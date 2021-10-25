@@ -1004,12 +1004,6 @@
   "ledgerAccountRestriction": {
     "message": "Bạn cần sử dụng tài khoản gần đây nhất thì mới có thể thêm một tài khoản mới."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Dùng Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "Cầu Ledger Live mới cho phép bạn dùng Ledger dễ dàng hơn.  Chỉ có trong Chrome."
-  },
   "ledgerLiveApp": {
     "message": "Ứng dụng Ledger Live"
   },
@@ -1527,9 +1521,6 @@
   "revealSeedWordsDescription": {
     "message": "Nếu thay đổi trình duyệt hoặc chuyển máy tính, bạn sẽ cần Cụm mật khẩu khôi phục bí mật này để truy cập tài khoản của mình. Hãy lưu Cụm mật khẩu khôi phục bí mật này ở nơi an toàn và bí mật."
   },
-  "revealSeedWordsTitle": {
-    "message": "Cụm mật khẩu khôi phục bí mật"
-  },
   "revealSeedWordsWarning": {
     "message": "Kẻ xấu có thể dùng các từ này để đánh cắp tất cả các tài khoản của bạn."
   },
@@ -1571,9 +1562,6 @@
   },
   "searchTokens": {
     "message": "Tìm kiếm token"
-  },
-  "secretBackupPhrase": {
-    "message": "Cụm mật khẩu sao lưu bí mật"
   },
   "secretBackupPhraseDescription": {
     "message": "Cụm mật khẩu sao lưu bí mật giúp việc sao lưu và khôi phục tài khoản trở nên dễ dàng."
@@ -2391,9 +2379,6 @@
   },
   "walletConnectionGuide": {
     "message": "hướng dẫn của chúng tôi về cách kết nối ví cứng"
-  },
-  "walletSeed": {
-    "message": "Cụm mật khẩu khôi phục bí mật"
   },
   "walletSeedRestore": {
     "message": "Cụm mật khẩu khôi phục bí mật của ví"

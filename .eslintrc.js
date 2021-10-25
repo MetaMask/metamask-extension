@@ -33,6 +33,7 @@ module.exports = {
     'nyc_output/**',
     '.vscode/**',
     'lavamoat/*/policy.json',
+    'storybook-build/**',
   ],
 
   extends: [
@@ -134,6 +135,7 @@ module.exports = {
         'shared/**/*.test.js',
         'development/**/*.test.js',
         'app/scripts/migrations/*.test.js',
+        'app/scripts/platforms/*.test.js',
       ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
@@ -157,6 +159,7 @@ module.exports = {
         'shared/**/*.test.js',
         'development/**/*.test.js',
         'app/scripts/migrations/*.test.js',
+        'app/scripts/platforms/*.test.js',
       ],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
@@ -183,6 +186,7 @@ module.exports = {
         'nyc.config.js',
         'stylelint.config.js',
         'app/scripts/lockdown-run.js',
+        'app/scripts/lockdown-more.js',
         'development/**/*.js',
         'test/e2e/**/*.js',
         'test/lib/wait-until-called.js',
@@ -197,6 +201,7 @@ module.exports = {
     {
       files: [
         'app/scripts/lockdown-run.js',
+        'app/scripts/lockdown-more.js',
         'test/unit-global/protect-intrinsics.test.js',
       ],
       globals: {

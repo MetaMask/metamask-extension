@@ -13,6 +13,12 @@ $justify-content:
   space-between,
   space-evenly;
 
+$flex-direction:
+  row,
+  row-reverse,
+  column,
+  column-reverse;
+
 $fractions: (
   1\/2: 50%,
   1\/3: 33.333333%,

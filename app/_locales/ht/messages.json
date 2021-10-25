@@ -492,9 +492,6 @@
   "revealSeedWordsDescription": {
     "message": "Si ou pa janm chanje navigatè ou deplase òdinatè, ou pral bezwen fraz seed la pou ka gen aksè a kont ou. Sere yo on kote an sekirite e an sekrè."
   },
-  "revealSeedWordsTitle": {
-    "message": "Seed Fraz"
-  },
   "revealSeedWordsWarning": {
     "message": "Yo ka itilize mo sa pou vòlè kont ou."
   },
@@ -690,9 +687,6 @@
   },
   "visitWebSite": {
     "message": "Vizite sit entènèt nou an"
-  },
-  "walletSeed": {
-    "message": "Bous Seed"
   },
   "welcome": {
     "message": "Byenveni nan MetaMask"

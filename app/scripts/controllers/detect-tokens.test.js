@@ -42,6 +42,7 @@ describe('DetectTokensController', function () {
       '0x7e57e2',
       '0xbc86727e770de68b1060c91f6bb6945c73e10388',
     ]);
+    preferences.setUseTokenDetection(true);
     sandbox
       .stub(network, 'getLatestBlock')
       .callsFake(() => Promise.resolve({}));

@@ -28,25 +28,26 @@ import {
   getShouldShowFiat,
   checkNetworkAndAccountSupports1559,
   getPreferences,
-  getHardwareWalletType,
+  doesAddressRequireLedgerHidConnection,
   getUseTokenDetection,
   getTokenList,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
-  transactionMatchesNetwork,
-  txParamsAreDappSuggested,
-} from '../../../shared/modules/transaction.utils';
-import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
-import { getPlatform } from '../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../shared/constants/app';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import {
+  isAddressLedger,
   updateTransactionGasFees,
   getIsGasEstimatesLoading,
   getNativeCurrency,
 } from '../../ducks/metamask/metamask';
+
+import {
+  transactionMatchesNetwork,
+  txParamsAreDappSuggested,
+} from '../../../shared/modules/transaction.utils';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
+import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -66,7 +67,6 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
-  const supportsEIP1599 = checkNetworkAndAccountSupports1559(state);
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
@@ -122,6 +122,8 @@ const mapStateToProps = (state, ownProps) => {
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
+  const supportsEIP1559 =
+    checkNetworkAndAccountSupports1559(state) && !isLegacyTransaction(txParams);
 
   const {
     hexTransactionAmount,
@@ -163,14 +165,18 @@ const mapStateToProps = (state, ownProps) => {
   }
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
-  const noGasPrice = !supportsEIP1599 && getNoGasPriceFetched(state);
+  const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
     fullTxData.userFeeLevel === 'custom' ||
     txParamsAreDappSuggested(fullTxData);
-  const showLedgerSteps = getHardwareWalletType(state) === KEYRING_TYPES.LEDGER;
-  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+  const fromAddressIsLedger = isAddressLedger(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
+
+  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
+    state,
+    fromAddress,
+  );
 
   return {
     balance,
@@ -210,16 +216,16 @@ const mapStateToProps = (state, ownProps) => {
     isMainnet,
     isEthGasPrice,
     noGasPrice,
-    supportsEIP1599,
+    supportsEIP1559,
     gasIsLoading: isGasEstimatesLoading || gasLoadingAnimationIsShowing,
     useNativeCurrencyAsPrimaryCurrency,
     maxFeePerGas: gasEstimationObject.maxFeePerGas,
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
-    showLedgerSteps,
-    isFirefox,
+    showLedgerSteps: fromAddressIsLedger,
     nativeCurrency,
+    hardwareWalletRequiresConnection,
   };
 };
 

@@ -1253,9 +1253,6 @@
   "revealSeedWordsDescription": {
     "message": "Se cambierai browser o computer, ti servirà questa frase seed per accedere ai tuoi account. Salvala in un posto sicuro e segreto."
   },
-  "revealSeedWordsTitle": {
-    "message": "Frase Seed"
-  },
   "revealSeedWordsWarning": {
     "message": "Non ripristinare la tua frase seed in pubblico!. Queste parole possono essere usate per rubare il tuo account."
   },
@@ -1297,9 +1294,6 @@
   },
   "searchTokens": {
     "message": "Cerca Tokens"
-  },
-  "secretBackupPhrase": {
-    "message": "Frase di Backup Segreta"
   },
   "secretBackupPhraseDescription": {
     "message": "La tua frase di backup segreta rende facile fare il backup e ripristinare il tuo account."
@@ -1952,9 +1946,6 @@
   },
   "walletConnectionGuide": {
     "message": "la nostra guida al collegamento del portafoglio hardware"
-  },
-  "walletSeed": {
-    "message": "Seed del Portafoglio"
   },
   "web3ShimUsageNotification": {
     "message": "Abbiamo notato che il sito corrente ha provato ad usare la API window.web3 rimossa. Se il sito ti sembra non funzionare, clicca $1 per più informazioni.",

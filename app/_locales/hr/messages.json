@@ -792,9 +792,6 @@
   "revealSeedWordsDescription": {
     "message": "Ako ikada promijenite preglednike ili računala, trebate ovu početnu rečenicu za pristupanje svojim računima. Spremite ih negdje na sigurno i tajno mjesto."
   },
-  "revealSeedWordsTitle": {
-    "message": "Početna rečenica"
-  },
   "revealSeedWordsWarning": {
     "message": "Ove se riječi mogu upotrijebiti za krađu vaših računa."
   },
@@ -830,9 +827,6 @@
   },
   "searchTokens": {
     "message": "Pretraži tokene"
-  },
-  "secretBackupPhrase": {
-    "message": "Alternativna tajna rečenica"
   },
   "secretBackupPhraseDescription": {
     "message": "Vašom se alternativnom tajnom rečenicom jednostavno sigurnosno kopira i obnavlja vaš račun."
@@ -1119,9 +1113,6 @@
   },
   "visitWebSite": {
     "message": "Posjetite naše mrežno mjesto"
-  },
-  "walletSeed": {
-    "message": "Početni novčanik"
   },
   "welcome": {
     "message": "Dobro došli u uslugu MetaMask"

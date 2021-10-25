@@ -799,9 +799,6 @@
   "revealSeedWordsDescription": {
     "message": "در صورتیکه شما معمولًا براوزر ها را تغییر داده یا کمپیوتر ها را انتقال میدهید، شما این عبارت آغازین را نیاز خواهید داشت تا به حساب های تان دسترسی داشته باشید. آنها را در یکجای مصؤن و مخفی نگهدارید."
   },
-  "revealSeedWordsTitle": {
-    "message": "عبارت بازیاب"
-  },
   "revealSeedWordsWarning": {
     "message": "این کلمات را میتوان جهت سرقت همه حساب های تان استفاده نمود."
   },
@@ -837,9 +834,6 @@
   },
   "searchTokens": {
     "message": "رمزیاب های جستجو"
-  },
-  "secretBackupPhrase": {
-    "message": "عبارت مخفی پشتیبان"
   },
   "secretBackupPhraseDescription": {
     "message": "عبارت مخفی پشتیبان تان نسخه پشتیبان و دوباره سازی حساب را تسهیل میسازد."
@@ -1129,9 +1123,6 @@
   },
   "visitWebSite": {
     "message": "از وب سایت ما دیدن نمایید"
-  },
-  "walletSeed": {
-    "message": "بازیاب کیف"
   },
   "welcome": {
     "message": "به MetaMask خوش آمدید"

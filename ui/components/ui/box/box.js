@@ -10,11 +10,15 @@ import {
   JUSTIFY_CONTENT,
   SIZES,
   TEXT_ALIGN,
+  FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
 
 const ValidSize = PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
 const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
-const MultipleSizes = PropTypes.oneOfType([ValidSize, ArrayOfValidSizes]);
+export const MultipleSizes = PropTypes.oneOfType([
+  ValidSize,
+  ArrayOfValidSizes,
+]);
 
 function generateSizeClasses(baseClass, type, main, top, right, bottom, left) {
   const arr = Array.isArray(main) ? main : [];
@@ -72,6 +76,7 @@ export default function Box({
   alignItems,
   justifyContent,
   textAlign,
+  flexDirection = FLEX_DIRECTION.ROW,
   display,
   width,
   height,
@@ -115,6 +120,7 @@ export default function Box({
       !display && (Boolean(justifyContent) || Boolean(alignItems)),
     [`box--justify-content-${justifyContent}`]: Boolean(justifyContent),
     [`box--align-items-${alignItems}`]: Boolean(alignItems),
+    [`box--flex-direction-${flexDirection}`]: Boolean(flexDirection),
     // text align
     [`box--text-align-${textAlign}`]: Boolean(textAlign),
     // display
@@ -132,6 +138,7 @@ export default function Box({
 
 Box.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  flexDirection: PropTypes.oneOf(Object.values(FLEX_DIRECTION)),
   margin: MultipleSizes,
   marginTop: ValidSize,
   marginBottom: ValidSize,

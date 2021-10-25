@@ -6,9 +6,12 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
 import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
+import Dropdown from '../../../components/ui/dropdown';
 
-import { getPlatform } from '../../../../app/scripts/lib/util';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import {
+  LEDGER_TRANSPORT_TYPES,
+  LEDGER_USB_VENDOR_ID,
+} from '../../../../shared/constants/hardware-wallets';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -36,10 +39,11 @@ export default class AdvancedTab extends PureComponent {
     threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
-    useLedgerLive: PropTypes.bool.isRequired,
+    ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
     setLedgerLivePreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
+    userHasALedgerAccount: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -393,24 +397,77 @@ export default class AdvancedTab extends PureComponent {
 
   renderLedgerLiveControl() {
     const { t } = this.context;
-    const { useLedgerLive, setLedgerLivePreference } = this.props;
+    const {
+      ledgerTransportType,
+      setLedgerLivePreference,
+      userHasALedgerAccount,
+    } = this.props;
+
+    const LEDGER_TRANSPORT_NAMES = {
+      LIVE: t('ledgerLive'),
+      WEBHID: t('webhid'),
+      U2F: t('u2f'),
+    };
+
+    const transportTypeOptions = [
+      {
+        name: LEDGER_TRANSPORT_NAMES.LIVE,
+        value: LEDGER_TRANSPORT_TYPES.LIVE,
+      },
+      {
+        name: LEDGER_TRANSPORT_NAMES.U2F,
+        value: LEDGER_TRANSPORT_TYPES.U2F,
+      },
+    ];
+
+    if (window.navigator.hid) {
+      transportTypeOptions.push({
+        name: LEDGER_TRANSPORT_NAMES.WEBHID,
+        value: LEDGER_TRANSPORT_TYPES.WEBHID,
+      });
+    }
+
+    const recommendedLedgerOption = window.navigator.hid
+      ? LEDGER_TRANSPORT_NAMES.WEBHID
+      : LEDGER_TRANSPORT_NAMES.U2F;
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{t('ledgerLiveAdvancedSetting')}</span>
+          <span>{t('preferredLedgerConnectionType')}</span>
           <div className="settings-page__content-description">
-            {t('ledgerLiveAdvancedSettingDescription')}
+            {t('ledgerConnectionPreferenceDescription', [
+              recommendedLedgerOption,
+              <Button
+                key="ledger-connection-settings-learn-more"
+                type="link"
+                href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="settings-page__inline-link"
+              >
+                {t('learnMore')}
+              </Button>,
+            ])}
           </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
-            <ToggleButton
-              value={useLedgerLive}
-              onToggle={(value) => setLedgerLivePreference(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-              disabled={getPlatform() === PLATFORM_FIREFOX}
+            <Dropdown
+              id="select-ledger-transport-type"
+              options={transportTypeOptions}
+              selectedOption={ledgerTransportType}
+              onChange={async (transportType) => {
+                setLedgerLivePreference(transportType);
+                if (
+                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+                  userHasALedgerAccount
+                ) {
+                  await window.navigator.hid.requestDevice({
+                    filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
+                  });
+                }
+              }}
             />
           </div>
         </div>
@@ -533,7 +590,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div className="settings-page__body">
-        {warning && <div className="settings-tab__error">{warning}</div>}
+        {warning ? <div className="settings-tab__error">{warning}</div> : null}
         {this.renderStateLogs()}
         {this.renderMobileSync()}
         {this.renderResetAccount()}

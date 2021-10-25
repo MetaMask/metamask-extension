@@ -230,8 +230,7 @@ export const createSwapsMockStore = () => {
           symbol: 'UNI',
           decimals: 18,
           name: 'Uniswap',
-          iconUrl:
-            'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984/logo.png',
+          iconUrl: '',
           aggregators: [
             'airswapLight',
             'bancor',
@@ -253,7 +252,7 @@ export const createSwapsMockStore = () => {
           symbol: 'LINK',
           decimals: 18,
           name: 'Chainlink',
-          iconUrl: 'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+          iconUrl: '',
           aggregators: [
             'airswapLight',
             'bancor',
@@ -275,8 +274,7 @@ export const createSwapsMockStore = () => {
           symbol: 'SUSHI',
           decimals: 18,
           name: 'SushiSwap',
-          iconUrl:
-            'https://assets.coingecko.com/coins/images/12271/thumb/512x512_Logo_no_chop.png?1606986688',
+          iconUrl: '',
           aggregators: [
             'bancor',
             'cmc',

@@ -93,7 +93,7 @@ export default class ConfirmPageContainerContent extends Component {
 
     return (
       <div className="confirm-page-container-content">
-        {warning && <ConfirmPageContainerWarning warning={warning} />}
+        {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
@@ -122,10 +122,11 @@ export default class ConfirmPageContainerContent extends Component {
           cancelText={cancelText}
           onSubmit={onSubmit}
           submitText={submitText}
-          submitButtonType="confirm"
           disabled={disabled}
         >
-          {unapprovedTxCount > 1 && <a onClick={onCancelAll}>{rejectNText}</a>}
+          {unapprovedTxCount > 1 ? (
+            <a onClick={onCancelAll}>{rejectNText}</a>
+          ) : null}
         </PageContainerFooter>
       </div>
     );

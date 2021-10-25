@@ -1004,12 +1004,6 @@
   "ledgerAccountRestriction": {
     "message": "नया खाता जोड़ने से पहले आपको अपने अंतिम खाते का उपयोग करना होगा।"
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Ledger Live का उपयोग करें"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "नया Ledger Live ब्रिज आपको अपने लेजर का अधिक आसानी से उपयोग करने की अनुमति देता है।  केवल Chrome में उपलब्ध है।"
-  },
   "ledgerLiveApp": {
     "message": "Ledger Live ऐप"
   },
@@ -1527,9 +1521,6 @@
   "revealSeedWordsDescription": {
     "message": "यदि आप कभी ब्राउज़र बदलते हैं या कंप्यूटर को स्थानांतरित करते हैं, तो आपको अपने खातों तक पहुँचने के लिए इस गुप्त रिकवरी फ्रेज़ की आवश्यकता होगी। उन्हें कहीं सुरक्षित और गोपनीय तरीके से सहेजें।"
   },
-  "revealSeedWordsTitle": {
-    "message": "गुप्त रिकवरी फ्रेज़"
-  },
   "revealSeedWordsWarning": {
     "message": "इन शब्दों का उपयोग आपके सभी खातों को चुराने के लिए किया जा सकता है।"
   },
@@ -1571,9 +1562,6 @@
   },
   "searchTokens": {
     "message": "टोकन खोजें"
-  },
-  "secretBackupPhrase": {
-    "message": "गुप्त बैकअप वाक्यांश"
   },
   "secretBackupPhraseDescription": {
     "message": "आपका गुप्त बैकअप वाक्यांश आपके खाते का बैकअप लेना और पुनर्स्थापित करना आसान बनाता है।"
@@ -2391,9 +2379,6 @@
   },
   "walletConnectionGuide": {
     "message": "हमारी हार्डवेयर वॉलेट कनेक्शन गाइड"
-  },
-  "walletSeed": {
-    "message": "गुप्त रिकवरी फ्रेज़"
   },
   "walletSeedRestore": {
     "message": "वॉलेट का गुप्त रिकवरी फ्रेज़"

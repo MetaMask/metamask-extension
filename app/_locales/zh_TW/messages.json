@@ -793,9 +793,6 @@
   "revealSeedWordsDescription": {
     "message": "若想在不同瀏覽器或電腦登入，將需要使用助憶詞還原帳戶資訊。請妥善並安全的保管您的助憶詞。"
   },
-  "revealSeedWordsTitle": {
-    "message": "助憶詞"
-  },
   "revealSeedWordsWarning": {
     "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。"
   },
@@ -831,9 +828,6 @@
   },
   "searchTokens": {
     "message": "搜尋代幣"
-  },
-  "secretBackupPhrase": {
-    "message": "助憶詞"
   },
   "secretBackupPhraseDescription": {
     "message": "助憶詞將可協助您用更簡單的方式備份帳戶資訊。"
@@ -1117,9 +1111,6 @@
   },
   "visitWebSite": {
     "message": "造訪我們的網站"
-  },
-  "walletSeed": {
-    "message": "助憶詞"
   },
   "welcome": {
     "message": "歡迎來到 MetaMask"

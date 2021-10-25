@@ -10,7 +10,7 @@ import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
+import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import FeeCard from '../fee-card';
 import EditGasPopover from '../../../components/app/edit-gas-popover/edit-gas-popover.component';
@@ -50,7 +50,10 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
-import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
+import {
+  toPrecisionWithoutTrailingZeros,
+  isEqualCaseInsensitive,
+} from '../../../helpers/utils/util';
 
 import {
   safeRefetchQuotes,
@@ -214,8 +217,8 @@ export default function ViewQuote() {
   const balanceToken =
     fetchParamsSourceToken === defaultSwapsToken.address
       ? defaultSwapsToken
-      : tokensWithBalances.find(
-          ({ address }) => address === fetchParamsSourceToken,
+      : tokensWithBalances.find(({ address }) =>
+          isEqualCaseInsensitive(address, fetchParamsSourceToken),
         );
 
   const selectedFromToken = balanceToken || usedQuote.sourceTokenInfo;

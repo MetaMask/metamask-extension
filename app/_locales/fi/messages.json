@@ -796,9 +796,6 @@
   "revealSeedWordsDescription": {
     "message": "Mikäli vaihdat jossakin vaiheessa selainta tai tietokonetta, tarvitset tämän salaustekstin tiliesi käyttämiseen. Tallenna se johonkin turvalliseen ja salaiseen paikkaan."
   },
-  "revealSeedWordsTitle": {
-    "message": "Juurilause"
-  },
   "revealSeedWordsWarning": {
     "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen."
   },
@@ -834,9 +831,6 @@
   },
   "searchTokens": {
     "message": "Hae tietueita"
-  },
-  "secretBackupPhrase": {
-    "message": "Salainen varmuuskopiolause"
   },
   "secretBackupPhraseDescription": {
     "message": "Salainen varmistuslauseesi tekee varmuuskopioinnista ja tilisi palauttamisesta helppoa."
@@ -1126,9 +1120,6 @@
   },
   "visitWebSite": {
     "message": "Vieraile verkkosivustollamme"
-  },
-  "walletSeed": {
-    "message": "Lompakon siemen"
   },
   "welcome": {
     "message": "Tervetuloa MetaMaskiin"

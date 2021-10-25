@@ -221,7 +221,6 @@ export default class QrScanner extends Component {
           onSubmit={this.tryAgain}
           cancelText={t('cancel')}
           submitText={t('tryAgain')}
-          submitButtonType="confirm"
         />
       </>
     );

@@ -97,14 +97,14 @@
     align-items: center;
   }
 
-  &__lock-button {
+  & &__lock-button {
     @include H7;
 
-    border: 1px solid $dusty-gray;
+    border: 1px solid $ui-white;
     background-color: transparent;
     color: $white;
-    border-radius: 4px;
     padding: 3.5px 24px;
+    width: 59px;
   }
 
   &__item-icon {

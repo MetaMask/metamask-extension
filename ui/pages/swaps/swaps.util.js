@@ -14,6 +14,7 @@ import {
   SWAPS_DEV_API_V2_BASE_URL,
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
+  SWAPS_CLIENT_ID,
 } from '../../../shared/constants/swaps';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 import {
@@ -53,7 +54,7 @@ const TOKEN_TRANSFER_LOG_TOPIC_HASH =
 
 const CACHE_REFRESH_FIVE_MINUTES = 300000;
 
-const clientIdHeader = { 'X-Client-Id': 'extension' };
+const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
 
 /**
  * @param {string} type Type of an API call, e.g. "tokens"

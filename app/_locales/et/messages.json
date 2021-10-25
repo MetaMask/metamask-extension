@@ -789,9 +789,6 @@
   "revealSeedWordsDescription": {
     "message": "Kui vahetate veebilehitsejat või arvutit, vajate oma kontodele ligipääsemiseks seemnefraasi. Hoidke seda turvalises ja salajases kohas."
   },
-  "revealSeedWordsTitle": {
-    "message": "Seemnefraas"
-  },
   "revealSeedWordsWarning": {
     "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks."
   },
@@ -827,9 +824,6 @@
   },
   "searchTokens": {
     "message": "Lubade otsimine"
-  },
-  "secretBackupPhrase": {
-    "message": "Salajane varundusfraas"
   },
   "secretBackupPhraseDescription": {
     "message": "Teie salajane varundusfraas hõlbustab konto varundamist ja taastamist."
@@ -1119,9 +1113,6 @@
   },
   "visitWebSite": {
     "message": "Külastage meie veebilehte"
-  },
-  "walletSeed": {
-    "message": "Rahakoti seeme"
   },
   "welcome": {
     "message": "Tere tulemast MetaMaski"

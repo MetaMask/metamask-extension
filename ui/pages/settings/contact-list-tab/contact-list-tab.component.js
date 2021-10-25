@@ -80,7 +80,6 @@ export default class ContactListTab extends Component {
               viewingContact || editingContact,
           })}
           type="secondary"
-          rounded
           onClick={() => {
             history.push(CONTACT_ADD_ROUTE);
           }}
@@ -137,7 +136,9 @@ export default class ContactListTab extends Component {
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}
         {this.renderContactContent()}
-        {!addingContact && addressBook.length > 0 && this.renderAddButton()}
+        {!addingContact && addressBook.length > 0
+          ? this.renderAddButton()
+          : null}
       </div>
     );
   }

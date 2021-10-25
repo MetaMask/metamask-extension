@@ -79,6 +79,7 @@ const initialState = {
     routeState: '',
     swapsFeatureIsLive: true,
     useNewSwapsApi: false,
+    isFetchingQuotes: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
   },
@@ -229,6 +230,8 @@ export default class SwapsController {
     const indexOfCurrentCall = this.indexOfNewestCallInFlight + 1;
     this.indexOfNewestCallInFlight = indexOfCurrentCall;
 
+    this.setIsFetchingQuotes(true);
+
     let [newQuotes] = await Promise.all([
       this._fetchTradesInfo(fetchParams, {
         ...fetchParamsMetaData,
@@ -236,6 +239,20 @@ export default class SwapsController {
       }),
       this._setSwapsRefreshRates(),
     ]);
+
+    const {
+      swapsState: { isFetchingQuotes },
+    } = this.store.getState();
+
+    // If isFetchingQuotes is false, it means a user left Swaps (we cleaned the state)
+    // and we don't want to set any API response with quotes into state.
+    if (!isFetchingQuotes) {
+      return [
+        {}, // quotes
+        null, // selectedAggId
+      ];
+    }
+    this.setIsFetchingQuotes(false);
 
     newQuotes = mapValues(newQuotes, (quote) => ({
       ...quote,
@@ -260,7 +277,9 @@ export default class SwapsController {
       // _getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is greater
       // than 0, it means that approval has already occured and is not needed. Otherwise, for tokens to be swapped, a new
       // call of the ERC-20 approve method is required.
-      approvalRequired = allowance.eq(0);
+      approvalRequired =
+        allowance.eq(0) &&
+        Object.values(newQuotes)[0].aggregator !== 'wrappedNative';
       if (!approvalRequired) {
         newQuotes = mapValues(newQuotes, (quote) => ({
           ...quote,
@@ -540,6 +559,13 @@ export default class SwapsController {
     this.store.updateState({ swapsState: { ...swapsState, routeState } });
   }
 
+  setIsFetchingQuotes(status) {
+    const { swapsState } = this.store.getState();
+    this.store.updateState({
+      swapsState: { ...swapsState, isFetchingQuotes: status },
+    });
+  }
+
   setSwapsLiveness(swapsLiveness) {
     const { swapsState } = this.store.getState();
     const { swapsFeatureIsLive, useNewSwapsApi } = swapsLiveness;
@@ -570,7 +596,6 @@ export default class SwapsController {
     this.store.updateState({
       swapsState: {
         ...initialState.swapsState,
-        tokens: swapsState.tokens,
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
           swapsState.swapsQuotePrefetchingRefreshTime,

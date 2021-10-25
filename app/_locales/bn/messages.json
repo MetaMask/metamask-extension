@@ -799,9 +799,6 @@
   "revealSeedWordsDescription": {
     "message": "আপনি কখনও ব্রাউজার পরিবর্তন করলে বা এক কম্পিউটার থেকে অন্য কম্পিউটারে গেলে, আপনাকে আপনার অ্যাকাউন্ট অ্যাক্সেস করার জন্য এই সীড ফ্রেজটি লাগবে। সেগুলি নিরাপদ ও গোপনীয় কোনো স্থানে সংরক্ষণ করুন।  "
   },
-  "revealSeedWordsTitle": {
-    "message": "সীড ফ্রেজ"
-  },
   "revealSeedWordsWarning": {
     "message": "আপনার সমস্ত অ্যাকাউন্ট চুরি করতে এই শব্দগুলি ব্যবহার করা যাবে।"
   },
@@ -837,9 +834,6 @@
   },
   "searchTokens": {
     "message": "টোকেনগুলি অনুসন্ধান করুন"
-  },
-  "secretBackupPhrase": {
-    "message": "গোপন ব্যাকআপ ফ্রেজ"
   },
   "secretBackupPhraseDescription": {
     "message": "আপনার গোপন বাক্যাংশ আপনার অ্যাকাউন্ট ব্যাকআপ এবং রিস্টোর করা সহজতর করে তোলে।"
@@ -1129,9 +1123,6 @@
   },
   "visitWebSite": {
     "message": "আমাদের ওয়েবসাইট দেখুন"
-  },
-  "walletSeed": {
-    "message": "ওয়ালেট সীড"
   },
   "welcome": {
     "message": "MetaMask এ স্বাগতম"

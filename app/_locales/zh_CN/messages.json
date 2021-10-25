@@ -1247,9 +1247,6 @@
   "revealSeedWordsDescription": {
     "message": "如果您更换浏览器或计算机，则需要使用此账户助记词访问您的帐户。请将它们保存在安全秘密的地方。"
   },
-  "revealSeedWordsTitle": {
-    "message": "账户助记词"
-  },
   "revealSeedWordsWarning": {
     "message": "该账户助记词可以用来窃取您的所有帐户"
   },
@@ -1291,9 +1288,6 @@
   },
   "searchTokens": {
     "message": "搜索代币"
-  },
-  "secretBackupPhrase": {
-    "message": "账户助记词"
   },
   "secretBackupPhraseDescription": {
     "message": "您的账户助记词可以帮助您轻松备份和恢复个人账户。"
@@ -1929,9 +1923,6 @@
   },
   "walletConnectionGuide": {
     "message": "我们的硬件钱包连接指南"
-  },
-  "walletSeed": {
-    "message": "账户助记词"
   },
   "web3ShimUsageNotification": {
     "message": "我们发现当前的网站尝试使用已经删除的 window.web3 API。如果这个网站网站已经无法正常使用，请点击 $1 获取更多信息。",

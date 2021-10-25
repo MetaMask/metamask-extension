@@ -768,9 +768,6 @@
   "revealSeedWordsDescription": {
     "message": "Wenn Sie einmal Ihren Browser oder Computer wechseln, benötigen Sie diesen Seed-Schlüssel, um auf Ihre Konten zuzugreifen. Bewahren Sie ihn an einem sicheren und geheimen Ort auf."
   },
-  "revealSeedWordsTitle": {
-    "message": "Mnemonische Phrase"
-  },
   "revealSeedWordsWarning": {
     "message": "Bitte niemals deine Seed-Wörterfolge an einem öffentlichen Ort kenntlich machen. Mit diesen Wörtern können alle deine Accounts gestohlen werden."
   },
@@ -806,9 +803,6 @@
   },
   "searchTokens": {
     "message": "Token suchen"
-  },
-  "secretBackupPhrase": {
-    "message": "Geheimer Backup-Schlüssel"
   },
   "secretBackupPhraseDescription": {
     "message": "Mit Ihrem geheimen Backup-Schlüssel können Sie Ihr Konto ganz einfach sichern und wiederherstellen."
