@@ -33,8 +33,8 @@
     &--warning {
       @include H7;
 
-      background-color: #fefae8;
-      border: 1px solid #ffd33d;
+      background-color: $Yellow-000;
+      border: 1px solid $alert-1;
       border-radius: 5px;
       box-sizing: border-box;
       padding: 12px;
