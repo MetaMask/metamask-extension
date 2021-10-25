@@ -12,7 +12,6 @@ const renderComponent = (props) => {
 const props = {
   decimals: 16,
   siteImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
-  // setCustomAmount: () => undefined,
   customTokenAmount: '10',
   tokenAmount: '10',
   origin: 'https://metamask.github.io/test-dapp/',
@@ -31,8 +30,6 @@ const props = {
   useNonceField: true,
   nextNonce: 1,
   customNonceValue: '2',
-  // updateCustomNonce: () => undefined,
-  // getNextNonce: () => undefined,
   showCustomizeNonceModal: jest.fn(),
   chainId: '1337',
   rpcPrefs: {},
