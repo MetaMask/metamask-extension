@@ -10,7 +10,6 @@ import {
   PLATFORM_OPERA,
   PLATFORM_CHROME,
   PLATFORM_EDGE,
-  PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
 import { getEnvironmentType, getPlatform } from './util';
 
@@ -158,44 +157,31 @@ describe('app utils', function () {
   });
 
   describe('getPlatform', function () {
-    afterEach(function () {
-      window.navigator.restore();
-      window?.brave.restore();
-    });
-
     const setBrowserSpecificWindow = (browser) => {
       switch (browser) {
         case 'firefox': {
-          sinon.stub(window, 'navigator').returns({
+          sinon.stub(window, 'navigator').value({
             userAgent:
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0) Gecko/20100101 Firefox/95.0',
           });
           break;
         }
-        case 'brave': {
-          sinon.stub(window, 'navigator').returns({
-            userAgent:
-              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36',
-          });
-          sinon.stub(window, 'brave').returns({});
-          break;
-        }
         case 'edge': {
-          sinon.stub(window, 'navigator').returns({
+          sinon.stub(window, 'navigator').value({
             userAgent:
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36 Edg/95.0.1020.30',
           });
           break;
         }
         case 'opera': {
-          sinon.stub(window, 'navigator').returns({
+          sinon.stub(window, 'navigator').value({
             userAgent:
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 OPR/80.0.4170.63',
           });
           break;
         }
         default: {
-          sinon.stub(window, 'navigator').returns({
+          sinon.stub(window, 'navigator').value({
             userAgent:
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36',
           });
@@ -207,11 +193,6 @@ describe('app utils', function () {
     it('should detect Firefox', function () {
       setBrowserSpecificWindow('firefox');
       assert.equal(getPlatform(), PLATFORM_FIREFOX);
-    });
-
-    it('should detect Brave', function () {
-      setBrowserSpecificWindow('brave');
-      assert.equal(getPlatform(), PLATFORM_BRAVE);
     });
 
     it('should detect Edge', function () {
