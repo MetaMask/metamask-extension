@@ -8,7 +8,7 @@ export default {
   id: __filename,
 };
 
-export const primaryType = () => (
+export const PrimaryType = () => (
   <Button
     onClick={action('clicked')}
     type="primary"
@@ -18,7 +18,7 @@ export const primaryType = () => (
   </Button>
 );
 
-export const secondaryType = () => (
+export const SecondaryType = () => (
   <Button
     onClick={action('clicked')}
     type="secondary"
@@ -28,7 +28,7 @@ export const secondaryType = () => (
   </Button>
 );
 
-export const defaultType = () => (
+export const DefaultType = () => (
   <Button
     onClick={action('clicked')}
     type="default"
@@ -38,7 +38,7 @@ export const defaultType = () => (
   </Button>
 );
 
-export const warningType = () => (
+export const WarningType = () => (
   <Button
     onClick={action('clicked')}
     type="warning"
@@ -48,7 +48,7 @@ export const warningType = () => (
   </Button>
 );
 
-export const dangerType = () => (
+export const DangerType = () => (
   <Button
     onClick={action('clicked')}
     type="danger"
@@ -58,7 +58,7 @@ export const dangerType = () => (
   </Button>
 );
 
-export const dangerPrimaryType = () => (
+export const DangerPrimaryType = () => (
   <Button
     onClick={action('clicked')}
     type="danger-primary"
