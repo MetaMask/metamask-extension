@@ -64,7 +64,7 @@ const getPlatform = () => {
     return PLATFORM_FIREFOX;
   } else if (navigator.brave) {
     return PLATFORM_BRAVE;
-  } else if (userAgent.includes('Edge')) {
+  } else if (userAgent.includes('Edg/')) {
     return PLATFORM_EDGE;
   } else if (userAgent.includes('OPR')) {
     return PLATFORM_OPERA;
