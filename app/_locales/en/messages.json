@@ -894,6 +894,9 @@
   "etherscanView": {
     "message": "View account on Etherscan"
   },
+  "etherscanViewOn": {
+    "message": "View on Etherscan"
+  },
   "expandView": {
     "message": "Expand view"
   },
