@@ -6,8 +6,14 @@ import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import UrlIcon from '../../../components/ui/url-icon';
 import { addressSummary, getURLHostName } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
+import { isBeta } from '../../../helpers/utils/build-types';
+import { ellipsify } from '../../send/send.utils';
 import Typography from '../../../components/ui/typography';
+import Box from '../../../components/ui/box';
+import Button from '../../../components/ui/button';
+import MetaFoxLogo from '../../../components/ui/metafox-logo';
+import Identicon from '../../../components/ui/identicon';
+import CopyIcon from '../../../components/ui/icon/copy-icon.component';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
@@ -16,15 +22,9 @@ import {
   COLORS,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
-import Box from '../../../components/ui/box';
-import Button from '../../../components/ui/button';
-import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
-import MetaFoxLogo from '../../../components/ui/metafox-logo';
-import { isBeta } from '../../../helpers/utils/build-types';
-import Identicon from '../../../components/ui/identicon';
-import { ellipsify } from '../../send/send.utils';
-import CopyIcon from '../../../components/ui/icon/copy-icon.component';
 import { SECOND } from '../../../../shared/constants/time';
+import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
+import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
