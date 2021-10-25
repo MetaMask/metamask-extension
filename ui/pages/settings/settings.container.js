@@ -1,7 +1,7 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getAddressBookEntryName } from '../../selectors';
+import { getAddressBookEntryOrAccountName } from '../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -72,7 +72,7 @@ const mapStateToProps = (state, ownProps) => {
   let initialBreadCrumbRoute;
   let initialBreadCrumbKey;
 
-  const addressName = getAddressBookEntryName(
+  const addressName = getAddressBookEntryOrAccountName(
     state,
     !isBurnAddress(pathNameTail) &&
       isValidHexAddress(pathNameTail, { mixedCaseUseChecksum: true })
