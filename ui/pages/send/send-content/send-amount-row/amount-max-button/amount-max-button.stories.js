@@ -14,7 +14,7 @@ import AmountMaxButton from './amount-max-button';
 
 export default {
   title: 'Pages/Button/Amount Max Button',
-  id: __filename
+  id: __filename,
 };
 
 export const AmountMaxButtonComponent = () => {

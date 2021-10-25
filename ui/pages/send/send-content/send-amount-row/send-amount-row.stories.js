@@ -12,7 +12,7 @@ import SendAmountRow from './send-amount-row.component';
 
 export default {
   title: 'Pages/Card/Send Amount Row',
-  id: __filename
+  id: __filename,
 };
 
 const ProviderWrapper = ({ children, store }) => {
