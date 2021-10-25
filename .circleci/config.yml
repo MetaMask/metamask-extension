@@ -50,7 +50,7 @@ workflows:
             - prep-deps
       - prep-build-storybook:
           requires:
-            test-storybook
+            - test-storybook
       - test-lint:
           requires:
             - prep-deps
