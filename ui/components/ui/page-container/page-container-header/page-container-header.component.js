@@ -21,7 +21,7 @@ export default class PageContainerHeader extends Component {
   renderTabs() {
     const { tabs } = this.props;
 
-    return tabs && <ul className="page-container__tabs">{tabs}</ul>;
+    return tabs ? <ul className="page-container__tabs">{tabs}</ul> : null;
   }
 
   renderCloseAction() {
@@ -99,7 +99,9 @@ export default class PageContainerHeader extends Component {
             {title}
           </div>
         )}
-        {subtitle && <div className="page-container__subtitle">{subtitle}</div>}
+        {subtitle ? (
+          <div className="page-container__subtitle">{subtitle}</div>
+        ) : null}
 
         {this.renderCloseAction()}
 

@@ -7,12 +7,14 @@ import {
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
-  ONBOARDING_WELCOME,
+  ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_PIN_EXTENSION_ROUTE,
+  ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -37,6 +39,8 @@ import PrivacySettings from './privacy-settings/privacy-settings';
 import CreationSuccessful from './creation-successful/creation-successful';
 import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
+import OnboardingPinExtension from './pin-extension/pin-extension';
+import MetaMetricsComponent from './metametrics/metametrics';
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
@@ -51,13 +55,6 @@ export default function OnboardingFlow() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
 
   useEffect(() => {
-    // For ONBOARDING_V2 dev purposes,
-    // Remove when ONBOARDING_V2 dev complete
-    if (process.env.ONBOARDING_V2) {
-      history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
-      return;
-    }
-
     if (completedOnboarding && seedPhraseBackedUp) {
       history.push(DEFAULT_ROUTE);
       return;
@@ -152,7 +149,18 @@ export default function OnboardingFlow() {
             path={ONBOARDING_COMPLETION_ROUTE}
             component={CreationSuccessful}
           />
-          <Route path={ONBOARDING_WELCOME} component={OnboardingWelcome} />
+          <Route
+            path={ONBOARDING_WELCOME_ROUTE}
+            component={OnboardingWelcome}
+          />
+          <Route
+            path={ONBOARDING_PIN_EXTENSION_ROUTE}
+            component={OnboardingPinExtension}
+          />
+          <Route
+            path={ONBOARDING_METAMETRICS}
+            component={MetaMetricsComponent}
+          />
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>

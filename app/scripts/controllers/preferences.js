@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import log from 'loglevel';
 import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
+import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 import { NETWORK_EVENTS } from './network';
 
 export default class PreferencesController {
@@ -45,7 +46,6 @@ export default class PreferencesController {
         showIncomingTransactions: true,
       },
       knownMethodData: {},
-      firstTimeFlowType: null,
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
@@ -56,11 +56,12 @@ export default class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
       },
-      completedOnboarding: false,
       // ENS decentralized website resolution
       ipfsGateway: 'dweb.link',
       infuraBlocked: null,
-      useLedgerLive: false,
+      ledgerTransportType: window.navigator.hid
+        ? LEDGER_TRANSPORT_TYPES.WEBHID
+        : LEDGER_TRANSPORT_TYPES.U2F,
       ...opts.initState,
     };
 
@@ -125,16 +126,6 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
-  }
-
-  /**
-   * Setter for the `firstTimeFlowType` property
-   *
-   * @param {string} type - Indicates the type of first time flow - create or import - the user wishes to follow
-   *
-   */
-  setFirstTimeFlowType(type) {
-    this.store.updateState({ firstTimeFlowType: type });
   }
 
   /**
@@ -510,15 +501,6 @@ export default class PreferencesController {
   }
 
   /**
-   * Sets the completedOnboarding state to true, indicating that the user has completed the
-   * onboarding process.
-   */
-  completeOnboarding() {
-    this.store.updateState({ completedOnboarding: true });
-    return Promise.resolve(true);
-  }
-
-  /**
    * A getter for the `ipfsGateway` property
    * @returns {string} The current IPFS gateway domain
    */
@@ -537,21 +519,21 @@ export default class PreferencesController {
   }
 
   /**
-   * A setter for the `useLedgerLive` property
-   * @param {bool} useLedgerLive - Value for ledger live support
-   * @returns {Promise<string>} A promise of the update to useLedgerLive
+   * A setter for the `useWebHid` property
+   * @param {string} ledgerTransportType - Either 'ledgerLive', 'webhid' or 'u2f'
+   * @returns {string} The transport type that was set.
    */
-  async setLedgerLivePreference(useLedgerLive) {
-    this.store.updateState({ useLedgerLive });
-    return useLedgerLive;
+  setLedgerTransportPreference(ledgerTransportType) {
+    this.store.updateState({ ledgerTransportType });
+    return ledgerTransportType;
   }
 
   /**
-   * A getter for the `useLedgerLive` property
-   * @returns {boolean} User preference of using Ledger Live
+   * A getter for the `ledgerTransportType` property
+   * @returns {boolean} User preference of using WebHid to connect Ledger
    */
-  getLedgerLivePreference() {
-    return this.store.getState().useLedgerLive;
+  getLedgerTransportPreference() {
+    return this.store.getState().ledgerTransportType;
   }
 
   /**

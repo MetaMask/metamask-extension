@@ -1,4 +1,4 @@
-import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { addHexPrefix, isHexString, stripHexPrefix } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
@@ -10,7 +10,9 @@ import {
 import { updateTransaction } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
+import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -339,4 +341,60 @@ export function getIsUnlocked(state) {
 
 export function getSeedPhraseBackedUp(state) {
   return state.metamask.seedPhraseBackedUp;
+}
+
+/**
+ * Given the redux state object and an address, finds a keyring that contains that address, if one exists
+ *
+ * @param {Object} state - the redux state object
+ * @param {string} address - the address to search for among the keyring addresses
+ * @returns {Object|undefined} The keyring which contains the passed address, or undefined
+ */
+export function findKeyringForAddress(state, address) {
+  const keyring = state.metamask.keyrings.find((kr) => {
+    return kr.accounts.some((account) => {
+      return (
+        isEqualCaseInsensitive(account, addHexPrefix(address)) ||
+        isEqualCaseInsensitive(account, stripHexPrefix(address))
+      );
+    });
+  });
+
+  return keyring;
+}
+
+/**
+ * Given the redux state object, returns the users preferred ledger transport type
+ *
+ * @param {Object} state - the redux state object
+ * @returns {string} The users preferred ledger transport type. One of'ledgerLive', 'webhid' or 'u2f'
+ */
+export function getLedgerTransportType(state) {
+  return state.metamask.ledgerTransportType;
+}
+
+/**
+ * Given the redux state object and an address, returns a boolean indicating whether the passed address is part of a Ledger keyring
+ *
+ * @param {Object} state - the redux state object
+ * @param {string} address - the address to search for among all keyring addresses
+ * @returns {boolean} true if the passed address is part of a ledger keyring, and false otherwise
+ */
+export function isAddressLedger(state, address) {
+  const keyring = findKeyringForAddress(state, address);
+
+  return keyring?.type === KEYRING_TYPES.LEDGER;
+}
+
+/**
+ * Given the redux state object, returns a boolean indicating whether the user has any Ledger accounts added to MetaMask (i.e. Ledger keyrings
+ * in state)
+ *
+ * @param {Object} state - the redux state object
+ * @returns {boolean} true if the user has a Ledger account and false otherwise
+ */
+export function doesUserHaveALedgerAccount(state) {
+  return state.metamask.keyrings.some((kr) => {
+    return kr.type === KEYRING_TYPES.LEDGER;
+  });
 }

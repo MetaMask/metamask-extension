@@ -364,7 +364,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.onboardingController = new OnboardingController({
       initState: initState.OnboardingController,
-      preferencesController: this.preferencesController,
     });
 
     this.tokensController.hub.on('pendingSuggestedAsset', async () => {
@@ -629,7 +628,7 @@ export default class MetamaskController extends EventEmitter {
     if (
       password &&
       !this.isUnlocked() &&
-      this.onboardingController.completedOnboarding
+      this.onboardingController.store.getState().completedOnboarding
     ) {
       this.submitPassword(password);
     }
@@ -820,7 +819,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
-      setFirstTimeFlowType: this.setFirstTimeFlowType.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
@@ -843,7 +841,10 @@ export default class MetamaskController extends EventEmitter {
         this.unlockHardwareWalletAccount,
         this,
       ),
-      setLedgerLivePreference: nodeify(this.setLedgerLivePreference, this),
+      setLedgerTransportPreference: nodeify(
+        this.setLedgerTransportPreference,
+        this,
+      ),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -899,10 +900,7 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setPreference,
         preferencesController,
       ),
-      completeOnboarding: nodeify(
-        preferencesController.completeOnboarding,
-        preferencesController,
-      ),
+
       addKnownMethodData: nodeify(
         preferencesController.addKnownMethodData,
         preferencesController,
@@ -1001,6 +999,14 @@ export default class MetamaskController extends EventEmitter {
       // onboarding controller
       setSeedPhraseBackedUp: nodeify(
         onboardingController.setSeedPhraseBackedUp,
+        onboardingController,
+      ),
+      completeOnboarding: nodeify(
+        onboardingController.completeOnboarding,
+        onboardingController,
+      ),
+      setFirstTimeFlowType: nodeify(
+        onboardingController.setFirstTimeFlowType,
         onboardingController,
       ),
 
@@ -1477,9 +1483,9 @@ export default class MetamaskController extends EventEmitter {
     // keyring's iframe and have the setting initialized properly
     // Optimistically called to not block Metamask login due to
     // Ledger Keyring GitHub downtime
-    this.setLedgerLivePreference(
-      this.preferencesController.getLedgerLivePreference(),
-    );
+    const transportPreference = this.preferencesController.getLedgerTransportPreference();
+
+    this.setLedgerTransportPreference(transportPreference);
 
     return this.keyringController.fullUpdate();
   }
@@ -2981,16 +2987,18 @@ export default class MetamaskController extends EventEmitter {
    * Sets the Ledger Live preference to use for Ledger hardware wallet support
    * @param {bool} bool - the value representing if the users wants to use Ledger Live
    */
-  async setLedgerLivePreference(bool) {
-    const currentValue = this.preferencesController.getLedgerLivePreference();
-    this.preferencesController.setLedgerLivePreference(bool);
+  async setLedgerTransportPreference(transportType) {
+    const currentValue = this.preferencesController.getLedgerTransportPreference();
+    const newValue = this.preferencesController.setLedgerTransportPreference(
+      transportType,
+    );
 
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod(bool).catch((e) => {
+      return keyring.updateTransportMethod(newValue).catch((e) => {
         // If there was an error updating the transport, we should
         // fall back to the original value
-        this.preferencesController.setLedgerLivePreference(currentValue);
+        this.preferencesController.setLedgerTransportPreference(currentValue);
         throw e;
       });
     }
@@ -3009,23 +3017,6 @@ export default class MetamaskController extends EventEmitter {
         bool,
       );
       cb(null, metaMetricsId);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  /**
-   * Sets the type of first time flow the user wishes to follow: create or import
-   * @param {string} type - Indicates the type of first time flow the user wishes to follow
-   * @param {Function} cb - A callback function called when complete.
-   */
-  setFirstTimeFlowType(type, cb) {
-    try {
-      this.preferencesController.setFirstTimeFlowType(type);
-      cb(null);
       return;
     } catch (err) {
       cb(err);

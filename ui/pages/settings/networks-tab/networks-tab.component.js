@@ -244,7 +244,7 @@ export default class NetworksTab extends PureComponent {
 
     return (
       <div className="networks-tab__body">
-        {isFullScreen && this.renderSubHeader()}
+        {isFullScreen ? this.renderSubHeader() : null}
         <div className="networks-tab__content">
           {this.renderNetworksTabContent()}
           {!isFullScreen && !shouldRenderNetworkForm ? (

@@ -2821,10 +2821,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-6.0.0.tgz#ec53e8ab278073e882411ed89705bc7d06b78c81"
   integrity sha512-LyakGYGwM8UQOGhwWa+5erAI1hXuiTgf/y7USzOomX6H9KiuY09IAUYnPh7ToPG2sedD2F48UF1bUm8yvCoZOw==
 
-"@metamask/eth-ledger-bridge-keyring@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.7.0.tgz#7d80e1e3dfab91ba2b6a1a2a5e352320e948b568"
-  integrity sha512-0UOEb/c3/fkatDK+se3gOHaGQ0RTRLbG5DqsoeowZ/JcO4wcMxBhOiIgOY4domOqUTekKKVPNC7Pc0mHpM9sAQ==
+"@metamask/eth-ledger-bridge-keyring@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.9.0.tgz#42e98e7dfeaaa08e7c9ceff261facddd7320df80"
+  integrity sha512-EuNKvodbdJxQPzr+zAE5TE1iKUzuIRWKeVaYoYwpi18RjjtSQMKmZcb3VXY8hmQu+Fj4Ld/ujj22qSYjYAjtPg==
   dependencies:
     "@ethereumjs/tx" "^3.2.0"
     eth-sig-util "^2.0.0"

@@ -196,7 +196,9 @@ export default class AccountMenu extends Component {
           key={identity.address}
         >
           <div className="account-menu__check-mark">
-            {isSelected && <div className="account-menu__check-mark-icon" />}
+            {isSelected ? (
+              <div className="account-menu__check-mark-icon" />
+            ) : null}
           </div>
           <Identicon address={identity.address} diameter={24} />
           <div className="account-menu__account-info">
