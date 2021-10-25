@@ -111,6 +111,7 @@ export default class SwapsController {
     this.getProviderConfig = getProviderConfig;
 
     this.indexOfNewestCallInFlight = 0;
+    this.activeFetchingQuotesCounter = 0;
 
     this.ethersProvider = new ethers.providers.Web3Provider(provider);
     this._currentNetwork = networkController.store.getState().network;
@@ -231,6 +232,7 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = indexOfCurrentCall;
 
     this.setIsFetchingQuotes(true);
+    this.activeFetchingQuotesCounter += 1;
 
     let [newQuotes] = await Promise.all([
       this._fetchTradesInfo(fetchParams, {
@@ -252,7 +254,10 @@ export default class SwapsController {
         null, // selectedAggId
       ];
     }
-    this.setIsFetchingQuotes(false);
+    this.activeFetchingQuotesCounter -= 1;
+    if (this.activeFetchingQuotesCounter === 0) {
+      this.setIsFetchingQuotes(false);
+    }
 
     newQuotes = mapValues(newQuotes, (quote) => ({
       ...quote,
