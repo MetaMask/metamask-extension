@@ -7,31 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.4.0]
-### Uncategorized
-- Add build type to Sentry environment ([#12441](https://github.com/MetaMask/metamask-extension/pull/12441))
-- Update NumericInput to remove PropTypes warning ([#12446](https://github.com/MetaMask/metamask-extension/pull/12446))
-- Use separate Infura project ID for production ([#12438](https://github.com/MetaMask/metamask-extension/pull/12438))
-- Add fixture server substitutions ([#12476](https://github.com/MetaMask/metamask-extension/pull/12476))
-- fix missing conversion rates in swaps token drop down ([#12420](https://github.com/MetaMask/metamask-extension/pull/12420))
-- Use rejected constant within transaction state manager ([#12458](https://github.com/MetaMask/metamask-extension/pull/12458))
-- Adding estimate fields to updateTransaction, createCancelTransaction and createSpeedUpTransaction ([#12398](https://github.com/MetaMask/metamask-extension/pull/12398))
-- Refactoring useGasFeeInputs hook ([#12327](https://github.com/MetaMask/metamask-extension/pull/12327))
-- Remove unused `SEGMENT_LEGACY_WRITE_KEY` ([#12429](https://github.com/MetaMask/metamask-extension/pull/12429))
-- Sync `master` with `develop` ([#12430](https://github.com/MetaMask/metamask-extension/pull/12430))
-- Revert "Run yarn lavamoat:auto"
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Connect Ledger via WebHID ([#12411](https://github.com/MetaMask/metamask-extension/pull/12411))
-- Removing unused prop/code paths from EditContact ([#12419](https://github.com/MetaMask/metamask-extension/pull/12419))
-- Use ternary conditionals instead of && ([#12406](https://github.com/MetaMask/metamask-extension/pull/12406))
-- Adding copy to SRP import screen to warn users  ([#12400](https://github.com/MetaMask/metamask-extension/pull/12400))
-- Onboarding V2 Cleanups ([#12417](https://github.com/MetaMask/metamask-extension/pull/12417))
-- Refactor checking if address is contract into a new module. ([#12354](https://github.com/MetaMask/metamask-extension/pull/12354))
-- Removing unneeded build sections from README.md ([#12414](https://github.com/MetaMask/metamask-extension/pull/12414))
-- Avoid storybook-build directory when linting ([#12408](https://github.com/MetaMask/metamask-extension/pull/12408))
-- fix issue where regional locales are not matched against our locales  list ([#12403](https://github.com/MetaMask/metamask-extension/pull/12403))
-- centralize min gas const ([#12387](https://github.com/MetaMask/metamask-extension/pull/12387))
-- Fix 12192 - Implement new metametrics onboarding screen ([#12282](https://github.com/MetaMask/metamask-extension/pull/12282))
-- Fix #12190 - Implement new pin extension view for onboarding ([#12290](https://github.com/MetaMask/metamask-extension/pull/12290))
+### Added
+- [#12411](https://github.com/MetaMask/metamask-extension/pull/12411): Add support for connecting Ledger devices to MetaMask via WebHID
+- [#12400](https://github.com/MetaMask/metamask-extension/pull/12400): Add text to Restore Account screen noting current wallet replacement
+
+### Fixed
+- [#12420](https://github.com/MetaMask/metamask-extension/pull/12420): Fix missing conversion rates in Swaps token dropdown
+- [#12403](https://github.com/MetaMask/metamask-extension/pull/12403): Fix incorrect default locale used during onboarding
 
 ## [10.3.0]
 ### Added
