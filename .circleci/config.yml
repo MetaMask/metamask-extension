@@ -45,12 +45,12 @@ workflows:
       - prep-build-test-metrics:
           requires:
             - prep-deps
-      - prep-build-storybook:
-          requires:
-            - prep-deps
       - test-storybook:
           requires:
-            - prep-build-storybook
+            - prep-deps
+      - prep-build-storybook:
+          requires:
+            test-storybook
       - test-lint:
           requires:
             - prep-deps
