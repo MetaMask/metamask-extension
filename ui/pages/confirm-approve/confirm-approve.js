@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ConfirmTransactionBase from '../confirm-transaction-base';
@@ -133,16 +133,16 @@ export default function ConfirmApprove() {
   }, [customNonceValue, nextNonce]);
 
   const [isContract, setIsContract] = useState(false);
+  const checkIfContract = useCallback(async () => {
+    const { isContractAddress } = await readAddressAsContract(
+      global.eth,
+      toAddress,
+    );
+    setIsContract(isContractAddress);
+  }, [setIsContract, toAddress]);
   useEffect(() => {
-    async function checkIfContract() {
-      const { isContractAddress } = await readAddressAsContract(
-        global.eth,
-        toAddress,
-      );
-      setIsContract(isContractAddress);
-    }
     checkIfContract();
-  }, [toAddress]);
+  }, [checkIfContract]);
 
   const { origin } = transaction;
   const formattedOrigin = origin
