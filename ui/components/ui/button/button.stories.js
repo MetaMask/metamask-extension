@@ -35,6 +35,15 @@ export default {
     submit: { control: 'boolean' },
     large: { control: 'boolean' },
     className: { control: 'text' },
+    icon: {
+      control: {
+        type: 'select',
+      },
+      options: ['BuyIcon'],
+      mapping: {
+        BuyIcon: <BuyIcon />,
+      },
+    },
   },
 };
 

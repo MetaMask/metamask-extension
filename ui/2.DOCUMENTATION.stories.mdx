@@ -14,7 +14,7 @@ Some general documentation best practices to follow:
 
 - Put yourself in the shoes of another developer trying to use the component you just created for the first time
 - Write a brief description of the component and what it's used for in the `README.mdx` file
-- Display the component's api using the `<Props of={YourComponent} />` component from storybook docs
+- Display the component's api using the `<ArgsTable of={YourComponent} />` component from storybook docs
 - Use the [controls](https://storybook.js.org/addons/@storybook/addon-controls/) api over knobs
 - Use the updated `argType` [actions](https://storybook.js.org/docs/react/essentials/actions) api over importing the actions plugin directly
 - Check the accessibility of the component using the **Accessibility** tab
@@ -55,20 +55,29 @@ export default {
     type: {
       control: {
         type: 'select',
-        options: [
-          'default',
-          'primary',
-          'secondary',
-          'warning',
-          'danger',
-          'danger-primary',
-          'link',
-        ],
       },
+      options: [
+        'default',
+        'primary',
+        'secondary',
+        'warning',
+        'danger',
+        'danger-primary',
+        'link',
+      ],
     },
     submit: { control: 'boolean' },
     large: { control: 'boolean' },
     className: { control: 'text' },
+    icon: {
+      control: {
+        type: 'select',
+      },
+      options: ['BuyIcon'],
+      mapping: {
+        BuyIcon: <BuyIcon />,
+      },
+    },
   },
 };
 
@@ -117,9 +126,9 @@ Now the storybook components are complete, the `README.mdx` documentation should
 ```md
 <!-- import the necessary blocks from storybook docs  -->
 
-import { Story, Preview, Props } from '@storybook/addon-docs';
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
-<!-- import the component to use for the props table under ## Component API  -->
+<!-- import the component to use for the ArgsTable under ## Component API  -->
 
 import Button from '.';
 
@@ -132,14 +141,16 @@ import Button from '.';
 Buttons communicate actions that users can take.
 
 <!-- Embed the DefaultStory using the storybook url  -->
-<Preview>
+
+<Canvas>
   <Story id="ui-components-ui-button-button-stories-js--default-story" />
-</Preview>
+</Canvas>
 
 ## Component API
 
-<!-- Display the component api using the prop table  -->
-<Props of={Button} />
+<!-- Display the component api using the ArgsTable  -->
+
+<ArgsTable of={Button} />
 
 ## Usage
 
@@ -162,9 +173,10 @@ By changing the `type` prop you can use different styles of the button.
 | `link`            | an optional action or navigation action out of the app changes root html tag from `<button>` to `<a>` |
 
 <!-- Embed other stories to further illustrate component usage  -->
-<Preview>
+
+<Canvas>
   <Story id="ui-components-ui-button-button-stories-js--types" />
-</Preview>
+</Canvas>
 ```
 
 Nice work! You're now ready to start creating comphrehensive documentation using storybook 🎉👍

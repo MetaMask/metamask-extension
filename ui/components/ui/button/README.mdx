@@ -1,4 +1,4 @@
-import { Story, Preview, Props } from '@storybook/addon-docs';
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
 import Button from '.';
 
@@ -6,13 +6,13 @@ import Button from '.';
 
 Buttons communicate actions that users can take.
 
-<Preview>
+<Canvas>
   <Story id="ui-components-ui-button-button-stories-js--default-story" />
-</Preview>
+</Canvas>
 
 ## Component API
 
-<Props of={Button} />
+<ArgsTable of={Button} />
 
 ## Usage
 
@@ -32,9 +32,9 @@ By changing the `type` prop you can use different styles of the button.
 | `danger--primary` | a negative principle call to action (such as Delete) on the page                                      |
 | `link`            | an optional action or navigation action out of the app changes root html tag from `<button>` to `<a>` |
 
-<Preview>
+<Canvas>
   <Story id="ui-components-ui-button-button-stories-js--types" />
-</Preview>
+</Canvas>
 
 ### Link Type
 
@@ -46,14 +46,14 @@ Rendered html
 <a class="button btn-link" role="button" tabindex="0">Click me</a>
 ```
 
-<Preview>
+<Canvas>
   <Story id="ui-components-ui-button-button-stories-js--link-type" />
-</Preview>
+</Canvas>
 
 ### With Icon
 
 Pass an icon component to `icon` prop to add an icon.
 
-<Preview>
+<Canvas>
   <Story id="ui-components-ui-button-button-stories-js--with-icon" />
-</Preview>
+</Canvas>
