@@ -79,7 +79,7 @@ const initialState = {
     routeState: '',
     swapsFeatureIsLive: true,
     useNewSwapsApi: false,
-    isFetchingQuotes: false,
+    isFetchingQuotesEnabled: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
   },
@@ -210,7 +210,11 @@ export default class SwapsController {
   ) {
     const { chainId } = fetchParamsMetaData;
     const {
-      swapsState: { useNewSwapsApi, quotesPollingLimitEnabled },
+      swapsState: {
+        useNewSwapsApi,
+        quotesPollingLimitEnabled,
+        isFetchingQuotesEnabled,
+      },
     } = this.store.getState();
 
     if (!fetchParams) {
@@ -231,8 +235,9 @@ export default class SwapsController {
     const indexOfCurrentCall = this.indexOfNewestCallInFlight + 1;
     this.indexOfNewestCallInFlight = indexOfCurrentCall;
 
-    this.setIsFetchingQuotes(true);
-    this.activeFetchingQuotesCounter += 1;
+    if (!isFetchingQuotesEnabled) {
+      this.setIsFetchingQuotesEnabled(true);
+    }
 
     let [newQuotes] = await Promise.all([
       this._fetchTradesInfo(fetchParams, {
@@ -243,20 +248,18 @@ export default class SwapsController {
     ]);
 
     const {
-      swapsState: { isFetchingQuotes },
+      swapsState: {
+        isFetchingQuotesEnabled: isFetchingQuotesEnabledAfterResponse,
+      },
     } = this.store.getState();
 
-    // If isFetchingQuotes is false, it means a user left Swaps (we cleaned the state)
+    // If isFetchingQuotesEnabledAfterResponse is false, it means a user left Swaps (we cleaned the state)
     // and we don't want to set any API response with quotes into state.
-    if (!isFetchingQuotes) {
+    if (!isFetchingQuotesEnabledAfterResponse) {
       return [
         {}, // quotes
         null, // selectedAggId
       ];
-    }
-    this.activeFetchingQuotesCounter -= 1;
-    if (this.activeFetchingQuotesCounter === 0) {
-      this.setIsFetchingQuotes(false);
     }
 
     newQuotes = mapValues(newQuotes, (quote) => ({
@@ -564,10 +567,10 @@ export default class SwapsController {
     this.store.updateState({ swapsState: { ...swapsState, routeState } });
   }
 
-  setIsFetchingQuotes(status) {
+  setIsFetchingQuotesEnabled(status) {
     const { swapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, isFetchingQuotes: status },
+      swapsState: { ...swapsState, isFetchingQuotesEnabled: status },
     });
   }
 
