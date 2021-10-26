@@ -1,0 +1,59 @@
+import { Story, Preview, Props } from '@storybook/addon-docs';
+
+import Button from '.';
+
+# Button
+
+Buttons communicate actions that users can take.
+
+<Preview>
+  <Story id="ui-components-ui-button-button-stories-js--default-story" />
+</Preview>
+
+## Component API
+
+<Props of={Button} />
+
+## Usage
+
+The following describes the props and example usage for this component.
+
+### Type
+
+By changing the `type` prop you can use different styles of the button.
+
+| type              | Description                                                                                           |
+| ----------------- | ----------------------------------------------------------------------------------------------------- |
+| `default`         | default style of the button                                                                           |
+| `primary`         | the principle call to action on the page                                                              |
+| `secondary`       | secondary actions on each page                                                                        |
+| `warning`         | a warning action in the page                                                                          |
+| `danger`          | a negative action (such as Delete) on the page                                                        |
+| `danger--primary` | a negative principle call to action (such as Delete) on the page                                      |
+| `link`            | an optional action or navigation action out of the app changes root html tag from `<button>` to `<a>` |
+
+<Preview>
+  <Story id="ui-components-ui-button-button-stories-js--types" />
+</Preview>
+
+### Link Type
+
+By changing the `type` to `"link"` the root html element of the button changes from `<button>` to `<a>`.
+
+Rendered html
+
+```html
+<a class="button btn-link" role="button" tabindex="0">Click me</a>
+```
+
+<Preview>
+  <Story id="ui-components-ui-button-button-stories-js--link-type" />
+</Preview>
+
+### With Icon
+
+Pass an icon component to `icon` prop to add an icon.
+
+<Preview>
+  <Story id="ui-components-ui-button-button-stories-js--with-icon" />
+</Preview>
