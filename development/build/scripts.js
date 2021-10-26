@@ -93,7 +93,8 @@ function getInfuraProjectId({ environment, testing }) {
   } else if (environment === ENVIRONMENT.PRODUCTION) {
     return getConfigValue('INFURA_PROD_PROJECT_ID');
   }
-  return getConfigValue('INFURA_PROJECT_ID');
+  // Skip validation because this is unset on PRs from forks
+  return metamaskrc.INFURA_PROJECT_ID;
 }
 
 module.exports = createScriptTasks;
