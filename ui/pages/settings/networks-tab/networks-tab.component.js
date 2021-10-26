@@ -43,6 +43,12 @@ export default class NetworksTab extends PureComponent {
     this.props.setSelectedSettingsRpcUrl('');
   }
 
+ useEffect(() => {
+  return {
+    setSelectedSettingsRpc('');
+  }
+ }, [setSelectedSettingsRpcUrl])
+
   isCurrentPath(pathname) {
     return this.props.location.pathname === pathname;
   }
@@ -237,7 +243,7 @@ export default class NetworksTab extends PureComponent {
       <div className="networks-tab__body">
         {isFullScreen ? this.renderSubHeader() : null}
         <div className="networks-tab__content">
-          {this.renderNetworksTabContent()}
+          <NetworksTabContent />
           {!isFullScreen && !shouldRenderNetworkForm ? (
             <div className="networks-tab__networks-list-popup-footer">
               <Button
