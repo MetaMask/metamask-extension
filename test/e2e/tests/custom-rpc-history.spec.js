@@ -32,7 +32,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        await driver.findElement('.add-network-form__sub-header-text');
+        // await driver.findElement('.add-network-form__sub-header-text');
         // wait for the full screen to be visible
         await driver.findVisibleElement('.settings-page__content');
 
@@ -79,7 +79,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        await driver.findElement('.add-network-form__sub-header-text');
+        // await driver.findElement('.add-network-form__sub-header-text');
         // wait for the full screen to be visible
         await driver.findVisibleElement('.settings-page__content');
 
@@ -120,7 +120,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        await driver.findElement('.add-network-form__sub-header-text');
+        // await driver.findElement('.add-network-form__sub-header-text');
         // wait for the full screen to be visible
         await driver.findVisibleElement('.settings-page__content');
 
