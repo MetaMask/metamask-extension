@@ -51,9 +51,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.setRpcTarget(target, chainId, ticker, nickname));
     },
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
-    setSelectedSettingsRpcUrl: (url) => {
-      dispatch(actions.setSelectedSettingsRpcUrl(url));
-    },
     displayInvalidCustomNetworkAlert: (networkName) => {
       dispatch(displayInvalidCustomNetworkAlert(networkName));
     },
@@ -85,7 +82,6 @@ class NetworkDropdown extends Component {
     setProviderType: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
     hideNetworkDropdown: PropTypes.func.isRequired,
-    setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
     frequentRpcListDetail: PropTypes.array.isRequired,
     shouldShowTestNetworks: PropTypes.bool,
     networkDropdownOpen: PropTypes.bool.isRequired,
@@ -266,12 +262,6 @@ class NetworkDropdown extends Component {
   }
 
   render() {
-    const {
-      provider: { rpcUrl: activeNetwork },
-      setSelectedSettingsRpcUrl,
-      history,
-      shouldShowTestNetworks,
-    } = this.props;
     const { shouldShowTestNetworks } = this.props;
     const rpcListDetail = this.props.frequentRpcListDetail;
     const isOpen = this.props.networkDropdownOpen;
