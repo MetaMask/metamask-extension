@@ -1007,9 +1007,6 @@
   "newContract": {
     "message": "Nuovo Contratto"
   },
-  "newNetwork": {
-    "message": "Nuova Rete"
-  },
   "newPassword": {
     "message": "Nuova Password (minimo 8 caratteri)"
   },

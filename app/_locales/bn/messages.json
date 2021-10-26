@@ -623,9 +623,6 @@
   "newContract": {
     "message": "নতুন কন্ট্র্যাক্ট"
   },
-  "newNetwork": {
-    "message": "নতুন নেটওয়ার্ক"
-  },
   "newPassword": {
     "message": "নতুন পাসওয়ার্ড (অন্তত 8 অক্ষরের)"
   },

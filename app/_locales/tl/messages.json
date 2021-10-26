@@ -1001,9 +1001,6 @@
   "newContract": {
     "message": "Bagong Kontrata"
   },
-  "newNetwork": {
-    "message": "Bagong Network"
-  },
   "newPassword": {
     "message": "Bagong password (min na 8 char)"
   },

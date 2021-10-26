@@ -616,9 +616,6 @@
   "newContract": {
     "message": "عقد جديد"
   },
-  "newNetwork": {
-    "message": "شبكة جديدة"
-  },
   "newPassword": {
     "message": "كلمة مرور جديدة (8 أحرف كحد أدنى)"
   },

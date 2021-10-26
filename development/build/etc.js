@@ -6,7 +6,7 @@ const pify = require('pify');
 const pump = pify(require('pump'));
 const { version } = require('../../package.json');
 const { createTask, composeParallel } = require('./task');
-const { BuildTypes } = require('./utils');
+const { BuildType } = require('./utils');
 
 module.exports = createEtcTasks;
 
@@ -38,7 +38,7 @@ function createEtcTasks({ browserPlatforms, buildType, livereload }) {
 function createZipTask(platform, buildType) {
   return async () => {
     const path =
-      buildType === BuildTypes.main
+      buildType === BuildType.main
         ? `metamask-${platform}-${version}`
         : `metamask-${buildType}-${platform}-${version}`;
     await pump(

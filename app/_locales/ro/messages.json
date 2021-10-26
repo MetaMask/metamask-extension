@@ -610,9 +610,6 @@
   "newContract": {
     "message": "Contract nou"
   },
-  "newNetwork": {
-    "message": "Rețea nouă"
-  },
   "newPassword": {
     "message": "Parola Nouă (minimum 8 caractere)"
   },

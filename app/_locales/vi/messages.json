@@ -1193,9 +1193,6 @@
   "newContract": {
     "message": "Hợp đồng mới"
   },
-  "newNetwork": {
-    "message": "Mạng mới"
-  },
   "newPassword": {
     "message": "Mật khẩu mới (tối thiểu 8 ký tự)"
   },

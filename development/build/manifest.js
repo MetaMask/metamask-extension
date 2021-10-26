@@ -6,7 +6,7 @@ const baseManifest = require('../../app/manifest/_base.json');
 const betaManifestModifications = require('../../app/manifest/_beta_modifications.json');
 
 const { createTask, composeSeries } = require('./task');
-const { BuildTypes } = require('./utils');
+const { BuildType } = require('./utils');
 
 module.exports = createManifestTasks;
 
@@ -114,7 +114,7 @@ async function writeJson(obj, file) {
 
 function getBuildModifications(buildType) {
   const buildModifications = {};
-  if (buildType === BuildTypes.beta) {
+  if (buildType === BuildType.beta) {
     Object.assign(buildModifications, betaManifestModifications);
   }
   return buildModifications;

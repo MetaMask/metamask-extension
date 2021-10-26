@@ -5,11 +5,14 @@ import {
   setSelectedSettingsRpcUrl,
   updateAndSetCustomRpc,
   displayWarning,
-  setNetworksTabAddMode,
   editRpc,
   showModal,
+  setNewNetworkAdded,
 } from '../../../store/actions';
-import { NETWORKS_FORM_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ADD_NETWORK_ROUTE,
+  NETWORKS_FORM_ROUTE,
+} from '../../../helpers/constants/routes';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -30,10 +33,10 @@ const mapStateToProps = (state, ownProps) => {
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const shouldRenderNetworkForm =
     isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE));
+  const addNewNetwork = Boolean(pathname.match(ADD_NETWORK_ROUTE));
 
   const { frequentRpcListDetail, provider } = state.metamask;
-  const { networksTabSelectedRpcUrl, networksTabIsInAddMode } = state.appState;
-
+  const { networksTabSelectedRpcUrl } = state.appState;
   const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
     return {
       label: rpc.nickname,
@@ -57,7 +60,7 @@ const mapStateToProps = (state, ownProps) => {
   const networkIsSelected = Boolean(selectedNetwork.rpcUrl);
 
   let networkDefaultedToProvider = false;
-  if (!networkIsSelected && !networksTabIsInAddMode) {
+  if (!networkIsSelected) {
     selectedNetwork =
       networksToRender.find((network) => {
         return (
@@ -73,12 +76,12 @@ const mapStateToProps = (state, ownProps) => {
     selectedNetwork,
     networksToRender,
     networkIsSelected,
-    networksTabIsInAddMode,
     providerType: provider.type,
     providerUrl: provider.rpcUrl,
     networkDefaultedToProvider,
     isFullScreen,
     shouldRenderNetworkForm,
+    addNewNetwork,
   };
 };
 
@@ -97,12 +100,13 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
     displayWarning: (warning) => dispatch(displayWarning(warning)),
-    setNetworksTabAddMode: (isInAddMode) =>
-      dispatch(setNetworksTabAddMode(isInAddMode)),
     editRpc: (oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs) => {
       return dispatch(
         editRpc(oldRpc, newRpc, chainId, ticker, nickname, rpcPrefs),
       );
+    },
+    setNewNetworkAdded: (newNetwork) => {
+      dispatch(setNewNetworkAdded(newNetwork));
     },
   };
 };

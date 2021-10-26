@@ -629,9 +629,6 @@
   "newContract": {
     "message": "建立新合約"
   },
-  "newNetwork": {
-    "message": "新增網路"
-  },
   "newPassword": {
     "message": "新密碼（至少8個字元）"
   },

@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 
+import { BuildType } from '../../../shared/constants/app';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
 /* eslint-disable prefer-destructuring */
@@ -8,6 +9,7 @@ import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
 const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
+const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
 /* eslint-enable prefer-destructuring */
 
 // This describes the subset of Redux state attached to errors sent to Sentry
@@ -87,10 +89,15 @@ export default function setupSentry({ release, getState }) {
     sentryTarget = SENTRY_DSN_DEV;
   }
 
+  const environment =
+    METAMASK_BUILD_TYPE === BuildType.main
+      ? METAMASK_ENVIRONMENT
+      : `${METAMASK_ENVIRONMENT}-${METAMASK_BUILD_TYPE}`;
+
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
-    environment: METAMASK_ENVIRONMENT,
+    environment,
     integrations: [new Dedupe(), new ExtraErrorData()],
     release,
     beforeSend: (report) => rewriteReport(report),

@@ -5,10 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
-import {
-  NETWORKS_ROUTE,
-  NETWORKS_FORM_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
@@ -51,9 +48,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.setRpcTarget(target, chainId, ticker, nickname));
     },
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
-    setNetworksTabAddMode: (isInAddMode) => {
-      dispatch(actions.setNetworksTabAddMode(isInAddMode));
-    },
     setSelectedSettingsRpcUrl: (url) => {
       dispatch(actions.setSelectedSettingsRpcUrl(url));
     },
@@ -88,7 +82,6 @@ class NetworkDropdown extends Component {
     setProviderType: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
     hideNetworkDropdown: PropTypes.func.isRequired,
-    setNetworksTabAddMode: PropTypes.func.isRequired,
     setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
     frequentRpcListDetail: PropTypes.array.isRequired,
     networkDropdownOpen: PropTypes.bool.isRequired,
@@ -239,8 +232,8 @@ class NetworkDropdown extends Component {
   render() {
     const {
       provider: { rpcUrl: activeNetwork },
-      setNetworksTabAddMode,
       setSelectedSettingsRpcUrl,
+      history,
     } = this.props;
     const rpcListDetail = this.props.frequentRpcListDetail;
     const isOpen = this.props.networkDropdownOpen;
@@ -291,13 +284,12 @@ class NetworkDropdown extends Component {
         <DropdownMenuItem
           closeMenu={() => this.props.hideNetworkDropdown()}
           onClick={() => {
-            this.props.history.push(
-              getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN
-                ? NETWORKS_ROUTE
-                : NETWORKS_FORM_ROUTE,
-            );
+            if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
+              history.push(ADD_NETWORK_ROUTE);
+            } else {
+              global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
+            }
             setSelectedSettingsRpcUrl('');
-            setNetworksTabAddMode(true);
           }}
           style={DROP_DOWN_MENU_ITEM_STYLE}
         >
