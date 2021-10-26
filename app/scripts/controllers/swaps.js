@@ -111,7 +111,6 @@ export default class SwapsController {
     this.getProviderConfig = getProviderConfig;
 
     this.indexOfNewestCallInFlight = 0;
-    this.activeFetchingQuotesCounter = 0;
 
     this.ethersProvider = new ethers.providers.Web3Provider(provider);
     this._currentNetwork = networkController.store.getState().network;
