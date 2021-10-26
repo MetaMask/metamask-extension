@@ -55,6 +55,7 @@ describe('AdvancedTab Component', () => {
         setLedgerLivePreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}
+        setShowTestNetworks={toggleTestnet}
       />,
       {
         context: {
