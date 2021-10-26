@@ -1193,9 +1193,6 @@
   "newContract": {
     "message": "새 계약"
   },
-  "newNetwork": {
-    "message": "새 네트워크"
-  },
   "newPassword": {
     "message": "새 암호(8자 이상)"
   },

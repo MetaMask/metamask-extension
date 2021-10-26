@@ -1004,9 +1004,6 @@
   "newContract": {
     "message": "新合约"
   },
-  "newNetwork": {
-    "message": "新增网络"
-  },
   "newPassword": {
     "message": "新密码（至少 8 个字符）"
   },

@@ -610,9 +610,6 @@
   "newContract": {
     "message": "Ny kontaktperson"
   },
-  "newNetwork": {
-    "message": "Nytt nettverk "
-  },
   "newPassword": {
     "message": "Nytt passord (minimum 8 tegn)"
   },

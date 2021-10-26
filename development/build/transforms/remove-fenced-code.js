@@ -1,6 +1,6 @@
 const path = require('path');
 const { PassThrough, Transform } = require('stream');
-const { BuildTypes } = require('../utils');
+const { BuildType } = require('../utils');
 const { lintTransformedFile } = require('./utils');
 
 const hasOwnProperty = (obj, key) => Reflect.hasOwnProperty.call(obj, key);
@@ -86,7 +86,7 @@ function createRemoveFencedCodeTransform(
   buildType,
   shouldLintTransformedFiles = true,
 ) {
-  if (!hasOwnProperty(BuildTypes, buildType)) {
+  if (!hasOwnProperty(BuildType, buildType)) {
     throw new Error(
       `Code fencing transform received unrecognized build type "${buildType}".`,
     );
@@ -136,7 +136,7 @@ const CommandValidators = {
     }
 
     params.forEach((param) => {
-      if (!hasOwnProperty(BuildTypes, param)) {
+      if (!hasOwnProperty(BuildType, param)) {
         throw new Error(
           getInvalidParamsMessage(
             filePath,

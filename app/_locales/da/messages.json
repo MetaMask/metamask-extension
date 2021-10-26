@@ -607,9 +607,6 @@
   "newContract": {
     "message": "Ny Kontrakt"
   },
-  "newNetwork": {
-    "message": "Nyt Netværk"
-  },
   "newPassword": {
     "message": "Ny adgangskode (min. 8 tegn)"
   },

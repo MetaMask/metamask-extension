@@ -1193,9 +1193,6 @@
   "newContract": {
     "message": "Novo contrato"
   },
-  "newNetwork": {
-    "message": "Nova rede"
-  },
   "newPassword": {
     "message": "Nova senha (mín. 8 caract.)"
   },

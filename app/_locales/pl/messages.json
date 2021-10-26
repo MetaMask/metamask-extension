@@ -620,9 +620,6 @@
   "newContract": {
     "message": "Nowy kontrakt"
   },
-  "newNetwork": {
-    "message": "Nowa sieć"
-  },
   "newPassword": {
     "message": "Nowe hasło (min. 8 znaków)"
   },

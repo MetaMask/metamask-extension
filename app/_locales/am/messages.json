@@ -620,9 +620,6 @@
   "newContract": {
     "message": "አዲስ ኮንትራት"
   },
-  "newNetwork": {
-    "message": "አዲስ አውታረ መረብ"
-  },
   "newPassword": {
     "message": "አዲስ የይለፍ ቃል (ቢያንስ 8 ቁምፊዎች)"
   },

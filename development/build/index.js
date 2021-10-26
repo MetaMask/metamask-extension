@@ -16,7 +16,7 @@ const createScriptTasks = require('./scripts');
 const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
-const { BuildTypes, getBrowserVersionMap } = require('./utils');
+const { BuildType, getBrowserVersionMap } = require('./utils');
 
 // packages required dynamically via browserify configuration in dependencies
 require('loose-envify');
@@ -149,7 +149,7 @@ function parseArgv() {
     ],
     string: [NamedArgs.BuildType],
     default: {
-      [NamedArgs.BuildType]: BuildTypes.main,
+      [NamedArgs.BuildType]: BuildType.main,
       [NamedArgs.LintFenceFiles]: true,
       [NamedArgs.OmitLockdown]: false,
       [NamedArgs.SkipStats]: false,
@@ -168,7 +168,7 @@ function parseArgv() {
   }
 
   const buildType = argv[NamedArgs.BuildType];
-  if (!(buildType in BuildTypes)) {
+  if (!(buildType in BuildType)) {
     throw new Error(`MetaMask build: Invalid build type: "${buildType}"`);
   }
 
