@@ -429,7 +429,7 @@ export default class Home extends PureComponent {
                   }
                 />
               </Tab>
-              {process.env.COLLECTIBLES_V1 === true && (
+              {process.env.COLLECTIBLES_V1 ? (
                 <Tab
                   activeClassName="home__tab--active"
                   className="home__tab"
@@ -442,7 +442,7 @@ export default class Home extends PureComponent {
                     }}
                   />
                 </Tab>
-              )}
+              ) : null}
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
