@@ -98,6 +98,8 @@ export default function Swap() {
   const isAwaitingSignaturesRoute = pathname === AWAITING_SIGNATURES_ROUTE;
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE;
   const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
+  const isSmartTransactionStatusRoute =
+    pathname === SMART_TRANSACTION_STATUS_ROUTE;
 
   const fetchParams = useSelector(getFetchParams);
   const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
@@ -294,19 +296,21 @@ export default function Swap() {
       <div className="swaps__container">
         <div className="swaps__header">
           <div className="swaps__title">{t('swap')}</div>
-          {!isAwaitingSwapRoute && !isAwaitingSignaturesRoute && (
-            <div
-              className="swaps__header-cancel"
-              onClick={async () => {
-                clearTemporaryTokenRef.current();
-                dispatch(clearSwapsState());
-                await dispatch(resetBackgroundSwapsState());
-                history.push(DEFAULT_ROUTE);
-              }}
-            >
-              {t('cancel')}
-            </div>
-          )}
+          {!isAwaitingSwapRoute &&
+            !isAwaitingSignaturesRoute &&
+            !isSmartTransactionStatusRoute && (
+              <div
+                className="swaps__header-cancel"
+                onClick={async () => {
+                  clearTemporaryTokenRef.current();
+                  dispatch(clearSwapsState());
+                  await dispatch(resetBackgroundSwapsState());
+                  history.push(DEFAULT_ROUTE);
+                }}
+              >
+                {t('cancel')}
+              </div>
+            )}
         </div>
         <div className="swaps__content">
           <Switch>
