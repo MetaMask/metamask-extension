@@ -1,7 +1,12 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
 import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
 import { txParamsAreDappSuggested } from '../../../../shared/modules/transaction.utils';
 import { EDIT_GAS_MODES, GAS_LIMITS } from '../../../../shared/constants/gas';
@@ -30,6 +35,7 @@ import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import { useGasFeeContext } from '../../../contexts/gasFee';
 
 export default function EditGasPopover({
   popoverTitle = '',
@@ -66,19 +72,22 @@ export default function EditGasPopover({
   const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
   const updatedCustomGasSettings = useIncrementedGasFees(transaction);
 
-  let updatedTransaction = transaction;
-  if (mode === EDIT_GAS_MODES.SPEED_UP || mode === EDIT_GAS_MODES.CANCEL) {
-    updatedTransaction = {
-      ...transaction,
-      userFeeLevel: 'custom',
-      txParams: {
-        ...transaction.txParams,
-        ...updatedCustomGasSettings,
-      },
-    };
-  }
+  const updatedTransaction = useMemo(() => {
+    if (mode === EDIT_GAS_MODES.SPEED_UP || mode === EDIT_GAS_MODES.CANCEL) {
+      return {
+        ...transaction,
+        userFeeLevel: 'custom',
+        txParams: {
+          ...transaction.txParams,
+          ...updatedCustomGasSettings,
+        },
+      };
+    }
+    return transaction;
+  }, [mode, transaction, updatedCustomGasSettings]);
 
   const {
+    setTransaction,
     maxPriorityFeePerGas,
     setMaxPriorityFeePerGas,
     maxPriorityFeePerGasFiat,
@@ -104,12 +113,11 @@ export default function EditGasPopover({
     balanceError,
     estimatesUnavailableWarning,
     estimatedBaseFee,
-  } = useGasFeeInputs(
-    defaultEstimateToUse,
-    updatedTransaction,
-    minimumGasLimit,
-    mode,
-  );
+  } = useGasFeeContext();
+
+  useEffect(() => {
+    setTransaction(updatedTransaction);
+  }, [setTransaction, updatedTransaction]);
 
   const txParamsHaveBeenCustomized =
     estimateToUse === 'custom' || txParamsAreDappSuggested(updatedTransaction);
