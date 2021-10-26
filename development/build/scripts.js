@@ -33,7 +33,11 @@ const metamaskrc = require('rc')('metamask', {
   INFURA_FLASK_PROJECT_ID: process.env.INFURA_FLASK_PROJECT_ID,
   INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
   ONBOARDING_V2: process.env.ONBOARDING_V2,
+<<<<<<< HEAD
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
+=======
+  EIP_1559_V2: process.env.EIP_1559_V2,
+>>>>>>> 825df729e (Edit transaction screen changes for EIP-1559 V2)
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_BETA_WRITE_KEY: process.env.SEGMENT_BETA_WRITE_KEY,
@@ -728,6 +732,7 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
+    EIP_1559_V2: metamaskrc.EIP_1559_V2 === '1',
   };
 }
 

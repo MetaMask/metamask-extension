@@ -3,6 +3,7 @@
 
 .typography {
   @include design-system.Paragraph;
+  white-space: pre;
 
   & b {
     font-weight: 700;
@@ -32,6 +33,12 @@
     }
   }
 
+  @each $size in design-system.$font-size {
+    &--size-#{$size} {
+      font-size: $size;
+    }
+  }
+  
   @each $alignment in design-system.$text-align {
     &--align-#{$alignment} {
       text-align: $alignment;
