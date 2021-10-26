@@ -12,18 +12,28 @@ export default class SendAmountRow extends Component {
     inError: PropTypes.bool,
     asset: PropTypes.object,
     updateSendAmount: PropTypes.func,
+    passDataToSendContent: PropTypes.func,
+    location: PropTypes.object
   };
 
   static contextTypes = {
     t: PropTypes.func,
   };
 
+  state = {
+    dataFromCurrency: {}
+  }
+
   handleChange = (newAmount) => {
     this.props.updateSendAmount(newAmount);
   };
 
+  getDataFromCurrency = (value) => {
+    this.setState({ dataFromCurrency: value})
+  }
+
   renderInput() {
-    const { amount, inError, asset } = this.props;
+    const { amount, inError, asset, location } = this.props;
 
     return asset.type === ASSET_TYPES.TOKEN ? (
       <UserPreferencedTokenInput
@@ -37,12 +47,16 @@ export default class SendAmountRow extends Component {
         error={inError}
         onChange={this.handleChange}
         value={amount}
+        passDataToSendAmount={this.getDataFromCurrency}
+        location={location}
       />
     );
   }
 
   render() {
     const { inError } = this.props;
+
+    this.props.passDataToSendContent(this.state)
 
     return (
       <SendRowWrapper

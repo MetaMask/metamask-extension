@@ -23,6 +23,7 @@ export default class SendFooter extends Component {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     cancelTx: PropTypes.func,
     draftTransactionID: PropTypes.string,
+    dataFromSendPage: PropTypes.object,
   };
 
   static contextTypes = {
@@ -57,6 +58,7 @@ export default class SendFooter extends Component {
       toAccounts,
       history,
       gasEstimateType,
+      dataFromSendPage
     } = this.props;
     const { metricsEvent } = this.context;
 
@@ -75,7 +77,12 @@ export default class SendFooter extends Component {
           gasChanged: gasEstimateType,
         },
       });
-      history.push(CONFIRM_TRANSACTION_ROUTE);
+      history.push({
+        pathname: CONFIRM_TRANSACTION_ROUTE,
+        state: {
+          currencyPreferenceData: dataFromSendPage,
+        },
+      })
     });
   }
 

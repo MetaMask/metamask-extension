@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
@@ -45,6 +45,7 @@ export default function SendTransactionScreen() {
       name: 'Used QR scanner',
     },
   });
+  const [dataFromSendAmountRow, setStateDataFromSendAmountRow] = useState()
 
   const dispatch = useDispatch();
 
@@ -78,21 +79,21 @@ export default function SendTransactionScreen() {
   }, [dispatch, cleanup]);
 
   let content;
-
   if ([SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(stage)) {
     content = (
       <>
         <SendContent
           showHexData={showHexData}
           gasIsExcessive={gasIsExcessive}
+          location={location.state}
+          passDataToSendPage={(value) => setStateDataFromSendAmountRow(value)}
         />
-        <SendFooter key="send-footer" history={history} />
+        <SendFooter key="send-footer" history={history} dataFromSendPage={dataFromSendAmountRow} />
       </>
     );
   } else {
     content = <AddRecipient />;
   }
-
   return (
     <div className="page-container">
       <SendHeader history={history} />

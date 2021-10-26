@@ -20,10 +20,11 @@ import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 export default class ConfirmTransactionSwitch extends Component {
   static propTypes = {
     txData: PropTypes.object,
+    location: PropTypes.object,
   };
 
   redirectToTransaction() {
-    const { txData } = this.props;
+    const { txData, location } = this.props;
     const { id, txParams: { data } = {}, type } = txData;
 
     if (type === TRANSACTION_TYPES.DEPLOY_CONTRACT) {
@@ -33,7 +34,7 @@ export default class ConfirmTransactionSwitch extends Component {
 
     if (type === TRANSACTION_TYPES.SIMPLE_SEND) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_ETHER_PATH}`;
-      return <Redirect to={{ pathname }} />;
+      return <Redirect to={{ pathname, state: { currencyData: location.state } }} />;
     }
 
     if (data) {

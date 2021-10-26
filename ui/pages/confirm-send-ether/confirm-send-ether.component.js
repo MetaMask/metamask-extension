@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ConfirmTransactionBase from '../confirm-transaction-base';
 import { SEND_ROUTE } from '../../helpers/constants/routes';
-
 export default class ConfirmSendEther extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -14,10 +13,20 @@ export default class ConfirmSendEther extends Component {
     txParams: PropTypes.object,
   };
 
+  state = {
+    currencyPreferenceObject: {}
+  }
+
   handleEdit({ txData }) {
     const { editTransaction, history } = this.props;
     editTransaction(txData).then(() => {
-      history.push(SEND_ROUTE);
+      history.push({
+        pathname: SEND_ROUTE,
+        state: {
+          hexData: txData.txParams.data,
+          currencyObject: this.state.currencyPreferenceObject
+        },
+      })
     });
   }
 
@@ -28,6 +37,10 @@ export default class ConfirmSendEther extends Component {
 
   render() {
     const hideData = this.shouldHideData();
+
+    if (this.props.location.state && this.props.location.state.currencyData) {
+      this.state.currencyPreferenceObject = this.props.location.state.currencyData.currencyPreferenceData.dataFromSendAmountRow.dataFromCurrency.dataFromCurrency
+    }
 
     return (
       <ConfirmTransactionBase
