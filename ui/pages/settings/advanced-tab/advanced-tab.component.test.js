@@ -3,13 +3,12 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import TextField from '../../../components/ui/text-field';
 import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
-import AdvancedTab from './advanced-tab.component';
 import ToggleButton from '../../../components/ui/toggle-button';
 import AdvancedTab from './advanced-tab.component';
 
 describe('AdvancedTab Component', () => {
   let root;
-  const setAutoLockTimeLimitSpy = sinon.spy();
+  let setAutoLockTimeLimitSpy = sinon.spy();
   const toggleTestnet = sinon.spy();
 
   beforeAll(() => {
@@ -42,8 +41,8 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should update autoLockTimeLimit', () => {
-    const setAutoLockTimeLimitSpy = sinon.spy();
-    const root = shallow(
+    setAutoLockTimeLimitSpy = sinon.spy();
+    root = shallow(
       <AdvancedTab
         ipfsGateway=""
         setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
@@ -77,7 +76,7 @@ describe('AdvancedTab Component', () => {
   it('should toggle show test networks', () => {
     const testNetworks = root.find('.settings-page__content-row').at(6);
     const toggleButton = testNetworks.find(ToggleButton);
-    toggleButton.first().simulate('toggle');    
+    toggleButton.first().simulate('toggle');
     expect(toggleTestnet.calledOnce).toStrictEqual(true);
-  });  
+  });
 });
