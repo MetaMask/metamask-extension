@@ -34,7 +34,9 @@ export default class ConfirmTransactionSwitch extends Component {
 
     if (type === TRANSACTION_TYPES.SIMPLE_SEND) {
       const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SEND_ETHER_PATH}`;
-      return <Redirect to={{ pathname, state: { currencyData: location.state } }} />;
+      return (
+        <Redirect to={{ pathname, state: { currencyData: location.state } }} />
+      );
     }
 
     if (data) {

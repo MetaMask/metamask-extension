@@ -33,17 +33,16 @@ export default class SendContent extends Component {
     networkOrAccountNotSupports1559: PropTypes.bool,
     getIsBalanceInsufficient: PropTypes.bool,
     location: PropTypes.object,
-    passDataToSendPage: PropTypes.func
+    passDataToSendPage: PropTypes.func,
   };
 
   state = {
-    dataFromSendAmountRow: {}
-  }
+    dataFromSendAmountRow: {},
+  };
 
   getDataFromSendAmountRow = (value) => {
-    this.setState({ dataFromSendAmountRow: value })
-  }
-
+    this.setState({ dataFromSendAmountRow: value });
+  };
 
   render() {
     const {
@@ -58,8 +57,8 @@ export default class SendContent extends Component {
       location
     } = this.props;
 
-    this.props.passDataToSendPage(this.state)
-    
+    this.props.passDataToSendPage(this.state);
+
     let gasError;
     if (gasIsExcessive) gasError = GAS_PRICE_EXCESSIVE_ERROR_KEY;
     else if (noGasPrice) gasError = GAS_PRICE_FETCH_FAILURE_ERROR_KEY;
@@ -80,7 +79,10 @@ export default class SendContent extends Component {
           {warning ? this.renderWarning() : null}
           {this.maybeRenderAddContact()}
           <SendAssetRow />
-          <SendAmountRow passDataToSendContent={this.getDataFromSendAmountRow} location={location}/>
+          <SendAmountRow
+            passDataToSendContent={this.getDataFromSendAmountRow}
+            location={location}
+          />
           {networkOrAccountNotSupports1559 && <SendGasRow />}
           {this.props.showHexData && <SendHexDataRow location={location} />}
         </div>

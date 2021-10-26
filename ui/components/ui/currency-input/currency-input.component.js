@@ -29,19 +29,30 @@ export default class CurrencyInput extends PureComponent {
     fiatSuffix: PropTypes.string,
     nativeSuffix: PropTypes.string,
     passDataToUserPeference: PropTypes.func,
-    location: PropTypes.object
+    location: PropTypes.object,
   };
 
   constructor(props) {
     super(props);
 
-    const hexValue = (this.props.location && this.props.location.currencyObject) ? this.props.location.currencyObject.hexValue : this.props.value
-    const decimalValue = (this.props.location && this.props.location.currencyObject) ? this.props.location.currencyObject.decimalValue : (hexValue ? this.getDecimalValue(props) : 0)
+    const hexValue =
+      this.props.location && this.props.location.currencyObject
+        ? this.props.location.currencyObject.hexValue
+        : this.props.value;
+    const decimalValue =
+      this.props.location && this.props.location.currencyObject
+        ? this.props.location.currencyObject.decimalValue
+        : hexValue
+        ? this.getDecimalValue(props)
+        : 0;
 
     this.state = {
       decimalValue,
       hexValue,
-      isSwapped: (this.props.location && this.props.location.currencyObject) ? this.props.location.currencyObject.isSwapped : false,
+      isSwapped:
+        this.props.location && this.props.location.currencyObject
+          ? this.props.location.currencyObject.isSwapped
+          : false,
     };
   }
 
@@ -124,7 +135,7 @@ export default class CurrencyInput extends PureComponent {
     const { currentCurrency, nativeCurrency, hideFiat } = this.props;
     const { hexValue } = this.state;
     let currency, numberOfDecimals;
-    
+
     if (hideFiat) {
       return (
         <div className="currency-input__conversion-component">

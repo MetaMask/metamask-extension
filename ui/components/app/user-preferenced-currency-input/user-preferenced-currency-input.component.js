@@ -6,21 +6,25 @@ export default class UserPreferencedCurrencyInput extends PureComponent {
   static propTypes = {
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     passDataToSendAmount: PropTypes.func,
-    location: PropTypes.object
+    location: PropTypes.object,
   };
 
   state = {
-    dataFromCurrency: {}
-  }
+    dataFromCurrency: {},
+  };
 
   getDataFromCurrency = (value) => {
-    this.setState({ dataFromCurrency: value })
-  }
+    this.setState({ dataFromCurrency: value });
+  };
 
   render() {
-    const { useNativeCurrencyAsPrimaryCurrency, location, ...restProps } = this.props;
-    
-    this.props.passDataToSendAmount(this.state)
+    const {
+      useNativeCurrencyAsPrimaryCurrency,
+      location,
+      ...restProps
+    } = this.props;
+
+    this.props.passDataToSendAmount(this.state);
 
     return (
       <CurrencyInput

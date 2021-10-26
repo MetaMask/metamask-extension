@@ -45,7 +45,7 @@ export default function SendTransactionScreen() {
       name: 'Used QR scanner',
     },
   });
-  const [dataFromSendAmountRow, setStateDataFromSendAmountRow] = useState()
+  const [dataFromSendAmountRow, setStateDataFromSendAmountRow] = useState();
 
   const dispatch = useDispatch();
 
@@ -88,7 +88,11 @@ export default function SendTransactionScreen() {
           location={location.state}
           passDataToSendPage={(value) => setStateDataFromSendAmountRow(value)}
         />
-        <SendFooter key="send-footer" history={history} dataFromSendPage={dataFromSendAmountRow} />
+        <SendFooter
+          key="send-footer"
+          history={history}
+          dataFromSendPage={dataFromSendAmountRow}
+        />
       </>
     );
   } else {

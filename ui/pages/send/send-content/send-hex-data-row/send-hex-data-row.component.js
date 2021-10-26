@@ -6,12 +6,12 @@ export default class SendHexDataRow extends Component {
   static propTypes = {
     inError: PropTypes.bool,
     updateSendHexData: PropTypes.func.isRequired,
-    location: PropTypes.object
+    location: PropTypes.object,
   };
 
   state = {
-    hexData: '' 
-  }
+    hexData: '',
+  };
 
   static contextTypes = {
     t: PropTypes.func,
@@ -21,7 +21,7 @@ export default class SendHexDataRow extends Component {
     const { updateSendHexData } = this.props;
     const data = event.target.value.replace(/\n/gu, '') || null;
     updateSendHexData(data);
-    this.setState({ hexData: data })
+    this.setState({ hexData: data });
   };
 
   render() {
@@ -44,7 +44,11 @@ export default class SendHexDataRow extends Component {
           onInput={this.onInput}
           placeholder={t('optional')}
           className="send-v2__hex-data__input"
-          value={(location && location.hexData && this.state.hexData === '') ? location.hexData : this.state.hexData}
+          value={
+            location && location.hexData && this.state.hexData === ''
+              ? location.hexData
+              : this.state.hexData
+          }
         />
       </SendRowWrapper>
     );

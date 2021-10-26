@@ -13,7 +13,7 @@ export default class SendAmountRow extends Component {
     asset: PropTypes.object,
     updateSendAmount: PropTypes.func,
     passDataToSendContent: PropTypes.func,
-    location: PropTypes.object
+    location: PropTypes.object,
   };
 
   static contextTypes = {
@@ -21,16 +21,16 @@ export default class SendAmountRow extends Component {
   };
 
   state = {
-    dataFromCurrency: {}
-  }
+    dataFromCurrency: {},
+  };
 
   handleChange = (newAmount) => {
     this.props.updateSendAmount(newAmount);
   };
 
   getDataFromCurrency = (value) => {
-    this.setState({ dataFromCurrency: value})
-  }
+    this.setState({ dataFromCurrency: value });
+  };
 
   renderInput() {
     const { amount, inError, asset, location } = this.props;
@@ -56,7 +56,7 @@ export default class SendAmountRow extends Component {
   render() {
     const { inError } = this.props;
 
-    this.props.passDataToSendContent(this.state)
+    this.props.passDataToSendContent(this.state);
 
     return (
       <SendRowWrapper

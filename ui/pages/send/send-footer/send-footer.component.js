@@ -58,7 +58,7 @@ export default class SendFooter extends Component {
       toAccounts,
       history,
       gasEstimateType,
-      dataFromSendPage
+      dataFromSendPage,
     } = this.props;
     const { metricsEvent } = this.context;
 
@@ -82,7 +82,7 @@ export default class SendFooter extends Component {
         state: {
           currencyPreferenceData: dataFromSendPage,
         },
-      })
+      });
     });
   }
 
