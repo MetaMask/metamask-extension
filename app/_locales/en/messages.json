@@ -564,6 +564,9 @@
   "customToken": {
     "message": "Custom Token"
   },
+  "customerSupport": {
+    "message": "customer support"
+  },
   "data": {
     "message": "Data"
   },
@@ -2327,24 +2330,31 @@
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
   },
+  "stxCancelled": {
+    "message": "Swap would have failed"
+  },
+  "stxCancelledDescription": {
+    "message": "Your transaction would have failed and was canceled to protect you from paying unnecessary gas fees."
+  },
+  "stxCancelledSubDescription": {
+    "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
+  },
   "stxFailure": {
-    "message": "Transaction failed"
+    "message": "Swap failed"
   },
   "stxFailureDescription": {
-    "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
+    "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxPending": {
-    "message": "Transaction is pending"
-  },
-  "stxPendingDescription": {
-    "message": "Your transaction is being processed."
+    "message": "Optimizing gas..."
   },
   "stxSuccess": {
-    "message": "Success"
+    "message": "Swap complete!"
   },
   "stxSuccessDescription": {
-    "message": "Transaction was completed successfully."
+    "message": "Your $1 is now available.",
+    "description": "$1 is a token symbol, e.g. ETH"
   },
   "stxUserCancelled": {
     "message": "Swap canceled"

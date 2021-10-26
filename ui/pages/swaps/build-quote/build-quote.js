@@ -28,6 +28,7 @@ import {
   DISPLAY,
   FLEX_DIRECTION,
   FONT_WEIGHT,
+  COLORS,
 } from '../../../helpers/constants/design-system';
 import {
   VIEW_QUOTE_ROUTE,
@@ -559,7 +560,7 @@ export default function BuildQuote({
               </Typography>
               <Typography
                 variant={TYPOGRAPHY.H8}
-                color="ui-4"
+                color={COLORS.UI4}
                 boxProps={{ marginTop: 3 }}
               >
                 {t('smartTransactionsSubDescription')}&nbsp;
@@ -567,7 +568,7 @@ export default function BuildQuote({
                   tag="span"
                   fontWeight={FONT_WEIGHT.BOLD}
                   variant={TYPOGRAPHY.H8}
-                  color="ui-4"
+                  color={COLORS.UI4}
                 >
                   {t('smartTransactionsYouCanOptOut')}&nbsp;
                   <a

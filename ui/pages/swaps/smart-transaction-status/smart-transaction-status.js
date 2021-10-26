@@ -14,7 +14,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../selectors/selectors';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { DEFAULT_ROUTE, ASSET_ROUTE } from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
@@ -25,26 +25,40 @@ import {
   JUSTIFY_CONTENT,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
-import SwapSuccessIcon from '../awaiting-swap/swap-success-icon';
-import SwapFailureIcon from '../awaiting-swap/swap-failure-icon';
 import {
   fetchSmartTransactionsStatus,
   stopPollingForQuotes,
   cancelSmartTransaction,
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
-
 import SwapsFooter from '../swaps-footer';
+import SuccessIcon from './success-icon';
+import RevertedIcon from './reverted-icon';
+import CanceledIcon from './canceled-icon';
+import BackgroundAnimation from './background-animation';
 
 const SMART_TRANSACTIONS_STATUS_INTERVAL = SECOND * 10; // Poll every 10 seconds.
 
+// It takes about 2s to show the link (waiting for uuid) and then it will be visible for about 10s or until a user clicks on it.
+const CANCEL_LINK_DURATION = SECOND * 12;
+
 export default function SmartTransactionStatus() {
-  const [showCancelSwapLink, setShowCancelSwapLink] = useState(true);
+  const [showCancelSwapLink, setShowCancelSwapLink] = useState(() => {
+    setTimeout(() => {
+      setShowCancelSwapLink(false);
+    }, CANCEL_LINK_DURATION);
+    return true;
+  });
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
   const fetchParams = useSelector(getFetchParams);
-  const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
+  const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {
+    destinationTokenInfo: {
+      address: 'address',
+      symbol: 'ETH',
+    },
+  };
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
@@ -101,23 +115,48 @@ export default function SmartTransactionStatus() {
     dispatch(stopPollingForQuotes());
   }, [dispatch]);
 
+  const onClickTokenTo = async (e) => {
+    e?.preventDefault();
+    await dispatch(prepareToLeaveSwaps());
+    history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
+  };
+
   let headerText = t('stxPending');
-  let description = t('stxPendingDescription');
+  let description;
+  let subDescription;
   let icon = <PulseLoader />;
   if (smartTransactionStatus.minedTx === 'success') {
     headerText = t('stxSuccess');
-    description = t('stxSuccessDescription');
-    icon = <SwapSuccessIcon />;
+    description = t('stxSuccessDescription', [
+      <a
+        className="smart-transaction-status__token-to-link"
+        key="smart-transaction-status__token-to-link"
+        href="#"
+        onClick={onClickTokenTo}
+      >
+        {destinationTokenInfo?.symbol}
+      </a>,
+    ]);
+    icon = <SuccessIcon />;
+  } else if (
+    smartTransactionStatus.minedTx === 'cancelled' &&
+    smartTransactionStatus.cancellationReason &&
+    smartTransactionStatus.cancellationReason !== 'user_cancelled'
+  ) {
+    headerText = t('stxCancelled');
+    description = t('stxCancelledDescription');
+    subDescription = t('stxCancelledSubDescription');
+    icon = <CanceledIcon />;
   } else if (
     smartTransactionStatus.cancellationReason &&
     smartTransactionStatus.cancellationReason === 'user_cancelled'
   ) {
     headerText = t('stxUserCancelled');
     description = t('stxUserCancelledDescription');
-    icon = <SwapFailureIcon />;
+    icon = <CanceledIcon />;
   } else if (
-    smartTransactionStatus.cancellationReason &&
-    smartTransactionStatus.cancellationReason !== 'not_cancelled'
+    smartTransactionStatus.minedTx &&
+    smartTransactionStatus.minedTx === 'reverted'
   ) {
     headerText = t('stxFailure');
     description = t('stxFailureDescription', [
@@ -128,10 +167,10 @@ export default function SmartTransactionStatus() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        support.metamask.io
+        {t('customerSupport')}
       </a>,
     ]);
-    icon = <SwapFailureIcon />;
+    icon = <RevertedIcon />;
   }
 
   const CancelSwap = () => {
@@ -163,14 +202,36 @@ export default function SmartTransactionStatus() {
         className="smart-transaction-status__content"
       >
         <Box marginTop={3} marginBottom={4}>
+          <Typography color={COLORS.UI4} variant={TYPOGRAPHY.H6}>
+            {`${fetchParams?.value} ${sourceTokenInfo?.symbol}`}
+            ->
+            {`~${fetchParams?.value} ${destinationTokenInfo?.symbol}`}
+          </Typography>
+        </Box>
+        <BackgroundAnimation position="top" />
+        <Box marginTop={3} marginBottom={4}>
           {icon}
         </Box>
         <Typography color={COLORS.BLACK} variant={TYPOGRAPHY.H3}>
           {headerText}
         </Typography>
-        <Typography variant={TYPOGRAPHY.Paragraph} boxProps={{ marginTop: 2 }}>
+        <Typography
+          variant={TYPOGRAPHY.Paragraph}
+          boxProps={{ marginTop: 2 }}
+          color={COLORS.UI4}
+        >
           {description}
         </Typography>
+        <BackgroundAnimation position="bottom" />
+        {subDescription && (
+          <Typography
+            variant={TYPOGRAPHY.H8}
+            boxProps={{ marginTop: 2 }}
+            color={COLORS.UI4}
+          >
+            {subDescription}
+          </Typography>
+        )}
       </Box>
       {showCancelSwapLink &&
         latestSmartTransactionUuid &&
