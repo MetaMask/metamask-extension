@@ -4,7 +4,7 @@ import SenderToRecipient from '../../ui/sender-to-recipient';
 import { PageContainerFooter } from '../../ui/page-container';
 import EditGasPopover from '../edit-gas-popover';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
-import ErrorMessage from '../../../components/ui/error-message';
+import ErrorMessage from '../../ui/error-message';
 import Dialog from '../../ui/dialog';
 import {
   ConfirmPageContainerHeader,
@@ -193,10 +193,10 @@ export default class ConfirmPageContainer extends Component {
             ethGasPriceWarning={ethGasPriceWarning}
           />
         )}
-        {contentComponent && (disabled && (errorKey || errorMessage)) && (
-            <div className="confirm-approve-content__warning">
-              <ErrorMessage errorKey={errorKey} />
-            </div>
+        {contentComponent && disabled && (errorKey || errorMessage) && (
+          <div className="confirm-approve-content__warning">
+            <ErrorMessage errorKey={errorKey} />
+          </div>
         )}
         {contentComponent && (
           <PageContainerFooter
