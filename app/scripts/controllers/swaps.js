@@ -79,7 +79,7 @@ const initialState = {
     routeState: '',
     swapsFeatureIsLive: true,
     useNewSwapsApi: false,
-    isFetchingQuotesEnabled: false,
+    saveFetchedQuotes: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
   },
@@ -212,7 +212,7 @@ export default class SwapsController {
       swapsState: {
         useNewSwapsApi,
         quotesPollingLimitEnabled,
-        isFetchingQuotesEnabled,
+        saveFetchedQuotes,
       },
     } = this.store.getState();
 
@@ -234,8 +234,8 @@ export default class SwapsController {
     const indexOfCurrentCall = this.indexOfNewestCallInFlight + 1;
     this.indexOfNewestCallInFlight = indexOfCurrentCall;
 
-    if (!isFetchingQuotesEnabled) {
-      this.setIsFetchingQuotesEnabled(true);
+    if (!saveFetchedQuotes) {
+      this.setSaveFetchedQuotes(true);
     }
 
     let [newQuotes] = await Promise.all([
@@ -247,14 +247,12 @@ export default class SwapsController {
     ]);
 
     const {
-      swapsState: {
-        isFetchingQuotesEnabled: isFetchingQuotesEnabledAfterResponse,
-      },
+      swapsState: { saveFetchedQuotes: saveFetchedQuotesAfterResponse },
     } = this.store.getState();
 
-    // If isFetchingQuotesEnabledAfterResponse is false, it means a user left Swaps (we cleaned the state)
+    // If saveFetchedQuotesAfterResponse is false, it means a user left Swaps (we cleaned the state)
     // and we don't want to set any API response with quotes into state.
-    if (!isFetchingQuotesEnabledAfterResponse) {
+    if (!saveFetchedQuotesAfterResponse) {
       return [
         {}, // quotes
         null, // selectedAggId
@@ -566,10 +564,10 @@ export default class SwapsController {
     this.store.updateState({ swapsState: { ...swapsState, routeState } });
   }
 
-  setIsFetchingQuotesEnabled(status) {
+  setSaveFetchedQuotes(status) {
     const { swapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, isFetchingQuotesEnabled: status },
+      swapsState: { ...swapsState, saveFetchedQuotes: status },
     });
   }
 
