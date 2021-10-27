@@ -576,13 +576,13 @@ function getAllowedNotificationIds(state) {
   const currentKeyringIsLedger = currentKeyring?.type === KEYRING_TYPES.LEDGER;
 
   return {
-    1: true,
-    2: true,
-    3: true,
-    4: getCurrentChainId(state) === BSC_CHAIN_ID,
-    5: true,
-    6: currentKeyringIsLedger,
-    7: currentKeyringIsLedger,
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+    5: false,
+    6: false,
+    7: false,
   };
 }
 
