@@ -111,6 +111,7 @@ export const getTranslatedUINoficiations = (t, locale) => {
       date: new Intl.DateTimeFormat(formattedLocale).format(
         new Date(UI_NOTIFICATIONS[8].date),
       ),
+      actionText: t('notifications8ActionText'),
     },
   };
 };
