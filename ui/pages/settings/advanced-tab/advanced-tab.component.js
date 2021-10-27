@@ -8,6 +8,10 @@ import Button from '../../../components/ui/button';
 import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 import Dropdown from '../../../components/ui/dropdown';
 
+import { getPlatform } from '../../../../app/scripts/lib/util';
+
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+
 import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
@@ -409,16 +413,21 @@ export default class AdvancedTab extends PureComponent {
       U2F: t('u2f'),
     };
 
+    const isFirefox = getPlatform() === PLATFORM_FIREFOX;
+
     const transportTypeOptions = [
-      {
-        name: LEDGER_TRANSPORT_NAMES.LIVE,
-        value: LEDGER_TRANSPORT_TYPES.LIVE,
-      },
       {
         name: LEDGER_TRANSPORT_NAMES.U2F,
         value: LEDGER_TRANSPORT_TYPES.U2F,
       },
     ];
+
+    if (!isFirefox) {
+      transportTypeOptions.push({
+        name: LEDGER_TRANSPORT_NAMES.LIVE,
+        value: LEDGER_TRANSPORT_TYPES.LIVE,
+      });
+    }
 
     if (window.navigator.hid) {
       transportTypeOptions.push({
