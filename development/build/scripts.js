@@ -55,7 +55,7 @@ const {
 const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
-const { BuildTypes } = require('./utils');
+const { BuildType } = require('./utils');
 
 /**
  * The build environment. This describes the environment this build was produced in.
@@ -89,7 +89,7 @@ function getConfigValue(key) {
  * Get the appropriate Infura project ID.
  *
  * @param {object} options - The Infura project ID options.
- * @param {BuildTypes} options.buildType - The current build type.
+ * @param {BuildType} options.buildType - The current build type.
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  * @param {boolean} options.testing - Whether the current build is a test build or not.
  * @returns {string} The Infura project ID.
@@ -100,11 +100,11 @@ function getInfuraProjectId({ buildType, environment, testing }) {
   } else if (environment !== ENVIRONMENT.PRODUCTION) {
     // Skip validation because this is unset on PRs from forks.
     return metamaskrc.INFURA_PROJECT_ID;
-  } else if (buildType === BuildTypes.main) {
+  } else if (buildType === BuildType.main) {
     return getConfigValue('INFURA_PROD_PROJECT_ID');
-  } else if (buildType === BuildTypes.beta) {
+  } else if (buildType === BuildType.beta) {
     return getConfigValue('INFURA_BETA_PROJECT_ID');
-  } else if (buildType === BuildTypes.flask) {
+  } else if (buildType === BuildType.flask) {
     return getConfigValue('INFURA_FLASK_PROJECT_ID');
   }
   throw new Error(`Invalid build type: '${buildType}'`);
@@ -114,7 +114,7 @@ function getInfuraProjectId({ buildType, environment, testing }) {
  * Get the appropriate Segment write key.
  *
  * @param {object} options - The Segment write key options.
- * @param {BuildTypes} options.buildType - The current build type.
+ * @param {BuildType} options.buildType - The current build type.
  * @param {keyof ENVIRONMENT} options.enviroment - The current build environment.
  * @returns {string} The Segment write key.
  */
@@ -122,11 +122,11 @@ function getSegmentWriteKey({ buildType, environment }) {
   if (environment !== ENVIRONMENT.PRODUCTION) {
     // Skip validation because this is unset on PRs from forks, and isn't necessary for development builds.
     return metamaskrc.SEGMENT_WRITE_KEY;
-  } else if (buildType === BuildTypes.main) {
+  } else if (buildType === BuildType.main) {
     return getConfigValue('SEGMENT_PROD_WRITE_KEY');
-  } else if (buildType === BuildTypes.beta) {
+  } else if (buildType === BuildType.beta) {
     return getConfigValue('SEGMENT_BETA_WRITE_KEY');
-  } else if (buildType === BuildTypes.flask) {
+  } else if (buildType === BuildType.flask) {
     return getConfigValue('SEGMENT_FLASK_WRITE_KEY');
   }
   throw new Error(`Invalid build type: '${buildType}'`);
