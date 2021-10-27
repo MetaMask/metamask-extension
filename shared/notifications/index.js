@@ -102,7 +102,7 @@ export const getTranslatedUINoficiations = (t, locale) => {
       ),
     },
     8: {
-      ...UI_NOTIFICATIONS[7],
+      ...UI_NOTIFICATIONS[8],
       title: t('notifications8Title'),
       description: [
         t('notifications8DescriptionOne'),
