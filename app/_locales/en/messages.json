@@ -82,6 +82,9 @@
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
+  "addNFT": {
+    "message": "Add NFT"
+  },
   "addNetwork": {
     "message": "Add Network"
   },
@@ -1542,6 +1545,9 @@
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nfts": {
+    "message": "NFTs"
+  },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
@@ -1553,6 +1559,12 @@
   },
   "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
+  },
+  "noNFTs": {
+    "message": "No NFTs to show"
+  },
+  "noNFTsDetails": {
+    "message": "Your NFTs will show up here. If you don't see your NFT, try importing manually."
   },
   "noThanks": {
     "message": "No Thanks"
