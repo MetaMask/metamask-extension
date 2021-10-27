@@ -347,7 +347,7 @@ export default class ConfirmApproveContent extends Component {
                   : t('copyToClipboard')
               }
             >
-              <CopyIcon size={9} color="#6a737d" />
+              <CopyIcon size={9} color={COLORS.UI4} />
             </Button>
             <Button
               type="link"
