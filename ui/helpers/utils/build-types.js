@@ -2,12 +2,10 @@ import betaJson from '../../../app/build-types/beta/beta-mascot.json';
 
 const assetList = {
   main: {
-    metafoxLogoHorizontalDark: '/images/logo/metamask-logo-horizontal.svg',
     // Will use default provided by the @metamask/logo library
     foxMeshJson: undefined,
   },
   beta: {
-    metafoxLogoHorizontalDark: '/images/logo/metamask-logo-horizontal-dark.svg',
     foxMeshJson: betaJson,
   },
 };
