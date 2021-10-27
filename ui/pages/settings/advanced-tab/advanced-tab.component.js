@@ -413,21 +413,16 @@ export default class AdvancedTab extends PureComponent {
       U2F: t('u2f'),
     };
 
-    const isFirefox = getPlatform() === PLATFORM_FIREFOX;
-
     const transportTypeOptions = [
+      {
+        name: LEDGER_TRANSPORT_NAMES.LIVE,
+        value: LEDGER_TRANSPORT_TYPES.LIVE,
+      },
       {
         name: LEDGER_TRANSPORT_NAMES.U2F,
         value: LEDGER_TRANSPORT_TYPES.U2F,
       },
     ];
-
-    if (!isFirefox) {
-      transportTypeOptions.push({
-        name: LEDGER_TRANSPORT_NAMES.LIVE,
-        value: LEDGER_TRANSPORT_TYPES.LIVE,
-      });
-    }
 
     if (window.navigator.hid) {
       transportTypeOptions.push({
@@ -597,6 +592,8 @@ export default class AdvancedTab extends PureComponent {
   render() {
     const { warning } = this.props;
 
+    const notUsingFirefox = getPlatform() !== PLATFORM_FIREFOX;
+
     return (
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
@@ -610,7 +607,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderThreeBoxControl()}
         {this.renderIpfsGatewayControl()}
-        {this.renderLedgerLiveControl()}
+        {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}
       </div>
     );
