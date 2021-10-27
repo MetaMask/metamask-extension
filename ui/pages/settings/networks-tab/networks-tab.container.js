@@ -16,7 +16,7 @@ import {
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import NetworksTab from './networks-tab.component';
+import NetworksTab from './network-tab';
 import { defaultNetworksData } from './networks-tab.constants';
 
 const defaultNetworks = defaultNetworksData.map((network) => ({
