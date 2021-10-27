@@ -2845,7 +2845,7 @@
     "message": "Try again"
   },
   "turnOnTokenDetection": {
-    "message": "Turn on Token Detection"
+    "message": "Turn on enhanced token detection"
   },
   "typePassword": {
     "message": "Type your MetaMask password"
