@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { Actions } = require('selenium-webdriver');
 const { withFixtures } = require('../helpers');
 
 describe('Stores custom RPC history', function () {
@@ -28,7 +27,7 @@ describe('Stores custom RPC history', function () {
 
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Ganache Testnet';
-                
+
         await driver.clickElement('.network-display');
 
         await driver.clickElement({ text: 'Add Network', tag: 'button' });
@@ -37,7 +36,9 @@ describe('Stores custom RPC history', function () {
 
         await driver.findElement('.settings-page__sub-header-text');
 
-        await driver.clickElement('.add-network-form__header-add-network-button');
+        await driver.clickElement(
+          '.add-network-form__header-add-network-button',
+        );
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const networkNameInput = customRpcInputs[0];
@@ -82,7 +83,9 @@ describe('Stores custom RPC history', function () {
 
         await driver.findElement('.settings-page__sub-header-text');
 
-        await driver.clickElement('.add-network-form__header-add-network-button');
+        await driver.clickElement(
+          '.add-network-form__header-add-network-button',
+        );
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
@@ -123,7 +126,9 @@ describe('Stores custom RPC history', function () {
 
         await driver.findElement('.settings-page__sub-header-text');
 
-        await driver.clickElement('.add-network-form__header-add-network-button');
+        await driver.clickElement(
+          '.add-network-form__header-add-network-button',
+        );
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
