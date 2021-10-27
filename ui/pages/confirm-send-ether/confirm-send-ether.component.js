@@ -12,10 +12,15 @@ export default class ConfirmSendEther extends Component {
     editTransaction: PropTypes.func,
     history: PropTypes.object,
     txParams: PropTypes.object,
+    location: PropTypes.object,
   };
 
   state = {
-    currencyPreferenceObject: {},
+    currencyPreferenceObject:
+      this.props.location.state && this.props.location.state.currencyData
+        ? this.props.location.state.currencyData.currencyPreferenceData
+            .dataFromSendAmountRow.dataFromCurrency.dataFromCurrency
+        : {},
   };
 
   handleEdit({ txData }) {
@@ -38,10 +43,6 @@ export default class ConfirmSendEther extends Component {
 
   render() {
     const hideData = this.shouldHideData();
-
-    if (this.props.location.state && this.props.location.state.currencyData) {
-      this.state.currencyPreferenceObject = this.props.location.state.currencyData.currencyPreferenceData.dataFromSendAmountRow.dataFromCurrency.dataFromCurrency;
-    }
 
     return (
       <ConfirmTransactionBase

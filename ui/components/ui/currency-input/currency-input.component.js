@@ -35,16 +35,17 @@ export default class CurrencyInput extends PureComponent {
   constructor(props) {
     super(props);
 
-    const hexValue =
-      this.props.location && this.props.location.currencyObject
-        ? this.props.location.currencyObject.hexValue
-        : this.props.value;
-    const decimalValue =
-      this.props.location && this.props.location.currencyObject
-        ? this.props.location.currencyObject.decimalValue
-        : hexValue
-        ? this.getDecimalValue(props)
-        : 0;
+    let hexValue = this.props.value;
+    let decimalValue;
+
+    if (this.props.location && this.props.location.currencyObject) {
+      hexValue = this.props.location.currencyObject.hexValue;
+      decimalValue = this.props.location.currencyObject.decimalValue;
+    } else if (hexValue) {
+      decimalValue = this.getDecimalValue(props);
+    } else {
+      decimalValue = 0;
+    }
 
     this.state = {
       decimalValue,
