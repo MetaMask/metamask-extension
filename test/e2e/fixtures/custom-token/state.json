@@ -67,7 +67,11 @@
       }
     },
     "NotificationController": {
-      "notifications": {}
+      "notifications": {
+        "8": {
+          "isShown": true
+        }
+      }
     },
     "OnboardingController": {
       "onboardingTabs": {},
