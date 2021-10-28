@@ -7,6 +7,7 @@ import Identicon from '../../ui/identicon';
 import Tooltip from '../../ui/tooltip';
 import CurrencyDisplay from '../../ui/currency-display';
 import { I18nContext } from '../../../contexts/i18n';
+import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import {
   SEND_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -42,7 +43,7 @@ const TokenOverview = ({ className, token }) => {
   });
   const history = useHistory();
   const keyring = useSelector(getCurrentKeyring);
-  const usingHardwareWallet = keyring.type.search('Hardware') !== -1;
+  const usingHardwareWallet = isHardwareKeyring(keyring.type);
   const { tokensWithBalances } = useTokenTracker([token]);
   const balanceToRender = tokensWithBalances[0]?.string;
   const balance = tokensWithBalances[0]?.balance;
