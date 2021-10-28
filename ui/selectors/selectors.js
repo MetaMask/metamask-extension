@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   MAINNET_CHAIN_ID,
-  BSC_CHAIN_ID,
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
@@ -571,10 +570,7 @@ export function getShowWhatsNewPopup(state) {
  * @param {Object} state
  * @returns {Object}
  */
-function getAllowedNotificationIds(state) {
-  const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger = currentKeyring?.type === KEYRING_TYPES.LEDGER;
-
+function getAllowedNotificationIds() {
   return {
     1: false,
     2: false,
