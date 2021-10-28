@@ -7,6 +7,7 @@ import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
 import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 import Dropdown from '../../../components/ui/dropdown';
+import Dialog from '../../../components/ui/dialog';
 
 import {
   LEDGER_TRANSPORT_TYPES,
@@ -51,6 +52,7 @@ export default class AdvancedTab extends PureComponent {
     lockTimeError: '',
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
+    showLedgerTransportWarning: false,
   };
 
   renderMobileSync() {
@@ -458,6 +460,12 @@ export default class AdvancedTab extends PureComponent {
               options={transportTypeOptions}
               selectedOption={ledgerTransportType}
               onChange={async (transportType) => {
+                if (
+                  ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE &&
+                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID
+                ) {
+                  this.setState({ showLedgerTransportWarning: true });
+                }
                 setLedgerLivePreference(transportType);
                 if (
                   transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
@@ -469,6 +477,13 @@ export default class AdvancedTab extends PureComponent {
                 }
               }}
             />
+            {this.state.showLedgerTransportWarning ? (
+              <Dialog type="message">
+                <div className="settings-page__content-item-dialog">
+                  {t('ledgerTransportChangeWarning')}
+                </div>
+              </Dialog>
+            ) : null}
           </div>
         </div>
       </div>
