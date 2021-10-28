@@ -1,43 +1,27 @@
 import React from 'react';
-import configureMockStore from 'redux-mock-store';
 import { screen } from '@testing-library/react';
-import { useSelector } from 'react-redux';
 
 import { ETH } from '../../helpers/constants/common';
-import { getPreferences, getNativeCurrency } from '../../selectors';
 import { renderWithProvider } from '../../../test/jest';
+import configureStore from '../../store/store';
 
 import GasDetails from './gas-details.component';
 
-jest.mock('react-redux', () => {
-  const actual = jest.requireActual('react-redux');
-
-  return {
-    ...actual,
-    useSelector: jest.fn(),
-  };
-});
-
 const render = (props) => {
-  const store = configureMockStore([])({ metamask: { identities: [] } });
+  const store = configureStore({
+    metamask: {
+      nativeCurrency: ETH,
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: true,
+      },
+      provider: {},
+    },
+  });
 
   return renderWithProvider(<GasDetails txData={{}} {...props} />, store);
 };
 
 describe('GasDetailsItem', () => {
-  beforeEach(() => {
-    useSelector.mockImplementation((selector) => {
-      if (selector === getNativeCurrency) {
-        return ETH;
-      }
-      if (selector === getPreferences) {
-        return {
-          useNativeCurrencyAsPrimaryCurrency: true,
-        };
-      }
-      return undefined;
-    });
-  });
   it('should should render label', () => {
     render();
     expect(screen.queryByText('Gas')).toBeInTheDocument();

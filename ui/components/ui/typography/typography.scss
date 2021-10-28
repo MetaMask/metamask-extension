@@ -4,8 +4,6 @@
 .typography {
   @include design-system.Paragraph;
 
-  white-space: pre;
-
   & b {
     font-weight: 700;
   }
