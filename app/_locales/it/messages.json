@@ -404,9 +404,6 @@
   "customGasSubTitle": {
     "message": "Incrementare il costo potrebbe diminuire il tempo di elaborazione, ma non è garantito."
   },
-  "customRPC": {
-    "message": "RPC Personalizzata"
-  },
   "customSpendLimit": {
     "message": "Limite Spesa Personalizzato"
   },

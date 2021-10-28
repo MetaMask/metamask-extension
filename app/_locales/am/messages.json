@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "ክፍያ መጨመር የመከወኛ ጊዜን ሊቀንስ ቢችልም ይህ ግን ዋስትና የለውም።"
   },
-  "customRPC": {
-    "message": "ብጁ RPC"
-  },
   "customToken": {
     "message": "ብጁ ተለዋጭ ስም"
   },

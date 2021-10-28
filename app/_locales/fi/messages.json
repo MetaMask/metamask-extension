@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Taksan korottaminen saattaa vähentää käsittelyaikaa, mutta siitä ei anneta takeita."
   },
-  "customRPC": {
-    "message": "Mukautettu RPC"
-  },
   "customToken": {
     "message": "Mukautettu tietue"
   },

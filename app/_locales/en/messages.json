@@ -555,9 +555,6 @@
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
-  "customRPC": {
-    "message": "Custom RPC"
-  },
   "customSpendLimit": {
     "message": "Custom Spend Limit"
   },
@@ -2187,6 +2184,12 @@
   },
   "showSeedPhrase": {
     "message": "Show Secret Recovery Phrase"
+  },
+  "showTestnetNetworks": {
+    "message": "Test networks"
+  },
+  "showTestnetNetworksDescription": {
+    "message": "Select this to show test networks in network list"
   },
   "sigRequest": {
     "message": "Signature Request"

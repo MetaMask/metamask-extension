@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Didinant mokestį gali mažėti apdorojimo trukmė, bet tai negarantuojama."
   },
-  "customRPC": {
-    "message": "Pritaikytas RPC"
-  },
   "customToken": {
     "message": "Pritaikytas žetonas"
   },

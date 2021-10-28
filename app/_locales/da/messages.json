@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Forøgelse af gebyr kan mindske bearbejdningstiden, men det er ikke en garanti."
   },
-  "customRPC": {
-    "message": "Tilpasset RPC"
-  },
   "customToken": {
     "message": "Brugerdefineret Token"
   },
