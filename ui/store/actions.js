@@ -29,6 +29,7 @@ import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-accoun
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
+  DEVICE_NAMES,
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
@@ -410,7 +411,7 @@ export function connectHardware(deviceName, page, hdPath, t) {
     try {
       const { ledgerTransportType } = getState().metamask;
       if (
-        deviceName === 'ledger' &&
+        deviceName === DEVICE_NAMES.LEDGER &&
         ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
       ) {
         const connectedDevices = await window.navigator.hid.requestDevice({
