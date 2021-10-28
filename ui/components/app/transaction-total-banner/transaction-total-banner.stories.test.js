@@ -6,6 +6,6 @@ import '@testing-library/jest-dom/extend-expect';
 import { Base } from './transaction-total-banner.stories';
 
 it('renders transaction total banner stories with Base state', () => {
-  render(<Base {...Base.args} />)
+  render(<Base {...Base.args} />);
   expect(screen.findByTestId('#popover-content')).toBeDefined();
 });
