@@ -32,7 +32,7 @@ export default class AppStateController extends EventEmitter {
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
       ...initState,
-      qrHardware: qrHardwareStore.getState(),
+      qrHardware: {},
     });
     this.timer = null;
 

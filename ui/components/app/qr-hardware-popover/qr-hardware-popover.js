@@ -14,15 +14,11 @@ const QRHardwarePopover = () => {
     [dispatch],
   );
 
-  const [showWalletImporter, setShowWalletImporter] = useState(false);
-  const showPopover = useMemo(() => showWalletImporter, [showWalletImporter]);
-
   const qrHardware = useSelector(getCurrentQRHardwareState);
   const { sync } = qrHardware;
-
-  useEffect(() => {
-    setShowWalletImporter(sync.reading);
-  }, [sync.reading]);
+  
+  const showWalletImporter = !!(sync && sync.reading);
+  const showPopover = showWalletImporter;
 
   const title = useMemo(() => {
     return showWalletImporter ? t('QRHardwareWalletImporterTitle') : '';
