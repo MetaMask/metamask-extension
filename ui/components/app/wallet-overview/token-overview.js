@@ -122,7 +122,7 @@ const TokenOverview = ({ className, token }) => {
             label={t('swap')}
             tooltipRender={(contents) => (
               <Tooltip
-                title={isSwapsChain ? '' : t('currentlyUnavailable')}
+                title={t('currentlyUnavailable')}
                 position="bottom"
                 disabled={isSwapsChain}
               >

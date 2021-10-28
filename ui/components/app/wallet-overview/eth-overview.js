@@ -153,7 +153,7 @@ const EthOverview = ({ className }) => {
             label={t('swap')}
             tooltipRender={(contents) => (
               <Tooltip
-                title={isSwapsChain ? '' : t('currentlyUnavailable')}
+                title={t('currentlyUnavailable')}
                 position="bottom"
                 disabled={isSwapsChain}
               >
