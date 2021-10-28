@@ -7,6 +7,7 @@ import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
 import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 import Dropdown from '../../../components/ui/dropdown';
+import { reloadLedgerIframe } from '../../../store/actions';
 
 import {
   LEDGER_TRANSPORT_TYPES,
@@ -466,6 +467,7 @@ export default class AdvancedTab extends PureComponent {
                   await window.navigator.hid.requestDevice({
                     filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
                   });
+                  reloadLedgerIframe();
                 }
               }}
             />

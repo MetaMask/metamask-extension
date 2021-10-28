@@ -2897,3 +2897,7 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
 export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
 }
+
+export async function reloadLedgerIframe() {
+  return promisifiedBackground.reloadLedgerIframe();
+}
