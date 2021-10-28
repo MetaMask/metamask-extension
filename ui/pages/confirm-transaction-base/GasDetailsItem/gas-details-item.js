@@ -1,19 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { COLORS } from '../../helpers/constants/design-system';
-import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
-import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
-import { useI18nContext } from '../../hooks/useI18nContext';
+import { COLORS } from '../../../helpers/constants/design-system';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import Box from '../../components/ui/box';
-import GasTiming from '../../components/app/gas-timing/gas-timing.component';
-import I18nValue from '../../components/ui/i18n-value';
-import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
-import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
-import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
-import Typography from '../../components/ui/typography/typography';
-import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
+import Box from '../../../components/ui/box';
+import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
+import I18nValue from '../../../components/ui/i18n-value';
+import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
+import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
+import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 
 const HeartBeat = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
@@ -33,13 +32,15 @@ const GasDetailItem = ({
     <TransactionDetailItem
       key="gas-item"
       detailTitle={
-        <Box display="flex" alignItems="center">
+        <Box display="flex">
           <Box marginRight={1}>
-            <I18nValue messageKey="transactionDetailGasHeadingV2" />
+            <p>
+              <I18nValue messageKey="transactionDetailGasHeadingV2" />
+            </p>
           </Box>
-          <Typography fontWeight={400} fontStyle="italic" fontSize="12px">
+          <span className="gas-details-item__estimate">
             (<I18nValue messageKey="transactionDetailGasInfoV2" />)
-          </Typography>
+          </span>
           <InfoTooltip
             contentText={
               <>

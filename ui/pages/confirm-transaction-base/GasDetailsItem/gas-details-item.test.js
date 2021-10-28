@@ -1,11 +1,11 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
-import { ETH } from '../../helpers/constants/common';
-import { renderWithProvider } from '../../../test/jest';
-import configureStore from '../../store/store';
+import { ETH } from '../../../helpers/constants/common';
+import { renderWithProvider } from '../../../../test/jest';
+import configureStore from '../../../store/store';
 
-import GasDetails from './gas-details.component';
+import GasDetailsItem from './gas-details-item.component';
 
 const render = (props) => {
   const store = configureStore({
@@ -18,7 +18,7 @@ const render = (props) => {
     },
   });
 
-  return renderWithProvider(<GasDetails txData={{}} {...props} />, store);
+  return renderWithProvider(<GasDetailsItem txData={{}} {...props} />, store);
 };
 
 describe('GasDetailsItem', () => {

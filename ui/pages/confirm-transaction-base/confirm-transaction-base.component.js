@@ -51,7 +51,7 @@ import {
 
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
-import GasDetailsItem from './gas-details.component';
+import GasDetailsItem from './GasDetailsItem';
 
 // eslint-disable-next-line prefer-destructuring
 const EIP_1559_V2 = process.env.EIP_1559_V2;
