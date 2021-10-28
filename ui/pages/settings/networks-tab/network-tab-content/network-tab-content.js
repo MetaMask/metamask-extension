@@ -23,7 +23,7 @@ const NetworkListItem = ({
   isFullScreen,
 }) => {
   const t = useI18nContext();
-  const history = useHistory;
+  const history = useHistory();
   const {
     label,
     labelKey,

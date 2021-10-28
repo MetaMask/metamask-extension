@@ -11,10 +11,16 @@ import Button from '../../../components/ui/button';
 import NetworkForm from './network-form';
 import NetworkTabContent from './network-tab-content';
 
-const SubHeader = () => {
+const SubHeader = ({ addNewNetwork }) => {
   const t = useI18nContext();
   const history = useHistory();
-  return (
+  return addNewNetwork ? (
+    <div className="networks-tab__subheader">
+      <span className="networks-tab__sub-header-text">{t('networks')}</span>
+      <span>{'  >  '}</span>
+      <div className="networks-tab__subheader--break">{t('addANetwork')}</div>
+    </div>
+  ) : (
     <div className="settings-page__sub-header">
       <span className="settings-page__sub-header-text">{t('networks')}</span>
       <div className="networks-tab__add-network-header-button-wrapper">
@@ -30,6 +36,10 @@ const SubHeader = () => {
       </div>
     </div>
   );
+};
+
+SubHeader.propTypes = {
+  addNewNetwork: PropTypes.bool.isRequired,
 };
 
 const NetworkTab = ({
@@ -56,54 +66,58 @@ const NetworkTab = ({
       setSelectedSettingsRpcUrl('');
     };
   }, [setSelectedSettingsRpcUrl]);
-  return addNewNetwork ? (
-    <NetworkForm
-      setRpcTarget={setRpcTarget}
-      onClear={(shouldUpdateHistory = true) => {
-        if (shouldUpdateHistory) {
-          history.push(NETWORKS_ROUTE);
-        }
-      }}
-      onAddNetwork={() => {
-        history.push(DEFAULT_ROUTE);
-      }}
-      rpcPrefs={selectedNetwork.rpcPrefs}
-      networksToRender={networksToRender}
-      setNewNetworkAdded={setNewNetworkAdded}
-      addNewNetwork={addNewNetwork}
-      history={history}
-    />
-  ) : (
+  return (
     <div className="networks-tab__body">
-      {isFullScreen ? <SubHeader /> : null}
+      {isFullScreen ? <SubHeader addNewNetwork={addNewNetwork} /> : null}
       <div className="networks-tab__content">
-        <NetworkTabContent
-          setRpcTarget={setRpcTarget}
-          showConfirmDeleteNetworkModal={showConfirmDeleteNetworkModal}
-          setSelectedSettingsRpcUrl={setSelectedSettingsRpcUrl}
-          selectedNetwork={selectedNetwork}
-          editRpc={editRpc}
-          providerUrl={providerUrl}
-          providerType={providerType}
-          networkDefaultedToProvider={networkDefaultedToProvider}
-          networksToRender={networksToRender}
-          isFullScreen={isFullScreen}
-          shouldRenderNetworkForm={shouldRenderNetworkForm}
-          networkIsSelected={networkIsSelected}
-        />
-        {!isFullScreen && !shouldRenderNetworkForm ? (
-          <div className="networks-tab__networks-list-popup-footer">
-            <Button
-              type="primary"
-              onClick={(event) => {
-                event.preventDefault();
-                global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
-              }}
-            >
-              {t('addNetwork')}
-            </Button>
-          </div>
-        ) : null}
+        {addNewNetwork ? (
+          <NetworkForm
+            setRpcTarget={setRpcTarget}
+            onClear={(shouldUpdateHistory = true) => {
+              if (shouldUpdateHistory) {
+                history.push(NETWORKS_ROUTE);
+              }
+            }}
+            onAddNetwork={() => {
+              history.push(DEFAULT_ROUTE);
+            }}
+            rpcPrefs={selectedNetwork.rpcPrefs}
+            networksToRender={networksToRender}
+            setNewNetworkAdded={setNewNetworkAdded}
+            addNewNetwork={addNewNetwork}
+            history={history}
+          />
+        ) : (
+          <>
+            <NetworkTabContent
+              setRpcTarget={setRpcTarget}
+              showConfirmDeleteNetworkModal={showConfirmDeleteNetworkModal}
+              setSelectedSettingsRpcUrl={setSelectedSettingsRpcUrl}
+              selectedNetwork={selectedNetwork}
+              editRpc={editRpc}
+              providerUrl={providerUrl}
+              providerType={providerType}
+              networkDefaultedToProvider={networkDefaultedToProvider}
+              networksToRender={networksToRender}
+              isFullScreen={isFullScreen}
+              shouldRenderNetworkForm={shouldRenderNetworkForm}
+              networkIsSelected={networkIsSelected}
+            />
+            {!isFullScreen && !shouldRenderNetworkForm ? (
+              <div className="networks-tab__networks-list-popup-footer">
+                <Button
+                  type="primary"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
+                  }}
+                >
+                  {t('addNetwork')}
+                </Button>
+              </div>
+            ) : null}
+          </>
+        )}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
 import log from 'loglevel';
+import classnames from 'classnames';
 import TextField from '../../../../components/ui/text-field';
 import Button from '../../../../components/ui/button';
 import Tooltip from '../../../../components/ui/tooltip';
@@ -11,6 +12,8 @@ import {
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import { decimalToHex } from '../../../../helpers/utils/conversions.util';
+import ActionableMessage from '../../../../components/ui/actionable-message';
+import { COLORS } from '../../../../helpers/constants/design-system';
 
 const FORM_STATE_KEYS = [
   'rpcUrl',
@@ -753,9 +756,124 @@ export default class NetworkForm extends PureComponent {
   }
 
   render() {
-    const { addNewNetwork } = this.props;
-    return addNewNetwork
-      ? this.renderAddNetworkForm()
-      : this.renderNetworkForm();
+    const { t } = this.context;
+    const { viewOnly, isCurrentRpcTarget, addNewNetwork } = this.props;
+    const {
+      networkName,
+      rpcUrl,
+      chainId = '',
+      ticker,
+      blockExplorerUrl,
+    } = this.state;
+
+    const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
+
+    const isSubmitDisabled =
+      this.hasErrors() ||
+      this.isSubmitting() ||
+      this.stateIsUnchanged() ||
+      !rpcUrl ||
+      !chainId;
+    return (
+      <div
+        className={classnames({
+          'networks-tab__network-form': !addNewNetwork,
+          'networks-tab__add-network-form': addNewNetwork,
+        })}
+      >
+        {addNewNetwork ? (
+          <ActionableMessage
+            type="warning"
+            message={t('onlyAddTrustedNetworks')}
+            iconFillColor={COLORS.ALERT3}
+            useIcon
+            withRightButton
+          />
+        ) : null}
+        <div
+          className={classnames({
+            'networks-tab__network-form-body': !addNewNetwork,
+            'networks-tab__add-network-form-body': addNewNetwork,
+          })}
+        >
+          {this.renderFormTextField({
+            className: 'networks-tab__network-form-row',
+            fieldKey: 'networkName',
+            textFieldId: 'network-name',
+            onChange: this.setStateWithValue('networkName'),
+            value: networkName,
+          })}
+          {this.renderFormTextField({
+            className: 'networks-tab__network-form-row',
+            fieldKey: 'rpcUrl',
+            textFieldId: 'rpc-url',
+            onChange: this.setStateWithValue('rpcUrl', this.validateUrlRpcUrl),
+            value: rpcUrl,
+          })}
+          {this.renderFormTextField({
+            className: 'networks-tab__network-form-row',
+            fieldKey: 'chainId',
+            textFieldId: 'chainId',
+            onChange: this.setStateWithValue(
+              'chainId',
+              this.validateChainIdOnChange.bind(this, rpcUrl),
+            ),
+            value: chainId,
+            tooltipText: viewOnly
+              ? null
+              : t('networkSettingsChainIdDescription'),
+          })}
+          {this.renderFormTextField({
+            className: 'networks-tab__network-form-row',
+            fieldKey: 'symbol',
+            textFieldId: 'network-ticker',
+            onChange: this.setStateWithValue('ticker'),
+            value: ticker,
+            optionalTextFieldKey: 'optionalCurrencySymbol',
+          })}
+          {this.renderFormTextField({
+            className: 'networks-tab__network-form-row',
+            fieldKey: 'blockExplorerUrl',
+            textFieldId: 'block-explorer-url',
+            onChange: this.setStateWithValue(
+              'blockExplorerUrl',
+              this.validateBlockExplorerURL,
+            ),
+            value: blockExplorerUrl,
+            optionalTextFieldKey: 'optionalBlockExplorerUrl',
+          })}
+        </div>
+        <div
+          className={classnames({
+            'networks-tab__network-form-footer': !addNewNetwork,
+            'networks-tab__add-network-form-footer': addNewNetwork,
+          })}
+        >
+          {!viewOnly && (
+            <>
+              {deletable && (
+                <Button type="danger" onClick={this.onDelete}>
+                  {t('delete')}
+                </Button>
+              )}
+              <Button
+                type="secondary"
+                onClick={this.onCancel}
+                disabled={this.stateIsUnchanged()}
+              >
+                {t('cancel')}
+              </Button>
+              <Button
+                type="primary"
+                disabled={isSubmitDisabled}
+                onClick={this.onSubmit}
+              >
+                {t('save')}
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
+    );
   }
 }
