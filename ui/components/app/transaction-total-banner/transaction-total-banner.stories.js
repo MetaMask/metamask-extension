@@ -6,7 +6,7 @@ export default {
   id: __filename,
 };
 
-export const basic = () => {
+export const Base = () => {
   return (
     <TransactionTotalBanner
       total="~18.73"
