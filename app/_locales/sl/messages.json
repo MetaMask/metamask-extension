@@ -611,9 +611,6 @@
   "newContract": {
     "message": "Nova pogodba"
   },
-  "newNetwork": {
-    "message": "Novo omrežje"
-  },
   "newPassword": {
     "message": "Novo geslo (min 8 znakov)"
   },

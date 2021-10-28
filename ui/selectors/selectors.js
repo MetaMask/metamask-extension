@@ -659,3 +659,12 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
     addressIsLedger && transportTypePreferenceIsWebHID && webHidIsNotConnected
   );
 }
+
+/**
+ * To retrieve the name of the new Network added using add network form
+ * @param {*} state
+ * @returns string
+ */
+export function getNewNetworkAdded(state) {
+  return state.appState.newNetworkAdded;
+}

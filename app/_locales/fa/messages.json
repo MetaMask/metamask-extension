@@ -623,9 +623,6 @@
   "newContract": {
     "message": "قرارداد جدید"
   },
-  "newNetwork": {
-    "message": "شبکه جدید"
-  },
   "newPassword": {
     "message": "رمز عبور جدید (حداقل 8 حرف)"
   },
