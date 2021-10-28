@@ -2446,10 +2446,10 @@ export function setSelectedSettingsRpcUrl(newRpcUrl) {
   };
 }
 
-export function setNetworksTabAddMode(isInAddMode) {
+export function setNewNetworkAdded(newNetworkAdded) {
   return {
-    type: actionConstants.SET_NETWORKS_TAB_ADD_MODE,
-    value: isInAddMode,
+    type: actionConstants.SET_NEW_NETWORK_ADDED,
+    value: newNetworkAdded,
   };
 }
 

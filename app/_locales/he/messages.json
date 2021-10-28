@@ -620,9 +620,6 @@
   "newContract": {
     "message": "חוזה חדש"
   },
-  "newNetwork": {
-    "message": "רשת חדשה"
-  },
   "newPassword": {
     "message": "ססמה חדשה (לפחות 8 תווים)"
   },

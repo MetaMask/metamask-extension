@@ -616,9 +616,6 @@
   "newContract": {
     "message": "Új szerződés"
   },
-  "newNetwork": {
-    "message": "Új hálózat"
-  },
   "newPassword": {
     "message": "Új jelszó (minimum 8 karakter)"
   },

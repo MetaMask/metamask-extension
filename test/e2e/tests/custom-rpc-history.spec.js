@@ -32,7 +32,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
 
-        await driver.findElement('.settings-page__sub-header-text');
+        await driver.findElement('.add-network-form__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const networkNameInput = customRpcInputs[0];
@@ -48,7 +48,7 @@ describe('Stores custom RPC history', function () {
         await chainIdInput.clear();
         await chainIdInput.sendKeys(chainId.toString());
 
-        await driver.clickElement('.network-form__footer .btn-primary');
+        await driver.clickElement('.add-network-form__footer .btn-primary');
         await driver.findElement({ text: networkName, tag: 'span' });
       },
     );
@@ -73,7 +73,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
 
-        await driver.findElement('.settings-page__sub-header-text');
+        await driver.findElement('.add-network-form__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
@@ -108,7 +108,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
 
-        await driver.findElement('.settings-page__sub-header-text');
+        await driver.findElement('.add-network-form__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
@@ -192,7 +192,9 @@ describe('Stores custom RPC history', function () {
         await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
 
         // cancel new custom rpc
-        await driver.clickElement('.network-form__footer button.btn-secondary');
+        await driver.clickElement(
+          '.add-network-form__footer button.btn-secondary',
+        );
 
         const networkListItems = await driver.findClickableElements(
           '.networks-tab__networks-list-name',

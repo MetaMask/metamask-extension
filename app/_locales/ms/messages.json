@@ -603,9 +603,6 @@
   "newContract": {
     "message": "Kontrak Baru"
   },
-  "newNetwork": {
-    "message": "Rangkaian Baru"
-  },
   "newPassword": {
     "message": "Kata Laluan Baru (min 8 aks)"
   },

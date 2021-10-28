@@ -1,7 +1,12 @@
 const semver = require('semver');
 const { version } = require('../../package.json');
 
-const BuildTypes = {
+/**
+ * The distribution this build is intended for.
+ *
+ * This should be kept in-sync with the `BuildType` map in `shared/constants/app.js`.
+ */
+const BuildType = {
   beta: 'beta',
   flask: 'flask',
   main: 'main',
@@ -35,7 +40,7 @@ function getBrowserVersionMap(platforms) {
     [buildType, buildVersion] = prerelease;
     if (!String(buildVersion).match(/^\d+$/u)) {
       throw new Error(`Invalid prerelease build version: '${buildVersion}'`);
-    } else if (buildType !== BuildTypes.beta) {
+    } else if (buildType !== BuildType.beta) {
       throw new Error(`Invalid prerelease build type: ${buildType}`);
     }
   }
@@ -58,6 +63,6 @@ function getBrowserVersionMap(platforms) {
 }
 
 module.exports = {
-  BuildTypes,
+  BuildType,
   getBrowserVersionMap,
 };
