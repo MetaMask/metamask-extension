@@ -1193,9 +1193,6 @@
   "newContract": {
     "message": "新しいコントラクト"
   },
-  "newNetwork": {
-    "message": "新しいネットワーク"
-  },
   "newPassword": {
     "message": "新しいパスワード (最低 8 文字)"
   },

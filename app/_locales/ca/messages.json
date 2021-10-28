@@ -607,9 +607,6 @@
   "newContract": {
     "message": "Nou Contracte"
   },
-  "newNetwork": {
-    "message": "Nova Xarxa"
-  },
   "newPassword": {
     "message": "Nova contrasenya (mínim 8 caràcters)"
   },

@@ -620,9 +620,6 @@
   "newContract": {
     "message": "Νέα Σύμβαση"
   },
-  "newNetwork": {
-    "message": "Νέο Δίκτυο"
-  },
   "newPassword": {
     "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"
   },

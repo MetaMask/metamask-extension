@@ -619,9 +619,6 @@
   "newContract": {
     "message": "Нов договор"
   },
-  "newNetwork": {
-    "message": "Нова мрежа"
-  },
   "newPassword": {
     "message": "Нова парола (мин. 8 символа)"
   },

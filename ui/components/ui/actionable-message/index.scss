@@ -85,6 +85,15 @@
     }
   }
 
+  &--info {
+    background: $Green-000;
+    border: 1px solid $Green-200;
+
+    .actionable-message__message {
+      color: $Black-100;
+    }
+  }
+
   &--left-aligned {
     .actionable-message__message,
     .actionable-message__actions {

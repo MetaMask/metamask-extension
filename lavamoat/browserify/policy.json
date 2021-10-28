@@ -626,6 +626,7 @@
       "globals": {
         "AbortController": true,
         "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__": true,
+        "__REDUX_DEVTOOLS_EXTENSION__": true,
         "console.error": true,
         "console.info": true,
         "console.warn": true
@@ -865,9 +866,11 @@
         "URLSearchParams": true,
         "XMLHttpRequest": true,
         "btoa": true,
+        "console.warn": true,
         "document": true,
         "location.href": true,
-        "navigator": true
+        "navigator": true,
+        "setTimeout": true
       },
       "packages": {
         "process": true
@@ -3796,6 +3799,18 @@
         "scheduler": true
       }
     },
+    "react-easy-swipe": {
+      "globals": {
+        "addEventListener": true,
+        "define": true,
+        "document.addEventListener": true,
+        "document.removeEventListener": true
+      },
+      "packages": {
+        "prop-types": true,
+        "react": true
+      }
+    },
     "react-fast-compare": {
       "globals": {
         "Element": true,
@@ -3860,6 +3875,22 @@
         "react-dom": true,
         "react-is": true,
         "redux": true
+      }
+    },
+    "react-responsive-carousel": {
+      "globals": {
+        "HTMLElement": true,
+        "clearTimeout": true,
+        "console.warn": true,
+        "document": true,
+        "getComputedStyle": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "classnames": true,
+        "react": true,
+        "react-dom": true,
+        "react-easy-swipe": true
       }
     },
     "react-router": {
@@ -3980,6 +4011,7 @@
         "console": true
       },
       "packages": {
+        "@babel/runtime": true,
         "symbol-observable": true
       }
     },
