@@ -1,11 +1,12 @@
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getEstimatedGasFeeTimeBounds,
   getGasEstimateType,
   getGasFeeEstimates,
   getIsGasEstimatesLoading,
-} from '../ducks/metamask/metamask';
-import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
+} from '../../ducks/metamask/metamask';
+import { SafeGasEstimatePolling } from './SafeGasEstimatePolling';
 
 /**
  * @typedef {object} GasEstimates
@@ -34,7 +35,10 @@ export function useGasFeeEstimates() {
   const gasFeeEstimates = useSelector(getGasFeeEstimates);
   const estimatedGasFeeTimeBounds = useSelector(getEstimatedGasFeeTimeBounds);
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
-  useSafeGasEstimatePolling();
+
+  useEffect(() => {
+    SafeGasEstimatePolling.startPolling();
+  }, []);
 
   return {
     gasFeeEstimates,
