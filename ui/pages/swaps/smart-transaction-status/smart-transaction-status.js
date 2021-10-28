@@ -9,21 +9,30 @@ import {
   prepareToLeaveSwaps,
   getSmartTransactionsStatus,
   getLatestSmartTransactionUuid,
+  getSelectedQuote,
+  getTopQuote,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../selectors/selectors';
-import { DEFAULT_ROUTE, ASSET_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  ASSET_ROUTE,
+  BUILD_QUOTE_ROUTE,
+} from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
+import UrlIcon from '../../../components/ui/url-icon';
 import {
   BLOCK_SIZES,
   COLORS,
   TYPOGRAPHY,
   JUSTIFY_CONTENT,
   DISPLAY,
+  FONT_WEIGHT,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import {
   fetchSmartTransactionsStatus,
@@ -32,9 +41,12 @@ import {
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
 import SwapsFooter from '../swaps-footer';
+import { calcTokenAmount } from '../../../helpers/utils/token-util';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
+import UnknownIcon from './unknown-icon';
+import ArrowIcon from './arrow-icon';
 import BackgroundAnimation from './background-animation';
 
 const SMART_TRANSACTIONS_STATUS_INTERVAL = SECOND * 10; // Poll every 10 seconds.
@@ -52,16 +64,15 @@ export default function SmartTransactionStatus() {
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
-  const fetchParams = useSelector(getFetchParams);
-  const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {
-    destinationTokenInfo: {
-      address: 'address',
-      symbol: 'ETH',
-    },
-  };
+  const fetchParams = useSelector(getFetchParams) || {};
+  const { destinationTokenInfo = {}, sourceTokenInfo = {} } =
+    fetchParams?.metaData || {};
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
+  const selectedQuote = useSelector(getSelectedQuote);
+  const topQuote = useSelector(getTopQuote);
+  const usedQuote = selectedQuote || topQuote;
   const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
   const latestSmartTransactionUuid = useSelector(getLatestSmartTransactionUuid);
   const smartTransactionStatus =
@@ -80,6 +91,14 @@ export default function SmartTransactionStatus() {
     stx_uuid: latestSmartTransactionUuid,
   };
 
+  let destinationValue = '0.16';
+  if (usedQuote?.destinationAmount) {
+    destinationValue = calcTokenAmount(
+      usedQuote?.destinationAmount,
+      destinationTokenInfo.decimals,
+    ).toPrecision(8);
+  }
+
   const stxStatusPageLoadedEvent = useNewMetricEvent({
     event: 'STX Status Page Loaded',
     sensitiveProperties,
@@ -96,6 +115,8 @@ export default function SmartTransactionStatus() {
     !smartTransactionStatus.minedTx ||
     (smartTransactionStatus.minedTx === 'not_mined' &&
       smartTransactionStatus.cancellationReason === 'not_cancelled');
+  const showCloseButtonOnly =
+    isSmartTransactionPending || smartTransactionStatus.minedTx === 'success';
 
   useEffect(() => {
     stxStatusPageLoadedEvent();
@@ -147,6 +168,10 @@ export default function SmartTransactionStatus() {
     description = t('stxCancelledDescription');
     subDescription = t('stxCancelledSubDescription');
     icon = <CanceledIcon />;
+  } else if (smartTransactionStatus.minedTx === 'unknown') {
+    headerText = t('stxUnknown');
+    description = t('stxUnknownDescription');
+    icon = <UnknownIcon />;
   } else if (
     smartTransactionStatus.cancellationReason &&
     smartTransactionStatus.cancellationReason === 'user_cancelled'
@@ -197,36 +222,92 @@ export default function SmartTransactionStatus() {
         paddingLeft={8}
         paddingRight={8}
         height={BLOCK_SIZES.FULL}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JUSTIFY_CONTENT.START}
         display={DISPLAY.FLEX}
         className="smart-transaction-status__content"
       >
-        <Box marginTop={3} marginBottom={4}>
+        <Box
+          marginTop={5}
+          marginBottom={0}
+          display={DISPLAY.FLEX}
+          justifyContent={JUSTIFY_CONTENT.CENTER}
+          alignItems={ALIGN_ITEMS.CENTER}
+        >
           <Typography color={COLORS.UI4} variant={TYPOGRAPHY.H6}>
-            {`${fetchParams?.value} ${sourceTokenInfo?.symbol}`}
-            ->
-            {`~${fetchParams?.value} ${destinationTokenInfo?.symbol}`}
+            {`${fetchParams?.value} `}
+          </Typography>
+          <Typography
+            color={COLORS.UI4}
+            variant={TYPOGRAPHY.H6}
+            fontWeight={FONT_WEIGHT.BOLD}
+            boxProps={{ marginLeft: 1, marginRight: 2 }}
+          >
+            {sourceTokenInfo?.symbol}
+          </Typography>
+          <UrlIcon
+            url={sourceTokenInfo.iconUrl}
+            className="main-quote-summary__icon"
+            name={sourceTokenInfo.symbol}
+            fallbackClassName="main-quote-summary__icon-fallback"
+          />
+          <Box display={DISPLAY.BLOCK} marginLeft={2} marginRight={2}>
+            <ArrowIcon />
+          </Box>
+          <UrlIcon
+            url={destinationTokenInfo.iconUrl}
+            className="main-quote-summary__icon"
+            name={destinationTokenInfo.symbol}
+            fallbackClassName="main-quote-summary__icon-fallback"
+          />
+          <Typography
+            color={COLORS.UI4}
+            variant={TYPOGRAPHY.H6}
+            boxProps={{ marginLeft: 2 }}
+          >
+            {`~${destinationValue} `}
+          </Typography>
+          <Typography
+            color={COLORS.UI4}
+            variant={TYPOGRAPHY.H6}
+            fontWeight={FONT_WEIGHT.BOLD}
+            boxProps={{ marginLeft: 1 }}
+          >
+            {destinationTokenInfo?.symbol}
           </Typography>
         </Box>
-        <BackgroundAnimation position="top" />
-        <Box marginTop={3} marginBottom={4}>
+        <Box
+          marginTop={3}
+          className="smart-transaction-status__background-animation"
+        >
+          <BackgroundAnimation position="top" />
+        </Box>
+        <Box marginTop={3} marginBottom={2}>
           {icon}
         </Box>
-        <Typography color={COLORS.BLACK} variant={TYPOGRAPHY.H3}>
+        <Typography
+          color={COLORS.BLACK}
+          variant={TYPOGRAPHY.H4}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {headerText}
         </Typography>
         <Typography
-          variant={TYPOGRAPHY.Paragraph}
-          boxProps={{ marginTop: 2 }}
+          variant={TYPOGRAPHY.H6}
+          boxProps={{ marginTop: 0 }}
           color={COLORS.UI4}
         >
           {description}
         </Typography>
-        <BackgroundAnimation position="bottom" />
+        <Box
+          marginTop={3}
+          className="smart-transaction-status__background-animation"
+        >
+          <BackgroundAnimation position="bottom" />
+        </Box>
         {subDescription && (
           <Typography
-            variant={TYPOGRAPHY.H8}
-            boxProps={{ marginTop: 2 }}
+            variant={TYPOGRAPHY.H7}
+            boxProps={{ marginTop: 8 }}
             color={COLORS.UI4}
           >
             {subDescription}
@@ -238,11 +319,21 @@ export default function SmartTransactionStatus() {
         isSmartTransactionPending && <CancelSwap />}
       <SwapsFooter
         onSubmit={async () => {
+          if (showCloseButtonOnly) {
+            await dispatch(prepareToLeaveSwaps());
+            history.push(DEFAULT_ROUTE);
+          } else {
+            history.push(BUILD_QUOTE_ROUTE);
+          }
+        }}
+        onCancel={async () => {
           await dispatch(prepareToLeaveSwaps());
           history.push(DEFAULT_ROUTE);
         }}
-        submitText={isSmartTransactionPending ? t('cancel') : t('close')}
-        hideCancel
+        submitText={showCloseButtonOnly ? t('close') : t('tryAgain')}
+        hideCancel={showCloseButtonOnly}
+        cancelText={t('close')}
+        className="smart-transaction-status__swaps-footer"
       />
     </div>
   );

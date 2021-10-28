@@ -5,14 +5,20 @@
   flex: 1;
   width: 100%;
 
-  &__content {
-    flex-flow: column;
-  }
-
   div {
     text-align: center;
-    display: flex;
-    justify-content: center;
+  }
+
+  &__content {
+    flex-flow: column;
+    width: 100%;
+  }
+
+  &__background-animation {
+    // TODO: Run it in a loop.
+    display: block;
+    position: relative;
+    left: -160px;
   }
 
   a {
@@ -23,5 +29,12 @@
     color: $Blue-500;
     margin-top: 24px;
     cursor: pointer;
+  }
+
+  &__swaps-footer {
+    .btn-secondary {
+      color: $ui-4;
+      border: 1px solid $ui-4;
+    }
   }
 }

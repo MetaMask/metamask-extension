@@ -2356,6 +2356,12 @@
     "message": "Your $1 is now available.",
     "description": "$1 is a token symbol, e.g. ETH"
   },
+  "stxUnknown": {
+    "message": "Status unknown"
+  },
+  "stxUnknownDescription": {
+    "message": "A transaction has been successful but we’re unsure what it is. This may be due to submitting another transaction while this swap was processing."
+  },
   "stxUserCancelled": {
     "message": "Swap canceled"
   },
