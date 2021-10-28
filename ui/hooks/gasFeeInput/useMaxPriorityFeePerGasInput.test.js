@@ -1,7 +1,10 @@
 import { useSelector } from 'react-redux';
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import { GAS_RECOMMENDATIONS } from '../../../shared/constants/gas';
+import {
+  GAS_RECOMMENDATIONS,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../shared/constants/gas';
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,
@@ -31,7 +34,7 @@ const renderUseMaxPriorityFeePerGasInputHook = (props) => {
       gasLimit: '21000',
       estimateToUse: GAS_RECOMMENDATIONS.MEDIUM,
       transaction: {
-        userFeeLevel: 'custom',
+        userFeeLevel: CUSTOM_GAS_ESTIMATE,
         txParams: { maxPriorityFeePerGas: '0x5028' },
       },
       ...FEE_MARKET_ESTIMATE_RETURN_VALUE,
@@ -57,7 +60,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
   it('returns maxFeePerGas values from transaction if transaction.userFeeLevel is custom and maxPriorityFeePerGas is not provided', () => {
     const { result } = renderUseMaxPriorityFeePerGasInputHook({
       transaction: {
-        userFeeLevel: 'custom',
+        userFeeLevel: CUSTOM_GAS_ESTIMATE,
         txParams: { maxFeePerGas: '0x5028' },
       },
     });

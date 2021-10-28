@@ -1,7 +1,10 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
-import { GAS_RECOMMENDATIONS } from '../../../shared/constants/gas';
+import {
+  GAS_RECOMMENDATIONS,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../shared/constants/gas';
 
 import { ETH, PRIMARY } from '../../helpers/constants/common';
 
@@ -282,7 +285,7 @@ describe('useGasFeeInputs', () => {
         result.current.setMaxFeePerGas('100');
         result.current.setMaxPriorityFeePerGas('10');
       });
-      expect(result.current.estimateToUse).toBe('custom');
+      expect(result.current.estimateToUse).toBe(CUSTOM_GAS_ESTIMATE);
       expect(result.current.maxFeePerGas).toBe('100');
       expect(result.current.maxPriorityFeePerGas).toBe('10');
     });

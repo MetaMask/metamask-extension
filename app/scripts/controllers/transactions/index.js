@@ -31,6 +31,7 @@ import {
   GAS_LIMITS,
   GAS_ESTIMATE_TYPES,
   GAS_RECOMMENDATIONS,
+  CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import {
@@ -436,7 +437,7 @@ export default class TransactionController extends EventEmitter {
       ) {
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
-        txMeta.userFeeLevel = 'custom';
+        txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
       } else {
         if (
           (defaultMaxFeePerGas &&
@@ -447,7 +448,7 @@ export default class TransactionController extends EventEmitter {
         ) {
           txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
         } else {
-          txMeta.userFeeLevel = 'custom';
+          txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         }
 
         if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {

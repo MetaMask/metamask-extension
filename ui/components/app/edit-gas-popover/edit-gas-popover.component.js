@@ -8,6 +8,7 @@ import {
   EDIT_GAS_MODES,
   GAS_LIMITS,
   GAS_RECOMMENDATIONS,
+  CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
 
 import {
@@ -74,7 +75,7 @@ export default function EditGasPopover({
   if (mode === EDIT_GAS_MODES.SPEED_UP || mode === EDIT_GAS_MODES.CANCEL) {
     updatedTransaction = {
       ...transaction,
-      userFeeLevel: 'custom',
+      userFeeLevel: CUSTOM_GAS_ESTIMATE,
       txParams: {
         ...transaction.txParams,
         ...updatedCustomGasSettings,
@@ -116,7 +117,8 @@ export default function EditGasPopover({
   );
 
   const txParamsHaveBeenCustomized =
-    estimateToUse === 'custom' || txParamsAreDappSuggested(updatedTransaction);
+    estimateToUse === CUSTOM_GAS_ESTIMATE ||
+    txParamsAreDappSuggested(updatedTransaction);
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
@@ -161,7 +163,7 @@ export default function EditGasPopover({
 
     const updatedTxMeta = {
       ...updatedTransaction,
-      userFeeLevel: estimateToUse || 'custom',
+      userFeeLevel: estimateToUse || CUSTOM_GAS_ESTIMATE,
       txParams: {
         ...cleanTransactionParams,
         ...newGasSettings,
@@ -189,7 +191,9 @@ export default function EditGasPopover({
       case EDIT_GAS_MODES.SWAPS:
         // This popover component should only be used for the "FEE_MARKET" type in Swaps.
         if (supportsEIP1559) {
-          dispatch(updateSwapsUserFeeLevel(estimateToUse || 'custom'));
+          dispatch(
+            updateSwapsUserFeeLevel(estimateToUse || CUSTOM_GAS_ESTIMATE),
+          );
           dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
         }
         break;

@@ -1,6 +1,9 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 
-import { GAS_RECOMMENDATIONS } from '../../../shared/constants/gas';
+import {
+  GAS_RECOMMENDATIONS,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../shared/constants/gas';
 import {
   FEE_MARKET_ESTIMATE_RETURN_VALUE,
   LEGACY_GAS_ESTIMATE_RETURN_VALUE,
@@ -31,7 +34,7 @@ describe('useGasPriceInput', () => {
     const { result } = renderHook(() =>
       useGasPriceInput({
         transaction: {
-          userFeeLevel: 'custom',
+          userFeeLevel: CUSTOM_GAS_ESTIMATE,
           txParams: { gasPrice: '0x5028' },
         },
       }),
