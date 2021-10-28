@@ -5,7 +5,7 @@ import { ETH } from '../../../helpers/constants/common';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 
-import GasDetailsItem from './gas-details-item.component';
+import GasDetailsItem from './gas-details-item';
 
 const render = (props) => {
   const store = configureStore({
