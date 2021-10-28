@@ -124,7 +124,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
           switch (path) {
             case STATUS_PATH: {
               const gasFee =
-                cachedGasLimit === HEX_ZERO_VALUE && cachedGasPrice === HEX_ZERO_VALUE
+                cachedGasLimit === HEX_ZERO_VALUE &&
+                cachedGasPrice === HEX_ZERO_VALUE
                   ? getHexGasTotal({
                       gasLimit: paramsGasLimit,
                       gasPrice: paramsEip1559Price || paramsGasPrice,

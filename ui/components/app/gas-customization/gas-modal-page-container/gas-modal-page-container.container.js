@@ -180,7 +180,10 @@ const mapStateToProps = (state, ownProps) => {
       originalTotalEth: sumHexWEIsToRenderableEth([value, customGasTotal]),
       newTotalFiat: showFiat ? newTotalFiat : '',
       newTotalEth,
-      transactionFee: sumHexWEIsToRenderableEth([HEX_ZERO_VALUE, customGasTotal]),
+      transactionFee: sumHexWEIsToRenderableEth([
+        HEX_ZERO_VALUE,
+        customGasTotal,
+      ]),
       sendAmount,
     },
     transaction: txData || transaction,

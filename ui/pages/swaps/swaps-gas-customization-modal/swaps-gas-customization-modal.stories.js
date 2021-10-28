@@ -70,7 +70,9 @@ export const GasModalPageContainerComponent = () => {
   useEffect(() => {
     // Transfer Fee
     const customGasTotal = calcGasTotal(gasLimit, gasPrice);
-    setTransactionFee(sumHexWEIsToRenderableEth([HEX_ZERO_VALUE, customGasTotal]));
+    setTransactionFee(
+      sumHexWEIsToRenderableEth([HEX_ZERO_VALUE, customGasTotal]),
+    );
 
     // New Total ETH
     setTotalETH(sumHexWEIsToRenderableEth([hexWei, customGasTotal, '']));

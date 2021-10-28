@@ -949,7 +949,8 @@ const slice = createSlice({
 
           if (
             !state.draftTransaction.txParams.maxPriorityFeePerGas ||
-            state.draftTransaction.txParams.maxPriorityFeePerGas === HEX_ZERO_VALUE
+            state.draftTransaction.txParams.maxPriorityFeePerGas ===
+              HEX_ZERO_VALUE
           ) {
             state.draftTransaction.txParams.maxPriorityFeePerGas =
               state.draftTransaction.txParams.maxFeePerGas;

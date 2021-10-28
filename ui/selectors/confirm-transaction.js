@@ -276,7 +276,8 @@ export const transactionFeeSelector = function (state, txData) {
   } else {
     switch (gasEstimateType) {
       case GAS_ESTIMATE_TYPES.NONE:
-        gasEstimationObject.gasPrice = txData.txParams?.gasPrice ?? HEX_ZERO_VALUE;
+        gasEstimationObject.gasPrice =
+          txData.txParams?.gasPrice ?? HEX_ZERO_VALUE;
         break;
       case GAS_ESTIMATE_TYPES.ETH_GASPRICE:
         gasEstimationObject.gasPrice =

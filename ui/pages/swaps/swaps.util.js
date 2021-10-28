@@ -510,7 +510,10 @@ export function getRenderableNetworkFeesForQuote({
   chainId,
   nativeCurrencySymbol,
 }) {
-  const totalGasLimitForCalculation = new BigNumber(tradeGas || HEX_ZERO_VALUE, 16)
+  const totalGasLimitForCalculation = new BigNumber(
+    tradeGas || HEX_ZERO_VALUE,
+    16,
+  )
     .plus(approveGas || HEX_ZERO_VALUE, 16)
     .toString(16);
   const gasTotalInWeiHex = calcGasTotal(totalGasLimitForCalculation, gasPrice);

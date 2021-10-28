@@ -319,7 +319,9 @@ export default function ViewQuote() {
     (tokensWithBalances?.length || balanceError) &&
     tokenCost.gt(new BigNumber(selectedFromToken.balance || HEX_ZERO_VALUE));
 
-  const insufficientEth = ethCost.gt(new BigNumber(ethBalance || HEX_ZERO_VALUE));
+  const insufficientEth = ethCost.gt(
+    new BigNumber(ethBalance || HEX_ZERO_VALUE),
+  );
 
   const tokenBalanceNeeded = insufficientTokens
     ? toPrecisionWithoutTrailingZeros(

@@ -27,9 +27,12 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-const mockGetCurrentEthBalance = (state) => state.metamask.balance || HEX_ZERO_VALUE;
-const mockGetCustomGasPrice = (state) => state.gas.customData.price || HEX_ZERO_VALUE;
-const mockGetCustomGasLimit = (state) => state.gas.customData.limit || HEX_ZERO_VALUE;
+const mockGetCurrentEthBalance = (state) =>
+  state.metamask.balance || HEX_ZERO_VALUE;
+const mockGetCustomGasPrice = (state) =>
+  state.gas.customData.price || HEX_ZERO_VALUE;
+const mockGetCustomGasLimit = (state) =>
+  state.gas.customData.limit || HEX_ZERO_VALUE;
 
 jest.mock('../../../../selectors', () => ({
   getBasicGasEstimateLoadingStatus: (s) =>
