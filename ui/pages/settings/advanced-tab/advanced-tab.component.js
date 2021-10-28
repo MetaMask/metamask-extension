@@ -459,7 +459,7 @@ export default class AdvancedTab extends PureComponent {
               options={transportTypeOptions}
               selectedOption={ledgerTransportType}
               onChange={async (transportType) => {
-                setLedgerLivePreference(transportType);
+                await setLedgerLivePreference(transportType);
                 if (
                   transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
                   userHasALedgerAccount
