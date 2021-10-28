@@ -44,7 +44,7 @@ export default class SendHexDataRow extends Component {
           onInput={this.onInput}
           placeholder={t('optional')}
           className="send-v2__hex-data__input"
-          value={
+          defaultValue={
             location && location.hexData && this.state.hexData === ''
               ? location.hexData
               : this.state.hexData
