@@ -8,7 +8,7 @@ const I18nValue = ({ messageKey, options }) => {
 };
 
 I18nValue.propTypes = {
-  messageKey: PropTypes.string,
+  messageKey: PropTypes.string.isRequired,
   options: PropTypes.array,
 };
 
