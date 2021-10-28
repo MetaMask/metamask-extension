@@ -84,7 +84,7 @@ export function getCurrentChainId(state) {
 
 export function getCurrentQRHardwareState(state) {
   const { qrHardware } = state.metamask;
-  return qrHardware;
+  return qrHardware || {};
 }
 
 export function getCurrentKeyring(state) {
