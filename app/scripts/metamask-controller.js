@@ -38,7 +38,7 @@ import {
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
-import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
+import { DEVICE_NAMES, KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
@@ -1589,16 +1589,16 @@ export default class MetamaskController extends EventEmitter {
   async getKeyringForDevice(deviceName, hdPath = null) {
     let keyringName = null;
     switch (deviceName) {
-      case 'trezor':
+      case DEVICE_NAMES.TREZOR:
         keyringName = TrezorKeyring.type;
         break;
-      case 'ledger':
+      case DEVICE_NAMES.LEDGER:
         keyringName = LedgerBridgeKeyring.type;
         break;
-      case 'QR Hardware':
+      case DEVICE_NAMES.QR:
         keyringName = QRHardwareKeyring.type;
         break;
-      case 'lattice':
+      case DEVICE_NAMES.LATTICE:
         keyringName = LatticeKeyring.type;
         break;
       default:
@@ -1615,7 +1615,7 @@ export default class MetamaskController extends EventEmitter {
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath);
     }
-    if (deviceName === 'lattice') {
+    if (deviceName === DEVICE_NAMES.LATTICE) {
       keyring.appName = 'MetaMask';
     }
     keyring.network = this.networkController.getProviderConfig().type;
@@ -1705,9 +1705,18 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(newAccounts);
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
-        const label = `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
-          parseInt(index, 10) + 1
-        } ${hdPathDescription || ''}`.trim();
+        let label;
+        if(deviceName === DEVICE_NAMES.QR) {
+          const keyringName = keyring.getName();
+          label = `${keyringName[0].toUpperCase()}${keyringName.slice(1)} ${
+            parseInt(index, 10) + 1
+          } ${hdPathDescription || ''}`.trim();
+        }
+        else {
+          label = `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
+            parseInt(index, 10) + 1
+          } ${hdPathDescription || ''}`.trim();
+        }
         // Set the account label to Trezor 1 /  Ledger 1, etc
         this.preferencesController.setAccountLabel(address, label);
         // Select the account

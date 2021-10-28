@@ -3956,21 +3956,21 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@keystonehq/base-eth-keyring@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@keystonehq/base-eth-keyring/-/base-eth-keyring-0.0.9.tgz#67c2e37ac1669c3bcc65b2709eb6106d2f517fa0"
-  integrity sha512-gx2XLTVbX5ORLuEhTwQHRzEl7XEqvowE9zraZqb08styEr4YQGai6HMjLZbGl7YiixVo2y8m/4NOdPXeg20rDQ==
+"@keystonehq/base-eth-keyring@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@keystonehq/base-eth-keyring/-/base-eth-keyring-0.2.0.tgz#23526d527acad787ae152477434415752f3057ee"
+  integrity sha512-A8S0qJZQIvG+j2wW3IvGyU4quEsGS4Ne/x7xD/rQXMP6EQUaMLFTtF/KBlOoAfVk1Y4xg4TAjmzEUiURXHDTfg==
   dependencies:
     "@ethereumjs/tx" "3.0.0"
-    "@keystonehq/bc-ur-registry-eth" "^0.6.13"
+    "@keystonehq/bc-ur-registry-eth" "^0.7.0"
     ethereumjs-util "^7.0.8"
     hdkey "^2.0.1"
     uuid "^8.3.2"
 
-"@keystonehq/bc-ur-registry-eth@^0.6.13":
-  version "0.6.13"
-  resolved "https://registry.yarnpkg.com/@keystonehq/bc-ur-registry-eth/-/bc-ur-registry-eth-0.6.13.tgz#c1680930b1d3fed14857336bd4fb47a484dfac32"
-  integrity sha512-sQQMMiKlacxMOIGeH8l/m/j3sL2VaM7Zid/xvf6cogZ5EZ5pa8Jow8cgY/t7krTOOBp81/GglCbwCGC8RIOLqA==
+"@keystonehq/bc-ur-registry-eth@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@keystonehq/bc-ur-registry-eth/-/bc-ur-registry-eth-0.7.0.tgz#1d2f97192e358ca022fc11e9ea69f001b1114e98"
+  integrity sha512-J5Qf8EMksK8MfVjwFp0FF0NOvqvXtDMYiEynQKZYu0lGAlDwt2hMQVCjOd9vqQ3sz9HgwAbTL5A8J+YMel8eeg==
   dependencies:
     "@keystonehq/bc-ur-registry" "^0.4.4"
     ethereumjs-util "^7.0.8"
@@ -3986,14 +3986,14 @@
     base58check "^2.0.0"
     tslib "^2.3.0"
 
-"@keystonehq/metamask-airgapped-keyring@0.0.9-alpha.0":
-  version "0.0.9-alpha.0"
-  resolved "https://registry.yarnpkg.com/@keystonehq/metamask-airgapped-keyring/-/metamask-airgapped-keyring-0.0.9-alpha.0.tgz#cd57fba94eb9100ac802a73bcc60ffb6c2b91cd9"
-  integrity sha512-m8LYJ2u8JlX7A95O20PhMdtk+uPT26/blZ2WaMzhkTNlkzyqPeXyNdXVpL9tU32Hbdc1axDASxKo7xo6k6jXhw==
+"@keystonehq/metamask-airgapped-keyring@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@keystonehq/metamask-airgapped-keyring/-/metamask-airgapped-keyring-0.1.0.tgz#60f29cfe63ba1ddc3364cc4ccfdbd8a9e1829fcf"
+  integrity sha512-S5K5A1ltBlxg19nkIG9+QecTZ/LeLXlE8vk3iGeD6b+HEYk9pEOOTu+reXZVGch887ae1X3F+jXYGtN3nvmlSw==
   dependencies:
     "@ethereumjs/tx" "^3.3.0"
-    "@keystonehq/base-eth-keyring" "^0.0.9"
-    "@keystonehq/bc-ur-registry-eth" "^0.6.13"
+    "@keystonehq/base-eth-keyring" "^0.2.0"
+    "@keystonehq/bc-ur-registry-eth" "^0.7.0"
     "@metamask/obs-store" "^7.0.0"
     rlp "^2.2.6"
     uuid "^8.3.2"

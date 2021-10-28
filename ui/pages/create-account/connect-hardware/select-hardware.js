@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Button from '../../../components/ui/button';
-import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
+import { DEVICE_NAMES, LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
@@ -31,9 +31,9 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === 'trezor',
+          selected: this.state.selectedDevice === DEVICE_NAMES.TREZOR,
         })}
-        onClick={(_) => this.setState({ selectedDevice: 'trezor' })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.TREZOR })}
       >
         <img
           className="hw-connect__btn__img"
@@ -48,9 +48,9 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === 'lattice',
+          selected: this.state.selectedDevice === DEVICE_NAMES.LATTICE,
         })}
-        onClick={(_) => this.setState({ selectedDevice: 'lattice' })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.LATTICE })}
       >
         <img
           className="hw-connect__btn__img"
@@ -65,9 +65,9 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === 'ledger',
+          selected: this.state.selectedDevice === DEVICE_NAMES.LEDGER,
         })}
-        onClick={(_) => this.setState({ selectedDevice: 'ledger' })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.LEDGER })}
       >
         <img
           className="hw-connect__btn__img"
@@ -82,9 +82,9 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn-large', {
-          selected: this.state.selectedDevice === 'QR Hardware',
+          selected: this.state.selectedDevice === DEVICE_NAMES.QR,
         })}
-        onClick={(_) => this.setState({ selectedDevice: 'QR Hardware' })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.QR })}
       >
         <img
           className="hw-connect__btn-large__img"
@@ -172,13 +172,13 @@ export default class SelectHardware extends Component {
 
   renderTutorialsteps() {
     switch (this.state.selectedDevice) {
-      case 'ledger':
+      case DEVICE_NAMES.LEDGER:
         return this.renderLedgerTutorialSteps();
-      case 'trezor':
+      case DEVICE_NAMES.TREZOR:
         return this.renderTrezorTutorialSteps();
-      case 'lattice':
+      case DEVICE_NAMES.LATTICE:
         return this.renderLatticeTutorialSteps();
-      case 'QR Hardware':
+      case DEVICE_NAMES.QR:
         return this.renderQRHardwareWalletSteps();
       default:
         return '';

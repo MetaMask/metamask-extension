@@ -10,6 +10,13 @@ export const KEYRING_TYPES = {
   QR: 'QR Hardware Wallet Device'
 };
 
+export const DEVICE_NAMES = {
+  LEDGER: 'ledger',
+  TREZOR: 'trezor',
+  QR: 'QR Hardware',
+  LATTICE: 'lattice'
+}
+
 /**
  * Used for setting the users preference for ledger transport type
  */
