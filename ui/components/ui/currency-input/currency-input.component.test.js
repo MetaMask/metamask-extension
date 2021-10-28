@@ -11,13 +11,17 @@ import CurrencyInput from './currency-input.component';
 describe('CurrencyInput Component', () => {
   describe('rendering', () => {
     it('should render properly without a suffix', () => {
-      const wrapper = shallow(<CurrencyInput />);
+      const passDataToUser = jest.fn();
+      const wrapper = shallow(
+        <CurrencyInput passDataToUserPreference={passDataToUser} />,
+      );
 
       expect(wrapper).toHaveLength(1);
       expect(wrapper.find(UnitInput)).toHaveLength(1);
     });
 
     it('should render properly with a suffix', () => {
+      const passDataToUser = jest.fn();
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -33,6 +37,7 @@ describe('CurrencyInput Component', () => {
             nativeSuffix="ETH"
             fiatSuffix="USD"
             nativeCurrency="ETH"
+            passDataToUserPreference={passDataToUser}
           />
         </Provider>,
       );
@@ -44,6 +49,7 @@ describe('CurrencyInput Component', () => {
     });
 
     it('should render properly with an ETH value', () => {
+      const passDataToUser = jest.fn();
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -62,6 +68,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
+            passDataToUserPreference={passDataToUser}
           />
         </Provider>,
       );
@@ -84,6 +91,7 @@ describe('CurrencyInput Component', () => {
     });
 
     it('should render properly with a fiat value', () => {
+      const passDataToUser = jest.fn();
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -103,6 +111,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
+            passDataToUserPreference={passDataToUser}
           />
         </Provider>,
       );
@@ -125,6 +134,7 @@ describe('CurrencyInput Component', () => {
     });
 
     it('should render properly with a native value when hideFiat is true', () => {
+      const passDataToUser = jest.fn();
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -146,6 +156,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
+            passDataToUserPreference={passDataToUser}
           />
         </Provider>,
         {
@@ -184,6 +195,7 @@ describe('CurrencyInput Component', () => {
     });
 
     it('should call onChange on input changes with the hex value for ETH', () => {
+      const passDataToUser = jest.fn();
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -200,6 +212,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
+            passDataToUserPreference={passDataToUser}
           />
         </Provider>,
       );
@@ -233,6 +246,7 @@ describe('CurrencyInput Component', () => {
     });
 
     it('should call onChange on input changes with the hex value for fiat', () => {
+      const passDataToUser = jest.fn();
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -250,6 +264,7 @@ describe('CurrencyInput Component', () => {
             currentCurrency="usd"
             conversionRate={231.06}
             useFiat
+            passDataToUserPreference={passDataToUser}
           />
         </Provider>,
       );
@@ -283,6 +298,7 @@ describe('CurrencyInput Component', () => {
     });
 
     it('should change the state and pass in a new decimalValue when props.value changes', () => {
+      const passDataToUser = jest.fn();
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -300,6 +316,7 @@ describe('CurrencyInput Component', () => {
             currentCurrency="usd"
             conversionRate={231.06}
             useFiat
+            passDataToUserPreference={passDataToUser}
           />
         </Provider>,
       );
@@ -324,6 +341,7 @@ describe('CurrencyInput Component', () => {
     });
 
     it('should swap selected currency when swap icon is clicked', () => {
+      const passDataToUser = jest.fn();
       const mockStore = {
         metamask: {
           nativeCurrency: 'ETH',
@@ -341,6 +359,7 @@ describe('CurrencyInput Component', () => {
             nativeCurrency="ETH"
             currentCurrency="usd"
             conversionRate={231.06}
+            passDataToUserPreference={passDataToUser}
           />
         </Provider>,
       );

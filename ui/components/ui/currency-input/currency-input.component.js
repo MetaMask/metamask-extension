@@ -28,7 +28,7 @@ export default class CurrencyInput extends PureComponent {
     value: PropTypes.string,
     fiatSuffix: PropTypes.string,
     nativeSuffix: PropTypes.string,
-    passDataToUserPeference: PropTypes.func,
+    passDataToUserPreference: PropTypes.func,
     location: PropTypes.object,
   };
 
@@ -169,7 +169,7 @@ export default class CurrencyInput extends PureComponent {
     const { fiatSuffix, nativeSuffix, ...restProps } = this.props;
     const { decimalValue } = this.state;
 
-    this.props.passDataToUserPeference(this.state);
+    this.props.passDataToUserPreference(this.state);
 
     return (
       <UnitInput

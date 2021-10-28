@@ -77,6 +77,7 @@ describe('SendAmountRow Component', () => {
 
 function shallowRenderSendAmountRow() {
   const updateSendAmount = sinon.spy();
+  const passDataToSend = jest.fn();
   const wrapper = shallow(
     <SendAmountRow
       amount="mockAmount"
@@ -87,6 +88,7 @@ function shallowRenderSendAmountRow() {
         details: { address: 'mockTokenAddress' },
       }}
       updateSendAmount={updateSendAmount}
+      passDataToSendContent={passDataToSend}
     />,
     { context: { t: (str) => `${str}_t` } },
   );

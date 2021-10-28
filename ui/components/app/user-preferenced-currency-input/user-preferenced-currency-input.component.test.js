@@ -6,15 +6,22 @@ import UserPreferencedCurrencyInput from './user-preferenced-currency-input.comp
 describe('UserPreferencedCurrencyInput Component', () => {
   describe('rendering', () => {
     it('should render properly', () => {
-      const wrapper = shallow(<UserPreferencedCurrencyInput />);
+      const passDataToSend = jest.fn();
+      const wrapper = shallow(
+        <UserPreferencedCurrencyInput passDataToSendAmount={passDataToSend} />,
+      );
 
       expect(wrapper).toHaveLength(1);
       expect(wrapper.find(CurrencyInput)).toHaveLength(1);
     });
 
     it('should render useFiat for CurrencyInput based on preferences.useNativeCurrencyAsPrimaryCurrency', () => {
+      const passDataToSend = jest.fn();
       const wrapper = shallow(
-        <UserPreferencedCurrencyInput useNativeCurrencyAsPrimaryCurrency />,
+        <UserPreferencedCurrencyInput
+          useNativeCurrencyAsPrimaryCurrency
+          passDataToSendAmount={passDataToSend}
+        />,
       );
 
       expect(wrapper).toHaveLength(1);

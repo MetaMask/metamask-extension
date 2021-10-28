@@ -123,11 +123,13 @@ describe('SendFooter Component', () => {
     });
 
     it('should call history.push', async () => {
+      const currencyPreferenceData = undefined;
       await wrapper.instance().onSubmit(MOCK_EVENT);
       expect(historySpies.push.callCount).toStrictEqual(1);
-      expect(historySpies.push.getCall(0).args[0]).toStrictEqual(
-        CONFIRM_TRANSACTION_ROUTE,
-      );
+      expect(historySpies.push.getCall(0).args[0]).toStrictEqual({
+        pathname: CONFIRM_TRANSACTION_ROUTE,
+        state: { currencyPreferenceData },
+      });
     });
   });
 

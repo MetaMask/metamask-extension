@@ -30,7 +30,7 @@ export default class UserPreferencedCurrencyInput extends PureComponent {
       <CurrencyInput
         {...restProps}
         useFiat={!useNativeCurrencyAsPrimaryCurrency}
-        passDataToUserPeference={this.getDataFromCurrency}
+        passDataToUserPreference={this.getDataFromCurrency}
         location={location}
       />
     );

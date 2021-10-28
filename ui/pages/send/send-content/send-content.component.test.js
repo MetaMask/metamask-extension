@@ -17,10 +17,15 @@ describe('SendContent Component', () => {
     networkAndAccountSupports1559: true,
   };
 
+  const passDataToSend = jest.fn();
+
   beforeEach(() => {
-    wrapper = shallow(<SendContent {...defaultProps} />, {
-      context: { t: (str) => `${str}_t` },
-    });
+    wrapper = shallow(
+      <SendContent passDataToSendPage={passDataToSend} {...defaultProps} />,
+      {
+        context: { t: (str) => `${str}_t` },
+      },
+    );
   });
 
   describe('render', () => {
