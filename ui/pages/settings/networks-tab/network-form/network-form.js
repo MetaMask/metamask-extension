@@ -10,8 +10,8 @@ import {
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import ActionableMessage from '../../../../components/ui/actionable-message';
-import TextField from '../../../../components/ui/text-field';
-import Tooltip from '../../../../components/ui/tooltip';
+// import TextField from '../../../../components/ui/text-field';
+// import Tooltip from '../../../../components/ui/tooltip';
 import Button from '../../../../components/ui/button';
 import FormField from '../../../../components/ui/form-field';
 
@@ -22,6 +22,38 @@ import FormField from '../../../../components/ui/form-field';
 //   'ticker',
 //   'blockExplorerUrl',
 // ];
+
+/**
+ * Attempts to convert the given chainId to a decimal string, for display
+ * purposes.
+ *
+ * Should be called with the props chainId whenever it is used to set the
+ * component's state.
+ *
+ * @param {unknown} chainId - The chainId to convert.
+ * @returns {string} The props chainId in decimal, or the original value if
+ * it can't be converted.
+ */
+const getDisplayChainId = (chainId) => {
+  if (!chainId || typeof chainId !== 'string' || !chainId.startsWith('0x')) {
+    return chainId;
+  }
+  return parseInt(chainId, 16).toString(10);
+};
+
+/**
+ * Prefixes a given id with '0x' if the prefix does not exist
+ *
+ * @param {string} chainId - The chainId to prefix
+ * @returns {string} The chainId, prefixed with '0x'
+ */
+const prefixChainId = (chainId) => {
+  let prefixedChainId = chainId;
+  if (!chainId.startsWith('0x')) {
+    prefixedChainId = `0x${parseInt(chainId, 10).toString(16)}`;
+  }
+  return prefixedChainId;
+};
 
 const NetworkForm = ({
   editRpc,
@@ -49,46 +81,18 @@ const NetworkForm = ({
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  /**
-   * Attempts to convert the given chainId to a decimal string, for display
-   * purposes.
-   *
-   * Should be called with the props chainId whenever it is used to set the
-   * component's state.
-   *
-   * @param {unknown} chainId - The chainId to convert.
-   * @returns {string} The props chainId in decimal, or the original value if
-   * it can't be converted.
-   */
-  const getDisplayChainId = (chainId) => {
-    if (!chainId || typeof chainId !== 'string' || !chainId.startsWith('0x')) {
-      return chainId;
-    }
-    return parseInt(chainId, 16).toString(10);
-  };
-
   const resetForm = (selectedNetwork) => {
-    setNetworkName(selectedNetwork?.label || (selectedNetwork?.labelKey && t(selectedNetwork?.labelKey)) || '');
+    setNetworkName(
+      selectedNetwork?.label ||
+        (selectedNetwork?.labelKey && t(selectedNetwork?.labelKey)) ||
+        '',
+    );
     setRpcUrl(selectedNetwork.rpcUrl);
     setChainId(getDisplayChainId(selectedNetwork.chainId));
     setTicker(selectedNetwork?.ticker);
     setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
     setErrors({});
     setIsSubmitting(false);
-  };
-
-  /**
-   * Prefixes a given id with '0x' if the prefix does not exist
-   *
-   * @param {string} chainId - The chainId to prefix
-   * @returns {string} The chainId, prefixed with '0x'
-   */
-  const prefixChainId = (chainId) => {
-    let prefixedChainId = chainId;
-    if (!chainId.startsWith('0x')) {
-      prefixedChainId = `0x${parseInt(chainId, 10).toString(16)}`;
-    }
-    return prefixedChainId;
   };
 
   const onSubmit = useCallback(async () => {
@@ -208,50 +212,50 @@ const NetworkForm = ({
     setIsSubmitting,
   ]);
 
-  const renderFormTextField = ({
-    className,
-    fieldKey,
-    textFieldId,
-    onChange,
-    value,
-    optionalTextFieldKey,
-    tooltipText,
-    autoFocus = false,
-  }) => {
-    // const { errors } = this.state;
-    // const { viewOnly } = this.props;
-    const errorMessage = errors[fieldKey]?.msg || '';
+  // const renderFormTextField = ({
+  //   className,
+  //   fieldKey,
+  //   textFieldId,
+  //   onChange,
+  //   value,
+  //   optionalTextFieldKey,
+  //   tooltipText,
+  //   autoFocus = false,
+  // }) => {
+  //   // const { errors } = this.state;
+  //   // const { viewOnly } = this.props;
+  //   const errorMessage = errors[fieldKey]?.msg || '';
 
-    return (
-      <div className={className}>
-        <div className="networks-tab__network-form-label">
-          <div className="networks-tab__network-form-label-text">
-            {t(optionalTextFieldKey || fieldKey)}
-          </div>
-          {!viewOnly && tooltipText ? (
-            <Tooltip
-              position="top"
-              title={tooltipText}
-              wrapperClassName="networks-tab__network-form-label-tooltip"
-            >
-              <i className="fa fa-info-circle" />
-            </Tooltip>
-          ) : null}
-        </div>
-        <TextField
-          type="text"
-          id={textFieldId}
-          onChange={onChange}
-          fullWidth
-          margin="dense"
-          value={value}
-          disabled={viewOnly}
-          error={errorMessage}
-          autoFocus={autoFocus}
-        />
-      </div>
-    );
-  };
+  //   return (
+  //     <div className={className}>
+  //       <div className="networks-tab__network-form-label">
+  //         <div className="networks-tab__network-form-label-text">
+  //           {t(optionalTextFieldKey || fieldKey)}
+  //         </div>
+  //         {!viewOnly && tooltipText ? (
+  //           <Tooltip
+  //             position="top"
+  //             title={tooltipText}
+  //             wrapperClassName="networks-tab__network-form-label-tooltip"
+  //           >
+  //             <i className="fa fa-info-circle" />
+  //           </Tooltip>
+  //         ) : null}
+  //       </div>
+  //       <TextField
+  //         type="text"
+  //         id={textFieldId}
+  //         onChange={onChange}
+  //         fullWidth
+  //         margin="dense"
+  //         value={value}
+  //         disabled={viewOnly}
+  //         error={errorMessage}
+  //         autoFocus={autoFocus}
+  //       />
+  //     </div>
+  //   );
+  // };
 
   const setStateWithValue = (stateKey, validator) => {
     return (e) => {
@@ -260,14 +264,19 @@ const NetworkForm = ({
       switch (stateKey) {
         case 'networkName':
           setNetworkName(e.target.value);
+          break;
         case 'rpcUrl':
           setRpcUrl(e.target.value);
+          break;
         case 'chainId':
           setChainId(e.target.value);
+          break;
         case 'ticker':
           setTicker(e.target.value);
+          break;
         case 'blockExplorerUrl':
           setBlockExplorerUrl(e.target.value);
+          break;
       }
     };
   };
