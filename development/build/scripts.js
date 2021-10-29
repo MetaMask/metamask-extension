@@ -323,7 +323,7 @@ function createFactoredBuild({
 }) {
   return async function () {
     // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration();
+    const buildConfiguration = createBuildConfiguration(buildType);
     buildConfiguration.label = 'primary';
     const { bundlerOpts, events } = buildConfiguration;
 
@@ -487,7 +487,7 @@ function createNormalBundle({
 }) {
   return async function () {
     // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration();
+    const buildConfiguration = createBuildConfiguration(buildType);
     buildConfiguration.label = label;
     const { bundlerOpts, events } = buildConfiguration;
 
@@ -532,7 +532,7 @@ function createNormalBundle({
   };
 }
 
-function createBuildConfiguration() {
+function createBuildConfiguration(buildType) {
   const label = '(unnamed bundle)';
   const events = new EventEmitter();
   const bundlerOpts = {
@@ -544,7 +544,7 @@ function createBuildConfiguration() {
     manualExternal: [],
     manualIgnore: [],
   };
-  return { label, bundlerOpts, events };
+  return { buildType, bundlerOpts, events, label };
 }
 
 function setupBundlerDefaults(
@@ -659,11 +659,15 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
 }
 
 async function bundleIt(buildConfiguration) {
-  const { label, bundlerOpts, events } = buildConfiguration;
+  const { buildType, label, bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
   // manually apply non-standard options
   bundler.external(bundlerOpts.manualExternal);
   bundler.ignore(bundlerOpts.manualIgnore);
+  if (buildType !== BuildType.flask) {
+    bundler.exclude('**/*.flask.js');
+  }
+
   // output build logs to terminal
   bundler.on('log', log);
   // forward update event (used by watchify)
