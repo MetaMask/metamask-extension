@@ -3,8 +3,10 @@
 //
 // run any task with "yarn build ${taskName}"
 //
+const path = require('path');
 const livereload = require('gulp-livereload');
 const minimist = require('minimist');
+const { sync: globby } = require('globby');
 const {
   createTask,
   composeSeries,
@@ -31,7 +33,7 @@ require('@babel/core');
 
 defineAndRunBuildTasks();
 
-function defineAndRunBuildTasks() {
+async function defineAndRunBuildTasks() {
   const {
     buildType,
     entryTask,
@@ -44,6 +46,8 @@ function defineAndRunBuildTasks() {
   const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
 
   const browserVersionMap = getBrowserVersionMap(browserPlatforms);
+
+  const ignoredFiles = getIgnoredFiles(buildType);
 
   const staticTasks = createStaticAssetTasks({
     livereload,
@@ -63,6 +67,7 @@ function defineAndRunBuildTasks() {
   const scriptTasks = createScriptTasks({
     browserPlatforms,
     buildType,
+    ignoredFiles,
     isLavaMoat,
     livereload,
     shouldLintFenceFiles,
@@ -187,4 +192,23 @@ function parseArgv() {
     shouldLintFenceFiles,
     skipStats: argv[NamedArgs.SkipStats],
   };
+}
+
+/**
+ * Gets the files to be ignored by the current build, if any.
+ *
+ * @param {string} buildType - The type of the current build.
+ * @returns {string[] | null} The array of files to be ignored by the current
+ * build, or `null` if no files are to be ignored.
+ */
+function getIgnoredFiles(buildType) {
+  return buildType === BuildType.flask
+    ? null
+    : globby(
+        [
+          '../../app/**/flask/**',
+          '../../shared/**/flask/**',
+          '../../ui/**/flask/**',
+        ].map((glob) => path.resolve(__dirname, glob)),
+      );
 }

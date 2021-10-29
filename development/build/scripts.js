@@ -2,7 +2,6 @@ const { callbackify } = require('util');
 const path = require('path');
 const { writeFileSync, readFileSync } = require('fs');
 const EventEmitter = require('events');
-const globby = require('globby');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
 const Vinyl = require('vinyl');
@@ -139,6 +138,7 @@ module.exports = createScriptTasks;
 function createScriptTasks({
   browserPlatforms,
   buildType,
+  ignoredFiles,
   isLavaMoat,
   livereload,
   shouldLintFenceFiles,
@@ -183,8 +183,9 @@ function createScriptTasks({
           }
           return `./app/scripts/${label}.js`;
         }),
-        testing,
+        ignoredFiles,
         shouldLintFenceFiles,
+        testing,
       }),
     );
 
@@ -254,6 +255,7 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
       shouldLintFenceFiles,
     });
@@ -267,6 +269,7 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
       shouldLintFenceFiles,
     });
@@ -280,6 +283,7 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
       shouldLintFenceFiles,
     });
@@ -297,8 +301,9 @@ function createScriptTasks({
         devMode,
         entryFilepath: `./app/scripts/${inpage}.js`,
         label: inpage,
-        testing,
+        ignoredFiles,
         shouldLintFenceFiles,
+        testing,
       }),
       createNormalBundle({
         buildType,
@@ -307,8 +312,9 @@ function createScriptTasks({
         devMode,
         entryFilepath: `./app/scripts/${contentscript}.js`,
         label: contentscript,
-        testing,
+        ignoredFiles,
         shouldLintFenceFiles,
+        testing,
       }),
     );
   }
@@ -319,12 +325,13 @@ function createFactoredBuild({
   buildType,
   devMode,
   entryFiles,
-  testing,
+  ignoredFiles,
   shouldLintFenceFiles,
+  testing,
 }) {
   return async function () {
     // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration(buildType);
+    const buildConfiguration = createBuildConfiguration(ignoredFiles);
     buildConfiguration.label = 'primary';
     const { bundlerOpts, events } = buildConfiguration;
 
@@ -481,14 +488,15 @@ function createNormalBundle({
   devMode,
   entryFilepath,
   extraEntries = [],
+  ignoredFiles,
   label,
   modulesToExpose,
-  shouldLintFenceFiles,
   testing,
+  shouldLintFenceFiles,
 }) {
   return async function () {
     // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration(buildType);
+    const buildConfiguration = createBuildConfiguration(ignoredFiles);
     buildConfiguration.label = label;
     const { bundlerOpts, events } = buildConfiguration;
 
@@ -533,7 +541,7 @@ function createNormalBundle({
   };
 }
 
-function createBuildConfiguration(buildType) {
+function createBuildConfiguration(excludedFiles) {
   const label = '(unnamed bundle)';
   const events = new EventEmitter();
   const bundlerOpts = {
@@ -544,8 +552,9 @@ function createBuildConfiguration(buildType) {
     // non-standard bify options
     manualExternal: [],
     manualIgnore: [],
+    manualExclude: excludedFiles ?? [],
   };
-  return { buildType, bundlerOpts, events, label };
+  return { bundlerOpts, events, label };
 }
 
 function setupBundlerDefaults(
@@ -660,23 +669,13 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
 }
 
 async function bundleIt(buildConfiguration) {
-  const { buildType, label, bundlerOpts, events } = buildConfiguration;
+  const { label, bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
-
-  // exclude Flask files from non-Flask builds
-  if (buildType !== BuildType.flask) {
-    bundler.exclude(
-      await globby(
-        ['../../app/**/flask/**', '../../ui/**/flask/**'].map((glob) =>
-          path.resolve(__dirname, glob),
-        ),
-      ),
-    );
-  }
 
   // manually apply non-standard options
   bundler.external(bundlerOpts.manualExternal);
   bundler.ignore(bundlerOpts.manualIgnore);
+  bundler.exclude(bundlerOpts.manualExclude);
 
   // output build logs to terminal
   bundler.on('log', log);
