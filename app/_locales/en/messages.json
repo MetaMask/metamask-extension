@@ -1659,6 +1659,9 @@
   "noAlreadyHaveSeed": {
     "message": "No, I already have a Secret Recovery Phrase"
   },
+  "noConversionDateAvailable": {
+    "message": "No Conversion Date Available"
+  },
   "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
   },

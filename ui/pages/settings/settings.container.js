@@ -47,6 +47,10 @@ const ROUTES_TO_I18N_KEYS = {
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps;
   const { pathname } = location;
+  const {
+    metamask: { conversionDate },
+  } = state;
+
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
 
   const isAddressEntryPage = pathNameTail.includes('0x');
@@ -91,6 +95,7 @@ const mapStateToProps = (state, ownProps) => {
     initialBreadCrumbKey,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     addNewNetwork,
+    conversionDate,
   };
 };
 
