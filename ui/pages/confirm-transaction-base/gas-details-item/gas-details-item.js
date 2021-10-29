@@ -34,9 +34,7 @@ const GasDetailItem = ({
       detailTitle={
         <Box display="flex">
           <Box marginRight={1}>
-            <p>
-              <I18nValue messageKey="transactionDetailGasHeadingV2" />
-            </p>
+            <I18nValue messageKey="transactionDetailGasHeadingV2" />
           </Box>
           <span className="gas-details-item__estimate">
             (<I18nValue messageKey="transactionDetailGasInfoV2" />)
