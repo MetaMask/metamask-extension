@@ -33,7 +33,7 @@ require('@babel/core');
 
 defineAndRunBuildTasks();
 
-async function defineAndRunBuildTasks() {
+function defineAndRunBuildTasks() {
   const {
     buildType,
     entryTask,
