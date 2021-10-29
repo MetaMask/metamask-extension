@@ -1,4 +1,5 @@
 import betaJson from '../../../app/build-types/beta/beta-mascot.json';
+import flaskJson from '../../../app/build-types/flask/flask-mascot.json';
 
 const assetList = {
   main: {
@@ -7,6 +8,9 @@ const assetList = {
   },
   beta: {
     foxMeshJson: betaJson,
+  },
+  flask: {
+    foxMeshJson: flaskJson,
   },
 };
 
