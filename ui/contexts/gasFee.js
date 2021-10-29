@@ -1,9 +1,11 @@
-import { createContext, useContext } from 'react';
+import React, { createContext, useContext } from 'react';
+import PropTypes from 'prop-types';
 import { useGasFeeInputs } from '../hooks/gasFeeInput/useGasFeeInputs';
 
 export const GasFeeContext = createContext({});
 
 export const GasFeeContextProvider = ({
+  children,
   defaultEstimateToUse,
   transaction,
   minimumGasLimit,
@@ -15,9 +17,21 @@ export const GasFeeContextProvider = ({
     minimumGasLimit,
     editGasMode,
   );
-  return gasFeeDetails;
+  return (
+    <GasFeeContext.Provider value={gasFeeDetails}>
+      {children}
+    </GasFeeContext.Provider>
+  );
 };
 
 export function useGasFeeContext() {
   return useContext(GasFeeContext);
 }
+
+GasFeeContextProvider.propTypes = {
+  children: PropTypes.node,
+  defaultEstimateToUse: PropTypes.string,
+  transaction: PropTypes.object.isRequired,
+  minimumGasLimit: PropTypes.string,
+  editGasMode: PropTypes.string,
+};
