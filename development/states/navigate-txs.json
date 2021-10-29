@@ -1,0 +1,320 @@
+{
+  "appState": {
+    "shouldClose": false,
+    "menuOpen": false,
+    "modal": {
+      "open": false,
+      "modalState": {
+        "name": null,
+        "props": {}
+      },
+      "previousModalState": {
+        "name": null
+      }
+    },
+    "sidebar": {
+      "isOpen": false,
+      "transitionName": "",
+      "type": ""
+    },
+    "alertOpen": false,
+    "alertMessage": null,
+    "qrCodeData": null,
+    "networkDropdownOpen": false,
+    "currentView": {
+      "name": "confTx",
+      "context": 0
+    },
+    "accountDetail": {
+      "subview": "transactions"
+    },
+    "transForward": false,
+    "isLoading": false,
+    "warning": null,
+    "buyView": {},
+    "isMouseUser": true,
+    "gasIsLoading": false,
+    "networkNonce": "0x92",
+    "defaultHdPaths": {
+      "trezor": "m/44'/60'/0'/0",
+      "ledger": "m/44'/60'/0'/0/0",
+      "lattice": "m/44'/60'/0'/0"
+    }
+  },
+  "confirmTransaction": {
+    "txData": {
+      "estimatedGas": "0x38f53",
+      "gasLimitSpecified": true,
+      "gasPriceSpecified": false,
+      "history": [],
+      "id": 2389644572638774,
+      "loadingDefaults": false,
+      "metamaskNetworkId": "4",
+      "origin": "remix.ethereum.org",
+      "status": "unapproved",
+      "time": 1538844223352,
+      "txParams": {
+        "data": "0x608060405234801561001057600080fd5b506102a7806100206000396000f30060806040526004361061004b5763ffffffff7c0100000000000000000000000000000000000000000000000000000000600035041663d13319c48114610050578063dfb29935146100da575b600080fd5b34801561005c57600080fd5b50610065610135565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561009f578181015183820152602001610087565b50505050905090810190601f1680156100cc5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b3480156100e657600080fd5b506040805160206004803580820135601f81018490048402850184019095528484526101339436949293602493928401919081908401838280828437509497506101cc9650505050505050565b005b60008054604080516020601f60026000196101006001881615020190951694909404938401819004810282018101909252828152606093909290918301828280156101c15780601f10610196576101008083540402835291602001916101c1565b820191906000526020600020905b8154815290600101906020018083116101a457829003601f168201915b505050505090505b90565b80516101df9060009060208401906101e3565b5050565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061022457805160ff1916838001178555610251565b82800160010185558215610251579182015b82811115610251578251825591602001919060010190610236565b5061025d929150610261565b5090565b6101c991905b8082111561025d57600081556001016102675600a165627a7a72305820cf4282c534b8f2faad947d592afa109b907e4e6b2f52335b361b69c24fedb9580029",
+        "from": "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2",
+        "gas": "0x38f53",
+        "gasPrice": "0x3b9aca00",
+        "value": "0x0"
+      },
+      "type": "standard"
+    },
+    "tokenData": {},
+    "methodData": {},
+    "tokenProps": {
+      "tokenDecimals": "",
+      "tokenSymbol": ""
+    },
+    "fiatTransactionAmount": "0",
+    "fiatTransactionFee": "0.05",
+    "fiatTransactionTotal": "0.05",
+    "ethTransactionAmount": "0",
+    "ethTransactionFee": "0.000233",
+    "ethTransactionTotal": "0.000233",
+    "hexGasTotal": "0xd42f28057e00",
+    "nonce": "",
+    "toSmartContract": false,
+    "fetchingData": false
+  },
+  "localeMessages": {},
+  "metamask": {
+    "isInitialized": true,
+    "isUnlocked": true,
+    "isAccountMenuOpen": false,
+    "isPopup": false,
+    "rpcTarget": "https://rawtestrpc.metamask.io/",
+    "identities": {
+      "0x8cf82b5aa41ff2282427be151dd328568684007a": {
+        "address": "0x8cf82b5aa41ff2282427be151dd328568684007a",
+        "name": "Account 3"
+      },
+      "0xbe1a00e10ec68b154adb84e8119167146a71c9a2": {
+        "address": "0xbe1a00e10ec68b154adb84e8119167146a71c9a2",
+        "name": "Account 2"
+      },
+      "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2": {
+        "address": "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2",
+        "name": "Account 1"
+      }
+    },
+    "unapprovedTxs": {
+      "2389644572638771": {
+        "estimatedGas": "0x8544",
+        "gasLimitSpecified": true,
+        "gasPriceSpecified": true,
+        "history": [],
+        "id": 2389644572638771,
+        "loadingDefaults": false,
+        "metamaskNetworkId": "4",
+        "origin": "MetaMask",
+        "status": "unapproved",
+        "time": 1538844175144,
+        "txParams": {
+          "data": "0xa9059cbb000000000000000000000000be1a00e10ec68b154adb84e8119167146a71c9a20000000000000000000000000000000000000000000000000000000000000000",
+          "from": "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2",
+          "gas": "0x8544",
+          "gasPrice": "0x3b9aca00",
+          "to": "0xe0b7927c4af23765cb51314a0e0521a9645f0e2a",
+          "value": "0x0"
+        },
+        "type": "standard"
+      },
+      "2389644572638772": {
+        "estimatedGas": "0x5208",
+        "gasLimitSpecified": true,
+        "gasPriceSpecified": true,
+        "history": [],
+        "id": 2389644572638772,
+        "loadingDefaults": false,
+        "metamaskNetworkId": "4",
+        "origin": "MetaMask",
+        "status": "unapproved",
+        "time": 1538844178492,
+        "txParams": {
+          "from": "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2",
+          "gas": "0x5208",
+          "gasPrice": "0x3b9aca00",
+          "to": "0xbe1a00e10ec68b154adb84e8119167146a71c9a2",
+          "value": "0x0"
+        },
+        "type": "standard"
+      },
+      "2389644572638773": {
+        "estimatedGas": {
+          "length": 1,
+          "negative": 0,
+          "red": null,
+          "words": [34061, null]
+        },
+        "gasLimitSpecified": false,
+        "gasPriceSpecified": true,
+        "history": [],
+        "id": 2389644572638773,
+        "loadingDefaults": false,
+        "metamaskNetworkId": "4",
+        "origin": "localhost",
+        "status": "unapproved",
+        "time": 1538844204724,
+        "txParams": {
+          "data": "0xdfb29935000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000155468697320697320746865206970667320686173680000000000000000000000",
+          "from": "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2",
+          "gas": "0xc793",
+          "gasPrice": "0x3b9aca00",
+          "to": "0xb7ec370c889b3b48ec537e0b2c887faedceb254a",
+          "value": "0x0"
+        },
+        "type": "standard"
+      },
+      "2389644572638774": {
+        "estimatedGas": "0x38f53",
+        "gasLimitSpecified": true,
+        "gasPriceSpecified": false,
+        "history": [],
+        "id": 2389644572638774,
+        "loadingDefaults": false,
+        "metamaskNetworkId": "4",
+        "origin": "remix.ethereum.org",
+        "status": "unapproved",
+        "time": 1538844223352,
+        "txParams": {
+          "data": "0x608060405234801561001057600080fd5b506102a7806100206000396000f30060806040526004361061004b5763ffffffff7c0100000000000000000000000000000000000000000000000000000000600035041663d13319c48114610050578063dfb29935146100da575b600080fd5b34801561005c57600080fd5b50610065610135565b6040805160208082528351818301528351919283929083019185019080838360005b8381101561009f578181015183820152602001610087565b50505050905090810190601f1680156100cc5780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b3480156100e657600080fd5b506040805160206004803580820135601f81018490048402850184019095528484526101339436949293602493928401919081908401838280828437509497506101cc9650505050505050565b005b60008054604080516020601f60026000196101006001881615020190951694909404938401819004810282018101909252828152606093909290918301828280156101c15780601f10610196576101008083540402835291602001916101c1565b820191906000526020600020905b8154815290600101906020018083116101a457829003601f168201915b505050505090505b90565b80516101df9060009060208401906101e3565b5050565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061022457805160ff1916838001178555610251565b82800160010185558215610251579182015b82811115610251578251825591602001919060010190610236565b5061025d929150610261565b5090565b6101c991905b8082111561025d57600081556001016102675600a165627a7a72305820cf4282c534b8f2faad947d592afa109b907e4e6b2f52335b361b69c24fedb9580029",
+          "from": "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2",
+          "gas": "0x38f53",
+          "gasPrice": "0x3b9aca00",
+          "value": "0x0"
+        },
+        "type": "standard"
+      }
+    },
+    "noActiveNotices": true,
+    "frequentRpcList": [],
+    "addressBook": [],
+    "selectedTokenAddress": null,
+    "contractExchangeRates": {},
+    "tokenExchangeRates": {},
+    "tokens": [
+      {
+        "address": "0xe0b7927c4af23765cb51314a0e0521a9645f0e2a",
+        "decimals": 9,
+        "symbol": "DGD"
+      }
+    ],
+    "pendingTokens": {},
+    "send": {
+      "gasLimit": null,
+      "gasPrice": null,
+      "gasTotal": null,
+      "tokenBalance": null,
+      "from": "",
+      "to": "",
+      "amount": "0x0",
+      "memo": "",
+      "errors": {},
+      "editingTransactionId": null,
+      "forceGasMin": null
+    },
+    "coinOptions": {},
+    "useBlockie": false,
+    "featureFlags": {
+      "betaUI": true,
+      "skipAnnounceBetaUI": true
+    },
+    "isRevealingSeedWords": false,
+    "welcomeScreenSeen": false,
+    "currentLocale": "en",
+    "preferences": {
+      "useETHAsPrimaryCurrency": true
+    },
+    "provider": {
+      "type": "rinkeby"
+    },
+    "network": "4",
+    "accounts": {
+      "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2": {
+        "address": "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2",
+        "balance": "0x36aabfb2a0190c00"
+      },
+      "0xbe1a00e10ec68b154adb84e8119167146a71c9a2": {
+        "address": "0xbe1a00e10ec68b154adb84e8119167146a71c9a2",
+        "balance": "0x7b3ef08c294a000"
+      },
+      "0x8cf82b5aa41ff2282427be151dd328568684007a": {
+        "address": "0x8cf82b5aa41ff2282427be151dd328568684007a",
+        "balance": "0x0"
+      }
+    },
+    "currentBlockGasLimit": "0x731e25",
+    "selectedAddressTxList": [],
+    "unapprovedMsgs": {},
+    "unapprovedMsgCount": 0,
+    "unapprovedPersonalMsgs": {},
+    "unapprovedPersonalMsgCount": 0,
+    "unapprovedTypedMessages": {},
+    "unapprovedTypedMessagesCount": 0,
+    "keyringTypes": [
+      "Simple Key Pair",
+      "HD Key Tree",
+      "Trezor Hardware",
+      "Ledger Hardware",
+      "Lattice Hardware"
+    ],
+    "keyrings": [
+      {
+        "type": "HD Key Tree",
+        "accounts": [
+          "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2",
+          "0xbe1a00e10ec68b154adb84e8119167146a71c9a2",
+          "0x8cf82b5aa41ff2282427be151dd328568684007a"
+        ]
+      }
+    ],
+    "currentAccountTab": "history",
+    "accountTokens": {
+      "0x8cf82b5aa41ff2282427be151dd328568684007a": {},
+      "0xbe1a00e10ec68b154adb84e8119167146a71c9a2": {},
+      "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2": {
+        "rinkeby": [
+          {
+            "address": "0xe0b7927c4af23765cb51314a0e0521a9645f0e2a",
+            "decimals": 9,
+            "symbol": "DGD"
+          },
+          {
+            "address": "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+            "decimals": 18,
+            "symbol": "DAI"
+          }
+        ]
+      }
+    },
+    "assetImages": {
+      "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359": null,
+      "0xe0b7927c4af23765cb51314a0e0521a9645f0e2a": null
+    },
+    "suggestedTokens": {},
+    "lostIdentities": {},
+    "seedWords": null,
+    "forgottenPassword": false,
+    "selectedAddress": "0xe2f12a09ba1098312a7d1cad7581ed253ca5f4b2",
+    "recentBlocks": [],
+    "currentCurrency": "usd",
+    "conversionRate": 225.23,
+    "conversionDate": 1538859376,
+    "shapeShiftTxList": [],
+    "infuraNetworkStatus": {
+      "kovan": "ok",
+      "mainnet": "ok",
+      "rinkeby": "ok",
+      "ropsten": "ok",
+      "goerli": "ok"
+    }
+  },
+  "send": {
+    "toDropdownOpen": false,
+    "errors": {},
+    "warnings": {}
+  }
+}
