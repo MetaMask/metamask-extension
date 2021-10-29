@@ -231,7 +231,10 @@ describe('build/transforms/remove-fenced-code', () => {
             buildType,
             testData.validInputs.extraContentWithoutFences,
           ),
-        ).toStrictEqual([testData.validInputs.extraContentWithoutFences, false]);
+        ).toStrictEqual([
+          testData.validInputs.extraContentWithoutFences,
+          false,
+        ]);
       });
     });
 
@@ -763,7 +766,13 @@ Always_Included
   data.validOutputs.flask = [data.validInputs.withFences, false];
   data.validOutputs.main = [data.validInputs.withoutFences, true];
 
-  data.validOutputsWithExtraContent.flask = [data.validInputs.extraContentWithFences, false];
-  data.validOutputsWithExtraContent.main = [data.validInputs.extraContentWithoutFences, true];
+  data.validOutputsWithExtraContent.flask = [
+    data.validInputs.extraContentWithFences,
+    false,
+  ];
+  data.validOutputsWithExtraContent.main = [
+    data.validInputs.extraContentWithoutFences,
+    true,
+  ];
   return deepFreeze(data);
 }
