@@ -3,16 +3,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
-import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
 import ColorIndicator from '../../ui/color-indicator';
 import { COLORS, SIZES } from '../../../helpers/constants/design-system';
+import { getShowTestNetworks } from '../../../selectors';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -34,6 +36,7 @@ const DROP_DOWN_MENU_ITEM_STYLE = {
 function mapStateToProps(state) {
   return {
     provider: state.metamask.provider,
+    shouldShowTestNetworks: getShowTestNetworks(state),
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
   };
@@ -48,9 +51,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.setRpcTarget(target, chainId, ticker, nickname));
     },
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
-    setSelectedSettingsRpcUrl: (url) => {
-      dispatch(actions.setSelectedSettingsRpcUrl(url));
-    },
     displayInvalidCustomNetworkAlert: (networkName) => {
       dispatch(displayInvalidCustomNetworkAlert(networkName));
     },
@@ -82,12 +82,12 @@ class NetworkDropdown extends Component {
     setProviderType: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
     hideNetworkDropdown: PropTypes.func.isRequired,
-    setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
     frequentRpcListDetail: PropTypes.array.isRequired,
+    shouldShowTestNetworks: PropTypes.bool,
     networkDropdownOpen: PropTypes.bool.isRequired,
-    history: PropTypes.object.isRequired,
     displayInvalidCustomNetworkAlert: PropTypes.func.isRequired,
     showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
+    history: PropTypes.object,
   };
 
   handleClick(newProviderType) {
@@ -109,6 +109,36 @@ class NetworkDropdown extends Component {
       },
     });
     setProviderType(newProviderType);
+  }
+
+  renderAddCustomButton() {
+    const style = {
+      width: '100%',
+      left: '40px',
+      color: 'white',
+      background: 'rgba(0, 0, 0, 0.75)',
+      borderRadius: '20px',
+      textTransform: 'none',
+    };
+
+    return (
+      <Button
+        type="submit"
+        style={style}
+        variant="contained"
+        size="large"
+        onClick={() => {
+          if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+            global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
+          } else {
+            this.props.history.push(NETWORKS_ROUTE);
+          }
+          this.props.hideNetworkDropdown();
+        }}
+      >
+        {this.context.t('addNetwork')}
+      </Button>
+    );
   }
 
   renderCustomRpcList(rpcListDetail, provider) {
@@ -188,6 +218,8 @@ class NetworkDropdown extends Component {
       name = this.context.t('rinkeby');
     } else if (providerName === 'goerli') {
       name = this.context.t('goerli');
+    } else if (providerName === 'localhost') {
+      name = this.context.t('localhost');
     } else {
       name = provider.nickname || this.context.t('unknownNetwork');
     }
@@ -230,11 +262,7 @@ class NetworkDropdown extends Component {
   }
 
   render() {
-    const {
-      provider: { rpcUrl: activeNetwork },
-      setSelectedSettingsRpcUrl,
-      history,
-    } = this.props;
+    const { shouldShowTestNetworks } = this.props;
     const rpcListDetail = this.props.frequentRpcListDetail;
     const isOpen = this.props.networkDropdownOpen;
 
@@ -275,44 +303,20 @@ class NetworkDropdown extends Component {
           </div>
         </div>
         {this.renderNetworkEntry('mainnet')}
-        {this.renderNetworkEntry('ropsten')}
-        {this.renderNetworkEntry('kovan')}
-        {this.renderNetworkEntry('rinkeby')}
-        {this.renderNetworkEntry('goerli')}
 
         {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
-        <DropdownMenuItem
-          closeMenu={() => this.props.hideNetworkDropdown()}
-          onClick={() => {
-            if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
-              history.push(ADD_NETWORK_ROUTE);
-            } else {
-              global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
-            }
-            setSelectedSettingsRpcUrl('');
-          }}
-          style={DROP_DOWN_MENU_ITEM_STYLE}
-        >
-          {activeNetwork === 'custom' ? (
-            <i className="fa fa-check" />
-          ) : (
-            <div className="network-check__transparent">✓</div>
-          )}
-          <ColorIndicator
-            type={ColorIndicator.TYPES.FILLED}
-            color={COLORS.TRANSPARENT}
-            borderColor={COLORS.UI2}
-            size={SIZES.LG}
-          />
-          <span
-            className="network-name-item"
-            style={{
-              color: activeNetwork === 'custom' ? '#ffffff' : '#9b9b9b',
-            }}
-          >
-            {this.context.t('customRPC')}
-          </span>
-        </DropdownMenuItem>
+
+        {shouldShowTestNetworks && (
+          <>
+            {this.renderNetworkEntry('ropsten')}
+            {this.renderNetworkEntry('kovan')}
+            {this.renderNetworkEntry('rinkeby')}
+            {this.renderNetworkEntry('goerli')}
+            {this.renderNetworkEntry('localhost')}
+          </>
+        )}
+
+        {this.renderAddCustomButton()}
       </Dropdown>
     );
   }

@@ -108,6 +108,7 @@ $ropsten: #ff4a8d;
 $kovan: #9064ff;
 $rinkeby: #f6c343;
 $goerli: #3099f2;
+$localhost: #29b6af;
 
 $color-map: (
   'ui-1': $ui-1,
@@ -136,5 +137,6 @@ $color-map: (
   'kovan': $kovan,
   'rinkeby': $rinkeby,
   'goerli': $goerli,
+  'localhost': $localhost,
   'transparent': transparent,
 );

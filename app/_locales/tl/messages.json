@@ -97,10 +97,6 @@
   "allowExternalExtensionTo": {
     "message": "Payagan ang external extension na ito na:"
   },
-  "allowOriginSpendToken": {
-    "message": "Payagan ang $1 na gastusin ang iyong $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Payagan ang site na ito na:"
   },
@@ -395,9 +391,6 @@
   },
   "customGasSubTitle": {
     "message": "Kapag dinagdagan ang bayarin, mababawasan ang mga oras ng pagproseso, pero hindi ito garantisado."
-  },
-  "customRPC": {
-    "message": "Custom na RPC"
   },
   "customSpendLimit": {
     "message": "Custom na Limitasyon sa Paggastos"
@@ -1819,10 +1812,6 @@
   "troubleTokenBalances": {
     "message": "Nagkaproblema kami sa pag-load ng mga balanse ng iyong token. Puwede mong tingnan ang mga iyon ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "Pinagkakatiwalaan mo ba ang site na ito? Sa pamamagitan ng pagbibigay ng pahintulot na ito, pinapayagan mo ang $1 na i-withdraw ang iyong $2 at i-automate ang mga transaksyon para sa iyo.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Subukan ulit"

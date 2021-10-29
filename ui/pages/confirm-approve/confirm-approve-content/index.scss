@@ -5,18 +5,67 @@
   width: 100%;
   font-style: normal;
 
-  &__identicon-wrapper {
+  &__icon-display-content {
     display: flex;
-    width: 100%;
-    justify-content: center;
-    margin-top: 22px;
-    padding-left: 24px;
-    padding-right: 24px;
+    height: 51px;
+    width: 65%;
+    margin-top: 16px;
+    padding: 12px 12px 14px 12px;
+    border: 1px solid $ui-1;
+    box-sizing: border-box;
+    border-radius: 100px;
+    align-items: center;
+    position: relative;
   }
 
-  &__identicon {
-    width: 48px;
-    height: 48px;
+  &__metafoxlogo,
+  &__siteinfo {
+    position: absolute;
+  }
+
+  &__siteinfo {
+    left: 39px;
+  }
+
+  &__address-display-content {
+    display: flex;
+    height: 27px;
+    width: 50%;
+    padding: 12px 12px 14px 12px;
+    background-color: $ui-1;
+    border-radius: 100px;
+    align-items: center;
+  }
+
+  &__siteimage-identicon {
+    width: 33px;
+    height: 33px;
+    border: solid #fff;
+  }
+
+  &__address-identicon {
+    margin: 4px 8px 0 4px;
+  }
+
+  &__copy-address,
+  &__etherscan-link {
+    padding: 0 0 0 8px;
+  }
+
+  &__etherscan-link {
+    img {
+      width: 9px;
+      height: 9px;
+    }
+  }
+
+  .app-header__logo-container {
+    margin-right: 0;
+  }
+
+  .app-header__metafox-logo--icon {
+    height: 33px;
+    width: 33px;
   }
 
   &__full-tx-content {
