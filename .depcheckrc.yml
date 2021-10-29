@@ -1,49 +1,48 @@
 # things that *are* used, that depcheck is wrong about
 ignores:
-  # 
+  #
   # webapp deps
-  # 
+  #
 
-  - "@babel/runtime"
-  - "@fortawesome/fontawesome-free"
-  - "punycode"
-  
-  # 
+  - '@babel/runtime'
+  - '@fortawesome/fontawesome-free'
+  - 'punycode'
+
+  #
   # dev deps
   #
 
   # safety fallback for npm lifecycle scripts, not used normally
-  - "@lavamoat/preinstall-always-fail"
+  - '@lavamoat/preinstall-always-fail'
   # used in testing + ci
-  - "@metamask/auto-changelog" # invoked as `auto-changelog`
-  - "@metamask/forwarder"
-  - "@metamask/test-dapp"
-  - "@sentry/cli" # invoked as `sentry-cli`
-  - "chromedriver"
-  - "depcheck" # ooo meta
-  - "ganache-cli"
-  - "geckodriver"
-  - "jest" 
-  - "lavamoat-viz"
-  - "prettier-plugin-sort-json" # automatically imported by prettier
-  - "source-map-explorer"
+  - '@metamask/auto-changelog' # invoked as `auto-changelog`
+  - '@metamask/forwarder'
+  - '@metamask/test-dapp'
+  - '@sentry/cli' # invoked as `sentry-cli`
+  - 'chromedriver'
+  - 'depcheck' # ooo meta
+  - 'ganache-cli'
+  - 'geckodriver'
+  - 'jest'
+  - 'lavamoat-viz'
+  - 'prettier-plugin-sort-json' # automatically imported by prettier
+  - 'source-map-explorer'
   # development tool
-  - "yarn-deduplicate"
-  - "improved-yarn-audit"
+  - 'yarn-deduplicate'
+  - 'improved-yarn-audit'
   # storybook
-  - "@storybook/core"
-  - "@storybook/addon-backgrounds"
-  - "@storybook/addon-toolbars"
-  - "style-loader"
-  - "css-loader"
-  - "sass-loader"
-  - "resolve-url-loader"
+  - '@storybook/core'
+  - '@storybook/addon-essentials'
+  - '@storybook/addon-a11y'
+  - 'style-loader'
+  - 'css-loader'
+  - 'sass-loader'
+  - 'resolve-url-loader'
 
-# files depcheck should not parse 
+# files depcheck should not parse
 ignorePatterns:
   # seems to incorrectly parse scss @include pragmas?
-  - "**/*.scss"
+  - '**/*.scss'
   # self-contained bundle used for testing
-  - "**/send-eth-with-private-key-test/web3js.js"
-  - "**/send-eth-with-private-key-test/ethereumjs-tx.js"
-  
+  - '**/send-eth-with-private-key-test/web3js.js'
+  - '**/send-eth-with-private-key-test/ethereumjs-tx.js'
