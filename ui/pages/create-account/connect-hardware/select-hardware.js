@@ -153,7 +153,8 @@ export default class SelectHardware extends Component {
         return this.renderLedgerTutorialSteps();
       case 'trezor':
         return this.renderTrezorTutorialSteps();
-      case 'lattice': // TODO: Add Lattice tutorial
+      case 'lattice':
+        return this.renderLatticeTutorialSteps();
       default:
         return '';
     }
@@ -194,6 +195,46 @@ export default class SelectHardware extends Component {
         </a>,
       ]),
     });
+
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <div className="hw-connect" key={index}>
+            <h3 className="hw-connect__title">{step.title}</h3>
+            <p className="hw-connect__msg">{step.message}</p>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  renderLatticeTutorialSteps() {
+    const steps = [
+      {
+        asset: 'connect-lattice',
+        dimensions: { width: '225px', height: '75px' },
+        title: this.context.t('step1LatticeWallet'),
+        message: this.context.t('step1LatticeWalletMsg', [
+          <a
+            className="hw-connect__msg-link"
+            href="https://metamask.zendesk.com/hc/en-us/articles/4408552261275"
+            rel="noopener noreferrer"
+            target="_blank"
+            key="lattice-setup-link"
+          >
+            {this.context.t('hardwareWalletSupportLinkConversion')}
+          </a>,
+        ]),
+      },
+    ];
 
     return (
       <div className="hw-tutorial">
