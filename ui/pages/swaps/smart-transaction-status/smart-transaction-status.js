@@ -21,7 +21,6 @@ import {
   ASSET_ROUTE,
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
-import PulseLoader from '../../../components/ui/pulse-loader';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import UrlIcon from '../../../components/ui/url-icon';
@@ -47,12 +46,26 @@ import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
 import UnknownIcon from './unknown-icon';
 import ArrowIcon from './arrow-icon';
+import TimerIcon from './timer-icon';
 import BackgroundAnimation from './background-animation';
 
 const SMART_TRANSACTIONS_STATUS_INTERVAL = SECOND * 10; // Poll every 10 seconds.
+const TOTAL_WAITING_TIME_IN_SEC = 180;
 
 // It takes about 2s to show the link (waiting for uuid) and then it will be visible for about 10s or until a user clicks on it.
 const CANCEL_LINK_DURATION = SECOND * 12;
+
+const PENDING_STATUS = {
+  OPTIMIZING_GAS: 'optimizingGas',
+  PRIVATELY_SUBMITTING: 'privatelySubmitting',
+  PUBLICLY_SUBMITTING: 'publiclySubmitting',
+};
+
+const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
+  const minutes = Math.floor(remainingTimeInSec / 60);
+  const seconds = remainingTimeInSec % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
 
 export default function SmartTransactionStatus() {
   const [showCancelSwapLink, setShowCancelSwapLink] = useState(() => {
@@ -61,6 +74,12 @@ export default function SmartTransactionStatus() {
     }, CANCEL_LINK_DURATION);
     return true;
   });
+  const [pendingStatus, setPendingStatus] = useState(
+    PENDING_STATUS.OPTIMIZING_GAS,
+  );
+  const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
+    TOTAL_WAITING_TIME_IN_SEC,
+  );
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -128,8 +147,29 @@ export default function SmartTransactionStatus() {
       }
     }, SMART_TRANSACTIONS_STATUS_INTERVAL);
     return () => clearInterval(intervalId);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, isSmartTransactionPending, latestSmartTransactionUuid]);
+
+  useEffect(() => {
+    let intervalId;
+    if (isSmartTransactionPending) {
+      intervalId = setInterval(() => {
+        if (timeLeftForPendingStxInSec <= 0) {
+          clearInterval(intervalId);
+          return;
+        }
+        if (timeLeftForPendingStxInSec === 150) {
+          setPendingStatus(PENDING_STATUS.PRIVATELY_SUBMITTING);
+        }
+        if (timeLeftForPendingStxInSec === 120) {
+          setPendingStatus(PENDING_STATUS.PUBLICLY_SUBMITTING);
+        }
+        setTimeLeftForPendingStxInSec(timeLeftForPendingStxInSec - 1);
+      }, 1000);
+    }
+    return () => clearInterval(intervalId);
+  }, [dispatch, isSmartTransactionPending, timeLeftForPendingStxInSec]);
 
   useEffect(() => {
     // We don't need to poll for quotes on the status page.
@@ -142,10 +182,17 @@ export default function SmartTransactionStatus() {
     history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
   };
 
-  let headerText = t('stxPending');
+  let headerText = t('stxPendingOptimizingGas');
   let description;
   let subDescription;
-  let icon = <PulseLoader />;
+  let icon;
+  if (isSmartTransactionPending) {
+    if (pendingStatus === PENDING_STATUS.PRIVATELY_SUBMITTING) {
+      headerText = t('stxPendingPrivatelySubmitting');
+    } else if (pendingStatus === PENDING_STATUS.PUBLICLY_SUBMITTING) {
+      headerText = t('stxPendingFinalizing');
+    }
+  }
   if (smartTransactionStatus.minedTx === 'success') {
     headerText = t('stxSuccess');
     description = t('stxSuccessDescription', [
@@ -200,8 +247,9 @@ export default function SmartTransactionStatus() {
 
   const CancelSwap = () => {
     return (
-      <Box marginBottom={3}>
+      <Box marginBottom={0}>
         <a
+          className="smart-transaction-status__cancel-swap-link"
           href="#"
           onClick={(e) => {
             e?.preventDefault();
@@ -227,7 +275,7 @@ export default function SmartTransactionStatus() {
         className="smart-transaction-status__content"
       >
         <Box
-          marginTop={5}
+          marginTop={10}
           marginBottom={0}
           display={DISPLAY.FLEX}
           justifyContent={JUSTIFY_CONTENT.CENTER}
@@ -281,9 +329,37 @@ export default function SmartTransactionStatus() {
         >
           <BackgroundAnimation position="top" />
         </Box>
-        <Box marginTop={3} marginBottom={2}>
-          {icon}
-        </Box>
+        {icon && (
+          <Box marginTop={3} marginBottom={2}>
+            {icon}
+          </Box>
+        )}
+        {isSmartTransactionPending && (
+          <Box
+            marginTop={7}
+            marginBottom={1}
+            display={DISPLAY.FLEX}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={ALIGN_ITEMS.CENTER}
+          >
+            <TimerIcon />
+            <Typography
+              color={COLORS.UI4}
+              variant={TYPOGRAPHY.H6}
+              boxProps={{ marginLeft: 1 }}
+            >
+              {`${t('swapCompleteIn')} `}
+            </Typography>
+            <Typography
+              color={COLORS.UI4}
+              variant={TYPOGRAPHY.H6}
+              fontWeight={FONT_WEIGHT.BOLD}
+              boxProps={{ marginLeft: 1 }}
+            >
+              {showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec)}
+            </Typography>
+          </Box>
+        )}
         <Typography
           color={COLORS.BLACK}
           variant={TYPOGRAPHY.H4}
@@ -291,13 +367,28 @@ export default function SmartTransactionStatus() {
         >
           {headerText}
         </Typography>
-        <Typography
-          variant={TYPOGRAPHY.H6}
-          boxProps={{ marginTop: 0 }}
-          color={COLORS.UI4}
-        >
-          {description}
-        </Typography>
+        {isSmartTransactionPending && (
+          <div className="smart-transaction-status__loading-bar-container">
+            <div
+              className="smart-transaction-status__loading-bar"
+              style={{
+                width: `${
+                  (100 / TOTAL_WAITING_TIME_IN_SEC) *
+                  (TOTAL_WAITING_TIME_IN_SEC - timeLeftForPendingStxInSec)
+                }%`,
+              }}
+            />
+          </div>
+        )}
+        {description && (
+          <Typography
+            variant={TYPOGRAPHY.H6}
+            boxProps={{ marginTop: 0 }}
+            color={COLORS.UI4}
+          >
+            {description}
+          </Typography>
+        )}
         <Box
           marginTop={3}
           className="smart-transaction-status__background-animation"

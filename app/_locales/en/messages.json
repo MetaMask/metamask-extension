@@ -2364,8 +2364,14 @@
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxPending": {
+  "stxPendingFinalizing": {
+    "message": "Finalizing..."
+  },
+  "stxPendingOptimizingGas": {
     "message": "Optimizing gas..."
+  },
+  "stxPendingPrivatelySubmitting": {
+    "message": "Privately submitting the Swap..."
   },
   "stxSuccess": {
     "message": "Swap complete!"
@@ -2431,6 +2437,9 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
+  },
+  "swapCompleteIn": {
+    "message": "Swap complete in <"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
