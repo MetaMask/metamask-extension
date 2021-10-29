@@ -169,10 +169,7 @@ export default function ConfirmApprove() {
       showAccountInHeader
       title={tokensText}
       contentComponent={
-        <GasFeeContextProvider
-          mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
-          transaction={transaction}
-        >
+        <GasFeeContextProvider transaction={transaction}>
           <ConfirmApproveContent
             decimals={decimals}
             siteImage={siteImage}

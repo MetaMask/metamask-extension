@@ -116,8 +116,10 @@ export default function EditGasPopover({
   } = useGasFeeContext();
 
   useEffect(() => {
-    setTransaction(updatedTransaction);
-  }, [setTransaction, updatedTransaction]);
+    if (mode === EDIT_GAS_MODES.SPEED_UP || mode === EDIT_GAS_MODES.CANCEL) {
+      setTransaction(updatedTransaction);
+    }
+  }, [mode, setTransaction, updatedTransaction]);
 
   const txParamsHaveBeenCustomized =
     estimateToUse === 'custom' || txParamsAreDappSuggested(updatedTransaction);
