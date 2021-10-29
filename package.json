@@ -277,6 +277,7 @@
     "ganache-cli": "^6.12.1",
     "ganache-core": "^2.13.1",
     "geckodriver": "^1.21.0",
+    "globby": "^11.0.4",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-dart-sass": "^1.0.2",

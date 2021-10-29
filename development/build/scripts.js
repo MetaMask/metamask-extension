@@ -2,6 +2,7 @@ const { callbackify } = require('util');
 const path = require('path');
 const { writeFileSync, readFileSync } = require('fs');
 const EventEmitter = require('events');
+const globby = require('globby');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
 const Vinyl = require('vinyl');
@@ -661,15 +662,25 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
 async function bundleIt(buildConfiguration) {
   const { buildType, label, bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
+
+  // exclude Flask files from non-Flask builds
+  if (buildType !== BuildType.flask) {
+    bundler.exclude(
+      await globby(
+        ['../../app/**/flask/**', '../../ui/**/flask/**'].map((glob) =>
+          path.resolve(__dirname, glob),
+        ),
+      ),
+    );
+  }
+
   // manually apply non-standard options
   bundler.external(bundlerOpts.manualExternal);
   bundler.ignore(bundlerOpts.manualIgnore);
-  if (buildType !== BuildType.flask) {
-    bundler.exclude('**/*.flask.js');
-  }
 
   // output build logs to terminal
   bundler.on('log', log);
+
   // forward update event (used by watchify)
   bundler.on('update', () => performBundle());
 
