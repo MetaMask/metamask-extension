@@ -1264,6 +1264,9 @@
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
+  "ledgerConnectionInstructionCloseLedgerBridge": {
+    "message": "Make sure other software connected to your device are closed."
+  },
   "ledgerConnectionInstructionHeader": {
     "message": "Prior to clicking confirm:"
   },

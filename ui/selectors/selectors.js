@@ -10,6 +10,7 @@ import {
   KEYRING_TYPES,
   WEBHID_CONNECTED_STATUSES,
   LEDGER_TRANSPORT_TYPES,
+  TRANSPORT_STATES,
 } from '../../shared/constants/hardware-wallets';
 
 import {
@@ -42,7 +43,10 @@ import {
   isAddressLedger,
   findKeyringForAddress,
 } from '../ducks/metamask/metamask';
-import { getLedgerWebHidConnectedStatus } from '../ducks/app/app';
+import {
+  getLedgerWebHidConnectedStatus,
+  getLedgerTransportStatus,
+} from '../ducks/app/app';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -665,9 +669,14 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
   const webHidIsNotConnected =
     getLedgerWebHidConnectedStatus(state) !==
     WEBHID_CONNECTED_STATUSES.CONNECTED;
+  const ledgerTransportStatus = getLedgerTransportStatus(state);
+  const transportIsNotSuccessfullyCreated =
+    ledgerTransportStatus !== TRANSPORT_STATES.VERIFIED;
 
   return (
-    addressIsLedger && transportTypePreferenceIsWebHID && webHidIsNotConnected
+    addressIsLedger &&
+    transportTypePreferenceIsWebHID &&
+    (webHidIsNotConnected || transportIsNotSuccessfullyCreated)
   );
 }
 
