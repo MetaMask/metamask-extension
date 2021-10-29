@@ -38,7 +38,7 @@ export default class ChooseAccount extends Component {
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
     }),
-    isNonWhitelistedDomain: PropTypes.bool.isRequired,
+    isNotAllowedDomain: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -202,7 +202,7 @@ export default class ChooseAccount extends Component {
       cancelPermissionsRequest,
       targetDomainMetadata,
       accounts,
-      isNonWhitelistedDomain,
+      isNotAllowedDomain,
     } = this.props;
     const { selectedAccounts } = this.state;
     const { t } = this.context;
@@ -222,9 +222,7 @@ export default class ChooseAccount extends Component {
         {this.renderAccountsListHeader()}
         {this.renderAccountsList()}
         <div className="permissions-connect-choose-account__footer-container">
-          <PermissionsConnectFooter
-            isNonWhitelistedDomain={isNonWhitelistedDomain}
-          />
+          <PermissionsConnectFooter isNotAllowedDomain={isNotAllowedDomain} />
           <div className="permissions-connect-choose-account__bottom-buttons">
             <Button
               onClick={() => cancelPermissionsRequest(permissionsRequestId)}

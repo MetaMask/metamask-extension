@@ -10,7 +10,7 @@ export default class SecurityTab extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      whitelistInputValue: this.props.whitelistValues.join(','),
+      allowlistInputValue: this.props.allowlistValues.join(','),
     };
   }
 
@@ -28,10 +28,10 @@ export default class SecurityTab extends PureComponent {
     setShowIncomingTransactionsFeatureFlag: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
-    useWhitelistMode: PropTypes.bool.isRequired,
-    setUseWhitelistMode: PropTypes.func.isRequired,
-    whitelistValues: PropTypes.array.isRequired,
-    setWhitelistValues: PropTypes.array.isRequired,
+    useAllowlistMode: PropTypes.bool.isRequired,
+    setUseAllowlistMode: PropTypes.func.isRequired,
+    allowlistValues: PropTypes.array.isRequired,
+    setAllowlistValues: PropTypes.array.isRequired,
   };
 
   renderSeedWords() {
@@ -154,23 +154,23 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderWhitelistModeToggle() {
+  renderAllowlistModeToggle() {
     const { t } = this.context;
-    const { useWhitelistMode, setUseWhitelistMode } = this.props;
+    const { useAllowlistMode, setUseAllowlistMode } = this.props;
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{t('useWhitelistMode')}</span>
+          <span>{t('useAllowlistMode')}</span>
           <div className="settings-page__content-description">
-            {t('useWhitelistModeDescription')}
+            {t('useAllowlistModeDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              value={useWhitelistMode}
-              onToggle={(value) => setUseWhitelistMode(!value)}
+              value={useAllowlistMode}
+              onToggle={(value) => setUseAllowlistMode(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -180,44 +180,44 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderWhitelistModeInput() {
+  renderAllowlistModeInput() {
     const { t } = this.context;
-    const { whitelistInputValue } = this.state;
-    const { useWhitelistMode, setWhitelistValues } = this.props;
+    const { allowlistInputValue } = this.state;
+    const { useAllowlistMode, setAllowlistValues } = this.props;
     const onChange = ({ target }) => {
-      this.setState({ whitelistInputValue: target.value });
+      this.setState({ allowlistInputValue: target.value });
     };
-    const submitWhitelist = () => {
-      const newWhitelist = whitelistInputValue
+    const submitAllowlist = () => {
+      const newAllowlist = allowlistInputValue
         .split(',')
         .map((v) => (isValidDomainName(v.trim()) ? v.trim() : null))
         .filter((v) => v);
 
-      setWhitelistValues(newWhitelist);
-      this.setState({ whitelistInputValue: newWhitelist.join(',') });
+      setAllowlistValues(newAllowlist);
+      this.setState({ allowlistInputValue: newAllowlist.join(',') });
     };
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>{t('whitelistValue')}</span>
+          <span>{t('allowlistValue')}</span>
           <div className="settings-page__content-description">
-            {t('whitelistValueDescription')}
+            {t('allowlistValueDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <TextField
               type="text"
-              id="whitelist-values"
+              id="allowlist-values"
               placeholder="metamask.io,consensys.net,etherscan.io"
               autoComplete="off"
               onChange={onChange}
-              onBlur={submitWhitelist}
+              onBlur={submitAllowlist}
               fullWidth
               margin="dense"
-              value={whitelistInputValue}
-              disabled={!useWhitelistMode}
+              value={allowlistInputValue}
+              disabled={!useAllowlistMode}
             />
           </div>
         </div>
@@ -234,8 +234,8 @@ export default class SecurityTab extends PureComponent {
         {this.renderSeedWords()}
         {this.renderIncomingTransactionsOptIn()}
         {this.renderPhishingDetectionToggle()}
-        {this.renderWhitelistModeToggle()}
-        {this.renderWhitelistModeInput()}
+        {this.renderAllowlistModeToggle()}
+        {this.renderAllowlistModeInput()}
         {this.renderMetaMetricsOptIn()}
       </div>
     );

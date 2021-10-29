@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { domainOutsideWhitelist } from '../../../helpers/utils/util';
+import { domainOutsideAllowlist } from '../../../helpers/utils/util';
 import { getMetaMaskIdentities } from '../../../selectors';
 import PermissionPageContainer from './permission-page-container.component';
 
@@ -10,18 +10,18 @@ const mapStateToProps = (state, ownProps) => {
   const requestMetadata = ownProps.request?.metadata
     ? new URL(ownProps.request?.metadata?.origin)
     : null;
-  const { useWhitelistMode, whitelistValues } = state.metamask;
-  const isNonWhitelistedDomain = domainOutsideWhitelist(
+  const { useAllowlistMode, allowlistValues } = state.metamask;
+  const isNotAllowedDomain = domainOutsideAllowlist(
     requestMetadata?.host,
-    useWhitelistMode,
-    whitelistValues,
+    useAllowlistMode,
+    allowlistValues,
   );
   const allIdentitiesSelected =
     Object.keys(selectedIdentities).length ===
       Object.keys(allIdentities).length && selectedIdentities.length > 1;
 
   return {
-    isNonWhitelistedDomain,
+    isNotAllowedDomain,
     allIdentitiesSelected,
   };
 };

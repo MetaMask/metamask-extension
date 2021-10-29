@@ -7,24 +7,24 @@ export default class PermissionsConnectFooter extends Component {
   };
 
   static propTypes = {
-    isNonWhitelistedDomain: PropTypes.bool,
+    isNotAllowedDomain: PropTypes.bool,
   };
 
   static defaultProps = {
-    isNonWhitelistedDomain: false,
+    isNotAllowedDomain: false,
   };
 
   render() {
-    const { isNonWhitelistedDomain } = this.props;
+    const { isNotAllowedDomain } = this.props;
     const { t } = this.context;
 
     return (
       <div className="permissions-connect-footer">
-        {isNonWhitelistedDomain && (
+        {isNotAllowedDomain && (
           <div className="permissions-connect-footer__text--danger permissions-connect-whitlist-warning">
             <div>
               <i className="fa fa-exclamation-circle fa-fw"></i>
-              {t('whitelistDanger')}
+              {t('allowlistDanger')}
             </div>
           </div>
         )}

@@ -31,8 +31,8 @@ export default class PreferencesController {
       useBlockie: false,
       useNonceField: false,
       usePhishDetect: true,
-      useWhitelistMode: false,
-      whitelistValues: [],
+      useAllowlistMode: false,
+      allowlistValues: [],
       dismissSeedBackUpReminder: false,
 
       // set to true means the dynamic list from the API is being used
@@ -118,23 +118,23 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `useWhitelistMode` property
+   * Setter for the `useAllowlistMode` property
    *
-   * @param {boolean} val - Whether or not the user wants to enable whitelisting only
+   * @param {boolean} val - Whether or not the user wants to enable allow list only interactions
    *
    */
-  setUseWhitelistMode(val) {
-    this.store.updateState({ useWhitelistMode: val });
+  setUseAllowlistMode(val) {
+    this.store.updateState({ useAllowlistMode: val });
   }
 
   /**
-   * Setter for the `whitelistValues` property
+   * Setter for the `allowlistValues` property
    *
-   * @param {array[string]} val - Array of url hosts that are whitelisted
+   * @param {array[string]} val - Array of url hosts that are allowed
    *
    */
-  setWhitelistValues(val) {
-    this.store.updateState({ whitelistValues: val });
+  setAllowlistValues(val) {
+    this.store.updateState({ allowlistValues: val });
   }
 
   /**

@@ -813,8 +813,8 @@ export default class MetamaskController extends EventEmitter {
       setUseBlockie: this.setUseBlockie.bind(this),
       setUseNonceField: this.setUseNonceField.bind(this),
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
-      setUseWhitelistMode: this.setUseWhitelistMode.bind(this),
-      setWhitelistValues: this.setWhitelistValues.bind(this),
+      setUseAllowlistMode: this.setUseAllowlistMode.bind(this),
+      setAllowlistValues: this.setAllowlistValues.bind(this),
       setUseTokenDetection: nodeify(
         this.preferencesController.setUseTokenDetection,
         this.preferencesController,
@@ -2966,13 +2966,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Sets whether or not to use whitelist mode enabled.
+   * Sets whether or not to use allow listing mode enabled.
    * @param {boolean} val
    * @param {Function} cb
    */
-  setUseWhitelistMode(val, cb) {
+  setUseAllowlistMode(val, cb) {
     try {
-      this.preferencesController.setUseWhitelistMode(val);
+      this.preferencesController.setUseAllowlistMode(val);
       cb(null);
       return;
     } catch (err) {
@@ -2987,9 +2987,9 @@ export default class MetamaskController extends EventEmitter {
    * @param {array[string]} val
    * @param {Function} cb
    */
-  setWhitelistValues(val, cb) {
+  setAllowlistValues(val, cb) {
     try {
-      this.preferencesController.setWhitelistValues(val);
+      this.preferencesController.setAllowlistValues(val);
       cb(null);
       return;
     } catch (err) {

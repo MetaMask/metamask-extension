@@ -9,7 +9,7 @@ import {
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 
-import { formatDate, domainOutsideWhitelist } from '../../helpers/utils/util';
+import { formatDate, domainOutsideAllowlist } from '../../helpers/utils/util';
 import {
   approvePermissionsRequest,
   rejectPermissionsRequest,
@@ -32,7 +32,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const permissionsRequests = getPermissionsRequests(state);
   const currentAddress = getSelectedAddress(state);
-  const { useWhitelistMode, whitelistValues } = state.metamask;
+  const { useAllowlistMode, allowlistValues } = state.metamask;
 
   const permissionsRequest = permissionsRequests.find(
     (req) => req.metadata.id === permissionsRequestId,
@@ -62,10 +62,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const lastConnectedInfo = getLastConnectedInfo(state) || {};
   const addressLastConnectedMap = lastConnectedInfo[origin]?.accounts || {};
-  const isNonWhitelistedDomain = domainOutsideWhitelist(
+  const isNotAllowedDomain = domainOutsideAllowlist(
     targetDomainMetadata?.host,
-    useWhitelistMode,
-    whitelistValues,
+    useAllowlistMode,
+    allowlistValues,
   );
 
   Object.keys(addressLastConnectedMap).forEach((key) => {
@@ -101,7 +101,7 @@ const mapStateToProps = (state, ownProps) => {
     confirmPermissionPath,
     page,
     targetDomainMetadata,
-    isNonWhitelistedDomain,
+    isNotAllowedDomain,
   };
 };
 

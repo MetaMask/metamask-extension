@@ -2034,11 +2034,11 @@ export function setUsePhishDetect(val) {
   };
 }
 
-export function setUseWhitelistMode(val) {
+export function setUseAllowlistMode(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setUseWhitelistMode`);
-    background.setUseWhitelistMode(val, (err) => {
+    log.debug(`background.setUseAllowlistMode`);
+    background.setUseAllowlistMode(val, (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2047,11 +2047,11 @@ export function setUseWhitelistMode(val) {
   };
 }
 
-export function setWhitelistValues(val) {
+export function setAllowlistValues(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setWhitelistValues`);
-    background.setWhitelistValues(val, (err) => {
+    log.debug(`background.setAllowlistValues`);
+    background.setAllowlistValues(val, (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         console.error(err);

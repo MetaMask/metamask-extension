@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { getAccountsWithLabels, getAddressBookEntry } from '../../../selectors';
 import * as actions from '../../../store/actions';
-import { domainOutsideWhitelist } from '../../../helpers/utils/util';
+import { domainOutsideAllowlist } from '../../../helpers/utils/util';
 import ConfirmPageContainer from './confirm-page-container.component';
 
 function mapStateToProps(state, ownProps) {
@@ -10,16 +10,16 @@ function mapStateToProps(state, ownProps) {
     ownProps?.origin && ownProps?.origin.includes('.')
       ? new URL(ownProps?.origin)
       : null;
-  const { useWhitelistMode, whitelistValues } = state.metamask;
-  const isNonWhitelistedDomain = domainOutsideWhitelist(
+  const { useAllowlistMode, allowlistValues } = state.metamask;
+  const isNotAllowedDomain = domainOutsideAllowlist(
     requestMetadata?.host,
-    useWhitelistMode,
-    whitelistValues,
+    useAllowlistMode,
+    allowlistValues,
   );
   const contact = getAddressBookEntry(state, to);
   return {
     contact,
-    isNonWhitelistedDomain,
+    isNotAllowedDomain,
     toName: contact?.name || ownProps.toName,
     isOwnedAccount: getAccountsWithLabels(state)
       .map((accountWithLabel) => accountWithLabel.address)
