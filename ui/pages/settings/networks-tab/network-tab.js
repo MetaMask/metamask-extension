@@ -62,7 +62,6 @@ const NetworkTab = ({
   const history = useHistory();
   useEffect(() => {
     return () => {
-      console.log('unmount');
       setSelectedSettingsRpcUrl('');
     };
   }, [setSelectedSettingsRpcUrl]);

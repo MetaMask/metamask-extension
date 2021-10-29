@@ -87,12 +87,16 @@
     display: grid;
     grid-template-columns: 100%;
     width: 95%;
+
+    &__view-only {
+      width: 100%;
+    }
   }
 
   &__add-network-form-body {
     display: grid;
     grid-template-columns: 48% 48%;
-    row-gap: 10%;
+    // row-gap: 10%;
     column-gap: 5%;
     margin-top: 24px;
     width: 100%;
@@ -276,7 +280,7 @@
   &__add-network-form-footer {
     display: flex;
     flex-flow: row;
-    padding: 3.75rem 0 0.75rem 0;
+    padding: 0.75rem 0;
     width: 60%;
 
     .btn-secondary {

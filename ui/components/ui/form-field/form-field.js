@@ -117,7 +117,7 @@ FormField.propTypes = {
   titleDetail: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   error: PropTypes.string,
   onChange: PropTypes.func,
-  value: PropTypes.number,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   detailText: PropTypes.string,
   autoFocus: PropTypes.bool,
   numeric: PropTypes.bool,

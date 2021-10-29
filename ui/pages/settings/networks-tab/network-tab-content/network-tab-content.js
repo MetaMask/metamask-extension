@@ -143,17 +143,8 @@ const NetworkTabContent = ({
   shouldRenderNetworkForm,
 }) => {
   const history = useHistory();
-  const t = useI18nContext();
-  const {
-    labelKey,
-    label,
-    rpcUrl,
-    chainId,
-    ticker,
-    viewOnly,
-    rpcPrefs,
-    blockExplorerUrl,
-  } = selectedNetwork;
+  // const t = useI18nContext();
+
   return (
     <>
       <NetworkList
@@ -170,11 +161,12 @@ const NetworkTabContent = ({
         <NetworkForm
           setRpcTarget={setRpcTarget}
           editRpc={editRpc}
-          networkName={label || (labelKey && t(labelKey)) || ''}
-          rpcUrl={rpcUrl}
-          chainId={chainId}
+          selectedNetwork={selectedNetwork}
+          // networkName={label || (labelKey && t(labelKey)) || ''}
+          // rpcUrl={rpcUrl}
+          // chainId={chainId}
           networksToRender={networksToRender}
-          ticker={ticker}
+          // ticker={ticker}
           onClear={(shouldUpdateHistory = true) => {
             setSelectedSettingsRpcUrl('');
             if (shouldUpdateHistory) {
@@ -182,10 +174,10 @@ const NetworkTabContent = ({
             }
           }}
           showConfirmDeleteNetworkModal={showConfirmDeleteNetworkModal}
-          viewOnly={viewOnly}
-          isCurrentRpcTarget={providerUrl === rpcUrl}
-          rpcPrefs={rpcPrefs}
-          blockExplorerUrl={blockExplorerUrl}
+          // viewOnly={viewOnly}
+          isCurrentRpcTarget={providerUrl === selectedNetwork.rpcUrl}
+          // rpcPrefs={rpcPrefs}
+          // blockExplorerUrl={blockExplorerUrl}
           isFullScreen={isFullScreen}
           history={history}
         />
