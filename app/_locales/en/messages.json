@@ -1745,6 +1745,9 @@
   "optional": {
     "message": "Optional"
   },
+  "optionalWithParanthesis": {
+    "message": "(Optional)"
+  },
   "optionalBlockExplorerUrl": {
     "message": "Block Explorer URL (optional)"
   },

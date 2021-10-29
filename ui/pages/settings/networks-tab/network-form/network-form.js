@@ -598,12 +598,14 @@ const NetworkForm = ({
           error={errors.ticker?.msg || ''}
           onChange={setTicker}
           titleText={t('symbol')}
+          titleUnit={t('optionalWithParanthesis')}
           value={ticker}
         />
         <FormField
           error={errors.blockExplorerUrl?.msg || ''}
           onChange={setBlockExplorerUrl}
           titleText={t('blockExplorerUrl')}
+          titleUnit={t('optionalWithParanthesis')}
           value={blockExplorerUrl}
         />
 
