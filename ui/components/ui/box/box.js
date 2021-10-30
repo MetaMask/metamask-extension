@@ -82,6 +82,7 @@ export default function Box({
   height,
   children,
   className,
+  backgroundColor,
 }) {
   const boxClassName = classnames('box', className, {
     // ---Borders---
@@ -128,6 +129,8 @@ export default function Box({
     // width & height
     [`box--width-${width}`]: Boolean(width),
     [`box--height-${height}`]: Boolean(height),
+    // background
+    [`box--background-color-${backgroundColor}`]: Boolean(backgroundColor),
   });
   // Apply Box styles to any other component using function pattern
   if (typeof children === 'function') {
@@ -159,5 +162,6 @@ Box.propTypes = {
   display: PropTypes.oneOf(Object.values(DISPLAY)),
   width: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
   height: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
+  backgroundColor: PropTypes.oneOf(Object.values(COLORS)),
   className: PropTypes.string,
 };

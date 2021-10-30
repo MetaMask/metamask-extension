@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Povećavanjem se naknade može smanjiti vrijeme obrade, ali se ne jamči."
   },
-  "customRPC": {
-    "message": "Prilagođeni RPC"
-  },
   "customToken": {
     "message": "Prilagođeni token"
   },
@@ -615,9 +612,6 @@
   },
   "newContract": {
     "message": "Novi ugovor"
-  },
-  "newNetwork": {
-    "message": "Nova mreža"
   },
   "newPassword": {
     "message": "Nova lozinka (najmanje osam znakova)"

@@ -139,4 +139,11 @@ $attributes: padding, margin;
       text-align: $alignment;
     }
   }
+
+  // background
+  @each $variant, $color in design-system.$color-map {
+    &--background-color-#{$variant} {
+      background-color: $color;
+    }
+  }
 }
