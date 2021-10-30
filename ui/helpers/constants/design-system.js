@@ -10,7 +10,7 @@ export const COLORS = {
   UI3: 'ui-3',
   UI4: 'ui-4',
   BLACK: 'black',
-  GRAY: 'gray',
+  GREY: 'grey',
   WHITE: 'white',
   PRIMARY1: 'primary-1',
   PRIMARY2: 'primary-2',
