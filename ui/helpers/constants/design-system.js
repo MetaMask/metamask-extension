@@ -96,6 +96,12 @@ export const FLEX_DIRECTION = {
   COLUMN_REVERSE: 'column-reverse',
 };
 
+export const FLEX_WRAP = {
+  WRAP: 'wrap',
+  WRAP_REVERSE: 'wrap-reverse',
+  NO_WRAP: 'nowrap',
+};
+
 export const DISPLAY = {
   BLOCK: 'block',
   FLEX: 'flex',

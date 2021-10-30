@@ -90,6 +90,12 @@ $attributes: padding, margin;
     }
   }
 
+  @each $wrap in design-system.$flex-wrap {
+    &--flex-wrap-#{$wrap} {
+      flex-wrap: $wrap;
+    }
+  }
+
   // Width and Height
   &--width-full {
     width: 100%;
