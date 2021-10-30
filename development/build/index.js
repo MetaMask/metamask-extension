@@ -203,9 +203,9 @@ function parseArgv() {
  */
 function getIgnoredFiles(currentBuildType) {
   const excludedFiles = Object.values(BuildType)
-    // Remove all build types that are neither "main" nor the current build
-    // type. "main" is the default build, and has no files that are excluded
-    // from other builds.
+    // This filter removes "main" and the current build type. The files of any
+    // build types that remain in the array will be excluded. "main" is the
+    // default build type, and has no files that are excluded from other builds.
     .filter(
       (buildType) =>
         buildType !== BuildType.main && buildType !== currentBuildType,

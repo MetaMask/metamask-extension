@@ -331,7 +331,7 @@ function createFactoredBuild({
 }) {
   return async function () {
     // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration(ignoredFiles);
+    const buildConfiguration = createBuildConfiguration();
     buildConfiguration.label = 'primary';
     const { bundlerOpts, events } = buildConfiguration;
 
@@ -344,6 +344,7 @@ function createFactoredBuild({
       buildType,
       devMode,
       envVars,
+      ignoredFiles,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
@@ -491,12 +492,12 @@ function createNormalBundle({
   ignoredFiles,
   label,
   modulesToExpose,
-  testing,
   shouldLintFenceFiles,
+  testing,
 }) {
   return async function () {
     // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration(ignoredFiles);
+    const buildConfiguration = createBuildConfiguration();
     buildConfiguration.label = label;
     const { bundlerOpts, events } = buildConfiguration;
 
@@ -509,6 +510,7 @@ function createNormalBundle({
       buildType,
       devMode,
       envVars,
+      ignoredFiles,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
@@ -541,7 +543,7 @@ function createNormalBundle({
   };
 }
 
-function createBuildConfiguration(excludedFiles) {
+function createBuildConfiguration() {
   const label = '(unnamed bundle)';
   const events = new EventEmitter();
   const bundlerOpts = {
@@ -552,14 +554,21 @@ function createBuildConfiguration(excludedFiles) {
     // non-standard bify options
     manualExternal: [],
     manualIgnore: [],
-    manualExclude: excludedFiles ?? [],
   };
   return { bundlerOpts, events, label };
 }
 
 function setupBundlerDefaults(
   buildConfiguration,
-  { buildType, devMode, envVars, minify, reloadOnChange, shouldLintFenceFiles },
+  {
+    buildType,
+    devMode,
+    envVars,
+    ignoredFiles,
+    minify,
+    reloadOnChange,
+    shouldLintFenceFiles,
+  },
 ) {
   const { bundlerOpts } = buildConfiguration;
 
@@ -587,6 +596,11 @@ function setupBundlerDefaults(
   // Inject environment variables via node-style `process.env`
   if (envVars) {
     bundlerOpts.transform.push([envify(envVars), { global: true }]);
+  }
+
+  // Ensure that any files that should be ignored are excluded from the build
+  if (ignoredFiles) {
+    bundlerOpts.manualExclude = ignoredFiles;
   }
 
   // Setup reload on change
@@ -675,7 +689,9 @@ async function bundleIt(buildConfiguration) {
   // manually apply non-standard options
   bundler.external(bundlerOpts.manualExternal);
   bundler.ignore(bundlerOpts.manualIgnore);
-  bundler.exclude(bundlerOpts.manualExclude);
+  if (Array.isArray(bundlerOpts.manualExclude)) {
+    bundler.exclude(bundlerOpts.manualExclude);
+  }
 
   // output build logs to terminal
   bundler.on('log', log);
