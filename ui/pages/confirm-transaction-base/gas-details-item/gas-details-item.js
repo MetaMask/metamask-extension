@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
@@ -30,7 +31,6 @@ const GasDetailItem = ({
 }) => {
   const t = useI18nContext();
   const { estimateToUse } = useGasFeeContext();
-  console.log('estimateToUse = ', estimateToUse); // estimateToUse available for use here
 
   return (
     <TransactionDetailItem
@@ -65,7 +65,7 @@ const GasDetailItem = ({
                 </p>
               </>
             }
-            position="top"
+            position="bottom"
           />
         </Box>
       }
@@ -91,9 +91,16 @@ const GasDetailItem = ({
         </div>
       }
       subText={t('editGasSubTextFee', [
-        <Box key="editGasSubTextFeeLabel" display="inline-flex">
+        <Box
+          key="editGasSubTextFeeLabel"
+          display="inline-flex"
+          className={classNames({
+            [`gas-details-item__gas-fee-warning`]: estimateToUse === 'high',
+          })}
+        >
           <Box marginRight={1}>
             <b>
+              {estimateToUse === 'high' && <>&#9888; &nbsp;</>}
               <I18nValue messageKey="editGasSubTextFeeLabel" />
             </b>
           </Box>

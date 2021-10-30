@@ -22,14 +22,14 @@ const render = (props) => {
 };
 
 describe('GasDetailsItem', () => {
-  it('should should render label', () => {
+  it('should render label', () => {
     render();
     expect(screen.queryByText('Gas')).toBeInTheDocument();
     expect(screen.queryByText('(estimated)')).toBeInTheDocument();
     expect(screen.queryByText('Max fee:')).toBeInTheDocument();
   });
 
-  it('should should render gas fee details', () => {
+  it('should render gas fee details', () => {
     render({
       hexMinimumTransactionFee: '0x1ca62a4f7800',
       hexMaximumTransactionFee: '0x290ee75e3d900',

@@ -1,0 +1,18 @@
+.low-gas-warning {
+  background-color: $alert-2;
+  border: 1px solid #FADF83;
+  border-radius: 10px;
+  
+  display: flex;
+  padding: 10px 15px;
+  margin-top: 20px;
+
+  &__alert-icon {
+    color: $alert-3;
+    margin-right: 10px;
+  }
+
+  p {
+    font-size: 12px;
+  }
+}

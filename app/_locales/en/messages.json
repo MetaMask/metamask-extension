@@ -2784,6 +2784,9 @@
   "transactionDetailGasInfoV2": {
     "message": "estimated"
   },
+  "lowGasWarning": {
+    "message": "Future transactions will queue after this one. This price was last seen was 2 hours ago."
+  },
   "transactionDetailGasTooltipConversion": {
     "message": "Learn more about gas fees"
   },
