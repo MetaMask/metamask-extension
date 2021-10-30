@@ -1,7 +1,6 @@
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
 import betaJson from '../../../app/build-types/beta/beta-mascot.json';
 ///: END:ONLY_INCLUDE_IN
-
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import flaskJson from '../../../app/build-types/flask/flask-mascot.json';
 ///: END:ONLY_INCLUDE_IN
@@ -11,13 +10,11 @@ const assetList = {
     // Will use default provided by the @metamask/logo library
     foxMeshJson: undefined,
   },
-
   ///: BEGIN:ONLY_INCLUDE_IN(beta)
   beta: {
     foxMeshJson: betaJson,
   },
   ///: END:ONLY_INCLUDE_IN
-
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   flask: {
     foxMeshJson: flaskJson,

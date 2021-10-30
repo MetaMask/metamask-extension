@@ -202,13 +202,13 @@ function parseArgv() {
  * build, or `null` if no files are to be ignored.
  */
 function getIgnoredFiles(buildType) {
-  return buildType === BuildType.flask
+  return buildType !== BuildType.main
     ? null
     : globby(
         [
-          '../../app/**/flask/**',
-          '../../shared/**/flask/**',
-          '../../ui/**/flask/**',
+          `../../app/**/${buildType}/**`,
+          `../../shared/**/${buildType}/**`,
+          `../../ui/**/${buildType}/**`,
         ].map((glob) => path.resolve(__dirname, glob)),
       );
 }
