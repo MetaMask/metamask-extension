@@ -201,14 +201,27 @@ function parseArgv() {
  * @returns {string[] | null} The array of files to be ignored by the current
  * build, or `null` if no files are to be ignored.
  */
-function getIgnoredFiles(buildType) {
-  return buildType !== BuildType.main
-    ? null
-    : globby(
-        [
-          `../../app/**/${buildType}/**`,
-          `../../shared/**/${buildType}/**`,
-          `../../ui/**/${buildType}/**`,
-        ].map((glob) => path.resolve(__dirname, glob)),
-      );
+function getIgnoredFiles(currentBuildType) {
+  const excludedFiles = Object.values(BuildType)
+    // Remove all build types that are neither "main" nor the current build
+    // type. "main" is the default build, and has no files that are excluded
+    // from other builds.
+    .filter(
+      (buildType) =>
+        buildType !== BuildType.main && buildType !== currentBuildType,
+    )
+    // Compute globs targeting files for exclusion for each excluded build
+    // type.
+    .reduce((excludedGlobs, excludedBuildType) => {
+      return excludedGlobs.concat([
+        `../../app/**/${excludedBuildType}/**`,
+        `../../shared/**/${excludedBuildType}/**`,
+        `../../ui/**/${excludedBuildType}/**`,
+      ]);
+    }, [])
+    // This creates absolute paths of the form:
+    // PATH_TO_REPOSITORY_ROOT/app/**/${excludedBuildType}/**
+    .map((pathGlob) => path.resolve(__dirname, pathGlob));
+
+  return globby(excludedFiles);
 }
