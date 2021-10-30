@@ -21,10 +21,10 @@ describe('Security Tab', () => {
     participateInMetaMetrics: false,
     setUsePhishDetect: sinon.spy(),
     usePhishDetect: true,
-    useWhitelistMode: true,
-    setUseWhitelistMode: sinon.spy(),
-    whitelistValues: [],
-    setWhitelistValues: sinon.spy(),
+    useAllowlistMode: true,
+    setUseAllowlistMode: sinon.spy(),
+    allowlistValues: [],
+    setAllowlistValues: sinon.spy(),
   };
 
   beforeEach(() => {
@@ -58,11 +58,11 @@ describe('Security Tab', () => {
     expect(props.setUsePhishDetect.calledOnce).toStrictEqual(true);
   });
 
-  it('toggles whitelistMode', () => {
-    const whitelistMode = wrapper.find({ type: 'checkbox' }).at(2);
+  it('toggles allowlistMode', () => {
+    const allowlistMode = wrapper.find({ type: 'checkbox' }).at(2);
 
-    whitelistMode.simulate('click');
-    expect(props.setUseWhitelistMode.calledOnce).toStrictEqual(true);
+    allowlistMode.simulate('click');
+    expect(props.setUseAllowlistMode.calledOnce).toStrictEqual(true);
   });
 
   it('toggles metaMetrics', () => {
