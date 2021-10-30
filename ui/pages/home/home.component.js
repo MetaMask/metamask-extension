@@ -35,6 +35,7 @@ import {
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
+  ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
 import BetaHomeFooter from './beta-home-footer.component';
 
@@ -438,7 +439,7 @@ export default class Home extends PureComponent {
                 >
                   <CollectiblesList
                     onAddNFT={() => {
-                      console.log('Added NFT');
+                      history.push(ADD_COLLECTIBLE_ROUTE);
                     }}
                   />
                 </Tab>

@@ -18,6 +18,7 @@ import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
 import MobileSyncPage from '../mobile-sync';
 import ImportTokenPage from '../import-token';
+import AddCollectiblePage from '../add-collectible';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account';
@@ -55,6 +56,7 @@ import {
   CONFIRM_IMPORT_TOKEN_ROUTE,
   INITIALIZE_ROUTE,
   ONBOARDING_ROUTE,
+  ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -153,6 +155,11 @@ export default class Routes extends Component {
         <Authenticated
           path={IMPORT_TOKEN_ROUTE}
           component={ImportTokenPage}
+          exact
+        />
+        <Authenticated
+          path={ADD_COLLECTIBLE_ROUTE}
+          component={AddCollectiblePage}
           exact
         />
         <Authenticated
