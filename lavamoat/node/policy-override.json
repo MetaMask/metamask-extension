@@ -27,6 +27,11 @@
         "eslint-plugin-react-hooks": true
       }
     },
+    "eslint-module-utils": {
+      "packages": {
+        "eslint-import-resolver-node": true
+      }
+    },
     "node-sass": {
       "native": true
     },
