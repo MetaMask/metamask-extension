@@ -4,7 +4,7 @@ import ImportWithSeedPhrase from './import-with-seed-phrase/import-with-seed-phr
 import NewAccount from './new-account';
 
 export default {
-  title: 'Pages/Form/Create Password',
+  title: 'Pages/First Time Flow/Create Password',
   id: __filename,
 };
 

@@ -4,7 +4,7 @@ import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetailItem from '.';
 
 export default {
-  title: 'App/Transaction/Transaction Detail Item',
+  title: 'Components/App/Transaction Detail Item',
   id: __filename,
 };
 

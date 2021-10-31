@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import ConnectedAccounts from './connected-accounts.component';
 
 export default {
-  title: 'Pages/Modal/Connected Accounts',
+  title: 'Pages/Connected Accounts',
   id: __filename,
 };
 

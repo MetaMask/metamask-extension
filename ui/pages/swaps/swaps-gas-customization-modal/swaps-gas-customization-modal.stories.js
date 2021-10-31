@@ -19,7 +19,7 @@ import GasModalPageContainer from './swaps-gas-customization-modal.component';
 const store = configureStore(testData);
 
 export default {
-  title: 'Pages/Gas Components/Swaps Gas Cutomization',
+  title: 'Pages/Swaps/Swaps Gas Cutomization Modal',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };

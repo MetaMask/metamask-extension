@@ -10,7 +10,7 @@ import Typography from '../typography';
 import Callout from './callout';
 
 export default {
-  title: 'UI/Callout/Callout',
+  title: 'Components/UI/Callout',
   id: __filename,
 };
 

@@ -13,11 +13,11 @@ import { AMOUNT_MODES, SEND_STATUSES } from '../../../../../ducks/send';
 import AmountMaxButton from './amount-max-button';
 
 export default {
-  title: 'Pages/Button/Amount Max Button',
+  title: 'Pages/Send/Send Content/Send Amount Row/Amount Max Button',
   id: __filename,
 };
 
-export const AmountMaxButtonComponent = () => {
+export const Base = () => {
   const store = createStore(combineReducers({ send: sendSBReducer }));
   const state = store.getState();
   const { send } = state;

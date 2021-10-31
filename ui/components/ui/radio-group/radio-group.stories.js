@@ -2,7 +2,7 @@ import React from 'react';
 import RadioGroup from '.';
 
 export default {
-  title: 'UI/Radio Button/Radio Group',
+  title: 'Components/UI/Radio Group',
   id: __filename,
 };
 

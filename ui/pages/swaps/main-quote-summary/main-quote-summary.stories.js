@@ -3,7 +3,7 @@ import { text, number } from '@storybook/addon-knobs';
 import MainQuoteSummary from './main-quote-summary';
 
 export default {
-  title: 'Pages/Card/Main Quote Summary',
+  title: 'Pages/Swaps/Main Quote Summary',
   id: __filename,
 };
 

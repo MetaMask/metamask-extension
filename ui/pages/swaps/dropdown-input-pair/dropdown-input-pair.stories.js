@@ -113,7 +113,7 @@ const tokens = [
 ];
 
 export default {
-  title: 'Pages/Dropdown/Dropdown Input Pair',
+  title: 'Pages/Swaps/Dropdown Input Pair',
   id: __filename,
 };
 

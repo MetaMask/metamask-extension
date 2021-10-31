@@ -5,7 +5,7 @@ import { boolean } from '@storybook/addon-knobs';
 import SendFooter from './send-footer.component';
 
 export default {
-  title: 'Pages/Button/Send Footer',
+  title: 'Pages/Send/Send Footer',
   id: __filename,
 };
 

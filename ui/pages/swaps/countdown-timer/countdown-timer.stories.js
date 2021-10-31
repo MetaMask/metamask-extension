@@ -3,7 +3,7 @@ import { number } from '@storybook/addon-knobs';
 import CountdownTimer from './countdown-timer';
 
 export default {
-  title: 'Pages/Label/Countdown Timer',
+  title: 'Pages/Swaps/Countdown Timer',
   id: __filename,
 };
 

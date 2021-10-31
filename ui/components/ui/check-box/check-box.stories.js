@@ -8,7 +8,7 @@ import CheckBox, {
 } from './check-box.component';
 
 export default {
-  title: 'UI/Checkbox/General',
+  title: 'Components/UI/Check Box',
   id: __filename,
 };
 

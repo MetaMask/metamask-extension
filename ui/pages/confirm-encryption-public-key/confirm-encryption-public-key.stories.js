@@ -6,7 +6,7 @@ import { updateMetamaskState } from '../../store/actions';
 import ConfirmEncryptionPublicKey from '.';
 
 export default {
-  title: 'Pages/Confirmation Screens/Confirm Encryption Public Key',
+  title: 'Pages/Confirm Encryption Public Key',
   id: __filename,
 };
 

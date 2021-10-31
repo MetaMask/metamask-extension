@@ -4,7 +4,7 @@ import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import ColorIndicator from './color-indicator';
 
 export default {
-  title: 'UI/Icon/Color Indicator',
+  title: 'Components/UI/Color Indicator',
   id: __filename,
 };
 

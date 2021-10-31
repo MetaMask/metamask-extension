@@ -2,7 +2,7 @@ import React from 'react';
 import TextField from '.';
 
 export default {
-  title: 'UI/Text Input/Text Field',
+  title: 'Components/UI/Text Field',
   id: __filename,
 };
 

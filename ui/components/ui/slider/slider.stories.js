@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import Slider from '.';
 
 export default {
-  title: 'UI/Slider/General',
+  title: 'Components/UI/Slider',
   id: __filename,
 };
 

@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import ImportToken from './import-token';
 
 export default {
-  title: 'Pages/Modal/Import Token',
+  title: 'Pages/Swaps/Import Token',
   id: __filename,
 };
 

@@ -3,7 +3,7 @@ import { text, number } from '@storybook/addon-knobs';
 import ExchangeRateDisplay from './exchange-rate-display';
 
 export default {
-  title: 'Pages/Label/Exchange Rate Display',
+  title: 'Pages/Swaps/Exchange Rate Display',
   id: __filename,
 };
 

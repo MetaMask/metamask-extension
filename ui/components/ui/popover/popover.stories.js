@@ -15,7 +15,7 @@ const mainWrapperStyle = {
 };
 
 export default {
-  title: 'UI/Modal/Popover',
+  title: 'Components/UI/Popover',
   id: __filename,
 };
 

@@ -5,7 +5,7 @@ import en from '../../../../app/_locales/en/messages.json';
 import MetaMaskTranslation from './metamask-translation';
 
 export default {
-  title: 'App/Metamask Translation',
+  title: 'Components/App/Metamask Translation',
   id: __filename,
 };
 

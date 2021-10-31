@@ -8,7 +8,7 @@ import TokenSearch from './token-search.component';
 const store = configureStore(testData);
 
 export default {
-  title: 'Pages/Text Input/Token Search',
+  title: 'Pages/Import Token/Token Search',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };

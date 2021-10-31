@@ -21,7 +21,7 @@ const buttonStyle = {
 };
 
 export default {
-  title: 'UI/General/Mascot',
+  title: 'Components/UI/Mascot',
   id: __filename,
 };
 

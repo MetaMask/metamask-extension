@@ -4,7 +4,7 @@ import { object, text } from '@storybook/addon-knobs';
 import TruncatedDefinitionList from './truncated-definition-list';
 
 export default {
-  title: 'UI/General/Truncated Definition List',
+  title: 'Components/UI/Truncated Definition List',
   id: __filename,
 };
 

@@ -14,7 +14,7 @@ import SendGasRow from './send-gas-row.component';
 const store = configureStore(testData);
 
 export default {
-  title: 'Pages/Gas Components/Send Gas Row',
+  title: 'Pages/Send/Send Content/Send Gas Row',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };

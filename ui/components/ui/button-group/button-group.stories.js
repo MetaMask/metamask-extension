@@ -6,7 +6,7 @@ import Button from '../button';
 import ButtonGroup from '.';
 
 export default {
-  title: 'UI/Button/Button Group',
+  title: 'Components/UI/Button Group',
   id: __filename,
 };
 

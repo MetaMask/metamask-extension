@@ -12,7 +12,7 @@ import {
 import Box from './box';
 
 export default {
-  title: 'UI/General/Box',
+  title: 'Components/UI/Box',
   id: __filename,
 };
 

@@ -3,7 +3,7 @@ import { text, boolean, number } from '@storybook/addon-knobs';
 import Identicon from './identicon.component';
 
 export default {
-  title: 'UI/Icon/Identicon',
+  title: 'Components/UI/Identicon',
   id: __filename,
 };
 

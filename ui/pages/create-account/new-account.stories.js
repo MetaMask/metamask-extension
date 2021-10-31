@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import NewAccountCreateForm from './new-account.component';
 
 export default {
-  title: 'Pages/Form/New Account',
+  title: 'Pages/Create Account/New Account',
   id: __filename,
 };
 

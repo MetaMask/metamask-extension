@@ -2,7 +2,7 @@ import React from 'react';
 import AwaitingSignatures from './awaiting-signatures';
 
 export default {
-  title: 'Pages/Modal/Awaiting Signatures',
+  title: 'Pages/Swaps/Awaiting Signatures',
   id: __filename,
 };
 

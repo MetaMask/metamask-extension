@@ -4,7 +4,7 @@ import Tab from './tab/tab.component';
 import Tabs from './tabs.component';
 
 export default {
-  title: 'UI/General/Tabs',
+  title: 'Components/UI/Tabs',
   id: __filename,
 };
 
