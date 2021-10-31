@@ -6,7 +6,7 @@ import { action } from '@storybook/addon-actions';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import { decGWEIToHexWEI } from '../../../helpers/utils/conversions.util';
-import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
+import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
 import { EDIT_GAS_MODES, GAS_LIMITS } from '../../../../shared/constants/gas';
 import EditGasDisplay from '.';
 
