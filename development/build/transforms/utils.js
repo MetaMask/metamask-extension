@@ -1,6 +1,21 @@
 const { ESLint } = require('eslint');
 const eslintrc = require('../../../.eslintrc.js');
 
+// We don't want linting to fail for purely stylistic reasons.
+eslintrc.rules['prettier/prettier'] = 'off';
+
+eslintrc.overrides = eslintrc.overrides.filter((override) => {
+  return !(
+    (override.extends &&
+      override.extends.find(
+        (configName) =>
+          configName.includes('jest') || configName.includes('mocha'),
+      )) ||
+    (override.plugins &&
+      override.plugins.find((pluginName) => pluginName.includes('jest')))
+  );
+});
+
 /**
  * The singleton ESLint instance.
  *

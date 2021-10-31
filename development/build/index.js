@@ -20,7 +20,8 @@ const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
 const { BuildType, getBrowserVersionMap } = require('./utils');
 
-// packages required dynamically via browserify configuration in dependencies
+// Packages required dynamically via browserify configuration in dependencies
+// Required for LavaMoat policy generation
 require('loose-envify');
 require('@babel/plugin-proposal-object-rest-spread');
 require('@babel/plugin-transform-runtime');
@@ -30,6 +31,20 @@ require('@babel/plugin-proposal-nullish-coalescing-operator');
 require('@babel/preset-env');
 require('@babel/preset-react');
 require('@babel/core');
+// ESLint-related
+require('@babel/eslint-parser');
+require('@babel/eslint-plugin');
+require('@metamask/eslint-config');
+require('@metamask/eslint-config-nodejs');
+require('eslint');
+require('eslint-config-prettier');
+// eslint-disable-next-line import/no-extraneous-dependencies, node/no-extraneous-require
+require('eslint-import-resolver-node');
+require('eslint-plugin-import');
+require('eslint-plugin-node');
+require('eslint-plugin-prettier');
+require('eslint-plugin-react');
+require('eslint-plugin-react-hooks');
 
 defineAndRunBuildTasks();
 
