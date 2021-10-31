@@ -11,6 +11,7 @@ const ABOUT_US_ROUTE = '/settings/about-us';
 const ALERTS_ROUTE = '/settings/alerts';
 const NETWORKS_ROUTE = '/settings/networks';
 const NETWORKS_FORM_ROUTE = '/settings/networks/form';
+const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
 const CONTACT_LIST_ROUTE = '/settings/contact-list';
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
@@ -65,7 +66,8 @@ const ONBOARDING_IMPORT_MOBILE_ROUTE = '/onboarding/import-mobile';
 const ONBOARDING_SECURE_YOUR_WALLET_ROUTE = '/onboarding/secure-your-wallet';
 const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
-const ONBOARDING_WELCOME = '/onboarding/welcome';
+const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
+const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 const CONFIRM_SEND_ETHER_PATH = '/send-ether';
@@ -95,6 +97,7 @@ const PATH_NAME_MAP = {
   [ALERTS_ROUTE]: 'Alerts Settings Page',
   [NETWORKS_ROUTE]: 'Network Settings Page',
   [NETWORKS_FORM_ROUTE]: 'Network Settings Page Form',
+  [ADD_NETWORK_ROUTE]: 'Add Network From Settings Page Form',
   [CONTACT_LIST_ROUTE]: 'Contact List Settings Page',
   [`${CONTACT_EDIT_ROUTE}/:address`]: 'Edit Contact Settings Page',
   [CONTACT_ADD_ROUTE]: 'Add Contact Settings Page',
@@ -199,6 +202,7 @@ export {
   CONTACT_VIEW_ROUTE,
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
+  ADD_NETWORK_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
   CONNECT_ROUTE,
@@ -226,5 +230,6 @@ export {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
-  ONBOARDING_WELCOME,
+  ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_METAMETRICS,
 };

@@ -7,6 +7,7 @@ import QrView from '../../../ui/qr-code';
 import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
 import { getURLHostName } from '../../../../helpers/utils/util';
+import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 
 export default class AccountDetailsModal extends Component {
   static propTypes = {
@@ -40,7 +41,7 @@ export default class AccountDetailsModal extends Component {
 
     let exportPrivateKeyFeatureEnabled = true;
     // This feature is disabled for hardware wallets
-    if (keyring?.type?.search('Hardware') !== -1) {
+    if (isHardwareKeyring(keyring?.type)) {
       exportPrivateKeyFeatureEnabled = false;
     }
 

@@ -273,7 +273,7 @@ class AccountList extends Component {
         {this.renderPagination()}
         {this.renderButtons()}
         {this.renderForgetDevice()}
-        {showPopover && this.renderSelectPathPopover()}
+        {showPopover ? this.renderSelectPathPopover() : null}
       </div>
     );
   }

@@ -1,31 +1,29 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
-import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
-import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
-import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
-import {
-  getConversionRate,
-  getNativeCurrency,
-} from '../ducks/metamask/metamask';
-import {
-  checkNetworkAndAccountSupports1559,
-  getCurrentCurrency,
-  getShouldShowFiat,
-  txDataSelector,
-  getSelectedAccount,
-} from '../selectors';
+import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 
-import { ETH, PRIMARY } from '../helpers/constants/common';
+import { ETH, PRIMARY } from '../../helpers/constants/common';
 
-import { useGasFeeEstimates } from './useGasFeeEstimates';
+import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
+import { useGasFeeEstimates } from '../useGasFeeEstimates';
 import { useGasFeeInputs } from './useGasFeeInputs';
-import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
 
-jest.mock('./useUserPreferencedCurrency', () => ({
+import {
+  MOCK_ETH_USD_CONVERSION_RATE,
+  LEGACY_GAS_ESTIMATE_RETURN_VALUE,
+  FEE_MARKET_ESTIMATE_RETURN_VALUE,
+  HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE,
+  configureEIP1559,
+  configureLegacy,
+  generateUseSelectorRouter,
+  getTotalCostInETH,
+} from './test-utils';
+
+jest.mock('../useUserPreferencedCurrency', () => ({
   useUserPreferencedCurrency: jest.fn(),
 }));
 
-jest.mock('./useGasFeeEstimates', () => ({
+jest.mock('../useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
 
@@ -37,116 +35,6 @@ jest.mock('react-redux', () => {
     useSelector: jest.fn(),
   };
 });
-
-// Why this number?
-// 20 gwei * 21000 gasLimit = 420,000 gwei
-// 420,000 gwei is 0.00042 ETH
-// 0.00042 ETH * 100000 = $42
-const MOCK_ETH_USD_CONVERSION_RATE = 100000;
-
-const LEGACY_GAS_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
-  gasFeeEstimates: {
-    low: '10',
-    medium: '20',
-    high: '30',
-  },
-  estimatedGasFeeTimeBounds: {},
-};
-
-const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-  gasFeeEstimates: {
-    low: {
-      minWaitTimeEstimate: 180000,
-      maxWaitTimeEstimate: 300000,
-      suggestedMaxPriorityFeePerGas: '3',
-      suggestedMaxFeePerGas: '53',
-    },
-    medium: {
-      minWaitTimeEstimate: 15000,
-      maxWaitTimeEstimate: 60000,
-      suggestedMaxPriorityFeePerGas: '7',
-      suggestedMaxFeePerGas: '70',
-    },
-    high: {
-      minWaitTimeEstimate: 0,
-      maxWaitTimeEstimate: 15000,
-      suggestedMaxPriorityFeePerGas: '10',
-      suggestedMaxFeePerGas: '100',
-    },
-    estimatedBaseFee: '50',
-  },
-  estimatedGasFeeTimeBounds: {},
-};
-
-const HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE = {
-  gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-  gasFeeEstimates: {
-    low: {
-      minWaitTimeEstimate: 180000,
-      maxWaitTimeEstimate: 300000,
-      suggestedMaxPriorityFeePerGas: '3',
-      suggestedMaxFeePerGas: '53000',
-    },
-    medium: {
-      minWaitTimeEstimate: 15000,
-      maxWaitTimeEstimate: 60000,
-      suggestedMaxPriorityFeePerGas: '7',
-      suggestedMaxFeePerGas: '70000',
-    },
-    high: {
-      minWaitTimeEstimate: 0,
-      maxWaitTimeEstimate: 15000,
-      suggestedMaxPriorityFeePerGas: '10',
-      suggestedMaxFeePerGas: '100000',
-    },
-    estimatedBaseFee: '50000',
-  },
-  estimatedGasFeeTimeBounds: {},
-};
-
-const generateUseSelectorRouter = ({
-  checkNetworkAndAccountSupports1559Response,
-} = {}) => (selector) => {
-  if (selector === getConversionRate) {
-    return MOCK_ETH_USD_CONVERSION_RATE;
-  }
-  if (selector === getNativeCurrency) {
-    return ETH;
-  }
-  if (selector === getCurrentCurrency) {
-    return 'USD';
-  }
-  if (selector === getShouldShowFiat) {
-    return true;
-  }
-  if (selector === txDataSelector) {
-    return {
-      txParams: {
-        value: '0x5555',
-      },
-    };
-  }
-  if (selector === getSelectedAccount) {
-    return {
-      balance: '0x440aa47cc2556',
-    };
-  }
-  if (selector === checkNetworkAndAccountSupports1559) {
-    return checkNetworkAndAccountSupports1559Response;
-  }
-  return undefined;
-};
-
-function getTotalCostInETH(gwei, gasLimit) {
-  return multiplyCurrencies(gwei, gasLimit, {
-    fromDenomination: 'GWEI',
-    toDenomination: 'ETH',
-    multiplicandBase: 10,
-    multiplierBase: 10,
-  });
-}
 
 describe('useGasFeeInputs', () => {
   beforeEach(() => {
@@ -161,10 +49,7 @@ describe('useGasFeeInputs', () => {
 
   describe('when using gasPrice API for estimation', () => {
     beforeEach(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => LEGACY_GAS_ESTIMATE_RETURN_VALUE,
-      );
-      useSelector.mockImplementation(generateUseSelectorRouter());
+      configureLegacy();
     });
     it('passes through the raw estimate values from useGasFeeEstimates', () => {
       const { result } = renderHook(() => useGasFeeInputs());
@@ -226,11 +111,9 @@ describe('useGasFeeInputs', () => {
 
   describe('when transaction is type-0', () => {
     beforeEach(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-      useSelector.mockImplementation(generateUseSelectorRouter());
+      configureEIP1559();
     });
+
     it('returns gasPrice appropriately, and "0" for EIP1559 fields', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs('medium', {
@@ -251,10 +134,7 @@ describe('useGasFeeInputs', () => {
 
   describe('when using EIP 1559 API for estimation', () => {
     beforeEach(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-      useSelector.mockImplementation(generateUseSelectorRouter());
+      configureEIP1559();
     });
     it('passes through the raw estimate values from useGasFeeEstimates', () => {
       const { result } = renderHook(() => useGasFeeInputs());
@@ -326,10 +206,7 @@ describe('useGasFeeInputs', () => {
 
   describe('when balance is sufficient for minimum transaction cost', () => {
     beforeEach(() => {
-      useGasFeeEstimates.mockImplementation(
-        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-      useSelector.mockImplementation(generateUseSelectorRouter());
+      configureEIP1559();
     });
 
     it('should return false', () => {
@@ -340,13 +217,9 @@ describe('useGasFeeInputs', () => {
 
   describe('when balance is insufficient for minimum transaction cost', () => {
     beforeEach(() => {
+      configureEIP1559();
       useGasFeeEstimates.mockImplementation(
         () => HIGH_FEE_MARKET_ESTIMATE_RETURN_VALUE,
-      );
-      useSelector.mockImplementation(
-        generateUseSelectorRouter({
-          checkNetworkAndAccountSupports1559Response: true,
-        }),
       );
     });
 
@@ -358,6 +231,81 @@ describe('useGasFeeInputs', () => {
         }),
       );
       expect(result.current.balanceError).toBe(true);
+    });
+  });
+
+  describe('callback setEstimateToUse', () => {
+    beforeEach(() => {
+      configureEIP1559();
+    });
+
+    it('should change estimateToUse value', () => {
+      const { result } = renderHook(() =>
+        useGasFeeInputs(null, {
+          userFeeLevel: 'medium',
+          txParams: { gas: '0x5208' },
+        }),
+      );
+      act(() => {
+        result.current.setEstimateToUse('high');
+      });
+      expect(result.current.estimateToUse).toBe('high');
+      expect(result.current.maxFeePerGas).toBe(
+        FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates.high
+          .suggestedMaxFeePerGas,
+      );
+      expect(result.current.maxPriorityFeePerGas).toBe(
+        FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates.high
+          .suggestedMaxPriorityFeePerGas,
+      );
+    });
+  });
+
+  describe('callback onManualChange', () => {
+    beforeEach(() => {
+      configureEIP1559();
+    });
+
+    it('should change estimateToUse value to custom', () => {
+      const { result } = renderHook(() =>
+        useGasFeeInputs(null, {
+          userFeeLevel: 'medium',
+          txParams: { gas: '0x5208' },
+        }),
+      );
+      act(() => {
+        result.current.onManualChange();
+        result.current.setMaxFeePerGas('100');
+        result.current.setMaxPriorityFeePerGas('10');
+      });
+      expect(result.current.estimateToUse).toBe('custom');
+      expect(result.current.maxFeePerGas).toBe('100');
+      expect(result.current.maxPriorityFeePerGas).toBe('10');
+    });
+  });
+
+  describe('when showFiat is false', () => {
+    beforeEach(() => {
+      configureEIP1559();
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          checkNetworkAndAccountSupports1559Response: true,
+          shouldShowFiat: false,
+        }),
+      );
+    });
+
+    it('does not return fiat values', () => {
+      const { result } = renderHook(() =>
+        useGasFeeInputs(null, {
+          userFeeLevel: 'medium',
+          txParams: { gas: '0x5208' },
+        }),
+      );
+      expect(result.current.maxFeePerGasFiat).toBe('');
+      expect(result.current.maxPriorityFeePerGasFiat).toBe('');
+      expect(result.current.estimatedMaximumFiat).toBe('');
+      expect(result.current.estimatedMinimumFiat).toBe('');
     });
   });
 });

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import Button from '../../../components/ui/button';
@@ -13,10 +14,31 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
+import { setCompletedOnboarding } from '../../../store/actions';
+import { useMetricEvent } from '../../../hooks/useMetricEvent';
+import { getFirstTimeFlowType } from '../../../selectors';
 
 export default function CreationSuccessful() {
+  const firstTimeFlowTypeNameMap = {
+    create: 'New Wallet Created',
+    import: 'New Wallet Imported',
+  };
   const history = useHistory();
   const t = useI18nContext();
+  const dispatch = useDispatch();
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+
+  const onboardingCompletedEvent = useMetricEvent({
+    category: 'Onboarding',
+    action: 'Onboarding Complete',
+    name: firstTimeFlowTypeNameMap[firstTimeFlowType],
+  });
+
+  const onComplete = async () => {
+    await dispatch(setCompletedOnboarding());
+    onboardingCompletedEvent();
+    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+  };
   return (
     <div className="creation-successful">
       <Box textAlign={TEXT_ALIGN.CENTER} margin={6}>
@@ -74,12 +96,7 @@ export default function CreationSuccessful() {
         >
           {t('setAdvancedPrivacySettings')}
         </Button>
-        <Button
-          type="primary"
-          large
-          rounded
-          onClick={() => history.push(ONBOARDING_PIN_EXTENSION_ROUTE)}
-        >
+        <Button type="primary" large rounded onClick={onComplete}>
           {t('done')}
         </Button>
       </Box>

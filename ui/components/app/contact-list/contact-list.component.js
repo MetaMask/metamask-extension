@@ -106,9 +106,9 @@ export default class ContactList extends PureComponent {
     return (
       <div className="send__select-recipient-wrapper__list">
         {children || null}
-        {searchForRecents && this.renderRecents()}
-        {searchForContacts && this.renderAddressBook()}
-        {searchForMyAccounts && this.renderMyAccounts()}
+        {searchForRecents ? this.renderRecents() : null}
+        {searchForContacts ? this.renderAddressBook() : null}
+        {searchForMyAccounts ? this.renderMyAccounts() : null}
       </div>
     );
   }

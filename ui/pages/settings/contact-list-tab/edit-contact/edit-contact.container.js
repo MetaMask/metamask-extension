@@ -9,7 +9,6 @@ import {
 import {
   addToAddressBook,
   removeFromAddressBook,
-  setAccountLabel,
 } from '../../../../store/actions';
 import EditContact from './edit-contact.component';
 
@@ -44,8 +43,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addToAddressBook(recipient, nickname, memo)),
     removeFromAddressBook: (chainId, addressToRemove) =>
       dispatch(removeFromAddressBook(chainId, addressToRemove)),
-    setAccountLabel: (address, label) =>
-      dispatch(setAccountLabel(address, label)),
   };
 };
 

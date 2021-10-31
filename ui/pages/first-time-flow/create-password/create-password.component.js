@@ -7,7 +7,6 @@ import {
   INITIALIZE_IMPORT_WITH_SEED_PHRASE_ROUTE,
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
 } from '../../../helpers/constants/routes';
-import { isBeta } from '../../../helpers/utils/build-types';
 import NewAccount from './new-account';
 import ImportWithSeedPhrase from './import-with-seed-phrase';
 
@@ -32,7 +31,7 @@ export default class CreatePassword extends PureComponent {
 
     return (
       <div className="first-time-flow__wrapper">
-        <MetaFoxLogo useDark={isBeta()} />
+        <MetaFoxLogo />
         <Switch>
           <Route
             exact

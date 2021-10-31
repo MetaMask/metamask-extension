@@ -26,3 +26,5 @@ export const Base = () => {
     />
   );
 };
+
+DefaultStory.storyName = 'Default';

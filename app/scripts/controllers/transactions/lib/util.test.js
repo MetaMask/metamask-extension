@@ -323,6 +323,8 @@ describe('txUtils', function () {
         gasPrice: '1',
         maxFeePerGas: '1',
         maxPriorityFeePerGas: '1',
+        estimateSuggested: 'medium',
+        estimateUsed: 'high',
         type: '1',
       };
 
@@ -376,6 +378,17 @@ describe('txUtils', function () {
         normalizedTxParams.type,
         '0x1',
         'type should be hex-prefixed',
+      );
+
+      assert.equal(
+        normalizedTxParams.estimateSuggested,
+        'medium',
+        'estimateSuggested should be the string originally provided',
+      );
+      assert.equal(
+        normalizedTxParams.estimateUsed,
+        'high',
+        'estimateSuggested should be the string originally provided',
       );
     });
   });
