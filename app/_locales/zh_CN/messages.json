@@ -103,10 +103,6 @@
   "allowExternalExtensionTo": {
     "message": "允许这个外部扩展到："
   },
-  "allowOriginSpendToken": {
-    "message": "允许 $1 使用您的 $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "允许本网站："
   },
@@ -404,9 +400,6 @@
   },
   "customGasSubTitle": {
     "message": "提升费用可能会缩短处理时间，但不保证绝对有效。"
-  },
-  "customRPC": {
-    "message": "自定义 RPC"
   },
   "customSpendLimit": {
     "message": "自定义消费限额"
@@ -1843,10 +1836,6 @@
   "troubleTokenBalances": {
     "message": "我们无法加载您的代币余额。您可以查看它们",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "您信任这个网站吗？授权即表示您允许 $1 提取您的 $2，并为您自动进行交易。",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "重试"

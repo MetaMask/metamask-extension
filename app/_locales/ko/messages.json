@@ -130,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "이 외부 확장을 통해 다음을 하도록 허용:"
   },
-  "allowOriginSpendToken": {
-    "message": "$1에서 $2을(를) 지출하도록 허용하시겠어요?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "이 사이트에서 다음을 하도록 허용:"
   },
@@ -473,9 +469,6 @@
   },
   "customGasSubTitle": {
     "message": "수수료를 올리면 처리 시간이 단축되기도 하지만 항상 그렇지는 않습니다."
-  },
-  "customRPC": {
-    "message": "맞춤형 RPC"
   },
   "customSpendLimit": {
     "message": "맞춤형 지출 한도"
@@ -2277,10 +2270,6 @@
   "troubleTokenBalances": {
     "message": "토큰 잔액을 로드하는 도중 문제가 발생했습니다. 다음에서 잔액을 확인하세요. ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "이 사이트를 신뢰하시나요? 이 권한을 부여하면 $1에서 귀하의 $2을(를) 인출하고 거래를 자동으로 처리하게 됩니다.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "다시 시도"

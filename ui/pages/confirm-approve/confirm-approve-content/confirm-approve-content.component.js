@@ -1,19 +1,29 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import copyToClipboard from 'copy-to-clipboard';
+import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import UrlIcon from '../../../components/ui/url-icon';
 import { addressSummary, getURLHostName } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
+import { isBeta } from '../../../helpers/utils/build-types';
+import { ellipsify } from '../../send/send.utils';
 import Typography from '../../../components/ui/typography';
+import Box from '../../../components/ui/box';
+import Button from '../../../components/ui/button';
+import MetaFoxLogo from '../../../components/ui/metafox-logo';
+import Identicon from '../../../components/ui/identicon';
+import CopyIcon from '../../../components/ui/icon/copy-icon.component';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
   BLOCK_SIZES,
   JUSTIFY_CONTENT,
+  COLORS,
+  DISPLAY,
 } from '../../../helpers/constants/design-system';
-import Box from '../../../components/ui/box';
-import Button from '../../../components/ui/button';
+import { SECOND } from '../../../../shared/constants/time';
+import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 
 export default class ConfirmApproveContent extends Component {
@@ -47,10 +57,15 @@ export default class ConfirmApproveContent extends Component {
     warning: PropTypes.string,
     txData: PropTypes.object,
     ledgerWalletRequiredHidConnection: PropTypes.bool,
+    tokenImage: PropTypes.string,
+    chainId: PropTypes.string,
+    rpcPrefs: PropTypes.object,
+    isContract: PropTypes.bool,
   };
 
   state = {
     showFullTxDetails: false,
+    copied: false,
   };
 
   renderApproveContentCard({
@@ -243,6 +258,11 @@ export default class ConfirmApproveContent extends Component {
       warning,
       txData,
       ledgerWalletRequiredHidConnection,
+      tokenImage,
+      toAddress,
+      chainId,
+      rpcPrefs,
+      isContract,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
@@ -257,20 +277,104 @@ export default class ConfirmApproveContent extends Component {
             <ConfirmPageContainerWarning warning={warning} />
           </div>
         )}
-        <div className="confirm-approve-content__identicon-wrapper">
-          <UrlIcon
-            className="confirm-approve-content__identicon"
-            fallbackClassName="confirm-approve-content__identicon"
-            name={getURLHostName(origin)}
-            url={siteImage}
-          />
-        </div>
+        <Box
+          display={DISPLAY.FLEX}
+          className="confirm-approve-content__icon-display-content"
+        >
+          <Box className="confirm-approve-content__metafoxlogo">
+            <MetaFoxLogo useDark={isBeta()} />
+          </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            className="confirm-approve-content__siteinfo"
+          >
+            <UrlIcon
+              className="confirm-approve-content__siteimage-identicon"
+              fallbackClassName="confirm-approve-content__siteimage-identicon"
+              name={getURLHostName(origin)}
+              url={siteImage}
+            />
+            <Typography
+              variant={TYPOGRAPHY.H6}
+              fontWeight={FONT_WEIGHT.NORMAL}
+              color={COLORS.UI4}
+              boxProps={{ marginLeft: 1, marginTop: 2 }}
+            >
+              {getURLHostName(origin)}
+            </Typography>
+          </Box>
+        </Box>
         <div className="confirm-approve-content__title">
-          {t('allowOriginSpendToken', [origin, tokenSymbol])}
+          {t('allowSpendToken', [tokenSymbol])}
         </div>
         <div className="confirm-approve-content__description">
-          {t('trustSiteApprovePermission', [origin, tokenSymbol])}
+          {t('trustSiteApprovePermission', [
+            isContract
+              ? t('contract').toLowerCase()
+              : t('account').toLowerCase(),
+          ])}
         </div>
+        <Box className="confirm-approve-content__address-display-content">
+          <Box display={DISPLAY.FLEX}>
+            <Identicon
+              className="confirm-approve-content__address-identicon"
+              diameter={20}
+              address={toAddress}
+              image={tokenImage}
+            />
+            <Typography
+              variant={TYPOGRAPHY.H6}
+              fontWeight={FONT_WEIGHT.NORMAL}
+              color={COLORS.UI4}
+              boxProps={{ marginBottom: 0 }}
+            >
+              {ellipsify(toAddress)}
+            </Typography>
+            <Button
+              type="link"
+              className="confirm-approve-content__copy-address"
+              onClick={() => {
+                this.setState({ copied: true });
+                this.copyTimeout = setTimeout(
+                  () => this.setState({ copied: false }),
+                  SECOND * 3,
+                );
+                copyToClipboard(toAddress);
+              }}
+              title={
+                this.state.copied
+                  ? t('copiedExclamation')
+                  : t('copyToClipboard')
+              }
+            >
+              <CopyIcon size={9} color="#6a737d" />
+            </Button>
+            <Button
+              type="link"
+              className="confirm-approve-content__etherscan-link"
+              onClick={() => {
+                const blockExplorerTokenLink = isContract
+                  ? getTokenTrackerLink(toAddress, chainId, null, null, {
+                      blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
+                    })
+                  : getAccountLink(
+                      toAddress,
+                      chainId,
+                      { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
+                      null,
+                    );
+                global.platform.openTab({
+                  url: blockExplorerTokenLink,
+                });
+              }}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={t('etherscanView')}
+            >
+              <img src="images/popout.svg" alt={t('etherscanView')} />
+            </Button>
+          </Box>
+        </Box>
         <div className="confirm-approve-content__edit-submission-button-container">
           <div
             className="confirm-approve-content__medium-link-text cursor-pointer"

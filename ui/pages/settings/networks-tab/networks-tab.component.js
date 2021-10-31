@@ -62,6 +62,7 @@ export default class NetworksTab extends PureComponent {
               event.preventDefault();
               history.push(ADD_NETWORK_ROUTE);
             }}
+            className="add-network-form__header-add-network-button"
           >
             {this.context.t('addANetwork')}
           </Button>

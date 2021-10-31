@@ -145,9 +145,9 @@
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
-  "allowOriginSpendToken": {
-    "message": "Allow $1 to spend your $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
+  "allowSpendToken": {
+    "message": "Give permission to access your $1?",
+    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowThisSiteTo": {
     "message": "Allow this site to:"
@@ -554,9 +554,6 @@
   },
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
-  },
-  "customRPC": {
-    "message": "Custom RPC"
   },
   "customSpendLimit": {
     "message": "Custom Spend Limit"
@@ -1174,6 +1171,9 @@
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
+  "insufficientFundsForGas": {
+    "message": "Insufficient funds for gas"
+  },
   "insufficientTokens": {
     "message": "Insufficient tokens."
   },
@@ -1292,6 +1292,9 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
+  },
+  "ledgerTransportChangeWarning": {
+    "message": "If your Ledger Live app is open, please disconnect any open Ledger Live connection and close the Ledger Live app."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "The ledger device was not connected. If you wish to connect your Ledger, please click 'Continue' again and approve HID connection",
@@ -2188,6 +2191,12 @@
   "showSeedPhrase": {
     "message": "Show Secret Recovery Phrase"
   },
+  "showTestnetNetworks": {
+    "message": "Test networks"
+  },
+  "showTestnetNetworksDescription": {
+    "message": "Select this to show test networks in network list"
+  },
   "sigRequest": {
     "message": "Signature Request"
   },
@@ -2838,8 +2847,7 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
-    "message": "Do you trust this site? By granting this permission, you’re allowing $1 to withdraw your $2 and automate transactions for you.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
+    "message": "By granting permission, you are allowing the following $1 to access your funds"
   },
   "tryAgain": {
     "message": "Try again"

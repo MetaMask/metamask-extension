@@ -248,9 +248,6 @@
   "customGasSubTitle": {
     "message": "Höhere Gebühren können Bearbeitungszeiten verkürzen, wofür es allerdings keine Garantie gibt."
   },
-  "customRPC": {
-    "message": "Spezieller RPC"
-  },
   "customToken": {
     "message": "Custom-Token"
   },

@@ -30,9 +30,15 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        await driver.findElement('.add-network-form__sub-header-text');
+        await driver.findVisibleElement('.settings-page__content');
+
+        await driver.findElement('.settings-page__sub-header-text');
+
+        await driver.clickElement(
+          '.add-network-form__header-add-network-button',
+        );
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const networkNameInput = customRpcInputs[0];
@@ -48,7 +54,7 @@ describe('Stores custom RPC history', function () {
         await chainIdInput.clear();
         await chainIdInput.sendKeys(chainId.toString());
 
-        await driver.clickElement('.add-network-form__footer .btn-primary');
+        await driver.clickElement('.add-network-form__footer-submit-button');
         await driver.findElement({ text: networkName, tag: 'span' });
       },
     );
@@ -71,9 +77,15 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        await driver.findElement('.add-network-form__sub-header-text');
+        await driver.findVisibleElement('.settings-page__content');
+
+        await driver.findElement('.settings-page__sub-header-text');
+
+        await driver.clickElement(
+          '.add-network-form__header-add-network-button',
+        );
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
@@ -81,7 +93,7 @@ describe('Stores custom RPC history', function () {
         await rpcUrlInput.clear();
         await rpcUrlInput.sendKeys(duplicateRpcUrl);
         await driver.findElement({
-          text: 'This URL is currently used by the Localhost 8545 network.',
+          text: 'This URL is currently used by the localhost network.',
           tag: 'p',
         });
       },
@@ -106,9 +118,17 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        await driver.findElement('.add-network-form__sub-header-text');
+        // await driver.findElement('.add-network-form__sub-header-text');
+        // wait for the full screen to be visible
+        await driver.findVisibleElement('.settings-page__content');
+
+        await driver.findElement('.settings-page__sub-header-text');
+
+        await driver.clickElement(
+          '.add-network-form__header-add-network-button',
+        );
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
@@ -120,8 +140,7 @@ describe('Stores custom RPC history', function () {
         await chainIdInput.clear();
         await chainIdInput.sendKeys(duplicateChainId);
         await driver.findElement({
-          text:
-            'This Chain ID is currently used by the Localhost 8545 network.',
+          text: 'This Chain ID is currently used by the localhost network.',
           tag: 'p',
         });
       },
@@ -189,12 +208,9 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        // cancel new custom rpc
-        await driver.clickElement(
-          '.add-network-form__footer button.btn-secondary',
-        );
+        await driver.findVisibleElement('.settings-page__content');
 
         const networkListItems = await driver.findClickableElements(
           '.networks-tab__networks-list-name',
