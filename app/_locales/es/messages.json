@@ -130,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "Permitir que esta extensión externa haga lo siguiente:"
   },
-  "allowOriginSpendToken": {
-    "message": "¿Permitir que $1 gaste su $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Permitir que este sitio haga lo siguiente:"
   },
@@ -473,9 +469,6 @@
   },
   "customGasSubTitle": {
     "message": "Aumentar la cuota puede disminuir los tiempos de procesamiento, pero no está garantizado."
-  },
-  "customRPC": {
-    "message": "RPC personalizada"
   },
   "customSpendLimit": {
     "message": "Límite de gastos personalizado"
@@ -2277,10 +2270,6 @@
   "troubleTokenBalances": {
     "message": "Tuvimos problemas al cargar los saldos de token. Puede verlos ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "¿Este sitio es de confianza? Al conceder este permiso, autoriza que $1 retire su $2 y automatice las transacciones por usted.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Vuelva a intentarlo"

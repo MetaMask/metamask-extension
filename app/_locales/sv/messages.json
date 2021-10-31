@@ -251,9 +251,6 @@
   "customGasSubTitle": {
     "message": "Att öka avgiften kan minska behandlingstiden, men det är inte garanterat att göra det."
   },
-  "customRPC": {
-    "message": "Anpassad RPC"
-  },
   "customToken": {
     "message": "Anpassad token"
   },

@@ -34,6 +34,7 @@ export default function reduceMetamask(state = {}, action) {
     preferences: {
       autoLockTimeLimit: undefined,
       showFiatInTestnets: false,
+      showTestNetworks: false,
       useNativeCurrencyAsPrimaryCurrency: true,
     },
     firstTimeFlowType: null,

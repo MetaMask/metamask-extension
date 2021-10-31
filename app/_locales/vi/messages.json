@@ -130,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "Cho phép tiện ích bên ngoài này:"
   },
-  "allowOriginSpendToken": {
-    "message": "Cho phép $1 chi tiêu $2 của bạn?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Cho phép trang web này:"
   },
@@ -473,9 +469,6 @@
   },
   "customGasSubTitle": {
     "message": "Việc tăng phí có thể giúp giảm thời gian xử lý, nhưng điều này không được đảm bảo."
-  },
-  "customRPC": {
-    "message": "RPC tùy chỉnh"
   },
   "customSpendLimit": {
     "message": "Giới hạn chi tiêu tùy chỉnh"
@@ -2277,10 +2270,6 @@
   "troubleTokenBalances": {
     "message": "Chúng tôi đã gặp phải vấn đề khi tải số dư token của bạn. Bạn có thể xem số dư ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "Bạn có tin tưởng trang web này không? Bằng việc cấp quyền này, bạn sẽ cho phép $1 rút $2 của bạn và tự động thực hiện các giao dịch cho bạn.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Thử lại"

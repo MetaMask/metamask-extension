@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "הגדלת התשלום עשויה לצמצם את זמני העיבוד, אבל אין ערובה לכך."
   },
-  "customRPC": {
-    "message": "RPC מותאם אישית"
-  },
   "customToken": {
     "message": "אסימון מותאם אישית"
   },
