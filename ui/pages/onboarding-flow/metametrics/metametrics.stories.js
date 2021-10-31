@@ -2,8 +2,8 @@ import React from 'react';
 import OnboardingMetametrics from './metametrics';
 
 export default {
-  title: 'Onboarding',
+  title: 'Pages/Onboarding Flow/Meta Metrics',
   id: __filename,
 };
 
-export const OnboardingComponent = () => <OnboardingMetametrics />;
+export const Base = () => <OnboardingMetametrics />;
