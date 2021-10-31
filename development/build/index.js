@@ -38,7 +38,6 @@ require('@metamask/eslint-config');
 require('@metamask/eslint-config-nodejs');
 require('eslint');
 require('eslint-config-prettier');
-// eslint-disable-next-line import/no-extraneous-dependencies, node/no-extraneous-require
 require('eslint-import-resolver-node');
 require('eslint-plugin-import');
 require('eslint-plugin-node');
