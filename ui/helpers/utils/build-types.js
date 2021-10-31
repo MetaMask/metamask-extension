@@ -34,8 +34,8 @@ export function getBuildSpecificAsset(assetName) {
     !assetList[buildType] ||
     !Object.keys(assetList[buildType]).includes(assetName)
   ) {
-    console.warn(
-      `Cannot find asset for build ${buildType}: ${assetName}, returning main build asset`,
+    console.error(
+      `Cannot find asset "${assetName}" for build "${buildType}", returning main build asset.`,
     );
     return assetList.main[assetName];
   }
