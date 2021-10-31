@@ -12436,9 +12436,9 @@ eth-keyring-controller@^6.1.0, eth-keyring-controller@^6.2.0, eth-keyring-contro
     obs-store "^4.0.3"
 
 eth-lattice-keyring@^0.3.0:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.3.3.tgz#48ec0420faa0ad7cade73c344954f7fc1e74cd5c"
-  integrity sha512-Hk/J/NkkARwqIUuxW4WEGXR+JDMw2keA6B6vbw4c3JyxtgD+rnCb6uCCQfmFgrEJpNYEmse1xZIwQY9m9FIyzw==
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.3.4.tgz#474aab8908feacd4a14a1dd5c08d70f6bccb1c5e"
+  integrity sha512-X21vOAMesTu3qYgAkHKVLQ/OeDLwIOSGcmVvXnbktLcE4p2GdwWxWT9VNziKeGf2aUrVBI6fniXlQb/eHYoycQ==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.1.1"
