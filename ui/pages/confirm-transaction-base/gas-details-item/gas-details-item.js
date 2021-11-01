@@ -100,7 +100,7 @@ const GasDetailItem = ({
         >
           <Box marginRight={1}>
             <b>
-              {estimateToUse === 'high' && <>&#9888; &nbsp;</>}
+              {estimateToUse === 'high' && '⚠ '}
               <I18nValue messageKey="editGasSubTextFeeLabel" />
             </b>
           </Box>
