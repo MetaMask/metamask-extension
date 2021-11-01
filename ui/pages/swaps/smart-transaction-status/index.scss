@@ -5,14 +5,37 @@
   flex: 1;
   width: 100%;
 
-  &__content {
-    flex-flow: column;
+  &__loading-bar-container {
+    height: 3px;
+    background: $Grey-100;
+    display: flex;
+    margin-top: 12px;
+    margin-bottom: 28px;
+  }
+
+  &__loading-bar {
+    height: 3px;
+    background: $Blue-500;
+    -webkit-transition: width 0.5s linear;
+    -moz-transition: width 0.5s linear;
+    -o-transition: width 0.5s linear;
+    transition: width 0.5s linear;
   }
 
   div {
     text-align: center;
-    display: flex;
-    justify-content: center;
+  }
+
+  &__content {
+    flex-flow: column;
+    width: 100%;
+  }
+
+  &__background-animation {
+    // TODO: Run it in a loop.
+    display: block;
+    position: relative;
+    left: -160px;
   }
 
   a {
@@ -23,5 +46,16 @@
     color: $Blue-500;
     margin-top: 24px;
     cursor: pointer;
+  }
+
+  &__cancel-swap-link {
+    font-size: $font-size-h7;
+  }
+
+  &__swaps-footer {
+    .btn-secondary {
+      color: $ui-4;
+      border: 1px solid $ui-4;
+    }
   }
 }

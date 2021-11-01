@@ -7,3 +7,20 @@ export const KEYRING_TYPES = {
   LEDGER: 'Ledger Hardware',
   TREZOR: 'Trezor Hardware',
 };
+
+/**
+ * Used for setting the users preference for ledger transport type
+ */
+export const LEDGER_TRANSPORT_TYPES = {
+  LIVE: 'ledgerLive',
+  WEBHID: 'webhid',
+  U2F: 'u2f',
+};
+
+export const LEDGER_USB_VENDOR_ID = '0x2c97';
+
+export const WEBHID_CONNECTED_STATUSES = {
+  CONNECTED: 'connected',
+  NOT_CONNECTED: 'notConnected',
+  UNKNOWN: 'unknown',
+};

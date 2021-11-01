@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Збільшення комісії може призвести до зменшення часу обробки, але це не гарантується."
   },
-  "customRPC": {
-    "message": "Налаштувати RPC"
-  },
   "customToken": {
     "message": "Користувацький токен"
   },
@@ -622,9 +619,6 @@
   },
   "newContract": {
     "message": "Новий контракт"
-  },
-  "newNetwork": {
-    "message": "Нова мережа"
   },
   "newPassword": {
     "message": "Новий пароль (мінімум 8 символів)"

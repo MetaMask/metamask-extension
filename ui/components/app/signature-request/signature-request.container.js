@@ -1,12 +1,28 @@
 import { connect } from 'react-redux';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
-import { accountsWithSendEtherInfoSelector } from '../../../selectors';
+import {
+  accountsWithSendEtherInfoSelector,
+  doesAddressRequireLedgerHidConnection,
+} from '../../../selectors';
+import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import SignatureRequest from './signature-request.component';
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  const { txData } = ownProps;
+  const {
+    msgParams: { from },
+  } = txData;
+  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
+    state,
+    from,
+  );
+  const isLedgerWallet = isAddressLedger(state, from);
+
   return {
+    isLedgerWallet,
+    hardwareWalletRequiresConnection,
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
   };
@@ -19,7 +35,11 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { allAccounts } = stateProps;
+  const {
+    allAccounts,
+    isLedgerWallet,
+    hardwareWalletRequiresConnection,
+  } = stateProps;
   const {
     signPersonalMessage,
     signTypedMessage,
@@ -58,6 +78,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     txData,
     cancel,
     sign,
+    isLedgerWallet,
+    hardwareWalletRequiresConnection,
   };
 }
 

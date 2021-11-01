@@ -19,6 +19,8 @@ const normalizers = {
   maxFeePerGas: addHexPrefix,
   maxPriorityFeePerGas: addHexPrefix,
   type: addHexPrefix,
+  estimateSuggested: (estimate) => estimate,
+  estimateUsed: (estimate) => estimate,
 };
 
 export function normalizeAndValidateTxParams(txParams, lowerCase = true) {

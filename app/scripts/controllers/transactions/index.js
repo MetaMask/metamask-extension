@@ -43,6 +43,7 @@ import {
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
 } from '../../../../shared/constants/network';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
+import { readAddressAsContract } from '../../../../shared/modules/contract-utils';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -654,6 +655,14 @@ export default class TransactionController extends EventEmitter {
       newGasParams.gas = customGasSettings?.gas ?? GAS_LIMITS.SIMPLE;
     }
 
+    if (customGasSettings.estimateSuggested) {
+      newGasParams.estimateSuggested = customGasSettings.estimateSuggested;
+    }
+
+    if (customGasSettings.estimateUsed) {
+      newGasParams.estimateUsed = customGasSettings.estimateUsed;
+    }
+
     if (isEIP1559Transaction(originalTxMeta)) {
       previousGasParams.maxFeePerGas = txParams.maxFeePerGas;
       previousGasParams.maxPriorityFeePerGas = txParams.maxPriorityFeePerGas;
@@ -880,38 +889,6 @@ export default class TransactionController extends EventEmitter {
     } finally {
       this.inProcessOfSigning.delete(txId);
     }
-  }
-
-  async approveExternalTransaction(txParams) {
-    // This is hacky, need to review with other engineers and decide on best alternative.
-    const uniqueHashOfParams = hashObject(txParams);
-    if (this.inProcessOfSigning.has(uniqueHashOfParams)) {
-      return '';
-    }
-    this.inProcessOfSigning.add(uniqueHashOfParams);
-    let rawTx;
-    let nonceLock;
-    try {
-      const fromAddress = txParams.from;
-      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
-      const nonce = nonceLock.nextNonce;
-
-      txParams.nonce = addHexPrefix(nonce.toString(16));
-
-      rawTx = await this.signExternalTransaction(txParams);
-      nonceLock.releaseLock();
-    } catch (err) {
-      log.error(err);
-      // must set transaction to submitted/failed before releasing lock
-      if (nonceLock) {
-        nonceLock.releaseLock();
-      }
-      // continue with error chain
-      throw err;
-    } finally {
-      this.inProcessOfSigning.delete(uniqueHashOfParams);
-    }
-    return rawTx;
   }
 
   async approveTransactionsWithSameNonce(listOfTxParams) {
@@ -1331,23 +1308,21 @@ export default class TransactionController extends EventEmitter {
       result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
     }
 
-    let code;
+    let contractCode;
+
     if (!result) {
-      try {
-        code = await this.query.getCode(to);
-      } catch (e) {
-        code = null;
-        log.warn(e);
-      }
+      const {
+        contractCode: resultCode,
+        isContractAddress,
+      } = await readAddressAsContract(this.query, to);
 
-      const codeIsEmpty = !code || code === '0x' || code === '0x0';
-
-      result = codeIsEmpty
-        ? TRANSACTION_TYPES.SIMPLE_SEND
-        : TRANSACTION_TYPES.CONTRACT_INTERACTION;
+      contractCode = resultCode;
+      result = isContractAddress
+        ? TRANSACTION_TYPES.CONTRACT_INTERACTION
+        : TRANSACTION_TYPES.SIMPLE_SEND;
     }
 
-    return { type: result, getCodeResponse: code };
+    return { type: result, getCodeResponse: contractCode };
   }
 
   /**
@@ -1491,7 +1466,14 @@ export default class TransactionController extends EventEmitter {
       status,
       chainId,
       origin: referrer,
-      txParams: { gasPrice, gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas },
+      txParams: {
+        gasPrice,
+        gas: gasLimit,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        estimateSuggested,
+        estimateUsed,
+      },
       metamaskNetworkId: network,
     } = txMeta;
     const source = referrer === 'metamask' ? 'user' : 'dapp';
@@ -1503,6 +1485,14 @@ export default class TransactionController extends EventEmitter {
       gasParams.max_priority_fee_per_gas = maxPriorityFeePerGas;
     } else {
       gasParams.gas_price = gasPrice;
+    }
+
+    if (estimateSuggested) {
+      gasParams.estimate_suggested = estimateSuggested;
+    }
+
+    if (estimateUsed) {
+      gasParams.estimate_used = estimateUsed;
     }
 
     const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
@@ -1539,6 +1529,8 @@ export default class TransactionController extends EventEmitter {
     for (const param in gasParams) {
       if (isHexString(gasParams[param])) {
         gasValuesInGwei[param] = hexWEIToDecGWEI(gasParams[param]);
+      } else {
+        gasValuesInGwei[param] = gasParams[param];
       }
     }
     return gasValuesInGwei;
