@@ -40,6 +40,7 @@ const POLL_COUNT_LIMIT = 3;
 // If for any reason the MetaSwap API fails to provide a refresh time,
 // provide a reasonable fallback to avoid further errors
 const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
+const FALLBACK_SMART_TRANSACTION_REFRESH_TIME = SECOND * 10;
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -82,8 +83,8 @@ const initialState = {
     isFetchingQuotes: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
-    swapsStxBatchStatusRefreshTime: SECOND * 10,
-    swapsStxGetTransactionsRefreshTime: SECOND * 10,
+    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
     swapsFeatureFlags: {},
     smartTransactionsStatus: {},
   },
@@ -173,9 +174,11 @@ export default class SwapsController {
         swapsQuotePrefetchingRefreshTime:
           swapsRefreshRates?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
         swapsStxGetTransactionsRefreshTime:
-          swapsRefreshRates?.stxGetTransactions || FALLBACK_QUOTE_REFRESH_TIME,
+          swapsRefreshRates?.stxGetTransactions ||
+          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
         swapsStxBatchStatusRefreshTime:
-          swapsRefreshRates?.stxBatchStatus || FALLBACK_QUOTE_REFRESH_TIME,
+          swapsRefreshRates?.stxBatchStatus ||
+          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
       },
     });
   }
