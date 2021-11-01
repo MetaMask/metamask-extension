@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
@@ -8,18 +9,20 @@ import { SIZES } from '../../../../helpers/constants/design-system';
 import ColorIndicator from '../../../../components/ui/color-indicator';
 import LockIcon from '../../../../components/ui/lock-icon';
 import { NETWORKS_FORM_ROUTE } from '../../../../helpers/constants/routes';
+import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
 
 const NetworkListItem = ({
-  network,
-  selectRpcUrl,
-  setSelectedSettingsRpcUrl,
-  networkIsSelected,
-  providerUrl,
-  providerType,
   isFullScreen,
+  providerType,
+  providerUrl,
+  network,
+  networkIsSelected,
+  selectedRpcUrl,
 }) => {
   const t = useI18nContext();
   const history = useHistory();
+  const dispatch = useDispatch();
+
   const {
     label,
     labelKey,
@@ -27,7 +30,7 @@ const NetworkListItem = ({
     providerType: currentProviderType,
   } = network;
 
-  const listItemNetworkIsSelected = selectRpcUrl && selectRpcUrl === rpcUrl;
+  const listItemNetworkIsSelected = selectedRpcUrl && selectedRpcUrl === rpcUrl;
   const listItemUrlIsProviderUrl = rpcUrl === providerUrl;
   const listItemTypeIsProviderNonRpcType =
     providerType !== NETWORK_TYPE_RPC && currentProviderType === providerType;
@@ -41,7 +44,7 @@ const NetworkListItem = ({
       key={`settings-network-list-item:${rpcUrl}`}
       className="networks-tab__networks-list-item"
       onClick={() => {
-        setSelectedSettingsRpcUrl(rpcUrl);
+        dispatch(setSelectedSettingsRpcUrl(rpcUrl));
         if (!isFullScreen) {
           history.push(NETWORKS_FORM_ROUTE);
         }
@@ -71,13 +74,12 @@ const NetworkListItem = ({
 };
 
 NetworkListItem.propTypes = {
-  network: PropTypes.object.isRequired,
-  selectRpcUrl: PropTypes.string,
-  setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
-  networkIsSelected: PropTypes.bool,
-  providerUrl: PropTypes.string,
-  providerType: PropTypes.string,
   isFullScreen: PropTypes.bool.isRequired,
+  providerType: PropTypes.string,
+  providerUrl: PropTypes.string,
+  network: PropTypes.object.isRequired,
+  networkIsSelected: PropTypes.bool,
+  selectedRpcUrl: PropTypes.string,
 };
 
 export default NetworkListItem;

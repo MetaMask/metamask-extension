@@ -16,17 +16,11 @@ const defaultNetworks = defaultNetworksData.map((network) => ({
 }));
 
 const propNewNetwork = {
-  onClear: () => undefined,
-  setRpcTarget: () => undefined,
   networksToRender: defaultNetworks,
-  onAddNetwork: () => undefined,
-  setNewNetworkAdded: () => undefined,
   addNewNetwork: true,
 };
 
 const propNetworkDisplay = {
-  editRpc: () => undefined,
-  showConfirmDeleteNetworkModal: () => undefined,
   selectedNetwork: {
     rpcUrl: 'http://localhost:8545',
     chainId: '1337',
@@ -36,12 +30,8 @@ const propNetworkDisplay = {
     viewOnly: false,
     rpcPrefs: {},
   },
-  onClear: () => undefined,
-  setRpcTarget: () => undefined,
   isCurrentRpcTarget: false,
   networksToRender: defaultNetworks,
-  onAddNetwork: () => undefined,
-  setNewNetworkAdded: () => undefined,
   addNewNetwork: false,
 };
 

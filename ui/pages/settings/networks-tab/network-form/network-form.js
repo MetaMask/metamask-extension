@@ -1,4 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
 import log from 'loglevel';
@@ -13,6 +15,17 @@ import ActionableMessage from '../../../../components/ui/actionable-message';
 import Button from '../../../../components/ui/button';
 import FormField from '../../../../components/ui/form-field';
 import { decimalToHex } from '../../../../helpers/utils/conversions.util';
+import {
+  setSelectedSettingsRpcUrl,
+  updateAndSetCustomRpc,
+  editRpc,
+  showModal,
+  setNewNetworkAdded,
+} from '../../../../store/actions';
+import {
+  DEFAULT_ROUTE,
+  NETWORKS_ROUTE,
+} from '../../../../helpers/constants/routes';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -52,18 +65,14 @@ const isValidWhenAppended = (url) => {
 };
 
 const NetworkForm = ({
-  editRpc,
-  showConfirmDeleteNetworkModal,
-  selectedNetwork,
-  onClear,
-  setRpcTarget,
+  addNewNetwork,
   isCurrentRpcTarget,
   networksToRender,
-  onAddNetwork,
-  setNewNetworkAdded,
-  addNewNetwork,
+  selectedNetwork,
 }) => {
   const t = useI18nContext();
+  const history = useHistory();
+  const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
   const selectedNetworkName = label || (labelKey && t(labelKey));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
@@ -385,27 +394,31 @@ const NetworkForm = ({
 
       // After this point, isSubmitting will be reset in componentDidUpdate
       if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
-        await editRpc(
-          selectedNetwork.rpcUrl,
-          rpcUrl,
-          prefixedChainId,
-          ticker,
-          networkName,
-          {
-            ...rpcPrefs,
-            blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
-          },
+        await dispatch(
+          editRpc(
+            selectedNetwork.rpcUrl,
+            rpcUrl,
+            prefixedChainId,
+            ticker,
+            networkName,
+            {
+              ...rpcPrefs,
+              blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
+            },
+          ),
         );
       } else {
-        await setRpcTarget(rpcUrl, prefixedChainId, ticker, networkName, {
-          ...rpcPrefs,
-          blockExplorerUrl: blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
-        });
+        await dispatch(
+          updateAndSetCustomRpc(rpcUrl, prefixedChainId, ticker, networkName, {
+            ...rpcPrefs,
+            blockExplorerUrl: blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
+          }),
+        );
       }
 
       if (addNewNetwork) {
-        setNewNetworkAdded(networkName);
-        onAddNetwork();
+        dispatch(setNewNetworkAdded(networkName));
+        history.push(DEFAULT_ROUTE);
       }
     } catch (error) {
       setIsSubmitting(false);
@@ -415,20 +428,25 @@ const NetworkForm = ({
 
   const onCancel = () => {
     if (addNewNetwork) {
-      onClear();
+      dispatch(setSelectedSettingsRpcUrl(''));
+      history.push(NETWORKS_ROUTE);
     } else {
       resetForm();
     }
   };
 
   const onDelete = () => {
-    showConfirmDeleteNetworkModal({
-      target: selectedNetwork.rpcUrl,
-      onConfirm: () => {
-        resetForm();
-        onClear();
-      },
-    });
+    dispatch(
+      showModal({
+        name: 'CONFIRM_DELETE_NETWORK',
+        target: selectedNetwork.rpcUrl,
+        onConfirm: () => {
+          resetForm();
+          dispatch(setSelectedSettingsRpcUrl(''));
+          history.push(NETWORKS_ROUTE);
+        },
+      }),
+    );
   };
   const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
   const stateUnchanged = stateIsUnchanged();
@@ -542,17 +560,9 @@ const NetworkForm = ({
 };
 
 NetworkForm.propTypes = {
-  editRpc: PropTypes.func,
-  showConfirmDeleteNetworkModal: PropTypes.func,
-  onClear: PropTypes.func.isRequired,
-  setRpcTarget: PropTypes.func.isRequired,
-  isCurrentRpcTarget: PropTypes.bool,
-  blockExplorerUrl: PropTypes.string,
-  rpcPrefs: PropTypes.object,
-  networksToRender: PropTypes.array.isRequired,
-  onAddNetwork: PropTypes.func,
-  setNewNetworkAdded: PropTypes.func,
   addNewNetwork: PropTypes.bool,
+  isCurrentRpcTarget: PropTypes.bool,
+  networksToRender: PropTypes.array.isRequired,
   selectedNetwork: PropTypes.object,
 };
 

@@ -1,69 +1,48 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
 import NetworkForm from '../network-form';
 import NetworkList from '../network-list';
-import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 
 const NetworkTabContent = ({
-  setRpcTarget,
-  showConfirmDeleteNetworkModal,
-  setSelectedSettingsRpcUrl,
-  selectedNetwork,
-  editRpc,
-  providerUrl,
-  providerType,
+  isFullScreen,
   networkDefaultedToProvider,
   networkIsSelected,
   networksToRender,
-  isFullScreen,
+  providerType,
+  providerUrl,
+  selectedNetwork,
   shouldRenderNetworkForm,
 }) => {
-  const history = useHistory();
-
   return (
     <>
       <NetworkList
-        networksToRender={networksToRender}
-        selectedNetwork={selectedNetwork}
-        setSelectedSettingsRpcUrl={setSelectedSettingsRpcUrl}
-        networkIsSelected={networkIsSelected}
+        isFullScreen={isFullScreen}
         networkDefaultedToProvider={networkDefaultedToProvider}
+        networkIsSelected={networkIsSelected}
+        networksToRender={networksToRender}
         providerType={providerType}
         providerUrl={providerUrl}
-        isFullScreen={isFullScreen}
+        selectedRpcUrl={selectedNetwork.rpcUrl}
       />
       {shouldRenderNetworkForm ? (
         <NetworkForm
-          setRpcTarget={setRpcTarget}
-          editRpc={editRpc}
-          selectedNetwork={selectedNetwork}
-          networksToRender={networksToRender}
-          onClear={(shouldUpdateHistory = true) => {
-            setSelectedSettingsRpcUrl('');
-            if (shouldUpdateHistory) {
-              history.push(NETWORKS_ROUTE);
-            }
-          }}
-          showConfirmDeleteNetworkModal={showConfirmDeleteNetworkModal}
           isCurrentRpcTarget={providerUrl === selectedNetwork.rpcUrl}
+          networksToRender={networksToRender}
+          selectedNetwork={selectedNetwork}
         />
       ) : null}
     </>
   );
 };
 NetworkTabContent.propTypes = {
-  setRpcTarget: PropTypes.func.isRequired,
-  showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
-  setSelectedSettingsRpcUrl: PropTypes.func.isRequired,
-  selectedNetwork: PropTypes.object,
-  editRpc: PropTypes.func.isRequired,
-  providerUrl: PropTypes.string,
-  providerType: PropTypes.string,
-  networksToRender: PropTypes.arrayOf(PropTypes.object).isRequired,
   isFullScreen: PropTypes.bool.isRequired,
-  shouldRenderNetworkForm: PropTypes.bool.isRequired,
-  networkIsSelected: PropTypes.bool,
   networkDefaultedToProvider: PropTypes.bool,
+  networkIsSelected: PropTypes.bool,
+  networksToRender: PropTypes.arrayOf(PropTypes.object).isRequired,
+  providerType: PropTypes.string,
+  providerUrl: PropTypes.string,
+  selectedNetwork: PropTypes.object,
+  shouldRenderNetworkForm: PropTypes.bool.isRequired,
 };
+
 export default NetworkTabContent;
