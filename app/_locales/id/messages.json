@@ -140,9 +140,6 @@
   "amount": {
     "message": "Jumlah"
   },
-  "amountWithColon": {
-    "message": "Jumlah:"
-  },
   "appDescription": {
     "message": "Dompet Ethereum di Browser Anda",
     "description": "The description of the application"
@@ -2190,9 +2187,6 @@
   "toAddress": {
     "message": "Untuk: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Untuk:"
   },
   "token": {
     "message": "Token"
