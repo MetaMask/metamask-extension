@@ -39,6 +39,7 @@ import {
   getSmartTransactionsOptInStatus,
   getUnsignedTransactionsAndEstimates,
   getSmartTransactionsEnabled,
+  signAndSendSwapsSmartTransaction,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -65,7 +66,6 @@ import {
   showModal,
   setSwapsQuotesPollingLimitEnabled,
   fetchUnsignedTransactionsAndEstimates,
-  signAndSendSmartTransaction,
 } from '../../../store/actions';
 import {
   ASSET_ROUTE,
@@ -174,7 +174,6 @@ export default function ViewQuote() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
-  console.log('stx enabled', smartTransactionsEnabled);
   const unsignedTransactionsAndEstimates = useSelector(
     getUnsignedTransactionsAndEstimates,
   );
@@ -874,11 +873,9 @@ export default function ViewQuote() {
                 destinationTokenSymbol,
               );
               dispatch(
-                signAndSendSmartTransaction({
+                signAndSendSwapsSmartTransaction({
                   unsignedTransaction,
                   unsignedTransactionsAndEstimates,
-                  sourceTokenSymbol,
-                  destinationTokenSymbol,
                 }),
               );
               history.push(SMART_TRANSACTION_STATUS_ROUTE);

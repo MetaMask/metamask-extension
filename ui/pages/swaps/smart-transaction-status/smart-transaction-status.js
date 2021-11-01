@@ -85,8 +85,6 @@ export default function SmartTransactionStatus() {
     (smartTransactionStatus.minedTx === 'not_mined' &&
       smartTransactionStatus.cancellationReason === 'not_cancelled');
 
-  console.log('is smart transaction pending', isSmartTransactionPending);
-
   useEffect(() => {
     stxStatusPageLoadedEvent();
     // const intervalId = setInterval(() => {

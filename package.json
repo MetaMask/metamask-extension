@@ -113,7 +113,7 @@
     "@metamask/obs-store": "^5.0.0",
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/providers": "^8.1.1",
-    "@metamask/smart-transactions-controller": "file:./../smart-transactions-controller/metamask-smart-transactions-controller-v1.0.0-d426ada6.tgz",
+    "@metamask/smart-transactions-controller": "file:./../smart-transactions-controller/metamask-smart-transactions-controller-v1.0.0-2b04b755.tgz",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "^1.6.2",
     "@sentry/browser": "^5.26.0",

@@ -26,6 +26,8 @@ import {
   setSwapsTxGasLimit,
   cancelTx,
   fetchSmartTransactionsLiveness,
+  signAndSendSmartTransaction,
+  updateSmartTransaction,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -679,6 +681,72 @@ export const fetchQuotesAndSetQuoteState = (
     }
 
     dispatch(setFetchingQuotes(false));
+  };
+};
+
+export const signAndSendSwapsSmartTransaction = ({
+  unsignedTransaction,
+  unsignedTransactionsAndEstimates,
+}) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const fetchParams = getFetchParams(state);
+    const { metaData, value: swapTokenValue, slippage } = fetchParams;
+    const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
+    const usedQuote = getUsedQuote(state);
+    try {
+      // sign and send stx
+      const uuid = await dispatch(
+        signAndSendSmartTransaction({
+          unsignedTransaction,
+          unsignedTransactionsAndEstimates,
+        }),
+      );
+      // update stx with data
+      const destinationValue = calcTokenAmount(
+        usedQuote.destinationAmount,
+        destinationTokenInfo.decimals || 18,
+      ).toPrecision(8);
+      const swapMetaData = {
+        token_from: sourceTokenInfo.symbol,
+        token_from_amount: String(swapTokenValue),
+        token_to: destinationTokenInfo.symbol,
+        token_to_amount: destinationValue,
+        slippage,
+        custom_slippage: slippage !== 2,
+        best_quote_source: getTopQuote(state)?.aggregator,
+        available_quotes: getQuotes(state)?.length,
+        other_quote_selected:
+          usedQuote.aggregator !== getTopQuote(state)?.aggregator,
+        other_quote_selected_source:
+          usedQuote.aggregator === getTopQuote(state)?.aggregator
+            ? ''
+            : usedQuote.aggregator,
+        average_savings: usedQuote.savings?.total,
+        performance_savings: usedQuote.savings?.performance,
+        fee_savings: usedQuote.savings?.fee,
+        median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+      };
+      const destinationTokenAddress = destinationTokenInfo.address;
+      const destinationTokenDecimals = destinationTokenInfo.decimals;
+      const destinationTokenSymbol = destinationTokenInfo.symbol;
+      const sourceTokenSymbol = sourceTokenInfo.symbol;
+      const type = TRANSACTION_TYPES.SWAP;
+      await dispatch(
+        updateSmartTransaction(uuid, {
+          origin: 'metamask',
+          destinationTokenAddress,
+          destinationTokenDecimals,
+          destinationTokenSymbol,
+          sourceTokenSymbol,
+          swapMetaData,
+          swapTokenValue,
+          type,
+        }),
+      );
+    } catch (e) {
+      console.log('signAndSendSwapsSmartTransaction error', e);
+    }
   };
 };
 

@@ -555,7 +555,12 @@ export default class MetamaskController extends EventEmitter {
       onNetworkStateChange: this.networkController.store.subscribe.bind(
         this.networkController.store,
       ),
+      getNetwork: this.networkController.getNetworkState.bind(
+        this.networkController,
+      ),
       nonceTracker: this.txController.nonceTracker,
+      provider: this.provider,
+      txController: this.txController,
     });
 
     // ensure accountTracker updates balances after network change
@@ -1198,6 +1203,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       fetchSmartTransactionsLiveness: nodeify(
         smartTransactionsController.fetchLiveness,
+        smartTransactionsController,
+      ),
+      updateSmartTransaction: nodeify(
+        smartTransactionsController.updateSmartTransaction,
         smartTransactionsController,
       ),
 

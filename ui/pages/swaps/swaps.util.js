@@ -756,6 +756,7 @@ export function getSwapsTokensReceivedFromTxMeta(
         numberOfDecimals: 6,
       },
     );
+    console.log(`ethReceived`, ethReceived);
     return ethReceived;
   }
   const txReceiptLogs = txReceipt?.logs;
@@ -775,6 +776,7 @@ export function getSwapsTokensReceivedFromTxMeta(
         isTransferFromGivenAddress
       );
     });
+    console.log('token transfer log', tokenTransferLog);
     return tokenTransferLog
       ? toPrecisionWithoutTrailingZeros(
           calcTokenAmount(tokenTransferLog.data, tokenDecimals).toString(10),
@@ -782,6 +784,7 @@ export function getSwapsTokensReceivedFromTxMeta(
         )
       : '';
   }
+  console.log(`null`, null);
   return null;
 }
 
