@@ -410,7 +410,7 @@ export default class ConfirmTransactionBase extends Component {
 
     return (
       <div className="confirm-page-container-content__details">
-        <LowGasWarning />
+        {EIP_1559_V2 && <LowGasWarning />}
         <TransactionDetail
           onEdit={() => this.handleEditGas()}
           rows={[
