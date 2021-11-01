@@ -13,6 +13,7 @@ import {
   JUSTIFY_CONTENT,
   TEXT_ALIGN,
 } from '../../../../helpers/constants/design-system';
+import { PageContainerFooter } from '../../../ui/page-container';
 
 const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
   const t = useI18nContext();
@@ -49,22 +50,13 @@ const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
           {t('QRHardwareSignRequestDescription')}
         </Typography>
       </Box>
-      <Box
-        display={DISPLAY.FLEX}
-        justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-      >
-        <Button
-          type="default"
-          onClick={() => {
-            cancelQRHardwareSignRequest();
-          }}
-        >
-          {t('QRHardwareSignRequestCancel')}
-        </Button>
-        <Button type="primary" onClick={toRead}>
-          {t('QRHardwareSignRequestGetSignature')}
-        </Button>
-      </Box>
+      <PageContainerFooter
+        onCancel={cancelQRHardwareSignRequest}
+        onSubmit={toRead}
+        cancelText={t('QRHardwareSignRequestCancel')}
+        submitText={t('QRHardwareSignRequestGetSignature')}
+        submitButtonType="confirm"
+      />
     </Box>
   );
 };
