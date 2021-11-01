@@ -57,7 +57,7 @@ SubHeader.propTypes = {
   addNewNetwork: PropTypes.bool.isRequired,
 };
 
-const NetworkTab = () => {
+const NetworkTab = ({ addNewNetwork }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
@@ -66,7 +66,6 @@ const NetworkTab = () => {
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const shouldRenderNetworkForm =
     isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE));
-  const addNewNetwork = Boolean(pathname.match(ADD_NETWORK_ROUTE));
 
   const frequentRpcListDetail = useSelector(getFrequentRpcListDetail);
   const provider = useSelector(getProvider);
@@ -152,4 +151,7 @@ const NetworkTab = () => {
   );
 };
 
+NetworkTab.propTypes = {
+  addNewNetwork: PropTypes.bool,
+};
 export default NetworkTab;
