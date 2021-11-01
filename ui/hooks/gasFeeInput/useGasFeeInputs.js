@@ -1,10 +1,15 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getAdvancedInlineGasShown } from '../../selectors';
-import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import { EDIT_GAS_MODES } from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
+import {
+  checkNetworkAndAccountSupports1559,
+  getAdvancedInlineGasShown,
+} from '../../selectors';
+import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
+import { hexToDecimal } from '../../helpers/utils/conversions.util';
+import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../helpers/utils/confirm-tx.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { useGasFeeErrors } from './useGasFeeErrors';
@@ -66,6 +71,10 @@ export function useGasFeeInputs(
 ) {
   const [transaction, setTransaction] = useState(trxn);
 
+  const supportsEIP1559 =
+    useSelector(checkNetworkAndAccountSupports1559) &&
+    !isLegacyTransaction(transaction?.txParams);
+
   // We need the gas estimates from the GasFeeController in the background.
   // Calling this hooks initiates polling for new gas estimates and returns the
   // current estimate.
@@ -88,6 +97,15 @@ export function useGasFeeInputs(
     if (transaction) return transaction?.userFeeLevel || null;
     return defaultEstimateToUse;
   });
+
+  const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
+    transaction,
+  );
+
+  const isUsingDappSuggestedGasFees = Boolean(
+    transaction?.dappSuggestedGasFees &&
+      dappSuggestedAndTxParamGasFeesAreTheSame,
+  );
 
   const [gasLimit, setGasLimit] = useState(
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
@@ -225,6 +243,7 @@ export function useGasFeeInputs(
   ]);
 
   return {
+    transaction,
     setTransaction,
     maxFeePerGas,
     maxFeePerGasFiat,
@@ -243,6 +262,7 @@ export function useGasFeeInputs(
     estimatedMaximumNative,
     estimatedMinimumNative,
     isGasEstimatesLoading,
+    isUsingDappSuggestedGasFees,
     gasFeeEstimates,
     gasEstimateType,
     estimatedGasFeeTimeBounds,
@@ -254,5 +274,6 @@ export function useGasFeeInputs(
     gasErrors,
     gasWarnings,
     hasGasErrors,
+    supportsEIP1559,
   };
 }

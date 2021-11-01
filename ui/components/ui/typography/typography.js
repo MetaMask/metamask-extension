@@ -20,6 +20,7 @@ export default function Typography({
   children,
   fontWeight = 'normal',
   fontStyle = 'normal',
+  fontSize,
   align,
   boxProps = {},
   margin = [1, 0],
@@ -33,6 +34,7 @@ export default function Typography({
     {
       [`typography--align-${align}`]: Boolean(align),
       [`typography--color-${color}`]: Boolean(color),
+      [`typography--size-${fontSize}`]: Boolean(fontSize),
     },
   );
 
@@ -67,6 +69,7 @@ Typography.propTypes = {
   margin: MultipleSizes,
   fontWeight: PropTypes.oneOf(Object.values(FONT_WEIGHT)),
   fontStyle: PropTypes.oneOf(Object.values(FONT_STYLE)),
+  fontSize: PropTypes.string,
   tag: PropTypes.oneOf([
     'p',
     'h1',
