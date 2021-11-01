@@ -9,6 +9,7 @@ import {
   prepareToLeaveSwaps,
   getSmartTransactionsStatus,
   getLatestSmartTransactionUuid,
+  getSwapsRefreshStates,
   getSelectedQuote,
   getTopQuote,
 } from '../../../ducks/swaps/swaps';
@@ -94,6 +95,7 @@ export default function SmartTransactionStatus() {
   const usedQuote = selectedQuote || topQuote;
   const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
   const latestSmartTransactionUuid = useSelector(getLatestSmartTransactionUuid);
+  const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   const smartTransactionStatus =
     smartTransactionsStatus?.[latestSmartTransactionUuid] || {}; // TODO: Use a list of STX from the STX controller.
 
@@ -145,11 +147,16 @@ export default function SmartTransactionStatus() {
       } else {
         clearInterval(intervalId);
       }
-    }, SMART_TRANSACTIONS_STATUS_INTERVAL);
+    }, swapsRefreshRates.stxBatchStatusRefreshTime);
     return () => clearInterval(intervalId);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, isSmartTransactionPending, latestSmartTransactionUuid]);
+  }, [
+    dispatch,
+    isSmartTransactionPending,
+    latestSmartTransactionUuid,
+    swapsRefreshRates.stxBatchStatusRefreshTime,
+  ]);
 
   useEffect(() => {
     let intervalId;
