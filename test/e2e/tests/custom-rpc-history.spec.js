@@ -32,14 +32,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        await driver.findVisibleElement('.settings-page__content');
-
-        await driver.findElement('.settings-page__sub-header-text');
-
-        await driver.clickElement(
-          '.add-network-form__header-add-network-button',
-        );
-        // await driver.findElement('.networks-tab__sub-header-text');
+        await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const networkNameInput = customRpcInputs[0];
@@ -55,10 +48,10 @@ describe('Stores custom RPC history', function () {
         await chainIdInput.clear();
         await chainIdInput.sendKeys(chainId.toString());
 
-        await driver.clickElement('.add-network-form__footer-submit-button');
-        // await driver.clickElement(
-        //   '.networks-tab__add-network-form-footer .btn-primary',
-        // );
+        await driver.clickElement(
+          '.networks-tab__add-network-form-footer .btn-primary',
+        );
+
         await driver.findElement({ text: networkName, tag: 'span' });
       },
     );
@@ -83,14 +76,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        await driver.findVisibleElement('.settings-page__content');
-
-        await driver.findElement('.settings-page__sub-header-text');
-
-        await driver.clickElement(
-          '.add-network-form__header-add-network-button',
-        );
-        // await driver.findElement('.networks-tab__sub-header-text');
+        await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
@@ -98,7 +84,7 @@ describe('Stores custom RPC history', function () {
         await rpcUrlInput.clear();
         await rpcUrlInput.sendKeys(duplicateRpcUrl);
         await driver.findElement({
-          text: 'This URL is currently used by the Localhost 8545 network.',
+          text: 'This URL is currently used by the localhost network.',
           tag: 'h6',
         });
       },
@@ -125,16 +111,7 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        // await driver.findElement('.add-network-form__sub-header-text');
-        // wait for the full screen to be visible
-        await driver.findVisibleElement('.settings-page__content');
-
-        await driver.findElement('.settings-page__sub-header-text');
-
-        await driver.clickElement(
-          '.add-network-form__header-add-network-button',
-        );
-        // await driver.findElement('.networks-tab__sub-header-text');
+        await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
@@ -146,8 +123,7 @@ describe('Stores custom RPC history', function () {
         await chainIdInput.clear();
         await chainIdInput.sendKeys(duplicateChainId);
         await driver.findElement({
-          text:
-            'This Chain ID is currently used by the Localhost 8545 network.',
+          text: 'This Chain ID is currently used by the localhost network.',
           tag: 'h6',
         });
       },
@@ -219,9 +195,9 @@ describe('Stores custom RPC history', function () {
 
         await driver.findVisibleElement('.settings-page__content');
         // // cancel new custom rpc
-        // await driver.clickElement(
-        //   '.networks-tab__add-network-form-footer button.btn-secondary',
-        // );
+        await driver.clickElement(
+          '.networks-tab__add-network-form-footer button.btn-secondary',
+        );
 
         const networkListItems = await driver.findClickableElements(
           '.networks-tab__networks-list-name',

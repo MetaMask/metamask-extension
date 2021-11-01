@@ -14,7 +14,7 @@ import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -129,9 +129,9 @@ class NetworkDropdown extends Component {
         size="large"
         onClick={() => {
           if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-            global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
+            global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE);
           } else {
-            this.props.history.push(NETWORKS_ROUTE);
+            this.props.history.push(ADD_NETWORK_ROUTE);
           }
           this.props.hideNetworkDropdown();
         }}
