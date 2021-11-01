@@ -65,8 +65,8 @@ const NetworkForm = ({
 }) => {
   const t = useI18nContext();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
-  const networkLabel = label || (labelKey && t(labelKey));
-  const [networkName, setNetworkName] = useState(networkLabel || '');
+  const selectedNetworkName = label || (labelKey && t(labelKey));
+  const [networkName, setNetworkName] = useState(selectedNetworkName || '');
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
   const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
@@ -77,14 +77,14 @@ const NetworkForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resetForm = useCallback(() => {
-    setNetworkName(networkLabel || '');
+    setNetworkName(selectedNetworkName || '');
     setRpcUrl(selectedNetwork.rpcUrl);
     setChainId(getDisplayChainId(selectedNetwork.chainId));
     setTicker(selectedNetwork?.ticker);
     setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
     setErrors({});
     setIsSubmitting(false);
-  }, [selectedNetwork, networkLabel]);
+  }, [selectedNetwork, selectedNetworkName]);
 
   const stateIsUnchanged = () => {
     // These added conditions are in case the saved chainId is invalid, which
@@ -98,7 +98,7 @@ const NetworkForm = ({
       rpcUrl === selectedNetwork.rpcUrl &&
       chainIdIsUnchanged &&
       ticker === selectedNetwork.ticker &&
-      networkName === selectedNetwork.networkName &&
+      networkName === selectedNetworkName &&
       blockExplorerUrl === selectedNetwork.blockExplorerUrl
     );
   };
@@ -119,7 +119,7 @@ const NetworkForm = ({
       setErrors({});
       setIsSubmitting(false);
     } else if (
-      prevNetworkName.current !== networkLabel ||
+      prevNetworkName.current !== selectedNetworkName ||
       prevRpcUrl.current !== selectedNetwork.rpcUrl ||
       prevChainId.current !== selectedNetwork.chainId ||
       prevTicker.current !== selectedNetwork.ticker ||
@@ -129,7 +129,7 @@ const NetworkForm = ({
     }
   }, [
     selectedNetwork,
-    networkLabel,
+    selectedNetworkName,
     addNewNetwork,
     setNetworkName,
     setRpcUrl,
@@ -431,9 +431,9 @@ const NetworkForm = ({
     });
   };
   const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
-  const isSubmitDisabled =
-    hasErrors() || isSubmitting || stateIsUnchanged() || !rpcUrl || !chainId;
   const stateUnchanged = stateIsUnchanged();
+  const isSubmitDisabled =
+    hasErrors() || isSubmitting || stateUnchanged || !rpcUrl || !chainId;
 
   return (
     <div
@@ -544,11 +544,6 @@ const NetworkForm = ({
 NetworkForm.propTypes = {
   editRpc: PropTypes.func,
   showConfirmDeleteNetworkModal: PropTypes.func,
-  rpcUrl: PropTypes.string,
-  chainId: PropTypes.string,
-  ticker: PropTypes.string,
-  viewOnly: PropTypes.bool,
-  networkName: PropTypes.string,
   onClear: PropTypes.func.isRequired,
   setRpcTarget: PropTypes.func.isRequired,
   isCurrentRpcTarget: PropTypes.bool,
