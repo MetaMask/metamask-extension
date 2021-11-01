@@ -668,12 +668,6 @@
   "on": {
     "message": "開啟"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "區塊鏈瀏覽器 URL（非必要）"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (可選)"
-  },
   "origin": {
     "message": "來源"
   },

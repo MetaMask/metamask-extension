@@ -658,12 +658,6 @@
   "on": {
     "message": "Sees"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokeeri Exploreri URL (valikuline)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Sümbol (valikuline)"
-  },
   "origin": {
     "message": "Päritolu"
   },

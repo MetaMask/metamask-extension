@@ -668,12 +668,6 @@
   "on": {
     "message": "ಆನ್‌"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "ಅನ್ವೇಷಕ URL ಅನ್ನು ನಿರ್ಬಂಧಿಸಿ (ಐಚ್ಛಿಕ)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "ಚಿಹ್ನೆ (ಐಚ್ಛಿಕ)"
-  },
   "origin": {
     "message": "ಮೂಲ"
   },

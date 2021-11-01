@@ -665,12 +665,6 @@
   "on": {
     "message": "Ενεργό"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Σύμβολο (προαιρετικό)"
-  },
   "origin": {
     "message": "Προέλευση"
   },

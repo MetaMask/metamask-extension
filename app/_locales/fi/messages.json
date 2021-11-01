@@ -665,12 +665,6 @@
   "on": {
     "message": "Käytössä"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Estä Explorerin URL-osoite (valinnainen)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symboli (valinnainen)"
-  },
   "origin": {
     "message": "Alkuperä"
   },

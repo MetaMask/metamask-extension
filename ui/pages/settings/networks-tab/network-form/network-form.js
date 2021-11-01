@@ -10,18 +10,9 @@ import {
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import ActionableMessage from '../../../../components/ui/actionable-message';
-// import TextField from '../../../../components/ui/text-field';
-// import Tooltip from '../../../../components/ui/tooltip';
 import Button from '../../../../components/ui/button';
 import FormField from '../../../../components/ui/form-field';
-
-// const FORM_STATE_KEYS = [
-//   'networkName',
-//   'rpcUrl',
-//   'chainId',
-//   'ticker',
-//   'blockExplorerUrl',
-// ];
+import { decimalToHex } from '../../../../helpers/utils/conversions.util';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -55,6 +46,11 @@ const prefixChainId = (chainId) => {
   return prefixedChainId;
 };
 
+const isValidWhenAppended = (url) => {
+  const appendedRpc = `http://${url}`;
+  return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/u);
+};
+
 const NetworkForm = ({
   editRpc,
   showConfirmDeleteNetworkModal,
@@ -69,9 +65,8 @@ const NetworkForm = ({
 }) => {
   const t = useI18nContext();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
-  const [networkName, setNetworkName] = useState(
-    label || (labelKey && t(labelKey)) || '',
-  );
+  const networkLabel = label || (labelKey && t(labelKey));
+  const [networkName, setNetworkName] = useState(networkLabel || '');
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
   const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
@@ -81,83 +76,15 @@ const NetworkForm = ({
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const resetForm = (selectedNetwork) => {
-    setNetworkName(
-      selectedNetwork?.label ||
-        (selectedNetwork?.labelKey && t(selectedNetwork?.labelKey)) ||
-        '',
-    );
+  const resetForm = useCallback(() => {
+    setNetworkName(networkLabel || '');
     setRpcUrl(selectedNetwork.rpcUrl);
     setChainId(getDisplayChainId(selectedNetwork.chainId));
     setTicker(selectedNetwork?.ticker);
     setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
     setErrors({});
     setIsSubmitting(false);
-  };
-
-  const onSubmit = useCallback(async () => {
-    setIsSubmitting(true);
-    try {
-      const formChainId = chainId.trim().toLowerCase();
-      const prefixedChainId = prefixChainId(formChainId);
-
-      if (
-        !(await validateChainIdOnSubmit(formChainId, prefixedChainId, rpcUrl))
-      ) {
-        setIsSubmitting(false);
-        return;
-      }
-
-      // After this point, isSubmitting will be reset in componentDidUpdate
-      if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
-        await editRpc(
-          selectedNetwork.rpcUrl,
-          rpcUrl,
-          prefixedChainId,
-          ticker,
-          networkName,
-          {
-            ...rpcPrefs,
-            blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
-          },
-        );
-      } else {
-        await setRpcTarget(rpcUrl, prefixedChainId, ticker, networkName, {
-          ...rpcPrefs,
-          blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
-        });
-      }
-
-      if (addNewNetwork) {
-        setNewNetworkAdded(networkName);
-        onAddNetwork();
-      }
-    } catch (error) {
-      setIsSubmitting(false);
-      throw error;
-    }
-  }, [networkName, chainId, rpcUrl, ticker, blockExplorerUrl, addNewNetwork]);
-
-  const onCancel = () => {
-    console.log('oncancel');
-    if (addNewNetwork) {
-      onClear();
-    } else {
-      resetForm();
-    }
-  };
-
-  const onDelete = () => {
-    console.log('onDelete');
-
-    showConfirmDeleteNetworkModal({
-      target: selectedNetwork.rpcUrl,
-      onConfirm: () => {
-        resetForm();
-        onClear();
-      },
-    });
-  };
+  }, [selectedNetwork, networkLabel]);
 
   const stateIsUnchanged = () => {
     // These added conditions are in case the saved chainId is invalid, which
@@ -167,9 +94,8 @@ const NetworkForm = ({
       typeof selectedNetwork.chainId === 'string' &&
       selectedNetwork.chainId.toLowerCase().startsWith('0x') &&
       chainId === getDisplayChainId(selectedNetwork.chainId);
-
     return (
-      rpcUrl === selectedNetwork.chainId &&
+      rpcUrl === selectedNetwork.rpcUrl &&
       chainIdIsUnchanged &&
       ticker === selectedNetwork.ticker &&
       networkName === selectedNetwork.networkName &&
@@ -193,16 +119,18 @@ const NetworkForm = ({
       setErrors({});
       setIsSubmitting(false);
     } else if (
-      prevNetworkName.current !== networkName ||
-      prevRpcUrl.current !== rpcUrl ||
-      prevChainId.current !== chainId ||
-      prevTicker.current !== ticker ||
-      prevBlockExplorerUrl.current !== blockExplorerUrl
+      prevNetworkName.current !== networkLabel ||
+      prevRpcUrl.current !== selectedNetwork.rpcUrl ||
+      prevChainId.current !== selectedNetwork.chainId ||
+      prevTicker.current !== selectedNetwork.ticker ||
+      prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl
     ) {
       resetForm(selectedNetwork);
     }
   }, [
     selectedNetwork,
+    networkLabel,
+    addNewNetwork,
     setNetworkName,
     setRpcUrl,
     setChainId,
@@ -210,85 +138,29 @@ const NetworkForm = ({
     setBlockExplorerUrl,
     setErrors,
     setIsSubmitting,
+    resetForm,
   ]);
 
-  // const renderFormTextField = ({
-  //   className,
-  //   fieldKey,
-  //   textFieldId,
-  //   onChange,
-  //   value,
-  //   optionalTextFieldKey,
-  //   tooltipText,
-  //   autoFocus = false,
-  // }) => {
-  //   // const { errors } = this.state;
-  //   // const { viewOnly } = this.props;
-  //   const errorMessage = errors[fieldKey]?.msg || '';
-
-  //   return (
-  //     <div className={className}>
-  //       <div className="networks-tab__network-form-label">
-  //         <div className="networks-tab__network-form-label-text">
-  //           {t(optionalTextFieldKey || fieldKey)}
-  //         </div>
-  //         {!viewOnly && tooltipText ? (
-  //           <Tooltip
-  //             position="top"
-  //             title={tooltipText}
-  //             wrapperClassName="networks-tab__network-form-label-tooltip"
-  //           >
-  //             <i className="fa fa-info-circle" />
-  //           </Tooltip>
-  //         ) : null}
-  //       </div>
-  //       <TextField
-  //         type="text"
-  //         id={textFieldId}
-  //         onChange={onChange}
-  //         fullWidth
-  //         margin="dense"
-  //         value={value}
-  //         disabled={viewOnly}
-  //         error={errorMessage}
-  //         autoFocus={autoFocus}
-  //       />
-  //     </div>
-  //   );
-  // };
-
-  const setStateWithValue = (stateKey, validator) => {
-    return (e) => {
-      validator?.(e.target.value, stateKey);
-      // this.setState({ [stateKey]: e.target.value });
-      switch (stateKey) {
-        case 'networkName':
-          setNetworkName(e.target.value);
-          break;
-        case 'rpcUrl':
-          setRpcUrl(e.target.value);
-          break;
-        case 'chainId':
-          setChainId(e.target.value);
-          break;
-        case 'ticker':
-          setTicker(e.target.value);
-          break;
-        case 'blockExplorerUrl':
-          setBlockExplorerUrl(e.target.value);
-          break;
-      }
+  useEffect(() => {
+    return () => {
+      setNetworkName('');
+      setRpcUrl('');
+      setChainId('');
+      setTicker('');
+      setBlockExplorerUrl('');
+      setErrors({});
     };
-  };
+  }, [
+    setNetworkName,
+    setRpcUrl,
+    setChainId,
+    setTicker,
+    setBlockExplorerUrl,
+    setErrors,
+  ]);
 
   const setErrorTo = (errorKey, errorVal) => {
     setErrors({ ...errors, [errorKey]: errorVal });
-    // this.setState({
-    //   errors: {
-    //     ...this.state.errors,
-    //     [errorKey]: errorVal,
-    //   },
-    // });
   };
 
   const setErrorEmpty = (errorKey) => {
@@ -299,15 +171,6 @@ const NetworkForm = ({
         key: '',
       },
     });
-    // this.setState({
-    //   errors: {
-    //     ...this.state.errors,
-    //     [errorKey]: {
-    //       msg: '',
-    //       key: '',
-    //     },
-    //   },
-    // });
   };
 
   const hasError = (errorKey, errorKeyVal) => {
@@ -315,7 +178,6 @@ const NetworkForm = ({
   };
 
   const hasErrors = () => {
-    // const { errors } = this.state;
     return Object.keys(errors).some((key) => {
       const error = errors[key];
       // Do not factor in duplicate chain id error for submission disabling
@@ -326,15 +188,12 @@ const NetworkForm = ({
     });
   };
 
-  const validateChainIdOnChange = (selfRpcUrl, chainIdArg = '') => {
-    // const { t } = this.context;
-    // const { networksToRender } = this.props;
-    const chainId = chainIdArg.trim();
-
+  const validateChainIdOnChange = (chainArg = '') => {
+    const formChainId = chainArg.trim();
     let errorKey = '';
     let errorMessage = '';
     let radix = 10;
-    let hexChainId = chainId;
+    let hexChainId = formChainId;
 
     if (!hexChainId.startsWith('0x')) {
       try {
@@ -349,10 +208,10 @@ const NetworkForm = ({
     }
 
     const [matchingChainId] = networksToRender.filter(
-      (e) => e.chainId === hexChainId && e.rpcUrl !== selfRpcUrl,
+      (e) => e.chainId === hexChainId && e.rpcUrl !== rpcUrl,
     );
 
-    if (chainId === '') {
+    if (formChainId === '') {
       setErrorEmpty('chainId');
       return;
     } else if (matchingChainId) {
@@ -360,21 +219,21 @@ const NetworkForm = ({
       errorMessage = t('chainIdExistsErrorMsg', [
         matchingChainId.label ?? matchingChainId.labelKey,
       ]);
-    } else if (chainId.startsWith('0x')) {
+    } else if (formChainId.startsWith('0x')) {
       radix = 16;
-      if (!/^0x[0-9a-f]+$/iu.test(chainId)) {
+      if (!/^0x[0-9a-f]+$/iu.test(formChainId)) {
         errorKey = 'invalidHexNumber';
         errorMessage = t('invalidHexNumber');
-      } else if (!isPrefixedFormattedHexString(chainId)) {
+      } else if (!isPrefixedFormattedHexString(formChainId)) {
         errorMessage = t('invalidHexNumberLeadingZeros');
       }
-    } else if (!/^[0-9]+$/u.test(chainId)) {
+    } else if (!/^[0-9]+$/u.test(formChainId)) {
       errorKey = 'invalidNumber';
       errorMessage = t('invalidNumber');
-    } else if (chainId.startsWith('0')) {
+    } else if (formChainId.startsWith('0')) {
       errorKey = 'invalidNumberLeadingZeros';
       errorMessage = t('invalidNumberLeadingZeros');
-    } else if (!isSafeChainId(parseInt(chainId, radix))) {
+    } else if (!isSafeChainId(parseInt(formChainId, radix))) {
       errorKey = 'invalidChainIdTooBig';
       errorMessage = t('invalidChainIdTooBig');
     }
@@ -393,21 +252,20 @@ const NetworkForm = ({
    * @param {string} formChainId - Non-empty, hex or decimal number string from
    * the form.
    * @param {string} parsedChainId - The parsed, hex string chain ID.
-   * @param {string} rpcUrl - The RPC URL from the form.
+   * @param {string} formRpcUrl - The RPC URL from the form.
    */
   const validateChainIdOnSubmit = async (
     formChainId,
     parsedChainId,
-    rpcUrl,
+    formRpcUrl,
   ) => {
-    // const { t } = this.context;
     let errorKey;
     let errorMessage;
     let endpointChainId;
     let providerError;
 
     try {
-      endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
+      endpointChainId = await jsonRpcRequest(formRpcUrl, 'eth_chainId');
     } catch (err) {
       log.warn('Failed to fetch the chainId from the endpoint.', err);
       providerError = err;
@@ -452,13 +310,7 @@ const NetworkForm = ({
     return true;
   };
 
-  const isValidWhenAppended = (url) => {
-    const appendedRpc = `http://${url}`;
-    return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/u);
-  };
-
-  const validateBlockExplorerURL = (url, stateKey) => {
-    // const { t } = this.context;
+  const validateBlockExplorerURL = (url) => {
     if (!validUrl.isWebUri(url) && url !== '') {
       let errorKey;
       let errorMessage;
@@ -471,20 +323,16 @@ const NetworkForm = ({
         errorMessage = t('invalidBlockExplorerURL');
       }
 
-      setErrorTo(stateKey, {
+      setErrorTo('blockExplorerUrl', {
         key: errorKey,
         msg: errorMessage,
       });
     } else {
-      setErrorEmpty(stateKey);
+      setErrorEmpty('blockExplorerUrl');
     }
   };
 
-  const validateUrlRpcUrl = (url, stateKey) => {
-    // const { t } = this.context;
-    // const { networksToRender } = this.props;
-    // const { chainId: stateChainId } = this.state;
-    // const url = e.target.value;
+  const validateUrlRpcUrl = (url) => {
     const isValidUrl = validUrl.isWebUri(url);
     const chainIdFetchFailed = hasError('chainId', 'failedToFetchChainId');
     const [matchingRPCUrl] = networksToRender.filter((e) => e.rpcUrl === url);
@@ -499,58 +347,94 @@ const NetworkForm = ({
         errorKey = 'invalidRPC';
         errorMessage = t('invalidRPC');
       }
-      setErrorTo(stateKey, {
+      setErrorTo('rpcUrl', {
         key: errorKey,
         msg: errorMessage,
       });
     } else if (matchingRPCUrl) {
-      setErrorTo(stateKey, {
+      setErrorTo('rpcUrl', {
         key: 'urlExistsErrorMsg',
         msg: t('urlExistsErrorMsg', [
           matchingRPCUrl.label ?? matchingRPCUrl.labelKey,
         ]),
       });
     } else {
-      setErrorEmpty(stateKey);
+      setErrorEmpty('rpcUrl');
     }
 
     // Re-validate the chain id if it could not be found with previous rpc url
     if (chainId && isValidUrl && chainIdFetchFailed) {
       const formChainId = chainId.trim().toLowerCase();
-      const stateChainId = prefixChainId(formChainId);
-      validateChainIdOnSubmit(formChainId, stateChainId, url);
+      const prefixedChainId = prefixChainId(formChainId);
+      validateChainIdOnSubmit(formChainId, prefixedChainId, url);
     }
-    // setRpcUrl(url);
   };
 
-  useEffect(() => {
-    return () => {
-      console.log('unmount networkform');
-      setNetworkName('');
-      setRpcUrl('');
-      setChainId('');
-      setTicker('');
-      setBlockExplorerUrl('');
-      setErrors({});
-      // onClear will push the network settings route unless was pass false.
-      // Since we call onClear to cause this component to be unmounted, the
-      // route will already have been updated, and we avoid setting it twice.
-      onClear(false);
-    };
-  }, [
-    setNetworkName,
-    setRpcUrl,
-    setChainId,
-    setTicker,
-    setBlockExplorerUrl,
-    setErrors,
-  ]);
+  const onSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      const formChainId = chainId.trim().toLowerCase();
+      const prefixedChainId = prefixChainId(formChainId);
 
+      if (
+        !(await validateChainIdOnSubmit(formChainId, prefixedChainId, rpcUrl))
+      ) {
+        setIsSubmitting(false);
+        return;
+      }
+
+      // After this point, isSubmitting will be reset in componentDidUpdate
+      if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
+        await editRpc(
+          selectedNetwork.rpcUrl,
+          rpcUrl,
+          prefixedChainId,
+          ticker,
+          networkName,
+          {
+            ...rpcPrefs,
+            blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
+          },
+        );
+      } else {
+        await setRpcTarget(rpcUrl, prefixedChainId, ticker, networkName, {
+          ...rpcPrefs,
+          blockExplorerUrl: blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
+        });
+      }
+
+      if (addNewNetwork) {
+        setNewNetworkAdded(networkName);
+        onAddNetwork();
+      }
+    } catch (error) {
+      setIsSubmitting(false);
+      throw error;
+    }
+  };
+
+  const onCancel = () => {
+    if (addNewNetwork) {
+      onClear();
+    } else {
+      resetForm();
+    }
+  };
+
+  const onDelete = () => {
+    showConfirmDeleteNetworkModal({
+      target: selectedNetwork.rpcUrl,
+      onConfirm: () => {
+        resetForm();
+        onClear();
+      },
+    });
+  };
   const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
   const isSubmitDisabled =
     hasErrors() || isSubmitting || stateIsUnchanged() || !rpcUrl || !chainId;
-  console.log(onCancel);
-  // console.log(networkName, chainId, rpcUrl, ticker, blockExplorerUrl)
+  const stateUnchanged = stateIsUnchanged();
+
   return (
     <div
       className={classnames({
@@ -580,82 +464,48 @@ const NetworkForm = ({
           onChange={setNetworkName}
           titleText={t('networkName')}
           value={networkName}
+          disabled={viewOnly}
         />
         <FormField
           error={errors.rpcUrl?.msg || ''}
-          onChange={setRpcUrl}
+          onChange={(value) => {
+            setRpcUrl(value);
+            validateUrlRpcUrl(value);
+          }}
           titleText={t('rpcUrl')}
           value={rpcUrl}
+          disabled={viewOnly}
         />
         <FormField
           error={errors.chainId?.msg || ''}
-          onChange={setChainId}
+          onChange={(value) => {
+            setChainId(value);
+            validateChainIdOnChange(value);
+          }}
           titleText={t('chainId')}
           value={chainId}
+          disabled={viewOnly}
           tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
         />
         <FormField
           error={errors.ticker?.msg || ''}
           onChange={setTicker}
-          titleText={t('symbol')}
+          titleText={t('CurrencySymbol')}
           titleUnit={t('optionalWithParanthesis')}
           value={ticker}
+          disabled={viewOnly}
         />
         <FormField
           error={errors.blockExplorerUrl?.msg || ''}
-          onChange={setBlockExplorerUrl}
+          onChange={(value) => {
+            setBlockExplorerUrl(value);
+            validateBlockExplorerURL(value);
+          }}
           titleText={t('blockExplorerUrl')}
           titleUnit={t('optionalWithParanthesis')}
           value={blockExplorerUrl}
+          disabled={viewOnly}
         />
-
-        {/* {renderFormTextField({
-          className: 'networks-tab__network-form-row',
-          fieldKey: 'networkName',
-          textFieldId: 'network-name',
-          onChange: setStateWithValue('networkName'),
-          value: networkName,
-        })} */}
-        {/* {renderFormTextField({
-          className: 'networks-tab__network-form-row',
-          fieldKey: 'rpcUrl',
-          textFieldId: 'rpc-url',
-          onChange: setStateWithValue(
-            'rpcUrl',
-            validateUrlRpcUrl,
-          ),
-          value: rpcUrl,
-        })} */}
-        {/* {renderFormTextField({
-          className: 'networks-tab__network-form-row',
-          fieldKey: 'chainId',
-          textFieldId: 'chainId',
-          onChange: setStateWithValue(
-            'chainId',
-            validateChainIdOnChange.bind(this, rpcUrl),
-          ),
-          value: chainId,
-          tooltipText: viewOnly ? null : t('networkSettingsChainIdDescription'),
-        })} */}
-        {/* {renderFormTextField({
-          className: 'networks-tab__network-form-row',
-          fieldKey: 'symbol',
-          textFieldId: 'network-ticker',
-          onChange: setStateWithValue('ticker'),
-          value: ticker,
-          optionalTextFieldKey: 'optionalCurrencySymbol',
-        })} */}
-        {/* {renderFormTextField({
-          className: 'networks-tab__network-form-row',
-          fieldKey: 'blockExplorerUrl',
-          textFieldId: 'block-explorer-url',
-          onChange: setStateWithValue(
-            'blockExplorerUrl',
-            validateBlockExplorerURL,
-          ),
-          value: blockExplorerUrl,
-          optionalTextFieldKey: 'optionalBlockExplorerUrl',
-        })}*/}
       </div>
       <div
         className={classnames({
@@ -673,7 +523,7 @@ const NetworkForm = ({
             <Button
               type="secondary"
               onClick={onCancel}
-              disabled={stateIsUnchanged}
+              disabled={stateUnchanged}
             >
               {t('cancel')}
             </Button>

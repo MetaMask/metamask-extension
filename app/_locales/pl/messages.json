@@ -662,12 +662,6 @@
   "on": {
     "message": "Włączone"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Adres URL przeglądarki łańcucha bloków (opcjonalnie)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (opcjonalnie)"
-  },
   "origin": {
     "message": "Pochodzenie"
   },

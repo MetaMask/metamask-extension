@@ -602,12 +602,6 @@
   "on": {
     "message": "Naka-on"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (opsyonal)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolo (opsyonal)"
-  },
   "origin": {
     "message": "Pinanggalingan"
   },

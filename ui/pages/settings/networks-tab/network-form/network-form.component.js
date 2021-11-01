@@ -621,7 +621,7 @@ export default class NetworkForm extends PureComponent {
                 textFieldId: 'network-ticker',
                 onChange: this.setStateWithValue('ticker'),
                 value: ticker,
-                optionalTextFieldKey: 'optionalCurrencySymbol',
+                optionalTextFieldKey: 'CurrencySymbol',
               })}
             </div>
             <div className="add-network-form__form-row">
@@ -634,7 +634,7 @@ export default class NetworkForm extends PureComponent {
                   this.validateBlockExplorerURL,
                 ),
                 value: blockExplorerUrl,
-                optionalTextFieldKey: 'optionalBlockExplorerUrl',
+                optionalTextFieldKey: 'blockExplorerUrl',
               })}
             </div>
           </div>
@@ -713,7 +713,7 @@ export default class NetworkForm extends PureComponent {
           textFieldId: 'network-ticker',
           onChange: this.setStateWithValue('ticker'),
           value: ticker,
-          optionalTextFieldKey: 'optionalCurrencySymbol',
+          optionalTextFieldKey: 'CurrencySymbol',
         })}
         {this.renderFormTextField({
           className: 'networks-tab__network-form-row',
@@ -724,7 +724,7 @@ export default class NetworkForm extends PureComponent {
             this.validateBlockExplorerURL,
           ),
           value: blockExplorerUrl,
-          optionalTextFieldKey: 'optionalBlockExplorerUrl',
+          optionalTextFieldKey: 'blockExplorerUrl',
         })}
         <div className="network-form__footer">
           {!viewOnly && (
@@ -829,7 +829,7 @@ export default class NetworkForm extends PureComponent {
             textFieldId: 'network-ticker',
             onChange: this.setStateWithValue('ticker'),
             value: ticker,
-            optionalTextFieldKey: 'optionalCurrencySymbol',
+            optionalTextFieldKey: 'CurrencySymbol',
           })}
           {this.renderFormTextField({
             className: 'networks-tab__network-form-row',
@@ -840,7 +840,7 @@ export default class NetworkForm extends PureComponent {
               this.validateBlockExplorerURL,
             ),
             value: blockExplorerUrl,
-            optionalTextFieldKey: 'optionalBlockExplorerUrl',
+            optionalTextFieldKey: 'blockExplorerUrl',
           })}
         </div>
         <div

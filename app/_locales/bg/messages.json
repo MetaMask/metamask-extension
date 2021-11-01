@@ -664,12 +664,6 @@
   "on": {
     "message": "Включено"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Блокиране на Explorer URL (по избор)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Символ (по избор)"
-  },
   "origin": {
     "message": "Произход"
   },

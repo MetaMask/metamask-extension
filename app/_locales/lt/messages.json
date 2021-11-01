@@ -668,12 +668,6 @@
   "on": {
     "message": "Įjungta"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokuoti naršyklės URL (pasirinktinai)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolis (nebūtinas)"
-  },
   "origin": {
     "message": "Kilmė"
   },

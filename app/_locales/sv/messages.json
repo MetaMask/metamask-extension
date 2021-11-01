@@ -652,12 +652,6 @@
   "on": {
     "message": "På"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (valfritt)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (frivillig)"
-  },
   "origin": {
     "message": "Ursprung"
   },

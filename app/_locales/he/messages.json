@@ -665,12 +665,6 @@
   "on": {
     "message": "פועל"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "חסום כתובת URL של אקספלורר (אופציונלי)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "סמל (אופציונלי)"
-  },
   "origin": {
     "message": "מקור"
   },

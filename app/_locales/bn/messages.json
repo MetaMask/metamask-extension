@@ -668,12 +668,6 @@
   "on": {
     "message": "চালু"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "এক্সপ্লোরার URL ব্লক করুন (ঐচ্ছিক)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "প্রতীক (ঐচ্ছিক)"
-  },
   "origin": {
     "message": "উৎস"
   },

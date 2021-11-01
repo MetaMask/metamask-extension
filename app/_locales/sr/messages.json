@@ -659,12 +659,6 @@
   "on": {
     "message": "Укључено"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokirajte URL Explorer-a (opciono)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (opciono)"
-  },
   "origin": {
     "message": "Извор"
   },
