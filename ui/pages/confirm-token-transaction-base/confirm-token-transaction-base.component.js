@@ -35,7 +35,9 @@ export default function ConfirmTokenTransactionBase({
     }
 
     const decimalEthValue = new BigNumber(tokenAmount)
-      .times(new BigNumber(contractExchangeRate))
+      .times(
+        new BigNumber(contractExchangeRate ? String(contractExchangeRate) : 0),
+      )
       .toFixed();
 
     return getWeiHexFromDecimalValue({
