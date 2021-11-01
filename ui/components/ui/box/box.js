@@ -11,6 +11,7 @@ import {
   SIZES,
   TEXT_ALIGN,
   FLEX_DIRECTION,
+  FLEX_WRAP,
 } from '../../../helpers/constants/design-system';
 
 const ValidSize = PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
@@ -77,6 +78,7 @@ export default function Box({
   justifyContent,
   textAlign,
   flexDirection = FLEX_DIRECTION.ROW,
+  flexWrap,
   display,
   width,
   height,
@@ -122,6 +124,7 @@ export default function Box({
     [`box--justify-content-${justifyContent}`]: Boolean(justifyContent),
     [`box--align-items-${alignItems}`]: Boolean(alignItems),
     [`box--flex-direction-${flexDirection}`]: Boolean(flexDirection),
+    [`box--flex-wrap-${flexWrap}`]: Boolean(flexWrap),
     // text align
     [`box--text-align-${textAlign}`]: Boolean(textAlign),
     // display
@@ -142,6 +145,7 @@ export default function Box({
 Box.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   flexDirection: PropTypes.oneOf(Object.values(FLEX_DIRECTION)),
+  flexWrap: PropTypes.oneOf(Object.values(FLEX_WRAP)),
   margin: MultipleSizes,
   marginTop: ValidSize,
   marginBottom: ValidSize,
