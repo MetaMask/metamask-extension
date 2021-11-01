@@ -189,6 +189,9 @@
   "approved": {
     "message": "Approved"
   },
+  "approvedAmountWithColon": {
+    "message": "Approved Amount:"
+  },
   "asset": {
     "message": "Asset"
   },
@@ -1058,6 +1061,9 @@
   "goerli": {
     "message": "Goerli Test Network"
   },
+  "grantedToWithColon": {
+    "message": "Granted To:"
+  },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
   },
@@ -1790,6 +1796,9 @@
   },
   "permissionCheckedIconDescription": {
     "message": "You have approved this permission"
+  },
+  "permissionRequest": {
+    "message": "Permission Request"
   },
   "permissionUncheckedIconDescription": {
     "message": "You have not approved this permission"

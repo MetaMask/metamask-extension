@@ -70,5 +70,12 @@ describe('ConfirmApproveContent Component', () => {
     expect(queryByText('2')).toBeInTheDocument();
     fireEvent.click(editButtons[1]);
     expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(1);
+
+    const showHideTxDetails = getByText('View full transaction details');
+    fireEvent.click(showHideTxDetails);
+    expect(getByText('Permission Request')).toBeInTheDocument();
+    expect(getByText('Approved Amount:')).toBeInTheDocument();
+    expect(getByText('Granted To:')).toBeInTheDocument();
+    expect(getByText('0x9bc5...fef4')).toBeInTheDocument();
   });
 });
