@@ -2955,9 +2955,9 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
-"@metamask/smart-transactions-controller@file:../smart-transactions-controller/metamask-smart-transactions-controller-v0.0.1-8989b10.tgz":
-  version "0.0.1-8989b10"
-  resolved "file:../smart-transactions-controller/metamask-smart-transactions-controller-v0.0.1-8989b10.tgz#06a5eeac1d4bfb0d2618e82f836d1d79c91a9d1c"
+"@metamask/smart-transactions-controller@file:../smart-transactions-controller/metamask-smart-transactions-controller-v0.0.1.tgz":
+  version "0.0.1"
+  resolved "file:../smart-transactions-controller/metamask-smart-transactions-controller-v0.0.1.tgz#5ee1bd0c648659f0ef327955910e02886ca6d4c7"
   dependencies:
     "@metamask/controllers" "^16.0.0"
 
