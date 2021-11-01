@@ -1,6 +1,6 @@
 {
   "QRHardwareSignRequestCancel": {
-    "message": "Cancel Transaction"
+    "message": "Cancel"
   },
   "QRHardwareSignRequestDescription": {
     "message": "After your QR wallet has signed the transaction, click on 'Get Signature' to receive the signature"
