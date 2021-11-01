@@ -408,7 +408,9 @@ function multiSplice(toSplice, splicingIndices) {
   // pushes the substring between each "end" index and the next "begin" index
   // to the array of retained substrings.
   if (splicingIndices.length > 2) {
-    for (let i = 1; i < splicingIndices.length; i += 2) {
+    // Note the boundary index of "splicingIndices.length - 1". This loop must
+    // not iterate over the last element of the array.
+    for (let i = 1; i < splicingIndices.length - 1; i += 2) {
       retainedSubstrings.push(
         toSplice.substring(splicingIndices[i], splicingIndices[i + 1]),
       );
