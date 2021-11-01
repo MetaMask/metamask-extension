@@ -4,12 +4,9 @@ import classnames from 'classnames';
 import NetworkListItem from '../network-list-item';
 
 const NetworkList = ({
-  isFullScreen,
   networkIsSelected,
   networksToRender,
   networkDefaultedToProvider,
-  providerType,
-  providerUrl,
   selectedRpcUrl,
 }) => {
   return (
@@ -23,11 +20,8 @@ const NetworkList = ({
         <NetworkListItem
           key={`settings-network-list:${network.rpcUrl}`}
           network={network}
-          selectedRpcUrl={selectedRpcUrl}
           networkIsSelected={networkIsSelected}
-          providerUrl={providerUrl}
-          providerType={providerType}
-          isFullScreen={isFullScreen}
+          selectedRpcUrl={selectedRpcUrl}
         />
       ))}
     </div>
@@ -35,12 +29,9 @@ const NetworkList = ({
 };
 
 NetworkList.propTypes = {
-  isFullScreen: PropTypes.bool.isRequired,
   networkDefaultedToProvider: PropTypes.bool,
   networkIsSelected: PropTypes.bool,
   networksToRender: PropTypes.arrayOf(PropTypes.object).isRequired,
-  providerType: PropTypes.string,
-  providerUrl: PropTypes.string,
   selectedRpcUrl: PropTypes.string,
 };
 

@@ -1,32 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import NetworkForm from '../network-form';
 import NetworkList from '../network-list';
+import { getProvider } from '../../../../selectors';
 
 const NetworkTabContent = ({
-  isFullScreen,
   networkDefaultedToProvider,
   networkIsSelected,
   networksToRender,
-  providerType,
-  providerUrl,
   selectedNetwork,
   shouldRenderNetworkForm,
 }) => {
+  const provider = useSelector(getProvider);
+
   return (
     <>
       <NetworkList
-        isFullScreen={isFullScreen}
         networkDefaultedToProvider={networkDefaultedToProvider}
         networkIsSelected={networkIsSelected}
         networksToRender={networksToRender}
-        providerType={providerType}
-        providerUrl={providerUrl}
         selectedRpcUrl={selectedNetwork.rpcUrl}
       />
       {shouldRenderNetworkForm ? (
         <NetworkForm
-          isCurrentRpcTarget={providerUrl === selectedNetwork.rpcUrl}
+          isCurrentRpcTarget={provider.rpcUrl === selectedNetwork.rpcUrl}
           networksToRender={networksToRender}
           selectedNetwork={selectedNetwork}
         />
@@ -35,12 +33,9 @@ const NetworkTabContent = ({
   );
 };
 NetworkTabContent.propTypes = {
-  isFullScreen: PropTypes.bool.isRequired,
   networkDefaultedToProvider: PropTypes.bool,
   networkIsSelected: PropTypes.bool,
   networksToRender: PropTypes.arrayOf(PropTypes.object).isRequired,
-  providerType: PropTypes.string,
-  providerUrl: PropTypes.string,
   selectedNetwork: PropTypes.object,
   shouldRenderNetworkForm: PropTypes.bool.isRequired,
 };

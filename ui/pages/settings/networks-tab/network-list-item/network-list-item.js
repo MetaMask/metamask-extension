@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
@@ -10,18 +10,17 @@ import ColorIndicator from '../../../../components/ui/color-indicator';
 import LockIcon from '../../../../components/ui/lock-icon';
 import { NETWORKS_FORM_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
+import { getProvider } from '../../../../selectors';
 
-const NetworkListItem = ({
-  isFullScreen,
-  providerType,
-  providerUrl,
-  network,
-  networkIsSelected,
-  selectedRpcUrl,
-}) => {
+const NetworkListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
+  const environmentType = getEnvironmentType();
+  const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
+  const provider = useSelector(getProvider);
 
   const {
     label,
@@ -31,14 +30,15 @@ const NetworkListItem = ({
   } = network;
 
   const listItemNetworkIsSelected = selectedRpcUrl && selectedRpcUrl === rpcUrl;
-  const listItemUrlIsProviderUrl = rpcUrl === providerUrl;
+  const listItemUrlIsProviderUrl = rpcUrl === provider.rpcUrl;
   const listItemTypeIsProviderNonRpcType =
-    providerType !== NETWORK_TYPE_RPC && currentProviderType === providerType;
+    provider.type !== NETWORK_TYPE_RPC && currentProviderType === provider.type;
   const listItemNetworkIsCurrentProvider =
     !networkIsSelected &&
     (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType);
   const displayNetworkListItemAsSelected =
     listItemNetworkIsSelected || listItemNetworkIsCurrentProvider;
+
   return (
     <div
       key={`settings-network-list-item:${rpcUrl}`}
@@ -74,9 +74,6 @@ const NetworkListItem = ({
 };
 
 NetworkListItem.propTypes = {
-  isFullScreen: PropTypes.bool.isRequired,
-  providerType: PropTypes.string,
-  providerUrl: PropTypes.string,
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
   selectedRpcUrl: PropTypes.string,

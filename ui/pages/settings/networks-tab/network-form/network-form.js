@@ -158,6 +158,7 @@ const NetworkForm = ({
       setTicker('');
       setBlockExplorerUrl('');
       setErrors({});
+      dispatch(setSelectedSettingsRpcUrl(''));
     };
   }, [
     setNetworkName,
@@ -166,6 +167,7 @@ const NetworkForm = ({
     setTicker,
     setBlockExplorerUrl,
     setErrors,
+    dispatch,
   ]);
 
   const setErrorTo = (errorKey, errorVal) => {
