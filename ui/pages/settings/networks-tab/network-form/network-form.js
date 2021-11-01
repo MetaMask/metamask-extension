@@ -490,7 +490,7 @@ const NetworkForm = ({
         <FormField
           error={errors.ticker?.msg || ''}
           onChange={setTicker}
-          titleText={t('CurrencySymbol')}
+          titleText={t('currencySymbol')}
           titleUnit={t('optionalWithParanthesis')}
           value={ticker}
           disabled={viewOnly}
