@@ -43,6 +43,9 @@
   "activityLog": {
     "message": "activity log"
   },
+  "addANetwork": {
+    "message": "Add a network"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -78,6 +81,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
+  },
+  "addNFT": {
+    "message": "Add NFT"
   },
   "addNetwork": {
     "message": "Add Network"
@@ -139,9 +145,9 @@
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
-  "allowOriginSpendToken": {
-    "message": "Allow $1 to spend your $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
+  "allowSpendToken": {
+    "message": "Give permission to access your $1?",
+    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowThisSiteTo": {
     "message": "Allow this site to:"
@@ -348,6 +354,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
+  "clickToConnectLedgerViaWebHID": {
+    "message": "Click here to connect your Ledger via WebHID",
+    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
   },
@@ -548,14 +558,14 @@
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
-  "customRPC": {
-    "message": "Custom RPC"
-  },
   "customSpendLimit": {
     "message": "Custom Spend Limit"
   },
   "customToken": {
     "message": "Custom Token"
+  },
+  "customerSupport": {
+    "message": "customer support"
   },
   "data": {
     "message": "Data"
@@ -1170,6 +1180,9 @@
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
+  "insufficientFundsForGas": {
+    "message": "Insufficient funds for gas"
+  },
   "insufficientTokens": {
     "message": "Insufficient tokens."
   },
@@ -1251,41 +1264,53 @@
   "learnMore": {
     "message": "Learn more"
   },
+  "learnMoreWithDot": {
+    "message": "Learn more."
+  },
   "learnScamRisk": {
     "message": "scams and security risks."
   },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Use Ledger Live"
+  "ledgerConnectionInstructionHeader": {
+    "message": "Prior to clicking confirm:"
   },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "The new Ledger Live bridge allows you to more easily use your Ledger.  Only available in Chrome."
+  "ledgerConnectionInstructionStepFour": {
+    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device"
+  },
+  "ledgerConnectionInstructionStepOne": {
+    "message": "Enable Use Ledger Live under Settings > Advanced"
+  },
+  "ledgerConnectionInstructionStepThree": {
+    "message": "Plug in your Ledger device and select the Ethereum app"
+  },
+  "ledgerConnectionInstructionStepTwo": {
+    "message": "Open and unlock Ledger Live App"
+  },
+  "ledgerConnectionPreferenceDescription": {
+    "message": "Customize how you connect your Ledger to MetaMask. $1 is recommended, but other options are available. Read more here: $2",
+    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
+  },
+  "ledgerLive": {
+    "message": "Ledger Live",
+    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
-  },
-  "ledgerLiveDialogHeader": {
-    "message": "Prior to clicking confirm:"
-  },
-  "ledgerLiveDialogStepFour": {
-    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device"
-  },
-  "ledgerLiveDialogStepOne": {
-    "message": "Enable Use Ledger Live under Settings > Advanced"
-  },
-  "ledgerLiveDialogStepThree": {
-    "message": "Plug in your Ledger device and select the Ethereum app"
-  },
-  "ledgerLiveDialogStepTwo": {
-    "message": "Open and unlock Ledger Live App"
   },
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
+  },
+  "ledgerTransportChangeWarning": {
+    "message": "If your Ledger Live app is open, please disconnect any open Ledger Live connection and close the Ledger Live app."
+  },
+  "ledgerWebHIDNotConnectedErrorMessage": {
+    "message": "The ledger device was not connected. If you wish to connect your Ledger, please click 'Continue' again and approve HID connection",
+    "description": "An error message shown to the user during the hardware connect flow."
   },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
@@ -1363,12 +1388,18 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "Always allow you to opt-out via Settings"
   },
+  "metametricsCommitmentsAllowOptOut2": {
+    "message": "Always be able to opt-out via Settings"
+  },
   "metametricsCommitmentsBoldNever": {
     "message": "Never",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask will.."
+  },
+  "metametricsCommitmentsNeverCollect": {
+    "message": "Never collect keys, addresses, transactions, balances, hashes, or any personal information"
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "$1 collect your full IP address",
@@ -1378,6 +1409,12 @@
     "message": "$1 collect keys, addresses, transactions, balances, hashes, or any personal information",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
+  "metametricsCommitmentsNeverIP": {
+    "message": "Never collect your full IP address"
+  },
+  "metametricsCommitmentsNeverSell": {
+    "message": "Never sell data for profit. Ever!"
+  },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "$1 sell data for profit. Ever!",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
@@ -1386,10 +1423,16 @@
     "message": "Send anonymized click & pageview events"
   },
   "metametricsHelpImproveMetaMask": {
-    "message": "Help Us Improve MetaMask"
+    "message": "Help us improve MetaMask"
   },
   "metametricsOptInDescription": {
     "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
+  },
+  "metametricsOptInDescription2": {
+    "message": "We would like to gather basic usage data to improve the usability of our product.  These metrics will..."
+  },
+  "metametricsTitle": {
+    "message": "Join 6M+ users to improve MetaMask"
   },
   "mismatchedChain": {
     "message": "The network details for this chain ID do not match our records. We recommend that you $1 before proceeding.",
@@ -1495,8 +1538,8 @@
   "newContract": {
     "message": "New Contract"
   },
-  "newNetwork": {
-    "message": "New Network"
+  "newNetworkAdded": {
+    "message": "“$1” was successfully added!"
   },
   "newPassword": {
     "message": "New password (min 8 chars)"
@@ -1517,6 +1560,9 @@
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nfts": {
+    "message": "NFTs"
+  },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
@@ -1528,6 +1574,12 @@
   },
   "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
+  },
+  "noNFTs": {
+    "message": "No NFTs to show"
+  },
+  "noNFTsDetails": {
+    "message": "Your NFTs will show up here. If you don't see your NFT, try importing manually."
   },
   "noThanks": {
     "message": "No Thanks"
@@ -1647,6 +1699,42 @@
   "onboardingImportWallet": {
     "message": "Import an existing wallet"
   },
+  "onboardingPinExtensionBillboardAccess": {
+    "message": "Full Access"
+  },
+  "onboardingPinExtensionBillboardDescription": {
+    "message": "These extensions can see and change information"
+  },
+  "onboardingPinExtensionBillboardDescription2": {
+    "message": "on this site."
+  },
+  "onboardingPinExtensionBillboardTitle": {
+    "message": "Extensions"
+  },
+  "onboardingPinExtensionChrome": {
+    "message": "Click the browser extension icon"
+  },
+  "onboardingPinExtensionDescription": {
+    "message": "Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations."
+  },
+  "onboardingPinExtensionDescription2": {
+    "message": "You can open MetaMask by clicking on the extension and access your wallet with 1 click."
+  },
+  "onboardingPinExtensionDescription3": {
+    "message": "Click browser extension icon to access it instantly"
+  },
+  "onboardingPinExtensionLabel": {
+    "message": "Pin MetaMask"
+  },
+  "onboardingPinExtensionStep1": {
+    "message": "1"
+  },
+  "onboardingPinExtensionStep2": {
+    "message": "2"
+  },
+  "onboardingPinExtensionTitle": {
+    "message": "Your MetaMask install is complete!"
+  },
   "onboardingReturnNotice": {
     "message": "\"$1\" will close this tab and direct back to $2",
     "description": "Return the user to the site that initiated onboarding"
@@ -1664,6 +1752,10 @@
   },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
+  },
+  "openFullScreenForLedgerWebHid": {
+    "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "optional": {
     "message": "Optional"
@@ -1726,6 +1818,10 @@
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "preferredLedgerConnectionType": {
+    "message": "Preferred Ledger Connection Type",
+    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "prev": {
     "message": "Prev"
@@ -1924,6 +2020,9 @@
   "secretPhrase": {
     "message": "Only the first account on this wallet will auto load. After completing this process, to add additional accounts, click the drop down menu, then select Create Account."
   },
+  "secretPhraseWarning": {
+    "message": "If you restore using another Secret Recovery Phrase, your current wallet, accounts and assets will be removed from this app permanently. This action cannot be undone."
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -2107,6 +2206,12 @@
   "showSeedPhrase": {
     "message": "Show Secret Recovery Phrase"
   },
+  "showTestnetNetworks": {
+    "message": "Test networks"
+  },
+  "showTestnetNetworksDescription": {
+    "message": "Select this to show test networks in network list"
+  },
   "sigRequest": {
     "message": "Signature Request"
   },
@@ -2143,11 +2248,26 @@
   "smartTransactionsAreHere": {
     "message": "Smart transactions are here!"
   },
+  "smartTransactionsBenefit1": {
+    "message": "Decrease transaction costs"
+  },
+  "smartTransactionsBenefit2": {
+    "message": "Reduce failures & minimize costs"
+  },
+  "smartTransactionsBenefit3": {
+    "message": "Protect from front-running"
+  },
+  "smartTransactionsBenefit4": {
+    "message": "Eliminate stuck transactions"
+  },
   "smartTransactionsDescription": {
     "message": "Smart transactions use MetaMask smart contracts to simulate transactions before submitting in order to..."
   },
-  "smartTransactionsDescription2": {
-    "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you. You can opt-out in advanced settings any time. Learn more."
+  "smartTransactionsSubDescription": {
+    "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you."
+  },
+  "smartTransactionsYouCanOptOut": {
+    "message": "You can opt-out in advanced settings any time."
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
@@ -2231,24 +2351,43 @@
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
   },
+  "stxCancelled": {
+    "message": "Swap would have failed"
+  },
+  "stxCancelledDescription": {
+    "message": "Your transaction would have failed and was canceled to protect you from paying unnecessary gas fees."
+  },
+  "stxCancelledSubDescription": {
+    "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
+  },
   "stxFailure": {
-    "message": "Transaction failed"
+    "message": "Swap failed"
   },
   "stxFailureDescription": {
-    "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
+    "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxPending": {
-    "message": "Transaction is pending"
+  "stxPendingFinalizing": {
+    "message": "Finalizing..."
   },
-  "stxPendingDescription": {
-    "message": "Your transaction is being processed."
+  "stxPendingOptimizingGas": {
+    "message": "Optimizing gas..."
+  },
+  "stxPendingPrivatelySubmitting": {
+    "message": "Privately submitting the Swap..."
   },
   "stxSuccess": {
-    "message": "Success"
+    "message": "Swap complete!"
   },
   "stxSuccessDescription": {
-    "message": "Transaction was completed successfully."
+    "message": "Your $1 is now available.",
+    "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxUnknown": {
+    "message": "Status unknown"
+  },
+  "stxUnknownDescription": {
+    "message": "A transaction has been successful but we’re unsure what it is. This may be due to submitting another transaction while this swap was processing."
   },
   "stxUserCancelled": {
     "message": "Swap canceled"
@@ -2301,6 +2440,9 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
+  },
+  "swapCompleteIn": {
+    "message": "Swap complete in <"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
@@ -2794,17 +2936,20 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
-    "message": "Do you trust this site? By granting this permission, you’re allowing $1 to withdraw your $2 and automate transactions for you.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
+    "message": "By granting permission, you are allowing the following $1 to access your funds"
   },
   "tryAgain": {
     "message": "Try again"
   },
   "turnOnTokenDetection": {
-    "message": "Turn on Token Detection"
+    "message": "Turn on enhanced token detection"
   },
   "typePassword": {
     "message": "Type your MetaMask password"
+  },
+  "u2f": {
+    "message": "U2F",
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
   "unapproved": {
     "message": "Unapproved"
@@ -2946,6 +3091,10 @@
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
     "description": "$1 is a clickable link."
+  },
+  "webhid": {
+    "message": "WebHID",
+    "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
   "welcome": {
     "message": "Welcome to MetaMask"

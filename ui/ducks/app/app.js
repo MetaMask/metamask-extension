@@ -1,3 +1,4 @@
+import { WEBHID_CONNECTED_STATUSES } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
 // actionConstants
@@ -36,7 +37,6 @@ export default function reduceApp(state = {}, action) {
       ledger: `m/44'/60'/0'/0/0`,
     },
     networksTabSelectedRpcUrl: '',
-    networksTabIsInAddMode: false,
     loadingMethodData: false,
     show3BoxModalAfterImport: false,
     threeBoxLastUpdated: null,
@@ -49,6 +49,8 @@ export default function reduceApp(state = {}, action) {
     },
     gasLoadingAnimationIsShowing: false,
     smartTransactionsError: null,
+    ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
+    newNetworkAdded: '',
     ...state,
   };
 
@@ -310,10 +312,10 @@ export default function reduceApp(state = {}, action) {
         networksTabSelectedRpcUrl: action.value,
       };
 
-    case actionConstants.SET_NETWORKS_TAB_ADD_MODE:
+    case actionConstants.SET_NEW_NETWORK_ADDED:
       return {
         ...appState,
-        networksTabIsInAddMode: action.value,
+        newNetworkAdded: action.value,
       };
 
     case actionConstants.LOADING_METHOD_DATA_STARTED:
@@ -373,6 +375,12 @@ export default function reduceApp(state = {}, action) {
         gasLoadingAnimationIsShowing: action.value,
       };
 
+    case actionConstants.SET_WEBHID_CONNECTED_STATUS:
+      return {
+        ...appState,
+        ledgerWebHidConnectedStatus: action.value,
+      };
+
     default:
       return appState;
   }
@@ -396,6 +404,10 @@ export function toggleGasLoadingAnimation(value) {
   return { type: actionConstants.TOGGLE_GAS_LOADING_ANIMATION, value };
 }
 
+export function setLedgerWebHidConnectedStatus(value) {
+  return { type: actionConstants.SET_WEBHID_CONNECTED_STATUS, value };
+}
+
 // Selectors
 export function getQrCodeData(state) {
   return state.appState.qrCodeData;
@@ -403,4 +415,8 @@ export function getQrCodeData(state) {
 
 export function getGasLoadingAnimationIsShowing(state) {
   return state.appState.gasLoadingAnimationIsShowing;
+}
+
+export function getLedgerWebHidConnectedStatus(state) {
+  return state.appState.ledgerWebHidConnectedStatus;
 }

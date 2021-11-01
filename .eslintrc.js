@@ -33,6 +33,7 @@ module.exports = {
     'nyc_output/**',
     '.vscode/**',
     'lavamoat/*/policy.json',
+    'storybook-build/**',
   ],
 
   extends: [

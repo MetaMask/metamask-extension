@@ -9,45 +9,89 @@ import {
   prepareToLeaveSwaps,
   getSmartTransactionsStatus,
   getLatestSmartTransactionUuid,
+  getSelectedQuote,
+  getTopQuote,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../selectors/selectors';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import PulseLoader from '../../../components/ui/pulse-loader';
+import {
+  DEFAULT_ROUTE,
+  ASSET_ROUTE,
+  BUILD_QUOTE_ROUTE,
+} from '../../../helpers/constants/routes';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
+import UrlIcon from '../../../components/ui/url-icon';
 import {
   BLOCK_SIZES,
   COLORS,
   TYPOGRAPHY,
   JUSTIFY_CONTENT,
   DISPLAY,
+  FONT_WEIGHT,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
-import SwapSuccessIcon from '../awaiting-swap/swap-success-icon';
-import SwapFailureIcon from '../awaiting-swap/swap-failure-icon';
 import {
   fetchSmartTransactionsStatus,
   stopPollingForQuotes,
   cancelSmartTransaction,
 } from '../../../store/actions';
 import { SECOND } from '../../../../shared/constants/time';
-
 import SwapsFooter from '../swaps-footer';
+import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import SuccessIcon from './success-icon';
+import RevertedIcon from './reverted-icon';
+import CanceledIcon from './canceled-icon';
+import UnknownIcon from './unknown-icon';
+import ArrowIcon from './arrow-icon';
+import TimerIcon from './timer-icon';
+import BackgroundAnimation from './background-animation';
 
 const SMART_TRANSACTIONS_STATUS_INTERVAL = SECOND * 10; // Poll every 10 seconds.
+const TOTAL_WAITING_TIME_IN_SEC = 180;
+
+// It takes about 2s to show the link (waiting for uuid) and then it will be visible for about 10s or until a user clicks on it.
+const CANCEL_LINK_DURATION = SECOND * 12;
+
+const PENDING_STATUS = {
+  OPTIMIZING_GAS: 'optimizingGas',
+  PRIVATELY_SUBMITTING: 'privatelySubmitting',
+  PUBLICLY_SUBMITTING: 'publiclySubmitting',
+};
+
+const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
+  const minutes = Math.floor(remainingTimeInSec / 60);
+  const seconds = remainingTimeInSec % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
 
 export default function SmartTransactionStatus() {
-  const [showCancelSwapLink, setShowCancelSwapLink] = useState(true);
+  const [showCancelSwapLink, setShowCancelSwapLink] = useState(() => {
+    setTimeout(() => {
+      setShowCancelSwapLink(false);
+    }, CANCEL_LINK_DURATION);
+    return true;
+  });
+  const [pendingStatus, setPendingStatus] = useState(
+    PENDING_STATUS.OPTIMIZING_GAS,
+  );
+  const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
+    TOTAL_WAITING_TIME_IN_SEC,
+  );
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
-  const fetchParams = useSelector(getFetchParams);
-  const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
+  const fetchParams = useSelector(getFetchParams) || {};
+  const { destinationTokenInfo = {}, sourceTokenInfo = {} } =
+    fetchParams?.metaData || {};
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
+  const selectedQuote = useSelector(getSelectedQuote);
+  const topQuote = useSelector(getTopQuote);
+  const usedQuote = selectedQuote || topQuote;
   const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
   const latestSmartTransactionUuid = useSelector(getLatestSmartTransactionUuid);
   const smartTransactionStatus =
@@ -66,6 +110,14 @@ export default function SmartTransactionStatus() {
     stx_uuid: latestSmartTransactionUuid,
   };
 
+  let destinationValue = '0.16';
+  if (usedQuote?.destinationAmount) {
+    destinationValue = calcTokenAmount(
+      usedQuote?.destinationAmount,
+      destinationTokenInfo.decimals,
+    ).toPrecision(8);
+  }
+
   const stxStatusPageLoadedEvent = useNewMetricEvent({
     event: 'STX Status Page Loaded',
     sensitiveProperties,
@@ -82,6 +134,8 @@ export default function SmartTransactionStatus() {
     !smartTransactionStatus.minedTx ||
     (smartTransactionStatus.minedTx === 'not_mined' &&
       smartTransactionStatus.cancellationReason === 'not_cancelled');
+  const showCloseButtonOnly =
+    isSmartTransactionPending || smartTransactionStatus.minedTx === 'success';
 
   useEffect(() => {
     stxStatusPageLoadedEvent();
@@ -93,31 +147,88 @@ export default function SmartTransactionStatus() {
       }
     }, SMART_TRANSACTIONS_STATUS_INTERVAL);
     return () => clearInterval(intervalId);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, isSmartTransactionPending, latestSmartTransactionUuid]);
+
+  useEffect(() => {
+    let intervalId;
+    if (isSmartTransactionPending) {
+      intervalId = setInterval(() => {
+        if (timeLeftForPendingStxInSec <= 0) {
+          clearInterval(intervalId);
+          return;
+        }
+        if (timeLeftForPendingStxInSec === 150) {
+          setPendingStatus(PENDING_STATUS.PRIVATELY_SUBMITTING);
+        }
+        if (timeLeftForPendingStxInSec === 120) {
+          setPendingStatus(PENDING_STATUS.PUBLICLY_SUBMITTING);
+        }
+        setTimeLeftForPendingStxInSec(timeLeftForPendingStxInSec - 1);
+      }, 1000);
+    }
+    return () => clearInterval(intervalId);
+  }, [dispatch, isSmartTransactionPending, timeLeftForPendingStxInSec]);
 
   useEffect(() => {
     // We don't need to poll for quotes on the status page.
     dispatch(stopPollingForQuotes());
   }, [dispatch]);
 
-  let headerText = t('stxPending');
-  let description = t('stxPendingDescription');
-  let icon = <PulseLoader />;
+  const onClickTokenTo = async (e) => {
+    e?.preventDefault();
+    await dispatch(prepareToLeaveSwaps());
+    history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
+  };
+
+  let headerText = t('stxPendingOptimizingGas');
+  let description;
+  let subDescription;
+  let icon;
+  if (isSmartTransactionPending) {
+    if (pendingStatus === PENDING_STATUS.PRIVATELY_SUBMITTING) {
+      headerText = t('stxPendingPrivatelySubmitting');
+    } else if (pendingStatus === PENDING_STATUS.PUBLICLY_SUBMITTING) {
+      headerText = t('stxPendingFinalizing');
+    }
+  }
   if (smartTransactionStatus.minedTx === 'success') {
     headerText = t('stxSuccess');
-    description = t('stxSuccessDescription');
-    icon = <SwapSuccessIcon />;
+    description = t('stxSuccessDescription', [
+      <a
+        className="smart-transaction-status__token-to-link"
+        key="smart-transaction-status__token-to-link"
+        href="#"
+        onClick={onClickTokenTo}
+      >
+        {destinationTokenInfo?.symbol}
+      </a>,
+    ]);
+    icon = <SuccessIcon />;
+  } else if (
+    smartTransactionStatus.minedTx === 'cancelled' &&
+    smartTransactionStatus.cancellationReason &&
+    smartTransactionStatus.cancellationReason !== 'user_cancelled'
+  ) {
+    headerText = t('stxCancelled');
+    description = t('stxCancelledDescription');
+    subDescription = t('stxCancelledSubDescription');
+    icon = <CanceledIcon />;
+  } else if (smartTransactionStatus.minedTx === 'unknown') {
+    headerText = t('stxUnknown');
+    description = t('stxUnknownDescription');
+    icon = <UnknownIcon />;
   } else if (
     smartTransactionStatus.cancellationReason &&
     smartTransactionStatus.cancellationReason === 'user_cancelled'
   ) {
     headerText = t('stxUserCancelled');
     description = t('stxUserCancelledDescription');
-    icon = <SwapFailureIcon />;
+    icon = <CanceledIcon />;
   } else if (
-    smartTransactionStatus.cancellationReason &&
-    smartTransactionStatus.cancellationReason !== 'not_cancelled'
+    smartTransactionStatus.minedTx &&
+    smartTransactionStatus.minedTx === 'reverted'
   ) {
     headerText = t('stxFailure');
     description = t('stxFailureDescription', [
@@ -128,16 +239,17 @@ export default function SmartTransactionStatus() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        support.metamask.io
+        {t('customerSupport')}
       </a>,
     ]);
-    icon = <SwapFailureIcon />;
+    icon = <RevertedIcon />;
   }
 
   const CancelSwap = () => {
     return (
-      <Box marginBottom={3}>
+      <Box marginBottom={0}>
         <a
+          className="smart-transaction-status__cancel-swap-link"
           href="#"
           onClick={(e) => {
             e?.preventDefault();
@@ -158,30 +270,161 @@ export default function SmartTransactionStatus() {
         paddingLeft={8}
         paddingRight={8}
         height={BLOCK_SIZES.FULL}
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        justifyContent={JUSTIFY_CONTENT.START}
         display={DISPLAY.FLEX}
         className="smart-transaction-status__content"
       >
-        <Box marginTop={3} marginBottom={4}>
-          {icon}
+        <Box
+          marginTop={10}
+          marginBottom={0}
+          display={DISPLAY.FLEX}
+          justifyContent={JUSTIFY_CONTENT.CENTER}
+          alignItems={ALIGN_ITEMS.CENTER}
+        >
+          <Typography color={COLORS.UI4} variant={TYPOGRAPHY.H6}>
+            {`${fetchParams?.value} `}
+          </Typography>
+          <Typography
+            color={COLORS.UI4}
+            variant={TYPOGRAPHY.H6}
+            fontWeight={FONT_WEIGHT.BOLD}
+            boxProps={{ marginLeft: 1, marginRight: 2 }}
+          >
+            {sourceTokenInfo?.symbol}
+          </Typography>
+          <UrlIcon
+            url={sourceTokenInfo.iconUrl}
+            className="main-quote-summary__icon"
+            name={sourceTokenInfo.symbol}
+            fallbackClassName="main-quote-summary__icon-fallback"
+          />
+          <Box display={DISPLAY.BLOCK} marginLeft={2} marginRight={2}>
+            <ArrowIcon />
+          </Box>
+          <UrlIcon
+            url={destinationTokenInfo.iconUrl}
+            className="main-quote-summary__icon"
+            name={destinationTokenInfo.symbol}
+            fallbackClassName="main-quote-summary__icon-fallback"
+          />
+          <Typography
+            color={COLORS.UI4}
+            variant={TYPOGRAPHY.H6}
+            boxProps={{ marginLeft: 2 }}
+          >
+            {`~${destinationValue} `}
+          </Typography>
+          <Typography
+            color={COLORS.UI4}
+            variant={TYPOGRAPHY.H6}
+            fontWeight={FONT_WEIGHT.BOLD}
+            boxProps={{ marginLeft: 1 }}
+          >
+            {destinationTokenInfo?.symbol}
+          </Typography>
         </Box>
-        <Typography color={COLORS.BLACK} variant={TYPOGRAPHY.H3}>
+        <Box
+          marginTop={3}
+          className="smart-transaction-status__background-animation"
+        >
+          <BackgroundAnimation position="top" />
+        </Box>
+        {icon && (
+          <Box marginTop={3} marginBottom={2}>
+            {icon}
+          </Box>
+        )}
+        {isSmartTransactionPending && (
+          <Box
+            marginTop={7}
+            marginBottom={1}
+            display={DISPLAY.FLEX}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+            alignItems={ALIGN_ITEMS.CENTER}
+          >
+            <TimerIcon />
+            <Typography
+              color={COLORS.UI4}
+              variant={TYPOGRAPHY.H6}
+              boxProps={{ marginLeft: 1 }}
+            >
+              {`${t('swapCompleteIn')} `}
+            </Typography>
+            <Typography
+              color={COLORS.UI4}
+              variant={TYPOGRAPHY.H6}
+              fontWeight={FONT_WEIGHT.BOLD}
+              boxProps={{ marginLeft: 1 }}
+            >
+              {showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec)}
+            </Typography>
+          </Box>
+        )}
+        <Typography
+          color={COLORS.BLACK}
+          variant={TYPOGRAPHY.H4}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {headerText}
         </Typography>
-        <Typography variant={TYPOGRAPHY.Paragraph} boxProps={{ marginTop: 2 }}>
-          {description}
-        </Typography>
+        {isSmartTransactionPending && (
+          <div className="smart-transaction-status__loading-bar-container">
+            <div
+              className="smart-transaction-status__loading-bar"
+              style={{
+                width: `${
+                  (100 / TOTAL_WAITING_TIME_IN_SEC) *
+                  (TOTAL_WAITING_TIME_IN_SEC - timeLeftForPendingStxInSec)
+                }%`,
+              }}
+            />
+          </div>
+        )}
+        {description && (
+          <Typography
+            variant={TYPOGRAPHY.H6}
+            boxProps={{ marginTop: 0 }}
+            color={COLORS.UI4}
+          >
+            {description}
+          </Typography>
+        )}
+        <Box
+          marginTop={3}
+          className="smart-transaction-status__background-animation"
+        >
+          <BackgroundAnimation position="bottom" />
+        </Box>
+        {subDescription && (
+          <Typography
+            variant={TYPOGRAPHY.H7}
+            boxProps={{ marginTop: 8 }}
+            color={COLORS.UI4}
+          >
+            {subDescription}
+          </Typography>
+        )}
       </Box>
       {showCancelSwapLink &&
         latestSmartTransactionUuid &&
         isSmartTransactionPending && <CancelSwap />}
       <SwapsFooter
         onSubmit={async () => {
+          if (showCloseButtonOnly) {
+            await dispatch(prepareToLeaveSwaps());
+            history.push(DEFAULT_ROUTE);
+          } else {
+            history.push(BUILD_QUOTE_ROUTE);
+          }
+        }}
+        onCancel={async () => {
           await dispatch(prepareToLeaveSwaps());
           history.push(DEFAULT_ROUTE);
         }}
-        submitText={isSmartTransactionPending ? t('cancel') : t('close')}
-        hideCancel
+        submitText={showCloseButtonOnly ? t('close') : t('tryAgain')}
+        hideCancel={showCloseButtonOnly}
+        cancelText={t('close')}
+        className="smart-transaction-status__swaps-footer"
       />
     </div>
   );

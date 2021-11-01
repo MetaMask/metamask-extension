@@ -406,7 +406,6 @@ class ImportToken extends Component {
               {this.context.t('enableFromSettings')}
             </Button>,
           ])}
-          type={false}
           withRightButton
           useIcon
           iconFillColor="#037DD6"

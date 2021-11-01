@@ -184,8 +184,13 @@ const MODALS = {
       top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
-      width: '449px',
+      width:
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '357px' : '449px',
       top: 'calc(33% + 45px)',
+      paddingLeft:
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
+      paddingRight:
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
     },
   },
 
