@@ -190,7 +190,7 @@ export default function ViewQuote() {
       };
       intervalId = setInterval(() => {
         dispatch(fetchUnsignedTransactionsAndEstimates(unsignedTx));
-      }, swapsRefreshRates.stxGetTransactions);
+      }, swapsRefreshRates.stxGetTransactionsRefreshTime);
       dispatch(fetchUnsignedTransactionsAndEstimates(unsignedTx));
     }
     return () => clearInterval(intervalId);
@@ -204,7 +204,7 @@ export default function ViewQuote() {
     unsignedTransaction.gas,
     unsignedTransaction.to,
     chainId,
-    swapsRefreshRates.stxGetTransactions,
+    swapsRefreshRates.stxGetTransactionsRefreshTime,
   ]);
 
   let gasFeeInputs;

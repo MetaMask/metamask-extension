@@ -90,14 +90,14 @@ export default function SmartTransactionStatus() {
       } else {
         clearInterval(intervalId);
       }
-    }, swapsRefreshRates.stxBatchStatus);
+    }, swapsRefreshRates.stxBatchStatusRefreshTime);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     dispatch,
     isSmartTransactionPending,
     latestSmartTransactionUuid,
-    swapsRefreshRates.stxBatchStatus,
+    swapsRefreshRates.stxBatchStatusRefreshTime,
   ]);
 
   useEffect(() => {
