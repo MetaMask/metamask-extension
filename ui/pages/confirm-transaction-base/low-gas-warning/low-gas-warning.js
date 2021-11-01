@@ -1,21 +1,22 @@
 import React from 'react';
 
-import { useGasFeeContext } from '../../../contexts/gasFee';
-
+import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import Box from '../../../components/ui/box';
-import I18nValue from '../../../components/ui/i18n-value';
-import Typography from '../../../components/ui/typography/typography';
+import { useGasFeeContext } from '../../../contexts/gasFee';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const LowGasWarning = () => {
   const { estimateToUse } = useGasFeeContext();
+  const t = useI18nContext();
 
   if (estimateToUse !== 'low') return null;
   return (
-    <Box className="low-gas-warning">
-      <i className="fa fa-exclamation-circle low-gas-warning__alert-icon"></i>
-      <Typography margin={[0, 0]}>
-        <I18nValue messageKey="lowGasWarning" />
-      </Typography>
+    <Box marginTop={20}>
+      <ActionableMessage
+        className="actionable-message--warning"
+        message={t('lowGasWarning')}
+        useIcon
+      />
     </Box>
   );
 };
