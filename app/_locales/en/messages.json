@@ -1325,7 +1325,7 @@
     "message": "Lock time is too great"
   },
   "lowGasWarning": {
-    "message": "Future transactions will queue after this one. This price was last seen was 2 hours ago."
+    "message": "Future transactions will queue after this one. This price was last seen was some time ago."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
