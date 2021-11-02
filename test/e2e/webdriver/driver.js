@@ -392,6 +392,7 @@ function collectMetrics() {
 }
 
 Driver.PAGES = {
+  BACKGROUND: 'background',
   HOME: 'home',
   NOTIFICATION: 'notification',
   POPUP: 'popup',
