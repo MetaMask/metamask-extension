@@ -44,16 +44,16 @@ const render = (props) => {
 
 describe('LowGasWarning', () => {
   it('should not return null for low gas estimate', () => {
-    render({ defaultEstimateToUse: 'low' });
+    render({ transaction: { userFeeLevel: 'low' } });
     expect(
-      document.getElementsByClassName('low-gas-warning__alert-icon'),
+      document.getElementsByClassName('actionable-message--warning'),
     ).toHaveLength(1);
   });
 
   it('should not return null for high gas estimate', () => {
-    render({ defaultEstimateToUse: 'high' });
+    render({ transaction: { userFeeLevel: 'high' } });
     expect(
-      document.getElementsByClassName('low-gas-warning__alert-icon'),
+      document.getElementsByClassName('actionable-message--warning'),
     ).toHaveLength(0);
   });
 });
