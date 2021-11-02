@@ -2979,15 +2979,11 @@ export function signAndSendSmartTransaction({
       true,
     );
     try {
-      const response = await promisifiedBackground.submitSignedTransactions({
+      await promisifiedBackground.submitSignedTransactions({
         signedTransactions,
         signedCanceledTransactions,
         txParams,
       }); // Returns e.g.: { uuid: 'dP23W7c2kt4FK9TmXOkz1UM2F20' }
-      dispatch({
-        type: actionConstants.SET_LATEST_SMART_TRANSACTION_UUID,
-        payload: response,
-      });
     } catch (e) {
       console.log(e);
       if (isPersistentError(e)) {
@@ -3003,13 +2999,7 @@ export function signAndSendSmartTransaction({
 export function fetchSmartTransactionsStatus(uuids) {
   return async (dispatch) => {
     try {
-      const smartTransactionsStatus = await promisifiedBackground.fetchSmartTransactionsStatus(
-        uuids,
-      );
-      dispatch({
-        type: actionConstants.SET_SMART_TRANSACTIONS_STATUS,
-        payload: smartTransactionsStatus,
-      });
+      await promisifiedBackground.fetchSmartTransactionsStatus(uuids);
     } catch (e) {
       console.log(e);
       if (isPersistentError(e)) {

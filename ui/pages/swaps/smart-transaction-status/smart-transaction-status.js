@@ -7,8 +7,7 @@ import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   getFetchParams,
   prepareToLeaveSwaps,
-  getSmartTransactionsStatus,
-  getLatestSmartTransactionUuid,
+  getCurrentSmartTransactions,
   getSwapsRefreshStates,
   getSelectedQuote,
   getTopQuote,
@@ -50,7 +49,6 @@ import ArrowIcon from './arrow-icon';
 import TimerIcon from './timer-icon';
 import BackgroundAnimation from './background-animation';
 
-const SMART_TRANSACTIONS_STATUS_INTERVAL = SECOND * 10; // Poll every 10 seconds.
 const TOTAL_WAITING_TIME_IN_SEC = 180;
 
 // It takes about 2s to show the link (waiting for uuid) and then it will be visible for about 10s or until a user clicks on it.
@@ -93,11 +91,17 @@ export default function SmartTransactionStatus() {
   const selectedQuote = useSelector(getSelectedQuote);
   const topQuote = useSelector(getTopQuote);
   const usedQuote = selectedQuote || topQuote;
-  const smartTransactionsStatus = useSelector(getSmartTransactionsStatus);
-  const latestSmartTransactionUuid = useSelector(getLatestSmartTransactionUuid);
+  const currentSmartTransactions = useSelector(getCurrentSmartTransactions);
   const swapsRefreshRates = useSelector(getSwapsRefreshStates);
-  const smartTransactionStatus =
-    smartTransactionsStatus?.[latestSmartTransactionUuid] || {}; // TODO: Use a list of STX from the STX controller.
+  let smartTransactionStatus = {};
+  let latestSmartTransactionUuid;
+
+  if (currentSmartTransactions && currentSmartTransactions.length > 0) {
+    const latestSmartTransaction =
+      currentSmartTransactions[currentSmartTransactions.length - 1];
+    latestSmartTransactionUuid = latestSmartTransaction?.uuid;
+    smartTransactionStatus = latestSmartTransaction?.statusMetadata || {};
+  }
 
   const sensitiveProperties = {
     needs_two_confirmations: needsTwoConfirmations,

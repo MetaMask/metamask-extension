@@ -96,20 +96,6 @@ export default function reduceApp(state = {}, action) {
         unsignedTransactionsAndEstimates: action.payload,
       };
 
-    // TODO: We might want to use state from the STX controller instead of this.
-    case actionConstants.SET_LATEST_SMART_TRANSACTION_UUID:
-      return {
-        ...appState,
-        latestSmartTransactionUuid: action.payload?.uuid,
-      };
-
-    // TODO: We might want to use state from the STX controller instead of this.
-    case actionConstants.SET_SMART_TRANSACTIONS_STATUS:
-      return {
-        ...appState,
-        smartTransactionsStatus: action.payload,
-      };
-
     case actionConstants.SET_SMART_TRANSACTIONS_LIVENESS:
       return {
         ...appState,

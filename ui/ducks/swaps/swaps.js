@@ -343,16 +343,12 @@ export const getSmartTransactionsOptInStatus = (state) => {
 export const getSmartTransactions = (state) => {
   return state.metamask.smartTransactions;
 };
+export const getCurrentSmartTransactions = (state) => {
+  return state.metamask.smartTransactions?.[getCurrentChainId(state)];
+};
 export const getUnsignedTransactionsAndEstimates = (state) => {
   return state.appState.unsignedTransactionsAndEstimates;
 };
-export const getSmartTransactionsStatus = (state) => {
-  return state.appState.smartTransactionsStatus;
-};
-export const getLatestSmartTransactionUuid = (state) => {
-  return state.appState.latestSmartTransactionUuid;
-};
-
 export const getSwapsRefreshStates = (state) => {
   const {
     swapsQuoteRefreshTime,
