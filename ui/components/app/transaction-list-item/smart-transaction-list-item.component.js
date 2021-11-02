@@ -35,13 +35,9 @@ export default function SmartTransactionListItem({
   const subtitle = 'metamask';
   const date = formatDateWithYearContext(time);
   let displayedStatusKey;
-  if (
-    !status?.minedTx ||
-    (status?.minedTx === 'not_mined' &&
-      status?.cancellationReason === 'not_cancelled')
-  ) {
+  if (status === 'pending') {
     displayedStatusKey = TRANSACTION_GROUP_STATUSES.PENDING;
-  } else if (status?.cancellationReason === 'user_cancelled') {
+  } else if (status.startsWith('cancelled')) {
     displayedStatusKey = TRANSACTION_GROUP_STATUSES.CANCELLED;
   }
   const className = 'transaction-list-item transaction-list-item--unconfirmed';

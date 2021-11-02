@@ -84,7 +84,7 @@ export default function TransactionList({
   const pendingSmartTransactions = useMemo(
     () =>
       smartTransactions
-        .filter((stx) => stx.txParams && stx.status === 'pending')
+        .filter((stx) => stx.status === 'pending')
         .map((stx) => ({ ...stx, transactionType: 'smart' })),
     [smartTransactions],
   );
@@ -92,7 +92,7 @@ export default function TransactionList({
   const cancelledSmartTransactions = useMemo(
     () =>
       smartTransactions
-        .filter((stx) => stx.txParams && stx.status.startsWith('cancelled'))
+        .filter((stx) => stx.status.startsWith('cancelled'))
         .map((stx) => ({ ...stx, transactionType: 'smart' })),
     [smartTransactions],
   );
