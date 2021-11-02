@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { Browser } = require('selenium-webdriver');
 const {
   getGlobalProperties,
   testIntrinsic,
@@ -48,6 +49,11 @@ describe('lockdown', function () {
   };
 
   it('the UI and background environments are locked down', async function () {
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      console.log('Skipping lockdown test in Firefox.');
+      return;
+    }
+
     await withFixtures(
       {
         // The fixtures used here is arbitrary. Any fixture would do.
