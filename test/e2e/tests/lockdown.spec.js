@@ -7,9 +7,19 @@ const {
 const { withFixtures } = require('../helpers');
 const { PAGES } = require('../webdriver/driver');
 
-// This iterates over all named intrinsics and tests that they are locked down
-// per ses/lockdown.
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+
+/**
+ * This script iterates over all named intrinsics and tests that they are locked
+ * down per ses/lockdown.
+ *
+ * We set globalThis to window in Firefox because the test fails otherwise.
+ * We believe this is due to some Selenium-related shenanigans. In the browser,
+ * this behavior is not a problem.
+ */
 const lockdownTestScript = `
+${isFirefox ? 'globalThis = window;' : ''}
+
 const assert = {
   equal: (value, comparison, message) => {
     if (value !== comparison) {
@@ -29,10 +39,13 @@ ${testIntrinsic.toString()}
 
 try {
   getGlobalProperties().forEach((propertyName) => {
+    console.log('Testing intrinsic:', propertyName);
     testIntrinsic(propertyName);
   })
+  console.log('Lockdown test successful!');
   return true;
 } catch (error) {
+  console.log('Lockdown test failed.', error);
   return false;
 }
 `;
@@ -49,11 +62,6 @@ describe('lockdown', function () {
   };
 
   it('the UI and background environments are locked down', async function () {
-    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-      console.log('Skipping lockdown test in Firefox.');
-      return;
-    }
-
     await withFixtures(
       {
         // The fixtures used here is arbitrary. Any fixture would do.
