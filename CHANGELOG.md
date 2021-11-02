@@ -8,12 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.4.0]
 ### Added
-- [#12411](https://github.com/MetaMask/metamask-extension/pull/12411): Add support for connecting Ledger devices to MetaMask via WebHID
 - [#12400](https://github.com/MetaMask/metamask-extension/pull/12400): Add text to Restore Account screen noting current wallet replacement
 
 ### Fixed
 - [#12420](https://github.com/MetaMask/metamask-extension/pull/12420): Fix missing conversion rates in Swaps token dropdown
 - [#12403](https://github.com/MetaMask/metamask-extension/pull/12403): Fix incorrect default locale used during onboarding
+- [#12484](https://github.com/MetaMask/metamask-extension/pull/12484): Prevent occasional incorrect "No Quotes Found" result in Swaps
+- [#12550](https://github.com/MetaMask/metamask-extension/pull/12550): Prevent occasional 'BigNumber' error on the confirm screen when sending tokens
 
 ## [10.3.0]
 ### Added
