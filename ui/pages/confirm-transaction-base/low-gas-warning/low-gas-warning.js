@@ -11,14 +11,14 @@ const LowGasWarning = () => {
 
   if (estimateToUse !== 'low') return null;
   return (
-    <Box marginTop={20}>
+    <div className="low-gas-warning">
       <ActionableMessage
         className="actionable-message--warning"
         message={t('lowGasWarning')}
         useIcon
         iconFillColor="#f8c000"
       />
-    </Box>
+    </div>
   );
 };
 
