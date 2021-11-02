@@ -100,7 +100,7 @@ export default function SendTransactionScreen() {
   }
   return (
     <div className="page-container">
-      <SendHeader history={history} />
+      <SendHeader history={history} data={location.state} />
       <EnsInput
         userInput={userInput}
         className="send__to-row"

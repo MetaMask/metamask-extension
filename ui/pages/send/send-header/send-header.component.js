@@ -1,6 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import PageContainerHeader from '../../../components/ui/page-container/page-container-header';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -11,8 +12,13 @@ import {
   resetSendState,
   SEND_STAGES,
 } from '../../../ducks/send';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 
-export default function SendHeader() {
+SendHeader.propTypes = {
+  data: PropTypes.object,
+};
+
+export default function SendHeader({ data }) {
   const history = useHistory();
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const dispatch = useDispatch();
@@ -22,7 +28,14 @@ export default function SendHeader() {
 
   const onClose = () => {
     dispatch(resetSendState());
-    history.push(mostRecentOverviewPage);
+    if (mostRecentOverviewPage === '/') {
+      history.push({
+        pathname: CONFIRM_TRANSACTION_ROUTE,
+        state: { currencyObject: data.currencyObject },
+      });
+    } else {
+      history.push(mostRecentOverviewPage);
+    }
   };
 
   let title = asset.type === ASSET_TYPES.NATIVE ? t('send') : t('sendTokens');

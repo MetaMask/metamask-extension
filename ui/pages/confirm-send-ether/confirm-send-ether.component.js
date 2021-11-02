@@ -15,12 +15,25 @@ export default class ConfirmSendEther extends Component {
     location: PropTypes.object,
   };
 
+  getCurrencyPreferenceObject = () => {
+    if (
+      this.props.location.state &&
+      this.props.location.state.currencyData &&
+      this.props.location.state.currencyData.currencyPreferenceData
+    ) {
+      return this.props.location.state.currencyData.currencyPreferenceData
+        .dataFromSendAmountRow.dataFromCurrency.dataFromCurrency;
+    } else if (
+      this.props.location.state &&
+      this.props.location.state.currencyData
+    ) {
+      return this.props.location.state.currencyData.currencyObject;
+    }
+    return {};
+  };
+
   state = {
-    currencyPreferenceObject:
-      this.props.location.state && this.props.location.state.currencyData
-        ? this.props.location.state.currencyData.currencyPreferenceData
-            .dataFromSendAmountRow.dataFromCurrency.dataFromCurrency
-        : {},
+    currencyPreferenceObject: this.getCurrencyPreferenceObject,
   };
 
   handleEdit({ txData }) {

@@ -54,7 +54,7 @@ export default class SendContent extends Component {
       isAssetSendable,
       networkOrAccountNotSupports1559,
       getIsBalanceInsufficient,
-      location
+      location,
     } = this.props;
 
     this.props.passDataToSendPage(this.state);
