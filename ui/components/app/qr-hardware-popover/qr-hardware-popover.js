@@ -6,22 +6,29 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   cancelReadQRHardwareCryptoHDKey as cancelReadQRHardwareCryptoHDKeyAction,
   cancelQRHardwareSignRequest as cancelQRHardwareSignRequestAction,
+  cancelTx,
 } from '../../../store/actions';
+import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
 
 const QRHardwarePopover = () => {
   const t = useI18nContext();
+  const { txData } = useSelector((state) => {
+    return state.confirmTransaction;
+  });
   const dispatch = useDispatch();
   const walletImporterCancel = useCallback(
     () => dispatch(cancelReadQRHardwareCryptoHDKeyAction()),
     [dispatch],
   );
 
-  const signRequestCancel = useCallback(
-    () => dispatch(cancelQRHardwareSignRequestAction()),
-    [dispatch],
-  );
+  const signRequestCancel = useCallback(() => {
+    dispatch(cancelTx(txData)).then(() => {
+      dispatch(clearConfirmTransaction());
+    });
+    dispatch(cancelQRHardwareSignRequestAction());
+  }, [dispatch, txData]);
 
   const qrHardware = useSelector(getCurrentQRHardwareState);
   const { sync, sign } = qrHardware;

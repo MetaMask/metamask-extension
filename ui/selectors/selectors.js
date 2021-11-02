@@ -87,9 +87,18 @@ export function getCurrentQRHardwareState(state) {
   return qrHardware || {};
 }
 
-export function getCurrentQRHardwareSignRequest(state) {
-  const { sign } = state.metamask.qrHardware;
-  return sign;
+export function hasUnsignedQRHardwareTransaction(state) {
+  const { txParams } = state.confirmTransaction.txData;
+  if (!txParams) return false;
+  const { from } = txParams;
+  const { keyrings } = state.metamask;
+  const qrKeyring = keyrings.find((kr) => kr.type === KEYRING_TYPES.QR);
+  if (!qrKeyring) return false;
+  return Boolean(
+    qrKeyring.accounts.find(
+      (account) => account.toLowerCase() === from.toLowerCase(),
+    ),
+  );
 }
 
 export function getCurrentKeyring(state) {

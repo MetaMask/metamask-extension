@@ -16,6 +16,7 @@ import {
   getSortedNotificationsToShow,
   getShowRecoveryPhraseReminder,
   getNewNetworkAdded,
+  hasUnsignedQRHardwareTransaction,
 } from '../../selectors';
 
 import {
@@ -58,7 +59,6 @@ const mapStateToProps = (state) => {
     defaultHomeActiveTabName,
     swapsState,
     dismissSeedBackUpReminder,
-    qrHardware,
   } = metamask;
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
@@ -84,8 +84,8 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       WEB3_SHIM_USAGE_ALERT_STATES.RECORDED;
 
-  const hasQRHardwareSignRequest = Boolean(
-    qrHardware && qrHardware.sign && qrHardware.sign.request,
+  const isSigningQRHardwareTransaction = hasUnsignedQRHardwareTransaction(
+    state,
   );
 
   return {
@@ -120,7 +120,7 @@ const mapStateToProps = (state) => {
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
-    hasQRHardwareSignRequest,
+    isSigningQRHardwareTransaction,
   };
 };
 
