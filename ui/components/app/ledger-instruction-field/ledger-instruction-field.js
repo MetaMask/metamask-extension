@@ -147,7 +147,20 @@ export default function LedgerInstructionField({ showDataInstruction }) {
               showDataInstruction,
             )}
             {renderInstructionStep(
-              `- ${t('ledgerConnectionInstructionCloseLedgerBridge')}`,
+              <span>
+                <Button
+                  type="link"
+                  onClick={async () => {
+                    if (environmentTypeIsFullScreen) {
+                      window.location.reload();
+                    } else {
+                      global.platform.openExtensionInBrowser(null, null, true);
+                    }
+                  }}
+                >
+                  {t('ledgerConnectionInstructionCloseOtherApps')}
+                </Button>
+              </span>,
               transportStatus === TRANSPORT_STATES.DEVICE_OPEN_FAILURE,
             )}
             {renderInstructionStep(
