@@ -125,6 +125,9 @@ export default class ConfirmPageContainer extends Component {
     const showAddToAddressDialog =
       !contact.name && toAddress && !isOwnedAccount && !hideSenderToRecipient;
 
+    const shouldDisplayWarning =
+      contentComponent && disabled && (errorKey || errorMessage);
+
     return (
       <div className="page-container">
         <ConfirmPageContainerNavigation
@@ -193,7 +196,7 @@ export default class ConfirmPageContainer extends Component {
             ethGasPriceWarning={ethGasPriceWarning}
           />
         )}
-        {contentComponent && disabled && (errorKey || errorMessage) && (
+        {shouldDisplayWarning && (
           <div className="confirm-approve-content__warning">
             <ErrorMessage errorKey={errorKey} />
           </div>
