@@ -156,10 +156,6 @@ export default function BuildQuote({
 
   const showSmartTransactionsOptInPopover =
     smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
-  console.log(
-    'showSmartTransactionsOptInPopover',
-    showSmartTransactionsOptInPopover,
-  );
 
   const onCloseSmartTransactionsOptInPopover = (e) => {
     e?.preventDefault();

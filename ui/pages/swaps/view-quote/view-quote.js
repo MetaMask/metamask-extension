@@ -155,7 +155,6 @@ export default function ViewQuote() {
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
-  console.log('networkAndAccountSupports1559', networkAndAccountSupports1559);
   const balanceError = useSelector(getBalanceError);
   const fetchParams = useSelector(getFetchParams);
   const approveTxParams = useSelector(getApproveTxParams);

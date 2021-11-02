@@ -1,12 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import { createLogger } from 'redux-logger';
 import { composeWithDevTools } from 'remote-redux-devtools';
 import rootReducer from '../ducks';
-
-const logger = createLogger({
-  collapsed: true,
-});
 
 export default function configureStore(initialState) {
   const composeEnhancers = composeWithDevTools({
@@ -18,6 +13,6 @@ export default function configureStore(initialState) {
   return createStore(
     rootReducer,
     initialState,
-    composeEnhancers(applyMiddleware(thunkMiddleware, logger)),
+    composeEnhancers(applyMiddleware(thunkMiddleware)),
   );
 }
