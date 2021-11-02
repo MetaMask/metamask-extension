@@ -7,8 +7,7 @@ import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
   getFetchParams,
   prepareToLeaveSwaps,
-  getLatestSmartTransactionUuid,
-  getSmartTransactions,
+  getCurrentSmartTransactions,
   getSwapsRefreshStates,
   getSelectedQuote,
   getTopQuote,
@@ -90,16 +89,20 @@ export default function SmartTransactionStatus() {
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = true;
-  const latestSmartTransactionUuid = useSelector(getLatestSmartTransactionUuid);
   const selectedQuote = useSelector(getSelectedQuote);
   const topQuote = useSelector(getTopQuote);
   const usedQuote = selectedQuote || topQuote;
-  const smartTransactions = useSelector(getSmartTransactions);
+  const currentSmartTransactions = useSelector(getCurrentSmartTransactions);
   const swapsRefreshRates = useSelector(getSwapsRefreshStates);
-  const smartTransactionStatus =
-    smartTransactions.find((stx) => stx.uuid === latestSmartTransactionUuid)
-      ?.status || {};
-  console.log(`smartTransactionStatus`, smartTransactionStatus);
+  let smartTransactionStatus = {};
+  let latestSmartTransactionUuid;
+
+  if (currentSmartTransactions && currentSmartTransactions.length > 0) {
+    const latestSmartTransaction =
+      currentSmartTransactions[currentSmartTransactions.length - 1];
+    latestSmartTransactionUuid = latestSmartTransaction?.uuid;
+    smartTransactionStatus = latestSmartTransaction?.statusMetadata || {};
+  }
 
   const sensitiveProperties = {
     needs_two_confirmations: needsTwoConfirmations,
@@ -229,6 +232,7 @@ export default function SmartTransactionStatus() {
     description = t('stxUnknownDescription');
     icon = <UnknownIcon />;
   } else if (
+    smartTransactionStatus.minedTx === 'cancelled' &&
     smartTransactionStatus.cancellationReason &&
     smartTransactionStatus.cancellationReason === 'user_cancelled'
   ) {

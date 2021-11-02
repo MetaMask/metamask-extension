@@ -867,11 +867,6 @@ export default function ViewQuote() {
           setSubmitClicked(true);
           if (!balanceError) {
             if (smartTransactionsEnabled && smartTransactionsOptInStatus) {
-              console.log(
-                'token symbols',
-                sourceTokenSymbol,
-                destinationTokenSymbol,
-              );
               dispatch(
                 signAndSendSwapsSmartTransaction({
                   unsignedTransaction,

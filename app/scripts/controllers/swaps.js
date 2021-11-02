@@ -86,7 +86,6 @@ const initialState = {
     swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
     swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
     swapsFeatureFlags: {},
-    smartTransactionsStatus: {},
   },
 };
 
