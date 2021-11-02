@@ -263,7 +263,6 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   addExternalTransaction(txMeta) {
-    console.log(`add external tx: txMeta`, txMeta);
     this._addTransactionsToState([txMeta]);
     return txMeta;
   }

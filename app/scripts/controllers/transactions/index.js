@@ -131,7 +131,6 @@ export default class TransactionController extends EventEmitter {
     this._onBootCleanUp();
 
     this.store = this.txStateManager.store;
-    console.log('store', this.store);
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
@@ -1101,7 +1100,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   async confirmExternalTransaction(txMeta, txReceipt, baseFeePerGas) {
-    console.log('confirm external tx', txMeta, txReceipt, baseFeePerGas);
     // add external transaction
     await this.txStateManager.addExternalTransaction(txMeta);
 
@@ -1489,7 +1487,6 @@ export default class TransactionController extends EventEmitter {
           approvalTxMeta,
           txMeta.chainId,
         );
-        console.log('tokens received', tokensReceived);
 
         const quoteVsExecutionRatio = tokensReceived
           ? `${new BigNumber(tokensReceived, 10)
@@ -1498,11 +1495,6 @@ export default class TransactionController extends EventEmitter {
               .round(2)}%`
           : null;
 
-        console.log(
-          'estimated gas',
-          txMeta.txReceipt.gasUsed,
-          txMeta.swapMetaData.estimated_gas,
-        );
         const estimatedVsUsedGasRatio =
           txMeta.txReceipt.gasUsed && txMeta.swapMetaData.estimated_gas
             ? `${new BigNumber(txMeta.txReceipt.gasUsed, 16)
