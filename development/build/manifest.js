@@ -49,36 +49,22 @@ function createManifestTasks({
   });
 
   // testDev: add perms
-  const envTestDev = createTaskForModifyManifestForEnvironment(
-    (manifest, platform) => {
-      if (platform === 'firefox') {
-        manifest.content_security_policy =
-          "script-src 'self' 'unsafe-eval'; object-src 'self'";
-      }
-
-      manifest.permissions = [
-        ...manifest.permissions,
-        'webRequestBlocking',
-        'http://localhost/*',
-      ];
-    },
-  );
+  const envTestDev = createTaskForModifyManifestForEnvironment((manifest) => {
+    manifest.permissions = [
+      ...manifest.permissions,
+      'webRequestBlocking',
+      'http://localhost/*',
+    ];
+  });
 
   // test: add permissions
-  const envTest = createTaskForModifyManifestForEnvironment(
-    (manifest, platform) => {
-      if (platform === 'firefox') {
-        manifest.content_security_policy =
-          "script-src 'self' 'unsafe-eval'; object-src 'self'";
-      }
-
-      manifest.permissions = [
-        ...manifest.permissions,
-        'webRequestBlocking',
-        'http://localhost/*',
-      ];
-    },
-  );
+  const envTest = createTaskForModifyManifestForEnvironment((manifest) => {
+    manifest.permissions = [
+      ...manifest.permissions,
+      'webRequestBlocking',
+      'http://localhost/*',
+    ];
+  });
 
   // high level manifest tasks
   const dev = createTask('manifest:dev', composeSeries(prepPlatforms, envDev));
@@ -109,7 +95,7 @@ function createManifestTasks({
             'manifest.json',
           );
           const manifest = await readJson(manifestPath);
-          transformFn(manifest, platform);
+          transformFn(manifest);
           await writeJson(manifest, manifestPath);
         }),
       );
