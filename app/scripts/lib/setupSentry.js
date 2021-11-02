@@ -100,8 +100,29 @@ export default function setupSentry({ release, getState }) {
     environment,
     integrations: [new Dedupe(), new ExtraErrorData()],
     release,
-    beforeSend: (report) => rewriteReport(report),
+    beforeSend: (report) => {
+      if (shouldFilterReport(report)) {
+        return null;
+      }
+      return rewriteReport(report);
+    },
   });
+
+  function shouldFilterReport(report) {
+    let shouldFilter = false;
+    try {
+      // attempting to reduce segment rate-limiting errors
+      // https://github.com/MetaMask/metamask-extension/issues/12334
+      visitErrorMessages(report, (errorMessage) => {
+        if (errorMessage.includes('Network Error')) {
+          shouldFilter = true;
+        }
+      });
+    } catch (err) {
+      console.warn(err);
+    }
+    return shouldFilter;
+  }
 
   function rewriteReport(report) {
     try {
@@ -141,6 +162,21 @@ function simplifyErrorMessages(report) {
     }
     return simplifiedErrorMessage;
   });
+}
+
+function visitErrorMessages(report, visitorFn) {
+  // rewrite top level message
+  if (typeof report.message === 'string') {
+    visitorFn(report.message);
+  }
+  // rewrite each exception message
+  if (report.exception && report.exception.values) {
+    report.exception.values.forEach((item) => {
+      if (typeof item.value === 'string') {
+        visitorFn(item.value);
+      }
+    });
+  }
 }
 
 function rewriteErrorMessages(report, rewriteFn) {
