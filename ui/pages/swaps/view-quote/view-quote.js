@@ -866,10 +866,19 @@ export default function ViewQuote() {
           setSubmitClicked(true);
           if (!balanceError) {
             if (smartTransactionsEnabled && smartTransactionsOptInStatus) {
+              const txParams = {
+                from: unsignedTransaction.from,
+                to: unsignedTransaction.to,
+                value: unsignedTransaction.value,
+                data: unsignedTransaction.data,
+                gas: unsignedTransaction.gas,
+                chainId,
+              };
               dispatch(
                 signAndSendSmartTransaction({
                   unsignedTransaction,
                   unsignedTransactionsAndEstimates,
+                  txParams,
                 }),
               );
               history.push(SMART_TRANSACTION_STATUS_ROUTE);

@@ -2966,6 +2966,7 @@ const createSignedTransactions = async (
 export function signAndSendSmartTransaction({
   unsignedTransaction,
   unsignedTransactionsAndEstimates,
+  txParams,
 }) {
   return async (dispatch) => {
     const signedTransactions = await createSignedTransactions(
@@ -2981,6 +2982,7 @@ export function signAndSendSmartTransaction({
       const response = await promisifiedBackground.submitSignedTransactions({
         signedTransactions,
         signedCanceledTransactions,
+        txParams,
       }); // Returns e.g.: { uuid: 'dP23W7c2kt4FK9TmXOkz1UM2F20' }
       dispatch({
         type: actionConstants.SET_LATEST_SMART_TRANSACTION_UUID,
