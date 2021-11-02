@@ -2910,6 +2910,11 @@ export async function setSmartTransactionsOptInStatus(optInState) {
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
 }
 
+const isPersistentError = (e) => {
+  const persistentError = "Fetch failed with status '5";
+  return e.message?.includes(persistentError);
+};
+
 export function fetchUnsignedTransactionsAndEstimates(unsignedTransaction) {
   return async (dispatch) => {
     try {
@@ -2922,6 +2927,12 @@ export function fetchUnsignedTransactionsAndEstimates(unsignedTransaction) {
       });
     } catch (e) {
       console.log(e);
+      if (isPersistentError(e)) {
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: e.message,
+        });
+      }
     }
   };
 }
@@ -2977,6 +2988,12 @@ export function signAndSendSmartTransaction({
       });
     } catch (e) {
       console.log(e);
+      if (isPersistentError(e)) {
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: e.message,
+        });
+      }
     }
   };
 }
@@ -2993,12 +3010,30 @@ export function fetchSmartTransactionsStatus(uuids) {
       });
     } catch (e) {
       console.log(e);
+      if (isPersistentError(e)) {
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: e.message,
+        });
+      }
     }
   };
 }
 
-export async function cancelSmartTransaction(uuid) {
-  await promisifiedBackground.cancelSmartTransaction(uuid);
+export function cancelSmartTransaction(uuid) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.cancelSmartTransaction(uuid);
+    } catch (e) {
+      console.log(e);
+      if (isPersistentError(e)) {
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: e.message,
+        });
+      }
+    }
+  };
 }
 
 export function fetchSmartTransactionsLiveness() {
