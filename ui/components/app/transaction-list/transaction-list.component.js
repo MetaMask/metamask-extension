@@ -15,7 +15,7 @@ import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../helpers/utils/util';
-import { getSmartTransactions } from '../../../ducks/swaps/swaps';
+import { getCurrentSmartTransactions } from '../../../ducks/swaps/swaps';
 
 const PAGE_INCREMENT = 10;
 
@@ -80,16 +80,11 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
   const chainId = useSelector(getCurrentChainId);
-  const smartTransactions = useSelector(getSmartTransactions);
+  const smartTransactions = useSelector(getCurrentSmartTransactions);
   const pendingSmartTransactions = useMemo(
     () =>
       smartTransactions
-        .filter(
-          (stx) =>
-            !stx.status?.minedTx ||
-            (stx.status?.minedTx === 'not_mined' &&
-              stx.status?.cancellationReason === 'not_cancelled'),
-        )
+        .filter((stx) => stx.txParams && stx.status === 'pending')
         .map((stx) => ({ ...stx, transactionType: 'smart' })),
     [smartTransactions],
   );
@@ -97,12 +92,7 @@ export default function TransactionList({
   const cancelledSmartTransactions = useMemo(
     () =>
       smartTransactions
-        .filter(
-          (stx) =>
-            !stx.status?.minedTx ||
-            (stx.status?.minedTx === 'not_mined' &&
-              stx.status?.cancellationReason === 'user_cancelled'),
-        )
+        .filter((stx) => stx.txParams && stx.status.startsWith('cancelled'))
         .map((stx) => ({ ...stx, transactionType: 'smart' })),
     [smartTransactions],
   );

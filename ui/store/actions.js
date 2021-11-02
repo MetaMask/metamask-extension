@@ -2978,11 +2978,12 @@ export function signAndSendSmartTransaction({
       true,
     );
     try {
-      await promisifiedBackground.submitSignedTransactions({
+      const response = await promisifiedBackground.submitSignedTransactions({
         signedTransactions,
         signedCanceledTransactions,
         txParams: unsignedTransaction,
       }); // Returns e.g.: { uuid: 'dP23W7c2kt4FK9TmXOkz1UM2F20' }
+      return response.uuid;
     } catch (e) {
       console.log(e);
       if (isPersistentError(e)) {
@@ -3019,6 +3020,16 @@ export function fetchSmartTransactionsStatus(uuids) {
   return async () => {
     try {
       await promisifiedBackground.fetchSmartTransactionsStatus(uuids);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+}
+
+export function setSmartTransactionsRefreshInterval(refreshInterval) {
+  return async () => {
+    try {
+      await promisifiedBackground.setStatusRefreshInterval(refreshInterval);
     } catch (e) {
       console.log(e);
     }

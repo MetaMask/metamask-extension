@@ -28,6 +28,7 @@ import {
   fetchSmartTransactionsLiveness,
   signAndSendSmartTransaction,
   updateSmartTransaction,
+  setSmartTransactionsRefreshInterval,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -341,9 +342,6 @@ export const getApproveTxParams = (state) => {
 
 export const getSmartTransactionsOptInStatus = (state) => {
   return state.metamask.userOptIn;
-};
-export const getSmartTransactions = (state) => {
-  return state.metamask.smartTransactions;
 };
 
 export const getCurrentSmartTransactions = (state) => {
@@ -708,7 +706,13 @@ export const signAndSendSwapsSmartTransaction = ({
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
+    const swapsRefreshStates = getSwapsRefreshStates(state);
     try {
+      dispatch(
+        setSmartTransactionsRefreshInterval(
+          swapsRefreshStates?.stxBatchStatusRefreshTime,
+        ),
+      );
       // sign and send stx
       const uuid = await dispatch(
         signAndSendSmartTransaction({
