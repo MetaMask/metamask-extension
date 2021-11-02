@@ -19,7 +19,7 @@ import {
 import SettingsPage from './settings.component';
 
 export default {
-  title: 'Pages/Send/Settings Page',
+  title: 'Pages/Settings',
   id: __filename,
   decorators: [
     (story) => (
