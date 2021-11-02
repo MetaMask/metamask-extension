@@ -139,6 +139,7 @@ module.exports = createScriptTasks;
 function createScriptTasks({
   browserPlatforms,
   buildType,
+  ignoredFiles,
   isLavaMoat,
   livereload,
   shouldLintFenceFiles,
@@ -183,8 +184,9 @@ function createScriptTasks({
           }
           return `./app/scripts/${label}.js`;
         }),
-        testing,
+        ignoredFiles,
         shouldLintFenceFiles,
+        testing,
       }),
     );
 
@@ -254,6 +256,7 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
       shouldLintFenceFiles,
     });
@@ -267,6 +270,7 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
       shouldLintFenceFiles,
     });
@@ -280,6 +284,7 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
       shouldLintFenceFiles,
     });
@@ -297,8 +302,9 @@ function createScriptTasks({
         devMode,
         entryFilepath: `./app/scripts/${inpage}.js`,
         label: inpage,
-        testing,
+        ignoredFiles,
         shouldLintFenceFiles,
+        testing,
       }),
       createNormalBundle({
         buildType,
@@ -307,8 +313,9 @@ function createScriptTasks({
         devMode,
         entryFilepath: `./app/scripts/${contentscript}.js`,
         label: contentscript,
-        testing,
+        ignoredFiles,
         shouldLintFenceFiles,
+        testing,
       }),
     );
   }
@@ -319,8 +326,9 @@ function createFactoredBuild({
   buildType,
   devMode,
   entryFiles,
-  testing,
+  ignoredFiles,
   shouldLintFenceFiles,
+  testing,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -337,6 +345,7 @@ function createFactoredBuild({
       buildType,
       devMode,
       envVars,
+      ignoredFiles,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
@@ -481,6 +490,7 @@ function createNormalBundle({
   devMode,
   entryFilepath,
   extraEntries = [],
+  ignoredFiles,
   label,
   modulesToExpose,
   shouldLintFenceFiles,
@@ -501,6 +511,7 @@ function createNormalBundle({
       buildType,
       devMode,
       envVars,
+      ignoredFiles,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
@@ -545,12 +556,20 @@ function createBuildConfiguration() {
     manualExternal: [],
     manualIgnore: [],
   };
-  return { label, bundlerOpts, events };
+  return { bundlerOpts, events, label };
 }
 
 function setupBundlerDefaults(
   buildConfiguration,
-  { buildType, devMode, envVars, minify, reloadOnChange, shouldLintFenceFiles },
+  {
+    buildType,
+    devMode,
+    envVars,
+    ignoredFiles,
+    minify,
+    reloadOnChange,
+    shouldLintFenceFiles,
+  },
 ) {
   const { bundlerOpts } = buildConfiguration;
 
@@ -578,6 +597,11 @@ function setupBundlerDefaults(
   // Inject environment variables via node-style `process.env`
   if (envVars) {
     bundlerOpts.transform.push([envify(envVars), { global: true }]);
+  }
+
+  // Ensure that any files that should be ignored are excluded from the build
+  if (ignoredFiles) {
+    bundlerOpts.manualExclude = ignoredFiles;
   }
 
   // Setup reload on change
@@ -662,11 +686,17 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
 async function bundleIt(buildConfiguration) {
   const { label, bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
+
   // manually apply non-standard options
   bundler.external(bundlerOpts.manualExternal);
   bundler.ignore(bundlerOpts.manualIgnore);
+  if (Array.isArray(bundlerOpts.manualExclude)) {
+    bundler.exclude(bundlerOpts.manualExclude);
+  }
+
   // output build logs to terminal
   bundler.on('log', log);
+
   // forward update event (used by watchify)
   bundler.on('update', () => performBundle());
 

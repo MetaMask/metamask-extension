@@ -1171,6 +1171,9 @@
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
+  "insufficientFundsForGas": {
+    "message": "Insufficient funds for gas"
+  },
   "insufficientTokens": {
     "message": "Insufficient tokens."
   },

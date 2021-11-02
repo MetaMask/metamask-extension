@@ -10,7 +10,7 @@ export const COLORS = {
   UI3: 'ui-3',
   UI4: 'ui-4',
   BLACK: 'black',
-  GRAY: 'gray',
+  GREY: 'grey',
   WHITE: 'white',
   PRIMARY1: 'primary-1',
   PRIMARY2: 'primary-2',
@@ -94,6 +94,12 @@ export const FLEX_DIRECTION = {
   ROW_REVERSE: 'row-reverse',
   COLUMN: 'column',
   COLUMN_REVERSE: 'column-reverse',
+};
+
+export const FLEX_WRAP = {
+  WRAP: 'wrap',
+  WRAP_REVERSE: 'wrap-reverse',
+  NO_WRAP: 'nowrap',
 };
 
 export const DISPLAY = {
