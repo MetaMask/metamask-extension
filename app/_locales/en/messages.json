@@ -159,9 +159,6 @@
   "amount": {
     "message": "Amount"
   },
-  "amountWithColon": {
-    "message": "Amount:"
-  },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
     "description": "The description of the application"
@@ -188,6 +185,9 @@
   },
   "approved": {
     "message": "Approved"
+  },
+  "approvedAmountWithColon": {
+    "message": "Approved Amount:"
   },
   "asset": {
     "message": "Asset"
@@ -1058,6 +1058,9 @@
   "goerli": {
     "message": "Goerli Test Network"
   },
+  "grantedToWithColon": {
+    "message": "Granted To:"
+  },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
   },
@@ -1790,6 +1793,9 @@
   },
   "permissionCheckedIconDescription": {
     "message": "You have approved this permission"
+  },
+  "permissionRequest": {
+    "message": "Permission Request"
   },
   "permissionUncheckedIconDescription": {
     "message": "You have not approved this permission"
@@ -2729,9 +2735,6 @@
   "toAddress": {
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "To:"
   },
   "token": {
     "message": "Token"

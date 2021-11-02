@@ -140,9 +140,6 @@
   "amount": {
     "message": "राशि"
   },
-  "amountWithColon": {
-    "message": "राशि:"
-  },
   "appDescription": {
     "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
     "description": "The description of the application"
@@ -2190,9 +2187,6 @@
   "toAddress": {
     "message": "प्रति: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "प्रति:"
   },
   "token": {
     "message": "टोकन"
