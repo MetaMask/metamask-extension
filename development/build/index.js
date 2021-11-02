@@ -3,8 +3,10 @@
 //
 // run any task with "yarn build ${taskName}"
 //
+const path = require('path');
 const livereload = require('gulp-livereload');
 const minimist = require('minimist');
+const { sync: globby } = require('globby');
 const {
   createTask,
   composeSeries,
@@ -18,7 +20,8 @@ const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
 const { BuildType, getBrowserVersionMap } = require('./utils');
 
-// packages required dynamically via browserify configuration in dependencies
+// Packages required dynamically via browserify configuration in dependencies
+// Required for LavaMoat policy generation
 require('loose-envify');
 require('@babel/plugin-proposal-object-rest-spread');
 require('@babel/plugin-transform-runtime');
@@ -28,6 +31,19 @@ require('@babel/plugin-proposal-nullish-coalescing-operator');
 require('@babel/preset-env');
 require('@babel/preset-react');
 require('@babel/core');
+// ESLint-related
+require('@babel/eslint-parser');
+require('@babel/eslint-plugin');
+require('@metamask/eslint-config');
+require('@metamask/eslint-config-nodejs');
+require('eslint');
+require('eslint-config-prettier');
+require('eslint-import-resolver-node');
+require('eslint-plugin-import');
+require('eslint-plugin-node');
+require('eslint-plugin-prettier');
+require('eslint-plugin-react');
+require('eslint-plugin-react-hooks');
 
 defineAndRunBuildTasks();
 
@@ -44,6 +60,8 @@ function defineAndRunBuildTasks() {
   const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
 
   const browserVersionMap = getBrowserVersionMap(browserPlatforms);
+
+  const ignoredFiles = getIgnoredFiles(buildType);
 
   const staticTasks = createStaticAssetTasks({
     livereload,
@@ -63,6 +81,7 @@ function defineAndRunBuildTasks() {
   const scriptTasks = createScriptTasks({
     browserPlatforms,
     buildType,
+    ignoredFiles,
     isLavaMoat,
     livereload,
     shouldLintFenceFiles,
@@ -137,21 +156,21 @@ function parseArgv() {
   const NamedArgs = {
     BuildType: 'build-type',
     LintFenceFiles: 'lint-fence-files',
-    OmitLockdown: 'omit-lockdown',
+    Lockdown: 'lockdown',
     SkipStats: 'skip-stats',
   };
 
   const argv = minimist(process.argv.slice(2), {
     boolean: [
       NamedArgs.LintFenceFiles,
-      NamedArgs.OmitLockdown,
+      NamedArgs.Lockdown,
       NamedArgs.SkipStats,
     ],
     string: [NamedArgs.BuildType],
     default: {
       [NamedArgs.BuildType]: BuildType.main,
       [NamedArgs.LintFenceFiles]: true,
-      [NamedArgs.OmitLockdown]: false,
+      [NamedArgs.Lockdown]: true,
       [NamedArgs.SkipStats]: false,
     },
   });
@@ -183,8 +202,40 @@ function parseArgv() {
     buildType,
     entryTask,
     isLavaMoat: process.argv[0].includes('lavamoat'),
-    shouldIncludeLockdown: argv[NamedArgs.OmitLockdown],
+    shouldIncludeLockdown: argv[NamedArgs.Lockdown],
     shouldLintFenceFiles,
     skipStats: argv[NamedArgs.SkipStats],
   };
+}
+
+/**
+ * Gets the files to be ignored by the current build, if any.
+ *
+ * @param {string} buildType - The type of the current build.
+ * @returns {string[] | null} The array of files to be ignored by the current
+ * build, or `null` if no files are to be ignored.
+ */
+function getIgnoredFiles(currentBuildType) {
+  const excludedFiles = Object.values(BuildType)
+    // This filter removes "main" and the current build type. The files of any
+    // build types that remain in the array will be excluded. "main" is the
+    // default build type, and has no files that are excluded from other builds.
+    .filter(
+      (buildType) =>
+        buildType !== BuildType.main && buildType !== currentBuildType,
+    )
+    // Compute globs targeting files for exclusion for each excluded build
+    // type.
+    .reduce((excludedGlobs, excludedBuildType) => {
+      return excludedGlobs.concat([
+        `../../app/**/${excludedBuildType}/**`,
+        `../../shared/**/${excludedBuildType}/**`,
+        `../../ui/**/${excludedBuildType}/**`,
+      ]);
+    }, [])
+    // This creates absolute paths of the form:
+    // PATH_TO_REPOSITORY_ROOT/app/**/${excludedBuildType}/**
+    .map((pathGlob) => path.resolve(__dirname, pathGlob));
+
+  return globby(excludedFiles);
 }
