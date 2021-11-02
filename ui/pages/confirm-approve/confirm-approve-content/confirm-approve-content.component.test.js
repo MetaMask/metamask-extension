@@ -74,7 +74,7 @@ describe('ConfirmApproveContent Component', () => {
     const showHideTxDetails = getByText('View full transaction details');
     expect(queryByText('Permission Request')).not.toBeInTheDocument();
     expect(queryByText('Approved Amount:')).not.toBeInTheDocument();
-    expect(queryByText('Granted To:')).not.toBeInTheDocument();    
+    expect(queryByText('Granted To:')).not.toBeInTheDocument();
     fireEvent.click(showHideTxDetails);
     expect(getByText('Permission Request')).toBeInTheDocument();
     expect(getByText('Approved Amount:')).toBeInTheDocument();
