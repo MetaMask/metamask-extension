@@ -649,9 +649,6 @@
     "@sentry/browser": {
       "globals": {
         "XMLHttpRequest": true,
-        "document.body": true,
-        "document.createElement": true,
-        "document.head": true,
         "setTimeout": true
       },
       "packages": {
@@ -676,9 +673,11 @@
     },
     "@sentry/hub": {
       "globals": {
-        "setTimeout": true
+        "clearInterval": true,
+        "setInterval": true
       },
       "packages": {
+        "@sentry/types": true,
         "@sentry/utils": true,
         "tslib": true
       }
