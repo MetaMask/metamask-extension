@@ -83,7 +83,11 @@ try {
   })();
 } catch (error) {
   console.error('Protecting intrinsics failed:', error);
-  if (globalThis?.sentry.captureException) {
+  if (
+    typeof globalThis !== 'undefined' &&
+    globalThis.sentry &&
+    globalThis.sentry.captureException
+  ) {
     globalThis.sentry.captureException(
       new Error(`Protecting intrinsics failed: ${error.message}`),
     );
