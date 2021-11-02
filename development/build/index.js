@@ -137,21 +137,21 @@ function parseArgv() {
   const NamedArgs = {
     BuildType: 'build-type',
     LintFenceFiles: 'lint-fence-files',
-    OmitLockdown: 'omit-lockdown',
+    Lockdown: 'lockdown',
     SkipStats: 'skip-stats',
   };
 
   const argv = minimist(process.argv.slice(2), {
     boolean: [
       NamedArgs.LintFenceFiles,
-      NamedArgs.OmitLockdown,
+      NamedArgs.Lockdown,
       NamedArgs.SkipStats,
     ],
     string: [NamedArgs.BuildType],
     default: {
       [NamedArgs.BuildType]: BuildType.main,
       [NamedArgs.LintFenceFiles]: true,
-      [NamedArgs.OmitLockdown]: false,
+      [NamedArgs.Lockdown]: true,
       [NamedArgs.SkipStats]: false,
     },
   });
@@ -183,7 +183,7 @@ function parseArgv() {
     buildType,
     entryTask,
     isLavaMoat: process.argv[0].includes('lavamoat'),
-    shouldIncludeLockdown: argv[NamedArgs.OmitLockdown],
+    shouldIncludeLockdown: argv[NamedArgs.Lockdown],
     shouldLintFenceFiles,
     skipStats: argv[NamedArgs.SkipStats],
   };
