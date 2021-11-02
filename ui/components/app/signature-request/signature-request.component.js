@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
-import LedgerInstructionField from '../ledger-instruction-field';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
@@ -16,11 +15,10 @@ export default class SignatureRequest extends PureComponent {
       balance: PropTypes.string,
       name: PropTypes.string,
     }).isRequired,
-    isLedgerWallet: PropTypes.bool,
+
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancel: PropTypes.func.isRequired,
     sign: PropTypes.func.isRequired,
-    hardwareWalletRequiresConnection: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -71,8 +69,6 @@ export default class SignatureRequest extends PureComponent {
       },
       cancel,
       sign,
-      isLedgerWallet,
-      hardwareWalletRequiresConnection,
     } = this.props;
     const { address: fromAddress } = fromAccount;
     const { message, domain = {} } = JSON.parse(data);
@@ -132,17 +128,8 @@ export default class SignatureRequest extends PureComponent {
             {this.formatWallet(fromAddress)}
           </div>
         </div>
-        {isLedgerWallet ? (
-          <div className="confirm-approve-content__ledger-instruction-wrapper">
-            <LedgerInstructionField showDataInstruction />
-          </div>
-        ) : null}
         <Message data={message} />
-        <Footer
-          cancelAction={onCancel}
-          signAction={onSign}
-          disabled={hardwareWalletRequiresConnection}
-        />
+        <Footer cancelAction={onCancel} signAction={onSign} />
       </div>
     );
   }

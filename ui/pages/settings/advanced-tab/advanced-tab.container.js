@@ -15,7 +15,6 @@ import {
   setDismissSeedBackUpReminder,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
-import { doesUserHaveALedgerAccount } from '../../../ducks/metamask/metamask';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -29,12 +28,10 @@ export const mapStateToProps = (state) => {
     threeBoxDisabled,
     useNonceField,
     ipfsGateway,
-    ledgerTransportType,
+    useLedgerLive,
     dismissSeedBackUpReminder,
   } = metamask;
   const { showFiatInTestnets, autoLockTimeLimit } = getPreferences(state);
-
-  const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
 
   return {
     warning,
@@ -46,9 +43,8 @@ export const mapStateToProps = (state) => {
     threeBoxDisabled,
     useNonceField,
     ipfsGateway,
-    ledgerTransportType,
+    useLedgerLive,
     dismissSeedBackUpReminder,
-    userHasALedgerAccount,
   };
 };
 

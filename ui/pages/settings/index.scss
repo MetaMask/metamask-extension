@@ -233,13 +233,6 @@
     margin-left: 1.875rem;
   }
 
-  &__inline-link {
-    @include H6;
-
-    display: initial;
-    padding: 0;
-  }
-
   &--selected {
     .settings-page {
       &__content {

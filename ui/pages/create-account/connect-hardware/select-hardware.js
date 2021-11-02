@@ -2,7 +2,6 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Button from '../../../components/ui/button';
-import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
@@ -12,7 +11,7 @@ export default class SelectHardware extends Component {
   static propTypes = {
     connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
-    ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
+    useLedgerLive: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -137,7 +136,7 @@ export default class SelectHardware extends Component {
 
   renderLedgerTutorialSteps() {
     const steps = [];
-    if (this.props.ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE) {
+    if (this.props.useLedgerLive) {
       steps.push({
         title: this.context.t('step1LedgerWallet'),
         message: this.context.t('step1LedgerWalletMsg', [

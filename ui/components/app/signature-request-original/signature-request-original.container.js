@@ -8,32 +8,18 @@ import {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
   getDomainMetadata,
-  doesAddressRequireLedgerHidConnection,
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import SignatureRequestOriginal from './signature-request-original.component';
 
-function mapStateToProps(state, ownProps) {
-  const {
-    msgParams: { from },
-  } = ownProps.txData;
-
-  const hardwareWalletRequiresConnection = doesAddressRequireLedgerHidConnection(
-    state,
-    from,
-  );
-  const isLedgerWallet = isAddressLedger(state, from);
-
+function mapStateToProps(state) {
   return {
     requester: null,
     requesterAddress: null,
     conversionRate: conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
-    hardwareWalletRequiresConnection,
-    isLedgerWallet,
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
     domainMetadata: getDomainMetadata(state),

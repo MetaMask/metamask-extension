@@ -24,7 +24,6 @@ import {
   getUseNonceField,
   getCustomNonceValue,
   getNextSuggestedNonce,
-  doesAddressRequireLedgerHidConnection,
 } from '../../selectors';
 
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
@@ -36,18 +35,12 @@ import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
-const doesAddressRequireLedgerHidConnectionByFromAddress = (address) => (
-  state,
-) => {
-  return doesAddressRequireLedgerHidConnection(state, address);
-};
-
 export default function ConfirmApprove() {
   const dispatch = useDispatch();
   const { id: paramsTransactionId } = useParams();
   const {
     id: transactionId,
-    txParams: { to: tokenAddress, data, from } = {},
+    txParams: { to: tokenAddress, data } = {},
   } = useSelector(txDataSelector);
 
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -58,10 +51,6 @@ export default function ConfirmApprove() {
   const useNonceField = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
-
-  const ledgerWalletRequiredHidConnection = useSelector(
-    doesAddressRequireLedgerHidConnectionByFromAddress(from),
-  );
 
   const transaction =
     currentNetworkTxList.find(
@@ -218,10 +207,6 @@ export default function ConfirmApprove() {
               )
             }
             warning={submitWarning}
-            txData={transaction}
-            ledgerWalletRequiredHidConnection={
-              ledgerWalletRequiredHidConnection
-            }
           />
           {showCustomizeGasPopover && (
             <EditGasPopover

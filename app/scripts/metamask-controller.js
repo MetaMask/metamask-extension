@@ -841,10 +841,7 @@ export default class MetamaskController extends EventEmitter {
         this.unlockHardwareWalletAccount,
         this,
       ),
-      setLedgerTransportPreference: nodeify(
-        this.setLedgerTransportPreference,
-        this,
-      ),
+      setLedgerLivePreference: nodeify(this.setLedgerLivePreference, this),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -1483,9 +1480,9 @@ export default class MetamaskController extends EventEmitter {
     // keyring's iframe and have the setting initialized properly
     // Optimistically called to not block Metamask login due to
     // Ledger Keyring GitHub downtime
-    const transportPreference = this.preferencesController.getLedgerTransportPreference();
-
-    this.setLedgerTransportPreference(transportPreference);
+    this.setLedgerLivePreference(
+      this.preferencesController.getLedgerLivePreference(),
+    );
 
     return this.keyringController.fullUpdate();
   }
@@ -2987,18 +2984,16 @@ export default class MetamaskController extends EventEmitter {
    * Sets the Ledger Live preference to use for Ledger hardware wallet support
    * @param {bool} bool - the value representing if the users wants to use Ledger Live
    */
-  async setLedgerTransportPreference(transportType) {
-    const currentValue = this.preferencesController.getLedgerTransportPreference();
-    const newValue = this.preferencesController.setLedgerTransportPreference(
-      transportType,
-    );
+  async setLedgerLivePreference(bool) {
+    const currentValue = this.preferencesController.getLedgerLivePreference();
+    this.preferencesController.setLedgerLivePreference(bool);
 
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod(newValue).catch((e) => {
+      return keyring.updateTransportMethod(bool).catch((e) => {
         // If there was an error updating the transport, we should
         // fall back to the original value
-        this.preferencesController.setLedgerTransportPreference(currentValue);
+        this.preferencesController.setLedgerLivePreference(currentValue);
         throw e;
       });
     }

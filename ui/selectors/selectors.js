@@ -1,3 +1,4 @@
+import { stripHexPrefix } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
@@ -7,11 +8,7 @@ import {
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/network';
-import {
-  KEYRING_TYPES,
-  WEBHID_CONNECTED_STATUSES,
-  LEDGER_TRANSPORT_TYPES,
-} from '../../shared/constants/hardware-wallets';
+import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
 
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -39,11 +36,7 @@ import {
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
-  getLedgerTransportType,
-  isAddressLedger,
-  findKeyringForAddress,
 } from '../ducks/metamask/metamask';
-import { getLedgerWebHidConnectedStatus } from '../ducks/app/app';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -84,7 +77,14 @@ export function getCurrentKeyring(state) {
     return null;
   }
 
-  const keyring = findKeyringForAddress(state, identity.address);
+  const simpleAddress = stripHexPrefix(identity.address).toLowerCase();
+
+  const keyring = state.metamask.keyrings.find((kr) => {
+    return (
+      kr.accounts.includes(simpleAddress) ||
+      kr.accounts.includes(identity.address)
+    );
+  });
 
   return keyring;
 }
@@ -645,17 +645,4 @@ export function getUseTokenDetection(state) {
  */
 export function getTokenList(state) {
   return state.metamask.tokenList;
-}
-
-export function doesAddressRequireLedgerHidConnection(state, address) {
-  const addressIsLedger = isAddressLedger(state, address);
-  const transportTypePreferenceIsWebHID =
-    getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.WEBHID;
-  const webHidIsNotConnected =
-    getLedgerWebHidConnectedStatus(state) !==
-    WEBHID_CONNECTED_STATUSES.CONNECTED;
-
-  return (
-    addressIsLedger && transportTypePreferenceIsWebHID && webHidIsNotConnected
-  );
 }
