@@ -1,4 +1,4 @@
-const reactVersion = require('./package.json').dependencies.react;
+const { version: reactVersion } = require('react/package.json');
 
 module.exports = {
   root: true,
@@ -215,11 +215,11 @@ module.exports = {
 
   settings: {
     react: {
-      // If this is set to 'detect', eslint will import react in order to find
+      // If this is set to 'detect', ESLint will import React in order to find
       // its version. Because we run ESLint in the build system under LavaMoat,
       // this means that detecting the React version requires a LavaMoat policy
       // for all of React, in the build system. That's a no-go, so we grab it
-      // from package.json.
+      // from React's package.json.
       version: reactVersion,
     },
   },
