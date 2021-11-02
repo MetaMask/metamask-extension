@@ -10,6 +10,7 @@ import {
   getIsAssetSendable,
   getIsBalanceInsufficient,
   getSendTo,
+  getSendAsset,
 } from '../../../ducks/send';
 
 import * as actions from '../../../store/actions';
@@ -33,6 +34,7 @@ function mapStateToProps(state) {
       state,
     ),
     getIsBalanceInsufficient: getIsBalanceInsufficient(state),
+    asset: getSendAsset(state),
   };
 }
 
