@@ -35,7 +35,7 @@ function createManifestTasks({
           platformModifications,
           browserVersionMap[platform],
           getBuildModifications(buildType),
-          customArrayMerge
+          customArrayMerge,
         );
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });
@@ -106,8 +106,9 @@ function createManifestTasks({
   // helper for merging obj value
   function customArrayMerge(objValue, srcValue) {
     if (Array.isArray(objValue)) {
-      return [...new Set([...objValue ,...srcValue])]
+      return [...new Set([...objValue, ...srcValue])];
     }
+    return null;
   }
 }
 
