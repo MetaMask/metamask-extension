@@ -33,7 +33,7 @@ export default class ConfirmSendEther extends Component {
   };
 
   state = {
-    currencyPreferenceObject: this.getCurrencyPreferenceObject,
+    currencyPreferenceObject: this.getCurrencyPreferenceObject(),
   };
 
   handleEdit({ txData }) {
