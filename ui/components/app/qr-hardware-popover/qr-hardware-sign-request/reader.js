@@ -1,19 +1,18 @@
 import React from 'react';
 import { ETHSignature } from '@keystonehq/bc-ur-registry-eth';
 import * as uuid from 'uuid';
-import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import BaseReader from '../base-reader';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const Reader = ({
   submitQRHardwareSignature,
   cancelQRHardwareSignRequest,
   requestId,
 }) => {
-  const history = useHistory();
+  const t = useI18nContext();
   const cancel = () => {
     cancelQRHardwareSignRequest();
-    history.goBack();
   };
 
   const handleSuccess = (ur) => {
@@ -30,7 +29,7 @@ const Reader = ({
           reject(new Error('#mismatched_signId'));
         }
       } else {
-        reject(new Error('unknownQrCode'));
+        reject(new Error(t('unknownQrCode')));
       }
     });
   };

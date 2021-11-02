@@ -24,7 +24,7 @@
     "message": "QR-based HW Wallet"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "Officially supported airgapped hardware wallets include:"
+    "message": "Officially supported airgapped hardware wallets include: "
   },
   "QRHardwareWalletSteps3Description": {
     "message": "More wallet integrations are currently underway."

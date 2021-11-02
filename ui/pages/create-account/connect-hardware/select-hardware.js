@@ -329,55 +329,22 @@ export default class SelectHardware extends Component {
     });
 
     steps.push({
-      message: this.context.t('QRHardwareWalletSteps2Description'),
-    });
-
-    steps.push({
       message: (
-        <a
-          className="hw-connect__msg-link"
-          href="https://www.keyst.one/"
-          rel="noopener noreferrer"
-          target="_blank"
-          key="keystone-support-link"
-        >
+        <p>
+          {this.context.t('QRHardwareWalletSteps2Description')}
           {this.context.t('keystone')}
-        </a>
-      ),
-    });
-
-    steps.push({
-      message: (
-        <a
-          className="hw-connect__msg-link"
-          href="https://www.ngrave.io/"
-          rel="noopener noreferrer"
-          target="_blank"
-          key="keystone-support-link"
-        >
+          ,&nbsp;
           {this.context.t('ngrave')}
-        </a>
-      ),
-    });
-
-    steps.push({
-      message: (
-        <a
-          className="hw-connect__msg-link"
-          href="https://airgap.it/"
-          rel="noopener noreferrer"
-          target="_blank"
-          key="keystone-support-link"
-        >
+          ,&nbsp;
           {this.context.t('airgapVault')}
-        </a>
+          ,&nbsp;{this.context.t('QRHardwareWalletSteps3Description')}
+        </p>
       ),
     });
 
     steps.push({
       asset: 'qrcode-wallet-demo',
       dimensions: { width: '225px', height: '75px' },
-      message: this.context.t('QRHardwareWalletSteps3Description'),
     });
 
     return (

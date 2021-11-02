@@ -37,13 +37,15 @@ const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
         </Typography>
       </Box>
       <Box
+        paddingTop={4}
+        paddingBottom={4}
         display={DISPLAY.FLEX}
         alignItems={ALIGN_ITEMS.CENTER}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <QRCode value={currentQRCode.toUpperCase()} size={250} />
       </Box>
-      <Box>
+      <Box paddingBottom={4}>
         <Typography align={TEXT_ALIGN.CENTER}>
           {t('QRHardwareSignRequestDescription')}
         </Typography>
