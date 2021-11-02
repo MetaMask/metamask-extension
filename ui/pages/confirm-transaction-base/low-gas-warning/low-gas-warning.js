@@ -1,7 +1,6 @@
 import React from 'react';
 
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
-import Box from '../../../components/ui/box';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
