@@ -16,7 +16,6 @@ export default class SelectHardware extends Component {
     connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
     ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
-    isQRCodeOpen: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -111,11 +110,9 @@ export default class SelectHardware extends Component {
         >
           {this.renderConnectToLatticeButton()}
         </div>
-        {this.props.isQRCodeOpen && (
-          <div className="hw-connect__btn-wrapper--qr">
-            {this.renderConnectToQRButton()}
-          </div>
-        )}
+        <div className="hw-connect__btn-wrapper--qr">
+          {this.renderConnectToQRButton()}
+        </div>
       </>
     );
   }

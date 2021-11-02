@@ -160,10 +160,9 @@ describe('Account Menu', () => {
     it('calls toggle menu and push /new-account/connect route to history', () => {
       connectHardwareWallet.simulate('click');
       expect(props.toggleAccountMenu.calledOnce).toStrictEqual(true);
-      expect(props.history.push.getCall(0).args[0]).toStrictEqual({
-        pathname: '/new-account/connect',
-        search: '?qrcode=off',
-      });
+      expect(props.history.push.getCall(0).args[0]).toStrictEqual(
+        '/new-account/connect',
+      );
     });
   });
 

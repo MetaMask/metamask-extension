@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import QRCode from 'qrcode.react';
 import { UR, UREncoder } from '@ngraveio/bc-ur';
 import PropTypes from 'prop-types';
-import Button from '../../../ui/button';
 import Typography from '../../../ui/typography';
 import Box from '../../../ui/box';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -10,7 +9,6 @@ import {
   ALIGN_ITEMS,
   DISPLAY,
   FLEX_DIRECTION,
-  JUSTIFY_CONTENT,
   TEXT_ALIGN,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../ui/page-container';
