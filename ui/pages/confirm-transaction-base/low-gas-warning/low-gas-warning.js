@@ -16,6 +16,7 @@ const LowGasWarning = () => {
         className="actionable-message--warning"
         message={t('lowGasWarning')}
         useIcon
+        iconFillColor="#f8c000"
       />
     </Box>
   );
