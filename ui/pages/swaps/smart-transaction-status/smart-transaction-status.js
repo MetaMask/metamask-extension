@@ -227,6 +227,7 @@ export default function SmartTransactionStatus() {
     description = t('stxUnknownDescription');
     icon = <UnknownIcon />;
   } else if (
+    smartTransactionStatus.minedTx === 'cancelled' &&
     smartTransactionStatus.cancellationReason &&
     smartTransactionStatus.cancellationReason === 'user_cancelled'
   ) {
