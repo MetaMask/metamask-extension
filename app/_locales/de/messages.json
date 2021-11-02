@@ -257,9 +257,6 @@
   "decimalsMustZerotoTen": {
     "message": "Die Dezimalangabe muss mindestens 0 und nicht höher als 36 sein."
   },
-  "defaultNetwork": {
-    "message": "Das Standardnetzwerk für Ether Transaktionen ist das Mainnet."
-  },
   "delete": {
     "message": "Löschen"
   },

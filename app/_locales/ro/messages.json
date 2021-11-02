@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
   },
-  "defaultNetwork": {
-    "message": "Rețeaua implicită pentru tranzacțiile cu Ether este Mainnet."
-  },
   "delete": {
     "message": "Șterge"
   },

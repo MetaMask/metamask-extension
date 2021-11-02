@@ -436,9 +436,6 @@
   "decryptRequest": {
     "message": "Decifra richiesta"
   },
-  "defaultNetwork": {
-    "message": "La rete predefinita per transazioni in Ether è la Rete Ethereum Principale."
-  },
   "delete": {
     "message": "Elimina"
   },

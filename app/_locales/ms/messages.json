@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Perpuluhan mestilah sekurang-kurangnya 0, dan tidak melebihi 36."
   },
-  "defaultNetwork": {
-    "message": "Rangkaian lalai untuk transaksi Ether ialah Net Utama."
-  },
   "delete": {
     "message": "Padam"
   },

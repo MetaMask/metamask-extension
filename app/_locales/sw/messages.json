@@ -260,9 +260,6 @@
   "decimalsMustZerotoTen": {
     "message": "Desimali zinapaswa kuwa angalau 0, na si zaidi ya 36."
   },
-  "defaultNetwork": {
-    "message": "Mtandao chaguomsingi wa miamala ya Ether ni Mainnet."
-  },
   "delete": {
     "message": "Futa"
   },

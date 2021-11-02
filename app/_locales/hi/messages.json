@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "अनुरोध डिक्रिप्ट करें"
   },
-  "defaultNetwork": {
-    "message": "Ether के लेनदेन के लिए डिफ़ॉल्ट नेटवर्क Mainnet है।"
-  },
   "delete": {
     "message": "हटाएँ"
   },

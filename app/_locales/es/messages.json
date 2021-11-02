@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "Descifrar solicitud"
   },
-  "defaultNetwork": {
-    "message": "La red predeterminada para las transacciones de ether es la red principal."
-  },
   "delete": {
     "message": "Eliminar"
   },

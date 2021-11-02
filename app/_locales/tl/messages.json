@@ -424,9 +424,6 @@
   "decryptRequest": {
     "message": "I-decrypt ang request"
   },
-  "defaultNetwork": {
-    "message": "Ang default na network para sa mga transaksyon ng Ether ay ang Mainnet."
-  },
   "delete": {
     "message": "I-delete"
   },

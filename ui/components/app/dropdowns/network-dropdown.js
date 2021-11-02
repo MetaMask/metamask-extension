@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import classnames from 'classnames';
 import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
@@ -14,7 +15,10 @@ import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ADD_NETWORK_ROUTE,
+  ADVANCED_ROUTE,
+} from '../../../helpers/constants/routes';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -262,9 +266,10 @@ class NetworkDropdown extends Component {
   }
 
   render() {
-    const { shouldShowTestNetworks } = this.props;
+    const { history, hideNetworkDropdown, shouldShowTestNetworks } = this.props;
     const rpcListDetail = this.props.frequentRpcListDetail;
     const isOpen = this.props.networkDropdownOpen;
+    const { t } = this.context;
 
     return (
       <Dropdown
@@ -278,7 +283,7 @@ class NetworkDropdown extends Component {
 
           if (notToggleElementIndex === -1) {
             event.stopPropagation();
-            this.props.hideNetworkDropdown();
+            hideNetworkDropdown();
           }
         }}
         containerClassName="network-droppo"
@@ -294,27 +299,41 @@ class NetworkDropdown extends Component {
         }}
       >
         <div className="network-dropdown-header">
-          <div className="network-dropdown-title">
-            {this.context.t('networks')}
-          </div>
+          <div className="network-dropdown-title">{t('networks')}</div>
           <div className="network-dropdown-divider" />
           <div className="network-dropdown-content">
-            {this.context.t('defaultNetwork')}
+            {t('defaultNetwork', [
+              <span key="testNetworksEnabled">
+                {shouldShowTestNetworks ? t('disable') : t('enable')}
+              </span>,
+              <span
+                key="advancedSettingsLink"
+                className="network-dropdown-content--link"
+                onClick={() => {
+                  hideNetworkDropdown();
+                  history.push(ADVANCED_ROUTE);
+                }}
+              >
+                {t('here')}
+              </span>,
+            ])}
           </div>
         </div>
         {this.renderNetworkEntry('mainnet')}
 
         {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
 
-        {shouldShowTestNetworks && (
-          <>
-            {this.renderNetworkEntry('ropsten')}
-            {this.renderNetworkEntry('kovan')}
-            {this.renderNetworkEntry('rinkeby')}
-            {this.renderNetworkEntry('goerli')}
-            {this.renderNetworkEntry('localhost')}
-          </>
-        )}
+        <div
+          className={classnames('network-dropdown-testnets', {
+            'network-dropdown-testnets--no-visibility': !shouldShowTestNetworks,
+          })}
+        >
+          {this.renderNetworkEntry('ropsten')}
+          {this.renderNetworkEntry('kovan')}
+          {this.renderNetworkEntry('rinkeby')}
+          {this.renderNetworkEntry('goerli')}
+          {this.renderNetworkEntry('localhost')}
+        </div>
 
         {this.renderAddCustomButton()}
       </Dropdown>

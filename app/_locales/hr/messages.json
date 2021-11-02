@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Decimalni brojevni ne smiju biti 0 i ne smiju prekoračivati 36."
   },
-  "defaultNetwork": {
-    "message": "Zadana je mreža za transakcije Ether glavna mreža."
-  },
   "delete": {
     "message": "Izbriši"
   },

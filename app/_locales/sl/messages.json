@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Decimalk mora biti med 0 in 36."
   },
-  "defaultNetwork": {
-    "message": "Privzeto omrežje za transkacije je glavno omrežje."
-  },
   "delete": {
     "message": "Izbriši"
   },

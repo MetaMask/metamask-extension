@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "요청 암호 해독"
   },
-  "defaultNetwork": {
-    "message": "Ether 거래의 기본 네트워크는 메인 넷입니다."
-  },
   "delete": {
     "message": "삭제"
   },
