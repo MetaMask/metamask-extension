@@ -36,7 +36,6 @@ try {
 }
 `;
 
-// The fixtures used in these tests are arbitrary. Any fixtures would do.
 describe('lockdown', function () {
   const ganacheOptions = {
     accounts: [
@@ -48,34 +47,28 @@ describe('lockdown', function () {
     ],
   };
 
-  it('the UI environment is locked down', async function () {
+  it('the UI and background environments are locked down', async function () {
     await withFixtures(
       {
+        // The fixtures used here is arbitrary. Any fixture would do.
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        const success = await driver.executeScript(lockdownTestScript);
+        await driver.navigate(PAGES.HOME);
+        assert.equal(
+          await driver.executeScript(lockdownTestScript),
+          true,
+          'The UI environment should be locked down.',
+        );
 
-        assert.equal(success, true, 'The environment should be locked down.');
-      },
-    );
-  });
-
-  it('the background environment is locked down', async function () {
-    await withFixtures(
-      {
-        fixtures: 'imported-account',
-        ganacheOptions,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate(PAGES.background);
-        const success = await driver.executeScript(lockdownTestScript);
-
-        assert.equal(success, true, 'The environment should be locked down.');
+        await driver.navigate(PAGES.BACKGROUND);
+        assert.equal(
+          await driver.executeScript(lockdownTestScript),
+          true,
+          'The background environment should be locked down.',
+        );
       },
     );
   });
