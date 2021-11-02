@@ -11,7 +11,7 @@ import { EDIT_GAS_MODES, GAS_LIMITS } from '../../../../shared/constants/gas';
 import EditGasDisplay from '.';
 
 export default {
-  title: 'Edit Gas Display',
+  title: 'Components/App/Edit Gas Display',
   id: __filename,
 };
 
