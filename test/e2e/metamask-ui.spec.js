@@ -3,6 +3,10 @@ const path = require('path');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const createStaticServer = require('../../development/create-static-server');
+const {
+  getGlobalProperties,
+  testIntrinsic,
+} = require('../helpers/protect-intrinsics-helpers');
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
@@ -81,6 +85,46 @@ describe('MetaMask', function () {
         }
         return resolve();
       });
+    });
+  });
+
+  describe('lockdown', function () {
+    it('the environment is locked down', async function () {
+      const success = await driver.executeScript(`
+        const assert = {
+          equal: (value, comparison, message) => {
+            if (value !== comparison) {
+              throw new Error(message || 'not equal');
+            }
+          },
+          ok: (value, message) => {
+            if (!value) {
+              throw new Error(message || 'not ok');
+            }
+          },
+        };
+
+        ${getGlobalProperties.toString()}
+
+        ${testIntrinsic.toString()}
+
+        try {
+          getGlobalProperties().forEach((propertyName) => {
+            testIntrinsic(propertyName);
+          })
+          return (
+            typeof lockdown === 'function' &&
+            typeof Compartment === 'function' &&
+            new Compartment().globalThis !== globalThis &&
+            Object.isFrozen(Object.prototype) &&
+            Object.isFrozen(Promise.prototype)
+          )
+        } catch (error) {
+          return false;
+        }
+      `);
+
+      assert.equal(success, true, 'The environment should be locked down.');
     });
   });
 

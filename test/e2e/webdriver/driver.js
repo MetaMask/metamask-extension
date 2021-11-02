@@ -49,6 +49,10 @@ class Driver {
     };
   }
 
+  async executeScript(script, ...args) {
+    return this.driver.executeScript(script, args);
+  }
+
   buildLocator(locator) {
     if (typeof locator === 'string') {
       // If locator is a string we assume its a css selector
