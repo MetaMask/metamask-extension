@@ -40,6 +40,7 @@ const POLL_COUNT_LIMIT = 3;
 // If for any reason the MetaSwap API fails to provide a refresh time,
 // provide a reasonable fallback to avoid further errors
 const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
+const FALLBACK_SMART_TRANSACTION_REFRESH_TIME = SECOND * 10;
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -79,9 +80,11 @@ const initialState = {
     routeState: '',
     swapsFeatureIsLive: true,
     useNewSwapsApi: false,
-    isFetchingQuotes: false,
+    saveFetchedQuotes: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
+    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
     swapsFeatureFlags: {},
     smartTransactionsStatus: {},
   },
@@ -144,6 +147,8 @@ export default class SwapsController {
     return {
       quotes: refreshRates.quotes * 1000,
       quotesPrefetching: refreshRates.quotesPrefetching * 1000,
+      stxGetTransactions: refreshRates.stxGetTransactions * 1000,
+      stxBatchStatus: refreshRates.stxBatchStatus * 1000,
     };
   }
 
@@ -168,6 +173,12 @@ export default class SwapsController {
           swapsRefreshRates?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
         swapsQuotePrefetchingRefreshTime:
           swapsRefreshRates?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
+        swapsStxGetTransactionsRefreshTime:
+          swapsRefreshRates?.stxGetTransactions ||
+          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+        swapsStxBatchStatusRefreshTime:
+          swapsRefreshRates?.stxBatchStatus ||
+          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
       },
     });
   }
@@ -211,7 +222,11 @@ export default class SwapsController {
   ) {
     const { chainId } = fetchParamsMetaData;
     const {
-      swapsState: { useNewSwapsApi, quotesPollingLimitEnabled },
+      swapsState: {
+        useNewSwapsApi,
+        quotesPollingLimitEnabled,
+        saveFetchedQuotes,
+      },
     } = this.store.getState();
 
     if (!fetchParams) {
@@ -232,7 +247,9 @@ export default class SwapsController {
     const indexOfCurrentCall = this.indexOfNewestCallInFlight + 1;
     this.indexOfNewestCallInFlight = indexOfCurrentCall;
 
-    this.setIsFetchingQuotes(true);
+    if (!saveFetchedQuotes) {
+      this.setSaveFetchedQuotes(true);
+    }
 
     let [newQuotes] = await Promise.all([
       this._fetchTradesInfo(fetchParams, {
@@ -243,18 +260,17 @@ export default class SwapsController {
     ]);
 
     const {
-      swapsState: { isFetchingQuotes },
+      swapsState: { saveFetchedQuotes: saveFetchedQuotesAfterResponse },
     } = this.store.getState();
 
-    // If isFetchingQuotes is false, it means a user left Swaps (we cleaned the state)
+    // If saveFetchedQuotesAfterResponse is false, it means a user left Swaps (we cleaned the state)
     // and we don't want to set any API response with quotes into state.
-    if (!isFetchingQuotes) {
+    if (!saveFetchedQuotesAfterResponse) {
       return [
         {}, // quotes
         null, // selectedAggId
       ];
     }
-    this.setIsFetchingQuotes(false);
 
     newQuotes = mapValues(newQuotes, (quote) => ({
       ...quote,
@@ -561,10 +577,10 @@ export default class SwapsController {
     this.store.updateState({ swapsState: { ...swapsState, routeState } });
   }
 
-  setIsFetchingQuotes(status) {
+  setSaveFetchedQuotes(status) {
     const { swapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, isFetchingQuotes: status },
+      swapsState: { ...swapsState, saveFetchedQuotes: status },
     });
   }
 

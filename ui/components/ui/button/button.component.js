@@ -66,7 +66,7 @@ const Button = ({
       )}
       {...buttonProps}
     >
-      {icon && <span className="button__icon">{icon}</span>}
+      {icon ? <span className="button__icon">{icon}</span> : null}
       {children}
     </Tag>
   );

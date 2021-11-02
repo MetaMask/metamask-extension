@@ -51,6 +51,7 @@ exports[`MainQuoteSummary renders the component with initial props 3`] = `
       class=""
       style="display: inline;"
       tabindex="0"
+      title=""
     >
       <span
         class="main-quote-summary__quote-large-number"

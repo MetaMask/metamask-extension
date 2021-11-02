@@ -39,7 +39,6 @@ function onError(error) {
  *
  * SEGMENT_HOST='http://localhost:9090'
  * SEGMENT_WRITE_KEY=FAKE
- * SEGMENT_LEGACY_WRITE_KEY=FAKE
  *
  * Note that the Segment keys must also be set - otherwise the extension will not send any
  * metric events.

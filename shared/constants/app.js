@@ -11,6 +11,17 @@ export const ENVIRONMENT_TYPE_NOTIFICATION = 'notification';
 export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
 export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
+/**
+ * The distribution this build is intended for.
+ *
+ * This should be kept in-sync with the `BuildType` map in `development/build/utils.js`.
+ */
+export const BuildType = {
+  beta: 'beta',
+  flask: 'flask',
+  main: 'main',
+};
+
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
 export const PLATFORM_EDGE = 'Edge';

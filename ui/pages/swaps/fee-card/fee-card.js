@@ -146,10 +146,13 @@ export default function FeeCard({
                 detailText={primaryFee.fee}
                 detailTotal={secondaryFee.fee}
                 subTitle={
-                  <GasTiming
-                    maxPriorityFeePerGas={maxPriorityFeePerGasDecGWEI}
-                    maxFeePerGas={maxFeePerGasDecGWEI}
-                  />
+                  (!smartTransactionsEnabled ||
+                    !smartTransactionsOptInStatus) && (
+                    <GasTiming
+                      maxPriorityFeePerGas={maxPriorityFeePerGasDecGWEI}
+                      maxFeePerGas={maxFeePerGasDecGWEI}
+                    />
+                  )
                 }
                 subText={
                   secondaryFee?.maxFee !== undefined && (

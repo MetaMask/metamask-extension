@@ -88,6 +88,7 @@ import {
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import { ETH, GWEI } from '../../helpers/constants/common';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
+import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 // typedefs
 /**
  * @typedef {import('@reduxjs/toolkit').PayloadAction} PayloadAction
@@ -230,13 +231,12 @@ async function estimateGasLimitForSend({
       // address. If this returns 0x, 0x0 or a nullish value then the address
       // is an externally owned account (NOT a contract account). For these
       // types of transactions the gasLimit will always be 21,000 or 0x5208
-      const contractCode = Boolean(to) && (await global.eth.getCode(to));
-      // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
-      const contractCodeIsEmpty =
-        !contractCode || contractCode === '0x' || contractCode === '0x0';
-      if (contractCodeIsEmpty && !isNonStandardEthChain) {
+      const { isContractAddress } = to
+        ? await readAddressAsContract(global.eth, to)
+        : {};
+      if (!isContractAddress && !isNonStandardEthChain) {
         return GAS_LIMITS.SIMPLE;
-      } else if (contractCodeIsEmpty && isNonStandardEthChain) {
+      } else if (!isContractAddress && isNonStandardEthChain) {
         isSimpleSendOnNonStandardNetwork = true;
       }
     }

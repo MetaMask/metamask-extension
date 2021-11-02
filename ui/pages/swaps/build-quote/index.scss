@@ -177,6 +177,15 @@
 .smart-transactions-popover {
   flex-direction: column;
 
+  ul {
+    list-style: inside;
+  }
+
+  a {
+    color: $Blue-500;
+    cursor: pointer;
+  }
+
   &__footer {
     flex-direction: column;
     flex: 1;
@@ -186,11 +195,8 @@
     button {
       border-radius: 50px;
     }
-
+    
     a {
-      @include H6;
-
-      padding-top: 8px;
       color: $Blue-500;
       cursor: pointer;
     }

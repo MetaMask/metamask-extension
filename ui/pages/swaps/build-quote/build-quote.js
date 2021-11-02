@@ -27,6 +27,8 @@ import {
   TYPOGRAPHY,
   DISPLAY,
   FLEX_DIRECTION,
+  FONT_WEIGHT,
+  COLORS,
 } from '../../../helpers/constants/design-system';
 import {
   VIEW_QUOTE_ROUTE,
@@ -500,43 +502,85 @@ export default function BuildQuote({
         {showSmartTransactionsOptInPopover && (
           <Popover
             title={t('smartTransactionsAreHere')}
-            onClose={onCloseSmartTransactionsOptInPopover}
             footer={
               <>
                 <Button type="primary" onClick={onEnableSmartTransactionsClick}>
                   {t('enableSmartTransactions')}
                 </Button>
-                <Box marginTop={5}>
-                  <a href="#" onClick={onCloseSmartTransactionsOptInPopover}>
-                    {t('noThanksVariant2')}
-                  </a>
+                <Box marginTop={4}>
+                  <Typography variant={TYPOGRAPHY.H6}>
+                    <a
+                      href="#"
+                      onClick={onCloseSmartTransactionsOptInPopover}
+                      className="smart-transactions-popover__no-thanks-link"
+                    >
+                      {t('noThanksVariant2')}
+                    </a>
+                  </Typography>
                 </Box>
               </>
             }
             footerClassName="smart-transactions-popover__footer"
           >
             <Box
-              padding={6}
-              paddingTop={3}
+              paddingRight={6}
+              paddingLeft={6}
+              paddingTop={0}
+              paddingBottom={0}
               display={DISPLAY.FLEX}
               className="smart-transactions-popover"
             >
               <Box
                 marginTop={0}
-                marginBottom={5}
+                marginBottom={4}
                 display={DISPLAY.FLEX}
                 flexDirection={FLEX_DIRECTION.COLUMN}
               >
                 <img
-                  src="./images/logo/metamask-logo-horizontal.svg"
+                  src="./images/logo/metamask-smart-transactions@4x.png"
                   alt={t('swapSwapSwitch')}
                 />
               </Box>
-              <Typography variant={TYPOGRAPHY.H6}>
+              <Typography variant={TYPOGRAPHY.H6} marginTop={0}>
                 {t('smartTransactionsDescription')}
               </Typography>
-              <Typography variant={TYPOGRAPHY.H8}>
-                {t('smartTransactionsDescription2')}
+              <Typography
+                tag="ul"
+                variant={TYPOGRAPHY.H6}
+                fontWeight={FONT_WEIGHT.BOLD}
+                marginTop={3}
+              >
+                <li>{t('smartTransactionsBenefit1')}</li>
+                <li>{t('smartTransactionsBenefit2')}</li>
+                <li>{t('smartTransactionsBenefit3')}</li>
+                <li>{t('smartTransactionsBenefit4')}</li>
+              </Typography>
+              <Typography
+                variant={TYPOGRAPHY.H8}
+                color={COLORS.UI4}
+                boxProps={{ marginTop: 3 }}
+              >
+                {t('smartTransactionsSubDescription')}&nbsp;
+                <Typography
+                  tag="span"
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  variant={TYPOGRAPHY.H8}
+                  color={COLORS.UI4}
+                >
+                  {t('smartTransactionsYouCanOptOut')}&nbsp;
+                  <a
+                    className="smart-transactions-popover__learn-more-link"
+                    onClick={() => {
+                      global.platform.openTab({
+                        url: 'https://metamask.io/1559', // TODO: Replace it with the right URL.
+                      });
+                    }}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('learnMoreWithDot')}
+                  </a>
+                </Typography>
               </Typography>
             </Box>
           </Popover>

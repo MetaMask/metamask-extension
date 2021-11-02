@@ -10,11 +10,6 @@ import {
 export default function Authenticated(props) {
   const { isUnlocked, completedOnboarding } = props;
   switch (true) {
-    // For ONBOARDING_V2 dev purposes,
-    // Remove when ONBOARDING_V2 dev complete
-    case process.env.ONBOARDING_V2 === true:
-      return <Redirect to={{ pathname: ONBOARDING_ROUTE }} />;
-
     case isUnlocked && completedOnboarding:
       return <Route {...props} />;
     case !completedOnboarding:
