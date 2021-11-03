@@ -9,30 +9,70 @@ import {
 } from 'eth-json-rpc-middleware';
 import { PollingBlockTracker } from 'eth-block-tracker';
 import { SECOND } from '../../../../shared/constants/time';
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 
 const inTest = process.env.IN_TEST;
 const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
+const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
-const pollingIntervals = {
-  43113: SECOND,
-  43114: SECOND,
+const getBlockTimestamp = async (rpcUrl, block) => {
+  const res = await fetchWithTimeout(rpcUrl, {
+    method: 'POST',
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'eth_getBlockByNumber',
+      params: [`0x${block.toString(16)}`, false],
+      id: 1,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  return Number.parseInt((await res.json()).result.timestamp, 16) * 1000;
 };
 
-const getChainOpts = (chainId) => {
-  return chainId in pollingIntervals
-    ? { pollingInterval: pollingIntervals[chainId] }
-    : {};
+const getChainOpts = async (rpcUrl) => {
+  try {
+    const response = await fetchWithTimeout(rpcUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        method: 'eth_blockNumber',
+        params: [],
+        id: 1,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const NUM_PAST = 5;
+    const latestBlock = Number.parseInt((await response.json()).result, 16);
+    const latestBlockTimestamp = await getBlockTimestamp(rpcUrl, latestBlock);
+    const pastBlockTimestamp = await getBlockTimestamp(
+      rpcUrl,
+      latestBlock - NUM_PAST,
+    );
+
+    return {
+      pollingInterval:
+        ((latestBlockTimestamp - pastBlockTimestamp) / NUM_PAST) * 0.75,
+    };
+  } catch {
+    return {};
+  }
 };
 
 const getTestMiddlewares = () => {
   return inTest ? [createEstimateGasDelayTestMiddleware()] : [];
 };
 
-export default function createJsonRpcClient({ rpcUrl, chainId }) {
+export default async function createJsonRpcClient({ rpcUrl, chainId }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl });
   const blockProvider = providerFromMiddleware(fetchMiddleware);
   const blockTracker = new PollingBlockTracker({
-    ...getChainOpts(chainId),
+    ...(await getChainOpts(rpcUrl)),
     ...blockTrackerOpts,
     provider: blockProvider,
   });
