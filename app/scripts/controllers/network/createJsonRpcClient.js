@@ -16,11 +16,13 @@ const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
 const pollingIntervals = {
   43113: SECOND,
   43114: SECOND,
-}
+};
 
 const getChainOpts = (chainId) => {
-  return chainId in pollingIntervals ? { pollingInterval: pollingIntervals[chainId] } : {};
-}
+  return chainId in pollingIntervals
+    ? { pollingInterval: pollingIntervals[chainId] }
+    : {};
+};
 
 const getTestMiddlewares = () => {
   return inTest ? [createEstimateGasDelayTestMiddleware()] : [];
