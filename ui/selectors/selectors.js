@@ -578,7 +578,7 @@ export function getShowWhatsNewPopup(state) {
 function getAllowedNotificationIds(state) {
   const currentKeyring = getCurrentKeyring(state);
   const currentKeyringIsLedger = currentKeyring?.type === KEYRING_TYPES.LEDGER;
-  const supportsWebHid = Boolean(window.navigator.hid);
+  const supportsWebHid = window.navigator.hid !== undefined;
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.LIVE;
 
