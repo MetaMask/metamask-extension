@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { COLORS } from '../../../helpers/constants/design-system';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -15,7 +16,7 @@ const LowGasWarning = () => {
         className="actionable-message--warning"
         message={t('lowGasWarning')}
         useIcon
-        iconFillColor="#f8c000"
+        iconFillColor={COLORS.ALERT3}
       />
     </div>
   );
