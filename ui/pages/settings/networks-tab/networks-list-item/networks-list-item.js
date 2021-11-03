@@ -21,7 +21,6 @@ const NetworksListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
   const provider = useSelector(getProvider);
-
   const {
     label,
     labelKey,

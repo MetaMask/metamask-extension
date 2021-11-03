@@ -20,7 +20,7 @@ import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
 import NetworksForm from './networks-form';
-import NetworksFormSubheader from './networks-form-subheader';
+import NetworksFormSubheader from './networks-tab-subheader';
 
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
