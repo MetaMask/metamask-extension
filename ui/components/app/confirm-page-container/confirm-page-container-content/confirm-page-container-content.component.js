@@ -3,12 +3,25 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
 import ErrorMessage from '../../../ui/error-message';
+import Button from '../../../ui/button';
+import Typography from '../../../ui/typography';
+import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
+import {
+  COLORS,
+  FONT_STYLE,
+  FONT_WEIGHT,
+  TYPOGRAPHY,
+} from '../../../../helpers/constants/design-system';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
+  };
+
+  state = {
+    confirmAnyways: false,
   };
 
   static propTypes = {
@@ -17,6 +30,7 @@ export default class ConfirmPageContainerContent extends Component {
     detailsComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
+    hasSimulationError: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
@@ -71,6 +85,7 @@ export default class ConfirmPageContainerContent extends Component {
       action,
       errorKey,
       errorMessage,
+      hasSimulationError,
       title,
       titleComponent,
       subtitleComponent,
@@ -93,11 +108,41 @@ export default class ConfirmPageContainerContent extends Component {
       hideTitle,
     } = this.props;
 
+    const isDisabled = () => {
+      return this.state.confirmAnyways ? false : disabled;
+    };
+
     return (
       <div className="confirm-page-container-content">
         {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
+        )}
+        {hasSimulationError && (
+          <div className="confirm-page-container-content__error-container">
+            <ActionableMessage
+              type="danger"
+              message={this.context.t('simulationErrorMessage', [
+                <Button
+                  key="try-anyways-button" // Tests won't pass without a key
+                  type="link"
+                  onClick={() => {
+                    this.setState({ confirmAnyways: true });
+                  }}
+                  style={{ padding: 0 }}
+                >
+                  <Typography
+                    color={COLORS.ERROR1}
+                    variant={TYPOGRAPHY.H6}
+                    fontWeight={FONT_WEIGHT.NORMAL}
+                    fontStyle={FONT_STYLE.NORMAL}
+                  >
+                    {this.context.t('iWillTryAnyway')}
+                  </Typography>
+                </Button>,
+              ])}
+            />
+          </div>
         )}
         <ConfirmPageContainerSummary
           className={classnames({
@@ -115,7 +160,7 @@ export default class ConfirmPageContainerContent extends Component {
           hideTitle={hideTitle}
         />
         {this.renderContent()}
-        {(errorKey || errorMessage) && (
+        {(errorKey || errorMessage) && !hasSimulationError && (
           <div className="confirm-page-container-content__error-container">
             <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
           </div>
@@ -125,7 +170,7 @@ export default class ConfirmPageContainerContent extends Component {
           cancelText={cancelText}
           onSubmit={onSubmit}
           submitText={submitText}
-          disabled={disabled}
+          disabled={isDisabled()}
         >
           {unapprovedTxCount > 1 ? (
             <a onClick={onCancelAll}>{rejectNText}</a>

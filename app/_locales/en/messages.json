@@ -1139,6 +1139,9 @@
   "id": {
     "message": "ID"
   },
+  "iWillTryAnyway": {
+    "message": "I will try anyway"
+  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
@@ -2286,6 +2289,10 @@
   },
   "signed": {
     "message": "Signed"
+  },
+  "simulationErrorMessage": {
+    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail. $1",
+    "desc": "A button that could be clicked to submit the transaction anyways"
   },
   "skip": {
     "message": "Skip"

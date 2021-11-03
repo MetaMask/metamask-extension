@@ -247,7 +247,8 @@ export default class ConfirmTransactionBase extends Component {
 
     if (simulationFails) {
       return {
-        valid: true,
+        valid: false,
+        hasSimulationError: true,
         errorKey: simulationFails.errorKey
           ? simulationFails.errorKey
           : TRANSACTION_ERROR_KEY,
@@ -320,6 +321,8 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
     } = this.props;
     const { t } = this.context;
+
+    const { hasSimulationError } = this.getErrorKey();
 
     const renderTotalMaxAmount = () => {
       if (
@@ -410,6 +413,137 @@ export default class ConfirmTransactionBase extends Component {
         </div>
       </div>
     ) : null;
+
+    const renderGasDetailsItem = () => {
+      return hasSimulationError === false ? (
+        EIP_1559_V2 ? (
+          <GasDetailsItem
+            key="gas_details"
+            hexMaximumTransactionFee={hexMaximumTransactionFee}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
+            isMainnet={isMainnet}
+            maxFeePerGas={maxFeePerGas}
+            maxPriorityFeePerGas={maxPriorityFeePerGas}
+            supportsEIP1559={supportsEIP1559}
+            txData={txData}
+            useNativeCurrencyAsPrimaryCurrency={
+              useNativeCurrencyAsPrimaryCurrency
+            }
+          />
+        ) : (
+          <TransactionDetailItem
+            key="gas-item"
+            detailTitle={
+              txData.dappSuggestedGasFees ? (
+                <>
+                  {t('transactionDetailGasHeading')}
+                  <InfoTooltip
+                    contentText={t('transactionDetailDappGasTooltip')}
+                    position="top"
+                  >
+                    <i className="fa fa-info-circle" />
+                  </InfoTooltip>
+                </>
+              ) : (
+                <>
+                  {t('transactionDetailGasHeading')}
+                  <InfoTooltip
+                    contentText={
+                      <>
+                        <p>
+                          {t('transactionDetailGasTooltipIntro', [
+                            isMainnet ? t('networkNameEthereum') : '',
+                          ])}
+                        </p>
+                        <p>{t('transactionDetailGasTooltipExplanation')}</p>
+                        <p>
+                          <a
+                            href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {t('transactionDetailGasTooltipConversion')}
+                          </a>
+                        </p>
+                      </>
+                    }
+                    position="top"
+                  >
+                    <i className="fa fa-info-circle" />
+                  </InfoTooltip>
+                </>
+              )
+            }
+            detailTitleColor={COLORS.BLACK}
+            detailText={
+              <div className="confirm-page-container-content__currency-container">
+                {renderHeartBeatIfNotInTest()}
+                <UserPreferencedCurrencyDisplay
+                  type={SECONDARY}
+                  value={hexMinimumTransactionFee}
+                  hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                />
+              </div>
+            }
+            detailTotal={
+              <div className="confirm-page-container-content__currency-container">
+                {renderHeartBeatIfNotInTest()}
+                <UserPreferencedCurrencyDisplay
+                  type={PRIMARY}
+                  value={hexMinimumTransactionFee}
+                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                />
+              </div>
+            }
+            subText={t('editGasSubTextFee', [
+              <b key="editGasSubTextFeeLabel">
+                {t('editGasSubTextFeeLabel')}
+              </b>,
+              <div
+                key="editGasSubTextFeeValue"
+                className="confirm-page-container-content__currency-container"
+              >
+                {renderHeartBeatIfNotInTest()}
+                <UserPreferencedCurrencyDisplay
+                  key="editGasSubTextFeeAmount"
+                  type={PRIMARY}
+                  value={hexMaximumTransactionFee}
+                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                />
+              </div>,
+            ])}
+            subTitle={
+              <>
+                {txData.dappSuggestedGasFees ? (
+                  <Typography
+                    variant={TYPOGRAPHY.H7}
+                    fontStyle={FONT_STYLE.ITALIC}
+                    color={COLORS.UI4}
+                  >
+                    {t('transactionDetailDappGasMoreInfo')}
+                  </Typography>
+                ) : (
+                  ''
+                )}
+                {supportsEIP1559 && (
+                  <GasTiming
+                    maxPriorityFeePerGas={hexWEIToDecGWEI(
+                      maxPriorityFeePerGas ||
+                      txData.txParams.maxPriorityFeePerGas,
+                    )}
+                    maxFeePerGas={hexWEIToDecGWEI(
+                      maxFeePerGas || txData.txParams.maxFeePerGas,
+                    )}
+                  />
+                )}
+              </>
+            }
+          />
+        )
+      ) : (
+        ''
+      );
+    };
 
     return (
       <div className="confirm-page-container-content__details">
@@ -921,7 +1055,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.state;
 
     const { name } = methodData;
-    const { valid, errorKey } = this.getErrorKey();
+    const { valid, errorKey, hasSimulationError } = this.getErrorKey();
     const {
       totalTx,
       positionOfCurrentTx,
@@ -965,6 +1099,7 @@ export default class ConfirmTransactionBase extends Component {
         identiconAddress={identiconAddress}
         errorMessage={submitError}
         errorKey={errorKey}
+        hasSimulationError={hasSimulationError}
         warning={submitWarning}
         totalTx={totalTx}
         positionOfCurrentTx={positionOfCurrentTx}
