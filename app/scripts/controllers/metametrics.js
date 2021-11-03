@@ -283,7 +283,22 @@ export default class MetaMetricsController {
   }
 
   /**
-   * track a metametrics event, performing necessary payload manipulation and
+   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
+   * @param {MetaMetricsEventPayload} payload - details of the event
+   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
+   */
+  trackEvent(payload, options) {
+    try {
+      this.submitEvent(payload, options).catch((err) => {
+        console.error(err);
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  /**
+   * submits (or queues for submission) a metametrics event, performing necessary payload manipulation and
    * routing the event to the appropriate segment source. Will split events
    * with sensitiveProperties into two events, tracking the sensitiveProperties
    * with the anonymousId only.
@@ -291,20 +306,7 @@ export default class MetaMetricsController {
    * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
    * @returns {Promise<void>}
    */
-  async trackEvent(payload, options) {
-    try {
-      await this._trackEvent(payload, options);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  /**
-   * @param {MetaMetricsEventPayload} payload - details of the event
-   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
-   * @returns {Promise<void>}
-   */
-  async _trackEvent(payload, options) {
+  async submitEvent(payload, options) {
     // event and category are required fields for all payloads
     if (!payload.event || !payload.category) {
       throw new Error(
