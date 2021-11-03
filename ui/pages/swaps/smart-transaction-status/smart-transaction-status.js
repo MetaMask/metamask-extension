@@ -37,7 +37,6 @@ import {
   cancelSmartTransaction,
 } from '../../../store/actions';
 
-import { SECOND } from '../../../../shared/constants/time';
 import SwapsFooter from '../swaps-footer';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
 import SuccessIcon from './success-icon';
@@ -49,9 +48,6 @@ import TimerIcon from './timer-icon';
 import BackgroundAnimation from './background-animation';
 
 const TOTAL_WAITING_TIME_IN_SEC = 180;
-
-// It takes about 2s to show the link (waiting for uuid) and then it will be visible for about 10s or until a user clicks on it.
-const CANCEL_LINK_DURATION = SECOND * 12;
 
 const PENDING_STATUS = {
   OPTIMIZING_GAS: 'optimizingGas',
@@ -66,12 +62,7 @@ const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
 };
 
 export default function SmartTransactionStatus() {
-  const [showCancelSwapLink, setShowCancelSwapLink] = useState(() => {
-    setTimeout(() => {
-      setShowCancelSwapLink(false);
-    }, CANCEL_LINK_DURATION);
-    return true;
-  });
+  const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const [pendingStatus, setPendingStatus] = useState(
     PENDING_STATUS.OPTIMIZING_GAS,
   );
@@ -92,10 +83,11 @@ export default function SmartTransactionStatus() {
   const usedQuote = selectedQuote || topQuote;
   const currentSmartTransactions = useSelector(getCurrentSmartTransactions);
   let smartTransactionStatus = {};
+  let latestSmartTransaction = {};
   let latestSmartTransactionUuid;
 
   if (currentSmartTransactions && currentSmartTransactions.length > 0) {
-    const latestSmartTransaction =
+    latestSmartTransaction =
       currentSmartTransactions[currentSmartTransactions.length - 1];
     latestSmartTransactionUuid = latestSmartTransaction?.uuid;
     smartTransactionStatus = latestSmartTransaction?.statusMetadata || {};
@@ -240,6 +232,9 @@ export default function SmartTransactionStatus() {
     icon = <RevertedIcon />;
   }
 
+  const showCancelSwapLink =
+    latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
+
   const CancelSwap = () => {
     return (
       <Box marginBottom={0}>
@@ -248,7 +243,7 @@ export default function SmartTransactionStatus() {
           href="#"
           onClick={(e) => {
             e?.preventDefault();
-            setShowCancelSwapLink(false); // We want to hide it after a user clicks on it.
+            setCancelSwapLinkClicked(true); // We want to hide it after a user clicks on it.
             cancelSmartTransactionEvent();
             dispatch(cancelSmartTransaction(latestSmartTransactionUuid));
           }}

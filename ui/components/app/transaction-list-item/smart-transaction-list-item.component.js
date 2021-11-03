@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import ListItem from '../../ui/list-item';
@@ -21,6 +21,7 @@ export default function SmartTransactionListItem({
   console.log(`smartTransaction`, smartTransaction);
   const dispatch = useDispatch();
   const t = useI18nContext();
+  const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const {
     sourceTokenSymbol,
     destinationTokenSymbol,
@@ -40,6 +41,8 @@ export default function SmartTransactionListItem({
   } else if (status.startsWith('cancelled')) {
     displayedStatusKey = TRANSACTION_GROUP_STATUSES.CANCELLED;
   }
+  const showCancelSwapLink =
+    smartTransaction.cancellable && !cancelSwapLinkClicked;
   const className = 'transaction-list-item transaction-list-item--unconfirmed';
   return (
     <>
@@ -63,17 +66,19 @@ export default function SmartTransactionListItem({
           </h3>
         }
       >
-        {displayedStatusKey === TRANSACTION_GROUP_STATUSES.PENDING && (
-          <div className="transaction-list-item__pending-actions">
-            <CancelButton
-              transaction={smartTransaction.uuid}
-              cancelTransaction={(e) => {
-                e?.preventDefault();
-                dispatch(cancelSmartTransaction(smartTransaction.uuid));
-              }}
-            />
-          </div>
-        )}
+        {displayedStatusKey === TRANSACTION_GROUP_STATUSES.PENDING &&
+          showCancelSwapLink && (
+            <div className="transaction-list-item__pending-actions">
+              <CancelButton
+                transaction={smartTransaction.uuid}
+                cancelTransaction={(e) => {
+                  e?.preventDefault();
+                  dispatch(cancelSmartTransaction(smartTransaction.uuid));
+                  setCancelSwapLinkClicked(true);
+                }}
+              />
+            </div>
+          )}
       </ListItem>
     </>
   );
