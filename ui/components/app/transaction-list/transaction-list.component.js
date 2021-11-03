@@ -133,17 +133,6 @@ export default function TransactionList({
     [],
   );
 
-  // const pendingSmartTransactions = [
-  //   {
-  //     uuid: '123456',
-  //     sourceTokenSymbol: 'ETH',
-  //     destinationTokenSymbol: 'UNI',
-  //     type: 'swap',
-  //     time: Date.now(),
-  //     transactionType: 'smart',
-  //   },
-  // ];
-
   const totalPendingTransactions = orderBy(
     pendingSmartTransactions.concat(pendingTransactions),
     [
