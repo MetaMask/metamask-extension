@@ -67,9 +67,6 @@
   "customGas": {
     "message": "Pas Gas aan"
   },
-  "customRPC": {
-    "message": "Aangepaste RPC"
-  },
   "decimal": {
     "message": "Decimalen van precisie"
   },

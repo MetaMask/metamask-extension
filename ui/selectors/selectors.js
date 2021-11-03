@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   MAINNET_CHAIN_ID,
-  BSC_CHAIN_ID,
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
@@ -424,6 +423,11 @@ export function getPreferences({ metamask }) {
   return metamask.preferences;
 }
 
+export function getShowTestNetworks(state) {
+  const { showTestNetworks } = getPreferences(state);
+  return Boolean(showTestNetworks);
+}
+
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
   const conversionRate = getConversionRate(state);
@@ -571,18 +575,15 @@ export function getShowWhatsNewPopup(state) {
  * @param {Object} state
  * @returns {Object}
  */
-function getAllowedNotificationIds(state) {
-  const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger = currentKeyring?.type === KEYRING_TYPES.LEDGER;
-
+function getAllowedNotificationIds() {
   return {
-    1: true,
-    2: true,
-    3: true,
-    4: getCurrentChainId(state) === BSC_CHAIN_ID,
-    5: true,
-    6: currentKeyringIsLedger,
-    7: currentKeyringIsLedger,
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+    5: false,
+    6: false,
+    7: false,
   };
 }
 
@@ -658,4 +659,13 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
   return (
     addressIsLedger && transportTypePreferenceIsWebHID && webHidIsNotConnected
   );
+}
+
+/**
+ * To retrieve the name of the new Network added using add network form
+ * @param {*} state
+ * @returns string
+ */
+export function getNewNetworkAdded(state) {
+  return state.appState.newNetworkAdded;
 }

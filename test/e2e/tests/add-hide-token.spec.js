@@ -27,7 +27,6 @@ describe('Hide token', function () {
           css: '.asset-list-item__token-button',
           text: '0 TST',
         });
-        await driver.clickElement('.popover-header__button');
 
         let assets = await driver.findElements('.asset-list-item');
         assert.equal(assets.length, 2);
@@ -39,7 +38,6 @@ describe('Hide token', function () {
         await driver.clickElement('[data-testid="asset-options__button"]');
 
         await driver.clickElement('[data-testid="asset-options__hide"]');
-
         // wait for confirm hide modal to be visible
         const confirmHideModal = await driver.findVisibleElement('span .modal');
 

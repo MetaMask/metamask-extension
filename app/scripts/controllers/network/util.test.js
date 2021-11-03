@@ -2,7 +2,9 @@ import { strict as assert } from 'assert';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  TRANSACTION_ENVELOPE_TYPES,
 } from '../../../../shared/constants/transaction';
+
 import { formatTxMetaForRpcResult } from './util';
 
 describe('network utils', function () {
@@ -92,7 +94,7 @@ describe('network utils', function () {
         s: '0x18bfc4eeb7ebcfacc3bd59ea100a6834ea3265e65945dbec69aa2a06564fafff',
         to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
         transactionIndex: null,
-        type: '0x0',
+        type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
         v: '0x29',
         value: '0x0',
       };

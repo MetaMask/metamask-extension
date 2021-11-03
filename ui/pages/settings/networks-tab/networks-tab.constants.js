@@ -5,6 +5,9 @@ import {
   KOVAN,
   KOVAN_CHAIN_ID,
   KOVAN_RPC_URL,
+  LOCALHOST,
+  LOCALHOST_CHAIN_ID,
+  LOCALHOST_RPC_URL,
   MAINNET,
   MAINNET_CHAIN_ID,
   MAINNET_RPC_URL,
@@ -61,6 +64,15 @@ const defaultNetworksData = [
     chainId: KOVAN_CHAIN_ID,
     ticker: 'ETH',
     blockExplorerUrl: 'https://kovan.etherscan.io',
+  },
+  {
+    labelKey: LOCALHOST,
+    iconColor: '#29B6AF',
+    providerType: LOCALHOST,
+    rpcUrl: LOCALHOST_RPC_URL,
+    chainId: LOCALHOST_CHAIN_ID,
+    ticker: 'ETH',
+    blockExplorerUrl: '',
   },
 ];
 
