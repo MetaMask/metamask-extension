@@ -533,7 +533,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div className="settings-page__body">
-        {warning && <div className="settings-tab__error">{warning}</div>}
+        {warning ? <div className="settings-tab__error">{warning}</div> : null}
         {this.renderStateLogs()}
         {this.renderMobileSync()}
         {this.renderResetAccount()}

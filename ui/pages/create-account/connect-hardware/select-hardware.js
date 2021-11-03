@@ -235,7 +235,7 @@ export default class SelectHardware extends Component {
       <div className="new-external-account-form">
         {this.renderHeader()}
         {this.renderButtons()}
-        {this.state.selectedDevice && this.renderTutorialsteps()}
+        {this.state.selectedDevice ? this.renderTutorialsteps() : null}
         {this.renderContinueButton()}
       </div>
     );

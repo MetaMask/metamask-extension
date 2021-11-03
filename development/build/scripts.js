@@ -29,10 +29,10 @@ const bifyModuleGroups = require('bify-module-groups');
 
 const metamaskrc = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
+  INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
   ONBOARDING_V2: process.env.ONBOARDING_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
-  SEGMENT_LEGACY_WRITE_KEY: process.env.SEGMENT_LEGACY_WRITE_KEY,
   SENTRY_DSN_DEV:
     process.env.SENTRY_DSN_DEV ||
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
@@ -50,6 +50,51 @@ const {
 const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
+
+/**
+ * The build environment. This describes the environment this build was produced in.
+ */
+const ENVIRONMENT = {
+  DEVELOPMENT: 'development',
+  PRODUCTION: 'production',
+  OTHER: 'other',
+  PULL_REQUEST: 'pull-request',
+  RELEASE_CANDIDATE: 'release-candidate',
+  STAGING: 'staging',
+  TESTING: 'testing',
+};
+
+/**
+ * Get a value from the configuration, and confirm that it is set.
+ *
+ * @param {string} key - The configuration key to retrieve.
+ * @returns {string} The config entry requested.
+ * @throws {Error} Throws if the requested key is missing.
+ */
+function getConfigValue(key) {
+  const value = metamaskrc[key];
+  if (!value) {
+    throw new Error(`Missing config entry for '${key}'`);
+  }
+  return value;
+}
+
+/**
+ * Get the appropriate Infura project ID.
+ *
+ * @param {object} options - The Infura project ID options.
+ * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
+ * @param {boolean} options.testing - Whether the current build is a test build or not.
+ * @returns {string} The Infura project ID.
+ */
+function getInfuraProjectId({ environment, testing }) {
+  if (testing) {
+    return '00000000000000000000000000000000';
+  } else if (environment === ENVIRONMENT.PRODUCTION) {
+    return getConfigValue('INFURA_PROD_PROJECT_ID');
+  }
+  return getConfigValue('INFURA_PROJECT_ID');
+}
 
 module.exports = createScriptTasks;
 
@@ -625,7 +670,7 @@ async function bundleIt(buildConfiguration) {
 
 function getEnvironmentVariables({ buildType, devMode, testing }) {
   const environment = getEnvironment({ devMode, testing });
-  if (environment === 'production' && !process.env.SENTRY_DSN) {
+  if (environment === ENVIRONMENT.PRODUCTION && !process.env.SENTRY_DSN) {
     throw new Error('Missing SENTRY_DSN environment variable');
   }
   return {
@@ -633,16 +678,14 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
-    NODE_ENV: devMode ? 'development' : 'production',
+    NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
     IN_TEST: testing ? 'true' : false,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},
     SENTRY_DSN: process.env.SENTRY_DSN,
     SENTRY_DSN_DEV: metamaskrc.SENTRY_DSN_DEV,
-    INFURA_PROJECT_ID: testing
-      ? '00000000000000000000000000000000'
-      : metamaskrc.INFURA_PROJECT_ID,
+    INFURA_PROJECT_ID: getInfuraProjectId({ environment, testing }),
     SEGMENT_HOST: metamaskrc.SEGMENT_HOST,
     // When we're in the 'production' environment we will use a specific key only set in CI
     // Otherwise we'll use the key from .metamaskrc or from the environment variable. If
@@ -650,13 +693,9 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
     // in the build. This is intentional so that developers can contribute to MetaMask without
     // inflating event volume.
     SEGMENT_WRITE_KEY:
-      environment === 'production'
+      environment === ENVIRONMENT.PRODUCTION
         ? process.env.SEGMENT_PROD_WRITE_KEY
         : metamaskrc.SEGMENT_WRITE_KEY,
-    SEGMENT_LEGACY_WRITE_KEY:
-      environment === 'production'
-        ? process.env.SEGMENT_PROD_LEGACY_WRITE_KEY
-        : metamaskrc.SEGMENT_LEGACY_WRITE_KEY,
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
   };
@@ -665,21 +704,21 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
 function getEnvironment({ devMode, testing }) {
   // get environment slug
   if (devMode) {
-    return 'development';
+    return ENVIRONMENT.DEVELOPMENT;
   } else if (testing) {
-    return 'testing';
+    return ENVIRONMENT.TESTING;
   } else if (process.env.CIRCLE_BRANCH === 'master') {
-    return 'production';
+    return ENVIRONMENT.PRODUCTION;
   } else if (
     /^Version-v(\d+)[.](\d+)[.](\d+)/u.test(process.env.CIRCLE_BRANCH)
   ) {
-    return 'release-candidate';
+    return ENVIRONMENT.RELEASE_CANDIDATE;
   } else if (process.env.CIRCLE_BRANCH === 'develop') {
-    return 'staging';
+    return ENVIRONMENT.STAGING;
   } else if (process.env.CIRCLE_PULL_REQUEST) {
-    return 'pull-request';
+    return ENVIRONMENT.PULL_REQUEST;
   }
-  return 'other';
+  return ENVIRONMENT.OTHER;
 }
 
 function renderHtmlFile({

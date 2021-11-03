@@ -11,6 +11,7 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
 } from '../../../shared/constants/transaction';
 import { addCurrencies } from '../../../shared/modules/conversion.utils';
+import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import fetchWithCache from './fetch-with-cache';
 
 const hstInterface = new ethers.utils.Interface(abi);
@@ -144,10 +145,8 @@ export function getLatestSubmittedTxWithNonce(
 }
 
 export async function isSmartContractAddress(address) {
-  const code = await global.eth.getCode(address);
-  // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
-  const codeIsEmpty = !code || code === '0x' || code === '0x0';
-  return !codeIsEmpty;
+  const { isContractCode } = readAddressAsContract(global.eth, address);
+  return isContractCode;
 }
 
 export function sumHexes(...args) {

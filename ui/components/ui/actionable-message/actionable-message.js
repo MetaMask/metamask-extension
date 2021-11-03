@@ -35,7 +35,7 @@ export default function ActionableMessage({
 
   return (
     <div className={actionableMessageClassName}>
-      {useIcon && <InfoTooltipIcon fillColor={iconFillColor} />}
+      {useIcon ? <InfoTooltipIcon fillColor={iconFillColor} /> : null}
       {infoTooltipText && (
         <InfoTooltip
           position="left"

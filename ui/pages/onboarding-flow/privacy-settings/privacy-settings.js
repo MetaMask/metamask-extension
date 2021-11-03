@@ -10,6 +10,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  setCompletedOnboarding,
   setFeatureFlag,
   setUsePhishDetect,
   setUseTokenDetection,
@@ -33,6 +34,7 @@ export default function PrivacySettings() {
     );
     dispatch(setUsePhishDetect(usePhishingDetection));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
+    dispatch(setCompletedOnboarding());
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
 
