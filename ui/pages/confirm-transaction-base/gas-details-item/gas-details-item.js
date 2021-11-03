@@ -7,6 +7,7 @@ import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Box from '../../../components/ui/box';
+import Typography from '../../../components/ui/typography/typography';
 import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
 import I18nValue from '../../../components/ui/i18n-value';
 import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
@@ -46,13 +47,15 @@ const GasDetailItem = ({
           <InfoTooltip
             contentText={
               <>
-                <p>
+                <Typography fontSize="12px">
                   {t('transactionDetailGasTooltipIntro', [
                     isMainnet ? t('networkNameEthereum') : '',
                   ])}
-                </p>
-                <p>{t('transactionDetailGasTooltipExplanation')}</p>
-                <p>
+                </Typography>
+                <Typography fontSize="12px">
+                  {t('transactionDetailGasTooltipExplanation')}
+                </Typography>
+                <Typography fontSize="12px">
                   <a
                     href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
                     target="_blank"
@@ -60,7 +63,7 @@ const GasDetailItem = ({
                   >
                     {t('transactionDetailGasTooltipConversion')}
                   </a>
-                </p>
+                </Typography>
               </>
             }
             position="top"
@@ -69,7 +72,7 @@ const GasDetailItem = ({
       }
       detailTitleColor={COLORS.BLACK}
       detailText={
-        <div className="confirm-page-container-content__currency-container">
+        <div className="gas-details-item__currency-container">
           <HeartBeat />
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
@@ -79,7 +82,7 @@ const GasDetailItem = ({
         </div>
       }
       detailTotal={
-        <div className="confirm-page-container-content__currency-container">
+        <div className="gas-details-item__currency-container">
           <HeartBeat />
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
@@ -90,14 +93,12 @@ const GasDetailItem = ({
       }
       subText={t('editGasSubTextFee', [
         <Box key="editGasSubTextFeeLabel" display="inline-flex">
-          <Box marginRight={1}>
-            <b>
-              <I18nValue messageKey="editGasSubTextFeeLabel" />
-            </b>
+          <Box marginRight={1} classNamee="gas-details-item__gasFeeLabel">
+            <I18nValue messageKey="editGasSubTextFeeLabel" />
           </Box>
           <div
             key="editGasSubTextFeeValue"
-            className="confirm-page-container-content__currency-container"
+            className="gas-details-item__currency-container"
           >
             <HeartBeat />
             <UserPreferencedCurrencyDisplay
