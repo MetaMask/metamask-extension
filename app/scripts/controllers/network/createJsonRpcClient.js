@@ -12,6 +12,16 @@ import { SECOND } from '../../../../shared/constants/time';
 
 const inTest = process.env.IN_TEST;
 const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
+
+const pollingIntervals = {
+  43113: SECOND,
+  43114: SECOND,
+}
+
+const getChainOpts = (chainId) => {
+  return chainId in pollingIntervals ? { pollingInterval: pollingIntervals[chainId] } : {};
+}
+
 const getTestMiddlewares = () => {
   return inTest ? [createEstimateGasDelayTestMiddleware()] : [];
 };
@@ -20,6 +30,7 @@ export default function createJsonRpcClient({ rpcUrl, chainId }) {
   const fetchMiddleware = createFetchMiddleware({ rpcUrl });
   const blockProvider = providerFromMiddleware(fetchMiddleware);
   const blockTracker = new PollingBlockTracker({
+    ...getChainOpts(chainId),
     ...blockTrackerOpts,
     provider: blockProvider,
   });
