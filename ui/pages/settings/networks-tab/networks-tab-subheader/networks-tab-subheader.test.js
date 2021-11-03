@@ -39,6 +39,8 @@ describe('NetworksTabSubheader Component', () => {
     const { queryByText } = renderComponent({
       addNewNetwork: true,
     });
-    expect(queryByText('Networks > Add a network')).toBeInTheDocument();
+    expect(queryByText('Networks')).toBeInTheDocument();
+    expect(queryByText('>')).toBeInTheDocument();
+    expect(queryByText('Add a network')).toBeInTheDocument();
   });
 });
