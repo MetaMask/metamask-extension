@@ -30,7 +30,7 @@ const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
   }, [urEncoder]);
 
   return (
-    <Box>
+    <>
       <Box>
         <Typography align={TEXT_ALIGN.CENTER}>
           {t('QRHardwareSignRequestSubtitle')}
@@ -45,7 +45,7 @@ const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
       >
         <QRCode value={currentQRCode.toUpperCase()} size={250} />
       </Box>
-      <Box paddingBottom={4}>
+      <Box paddingBottom={4} paddingLeft={4} paddingRight={4}>
         <Typography align={TEXT_ALIGN.CENTER}>
           {t('QRHardwareSignRequestDescription')}
         </Typography>
@@ -57,7 +57,7 @@ const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
         submitText={t('QRHardwareSignRequestGetSignature')}
         submitButtonType="confirm"
       />
-    </Box>
+    </>
   );
 };
 

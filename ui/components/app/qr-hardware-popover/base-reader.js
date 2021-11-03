@@ -15,7 +15,12 @@ const READY_STATE = {
   READY: 'READY',
 };
 
-const BaseReader = ({ handleCancel, handleSuccess }) => {
+const BaseReader = ({
+  isReadingWallet,
+  handleCancel,
+  handleSuccess,
+  setErrorTitle,
+}) => {
   const t = useI18nContext();
   const [ready, setReady] = useState(READY_STATE.ACCESSING_CAMERA);
   const [error, setError] = useState(null);
@@ -128,6 +133,11 @@ const BaseReader = ({ handleCancel, handleSuccess }) => {
         handleSuccess(result).catch(setError);
       }
     } catch (e) {
+      if (isReadingWallet) {
+        setErrorTitle(t('QRHardwareUnknownQRCodeTitle'));
+      } else {
+        setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
+      }
       setError(new Error(t('unknownQrCode')));
     }
   };
@@ -138,7 +148,13 @@ const BaseReader = ({ handleCancel, handleSuccess }) => {
       title = t('noWebcamFoundTitle');
       msg = t('noWebcamFound');
     } else if (error.message === t('unknownQrCode')) {
-      msg = t('unknownQrCode');
+      if (isReadingWallet) {
+        msg = t('QRHardwareUnknownWalletQRCode');
+      } else {
+        msg = t('unknownQrCode');
+      }
+    } else if (error.message === t('QRHardwareMismatchedSignId')) {
+      msg = t('QRHardwareMismatchedSignId');
     } else {
       title = t('unknownCameraErrorTitle');
       msg = t('unknownCameraError');
@@ -152,8 +168,14 @@ const BaseReader = ({ handleCancel, handleSuccess }) => {
         {title ? <div className="qr-scanner__title">{title}</div> : null}
         <div className="qr-scanner__error">{msg}</div>
         <PageContainerFooter
-          onCancel={handleCancel}
-          onSubmit={tryAgain}
+          onCancel={() => {
+            setErrorTitle('');
+            handleCancel();
+          }}
+          onSubmit={() => {
+            setErrorTitle('');
+            tryAgain();
+          }}
           cancelText={t('cancel')}
           submitText={t('tryAgain')}
           submitButtonType="confirm"
@@ -167,7 +189,7 @@ const BaseReader = ({ handleCancel, handleSuccess }) => {
     if (ready === READY_STATE.ACCESSING_CAMERA) {
       message = t('accessingYourCamera');
     } else if (ready === READY_STATE.READY) {
-      message = t('scanInstructions');
+      message = t('QRHardwareScanInstructions');
     } else if (ready === READY_STATE.NEED_TO_ALLOW_ACCESS) {
       message = t('youNeedToAllowCameraAccess');
     }
@@ -195,8 +217,10 @@ const BaseReader = ({ handleCancel, handleSuccess }) => {
 };
 
 BaseReader.propTypes = {
+  isReadingWallet: PropTypes.bool.isRequired,
   handleCancel: PropTypes.func.isRequired,
   handleSuccess: PropTypes.func.isRequired,
+  setErrorTitle: PropTypes.func.isRequired,
 };
 
 export default BaseReader;

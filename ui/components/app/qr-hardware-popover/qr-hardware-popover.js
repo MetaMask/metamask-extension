@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentQRHardwareState } from '../../../selectors';
 import Popover from '../../ui/popover';
@@ -7,16 +7,35 @@ import {
   cancelReadQRHardwareCryptoHDKey as cancelReadQRHardwareCryptoHDKeyAction,
   cancelQRHardwareSignRequest as cancelQRHardwareSignRequestAction,
   cancelTx,
+  cancelPersonalMsg,
+  cancelMsg,
+  cancelTypedMsg,
 } from '../../../store/actions';
-import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
 
 const QRHardwarePopover = () => {
   const t = useI18nContext();
+
+  const qrHardware = useSelector(getCurrentQRHardwareState);
+  const { sync, sign } = qrHardware;
+  const showWalletImporter = sync?.reading;
+  const showSignRequest = sign?.request;
+  const showPopover = showWalletImporter || showSignRequest;
+  const [errorTitle, setErrorTitle] = useState('');
+
   const { txData } = useSelector((state) => {
     return state.confirmTransaction;
   });
+  // the confirmTransaction's life cycle is not consistent with QR hardware wallet;
+  // the confirmTransaction will change after the previous tx is confirmed or cancel,
+  // we want to block the changing by sign request id;
+  const _txData = useMemo(() => {
+    return txData;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sign?.request?.requestId]);
+
   const dispatch = useDispatch();
   const walletImporterCancel = useCallback(
     () => dispatch(cancelReadQRHardwareCryptoHDKeyAction()),
@@ -24,17 +43,27 @@ const QRHardwarePopover = () => {
   );
 
   const signRequestCancel = useCallback(() => {
-    dispatch(cancelTx(txData)).then(() => {
-      dispatch(clearConfirmTransaction());
-    });
+    let action = cancelTx;
+    switch (_txData.type) {
+      case MESSAGE_TYPE.PERSONAL_SIGN: {
+        action = cancelPersonalMsg;
+        break;
+      }
+      case MESSAGE_TYPE.ETH_SIGN: {
+        action = cancelMsg;
+        break;
+      }
+      case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA: {
+        action = cancelTypedMsg;
+        break;
+      }
+      default: {
+        action = cancelTx;
+      }
+    }
+    dispatch(action(_txData));
     dispatch(cancelQRHardwareSignRequestAction());
-  }, [dispatch, txData]);
-
-  const qrHardware = useSelector(getCurrentQRHardwareState);
-  const { sync, sign } = qrHardware;
-  const showWalletImporter = Boolean(sync && sync.reading);
-  const showSignRequest = Boolean(sign && sign.request);
-  const showPopover = showWalletImporter || showSignRequest;
+  }, [dispatch, _txData]);
 
   const title = useMemo(() => {
     let _title = '';
@@ -43,8 +72,11 @@ const QRHardwarePopover = () => {
     } else if (showWalletImporter) {
       _title = t('QRHardwareWalletImporterTitle');
     }
+    if (errorTitle !== '') {
+      _title = errorTitle;
+    }
     return _title;
-  }, [showSignRequest, showWalletImporter, t]);
+  }, [showSignRequest, showWalletImporter, t, errorTitle]);
 
   return showPopover ? (
     <Popover
@@ -52,10 +84,14 @@ const QRHardwarePopover = () => {
       onClose={showWalletImporter ? walletImporterCancel : signRequestCancel}
     >
       {showWalletImporter && (
-        <QRHardwareWalletImporter handleCancel={walletImporterCancel} />
+        <QRHardwareWalletImporter
+          handleCancel={walletImporterCancel}
+          setErrorTitle={setErrorTitle}
+        />
       )}
       {showSignRequest && (
         <QRHardwareSignRequest
+          setErrorTitle={setErrorTitle}
           handleCancel={signRequestCancel}
           request={sign.request}
         />

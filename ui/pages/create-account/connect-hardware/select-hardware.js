@@ -330,16 +330,31 @@ export default class SelectHardware extends Component {
 
     steps.push({
       message: (
-        <p>
-          {this.context.t('QRHardwareWalletSteps2Description')}
-          {this.context.t('keystone')}
-          ,&nbsp;
-          {this.context.t('ngrave')}
-          ,&nbsp;
-          {this.context.t('airgapVault')}
-          ,&nbsp;{this.context.t('QRHardwareWalletSteps3Description')}
-        </p>
+        <>
+          <a
+            className="hw-connect__msg-link"
+            href="https://keyst.one"
+            rel="noopener noreferrer"
+            target="_blank"
+            key="keystone-support-link"
+          >
+            {this.context.t('keystone')}
+          </a>
+          <a
+            className="hw-connect__msg-link"
+            href="https://keyst.one/mm"
+            rel="noopener noreferrer"
+            target="_blank"
+            key="keystone-tutorial-link"
+          >
+            {this.context.t('keystoneTutorial')}
+          </a>
+        </>
       ),
+    });
+
+    steps.push({
+      message: this.context.t('QRHardwareWalletSteps2Description'),
     });
 
     steps.push({

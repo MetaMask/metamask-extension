@@ -1697,6 +1697,18 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * get hardware account label
+   *
+   * @return string label
+   * */
+
+  getAccountLabel(name, index, hdPathDescription) {
+    return `${name[0].toUpperCase()}${name.slice(1)} ${
+      parseInt(index, 10) + 1
+    } ${hdPathDescription || ''}`.trim();
+  }
+
+  /**
    * Imports an account from a Trezor or Ledger device.
    *
    * @returns {} keyState
@@ -1716,18 +1728,12 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(newAccounts);
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
-        let label;
-        if (deviceName === DEVICE_NAMES.QR) {
-          const keyringName = keyring.getName();
-          label = `${keyringName[0].toUpperCase()}${keyringName.slice(1)} ${
-            parseInt(index, 10) + 1
-          } ${hdPathDescription || ''}`.trim();
-        } else {
-          label = `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
-            parseInt(index, 10) + 1
-          } ${hdPathDescription || ''}`.trim();
-        }
-        // Set the account label to Trezor 1 /  Ledger 1, etc
+        const label = this.getAccountLabel(
+          deviceName === DEVICE_NAMES.QR ? keyring.getName() : deviceName,
+          index,
+          hdPathDescription,
+        );
+        // Set the account label to Trezor 1 /  Ledger 1 / QR Hardware 1, etc
         this.preferencesController.setAccountLabel(address, label);
         // Select the account
         this.preferencesController.setSelectedAddress(address);
@@ -2130,6 +2136,12 @@ export default class MetamaskController extends EventEmitter {
             new Error('Lattice does not support eth_getEncryptionPublicKey.'),
           );
         });
+      }
+
+      case KEYRING_TYPES.QR: {
+        return Promise.reject(
+          new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
+        );
       }
 
       default: {

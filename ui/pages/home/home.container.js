@@ -17,6 +17,7 @@ import {
   getShowRecoveryPhraseReminder,
   getNewNetworkAdded,
   hasUnsignedQRHardwareTransaction,
+  hasUnsignedQRHardwareMessage,
 } from '../../selectors';
 
 import {
@@ -84,9 +85,9 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       WEB3_SHIM_USAGE_ALERT_STATES.RECORDED;
 
-  const isSigningQRHardwareTransaction = hasUnsignedQRHardwareTransaction(
-    state,
-  );
+  const isSigningQRHardwareTransaction =
+    hasUnsignedQRHardwareTransaction(state) ||
+    hasUnsignedQRHardwareMessage(state);
 
   return {
     forgottenPassword,

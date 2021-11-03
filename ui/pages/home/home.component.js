@@ -117,10 +117,11 @@ export default class Home extends PureComponent {
 
     // eslint-disable-next-line react/no-unused-state
     this.setState({ mounted: true });
-    if (isSigningQRHardwareTransaction) {
-      return;
-    }
-    if (isNotification && totalUnapprovedCount === 0) {
+    if (
+      isNotification &&
+      totalUnapprovedCount === 0 &&
+      !isSigningQRHardwareTransaction
+    ) {
       global.platform.closeCurrentWindow();
     } else if (!isNotification && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
@@ -149,11 +150,16 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
+      isSigningQRHardwareTransaction,
     },
     { mounted },
   ) {
     if (!mounted) {
-      if (isNotification && totalUnapprovedCount === 0) {
+      if (
+        isNotification &&
+        totalUnapprovedCount === 0 &&
+        !isSigningQRHardwareTransaction
+      ) {
         return { closing: true };
       } else if (
         firstPermissionsRequestId ||

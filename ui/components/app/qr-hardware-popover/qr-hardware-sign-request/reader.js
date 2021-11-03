@@ -9,6 +9,7 @@ const Reader = ({
   submitQRHardwareSignature,
   cancelQRHardwareSignRequest,
   requestId,
+  setErrorTitle,
 }) => {
   const t = useI18nContext();
   const cancel = () => {
@@ -26,7 +27,8 @@ const Reader = ({
             .then(resolve)
             .catch(reject);
         } else {
-          reject(new Error('#mismatched_signId'));
+          setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
+          reject(new Error(t('QRHardwareMismatchedSignId')));
         }
       } else {
         reject(new Error(t('unknownQrCode')));
@@ -34,13 +36,21 @@ const Reader = ({
     });
   };
 
-  return <BaseReader handleCancel={cancel} handleSuccess={handleSuccess} />;
+  return (
+    <BaseReader
+      isReadingWallet={false}
+      handleCancel={cancel}
+      handleSuccess={handleSuccess}
+      setErrorTitle={setErrorTitle}
+    />
+  );
 };
 
 Reader.propTypes = {
   submitQRHardwareSignature: PropTypes.func.isRequired,
   cancelQRHardwareSignRequest: PropTypes.func.isRequired,
   requestId: PropTypes.string.isRequired,
+  setErrorTitle: PropTypes.func.isRequired,
 };
 
 export default Reader;

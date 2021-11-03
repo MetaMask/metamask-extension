@@ -4,7 +4,7 @@ import { submitQRHardwareSignature } from '../../../../store/actions';
 import Player from './player';
 import Reader from './reader';
 
-const QRHardwareSignRequest = ({ request, handleCancel }) => {
+const QRHardwareSignRequest = ({ request, handleCancel, setErrorTitle }) => {
   const [status, setStatus] = useState('play');
 
   const toRead = useCallback(() => setStatus('read'), []);
@@ -27,6 +27,7 @@ const QRHardwareSignRequest = ({ request, handleCancel }) => {
         cancelQRHardwareSignRequest={handleCancel}
         submitQRHardwareSignature={submitQRHardwareSignature}
         requestId={request.requestId}
+        setErrorTitle={setErrorTitle}
       />
     );
   };
@@ -38,6 +39,7 @@ const QRHardwareSignRequest = ({ request, handleCancel }) => {
 QRHardwareSignRequest.propTypes = {
   request: PropTypes.object.isRequired,
   handleCancel: PropTypes.func.isRequired,
+  setErrorTitle: PropTypes.func.isRequired,
 };
 
 export default QRHardwareSignRequest;

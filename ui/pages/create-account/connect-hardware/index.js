@@ -181,7 +181,10 @@ class ConnectHardwareForm extends Component {
           });
         } else if (
           errorMessage !== 'Window closed' &&
-          errorMessage !== 'Popup closed'
+          errorMessage !== 'Popup closed' &&
+          errorMessage
+            .toLowerCase()
+            .includes('KeystoneError#sync_cancel'.toLowerCase()) === false
         ) {
           this.setState({
             error: errorMessage,

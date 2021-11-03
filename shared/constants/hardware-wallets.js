@@ -1,5 +1,5 @@
 /**
- * Accounts can be instantiated from simple, HD or the three hardware wallet
+ * Accounts can be instantiated from simple, HD or the multiple hardware wallet
  * keyring types. Both simple and HD are treated as default but we do special
  * case accounts managed by a hardware wallet.
  */
