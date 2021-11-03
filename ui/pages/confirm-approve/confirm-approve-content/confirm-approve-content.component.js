@@ -147,8 +147,11 @@ export default class ConfirmApproveContent extends Component {
       tokenSymbol,
       origin,
       toAddress,
+      isContract,
     } = this.props;
-
+    const displayedAddress = isContract
+      ? `${t('contract')} (${addressSummary(toAddress)})`
+      : addressSummary(toAddress);
     return (
       <div className="flex-column">
         <div className="confirm-approve-content__small-text">
@@ -156,7 +159,7 @@ export default class ConfirmApproveContent extends Component {
         </div>
         <div className="flex-row">
           <div className="confirm-approve-content__label">
-            {t('amountWithColon')}
+            {t('approvedAmountWithColon')}
           </div>
           <div className="confirm-approve-content__medium-text">
             {`${Number(customTokenAmount || tokenAmount)} ${tokenSymbol}`}
@@ -164,10 +167,31 @@ export default class ConfirmApproveContent extends Component {
         </div>
         <div className="flex-row">
           <div className="confirm-approve-content__label">
-            {t('toWithColon')}
+            {t('grantedToWithColon')}
           </div>
           <div className="confirm-approve-content__medium-text">
-            {addressSummary(toAddress)}
+            {`${displayedAddress}`}
+          </div>
+          <div className="confirm-approve-content__medium-text">
+            <Button
+              type="link"
+              className="confirm-approve-content__copy-address"
+              onClick={() => {
+                this.setState({ copied: true });
+                this.copyTimeout = setTimeout(
+                  () => this.setState({ copied: false }),
+                  SECOND * 3,
+                );
+                copyToClipboard(toAddress);
+              }}
+              title={
+                this.state.copied
+                  ? t('copiedExclamation')
+                  : t('copyToClipboard')
+              }
+            >
+              <CopyIcon size={14} color="#6a737d" />
+            </Button>
           </div>
         </div>
       </div>
@@ -396,7 +420,7 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__card-wrapper">
           {this.renderApproveContentCard({
             symbol: <i className="fa fa-tag" />,
-            title: 'Transaction Fee',
+            title: t('transactionFee'),
             showEdit: true,
             onEditClick: showCustomizeGasModal,
             content: this.renderTransactionDetailsContent(),
@@ -468,7 +492,7 @@ export default class ConfirmApproveContent extends Component {
             <div className="confirm-approve-content__permission">
               {this.renderApproveContentCard({
                 symbol: <img src="./images/user-check.svg" alt="" />,
-                title: 'Permission',
+                title: t('permissionRequest'),
                 content: this.renderPermissionContent(),
                 showEdit: true,
                 onEditClick: () =>
