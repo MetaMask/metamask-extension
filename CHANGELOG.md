@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.4.1]
-### Uncategorized
-- Update build system lockdown parameter ([#12556](https://github.com/MetaMask/metamask-extension/pull/12556))
+### Changed
+- [#12515](https://github.com/MetaMask/metamask-extension/pull/12515): Updating 'Learn more' link location in dapp connection flow
 
 ## [10.4.0]
 ### Added
