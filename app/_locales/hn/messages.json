@@ -70,9 +70,6 @@
   "customGas": {
     "message": "अनुकूलित करें गैस"
   },
-  "customRPC": {
-    "message": "कस्टम RPC"
-  },
   "decimal": {
     "message": "दशमलव परिशुद्धता"
   },

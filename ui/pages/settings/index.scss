@@ -115,7 +115,7 @@
   &__close-button::after {
     content: '\00D7';
     font-size: 40px;
-    color: $dusty-gray;
+    color: $ui-4;
     cursor: pointer;
   }
 
@@ -189,6 +189,10 @@
     &--disabled {
       cursor: not-allowed;
       opacity: 0.5;
+    }
+
+    & .dialog {
+      margin-top: 10px;
     }
   }
 

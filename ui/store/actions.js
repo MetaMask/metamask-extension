@@ -1931,6 +1931,10 @@ export function setShowFiatConversionOnTestnetsPreference(value) {
   return setPreference('showFiatInTestnets', value);
 }
 
+export function setShowTestNetworks(value) {
+  return setPreference('showTestNetworks', value);
+}
+
 export function setAutoLockTimeLimit(value) {
   return setPreference('autoLockTimeLimit', value);
 }

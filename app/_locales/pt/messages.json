@@ -70,9 +70,6 @@
   "customGas": {
     "message": "Customizar Gas"
   },
-  "customRPC": {
-    "message": "Customizar RPC"
-  },
   "decimal": {
     "message": "Precisão em Decimais"
   },
