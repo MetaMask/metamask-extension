@@ -7,70 +7,67 @@ import {
   COLORS,
   TYPOGRAPHY,
   TEXT_ALIGN,
-  BLOCK_SIZES,
   JUSTIFY_CONTENT,
   FLEX_DIRECTION,
+  FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 export default function CollectiblesList({ onAddNFT }) {
   const collectibles = [];
   const t = useI18nContext();
-  const blockSizes = {
-    copy:
-      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-        ? BLOCK_SIZES.TWO_THIRDS
-        : BLOCK_SIZES.ONE_THIRD,
-    button:
-      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-        ? BLOCK_SIZES.HALF
-        : BLOCK_SIZES.ONE_FIFTH,
-  };
 
   return (
     <div className="collectibles-list">
       {collectibles.length > 0 ? (
         <span>{JSON.stringify(collectibles)}</span>
       ) : (
-        <Box padding={[4, 0, 4, 0]} flexDirection={FLEX_DIRECTION.COLUMN}>
+        <Box padding={[4, 0, 4, 0]}>
           <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
-            <img src="./images/diamond.png" />
+            <img src="./images/no-nfts.svg" />
           </Box>
-          <Typography
-            color={COLORS.UI3}
-            variant={TYPOGRAPHY.H3}
-            align={TEXT_ALIGN.CENTER}
+          <Box
+            marginTop={4}
+            marginBottom={12}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+            flexDirection={FLEX_DIRECTION.COLUMN}
           >
-            {t('noNFTs')}
-          </Typography>
-          <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
-            <Box width={blockSizes.copy}>
-              <Typography
-                color={COLORS.UI3}
-                variant={TYPOGRAPHY.H5}
-                align={TEXT_ALIGN.CENTER}
-              >
-                {t('noNFTsDetails')}
-              </Typography>
-            </Box>
-          </Box>
-          <Box marginTop={6} justifyContent={JUSTIFY_CONTENT.CENTER}>
-            <Box width={blockSizes.button}>
-              <Button type="primary" onClick={onAddNFT}>
-                {t('addNFT')}
-              </Button>
-            </Box>
-          </Box>
-          <Box marginTop={2}>
+            <Typography
+              color={COLORS.UI3}
+              variant={TYPOGRAPHY.H4}
+              align={TEXT_ALIGN.CENTER}
+              fontWeight={FONT_WEIGHT.BOLD}
+            >
+              {t('noNFTs')}
+            </Typography>
             <Button
-              href="https://community.metamask.io/"
-              target="_blank"
               type="link"
+              target="_blank"
               rel="noopener noreferrer"
+              href="https://metamask.zendesk.com/hc/en-us/articles/360058238591-NFT-tokens-in-MetaMask-wallet"
+              style={{ padding: 0, fontSize: '1rem' }}
             >
               {t('learnMore')}
+            </Button>
+          </Box>
+          <Box
+            marginBottom={4}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+            flexDirection={FLEX_DIRECTION.COLUMN}
+          >
+            <Typography
+              color={COLORS.UI3}
+              variant={TYPOGRAPHY.H5}
+              align={TEXT_ALIGN.CENTER}
+            >
+              {t('missingNFT')}
+            </Typography>
+            <Button
+              type="link"
+              onClick={onAddNFT}
+              style={{ padding: 0, fontSize: '1rem' }}
+            >
+              {t('addNFT')}
             </Button>
           </Box>
         </Box>
