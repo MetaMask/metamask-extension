@@ -8,7 +8,6 @@ import {
   getFetchParams,
   prepareToLeaveSwaps,
   getCurrentSmartTransactions,
-  getSwapsRefreshStates,
   getSelectedQuote,
   getTopQuote,
 } from '../../../ducks/swaps/swaps';
@@ -34,10 +33,10 @@ import {
   ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import {
-  fetchSmartTransactionsStatus,
   stopPollingForQuotes,
   cancelSmartTransaction,
 } from '../../../store/actions';
+
 import { SECOND } from '../../../../shared/constants/time';
 import SwapsFooter from '../swaps-footer';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
@@ -92,7 +91,6 @@ export default function SmartTransactionStatus() {
   const topQuote = useSelector(getTopQuote);
   const usedQuote = selectedQuote || topQuote;
   const currentSmartTransactions = useSelector(getCurrentSmartTransactions);
-  const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   let smartTransactionStatus = {};
   let latestSmartTransactionUuid;
 
@@ -145,22 +143,7 @@ export default function SmartTransactionStatus() {
 
   useEffect(() => {
     stxStatusPageLoadedEvent();
-    const intervalId = setInterval(() => {
-      if (isSmartTransactionPending && latestSmartTransactionUuid) {
-        dispatch(fetchSmartTransactionsStatus([latestSmartTransactionUuid]));
-      } else {
-        clearInterval(intervalId);
-      }
-    }, swapsRefreshRates.stxBatchStatusRefreshTime);
-    return () => clearInterval(intervalId);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    dispatch,
-    isSmartTransactionPending,
-    latestSmartTransactionUuid,
-    swapsRefreshRates.stxBatchStatusRefreshTime,
-  ]);
+  }, [stxStatusPageLoadedEvent]);
 
   useEffect(() => {
     let intervalId;

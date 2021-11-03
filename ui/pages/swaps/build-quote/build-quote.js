@@ -154,23 +154,16 @@ export default function BuildQuote({
     smartTransactionsOptInStatus !== undefined;
   const currentCurrency = useSelector(getCurrentCurrency);
 
-  const [
-    showSmartTransactionsOptInPopover,
-    setShowSmartTransactionsOptInPopover,
-  ] = useState(() => {
-    return smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
-  });
+  const showSmartTransactionsOptInPopover =
+    smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
 
   const onCloseSmartTransactionsOptInPopover = (e) => {
     e?.preventDefault();
     setSmartTransactionsOptInStatus(false);
-    setShowSmartTransactionsOptInPopover(false);
   };
 
-  const onEnableSmartTransactionsClick = () => {
+  const onEnableSmartTransactionsClick = () =>
     setSmartTransactionsOptInStatus(true);
-    setShowSmartTransactionsOptInPopover(false);
-  };
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,
