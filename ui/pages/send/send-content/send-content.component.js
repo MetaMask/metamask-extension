@@ -55,9 +55,7 @@ export default class SendContent extends Component {
     else if (getIsBalanceInsufficient)
       gasError = INSUFFICIENT_FUNDS_FOR_GAS_ERROR_KEY;
     const showHexData =
-      this.props.showHexData &&
-      asset.type !== ASSET_TYPES.NATIVE &&
-      asset.type !== ASSET_TYPES.TOKEN;
+      this.props.showHexData && asset.type !== ASSET_TYPES.TOKEN;
 
     return (
       <PageContainerContent>
