@@ -5,6 +5,10 @@
   width: 100%;
   font-style: normal;
 
+  &__warning {
+    padding: 0 24px 16px 24px;
+  }
+
   &__icon-display-content {
     display: flex;
     height: 51px;
