@@ -218,9 +218,11 @@ export default function SmartTransactionStatus() {
     ]);
     icon = <SuccessIcon />;
   } else if (
-    smartTransactionStatus.minedTx === 'cancelled' &&
-    smartTransactionStatus.cancellationReason &&
-    smartTransactionStatus.cancellationReason !== 'user_cancelled'
+    (smartTransactionStatus.minedTx === 'cancelled' &&
+      smartTransactionStatus.cancellationReason &&
+      smartTransactionStatus.cancellationReason !== 'user_cancelled') ||
+    (smartTransactionStatus.minedTx === 'not_mined' &&
+      smartTransactionStatus.cancellationReason === 'deadline_missed')
   ) {
     headerText = t('stxCancelled');
     description = t('stxCancelledDescription');
@@ -231,7 +233,6 @@ export default function SmartTransactionStatus() {
     description = t('stxUnknownDescription');
     icon = <UnknownIcon />;
   } else if (
-    smartTransactionStatus.minedTx === 'cancelled' &&
     smartTransactionStatus.cancellationReason &&
     smartTransactionStatus.cancellationReason === 'user_cancelled'
   ) {
