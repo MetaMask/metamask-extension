@@ -53,6 +53,10 @@ export default class PermissionPageContainerContent extends PureComponent {
           '$1',
           permissionName.replace(SNAP_PREFIX, ''),
         );
+      } else if (permissionName === 'snap_getBip44Entropy_461') {
+        description = `Allow the snap to manage keys for the Filecoin protocol.`;
+      } else if (permissionName === 'snap_getBip44Entropy_1') {
+        description = `Allow the snap to manage keys for the test networks.`;
       } else {
         description = permissionsDescriptions[keyablePermissionName];
       }
