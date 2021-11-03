@@ -28,7 +28,7 @@ export default function SendHeader({ data }) {
 
   const onClose = () => {
     dispatch(resetSendState());
-    if (data !== undefined) {
+    if (data) {
       history.push({
         pathname: CONFIRM_TRANSACTION_ROUTE,
         state: { currencyObject: data.currencyObject },
