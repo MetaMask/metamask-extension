@@ -924,6 +924,10 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.setDismissSeedBackUpReminder,
         this.preferencesController,
       ),
+      setUseAdvancedGasFee: nodeify(
+        preferencesController.setUseAdvancedGasFee,
+        preferencesController,
+      ),
 
       // AddressController
       setAddressBook: nodeify(

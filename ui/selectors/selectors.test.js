@@ -245,4 +245,8 @@ describe('Selectors', () => {
       },
     });
   });
+  it('#getUseAdvancedGasFee', () => {
+    const useAdvancedGasFee = selectors.getUseAdvancedGasFee(mockState);
+    expect(useAdvancedGasFee).toStrictEqual(false);
+  });
 });

@@ -2090,6 +2090,19 @@ export function setUseTokenDetection(val) {
   };
 }
 
+export function setUseAdvancedGasFee(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseAdvancedGasFee`);
+    background.setUseAdvancedGasFee(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
 export function setIpfsGateway(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());

@@ -266,4 +266,23 @@ describe('preferences controller', function () {
       );
     });
   });
+
+  describe('setUseAdvancedGasFee', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useAdvancedGasFee, false);
+    });
+
+    it('should set the useAdvancedGasFee property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useAdvancedGasFee,
+        false,
+      );
+      preferencesController.setUseAdvancedGasFee(true);
+      assert.equal(
+        preferencesController.store.getState().useAdvancedGasFee,
+        true,
+      );
+    });
+  });
 });

@@ -718,3 +718,11 @@ export function getNetworkSupportsSettingGasPrice(state) {
 export function getIsMultiLayerFeeNetwork(state) {
   return getIsOptimism(state);
 }
+/**
+ *  To get the useAdvancedGasFee flag to determine if teh advanced/custom gas fee has to be used as default values.
+ *  @param {*} state
+ *  @returns Boolean
+ */
+export function getUseAdvancedGasFee(state) {
+  return Boolean(state.metamask.useAdvancedGasFee);
+}
