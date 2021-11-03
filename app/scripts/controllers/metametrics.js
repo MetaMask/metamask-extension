@@ -292,6 +292,19 @@ export default class MetaMetricsController {
    * @returns {Promise<void>}
    */
   async trackEvent(payload, options) {
+    try {
+      await this._trackEvent(payload, options);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  /**
+   * @param {MetaMetricsEventPayload} payload - details of the event
+   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
+   * @returns {Promise<void>}
+   */
+  async _trackEvent(payload, options) {
     // event and category are required fields for all payloads
     if (!payload.event || !payload.category) {
       throw new Error(
