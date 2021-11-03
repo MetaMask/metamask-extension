@@ -33,7 +33,7 @@ export default class SendContent extends Component {
     noGasPrice: PropTypes.bool,
     networkOrAccountNotSupports1559: PropTypes.bool,
     getIsBalanceInsufficient: PropTypes.bool,
-    asset: PropTypes.string,
+    asset: PropTypes.object,
   };
 
   render() {
