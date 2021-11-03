@@ -10,7 +10,7 @@ export default {
   id: __filename,
 };
 
-export const Base = () => {
+export const DefaultStory = () => {
   const [checked, setChecked] = useState(false);
   const handleOnToggle = (e) => {
     action('onToggle')(e);
