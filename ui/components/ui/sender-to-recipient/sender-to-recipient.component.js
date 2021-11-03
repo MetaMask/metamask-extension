@@ -71,9 +71,7 @@ function SenderAddress({
         <div className="sender-to-recipient__name">
           {addressOnly ? (
             <span>
-              {`${t('from')}: ${
-                senderName || shortenAddress(checksummedSenderAddress)
-              }`}
+              {`${senderName || shortenAddress(checksummedSenderAddress)}`}
             </span>
           ) : (
             senderName
@@ -144,7 +142,6 @@ function RecipientWithAddress({
         onHidden={() => setAddressCopied(false)}
       >
         <div className="sender-to-recipient__name">
-          <span>{addressOnly ? `${t('to')}: ` : ''}</span>
           {addressOnly
             ? recipientNickname ||
               recipientEns ||

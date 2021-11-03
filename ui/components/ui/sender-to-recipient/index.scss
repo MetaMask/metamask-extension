@@ -7,7 +7,6 @@
   flex: 0 0 auto;
 
   &--default {
-    border-bottom: 1px solid $geyser;
     height: 42px;
 
     .sender-to-recipient {
@@ -28,6 +27,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        border: 1px solid #d8d8d8;
 
         &--sender {
           padding-right: 30px;
@@ -51,7 +51,7 @@
         align-items: center;
         justify-content: center;
 
-        [dir='rtl'] & {
+        [dir="rtl"] & {
           transform: rotate(180deg);
         }
       }
@@ -69,14 +69,14 @@
       }
 
       &__name {
-        @include H6;
+        @include H7;
 
         padding-left: 14px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
 
-        [dir='rtl'] & {
+        [dir="rtl"] & {
           /*rtl:ignore*/
           direction: ltr;
 
@@ -109,6 +109,7 @@
         cursor: pointer;
         min-width: 0;
         color: $dusty-gray;
+        border: 1px solid #d8d8d8;
       }
 
       &__tooltip-wrapper {
@@ -124,7 +125,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
 
-        [dir='rtl'] & {
+        [dir="rtl"] & {
           /*rtl:ignore*/
           direction: ltr;
 
@@ -145,7 +146,7 @@
         justify-content: center;
         align-items: center;
 
-        [dir='rtl'] & {
+        [dir="rtl"] & {
           transform: rotate(180deg);
         }
       }
@@ -164,6 +165,7 @@
         cursor: pointer;
         min-width: 0;
         color: $dusty-gray;
+        border: 1px solid #d8d8d8;
       }
 
       &__tooltip-wrapper {
@@ -180,7 +182,7 @@
         white-space: nowrap;
         margin-inline-start: 8px;
 
-        [dir='rtl'] & {
+        [dir="rtl"] & {
           /*rtl:ignore*/
           direction: ltr;
 
@@ -201,7 +203,7 @@
         justify-content: center;
         align-items: center;
 
-        [dir='rtl'] & {
+        [dir="rtl"] & {
           transform: rotate(180deg);
         }
       }
