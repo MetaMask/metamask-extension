@@ -41,6 +41,7 @@ export default class ConfirmPageContainer extends Component {
     contentComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
+    hasSimulationError: PropTypes.bool,
     dataComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
     identiconAddress: PropTypes.string,
@@ -87,6 +88,7 @@ export default class ConfirmPageContainer extends Component {
       disabled,
       errorKey,
       errorMessage,
+      hasSimulationError,
       contentComponent,
       action,
       title,
@@ -189,6 +191,7 @@ export default class ConfirmPageContainer extends Component {
               dataComponent={dataComponent}
               errorMessage={errorMessage}
               errorKey={errorKey}
+              hasSimulationError={hasSimulationError}
               identiconAddress={identiconAddress}
               nonce={nonce}
               warning={warning}
