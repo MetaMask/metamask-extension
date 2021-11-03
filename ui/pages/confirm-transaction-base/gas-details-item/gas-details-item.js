@@ -5,12 +5,12 @@ import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+
 import Box from '../../../components/ui/box';
 import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
 import I18nValue from '../../../components/ui/i18n-value';
 import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
-import Typography from '../../../components/ui/typography/typography';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 
@@ -42,15 +42,13 @@ const GasDetailItem = ({
           <InfoTooltip
             contentText={
               <>
-                <Typography>
+                <p>
                   {t('transactionDetailGasTooltipIntro', [
                     isMainnet ? t('networkNameEthereum') : '',
                   ])}
-                </Typography>
-                <Typography>
-                  {t('transactionDetailGasTooltipExplanation')}
-                </Typography>
-                <Typography>
+                </p>
+                <p>{t('transactionDetailGasTooltipExplanation')}</p>
+                <p>
                   <a
                     href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
                     target="_blank"
@@ -58,7 +56,7 @@ const GasDetailItem = ({
                   >
                     {t('transactionDetailGasTooltipConversion')}
                   </a>
-                </Typography>
+                </p>
               </>
             }
             position="top"
