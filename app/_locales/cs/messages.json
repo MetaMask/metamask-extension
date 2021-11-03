@@ -88,9 +88,6 @@
   "customGas": {
     "message": "Nastavit palivo"
   },
-  "customRPC": {
-    "message": "Vlastní RPC"
-  },
   "customToken": {
     "message": "Vlastní token"
   },

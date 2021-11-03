@@ -40,21 +40,21 @@ describe('MetaMask', function () {
         await driver.switchToWindow(windowHandles[0]);
 
         await driver.clickElement('.network-display');
-        await driver.clickElement({ text: 'Ropsten', tag: 'span' });
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
 
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
         const switchedNetworkDiv = await driver.waitForSelector({
           css: '#network',
-          text: '3',
+          text: '1',
         });
         const switchedChainIdDiv = await driver.waitForSelector({
           css: '#chainId',
-          text: '0x3',
+          text: '0x1',
         });
         const accountsDiv = await driver.findElement('#accounts');
 
-        assert.equal(await switchedNetworkDiv.getText(), '3');
-        assert.equal(await switchedChainIdDiv.getText(), '0x3');
+        assert.equal(await switchedNetworkDiv.getText(), '1');
+        assert.equal(await switchedChainIdDiv.getText(), '0x1');
         assert.equal(
           await accountsDiv.getText(),
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',

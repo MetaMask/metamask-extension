@@ -130,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "Permitir que esta extensão externa:"
   },
-  "allowOriginSpendToken": {
-    "message": "Permitir que $1 gaste seus(suas) $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Permitir que este site:"
   },
@@ -143,9 +139,6 @@
   },
   "amount": {
     "message": "Valor"
-  },
-  "amountWithColon": {
-    "message": "Valor:"
   },
   "appDescription": {
     "message": "Uma carteira do Ethereum no seu navegador",
@@ -473,9 +466,6 @@
   },
   "customGasSubTitle": {
     "message": "Aumentar a taxa pode diminuir o tempo de processamento, mas não é garantia."
-  },
-  "customRPC": {
-    "message": "RPC personalizada"
   },
   "customSpendLimit": {
     "message": "Limite de gastos personalizado"
@@ -1004,12 +994,6 @@
   "ledgerAccountRestriction": {
     "message": "Você precisa usar sua última conta antes de adicionar uma nova."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Usar Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "A nova ponte do Ledger Live permite utilizar seu Ledger mais facilmente.  Disponível somente no Chrome."
-  },
   "ledgerLiveApp": {
     "message": "Aplicativo Ledger Live"
   },
@@ -1198,9 +1182,6 @@
   },
   "newContract": {
     "message": "Novo contrato"
-  },
-  "newNetwork": {
-    "message": "Nova rede"
   },
   "newPassword": {
     "message": "Nova senha (mín. 8 caract.)"
@@ -2207,9 +2188,6 @@
     "message": "Até: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "Até:"
-  },
   "token": {
     "message": "Token"
   },
@@ -2286,10 +2264,6 @@
   "troubleTokenBalances": {
     "message": "Tivemos dificuldade para carregar os saldos do seu token. Você pode exibi-los ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "Você confia neste site? Ao conceder esta permissão, você está permitindo que $1 saque seus(suas) $2 e automatize as transações por você.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Tente novamente"

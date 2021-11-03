@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
+import CollectiblesList from '../../components/app/collectibles-list';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
@@ -15,6 +16,9 @@ import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
+import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import Typography from '../../components/ui/typography/typography';
+import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 
 import { isBeta } from '../../helpers/utils/build-types';
 
@@ -84,6 +88,8 @@ export default class Home extends PureComponent {
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
     seedPhraseBackedUp: PropTypes.bool.isRequired,
+    newNetworkAdded: PropTypes.string,
+    setNewNetworkAdded: PropTypes.func.isRequired,
   };
 
   state = {
@@ -199,10 +205,36 @@ export default class Home extends PureComponent {
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
       infuraBlocked,
+      newNetworkAdded,
+      setNewNetworkAdded,
     } = this.props;
-
     return (
       <MultipleNotifications>
+        {newNetworkAdded ? (
+          <ActionableMessage
+            type="info"
+            className="home__new-network-notification"
+            message={
+              <div className="home__new-network-notification-message">
+                <img
+                  src="./images/check_circle.svg"
+                  className="home__new-network-notification-message--image"
+                />
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                >
+                  {this.context.t('newNetworkAdded', [newNetworkAdded])}
+                </Typography>
+                <button
+                  className="fas fa-times home__close"
+                  title={t('close')}
+                  onClick={() => setNewNetworkAdded('')}
+                />
+              </div>
+            }
+          />
+        ) : null}
         {shouldShowWeb3ShimUsageNotification ? (
           <HomeNotification
             descriptionText={t('web3ShimUsageNotification', [
@@ -397,6 +429,20 @@ export default class Home extends PureComponent {
                   }
                 />
               </Tab>
+              {process.env.COLLECTIBLES_V1 ? (
+                <Tab
+                  activeClassName="home__tab--active"
+                  className="home__tab"
+                  data-testid="home__nfts-tab"
+                  name={t('nfts')}
+                >
+                  <CollectiblesList
+                    onAddNFT={() => {
+                      console.log('Added NFT');
+                    }}
+                  />
+                </Tab>
+              ) : null}
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"

@@ -4,6 +4,7 @@ import SenderToRecipient from '../../ui/sender-to-recipient';
 import { PageContainerFooter } from '../../ui/page-container';
 import EditGasPopover from '../edit-gas-popover';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import ErrorMessage from '../../ui/error-message';
 import Dialog from '../../ui/dialog';
 import {
   ConfirmPageContainerHeader,
@@ -124,6 +125,9 @@ export default class ConfirmPageContainer extends Component {
     const showAddToAddressDialog =
       !contact.name && toAddress && !isOwnedAccount && !hideSenderToRecipient;
 
+    const shouldDisplayWarning =
+      contentComponent && disabled && (errorKey || errorMessage);
+
     return (
       <div className="page-container">
         <ConfirmPageContainerNavigation
@@ -191,6 +195,11 @@ export default class ConfirmPageContainer extends Component {
             origin={origin}
             ethGasPriceWarning={ethGasPriceWarning}
           />
+        )}
+        {shouldDisplayWarning && (
+          <div className="confirm-approve-content__warning">
+            <ErrorMessage errorKey={errorKey} />
+          </div>
         )}
         {contentComponent && (
           <PageContainerFooter

@@ -12,7 +12,9 @@ import {
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  TRANSACTION_ENVELOPE_TYPES,
 } from '../../../../shared/constants/transaction';
+
 import { SECOND } from '../../../../shared/constants/time';
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
@@ -544,7 +546,7 @@ describe('Transaction Controller', function () {
           txParams: {
             to: VALID_ADDRESS,
             from: VALID_ADDRESS_TWO,
-            type: '0x0',
+            type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
           },
           history: [{}],
         },
@@ -554,7 +556,7 @@ describe('Transaction Controller', function () {
         txParams: {
           from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
           to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
-          type: '0x0',
+          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
         },
         history: [{}],
       };

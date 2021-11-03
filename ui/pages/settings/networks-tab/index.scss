@@ -1,3 +1,5 @@
+@import 'network-form/index.scss';
+
 .networks-tab {
   &__content {
     margin-top: 24px;
@@ -86,6 +88,7 @@
     @include H6;
 
     color: #000;
+    font-weight: bold;
   }
 
   &__network-form-label-tooltip {

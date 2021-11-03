@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Meningkatkan fi mungkin akan mengurangkan masa pemprosesan, tetapi ia tidak dijamin."
   },
-  "customRPC": {
-    "message": "RPC Tersuai"
-  },
   "customToken": {
     "message": "Token Tersuai"
   },
@@ -602,9 +599,6 @@
   },
   "newContract": {
     "message": "Kontrak Baru"
-  },
-  "newNetwork": {
-    "message": "Rangkaian Baru"
   },
   "newPassword": {
     "message": "Kata Laluan Baru (min 8 aks)"

@@ -103,9 +103,6 @@
   "customGas": {
     "message": "எரிவாயுவைத் தனிப்பயனாக்குங்கள்"
   },
-  "customRPC": {
-    "message": "விருப்ப RPC ஐ"
-  },
   "customToken": {
     "message": "தனிப்பயன் டோக்கன்"
   },

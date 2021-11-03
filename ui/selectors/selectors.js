@@ -1,14 +1,16 @@
-import { stripHexPrefix } from 'ethereumjs-util';
 import { createSelector } from 'reselect';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   MAINNET_CHAIN_ID,
-  BSC_CHAIN_ID,
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/network';
-import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
+import {
+  KEYRING_TYPES,
+  WEBHID_CONNECTED_STATUSES,
+  LEDGER_TRANSPORT_TYPES,
+} from '../../shared/constants/hardware-wallets';
 
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -36,7 +38,11 @@ import {
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
+  getLedgerTransportType,
+  isAddressLedger,
+  findKeyringForAddress,
 } from '../ducks/metamask/metamask';
+import { getLedgerWebHidConnectedStatus } from '../ducks/app/app';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -77,14 +83,7 @@ export function getCurrentKeyring(state) {
     return null;
   }
 
-  const simpleAddress = stripHexPrefix(identity.address).toLowerCase();
-
-  const keyring = state.metamask.keyrings.find((kr) => {
-    return (
-      kr.accounts.includes(simpleAddress) ||
-      kr.accounts.includes(identity.address)
-    );
-  });
+  const keyring = findKeyringForAddress(state, identity.address);
 
   return keyring;
 }
@@ -424,6 +423,11 @@ export function getPreferences({ metamask }) {
   return metamask.preferences;
 }
 
+export function getShowTestNetworks(state) {
+  const { showTestNetworks } = getPreferences(state);
+  return Boolean(showTestNetworks);
+}
+
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
   const conversionRate = getConversionRate(state);
@@ -571,18 +575,15 @@ export function getShowWhatsNewPopup(state) {
  * @param {Object} state
  * @returns {Object}
  */
-function getAllowedNotificationIds(state) {
-  const currentKeyring = getCurrentKeyring(state);
-  const currentKeyringIsLedger = currentKeyring?.type === KEYRING_TYPES.LEDGER;
-
+function getAllowedNotificationIds() {
   return {
-    1: true,
-    2: true,
-    3: true,
-    4: getCurrentChainId(state) === BSC_CHAIN_ID,
-    5: true,
-    6: currentKeyringIsLedger,
-    7: currentKeyringIsLedger,
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+    5: false,
+    6: false,
+    7: false,
   };
 }
 
@@ -645,4 +646,26 @@ export function getUseTokenDetection(state) {
  */
 export function getTokenList(state) {
   return state.metamask.tokenList;
+}
+
+export function doesAddressRequireLedgerHidConnection(state, address) {
+  const addressIsLedger = isAddressLedger(state, address);
+  const transportTypePreferenceIsWebHID =
+    getLedgerTransportType(state) === LEDGER_TRANSPORT_TYPES.WEBHID;
+  const webHidIsNotConnected =
+    getLedgerWebHidConnectedStatus(state) !==
+    WEBHID_CONNECTED_STATUSES.CONNECTED;
+
+  return (
+    addressIsLedger && transportTypePreferenceIsWebHID && webHidIsNotConnected
+  );
+}
+
+/**
+ * To retrieve the name of the new Network added using add network form
+ * @param {*} state
+ * @returns string
+ */
+export function getNewNetworkAdded(state) {
+  return state.appState.newNetworkAdded;
 }

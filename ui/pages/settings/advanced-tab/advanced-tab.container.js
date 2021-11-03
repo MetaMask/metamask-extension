@@ -6,6 +6,7 @@ import {
   setFeatureFlag,
   showModal,
   setShowFiatConversionOnTestnetsPreference,
+  setShowTestNetworks,
   setAutoLockTimeLimit,
   setThreeBoxSyncingPermission,
   turnThreeBoxSyncingOnAndInitialize,
@@ -15,6 +16,7 @@ import {
   setDismissSeedBackUpReminder,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
+import { doesUserHaveALedgerAccount } from '../../../ducks/metamask/metamask';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -28,23 +30,31 @@ export const mapStateToProps = (state) => {
     threeBoxDisabled,
     useNonceField,
     ipfsGateway,
-    useLedgerLive,
+    ledgerTransportType,
     dismissSeedBackUpReminder,
   } = metamask;
-  const { showFiatInTestnets, autoLockTimeLimit } = getPreferences(state);
+  const {
+    showFiatInTestnets,
+    showTestNetworks,
+    autoLockTimeLimit,
+  } = getPreferences(state);
+
+  const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
 
   return {
     warning,
     sendHexData,
     advancedInlineGas,
     showFiatInTestnets,
+    showTestNetworks,
     autoLockTimeLimit,
     threeBoxSyncingAllowed,
     threeBoxDisabled,
     useNonceField,
     ipfsGateway,
-    useLedgerLive,
+    ledgerTransportType,
     dismissSeedBackUpReminder,
+    userHasALedgerAccount,
   };
 };
 
@@ -60,6 +70,9 @@ export const mapDispatchToProps = (dispatch) => {
     setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value));
+    },
+    setShowTestNetworks: (value) => {
+      return dispatch(setShowTestNetworks(value));
     },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));

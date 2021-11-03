@@ -251,9 +251,6 @@
   "customGasSubTitle": {
     "message": "Ada iliyoongezeka inaweza kupunguza muda wa uchakataji, lakini haihakikishwi."
   },
-  "customRPC": {
-    "message": "RPC Maalumu"
-  },
   "customToken": {
     "message": "Kianzio Maalumu"
   },
@@ -600,9 +597,6 @@
   },
   "newContract": {
     "message": "Mkataba Mpya"
-  },
-  "newNetwork": {
-    "message": "Mtandao Mpya"
   },
   "newPassword": {
     "message": "Nenosiri Jipya (kiwango cha chini herufi 8)"

@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "اضافه نمودن فیس ممکن زمان پروسس را کاهش دهد، اما تضمین نمیشود."
   },
-  "customRPC": {
-    "message": "RPC رایج"
-  },
   "customToken": {
     "message": "رمزیاب دلخواه"
   },
@@ -622,9 +619,6 @@
   },
   "newContract": {
     "message": "قرارداد جدید"
-  },
-  "newNetwork": {
-    "message": "شبکه جدید"
   },
   "newPassword": {
     "message": "رمز عبور جدید (حداقل 8 حرف)"

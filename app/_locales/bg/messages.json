@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Увеличаването на таксата може да намали времето за обработка, но това не е гарантирано."
   },
-  "customRPC": {
-    "message": "RPC по избор"
-  },
   "customToken": {
     "message": "Персонализиран маркер"
   },
@@ -618,9 +615,6 @@
   },
   "newContract": {
     "message": "Нов договор"
-  },
-  "newNetwork": {
-    "message": "Нова мрежа"
   },
   "newPassword": {
     "message": "Нова парола (мин. 8 символа)"

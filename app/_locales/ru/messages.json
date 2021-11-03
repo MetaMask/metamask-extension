@@ -130,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "Разрешить этому внешнему расширению:"
   },
-  "allowOriginSpendToken": {
-    "message": "Разрешить $1 потратить ваши $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Разрешить этому сайту:"
   },
@@ -143,9 +139,6 @@
   },
   "amount": {
     "message": "Сумма"
-  },
-  "amountWithColon": {
-    "message": "Сумма:"
   },
   "appDescription": {
     "message": "Кошелек Ethereum в вашем браузере",
@@ -473,9 +466,6 @@
   },
   "customGasSubTitle": {
     "message": "Увеличение комиссии может сократить время обработки, но это не гарантируется."
-  },
-  "customRPC": {
-    "message": "Пользовательский RPC"
   },
   "customSpendLimit": {
     "message": "Пользовательский предел расходов"
@@ -1004,12 +994,6 @@
   "ledgerAccountRestriction": {
     "message": "Вам необходимо использовать свой последний счет, прежде чем вы сможете добавить новый."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Использовать Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "Новое решение Ledger Live Bridge упрощает использование Ledger.  Доступно только в Chrome."
-  },
   "ledgerLiveApp": {
     "message": "Приложение Ledger Live"
   },
@@ -1198,9 +1182,6 @@
   },
   "newContract": {
     "message": "Новый контракт"
-  },
-  "newNetwork": {
-    "message": "Новая сеть"
   },
   "newPassword": {
     "message": "Новый пароль (мин.8 знаков)"
@@ -2207,9 +2188,6 @@
     "message": "Адресат $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "Адресат"
-  },
   "token": {
     "message": "Токен"
   },
@@ -2286,10 +2264,6 @@
   "troubleTokenBalances": {
     "message": "У нас возникли проблемы с загрузкой вашего баланса токенов. Вы можете просмотреть их ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "Вы доверяете этому сайту? Предоставляя это разрешение, вы разрешаете $1 вывести ваши $2 и автоматизировать транзакции для вас.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Попробуйте еще раз"

@@ -1258,7 +1258,6 @@ const state = {
       ledger: "m/44'/60'/0'/0/0",
     },
     networksTabSelectedRpcUrl: '',
-    networksTabIsInAddMode: false,
     loadingMethodData: false,
     show3BoxModalAfterImport: false,
     threeBoxLastUpdated: null,
