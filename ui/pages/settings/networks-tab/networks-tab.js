@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -18,46 +18,16 @@ import {
 } from '../../../selectors';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
-import NetworkTabContent from './network-tab-content';
-import NetworkForm from './network-form';
+import NetworksTabContent from './networks-tab-content';
+import NetworksForm from './networks-form';
+import NetworksFormSubheader from './networks-form-subheader';
 
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
 }));
 
-const SubHeader = ({ addNewNetwork }) => {
-  const t = useI18nContext();
-  const history = useHistory();
-  return addNewNetwork ? (
-    <div className="networks-tab__subheader">
-      <span className="networks-tab__sub-header-text">{t('networks')}</span>
-      <span>{'  >  '}</span>
-      <div className="networks-tab__subheader--break">{t('addANetwork')}</div>
-    </div>
-  ) : (
-    <div className="settings-page__sub-header">
-      <span className="settings-page__sub-header-text">{t('networks')}</span>
-      <div className="networks-tab__add-network-header-button-wrapper">
-        <Button
-          type="primary"
-          onClick={(event) => {
-            event.preventDefault();
-            history.push(ADD_NETWORK_ROUTE);
-          }}
-        >
-          {t('addANetwork')}
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-SubHeader.propTypes = {
-  addNewNetwork: PropTypes.bool.isRequired,
-};
-
-const NetworkTab = ({ addNewNetwork }) => {
+const NetworksTab = ({ addNewNetwork }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { pathname } = useLocation();
@@ -114,16 +84,18 @@ const NetworkTab = ({ addNewNetwork }) => {
 
   return (
     <div className="networks-tab__body">
-      {isFullScreen ? <SubHeader addNewNetwork={addNewNetwork} /> : null}
+      {isFullScreen ? (
+        <NetworksFormSubheader addNewNetwork={addNewNetwork} />
+      ) : null}
       <div className="networks-tab__content">
         {addNewNetwork ? (
-          <NetworkForm
+          <NetworksForm
             networksToRender={networksToRender}
             addNewNetwork={addNewNetwork}
           />
         ) : (
           <>
-            <NetworkTabContent
+            <NetworksTabContent
               networkDefaultedToProvider={networkDefaultedToProvider}
               networkIsSelected={networkIsSelected}
               networksToRender={networksToRender}
@@ -151,7 +123,7 @@ const NetworkTab = ({ addNewNetwork }) => {
   );
 };
 
-NetworkTab.propTypes = {
+NetworksTab.propTypes = {
   addNewNetwork: PropTypes.bool,
 };
-export default NetworkTab;
+export default NetworksTab;

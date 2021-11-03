@@ -3,11 +3,11 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
-import NetworkForm from '.';
+import NetworksForm from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({ metamask: {} });
-  return renderWithProvider(<NetworkForm {...props} />, store);
+  return renderWithProvider(<NetworksForm {...props} />, store);
 };
 
 const defaultNetworks = defaultNetworksData.map((network) => ({

@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import NetworkForm from '../network-form';
-import NetworkList from '../network-list';
+import NetworksForm from '../networks-form';
+import NetworksList from '../networks-list';
 import { getProvider } from '../../../../selectors';
 
-const NetworkTabContent = ({
+const NetworksTabContent = ({
   networkDefaultedToProvider,
   networkIsSelected,
   networksToRender,
@@ -16,14 +16,14 @@ const NetworkTabContent = ({
 
   return (
     <>
-      <NetworkList
+      <NetworksList
         networkDefaultedToProvider={networkDefaultedToProvider}
         networkIsSelected={networkIsSelected}
         networksToRender={networksToRender}
         selectedRpcUrl={selectedNetwork.rpcUrl}
       />
       {shouldRenderNetworkForm ? (
-        <NetworkForm
+        <NetworksForm
           isCurrentRpcTarget={provider.rpcUrl === selectedNetwork.rpcUrl}
           networksToRender={networksToRender}
           selectedNetwork={selectedNetwork}
@@ -32,7 +32,7 @@ const NetworkTabContent = ({
     </>
   );
 };
-NetworkTabContent.propTypes = {
+NetworksTabContent.propTypes = {
   networkDefaultedToProvider: PropTypes.bool,
   networkIsSelected: PropTypes.bool,
   networksToRender: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -40,4 +40,4 @@ NetworkTabContent.propTypes = {
   shouldRenderNetworkForm: PropTypes.bool.isRequired,
 };
 
-export default NetworkTabContent;
+export default NetworksTabContent;

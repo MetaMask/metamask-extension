@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import NetworkListItem from '../network-list-item';
+import NetworksListItem from '../networks-list-item';
 
-const NetworkList = ({
+const NetworksList = ({
   networkIsSelected,
   networksToRender,
   networkDefaultedToProvider,
@@ -17,7 +17,7 @@ const NetworkList = ({
       })}
     >
       {networksToRender.map((network) => (
-        <NetworkListItem
+        <NetworksListItem
           key={`settings-network-list:${network.rpcUrl}`}
           network={network}
           networkIsSelected={networkIsSelected}
@@ -28,11 +28,11 @@ const NetworkList = ({
   );
 };
 
-NetworkList.propTypes = {
+NetworksList.propTypes = {
   networkDefaultedToProvider: PropTypes.bool,
   networkIsSelected: PropTypes.bool,
   networksToRender: PropTypes.arrayOf(PropTypes.object).isRequired,
   selectedRpcUrl: PropTypes.string,
 };
 
-export default NetworkList;
+export default NetworksList;

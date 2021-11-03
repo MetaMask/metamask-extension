@@ -1,1 +1,1 @@
-export { default } from './network-tab';
+export { default } from './networks-tab';

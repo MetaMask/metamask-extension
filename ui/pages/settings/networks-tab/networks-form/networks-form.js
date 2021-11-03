@@ -64,7 +64,7 @@ const isValidWhenAppended = (url) => {
   return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/u);
 };
 
-const NetworkForm = ({
+const NetworksForm = ({
   addNewNetwork,
   isCurrentRpcTarget,
   networksToRender,
@@ -561,15 +561,15 @@ const NetworkForm = ({
   );
 };
 
-NetworkForm.propTypes = {
+NetworksForm.propTypes = {
   addNewNetwork: PropTypes.bool,
   isCurrentRpcTarget: PropTypes.bool,
   networksToRender: PropTypes.array.isRequired,
   selectedNetwork: PropTypes.object,
 };
 
-NetworkForm.defaultProps = {
+NetworksForm.defaultProps = {
   selectedNetwork: {},
 };
 
-export default NetworkForm;
+export default NetworksForm;

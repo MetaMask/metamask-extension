@@ -14,7 +14,7 @@ import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { getProvider } from '../../../../selectors';
 
-const NetworkListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
+const NetworksListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -73,10 +73,10 @@ const NetworkListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
   );
 };
 
-NetworkListItem.propTypes = {
+NetworksListItem.propTypes = {
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
   selectedRpcUrl: PropTypes.string,
 };
 
-export default NetworkListItem;
+export default NetworksListItem;
