@@ -65,7 +65,7 @@ const GasDetailItem = ({
       }
       detailTitleColor={COLORS.BLACK}
       detailText={
-        <div className="confirm-page-container-content__currency-container">
+        <div className="gas-details-item__currency-container">
           <HeartBeat />
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
@@ -75,7 +75,7 @@ const GasDetailItem = ({
         </div>
       }
       detailTotal={
-        <div className="confirm-page-container-content__currency-container">
+        <div className="gas-details-item__currency-container">
           <HeartBeat />
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
@@ -86,14 +86,14 @@ const GasDetailItem = ({
       }
       subText={t('editGasSubTextFee', [
         <Box key="editGasSubTextFeeLabel" display="inline-flex">
-          <Box marginRight={1}>
+          <Box marginRight={1} classNamee="gas-details-item__gasFeeLabel">
             <b>
               <I18nValue messageKey="editGasSubTextFeeLabel" />
             </b>
           </Box>
           <div
             key="editGasSubTextFeeValue"
-            className="confirm-page-container-content__currency-container"
+            className="gas-details-item__currency-container"
           >
             <HeartBeat />
             <UserPreferencedCurrencyDisplay

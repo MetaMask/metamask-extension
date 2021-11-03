@@ -6,4 +6,12 @@
     color: $Grey-500;
     line-height: inherit;
   }
+
+  &__gasFeeLabel {
+    font-weight: bold;
+  }
+
+  &__currency-container {
+    position: relative;
+  }
 }
