@@ -1,17 +1,25 @@
+///: BEGIN:ONLY_INCLUDE_IN(beta)
 import betaJson from '../../../app/build-types/beta/beta-mascot.json';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import flaskJson from '../../../app/build-types/flask/flask-mascot.json';
+///: END:ONLY_INCLUDE_IN
 
 const assetList = {
   main: {
     // Will use default provided by the @metamask/logo library
     foxMeshJson: undefined,
   },
+  ///: BEGIN:ONLY_INCLUDE_IN(beta)
   beta: {
     foxMeshJson: betaJson,
   },
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   flask: {
     foxMeshJson: flaskJson,
   },
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export function isBeta() {
@@ -26,8 +34,8 @@ export function getBuildSpecificAsset(assetName) {
     !assetList[buildType] ||
     !Object.keys(assetList[buildType]).includes(assetName)
   ) {
-    console.warn(
-      `Cannot find asset for build ${buildType}: ${assetName}, returning main build asset`,
+    console.error(
+      `Cannot find asset "${assetName}" for build "${buildType}", returning main build asset.`,
     );
     return assetList.main[assetName];
   }

@@ -10,4 +10,12 @@
   &__gas-fee-warning {
     color: $secondary-1;
   }
+
+  &__gasFeeLabel {
+    font-weight: bold;
+  }
+
+  &__currency-container {
+    position: relative;
+  }
 }

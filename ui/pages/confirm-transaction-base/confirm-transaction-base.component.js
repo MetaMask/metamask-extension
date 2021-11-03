@@ -51,6 +51,7 @@ import {
 
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
+
 import GasDetailsItem from './gas-details-item';
 import LowGasWarning from './low-gas-warning';
 
@@ -516,7 +517,7 @@ export default class ConfirmTransactionBase extends Component {
                       <Typography
                         variant={TYPOGRAPHY.H7}
                         fontStyle={FONT_STYLE.ITALIC}
-                        color={COLORS.GRAY}
+                        color={COLORS.UI4}
                       >
                         {t('transactionDetailDappGasMoreInfo')}
                       </Typography>

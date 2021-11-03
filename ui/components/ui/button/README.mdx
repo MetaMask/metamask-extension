@@ -1,0 +1,59 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import Button from '.';
+
+# Button
+
+Buttons communicate actions that users can take.
+
+<Canvas>
+  <Story id="ui-components-ui-button-button-stories-js--default-story" />
+</Canvas>
+
+## Component API
+
+<ArgsTable of={Button} />
+
+## Usage
+
+The following describes the props and example usage for this component.
+
+### Type
+
+By changing the `type` prop you can use different styles of the button.
+
+| type              | Description                                                                                           |
+| ----------------- | ----------------------------------------------------------------------------------------------------- |
+| `default`         | default style of the button                                                                           |
+| `primary`         | the principle call to action on the page                                                              |
+| `secondary`       | secondary actions on each page                                                                        |
+| `warning`         | a warning action in the page                                                                          |
+| `danger`          | a negative action (such as Delete) on the page                                                        |
+| `danger--primary` | a negative principle call to action (such as Delete) on the page                                      |
+| `link`            | an optional action or navigation action out of the app changes root html tag from `<button>` to `<a>` |
+
+<Canvas>
+  <Story id="ui-components-ui-button-button-stories-js--types" />
+</Canvas>
+
+### Link Type
+
+By changing the `type` to `"link"` the root html element of the button changes from `<button>` to `<a>`.
+
+Rendered html
+
+```html
+<a class="button btn-link" role="button" tabindex="0">Click me</a>
+```
+
+<Canvas>
+  <Story id="ui-components-ui-button-button-stories-js--link-type" />
+</Canvas>
+
+### With Icon
+
+Pass an icon component to `icon` prop to add an icon.
+
+<Canvas>
+  <Story id="ui-components-ui-button-button-stories-js--with-icon" />
+</Canvas>
