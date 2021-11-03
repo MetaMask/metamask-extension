@@ -32,6 +32,12 @@
     }
   }
 
+  @each $size in design-system.$font-size {
+    &--size-#{$size} {
+      font-size: $size;
+    }
+  }
+
   @each $alignment in design-system.$text-align {
     &--align-#{$alignment} {
       text-align: $alignment;

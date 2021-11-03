@@ -201,6 +201,14 @@ describe('build/transforms/remove-fenced-code', () => {
           ),
         ).toStrictEqual(testData.validOutputs[buildType]);
 
+        expect(
+          removeFencedCode(
+            mockFileName,
+            buildType,
+            testData.validInputs.extraContentWithFences,
+          ),
+        ).toStrictEqual(testData.validOutputsWithExtraContent[buildType]);
+
         // Ensure that the minimal input template is in fact valid
         const minimalInput = getMinimalFencedCode(buildType);
         expect(
@@ -216,6 +224,17 @@ describe('build/transforms/remove-fenced-code', () => {
             testData.validInputs.withoutFences,
           ),
         ).toStrictEqual([testData.validInputs.withoutFences, false]);
+
+        expect(
+          removeFencedCode(
+            mockFileName,
+            buildType,
+            testData.validInputs.extraContentWithoutFences,
+          ),
+        ).toStrictEqual([
+          testData.validInputs.extraContentWithoutFences,
+          false,
+        ]);
       });
     });
 
@@ -611,6 +630,43 @@ Conditionally_Included
        ///: END:ONLY_INCLUDE_IN
 `,
 
+      extraContentWithFences: `
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+  Always_Included
+Always_Included
+   Always_Included
+Always_Included
+  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+  Conditionally_Included
+
+  Conditionally_Included
+  Conditionally_Included
+  ///: END:ONLY_INCLUDE_IN
+Always_Included
+
+Always_Included
+   Always_Included
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+
+  Conditionally_Included
+    Conditionally_Included
+       ///: END:ONLY_INCLUDE_IN
+Always_Included
+   Always_Included
+Always_Included
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+  Conditionally_Included
+Conditionally_Included
+
+       ///: END:ONLY_INCLUDE_IN
+    Always_Included
+      Always_Included
+Always_Included
+`,
+
       withoutFences: `
   Always_Included
 Always_Included
@@ -624,6 +680,24 @@ Always_Included
    Always_Included
 Always_Included
 
+`,
+
+      extraContentWithoutFences: `
+  Always_Included
+Always_Included
+   Always_Included
+Always_Included
+Always_Included
+
+Always_Included
+   Always_Included
+Always_Included
+   Always_Included
+Always_Included
+
+    Always_Included
+      Always_Included
+Always_Included
 `,
     },
 
@@ -655,9 +729,50 @@ Always_Included
         true,
       ],
     },
+
+    validOutputsWithExtraContent: {
+      beta: [
+        `
+///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+Conditionally_Included
+///: END:ONLY_INCLUDE_IN
+  Always_Included
+Always_Included
+   Always_Included
+Always_Included
+  ///: BEGIN:ONLY_INCLUDE_IN(flask,beta)
+  Conditionally_Included
+
+  Conditionally_Included
+  Conditionally_Included
+  ///: END:ONLY_INCLUDE_IN
+Always_Included
+
+Always_Included
+   Always_Included
+Always_Included
+   Always_Included
+Always_Included
+
+    Always_Included
+      Always_Included
+Always_Included
+`,
+        true,
+      ],
+    },
   };
 
   data.validOutputs.flask = [data.validInputs.withFences, false];
   data.validOutputs.main = [data.validInputs.withoutFences, true];
+
+  data.validOutputsWithExtraContent.flask = [
+    data.validInputs.extraContentWithFences,
+    false,
+  ];
+  data.validOutputsWithExtraContent.main = [
+    data.validInputs.extraContentWithoutFences,
+    true,
+  ];
   return deepFreeze(data);
 }
