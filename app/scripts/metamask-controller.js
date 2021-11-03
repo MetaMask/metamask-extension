@@ -764,7 +764,9 @@ export default class MetamaskController extends EventEmitter {
       stopInlineSnap: () => this.snapController.removeInlineSnap(),
       startSnap: (...args) => this.snapController.startSnap(args),
       stopSnap: (...args) => this.snapController.stopSnap(args),
-      getState: () => this.snapController.state,
+      getSnapControllerState: () => this.snapController.state,
+      getPermissionControllerState: () =>
+        this.permissionsController.permissions.state,
     };
   }
 
