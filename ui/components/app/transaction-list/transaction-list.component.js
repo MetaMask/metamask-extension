@@ -138,21 +138,14 @@ export default function TransactionList({
     [
       (transaction) =>
         transaction.transactionType === 'smart'
-          ? transaction.time
-          : transaction.initialTransaction?.time,
+          ? transaction.txParams?.nonce
+          : transaction.initialTransaction?.txParams?.nonce,
     ],
     ['desc'],
   );
 
-  const totalCompletedTransactions = orderBy(
-    cancelledSmartTransactions.concat(completedTransactions),
-    [
-      (transaction) =>
-        transaction.transactionType === 'smart'
-          ? transaction.time
-          : transaction.initialTransaction?.time,
-    ],
-    ['desc'],
+  const totalCompletedTransactions = completedTransactions.concat(
+    cancelledSmartTransactions,
   );
 
   return (
