@@ -20,7 +20,7 @@ import { useGasFeeContext } from '../../../contexts/gasFee';
 const HeartBeat = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
 
-const GasDetailItem = ({
+const GasDetailsItem = ({
   hexMaximumTransactionFee,
   hexMinimumTransactionFee,
   isMainnet,
@@ -135,7 +135,7 @@ const GasDetailItem = ({
   );
 };
 
-GasDetailItem.propTypes = {
+GasDetailsItem.propTypes = {
   hexMaximumTransactionFee: PropTypes.string,
   hexMinimumTransactionFee: PropTypes.string,
   isMainnet: PropTypes.bool,
@@ -146,4 +146,4 @@ GasDetailItem.propTypes = {
   useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
 };
 
-export default GasDetailItem;
+export default GasDetailsItem;
