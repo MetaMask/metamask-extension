@@ -138,6 +138,7 @@ export default class ConfirmTransactionBase extends Component {
     fetchOptimismL1Fee: PropTypes.func.isRequired,
     isOptimism: PropTypes.bool,
     hexEstimatedL1Fee: PropTypes.string.isRequired,
+    isStandardNetwork: PropTypes.bool,
   };
 
   state = {
@@ -330,6 +331,7 @@ export default class ConfirmTransactionBase extends Component {
       supportsEIP1559,
       isOptimism,
       hexEstimatedL1Fee,
+      isStandardNetwork,
     } = this.props;
     const { t } = this.context;
 
@@ -376,6 +378,7 @@ export default class ConfirmTransactionBase extends Component {
               type={SECONDARY}
               value={hexMinimumTransactionFee}
               hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+              ethNumberOfDecimals={15}
             />
           </div>
         );
@@ -407,7 +410,7 @@ export default class ConfirmTransactionBase extends Component {
     const renderEstimatedL1GasFeeItem = () => {
       const detailTitle = (
         <>
-          {hexEstimatedL1Fee === null
+          {isStandardNetwork
             ? t('transactionDetailGasHeading')
             : t('transactionDetailL1GasHeading')}
           <InfoTooltip
@@ -463,51 +466,49 @@ export default class ConfirmTransactionBase extends Component {
         </div>
       );
 
-      const subTitle =
-        hexEstimatedL1Fee === null ? (
-          <>
-            {txData.dappSuggestedGasFees ? (
-              <Typography
-                variant={TYPOGRAPHY.H7}
-                fontStyle={FONT_STYLE.ITALIC}
-                color={COLORS.UI4}
-              >
-                {t('transactionDetailDappGasMoreInfo')}
-              </Typography>
-            ) : (
-              ''
-            )}
-            {supportsEIP1559 && (
-              <GasTiming
-                maxPriorityFeePerGas={hexWEIToDecGWEI(
-                  maxPriorityFeePerGas || txData.txParams.maxPriorityFeePerGas,
-                )}
-                maxFeePerGas={hexWEIToDecGWEI(
-                  maxFeePerGas || txData.txParams.maxFeePerGas,
-                )}
-              />
-            )}
-          </>
-        ) : null;
+      const subTitle = isStandardNetwork ? (
+        <>
+          {txData.dappSuggestedGasFees ? (
+            <Typography
+              variant={TYPOGRAPHY.H7}
+              fontStyle={FONT_STYLE.ITALIC}
+              color={COLORS.UI4}
+            >
+              {t('transactionDetailDappGasMoreInfo')}
+            </Typography>
+          ) : (
+            ''
+          )}
+          {supportsEIP1559 && (
+            <GasTiming
+              maxPriorityFeePerGas={hexWEIToDecGWEI(
+                maxPriorityFeePerGas || txData.txParams.maxPriorityFeePerGas,
+              )}
+              maxFeePerGas={hexWEIToDecGWEI(
+                maxFeePerGas || txData.txParams.maxFeePerGas,
+              )}
+            />
+          )}
+        </>
+      ) : null;
 
-      const subText =
-        hexEstimatedL1Fee === null
-          ? t('editGasSubTextFee', [
-              <b key="editGasSubTextFeeLabel">{t('editGasSubTextFeeLabel')}</b>,
-              <div
-                key="editGasSubTextFeeValue"
-                className="confirm-page-container-content__currency-container"
-              >
-                {renderHeartBeatIfNotInTest()}
-                <UserPreferencedCurrencyDisplay
-                  key="editGasSubTextFeeAmount"
-                  type={PRIMARY}
-                  value={hexMaximumTransactionFee}
-                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                />
-              </div>,
-            ])
-          : null;
+      const subText = isStandardNetwork
+        ? t('editGasSubTextFee', [
+            <b key="editGasSubTextFeeLabel">{t('editGasSubTextFeeLabel')}</b>,
+            <div
+              key="editGasSubTextFeeValue"
+              className="confirm-page-container-content__currency-container"
+            >
+              {renderHeartBeatIfNotInTest()}
+              <UserPreferencedCurrencyDisplay
+                key="editGasSubTextFeeAmount"
+                type={PRIMARY}
+                value={hexMaximumTransactionFee}
+                hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+              />
+            </div>,
+          ])
+        : null;
 
       return (
         <TransactionDetailItem
@@ -583,20 +584,18 @@ export default class ConfirmTransactionBase extends Component {
     };
 
     const renderEstimatedTotalItem = () => {
-      const subTitle =
-        hexEstimatedL1Fee === null
-          ? t('transactionDetailGasTotalSubtitle')
-          : null;
+      const subTitle = isStandardNetwork
+        ? t('transactionDetailGasTotalSubtitle')
+        : null;
 
-      const subText =
-        hexEstimatedL1Fee === null
-          ? t('editGasSubTextAmount', [
-              <b key="editGasSubTextAmountLabel">
-                {t('editGasSubTextAmountLabel')}
-              </b>,
-              renderTotalMaxAmount(),
-            ])
-          : null;
+      const subText = isStandardNetwork
+        ? t('editGasSubTextAmount', [
+            <b key="editGasSubTextAmountLabel">
+              {t('editGasSubTextAmountLabel')}
+            </b>,
+            renderTotalMaxAmount(),
+          ])
+        : null;
 
       return (
         <TransactionDetailItem
@@ -984,7 +983,6 @@ export default class ConfirmTransactionBase extends Component {
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
 
     if (isOptimism) {
-      console.log('[componentDidMount] Fetching Optimism L1 fee...');
       // here `txData` is the same thing as `txMeta` elsewhere
       fetchOptimismL1Fee(txData);
     }
