@@ -98,13 +98,11 @@ export function useGasFeeInputs(
     return defaultEstimateToUse;
   });
 
-  const dappSuggestedAndTxParamGasFeesAreTheSame = areDappSuggestedAndTxParamGasFeesTheSame(
-    transaction,
-  );
-
-  const isUsingDappSuggestedGasFees = Boolean(
-    transaction?.dappSuggestedGasFees &&
-      dappSuggestedAndTxParamGasFeesAreTheSame,
+  const [
+    isUsingDappSuggestedGasFees,
+    setIsUsingDappSuggestedGasFees,
+  ] = useState(() =>
+    Boolean(areDappSuggestedAndTxParamGasFeesTheSame(transaction)),
   );
 
   const [gasLimit, setGasLimit] = useState(
@@ -208,6 +206,7 @@ export function useGasFeeInputs(
       setMaxPriorityFeePerGas(null);
       setGasPrice(null);
       setGasPriceHasBeenManuallySet(false);
+      setIsUsingDappSuggestedGasFees(false);
     },
     [
       setInternalEstimateToUse,
@@ -216,6 +215,7 @@ export function useGasFeeInputs(
       setMaxPriorityFeePerGas,
       setGasPrice,
       setGasPriceHasBeenManuallySet,
+      setIsUsingDappSuggestedGasFees,
     ],
   );
 
