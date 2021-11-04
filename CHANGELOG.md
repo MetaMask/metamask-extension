@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.4.1]
+### Changed
+- [#12515](https://github.com/MetaMask/metamask-extension/pull/12515): Updating 'Learn more' link location in dapp connection flow
+
+## [10.4.0]
+### Added
+- [#12400](https://github.com/MetaMask/metamask-extension/pull/12400): Add text to Restore Account screen noting current wallet replacement
+
+### Fixed
+- [#12420](https://github.com/MetaMask/metamask-extension/pull/12420): Fix missing conversion rates in Swaps token dropdown
+- [#12403](https://github.com/MetaMask/metamask-extension/pull/12403): Fix incorrect default locale used during onboarding
+- [#12484](https://github.com/MetaMask/metamask-extension/pull/12484): Prevent occasional incorrect "No Quotes Found" result in Swaps
+- [#12550](https://github.com/MetaMask/metamask-extension/pull/12550): Prevent occasional 'BigNumber' error on the confirm screen when sending tokens
+
 ## [10.3.0]
 ### Added
 - [#12252](https://github.com/MetaMask/metamask-extension/pull/12252): Support type "0" transactions on EIP-1559 networks
@@ -2524,7 +2538,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...HEAD
+[10.4.1]: https://github.com/MetaMask/metamask-extension/compare/v10.4.0...v10.4.1
+[10.4.0]: https://github.com/MetaMask/metamask-extension/compare/v10.3.0...v10.4.0
 [10.3.0]: https://github.com/MetaMask/metamask-extension/compare/v10.2.2...v10.3.0
 [10.2.2]: https://github.com/MetaMask/metamask-extension/compare/v10.2.1...v10.2.2
 [10.2.1]: https://github.com/MetaMask/metamask-extension/compare/v10.2.0...v10.2.1

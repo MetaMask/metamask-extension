@@ -101,7 +101,7 @@ class SettingsPage extends PureComponent {
     let titleText;
 
     if (isPopup && addressName) {
-      titleText = addressName;
+      titleText = t('details');
     } else if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey);
     } else {

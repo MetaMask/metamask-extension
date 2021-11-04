@@ -15,6 +15,7 @@ describe('SendContent Component', () => {
     showHexData: true,
     gasIsExcessive: false,
     networkAndAccountSupports1559: true,
+    asset: { type: 'NATIVE' },
   };
 
   beforeEach(() => {
@@ -58,6 +59,23 @@ describe('SendContent Component', () => {
 
     it('should not render the SendHexDataRow if props.showHexData is false', () => {
       wrapper.setProps({ showHexData: false });
+      const PageContainerContentChild = wrapper
+        .find(PageContainerContent)
+        .children();
+      expect(PageContainerContentChild.childAt(0).is(Dialog)).toStrictEqual(
+        true,
+      );
+      expect(
+        PageContainerContentChild.childAt(1).is(SendAssetRow),
+      ).toStrictEqual(true);
+      expect(
+        PageContainerContentChild.childAt(2).is(SendAmountRow),
+      ).toStrictEqual(true);
+      expect(wrapper.find(SendHexDataRow)).toHaveLength(0);
+    });
+
+    it('should not render the SendHexDataRow if the asset type is TOKEN (ERC-20)', () => {
+      wrapper.setProps({ asset: { type: 'TOKEN' } });
       const PageContainerContentChild = wrapper
         .find(PageContainerContent)
         .children();

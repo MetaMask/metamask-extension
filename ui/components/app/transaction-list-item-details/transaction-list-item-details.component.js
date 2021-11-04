@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import SenderToRecipient from '../../ui/sender-to-recipient';
-import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
+import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
 import Button from '../../ui/button';
@@ -215,7 +215,7 @@ export default class TransactionListItemDetails extends PureComponent {
             <div className="transaction-list-item-details__sender-to-recipient-container">
               <SenderToRecipient
                 warnUserOnAccountMismatch={false}
-                variant={FLAT_VARIANT}
+                variant={DEFAULT_VARIANT}
                 addressOnly
                 recipientEns={recipientEns}
                 recipientAddress={recipientAddress}
