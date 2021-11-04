@@ -133,7 +133,8 @@ export default class PreferencesController {
   /**
    * Setter for the `useAdvancedGasFee` property
    *
-   * @param {boolean} val - Whether or not the user prefers to use the static token list or dynamic token list from the API
+   * @param {boolean} val - Whether or not the user prefers to use the advanced gas settings,
+   *  and the custom Max base fee and priority fee by default
    *
    */
   setUseAdvancedGasFee(val) {
