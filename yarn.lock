@@ -3700,9 +3700,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/eslint-config/-/eslint-config-6.0.0.tgz#ec53e8ab278073e882411ed89705bc7d06b78c81"
   integrity sha512-LyakGYGwM8UQOGhwWa+5erAI1hXuiTgf/y7USzOomX6H9KiuY09IAUYnPh7ToPG2sedD2F48UF1bUm8yvCoZOw==
 
-"@metamask/eth-ledger-bridge-keyring@git://github.com/MetaMask/eth-ledger-bridge-keyring.git#5684e3d":
-  version "0.9.0"
-  resolved "git://github.com/MetaMask/eth-ledger-bridge-keyring.git#5684e3de3f5e79275e57ddccd9589c0eb992a442"
+"@metamask/eth-ledger-bridge-keyring@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-ledger-bridge-keyring/-/eth-ledger-bridge-keyring-0.10.0.tgz#9d5103be22221f4ef71393a2e11f24b788e343a5"
+  integrity sha512-ewcnEFmIL2lkUta811yQeJVWhTjll9U62GdbuauvxdQ0c6VBGZnf02GU3gcxyMOcEvZBnlU+d5LWpURQA8iNZQ==
   dependencies:
     "@ethereumjs/tx" "^3.2.0"
     eth-sig-util "^2.0.0"
