@@ -139,6 +139,8 @@ export default function TransactionListItem({
     cancelTransaction,
   ]);
 
+  const showCancelButton = !hasCancelled && isPending && !isUnapproved;
+
   return (
     <>
       <ListItem
