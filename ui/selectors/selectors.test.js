@@ -245,8 +245,17 @@ describe('Selectors', () => {
       },
     });
   });
-  it('#getUseAdvancedGasFee', () => {
-    const useAdvancedGasFee = selectors.getUseAdvancedGasFee(mockState);
-    expect(useAdvancedGasFee).toStrictEqual(false);
+  it('#getAdvancedGasFeeValues', () => {
+    const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
+    expect(advancedGasFee).toStrictEqual({
+      maxBaseFee: '1.5',
+      priorityFee: '2',
+    });
+  });
+  it('#getIsAdvancedGasFeeDefault', () => {
+    const isAdvancedGasFeeDefault = selectors.getIsAdvancedGasFeeDefault(
+      mockState,
+    );
+    expect(isAdvancedGasFeeDefault).toStrictEqual(true);
   });
 });

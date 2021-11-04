@@ -267,21 +267,33 @@ describe('preferences controller', function () {
     });
   });
 
-  describe('setUseAdvancedGasFee', function () {
-    it('should default to false', function () {
+  describe('setAdvancedGasFee', function () {
+    it('should default to empty values for maxFee and priorityFee', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.useAdvancedGasFee, false);
+      assert.equal(state.advancedGasFee.maxBaseFee, '');
+      assert.equal(state.advancedGasFee.priorityFee, '');
     });
 
-    it('should set the useAdvancedGasFee property in state', function () {
+    it('should set the setAdvancedGasFee property in state', function () {
       assert.equal(
-        preferencesController.store.getState().useAdvancedGasFee,
-        false,
+        preferencesController.store.getState().advancedGasFee.maxBaseFee,
+        '',
       );
-      preferencesController.setUseAdvancedGasFee(true);
       assert.equal(
-        preferencesController.store.getState().useAdvancedGasFee,
-        true,
+        preferencesController.store.getState().advancedGasFee.priorityFee,
+        '',
+      );
+      preferencesController.setAdvancedGasFee({
+        maxBaseFee: '1.5',
+        priorityFee: '2',
+      });
+      assert.equal(
+        preferencesController.store.getState().advancedGasFee.maxBaseFee,
+        '1.5',
+      );
+      assert.equal(
+        preferencesController.store.getState().advancedGasFee.priorityFee,
+        '2',
       );
     });
   });

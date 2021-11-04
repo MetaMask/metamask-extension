@@ -2090,11 +2090,11 @@ export function setUseTokenDetection(val) {
   };
 }
 
-export function setUseAdvancedGasFee(val) {
+export function setAdvancedGasFee(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setUseAdvancedGasFee`);
-    background.setUseAdvancedGasFee(val, (err) => {
+    log.debug(`background.setAdvancedGasFee`);
+    background.setAdvancedGasFee(val, (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
