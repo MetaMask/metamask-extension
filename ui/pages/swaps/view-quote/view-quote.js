@@ -94,7 +94,6 @@ import {
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import ViewQuotePriceDifference from './view-quote-price-difference';
@@ -675,15 +674,6 @@ export default function ViewQuote() {
     }
   }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
 
-  const transaction = {
-    userFeeLevel: swapsUserFeeLevel || 'high',
-    txParams: {
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-      gas: maxGasLimit,
-    },
-  };
-
   return (
     <div className="view-quote">
       <div
@@ -703,21 +693,21 @@ export default function ViewQuote() {
         )}
 
         {showEditGasPopover && networkAndAccountSupports1559 && (
-          <GasFeeContextProvider
-            defaultEstimateToUse="high"
+          <EditGasPopover
+            transaction={{
+              userFeeLevel: swapsUserFeeLevel || 'high',
+              txParams: {
+                maxFeePerGas,
+                maxPriorityFeePerGas,
+                gas: maxGasLimit,
+              },
+            }}
             minimumGasLimit={usedGasLimit}
+            defaultEstimateToUse="high"
             mode={EDIT_GAS_MODES.SWAPS}
-            transaction={transaction}
-          >
-            <EditGasPopover
-              transaction={transaction}
-              minimumGasLimit={usedGasLimit}
-              defaultEstimateToUse="high"
-              mode={EDIT_GAS_MODES.SWAPS}
-              confirmButtonText={t('submit')}
-              onClose={onCloseEditGasPopover}
-            />
-          </GasFeeContextProvider>
+            confirmButtonText={t('submit')}
+            onClose={onCloseEditGasPopover}
+          />
         )}
 
         <div

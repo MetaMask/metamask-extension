@@ -18,7 +18,6 @@ import {
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import EditGasPopover from '../edit-gas-popover';
 import { useMetricEvent } from '../../../hooks/useMetricEvent';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import Button from '../../ui/button';
 import CancelButton from '../cancel-button';
 
@@ -140,19 +139,8 @@ export default function TransactionListItem({
     cancelTransaction,
   ]);
 
-  const showCancelButton = !hasCancelled && isPending && !isUnapproved;
-  let mode;
-  if (showRetryEditGasPopover) {
-    mode = EDIT_GAS_MODES.SPEED_UP;
-  } else if (showCancelEditGasPopover) {
-    mode = EDIT_GAS_MODES.CANCEL;
-  }
-
   return (
-    <GasFeeContextProvider
-      mode={mode}
-      transaction={transactionGroup.primaryTransaction}
-    >
+    <>
       <ListItem
         onClick={toggleShowDetails}
         className={className}
@@ -238,7 +226,7 @@ export default function TransactionListItem({
           transaction={transactionGroup.primaryTransaction}
         />
       )}
-    </GasFeeContextProvider>
+    </>
   );
 }
 

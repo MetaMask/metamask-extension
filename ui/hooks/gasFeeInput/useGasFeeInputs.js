@@ -60,12 +60,10 @@ import { useGasEstimates } from './useGasEstimates';
  */
 export function useGasFeeInputs(
   defaultEstimateToUse = 'medium',
-  trxn,
+  transaction,
   minimumGasLimit = '0x5208',
   editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
 ) {
-  const [transaction, setTransaction] = useState(trxn);
-
   // We need the gas estimates from the GasFeeController in the background.
   // Calling this hooks initiates polling for new gas estimates and returns the
   // current estimate.
@@ -225,7 +223,6 @@ export function useGasFeeInputs(
   ]);
 
   return {
-    setTransaction,
     maxFeePerGas,
     maxFeePerGasFiat,
     setMaxFeePerGas,
