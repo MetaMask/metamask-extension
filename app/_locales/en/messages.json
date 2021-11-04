@@ -2221,7 +2221,7 @@
     "message": "Show Secret Recovery Phrase"
   },
   "showTestnetNetworks": {
-    "message": "Test networks"
+    "message": "Show test networks"
   },
   "showTestnetNetworksDescription": {
     "message": "Select this to show test networks in network list"
