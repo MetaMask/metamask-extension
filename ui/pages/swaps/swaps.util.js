@@ -84,11 +84,11 @@ export const getBaseApi = function (
   chainId = MAINNET_CHAIN_ID,
   useNewSwapsApi = false,
 ) {
+  // eslint-disable-next-line no-param-reassign
+  chainId = chainId === '0x4' ? '0x1' : chainId;
   const baseUrl = useNewSwapsApi
     ? getBaseUrlForNewSwapsApi(type, chainId)
     : METASWAP_CHAINID_API_HOST_MAP[chainId];
-  // eslint-disable-next-line no-param-reassign
-  chainId = chainId === '0x4' ? '0x1' : chainId;
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   if (!baseUrl) {
     throw new Error(`Swaps API calls are disabled for chainId: ${chainId}`);
@@ -782,6 +782,7 @@ export function getSwapsTokensReceivedFromTxMeta(
         )
       : '';
   }
+  console.log(`null`, null);
   return null;
 }
 
