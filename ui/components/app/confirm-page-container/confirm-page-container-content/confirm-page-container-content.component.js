@@ -112,6 +112,11 @@ export default class ConfirmPageContainerContent extends Component {
       return this.state.confirmAnyways ? false : disabled;
     };
 
+    const primaryAction = {
+      label: this.context.t('iWillTryAnyway'),
+      onClick: () => this.setState({ confirmAnyways: true })
+    }
+
     return (
       <div className="confirm-page-container-content">
         {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
@@ -122,25 +127,8 @@ export default class ConfirmPageContainerContent extends Component {
           <div className="confirm-page-container-content__error-container">
             <ActionableMessage
               type="danger"
-              message={this.context.t('simulationErrorMessage', [
-                <Button
-                  key="try-anyways-button" // Tests won't pass without a key
-                  type="link"
-                  onClick={() => {
-                    this.setState({ confirmAnyways: true });
-                  }}
-                  style={{ padding: 0 }}
-                >
-                  <Typography
-                    color={COLORS.ERROR1}
-                    variant={TYPOGRAPHY.H6}
-                    fontWeight={FONT_WEIGHT.NORMAL}
-                    fontStyle={FONT_STYLE.NORMAL}
-                  >
-                    {this.context.t('iWillTryAnyway')}
-                  </Typography>
-                </Button>,
-              ])}
+              primaryAction={primaryAction}
+              message={this.context.t('simulationErrorMessage')}
             />
           </div>
         )}
