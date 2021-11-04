@@ -468,10 +468,12 @@ export default class MetamaskController extends EventEmitter {
       getEIP1559GasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
         this.gasFeeController,
       ),
-      getExternalPendingTransactions: () =>
-        this.getExternalPendingTransactions.bind(this),
-      getExternalConfirmedTransactions: () =>
-        this.getExternalConfirmedTransactions.bind(this),
+      getExternalPendingTransactions: this.getExternalPendingTransactions.bind(
+        this,
+      ),
+      getExternalConfirmedTransactions: this.getExternalConfirmedTransactions.bind(
+        this,
+      ),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -2799,17 +2801,15 @@ export default class MetamaskController extends EventEmitter {
   // MISCELLANEOUS
   //=============================================================================
 
-  /**
-   */
   getExternalPendingTransactions(address) {
-    // Code to collect external pending transactions goes here
-    return [];
+    return this.smartTransactionsController.getTransactions({
+      addressFrom: address,
+      status: 'pending',
+    });
   }
 
-  /**
-   */
-  getExternalConfirmedTransactions(address) {
-    // Code to collect external confirmed transactions goes here
+  // TODO: Remove this fn, because it's not needed anymore, since we push confirmed smart transactions into the list of regular transactions.
+  getExternalConfirmedTransactions() {
     return [];
   }
 
