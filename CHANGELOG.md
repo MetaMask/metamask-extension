@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.5.0]
+### Uncategorized
+- Add beta and Flask builds to CI ([#12572](https://github.com/MetaMask/metamask-extension/pull/12572))
+- Check if ledger was successfully able to establish transport on confirm screen mount ([#12535](https://github.com/MetaMask/metamask-extension/pull/12535))
+- Ledger WebHID What's New popup ([#12501](https://github.com/MetaMask/metamask-extension/pull/12501))
+- Ensure ledger transport preference is set on import ([#12557](https://github.com/MetaMask/metamask-extension/pull/12557))
+- Don't show ledger live option in advanced settings if using firefox ([#12494](https://github.com/MetaMask/metamask-extension/pull/12494))
+- Turn off all old notifications ([#12500](https://github.com/MetaMask/metamask-extension/pull/12500))
+- Provide instructions for users switching from Ledger Live to WebHID ([#12519](https://github.com/MetaMask/metamask-extension/pull/12519))
+- Connect Ledger via WebHID ([#12411](https://github.com/MetaMask/metamask-extension/pull/12411))
+
 ## [10.4.1]
 ### Changed
 - [#12515](https://github.com/MetaMask/metamask-extension/pull/12515): Updating 'Learn more' link location in dapp connection flow
@@ -2538,7 +2549,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...HEAD
+[10.5.0]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...v10.5.0
 [10.4.1]: https://github.com/MetaMask/metamask-extension/compare/v10.4.0...v10.4.1
 [10.4.0]: https://github.com/MetaMask/metamask-extension/compare/v10.3.0...v10.4.0
 [10.3.0]: https://github.com/MetaMask/metamask-extension/compare/v10.2.2...v10.3.0
