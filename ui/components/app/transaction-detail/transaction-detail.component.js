@@ -17,7 +17,11 @@ const GasLevelIconMap = {
   custom: '⚙',
 };
 
-export default function TransactionDetail({ rows = [], onEdit, disabled = false }) {
+export default function TransactionDetail({
+  rows = [],
+  onEdit,
+  disabled = false,
+}) {
   // eslint-disable-next-line prefer-destructuring
   const EIP_1559_V2 = process.env.EIP_1559_V2;
 
@@ -95,7 +99,9 @@ export default function TransactionDetail({ rows = [], onEdit, disabled = false 
     <div className="transaction-detail">
       {onEdit && (
         <div className="transaction-detail-edit">
-          <button disabled={disabled} onClick={onEdit}>{t('edit')}</button>
+          <button disabled={disabled} onClick={onEdit}>
+            {t('edit')}
+          </button>
         </div>
       )}
       <div className="transaction-detail-rows">{rows}</div>
