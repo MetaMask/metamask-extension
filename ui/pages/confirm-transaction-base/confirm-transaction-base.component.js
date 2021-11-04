@@ -326,6 +326,11 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { t } = this.context;
 
+    const { valid } = this.getErrorKey();
+    const isDisabled = () => {
+      return this.state.confirmAnyways ? false : !valid;
+    };
+
     const hasSimulationError = Boolean(this.props.txData.simulationFails);
 
     const renderTotalMaxAmount = () => {
@@ -552,6 +557,7 @@ export default class ConfirmTransactionBase extends Component {
     return (
       <div className="confirm-page-container-content__details">
         <TransactionDetail
+          disabled={isDisabled()}
           onEdit={() => this.handleEditGas()}
           rows={[
             EIP_1559_V2 ? (
