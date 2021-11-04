@@ -38,7 +38,7 @@
   &__actions {
     display: flex;
     width: 80%;
-    justify-content: space-evenly;
+    justify-content: flex-end;
     align-items: center;
     margin-top: 10px;
     color: $Blue-600;

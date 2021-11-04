@@ -29,4 +29,5 @@ export default function TransactionDetail({
 TransactionDetail.propTypes = {
   rows: PropTypes.arrayOf(TransactionDetailItem).isRequired,
   onEdit: PropTypes.func,
+  disabled: PropTypes.bool,
 };
