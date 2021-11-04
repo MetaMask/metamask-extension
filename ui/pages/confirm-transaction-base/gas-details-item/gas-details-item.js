@@ -29,7 +29,6 @@ const GasDetailItem = ({
   useNativeCurrencyAsPrimaryCurrency,
 }) => {
   const t = useI18nContext();
-
   return (
     <TransactionDetailItem
       key="gas-item"
