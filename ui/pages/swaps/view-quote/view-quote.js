@@ -39,6 +39,7 @@ import {
   getSmartTransactionsOptInStatus,
   getUnsignedTransactionsAndEstimates,
   getSmartTransactionsEnabled,
+  signAndSendSwapsSmartTransaction,
   getSwapsRefreshStates,
 } from '../../../ducks/swaps/swaps';
 import {
@@ -66,7 +67,6 @@ import {
   showModal,
   setSwapsQuotesPollingLimitEnabled,
   fetchUnsignedTransactionsAndEstimates,
-  signAndSendSmartTransaction,
 } from '../../../store/actions';
 import {
   ASSET_ROUTE,
@@ -866,19 +866,10 @@ export default function ViewQuote() {
           setSubmitClicked(true);
           if (!balanceError) {
             if (smartTransactionsEnabled && smartTransactionsOptInStatus) {
-              const txParams = {
-                from: unsignedTransaction.from,
-                to: unsignedTransaction.to,
-                value: unsignedTransaction.value,
-                data: unsignedTransaction.data,
-                gas: unsignedTransaction.gas,
-                chainId,
-              };
               dispatch(
-                signAndSendSmartTransaction({
+                signAndSendSwapsSmartTransaction({
                   unsignedTransaction,
                   unsignedTransactionsAndEstimates,
-                  txParams,
                 }),
               );
               history.push(SMART_TRANSACTION_STATUS_ROUTE);

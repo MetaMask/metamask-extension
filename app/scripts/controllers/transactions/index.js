@@ -1108,6 +1108,83 @@ export default class TransactionController extends EventEmitter {
     }
   }
 
+  async confirmExternalTransaction(txMeta, txReceipt, baseFeePerGas) {
+    // add external transaction
+    await this.txStateManager.addExternalTransaction(txMeta);
+
+    const txId = txMeta.id;
+
+    if (!txMeta) {
+      return;
+    }
+
+    try {
+      // It seems that sometimes the numerical values being returned from
+      // this.query.getTransactionReceipt are BN instances and not strings.
+      const gasUsed =
+        typeof txReceipt.gasUsed === 'string'
+          ? txReceipt.gasUsed
+          : txReceipt.gasUsed.toString(16);
+
+      txMeta.txReceipt = {
+        ...txReceipt,
+        gasUsed,
+      };
+
+      if (baseFeePerGas) {
+        txMeta.baseFeePerGas = baseFeePerGas;
+      }
+
+      this.txStateManager.setTxStatusConfirmed(txId);
+      this._markNonceDuplicatesDropped(txId);
+
+      const { submittedTime } = txMeta;
+      const metricsParams = { gas_used: gasUsed };
+
+      if (submittedTime) {
+        metricsParams.completion_time = this._getTransactionCompletionTime(
+          submittedTime,
+        );
+      }
+
+      if (txReceipt.status === '0x0') {
+        metricsParams.status = 'failed on-chain';
+        // metricsParams.error = TODO: figure out a way to get the on-chain failure reason
+      }
+
+      this._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.FINALIZED,
+        metricsParams,
+      );
+
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#confirmTransaction - add txReceipt',
+      );
+
+      if (txMeta.type === TRANSACTION_TYPES.SWAP) {
+        const postTxBalance = await this.query.getBalance(txMeta.txParams.from);
+        const latestTxMeta = this.txStateManager.getTransaction(txId);
+
+        const approvalTxMeta = latestTxMeta.approvalTxId
+          ? this.txStateManager.getTransaction(latestTxMeta.approvalTxId)
+          : null;
+
+        latestTxMeta.postTxBalance = postTxBalance.toString(16);
+
+        this.txStateManager.updateTransaction(
+          latestTxMeta,
+          'transactions#confirmTransaction - add postTxBalance',
+        );
+
+        this._trackSwapsMetrics(latestTxMeta, approvalTxMeta);
+      }
+    } catch (err) {
+      log.error(err);
+    }
+  }
+
   /**
     Convenience method for the ui thats sets the transaction to rejected
     @param {number} txId - the tx's Id
@@ -1425,13 +1502,13 @@ export default class TransactionController extends EventEmitter {
               .round(2)}%`
           : null;
 
-        const estimatedVsUsedGasRatio = `${new BigNumber(
-          txMeta.txReceipt.gasUsed,
-          16,
-        )
-          .div(txMeta.swapMetaData.estimated_gas, 10)
-          .times(100)
-          .round(2)}%`;
+        const estimatedVsUsedGasRatio =
+          txMeta.txReceipt.gasUsed && txMeta.swapMetaData.estimated_gas
+            ? `${new BigNumber(txMeta.txReceipt.gasUsed, 16)
+                .div(txMeta.swapMetaData.estimated_gas, 10)
+                .times(100)
+                .round(2)}%`
+            : null;
 
         this._trackMetaMetricsEvent({
           event: 'Swap Completed',

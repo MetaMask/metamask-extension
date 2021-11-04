@@ -2966,7 +2966,6 @@ const createSignedTransactions = async (
 export function signAndSendSmartTransaction({
   unsignedTransaction,
   unsignedTransactionsAndEstimates,
-  txParams,
 }) {
   return async (dispatch) => {
     const signedTransactions = await createSignedTransactions(
@@ -2979,11 +2978,32 @@ export function signAndSendSmartTransaction({
       true,
     );
     try {
-      await promisifiedBackground.submitSignedTransactions({
+      const response = await promisifiedBackground.submitSignedTransactions({
         signedTransactions,
         signedCanceledTransactions,
-        txParams,
+        txParams: unsignedTransaction,
       }); // Returns e.g.: { uuid: 'dP23W7c2kt4FK9TmXOkz1UM2F20' }
+      return response.uuid;
+    } catch (e) {
+      console.log(e);
+      if (isPersistentError(e)) {
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: e.message,
+        });
+      }
+    }
+    return null;
+  };
+}
+
+export function updateSmartTransaction(uuid, txData) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateSmartTransaction({
+        uuid,
+        ...txData,
+      });
     } catch (e) {
       console.log(e);
       if (isPersistentError(e)) {
@@ -2997,17 +3017,21 @@ export function signAndSendSmartTransaction({
 }
 
 export function fetchSmartTransactionsStatus(uuids) {
-  return async (dispatch) => {
+  return async () => {
     try {
       await promisifiedBackground.fetchSmartTransactionsStatus(uuids);
     } catch (e) {
       console.log(e);
-      if (isPersistentError(e)) {
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: e.message,
-        });
-      }
+    }
+  };
+}
+
+export function setSmartTransactionsRefreshInterval(refreshInterval) {
+  return async () => {
+    try {
+      await promisifiedBackground.setStatusRefreshInterval(refreshInterval);
+    } catch (e) {
+      console.log(e);
     }
   };
 }
