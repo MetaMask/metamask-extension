@@ -235,7 +235,6 @@ export default class ConfirmTransactionBase extends Component {
     if (insufficientBalance) {
       return {
         valid: false,
-        hasSimulationError: false,
         errorKey: INSUFFICIENT_FUNDS_ERROR_KEY,
       };
     }
@@ -243,7 +242,6 @@ export default class ConfirmTransactionBase extends Component {
     if (hexToDecimal(customGas.gasLimit) < Number(MIN_GAS_LIMIT_DEC)) {
       return {
         valid: false,
-        hasSimulationError: false,
         errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
       };
     }
@@ -251,7 +249,6 @@ export default class ConfirmTransactionBase extends Component {
     if (simulationFails) {
       return {
         valid: false,
-        hasSimulationError: true,
         errorKey: simulationFails.errorKey
           ? simulationFails.errorKey
           : TRANSACTION_ERROR_KEY,
@@ -261,14 +258,12 @@ export default class ConfirmTransactionBase extends Component {
     if (noGasPrice && !gasFeeIsCustom) {
       return {
         valid: false,
-        hasSimulationError: false,
         errorKey: GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
       };
     }
 
     return {
       valid: true,
-      hasSimulationError: false,
     };
   }
 
@@ -326,7 +321,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { t } = this.context;
 
-    const { hasSimulationError } = this.getErrorKey();
+    const hasSimulationError  = Boolean(this.props.txData.simulationFails);
 
     const renderTotalMaxAmount = () => {
       if (
@@ -1069,7 +1064,8 @@ export default class ConfirmTransactionBase extends Component {
     } = this.state;
 
     const { name } = methodData;
-    const { valid, errorKey, hasSimulationError } = this.getErrorKey();
+    const { valid, errorKey } = this.getErrorKey();
+    const hasSimulationError  = Boolean(txData.simulationFails);
     const {
       totalTx,
       positionOfCurrentTx,
