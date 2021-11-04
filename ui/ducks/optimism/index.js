@@ -39,16 +39,19 @@ const selectors = {
     return state[name].estimatedL1Fee;
   },
 
-  getIsOptimism(state) {
-    return selectors.getIsOptimismTestnet(state);
-  },
-
   getIsOptimismMainnet(state) {
     return getCurrentChainId(state) === OPTIMISM_CHAIN_ID;
   },
 
   getIsOptimismTestnet(state) {
     return getCurrentChainId(state) === OPTIMISM_TESTNET_CHAIN_ID;
+  },
+
+  getIsOptimism(state) {
+    return (
+      selectors.getIsOptimismTestnet(state) ||
+      selectors.getIsOptimismMainnet(state)
+    );
   },
 };
 
