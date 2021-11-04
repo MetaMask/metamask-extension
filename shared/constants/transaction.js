@@ -123,6 +123,7 @@ export const TRANSACTION_STATUSES = {
   FAILED: 'failed',
   DROPPED: 'dropped',
   CONFIRMED: 'confirmed',
+  PENDING: 'pending',
 };
 
 /**

@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { orderBy } from 'lodash';
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
@@ -15,7 +14,6 @@ import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../helpers/utils/util';
-import { getCurrentSmartTransactions } from '../../../ducks/swaps/swaps';
 
 const PAGE_INCREMENT = 10;
 
@@ -80,22 +78,6 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
   const chainId = useSelector(getCurrentChainId);
-  const smartTransactions = useSelector(getCurrentSmartTransactions);
-  const pendingSmartTransactions = useMemo(
-    () =>
-      smartTransactions
-        .filter((stx) => stx.status === 'pending')
-        .map((stx) => ({ ...stx, transactionType: 'smart' })),
-    [smartTransactions],
-  );
-
-  const cancelledSmartTransactions = useMemo(
-    () =>
-      smartTransactions
-        .filter((stx) => stx.status.startsWith('cancelled'))
-        .map((stx) => ({ ...stx, transactionType: 'smart' })),
-    [smartTransactions],
-  );
 
   const pendingTransactions = useMemo(
     () =>
@@ -133,56 +115,44 @@ export default function TransactionList({
     [],
   );
 
-  const totalPendingTransactions = orderBy(
-    pendingSmartTransactions.concat(pendingTransactions),
-    [
-      (transaction) =>
-        transaction.transactionType === 'smart'
-          ? transaction.txParams?.nonce
-          : transaction.initialTransaction?.txParams?.nonce,
-    ],
-    ['desc'],
-  );
-
-  const totalCompletedTransactions = completedTransactions.concat(
-    cancelledSmartTransactions,
-  );
-
   return (
     <div className="transaction-list">
       <div className="transaction-list__transactions">
-        {totalPendingTransactions.length > 0 && (
+        {pendingTransactions.length > 0 && (
           <div className="transaction-list__pending-transactions">
             <div className="transaction-list__header">
-              {`${t('queue')} (${totalPendingTransactions.length})`}
+              {`${t('queue')} (${pendingTransactions.length})`}
             </div>
-            {pendingSmartTransactions.map((smartTransaction, index) => (
-              <SmartTransactionListItem
-                isEarliestNonce={index === 0}
-                smartTransaction={smartTransaction}
-                key={`${smartTransaction.nonce}:${index}`}
-              />
-            ))}
-            {pendingTransactions.map((transactionGroup, index) => (
-              <TransactionListItem
-                isEarliestNonce={index === 0}
-                transactionGroup={transactionGroup}
-                key={`${transactionGroup.nonce}:${index}`}
-              />
-            ))}
+            {pendingTransactions.map((transactionGroup, index) =>
+              transactionGroup.initialTransaction.transactionType ===
+              'smart' ? (
+                <SmartTransactionListItem
+                  isEarliestNonce={index === 0}
+                  smartTransaction={transactionGroup.initialTransaction}
+                  key={`${transactionGroup.nonce}:${index}`}
+                />
+              ) : (
+                <TransactionListItem
+                  isEarliestNonce={index === 0}
+                  transactionGroup={transactionGroup}
+                  key={`${transactionGroup.nonce}:${index}`}
+                />
+              ),
+            )}
           </div>
         )}
         <div className="transaction-list__completed-transactions">
-          {totalPendingTransactions.length > 0 ? (
+          {pendingTransactions.length > 0 ? (
             <div className="transaction-list__header">{t('history')}</div>
           ) : null}
-          {totalCompletedTransactions.length > 0 ? (
-            totalCompletedTransactions
+          {completedTransactions.length > 0 ? (
+            completedTransactions
               .slice(0, limit)
               .map((transactionGroup, index) =>
-                transactionGroup.transactionType === 'smart' ? (
+                transactionGroup.initialTransaction?.transactionType ===
+                'smart' ? (
                   <SmartTransactionListItem
-                    smartTransaction={transactionGroup}
+                    smartTransaction={transactionGroup.initialTransaction}
                     key={`${transactionGroup.nonce}:${index}`}
                   />
                 ) : (
@@ -199,7 +169,7 @@ export default function TransactionList({
               </div>
             </div>
           )}
-          {totalCompletedTransactions.length > limit && (
+          {completedTransactions.length > limit && (
             <Button
               className="transaction-list__view-more"
               type="secondary"
