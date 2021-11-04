@@ -782,7 +782,6 @@ export function getSwapsTokensReceivedFromTxMeta(
         )
       : '';
   }
-  console.log(`null`, null);
   return null;
 }
 
