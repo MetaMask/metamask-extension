@@ -12,10 +12,6 @@ export default class ConfirmPageContainerContent extends Component {
     t: PropTypes.func.isRequired,
   };
 
-  state = {
-    confirmAnyways: false,
-  };
-
   static propTypes = {
     action: PropTypes.string,
     dataComponent: PropTypes.node,
@@ -37,6 +33,7 @@ export default class ConfirmPageContainerContent extends Component {
     onCancel: PropTypes.func,
     cancelText: PropTypes.string,
     onSubmit: PropTypes.func,
+    onConfirmAnyways: PropTypes.func,
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
@@ -98,15 +95,12 @@ export default class ConfirmPageContainerContent extends Component {
       origin,
       ethGasPriceWarning,
       hideTitle,
+      onConfirmAnyways,
     } = this.props;
-
-    const isDisabled = () => {
-      return this.state.confirmAnyways ? false : disabled;
-    };
 
     const primaryAction = {
       label: this.context.t('iWillTryAnyway'),
-      onClick: () => this.setState({ confirmAnyways: true }),
+      onClick: onConfirmAnyways,
     };
 
     return (
@@ -150,7 +144,7 @@ export default class ConfirmPageContainerContent extends Component {
           cancelText={cancelText}
           onSubmit={onSubmit}
           submitText={submitText}
-          disabled={isDisabled()}
+          disabled={disabled}
         >
           {unapprovedTxCount > 1 ? (
             <a onClick={onCancelAll}>{rejectNText}</a>
