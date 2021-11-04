@@ -346,21 +346,7 @@ export default class ConfirmTransactionBase extends Component {
                   t('transactionDetailDappGasTooltip')
                 ) : (
                   <>
-                    <p>
-                      {t('transactionDetailGasTooltipIntro', [
-                        isMainnet ? t('networkNameEthereum') : '',
-                      ])}
-                    </p>
-                    <p>{t('transactionDetailGasTooltipExplanation')}</p>
-                    <p>
-                      <a
-                        href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {t('transactionDetailGasTooltipConversion')}
-                      </a>
-                    </p>
+                    <p>{t('multilayerNetworkGasInfo')}</p>
                   </>
                 )
               }
@@ -413,34 +399,36 @@ export default class ConfirmTransactionBase extends Component {
           {isStandardNetwork
             ? t('transactionDetailGasHeading')
             : t('transactionDetailL1GasHeading')}
-          <InfoTooltip
-            contentText={
-              txData.dappSuggestedGasFees ? (
-                t('transactionDetailDappGasTooltip')
-              ) : (
-                <>
-                  <p>
-                    {t('transactionDetailGasTooltipIntro', [
-                      isMainnet ? t('networkNameEthereum') : '',
-                    ])}
-                  </p>
-                  <p>{t('transactionDetailGasTooltipExplanation')}</p>
-                  <p>
-                    <a
-                      href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {t('transactionDetailGasTooltipConversion')}
-                    </a>
-                  </p>
-                </>
-              )
-            }
-            position="top"
-          >
-            <i className="fa fa-info-circle" />
-          </InfoTooltip>
+          {isStandardNetwork ? (
+            <InfoTooltip
+              contentText={
+                txData.dappSuggestedGasFees ? (
+                  t('transactionDetailDappGasTooltip')
+                ) : (
+                  <>
+                    <p>
+                      {t('transactionDetailGasTooltipIntro', [
+                        isMainnet ? t('networkNameEthereum') : '',
+                      ])}
+                    </p>
+                    <p>{t('transactionDetailGasTooltipExplanation')}</p>
+                    <p>
+                      <a
+                        href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {t('transactionDetailGasTooltipConversion')}
+                      </a>
+                    </p>
+                  </>
+                )
+              }
+              position="top"
+            >
+              <i className="fa fa-info-circle" />
+            </InfoTooltip>
+          ) : null}
         </>
       );
 
