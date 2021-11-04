@@ -234,6 +234,7 @@ export default class ConfirmTransactionBase extends Component {
     if (insufficientBalance) {
       return {
         valid: false,
+        hasSimulationError: false,
         errorKey: INSUFFICIENT_FUNDS_ERROR_KEY,
       };
     }
@@ -241,6 +242,7 @@ export default class ConfirmTransactionBase extends Component {
     if (hexToDecimal(customGas.gasLimit) < Number(MIN_GAS_LIMIT_DEC)) {
       return {
         valid: false,
+        hasSimulationError: false,
         errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
       };
     }
@@ -258,12 +260,14 @@ export default class ConfirmTransactionBase extends Component {
     if (noGasPrice && !gasFeeIsCustom) {
       return {
         valid: false,
+        hasSimulationError: false,
         errorKey: GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
       };
     }
 
     return {
       valid: true,
+      hasSimulationError: false,
     };
   }
 
