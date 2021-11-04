@@ -144,7 +144,7 @@ export default class ConfirmTransactionBase extends Component {
     submitWarning: '',
     ethGasPriceWarning: '',
     editingGas: false,
-    confirmAnyways: false,    
+    confirmAnyways: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -299,7 +299,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   handleConfirmAnyways() {
-    this.setState({ confirmAnyways: true })
+    this.setState({ confirmAnyways: true });
   }
 
   renderDetails() {
@@ -505,9 +505,7 @@ export default class ConfirmTransactionBase extends Component {
               </div>
             }
             subText={t('editGasSubTextFee', [
-              <b key="editGasSubTextFeeLabel">
-                {t('editGasSubTextFeeLabel')}
-              </b>,
+              <b key="editGasSubTextFeeLabel">{t('editGasSubTextFeeLabel')}</b>,
               <div
                 key="editGasSubTextFeeValue"
                 className="confirm-page-container-content__currency-container"
@@ -538,7 +536,7 @@ export default class ConfirmTransactionBase extends Component {
                   <GasTiming
                     maxPriorityFeePerGas={hexWEIToDecGWEI(
                       maxPriorityFeePerGas ||
-                      txData.txParams.maxPriorityFeePerGas,
+                        txData.txParams.maxPriorityFeePerGas,
                     )}
                     maxFeePerGas={hexWEIToDecGWEI(
                       maxFeePerGas || txData.txParams.maxFeePerGas,
@@ -1092,7 +1090,7 @@ export default class ConfirmTransactionBase extends Component {
     const isDisabled = () => {
       return this.state.confirmAnyways ? false : !valid;
     };
-  
+
     let functionType = getMethodName(name);
     if (!functionType) {
       if (type) {
@@ -1136,6 +1134,7 @@ export default class ConfirmTransactionBase extends Component {
         lastTx={lastTx}
         ofText={ofText}
         requestsWaitingText={requestsWaitingText}
+        hideConfirmAnyways={!isDisabled()}
         disabled={
           isDisabled() ||
           submitting ||
