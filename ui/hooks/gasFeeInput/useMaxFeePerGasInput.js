@@ -60,8 +60,9 @@ export function useMaxFeePerGasInput({
   // transitional because it is only used to modify a transaction in the
   // metamask (background) state tree.
   const [maxFeePerGas, setMaxFeePerGas] = useState(() => {
-    if (maxFeePerGasFromTransaction && feeParamsAreCustom(transaction))
+    if (maxFeePerGasFromTransaction && feeParamsAreCustom(transaction)) {
       return maxFeePerGasFromTransaction;
+    }
     return null;
   });
 

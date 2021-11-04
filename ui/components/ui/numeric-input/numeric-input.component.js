@@ -30,7 +30,9 @@ export default function NumericInput({
         onChange={(e) => {
           const newValue = e.target.value;
           const match = DECIMAL_REGEX.exec(newValue);
-          if (match?.[1]?.length >= 15) return;
+          if (match?.[1]?.length >= 15) {
+            return;
+          }
           onChange?.(parseFloat(newValue || 0, 10));
         }}
         min="0"

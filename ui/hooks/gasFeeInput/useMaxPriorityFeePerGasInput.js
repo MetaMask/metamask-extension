@@ -56,8 +56,12 @@ export function useMaxPriorityFeePerGasInput({
     : 0;
 
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(() => {
-    if (maxPriorityFeePerGasFromTransaction && feeParamsAreCustom(transaction))
+    if (
+      maxPriorityFeePerGasFromTransaction &&
+      feeParamsAreCustom(transaction)
+    ) {
       return maxPriorityFeePerGasFromTransaction;
+    }
     return null;
   });
 
