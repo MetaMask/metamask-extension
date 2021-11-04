@@ -267,7 +267,7 @@ TextField.propTypes = {
   autoComplete: PropTypes.string,
   placeholder: PropTypes.string,
   name: PropTypes.string,
-  passwordrules: PropTypes.string
+  passwordrules: PropTypes.string,
 };
 
 export default withStyles(styles)(TextField);
