@@ -646,12 +646,6 @@
   "on": {
     "message": "Imewashwa"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL ya Block Explorer URL (hiari)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Ishara (hiari)"
-  },
   "origin": {
     "message": "Asili"
   },

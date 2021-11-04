@@ -637,12 +637,6 @@
   "on": {
     "message": "Zapnuté"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokovať URL Explorera (voliteľné)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (voliteľné)"
-  },
   "origin": {
     "message": "Pôvod"
   },

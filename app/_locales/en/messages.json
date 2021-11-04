@@ -1767,11 +1767,8 @@
   "optional": {
     "message": "Optional"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (optional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Currency Symbol (optional)"
+  "optionalWithParanthesis": {
+    "message": "(Optional)"
   },
   "or": {
     "message": "or"

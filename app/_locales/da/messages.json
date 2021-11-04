@@ -652,12 +652,6 @@
   "on": {
     "message": "Til"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Blok-stifinder-URL (valgfrit)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (valgfrit)"
-  },
   "parameters": {
     "message": "Parametre"
   },

@@ -1321,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続します。"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "ブロック エクスプローラーの URL (オプション)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "通貨記号 (オプション)"
-  },
   "origin": {
     "message": "起点"
   },

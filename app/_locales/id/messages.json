@@ -1321,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL Block Explorer (opsional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol Mata Uang (opsional)"
-  },
   "origin": {
     "message": "Asal"
   },

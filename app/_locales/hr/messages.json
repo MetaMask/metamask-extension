@@ -661,12 +661,6 @@
   "on": {
     "message": "Uključi"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokiraj Explorerov URL (neobavezno)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (neobavezno)"
-  },
   "origin": {
     "message": "Podrijetlo"
   },

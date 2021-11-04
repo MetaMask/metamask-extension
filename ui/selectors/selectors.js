@@ -688,3 +688,15 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
 export function getNewNetworkAdded(state) {
   return state.appState.newNetworkAdded;
 }
+
+export function getNetworksTabSelectedRpcUrl(state) {
+  return state.appState.networksTabSelectedRpcUrl;
+}
+
+export function getProvider(state) {
+  return state.metamask.provider;
+}
+
+export function getFrequentRpcListDetail(state) {
+  return state.metamask.frequentRpcListDetail;
+}

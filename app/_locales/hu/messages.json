@@ -661,12 +661,6 @@
   "on": {
     "message": "Be"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Explorer URL letiltása (nem kötelező)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Szimbólum (opcionális)"
-  },
   "origin": {
     "message": "Eredet"
   },

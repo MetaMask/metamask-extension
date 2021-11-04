@@ -645,12 +645,6 @@
   "on": {
     "message": "Hidupkan"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Sekat URL Explorer (pilihan)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (pilihan)"
-  },
   "origin": {
     "message": "Asal"
   },

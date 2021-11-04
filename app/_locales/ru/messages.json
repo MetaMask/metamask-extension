@@ -1321,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "Подключайтесь только к сайтам, которым доверяете."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL-адрес проводника блока (необязательно)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Символ валюты (необязательно)"
-  },
   "origin": {
     "message": "Источник"
   },
