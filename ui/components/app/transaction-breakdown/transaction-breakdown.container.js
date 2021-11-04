@@ -5,13 +5,14 @@ import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { subtractHexes } from '../../../helpers/utils/conversions.util';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
+import { getIsOptimism } from '../../../ducks/optimism';
 import TransactionBreakdown from './transaction-breakdown.component';
 
 const mapStateToProps = (state, ownProps) => {
   const { transaction, isTokenApprove } = ownProps;
   const {
     txParams: { gas, gasPrice, maxFeePerGas, value } = {},
-    txReceipt: { gasUsed, effectiveGasPrice } = {},
+    txReceipt: { gasUsed, effectiveGasPrice, l1Fee: l1HexGasTotal } = {},
     baseFeePerGas,
   } = transaction;
 
@@ -35,6 +36,8 @@ const mapStateToProps = (state, ownProps) => {
     '0x0';
   const totalInHex = sumHexes(hexGasTotal, value);
 
+  const isOptimism = getIsOptimism(state);
+
   return {
     nativeCurrency: getNativeCurrency(state),
     showFiat: getShouldShowFiat(state),
@@ -48,6 +51,8 @@ const mapStateToProps = (state, ownProps) => {
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
+    isOptimism,
+    l1HexGasTotal,
   };
 };
 
