@@ -143,6 +143,7 @@ export default class ConfirmTransactionBase extends Component {
     submitWarning: '',
     ethGasPriceWarning: '',
     editingGas: false,
+    confirmAnyways: false,    
   };
 
   componentDidUpdate(prevProps) {
@@ -294,6 +295,10 @@ export default class ConfirmTransactionBase extends Component {
 
   handleCloseEditGas() {
     this.setState({ editingGas: false });
+  }
+
+  handleConfirmAnyways() {
+    this.setState({ confirmAnyways: true })
   }
 
   renderDetails() {
@@ -1068,6 +1073,10 @@ export default class ConfirmTransactionBase extends Component {
       requestsWaitingText,
     } = this.getNavigateTxData();
 
+    const isDisabled = () => {
+      return this.state.confirmAnyways ? false : !valid;
+    };
+  
     let functionType = getMethodName(name);
     if (!functionType) {
       if (type) {
@@ -1112,7 +1121,7 @@ export default class ConfirmTransactionBase extends Component {
         ofText={ofText}
         requestsWaitingText={requestsWaitingText}
         disabled={
-          !valid ||
+          isDisabled() ||
           submitting ||
           hardwareWalletRequiresConnection ||
           (gasIsLoading && !gasFeeIsCustom)
@@ -1121,6 +1130,7 @@ export default class ConfirmTransactionBase extends Component {
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}
+        onConfirmAnyways={() => this.handleConfirmAnyways()}
         hideSenderToRecipient={hideSenderToRecipient}
         origin={txData.origin}
         ethGasPriceWarning={ethGasPriceWarning}
