@@ -36,7 +36,6 @@ import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import Loading from '../../components/ui/loading-screen';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
-import { GasFeeContextProvider } from '../../contexts/gasFee';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
@@ -169,7 +168,7 @@ export default function ConfirmApprove() {
       showAccountInHeader
       title={tokensText}
       contentComponent={
-        <GasFeeContextProvider transaction={transaction}>
+        <>
           <ConfirmApproveContent
             decimals={decimals}
             siteImage={siteImage}
@@ -254,7 +253,7 @@ export default function ConfirmApprove() {
               transaction={transaction}
             />
           )}
-        </GasFeeContextProvider>
+        </>
       }
       hideSenderToRecipient
       customTxParamsData={customData}

@@ -15,7 +15,6 @@ import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
-import { useGasFeeContext } from '../../../contexts/gasFee';
 
 const HeartBeat = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
