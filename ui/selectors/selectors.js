@@ -303,10 +303,13 @@ export function getAddressBookEntry(state, address) {
   return entry;
 }
 
-export function getAddressBookEntryName(state, address) {
+export function getAddressBookEntryOrAccountName(state, address) {
   const entry =
-    getAddressBookEntry(state, address) || state.metamask.identities[address];
-  return entry && entry.name !== '' ? entry.name : shortenAddress(address);
+    getAddressBookEntry(state, address) ||
+    Object.values(state.metamask.identities).find((identity) =>
+      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    );
+  return entry && entry.name !== '' ? entry.name : address;
 }
 
 export function accountsWithSendEtherInfoSelector(state) {
