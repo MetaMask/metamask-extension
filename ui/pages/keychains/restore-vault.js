@@ -215,6 +215,8 @@ class RestoreVaultPage extends Component {
             </div>
             <TextField
               id="password"
+              name="password"
+              placeholder="New password"
               label={t('newPassword')}
               type="password"
               className="first-time-flow__input"
@@ -224,11 +226,14 @@ class RestoreVaultPage extends Component {
               }
               error={passwordError}
               autoComplete="new-password"
+              passwordrules="minlength: 8; maxlength: 20; required: lower; required: upper; required: digit;"
               margin="normal"
               largeLabel
             />
             <TextField
               id="confirm-password"
+              name="confirm-password"
+              placeholder="Confirm password"
               label={t('confirmPassword')}
               type="password"
               className="first-time-flow__input"
@@ -238,6 +243,7 @@ class RestoreVaultPage extends Component {
               }
               error={confirmPasswordError}
               autoComplete="confirm-password"
+              passwordrules="minlength: 8; maxlength: 20; required: lower; required: upper; required: digit;"
               margin="normal"
               largeLabel
             />

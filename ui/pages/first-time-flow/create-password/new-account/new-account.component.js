@@ -168,6 +168,8 @@ export default class NewAccount extends PureComponent {
         <form className="first-time-flow__form" onSubmit={this.handleCreate}>
           <TextField
             id="create-password"
+            name="create-password"
+            placeholder="New password"
             label={t('newPassword')}
             type="password"
             className="first-time-flow__input"
@@ -176,12 +178,15 @@ export default class NewAccount extends PureComponent {
             error={passwordError}
             autoFocus
             autoComplete="new-password"
+            passwordrules="minlength: 8; maxlength: 20; required: lower; required: upper; required: digit;"
             margin="normal"
             fullWidth
             largeLabel
           />
           <TextField
             id="confirm-password"
+            name="confirm-password"
+            placeholder="Confirm password"
             label={t('confirmPassword')}
             type="password"
             className="first-time-flow__input"
@@ -191,6 +196,7 @@ export default class NewAccount extends PureComponent {
             }
             error={confirmPasswordError}
             autoComplete="confirm-password"
+            passwordrules="minlength: 8; maxlength: 20; required: lower; required: upper; required: digit;"
             margin="normal"
             fullWidth
             largeLabel

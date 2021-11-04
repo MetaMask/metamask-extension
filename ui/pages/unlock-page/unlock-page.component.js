@@ -153,6 +153,8 @@ export default class UnlockPage extends Component {
           <form className="unlock-page__form" onSubmit={this.handleSubmit}>
             <TextField
               id="password"
+              name="password"
+              placeholder="Password"
               label={t('password')}
               type="password"
               value={password}
@@ -160,6 +162,7 @@ export default class UnlockPage extends Component {
               error={error}
               autoFocus
               autoComplete="current-password"
+              passwordrules="minlength: 8; maxlength: 20; required: lower; required: upper; required: digit;"
               theme="material"
               fullWidth
             />
