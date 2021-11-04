@@ -94,7 +94,6 @@ import {
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import ViewQuotePriceDifference from './view-quote-price-difference';
@@ -675,158 +674,143 @@ export default function ViewQuote() {
     }
   }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
 
-  const transaction = {
-    userFeeLevel: swapsUserFeeLevel || 'high',
-    txParams: {
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-      gas: maxGasLimit,
-    },
-  };
-
   return (
-    <>
-      <div className="view-quote">
+    <div className="view-quote">
+      <div
+        className={classnames('view-quote__content', {
+          'view-quote__content_modal': disableSubmissionDueToPriceWarning,
+        })}
+      >
+        {selectQuotePopoverShown && (
+          <SelectQuotePopover
+            quoteDataRows={renderablePopoverData}
+            onClose={() => setSelectQuotePopoverShown(false)}
+            onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
+            swapToSymbol={destinationTokenSymbol}
+            initialAggId={usedQuote.aggregator}
+            onQuoteDetailsIsOpened={quoteDetailsOpened}
+          />
+        )}
+
+        {showEditGasPopover && networkAndAccountSupports1559 && (
+          <EditGasPopover
+            transaction={{
+              userFeeLevel: swapsUserFeeLevel || 'high',
+              txParams: {
+                maxFeePerGas,
+                maxPriorityFeePerGas,
+                gas: maxGasLimit,
+              },
+            }}
+            minimumGasLimit={usedGasLimit}
+            defaultEstimateToUse="high"
+            mode={EDIT_GAS_MODES.SWAPS}
+            confirmButtonText={t('submit')}
+            onClose={onCloseEditGasPopover}
+          />
+        )}
+
         <div
-          className={classnames('view-quote__content', {
-            'view-quote__content_modal': disableSubmissionDueToPriceWarning,
+          className={classnames('view-quote__warning-wrapper', {
+            'view-quote__warning-wrapper--thin': !isShowingWarning,
           })}
         >
-          {selectQuotePopoverShown && (
-            <SelectQuotePopover
-              quoteDataRows={renderablePopoverData}
-              onClose={() => setSelectQuotePopoverShown(false)}
-              onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
-              swapToSymbol={destinationTokenSymbol}
-              initialAggId={usedQuote.aggregator}
-              onQuoteDetailsIsOpened={quoteDetailsOpened}
+          {viewQuotePriceDifferenceComponent}
+          {(showInsufficientWarning || tokenBalanceUnavailable) && (
+            <ActionableMessage
+              message={actionableBalanceErrorMessage}
+              onClose={() => setWarningHidden(true)}
             />
           )}
-
-          {showEditGasPopover && networkAndAccountSupports1559 && (
-            <GasFeeContextProvider
-              defaultEstimateToUse="high"
-              minimumGasLimit={usedGasLimit}
-              mode={EDIT_GAS_MODES.SWAPS}
-              transaction={transaction}
-            >
-              <EditGasPopover
-                transaction={transaction}
-                minimumGasLimit={usedGasLimit}
-                defaultEstimateToUse="high"
-                mode={EDIT_GAS_MODES.SWAPS}
-                confirmButtonText={t('submit')}
-                onClose={onCloseEditGasPopover}
-              />
-            </GasFeeContextProvider>
-          )}
-
-          <div
-            className={classnames('view-quote__warning-wrapper', {
-              'view-quote__warning-wrapper--thin': !isShowingWarning,
-            })}
-          >
-            {viewQuotePriceDifferenceComponent}
-            {(showInsufficientWarning || tokenBalanceUnavailable) && (
-              <ActionableMessage
-                message={actionableBalanceErrorMessage}
-                onClose={() => setWarningHidden(true)}
-              />
-            )}
-          </div>
-          <div className="view-quote__countdown-timer-container">
-            <CountdownTimer
-              timeStarted={quotesLastFetched}
-              warningTime="0:30"
-              infoTooltipLabelKey="swapQuotesAreRefreshed"
-              labelKey="swapNewQuoteIn"
-            />
-          </div>
-          <MainQuoteSummary
-            sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
-            sourceDecimals={sourceTokenDecimals}
-            sourceSymbol={sourceTokenSymbol}
-            destinationValue={calcTokenValue(
-              destinationTokenValue,
-              destinationTokenDecimals,
-            )}
-            destinationDecimals={destinationTokenDecimals}
-            destinationSymbol={destinationTokenSymbol}
-            sourceIconUrl={sourceTokenIconUrl}
-            destinationIconUrl={destinationIconUrl}
-          />
-          <div
-            className={classnames('view-quote__fee-card-container', {
-              'view-quote__fee-card-container--three-rows':
-                approveTxParams && (!balanceError || warningHidden),
-            })}
-          >
-            <FeeCard
-              primaryFee={{
-                fee: feeInEth,
-                maxFee: maxFeeInEth,
-              }}
-              secondaryFee={{
-                fee: feeInFiat,
-                maxFee: maxFeeInFiat,
-              }}
-              onFeeCardMaxRowClick={onFeeCardMaxRowClick}
-              hideTokenApprovalRow={
-                !approveTxParams || (balanceError && !warningHidden)
-              }
-              tokenApprovalTextComponent={tokenApprovalTextComponent}
-              tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
-              onTokenApprovalClick={onFeeCardTokenApprovalClick}
-              metaMaskFee={String(metaMaskFee)}
-              isBestQuote={isBestQuote}
-              numberOfQuotes={Object.values(quotes).length}
-              onQuotesClick={() => {
-                allAvailableQuotesOpened();
-                setSelectQuotePopoverShown(true);
-              }}
-              tokenConversionRate={
-                destinationTokenSymbol === defaultSwapsToken.symbol
-                  ? 1
-                  : memoizedTokenConversionRates[destinationToken.address]
-              }
-              chainId={chainId}
-              networkAndAccountSupports1559={networkAndAccountSupports1559}
-              maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(
-                maxPriorityFeePerGas,
-              )}
-              maxFeePerGasDecGWEI={hexWEIToDecGWEI(maxFeePerGas)}
-            />
-          </div>
         </div>
-        <SwapsFooter
-          onSubmit={() => {
-            setSubmitClicked(true);
-            if (!balanceError) {
-              dispatch(signAndSendTransactions(history, metaMetricsEvent));
-            } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
-              history.push(DEFAULT_ROUTE);
-            } else {
-              history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
-            }
-          }}
-          submitText={t('swap')}
-          onCancel={async () =>
-            await dispatch(navigateBackToBuildQuote(history))
-          }
-          disabled={
-            submitClicked ||
-            balanceError ||
-            tokenBalanceUnavailable ||
-            disableSubmissionDueToPriceWarning ||
-            (networkAndAccountSupports1559 &&
-              baseAndPriorityFeePerGas === undefined) ||
-            (!networkAndAccountSupports1559 &&
-              (gasPrice === null || gasPrice === undefined))
-          }
-          className={isShowingWarning && 'view-quote__thin-swaps-footer'}
-          showTopBorder
+        <div className="view-quote__countdown-timer-container">
+          <CountdownTimer
+            timeStarted={quotesLastFetched}
+            warningTime="0:30"
+            infoTooltipLabelKey="swapQuotesAreRefreshed"
+            labelKey="swapNewQuoteIn"
+          />
+        </div>
+        <MainQuoteSummary
+          sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
+          sourceDecimals={sourceTokenDecimals}
+          sourceSymbol={sourceTokenSymbol}
+          destinationValue={calcTokenValue(
+            destinationTokenValue,
+            destinationTokenDecimals,
+          )}
+          destinationDecimals={destinationTokenDecimals}
+          destinationSymbol={destinationTokenSymbol}
+          sourceIconUrl={sourceTokenIconUrl}
+          destinationIconUrl={destinationIconUrl}
         />
+        <div
+          className={classnames('view-quote__fee-card-container', {
+            'view-quote__fee-card-container--three-rows':
+              approveTxParams && (!balanceError || warningHidden),
+          })}
+        >
+          <FeeCard
+            primaryFee={{
+              fee: feeInEth,
+              maxFee: maxFeeInEth,
+            }}
+            secondaryFee={{
+              fee: feeInFiat,
+              maxFee: maxFeeInFiat,
+            }}
+            onFeeCardMaxRowClick={onFeeCardMaxRowClick}
+            hideTokenApprovalRow={
+              !approveTxParams || (balanceError && !warningHidden)
+            }
+            tokenApprovalTextComponent={tokenApprovalTextComponent}
+            tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
+            onTokenApprovalClick={onFeeCardTokenApprovalClick}
+            metaMaskFee={String(metaMaskFee)}
+            isBestQuote={isBestQuote}
+            numberOfQuotes={Object.values(quotes).length}
+            onQuotesClick={() => {
+              allAvailableQuotesOpened();
+              setSelectQuotePopoverShown(true);
+            }}
+            tokenConversionRate={
+              destinationTokenSymbol === defaultSwapsToken.symbol
+                ? 1
+                : memoizedTokenConversionRates[destinationToken.address]
+            }
+            chainId={chainId}
+            networkAndAccountSupports1559={networkAndAccountSupports1559}
+            maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(maxPriorityFeePerGas)}
+            maxFeePerGasDecGWEI={hexWEIToDecGWEI(maxFeePerGas)}
+          />
+        </div>
       </div>
-    </>
+      <SwapsFooter
+        onSubmit={() => {
+          setSubmitClicked(true);
+          if (!balanceError) {
+            dispatch(signAndSendTransactions(history, metaMetricsEvent));
+          } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
+            history.push(DEFAULT_ROUTE);
+          } else {
+            history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
+          }
+        }}
+        submitText={t('swap')}
+        onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
+        disabled={
+          submitClicked ||
+          balanceError ||
+          tokenBalanceUnavailable ||
+          disableSubmissionDueToPriceWarning ||
+          (networkAndAccountSupports1559 &&
+            baseAndPriorityFeePerGas === undefined) ||
+          (!networkAndAccountSupports1559 &&
+            (gasPrice === null || gasPrice === undefined))
+        }
+        className={isShowingWarning && 'view-quote__thin-swaps-footer'}
+        showTopBorder
+      />
+    </div>
   );
 }
