@@ -371,14 +371,13 @@ export default class ConfirmTransactionBase extends Component {
           </>
         );
 
-        const detailText = (
+        const detailText = isStandardNetwork && (
           <div className="confirm-page-container-content__currency-container">
             {renderHeartBeatIfNotInTest()}
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
               value={hexMinimumTransactionFee}
               hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-              ethNumberOfDecimals={15}
             />
           </div>
         );
@@ -390,6 +389,7 @@ export default class ConfirmTransactionBase extends Component {
               type={PRIMARY}
               value={hexMinimumTransactionFee}
               hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+              numberOfDecimals={15}
             />
           </div>
         );
@@ -444,12 +444,12 @@ export default class ConfirmTransactionBase extends Component {
         </>
       );
 
-      const detailText = (
+      const detailText = isStandardNetwork && (
         <div className="confirm-page-container-content__currency-container">
           {renderHeartBeatIfNotInTest()}
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
-            value={hexEstimatedL1Fee || hexMinimumTransactionFee}
+            value={hexMinimumTransactionFee}
             hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
           />
         </div>
@@ -462,6 +462,7 @@ export default class ConfirmTransactionBase extends Component {
             type={PRIMARY}
             value={hexEstimatedL1Fee || hexMinimumTransactionFee}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            numberOfDecimals={hexEstimatedL1Fee ? 18 : null}
           />
         </div>
       );
@@ -657,7 +658,7 @@ export default class ConfirmTransactionBase extends Component {
       ) : null,
       renderEstimatedL2GasFeeItem(),
       renderEstimatedL1GasFeeItem(),
-      renderEstimatedTotalItem(),
+      isStandardNetwork && renderEstimatedTotalItem(),
     ];
 
     return (

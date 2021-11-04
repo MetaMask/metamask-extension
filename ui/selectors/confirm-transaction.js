@@ -251,8 +251,6 @@ export const transactionFeeSelector = function (state, txData) {
   const ethEstimatedL1Fee = conversionUtil(estimatedL1Fee, {
     fromNumericBase: 'BN',
     toNumericBase: 'dec',
-    fromDenomination: 'GWEI',
-    toDenomination: 'WEI',
   });
   const hexEstimatedL1Fee = addHexPrefix(
     conversionUtil(ethEstimatedL1Fee, {
