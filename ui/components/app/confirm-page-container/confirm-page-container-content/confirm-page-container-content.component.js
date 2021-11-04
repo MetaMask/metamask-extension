@@ -3,16 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
 import ErrorMessage from '../../../ui/error-message';
-import Button from '../../../ui/button';
-import Typography from '../../../ui/typography';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
-import {
-  COLORS,
-  FONT_STYLE,
-  FONT_WEIGHT,
-  TYPOGRAPHY,
-} from '../../../../helpers/constants/design-system';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -114,8 +106,8 @@ export default class ConfirmPageContainerContent extends Component {
 
     const primaryAction = {
       label: this.context.t('iWillTryAnyway'),
-      onClick: () => this.setState({ confirmAnyways: true })
-    }
+      onClick: () => this.setState({ confirmAnyways: true }),
+    };
 
     return (
       <div className="confirm-page-container-content">

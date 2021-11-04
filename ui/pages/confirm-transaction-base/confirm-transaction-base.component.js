@@ -321,7 +321,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { t } = this.context;
 
-    const hasSimulationError  = Boolean(this.props.txData.simulationFails);
+    const hasSimulationError = Boolean(this.props.txData.simulationFails);
 
     const renderTotalMaxAmount = () => {
       if (
@@ -1055,7 +1055,7 @@ export default class ConfirmTransactionBase extends Component {
 
     const { name } = methodData;
     const { valid, errorKey } = this.getErrorKey();
-    const hasSimulationError  = Boolean(txData.simulationFails);
+    const hasSimulationError = Boolean(txData.simulationFails);
     const {
       totalTx,
       positionOfCurrentTx,
