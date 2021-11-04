@@ -1,18 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { Component, useMemo, createContext } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import * as en from '../../app/_locales/en/messages.json';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
-import {
-  MetaMetricsProvider,
-  LegacyMetaMetricsProvider,
-} from '../../ui/contexts/metametrics';
-import {
-  MetaMetricsProvider as NewMetaMetricsProvider,
-  LegacyMetaMetricsProvider as NewLegacyMetaMetricsProvider,
-} from '../../ui/contexts/metametrics.new';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 
 export const I18nProvider = (props) => {
@@ -40,21 +32,41 @@ I18nProvider.defaultProps = {
   children: undefined,
 };
 
+const MetaMetricsContext = createContext((args) => args);
+
+class LegacyMetaMetricsProvider extends Component {
+  static propTypes = {
+    children: PropTypes.node,
+  };
+
+  static defaultProps = {
+    children: undefined,
+  };
+
+  static contextType = MetaMetricsContext;
+
+  static childContextTypes = {
+    metricsEvent: PropTypes.func,
+  };
+
+  getChildContext() {
+    return {
+      metricsEvent: this.context,
+    };
+  }
+
+  render() {
+    return this.props.children;
+  }
+}
+
 export function renderWithProvider(component, store) {
   const Wrapper = ({ children }) => {
     const WithoutStore = () => (
       <MemoryRouter initialEntries={['/']} initialIndex={0}>
         <I18nProvider currentLocale="en" current={en} en={en}>
           <LegacyI18nProvider>
-            <MetaMetricsProvider>
-              <LegacyMetaMetricsProvider>
-                <NewMetaMetricsProvider>
-                  <NewLegacyMetaMetricsProvider>
-                    {children}
-                  </NewLegacyMetaMetricsProvider>
-                </NewMetaMetricsProvider>
-              </LegacyMetaMetricsProvider>
-            </MetaMetricsProvider>
+            <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
           </LegacyI18nProvider>
         </I18nProvider>
       </MemoryRouter>

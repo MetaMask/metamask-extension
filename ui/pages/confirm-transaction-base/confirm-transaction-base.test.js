@@ -84,6 +84,9 @@ describe('ConfirmTransactionBase', () => {
       txData: {
         id: transactionId,
         origin: 'something',
+        txParams: {
+          value: '0x0',
+        },
       },
     },
     metamask: {
@@ -172,12 +175,18 @@ describe('ConfirmTransactionBase', () => {
     });
 
     it('does not kick off a request to fetch the L1 fee from Optimism on mount', () => {
-      renderWithProvider(<ConfirmTransactionBase />, store);
+      renderWithProvider(
+        <ConfirmTransactionBase hexMaximumTransactionFee="0x1" />,
+        store,
+      );
       expect(fetchEstimatedOptimismL1Fee).not.toHaveBeenCalled();
     });
 
     it('does not kick off a fresh request to fetch the L1 fee from Optimism when txData is updated', () => {
-      renderWithProvider(<ConfirmTransactionBase />, store);
+      renderWithProvider(
+        <ConfirmTransactionBase hexMaximumTransactionFee="0x1" />,
+        store,
+      );
       store.dispatch(
         updateTxData({
           id: transactionId,
