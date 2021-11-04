@@ -92,10 +92,12 @@ export default class NetworkController extends EventEmitter {
 
     /*
      * type NetworkOps = { "type": string, "rpcUrl": string, "chainId": string };
+     * type networkKey = `JSON.parse([type, rpcUrl, chainId])`
      * type Network = { "provider": Provider, "blockTracker": BlockTracker };
-     * type networks = Map<NetworkOps, Network>;
+     * type networks = Map<NetworkKey, Network>;
      */
     this.networks = new Map();
+    this.selectedNetwork = this._networkKeyForOpts(defaultProviderConfig);
   }
 
   /**
@@ -344,15 +346,55 @@ export default class NetworkController extends EventEmitter {
     this._blockTracker = blockTracker;
   }
 
-  _setNetworkClient({ networkMiddleware, blockTracker }) {
+  _createChainConditionalProviderAndBlockTracker() {
     const metamaskMiddleware = createMetamaskMiddleware(
       this._baseProviderParams,
     );
     const engine = new JsonRpcEngine();
+    engine.push(this._chainConditionalRequestMiddleware);
     engine.push(metamaskMiddleware);
     engine.push(networkMiddleware);
     const provider = providerFromEngine(engine);
     this._setProviderAndBlockTracker({ provider, blockTracker });
+  }
+
+  _chainConditionalRequestMiddleware (req, res, next, end) {
+    // If no chainId is present, then behave as usual, using "current network" logic:
+    if (!req?.params?.chainId) {
+      return next();
+    }
+
+    const networkOptsArr = this.networks.keys.map(this._networkOptsForKey)
+    .filter(key => key.chainId === req.params.chainId);
+
+    const networkOpts = networkOptsArr[networkOptsArr.length - 1];
+
+    if (networkOptsArr) {
+      // We should retain dapp connection, maybe add the permitted chainId's provider
+      // from the permissions controller, where the user would have granted a network access to a recipient.
+      log.info(`Multiple providers for chainId ${req.params.chainId}, defaulting to newest, ${networkOpts.rpcUrl}`);
+    }
+
+    const networkKey = this._networkKeyForOpts(networkOptsArr);
+    const { provider } = this.networks.get(networkKey);
+    provider.send(req, (err, result) => {
+      if (err) {
+        res.error = err;
+        return end();
+      }
+
+      res.result = result;
+      end();
+    });
+  }
+
+  _networkKeyForOpts({ type, rpcUrl, chainId }) {
+    return JSON.stringify([ type, rpcUrl, chainId ]);
+  }
+
+  _networkOptsForKey(networkKey) {
+    const [ type, rpcUrl, chainId ] = JSON.parse(networkKey);
+    return { type, rpcUrl, chainId };
   }
 
   _setProviderAndBlockTracker({ provider, blockTracker }) {
@@ -369,13 +411,10 @@ export default class NetworkController extends EventEmitter {
         eventFilter: 'skipInternal',
       });
     }
+
     // set new provider and blockTracker
     this._provider = provider;
     this._blockTracker = blockTracker;
-  }
-
-  _networkKeyForOpts({ type, rpcUrl, chainId }) {
-    return JSON.stringify([ type, rpcUrl, chainId ]);
   }
 
 }
