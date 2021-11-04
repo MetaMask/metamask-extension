@@ -27,6 +27,7 @@ import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import createMetamaskMiddleware from './createMetamaskMiddleware';
 import createInfuraClient from './createInfuraClient';
 import createJsonRpcClient from './createJsonRpcClient';
+import Network from './network2';
 
 const env = process.env.METAMASK_ENV;
 const fetchWithTimeout = getFetchWithTimeout(30000);
@@ -88,6 +89,13 @@ export default class NetworkController extends EventEmitter {
     this._blockTrackerProxy = null;
 
     this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
+
+    /*
+     * type NetworkOps = { "type": string, "rpcUrl": string, "chainId": string };
+     * type Network = { "provider": Provider, "blockTracker": BlockTracker };
+     * type networks = Map<NetworkOps, Network>;
+     */
+    this.networks = new Map();
   }
 
   /**
@@ -108,7 +116,16 @@ export default class NetworkController extends EventEmitter {
   initializeProvider(providerParams) {
     this._baseProviderParams = providerParams;
     const { type, rpcUrl, chainId } = this.getProviderConfig();
-    this._configureProvider({ type, rpcUrl, chainId });
+    const networkOps = { type, rpcUrl, chainId };
+
+    const networkKey = this._networkKeyForOpts(networkOpts);
+    let network = this.networks.get(networkKey);
+    if (!network) {
+      const network = new Network({...networkOps, infuraProjectId: this.infuraProjectId});
+      this.networks.set(networkKey, network);
+    }
+
+    this._configureProvider(networkOps, network);
     this.lookupNetwork();
   }
 
@@ -297,34 +314,34 @@ export default class NetworkController extends EventEmitter {
     this.emit(NETWORK_EVENTS.NETWORK_DID_CHANGE, opts.type);
   }
 
-  _configureProvider({ type, rpcUrl, chainId }) {
-    // infura type-based endpoints
-    const isInfura = INFURA_PROVIDER_TYPES.includes(type);
-    if (isInfura) {
-      this._configureInfuraProvider(type, this._infuraProjectId);
-      // url-based rpc endpoints
-    } else if (type === NETWORK_TYPE_RPC) {
-      this._configureStandardProvider(rpcUrl, chainId);
-    } else {
-      throw new Error(
-        `NetworkController - _configureProvider - unknown type "${type}"`,
-      );
+  _configureProvider(networkOpts, network) {
+    const { type, rpcUrl, chainId } = networkOpts;
+
+    if (!network) {
+      network = new Network(networkOpts);
     }
+
+    return this._configureNetwork(network);
   }
 
-  _configureInfuraProvider(type, projectId) {
-    log.info('NetworkController - configureInfuraProvider', type);
-    const networkClient = createInfuraClient({
-      network: type,
-      projectId,
-    });
-    this._setNetworkClient(networkClient);
-  }
-
-  _configureStandardProvider(rpcUrl, chainId) {
-    log.info('NetworkController - configureStandardProvider', rpcUrl);
-    const networkClient = createJsonRpcClient({ rpcUrl, chainId });
-    this._setNetworkClient(networkClient);
+  _configureLegacyProxiesFromNetwork (network) {
+    const { provider, blockTracker } = network;
+    // update or intialize proxies
+    if (this._providerProxy) {
+      this._providerProxy.setTarget(provider);
+    } else {
+      this._providerProxy = createSwappableProxy(provider);
+    }
+    if (this._blockTrackerProxy) {
+      this._blockTrackerProxy.setTarget(blockTracker);
+    } else {
+      this._blockTrackerProxy = createEventEmitterProxy(blockTracker, {
+        eventFilter: 'skipInternal',
+      });
+    }
+    // set new provider and blockTracker
+    this._provider = provider;
+    this._blockTracker = blockTracker;
   }
 
   _setNetworkClient({ networkMiddleware, blockTracker }) {
@@ -356,4 +373,9 @@ export default class NetworkController extends EventEmitter {
     this._provider = provider;
     this._blockTracker = blockTracker;
   }
+
+  _networkKeyForOpts({ type, rpcUrl, chainId }) {
+    return JSON.stringify([ type, rpcUrl, chainId ]);
+  }
+
 }
