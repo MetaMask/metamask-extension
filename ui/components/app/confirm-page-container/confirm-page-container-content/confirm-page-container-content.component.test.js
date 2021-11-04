@@ -23,6 +23,7 @@ describe('Confirm Page Container Page', () => {
     const mockOnCancel = jest.fn();
     const mockOnCancelAll = jest.fn();
     const mockOnSubmit = jest.fn();
+    const mockOnConfirmAnyways = jest.fn();
     props = {
       action: ' Withdraw Stake',
       errorMessage: null,
@@ -32,6 +33,7 @@ describe('Confirm Page Container Page', () => {
       onCancel: mockOnCancel,
       cancelText: 'Reject',
       onSubmit: mockOnSubmit,
+      onConfirmAnyways: mockOnConfirmAnyways,
       submitText: 'Confirm',
       disabled: true,
       origin: 'http://localhost:4200',
@@ -49,21 +51,21 @@ describe('Confirm Page Container Page', () => {
     ).not.toBeInTheDocument();
     expect(
       queryByText(
-        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
+        'This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended.',
       ),
     ).toBeInTheDocument();
     expect(queryByText('I will try anyway')).toBeInTheDocument();
 
+    const confirmButton = getByText('Confirm');
     expect(getByText('Confirm').closest('button')).toBeDisabled();
+    fireEvent.click(confirmButton);
+    await tick();
+    expect(props.onSubmit).toHaveBeenCalledTimes(0);
+
     const iWillTryButton = getByText('I will try anyway');
     fireEvent.click(iWillTryButton);
     await tick();
-    expect(getByText('Confirm').closest('button')).toBeEnabled();
-
-    const confirmButton = getByText('Confirm');
-    fireEvent.click(confirmButton);
-    await tick();
-    expect(props.onSubmit).toHaveBeenCalledTimes(1);
+    expect(props.onConfirmAnyways).toHaveBeenCalledTimes(1);
 
     const cancelButton = getByText('Reject');
     fireEvent.click(cancelButton);
@@ -82,7 +84,7 @@ describe('Confirm Page Container Page', () => {
 
     expect(
       queryByText(
-        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
+        'This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended.',
       ),
     ).not.toBeInTheDocument();
     expect(queryByText('I will try anyway')).not.toBeInTheDocument();
@@ -107,14 +109,13 @@ describe('Confirm Page Container Page', () => {
 
     expect(
       queryByText(
-        'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
+        'This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended.',
       ),
     ).not.toBeInTheDocument();
     expect(
       queryByText('Transaction Error. Exception thrown in contract code.'),
     ).not.toBeInTheDocument();
     expect(queryByText('I will try anyway')).not.toBeInTheDocument();
-    expect(getByText('Confirm').closest('button')).toBeEnabled();
 
     const confirmButton = getByText('Confirm');
     fireEvent.click(confirmButton);
