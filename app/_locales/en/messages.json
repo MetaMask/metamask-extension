@@ -2291,8 +2291,7 @@
     "message": "Signed"
   },
   "simulationErrorMessage": {
-    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail. $1",
-    "desc": "A button that could be clicked to submit the transaction anyways"
+    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "skip": {
     "message": "Skip"
