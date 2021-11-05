@@ -2728,10 +2728,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createSnapMethodMiddleware(isSnap, {
         getAppKey: this.getAppKeyForDomain.bind(this, origin),
-        getSnaps: snapController.getPermittedSnaps.bind(
-          snapController,
-          origin,
-        ),
+        getSnaps: snapController.getPermittedSnaps.bind(snapController, origin),
         requestPermissions: permissionsController.requestPermissions.bind(
           permissionsController,
           origin,
@@ -2740,10 +2737,7 @@ export default class MetamaskController extends EventEmitter {
           permissionsController,
           origin,
         ),
-        installSnaps: snapController.installSnaps.bind(
-          snapController,
-          origin,
-        ),
+        installSnaps: snapController.installSnaps.bind(snapController, origin),
       }),
     );
 
