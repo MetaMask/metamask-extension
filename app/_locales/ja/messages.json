@@ -140,9 +140,6 @@
   "amount": {
     "message": "金額"
   },
-  "amountWithColon": {
-    "message": "金額:"
-  },
   "appDescription": {
     "message": "ブラウザーにあるイーサリアム ウォレット",
     "description": "The description of the application"
@@ -1324,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続します。"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "ブロック エクスプローラーの URL (オプション)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "通貨記号 (オプション)"
-  },
   "origin": {
     "message": "起点"
   },
@@ -2190,9 +2181,6 @@
   "toAddress": {
     "message": "移動先:$1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "移動先:"
   },
   "token": {
     "message": "トークン"

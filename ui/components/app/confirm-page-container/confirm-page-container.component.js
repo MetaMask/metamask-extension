@@ -5,6 +5,8 @@ import { PageContainerFooter } from '../../ui/page-container';
 import EditGasPopover from '../edit-gas-popover';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
+import ErrorMessage from '../../ui/error-message';
+import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import Dialog from '../../ui/dialog';
 import {
   ConfirmPageContainerHeader,
@@ -125,101 +127,113 @@ export default class ConfirmPageContainer extends Component {
     const showAddToAddressDialog =
       !contact.name && toAddress && !isOwnedAccount && !hideSenderToRecipient;
 
+    const shouldDisplayWarning =
+      contentComponent && disabled && (errorKey || errorMessage);
+
+    const hideTitle =
+      (currentTransaction.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
+        currentTransaction.type === TRANSACTION_TYPES.DEPLOY_CONTRACT) &&
+      currentTransaction.txParams?.value === '0x0';
+
     return (
-      <div className="page-container">
-        <ConfirmPageContainerNavigation
-          totalTx={totalTx}
-          positionOfCurrentTx={positionOfCurrentTx}
-          nextTxId={nextTxId}
-          prevTxId={prevTxId}
-          showNavigation={showNavigation}
-          onNextTx={(txId) => onNextTx(txId)}
-          firstTx={firstTx}
-          lastTx={lastTx}
-          ofText={ofText}
-          requestsWaitingText={requestsWaitingText}
-        />
-        <GasFeeContextProvider transaction={currentTransaction}>
-          <>
-            <ConfirmPageContainerHeader
-              showEdit={showEdit}
-              onEdit={() => onEdit()}
-              showAccountInHeader={showAccountInHeader}
-              accountAddress={fromAddress}
-            >
-              {hideSenderToRecipient ? null : (
-                <SenderToRecipient
-                  senderName={fromName}
-                  senderAddress={fromAddress}
-                  recipientName={toName}
-                  recipientAddress={toAddress}
-                  recipientEns={toEns}
-                  recipientNickname={toNickname}
-                />
-              )}
-            </ConfirmPageContainerHeader>
-            <div>
-              {showAddToAddressDialog && (
-                <Dialog
-                  type="message"
-                  className="send__dialog"
-                  onClick={() => showAddToAddressBookModal()}
-                >
-                  {this.context.t('newAccountDetectedDialogMessage')}
-                </Dialog>
-              )}
-            </div>
-            {contentComponent || (
-              <ConfirmPageContainerContent
-                action={action}
-                title={title}
-                titleComponent={titleComponent}
-                subtitleComponent={subtitleComponent}
-                hideSubtitle={hideSubtitle}
-                detailsComponent={detailsComponent}
-                dataComponent={dataComponent}
-                errorMessage={errorMessage}
-                errorKey={errorKey}
-                identiconAddress={identiconAddress}
-                nonce={nonce}
-                warning={warning}
-                onCancelAll={onCancelAll}
-                onCancel={onCancel}
-                cancelText={this.context.t('reject')}
-                onSubmit={onSubmit}
-                submitText={this.context.t('confirm')}
-                disabled={disabled}
-                unapprovedTxCount={unapprovedTxCount}
-                rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
-                origin={origin}
-                ethGasPriceWarning={ethGasPriceWarning}
+      <GasFeeContextProvider transaction={transaction}>
+        <div className="page-container">
+          <ConfirmPageContainerNavigation
+            totalTx={totalTx}
+            positionOfCurrentTx={positionOfCurrentTx}
+            nextTxId={nextTxId}
+            prevTxId={prevTxId}
+            showNavigation={showNavigation}
+            onNextTx={(txId) => onNextTx(txId)}
+            firstTx={firstTx}
+            lastTx={lastTx}
+            ofText={ofText}
+            requestsWaitingText={requestsWaitingText}
+          />
+          <ConfirmPageContainerHeader
+            showEdit={showEdit}
+            onEdit={() => onEdit()}
+            showAccountInHeader={showAccountInHeader}
+            accountAddress={fromAddress}
+          >
+            {hideSenderToRecipient ? null : (
+              <SenderToRecipient
+                senderName={fromName}
+                senderAddress={fromAddress}
+                recipientName={toName}
+                recipientAddress={toAddress}
+                recipientEns={toEns}
+                recipientNickname={toNickname}
               />
             )}
-            {contentComponent && (
-              <PageContainerFooter
-                onCancel={onCancel}
-                cancelText={this.context.t('reject')}
-                onSubmit={onSubmit}
-                submitText={this.context.t('confirm')}
-                disabled={disabled}
+          </ConfirmPageContainerHeader>
+          <div>
+            {showAddToAddressDialog && (
+              <Dialog
+                type="message"
+                className="send__dialog"
+                onClick={() => showAddToAddressBookModal()}
               >
-                {unapprovedTxCount > 1 && (
-                  <a onClick={onCancelAll}>
-                    {this.context.t('rejectTxsN', [unapprovedTxCount])}
-                  </a>
-                )}
-              </PageContainerFooter>
+                {this.context.t('newAccountDetectedDialogMessage')}
+              </Dialog>
             )}
-            {editingGas && (
-              <EditGasPopover
-                mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
-                onClose={handleCloseEditGas}
-                transaction={currentTransaction}
-              />
-            )}
-          </>
-        </GasFeeContextProvider>
-      </div>
+          </div>
+          {contentComponent || (
+            <ConfirmPageContainerContent
+              action={action}
+              title={title}
+              titleComponent={titleComponent}
+              subtitleComponent={subtitleComponent}
+              hideSubtitle={hideSubtitle}
+              detailsComponent={detailsComponent}
+              dataComponent={dataComponent}
+              errorMessage={errorMessage}
+              errorKey={errorKey}
+              identiconAddress={identiconAddress}
+              nonce={nonce}
+              warning={warning}
+              onCancelAll={onCancelAll}
+              onCancel={onCancel}
+              cancelText={this.context.t('reject')}
+              onSubmit={onSubmit}
+              submitText={this.context.t('confirm')}
+              disabled={disabled}
+              unapprovedTxCount={unapprovedTxCount}
+              rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
+              origin={origin}
+              ethGasPriceWarning={ethGasPriceWarning}
+              hideTitle={hideTitle}
+            />
+          )}
+          {shouldDisplayWarning && (
+            <div className="confirm-approve-content__warning">
+              <ErrorMessage errorKey={errorKey} />
+            </div>
+          )}
+          {contentComponent && (
+            <PageContainerFooter
+              onCancel={onCancel}
+              cancelText={this.context.t('reject')}
+              onSubmit={onSubmit}
+              submitText={this.context.t('confirm')}
+              disabled={disabled}
+            >
+              {unapprovedTxCount > 1 && (
+                <a onClick={onCancelAll}>
+                  {this.context.t('rejectTxsN', [unapprovedTxCount])}
+                </a>
+              )}
+            </PageContainerFooter>
+          )}
+          {editingGas && (
+            <EditGasPopover
+              mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+              onClose={handleCloseEditGas}
+              transaction={currentTransaction}
+            />
+          )}
+        </div>
+      </GasFeeContextProvider>
     );
   }
 }

@@ -665,12 +665,6 @@
   "on": {
     "message": "በርቷል"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "ኤክስፕሎረር URL አግድ (አማራጭ)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "ምልክት (አማራጭ)"
-  },
   "origin": {
     "message": "መነሻ"
   },

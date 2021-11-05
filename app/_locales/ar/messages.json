@@ -661,12 +661,6 @@
   "on": {
     "message": "تشغيل"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "العنوان الإلكتروني لمستكشف البلوكات (اختياري)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "الرمز (اختياري)"
-  },
   "origin": {
     "message": "الأصل"
   },

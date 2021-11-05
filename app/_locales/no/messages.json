@@ -655,12 +655,6 @@
   "on": {
     "message": "På"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokker Explorer URL (valgfritt)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (valgfritt)"
-  },
   "origin": {
     "message": "Opprinnelse"
   },

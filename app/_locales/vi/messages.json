@@ -140,9 +140,6 @@
   "amount": {
     "message": "Số tiền"
   },
-  "amountWithColon": {
-    "message": "Số tiền:"
-  },
   "appDescription": {
     "message": "Ví Ethereum trên trình duyệt của bạn",
     "description": "The description of the application"
@@ -1324,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL trình khám phá khối (không bắt buộc)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Ký hiệu tiền tệ (không bắt buộc)"
-  },
   "origin": {
     "message": "Nguồn gốc"
   },
@@ -2190,9 +2181,6 @@
   "toAddress": {
     "message": "Đến: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Đến:"
   },
   "token": {
     "message": "Token"

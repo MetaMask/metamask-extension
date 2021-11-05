@@ -668,12 +668,6 @@
   "on": {
     "message": "Увімкнути"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Блокувати Explorer URL (не обов'язково)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Символ (не обов'язково)"
-  },
   "origin": {
     "message": "Походження"
   },

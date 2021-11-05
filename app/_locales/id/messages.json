@@ -140,9 +140,6 @@
   "amount": {
     "message": "Jumlah"
   },
-  "amountWithColon": {
-    "message": "Jumlah:"
-  },
   "appDescription": {
     "message": "Dompet Ethereum di Browser Anda",
     "description": "The description of the application"
@@ -1324,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL Block Explorer (opsional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol Mata Uang (opsional)"
-  },
   "origin": {
     "message": "Asal"
   },
@@ -2190,9 +2181,6 @@
   "toAddress": {
     "message": "Untuk: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Untuk:"
   },
   "token": {
     "message": "Token"

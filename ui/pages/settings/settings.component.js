@@ -101,7 +101,7 @@ class SettingsPage extends PureComponent {
     let titleText;
 
     if (isPopup && addressName) {
-      titleText = addressName;
+      titleText = t('details');
     } else if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey);
     } else {
@@ -231,7 +231,11 @@ class SettingsPage extends PureComponent {
         <Route exact path={ABOUT_US_ROUTE} component={InfoTab} />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
         <Route exact path={ALERTS_ROUTE} component={AlertsTab} />
-        <Route exact path={ADD_NETWORK_ROUTE} component={NetworksTab} />
+        <Route
+          exact
+          path={ADD_NETWORK_ROUTE}
+          render={() => <NetworksTab addNewNetwork />}
+        />
         <Route path={NETWORKS_ROUTE} component={NetworksTab} />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />

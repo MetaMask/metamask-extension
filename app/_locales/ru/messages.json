@@ -140,9 +140,6 @@
   "amount": {
     "message": "Сумма"
   },
-  "amountWithColon": {
-    "message": "Сумма:"
-  },
   "appDescription": {
     "message": "Кошелек Ethereum в вашем браузере",
     "description": "The description of the application"
@@ -1324,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "Подключайтесь только к сайтам, которым доверяете."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL-адрес проводника блока (необязательно)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Символ валюты (необязательно)"
-  },
   "origin": {
     "message": "Источник"
   },
@@ -2190,9 +2181,6 @@
   "toAddress": {
     "message": "Адресат $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Адресат"
   },
   "token": {
     "message": "Токен"
