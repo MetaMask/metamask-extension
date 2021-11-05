@@ -2782,6 +2782,10 @@ export function setLedgerLivePreference(value) {
   };
 }
 
+export async function attemptLedgerTransportCreation() {
+  return await promisifiedBackground.attemptLedgerTransportCreation();
+}
+
 export function captureSingleException(error) {
   return async (dispatch, getState) => {
     const { singleExceptions } = getState().appState;

@@ -866,6 +866,10 @@ export default class MetamaskController extends EventEmitter {
         this.setLedgerTransportPreference,
         this,
       ),
+      attemptLedgerTransportCreation: nodeify(
+        this.attemptLedgerTransportCreation,
+        this,
+      ),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -1617,6 +1621,11 @@ export default class MetamaskController extends EventEmitter {
     keyring.network = this.networkController.getProviderConfig().type;
 
     return keyring;
+  }
+
+  async attemptLedgerTransportCreation() {
+    const keyring = await this.getKeyringForDevice('ledger');
+    return await keyring.attemptMakeApp();
   }
 
   /**

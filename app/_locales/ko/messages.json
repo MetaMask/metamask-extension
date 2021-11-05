@@ -1321,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "블록 탐색기 URL(선택 사항)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "통화 기호(선택 사항)"
-  },
   "origin": {
     "message": "원본"
   },

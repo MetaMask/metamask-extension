@@ -1321,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL ng Block Explorer (opsyonal)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolo ng Currency (opsyonal)"
-  },
   "origin": {
     "message": "Pinagmulan"
   },

@@ -1074,12 +1074,6 @@
   "onlyConnectTrust": {
     "message": "只连接您信任的网站。"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "区块浏览器 URL（选填）"
-  },
-  "optionalCurrencySymbol": {
-    "message": "符号（选填）"
-  },
   "origin": {
     "message": "来源"
   },

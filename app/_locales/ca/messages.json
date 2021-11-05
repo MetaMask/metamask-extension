@@ -652,12 +652,6 @@
   "on": {
     "message": "Activat"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Bloqueja l'URL d'Explorer (opcional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Símbol (opcional)"
-  },
   "origin": {
     "message": "Origen"
   },

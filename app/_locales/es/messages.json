@@ -1321,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Dirección URL del explorador de bloques (opcional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Símbolo de moneda (opcional)"
-  },
   "origin": {
     "message": "Origen"
   },

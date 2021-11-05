@@ -1321,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL trình khám phá khối (không bắt buộc)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Ký hiệu tiền tệ (không bắt buộc)"
-  },
   "origin": {
     "message": "Nguồn gốc"
   },

@@ -1080,12 +1080,6 @@
   "onlyConnectTrust": {
     "message": "Connettiti solo con siti di cui ti fidi."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL del Block Explorer (opzionale)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolo (opzionale)"
-  },
   "origin": {
     "message": "Origine"
   },
