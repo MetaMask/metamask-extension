@@ -136,7 +136,7 @@ export default class ConfirmPageContainer extends Component {
       currentTransaction.txParams?.value === '0x0';
 
     return (
-      <GasFeeContextProvider transaction={transaction}>
+      <GasFeeContextProvider transaction={currentTransaction}>
         <div className="page-container">
           <ConfirmPageContainerNavigation
             totalTx={totalTx}
