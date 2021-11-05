@@ -50,12 +50,6 @@ import BackgroundAnimation from './background-animation';
 
 const TOTAL_WAITING_TIME_IN_SEC = 180;
 
-const PENDING_STATUS = {
-  OPTIMIZING_GAS: 'optimizingGas',
-  PRIVATELY_SUBMITTING: 'privatelySubmitting',
-  PUBLICLY_SUBMITTING: 'publiclySubmitting',
-};
-
 const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
   const minutes = Math.floor(remainingTimeInSec / 60);
   const seconds = remainingTimeInSec % 60;
@@ -64,12 +58,6 @@ const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
 
 export default function SmartTransactionStatus() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
-  const [pendingStatus, setPendingStatus] = useState(
-    PENDING_STATUS.OPTIMIZING_GAS,
-  );
-  const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
-    TOTAL_WAITING_TIME_IN_SEC,
-  );
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -93,6 +81,23 @@ export default function SmartTransactionStatus() {
     latestSmartTransactionUuid = latestSmartTransaction?.uuid;
     smartTransactionStatus = latestSmartTransaction?.statusMetadata || {};
   }
+  const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
+    () => {
+      if (
+        !latestSmartTransaction.time ||
+        latestSmartTransaction.status !== 'pending'
+      ) {
+        return TOTAL_WAITING_TIME_IN_SEC;
+      }
+      const secondsAfterStxSubmission = Math.round(
+        (Date.now() - latestSmartTransaction.time) / 1000,
+      );
+      if (secondsAfterStxSubmission > TOTAL_WAITING_TIME_IN_SEC) {
+        return 0;
+      }
+      return TOTAL_WAITING_TIME_IN_SEC - secondsAfterStxSubmission;
+    },
+  );
 
   const sensitiveProperties = {
     needs_two_confirmations: needsTwoConfirmations,
@@ -107,7 +112,7 @@ export default function SmartTransactionStatus() {
     stx_uuid: latestSmartTransactionUuid,
   };
 
-  let destinationValue = '0.16';
+  let destinationValue;
   if (usedQuote?.destinationAmount) {
     destinationValue = calcTokenAmount(
       usedQuote?.destinationAmount,
@@ -146,12 +151,6 @@ export default function SmartTransactionStatus() {
           clearInterval(intervalId);
           return;
         }
-        if (timeLeftForPendingStxInSec === 150) {
-          setPendingStatus(PENDING_STATUS.PRIVATELY_SUBMITTING);
-        }
-        if (timeLeftForPendingStxInSec === 120) {
-          setPendingStatus(PENDING_STATUS.PUBLICLY_SUBMITTING);
-        }
         setTimeLeftForPendingStxInSec(timeLeftForPendingStxInSec - 1);
       }, 1000);
     }
@@ -175,10 +174,10 @@ export default function SmartTransactionStatus() {
   let subDescription;
   let icon;
   if (isSmartTransactionPending) {
-    if (pendingStatus === PENDING_STATUS.PRIVATELY_SUBMITTING) {
-      headerText = t('stxPendingPrivatelySubmitting');
-    } else if (pendingStatus === PENDING_STATUS.PUBLICLY_SUBMITTING) {
+    if (timeLeftForPendingStxInSec < 120) {
       headerText = t('stxPendingFinalizing');
+    } else if (timeLeftForPendingStxInSec < 150) {
+      headerText = t('stxPendingPrivatelySubmitting');
     }
   }
   if (smartTransactionStatus.minedTx === 'success') {
