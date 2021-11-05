@@ -2800,6 +2800,12 @@
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
   },
+  "transactionDetailGasHeadingV2": {
+    "message": "Gas"
+  },
+  "transactionDetailGasInfoV2": {
+    "message": "estimated"
+  },
   "transactionDetailGasTooltipConversion": {
     "message": "Learn more about gas fees"
   },
