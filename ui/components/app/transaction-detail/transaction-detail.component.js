@@ -36,7 +36,7 @@ export default function TransactionDetail({ rows = [], onEdit }) {
     ? 'dappSuggested'
     : estimateToUse;
 
-  if (EIP_1559_V2) {
+  if (EIP_1559_V2 && estimateUsed) {
     return (
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
