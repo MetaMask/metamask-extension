@@ -43,6 +43,7 @@ function mapStateToProps(state) {
     shouldShowTestNetworks: getShowTestNetworks(state),
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
+    showTestnetMessageInDropdown: state.appState.showTestnetMessageInDropdown,
   };
 }
 
@@ -67,6 +68,7 @@ function mapDispatchToProps(dispatch) {
         }),
       );
     },
+    hideTestNetMessage: () => dispatch(actions.hideTestNetMessage()),
   };
 }
 
@@ -91,6 +93,8 @@ class NetworkDropdown extends Component {
     networkDropdownOpen: PropTypes.bool.isRequired,
     displayInvalidCustomNetworkAlert: PropTypes.func.isRequired,
     showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
+    showTestnetMessageInDropdown: PropTypes.bool.isRequired,
+    hideTestNetMessage: PropTypes.func.isRequired,
     history: PropTypes.object,
   };
 
@@ -266,7 +270,13 @@ class NetworkDropdown extends Component {
   }
 
   render() {
-    const { history, hideNetworkDropdown, shouldShowTestNetworks } = this.props;
+    const {
+      history,
+      hideNetworkDropdown,
+      shouldShowTestNetworks,
+      showTestnetMessageInDropdown,
+      hideTestNetMessage,
+    } = this.props;
     const rpcListDetail = this.props.frequentRpcListDetail;
     const isOpen = this.props.networkDropdownOpen;
     const { t } = this.context;
@@ -301,23 +311,30 @@ class NetworkDropdown extends Component {
         <div className="network-dropdown-header">
           <div className="network-dropdown-title">{t('networks')}</div>
           <div className="network-dropdown-divider" />
-          <div className="network-dropdown-content">
-            {t('defaultNetwork', [
-              <span key="testNetworksEnabled">
-                {shouldShowTestNetworks ? t('disable') : t('enable')}
-              </span>,
-              <span
-                key="advancedSettingsLink"
-                className="network-dropdown-content--link"
-                onClick={() => {
-                  hideNetworkDropdown();
-                  history.push(ADVANCED_ROUTE);
-                }}
-              >
-                {t('here')}
-              </span>,
-            ])}
-          </div>
+          {showTestnetMessageInDropdown ? (
+            <div className="network-dropdown-content">
+              {t('defaultNetwork', [
+                <span key="testNetworksEnabled">
+                  {shouldShowTestNetworks ? t('disable') : t('enable')}
+                </span>,
+                <span
+                  key="advancedSettingsLink"
+                  className="network-dropdown-content--link"
+                  onClick={() => {
+                    hideNetworkDropdown();
+                    history.push(ADVANCED_ROUTE);
+                  }}
+                >
+                  {t('here')}
+                </span>,
+              ])}
+              <button
+                title={t('dismiss')}
+                onClick={hideTestNetMessage}
+                className="fas fa-times network-dropdown-content--close"
+              />
+            </div>
+          ) : null}
         </div>
         {this.renderNetworkEntry('mainnet')}
 

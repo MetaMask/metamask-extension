@@ -1649,6 +1649,12 @@ export function hideNetworkDropdown() {
   };
 }
 
+export function hideTestNetMessage() {
+  return {
+    type: actionConstants.HIDE_TESTNET_MESSAGE,
+  };
+}
+
 export function showModal(payload) {
   return {
     type: actionConstants.MODAL_OPEN,

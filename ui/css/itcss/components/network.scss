@@ -163,6 +163,14 @@
     font-weight: bold;
     text-decoration: underline;
   }
+
+  &--close {
+    color: $white;
+    background: inherit;
+    position: absolute;
+    top: 64px;
+    right: 10px;
+  }
 }
 
 .network-caret {
