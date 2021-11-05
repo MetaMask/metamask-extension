@@ -126,20 +126,20 @@ export default class ConfirmPageContainer extends Component {
       !contact.name && toAddress && !isOwnedAccount && !hideSenderToRecipient;
 
     return (
-      <div className="page-container">
-        <ConfirmPageContainerNavigation
-          totalTx={totalTx}
-          positionOfCurrentTx={positionOfCurrentTx}
-          nextTxId={nextTxId}
-          prevTxId={prevTxId}
-          showNavigation={showNavigation}
-          onNextTx={(txId) => onNextTx(txId)}
-          firstTx={firstTx}
-          lastTx={lastTx}
-          ofText={ofText}
-          requestsWaitingText={requestsWaitingText}
-        />
-        <GasFeeContextProvider transaction={currentTransaction}>
+      <GasFeeContextProvider transaction={currentTransaction}>
+        <div className="page-container">
+          <ConfirmPageContainerNavigation
+            totalTx={totalTx}
+            positionOfCurrentTx={positionOfCurrentTx}
+            nextTxId={nextTxId}
+            prevTxId={prevTxId}
+            showNavigation={showNavigation}
+            onNextTx={(txId) => onNextTx(txId)}
+            firstTx={firstTx}
+            lastTx={lastTx}
+            ofText={ofText}
+            requestsWaitingText={requestsWaitingText}
+          />
           <>
             <ConfirmPageContainerHeader
               showEdit={showEdit}
@@ -218,8 +218,8 @@ export default class ConfirmPageContainer extends Component {
               />
             )}
           </>
-        </GasFeeContextProvider>
-      </div>
+        </div>
+      </GasFeeContextProvider>
     );
   }
 }
