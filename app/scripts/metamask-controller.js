@@ -31,6 +31,7 @@ import {
   TokenRatesController,
   CollectiblesController,
   AssetsContractController,
+  CollectibleDetectionController,
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
@@ -195,6 +196,25 @@ export default class MetamaskController extends EventEmitter {
       getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
         this.assetsContractController,
       ),
+    });
+
+    this.collectibleDetectionController = new CollectibleDetectionController({
+      onCollectiblesStateChange: (listener) =>
+        this.collectiblesController.subscribe(listener),
+      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
+      getOpenSeaApiKey: () => this.collectiblesController.openSeaApiKey,
+      getBalancesInSingleCall: this.assetsContractController.getBalancesInSingleCall.bind(
+        this.assetsContractController,
+      ),
+      addCollectible: this.collectiblesController.addCollectible.bind(
+        this.collectiblesController,
+      ),
+      getCollectiblesState: () => this.collectiblesController.state,
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -1291,6 +1311,12 @@ export default class MetamaskController extends EventEmitter {
       detectNewTokens: nodeify(
         this.detectTokensController.detectNewTokens,
         this.detectTokensController,
+      ),
+
+      // DetectCollectibleController
+      detectCollectibles: nodeify(
+        this.collectibleDetectionController.detectCollectibles,
+        this.collectibleDetectionController,
       ),
     };
   }
