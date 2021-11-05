@@ -418,14 +418,21 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.workerController = new IframeExecutionEnvironmentService({
-      setupSnapProvider: this.setupSnapProvider.bind(this),
       iframeUrl: new URL(
         'https://metamask.github.io/iframe-execution-environment/',
       ),
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'ServiceMessenger',
+      }),
+      setupSnapProvider: this.setupSnapProvider.bind(this),
     });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
+      allowedEvents: [
+        'ServiceMessenger:unhandledError',
+        'ServiceMessenger:unresponsive',
+      ],
     });
 
     this.snapController = new SnapController({
