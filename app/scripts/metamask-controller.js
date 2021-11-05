@@ -849,6 +849,10 @@ export default class MetamaskController extends EventEmitter {
         this.attemptLedgerTransportCreation,
         this,
       ),
+      establishLedgerTransportPreference: nodeify(
+        this.establishLedgerTransportPreference,
+        this,
+      ),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -1252,6 +1256,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.setAddresses(addresses);
         this.selectFirstIdentity();
       }
+
       return vault;
     } finally {
       releaseLock();
@@ -1563,6 +1568,11 @@ export default class MetamaskController extends EventEmitter {
   async attemptLedgerTransportCreation() {
     const keyring = await this.getKeyringForDevice('ledger');
     return await keyring.attemptMakeApp();
+  }
+
+  async establishLedgerTransportPreference() {
+    const transportPreference = this.preferencesController.getLedgerTransportPreference();
+    return await this.setLedgerTransportPreference(transportPreference);
   }
 
   /**
