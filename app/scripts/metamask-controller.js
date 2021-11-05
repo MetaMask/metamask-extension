@@ -196,6 +196,15 @@ export default class MetamaskController extends EventEmitter {
       getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
         this.assetsContractController,
       ),
+      getOwnerOf: this.assetsContractController.getOwnerOf.bind(
+        this.assetsContractController,
+      ),
+      balanceOfERC1155Collectible: this.assetsContractController.balanceOfERC1155Collectible.bind(
+        this.assetsContractController,
+      ),
+      uriERC1155Collectible: this.assetsContractController.uriERC1155Collectible.bind(
+        this.assetsContractController,
+      ),
     });
 
     this.collectibleDetectionController = new CollectibleDetectionController({
