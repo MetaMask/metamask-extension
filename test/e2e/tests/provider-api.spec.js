@@ -69,6 +69,7 @@ describe('MetaMask', function () {
     await withFixtures(
       {
         dapp: true,
+        failOnConsoleError: false,
         fixtures: 'connected-state',
         ganacheOptions,
         title: this.test.title,
