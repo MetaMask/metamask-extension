@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
 import { isHexPrefixed } from 'ethereumjs-util';
-import copyToClipboard from 'copy-to-clipboard';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import Tooltip from '../tooltip';
 import CopyIcon from '../icon/copy-icon.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SECOND } from '../../../../shared/constants/time';
 
 export default connect(mapStateToProps)(QrCodeView);
 
@@ -27,7 +26,7 @@ function QrCodeView(props) {
   const address = `${
     isHexPrefixed(data) ? 'ethereum:' : ''
   }${toChecksumHexAddress(data)}`;
-  const [copied, setCopied] = useState(false);
+  const [copied, handleCopy] = useCopyToClipboard();
   const t = useI18nContext();
   const qrImage = qrCode(4, 'M');
   qrImage.addData(address);
@@ -65,9 +64,7 @@ function QrCodeView(props) {
         <div
           className="qr-code__address-container"
           onClick={() => {
-            setCopied(true);
-            setTimeout(() => setCopied(false), SECOND * 3);
-            copyToClipboard(toChecksumHexAddress(data));
+            handleCopy(toChecksumHexAddress(data));
           }}
         >
           <div className="qr-code__address">{toChecksumHexAddress(data)}</div>
