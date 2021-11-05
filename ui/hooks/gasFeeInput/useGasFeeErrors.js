@@ -21,7 +21,6 @@ import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 
 const validateGasLimit = (gasLimit, minimumGasLimit) => {
-  if (gasLimit === undefined) return undefined;
   const gasLimitTooLow = conversionLessThan(
     { value: gasLimit, fromNumericBase: 'dec' },
     { value: minimumGasLimit || GAS_LIMITS.SIMPLE, fromNumericBase: 'hex' },
