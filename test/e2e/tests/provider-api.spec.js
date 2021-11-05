@@ -1,8 +1,5 @@
 const { strict: assert } = require('assert');
 const { errorCodes } = require('eth-rpc-errors');
-const {
-  UNSUPPORTED_RPC_METHODS,
-} = require('../../../shared/constants/network');
 const { withFixtures } = require('../helpers');
 
 describe('MetaMask', function () {
@@ -82,24 +79,26 @@ describe('MetaMask', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
-        for (const unsupportedMethod of UNSUPPORTED_RPC_METHODS.values()) {
+        for (const unsupportedMethod of ['eth_signTransaction']) {
           assert.equal(
-            await driver.executeScript(`
-              try {
-                await window.ethereum.request({ method: '${unsupportedMethod}' });
-                console.error('The unsupported method "${unsupportedMethod}" was not rejected.');
-                return false;
-              } catch (error) {
-                if (error.code === ${errorCodes.rpc.methodNotSupported}) {
-                  return true;
-                }
+            await driver.executeAsyncScript(`
+              const webDriverCallback = arguments[arguments.length - 1];
+              window.ethereum.request({ method: '${unsupportedMethod}' })
+                .then(() => {
+                  console.error('The unsupported method "${unsupportedMethod}" was not rejected.');
+                  webDriverCallback(false);
+                })
+                .catch((error) => {
+                  if (error.code === ${errorCodes.rpc.methodNotSupported}) {
+                    webDriverCallback(true);
+                  }
 
-                console.error(
-                  'The unsupported method "${unsupportedMethod}" was rejected with an unexpected error.',
-                  error,
-                );
-                return false;
-              }
+                  console.error(
+                    'The unsupported method "${unsupportedMethod}" was rejected with an unexpected error.',
+                    error,
+                  );
+                  webDriverCallback(false);
+                })
             `),
             true,
             `The unsupported method "${unsupportedMethod}" should be rejected by the provider.`,
