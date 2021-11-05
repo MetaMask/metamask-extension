@@ -196,21 +196,6 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
-        <TransactionBreakdownRow title={t('total')}>
-          <UserPreferencedCurrencyDisplay
-            className="transaction-breakdown__value transaction-breakdown__value--eth-total"
-            type={PRIMARY}
-            value={totalInHex}
-            numberOfDecimals={isOptimism ? 18 : null}
-          />
-          {showFiat && (
-            <UserPreferencedCurrencyDisplay
-              className="transaction-breakdown__value"
-              type={SECONDARY}
-              value={totalInHex}
-            />
-          )}
-        </TransactionBreakdownRow>
         {isOptimism && (
           <TransactionBreakdownRow title={t('transactionHistoryL1GasLabel')}>
             <UserPreferencedCurrencyDisplay
@@ -229,6 +214,21 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
+        <TransactionBreakdownRow title={t('total')}>
+          <UserPreferencedCurrencyDisplay
+            className="transaction-breakdown__value transaction-breakdown__value--eth-total"
+            type={PRIMARY}
+            value={totalInHex}
+            numberOfDecimals={isOptimism ? 18 : null}
+          />
+          {showFiat && (
+            <UserPreferencedCurrencyDisplay
+              className="transaction-breakdown__value"
+              type={SECONDARY}
+              value={totalInHex}
+            />
+          )}
+        </TransactionBreakdownRow>
       </div>
     );
   }

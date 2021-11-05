@@ -139,6 +139,7 @@ export default class ConfirmTransactionBase extends Component {
     isOptimism: PropTypes.bool,
     hexEstimatedL1Fee: PropTypes.string.isRequired,
     isStandardNetwork: PropTypes.bool,
+    multilayerTotal: PropTypes.bool,
   };
 
   state = {
@@ -332,6 +333,7 @@ export default class ConfirmTransactionBase extends Component {
       isOptimism,
       hexEstimatedL1Fee,
       isStandardNetwork,
+      multilayerTotal,
     } = this.props;
     const { t } = this.context;
 
@@ -562,8 +564,9 @@ export default class ConfirmTransactionBase extends Component {
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
             key="total-detail-text"
-            value={hexTransactionTotal}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            value={multilayerTotal || hexTransactionTotal}
+            hideLabel={useNativeCurrencyAsPrimaryCurrency && !multilayerTotal}
+            numberOfDecimals={multilayerTotal ? 18 : null}
           />
         );
       }
@@ -591,7 +594,7 @@ export default class ConfirmTransactionBase extends Component {
           key="total-item"
           detailTitle={t('total')}
           detailText={renderTotalDetailText()}
-          detailTotal={renderTotalDetailTotal()}
+          detailTotal={isStandardNetwork && renderTotalDetailTotal()}
           subTitle={subTitle}
           subText={subText}
         />
@@ -646,7 +649,7 @@ export default class ConfirmTransactionBase extends Component {
       ) : null,
       renderEstimatedL2GasFeeItem(),
       renderEstimatedL1GasFeeItem(),
-      isStandardNetwork && renderEstimatedTotalItem(),
+      renderEstimatedTotalItem(),
     ];
 
     return (

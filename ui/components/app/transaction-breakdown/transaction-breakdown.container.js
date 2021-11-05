@@ -34,9 +34,14 @@ const mapStateToProps = (state, ownProps) => {
       usedGasPrice &&
       getHexGasTotal({ gasLimit, gasPrice: usedGasPrice })) ||
     '0x0';
-  const totalInHex = sumHexes(hexGasTotal, value);
+
+  let totalInHex = sumHexes(hexGasTotal, value);
 
   const isOptimism = getIsOptimism(state);
+
+  if (isOptimism) {
+    totalInHex = sumHexes(totalInHex, l1HexGasTotal);
+  }
 
   return {
     nativeCurrency: getNativeCurrency(state),
