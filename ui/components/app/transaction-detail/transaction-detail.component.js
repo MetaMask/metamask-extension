@@ -56,7 +56,7 @@ export default function TransactionDetail({ rows = [], onEdit }) {
             <InfoTooltip
               contentText={
                 <div className="transaction-detail-edit-V2-tooltip">
-                  <Typography fontSize="12px" color={COLORS.GRAY}>
+                  <Typography fontSize="12px" color={COLORS.GREY}>
                     {t('dappSuggestedTooltip', [transaction.origin])}
                   </Typography>
                   {supportsEIP1559 ? (
