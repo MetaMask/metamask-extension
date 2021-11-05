@@ -176,6 +176,22 @@ describe('txUtils', function () {
         );
       });
 
+      it('should error when maxFeePerGas is not a hex string', function () {
+        const txParams = {
+          maxFeePerGas: 'oodmjsjisis',
+          to: BURN_ADDRESS,
+        };
+
+        assert.throws(
+          () => {
+            txUtils.validateTxParams(txParams);
+          },
+          {
+            message: `Invalid max fee per gas of "${txParams.maxFeePerGas}": not a valid hex string.`,
+          },
+        );
+      });
+
       it('should error when specifying gasPrice', function () {
         const txParams = {
           gasPrice: '0x1',
@@ -190,6 +206,22 @@ describe('txUtils', function () {
           {
             message:
               'Invalid transaction params: specified gasPrice but also included maxFeePerGas, these cannot be mixed',
+          },
+        );
+      });
+
+      it('should error when gasPrice is not a hex string', function () {
+        const txParams = {
+          gasPrice: 'msaoaos',
+          to: BURN_ADDRESS,
+        };
+
+        assert.throws(
+          () => {
+            txUtils.validateTxParams(txParams);
+          },
+          {
+            message: `Invalid gas price of "${txParams.gasPrice}": not a valid hex string.`,
           },
         );
       });
@@ -227,6 +259,22 @@ describe('txUtils', function () {
           {
             message:
               'Invalid transaction envelope type: specified type "0x0" but including maxFeePerGas and maxPriorityFeePerGas requires type: "0x2"',
+          },
+        );
+      });
+
+      it('should error when maxPriorityFeePerGas is not a hex string', function () {
+        const txParams = {
+          maxPriorityFeePerGas: '8889d9d9d9d',
+          to: BURN_ADDRESS,
+        };
+
+        assert.throws(
+          () => {
+            txUtils.validateTxParams(txParams);
+          },
+          {
+            message: `Invalid max priority fee of "${txParams.maxPriorityFeePerGas}": not a valid hex string.`,
           },
         );
       });
