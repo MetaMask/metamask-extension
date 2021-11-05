@@ -317,16 +317,18 @@ class NetworkDropdown extends Component {
                 <span key="testNetworksEnabled">
                   {shouldShowTestNetworks ? t('disable') : t('enable')}
                 </span>,
-                <span
+                <a
+                  href="#"
                   key="advancedSettingsLink"
                   className="network-dropdown-content--link"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
                     hideNetworkDropdown();
                     history.push(ADVANCED_ROUTE);
                   }}
                 >
                   {t('here')}
-                </span>,
+                </a>,
               ])}
               <button
                 title={t('dismiss')}
