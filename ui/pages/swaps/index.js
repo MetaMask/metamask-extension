@@ -38,6 +38,7 @@ import {
   getUseNewSwapsApi,
   getFromToken,
   getReviewSwapClickedTimestamp,
+  getPendingSmartTransactions,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
@@ -130,6 +131,7 @@ export default function Swap() {
   const tokenList = useSelector(getTokenList);
   const listTokenValues = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
+  const pendingSmartTransactions = useSelector(getPendingSmartTransactions);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
 
   if (networkAndAccountSupports1559) {
@@ -364,6 +366,16 @@ export default function Swap() {
               path={VIEW_QUOTE_ROUTE}
               exact
               render={() => {
+                if (
+                  pendingSmartTransactions.length > 0 &&
+                  routeState === 'smartTransactionStatus'
+                ) {
+                  return (
+                    <Redirect
+                      to={{ pathname: SMART_TRANSACTION_STATUS_ROUTE }}
+                    />
+                  );
+                }
                 if (Object.values(quotes).length) {
                   return (
                     <ViewQuote numberOfQuotes={Object.values(quotes).length} />

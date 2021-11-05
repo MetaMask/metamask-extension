@@ -35,6 +35,7 @@ import {
 import {
   stopPollingForQuotes,
   cancelSmartTransaction,
+  setBackgroundSwapRouteState,
 } from '../../../store/actions';
 
 import SwapsFooter from '../swaps-footer';
@@ -160,6 +161,7 @@ export default function SmartTransactionStatus() {
   useEffect(() => {
     // We don't need to poll for quotes on the status page.
     dispatch(stopPollingForQuotes());
+    dispatch(setBackgroundSwapRouteState('smartTransactionStatus'));
   }, [dispatch]);
 
   const onClickTokenTo = async (e) => {

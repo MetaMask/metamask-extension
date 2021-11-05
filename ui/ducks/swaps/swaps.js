@@ -341,15 +341,27 @@ export const getApproveTxParams = (state) => {
 };
 
 export const getSmartTransactionsOptInStatus = (state) => {
-  return state.metamask.userOptIn;
+  return state.metamask.smartTransactionsState?.userOptIn;
 };
 
 export const getCurrentSmartTransactions = (state) => {
-  return state.metamask.smartTransactions?.[getCurrentChainId(state)];
+  return state.metamask.smartTransactionsState?.smartTransactions?.[
+    getCurrentChainId(state)
+  ];
 };
+
+export const getPendingSmartTransactions = (state) => {
+  const currentSmartTransactions = getCurrentSmartTransactions(state);
+  if (!currentSmartTransactions || currentSmartTransactions.length === 0) {
+    return [];
+  }
+  return currentSmartTransactions.filter((stx) => stx.status === 'pending');
+};
+
 export const getUnsignedTransactionsAndEstimates = (state) => {
   return state.appState.unsignedTransactionsAndEstimates;
 };
+
 export const getSwapsRefreshStates = (state) => {
   const {
     swapsQuoteRefreshTime,
