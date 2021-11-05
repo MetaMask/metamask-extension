@@ -12325,10 +12325,10 @@ eth-json-rpc-middleware@^6.0.0:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-json-rpc-middleware@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-7.0.1.tgz#3b9d7f61ea8d86b112add1558432a51efa413f56"
-  integrity sha512-Z0Fg5spBzayjfLf7aTTaSZnzUhXE6wLWOWgdtX01LMigbttjSUbJxp23Z2jw5CavCnG8yEz9yQNHFQV2p2o/hQ==
+eth-json-rpc-middleware@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-8.0.0.tgz#d2a50a5fceca996ddc9d6775d53cf7e341500a88"
+  integrity sha512-G0693ZsEXzERrvE6mb2fevDvSE2gs1ClqFnh/r6/RUYq3y1uzK/5klRsfQvQPCGM9q2FEBKxWYdbIjMZAXWcDQ==
   dependencies:
     "@metamask/safe-event-emitter" "^2.0.0"
     btoa "^1.2.1"
