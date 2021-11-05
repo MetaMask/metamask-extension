@@ -9,6 +9,10 @@ import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 import Dropdown from '../../../components/ui/dropdown';
 import Dialog from '../../../components/ui/dialog';
 
+import { getPlatform } from '../../../../app/scripts/lib/util';
+
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+
 import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
@@ -634,6 +638,8 @@ export default class AdvancedTab extends PureComponent {
   render() {
     const { warning } = this.props;
 
+    const notUsingFirefox = getPlatform() !== PLATFORM_FIREFOX;
+
     return (
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
@@ -648,7 +654,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderThreeBoxControl()}
         {this.renderIpfsGatewayControl()}
-        {this.renderLedgerLiveControl()}
+        {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}
       </div>
     );

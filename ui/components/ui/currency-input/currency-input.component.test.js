@@ -120,7 +120,7 @@ describe('CurrencyInput Component', () => {
       expect(wrapper.find('.unit-input__suffix').text()).toStrictEqual('USD');
       expect(wrapper.find('.unit-input__input').props().value).toStrictEqual(1);
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
-        '0.004328ETH',
+        '0.00432788ETH',
       );
     });
 
@@ -159,14 +159,16 @@ describe('CurrencyInput Component', () => {
         .find(CurrencyInput)
         .at(0)
         .instance();
-      expect(currencyInputInstance.state.decimalValue).toStrictEqual(0.004328);
+      expect(currencyInputInstance.state.decimalValue).toStrictEqual(
+        0.00432788,
+      );
       expect(currencyInputInstance.state.hexValue).toStrictEqual(
         'f602f2234d0ea',
       );
       expect(wrapper.find('.unit-input__suffix')).toHaveLength(1);
       expect(wrapper.find('.unit-input__suffix').text()).toStrictEqual('ETH');
       expect(wrapper.find('.unit-input__input').props().value).toStrictEqual(
-        0.004328,
+        0.00432788,
       );
       expect(
         wrapper.find('.currency-input__conversion-component').text(),
@@ -274,7 +276,7 @@ describe('CurrencyInput Component', () => {
       expect(handleChangeSpy.callCount).toStrictEqual(1);
       expect(handleChangeSpy.calledWith('f602f2234d0ea')).toStrictEqual(true);
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
-        '0.004328ETH',
+        '0.00432788ETH',
       );
       expect(currencyInputInstance.state.decimalValue).toStrictEqual(1);
       expect(currencyInputInstance.state.hexValue).toStrictEqual(
@@ -375,7 +377,7 @@ describe('CurrencyInput Component', () => {
       const swap = wrapper.find('.currency-input__swap-component');
       swap.simulate('click');
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
-        '0.004328ETH',
+        '0.00432788ETH',
       );
     });
   });

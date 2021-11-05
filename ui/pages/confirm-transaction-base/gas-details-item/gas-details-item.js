@@ -89,7 +89,7 @@ const GasDetailItem = ({
       }
       subText={t('editGasSubTextFee', [
         <Box key="editGasSubTextFeeLabel" display="inline-flex">
-          <Box marginRight={1} classNamee="gas-details-item__gasFeeLabel">
+          <Box marginRight={1} className="gas-details-item__gasfee-label">
             <I18nValue messageKey="editGasSubTextFeeLabel" />
           </Box>
           <div

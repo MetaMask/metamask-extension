@@ -140,9 +140,6 @@
   "amount": {
     "message": "금액"
   },
-  "amountWithColon": {
-    "message": "금액:"
-  },
   "appDescription": {
     "message": "브라우저의 이더리움 지갑",
     "description": "The description of the application"
@@ -1324,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "블록 탐색기 URL(선택 사항)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "통화 기호(선택 사항)"
-  },
   "origin": {
     "message": "원본"
   },
@@ -2190,9 +2181,6 @@
   "toAddress": {
     "message": "수신: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "수신:"
   },
   "token": {
     "message": "토큰"

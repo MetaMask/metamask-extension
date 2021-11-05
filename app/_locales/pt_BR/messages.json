@@ -140,9 +140,6 @@
   "amount": {
     "message": "Valor"
   },
-  "amountWithColon": {
-    "message": "Valor:"
-  },
   "appDescription": {
     "message": "Uma carteira do Ethereum no seu navegador",
     "description": "The description of the application"
@@ -1324,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em quem você confia."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL do Block Explorer (opcional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Símbolo de moeda (opcional)"
-  },
   "origin": {
     "message": "Origem"
   },
@@ -2190,9 +2181,6 @@
   "toAddress": {
     "message": "Até: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Até:"
   },
   "token": {
     "message": "Token"

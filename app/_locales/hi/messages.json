@@ -140,9 +140,6 @@
   "amount": {
     "message": "राशि"
   },
-  "amountWithColon": {
-    "message": "राशि:"
-  },
   "appDescription": {
     "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
     "description": "The description of the application"
@@ -1324,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं।"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "ब्लॉक एक्सप्लोरर URL (वैकल्पिक)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "मुद्रा प्रतीक (वैकल्पिक)"
-  },
   "origin": {
     "message": "उत्पत्ति"
   },
@@ -2190,9 +2181,6 @@
   "toAddress": {
     "message": "प्रति: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "प्रति:"
   },
   "token": {
     "message": "टोकन"

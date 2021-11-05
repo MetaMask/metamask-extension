@@ -668,12 +668,6 @@
   "on": {
     "message": "روشن"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "بلاک کردن مرورگر URL (انتخابی)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "سمبول (انتخابی)"
-  },
   "origin": {
     "message": "مبدأ"
   },

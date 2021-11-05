@@ -113,9 +113,6 @@
   "amount": {
     "message": "数额"
   },
-  "amountWithColon": {
-    "message": "数额："
-  },
   "appDescription": {
     "message": "以太坊浏览器插件",
     "description": "The description of the application"
@@ -1077,12 +1074,6 @@
   "onlyConnectTrust": {
     "message": "只连接您信任的网站。"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "区块浏览器 URL（选填）"
-  },
-  "optionalCurrencySymbol": {
-    "message": "符号（选填）"
-  },
   "origin": {
     "message": "来源"
   },
@@ -1762,9 +1753,6 @@
   "toAddress": {
     "message": "至：$1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "至："
   },
   "token": {
     "message": "代币"

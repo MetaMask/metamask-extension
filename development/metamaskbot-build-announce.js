@@ -39,6 +39,18 @@ async function start() {
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
+  const betaBuildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds-beta/metamask-beta-${platform}-${VERSION}.zip`;
+      return `<a href="${url}">${platform}</a>`;
+    })
+    .join(', ');
+  const flaskBuildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}.zip`;
+      return `<a href="${url}">${platform}</a>`;
+    })
+    .join(', ');
 
   // links to bundle browser builds
   const bundles = {};
@@ -86,6 +98,8 @@ async function start() {
 
   const contentRows = [
     `builds: ${buildLinks}`,
+    `builds (beta): ${betaBuildLinks}`,
+    `builds (flask): ${flaskBuildLinks}`,
     `build viz: ${depVizLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
