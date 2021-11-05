@@ -409,6 +409,10 @@ export function connectHardware(deviceName, page, hdPath, t) {
     let accounts;
     try {
       const { ledgerTransportType } = getState().metamask;
+
+      if (deviceName === 'ledger') {
+        await promisifiedBackground.establishLedgerTransportPreference();
+      }
       if (
         deviceName === 'ledger' &&
         ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
