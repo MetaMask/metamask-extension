@@ -241,6 +241,7 @@ export function useGasFeeInputs(
   ]);
 
   return {
+    transaction,
     maxFeePerGas,
     maxFeePerGasFiat,
     setMaxFeePerGas,
