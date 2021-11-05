@@ -25,6 +25,7 @@ const BaseReader = ({
   const [ready, setReady] = useState(READY_STATE.ACCESSING_CAMERA);
   const [error, setError] = useState(null);
   const [urDecoder, setURDecoder] = useState(new URDecoder());
+  const [progress, setProgress] = useState(null);
   let permissionChecker = null;
   const mounted = useRef(false);
 
@@ -130,7 +131,10 @@ const BaseReader = ({
       urDecoder.receivePart(data);
       if (urDecoder.isComplete()) {
         const result = urDecoder.resultUR();
+        setProgress(1);
         handleSuccess(result).catch(setError);
+      } else {
+        setProgress(urDecoder.getProgress());
       }
     } catch (e) {
       if (isReadingWallet) {
@@ -206,6 +210,11 @@ const BaseReader = ({
             />
           </div>
         </div>
+        {progress && (
+          <div className="qr-scanner__status">{`${Math.floor(
+            progress * 100,
+          )} %`}</div>
+        )}
         {message && <div className="qr-scanner__status">{message}</div>}
       </>
     );

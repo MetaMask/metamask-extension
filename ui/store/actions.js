@@ -2942,10 +2942,14 @@ export async function submitQRHardwareCryptoHDKey(cbor) {
   await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);
 }
 
-export function cancelReadQRHardwareCryptoHDKey() {
+export async function submitQRHardwareCryptoAccount(cbor) {
+  await promisifiedBackground.submitQRHardwareCryptoAccount(cbor);
+}
+
+export function cancelSyncQRHardware() {
   return async (dispatch) => {
     dispatch(hideLoadingIndication());
-    await promisifiedBackground.cancelReadQRHardwareCryptoHDKey();
+    await promisifiedBackground.cancelSyncQRHardware();
   };
 }
 

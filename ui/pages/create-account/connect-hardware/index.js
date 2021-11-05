@@ -79,7 +79,11 @@ class ConnectHardwareForm extends Component {
   }
 
   async checkIfUnlocked() {
-    for (const device of [DEVICE_NAMES.TREZOR, DEVICE_NAMES.LEDGER, DEVICE_NAMES.LATTICE]) {
+    for (const device of [
+      DEVICE_NAMES.TREZOR,
+      DEVICE_NAMES.LEDGER,
+      DEVICE_NAMES.LATTICE,
+    ]) {
       const path = this.props.defaultHdPaths[device];
       const unlocked = await this.props.checkHardwareStatus(device, path);
       if (unlocked) {

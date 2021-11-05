@@ -7,7 +7,6 @@ import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 
 import { getURLHostName } from '../../../helpers/utils/util';
-import Typography from '../../../components/ui/typography';
 
 class AccountList extends Component {
   state = {

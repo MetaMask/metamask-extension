@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { submitQRHardwareCryptoHDKey } from '../../../../store/actions';
+import {
+  submitQRHardwareCryptoAccount,
+  submitQRHardwareCryptoHDKey,
+} from '../../../../store/actions';
 import BaseReader from '../base-reader';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -10,6 +13,10 @@ const QRHardwareWalletImporter = ({ handleCancel, setErrorTitle }) => {
     return new Promise((resolve, reject) => {
       if (ur.type === 'crypto-hdkey') {
         submitQRHardwareCryptoHDKey(ur.cbor.toString('hex'))
+          .then(resolve)
+          .catch(reject);
+      } else if (ur.type === 'crypto-account') {
+        submitQRHardwareCryptoAccount(ur.cbor.toString('hex'))
           .then(resolve)
           .catch(reject);
       } else {

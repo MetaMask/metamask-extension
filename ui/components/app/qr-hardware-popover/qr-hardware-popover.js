@@ -4,7 +4,7 @@ import { getCurrentQRHardwareState } from '../../../selectors';
 import Popover from '../../ui/popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  cancelReadQRHardwareCryptoHDKey as cancelReadQRHardwareCryptoHDKeyAction,
+  cancelSyncQRHardware as cancelSyncQRHardwareAction,
   cancelQRHardwareSignRequest as cancelQRHardwareSignRequestAction,
   cancelTx,
   cancelPersonalMsg,
@@ -38,7 +38,7 @@ const QRHardwarePopover = () => {
 
   const dispatch = useDispatch();
   const walletImporterCancel = useCallback(
-    () => dispatch(cancelReadQRHardwareCryptoHDKeyAction()),
+    () => dispatch(cancelSyncQRHardwareAction()),
     [dispatch],
   );
 
