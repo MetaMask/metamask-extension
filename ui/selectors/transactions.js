@@ -42,13 +42,25 @@ export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
+export const smartTransactionsListSelector = (state) =>
+  state.metamask.smartTransactionsState?.smartTransactions?.[
+    getCurrentChainId(state)
+  ]
+    ?.filter((stx) => !stx.confirmed)
+    .map((stx) => ({
+      ...stx,
+      transactionType: 'smart',
+      status: stx.status.startsWith('cancelled') ? 'cancelled' : stx.status,
+    }));
+
 export const selectedAddressTxListSelector = createSelector(
   getSelectedAddress,
   currentNetworkTxListSelector,
-  (selectedAddress, transactions = []) => {
-    return transactions.filter(
-      ({ txParams }) => txParams.from === selectedAddress,
-    );
+  smartTransactionsListSelector,
+  (selectedAddress, transactions = [], smTransactions = []) => {
+    return transactions
+      .filter(({ txParams }) => txParams.from === selectedAddress)
+      .concat(smTransactions);
   },
 );
 

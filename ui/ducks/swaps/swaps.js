@@ -341,11 +341,13 @@ export const getApproveTxParams = (state) => {
 };
 
 export const getSmartTransactionsOptInStatus = (state) => {
-  return state.metamask.userOptIn;
+  return state.metamask.smartTransactionsState?.userOptIn;
 };
 
 export const getCurrentSmartTransactions = (state) => {
-  return state.metamask.smartTransactions?.[getCurrentChainId(state)];
+  return state.metamask.smartTransactionsState?.smartTransactions?.[
+    getCurrentChainId(state)
+  ];
 };
 export const getUnsignedTransactionsAndEstimates = (state) => {
   return state.appState.unsignedTransactionsAndEstimates;
