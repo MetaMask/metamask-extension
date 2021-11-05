@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { ellipsify } from '../../send.utils';
 import { isValidDomainName } from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
@@ -106,9 +105,9 @@ export default class EnsInput extends Component {
             <>
               <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
                 <div className="ens-input__selected-input__title">
-                  {selectedName || ellipsify(selectedAddress)}
+                  {selectedName || selectedAddress}
                 </div>
-                {selectedName && (
+                {selectedName !== selectedAddress && (
                   <div className="ens-input__selected-input__subtitle">
                     {selectedAddress}
                   </div>

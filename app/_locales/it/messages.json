@@ -113,9 +113,6 @@
   "amount": {
     "message": "Importo"
   },
-  "amountWithColon": {
-    "message": "Importo:"
-  },
   "appDescription": {
     "message": "Ethereum Browser Extension",
     "description": "The description of the application"
@@ -1083,12 +1080,6 @@
   "onlyConnectTrust": {
     "message": "Connettiti solo con siti di cui ti fidi."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL del Block Explorer (opzionale)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolo (opzionale)"
-  },
   "origin": {
     "message": "Origine"
   },
@@ -1782,9 +1773,6 @@
   "toAddress": {
     "message": "A: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "To:"
   },
   "token": {
     "message": "Token"

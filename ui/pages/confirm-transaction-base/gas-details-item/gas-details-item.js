@@ -95,7 +95,7 @@ const GasDetailsItem = ({
         <Box
           key="editGasSubTextFeeLabel"
           display="inline-flex"
-          className={classNames('gas-details-item__gasFeeLabel', {
+          className={classNames('gas-details-item__gasfee-label', {
             [`gas-details-item__gas-fee-warning`]: estimateToUse === 'high',
           })}
         >

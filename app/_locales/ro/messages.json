@@ -655,12 +655,6 @@
   "on": {
     "message": "Activat"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL explorator bloc (opțional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (opțional)"
-  },
   "origin": {
     "message": "Origine"
   },

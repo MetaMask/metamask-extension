@@ -1,4 +1,7 @@
-import { WEBHID_CONNECTED_STATUSES } from '../../../shared/constants/hardware-wallets';
+import {
+  WEBHID_CONNECTED_STATUSES,
+  TRANSPORT_STATES,
+} from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
 // actionConstants
@@ -49,6 +52,7 @@ export default function reduceApp(state = {}, action) {
     },
     gasLoadingAnimationIsShowing: false,
     ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
+    ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
     ...state,
   };
@@ -348,6 +352,12 @@ export default function reduceApp(state = {}, action) {
         ledgerWebHidConnectedStatus: action.value,
       };
 
+    case actionConstants.SET_LEDGER_TRANSPORT_STATUS:
+      return {
+        ...appState,
+        ledgerTransportStatus: action.value,
+      };
+
     default:
       return appState;
   }
@@ -375,6 +385,10 @@ export function setLedgerWebHidConnectedStatus(value) {
   return { type: actionConstants.SET_WEBHID_CONNECTED_STATUS, value };
 }
 
+export function setLedgerTransportStatus(value) {
+  return { type: actionConstants.SET_LEDGER_TRANSPORT_STATUS, value };
+}
+
 // Selectors
 export function getQrCodeData(state) {
   return state.appState.qrCodeData;
@@ -386,4 +400,8 @@ export function getGasLoadingAnimationIsShowing(state) {
 
 export function getLedgerWebHidConnectedStatus(state) {
   return state.appState.ledgerWebHidConnectedStatus;
+}
+
+export function getLedgerTransportStatus(state) {
+  return state.appState.ledgerTransportStatus;
 }

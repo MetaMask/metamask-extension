@@ -1,8 +1,5 @@
-@import 'network-form/index.scss';
-
 .networks-tab {
   &__content {
-    margin-top: 24px;
     display: flex;
     height: 100%;
     max-width: 739px;
@@ -27,13 +24,35 @@
     }
   }
 
+  &__subheader {
+    @include H4;
+
+    padding: 16px 4px;
+    border-bottom: 1px solid $alto;
+    height: 72px;
+    align-items: center;
+    display: flex;
+    flex-flow: row nowrap;
+  }
+
+  &__subheader--break {
+    margin-inline-start: 10px;
+  }
+
+  &__sub-header-text {
+    @include H4;
+
+    color: $ui-4;
+    margin-right: 10px;
+  }
+
   &__network-form {
     display: flex;
     flex: 1 0 auto;
     flex-direction: column;
     justify-content: space-between;
-    max-width: 343px;
     max-height: 465px;
+    margin-top: 24px;
 
     .page-container__footer {
       border-top: none;
@@ -53,29 +72,39 @@
       max-width: 100%;
       max-height: 100%;
       align-items: center;
-      width: 100%;
+      width: 90%;
       margin-top: 10px;
     }
   }
 
+  &__add-network-form {
+    display: flex;
+    flex-direction: column;
+    max-height: 465px;
+  }
+
+  &__network-form-body {
+    display: grid;
+    grid-template-columns: 100%;
+    width: 95%;
+
+    &__view-only {
+      width: 100%;
+    }
+  }
+
+  &__add-network-form-body {
+    display: grid;
+    grid-template-columns: 48% 48%;
+    // row-gap: 10%;
+    column-gap: 5%;
+    margin-top: 24px;
+    width: 100%;
+  }
+
   &__network-form-row {
     @media screen and (max-width: $break-small) {
-      width: 93%;
-    }
-
-    &--warning {
-      @include H7;
-
-      background-color: #fefae8;
-      border: 1px solid #ffd33d;
-      border-radius: 5px;
-      box-sizing: border-box;
-      padding: 12px;
-      margin: 12px 0;
-
-      @media screen and (max-width: $break-small) {
-        width: 93%;
-      }
+      width: 99%;
     }
   }
 
@@ -100,12 +129,14 @@
   &__networks-list {
     flex: 0.5 0 auto;
     max-width: 343px;
+    margin-top: 24px;
 
     @media screen and (max-width: $break-small) {
       flex: 1;
       overflow-y: auto;
       max-width: 100vw;
       width: 100vw;
+      margin-top: 0;
     }
   }
 
@@ -223,13 +254,12 @@
     font-weight: 300;
     color: #cdcdcd;
   }
-}
 
-.network-form {
-  &__footer {
+  &__network-form-footer {
     display: flex;
     flex-flow: row nowrap;
     padding: 0.75rem 0;
+    width: 95%;
 
     @media screen and (max-width: $break-small) {
       width: 93%;
@@ -245,6 +275,21 @@
 
     .btn-danger {
       margin-right: 3.75rem;
+    }
+  }
+
+  &__add-network-form-footer {
+    display: flex;
+    flex-flow: row;
+    padding: 0.75rem 0;
+    width: 60%;
+
+    .btn-secondary {
+      margin-right: 0.5rem;
+    }
+
+    .btn-primary {
+      margin-left: 0.5rem;
     }
   }
 }

@@ -140,9 +140,6 @@
   "amount": {
     "message": "Importe"
   },
-  "amountWithColon": {
-    "message": "Importe:"
-  },
   "appDescription": {
     "message": "Una cartera de Ethereum en el explorador",
     "description": "The description of the application"
@@ -1324,12 +1321,6 @@
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Dirección URL del explorador de bloques (opcional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Símbolo de moneda (opcional)"
-  },
   "origin": {
     "message": "Origen"
   },
@@ -2190,9 +2181,6 @@
   "toAddress": {
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Para:"
   },
   "token": {
     "message": "Token"
