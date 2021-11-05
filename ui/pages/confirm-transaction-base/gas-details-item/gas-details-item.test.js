@@ -52,13 +52,13 @@ describe('GasDetailsItem', () => {
     expect(screen.queryByText('ETH')).toBeInTheDocument();
   });
 
-  it('should show warning icon is estimates are high', () => {
+  it('should show warning icon if estimates are high', () => {
     render({ defaultEstimateToUse: 'high' });
     console.log(document.body.innerHTML);
     expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
   });
 
-  it('should not show warning icon is estimates are high', () => {
+  it('should not show warning icon if estimates are not high', () => {
     render({ defaultEstimateToUse: 'low' });
     expect(screen.queryByText('Max fee:')).toBeInTheDocument();
   });
