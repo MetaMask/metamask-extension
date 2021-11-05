@@ -233,7 +233,12 @@ describe('Metamask Import UI', function () {
         // should remove the account
         await driver.clickElement({ text: 'Remove', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
+        await driver.wait(async () => {
+          const _currentActiveAccountName = await driver.findElement(
+            '.selected-account__name',
+          );
+          return _currentActiveAccountName !== 'Account 5';
+        }, 10000);
 
         const currentActiveAccountName = await driver.findElement(
           '.selected-account__name',
