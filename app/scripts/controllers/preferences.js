@@ -38,8 +38,8 @@ export default class PreferencesController {
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
       advancedGasFee: {
-        maxBaseFee: '',
-        priorityFee: '',
+        maxBaseFee: undefined,
+        priorityFee: undefined,
       },
 
       // WARNING: Do not use feature flags for security-sensitive things.

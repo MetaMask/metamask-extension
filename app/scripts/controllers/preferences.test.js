@@ -277,11 +277,11 @@ describe('preferences controller', function () {
     it('should set the setAdvancedGasFee property in state', function () {
       assert.equal(
         preferencesController.store.getState().advancedGasFee.maxBaseFee,
-        '',
+        undefined,
       );
       assert.equal(
         preferencesController.store.getState().advancedGasFee.priorityFee,
-        '',
+        undefined,
       );
       preferencesController.setAdvancedGasFee({
         maxBaseFee: '1.5',
