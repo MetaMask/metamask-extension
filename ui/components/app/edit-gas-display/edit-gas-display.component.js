@@ -6,6 +6,7 @@ import {
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
   GAS_ESTIMATE_TYPES,
+  CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
 
 import Button from '../../ui/button';
@@ -84,7 +85,7 @@ export default function EditGasDisplay({
   );
 
   const [showAdvancedForm, setShowAdvancedForm] = useState(
-    !estimateToUse || estimateToUse === 'custom' || !supportsEIP1559,
+    !estimateToUse || estimateToUse === CUSTOM_GAS_ESTIMATE || !supportsEIP1559,
   );
   const [hideRadioButtons, setHideRadioButtons] = useState(
     showAdvancedInlineGasIfPossible,
