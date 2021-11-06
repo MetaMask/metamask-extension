@@ -2,10 +2,10 @@
 @use "design-system";
 @use "utilities";
 
-$attributes: padding, margin;
+$attributes: padding, margin, gap;
 
 .box {
-  // Padding and Margin
+  // Padding, Margin, and Gap
   @each $attribute in $attributes {
     @each $size in design-system.$sizes-numeric {
       &--#{$attribute}-#{$size} {
