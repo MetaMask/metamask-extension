@@ -6,11 +6,11 @@ import Button from '../button';
 import ButtonGroup from '.';
 
 export default {
-  title: 'ButtonGroup',
+  title: 'Components/UI/Button Group',
   id: __filename,
 };
 
-export const withButtons = () => (
+export const WithButtons = () => (
   <ButtonGroup
     style={{ width: '300px' }}
     disabled={boolean('Disabled', false)}
@@ -22,7 +22,7 @@ export const withButtons = () => (
   </ButtonGroup>
 );
 
-export const withDisabledButton = () => (
+export const WithDisabledButton = () => (
   <ButtonGroup style={{ width: '300px' }} disabled={boolean('Disabled', false)}>
     <Button onClick={action('enabled')}>{text('Button1', 'Enabled')}</Button>
     <Button onClick={action('disabled')} disabled>
@@ -31,7 +31,7 @@ export const withDisabledButton = () => (
   </ButtonGroup>
 );
 
-export const radioButtons = () => (
+export const RadioButtons = () => (
   <ButtonGroup
     style={{ width: '300px' }}
     defaultActiveButtonIndex={1}

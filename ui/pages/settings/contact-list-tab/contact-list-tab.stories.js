@@ -10,12 +10,12 @@ import ContactListTab from './contact-list-tab.component';
 const store = configureStore(testData);
 
 export default {
-  title: 'ContactListTab',
+  title: 'Pages/Settings/Contact List Tab',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-export const ContactListTabComponent = () => {
+export const Base = () => {
   const { metamask } = store.getState();
   const { addresses } = metamask;
   const addressBook = object('Address Book', addresses);

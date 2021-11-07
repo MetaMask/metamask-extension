@@ -3,11 +3,11 @@ import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
 import RadioGroup from '.';
 
 export default {
-  title: 'RadioGroup',
+  title: 'Components/UI/Radio Group',
   id: __filename,
 };
 
-export const radioGroup = () => {
+export const Base = () => {
   return (
     <div className="radio-group" style={{ minWidth: '600px' }}>
       <RadioGroup

@@ -3,11 +3,11 @@ import { text, number } from '@storybook/addon-knobs';
 import MainQuoteSummary from './main-quote-summary';
 
 export default {
-  title: 'MainQuoteSummary',
+  title: 'Pages/Swaps/Main Quote Summary',
   id: __filename,
 };
 
-export const BestQuote = () => {
+export const Base = () => {
   return (
     <div
       style={{

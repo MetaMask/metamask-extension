@@ -3,10 +3,10 @@ import { action } from '@storybook/addon-actions';
 import NewAccountCreateForm from './new-account.component';
 
 export default {
-  title: 'New Account',
+  title: 'Pages/Create Account/New Account',
   id: __filename,
 };
 
-export const NewAccountComponent = () => {
+export const Base = () => {
   return <NewAccountCreateForm createAccount={action('Account Created')} />;
 };

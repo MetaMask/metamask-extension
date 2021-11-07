@@ -3,10 +3,10 @@ import { text } from '@storybook/addon-knobs';
 import ErrorMessage from '.';
 
 export default {
-  title: 'ErrorMessage',
+  title: 'Components/UI/Error Message',
   id: __filename,
 };
 
-export const primaryType = () => (
+export const Base = () => (
   <ErrorMessage errorMessage={text('Error Message:', 'There was an error!')} />
 );

@@ -3,13 +3,13 @@ import { store } from '../../../.storybook/preview';
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/Confirm Token Transaction Base',
   id: __filename,
 };
 
 const state = store.getState();
 
-export const ConfirmTokenTransaction = () => {
+export const Base = () => {
   const { metamask, confirmTransaction } = state;
   const { currentCurrency } = metamask;
   const { fiatTransactionTotal } = confirmTransaction;

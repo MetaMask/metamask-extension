@@ -2,10 +2,10 @@ import React from 'react';
 import Welcome from './welcome.component';
 
 export default {
-  title: 'First Time Flow',
+  title: 'Pages/First Time Flow/Welcome',
   id: __filename,
 };
 
-export const WelcomeComponent = () => {
+export const Base = () => {
   return <Welcome />;
 };

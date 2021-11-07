@@ -2,8 +2,8 @@ import React from 'react';
 import OnboardingPinExtension from './pin-extension';
 
 export default {
-  title: 'Onboarding',
+  title: 'Pages/Onboarding Flow/Pin Extension',
   id: __filename,
 };
 
-export const OnboardingComponent = () => <OnboardingPinExtension />;
+export const Base = () => <OnboardingPinExtension />;

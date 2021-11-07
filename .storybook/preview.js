@@ -22,6 +22,11 @@ addParameters({
       { name: 'dark', value: '#333333' },
     ],
   },
+  options: {
+    storySort: {
+      order: ['Getting Started'], 
+    },
+  },
 });
 
 export const globalTypes = {

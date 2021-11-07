@@ -11,7 +11,7 @@ import { domainMetadata } from '../../../.storybook/initial-states/approval-scre
 import ConfirmApprove from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/Confirm Approve',
   id: __filename,
 };
 
@@ -58,7 +58,7 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const ApproveTokens = () => {
+export const Base = () => {
   const state = store.getState();
   store.dispatch(
     updateMetamaskState(

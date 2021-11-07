@@ -4,7 +4,7 @@ import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import MetaMaskTemplateRenderer from '.';
 
 export default {
-  title: 'MetaMask Template Renderer',
+  title: 'Components/App/Metamask Template Renderer',
   id: __filename,
 };
 
@@ -83,11 +83,11 @@ const SECTIONS = {
     },
   ],
 };
-export const metaMaskTemplateRenderer = () => (
+export const Base = () => (
   <MetaMaskTemplateRenderer sections={object('sections', SECTIONS)} />
 );
 
-export const withInvalidElement = () => (
+export const WithInvalidElement = () => (
   <MetaMaskTemplateRenderer
     sections={object('sections', [
       {

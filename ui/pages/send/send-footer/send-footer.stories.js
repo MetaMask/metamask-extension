@@ -5,11 +5,11 @@ import { boolean } from '@storybook/addon-knobs';
 import SendFooter from './send-footer.component';
 
 export default {
-  title: 'SendFooter',
+  title: 'Pages/Send/Send Footer',
   id: __filename,
 };
 
-export const SendFooterComponent = () => {
+export const Base = () => {
   const disabled = boolean('Disabled', false);
   return (
     <SendFooter

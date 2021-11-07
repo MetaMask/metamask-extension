@@ -4,11 +4,11 @@ import { boolean, text } from '@storybook/addon-knobs';
 import SendContent from './send-content.component';
 
 export default {
-  title: 'SendContent',
+  title: 'Pages/Send/Send Content',
   id: __filename,
 };
 
-export const SendContentComponent = () => {
+export const Base = () => {
   return (
     <SendContent
       showHexData={boolean('Show Hex Data', false)}

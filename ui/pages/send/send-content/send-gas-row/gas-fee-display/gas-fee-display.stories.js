@@ -4,11 +4,11 @@ import { number, boolean } from '@storybook/addon-knobs';
 import GasFeeDisplay from './gas-fee-display.component';
 
 export default {
-  title: 'GasFeeDisplay',
+  title: 'Pages/Send/Send Content/Send Gas Row/Gas Fee Display',
   id: __filename,
 };
 
-export const GasFeeDisplayComponent = () => {
+export const Base = () => {
   const gasTotal = number('Gas Total', 10000000000);
   return (
     <GasFeeDisplay

@@ -21,11 +21,11 @@ const buttonStyle = {
 };
 
 export default {
-  title: 'Mascot',
+  title: 'Components/UI/Mascot',
   id: __filename,
 };
 
-export function Demo() {
+export function Base() {
   const [lookAtDirection, setLookAtDirection] = useState(null);
   const [followMouseMode, setFollowMouseMode] = useState(false);
   const [clickToLookMode, setClickToLookMode] = useState(false);

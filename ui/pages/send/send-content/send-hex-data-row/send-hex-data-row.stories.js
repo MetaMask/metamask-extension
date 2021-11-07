@@ -7,7 +7,7 @@ export default {
   id: __filename,
 };
 
-export const SendHexDataRowComponent = () => {
+export const Base = () => {
   return (
     <div style={{ width: 450 }}>
       <SendHexDataRow

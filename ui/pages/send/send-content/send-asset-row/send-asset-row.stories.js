@@ -15,7 +15,7 @@ export default {
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-export const SendAssetRowComponent = () => {
+export const Base = () => {
   const { metamask } = store.getState();
 
   const { identities, assetImages, tokens } = metamask;

@@ -4,7 +4,7 @@ import { text } from '@storybook/addon-knobs';
 import ActionableMessage from '.';
 
 export default {
-  title: 'ActionableMessage',
+  title: 'Components/UI/Actionable Message',
   id: __filename,
 };
 
@@ -70,7 +70,7 @@ export const LeftAligned = () => (
   </div>
 );
 
-export const withIcon = () => (
+export const WithIcon = () => (
   <div style={{ height: '200px', width: '300px' }}>
     <ActionableMessage
       message={text(

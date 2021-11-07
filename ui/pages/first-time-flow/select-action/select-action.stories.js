@@ -2,10 +2,10 @@ import React from 'react';
 import SelectAction from './select-action.component';
 
 export default {
-  title: 'First Time Flow',
+  title: 'Pages/First Time Flow/Select Action',
   id: __filename,
 };
 
-export const SelectActionComponent = () => {
+export const Base = () => {
   return <SelectAction />;
 };

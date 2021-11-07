@@ -113,7 +113,7 @@ const tokens = [
 ];
 
 export default {
-  title: 'DropdownInputPair',
+  title: 'Pages/Swaps/Dropdown Input Pair',
   id: __filename,
 };
 
@@ -127,7 +127,7 @@ const tokensToSearch = tokens.map((token) => ({
   rightSecondaryLabel: `$${(Math.random() * 1000).toFixed(2)}`,
 }));
 
-export const Basic = () => {
+export const Base = () => {
   const [inputValue, setInputValue] = useState();
 
   return (

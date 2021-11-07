@@ -2,11 +2,11 @@ import React from 'react';
 import TransactionTotalBanner from '.';
 
 export default {
-  title: 'Transaction Total Banner',
+  title: 'Components/App/Transaction Total Banner',
   id: __filename,
 };
 
-export const basic = () => {
+export const Base = () => {
   return (
     <TransactionTotalBanner
       total="~18.73"

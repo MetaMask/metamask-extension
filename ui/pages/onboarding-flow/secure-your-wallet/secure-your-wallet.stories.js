@@ -2,7 +2,7 @@ import React from 'react';
 import SecureYourWallet from './secure-your-wallet';
 
 export default {
-  title: 'Onboarding - Secure Your Wallet',
+  title: 'Pages/Onboarding Flow/Secure Your Wallet',
   id: __filename,
 };
 

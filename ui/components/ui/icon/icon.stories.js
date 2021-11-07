@@ -12,7 +12,7 @@ import InfoIconInverted from './info-icon-inverted.component';
 import PaperAirplane from './paper-airplane-icon';
 
 export default {
-  title: 'Icon',
+  title: 'Components/UI/Icon',
   id: __filename,
 };
 

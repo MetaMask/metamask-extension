@@ -8,7 +8,7 @@ import CheckBox, {
 } from './check-box.component';
 
 export default {
-  title: 'Check Box',
+  title: 'Components/UI/Check Box',
   id: __filename,
 };
 
@@ -20,7 +20,7 @@ const checkboxOptions = {
   False: false,
 };
 
-export const primaryType = () => (
+export const Base = () => (
   <CheckBox
     checked={select('checked state', checkboxOptions, UNCHECKED)}
     disabled={boolean('Disabled', false)}

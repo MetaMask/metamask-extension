@@ -3,7 +3,7 @@ import React from 'react';
 import TransactionList from '.';
 
 export default {
-  title: 'Transaction List',
+  title: 'Components/App/Transaction List',
   id: __filename,
 };
 
@@ -11,7 +11,7 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const TxList = () => {
+export const Base = () => {
   return (
     <PageSet>
       <TransactionList />

@@ -3,11 +3,11 @@ import { action } from '@storybook/addon-actions';
 import ImportToken from './import-token';
 
 export default {
-  title: 'Import Token',
+  title: 'Pages/Swaps/Import Token',
   id: __filename,
 };
 
-export const ImportTokenComponent = () => {
+export const Base = () => {
   const data = {
     iconUrl: './BAT_icon.svg',
     name: 'Basic Attention Token',

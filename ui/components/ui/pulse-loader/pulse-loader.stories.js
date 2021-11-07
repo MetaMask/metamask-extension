@@ -2,8 +2,8 @@ import React from 'react';
 import PulseLoader from '.';
 
 export default {
-  title: 'PulseLoader',
+  title: 'Components/UI/Pulse Loader',
   id: __filename,
 };
 
-export const common = () => <PulseLoader />;
+export const Base = () => <PulseLoader />;

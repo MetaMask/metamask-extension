@@ -4,11 +4,11 @@ import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import ColorIndicator from './color-indicator';
 
 export default {
-  title: 'ColorIndicator',
+  title: 'Components/UI/Color Indicator',
   id: __filename,
 };
 
-export const colorIndicator = () => (
+export const Base = () => (
   <ColorIndicator
     size={select('size', SIZES, SIZES.LG)}
     type={select('type', ColorIndicator.TYPES, ColorIndicator.TYPES.FILLED)}
@@ -17,7 +17,7 @@ export const colorIndicator = () => (
   />
 );
 
-export const withIcon = () => (
+export const WithIcon = () => (
   <ColorIndicator
     size={select('size', SIZES, SIZES.LG)}
     type={select('type', ColorIndicator.TYPES, ColorIndicator.TYPES.FILLED)}

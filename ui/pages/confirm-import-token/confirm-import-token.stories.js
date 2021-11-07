@@ -9,7 +9,7 @@ import { updateMetamaskState } from '../../store/actions';
 import ConfirmAddToken from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/Confirm Import Token',
   id: __filename,
 };
 
@@ -35,7 +35,7 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const AddToken = () => {
+export const Base = () => {
   const { metamask: state } = store.getState();
   store.dispatch(
     updateMetamaskState(

@@ -126,11 +126,11 @@ const tokensToSearch = tokens.map((token) => ({
 }));
 
 export default {
-  title: 'BuildQuote',
+  title: 'Pages/Swaps/Build Quote',
   id: __filename,
 };
 
-export const Default = () => {
+export const Base = () => {
   const [inputValue, onInputChange] = useState(null);
   const [selectedFromToken, setSelectedFromToken] = useState(null);
   const formattedSwapFromFiatValue = `$${(Number(inputValue) * 4).toFixed(2)}`;

@@ -3,7 +3,7 @@ import React from 'react';
 import ConfirmTransactionBase from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/Confirm Transaction Base',
   id: __filename,
 };
 
@@ -11,7 +11,7 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const ConfirmTransactionBaseComponent = () => {
+export const Base = () => {
   return (
     <PageSet>
       <ConfirmTransactionBase />

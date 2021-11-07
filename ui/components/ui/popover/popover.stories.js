@@ -15,11 +15,11 @@ const mainWrapperStyle = {
 };
 
 export default {
-  title: 'Popover',
+  title: 'Components/UI/Popover',
   id: __filename,
 };
 
-export const approve = () => (
+export const Approve = () => (
   <div style={containerStyle}>
     <Popover
       title={text('title', 'Approve spend limit')}

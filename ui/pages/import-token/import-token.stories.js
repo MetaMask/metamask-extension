@@ -4,10 +4,10 @@ import { boolean } from '@storybook/addon-knobs';
 import ImportToken from './import-token.component';
 
 export default {
-  title: 'Import Token',
+  title: 'Pages/Import Token',
   id: __filename,
 };
 
-export const ImportTokenComponent = () => {
+export const Base = () => {
   return <ImportToken showSearchTab={boolean('Show Search Tab', false)} />;
 };

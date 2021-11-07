@@ -9,15 +9,16 @@ import AccountList from './account-list';
 const store = configureStore(testData);
 
 export default {
-  title: 'Account List',
+  title: 'Pages/Create Account/Connect Hardware/Account List',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
+
 global.platform = {
   openTab: () => action('Open Tab')(),
 };
 
-export const AccountListComponent = () => {
+export const Base = () => {
   const [selectedAccounts, setSelectedAccounts] = useState([
     {
       name: 'This is a Really Long Account Name',

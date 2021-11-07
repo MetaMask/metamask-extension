@@ -3,7 +3,7 @@ import React from 'react';
 import ConnectedSites from '.';
 
 export default {
-  title: 'Connected Sites',
+  title: 'Pages/Connected Sites',
   id: __filename,
 };
 
@@ -11,7 +11,7 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const ConnectedSitesComponent = () => {
+export const Base = () => {
   return (
     <PageSet>
       <ConnectedSites />

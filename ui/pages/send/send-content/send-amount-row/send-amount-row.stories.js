@@ -48,7 +48,7 @@ const UsingReduxComponent = () => {
   );
 };
 
-export const SendAmountComponent = () => {
+export const Base = () => {
   const store = configureStore(testData);
 
   return (

@@ -3,11 +3,11 @@ import { text, boolean } from '@storybook/addon-knobs';
 import AdvancedTab from './advanced-tab.component';
 
 export default {
-  title: 'AdvancedTab',
+  title: 'Pages/Settings/Advanced Tab',
   id: __filename,
 };
 
-export const AdvancedTabComponent = () => {
+export const Base = () => {
   return (
     <div style={{ flex: 1, height: 500 }}>
       <AdvancedTab

@@ -8,7 +8,7 @@ import {
 import DefinitionList from './definition-list';
 
 export default {
-  title: 'Definition List',
+  title: 'Components/UI/Definition List',
   id: __filename,
 };
 
@@ -34,14 +34,14 @@ const tooltips = {
   'Ticker': 'The currency symbol of the primary currency for this network',
 };
 
-export const definitionList = () => (
+export const Base = () => (
   <DefinitionList
     dictionary={object('dictionary', basic)}
     gapSize={select('gapSize', SIZES, SIZES.SM)}
   />
 );
 
-export const withTooltips = () => (
+export const WithTooltips = () => (
   <DefinitionList
     dictionary={object('dictionary', advanced)}
     tooltips={object('tooltips', tooltips)}
@@ -49,7 +49,7 @@ export const withTooltips = () => (
   />
 );
 
-export const withTypographyControl = () => (
+export const WithTypographyControl = () => (
   <DefinitionList
     dictionary={object('dictionary', advanced)}
     tooltips={object('tooltips', tooltips)}

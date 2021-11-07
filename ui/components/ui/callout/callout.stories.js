@@ -10,11 +10,11 @@ import Typography from '../typography';
 import Callout from './callout';
 
 export default {
-  title: 'Callout',
+  title: 'Components/UI/Callout',
   id: __filename,
 };
 
-export const persistentCallout = () => (
+export const PersistentCallout = () => (
   <Box borderColor={COLORS.UI2} padding={[8, 0, 0, 0]}>
     <Box margin={2}>
       <Typography variant={TYPOGRAPHY.H4}>This is your private key:</Typography>

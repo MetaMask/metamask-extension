@@ -2,10 +2,10 @@ import React from 'react';
 import AlertCircleIcon from './alert-circle-icon.component';
 
 export default {
-  title: 'AlertCircleIcon',
+  title: 'Components/UI/Alert Circle Icon',
   id: __filename,
 };
 
-export const dangerCircleIcon = () => <AlertCircleIcon type="danger" />;
+export const DangerCircleIcon = () => <AlertCircleIcon type="danger" />;
 
-export const warningCircleIcon = () => <AlertCircleIcon type="warning" />;
+export const WarningCircleIcon = () => <AlertCircleIcon type="warning" />;

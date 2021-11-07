@@ -3,7 +3,7 @@ import { text } from '@storybook/addon-knobs';
 import InfoTooltip from './info-tooltip';
 
 export default {
-  title: 'InfoTooltip',
+  title: 'Components/UI/Info Tooltip',
   id: __filename,
 };
 

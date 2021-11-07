@@ -3,11 +3,11 @@ import { text, number } from '@storybook/addon-knobs';
 import ExchangeRateDisplay from './exchange-rate-display';
 
 export default {
-  title: 'ExchangeRateDisplay',
+  title: 'Pages/Swaps/Exchange Rate Display',
   id: __filename,
 };
 
-export const Default = () => {
+export const Base = () => {
   return (
     <ExchangeRateDisplay
       primaryTokenValue={text('primaryTokenValue', '2000000000000000000')}

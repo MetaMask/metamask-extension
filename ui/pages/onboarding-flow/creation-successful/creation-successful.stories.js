@@ -2,7 +2,7 @@ import React from 'react';
 import CreationSuccessful from './creation-successful';
 
 export default {
-  title: 'Onboarding - Creation Successful',
+  title: 'Pages/Onboarding Flow/Creation Successful',
   id: __filename,
 };
 

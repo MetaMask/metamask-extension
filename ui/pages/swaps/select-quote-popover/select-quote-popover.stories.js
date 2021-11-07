@@ -6,11 +6,11 @@ import mockQuoteData from './mock-quote-data';
 import SelectQuotePopover from '.';
 
 export default {
-  title: 'SelectQuotePopover',
+  title: 'Pages/Swaps/Select Quote Popover',
   id: __filename,
 };
 
-export const Default = () => {
+export const Base = () => {
   const [showPopover, setShowPopover] = useState(false);
 
   return (

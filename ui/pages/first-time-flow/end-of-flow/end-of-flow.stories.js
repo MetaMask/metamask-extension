@@ -2,10 +2,10 @@ import React from 'react';
 import EndOfFlowScreen from './end-of-flow.component';
 
 export default {
-  title: 'First Time Flow',
+  title: 'Pages/First Time Flow/End Of Flow',
   id: __filename,
 };
 
-export const EndOfFlowComponent = () => {
+export const Base = () => {
   return <EndOfFlowScreen />;
 };

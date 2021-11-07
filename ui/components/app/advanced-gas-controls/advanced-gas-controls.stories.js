@@ -3,11 +3,11 @@ import React from 'react';
 import AdvancedGasControls from '.';
 
 export default {
-  title: 'Advanced Gas Controls',
+  title: 'Components/App/Advanced Gas Controls',
   id: __filename,
 };
 
-export const simple = () => {
+export const Base = () => {
   return (
     <div style={{ width: '600px' }}>
       <AdvancedGasControls />

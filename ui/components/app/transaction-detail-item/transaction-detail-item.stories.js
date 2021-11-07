@@ -4,11 +4,11 @@ import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetailItem from '.';
 
 export default {
-  title: 'Transaction Detail Item',
+  title: 'Components/App/Transaction Detail Item',
   id: __filename,
 };
 
-export const basic = () => {
+export const Base = () => {
   return (
     <div style={{ width: '400px' }}>
       <TransactionDetailItem

@@ -2,10 +2,10 @@ import React from 'react';
 import AwaitingSignatures from './awaiting-signatures';
 
 export default {
-  title: 'Signatures',
+  title: 'Pages/Swaps/Awaiting Signatures',
   id: __filename,
 };
 
-export const AwaitingSignaturesComponent = () => {
+export const Base = () => {
   return <AwaitingSignatures />;
 };

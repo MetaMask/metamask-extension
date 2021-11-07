@@ -7,7 +7,7 @@ import { updateTransactionParams } from '../../store/actions';
 import ConfirmDeployContract from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/Confirm Deploy Contract',
   id: __filename,
 };
 
@@ -49,7 +49,7 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const DeployContract = () => {
+export const Base = () => {
   return (
     <PageSet>
       <ConfirmDeployContract />

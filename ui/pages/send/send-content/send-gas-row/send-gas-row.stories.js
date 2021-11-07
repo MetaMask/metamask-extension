@@ -14,12 +14,12 @@ import SendGasRow from './send-gas-row.component';
 const store = configureStore(testData);
 
 export default {
-  title: 'SendGasRow',
+  title: 'Pages/Send/Send Content/Send Gas Row',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-export const SendGasRowComponent = () => {
+export const Base = () => {
   const state = store.getState();
   const { metamask } = state;
   const { send } = metamask;
