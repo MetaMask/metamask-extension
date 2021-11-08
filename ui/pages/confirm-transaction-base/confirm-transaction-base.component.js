@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
+import TransactionDecoding from '../../components/app/transaction-decoding';
 import { isBalanceSufficient } from '../send/send.utils';
 import {
   addHexes,
@@ -18,9 +19,12 @@ import {
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
+import CopyRawData from '../../components/app/transaction-decoding/components/ui/copy-raw-data';
+
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import ActionableMessage from '../../components/ui/actionable-message';
+import Disclosure from '../../components/ui/disclosure';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
@@ -106,6 +110,7 @@ export default class ConfirmTransactionBase extends Component {
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
+    dataHexComponent: PropTypes.node,
     hideData: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
@@ -137,6 +142,7 @@ export default class ConfirmTransactionBase extends Component {
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
+    chainId: PropTypes.string,
   };
 
   state = {
@@ -615,7 +621,7 @@ export default class ConfirmTransactionBase extends Component {
   renderData(functionType) {
     const { t } = this.context;
     const {
-      txData: { txParams: { data } = {} } = {},
+      txData: { txParams } = {},
       methodData: { params } = {},
       hideData,
       dataComponent,
@@ -634,6 +640,38 @@ export default class ConfirmTransactionBase extends Component {
               {functionType}
             </span>
           </div>
+          <Disclosure>
+            <TransactionDecoding to={txParams?.to} inputData={txParams?.data} />
+          </Disclosure>
+        </div>
+      )
+    );
+  }
+
+  renderDataHex(functionType) {
+    const { t } = this.context;
+    const {
+      txData: { txParams } = {},
+      methodData: { params } = {},
+      hideData,
+      dataHexComponent,
+    } = this.props;
+
+    if (hideData) {
+      return null;
+    }
+
+    return (
+      dataHexComponent || (
+        <div className="confirm-page-container-content__data">
+          <div className="confirm-page-container-content__data-box-label">
+            {`${t('functionType')}:`}
+            <span className="confirm-page-container-content__function-type">
+              {`${functionType} (${
+                params ? params.map(({ type }) => type).join(', ') : null
+              })`}
+            </span>
+          </div>
           {params && (
             <div className="confirm-page-container-content__data-box">
               <div className="confirm-page-container-content__data-field-label">
@@ -645,9 +683,12 @@ export default class ConfirmTransactionBase extends Component {
             </div>
           )}
           <div className="confirm-page-container-content__data-box-label">
-            {`${t('hexData')}: ${toBuffer(data).length} bytes`}
+            {`${t('hexData')}: ${toBuffer(txParams?.data).length} bytes`}
           </div>
-          <div className="confirm-page-container-content__data-box">{data}</div>
+          <div className="confirm-page-container-content__data-box">
+            {txParams?.data}
+          </div>
+          <CopyRawData data={txParams?.data} />
         </div>
       )
     );

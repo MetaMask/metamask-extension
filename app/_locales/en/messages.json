@@ -654,6 +654,9 @@
   "dataBackupFoundInfo": {
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
   },
+  "dataHex": {
+    "message": "Hex"
+  },
   "decimal": {
     "message": "Token Decimal"
   },
@@ -2957,6 +2960,9 @@
   "total": {
     "message": "Total"
   },
+  "totalAmount": {
+    "message": "Total Amount"
+  },
   "transaction": {
     "message": "transaction"
   },
@@ -3181,6 +3187,9 @@
   },
   "viewMore": {
     "message": "View More"
+  },
+  "viewOnBlockExplorer": {
+    "message": "View on block explorer"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View $1 at $2",

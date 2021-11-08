@@ -231,6 +231,7 @@ const mapStateToProps = (state, ownProps) => {
     nativeCurrency,
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
+    chainId,
   };
 };
 
