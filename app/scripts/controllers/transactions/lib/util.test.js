@@ -187,7 +187,7 @@ describe('txUtils', function () {
             txUtils.validateTxParams(txParams);
           },
           {
-            message: `Invalid max fee per gas of "${txParams.maxFeePerGas}": not a valid hex string.`,
+            message: `Invalid param "maxFeePerGas": not a valid hex string.`,
           },
         );
       });
@@ -221,7 +221,7 @@ describe('txUtils', function () {
             txUtils.validateTxParams(txParams);
           },
           {
-            message: `Invalid gas price of "${txParams.gasPrice}": not a valid hex string.`,
+            message: `Invalid param "gasPrice": not a valid hex string.`,
           },
         );
       });
@@ -274,7 +274,7 @@ describe('txUtils', function () {
             txUtils.validateTxParams(txParams);
           },
           {
-            message: `Invalid max priority fee of "${txParams.maxPriorityFeePerGas}": not a valid hex string.`,
+            message: `Invalid param "maxPriorityFeePerGas": not a valid hex string.`,
           },
         );
       });

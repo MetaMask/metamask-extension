@@ -84,6 +84,21 @@ function ensureFieldIsString(txParams, field) {
 }
 
 /**
+ * Ensures that the provided value for field is a hex string, throws an
+ * invalidParams error if field is not a hex string.
+ * @param {Object} txParams - the transaction parameters object
+ * @param {string} field - the current field being validated
+ * @throws {ethErrors.rpc.invalidParams} - throws if field is not a string
+ */
+function ensureFieldIsHexString(key, value) {
+  if (!value.match(/^0x[a-fA-F0-9]+$/u)) {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid param "${key}": not a valid hex string.`,
+    );
+  }
+}
+
+/**
  * Ensures that the provided txParams has the proper 'type' specified for the
  * given field, if it is provided. If types do not match throws an
  * invalidParams error.
@@ -164,11 +179,7 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
           'maxPriorityFeePerGas',
         );
         ensureFieldIsString(txParams, 'gasPrice');
-        if (!value.match(/^0x[a-fA-F0-9]+$/u)) {
-          throw ethErrors.rpc.invalidParams(
-            `Invalid gas price of "${value}": not a valid hex string.`,
-          );
-        }
+        ensureFieldIsHexString(key, value);
         break;
       case 'maxFeePerGas':
         ensureProperTransactionEnvelopeTypeProvided(txParams, 'maxFeePerGas');
@@ -178,11 +189,7 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
           'gasPrice',
         );
         ensureFieldIsString(txParams, 'maxFeePerGas');
-        if (!value.match(/^0x[a-fA-F0-9]+$/u)) {
-          throw ethErrors.rpc.invalidParams(
-            `Invalid max fee per gas of "${value}": not a valid hex string.`,
-          );
-        }
+        ensureFieldIsHexString(key, value);
         break;
       case 'maxPriorityFeePerGas':
         ensureProperTransactionEnvelopeTypeProvided(
@@ -195,11 +202,7 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
           'gasPrice',
         );
         ensureFieldIsString(txParams, 'maxPriorityFeePerGas');
-        if (!value.match(/^0x[a-fA-F0-9]+$/u)) {
-          throw ethErrors.rpc.invalidParams(
-            `Invalid max priority fee of "${value}": not a valid hex string.`,
-          );
-        }
+        ensureFieldIsHexString(key, value);
         break;
       case 'value':
         ensureFieldIsString(txParams, 'value');
@@ -215,11 +218,7 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
           );
         }
 
-        if (!value.match(/^0x[a-fA-F0-9]+$/u)) {
-          throw ethErrors.rpc.invalidParams(
-            `Invalid transaction value of "${value}": not a valid hex string.`,
-          );
-        }
+        ensureFieldIsHexString(key, value);
         break;
       case 'chainId':
         if (typeof value !== 'number' && typeof value !== 'string') {
