@@ -65,7 +65,7 @@ export default class TransactionBreakdown extends PureComponent {
     return (
       <div className={classnames('transaction-breakdown', className)}>
         <div className="transaction-breakdown__title">{t('transaction')}</div>
-        <TransactionBreakdownRow title={t('nonce')}>
+        <TransactionBreakdownRow divider={true} title={t('nonce')}>
           {typeof nonce === 'undefined' ? null : (
             <HexToDecimal
               className="transaction-breakdown__value"
@@ -76,7 +76,7 @@ export default class TransactionBreakdown extends PureComponent {
         <TransactionBreakdownRow
           title={isTokenApprove ? t('spendLimitAmount') : t('amount')}
         >
-          <span className="transaction-breakdown__value">
+          <span className="transaction-breakdown__value transaction-breakdown__value--amount">
             {primaryCurrency}
           </span>
         </TransactionBreakdownRow>
@@ -178,7 +178,10 @@ export default class TransactionBreakdown extends PureComponent {
           </TransactionBreakdownRow>
         )}
         {isEIP1559Transaction && (
-          <TransactionBreakdownRow title={t('transactionHistoryMaxFeePerGas')}>
+          <TransactionBreakdownRow
+            divider={true}
+            title={t('transactionHistoryMaxFeePerGas')}
+          >
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
               currency={nativeCurrency}
@@ -214,7 +217,7 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
-        <TransactionBreakdownRow title={t('total')}>
+        <TransactionBreakdownRow title={t('totalAmount')}>
           <UserPreferencedCurrencyDisplay
             className="transaction-breakdown__value transaction-breakdown__value--eth-total"
             type={PRIMARY}
