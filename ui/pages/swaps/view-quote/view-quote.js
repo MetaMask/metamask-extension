@@ -37,8 +37,8 @@ import {
   getSwapsQuoteRefreshTime,
   getReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
-  getUnsignedTransactionsAndEstimates,
   getSmartTransactionsEnabled,
+  getUnsignedTransactionsAndEstimates,
   signAndSendSwapsSmartTransaction,
   getSwapsRefreshStates,
 } from '../../../ducks/swaps/swaps';
@@ -477,6 +477,8 @@ export default function ViewQuote() {
     available_quotes: numberOfQuotes,
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
+    stx_enabled: smartTransactionsEnabled,
+    stx_user_opt_in: smartTransactionsOptInStatus,
   };
 
   const allAvailableQuotesOpened = useNewMetricEvent({
@@ -876,6 +878,7 @@ export default function ViewQuote() {
                 signAndSendSwapsSmartTransaction({
                   unsignedTransaction,
                   unsignedTransactionsAndEstimates,
+                  metaMetricsEvent,
                 }),
               );
               history.push(SMART_TRANSACTION_STATUS_ROUTE);

@@ -598,6 +598,8 @@ export const fetchQuotesAndSetQuoteState = (
     const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
       state,
     );
+    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
+    const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
@@ -610,6 +612,8 @@ export const fetchQuotesAndSetQuoteState = (
         custom_slippage: maxSlippage !== 2,
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
+        stx_enabled: smartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
         anonymizedData: true,
       },
     });
@@ -661,6 +665,8 @@ export const fetchQuotesAndSetQuoteState = (
             custom_slippage: maxSlippage !== 2,
             is_hardware_wallet: hardwareWalletUsed,
             hardware_wallet_type: hardwareWalletType,
+            stx_enabled: smartTransactionsEnabled,
+            stx_user_opt_in: smartTransactionsOptInStatus,
           },
         });
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
@@ -686,6 +692,8 @@ export const fetchQuotesAndSetQuoteState = (
             available_quotes: Object.values(fetchedQuotes)?.length,
             is_hardware_wallet: hardwareWalletUsed,
             hardware_wallet_type: hardwareWalletType,
+            stx_enabled: smartTransactionsEnabled,
+            stx_user_opt_in: smartTransactionsOptInStatus,
             anonymizedData: true,
           },
         });
@@ -711,6 +719,7 @@ export const fetchQuotesAndSetQuoteState = (
 export const signAndSendSwapsSmartTransaction = ({
   unsignedTransaction,
   unsignedTransactionsAndEstimates,
+  metaMetricsEvent,
 }) => {
   return async (dispatch, getState) => {
     const state = getState();
@@ -737,6 +746,10 @@ export const signAndSendSwapsSmartTransaction = ({
         usedQuote.destinationAmount,
         destinationTokenInfo.decimals || 18,
       ).toPrecision(8);
+      const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(
+        state,
+      );
+      const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
       const swapMetaData = {
         token_from: sourceTokenInfo.symbol,
         token_from_amount: String(swapTokenValue),
@@ -756,7 +769,14 @@ export const signAndSendSwapsSmartTransaction = ({
         performance_savings: usedQuote.savings?.performance,
         fee_savings: usedQuote.savings?.fee,
         median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+        stx_enabled: smartTransactionsEnabled,
+        stx_user_opt_in: smartTransactionsOptInStatus,
       };
+      metaMetricsEvent({
+        event: 'STX Submitted',
+        category: 'swaps',
+        sensitiveProperties: swapMetaData,
+      });
       const destinationTokenAddress = destinationTokenInfo.address;
       const destinationTokenDecimals = destinationTokenInfo.decimals;
       const destinationTokenSymbol = destinationTokenInfo.symbol;
@@ -892,7 +912,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       conversionRate: usdConversionRate,
       numberOfDecimals: 6,
     });
-
+    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
+    const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
     const swapMetaData = {
       token_from: sourceTokenInfo.symbol,
       token_from_amount: String(swapTokenValue),
@@ -918,6 +939,8 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: getHardwareWalletType(state),
+      stx_enabled: smartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
     };
     if (networkAndAccountSupports1559) {
       swapMetaData.max_fee_per_gas = maxFeePerGas;

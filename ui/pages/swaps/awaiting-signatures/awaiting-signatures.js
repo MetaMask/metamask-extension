@@ -8,6 +8,8 @@ import {
   getFetchParams,
   getApproveTxParams,
   prepareToLeaveSwaps,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -40,6 +42,10 @@ export default function AwaitingSignatures() {
   const approveTxParams = useSelector(getApproveTxParams);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const needsTwoConfirmations = Boolean(approveTxParams);
 
   const awaitingSignaturesEvent = useNewMetricEvent({
@@ -54,6 +60,8 @@ export default function AwaitingSignatures() {
       custom_slippage: fetchParams?.slippage === 2,
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
     },
     category: 'swaps',
   });

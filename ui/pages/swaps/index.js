@@ -39,6 +39,8 @@ import {
   getFromToken,
   getReviewSwapClickedTimestamp,
   getPendingSmartTransactions,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
@@ -133,6 +135,10 @@ export default function Swap() {
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const pendingSmartTransactions = useSelector(getPendingSmartTransactions);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
 
   if (networkAndAccountSupports1559) {
     // This will pre-load gas fees before going to the View Quote page.
@@ -245,6 +251,8 @@ export default function Swap() {
       current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
     },
   });
   const exitEventRef = useRef();

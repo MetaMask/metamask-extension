@@ -57,6 +57,8 @@ import {
   getRpcPrefsForCurrentProvider,
   getUseTokenDetection,
   getTokenList,
+  isHardwareWallet,
+  getHardwareWalletType,
 } from '../../../selectors';
 
 import {
@@ -146,6 +148,8 @@ export default function BuildQuote({
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
@@ -399,10 +403,22 @@ export default function BuildQuote({
     }
   }, [onInputChange, prevFromTokenBalance, inputValue, fromTokenBalance]);
 
+  const buildQuotePageLoadedEvent = useNewMetricEvent({
+    event: 'Build Quote Page Loaded',
+    category: 'swaps',
+    sensitiveProperties: {
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
+    },
+  });
+
   useEffect(() => {
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
-  }, [dispatch]);
+    buildQuotePageLoadedEvent();
+  }, [dispatch, buildQuotePageLoadedEvent]);
 
   const BlockExplorerLink = () => {
     return (

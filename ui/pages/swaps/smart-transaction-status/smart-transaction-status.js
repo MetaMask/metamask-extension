@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { I18nContext } from '../../../contexts/i18n';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
@@ -10,6 +10,8 @@ import {
   getCurrentSmartTransactions,
   getSelectedQuote,
   getTopQuote,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -71,6 +73,10 @@ export default function SmartTransactionStatus() {
   const topQuote = useSelector(getTopQuote);
   const usedQuote = selectedQuote || topQuote;
   const currentSmartTransactions = useSelector(getCurrentSmartTransactions);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   let smartTransactionStatus = {};
   let latestSmartTransaction = {};
   let latestSmartTransactionUuid;
@@ -110,6 +116,8 @@ export default function SmartTransactionStatus() {
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
     stx_uuid: latestSmartTransactionUuid,
+    stx_enabled: smartTransactionsEnabled,
+    stx_user_opt_in: smartTransactionsOptInStatus,
   };
 
   let destinationValue;
