@@ -2779,7 +2779,7 @@ export function getCurrentWindowTab() {
   };
 }
 
-export function setLedgerLivePreference(value) {
+export function setLedgerTransportPreference(value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
     await promisifiedBackground.setLedgerTransportPreference(value);
