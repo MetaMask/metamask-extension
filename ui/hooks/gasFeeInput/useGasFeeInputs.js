@@ -77,7 +77,7 @@ export function useGasFeeInputs(
   // Calling this hooks initiates polling for new gas estimates and returns the
   // current estimate.
   const {
-    gasEstimateType,
+    gasEstimateUsed,
     gasFeeEstimates,
     isGasEstimatesLoading,
     estimatedGasFeeTimeBounds,
@@ -96,12 +96,12 @@ export function useGasFeeInputs(
     return defaultEstimateToUse;
   });
 
-  const [
-    isUsingDappSuggestedGasFees,
-    setIsUsingDappSuggestedGasFees,
-  ] = useState(() =>
-    Boolean(areDappSuggestedAndTxParamGasFeesTheSame(transaction)),
-  );
+  const [estimateUsed, setEstimateUsed] = useState(() => {
+    if (areDappSuggestedAndTxParamGasFeesTheSame(transaction)) {
+      return 'dappSuggested';
+    }
+    return estimateToUse;
+  });
 
   const [gasLimit, setGasLimit] = useState(
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
@@ -113,7 +113,7 @@ export function useGasFeeInputs(
     setGasPriceHasBeenManuallySet,
   } = useGasPriceInput({
     estimateToUse,
-    gasEstimateType,
+    gasEstimateUsed,
     gasFeeEstimates,
     transaction,
   });
@@ -124,7 +124,7 @@ export function useGasFeeInputs(
     setMaxFeePerGas,
   } = useMaxFeePerGasInput({
     estimateToUse,
-    gasEstimateType,
+    gasEstimateUsed,
     gasFeeEstimates,
     gasLimit,
     gasPrice,
@@ -137,7 +137,7 @@ export function useGasFeeInputs(
     setMaxPriorityFeePerGas,
   } = useMaxPriorityFeePerGasInput({
     estimateToUse,
-    gasEstimateType,
+    gasEstimateUsed,
     gasFeeEstimates,
     gasLimit,
     transaction,
@@ -152,7 +152,7 @@ export function useGasFeeInputs(
     minimumCostInHexWei,
   } = useGasEstimates({
     editGasMode,
-    gasEstimateType,
+    gasEstimateUsed,
     gasFeeEstimates,
     gasLimit,
     gasPrice,
@@ -169,7 +169,7 @@ export function useGasFeeInputs(
     gasWarnings,
     hasGasErrors,
   } = useGasFeeErrors({
-    gasEstimateType,
+    gasEstimateUsed,
     gasFeeEstimates,
     isGasEstimatesLoading,
     gasLimit,
@@ -204,7 +204,7 @@ export function useGasFeeInputs(
       setMaxPriorityFeePerGas(null);
       setGasPrice(null);
       setGasPriceHasBeenManuallySet(false);
-      setIsUsingDappSuggestedGasFees(false);
+      setEstimateUsed(estimateLevel);
     },
     [
       setInternalEstimateToUse,
@@ -213,7 +213,7 @@ export function useGasFeeInputs(
       setMaxPriorityFeePerGas,
       setGasPrice,
       setGasPriceHasBeenManuallySet,
-      setIsUsingDappSuggestedGasFees,
+      setEstimateUsed,
     ],
   );
 
@@ -226,6 +226,7 @@ export function useGasFeeInputs(
     setMaxFeePerGas(maxFeePerGas);
     setMaxPriorityFeePerGas(maxPriorityFeePerGas);
     setGasPriceHasBeenManuallySet(true);
+    setEstimateUsed('custom');
   }, [
     setInternalEstimateToUse,
     handleGasLimitOutOfBoundError,
@@ -259,9 +260,9 @@ export function useGasFeeInputs(
     estimatedMaximumNative,
     estimatedMinimumNative,
     isGasEstimatesLoading,
-    isUsingDappSuggestedGasFees,
+    estimateUsed,
     gasFeeEstimates,
-    gasEstimateType,
+    gasEstimateUsed,
     estimatedGasFeeTimeBounds,
     onManualChange,
     estimatedBaseFee,

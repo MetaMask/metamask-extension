@@ -1,0 +1,24 @@
+.edit-gas-item{
+  font-size: 10px;
+  font-weight: 700;
+  color: $ui-4;
+
+  &-selected {
+    background-color: $ui-1;
+  }
+
+  > span {
+    display: inline-block;
+    width: 22%;
+  }
+
+  > span:first-of-type {
+    width: 40%;
+  }
+
+  &__name {
+    color: $ui-black;
+    font-size: 12px;
+    font-weight: 700;
+  }
+}

@@ -8,14 +8,7 @@ import Typography from '../../ui/typography/typography';
 
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import { COLORS } from '../../../helpers/constants/design-system';
-
-const GasLevelIconMap = {
-  low: '🐢',
-  medium: '🦊',
-  high: '🦍',
-  dappSuggested: '🌐',
-  custom: '⚙',
-};
+import { GasLevelIconMap } from '../../../helpers/constants/gas';
 
 export default function TransactionDetail({ rows = [], onEdit }) {
   // eslint-disable-next-line prefer-destructuring
@@ -23,18 +16,14 @@ export default function TransactionDetail({ rows = [], onEdit }) {
 
   const t = useContext(I18nContext);
   const {
-    estimateToUse,
     gasLimit,
     gasPrice,
-    isUsingDappSuggestedGasFees,
+    estimateUsed,
     maxFeePerGas,
     maxPriorityFeePerGas,
     transaction,
     supportsEIP1559,
   } = useGasFeeContext();
-  const estimateUsed = isUsingDappSuggestedGasFees
-    ? 'dappSuggested'
-    : estimateToUse;
 
   if (EIP_1559_V2 && estimateUsed) {
     return (

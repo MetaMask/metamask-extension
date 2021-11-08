@@ -1,0 +1,29 @@
+.edit-gas-fee-popover {
+  @media screen and (min-width: $break-large) {
+    max-height: 84vh;
+  }
+
+  &__wrapper {
+    border-top: 1px solid $ui-grey;
+  }
+
+  &__mm-recommended {
+    padding: 16px 24px;
+
+    &__header{
+      font-size: 10px;
+      font-weight: 700;
+      color: $ui-4;
+
+      > span {
+        display: inline-block;
+        width: 22%;
+      }
+
+      > span:first-of-type {
+        width: 40%;
+      }
+    }
+  }
+  
+}

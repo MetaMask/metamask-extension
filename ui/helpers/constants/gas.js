@@ -31,3 +31,11 @@ export function getGasFormErrorText(type, t, { minimumGasLimit } = {}) {
       return '';
   }
 }
+
+export const GasLevelIconMap = {
+  low: '🐢',
+  medium: '🦊',
+  high: '🦍',
+  dappSuggested: '🌐',
+  custom: '⚙',
+};
