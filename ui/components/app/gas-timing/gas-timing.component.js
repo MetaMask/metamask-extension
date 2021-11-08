@@ -96,12 +96,14 @@ export default function GasTiming({
     previousIsUnknownLow,
   ]);
 
-  const unknownProcessingTimeText = (
-    <>
-      {t('editGasTooLow')}{' '}
-      <InfoTooltip position="top" contentText={t('editGasTooLowTooltip')} />
-    </>
-  );
+  let unknownProcessingTimeText
+  if (EIP_1559_V2) {
+    unknownProcessingTimeText = t('editGasTooLow');
+  } else {
+    unknownProcessingTimeText = <>
+    {t('editGasTooLow')}{' '}
+    <InfoTooltip position="top" contentText={t('editGasTooLowTooltip')} />
+  </>;
 
   if (
     gasWarnings?.maxPriorityFee === GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW ||
