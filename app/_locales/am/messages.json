@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "ክፍያ መጨመር የመከወኛ ጊዜን ሊቀንስ ቢችልም ይህ ግን ዋስትና የለውም።"
   },
-  "customRPC": {
-    "message": "ብጁ RPC"
-  },
   "customToken": {
     "message": "ብጁ ተለዋጭ ስም"
   },
@@ -620,9 +617,6 @@
   "newContract": {
     "message": "አዲስ ኮንትራት"
   },
-  "newNetwork": {
-    "message": "አዲስ አውታረ መረብ"
-  },
   "newPassword": {
     "message": "አዲስ የይለፍ ቃል (ቢያንስ 8 ቁምፊዎች)"
   },
@@ -670,12 +664,6 @@
   },
   "on": {
     "message": "በርቷል"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "ኤክስፕሎረር URL አግድ (አማራጭ)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "ምልክት (አማራጭ)"
   },
   "origin": {
     "message": "መነሻ"

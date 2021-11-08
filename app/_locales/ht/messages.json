@@ -136,9 +136,6 @@
   "customGas": {
     "message": "Koutim Gaz"
   },
-  "customRPC": {
-    "message": "Koutim RPC"
-  },
   "customToken": {
     "message": "Koutim Token"
   },

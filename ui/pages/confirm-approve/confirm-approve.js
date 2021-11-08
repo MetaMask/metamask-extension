@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ConfirmTransactionBase from '../confirm-transaction-base';
@@ -14,6 +14,7 @@ import {
   getTokenAddressParam,
   getTokenValueParam,
 } from '../../helpers/utils/token-util';
+import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
 import { getTokens, getNativeCurrency } from '../../ducks/metamask/metamask';
 import {
@@ -25,6 +26,8 @@ import {
   getCustomNonceValue,
   getNextSuggestedNonce,
   doesAddressRequireLedgerHidConnection,
+  getCurrentChainId,
+  getRpcPrefsForCurrentProvider,
 } from '../../selectors';
 
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
@@ -58,6 +61,8 @@ export default function ConfirmApprove() {
   const useNonceField = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
+  const chainId = useSelector(getCurrentChainId);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
   const ledgerWalletRequiredHidConnection = useSelector(
     doesAddressRequireLedgerHidConnectionByFromAddress(from),
@@ -83,6 +88,7 @@ export default function ConfirmApprove() {
 
   const tokenSymbol = currentToken?.symbol;
   const decimals = Number(currentToken?.decimals);
+  const tokenImage = currentToken?.image;
   const tokenData = getTokenData(data);
   const tokenValue = getTokenValueParam(tokenData);
   const toAddress = getTokenAddressParam(tokenData);
@@ -125,6 +131,19 @@ export default function ConfirmApprove() {
     prevCustomNonce.current = customNonceValue;
     prevNonce.current = nextNonce;
   }, [customNonceValue, nextNonce]);
+
+  const [isContract, setIsContract] = useState(false);
+  const checkIfContract = useCallback(async () => {
+    const { isContractAddress } = await readAddressAsContract(
+      global.eth,
+      toAddress,
+    );
+    setIsContract(isContractAddress);
+  }, [setIsContract, toAddress]);
+  useEffect(() => {
+    checkIfContract();
+  }, [checkIfContract]);
+
   const { origin } = transaction;
   const formattedOrigin = origin
     ? origin[0].toUpperCase() + origin.slice(1)
@@ -158,6 +177,7 @@ export default function ConfirmApprove() {
             tokenAmount={tokenAmount}
             origin={formattedOrigin}
             tokenSymbol={tokenSymbol}
+            tokenImage={tokenImage}
             tokenBalance={tokenBalance}
             showCustomizeGasModal={approveTransaction}
             showEditApprovalPermissionModal={({
@@ -222,6 +242,9 @@ export default function ConfirmApprove() {
             ledgerWalletRequiredHidConnection={
               ledgerWalletRequiredHidConnection
             }
+            chainId={chainId}
+            rpcPrefs={rpcPrefs}
+            isContract={isContract}
           />
           {showCustomizeGasPopover && (
             <EditGasPopover

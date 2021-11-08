@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Zwiększenie opłaty może skrócić czas przetwarzania transakcji, ale nie jest to gwarantowane."
   },
-  "customRPC": {
-    "message": "Własne RPC"
-  },
   "customToken": {
     "message": "Własny token"
   },
@@ -620,9 +617,6 @@
   "newContract": {
     "message": "Nowy kontrakt"
   },
-  "newNetwork": {
-    "message": "Nowa sieć"
-  },
   "newPassword": {
     "message": "Nowe hasło (min. 8 znaków)"
   },
@@ -667,12 +661,6 @@
   },
   "on": {
     "message": "Włączone"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Adres URL przeglądarki łańcucha bloków (opcjonalnie)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (opcjonalnie)"
   },
   "origin": {
     "message": "Pochodzenie"

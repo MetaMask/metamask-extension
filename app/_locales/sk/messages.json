@@ -251,9 +251,6 @@
   "customGasSubTitle": {
     "message": "Zvýšenie poplatku môže skrátiť dobu spracovania, nie je to však zaručené."
   },
-  "customRPC": {
-    "message": "Vlastní RPC"
-  },
   "customToken": {
     "message": "Vlastní token"
   },
@@ -595,9 +592,6 @@
   "newContract": {
     "message": "Nový kontrakt"
   },
-  "newNetwork": {
-    "message": "Nová sieť"
-  },
   "newPassword": {
     "message": "Nové heslo (min 8 znaků)"
   },
@@ -642,12 +636,6 @@
   },
   "on": {
     "message": "Zapnuté"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokovať URL Explorera (voliteľné)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (voliteľné)"
   },
   "origin": {
     "message": "Pôvod"

@@ -27,6 +27,12 @@ module.exports = function createStaticAssetTasks({
         dest: `images`,
       },
     ],
+    [BuildType.flask]: [
+      {
+        src: './app/build-types/flask/',
+        dest: `images`,
+      },
+    ],
   };
 
   if (Object.keys(additionalBuildTargets).includes(buildType)) {

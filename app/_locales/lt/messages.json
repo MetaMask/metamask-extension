@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Didinant mokestį gali mažėti apdorojimo trukmė, bet tai negarantuojama."
   },
-  "customRPC": {
-    "message": "Pritaikytas RPC"
-  },
   "customToken": {
     "message": "Pritaikytas žetonas"
   },
@@ -623,9 +620,6 @@
   "newContract": {
     "message": "Nauja sutartis"
   },
-  "newNetwork": {
-    "message": "Naujas tinklas"
-  },
   "newPassword": {
     "message": "Naujas slaptažodis (bent 8 ženklai)"
   },
@@ -673,12 +667,6 @@
   },
   "on": {
     "message": "Įjungta"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokuoti naršyklės URL (pasirinktinai)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolis (nebūtinas)"
   },
   "origin": {
     "message": "Kilmė"

@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "A díj növelése csökkentheti a feldolgozási időt, de ez nem garantált."
   },
-  "customRPC": {
-    "message": "Egyedi RPC"
-  },
   "customToken": {
     "message": "Egyéni token"
   },
@@ -616,9 +613,6 @@
   "newContract": {
     "message": "Új szerződés"
   },
-  "newNetwork": {
-    "message": "Új hálózat"
-  },
   "newPassword": {
     "message": "Új jelszó (minimum 8 karakter)"
   },
@@ -666,12 +660,6 @@
   },
   "on": {
     "message": "Be"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Explorer URL letiltása (nem kötelező)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Szimbólum (opcionális)"
   },
   "origin": {
     "message": "Eredet"

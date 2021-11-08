@@ -130,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "इस बाहरी एक्सटेंशन को इसकी अनुमति दें:"
   },
-  "allowOriginSpendToken": {
-    "message": "$1 को आपका $2 खर्च करने की अनुमति दें?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "इस साइट को इसकी अनुमति दें:"
   },
@@ -143,9 +139,6 @@
   },
   "amount": {
     "message": "राशि"
-  },
-  "amountWithColon": {
-    "message": "राशि:"
   },
   "appDescription": {
     "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
@@ -473,9 +466,6 @@
   },
   "customGasSubTitle": {
     "message": "शुल्क बढ़ाने से प्रसंस्करण समय में कमी हो सकती है, लेकिन इसकी गारंटी नहीं होती है।"
-  },
-  "customRPC": {
-    "message": "कस्टम RPC"
   },
   "customSpendLimit": {
     "message": "कस्टम खर्च सीमा"
@@ -1193,9 +1183,6 @@
   "newContract": {
     "message": "नया अनुबंध"
   },
-  "newNetwork": {
-    "message": "नया नेटवर्क"
-  },
   "newPassword": {
     "message": "नया पासवर्ड (न्यूनतम 8 वर्ण)"
   },
@@ -1333,12 +1320,6 @@
   },
   "onlyConnectTrust": {
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं।"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "ब्लॉक एक्सप्लोरर URL (वैकल्पिक)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "मुद्रा प्रतीक (वैकल्पिक)"
   },
   "origin": {
     "message": "उत्पत्ति"
@@ -2201,9 +2182,6 @@
     "message": "प्रति: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "प्रति:"
-  },
   "token": {
     "message": "टोकन"
   },
@@ -2280,10 +2258,6 @@
   "troubleTokenBalances": {
     "message": "हमें आपके टोकन की शेषराशि लोड करने में परेशानी हुई। आप उन्हें देख सकते हैं ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "क्या आप इस साइट पर भरोसा करते हैं? यह अनुमति देकर, आप $1 को अपने $2 की निकासी करने और आपके लिए लेनदेनों को स्वचालित करने की अनुमति दे रहे हैं।",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "पुनः प्रयास करें"

@@ -130,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "Izinkan ekstensi eksternal ini untuk:"
   },
-  "allowOriginSpendToken": {
-    "message": "Izinkan $1 untuk menggunakan $2 Anda?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Izinkan situs ini untuk:"
   },
@@ -143,9 +139,6 @@
   },
   "amount": {
     "message": "Jumlah"
-  },
-  "amountWithColon": {
-    "message": "Jumlah:"
   },
   "appDescription": {
     "message": "Dompet Ethereum di Browser Anda",
@@ -473,9 +466,6 @@
   },
   "customGasSubTitle": {
     "message": "Menaikkan biaya dapat mengurangi waktu pemrosesan, namun tidak dijamin."
-  },
-  "customRPC": {
-    "message": "RPC Kustom"
   },
   "customSpendLimit": {
     "message": "Batas Penggunaan Kustom"
@@ -1193,9 +1183,6 @@
   "newContract": {
     "message": "Kontrak Baru"
   },
-  "newNetwork": {
-    "message": "Jaringan Baru"
-  },
   "newPassword": {
     "message": "Kata sandi baru (min. 8 karakter)"
   },
@@ -1333,12 +1320,6 @@
   },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL Block Explorer (opsional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol Mata Uang (opsional)"
   },
   "origin": {
     "message": "Asal"
@@ -2201,9 +2182,6 @@
     "message": "Untuk: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "Untuk:"
-  },
   "token": {
     "message": "Token"
   },
@@ -2280,10 +2258,6 @@
   "troubleTokenBalances": {
     "message": "Kami mengalami masalah saat memuat saldo token Anda. Anda dapat melihatnya ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "Anda percaya situs ini? Dengan memberikan izin ini, Anda mengizinkan $1 untuk menarik $2 Anda dan mengotomatiskan transaksi untuk Anda.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Coba lagi"

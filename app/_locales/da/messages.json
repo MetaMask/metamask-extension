@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Forøgelse af gebyr kan mindske bearbejdningstiden, men det er ikke en garanti."
   },
-  "customRPC": {
-    "message": "Tilpasset RPC"
-  },
   "customToken": {
     "message": "Brugerdefineret Token"
   },
@@ -607,9 +604,6 @@
   "newContract": {
     "message": "Ny Kontrakt"
   },
-  "newNetwork": {
-    "message": "Nyt Netværk"
-  },
   "newPassword": {
     "message": "Ny adgangskode (min. 8 tegn)"
   },
@@ -657,12 +651,6 @@
   },
   "on": {
     "message": "Til"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blok-stifinder-URL (valgfrit)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (valgfrit)"
   },
   "parameters": {
     "message": "Parametre"

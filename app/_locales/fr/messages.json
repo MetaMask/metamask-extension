@@ -248,9 +248,6 @@
   "customGasSubTitle": {
     "message": "Augmenter le tarif peut faire baisser le temps de traitement, mais cela n'est pas garanti."
   },
-  "customRPC": {
-    "message": "RPC personnalisé"
-  },
   "customToken": {
     "message": "Jeton personnalisé"
   },
@@ -608,9 +605,6 @@
   "newContract": {
     "message": "Nouveau contrat"
   },
-  "newNetwork": {
-    "message": "Nouveau réseau"
-  },
   "newPassword": {
     "message": "Nouveau mot de passe (min 8 caractères)"
   },
@@ -655,12 +649,6 @@
   },
   "on": {
     "message": "Activé"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL de l'explorateur de blocs (facultatif)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbole (facultatif)"
   },
   "origin": {
     "message": "Origine"

@@ -75,6 +75,12 @@ export const box = () => {
       )}
       borderWidth={number('borderWidth', 1, sizeKnobOptions, 'border')}
       borderColor={select('borderColor', COLORS, COLORS.BLACK, 'border')}
+      backgroundColor={select(
+        'backgroundColor',
+        COLORS,
+        COLORS.WHITE,
+        'background',
+      )}
     >
       {items}
     </Box>

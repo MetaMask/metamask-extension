@@ -51,7 +51,7 @@ describe('TransactionBreakdown', () => {
         ['Amount', '-0.01 ETH'],
         ['Gas Limit (units)', '46890'],
         ['Gas price', '2.467043803'],
-        ['Total', '0.010116ETH'],
+        ['Total', '0.01011568ETH'],
       ]);
     });
   });
@@ -90,7 +90,7 @@ describe('TransactionBreakdown', () => {
         ['Priority Fee (GWEI)', '2.467043796'],
         ['Total Gas Fee', '0.000077ETH'],
         ['Max Fee Per Gas', '0.000000003ETH'],
-        ['Total', '0.010077ETH'],
+        ['Total', '0.01007712ETH'],
       ]);
     });
   });

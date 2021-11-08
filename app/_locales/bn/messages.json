@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "ফী বৃদ্ধি করা প্রক্রিয়াকরণের সময় কমাতে পারে, কিন্তু সেটির নিশ্চয়তা দেওয়া হয় না।"
   },
-  "customRPC": {
-    "message": "কাস্টম RPC"
-  },
   "customToken": {
     "message": "কাস্টম টোকেন"
   },
@@ -623,9 +620,6 @@
   "newContract": {
     "message": "নতুন কন্ট্র্যাক্ট"
   },
-  "newNetwork": {
-    "message": "নতুন নেটওয়ার্ক"
-  },
   "newPassword": {
     "message": "নতুন পাসওয়ার্ড (অন্তত 8 অক্ষরের)"
   },
@@ -673,12 +667,6 @@
   },
   "on": {
     "message": "চালু"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "এক্সপ্লোরার URL ব্লক করুন (ঐচ্ছিক)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "প্রতীক (ঐচ্ছিক)"
   },
   "origin": {
     "message": "উৎস"

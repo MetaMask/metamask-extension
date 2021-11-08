@@ -254,9 +254,6 @@
   "customGasSubTitle": {
     "message": "Økt gebyr kan redusere behandlingstiden, men det er ikke garantert."
   },
-  "customRPC": {
-    "message": "Tilpasset RPC"
-  },
   "customToken": {
     "message": "Egendefinert token "
   },
@@ -610,9 +607,6 @@
   "newContract": {
     "message": "Ny kontaktperson"
   },
-  "newNetwork": {
-    "message": "Nytt nettverk "
-  },
   "newPassword": {
     "message": "Nytt passord (minimum 8 tegn)"
   },
@@ -660,12 +654,6 @@
   },
   "on": {
     "message": "På"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokker Explorer URL (valgfritt)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (valgfritt)"
   },
   "origin": {
     "message": "Opprinnelse"

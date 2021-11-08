@@ -248,9 +248,6 @@
   "customGasSubTitle": {
     "message": "Höhere Gebühren können Bearbeitungszeiten verkürzen, wofür es allerdings keine Garantie gibt."
   },
-  "customRPC": {
-    "message": "Spezieller RPC"
-  },
   "customToken": {
     "message": "Custom-Token"
   },
@@ -602,9 +599,6 @@
   "newContract": {
     "message": "Neuer Smart Contract"
   },
-  "newNetwork": {
-    "message": "Neues Netzwerk"
-  },
   "newPassword": {
     "message": "Neues Passwort (min. 8 Zeichen)"
   },
@@ -650,9 +644,6 @@
   "on": {
     "message": "An"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Block-Explorer-URL (optional)"
-  },
   "origin": {
     "message": "Ursprung"
   },
@@ -697,7 +688,7 @@
     "message": "Datenschutzrichtlinie"
   },
   "privateKeyWarning": {
-    "message": "Warnung: Niemals jemanden deinen Private Key mitteilen. Jeder der im Besitz deines Private Keys ist, kann jegliches Guthaben deines Accounts stehlen."
+    "message": "Warnung: Niemals jemandem deinen Private Key mitteilen. Jeder der im Besitz deines Private Keys ist, kann jegliches Guthaben deines Accounts stehlen."
   },
   "privateNetwork": {
     "message": "Privates Netzwerk"
@@ -964,7 +955,7 @@
     "message": "Hierdurch werden ein neues Wallet und eine mnemonische Phrase erzeugt"
   },
   "tips": {
-    "message": "Trinkgelder"
+    "message": "Tipps"
   },
   "to": {
     "message": "An"

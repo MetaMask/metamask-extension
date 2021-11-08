@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Creșterea taxei poate reduce timpii de procesare, dar acest lucru nu este garantat."
   },
-  "customRPC": {
-    "message": "RPC particularizat"
-  },
   "customToken": {
     "message": "Token personalizat"
   },
@@ -610,9 +607,6 @@
   "newContract": {
     "message": "Contract nou"
   },
-  "newNetwork": {
-    "message": "Rețea nouă"
-  },
   "newPassword": {
     "message": "Parola Nouă (minimum 8 caractere)"
   },
@@ -660,12 +654,6 @@
   },
   "on": {
     "message": "Activat"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL explorator bloc (opțional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (opțional)"
   },
   "origin": {
     "message": "Origine"

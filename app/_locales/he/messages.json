@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "הגדלת התשלום עשויה לצמצם את זמני העיבוד, אבל אין ערובה לכך."
   },
-  "customRPC": {
-    "message": "RPC מותאם אישית"
-  },
   "customToken": {
     "message": "אסימון מותאם אישית"
   },
@@ -620,9 +617,6 @@
   "newContract": {
     "message": "חוזה חדש"
   },
-  "newNetwork": {
-    "message": "רשת חדשה"
-  },
   "newPassword": {
     "message": "ססמה חדשה (לפחות 8 תווים)"
   },
@@ -670,12 +664,6 @@
   },
   "on": {
     "message": "פועל"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "חסום כתובת URL של אקספלורר (אופציונלי)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "סמל (אופציונלי)"
   },
   "origin": {
     "message": "מקור"

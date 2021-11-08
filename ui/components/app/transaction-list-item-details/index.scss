@@ -6,11 +6,6 @@
     align-items: center;
   }
 
-  &__body {
-    background: #fafbfc;
-    padding: 8px 16px;
-  }
-
   &__header-buttons {
     display: flex;
     flex-direction: row;
@@ -41,6 +36,7 @@
   &__cards-container {
     display: flex;
     flex-direction: column;
+    padding: 8px 16px;
   }
 
   &__transaction-breakdown {
@@ -53,6 +49,5 @@
   &__transaction-activity-log {
     flex: 2;
     min-width: 0;
-    padding-left: 12px;
   }
 }

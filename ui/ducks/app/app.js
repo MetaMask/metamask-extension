@@ -40,7 +40,6 @@ export default function reduceApp(state = {}, action) {
       ledger: `m/44'/60'/0'/0/0`,
     },
     networksTabSelectedRpcUrl: '',
-    networksTabIsInAddMode: false,
     loadingMethodData: false,
     show3BoxModalAfterImport: false,
     threeBoxLastUpdated: null,
@@ -54,6 +53,7 @@ export default function reduceApp(state = {}, action) {
     gasLoadingAnimationIsShowing: false,
     ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
+    newNetworkAdded: '',
     ...state,
   };
 
@@ -283,10 +283,10 @@ export default function reduceApp(state = {}, action) {
         networksTabSelectedRpcUrl: action.value,
       };
 
-    case actionConstants.SET_NETWORKS_TAB_ADD_MODE:
+    case actionConstants.SET_NEW_NETWORK_ADDED:
       return {
         ...appState,
-        networksTabIsInAddMode: action.value,
+        newNetworkAdded: action.value,
       };
 
     case actionConstants.LOADING_METHOD_DATA_STARTED:

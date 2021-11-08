@@ -130,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "이 외부 확장을 통해 다음을 하도록 허용:"
   },
-  "allowOriginSpendToken": {
-    "message": "$1에서 $2을(를) 지출하도록 허용하시겠어요?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "이 사이트에서 다음을 하도록 허용:"
   },
@@ -143,9 +139,6 @@
   },
   "amount": {
     "message": "금액"
-  },
-  "amountWithColon": {
-    "message": "금액:"
   },
   "appDescription": {
     "message": "브라우저의 이더리움 지갑",
@@ -473,9 +466,6 @@
   },
   "customGasSubTitle": {
     "message": "수수료를 올리면 처리 시간이 단축되기도 하지만 항상 그렇지는 않습니다."
-  },
-  "customRPC": {
-    "message": "맞춤형 RPC"
   },
   "customSpendLimit": {
     "message": "맞춤형 지출 한도"
@@ -1193,9 +1183,6 @@
   "newContract": {
     "message": "새 계약"
   },
-  "newNetwork": {
-    "message": "새 네트워크"
-  },
   "newPassword": {
     "message": "새 암호(8자 이상)"
   },
@@ -1333,12 +1320,6 @@
   },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "블록 탐색기 URL(선택 사항)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "통화 기호(선택 사항)"
   },
   "origin": {
     "message": "원본"
@@ -2201,9 +2182,6 @@
     "message": "수신: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "수신:"
-  },
   "token": {
     "message": "토큰"
   },
@@ -2280,10 +2258,6 @@
   "troubleTokenBalances": {
     "message": "토큰 잔액을 로드하는 도중 문제가 발생했습니다. 다음에서 잔액을 확인하세요. ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "이 사이트를 신뢰하시나요? 이 권한을 부여하면 $1에서 귀하의 $2을(를) 인출하고 거래를 자동으로 처리하게 됩니다.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "다시 시도"

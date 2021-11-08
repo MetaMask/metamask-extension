@@ -88,9 +88,6 @@
   "customGas": {
     "message": "Gas'i özelleştir"
   },
-  "customRPC": {
-    "message": "Özel RPC"
-  },
   "customToken": {
     "message": "Özel Jeton"
   },

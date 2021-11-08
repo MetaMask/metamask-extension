@@ -557,9 +557,6 @@
   "newContract": {
     "message": "Bagong Contract"
   },
-  "newNetwork": {
-    "message": "Bagong Network"
-  },
   "newPassword": {
     "message": "Bagong Password (min 8 char)"
   },
@@ -604,12 +601,6 @@
   },
   "on": {
     "message": "Naka-on"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (opsyonal)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolo (opsyonal)"
   },
   "origin": {
     "message": "Pinanggalingan"

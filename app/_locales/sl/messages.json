@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Povečanje lahko skrajša čas obdelave, vendar ni zagotovljeno."
   },
-  "customRPC": {
-    "message": "RPC po meri"
-  },
   "customToken": {
     "message": "Žeton po meri"
   },
@@ -611,9 +608,6 @@
   "newContract": {
     "message": "Nova pogodba"
   },
-  "newNetwork": {
-    "message": "Novo omrežje"
-  },
   "newPassword": {
     "message": "Novo geslo (min 8 znakov)"
   },
@@ -661,12 +655,6 @@
   },
   "on": {
     "message": "Vklopljeno"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokiraj URL Explorerja (poljubno)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (nezahtevano)"
   },
   "origin": {
     "message": "Izvor"

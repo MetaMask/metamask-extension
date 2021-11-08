@@ -254,9 +254,6 @@
   "customGasSubTitle": {
     "message": "Η αύξηση των τελών μπορεί να μειώσει τους χρόνους επεξεργασίας, αλλά αυτό δεν είναι εγγυημένο."
   },
-  "customRPC": {
-    "message": "Προσαρμοσμένο RPC"
-  },
   "customToken": {
     "message": "Προσαρμοσμένο Token"
   },
@@ -620,9 +617,6 @@
   "newContract": {
     "message": "Νέα Σύμβαση"
   },
-  "newNetwork": {
-    "message": "Νέο Δίκτυο"
-  },
   "newPassword": {
     "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"
   },
@@ -670,12 +664,6 @@
   },
   "on": {
     "message": "Ενεργό"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Σύμβολο (προαιρετικό)"
   },
   "origin": {
     "message": "Προέλευση"

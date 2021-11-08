@@ -3,19 +3,21 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  stories: ['../ui/**/*.stories.js'],
+  stories: ['../ui/**/*.stories.js', '../ui/**/*.stories.mdx'],
   addons: [
-    '@storybook/addon-knobs',
+    '@storybook/addon-essentials',
     '@storybook/addon-actions',
-    '@storybook/addon-backgrounds',
-    '@storybook/addon-toolbars',
+    '@storybook/addon-a11y',
+    '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
   ],
+  // Uses babel.config.js settings and prevents "Missing class properties transform" error
+  babel: async (options) => ({ overrides: options.overrides }),
   webpackFinal: async (config) => {
-    config.context = process.cwd()
+    config.context = process.cwd();
     config.node = {
-      __filename: true
-    }
+      __filename: true,
+    };
     config.module.strictExportPresence = true;
     config.module.rules.push({
       test: /\.scss$/,

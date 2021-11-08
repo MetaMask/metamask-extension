@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Nodevas palielināšana var saīsināt apstrādes laiku, bet ne garantēti."
   },
-  "customRPC": {
-    "message": "Pielāgots RPC izsaukums"
-  },
   "customToken": {
     "message": "Pielāgots marķieris"
   },
@@ -619,9 +616,6 @@
   "newContract": {
     "message": "Jauns līgums"
   },
-  "newNetwork": {
-    "message": "Jauns tīkls"
-  },
   "newPassword": {
     "message": "Jauna parole (vism. 8 rakstzīmes)"
   },
@@ -669,12 +663,6 @@
   },
   "on": {
     "message": "Iesl."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Bloķēt Explorer URL (pēc izvēles)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbols (neobligāti)"
   },
   "origin": {
     "message": "Avots"
