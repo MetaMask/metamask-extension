@@ -2374,7 +2374,11 @@ export default class MetamaskController extends EventEmitter {
     const address =
       fromAddress || this.preferencesController.getSelectedAddress();
     const keyring = await this.keyringController.getKeyringForAccount(address);
-    return keyring.type !== KEYRING_TYPES.TREZOR;
+    if (keyring.type === KEYRING_TYPES.TREZOR) {
+      const model = keyring.getModel();
+      return model === 'T';
+    };
+    return true;
   }
 
   //=============================================================================

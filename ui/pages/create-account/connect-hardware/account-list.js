@@ -62,7 +62,7 @@ class AccountList extends Component {
   renderHeader() {
     const { device } = this.props;
     const shouldShowHDPaths =
-      device.toLowerCase() === 'ledger' || device.toLowerCase() === 'lattice';
+      device.toLowerCase() === 'ledger' || device.toLowerCase() === 'lattice' || device.toLowerCase() === 'trezor';
     return (
       <div className="hw-connect">
         <h3 className="hw-connect__unlock-title">
