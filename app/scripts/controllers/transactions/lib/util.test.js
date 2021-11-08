@@ -177,19 +177,23 @@ describe('txUtils', function () {
       });
 
       it('should error when maxFeePerGas is not a hex string', function () {
-        const txParams = {
-          maxFeePerGas: 'oodmjsjisis',
-          to: BURN_ADDRESS,
-        };
+        const key = 'maxFeePerGas';
+        const value = 'oodmjsjisis';
 
         assert.throws(
           () => {
-            txUtils.validateTxParams(txParams);
+            txUtils.ensureFieldIsHexString(key, value);
           },
           {
-            message: `Invalid param "maxFeePerGas": not a valid hex string.`,
+            message: `Invalid param "${key}": not a valid hex string.`,
           },
         );
+      });
+
+      it('should not throw error when maxFeePerGas is valid hex', function () {
+        const key = 'maxFeePerGas';
+        const value = '0x0011';
+        assert.doesNotThrow(() => txUtils.ensureFieldIsHexString(key, value));
       });
 
       it('should error when specifying gasPrice', function () {
@@ -211,19 +215,23 @@ describe('txUtils', function () {
       });
 
       it('should error when gasPrice is not a hex string', function () {
-        const txParams = {
-          gasPrice: 'msaoaos',
-          to: BURN_ADDRESS,
-        };
+        const key = 'gasPrice';
+        const value = 'msaoaos';
 
         assert.throws(
           () => {
-            txUtils.validateTxParams(txParams);
+            txUtils.ensureFieldIsHexString(key, value);
           },
           {
-            message: `Invalid param "gasPrice": not a valid hex string.`,
+            message: `Invalid param "${key}": not a valid hex string.`,
           },
         );
+      });
+
+      it('should not throw error when gas price is valid hex', function () {
+        const key = 'gasPrice';
+        const value = '0x0011';
+        assert.doesNotThrow(() => txUtils.ensureFieldIsHexString(key, value));
       });
 
       it('should validate if maxFeePerGas is set with no type or gasPrice field', function () {
@@ -263,20 +271,24 @@ describe('txUtils', function () {
         );
       });
 
-      it('should error when maxPriorityFeePerGas is not a hex string', function () {
-        const txParams = {
-          maxPriorityFeePerGas: '8889d9d9d9d',
-          to: BURN_ADDRESS,
-        };
+      it('should show error when maxPriorityFeePerGas is not a hex string', function () {
+        const key = 'maxPriorityFeePerGas';
+        const value = '8889d9d9d9d';
 
         assert.throws(
           () => {
-            txUtils.validateTxParams(txParams);
+            txUtils.ensureFieldIsHexString(key, value);
           },
           {
-            message: `Invalid param "maxPriorityFeePerGas": not a valid hex string.`,
+            message: `Invalid param "${key}": not a valid hex string.`,
           },
         );
+      });
+
+      it('should not throw error when maxPriorityFeePerGas is valid hex', function () {
+        const key = 'maxPriorityFeePerGas';
+        const value = '0x0011';
+        assert.doesNotThrow(() => txUtils.ensureFieldIsHexString(key, value));
       });
 
       it('should error when maxFeePerGas is not a string', function () {

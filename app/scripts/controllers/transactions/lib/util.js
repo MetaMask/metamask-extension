@@ -86,11 +86,11 @@ function ensureFieldIsString(txParams, field) {
 /**
  * Ensures that the provided value for field is a hex string, throws an
  * invalidParams error if field is not a hex string.
- * @param {Object} txParams - the transaction parameters object
- * @param {string} field - the current field being validated
- * @throws {ethErrors.rpc.invalidParams} - throws if field is not a string
+ * @param {string} key - the transaction parameters key
+ * @param {string} value - the current value being validated
+ * @throws {ethErrors.rpc.invalidParams} - throws if value is not a string
  */
-function ensureFieldIsHexString(key, value) {
+export function ensureFieldIsHexString(key, value) {
   if (!value.match(/^0x[a-fA-F0-9]+$/u)) {
     throw ethErrors.rpc.invalidParams(
       `Invalid param "${key}": not a valid hex string.`,
