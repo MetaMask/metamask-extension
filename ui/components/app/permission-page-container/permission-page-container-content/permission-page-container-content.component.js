@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { PLUGIN_PREFIX } from '@metamask/snap-controllers';
+import { SNAP_PREFIX } from '@metamask/snap-controllers';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import CheckBox from '../../../ui/check-box';
@@ -39,19 +39,19 @@ export default class PermissionPageContainerContent extends PureComponent {
     const { t } = this.context;
 
     const items = Object.keys(selectedPermissions).map((permissionName) => {
-      const isPluginPermission = permissionName.startsWith(PLUGIN_PREFIX);
-      const keyablePermissionName = isPluginPermission
-        ? `${PLUGIN_PREFIX}*`
+      const isSnapPermission = permissionName.startsWith(SNAP_PREFIX);
+      const keyablePermissionName = isSnapPermission
+        ? `${SNAP_PREFIX}*`
         : permissionName;
       const isEthAccounts = permissionName === 'eth_accounts';
 
       let description;
       if (isEthAccounts) {
         description = t(permissionName);
-      } else if (isPluginPermission) {
+      } else if (isSnapPermission) {
         description = permissionsDescriptions[keyablePermissionName].replace(
           '$1',
-          permissionName.replace(PLUGIN_PREFIX, ''),
+          permissionName.replace(SNAP_PREFIX, ''),
         );
       } else {
         description = permissionsDescriptions[keyablePermissionName];
