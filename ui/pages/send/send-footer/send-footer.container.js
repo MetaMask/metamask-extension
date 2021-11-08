@@ -17,6 +17,7 @@ import {
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { getSendToAccounts } from '../../../ducks/metamask/metamask';
+import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
 import SendFooter from './send-footer.component';
 
 export default connect(mapStateToProps, mapDispatchToProps)(SendFooter);
@@ -39,7 +40,7 @@ function mapStateToProps(state) {
   const gasEstimateType =
     activeButtonIndex >= 0
       ? gasButtonInfo[activeButtonIndex].gasEstimateType
-      : 'custom';
+      : CUSTOM_GAS_ESTIMATE;
 
   return {
     disabled: isSendFormInvalid(state),

@@ -403,13 +403,17 @@ export function forgetDevice(deviceName) {
 export function connectHardware(deviceName, page, hdPath, t) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath);
   return async (dispatch, getState) => {
+    const { ledgerTransportType } = getState().metamask;
+
     dispatch(
       showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`),
     );
 
     let accounts;
     try {
-      const { ledgerTransportType } = getState().metamask;
+      if (deviceName === 'ledger') {
+        await promisifiedBackground.establishLedgerTransportPreference();
+      }
       if (
         deviceName === 'ledger' &&
         ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
@@ -432,8 +436,17 @@ export function connectHardware(deviceName, page, hdPath, t) {
       );
     } catch (error) {
       log.error(error);
-      dispatch(displayWarning(error.message));
-      throw error;
+      if (
+        deviceName === 'ledger' &&
+        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+        error.message.match('Failed to open the device')
+      ) {
+        dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
+        throw new Error(t('ledgerDeviceOpenFailureMessage'));
+      } else {
+        dispatch(displayWarning(error.message));
+        throw error;
+      }
     } finally {
       dispatch(hideLoadingIndication());
     }

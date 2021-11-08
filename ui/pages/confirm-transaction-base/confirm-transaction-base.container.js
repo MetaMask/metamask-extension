@@ -48,6 +48,7 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
+import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -168,7 +169,7 @@ const mapStateToProps = (state, ownProps) => {
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
-    fullTxData.userFeeLevel === 'custom' ||
+    fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
     txParamsAreDappSuggested(fullTxData);
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
