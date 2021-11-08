@@ -441,6 +441,7 @@ export function connectHardware(deviceName, page, hdPath, t) {
         error.message.match('Failed to open the device')
       ) {
         dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
+        throw new Error(t('ledgerDeviceOpenFailureMessage'));
       } else {
         dispatch(displayWarning(error.message));
         throw error;
