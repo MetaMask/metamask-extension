@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
-import Tree from '../../components/ui/tree';
+import Tree from '../../components/app/transaction-decoding';
 import { isBalanceSufficient } from '../send/send.utils';
 import {
   addHexes,
