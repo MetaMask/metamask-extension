@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
-import Tree from '../../components/app/transaction-decoding';
+import TransactionDecoding from '../../components/app/transaction-decoding';
 import { isBalanceSufficient } from '../send/send.utils';
 import {
   addHexes,
@@ -130,6 +130,7 @@ export default class ConfirmTransactionBase extends Component {
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
+    chainId: PropTypes.string,
   };
 
   state = {
@@ -545,11 +546,14 @@ export default class ConfirmTransactionBase extends Component {
   renderData(functionType) {
     const { t } = this.context;
     const {
-      txData: { txParams: { data } = {} } = {},
+      txData: { txParams } = {},
       methodData: { params } = {},
       hideData,
       dataComponent,
+      chainId,
     } = this.props;
+
+    console.log('txParams', txParams);
 
     if (hideData) {
       return null;
@@ -564,7 +568,11 @@ export default class ConfirmTransactionBase extends Component {
               {functionType}
             </span>
           </div>
-          <Tree />
+          <TransactionDecoding
+            to={txParams?.to}
+            chainId={hexToDecimal(chainId)}
+            inputData={txParams?.data}
+          />
           {/* {params && (
             <div className="confirm-page-container-content__data-box">
               <div className="confirm-page-container-content__data-field-label">

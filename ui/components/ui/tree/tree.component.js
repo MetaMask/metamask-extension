@@ -27,7 +27,7 @@ const Tree = (nodes) => {
             </li>
             {data.map((param) => (
               <li className="solidity-value">
-                <details>
+                <details open={param === 'signer' ? 'open' : false}>
                   <summary>{param}</summary>
                   <ol>
                     <li className="solidity-value">
