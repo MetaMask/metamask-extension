@@ -42,6 +42,13 @@ export const getNewState = (state, props) => {
   return Object.assign(state, props);
 };
 
+const styles = {
+  height: '100vh',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+};
+
 export const store = configureStore(testData);
 const history = createBrowserHistory();
 const proxiedBackground = new Proxy(
@@ -69,7 +76,9 @@ const metamaskDecorator = (story, context) => {
             current={current}
             en={allLocales.en}
           >
-            <LegacyI18nProvider>{story()}</LegacyI18nProvider>
+            <LegacyI18nProvider>
+              <div style={styles}>{story()}</div>
+            </LegacyI18nProvider>
           </I18nProvider>
         </MetaMetricsProviderStorybook>
       </Router>

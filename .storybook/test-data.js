@@ -872,6 +872,30 @@ const state = {
         nickname: 'Localhost 8545',
         rpcPrefs: {},
       },
+      {
+        id: 4279100034,
+        method: "eth_accounts",
+        methodType: "restricted",
+        origin: "https://app.uniswap.org",
+        request: {
+          method: "eth_accounts",
+          params: [],
+          jsonrpc: "2.0",
+          id: 4279100034,
+          origin: "https://app.uniswap.org",
+          tabId: 5
+        },
+        requestTime: 1620710712072,
+        response: {
+          id: 4279100034,
+          jsonrpc: "2.0",
+          result: [
+            "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4"
+          ]
+        },
+        responseTime: 1620710712075,
+        success: true
+      }
     ],
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
