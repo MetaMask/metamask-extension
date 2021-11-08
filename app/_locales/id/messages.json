@@ -1004,12 +1004,6 @@
   "ledgerAccountRestriction": {
     "message": "Anda perlu memanfaatkan akun terakhir Anda sebelum menambahkan yang baru."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Gunakan Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "Jembatan Ledger Live baru memungkinkan Anda untuk menggunakan Ledger Anda dengan lebih mudah.  Hanya tersedia di Chrome."
-  },
   "ledgerLiveApp": {
     "message": "Aplikasi Ledger Live"
   },

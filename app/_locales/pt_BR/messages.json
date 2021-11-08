@@ -1004,12 +1004,6 @@
   "ledgerAccountRestriction": {
     "message": "Você precisa usar sua última conta antes de adicionar uma nova."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Usar Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "A nova ponte do Ledger Live permite utilizar seu Ledger mais facilmente.  Disponível somente no Chrome."
-  },
   "ledgerLiveApp": {
     "message": "Aplicativo Ledger Live"
   },

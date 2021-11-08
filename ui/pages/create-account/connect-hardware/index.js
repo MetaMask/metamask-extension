@@ -11,6 +11,7 @@ import {
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { SECOND } from '../../../../shared/constants/time';
+import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
@@ -26,6 +27,10 @@ const HD_PATHS = [
 ];
 
 class ConnectHardwareForm extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   state = {
     error: null,
     selectedAccounts: [],
@@ -106,7 +111,7 @@ class ConnectHardwareForm extends Component {
 
   getPage = (device, page, hdPath) => {
     this.props
-      .connectHardware(device, page, hdPath)
+      .connectHardware(device, page, hdPath, this.context.t)
       .then((accounts) => {
         if (accounts.length) {
           // If we just loaded the accounts for the first time
@@ -262,7 +267,7 @@ class ConnectHardwareForm extends Component {
         <SelectHardware
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
-          useLedgerLive={this.props.useLedgerLive}
+          ledgerTransportType={this.props.ledgerTransportType}
         />
       );
     }
@@ -313,7 +318,7 @@ ConnectHardwareForm.propTypes = {
   connectedAccounts: PropTypes.array.isRequired,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
-  useLedgerLive: PropTypes.bool.isRequired,
+  ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
 };
 
 const mapStateToProps = (state) => ({
@@ -323,7 +328,7 @@ const mapStateToProps = (state) => ({
   connectedAccounts: getMetaMaskAccountsConnected(state),
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  useLedgerLive: state.metamask.useLedgerLive,
+  ledgerTransportType: state.metamask.ledgerTransportType,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -331,8 +336,8 @@ const mapDispatchToProps = (dispatch) => {
     setHardwareWalletDefaultHdPath: ({ device, path }) => {
       return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }));
     },
-    connectHardware: (deviceName, page, hdPath) => {
-      return dispatch(actions.connectHardware(deviceName, page, hdPath));
+    connectHardware: (deviceName, page, hdPath, t) => {
+      return dispatch(actions.connectHardware(deviceName, page, hdPath, t));
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));

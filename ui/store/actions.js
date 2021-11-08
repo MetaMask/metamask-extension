@@ -28,6 +28,10 @@ import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import {
+  LEDGER_TRANSPORT_TYPES,
+  LEDGER_USB_VENDOR_ID,
+} from '../../shared/constants/hardware-wallets';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -395,15 +399,35 @@ export function forgetDevice(deviceName) {
   };
 }
 
-export function connectHardware(deviceName, page, hdPath) {
+export function connectHardware(deviceName, page, hdPath, t) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath);
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const { ledgerTransportType } = getState().metamask;
+
     dispatch(
       showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`),
     );
 
     let accounts;
     try {
+      if (deviceName === 'ledger') {
+        await promisifiedBackground.establishLedgerTransportPreference();
+      }
+      if (
+        deviceName === 'ledger' &&
+        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
+      ) {
+        const connectedDevices = await window.navigator.hid.requestDevice({
+          filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
+        });
+        const userApprovedWebHidConnection = connectedDevices.some(
+          (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+        );
+        if (!userApprovedWebHidConnection) {
+          throw new Error(t('ledgerWebHIDNotConnectedErrorMessage'));
+        }
+      }
+
       accounts = await promisifiedBackground.connectHardware(
         deviceName,
         page,
@@ -411,8 +435,17 @@ export function connectHardware(deviceName, page, hdPath) {
       );
     } catch (error) {
       log.error(error);
-      dispatch(displayWarning(error.message));
-      throw error;
+      if (
+        deviceName === 'ledger' &&
+        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+        error.message.match('Failed to open the device')
+      ) {
+        dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
+        throw new Error(t('ledgerDeviceOpenFailureMessage'));
+      } else {
+        dispatch(displayWarning(error.message));
+        throw error;
+      }
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -2745,9 +2778,13 @@ export function getCurrentWindowTab() {
 export function setLedgerLivePreference(value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
-    await promisifiedBackground.setLedgerLivePreference(value);
+    await promisifiedBackground.setLedgerTransportPreference(value);
     dispatch(hideLoadingIndication());
   };
+}
+
+export async function attemptLedgerTransportCreation() {
+  return await promisifiedBackground.attemptLedgerTransportCreation();
 }
 
 export function captureSingleException(error) {

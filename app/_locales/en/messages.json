@@ -345,6 +345,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
+  "clickToConnectLedgerViaWebHID": {
+    "message": "Click here to connect your Ledger via WebHID",
+    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
   },
@@ -1251,35 +1255,50 @@
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Use Ledger Live"
+  "ledgerConnectionInstructionCloseOtherApps": {
+    "message": "Close any other software connected to your device and then click here to refresh."
   },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "The new Ledger Live bridge allows you to more easily use your Ledger.  Only available in Chrome."
+  "ledgerConnectionInstructionHeader": {
+    "message": "Prior to clicking confirm:"
+  },
+  "ledgerConnectionInstructionStepFour": {
+    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device"
+  },
+  "ledgerConnectionInstructionStepOne": {
+    "message": "Enable Use Ledger Live under Settings > Advanced"
+  },
+  "ledgerConnectionInstructionStepThree": {
+    "message": "Plug in your Ledger device and select the Ethereum app"
+  },
+  "ledgerConnectionInstructionStepTwo": {
+    "message": "Open and unlock Ledger Live App"
+  },
+  "ledgerConnectionPreferenceDescription": {
+    "message": "Customize how you connect your Ledger to MetaMask. $1 is recommended, but other options are available. Read more here: $2",
+    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
+  },
+  "ledgerDeviceOpenFailureMessage": {
+    "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
+  },
+  "ledgerLive": {
+    "message": "Ledger Live",
+    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
-  },
-  "ledgerLiveDialogHeader": {
-    "message": "Prior to clicking confirm:"
-  },
-  "ledgerLiveDialogStepFour": {
-    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device"
-  },
-  "ledgerLiveDialogStepOne": {
-    "message": "Enable Use Ledger Live under Settings > Advanced"
-  },
-  "ledgerLiveDialogStepThree": {
-    "message": "Plug in your Ledger device and select the Ethereum app"
-  },
-  "ledgerLiveDialogStepTwo": {
-    "message": "Open and unlock Ledger Live App"
   },
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
+  },
+  "ledgerTransportChangeWarning": {
+    "message": "If your Ledger Live app is open, please disconnect any open Ledger Live connection and close the Ledger Live app."
+  },
+  "ledgerWebHIDNotConnectedErrorMessage": {
+    "message": "The ledger device was not connected. If you wish to connect your Ledger, please click 'Continue' again and approve HID connection",
+    "description": "An error message shown to the user during the hardware connect flow."
   },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
@@ -1635,6 +1654,22 @@
     "message": "Ledger firmware update",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
+  "notifications8ActionText": {
+    "message": "Go to Advanced Settings",
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+  },
+  "notifications8DescriptionOne": {
+    "message": "As of MetaMask v10.4.0, you no longer need Ledger Live to connect your Ledger device to MetaMask.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
+  },
+  "notifications8DescriptionTwo": {
+    "message": "For an easier and more stable ledger experience, go to the Advanced tab of settings and switch the 'Preferred Ledger Connection Type' to 'WebHID'.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
+  },
+  "notifications8Title": {
+    "message": "Ledger connection improvement",
+    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -1710,6 +1745,10 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "openFullScreenForLedgerWebHid": {
+    "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
   "optional": {
     "message": "Optional"
   },
@@ -1771,6 +1810,10 @@
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "preferredLedgerConnectionType": {
+    "message": "Preferred Ledger Connection Type",
+    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "prev": {
     "message": "Prev"
@@ -2817,6 +2860,10 @@
   "typePassword": {
     "message": "Type your MetaMask password"
   },
+  "u2f": {
+    "message": "U2F",
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+  },
   "unapproved": {
     "message": "Unapproved"
   },
@@ -2957,6 +3004,10 @@
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
     "description": "$1 is a clickable link."
+  },
+  "webhid": {
+    "message": "WebHID",
+    "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
   "welcome": {
     "message": "Welcome to MetaMask"

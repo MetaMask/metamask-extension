@@ -1004,12 +1004,6 @@
   "ledgerAccountRestriction": {
     "message": "नया खाता जोड़ने से पहले आपको अपने अंतिम खाते का उपयोग करना होगा।"
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Ledger Live का उपयोग करें"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "नया Ledger Live ब्रिज आपको अपने लेजर का अधिक आसानी से उपयोग करने की अनुमति देता है।  केवल Chrome में उपलब्ध है।"
-  },
   "ledgerLiveApp": {
     "message": "Ledger Live ऐप"
   },

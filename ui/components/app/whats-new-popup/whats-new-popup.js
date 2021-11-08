@@ -12,7 +12,10 @@ import Typography from '../../ui/typography';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINoficiations } from '../../../../shared/notifications';
 import { getSortedNotificationsToShow } from '../../../selectors';
-import { BUILD_QUOTE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  BUILD_QUOTE_ROUTE,
+  ADVANCED_ROUTE,
+} from '../../../helpers/constants/routes';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 function getActionFunctionById(id, history) {
@@ -37,6 +40,10 @@ function getActionFunctionById(id, history) {
       global.platform.openTab({
         url: 'https://metamask.zendesk.com/hc/en-us/articles/360060826432',
       });
+    },
+    8: () => {
+      updateViewedNotifications({ 8: true });
+      history.push(ADVANCED_ROUTE);
     },
   };
 
