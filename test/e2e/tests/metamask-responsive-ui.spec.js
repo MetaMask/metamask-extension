@@ -16,6 +16,13 @@ describe('Metamask Responsive UI', function () {
       async ({ driver }) => {
         await driver.navigate();
 
+        async function clickWordAndWait(word) {
+          await driver.clickElement(
+            `[data-testid="seed-phrase-sorted"] [data-testid="draggable-seed-${word}"]`,
+          );
+          await driver.delay(tinyDelayMs);
+        }
+
         if (process.env.ONBOARDING_V2 === '1') {
           // welcome
           await driver.clickElement('[data-testid="onboarding-create-wallet"]');
@@ -36,7 +43,9 @@ describe('Metamask Responsive UI', function () {
           await driver.clickElement('[data-testid="create-password-wallet"]');
 
           // secure wallet
-          await driver.clickElement('[data-testid="secure-wallet-recommended"]');
+          await driver.clickElement(
+            '[data-testid="secure-wallet-recommended"]',
+          );
 
           // review
           await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
@@ -53,8 +62,14 @@ describe('Metamask Responsive UI', function () {
 
           // confirm
           await driver.fill('[data-testid="recovery-phrase-input-2"]', chipTwo);
-          await driver.fill('[data-testid="recovery-phrase-input-3"]', chipThree);
-          await driver.fill('[data-testid="recovery-phrase-input-7"]', chipSeven);
+          await driver.fill(
+            '[data-testid="recovery-phrase-input-3"]',
+            chipThree,
+          );
+          await driver.fill(
+            '[data-testid="recovery-phrase-input-7"]',
+            chipSeven,
+          );
           await driver.clickElement('[data-testid="recovery-phrase-confirm"]');
 
           // complete
@@ -107,13 +122,6 @@ describe('Metamask Responsive UI', function () {
             text: enLocaleMessages.next.message,
             tag: 'button',
           });
-
-          async function clickWordAndWait(word) {
-            await driver.clickElement(
-              `[data-testid="seed-phrase-sorted"] [data-testid="draggable-seed-${word}"]`,
-            );
-            await driver.delay(tinyDelayMs);
-          }
 
           // can retype the Secret Recovery Phrase
           const words = seedPhrase.split(' ');

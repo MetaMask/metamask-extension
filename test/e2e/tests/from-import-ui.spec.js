@@ -77,7 +77,10 @@ describe('Metamask Import UI', function () {
           );
 
           await driver.fill('#password', 'correct horse battery staple');
-          await driver.fill('#confirm-password', 'correct horse battery staple');
+          await driver.fill(
+            '#confirm-password',
+            'correct horse battery staple',
+          );
 
           await driver.clickElement('.first-time-flow__terms');
 
@@ -90,7 +93,7 @@ describe('Metamask Import UI', function () {
             tag: 'button',
           });
         }
-        
+
         // Show account information
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
