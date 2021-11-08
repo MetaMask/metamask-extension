@@ -6,6 +6,81 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.6.0]
+### Uncategorized
+- Replacing instances of 'testnets' with 'test networks' ([#12626](https://github.com/MetaMask/metamask-extension/pull/12626))
+- Implementing display solution for testnets in the network dropdown ([#12564](https://github.com/MetaMask/metamask-extension/pull/12564))
+- Sync `master` with `develop` ([#12616](https://github.com/MetaMask/metamask-extension/pull/12616))
+- Adding 'gap' prop to Box ([#12611](https://github.com/MetaMask/metamask-extension/pull/12611))
+- Rename the function of the Ledger preference renaming ([#12459](https://github.com/MetaMask/metamask-extension/pull/12459))
+- Support for GridPlus Lattice1 hardware wallet ([#12053](https://github.com/MetaMask/metamask-extension/pull/12053))
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Throw, and not just display, ledgerDeviceOpenFailureMessage on failed to open device error in ledger connect flow ([#12613](https://github.com/MetaMask/metamask-extension/pull/12613))
+- Use gas recommendation constants throughout app ([#12461](https://github.com/MetaMask/metamask-extension/pull/12461))
+- Improve browser detection code ([#12456](https://github.com/MetaMask/metamask-extension/pull/12456))
+- Updating default collectibles tab view ([#12575](https://github.com/MetaMask/metamask-extension/pull/12575))
+- Update German translations ([#12547](https://github.com/MetaMask/metamask-extension/pull/12547))
+- Minor code cleanup of _viewOnEtherscan ([#12609](https://github.com/MetaMask/metamask-extension/pull/12609))
+- Add Ledger connection flow warning message for failed to connect device error ([#12604](https://github.com/MetaMask/metamask-extension/pull/12604))
+- Fix build ([#12606](https://github.com/MetaMask/metamask-extension/pull/12606))
+- Edit transaction screen changes for EIP-1559 V2 ([#12493](https://github.com/MetaMask/metamask-extension/pull/12493))
+- Ensure proper transport type is set before attempting to connect ledger wallet ([#12594](https://github.com/MetaMask/metamask-extension/pull/12594))
+- update chromedriver to v95 ([#12603](https://github.com/MetaMask/metamask-extension/pull/12603))
+- Changed ETH decimal values to have 8 places for sending ([#12437](https://github.com/MetaMask/metamask-extension/pull/12437))
+- hide eth amount ([#12435](https://github.com/MetaMask/metamask-extension/pull/12435))
+- Network tab refactor ([#12502](https://github.com/MetaMask/metamask-extension/pull/12502))
+- Bump vm2 from 3.9.3 to 3.9.5 ([#12582](https://github.com/MetaMask/metamask-extension/pull/12582))
+- Bump tmpl from 1.0.4 to 1.0.5 ([#12581](https://github.com/MetaMask/metamask-extension/pull/12581))
+- Bump keypair from 1.0.1 to 1.0.4 ([#12583](https://github.com/MetaMask/metamask-extension/pull/12583))
+- Add beta and Flask builds to CI ([#12572](https://github.com/MetaMask/metamask-extension/pull/12572))
+- Check if ledger was successfully able to establish transport on confirm screen mount ([#12535](https://github.com/MetaMask/metamask-extension/pull/12535))
+- Heading on contact details view in popup should say "Details" instead of contact name ([#12380](https://github.com/MetaMask/metamask-extension/pull/12380))
+- Show account name & full address in send view - issue #12346  ([#12415](https://github.com/MetaMask/metamask-extension/pull/12415))
+- Fix fllWidth proptype error ([#12555](https://github.com/MetaMask/metamask-extension/pull/12555))
+- Sync `master` with `develop` ([#12571](https://github.com/MetaMask/metamask-extension/pull/12571))
+- Remove hexdata field from token send ([#12565](https://github.com/MetaMask/metamask-extension/pull/12565))
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Sync `master` with `develop` ([#12568](https://github.com/MetaMask/metamask-extension/pull/12568))
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Ensure ledger transport preference is set on import ([#12557](https://github.com/MetaMask/metamask-extension/pull/12557))
+- Fix/ux papercuts transaction details issue #12295 ([#12401](https://github.com/MetaMask/metamask-extension/pull/12401))
+- Warn the user of insufficient funds when approving a token ([#12496](https://github.com/MetaMask/metamask-extension/pull/12496))
+- Add lockdown e2e test ([#12562](https://github.com/MetaMask/metamask-extension/pull/12562))
+- deps - update sentry ([#12561](https://github.com/MetaMask/metamask-extension/pull/12561))
+- UX improvements to the "Permission Request" section on the approve screen ([#12553](https://github.com/MetaMask/metamask-extension/pull/12553))
+- Update the 3D beta logo ([#12497](https://github.com/MetaMask/metamask-extension/pull/12497))
+- Update build system lockdown parameter ([#12556](https://github.com/MetaMask/metamask-extension/pull/12556))
+- Don't show ledger live option in advanced settings if using firefox ([#12494](https://github.com/MetaMask/metamask-extension/pull/12494))
+- Exclude files from builds by build type ([#12521](https://github.com/MetaMask/metamask-extension/pull/12521))
+- Fixed approve confirmation logic ([#12511](https://github.com/MetaMask/metamask-extension/pull/12511))
+- Adding flexWrap prop to Box ([#12542](https://github.com/MetaMask/metamask-extension/pull/12542))
+- Fixing COLORS.GRAY ([#12538](https://github.com/MetaMask/metamask-extension/pull/12538))
+- Fix off-by-one error in code fence transform ([#12540](https://github.com/MetaMask/metamask-extension/pull/12540))
+- Add settings-component to Storybook ([#12086](https://github.com/MetaMask/metamask-extension/pull/12086))
+- update anonymous id ([#12503](https://github.com/MetaMask/metamask-extension/pull/12503))
+- Docs/12367 Adding storybook essentials addons ([#12393](https://github.com/MetaMask/metamask-extension/pull/12393))
+- Adding backgroundColor prop to Box ([#12524](https://github.com/MetaMask/metamask-extension/pull/12524))
+- Show error if user have insufficient gas. ([#12531](https://github.com/MetaMask/metamask-extension/pull/12531))
+- Deleting old GasFeeInputs hook ([#12526](https://github.com/MetaMask/metamask-extension/pull/12526))
+- Update icons on the settings page ([#12359](https://github.com/MetaMask/metamask-extension/pull/12359))
+- Add static files for the Flask build ([#12518](https://github.com/MetaMask/metamask-extension/pull/12518))
+- Provide instructions for users switching from Ledger Live to WebHID ([#12519](https://github.com/MetaMask/metamask-extension/pull/12519))
+- Remove the partially-applied dark mode styles used for beta ([#12489](https://github.com/MetaMask/metamask-extension/pull/12489))
+- Implement Network Switcher designs ([#12260](https://github.com/MetaMask/metamask-extension/pull/12260))
+- Approve screen header and sub-header improvement ([#12360](https://github.com/MetaMask/metamask-extension/pull/12360))
+- Don't show "Unavailable on this network" if Swaps button is enabled ([#12513](https://github.com/MetaMask/metamask-extension/pull/12513))
+- Adding metrics event for Advanced Options (EditGasDisplay) ([#12507](https://github.com/MetaMask/metamask-extension/pull/12507))
+- Use TRANSACTION_ENVELOPE_TYPES for legacy transaction type testing ([#12455](https://github.com/MetaMask/metamask-extension/pull/12455))
+- Create function for hardware keyring checking ([#12457](https://github.com/MetaMask/metamask-extension/pull/12457))
+- Improve token detection wording ([#12498](https://github.com/MetaMask/metamask-extension/pull/12498))
+- Adding collectibles feature flag, default NFT tab ([#12463](https://github.com/MetaMask/metamask-extension/pull/12463))
+- Fix production builds ([#12488](https://github.com/MetaMask/metamask-extension/pull/12488))
+- Update `@metamask/logo` from v3.0.1 to v3.1.0 ([#12490](https://github.com/MetaMask/metamask-extension/pull/12490))
+- Add secrets for beta and Flask builds ([#12440](https://github.com/MetaMask/metamask-extension/pull/12440))
+- Fix builds from forks ([#12485](https://github.com/MetaMask/metamask-extension/pull/12485))
+- Network Form Design and switch to full screen enhancements ([#12302](https://github.com/MetaMask/metamask-extension/pull/12302))
+- Improve autorebuilding in dev to reduce CPU load ([#11886](https://github.com/MetaMask/metamask-extension/pull/11886))
+
 ## [10.5.0]
 ### Added
 - [#12411](https://github.com/MetaMask/metamask-extension/pull/12411): Add support for connecting Ledger devices to MetaMask via WebHID
@@ -2546,7 +2621,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...HEAD
+[10.6.0]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...v10.6.0
 [10.5.0]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...v10.5.0
 [10.4.1]: https://github.com/MetaMask/metamask-extension/compare/v10.4.0...v10.4.1
 [10.4.0]: https://github.com/MetaMask/metamask-extension/compare/v10.3.0...v10.4.0
