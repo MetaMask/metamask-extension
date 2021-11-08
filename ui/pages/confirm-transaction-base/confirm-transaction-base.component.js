@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
+import Tree from '../../components/ui/tree';
 import { isBalanceSufficient } from '../send/send.utils';
 import {
   addHexes,
@@ -563,7 +564,8 @@ export default class ConfirmTransactionBase extends Component {
               {functionType}
             </span>
           </div>
-          {params && (
+          <Tree />
+          {/* {params && (
             <div className="confirm-page-container-content__data-box">
               <div className="confirm-page-container-content__data-field-label">
                 {`${t('parameters')}:`}
@@ -576,7 +578,7 @@ export default class ConfirmTransactionBase extends Component {
           <div className="confirm-page-container-content__data-box-label">
             {`${t('hexData')}: ${toBuffer(data).length} bytes`}
           </div>
-          <div className="confirm-page-container-content__data-box">{data}</div>
+          <div className="confirm-page-container-content__data-box">{data}</div> */}
         </div>
       )
     );
