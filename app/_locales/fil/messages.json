@@ -245,9 +245,6 @@
   "decimalsMustZerotoTen": {
     "message": "Ang mga decimal ay hindi dapat bumaba sa 0, at hindi lumampas sa 36."
   },
-  "defaultNetwork": {
-    "message": "Ang default na network para sa mga transaksyon ng Ether ay Mainnet."
-  },
   "delete": {
     "message": "I-delete"
   },

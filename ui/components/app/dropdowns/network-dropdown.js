@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import classnames from 'classnames';
 import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
@@ -14,7 +15,10 @@ import { COLORS, SIZES } from '../../../helpers/constants/design-system';
 import { getShowTestNetworks } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ADD_NETWORK_ROUTE,
+  ADVANCED_ROUTE,
+} from '../../../helpers/constants/routes';
 import { Dropdown, DropdownMenuItem } from './dropdown';
 
 // classes from nodes of the toggle element.
@@ -39,6 +43,7 @@ function mapStateToProps(state) {
     shouldShowTestNetworks: getShowTestNetworks(state),
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
+    showTestnetMessageInDropdown: state.appState.showTestnetMessageInDropdown,
   };
 }
 
@@ -63,6 +68,7 @@ function mapDispatchToProps(dispatch) {
         }),
       );
     },
+    hideTestNetMessage: () => dispatch(actions.hideTestNetMessage()),
   };
 }
 
@@ -87,6 +93,8 @@ class NetworkDropdown extends Component {
     networkDropdownOpen: PropTypes.bool.isRequired,
     displayInvalidCustomNetworkAlert: PropTypes.func.isRequired,
     showConfirmDeleteNetworkModal: PropTypes.func.isRequired,
+    showTestnetMessageInDropdown: PropTypes.bool.isRequired,
+    hideTestNetMessage: PropTypes.func.isRequired,
     history: PropTypes.object,
   };
 
@@ -262,9 +270,16 @@ class NetworkDropdown extends Component {
   }
 
   render() {
-    const { shouldShowTestNetworks } = this.props;
+    const {
+      history,
+      hideNetworkDropdown,
+      shouldShowTestNetworks,
+      showTestnetMessageInDropdown,
+      hideTestNetMessage,
+    } = this.props;
     const rpcListDetail = this.props.frequentRpcListDetail;
     const isOpen = this.props.networkDropdownOpen;
+    const { t } = this.context;
 
     return (
       <Dropdown
@@ -278,7 +293,7 @@ class NetworkDropdown extends Component {
 
           if (notToggleElementIndex === -1) {
             event.stopPropagation();
-            this.props.hideNetworkDropdown();
+            hideNetworkDropdown();
           }
         }}
         containerClassName="network-droppo"
@@ -294,27 +309,50 @@ class NetworkDropdown extends Component {
         }}
       >
         <div className="network-dropdown-header">
-          <div className="network-dropdown-title">
-            {this.context.t('networks')}
-          </div>
+          <div className="network-dropdown-title">{t('networks')}</div>
           <div className="network-dropdown-divider" />
-          <div className="network-dropdown-content">
-            {this.context.t('defaultNetwork')}
-          </div>
+          {showTestnetMessageInDropdown ? (
+            <div className="network-dropdown-content">
+              {t('defaultNetwork', [
+                <span key="testNetworksEnabled">
+                  {shouldShowTestNetworks ? t('disable') : t('enable')}
+                </span>,
+                <a
+                  href="#"
+                  key="advancedSettingsLink"
+                  className="network-dropdown-content--link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    hideNetworkDropdown();
+                    history.push(ADVANCED_ROUTE);
+                  }}
+                >
+                  {t('here')}
+                </a>,
+              ])}
+              <button
+                title={t('dismiss')}
+                onClick={hideTestNetMessage}
+                className="fas fa-times network-dropdown-content--close"
+              />
+            </div>
+          ) : null}
         </div>
         {this.renderNetworkEntry('mainnet')}
 
         {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
 
-        {shouldShowTestNetworks && (
-          <>
-            {this.renderNetworkEntry('ropsten')}
-            {this.renderNetworkEntry('kovan')}
-            {this.renderNetworkEntry('rinkeby')}
-            {this.renderNetworkEntry('goerli')}
-            {this.renderNetworkEntry('localhost')}
-          </>
-        )}
+        <div
+          className={classnames('network-dropdown-testnets', {
+            'network-dropdown-testnets--no-visibility': !shouldShowTestNetworks,
+          })}
+        >
+          {this.renderNetworkEntry('ropsten')}
+          {this.renderNetworkEntry('kovan')}
+          {this.renderNetworkEntry('rinkeby')}
+          {this.renderNetworkEntry('goerli')}
+          {this.renderNetworkEntry('localhost')}
+        </div>
 
         {this.renderAddCustomButton()}
       </Dropdown>

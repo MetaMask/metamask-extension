@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Кількість розрядів після коми: від 0 до 36."
   },
-  "defaultNetwork": {
-    "message": "Мережа для транзакцій з Ether за замовчуванням - Mainnet."
-  },
   "delete": {
     "message": "Видалити"
   },

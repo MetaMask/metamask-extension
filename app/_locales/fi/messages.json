@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Desimaalien on oltava vähintään 0 ja korkeintaan 36."
   },
-  "defaultNetwork": {
-    "message": "Oletusverkko Ether-tapahtumille on Mainnet."
-  },
   "delete": {
     "message": "Poista"
   },

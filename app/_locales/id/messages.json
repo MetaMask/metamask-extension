@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "Dekrip permintaan"
   },
-  "defaultNetwork": {
-    "message": "Jaringan default untuk transaksi Ether adalah Jaringan Utama."
-  },
   "delete": {
     "message": "Hapus"
   },

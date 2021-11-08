@@ -433,9 +433,6 @@
   "decryptRequest": {
     "message": "解密请求"
   },
-  "defaultNetwork": {
-    "message": "默认以太坊（Ether）交易网络为主网。"
-  },
   "delete": {
     "message": "删除"
   },

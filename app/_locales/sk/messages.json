@@ -260,9 +260,6 @@
   "decimalsMustZerotoTen": {
     "message": "Desetinných míst musí být od 0 do 36."
   },
-  "defaultNetwork": {
-    "message": "Výchozí síť pro Etherové transakce je Mainnet."
-  },
   "delete": {
     "message": "Odstrániť"
   },

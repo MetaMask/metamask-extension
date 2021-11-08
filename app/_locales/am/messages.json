@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
   },
-  "defaultNetwork": {
-    "message": "የ Ether ግብይቶች ንቡር አውታረ መረብ Mainnet ነው።"
-  },
   "delete": {
     "message": "ሰርዝ"
   },

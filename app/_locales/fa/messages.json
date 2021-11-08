@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "اعشاریه ها باید حد اقل 0، و بیشتر از 36 نباشند."
   },
-  "defaultNetwork": {
-    "message": "شبکه خودکار برای معاملات Ether عبارت است از Mainnet."
-  },
   "delete": {
     "message": "حذف"
   },

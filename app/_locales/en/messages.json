@@ -594,7 +594,8 @@
     "message": "Decrypt request"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Mainnet."
+    "message": "The default network for Ether transactions is Mainnet. You can also $1 testnets $2.",
+    "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "delete": {
     "message": "Delete"
@@ -619,6 +620,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+  },
+  "disable": {
+    "message": "disable"
   },
   "disconnect": {
     "message": "Disconnect"
@@ -770,6 +774,9 @@
   },
   "editPermission": {
     "message": "Edit Permission"
+  },
+  "enable": {
+    "message": "enable"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -2210,7 +2217,7 @@
     "message": "Show Secret Recovery Phrase"
   },
   "showTestnetNetworks": {
-    "message": "Test networks"
+    "message": "Show test networks"
   },
   "showTestnetNetworksDescription": {
     "message": "Select this to show test networks in network list"
