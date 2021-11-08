@@ -21,7 +21,6 @@ import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 
 const validateGasLimit = (gasLimit, minimumGasLimit) => {
-  if (gasLimit === undefined) return undefined;
   const gasLimitTooLow = conversionLessThan(
     { value: gasLimit, fromNumericBase: 'dec' },
     { value: minimumGasLimit || GAS_LIMITS.SIMPLE, fromNumericBase: 'hex' },
@@ -131,9 +130,10 @@ const getMaxFeeWarning = (
   return undefined;
 };
 
-const getBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
-  if (minimumCostInHexWei === undefined || ethBalance === undefined)
+const hasBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
+  if (minimumCostInHexWei === undefined || ethBalance === undefined) {
     return false;
+  }
   const minimumTxCostInHexWei = addHexes(
     minimumCostInHexWei,
     transaction?.txParams?.value || '0x0',
@@ -250,7 +250,7 @@ export function useGasFeeErrors({
   );
 
   const { balance: ethBalance } = useSelector(getSelectedAccount);
-  const balanceError = getBalanceError(
+  const balanceError = hasBalanceError(
     minimumCostInHexWei,
     transaction,
     ethBalance,

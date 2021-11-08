@@ -54,7 +54,6 @@ describe('GasDetailsItem', () => {
 
   it('should show warning icon if estimates are high', () => {
     render({ defaultEstimateToUse: 'high' });
-    console.log(document.body.innerHTML);
     expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
   });
 

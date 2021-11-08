@@ -50,7 +50,7 @@ describe('LowGasWarning', () => {
     ).toHaveLength(1);
   });
 
-  it('should not return null for high gas estimate', () => {
+  it('should return null for high gas estimate', () => {
     render({ transaction: { userFeeLevel: 'high' } });
     expect(
       document.getElementsByClassName('actionable-message--warning'),
