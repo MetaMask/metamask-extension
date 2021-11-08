@@ -827,29 +827,48 @@ export default class MetamaskController extends EventEmitter {
     this.publicConfigStore = this.createPublicConfigStore();
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
-   * Temporary constructor helper: Set up global snap functions for dev purposes
-   * TODO:snaps Remove.
+   * Flask-only constructor helper.
+   * Set up global Snap functions for development purposes.
    */
   _setupSnapGlobals() {
     globalThis.snaps = {
+      /**
+       * Clear all permissions (of all kinds) from state.
+       */
       clearPermissions: () => this.permissionsController.clearPermissions(),
+
+      /**
+       * Clear all Snaps from state.
+       */
       clearSnaps: () => this.snapController.clearState(),
-      clearPermsAndSnaps: () => {
+
+      /**
+       * Clear all permissions (of all kinds) and all Snaps from state.
+       */
+      clearPermissionsAndSnaps: () => {
         this.permissionsController.clearPermissions();
         this.snapController.clearState();
       },
-      hasSnap: (...args) => this.snapController.has(args),
-      isSnapRunning: (...args) => this.snapController.isRunning(args),
-      removeSnap: (...args) => this.snapController.removeSnap(args),
-      runExistingSnaps: () => this.snapController.runExistingSnaps(),
+
+      /**
+       * Remove the specified Snap and revoke all related permissions.
+       */
+      removeSnap: (snapName) => this.snapController.removeSnap(snapName),
+      hasSnap: (snapName) => this.snapController.has(snapName),
+      isSnapRunning: (snapName) => this.snapController.isRunning(snapName),
+      startExistingSnaps: () => this.snapController.runExistingSnaps(),
       startInlineSnap: () => this.snapController.runInlineSnap(),
       stopInlineSnap: () => this.snapController.removeInlineSnap(),
-      startSnap: (...args) => this.snapController.startSnap(args),
-      stopSnap: (...args) => this.snapController.stopSnap(args),
-      getState: () => this.snapController.state,
+      startSnap: (snapName) => this.snapController.startSnap(snapName),
+      stopSnap: (snapName) => this.snapController.stopSnap(snapName),
+      getSnapControllerState: () => this.snapController.state,
+      getPermissionControllerState: () =>
+        this.permissionsController.permissions,
     };
   }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Constructor helper: initialize a provider.
