@@ -15,7 +15,7 @@ const handlerMap = handlers.reduce((map, handler) => {
   return map;
 }, new Map());
 
-const pluginHandlerMap = permittedMethods.reduce((map, handler) => {
+const snapHandlerMap = permittedMethods.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
     map.set(methodName, getImplementation(handler));
   }
@@ -48,13 +48,13 @@ export function createMethodMiddleware(hooks) {
   };
 }
 
-export function createPluginMethodMiddleware(isPlugin, hooks) {
+export function createSnapMethodMiddleware(isSnap, hooks) {
   return function methodMiddleware(req, res, next, end) {
-    if (pluginHandlerMap.has(req.method)) {
-      if (/^snap_/iu.test(req.method) && !isPlugin) {
+    if (snapHandlerMap.has(req.method)) {
+      if (/^snap_/iu.test(req.method) && !isSnap) {
         return end(ethErrors.rpc.methodNotFound());
       }
-      return pluginHandlerMap.get(req.method)(req, res, next, end, hooks);
+      return snapHandlerMap.get(req.method)(req, res, next, end, hooks);
     }
     return next();
   };
