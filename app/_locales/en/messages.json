@@ -113,7 +113,7 @@
     "message": "Advanced Options"
   },
   "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC"
+    "message": "Access developer features, download State Logs, Reset Account, setup test networks and custom RPC"
   },
   "affirmAgree": {
     "message": "I Agree"
@@ -594,7 +594,7 @@
     "message": "Decrypt request"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Mainnet. You can also $1 testnets $2.",
+    "message": "The default network for Ether transactions is Mainnet. You can also $1 test networks $2.",
     "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "delete": {
@@ -2187,10 +2187,10 @@
     "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
   "showFiatConversionInTestnets": {
-    "message": "Show Conversion on Testnets"
+    "message": "Show Conversion on test networks"
   },
   "showFiatConversionInTestnetsDescription": {
-    "message": "Select this to show fiat conversion on Testnets"
+    "message": "Select this to show fiat conversion on test networks"
   },
   "showHexData": {
     "message": "Show Hex Data"
