@@ -56,8 +56,10 @@ describe('TransactionDetail', () => {
   beforeEach(() => {
     process.env.EIP_1559_V2 = true;
   });
+  afterEach(() => {
+    process.env.EIP_1559_V2 = false;
+  });
   it('should render edit link with text low if low gas estimates are selected', () => {
-    process.env.EIP_1559_V2 = true;
     render({ transaction: { userFeeLevel: 'low' } });
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();

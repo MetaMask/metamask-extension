@@ -16,7 +16,7 @@
     }
   }
 
-  .transaction-detail-edit-V2 {
+  &-edit-V2 {
     margin-bottom: 10px;
     display: flex;
     align-items: baseline;
@@ -40,11 +40,11 @@
       margin-right: 2px;
     }
 
-    &-icon {
+    &__icon {
       font-size: 16px;
     }
 
-    &-label {
+    &__label {
       font-size: 12px;
       margin-right: 8px;
     }
@@ -56,7 +56,7 @@
   }
 }
 
-.transaction-detail-edit-V2-tooltip {
+.transaction-detail-edit-V2__tooltip {
   p {
     color: $Grey-500;
   }

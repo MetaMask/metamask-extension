@@ -41,10 +41,10 @@ export default function TransactionDetail({ rows = [], onEdit }) {
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
           <button onClick={onEdit}>
-            <span className="transaction-detail-edit-V2-icon">
+            <span className="transaction-detail-edit-V2__icon">
               {`${GasLevelIconMap[estimateUsed]} `}
             </span>
-            <span className="transaction-detail-edit-V2-label">
+            <span className="transaction-detail-edit-V2__label">
               {t(estimateUsed)}
             </span>
             <i className="fas fa-chevron-right asset-list-item__chevron-right" />
@@ -55,7 +55,7 @@ export default function TransactionDetail({ rows = [], onEdit }) {
           {estimateUsed === 'dappSuggested' && (
             <InfoTooltip
               contentText={
-                <div className="transaction-detail-edit-V2-tooltip">
+                <div className="transaction-detail-edit-V2__tooltip">
                   <Typography fontSize="12px" color={COLORS.GREY}>
                     {t('dappSuggestedTooltip', [transaction.origin])}
                   </Typography>
