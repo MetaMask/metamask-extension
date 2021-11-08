@@ -840,9 +840,6 @@
   "selectAnAccount": {
     "message": "Odaberi račun"
   },
-  "selectAnAccountHelp": {
-    "message": "Odaberi račun za prikaz u usluzi MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Odaberite svaku rečenicu kako biste provjerili je li točna."
   },

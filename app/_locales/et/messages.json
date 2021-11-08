@@ -837,9 +837,6 @@
   "selectAnAccount": {
     "message": "Valige konto"
   },
-  "selectAnAccountHelp": {
-    "message": "Valige konto, mida MetaMaskis vaadata"
-  },
   "selectEachPhrase": {
     "message": "Valige iga fraas, veendumaks, et see on õige."
   },

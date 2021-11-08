@@ -847,9 +847,6 @@
   "selectAnAccount": {
     "message": "Pasirinkite paskyrą"
   },
-  "selectAnAccountHelp": {
-    "message": "Pasirinkite paskyrą peržiūrėti „MetaMask“"
-  },
   "selectEachPhrase": {
     "message": "Pasirinkite kiekvieną frazę, kad patikrintumėte, ar ji tinkama"
   },

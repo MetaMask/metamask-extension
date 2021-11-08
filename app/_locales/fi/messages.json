@@ -844,9 +844,6 @@
   "selectAnAccount": {
     "message": "Valitse tili"
   },
-  "selectAnAccountHelp": {
-    "message": "Valitse MetaMaskissa näytettävä tili"
-  },
   "selectEachPhrase": {
     "message": "Ole hyvä ja valitse jokainen teksti järjestyksessä varmistaaksesi, että se on oikein."
   },

@@ -844,9 +844,6 @@
   "selectAnAccount": {
     "message": "Επιλέξτε Λογαριασμό"
   },
-  "selectAnAccountHelp": {
-    "message": "Επιλέξτε τον λογαριασμό για προβολή στο MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Παρακαλούμε επιλέξτε κάθε φράση, για να βεβαιωθείτε ότι είναι σωστή."
   },

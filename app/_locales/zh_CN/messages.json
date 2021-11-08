@@ -1303,9 +1303,6 @@
   "selectAnAccount": {
     "message": "选择一个账户"
   },
-  "selectAnAccountHelp": {
-    "message": "选择在 MetaMask 中查看的账户"
-  },
   "selectEachPhrase": {
     "message": "请选择每个单词，以确保其正确性。"
   },

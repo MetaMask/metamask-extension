@@ -834,9 +834,6 @@
   "selectAnAccount": {
     "message": "Selectați un cont"
   },
-  "selectAnAccountHelp": {
-    "message": "Selectați contul de vizualizat în MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Vă rugăm să selectați fiecare expresie pentru a vă asigura că este corectă."
   },

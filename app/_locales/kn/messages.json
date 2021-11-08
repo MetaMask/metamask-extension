@@ -847,9 +847,6 @@
   "selectAnAccount": {
     "message": "ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask ನಲ್ಲಿ ವೀಕ್ಷಿಸಲು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
   "selectEachPhrase": {
     "message": "ಅದು ಸರಿಯಾಗಿದೆಯೆ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು ದಯವಿಟ್ಟು ಪ್ರತಿ ಫ್ರೇಸ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ."
   },

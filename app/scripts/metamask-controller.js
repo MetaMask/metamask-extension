@@ -14,6 +14,7 @@ import { stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
+import LatticeKeyring from 'eth-lattice-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
 import {
@@ -371,7 +372,11 @@ export default class MetamaskController extends EventEmitter {
       await opts.openPopup();
     });
 
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring];
+    const additionalKeyrings = [
+      TrezorKeyring,
+      LedgerBridgeKeyring,
+      LatticeKeyring,
+    ];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -1508,6 +1513,7 @@ export default class MetamaskController extends EventEmitter {
         .map((address) => toChecksumHexAddress(address)),
       ledger: [],
       trezor: [],
+      lattice: [],
     };
 
     // transactions
@@ -1608,6 +1614,9 @@ export default class MetamaskController extends EventEmitter {
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type;
         break;
+      case 'lattice':
+        keyringName = LatticeKeyring.type;
+        break;
       default:
         throw new Error(
           'MetamaskController:getKeyringForDevice - Unknown device',
@@ -1622,7 +1631,9 @@ export default class MetamaskController extends EventEmitter {
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath);
     }
-
+    if (deviceName === 'lattice') {
+      keyring.appName = 'MetaMask';
+    }
     keyring.network = this.networkController.getProviderConfig().type;
 
     return keyring;
@@ -2106,6 +2117,14 @@ export default class MetamaskController extends EventEmitter {
         return new Promise((_, reject) => {
           reject(
             new Error('Trezor does not support eth_getEncryptionPublicKey.'),
+          );
+        });
+      }
+
+      case KEYRING_TYPES.LATTICE: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('Lattice does not support eth_getEncryptionPublicKey.'),
           );
         });
       }

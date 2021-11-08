@@ -840,9 +840,6 @@
   "selectAnAccount": {
     "message": "Válasszon fiókot"
   },
-  "selectAnAccountHelp": {
-    "message": "Válássza ki a MetaMask-ban megtekinteni kívánt fiókot"
-  },
   "selectEachPhrase": {
     "message": "Kérjük, válassza ki az egyes mondatokat, hogy meggyőződjön azok helyességéről. "
   },
