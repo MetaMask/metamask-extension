@@ -53,17 +53,17 @@
       align-self: center;
       margin-left: 6px;
     }
-  }
-}
 
-.transaction-detail-edit-V2__tooltip {
-  p {
-    color: $Grey-500;
-  }
-
-  b {
-    color: $neutral-black;
-    display: inline-block;
-    min-width: 60%;
+    &__tooltip {
+      p {
+        color: $Grey-500;
+      }
+    
+      b {
+        color: $neutral-black;
+        display: inline-block;
+        min-width: 60%;
+      }
+    }
   }
 }
