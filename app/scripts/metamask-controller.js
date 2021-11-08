@@ -35,11 +35,10 @@ import {
   AssetsContractController,
   CollectibleDetectionController,
 } from '@metamask/controllers';
-import {
-  PluginController,
-  ExternalResourceController,
-} from '@metamask/snap-controllers';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SnapController } from '@metamask/snap-controllers';
 import { IframeExecutionEnvironmentService } from '@metamask/iframe-execution-environment-service';
+///: END:ONLY_INCLUDE_IN
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -62,7 +61,9 @@ import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createMethodMiddleware,
-  createPluginMethodMiddleware,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  createSnapMethodMiddleware,
+  ///: END:ONLY_INCLUDE_IN
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
@@ -101,10 +102,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
   UPDATE_BADGE: 'updateBadge',
   // TODO: Add this and similar enums to @metamask/controllers and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
-};
-
-const RESOURCE_KEYS = {
-  ASSETS: 'snaps:resources:assets',
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -247,12 +244,6 @@ export default class MetamaskController extends EventEmitter {
           getCollectiblesState: () => this.collectiblesController.state,
         },
       ));
-
-    this.assetsController = new ExternalResourceController({
-      requiredFields: ['symbol', 'balance', 'identifier', 'decimals'],
-      storageKey: RESOURCE_KEYS.ASSETS,
-      initialResources: initState.AssetsController,
-    });
 
     this.metaMetricsController = new MetaMetricsController({
       segment,
@@ -489,25 +480,33 @@ export default class MetamaskController extends EventEmitter {
       initState.PermissionsMetadata,
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.workerController = new IframeExecutionEnvironmentService({
-      setupPluginProvider: this.setupPluginProvider.bind(this),
       iframeUrl: new URL(
         'https://metamask.github.io/iframe-execution-environment/',
       ),
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'ServiceMessenger',
+      }),
+      setupSnapProvider: this.setupSnapProvider.bind(this),
     });
 
-    const pluginControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'PluginController',
+    const snapControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'SnapController',
+      allowedEvents: [
+        'ServiceMessenger:unhandledError',
+        'ServiceMessenger:unresponsive',
+      ],
     });
 
-    this.pluginController = new PluginController({
-      terminateAllPlugins: this.workerController.terminateAllPlugins.bind(
+    this.snapController = new SnapController({
+      terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
         this.workerController,
       ),
-      terminatePlugin: this.workerController.terminatePlugin.bind(
+      terminateSnap: this.workerController.terminateSnap.bind(
         this.workerController,
       ),
-      executePlugin: this.workerController.executePlugin.bind(
+      executeSnap: this.workerController.executeSnap.bind(
         this.workerController,
       ),
       getRpcMessageHandler: this.workerController.getRpcMessageHandler.bind(
@@ -526,34 +525,34 @@ export default class MetamaskController extends EventEmitter {
         this.permissionsController,
       ),
       closeAllConnections: this.removeAllConnections.bind(this),
-      state: initState.PluginController,
-      messenger: pluginControllerMessenger,
+      state: initState.SnapController,
+      messenger: snapControllerMessenger,
     });
     this._setupSnapGlobals();
+    ///: END:ONLY_INCLUDE_IN
 
     this.permissionsController.initializePermissions(
       initState.PermissionsController,
       getRestrictedMethods,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       {
-        addPlugin: this.pluginController.add.bind(this.pluginController),
+        addSnap: this.snapController.add.bind(this.snapController),
         clearSnapState: (fromDomain) =>
-          this.pluginController.updatePluginState(fromDomain, {}),
+          this.snapController.updateSnapState(fromDomain, {}),
         getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
-        getPlugin: this.pluginController.get.bind(this.pluginController),
-        getPluginRpcHandler: this.pluginController.getRpcMessageHandler.bind(
-          this.pluginController,
+        getSnap: this.snapController.get.bind(this.snapController),
+        getSnapRpcHandler: this.snapController.getRpcMessageHandler.bind(
+          this.snapController,
         ),
-        getSnapState: this.pluginController.getPluginState.bind(
-          this.pluginController,
-        ),
-        handleAssetRequest: this.assetsController.handleRpcRequest.bind(
-          this.assetsController,
+        getSnapState: this.snapController.getSnapState.bind(
+          this.snapController,
         ),
         showConfirmation: window.confirm, // Eventually, a template confirmation.
-        updateSnapState: this.pluginController.updatePluginState.bind(
-          this.pluginController,
+        updateSnapState: this.snapController.updateSnapState.bind(
+          this.snapController,
         ),
       },
+      ///: END:ONLY_INCLUDE_IN
     );
 
     this.detectTokensController = new DetectTokensController({
@@ -761,9 +760,9 @@ export default class MetamaskController extends EventEmitter {
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
       CollectiblesController: this.collectiblesController,
-      // snaps
-      PluginController: this.pluginController,
-      AssetsController: this.assetsController.store,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      SnapController: this.snapController,
+      ///: END:ONLY_INCLUDE_IN
     });
 
     this.memStore = new ComposableObservableStore({
@@ -799,9 +798,9 @@ export default class MetamaskController extends EventEmitter {
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
         CollectiblesController: this.collectiblesController,
-        // snaps
-        AssetsController: this.assetsController.store,
-        PluginController: this.pluginController,
+        ///: BEGIN:ONLY_INCLUDE_IN(flask)
+        SnapController: this.snapController,
+        ///: END:ONLY_INCLUDE_IN
       },
       controllerMessenger: this.controllerMessenger,
     });
@@ -831,29 +830,48 @@ export default class MetamaskController extends EventEmitter {
     this.publicConfigStore = this.createPublicConfigStore();
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
-   * Temporary constructor helper: Set up global snap functions for dev purposes
-   * TODO:snaps Remove.
+   * Flask-only constructor helper.
+   * Set up global Snap functions for development purposes.
    */
   _setupSnapGlobals() {
     globalThis.snaps = {
+      /**
+       * Clear all permissions (of all kinds) from state.
+       */
       clearPermissions: () => this.permissionsController.clearPermissions(),
-      clearPlugins: () => this.pluginController.clearState(),
-      clearPermsAndPlugins: () => {
+
+      /**
+       * Clear all Snaps from state.
+       */
+      clearSnaps: () => this.snapController.clearState(),
+
+      /**
+       * Clear all permissions (of all kinds) and all Snaps from state.
+       */
+      clearPermissionsAndSnaps: () => {
         this.permissionsController.clearPermissions();
-        this.pluginController.clearState();
+        this.snapController.clearState();
       },
-      hasPlugin: (...args) => this.pluginController.has(args),
-      isPluginRunning: (...args) => this.pluginController.isRunning(args),
-      removePlugin: (...args) => this.pluginController.removePlugin(args),
-      runExistingPlugins: () => this.pluginController.runExistingPlugins(),
-      startInlinePlugin: () => this.pluginController.runInlinePlugin(),
-      stopInlinePlugin: () => this.pluginController.removeInlinePlugin(),
-      startPlugin: (...args) => this.pluginController.startPlugin(args),
-      stopPlugin: (...args) => this.pluginController.stopPlugin(args),
-      getState: () => this.pluginController.state,
+
+      /**
+       * Remove the specified Snap and revoke all related permissions.
+       */
+      removeSnap: (snapName) => this.snapController.removeSnap(snapName),
+      hasSnap: (snapName) => this.snapController.has(snapName),
+      isSnapRunning: (snapName) => this.snapController.isRunning(snapName),
+      startExistingSnaps: () => this.snapController.runExistingSnaps(),
+      startInlineSnap: () => this.snapController.runInlineSnap(),
+      stopInlineSnap: () => this.snapController.removeInlineSnap(),
+      startSnap: (snapName) => this.snapController.startSnap(snapName),
+      stopSnap: (snapName) => this.snapController.stopSnap(snapName),
+      getSnapControllerState: () => this.snapController.state,
+      getPermissionControllerState: () =>
+        this.permissionsController.permissions,
     };
   }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Constructor helper: initialize a provider.
@@ -2135,6 +2153,7 @@ export default class MetamaskController extends EventEmitter {
     return await promise;
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
    * TODO:snaps verify safety of using keyringController.getAccounts
    */
@@ -2149,6 +2168,7 @@ export default class MetamaskController extends EventEmitter {
 
     return this.keyringController.exportAppKeyForAddress(account, domain);
   }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Signifies user intent to complete an eth_sign method.
@@ -2650,10 +2670,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {*} connectionStream - The Duplex stream to connect to.
    * @param {MessageSender} sender - The sender of the messages on this stream
    */
-  setupUntrustedCommunication(connectionStream, sender, isPlugin = false) {
+  setupUntrustedCommunication(connectionStream, sender, isSnap = false) {
     const { usePhishDetect } = this.preferencesController.store.getState();
 
-    if (!isPlugin) {
+    if (!isSnap) {
       const { hostname } = new URL(sender.url);
       // Check if new connection is blocked if phishing detection is on
       if (usePhishDetect && this.phishingController.test(hostname)) {
@@ -2671,11 +2691,11 @@ export default class MetamaskController extends EventEmitter {
       mux.createStream('metamask-provider'),
       sender,
       false,
-      isPlugin,
+      isSnap,
     );
 
     // TODO:LegacyProvider: Delete
-    if (!isPlugin) {
+    if (!isSnap) {
       // legacy streams
       this.setupPublicConfig(mux.createStream('publicConfig'));
     }
@@ -2758,12 +2778,14 @@ export default class MetamaskController extends EventEmitter {
     outStream,
     sender,
     isInternal = false,
-    isPlugin = false,
+    isSnap = false,
   ) {
     let origin;
     if (isInternal) {
       origin = 'metamask';
-    } else if (isPlugin) {
+    }
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    else if (isSnap) {
       try {
         origin = new URL(sender.url).toString();
       } catch (_) {
@@ -2771,12 +2793,14 @@ export default class MetamaskController extends EventEmitter {
         // handle it better than by means of this hack.
         origin = sender.url;
       }
-    } else {
+    }
+    ///: END:ONLY_INCLUDE_IN
+    else {
       origin = new URL(sender.url).origin;
     }
 
     let extensionId;
-    if (!isPlugin && sender.id !== this.extension.runtime.id) {
+    if (!isSnap && sender.id !== this.extension.runtime.id) {
       extensionId = sender.id;
     }
     let tabId;
@@ -2790,7 +2814,7 @@ export default class MetamaskController extends EventEmitter {
       extensionId,
       tabId,
       isInternal,
-      isPlugin,
+      isSnap,
     });
 
     // setup connection
@@ -2812,16 +2836,18 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
-   * For plugins running in workers.
+   * For snaps running in workers.
    */
-  setupPluginProvider(pluginName, connectionStream) {
+  setupSnapProvider(snapName, connectionStream) {
     const sender = {
-      hostname: pluginName,
-      url: pluginName,
+      hostname: snapName,
+      url: snapName,
     };
     this.setupUntrustedCommunication(connectionStream, sender, true);
   }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
@@ -2838,15 +2864,17 @@ export default class MetamaskController extends EventEmitter {
     extensionId,
     tabId,
     isInternal = false,
-    isPlugin = false,
+    isSnap = false,
   }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
     const {
       blockTracker,
       permissionsController,
-      pluginController,
       provider,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      snapController,
+      ///: END:ONLY_INCLUDE_IN
     } = this;
 
     // create filter polyfill middleware
@@ -2871,7 +2899,7 @@ export default class MetamaskController extends EventEmitter {
 
     // logging
     engine.push(createLoggerMiddleware({ origin }));
-    if (!isPlugin) {
+    if (!isSnap) {
       engine.push(
         createOnboardingMiddleware({
           location,
@@ -2935,13 +2963,11 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     engine.push(
-      createPluginMethodMiddleware(isPlugin, {
+      createSnapMethodMiddleware(isSnap, {
         getAppKey: this.getAppKeyForDomain.bind(this, origin),
-        getPlugins: pluginController.getPermittedPlugins.bind(
-          pluginController,
-          origin,
-        ),
+        getSnaps: snapController.getPermittedSnaps.bind(snapController, origin),
         requestPermissions: permissionsController.requestPermissions.bind(
           permissionsController,
           origin,
@@ -2950,12 +2976,10 @@ export default class MetamaskController extends EventEmitter {
           permissionsController,
           origin,
         ),
-        installPlugins: pluginController.installPlugins.bind(
-          pluginController,
-          origin,
-        ),
+        installSnaps: snapController.installSnaps.bind(snapController, origin),
       }),
     );
+    ///: END:ONLY_INCLUDE_IN
 
     // filter and subscription polyfills
     engine.push(filterMiddleware);
@@ -2963,7 +2987,7 @@ export default class MetamaskController extends EventEmitter {
     if (!isInternal) {
       // permissions
       engine.push(
-        this.permissionsController.createMiddleware({ origin, extensionId }),
+        permissionsController.createMiddleware({ origin, extensionId }),
       );
     }
 

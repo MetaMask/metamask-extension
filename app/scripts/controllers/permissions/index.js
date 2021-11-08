@@ -30,7 +30,6 @@ export class PermissionsController {
     {
       approvals,
       getKeyringAccounts,
-      getRestrictedMethods,
       getUnlockPromise,
       isUnlocked,
       notifyDomain,
@@ -65,11 +64,6 @@ export class PermissionsController {
         await this._handleAccountSelected(selectedAddress);
       }
     });
-
-    // TODO:temp Just to keep unit tests working for now
-    if (process.env.METAMASK_ENV === 'test' && getRestrictedMethods) {
-      this.initializePermissions({}, getRestrictedMethods);
-    }
   }
 
   createMiddleware({ origin, extensionId }) {
@@ -722,7 +716,6 @@ export class PermissionsController {
 
     // these permission requests are almost certainly stale
     const initState = { ...restoredPermissions, permissionsRequests: [] };
-    delete initState.permissionsDescriptions;
 
     this.permissions = new RpcCap(
       {

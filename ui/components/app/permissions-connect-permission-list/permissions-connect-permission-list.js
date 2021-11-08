@@ -5,6 +5,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 export default function PermissionsConnectPermissionList({ permissions }) {
   const t = useI18nContext();
 
+  // TODO:flask Add Snap permissions
   const PERMISSION_TYPES = useMemo(() => {
     return {
       eth_accounts: {

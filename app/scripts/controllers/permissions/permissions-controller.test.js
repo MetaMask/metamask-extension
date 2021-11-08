@@ -8,6 +8,7 @@ import {
   getNotifyDomain,
   getNotifyAllDomains,
   getPermControllerOpts,
+  getRestrictedMethods,
 } from '../../../../test/mocks/permission-controller';
 import {
   getRequestUserApprovalHelper,
@@ -37,11 +38,13 @@ const initNotifications = () => {
 };
 
 const initPermController = (notifications = initNotifications()) => {
-  return new PermissionsController({
+  const controller = new PermissionsController({
     ...getPermControllerOpts(),
     notifyDomain: getNotifyDomain(notifications),
     notifyAllDomains: getNotifyAllDomains(notifications),
   });
+  controller.initializePermissions({}, getRestrictedMethods);
+  return controller;
 };
 
 describe('permissions controller', function () {
@@ -889,12 +892,15 @@ describe('permissions controller', function () {
         selectedAddress: DUMMY_ACCOUNT,
       });
       notifications = initNotifications();
+
       permController = new PermissionsController({
         ...getPermControllerOpts(),
         notifyDomain: getNotifyDomain(notifications),
         notifyAllDomains: getNotifyAllDomains(notifications),
         preferences,
       });
+      permController.initializePermissions({}, getRestrictedMethods);
+
       grantPermissions(
         permController,
         DOMAINS.b.origin,
@@ -903,6 +909,7 @@ describe('permissions controller', function () {
           EXTRA_ACCOUNT,
         ]),
       );
+
       grantPermissions(
         permController,
         DOMAINS.c.origin,
