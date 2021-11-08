@@ -824,9 +824,6 @@
   "selectAnAccount": {
     "message": "Pilih Akaun"
   },
-  "selectAnAccountHelp": {
-    "message": "Pilih akaun untuk dilihat dalam MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Sila pilih setiap ungkapan untuk memastikan ia betul."
   },

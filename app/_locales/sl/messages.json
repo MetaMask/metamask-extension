@@ -835,9 +835,6 @@
   "selectAnAccount": {
     "message": "Izberi račun"
   },
-  "selectAnAccountHelp": {
-    "message": "Izberi račun za prikaz v MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Izberite vsako geslo ter se prepričajte, da je pravilno."
   },

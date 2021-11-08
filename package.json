@@ -137,6 +137,7 @@
     "eth-json-rpc-middleware": "^6.0.0",
     "eth-keyring-controller": "^6.2.0",
     "eth-method-registry": "^2.0.0",
+    "eth-lattice-keyring": "^0.3.0",
     "eth-query": "^2.1.2",
     "eth-rpc-errors": "^4.0.2",
     "eth-sig-util": "^3.0.0",
@@ -347,6 +348,7 @@
   },
   "lavamoat": {
     "allowScripts": {
+      "gridplus-sdk": false,
       "chromedriver": true,
       "geckodriver": true,
       "@sentry/cli": true,

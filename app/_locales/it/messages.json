@@ -1309,9 +1309,6 @@
   "selectAnAccount": {
     "message": "Seleziona un Account"
   },
-  "selectAnAccountHelp": {
-    "message": "Selezione l'account da visualizzare in MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Per favore seleziona ogni frase in ordine per assicurarti che sia corretta."
   },

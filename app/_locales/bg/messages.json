@@ -843,9 +843,6 @@
   "selectAnAccount": {
     "message": "Изберете акаунт"
   },
-  "selectAnAccountHelp": {
-    "message": "Изберете акаунта за преглед в MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Моля, изберете всяка фраза, за да се уверите, че е правилна."
   },

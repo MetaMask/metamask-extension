@@ -840,9 +840,6 @@
   "selectAnAccount": {
     "message": "قم بتحديد حساب"
   },
-  "selectAnAccountHelp": {
-    "message": "حدد الحساب لعرضه في MetaMask"
-  },
   "selectEachPhrase": {
     "message": "يُرجى تحديد كل عبارة للتأكد من صحتها."
   },

@@ -847,9 +847,6 @@
   "selectAnAccount": {
     "message": "یک حساب را انتخاب کنید"
   },
-  "selectAnAccountHelp": {
-    "message": "برای مشاهده MetaMask حساب را انتخاب نمایید"
-  },
   "selectEachPhrase": {
     "message": "لطفًا جهت اطمینان از درستی، هر عبارت را انتخاب کنید."
   },

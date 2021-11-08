@@ -1619,13 +1619,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "Akun ini sudah terhubung ke MetaMask."
   },
-  "selectAnAccountHelp": {
-    "message": "Pilih akun untuk dilihat di MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Tidak melihat akun Anda? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "Pilih masing-masing frasa untuk memastikan kebenarannya."
   },
@@ -2105,12 +2098,6 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Izinkan situs ini untuk beralih jaringan?"
-  },
-  "switchLedgerPaths": {
-    "message": "Beralih jalur Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Pilih jalur Ledger untuk melihat akun lain"
   },
   "switchNetwork": {
     "message": "Beralih jaringan"

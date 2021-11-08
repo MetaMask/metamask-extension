@@ -828,9 +828,6 @@
   "selectAnAccount": {
     "message": "Vælg en Konto"
   },
-  "selectAnAccountHelp": {
-    "message": "Vælg kontoen der skal vises i MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Vælg venligst hver sætning, for at sikre at de er korrekte."
   },

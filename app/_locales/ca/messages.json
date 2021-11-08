@@ -825,9 +825,6 @@
   "selectAnAccount": {
     "message": "Selecciona un Compte"
   },
-  "selectAnAccountHelp": {
-    "message": "Selecciona el compte que vols veure a MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Si us plau selecciona cada frase per a assegurar-te que és correcta."
   },

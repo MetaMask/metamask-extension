@@ -841,9 +841,6 @@
   "selectAnAccount": {
     "message": "בחר חשבון"
   },
-  "selectAnAccountHelp": {
-    "message": "בחר את החשבון לצפייה ב- MetaMask"
-  },
   "selectEachPhrase": {
     "message": "נא לבחור כל צירוף מילים כדי להבטיח שהוא נכון."
   },

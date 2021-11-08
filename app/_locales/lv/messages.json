@@ -843,9 +843,6 @@
   "selectAnAccount": {
     "message": "Atlasiet kontu"
   },
-  "selectAnAccountHelp": {
-    "message": "Atlasiet kontu, ko skatīt MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Lūdzu, atlasiet katru frāzi, lai pārliecinātos par tās pareizību."
   },

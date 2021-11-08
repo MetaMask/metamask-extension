@@ -1300,9 +1300,6 @@
   "selectAnAccount": {
     "message": "Pumili ng Account"
   },
-  "selectAnAccountHelp": {
-    "message": "Piliin ang account na titingnan sa MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Pakipili ang bawat phrase para matiyak na tama ito."
   },
