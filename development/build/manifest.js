@@ -108,7 +108,6 @@ function createManifestTasks({
     if (Array.isArray(objValue)) {
       return [...new Set([...objValue, ...srcValue])];
     }
-    return null;
   }
 }
 
