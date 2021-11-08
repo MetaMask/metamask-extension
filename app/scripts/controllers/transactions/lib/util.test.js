@@ -177,15 +177,16 @@ describe('txUtils', function () {
       });
 
       it('should error when maxFeePerGas is not a hex string', function () {
-        const key = 'maxFeePerGas';
-        const value = 'oodmjsjisis';
-
+        const txParams = {
+          maxFeePerGas: 'oodmjsjisis',
+          to: BURN_ADDRESS,
+        };
         assert.throws(
           () => {
-            txUtils.ensureFieldIsHexString(key, value);
+            txUtils.validateTxParams(txParams);
           },
           {
-            message: `Invalid param "${key}": not a valid hex string.`,
+            message: `Invalid param "maxFeePerGas": not a valid hex string.`,
           },
         );
       });
@@ -215,15 +216,16 @@ describe('txUtils', function () {
       });
 
       it('should error when gasPrice is not a hex string', function () {
-        const key = 'gasPrice';
-        const value = 'msaoaos';
-
+        const txParams = {
+          gasPrice: 'msaoaos',
+          to: BURN_ADDRESS,
+        };
         assert.throws(
           () => {
-            txUtils.ensureFieldIsHexString(key, value);
+            txUtils.validateTxParams(txParams);
           },
           {
-            message: `Invalid param "${key}": not a valid hex string.`,
+            message: `Invalid param "gasPrice": not a valid hex string.`,
           },
         );
       });
@@ -272,15 +274,16 @@ describe('txUtils', function () {
       });
 
       it('should show error when maxPriorityFeePerGas is not a hex string', function () {
-        const key = 'maxPriorityFeePerGas';
-        const value = '8889d9d9d9d';
-
+        const txParams = {
+          maxPriorityFeePerGas: '8889d9d9d9d',
+          to: BURN_ADDRESS,
+        };
         assert.throws(
           () => {
-            txUtils.ensureFieldIsHexString(key, value);
+            txUtils.validateTxParams(txParams);
           },
           {
-            message: `Invalid param "${key}": not a valid hex string.`,
+            message: `Invalid param "maxPriorityFeePerGas": not a valid hex string.`,
           },
         );
       });
