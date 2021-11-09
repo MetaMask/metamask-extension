@@ -112,11 +112,17 @@
   "advanced": {
     "message": "Advanced"
   },
+  "advancedBaseGasFeeToolTip": {
+    "message": "Any difference between your max base fee and the current base fee will be refunded after completion."
+  },
   "advancedGasPriceTitle": {
     "message": "Gas price"
   },
   "advancedOptions": {
     "message": "Advanced Options"
+  },
+  "advancedPriorityFeeToolTip": {
+    "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
   "advancedSettingsDescription": {
     "message": "Access developer features, download State Logs, Reset Account, setup test networks and custom RPC"
@@ -789,6 +795,12 @@
   "editGasTooLowWarningTooltip": {
     "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
   },
+  "editInGwei": {
+    "message": "Edit in GWEI"
+  },
+  "editInMultiplier": {
+    "message": "Edit in multiplier"
+  },
   "editNonceField": {
     "message": "Edit Nonce"
   },
@@ -1105,6 +1117,9 @@
   },
   "grantedToWithColon": {
     "message": "Granted to:"
+  },
+  "gweiInParanthesis": {
+    "message": "(GWEI)"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -1514,6 +1529,9 @@
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
+  "multiplierInParathesis": {
+    "message": "(Multiplier)"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -1916,6 +1934,9 @@
   },
   "primaryCurrencySettingDescription": {
     "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "priorityFee": {
+    "message": "Priority Fee"
   },
   "privacyMsg": {
     "message": "Privacy Policy"

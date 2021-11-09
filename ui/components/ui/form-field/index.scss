@@ -1,6 +1,11 @@
 .form-field {
   margin-bottom: 20px;
 
+  &__border {
+    padding-bottom: 20px;
+    border-bottom: 1px solid $Grey-200;
+  }
+
   &__heading {
     display: flex;
     margin-top: 4px;

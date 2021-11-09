@@ -30,6 +30,7 @@ import AddToAddressBookModal from './add-to-addressbook-modal';
 import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
+import AdvancedGasModal from './advanced-gas-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -384,6 +385,19 @@ const MODALS = {
 
   CUSTOMIZE_NONCE: {
     contents: <CustomizeNonceModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  ADVANCED_GAS_FEE: {
+    contents: <AdvancedGasModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

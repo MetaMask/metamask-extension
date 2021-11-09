@@ -18,6 +18,7 @@ const Popover = ({
   CustomBackground,
   popoverRef,
   centerTitle,
+  headerClassName,
 }) => {
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
@@ -34,7 +35,7 @@ const Popover = ({
       >
         {showArrow ? <div className="popover-arrow" /> : null}
         {showHeader && (
-          <header className="popover-header">
+          <header className={classnames("popover-header", headerClassName)}>
             <div
               className={classnames(
                 'popover-header__title',
@@ -96,6 +97,7 @@ Popover.propTypes = {
     current: PropTypes.instanceOf(window.Element),
   }),
   centerTitle: PropTypes.bool,
+  headerClassName: PropTypes.string,
 };
 
 export default class PopoverPortal extends PureComponent {

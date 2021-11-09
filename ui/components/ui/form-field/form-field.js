@@ -17,6 +17,7 @@ import InfoTooltip from '../info-tooltip/info-tooltip';
 
 export default function FormField({
   dataTestId,
+  titleFontSize,
   titleText,
   titleUnit,
   tooltipText,
@@ -30,11 +31,14 @@ export default function FormField({
   password,
   allowDecimals,
   disabled,
+  bottomBorder,
+  inputDetails
 }) {
   return (
     <div
       className={classNames('form-field', {
         'form-field__row--error': error,
+        'form-field__border': bottomBorder,
       })}
     >
       <label>
@@ -42,9 +46,9 @@ export default function FormField({
           <div className="form-field__heading-title">
             {titleText && (
               <Typography
-                tag={TYPOGRAPHY.H6}
+                tag={titleFontSize || TYPOGRAPHY.H6}
                 fontWeight={FONT_WEIGHT.BOLD}
-                variant={TYPOGRAPHY.H6}
+                variant={titleFontSize || TYPOGRAPHY.H6}
                 boxProps={{ display: DISPLAY.INLINE_BLOCK }}
               >
                 {titleText}
@@ -52,8 +56,8 @@ export default function FormField({
             )}
             {titleUnit && (
               <Typography
-                tag={TYPOGRAPHY.H6}
-                variant={TYPOGRAPHY.H6}
+                tag={titleFontSize || TYPOGRAPHY.H6}
+                variant={titleFontSize || TYPOGRAPHY.H6}
                 color={COLORS.UI4}
                 boxProps={{ display: DISPLAY.INLINE_BLOCK }}
               >
@@ -107,6 +111,7 @@ export default function FormField({
             {error}
           </Typography>
         )}
+        {inputDetails}
       </label>
     </div>
   );
@@ -127,6 +132,8 @@ FormField.propTypes = {
   password: PropTypes.bool,
   allowDecimals: PropTypes.bool,
   disabled: PropTypes.bool,
+  bottomBorder: PropTypes.bool,
+  inputDetails: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 };
 
 FormField.defaultProps = {
@@ -143,4 +150,6 @@ FormField.defaultProps = {
   password: false,
   allowDecimals: true,
   disabled: false,
+  bottomBorder: false,
+  // inputDetails: '',
 };
