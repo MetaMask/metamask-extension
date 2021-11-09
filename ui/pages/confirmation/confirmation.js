@@ -29,9 +29,9 @@ import { getTemplateValues, getTemplateAlerts } from './templates';
  * immutable and painless. This state is not stored in redux state because it
  * should persist only for the lifespan of the current session, and will only
  * be used on this page. Dismissing alerts for confirmations should persist
- * while the user pages back and forth between confirmations. However, if the
- * user closes the confirmation window and later reopens the extension they
- * should be displayed the alerts again.
+ * while the user pages back and forth between confirmations. If the user
+ * closes the confirmation window and later reopens the extension they should
+ * be all dismissed
  */
 const alertStateReducer = produce((state, action) => {
   switch (action.type) {

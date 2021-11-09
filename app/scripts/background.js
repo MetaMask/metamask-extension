@@ -23,7 +23,7 @@ import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
 import createStreamSink from './lib/createStreamSink';
-import NotificationManager from './lib/notification-manager';
+import NotificationManager, { NOTIFICATION_MANAGER_EVENTS } from './lib/notification-manager';
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
@@ -473,6 +473,29 @@ function setupController(initState, initLangCode) {
     }
     extension.browserAction.setBadgeText({ text: label });
     extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+  }
+
+  notificationManager.on(
+    NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
+    rejectUnapprovedNotifications
+  );
+
+  function rejectUnapprovedNotifications() {
+    // TODO(ritave): Return 4001 error to the user,
+    //               instead of just silently dropping
+    //               https://docs.metamask.io/guide/ethereum-provider.html#using-the-provider
+    // Metamask can open a popup for a login, we need to check if
+    // we're on a confirmation page
+    if (controller.appStateController.isUnlocked()) {
+      controller.txController.txStateManager.clearUnapprovedTxs();
+      controller.messageManager.clearUnapproved();
+      controller.personalMessageManager.clearUnapproved();
+      controller.decryptMessageManager.clearUnapproved();
+      controller.encryptionPublicKeyManager.clearUnapproved();
+      controller.typedMessageManager.clearUnapproved();
+      controller.approvalController.clear();
+      updateBadge();
+    }
   }
 
   return Promise.resolve();
