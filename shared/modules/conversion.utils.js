@@ -229,6 +229,24 @@ const multiplyCurrencies = (a, b, options = {}) => {
   });
 };
 
+const divideCurrencies = (a, b, options = {}) => {
+  const { multiplicandBase, multiplierBase, ...conversionOptions } = options;
+
+  if (!isValidBase(multiplicandBase) || !isValidBase(multiplierBase)) {
+    throw new Error('Must specify valid multiplicandBase and multiplierBase');
+  }
+
+  const value = getBigNumber(a, multiplicandBase).div(
+    getBigNumber(b, multiplierBase),
+  );
+
+  return converter({
+    value,
+    ...conversionOptions,
+  });
+};
+
+
 const conversionGreaterThan = ({ ...firstProps }, { ...secondProps }) => {
   const firstValue = converter({ ...firstProps });
   const secondValue = converter({ ...secondProps });
@@ -291,4 +309,5 @@ export {
   decGWEIToHexWEI,
   toBigNumber,
   toNormalizedDenomination,
+  divideCurrencies,
 };

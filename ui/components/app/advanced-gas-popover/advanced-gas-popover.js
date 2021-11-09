@@ -14,6 +14,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BORDER_STYLE, COLORS, FLEX_DIRECTION, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import Typography from '../../ui/typography';
+import { divideCurrencies, multiplyCurrencies } from '../../../../shared/modules/conversion.utils';
 
 const AdvancedGasPopover = ({ onClose }) => {
   const t = useI18nContext();
@@ -27,20 +28,23 @@ const AdvancedGasPopover = ({ onClose }) => {
     estimatedBaseFee,
   } = useGasFeeContext();
   const estimatedBaseFeeInDecGWEI = hexWEIToDecGWEI(estimatedBaseFee);
-  const baseFeeMultiplier = BnMultiplyByFraction(
-    hexToBn(decGWEIToHexWEI(maxFeePerGas)),
-    1,
-    estimatedBaseFee,
-  ).toString(10);
+  const baseFeeMultiplier = divideCurrencies(decGWEIToHexWEI(maxFeePerGas), estimatedBaseFee, {multiplicandBase: 16, multiplierBase:16, toNumericBase: 'dec'})
+  // const baseFeeMultiplier = BnMultiplyByFraction(
+  //   hexToBn(decGWEIToHexWEI(maxFeePerGas)),
+  //   1,
+  //   estimatedBaseFee,
+  // ).toString(10);
   const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(
     baseFeeMultiplier,
   );
   const [priorityFee, setPriorityFee] = useState(maxPriorityFeePerGas);
-  const baseFee = BnMultiplyByFraction(
-    hexToBn(estimatedBaseFee),
-    maxBaseFeeMultiplier,
-    1,
-  ).toString(10);
+  // const baseFee = BnMultiplyByFraction(
+  //   hexToBn(estimatedBaseFee),
+  //   maxBaseFeeMultiplier,
+  //   1,
+  // ).toString(10);
+  const baseFee = multiplyCurrencies(estimatedBaseFee, maxBaseFeeMultiplier,{multiplicandBase: 16, multiplierBase:10, toNumericBase: 'dec'})
+
   const [editingInGwei, setEditingInGwei] = useState(false);
 
   return (
@@ -77,7 +81,7 @@ const AdvancedGasPopover = ({ onClose }) => {
                 variant={TYPOGRAPHY.H7} 
                 color={COLORS.UI4}
               >
-                {`current: 192 GWEI`}
+                {`current: ${estimatedBaseFeeInDecGWEI} GWEI`}
               </Typography>
               <Typography 
                 tag={TYPOGRAPHY.H7} 
