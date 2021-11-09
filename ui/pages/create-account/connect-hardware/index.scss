@@ -28,12 +28,7 @@
   &__btn-wrapper {
     flex: 1;
     flex-direction: row;
-    overflow: auto;
     display: flex;
-
-    &--qr {
-      margin-top: 15px;
-    }
   }
 
   &__connect-btn {
@@ -75,28 +70,6 @@
 
   &__btn:last-child {
     margin-right: 20px;
-  }
-
-  &__btn-large {
-    background: #fbfbfb;
-    border: 1px solid #e5e5e5;
-    height: 100px;
-    width: 315px;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 5px;
-    padding: 0;
-
-    &__img {
-      width: 285px;
-    }
-  }
-
-  &__btn-large.selected {
-    border-color: #00a8ee;
-    width: 315px;
   }
 
   &__hdPath {

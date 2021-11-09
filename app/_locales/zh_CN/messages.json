@@ -5,6 +5,9 @@
   "QRHardwareMismatchedSignId": {
     "message": "扫描的签名二维码不属于当前交易，请检查交易详情后重试。"
   },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "暂无更多账户，若想切换到其他账户，请在硬件钱包中选择想要的账户重新同步。"
+  },
   "QRHardwareScanInstructions": {
     "message": "为了保护您的隐私，屏幕是模糊的，但不影响对二维码的读取。"
   },
@@ -20,6 +23,9 @@
   "QRHardwareSignRequestSubtitle": {
     "message": "用硬件钱包扫描二维码"
   },
+  "QRHardwareSignRequestTitle": {
+    "message": "获取签名"
+  },
   "QRHardwareUnknownQRCodeTitle": {
     "message": "非法二维码"
   },
@@ -33,7 +39,7 @@
     "message": "该类硬件钱包通过二维码实现通讯交互，做到完全脱网。官方支持的钱包有："
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "AirGap Vault & Ngrave (即将到来)"
+    "message": "AirGap Vault & Ngrave (即将上线)"
   },
   "about": {
     "message": "关于"

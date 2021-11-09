@@ -184,6 +184,16 @@ class ConnectHardwareForm extends Component {
             error: this.context.t('ledgerTimeout'),
           });
         } else if (
+          errorMessage
+            .toLowerCase()
+            .includes(
+              'KeystoneError#pubkey_account.no_expected_account'.toLowerCase(),
+            )
+        ) {
+          this.setState({
+            error: this.context.t('QRHardwarePubkeyAccountOutOfRange'),
+          });
+        } else if (
           errorMessage !== 'Window closed' &&
           errorMessage !== 'Popup closed' &&
           errorMessage

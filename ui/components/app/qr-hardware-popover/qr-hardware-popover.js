@@ -77,7 +77,6 @@ const QRHardwarePopover = () => {
     }
     return _title;
   }, [showSignRequest, showWalletImporter, t, errorTitle]);
-
   return showPopover ? (
     <Popover
       title={title}

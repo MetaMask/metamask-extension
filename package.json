@@ -106,7 +106,7 @@
     "@formatjs/intl-relativetimeformat": "^5.2.6",
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@keystonehq/bc-ur-registry-eth": "^0.6.8",
-    "@keystonehq/metamask-airgapped-keyring": "0.1.2-alpha.0",
+    "@keystonehq/metamask-airgapped-keyring": "0.2.0",
     "@material-ui/core": "^4.11.0",
     "@metamask/contract-metadata": "^1.28.0",
     "@metamask/controllers": "^17.0.0",

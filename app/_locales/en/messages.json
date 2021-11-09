@@ -5,6 +5,9 @@
   "QRHardwareMismatchedSignId": {
     "message": "Incongruent transaction data. Please check the transaction details."
   },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "No more accounts. If you would like to access another account unlisted below, please reconnect your hardware wallet and select it."
+  },
   "QRHardwareScanInstructions": {
     "message": "Place the QR code in front of your camera. The screen is blurred, but it will not affect the reading."
   },

@@ -31,6 +31,7 @@ const Reader = ({
           reject(new Error(t('QRHardwareMismatchedSignId')));
         }
       } else {
+        setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
         reject(new Error(t('unknownQrCode')));
       }
     });

@@ -83,13 +83,13 @@ export default class SelectHardware extends Component {
   renderConnectToQRButton() {
     return (
       <button
-        className={classnames('hw-connect__btn-large', {
+        className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === DEVICE_NAMES.QR,
         })}
         onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.QR })}
       >
         <img
-          className="hw-connect__btn-large__img"
+          className="hw-connect__btn__img"
           src="images/qrcode-wallet-logo.svg"
           alt="QRCode"
         />
@@ -109,8 +109,6 @@ export default class SelectHardware extends Component {
           style={{ margin: '10px 0 0 0' }}
         >
           {this.renderConnectToLatticeButton()}
-        </div>
-        <div className="hw-connect__btn-wrapper--qr">
           {this.renderConnectToQRButton()}
         </div>
       </>

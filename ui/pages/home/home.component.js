@@ -100,7 +100,7 @@ export default class Home extends PureComponent {
     canShowBlockageNotification: true,
   };
 
-  componentDidMount() {
+  checkStatusAndNavigate() {
     const {
       firstPermissionsRequestId,
       history,
@@ -114,9 +114,6 @@ export default class Home extends PureComponent {
       pendingConfirmations,
       isSigningQRHardwareTransaction,
     } = this.props;
-
-    // eslint-disable-next-line react/no-unused-state
-    this.setState({ mounted: true });
     if (
       isNotification &&
       totalUnapprovedCount === 0 &&
@@ -138,6 +135,12 @@ export default class Home extends PureComponent {
     } else if (pendingConfirmations.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
+  }
+
+  componentDidMount() {
+    // eslint-disable-next-line react/no-unused-state
+    this.setState({ mounted: true });
+    this.checkStatusAndNavigate();
   }
 
   static getDerivedStateFromProps(
@@ -180,22 +183,13 @@ export default class Home extends PureComponent {
       showRestorePrompt,
       threeBoxLastUpdated,
       threeBoxSynced,
-      isSigningQRHardwareTransaction,
-      isNotification,
-      totalUnapprovedCount,
     } = this.props;
 
     if (!prevState.closing && this.state.closing) {
       global.platform.closeCurrentWindow();
     }
 
-    if (
-      !isSigningQRHardwareTransaction &&
-      isNotification &&
-      totalUnapprovedCount === 0
-    ) {
-      global.platform.closeCurrentWindow();
-    }
+    this.checkStatusAndNavigate();
 
     if (threeBoxSynced && showRestorePrompt && threeBoxLastUpdated === null) {
       setupThreeBox();
