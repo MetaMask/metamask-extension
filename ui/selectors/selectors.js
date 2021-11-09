@@ -146,7 +146,7 @@ export function isEIP1559Account(state) {
   if (keyring.type === KEYRING_TYPES.TREZOR) {
     const model = keyring.getModel();
     return model === 'T';
-  };
+  }
   return true;
 }
 
