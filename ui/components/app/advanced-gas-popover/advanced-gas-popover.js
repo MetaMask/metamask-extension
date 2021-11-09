@@ -28,7 +28,7 @@ const AdvancedGasPopover = ({ onClose }) => {
     estimatedBaseFee,
   } = useGasFeeContext();
   const estimatedBaseFeeInDecGWEI = hexWEIToDecGWEI(estimatedBaseFee);
-  const baseFeeMultiplier = divideCurrencies(decGWEIToHexWEI(maxFeePerGas), estimatedBaseFee, {multiplicandBase: 16, multiplierBase:16, toNumericBase: 'dec'})
+  const baseFeeMultiplier = divideCurrencies(decGWEIToHexWEI(maxFeePerGas), estimatedBaseFee, {numberOfDecimals: 6, multiplicandBase: 16, multiplierBase:16, toNumericBase: 'dec'})
   // const baseFeeMultiplier = BnMultiplyByFraction(
   //   hexToBn(decGWEIToHexWEI(maxFeePerGas)),
   //   1,
@@ -43,7 +43,12 @@ const AdvancedGasPopover = ({ onClose }) => {
   //   maxBaseFeeMultiplier,
   //   1,
   // ).toString(10);
-  const baseFee = multiplyCurrencies(estimatedBaseFee, maxBaseFeeMultiplier,{multiplicandBase: 16, multiplierBase:10, toNumericBase: 'dec'})
+  const baseFee = multiplyCurrencies(estimatedBaseFee, maxBaseFeeMultiplier,{
+    numberOfDecimals: 6, multiplicandBase: 16, multiplierBase:10, toNumericBase: 'dec',
+    fromDenomination: 'WEI',
+    toDenomination: 'GWEI',
+
+  })
 
   const [editingInGwei, setEditingInGwei] = useState(false);
 
