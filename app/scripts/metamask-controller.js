@@ -568,6 +568,9 @@ export default class MetamaskController extends EventEmitter {
       nonceTracker: this.txController.nonceTracker,
       provider: this.provider,
       txController: this.txController,
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
     });
 
     // ensure accountTracker updates balances after network change

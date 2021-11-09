@@ -773,7 +773,7 @@ export const signAndSendSwapsSmartTransaction = ({
         stx_user_opt_in: smartTransactionsOptInStatus,
       };
       metaMetricsEvent({
-        event: 'STX Submitted',
+        event: 'STX Swap Started',
         category: 'swaps',
         sensitiveProperties: swapMetaData,
       });

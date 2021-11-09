@@ -130,14 +130,14 @@ export default function SmartTransactionStatus() {
 
   const stxStatusPageLoadedEvent = useNewMetricEvent({
     event: 'STX Status Page Loaded',
-    sensitiveProperties,
     category: 'swaps',
+    sensitiveProperties,
   });
 
   const cancelSmartTransactionEvent = useNewMetricEvent({
     event: 'Cancel STX',
-    sensitiveProperties,
     category: 'swaps',
+    sensitiveProperties,
   });
 
   const isSmartTransactionPending =
