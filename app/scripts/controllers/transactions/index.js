@@ -1011,7 +1011,7 @@ export default class TransactionController extends EventEmitter {
 
       if (submittedTime) {
         metricsParams.completion_time = this._getTransactionCompletionTime(
-          submittedTime,
+          txMeta.time,
         );
       }
 
@@ -1465,8 +1465,8 @@ export default class TransactionController extends EventEmitter {
     });
   }
 
-  _getTransactionCompletionTime(submittedTime) {
-    return Math.round((Date.now() - submittedTime) / 1000).toString();
+  _getTransactionCompletionTime(time) {
+    return Math.round(time / 1000).toString();
   }
 
   _getGasValuesInGWEI(gasParams) {
