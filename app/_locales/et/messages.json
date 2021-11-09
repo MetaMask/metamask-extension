@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Kümnendkohad peavad olema vähemalt 0 ja mitte üle 36."
   },
-  "defaultNetwork": {
-    "message": "Etheri tehingute vaikevõrk on peavõrk."
-  },
   "delete": {
     "message": "Kustuta"
   },

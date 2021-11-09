@@ -263,9 +263,6 @@
   "decimalsMustZerotoTen": {
     "message": "Els decimals han de ser al menys 0, i no més de 36."
   },
-  "defaultNetwork": {
-    "message": "La xarxa per defecte per a les transaccions Ether és Mainnet."
-  },
   "delete": {
     "message": "Suprimeix"
   },

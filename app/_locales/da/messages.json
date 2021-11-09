@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Decimaler skal være mindst 0 og højst 36."
   },
-  "defaultNetwork": {
-    "message": "Standardnetværket for Ether-transaktioner er Mainnet."
-  },
   "delete": {
     "message": "Slet"
   },

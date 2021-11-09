@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "リクエストの復号"
   },
-  "defaultNetwork": {
-    "message": "Ether 取引のためのデフォルトのネットワークはメインネットです。"
-  },
   "delete": {
     "message": "削除"
   },

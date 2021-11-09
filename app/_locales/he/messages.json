@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "מספרים עשרוניים חייבים להיות לפחות 0 ולא מעל 36."
   },
-  "defaultNetwork": {
-    "message": "רשת ברירת המחדל לעסקאות Ether היא Mainnet."
-  },
   "delete": {
     "message": "מחיקה"
   },

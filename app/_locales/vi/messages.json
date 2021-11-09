@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "Yêu cầu của Decrypt"
   },
-  "defaultNetwork": {
-    "message": "Mạng mặc định cho các giao dịch Ether là Mạng chính thức."
-  },
   "delete": {
     "message": "Xóa"
   },

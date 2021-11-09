@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "Descriptografar solicitação"
   },
-  "defaultNetwork": {
-    "message": "A rede padrão das transações em ether é a Mainnet."
-  },
   "delete": {
     "message": "Excluir"
   },

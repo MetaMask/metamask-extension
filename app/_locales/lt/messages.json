@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Turi būti bent 0 skaitmenų po kablelio, bet ne daugiau kaip 36."
   },
-  "defaultNetwork": {
-    "message": "Numatytasis „Ether“ operacijų tinklas yra pagrindinis tinklas."
-  },
   "delete": {
     "message": "Ištrinti"
   },

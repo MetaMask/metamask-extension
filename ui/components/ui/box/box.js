@@ -79,6 +79,7 @@ export default function Box({
   textAlign,
   flexDirection = FLEX_DIRECTION.ROW,
   flexWrap,
+  gap,
   display,
   width,
   height,
@@ -134,6 +135,7 @@ export default function Box({
     [`box--height-${height}`]: Boolean(height),
     // background
     [`box--background-color-${backgroundColor}`]: Boolean(backgroundColor),
+    ...generateSizeClasses('box', 'gap', gap),
   });
   // Apply Box styles to any other component using function pattern
   if (typeof children === 'function') {
@@ -146,6 +148,7 @@ Box.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   flexDirection: PropTypes.oneOf(Object.values(FLEX_DIRECTION)),
   flexWrap: PropTypes.oneOf(Object.values(FLEX_WRAP)),
+  gap: ValidSize,
   margin: MultipleSizes,
   marginTop: ValidSize,
   marginBottom: ValidSize,
