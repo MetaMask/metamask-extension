@@ -1769,13 +1769,13 @@ describe('Transaction Controller', function () {
     it('calculates completion time (one)', function () {
       const submittedTime = 1625781997397;
       const result = txController._getTransactionCompletionTime(submittedTime);
-      assert.equal(result, '19');
+      assert.equal(result, '1625781997');
     });
 
     it('calculates completion time (two)', function () {
       const submittedTime = 1625781995397;
       const result = txController._getTransactionCompletionTime(submittedTime);
-      assert.equal(result, '21');
+      assert.equal(result, '1625781995');
     });
   });
 

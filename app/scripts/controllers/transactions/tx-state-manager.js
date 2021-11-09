@@ -288,9 +288,7 @@ export default class TransactionStateManager extends EventEmitter {
     // recover previous tx state obj
     const previousState = replayHistory(txMeta.history);
     // generate history entry and add to history
-
     const entry = generateHistoryEntry(previousState, currentState, note);
-
     if (entry.length) {
       txMeta.history.push(entry);
     }
