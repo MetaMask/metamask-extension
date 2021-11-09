@@ -13,11 +13,11 @@ const EditGasFeePopover = ({ onClose }) => {
       className="edit-gas-fee-popover"
     >
       <div className="edit-gas-fee-popover__wrapper">
-        <div className="edit-gas-fee-popover__mm-recommended">
-          <div className="edit-gas-fee-popover__mm-recommended__header">
-            <span>Gas option</span>
-            <span>Type</span>
-            <span>Max fee</span>
+        <div className="edit-gas-fee-popover__content">
+          <div className="edit-gas-fee-popover__content__header">
+            <span className="edit-gas-fee-popover__content__header-option"><I18nValue messageKey="gasOption" /></span>
+            <span className="edit-gas-fee-popover__content__header-time"><I18nValue messageKey="time" /></span>
+            <span className="edit-gas-fee-popover__content__header-max-fee"><I18nValue messageKey="maxFee" /></span>
           </div>
           <EditGasItem estimateType="low" />
           <EditGasItem estimateType="medium" />
@@ -33,3 +33,5 @@ EditGasFeePopover.propTypes = {
 };
 
 export default EditGasFeePopover;
+
+// <I18nValue messageKey="maxFee" />

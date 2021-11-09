@@ -1,7 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import { I18nContext } from '../../../contexts/i18n';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import Typography from '../../ui/typography/typography';
@@ -9,12 +8,13 @@ import Typography from '../../ui/typography/typography';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import { COLORS } from '../../../helpers/constants/design-system';
 import { GasLevelIconMap } from '../../../helpers/constants/gas';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function TransactionDetail({ rows = [], onEdit }) {
   // eslint-disable-next-line prefer-destructuring
   const EIP_1559_V2 = process.env.EIP_1559_V2;
 
-  const t = useContext(I18nContext);
+  const t = useI18nContext();
   const {
     gasLimit,
     gasPrice,

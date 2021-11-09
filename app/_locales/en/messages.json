@@ -1022,6 +1022,14 @@
     "message": "$1 minutes",
     "description": "$1 represents a number of minutes"
   },
+  "gasTimingMinutesShort": {
+    "message": "$1 min",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingHoursShort": {
+    "message": "$1 hrs",
+    "description": "$1 represents a number of hours"
+  },
   "gasTimingNegative": {
     "message": "Maybe in $1",
     "description": "$1 represents an amount of time"
@@ -1032,6 +1040,10 @@
   },
   "gasTimingSeconds": {
     "message": "$1 seconds",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingSecondsShort": {
+    "message": "$1 sec",
     "description": "$1 represents a number of seconds"
   },
   "gasTimingVeryPositive": {
@@ -1373,6 +1385,12 @@
   },
   "maxFee": {
     "message": "Max fee"
+  },
+  "time": {
+    "message": "Time"
+  },
+  "gasOption": {
+    "message": "Gas option"
   },
   "maxPriorityFee": {
     "message": "Max priority fee"

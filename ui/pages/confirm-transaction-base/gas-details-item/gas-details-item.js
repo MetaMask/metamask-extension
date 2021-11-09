@@ -32,7 +32,7 @@ const GasDetailsItem = ({
 }) => {
   const t = useI18nContext();
   const { estimateUsed } = useGasFeeContext();
-
+console.log('hexMinimumTransactionFee = ', hexMinimumTransactionFee)
   return (
     <TransactionDetailItem
       key="gas-item"
