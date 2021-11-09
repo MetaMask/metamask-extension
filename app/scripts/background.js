@@ -486,7 +486,7 @@ function setupController(initState, initLangCode) {
     //               https://docs.metamask.io/guide/ethereum-provider.html#using-the-provider
     // Metamask can open a popup for a login, we need to check if
     // we're on a confirmation page
-    if (controller.appStateController.isUnlocked()) {
+    if (controller.isUnlocked()) {
       controller.txController.txStateManager.clearUnapprovedTxs();
       controller.messageManager.clearUnapproved();
       controller.personalMessageManager.clearUnapproved();

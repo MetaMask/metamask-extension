@@ -60,7 +60,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
         name: 'Cancel Via Notification Close',
       },
     });
-    clearConfirmTransaction();
+    //clearConfirmTransaction();
   };
 
   _removeBeforeUnload = () => {

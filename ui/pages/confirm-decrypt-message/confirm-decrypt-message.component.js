@@ -71,7 +71,7 @@ export default class ConfirmDecryptMessage extends Component {
         name: 'Cancel Via Notification Close',
       },
     });
-    clearConfirmTransaction();
+    //clearConfirmTransaction();
   };
 
   _removeBeforeUnload = () => {
