@@ -1,5 +1,8 @@
 name: shellcheck
 
+permissions:
+  contents: write
+
 on: [push]
 
 jobs:
