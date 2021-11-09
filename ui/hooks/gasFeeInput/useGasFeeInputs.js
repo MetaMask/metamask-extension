@@ -77,7 +77,7 @@ export function useGasFeeInputs(
   // Calling this hooks initiates polling for new gas estimates and returns the
   // current estimate.
   const {
-    gasEstimateUsed,
+    gasEstimateType,
     gasFeeEstimates,
     isGasEstimatesLoading,
     estimatedGasFeeTimeBounds,
@@ -113,7 +113,7 @@ export function useGasFeeInputs(
     setGasPriceHasBeenManuallySet,
   } = useGasPriceInput({
     estimateToUse,
-    gasEstimateUsed,
+    gasEstimateType,
     gasFeeEstimates,
     transaction,
   });
@@ -124,7 +124,7 @@ export function useGasFeeInputs(
     setMaxFeePerGas,
   } = useMaxFeePerGasInput({
     estimateToUse,
-    gasEstimateUsed,
+    gasEstimateType,
     gasFeeEstimates,
     gasLimit,
     gasPrice,
@@ -137,7 +137,7 @@ export function useGasFeeInputs(
     setMaxPriorityFeePerGas,
   } = useMaxPriorityFeePerGasInput({
     estimateToUse,
-    gasEstimateUsed,
+    gasEstimateType,
     gasFeeEstimates,
     gasLimit,
     transaction,
@@ -152,7 +152,7 @@ export function useGasFeeInputs(
     minimumCostInHexWei,
   } = useGasEstimates({
     editGasMode,
-    gasEstimateUsed,
+    gasEstimateType,
     gasFeeEstimates,
     gasLimit,
     gasPrice,
@@ -169,7 +169,7 @@ export function useGasFeeInputs(
     gasWarnings,
     hasGasErrors,
   } = useGasFeeErrors({
-    gasEstimateUsed,
+    gasEstimateType,
     gasFeeEstimates,
     isGasEstimatesLoading,
     gasLimit,
@@ -262,7 +262,7 @@ export function useGasFeeInputs(
     isGasEstimatesLoading,
     estimateUsed,
     gasFeeEstimates,
-    gasEstimateUsed,
+    gasEstimateType,
     estimatedGasFeeTimeBounds,
     onManualChange,
     estimatedBaseFee,
