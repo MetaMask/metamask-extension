@@ -11,12 +11,8 @@
     background-color: $ui-1;
   }
 
-  > span {
-    display: inline-block;
-    width: 20%;
-  }
-
   &__name {
+    display: inline-block;
     color: $ui-black;
     font-size: 12px;
     font-weight: 700;
@@ -28,15 +24,18 @@
   }
 
   &__time-estimate {
+    display: inline-block;
     width: 20%;
   }
 
   &__fee-estimate {
+    display: inline-block;
     width: 30%;
     white-space: nowrap;
   }
 
   &__tooltip {
+    display: inline-block;
     text-align: right;
     width: 10%;
     .info-tooltip {

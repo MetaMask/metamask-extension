@@ -997,6 +997,9 @@
     "message": "Gas limit must be at least $1",
     "description": "$1 is the custom gas limit, in decimal."
   },
+  "gasOption": {
+    "message": "Gas option"
+  },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },
@@ -1018,6 +1021,10 @@
   "gasPriceLabel": {
     "message": "Gas price"
   },
+  "gasTimingHoursShort": {
+    "message": "$1 hrs",
+    "description": "$1 represents a number of hours"
+  },
   "gasTimingMinutes": {
     "message": "$1 minutes",
     "description": "$1 represents a number of minutes"
@@ -1025,10 +1032,6 @@
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
-  },
-  "gasTimingHoursShort": {
-    "message": "$1 hrs",
-    "description": "$1 represents a number of hours"
   },
   "gasTimingNegative": {
     "message": "Maybe in $1",
@@ -1385,12 +1388,6 @@
   },
   "maxFee": {
     "message": "Max fee"
-  },
-  "time": {
-    "message": "Time"
-  },
-  "gasOption": {
-    "message": "Gas option"
   },
   "maxPriorityFee": {
     "message": "Max priority fee"
@@ -2787,6 +2784,9 @@
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
+  },
+  "time": {
+    "message": "Time"
   },
   "tips": {
     "message": "Tips"

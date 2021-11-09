@@ -10,25 +10,24 @@
   &__content {
     padding: 16px 12px;
 
-    &__header{
+    &__header {
       color: $ui-4;
       font-size: 10px;
       font-weight: 700;
       margin: 0 12px;
 
-      > span {
+      &-option {
         display: inline-block;
-      }
-
-      &__header-option {
         width: 40%;
       }
 
-      &__header-time {
+      &-time {
+        display: inline-block;
         width: 20%;
       }
 
-      &__header-max-fee {
+      &-max-fee {
+        display: inline-block;
         width: 30%;
       }
     }
