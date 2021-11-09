@@ -242,10 +242,6 @@ describe('Metamask Import UI', function () {
           { timeout: 10000 },
         );
 
-        const currentActiveAccountName = await driver.findElement(
-          '.selected-account__name',
-        );
-        assert.equal(await currentActiveAccountName.getText(), 'Account 1');
         await driver.delay(regularDelayMs);
         await driver.clickElement('.account-menu__icon');
 
