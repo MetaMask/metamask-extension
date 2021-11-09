@@ -292,12 +292,6 @@ export default class TransactionStateManager extends EventEmitter {
     const entry = generateHistoryEntry(previousState, currentState, note);
 
     if (entry.length) {
-      if (
-        note.toLowerCase().includes('setting status to confirmed') ||
-        note.toLowerCase().includes('transactions#confirmtransaction')
-      ) {
-        entry[0].timestamp = txMeta.time;
-      }
       txMeta.history.push(entry);
     }
 
