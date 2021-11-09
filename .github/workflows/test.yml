@@ -1,7 +1,7 @@
 name: shellcheck
 
 permissions:
-  contents: write
+  checks: write
 
 on: [push]
 
