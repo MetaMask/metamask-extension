@@ -46,6 +46,9 @@
   "addANetwork": {
     "message": "Add a network"
   },
+  "addANickname": {
+    "message": "Add a nickname"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -2989,6 +2992,9 @@
   },
   "viewMore": {
     "message": "View More"
+  },
+  "viewOnBlockExplorer": {
+    "message": "View on block explorer"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View $1 at $2",
