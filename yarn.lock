@@ -11327,9 +11327,9 @@ eth-simple-keyring@^4.2.0:
     ethereumjs-wallet "^1.0.1"
     events "^1.1.1"
 
-"eth-trezor-keyring@git://github.com/MetaMask/eth-trezor-keyring.git#872928c":
+"eth-trezor-keyring@git://github.com/MetaMask/eth-trezor-keyring.git#ce92358":
   version "0.7.0"
-  resolved "git://github.com/MetaMask/eth-trezor-keyring.git#872928cac59072aea51822372be8fefd4ed162cb"
+  resolved "git://github.com/MetaMask/eth-trezor-keyring.git#ce9235823d6b2e0f2c249bdf36d12dd9989616c6"
   dependencies:
     "@ethereumjs/tx" "^3.2.1"
     ethereumjs-util "^7.0.9"
