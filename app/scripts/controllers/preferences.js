@@ -37,10 +37,7 @@ export default class PreferencesController {
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
-      advancedGasFee: {
-        maxBaseFee: undefined,
-        priorityFee: undefined,
-      },
+      advancedGasFee: null,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace

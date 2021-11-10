@@ -268,21 +268,14 @@ describe('preferences controller', function () {
   });
 
   describe('setAdvancedGasFee', function () {
-    it('should default to empty values for maxFee and priorityFee', function () {
+    it('should default to null', function () {
       const state = preferencesController.store.getState();
-      assert.equal(state.advancedGasFee.maxBaseFee, undefined);
-      assert.equal(state.advancedGasFee.priorityFee, undefined);
+      assert.equal(state.advancedGasFee, null);
     });
 
     it('should set the setAdvancedGasFee property in state', function () {
-      assert.equal(
-        preferencesController.store.getState().advancedGasFee.maxBaseFee,
-        undefined,
-      );
-      assert.equal(
-        preferencesController.store.getState().advancedGasFee.priorityFee,
-        undefined,
-      );
+      const state = preferencesController.store.getState();
+      assert.equal(state.advancedGasFee, null);
       preferencesController.setAdvancedGasFee({
         maxBaseFee: '1.5',
         priorityFee: '2',
