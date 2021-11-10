@@ -424,7 +424,7 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const renderGasDetailsItem = () => {
-      if (hasSimulationError && !confirmAnyways) {
+      if (hasSimulationError && !this.state.confirmAnyways) {
         return null;
       }
       return EIP_1559_V2 ? (
