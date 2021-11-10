@@ -938,6 +938,11 @@
         "safe-buffer": true
       }
     },
+    "bitwise": {
+      "packages": {
+        "buffer": true
+      }
+    },
     "bl": {
       "packages": {
         "buffer": true,
@@ -1574,6 +1579,26 @@
         "obs-store": true
       }
     },
+    "eth-lattice-keyring": {
+      "globals": {
+        "addEventListener": true,
+        "browser": true,
+        "clearInterval": true,
+        "console.warn": true,
+        "open": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "bignumber.js": true,
+        "buffer": true,
+        "crypto-browserify": true,
+        "ethereumjs-util": true,
+        "events": true,
+        "gridplus-sdk": true
+      }
+    },
     "eth-method-registry": {
       "packages": {
         "ethjs": true
@@ -1727,6 +1752,11 @@
         "@ethersproject/wallet": true,
         "@ethersproject/web": true,
         "@ethersproject/wordlists": true
+      }
+    },
+    "ethers-eip712": {
+      "packages": {
+        "ethers": true
       }
     },
     "ethjs": {
@@ -1903,6 +1933,29 @@
       },
       "packages": {
         "cross-fetch": true
+      }
+    },
+    "gridplus-sdk": {
+      "globals": {
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "aes-js": true,
+        "bech32": true,
+        "bignumber.js": true,
+        "bitwise": true,
+        "borc": true,
+        "bs58check": true,
+        "buffer": true,
+        "crc-32": true,
+        "elliptic": true,
+        "ethers": true,
+        "ethers-eip712": true,
+        "js-sha3": true,
+        "rlp-browser": true,
+        "secp256k1": true,
+        "superagent": true
       }
     },
     "hamt-sharding": {
@@ -4093,6 +4146,12 @@
         "buffer": true
       }
     },
+    "rlp-browser": {
+      "packages": {
+        "assert": true,
+        "buffer": true
+      }
+    },
     "rn-host-detect": {
       "globals": {
         "__DEV__": true,
@@ -4370,6 +4429,21 @@
     "strip-hex-prefix": {
       "packages": {
         "is-hex-prefixed": true
+      }
+    },
+    "superagent": {
+      "globals": {
+        "ActiveXObject": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.trace": true,
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "component-emitter": true
       }
     },
     "textarea-caret": {
