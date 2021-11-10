@@ -699,6 +699,9 @@
   "editGasEducationModalTitle": {
     "message": "How to choose?"
   },
+  "editGasFeeModalTitle": {
+    "message": "Edit gas fee"
+  },
   "editGasHigh": {
     "message": "High"
   },

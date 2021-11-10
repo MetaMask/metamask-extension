@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import Popover from '../../ui/popover';
 import I18nValue from '../../ui/i18n-value';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
@@ -8,9 +9,11 @@ import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import EditGasItem from './edit-gas-item';
 
 const EditGasFeePopover = ({ onClose }) => {
+  const t = useI18nContext();
+
   return (
     <Popover
-      title="Edit gas fee"
+      title={t('editGasFeeModalTitle')}
       onClose={onClose}
       className="edit-gas-fee-popover"
     >

@@ -35,17 +35,19 @@ const EditGasItem = ({ estimateType, onClose }) => {
       })
     : null;
 
+  const onOptionSelect = () => {
+    setEstimateToUse(estimateType);
+    updateTransaction(estimateType);
+    onClose();
+  };
+
   return (
     <div
       className={classNames('edit-gas-item', {
         [`edit-gas-item-selected`]: estimateType === estimateUsed,
       })}
       role="button"
-      onClick={() => {
-        setEstimateToUse(estimateType);
-        updateTransaction(estimateType);
-        onClose();
-      }}
+      onClick={onOptionSelect}
     >
       <span className="edit-gas-item__name">
         <span className="edit-gas-item__icon">

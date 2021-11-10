@@ -419,7 +419,7 @@ export const toHumanReadableTime = (milliseconds = 1, t) => {
     return t('gasTimingSecondsShort', [seconds]);
   }
   if (seconds <= MINUTE_CUTOFF) {
-    return t('gasTimingMinutesShort', [seconds]);
+    return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
   }
-  return t('gasTimingHoursShort', [Math.ceil(seconds / 60)]);
+  return t('gasTimingHoursShort', [Math.ceil(seconds / 3600)]);
 };
