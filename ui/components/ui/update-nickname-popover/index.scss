@@ -1,12 +1,10 @@
 
 .update-nickname {
-
   &__cancel {
     margin-right: 16px;
   }
 
   &__content {
-
     &__indenticon {
       margin-bottom: 16px;
     }
@@ -20,9 +18,9 @@
     }
 
     &__address {
-        font-size: 13px;
-        color: #BBC0C5;
-        margin-bottom: 16px;
+      font-size: 13px;
+      color: #bbc0c5;
+      margin-bottom: 16px;
     }
 
     &__label,
@@ -34,10 +32,9 @@
     }
 
     &__nickname-label {
-        margin-bottom: 8px;
-        color: #24292e;
-        font-size: 14px;
+      margin-bottom: 8px;
+      color: #24292e;
+      font-size: 14px;
     }
-
   }
 }
