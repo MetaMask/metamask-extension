@@ -85,7 +85,7 @@ export default function SmartTransactionStatus() {
     latestSmartTransaction =
       currentSmartTransactions[currentSmartTransactions.length - 1];
     latestSmartTransactionUuid = latestSmartTransaction?.uuid;
-    smartTransactionStatus = latestSmartTransaction?.statusMetadata || {};
+    smartTransactionStatus = latestSmartTransaction?.status || '';
   }
   if (
     latestSmartTransactionUuid &&
@@ -93,7 +93,7 @@ export default function SmartTransactionStatus() {
   ) {
     latestSmartTransaction = {};
     latestSmartTransactionUuid = null;
-    smartTransactionStatus = {};
+    smartTransactionStatus = '';
   }
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
     () => {
@@ -148,12 +148,9 @@ export default function SmartTransactionStatus() {
     sensitiveProperties,
   });
 
-  const isSmartTransactionPending =
-    !smartTransactionStatus.minedTx ||
-    (smartTransactionStatus.minedTx === 'not_mined' &&
-      smartTransactionStatus.cancellationReason === 'not_cancelled');
+  const isSmartTransactionPending = smartTransactionStatus === 'pending';
   const showCloseButtonOnly =
-    isSmartTransactionPending || smartTransactionStatus.minedTx === 'success';
+    isSmartTransactionPending || smartTransactionStatus === 'success';
 
   useEffect(() => {
     stxStatusPageLoadedEvent();
@@ -196,7 +193,7 @@ export default function SmartTransactionStatus() {
       headerText = t('stxPendingPrivatelySubmitting');
     }
   }
-  if (smartTransactionStatus.minedTx === 'success') {
+  if (smartTransactionStatus === 'success') {
     headerText = t('stxSuccess');
     description = t('stxSuccessDescription', [
       <a
@@ -209,12 +206,13 @@ export default function SmartTransactionStatus() {
       </a>,
     ]);
     icon = <SuccessIcon />;
+  } else if (smartTransactionStatus === 'cancelled_user_cancelled') {
+    headerText = t('stxUserCancelled');
+    description = t('stxUserCancelledDescription');
+    icon = <CanceledIcon />;
   } else if (
-    (smartTransactionStatus.minedTx === 'cancelled' &&
-      smartTransactionStatus.cancellationReason &&
-      smartTransactionStatus.cancellationReason !== 'user_cancelled') ||
-    (smartTransactionStatus.minedTx === 'not_mined' &&
-      smartTransactionStatus.cancellationReason === 'deadline_missed')
+    smartTransactionStatus.startsWith('cancelled') ||
+    smartTransactionStatus.includes('deadline_missed')
   ) {
     headerText = t('stxCancelled');
     description = t('stxCancelledDescription');
@@ -224,17 +222,7 @@ export default function SmartTransactionStatus() {
     headerText = t('stxUnknown');
     description = t('stxUnknownDescription');
     icon = <UnknownIcon />;
-  } else if (
-    smartTransactionStatus.cancellationReason &&
-    smartTransactionStatus.cancellationReason === 'user_cancelled'
-  ) {
-    headerText = t('stxUserCancelled');
-    description = t('stxUserCancelledDescription');
-    icon = <CanceledIcon />;
-  } else if (
-    smartTransactionStatus.minedTx &&
-    smartTransactionStatus.minedTx === 'reverted'
-  ) {
+  } else if (smartTransactionStatus === 'reverted') {
     headerText = t('stxFailure');
     description = t('stxFailureDescription', [
       <a
