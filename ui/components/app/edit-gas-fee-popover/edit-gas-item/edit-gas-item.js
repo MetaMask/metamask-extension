@@ -15,15 +15,14 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import I18nValue from '../../../ui/i18n-value';
 import InfoTooltip from '../../../ui/info-tooltip';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
-import { useTransactionHelper } from './useTransactionHelper';
 
-const EditGasItem = ({ estimateType }) => {
-  useTransactionHelper();
+const EditGasItem = ({ estimateType, onClose }) => {
   const {
-    gasLimit,
     estimateUsed,
     gasFeeEstimates,
+    gasLimit,
     setEstimateToUse,
+    updateTransaction,
   } = useGasFeeContext();
   const t = useI18nContext();
 
@@ -42,7 +41,11 @@ const EditGasItem = ({ estimateType }) => {
         [`edit-gas-item-selected`]: estimateType === estimateUsed,
       })}
       role="button"
-      onClick={() => setEstimateToUse(estimateType)}
+      onClick={() => {
+        setEstimateToUse(estimateType);
+        updateTransaction(estimateType);
+        onClose();
+      }}
     >
       <span className="edit-gas-item__name">
         <span className="edit-gas-item__icon">
@@ -73,6 +76,7 @@ const EditGasItem = ({ estimateType }) => {
 
 EditGasItem.propTypes = {
   estimateType: PropTypes.string,
+  onClose: PropTypes.func,
 };
 
 export default EditGasItem;

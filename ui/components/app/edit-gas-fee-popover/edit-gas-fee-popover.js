@@ -29,9 +29,9 @@ const EditGasFeePopover = ({ onClose }) => {
                 <I18nValue messageKey="maxFee" />
               </span>
             </div>
-            <EditGasItem estimateType="low" />
-            <EditGasItem estimateType="medium" />
-            <EditGasItem estimateType="high" />
+            <EditGasItem estimateType="low" onClose={onClose} />
+            <EditGasItem estimateType="medium" onClose={onClose} />
+            <EditGasItem estimateType="high" onClose={onClose} />
           </div>
         </div>
       </>

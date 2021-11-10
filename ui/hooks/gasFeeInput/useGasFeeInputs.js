@@ -17,6 +17,7 @@ import { useGasPriceInput } from './useGasPriceInput';
 import { useMaxFeePerGasInput } from './useMaxFeePerGasInput';
 import { useMaxPriorityFeePerGasInput } from './useMaxPriorityFeePerGasInput';
 import { useGasEstimates } from './useGasEstimates';
+import { useTransactionFunctions } from './useTransactionFunctions';
 
 /**
  * @typedef {Object} GasFeeInputReturnType
@@ -193,6 +194,17 @@ export function useGasFeeInputs(
     }
   }, [minimumGasLimit, gasErrors.gasLimit, transaction]);
 
+  const { updateTransaction } = useTransactionFunctions({
+    defaultEstimateToUse,
+    gasLimit,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    gasFeeEstimates,
+    supportsEIP1559,
+    transaction,
+  });
+
   // When a user selects an estimate level, it will wipe out what they have
   // previously put in the inputs. This returns the inputs to the estimated
   // values at the level specified.
@@ -273,5 +285,6 @@ export function useGasFeeInputs(
     gasWarnings,
     hasGasErrors,
     supportsEIP1559,
+    updateTransaction,
   };
 }
