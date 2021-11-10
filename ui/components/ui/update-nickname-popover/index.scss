@@ -1,0 +1,43 @@
+
+.update-nickname {
+
+  &__cancel {
+    margin-right: 16px;
+  }
+
+  &__content {
+
+    &__indenticon {
+      margin-bottom: 16px;
+    }
+
+    &__text-area-wrapper {
+      height: 96px !important;
+    }
+
+    &__text-area {
+      line-height: initial !important;
+    }
+
+    &__address {
+        font-size: 13px;
+        color: #BBC0C5;
+        margin-bottom: 16px;
+    }
+
+    &__label,
+    &__label--capitalized {
+      text-transform: capitalize;
+      margin-top: 16px;
+      color: #24292e;
+      font-size: 14px;
+    }
+
+    &__nickname-label {
+        margin-bottom: 8px;
+        color: #24292e;
+        font-size: 14px;
+    }
+
+  }
+}

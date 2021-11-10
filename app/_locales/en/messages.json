@@ -49,6 +49,9 @@
   "addANetwork": {
     "message": "Add a network"
   },
+  "addANickname": {
+    "message": "Add a nickname"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -687,6 +690,9 @@
   },
   "edit": {
     "message": "Edit"
+  },
+  "editAddressNickname": {
+    "message": "Edit address nickname"
   },
   "editContact": {
     "message": "Edit Contact"
@@ -1615,6 +1621,9 @@
   },
   "nfts": {
     "message": "NFTs"
+  },
+  "nickname": {
+    "message": "Nickname"
   },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
