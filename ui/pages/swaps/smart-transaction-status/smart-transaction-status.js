@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { I18nContext } from '../../../contexts/i18n';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
@@ -86,6 +86,14 @@ export default function SmartTransactionStatus() {
       currentSmartTransactions[currentSmartTransactions.length - 1];
     latestSmartTransactionUuid = latestSmartTransaction?.uuid;
     smartTransactionStatus = latestSmartTransaction?.statusMetadata || {};
+  }
+  if (
+    latestSmartTransactionUuid &&
+    usedQuote?.trade?.data !== latestSmartTransaction?.txParams?.data
+  ) {
+    latestSmartTransaction = {};
+    latestSmartTransactionUuid = null;
+    smartTransactionStatus = {};
   }
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
     () => {
