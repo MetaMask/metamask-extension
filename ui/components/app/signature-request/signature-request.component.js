@@ -51,8 +51,6 @@ export default class SignatureRequest extends PureComponent {
         type,
       },
     });
-    //clearConfirmTransaction();
-    //cancel(event);
   };
 
   formatWallet(wallet) {

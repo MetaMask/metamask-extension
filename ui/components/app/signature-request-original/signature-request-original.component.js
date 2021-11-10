@@ -65,8 +65,6 @@ export default class SignatureRequestOriginal extends Component {
         name: 'Cancel Sig Request Via Notification Close',
       },
     });
-    //clearConfirmTransaction();
-    //cancel(event);
   };
 
   _removeBeforeUnload = () => {

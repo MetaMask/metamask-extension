@@ -402,13 +402,17 @@ export function forgetDevice(deviceName) {
 export function connectHardware(deviceName, page, hdPath, t) {
   log.debug(`background.connectHardware`, deviceName, page, hdPath);
   return async (dispatch, getState) => {
+    const { ledgerTransportType } = getState().metamask;
+
     dispatch(
       showLoadingIndication(`Looking for your ${capitalize(deviceName)}...`),
     );
 
     let accounts;
     try {
-      const { ledgerTransportType } = getState().metamask;
+      if (deviceName === 'ledger') {
+        await promisifiedBackground.establishLedgerTransportPreference();
+      }
       if (
         deviceName === 'ledger' &&
         ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
@@ -431,8 +435,17 @@ export function connectHardware(deviceName, page, hdPath, t) {
       );
     } catch (error) {
       log.error(error);
-      dispatch(displayWarning(error.message));
-      throw error;
+      if (
+        deviceName === 'ledger' &&
+        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+        error.message.match('Failed to open the device')
+      ) {
+        dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
+        throw new Error(t('ledgerDeviceOpenFailureMessage'));
+      } else {
+        dispatch(displayWarning(error.message));
+        throw error;
+      }
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -1645,6 +1658,12 @@ export function hideNetworkDropdown() {
   };
 }
 
+export function hideTestNetMessage() {
+  return {
+    type: actionConstants.HIDE_TESTNET_MESSAGE,
+  };
+}
+
 export function showModal(payload) {
   return {
     type: actionConstants.MODAL_OPEN,
@@ -2766,7 +2785,7 @@ export function getCurrentWindowTab() {
   };
 }
 
-export function setLedgerLivePreference(value) {
+export function setLedgerTransportPreference(value) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
     await promisifiedBackground.setLedgerTransportPreference(value);
