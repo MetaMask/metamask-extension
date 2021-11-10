@@ -268,28 +268,35 @@ export default class MetaMetricsController {
    *  view
    */
   trackPage({ name, params, environmentType, page, referrer }, options) {
-    if (this.state.participateInMetaMetrics === false) {
-      return;
-    }
+    try {
+      if (this.state.participateInMetaMetrics === false) {
+        return;
+      }
 
-    if (this.state.participateInMetaMetrics === null && !options?.isOptInPath) {
-      return;
+      if (
+        this.state.participateInMetaMetrics === null &&
+        !options?.isOptInPath
+      ) {
+        return;
+      }
+      const { metaMetricsId } = this.state;
+      const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
+      const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
+      this.segment.page({
+        [idTrait]: idValue,
+        name,
+        properties: {
+          params,
+          locale: this.locale,
+          network: this.network,
+          chain_id: this.chainId,
+          environment_type: environmentType,
+        },
+        context: this._buildContext(referrer, page),
+      });
+    } catch (err) {
+      this._captureException(err);
     }
-    const { metaMetricsId } = this.state;
-    const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
-    const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
-    this.segment.page({
-      [idTrait]: idValue,
-      name,
-      properties: {
-        params,
-        locale: this.locale,
-        network: this.network,
-        chain_id: this.chainId,
-        environment_type: environmentType,
-      },
-      context: this._buildContext(referrer, page),
-    });
   }
 
   /**
