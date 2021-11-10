@@ -130,6 +130,7 @@ export default class AdvancedGasInputs extends Component {
     errorComponent,
     errorType,
     label,
+    testId,
     customMessageComponent,
     tooltipTitle,
     disabled,
@@ -155,6 +156,7 @@ export default class AdvancedGasInputs extends Component {
             value={value}
             onChange={onChange}
             disabled={disabled}
+            data-testid={testId}
           />
           <div
             className={classnames(
@@ -244,6 +246,7 @@ export default class AdvancedGasInputs extends Component {
       <div className="advanced-gas-inputs__gas-edit-rows">
         {this.renderGasInput({
           label: this.context.t('gasPrice'),
+          testId: 'gas-price',
           tooltipTitle: this.context.t('gasPriceInfoTooltipContent'),
           value: this.state.gasPrice,
           onChange: this.onChangeGasPrice,
@@ -253,6 +256,7 @@ export default class AdvancedGasInputs extends Component {
         })}
         {this.renderGasInput({
           label: this.context.t('gasLimit'),
+          testId: 'gas-limit',
           tooltipTitle: this.context.t('gasLimitInfoTooltipContent'),
           value: this.state.gasLimit,
           onChange: this.onChangeGasLimit,
