@@ -580,7 +580,8 @@ export default function BuildQuote({
                   color={COLORS.UI4}
                 >
                   {t('smartTransactionsYouCanOptOut')}&nbsp;
-                  <a
+                  {/* TODO: Enable this once we have the right URL. */}
+                  {/* <a
                     className="smart-transactions-popover__learn-more-link"
                     onClick={() => {
                       global.platform.openTab({
@@ -591,7 +592,7 @@ export default function BuildQuote({
                     rel="noopener noreferrer"
                   >
                     {t('learnMoreWithDot')}
-                  </a>
+                  </a> */}
                 </Typography>
               </Typography>
             </Box>
