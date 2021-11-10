@@ -27,6 +27,8 @@ import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
+// eslint-disable-next-line prefer-destructuring
+const EIP_1559_V2 = process.env.EIP_1559_V2;
 
 // Shows "seconds" as unit of time if under SECOND_CUTOFF, otherwise "minutes"
 const toHumanReadableTime = (milliseconds = 1, t) => {
@@ -164,6 +166,12 @@ export default function GasTiming({
           toHumanReadableTime(Number(customEstimatedTime?.upperTimeBound), t),
         ]);
       }
+    }
+    // code below needs to cleaned-up once EIP_1559_V2 flag is removed
+    else if (EIP_1559_V2) {
+      text = t('gasTimingNegative', [
+        toHumanReadableTime(low.maxWaitTimeEstimate, t),
+      ]);
     } else {
       text = (
         <>

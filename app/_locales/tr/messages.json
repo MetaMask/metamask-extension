@@ -97,9 +97,6 @@
   "decimalsMustZerotoTen": {
     "message": "Ondalıklar en azından 0 olmalı ve 36'dan büyük olmamalı."
   },
-  "defaultNetwork": {
-    "message": "Ether işlemleri için varsayılan ağ Mainnet."
-  },
   "depositEther": {
     "message": "Ether yatır"
   },

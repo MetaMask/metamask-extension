@@ -191,9 +191,10 @@ module.exports = {
         'app/scripts/lockdown-more.js',
         'development/**/*.js',
         'test/e2e/**/*.js',
-        'test/lib/wait-until-called.js',
         'test/env.js',
         'test/setup.js',
+        'test/helpers/protect-intrinsics-helpers.js',
+        'test/lib/wait-until-called.js',
         'jest.config.js',
       ],
       parserOptions: {
@@ -204,6 +205,7 @@ module.exports = {
       files: [
         'app/scripts/lockdown-run.js',
         'app/scripts/lockdown-more.js',
+        'test/helpers/protect-intrinsics-helpers.js',
         'test/unit-global/protect-intrinsics.test.js',
       ],
       globals: {

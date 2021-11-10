@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.3.0",
+  "version": "10.5.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -105,7 +105,7 @@
     "@material-ui/core": "^4.11.0",
     "@metamask/contract-metadata": "^1.28.0",
     "@metamask/controllers": "^17.0.0",
-    "@metamask/eth-ledger-bridge-keyring": "^0.9.0",
+    "@metamask/eth-ledger-bridge-keyring": "^0.10.0",
     "@metamask/eth-token-tracker": "^3.0.1",
     "@metamask/etherscan-link": "^2.1.0",
     "@metamask/jazzicon": "^2.0.0",
@@ -115,8 +115,8 @@
     "@metamask/providers": "^8.1.1",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "^1.6.2",
-    "@sentry/browser": "^5.26.0",
-    "@sentry/integrations": "^5.26.0",
+    "@sentry/browser": "^6.0.0",
+    "@sentry/integrations": "^6.0.0",
     "@zxing/library": "^0.8.0",
     "analytics-node": "^3.4.0-beta.3",
     "await-semaphore": "^0.1.1",
@@ -137,6 +137,7 @@
     "eth-json-rpc-middleware": "^6.0.0",
     "eth-keyring-controller": "^6.2.0",
     "eth-method-registry": "^2.0.0",
+    "eth-lattice-keyring": "^0.3.0",
     "eth-query": "^2.1.2",
     "eth-rpc-errors": "^4.0.2",
     "eth-sig-util": "^3.0.0",
@@ -250,7 +251,7 @@
     "brfs": "^2.0.2",
     "browserify": "^16.5.1",
     "chalk": "^3.0.0",
-    "chromedriver": "^93.0.1",
+    "chromedriver": "^95.0.0",
     "concurrently": "^5.2.0",
     "copy-webpack-plugin": "^6.0.3",
     "cross-spawn": "^7.0.3",
@@ -347,6 +348,7 @@
   },
   "lavamoat": {
     "allowScripts": {
+      "gridplus-sdk": false,
       "chromedriver": true,
       "geckodriver": true,
       "@sentry/cli": true,

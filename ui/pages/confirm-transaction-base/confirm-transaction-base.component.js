@@ -52,6 +52,11 @@ import {
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
+import GasDetailsItem from './gas-details-item';
+
+// eslint-disable-next-line prefer-destructuring
+const EIP_1559_V2 = process.env.EIP_1559_V2;
+
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
 
@@ -408,114 +413,130 @@ export default class ConfirmTransactionBase extends Component {
         <TransactionDetail
           onEdit={() => this.handleEditGas()}
           rows={[
-            <TransactionDetailItem
-              key="gas-item"
-              detailTitle={
-                txData.dappSuggestedGasFees ? (
-                  <>
-                    {t('transactionDetailGasHeading')}
-                    <InfoTooltip
-                      contentText={t('transactionDetailDappGasTooltip')}
-                      position="top"
-                    >
-                      <i className="fa fa-info-circle" />
-                    </InfoTooltip>
-                  </>
-                ) : (
-                  <>
-                    {t('transactionDetailGasHeading')}
-                    <InfoTooltip
-                      contentText={
-                        <>
-                          <p>
-                            {t('transactionDetailGasTooltipIntro', [
-                              isMainnet ? t('networkNameEthereum') : '',
-                            ])}
-                          </p>
-                          <p>{t('transactionDetailGasTooltipExplanation')}</p>
-                          <p>
-                            <a
-                              href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {t('transactionDetailGasTooltipConversion')}
-                            </a>
-                          </p>
-                        </>
-                      }
-                      position="top"
-                    >
-                      <i className="fa fa-info-circle" />
-                    </InfoTooltip>
-                  </>
-                )
-              }
-              detailTitleColor={COLORS.BLACK}
-              detailText={
-                <div className="confirm-page-container-content__currency-container">
-                  {renderHeartBeatIfNotInTest()}
-                  <UserPreferencedCurrencyDisplay
-                    type={SECONDARY}
-                    value={hexMinimumTransactionFee}
-                    hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                  />
-                </div>
-              }
-              detailTotal={
-                <div className="confirm-page-container-content__currency-container">
-                  {renderHeartBeatIfNotInTest()}
-                  <UserPreferencedCurrencyDisplay
-                    type={PRIMARY}
-                    value={hexMinimumTransactionFee}
-                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                  />
-                </div>
-              }
-              subText={t('editGasSubTextFee', [
-                <b key="editGasSubTextFeeLabel">
-                  {t('editGasSubTextFeeLabel')}
-                </b>,
-                <div
-                  key="editGasSubTextFeeValue"
-                  className="confirm-page-container-content__currency-container"
-                >
-                  {renderHeartBeatIfNotInTest()}
-                  <UserPreferencedCurrencyDisplay
-                    key="editGasSubTextFeeAmount"
-                    type={PRIMARY}
-                    value={hexMaximumTransactionFee}
-                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                  />
-                </div>,
-              ])}
-              subTitle={
-                <>
-                  {txData.dappSuggestedGasFees ? (
-                    <Typography
-                      variant={TYPOGRAPHY.H7}
-                      fontStyle={FONT_STYLE.ITALIC}
-                      color={COLORS.UI4}
-                    >
-                      {t('transactionDetailDappGasMoreInfo')}
-                    </Typography>
+            EIP_1559_V2 ? (
+              <GasDetailsItem
+                key="gas_details"
+                hexMaximumTransactionFee={hexMaximumTransactionFee}
+                hexMinimumTransactionFee={hexMinimumTransactionFee}
+                isMainnet={isMainnet}
+                maxFeePerGas={maxFeePerGas}
+                maxPriorityFeePerGas={maxPriorityFeePerGas}
+                supportsEIP1559={supportsEIP1559}
+                txData={txData}
+                useNativeCurrencyAsPrimaryCurrency={
+                  useNativeCurrencyAsPrimaryCurrency
+                }
+              />
+            ) : (
+              <TransactionDetailItem
+                key="gas-item"
+                detailTitle={
+                  txData.dappSuggestedGasFees ? (
+                    <>
+                      {t('transactionDetailGasHeading')}
+                      <InfoTooltip
+                        contentText={t('transactionDetailDappGasTooltip')}
+                        position="top"
+                      >
+                        <i className="fa fa-info-circle" />
+                      </InfoTooltip>
+                    </>
                   ) : (
-                    ''
-                  )}
-                  {supportsEIP1559 && (
-                    <GasTiming
-                      maxPriorityFeePerGas={hexWEIToDecGWEI(
-                        maxPriorityFeePerGas ||
-                          txData.txParams.maxPriorityFeePerGas,
-                      )}
-                      maxFeePerGas={hexWEIToDecGWEI(
-                        maxFeePerGas || txData.txParams.maxFeePerGas,
-                      )}
+                    <>
+                      {t('transactionDetailGasHeading')}
+                      <InfoTooltip
+                        contentText={
+                          <>
+                            <p>
+                              {t('transactionDetailGasTooltipIntro', [
+                                isMainnet ? t('networkNameEthereum') : '',
+                              ])}
+                            </p>
+                            <p>{t('transactionDetailGasTooltipExplanation')}</p>
+                            <p>
+                              <a
+                                href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {t('transactionDetailGasTooltipConversion')}
+                              </a>
+                            </p>
+                          </>
+                        }
+                        position="top"
+                      >
+                        <i className="fa fa-info-circle" />
+                      </InfoTooltip>
+                    </>
+                  )
+                }
+                detailTitleColor={COLORS.BLACK}
+                detailText={
+                  <div className="confirm-page-container-content__currency-container">
+                    {renderHeartBeatIfNotInTest()}
+                    <UserPreferencedCurrencyDisplay
+                      type={SECONDARY}
+                      value={hexMinimumTransactionFee}
+                      hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
                     />
-                  )}
-                </>
-              }
-            />,
+                  </div>
+                }
+                detailTotal={
+                  <div className="confirm-page-container-content__currency-container">
+                    {renderHeartBeatIfNotInTest()}
+                    <UserPreferencedCurrencyDisplay
+                      type={PRIMARY}
+                      value={hexMinimumTransactionFee}
+                      hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                    />
+                  </div>
+                }
+                subText={t('editGasSubTextFee', [
+                  <b key="editGasSubTextFeeLabel">
+                    {t('editGasSubTextFeeLabel')}
+                  </b>,
+                  <div
+                    key="editGasSubTextFeeValue"
+                    className="confirm-page-container-content__currency-container"
+                  >
+                    {renderHeartBeatIfNotInTest()}
+                    <UserPreferencedCurrencyDisplay
+                      key="editGasSubTextFeeAmount"
+                      type={PRIMARY}
+                      value={hexMaximumTransactionFee}
+                      hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                    />
+                  </div>,
+                ])}
+                subTitle={
+                  <>
+                    {txData.dappSuggestedGasFees ? (
+                      <Typography
+                        variant={TYPOGRAPHY.H7}
+                        fontStyle={FONT_STYLE.ITALIC}
+                        color={COLORS.UI4}
+                      >
+                        {t('transactionDetailDappGasMoreInfo')}
+                      </Typography>
+                    ) : (
+                      ''
+                    )}
+                    {supportsEIP1559 && (
+                      <GasTiming
+                        maxPriorityFeePerGas={hexWEIToDecGWEI(
+                          maxPriorityFeePerGas ||
+                            txData.txParams.maxPriorityFeePerGas,
+                        )}
+                        maxFeePerGas={hexWEIToDecGWEI(
+                          maxFeePerGas || txData.txParams.maxFeePerGas,
+                        )}
+                      />
+                    )}
+                  </>
+                }
+              />
+            ),
             <TransactionDetailItem
               key="total-item"
               detailTitle={t('total')}

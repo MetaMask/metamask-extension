@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "اعشاریه ها باید حد اقل 0، و بیشتر از 36 نباشند."
   },
-  "defaultNetwork": {
-    "message": "شبکه خودکار برای معاملات Ether عبارت است از Mainnet."
-  },
   "delete": {
     "message": "حذف"
   },
@@ -668,12 +665,6 @@
   "on": {
     "message": "روشن"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "بلاک کردن مرورگر URL (انتخابی)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "سمبول (انتخابی)"
-  },
   "origin": {
     "message": "مبدأ"
   },
@@ -852,9 +843,6 @@
   },
   "selectAnAccount": {
     "message": "یک حساب را انتخاب کنید"
-  },
-  "selectAnAccountHelp": {
-    "message": "برای مشاهده MetaMask حساب را انتخاب نمایید"
   },
   "selectEachPhrase": {
     "message": "لطفًا جهت اطمینان از درستی، هر عبارت را انتخاب کنید."

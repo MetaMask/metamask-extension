@@ -115,9 +115,6 @@
   "decimalsMustZerotoTen": {
     "message": "จำนวนต้องมากกว่า 0 และไม่เกิน 36"
   },
-  "defaultNetwork": {
-    "message": "ค่าเริ่มต้นของเครือข่ายสำหรับทำรายการธุรกรรมอีเธอร์คือ Mainnet"
-  },
   "delete": {
     "message": "ลบ"
   },

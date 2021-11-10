@@ -123,7 +123,6 @@ export default class UnlockPage extends Component {
         type="submit"
         style={style}
         disabled={!this.state.password}
-        fullWidth
         variant="contained"
         size="large"
         onClick={this.handleSubmit}

@@ -3,7 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { getAdvancedInlineGasShown } from '../../selectors';
 import { hexToDecimal } from '../../helpers/utils/conversions.util';
+import {
+  EDIT_GAS_MODES,
+  GAS_RECOMMENDATIONS,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
+
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { useGasFeeErrors } from './useGasFeeErrors';
@@ -58,10 +64,10 @@ import { useGasEstimates } from './useGasEstimates';
  * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(
-  defaultEstimateToUse = 'medium',
+  defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
   transaction,
   minimumGasLimit = '0x5208',
-  editGasMode,
+  editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
 ) {
   // We need the gas estimates from the GasFeeController in the background.
   // Calling this hooks initiates polling for new gas estimates and returns the
@@ -199,7 +205,7 @@ export function useGasFeeInputs(
   );
 
   const onManualChange = useCallback(() => {
-    setInternalEstimateToUse('custom');
+    setInternalEstimateToUse(CUSTOM_GAS_ESTIMATE);
     handleGasLimitOutOfBoundError();
     // Restore existing values
     setGasPrice(gasPrice);

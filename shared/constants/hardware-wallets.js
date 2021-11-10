@@ -6,6 +6,7 @@
 export const KEYRING_TYPES = {
   LEDGER: 'Ledger Hardware',
   TREZOR: 'Trezor Hardware',
+  LATTICE: 'Lattice Hardware',
 };
 
 /**
@@ -23,4 +24,11 @@ export const WEBHID_CONNECTED_STATUSES = {
   CONNECTED: 'connected',
   NOT_CONNECTED: 'notConnected',
   UNKNOWN: 'unknown',
+};
+
+export const TRANSPORT_STATES = {
+  NONE: 'NONE',
+  VERIFIED: 'VERIFIED',
+  DEVICE_OPEN_FAILURE: 'DEVICE_OPEN_FAILURE',
+  UNKNOWN_FAILURE: 'UNKNOWN_FAILURE',
 };

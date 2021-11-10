@@ -39,6 +39,12 @@ workflows:
       - prep-build:
           requires:
             - prep-deps
+      - prep-build-beta:
+          requires:
+            - prep-deps
+      - prep-build-flask:
+          requires:
+            - prep-deps
       - prep-build-test:
           requires:
             - prep-deps
@@ -79,10 +85,24 @@ workflows:
       - validate-source-maps:
           requires:
             - prep-build
+      - validate-source-maps-beta:
+          requires:
+            - prep-build-beta
+      - validate-source-maps-flask:
+          requires:
+            - prep-build-flask
       - test-mozilla-lint:
           requires:
             - prep-deps
             - prep-build
+      - test-mozilla-lint-beta:
+          requires:
+            - prep-deps
+            - prep-build-beta
+      - test-mozilla-lint-flask:
+          requires:
+            - prep-deps
+            - prep-build-flask
       - all-tests-pass:
           requires:
             - validate-lavamoat-config
@@ -93,7 +113,11 @@ workflows:
             - test-unit
             - test-unit-global
             - validate-source-maps
+            - validate-source-maps-beta
+            - validate-source-maps-flask
             - test-mozilla-lint
+            - test-mozilla-lint-beta
+            - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-firefox
             - test-e2e-chrome-metrics
@@ -105,6 +129,8 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-beta
+            - prep-build-flask
             - prep-build-storybook
             - benchmark
             - all-tests-pass
@@ -200,6 +226,54 @@ jobs:
           paths:
             - dist
             - builds
+
+  prep-build-beta:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: build:dist
+          command: yarn build --build-type beta prod
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move beta build to 'dist-beta' to avoid conflict with production build
+          command: mv ./dist ./dist-beta
+      - run:
+          name: Move beta zips to 'builds-beta' to avoid conflict with production build
+          command: mv ./builds ./builds-beta
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-beta
+            - builds-beta
+
+  prep-build-flask:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: build:dist
+          command: yarn build --build-type flask prod
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move flask build to 'dist-flask' to avoid conflict with production build
+          command: mv ./dist ./dist-flask
+      - run:
+          name: Move flask zips to 'builds-flask' to avoid conflict with production build
+          command: mv ./builds ./builds-flask
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-flask
+            - builds-flask
 
   prep-build-test:
     executor: node-browsers-medium-plus
@@ -483,8 +557,20 @@ jobs:
           path: dist/sourcemaps
           destination: builds/sourcemaps
       - store_artifacts:
+          path: dist-beta/sourcemaps
+          destination: builds-beta/sourcemaps
+      - store_artifacts:
+          path: dist-flask/sourcemaps
+          destination: builds-flask/sourcemaps
+      - store_artifacts:
           path: builds
           destination: builds
+      - store_artifacts:
+          path: builds-beta
+          destination: builds-beta
+      - store_artifacts:
+          path: builds-flask
+          destination: builds-flask
       - store_artifacts:
           path: coverage
           destination: coverage
@@ -577,12 +663,76 @@ jobs:
           name: Validate source maps
           command: yarn validate-source-maps
 
+  validate-source-maps-beta:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move beta build to dist
+          command: mv ./dist-beta ./dist
+      - run:
+          name: Move beta zips to builds
+          command: mv ./builds-beta ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
+  validate-source-maps-flask:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move flask build to dist
+          command: mv ./dist-flask ./dist
+      - run:
+          name: Move flask zips to builds
+          command: mv ./builds-flask ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
   test-mozilla-lint:
     executor: node-browsers
     steps:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: test:mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+
+  test-mozilla-lint-beta:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move beta build to dist
+          command: mv ./dist-beta ./dist
+      - run:
+          name: Move beta zips to builds
+          command: mv ./builds-beta ./builds
+      - run:
+          name: test:mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+
+  test-mozilla-lint-flask:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move flask build to dist
+          command: mv ./dist-flask ./dist
+      - run:
+          name: Move flask zips to builds
+          command: mv ./builds-flask ./builds
       - run:
           name: test:mozilla-lint
           command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint

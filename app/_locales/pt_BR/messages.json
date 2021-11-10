@@ -140,9 +140,6 @@
   "amount": {
     "message": "Valor"
   },
-  "amountWithColon": {
-    "message": "Valor:"
-  },
   "appDescription": {
     "message": "Uma carteira do Ethereum no seu navegador",
     "description": "The description of the application"
@@ -504,9 +501,6 @@
   },
   "decryptRequest": {
     "message": "Descriptografar solicitação"
-  },
-  "defaultNetwork": {
-    "message": "A rede padrão das transações em ether é a Mainnet."
   },
   "delete": {
     "message": "Excluir"
@@ -1324,12 +1318,6 @@
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em quem você confia."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL do Block Explorer (opcional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Símbolo de moeda (opcional)"
-  },
   "origin": {
     "message": "Origem"
   },
@@ -1627,13 +1615,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Esta conta já foi conectada ao MetaMask"
-  },
-  "selectAnAccountHelp": {
-    "message": "Selecione uma conta a ser exibida no MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Não está vendo sua conta? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
     "message": "Selecione cada frase para garantir que esteja correta."
@@ -2115,12 +2096,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Permitir que este site mude a rede?"
   },
-  "switchLedgerPaths": {
-    "message": "Mudar caminhos do Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Selecione o caminho do Ledger para ver outras contas"
-  },
   "switchNetwork": {
     "message": "Trocar de rede"
   },
@@ -2190,9 +2165,6 @@
   "toAddress": {
     "message": "Até: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Até:"
   },
   "token": {
     "message": "Token"

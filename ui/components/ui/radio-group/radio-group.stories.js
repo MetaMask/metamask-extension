@@ -1,4 +1,5 @@
 import React from 'react';
+import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
 import RadioGroup from '.';
 
 export default {
@@ -12,11 +13,15 @@ export const radioGroup = () => {
       <RadioGroup
         name="gas-recommendation"
         options={[
-          { value: 'low', label: 'Low', recommended: false },
-          { value: 'medium', label: 'Medium', recommended: false },
-          { value: 'high', label: 'High', recommended: true },
+          { value: GAS_RECOMMENDATIONS.LOW, label: 'Low', recommended: false },
+          {
+            value: GAS_RECOMMENDATIONS.MEDIUM,
+            label: 'Medium',
+            recommended: false,
+          },
+          { value: GAS_RECOMMENDATIONS.HIGH, label: 'High', recommended: true },
         ]}
-        selectedValue="high"
+        selectedValue={GAS_RECOMMENDATIONS.HIGH}
       />
     </div>
   );

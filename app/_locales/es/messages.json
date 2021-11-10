@@ -140,9 +140,6 @@
   "amount": {
     "message": "Importe"
   },
-  "amountWithColon": {
-    "message": "Importe:"
-  },
   "appDescription": {
     "message": "Una cartera de Ethereum en el explorador",
     "description": "The description of the application"
@@ -504,9 +501,6 @@
   },
   "decryptRequest": {
     "message": "Descifrar solicitud"
-  },
-  "defaultNetwork": {
-    "message": "La red predeterminada para las transacciones de ether es la red principal."
   },
   "delete": {
     "message": "Eliminar"
@@ -1324,12 +1318,6 @@
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Dirección URL del explorador de bloques (opcional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Símbolo de moneda (opcional)"
-  },
   "origin": {
     "message": "Origen"
   },
@@ -1627,13 +1615,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Esta cuenta ya se conectó a MetaMask."
-  },
-  "selectAnAccountHelp": {
-    "message": "Seleccione una cuenta para verla en MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "¿No ve su cuenta? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
     "message": "Seleccione cada frase para garantizar que sea correcta."
@@ -2115,12 +2096,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "¿Le permite a este sitio cambiar la red?"
   },
-  "switchLedgerPaths": {
-    "message": "Cambiar rutas de acceso al Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Seleccione la ruta de acceso al Ledger para ver otras cuentas"
-  },
   "switchNetwork": {
     "message": "Cambiar red"
   },
@@ -2190,9 +2165,6 @@
   "toAddress": {
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Para:"
   },
   "token": {
     "message": "Token"

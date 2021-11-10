@@ -107,9 +107,6 @@
   "amount": {
     "message": "Halaga"
   },
-  "amountWithColon": {
-    "message": "Halaga:"
-  },
   "appDescription": {
     "message": "Ethereum Wallet sa iyong Browser",
     "description": "The description of the application"
@@ -426,9 +423,6 @@
   },
   "decryptRequest": {
     "message": "I-decrypt ang request"
-  },
-  "defaultNetwork": {
-    "message": "Ang default na network para sa mga transaksyon ng Ether ay ang Mainnet."
   },
   "delete": {
     "message": "I-delete"
@@ -1074,12 +1068,6 @@
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL ng Block Explorer (opsyonal)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolo ng Currency (opsyonal)"
-  },
   "origin": {
     "message": "Pinagmulan"
   },
@@ -1308,9 +1296,6 @@
   },
   "selectAnAccount": {
     "message": "Pumili ng Account"
-  },
-  "selectAnAccountHelp": {
-    "message": "Piliin ang account na titingnan sa MetaMask"
   },
   "selectEachPhrase": {
     "message": "Pakipili ang bawat phrase para matiyak na tama ito."
@@ -1738,9 +1723,6 @@
   "toAddress": {
     "message": "Para kay/sa: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Para kay/sa:"
   },
   "token": {
     "message": "Token"

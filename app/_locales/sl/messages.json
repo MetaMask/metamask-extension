@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Decimalk mora biti med 0 in 36."
   },
-  "defaultNetwork": {
-    "message": "Privzeto omrežje za transkacije je glavno omrežje."
-  },
   "delete": {
     "message": "Izbriši"
   },
@@ -656,12 +653,6 @@
   "on": {
     "message": "Vklopljeno"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokiraj URL Explorerja (poljubno)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (nezahtevano)"
-  },
   "origin": {
     "message": "Izvor"
   },
@@ -840,9 +831,6 @@
   },
   "selectAnAccount": {
     "message": "Izberi račun"
-  },
-  "selectAnAccountHelp": {
-    "message": "Izberi račun za prikaz v MetaMask"
   },
   "selectEachPhrase": {
     "message": "Izberite vsako geslo ter se prepričajte, da je pravilno."

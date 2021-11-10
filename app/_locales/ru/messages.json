@@ -140,9 +140,6 @@
   "amount": {
     "message": "Сумма"
   },
-  "amountWithColon": {
-    "message": "Сумма:"
-  },
   "appDescription": {
     "message": "Кошелек Ethereum в вашем браузере",
     "description": "The description of the application"
@@ -504,9 +501,6 @@
   },
   "decryptRequest": {
     "message": "Расшифровать запрос"
-  },
-  "defaultNetwork": {
-    "message": "Сетью по умолчанию для транзакций Ether является Mainnet."
   },
   "delete": {
     "message": "Удалить"
@@ -1324,12 +1318,6 @@
   "onlyConnectTrust": {
     "message": "Подключайтесь только к сайтам, которым доверяете."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL-адрес проводника блока (необязательно)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Символ валюты (необязательно)"
-  },
   "origin": {
     "message": "Источник"
   },
@@ -1627,13 +1615,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Этот счет уже подключен к MetaMask"
-  },
-  "selectAnAccountHelp": {
-    "message": "Выберите счет для просмотра в MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Не видите свой счет? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
     "message": "Выберите каждую фразу, чтобы убедиться, что она верна."
@@ -2115,12 +2096,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Разрешить этому сайту переключить сеть?"
   },
-  "switchLedgerPaths": {
-    "message": "Переключить пути Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Выберите путь Ledger для просмотра других счетов"
-  },
   "switchNetwork": {
     "message": "Переключить сеть"
   },
@@ -2190,9 +2165,6 @@
   "toAddress": {
     "message": "Адресат $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Адресат"
   },
   "token": {
     "message": "Токен"

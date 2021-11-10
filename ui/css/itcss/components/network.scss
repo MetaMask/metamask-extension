@@ -135,6 +135,12 @@
   background-color: $scorpion;
 }
 
+.network-dropdown-testnets {
+  &--no-visibility {
+    visibility: hidden;
+  }
+}
+
 .network-dropdown-title {
   @include H4;
 
@@ -150,6 +156,25 @@
   min-height: 36px;
   width: 265px;
   color: $dusty-gray;
+
+  &--link {
+    color: $white;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: underline;
+
+    &:hover {
+      color: $white;
+    }
+  }
+
+  &--close {
+    color: $white;
+    background: inherit;
+    position: absolute;
+    top: 64px;
+    right: 10px;
+  }
 }
 
 .network-caret {

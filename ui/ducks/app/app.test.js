@@ -38,6 +38,16 @@ describe('App State', () => {
     expect(newState.networkDropdownOpen).toStrictEqual(false);
   });
 
+  it('sets showTestnetMessageInDropdown dropdown to false', () => {
+    const testnetMessage = { showTestnetMessageInDropdown: true };
+    const state = { ...metamaskState, ...testnetMessage };
+    const newState = reduceApp(state, {
+      type: actions.HIDE_TESTNET_MESSAGE,
+    });
+
+    expect(newState.showTestnetMessageInDropdown).toStrictEqual(false);
+  });
+
   it('opens alert', () => {
     const state = reduceApp(metamaskState, {
       type: actions.ALERT_OPEN,
@@ -255,6 +265,7 @@ describe('App State', () => {
     const hdPaths = {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'",
+      lattice: "m/44'/60'/0'/0",
     };
     const state = reduceApp(metamaskState, {
       type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,

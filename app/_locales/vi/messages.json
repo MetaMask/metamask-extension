@@ -140,9 +140,6 @@
   "amount": {
     "message": "Số tiền"
   },
-  "amountWithColon": {
-    "message": "Số tiền:"
-  },
   "appDescription": {
     "message": "Ví Ethereum trên trình duyệt của bạn",
     "description": "The description of the application"
@@ -504,9 +501,6 @@
   },
   "decryptRequest": {
     "message": "Yêu cầu của Decrypt"
-  },
-  "defaultNetwork": {
-    "message": "Mạng mặc định cho các giao dịch Ether là Mạng chính thức."
   },
   "delete": {
     "message": "Xóa"
@@ -1324,12 +1318,6 @@
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL trình khám phá khối (không bắt buộc)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Ký hiệu tiền tệ (không bắt buộc)"
-  },
   "origin": {
     "message": "Nguồn gốc"
   },
@@ -1627,13 +1615,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Tài khoản này đã được kết nối với MetaMask"
-  },
-  "selectAnAccountHelp": {
-    "message": "Chọn một tài khoản để xem trong MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Bạn không thấy tài khoản của mình? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
     "message": "Vui lòng chọn từng cụm mật khẩu theo thứ tự để đảm bảo sự chính xác."
@@ -2115,12 +2096,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Cho phép trang web này chuyển mạng?"
   },
-  "switchLedgerPaths": {
-    "message": "Chuyển đường dẫn Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Chọn đường dẫn Ledger để xem các tài khoản khác"
-  },
   "switchNetwork": {
     "message": "Chuyển mạng"
   },
@@ -2190,9 +2165,6 @@
   "toAddress": {
     "message": "Đến: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Đến:"
   },
   "token": {
     "message": "Token"
