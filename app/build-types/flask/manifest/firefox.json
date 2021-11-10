@@ -1,0 +1,7 @@
+{
+  "applications": {
+    "gecko": {
+      "id": "webextension-flask@metamask.io"
+    }
+  }
+}
