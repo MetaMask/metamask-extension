@@ -233,10 +233,15 @@ describe('Metamask Import UI', function () {
         // should remove the account
         await driver.clickElement({ text: 'Remove', tag: 'button' });
 
-        const currentActiveAccountName = await driver.findElement(
-          '.selected-account__name',
+        // Wait until selected account switches away from removed account to first account
+        await driver.waitForSelector(
+          {
+            css: '.selected-account__name',
+            text: 'Account 1',
+          },
+          { timeout: 10000 },
         );
-        assert.equal(await currentActiveAccountName.getText(), 'Account 1');
+
         await driver.delay(regularDelayMs);
         await driver.clickElement('.account-menu__icon');
 
