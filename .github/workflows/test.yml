@@ -15,7 +15,6 @@ jobs:
           echo -e '#!/bin/bash\n' >> package.json_temp.sh
           jq -r '.scripts | keys[] as $key | .[$key]' < package.json >> package.json_temp.sh
           cat package.json_temp.sh
-    steps:
       - uses: actions/checkout@master
       - name: ShellCheck Action
         uses: fearphage/shellcheck-action@95d2a3d34d381a7314c286ea1725ca8cce3b51fd
