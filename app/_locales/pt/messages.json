@@ -76,9 +76,6 @@
   "decimalsMustZerotoTen": {
     "message": "Decimais devem ser no mínimo 0 e não passar de 36."
   },
-  "defaultNetwork": {
-    "message": "A rede pré definida para transações em Ether é a Mainnet."
-  },
   "depositEther": {
     "message": "Depositar Ether"
   },

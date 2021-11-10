@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "요청 암호 해독"
   },
-  "defaultNetwork": {
-    "message": "Ether 거래의 기본 네트워크는 메인 넷입니다."
-  },
   "delete": {
     "message": "삭제"
   },
@@ -1619,13 +1616,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "이 계정은 이미 MetaMask와 연결되어 있습니다."
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask에서 확인할 계정을 선택하십시오."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "계정을 찾을 수 없습니까? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "각 구문을 선택하여 구문이 올바른지 확인하세요."
   },
@@ -2105,12 +2095,6 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "이 사이트가 네트워크를 전환하도록 허용하시겠어요?"
-  },
-  "switchLedgerPaths": {
-    "message": "Ledger 경로 전환"
-  },
-  "switchLedgerPathsText": {
-    "message": "다른 계정을 보려면 Ledger 경로를 선택하세요."
   },
   "switchNetwork": {
     "message": "네트워크 전환"

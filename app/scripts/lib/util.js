@@ -56,21 +56,20 @@ const getEnvironmentType = (url = window.location.href) =>
  * @returns {string} the platform ENUM
  *
  */
-const getPlatform = (_) => {
-  const ua = window.navigator.userAgent;
-  if (ua.search('Firefox') === -1) {
-    if (window && window.chrome && window.chrome.ipcRenderer) {
-      return PLATFORM_BRAVE;
-    }
-    if (ua.search('Edge') !== -1) {
-      return PLATFORM_EDGE;
-    }
-    if (ua.search('OPR') !== -1) {
-      return PLATFORM_OPERA;
-    }
-    return PLATFORM_CHROME;
+const getPlatform = () => {
+  const { navigator } = window;
+  const { userAgent } = navigator;
+
+  if (userAgent.includes('Firefox')) {
+    return PLATFORM_FIREFOX;
+  } else if ('brave' in navigator) {
+    return PLATFORM_BRAVE;
+  } else if (userAgent.includes('Edg/')) {
+    return PLATFORM_EDGE;
+  } else if (userAgent.includes('OPR')) {
+    return PLATFORM_OPERA;
   }
-  return PLATFORM_FIREFOX;
+  return PLATFORM_CHROME;
 };
 
 /**

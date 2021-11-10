@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "يجب أن تكون الكسور العشرية صفراً على الأقل، وألا تزيد عن 36 كسراً."
   },
-  "defaultNetwork": {
-    "message": "الشبكة الافتراضية لمعاملات الأثير هي الشبكة الرئيسية."
-  },
   "delete": {
     "message": "حذف"
   },
@@ -839,9 +836,6 @@
   },
   "selectAnAccount": {
     "message": "قم بتحديد حساب"
-  },
-  "selectAnAccountHelp": {
-    "message": "حدد الحساب لعرضه في MetaMask"
   },
   "selectEachPhrase": {
     "message": "يُرجى تحديد كل عبارة للتأكد من صحتها."

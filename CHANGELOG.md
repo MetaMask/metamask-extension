@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.5.0]
+### Added
+- [#12411](https://github.com/MetaMask/metamask-extension/pull/12411): Add support for connecting Ledger devices to MetaMask via WebHID
+- [#12501](https://github.com/MetaMask/metamask-extension/pull/12501): Add "What's New" notification regarding Ledger WebHID support
+
+### Removed
+- [#12500](https://github.com/MetaMask/metamask-extension/pull/12500): Remove all notifications prior to Ledger WebHID announcement
+
 ## [10.4.1]
 ### Changed
 - [#12515](https://github.com/MetaMask/metamask-extension/pull/12515): Updating 'Learn more' link location in dapp connection flow
@@ -2538,7 +2546,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...HEAD
+[10.5.0]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...v10.5.0
 [10.4.1]: https://github.com/MetaMask/metamask-extension/compare/v10.4.0...v10.4.1
 [10.4.0]: https://github.com/MetaMask/metamask-extension/compare/v10.3.0...v10.4.0
 [10.3.0]: https://github.com/MetaMask/metamask-extension/compare/v10.2.2...v10.3.0

@@ -260,9 +260,6 @@
   "decimalsMustZerotoTen": {
     "message": "Decimalerna måste vara minst 0 och inte över 36."
   },
-  "defaultNetwork": {
-    "message": "Standardnätverket för Ether-transaktioner är Mainnet."
-  },
   "delete": {
     "message": "Radera"
   },
@@ -830,9 +827,6 @@
   },
   "selectAnAccount": {
     "message": "Välj ett konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Välj konto att visa i MetaMask"
   },
   "selectEachPhrase": {
     "message": "Välj varje fras för att säkerställa att den är korrekt."

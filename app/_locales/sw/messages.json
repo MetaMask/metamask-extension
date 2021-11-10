@@ -260,9 +260,6 @@
   "decimalsMustZerotoTen": {
     "message": "Desimali zinapaswa kuwa angalau 0, na si zaidi ya 36."
   },
-  "defaultNetwork": {
-    "message": "Mtandao chaguomsingi wa miamala ya Ether ni Mainnet."
-  },
   "delete": {
     "message": "Futa"
   },
@@ -824,9 +821,6 @@
   },
   "selectAnAccount": {
     "message": "Chagua Akaunti"
-  },
-  "selectAnAccountHelp": {
-    "message": "Chagua akaunti kuangalia kwenye MetaMask"
   },
   "selectEachPhrase": {
     "message": "Tafadhali chagua kila kirai ili kuhakikisha kuwa hii ni sahihi."

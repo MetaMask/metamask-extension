@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Decimaler skal være mindst 0 og højst 36."
   },
-  "defaultNetwork": {
-    "message": "Standardnetværket for Ether-transaktioner er Mainnet."
-  },
   "delete": {
     "message": "Slet"
   },
@@ -827,9 +824,6 @@
   },
   "selectAnAccount": {
     "message": "Vælg en Konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Vælg kontoen der skal vises i MetaMask"
   },
   "selectEachPhrase": {
     "message": "Vælg venligst hver sætning, for at sikre at de er korrekte."

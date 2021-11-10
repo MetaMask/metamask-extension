@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "リクエストの復号"
   },
-  "defaultNetwork": {
-    "message": "Ether 取引のためのデフォルトのネットワークはメインネットです。"
-  },
   "delete": {
     "message": "削除"
   },
@@ -1619,13 +1616,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "このアカウントはすでに MetaMask に接続されています"
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask で表示するアカウントを選択します。"
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "アカウントが表示されません。$1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "各フレーズを選択して、各フレーズが正しいことを確認してください。"
   },
@@ -2105,12 +2095,6 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "このサイトのネットワーク変更を許可しますか？"
-  },
-  "switchLedgerPaths": {
-    "message": "レジャー パスの切り替え"
-  },
-  "switchLedgerPathsText": {
-    "message": "レジャー パスを選択して他のアカウントを表示します"
   },
   "switchNetwork": {
     "message": "ネットワークの切り替え"

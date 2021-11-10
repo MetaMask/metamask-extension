@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Decimalni brojevni ne smiju biti 0 i ne smiju prekoračivati 36."
   },
-  "defaultNetwork": {
-    "message": "Zadana je mreža za transakcije Ether glavna mreža."
-  },
   "delete": {
     "message": "Izbriši"
   },
@@ -839,9 +836,6 @@
   },
   "selectAnAccount": {
     "message": "Odaberi račun"
-  },
-  "selectAnAccountHelp": {
-    "message": "Odaberi račun za prikaz u usluzi MetaMask"
   },
   "selectEachPhrase": {
     "message": "Odaberite svaku rečenicu kako biste provjerili je li točna."

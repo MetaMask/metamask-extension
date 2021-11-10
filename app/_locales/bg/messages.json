@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Десетичните знаци трябва да бъдат най-малко 0 и не повече от 36."
   },
-  "defaultNetwork": {
-    "message": "Мрежата по подразбиране за Ether транзакции е Mainnet."
-  },
   "delete": {
     "message": "Изтриване"
   },
@@ -842,9 +839,6 @@
   },
   "selectAnAccount": {
     "message": "Изберете акаунт"
-  },
-  "selectAnAccountHelp": {
-    "message": "Изберете акаунта за преглед в MetaMask"
   },
   "selectEachPhrase": {
     "message": "Моля, изберете всяка фраза, за да се уверите, че е правилна."

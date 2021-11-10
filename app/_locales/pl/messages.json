@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Liczb po przecinku musi być co najmniej 0 i nie więcej niż 36."
   },
-  "defaultNetwork": {
-    "message": "Domyślna sieć dla Eteru to Mainnet."
-  },
   "delete": {
     "message": "Usuń"
   },
@@ -840,9 +837,6 @@
   },
   "selectAnAccount": {
     "message": "Wybierz konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Wybierz konto do przeglądania w MetaMask"
   },
   "selectEachPhrase": {
     "message": "Wybierz każdą frazę, aby upewnić się, że jest poprawna."

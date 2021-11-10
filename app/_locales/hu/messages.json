@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "A tizedesjegyek száma 0 és 36 között legyen . "
   },
-  "defaultNetwork": {
-    "message": "Az Ether tranzakciók alapértelmezett hálózata a Mainnet."
-  },
   "delete": {
     "message": "Törlés"
   },
@@ -839,9 +836,6 @@
   },
   "selectAnAccount": {
     "message": "Válasszon fiókot"
-  },
-  "selectAnAccountHelp": {
-    "message": "Válássza ki a MetaMask-ban megtekinteni kívánt fiókot"
   },
   "selectEachPhrase": {
     "message": "Kérjük, válassza ki az egyes mondatokat, hogy meggyőződjön azok helyességéről. "

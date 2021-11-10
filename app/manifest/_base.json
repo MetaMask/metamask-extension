@@ -66,6 +66,7 @@
     "clipboardWrite",
     "http://localhost:8545/",
     "https://*.infura.io/",
+    "https://wallet.gridplus.io/*",
     "activeTab",
     "webRequest",
     "*://*.eth/",

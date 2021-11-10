@@ -263,9 +263,6 @@
   "decimalsMustZerotoTen": {
     "message": "Els decimals han de ser al menys 0, i no més de 36."
   },
-  "defaultNetwork": {
-    "message": "La xarxa per defecte per a les transaccions Ether és Mainnet."
-  },
   "delete": {
     "message": "Suprimeix"
   },
@@ -824,9 +821,6 @@
   },
   "selectAnAccount": {
     "message": "Selecciona un Compte"
-  },
-  "selectAnAccountHelp": {
-    "message": "Selecciona el compte que vols veure a MetaMask"
   },
   "selectEachPhrase": {
     "message": "Si us plau selecciona cada frase per a assegurar-te que és correcta."
