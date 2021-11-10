@@ -6,6 +6,7 @@ import Typography from '../typography';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 export default function Chip({
+  dataTestId,
   className,
   children,
   borderColor = COLORS.UI1,
@@ -25,6 +26,7 @@ export default function Chip({
 
   return (
     <div
+      data-testid={dataTestId}
       onClick={onClick}
       onKeyPress={onKeyPress}
       className={classnames(className, 'chip', {
@@ -53,6 +55,7 @@ export default function Chip({
 }
 
 Chip.propTypes = {
+  dataTestId: PropTypes.string,
   borderColor: PropTypes.oneOf(Object.values(COLORS)),
   label: PropTypes.string,
   children: PropTypes.node,
