@@ -3,7 +3,6 @@
   color: $ui-4;
   cursor: pointer;
   font-size: 12px;
-
   margin: 12px 0;
   padding: 6px 12px;
 
@@ -38,16 +37,19 @@
     display: inline-block;
     text-align: right;
     width: 10%;
+
     .info-tooltip {
       display: inline-block;
     }
   }
 
-  &__time-estimate-low, &__fee-estimate-high {
+  &__time-estimate-low,
+  &__fee-estimate-high {
     color: $secondary-1;
   }
 
-  &__time-estimate-medium, &__time-estimate-high {
+  &__time-estimate-medium,
+  &__time-estimate-high {
     color: $success-3;
   }
 }
