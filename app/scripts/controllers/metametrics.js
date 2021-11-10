@@ -288,6 +288,8 @@ export default class MetaMetricsController {
    * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
    */
   trackEvent(payload, options) {
+    // validation is not caught and handled
+    this.validatePayload(payload);
     try {
       this.submitEvent(payload, options).catch((err) => {
         console.error(err);
@@ -307,20 +309,7 @@ export default class MetaMetricsController {
    * @returns {Promise<void>}
    */
   async submitEvent(payload, options) {
-    // event and category are required fields for all payloads
-    if (!payload.event || !payload.category) {
-      throw new Error(
-        `Must specify event and category. Event was: ${
-          payload.event
-        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
-          payload,
-        )}. ${
-          typeof payload.properties === 'object'
-            ? `Payload property keys were: ${Object.keys(payload.properties)}`
-            : ''
-        }`,
-      );
-    }
+    this.validatePayload(payload);
 
     if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
       return;
@@ -359,5 +348,26 @@ export default class MetaMetricsController {
     events.push(this._track(this._buildEventPayload(payload), options));
 
     await Promise.all(events);
+  }
+
+  /**
+   * validates a metametrics event
+   * @param {MetaMetricsEventPayload} payload - details of the event
+   */
+  validatePayload(payload) {
+    // event and category are required fields for all payloads
+    if (!payload.event || !payload.category) {
+      throw new Error(
+        `Must specify event and category. Event was: ${
+          payload.event
+        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
+          payload,
+        )}. ${
+          typeof payload.properties === 'object'
+            ? `Payload property keys were: ${Object.keys(payload.properties)}`
+            : ''
+        }`,
+      );
+    }
   }
 }
