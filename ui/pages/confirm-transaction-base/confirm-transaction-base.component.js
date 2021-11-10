@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
 import {
@@ -822,10 +820,6 @@ export default class ConfirmTransactionBase extends Component {
     };
   }
 
-  _beforeUnload = () => {
-    const { txData: { id } = {}, cancelTransaction } = this.props;
-  };
-
   _beforeUnloadForGasPolling = () => {
     this._isMounted = false;
     if (this.state.pollingToken) {
@@ -835,9 +829,6 @@ export default class ConfirmTransactionBase extends Component {
   };
 
   _removeBeforeUnload = () => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.removeEventListener('beforeunload', this._beforeUnload);
-    }
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
@@ -860,10 +851,6 @@ export default class ConfirmTransactionBase extends Component {
         origin,
       },
     });
-
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
 
     getNextNonce();
     if (toAddress) {

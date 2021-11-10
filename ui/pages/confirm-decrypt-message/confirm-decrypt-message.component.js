@@ -57,11 +57,7 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   _beforeUnload = async (event) => {
-    const {
-      clearConfirmTransaction,
-      cancelDecryptMessage,
-      txData,
-    } = this.props;
+    const { cancelDecryptMessage, txData } = this.props;
     const { metricsEvent } = this.context;
     await cancelDecryptMessage(txData, event);
     metricsEvent({

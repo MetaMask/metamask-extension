@@ -23,7 +23,9 @@ import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
 import createStreamSink from './lib/createStreamSink';
-import NotificationManager, { NOTIFICATION_MANAGER_EVENTS } from './lib/notification-manager';
+import NotificationManager, {
+  NOTIFICATION_MANAGER_EVENTS,
+} from './lib/notification-manager';
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
@@ -477,23 +479,18 @@ function setupController(initState, initLangCode) {
 
   notificationManager.on(
     NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
-    rejectUnapprovedNotifications
+    rejectUnapprovedNotifications,
   );
 
   function rejectUnapprovedNotifications() {
-    // TODO(ritave): Return 4001 error to the user,
-    //               instead of just silently dropping
-    //               https://docs.metamask.io/guide/ethereum-provider.html#using-the-provider
     // Metamask can open a popup for a login, we need to check if
     // we're on a confirmation page
     if (controller.isUnlocked()) {
-      /*
-      controller.txController.txStateManager.store.getState().transactions.filter((tx) => tx.status === "unapproved")
-      controller.txController.txStateManager
-        .getUnapprovedTxList()*/
-      Object.keys(controller.txController.txStateManager
-        .getUnapprovedTxList())
-        .forEach((txId) => controller.txController.txStateManager.setTxStatusRejected(txId));
+      Object.keys(
+        controller.txController.txStateManager.getUnapprovedTxList(),
+      ).forEach((txId) =>
+        controller.txController.txStateManager.setTxStatusRejected(txId),
+      );
       controller.messageManager.messages
         .filter((msg) => msg.status === 'unapproved')
         .forEach((tx) => controller.messageManager.rejectMsg(tx.id));
@@ -509,9 +506,11 @@ function setupController(initState, initLangCode) {
       controller.typedMessageManager.messages
         .filter((msg) => msg.status === 'unapproved')
         .forEach((tx) => controller.decryptMessageManager.rejectMsg(tx.id));
-      Object.keys(controller.approvalController.state.pendingApprovals)
-        .forEach((approvalId) => controller.approvalController.reject(approvalId, new Error()));
-
+      Object.keys(
+        controller.approvalController.state.pendingApprovals,
+      ).forEach((approvalId) =>
+        controller.approvalController.reject(approvalId, new Error()),
+      );
 
       updateBadge();
     }

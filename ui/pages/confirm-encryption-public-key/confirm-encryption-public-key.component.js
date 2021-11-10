@@ -46,11 +46,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   _beforeUnload = async (event) => {
-    const {
-      clearConfirmTransaction,
-      cancelEncryptionPublicKey,
-      txData,
-    } = this.props;
+    const { cancelEncryptionPublicKey, txData } = this.props;
     const { metricsEvent } = this.context;
     await cancelEncryptionPublicKey(txData, event);
     metricsEvent({

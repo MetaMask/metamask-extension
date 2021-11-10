@@ -17,7 +17,6 @@ export default class SignatureRequest extends PureComponent {
       name: PropTypes.string,
     }).isRequired,
     isLedgerWallet: PropTypes.bool,
-    clearConfirmTransaction: PropTypes.func.isRequired,
     cancel: PropTypes.func.isRequired,
     sign: PropTypes.func.isRequired,
     hardwareWalletRequiresConnection: PropTypes.func.isRequired,
@@ -34,10 +33,8 @@ export default class SignatureRequest extends PureComponent {
     }
   }
 
-  _beforeUnload = (event) => {
+  _beforeUnload = (_) => {
     const {
-      clearConfirmTransaction,
-      cancel,
       txData: { type },
     } = this.props;
     const { metricsEvent } = this.context;

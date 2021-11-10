@@ -55,8 +55,7 @@ export default class SignatureRequestOriginal extends Component {
     this._removeBeforeUnload();
   };
 
-  _beforeUnload = (event) => {
-    const { clearConfirmTransaction, cancel } = this.props;
+  _beforeUnload = (_) => {
     const { metricsEvent } = this.context;
     metricsEvent({
       eventOpts: {
