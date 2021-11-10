@@ -78,8 +78,8 @@ export default class TokenInput extends PureComponent {
   handleChange = (decimalValue, applyDecimals = false) => {
     const { token: { decimals } = {}, onChange } = this.props;
 
-    const newDecimalValue = decimalValue;
-    
+    let newDecimalValue = decimalValue;
+
     if (decimals && applyDecimals) {
       newDecimalValue = parseFloat(decimalValue).toFixed(decimals);
     }
