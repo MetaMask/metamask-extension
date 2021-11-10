@@ -75,14 +75,14 @@ export default class TokenInput extends PureComponent {
     return Number(decimalValueString) ? decimalValueString : '';
   }
 
-  handleChange = (decimalValue) => {
+  handleChange = (decimalValue, applyDecimals = false) => {
     const { token: { decimals } = {}, onChange } = this.props;
 
     const newDecimalValue = decimalValue;
-    // we shouldn't be doing this on change. We should do this on blur,
-    // if (decimals) {
-    // newDecimalValue = parseFloat(decimalValue).toFixed(decimals);
-    // }
+    
+    if (decimals && applyDecimals) {
+      newDecimalValue = parseFloat(decimalValue).toFixed(decimals);
+    }
 
     const multiplier = Math.pow(10, Number(decimals || 0));
     const hexValue = multiplyCurrencies(newDecimalValue || 0, multiplier, {
@@ -96,22 +96,7 @@ export default class TokenInput extends PureComponent {
   };
 
   handleBlur = (decimalValue) => {
-    const { token: { decimals } = {}, onChange } = this.props;
-
-    let newDecimalValue = decimalValue;
-    if (decimals) {
-      newDecimalValue = parseFloat(decimalValue).toFixed(decimals);
-    }
-
-    const multiplier = Math.pow(10, Number(decimals || 0));
-    const hexValue = multiplyCurrencies(newDecimalValue || 0, multiplier, {
-      multiplicandBase: 10,
-      multiplierBase: 10,
-      toNumericBase: 'hex',
-    });
-
-    this.setState({ hexValue, decimalValue });
-    onChange(hexValue);
+    this.handleChange(decimalValue, true);
   };
 
   renderConversionComponent() {
