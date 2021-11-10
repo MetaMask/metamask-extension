@@ -487,13 +487,32 @@ function setupController(initState, initLangCode) {
     // Metamask can open a popup for a login, we need to check if
     // we're on a confirmation page
     if (controller.isUnlocked()) {
-      controller.txController.txStateManager.clearUnapprovedTxs();
-      controller.messageManager.clearUnapproved();
-      controller.personalMessageManager.clearUnapproved();
-      controller.decryptMessageManager.clearUnapproved();
-      controller.encryptionPublicKeyManager.clearUnapproved();
-      controller.typedMessageManager.clearUnapproved();
-      controller.approvalController.clear();
+      /*
+      controller.txController.txStateManager.store.getState().transactions.filter((tx) => tx.status === "unapproved")
+      controller.txController.txStateManager
+        .getUnapprovedTxList()*/
+      Object.keys(controller.txController.txStateManager
+        .getUnapprovedTxList())
+        .forEach((txId) => controller.txController.txStateManager.setTxStatusRejected(txId));
+      controller.messageManager.messages
+        .filter((msg) => msg.status === 'unapproved')
+        .forEach((tx) => controller.messageManager.rejectMsg(tx.id));
+      controller.personalMessageManager.messages
+        .filter((msg) => msg.status === 'unapproved')
+        .forEach((tx) => controller.personalMessageManager.rejectMsg(tx.id));
+      controller.decryptMessageManager.messages
+        .filter((msg) => msg.status === 'unapproved')
+        .forEach((tx) => controller.decryptMessageManager.rejectMsg(tx.id));
+      controller.encryptionPublicKeyManager.messages
+        .filter((msg) => msg.status === 'unapproved')
+        .forEach((tx) => controller.decryptMessageManager.rejectMsg(tx.id));
+      controller.typedMessageManager.messages
+        .filter((msg) => msg.status === 'unapproved')
+        .forEach((tx) => controller.decryptMessageManager.rejectMsg(tx.id));
+      Object.keys(controller.approvalController.state.pendingApprovals)
+        .forEach((approvalId) => controller.approvalController.reject(approvalId, new Error()));
+
+
       updateBadge();
     }
   }
