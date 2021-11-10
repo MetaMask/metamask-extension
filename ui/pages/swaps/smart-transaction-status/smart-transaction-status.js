@@ -77,7 +77,7 @@ export default function SmartTransactionStatus() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
-  let smartTransactionStatus = {};
+  let smartTransactionStatus = '';
   let latestSmartTransaction = {};
   let latestSmartTransactionUuid;
 
