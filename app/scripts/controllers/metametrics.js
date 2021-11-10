@@ -294,7 +294,9 @@ export default class MetaMetricsController {
       this.submitEvent(payload, options).catch((err) => {
         // throw error on clean stack so its captured by sentry
         // but does not cause any side effects
-        setTimeout(() => { throw err });
+        setTimeout(() => {
+          throw err;
+        });
       });
     } catch (err) {
       console.error(err);
