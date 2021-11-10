@@ -91,9 +91,6 @@
   "addToken": {
     "message": "Gehitu tokena"
   },
-  "addTokens": {
-    "message": "Gehitu tokenak"
-  },
   "advanced": {
     "message": "Aurreratua"
   },
@@ -133,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "Kanpoko luzapen horrek honako hau egin dezan ahalbidetzea:"
   },
-  "allowOriginSpendToken": {
-    "message": "Onartzen duzu $1 zure $2 gastatzea baimentzen duzu?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Leku honek honako hau egin dezan ahalbidetzea:"
   },
@@ -146,9 +139,6 @@
   },
   "amount": {
     "message": "Zenbatekoa"
-  },
-  "amountWithColon": {
-    "message": "Zenbatekoa:"
   },
   "appDescription": {
     "message": "Ethereumen zorro bat esploratzailean",
@@ -477,9 +467,6 @@
   "customGasSubTitle": {
     "message": "Kuota handitzeak prozesatze-denborak murriztu ditzake, baina ez dago bermatuta."
   },
-  "customRPC": {
-    "message": "RPC pertsonizatua"
-  },
   "customSpendLimit": {
     "message": "Gastuen muga pertsonizatua"
   },
@@ -516,7 +503,8 @@
     "message": "Eskaera deszifratu"
   },
   "defaultNetwork": {
-    "message": "ether-en transakzioetarako sare lehenetsia sare nagusia da."
+    "message": "ether-en transakzioetarako sare lehenetsia sare nagusia da.",
+    "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "delete": {
     "message": "Ezabatu"
@@ -1007,12 +995,6 @@
   "ledgerAccountRestriction": {
     "message": "Zure azken kontua erabili behar duzu berri bat gehitu aurretik."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Erabili Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "Ledger Live zubi berriak Ledger modu errazagoan erabiltzeko aukera ematen dio. Google Chromen eskuragarri dago."
-  },
   "ledgerLiveApp": {
     "message": "Ledger Live aplikazioa"
   },
@@ -1024,9 +1006,6 @@
   },
   "letsGoSetUp": {
     "message": "Bai, konfigurazioa ezarriko dugu."
-  },
-  "likeToAddTokens": {
-    "message": "Gustatuko litzaizuke token hauek gehitzea?"
   },
   "links": {
     "message": "Loturak"
@@ -1202,9 +1181,6 @@
   "newContract": {
     "message": "Kontratu berria"
   },
-  "newNetwork": {
-    "message": "Sare berria"
-  },
   "newPassword": {
     "message": "Pasahitz berria (gutxienez 8 karaktere)"
   },
@@ -1340,17 +1316,8 @@
   "onlyAddTrustedNetworks": {
     "message": "Asmo txarreko sarearen hornitzaile batek gezurra esan dezake bloke-katearen egoerari buruz eta bere sare-jarduera erregistratu. Gehitu konfiantzazko sare pertsonalizatuak bakarrik."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Sare nagusian bakarrik dago eskuragarri"
-  },
   "onlyConnectTrust": {
     "message": "Konektatu konfiantzazko lekuekin bakarrik."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Bloke-arakatzailearen URL helbidea (aukerakoa)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Txanponaren sinboloa (aukerakoa)"
   },
   "origin": {
     "message": "Jatorria"
@@ -1533,9 +1500,6 @@
   "revealSeedWordsDescription": {
     "message": "Inoiz esploratzailea edo ekipoa aldatzen baduzu, berreskuratzeko esaldi sekretu hau beharko du kontuetara sartzeko. Gorde ezazu leku seguru eta sekretu batean."
   },
-  "revealSeedWordsTitle": {
-    "message": "Berreskuratzeko esaldi sekretua"
-  },
   "revealSeedWordsWarning": {
     "message": "Hitz hauek zure kontu guztiak lapurtzeko erabil daitezke."
   },
@@ -1577,9 +1541,6 @@
   },
   "searchTokens": {
     "message": "Bilatu tokenak"
-  },
-  "secretBackupPhrase": {
-    "message": "Babes-esaldi sekretua"
   },
   "secretBackupPhraseDescription": {
     "message": "Babes-esaldi sekretuak segurtasun-kopia bat sortzea eta kontua lehengoratzea errazten du."
@@ -1656,13 +1617,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "Kontu hau MetaMaskera konektatuta dago."
   },
-  "selectAnAccountHelp": {
-    "message": "Aukeratu kontu bat MetaMasken ikusteko."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Ez duzu zure kontua ikusten? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "Hautatu esaldi bakoitza zuzena dela bermatzeko."
   },
@@ -1690,9 +1644,6 @@
   },
   "sendTokens": {
     "message": "Bidali tokenak"
-  },
-  "sentEther": {
-    "message": "Bidali etherrak"
   },
   "separateEachWord": {
     "message": "Bereizi hitz bakoitza espazio bakar batekin"
@@ -1873,10 +1824,6 @@
     "message": "Ez dago $1 tokenak erabilgarririk",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "$1 egiaztatzen",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Baieztatu hardware-zorroarekin"
   },
@@ -1927,9 +1874,6 @@
   },
   "swapFetchingTokens": {
     "message": "Tokenak jasotzen…"
-  },
-  "swapFinalizing": {
-    "message": "Amaitzen…"
   },
   "swapFromTo": {
     "message": "Trukaketa $1-tik $2-ra",
@@ -2153,12 +2097,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Sarea aldatzen uzten dizu?"
   },
-  "switchLedgerPaths": {
-    "message": "Ledgerrera sartzeko ibilbideak aldatzea"
-  },
-  "switchLedgerPathsText": {
-    "message": "Aukeratu Ledgerrera sartzeko bidea beste kontu batzuk ikusteko"
-  },
   "switchNetwork": {
     "message": "Sarea aldatu"
   },
@@ -2228,9 +2166,6 @@
   "toAddress": {
     "message": "Noretzat: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Noretzat:"
   },
   "token": {
     "message": "Tokena"
@@ -2403,22 +2338,22 @@
     "message": "Gehiago ikusi"
   },
   "viewOnCustomBlockExplorer": {
-    "message": "Ikusi $1"
+    "message": "Ikusi $1",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
   },
   "viewOnEtherscan": {
-    "message": "Ikusi Etherscan"
+    "message": "Ikusi Etherscan",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "viewinExplorer": {
-    "message": "Ikusi esploratzailean"
+    "message": "Ikusi esploratzailean",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
     "message": "Bisitatu gure webgunea"
   },
   "walletConnectionGuide": {
     "message": "Hardware zorroa konektatzeko gure gida"
-  },
-  "walletSeed": {
-    "message": "Berreskuratzeko esaldi sekretua"
   },
   "walletSeedRestore": {
     "message": "Zorroa berreskuratzeko esaldia sekretua"
