@@ -7,6 +7,14 @@ import {
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
 } from '../../../shared/constants/metametrics';
 
+const defaultCaptureException = (err) => {
+  // throw error on clean stack so its captured by platform integrations (eg sentry)
+  // but does not interupt the call stack
+  setTimeout(() => {
+    throw err;
+  });
+};
+
 /**
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsContext} MetaMetricsContext
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
@@ -51,7 +59,9 @@ export default class MetaMetricsController {
     version,
     environment,
     initState,
+    captureException = defaultCaptureException,
   }) {
+    this._captureException = captureException;
     const prefState = preferencesStore.getState();
     this.chainId = getCurrentChainId();
     this.network = getNetworkIdentifier();
@@ -291,13 +301,9 @@ export default class MetaMetricsController {
     // validation is not caught and handled
     this.validatePayload(payload);
     try {
-      this.submitEvent(payload, options).catch((err) => {
-        // throw error on clean stack so its captured by sentry
-        // but does not cause any side effects
-        setTimeout(() => {
-          throw err;
-        });
-      });
+      this.submitEvent(payload, options).catch((err) =>
+        this._captureException(err),
+      );
     } catch (err) {
       console.error(err);
     }
