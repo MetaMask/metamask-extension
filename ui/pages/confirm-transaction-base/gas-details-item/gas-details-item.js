@@ -26,7 +26,6 @@ const GasDetailsItem = ({
   isMainnet,
   maxFeePerGas,
   maxPriorityFeePerGas,
-  supportsEIP1559,
   txData,
   useNativeCurrencyAsPrimaryCurrency,
 }) => {
@@ -120,16 +119,14 @@ const GasDetailsItem = ({
         </Box>,
       ])}
       subTitle={
-        supportsEIP1559 && (
-          <GasTiming
-            maxPriorityFeePerGas={hexWEIToDecGWEI(
-              maxPriorityFeePerGas || txData.txParams.maxPriorityFeePerGas,
-            )}
-            maxFeePerGas={hexWEIToDecGWEI(
-              maxFeePerGas || txData.txParams.maxFeePerGas,
-            )}
-          />
-        )
+        <GasTiming
+          maxPriorityFeePerGas={hexWEIToDecGWEI(
+            maxPriorityFeePerGas || txData.txParams.maxPriorityFeePerGas,
+          )}
+          maxFeePerGas={hexWEIToDecGWEI(
+            maxFeePerGas || txData.txParams.maxFeePerGas,
+          )}
+        />
       }
     />
   );
@@ -141,7 +138,6 @@ GasDetailsItem.propTypes = {
   isMainnet: PropTypes.bool,
   maxFeePerGas: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
-  supportsEIP1559: PropTypes.bool,
   txData: PropTypes.object,
   useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
 };

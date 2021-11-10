@@ -17,12 +17,10 @@ export default function TransactionDetail({ rows = [], onEdit }) {
   const t = useI18nContext();
   const {
     gasLimit,
-    gasPrice,
     estimateUsed,
     maxFeePerGas,
     maxPriorityFeePerGas,
     transaction,
-    supportsEIP1559,
   } = useGasFeeContext();
 
   if (EIP_1559_V2 && estimateUsed) {
@@ -48,23 +46,14 @@ export default function TransactionDetail({ rows = [], onEdit }) {
                   <Typography fontSize="12px" color={COLORS.GREY}>
                     {t('dappSuggestedTooltip', [transaction.origin])}
                   </Typography>
-                  {supportsEIP1559 ? (
-                    <>
-                      <Typography fontSize="12px">
-                        <b>{t('maxBaseFee')}</b>
-                        {maxFeePerGas}
-                      </Typography>
-                      <Typography fontSize="12px">
-                        <b>{t('maxPriorityFee')}</b>
-                        {maxPriorityFeePerGas}
-                      </Typography>
-                    </>
-                  ) : (
-                    <Typography fontSize="12px">
-                      <b>{t('gasPriceLabel')}</b>
-                      {gasPrice}
-                    </Typography>
-                  )}
+                  <Typography fontSize="12px">
+                    <b>{t('maxBaseFee')}</b>
+                    {maxFeePerGas}
+                  </Typography>
+                  <Typography fontSize="12px">
+                    <b>{t('maxPriorityFee')}</b>
+                    {maxPriorityFeePerGas}
+                  </Typography>
                   <Typography fontSize="12px">
                     <b>{t('gasLimit')}</b>
                     {gasLimit}

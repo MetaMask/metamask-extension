@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/jest';
 import { ETH } from '../../../../helpers/constants/common';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
@@ -14,6 +14,9 @@ jest.mock('../../../../store/actions', () => ({
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
+  getGasFeeTimeEstimate: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve('unknown')),
 }));
 
 const MOCK_FEE_ESTIMATE = {
@@ -38,7 +41,12 @@ const MOCK_FEE_ESTIMATE = {
   estimatedBaseFee: '50',
 };
 
-const renderComponent = (props) => {
+const DAPP_SUGGESTED_ESTIMATE = {
+  maxFeePerGas: '0x59682f10',
+  maxPriorityFeePerGas: '0x59682f00',
+};
+
+const renderComponent = (props, transactionProps) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -57,7 +65,9 @@ const renderComponent = (props) => {
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider transaction={{ txParams: { gas: '0x5208' } }}>
+    <GasFeeContextProvider
+      transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
+    >
       <EditGasItem estimateType="low" {...props} />
     </GasFeeContextProvider>,
     store,
@@ -65,29 +75,58 @@ const renderComponent = (props) => {
 };
 
 describe('EditGasItem', () => {
-  it('should renders low gas estimate options for estimateType low', () => {
+  it('should renders low gas estimate option for estimateType low', () => {
     renderComponent({ estimateType: 'low' });
-
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
-    expect(screen.queryByText('6 min')).toBeInTheDocument();
+    expect(screen.queryByText('5 min')).toBeInTheDocument();
     expect(screen.queryByTitle('0.001113 ETH')).toBeInTheDocument();
   });
 
-  it('should renders market gas estimate options for estimateType medium', () => {
+  it('should renders market gas estimate option for estimateType medium', () => {
     renderComponent({ estimateType: 'medium' });
-
     expect(screen.queryByText('🦊')).toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
-    expect(screen.queryByText('30 sec')).toBeInTheDocument();
+    expect(screen.queryByText('5 min')).toBeInTheDocument();
     expect(screen.queryByTitle('0.00147 ETH')).toBeInTheDocument();
   });
 
-  it('should renders aggressive gas estimate options for estimateType high', () => {
+  it('should renders aggressive gas estimate option for estimateType high', () => {
     renderComponent({ estimateType: 'high' });
-
     expect(screen.queryByText('🦍')).toBeInTheDocument();
+    expect(screen.queryByText('Aggressive')).toBeInTheDocument();
     expect(screen.queryByText('15 sec')).toBeInTheDocument();
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
+  });
+
+  it('should highlight option is estimateType is currently selected', () => {
+    renderComponent({ estimateType: 'high' }, { userFeeLevel: 'high' });
+    expect(
+      document.getElementsByClassName('edit-gas-item-selected'),
+    ).toHaveLength(1);
+  });
+
+  it('should renders site gas estimate option for estimateType dappSuggested', () => {
+    renderComponent(
+      { estimateType: 'dappSuggested' },
+      { dappSuggestedGasFees: DAPP_SUGGESTED_ESTIMATE },
+    );
+    expect(screen.queryByText('🌐')).toBeInTheDocument();
+    expect(screen.queryByText('Site')).toBeInTheDocument();
+    expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
+  });
+
+  it('should disable site gas estimate option for is transaction does not have dappSuggestedGasFees', async () => {
+    renderComponent({ estimateType: 'dappSuggested' });
+    expect(
+      document.getElementsByClassName('edit-gas-item-disabled'),
+    ).toHaveLength(1);
+  });
+
+  it('should renders advance gas estimate option for estimateType custom', () => {
+    renderComponent({ estimateType: 'custom' });
+    expect(screen.queryByText('⚙')).toBeInTheDocument();
+    expect(screen.queryByText('Advanced')).toBeInTheDocument();
+    expect(screen.queryAllByText('--')).toHaveLength(2);
   });
 });

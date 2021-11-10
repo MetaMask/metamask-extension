@@ -31,5 +31,10 @@
         width: 30%;
       }
     }
+
+    &__separator {
+      border-top: 1px solid $ui-grey;
+      margin: 8px 12px;
+    }
   }
 }

@@ -8,8 +8,6 @@ import configureStore from '../../../store/store';
 
 import TransactionDetail from './transaction-detail.component';
 
-process.env.EIP_1559_V2 = true;
-
 jest.mock('../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
@@ -65,19 +63,16 @@ describe('TransactionDetail', () => {
     expect(screen.queryByText('Low')).toBeInTheDocument();
   });
   it('should render edit link with text markey if medium gas estimates are selected', () => {
-    process.env.EIP_1559_V2 = true;
     render({ transaction: { userFeeLevel: 'medium' } });
     expect(screen.queryByText('🦊')).toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
   });
   it('should render edit link with text agressive if high gas estimates are selected', () => {
-    process.env.EIP_1559_V2 = true;
     render({ transaction: { userFeeLevel: 'high' } });
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
   });
   it('should render edit link with text Site suggested if site suggested estimated are used', () => {
-    process.env.EIP_1559_V2 = true;
     render({
       transaction: {
         dappSuggestedGasFees: { maxFeePerGas: 1, maxPriorityFeePerGas: 1 },
@@ -89,7 +84,6 @@ describe('TransactionDetail', () => {
     expect(document.getElementsByClassName('info-tooltip')).toHaveLength(1);
   });
   it('should render edit link with text advance if custom gas estimates are used', () => {
-    process.env.EIP_1559_V2 = true;
     render({
       defaultEstimateToUse: 'custom',
     });

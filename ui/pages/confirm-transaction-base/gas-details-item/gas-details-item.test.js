@@ -14,6 +14,7 @@ jest.mock('../../../store/actions', () => ({
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
+  getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
 const render = (props) => {
@@ -37,7 +38,7 @@ const render = (props) => {
 
   return renderWithProvider(
     <GasFeeContextProvider {...props}>
-      <GasDetailsItem txData={{}} {...props} />
+      <GasDetailsItem txData={{ txParams: {} }} {...props} />
     </GasFeeContextProvider>,
     store,
   );

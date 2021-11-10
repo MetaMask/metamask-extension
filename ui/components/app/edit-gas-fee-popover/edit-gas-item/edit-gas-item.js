@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
+import { ESTIMATE_USED } from '../../../../../shared/constants/gas';
 import { GasLevelIconMap } from '../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import {
@@ -16,28 +17,72 @@ import I18nValue from '../../../ui/i18n-value';
 import InfoTooltip from '../../../ui/info-tooltip';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 
+import { useCustomTimeEstimate } from './useCustomTimeEstimate';
+
 const EditGasItem = ({ estimateType, onClose }) => {
   const {
     estimateUsed,
     gasFeeEstimates,
     gasLimit,
-    setEstimateToUse,
-    updateTransaction,
+    maxFeePerGas: customMaxFeePerGas,
+    maxPriorityFeePerGas: customMaxPriorityFeePerGas,
+    updateTransactionUsingGasFeeEstimates,
+    transaction: { dappSuggestedGasFees },
   } = useGasFeeContext();
   const t = useI18nContext();
+  const { waitTimeEstimate } = useCustomTimeEstimate({
+    estimateType,
+    maxFeePerGas:
+      estimateType === ESTIMATE_USED.DAPP_SUGGESTED
+        ? dappSuggestedGasFees?.maxFeePerGas
+        : customMaxFeePerGas,
+    maxPriorityFeePerGas:
+      estimateType === ESTIMATE_USED.DAPP_SUGGESTED
+        ? dappSuggestedGasFees?.maxPriorityFeePerGas
+        : customMaxPriorityFeePerGas,
+    gasFeeEstimates,
+  });
 
-  const { minWaitTimeEstimate, suggestedMaxFeePerGas } =
-    gasFeeEstimates[estimateType] || {};
-  const hexMaximumTransactionFee = suggestedMaxFeePerGas
+  let maxFeePerGas;
+  let minWaitTime;
+
+  if (gasFeeEstimates[estimateType]) {
+    const { minWaitTimeEstimate, suggestedMaxFeePerGas } = gasFeeEstimates[
+      estimateType
+    ];
+    maxFeePerGas = decGWEIToHexWEI(suggestedMaxFeePerGas);
+    minWaitTime =
+      estimateType === ESTIMATE_USED.HIGH
+        ? minWaitTimeEstimate
+        : gasFeeEstimates?.low.maxWaitTimeEstimate;
+  } else if (
+    estimateType === ESTIMATE_USED.DAPP_SUGGESTED &&
+    dappSuggestedGasFees
+  ) {
+    maxFeePerGas = dappSuggestedGasFees.maxFeePerGas;
+    minWaitTime = waitTimeEstimate;
+  } else if (
+    estimateType === ESTIMATE_USED.CUSTOM &&
+    estimateUsed === ESTIMATE_USED.CUSTOM
+  ) {
+    // todo: we should show default custom setting for user if available
+    // after PR is merged: https://github.com/MetaMask/metamask-extension/pull/12577/files
+    maxFeePerGas = decGWEIToHexWEI(customMaxFeePerGas);
+    minWaitTime = waitTimeEstimate;
+  }
+
+  const hexMaximumTransactionFee = maxFeePerGas
     ? getMaximumGasTotalInHexWei({
         gasLimit: decimalToHex(gasLimit),
-        maxFeePerGas: decGWEIToHexWEI(suggestedMaxFeePerGas),
+        maxFeePerGas,
       })
     : null;
 
   const onOptionSelect = () => {
-    setEstimateToUse(estimateType);
-    updateTransaction(estimateType);
+    if (estimateType !== ESTIMATE_USED.CUSTOM) {
+      updateTransactionUsingGasFeeEstimates(estimateType);
+    }
+    // todo: open advance modal if edtimateType is custom
     onClose();
   };
 
@@ -45,29 +90,46 @@ const EditGasItem = ({ estimateType, onClose }) => {
     <div
       className={classNames('edit-gas-item', {
         [`edit-gas-item-selected`]: estimateType === estimateUsed,
+        [`edit-gas-item-disabled`]:
+          estimateType === ESTIMATE_USED.DAPP_SUGGESTED &&
+          !dappSuggestedGasFees,
       })}
       role="button"
       onClick={onOptionSelect}
     >
       <span className="edit-gas-item__name">
-        <span className="edit-gas-item__icon">
+        <span
+          className={`edit-gas-item__icon edit-gas-item__icon-${estimateType}`}
+        >
           {GasLevelIconMap[estimateType]}
         </span>
-        <I18nValue messageKey={estimateType} />
+        <I18nValue
+          messageKey={
+            estimateType === ESTIMATE_USED.DAPP_SUGGESTED
+              ? 'dappSuggestedShortLabel'
+              : estimateType
+          }
+        />
       </span>
       <span
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${estimateType}`}
       >
-        {minWaitTimeEstimate && toHumanReadableTime(minWaitTimeEstimate, t)}
+        {minWaitTime
+          ? minWaitTime && toHumanReadableTime(minWaitTime, t)
+          : '--'}
       </span>
       <span
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${estimateType}`}
       >
-        <UserPreferencedCurrencyDisplay
-          key="editGasSubTextFeeAmount"
-          type={PRIMARY}
-          value={hexMaximumTransactionFee}
-        />
+        {hexMaximumTransactionFee ? (
+          <UserPreferencedCurrencyDisplay
+            key="editGasSubTextFeeAmount"
+            type={PRIMARY}
+            value={hexMaximumTransactionFee}
+          />
+        ) : (
+          '--'
+        )}
       </span>
       <span className="edit-gas-item__tooltip">
         <InfoTooltip position="top" />

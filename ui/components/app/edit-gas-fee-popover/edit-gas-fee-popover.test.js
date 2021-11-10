@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/jest';
 import { ETH } from '../../../helpers/constants/common';
 import configureStore from '../../../store/store';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -71,16 +71,18 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('🦊')).toBeInTheDocument();
     expect(screen.queryByText('🦍')).toBeInTheDocument();
+    expect(screen.queryByText('🌐')).toBeInTheDocument();
+    expect(screen.queryByText('⚙')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
+    expect(screen.queryByText('Site')).toBeInTheDocument();
+    expect(screen.queryByText('Advanced')).toBeInTheDocument();
   });
 
   it('should show time estimates', () => {
     renderComponent();
-    console.log(document.body.innerHTML);
-    expect(screen.queryByText('6 min')).toBeInTheDocument();
-    expect(screen.queryByText('30 sec')).toBeInTheDocument();
+    expect(screen.queryAllByText('5 min')).toHaveLength(2);
     expect(screen.queryByText('15 sec')).toBeInTheDocument();
   });
 
