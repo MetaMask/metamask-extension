@@ -68,7 +68,7 @@ const EditGasItem = ({ estimateType, onClose }) => {
         />
       </span>
       <span className="edit-gas-item__tooltip">
-        <InfoTooltip />
+        <InfoTooltip position="top" />
       </span>
     </div>
   );
