@@ -23,13 +23,13 @@ module.exports = function createStaticAssetTasks({
   const additionalBuildTargets = {
     [BuildType.beta]: [
       {
-        src: './app/build-types/beta/',
+        src: './app/build-types/beta/images/',
         dest: `images`,
       },
     ],
     [BuildType.flask]: [
       {
-        src: './app/build-types/flask/',
+        src: './app/build-types/flask/images/',
         dest: `images`,
       },
     ],
