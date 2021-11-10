@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { getAdvancedInlineGasShown } from '../../selectors';
 import { hexToDecimal } from '../../helpers/utils/conversions.util';
+import { EDIT_GAS_MODES } from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import {
   GAS_RECOMMENDATIONS,
@@ -65,7 +66,7 @@ export function useGasFeeInputs(
   defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
   transaction,
   minimumGasLimit = '0x5208',
-  editGasMode,
+  editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
 ) {
   // We need the gas estimates from the GasFeeController in the background.
   // Calling this hooks initiates polling for new gas estimates and returns the
