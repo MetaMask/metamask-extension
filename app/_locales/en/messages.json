@@ -1265,6 +1265,9 @@
   "lastConnected": {
     "message": "Last Connected"
   },
+  "layer1Fees": {
+    "message": "Layer 1 fees"
+  },
   "learnMore": {
     "message": "Learn more"
   },
@@ -2825,6 +2828,12 @@
   "transactionDetailGasTotalSubtitle": {
     "message": "Amount + gas fee"
   },
+  "transactionDetailLayer2GasHeading": {
+    "message": "Layer 2 gas fee"
+  },
+  "transactionDetailMultiLayerTotalSubtitle": {
+    "message": "Amount + fees"
+  },
   "transactionDropped": {
     "message": "Transaction dropped at $2."
   },
@@ -2842,6 +2851,15 @@
   },
   "transactionHistoryBaseFee": {
     "message": "Base Fee (GWEI)"
+  },
+  "transactionHistoryL1GasLabel": {
+    "message": "Total L1 gas fee"
+  },
+  "transactionHistoryL2GasLimitLabel": {
+    "message": "L2 gas limit`"
+  },
+  "transactionHistoryL2GasPriceLabel": {
+    "message": "L2 gas price`"
   },
   "transactionHistoryMaxFeePerGas": {
     "message": "Max Fee Per Gas"
