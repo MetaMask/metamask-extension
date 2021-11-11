@@ -10,7 +10,6 @@ import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
 import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware';
 import KeyringController from 'eth-keyring-controller';
 import { Mutex } from 'await-semaphore';
-import stripHexPrefix from 'strip-hex-prefix';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
@@ -38,7 +37,7 @@ import {
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress, stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 import { POLLING_TOKEN_ENVIRONMENT_TYPES } from '../../shared/constants/app';
 

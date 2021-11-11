@@ -12,6 +12,7 @@ import {
   bnToHex,
   pubToAddress,
   keccak,
+  isHexPrefixed,
 } from 'ethereumjs-util';
 import { toBuffer } from './buffer-utils';
 
@@ -26,6 +27,7 @@ export {
   toChecksumAddress,
   pubToAddress,
   keccak,
+  isHexPrefixed,
 };
 
 export const BURN_ADDRESS = zeroAddress();
