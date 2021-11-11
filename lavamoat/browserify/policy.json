@@ -84,6 +84,12 @@
         "multihashes": true
       }
     },
+    "@eth-optimism/contracts": {
+      "packages": {
+        "@ethersproject/abstract-provider": true,
+        "ethers": true
+      }
+    },
     "@ethereumjs/common": {
       "packages": {
         "buffer": true,
@@ -319,6 +325,7 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "@ethersproject/keccak256": true,
+        "@ethersproject/logger": true,
         "@ethersproject/sha2": true,
         "@ethersproject/strings": true
       }
