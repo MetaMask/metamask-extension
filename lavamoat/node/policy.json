@@ -2767,7 +2767,7 @@
     },
     "jsesc": {
       "globals": {
-        "define": true
+        "Buffer.isBuffer": true
       }
     },
     "json-stable-stringify": {
