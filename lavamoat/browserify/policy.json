@@ -593,6 +593,16 @@
         "gl-vec3": true
       }
     },
+    "@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "end-of-stream": true,
+        "once": true,
+        "readable-stream": true
+      }
+    },
     "@metamask/obs-store": {
       "globals": {
         "localStorage": true
@@ -3309,16 +3319,6 @@
       "packages": {
         "bn.js": true,
         "strip-hex-prefix": true
-      }
-    },
-    "obj-multiplex": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "end-of-stream": true,
-        "once": true,
-        "readable-stream": true
       }
     },
     "obs-store": {
