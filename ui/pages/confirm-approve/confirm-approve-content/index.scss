@@ -27,6 +27,18 @@
     position: absolute;
   }
 
+  &__metafoxlogo {
+    .app-header {
+      &__metafox-logo--horizontal {
+        display: none;
+      }
+
+      &__metafox-logo--icon {
+        display: block;
+      }
+    }
+  }
+
   &__siteinfo {
     left: 39px;
   }
