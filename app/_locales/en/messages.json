@@ -2953,6 +2953,9 @@
   "tryAgain": {
     "message": "Try again"
   },
+  "tryAnywayOption": {
+    "message": "I will try anyway"
+  },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
   },
