@@ -1139,7 +1139,7 @@
   "id": {
     "message": "ID"
   },
-  "iWillTryAnyway": {
+  "tryAnywayOption": {
     "message": "I will try anyway"
   },
   "import": {

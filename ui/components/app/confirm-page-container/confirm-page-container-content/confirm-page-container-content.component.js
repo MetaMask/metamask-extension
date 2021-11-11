@@ -103,7 +103,7 @@ export default class ConfirmPageContainerContent extends Component {
     const primaryAction = hideConfirmAnyways
       ? null
       : {
-          label: this.context.t('iWillTryAnyway'),
+          label: this.context.t('tryAnywayOption'),
           onClick: onConfirmAnyways,
         };
 
