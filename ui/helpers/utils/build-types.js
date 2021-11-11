@@ -1,8 +1,8 @@
 ///: BEGIN:ONLY_INCLUDE_IN(beta)
-import betaJson from '../../../app/build-types/beta/beta-mascot.json';
+import betaJson from '../../../app/build-types/beta/images/beta-mascot.json';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import flaskJson from '../../../app/build-types/flask/flask-mascot.json';
+import flaskJson from '../../../app/build-types/flask/images/flask-mascot.json';
 ///: END:ONLY_INCLUDE_IN
 
 const assetList = {

@@ -17,6 +17,7 @@ import {
   MOCKS,
 } from '../../../../test/jest';
 import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../helpers/constants/transactions';
 import FeeCard from '.';
 
 const middleware = [thunk];
@@ -35,7 +36,7 @@ const generateUseSelectorRouter = () => (selector) => {
     return true;
   }
   if (selector === getGasEstimateType) {
-    return 'fee-market';
+    return TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET;
   }
   if (selector === getGasFeeEstimates) {
     return MOCKS.createGasFeeEstimatesForFeeMarket();

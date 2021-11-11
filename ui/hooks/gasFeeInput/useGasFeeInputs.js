@@ -3,12 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { getAdvancedInlineGasShown } from '../../selectors';
 import { hexToDecimal } from '../../helpers/utils/conversions.util';
-import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import {
   CUSTOM_GAS_ESTIMATE,
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
 } from '../../../shared/constants/gas';
+import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
+
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { useGasFeeErrors } from './useGasFeeErrors';
