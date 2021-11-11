@@ -183,13 +183,14 @@ export default class Home extends PureComponent {
       showRestorePrompt,
       threeBoxLastUpdated,
       threeBoxSynced,
+      isNotification,
     } = this.props;
 
     if (!prevState.closing && this.state.closing) {
       global.platform.closeCurrentWindow();
     }
 
-    this.checkStatusAndNavigate();
+    isNotification && this.checkStatusAndNavigate();
 
     if (threeBoxSynced && showRestorePrompt && threeBoxLastUpdated === null) {
       setupThreeBox();
