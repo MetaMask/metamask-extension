@@ -2,6 +2,8 @@ import * as ethers from 'ethers';
 import * as optimismContracts from '@eth-optimism/contracts';
 import buildUnserializedTransaction from './buildUnserializedTransaction';
 
+// The code in this file is largely drawn from https://community.optimism.io/docs/developers/l2/new-fees.html#for-frontend-and-wallet-developers
+
 function buildOVMGasPriceOracleContract(eth) {
   const OVMGasPriceOracle = optimismContracts
     .getContractFactory('OVM_GasPriceOracle')
