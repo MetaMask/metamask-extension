@@ -67,7 +67,9 @@ export function getValueFromWeiHex({
   conversionRate,
   numberOfDecimals,
   toDenomination,
+  from='',
 }) {
+  from ==='advancedgaspopover' ? console.log(`${from} getValueFromWeiHex: ${value}`): null;
   return conversionUtil(value, {
     fromNumericBase: 'hex',
     toNumericBase: 'dec',

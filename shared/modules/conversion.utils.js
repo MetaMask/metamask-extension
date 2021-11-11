@@ -149,11 +149,13 @@ const conversionUtil = (
     numberOfDecimals,
     conversionRate,
     invertConversionRate,
+    from='',
   },
 ) => {
   if (fromCurrency !== toCurrency && !conversionRate) {
     return 0;
   }
+  from==='advancedgaspopover'?console.log(`${from} value: ${value}`):null;
   return converter({
     fromCurrency,
     toCurrency,
@@ -230,22 +232,19 @@ const multiplyCurrencies = (a, b, options = {}) => {
 };
 
 const divideCurrencies = (a, b, options = {}) => {
-  const { multiplicandBase, multiplierBase, ...conversionOptions } = options;
+  const { dividendBase, divisorBase, ...conversionOptions } = options;
 
-  if (!isValidBase(multiplicandBase) || !isValidBase(multiplierBase)) {
-    throw new Error('Must specify valid multiplicandBase and multiplierBase');
+  if (!isValidBase(dividendBase) || !isValidBase(divisorBase)) {
+    throw new Error('Must specify valid dividendBase and divisorBase');
   }
 
-  const value = getBigNumber(a, multiplicandBase).div(
-    getBigNumber(b, multiplierBase),
-  );
+  const value = getBigNumber(a, dividendBase).div(getBigNumber(b, divisorBase));
 
   return converter({
     value,
     ...conversionOptions,
   });
 };
-
 
 const conversionGreaterThan = ({ ...firstProps }, { ...secondProps }) => {
   const firstValue = converter({ ...firstProps });

@@ -32,7 +32,7 @@ export default function FormField({
   allowDecimals,
   disabled,
   bottomBorder,
-  inputDetails
+  inputDetails,
 }) {
   return (
     <div
