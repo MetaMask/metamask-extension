@@ -34,13 +34,14 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @property {Array} messages Holds all messages that have been created by this EncryptionPublicKeyManager
    *
    */
-  constructor() {
+  constructor(opts) {
     super();
     this.memStore = new ObservableStore({
       unapprovedEncryptionPublicKeyMsgs: {},
       unapprovedEncryptionPublicKeyMsgCount: 0,
     });
     this.messages = [];
+    this.metricsEvent = opts.metricsEvent;
   }
 
   /**
@@ -227,6 +228,13 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    *
    */
   rejectMsg(msgId) {
+    this.metricsEvent({
+      event: 'Reject',
+      category: 'Messages',
+      properties: {
+        action: 'Encryption public key Request',
+      },
+    });
     this._setMsgStatus(msgId, 'rejected');
   }
 

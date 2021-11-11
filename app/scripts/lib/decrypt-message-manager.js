@@ -38,13 +38,14 @@ export default class DecryptMessageManager extends EventEmitter {
    * @property {Array} messages Holds all messages that have been created by this DecryptMessageManager
    *
    */
-  constructor() {
+  constructor(opts) {
     super();
     this.memStore = new ObservableStore({
       unapprovedDecryptMsgs: {},
       unapprovedDecryptMsgCount: 0,
     });
     this.messages = [];
+    this.metricsEvent = opts.metricsEvent;
   }
 
   /**
@@ -238,6 +239,13 @@ export default class DecryptMessageManager extends EventEmitter {
    *
    */
   rejectMsg(msgId) {
+    this.metricsEvent({
+      event: 'Reject',
+      category: 'Messages',
+      properties: {
+        action: 'Decrypt Message Request',
+      },
+    });
     this._setMsgStatus(msgId, 'rejected');
   }
 

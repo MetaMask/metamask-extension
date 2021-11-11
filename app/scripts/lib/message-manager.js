@@ -35,13 +35,14 @@ export default class MessageManager extends EventEmitter {
    * @property {Array} messages Holds all messages that have been created by this MessageManager
    *
    */
-  constructor() {
+  constructor(opts) {
     super();
     this.memStore = new ObservableStore({
       unapprovedMsgs: {},
       unapprovedMsgCount: 0,
     });
     this.messages = [];
+    this.metricsEvent = opts.metricsEvent;
   }
 
   /**
@@ -218,6 +219,13 @@ export default class MessageManager extends EventEmitter {
    *
    */
   rejectMsg(msgId) {
+    this.metricsEvent({
+      event: 'Reject Sig Request',
+      category: 'Transactions',
+      properties: {
+        action: 'Sign Request',
+      },
+    });
     this._setMsgStatus(msgId, 'rejected');
   }
 

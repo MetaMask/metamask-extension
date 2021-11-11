@@ -47,15 +47,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
   _beforeUnload = async (event) => {
     const { cancelEncryptionPublicKey, txData } = this.props;
-    const { metricsEvent } = this.context;
     await cancelEncryptionPublicKey(txData, event);
-    metricsEvent({
-      eventOpts: {
-        category: 'Messages',
-        action: 'Encryption public key Request',
-        name: 'Cancel Via Notification Close',
-      },
-    });
   };
 
   _removeBeforeUnload = () => {
