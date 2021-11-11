@@ -25,7 +25,7 @@ export default function MultilayerFeeMessage({ transaction, layer2fee }) {
   }
 
   const totalInWeiHex = sumHexes(
-    layer2fee,
+    layer2fee || '0x0',
     fetchedLayer1Total || '0x0',
     transaction.txParams.value || '0x0',
   );
