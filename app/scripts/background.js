@@ -17,6 +17,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
 } from '../../shared/constants/app';
 import { SECOND } from '../../shared/constants/time';
+import { REJECT_NOTFICIATION_CLOSE, REJECT_NOTFICIATION_CLOSE_SIG} from '../../shared/constants/metametrics';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -493,23 +494,25 @@ function setupController(initState, initLangCode) {
       );
       controller.messageManager.messages
         .filter((msg) => msg.status === 'unapproved')
-        .forEach((tx) => controller.messageManager.rejectMsg(tx.id));
+        .forEach((tx) => controller.messageManager.rejectMsg(tx.id, REJECT_NOTFICIATION_CLOSE_SIG));
       controller.personalMessageManager.messages
         .filter((msg) => msg.status === 'unapproved')
         .forEach((tx) => controller.personalMessageManager.rejectMsg(tx.id));
       controller.decryptMessageManager.messages
         .filter((msg) => msg.status === 'unapproved')
-        .forEach((tx) => controller.decryptMessageManager.rejectMsg(tx.id));
+        .forEach((tx) => controller.decryptMessageManager.rejectMsg(tx.id, REJECT_NOTFICIATION_CLOSE));
       controller.encryptionPublicKeyManager.messages
         .filter((msg) => msg.status === 'unapproved')
-        .forEach((tx) => controller.decryptMessageManager.rejectMsg(tx.id));
+        .forEach((tx) => controller.encryptionPublicKeyManager.rejectMsg(tx.id, REJECT_NOTFICIATION_CLOSE));
       controller.typedMessageManager.messages
         .filter((msg) => msg.status === 'unapproved')
-        .forEach((tx) => controller.decryptMessageManager.rejectMsg(tx.id));
+        .forEach((tx) => controller.typedMessageManager.rejectMsg(tx.id));
+      // We're specifcally avoid using approvalController directly for better
+      // Error support during rejection
       Object.keys(
-        controller.approvalController.state.pendingApprovals,
+        controller.permissionsController.approvals.state.pendingApprovals,
       ).forEach((approvalId) =>
-        controller.approvalController.reject(approvalId, new Error()),
+        controller.permissionsController.rejectPermissionsRequest(approvalId),
       );
 
       updateBadge();

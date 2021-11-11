@@ -5,8 +5,6 @@ import AccountListItem from '../../components/app/account-list-item';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmEncryptionPublicKey extends Component {

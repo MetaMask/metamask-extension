@@ -227,14 +227,16 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @param {number} msgId The id of the EncryptionPublicKey to reject.
    *
    */
-  rejectMsg(msgId) {
-    this.metricsEvent({
-      event: 'Reject',
-      category: 'Messages',
-      properties: {
-        action: 'Encryption public key Request',
-      },
-    });
+  rejectMsg(msgId, reason = undefined) {
+    if (reason) {
+      this.metricsEvent({
+        event: reason,
+        category: 'Messages',
+        properties: {
+          action: 'Encryption public key Request',
+        },
+      });
+    }
     this._setMsgStatus(msgId, 'rejected');
   }
 

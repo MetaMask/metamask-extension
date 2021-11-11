@@ -266,7 +266,6 @@ export default class SignatureRequestOriginal extends Component {
           large
           className="request-signature__footer__cancel-button"
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await cancel(event);
             metricsEvent({
               eventOpts: {
@@ -291,7 +290,6 @@ export default class SignatureRequestOriginal extends Component {
           className="request-signature__footer__sign-button"
           disabled={hardwareWalletRequiresConnection}
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await sign(event);
             metricsEvent({
               eventOpts: {

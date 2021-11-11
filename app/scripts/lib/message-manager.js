@@ -218,14 +218,16 @@ export default class MessageManager extends EventEmitter {
    * @param {number} msgId - The id of the Message to reject.
    *
    */
-  rejectMsg(msgId) {
-    this.metricsEvent({
-      event: 'Reject Sig Request',
-      category: 'Transactions',
-      properties: {
-        action: 'Sign Request',
-      },
-    });
+  rejectMsg(msgId, reason = undefined) {
+    if (reason) {
+      this.metricsEvent({
+        event: reason,
+        category: 'Transactions',
+        properties: {
+          action: 'Sign Request',
+        },
+      });
+    }
     this._setMsgStatus(msgId, 'rejected');
   }
 

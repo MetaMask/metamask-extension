@@ -238,14 +238,16 @@ export default class DecryptMessageManager extends EventEmitter {
    * @param {number} msgId The id of the DecryptMessage to reject.
    *
    */
-  rejectMsg(msgId) {
-    this.metricsEvent({
-      event: 'Reject',
-      category: 'Messages',
-      properties: {
-        action: 'Decrypt Message Request',
-      },
-    });
+  rejectMsg(msgId, reason = undefined) {
+    if (reason) {
+      this.metricsEvent({
+        event: reason,
+        category: 'Messages',
+        properties: {
+          action: 'Decrypt Message Request',
+        },
+      });
+    }
     this._setMsgStatus(msgId, 'rejected');
   }
 
