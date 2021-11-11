@@ -37,6 +37,7 @@ describe('Confirm Page Container Page', () => {
       submitText: 'Confirm',
       disabled: true,
       origin: 'http://localhost:4200',
+      hideTitle: false,
     };
   });
 
@@ -59,17 +60,14 @@ describe('Confirm Page Container Page', () => {
     const confirmButton = getByText('Confirm');
     expect(getByText('Confirm').closest('button')).toBeDisabled();
     fireEvent.click(confirmButton);
-    await tick();
     expect(props.onSubmit).toHaveBeenCalledTimes(0);
 
     const iWillTryButton = getByText('I will try anyway');
     fireEvent.click(iWillTryButton);
-    await tick();
     expect(props.onConfirmAnyways).toHaveBeenCalledTimes(1);
 
     const cancelButton = getByText('Reject');
     fireEvent.click(cancelButton);
-    await tick();
     expect(props.onCancel).toHaveBeenCalledTimes(1);
   });
 
@@ -95,7 +93,6 @@ describe('Confirm Page Container Page', () => {
 
     const cancelButton = getByText('Reject');
     fireEvent.click(cancelButton);
-    await tick();
     expect(props.onCancel).toHaveBeenCalledTimes(1);
   });
 
@@ -119,12 +116,10 @@ describe('Confirm Page Container Page', () => {
 
     const confirmButton = getByText('Confirm');
     fireEvent.click(confirmButton);
-    await tick();
     expect(props.onSubmit).toHaveBeenCalledTimes(1);
 
     const cancelButton = getByText('Reject');
     fireEvent.click(cancelButton);
-    await tick();
     expect(props.onCancel).toHaveBeenCalledTimes(1);
   });
 });
