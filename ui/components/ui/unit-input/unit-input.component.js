@@ -17,6 +17,7 @@ export default class UnitInput extends PureComponent {
     actionComponent: PropTypes.node,
     error: PropTypes.bool,
     onChange: PropTypes.func,
+    onBlur: PropTypes.func,
     placeholder: PropTypes.string,
     suffix: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -55,6 +56,8 @@ export default class UnitInput extends PureComponent {
     if (value === '') {
       this.setState({ value: '0' });
     }
+
+    this.props.onBlur && this.props.onBlur(value);
   };
 
   handleChange = (event) => {
