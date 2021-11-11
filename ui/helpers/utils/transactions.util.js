@@ -2,8 +2,7 @@ import { MethodRegistry } from 'eth-method-registry';
 import abi from 'human-standard-token-abi';
 import { ethers } from 'ethers';
 import log from 'loglevel';
-
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../shared/modules/hexstring-utils';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_GROUP_STATUSES,

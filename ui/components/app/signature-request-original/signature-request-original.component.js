@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { stripHexPrefix } from 'ethereumjs-util';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
-
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   MESSAGE_TYPE,
@@ -13,6 +11,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
 import AccountListItem from '../account-list-item';
 import { conversionUtil } from '../../../../shared/modules/conversion.utils';
+import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
 import SiteIcon from '../../ui/site-icon';
 

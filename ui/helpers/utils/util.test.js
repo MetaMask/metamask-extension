@@ -1,4 +1,4 @@
-import { BN } from 'ethereumjs-util';
+import { BN } from 'bn.js';
 import * as util from './util';
 
 describe('util', () => {

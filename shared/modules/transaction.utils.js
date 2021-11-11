@@ -1,4 +1,4 @@
-import { isHexString } from 'ethereumjs-util';
+import { isHexString } from './hexstring-utils';
 
 export function transactionMatchesNetwork(transaction, chainId, networkId) {
   if (typeof transaction.chainId !== 'undefined') {

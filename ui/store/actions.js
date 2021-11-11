@@ -17,7 +17,7 @@ import {
 } from '../../shared/constants/app';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
-import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
@@ -27,7 +27,10 @@ import {
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+import {
+  toChecksumHexAddress,
+  addHexPrefix,
+} from '../../shared/modules/hexstring-utils';
 import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,

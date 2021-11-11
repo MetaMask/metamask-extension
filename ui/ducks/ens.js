@@ -3,8 +3,6 @@ import ENS from 'ethjs-ens';
 import log from 'loglevel';
 import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
-import { isHexString } from 'ethereumjs-util';
-
 import { getCurrentChainId } from '../selectors';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
@@ -25,6 +23,7 @@ import {
   BURN_ADDRESS,
   isBurnAddress,
   isValidHexAddress,
+  isHexString,
 } from '../../shared/modules/hexstring-utils';
 
 // Local Constants

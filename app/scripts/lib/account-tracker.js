@@ -27,7 +27,7 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
   SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
 } from '../constants/contracts';
-import { bnToHex } from './util';
+import { bnToHex } from '../../../shared/modules/hexstring-utils';
 
 /**
  * This module is responsible for tracking any number of accounts and caching their current balances & transaction

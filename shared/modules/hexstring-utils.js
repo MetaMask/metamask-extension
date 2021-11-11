@@ -1,3 +1,4 @@
+import BN from 'bn.js';
 import {
   isHexString,
   isValidAddress,
@@ -5,7 +6,27 @@ import {
   addHexPrefix,
   toChecksumAddress,
   zeroAddress,
+  isValidPrivate,
+  bufferToHex,
+  stripHexPrefix,
+  bnToHex,
+  pubToAddress,
+  keccak,
 } from 'ethereumjs-util';
+import { toBuffer } from './buffer-utils';
+
+export {
+  toBuffer,
+  isValidPrivate,
+  bufferToHex,
+  addHexPrefix,
+  stripHexPrefix,
+  bnToHex,
+  isHexString,
+  toChecksumAddress,
+  pubToAddress,
+  keccak,
+};
 
 export const BURN_ADDRESS = zeroAddress();
 
@@ -71,4 +92,15 @@ export function toChecksumHexAddress(address) {
     return hexPrefixed;
   }
   return toChecksumAddress(addHexPrefix(address));
+}
+
+/**
+ * Converts a hex string to a BN object
+ *
+ * @param {string} inputHex - A number represented as a hex string
+ * @returns {Object} A BN object
+ *
+ */
+export function hexToBn(inputHex) {
+  return new BN(stripHexPrefix(inputHex), 16);
 }

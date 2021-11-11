@@ -7,10 +7,8 @@ import {
   conversionGreaterThan,
   conversionLessThan,
 } from '../../../shared/modules/conversion.utils';
-
+import { addHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { calcTokenAmount } from '../../helpers/utils/token-util';
-import { addHexPrefix } from '../../../app/scripts/lib/util';
-
 import { TOKEN_TRANSFER_FUNCTION_SIGNATURE } from './send.constants';
 
 export {

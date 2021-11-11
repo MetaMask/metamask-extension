@@ -1,5 +1,5 @@
-import { addHexPrefix } from 'ethereumjs-util';
 import { MIN_GAS_LIMIT_HEX } from '../../ui/pages/send/send.constants';
+import { addHexPrefix } from '../modules/hexstring-utils';
 
 const ONE_HUNDRED_THOUSAND = 100000;
 

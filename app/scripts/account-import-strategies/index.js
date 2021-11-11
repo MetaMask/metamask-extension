@@ -5,9 +5,9 @@ import {
   toBuffer,
   isValidPrivate,
   bufferToHex,
+  addHexPrefix,
   stripHexPrefix,
-} from 'ethereumjs-util';
-import { addHexPrefix } from '../lib/util';
+} from '../../../shared/modules/hexstring-utils';
 
 const accountImporter = {
   importAccount(strategy, args) {

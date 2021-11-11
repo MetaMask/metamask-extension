@@ -1,13 +1,14 @@
 import log from 'loglevel';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-
-import { stripHexPrefix } from 'ethereumjs-util';
 import copyToClipboard from 'copy-to-clipboard';
 import ReadOnlyInput from '../../../ui/readonly-input';
 import Button from '../../../ui/button';
 import AccountModalContainer from '../account-modal-container';
-import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import {
+  stripHexPrefix,
+  toChecksumHexAddress,
+} from '../../../../../shared/modules/hexstring-utils';
 
 export default class ExportPrivateKeyModal extends Component {
   static contextTypes = {

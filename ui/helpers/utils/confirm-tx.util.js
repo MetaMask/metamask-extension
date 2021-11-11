@@ -1,7 +1,7 @@
 import currencyFormatter from 'currency-formatter';
 import currencies from 'currency-formatter/currencies';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 import { unconfirmedTransactionsCountSelector } from '../../selectors';
 import {

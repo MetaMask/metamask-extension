@@ -2,9 +2,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import qrCode from 'qrcode-generator';
 import { connect } from 'react-redux';
-import { isHexPrefixed } from 'ethereumjs-util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import {
+  toChecksumHexAddress,
+  isHexPrefixed,
+} from '../../../../shared/modules/hexstring-utils';
 import Tooltip from '../tooltip';
 import CopyIcon from '../icon/copy-icon.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';

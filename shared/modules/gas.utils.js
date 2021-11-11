@@ -1,4 +1,4 @@
-import { addHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix } from './hexstring-utils';
 import {
   addCurrencies,
   conversionGreaterThan,

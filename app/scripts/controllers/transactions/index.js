@@ -1,6 +1,5 @@
 import EventEmitter from 'safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
-import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
 import abi from 'human-standard-token-abi';
@@ -11,13 +10,7 @@ import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import cleanErrorStack from '../../lib/cleanErrorStack';
-import {
-  hexToBn,
-  bnToHex,
-  BnMultiplyByFraction,
-  addHexPrefix,
-  getChainType,
-} from '../../lib/util';
+import { BnMultiplyByFraction, getChainType } from '../../lib/util';
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/helpers/constants/error-keys';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
 import { hexWEIToDecGWEI } from '../../../../ui/helpers/utils/conversions.util';
@@ -41,6 +34,15 @@ import {
   NETWORK_TYPE_RPC,
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
 } from '../../../../shared/constants/network';
+import {
+  hexToBn,
+  bnToHex,
+  bufferToHex,
+  toBuffer,
+  addHexPrefix,
+  keccak,
+  isHexString,
+} from '../../../../shared/modules/hexstring-utils';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
 import { readAddressAsContract } from '../../../../shared/modules/contract-utils';
 import TransactionStateManager from './tx-state-manager';

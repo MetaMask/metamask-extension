@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import UnitInput from '../unit-input';
 import CurrencyDisplay from '../currency-display';
 import { getWeiHexFromDecimalValue } from '../../../helpers/utils/conversions.util';
+import { addHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import {
   conversionUtil,
   multiplyCurrencies,
 } from '../../../../shared/modules/conversion.utils';
 import { ETH } from '../../../helpers/constants/common';
-import { addHexPrefix } from '../../../../app/scripts/lib/util';
 
 /**
  * Component that allows user to enter token values as a number, and props receive a converted

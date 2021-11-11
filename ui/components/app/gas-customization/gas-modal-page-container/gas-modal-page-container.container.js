@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { addHexPrefix } from '../../../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../../../shared/modules/hexstring-utils';
 import {
   hideModal,
   createRetryTransaction,

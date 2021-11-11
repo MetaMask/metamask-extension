@@ -1,8 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
-
-import { addHexPrefix } from 'ethereumjs-util';
-
+import { addHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { SECONDARY } from '../../helpers/constants/common';
 import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
 import {

@@ -2,7 +2,7 @@ import {
   conversionUtil,
   multiplyCurrencies,
 } from '../../../shared/modules/conversion.utils';
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 const MIN_GAS_PRICE_DEC = '0';
 const MIN_GAS_PRICE_HEX = parseInt(MIN_GAS_PRICE_DEC, 10).toString(16);

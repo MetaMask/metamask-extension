@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix } from 'ethereumjs-util';
 import { debounce } from 'lodash';
 import {
   conversionGreaterThan,
@@ -83,6 +82,7 @@ import {
 
 import { resetEnsResolution } from '../ens';
 import {
+  addHexPrefix,
   isBurnAddress,
   isValidHexAddress,
 } from '../../../shared/modules/hexstring-utils';

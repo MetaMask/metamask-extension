@@ -1,5 +1,8 @@
 import { createSelector } from 'reselect';
-import { addHexPrefix } from '../../app/scripts/lib/util';
+import {
+  addHexPrefix,
+  toChecksumHexAddress,
+} from '../../shared/modules/hexstring-utils';
 import {
   MAINNET_CHAIN_ID,
   TEST_CHAINS,
@@ -32,7 +35,6 @@ import {
 
 import { TEMPLATED_CONFIRMATION_MESSAGE_TYPES } from '../pages/confirmation/templates';
 
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { DAY } from '../../shared/constants/time';
 import {
   getNativeCurrency,

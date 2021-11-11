@@ -1,5 +1,5 @@
 import { ETH, GWEI, WEI } from '../constants/common';
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../shared/modules/hexstring-utils';
 import {
   conversionUtil,
   addCurrencies,

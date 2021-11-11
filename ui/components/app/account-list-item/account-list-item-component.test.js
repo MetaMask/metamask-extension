@@ -2,12 +2,10 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 import Identicon from '../../ui/identicon';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import AccountListItem from './account-list-item';
 
-jest.mock('../../../../shared/modules/hexstring-utils', () => ({
-  toChecksumHexAddress: jest.fn(() => 'mockCheckSumAddress'),
-}));
+const mockAddress = '0x829bd824b016326a401d083b33d0922933330000';
+const mockChecksumAddress = '0x829BD824B016326a401D083b33d0922933330000';
 
 describe('AccountListItem Component', () => {
   let wrapper, propsMethodSpies;
@@ -22,7 +20,7 @@ describe('AccountListItem Component', () => {
       wrapper = shallow(
         <AccountListItem
           account={{
-            address: 'mockAddress',
+            address: mockAddress,
             name: 'mockName',
             balance: 'mockBalance',
           }}
@@ -57,7 +55,7 @@ describe('AccountListItem Component', () => {
       onClick();
       expect(propsMethodSpies.handleClick.callCount).toStrictEqual(1);
       expect(propsMethodSpies.handleClick.getCall(0).args).toStrictEqual([
-        { address: 'mockAddress', name: 'mockName', balance: 'mockBalance' },
+        { address: mockAddress, name: 'mockName', balance: 'mockBalance' },
       ]);
     });
 
@@ -125,8 +123,7 @@ describe('AccountListItem Component', () => {
       );
       expect(
         wrapper.find('.account-list-item__account-address').text(),
-      ).toStrictEqual('mockCheckSumAddress');
-      expect(toChecksumHexAddress).toHaveBeenCalledWith('mockAddress');
+      ).toStrictEqual(mockChecksumAddress);
     });
 
     it('should not render the account address as a checksumAddress if displayAddress is false', () => {

@@ -15,7 +15,7 @@ import {
   getDraftTransactionID,
 } from '../../../ducks/send';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { addHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import { getSendToAccounts } from '../../../ducks/metamask/metamask';
 import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
 import SendFooter from './send-footer.component';

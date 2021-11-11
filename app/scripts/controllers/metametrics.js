@@ -1,6 +1,6 @@
 import { merge, omit } from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
-import { bufferToHex, keccak } from 'ethereumjs-util';
+import { bufferToHex, keccak } from '../../../shared/modules/hexstring-utils';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,

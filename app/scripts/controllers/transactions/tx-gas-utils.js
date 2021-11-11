@@ -1,8 +1,12 @@
 import EthQuery from 'ethjs-query';
 import log from 'loglevel';
-import { addHexPrefix } from 'ethereumjs-util';
 import { cloneDeep } from 'lodash';
-import { hexToBn, BnMultiplyByFraction, bnToHex } from '../../lib/util';
+import {
+  addHexPrefix,
+  hexToBn,
+  bnToHex,
+} from '../../../../shared/modules/hexstring-utils';
+import { BnMultiplyByFraction } from '../../lib/util';
 
 /**
  * Result of gas analysis, including either a gas estimate for a successful analysis, or

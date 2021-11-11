@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { addHexPrefix } from 'ethereumjs-util';
 import { useMemo } from 'react';
 import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import { isEIP1559Transaction } from '../../shared/modules/transaction.utils';
+import { addHexPrefix } from '../../shared/modules/hexstring-utils';
 import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
 

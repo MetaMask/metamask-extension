@@ -1,11 +1,13 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { addHexPrefix } from '../../../lib/util';
 import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../../../shared/constants/transaction';
 import { isEIP1559Transaction } from '../../../../../shared/modules/transaction.utils';
-import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import {
+  isValidHexAddress,
+  addHexPrefix,
+} from '../../../../../shared/modules/hexstring-utils';
 
 const normalizers = {
   from: addHexPrefix,

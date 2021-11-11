@@ -1,9 +1,9 @@
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
-import { toBuffer } from 'ethereumjs-util';
 import { TransactionFactory } from '@ethereumjs/tx';
 import { ObservableStore } from '@metamask/obs-store';
 import sinon from 'sinon';
+import { toBuffer } from '../../../../shared/modules/buffer-utils';
 
 import {
   createTestProviderTools,

@@ -1,5 +1,4 @@
 import extension from 'extensionizer';
-import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
 import {
@@ -73,17 +72,6 @@ const getPlatform = () => {
 };
 
 /**
- * Converts a hex string to a BN object
- *
- * @param {string} inputHex - A number represented as a hex string
- * @returns {Object} A BN object
- *
- */
-function hexToBn(inputHex) {
-  return new BN(stripHexPrefix(inputHex), 16);
-}
-
-/**
  * Used to multiply a BN by a fraction
  *
  * @param {BN} targetBN - The number to multiply by a fraction
@@ -116,39 +104,6 @@ function checkForError() {
   return new Error(lastError.message);
 }
 
-/**
- * Prefixes a hex string with '0x' or '-0x' and returns it. Idempotent.
- *
- * @param {string} str - The string to prefix.
- * @returns {string} The prefixed string.
- */
-const addHexPrefix = (str) => {
-  if (typeof str !== 'string' || str.match(/^-?0x/u)) {
-    return str;
-  }
-
-  if (str.match(/^-?0X/u)) {
-    return str.replace('0X', '0x');
-  }
-
-  if (str.startsWith('-')) {
-    return str.replace('-', '-0x');
-  }
-
-  return `0x${str}`;
-};
-
-/**
- * Converts a BN object to a hex string with a '0x' prefix
- *
- * @param {BN} inputBn - The BN to convert to a hex string
- * @returns {string} - A '0x' prefixed hex string
- *
- */
-function bnToHex(inputBn) {
-  return addHexPrefix(inputBn.toString(16));
-}
-
 function getChainType(chainId) {
   if (chainId === MAINNET_CHAIN_ID) {
     return 'mainnet';
@@ -161,10 +116,7 @@ function getChainType(chainId) {
 export {
   getPlatform,
   getEnvironmentType,
-  hexToBn,
   BnMultiplyByFraction,
   checkForError,
-  addHexPrefix,
-  bnToHex,
   getChainType,
 };

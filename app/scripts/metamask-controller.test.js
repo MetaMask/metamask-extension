@@ -2,7 +2,6 @@ import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
-import { pubToAddress, bufferToHex } from 'ethereumjs-util';
 import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import proxyquire from 'proxyquire';
@@ -10,7 +9,11 @@ import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
-import { addHexPrefix } from './lib/util';
+import {
+  addHexPrefix,
+  pubToAddress,
+  bufferToHex,
+} from '../../shared/modules/hexstring-utils';
 
 const Ganache = require('../../test/e2e/ganache');
 

@@ -2,7 +2,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
 import BN from 'bn.js';
 import createId from '../../../shared/modules/random-id';
-import { bnToHex } from '../lib/util';
+import { bnToHex } from '../../../shared/modules/hexstring-utils';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 import {
