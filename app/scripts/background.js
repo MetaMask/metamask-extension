@@ -124,6 +124,9 @@ async function initialize() {
   const initLangCode = await getFirstPreferredLangCode();
   await setupController(initState, initLangCode);
   log.info('MetaMask initialization complete.');
+  setTimeout(() => {
+    throw new Error('TEST ERROR');
+  }, 0);
 }
 
 //
