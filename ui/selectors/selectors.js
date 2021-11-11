@@ -5,6 +5,8 @@ import {
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
+  OPTIMISM_CHAIN_ID,
+  OPTIMISM_TESTNET_CHAIN_ID,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -670,4 +672,19 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
     transportTypePreferenceIsWebHID &&
     (webHidIsNotConnected || transportIsNotSuccessfullyCreated)
   );
+}
+
+export function getIsOptimism(state) {
+  return (
+    getCurrentChainId(state) === OPTIMISM_CHAIN_ID ||
+    getCurrentChainId(state) === OPTIMISM_TESTNET_CHAIN_ID
+  );
+}
+
+export function getNetworkSupportsSettingGasPrice(state) {
+  return !getIsOptimism(state);
+}
+
+export function getIsMultiLayerFeeNetwork(state) {
+  return getIsOptimism(state);
 }

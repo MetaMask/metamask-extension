@@ -7,7 +7,9 @@ import { renderWithProvider } from '../../../../test/jest/rendering';
 import AdvancedGasControls from './advanced-gas-controls.component';
 
 const renderComponent = (props) => {
-  const store = configureMockStore([])({ metamask: { identities: [] } });
+  const store = configureMockStore([])({
+    metamask: { identities: [], provider: {} },
+  });
   return renderWithProvider(<AdvancedGasControls {...props} />, store);
 };
 
