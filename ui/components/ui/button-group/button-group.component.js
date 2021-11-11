@@ -21,7 +21,7 @@ export default class ButtonGroup extends PureComponent {
      */
     children: PropTypes.array,
     /**
-     * classname is used for children prop, changing it in storybook won't change anything
+     * Adds a className to the root div of the of the ButtonGroup component
      */
     className: PropTypes.string,
     /**
