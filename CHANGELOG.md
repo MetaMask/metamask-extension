@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.5.1]
-### Uncategorized
-- Fix yarn.lock
-- Support for Layer 2 networks with transaction fees on both layers ([#12658](https://github.com/MetaMask/metamask-extension/pull/12658))
+### Changed
+- [#12658](https://github.com/MetaMask/metamask-extension/pull/12658): Properly display transaction fees on layer two networks like Optimism which have fees on both layers
 
 ## [10.5.0]
 ### Added
