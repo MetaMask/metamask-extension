@@ -2,7 +2,6 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { tick } from '../../../../../test/lib/tick';
 import { TRANSACTION_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
