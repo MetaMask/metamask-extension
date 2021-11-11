@@ -325,7 +325,6 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "@ethersproject/keccak256": true,
-        "@ethersproject/logger": true,
         "@ethersproject/sha2": true,
         "@ethersproject/strings": true
       }
