@@ -89,7 +89,7 @@ export function getActivities(transaction, isFirstTransaction = false) {
       // need to cache these values because the status update history events don't provide us with
       // the latest gas limit and gas price.
       cachedGasLimit = gas;
-      cachedGasPrice = eip1559Price || gasPrice || paramsGasPrice || '0x0';
+      cachedGasPrice = eip1559Price || gasPrice || '0x0';
 
       if (isFirstTransaction) {
         return acc.concat({
@@ -118,7 +118,8 @@ export function getActivities(transaction, isFirstTransaction = false) {
           switch (path) {
             case STATUS_PATH: {
               const gasFee =
-                cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
+                (cachedGasLimit === '0x0' && cachedGasPrice === '0x0') ||
+                (paramsGasLimit !== '0x0' && paramsGasPrice !== '0x0')
                   ? getHexGasTotal({
                       gasLimit: paramsGasLimit,
                       gasPrice: paramsEip1559Price || paramsGasPrice,
