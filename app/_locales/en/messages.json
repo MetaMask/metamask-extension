@@ -2853,13 +2853,13 @@
     "message": "Base Fee (GWEI)"
   },
   "transactionHistoryL1GasLabel": {
-    "message": "Total L1 gas fee"
+    "message": "Total L1 Gas Fee"
   },
   "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 gas limit`"
+    "message": "L2 Gas Limit"
   },
   "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 gas price`"
+    "message": "L2 Gas Price"
   },
   "transactionHistoryMaxFeePerGas": {
     "message": "Max Fee Per Gas"
