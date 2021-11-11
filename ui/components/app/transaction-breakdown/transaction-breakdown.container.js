@@ -40,10 +40,10 @@ const mapStateToProps = (state, ownProps) => {
 
   let totalInHex = sumHexes(hexGasTotal, value);
 
-  const isOptimism =
+  const isMultiLayerFeeNetwork =
     getIsMultiLayerFeeNetwork(state) && l1HexGasTotal !== undefined;
 
-  if (isOptimism) {
+  if (isMultiLayerFeeNetwork) {
     totalInHex = sumHexes(totalInHex, l1HexGasTotal);
   }
 
@@ -60,7 +60,7 @@ const mapStateToProps = (state, ownProps) => {
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
-    isOptimism,
+    isMultiLayerFeeNetwork,
     l1HexGasTotal,
   };
 };
