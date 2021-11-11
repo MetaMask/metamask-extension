@@ -73,9 +73,6 @@
   "decimalsMustZerotoTen": {
     "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
   },
-  "defaultNetwork": {
-    "message": "Het standaardnetwerk voor Ether-transacties is Mainnet."
-  },
   "depositEther": {
     "message": "Stort Ether"
   },

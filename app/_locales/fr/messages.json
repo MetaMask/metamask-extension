@@ -257,9 +257,6 @@
   "decimalsMustZerotoTen": {
     "message": "Les décimales doivent être plus grandes que 0 et inférieures à 36."
   },
-  "defaultNetwork": {
-    "message": "Le réseau par défaut pour les transactions Ether est le \"Réseau principal Ethereum\"."
-  },
   "delete": {
     "message": "Supprimer"
   },
@@ -828,9 +825,6 @@
   },
   "selectAnAccount": {
     "message": "Selectionner un compte"
-  },
-  "selectAnAccountHelp": {
-    "message": "Selectionner le compte à afficher dans MetaMask"
   },
   "selectEachPhrase": {
     "message": "Veuillez sélectionner chaque phrase afin de vous assurer qu'elle est correcte."

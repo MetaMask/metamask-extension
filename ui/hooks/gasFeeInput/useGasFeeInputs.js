@@ -1,15 +1,19 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { EDIT_GAS_MODES } from '../../../shared/constants/gas';
+import {
+  CUSTOM_GAS_ESTIMATE,
+  GAS_RECOMMENDATIONS,
+  EDIT_GAS_MODES,
+} from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
+import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../helpers/utils/confirm-tx.util';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
 } from '../../selectors';
-import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { hexToDecimal } from '../../helpers/utils/conversions.util';
-import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../helpers/utils/confirm-tx.util';
+import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { useGasFeeErrors } from './useGasFeeErrors';
@@ -64,7 +68,7 @@ import { useGasEstimates } from './useGasEstimates';
  * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(
-  defaultEstimateToUse = 'medium',
+  defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
   transaction,
   minimumGasLimit = '0x5208',
   editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
@@ -218,7 +222,7 @@ export function useGasFeeInputs(
   );
 
   const onManualChange = useCallback(() => {
-    setInternalEstimateToUse('custom');
+    setInternalEstimateToUse(CUSTOM_GAS_ESTIMATE);
     handleGasLimitOutOfBoundError();
     // Restore existing values
     setGasPrice(gasPrice);

@@ -93,7 +93,10 @@ import {
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
-import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  GAS_RECOMMENDATIONS,
+} from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import ViewQuotePriceDifference from './view-quote-price-difference';
@@ -117,7 +120,10 @@ export default function ViewQuote() {
     acknowledgedPriceDifference,
     setAcknowledgedPriceDifference,
   ] = useState(false);
-  const priceDifferenceRiskyBuckets = ['high', 'medium'];
+  const priceDifferenceRiskyBuckets = [
+    GAS_RECOMMENDATIONS.HIGH,
+    GAS_RECOMMENDATIONS.MEDIUM,
+  ];
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const quotes = useSelector(getQuotes, isEqual);
@@ -163,8 +169,8 @@ export default function ViewQuote() {
   if (networkAndAccountSupports1559) {
     // For Swaps we want to get 'high' estimations by default.
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    gasFeeInputs = useGasFeeInputs('high', {
-      userFeeLevel: swapsUserFeeLevel || 'high',
+    gasFeeInputs = useGasFeeInputs(GAS_RECOMMENDATIONS.HIGH, {
+      userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
     });
   }
 
@@ -592,8 +598,8 @@ export default function ViewQuote() {
   useEffect(() => {
     if (
       acknowledgedPriceDifference &&
-      lastPriceDifferenceBucket === 'medium' &&
-      priceSlippageBucket === 'high'
+      lastPriceDifferenceBucket === GAS_RECOMMENDATIONS.MEDIUM &&
+      priceSlippageBucket === GAS_RECOMMENDATIONS.HIGH
     ) {
       setAcknowledgedPriceDifference(false);
     }
@@ -695,7 +701,7 @@ export default function ViewQuote() {
         {showEditGasPopover && networkAndAccountSupports1559 && (
           <EditGasPopover
             transaction={{
-              userFeeLevel: swapsUserFeeLevel || 'high',
+              userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
               txParams: {
                 maxFeePerGas,
                 maxPriorityFeePerGas,
@@ -703,7 +709,7 @@ export default function ViewQuote() {
               },
             }}
             minimumGasLimit={usedGasLimit}
-            defaultEstimateToUse="high"
+            defaultEstimateToUse={GAS_RECOMMENDATIONS.HIGH}
             mode={EDIT_GAS_MODES.SWAPS}
             confirmButtonText={t('submit')}
             onClose={onCloseEditGasPopover}

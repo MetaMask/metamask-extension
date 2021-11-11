@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "Расшифровать запрос"
   },
-  "defaultNetwork": {
-    "message": "Сетью по умолчанию для транзакций Ether является Mainnet."
-  },
   "delete": {
     "message": "Удалить"
   },
@@ -1619,13 +1616,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "Этот счет уже подключен к MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Выберите счет для просмотра в MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Не видите свой счет? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "Выберите каждую фразу, чтобы убедиться, что она верна."
   },
@@ -2105,12 +2095,6 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Разрешить этому сайту переключить сеть?"
-  },
-  "switchLedgerPaths": {
-    "message": "Переключить пути Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Выберите путь Ledger для просмотра других счетов"
   },
   "switchNetwork": {
     "message": "Переключить сеть"

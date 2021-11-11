@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "अनुरोध डिक्रिप्ट करें"
   },
-  "defaultNetwork": {
-    "message": "Ether के लेनदेन के लिए डिफ़ॉल्ट नेटवर्क Mainnet है।"
-  },
   "delete": {
     "message": "हटाएँ"
   },
@@ -1619,13 +1616,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "यह खाता पहले ही MetaMask से जुड़ा हुआ है"
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask में देखने के लिए खाते का चयन करें।"
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "अपना खाता नहीं देख पा रहे हैं? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "कृपया प्रत्येक वाक्यांश का चयन करें, ताकि यह सुनिश्चित हो सके कि यह सही है।"
   },
@@ -2105,12 +2095,6 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "इस साइट को नेटवर्क स्विच करने की अनुमति दें?"
-  },
-  "switchLedgerPaths": {
-    "message": "Ledger पथ स्विच करें"
-  },
-  "switchLedgerPathsText": {
-    "message": "अन्य खाते देखने के लिए Ledger पथ का चयन करें"
   },
   "switchNetwork": {
     "message": "नेटवर्क स्विच करें"

@@ -433,9 +433,6 @@
   "decryptRequest": {
     "message": "解密请求"
   },
-  "defaultNetwork": {
-    "message": "默认以太坊（Ether）交易网络为主网。"
-  },
   "delete": {
     "message": "删除"
   },
@@ -506,7 +503,7 @@
     "message": "编辑权限"
   },
   "encryptionPublicKeyNotice": {
-    "message": "$1 希望得到您的加密公钥。同意后该网站将可以想您发送加密信息。",
+    "message": "$1 希望得到您的加密公钥。同意后该网站将可以向您发送加密信息。",
     "description": "$1 is the web3 site name"
   },
   "encryptionPublicKeyRequest": {
@@ -1302,9 +1299,6 @@
   },
   "selectAnAccount": {
     "message": "选择一个账户"
-  },
-  "selectAnAccountHelp": {
-    "message": "选择在 MetaMask 中查看的账户"
   },
   "selectEachPhrase": {
     "message": "请选择每个单词，以确保其正确性。"

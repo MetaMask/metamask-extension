@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "Descriptografar solicitação"
   },
-  "defaultNetwork": {
-    "message": "A rede padrão das transações em ether é a Mainnet."
-  },
   "delete": {
     "message": "Excluir"
   },
@@ -1619,13 +1616,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "Esta conta já foi conectada ao MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Selecione uma conta a ser exibida no MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Não está vendo sua conta? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "Selecione cada frase para garantir que esteja correta."
   },
@@ -2105,12 +2095,6 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Permitir que este site mude a rede?"
-  },
-  "switchLedgerPaths": {
-    "message": "Mudar caminhos do Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Selecione o caminho do Ledger para ver outras contas"
   },
   "switchNetwork": {
     "message": "Trocar de rede"

@@ -436,9 +436,6 @@
   "decryptRequest": {
     "message": "Decifra richiesta"
   },
-  "defaultNetwork": {
-    "message": "La rete predefinita per transazioni in Ether è la Rete Ethereum Principale."
-  },
   "delete": {
     "message": "Elimina"
   },
@@ -1308,9 +1305,6 @@
   },
   "selectAnAccount": {
     "message": "Seleziona un Account"
-  },
-  "selectAnAccountHelp": {
-    "message": "Selezione l'account da visualizzare in MetaMask"
   },
   "selectEachPhrase": {
     "message": "Per favore seleziona ogni frase in ordine per assicurarti che sia corretta."

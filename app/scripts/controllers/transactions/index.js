@@ -26,10 +26,13 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_ENVELOPE_TYPES,
 } from '../../../../shared/constants/transaction';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import {
   GAS_LIMITS,
   GAS_ESTIMATE_TYPES,
+  GAS_RECOMMENDATIONS,
+  CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import {
@@ -435,7 +438,7 @@ export default class TransactionController extends EventEmitter {
       ) {
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
-        txMeta.userFeeLevel = 'custom';
+        txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
       } else {
         if (
           (defaultMaxFeePerGas &&
@@ -444,9 +447,9 @@ export default class TransactionController extends EventEmitter {
             !txMeta.txParams.maxPriorityFeePerGas) ||
           txMeta.origin === 'metamask'
         ) {
-          txMeta.userFeeLevel = 'medium';
+          txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
         } else {
-          txMeta.userFeeLevel = 'custom';
+          txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         }
 
         if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {
@@ -1445,8 +1448,8 @@ export default class TransactionController extends EventEmitter {
       sensitiveProperties: {
         status,
         transaction_envelope_type: isEIP1559Transaction(txMeta)
-          ? 'fee-market'
-          : 'legacy',
+          ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
+          : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
         first_seen: time,
         gas_limit: gasLimit,
         ...gasParamsInGwei,

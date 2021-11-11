@@ -64,7 +64,7 @@ const accountModalStyle = {
     margin: '0 auto',
   },
   laptopModalStyle: {
-    width: '360px',
+    width: '335px',
     // top: 'calc(33% + 45px)',
     boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     borderRadius: '4px',

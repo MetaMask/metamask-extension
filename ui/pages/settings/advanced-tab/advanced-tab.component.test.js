@@ -24,7 +24,7 @@ describe('AdvancedTab Component', () => {
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
         ledgerTransportType={LEDGER_TRANSPORT_TYPES.U2F}
-        setLedgerLivePreference={() => undefined}
+        setLedgerTransportPreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}
       />,
@@ -52,7 +52,7 @@ describe('AdvancedTab Component', () => {
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
         ledgerTransportType={LEDGER_TRANSPORT_TYPES.U2F}
-        setLedgerLivePreference={() => undefined}
+        setLedgerTransportPreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}
         setShowTestNetworks={toggleTestnet}

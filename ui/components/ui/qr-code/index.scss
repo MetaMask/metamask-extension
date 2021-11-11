@@ -25,10 +25,41 @@
     margin-bottom: 9px;
   }
 
+  &__address-container {
+    display: flex;
+    justify-content: center;
+
+    &__tooltip-wrapper {
+      width: 100%;
+    }
+
+    &:hover {
+      cursor: pointer;
+
+      .qr-code__copy-icon__svg {
+        fill: $primary-1;
+      }
+    }
+  }
+
   &__address {
     @include H7;
 
-    background-color: $ui-1;
-    padding: 12px;
+    background-color: $Grey-000;
+    width: 76%;
+    padding: 8px 12px;
+    word-break: break-all;
+    text-align: center;
+  }
+
+  &__copy-icon {
+    height: 13px;
+    padding: 17px 0;
+    position: absolute;
+    right: 24px;
+
+    &__svg {
+      fill: $ui-5;
+    }
   }
 }

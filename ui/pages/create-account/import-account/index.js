@@ -41,7 +41,7 @@ export default class AccountImportSubview extends Component {
     return (
       <>
         <div className="page-container__header">
-          <div className="page-container__title">Import Account</div>
+          <div className="page-container__title">{t('importAccount')}</div>
           <div className="page-container__subtitle">
             {t('importAccountMsg')}
             <span
