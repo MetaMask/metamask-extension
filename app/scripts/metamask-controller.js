@@ -37,7 +37,10 @@ import {
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { toChecksumHexAddress, stripHexPrefix } from '../../shared/modules/hexstring-utils';
+import {
+  toChecksumHexAddress,
+  stripHexPrefix,
+} from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 import { POLLING_TOKEN_ENVIRONMENT_TYPES } from '../../shared/constants/app';
 
