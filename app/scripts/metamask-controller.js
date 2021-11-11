@@ -17,6 +17,7 @@ import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
+import { captureException } from '@sentry/browser';
 import {
   AddressBookController,
   ApprovalController,
@@ -190,6 +191,7 @@ export default class MetamaskController extends EventEmitter {
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
       initState: initState.MetaMetricsController,
+      captureException,
     });
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
