@@ -1,4 +1,3 @@
-import extension from 'extensionizer';
 import EventEmitter from 'safe-event-emitter';
 import ExtensionPlatform from '../platforms/extension';
 
@@ -20,7 +19,7 @@ export default class NotificationManager extends EventEmitter {
   constructor() {
     super();
     this.platform = new ExtensionPlatform();
-    extension.windows.onRemoved.addListener(this._onWindowClosed.bind(this));
+    this.platform.addOnRemovedListener(this._onWindowClosed.bind(this));
   }
 
   /**

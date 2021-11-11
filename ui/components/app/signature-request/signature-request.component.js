@@ -33,7 +33,7 @@ export default class SignatureRequest extends PureComponent {
     }
   }
 
-  _beforeUnload = (_) => {
+  _beforeUnload = () => {
     const {
       txData: { type },
     } = this.props;
