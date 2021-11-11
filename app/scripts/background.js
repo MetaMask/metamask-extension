@@ -342,13 +342,26 @@ function setupController(initState, initLangCode) {
       // communication with popup
       controller.isClientOpen = true;
 
-      // catch stream destroyed or ended already errors
+      let communicationError;
       try {
         controller.setupTrustedCommunication(portStream, remotePort.sender);
-      } catch (e) {
-        if (e.message.includes('already')) {
-          console.error(e);
+      } catch (error) {
+        communicationError = error;
+      }
+
+      if (communicationError) {
+        // Prevent disconnect related errors from bubbling up.
+        // This would occur if the connection being established was terminated
+        // during initialization.
+        if (
+          communicationError.message.startsWith(
+            'ObjectMultiplex - parent stream already',
+          )
+        ) {
+          console.error(communicationError);
+          return;
         }
+        throw communicationError;
       }
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
@@ -409,12 +422,16 @@ function setupController(initState, initLangCode) {
   function connectExternal(remotePort) {
     const portStream = new PortStream(remotePort);
 
-    // catch stream destroyed or ended already errors
     try {
       controller.setupUntrustedCommunication(portStream, remotePort.sender);
-    } catch (e) {
-      if (e.message.includes('already')) {
-        console.error(e);
+    } catch (error) {
+      // Prevent disconnect related errors from bubbling up.
+      // This would occur if the connection being established was terminated
+      // during initialization.
+      if (error.message.startsWith('ObjectMultiplex - parent stream already')) {
+        console.error(error);
+      } else {
+        throw error;
       }
     }
   }
