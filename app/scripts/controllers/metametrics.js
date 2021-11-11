@@ -307,13 +307,9 @@ export default class MetaMetricsController {
   trackEvent(payload, options) {
     // validation is not caught and handled
     this.validatePayload(payload);
-    try {
-      this.submitEvent(payload, options).catch((err) =>
-        this._captureException(err),
-      );
-    } catch (err) {
-      console.error(err);
-    }
+    this.submitEvent(payload, options).catch((err) =>
+      this._captureException(err),
+    );
   }
 
   /**
