@@ -142,4 +142,5 @@ export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
  */
 
 export const REJECT_NOTFICIATION_CLOSE = 'Cancel Via Notification Close';
-export const REJECT_NOTFICIATION_CLOSE_SIG = 'Cancel Sig Request Via Notification Close'
+export const REJECT_NOTFICIATION_CLOSE_SIG =
+  'Cancel Sig Request Via Notification Close';
