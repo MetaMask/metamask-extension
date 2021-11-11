@@ -33,31 +33,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
     nativeCurrency: PropTypes.string.isRequired,
   };
 
-  componentDidMount = () => {
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
-  };
-
-  componentWillUnmount = () => {
-    this._removeBeforeUnload();
-  };
-
-  _beforeUnload = async (event) => {
-    const { cancelEncryptionPublicKey, txData } = this.props;
-    await cancelEncryptionPublicKey(txData, event);
-  };
-
-  _removeBeforeUnload = () => {
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
-      window.removeEventListener('beforeunload', this._beforeUnload);
-    }
-  };
-
   renderHeader = () => {
     return (
       <div className="request-encryption-public-key__header">

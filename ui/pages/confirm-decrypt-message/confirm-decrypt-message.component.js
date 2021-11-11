@@ -44,31 +44,6 @@ export default class ConfirmDecryptMessage extends Component {
     hasCopied: false,
   };
 
-  componentDidMount = () => {
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
-  };
-
-  componentWillUnmount = () => {
-    this._removeBeforeUnload();
-  };
-
-  _beforeUnload = async (event) => {
-    const { cancelDecryptMessage, txData } = this.props;
-    await cancelDecryptMessage(txData, event);
-  };
-
-  _removeBeforeUnload = () => {
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
-      window.removeEventListener('beforeunload', this._beforeUnload);
-    }
-  };
-
   copyMessage = () => {
     copyToClipboard(this.state.rawMessage);
     this.context.metricsEvent({
