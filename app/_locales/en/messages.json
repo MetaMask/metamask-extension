@@ -549,6 +549,9 @@
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
   },
+  "custom": {
+    "message": "Advanced"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
@@ -560,6 +563,13 @@
   },
   "customToken": {
     "message": "Custom Token"
+  },
+  "dappSuggested": {
+    "message": "Site suggested"
+  },
+  "dappSuggestedTooltip": {
+    "message": "$1 has recommended this price.",
+    "description": "$1 represents the Dapp's origin"
   },
   "data": {
     "message": "Data"
@@ -1015,6 +1025,9 @@
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
+  "gasPriceLabel": {
+    "message": "Gas price"
+  },
   "gasTimingMinutes": {
     "message": "$1 minutes",
     "description": "$1 represents a number of minutes"
@@ -1112,6 +1125,9 @@
   },
   "hideZeroBalanceTokens": {
     "message": "Hide Tokens Without Balance"
+  },
+  "high": {
+    "message": "Aggressive"
   },
   "history": {
     "message": "History"
@@ -1349,6 +1365,9 @@
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
+  "low": {
+    "message": "Low"
+  },
   "lowPriorityMessage": {
     "message": "Future transactions will queue after this one. This price was last seen was some time ago."
   },
@@ -1365,11 +1384,17 @@
   "max": {
     "message": "Max"
   },
+  "maxBaseFee": {
+    "message": "Max base fee"
+  },
   "maxFee": {
     "message": "Max fee"
   },
   "maxPriorityFee": {
     "message": "Max priority fee"
+  },
+  "medium": {
+    "message": "Market"
   },
   "memo": {
     "message": "memo"
