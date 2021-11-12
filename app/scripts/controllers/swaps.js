@@ -280,7 +280,7 @@ export default class SwapsController {
 
       // For a user to be able to swap a token, they need to have approved the MetaSwap contract to withdraw that token.
       // _getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is greater
-      // than 0, it means that approval has already occured and is not needed. Otherwise, for tokens to be swapped, a new
+      // than 0, it means that approval has already occurred and is not needed. Otherwise, for tokens to be swapped, a new
       // call of the ERC-20 approve method is required.
       approvalRequired =
         allowance.eq(0) &&

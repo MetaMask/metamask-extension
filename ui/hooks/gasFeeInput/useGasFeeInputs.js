@@ -101,6 +101,7 @@ export function useGasFeeInputs(
     return defaultEstimateToUse;
   });
 
+<<<<<<< HEAD
   const [estimateUsed, setEstimateUsed] = useState(() => {
     if (areDappSuggestedAndTxParamGasFeesTheSame(transaction)) {
       return 'dappSuggested';
@@ -109,6 +110,16 @@ export function useGasFeeInputs(
   });
 
   const [gasLimit, setGasLimit] = useState(() =>
+=======
+  const [
+    isUsingDappSuggestedGasFees,
+    setIsUsingDappSuggestedGasFees,
+  ] = useState(() =>
+    Boolean(areDappSuggestedAndTxParamGasFeesTheSame(transaction)),
+  );
+
+  const [gasLimit, setGasLimit] = useState(
+>>>>>>> 39cb29d5b530000c8478088a91f99c8a3476ec0a
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
   );
 
@@ -220,7 +231,11 @@ export function useGasFeeInputs(
       setMaxPriorityFeePerGas(null);
       setGasPrice(null);
       setGasPriceHasBeenManuallySet(false);
+<<<<<<< HEAD
       setEstimateUsed(estimateLevel);
+=======
+      setIsUsingDappSuggestedGasFees(false);
+>>>>>>> 39cb29d5b530000c8478088a91f99c8a3476ec0a
     },
     [
       setInternalEstimateToUse,
@@ -229,7 +244,11 @@ export function useGasFeeInputs(
       setMaxPriorityFeePerGas,
       setGasPrice,
       setGasPriceHasBeenManuallySet,
+<<<<<<< HEAD
       setEstimateUsed,
+=======
+      setIsUsingDappSuggestedGasFees,
+>>>>>>> 39cb29d5b530000c8478088a91f99c8a3476ec0a
     ],
   );
 
@@ -276,7 +295,11 @@ export function useGasFeeInputs(
     estimatedMaximumNative,
     estimatedMinimumNative,
     isGasEstimatesLoading,
+<<<<<<< HEAD
     estimateUsed,
+=======
+    isUsingDappSuggestedGasFees,
+>>>>>>> 39cb29d5b530000c8478088a91f99c8a3476ec0a
     gasFeeEstimates,
     gasEstimateType,
     estimatedGasFeeTimeBounds,
@@ -289,6 +312,9 @@ export function useGasFeeInputs(
     gasWarnings,
     hasGasErrors,
     supportsEIP1559,
+<<<<<<< HEAD
     updateTransaction,
+=======
+>>>>>>> 39cb29d5b530000c8478088a91f99c8a3476ec0a
   };
 }

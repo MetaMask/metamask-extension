@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.5.1]
+### Changed
+- [#12658](https://github.com/MetaMask/metamask-extension/pull/12658): Properly display transaction fees on layer two networks like Optimism which have fees on both layers
+
 ## [10.5.0]
 ### Added
 - [#12411](https://github.com/MetaMask/metamask-extension/pull/12411): Add support for connecting Ledger devices to MetaMask via WebHID
@@ -2546,7 +2550,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.5.1...HEAD
+[10.5.1]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...v10.5.1
 [10.5.0]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...v10.5.0
 [10.4.1]: https://github.com/MetaMask/metamask-extension/compare/v10.4.0...v10.4.1
 [10.4.0]: https://github.com/MetaMask/metamask-extension/compare/v10.3.0...v10.4.0
