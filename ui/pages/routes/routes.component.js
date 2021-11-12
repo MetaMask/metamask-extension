@@ -157,11 +157,13 @@ export default class Routes extends Component {
           component={ImportTokenPage}
           exact
         />
-        <Authenticated
-          path={ADD_COLLECTIBLE_ROUTE}
-          component={AddCollectiblePage}
-          exact
-        />
+        {process.env.COLLECTIBLES_V1 ? (
+          <Authenticated
+            path={ADD_COLLECTIBLE_ROUTE}
+            component={AddCollectiblePage}
+            exact
+          />
+        ) : null}
         <Authenticated
           path={CONFIRM_IMPORT_TOKEN_ROUTE}
           component={ConfirmImportTokenPage}
