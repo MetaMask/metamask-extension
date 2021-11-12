@@ -31,6 +31,7 @@ import {
   doesAddressRequireLedgerHidConnection,
   getUseTokenDetection,
   getTokenList,
+  getIsMultiLayerFeeNetwork,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -178,6 +179,8 @@ const mapStateToProps = (state, ownProps) => {
     fromAddress,
   );
 
+  const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
+
   return {
     balance,
     fromAddress,
@@ -226,6 +229,7 @@ const mapStateToProps = (state, ownProps) => {
     showLedgerSteps: fromAddressIsLedger,
     nativeCurrency,
     hardwareWalletRequiresConnection,
+    isMultiLayerFeeNetwork,
   };
 };
 

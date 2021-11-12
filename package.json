@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.5.0",
+  "version": "10.5.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -98,6 +98,7 @@
     "@babel/runtime": "^7.5.5",
     "@download/blockies": "^1.0.3",
     "@ensdomains/content-hash": "^2.5.6",
+    "@eth-optimism/contracts": "0.0.0-2021919175625",
     "@ethereumjs/common": "^2.3.1",
     "@ethereumjs/tx": "^3.2.1",
     "@formatjs/intl-relativetimeformat": "^5.2.6",
@@ -361,7 +362,9 @@
       "github:assemblyscript/assemblyscript": false,
       "tiny-secp256k1": false,
       "@lavamoat/preinstall-always-fail": false,
-      "fsevents": false
+      "fsevents": false,
+      "node-hid": false,
+      "usb": false
     }
   }
 }

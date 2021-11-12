@@ -7,6 +7,7 @@ import FormField from '../../ui/form-field';
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
 import { getIsGasEstimatesLoading } from '../../../ducks/metamask/metamask';
+import { getNetworkSupportsSettingGasPrice } from '../../../selectors/selectors';
 
 export default function AdvancedGasControls({
   gasEstimateType,
@@ -33,6 +34,10 @@ export default function AdvancedGasControls({
     (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
       gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE ||
       isGasEstimatesLoading);
+
+  const networkSupportsSettingGasPrice = useSelector(
+    getNetworkSupportsSettingGasPrice,
+  );
 
   return (
     <div className="advanced-gas-controls">
@@ -106,6 +111,7 @@ export default function AdvancedGasControls({
                 ? getGasFormErrorText(gasErrors.gasPrice, t)
                 : null
             }
+            disabled={!networkSupportsSettingGasPrice}
           />
         </>
       )}
