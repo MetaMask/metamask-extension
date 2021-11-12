@@ -879,3 +879,12 @@ export const countDecimals = (value) => {
   if (!value || Math.floor(value) === value) return 0;
   return value.toString().split('.')[1]?.length || 0;
 };
+
+export const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
+  if (!Number.isInteger(remainingTimeInSec)) {
+    return '0:00';
+  }
+  const minutes = Math.floor(remainingTimeInSec / 60);
+  const seconds = remainingTimeInSec % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};

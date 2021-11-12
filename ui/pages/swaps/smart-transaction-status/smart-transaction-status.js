@@ -42,6 +42,7 @@ import {
 
 import SwapsFooter from '../swaps-footer';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import { showRemainingTimeInMinAndSec } from '../swaps.util';
 import SuccessIcon from './success-icon';
 import RevertedIcon from './reverted-icon';
 import CanceledIcon from './canceled-icon';
@@ -51,12 +52,6 @@ import TimerIcon from './timer-icon';
 import BackgroundAnimation from './background-animation';
 
 const TOTAL_WAITING_TIME_IN_SEC = 180;
-
-const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
-  const minutes = Math.floor(remainingTimeInSec / 60);
-  const seconds = remainingTimeInSec % 60;
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-};
 
 export default function SmartTransactionStatus() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
@@ -87,10 +82,15 @@ export default function SmartTransactionStatus() {
     latestSmartTransactionUuid = latestSmartTransaction?.uuid;
     smartTransactionStatus = latestSmartTransaction?.status || '';
   }
+
   if (
     latestSmartTransactionUuid &&
     usedQuote?.trade?.data !== latestSmartTransaction?.txParams?.data
   ) {
+    // If a newly submitted smart transaction is not the same as "latestSmartTransaction", we clean up data below,
+    // which means a "pending" status page will be displayed.
+    // The reason is that we redirect to the STX status page immediatelly after submit without waiting for a backend response
+    // and without this code a user would briefly (~1 - 2s) see a status page for the previous smart transaction.
     latestSmartTransaction = {};
     latestSmartTransactionUuid = null;
     smartTransactionStatus = '';
