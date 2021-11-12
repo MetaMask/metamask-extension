@@ -18,7 +18,6 @@ export default function SmartTransactionListItem({
   smartTransaction,
   isEarliestNonce = false,
 }) {
-  console.log(`smartTransaction`, smartTransaction);
   const dispatch = useDispatch();
   const t = useI18nContext();
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
