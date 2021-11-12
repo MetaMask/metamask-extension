@@ -76,9 +76,6 @@
   "decimalsMustZerotoTen": {
     "message": "दशमलव कम से कम 0 होनी चाहिए, और 36 से अधिक नहीं होनी चाहिए।"
   },
-  "defaultNetwork": {
-    "message": "ईथर लेनदेन के लिए डिफ़ॉल्ट नेटवर्क मुख्य नेट है।"
-  },
   "depositEther": {
     "message": "जमा - Ether"
   },

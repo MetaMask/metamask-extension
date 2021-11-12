@@ -42,6 +42,11 @@ export const ESTIMATE_USED = {
 };
 
 /**
+ * Represents the user customizing their gas preference
+ */
+export const CUSTOM_GAS_ESTIMATE = 'custom';
+
+/**
  * These represent the different edit modes presented in the UI
  */
 export const EDIT_GAS_MODES = {

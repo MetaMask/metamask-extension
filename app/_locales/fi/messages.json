@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Desimaalien on oltava vähintään 0 ja korkeintaan 36."
   },
-  "defaultNetwork": {
-    "message": "Oletusverkko Ether-tapahtumille on Mainnet."
-  },
   "delete": {
     "message": "Poista"
   },
@@ -843,9 +840,6 @@
   },
   "selectAnAccount": {
     "message": "Valitse tili"
-  },
-  "selectAnAccountHelp": {
-    "message": "Valitse MetaMaskissa näytettävä tili"
   },
   "selectEachPhrase": {
     "message": "Ole hyvä ja valitse jokainen teksti järjestyksessä varmistaaksesi, että se on oikein."

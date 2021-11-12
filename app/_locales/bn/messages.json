@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "দশমিকগুলি অবশ্যই অন্তত 0 হতে হবে, এবং 36 এর উপর হবে না।"
   },
-  "defaultNetwork": {
-    "message": "ইথার লেনদেনগুলির জন্য ডিফল্ট নেটওয়ার্কটি হল মেন নেট।"
-  },
   "delete": {
     "message": "মুছুন"
   },
@@ -846,9 +843,6 @@
   },
   "selectAnAccount": {
     "message": "একটি অ্যাকাউন্ট নির্বাচন করুন"
-  },
-  "selectAnAccountHelp": {
-    "message": "MetaMask এ দেখতে অ্যাকাউন্টটি নির্বাচন করুন"
   },
   "selectEachPhrase": {
     "message": "ফ্রেজগুলি সঠিক তা নিশ্চিত করতে অনুগ্রহ করে প্রতিটি ফ্রেজ নির্বাচন করুন।"

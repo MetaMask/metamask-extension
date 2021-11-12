@@ -4,16 +4,16 @@ import ActionableMessage from '../../../components/ui/actionable-message/actiona
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-const LowGasWarning = () => {
+const LowPriorityMessage = () => {
   const { estimateUsed } = useGasFeeContext();
   const t = useI18nContext();
 
   if (estimateUsed !== 'low') return null;
   return (
-    <div className="low-gas-warning">
+    <div className="low-priority-message">
       <ActionableMessage
         className="actionable-message--warning"
-        message={t('lowGasWarning')}
+        message={t('lowPriorityMessage')}
         useIcon
         iconFillColor="#f8c000"
       />
@@ -21,4 +21,4 @@ const LowGasWarning = () => {
   );
 };
 
-export default LowGasWarning;
+export default LowPriorityMessage;

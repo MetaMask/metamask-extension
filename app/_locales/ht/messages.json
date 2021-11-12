@@ -145,9 +145,6 @@
   "decimalsMustZerotoTen": {
     "message": "Desimal yo dwe omwen 0, epi pa dwe plis pase 36."
   },
-  "defaultNetwork": {
-    "message": "Dfo rezo a pou tranzaksyon Ether se Mainnet."
-  },
   "depositEther": {
     "message": "Depo Ether"
   },
@@ -527,9 +524,6 @@
   },
   "selectAnAccount": {
     "message": "Chwazi yon kont"
-  },
-  "selectAnAccountHelp": {
-    "message": "Chwazi kont pou wè nan MetaMask"
   },
   "selectHdPath": {
     "message": "Chwazi chemen HD"

@@ -38,6 +38,7 @@ export default function reduceApp(state = {}, action) {
     defaultHdPaths: {
       trezor: `m/44'/60'/0'/0`,
       ledger: `m/44'/60'/0'/0/0`,
+      lattice: `m/44'/60'/0'/0`,
     },
     networksTabSelectedRpcUrl: '',
     loadingMethodData: false,
@@ -54,6 +55,7 @@ export default function reduceApp(state = {}, action) {
     ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
+    showTestnetMessageInDropdown: true,
     ...state,
   };
 
@@ -69,6 +71,12 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         networkDropdownOpen: false,
+      };
+
+    case actionConstants.HIDE_TESTNET_MESSAGE:
+      return {
+        ...appState,
+        showTestnetMessageInDropdown: false,
       };
 
     // alert methods

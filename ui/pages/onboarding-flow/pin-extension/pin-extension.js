@@ -58,6 +58,9 @@ export default function OnboardingPinExtension() {
       </Carousel>
       <div className="onboarding-pin-extension__buttons">
         <Button
+          data-testid={
+            selectedIndex === 0 ? 'pin-extension-next' : 'pin-extension-done'
+          }
           type="primary"
           onClick={() => {
             if (selectedIndex === 0) {

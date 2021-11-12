@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
   },
-  "defaultNetwork": {
-    "message": "የ Ether ግብይቶች ንቡር አውታረ መረብ Mainnet ነው።"
-  },
   "delete": {
     "message": "ሰርዝ"
   },
@@ -843,9 +840,6 @@
   },
   "selectAnAccount": {
     "message": "መለያ ይምረጡ"
-  },
-  "selectAnAccountHelp": {
-    "message": "መለያውን በ MetaMask ለማየት ይምረጡ"
   },
   "selectEachPhrase": {
     "message": "እባክዎ እያንዳንዱን ሐረግ በመምረጥ ትክክለኛነቱን ያረጋግጡ።"

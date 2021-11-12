@@ -502,9 +502,6 @@
   "decryptRequest": {
     "message": "I-decrypt ang request"
   },
-  "defaultNetwork": {
-    "message": "Ang default na network para sa mga transaksyon ng Ether ay ang Mainnet."
-  },
   "delete": {
     "message": "I-delete"
   },
@@ -1619,13 +1616,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "Nakakonekta na ang account na ito sa MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Pumili ng account na titingnan sa MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Hindi makita ang iyong account? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "Pakipili ang bawat phrase para matiyak na tama ito."
   },
@@ -2105,12 +2095,6 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Payagang palitan ng site na ito ang network?"
-  },
-  "switchLedgerPaths": {
-    "message": "Magpalit ng path ng Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Piliin ang path ng Ledger para tingnan ang iba pang account"
   },
   "switchNetwork": {
     "message": "Lumipat ng network"

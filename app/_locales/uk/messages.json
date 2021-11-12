@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Кількість розрядів після коми: від 0 до 36."
   },
-  "defaultNetwork": {
-    "message": "Мережа для транзакцій з Ether за замовчуванням - Mainnet."
-  },
   "delete": {
     "message": "Видалити"
   },
@@ -846,9 +843,6 @@
   },
   "selectAnAccount": {
     "message": "Виберіть обліковий запис"
-  },
-  "selectAnAccountHelp": {
-    "message": "Оберіть обліковий запис для перегляду в MetaMask"
   },
   "selectEachPhrase": {
     "message": "Виберіть кожну фразу, щоб переконатися, що вона правильна."

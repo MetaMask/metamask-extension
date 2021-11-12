@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { ComposedStore, ObservableStore } from '@metamask/obs-store';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine';
+import { providerFromEngine } from 'eth-json-rpc-middleware';
 import log from 'loglevel';
 import {
   createSwappableProxy,

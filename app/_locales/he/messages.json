@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "מספרים עשרוניים חייבים להיות לפחות 0 ולא מעל 36."
   },
-  "defaultNetwork": {
-    "message": "רשת ברירת המחדל לעסקאות Ether היא Mainnet."
-  },
   "delete": {
     "message": "מחיקה"
   },
@@ -840,9 +837,6 @@
   },
   "selectAnAccount": {
     "message": "בחר חשבון"
-  },
-  "selectAnAccountHelp": {
-    "message": "בחר את החשבון לצפייה ב- MetaMask"
   },
   "selectEachPhrase": {
     "message": "נא לבחור כל צירוף מילים כדי להבטיח שהוא נכון."

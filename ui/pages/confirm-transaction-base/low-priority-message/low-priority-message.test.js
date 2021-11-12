@@ -5,7 +5,7 @@ import { ETH } from '../../../helpers/constants/common';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
 
-import LowGasWarning from './low-gas-warning';
+import LowPriorityMessage from './low-priority-message';
 
 jest.mock('../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
@@ -36,21 +36,21 @@ const render = (props) => {
 
   return renderWithProvider(
     <GasFeeContextProvider {...props}>
-      <LowGasWarning />
+      <LowPriorityMessage />
     </GasFeeContextProvider>,
     store,
   );
 };
 
-describe('LowGasWarning', () => {
-  it('should not return null for low gas estimate', () => {
+describe('LowPriorityMessage', () => {
+  it('should returning warning message for low gas estimate', () => {
     render({ transaction: { userFeeLevel: 'low' } });
     expect(
       document.getElementsByClassName('actionable-message--warning'),
     ).toHaveLength(1);
   });
 
-  it('should return null for high gas estimate', () => {
+  it('should return null for gas estimate other than low', () => {
     render({ transaction: { userFeeLevel: 'high' } });
     expect(
       document.getElementsByClassName('actionable-message--warning'),
