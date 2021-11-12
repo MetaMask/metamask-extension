@@ -85,7 +85,7 @@ export const getBaseApi = function (
   useNewSwapsApi = false,
 ) {
   // eslint-disable-next-line no-param-reassign
-  chainId = chainId === '0x4' ? '0x1' : chainId;
+  chainId = chainId === RINKEBY_CHAIN_ID ? MAINNET_CHAIN_ID : chainId;
   const baseUrl = useNewSwapsApi
     ? getBaseUrlForNewSwapsApi(type, chainId)
     : METASWAP_CHAINID_API_HOST_MAP[chainId];

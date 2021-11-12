@@ -53,6 +53,10 @@ import {
   addHexes,
 } from '../../helpers/utils/conversions.util';
 import { conversionLessThan } from '../../../shared/modules/conversion.utils';
+import {
+  MAINNET_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
+} from '../../../shared/constants/network';
 import { calcTokenAmount } from '../../helpers/utils/token-util';
 import {
   getSelectedAccount,
@@ -247,13 +251,16 @@ export const getUseNewSwapsApi = (state) =>
 
 export const getSmartTransactionsEnabled = (state) => {
   const hardwareWalletUsed = isHardwareWallet(state);
-  const EIP1559NetworkUsed = isEIP1559Network(state);
+  const chainId = getCurrentChainId(state);
+  const isAllowedNetwork = [MAINNET_CHAIN_ID, RINKEBY_CHAIN_ID].includes(
+    chainId,
+  );
   const smartTransactionsFeatureFlagEnabled =
     state.metamask.swapsState?.swapsFeatureFlags?.smart_transactions
       ?.extension_active;
   const { smartTransactionsLiveness, smartTransactionsError } = state.appState;
   return Boolean(
-    EIP1559NetworkUsed &&
+    isAllowedNetwork &&
       !hardwareWalletUsed &&
       smartTransactionsFeatureFlagEnabled &&
       smartTransactionsLiveness &&
