@@ -424,9 +424,6 @@
   "decryptRequest": {
     "message": "I-decrypt ang request"
   },
-  "defaultNetwork": {
-    "message": "Ang default na network para sa mga transaksyon ng Ether ay ang Mainnet."
-  },
   "delete": {
     "message": "I-delete"
   },
@@ -1299,9 +1296,6 @@
   },
   "selectAnAccount": {
     "message": "Pumili ng Account"
-  },
-  "selectAnAccountHelp": {
-    "message": "Piliin ang account na titingnan sa MetaMask"
   },
   "selectEachPhrase": {
     "message": "Pakipili ang bawat phrase para matiyak na tama ito."

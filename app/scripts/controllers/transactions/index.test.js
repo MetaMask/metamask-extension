@@ -16,7 +16,11 @@ import {
 } from '../../../../shared/constants/transaction';
 
 import { SECOND } from '../../../../shared/constants/time';
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import {
+  GAS_ESTIMATE_TYPES,
+  GAS_RECOMMENDATIONS,
+} from '../../../../shared/constants/gas';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import TransactionController, { TRANSACTION_EVENTS } from '.';
 
@@ -771,7 +775,7 @@ describe('Transaction Controller', function () {
           nonce: '0x4b',
         },
         type: TRANSACTION_TYPES.SIMPLE_SEND,
-        transaction_envelope_type: 'legacy',
+        transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
         origin: 'metamask',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1001,8 +1005,8 @@ describe('Transaction Controller', function () {
         to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
         gas: '0x5209',
         gasPrice: '0xa',
-        estimateSuggested: 'medium',
-        estimateUsed: 'high',
+        estimateSuggested: GAS_RECOMMENDATIONS.MEDIUM,
+        estimateUsed: GAS_RECOMMENDATIONS.HIGH,
       };
       txController.txStateManager._addTransactionsToState([
         {
@@ -1575,7 +1579,7 @@ describe('Transaction Controller', function () {
           gas_price: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
-          transaction_envelope_type: 'legacy',
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
           status: 'unapproved',
         },
       };
@@ -1622,7 +1626,7 @@ describe('Transaction Controller', function () {
           gas_price: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
-          transaction_envelope_type: 'legacy',
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
           status: 'unapproved',
         },
       };
@@ -1671,7 +1675,7 @@ describe('Transaction Controller', function () {
           gas_price: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
-          transaction_envelope_type: 'legacy',
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
           status: 'unapproved',
         },
       };
@@ -1702,8 +1706,8 @@ describe('Transaction Controller', function () {
           maxPriorityFeePerGas: '0x77359400',
           gas: '0x7b0d',
           nonce: '0x4b',
-          estimateSuggested: 'medium',
-          estimateUsed: 'high',
+          estimateSuggested: GAS_RECOMMENDATIONS.MEDIUM,
+          estimateUsed: GAS_RECOMMENDATIONS.HIGH,
         },
         type: TRANSACTION_TYPES.SIMPLE_SEND,
         origin: 'other',
@@ -1728,10 +1732,10 @@ describe('Transaction Controller', function () {
           max_priority_fee_per_gas: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
-          transaction_envelope_type: 'fee-market',
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET,
           status: 'unapproved',
-          estimate_suggested: 'medium',
-          estimate_used: 'high',
+          estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
+          estimate_used: GAS_RECOMMENDATIONS.HIGH,
         },
       };
 
@@ -1804,14 +1808,14 @@ describe('Transaction Controller', function () {
       const params = {
         max_fee_per_gas: '0x77359400',
         max_priority_fee_per_gas: '0x77359400',
-        estimate_suggested: 'medium',
-        estimate_used: 'high',
+        estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
+        estimate_used: GAS_RECOMMENDATIONS.HIGH,
       };
       const expectedParams = {
         max_fee_per_gas: '2',
         max_priority_fee_per_gas: '2',
-        estimate_suggested: 'medium',
-        estimate_used: 'high',
+        estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
+        estimate_used: GAS_RECOMMENDATIONS.HIGH,
       };
       const result = txController._getGasValuesInGWEI(params);
       assert.deepEqual(result, expectedParams);

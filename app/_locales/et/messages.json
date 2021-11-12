@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Kümnendkohad peavad olema vähemalt 0 ja mitte üle 36."
   },
-  "defaultNetwork": {
-    "message": "Etheri tehingute vaikevõrk on peavõrk."
-  },
   "delete": {
     "message": "Kustuta"
   },
@@ -836,9 +833,6 @@
   },
   "selectAnAccount": {
     "message": "Valige konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Valige konto, mida MetaMaskis vaadata"
   },
   "selectEachPhrase": {
     "message": "Valige iga fraas, veendumaks, et see on õige."

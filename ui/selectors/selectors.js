@@ -5,6 +5,8 @@ import {
   TEST_CHAINS,
   NETWORK_TYPE_RPC,
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
+  OPTIMISM_CHAIN_ID,
+  OPTIMISM_TESTNET_CHAIN_ID,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -151,6 +153,7 @@ export function getAccountType(state) {
   switch (type) {
     case KEYRING_TYPES.TREZOR:
     case KEYRING_TYPES.LEDGER:
+    case KEYRING_TYPES.LATTICE:
       return 'hardware';
     case 'Simple Key Pair':
       return 'imported';
@@ -699,4 +702,39 @@ export function getProvider(state) {
 
 export function getFrequentRpcListDetail(state) {
   return state.metamask.frequentRpcListDetail;
+}
+
+export function getIsOptimism(state) {
+  return (
+    getCurrentChainId(state) === OPTIMISM_CHAIN_ID ||
+    getCurrentChainId(state) === OPTIMISM_TESTNET_CHAIN_ID
+  );
+}
+
+export function getNetworkSupportsSettingGasPrice(state) {
+  return !getIsOptimism(state);
+}
+
+export function getIsMultiLayerFeeNetwork(state) {
+  return getIsOptimism(state);
+}
+/**
+ *  To retrieve the maxBaseFee and priotitFee teh user has set as default
+ *  @param {*} state
+ *  @returns Boolean
+ */
+export function getAdvancedGasFeeValues(state) {
+  return state.metamask.advancedGasFee;
+}
+
+/**
+ *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
+ *  @param {*} state
+ *  @returns Boolean
+ */
+export function getIsAdvancedGasFeeDefault(state) {
+  const { advancedGasFee } = state.metamask;
+  return (
+    Boolean(advancedGasFee?.maxBaseFee) && Boolean(advancedGasFee?.priorityFee)
+  );
 }

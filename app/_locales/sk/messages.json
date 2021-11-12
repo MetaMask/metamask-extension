@@ -260,9 +260,6 @@
   "decimalsMustZerotoTen": {
     "message": "Desetinných míst musí být od 0 do 36."
   },
-  "defaultNetwork": {
-    "message": "Výchozí síť pro Etherové transakce je Mainnet."
-  },
   "delete": {
     "message": "Odstrániť"
   },
@@ -809,9 +806,6 @@
   },
   "selectAnAccount": {
     "message": "Vybrať účet"
-  },
-  "selectAnAccountHelp": {
-    "message": "Vyberte účet, ktorý chcete zobraziť v MetaMask"
   },
   "selectEachPhrase": {
     "message": "Vyberte každú frázu, aby ste sa uistili, že je správna."

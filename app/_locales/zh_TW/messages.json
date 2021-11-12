@@ -275,9 +275,6 @@
   "decimalsMustZerotoTen": {
     "message": "小數點後位數至少為0, 最多為36."
   },
-  "defaultNetwork": {
-    "message": "預設以太幣交易網路為主網路"
-  },
   "delete": {
     "message": "刪除"
   },

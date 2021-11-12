@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.4.1",
+  "version": "10.5.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -98,6 +98,7 @@
     "@babel/runtime": "^7.5.5",
     "@download/blockies": "^1.0.3",
     "@ensdomains/content-hash": "^2.5.6",
+    "@eth-optimism/contracts": "0.0.0-2021919175625",
     "@ethereumjs/common": "^2.3.1",
     "@ethereumjs/tx": "^3.2.1",
     "@formatjs/intl-relativetimeformat": "^5.2.6",
@@ -134,9 +135,10 @@
     "eth-ens-namehash": "^2.0.8",
     "eth-json-rpc-filters": "^4.2.1",
     "eth-json-rpc-infura": "^5.1.0",
-    "eth-json-rpc-middleware": "^6.0.0",
+    "eth-json-rpc-middleware": "^8.0.0",
     "eth-keyring-controller": "^6.2.0",
     "eth-method-registry": "^2.0.0",
+    "eth-lattice-keyring": "^0.3.0",
     "eth-query": "^2.1.2",
     "eth-rpc-errors": "^4.0.2",
     "eth-sig-util": "^3.0.0",
@@ -347,6 +349,7 @@
   },
   "lavamoat": {
     "allowScripts": {
+      "gridplus-sdk": false,
       "chromedriver": true,
       "geckodriver": true,
       "@sentry/cli": true,
@@ -365,7 +368,9 @@
       "github:assemblyscript/assemblyscript": false,
       "tiny-secp256k1": false,
       "@lavamoat/preinstall-always-fail": false,
-      "fsevents": false
+      "fsevents": false,
+      "node-hid": false,
+      "usb": false
     }
   }
 }

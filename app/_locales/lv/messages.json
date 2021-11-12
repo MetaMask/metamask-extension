@@ -266,9 +266,6 @@
   "decimalsMustZerotoTen": {
     "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
   },
-  "defaultNetwork": {
-    "message": "Galvenais Ether darījumu tīkls ir Mainnet."
-  },
   "delete": {
     "message": "Dzēst"
   },
@@ -842,9 +839,6 @@
   },
   "selectAnAccount": {
     "message": "Atlasiet kontu"
-  },
-  "selectAnAccountHelp": {
-    "message": "Atlasiet kontu, ko skatīt MetaMask"
   },
   "selectEachPhrase": {
     "message": "Lūdzu, atlasiet katru frāzi, lai pārliecinātos par tās pareizību."

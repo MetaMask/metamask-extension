@@ -7,6 +7,14 @@ import {
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
 } from '../../../shared/constants/metametrics';
 
+const defaultCaptureException = (err) => {
+  // throw error on clean stack so its captured by platform integrations (eg sentry)
+  // but does not interupt the call stack
+  setTimeout(() => {
+    throw err;
+  });
+};
+
 /**
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsContext} MetaMetricsContext
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
@@ -51,7 +59,9 @@ export default class MetaMetricsController {
     version,
     environment,
     initState,
+    captureException = defaultCaptureException,
   }) {
+    this._captureException = captureException;
     const prefState = preferencesStore.getState();
     this.chainId = getCurrentChainId();
     this.network = getNetworkIdentifier();
@@ -258,32 +268,52 @@ export default class MetaMetricsController {
    *  view
    */
   trackPage({ name, params, environmentType, page, referrer }, options) {
-    if (this.state.participateInMetaMetrics === false) {
-      return;
-    }
+    try {
+      if (this.state.participateInMetaMetrics === false) {
+        return;
+      }
 
-    if (this.state.participateInMetaMetrics === null && !options?.isOptInPath) {
-      return;
+      if (
+        this.state.participateInMetaMetrics === null &&
+        !options?.isOptInPath
+      ) {
+        return;
+      }
+      const { metaMetricsId } = this.state;
+      const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
+      const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
+      this.segment.page({
+        [idTrait]: idValue,
+        name,
+        properties: {
+          params,
+          locale: this.locale,
+          network: this.network,
+          chain_id: this.chainId,
+          environment_type: environmentType,
+        },
+        context: this._buildContext(referrer, page),
+      });
+    } catch (err) {
+      this._captureException(err);
     }
-    const { metaMetricsId } = this.state;
-    const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
-    const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
-    this.segment.page({
-      [idTrait]: idValue,
-      name,
-      properties: {
-        params,
-        locale: this.locale,
-        network: this.network,
-        chain_id: this.chainId,
-        environment_type: environmentType,
-      },
-      context: this._buildContext(referrer, page),
-    });
   }
 
   /**
-   * track a metametrics event, performing necessary payload manipulation and
+   * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
+   * @param {MetaMetricsEventPayload} payload - details of the event
+   * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
+   */
+  trackEvent(payload, options) {
+    // validation is not caught and handled
+    this.validatePayload(payload);
+    this.submitEvent(payload, options).catch((err) =>
+      this._captureException(err),
+    );
+  }
+
+  /**
+   * submits (or queues for submission) a metametrics event, performing necessary payload manipulation and
    * routing the event to the appropriate segment source. Will split events
    * with sensitiveProperties into two events, tracking the sensitiveProperties
    * with the anonymousId only.
@@ -291,21 +321,8 @@ export default class MetaMetricsController {
    * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
    * @returns {Promise<void>}
    */
-  async trackEvent(payload, options) {
-    // event and category are required fields for all payloads
-    if (!payload.event || !payload.category) {
-      throw new Error(
-        `Must specify event and category. Event was: ${
-          payload.event
-        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
-          payload,
-        )}. ${
-          typeof payload.properties === 'object'
-            ? `Payload property keys were: ${Object.keys(payload.properties)}`
-            : ''
-        }`,
-      );
-    }
+  async submitEvent(payload, options) {
+    this.validatePayload(payload);
 
     if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
       return;
@@ -344,5 +361,26 @@ export default class MetaMetricsController {
     events.push(this._track(this._buildEventPayload(payload), options));
 
     await Promise.all(events);
+  }
+
+  /**
+   * validates a metametrics event
+   * @param {MetaMetricsEventPayload} payload - details of the event
+   */
+  validatePayload(payload) {
+    // event and category are required fields for all payloads
+    if (!payload.event || !payload.category) {
+      throw new Error(
+        `Must specify event and category. Event was: ${
+          payload.event
+        }. Category was: ${payload.category}. Payload keys were: ${Object.keys(
+          payload,
+        )}. ${
+          typeof payload.properties === 'object'
+            ? `Payload property keys were: ${Object.keys(payload.properties)}`
+            : ''
+        }`,
+      );
+    }
   }
 }

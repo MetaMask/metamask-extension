@@ -47,7 +47,7 @@ export default class AdvancedTab extends PureComponent {
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
     ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
-    setLedgerLivePreference: PropTypes.func.isRequired,
+    setLedgerTransportPreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     userHasALedgerAccount: PropTypes.bool.isRequired,
@@ -436,7 +436,7 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     const {
       ledgerTransportType,
-      setLedgerLivePreference,
+      setLedgerTransportPreference,
       userHasALedgerAccount,
     } = this.props;
 
@@ -501,7 +501,7 @@ export default class AdvancedTab extends PureComponent {
                 ) {
                   this.setState({ showLedgerTransportWarning: true });
                 }
-                setLedgerLivePreference(transportType);
+                setLedgerTransportPreference(transportType);
                 if (
                   transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
                   userHasALedgerAccount

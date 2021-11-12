@@ -263,9 +263,6 @@
   "decimalsMustZerotoTen": {
     "message": "Decimalni broj mora biti najmanje 0, a ne veći od 36."
   },
-  "defaultNetwork": {
-    "message": "Podrazumevana mreža za Ether transakcije je Mainnet."
-  },
   "delete": {
     "message": "Избриши"
   },
@@ -837,9 +834,6 @@
   },
   "selectAnAccount": {
     "message": "Izaberite nalog"
-  },
-  "selectAnAccountHelp": {
-    "message": "Izaberite nalog za prikaz u MetaMask-u"
   },
   "selectEachPhrase": {
     "message": "Molimo vas izaberite svaki izraz kako biste proverili da je tačan."

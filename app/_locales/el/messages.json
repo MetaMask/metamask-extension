@@ -263,9 +263,6 @@
   "decimalsMustZerotoTen": {
     "message": "Τα δεκαδικά πρέπει να είναι τουλάχιστον 0 και όχι πάνω από 36."
   },
-  "defaultNetwork": {
-    "message": "Το προεπιλεγμένο δίκτυο για συναλλαγές Ether είναι το Mainnet."
-  },
   "delete": {
     "message": "Διαγραφή"
   },
@@ -843,9 +840,6 @@
   },
   "selectAnAccount": {
     "message": "Επιλέξτε Λογαριασμό"
-  },
-  "selectAnAccountHelp": {
-    "message": "Επιλέξτε τον λογαριασμό για προβολή στο MetaMask"
   },
   "selectEachPhrase": {
     "message": "Παρακαλούμε επιλέξτε κάθε φράση, για να βεβαιωθείτε ότι είναι σωστή."
