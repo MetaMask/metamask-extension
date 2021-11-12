@@ -17,6 +17,7 @@ import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
+import { ethErrors } from 'eth-rpc-errors';
 import { captureException } from '@sentry/browser';
 import {
   AddressBookController,
@@ -61,7 +62,7 @@ import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import ThreeBoxController from './controllers/threebox';
 import IncomingTransactionsController from './controllers/incoming-transactions';
-import MessageManager from './lib/message-manager';
+import MessageManager, { normalizeMsgData } from './lib/message-manager';
 import DecryptMessageManager from './lib/decrypt-message-manager';
 import EncryptionPublicKeyManager from './lib/encryption-public-key-manager';
 import PersonalMessageManager from './lib/personal-message-manager';
@@ -1849,12 +1850,18 @@ export default class MetamaskController extends EventEmitter {
    * @param {Function} cb - The callback function called with the signature.
    */
   newUnsignedMessage(msgParams, req) {
-    const promise = this.messageManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
-    );
-    this.sendUpdate();
-    this.opts.showUserConfirmation();
+    const data = normalizeMsgData(msgParams.data);
+    let promise;
+    // 64 hex + "0x" at the beginning
+    if (data.length === 66) {
+      promise = this.messageManager.addUnapprovedMessageAsync(msgParams, req);
+      this.sendUpdate();
+      this.opts.showUserConfirmation();
+    } else {
+      promise = Promise.reject(
+        ethErrors.rpc.invalidParams('eth_sign requires 32 byte message hash'),
+      );
+    }
     return promise;
   }
 
