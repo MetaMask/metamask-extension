@@ -27,6 +27,18 @@
     position: absolute;
   }
 
+  &__metafoxlogo {
+    .app-header {
+      &__metafox-logo--horizontal {
+        display: none;
+      }
+
+      &__metafox-logo--icon {
+        display: block;
+      }
+    }
+  }
+
   &__siteinfo {
     left: 39px;
   }
@@ -34,11 +46,11 @@
   &__address-display-content {
     display: flex;
     height: 27px;
-    width: 50%;
     padding: 12px 12px 14px 12px;
     background-color: $ui-1;
     border-radius: 100px;
     align-items: center;
+    justify-content: center;
   }
 
   &__siteimage-identicon {

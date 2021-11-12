@@ -266,4 +266,28 @@ describe('preferences controller', function () {
       );
     });
   });
+
+  describe('setAdvancedGasFee', function () {
+    it('should default to null', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.advancedGasFee, null);
+    });
+
+    it('should set the setAdvancedGasFee property in state', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.advancedGasFee, null);
+      preferencesController.setAdvancedGasFee({
+        maxBaseFee: '1.5',
+        priorityFee: '2',
+      });
+      assert.equal(
+        preferencesController.store.getState().advancedGasFee.maxBaseFee,
+        '1.5',
+      );
+      assert.equal(
+        preferencesController.store.getState().advancedGasFee.priorityFee,
+        '2',
+      );
+    });
+  });
 });

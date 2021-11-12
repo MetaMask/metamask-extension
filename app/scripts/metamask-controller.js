@@ -7,7 +7,7 @@ import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
-import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware';
+import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import KeyringController from 'eth-keyring-controller';
 import { Mutex } from 'await-semaphore';
 import { stripHexPrefix } from 'ethereumjs-util';
@@ -17,6 +17,7 @@ import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
+import { captureException } from '@sentry/browser';
 import {
   AddressBookController,
   ApprovalController,
@@ -191,6 +192,7 @@ export default class MetamaskController extends EventEmitter {
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
       initState: initState.MetaMetricsController,
+      captureException,
     });
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
@@ -945,6 +947,10 @@ export default class MetamaskController extends EventEmitter {
       setDismissSeedBackUpReminder: nodeify(
         this.preferencesController.setDismissSeedBackUpReminder,
         this.preferencesController,
+      ),
+      setAdvancedGasFee: nodeify(
+        preferencesController.setAdvancedGasFee,
+        preferencesController,
       ),
 
       // AddressController

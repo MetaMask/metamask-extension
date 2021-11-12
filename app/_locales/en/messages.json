@@ -1139,7 +1139,7 @@
     "message": "import using Secret Recovery Phrase"
   },
   "importAccountMsg": {
-    "message": " Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts "
+    "message": "Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts"
   },
   "importAccountSeedPhrase": {
     "message": "Import a wallet with Secret Recovery Phrase"
@@ -1274,6 +1274,9 @@
   "lastConnected": {
     "message": "Last Connected"
   },
+  "layer1Fees": {
+    "message": "Layer 1 fees"
+  },
   "learnMore": {
     "message": "Learn more"
   },
@@ -1357,6 +1360,9 @@
   },
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
+  },
+  "lowPriorityMessage": {
+    "message": "Future transactions will queue after this one. This price was last seen was some time ago."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -2914,6 +2920,12 @@
   "transactionDetailGasTotalSubtitle": {
     "message": "Amount + gas fee"
   },
+  "transactionDetailLayer2GasHeading": {
+    "message": "Layer 2 gas fee"
+  },
+  "transactionDetailMultiLayerTotalSubtitle": {
+    "message": "Amount + fees"
+  },
   "transactionDropped": {
     "message": "Transaction dropped at $2."
   },
@@ -2931,6 +2943,15 @@
   },
   "transactionHistoryBaseFee": {
     "message": "Base Fee (GWEI)"
+  },
+  "transactionHistoryL1GasLabel": {
+    "message": "Total L1 Gas Fee"
+  },
+  "transactionHistoryL2GasLimitLabel": {
+    "message": "L2 Gas Limit"
+  },
+  "transactionHistoryL2GasPriceLabel": {
+    "message": "L2 Gas Price"
   },
   "transactionHistoryMaxFeePerGas": {
     "message": "Max Fee Per Gas"

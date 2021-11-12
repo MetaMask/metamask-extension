@@ -36,6 +36,7 @@ import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
+import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
 
 import {
   COLORS,
@@ -53,6 +54,7 @@ import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
 import GasDetailsItem from './gas-details-item';
+import LowPriorityMessage from './low-priority-message';
 
 // eslint-disable-next-line prefer-destructuring
 const EIP_1559_V2 = process.env.EIP_1559_V2;
@@ -134,6 +136,7 @@ export default class ConfirmTransactionBase extends Component {
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
+    isMultiLayerFeeNetwork: PropTypes.bool,
   };
 
   state = {
@@ -315,6 +318,8 @@ export default class ConfirmTransactionBase extends Component {
       isMainnet,
       showLedgerSteps,
       supportsEIP1559,
+      isMultiLayerFeeNetwork,
+      nativeCurrency,
     } = this.props;
     const { t } = this.context;
 
@@ -410,6 +415,7 @@ export default class ConfirmTransactionBase extends Component {
 
     return (
       <div className="confirm-page-container-content__details">
+        {EIP_1559_V2 && <LowPriorityMessage />}
         <TransactionDetail
           onEdit={() => this.handleEditGas()}
           rows={[
@@ -433,7 +439,9 @@ export default class ConfirmTransactionBase extends Component {
                 detailTitle={
                   txData.dappSuggestedGasFees ? (
                     <>
-                      {t('transactionDetailGasHeading')}
+                      {isMultiLayerFeeNetwork
+                        ? t('transactionDetailLayer2GasHeading')
+                        : t('transactionDetailGasHeading')}
                       <InfoTooltip
                         contentText={t('transactionDetailDappGasTooltip')}
                         position="top"
@@ -443,7 +451,9 @@ export default class ConfirmTransactionBase extends Component {
                     </>
                   ) : (
                     <>
-                      {t('transactionDetailGasHeading')}
+                      {isMultiLayerFeeNetwork
+                        ? t('transactionDetailLayer2GasHeading')
+                        : t('transactionDetailGasHeading')}
                       <InfoTooltip
                         contentText={
                           <>
@@ -473,14 +483,16 @@ export default class ConfirmTransactionBase extends Component {
                 }
                 detailTitleColor={COLORS.BLACK}
                 detailText={
-                  <div className="confirm-page-container-content__currency-container">
-                    {renderHeartBeatIfNotInTest()}
-                    <UserPreferencedCurrencyDisplay
-                      type={SECONDARY}
-                      value={hexMinimumTransactionFee}
-                      hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                    />
-                  </div>
+                  !isMultiLayerFeeNetwork && (
+                    <div className="confirm-page-container-content__currency-container">
+                      {renderHeartBeatIfNotInTest()}
+                      <UserPreferencedCurrencyDisplay
+                        type={SECONDARY}
+                        value={hexMinimumTransactionFee}
+                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                      />
+                    </div>
+                  )
                 }
                 detailTotal={
                   <div className="confirm-page-container-content__currency-container">
@@ -489,26 +501,30 @@ export default class ConfirmTransactionBase extends Component {
                       type={PRIMARY}
                       value={hexMinimumTransactionFee}
                       hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                      numberOfDecimals={isMultiLayerFeeNetwork ? 18 : 6}
                     />
                   </div>
                 }
-                subText={t('editGasSubTextFee', [
-                  <b key="editGasSubTextFeeLabel">
-                    {t('editGasSubTextFeeLabel')}
-                  </b>,
-                  <div
-                    key="editGasSubTextFeeValue"
-                    className="confirm-page-container-content__currency-container"
-                  >
-                    {renderHeartBeatIfNotInTest()}
-                    <UserPreferencedCurrencyDisplay
-                      key="editGasSubTextFeeAmount"
-                      type={PRIMARY}
-                      value={hexMaximumTransactionFee}
-                      hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                    />
-                  </div>,
-                ])}
+                subText={
+                  !isMultiLayerFeeNetwork &&
+                  t('editGasSubTextFee', [
+                    <b key="editGasSubTextFeeLabel">
+                      {t('editGasSubTextFeeLabel')}
+                    </b>,
+                    <div
+                      key="editGasSubTextFeeValue"
+                      className="confirm-page-container-content__currency-container"
+                    >
+                      {renderHeartBeatIfNotInTest()}
+                      <UserPreferencedCurrencyDisplay
+                        key="editGasSubTextFeeAmount"
+                        type={PRIMARY}
+                        value={hexMaximumTransactionFee}
+                        hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                      />
+                    </div>,
+                  ])
+                }
                 subTitle={
                   <>
                     {txData.dappSuggestedGasFees ? (
@@ -537,19 +553,28 @@ export default class ConfirmTransactionBase extends Component {
                 }
               />
             ),
-            <TransactionDetailItem
-              key="total-item"
-              detailTitle={t('total')}
-              detailText={renderTotalDetailText()}
-              detailTotal={renderTotalDetailTotal()}
-              subTitle={t('transactionDetailGasTotalSubtitle')}
-              subText={t('editGasSubTextAmount', [
-                <b key="editGasSubTextAmountLabel">
-                  {t('editGasSubTextAmountLabel')}
-                </b>,
-                renderTotalMaxAmount(),
-              ])}
-            />,
+            isMultiLayerFeeNetwork && (
+              <MultiLayerFeeMessage
+                transaction={txData}
+                layer2fee={hexMinimumTransactionFee}
+                nativeCurrency={nativeCurrency}
+              />
+            ),
+            !isMultiLayerFeeNetwork && (
+              <TransactionDetailItem
+                key="total-item"
+                detailTitle={t('total')}
+                detailText={renderTotalDetailText()}
+                detailTotal={renderTotalDetailTotal()}
+                subTitle={t('transactionDetailGasTotalSubtitle')}
+                subText={t('editGasSubTextAmount', [
+                  <b key="editGasSubTextAmountLabel">
+                    {t('editGasSubTextAmountLabel')}
+                  </b>,
+                  renderTotalMaxAmount(),
+                ])}
+              />
+            ),
           ]}
         />
         {nonceField}

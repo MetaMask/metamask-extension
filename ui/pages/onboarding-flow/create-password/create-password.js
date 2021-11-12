@@ -131,6 +131,7 @@ export default function CreatePassword({
       >
         <form className="create-password__form" onSubmit={handleCreate}>
           <FormField
+            dataTestId="create-password-new"
             autoFocus
             error={passwordError}
             onChange={handlePasswordChange}
@@ -151,6 +152,7 @@ export default function CreatePassword({
             }
           />
           <FormField
+            dataTestId="create-password-confirm"
             onChange={handleConfirmPasswordChange}
             password={!showPassword}
             error={confirmPasswordError}
@@ -170,6 +172,7 @@ export default function CreatePassword({
             marginBottom={4}
           >
             <CheckBox
+              dataTestId="create-password-terms"
               onClick={() => setTermsChecked(!termsChecked)}
               checked={termsChecked}
             />
@@ -190,6 +193,11 @@ export default function CreatePassword({
             </Typography>
           </Box>
           <Button
+            data-testid={
+              secretRecoveryPhrase
+                ? 'create-password-import'
+                : 'create-password-wallet'
+            }
             type="primary"
             className="create-password__form--submit-button"
             disabled={!isValid || !termsChecked}
