@@ -313,6 +313,7 @@ export default class ConfirmTransactionBase extends Component {
       showLedgerSteps,
       supportsEIP1559,
       isMultiLayerFeeNetwork,
+      nativeCurrency,
     } = this.props;
     const { t } = this.context;
 
@@ -533,6 +534,7 @@ export default class ConfirmTransactionBase extends Component {
               <MultiLayerFeeMessage
                 transaction={txData}
                 layer2fee={hexMinimumTransactionFee}
+                nativeCurrency={nativeCurrency}
               />
             ),
             !isMultiLayerFeeNetwork && (
