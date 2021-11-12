@@ -47,7 +47,7 @@ export default function NumericInput({
 }
 
 NumericInput.propTypes = {
-  value: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   detailText: PropTypes.string,
   onChange: PropTypes.func,
   error: PropTypes.string,

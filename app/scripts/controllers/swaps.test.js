@@ -135,7 +135,7 @@ const EMPTY_INIT_STATE = {
     swapsQuoteRefreshTime: 60000,
     swapsQuotePrefetchingRefreshTime: 60000,
     swapsUserFeeLevel: '',
-    isFetchingQuotes: false,
+    saveFetchedQuotes: false,
   },
 };
 

@@ -6,7 +6,7 @@ const glob = require('fast-glob');
 const locales = require('../../app/_locales/index.json');
 
 const { createTask, composeSeries } = require('./task');
-const { BuildTypes } = require('./utils');
+const { BuildType } = require('./utils');
 
 const EMPTY_JS_FILE = './development/empty.js';
 
@@ -21,9 +21,15 @@ module.exports = function createStaticAssetTasks({
   );
 
   const additionalBuildTargets = {
-    [BuildTypes.beta]: [
+    [BuildType.beta]: [
       {
-        src: './app/build-types/beta/',
+        src: './app/build-types/beta/images/',
+        dest: `images`,
+      },
+    ],
+    [BuildType.flask]: [
+      {
+        src: './app/build-types/flask/images/',
         dest: `images`,
       },
     ],

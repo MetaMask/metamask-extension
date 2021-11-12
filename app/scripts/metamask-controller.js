@@ -7,15 +7,17 @@ import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
-import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware';
+import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import KeyringController from 'eth-keyring-controller';
 import { Mutex } from 'await-semaphore';
 import { stripHexPrefix } from 'ethereumjs-util';
 import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
+import LatticeKeyring from 'eth-lattice-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
+import { captureException } from '@sentry/browser';
 import {
   AddressBookController,
   ApprovalController,
@@ -189,6 +191,7 @@ export default class MetamaskController extends EventEmitter {
       version: this.platform.getVersion(),
       environment: process.env.METAMASK_ENVIRONMENT,
       initState: initState.MetaMetricsController,
+      captureException,
     });
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
@@ -370,7 +373,11 @@ export default class MetamaskController extends EventEmitter {
       await opts.openPopup();
     });
 
-    const additionalKeyrings = [TrezorKeyring, LedgerBridgeKeyring];
+    const additionalKeyrings = [
+      TrezorKeyring,
+      LedgerBridgeKeyring,
+      LatticeKeyring,
+    ];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
       initState: initState.KeyringController,
@@ -843,7 +850,18 @@ export default class MetamaskController extends EventEmitter {
         this.unlockHardwareWalletAccount,
         this,
       ),
-      setLedgerLivePreference: nodeify(this.setLedgerLivePreference, this),
+      setLedgerTransportPreference: nodeify(
+        this.setLedgerTransportPreference,
+        this,
+      ),
+      attemptLedgerTransportCreation: nodeify(
+        this.attemptLedgerTransportCreation,
+        this,
+      ),
+      establishLedgerTransportPreference: nodeify(
+        this.establishLedgerTransportPreference,
+        this,
+      ),
 
       // mobile
       fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
@@ -907,6 +925,10 @@ export default class MetamaskController extends EventEmitter {
       setDismissSeedBackUpReminder: nodeify(
         this.preferencesController.setDismissSeedBackUpReminder,
         this.preferencesController,
+      ),
+      setAdvancedGasFee: nodeify(
+        preferencesController.setAdvancedGasFee,
+        preferencesController,
       ),
 
       // AddressController
@@ -1247,6 +1269,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.setAddresses(addresses);
         this.selectFirstIdentity();
       }
+
       return vault;
     } finally {
       releaseLock();
@@ -1315,6 +1338,13 @@ export default class MetamaskController extends EventEmitter {
         await this.removeAccount(accounts[accounts.length - 1]);
         accounts = await keyringController.getAccounts();
       }
+
+      // This must be set as soon as possible to communicate to the
+      // keyring's iframe and have the setting initialized properly
+      // Optimistically called to not block Metamask login due to
+      // Ledger Keyring GitHub downtime
+      const transportPreference = this.preferencesController.getLedgerTransportPreference();
+      this.setLedgerTransportPreference(transportPreference);
 
       // set new identities
       this.preferencesController.setAddresses(accounts);
@@ -1428,6 +1458,7 @@ export default class MetamaskController extends EventEmitter {
         .map((address) => toChecksumHexAddress(address)),
       ledger: [],
       trezor: [],
+      lattice: [],
     };
 
     // transactions
@@ -1482,9 +1513,9 @@ export default class MetamaskController extends EventEmitter {
     // keyring's iframe and have the setting initialized properly
     // Optimistically called to not block Metamask login due to
     // Ledger Keyring GitHub downtime
-    this.setLedgerLivePreference(
-      this.preferencesController.getLedgerLivePreference(),
-    );
+    const transportPreference = this.preferencesController.getLedgerTransportPreference();
+
+    this.setLedgerTransportPreference(transportPreference);
 
     return this.keyringController.fullUpdate();
   }
@@ -1528,6 +1559,9 @@ export default class MetamaskController extends EventEmitter {
       case 'ledger':
         keyringName = LedgerBridgeKeyring.type;
         break;
+      case 'lattice':
+        keyringName = LatticeKeyring.type;
+        break;
       default:
         throw new Error(
           'MetamaskController:getKeyringForDevice - Unknown device',
@@ -1542,10 +1576,22 @@ export default class MetamaskController extends EventEmitter {
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath);
     }
-
+    if (deviceName === 'lattice') {
+      keyring.appName = 'MetaMask';
+    }
     keyring.network = this.networkController.getProviderConfig().type;
 
     return keyring;
+  }
+
+  async attemptLedgerTransportCreation() {
+    const keyring = await this.getKeyringForDevice('ledger');
+    return await keyring.attemptMakeApp();
+  }
+
+  async establishLedgerTransportPreference() {
+    const transportPreference = this.preferencesController.getLedgerTransportPreference();
+    return await this.setLedgerTransportPreference(transportPreference);
   }
 
   /**
@@ -2016,6 +2062,14 @@ export default class MetamaskController extends EventEmitter {
         return new Promise((_, reject) => {
           reject(
             new Error('Trezor does not support eth_getEncryptionPublicKey.'),
+          );
+        });
+      }
+
+      case KEYRING_TYPES.LATTICE: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('Lattice does not support eth_getEncryptionPublicKey.'),
           );
         });
       }
@@ -3020,16 +3074,18 @@ export default class MetamaskController extends EventEmitter {
    * Sets the Ledger Live preference to use for Ledger hardware wallet support
    * @param {bool} bool - the value representing if the users wants to use Ledger Live
    */
-  async setLedgerLivePreference(bool) {
-    const currentValue = this.preferencesController.getLedgerLivePreference();
-    this.preferencesController.setLedgerLivePreference(bool);
+  async setLedgerTransportPreference(transportType) {
+    const currentValue = this.preferencesController.getLedgerTransportPreference();
+    const newValue = this.preferencesController.setLedgerTransportPreference(
+      transportType,
+    );
 
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod(bool).catch((e) => {
+      return keyring.updateTransportMethod(newValue).catch((e) => {
         // If there was an error updating the transport, we should
         // fall back to the original value
-        this.preferencesController.setLedgerLivePreference(currentValue);
+        this.preferencesController.setLedgerTransportPreference(currentValue);
         throw e;
       });
     }

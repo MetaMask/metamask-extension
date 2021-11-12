@@ -43,6 +43,9 @@
   "activityLog": {
     "message": "activity log"
   },
+  "addANetwork": {
+    "message": "Add a network"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -79,6 +82,9 @@
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
+  "addNFT": {
+    "message": "Add NFT"
+  },
   "addNetwork": {
     "message": "Add Network"
   },
@@ -107,7 +113,7 @@
     "message": "Advanced Options"
   },
   "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC"
+    "message": "Access developer features, download State Logs, Reset Account, setup test networks and custom RPC"
   },
   "affirmAgree": {
     "message": "I Agree"
@@ -139,9 +145,9 @@
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
-  "allowOriginSpendToken": {
-    "message": "Allow $1 to spend your $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
+  "allowSpendToken": {
+    "message": "Give permission to access your $1?",
+    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowThisSiteTo": {
     "message": "Allow this site to:"
@@ -161,9 +167,6 @@
   },
   "amount": {
     "message": "Amount"
-  },
-  "amountWithColon": {
-    "message": "Amount:"
   },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
@@ -191,6 +194,9 @@
   },
   "approved": {
     "message": "Approved"
+  },
+  "approvedAmountWithColon": {
+    "message": "Approved Amount:"
   },
   "asset": {
     "message": "Asset"
@@ -353,6 +359,10 @@
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
+  },
+  "clickToConnectLedgerViaWebHID": {
+    "message": "Click here to connect your Ledger via WebHID",
+    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
@@ -548,20 +558,27 @@
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
   },
+  "custom": {
+    "message": "Advanced"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
-  "customRPC": {
-    "message": "Custom RPC"
-  },
   "customSpendLimit": {
     "message": "Custom Spend Limit"
   },
   "customToken": {
     "message": "Custom Token"
+  },
+  "dappSuggested": {
+    "message": "Site suggested"
+  },
+  "dappSuggestedTooltip": {
+    "message": "$1 has recommended this price.",
+    "description": "$1 represents the Dapp's origin"
   },
   "data": {
     "message": "Data"
@@ -596,7 +613,8 @@
     "message": "Decrypt request"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Mainnet."
+    "message": "The default network for Ether transactions is Mainnet. You can also $1 test networks $2.",
+    "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "delete": {
     "message": "Delete"
@@ -621,6 +639,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+  },
+  "disable": {
+    "message": "disable"
   },
   "disconnect": {
     "message": "Disconnect"
@@ -773,6 +794,9 @@
   "editPermission": {
     "message": "Edit Permission"
   },
+  "enable": {
+    "message": "enable"
+  },
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
@@ -896,6 +920,9 @@
   "etherscanView": {
     "message": "View account on Etherscan"
   },
+  "etherscanViewOn": {
+    "message": "View on Etherscan"
+  },
   "expandView": {
     "message": "Expand view"
   },
@@ -1007,6 +1034,9 @@
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
+  "gasPriceLabel": {
+    "message": "Gas price"
+  },
   "gasTimingMinutes": {
     "message": "$1 minutes",
     "description": "$1 represents a number of minutes"
@@ -1060,6 +1090,9 @@
   "goerli": {
     "message": "Goerli Test Network"
   },
+  "grantedToWithColon": {
+    "message": "Granted To:"
+  },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
   },
@@ -1102,6 +1135,9 @@
   "hideZeroBalanceTokens": {
     "message": "Hide Tokens Without Balance"
   },
+  "high": {
+    "message": "Aggressive"
+  },
   "history": {
     "message": "History"
   },
@@ -1119,7 +1155,7 @@
     "message": "import using Secret Recovery Phrase"
   },
   "importAccountMsg": {
-    "message": " Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts "
+    "message": "Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts"
   },
   "importAccountSeedPhrase": {
     "message": "Import a wallet with Secret Recovery Phrase"
@@ -1172,6 +1208,9 @@
   },
   "insufficientFunds": {
     "message": "Insufficient funds."
+  },
+  "insufficientFundsForGas": {
+    "message": "Insufficient funds for gas"
   },
   "insufficientTokens": {
     "message": "Insufficient tokens."
@@ -1251,6 +1290,9 @@
   "lastConnected": {
     "message": "Last Connected"
   },
+  "layer1Fees": {
+    "message": "Layer 1 fees"
+  },
   "learnMore": {
     "message": "Learn more"
   },
@@ -1260,35 +1302,50 @@
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Use Ledger Live"
+  "ledgerConnectionInstructionCloseOtherApps": {
+    "message": "Close any other software connected to your device and then click here to refresh."
   },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "The new Ledger Live bridge allows you to more easily use your Ledger.  Only available in Chrome."
+  "ledgerConnectionInstructionHeader": {
+    "message": "Prior to clicking confirm:"
+  },
+  "ledgerConnectionInstructionStepFour": {
+    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device"
+  },
+  "ledgerConnectionInstructionStepOne": {
+    "message": "Enable Use Ledger Live under Settings > Advanced"
+  },
+  "ledgerConnectionInstructionStepThree": {
+    "message": "Plug in your Ledger device and select the Ethereum app"
+  },
+  "ledgerConnectionInstructionStepTwo": {
+    "message": "Open and unlock Ledger Live App"
+  },
+  "ledgerConnectionPreferenceDescription": {
+    "message": "Customize how you connect your Ledger to MetaMask. $1 is recommended, but other options are available. Read more here: $2",
+    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
+  },
+  "ledgerDeviceOpenFailureMessage": {
+    "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
+  },
+  "ledgerLive": {
+    "message": "Ledger Live",
+    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
-  },
-  "ledgerLiveDialogHeader": {
-    "message": "Prior to clicking confirm:"
-  },
-  "ledgerLiveDialogStepFour": {
-    "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device"
-  },
-  "ledgerLiveDialogStepOne": {
-    "message": "Enable Use Ledger Live under Settings > Advanced"
-  },
-  "ledgerLiveDialogStepThree": {
-    "message": "Plug in your Ledger device and select the Ethereum app"
-  },
-  "ledgerLiveDialogStepTwo": {
-    "message": "Open and unlock Ledger Live App"
   },
   "ledgerLocked": {
     "message": "Cannot connect to Ledger device. Please make sure your device is unlocked and Ethereum app is opened."
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
+  },
+  "ledgerTransportChangeWarning": {
+    "message": "If your Ledger Live app is open, please disconnect any open Ledger Live connection and close the Ledger Live app."
+  },
+  "ledgerWebHIDNotConnectedErrorMessage": {
+    "message": "The ledger device was not connected. If you wish to connect your Ledger, please click 'Continue' again and approve HID connection",
+    "description": "An error message shown to the user during the hardware connect flow."
   },
   "letsGoSetUp": {
     "message": "Yes, let’s get set up!"
@@ -1317,6 +1374,12 @@
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
+  "low": {
+    "message": "Low"
+  },
+  "lowPriorityMessage": {
+    "message": "Future transactions will queue after this one. This price was last seen was some time ago."
+  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
@@ -1330,11 +1393,17 @@
   "max": {
     "message": "Max"
   },
+  "maxBaseFee": {
+    "message": "Max base fee"
+  },
   "maxFee": {
     "message": "Max fee"
   },
   "maxPriorityFee": {
     "message": "Max priority fee"
+  },
+  "medium": {
+    "message": "Market"
   },
   "memo": {
     "message": "memo"
@@ -1419,6 +1488,9 @@
   "mismatchedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
+  },
+  "missingNFT": {
+    "message": "Don't see your NFT?"
   },
   "missingToken": {
     "message": "Don't see your token?"
@@ -1516,8 +1588,8 @@
   "newContract": {
     "message": "New Contract"
   },
-  "newNetwork": {
-    "message": "New Network"
+  "newNetworkAdded": {
+    "message": "“$1” was successfully added!"
   },
   "newPassword": {
     "message": "New password (min 8 chars)"
@@ -1538,6 +1610,9 @@
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nfts": {
+    "message": "NFTs"
+  },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
@@ -1549,6 +1624,9 @@
   },
   "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
+  },
+  "noNFTs": {
+    "message": "No NFTs yet"
   },
   "noThanks": {
     "message": "No Thanks"
@@ -1644,6 +1722,22 @@
     "message": "Ledger firmware update",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
   },
+  "notifications8ActionText": {
+    "message": "Go to Advanced Settings",
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+  },
+  "notifications8DescriptionOne": {
+    "message": "As of MetaMask v10.4.0, you no longer need Ledger Live to connect your Ledger device to MetaMask.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
+  },
+  "notifications8DescriptionTwo": {
+    "message": "For an easier and more stable ledger experience, go to the Advanced tab of settings and switch the 'Preferred Ledger Connection Type' to 'WebHID'.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
+  },
+  "notifications8Title": {
+    "message": "Ledger connection improvement",
+    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -1719,14 +1813,15 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "openFullScreenForLedgerWebHid": {
+    "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
   "optional": {
     "message": "Optional"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (optional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Currency Symbol (optional)"
+  "optionalWithParanthesis": {
+    "message": "(Optional)"
   },
   "or": {
     "message": "or"
@@ -1768,6 +1863,9 @@
   "permissionCheckedIconDescription": {
     "message": "You have approved this permission"
   },
+  "permissionRequest": {
+    "message": "Permission Request"
+  },
   "permissionUncheckedIconDescription": {
     "message": "You have not approved this permission"
   },
@@ -1780,6 +1878,10 @@
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "preferredLedgerConnectionType": {
+    "message": "Preferred Ledger Connection Type",
+    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "prev": {
     "message": "Prev"
@@ -1978,6 +2080,9 @@
   "secretPhrase": {
     "message": "Only the first account on this wallet will auto load. After completing this process, to add additional accounts, click the drop down menu, then select Create Account."
   },
+  "secretPhraseWarning": {
+    "message": "If you restore using another Secret Recovery Phrase, your current wallet, accounts and assets will be removed from this app permanently. This action cannot be undone."
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -2068,13 +2173,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Select an account to view in MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Don't see your account? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "Please select each phrase in order to make sure it is correct."
   },
@@ -2082,7 +2180,7 @@
     "message": "Select HD Path"
   },
   "selectPathHelp": {
-    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+    "message": "If you don't see the accounts you expect, try switching the HD path."
   },
   "selectType": {
     "message": "Select Type"
@@ -2132,10 +2230,10 @@
     "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
   "showFiatConversionInTestnets": {
-    "message": "Show Conversion on Testnets"
+    "message": "Show Conversion on test networks"
   },
   "showFiatConversionInTestnetsDescription": {
-    "message": "Select this to show fiat conversion on Testnets"
+    "message": "Select this to show fiat conversion on test networks"
   },
   "showHexData": {
     "message": "Show Hex Data"
@@ -2160,6 +2258,12 @@
   },
   "showSeedPhrase": {
     "message": "Show Secret Recovery Phrase"
+  },
+  "showTestnetNetworks": {
+    "message": "Show test networks"
+  },
+  "showTestnetNetworksDescription": {
+    "message": "Select this to show test networks in network list"
   },
   "sigRequest": {
     "message": "Signature Request"
@@ -2248,6 +2352,13 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
+  },
+  "step1LatticeWallet": {
+    "message": "Make sure your Lattice1 is ready to connect"
+  },
+  "step1LatticeWalletMsg": {
+    "message": "You can connect MetaMask to your Lattice1 device once it is set up and online. Unlock your device and have your Device ID ready. For more on using hardware wallets, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
     "message": "Download Ledger app"
@@ -2612,12 +2723,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"
   },
-  "switchLedgerPaths": {
-    "message": "Switch Ledger paths"
-  },
-  "switchLedgerPathsText": {
-    "message": "Select the Ledger path to view other accounts"
-  },
   "switchNetwork": {
     "message": "Switch network"
   },
@@ -2694,9 +2799,6 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "To:"
-  },
   "token": {
     "message": "Token"
   },
@@ -2745,6 +2847,12 @@
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
   },
+  "transactionDetailGasHeadingV2": {
+    "message": "Gas"
+  },
+  "transactionDetailGasInfoV2": {
+    "message": "estimated"
+  },
   "transactionDetailGasTooltipConversion": {
     "message": "Learn more about gas fees"
   },
@@ -2756,6 +2864,12 @@
   },
   "transactionDetailGasTotalSubtitle": {
     "message": "Amount + gas fee"
+  },
+  "transactionDetailLayer2GasHeading": {
+    "message": "Layer 2 gas fee"
+  },
+  "transactionDetailMultiLayerTotalSubtitle": {
+    "message": "Amount + fees"
   },
   "transactionDropped": {
     "message": "Transaction dropped at $2."
@@ -2774,6 +2888,15 @@
   },
   "transactionHistoryBaseFee": {
     "message": "Base Fee (GWEI)"
+  },
+  "transactionHistoryL1GasLabel": {
+    "message": "Total L1 Gas Fee"
+  },
+  "transactionHistoryL2GasLimitLabel": {
+    "message": "L2 Gas Limit"
+  },
+  "transactionHistoryL2GasPriceLabel": {
+    "message": "L2 Gas Price"
   },
   "transactionHistoryMaxFeePerGas": {
     "message": "Max Fee Per Gas"
@@ -2811,17 +2934,20 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
-    "message": "Do you trust this site? By granting this permission, you’re allowing $1 to withdraw your $2 and automate transactions for you.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
+    "message": "By granting permission, you are allowing the following $1 to access your funds"
   },
   "tryAgain": {
     "message": "Try again"
   },
   "turnOnTokenDetection": {
-    "message": "Turn on Token Detection"
+    "message": "Turn on enhanced token detection"
   },
   "typePassword": {
     "message": "Type your MetaMask password"
+  },
+  "u2f": {
+    "message": "U2F",
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
   "unapproved": {
     "message": "Unapproved"
@@ -2969,6 +3095,10 @@
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
     "description": "$1 is a clickable link."
+  },
+  "webhid": {
+    "message": "WebHID",
+    "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
   "welcome": {
     "message": "Welcome to MetaMask"

@@ -111,7 +111,11 @@ export default class ExtensionPlatform {
     return version;
   }
 
-  openExtensionInBrowser(route = null, queryString = null) {
+  openExtensionInBrowser(
+    route = null,
+    queryString = null,
+    keepWindowOpen = false,
+  ) {
     let extensionURL = extension.runtime.getURL('home.html');
 
     if (queryString) {
@@ -122,7 +126,10 @@ export default class ExtensionPlatform {
       extensionURL += `#${route}`;
     }
     this.openTab({ url: extensionURL });
-    if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
+    if (
+      getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND &&
+      !keepWindowOpen
+    ) {
       window.close();
     }
   }
@@ -255,9 +262,9 @@ export default class ExtensionPlatform {
     }
   }
 
-  _viewOnEtherscan(txId) {
-    if (txId.startsWith('https://')) {
-      extension.tabs.create({ url: txId });
+  _viewOnEtherscan(url) {
+    if (url.startsWith('https://')) {
+      extension.tabs.create({ url });
     }
   }
 }

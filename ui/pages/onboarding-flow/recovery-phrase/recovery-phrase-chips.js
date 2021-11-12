@@ -36,6 +36,7 @@ export default function RecoveryPhraseChips({
       className="recovery-phrase__secret"
     >
       <div
+        data-testid="recovery-phrase-chips"
         className={classnames('recovery-phrase__chips', {
           'recovery-phrase__chips--hidden': hideSeedPhrase,
         })}
@@ -52,6 +53,7 @@ export default function RecoveryPhraseChips({
                   {`${index + 1}.`}
                 </div>
                 <ChipWithInput
+                  dataTestId={`recovery-phrase-input-${index}`}
                   borderColor={COLORS.PRIMARY1}
                   className="recovery-phrase__chip--with-input"
                   inputValue={inputValue[index]}
@@ -67,7 +69,11 @@ export default function RecoveryPhraseChips({
               <div className="recovery-phrase__chip-item__number">
                 {`${index + 1}.`}
               </div>
-              <Chip className="recovery-phrase__chip" borderColor={COLORS.UI3}>
+              <Chip
+                dataTestId={`recovery-phrase-chip-${index}`}
+                className="recovery-phrase__chip"
+                borderColor={COLORS.UI3}
+              >
                 {word}
               </Chip>
             </div>

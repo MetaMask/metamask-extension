@@ -6,6 +6,7 @@ import Typography from '../typography';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 export default function Chip({
+  dataTestId,
   className,
   children,
   borderColor = COLORS.UI1,
@@ -25,6 +26,7 @@ export default function Chip({
 
   return (
     <div
+      data-testid={dataTestId}
       onClick={onClick}
       onKeyPress={onKeyPress}
       className={classnames(className, 'chip', {
@@ -35,7 +37,7 @@ export default function Chip({
       role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
     >
-      {leftIcon && <div className="chip__left-icon">{leftIcon}</div>}
+      {leftIcon ? <div className="chip__left-icon">{leftIcon}</div> : null}
       {children ?? (
         <Typography
           className="chip__label"
@@ -47,12 +49,13 @@ export default function Chip({
           {label}
         </Typography>
       )}
-      {rightIcon && <div className="chip__right-icon">{rightIcon}</div>}
+      {rightIcon ? <div className="chip__right-icon">{rightIcon}</div> : null}
     </div>
   );
 }
 
 Chip.propTypes = {
+  dataTestId: PropTypes.string,
   borderColor: PropTypes.oneOf(Object.values(COLORS)),
   label: PropTypes.string,
   children: PropTypes.node,

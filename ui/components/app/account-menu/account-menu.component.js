@@ -196,7 +196,9 @@ export default class AccountMenu extends Component {
           key={identity.address}
         >
           <div className="account-menu__check-mark">
-            {isSelected && <div className="account-menu__check-mark-icon" />}
+            {isSelected ? (
+              <div className="account-menu__check-mark-icon" />
+            ) : null}
           </div>
           <Identicon address={identity.address} diameter={24} />
           <div className="account-menu__account-info">
@@ -236,6 +238,7 @@ export default class AccountMenu extends Component {
     switch (type) {
       case KEYRING_TYPES.TREZOR:
       case KEYRING_TYPES.LEDGER:
+      case KEYRING_TYPES.LATTICE:
         label = t('hardware');
         break;
       case 'Simple Key Pair':

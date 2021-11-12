@@ -1,6 +1,6 @@
 const path = require('path');
 const { PassThrough, Transform } = require('stream');
-const { BuildTypes } = require('../utils');
+const { BuildType } = require('../utils');
 const { lintTransformedFile } = require('./utils');
 
 const hasOwnProperty = (obj, key) => Reflect.hasOwnProperty.call(obj, key);
@@ -86,7 +86,7 @@ function createRemoveFencedCodeTransform(
   buildType,
   shouldLintTransformedFiles = true,
 ) {
-  if (!hasOwnProperty(BuildTypes, buildType)) {
+  if (!hasOwnProperty(BuildType, buildType)) {
     throw new Error(
       `Code fencing transform received unrecognized build type "${buildType}".`,
     );
@@ -136,7 +136,7 @@ const CommandValidators = {
     }
 
     params.forEach((param) => {
-      if (!hasOwnProperty(BuildTypes, param)) {
+      if (!hasOwnProperty(BuildType, param)) {
         throw new Error(
           getInvalidParamsMessage(
             filePath,
@@ -408,7 +408,9 @@ function multiSplice(toSplice, splicingIndices) {
   // pushes the substring between each "end" index and the next "begin" index
   // to the array of retained substrings.
   if (splicingIndices.length > 2) {
-    for (let i = 1; i < splicingIndices.length; i += 2) {
+    // Note the boundary index of "splicingIndices.length - 1". This loop must
+    // not iterate over the last element of the array.
+    for (let i = 1; i < splicingIndices.length - 1; i += 2) {
       retainedSubstrings.push(
         toSplice.substring(splicingIndices[i], splicingIndices[i + 1]),
       );

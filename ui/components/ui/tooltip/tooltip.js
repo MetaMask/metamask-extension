@@ -80,7 +80,7 @@ export default class Tooltip extends PureComponent {
         size={size}
         offset={offset}
         style={style}
-        title={title}
+        title={disabled ? '' : title}
         trigger={trigger}
         theme={theme}
         tabIndex={tabIndex || 0}

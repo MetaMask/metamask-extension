@@ -254,9 +254,6 @@
   "customGasSubTitle": {
     "message": "Augmentar la tarifa pot disminuir els temps de processament, però això no està garantit."
   },
-  "customRPC": {
-    "message": "RPC a mida"
-  },
   "customToken": {
     "message": "Fitxa a Mida"
   },
@@ -265,9 +262,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Els decimals han de ser al menys 0, i no més de 36."
-  },
-  "defaultNetwork": {
-    "message": "La xarxa per defecte per a les transaccions Ether és Mainnet."
   },
   "delete": {
     "message": "Suprimeix"
@@ -607,9 +601,6 @@
   "newContract": {
     "message": "Nou Contracte"
   },
-  "newNetwork": {
-    "message": "Nova Xarxa"
-  },
   "newPassword": {
     "message": "Nova contrasenya (mínim 8 caràcters)"
   },
@@ -657,12 +648,6 @@
   },
   "on": {
     "message": "Activat"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Bloqueja l'URL d'Explorer (opcional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Símbol (opcional)"
   },
   "origin": {
     "message": "Origen"
@@ -836,9 +821,6 @@
   },
   "selectAnAccount": {
     "message": "Selecciona un Compte"
-  },
-  "selectAnAccountHelp": {
-    "message": "Selecciona el compte que vols veure a MetaMask"
   },
   "selectEachPhrase": {
     "message": "Si us plau selecciona cada frase per a assegurar-te que és correcta."

@@ -35,6 +35,7 @@ export default class ConfirmPageContainerContent extends Component {
     disabled: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
+    hideTitle: PropTypes.boolean,
   };
 
   renderContent() {
@@ -89,11 +90,12 @@ export default class ConfirmPageContainerContent extends Component {
       rejectNText,
       origin,
       ethGasPriceWarning,
+      hideTitle,
     } = this.props;
 
     return (
       <div className="confirm-page-container-content">
-        {warning && <ConfirmPageContainerWarning warning={warning} />}
+        {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
@@ -110,6 +112,7 @@ export default class ConfirmPageContainerContent extends Component {
           identiconAddress={identiconAddress}
           nonce={nonce}
           origin={origin}
+          hideTitle={hideTitle}
         />
         {this.renderContent()}
         {(errorKey || errorMessage) && (
@@ -124,7 +127,9 @@ export default class ConfirmPageContainerContent extends Component {
           submitText={submitText}
           disabled={disabled}
         >
-          {unapprovedTxCount > 1 && <a onClick={onCancelAll}>{rejectNText}</a>}
+          {unapprovedTxCount > 1 ? (
+            <a onClick={onCancelAll}>{rejectNText}</a>
+          ) : null}
         </PageContainerFooter>
       </div>
     );

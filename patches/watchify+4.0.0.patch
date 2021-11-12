@@ -1,0 +1,38 @@
+diff --git a/node_modules/watchify/index.js b/node_modules/watchify/index.js
+index 0753b9f..05efb1b 100644
+--- a/node_modules/watchify/index.js
++++ b/node_modules/watchify/index.js
+@@ -58,33 +58,6 @@ function watchify (b, opts) {
+         if (pkgcache) pkgcache[file] = pkg;
+     });
+     
+-    b.on('reset', reset);
+-    reset();
+-    
+-    function reset () {
+-        var time = null;
+-        var bytes = 0;
+-        b.pipeline.get('record').on('end', function () {
+-            time = Date.now();
+-        });
+-        
+-        b.pipeline.get('wrap').push(through(write, end));
+-        function write (buf, enc, next) {
+-            bytes += buf.length;
+-            this.push(buf);
+-            next();
+-        }
+-        function end () {
+-            var delta = Date.now() - time;
+-            b.emit('time', delta);
+-            b.emit('bytes', bytes);
+-            b.emit('log', bytes + ' bytes written ('
+-                + (delta / 1000).toFixed(2) + ' seconds)'
+-            );
+-            this.push(null);
+-        }
+-    }
+-    
+     var fwatchers = {};
+     var fwatcherFiles = {};
+     var ignoredFiles = {};

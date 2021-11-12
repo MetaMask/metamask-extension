@@ -11,6 +11,7 @@ import {
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { SECOND } from '../../../../shared/constants/time';
+import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
 import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
@@ -19,13 +20,37 @@ const U2F_ERROR = 'U2F';
 const LEDGER_LIVE_PATH = `m/44'/60'/0'/0/0`;
 const MEW_PATH = `m/44'/60'/0'`;
 const BIP44_PATH = `m/44'/60'/0'/0`;
-const HD_PATHS = [
+const LEDGER_HD_PATHS = [
   { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
   { name: 'Legacy (MEW / MyCrypto)', value: MEW_PATH },
   { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
 ];
 
+const LATTICE_STANDARD_BIP44_PATH = `m/44'/60'/0'/0/x`;
+const LATTICE_LEDGER_LIVE_PATH = `m/44'/60'/x'/0/0`;
+const LATTICE_MEW_PATH = `m/44'/60'/0'/x`;
+const LATTICE_HD_PATHS = [
+  {
+    name: `Standard (${LATTICE_STANDARD_BIP44_PATH})`,
+    value: LATTICE_STANDARD_BIP44_PATH,
+  },
+  {
+    name: `Ledger Live (${LATTICE_LEDGER_LIVE_PATH})`,
+    value: LATTICE_LEDGER_LIVE_PATH,
+  },
+  { name: `Ledger Legacy (${LATTICE_MEW_PATH})`, value: LATTICE_MEW_PATH },
+];
+
+const HD_PATHS = {
+  ledger: LEDGER_HD_PATHS,
+  lattice: LATTICE_HD_PATHS,
+};
+
 class ConnectHardwareForm extends Component {
+  static contextTypes = {
+    t: PropTypes.func,
+  };
+
   state = {
     error: null,
     selectedAccounts: [],
@@ -51,7 +76,7 @@ class ConnectHardwareForm extends Component {
   }
 
   async checkIfUnlocked() {
-    for (const device of ['trezor', 'ledger']) {
+    for (const device of ['trezor', 'ledger', 'lattice']) {
       const path = this.props.defaultHdPaths[device];
       const unlocked = await this.props.checkHardwareStatus(device, path);
       if (unlocked) {
@@ -106,7 +131,7 @@ class ConnectHardwareForm extends Component {
 
   getPage = (device, page, hdPath) => {
     this.props
-      .connectHardware(device, page, hdPath)
+      .connectHardware(device, page, hdPath, this.context.t)
       .then((accounts) => {
         if (accounts.length) {
           // If we just loaded the accounts for the first time
@@ -262,7 +287,7 @@ class ConnectHardwareForm extends Component {
         <SelectHardware
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
-          useLedgerLive={this.props.useLedgerLive}
+          ledgerTransportType={this.props.ledgerTransportType}
         />
       );
     }
@@ -313,7 +338,7 @@ ConnectHardwareForm.propTypes = {
   connectedAccounts: PropTypes.array.isRequired,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
-  useLedgerLive: PropTypes.bool.isRequired,
+  ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
 };
 
 const mapStateToProps = (state) => ({
@@ -323,7 +348,7 @@ const mapStateToProps = (state) => ({
   connectedAccounts: getMetaMaskAccountsConnected(state),
   defaultHdPaths: state.appState.defaultHdPaths,
   mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  useLedgerLive: state.metamask.useLedgerLive,
+  ledgerTransportType: state.metamask.ledgerTransportType,
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -331,8 +356,8 @@ const mapDispatchToProps = (dispatch) => {
     setHardwareWalletDefaultHdPath: ({ device, path }) => {
       return dispatch(actions.setHardwareWalletDefaultHdPath({ device, path }));
     },
-    connectHardware: (deviceName, page, hdPath) => {
-      return dispatch(actions.connectHardware(deviceName, page, hdPath));
+    connectHardware: (deviceName, page, hdPath, t) => {
+      return dispatch(actions.connectHardware(deviceName, page, hdPath, t));
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));

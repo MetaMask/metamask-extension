@@ -163,6 +163,9 @@ class RestoreVaultPage extends Component {
             <div className="import-account__selector-label">
               {this.context.t('secretPhrase')}
             </div>
+            <div className="import-account__selector-typography">
+              {this.context.t('secretPhraseWarning')}
+            </div>
             <div className="import-account__input-wrapper">
               <label className="import-account__input-label">
                 {this.context.t('walletSeedRestore')}

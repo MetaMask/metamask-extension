@@ -4,6 +4,7 @@ import {
   decimalToHex,
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util';
+import { getNetworkSupportsSettingGasPrice } from '../../../../selectors/selectors';
 import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 import AdvancedGasInputs from './advanced-gas-inputs.component';
 
@@ -19,7 +20,13 @@ function convertMinimumGasLimitForInputs(minimumGasLimit = MIN_GAS_LIMIT_DEC) {
   return parseInt(minimumGasLimit, 10);
 }
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
+function mapStateToProps(state) {
+  return {
+    networkSupportsSettingGasPrice: getNetworkSupportsSettingGasPrice(state),
+  };
+}
+
+function mergeProps(stateProps, dispatchProps, ownProps) {
   const {
     customGasPrice,
     customGasLimit,
@@ -38,6 +45,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       updateCustomGasPrice(decGWEIToHexWEI(price)),
     updateCustomGasLimit: (limit) => updateCustomGasLimit(decimalToHex(limit)),
   };
-};
+}
 
-export default connect(null, null, mergeProps)(AdvancedGasInputs);
+export default connect(mapStateToProps, null, mergeProps)(AdvancedGasInputs);

@@ -11,7 +11,6 @@ import {
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
-import { isBeta } from '../../../helpers/utils/build-types';
 import ConfirmSeedPhrase from './confirm-seed-phrase';
 import RevealSeedPhrase from './reveal-seed-phrase';
 import SeedPhraseIntro from './seed-phrase-intro';
@@ -51,7 +50,7 @@ export default class SeedPhrase extends PureComponent {
     return (
       <DragDropContextProvider backend={HTML5Backend}>
         <div className={`first-time-flow__wrapper ${introClass}`}>
-          <MetaFoxLogo useDark={isBeta()} />
+          <MetaFoxLogo />
           <Switch>
             <Route
               exact

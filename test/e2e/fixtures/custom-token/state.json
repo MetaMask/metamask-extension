@@ -12,7 +12,7 @@
       "connectedStatusPopoverHasBeenShown": true,
       "defaultHomeActiveTabName": null,
       "recoveryPhraseReminderHasBeenShown": true,
-      "recoveryPhraseReminderLastShown": 1627317428214
+      "recoveryPhraseReminderLastShown": "__FIXTURE_SUBSTITUTION__currentDateInMilliseconds"
     },
     "CachedBalancesController": {
       "cachedBalances": {
@@ -67,7 +67,11 @@
       }
     },
     "NotificationController": {
-      "notifications": {}
+      "notifications": {
+        "8": {
+          "isShown": true
+        }
+      }
     },
     "OnboardingController": {
       "onboardingTabs": {},

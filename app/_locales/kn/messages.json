@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "ಹೆಚ್ಚುತ್ತಿರುವ ಶುಲ್ಕವು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸುವ ಸಮಯದಲ್ಲಿ ಕಡಿಮೆಯಾಗುತ್ತದೆ ಆದರೆ ಇದು ಖಚಿತವಾಗಿಲ್ಲ."
   },
-  "customRPC": {
-    "message": "ಕಸ್ಟಮ್ RPC"
-  },
   "customToken": {
     "message": "ಕಸ್ಟಮ್ ಟೋಕನ್"
   },
@@ -268,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "ದಶಮಾಂಶಗಳು ಕನಿಷ್ಟ 0 ಆಗಿರಬೇಕು ಮತ್ತು 36 ಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬಾರದು"
-  },
-  "defaultNetwork": {
-    "message": "ಎಥರ್ ವಹಿವಾಟುಗಳಿಗಾಗಿ ಡೀಫಾಲ್ಟ್ ನೆಟ್‌ವರ್ಕ್ ಪ್ರಮುಖವಾಗಿರುವ ನೆಟ್ ಆಗಿದೆ."
   },
   "delete": {
     "message": "ಅಳಿಸಿ"
@@ -623,9 +617,6 @@
   "newContract": {
     "message": "ಹೊಸ ಒಪ್ಪಂದ"
   },
-  "newNetwork": {
-    "message": "ಹೊಸ ನೆಟ್‌ವರ್ಕ್"
-  },
   "newPassword": {
     "message": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ (ಕನಿಷ್ಟ 8 ಅಕ್ಷರಗಳು)"
   },
@@ -673,12 +664,6 @@
   },
   "on": {
     "message": "ಆನ್‌"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "ಅನ್ವೇಷಕ URL ಅನ್ನು ನಿರ್ಬಂಧಿಸಿ (ಐಚ್ಛಿಕ)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "ಚಿಹ್ನೆ (ಐಚ್ಛಿಕ)"
   },
   "origin": {
     "message": "ಮೂಲ"
@@ -858,9 +843,6 @@
   },
   "selectAnAccount": {
     "message": "ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
-  "selectAnAccountHelp": {
-    "message": "MetaMask ನಲ್ಲಿ ವೀಕ್ಷಿಸಲು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "selectEachPhrase": {
     "message": "ಅದು ಸರಿಯಾಗಿದೆಯೆ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು ದಯವಿಟ್ಟು ಪ್ರತಿ ಫ್ರೇಸ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ."

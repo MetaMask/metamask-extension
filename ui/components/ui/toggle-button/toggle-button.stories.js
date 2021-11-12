@@ -27,6 +27,4 @@ export const DefaultStory = () => {
   );
 };
 
-DefaultStory.story = {
-  name: 'Default',
-};
+DefaultStory.storyName = 'Default';

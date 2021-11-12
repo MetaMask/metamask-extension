@@ -5,6 +5,7 @@ import { COLORS } from '../../../helpers/constants/design-system';
 import Chip from '.';
 
 export function ChipWithInput({
+  dataTestId,
   className,
   borderColor = COLORS.UI1,
   inputValue,
@@ -17,6 +18,7 @@ export function ChipWithInput({
     >
       {setInputValue && (
         <input
+          data-testid={dataTestId}
           type="text"
           className="chip__input"
           onChange={(e) => {
@@ -30,6 +32,7 @@ export function ChipWithInput({
 }
 
 ChipWithInput.propTypes = {
+  dataTestId: PropTypes.string,
   borderColor: PropTypes.oneOf(Object.values(COLORS)),
   className: PropTypes.string,
   inputValue: PropTypes.string,

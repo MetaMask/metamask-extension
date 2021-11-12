@@ -35,12 +35,12 @@ import TransactionDetailItem from '../../components/app/transaction-detail-item/
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
-import Dialog from '../../components/ui/dialog';
+import LedgerInstructionField from '../../components/app/ledger-instruction-field';
+import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
 
 import {
   COLORS,
   FONT_STYLE,
-  FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../helpers/constants/design-system';
 import {
@@ -52,6 +52,12 @@ import {
 
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
+
+import GasDetailsItem from './gas-details-item';
+import LowPriorityMessage from './low-priority-message';
+
+// eslint-disable-next-line prefer-destructuring
+const EIP_1559_V2 = process.env.EIP_1559_V2;
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
@@ -127,9 +133,10 @@ export default class ConfirmTransactionBase extends Component {
     isMainnet: PropTypes.bool,
     gasFeeIsCustom: PropTypes.bool,
     showLedgerSteps: PropTypes.bool.isRequired,
-    isFirefox: PropTypes.bool.isRequired,
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
+    hardwareWalletRequiresConnection: PropTypes.bool,
+    isMultiLayerFeeNetwork: PropTypes.bool,
   };
 
   state = {
@@ -310,8 +317,9 @@ export default class ConfirmTransactionBase extends Component {
       maxPriorityFeePerGas,
       isMainnet,
       showLedgerSteps,
-      isFirefox,
       supportsEIP1559,
+      isMultiLayerFeeNetwork,
+      nativeCurrency,
     } = this.props;
     const { t } = this.context;
 
@@ -405,176 +413,176 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
-    const renderLedgerLiveStep = (text, show = true) => {
-      return (
-        show && (
-          <Typography
-            boxProps={{ margin: 0 }}
-            color={COLORS.PRIMARY3}
-            fontWeight={FONT_WEIGHT.BOLD}
-            variant={TYPOGRAPHY.H7}
-          >
-            {text}
-          </Typography>
-        )
-      );
-    };
-
-    const ledgerInstructionField = showLedgerSteps ? (
-      <div>
-        <div className="confirm-detail-row">
-          <Dialog type="message">
-            <div className="ledger-live-dialog">
-              {renderLedgerLiveStep(t('ledgerLiveDialogHeader'))}
-              {renderLedgerLiveStep(
-                `- ${t('ledgerLiveDialogStepOne')}`,
-                !isFirefox,
-              )}
-              {renderLedgerLiveStep(
-                `- ${t('ledgerLiveDialogStepTwo')}`,
-                !isFirefox,
-              )}
-              {renderLedgerLiveStep(`- ${t('ledgerLiveDialogStepThree')}`)}
-              {renderLedgerLiveStep(
-                `- ${t('ledgerLiveDialogStepFour')}`,
-                Boolean(txData.txParams?.data),
-              )}
-            </div>
-          </Dialog>
-        </div>
-      </div>
-    ) : null;
-
     return (
       <div className="confirm-page-container-content__details">
+        {EIP_1559_V2 && <LowPriorityMessage />}
         <TransactionDetail
           onEdit={() => this.handleEditGas()}
           rows={[
-            <TransactionDetailItem
-              key="gas-item"
-              detailTitle={
-                txData.dappSuggestedGasFees ? (
-                  <>
-                    {t('transactionDetailGasHeading')}
-                    <InfoTooltip
-                      contentText={t('transactionDetailDappGasTooltip')}
-                      position="top"
-                    >
-                      <i className="fa fa-info-circle" />
-                    </InfoTooltip>
-                  </>
-                ) : (
-                  <>
-                    {t('transactionDetailGasHeading')}
-                    <InfoTooltip
-                      contentText={
-                        <>
-                          <p>
-                            {t('transactionDetailGasTooltipIntro', [
-                              isMainnet ? t('networkNameEthereum') : '',
-                            ])}
-                          </p>
-                          <p>{t('transactionDetailGasTooltipExplanation')}</p>
-                          <p>
-                            <a
-                              href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {t('transactionDetailGasTooltipConversion')}
-                            </a>
-                          </p>
-                        </>
-                      }
-                      position="top"
-                    >
-                      <i className="fa fa-info-circle" />
-                    </InfoTooltip>
-                  </>
-                )
-              }
-              detailTitleColor={COLORS.BLACK}
-              detailText={
-                <div className="confirm-page-container-content__currency-container">
-                  {renderHeartBeatIfNotInTest()}
-                  <UserPreferencedCurrencyDisplay
-                    type={SECONDARY}
-                    value={hexMinimumTransactionFee}
-                    hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                  />
-                </div>
-              }
-              detailTotal={
-                <div className="confirm-page-container-content__currency-container">
-                  {renderHeartBeatIfNotInTest()}
-                  <UserPreferencedCurrencyDisplay
-                    type={PRIMARY}
-                    value={hexMinimumTransactionFee}
-                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                  />
-                </div>
-              }
-              subText={t('editGasSubTextFee', [
-                <b key="editGasSubTextFeeLabel">
-                  {t('editGasSubTextFeeLabel')}
-                </b>,
-                <div
-                  key="editGasSubTextFeeValue"
-                  className="confirm-page-container-content__currency-container"
-                >
-                  {renderHeartBeatIfNotInTest()}
-                  <UserPreferencedCurrencyDisplay
-                    key="editGasSubTextFeeAmount"
-                    type={PRIMARY}
-                    value={hexMaximumTransactionFee}
-                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                  />
-                </div>,
-              ])}
-              subTitle={
-                <>
-                  {txData.dappSuggestedGasFees ? (
-                    <Typography
-                      variant={TYPOGRAPHY.H7}
-                      fontStyle={FONT_STYLE.ITALIC}
-                      color={COLORS.GRAY}
-                    >
-                      {t('transactionDetailDappGasMoreInfo')}
-                    </Typography>
+            EIP_1559_V2 ? (
+              <GasDetailsItem
+                key="gas_details"
+                hexMaximumTransactionFee={hexMaximumTransactionFee}
+                hexMinimumTransactionFee={hexMinimumTransactionFee}
+                isMainnet={isMainnet}
+                maxFeePerGas={maxFeePerGas}
+                maxPriorityFeePerGas={maxPriorityFeePerGas}
+                supportsEIP1559={supportsEIP1559}
+                txData={txData}
+                useNativeCurrencyAsPrimaryCurrency={
+                  useNativeCurrencyAsPrimaryCurrency
+                }
+              />
+            ) : (
+              <TransactionDetailItem
+                key="gas-item"
+                detailTitle={
+                  txData.dappSuggestedGasFees ? (
+                    <>
+                      {isMultiLayerFeeNetwork
+                        ? t('transactionDetailLayer2GasHeading')
+                        : t('transactionDetailGasHeading')}
+                      <InfoTooltip
+                        contentText={t('transactionDetailDappGasTooltip')}
+                        position="top"
+                      >
+                        <i className="fa fa-info-circle" />
+                      </InfoTooltip>
+                    </>
                   ) : (
-                    ''
-                  )}
-                  {supportsEIP1559 && (
-                    <GasTiming
-                      maxPriorityFeePerGas={hexWEIToDecGWEI(
-                        maxPriorityFeePerGas ||
-                          txData.txParams.maxPriorityFeePerGas,
-                      )}
-                      maxFeePerGas={hexWEIToDecGWEI(
-                        maxFeePerGas || txData.txParams.maxFeePerGas,
-                      )}
+                    <>
+                      {isMultiLayerFeeNetwork
+                        ? t('transactionDetailLayer2GasHeading')
+                        : t('transactionDetailGasHeading')}
+                      <InfoTooltip
+                        contentText={
+                          <>
+                            <p>
+                              {t('transactionDetailGasTooltipIntro', [
+                                isMainnet ? t('networkNameEthereum') : '',
+                              ])}
+                            </p>
+                            <p>{t('transactionDetailGasTooltipExplanation')}</p>
+                            <p>
+                              <a
+                                href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {t('transactionDetailGasTooltipConversion')}
+                              </a>
+                            </p>
+                          </>
+                        }
+                        position="top"
+                      >
+                        <i className="fa fa-info-circle" />
+                      </InfoTooltip>
+                    </>
+                  )
+                }
+                detailTitleColor={COLORS.BLACK}
+                detailText={
+                  !isMultiLayerFeeNetwork && (
+                    <div className="confirm-page-container-content__currency-container">
+                      {renderHeartBeatIfNotInTest()}
+                      <UserPreferencedCurrencyDisplay
+                        type={SECONDARY}
+                        value={hexMinimumTransactionFee}
+                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                      />
+                    </div>
+                  )
+                }
+                detailTotal={
+                  <div className="confirm-page-container-content__currency-container">
+                    {renderHeartBeatIfNotInTest()}
+                    <UserPreferencedCurrencyDisplay
+                      type={PRIMARY}
+                      value={hexMinimumTransactionFee}
+                      hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                      numberOfDecimals={isMultiLayerFeeNetwork ? 18 : 6}
                     />
-                  )}
-                </>
-              }
-            />,
-            <TransactionDetailItem
-              key="total-item"
-              detailTitle={t('total')}
-              detailText={renderTotalDetailText()}
-              detailTotal={renderTotalDetailTotal()}
-              subTitle={t('transactionDetailGasTotalSubtitle')}
-              subText={t('editGasSubTextAmount', [
-                <b key="editGasSubTextAmountLabel">
-                  {t('editGasSubTextAmountLabel')}
-                </b>,
-                renderTotalMaxAmount(),
-              ])}
-            />,
+                  </div>
+                }
+                subText={
+                  !isMultiLayerFeeNetwork &&
+                  t('editGasSubTextFee', [
+                    <b key="editGasSubTextFeeLabel">
+                      {t('editGasSubTextFeeLabel')}
+                    </b>,
+                    <div
+                      key="editGasSubTextFeeValue"
+                      className="confirm-page-container-content__currency-container"
+                    >
+                      {renderHeartBeatIfNotInTest()}
+                      <UserPreferencedCurrencyDisplay
+                        key="editGasSubTextFeeAmount"
+                        type={PRIMARY}
+                        value={hexMaximumTransactionFee}
+                        hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                      />
+                    </div>,
+                  ])
+                }
+                subTitle={
+                  <>
+                    {txData.dappSuggestedGasFees ? (
+                      <Typography
+                        variant={TYPOGRAPHY.H7}
+                        fontStyle={FONT_STYLE.ITALIC}
+                        color={COLORS.UI4}
+                      >
+                        {t('transactionDetailDappGasMoreInfo')}
+                      </Typography>
+                    ) : (
+                      ''
+                    )}
+                    {supportsEIP1559 && (
+                      <GasTiming
+                        maxPriorityFeePerGas={hexWEIToDecGWEI(
+                          maxPriorityFeePerGas ||
+                            txData.txParams.maxPriorityFeePerGas,
+                        )}
+                        maxFeePerGas={hexWEIToDecGWEI(
+                          maxFeePerGas || txData.txParams.maxFeePerGas,
+                        )}
+                      />
+                    )}
+                  </>
+                }
+              />
+            ),
+            isMultiLayerFeeNetwork && (
+              <MultiLayerFeeMessage
+                transaction={txData}
+                layer2fee={hexMinimumTransactionFee}
+                nativeCurrency={nativeCurrency}
+              />
+            ),
+            !isMultiLayerFeeNetwork && (
+              <TransactionDetailItem
+                key="total-item"
+                detailTitle={t('total')}
+                detailText={renderTotalDetailText()}
+                detailTotal={renderTotalDetailTotal()}
+                subTitle={t('transactionDetailGasTotalSubtitle')}
+                subText={t('editGasSubTextAmount', [
+                  <b key="editGasSubTextAmountLabel">
+                    {t('editGasSubTextAmountLabel')}
+                  </b>,
+                  renderTotalMaxAmount(),
+                ])}
+              />
+            ),
           ]}
         />
         {nonceField}
-        {ledgerInstructionField}
+        {showLedgerSteps ? (
+          <LedgerInstructionField
+            showDataInstruction={Boolean(txData.txParams?.data)}
+          />
+        ) : null}
       </div>
     );
   }
@@ -916,6 +924,7 @@ export default class ConfirmTransactionBase extends Component {
       gasIsLoading,
       gasFeeIsCustom,
       nativeCurrency,
+      hardwareWalletRequiresConnection,
     } = this.props;
     const {
       submitting,
@@ -981,7 +990,12 @@ export default class ConfirmTransactionBase extends Component {
         lastTx={lastTx}
         ofText={ofText}
         requestsWaitingText={requestsWaitingText}
-        disabled={!valid || submitting || (gasIsLoading && !gasFeeIsCustom)}
+        disabled={
+          !valid ||
+          submitting ||
+          hardwareWalletRequiresConnection ||
+          (gasIsLoading && !gasFeeIsCustom)
+        }
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}

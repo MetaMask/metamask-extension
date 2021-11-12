@@ -67,17 +67,11 @@
   "customGas": {
     "message": "Pas Gas aan"
   },
-  "customRPC": {
-    "message": "Aangepaste RPC"
-  },
   "decimal": {
     "message": "Decimalen van precisie"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
-  },
-  "defaultNetwork": {
-    "message": "Het standaardnetwerk voor Ether-transacties is Mainnet."
   },
   "depositEther": {
     "message": "Stort Ether"

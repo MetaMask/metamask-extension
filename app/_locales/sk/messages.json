@@ -251,9 +251,6 @@
   "customGasSubTitle": {
     "message": "Zvýšenie poplatku môže skrátiť dobu spracovania, nie je to však zaručené."
   },
-  "customRPC": {
-    "message": "Vlastní RPC"
-  },
   "customToken": {
     "message": "Vlastní token"
   },
@@ -262,9 +259,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desetinných míst musí být od 0 do 36."
-  },
-  "defaultNetwork": {
-    "message": "Výchozí síť pro Etherové transakce je Mainnet."
   },
   "delete": {
     "message": "Odstrániť"
@@ -595,9 +589,6 @@
   "newContract": {
     "message": "Nový kontrakt"
   },
-  "newNetwork": {
-    "message": "Nová sieť"
-  },
   "newPassword": {
     "message": "Nové heslo (min 8 znaků)"
   },
@@ -642,12 +633,6 @@
   },
   "on": {
     "message": "Zapnuté"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokovať URL Explorera (voliteľné)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (voliteľné)"
   },
   "origin": {
     "message": "Pôvod"
@@ -821,9 +806,6 @@
   },
   "selectAnAccount": {
     "message": "Vybrať účet"
-  },
-  "selectAnAccountHelp": {
-    "message": "Vyberte účet, ktorý chcete zobraziť v MetaMask"
   },
   "selectEachPhrase": {
     "message": "Vyberte každú frázu, aby ste sa uistili, že je správna."

@@ -14,7 +14,7 @@ jest.mock('../../../components/ui/info-tooltip/info-tooltip-icon', () => () =>
   '<InfoTooltipIcon />',
 );
 
-jest.mock('../../../hooks/useGasFeeInputs', () => {
+jest.mock('../../../hooks/gasFeeInput/useGasFeeInputs', () => {
   return {
     useGasFeeInputs: () => {
       return {
