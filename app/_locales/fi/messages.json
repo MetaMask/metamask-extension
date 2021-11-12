@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Taksan korottaminen saattaa vähentää käsittelyaikaa, mutta siitä ei anneta takeita."
   },
-  "customRPC": {
-    "message": "Mukautettu RPC"
-  },
   "customToken": {
     "message": "Mukautettu tietue"
   },
@@ -268,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desimaalien on oltava vähintään 0 ja korkeintaan 36."
-  },
-  "defaultNetwork": {
-    "message": "Oletusverkko Ether-tapahtumille on Mainnet."
   },
   "delete": {
     "message": "Poista"
@@ -623,9 +617,6 @@
   "newContract": {
     "message": "Uusi sopimus"
   },
-  "newNetwork": {
-    "message": "Uusi verkko"
-  },
   "newPassword": {
     "message": "Uusi salasana (väh. 8 merkkiä)"
   },
@@ -670,12 +661,6 @@
   },
   "on": {
     "message": "Käytössä"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Estä Explorerin URL-osoite (valinnainen)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symboli (valinnainen)"
   },
   "origin": {
     "message": "Alkuperä"
@@ -855,9 +840,6 @@
   },
   "selectAnAccount": {
     "message": "Valitse tili"
-  },
-  "selectAnAccountHelp": {
-    "message": "Valitse MetaMaskissa näytettävä tili"
   },
   "selectEachPhrase": {
     "message": "Ole hyvä ja valitse jokainen teksti järjestyksessä varmistaaksesi, että se on oikein."

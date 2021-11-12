@@ -130,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "Permitir que esta extensão externa:"
   },
-  "allowOriginSpendToken": {
-    "message": "Permitir que $1 gaste seus(suas) $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Permitir que este site:"
   },
@@ -143,9 +139,6 @@
   },
   "amount": {
     "message": "Valor"
-  },
-  "amountWithColon": {
-    "message": "Valor:"
   },
   "appDescription": {
     "message": "Uma carteira do Ethereum no seu navegador",
@@ -474,9 +467,6 @@
   "customGasSubTitle": {
     "message": "Aumentar a taxa pode diminuir o tempo de processamento, mas não é garantia."
   },
-  "customRPC": {
-    "message": "RPC personalizada"
-  },
   "customSpendLimit": {
     "message": "Limite de gastos personalizado"
   },
@@ -511,9 +501,6 @@
   },
   "decryptRequest": {
     "message": "Descriptografar solicitação"
-  },
-  "defaultNetwork": {
-    "message": "A rede padrão das transações em ether é a Mainnet."
   },
   "delete": {
     "message": "Excluir"
@@ -1193,9 +1180,6 @@
   "newContract": {
     "message": "Novo contrato"
   },
-  "newNetwork": {
-    "message": "Nova rede"
-  },
   "newPassword": {
     "message": "Nova senha (mín. 8 caract.)"
   },
@@ -1333,12 +1317,6 @@
   },
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em quem você confia."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL do Block Explorer (opcional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Símbolo de moeda (opcional)"
   },
   "origin": {
     "message": "Origem"
@@ -1637,13 +1615,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Esta conta já foi conectada ao MetaMask"
-  },
-  "selectAnAccountHelp": {
-    "message": "Selecione uma conta a ser exibida no MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Não está vendo sua conta? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
     "message": "Selecione cada frase para garantir que esteja correta."
@@ -2125,12 +2096,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Permitir que este site mude a rede?"
   },
-  "switchLedgerPaths": {
-    "message": "Mudar caminhos do Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Selecione o caminho do Ledger para ver outras contas"
-  },
   "switchNetwork": {
     "message": "Trocar de rede"
   },
@@ -2200,9 +2165,6 @@
   "toAddress": {
     "message": "Até: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Até:"
   },
   "token": {
     "message": "Token"
@@ -2280,10 +2242,6 @@
   "troubleTokenBalances": {
     "message": "Tivemos dificuldade para carregar os saldos do seu token. Você pode exibi-los ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "Você confia neste site? Ao conceder esta permissão, você está permitindo que $1 saque seus(suas) $2 e automatize as transações por você.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Tente novamente"

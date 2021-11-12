@@ -96,12 +96,20 @@ export default function OnboardingWelcome() {
       </Carousel>
       <ul className="onboarding-welcome__buttons">
         <li>
-          <Button type="primary" onClick={onCreateClick}>
+          <Button
+            data-testid="onboarding-create-wallet"
+            type="primary"
+            onClick={onCreateClick}
+          >
             {t('onboardingCreateWallet')}
           </Button>
         </li>
         <li>
-          <Button type="secondary" onClick={onImportClick}>
+          <Button
+            data-testid="onboarding-import-wallet"
+            type="secondary"
+            onClick={onImportClick}
+          >
             {t('onboardingImportWallet')}
           </Button>
         </li>

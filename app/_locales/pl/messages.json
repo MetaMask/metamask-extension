@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Zwiększenie opłaty może skrócić czas przetwarzania transakcji, ale nie jest to gwarantowane."
   },
-  "customRPC": {
-    "message": "Własne RPC"
-  },
   "customToken": {
     "message": "Własny token"
   },
@@ -268,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Liczb po przecinku musi być co najmniej 0 i nie więcej niż 36."
-  },
-  "defaultNetwork": {
-    "message": "Domyślna sieć dla Eteru to Mainnet."
   },
   "delete": {
     "message": "Usuń"
@@ -620,9 +614,6 @@
   "newContract": {
     "message": "Nowy kontrakt"
   },
-  "newNetwork": {
-    "message": "Nowa sieć"
-  },
   "newPassword": {
     "message": "Nowe hasło (min. 8 znaków)"
   },
@@ -667,12 +658,6 @@
   },
   "on": {
     "message": "Włączone"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Adres URL przeglądarki łańcucha bloków (opcjonalnie)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (opcjonalnie)"
   },
   "origin": {
     "message": "Pochodzenie"
@@ -852,9 +837,6 @@
   },
   "selectAnAccount": {
     "message": "Wybierz konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Wybierz konto do przeglądania w MetaMask"
   },
   "selectEachPhrase": {
     "message": "Wybierz każdą frazę, aby upewnić się, że jest poprawna."

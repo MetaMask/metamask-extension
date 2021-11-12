@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Tasu suurendamine võib töötlemisaegu vähendada, kuid see ei ole tagatud."
   },
-  "customRPC": {
-    "message": "Kohandatud RPC"
-  },
   "customToken": {
     "message": "Kohandatud luba"
   },
@@ -268,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Kümnendkohad peavad olema vähemalt 0 ja mitte üle 36."
-  },
-  "defaultNetwork": {
-    "message": "Etheri tehingute vaikevõrk on peavõrk."
   },
   "delete": {
     "message": "Kustuta"
@@ -613,9 +607,6 @@
   "newContract": {
     "message": "Uus kontakt"
   },
-  "newNetwork": {
-    "message": "Uus võrk"
-  },
   "newPassword": {
     "message": "Uus parool (vähemalt 8 tähemärki)"
   },
@@ -663,12 +654,6 @@
   },
   "on": {
     "message": "Sees"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokeeri Exploreri URL (valikuline)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Sümbol (valikuline)"
   },
   "origin": {
     "message": "Päritolu"
@@ -848,9 +833,6 @@
   },
   "selectAnAccount": {
     "message": "Valige konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Valige konto, mida MetaMaskis vaadata"
   },
   "selectEachPhrase": {
     "message": "Valige iga fraas, veendumaks, et see on õige."

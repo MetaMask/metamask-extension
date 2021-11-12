@@ -7,6 +7,7 @@ import { sumHexWEIsToUnformattedFiat } from '../../../helpers/utils/conversions.
 import AdvancedGasInputs from '../../../components/app/gas-customization/advanced-gas-inputs';
 import BasicTabContent from '../../../components/app/gas-customization/gas-modal-page-container/basic-tab-content';
 import { GAS_ESTIMATE_TYPES } from '../../../helpers/constants/common';
+import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
 
 export default class GasModalPageContainer extends Component {
   static contextTypes = {
@@ -99,11 +100,11 @@ export default class GasModalPageContainer extends Component {
           <div className="advanced-tab__gas-inputs">
             <AdvancedGasInputs
               updateCustomGasPrice={(updatedPrice) => {
-                this.setState({ gasSpeedType: 'custom' });
+                this.setState({ gasSpeedType: CUSTOM_GAS_ESTIMATE });
                 setSwapsCustomizationModalPrice(updatedPrice);
               }}
               updateCustomGasLimit={(updatedLimit) => {
-                this.setState({ gasSpeedType: 'custom' });
+                this.setState({ gasSpeedType: CUSTOM_GAS_ESTIMATE });
                 setSwapsCustomizationModalLimit(updatedLimit);
               }}
               customGasPrice={customGasPrice}

@@ -248,9 +248,6 @@
   "customGasSubTitle": {
     "message": "Höhere Gebühren können Bearbeitungszeiten verkürzen, wofür es allerdings keine Garantie gibt."
   },
-  "customRPC": {
-    "message": "Spezieller RPC"
-  },
   "customToken": {
     "message": "Custom-Token"
   },
@@ -259,9 +256,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Die Dezimalangabe muss mindestens 0 und nicht höher als 36 sein."
-  },
-  "defaultNetwork": {
-    "message": "Das Standardnetzwerk für Ether Transaktionen ist das Mainnet."
   },
   "delete": {
     "message": "Löschen"
@@ -602,9 +596,6 @@
   "newContract": {
     "message": "Neuer Smart Contract"
   },
-  "newNetwork": {
-    "message": "Neues Netzwerk"
-  },
   "newPassword": {
     "message": "Neues Passwort (min. 8 Zeichen)"
   },
@@ -650,9 +641,6 @@
   "on": {
     "message": "An"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Block-Explorer-URL (optional)"
-  },
   "origin": {
     "message": "Ursprung"
   },
@@ -697,7 +685,7 @@
     "message": "Datenschutzrichtlinie"
   },
   "privateKeyWarning": {
-    "message": "Warnung: Niemals jemanden deinen Private Key mitteilen. Jeder der im Besitz deines Private Keys ist, kann jegliches Guthaben deines Accounts stehlen."
+    "message": "Warnung: Niemals jemandem deinen Private Key mitteilen. Jeder der im Besitz deines Private Keys ist, kann jegliches Guthaben deines Accounts stehlen."
   },
   "privateNetwork": {
     "message": "Privates Netzwerk"
@@ -827,9 +815,6 @@
   },
   "selectAnAccount": {
     "message": "Ein Konto auswählen"
-  },
-  "selectAnAccountHelp": {
-    "message": "Wählen Sie das Konto aus, das in MetaMask angezeigt werden soll."
   },
   "selectEachPhrase": {
     "message": "Bitte wählen Sie jede Phrase aus, um sicherzustellen, dass sie korrekt ist."
@@ -964,7 +949,7 @@
     "message": "Hierdurch werden ein neues Wallet und eine mnemonische Phrase erzeugt"
   },
   "tips": {
-    "message": "Trinkgelder"
+    "message": "Tipps"
   },
   "to": {
     "message": "An"

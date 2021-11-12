@@ -1,6 +1,10 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
+import {
+  GAS_RECOMMENDATIONS,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../shared/constants/gas';
 
 import { ETH, PRIMARY } from '../../helpers/constants/common';
 
@@ -116,7 +120,7 @@ describe('useGasFeeInputs', () => {
 
     it('returns gasPrice appropriately, and "0" for EIP1559 fields', () => {
       const { result } = renderHook(() =>
-        useGasFeeInputs('medium', {
+        useGasFeeInputs(GAS_RECOMMENDATIONS.MEDIUM, {
           txParams: {
             value: '3782DACE9D90000',
             gasLimit: '0x5028',
@@ -167,7 +171,10 @@ describe('useGasFeeInputs', () => {
         }),
       );
       const { result } = renderHook(() =>
-        useGasFeeInputs(null, { txParams: {}, userFeeLevel: 'medium' }),
+        useGasFeeInputs(null, {
+          txParams: {},
+          userFeeLevel: GAS_RECOMMENDATIONS.MEDIUM,
+        }),
       );
       expect(result.current.maxFeePerGas).toBe(
         FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates.medium
@@ -226,7 +233,7 @@ describe('useGasFeeInputs', () => {
     it('should return true', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs(null, {
-          userFeeLevel: 'medium',
+          userFeeLevel: GAS_RECOMMENDATIONS.MEDIUM,
           txParams: { gas: '0x5208' },
         }),
       );
@@ -242,14 +249,14 @@ describe('useGasFeeInputs', () => {
     it('should change estimateToUse value', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs(null, {
-          userFeeLevel: 'medium',
+          userFeeLevel: GAS_RECOMMENDATIONS.MEDIUM,
           txParams: { gas: '0x5208' },
         }),
       );
       act(() => {
-        result.current.setEstimateToUse('high');
+        result.current.setEstimateToUse(GAS_RECOMMENDATIONS.HIGH);
       });
-      expect(result.current.estimateToUse).toBe('high');
+      expect(result.current.estimateToUse).toBe(GAS_RECOMMENDATIONS.HIGH);
       expect(result.current.maxFeePerGas).toBe(
         FEE_MARKET_ESTIMATE_RETURN_VALUE.gasFeeEstimates.high
           .suggestedMaxFeePerGas,
@@ -269,7 +276,7 @@ describe('useGasFeeInputs', () => {
     it('should change estimateToUse value to custom', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs(null, {
-          userFeeLevel: 'medium',
+          userFeeLevel: GAS_RECOMMENDATIONS.MEDIUM,
           txParams: { gas: '0x5208' },
         }),
       );
@@ -278,7 +285,7 @@ describe('useGasFeeInputs', () => {
         result.current.setMaxFeePerGas('100');
         result.current.setMaxPriorityFeePerGas('10');
       });
-      expect(result.current.estimateToUse).toBe('custom');
+      expect(result.current.estimateToUse).toBe(CUSTOM_GAS_ESTIMATE);
       expect(result.current.maxFeePerGas).toBe('100');
       expect(result.current.maxPriorityFeePerGas).toBe('10');
     });
@@ -298,7 +305,7 @@ describe('useGasFeeInputs', () => {
     it('does not return fiat values', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs(null, {
-          userFeeLevel: 'medium',
+          userFeeLevel: GAS_RECOMMENDATIONS.MEDIUM,
           txParams: { gas: '0x5208' },
         }),
       );

@@ -130,7 +130,10 @@ const getMaxFeeWarning = (
   return undefined;
 };
 
-const getBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
+const hasBalanceError = (minimumCostInHexWei, transaction, ethBalance) => {
+  if (minimumCostInHexWei === undefined || ethBalance === undefined) {
+    return false;
+  }
   const minimumTxCostInHexWei = addHexes(
     minimumCostInHexWei,
     transaction?.txParams?.value || '0x0',
@@ -247,7 +250,7 @@ export function useGasFeeErrors({
   );
 
   const { balance: ethBalance } = useSelector(getSelectedAccount);
-  const balanceError = getBalanceError(
+  const balanceError = hasBalanceError(
     minimumCostInHexWei,
     transaction,
     ethBalance,

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { INITIALIZE_METAMETRICS_OPT_IN_ROUTE } from '../../../helpers/constants/routes';
-import { isBeta } from '../../../helpers/utils/build-types';
 
 export default class SelectAction extends PureComponent {
   static propTypes = {
@@ -40,7 +39,7 @@ export default class SelectAction extends PureComponent {
 
     return (
       <div className="select-action">
-        <MetaFoxLogo useDark={isBeta()} />
+        <MetaFoxLogo />
 
         <div className="select-action__wrapper">
           <div className="select-action__body">

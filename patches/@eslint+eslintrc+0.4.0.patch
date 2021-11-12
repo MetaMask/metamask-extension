@@ -1,0 +1,21 @@
+diff --git a/node_modules/@eslint/eslintrc/lib/config-array-factory.js b/node_modules/@eslint/eslintrc/lib/config-array-factory.js
+index c7ff6a0..6a88c6d 100644
+--- a/node_modules/@eslint/eslintrc/lib/config-array-factory.js
++++ b/node_modules/@eslint/eslintrc/lib/config-array-factory.js
+@@ -41,7 +41,6 @@
+ 
+ const fs = require("fs");
+ const path = require("path");
+-const importFresh = require("import-fresh");
+ const stripComments = require("strip-json-comments");
+ const ConfigValidator = require("./shared/config-validator");
+ const naming = require("./shared/naming");
+@@ -222,7 +221,7 @@ function loadLegacyConfigFile(filePath) {
+ function loadJSConfigFile(filePath) {
+     debug(`Loading JS config file: ${filePath}`);
+     try {
+-        return importFresh(filePath);
++        return require(filePath);
+     } catch (e) {
+         debug(`Error reading JavaScript file: ${filePath}`);
+         e.message = `Cannot read config file: ${filePath}\nError: ${e.message}`;

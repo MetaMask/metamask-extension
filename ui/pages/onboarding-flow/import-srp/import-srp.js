@@ -78,6 +78,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
               />
             </button>
             <textarea
+              data-testid="import-srp-text"
               className={classnames('srp-text-area__textarea', {
                 'srp-text-area__textarea--blur': !revealSRP,
                 'srp-text-area__textarea--error': error,
@@ -96,6 +97,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
           </div>
           <Button
             type="primary"
+            data-testid="import-srp-confirm"
             large
             onClick={() => {
               submitSecretRecoveryPhrase(secretRecoveryPhrase);

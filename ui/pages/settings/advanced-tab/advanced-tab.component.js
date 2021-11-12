@@ -36,16 +36,18 @@ export default class AdvancedTab extends PureComponent {
     setAdvancedInlineGasFeatureFlag: PropTypes.func,
     advancedInlineGas: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
+    showTestNetworks: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
+    setShowTestNetworks: PropTypes.func.isRequired,
     threeBoxSyncingAllowed: PropTypes.bool.isRequired,
     setThreeBoxSyncingPermission: PropTypes.func.isRequired,
     threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
     ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
-    setLedgerLivePreference: PropTypes.func.isRequired,
+    setLedgerTransportPreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     userHasALedgerAccount: PropTypes.bool.isRequired,
@@ -217,6 +219,35 @@ export default class AdvancedTab extends PureComponent {
             <ToggleButton
               value={advancedInlineGas}
               onToggle={(value) => setAdvancedInlineGasFeatureFlag(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderToggleTestNetworks() {
+    const { t } = this.context;
+    const { showTestNetworks, setShowTestNetworks } = this.props;
+
+    return (
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-show-testnet-conversion"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('showTestnetNetworks')}</span>
+          <div className="settings-page__content-description">
+            {t('showTestnetNetworksDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={showTestNetworks}
+              onToggle={(value) => setShowTestNetworks(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
@@ -405,7 +436,7 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     const {
       ledgerTransportType,
-      setLedgerLivePreference,
+      setLedgerTransportPreference,
       userHasALedgerAccount,
     } = this.props;
 
@@ -470,7 +501,7 @@ export default class AdvancedTab extends PureComponent {
                 ) {
                   this.setState({ showLedgerTransportWarning: true });
                 }
-                setLedgerLivePreference(transportType);
+                setLedgerTransportPreference(transportType);
                 if (
                   transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
                   userHasALedgerAccount
@@ -618,6 +649,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAdvancedGasInputInline()}
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
+        {this.renderToggleTestNetworks()}
         {this.renderUseNonceOptIn()}
         {this.renderAutoLockTimeLimit()}
         {this.renderThreeBoxControl()}

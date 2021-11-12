@@ -35,6 +35,10 @@
     background-color: lighten($dodger-blue, 35%);
   }
 
+  &--localhost {
+    background-color: lighten($blue-lagoon, 68%);
+  }
+
   &.chip {
     margin: 0;
     max-width: 100%;

@@ -325,6 +325,7 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "@ethersproject/keccak256": true,
+        "@ethersproject/logger": true,
         "@ethersproject/sha2": true,
         "@ethersproject/strings": true
       }
@@ -655,9 +656,6 @@
     "@sentry/browser": {
       "globals": {
         "XMLHttpRequest": true,
-        "document.body": true,
-        "document.createElement": true,
-        "document.head": true,
         "setTimeout": true
       },
       "packages": {
@@ -682,9 +680,11 @@
     },
     "@sentry/hub": {
       "globals": {
-        "setTimeout": true
+        "clearInterval": true,
+        "setInterval": true
       },
       "packages": {
+        "@sentry/types": true,
         "@sentry/utils": true,
         "tslib": true
       }
@@ -943,6 +943,11 @@
     "bip66": {
       "packages": {
         "safe-buffer": true
+      }
+    },
+    "bitwise": {
+      "packages": {
+        "buffer": true
       }
     },
     "bl": {
@@ -1551,11 +1556,15 @@
     },
     "eth-json-rpc-middleware": {
       "globals": {
+        "URL": true,
+        "btoa": true,
         "console.error": true,
         "fetch": true,
         "setTimeout": true
       },
       "packages": {
+        "@metamask/safe-event-emitter": true,
+        "browser-resolve": true,
         "btoa": true,
         "clone": true,
         "eth-rpc-errors": true,
@@ -1579,6 +1588,26 @@
         "events": true,
         "loglevel": true,
         "obs-store": true
+      }
+    },
+    "eth-lattice-keyring": {
+      "globals": {
+        "addEventListener": true,
+        "browser": true,
+        "clearInterval": true,
+        "console.warn": true,
+        "open": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "bignumber.js": true,
+        "buffer": true,
+        "crypto-browserify": true,
+        "ethereumjs-util": true,
+        "events": true,
+        "gridplus-sdk": true
       }
     },
     "eth-method-registry": {
@@ -1734,6 +1763,11 @@
         "@ethersproject/wallet": true,
         "@ethersproject/web": true,
         "@ethersproject/wordlists": true
+      }
+    },
+    "ethers-eip712": {
+      "packages": {
+        "ethers": true
       }
     },
     "ethjs": {
@@ -1910,6 +1944,29 @@
       },
       "packages": {
         "cross-fetch": true
+      }
+    },
+    "gridplus-sdk": {
+      "globals": {
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "aes-js": true,
+        "bech32": true,
+        "bignumber.js": true,
+        "bitwise": true,
+        "borc": true,
+        "bs58check": true,
+        "buffer": true,
+        "crc-32": true,
+        "elliptic": true,
+        "ethers": true,
+        "ethers-eip712": true,
+        "js-sha3": true,
+        "rlp-browser": true,
+        "secp256k1": true,
+        "superagent": true
       }
     },
     "hamt-sharding": {
@@ -4100,6 +4157,12 @@
         "buffer": true
       }
     },
+    "rlp-browser": {
+      "packages": {
+        "assert": true,
+        "buffer": true
+      }
+    },
     "rn-host-detect": {
       "globals": {
         "__DEV__": true,
@@ -4377,6 +4440,21 @@
     "strip-hex-prefix": {
       "packages": {
         "is-hex-prefixed": true
+      }
+    },
+    "superagent": {
+      "globals": {
+        "ActiveXObject": true,
+        "XMLHttpRequest": true,
+        "btoa": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.trace": true,
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "component-emitter": true
       }
     },
     "textarea-caret": {

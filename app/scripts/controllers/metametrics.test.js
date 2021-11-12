@@ -196,14 +196,14 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('trackEvent', function () {
+  describe('submitEvent', function () {
     it('should not track an event if user is not participating in metametrics', function () {
       const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
       });
       mock.expects('track').never();
-      metaMetricsController.trackEvent({
+      metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         properties: {
@@ -230,7 +230,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
           },
         });
-      metaMetricsController.trackEvent(
+      metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
@@ -260,7 +260,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
           },
         });
-      metaMetricsController.trackEvent(
+      metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
@@ -289,7 +289,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
           },
         });
-      metaMetricsController.trackEvent(
+      metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
@@ -317,7 +317,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
           },
         });
-      metaMetricsController.trackEvent({
+      metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         properties: {
@@ -331,7 +331,7 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController();
       const flushStub = sinon.stub(segment, 'flush');
       const flushCalled = waitUntilCalled(flushStub, segment);
-      metaMetricsController.trackEvent(
+      metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
@@ -344,13 +344,13 @@ describe('MetaMetricsController', function () {
     it('should throw if event or category not provided', function () {
       const metaMetricsController = getMetaMetricsController();
       assert.rejects(
-        () => metaMetricsController.trackEvent({ event: 'test' }),
+        () => metaMetricsController.submitEvent({ event: 'test' }),
         /Must specify event and category\./u,
         'must specify category',
       );
 
       assert.rejects(
-        () => metaMetricsController.trackEvent({ category: 'test' }),
+        () => metaMetricsController.submitEvent({ category: 'test' }),
         /Must specify event and category\./u,
         'must specify event',
       );
@@ -360,7 +360,7 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController();
       assert.rejects(
         () =>
-          metaMetricsController.trackEvent(
+          metaMetricsController.submitEvent(
             {
               event: 'Fake Event',
               category: 'Unit Test',
@@ -375,7 +375,7 @@ describe('MetaMetricsController', function () {
     it('should track sensitiveProperties in a separate, anonymous event', function () {
       const metaMetricsController = getMetaMetricsController();
       const spy = sinon.spy(segment, 'track');
-      metaMetricsController.trackEvent({
+      metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         sensitiveProperties: { foo: 'bar' },

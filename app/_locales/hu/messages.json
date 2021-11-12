@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "A díj növelése csökkentheti a feldolgozási időt, de ez nem garantált."
   },
-  "customRPC": {
-    "message": "Egyedi RPC"
-  },
   "customToken": {
     "message": "Egyéni token"
   },
@@ -268,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "A tizedesjegyek száma 0 és 36 között legyen . "
-  },
-  "defaultNetwork": {
-    "message": "Az Ether tranzakciók alapértelmezett hálózata a Mainnet."
   },
   "delete": {
     "message": "Törlés"
@@ -616,9 +610,6 @@
   "newContract": {
     "message": "Új szerződés"
   },
-  "newNetwork": {
-    "message": "Új hálózat"
-  },
   "newPassword": {
     "message": "Új jelszó (minimum 8 karakter)"
   },
@@ -666,12 +657,6 @@
   },
   "on": {
     "message": "Be"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Explorer URL letiltása (nem kötelező)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Szimbólum (opcionális)"
   },
   "origin": {
     "message": "Eredet"
@@ -851,9 +836,6 @@
   },
   "selectAnAccount": {
     "message": "Válasszon fiókot"
-  },
-  "selectAnAccountHelp": {
-    "message": "Válássza ki a MetaMask-ban megtekinteni kívánt fiókot"
   },
   "selectEachPhrase": {
     "message": "Kérjük, válassza ki az egyes mondatokat, hogy meggyőződjön azok helyességéről. "

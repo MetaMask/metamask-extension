@@ -130,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "Разрешить этому внешнему расширению:"
   },
-  "allowOriginSpendToken": {
-    "message": "Разрешить $1 потратить ваши $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Разрешить этому сайту:"
   },
@@ -143,9 +139,6 @@
   },
   "amount": {
     "message": "Сумма"
-  },
-  "amountWithColon": {
-    "message": "Сумма:"
   },
   "appDescription": {
     "message": "Кошелек Ethereum в вашем браузере",
@@ -474,9 +467,6 @@
   "customGasSubTitle": {
     "message": "Увеличение комиссии может сократить время обработки, но это не гарантируется."
   },
-  "customRPC": {
-    "message": "Пользовательский RPC"
-  },
   "customSpendLimit": {
     "message": "Пользовательский предел расходов"
   },
@@ -511,9 +501,6 @@
   },
   "decryptRequest": {
     "message": "Расшифровать запрос"
-  },
-  "defaultNetwork": {
-    "message": "Сетью по умолчанию для транзакций Ether является Mainnet."
   },
   "delete": {
     "message": "Удалить"
@@ -1193,9 +1180,6 @@
   "newContract": {
     "message": "Новый контракт"
   },
-  "newNetwork": {
-    "message": "Новая сеть"
-  },
   "newPassword": {
     "message": "Новый пароль (мин.8 знаков)"
   },
@@ -1333,12 +1317,6 @@
   },
   "onlyConnectTrust": {
     "message": "Подключайтесь только к сайтам, которым доверяете."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL-адрес проводника блока (необязательно)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Символ валюты (необязательно)"
   },
   "origin": {
     "message": "Источник"
@@ -1637,13 +1615,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Этот счет уже подключен к MetaMask"
-  },
-  "selectAnAccountHelp": {
-    "message": "Выберите счет для просмотра в MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Не видите свой счет? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
     "message": "Выберите каждую фразу, чтобы убедиться, что она верна."
@@ -2125,12 +2096,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Разрешить этому сайту переключить сеть?"
   },
-  "switchLedgerPaths": {
-    "message": "Переключить пути Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Выберите путь Ledger для просмотра других счетов"
-  },
   "switchNetwork": {
     "message": "Переключить сеть"
   },
@@ -2200,9 +2165,6 @@
   "toAddress": {
     "message": "Адресат $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Адресат"
   },
   "token": {
     "message": "Токен"
@@ -2280,10 +2242,6 @@
   "troubleTokenBalances": {
     "message": "У нас возникли проблемы с загрузкой вашего баланса токенов. Вы можете просмотреть их ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "Вы доверяете этому сайту? Предоставляя это разрешение, вы разрешаете $1 вывести ваши $2 и автоматизировать транзакции для вас.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Попробуйте еще раз"

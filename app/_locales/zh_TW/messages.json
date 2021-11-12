@@ -266,9 +266,6 @@
   "customGasSubTitle": {
     "message": "提升費用可能會加快處理時間，但不保證"
   },
-  "customRPC": {
-    "message": "自訂 RPC"
-  },
   "customToken": {
     "message": "自訂代幣"
   },
@@ -277,9 +274,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "小數點後位數至少為0, 最多為36."
-  },
-  "defaultNetwork": {
-    "message": "預設以太幣交易網路為主網路"
   },
   "delete": {
     "message": "刪除"
@@ -629,9 +623,6 @@
   "newContract": {
     "message": "建立新合約"
   },
-  "newNetwork": {
-    "message": "新增網路"
-  },
   "newPassword": {
     "message": "新密碼（至少8個字元）"
   },
@@ -673,12 +664,6 @@
   },
   "on": {
     "message": "開啟"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "區塊鏈瀏覽器 URL（非必要）"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (可選)"
   },
   "origin": {
     "message": "來源"

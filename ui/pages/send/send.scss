@@ -180,17 +180,13 @@
     &__status-icon {
       @extend %bg-contain;
 
-      background-image: url("/images/search-black.svg");
+      background-image: url('/images/search-black.svg');
       width: 1.125rem;
       height: 1.125rem;
       margin: 0.25rem 0.5rem 0.25rem 0.25rem;
 
-      &--error {
-
-      }
-
       &--valid {
-        background-image: url("/images/check-green-solid.svg");
+        background-image: url('/images/check-green-solid.svg');
       }
     }
 
@@ -213,7 +209,7 @@
       cursor: pointer;
 
       &--erase {
-        background-image: url("/images/close-gray.svg");
+        background-image: url('/images/close-gray.svg');
         background-color: unset;
         width: 0.75rem;
         height: 0.75rem;
@@ -221,7 +217,7 @@
       }
 
       &--qrcode {
-        background-image: url("/images/qr-blue.svg");
+        background-image: url('/images/qr-blue.svg');
         background-color: unset;
         width: 1.5rem;
         height: 1.5rem;
@@ -234,7 +230,7 @@
 
       .ens-input__wrapper {
         &__status-icon {
-          background-image: url("/images/check-green-solid.svg");
+          background-image: url('/images/check-green-solid.svg');
         }
 
         &__input {
@@ -253,6 +249,9 @@
       @include H6;
 
       @extend %ellipsify;
+
+      word-wrap: break-word;
+      white-space: inherit !important;
     }
 
     &__subtitle {

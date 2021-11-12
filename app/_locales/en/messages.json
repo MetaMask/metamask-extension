@@ -43,6 +43,9 @@
   "activityLog": {
     "message": "activity log"
   },
+  "addANetwork": {
+    "message": "Add a network"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -79,6 +82,9 @@
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
+  "addNFT": {
+    "message": "Add NFT"
+  },
   "addNetwork": {
     "message": "Add Network"
   },
@@ -107,7 +113,7 @@
     "message": "Advanced Options"
   },
   "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup testnets and custom RPC"
+    "message": "Access developer features, download State Logs, Reset Account, setup test networks and custom RPC"
   },
   "affirmAgree": {
     "message": "I Agree"
@@ -139,9 +145,9 @@
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
-  "allowOriginSpendToken": {
-    "message": "Allow $1 to spend your $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
+  "allowSpendToken": {
+    "message": "Give permission to access your $1?",
+    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowThisSiteTo": {
     "message": "Allow this site to:"
@@ -152,9 +158,6 @@
   },
   "amount": {
     "message": "Amount"
-  },
-  "amountWithColon": {
-    "message": "Amount:"
   },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
@@ -182,6 +185,9 @@
   },
   "approved": {
     "message": "Approved"
+  },
+  "approvedAmountWithColon": {
+    "message": "Approved Amount:"
   },
   "asset": {
     "message": "Asset"
@@ -549,9 +555,6 @@
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
-  "customRPC": {
-    "message": "Custom RPC"
-  },
   "customSpendLimit": {
     "message": "Custom Spend Limit"
   },
@@ -591,7 +594,8 @@
     "message": "Decrypt request"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Mainnet."
+    "message": "The default network for Ether transactions is Mainnet. You can also $1 test networks $2.",
+    "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "delete": {
     "message": "Delete"
@@ -616,6 +620,9 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+  },
+  "disable": {
+    "message": "disable"
   },
   "disconnect": {
     "message": "Disconnect"
@@ -768,6 +775,9 @@
   "editPermission": {
     "message": "Edit Permission"
   },
+  "enable": {
+    "message": "enable"
+  },
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
@@ -890,6 +900,9 @@
   },
   "etherscanView": {
     "message": "View account on Etherscan"
+  },
+  "etherscanViewOn": {
+    "message": "View on Etherscan"
   },
   "expandView": {
     "message": "Expand view"
@@ -1055,6 +1068,9 @@
   "goerli": {
     "message": "Goerli Test Network"
   },
+  "grantedToWithColon": {
+    "message": "Granted To:"
+  },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
   },
@@ -1114,7 +1130,7 @@
     "message": "import using Secret Recovery Phrase"
   },
   "importAccountMsg": {
-    "message": " Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts "
+    "message": "Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts"
   },
   "importAccountSeedPhrase": {
     "message": "Import a wallet with Secret Recovery Phrase"
@@ -1167,6 +1183,9 @@
   },
   "insufficientFunds": {
     "message": "Insufficient funds."
+  },
+  "insufficientFundsForGas": {
+    "message": "Insufficient funds for gas"
   },
   "insufficientTokens": {
     "message": "Insufficient tokens."
@@ -1330,6 +1349,9 @@
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
+  "lowPriorityMessage": {
+    "message": "Future transactions will queue after this one. This price was last seen was some time ago."
+  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
@@ -1433,6 +1455,9 @@
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
+  "missingNFT": {
+    "message": "Don't see your NFT?"
+  },
   "missingToken": {
     "message": "Don't see your token?"
   },
@@ -1529,8 +1554,8 @@
   "newContract": {
     "message": "New Contract"
   },
-  "newNetwork": {
-    "message": "New Network"
+  "newNetworkAdded": {
+    "message": "“$1” was successfully added!"
   },
   "newPassword": {
     "message": "New password (min 8 chars)"
@@ -1551,6 +1576,9 @@
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nfts": {
+    "message": "NFTs"
+  },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
@@ -1562,6 +1590,9 @@
   },
   "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
+  },
+  "noNFTs": {
+    "message": "No NFTs yet"
   },
   "noThanks": {
     "message": "No Thanks"
@@ -1755,11 +1786,8 @@
   "optional": {
     "message": "Optional"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (optional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Currency Symbol (optional)"
+  "optionalWithParanthesis": {
+    "message": "(Optional)"
   },
   "or": {
     "message": "or"
@@ -1800,6 +1828,9 @@
   },
   "permissionCheckedIconDescription": {
     "message": "You have approved this permission"
+  },
+  "permissionRequest": {
+    "message": "Permission Request"
   },
   "permissionUncheckedIconDescription": {
     "message": "You have not approved this permission"
@@ -2108,13 +2139,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Select an account to view in MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Don't see your account? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "Please select each phrase in order to make sure it is correct."
   },
@@ -2122,7 +2146,7 @@
     "message": "Select HD Path"
   },
   "selectPathHelp": {
-    "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
+    "message": "If you don't see the accounts you expect, try switching the HD path."
   },
   "selectType": {
     "message": "Select Type"
@@ -2172,10 +2196,10 @@
     "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
   "showFiatConversionInTestnets": {
-    "message": "Show Conversion on Testnets"
+    "message": "Show Conversion on test networks"
   },
   "showFiatConversionInTestnetsDescription": {
-    "message": "Select this to show fiat conversion on Testnets"
+    "message": "Select this to show fiat conversion on test networks"
   },
   "showHexData": {
     "message": "Show Hex Data"
@@ -2200,6 +2224,12 @@
   },
   "showSeedPhrase": {
     "message": "Show Secret Recovery Phrase"
+  },
+  "showTestnetNetworks": {
+    "message": "Show test networks"
+  },
+  "showTestnetNetworksDescription": {
+    "message": "Select this to show test networks in network list"
   },
   "sigRequest": {
     "message": "Signature Request"
@@ -2288,6 +2318,13 @@
   },
   "statusNotConnected": {
     "message": "Not connected"
+  },
+  "step1LatticeWallet": {
+    "message": "Make sure your Lattice1 is ready to connect"
+  },
+  "step1LatticeWalletMsg": {
+    "message": "You can connect MetaMask to your Lattice1 device once it is set up and online. Unlock your device and have your Device ID ready. For more on using hardware wallets, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
     "message": "Download Ledger app"
@@ -2652,12 +2689,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"
   },
-  "switchLedgerPaths": {
-    "message": "Switch Ledger paths"
-  },
-  "switchLedgerPathsText": {
-    "message": "Select the Ledger path to view other accounts"
-  },
   "switchNetwork": {
     "message": "Switch network"
   },
@@ -2734,9 +2765,6 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "To:"
-  },
   "token": {
     "message": "Token"
   },
@@ -2784,6 +2812,12 @@
   },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
+  },
+  "transactionDetailGasHeadingV2": {
+    "message": "Gas"
+  },
+  "transactionDetailGasInfoV2": {
+    "message": "estimated"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Learn more about gas fees"
@@ -2866,14 +2900,13 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
-    "message": "Do you trust this site? By granting this permission, you’re allowing $1 to withdraw your $2 and automate transactions for you.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
+    "message": "By granting permission, you are allowing the following $1 to access your funds"
   },
   "tryAgain": {
     "message": "Try again"
   },
   "turnOnTokenDetection": {
-    "message": "Turn on Token Detection"
+    "message": "Turn on enhanced token detection"
   },
   "typePassword": {
     "message": "Type your MetaMask password"

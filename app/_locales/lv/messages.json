@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Nodevas palielināšana var saīsināt apstrādes laiku, bet ne garantēti."
   },
-  "customRPC": {
-    "message": "Pielāgots RPC izsaukums"
-  },
   "customToken": {
     "message": "Pielāgots marķieris"
   },
@@ -268,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
-  },
-  "defaultNetwork": {
-    "message": "Galvenais Ether darījumu tīkls ir Mainnet."
   },
   "delete": {
     "message": "Dzēst"
@@ -619,9 +613,6 @@
   "newContract": {
     "message": "Jauns līgums"
   },
-  "newNetwork": {
-    "message": "Jauns tīkls"
-  },
   "newPassword": {
     "message": "Jauna parole (vism. 8 rakstzīmes)"
   },
@@ -669,12 +660,6 @@
   },
   "on": {
     "message": "Iesl."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Bloķēt Explorer URL (pēc izvēles)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbols (neobligāti)"
   },
   "origin": {
     "message": "Avots"
@@ -854,9 +839,6 @@
   },
   "selectAnAccount": {
     "message": "Atlasiet kontu"
-  },
-  "selectAnAccountHelp": {
-    "message": "Atlasiet kontu, ko skatīt MetaMask"
   },
   "selectEachPhrase": {
     "message": "Lūdzu, atlasiet katru frāzi, lai pārliecinātos par tās pareizību."
