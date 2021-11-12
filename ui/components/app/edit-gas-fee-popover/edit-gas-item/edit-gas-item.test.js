@@ -133,6 +133,6 @@ describe('EditGasItem', () => {
     expect(screen.queryByText('⚙')).toBeInTheDocument();
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
     // below value of custom gas fee estimate is default obtained from state.metamask.advancedGasFee
-    expect(screen.queryByText('0.001575 ETH')).toBeInTheDocument();
+    expect(screen.queryByTitle('0.001575 ETH')).toBeInTheDocument();
   });
 });
