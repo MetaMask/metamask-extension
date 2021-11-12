@@ -16,7 +16,11 @@ import {
 } from '../../helpers/utils/token-util';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
-import { getTokens, getNativeCurrency } from '../../ducks/metamask/metamask';
+import {
+  getTokens,
+  getNativeCurrency,
+  isAddressLedger,
+} from '../../ducks/metamask/metamask';
 import {
   transactionFeeSelector,
   txDataSelector,
@@ -25,7 +29,6 @@ import {
   getUseNonceField,
   getCustomNonceValue,
   getNextSuggestedNonce,
-  doesAddressRequireLedgerHidConnection,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../selectors';
@@ -39,10 +42,8 @@ import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
-const doesAddressRequireLedgerHidConnectionByFromAddress = (address) => (
-  state,
-) => {
-  return doesAddressRequireLedgerHidConnection(state, address);
+const isAddressLedgerByFromAddress = (address) => (state) => {
+  return isAddressLedger(state, address);
 };
 
 export default function ConfirmApprove() {
@@ -64,9 +65,7 @@ export default function ConfirmApprove() {
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
-  const ledgerWalletRequiredHidConnection = useSelector(
-    doesAddressRequireLedgerHidConnectionByFromAddress(from),
-  );
+  const fromAddressIsLedger = useSelector(isAddressLedgerByFromAddress(from));
 
   const transaction =
     currentNetworkTxList.find(
@@ -239,9 +238,7 @@ export default function ConfirmApprove() {
             }
             warning={submitWarning}
             txData={transaction}
-            ledgerWalletRequiredHidConnection={
-              ledgerWalletRequiredHidConnection
-            }
+            fromAddressIsLedger={fromAddressIsLedger}
             chainId={chainId}
             rpcPrefs={rpcPrefs}
             isContract={isContract}
