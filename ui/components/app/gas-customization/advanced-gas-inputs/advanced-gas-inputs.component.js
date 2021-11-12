@@ -20,10 +20,12 @@ export default class AdvancedGasInputs extends Component {
     customGasLimitMessage: PropTypes.string,
     minimumGasLimit: PropTypes.number,
     customPriceIsExcessive: PropTypes.bool,
+    networkSupportsSettingGasPrice: PropTypes.bool,
   };
 
   static defaultProps = {
     customPriceIsExcessive: false,
+    networkSupportsSettingGasPrice: true,
   };
 
   constructor(props) {
@@ -131,6 +133,7 @@ export default class AdvancedGasInputs extends Component {
     testId,
     customMessageComponent,
     tooltipTitle,
+    disabled,
   }) {
     return (
       <div className="advanced-gas-inputs__gas-edit-row">
@@ -152,6 +155,7 @@ export default class AdvancedGasInputs extends Component {
             min="0"
             value={value}
             onChange={onChange}
+            disabled={disabled}
             data-testid={testId}
           />
           <div
@@ -162,18 +166,22 @@ export default class AdvancedGasInputs extends Component {
                   errorType === 'error',
                 'advanced-gas-inputs__gas-edit-row__input--warning':
                   errorType === 'warning',
+                'advanced-gas-inputs__gas-edit-row__input-arrows--hidden': disabled,
               },
             )}
           >
             <div
               className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
-              onClick={() => onChange({ target: { value: value + 1 } })}
+              onClick={() =>
+                !disabled && onChange({ target: { value: value + 1 } })
+              }
             >
               <i className="fa fa-sm fa-angle-up" />
             </div>
             <div
               className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
               onClick={() =>
+                !disabled &&
                 onChange({ target: { value: Math.max(value - 1, 0) } })
               }
             >
@@ -194,6 +202,7 @@ export default class AdvancedGasInputs extends Component {
       customGasLimitMessage,
       minimumGasLimit,
       customPriceIsExcessive,
+      networkSupportsSettingGasPrice,
     } = this.props;
     const { gasPrice, gasLimit } = this.state;
 
@@ -243,6 +252,7 @@ export default class AdvancedGasInputs extends Component {
           onChange: this.onChangeGasPrice,
           errorComponent: gasPriceErrorComponent,
           errorType: gasPriceErrorType,
+          disabled: !networkSupportsSettingGasPrice,
         })}
         {this.renderGasInput({
           label: this.context.t('gasLimit'),
