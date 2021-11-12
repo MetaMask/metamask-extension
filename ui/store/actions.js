@@ -2962,7 +2962,7 @@ export function fetchUnsignedTransactionsAndEstimates(unsignedTransaction) {
         payload: unsignedTransactionsAndEstimates,
       });
     } catch (e) {
-      console.log(e);
+      log.error(e);
       if (isPersistentError(e)) {
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
@@ -3021,7 +3021,7 @@ export function signAndSendSmartTransaction({
       }); // Returns e.g.: { uuid: 'dP23W7c2kt4FK9TmXOkz1UM2F20' }
       return response.uuid;
     } catch (e) {
-      console.log(e);
+      log.error(e);
       if (isPersistentError(e)) {
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
@@ -3041,7 +3041,7 @@ export function updateSmartTransaction(uuid, txData) {
         ...txData,
       });
     } catch (e) {
-      console.log(e);
+      log.error(e);
       if (isPersistentError(e)) {
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
@@ -3057,7 +3057,7 @@ export function fetchSmartTransactionsStatus(uuids) {
     try {
       await promisifiedBackground.fetchSmartTransactionsStatus(uuids);
     } catch (e) {
-      console.log(e);
+      log.error(e);
     }
   };
 }
@@ -3067,7 +3067,7 @@ export function setSmartTransactionsRefreshInterval(refreshInterval) {
     try {
       await promisifiedBackground.setStatusRefreshInterval(refreshInterval);
     } catch (e) {
-      console.log(e);
+      log.error(e);
     }
   };
 }
@@ -3077,7 +3077,7 @@ export function cancelSmartTransaction(uuid) {
     try {
       await promisifiedBackground.cancelSmartTransaction(uuid);
     } catch (e) {
-      console.log(e);
+      log.error(e);
       if (isPersistentError(e)) {
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
@@ -3097,7 +3097,7 @@ export function fetchSmartTransactionsLiveness() {
         payload: smartTransactionsLiveness,
       });
     } catch (e) {
-      console.log(e);
+      log.error(e);
       dispatch({
         type: actionConstants.SET_SMART_TRANSACTIONS_LIVENESS,
         payload: false,
