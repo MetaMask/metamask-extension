@@ -5,7 +5,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { TRANSACTION_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
-describe('Confirm Page Container Page', () => {
+describe('Confirm Page Container Content', () => {
   const mockStore = {
     metamask: {
       provider: {
