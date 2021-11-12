@@ -478,6 +478,7 @@ export default class MetamaskController extends EventEmitter {
       getExternalPendingTransactions: this.getExternalPendingTransactions.bind(
         this,
       ),
+      // TODO: We can probably remove "getExternalConfirmedTransactions", since when an STX is done, we push it to regular transactions.
       getExternalConfirmedTransactions: this.getExternalConfirmedTransactions.bind(
         this,
       ),

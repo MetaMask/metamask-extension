@@ -145,6 +145,7 @@ export default class TransactionController extends EventEmitter {
         this.txStateManager,
       ),
       getExternalPendingTransactions: opts.getExternalPendingTransactions,
+      // TODO: We can probably remove the next line, since when an STX is done, we push it to regular transactions.
       getExternalConfirmedTransactions: opts.getExternalConfirmedTransactions,
     });
 

@@ -76,7 +76,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
-import { getGasFeeEstimates, isEIP1559Network } from '../metamask/metamask';
+import { getGasFeeEstimates } from '../metamask/metamask';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
