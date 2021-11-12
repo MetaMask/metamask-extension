@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
-import { ESTIMATE_USED } from '../../../../../shared/constants/gas';
+import { GAS_ESTIMATE } from '../../../../../shared/constants/gas';
 import { GasLevelIconMap } from '../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import {
@@ -33,11 +33,11 @@ const EditGasItem = ({ estimateType, onClose }) => {
   const { waitTimeEstimate } = useCustomTimeEstimate({
     estimateType,
     maxFeePerGas:
-      estimateType === ESTIMATE_USED.DAPP_SUGGESTED
+      estimateType === GAS_ESTIMATE.DAPP_SUGGESTED
         ? dappSuggestedGasFees?.maxFeePerGas
         : customMaxFeePerGas,
     maxPriorityFeePerGas:
-      estimateType === ESTIMATE_USED.DAPP_SUGGESTED
+      estimateType === GAS_ESTIMATE.DAPP_SUGGESTED
         ? dappSuggestedGasFees?.maxPriorityFeePerGas
         : customMaxPriorityFeePerGas,
     gasFeeEstimates,
@@ -52,18 +52,18 @@ const EditGasItem = ({ estimateType, onClose }) => {
     ];
     maxFeePerGas = decGWEIToHexWEI(suggestedMaxFeePerGas);
     minWaitTime =
-      estimateType === ESTIMATE_USED.HIGH
+      estimateType === GAS_ESTIMATE.HIGH
         ? minWaitTimeEstimate
         : gasFeeEstimates?.low.maxWaitTimeEstimate;
   } else if (
-    estimateType === ESTIMATE_USED.DAPP_SUGGESTED &&
+    estimateType === GAS_ESTIMATE.DAPP_SUGGESTED &&
     dappSuggestedGasFees
   ) {
     maxFeePerGas = dappSuggestedGasFees.maxFeePerGas;
     minWaitTime = waitTimeEstimate;
   } else if (
-    estimateType === ESTIMATE_USED.CUSTOM &&
-    estimateUsed === ESTIMATE_USED.CUSTOM
+    estimateType === GAS_ESTIMATE.CUSTOM &&
+    estimateUsed === GAS_ESTIMATE.CUSTOM
   ) {
     // todo: we should show default custom setting for user if available
     // after PR is merged: https://github.com/MetaMask/metamask-extension/pull/12577/files
@@ -79,7 +79,7 @@ const EditGasItem = ({ estimateType, onClose }) => {
     : null;
 
   const onOptionSelect = () => {
-    if (estimateType !== ESTIMATE_USED.CUSTOM) {
+    if (estimateType !== GAS_ESTIMATE.CUSTOM) {
       updateTransactionUsingGasFeeEstimates(estimateType);
     }
     // todo: open advance modal if edtimateType is custom
@@ -91,8 +91,7 @@ const EditGasItem = ({ estimateType, onClose }) => {
       className={classNames('edit-gas-item', {
         [`edit-gas-item-selected`]: estimateType === estimateUsed,
         [`edit-gas-item-disabled`]:
-          estimateType === ESTIMATE_USED.DAPP_SUGGESTED &&
-          !dappSuggestedGasFees,
+          estimateType === GAS_ESTIMATE.DAPP_SUGGESTED && !dappSuggestedGasFees,
       })}
       role="button"
       onClick={onOptionSelect}
@@ -105,7 +104,7 @@ const EditGasItem = ({ estimateType, onClose }) => {
         </span>
         <I18nValue
           messageKey={
-            estimateType === ESTIMATE_USED.DAPP_SUGGESTED
+            estimateType === GAS_ESTIMATE.DAPP_SUGGESTED
               ? 'dappSuggestedShortLabel'
               : estimateType
           }

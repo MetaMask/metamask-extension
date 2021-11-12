@@ -1735,7 +1735,7 @@ describe('Transaction Controller', function () {
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET,
           status: 'unapproved',
           estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
-          estimate_used: GAS_RECOMMENDATIONS.HIGH,
+          GAS_ESTIMATE: GAS_RECOMMENDATIONS.HIGH,
         },
       };
 
@@ -1809,13 +1809,13 @@ describe('Transaction Controller', function () {
         max_fee_per_gas: '0x77359400',
         max_priority_fee_per_gas: '0x77359400',
         estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
-        estimate_used: GAS_RECOMMENDATIONS.HIGH,
+        GAS_ESTIMATE: GAS_RECOMMENDATIONS.HIGH,
       };
       const expectedParams = {
         max_fee_per_gas: '2',
         max_priority_fee_per_gas: '2',
         estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
-        estimate_used: GAS_RECOMMENDATIONS.HIGH,
+        GAS_ESTIMATE: GAS_RECOMMENDATIONS.HIGH,
       };
       const result = txController._getGasValuesInGWEI(params);
       assert.deepEqual(result, expectedParams);

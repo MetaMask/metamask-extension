@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { ESTIMATE_USED } from '../../../shared/constants/gas';
+import { GAS_ESTIMATE } from '../../../shared/constants/gas';
 import {
   decGWEIToHexWEI,
   decimalToHex,
@@ -43,13 +43,13 @@ export const useTransactionFunctions = ({
 
   const updateTransactionUsingGasFeeEstimates = useCallback(
     (estimateType) => {
-      if (estimateType === ESTIMATE_USED.DAPP_SUGGESTED) {
+      if (estimateType === GAS_ESTIMATE.DAPP_SUGGESTED) {
         const {
           maxFeePerGas,
           maxPriorityFeePerGas,
         } = transaction?.dappSuggestedGasFees;
         updateTransaction(
-          ESTIMATE_USED.CUSTOM,
+          GAS_ESTIMATE.CUSTOM,
           maxFeePerGas,
           maxPriorityFeePerGas,
         );

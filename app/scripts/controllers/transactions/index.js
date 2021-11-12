@@ -1430,7 +1430,7 @@ export default class TransactionController extends EventEmitter {
     }
 
     if (estimateUsed) {
-      gasParams.estimate_used = estimateUsed;
+      gasParams.GAS_ESTIMATE = estimateUsed;
     }
 
     const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);

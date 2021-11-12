@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { ESTIMATE_USED } from '../../../../shared/constants/gas';
+import { GAS_ESTIMATE } from '../../../../shared/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Popover from '../../ui/popover';
 import I18nValue from '../../ui/i18n-value';
@@ -33,21 +33,15 @@ const EditGasFeePopover = ({ onClose }) => {
                 <I18nValue messageKey="maxFee" />
               </span>
             </div>
-            <EditGasItem estimateType={ESTIMATE_USED.LOW} onClose={onClose} />
-            <EditGasItem
-              estimateType={ESTIMATE_USED.MEDIUM}
-              onClose={onClose}
-            />
-            <EditGasItem estimateType={ESTIMATE_USED.HIGH} onClose={onClose} />
+            <EditGasItem estimateType={GAS_ESTIMATE.LOW} onClose={onClose} />
+            <EditGasItem estimateType={GAS_ESTIMATE.MEDIUM} onClose={onClose} />
+            <EditGasItem estimateType={GAS_ESTIMATE.HIGH} onClose={onClose} />
             <div className="edit-gas-fee-popover__content__separator" />
             <EditGasItem
-              estimateType={ESTIMATE_USED.DAPP_SUGGESTED}
+              estimateType={GAS_ESTIMATE.DAPP_SUGGESTED}
               onClose={onClose}
             />
-            <EditGasItem
-              estimateType={ESTIMATE_USED.CUSTOM}
-              onClose={onClose}
-            />
+            <EditGasItem estimateType={GAS_ESTIMATE.CUSTOM} onClose={onClose} />
           </div>
         </div>
       </>
