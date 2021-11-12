@@ -1349,6 +1349,9 @@
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
+  "lowPriorityMessage": {
+    "message": "Future transactions will queue after this one. This price was last seen was some time ago."
+  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },

@@ -1,12 +1,11 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
 
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ETH } from '../../../helpers/constants/common';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 
-import GasDetailsItem from './gas-details-item';
+import LowPriorityMessage from './low-priority-message';
 
 jest.mock('../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
@@ -37,28 +36,24 @@ const render = (props) => {
 
   return renderWithProvider(
     <GasFeeContextProvider {...props}>
-      <GasDetailsItem txData={{}} {...props} />
+      <LowPriorityMessage />
     </GasFeeContextProvider>,
     store,
   );
 };
 
-describe('GasDetailsItem', () => {
-  it('should render label', () => {
-    render();
-    expect(screen.queryByText('Gas')).toBeInTheDocument();
-    expect(screen.queryByText('(estimated)')).toBeInTheDocument();
-    expect(screen.queryByText('Max fee:')).toBeInTheDocument();
-    expect(screen.queryByText('ETH')).toBeInTheDocument();
+describe('LowPriorityMessage', () => {
+  it('should returning warning message for low gas estimate', () => {
+    render({ transaction: { userFeeLevel: 'low' } });
+    expect(
+      document.getElementsByClassName('actionable-message--warning'),
+    ).toHaveLength(1);
   });
 
-  it('should show warning icon if estimates are high', () => {
-    render({ defaultEstimateToUse: 'high' });
-    expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
-  });
-
-  it('should not show warning icon if estimates are not high', () => {
-    render({ defaultEstimateToUse: 'low' });
-    expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+  it('should return null for gas estimate other than low', () => {
+    render({ transaction: { userFeeLevel: 'high' } });
+    expect(
+      document.getElementsByClassName('actionable-message--warning'),
+    ).toHaveLength(0);
   });
 });

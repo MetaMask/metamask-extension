@@ -54,6 +54,7 @@ import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
 import GasDetailsItem from './gas-details-item';
+import LowPriorityMessage from './low-priority-message';
 
 // eslint-disable-next-line prefer-destructuring
 const EIP_1559_V2 = process.env.EIP_1559_V2;
@@ -414,6 +415,7 @@ export default class ConfirmTransactionBase extends Component {
 
     return (
       <div className="confirm-page-container-content__details">
+        {EIP_1559_V2 && <LowPriorityMessage />}
         <TransactionDetail
           onEdit={() => this.handleEditGas()}
           rows={[

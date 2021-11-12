@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import { getAdvancedInlineGasShown } from '../../selectors';
 import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import {
-  EDIT_GAS_MODES,
-  GAS_RECOMMENDATIONS,
   CUSTOM_GAS_ESTIMATE,
+  GAS_RECOMMENDATIONS,
+  EDIT_GAS_MODES,
 } from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 
