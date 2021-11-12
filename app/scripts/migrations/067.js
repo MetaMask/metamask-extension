@@ -25,7 +25,7 @@ export default {
 
 function transformState(state) {
   let newState = state;
-  console.log('state', state);
+
   const PreferencesController = state?.PreferencesController || {};
   const preferences = PreferencesController.preferences || {};
 
