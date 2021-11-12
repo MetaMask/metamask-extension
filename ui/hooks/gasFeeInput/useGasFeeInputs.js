@@ -116,7 +116,7 @@ export function useGasFeeInputs(
   useEffect(() => {
     if (areDappSuggestedAndTxParamGasFeesTheSame(transaction)) {
       setEstimateUsed('dappSuggested');
-    } else {
+    } else if (transaction?.userFeeLevel) {
       setEstimateUsed(transaction?.userFeeLevel);
     }
   }, [setEstimateUsed, transaction]);

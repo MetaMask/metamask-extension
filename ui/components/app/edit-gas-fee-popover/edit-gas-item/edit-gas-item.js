@@ -24,23 +24,19 @@ const EditGasItem = ({ estimateType, onClose }) => {
     estimateUsed,
     gasFeeEstimates,
     gasLimit,
-    maxFeePerGas: customMaxFeePerGas,
-    maxPriorityFeePerGas: customMaxPriorityFeePerGas,
+    maxFeePerGas: maxFeePerGasValue,
+    maxPriorityFeePerGas: maxPriorityFeePerGasValue,
     updateTransactionUsingGasFeeEstimates,
     transaction: { dappSuggestedGasFees },
   } = useGasFeeContext();
   const t = useI18nContext();
   const { waitTimeEstimate } = useCustomTimeEstimate({
+    dappSuggestedGasFees,
     estimateType,
-    maxFeePerGas:
-      estimateType === GAS_ESTIMATE.DAPP_SUGGESTED
-        ? dappSuggestedGasFees?.maxFeePerGas
-        : customMaxFeePerGas,
-    maxPriorityFeePerGas:
-      estimateType === GAS_ESTIMATE.DAPP_SUGGESTED
-        ? dappSuggestedGasFees?.maxPriorityFeePerGas
-        : customMaxPriorityFeePerGas,
+    estimateUsed,
     gasFeeEstimates,
+    maxFeePerGasValue,
+    maxPriorityFeePerGasValue,
   });
 
   let maxFeePerGas;

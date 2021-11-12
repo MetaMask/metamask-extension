@@ -13,22 +13,36 @@ import {
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
 
 export const useCustomTimeEstimate = ({
+  dappSuggestedGasFees,
   estimateType,
+  estimateUsed,
   gasFeeEstimates,
-  maxFeePerGas,
-  maxPriorityFeePerGas,
+  maxFeePerGasValue,
+  maxPriorityFeePerGasValue,
 }) => {
   const gasEstimateType = useSelector(getGasEstimateType);
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
 
+  let maxFeePerGas;
+  let maxPriorityFeePerGas;
+  if (estimateType === GAS_ESTIMATE.DAPP_SUGGESTED) {
+    maxFeePerGas = dappSuggestedGasFees?.maxFeePerGas;
+    maxPriorityFeePerGas = dappSuggestedGasFees?.maxPriorityFeePerGas;
+  } else if (
+    estimateType === GAS_ESTIMATE.CUSTOM &&
+    estimateUsed === GAS_ESTIMATE.CUSTOM
+  ) {
+    maxFeePerGas = maxFeePerGasValue;
+    maxPriorityFeePerGas = maxPriorityFeePerGasValue;
+  }
+
   const returnNoEstimates =
     isGasEstimatesLoading ||
     gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET ||
-    (estimateType !== GAS_ESTIMATE.DAPP_SUGGESTED &&
-      estimateType !== GAS_ESTIMATE.CUSTOM) ||
     !maxPriorityFeePerGas;
+
   // If the user has chosen a value lower than the low gas fee estimate,
   // We'll need to use the useEffect hook below to make a call to calculate
   // the time to show
@@ -38,7 +52,12 @@ export const useCustomTimeEstimate = ({
       Number(gasFeeEstimates.low.suggestedMaxPriorityFeePerGas);
 
   useEffect(() => {
-    if (returnNoEstimates) return;
+    if (
+      isGasEstimatesLoading ||
+      gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET ||
+      !maxPriorityFeePerGas
+    )
+      return;
     if (isUnknownLow) {
       // getGasFeeTimeEstimate requires parameters in string format
       getGasFeeTimeEstimate(
@@ -48,7 +67,14 @@ export const useCustomTimeEstimate = ({
         setCustomEstimatedTime(result);
       });
     }
-  }, [isUnknownLow, maxFeePerGas, maxPriorityFeePerGas, returnNoEstimates]);
+  }, [
+    gasEstimateType,
+    isUnknownLow,
+    isGasEstimatesLoading,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    returnNoEstimates,
+  ]);
 
   if (returnNoEstimates) {
     return {};
