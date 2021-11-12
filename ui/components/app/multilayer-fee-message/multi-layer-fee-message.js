@@ -10,7 +10,11 @@ import {
   toNormalizedDenomination,
 } from '../../../../shared/modules/conversion.utils';
 
-export default function MultilayerFeeMessage({ transaction, layer2fee }) {
+export default function MultilayerFeeMessage({
+  transaction,
+  layer2fee,
+  nativeCurrency,
+}) {
   const t = useContext(I18nContext);
 
   const [fetchedLayer1Total, setLayer1Total] = useState(null);
@@ -21,7 +25,7 @@ export default function MultilayerFeeMessage({ transaction, layer2fee }) {
     const layer1TotalBN = toBigNumber.hex(fetchedLayer1Total);
     layer1Total = `${toNormalizedDenomination
       .WEI(layer1TotalBN)
-      .toString(10)} ETH`;
+      .toString(10)} ${nativeCurrency}`;
   }
 
   const totalInWeiHex = sumHexes(
@@ -32,7 +36,7 @@ export default function MultilayerFeeMessage({ transaction, layer2fee }) {
   const totalBN = toBigNumber.hex(totalInWeiHex);
   const totalInEth = `${toNormalizedDenomination
     .WEI(totalBN)
-    .toString(10)} ETH`;
+    .toString(10)} ${nativeCurrency}`;
 
   useEffect(() => {
     const getEstimatedL1Fee = async () => {
@@ -67,4 +71,5 @@ export default function MultilayerFeeMessage({ transaction, layer2fee }) {
 MultilayerFeeMessage.propTypes = {
   transaction: PropTypes.object,
   layer2fee: PropTypes.string,
+  nativeCurrency: PropTypes.string,
 };
