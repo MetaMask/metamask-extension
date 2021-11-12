@@ -46,7 +46,7 @@ const DAPP_SUGGESTED_ESTIMATE = {
   maxPriorityFeePerGas: '0x59682f00',
 };
 
-const renderComponent = (props, transactionProps) => {
+const renderComponent = (props, transactionProps, gasFeeContextProps) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -61,12 +61,17 @@ const renderComponent = (props, transactionProps) => {
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      advancedGasFee: {
+        maxBaseFee: '1.5',
+        priorityFee: '2',
+      },
     },
   });
 
   return renderWithProvider(
     <GasFeeContextProvider
       transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
+      {...gasFeeContextProps}
     >
       <EditGasItem estimateType="low" {...props} />
     </GasFeeContextProvider>,
@@ -127,6 +132,7 @@ describe('EditGasItem', () => {
     renderComponent({ estimateType: 'custom' });
     expect(screen.queryByText('⚙')).toBeInTheDocument();
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
-    expect(screen.queryAllByText('--')).toHaveLength(2);
+    // below value of custom gas fee estimate is default obtained from state.metamask.advancedGasFee
+    expect(screen.queryAllByText('0.001575 ETH')).toHaveLength(2);
   });
 });

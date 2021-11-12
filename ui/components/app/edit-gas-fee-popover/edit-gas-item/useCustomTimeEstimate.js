@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 
-import {
-  GAS_ESTIMATE,
-  GAS_ESTIMATE_TYPES,
-} from '../../../../../shared/constants/gas';
+import { GAS_ESTIMATE_TYPES } from '../../../../../shared/constants/gas';
 import {
   getGasEstimateType,
   getIsGasEstimatesLoading,
@@ -13,30 +10,14 @@ import {
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
 
 export const useCustomTimeEstimate = ({
-  dappSuggestedGasFees,
-  estimateType,
-  estimateUsed,
   gasFeeEstimates,
-  maxFeePerGasValue,
-  maxPriorityFeePerGasValue,
+  maxFeePerGas,
+  maxPriorityFeePerGas,
 }) => {
   const gasEstimateType = useSelector(getGasEstimateType);
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
-
-  let maxFeePerGas;
-  let maxPriorityFeePerGas;
-  if (estimateType === GAS_ESTIMATE.DAPP_SUGGESTED) {
-    maxFeePerGas = dappSuggestedGasFees?.maxFeePerGas;
-    maxPriorityFeePerGas = dappSuggestedGasFees?.maxPriorityFeePerGas;
-  } else if (
-    estimateType === GAS_ESTIMATE.CUSTOM &&
-    estimateUsed === GAS_ESTIMATE.CUSTOM
-  ) {
-    maxFeePerGas = maxFeePerGasValue;
-    maxPriorityFeePerGas = maxPriorityFeePerGasValue;
-  }
 
   const returnNoEstimates =
     isGasEstimatesLoading ||
