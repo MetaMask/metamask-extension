@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.5.2]
+### Uncategorized
+- Ensure approve button can be enabled when using ledger webhid ([#12685](https://github.com/MetaMask/metamask-extension/pull/12685))
+
 ## [10.5.1]
 ### Changed
 - [#12658](https://github.com/MetaMask/metamask-extension/pull/12658): Properly display transaction fees on layer two networks like Optimism which have fees on both layers
@@ -2550,7 +2554,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.5.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.5.2...HEAD
+[10.5.2]: https://github.com/MetaMask/metamask-extension/compare/v10.5.1...v10.5.2
 [10.5.1]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...v10.5.1
 [10.5.0]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...v10.5.0
 [10.4.1]: https://github.com/MetaMask/metamask-extension/compare/v10.4.0...v10.4.1
