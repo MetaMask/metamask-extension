@@ -1365,9 +1365,6 @@
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
-  "low": {
-    "message": "Low"
-  },
   "lowPriorityMessage": {
     "message": "Future transactions will queue after this one. This price was last seen was some time ago."
   },
