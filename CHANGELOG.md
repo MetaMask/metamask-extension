@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.5.2]
-### Uncategorized
-- Ensure approve button can be enabled when using ledger webhid ([#12685](https://github.com/MetaMask/metamask-extension/pull/12685))
+### Fixed
+- [#12685](https://github.com/MetaMask/metamask-extension/pull/12685): Fix Ledger WebHID issue preventing confirmation of token approvals
 
 ## [10.5.1]
 ### Changed
