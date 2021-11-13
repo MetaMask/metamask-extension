@@ -30,11 +30,10 @@ import {
   TokensController,
   TokenRatesController,
 } from '@metamask/controllers';
-import {
-  SnapController,
-  ExternalResourceController,
-} from '@metamask/snap-controllers';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SnapController } from '@metamask/snap-controllers';
 import { IframeExecutionEnvironmentService } from '@metamask/iframe-execution-environment-service';
+///: END:ONLY_INCLUDE_IN
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -54,7 +53,9 @@ import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
   createMethodMiddleware,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   createSnapMethodMiddleware,
+  ///: END:ONLY_INCLUDE_IN
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
@@ -93,10 +94,6 @@ export const METAMASK_CONTROLLER_EVENTS = {
   UPDATE_BADGE: 'updateBadge',
   // TODO: Add this and similar enums to @metamask/controllers and export them
   APPROVAL_STATE_CHANGE: 'ApprovalController:stateChange',
-};
-
-const RESOURCE_KEYS = {
-  ASSETS: 'snaps:resources:assets',
 };
 
 export default class MetamaskController extends EventEmitter {
@@ -185,12 +182,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       config: { provider: this.provider },
       state: initState.TokensController,
-    });
-
-    this.assetsController = new ExternalResourceController({
-      requiredFields: ['symbol', 'balance', 'identifier', 'decimals'],
-      storageKey: RESOURCE_KEYS.ASSETS,
-      initialResources: initState.AssetsController,
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -424,6 +415,7 @@ export default class MetamaskController extends EventEmitter {
       initState.PermissionsMetadata,
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     this.workerController = new IframeExecutionEnvironmentService({
       iframeUrl: new URL(
         'https://metamask.github.io/iframe-execution-environment/',
@@ -472,10 +464,12 @@ export default class MetamaskController extends EventEmitter {
       messenger: snapControllerMessenger,
     });
     this._setupSnapGlobals();
+    ///: END:ONLY_INCLUDE_IN
 
     this.permissionsController.initializePermissions(
       initState.PermissionsController,
       getRestrictedMethods,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       {
         addSnap: this.snapController.add.bind(this.snapController),
         clearSnapState: (fromDomain) =>
@@ -488,14 +482,12 @@ export default class MetamaskController extends EventEmitter {
         getSnapState: this.snapController.getSnapState.bind(
           this.snapController,
         ),
-        handleAssetRequest: this.assetsController.handleRpcRequest.bind(
-          this.assetsController,
-        ),
         showConfirmation: window.confirm, // Eventually, a template confirmation.
         updateSnapState: this.snapController.updateSnapState.bind(
           this.snapController,
         ),
       },
+      ///: END:ONLY_INCLUDE_IN
     );
 
     this.detectTokensController = new DetectTokensController({
@@ -701,9 +693,9 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
-      // snaps
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
-      AssetsController: this.assetsController.store,
+      ///: END:ONLY_INCLUDE_IN
     });
 
     this.memStore = new ComposableObservableStore({
@@ -738,9 +730,9 @@ export default class MetamaskController extends EventEmitter {
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
-        // snaps
-        AssetsController: this.assetsController.store,
+        ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
+        ///: END:ONLY_INCLUDE_IN
       },
       controllerMessenger: this.controllerMessenger,
     });
@@ -2003,6 +1995,7 @@ export default class MetamaskController extends EventEmitter {
     return promise;
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
    * TODO:snaps verify safety of using keyringController.getAccounts
    */
@@ -2017,6 +2010,7 @@ export default class MetamaskController extends EventEmitter {
 
     return this.keyringController.exportAppKeyForAddress(account, domain);
   }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Signifies user intent to complete an eth_sign method.
@@ -2618,7 +2612,9 @@ export default class MetamaskController extends EventEmitter {
     let origin;
     if (isInternal) {
       origin = 'metamask';
-    } else if (isSnap) {
+    }
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    else if (isSnap) {
       try {
         origin = new URL(sender.url).toString();
       } catch (_) {
@@ -2626,7 +2622,9 @@ export default class MetamaskController extends EventEmitter {
         // handle it better than by means of this hack.
         origin = sender.url;
       }
-    } else {
+    }
+    ///: END:ONLY_INCLUDE_IN
+    else {
       origin = new URL(sender.url).origin;
     }
 
@@ -2667,6 +2665,7 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
    * For snaps running in workers.
    */
@@ -2677,6 +2676,7 @@ export default class MetamaskController extends EventEmitter {
     };
     this.setupUntrustedCommunication(connectionStream, sender, true);
   }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * A method for creating a provider that is safely restricted for the requesting domain.
@@ -2700,8 +2700,10 @@ export default class MetamaskController extends EventEmitter {
     const {
       blockTracker,
       permissionsController,
-      snapController,
       provider,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      snapController,
+      ///: END:ONLY_INCLUDE_IN
     } = this;
 
     // create filter polyfill middleware
@@ -2790,6 +2792,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     engine.push(
       createSnapMethodMiddleware(isSnap, {
         getAppKey: this.getAppKeyForDomain.bind(this, origin),
@@ -2805,6 +2808,7 @@ export default class MetamaskController extends EventEmitter {
         installSnaps: snapController.installSnaps.bind(snapController, origin),
       }),
     );
+    ///: END:ONLY_INCLUDE_IN
 
     // filter and subscription polyfills
     engine.push(filterMiddleware);

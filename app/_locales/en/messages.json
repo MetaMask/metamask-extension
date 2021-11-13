@@ -2299,6 +2299,26 @@
   "slow": {
     "message": "Slow"
   },
+  "snap_clearState": {
+    "message": "Clear its stored data from your device.",
+    "description": "The description for the `snap_clearState` permission"
+  },
+  "snap_confirm": {
+    "message": "Display a confirmation in MetaMask.",
+    "description": "The description for the `snap_confirm` permission"
+  },
+  "snap_getBip44Entropy_": {
+    "message": "Manage keys for the $1 protocol.",
+    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+  },
+  "snap_getState": {
+    "message": "Access its stored data on your device.",
+    "description": "The description for the `snap_updateState` permission"
+  },
+  "snap_updateState": {
+    "message": "Store data on your device.",
+    "description": "The description for the `snap_updateState` permission"
+  },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
@@ -3093,6 +3113,10 @@
   },
   "walletSeedRestore": {
     "message": "Wallet Secret Recovery Phrase"
+  },
+  "wallet_snap_": {
+    "message": "Connect to the $1 Snap.",
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",

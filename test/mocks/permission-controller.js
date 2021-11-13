@@ -42,7 +42,7 @@ const getIdentities = () => {
 };
 
 // perm controller initialization helper
-const getRestrictedMethods = (permController) => {
+export const getRestrictedMethods = (permController) => {
   return {
     // the actual, production restricted methods
     ..._getRestrictedMethods(permController),
@@ -75,7 +75,6 @@ export function getPermControllerOpts() {
     }),
     getKeyringAccounts: async () => [...keyringAccounts],
     getUnlockPromise: () => Promise.resolve(),
-    getRestrictedMethods,
     isUnlocked: () => true,
     notifyDomain: noop,
     notifyAllDomains: noop,
