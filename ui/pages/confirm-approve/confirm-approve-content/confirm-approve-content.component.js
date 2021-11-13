@@ -46,7 +46,7 @@ export default class ConfirmApproveContent extends Component {
     showCustomizeNonceModal: PropTypes.func,
     warning: PropTypes.string,
     txData: PropTypes.object,
-    ledgerWalletRequiredHidConnection: PropTypes.bool,
+    fromAddressIsLedger: PropTypes.bool,
   };
 
   state = {
@@ -242,7 +242,7 @@ export default class ConfirmApproveContent extends Component {
       useNonceField,
       warning,
       txData,
-      ledgerWalletRequiredHidConnection,
+      fromAddressIsLedger,
     } = this.props;
     const { showFullTxDetails } = this.state;
 
@@ -351,7 +351,7 @@ export default class ConfirmApproveContent extends Component {
             })}
         </div>
 
-        {ledgerWalletRequiredHidConnection ? (
+        {fromAddressIsLedger ? (
           <div className="confirm-approve-content__ledger-instruction-wrapper">
             <LedgerInstructionField
               showDataInstruction={Boolean(txData.txParams?.data)}
