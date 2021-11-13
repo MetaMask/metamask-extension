@@ -317,6 +317,9 @@
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
   },
+  "busy": {
+    "message": "Busy"
+  },
   "buy": {
     "message": "Buy"
   },
@@ -1309,8 +1312,11 @@
   "layer1Fees": {
     "message": "Layer 1 fees"
   },
+  "learmMoreAboutGas": {
+    "message": "Want to $1 about gas?"
+  },
   "learnMore": {
-    "message": "Learn more"
+    "message": "learn more"
   },
   "learnScamRisk": {
     "message": "scams and security risks."
@@ -1576,6 +1582,9 @@
   "networkSettingsDescription": {
     "message": "Add and edit custom RPC networks"
   },
+  "networkStatus": {
+    "message": "Network status"
+  },
   "networkURL": {
     "message": "Network URL"
   },
@@ -1676,6 +1685,9 @@
   },
   "nonceFieldHeading": {
     "message": "Custom Nonce"
+  },
+  "notBusy": {
+    "message": "Not busy"
   },
   "notCurrentAccount": {
     "message": "Is this the correct account? It's different from the currently selected account in your wallet"
@@ -2365,6 +2377,9 @@
   },
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
+  },
+  "stable": {
+    "message": "Stable"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
