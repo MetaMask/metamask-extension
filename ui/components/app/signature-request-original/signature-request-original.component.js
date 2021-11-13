@@ -39,6 +39,7 @@ export default class SignatureRequestOriginal extends Component {
     domainMetadata: PropTypes.object,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isLedgerWallet: PropTypes.bool,
+    nativeCurrency: PropTypes.string.isRequired,
   };
 
   state = {
@@ -108,12 +109,12 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderBalance = () => {
-    const { conversionRate } = this.props;
+    const { conversionRate, nativeCurrency } = this.props;
     const {
       fromAccount: { balance },
     } = this.state;
 
-    const balanceInEther = conversionUtil(balance, {
+    const balanceInBaseAsset = conversionUtil(balance, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
@@ -127,7 +128,7 @@ export default class SignatureRequestOriginal extends Component {
           {`${this.context.t('balance')}:`}
         </div>
         <div className="request-signature__balance-value">
-          {`${balanceInEther} ETH`}
+          {`${balanceInBaseAsset} ${nativeCurrency}`}
         </div>
       </div>
     );
