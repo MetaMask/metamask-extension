@@ -258,6 +258,13 @@ export default class MetamaskController extends EventEmitter {
     this.blockController = new BlockController({
       blockTracker: this.blockTracker,
       provider: this.provider,
+      getCurrentChainId: this.networkController.getCurrentChainId.bind(
+        this.networkController,
+      ),
+      onNetworkDidChange: this.networkController.on.bind(
+        this.networkController,
+        NETWORK_EVENTS.NETWORK_DID_CHANGE,
+      ),
     });
 
     this.onboardingController = new OnboardingController({
@@ -1022,6 +1029,21 @@ export default class MetamaskController extends EventEmitter {
 
       resetBlockList: nodeify(
         this.blockController.resetBlockList,
+        this.blockController,
+      ),
+
+      convertNumbers: nodeify(
+        this.blockController.convertNumbers,
+        this.blockController,
+      ),
+
+      removeBlockFromList: nodeify(
+        this.blockController.removeBlockFromList,
+        this.blockController,
+      ),
+
+      sortBlocks: nodeify(
+        this.blockController.sortBlocks,
         this.blockController,
       ),
     };

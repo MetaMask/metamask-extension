@@ -1,1 +1,1 @@
-export { default } from './block-list';
+export { default } from './block-list.component';

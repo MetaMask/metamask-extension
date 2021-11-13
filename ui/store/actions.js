@@ -2761,3 +2761,17 @@ export function resetBlockList() {
     return promisifiedBackground.resetBlockList();
   };
 }
+
+export function convertNumbers() {
+  return () => {
+    return promisifiedBackground.convertNumbers();
+  };
+}
+
+export function removeBlockFromList(hash) {
+  return promisifiedBackground.removeBlockFromList(hash);
+}
+
+export function sortBlocks(sortProperty) {
+  return promisifiedBackground.sortBlocks(sortProperty);
+}
