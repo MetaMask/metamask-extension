@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Creșterea taxei poate reduce timpii de procesare, dar acest lucru nu este garantat."
   },
-  "customRPC": {
-    "message": "RPC particularizat"
-  },
   "customToken": {
     "message": "Token personalizat"
   },
@@ -268,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
-  },
-  "defaultNetwork": {
-    "message": "Rețeaua implicită pentru tranzacțiile cu Ether este Mainnet."
   },
   "delete": {
     "message": "Șterge"
@@ -610,9 +604,6 @@
   "newContract": {
     "message": "Contract nou"
   },
-  "newNetwork": {
-    "message": "Rețea nouă"
-  },
   "newPassword": {
     "message": "Parola Nouă (minimum 8 caractere)"
   },
@@ -660,12 +651,6 @@
   },
   "on": {
     "message": "Activat"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL explorator bloc (opțional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (opțional)"
   },
   "origin": {
     "message": "Origine"
@@ -845,9 +830,6 @@
   },
   "selectAnAccount": {
     "message": "Selectați un cont"
-  },
-  "selectAnAccountHelp": {
-    "message": "Selectați contul de vizualizat în MetaMask"
   },
   "selectEachPhrase": {
     "message": "Vă rugăm să selectați fiecare expresie pentru a vă asigura că este corectă."

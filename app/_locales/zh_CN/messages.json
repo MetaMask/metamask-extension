@@ -103,10 +103,6 @@
   "allowExternalExtensionTo": {
     "message": "允许这个外部扩展到："
   },
-  "allowOriginSpendToken": {
-    "message": "允许 $1 使用您的 $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "允许本网站："
   },
@@ -116,9 +112,6 @@
   },
   "amount": {
     "message": "数额"
-  },
-  "amountWithColon": {
-    "message": "数额："
   },
   "appDescription": {
     "message": "以太坊浏览器插件",
@@ -405,9 +398,6 @@
   "customGasSubTitle": {
     "message": "提升费用可能会缩短处理时间，但不保证绝对有效。"
   },
-  "customRPC": {
-    "message": "自定义 RPC"
-  },
   "customSpendLimit": {
     "message": "自定义消费限额"
   },
@@ -442,9 +432,6 @@
   },
   "decryptRequest": {
     "message": "解密请求"
-  },
-  "defaultNetwork": {
-    "message": "默认以太坊（Ether）交易网络为主网。"
   },
   "delete": {
     "message": "删除"
@@ -516,7 +503,7 @@
     "message": "编辑权限"
   },
   "encryptionPublicKeyNotice": {
-    "message": "$1 希望得到您的加密公钥。同意后该网站将可以想您发送加密信息。",
+    "message": "$1 希望得到您的加密公钥。同意后该网站将可以向您发送加密信息。",
     "description": "$1 is the web3 site name"
   },
   "encryptionPublicKeyRequest": {
@@ -1004,9 +991,6 @@
   "newContract": {
     "message": "新合约"
   },
-  "newNetwork": {
-    "message": "新增网络"
-  },
   "newPassword": {
     "message": "新密码（至少 8 个字符）"
   },
@@ -1086,12 +1070,6 @@
   },
   "onlyConnectTrust": {
     "message": "只连接您信任的网站。"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "区块浏览器 URL（选填）"
-  },
-  "optionalCurrencySymbol": {
-    "message": "符号（选填）"
   },
   "origin": {
     "message": "来源"
@@ -1321,9 +1299,6 @@
   },
   "selectAnAccount": {
     "message": "选择一个账户"
-  },
-  "selectAnAccountHelp": {
-    "message": "选择在 MetaMask 中查看的账户"
   },
   "selectEachPhrase": {
     "message": "请选择每个单词，以确保其正确性。"
@@ -1773,9 +1748,6 @@
     "message": "至：$1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "至："
-  },
   "token": {
     "message": "代币"
   },
@@ -1846,10 +1818,6 @@
   "troubleTokenBalances": {
     "message": "我们无法加载您的代币余额。您可以查看它们",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "您信任这个网站吗？授权即表示您允许 $1 提取您的 $2，并为您自动进行交易。",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "重试"

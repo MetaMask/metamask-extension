@@ -13,9 +13,10 @@ export const AdvancedTabComponent = () => {
       <AdvancedTab
         setAutoLockTimeLimit={() => undefined}
         setShowFiatConversionOnTestnetsPreference={() => undefined}
+        setShowTestNetworks={() => undefined}
         setThreeBoxSyncingPermission={() => undefined}
         setIpfsGateway={() => undefined}
-        setLedgerLivePreference={() => undefined}
+        setLedgerTransportPreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         setUseNonceField={() => undefined}
         setHexDataFeatureFlag={() => undefined}

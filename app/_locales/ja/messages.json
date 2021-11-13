@@ -130,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "この外部拡張機能に次の操作を許可します"
   },
-  "allowOriginSpendToken": {
-    "message": "$1 に $2 の使用を許可しますか?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "このサイトに次の操作を許可します"
   },
@@ -143,9 +139,6 @@
   },
   "amount": {
     "message": "金額"
-  },
-  "amountWithColon": {
-    "message": "金額:"
   },
   "appDescription": {
     "message": "ブラウザーにあるイーサリアム ウォレット",
@@ -474,9 +467,6 @@
   "customGasSubTitle": {
     "message": "手数料を増やすと処理時間は減少する可能性がありますが、減少しない場合もあります。"
   },
-  "customRPC": {
-    "message": "カスタム RPC"
-  },
   "customSpendLimit": {
     "message": "カスタム使用限度額"
   },
@@ -511,9 +501,6 @@
   },
   "decryptRequest": {
     "message": "リクエストの復号"
-  },
-  "defaultNetwork": {
-    "message": "Ether 取引のためのデフォルトのネットワークはメインネットです。"
   },
   "delete": {
     "message": "削除"
@@ -1193,9 +1180,6 @@
   "newContract": {
     "message": "新しいコントラクト"
   },
-  "newNetwork": {
-    "message": "新しいネットワーク"
-  },
   "newPassword": {
     "message": "新しいパスワード (最低 8 文字)"
   },
@@ -1333,12 +1317,6 @@
   },
   "onlyConnectTrust": {
     "message": "信頼するサイトにのみ接続します。"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "ブロック エクスプローラーの URL (オプション)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "通貨記号 (オプション)"
   },
   "origin": {
     "message": "起点"
@@ -1637,13 +1615,6 @@
   },
   "selectAnAccountAlreadyConnected": {
     "message": "このアカウントはすでに MetaMask に接続されています"
-  },
-  "selectAnAccountHelp": {
-    "message": "MetaMask で表示するアカウントを選択します。"
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "アカウントが表示されません。$1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "selectEachPhrase": {
     "message": "各フレーズを選択して、各フレーズが正しいことを確認してください。"
@@ -2125,12 +2096,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "このサイトのネットワーク変更を許可しますか？"
   },
-  "switchLedgerPaths": {
-    "message": "レジャー パスの切り替え"
-  },
-  "switchLedgerPathsText": {
-    "message": "レジャー パスを選択して他のアカウントを表示します"
-  },
   "switchNetwork": {
     "message": "ネットワークの切り替え"
   },
@@ -2200,9 +2165,6 @@
   "toAddress": {
     "message": "移動先:$1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "移動先:"
   },
   "token": {
     "message": "トークン"
@@ -2280,10 +2242,6 @@
   "troubleTokenBalances": {
     "message": "トークン バランスのロードに問題があります。トークン バランスを表示できます",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "このサイトを信頼しますか?許可を与えることにより、$1 は $2 を取り消して、トランザクションを自動化できます。",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "再試行"

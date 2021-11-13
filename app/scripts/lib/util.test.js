@@ -1,13 +1,17 @@
 import { strict as assert } from 'assert';
+import sinon from 'sinon';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
-
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_BACKGROUND,
+  PLATFORM_FIREFOX,
+  PLATFORM_OPERA,
+  PLATFORM_CHROME,
+  PLATFORM_EDGE,
 } from '../../../shared/constants/app';
-import { getEnvironmentType } from './util';
+import { getEnvironmentType, getPlatform } from './util';
 
 describe('app utils', function () {
   describe('getEnvironmentType', function () {
@@ -149,6 +153,61 @@ describe('app utils', function () {
         false,
         'should return false',
       );
+    });
+  });
+
+  describe('getPlatform', function () {
+    const setBrowserSpecificWindow = (browser) => {
+      switch (browser) {
+        case 'firefox': {
+          sinon.stub(window, 'navigator').value({
+            userAgent:
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0) Gecko/20100101 Firefox/95.0',
+          });
+          break;
+        }
+        case 'edge': {
+          sinon.stub(window, 'navigator').value({
+            userAgent:
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36 Edg/95.0.1020.30',
+          });
+          break;
+        }
+        case 'opera': {
+          sinon.stub(window, 'navigator').value({
+            userAgent:
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 OPR/80.0.4170.63',
+          });
+          break;
+        }
+        default: {
+          sinon.stub(window, 'navigator').value({
+            userAgent:
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36',
+          });
+          break;
+        }
+      }
+    };
+
+    it('should detect Firefox', function () {
+      setBrowserSpecificWindow('firefox');
+      assert.equal(getPlatform(), PLATFORM_FIREFOX);
+    });
+
+    it('should detect Edge', function () {
+      setBrowserSpecificWindow('edge');
+      assert.equal(getPlatform(), PLATFORM_EDGE);
+    });
+
+    it('should detect Opera', function () {
+      setBrowserSpecificWindow('opera');
+      assert.equal(getPlatform(), PLATFORM_OPERA);
+    });
+
+    it('should detect Chrome', function () {
+      setBrowserSpecificWindow('chrome');
+      assert.equal(getPlatform(), PLATFORM_CHROME);
     });
   });
 });

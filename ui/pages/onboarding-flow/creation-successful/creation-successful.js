@@ -96,7 +96,13 @@ export default function CreationSuccessful() {
         >
           {t('setAdvancedPrivacySettings')}
         </Button>
-        <Button type="primary" large rounded onClick={onComplete}>
+        <Button
+          data-testid="onboarding-complete-done"
+          type="primary"
+          large
+          rounded
+          onClick={onComplete}
+        >
           {t('done')}
         </Button>
       </Box>

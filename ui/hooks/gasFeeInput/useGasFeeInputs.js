@@ -1,9 +1,19 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getAdvancedInlineGasShown } from '../../selectors';
-import { hexToDecimal } from '../../helpers/utils/conversions.util';
+import {
+  CUSTOM_GAS_ESTIMATE,
+  GAS_RECOMMENDATIONS,
+  EDIT_GAS_MODES,
+} from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
+import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../helpers/utils/confirm-tx.util';
+import {
+  checkNetworkAndAccountSupports1559,
+  getAdvancedInlineGasShown,
+} from '../../selectors';
+import { hexToDecimal } from '../../helpers/utils/conversions.util';
+import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
 
 import { useGasFeeErrors } from './useGasFeeErrors';
@@ -58,11 +68,15 @@ import { useGasEstimates } from './useGasEstimates';
  * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(
-  defaultEstimateToUse = 'medium',
+  defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
   transaction,
   minimumGasLimit = '0x5208',
-  editGasMode,
+  editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
 ) {
+  const supportsEIP1559 =
+    useSelector(checkNetworkAndAccountSupports1559) &&
+    !isLegacyTransaction(transaction?.txParams);
+
   // We need the gas estimates from the GasFeeController in the background.
   // Calling this hooks initiates polling for new gas estimates and returns the
   // current estimate.
@@ -85,6 +99,13 @@ export function useGasFeeInputs(
     if (transaction) return transaction?.userFeeLevel || null;
     return defaultEstimateToUse;
   });
+
+  const [
+    isUsingDappSuggestedGasFees,
+    setIsUsingDappSuggestedGasFees,
+  ] = useState(() =>
+    Boolean(areDappSuggestedAndTxParamGasFeesTheSame(transaction)),
+  );
 
   const [gasLimit, setGasLimit] = useState(
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
@@ -187,6 +208,7 @@ export function useGasFeeInputs(
       setMaxPriorityFeePerGas(null);
       setGasPrice(null);
       setGasPriceHasBeenManuallySet(false);
+      setIsUsingDappSuggestedGasFees(false);
     },
     [
       setInternalEstimateToUse,
@@ -195,11 +217,12 @@ export function useGasFeeInputs(
       setMaxPriorityFeePerGas,
       setGasPrice,
       setGasPriceHasBeenManuallySet,
+      setIsUsingDappSuggestedGasFees,
     ],
   );
 
   const onManualChange = useCallback(() => {
-    setInternalEstimateToUse('custom');
+    setInternalEstimateToUse(CUSTOM_GAS_ESTIMATE);
     handleGasLimitOutOfBoundError();
     // Restore existing values
     setGasPrice(gasPrice);
@@ -222,6 +245,7 @@ export function useGasFeeInputs(
   ]);
 
   return {
+    transaction,
     maxFeePerGas,
     maxFeePerGasFiat,
     setMaxFeePerGas,
@@ -239,6 +263,7 @@ export function useGasFeeInputs(
     estimatedMaximumNative,
     estimatedMinimumNative,
     isGasEstimatesLoading,
+    isUsingDappSuggestedGasFees,
     gasFeeEstimates,
     gasEstimateType,
     estimatedGasFeeTimeBounds,
@@ -250,5 +275,6 @@ export function useGasFeeInputs(
     gasErrors,
     gasWarnings,
     hasGasErrors,
+    supportsEIP1559,
   };
 }

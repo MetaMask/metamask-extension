@@ -1,3 +1,5 @@
+const { version: reactVersion } = require('react/package.json');
+
 module.exports = {
   root: true,
   parser: '@babel/eslint-parser',
@@ -189,9 +191,10 @@ module.exports = {
         'app/scripts/lockdown-more.js',
         'development/**/*.js',
         'test/e2e/**/*.js',
-        'test/lib/wait-until-called.js',
         'test/env.js',
         'test/setup.js',
+        'test/helpers/protect-intrinsics-helpers.js',
+        'test/lib/wait-until-called.js',
         'jest.config.js',
       ],
       parserOptions: {
@@ -202,6 +205,7 @@ module.exports = {
       files: [
         'app/scripts/lockdown-run.js',
         'app/scripts/lockdown-more.js',
+        'test/helpers/protect-intrinsics-helpers.js',
         'test/unit-global/protect-intrinsics.test.js',
       ],
       globals: {
@@ -213,7 +217,12 @@ module.exports = {
 
   settings: {
     react: {
-      version: 'detect',
+      // If this is set to 'detect', ESLint will import React in order to find
+      // its version. Because we run ESLint in the build system under LavaMoat,
+      // this means that detecting the React version requires a LavaMoat policy
+      // for all of React, in the build system. That's a no-go, so we grab it
+      // from React's package.json.
+      version: reactVersion,
     },
   },
 };

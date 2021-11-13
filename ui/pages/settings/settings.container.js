@@ -1,7 +1,7 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getAddressBookEntryName } from '../../selectors';
+import { getAddressBookEntryOrAccountName } from '../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -24,6 +24,7 @@ import {
   SECURITY_ROUTE,
   SETTINGS_ROUTE,
   EXPERIMENTAL_ROUTE,
+  ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
 import Settings from './settings.component';
 
@@ -38,6 +39,7 @@ const ROUTES_TO_I18N_KEYS = {
   [CONTACT_VIEW_ROUTE]: 'viewContact',
   [NETWORKS_ROUTE]: 'networks',
   [NETWORKS_FORM_ROUTE]: 'networks',
+  [ADD_NETWORK_ROUTE]: 'networks',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [EXPERIMENTAL_ROUTE]: 'experimental',
 };
@@ -50,7 +52,10 @@ const mapStateToProps = (state, ownProps) => {
   const isAddressEntryPage = pathNameTail.includes('0x');
   const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE));
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE));
-  const isNetworksFormPage = Boolean(pathname.match(NETWORKS_FORM_ROUTE));
+  const isNetworksFormPage =
+    Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
+    Boolean(pathname.match(ADD_NETWORK_ROUTE));
+  const addNewNetwork = Boolean(pathname.match(ADD_NETWORK_ROUTE));
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];
@@ -67,7 +72,7 @@ const mapStateToProps = (state, ownProps) => {
   let initialBreadCrumbRoute;
   let initialBreadCrumbKey;
 
-  const addressName = getAddressBookEntryName(
+  const addressName = getAddressBookEntryOrAccountName(
     state,
     !isBurnAddress(pathNameTail) &&
       isValidHexAddress(pathNameTail, { mixedCaseUseChecksum: true })
@@ -85,6 +90,7 @@ const mapStateToProps = (state, ownProps) => {
     initialBreadCrumbRoute,
     initialBreadCrumbKey,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    addNewNetwork,
   };
 };
 
