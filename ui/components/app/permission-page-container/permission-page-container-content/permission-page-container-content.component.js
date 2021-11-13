@@ -1,13 +1,20 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { SNAP_PREFIX } from '@metamask/snap-controllers';
+///: END:ONLY_INCLUDE_IN
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import CheckBox from '../../../ui/check-box';
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+// TODO:flask use (better) enums for these
+const invokeSnapPrefix = SNAP_PREFIX;
+const getBip44EntropyPrefix = 'snap_getBip44Entropy_';
+///: END:ONLY_INCLUDE_IN
+
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
-    permissionsDescriptions: PropTypes.object.isRequired,
     domainMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
       icon: PropTypes.string,
@@ -31,33 +38,32 @@ export default class PermissionPageContainerContent extends PureComponent {
   };
 
   renderRequestedPermissions() {
-    const {
-      selectedPermissions,
-      onPermissionToggle,
-      permissionsDescriptions,
-    } = this.props;
+    const { selectedPermissions, onPermissionToggle } = this.props;
     const { t } = this.context;
 
     const items = Object.keys(selectedPermissions).map((permissionName) => {
-      const isSnapPermission = permissionName.startsWith(SNAP_PREFIX);
-      const keyablePermissionName = isSnapPermission
-        ? `${SNAP_PREFIX}*`
-        : permissionName;
       const isEthAccounts = permissionName === 'eth_accounts';
 
-      let description;
+      let description = `Unknown permission: "${permissionName}"`;
       if (isEthAccounts) {
         description = t(permissionName);
-      } else if (isSnapPermission) {
-        description = permissionsDescriptions[keyablePermissionName].replace(
-          '$1',
-          permissionName.replace(SNAP_PREFIX, ''),
-        );
-      } else {
-        description = permissionsDescriptions[keyablePermissionName];
       }
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      else if (permissionName.startsWith(invokeSnapPrefix)) {
+        description = t(invokeSnapPrefix, [
+          permissionName.replace(invokeSnapPrefix, ''),
+        ]);
+      } else if (permissionName.startsWith(getBip44EntropyPrefix)) {
+        // TODO:flask create coin_type to protocol name enum
+        description = t(getBip44EntropyPrefix, [
+          permissionName.replace(getBip44EntropyPrefix, ''),
+        ]);
+      } else {
+        description = t(permissionName);
+      }
+      ///: END:ONLY_INCLUDE_IN
 
-      // don't allow deselecting eth_accounts
+      // Don't allow deselecting eth_accounts
       const isDisabled = isEthAccounts;
       const isChecked = Boolean(selectedPermissions[permissionName]);
       const title = isChecked

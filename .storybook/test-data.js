@@ -1014,7 +1014,6 @@ const state = {
       mainnet: 10902989,
     },
     permissionsRequests: [],
-    permissionsDescriptions: {},
     domains: {
       'https://app.uniswap.org': {
         permissions: [

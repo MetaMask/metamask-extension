@@ -6,6 +6,7 @@ import {
   getters,
   getPermControllerOpts,
   getPermissionsMiddleware,
+  getRestrictedMethods,
 } from '../../../../test/mocks/permission-controller';
 import {
   getUserApprovalPromise,
@@ -20,9 +21,11 @@ const { CAVEATS, ERRORS, PERMS, RPC_REQUESTS } = getters;
 const { ACCOUNTS, DOMAINS, PERM_NAMES } = constants;
 
 const initPermController = () => {
-  return new PermissionsController({
+  const controller = new PermissionsController({
     ...getPermControllerOpts(),
   });
+  controller.initializePermissions({}, getRestrictedMethods);
+  return controller;
 };
 
 const createApprovalSpies = (permController) => {
