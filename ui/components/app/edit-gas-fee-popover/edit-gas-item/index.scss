@@ -4,7 +4,8 @@
   cursor: pointer;
   font-size: 12px;
   margin: 12px 0;
-  padding: 6px 12px;
+  padding: 4px 12px;
+  height: 32px;
 
   &-selected {
     background-color: $ui-1;
@@ -14,12 +15,12 @@
     display: inline-block;
     color: $ui-black;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: bold;
     width: 40%;
   }
 
   &__icon {
-    margin-right: 6px;
+    margin-right: 4px;
   }
 
   &__time-estimate {
