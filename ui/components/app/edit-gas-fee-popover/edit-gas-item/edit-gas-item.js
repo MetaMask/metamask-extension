@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
-import { GAS_ESTIMATE } from '../../../../../shared/constants/gas';
+import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
 import { GasLevelIconMap } from '../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import {
@@ -22,7 +22,7 @@ import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-disp
 
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
-const EditGasItem = ({ estimateType, onClose }) => {
+const EditGasItem = ({ priorityLevel, onClose }) => {
   const {
     estimateUsed,
     gasFeeEstimates,
@@ -38,18 +38,18 @@ const EditGasItem = ({ estimateType, onClose }) => {
   let maxPriorityFeePerGas;
   let minWaitTime;
 
-  if (gasFeeEstimates[estimateType]) {
-    maxFeePerGas = gasFeeEstimates[estimateType].suggestedMaxFeePerGas;
+  if (gasFeeEstimates[priorityLevel]) {
+    maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
   } else if (
-    estimateType === GAS_ESTIMATE.DAPP_SUGGESTED &&
+    priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
     dappSuggestedGasFees
   ) {
     maxFeePerGas = hexWEIToDecGWEI(dappSuggestedGasFees.maxFeePerGas);
     maxPriorityFeePerGas = hexWEIToDecGWEI(
       dappSuggestedGasFees.maxPriorityFeePerGas,
     );
-  } else if (estimateType === GAS_ESTIMATE.CUSTOM) {
-    if (estimateUsed === GAS_ESTIMATE.CUSTOM) {
+  } else if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
+    if (estimateUsed === PRIORITY_LEVELS.CUSTOM) {
       maxFeePerGas = maxFeePerGasValue;
       maxPriorityFeePerGas = maxPriorityFeePerGasValue;
     } else if (advanecGasFeeDefault) {
@@ -66,9 +66,9 @@ const EditGasItem = ({ estimateType, onClose }) => {
     maxPriorityFeePerGas,
   });
 
-  if (gasFeeEstimates[estimateType]) {
+  if (gasFeeEstimates[priorityLevel]) {
     minWaitTime =
-      estimateType === GAS_ESTIMATE.HIGH
+      priorityLevel === PRIORITY_LEVELS.HIGH
         ? gasFeeEstimates?.high.minWaitTimeEstimate
         : gasFeeEstimates?.low.maxWaitTimeEstimate;
   } else {
@@ -83,46 +83,47 @@ const EditGasItem = ({ estimateType, onClose }) => {
     : null;
 
   const onOptionSelect = () => {
-    if (estimateType !== GAS_ESTIMATE.CUSTOM) {
-      updateTransactionUsingGasFeeEstimates(estimateType);
+    if (priorityLevel !== PRIORITY_LEVELS.CUSTOM) {
+      updateTransactionUsingGasFeeEstimates(priorityLevel);
     }
-    // todo: open advance modal if estimateType is custom
+    // todo: open advance modal if priorityLevel is custom
     onClose();
   };
 
   return (
     <div
       className={classNames('edit-gas-item', {
-        [`edit-gas-item-selected`]: estimateType === estimateUsed,
+        [`edit-gas-item-selected`]: priorityLevel === estimateUsed,
         [`edit-gas-item-disabled`]:
-          estimateType === GAS_ESTIMATE.DAPP_SUGGESTED && !dappSuggestedGasFees,
+          priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
+          !dappSuggestedGasFees,
       })}
       role="button"
       onClick={onOptionSelect}
     >
       <span className="edit-gas-item__name">
         <span
-          className={`edit-gas-item__icon edit-gas-item__icon-${estimateType}`}
+          className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
         >
-          {GasLevelIconMap[estimateType]}
+          {GasLevelIconMap[priorityLevel]}
         </span>
         <I18nValue
           messageKey={
-            estimateType === GAS_ESTIMATE.DAPP_SUGGESTED
+            priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED
               ? 'dappSuggestedShortLabel'
-              : estimateType
+              : priorityLevel
           }
         />
       </span>
       <span
-        className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${estimateType}`}
+        className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
       >
         {minWaitTime
           ? minWaitTime && toHumanReadableTime(minWaitTime, t)
           : '--'}
       </span>
       <span
-        className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${estimateType}`}
+        className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}
       >
         {hexMaximumTransactionFee ? (
           <UserPreferencedCurrencyDisplay
@@ -142,7 +143,7 @@ const EditGasItem = ({ estimateType, onClose }) => {
 };
 
 EditGasItem.propTypes = {
-  estimateType: PropTypes.string,
+  priorityLevel: PropTypes.string,
   onClose: PropTypes.func,
 };
 

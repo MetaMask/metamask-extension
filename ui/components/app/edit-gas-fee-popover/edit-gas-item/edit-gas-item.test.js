@@ -73,47 +73,47 @@ const renderComponent = (props, transactionProps, gasFeeContextProps) => {
       transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
       {...gasFeeContextProps}
     >
-      <EditGasItem estimateType="low" {...props} />
+      <EditGasItem priorityLevel="low" {...props} />
     </GasFeeContextProvider>,
     store,
   );
 };
 
 describe('EditGasItem', () => {
-  it('should renders low gas estimate option for estimateType low', () => {
-    renderComponent({ estimateType: 'low' });
+  it('should renders low gas estimate option for priorityLevel low', () => {
+    renderComponent({ priorityLevel: 'low' });
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
     expect(screen.queryByText('5 min')).toBeInTheDocument();
     expect(screen.queryByTitle('0.001113 ETH')).toBeInTheDocument();
   });
 
-  it('should renders market gas estimate option for estimateType medium', () => {
-    renderComponent({ estimateType: 'medium' });
+  it('should renders market gas estimate option for priorityLevel medium', () => {
+    renderComponent({ priorityLevel: 'medium' });
     expect(screen.queryByText('🦊')).toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
     expect(screen.queryByText('5 min')).toBeInTheDocument();
     expect(screen.queryByTitle('0.00147 ETH')).toBeInTheDocument();
   });
 
-  it('should renders aggressive gas estimate option for estimateType high', () => {
-    renderComponent({ estimateType: 'high' });
+  it('should renders aggressive gas estimate option for priorityLevel high', () => {
+    renderComponent({ priorityLevel: 'high' });
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
     expect(screen.queryByText('15 sec')).toBeInTheDocument();
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
   });
 
-  it('should highlight option is estimateType is currently selected', () => {
-    renderComponent({ estimateType: 'high' }, { userFeeLevel: 'high' });
+  it('should highlight option is priorityLevel is currently selected', () => {
+    renderComponent({ priorityLevel: 'high' }, { userFeeLevel: 'high' });
     expect(
       document.getElementsByClassName('edit-gas-item-selected'),
     ).toHaveLength(1);
   });
 
-  it('should renders site gas estimate option for estimateType dappSuggested', () => {
+  it('should renders site gas estimate option for priorityLevel dappSuggested', () => {
     renderComponent(
-      { estimateType: 'dappSuggested' },
+      { priorityLevel: 'dappSuggested' },
       { dappSuggestedGasFees: DAPP_SUGGESTED_ESTIMATE },
     );
     expect(screen.queryByText('🌐')).toBeInTheDocument();
@@ -122,14 +122,14 @@ describe('EditGasItem', () => {
   });
 
   it('should disable site gas estimate option for is transaction does not have dappSuggestedGasFees', async () => {
-    renderComponent({ estimateType: 'dappSuggested' });
+    renderComponent({ priorityLevel: 'dappSuggested' });
     expect(
       document.getElementsByClassName('edit-gas-item-disabled'),
     ).toHaveLength(1);
   });
 
-  it('should renders advance gas estimate option for estimateType custom', () => {
-    renderComponent({ estimateType: 'custom' });
+  it('should renders advance gas estimate option for priorityLevel custom', () => {
+    renderComponent({ priorityLevel: 'custom' });
     expect(screen.queryByText('⚙')).toBeInTheDocument();
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
     // below value of custom gas fee estimate is default obtained from state.metamask.advancedGasFee
