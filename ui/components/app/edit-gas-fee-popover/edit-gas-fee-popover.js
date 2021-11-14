@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { GAS_ESTIMATE } from '../../../../shared/constants/gas';
+import { PRIORITY_LEVELS } from '../../../../shared/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Popover from '../../ui/popover';
 import I18nValue from '../../ui/i18n-value';
@@ -33,15 +33,27 @@ const EditGasFeePopover = ({ onClose }) => {
                 <I18nValue messageKey="maxFee" />
               </span>
             </div>
-            <EditGasItem estimateType={GAS_ESTIMATE.LOW} onClose={onClose} />
-            <EditGasItem estimateType={GAS_ESTIMATE.MEDIUM} onClose={onClose} />
-            <EditGasItem estimateType={GAS_ESTIMATE.HIGH} onClose={onClose} />
-            <div className="edit-gas-fee-popover__content__separator" />
             <EditGasItem
-              estimateType={GAS_ESTIMATE.DAPP_SUGGESTED}
+              priorityLevel={PRIORITY_LEVELS.LOW}
               onClose={onClose}
             />
-            <EditGasItem estimateType={GAS_ESTIMATE.CUSTOM} onClose={onClose} />
+            <EditGasItem
+              priorityLevel={PRIORITY_LEVELS.MEDIUM}
+              onClose={onClose}
+            />
+            <EditGasItem
+              priorityLevel={PRIORITY_LEVELS.HIGH}
+              onClose={onClose}
+            />
+            <div className="edit-gas-fee-popover__content__separator" />
+            <EditGasItem
+              priorityLevel={PRIORITY_LEVELS.DAPP_SUGGESTED}
+              onClose={onClose}
+            />
+            <EditGasItem
+              priorityLevel={PRIORITY_LEVELS.CUSTOM}
+              onClose={onClose}
+            />
           </div>
         </div>
       </>
