@@ -67,9 +67,12 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 * The `allow-scripts` configuration in `package.json`
   * Run `yarn allow-scripts auto` to update the `allow-scripts` configuration automatically. This config determines whether the package's install/postinstall scripts are allowed to run. Review each new package to determine whether the install script needs to run or not, testing if necessary.
   * Unfortunately, `yarn allow-scripts auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.
-* The LavaMoat auto-generated policy in `lavamoat/build-system/policy.json`
-  * Run `yarn lavamoat:auto` to re-generate this policy file. Review the changes to determine whether the access granted to each package seems appropriate.
+* The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`)
+  * Run `yarn lavamoat:auto` to re-generate these policy files. Review the changes to determine whether the access granted to each package seems appropriate.
   * Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.
+* The build system LavaMoat policy file (`lavamoat/build-system/policy.json`)
+  * Run `yarn lavamoat:build:auto` to re-generate this policy file.
+  * This only applies if the external modules imported by the build system or its dependencies have changed. Keep in mind that some modules may be imported dynamically, and may elude LavaMoat's static analysis. If this occurs, debug the build system with [`ndb`](https://www.npmjs.com/package/ndb) to determine which packages are dynamically imported, add them to the "useless" imports in `development/build/index.js`, and re-run the auto policy script.
 
 ## Architecture
 
