@@ -174,7 +174,7 @@
     "message": "返回全部"
   },
   "backupApprovalInfo": {
-    "message": "如果不慎丢失个人设备，忘记密码，或者需要重新安装 MetaMask，亦或是需在另一台设备上打开钱包，请使用该保密码恢复个人钱包数据。"
+    "message": "如果不慎丢失个人设备，忘记密码，或者需要重新安装 MetaMask，亦或是需在另一台设备上打开钱包，请使用该密码恢复个人钱包数据。"
   },
   "backupApprovalNotice": {
     "message": "请备份您的账户助记词，保证您的钱包和资金安全。"
@@ -663,7 +663,7 @@
     "message": "燃料限制"
   },
   "gasLimitInfoTooltipContent": {
-    "message": "燃料限制是指您愿意花费的最燃料量单位。"
+    "message": "燃料限制是指您愿意花费的最大燃料单位的数量。"
   },
   "gasLimitTooLow": {
     "message": "燃料限制至少要 21000"
@@ -842,7 +842,7 @@
     "message": "已知接收方地址。"
   },
   "knownTokenWarning": {
-    "message": "此操作将编辑已经在您的钱包中列出的代币，有肯能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。"
+    "message": "此操作将编辑已经在您的钱包中列出的代币，有可能被用来欺骗您。只有确定要更改这些代币的内容时，才通过此操作。"
   },
   "kovan": {
     "message": "Kovan 测试网络"
