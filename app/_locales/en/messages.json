@@ -52,6 +52,9 @@
   "addANickname": {
     "message": "Add a nickname"
   },
+  "addMemo": {
+    "message": "Add memo"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },

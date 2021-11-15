@@ -1,5 +1,10 @@
 
 .update-nickname {
+  &__wrapper {
+    height: 620px;
+    width: 360px;
+  }
+
   &__cancel {
     margin-right: 16px;
   }

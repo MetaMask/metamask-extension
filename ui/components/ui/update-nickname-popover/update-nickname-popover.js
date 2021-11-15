@@ -8,7 +8,6 @@ import TextField from '../text-field';
 import { I18nContext } from '../../../contexts/i18n';
 
 import Identicon from '../identicon/identicon.component';
-import { shortenAddress } from '../../../helpers/utils/util';
 
 export default function UpdateNicknamePopover({
   nickname,
@@ -41,7 +40,7 @@ export default function UpdateNicknamePopover({
     <Popover
       title={title}
       onClose={closePopover}
-      className="update-nickname"
+      className="update-nickname__wrapper"
       footer={
         <>
           <Button
@@ -69,15 +68,14 @@ export default function UpdateNicknamePopover({
         <label className="update-nickname__content__label--capitalized">
           {t('address')}
         </label>
-        <div className="update-nickname__content__address">
-          {shortenAddress(address)}
-        </div>
+        <div className="update-nickname__content__address">{address}</div>
         <div className="update-nickname__content__nickname-label">
           {t('nickname')}
         </div>
         <TextField
           className="update-nickname__content__text-field"
           value={nickname}
+          placeholder={t('addANickname')}
           fullWidth
         />
         <div className="update-nickname__content__label--capitalized">
@@ -86,7 +84,8 @@ export default function UpdateNicknamePopover({
         <TextField
           type="text"
           id="memo"
-          placeholder={memo}
+          value={memo}
+          placeholder={t('addMemo')}
           fullWidth
           margin="dense"
           multiline
