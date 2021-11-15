@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
 import ErrorMessage from '../../../ui/error-message';
-import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
@@ -18,7 +17,6 @@ export default class ConfirmPageContainerContent extends Component {
     detailsComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
-    hasSimulationError: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
@@ -33,10 +31,8 @@ export default class ConfirmPageContainerContent extends Component {
     onCancel: PropTypes.func,
     cancelText: PropTypes.string,
     onSubmit: PropTypes.func,
-    onConfirmAnyways: PropTypes.func,
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
-    hideConfirmAnyways: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
     hideTitle: PropTypes.boolean,
@@ -75,7 +71,6 @@ export default class ConfirmPageContainerContent extends Component {
       action,
       errorKey,
       errorMessage,
-      hasSimulationError,
       title,
       titleComponent,
       subtitleComponent,
@@ -96,31 +91,13 @@ export default class ConfirmPageContainerContent extends Component {
       origin,
       ethGasPriceWarning,
       hideTitle,
-      onConfirmAnyways,
-      hideConfirmAnyways,
     } = this.props;
-
-    const primaryAction = hideConfirmAnyways
-      ? null
-      : {
-          label: this.context.t('tryAnywayOption'),
-          onClick: onConfirmAnyways,
-        };
 
     return (
       <div className="confirm-page-container-content">
         {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
-        )}
-        {hasSimulationError && (
-          <div className="confirm-page-container-content__error-container">
-            <ActionableMessage
-              type="danger"
-              primaryAction={primaryAction}
-              message={this.context.t('simulationErrorMessage')}
-            />
-          </div>
         )}
         <ConfirmPageContainerSummary
           className={classnames({
@@ -138,7 +115,7 @@ export default class ConfirmPageContainerContent extends Component {
           hideTitle={hideTitle}
         />
         {this.renderContent()}
-        {(errorKey || errorMessage) && !hasSimulationError && (
+        {(errorKey || errorMessage) && (
           <div className="confirm-page-container-content__error-container">
             <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
           </div>
