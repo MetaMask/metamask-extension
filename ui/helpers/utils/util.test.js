@@ -340,4 +340,34 @@ describe('util', () => {
       expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
     });
   });
+
+  describe('getPermissionLocaleMessageKey', () => {
+    it('should return the correct parameters for non-namespaced messages', () => {
+      [
+        'snap_clearState',
+        'snap_confirm',
+        'snap_getState',
+        'snap_updateState',
+      ].forEach((permissionName) => {
+        expect(
+          util.getPermissionLocaleMessageParams(permissionName),
+        ).toStrictEqual([permissionName]);
+      });
+    });
+
+    it('should return the correct parameters for namespaced messages', () => {
+      expect(
+        util.getPermissionLocaleMessageParams('wallet_snap_fooSnap'),
+      ).toStrictEqual(['wallet_snap_', ['fooSnap']]);
+      expect(
+        util.getPermissionLocaleMessageParams('snap_getBip44Entropy_461'),
+      ).toStrictEqual(['snap_getBip44Entropy_', ['461']]);
+    });
+
+    it('should return the correct parameters for unknown messages', () => {
+      expect(
+        util.getPermissionLocaleMessageParams('wallet_fooBar'),
+      ).toStrictEqual(['unknownPermission', ['wallet_fooBar']]);
+    });
+  });
 });

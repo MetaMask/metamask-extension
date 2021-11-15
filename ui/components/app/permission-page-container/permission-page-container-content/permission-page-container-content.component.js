@@ -1,16 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SNAP_PREFIX } from '@metamask/snap-controllers';
-///: END:ONLY_INCLUDE_IN
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import CheckBox from '../../../ui/check-box';
-
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-// TODO:flask use (better) enums for these
-const invokeSnapPrefix = SNAP_PREFIX;
-const getBip44EntropyPrefix = 'snap_getBip44Entropy_';
+import { getPermissionLocaleMessageParams } from '../../../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IN
 
 export default class PermissionPageContainerContent extends PureComponent {
@@ -44,22 +38,13 @@ export default class PermissionPageContainerContent extends PureComponent {
     const items = Object.keys(selectedPermissions).map((permissionName) => {
       const isEthAccounts = permissionName === 'eth_accounts';
 
-      let description = `Unknown permission: "${permissionName}"`;
+      let description = t('unknownPermission', permissionName);
       if (isEthAccounts) {
         description = t(permissionName);
       }
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      else if (permissionName.startsWith(invokeSnapPrefix)) {
-        description = t(invokeSnapPrefix, [
-          permissionName.replace(invokeSnapPrefix, ''),
-        ]);
-      } else if (permissionName.startsWith(getBip44EntropyPrefix)) {
-        // TODO:flask create coin_type to protocol name enum
-        description = t(getBip44EntropyPrefix, [
-          permissionName.replace(getBip44EntropyPrefix, ''),
-        ]);
-      } else {
-        description = t(permissionName);
+      else {
+        description = t(...getPermissionLocaleMessageParams(permissionName));
       }
       ///: END:ONLY_INCLUDE_IN
 
