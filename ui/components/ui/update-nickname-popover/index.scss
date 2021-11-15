@@ -3,6 +3,13 @@
   &__wrapper {
     height: 620px;
     width: 360px;
+    border-radius: 0;
+
+    .popover-header {
+      border-bottom: 1px solid #d2d8dd;
+      margin-bottom: 16px;
+      border-radius: 0;
+    }
   }
 
   &__cancel {
@@ -23,6 +30,7 @@
     }
 
     &__address {
+      margin-top: 8px;
       font-size: 13px;
       color: #bbc0c5;
       margin-bottom: 16px;
