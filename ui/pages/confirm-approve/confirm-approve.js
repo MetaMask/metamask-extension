@@ -144,9 +144,7 @@ export default function ConfirmApprove() {
   }, [checkIfContract]);
 
   const { origin } = transaction;
-  const formattedOrigin = origin
-    ? origin[0].toUpperCase() + origin.slice(1)
-    : '';
+  const formattedOrigin = origin || '';
 
   const { icon: siteImage = '' } = domainMetadata[origin] || {};
 
