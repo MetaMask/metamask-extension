@@ -356,6 +356,9 @@
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
+  "cancelSpeedUp": {
+    "message": "cancel or speed up a tranaction."
+  },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
@@ -1324,6 +1327,9 @@
   "learmMoreAboutGas": {
     "message": "Want to $1 about gas?"
   },
+  "learnCancelSpeeedup": {
+    "message": "Learn how to $1"
+  },
   "learnMore": {
     "message": "learn more"
   },
@@ -1908,6 +1914,12 @@
   },
   "pending": {
     "message": "Pending"
+  },
+  "pendingTransaction": {
+    "message": "You have ($1) pending transaction(s)."
+  },
+  "pendingTransactionInfo": {
+    "message": "This transaction will not process until that one is complete."
   },
   "permissionCheckedIconDescription": {
     "message": "You have approved this permission"

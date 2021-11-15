@@ -1,5 +1,5 @@
 .edit-gas-fee-popover {
-  height: 500px;
+  height: 540px;
 
   &__wrapper {
     border-top: 1px solid $ui-grey;
@@ -7,6 +7,11 @@
 
   &__content {
     padding: 16px 12px;
+
+    & .error-message {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
 
     &__header {
       color: $ui-4;
