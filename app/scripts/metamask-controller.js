@@ -526,13 +526,32 @@ export default class MetamaskController extends EventEmitter {
       }
     });
     this.networkController.lookupNetwork();
-    this.messageManager = new MessageManager();
-    this.personalMessageManager = new PersonalMessageManager();
-    this.decryptMessageManager = new DecryptMessageManager();
-    this.encryptionPublicKeyManager = new EncryptionPublicKeyManager();
+    this.messageManager = new MessageManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
+    this.personalMessageManager = new PersonalMessageManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
+    this.decryptMessageManager = new DecryptMessageManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
+    this.encryptionPublicKeyManager = new EncryptionPublicKeyManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
     this.typedMessageManager = new TypedMessageManager({
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
+      ),
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
       ),
     });
 
