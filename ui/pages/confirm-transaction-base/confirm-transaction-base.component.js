@@ -130,7 +130,6 @@ export default class ConfirmTransactionBase extends Component {
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
-    chainId: PropTypes.string,
   };
 
   state = {
@@ -550,10 +549,7 @@ export default class ConfirmTransactionBase extends Component {
       methodData: { params } = {},
       hideData,
       dataComponent,
-      chainId,
     } = this.props;
-
-    console.log('txParams', txParams);
 
     if (hideData) {
       return null;
@@ -568,11 +564,7 @@ export default class ConfirmTransactionBase extends Component {
               {functionType}
             </span>
           </div>
-          <TransactionDecoding
-            to={txParams?.to}
-            chainId={hexToDecimal(chainId)}
-            inputData={txParams?.data}
-          />
+          <TransactionDecoding to={txParams?.to} inputData={txParams?.data} />
           {/* {params && (
             <div className="confirm-page-container-content__data-box">
               <div className="confirm-page-container-content__data-field-label">
@@ -584,9 +576,11 @@ export default class ConfirmTransactionBase extends Component {
             </div>
           )}
           <div className="confirm-page-container-content__data-box-label">
-            {`${t('hexData')}: ${toBuffer(data).length} bytes`}
+            {`${t('hexData')}: ${toBuffer(txParams?.data).length} bytes`}
           </div>
-          <div className="confirm-page-container-content__data-box">{data}</div> */}
+          <div className="confirm-page-container-content__data-box">
+            {txParams?.data}
+          </div> */}
         </div>
       )
     );

@@ -10,4 +10,174 @@
     }
   }
 
+  .copy-raw-tx {
+    display: flex;
+    align-items: center;
+    &__button {
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      margin-top: 10px;
+      background-color: transparent;
+
+      &:hover {
+        background-color: #f2f3f4;
+      }
+    
+      &:active {
+        background-color: #ededed;
+      }
+    }  
+    &__icon {
+      padding-right: 6px;
+    } 
+    &__label {
+      color: #6A737D
+    }
+  }
+  .tree-component {
+    font-size: 0.875rem;
+    line-height: 2;
+  
+    .eth-tx-params {
+      padding: 8px;
+      width: 343px;
+      background: white;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: left;
+      font-family: Euclid Circular B, sans-serif;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 172%;
+    }
+  
+    ol ol {
+      padding-left: 22px;
+      border-left: 1px solid #D6D9DC;
+    }
+
+    details > summary::-webkit-details-marker, details > summary::marker {
+      display: none;
+      content: '';
+    }
+  
+    details > summary {
+      position: relative;
+      padding-left: 16px;
+      &::before {
+        position: absolute;
+        content: " ";
+        flex: 0 0 auto;
+        height: 16px;
+        width: 16px;
+        background-image: url("images/icons/expand.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        left: -7px;
+        top: 7px;
+      }
+    }
+  
+    details[open] > summary {
+      &::before {
+        position: absolute;
+        content: " ";
+        flex: 0 0 auto;
+        height: 16px;
+        width: 16px;
+        background-image: url("images/icons/collapse.svg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        left: -7px;
+        top: 7px;
+      }
+    }
+    
+    .solidity-value > div {
+      display: flex;
+    }
+  
+    .eth-tx-params .solidity-func-name {
+      width: fit-content;
+      padding: 4px;
+      text-transform: uppercase;
+      border:1px solid rgb(149, 149, 149);
+      color:rgb(149,149,149);
+      border-radius: 4px;
+    }
+  
+    .eth-tx-params .sol-value {
+      display: flex;
+      flex-flow: row wrap;
+    }
+  
+    .eth-tx-params .sol-value > {
+      overflow: ellipses;
+    }
+  
+    .eth-tx-params ol {
+      list-style: none;
+      padding: 0px;
+      max-width: inherit;
+    }
+  
+    .eth-tx-params > ol {
+      margin-left: 16px;
+    }
+  
+    /* 
+    Use this parameter to change the indentation!! */
+    .eth-tx-params ol ol:not(:first-child) {
+      padding-left: 8px;
+    }
+  
+    pre.solidity-raw {
+      text-align: left;
+    }
+  
+    .solidity-address {
+      display: flex;
+      flex-direction: row;
+    }
+  
+    .solidity-address :first-child {
+      width: 16px;
+      height: 16px;
+      margin: 0px 8px;
+    }
+  
+    .solidity-item .param-name {
+      padding-right: 4px;
+    }
+  
+    .solidity-value {
+      color: #6A737D;
+      overflow-x: hidden;
+    }
+  
+    .eth-tx-params details > summary {
+      color: black;
+      font-family: sans-serif;
+    }
+  
+    .eth-tx-params footer {
+      text-align: center;
+      color: #8d959e;
+    }
+  
+    .eth-tx-params footer a {
+      text-align: center;
+      color: #8d959e;
+    }
+  }
+  
 }
+
+
