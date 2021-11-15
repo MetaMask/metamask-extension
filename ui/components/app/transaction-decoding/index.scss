@@ -38,9 +38,23 @@
     }
   }
   .tree-component {
+
+    .sender-to-recipient__party {
+      display: flex;
+      align-items: center;
+    }
+
+    .sender-to-recipient__sender-icon {
+      padding: 0 5px 0 0;
+    }
+
     font-size: 0.875rem;
     line-height: 2;
-  
+    
+    & > ol {
+      padding-left: 5px;
+    }
+    
     .eth-tx-params {
       padding: 8px;
       width: 343px;
@@ -59,6 +73,7 @@
     ol ol {
       padding-left: 22px;
       border-left: 1px solid #D6D9DC;
+      margin-left: 7px;
     }
 
     details > summary::-webkit-details-marker, details > summary::marker {
@@ -68,7 +83,7 @@
   
     details > summary {
       position: relative;
-      padding-left: 16px;
+      padding-left: 20px;
       &::before {
         position: absolute;
         content: " ";
@@ -79,7 +94,7 @@
         background-size: contain;
         background-repeat: no-repeat;
         cursor: pointer;
-        left: -7px;
+        left: 0;
         top: 7px;
       }
     }
@@ -95,7 +110,7 @@
         background-size: contain;
         background-repeat: no-repeat;
         cursor: pointer;
-        left: -7px;
+        left: 0;
         top: 7px;
       }
     }

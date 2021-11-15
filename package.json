@@ -249,6 +249,7 @@
     "babelify": "^10.0.0",
     "bify-module-groups": "^1.0.0",
     "brfs": "^2.0.2",
+    "browser-util-inspect": "^0.2.0",
     "browserify": "^16.5.1",
     "chalk": "^3.0.0",
     "chromedriver": "^93.0.1",

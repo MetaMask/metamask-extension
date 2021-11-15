@@ -96,7 +96,7 @@ SenderAddress.propTypes = {
   warnUserOnAccountMismatch: PropTypes.bool,
 };
 
-function RecipientWithAddress({
+export function RecipientWithAddress({
   checksummedRecipientAddress,
   onRecipientClick,
   addressOnly,
