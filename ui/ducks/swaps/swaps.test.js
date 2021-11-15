@@ -273,21 +273,31 @@ describe('Ducks - Swaps', () => {
   });
 
   describe('getSmartTransactionsEnabled', () => {
-    it('returns true if feature flag is enabled, not a HW and is EIP-1559', () => {
+    it('returns true if feature flag is enabled, not a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
-      state.metamask.networkDetails.EIPS[1559] = true;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
     });
 
-    it('returns false if feature flag is disabled, not a HW and is EIP-1559', () => {
+    it('returns false if feature flag is disabled, not a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
       state.metamask.swapsState.swapsFeatureFlags.smart_transactions.extension_active = false;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
-    it('returns false if feature flag is enabled, is a HW and is EIP-1559', () => {
+    it('returns false if feature flag is enabled, not a HW, STX liveness is false and is Ethereum network', () => {
       const state = createSwapsMockStore();
-      state.metamask.networkDetails.EIPS[1559] = true;
+      state.appState.smartTransactionsLiveness = false;
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns false if feature flag is enabled, not a HW, STX error is present and is Ethereum network', () => {
+      const state = createSwapsMockStore();
+      state.appState.smartTransactionsError = 'Internal Server Error';
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns false if feature flag is enabled, is a HW and is Ethereum network', () => {
+      const state = createSwapsMockStore();
       state.metamask.keyrings[0].type = 'Trezor Hardware';
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
@@ -296,6 +306,18 @@ describe('Ducks - Swaps', () => {
       const state = createSwapsMockStore();
       state.metamask.provider.chainId = POLYGON_CHAIN_ID;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns false if feature flag is enabled, not a HW and is BSC network', () => {
+      const state = createSwapsMockStore();
+      state.metamask.provider.chainId = BSC_CHAIN_ID;
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
+    });
+
+    it('returns true if feature flag is enabled, not a HW and is Rinkeby network', () => {
+      const state = createSwapsMockStore();
+      state.metamask.provider.chainId = RINKEBY_CHAIN_ID;
+      expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
     });
 
     it('returns false if feature flag is missing', () => {
