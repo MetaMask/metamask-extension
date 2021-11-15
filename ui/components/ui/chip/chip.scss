@@ -18,8 +18,11 @@
   }
 
   @each $variant, $color in design-system.$color-map {
-    &--#{$variant} {
+    &--border-color-#{$variant} {
       border-color: $color;
+    }
+    &--background-color-#{$variant} {
+      background-color: $color;
     }
   }
 
