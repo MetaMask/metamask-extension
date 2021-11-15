@@ -34,6 +34,7 @@ export default class TokenInput extends PureComponent {
       symbol: PropTypes.string,
     }).isRequired,
     tokenExchangeRates: PropTypes.object,
+    primaryNumberOfDecimals: PropTypes.number,
   };
 
   constructor(props) {
@@ -108,6 +109,7 @@ export default class TokenInput extends PureComponent {
       currentCurrency,
       hideConversion,
       token,
+      primaryNumberOfDecimals = 8,
     } = this.props;
     const { decimalValue } = this.state;
 
@@ -129,7 +131,7 @@ export default class TokenInput extends PureComponent {
     } else {
       // Display ETH
       currency = ETH;
-      numberOfDecimals = 6;
+      numberOfDecimals = primaryNumberOfDecimals;
     }
 
     const decimalEthValue = decimalValue * tokenExchangeRate || 0;
