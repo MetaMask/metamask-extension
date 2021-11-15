@@ -52,9 +52,6 @@
   "addANickname": {
     "message": "Add a nickname"
   },
-  "addMemo": {
-    "message": "Add memo"
-  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -90,6 +87,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
+  },
+  "addMemo": {
+    "message": "Add memo"
   },
   "addNFT": {
     "message": "Add NFT"
