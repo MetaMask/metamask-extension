@@ -38,7 +38,7 @@ const MOCK_FEE_ESTIMATE = {
   estimatedBaseFee: '50',
 };
 
-const renderComponent = () => {
+const render = (txProps) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -47,7 +47,7 @@ const renderComponent = () => {
       accounts: {
         '0xAddress': {
           address: '0xAddress',
-          balance: '0x176e5b6f173ebe66',
+          balance: '0x1F4',
         },
       },
       selectedAddress: '0xAddress',
@@ -57,7 +57,9 @@ const renderComponent = () => {
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider transaction={{ txParams: { gas: '0x5208' } }}>
+    <GasFeeContextProvider
+      transaction={{ txParams: { gas: '0x5208' }, ...txProps }}
+    >
       <EditGasFeePopover />
     </GasFeeContextProvider>,
     store,
@@ -66,7 +68,7 @@ const renderComponent = () => {
 
 describe('EditGasFeePopover', () => {
   it('should renders low / medium / high options', () => {
-    renderComponent();
+    render();
 
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('🦊')).toBeInTheDocument();
@@ -81,15 +83,25 @@ describe('EditGasFeePopover', () => {
   });
 
   it('should show time estimates', () => {
-    renderComponent();
+    render();
     expect(screen.queryAllByText('5 min')).toHaveLength(2);
     expect(screen.queryByText('15 sec')).toBeInTheDocument();
   });
 
   it('should show gas fee estimates', () => {
-    renderComponent();
+    render();
     expect(screen.queryByTitle('0.001113 ETH')).toBeInTheDocument();
     expect(screen.queryByTitle('0.00147 ETH')).toBeInTheDocument();
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
+  });
+
+  it('should not show insufficient balance message if transaction value is less than balance', () => {
+    render({ userFeeLevel: 'high', txParams: { value: '0x64' } });
+    expect(screen.queryByText('Insufficient funds.')).not.toBeInTheDocument();
+  });
+
+  it('should show insufficient balance message if transaction value is more than balance', () => {
+    render({ userFeeLevel: 'high', txParams: { value: '0x5208' } });
+    expect(screen.queryByText('Insufficient funds.')).toBeInTheDocument();
   });
 });
