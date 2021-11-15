@@ -187,7 +187,7 @@
     "message": "Approved"
   },
   "approvedAmountWithColon": {
-    "message": "Approved Amount:"
+    "message": "Approved amount:"
   },
   "asset": {
     "message": "Asset"
@@ -1066,7 +1066,7 @@
     "message": "Goerli Test Network"
   },
   "grantedToWithColon": {
-    "message": "Granted To:"
+    "message": "Granted to:"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -1821,7 +1821,7 @@
     "message": "You have approved this permission"
   },
   "permissionRequest": {
-    "message": "Permission Request"
+    "message": "Permission request"
   },
   "permissionUncheckedIconDescription": {
     "message": "You have not approved this permission"
@@ -2835,7 +2835,7 @@
     "message": "Transaction encountered an error."
   },
   "transactionFee": {
-    "message": "Transaction Fee"
+    "message": "Transaction fee"
   },
   "transactionHistoryBaseFee": {
     "message": "Base Fee (GWEI)"
