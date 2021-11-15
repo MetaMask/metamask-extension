@@ -142,7 +142,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
       setSeedPhraseBackedUp(true).then(async () => {
         initializeThreeBox();
-        history.push(INITIALIZE_END_OF_FLOW_ROUTE);
+        history.replace(INITIALIZE_END_OF_FLOW_ROUTE);
       });
     } catch (error) {
       this.setState({ seedPhraseError: error.message });

@@ -99,7 +99,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             large
             onClick={() => {
               submitSecretRecoveryPhrase(secretRecoveryPhrase);
-              history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+              history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
             }}
             disabled={error || secretRecoveryPhrase.length === 0}
           >
