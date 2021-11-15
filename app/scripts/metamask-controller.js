@@ -1849,7 +1849,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {Object} msgParams - The params passed to eth_sign.
    * @param {Function} cb - The callback function called with the signature.
    */
-  newUnsignedMessage(msgParams, req) {
+  async newUnsignedMessage(msgParams, req) {
     const data = normalizeMsgData(msgParams.data);
     let promise;
     // 64 hex + "0x" at the beginning
@@ -1858,11 +1858,11 @@ export default class MetamaskController extends EventEmitter {
       this.sendUpdate();
       this.opts.showUserConfirmation();
     } else {
-      promise = Promise.reject(
-        ethErrors.rpc.invalidParams('eth_sign requires 32 byte message hash'),
+      throw ethErrors.rpc.invalidParams(
+        'eth_sign requires 32 byte message hash',
       );
     }
-    return promise;
+    return await promise;
   }
 
   /**
