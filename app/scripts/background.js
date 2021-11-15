@@ -487,65 +487,61 @@ function setupController(initState, initLangCode) {
   );
 
   function rejectUnapprovedNotifications() {
-    // Metamask can open a popup for a login, we need to check if
-    // we're on a confirmation page
-    if (controller.isUnlocked()) {
-      Object.keys(
-        controller.txController.txStateManager.getUnapprovedTxList(),
-      ).forEach((txId) =>
-        controller.txController.txStateManager.setTxStatusRejected(txId),
+    Object.keys(
+      controller.txController.txStateManager.getUnapprovedTxList(),
+    ).forEach((txId) =>
+      controller.txController.txStateManager.setTxStatusRejected(txId),
+    );
+    controller.messageManager.messages
+      .filter((msg) => msg.status === 'unapproved')
+      .forEach((tx) =>
+        controller.messageManager.rejectMsg(
+          tx.id,
+          REJECT_NOTFICIATION_CLOSE_SIG,
+        ),
       );
-      controller.messageManager.messages
-        .filter((msg) => msg.status === 'unapproved')
-        .forEach((tx) =>
-          controller.messageManager.rejectMsg(
-            tx.id,
-            REJECT_NOTFICIATION_CLOSE_SIG,
-          ),
-        );
-      controller.personalMessageManager.messages
-        .filter((msg) => msg.status === 'unapproved')
-        .forEach((tx) =>
-          controller.personalMessageManager.rejectMsg(
-            tx.id,
-            REJECT_NOTFICIATION_CLOSE_SIG,
-          ),
-        );
-      controller.typedMessageManager.messages
-        .filter((msg) => msg.status === 'unapproved')
-        .forEach((tx) =>
-          controller.typedMessageManager.rejectMsg(
-            tx.id,
-            REJECT_NOTFICIATION_CLOSE_SIG,
-          ),
-        );
-      controller.decryptMessageManager.messages
-        .filter((msg) => msg.status === 'unapproved')
-        .forEach((tx) =>
-          controller.decryptMessageManager.rejectMsg(
-            tx.id,
-            REJECT_NOTFICIATION_CLOSE,
-          ),
-        );
-      controller.encryptionPublicKeyManager.messages
-        .filter((msg) => msg.status === 'unapproved')
-        .forEach((tx) =>
-          controller.encryptionPublicKeyManager.rejectMsg(
-            tx.id,
-            REJECT_NOTFICIATION_CLOSE,
-          ),
-        );
-
-      // We're specifcally avoid using approvalController directly for better
-      // Error support during rejection
-      Object.keys(
-        controller.permissionsController.approvals.state.pendingApprovals,
-      ).forEach((approvalId) =>
-        controller.permissionsController.rejectPermissionsRequest(approvalId),
+    controller.personalMessageManager.messages
+      .filter((msg) => msg.status === 'unapproved')
+      .forEach((tx) =>
+        controller.personalMessageManager.rejectMsg(
+          tx.id,
+          REJECT_NOTFICIATION_CLOSE_SIG,
+        ),
+      );
+    controller.typedMessageManager.messages
+      .filter((msg) => msg.status === 'unapproved')
+      .forEach((tx) =>
+        controller.typedMessageManager.rejectMsg(
+          tx.id,
+          REJECT_NOTFICIATION_CLOSE_SIG,
+        ),
+      );
+    controller.decryptMessageManager.messages
+      .filter((msg) => msg.status === 'unapproved')
+      .forEach((tx) =>
+        controller.decryptMessageManager.rejectMsg(
+          tx.id,
+          REJECT_NOTFICIATION_CLOSE,
+        ),
+      );
+    controller.encryptionPublicKeyManager.messages
+      .filter((msg) => msg.status === 'unapproved')
+      .forEach((tx) =>
+        controller.encryptionPublicKeyManager.rejectMsg(
+          tx.id,
+          REJECT_NOTFICIATION_CLOSE,
+        ),
       );
 
-      updateBadge();
-    }
+    // We're specifcally avoid using approvalController directly for better
+    // Error support during rejection
+    Object.keys(
+      controller.permissionsController.approvals.state.pendingApprovals,
+    ).forEach((approvalId) =>
+      controller.permissionsController.rejectPermissionsRequest(approvalId),
+    );
+
+    updateBadge();
   }
 
   return Promise.resolve();
