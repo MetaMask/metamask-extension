@@ -3,6 +3,9 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { SNAP_PREFIX } from '@metamask/snap-controllers';
+///: END:ONLY_INCLUDE_IN
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
   GOERLI_CHAIN_ID,
@@ -408,3 +411,48 @@ export function getURLHost(url) {
 export function getURLHostName(url) {
   return getURL(url)?.hostname || '';
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+// We need this literal to appear, and we also need to blow up on boot if it's
+// changed.
+if (SNAP_PREFIX !== 'wallet_snap_') {
+  throw new Error(`The Snap method prefix has changed to: "${SNAP_PREFIX}"`);
+}
+
+const SNAP_PERMISSION_MESSAGE_KEYS = new Set([
+  'snap_clearState',
+  'snap_confirm',
+  'snap_getState',
+  'snap_updateState',
+]);
+
+const GET_BIP44_ENTROPY_KEY = 'snap_getBip44Entropy_';
+const INVOKE_SNAP_KEY = SNAP_PREFIX;
+
+/**
+ * A utility function for retrieving Snap-related permission locale message
+ * parameters. Mainly exists so that our locale message verification script does
+ * not misclassify the related messages as unused.
+ *
+ * @param {string} permissionName - The name of the permission to get the locale
+ * message key for.
+ * @returns {string} The locale message key for the given permission name, or
+ * the key for unrecognized permissions if the permission name is not
+ * regognized.
+ */
+export function getPermissionLocaleMessageParams(permissionName) {
+  if (permissionName.startsWith(INVOKE_SNAP_KEY)) {
+    return [INVOKE_SNAP_KEY, [permissionName.replace(INVOKE_SNAP_KEY, '')]];
+  } else if (permissionName.startsWith(GET_BIP44_ENTROPY_KEY)) {
+    // TODO:flask Establish coin_type to protocol name enum per SLIP-44
+    return [
+      GET_BIP44_ENTROPY_KEY,
+      [permissionName.replace(GET_BIP44_ENTROPY_KEY, '')],
+    ];
+  } else if (SNAP_PERMISSION_MESSAGE_KEYS.has(permissionName)) {
+    return [permissionName];
+  }
+
+  return ['unknownPermission', [permissionName]];
+}
+///: END:ONLY_INCLUDE_IN

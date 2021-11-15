@@ -2995,6 +2995,10 @@
   "unknownNetwork": {
     "message": "Unknown Private Network"
   },
+  "unknownPermission": {
+    "message": "Unknown permission: $1",
+    "description": "$1 is the name of a requested permission that is not recognized."
+  },
   "unknownQrCode": {
     "message": "Error: We couldn't identify that QR code"
   },
