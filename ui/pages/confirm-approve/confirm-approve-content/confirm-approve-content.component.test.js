@@ -58,7 +58,7 @@ describe('ConfirmApproveContent Component', () => {
 
     const editButtons = getAllByText('Edit');
 
-    expect(queryByText('Transaction Fee')).toBeInTheDocument();
+    expect(queryByText('Transaction fee')).toBeInTheDocument();
     expect(
       queryByText('A fee is associated with this request.'),
     ).toBeInTheDocument();
