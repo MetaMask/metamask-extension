@@ -577,6 +577,26 @@
         "URL": true
       }
     },
+    "@metamask/iframe-execution-environment-service": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "document.getElementById": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/object-multiplex": true,
+        "@metamask/post-message-stream": true,
+        "@metamask/snap-workers": true,
+        "json-rpc-engine": true,
+        "json-rpc-middleware-stream": true,
+        "nanoid": true,
+        "pump": true
+      }
+    },
     "@metamask/jazzicon": {
       "globals": {
         "document.createElement": true,
@@ -585,6 +605,16 @@
       "packages": {
         "color": true,
         "mersenne-twister": true
+      }
+    },
+    "@metamask/key-tree": {
+      "packages": {
+        "bip39": true,
+        "buffer": true,
+        "crypto-browserify": true,
+        "is-buffer": true,
+        "keccak": true,
+        "secp256k1": true
       }
     },
     "@metamask/logo": {
@@ -601,6 +631,16 @@
         "gl-vec3": true
       }
     },
+    "@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "end-of-stream": true,
+        "once": true,
+        "readable-stream": true
+      }
+    },
     "@metamask/obs-store": {
       "globals": {
         "localStorage": true
@@ -611,12 +651,55 @@
         "through2": true
       }
     },
+    "@metamask/post-message-stream": {
+      "globals": {
+        "addEventListener": true,
+        "location.origin": true,
+        "onmessage": "write",
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "readable-stream": true
+      }
+    },
+    "@metamask/rpc-methods": {
+      "packages": {
+        "@metamask/key-tree": true,
+        "@metamask/snap-controllers": true,
+        "eth-rpc-errors": true
+      }
+    },
     "@metamask/safe-event-emitter": {
       "globals": {
         "setTimeout": true
       },
       "packages": {
         "events": true
+      }
+    },
+    "@metamask/snap-controllers": {
+      "globals": {
+        "Worker": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controllers": true,
+        "@metamask/object-multiplex": true,
+        "@metamask/obs-store": true,
+        "@metamask/post-message-stream": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/snap-workers": true,
+        "eth-rpc-errors": true,
+        "json-rpc-engine": true,
+        "json-rpc-middleware-stream": true,
+        "nanoid": true,
+        "pump": true
       }
     },
     "@popperjs/core": {
@@ -934,6 +1017,7 @@
     },
     "bip39": {
       "packages": {
+        "buffer": true,
         "create-hash": true,
         "pbkdf2": true,
         "randombytes": true,
@@ -2567,7 +2651,11 @@
       }
     },
     "json-rpc-middleware-stream": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
+        "@metamask/safe-event-emitter": true,
         "readable-stream": true
       }
     },
@@ -2646,6 +2734,7 @@
       "packages": {
         "buffer": true,
         "inherits": true,
+        "readable-stream": true,
         "safe-buffer": true,
         "stream-browserify": true
       }
