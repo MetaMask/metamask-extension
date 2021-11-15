@@ -9,6 +9,10 @@
     .popover-header {
       padding: 16px 16px 0 0;
     }
+
+    .popover-content {
+      margin-top: -15px;
+    }
   }
 
   &__identicon {
@@ -24,7 +28,7 @@
     height: 26px;
     left: 113px;
     right: 114px;
-    top: 48px;
+    top: 44px;
     font-style: normal;
     font-weight: bold;
     font-size: 18px;
@@ -62,7 +66,6 @@
       display: flex;
       align-items: center;
       color: #4a4a4a;
-      padding-right: 8px;
     }
   }
 
@@ -82,7 +85,7 @@
   }
 
   &__div-button {
-    margin: 100px 88px 0 88px;
+    margin: 105px 88px 0 88px;
   }
 
   &__button {

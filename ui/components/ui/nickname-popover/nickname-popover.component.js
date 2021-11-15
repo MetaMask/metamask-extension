@@ -7,6 +7,7 @@ import Button from '../button';
 import Identicon from '../identicon/identicon.component';
 import { shortenAddress } from '../../../helpers/utils/util';
 import CopyIcon from '../icon/copy-icon.component';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import './index.scss';
 
 const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
@@ -16,6 +17,8 @@ const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
     onAdd(address);
     onClose();
   }, [address, onClose, onAdd]);
+
+  const [copied, handleCopy] = useCopyToClipboard();
 
   return (
     <div className="nickname-popover">
@@ -36,7 +39,15 @@ const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
             {address}
           </div>
           <div>
-            <CopyIcon size={11} color="#989a9b" />
+            <button
+              type="link"
+              onClick={() => {
+                handleCopy(address);
+              }}
+              title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+            >
+              <CopyIcon size={11} color="#989a9b" />
+            </button>
           </div>
         </div>
         <div className="nickname-popover__view-on-block-explorer">
