@@ -24,45 +24,43 @@ export default {
 };
 
 function transformState(state) {
-  let newState = state;
-
   const PreferencesController = state?.PreferencesController || {};
   const preferences = PreferencesController.preferences || {};
 
-  if (!preferences.showTestNetworks) {
-    const transactions = state?.TransactionController?.transactions || {};
-    const provider = state.NetworkController?.provider || {};
-    const cachedBalances = state.CachedBalancesController?.cachedBalances || {};
-
-    const userIsCurrentlyOnATestNet = TEST_CHAINS.includes(provider?.chainId);
-    const userHasMadeATestNetTransaction = Object.values(
-      transactions,
-    ).some(({ chainId }) => TEST_CHAINS.includes(chainId));
-    const userHasACachedBalanceOnATestnet = TEST_CHAINS.some((chainId) => {
-      const cachedBalancesForChain = Object.values(
-        cachedBalances[chainId] || {},
-      );
-      const userHasABalanceGreaterThanZeroOnThisChain = cachedBalancesForChain.some(
-        hexNumberIsGreaterThanZero,
-      );
-      return userHasABalanceGreaterThanZeroOnThisChain;
-    });
-    const userHasUsedATestnet =
-      userIsCurrentlyOnATestNet ||
-      userHasMadeATestNetTransaction ||
-      userHasACachedBalanceOnATestnet;
-
-    newState = {
-      ...state,
-      PreferencesController: {
-        ...PreferencesController,
-        preferences: {
-          ...preferences,
-          showTestNetworks: userHasUsedATestnet,
-        },
-      },
-    };
+  if (preferences.showTestNetworks) {
+    return state;
   }
+
+  const transactions = state?.TransactionController?.transactions || {};
+  const provider = state.NetworkController?.provider || {};
+  const cachedBalances = state.CachedBalancesController?.cachedBalances || {};
+
+  const userIsCurrentlyOnATestNet = TEST_CHAINS.includes(provider?.chainId);
+  const userHasMadeATestNetTransaction = Object.values(
+    transactions,
+  ).some(({ chainId }) => TEST_CHAINS.includes(chainId));
+  const userHasACachedBalanceOnATestnet = TEST_CHAINS.some((chainId) => {
+    const cachedBalancesForChain = Object.values(cachedBalances[chainId] || {});
+    const userHasABalanceGreaterThanZeroOnThisChain = cachedBalancesForChain.some(
+      hexNumberIsGreaterThanZero,
+    );
+    return userHasABalanceGreaterThanZeroOnThisChain;
+  });
+  const userHasUsedATestnet =
+    userIsCurrentlyOnATestNet ||
+    userHasMadeATestNetTransaction ||
+    userHasACachedBalanceOnATestnet;
+
+  const newState = {
+    ...state,
+    PreferencesController: {
+      ...PreferencesController,
+      preferences: {
+        ...preferences,
+        showTestNetworks: userHasUsedATestnet,
+      },
+    },
+  };
 
   return newState;
 }
