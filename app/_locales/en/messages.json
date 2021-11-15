@@ -43,6 +43,9 @@
   "activityLog": {
     "message": "activity log"
   },
+  "add": {
+    "message": "Add"
+  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -99,6 +102,9 @@
   },
   "addToken": {
     "message": "Add Token"
+  },
+  "address": {
+    "message": "Address"
   },
   "addressBookIcon": {
     "message": "Address book icon"
@@ -1132,6 +1138,9 @@
   "history": {
     "message": "History"
   },
+  "id": {
+    "message": "ID"
+  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
@@ -1600,6 +1609,9 @@
   "nextNonceWarning": {
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "nftTokenIdPlaceholder": {
+    "message": "Enter the collectible ID"
   },
   "nfts": {
     "message": "NFTs"
