@@ -13,7 +13,6 @@ import {
 } from '../../helpers/constants/routes';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
-  TRANSACTION_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
@@ -21,6 +20,7 @@ import {
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
+import ActionableMessage from '../../components/ui/actionable-message';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
@@ -217,7 +217,7 @@ export default class ConfirmTransactionBase extends Component {
       balance,
       conversionRate,
       hexMaximumTransactionFee,
-      txData: { simulationFails, txParams: { value: amount } = {} } = {},
+      txData: { txParams: { value: amount } = {} } = {},
       customGas,
       noGasPrice,
       gasFeeIsCustom,
@@ -243,15 +243,6 @@ export default class ConfirmTransactionBase extends Component {
       return {
         valid: false,
         errorKey: GAS_LIMIT_TOO_LOW_ERROR_KEY,
-      };
-    }
-
-    if (simulationFails) {
-      return {
-        valid: false,
-        errorKey: simulationFails.errorKey
-          ? simulationFails.errorKey
-          : TRANSACTION_ERROR_KEY,
       };
     }
 
@@ -331,7 +322,9 @@ export default class ConfirmTransactionBase extends Component {
       return this.state.confirmAnyways ? false : !valid;
     };
 
-    const hasSimulationError = Boolean(this.props.txData.simulationFails);
+    const hasSimulationError = Boolean(txData.simulationFails);
+    const renderSimulationFailureWarning =
+      hasSimulationError && !this.state.confirmAnyways;
 
     const renderTotalMaxAmount = () => {
       if (
@@ -424,10 +417,6 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const renderGasDetailsItem = () => {
-      if (hasSimulationError && !this.state.confirmAnyways) {
-        return null;
-      }
-
       return EIP_1559_V2 ? (
         <GasDetailsItem
           key="gas_details"
@@ -562,15 +551,32 @@ export default class ConfirmTransactionBase extends Component {
       );
     };
 
+    const simulationFailureWarning = () => (
+      <div className="confirm-page-container-content__error-container">
+        <ActionableMessage
+          type="danger"
+          primaryAction={{
+            label: this.context.t('tryAnywayOption'),
+            onClick: () => this.handleConfirmAnyways(),
+          }}
+          message={this.context.t('simulationErrorMessage')}
+          roundedButtons
+        />
+      </div>
+    );
+
     return (
       <div className="confirm-page-container-content__details">
         {EIP_1559_V2 && <LowPriorityMessage />}
         <TransactionDetail
           disabled={isDisabled()}
-          onEdit={() => this.handleEditGas()}
+          onEdit={
+            renderSimulationFailureWarning ? null : () => this.handleEditGas()
+          }
           rows={[
-            renderGasDetailsItem(),
-            isMultiLayerFeeNetwork && (
+            renderSimulationFailureWarning && simulationFailureWarning(),
+            !renderSimulationFailureWarning && renderGasDetailsItem(),
+            !renderSimulationFailureWarning && isMultiLayerFeeNetwork && (
               <MultiLayerFeeMessage
                 transaction={txData}
                 layer2fee={hexMinimumTransactionFee}
@@ -937,11 +943,14 @@ export default class ConfirmTransactionBase extends Component {
       submitWarning,
       ethGasPriceWarning,
       editingGas,
+      confirmAnyways,
     } = this.state;
 
     const { name } = methodData;
     const { valid, errorKey } = this.getErrorKey();
     const hasSimulationError = Boolean(txData.simulationFails);
+    const renderSimulationFailureWarning =
+      hasSimulationError && !confirmAnyways;
     const {
       totalTx,
       positionOfCurrentTx,
@@ -955,7 +964,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.getNavigateTxData();
 
     const isDisabled = () => {
-      return this.state.confirmAnyways ? false : !valid;
+      return confirmAnyways ? false : !valid;
     };
 
     let functionType = getMethodName(name);
@@ -1003,7 +1012,8 @@ export default class ConfirmTransactionBase extends Component {
         requestsWaitingText={requestsWaitingText}
         hideConfirmAnyways={!isDisabled()}
         disabled={
-          isDisabled() ||
+          renderSimulationFailureWarning ||
+          !valid ||
           submitting ||
           hardwareWalletRequiresConnection ||
           (gasIsLoading && !gasFeeIsCustom)
@@ -1012,7 +1022,6 @@ export default class ConfirmTransactionBase extends Component {
         onCancelAll={() => this.handleCancelAll()}
         onCancel={() => this.handleCancel()}
         onSubmit={() => this.handleSubmit()}
-        onConfirmAnyways={() => this.handleConfirmAnyways()}
         hideSenderToRecipient={hideSenderToRecipient}
         origin={txData.origin}
         ethGasPriceWarning={ethGasPriceWarning}
