@@ -315,6 +315,7 @@ export const createSwapsMockStore = () => {
         },
       },
       gasLoadingAnimationIsShowing: false,
+      smartTransactionsLiveness: true,
     },
   };
 };

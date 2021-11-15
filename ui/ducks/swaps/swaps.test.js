@@ -3,11 +3,18 @@ import nock from 'nock';
 import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
 import { setStorageItem } from '../../helpers/utils/storage-helpers';
+import {
+  MAINNET_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
+  BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+} from '../../../shared/constants/network';
 import * as swaps from './swaps';
 
 jest.mock('../../store/actions.js', () => ({
   setSwapsLiveness: jest.fn(),
   setSwapsFeatureFlags: jest.fn(),
+  fetchSmartTransactionsLiveness: jest.fn(),
 }));
 
 const providerState = {
@@ -52,6 +59,20 @@ describe('Ducks - Swaps', () => {
       return apiNock.reply(200, featureFlagsResponse);
     };
 
+    const mockSmartTransactionsLivenessApiResponse = ({
+      smartTransactionsLiveness,
+      replyWithError = false,
+    } = {}) => {
+      const apiNock = nock('http://localhost:4000/networks/1').get('/health');
+      if (replyWithError) {
+        return apiNock.replyWithError({
+          message: 'Server error. Try again later',
+          code: 'serverSideError',
+        });
+      }
+      return apiNock.reply(200, smartTransactionsLiveness);
+    };
+
     const createGetState = () => {
       return () => ({
         metamask: { provider: { ...providerState } },
@@ -73,7 +94,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(2);
+      expect(mockDispatch).toHaveBeenCalledTimes(3);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -95,7 +116,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(2);
+      expect(mockDispatch).toHaveBeenCalledTimes(3);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -118,7 +139,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(2);
+      expect(mockDispatch).toHaveBeenCalledTimes(3);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -166,7 +187,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock2.isDone()).toBe(false); // Second API call wasn't made, cache was used instead.
-      expect(mockDispatch).toHaveBeenCalledTimes(4);
+      expect(mockDispatch).toHaveBeenCalledTimes(6);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -271,8 +292,9 @@ describe('Ducks - Swaps', () => {
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
-    it('returns false if feature flag is enabled, not a HW and is not EIP-1559', () => {
+    it('returns false if feature flag is enabled, not a HW and is Polygon network', () => {
       const state = createSwapsMockStore();
+      state.metamask.provider.chainId = POLYGON_CHAIN_ID;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 

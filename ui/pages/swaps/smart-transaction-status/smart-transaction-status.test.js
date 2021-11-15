@@ -12,16 +12,14 @@ import SmartTransactionStatus from '.';
 const middleware = [thunk];
 setBackgroundConnection({
   stopPollingForQuotes: jest.fn(),
+  setBackgroundSwapRouteState: jest.fn(),
 });
 
 describe('SmartTransactionStatus', () => {
   it('renders the component with initial props', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const { getByText } = renderWithProvider(<SmartTransactionStatus />, store);
-    expect(getByText('Transaction is pending')).toBeInTheDocument();
-    expect(
-      getByText('Your transaction is being processed.'),
-    ).toBeInTheDocument();
-    expect(getByText('Cancel')).toBeInTheDocument();
+    expect(getByText('Optimizing gas...')).toBeInTheDocument();
+    expect(getByText('Close')).toBeInTheDocument();
   });
 });
