@@ -505,7 +505,20 @@ function setupController(initState, initLangCode) {
         );
       controller.personalMessageManager.messages
         .filter((msg) => msg.status === 'unapproved')
-        .forEach((tx) => controller.personalMessageManager.rejectMsg(tx.id));
+        .forEach((tx) =>
+          controller.personalMessageManager.rejectMsg(
+            tx.id,
+            REJECT_NOTFICIATION_CLOSE_SIG,
+          ),
+        );
+      controller.typedMessageManager.messages
+        .filter((msg) => msg.status === 'unapproved')
+        .forEach((tx) =>
+          controller.typedMessageManager.rejectMsg(
+            tx.id,
+            REJECT_NOTFICIATION_CLOSE_SIG,
+          ),
+        );
       controller.decryptMessageManager.messages
         .filter((msg) => msg.status === 'unapproved')
         .forEach((tx) =>
@@ -522,9 +535,7 @@ function setupController(initState, initLangCode) {
             REJECT_NOTFICIATION_CLOSE,
           ),
         );
-      controller.typedMessageManager.messages
-        .filter((msg) => msg.status === 'unapproved')
-        .forEach((tx) => controller.typedMessageManager.rejectMsg(tx.id));
+
       // We're specifcally avoid using approvalController directly for better
       // Error support during rejection
       Object.keys(

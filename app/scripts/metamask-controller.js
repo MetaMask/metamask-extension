@@ -531,7 +531,11 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController,
       ),
     });
-    this.personalMessageManager = new PersonalMessageManager();
+    this.personalMessageManager = new PersonalMessageManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
     this.decryptMessageManager = new DecryptMessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
@@ -545,6 +549,9 @@ export default class MetamaskController extends EventEmitter {
     this.typedMessageManager = new TypedMessageManager({
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
+      ),
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
       ),
     });
 
