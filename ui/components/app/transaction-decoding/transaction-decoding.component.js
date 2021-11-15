@@ -116,7 +116,6 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
             );
 
           default:
-            console.log('item: %o', value);
             return (
               <pre className="sol-item solidity-raw">
                 {inspect(new Codec.Format.Utils.Inspect.ResultInspector(value))}
@@ -208,13 +207,9 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       // };
 
       // transform tx decoding arguments into tree data
-      console.log('decoding?.arguments', decoding?.arguments);
       const params = transformTxDecoding(decoding?.arguments);
-      console.log(
-        '🚀 ~ file: transaction-decoding.component.js ~ line 179 ~ params',
-        params,
-      );
       setTx(params);
+      console.log('tree data', params);
     })();
   }, [to, chainId, data]);
 
