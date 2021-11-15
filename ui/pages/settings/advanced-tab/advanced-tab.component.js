@@ -66,6 +66,7 @@ export default class AdvancedTab extends PureComponent {
   componentDidMount() {
     if (window.location.hash.match(/show-testnets/u)) {
       this.showTestNetworksRef.current.scrollIntoView({ behavior: 'smooth' });
+      this.showTestNetworksRef.current.focus();
     }
   }
 
