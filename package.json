@@ -41,7 +41,7 @@
     "test:coverage:path": "nyc --check-coverage yarn test:unit:path",
     "ganache:start": "./development/run-ganache.sh",
     "sentry:publish": "node ./development/sentry-publish.js",
-    "lint:prettier": "prettier '**/*.json' '!lavamoat/**/policy.json'",
+    "lint:prettier": "prettier '**/*.json'",
     "lint": "yarn lint:prettier --check '**/*.json' && eslint . --ext js,snap --cache && yarn lint:styles",
     "lint:fix": "yarn lint:prettier --write '**/*.json' && eslint . --ext js --cache --fix",
     "lint:changed": "{ git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep --regexp='[.]js$' | tr '\\n' '\\0' | xargs -0 eslint",
