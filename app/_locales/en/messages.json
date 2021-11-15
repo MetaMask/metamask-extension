@@ -1588,6 +1588,12 @@
   "newContract": {
     "message": "New Contract"
   },
+  "newNFTsDetected": {
+    "message": "New NFTs detected"
+  },
+  "newNFTsDetectedInfo": {
+    "message": "One or more new NFTs were detected in your wallet."
+  },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
   },
@@ -2181,6 +2187,9 @@
   },
   "selectHdPath": {
     "message": "Select HD Path"
+  },
+  "selectNFTPrivacyPreference": {
+    "message": "Select NFT privacy preference"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
