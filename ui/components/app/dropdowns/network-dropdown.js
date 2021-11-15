@@ -324,7 +324,7 @@ class NetworkDropdown extends Component {
                   onClick={(e) => {
                     e.preventDefault();
                     hideNetworkDropdown();
-                    history.push(ADVANCED_ROUTE);
+                    history.push(`${ADVANCED_ROUTE}#show-testnets`);
                   }}
                 >
                   {t('here')}
