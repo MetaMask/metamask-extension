@@ -241,7 +241,6 @@ export default class PersonalMessageManager extends EventEmitter {
    */
   rejectMsg(msgId, reason = undefined) {
     if (reason) {
-      // Personal Mmessage
       const msg = this.getMsg(msgId);
       this.metricsEvent({
         event: reason,
