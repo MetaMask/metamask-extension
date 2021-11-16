@@ -136,7 +136,9 @@ export default class SwapsController {
     if (
       !refreshRates ||
       typeof refreshRates.quotes !== 'number' ||
-      typeof refreshRates.quotesPrefetching !== 'number'
+      typeof refreshRates.quotesPrefetching !== 'number' ||
+      typeof refreshRates.stxGetTransactions !== 'number' ||
+      typeof refreshRates.stxBatchStatus !== 'number'
     ) {
       throw new Error(
         `MetaMask - invalid response for refreshRates: ${response}`,
