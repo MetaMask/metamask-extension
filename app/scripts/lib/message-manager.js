@@ -93,6 +93,10 @@ export default class MessageManager extends EventEmitter {
                 'MetaMask Message Signature: User denied message signature.',
               ),
             );
+          case 'errored':
+            return reject(
+              new Error(`MetaMask Message Signature: ${data.error}`),
+            );
           default:
             return reject(
               new Error(
@@ -231,6 +235,19 @@ export default class MessageManager extends EventEmitter {
       });
     }
     this._setMsgStatus(msgId, 'rejected');
+  }
+
+  /**
+   * Sets a Message status to 'errored' via a call to this._setMsgStatus.
+   *
+   * @param {number} msgId - The id of the Message to error
+   *
+   */
+  errorMessage(msgId, error) {
+    const msg = this.getMsg(msgId);
+    msg.error = error;
+    this._updateMsg(msg);
+    this._setMsgStatus(msgId, 'errored');
   }
 
   /**

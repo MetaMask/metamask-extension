@@ -1872,24 +1872,23 @@ export default class MetamaskController extends EventEmitter {
    * @param {Object} msgParams - The params passed to eth_call.
    * @returns {Promise<Object>} Full state update.
    */
-  signMessage(msgParams) {
+  async signMessage(msgParams) {
     log.info('MetaMaskController - signMessage');
     const msgId = msgParams.metamaskId;
-
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    return this.messageManager
-      .approveMessage(msgParams)
-      .then((cleanMsgParams) => {
-        // signs the message
-        return this.keyringController.signMessage(cleanMsgParams);
-      })
-      .then((rawSig) => {
-        // tells the listener that the message has been signed
-        // and can be returned to the dapp
-        this.messageManager.setMsgStatusSigned(msgId, rawSig);
-        return this.getState();
-      });
+    try {
+      // sets the status op the message to 'approved'
+      // and removes the metamaskId for signing
+      const cleanMsgParams = await this.messageManager.approveMessage(
+        msgParams,
+      );
+      const rawSig = await this.keyringController.signMessage(cleanMsgParams);
+      this.messageManager.setMsgStatusSigned(msgId, rawSig);
+      return this.getState();
+    } catch (error) {
+      log.info('MetaMaskController - eth_sign failed', error);
+      this.messageManager.errorMessage(msgId, error);
+      throw error;
+    }
   }
 
   /**
@@ -1936,23 +1935,27 @@ export default class MetamaskController extends EventEmitter {
    * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
    * @returns {Promise<Object>} A full state update.
    */
-  signPersonalMessage(msgParams) {
+  async signPersonalMessage(msgParams) {
     log.info('MetaMaskController - signPersonalMessage');
     const msgId = msgParams.metamaskId;
     // sets the status op the message to 'approved'
     // and removes the metamaskId for signing
-    return this.personalMessageManager
-      .approveMessage(msgParams)
-      .then((cleanMsgParams) => {
-        // signs the message
-        return this.keyringController.signPersonalMessage(cleanMsgParams);
-      })
-      .then((rawSig) => {
-        // tells the listener that the message has been signed
-        // and can be returned to the dapp
-        this.personalMessageManager.setMsgStatusSigned(msgId, rawSig);
-        return this.getState();
-      });
+    try {
+      const cleanMsgParams = await this.personalMessageManager.approveMessage(
+        msgParams,
+      );
+      const rawSig = await this.keyringController.signPersonalMessage(
+        cleanMsgParams,
+      );
+      // tells the listener that the message has been signed
+      // and can be returned to the dapp
+      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig);
+      return this.getState();
+    } catch (error) {
+      log.info('MetaMaskController - eth_personalSign failed', error);
+      this.personalMessageManager.errorMessage(msgId, error);
+      throw error;
+    }
   }
 
   /**
