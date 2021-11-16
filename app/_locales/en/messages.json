@@ -617,10 +617,6 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
-  "defaultNetwork": {
-    "message": "The default network for Ether transactions is Mainnet. You can also $1 test networks $2.",
-    "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
-  },
   "delete": {
     "message": "Delete"
   },
@@ -644,9 +640,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
-  },
-  "disable": {
-    "message": "disable"
   },
   "disconnect": {
     "message": "Disconnect"
@@ -798,9 +791,6 @@
   },
   "editPermission": {
     "message": "Edit Permission"
-  },
-  "enable": {
-    "message": "enable"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -2252,6 +2242,9 @@
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
   },
+  "showHide": {
+    "message": "Show/hide"
+  },
   "showIncomingTransactions": {
     "message": "Show Incoming Transactions"
   },
@@ -2809,6 +2802,10 @@
   "toAddress": {
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toggleTestNetworks": {
+    "message": "$1 test networks",
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
