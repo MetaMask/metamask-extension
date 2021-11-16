@@ -3,8 +3,9 @@
   &__popover-wrap {
     height: 232px;
     border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.214);
+    background: $ui-white;
+    display: flex;
+    justify-content: center;
 
     .popover-header {
       padding: 16px 16px 0 0;
@@ -12,86 +13,59 @@
 
     .popover-content {
       margin-top: -15px;
+      align-items: center;
     }
   }
 
   &__identicon {
-    width: 36px;
-    height: 36px;
-    border-radius: 32px;
-    align-items: center;
-    margin-left: 146px;
   }
 
   &__address {
-    position: absolute;
-    height: 26px;
-    left: 113px;
-    right: 114px;
-    top: 44px;
-    font-style: normal;
+    @include H4;
     font-weight: bold;
-    font-size: 18px;
-    line-height: 140.62%;
+
     display: flex;
     align-items: center;
-    color: #24292e;
+    color: $Black-100;
+    padding-top: 8px;
   }
 
   &__public-address {
+    @include H7;
+
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 5px 12px;
-    position: absolute;
-    width: 283px;
-    height: 25px;
-    left: 23px;
-    top: 77px;
-    background: #f2f3f4;
+    min-height: 25px;
+    background: $Grey-000;
     border-radius: 40px;
-    padding-top: 8px;
-    padding-bottom: 8px;
+    padding-left: 8px;
+    padding-right: 2px;
+    margin-top: 8px;
 
-    &__contant {
-      position: static;
-      left: 12px;
-      right: 31px;
-      top: 20%;
-      bottom: 20%;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 10px;
-      line-height: 140.62%;
-      display: flex;
-      align-items: center;
-      color: #4a4a4a;
+    button {
+      background: none;
+    }
+
+    &__constant {
+      @include H8;
+
+      color: $Grey-500;
     }
   }
 
   &__view-on-block-explorer {
-    position: absolute;
-    width: 128px;
-    height: 17px;
-    left: 100px;
-    top: 110px;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 12px;
-    line-height: 140.62%;
-    display: flex;
-    align-items: center;
-    color: #037dd6;
+    @include H7;
+
+    color: $Blue-500;
+    margin-top: 12px;
   }
 
-  &__div-button {
-    margin: 105px 88px 0 88px;
-  }
-
-  &__button {
+  &__footer-button {
+    margin-top: 16px;
     width: 152px;
     height: 40px;
     border-radius: 100px;
-    background: #037dd6;
+    background: $primary-1;
   }
 }
