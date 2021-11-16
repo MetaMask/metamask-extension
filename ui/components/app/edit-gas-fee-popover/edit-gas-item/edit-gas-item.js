@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
-import { GasLevelIconMap } from '../../../../helpers/constants/gas';
+import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import {
   decGWEIToHexWEI,
@@ -44,14 +44,14 @@ const EditGasItem = ({ estimateType, onClose }) => {
   return (
     <div
       className={classNames('edit-gas-item', {
-        [`edit-gas-item-selected`]: estimateType === estimateUsed,
+        'edit-gas-item--selected': estimateType === estimateUsed,
       })}
       role="button"
       onClick={onOptionSelect}
     >
       <span className="edit-gas-item__name">
         <span className="edit-gas-item__icon">
-          {GasLevelIconMap[estimateType]}
+          {PRIORITY_LEVEL_ICON_MAP[estimateType]}
         </span>
         <I18nValue messageKey={estimateType} />
       </span>

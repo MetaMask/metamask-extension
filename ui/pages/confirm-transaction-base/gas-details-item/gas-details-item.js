@@ -96,7 +96,7 @@ const GasDetailsItem = ({
           key="editGasSubTextFeeLabel"
           display="inline-flex"
           className={classNames('gas-details-item__gasfee-label', {
-            [`gas-details-item__gas-fee-warning`]: estimateUsed === 'high',
+            'gas-details-item__gas-fee-warning': estimateUsed === 'high',
           })}
         >
           <Box marginRight={1}>
