@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
+import { text } from '@storybook/addon-knobs';
 import Button from '../button';
 import NicknamePopover from '.';
 
@@ -18,7 +19,10 @@ export const Default = () => {
       </Button>
       {showNicknamePopover && (
         <NicknamePopover
-          address="0x5e6DaAD1BE117e26590F9eEcD509336ABFBe5966"
+          address={text(
+            'Address',
+            '0x5e6DaAD1BE117e26590F9eEcD509336ABFBe5966',
+          )}
           onClose={() => setShowNicknamePopover(false)}
           onAdd={action('add NicknamePopover')}
         />
