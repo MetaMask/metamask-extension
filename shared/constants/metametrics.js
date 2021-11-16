@@ -140,3 +140,7 @@ export const METAMETRICS_BACKGROUND_PAGE_OBJECT = {
  * @property {() => void} identify - Identify an anonymous user. We do not
  *  currently use this method.
  */
+
+export const REJECT_NOTFICIATION_CLOSE = 'Cancel Via Notification Close';
+export const REJECT_NOTFICIATION_CLOSE_SIG =
+  'Cancel Sig Request Via Notification Close';

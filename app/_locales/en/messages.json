@@ -43,6 +43,9 @@
   "activityLog": {
     "message": "activity log"
   },
+  "add": {
+    "message": "Add"
+  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -99,6 +102,9 @@
   },
   "addToken": {
     "message": "Add Token"
+  },
+  "address": {
+    "message": "Address"
   },
   "addressBookIcon": {
     "message": "Address book icon"
@@ -167,6 +173,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approvalAndAggregatorTxFeeCost": {
     "message": "Approval and aggregator network fee"
   },
@@ -187,7 +201,7 @@
     "message": "Approved"
   },
   "approvedAmountWithColon": {
-    "message": "Approved Amount:"
+    "message": "Approved amount:"
   },
   "asset": {
     "message": "Asset"
@@ -1091,7 +1105,7 @@
     "message": "Goerli Test Network"
   },
   "grantedToWithColon": {
-    "message": "Granted To:"
+    "message": "Granted to:"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -1140,6 +1154,9 @@
   },
   "history": {
     "message": "History"
+  },
+  "id": {
+    "message": "ID"
   },
   "import": {
     "message": "Import",
@@ -1613,6 +1630,9 @@
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nftTokenIdPlaceholder": {
+    "message": "Enter the collectible ID"
+  },
   "nfts": {
     "message": "NFTs"
   },
@@ -1870,7 +1890,7 @@
     "message": "You have approved this permission"
   },
   "permissionRequest": {
-    "message": "Permission Request"
+    "message": "Permission request"
   },
   "permissionUncheckedIconDescription": {
     "message": "You have not approved this permission"
@@ -2964,7 +2984,7 @@
     "message": "Transaction encountered an error."
   },
   "transactionFee": {
-    "message": "Transaction Fee"
+    "message": "Transaction fee"
   },
   "transactionHistoryBaseFee": {
     "message": "Base Fee (GWEI)"

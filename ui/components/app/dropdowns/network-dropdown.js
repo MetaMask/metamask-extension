@@ -324,7 +324,7 @@ class NetworkDropdown extends Component {
                   onClick={(e) => {
                     e.preventDefault();
                     hideNetworkDropdown();
-                    history.push(ADVANCED_ROUTE);
+                    history.push(`${ADVANCED_ROUTE}#show-testnets`);
                   }}
                 >
                   {t('here')}
@@ -338,20 +338,23 @@ class NetworkDropdown extends Component {
             </div>
           ) : null}
         </div>
-        {this.renderNetworkEntry('mainnet')}
 
-        {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
+        <div className="network-dropdown-list">
+          {this.renderNetworkEntry('mainnet')}
 
-        <div
-          className={classnames('network-dropdown-testnets', {
-            'network-dropdown-testnets--no-visibility': !shouldShowTestNetworks,
-          })}
-        >
-          {this.renderNetworkEntry('ropsten')}
-          {this.renderNetworkEntry('kovan')}
-          {this.renderNetworkEntry('rinkeby')}
-          {this.renderNetworkEntry('goerli')}
-          {this.renderNetworkEntry('localhost')}
+          {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
+
+          <div
+            className={classnames('network-dropdown-testnets', {
+              'network-dropdown-testnets--no-visibility': !shouldShowTestNetworks,
+            })}
+          >
+            {this.renderNetworkEntry('ropsten')}
+            {this.renderNetworkEntry('kovan')}
+            {this.renderNetworkEntry('rinkeby')}
+            {this.renderNetworkEntry('goerli')}
+            {this.renderNetworkEntry('localhost')}
+          </div>
         </div>
 
         {this.renderAddCustomButton()}

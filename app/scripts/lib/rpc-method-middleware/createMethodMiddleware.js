@@ -4,7 +4,7 @@ import handlers from './handlers';
 
 const handlerMap = handlers.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
-    map.set(methodName, handler.implementation);
+    map.set(methodName, handler);
   }
   return map;
 }, new Map());
@@ -23,7 +23,6 @@ const handlerMap = handlers.reduce((map, handler) => {
  * Eventually, we'll want to extract this middleware into its own package.
  *
  * @param {Object} opts - The middleware options
- * @param {Function} opts.sendMetrics - A function for sending a metrics event
  * @returns {(req: Object, res: Object, next: Function, end: Function) => void}
  */
 export default function createMethodMiddleware(opts) {
@@ -33,9 +32,32 @@ export default function createMethodMiddleware(opts) {
       return end(ethErrors.rpc.methodNotSupported());
     }
 
-    if (handlerMap.has(req.method)) {
-      return handlerMap.get(req.method)(req, res, next, end, opts);
+    const handler = handlerMap.get(req.method);
+    if (handler) {
+      const { implementation, hookNames } = handler;
+      return implementation(req, res, next, end, selectHooks(opts, hookNames));
     }
+
     return next();
   };
+}
+
+/**
+ * Returns the subset of the specified `hooks` that are included in the
+ * `hookNames` object. This is a Principle of Least Authority (POLA) measure
+ * to ensure that each RPC method implementation only has access to the
+ * API "hooks" it needs to do its job.
+ *
+ * @param {Record<string, unknown>} hooks - The hooks to select from.
+ * @param {Record<string, true>} hookNames - The names of the hooks to select.
+ * @returns {Record<string, unknown> | undefined} The selected hooks.
+ */
+function selectHooks(hooks, hookNames) {
+  if (hookNames) {
+    return Object.keys(hookNames).reduce((hookSubset, hookName) => {
+      hookSubset[hookName] = hooks[hookName];
+      return hookSubset;
+    }, {});
+  }
+  return undefined;
 }
