@@ -1611,7 +1611,7 @@
     "description": "The next nonce according to MetaMask's internal logic"
   },
   "nftTokenIdPlaceholder": {
-    "message": "输入收藏品 ID"
+    "message": "输入藏品 ID"
   },
   "nfts": {
     "message": "NFT"
