@@ -45,6 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - [#12513](https://github.com/MetaMask/metamask-extension/pull/12513): Fix "Unavailable on this network" tooltip showing on Swaps button when Swaps is enabled for the current network.
 - [#12511](https://github.com/MetaMask/metamask-extension/pull/12511): Fix issue where approval confirmation says "Unlimited" though limited funds were specified
+
 ## [10.5.2]
 ### Fixed
 - [#12685](https://github.com/MetaMask/metamask-extension/pull/12685): Fix Ledger WebHID issue preventing confirmation of token approvals
@@ -2594,8 +2595,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...HEAD
-[10.6.0]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...v10.6.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.5.2...HEAD
+[10.6.0]: https://github.com/MetaMask/metamask-extension/compare/v10.5.2...v10.6.0
 [10.5.2]: https://github.com/MetaMask/metamask-extension/compare/v10.5.1...v10.5.2
 [10.5.1]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...v10.5.1
 [10.5.0]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...v10.5.0
