@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Popover from '../popover';
@@ -18,6 +18,17 @@ export default function UpdateNicknamePopover({
 }) {
   const t = useContext(I18nContext);
 
+  const [nicknameInput, setNicknameInput] = useState(nickname);
+  const [memoInput, setMemoInput] = useState(memo);
+
+  const handleNicknameChange = (event) => {
+    setNicknameInput(event.target.value);
+  };
+
+  const handleMemoChange = (event) => {
+    setMemoInput(event.target.value);
+  };
+
   const closePopover = useCallback(() => {
     onClose();
   }, [onClose]);
@@ -26,10 +37,10 @@ export default function UpdateNicknamePopover({
     onClose();
   };
 
-  const onSubmit = useCallback(() => {
-    onAdd(address);
+  const onSubmit = () => {
+    onAdd(address, nicknameInput, memoInput);
     onClose();
-  }, [address, onClose, onAdd]);
+  };
 
   let title = t('addANickname');
   if (nickname) {
@@ -56,10 +67,7 @@ export default function UpdateNicknamePopover({
         </>
       }
     >
-      <div
-        className="update-nickname__content"
-        style={{ padding: '0 20px 20px 20px', position: 'relative' }}
-      >
+      <div className="update-nickname__content">
         <Identicon
           className="update-nickname__content__indenticon"
           address={address}
@@ -74,7 +82,8 @@ export default function UpdateNicknamePopover({
         </div>
         <TextField
           className="update-nickname__content__text-field"
-          value={nickname}
+          value={nicknameInput}
+          onChange={handleNicknameChange}
           placeholder={t('addANickname')}
           fullWidth
         />
@@ -84,7 +93,8 @@ export default function UpdateNicknamePopover({
         <TextField
           type="text"
           id="memo"
-          value={memo}
+          value={memoInput}
+          onChange={handleMemoChange}
           placeholder={t('addMemo')}
           fullWidth
           margin="dense"

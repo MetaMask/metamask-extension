@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
+import { text } from '@storybook/addon-knobs';
 import Button from '../button';
 import UpdateNicknamePopover from '.';
 
@@ -17,7 +18,7 @@ export const AddNickname = () => {
       </Button>
       {showPopover && (
         <UpdateNicknamePopover
-          address="0x0011244f50ff4"
+          address={text('address', '0x0011244f50ff4')}
           onClose={() => action(`Close Update Nickname Popover`)()}
         />
       )}
@@ -34,8 +35,8 @@ export const UpdateNickname = () => {
       </Button>
       {showPopover && (
         <UpdateNicknamePopover
-          address="0x0011244f50ff4"
-          nickname="user_nickname"
+          address={text('address', '0x0011244f50ff4')}
+          nickname={text('nickname', 'user_nickname')}
           onClose={() => action(`Close Update Nickname Popover`)()}
         />
       )}
