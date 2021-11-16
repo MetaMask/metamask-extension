@@ -119,6 +119,7 @@ export default function FormField({
 
 FormField.propTypes = {
   dataTestId: PropTypes.string,
+  titleFontSize: PropTypes.string,
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   titleUnit: PropTypes.string,
   tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
@@ -137,6 +138,7 @@ FormField.propTypes = {
 };
 
 FormField.defaultProps = {
+  titleFontSize: '',
   titleText: '',
   titleUnit: '',
   tooltipText: '',
@@ -151,5 +153,5 @@ FormField.defaultProps = {
   allowDecimals: true,
   disabled: false,
   bottomBorder: false,
-  // inputDetails: '',
+  inputDetails: '',
 };

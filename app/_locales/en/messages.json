@@ -263,6 +263,14 @@
   "balanceOutdated": {
     "message": "Balance may be outdated"
   },
+  "baseFeeFiatFromGwei": {
+    "message": "$1 GWEI $2",
+    "description": "$1 is the base fee in GWEI and $2 is the fist value of the same or a message saying >=$0.01"
+  },
+  "baseFeeFiatFromMultiplier": {
+    "message": "$1x $2",
+    "description": "$1 is the base fee in GWEI and $2 is the fist value of the same or a message saying >=$0.01"
+  },
   "basic": {
     "message": "Basic"
   },
@@ -979,6 +987,13 @@
   "fiat": {
     "message": "Fiat",
     "description": "Exchange type"
+  },
+  "fiatApproxValueShown": {
+    "message": "≈ $1",
+    "description": "$1 will take the base fee in fiat when the value is greated than $0.01"
+  },
+  "fiatValueLowerThanDecimalsShown": {
+    "message": "<= $0.01"
   },
   "fileImportFail": {
     "message": "File import not working? Click here!",

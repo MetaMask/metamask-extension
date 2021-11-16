@@ -42,7 +42,7 @@ import { conversionUtil } from '../../shared/modules/conversion.utils';
  */
 export function useCurrencyDisplay(
   inputValue,
-  { displayValue, prefix, numberOfDecimals, denomination, currency, from, ...opts },
+  { displayValue, prefix, numberOfDecimals, denomination, currency, ...opts },
 ) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -73,7 +73,6 @@ export function useCurrencyDisplay(
           conversionRate,
           numberOfDecimals: numberOfDecimals || 2,
           toDenomination: denomination,
-          from: from,
         }),
         currency,
       );

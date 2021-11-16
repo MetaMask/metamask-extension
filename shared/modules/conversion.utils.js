@@ -149,13 +149,11 @@ const conversionUtil = (
     numberOfDecimals,
     conversionRate,
     invertConversionRate,
-    from='',
   },
 ) => {
   if (fromCurrency !== toCurrency && !conversionRate) {
     return 0;
   }
-  from==='advancedgaspopover'?console.log(`${from} value: ${value}`):null;
   return converter({
     fromCurrency,
     toCurrency,

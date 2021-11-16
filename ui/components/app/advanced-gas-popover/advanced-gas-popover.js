@@ -5,11 +5,21 @@ import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import { useGasFeeContext } from '../../../contexts/gasFee';
-import { decGWEIToHexWEI, hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
+import {
+  decGWEIToHexWEI,
+  hexWEIToDecGWEI,
+} from '../../../helpers/utils/conversions.util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { COLORS, FONT_WEIGHT, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import {
+  COLORS,
+  FONT_WEIGHT,
+  TYPOGRAPHY,
+} from '../../../helpers/constants/design-system';
 import Typography from '../../ui/typography';
-import { divideCurrencies, multiplyCurrencies } from '../../../../shared/modules/conversion.utils';
+import {
+  divideCurrencies,
+  multiplyCurrencies,
+} from '../../../../shared/modules/conversion.utils';
 import { SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -18,29 +28,69 @@ const AdvancedGasPopover = ({ onClose }) => {
   const t = useI18nContext();
   const {
     maxPriorityFeePerGas,
-    maxPriorityFeePerGasFiat,
     maxFeePerGas,
     estimatedBaseFee,
+    onManualChange,
   } = useGasFeeContext();
 
-  const estimatedBaseFeeInDecGWEI = hexWEIToDecGWEI(estimatedBaseFee);
-  const baseFeeMultiplier = divideCurrencies(decGWEIToHexWEI(maxFeePerGas), estimatedBaseFee, {numberOfDecimals: 2, dividendBase: 16, divisorBase:16, toNumericBase: 'dec'})
+  const [editingInGwei, setEditingInGwei] = useState(false);
+  const [priorityFee, setPriorityFee] = useState(maxPriorityFeePerGas);
+
+  const estimatedBaseFeeInDecGWEI = hexWEIToDecGWEI(estimatedBaseFee, {
+    numberOfDecimals: 6,
+  });
+  const baseFeeMultiplier = divideCurrencies(
+    decGWEIToHexWEI(maxFeePerGas),
+    estimatedBaseFee,
+    {
+      numberOfDecimals: 6,
+      dividendBase: 16,
+      divisorBase: 16,
+      toNumericBase: 'dec',
+    },
+  );
   const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(
     baseFeeMultiplier,
   );
-  const baseFee = multiplyCurrencies(estimatedBaseFee, maxBaseFeeMultiplier,{
-    numberOfDecimals: 2, multiplicandBase: 16, multiplierBase:10, toNumericBase: 'dec',
+  const baseFee = multiplyCurrencies(estimatedBaseFee, maxBaseFeeMultiplier, {
+    numberOfDecimals: 6,
+    multiplicandBase: 16,
+    multiplierBase: 10,
+    toNumericBase: 'dec',
     fromDenomination: 'WEI',
     toDenomination: 'GWEI',
   });
 
-  const [priorityFee, setPriorityFee] = useState(maxPriorityFeePerGas);
-  const [editingInGwei, setEditingInGwei] = useState(false);
-
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
-  console.log('from popover: ', baseFee, decGWEIToHexWEI(baseFee));
-  const [, {value: baseFeeInFiat}] = useCurrencyDisplay(decGWEIToHexWEI(baseFee),{currency, numberOfDecimals, from:'advancedgaspopover'});
-  console.log(baseFeeInFiat)
+  const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
+    decGWEIToHexWEI(baseFee),
+    { currency, numberOfDecimals },
+  );
+  const [, { value: priorityFeeInFiat }] = useCurrencyDisplay(
+    decGWEIToHexWEI(priorityFee),
+    { currency, numberOfDecimals },
+  );
+  const baseFeeFiatMessage =
+    parseFloat(baseFeeInFiat.split('$')[1]) >= 0.01
+      ? t('fiatApproxValueShown', [baseFeeInFiat])
+      : t('fiatValueLowerThanDecimalsShown');
+  const priorityFeeFiatMessage =
+    parseFloat(priorityFeeInFiat.split('$')[1]) >= 0.01
+      ? t('fiatApproxValueShown', [priorityFeeInFiat])
+      : t('fiatValueLowerThanDecimalsShown');
+  const setBaseFee = (value) => {
+    let baseFeeMul = value;
+    if (editingInGwei) {
+      baseFeeMul = divideCurrencies(decGWEIToHexWEI(value), estimatedBaseFee, {
+        numberOfDecimals: 6,
+        dividendBase: 16,
+        divisorBase: 16,
+        toNumericBase: 'dec',
+      });
+    }
+    console.log(baseFeeMul);
+    setMaxBaseFeeMultiplier(baseFeeMul);
+  };
   return (
     <Popover
       headerClassName="advanced-gas-popover__header-border"
@@ -48,9 +98,12 @@ const AdvancedGasPopover = ({ onClose }) => {
       onBack={() => onClose()}
       onClose={() => onClose()}
     >
-      <Box className="advanced-gas-popover" margin={4} >
+      <Box className="advanced-gas-popover" margin={4}>
         <FormField
-          onChange={(value) => setMaxBaseFeeMultiplier(value)}
+          onChange={(value) => {
+            onManualChange?.();
+            setBaseFee(value);
+          }}
           titleFontSize={TYPOGRAPHY.H7}
           titleText={t('maxBaseFee')}
           titleUnit={
@@ -59,99 +112,132 @@ const AdvancedGasPopover = ({ onClose }) => {
           tooltipText={t('advancedBaseGasFeeToolTip')}
           titleDetail={
             editingInGwei ? (
-              <Button className="advanced-gas-popover__edit-link" type="link" onClick={() => setEditingInGwei(false)}>{t('editInMultiplier')}</Button>
+              <Button
+                className="advanced-gas-popover__edit-link"
+                type="link"
+                onClick={() => setEditingInGwei(false)}
+              >
+                {t('editInMultiplier')}
+              </Button>
             ) : (
-              <Button className="advanced-gas-popover__edit-link" type="link" onClick={() => setEditingInGwei(true)}>{t('editInGwei')}</Button>
+              <Button
+                className="advanced-gas-popover__edit-link"
+                type="link"
+                onClick={() => setEditingInGwei(true)}
+              >
+                {t('editInGwei')}
+              </Button>
             )
           }
           value={editingInGwei ? baseFee : maxBaseFeeMultiplier}
-          detailText={editingInGwei ? `${maxBaseFeeMultiplier}x ≈ ${baseFeeInFiat}` :`${baseFee} GWEI ≈ ${baseFeeInFiat}`}
+          detailText={
+            editingInGwei
+              ? t('baseFeeFiatFromMultiplier', [
+                  maxBaseFeeMultiplier,
+                  baseFeeFiatMessage,
+                ])
+              : t('baseFeeFiatFromGwei', [baseFee, baseFeeFiatMessage])
+          }
           numeric
           bottomBorder
-          inputDetails= {
+          inputDetails={
             <Box className="advanced-gas-popover__input-subtext">
               <Box className="advanced-gas-popover__input-subtext">
-                <Typography 
-                  tag={TYPOGRAPHY.H7} 
-                  variant={TYPOGRAPHY.H7} 
+                <Typography
+                  tag={TYPOGRAPHY.H8}
+                  variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  {`current:`}
+                  Current:
                 </Typography>
-                <Typography 
-                  tag={TYPOGRAPHY.H7} 
-                  variant={TYPOGRAPHY.H7} 
+                <Typography
+                  tag={TYPOGRAPHY.H8}
+                  variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                 >
                   {`${estimatedBaseFeeInDecGWEI} GWEI`}
-                  <img height="18" src="./images/right-up-arrow-green.svg" alt="" />
+                  <img
+                    height="10"
+                    width="10"
+                    src="./images/high-arrow.svg"
+                    alt=""
+                  />
                 </Typography>
               </Box>
               <Box className="advanced-gas-popover__input-subtext">
-                <Typography 
-                  tag={TYPOGRAPHY.H7} 
-                  variant={TYPOGRAPHY.H7} 
+                <Typography
+                  tag={TYPOGRAPHY.H8}
+                  variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  {`12hr:`}
+                  12hr:
                 </Typography>
-                <Typography 
-                  tag={TYPOGRAPHY.H7} 
-                  variant={TYPOGRAPHY.H7} 
+                <Typography
+                  tag={TYPOGRAPHY.H8}
+                  variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                 >
-                  {`23-359 GWEI`}
+                  23-359 GWEI
                 </Typography>
               </Box>
             </Box>
           }
         />
         <FormField
-          onChange={(value) => setPriorityFee(value)}
+          onChange={(value) => {
+            onManualChange?.();
+            setPriorityFee(value);
+          }}
           titleFontSize={TYPOGRAPHY.H7}
           titleText={t('priorityFee')}
           titleUnit={t('gweiInParanthesis')}
           tooltipText={t('advancedPriorityFeeToolTip')}
           value={priorityFee}
-          detailText={`≈ ${maxPriorityFeePerGasFiat}`}
+          detailText={priorityFeeFiatMessage}
           numeric
           bottomBorder
-          inputDetails= {
+          inputDetails={
             <Box className="advanced-gas-popover__input-subtext">
               <Box className="advanced-gas-popover__input-subtext">
-                <Typography 
-                  tag={TYPOGRAPHY.H7} 
-                  variant={TYPOGRAPHY.H7} 
+                <Typography
+                  tag={TYPOGRAPHY.H8}
+                  variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  {`current:`}
+                  Current:
                 </Typography>
-                <Typography 
-                  tag={TYPOGRAPHY.H7} 
-                  variant={TYPOGRAPHY.H7} 
+                <Typography
+                  tag={TYPOGRAPHY.H8}
+                  variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                 >
-                  {`${estimatedBaseFeeInDecGWEI} GWEI`}
+                  1-18 GWEI
+                  <img
+                    height="10"
+                    width="10"
+                    src="./images/low-arrow.svg"
+                    alt=""
+                  />
                 </Typography>
               </Box>
               <Box className="advanced-gas-popover__input-subtext">
-                <Typography 
-                  tag={TYPOGRAPHY.H7} 
-                  variant={TYPOGRAPHY.H7} 
+                <Typography
+                  tag={TYPOGRAPHY.H8}
+                  variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  {`12hr:`}
+                  12hr:
                 </Typography>
-                <Typography 
-                  tag={TYPOGRAPHY.H7} 
-                  variant={TYPOGRAPHY.H7} 
+                <Typography
+                  tag={TYPOGRAPHY.H8}
+                  variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                 >
-                  {`23-359 GWEI`}
+                  0.1-127 GWEI
                 </Typography>
               </Box>
             </Box>

@@ -35,7 +35,7 @@ const Popover = ({
       >
         {showArrow ? <div className="popover-arrow" /> : null}
         {showHeader && (
-          <header className={classnames("popover-header", headerClassName)}>
+          <header className={classnames('popover-header', headerClassName)}>
             <div
               className={classnames(
                 'popover-header__title',
