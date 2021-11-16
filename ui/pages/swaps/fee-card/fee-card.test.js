@@ -134,4 +134,26 @@ describe('FeeCard', () => {
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
   });
+
+  it('renders the component with Smart Transactions enabled and user opted in', () => {
+    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const props = createProps({
+      smartTransactionsOptInStatus: true,
+      smartTransactionsEnabled: true,
+      maxPriorityFeePerGasDecGWEI: '3',
+      maxFeePerGasDecGWEI: '4',
+    });
+    const { getByText, queryByTestId, queryByText } = renderWithProvider(
+      <FeeCard {...props} />,
+      store,
+    );
+    expect(getByText('Using the best quote')).toBeInTheDocument();
+    expect(getByText('6 quotes')).toBeInTheDocument();
+    expect(getByText('Estimated network fee')).toBeInTheDocument();
+    expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
+    expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
+    expect(getByText(props.secondaryFee.maxFee)).toBeInTheDocument();
+    expect(queryByTestId('fee-card__edit-link')).not.toBeInTheDocument();
+    expect(queryByText('Maybe in 5 minutes')).not.toBeInTheDocument();
+  });
 });

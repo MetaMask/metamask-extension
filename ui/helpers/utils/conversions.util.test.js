@@ -39,4 +39,10 @@ describe('conversion utils', () => {
       expect(weiValue).toStrictEqual('1000000000000000000');
     });
   });
+
+  describe('decWEIToHexWEI', () => {
+    it('should correctly convert 1000 dec WEI to hex WEI', () => {
+      expect(utils.decWEIToHexWEI('1000')).toStrictEqual('3E8');
+    });
+  });
 });

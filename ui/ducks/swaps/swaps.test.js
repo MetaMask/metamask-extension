@@ -326,4 +326,44 @@ describe('Ducks - Swaps', () => {
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
   });
+
+  describe('getSmartTransactionsOptInStatus', () => {
+    it('returns STX opt in status', () => {
+      const state = createSwapsMockStore();
+      expect(swaps.getSmartTransactionsOptInStatus(state)).toBe(true);
+    });
+  });
+
+  describe('getCurrentSmartTransactions', () => {
+    it('returns current smart transactions', () => {
+      const state = createSwapsMockStore();
+      expect(swaps.getCurrentSmartTransactions(state)).toMatchObject(
+        state.metamask.smartTransactionsState.smartTransactions[
+          MAINNET_CHAIN_ID
+        ],
+      );
+    });
+  });
+
+  describe('getPendingSmartTransactions', () => {
+    it('returns pending smart transactions', () => {
+      const state = createSwapsMockStore();
+      const pendingSmartTransactions = swaps.getPendingSmartTransactions(state);
+      expect(pendingSmartTransactions).toHaveLength(1);
+      expect(pendingSmartTransactions[0].uuid).toBe('uuid2');
+      expect(pendingSmartTransactions[0].status).toBe('pending');
+    });
+  });
+
+  describe('getUnsignedTransactionsAndEstimates', () => {
+    it('returns unsigned transactions and estimates', () => {
+      const state = createSwapsMockStore();
+      const unsignedTransactionsAndEstimates = swaps.getUnsignedTransactionsAndEstimates(
+        state,
+      );
+      expect(unsignedTransactionsAndEstimates).toMatchObject(
+        state.appState.unsignedTransactionsAndEstimates,
+      );
+    });
+  });
 });

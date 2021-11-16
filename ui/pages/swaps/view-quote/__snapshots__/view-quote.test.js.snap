@@ -236,7 +236,7 @@ exports[`ViewQuote renders the component with initial props 4`] = `
     <div
       class="fee-card__row-header-secondary--bold"
     >
-      0 ETH
+      0.00004 ETH
     </div>
     <div
       class="fee-card__row-header-primary--bold"

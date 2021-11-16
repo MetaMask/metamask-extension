@@ -170,6 +170,7 @@ export default function FeeCard({
                         !smartTransactionsOptInStatus) && (
                         <span
                           className="fee-card__edit-link"
+                          data-testid="fee-card__edit-link"
                           onClick={() => onFeeCardMaxRowClick()}
                         >
                           {t('edit')}

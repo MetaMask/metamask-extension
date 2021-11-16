@@ -93,7 +93,7 @@ describe('ViewQuote', () => {
       getByTestId('fee-card__savings-and-quotes-header'),
     ).toMatchSnapshot();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
-    expect(getByText('0.01044 ETH')).toBeInTheDocument();
+    expect(getByText('0.00004 ETH')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
     expect(getByText('Back')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();

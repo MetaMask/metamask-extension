@@ -36,6 +36,8 @@ import {
   getSwapsLivenessForNetwork,
   countDecimals,
   shouldEnableDirectWrapping,
+  showRemainingTimeInMinAndSec,
+  getEstimatedFeeForSmartTransaction,
 } from './swaps.util';
 
 jest.mock('../../helpers/utils/storage-helpers.js', () => ({
@@ -518,6 +520,27 @@ describe('Swaps Util', () => {
       expect(
         shouldEnableDirectWrapping(MAINNET_CHAIN_ID, WETH_CONTRACT_ADDRESS),
       ).toBe(false);
+    });
+  });
+
+  describe('showRemainingTimeInMinAndSec', () => {
+    it('returns 0:00 if we do not pass an integer', () => {
+      expect(showRemainingTimeInMinAndSec('5')).toBe('0:00');
+    });
+
+    it('returns 0:05 if 5 seconds are remaining', () => {
+      expect(showRemainingTimeInMinAndSec(5)).toBe('0:05');
+    });
+
+    it('returns 2:59', () => {
+      expect(showRemainingTimeInMinAndSec(179)).toBe('2:59');
+    });
+  });
+
+  describe('getEstimatedFeeForSmartTransaction', () => {
+    it('returns estimated for for STX', () => {
+      // TODO: Implement tests for this function.
+      expect(true).toBe(true);
     });
   });
 });
