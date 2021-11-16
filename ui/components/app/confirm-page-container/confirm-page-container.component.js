@@ -23,6 +23,7 @@ import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
+import HardwareConnectivityPopover from '../../../pages/confirm-transaction-base/hardware-connectivity/hardware-connectivity-popover';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -97,6 +98,9 @@ export default class ConfirmPageContainer extends Component {
     nativeCurrency: PropTypes.string,
     showBuyModal: PropTypes.func,
     isBuyableChain: PropTypes.bool,
+    // Hardware
+    showingHardwareConnectionContents: PropTypes.bool,
+    showingHardwareConnectionAdvancedPopover: PropTypes.bool,
   };
 
   render() {
@@ -153,6 +157,8 @@ export default class ConfirmPageContainer extends Component {
       showBuyModal,
       isBuyableChain,
       networkIdentifier,
+      showingHardwareConnectionContents,
+      showingHardwareConnectionAdvancedPopover,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -170,6 +176,10 @@ export default class ConfirmPageContainer extends Component {
       NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
 
     const { t } = this.context;
+    /* ToDo:  We need this method from elevated component */
+    const onHardwareConnectivityClose = () => {
+      console.log('Closing hardware connectivity');
+    };
 
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
@@ -261,6 +271,9 @@ export default class ConfirmPageContainer extends Component {
               toAddress={toAddress}
               transactionType={currentTransaction.type}
               isBuyableChain={isBuyableChain}
+              showingHardwareConnectionContents={
+                showingHardwareConnectionContents
+              }
             />
           )}
           {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
@@ -330,6 +343,11 @@ export default class ConfirmPageContainer extends Component {
               <AdvancedGasFeePopover />
             </>
           )}
+          {showingHardwareConnectionAdvancedPopover ? (
+            <HardwareConnectivityPopover
+              onClose={onHardwareConnectivityClose}
+            />
+          ) : null}
         </div>
       </GasFeeContextProvider>
     );

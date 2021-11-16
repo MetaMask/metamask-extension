@@ -1419,6 +1419,30 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
+  "hardwareWalletConnectivityAdvancedMethodSelect": {
+    "message": "Select Connection Method"
+  },
+  "hardwareWalletConnectivityAdvancedMethodSelectDescription": {
+    "message": "Pick your prefered connection method. MetaMask will use the best available."
+  },
+  "hardwareWalletConnectivityAdvancedPathDescription": {
+    "message": "Change the Ledger path to view other accounts. Try switching to “Legacy (MEW / My Crypto)”"
+  },
+  "hardwareWalletConnectivityConnected": {
+    "message": "$1 is ready",
+    "description": "$1 represents the name of the device"
+  },
+  "hardwareWalletConnectivityHelperHeading": {
+    "message": "Connect your $1",
+    "description": "$1 represents the name of the device"
+  },
+  "hardwareWalletConnectivityNotConnected": {
+    "message": "$1 is not connected.",
+    "description": "$1 represents the name of the device"
+  },
+  "hardwareWalletConnectivityNotConnectedConversion": {
+    "message": "Click to connect"
+  },
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
