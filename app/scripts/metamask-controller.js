@@ -1854,7 +1854,8 @@ export default class MetamaskController extends EventEmitter {
     let promise;
     // 64 hex + "0x" at the beginning
     // This is needed because Ethereum's EcSign works only on 32 byte numbers
-    if (data.length === 66) {
+    // For 67 length see: https://github.com/MetaMask/metamask-extension/pull/12679/files#r749479607
+    if (data.length === 66 || data.length == 67) {
       promise = this.messageManager.addUnapprovedMessageAsync(msgParams, req);
       this.sendUpdate();
       this.opts.showUserConfirmation();
