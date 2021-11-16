@@ -109,6 +109,10 @@
       i {
         font-size: $font-size-h8;
       }
+
+      &--hidden {
+        display: none;
+      }
     }
 
     &__input-arrows--error {
