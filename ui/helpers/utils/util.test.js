@@ -301,4 +301,31 @@ describe('util', () => {
       });
     });
   });
+
+  describe('toHumanReadableTime()', () => {
+    const t = (key, number) => {
+      switch (key) {
+        case 'gasTimingSecondsShort':
+          return `${number} sec`;
+        case 'gasTimingMinutesShort':
+          return `${number} min`;
+        case 'gasTimingHoursShort':
+          return `${number} hrs`;
+        default:
+          return '';
+      }
+    };
+    it('should return empty string if milliseconds passed is undefined', () => {
+      expect(util.toHumanReadableTime(t)).toStrictEqual('');
+    });
+    it('should return value in seconds for milliseconds passed is less than 9000, that is 90 seconds', () => {
+      expect(util.toHumanReadableTime(t, 6000)).toStrictEqual('6 sec');
+    });
+    it('should return value in minutes for milliseconds passed is greater than 90000', () => {
+      expect(util.toHumanReadableTime(t, 120000)).toStrictEqual('2 min');
+    });
+    it('should return value in hours for milliseconds passed is greater than 5400000, that is 90 minutes', () => {
+      expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
+    });
+  });
 });
