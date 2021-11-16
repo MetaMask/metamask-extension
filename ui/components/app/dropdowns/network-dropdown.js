@@ -43,7 +43,7 @@ function mapStateToProps(state) {
     shouldShowTestNetworks: getShowTestNetworks(state),
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
-    showTestnetMessageInDropdown: state.appState.showTestnetMessageInDropdown,
+    showTestnetMessageInDropdown: state.metamask.showTestnetMessageInDropdown,
   };
 }
 
