@@ -954,6 +954,10 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.setRecoveryPhraseReminderLastShown,
         this.appStateController,
       ),
+      setShowTestnetMessageInDropdown: nodeify(
+        this.appStateController.setShowTestnetMessageInDropdown,
+        this.appStateController,
+      ),
 
       // EnsController
       tryReverseResolveAddress: nodeify(
