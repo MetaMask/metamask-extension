@@ -163,8 +163,8 @@ export default class UnlockPage extends Component {
               autoFocus
               autoComplete="current-password"
               minLength={8}
-              maxLength={20}
-              pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]{8,20}"
+              maxLength={50}
+              pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]{8,}"
               theme="material"
               fullWidth
             />

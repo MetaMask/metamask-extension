@@ -227,8 +227,8 @@ class RestoreVaultPage extends Component {
               error={passwordError}
               autoComplete="new-password"
               minLength={8}
-              maxLength={20}
-              pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]{8,20}"
+              maxLength={50}
+              pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]{8,}"
               margin="normal"
               largeLabel
             />
@@ -246,8 +246,8 @@ class RestoreVaultPage extends Component {
               error={confirmPasswordError}
               autoComplete="confirm-password"
               minLength={8}
-              maxLength={20}
-              pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]{8,20}"
+              maxLength={50}
+              pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]{8,}"
               margin="normal"
               largeLabel
             />
