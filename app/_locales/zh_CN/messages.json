@@ -46,6 +46,9 @@
   "addANetwork": {
     "message": "添加网络"
   },
+  "add": {
+    "message": "添加"
+  },
   "addAcquiredTokens": {
     "message": "在 MetaMask 上添加获得的代币"
   },
@@ -99,6 +102,9 @@
   },
   "addToken": {
     "message": "添加代币"
+  },
+  "address": {
+    "message": "地址"
   },
   "addressBookIcon": {
     "message": "地址簿图标"
@@ -1132,6 +1138,9 @@
   "history": {
     "message": "历史记录"
   },
+  "id": {
+    "message": "ID"
+  },
   "import": {
     "message": "导入",
     "description": "Button to import an account from a selected file"
@@ -1600,6 +1609,9 @@
   "nextNonceWarning": {
     "message": "序号高于 $1 建议的序号",
     "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "nftTokenIdPlaceholder": {
+    "message": "输入收藏品的 ID"
   },
   "nfts": {
     "message": "NFT"
