@@ -166,7 +166,6 @@
   &--link {
     color: $white;
     cursor: pointer;
-    font-weight: bold;
     text-decoration: underline;
 
     &:hover {
@@ -174,12 +173,14 @@
     }
   }
 
-  &--close {
-    color: $white;
+  &--dismiss {
+    color: inherit;
     background: inherit;
     position: absolute;
-    top: 64px;
+    top: 63px;
     right: 10px;
+    border: 1px solid $dusty-gray;
+    border-radius: 10px;
   }
 }
 
