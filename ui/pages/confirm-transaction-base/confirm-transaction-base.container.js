@@ -245,7 +245,7 @@ const mapStateToProps = (state, ownProps) => {
     maxPriorityFeePerGas: gasEstimationObject.maxPriorityFeePerGas,
     baseFeePerGas: gasEstimationObject.baseFeePerGas,
     gasFeeIsCustom,
-    showLedgerSteps: fromAddressIsLedger,
+    showLedgerSteps: true /* fromAddressIsLedger */,
     nativeCurrency,
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,

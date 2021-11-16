@@ -61,8 +61,10 @@ import {
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
+import HardwareConnectivityMessage from './hardware-connectivity/hardware-connectivity-message';
 
 import TransactionAlerts from './transaction-alerts';
+import HardwareConnectivityContent from './hardware-connectivity/hardware-connectivity-content';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -155,6 +157,8 @@ export default class ConfirmTransactionBase extends Component {
     ethGasPriceWarning: '',
     editingGas: false,
     userAcknowledgedGasMissing: false,
+    showingHardwareConnectionContents: /* false */ true,
+    showingHardwareConnectionAdvancedPopover: /* false */ true,
   };
 
   componentDidUpdate(prevProps) {
@@ -327,6 +331,7 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       showBuyModal,
     } = this.props;
+    const { showingHardwareConnectionContents } = this.state;
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
 
@@ -579,6 +584,20 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     );
 
+    if (showingHardwareConnectionContents) {
+      return (
+        <div className="confirm-page-container-content__details">
+          <HardwareConnectivityContent
+            deviceName="Ledger"
+            onConnectClick={() => {}}
+            onAdvancedClick={() => {
+              this.setState({ showingHardwareConnectionAdvancedPopover: true });
+            }}
+          />
+        </div>
+      );
+    }
+
     return (
       <div className="confirm-page-container-content__details">
         <TransactionAlerts
@@ -636,6 +655,16 @@ export default class ConfirmTransactionBase extends Component {
             showDataInstruction={Boolean(txData.txParams?.data)}
           />
         ) : null}
+        {
+          /* showLedgerSteps */ true ? (
+            <HardwareConnectivityMessage
+              onClick={() => {
+                console.log('Opening the modal!');
+                this.setState({ showingHardwareConnectionContents: true });
+              }}
+            />
+          ) : null
+        }
       </div>
     );
   }
@@ -861,9 +890,10 @@ export default class ConfirmTransactionBase extends Component {
 
   renderTitleComponent() {
     const { title, hexTransactionAmount } = this.props;
+    const { showingHardwareConnectionContents } = this.state;
 
     // Title string passed in by props takes priority
-    if (title) {
+    if (title || showingHardwareConnectionContents) {
       return null;
     }
 
@@ -880,6 +910,11 @@ export default class ConfirmTransactionBase extends Component {
 
   renderSubtitleComponent() {
     const { subtitleComponent, hexTransactionAmount } = this.props;
+    const { showingHardwareConnectionContents } = this.state;
+
+    if (showingHardwareConnectionContents) {
+      return null;
+    }
 
     return (
       subtitleComponent || (
@@ -1021,6 +1056,8 @@ export default class ConfirmTransactionBase extends Component {
       ethGasPriceWarning,
       editingGas,
       userAcknowledgedGasMissing,
+      showingHardwareConnectionContents,
+      showingHardwareConnectionAdvancedPopover,
     } = this.state;
 
     const { name } = methodData;
@@ -1119,6 +1156,10 @@ export default class ConfirmTransactionBase extends Component {
           currentTransaction={txData}
           supportsEIP1559V2={this.supportsEIP1559V2}
           nativeCurrency={nativeCurrency}
+          showingHardwareConnectionContents={showingHardwareConnectionContents}
+          showingHardwareConnectionAdvancedPopover={
+            showingHardwareConnectionAdvancedPopover
+          }
         />
       </TransactionModalContextProvider>
     );
