@@ -10,6 +10,7 @@ import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
+import { QUAI_CONTEXTS } from '../../../../shared/constants/quai';
 import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
 import {
   SETTINGS_ROUTE,
@@ -203,6 +204,7 @@ export default class AccountMenu extends Component {
           <Identicon address={identity.address} diameter={24} />
           <div className="account-menu__account-info">
             <div className="account-menu__name">{identity.name || ''}</div>
+            {this.getContext(identity.address)}
             <UserPreferencedCurrencyDisplay
               className="account-menu__balance"
               value={identity.balance}
@@ -222,6 +224,26 @@ export default class AccountMenu extends Component {
         </div>
       );
     });
+  }
+
+  getContext(address) {
+    let context = QUAI_CONTEXTS.filter((obj) => {
+      return obj.byte == address.substring(0, 4);
+    });
+    console.log(context);
+    if (!context || !context[0]) {
+      context = 'Unavailable';
+    } else {
+      context = context[0].name;
+    }
+    return (
+      <div
+        className="account-menu__lock-button"
+        style={{ width: 'max-content' }}
+      >
+        {context}
+      </div>
+    );
   }
 
   renderKeyringType(keyring) {

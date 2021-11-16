@@ -1,0 +1,31 @@
+export const QUAI_CONTEXTS = [
+  { name: 'Prime', value: 'prime', byte: '0x00', id: '9000' },
+  { name: 'Cyprus', value: 'cyprus', byte: '0x0a', id: '9100' },
+  { name: 'Paxos', value: 'paxos', byte: '0x0b', id: '9200' },
+  { name: 'Hydra', value: 'hydra', byte: '0x0c', id: '9300' },
+  { name: 'Cyprus One', value: 'cyprus-1', byte: '0x1a', id: '9101' },
+  { name: 'Cyprus Two', value: 'cyprus-2', byte: '0x2a', id: '9102' },
+  { name: 'Cyprus Three', value: 'cyprus-3', byte: '0x3a', id: '9103' },
+  { name: 'Paxos One', value: 'paxos-1', byte: '0x1b', id: '9201' },
+  { name: 'Paxos Two', value: 'paxos-2', byte: '0x2b', id: '9202' },
+  { name: 'Paxos Three', value: 'paxos-3', byte: '0x3b', id: '9203' },
+  { name: 'Hydra One', value: 'hydra-1', byte: '0x1c', id: '9301' },
+  { name: 'Hydra Two', value: 'hydra-2', byte: '0x2c', id: '9302' },
+  { name: 'Hydra Three', value: 'hydra-3', byte: '0x3c', id: '9303' },
+];
+
+export const QUAI_OPTIONS = [
+  { name: 'Prime', value: 'prime' },
+  { name: 'Cyprus', value: 'cyprus' },
+  { name: 'Paxos', value: 'paxos' },
+  { name: 'Hydra', value: 'hydra' },
+  { name: 'Cyprus One', value: 'cyprus-1' },
+  { name: 'Cyprus Two', value: 'cyprus-2' },
+  { name: 'Cyprus Three', value: 'cyprus-3' },
+  { name: 'Paxos One', value: 'paxos-1' },
+  { name: 'Paxos Two', value: 'paxos-2' },
+  { name: 'Paxos Three', value: 'paxos-3' },
+  { name: 'Hydra One', value: 'hydra-1' },
+  { name: 'Hydra Two', value: 'hydra-2' },
+  { name: 'Hydra Three', value: 'hydra-3' },
+];

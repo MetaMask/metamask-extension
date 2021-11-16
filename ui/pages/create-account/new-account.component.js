@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../components/ui/button';
+import Dropdown from '../../components/ui/dropdown';
+import { QUAI_OPTIONS } from '../../../shared/constants/quai';
 
 export default class NewAccountCreateForm extends Component {
   static defaultProps = {
@@ -12,13 +14,15 @@ export default class NewAccountCreateForm extends Component {
     defaultAccountName: this.context.t('newAccountNumberName', [
       this.props.newAccountNumber,
     ]),
+    quaiContext: 'prime',
   };
 
   render() {
-    const { newAccountName, defaultAccountName } = this.state;
+    const { newAccountName, defaultAccountName, quaiContext } = this.state;
     const { history, createAccount, mostRecentOverviewPage } = this.props;
+
     const createClick = (_) => {
-      createAccount(newAccountName || defaultAccountName)
+      createAccount(newAccountName || defaultAccountName, quaiContext)
         .then(() => {
           this.context.metricsEvent({
             eventOpts: {
@@ -57,6 +61,18 @@ export default class NewAccountCreateForm extends Component {
               this.setState({ newAccountName: event.target.value })
             }
             autoFocus
+          />
+
+          <div className="new-account-create-form__input-label">
+            {this.context.t('networkName')}
+          </div>
+          <Dropdown
+            id="select-ledger-transport-type"
+            options={QUAI_OPTIONS}
+            selectedOption={quaiContext}
+            onChange={async (chain) => {
+              this.setState({ quaiContext: chain });
+            }}
           />
           <div className="new-account-create-form__buttons">
             <Button

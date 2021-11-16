@@ -1342,7 +1342,7 @@ export default class MetamaskController extends EventEmitter {
 
       // seek out the first zero balance
       while (lastBalance !== '0x0') {
-        await keyringController.addNewAccount(primaryKeyring);
+        await keyringController.addNewAccount(primaryKeyring, '0x00');
         accounts = await keyringController.getAccounts();
         lastBalance = await this.getBalance(
           accounts[accounts.length - 1],
@@ -1678,7 +1678,10 @@ export default class MetamaskController extends EventEmitter {
 
     keyring.setAccountToUnlock(index);
     const oldAccounts = await this.keyringController.getAccounts();
-    const keyState = await this.keyringController.addNewAccount(keyring);
+    const keyState = await this.keyringController.addNewAccount(
+      keyring,
+      '0x00',
+    );
     const newAccounts = await this.keyringController.getAccounts();
     this.preferencesController.setAddresses(newAccounts);
     newAccounts.forEach((address) => {
@@ -1706,7 +1709,7 @@ export default class MetamaskController extends EventEmitter {
    *
    * @returns {} keyState
    */
-  async addNewAccount() {
+  async addNewAccount(bytePrefix) {
     const primaryKeyring = this.keyringController.getKeyringsByType(
       'HD Key Tree',
     )[0];
@@ -1714,18 +1717,30 @@ export default class MetamaskController extends EventEmitter {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
     const { keyringController } = this;
+    let validByte = false;
     const oldAccounts = await keyringController.getAccounts();
-    const keyState = await keyringController.addNewAccount(primaryKeyring);
-    const newAccounts = await keyringController.getAccounts();
+    let keyState;
+    while (!validByte) {
+      keyState = await keyringController.addNewAccount(
+        primaryKeyring,
+        bytePrefix,
+      );
+      let newAccounts = await keyringController.getAccounts();
 
-    await this.verifySeedPhrase();
+      await this.verifySeedPhrase();
 
-    this.preferencesController.setAddresses(newAccounts);
-    newAccounts.forEach((address) => {
-      if (!oldAccounts.includes(address)) {
-        this.preferencesController.setSelectedAddress(address);
+      for (let i = 0; i < newAccounts.length; i++) {
+        let address = newAccounts[i];
+        if (!oldAccounts.includes(address)) {
+          if (address.substring(0, 4) == bytePrefix) {
+            this.preferencesController.setSelectedAddress(address);
+            validByte = true;
+          } else {
+            await keyringController.removeAccount(address);
+          }
+        }
       }
-    });
+    }
 
     const { identities } = this.preferencesController.store.getState();
     return { ...keyState, identities };

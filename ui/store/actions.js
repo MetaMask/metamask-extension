@@ -15,6 +15,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
+import { QUAI_CONTEXTS } from '../../shared/constants/quai';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
@@ -332,15 +333,18 @@ export function importNewAccount(strategy, args) {
   };
 }
 
-export function addNewAccount() {
-  log.debug(`background.addNewAccount`);
+export function addNewAccount(bytePrefix) {
+  log.debug(`background.addNewAccount`, bytePrefix);
   return async (dispatch, getState) => {
     const oldIdentities = getState().metamask.identities;
     dispatch(showLoadingIndication());
 
     let newIdentities;
     try {
-      const { identities } = await promisifiedBackground.addNewAccount();
+      console.log(bytePrefix);
+      const { identities } = await promisifiedBackground.addNewAccount(
+        bytePrefix,
+      );
       newIdentities = identities;
     } catch (error) {
       dispatch(displayWarning(error.message));
