@@ -33,7 +33,7 @@ const EditGasItem = ({ priorityLevel, onClose }) => {
     transaction: { dappSuggestedGasFees },
   } = useGasFeeContext();
   const t = useI18nContext();
-  const advanecGasFeeDefault = useSelector(getAdvancedGasFeeValues);
+  const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   let maxFeePerGas;
   let maxPriorityFeePerGas;
   let minWaitTime;
@@ -52,11 +52,11 @@ const EditGasItem = ({ priorityLevel, onClose }) => {
     if (estimateUsed === PRIORITY_LEVELS.CUSTOM) {
       maxFeePerGas = maxFeePerGasValue;
       maxPriorityFeePerGas = maxPriorityFeePerGasValue;
-    } else if (advanecGasFeeDefault) {
+    } else if (advancedGasFeeValues) {
       maxFeePerGas =
         gasFeeEstimates.estimatedBaseFee *
-        parseFloat(advanecGasFeeDefault.maxBaseFee);
-      maxPriorityFeePerGas = advanecGasFeeDefault.priorityFee;
+        parseFloat(advancedGasFeeValues.maxBaseFee);
+      maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
     }
   }
 
