@@ -61,6 +61,15 @@ export default class AdvancedTab extends PureComponent {
     showLedgerTransportWarning: false,
   };
 
+  showTestNetworksRef = React.createRef();
+
+  componentDidMount() {
+    if (window.location.hash.match(/show-testnets/u)) {
+      this.showTestNetworksRef.current.scrollIntoView({ behavior: 'smooth' });
+      this.showTestNetworksRef.current.focus();
+    }
+  }
+
   renderMobileSync() {
     const { t } = this.context;
     const { history } = this.props;
@@ -234,6 +243,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.showTestNetworksRef}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
