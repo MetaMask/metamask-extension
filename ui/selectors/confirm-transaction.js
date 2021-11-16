@@ -17,7 +17,10 @@ import {
 } from '../ducks/metamask/metamask';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
-import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
+import {
+  GAS_ESTIMATE_TYPES,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../shared/constants/gas';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
@@ -258,12 +261,13 @@ export const transactionFeeSelector = function (state, txData) {
       } = selectedGasEstimates;
       gasEstimationObject.maxFeePerGas =
         txData.txParams?.maxFeePerGas &&
-        (txData.userFeeLevel === 'custom' || !suggestedMaxFeePerGas)
+        (txData.userFeeLevel === CUSTOM_GAS_ESTIMATE || !suggestedMaxFeePerGas)
           ? txData.txParams?.maxFeePerGas
           : decGWEIToHexWEI(suggestedMaxFeePerGas || gasPrice);
       gasEstimationObject.maxPriorityFeePerGas =
         txData.txParams?.maxPriorityFeePerGas &&
-        (txData.userFeeLevel === 'custom' || !suggestedMaxPriorityFeePerGas)
+        (txData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
+          !suggestedMaxPriorityFeePerGas)
           ? txData.txParams?.maxPriorityFeePerGas
           : (suggestedMaxPriorityFeePerGas &&
               decGWEIToHexWEI(suggestedMaxPriorityFeePerGas)) ||

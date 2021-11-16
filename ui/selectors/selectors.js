@@ -153,6 +153,7 @@ export function getAccountType(state) {
   switch (type) {
     case KEYRING_TYPES.TREZOR:
     case KEYRING_TYPES.LEDGER:
+    case KEYRING_TYPES.LATTICE:
       return 'hardware';
     case 'Simple Key Pair':
       return 'imported';
@@ -309,10 +310,13 @@ export function getAddressBookEntry(state, address) {
   return entry;
 }
 
-export function getAddressBookEntryName(state, address) {
+export function getAddressBookEntryOrAccountName(state, address) {
   const entry =
-    getAddressBookEntry(state, address) || state.metamask.identities[address];
-  return entry && entry.name !== '' ? entry.name : shortenAddress(address);
+    getAddressBookEntry(state, address) ||
+    Object.values(state.metamask.identities).find((identity) =>
+      isEqualCaseInsensitive(identity.address, toChecksumHexAddress(address)),
+    );
+  return entry && entry.name !== '' ? entry.name : address;
 }
 
 export function accountsWithSendEtherInfoSelector(state) {
@@ -427,6 +431,11 @@ export function getIsNonStandardEthChain(state) {
 
 export function getPreferences({ metamask }) {
   return metamask.preferences;
+}
+
+export function getShowTestNetworks(state) {
+  const { showTestNetworks } = getPreferences(state);
+  return Boolean(showTestNetworks);
 }
 
 export function getShouldShowFiat(state) {
@@ -672,6 +681,27 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
     transportTypePreferenceIsWebHID &&
     (webHidIsNotConnected || transportIsNotSuccessfullyCreated)
   );
+}
+
+/**
+ * To retrieve the name of the new Network added using add network form
+ * @param {*} state
+ * @returns string
+ */
+export function getNewNetworkAdded(state) {
+  return state.appState.newNetworkAdded;
+}
+
+export function getNetworksTabSelectedRpcUrl(state) {
+  return state.appState.networksTabSelectedRpcUrl;
+}
+
+export function getProvider(state) {
+  return state.metamask.provider;
+}
+
+export function getFrequentRpcListDetail(state) {
+  return state.metamask.frequentRpcListDetail;
 }
 
 export function getIsOptimism(state) {

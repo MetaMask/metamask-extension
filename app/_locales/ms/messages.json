@@ -257,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Meningkatkan fi mungkin akan mengurangkan masa pemprosesan, tetapi ia tidak dijamin."
   },
-  "customRPC": {
-    "message": "RPC Tersuai"
-  },
   "customToken": {
     "message": "Token Tersuai"
   },
@@ -268,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Perpuluhan mestilah sekurang-kurangnya 0, dan tidak melebihi 36."
-  },
-  "defaultNetwork": {
-    "message": "Rangkaian lalai untuk transaksi Ether ialah Net Utama."
   },
   "delete": {
     "message": "Padam"
@@ -603,9 +597,6 @@
   "newContract": {
     "message": "Kontrak Baru"
   },
-  "newNetwork": {
-    "message": "Rangkaian Baru"
-  },
   "newPassword": {
     "message": "Kata Laluan Baru (min 8 aks)"
   },
@@ -650,12 +641,6 @@
   },
   "on": {
     "message": "Hidupkan"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Sekat URL Explorer (pilihan)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (pilihan)"
   },
   "origin": {
     "message": "Asal"
@@ -835,9 +820,6 @@
   },
   "selectAnAccount": {
     "message": "Pilih Akaun"
-  },
-  "selectAnAccountHelp": {
-    "message": "Pilih akaun untuk dilihat dalam MetaMask"
   },
   "selectEachPhrase": {
     "message": "Sila pilih setiap ungkapan untuk memastikan ia betul."

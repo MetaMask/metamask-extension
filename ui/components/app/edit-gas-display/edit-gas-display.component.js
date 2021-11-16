@@ -6,6 +6,7 @@ import {
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
   GAS_ESTIMATE_TYPES,
+  CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
 
 import Button from '../../ui/button';
@@ -33,6 +34,8 @@ import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 import { I18nContext } from '../../../contexts/i18n';
 import GasTiming from '../gas-timing';
+
+import { useMetricEvent } from '../../../hooks/useMetricEvent';
 
 export default function EditGasDisplay({
   mode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
@@ -82,7 +85,7 @@ export default function EditGasDisplay({
   );
 
   const [showAdvancedForm, setShowAdvancedForm] = useState(
-    !estimateToUse || estimateToUse === 'custom' || !supportsEIP1559,
+    !estimateToUse || estimateToUse === CUSTOM_GAS_ESTIMATE || !supportsEIP1559,
   );
   const [hideRadioButtons, setHideRadioButtons] = useState(
     showAdvancedInlineGasIfPossible,
@@ -118,6 +121,14 @@ export default function EditGasDisplay({
   } else if (estimatesUnavailableWarning) {
     errorKey = 'gasEstimatesUnavailableWarning';
   }
+
+  const clickedAdvancedOptionsMetricsEvent = useMetricEvent({
+    eventOpts: {
+      category: 'Transactions',
+      action: 'Edit Screen',
+      name: 'Clicked "Advanced Options"',
+    },
+  });
 
   return (
     <div className="edit-gas-display">
@@ -250,7 +261,10 @@ export default function EditGasDisplay({
           !showAdvancedInlineGasIfPossible && (
             <button
               className="edit-gas-display__advanced-button"
-              onClick={() => setShowAdvancedForm(!showAdvancedForm)}
+              onClick={() => {
+                setShowAdvancedForm(!showAdvancedForm);
+                clickedAdvancedOptionsMetricsEvent();
+              }}
             >
               {t('advancedOptions')}{' '}
               {showAdvancedForm ? (

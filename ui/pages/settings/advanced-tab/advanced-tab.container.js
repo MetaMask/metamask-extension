@@ -6,12 +6,13 @@ import {
   setFeatureFlag,
   showModal,
   setShowFiatConversionOnTestnetsPreference,
+  setShowTestNetworks,
   setAutoLockTimeLimit,
   setThreeBoxSyncingPermission,
   turnThreeBoxSyncingOnAndInitialize,
   setUseNonceField,
   setIpfsGateway,
-  setLedgerLivePreference,
+  setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
@@ -32,7 +33,11 @@ export const mapStateToProps = (state) => {
     ledgerTransportType,
     dismissSeedBackUpReminder,
   } = metamask;
-  const { showFiatInTestnets, autoLockTimeLimit } = getPreferences(state);
+  const {
+    showFiatInTestnets,
+    showTestNetworks,
+    autoLockTimeLimit,
+  } = getPreferences(state);
 
   const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
 
@@ -41,6 +46,7 @@ export const mapStateToProps = (state) => {
     sendHexData,
     advancedInlineGas,
     showFiatInTestnets,
+    showTestNetworks,
     autoLockTimeLimit,
     threeBoxSyncingAllowed,
     threeBoxDisabled,
@@ -65,6 +71,9 @@ export const mapDispatchToProps = (dispatch) => {
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value));
     },
+    setShowTestNetworks: (value) => {
+      return dispatch(setShowTestNetworks(value));
+    },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
     },
@@ -78,8 +87,8 @@ export const mapDispatchToProps = (dispatch) => {
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value));
     },
-    setLedgerLivePreference: (value) => {
-      return dispatch(setLedgerLivePreference(value));
+    setLedgerTransportPreference: (value) => {
+      return dispatch(setLedgerTransportPreference(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));

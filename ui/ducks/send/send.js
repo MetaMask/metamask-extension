@@ -40,6 +40,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getUseTokenDetection,
   getTokenList,
+  getAddressBookEntryOrAccountName,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -1444,12 +1445,12 @@ export function useMyAccountsForRecipientSearch() {
 export function updateRecipient({ address, nickname }) {
   return async (dispatch, getState) => {
     const state = getState();
-    const nicknameFromAddressBook =
-      getAddressBookEntry(state, address)?.name ?? '';
+    const nicknameFromAddressBookEntryOrAccountName =
+      getAddressBookEntryOrAccountName(state, address) ?? '';
     await dispatch(
       actions.updateRecipient({
         address,
-        nickname: nickname || nicknameFromAddressBook,
+        nickname: nickname || nicknameFromAddressBookEntryOrAccountName,
       }),
     );
     await dispatch(computeEstimatedGasLimit());

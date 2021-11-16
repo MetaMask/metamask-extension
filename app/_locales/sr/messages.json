@@ -254,9 +254,6 @@
   "customGasSubTitle": {
     "message": "Povećanje naknade može smanjiti vreme obrade, ali to nije zagarantovano."
   },
-  "customRPC": {
-    "message": "Korisnički definisan RPC"
-  },
   "customToken": {
     "message": "Prilagođeni token"
   },
@@ -265,9 +262,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalni broj mora biti najmanje 0, a ne veći od 36."
-  },
-  "defaultNetwork": {
-    "message": "Podrazumevana mreža za Ether transakcije je Mainnet."
   },
   "delete": {
     "message": "Избриши"
@@ -614,9 +608,6 @@
   "newContract": {
     "message": "Novi ugovor"
   },
-  "newNetwork": {
-    "message": "Nova mreža"
-  },
   "newPassword": {
     "message": "Nova lozinka (minimalno 8 karaktera)"
   },
@@ -664,12 +655,6 @@
   },
   "on": {
     "message": "Укључено"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokirajte URL Explorer-a (opciono)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (opciono)"
   },
   "origin": {
     "message": "Извор"
@@ -849,9 +834,6 @@
   },
   "selectAnAccount": {
     "message": "Izaberite nalog"
-  },
-  "selectAnAccountHelp": {
-    "message": "Izaberite nalog za prikaz u MetaMask-u"
   },
   "selectEachPhrase": {
     "message": "Molimo vas izaberite svaki izraz kako biste proverili da je tačan."

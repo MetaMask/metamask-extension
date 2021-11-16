@@ -6,6 +6,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.6.0]
+### Added
+- [#12053](https://github.com/MetaMask/metamask-extension/pull/12053): Add support for GridPlus Lattice1 hardware wallet
+- [#12496](https://github.com/MetaMask/metamask-extension/pull/12496): Add warning for insufficient funds when approving a token
+- [#12564](https://github.com/MetaMask/metamask-extension/pull/12564): Add dismissable link to advanced settings to the top of the networks dropdown
+
+### Changed
+- [#12435](https://github.com/MetaMask/metamask-extension/pull/12435): Hide ETH amount on confirm screen for contract interactions where no ETH is being sent
+- [#12626](https://github.com/MetaMask/metamask-extension/pull/12626): Replace instances of 'testnets' with 'test networks' throughout the extension
+- [#12380](https://github.com/MetaMask/metamask-extension/pull/12380): Update heading on contact details in popup view to say "Details" instead of the contact name
+- [#12437](https://github.com/MetaMask/metamask-extension/pull/12437): Change decimal precision for ETH send amounts from 6 -> 8
+- [#12415](https://github.com/MetaMask/metamask-extension/pull/12415): Show account name when entering a user's own account address in the recipient field
+- [#12498](https://github.com/MetaMask/metamask-extension/pull/12498): Change token detection option wording from "Turn on Token Detection" -> "Turn on enhanced token detection"
+- [#12359](https://github.com/MetaMask/metamask-extension/pull/12359): Update settings page icon colors with different gray values
+- [#12531](https://github.com/MetaMask/metamask-extension/pull/12531): Show error if user has insufficient gas during send flow
+- [#12553](https://github.com/MetaMask/metamask-extension/pull/12553): Update the "Permission Request" section on the approve screen
+  - Update header from "Permission" -> "Permission Request"
+  - Update "Amount" label -> "Approved Amount"
+  - Update "To" label -> "Granted to"
+  - Specify in the "Granted to" field whether amount is designated to a contract address
+- [#12401](https://github.com/MetaMask/metamask-extension/pull/12401): Update transaction details view
+  - Left align all content and adjust padding
+  - Truncate "To" and "From" addresses, show icons for addresses
+- [#12360](https://github.com/MetaMask/metamask-extension/pull/12360): Update approval screen
+  - Update header copy: -> "Give permission to access your [token]?”
+  - Update subheader copy -> "By granting permission, you are allowing the following [contract/account] to access your funds”
+  - Include contract address and accompanying icon
+- [#12302](https://github.com/MetaMask/metamask-extension/pull/12302): Open new full browser window for new network form upon clicking "Add Network"
+- [#12260](https://github.com/MetaMask/metamask-extension/pull/12260): Update networks dropdown
+  - Change "Custom RPC" to "Add a network" button
+  - Hide test networks by default, and show them for users who have recently used them
+  - Add option to display test networks in dropdown in advanced settings
+
+### Removed
+- [#12565](https://github.com/MetaMask/metamask-extension/pull/12565): Remove "hex data" field from the send flow for ERC-20 transactions
+
+### Fixed
+- [#12513](https://github.com/MetaMask/metamask-extension/pull/12513): Fix "Unavailable on this network" tooltip showing on Swaps button when Swaps is enabled for the current network.
+- [#12511](https://github.com/MetaMask/metamask-extension/pull/12511): Fix issue where approval confirmation says "Unlimited" though limited funds were specified
+
 ## [10.5.2]
 ### Fixed
 - [#12685](https://github.com/MetaMask/metamask-extension/pull/12685): Fix Ledger WebHID issue preventing confirmation of token approvals
@@ -2554,7 +2594,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.5.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...HEAD
+[10.6.0]: https://github.com/MetaMask/metamask-extension/compare/v10.5.2...v10.6.0
 [10.5.2]: https://github.com/MetaMask/metamask-extension/compare/v10.5.1...v10.5.2
 [10.5.1]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...v10.5.1
 [10.5.0]: https://github.com/MetaMask/metamask-extension/compare/v10.4.1...v10.5.0

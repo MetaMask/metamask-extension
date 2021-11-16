@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { isEqual } from 'lodash';
 
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import {
+  GAS_ESTIMATE_TYPES,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../shared/constants/gas';
 import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 
@@ -30,7 +33,7 @@ export function useGasPriceInput({
   transaction,
 }) {
   const [gasPriceHasBeenManuallySet, setGasPriceHasBeenManuallySet] = useState(
-    transaction?.userFeeLevel === 'custom',
+    transaction?.userFeeLevel === CUSTOM_GAS_ESTIMATE,
   );
 
   const [gasPrice, setGasPrice] = useState(() => {

@@ -29,10 +29,17 @@ const bifyModuleGroups = require('bify-module-groups');
 
 const metamaskrc = require('rc')('metamask', {
   INFURA_PROJECT_ID: process.env.INFURA_PROJECT_ID,
+  INFURA_BETA_PROJECT_ID: process.env.INFURA_BETA_PROJECT_ID,
+  INFURA_FLASK_PROJECT_ID: process.env.INFURA_FLASK_PROJECT_ID,
   INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
   ONBOARDING_V2: process.env.ONBOARDING_V2,
+  COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
+  EIP_1559_V2: process.env.EIP_1559_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
+  SEGMENT_BETA_WRITE_KEY: process.env.SEGMENT_BETA_WRITE_KEY,
+  SEGMENT_FLASK_WRITE_KEY: process.env.SEGMENT_FLASK_WRITE_KEY,
+  SEGMENT_PROD_WRITE_KEY: process.env.SEGMENT_PROD_WRITE_KEY,
   SENTRY_DSN_DEV:
     process.env.SENTRY_DSN_DEV ||
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
@@ -50,6 +57,7 @@ const {
 const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
+const { BuildType } = require('./utils');
 
 /**
  * The build environment. This describes the environment this build was produced in.
@@ -83,17 +91,47 @@ function getConfigValue(key) {
  * Get the appropriate Infura project ID.
  *
  * @param {object} options - The Infura project ID options.
+ * @param {BuildType} options.buildType - The current build type.
  * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
  * @param {boolean} options.testing - Whether the current build is a test build or not.
  * @returns {string} The Infura project ID.
  */
-function getInfuraProjectId({ environment, testing }) {
+function getInfuraProjectId({ buildType, environment, testing }) {
   if (testing) {
     return '00000000000000000000000000000000';
-  } else if (environment === ENVIRONMENT.PRODUCTION) {
+  } else if (environment !== ENVIRONMENT.PRODUCTION) {
+    // Skip validation because this is unset on PRs from forks.
+    return metamaskrc.INFURA_PROJECT_ID;
+  } else if (buildType === BuildType.main) {
     return getConfigValue('INFURA_PROD_PROJECT_ID');
+  } else if (buildType === BuildType.beta) {
+    return getConfigValue('INFURA_BETA_PROJECT_ID');
+  } else if (buildType === BuildType.flask) {
+    return getConfigValue('INFURA_FLASK_PROJECT_ID');
   }
-  return getConfigValue('INFURA_PROJECT_ID');
+  throw new Error(`Invalid build type: '${buildType}'`);
+}
+
+/**
+ * Get the appropriate Segment write key.
+ *
+ * @param {object} options - The Segment write key options.
+ * @param {BuildType} options.buildType - The current build type.
+ * @param {keyof ENVIRONMENT} options.enviroment - The current build environment.
+ * @returns {string} The Segment write key.
+ */
+function getSegmentWriteKey({ buildType, environment }) {
+  if (environment !== ENVIRONMENT.PRODUCTION) {
+    // Skip validation because this is unset on PRs from forks, and isn't necessary for development builds.
+    return metamaskrc.SEGMENT_WRITE_KEY;
+  } else if (buildType === BuildType.main) {
+    return getConfigValue('SEGMENT_PROD_WRITE_KEY');
+  } else if (buildType === BuildType.beta) {
+    return getConfigValue('SEGMENT_BETA_WRITE_KEY');
+  } else if (buildType === BuildType.flask) {
+    return getConfigValue('SEGMENT_FLASK_WRITE_KEY');
+  }
+  throw new Error(`Invalid build type: '${buildType}'`);
 }
 
 module.exports = createScriptTasks;
@@ -101,6 +139,7 @@ module.exports = createScriptTasks;
 function createScriptTasks({
   browserPlatforms,
   buildType,
+  ignoredFiles,
   isLavaMoat,
   livereload,
   shouldLintFenceFiles,
@@ -145,8 +184,9 @@ function createScriptTasks({
           }
           return `./app/scripts/${label}.js`;
         }),
-        testing,
+        ignoredFiles,
         shouldLintFenceFiles,
+        testing,
       }),
     );
 
@@ -216,6 +256,7 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
       shouldLintFenceFiles,
     });
@@ -229,6 +270,7 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
       shouldLintFenceFiles,
     });
@@ -242,6 +284,7 @@ function createScriptTasks({
       destFilepath: `${label}.js`,
       devMode,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
       label,
       shouldLintFenceFiles,
     });
@@ -259,8 +302,9 @@ function createScriptTasks({
         devMode,
         entryFilepath: `./app/scripts/${inpage}.js`,
         label: inpage,
-        testing,
+        ignoredFiles,
         shouldLintFenceFiles,
+        testing,
       }),
       createNormalBundle({
         buildType,
@@ -269,8 +313,9 @@ function createScriptTasks({
         devMode,
         entryFilepath: `./app/scripts/${contentscript}.js`,
         label: contentscript,
-        testing,
+        ignoredFiles,
         shouldLintFenceFiles,
+        testing,
       }),
     );
   }
@@ -281,8 +326,9 @@ function createFactoredBuild({
   buildType,
   devMode,
   entryFiles,
-  testing,
+  ignoredFiles,
   shouldLintFenceFiles,
+  testing,
 }) {
   return async function () {
     // create bundler setup and apply defaults
@@ -299,6 +345,7 @@ function createFactoredBuild({
       buildType,
       devMode,
       envVars,
+      ignoredFiles,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
@@ -443,6 +490,7 @@ function createNormalBundle({
   devMode,
   entryFilepath,
   extraEntries = [],
+  ignoredFiles,
   label,
   modulesToExpose,
   shouldLintFenceFiles,
@@ -463,6 +511,7 @@ function createNormalBundle({
       buildType,
       devMode,
       envVars,
+      ignoredFiles,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
@@ -507,12 +556,20 @@ function createBuildConfiguration() {
     manualExternal: [],
     manualIgnore: [],
   };
-  return { label, bundlerOpts, events };
+  return { bundlerOpts, events, label };
 }
 
 function setupBundlerDefaults(
   buildConfiguration,
-  { buildType, devMode, envVars, minify, reloadOnChange, shouldLintFenceFiles },
+  {
+    buildType,
+    devMode,
+    envVars,
+    ignoredFiles,
+    minify,
+    reloadOnChange,
+    shouldLintFenceFiles,
+  },
 ) {
   const { bundlerOpts } = buildConfiguration;
 
@@ -540,6 +597,11 @@ function setupBundlerDefaults(
   // Inject environment variables via node-style `process.env`
   if (envVars) {
     bundlerOpts.transform.push([envify(envVars), { global: true }]);
+  }
+
+  // Ensure that any files that should be ignored are excluded from the build
+  if (ignoredFiles) {
+    bundlerOpts.manualExclude = ignoredFiles;
   }
 
   // Setup reload on change
@@ -624,11 +686,17 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
 async function bundleIt(buildConfiguration) {
   const { label, bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
+
   // manually apply non-standard options
   bundler.external(bundlerOpts.manualExternal);
   bundler.ignore(bundlerOpts.manualIgnore);
+  if (Array.isArray(bundlerOpts.manualExclude)) {
+    bundler.exclude(bundlerOpts.manualExclude);
+  }
+
   // output build logs to terminal
   bundler.on('log', log);
+
   // forward update event (used by watchify)
   bundler.on('update', () => performBundle());
 
@@ -685,19 +753,13 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
     CONF: devMode ? metamaskrc : {},
     SENTRY_DSN: process.env.SENTRY_DSN,
     SENTRY_DSN_DEV: metamaskrc.SENTRY_DSN_DEV,
-    INFURA_PROJECT_ID: getInfuraProjectId({ environment, testing }),
+    INFURA_PROJECT_ID: getInfuraProjectId({ buildType, environment, testing }),
     SEGMENT_HOST: metamaskrc.SEGMENT_HOST,
-    // When we're in the 'production' environment we will use a specific key only set in CI
-    // Otherwise we'll use the key from .metamaskrc or from the environment variable. If
-    // the value of SEGMENT_WRITE_KEY that we envify is undefined then no events will be tracked
-    // in the build. This is intentional so that developers can contribute to MetaMask without
-    // inflating event volume.
-    SEGMENT_WRITE_KEY:
-      environment === ENVIRONMENT.PRODUCTION
-        ? process.env.SEGMENT_PROD_WRITE_KEY
-        : metamaskrc.SEGMENT_WRITE_KEY,
+    SEGMENT_WRITE_KEY: getSegmentWriteKey({ buildType, environment }),
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
+    COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
+    EIP_1559_V2: metamaskrc.EIP_1559_V2 === '1',
   };
 }
 

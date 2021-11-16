@@ -1,0 +1,17 @@
+.gas-details-item {
+  &__estimate {
+    font-weight: 400;
+    font-style: italic;
+    font-size: 12px;
+    color: $Grey-500;
+    line-height: inherit;
+  }
+
+  &__gasfee-label {
+    font-weight: bold;
+  }
+
+  &__currency-container {
+    position: relative;
+  }
+}
