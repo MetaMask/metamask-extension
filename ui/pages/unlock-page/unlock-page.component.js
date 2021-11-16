@@ -164,7 +164,7 @@ export default class UnlockPage extends Component {
               autoComplete="current-password"
               minLength={8}
               maxLength={20}
-              pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]"
+              pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]{8,20}"
               theme="material"
               fullWidth
             />

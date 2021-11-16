@@ -296,7 +296,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           autoComplete="new-password"
           minLength={8}
           maxLength={20}
-          pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]"
+          pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]{8,20}"
           margin="normal"
           largeLabel
         />
@@ -315,7 +315,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
           autoComplete="new-password"
           minLength={8}
           maxLength={20}
-          pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]"
+          pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]{8,20}"
           margin="normal"
           largeLabel
         />
