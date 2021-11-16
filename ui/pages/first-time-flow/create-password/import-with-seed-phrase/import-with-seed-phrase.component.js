@@ -294,7 +294,9 @@ export default class ImportWithSeedPhrase extends PureComponent {
           onChange={(event) => this.handlePasswordChange(event.target.value)}
           error={passwordError}
           autoComplete="new-password"
-          passwordrules="minlength: 8; maxlength: 20; required: lower; required: upper; required: digit;"
+          minLength={8}
+          maxLength={20}
+          pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]"
           margin="normal"
           largeLabel
         />
@@ -311,7 +313,9 @@ export default class ImportWithSeedPhrase extends PureComponent {
           }
           error={confirmPasswordError}
           autoComplete="new-password"
-          passwordrules="minlength: 8; maxlength: 20; required: lower; required: upper; required: digit;"
+          minLength={8}
+          maxLength={20}
+          pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]"
           margin="normal"
           largeLabel
         />

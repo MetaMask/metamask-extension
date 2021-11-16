@@ -93,7 +93,9 @@ const getMaterialThemeInputProps = ({
   autoComplete,
   placeholder,
   name,
-  passwordrules,
+  minLength,
+  maxLength,
+  pattern,
 }) => ({
   InputLabelProps: {
     classes: {
@@ -114,7 +116,9 @@ const getMaterialThemeInputProps = ({
       autoComplete,
       placeholder,
       name,
-      passwordrules,
+      minLength,
+      maxLength,
+      pattern,
     },
   },
 });
@@ -133,7 +137,9 @@ const getMaterialWhitePaddedThemeInputProps = ({
   autoComplete,
   placeholder,
   name,
-  passwordrules,
+  minLength,
+  maxLength,
+  pattern,
 }) => ({
   InputProps: {
     startAdornment,
@@ -150,7 +156,9 @@ const getMaterialWhitePaddedThemeInputProps = ({
       autoComplete,
       placeholder,
       name,
-      passwordrules,
+      minLength,
+      maxLength,
+      pattern,
     },
   },
 });
@@ -174,7 +182,9 @@ const getBorderedThemeInputProps = ({
   autoComplete,
   placeholder,
   name,
-  passwordrules,
+  minLength,
+  maxLength,
+  pattern,
 }) => ({
   InputLabelProps: {
     shrink: true,
@@ -200,7 +210,9 @@ const getBorderedThemeInputProps = ({
       autoComplete,
       placeholder,
       name,
-      passwordrules,
+      minLength,
+      maxLength,
+      pattern,
     },
   },
 });
@@ -223,7 +235,9 @@ const TextField = ({
   autoComplete,
   placeholder,
   name,
-  passwordrules,
+  minLength,
+  maxLength,
+  pattern,
   ...textFieldProps
 }) => {
   const inputProps = themeToInputProps[theme]({
@@ -236,7 +250,9 @@ const TextField = ({
     autoComplete,
     placeholder,
     name,
-    passwordrules,
+    minLength,
+    maxLength,
+    pattern,
   });
 
   return (
@@ -267,7 +283,9 @@ TextField.propTypes = {
   autoComplete: PropTypes.string,
   placeholder: PropTypes.string,
   name: PropTypes.string,
-  passwordrules: PropTypes.string,
+  minLength: PropTypes.number,
+  maxLength: PropTypes.number,
+  pattern: PropTypes.string,
 };
 
 export default withStyles(styles)(TextField);

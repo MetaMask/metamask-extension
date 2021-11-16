@@ -178,7 +178,9 @@ export default class NewAccount extends PureComponent {
             error={passwordError}
             autoFocus
             autoComplete="new-password"
-            passwordrules="minlength: 8; maxlength: 20; required: lower; required: upper; required: digit;"
+            minLength={8}
+            maxLength={20}
+            pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]"
             margin="normal"
             fullWidth
             largeLabel
@@ -196,7 +198,9 @@ export default class NewAccount extends PureComponent {
             }
             error={confirmPasswordError}
             autoComplete="confirm-password"
-            passwordrules="minlength: 8; maxlength: 20; required: lower; required: upper; required: digit;"
+            minLength={8}
+            maxLength={20}
+            pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]"
             margin="normal"
             fullWidth
             largeLabel

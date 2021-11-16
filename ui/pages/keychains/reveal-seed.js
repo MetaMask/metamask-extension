@@ -75,7 +75,9 @@ class RevealSeedPage extends Component {
             placeholder={t('password')}
             id="password-box"
             name="password-box"
-            passwordrules="minlength: 8; maxlength: 20; required: lower; required: upper; required: digit;"
+            minLength={8}
+            maxLength={20}
+            pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]"
             value={this.state.password}
             onChange={(event) =>
               this.setState({ password: event.target.value })

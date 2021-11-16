@@ -162,7 +162,9 @@ export default class UnlockPage extends Component {
               error={error}
               autoFocus
               autoComplete="current-password"
-              passwordrules="minlength: 8; maxlength: 20; required: lower; required: upper; required: digit;"
+              minLength={8}
+              maxLength={20}
+              pattern="[a-zA-Z0-9!#$%&'()*+,-.:;<=>?@^_`{|}~]"
               theme="material"
               fullWidth
             />
