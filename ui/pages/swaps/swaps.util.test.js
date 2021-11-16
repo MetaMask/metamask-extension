@@ -37,7 +37,6 @@ import {
   countDecimals,
   shouldEnableDirectWrapping,
   showRemainingTimeInMinAndSec,
-  getEstimatedFeeForSmartTransaction,
 } from './swaps.util';
 
 jest.mock('../../helpers/utils/storage-helpers.js', () => ({

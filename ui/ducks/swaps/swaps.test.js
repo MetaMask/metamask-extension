@@ -59,20 +59,6 @@ describe('Ducks - Swaps', () => {
       return apiNock.reply(200, featureFlagsResponse);
     };
 
-    const mockSmartTransactionsLivenessApiResponse = ({
-      smartTransactionsLiveness,
-      replyWithError = false,
-    } = {}) => {
-      const apiNock = nock('http://localhost:4000/networks/1').get('/health');
-      if (replyWithError) {
-        return apiNock.replyWithError({
-          message: 'Server error. Try again later',
-          code: 'serverSideError',
-        });
-      }
-      return apiNock.reply(200, smartTransactionsLiveness);
-    };
-
     const createGetState = () => {
       return () => ({
         metamask: { provider: { ...providerState } },
