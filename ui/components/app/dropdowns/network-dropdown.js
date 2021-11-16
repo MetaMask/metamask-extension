@@ -324,7 +324,7 @@ class NetworkDropdown extends Component {
                     history.push(`${ADVANCED_ROUTE}#show-testnets`);
                   }}
                 >
-                  {t('disableEnable')}
+                  {t('showHide')}
                 </a>,
               ])}
               <button

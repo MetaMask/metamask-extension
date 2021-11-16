@@ -641,9 +641,6 @@
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
   },
-  "disableEnable": {
-    "message": "Disable/enable"
-  },
   "disconnect": {
     "message": "Disconnect"
   },
@@ -2245,6 +2242,9 @@
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
   },
+  "showHide": {
+    "message": "Show/hide"
+  },
   "showIncomingTransactions": {
     "message": "Show Incoming Transactions"
   },
@@ -2805,7 +2805,7 @@
   },
   "toggleTestNetworks": {
     "message": "$1 test networks",
-    "description": "$1 is a clickable link with text defined by the 'disableEnable' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
