@@ -6,7 +6,7 @@
     "message": "版本、支持中心和联系方式。"
   },
   "acceleratingATransaction": {
-    "message": "_ 设定更高的燃料价格以提高网络快速处理几率，可以加快交易完成进度，但无法保证每次均能够实现提速。"
+    "message": "* 设定更高的燃料价格以提高网络快速处理几率，可以加快交易完成进度，但无法保证每次均能够实现提速。"
   },
   "acceptTermsOfUse": {
     "message": "我已阅读并同意$1",
@@ -2162,7 +2162,7 @@
     "message": "写下你的保密恢复短语（助记词）"
   },
   "selectAHigherGasFee": {
-    "message": "选择更高的燃料费用，提高交易处理速度。_"
+    "message": "选择更高的燃料费用，提高交易处理速度。*"
   },
   "selectAccounts": {
     "message": "选择账户"
