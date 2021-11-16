@@ -58,7 +58,7 @@ const EditGasItem = ({ estimateType, onClose }) => {
       <span
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${estimateType}`}
       >
-        {minWaitTimeEstimate && toHumanReadableTime(minWaitTimeEstimate, t)}
+        {minWaitTimeEstimate && toHumanReadableTime(t, minWaitTimeEstimate)}
       </span>
       <span
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${estimateType}`}
