@@ -503,7 +503,7 @@
     "message": "编辑权限"
   },
   "encryptionPublicKeyNotice": {
-    "message": "$1 希望得到您的加密公钥。同意后该网站将可以想您发送加密信息。",
+    "message": "$1 希望得到您的加密公钥。同意后该网站将可以向您发送加密信息。",
     "description": "$1 is the web3 site name"
   },
   "encryptionPublicKeyRequest": {

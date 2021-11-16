@@ -24,6 +24,7 @@ import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 
 import { getGasFeeTimeEstimate } from '../../../store/actions';
 import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
+import { useGasFeeContext } from '../../../contexts/gasFee';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
@@ -49,6 +50,7 @@ export default function GasTiming({
 
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
   const t = useContext(I18nContext);
+  const { estimateToUse } = useGasFeeContext();
 
   // If the user has chosen a value lower than the low gas fee estimate,
   // We'll need to use the useEffect hook below to make a call to calculate
@@ -94,12 +96,17 @@ export default function GasTiming({
     previousIsUnknownLow,
   ]);
 
-  const unknownProcessingTimeText = (
-    <>
-      {t('editGasTooLow')}{' '}
-      <InfoTooltip position="top" contentText={t('editGasTooLowTooltip')} />
-    </>
-  );
+  let unknownProcessingTimeText;
+  if (EIP_1559_V2) {
+    unknownProcessingTimeText = t('editGasTooLow');
+  } else {
+    unknownProcessingTimeText = (
+      <>
+        {t('editGasTooLow')}{' '}
+        <InfoTooltip position="top" contentText={t('editGasTooLowTooltip')} />
+      </>
+    );
+  }
 
   if (
     gasWarnings?.maxPriorityFee === GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW ||
@@ -148,8 +155,9 @@ export default function GasTiming({
       ]);
     }
   } else {
-    attitude = 'negative';
-
+    if (!EIP_1559_V2 || estimateToUse === 'low') {
+      attitude = 'negative';
+    }
     // If the user has chosen a value less than our low estimate,
     // calculate a potential wait time
     if (isUnknownLow) {
@@ -191,7 +199,8 @@ export default function GasTiming({
     <Typography
       variant={TYPOGRAPHY.H7}
       className={classNames('gas-timing', {
-        [`gas-timing--${attitude}`]: attitude,
+        [`gas-timing--${attitude}`]: attitude && !EIP_1559_V2,
+        [`gas-timing--${attitude}-V2`]: attitude && EIP_1559_V2,
       })}
     >
       {text}

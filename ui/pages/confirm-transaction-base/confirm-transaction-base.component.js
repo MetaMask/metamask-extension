@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
 import {
@@ -54,6 +52,7 @@ import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
 import GasDetailsItem from './gas-details-item';
+import LowPriorityMessage from './low-priority-message';
 
 // eslint-disable-next-line prefer-destructuring
 const EIP_1559_V2 = process.env.EIP_1559_V2;
@@ -414,6 +413,7 @@ export default class ConfirmTransactionBase extends Component {
 
     return (
       <div className="confirm-page-container-content__details">
+        {EIP_1559_V2 && <LowPriorityMessage />}
         <TransactionDetail
           onEdit={() => this.handleEditGas()}
           rows={[
@@ -499,6 +499,7 @@ export default class ConfirmTransactionBase extends Component {
                       type={PRIMARY}
                       value={hexMinimumTransactionFee}
                       hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                      numberOfDecimals={isMultiLayerFeeNetwork ? 18 : 6}
                     />
                   </div>
                 }
@@ -823,11 +824,6 @@ export default class ConfirmTransactionBase extends Component {
     };
   }
 
-  _beforeUnload = () => {
-    const { txData: { id } = {}, cancelTransaction } = this.props;
-    cancelTransaction({ id });
-  };
-
   _beforeUnloadForGasPolling = () => {
     this._isMounted = false;
     if (this.state.pollingToken) {
@@ -837,9 +833,6 @@ export default class ConfirmTransactionBase extends Component {
   };
 
   _removeBeforeUnload = () => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.removeEventListener('beforeunload', this._beforeUnload);
-    }
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
@@ -862,10 +855,6 @@ export default class ConfirmTransactionBase extends Component {
         origin,
       },
     });
-
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
 
     getNextNonce();
     if (toAddress) {

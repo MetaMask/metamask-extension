@@ -1,5 +1,5 @@
 node_modules/**
-lavamoat/*/policy.json
+lavamoat/**/policy.json
 dist/**
 builds/**
 test-*/**
