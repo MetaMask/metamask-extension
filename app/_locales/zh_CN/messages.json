@@ -6,7 +6,7 @@
     "message": "版本、支持中心和联系方式。"
   },
   "acceleratingATransaction": {
-    "message": "* 设定更高的燃料价格以提高网络快速处理几率，可以加快交易完成进度，但无法保证每次均能够实现提速。"
+    "message": "_ 设定更高的燃料价格以提高网络快速处理几率，可以加快交易完成进度，但无法保证每次均能够实现提速。"
   },
   "acceptTermsOfUse": {
     "message": "我已阅读并同意$1",
@@ -610,7 +610,7 @@
     "message": "解密请求"
   },
   "defaultNetwork": {
-    "message": "Ether 交易的默认网络是以太坊主网络。你也可以$1测试网络 $2。",
+    "message": "Ether 交易的默认网络是以太坊主网络。你也可以$1 测试网络 $2。",
     "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "delete": {
@@ -1449,11 +1449,11 @@
     "message": "绝不收集密钥、地址、交易、余额、哈希值或任何个人信息"
   },
   "metametricsCommitmentsNeverCollectIP": {
-    "message": "$1收集你的完整 IP 地址",
+    "message": "$1 收集你的完整 IP 地址",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsNeverCollectKeysEtc": {
-    "message": "$1收集密钥、地址、交易、余额、哈希值或任何个人信息",
+    "message": "$1 收集密钥、地址、交易、余额、哈希值或任何个人信息",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsNeverIP": {
@@ -1463,7 +1463,7 @@
     "message": "绝不为利益而出售您的数据，永远不会！"
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
-    "message": "$1为利益而出售您的数据，永远不会！",
+    "message": "$1 为利益而出售您的数据，永远不会！",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
   },
   "metametricsCommitmentsSendAnonymizedEvents": {
@@ -1479,7 +1479,7 @@
     "message": "我们希望收集基本的使用数据，以提高我们产品的可用性。这些指标将……"
   },
   "metametricsTitle": {
-    "message": "加入 600 多万用户的行列，改进MetaMask"
+    "message": "加入 600 多万用户的行列，改进 MetaMask"
   },
   "mismatchedChain": {
     "message": "这个链 ID 的网络详情与我们的记录不符。我们建议你在进行之前先 $1 。",
@@ -1803,7 +1803,7 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onboardingShowIncomingTransactionsDescription": {
-    "message": "在你的钱包中显示传入的交易依赖于与 $1的通信，Etherscan 将可以访问你的以太坊地址和你的 IP 地址。详情见 $2。",
+    "message": "在你的钱包中显示传入的交易依赖于与 $1 的通信，Etherscan 将可以访问你的以太坊地址和你的 IP 地址。详情见 $2。",
     "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
   },
   "onboardingUsePhishingDetectionDescription": {
@@ -2162,7 +2162,7 @@
     "message": "写下你的保密恢复短语（助记词）"
   },
   "selectAHigherGasFee": {
-    "message": "选择更高的燃料费用，提高交易处理速度。*"
+    "message": "选择更高的燃料费用，提高交易处理速度。_"
   },
   "selectAccounts": {
     "message": "选择账户"
@@ -2547,7 +2547,7 @@
   },
   "swapPriceDifference": {
     "message": "您将兑换 $1 $2（~$3）为 $4 $5（~$6）。",
-    "description": "This message represents the price slippage for the swap.  $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
+    "description": "This message represents the price slippage for the swap. $1 and $4 are a number (ex: 2.89), $2 and $5 are symbols (ex: ETH), and $3 and $6 are fiat currency amounts."
   },
   "swapPriceDifferenceTitle": {
     "message": "价格差异 ~$1%",
