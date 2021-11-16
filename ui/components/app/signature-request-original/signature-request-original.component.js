@@ -75,10 +75,7 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderBalance = () => {
-    const {
-      conversionRate,
-      nativeCurrency,
-    } = this.props;
+    const { conversionRate, nativeCurrency } = this.props;
 
     const {
       fromAccount: { balance },
