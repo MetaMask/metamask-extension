@@ -7,7 +7,7 @@ import Typography from '../../ui/typography/typography';
 
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import { COLORS } from '../../../helpers/constants/design-system';
-import { GasLevelIconMap } from '../../../helpers/constants/gas';
+import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function TransactionDetail({ rows = [], onEdit }) {
@@ -29,7 +29,7 @@ export default function TransactionDetail({ rows = [], onEdit }) {
         <div className="transaction-detail-edit-V2">
           <button onClick={onEdit}>
             <span className="transaction-detail-edit-V2__icon">
-              {`${GasLevelIconMap[estimateUsed]} `}
+              {`${PRIORITY_LEVEL_ICON_MAP[estimateUsed]} `}
             </span>
             <span className="transaction-detail-edit-V2__label">
               {t(estimateUsed)}

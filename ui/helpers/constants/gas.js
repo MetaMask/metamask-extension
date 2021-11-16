@@ -32,7 +32,7 @@ export function getGasFormErrorText(type, t, { minimumGasLimit } = {}) {
   }
 }
 
-export const GasLevelIconMap = {
+export const PRIORITY_LEVEL_ICON_MAP = {
   low: '🐢',
   medium: '🦊',
   high: '🦍',

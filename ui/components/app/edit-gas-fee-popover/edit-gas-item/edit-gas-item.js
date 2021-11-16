@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
 import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
-import { GasLevelIconMap } from '../../../../helpers/constants/gas';
+import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import {
   decGWEIToHexWEI,
@@ -93,8 +93,8 @@ const EditGasItem = ({ priorityLevel, onClose }) => {
   return (
     <div
       className={classNames('edit-gas-item', {
-        [`edit-gas-item-selected`]: priorityLevel === estimateUsed,
-        [`edit-gas-item-disabled`]:
+        'edit-gas-item-selected': priorityLevel === estimateUsed,
+        'edit-gas-item-disabled':
           priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
           !dappSuggestedGasFees,
       })}
@@ -105,7 +105,7 @@ const EditGasItem = ({ priorityLevel, onClose }) => {
         <span
           className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
         >
-          {GasLevelIconMap[priorityLevel]}
+          {PRIORITY_LEVEL_ICON_MAP[priorityLevel]}
         </span>
         <I18nValue
           messageKey={
