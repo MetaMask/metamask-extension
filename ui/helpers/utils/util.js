@@ -413,7 +413,8 @@ export function getURLHostName(url) {
 const MINUTE_CUTOFF = 90 * 60;
 const SECOND_CUTOFF = 90;
 
-export const toHumanReadableTime = (milliseconds = 1, t) => {
+export const toHumanReadableTime = (t, milliseconds) => {
+  if (milliseconds === undefined || milliseconds === null) return '';
   const seconds = Math.ceil(milliseconds / 1000);
   if (seconds <= SECOND_CUTOFF) {
     return t('gasTimingSecondsShort', [seconds]);
