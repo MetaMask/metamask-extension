@@ -100,6 +100,7 @@ export default class ConfirmTransactionBase extends Component {
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
+    dataHexComponent: PropTypes.node,
     hideData: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
@@ -565,7 +566,34 @@ export default class ConfirmTransactionBase extends Component {
             </span>
           </div>
           <TransactionDecoding to={txParams?.to} inputData={txParams?.data} />
-          {/* {params && (
+        </div>
+      )
+    );
+  }
+
+  renderDataHex(functionType) {
+    const { t } = this.context;
+    const {
+      txData: { txParams } = {},
+      methodData: { params } = {},
+      hideData,
+      dataComponent,
+    } = this.props;
+
+    if (hideData) {
+      return null;
+    }
+
+    return (
+      dataComponent || (
+        <div className="confirm-page-container-content__data">
+          <div className="confirm-page-container-content__data-box-label">
+            {`${t('functionType')}:`}
+            <span className="confirm-page-container-content__function-type">
+              {functionType}
+            </span>
+          </div>
+          {params && (
             <div className="confirm-page-container-content__data-box">
               <div className="confirm-page-container-content__data-field-label">
                 {`${t('parameters')}:`}
@@ -580,7 +608,7 @@ export default class ConfirmTransactionBase extends Component {
           </div>
           <div className="confirm-page-container-content__data-box">
             {txParams?.data}
-          </div> */}
+          </div>
         </div>
       )
     );
@@ -931,6 +959,7 @@ export default class ConfirmTransactionBase extends Component {
         hideSubtitle={hideSubtitle}
         detailsComponent={this.renderDetails()}
         dataComponent={this.renderData(functionType)}
+        dataHexComponent={this.renderDataHex(functionType)}
         contentComponent={contentComponent}
         nonce={customNonceValue || nonce}
         unapprovedTxCount={unapprovedTxCount}

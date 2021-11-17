@@ -39,6 +39,7 @@ export default class ConfirmPageContainer extends Component {
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
     dataComponent: PropTypes.node,
+    dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
@@ -92,6 +93,7 @@ export default class ConfirmPageContainer extends Component {
       hideSubtitle,
       detailsComponent,
       dataComponent,
+      dataHexComponent,
       onCancelAll,
       onCancel,
       onSubmit,
@@ -175,6 +177,7 @@ export default class ConfirmPageContainer extends Component {
             hideSubtitle={hideSubtitle}
             detailsComponent={detailsComponent}
             dataComponent={dataComponent}
+            dataHexComponent={dataHexComponent}
             errorMessage={errorMessage}
             errorKey={errorKey}
             identiconAddress={identiconAddress}
