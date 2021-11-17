@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import log from 'loglevel';
 import { URDecoder } from '@ngraveio/bc-ur';
-import QrReader from 'react-qr-reader';
 import PropTypes from 'prop-types';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import WebcamUtils from '../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { SECOND } from '../../../../shared/constants/time';
+import EnhancedReader from './enhanced-reader';
 
 const READY_STATE = {
   ACCESSING_CAMERA: 'ACCESSING_CAMERA',
@@ -26,6 +27,7 @@ const BaseReader = ({
   const [error, setError] = useState(null);
   const [urDecoder, setURDecoder] = useState(new URDecoder());
   const [progress, setProgress] = useState(0);
+
   let permissionChecker = null;
   const mounted = useRef(false);
 
@@ -55,7 +57,7 @@ const BaseReader = ({
     }
     // initial attempt is required to trigger permission prompt
     // eslint-disable-next-line no-use-before-define
-    initCamera();
+    return initCamera();
   };
 
   const checkPermissions = async () => {
@@ -63,14 +65,15 @@ const BaseReader = ({
       const { permissions } = await WebcamUtils.checkStatus();
       if (permissions) {
         // Let the video stream load first...
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, SECOND * 2));
         if (!mounted.current) {
           return;
         }
         setReady(READY_STATE.READY);
       } else if (mounted.current) {
         // Keep checking for permissions
-        permissionChecker = setTimeout(checkPermissions, 1000);
+        permissionChecker = setTimeout(checkPermissions, SECOND);
+        setReady(READY_STATE.NEED_TO_ALLOW_ACCESS);
       }
     } catch (e) {
       if (mounted.current) {
@@ -79,9 +82,32 @@ const BaseReader = ({
     }
   };
 
-  const initCamera = async () => {
+  const handleScan = (data) => {
     try {
-      await checkPermissions();
+      if (!data) {
+        return;
+      }
+      urDecoder.receivePart(data);
+      if (urDecoder.isComplete()) {
+        const result = urDecoder.resultUR();
+        setProgress(1);
+        handleSuccess(result).catch(setError);
+      } else {
+        setProgress(urDecoder.getProgress());
+      }
+    } catch (e) {
+      if (isReadingWallet) {
+        setErrorTitle(t('QRHardwareUnknownQRCodeTitle'));
+      } else {
+        setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
+      }
+      setError(new Error(t('unknownQrCode')));
+    }
+  };
+
+  const initCamera = () => {
+    try {
+      checkPermissions();
     } catch (e) {
       if (!mounted.current) {
         return;
@@ -118,33 +144,6 @@ const BaseReader = ({
     clearTimeout(permissionChecker);
     reset();
     checkEnvironment();
-  };
-
-  const handleError = (e) => {
-    setError(e);
-  };
-
-  const handleScan = (data) => {
-    try {
-      if (!data) {
-        return;
-      }
-      urDecoder.receivePart(data);
-      if (urDecoder.isComplete()) {
-        const result = urDecoder.resultUR();
-        setProgress(1);
-        handleSuccess(result).catch(setError);
-      } else {
-        setProgress(urDecoder.getProgress());
-      }
-    } catch (e) {
-      if (isReadingWallet) {
-        setErrorTitle(t('QRHardwareUnknownQRCodeTitle'));
-      } else {
-        setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
-      }
-      setError(new Error(t('unknownQrCode')));
-    }
   };
 
   const renderError = () => {
@@ -198,18 +197,10 @@ const BaseReader = ({
     } else if (ready === READY_STATE.NEED_TO_ALLOW_ACCESS) {
       message = t('youNeedToAllowCameraAccess');
     }
-
     return (
       <>
         <div className="qr-scanner__content">
-          <div className="qr-scanner__content__video-wrapper">
-            <QrReader
-              delay={300}
-              onError={handleError}
-              onScan={handleScan}
-              style={{ width: '100%', filter: 'blur(4px)' }}
-            />
-          </div>
+          <EnhancedReader handleScan={handleScan} showSpinner={progress >= 1} />
         </div>
         {progress > 0 && (
           <div className="qr-scanner__status">{`${Math.floor(
