@@ -4,7 +4,7 @@ import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import CheckBox from '../../../ui/check-box';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { getPermissionLocaleMessageParams } from '../../../../helpers/utils/util';
+import { getPermissionLocaleMessage } from '../../../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IN
 
 export default class PermissionPageContainerContent extends PureComponent {
@@ -44,7 +44,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       }
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       else {
-        description = t(...getPermissionLocaleMessageParams(permissionName));
+        description = getPermissionLocaleMessage(t, permissionName);
       }
       ///: END:ONLY_INCLUDE_IN
 
