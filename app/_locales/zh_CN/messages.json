@@ -173,6 +173,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask 测试版",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approvalAndAggregatorTxFeeCost": {
     "message": "批准聚合商网络手续费"
   },
@@ -609,10 +617,6 @@
   "decryptRequest": {
     "message": "解密请求"
   },
-  "defaultNetwork": {
-    "message": "Ether 交易的默认网络是以太坊主网络。你也可以$1 测试网络 $2。",
-    "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
-  },
   "delete": {
     "message": "删除"
   },
@@ -636,9 +640,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "如果您已经有了一些 Ether，最快捷的方法就是直接向新钱包存入 Ether。"
-  },
-  "disable": {
-    "message": "禁用"
   },
   "disconnect": {
     "message": "断开"
@@ -790,9 +791,6 @@
   },
   "editPermission": {
     "message": "修改权限"
-  },
-  "enable": {
-    "message": "启用"
   },
   "enableFromSettings": {
     "message": "从设置中启用它。"
@@ -2244,6 +2242,9 @@
   "showHexDataDescription": {
     "message": "选择此选项在发送页面显示十六进制数据字域"
   },
+  "showHide": {
+    "message": "显示/隐藏"
+  },
   "showIncomingTransactions": {
     "message": "显示收到的交易"
   },
@@ -2801,6 +2802,10 @@
   "toAddress": {
     "message": "至：$1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toggleTestNetworks": {
+    "message": "$1测试网络",
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "代币"
