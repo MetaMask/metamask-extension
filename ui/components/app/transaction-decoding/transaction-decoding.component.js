@@ -146,7 +146,9 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       <li className="solidity-value">
         <div className="solidity-named-item solidity-item">
           {!Array.isArray(value) ? (
-            <span className="param-name typography--color-black">{name}: </span>
+            <span className="param-name typography--weight-bold typography--color-black">
+              {name}:{' '}
+            </span>
           ) : null}
           <span className="sol-item solidity-uint">
             {renderLeafValue({ name, typeClass, type, value, kind })}
@@ -214,24 +216,15 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   }, [to, chainId, data]);
 
   return (
-    <div className="transaction-decoding-wrapper">
+    <div className="tx-insight-wrapper">
       {loading ? (
-        <div className="transaction-decoding-wrapper-loading">
+        <div className="tx-insight-wrapper-loading">
           <Spinner color="#F7C06C" />
         </div>
       ) : (
-        <div className="transaction-decoding-wrapper-content">
+        <div className="tx-insight-wrapper-content">
           <div className="tree-component">
-            <ol>
-              <li>
-                <details open>
-                  <summary className="typography--weight-bold typography--color-black">
-                    Transaction data:{' '}
-                  </summary>
-                  <ol>{tx.map(renderTreeItems)}</ol>
-                </details>
-              </li>
-            </ol>
+            <ol>{tx.map(renderTreeItems)}</ol>
           </div>
           <div className="copy-raw-tx">
             <Tooltip position="right" title={copied ? 'Copied!' : ''}>

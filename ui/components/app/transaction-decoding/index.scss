@@ -1,4 +1,18 @@
-.transaction-decoding-wrapper {
+// @import 'components/address/index'; 
+
+
+.tx-insight-wrapper {
+
+  // styling for address component
+  .tx-insight-component-address {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      &__sender-icon {
+        padding-right: 5px;
+      }
+  }
+
   &-loading {
     display: flex;
     justify-content: center;
@@ -49,10 +63,10 @@
     }
 
     font-size: 0.875rem;
-    line-height: 2;
+    line-height: 175%;
     
     & > ol {
-      padding-left: 5px;
+      padding-left: 0;
     }
     
     .eth-tx-params {
@@ -72,48 +86,48 @@
   
     ol ol {
       padding-left: 22px;
-      border-left: 1px solid #D6D9DC;
-      margin-left: 7px;
+      margin-left: 4px;
     }
 
-    details > summary::-webkit-details-marker, details > summary::marker {
-      display: none;
-      content: '';
-    }
+    // details > summary::-webkit-details-marker, details > summary::marker {
+    //   display: none;
+    //   content: '';
+    // }
   
     details > summary {
       position: relative;
-      padding-left: 20px;
-      &::before {
-        position: absolute;
-        content: " ";
-        flex: 0 0 auto;
-        height: 16px;
-        width: 16px;
-        background-image: url("images/icons/expand.svg");
-        background-size: contain;
-        background-repeat: no-repeat;
-        cursor: pointer;
-        left: 0;
-        top: 7px;
-      }
+      cursor: pointer;
+      // padding-left: 20px;
+      // &::before {
+      //   position: absolute;
+      //   content: " ";
+      //   flex: 0 0 auto;
+      //   height: 16px;
+      //   width: 16px;
+      //   background-image: url("images/icons/expand.svg");
+      //   background-size: contain;
+      //   background-repeat: no-repeat;
+      //   cursor: pointer;
+      //   left: 0;
+      //   top: 7px;
+      // }
     }
   
-    details[open] > summary {
-      &::before {
-        position: absolute;
-        content: " ";
-        flex: 0 0 auto;
-        height: 16px;
-        width: 16px;
-        background-image: url("images/icons/collapse.svg");
-        background-size: contain;
-        background-repeat: no-repeat;
-        cursor: pointer;
-        left: 0;
-        top: 7px;
-      }
-    }
+    // details[open] > summary {
+    //   &::before {
+    //     position: absolute;
+    //     content: " ";
+    //     flex: 0 0 auto;
+    //     height: 16px;
+    //     width: 16px;
+    //     background-image: url("images/icons/collapse.svg");
+    //     background-size: contain;
+    //     background-repeat: no-repeat;
+    //     cursor: pointer;
+    //     left: 0;
+    //     top: 7px;
+    //   }
+    // }
     
     .solidity-value > div {
       display: flex;
@@ -175,6 +189,7 @@
     .solidity-value {
       color: #6A737D;
       overflow-x: hidden;
+      padding-bottom: 5px;
     }
   
     .eth-tx-params details > summary {

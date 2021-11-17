@@ -19,21 +19,11 @@ const Address = ({
 
   let tooltipHtml = <p>{t('copiedExclamation')}</p>;
   if (!addressCopied) {
-    if (addressOnly && !recipientNickname && !recipientEns) {
-      tooltipHtml = <p>{t('copyAddress')}</p>;
-    } else {
-      tooltipHtml = (
-        <p>
-          {shortenAddress(checksummedRecipientAddress)}
-          <br />
-          {t('copyAddress')}
-        </p>
-      );
-    }
+    tooltipHtml = '';
   }
   return (
     <div
-      className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
+      className="tx-insight tx-insight-component tx-insight-component-address"
       onClick={() => {
         setAddressCopied(true);
         copyToClipboard(checksummedRecipientAddress);
@@ -42,18 +32,17 @@ const Address = ({
         }
       }}
     >
-      <div className="sender-to-recipient__sender-icon">
+      <div className="tx-insight-component-address__sender-icon">
         <Identicon address={checksummedRecipientAddress} diameter={18} />
       </div>
       <Tooltip
-        position="bottom"
+        position="right"
         html={tooltipHtml}
-        offset={-10}
-        wrapperClassName="sender-to-recipient__tooltip-wrapper"
-        containerClassName="sender-to-recipient__tooltip-container"
+        wrapperClassName="tx-insight-component-address__tooltip-wrapper"
+        containerClassName="tx-insight-component-address__tooltip-container"
         onHidden={() => setAddressCopied(false)}
       >
-        <div className="sender-to-recipient__name">
+        <div className="address__name">
           {addressOnly
             ? recipientNickname ||
               recipientEns ||
