@@ -1139,9 +1139,6 @@
   "id": {
     "message": "ID"
   },
-  "tryAnywayOption": {
-    "message": "I will try anyway"
-  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
