@@ -1356,12 +1356,6 @@ export function acceptWatchAsset(suggestedAssetID) {
   };
 }
 
-export function addKnownMethodData(fourBytePrefix, methodData) {
-  return () => {
-    background.addKnownMethodData(fourBytePrefix, methodData);
-  };
-}
-
 export function clearPendingTokens() {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
@@ -2396,19 +2390,6 @@ export function rejectPermissionsRequest(requestId) {
 export function removePermissionsFor(domains) {
   return (dispatch) => {
     background.removePermissionsFor(domains, (err) => {
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
-  };
-}
-
-/**
- * Clears all permissions for all domains.
- */
-export function clearPermissions() {
-  return (dispatch) => {
-    background.clearPermissions((err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
