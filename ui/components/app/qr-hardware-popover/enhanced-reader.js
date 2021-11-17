@@ -6,16 +6,14 @@ import PropTypes from 'prop-types';
 import { MILLISECOND } from '../../../../shared/constants/time';
 import Spinner from '../../ui/spinner';
 
-const EnhancedReader = ({ handleScan, showSpinner }) => {
+const EnhancedReader = ({ handleScan }) => {
   const [canplay, setCanplay] = useState(false);
-  const playVideo = useMemo(() => {
-    return canplay && !showSpinner;
-  }, [canplay, showSpinner]);
   const codeReader = useMemo(() => {
     const hint = new Map();
     hint.set(DecodeHintType.POSSIBLE_FORMATS, [BarcodeFormat.QR_CODE]);
     return new BrowserQRCodeReader(hint, {
       delayBetweenScanAttempts: MILLISECOND * 100,
+      delayBetweenScanSuccess: MILLISECOND * 100,
     });
   }, []);
 
@@ -52,19 +50,18 @@ const EnhancedReader = ({ handleScan, showSpinner }) => {
       <video
         id="video"
         style={{
-          display: playVideo ? 'block' : 'none',
+          display: canplay ? 'block' : 'none',
           width: '100%',
           filter: 'blur(4px)',
         }}
       />
-      {playVideo ? null : <Spinner color="#F7C06C" />}
+      {canplay ? null : <Spinner color="#F7C06C" />}
     </div>
   );
 };
 
 EnhancedReader.propTypes = {
   handleScan: PropTypes.func.isRequired,
-  showSpinner: PropTypes.bool.isRequired,
 };
 
 export default EnhancedReader;

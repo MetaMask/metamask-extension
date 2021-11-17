@@ -321,45 +321,43 @@ export default class SelectHardware extends Component {
 
   renderQRHardwareWalletSteps() {
     const steps = [];
-    steps.push({
-      title: this.context.t('QRHardwareWalletSteps1Title'),
-      message: this.context.t('QRHardwareWalletSteps1Description'),
-    });
-
-    steps.push({
-      message: (
-        <>
-          <a
-            className="hw-connect__msg-link"
-            href="https://keyst.one"
-            rel="noopener noreferrer"
-            target="_blank"
-            key="keystone-support-link"
-          >
-            {this.context.t('keystone')}
-          </a>
-          <a
-            className="hw-connect__msg-link"
-            href="https://keyst.one/mm"
-            rel="noopener noreferrer"
-            target="_blank"
-            key="keystone-tutorial-link"
-          >
-            {this.context.t('keystoneTutorial')}
-          </a>
-        </>
-      ),
-    });
-
-    steps.push({
-      message: this.context.t('QRHardwareWalletSteps2Description'),
-    });
-
-    steps.push({
-      asset: 'qrcode-wallet-demo',
-      dimensions: { width: '225px', height: '75px' },
-    });
-
+    steps.push(
+      {
+        title: this.context.t('QRHardwareWalletSteps1Title'),
+        message: this.context.t('QRHardwareWalletSteps1Description'),
+      },
+      {
+        message: (
+          <>
+            <a
+              className="hw-connect__msg-link"
+              href="https://keyst.one"
+              rel="noopener noreferrer"
+              target="_blank"
+              key="keystone-support-link"
+            >
+              {this.context.t('keystone')}
+            </a>
+            <a
+              className="hw-connect__msg-link"
+              href="https://keyst.one/mm"
+              rel="noopener noreferrer"
+              target="_blank"
+              key="keystone-tutorial-link"
+            >
+              {this.context.t('keystoneTutorial')}
+            </a>
+          </>
+        ),
+      },
+      {
+        message: this.context.t('QRHardwareWalletSteps2Description'),
+      },
+      {
+        asset: 'qrcode-wallet-demo',
+        dimensions: { width: '225px', height: '75px' },
+      },
+    );
     return (
       <div className="hw-tutorial">
         {steps.map((step, index) => (
