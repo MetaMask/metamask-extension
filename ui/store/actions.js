@@ -1659,12 +1659,6 @@ export function hideNetworkDropdown() {
   };
 }
 
-export function hideTestNetMessage() {
-  return {
-    type: actionConstants.HIDE_TESTNET_MESSAGE,
-  };
-}
-
 export function showModal(payload) {
   return {
     type: actionConstants.MODAL_OPEN,
@@ -3109,4 +3103,8 @@ export function fetchSmartTransactionsLiveness() {
 // DetectTokenController
 export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
+}
+
+export function hideTestNetMessage() {
+  return promisifiedBackground.setShowTestnetMessageInDropdown(false);
 }

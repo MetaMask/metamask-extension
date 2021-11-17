@@ -30,6 +30,7 @@ export default class AppStateController extends EventEmitter {
       fullScreenGasPollTokens: [],
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
+      showTestnetMessageInDropdown: true,
       ...initState,
     });
     this.timer = null;
@@ -227,5 +228,13 @@ export default class AppStateController extends EventEmitter {
       notificationGasPollTokens: [],
       fullScreenGasPollTokens: [],
     });
+  }
+
+  /**
+   * Sets whether the testnet dismissal link should be shown in the network dropdown
+   * @returns {void}
+   */
+  setShowTestnetMessageInDropdown(showTestnetMessageInDropdown) {
+    this.store.updateState({ showTestnetMessageInDropdown });
   }
 }

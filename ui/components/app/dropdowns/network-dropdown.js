@@ -43,7 +43,7 @@ function mapStateToProps(state) {
     shouldShowTestNetworks: getShowTestNetworks(state),
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
-    showTestnetMessageInDropdown: state.appState.showTestnetMessageInDropdown,
+    showTestnetMessageInDropdown: state.metamask.showTestnetMessageInDropdown,
   };
 }
 
@@ -313,10 +313,7 @@ class NetworkDropdown extends Component {
           <div className="network-dropdown-divider" />
           {showTestnetMessageInDropdown ? (
             <div className="network-dropdown-content">
-              {t('defaultNetwork', [
-                <span key="testNetworksEnabled">
-                  {shouldShowTestNetworks ? t('disable') : t('enable')}
-                </span>,
+              {t('toggleTestNetworks', [
                 <a
                   href="#"
                   key="advancedSettingsLink"
@@ -327,14 +324,15 @@ class NetworkDropdown extends Component {
                     history.push(`${ADVANCED_ROUTE}#show-testnets`);
                   }}
                 >
-                  {t('here')}
+                  {t('showHide')}
                 </a>,
               ])}
               <button
-                title={t('dismiss')}
                 onClick={hideTestNetMessage}
-                className="fas fa-times network-dropdown-content--close"
-              />
+                className="network-dropdown-content--dismiss"
+              >
+                {t('dismiss')}
+              </button>
             </div>
           ) : null}
         </div>

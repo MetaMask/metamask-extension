@@ -56,7 +56,6 @@ export default function reduceApp(state = {}, action) {
     ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
-    showTestnetMessageInDropdown: true,
     ...state,
   };
 
@@ -72,12 +71,6 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         networkDropdownOpen: false,
-      };
-
-    case actionConstants.HIDE_TESTNET_MESSAGE:
-      return {
-        ...appState,
-        showTestnetMessageInDropdown: false,
       };
 
     // alert methods

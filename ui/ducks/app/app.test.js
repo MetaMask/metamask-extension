@@ -38,16 +38,6 @@ describe('App State', () => {
     expect(newState.networkDropdownOpen).toStrictEqual(false);
   });
 
-  it('sets showTestnetMessageInDropdown dropdown to false', () => {
-    const testnetMessage = { showTestnetMessageInDropdown: true };
-    const state = { ...metamaskState, ...testnetMessage };
-    const newState = reduceApp(state, {
-      type: actions.HIDE_TESTNET_MESSAGE,
-    });
-
-    expect(newState.showTestnetMessageInDropdown).toStrictEqual(false);
-  });
-
   it('opens alert', () => {
     const state = reduceApp(metamaskState, {
       type: actions.ALERT_OPEN,
