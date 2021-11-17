@@ -7,56 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.7.0]
-### Uncategorized
-- Use v2 API for fiat onboarding URL creation, fix wrapping / unwrapping ([#12729](https://github.com/MetaMask/metamask-extension/pull/12729))
-- Make ToggleButton keyboard accessible ([#12727](https://github.com/MetaMask/metamask-extension/pull/12727))
-- Sync `master` with `develop` ([#12724](https://github.com/MetaMask/metamask-extension/pull/12724))
-- Fix yarn.lock
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Ensure the test network dismissal message in the network dropdown is permanently dismissed ([#12723](https://github.com/MetaMask/metamask-extension/pull/12723))
-- Updates to network dropdown test network messaging ([#12722](https://github.com/MetaMask/metamask-extension/pull/12722))
-- Fix manifest i18n substitutions for Beta and Flask ([#12717](https://github.com/MetaMask/metamask-extension/pull/12717))
-- Fix typo in network.js ([#12636](https://github.com/MetaMask/metamask-extension/pull/12636))
-- Scroll to "show test networks" setting from network dropdown link ([#12711](https://github.com/MetaMask/metamask-extension/pull/12711))
-- Add RPC method handler hook selection ([#12664](https://github.com/MetaMask/metamask-extension/pull/12664))
-- Add per-build type LavaMoat policies ([#12702](https://github.com/MetaMask/metamask-extension/pull/12702))
-- addresses an issue found in 10.6.0 QA ([#12710](https://github.com/MetaMask/metamask-extension/pull/12710))
-- Adding scroll bar to handle overflow of long network lists ([#12706](https://github.com/MetaMask/metamask-extension/pull/12706))
-- Add migration to set showTestNetworks to true if there is evidence of testnet use ([#12675](https://github.com/MetaMask/metamask-extension/pull/12675))
-- Replace history during onboarding ([#12693](https://github.com/MetaMask/metamask-extension/pull/12693))
-- GridPlus: Updates `eth-lattice-keyring` to v0.4.0 for UX improvements ([#12649](https://github.com/MetaMask/metamask-extension/pull/12649))
-- Updating Card ui component and adding story ([#12666](https://github.com/MetaMask/metamask-extension/pull/12666))
-- Updating Chip component ([#12671](https://github.com/MetaMask/metamask-extension/pull/12671))
-- Implement 'Add NFT' screen ([#12544](https://github.com/MetaMask/metamask-extension/pull/12544))
-- Show correct base asset in Signature Request view ([#12696](https://github.com/MetaMask/metamask-extension/pull/12696))
-- Reject popup confirmations on close ([#12643](https://github.com/MetaMask/metamask-extension/pull/12643))
-- Sync `master` with `develop` ([#12692](https://github.com/MetaMask/metamask-extension/pull/12692))
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Changes in edit link on confirm transaction page ([#12567](https://github.com/MetaMask/metamask-extension/pull/12567))
-- Sync `master` with `develop` ([#12678](https://github.com/MetaMask/metamask-extension/pull/12678))
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- fix typo ([#12672](https://github.com/MetaMask/metamask-extension/pull/12672))
-- Show warning in confirm transaction screen for low/high gas values. ([#12545](https://github.com/MetaMask/metamask-extension/pull/12545))
-- Fix copy issues related to layer 2 fee changes ([#12667](https://github.com/MetaMask/metamask-extension/pull/12667))
-- Update LavaMoat policy ([#12665](https://github.com/MetaMask/metamask-extension/pull/12665))
-- eth-json-rpc-middleware@8.0.0 ([#10738](https://github.com/MetaMask/metamask-extension/pull/10738))
-- EIP-1559 V2 : Adding advancedGasFee property to Preference Controller ([#12577](https://github.com/MetaMask/metamask-extension/pull/12577))
-- We shouldn't be changing decimal places as user type, we should do that on blur. ([#12631](https://github.com/MetaMask/metamask-extension/pull/12631))
-- Fixing MetaFox logo display on Approval Screen in full width ([#12656](https://github.com/MetaMask/metamask-extension/pull/12656))
-- Create codeql-analysis.yml ([#12652](https://github.com/MetaMask/metamask-extension/pull/12652))
-- metametrics - ensure segment submission failures do not bubble up ([#12573](https://github.com/MetaMask/metamask-extension/pull/12573))
-- Add platform-specific build type manifest modifications ([#12638](https://github.com/MetaMask/metamask-extension/pull/12638))
-- Use gas estimate type constants ([#12460](https://github.com/MetaMask/metamask-extension/pull/12460))
-- Lavamoat - enable lavamoat for the webapp background ([#12566](https://github.com/MetaMask/metamask-extension/pull/12566))
-- Refactor tests for AdvancedGasInputs ([#12445](https://github.com/MetaMask/metamask-extension/pull/12445))
-- Approval screen: Center justify address display content ([#12639](https://github.com/MetaMask/metamask-extension/pull/12639))
-- Update Chinese translations: correct typos. ([#12586](https://github.com/MetaMask/metamask-extension/pull/12586))
-- Fix untranslated header text in AccountImportSubview ([#12640](https://github.com/MetaMask/metamask-extension/pull/12640))
-- Onboarding v2 e2e test ([#12628](https://github.com/MetaMask/metamask-extension/pull/12628))
-- Fix lint errors ([#12645](https://github.com/MetaMask/metamask-extension/pull/12645))
-- Fix flaky account removal e2e test ([#12607](https://github.com/MetaMask/metamask-extension/pull/12607))
-- Adding GasFee context ([#12530](https://github.com/MetaMask/metamask-extension/pull/12530))
-- Fix/ux papercuts account details issue #12292 ([#12399](https://github.com/MetaMask/metamask-extension/pull/12399))
+### Added
+- [#12545](https://github.com/MetaMask/metamask-extension/pull/12545): Add warning to confirm transaction screen for low and high gas values
+
+### Changed
+- [#12643](https://github.com/MetaMask/metamask-extension/pull/12643): Reject popup confirmations on close
+- [#12566](https://github.com/MetaMask/metamask-extension/pull/12566): Enable LavaMoat for the webapp background
+- [#12399](https://github.com/MetaMask/metamask-extension/pull/12399): Update the "Account Details" view
+  - Change "Close" icon color from gray -> black
+  - Display the entire account address
+  - Use rounded style for "View on Etherscan" and "Export Private Key" buttons
+
+### Fixed
+- [#12696](https://github.com/MetaMask/metamask-extension/pull/12696): Show correct base asset for current network in the Signature Request view
+- [#12727](https://github.com/MetaMask/metamask-extension/pull/12727): Make toggle buttons keyboard accessible
+- [#12729](https://github.com/MetaMask/metamask-extension/pull/12729): Swaps: Fix issue with wrapping and unwrapping when an address contains uppercase characters
+- [#12631](https://github.com/MetaMask/metamask-extension/pull/12631): Fix bug preventing sending high precision decimal amounts of tokens in the send flow
 
 ## [10.6.0]
 ### Added
