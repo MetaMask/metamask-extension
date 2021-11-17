@@ -22,6 +22,8 @@ import {
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
+import CopyRawData from '../../components/app/transaction-decoding/components/ui/copy-raw-data';
+
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import {
@@ -577,7 +579,7 @@ export default class ConfirmTransactionBase extends Component {
       txData: { txParams } = {},
       methodData: { params } = {},
       hideData,
-      dataComponent,
+      dataHexComponent,
     } = this.props;
 
     if (hideData) {
@@ -585,12 +587,12 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     return (
-      dataComponent || (
+      dataHexComponent || (
         <div className="confirm-page-container-content__data">
           <div className="confirm-page-container-content__data-box-label">
             {`${t('functionType')}:`}
             <span className="confirm-page-container-content__function-type">
-              {functionType}
+              {`${functionType} (${params.map(({ type }) => type).join(', ')})`}
             </span>
           </div>
           {params && (
@@ -609,6 +611,7 @@ export default class ConfirmTransactionBase extends Component {
           <div className="confirm-page-container-content__data-box">
             {txParams?.data}
           </div>
+          <CopyRawData data={txParams?.data} />
         </div>
       )
     );
@@ -921,6 +924,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.state;
 
     const { name } = methodData;
+    console.log('🚀  ~ methodData', methodData);
     const { valid, errorKey } = this.getErrorKey();
     const {
       totalTx,

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
-import Tooltip from '../../../../ui/tooltip/tooltip';
-import { shortenAddress } from '../../../../../helpers/utils/util';
-import Identicon from '../../../../ui/identicon';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import Tooltip from '../../../../../ui/tooltip/tooltip';
+import { shortenAddress } from '../../../../../../helpers/utils/util';
+import Identicon from '../../../../../ui/identicon';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 
 const Address = ({
   checksummedRecipientAddress,

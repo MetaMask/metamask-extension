@@ -1,0 +1,27 @@
+.copy-raw-data {
+    display: flex;
+    align-items: center;
+    &__button {
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        margin-top: 10px;
+        background-color: transparent;
+
+        &:hover {
+        background-color: #f2f3f4;
+        }
+
+        &:active {
+        background-color: #ededed;
+        }
+    }  
+    &__icon {
+        padding-right: 6px;
+    } 
+    &__label {
+        color: #6A737D
+    }
+}

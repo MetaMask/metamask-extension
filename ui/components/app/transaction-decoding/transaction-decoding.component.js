@@ -8,21 +8,17 @@ import { getSelectedAccount, getCurrentChainId } from '../../../selectors';
 import { FETCH_PROJECT_INFO_URI, TX_EXTRA_URI } from './constants';
 import { hexToDecimal } from '../../../helpers/utils/conversions.util';
 import { ethers } from 'ethers';
-import CopyIcon from '../../ui/icon/copy-icon.component';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import Tooltip from '../../ui/tooltip';
 import * as Codec from '@truffle/codec';
 import inspect from 'browser-util-inspect';
-import { RecipientWithAddress } from '../../ui/sender-to-recipient/sender-to-recipient.component';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { I18nContext } from '../../../contexts/i18n';
 
-import Address from './components/address';
+import CopyRawData from './components/ui/copy-raw-data/';
+import Address from './components/decoding/address';
 
 export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const t = useContext(I18nContext);
   const [tx, setTx] = useState([]);
-  const [copied, handleCopy] = useCopyToClipboard();
   const { address: from } = useSelector(getSelectedAccount);
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
 
@@ -211,7 +207,6 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       // transform tx decoding arguments into tree data
       const params = transformTxDecoding(decoding?.arguments);
       setTx(params);
-      console.log('tree data', params);
     })();
   }, [to, chainId, data]);
 
@@ -223,28 +218,11 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         </div>
       ) : (
         <div className="tx-insight-wrapper-content">
-          <div className="tree-component">
+          <div className="tx-insight-content__tree-component">
             <ol>{tx.map(renderTreeItems)}</ol>
           </div>
-          <div className="copy-raw-tx">
-            <Tooltip position="right" title={copied ? 'Copied!' : ''}>
-              <button
-                onClick={() => {
-                  handleCopy(data);
-                }}
-                className="copy-raw-tx__button"
-              >
-                <div className="copy-raw-tx__icon">
-                  <CopyIcon size={12} color="#BBC0C5" />
-                </div>
-                <div className="copy-raw-tx__label">
-                  Copy raw transaction data
-                </div>
-              </button>
-            </Tooltip>
-            {/* <div className="copy-raw-tx__status">
-              
-            </div> */}
+          <div className="tx-insight-content__copy-raw-tx">
+            <CopyRawData data={data} />
           </div>
         </div>
       )}
