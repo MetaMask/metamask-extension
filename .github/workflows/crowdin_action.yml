@@ -6,7 +6,9 @@ permissions:
 
 on:
   push:
-    branches: [ develop ]
+    branches:
+      - develop
+      - feature/crowdin
   schedule:
     - cron: "0 */12 * * *"
 
