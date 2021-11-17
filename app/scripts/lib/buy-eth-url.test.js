@@ -7,6 +7,7 @@ import {
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { TRANSAK_API_KEY } from '../constants/on-ramp';
+import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
 import getBuyEthUrl from './buy-eth-url';
 
 const WYRE_ACCOUNT_ID = 'AC-7AG3W4XH4N2';
@@ -28,7 +29,7 @@ const KOVAN = {
 
 describe('buy-eth-url', function () {
   it('returns Wyre url with an ETH address for Ethereum mainnet', async function () {
-    nock('https://api2.metaswap.codefi.network')
+    nock(SWAPS_API_V2_BASE_URL)
       .get(
         `/networks/1/fiatOnRampUrl?serviceName=wyre&destinationAddress=${ETH_ADDRESS}`,
       )
