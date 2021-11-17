@@ -28,8 +28,10 @@ const KOVAN = {
 
 describe('buy-eth-url', function () {
   it('returns Wyre url with an ETH address for Ethereum mainnet', async function () {
-    nock('https://api.metaswap.codefi.network')
-      .get(`/fiatOnRampUrl?serviceName=wyre&destinationAddress=${ETH_ADDRESS}`)
+    nock('https://api2.metaswap.codefi.network')
+      .get(
+        `/networks/1/fiatOnRampUrl?serviceName=wyre&destinationAddress=${ETH_ADDRESS}`,
+      )
       .reply(200, {
         url: `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=ETH&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
       });
