@@ -592,7 +592,9 @@ export default class ConfirmTransactionBase extends Component {
           <div className="confirm-page-container-content__data-box-label">
             {`${t('functionType')}:`}
             <span className="confirm-page-container-content__function-type">
-              {`${functionType} (${params.map(({ type }) => type).join(', ')})`}
+              {`${functionType} (${
+                params ? params.map(({ type }) => type).join(', ') : null
+              })`}
             </span>
           </div>
           {params && (
