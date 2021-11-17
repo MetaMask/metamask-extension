@@ -1,22 +1,20 @@
 .advanced-gas-popover {
+  &__header-border {
+    border-bottom: 1px solid $Grey-200;
+  }
 
-    &__header-border {
-        border-bottom: 1px solid $Grey-200;
-    }
+  &__input-details-wrap {
+    display: flex;
+  }
 
-    &__input-details-wrap {
-        display: flex;
-    }
+  & &__edit-link {
+    @include H7;
 
-    & &__edit-link {
-        @include H7;
-    
-        display: inline;
-        padding: 0 5px 16px;
-    }
+    display: inline;
+    padding: 0 5px 16px;
+  }
 
-    &__input-subtext {
-        display: flex;
-    }
+  &__input-subtext {
+    display: flex;
+  }
 }
-

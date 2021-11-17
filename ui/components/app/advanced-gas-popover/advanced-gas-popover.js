@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import FormField from '../../ui/form-field';
 import Box from '../../ui/box';
@@ -52,6 +52,7 @@ const AdvancedGasPopover = ({ onClose }) => {
   const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(
     baseFeeMultiplier,
   );
+
   const baseFee = multiplyCurrencies(estimatedBaseFee, maxBaseFeeMultiplier, {
     numberOfDecimals: 6,
     multiplicandBase: 16,
@@ -60,7 +61,7 @@ const AdvancedGasPopover = ({ onClose }) => {
     fromDenomination: 'WEI',
     toDenomination: 'GWEI',
   });
-
+  const [maxBaseFeeGWEI, setMaxBaseFeeGWEI] = useState(baseFee);
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
   const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
     decGWEIToHexWEI(baseFee),
@@ -78,19 +79,85 @@ const AdvancedGasPopover = ({ onClose }) => {
     parseFloat(priorityFeeInFiat.split('$')[1]) >= 0.01
       ? t('fiatApproxValueShown', [priorityFeeInFiat])
       : t('fiatValueLowerThanDecimalsShown');
-  const setBaseFee = (value) => {
-    let baseFeeMul = value;
-    if (editingInGwei) {
-      baseFeeMul = divideCurrencies(decGWEIToHexWEI(value), estimatedBaseFee, {
-        numberOfDecimals: 6,
-        dividendBase: 16,
-        divisorBase: 16,
-        toNumericBase: 'dec',
-      });
-    }
-    console.log(baseFeeMul);
-    setMaxBaseFeeMultiplier(baseFeeMul);
-  };
+
+  const setBaseFee = useCallback(
+    (value) => {
+      let baseFeeValue = value;
+      if (editingInGwei) {
+        baseFeeValue = divideCurrencies(
+          decGWEIToHexWEI(value),
+          estimatedBaseFee,
+          {
+            numberOfDecimals: 6,
+            dividendBase: 16,
+            divisorBase: 16,
+            toNumericBase: 'dec',
+          },
+        );
+        setMaxBaseFeeGWEI(value);
+        setMaxBaseFeeMultiplier(baseFeeValue);
+      } else {
+        baseFeeValue = multiplyCurrencies(estimatedBaseFee, value, {
+          numberOfDecimals: 6,
+          multiplicandBase: 16,
+          multiplierBase: 10,
+          toNumericBase: 'dec',
+          fromDenomination: 'WEI',
+          toDenomination: 'GWEI',
+        });
+        setMaxBaseFeeMultiplier(value);
+        setMaxBaseFeeGWEI(baseFeeValue);
+      }
+    },
+    [
+      estimatedBaseFee,
+      editingInGwei,
+      setMaxBaseFeeGWEI,
+      setMaxBaseFeeMultiplier,
+    ],
+  );
+
+  const updateBaseFeeMode = useCallback(
+    (value) => {
+      if (value) {
+        const baseFeeGwei = multiplyCurrencies(
+          estimatedBaseFee,
+          maxBaseFeeMultiplier,
+          {
+            numberOfDecimals: 6,
+            multiplicandBase: 16,
+            multiplierBase: 10,
+            toNumericBase: 'dec',
+            fromDenomination: 'WEI',
+            toDenomination: 'GWEI',
+          },
+        );
+        setMaxBaseFeeGWEI(baseFeeGwei);
+      } else {
+        const baseFeeMul = divideCurrencies(
+          decGWEIToHexWEI(maxBaseFeeGWEI),
+          estimatedBaseFee,
+          {
+            numberOfDecimals: 6,
+            dividendBase: 16,
+            divisorBase: 16,
+            toNumericBase: 'dec',
+          },
+        );
+        setMaxBaseFeeMultiplier(baseFeeMul);
+      }
+      setEditingInGwei(value);
+    },
+    [
+      estimatedBaseFee,
+      maxBaseFeeMultiplier,
+      maxBaseFeeGWEI,
+      setMaxBaseFeeGWEI,
+      setMaxBaseFeeMultiplier,
+      setEditingInGwei,
+    ],
+  );
+
   return (
     <Popover
       headerClassName="advanced-gas-popover__header-border"
@@ -115,7 +182,7 @@ const AdvancedGasPopover = ({ onClose }) => {
               <Button
                 className="advanced-gas-popover__edit-link"
                 type="link"
-                onClick={() => setEditingInGwei(false)}
+                onClick={() => updateBaseFeeMode(false)}
               >
                 {t('editInMultiplier')}
               </Button>
@@ -123,13 +190,13 @@ const AdvancedGasPopover = ({ onClose }) => {
               <Button
                 className="advanced-gas-popover__edit-link"
                 type="link"
-                onClick={() => setEditingInGwei(true)}
+                onClick={() => updateBaseFeeMode(true)}
               >
                 {t('editInGwei')}
               </Button>
             )
           }
-          value={editingInGwei ? baseFee : maxBaseFeeMultiplier}
+          value={editingInGwei ? maxBaseFeeGWEI : maxBaseFeeMultiplier}
           detailText={
             editingInGwei
               ? t('baseFeeFiatFromMultiplier', [
