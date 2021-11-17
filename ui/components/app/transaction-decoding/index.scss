@@ -2,7 +2,7 @@
 
 @import './components/ui/copy-raw-data/index';
 .tx-insight-wrapper {
-
+  overflow-x: hidden;
   // styling for address component
   .tx-insight-component-address {
       display: flex;
@@ -70,6 +70,7 @@
       details > summary {
         position: relative;
         cursor: pointer;
+        padding-bottom: 5px;
         // padding-left: 20px;
         // &::before {
         //   position: absolute;
@@ -102,9 +103,6 @@
       //   }
       // }
       
-      .solidity-value > div {
-        display: flex;
-      }
     
       .eth-tx-params .solidity-func-name {
         width: fit-content;
@@ -163,6 +161,12 @@
         color: #6A737D;
         overflow-x: hidden;
         padding-bottom: 5px;
+
+        & > div {
+          display: flex;
+          flex-wrap: wrap;
+          word-break: break-all;
+        }
       }
     
       .eth-tx-params details > summary {

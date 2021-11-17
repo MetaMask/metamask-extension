@@ -121,20 +121,14 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     }
   };
 
-  const renderTreeItems = ({
-    name,
-    kind,
-    typeClass,
-    type,
-    value,
-    children,
-  }) => {
+  const renderTreeItems = (
+    { name, kind, typeClass, type, value, children },
+    index,
+  ) => {
     return children ? (
       <li>
-        <details>
-          <summary className="typography--weight-bold typography--color-black">
-            {name}:{' '}
-          </summary>
+        <details open={index === 0 ? 'open' : ''}>
+          <summary>{name}: </summary>
           <ol>{children.map(renderTreeItems)}</ol>
         </details>
       </li>
