@@ -275,11 +275,18 @@ export const shouldEnableDirectWrapping = (
   sourceToken,
   destinationToken,
 ) => {
+  if (!sourceToken || !destinationToken) {
+    return false;
+  }
   const wrappedToken = SWAPS_WRAPPED_TOKENS_ADDRESSES[chainId];
   const nativeToken = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.address;
+  const sourceTokenLowerCase = sourceToken.toLowerCase();
+  const destinationTokenLowerCase = destinationToken.toLowerCase();
   return (
-    (sourceToken === wrappedToken && destinationToken === nativeToken) ||
-    (sourceToken === nativeToken && destinationToken === wrappedToken)
+    (sourceTokenLowerCase === wrappedToken &&
+      destinationTokenLowerCase === nativeToken) ||
+    (sourceTokenLowerCase === nativeToken &&
+      destinationTokenLowerCase === wrappedToken)
   );
 };
 
