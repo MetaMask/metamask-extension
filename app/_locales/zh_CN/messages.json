@@ -43,11 +43,11 @@
   "activityLog": {
     "message": "活动日志"
   },
-  "addANetwork": {
-    "message": "添加网络"
-  },
   "add": {
     "message": "添加"
+  },
+  "addANetwork": {
+    "message": "添加网络"
   },
   "addAcquiredTokens": {
     "message": "在 MetaMask 上添加获得的代币"
