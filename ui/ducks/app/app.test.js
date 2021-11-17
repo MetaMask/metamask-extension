@@ -393,7 +393,7 @@ describe('App State', () => {
       type: actions.SET_UNSIGNED_TRANSACTIONS_AND_ESTIMATES,
       payload: createGetTransactionsApiResponse(),
     });
-    expect(state.appState.unsignedTransactionsAndEstimates).toMatchObject(
+    expect(state.unsignedTransactionsAndEstimates).toMatchObject(
       createGetTransactionsApiResponse(),
     );
   });
@@ -403,7 +403,7 @@ describe('App State', () => {
       type: actions.SET_SMART_TRANSACTIONS_LIVENESS,
       payload: true,
     });
-    expect(state.appState.smartTransactionsLiveness).toStrictEqual(true);
+    expect(state.smartTransactionsLiveness).toStrictEqual(true);
   });
 
   it('smart transactions - SET_SMART_TRANSACTIONS_ERROR', () => {
@@ -411,8 +411,6 @@ describe('App State', () => {
       type: actions.SET_SMART_TRANSACTIONS_ERROR,
       payload: 'Server Side Error',
     });
-    expect(state.appState.smartTransactionsLiveness).toStrictEqual(
-      'Server Side Error',
-    );
+    expect(state.smartTransactionsError).toStrictEqual('Server Side Error');
   });
 });
