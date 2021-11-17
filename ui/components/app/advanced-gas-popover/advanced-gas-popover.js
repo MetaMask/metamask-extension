@@ -160,7 +160,7 @@ const AdvancedGasPopover = ({ onClose }) => {
 
   return (
     <Popover
-      headerClassName="advanced-gas-popover__header-border"
+      className="advanced-gas-popover"
       title="Advanced gas fee"
       onBack={() => onClose()}
       onClose={() => onClose()}
@@ -219,20 +219,18 @@ const AdvancedGasPopover = ({ onClose }) => {
                   Current:
                 </Typography>
                 <Typography
-                  tag={TYPOGRAPHY.H8}
+                  tag={TYPOGRAPHY.Paragraph}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                 >
                   {`${estimatedBaseFeeInDecGWEI} GWEI`}
-                  <img
-                    height="10"
-                    width="10"
-                    src="./images/high-arrow.svg"
-                    alt=""
-                  />
                 </Typography>
+                <img height="18" src="./images/high-arrow.svg" alt="" />
               </Box>
-              <Box className="advanced-gas-popover__input-subtext">
+              <Box
+                marginLeft={4}
+                className="advanced-gas-popover__input-subtext"
+              >
                 <Typography
                   tag={TYPOGRAPHY.H8}
                   variant={TYPOGRAPHY.H8}
@@ -277,20 +275,18 @@ const AdvancedGasPopover = ({ onClose }) => {
                   Current:
                 </Typography>
                 <Typography
-                  tag={TYPOGRAPHY.H8}
+                  tag={TYPOGRAPHY.Paragraph}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                 >
                   1-18 GWEI
-                  <img
-                    height="10"
-                    width="10"
-                    src="./images/low-arrow.svg"
-                    alt=""
-                  />
                 </Typography>
+                <img height="18" src="./images/low-arrow.svg" alt="" />
               </Box>
-              <Box className="advanced-gas-popover__input-subtext">
+              <Box
+                marginLeft={4}
+                className="advanced-gas-popover__input-subtext"
+              >
                 <Typography
                   tag={TYPOGRAPHY.H8}
                   variant={TYPOGRAPHY.H8}

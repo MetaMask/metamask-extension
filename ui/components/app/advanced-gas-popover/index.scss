@@ -1,8 +1,4 @@
 .advanced-gas-popover {
-  &__header-border {
-    border-bottom: 1px solid $Grey-200;
-  }
-
   &__input-details-wrap {
     display: flex;
   }
@@ -16,5 +12,12 @@
 
   &__input-subtext {
     display: flex;
+  }
+
+  .popover-header {
+    border-radius: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: 1px solid $Grey-200;
   }
 }
