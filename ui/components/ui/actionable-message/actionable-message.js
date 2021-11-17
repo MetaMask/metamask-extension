@@ -37,7 +37,7 @@ export default function ActionableMessage({
   );
 
   const onlyOneAction =
-    (primaryAction || secondaryAction) && (!primaryAction || !secondaryAction);
+    (primaryAction && !secondaryAction) || (secondaryAction && !primaryAction);
 
   return (
     <div className={actionableMessageClassName}>
