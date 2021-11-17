@@ -37,7 +37,7 @@ export default function SmartTransactionListItem({
   let displayedStatusKey;
   if (status === 'pending') {
     displayedStatusKey = TRANSACTION_GROUP_STATUSES.PENDING;
-  } else if (status.startsWith('cancelled')) {
+  } else if (status?.startsWith('cancelled')) {
     displayedStatusKey = TRANSACTION_GROUP_STATUSES.CANCELLED;
   }
   const showCancelSwapLink =

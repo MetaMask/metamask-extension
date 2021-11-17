@@ -150,7 +150,9 @@ export default function SmartTransactionStatus() {
 
   const isSmartTransactionPending = smartTransactionStatus === 'pending';
   const showCloseButtonOnly =
-    isSmartTransactionPending || smartTransactionStatus === 'success';
+    smartTransactionStatus === '' ||
+    isSmartTransactionPending ||
+    smartTransactionStatus === 'success';
 
   useEffect(() => {
     stxStatusPageLoadedEvent();
