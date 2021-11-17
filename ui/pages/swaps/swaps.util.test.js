@@ -425,12 +425,12 @@ describe('Swaps Util', () => {
     });
 
     it('returns true if swapping from ETH with uppercase chars to WETH', () => {
-      const ethContractAddressWithUpperCaseChars =
+      const ethAddressWithUpperCaseChars =
         '0X0000000000000000000000000000000000000000';
       expect(
         shouldEnableDirectWrapping(
           MAINNET_CHAIN_ID,
-          ethContractAddressWithUpperCaseChars,
+          ethAddressWithUpperCaseChars,
           WETH_CONTRACT_ADDRESS,
         ),
       ).toBe(true);
