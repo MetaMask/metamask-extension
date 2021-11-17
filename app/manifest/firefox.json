@@ -4,6 +4,5 @@
       "id": "webextension@metamask.io",
       "strict_min_version": "68.0"
     }
-  },
-  "content_security_policy": "script-src 'self' blob:; object-src 'self'"
+  }
 }

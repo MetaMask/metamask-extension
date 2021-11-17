@@ -412,6 +412,47 @@
         "Intl.getCanonicalLocales": true
       }
     },
+    "@keystonehq/base-eth-keyring": {
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@keystonehq/bc-ur-registry-eth": true,
+        "buffer": true,
+        "ethereumjs-util": true,
+        "hdkey": true,
+        "uuid": true
+      }
+    },
+    "@keystonehq/bc-ur-registry": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "@ngraveio/bc-ur": true,
+        "bs58check": true,
+        "buffer": true
+      }
+    },
+    "@keystonehq/bc-ur-registry-eth": {
+      "packages": {
+        "@keystonehq/bc-ur-registry": true,
+        "buffer": true,
+        "ethereumjs-util": true,
+        "hdkey": true,
+        "uuid": true
+      }
+    },
+    "@keystonehq/metamask-airgapped-keyring": {
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@keystonehq/base-eth-keyring": true,
+        "@keystonehq/bc-ur-registry-eth": true,
+        "@metamask/obs-store": true,
+        "buffer": true,
+        "events": true,
+        "rlp": true,
+        "uuid": true
+      }
+    },
     "@material-ui/core": {
       "globals": {
         "Image": true,
@@ -618,6 +659,18 @@
         "events": true
       }
     },
+    "@ngraveio/bc-ur": {
+      "packages": {
+        "@apocentre/alias-sampling": true,
+        "assert": true,
+        "bignumber.js": true,
+        "buffer": true,
+        "cbor-sync": true,
+        "crc": true,
+        "jsbi": true,
+        "sha.js": true
+      }
+    },
     "@popperjs/core": {
       "globals": {
         "Element": true,
@@ -735,6 +788,23 @@
       "packages": {
         "is-buffer": true,
         "util": true
+      }
+    },
+    "@zxing/browser": {
+      "globals": {
+        "HTMLElement": true,
+        "HTMLImageElement": true,
+        "HTMLVideoElement": true,
+        "URL.createObjectURL": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "document": true,
+        "navigator": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@zxing/library": true
       }
     },
     "@zxing/library": {
@@ -974,6 +1044,9 @@
       }
     },
     "bn.js": {
+      "globals": {
+        "Buffer": true
+      },
       "packages": {
         "browser-resolve": true
       }
@@ -1098,6 +1171,14 @@
         "buffer": true
       }
     },
+    "cbor-sync": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "buffer": true
+      }
+    },
     "cids": {
       "packages": {
         "buffer": true,
@@ -1188,6 +1269,11 @@
     "core-util-is": {
       "packages": {
         "is-buffer": true
+      }
+    },
+    "crc": {
+      "packages": {
+        "buffer": true
       }
     },
     "crc-32": {
@@ -2006,6 +2092,7 @@
     "hdkey": {
       "packages": {
         "assert": true,
+        "bs58check": true,
         "coinstring": true,
         "crypto-browserify": true,
         "safe-buffer": true,
@@ -2556,6 +2643,11 @@
     "jsan": {
       "globals": {
         "console.warn": true
+      }
+    },
+    "jsbi": {
+      "globals": {
+        "define": true
       }
     },
     "json-rpc-engine": {
@@ -3766,6 +3858,17 @@
     "qrcode-generator": {
       "globals": {
         "define": true
+      }
+    },
+    "qrcode.react": {
+      "globals": {
+        "Path2D": true,
+        "devicePixelRatio": true
+      },
+      "packages": {
+        "prop-types": true,
+        "qr.js": true,
+        "react": true
       }
     },
     "rabin-wasm": {
