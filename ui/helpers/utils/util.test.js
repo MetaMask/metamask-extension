@@ -342,32 +342,43 @@ describe('util', () => {
   });
 
   describe('getPermissionLocaleMessageKey', () => {
-    it('should return the correct parameters for non-namespaced messages', () => {
+    it('should handle non-namespaced permissions', () => {
+      const translationMock = jest.fn();
+
       [
         'snap_clearState',
         'snap_confirm',
         'snap_getState',
         'snap_updateState',
       ].forEach((permissionName) => {
-        expect(
-          util.getPermissionLocaleMessageParams(permissionName),
-        ).toStrictEqual([permissionName]);
+        util.getPermissionLocaleMessage(translationMock, permissionName);
+        expect(translationMock).toHaveBeenCalledWith(permissionName);
+        translationMock.mockRestore();
       });
     });
 
-    it('should return the correct parameters for namespaced messages', () => {
-      expect(
-        util.getPermissionLocaleMessageParams('wallet_snap_fooSnap'),
-      ).toStrictEqual(['wallet_snap_', ['fooSnap']]);
-      expect(
-        util.getPermissionLocaleMessageParams('snap_getBip44Entropy_461'),
-      ).toStrictEqual(['snap_getBip44Entropy_', ['461']]);
+    it('should handle namespaced permissions', () => {
+      const translationMock = jest.fn();
+
+      [
+        ['wallet_snap_fooSnap', 'wallet_snap_'],
+        ['snap_getBip44Entropy_461', 'snap_getBip44Entropy_'],
+      ].forEach(([permissionName, namespacePrefix]) => {
+        util.getPermissionLocaleMessage(translationMock, permissionName);
+        expect(translationMock).toHaveBeenCalledWith(namespacePrefix, [
+          permissionName.replace(namespacePrefix, ''),
+        ]);
+        translationMock.mockRestore();
+      });
     });
 
-    it('should return the correct parameters for unknown messages', () => {
-      expect(
-        util.getPermissionLocaleMessageParams('wallet_fooBar'),
-      ).toStrictEqual(['unknownPermission', ['wallet_fooBar']]);
+    it('should handle unknown permissions', () => {
+      const translationMock = jest.fn();
+
+      util.getPermissionLocaleMessage(translationMock, 'wallet_fooBar');
+      expect(translationMock).toHaveBeenCalledWith('unknownPermission', [
+        'wallet_fooBar',
+      ]);
     });
   });
 });

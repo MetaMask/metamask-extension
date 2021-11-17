@@ -3,9 +3,6 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SNAP_PREFIX } from '@metamask/snap-controllers';
-///: END:ONLY_INCLUDE_IN
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
   GOERLI_CHAIN_ID,
@@ -429,46 +426,37 @@ export const toHumanReadableTime = (t, milliseconds) => {
 };
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-// We need this literal to appear, and we also need to blow up on boot if it's
-// changed.
-if (SNAP_PREFIX !== 'wallet_snap_') {
-  throw new Error(`The Snap method prefix has changed to: "${SNAP_PREFIX}"`);
-}
-
-const SNAP_PERMISSION_MESSAGE_KEYS = new Set([
-  'snap_clearState',
-  'snap_confirm',
-  'snap_getState',
-  'snap_updateState',
-]);
-
-const GET_BIP44_ENTROPY_KEY = 'snap_getBip44Entropy_';
-const INVOKE_SNAP_KEY = SNAP_PREFIX;
+const SNAP_PERMISSION_MESSAGES = {
+  snap_clearState: (t) => t('snap_clearState'),
+  snap_confirm: (t) => t('snap_confirm'),
+  snap_getState: (t) => t('snap_getState'),
+  snap_updateState: (t) => t('snap_updateState'),
+};
 
 /**
- * A utility function for retrieving Snap-related permission locale message
- * parameters. Mainly exists so that our locale message verification script does
+ * A utility function for retrieving Snap-related permission locale messages.
+ * Mainly exists so that our locale message verification script does
  * not misclassify the related messages as unused.
  *
+ * @param {Function} t - The translation function.
  * @param {string} permissionName - The name of the permission to get the locale
  * message key for.
- * @returns {string} The locale message key for the given permission name, or
- * the key for unrecognized permissions if the permission name is not
- * regognized.
+ * @returns {string} The locale message for the given permission name, or
+ * the message for unrecognized permissions if the permission name is not
+ * recognized.
  */
-export function getPermissionLocaleMessageParams(permissionName) {
-  if (permissionName.startsWith(INVOKE_SNAP_KEY)) {
-    return [INVOKE_SNAP_KEY, [permissionName.replace(INVOKE_SNAP_KEY, '')]];
-  } else if (permissionName.startsWith(GET_BIP44_ENTROPY_KEY)) {
+export function getPermissionLocaleMessage(t, permissionName) {
+  if (permissionName.startsWith('wallet_snap_')) {
+    return t('wallet_snap_', [permissionName.replace('wallet_snap_', '')]);
+  } else if (permissionName.startsWith('snap_getBip44Entropy_')) {
     // TODO:flask Establish coin_type to protocol name enum per SLIP-44
-    return [
-      GET_BIP44_ENTROPY_KEY,
-      [permissionName.replace(GET_BIP44_ENTROPY_KEY, '')],
-    ];
-  } else if (SNAP_PERMISSION_MESSAGE_KEYS.has(permissionName)) {
-    return [permissionName];
+    return t('snap_getBip44Entropy_', [
+      permissionName.replace('snap_getBip44Entropy_', ''),
+    ]);
+  } else if (SNAP_PERMISSION_MESSAGES[permissionName]) {
+    return SNAP_PERMISSION_MESSAGES[permissionName](t);
   }
 
-  return ['unknownPermission', [permissionName]];
+  return t('unknownPermission', [permissionName]);
 }
 ///: END:ONLY_INCLUDE_IN
