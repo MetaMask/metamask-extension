@@ -21,6 +21,6 @@
     "128": "images/icon-128.png",
     "512": "images/icon-512.png"
   },
-  "name": "__MSG_appName__ Flask",
-  "short_name": "__MSG_appName__ Flask"
+  "name": "__MSG_appNameFlask__",
+  "short_name": "__MSG_appNameFlask__"
 }

@@ -43,6 +43,9 @@
   "activityLog": {
     "message": "activity log"
   },
+  "add": {
+    "message": "Add"
+  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -99,6 +102,9 @@
   },
   "addToken": {
     "message": "Add Token"
+  },
+  "address": {
+    "message": "Address"
   },
   "addressBookIcon": {
     "message": "Address book icon"
@@ -167,6 +173,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approvalAndAggregatorTxFeeCost": {
     "message": "Approval and aggregator network fee"
   },
@@ -187,7 +201,7 @@
     "message": "Approved"
   },
   "approvedAmountWithColon": {
-    "message": "Approved Amount:"
+    "message": "Approved amount:"
   },
   "asset": {
     "message": "Asset"
@@ -549,6 +563,9 @@
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
   },
+  "custom": {
+    "message": "Advanced"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
@@ -560,6 +577,13 @@
   },
   "customToken": {
     "message": "Custom Token"
+  },
+  "dappSuggested": {
+    "message": "Site suggested"
+  },
+  "dappSuggestedTooltip": {
+    "message": "$1 has recommended this price.",
+    "description": "$1 represents the Dapp's origin"
   },
   "data": {
     "message": "Data"
@@ -593,10 +617,6 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
-  "defaultNetwork": {
-    "message": "The default network for Ether transactions is Mainnet. You can also $1 test networks $2.",
-    "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
-  },
   "delete": {
     "message": "Delete"
   },
@@ -620,9 +640,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
-  },
-  "disable": {
-    "message": "disable"
   },
   "disconnect": {
     "message": "Disconnect"
@@ -774,9 +791,6 @@
   },
   "editPermission": {
     "message": "Edit Permission"
-  },
-  "enable": {
-    "message": "enable"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -1015,6 +1029,9 @@
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
+  "gasPriceLabel": {
+    "message": "Gas price"
+  },
   "gasTimingMinutes": {
     "message": "$1 minutes",
     "description": "$1 represents a number of minutes"
@@ -1069,7 +1086,7 @@
     "message": "Goerli Test Network"
   },
   "grantedToWithColon": {
-    "message": "Granted To:"
+    "message": "Granted to:"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -1113,8 +1130,14 @@
   "hideZeroBalanceTokens": {
     "message": "Hide Tokens Without Balance"
   },
+  "high": {
+    "message": "Aggressive"
+  },
   "history": {
     "message": "History"
+  },
+  "id": {
+    "message": "ID"
   },
   "import": {
     "message": "Import",
@@ -1349,6 +1372,12 @@
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
+  "low": {
+    "message": "Low"
+  },
+  "lowPriorityMessage": {
+    "message": "Future transactions will queue after this one. This price was last seen was some time ago."
+  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
@@ -1362,11 +1391,17 @@
   "max": {
     "message": "Max"
   },
+  "maxBaseFee": {
+    "message": "Max base fee"
+  },
   "maxFee": {
     "message": "Max fee"
   },
   "maxPriorityFee": {
     "message": "Max priority fee"
+  },
+  "medium": {
+    "message": "Market"
   },
   "memo": {
     "message": "memo"
@@ -1572,6 +1607,9 @@
   "nextNonceWarning": {
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "nftTokenIdPlaceholder": {
+    "message": "Enter the collectible ID"
   },
   "nfts": {
     "message": "NFTs"
@@ -1827,7 +1865,7 @@
     "message": "You have approved this permission"
   },
   "permissionRequest": {
-    "message": "Permission Request"
+    "message": "Permission request"
   },
   "permissionUncheckedIconDescription": {
     "message": "You have not approved this permission"
@@ -2203,6 +2241,9 @@
   },
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
+  },
+  "showHide": {
+    "message": "Show/hide"
   },
   "showIncomingTransactions": {
     "message": "Show Incoming Transactions"
@@ -2765,6 +2806,10 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
+  "toggleTestNetworks": {
+    "message": "$1 test networks",
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+  },
   "token": {
     "message": "Token"
   },
@@ -2850,19 +2895,19 @@
     "message": "Transaction encountered an error."
   },
   "transactionFee": {
-    "message": "Transaction Fee"
+    "message": "Transaction fee"
   },
   "transactionHistoryBaseFee": {
     "message": "Base Fee (GWEI)"
   },
   "transactionHistoryL1GasLabel": {
-    "message": "Total L1 gas fee"
+    "message": "Total L1 Gas Fee"
   },
   "transactionHistoryL2GasLimitLabel": {
-    "message": "L2 gas limit`"
+    "message": "L2 Gas Limit"
   },
   "transactionHistoryL2GasPriceLabel": {
-    "message": "L2 gas price`"
+    "message": "L2 Gas Price"
   },
   "transactionHistoryMaxFeePerGas": {
     "message": "Max Fee Per Gas"

@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { ComposedStore, ObservableStore } from '@metamask/obs-store';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine';
+import { providerFromEngine } from 'eth-json-rpc-middleware';
 import log from 'loglevel';
 import {
   createSwappableProxy,
@@ -430,7 +430,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   _setProviderAndBlockTracker({ provider, blockTracker }) {
-    // update or intialize proxies
+    // update or initialize proxies
     if (this._providerProxy) {
       this._providerProxy.setTarget(provider);
     } else {

@@ -41,7 +41,6 @@ export default class ConfirmPageContainer extends Component {
     contentComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
-    hasSimulationError: PropTypes.bool,
     dataComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
     identiconAddress: PropTypes.string,
@@ -65,7 +64,6 @@ export default class ConfirmPageContainer extends Component {
     onCancelAll: PropTypes.func,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
-    onConfirmAnyways: PropTypes.func,
     disabled: PropTypes.bool,
     editingGas: PropTypes.bool,
     handleCloseEditGas: PropTypes.func,
@@ -74,7 +72,6 @@ export default class ConfirmPageContainer extends Component {
     showAddToAddressBookModal: PropTypes.func,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
-    hideConfirmAnyways: PropTypes.bool,
   };
 
   render() {
@@ -90,7 +87,6 @@ export default class ConfirmPageContainer extends Component {
       disabled,
       errorKey,
       errorMessage,
-      hasSimulationError,
       contentComponent,
       action,
       title,
@@ -102,7 +98,6 @@ export default class ConfirmPageContainer extends Component {
       onCancelAll,
       onCancel,
       onSubmit,
-      onConfirmAnyways,
       identiconAddress,
       nonce,
       unapprovedTxCount,
@@ -125,7 +120,6 @@ export default class ConfirmPageContainer extends Component {
       handleCloseEditGas,
       currentTransaction,
       showAddToAddressBookModal,
-      hideConfirmAnyways,
       contact = {},
       isOwnedAccount,
     } = this.props;
@@ -195,7 +189,6 @@ export default class ConfirmPageContainer extends Component {
               dataComponent={dataComponent}
               errorMessage={errorMessage}
               errorKey={errorKey}
-              hasSimulationError={hasSimulationError}
               identiconAddress={identiconAddress}
               nonce={nonce}
               warning={warning}
@@ -210,8 +203,6 @@ export default class ConfirmPageContainer extends Component {
               origin={origin}
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
-              onConfirmAnyways={onConfirmAnyways}
-              hideConfirmAnyways={hideConfirmAnyways}
             />
           )}
           {shouldDisplayWarning && (

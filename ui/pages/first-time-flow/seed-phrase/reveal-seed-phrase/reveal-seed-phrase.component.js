@@ -54,7 +54,7 @@ export default class RevealSeedPhrase extends PureComponent {
       return;
     }
 
-    history.push(INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE);
+    history.replace(INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE);
   };
 
   handleSkip = async () => {
@@ -78,7 +78,7 @@ export default class RevealSeedPhrase extends PureComponent {
     if (onboardingInitiator) {
       await returnToOnboardingInitiator(onboardingInitiator);
     }
-    history.push(DEFAULT_ROUTE);
+    history.replace(DEFAULT_ROUTE);
   };
 
   renderSecretWordsContainer() {

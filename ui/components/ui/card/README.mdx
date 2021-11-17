@@ -1,0 +1,42 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import Card from '.';
+
+# Card
+
+Cards are used to group related content or actions together.
+
+<Canvas>
+  <Story id="ui-components-ui-card-card-stories-js--default-story" />
+</Canvas>
+
+## Component API
+
+The `Card` component extends the `Box` component. See the `Box` component for an extended list of props.
+
+<ArgsTable of={Card} />
+
+## Usage
+
+The following describes the props and example usage for this component.
+
+### Padding, Border and Background Color
+
+The Card component has a set of default props that should meet most card use cases. There is a strong recommendation to not overwrite these to ensure our cards stay consistent across the app.
+
+That being said all props can be overwritten if necessary.
+
+```jsx
+import { COLORS } from '../../../helpers/constants/design-system';
+
+// To remove the border
+<Card border={false} />
+// All border related props of the Box component will work
+
+// To remove or change padding
+<Card padding={0} />
+// All padding related props of the Box component will work
+
+// To change the background color
+<Card backgroundColor={COLORS.UI4} />
+```

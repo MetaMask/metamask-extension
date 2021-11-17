@@ -1658,12 +1658,6 @@ export function hideNetworkDropdown() {
   };
 }
 
-export function hideTestNetMessage() {
-  return {
-    type: actionConstants.HIDE_TESTNET_MESSAGE,
-  };
-}
-
 export function showModal(payload) {
   return {
     type: actionConstants.MODAL_OPEN,
@@ -2082,6 +2076,19 @@ export function setUseTokenDetection(val) {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseTokenDetection`);
     background.setUseTokenDetection(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function setAdvancedGasFee(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setAdvancedGasFee`);
+    background.setAdvancedGasFee(val, (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2923,4 +2930,8 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
 // DetectTokenController
 export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
+}
+
+export function hideTestNetMessage() {
+  return promisifiedBackground.setShowTestnetMessageInDropdown(false);
 }

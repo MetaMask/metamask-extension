@@ -7,6 +7,10 @@
     line-height: inherit;
   }
 
+  &__gas-fee-warning {
+    color: $secondary-1;
+  }
+
   &__gasfee-label {
     font-weight: bold;
   }
