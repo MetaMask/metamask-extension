@@ -27,7 +27,7 @@ const CopyRawData = (data) => {
   );
 };
 
-CopyRawData.PropTypes = {
+CopyRawData.propTypes = {
   data: PropTypes.string.isRequired,
 };
 

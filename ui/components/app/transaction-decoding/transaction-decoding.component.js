@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../../ui/spinner';
+import ErrorMessage from '../../ui/error-message';
 import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
 import { useSelector } from 'react-redux';
 import { forAddress } from '@truffle/decoder';
@@ -149,6 +150,8 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   };
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -162,21 +165,44 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       //     }),
       //   { method: 'GET' },
       // );
-      const { decoding } = await fetchWithCache(
-        TX_EXTRA_URI +
+      try {
+        const request_url =
+          TX_EXTRA_URI +
           '?' +
           new URLSearchParams({
             to,
             from,
             data,
-          }),
-        { method: 'GET' },
-      );
-      // fake await
-      await new Promise((resolve) => {
-        setTimeout(() => resolve(true), 500);
-      });
-      setLoading(false);
+          });
+        console.log('request_url', request_url);
+
+        const response = await fetchWithCache(request_url, {
+          method: 'GET',
+        });
+
+        if (!response) {
+          throw new Error(`Decoding error: request time out !`);
+        }
+
+        if (!response?.decoding) {
+          throw new Error(`Decoding error: ${response}`);
+        }
+
+        // fake await
+        await new Promise((resolve) => {
+          setTimeout(() => resolve(true), 500);
+        });
+
+        // transform tx decoding arguments into tree data
+        const params = transformTxDecoding(response?.decoding?.arguments);
+        setTx(params);
+
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        setError(true);
+        setErrorMessage(error?.message);
+      }
 
       // console.log('🚀 ~  global.ethereumProvider', global.ethereumProvider);
 
@@ -197,10 +223,6 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       //   input: data,
       //   blockNumber: null,
       // };
-
-      // transform tx decoding arguments into tree data
-      const params = transformTxDecoding(decoding?.arguments);
-      setTx(params);
     })();
   }, [to, chainId, data]);
 
@@ -210,6 +232,8 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         <div className="tx-insight-wrapper-loading">
           <Spinner color="#F7C06C" />
         </div>
+      ) : error ? (
+        <ErrorMessage errorMessage={errorMessage} />
       ) : (
         <div className="tx-insight-wrapper-content">
           <div className="tx-insight-content__tree-component">

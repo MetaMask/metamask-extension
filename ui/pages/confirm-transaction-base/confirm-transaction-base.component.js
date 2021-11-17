@@ -926,7 +926,6 @@ export default class ConfirmTransactionBase extends Component {
     } = this.state;
 
     const { name } = methodData;
-    console.log('🚀  ~ methodData', methodData);
     const { valid, errorKey } = this.getErrorKey();
     const {
       totalTx,
