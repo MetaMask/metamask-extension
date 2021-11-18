@@ -49,7 +49,7 @@ class RemoveFencedCodeTransform extends Transform {
         Buffer.concat(this._fileBuffers).toString('utf8'),
       );
     } catch (error) {
-      end(error);
+      return end(error);
     }
 
     const pushAndEnd = () => {
