@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ETH } from '../../../helpers/constants/common';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
