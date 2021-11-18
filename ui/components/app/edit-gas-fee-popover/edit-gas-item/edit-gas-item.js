@@ -119,7 +119,7 @@ const EditGasItem = ({ priorityLevel, onClose }) => {
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
       >
         {minWaitTime
-          ? minWaitTime && toHumanReadableTime(minWaitTime, t)
+          ? minWaitTime && toHumanReadableTime(t, minWaitTime)
           : '--'}
       </span>
       <span
