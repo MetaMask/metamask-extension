@@ -8,7 +8,6 @@ import Identicon from '../identicon/identicon.component';
 import { shortenAddress } from '../../../helpers/utils/util';
 import CopyIcon from '../icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import './index.scss';
 
 const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
   const t = useContext(I18nContext);
@@ -35,33 +34,29 @@ const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
           {shortenAddress(address)}
         </div>
         <div className="nickname-popover__public-address">
-          <div className="nickname-popover__public-address__contant">
+          <div className="nickname-popover__public-address__constant">
             {address}
           </div>
-          <div>
-            <button
-              type="link"
-              onClick={() => {
-                handleCopy(address);
-              }}
-              title={copied ? t('copiedExclamation') : t('copyToClipboard')}
-            >
-              <CopyIcon size={11} color="#989a9b" />
-            </button>
-          </div>
+          <button
+            type="link"
+            onClick={() => {
+              handleCopy(address);
+            }}
+            title={copied ? t('copiedExclamation') : t('copyToClipboard')}
+          >
+            <CopyIcon size={11} color="#989a9b" />
+          </button>
         </div>
         <div className="nickname-popover__view-on-block-explorer">
           {t('viewOnBlockExplorer')}
         </div>
-        <div className="nickname-popover__div-button">
-          <Button
-            type="primary"
-            className="nickname-popover__button"
-            onClick={onAddClick}
-          >
-            {t('addANickname')}
-          </Button>
-        </div>
+        <Button
+          type="primary"
+          className="nickname-popover__footer-button"
+          onClick={onAddClick}
+        >
+          {t('addANickname')}
+        </Button>
       </Popover>
     </div>
   );
