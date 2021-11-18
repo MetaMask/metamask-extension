@@ -164,7 +164,6 @@ export default function OnboardingFlow() {
             path={ONBOARDING_METAMETRICS}
             component={MetaMetricsComponent}
           />
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           <Route
             path={ONBOARDING_EXPERIMENTAL_AREA}
             render={(routeProps) => (
@@ -174,7 +173,6 @@ export default function OnboardingFlow() {
               />
             )}
           />
-          ///: END:ONLY_INCLUDE_IN
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>

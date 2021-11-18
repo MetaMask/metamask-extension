@@ -165,7 +165,6 @@ export default class FirstTimeFlow extends PureComponent {
             component={EndOfFlow}
           />
           <Route exact path={INITIALIZE_WELCOME_ROUTE} component={Welcome} />
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           <Route
             exact
             path={INITIALIZE_EXPERIMENTAL_AREA}
@@ -176,7 +175,6 @@ export default class FirstTimeFlow extends PureComponent {
               />
             )}
           />
-          ///: END:ONLY_INCLUDE_IN
           <Route
             exact
             path={INITIALIZE_METAMETRICS_OPT_IN_ROUTE}
