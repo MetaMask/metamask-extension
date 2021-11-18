@@ -1,6 +1,6 @@
-// BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { handlers as permittedMethods } from '@metamask/rpc-methods/dist/permitted';
-// END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IN
 import { selectHooks } from '@metamask/rpc-methods/dist/utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
@@ -13,14 +13,14 @@ const handlerMap = handlers.reduce((map, handler) => {
   return map;
 }, new Map());
 
-// BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 const snapHandlerMap = permittedMethods.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
     map.set(methodName, handler);
   }
   return map;
 }, new Map());
-// END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IN
 
 /**
  * Returns a middleware that implements the RPC methods defined in the handlers
@@ -55,7 +55,7 @@ export function createMethodMiddleware(hooks) {
   };
 }
 
-// BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function createSnapMethodMiddleware(isSnap, hooks) {
   return function methodMiddleware(req, res, next, end) {
     const handler = snapHandlerMap.get(req.method);
@@ -71,4 +71,4 @@ export function createSnapMethodMiddleware(isSnap, hooks) {
     return next();
   };
 }
-// END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IN

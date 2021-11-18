@@ -38,7 +38,7 @@ export default class PermissionPageContainerContent extends PureComponent {
     const items = Object.keys(selectedPermissions).map((permissionName) => {
       const isEthAccounts = permissionName === 'eth_accounts';
 
-      let description = t('unknownPermission', permissionName);
+      let description = t('unknownPermission', [permissionName]);
       if (isEthAccounts) {
         description = t(permissionName);
       }
