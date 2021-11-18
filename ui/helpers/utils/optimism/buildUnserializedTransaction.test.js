@@ -1,5 +1,4 @@
 import { BN } from 'ethereumjs-util';
-import { times } from 'lodash';
 import buildUnserializedTransaction from './buildUnserializedTransaction';
 
 describe('buildUnserializedTransaction', () => {
