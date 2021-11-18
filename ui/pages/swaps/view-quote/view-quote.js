@@ -269,11 +269,15 @@ export default function ViewQuote() {
     smartTransactionsOptInStatus &&
     unsignedTransactionsAndEstimates
   ) {
-    const maxFeePerGasDecWEI =
+    const highestEstimatedFee =
       unsignedTransactionsAndEstimates.fees[
         unsignedTransactionsAndEstimates.fees.length - 1
-      ]?.maxFeePerGas;
+      ];
+    const maxFeePerGasDecWEI = highestEstimatedFee?.maxFeePerGas;
     maxFeePerGas = decWEIToHexWEI(maxFeePerGasDecWEI);
+    const maxPriorityFeePerGasDecWEI =
+      highestEstimatedFee?.maxPriorityFeePerGas;
+    maxPriorityFeePerGas = decWEIToHexWEI(maxPriorityFeePerGasDecWEI);
     maxGasLimit = unsignedTransactionsAndEstimates.gasLimit;
   }
 
