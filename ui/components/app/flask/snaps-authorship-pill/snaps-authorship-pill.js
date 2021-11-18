@@ -25,6 +25,9 @@ SnapsAuthorshipPill.propTypes = {
    * NPM package name of the snap
    */
   packageName: PropTypes.string,
+  /**
+   * The className of the SnapsAuthorshipPill
+   */
   className: PropTypes.string,
 };
 

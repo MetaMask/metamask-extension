@@ -20,10 +20,19 @@ export default function NpmIcon({ className, color }) {
 }
 
 NpmIcon.defaultProps = {
+  /**
+   * The default color of the icon
+   */
   color: '#6A737D',
 };
 
 NpmIcon.propTypes = {
+  /**
+   * The className of the icon
+   */
   className: PropTypes.string,
+  /**
+   * The color of the icon
+   */
   color: PropTypes.string,
 };
