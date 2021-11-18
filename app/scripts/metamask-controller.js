@@ -1037,9 +1037,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
       createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
-      isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
-      getPendingNonce: nodeify(this.getPendingNonce, this),
       getNextNonce: nodeify(this.getNextNonce, this),
       addUnapprovedTransaction: nodeify(
         txController.addUnapprovedTransaction,
@@ -1121,13 +1119,6 @@ export default class MetamaskController extends EventEmitter {
       // permissions
       approvePermissionsRequest: nodeify(
         permissionsController.approvePermissionsRequest,
-        permissionsController,
-      ),
-      clearPermissions: permissionsController.clearPermissions.bind(
-        permissionsController,
-      ),
-      getApprovedAccounts: nodeify(
-        permissionsController.getAccounts,
         permissionsController,
       ),
       rejectPermissionsRequest: nodeify(
