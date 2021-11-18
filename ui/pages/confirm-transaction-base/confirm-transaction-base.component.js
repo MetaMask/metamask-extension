@@ -143,6 +143,7 @@ export default class ConfirmTransactionBase extends Component {
     submitWarning: '',
     ethGasPriceWarning: '',
     editingGas: false,
+    proceedTransaction: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -320,6 +321,7 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
     } = this.props;
     const { t } = this.context;
+    const { proceedTransaction } = this.state;
 
     const renderTotalMaxAmount = () => {
       if (
@@ -413,9 +415,18 @@ export default class ConfirmTransactionBase extends Component {
 
     return (
       <div className="confirm-page-container-content__details">
-        {EIP_1559_V2 && <TransactionAlerts />}
+        {EIP_1559_V2 && (
+          <TransactionAlerts
+            enableProceedTransaction={() => {
+              console.log('updating state');
+              this.setState({ proceedTransaction: true });
+            }}
+            proceedTransaction={proceedTransaction}
+          />
+        )}
         <TransactionDetail
           onEdit={() => this.handleEditGas()}
+          proceedTransaction={proceedTransaction}
           rows={[
             EIP_1559_V2 ? (
               <GasDetailsItem
@@ -425,6 +436,7 @@ export default class ConfirmTransactionBase extends Component {
                 isMainnet={isMainnet}
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
+                proceedTransaction={proceedTransaction}
                 supportsEIP1559={supportsEIP1559}
                 txData={txData}
                 useNativeCurrencyAsPrimaryCurrency={
@@ -918,6 +930,7 @@ export default class ConfirmTransactionBase extends Component {
       submitWarning,
       ethGasPriceWarning,
       editingGas,
+      proceedTransaction,
     } = this.state;
 
     const { name } = methodData;
@@ -980,7 +993,8 @@ export default class ConfirmTransactionBase extends Component {
           !valid ||
           submitting ||
           hardwareWalletRequiresConnection ||
-          (gasIsLoading && !gasFeeIsCustom)
+          (gasIsLoading && !gasFeeIsCustom) ||
+          (Boolean(txData?.simulationFails) && !proceedTransaction)
         }
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}

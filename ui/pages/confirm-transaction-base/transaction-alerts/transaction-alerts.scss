@@ -1,7 +1,9 @@
 .transaction-alerts {
-  margin-top: 20px;
+  & > *:first-of-type {
+    margin-top: 20px;
+  }
 
-  &--separator {
+  & > *:not(:first-of-type) {
     margin-top: 12px;
   }
 
@@ -10,6 +12,7 @@
   }
 
   &__pending-transactions {
+    text-align: left;
     & a {
       color: $primary-1;
     }

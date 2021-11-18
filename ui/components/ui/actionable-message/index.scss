@@ -48,6 +48,16 @@
     font-weight: bold;
   }
 
+  button.actionable-message__action-v2 {
+    color: $primary-1;
+    background: none;
+    border: none;
+    font-size: 12px;    
+    align-self: baseline;
+    padding: 0;
+    margin-top: 12px;
+  }
+
   &__info-tooltip-wrapper {
     position: absolute;
     right: 4px;

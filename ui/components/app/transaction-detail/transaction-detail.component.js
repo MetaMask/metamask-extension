@@ -10,7 +10,11 @@ import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export default function TransactionDetail({ rows = [], onEdit }) {
+export default function TransactionDetail({
+  rows = [],
+  onEdit,
+  proceedTransaction,
+}) {
   // eslint-disable-next-line prefer-destructuring
   const EIP_1559_V2 = process.env.EIP_1559_V2;
 
@@ -18,12 +22,15 @@ export default function TransactionDetail({ rows = [], onEdit }) {
   const {
     gasLimit,
     estimateUsed,
+    hasSimulationError,
     maxFeePerGas,
     maxPriorityFeePerGas,
     transaction,
   } = useGasFeeContext();
 
-  if (EIP_1559_V2 && estimateUsed) {
+  const editEnabled = !hasSimulationError || proceedTransaction;
+
+  if (editEnabled && EIP_1559_V2 && estimateUsed) {
     return (
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
@@ -71,7 +78,7 @@ export default function TransactionDetail({ rows = [], onEdit }) {
 
   return (
     <div className="transaction-detail">
-      {onEdit && (
+      {editEnabled && onEdit && (
         <div className="transaction-detail-edit">
           <button onClick={onEdit}>{t('edit')}</button>
         </div>
@@ -84,4 +91,5 @@ export default function TransactionDetail({ rows = [], onEdit }) {
 TransactionDetail.propTypes = {
   rows: PropTypes.arrayOf(TransactionDetailItem).isRequired,
   onEdit: PropTypes.func,
+  proceedTransaction: PropTypes.bool.isRequired,
 };

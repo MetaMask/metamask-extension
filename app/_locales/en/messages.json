@@ -1954,6 +1954,9 @@
   "privateNetwork": {
     "message": "Private Network"
   },
+  "proceedTransaction": {
+    "message": "I want to proceed anyway"
+  },
   "proposedApprovalLimit": {
     "message": "Proposed Approval Limit"
   },
@@ -2337,6 +2340,9 @@
   },
   "signed": {
     "message": "Signed"
+  },
+  "simulationErrorMessage": {
+    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "skip": {
     "message": "Skip"

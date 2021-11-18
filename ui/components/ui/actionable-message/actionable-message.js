@@ -19,6 +19,7 @@ const typeHash = {
 export default function ActionableMessage({
   message = '',
   primaryAction = null,
+  primaryActionV2 = null,
   secondaryAction = null,
   className = '',
   infoTooltipText = '',
@@ -46,6 +47,14 @@ export default function ActionableMessage({
         />
       )}
       <div className="actionable-message__message">{message}</div>
+      {primaryActionV2 && (
+        <button
+          className="actionable-message__action-v2"
+          onClick={primaryActionV2.onClick}
+        >
+          {primaryActionV2.label}
+        </button>
+      )}
       {(primaryAction || secondaryAction) && (
         <div className="actionable-message__actions">
           {primaryAction && (
@@ -79,6 +88,10 @@ export default function ActionableMessage({
 ActionableMessage.propTypes = {
   message: PropTypes.node.isRequired,
   primaryAction: PropTypes.shape({
+    label: PropTypes.string,
+    onClick: PropTypes.func,
+  }),
+  primaryActionV2: PropTypes.shape({
     label: PropTypes.string,
     onClick: PropTypes.func,
   }),
