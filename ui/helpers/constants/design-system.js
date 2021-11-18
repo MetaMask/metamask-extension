@@ -11,6 +11,7 @@ export const COLORS = {
   UI4: 'ui-4',
   BLACK: 'black',
   GREY: 'grey',
+  NEUTRAL_GREY: 'neutral-grey',
   WHITE: 'white',
   PRIMARY1: 'primary-1',
   PRIMARY2: 'primary-2',

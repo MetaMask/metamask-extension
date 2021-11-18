@@ -53,6 +53,37 @@
     text-align: right;
     width: 10%;
 
+    &__container {
+      display: flex;
+      justify-content: center;
+      // align-items: center;
+      flex-direction: column;
+      margin: auto;
+
+      &__message {
+        margin-top: 8px;
+      }
+
+      &__label {
+        width: 50%;
+      }
+
+      &__value {
+        width: 50%;
+      }
+
+      &__values {
+        margin-top: 8px;
+        
+        div {
+          display: flex;
+          flex-direction: row;
+          text-align: left;
+          margin: 0;
+          padding: 0;
+        }
+      }
+    }
     .info-tooltip {
       display: inline-block;
     }

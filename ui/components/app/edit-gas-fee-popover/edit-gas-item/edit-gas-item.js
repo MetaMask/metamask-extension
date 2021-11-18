@@ -22,6 +22,11 @@ import InfoTooltip from '../../../ui/info-tooltip';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
+import Typography from '../../../ui/typography';
+import {
+  COLORS,
+  FONT_WEIGHT,
+} from '../../../../helpers/constants/design-system';
 
 const EditGasItem = ({ priorityLevel }) => {
   const {
@@ -43,6 +48,8 @@ const EditGasItem = ({ priorityLevel }) => {
 
   if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
+    maxPriorityFeePerGas =
+      gasFeeEstimates[priorityLevel].suggestedMaxPriorityFeePerGas;
   } else if (
     priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
     dappSuggestedGasFees
@@ -145,7 +152,86 @@ const EditGasItem = ({ priorityLevel }) => {
         )}
       </span>
       <span className="edit-gas-item__tooltip">
-        <InfoTooltip position="top" />
+        <InfoTooltip
+          wide
+          contentText={
+            <div className="edit-gas-item__tooltip__container">
+              <img
+                alt=""
+                width={110}
+                src={`./images/curve-${priorityLevel}.svg`}
+              />
+              <div className="edit-gas-item__tooltip__container__message">
+                <Typography fontSize="12px">
+                  {t(`${priorityLevel}GasSettingToolTipMessage`, [
+                    <span>
+                      <b>{t(priorityLevel)}</b>
+                    </span>,
+                  ])}
+                </Typography>
+              </div>
+              {priorityLevel !== PRIORITY_LEVELS.CUSTOM ? (
+                <div className="edit-gas-item__tooltip__container__values">
+                  <div>
+                    <Typography
+                      fontSize="12px"
+                      fontWeight={FONT_WEIGHT.BOLD}
+                      margin={0}
+                      className="edit-gas-item__tooltip__container__label"
+                    >
+                      {t('maxBaseFee')}
+                    </Typography>
+                    <Typography
+                      fontSize="12px"
+                      color={COLORS.NEUTRAL_GREY}
+                      margin={0}
+                      className="edit-gas-item__tooltip__container__value"
+                    >
+                      {maxFeePerGas}
+                    </Typography>
+                  </div>
+                  <div>
+                    <Typography
+                      fontSize="12px"
+                      fontWeight={FONT_WEIGHT.BOLD}
+                      margin={0}
+                      className="edit-gas-item__tooltip__container__label"
+                    >
+                      {t('priorityFee')}
+                    </Typography>
+                    <Typography
+                      fontSize="12px"
+                      color={COLORS.NEUTRAL_GREY}
+                      margin={0}
+                      className="edit-gas-item__tooltip__container__value"
+                    >
+                      {maxPriorityFeePerGas ?? maxPriorityFeePerGasValue}
+                    </Typography>
+                  </div>
+                  <div>
+                    <Typography
+                      fontSize="12px"
+                      fontWeight={FONT_WEIGHT.BOLD}
+                      margin={0}
+                      className="edit-gas-item__tooltip__container__label"
+                    >
+                      {t('gasLimit')}
+                    </Typography>
+                    <Typography
+                      fontSize="12px"
+                      color={COLORS.NEUTRAL_GREY}
+                      margin={0}
+                      className="edit-gas-item__tooltip__container__value"
+                    >
+                      {gasLimit}
+                    </Typography>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          }
+          position="top"
+        />
       </span>
     </button>
   );
