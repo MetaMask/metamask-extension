@@ -10,7 +10,7 @@ const SnapsAuthorshipPill = ({ packageName }) => {
     <Chip
       leftIcon={
         <Box paddingLeft={2}>
-          <NpmIcon width={25} height={10} />
+          <NpmIcon />
         </Box>
       }
       label={packageName}

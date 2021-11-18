@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default function NpmIcon({ width, height, className, color }) {
+export default function NpmIcon({ className, color }) {
   return (
     <svg
       className={className}
-      width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
+      width="25"
+      height="10"
+      viewBox="0 0 25 10"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -25,7 +25,5 @@ NpmIcon.defaultProps = {
 
 NpmIcon.propTypes = {
   className: PropTypes.string,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
   color: PropTypes.string,
 };
