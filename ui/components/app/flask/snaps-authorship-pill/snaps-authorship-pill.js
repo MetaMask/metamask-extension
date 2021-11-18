@@ -7,7 +7,6 @@ import Typography from '../../../ui/typography';
 import {
   COLORS,
   TYPOGRAPHY,
-  FONT_WEIGHT,
 } from '../../../../helpers/constants/design-system';
 
 const SnapsAuthorshipPill = ({ packageName, className }) => {
@@ -19,7 +18,6 @@ const SnapsAuthorshipPill = ({ packageName, className }) => {
         </Box>
       }
       className={className}
-      label={packageName}
       backgroundColor={COLORS.UI1}
     >
       <Typography
@@ -27,7 +25,6 @@ const SnapsAuthorshipPill = ({ packageName, className }) => {
         variant={TYPOGRAPHY.H7}
         tag="span"
         color={COLORS.UI4}
-        fontWeight={FONT_WEIGHT['400']}
       >
         {packageName}
       </Typography>

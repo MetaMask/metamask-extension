@@ -17,5 +17,5 @@ export const DefaultStory = (args) => <SnapsAuthorshipPill {...args} />;
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  packageName: '@airswap/snap',
+  packageName: 'npm-package-name',
 };
