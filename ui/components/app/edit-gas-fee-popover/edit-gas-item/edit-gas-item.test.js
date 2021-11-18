@@ -14,6 +14,9 @@ jest.mock('../../../../store/actions', () => ({
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
+  getGasFeeTimeEstimate: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve('unknown')),
 }));
 
 const MOCK_FEE_ESTIMATE = {
@@ -38,7 +41,12 @@ const MOCK_FEE_ESTIMATE = {
   estimatedBaseFee: '50',
 };
 
-const renderComponent = (props) => {
+const DAPP_SUGGESTED_ESTIMATE = {
+  maxFeePerGas: '0x59682f10',
+  maxPriorityFeePerGas: '0x59682f00',
+};
+
+const renderComponent = (props, transactionProps, gasFeeContextProps) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -53,41 +61,78 @@ const renderComponent = (props) => {
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      advancedGasFee: {
+        maxBaseFee: '1.5',
+        priorityFee: '2',
+      },
     },
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider transaction={{ txParams: { gas: '0x5208' } }}>
-      <EditGasItem estimateType="low" {...props} />
+    <GasFeeContextProvider
+      transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
+      {...gasFeeContextProps}
+    >
+      <EditGasItem priorityLevel="low" {...props} />
     </GasFeeContextProvider>,
     store,
   );
 };
 
 describe('EditGasItem', () => {
-  it('should renders low gas estimate options for estimateType low', () => {
-    renderComponent({ estimateType: 'low' });
-
+  it('should renders low gas estimate option for priorityLevel low', () => {
+    renderComponent({ priorityLevel: 'low' });
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
-    expect(screen.queryByText('6 min')).toBeInTheDocument();
+    expect(screen.queryByText('5 min')).toBeInTheDocument();
     expect(screen.queryByTitle('0.001113 ETH')).toBeInTheDocument();
   });
 
-  it('should renders market gas estimate options for estimateType medium', () => {
-    renderComponent({ estimateType: 'medium' });
-
+  it('should renders market gas estimate option for priorityLevel medium', () => {
+    renderComponent({ priorityLevel: 'medium' });
     expect(screen.queryByText('🦊')).toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
-    expect(screen.queryByText('30 sec')).toBeInTheDocument();
+    expect(screen.queryByText('5 min')).toBeInTheDocument();
     expect(screen.queryByTitle('0.00147 ETH')).toBeInTheDocument();
   });
 
-  it('should renders aggressive gas estimate options for estimateType high', () => {
-    renderComponent({ estimateType: 'high' });
-
+  it('should renders aggressive gas estimate option for priorityLevel high', () => {
+    renderComponent({ priorityLevel: 'high' });
     expect(screen.queryByText('🦍')).toBeInTheDocument();
+    expect(screen.queryByText('Aggressive')).toBeInTheDocument();
     expect(screen.queryByText('15 sec')).toBeInTheDocument();
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
+  });
+
+  it('should highlight option is priorityLevel is currently selected', () => {
+    renderComponent({ priorityLevel: 'high' }, { userFeeLevel: 'high' });
+    expect(
+      document.getElementsByClassName('edit-gas-item-selected'),
+    ).toHaveLength(1);
+  });
+
+  it('should renders site gas estimate option for priorityLevel dappSuggested', () => {
+    renderComponent(
+      { priorityLevel: 'dappSuggested' },
+      { dappSuggestedGasFees: DAPP_SUGGESTED_ESTIMATE },
+    );
+    expect(screen.queryByText('🌐')).toBeInTheDocument();
+    expect(screen.queryByText('Site')).toBeInTheDocument();
+    expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
+  });
+
+  it('should disable site gas estimate option for is transaction does not have dappSuggestedGasFees', async () => {
+    renderComponent({ priorityLevel: 'dappSuggested' });
+    expect(
+      document.getElementsByClassName('edit-gas-item-disabled'),
+    ).toHaveLength(1);
+  });
+
+  it('should renders advance gas estimate option for priorityLevel custom', () => {
+    renderComponent({ priorityLevel: 'custom' });
+    expect(screen.queryByText('⚙')).toBeInTheDocument();
+    expect(screen.queryByText('Advanced')).toBeInTheDocument();
+    // below value of custom gas fee estimate is default obtained from state.metamask.advancedGasFee
+    expect(screen.queryByTitle('0.001575 ETH')).toBeInTheDocument();
   });
 });

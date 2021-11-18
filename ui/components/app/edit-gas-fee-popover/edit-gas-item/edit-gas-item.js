@@ -1,14 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
 
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
+import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import {
   decGWEIToHexWEI,
   decimalToHex,
+  hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util';
+import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { toHumanReadableTime } from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -16,58 +20,120 @@ import I18nValue from '../../../ui/i18n-value';
 import InfoTooltip from '../../../ui/info-tooltip';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 
-const EditGasItem = ({ estimateType, onClose }) => {
+import { useCustomTimeEstimate } from './useCustomTimeEstimate';
+
+const EditGasItem = ({ priorityLevel, onClose }) => {
   const {
     estimateUsed,
     gasFeeEstimates,
     gasLimit,
-    setEstimateToUse,
-    updateTransaction,
+    maxFeePerGas: maxFeePerGasValue,
+    maxPriorityFeePerGas: maxPriorityFeePerGasValue,
+    updateTransactionUsingGasFeeEstimates,
+    transaction: { dappSuggestedGasFees },
   } = useGasFeeContext();
   const t = useI18nContext();
+  const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
+  let maxFeePerGas;
+  let maxPriorityFeePerGas;
+  let minWaitTime;
 
-  const { minWaitTimeEstimate, suggestedMaxFeePerGas } =
-    gasFeeEstimates[estimateType] || {};
-  const hexMaximumTransactionFee = suggestedMaxFeePerGas
+  if (gasFeeEstimates[priorityLevel]) {
+    maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
+  } else if (
+    priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
+    dappSuggestedGasFees
+  ) {
+    maxFeePerGas = hexWEIToDecGWEI(dappSuggestedGasFees.maxFeePerGas);
+    maxPriorityFeePerGas = hexWEIToDecGWEI(
+      dappSuggestedGasFees.maxPriorityFeePerGas,
+    );
+  } else if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
+    if (estimateUsed === PRIORITY_LEVELS.CUSTOM) {
+      maxFeePerGas = maxFeePerGasValue;
+      maxPriorityFeePerGas = maxPriorityFeePerGasValue;
+    } else if (advancedGasFeeValues) {
+      maxFeePerGas =
+        gasFeeEstimates.estimatedBaseFee *
+        parseFloat(advancedGasFeeValues.maxBaseFee);
+      maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
+    }
+  }
+
+  const { waitTimeEstimate } = useCustomTimeEstimate({
+    gasFeeEstimates,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+  });
+
+  if (gasFeeEstimates[priorityLevel]) {
+    minWaitTime =
+      priorityLevel === PRIORITY_LEVELS.HIGH
+        ? gasFeeEstimates?.high.minWaitTimeEstimate
+        : gasFeeEstimates?.low.maxWaitTimeEstimate;
+  } else {
+    minWaitTime = waitTimeEstimate;
+  }
+
+  const hexMaximumTransactionFee = maxFeePerGas
     ? getMaximumGasTotalInHexWei({
         gasLimit: decimalToHex(gasLimit),
-        maxFeePerGas: decGWEIToHexWEI(suggestedMaxFeePerGas),
+        maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
       })
     : null;
 
   const onOptionSelect = () => {
-    setEstimateToUse(estimateType);
-    updateTransaction(estimateType);
+    if (priorityLevel !== PRIORITY_LEVELS.CUSTOM) {
+      updateTransactionUsingGasFeeEstimates(priorityLevel);
+    }
+    // todo: open advance modal if priorityLevel is custom
     onClose();
   };
 
   return (
     <div
       className={classNames('edit-gas-item', {
-        'edit-gas-item--selected': estimateType === estimateUsed,
+        'edit-gas-item-selected': priorityLevel === estimateUsed,
+        'edit-gas-item-disabled':
+          priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
+          !dappSuggestedGasFees,
       })}
       role="button"
       onClick={onOptionSelect}
     >
       <span className="edit-gas-item__name">
-        <span className="edit-gas-item__icon">
-          {PRIORITY_LEVEL_ICON_MAP[estimateType]}
+        <span
+          className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
+        >
+          {PRIORITY_LEVEL_ICON_MAP[priorityLevel]}
         </span>
-        <I18nValue messageKey={estimateType} />
-      </span>
-      <span
-        className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${estimateType}`}
-      >
-        {minWaitTimeEstimate && toHumanReadableTime(t, minWaitTimeEstimate)}
-      </span>
-      <span
-        className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${estimateType}`}
-      >
-        <UserPreferencedCurrencyDisplay
-          key="editGasSubTextFeeAmount"
-          type={PRIMARY}
-          value={hexMaximumTransactionFee}
+        <I18nValue
+          messageKey={
+            priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED
+              ? 'dappSuggestedShortLabel'
+              : priorityLevel
+          }
         />
+      </span>
+      <span
+        className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
+      >
+        {minWaitTime
+          ? minWaitTime && toHumanReadableTime(t, minWaitTime)
+          : '--'}
+      </span>
+      <span
+        className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}
+      >
+        {hexMaximumTransactionFee ? (
+          <UserPreferencedCurrencyDisplay
+            key="editGasSubTextFeeAmount"
+            type={PRIMARY}
+            value={hexMaximumTransactionFee}
+          />
+        ) : (
+          '--'
+        )}
       </span>
       <span className="edit-gas-item__tooltip">
         <InfoTooltip position="top" />
@@ -77,7 +143,7 @@ const EditGasItem = ({ estimateType, onClose }) => {
 };
 
 EditGasItem.propTypes = {
-  estimateType: PropTypes.string,
+  priorityLevel: PropTypes.string,
   onClose: PropTypes.func,
 };
 

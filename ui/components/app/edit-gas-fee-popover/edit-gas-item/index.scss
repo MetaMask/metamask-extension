@@ -3,6 +3,8 @@
   color: $ui-4;
   cursor: pointer;
   font-size: 12px;
+  display: flex;
+  align-items: center;
   margin: 12px 0;
   padding: 4px 12px;
   height: 32px;
@@ -11,8 +13,13 @@
     background-color: $ui-1;
   }
 
+  &-disabled {
+    cursor: default;
+  }
+
   &__name {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     color: $ui-black;
     font-size: 12px;
     font-weight: bold;
@@ -21,6 +28,11 @@
 
   &__icon {
     margin-right: 4px;
+
+    &-custom {
+      font-size: 20px;
+      line-height: 0;
+    }
   }
 
   &__time-estimate {

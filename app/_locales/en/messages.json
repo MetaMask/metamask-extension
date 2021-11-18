@@ -581,6 +581,9 @@
   "dappSuggested": {
     "message": "Site suggested"
   },
+  "dappSuggestedShortLabel": {
+    "message": "Site"
+  },
   "dappSuggestedTooltip": {
     "message": "$1 has recommended this price.",
     "description": "$1 represents the Dapp's origin"
@@ -1034,9 +1037,6 @@
   },
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
-  },
-  "gasPriceLabel": {
-    "message": "Gas price"
   },
   "gasTimingHoursShort": {
     "message": "$1 hrs",

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -108,6 +108,19 @@ export function useGasFeeInputs(
     return estimateToUse;
   });
 
+  /**
+   * In EIP-1559 V2 designs change to gas estimate is always updated to transaction
+   * Thus callback setEstimateToUse can be deprecate in favour of this useEffect
+   * so that transaction is source of truth whenever possible.
+   */
+  useEffect(() => {
+    if (areDappSuggestedAndTxParamGasFeesTheSame(transaction)) {
+      setEstimateUsed('dappSuggested');
+    } else if (transaction?.userFeeLevel) {
+      setEstimateUsed(transaction?.userFeeLevel);
+    }
+  }, [setEstimateUsed, transaction]);
+
   const [gasLimit, setGasLimit] = useState(() =>
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
   );
@@ -198,7 +211,7 @@ export function useGasFeeInputs(
     }
   }, [minimumGasLimit, gasErrors.gasLimit, transaction]);
 
-  const { updateTransaction } = useTransactionFunctions({
+  const { updateTransactionUsingGasFeeEstimates } = useTransactionFunctions({
     defaultEstimateToUse,
     gasLimit,
     gasPrice,
@@ -289,6 +302,6 @@ export function useGasFeeInputs(
     gasWarnings,
     hasGasErrors,
     supportsEIP1559,
-    updateTransaction,
+    updateTransactionUsingGasFeeEstimates,
   };
 }
