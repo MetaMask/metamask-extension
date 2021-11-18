@@ -2816,7 +2816,7 @@ export default class MetamaskController extends EventEmitter {
     if (!isInternal) {
       // permissions
       engine.push(
-        this.permissionsController.createMiddleware({ origin, extensionId }),
+        permissionsController.createMiddleware({ origin, extensionId }),
       );
     }
 
