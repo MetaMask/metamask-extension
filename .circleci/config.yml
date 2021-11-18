@@ -25,7 +25,9 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
-      - test-deps-audit
+      - test-deps-audit:
+          requires:
+            - prep-deps
       - test-deps-depcheck:
           requires:
             - prep-deps
