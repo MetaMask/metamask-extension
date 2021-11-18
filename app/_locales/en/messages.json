@@ -115,6 +115,9 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Any difference between your max base fee and the current base fee will be refunded after completion."
   },
+  "advancedGasFeeModalTitle": {
+    "message": "Advanced Gas Fee"
+  },
   "advancedGasPriceTitle": {
     "message": "Gas price"
   },
@@ -573,6 +576,9 @@
   },
   "currentLanguage": {
     "message": "Current Language"
+  },
+  "currentTitle": {
+    "message": "Current:"
   },
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
@@ -3015,6 +3021,9 @@
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
+  },
+  "twelveHrTitle": {
+    "message": "12hr:"
   },
   "typePassword": {
     "message": "Type your MetaMask password"

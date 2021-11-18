@@ -4,23 +4,24 @@ import FormField from '../../ui/form-field';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
-import { useGasFeeContext } from '../../../contexts/gasFee';
+import Typography from '../../ui/typography';
+import I18nValue from '../../ui/i18n-value';
 import {
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
 } from '../../../helpers/utils/conversions.util';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  divideCurrencies,
+  multiplyCurrencies,
+} from '../../../../shared/modules/conversion.utils';
 import {
   COLORS,
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
-import Typography from '../../ui/typography';
-import {
-  divideCurrencies,
-  multiplyCurrencies,
-} from '../../../../shared/modules/conversion.utils';
 import { SECONDARY } from '../../../helpers/constants/common';
+import { useGasFeeContext } from '../../../contexts/gasFee';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 
@@ -161,7 +162,7 @@ const AdvancedGasPopover = ({ onClose }) => {
   return (
     <Popover
       className="advanced-gas-popover"
-      title="Advanced gas fee"
+      title={t('advancedGasFeeModalTitle')}
       onBack={() => onClose()}
       onClose={() => onClose()}
     >
@@ -184,7 +185,7 @@ const AdvancedGasPopover = ({ onClose }) => {
                 type="link"
                 onClick={() => updateBaseFeeMode(false)}
               >
-                {t('editInMultiplier')}
+                <I18nValue messageKey="editInMultiplier" />
               </Button>
             ) : (
               <Button
@@ -192,7 +193,7 @@ const AdvancedGasPopover = ({ onClose }) => {
                 type="link"
                 onClick={() => updateBaseFeeMode(true)}
               >
-                {t('editInGwei')}
+                <I18nValue messageKey="editInGwei" />
               </Button>
             )
           }
@@ -216,7 +217,7 @@ const AdvancedGasPopover = ({ onClose }) => {
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  Current:
+                  <I18nValue messageKey="currentTitle" />
                 </Typography>
                 <Typography
                   tag={TYPOGRAPHY.Paragraph}
@@ -237,7 +238,7 @@ const AdvancedGasPopover = ({ onClose }) => {
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  12hr:
+                  <I18nValue messageKey="twelveHrTitle" />
                 </Typography>
                 <Typography
                   tag={TYPOGRAPHY.H8}
@@ -272,7 +273,7 @@ const AdvancedGasPopover = ({ onClose }) => {
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  Current:
+                  <I18nValue messageKey="currentTitle" />
                 </Typography>
                 <Typography
                   tag={TYPOGRAPHY.Paragraph}
@@ -293,7 +294,7 @@ const AdvancedGasPopover = ({ onClose }) => {
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  12hr:
+                  <I18nValue messageKey="twelveHrTitle" />
                 </Typography>
                 <Typography
                   tag={TYPOGRAPHY.H8}
