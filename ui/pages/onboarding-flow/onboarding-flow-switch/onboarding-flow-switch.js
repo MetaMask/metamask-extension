@@ -7,6 +7,7 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
   ONBOARDING_EXPERIMENTAL_AREA,
+  ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -34,7 +35,10 @@ export default function OnboardingFlowSwitch() {
   }
 
   if (!isInitialized) {
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     return <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
+    ///: END:ONLY_INCLUDE_IN
+    return <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />; // eslint-disable-line no-unreachable
   }
 
   return <Redirect to={{ pathname: ONBOARDING_UNLOCK_ROUTE }} />;

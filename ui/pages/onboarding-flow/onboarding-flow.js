@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import React, { useEffect, useState } from 'react';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,6 +32,7 @@ import {
 import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import ExperimentalArea from '../../components/app/experimental-area';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -42,7 +44,6 @@ import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
-import ExperimentalArea from './experimental-area';
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
@@ -163,10 +164,17 @@ export default function OnboardingFlow() {
             path={ONBOARDING_METAMETRICS}
             component={MetaMetricsComponent}
           />
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           <Route
             path={ONBOARDING_EXPERIMENTAL_AREA}
-            component={ExperimentalArea}
+            render={(routeProps) => (
+              <ExperimentalArea
+                {...routeProps}
+                redirectTo={ONBOARDING_WELCOME_ROUTE}
+              />
+            )}
           />
+          ///: END:ONLY_INCLUDE_IN
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>
