@@ -22,8 +22,11 @@ const StatusSlider = () => {
   const sliderValueNumeric = Math.round(statusValue * 10);
 
   let statusLabel = 'stable';
-  if (statusValue <= 0.33) statusLabel = 'notBusy';
-  else if (statusValue > 0.66) statusLabel = 'busy';
+  if (statusValue <= 0.33) {
+    statusLabel = 'notBusy';
+  } else if (statusValue > 0.66) {
+    statusLabel = 'busy';
+  }
 
   return (
     <div className="status-slider">
