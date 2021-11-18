@@ -20,10 +20,10 @@ jest.mock('../../../../store/actions', () => ({
 }));
 
 const MOCK_FEE_ESTIMATE = {
-  estimatedBaseFee: '.000005',
+  estimatedBaseFee: '50.0112',
 };
 
-const renderComponent = () => {
+const renderComponent = (props) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -38,6 +38,7 @@ const renderComponent = () => {
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
+      ...props,
     },
   });
 
@@ -56,10 +57,22 @@ describe('NetworkStatus', () => {
     expect(screen.queryByText('Priority fee')).toBeInTheDocument();
   });
 
-  it('should renders current base fee value', () => {
+  it('should renders current base fee value rounded to 2 decimal places', () => {
     renderComponent();
     expect(
-      screen.queryByText(`${MOCK_FEE_ESTIMATE.estimatedBaseFee} GWEI`),
+      screen.queryByText(
+        `${parseFloat(MOCK_FEE_ESTIMATE.estimatedBaseFee).toFixed(2)} GWEI`,
+      ),
     ).toBeInTheDocument();
+  });
+
+  it('should .01 as estimates base fee if estimated base fee is < .01', () => {
+    renderComponent({
+      gasFeeEstimates: {
+        estimatedBaseFee: '0.0012',
+      },
+    });
+    console.log(document.body.innerHTML);
+    expect(screen.queryByText('0.01 GWEI')).toBeInTheDocument();
   });
 });
