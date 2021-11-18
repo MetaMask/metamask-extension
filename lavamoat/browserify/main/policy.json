@@ -974,6 +974,9 @@
       }
     },
     "bn.js": {
+      "globals": {
+        "Buffer": true
+      },
       "packages": {
         "browser-resolve": true
       }
@@ -1098,6 +1101,12 @@
         "buffer": true
       }
     },
+    "call-bind": {
+      "packages": {
+        "function-bind": true,
+        "get-intrinsic": true
+      }
+    },
     "cids": {
       "packages": {
         "buffer": true,
@@ -1159,7 +1168,7 @@
     },
     "copy-to-clipboard": {
       "globals": {
-        "clipboardData.setData": true,
+        "clipboardData": true,
         "console.error": true,
         "console.warn": true,
         "document.body.appendChild": true,
@@ -1487,12 +1496,6 @@
     "errno": {
       "packages": {
         "prr": true
-      }
-    },
-    "es-abstract": {
-      "packages": {
-        "function-bind": true,
-        "has-symbols": true
       }
     },
     "eth-block-tracker": {
@@ -1933,6 +1936,18 @@
         "webkitRTCSessionDescription": true
       }
     },
+    "get-intrinsic": {
+      "globals": {
+        "AggregateError": true,
+        "FinalizationRegistry": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "function-bind": true,
+        "has": true,
+        "has-symbols": true
+      }
+    },
     "get-params": {
       "globals": {
         "GetParams": "write"
@@ -1973,6 +1988,11 @@
       "packages": {
         "is-buffer": true,
         "sparse-array": true
+      }
+    },
+    "has": {
+      "packages": {
+        "function-bind": true
       }
     },
     "has-binary2": {
@@ -2497,6 +2517,7 @@
     },
     "is-regex": {
       "packages": {
+        "call-bind": true,
         "has-symbols": true
       }
     },
@@ -4074,8 +4095,7 @@
         "console": true
       },
       "packages": {
-        "@babel/runtime": true,
-        "symbol-observable": true
+        "@babel/runtime": true
       }
     },
     "redux-devtools-core": {
@@ -4114,8 +4134,8 @@
     },
     "regexp.prototype.flags": {
       "packages": {
-        "define-properties": true,
-        "es-abstract": true
+        "call-bind": true,
+        "define-properties": true
       }
     },
     "relative-url": {
