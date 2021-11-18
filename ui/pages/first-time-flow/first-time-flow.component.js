@@ -13,6 +13,7 @@ import {
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
+  INITIALIZE_EXPERIMENTAL_AREA,
 } from '../../helpers/constants/routes';
 import FirstTimeFlowSwitch from './first-time-flow-switch';
 import Welcome from './welcome';
@@ -21,6 +22,7 @@ import EndOfFlow from './end-of-flow';
 import CreatePassword from './create-password';
 import SeedPhrase from './seed-phrase';
 import MetaMetricsOptInScreen from './metametrics-opt-in';
+import ExperimentalArea from './experimental-area';
 
 export default class FirstTimeFlow extends PureComponent {
   static propTypes = {
@@ -162,6 +164,11 @@ export default class FirstTimeFlow extends PureComponent {
             component={EndOfFlow}
           />
           <Route exact path={INITIALIZE_WELCOME_ROUTE} component={Welcome} />
+          <Route
+            exact
+            path={INITIALIZE_EXPERIMENTAL_AREA}
+            component={ExperimentalArea}
+          />
           <Route
             exact
             path={INITIALIZE_METAMETRICS_OPT_IN_ROUTE}

@@ -41,6 +41,7 @@ const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 const ADD_COLLECTIBLE_ROUTE = '/add-collectible';
 
 const INITIALIZE_ROUTE = '/initialize';
+const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome';
 const INITIALIZE_UNLOCK_ROUTE = '/initialize/unlock';
 const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password';
@@ -173,6 +174,7 @@ export {
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
   INITIALIZE_ROUTE,
+  INITIALIZE_EXPERIMENTAL_AREA,
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_CREATE_PASSWORD_ROUTE,

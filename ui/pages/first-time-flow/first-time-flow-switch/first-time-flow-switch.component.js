@@ -5,8 +5,8 @@ import {
   DEFAULT_ROUTE,
   LOCK_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
-  INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
+  INITIALIZE_EXPERIMENTAL_AREA,
 } from '../../../helpers/constants/routes';
 
 export default class FirstTimeFlowSwitch extends PureComponent {
@@ -38,7 +38,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
     }
 
     if (!isInitialized) {
-      return <Redirect to={{ pathname: INITIALIZE_WELCOME_ROUTE }} />;
+      return <Redirect to={{ pathname: INITIALIZE_EXPERIMENTAL_AREA }} />;
     }
 
     return <Redirect to={{ pathname: INITIALIZE_UNLOCK_ROUTE }} />;
