@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
+import NewCollectiblesNotice from '../new-collectibles-notice';
 import {
   COLORS,
   TYPOGRAPHY,
@@ -15,6 +16,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function CollectiblesList({ onAddNFT }) {
   const collectibles = [];
+  const newNFTsDetected = true;
   const t = useI18nContext();
 
   return (
@@ -22,7 +24,8 @@ export default function CollectiblesList({ onAddNFT }) {
       {collectibles.length > 0 ? (
         <span>{JSON.stringify(collectibles)}</span>
       ) : (
-        <Box padding={[4, 0, 4, 0]}>
+        <Box padding={[6, 12, 6, 12]}>
+          {newNFTsDetected ? <NewCollectiblesNotice /> : null}
           <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
             <img src="./images/no-nfts.svg" />
           </Box>
