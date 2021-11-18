@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
 import LedgerInstructionField from '../ledger-instruction-field';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from './signature-request.constants';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
@@ -17,7 +15,6 @@ export default class SignatureRequest extends PureComponent {
       name: PropTypes.string,
     }).isRequired,
     isLedgerWallet: PropTypes.bool,
-    clearConfirmTransaction: PropTypes.func.isRequired,
     cancel: PropTypes.func.isRequired,
     sign: PropTypes.func.isRequired,
     hardwareWalletRequiresConnection: PropTypes.func.isRequired,
@@ -26,33 +23,6 @@ export default class SignatureRequest extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  };
-
-  componentDidMount() {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
-  }
-
-  _beforeUnload = (event) => {
-    const {
-      clearConfirmTransaction,
-      cancel,
-      txData: { type },
-    } = this.props;
-    const { metricsEvent } = this.context;
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Sign Request',
-        name: 'Cancel Sig Request Via Notification Close',
-      },
-      customVariables: {
-        type,
-      },
-    });
-    clearConfirmTransaction();
-    cancel(event);
   };
 
   formatWallet(wallet) {
@@ -79,7 +49,6 @@ export default class SignatureRequest extends PureComponent {
     const { metricsEvent } = this.context;
 
     const onSign = (event) => {
-      window.removeEventListener('beforeunload', this._beforeUnload);
       sign(event);
       metricsEvent({
         eventOpts: {
@@ -95,7 +64,6 @@ export default class SignatureRequest extends PureComponent {
     };
 
     const onCancel = (event) => {
-      window.removeEventListener('beforeunload', this._beforeUnload);
       cancel(event);
       metricsEvent({
         eventOpts: {

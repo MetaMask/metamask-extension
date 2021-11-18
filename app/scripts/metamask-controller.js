@@ -526,13 +526,32 @@ export default class MetamaskController extends EventEmitter {
       }
     });
     this.networkController.lookupNetwork();
-    this.messageManager = new MessageManager();
-    this.personalMessageManager = new PersonalMessageManager();
-    this.decryptMessageManager = new DecryptMessageManager();
-    this.encryptionPublicKeyManager = new EncryptionPublicKeyManager();
+    this.messageManager = new MessageManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
+    this.personalMessageManager = new PersonalMessageManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
+    this.decryptMessageManager = new DecryptMessageManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
+    this.encryptionPublicKeyManager = new EncryptionPublicKeyManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
     this.typedMessageManager = new TypedMessageManager({
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
+      ),
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
       ),
     });
 
@@ -960,6 +979,10 @@ export default class MetamaskController extends EventEmitter {
         this.appStateController.setRecoveryPhraseReminderLastShown,
         this.appStateController,
       ),
+      setShowTestnetMessageInDropdown: nodeify(
+        this.appStateController.setShowTestnetMessageInDropdown,
+        this.appStateController,
+      ),
 
       // EnsController
       tryReverseResolveAddress: nodeify(
@@ -985,9 +1008,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
       createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
-      isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
-      getPendingNonce: nodeify(this.getPendingNonce, this),
       getNextNonce: nodeify(this.getNextNonce, this),
       addUnapprovedTransaction: nodeify(
         txController.addUnapprovedTransaction,
@@ -1069,13 +1090,6 @@ export default class MetamaskController extends EventEmitter {
       // permissions
       approvePermissionsRequest: nodeify(
         permissionsController.approvePermissionsRequest,
-        permissionsController,
-      ),
-      clearPermissions: permissionsController.clearPermissions.bind(
-        permissionsController,
-      ),
-      getApprovedAccounts: nodeify(
-        permissionsController.getAccounts,
         permissionsController,
       ),
       rejectPermissionsRequest: nodeify(

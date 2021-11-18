@@ -430,7 +430,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   _setProviderAndBlockTracker({ provider, blockTracker }) {
-    // update or intialize proxies
+    // update or initialize proxies
     if (this._providerProxy) {
       this._providerProxy.setTarget(provider);
     } else {

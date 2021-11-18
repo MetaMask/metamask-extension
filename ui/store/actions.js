@@ -1356,12 +1356,6 @@ export function acceptWatchAsset(suggestedAssetID) {
   };
 }
 
-export function addKnownMethodData(fourBytePrefix, methodData) {
-  return () => {
-    background.addKnownMethodData(fourBytePrefix, methodData);
-  };
-}
-
 export function clearPendingTokens() {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
@@ -1655,12 +1649,6 @@ export function showNetworkDropdown() {
 export function hideNetworkDropdown() {
   return {
     type: actionConstants.NETWORK_DROPDOWN_CLOSE,
-  };
-}
-
-export function hideTestNetMessage() {
-  return {
-    type: actionConstants.HIDE_TESTNET_MESSAGE,
   };
 }
 
@@ -2409,19 +2397,6 @@ export function removePermissionsFor(domains) {
   };
 }
 
-/**
- * Clears all permissions for all domains.
- */
-export function clearPermissions() {
-  return (dispatch) => {
-    background.clearPermissions((err) => {
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
-  };
-}
-
 // Pending Approvals
 
 /**
@@ -2936,4 +2911,8 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
 // DetectTokenController
 export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
+}
+
+export function hideTestNetMessage() {
+  return promisifiedBackground.setShowTestnetMessageInDropdown(false);
 }

@@ -43,6 +43,9 @@
   "activityLog": {
     "message": "activity log"
   },
+  "add": {
+    "message": "Add"
+  },
   "addANetwork": {
     "message": "Add a network"
   },
@@ -99,6 +102,9 @@
   },
   "addToken": {
     "message": "Add Token"
+  },
+  "address": {
+    "message": "Address"
   },
   "addressBookIcon": {
     "message": "Address book icon"
@@ -167,6 +173,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approvalAndAggregatorTxFeeCost": {
     "message": "Approval and aggregator network fee"
   },
@@ -187,7 +201,7 @@
     "message": "Approved"
   },
   "approvedAmountWithColon": {
-    "message": "Approved Amount:"
+    "message": "Approved amount:"
   },
   "asset": {
     "message": "Asset"
@@ -606,10 +620,6 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
-  "defaultNetwork": {
-    "message": "The default network for Ether transactions is Mainnet. You can also $1 test networks $2.",
-    "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
-  },
   "delete": {
     "message": "Delete"
   },
@@ -633,9 +643,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
-  },
-  "disable": {
-    "message": "disable"
   },
   "disconnect": {
     "message": "Disconnect"
@@ -790,9 +797,6 @@
   },
   "editPermission": {
     "message": "Edit Permission"
-  },
-  "enable": {
-    "message": "enable"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -1038,6 +1042,10 @@
     "message": "$1 hrs",
     "description": "$1 represents a number of hours"
   },
+  "gasTimingHoursShort": {
+    "message": "$1 hrs",
+    "description": "$1 represents a number of hours"
+  },
   "gasTimingMinutes": {
     "message": "$1 minutes",
     "description": "$1 represents a number of minutes"
@@ -1100,7 +1108,7 @@
     "message": "Goerli Test Network"
   },
   "grantedToWithColon": {
-    "message": "Granted To:"
+    "message": "Granted to:"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -1149,6 +1157,9 @@
   },
   "history": {
     "message": "History"
+  },
+  "id": {
+    "message": "ID"
   },
   "import": {
     "message": "Import",
@@ -1619,6 +1630,9 @@
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nftTokenIdPlaceholder": {
+    "message": "Enter the collectible ID"
+  },
   "nfts": {
     "message": "NFTs"
   },
@@ -1873,7 +1887,7 @@
     "message": "You have approved this permission"
   },
   "permissionRequest": {
-    "message": "Permission Request"
+    "message": "Permission request"
   },
   "permissionUncheckedIconDescription": {
     "message": "You have not approved this permission"
@@ -2249,6 +2263,9 @@
   },
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
+  },
+  "showHide": {
+    "message": "Show/hide"
   },
   "showIncomingTransactions": {
     "message": "Show Incoming Transactions"
@@ -2811,6 +2828,10 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
+  "toggleTestNetworks": {
+    "message": "$1 test networks",
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
+  },
   "token": {
     "message": "Token"
   },
@@ -2896,7 +2917,7 @@
     "message": "Transaction encountered an error."
   },
   "transactionFee": {
-    "message": "Transaction Fee"
+    "message": "Transaction fee"
   },
   "transactionHistoryBaseFee": {
     "message": "Base Fee (GWEI)"

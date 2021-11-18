@@ -9,6 +9,9 @@ import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 const getProviderState = {
   methodNames: [MESSAGE_TYPE.GET_PROVIDER_STATE],
   implementation: getProviderStateHandler,
+  hookNames: {
+    getProviderState: true,
+  },
 };
 export default getProviderState;
 

@@ -69,7 +69,7 @@ exports[`GasCustomizationModalContainer renders the component with initial props
   <span
     class="gas-modal-content__info-row__transaction-info__label"
   >
-    Transaction Fee
+    Transaction fee
   </span>
   <span
     class="gas-modal-content__info-row__transaction-info__value"
