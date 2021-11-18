@@ -55,6 +55,7 @@ const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm';
 const INITIALIZE_METAMETRICS_OPT_IN_ROUTE = '/initialize/metametrics-opt-in';
 
 const ONBOARDING_ROUTE = '/onboarding';
+const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
 const ONBOARDING_CONFIRM_SRP_ROUTE = '/onboarding/confirm-recovery-phrase';
 const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
@@ -221,6 +222,7 @@ export {
   SWAPS_MAINTENANCE_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
   ONBOARDING_ROUTE,
+  ONBOARDING_EXPERIMENTAL_AREA,
   ONBOARDING_HELP_US_IMPROVE_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,

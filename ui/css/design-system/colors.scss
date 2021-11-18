@@ -1,6 +1,5 @@
 // These are the colors of the MetaMask design system
 // Only design system colors should be added, no superfluous variables
-// See https://bit.ly/32mnoja (link to figma design system)
 $Blue-000: #eaf6ff;
 $Blue-100: #a7d9fe;
 $Blue-200: #75c4fd;
@@ -112,6 +111,8 @@ $rinkeby: #f6c343;
 $goerli: #3099f2;
 $localhost: #29b6af;
 
+$flask-purple: #8B45B6;
+
 $color-map: (
   'ui-1': $ui-1,
   'ui-2': $ui-2,
@@ -143,4 +144,5 @@ $color-map: (
   'goerli': $goerli,
   'localhost': $localhost,
   'transparent': transparent,
+  "flask-purple": $flask-purple
 );

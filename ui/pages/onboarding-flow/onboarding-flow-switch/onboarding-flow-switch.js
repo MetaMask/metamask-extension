@@ -7,6 +7,7 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_EXPERIMENTAL_AREA,
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -34,7 +35,7 @@ export default function OnboardingFlowSwitch() {
   }
 
   if (!isInitialized) {
-    return <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />;
+    return <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
   }
 
   return <Redirect to={{ pathname: ONBOARDING_UNLOCK_ROUTE }} />;

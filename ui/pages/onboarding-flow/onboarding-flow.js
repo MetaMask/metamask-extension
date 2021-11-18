@@ -3,6 +3,7 @@ import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Unlock from '../unlock-page';
 import {
+  ONBOARDING_EXPERIMENTAL_AREA,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,
@@ -41,6 +42,7 @@ import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
 import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
+import ExperimentalArea from './experimental-area';
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
@@ -160,6 +162,10 @@ export default function OnboardingFlow() {
           <Route
             path={ONBOARDING_METAMETRICS}
             component={MetaMetricsComponent}
+          />
+          <Route
+            path={ONBOARDING_EXPERIMENTAL_AREA}
+            component={ExperimentalArea}
           />
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
