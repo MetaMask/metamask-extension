@@ -1042,10 +1042,6 @@
     "message": "$1 hrs",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingHoursShort": {
-    "message": "$1 hrs",
-    "description": "$1 represents a number of hours"
-  },
   "gasTimingMinutes": {
     "message": "$1 minutes",
     "description": "$1 represents a number of minutes"
