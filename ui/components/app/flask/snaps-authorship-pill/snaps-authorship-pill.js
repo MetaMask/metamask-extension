@@ -5,7 +5,7 @@ import Box from '../../../ui/box';
 import NpmIcon from '../../../ui/icon/npm-icon';
 import { COLORS } from '../../../../helpers/constants/design-system';
 
-const SnapsAuthorshipPill = ({ packageName }) => {
+const SnapsAuthorshipPill = ({ packageName, className }) => {
   return (
     <Chip
       leftIcon={
@@ -13,6 +13,7 @@ const SnapsAuthorshipPill = ({ packageName }) => {
           <NpmIcon />
         </Box>
       }
+      className={className}
       label={packageName}
       backgroundColor={COLORS.UI1}
     />
@@ -24,6 +25,7 @@ SnapsAuthorshipPill.propTypes = {
    * NPM package name of the snap
    */
   packageName: PropTypes.string,
+  className: PropTypes.string,
 };
 
 export default SnapsAuthorshipPill;
