@@ -207,24 +207,27 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    this.collectibleDetectionController = new CollectibleDetectionController({
-      onCollectiblesStateChange: (listener) =>
-        this.collectiblesController.subscribe(listener),
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
-      onNetworkStateChange: this.networkController.store.subscribe.bind(
-        this.networkController.store,
-      ),
-      getOpenSeaApiKey: () => this.collectiblesController.openSeaApiKey,
-      getBalancesInSingleCall: this.assetsContractController.getBalancesInSingleCall.bind(
-        this.assetsContractController,
-      ),
-      addCollectible: this.collectiblesController.addCollectible.bind(
-        this.collectiblesController,
-      ),
-      getCollectiblesState: () => this.collectiblesController.state,
-    });
+    process.env.COLLECTIBLES_V1 &&
+      (this.collectibleDetectionController = new CollectibleDetectionController(
+        {
+          onCollectiblesStateChange: (listener) =>
+            this.collectiblesController.subscribe(listener),
+          onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+            this.preferencesController.store,
+          ),
+          onNetworkStateChange: this.networkController.store.subscribe.bind(
+            this.networkController.store,
+          ),
+          getOpenSeaApiKey: () => this.collectiblesController.openSeaApiKey,
+          getBalancesInSingleCall: this.assetsContractController.getBalancesInSingleCall.bind(
+            this.assetsContractController,
+          ),
+          addCollectible: this.collectiblesController.addCollectible.bind(
+            this.collectiblesController,
+          ),
+          getCollectiblesState: () => this.collectiblesController.state,
+        },
+      ));
 
     this.metaMetricsController = new MetaMetricsController({
       segment,
@@ -1323,10 +1326,12 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // DetectCollectibleController
-      detectCollectibles: nodeify(
-        this.collectibleDetectionController.detectCollectibles,
-        this.collectibleDetectionController,
-      ),
+      detectCollectibles: process.env.COLLECTIBLES_V1
+        ? nodeify(
+            this.collectibleDetectionController.detectCollectibles,
+            this.collectibleDetectionController,
+          )
+        : null,
     };
   }
 
