@@ -20,10 +20,10 @@
   },
   "appName": {
     "message": "MetaMask",
-    "description": "The name of the application"
+    "description": "Uygulamanın adı"
   },
   "approve": {
-    "message": "Onaylamak"
+    "message": "Onayla"
   },
   "approved": {
     "message": "Onaylandı"
@@ -104,10 +104,10 @@
     "message": "Ayrıntılar"
   },
   "directDepositEther": {
-    "message": "Direk Ether Yatırma"
+    "message": "Direkt Ether Yatırma"
   },
   "directDepositEtherExplainer": {
-    "message": "Eğer çoktan Etheriniz varsa, yeni hesabınıza Ether aktarmanın en kolay yolu direk yatırmadır."
+    "message": "Eğer çoktan Etheriniz varsa, yeni hesabınıza Ether aktarmanın en kolay yolu doğrudan yatırmadır."
   },
   "done": {
     "message": "Bitti"
@@ -246,7 +246,7 @@
     "message": "Hesaplarım"
   },
   "needEtherInWallet": {
-    "message": "MetaMask kullanarak merkezi olamayan uygulamalarla etkileşmek için cüzdanınızda Ether bulunmalıdır."
+    "message": "MetaMask kullanarak merkezi olmayan uygulamalarla etkileşmek için cüzdanınızda Ether bulunmalıdır."
   },
   "needImportFile": {
     "message": "Almak için bir dosya seçmelisiniz.",
@@ -449,9 +449,9 @@
     "message": "Web sitemizi ziyaret edin"
   },
   "welcome": {
-    "message": "MetaMask'ya Hoşgeldiniz"
+    "message": "MetaMask'e Hoşgeldiniz"
   },
   "youSign": {
-    "message": "İmzalıyorsunuz"
+    "message": "İmzalayın"
   }
 }
