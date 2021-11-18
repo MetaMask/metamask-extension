@@ -710,6 +710,9 @@
   "editGasEducationModalTitle": {
     "message": "How to choose?"
   },
+  "editGasFeeModalTitle": {
+    "message": "Edit gas fee"
+  },
   "editGasHigh": {
     "message": "High"
   },
@@ -1011,6 +1014,9 @@
     "message": "Gas limit must be at least $1",
     "description": "$1 is the custom gas limit, in decimal."
   },
+  "gasOption": {
+    "message": "Gas option"
+  },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },
@@ -1032,8 +1038,16 @@
   "gasPriceLabel": {
     "message": "Gas price"
   },
+  "gasTimingHoursShort": {
+    "message": "$1 hrs",
+    "description": "$1 represents a number of hours"
+  },
   "gasTimingMinutes": {
     "message": "$1 minutes",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingMinutesShort": {
+    "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
   "gasTimingNegative": {
@@ -1046,6 +1060,10 @@
   },
   "gasTimingSeconds": {
     "message": "$1 seconds",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingSecondsShort": {
+    "message": "$1 sec",
     "description": "$1 represents a number of seconds"
   },
   "gasTimingVeryPositive": {
@@ -2792,6 +2810,9 @@
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
+  },
+  "time": {
+    "message": "Time"
   },
   "tips": {
     "message": "Tips"

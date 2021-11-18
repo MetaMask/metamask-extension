@@ -50,7 +50,7 @@ export default function GasTiming({
 
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
   const t = useContext(I18nContext);
-  const { estimateToUse } = useGasFeeContext();
+  const { estimateUsed } = useGasFeeContext();
 
   // If the user has chosen a value lower than the low gas fee estimate,
   // We'll need to use the useEffect hook below to make a call to calculate
@@ -155,7 +155,7 @@ export default function GasTiming({
       ]);
     }
   } else {
-    if (!EIP_1559_V2 || estimateToUse === 'low') {
+    if (!EIP_1559_V2 || estimateUsed === 'low') {
       attitude = 'negative';
     }
     // If the user has chosen a value less than our low estimate,

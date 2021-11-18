@@ -1,40 +1,29 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import { I18nContext } from '../../../contexts/i18n';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import Typography from '../../ui/typography/typography';
 
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import { COLORS } from '../../../helpers/constants/design-system';
-
-const GasLevelIconMap = {
-  low: '🐢',
-  medium: '🦊',
-  high: '🦍',
-  dappSuggested: '🌐',
-  custom: '⚙',
-};
+import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function TransactionDetail({ rows = [], onEdit }) {
   // eslint-disable-next-line prefer-destructuring
   const EIP_1559_V2 = process.env.EIP_1559_V2;
 
-  const t = useContext(I18nContext);
+  const t = useI18nContext();
   const {
-    estimateToUse,
     gasLimit,
     gasPrice,
-    isUsingDappSuggestedGasFees,
+    estimateUsed,
     maxFeePerGas,
     maxPriorityFeePerGas,
     transaction,
     supportsEIP1559,
   } = useGasFeeContext();
-  const estimateUsed = isUsingDappSuggestedGasFees
-    ? 'dappSuggested'
-    : estimateToUse;
 
   if (EIP_1559_V2 && estimateUsed) {
     return (
@@ -42,7 +31,7 @@ export default function TransactionDetail({ rows = [], onEdit }) {
         <div className="transaction-detail-edit-V2">
           <button onClick={onEdit}>
             <span className="transaction-detail-edit-V2__icon">
-              {`${GasLevelIconMap[estimateUsed]} `}
+              {`${PRIORITY_LEVEL_ICON_MAP[estimateUsed]} `}
             </span>
             <span className="transaction-detail-edit-V2__label">
               {t(estimateUsed)}
