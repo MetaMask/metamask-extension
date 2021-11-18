@@ -61,7 +61,7 @@ class AccountList extends Component {
 
   renderHeader() {
     const { device } = this.props;
-    const shouldShowHDPaths = ['ledger', 'lattice', 'device'].includes(
+    const shouldShowHDPaths = ['ledger', 'lattice', 'trezor'].includes(
       device.toLowerCase(),
     );
     return (
