@@ -53,6 +53,7 @@ export default function reduceApp(state = {}, action) {
     },
     gasLoadingAnimationIsShowing: false,
     smartTransactionsError: null,
+    smartTransactionsErrorMessageDismissed: false,
     ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
@@ -111,6 +112,12 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         smartTransactionsError: action.payload,
+      };
+
+    case actionConstants.DISMISS_SMART_TRANSACTIONS_ERROR_MESSAGE:
+      return {
+        ...appState,
+        smartTransactionsErrorMessageDismissed: true,
       };
 
     // modal methods:
