@@ -2374,11 +2374,7 @@
     semver "^7.3.4"
     yargs "^16.2.0"
 
-<<<<<<< HEAD
 "@lavamoat/lavapack@^2.0.3", "@lavamoat/lavapack@^2.0.4":
-=======
-"@lavamoat/lavapack@^2.0.3":
->>>>>>> 39aef4f10 (yarn.lock fixed)
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@lavamoat/lavapack/-/lavapack-2.0.4.tgz#504d942837c0141a385141220917d81d9f9f4c95"
   integrity sha512-ttaEWUiROG12fGwzFcBlXNr39dzpU4W6Es7rFmS5ihT7j//eT1NrV73S357Lw8cmfZezvz1/ca1fqnZcZvarPw==
