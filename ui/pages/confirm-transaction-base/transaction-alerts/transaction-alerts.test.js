@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  screen,
-  fireEvent,
-  waitForElementToBeRemoved,
-} from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 
 import { ETH } from '../../../helpers/constants/common';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';

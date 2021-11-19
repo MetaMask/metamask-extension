@@ -103,7 +103,7 @@ describe('TransactionDetail', () => {
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
-  it('should render edit link if transaction has SimulationError and prop proceedTransaction is true', () => {
+  it('should render edit link if prop proceedTransaction is true even if transaction has SimulationError', () => {
     render(
       { transaction: { simulationFails: true } },
       { proceedTransaction: true },
