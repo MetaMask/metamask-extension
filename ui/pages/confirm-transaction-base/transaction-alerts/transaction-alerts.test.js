@@ -1,5 +1,9 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import {
+  screen,
+  fireEvent,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 
 import { ETH } from '../../../helpers/constants/common';
 import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
@@ -17,7 +21,7 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
-const render = (props, state) => {
+const render = (props, state, componentProps) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -39,7 +43,7 @@ const render = (props, state) => {
 
   return renderWithProvider(
     <GasFeeContextProvider {...props}>
-      <TransactionAlerts />
+      <TransactionAlerts {...componentProps} />
     </GasFeeContextProvider>,
     store,
   );
@@ -91,5 +95,42 @@ describe('TransactionAlerts', () => {
     expect(
       screen.queryByText('You have (1) pending transaction(s).'),
     ).toBeInTheDocument();
+  });
+
+  describe('SimulationError Message', () => {
+    it('should show simulation error message along with option to proceed anyway if transaction.simulationFails is true', () => {
+      render({ transaction: { simulationFails: true } });
+      expect(
+        screen.queryByText(
+          'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
+        ),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText('I want to proceed anyway'),
+      ).toBeInTheDocument();
+    });
+
+    it('should not show options to proceed anyways if compoennt prop proceedTransaction is already true', () => {
+      render({ transaction: { simulationFails: true } }, undefined, {
+        proceedTransaction: true,
+      });
+      expect(
+        screen.queryByText(
+          'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
+        ),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText('I want to proceed anyway'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('should call prop enableProceedTransaction if proceed anyways option is clicked', () => {
+      const enableProceedTransaction = jest.fn();
+      render({ transaction: { simulationFails: true } }, undefined, {
+        enableProceedTransaction,
+      });
+      fireEvent.click(screen.queryByText('I want to proceed anyway'));
+      expect(enableProceedTransaction).toHaveBeenCalledTimes(1);
+    });
   });
 });

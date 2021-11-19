@@ -16,7 +16,7 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
-const render = (props) => {
+const render = (props, componentProps) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -43,7 +43,7 @@ const render = (props) => {
           console.log('on edit');
         }}
         rows={[]}
-        {...props}
+        {...componentProps}
       />
     </GasFeeContextProvider>,
     store,
@@ -54,24 +54,29 @@ describe('TransactionDetail', () => {
   beforeEach(() => {
     process.env.EIP_1559_V2 = true;
   });
+
   afterEach(() => {
     process.env.EIP_1559_V2 = false;
   });
+
   it('should render edit link with text low if low gas estimates are selected', () => {
     render({ transaction: { userFeeLevel: 'low' } });
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
   });
+
   it('should render edit link with text markey if medium gas estimates are selected', () => {
     render({ transaction: { userFeeLevel: 'medium' } });
     expect(screen.queryByText('🦊')).toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
   });
+
   it('should render edit link with text agressive if high gas estimates are selected', () => {
     render({ transaction: { userFeeLevel: 'high' } });
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
   });
+
   it('should render edit link with text Site suggested if site suggested estimated are used', () => {
     render({
       transaction: {
@@ -83,6 +88,7 @@ describe('TransactionDetail', () => {
     expect(screen.queryByText('Site suggested')).toBeInTheDocument();
     expect(document.getElementsByClassName('info-tooltip')).toHaveLength(1);
   });
+
   it('should render edit link with text advance if custom gas estimates are used', () => {
     render({
       defaultEstimateToUse: 'custom',
@@ -90,5 +96,18 @@ describe('TransactionDetail', () => {
     expect(screen.queryByText('⚙')).toBeInTheDocument();
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
     expect(screen.queryByText('Edit')).toBeInTheDocument();
+  });
+
+  it('should not render edit link if transaction has SimulationError and prop proceedTransaction is false', () => {
+    render({ transaction: { simulationFails: true } });
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
+
+  it('should render edit link if transaction has SimulationError and prop proceedTransaction is true', () => {
+    render(
+      { transaction: { simulationFails: true } },
+      { proceedTransaction: true },
+    );
+    expect(screen.queryByRole('button')).toBeInTheDocument();
   });
 });

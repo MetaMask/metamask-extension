@@ -17,7 +17,7 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
-const render = (props) => {
+const render = (props, componentProps) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -38,7 +38,11 @@ const render = (props) => {
 
   return renderWithProvider(
     <GasFeeContextProvider {...props}>
-      <GasDetailsItem txData={{ txParams: {} }} {...props} />
+      <GasDetailsItem
+        txData={{ txParams: {} }}
+        proceedTransaction={false}
+        {...componentProps}
+      />
     </GasFeeContextProvider>,
     store,
   );
@@ -66,6 +70,21 @@ describe('GasDetailsItem', () => {
     render({ defaultEstimateToUse: 'low' });
     await waitFor(() => {
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+    });
+  });
+
+  it('should return null if there is simulationError and user has not selected proceed anyway', () => {
+    const { container } = render({
+      defaultEstimateToUse: 'low',
+      transaction: { simulationFails: true },
+    });
+    expect(container.innerHTML).toHaveLength(0);
+  });
+
+  it('should not return null even if there is simulationError if user selected proceedAnyways', async () => {
+    render();
+    await waitFor(() => {
+      expect(screen.queryByText('Gas')).toBeInTheDocument();
     });
   });
 });
