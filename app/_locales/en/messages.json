@@ -581,6 +581,9 @@
   "dappSuggested": {
     "message": "Site suggested"
   },
+  "dappSuggestedShortLabel": {
+    "message": "Site"
+  },
   "dappSuggestedTooltip": {
     "message": "$1 has recommended this price.",
     "description": "$1 represents the Dapp's origin"
@@ -709,6 +712,9 @@
   },
   "editGasEducationModalTitle": {
     "message": "How to choose?"
+  },
+  "editGasFeeModalTitle": {
+    "message": "Edit gas fee"
   },
   "editGasHigh": {
     "message": "High"
@@ -1011,6 +1017,9 @@
     "message": "Gas limit must be at least $1",
     "description": "$1 is the custom gas limit, in decimal."
   },
+  "gasOption": {
+    "message": "Gas option"
+  },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },
@@ -1029,11 +1038,16 @@
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
-  "gasPriceLabel": {
-    "message": "Gas price"
+  "gasTimingHoursShort": {
+    "message": "$1 hrs",
+    "description": "$1 represents a number of hours"
   },
   "gasTimingMinutes": {
     "message": "$1 minutes",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingMinutesShort": {
+    "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
   "gasTimingNegative": {
@@ -1046,6 +1060,10 @@
   },
   "gasTimingSeconds": {
     "message": "$1 seconds",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingSecondsShort": {
+    "message": "$1 sec",
     "description": "$1 represents a number of seconds"
   },
   "gasTimingVeryPositive": {
@@ -1585,6 +1603,12 @@
   },
   "newContract": {
     "message": "New Contract"
+  },
+  "newNFTsDetected": {
+    "message": "New NFTs detected"
+  },
+  "newNFTsDetectedInfo": {
+    "message": "One or more new NFTs were detected in your wallet."
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
@@ -2179,6 +2203,9 @@
   },
   "selectHdPath": {
     "message": "Select HD Path"
+  },
+  "selectNFTPrivacyPreference": {
+    "message": "Select NFT privacy preference"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
@@ -2792,6 +2819,9 @@
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
+  },
+  "time": {
+    "message": "Time"
   },
   "tips": {
     "message": "Tips"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 
 import { ETH } from '../../../helpers/constants/common';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -14,6 +14,7 @@ jest.mock('../../../store/actions', () => ({
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
+  getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
 const render = (props) => {
@@ -37,28 +38,34 @@ const render = (props) => {
 
   return renderWithProvider(
     <GasFeeContextProvider {...props}>
-      <GasDetailsItem txData={{}} {...props} />
+      <GasDetailsItem txData={{ txParams: {} }} {...props} />
     </GasFeeContextProvider>,
     store,
   );
 };
 
 describe('GasDetailsItem', () => {
-  it('should render label', () => {
+  it('should render label', async () => {
     render();
-    expect(screen.queryByText('Gas')).toBeInTheDocument();
-    expect(screen.queryByText('(estimated)')).toBeInTheDocument();
-    expect(screen.queryByText('Max fee:')).toBeInTheDocument();
-    expect(screen.queryByText('ETH')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('Gas')).toBeInTheDocument();
+      expect(screen.queryByText('(estimated)')).toBeInTheDocument();
+      expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+      expect(screen.queryByText('ETH')).toBeInTheDocument();
+    });
   });
 
-  it('should show warning icon if estimates are high', () => {
+  it('should show warning icon if estimates are high', async () => {
     render({ defaultEstimateToUse: 'high' });
-    expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
+    });
   });
 
-  it('should not show warning icon if estimates are not high', () => {
+  it('should not show warning icon if estimates are not high', async () => {
     render({ defaultEstimateToUse: 'low' });
-    expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+    });
   });
 });
