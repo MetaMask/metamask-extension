@@ -35,10 +35,14 @@ export default function OnboardingFlowSwitch() {
   }
 
   if (!isInitialized) {
+    let redirect;
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    return <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
+    redirect = <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
     ///: END:ONLY_INCLUDE_IN
-    return <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />; // eslint-disable-line no-unreachable
+    ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
+    redirect = <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />;
+    ///: END:ONLY_INCLUDE_IN
+    return redirect;
   }
 
   return <Redirect to={{ pathname: ONBOARDING_UNLOCK_ROUTE }} />;
