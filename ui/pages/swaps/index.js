@@ -336,8 +336,18 @@ export default function Swap() {
           {showSmartTransactionsErrorMessage && (
             <ActionableMessage
               type="danger"
-              message="Smart transaction is currently experiencing issues. Please continue to enjoy MetaMask with smart transactions disabled."
-              className="actionable-message--left-aligned actionable-message--error swaps__message-error"
+              message={
+                <div className="build-quote__token-verification-warning-message">
+                  <div className="build-quote__bold">
+                    Smart Transactions Alert
+                  </div>
+                  <div>
+                    Smart transaction is currently experiencing issues and is
+                    therefore disabled.
+                  </div>
+                </div>
+              }
+              className="actionable-message--left-aligned actionable-message--error"
               primaryAction={{
                 label: t('dismiss'),
                 onClick: () => dispatch(dismissSmartTransactionsErrorMessage()),
