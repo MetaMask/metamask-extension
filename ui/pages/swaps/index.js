@@ -339,15 +339,12 @@ export default function Swap() {
               message={
                 <div className="build-quote__token-verification-warning-message">
                   <div className="build-quote__bold">
-                    Smart Transactions Alert
+                    {t('smartTransactionsAlert')}
                   </div>
-                  <div>
-                    Smart transaction is currently experiencing issues and is
-                    therefore disabled.
-                  </div>
+                  <div>{t('smartTransactionsUnavailable')}</div>
                 </div>
               }
-              className="actionable-message--left-aligned actionable-message--error"
+              className="actionable-message--left-aligned actionable-message--error swaps__error-message"
               primaryAction={{
                 label: t('dismiss'),
                 onClick: () => dispatch(dismissSmartTransactionsErrorMessage()),
