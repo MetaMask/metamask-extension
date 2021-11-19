@@ -31,7 +31,7 @@ export function useGasFeeContext() {
 GasFeeContextProvider.propTypes = {
   children: PropTypes.node.isRequired,
   defaultEstimateToUse: PropTypes.string,
-  transaction: PropTypes.object.isRequired,
+  transaction: PropTypes.object,
   minimumGasLimit: PropTypes.string,
   editGasMode: PropTypes.string,
 };

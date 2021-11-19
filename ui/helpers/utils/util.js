@@ -408,3 +408,19 @@ export function getURLHost(url) {
 export function getURLHostName(url) {
   return getURL(url)?.hostname || '';
 }
+
+// Once we reach this threshold, we switch to higher unit
+const MINUTE_CUTOFF = 90 * 60;
+const SECOND_CUTOFF = 90;
+
+export const toHumanReadableTime = (t, milliseconds) => {
+  if (milliseconds === undefined || milliseconds === null) return '';
+  const seconds = Math.ceil(milliseconds / 1000);
+  if (seconds <= SECOND_CUTOFF) {
+    return t('gasTimingSecondsShort', [seconds]);
+  }
+  if (seconds <= MINUTE_CUTOFF) {
+    return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
+  }
+  return t('gasTimingHoursShort', [Math.ceil(seconds / 3600)]);
+};

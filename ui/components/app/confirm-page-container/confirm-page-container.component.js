@@ -8,11 +8,15 @@ import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import ErrorMessage from '../../ui/error-message';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import Dialog from '../../ui/dialog';
+import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
   ConfirmPageContainerNavigation,
 } from '.';
+
+// eslint-disable-next-line prefer-destructuring
+const EIP_1559_V2 = process.env.EIP_1559_V2;
 
 export default class ConfirmPageContainer extends Component {
   static contextTypes = {
@@ -225,12 +229,15 @@ export default class ConfirmPageContainer extends Component {
               )}
             </PageContainerFooter>
           )}
-          {editingGas && (
+          {editingGas && !EIP_1559_V2 && (
             <EditGasPopover
               mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
               onClose={handleCloseEditGas}
               transaction={currentTransaction}
             />
+          )}
+          {editingGas && EIP_1559_V2 && (
+            <EditGasFeePopover onClose={handleCloseEditGas} />
           )}
         </div>
       </GasFeeContextProvider>

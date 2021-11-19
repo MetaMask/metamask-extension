@@ -5,10 +5,10 @@ import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const LowPriorityMessage = () => {
-  const { estimateToUse } = useGasFeeContext();
+  const { estimateUsed } = useGasFeeContext();
   const t = useI18nContext();
 
-  if (estimateToUse !== 'low') return null;
+  if (estimateUsed !== 'low') return null;
   return (
     <div className="low-priority-message">
       <ActionableMessage
