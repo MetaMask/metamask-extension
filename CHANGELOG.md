@@ -7,11 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.6.1]
-### Uncategorized
-- Ensure that metametrics error related to anonymousId is not sent to sentry ([#12763](https://github.com/MetaMask/metamask-extension/pull/12763))
-- Update `improved-yarn-audit` and ignore 2 advisories ([#12765](https://github.com/MetaMask/metamask-extension/pull/12765))
-- Don't dispatch hideTestNetMessage ([#12748](https://github.com/MetaMask/metamask-extension/pull/12748))
-- metametrics - ensure segment submission failures do not bubble up ([#12573](https://github.com/MetaMask/metamask-extension/pull/12573))
+### Fixed
+- [#12573](https://github.com/MetaMask/metamask-extension/pull/12573): Ensure metrics api errors do not impact user experience
 
 ## [10.6.0]
 ### Added
