@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-comment-textnodes */
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';

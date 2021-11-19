@@ -6,8 +6,8 @@ import {
   LOCK_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
-  INITIALIZE_EXPERIMENTAL_AREA,
-  INITIALIZE_WELCOME_ROUTE,
+  INITIALIZE_EXPERIMENTAL_AREA, // eslint-disable-line no-unused-vars
+  INITIALIZE_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
 } from '../../../helpers/constants/routes';
 
 export default class FirstTimeFlowSwitch extends PureComponent {
@@ -19,6 +19,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
   };
 
   render() {
+    /* eslint-disable prefer-const */
     const {
       completedOnboarding,
       isInitialized,

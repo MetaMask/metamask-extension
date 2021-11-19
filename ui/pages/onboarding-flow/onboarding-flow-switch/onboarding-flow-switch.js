@@ -6,8 +6,8 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
-  ONBOARDING_EXPERIMENTAL_AREA,
-  ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_EXPERIMENTAL_AREA, // eslint-disable-line no-unused-vars
+  ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -17,6 +17,7 @@ import {
 } from '../../../ducks/metamask/metamask';
 
 export default function OnboardingFlowSwitch() {
+  /* eslint-disable prefer-const */
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
