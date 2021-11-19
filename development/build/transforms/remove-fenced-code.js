@@ -58,12 +58,11 @@ class RemoveFencedCodeTransform extends Transform {
     };
 
     if (this.shouldLintTransformedFiles && didModify) {
-      lintTransformedFile(fileContent, this.filePath)
+      return lintTransformedFile(fileContent, this.filePath)
         .then(pushAndEnd)
         .catch((error) => end(error));
-    } else {
-      pushAndEnd();
     }
+    return pushAndEnd();
   }
 }
 
