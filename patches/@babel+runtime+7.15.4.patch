@@ -1,0 +1,21 @@
+diff --git a/node_modules/@babel/runtime/helpers/setPrototypeOf.js b/node_modules/@babel/runtime/helpers/setPrototypeOf.js
+index 415797b..63312f2 100644
+--- a/node_modules/@babel/runtime/helpers/setPrototypeOf.js
++++ b/node_modules/@babel/runtime/helpers/setPrototypeOf.js
+@@ -1,12 +1,7 @@
+ function _setPrototypeOf(o, p) {
+-  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+-    o.__proto__ = p;
+-    return o;
+-  };
+-
+-  module.exports["default"] = module.exports, module.exports.__esModule = true;
+-  return _setPrototypeOf(o, p);
+-}
++  o.__proto__ = p;
++  return o;
++};
+ 
+ module.exports = _setPrototypeOf;
+ module.exports["default"] = module.exports, module.exports.__esModule = true;
+\ No newline at end of file
