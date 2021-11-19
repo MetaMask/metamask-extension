@@ -46,9 +46,14 @@
 
   &__action {
     font-weight: bold;
+
+    &-danger {
+      background: $Red-500;
+      color: #fff;
+    }
   }
 
-  button.actionable-message__action-v2 {
+  &__action-v2 {
     color: $primary-1;
     background: none;
     border: none;
@@ -87,11 +92,6 @@
     .actionable-message__message {
       color: $Black-100;
       text-align: left;
-    }
-
-    button {
-      background: $Red-500;
-      color: #fff;
     }
   }
 

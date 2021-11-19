@@ -1,4 +1,6 @@
 .transaction-alerts {
+  text-align: left;
+
   & > *:first-of-type {
     margin-top: 20px;
   }
@@ -12,8 +14,6 @@
   }
 
   &__pending-transactions {
-    text-align: left;
-
     & a {
       color: $primary-1;
     }

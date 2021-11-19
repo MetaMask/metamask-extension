@@ -62,6 +62,7 @@ export default function ActionableMessage({
               className={classnames(
                 'actionable-message__action',
                 'actionable-message__action--primary',
+                `actionable-message__action-${type}`,
               )}
               onClick={primaryAction.onClick}
             >
@@ -73,6 +74,7 @@ export default function ActionableMessage({
               className={classnames(
                 'actionable-message__action',
                 'actionable-message__action--secondary',
+                `actionable-message__action-${type}`,
               )}
               onClick={secondaryAction.onClick}
             >
