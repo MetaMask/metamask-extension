@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.6.1]
+### Uncategorized
+- Ensure that metametrics error related to anonymousId is not sent to sentry ([#12763](https://github.com/MetaMask/metamask-extension/pull/12763))
+- Update `improved-yarn-audit` and ignore 2 advisories ([#12765](https://github.com/MetaMask/metamask-extension/pull/12765))
+- Don't dispatch hideTestNetMessage ([#12748](https://github.com/MetaMask/metamask-extension/pull/12748))
+- metametrics - ensure segment submission failures do not bubble up ([#12573](https://github.com/MetaMask/metamask-extension/pull/12573))
+
 ## [10.6.0]
 ### Added
 - [#12053](https://github.com/MetaMask/metamask-extension/pull/12053): Add support for GridPlus Lattice1 hardware wallet
@@ -2594,7 +2601,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.1...HEAD
+[10.6.1]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...v10.6.1
 [10.6.0]: https://github.com/MetaMask/metamask-extension/compare/v10.5.2...v10.6.0
 [10.5.2]: https://github.com/MetaMask/metamask-extension/compare/v10.5.1...v10.5.2
 [10.5.1]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...v10.5.1
