@@ -212,10 +212,11 @@ const AdvancedGasPopover = ({ onClose }) => {
             <Box className="advanced-gas-popover__input-subtext">
               <Box className="advanced-gas-popover__input-subtext">
                 <Typography
-                  tag={TYPOGRAPHY.H8}
+                  tag={TYPOGRAPHY.Paragraph}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
+                  boxProps={{ marginRight: 1 }}
                 >
                   <I18nValue messageKey="currentTitle" />
                 </Typography>
@@ -223,6 +224,7 @@ const AdvancedGasPopover = ({ onClose }) => {
                   tag={TYPOGRAPHY.Paragraph}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
+                  boxProps={{ marginRight: 1 }}
                 >
                   {`${estimatedBaseFeeInDecGWEI} GWEI`}
                 </Typography>
@@ -233,17 +235,19 @@ const AdvancedGasPopover = ({ onClose }) => {
                 className="advanced-gas-popover__input-subtext"
               >
                 <Typography
-                  tag={TYPOGRAPHY.H8}
+                  tag={TYPOGRAPHY.Paragraph}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
+                  boxProps={{ marginRight: 1 }}
                 >
                   <I18nValue messageKey="twelveHrTitle" />
                 </Typography>
                 <Typography
-                  tag={TYPOGRAPHY.H8}
+                  tag={TYPOGRAPHY.Paragraph}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
+                  boxProps={{ marginRight: 1 }}
                 >
                   23-359 GWEI
                 </Typography>
@@ -268,10 +272,11 @@ const AdvancedGasPopover = ({ onClose }) => {
             <Box className="advanced-gas-popover__input-subtext">
               <Box className="advanced-gas-popover__input-subtext">
                 <Typography
-                  tag={TYPOGRAPHY.H8}
+                  tag={TYPOGRAPHY.Paragraph}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
+                  boxProps={{ marginRight: 1 }}
                 >
                   <I18nValue messageKey="currentTitle" />
                 </Typography>
@@ -279,6 +284,7 @@ const AdvancedGasPopover = ({ onClose }) => {
                   tag={TYPOGRAPHY.Paragraph}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
+                  boxProps={{ marginRight: 1 }}
                 >
                   1-18 GWEI
                 </Typography>
@@ -289,17 +295,19 @@ const AdvancedGasPopover = ({ onClose }) => {
                 className="advanced-gas-popover__input-subtext"
               >
                 <Typography
-                  tag={TYPOGRAPHY.H8}
+                  tag={TYPOGRAPHY.Paragraph}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                   fontWeight={FONT_WEIGHT.BOLD}
+                  boxProps={{ marginRight: 1 }}
                 >
                   <I18nValue messageKey="twelveHrTitle" />
                 </Typography>
                 <Typography
-                  tag={TYPOGRAPHY.H8}
+                  tag={TYPOGRAPHY.Paragraph}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
+                  boxProps={{ marginRight: 1 }}
                 >
                   0.1-127 GWEI
                 </Typography>

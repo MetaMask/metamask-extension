@@ -46,7 +46,7 @@ export default function FormField({
           <div className="form-field__heading-title">
             {titleText && (
               <Typography
-                tag={titleFontSize || TYPOGRAPHY.H6}
+                tag={TYPOGRAPHY.H6}
                 fontWeight={FONT_WEIGHT.BOLD}
                 variant={titleFontSize || TYPOGRAPHY.H6}
                 boxProps={{ display: DISPLAY.INLINE_BLOCK }}
@@ -56,7 +56,7 @@ export default function FormField({
             )}
             {titleUnit && (
               <Typography
-                tag={titleFontSize || TYPOGRAPHY.H6}
+                tag={TYPOGRAPHY.H6}
                 variant={titleFontSize || TYPOGRAPHY.H6}
                 color={COLORS.UI4}
                 boxProps={{ display: DISPLAY.INLINE_BLOCK }}
