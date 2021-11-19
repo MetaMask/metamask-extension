@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import UnitInput from '../unit-input';
 import CurrencyDisplay from '../currency-display';
@@ -7,103 +7,102 @@ import {
   getWeiHexFromDecimalValue,
 } from '../../../helpers/utils/conversions.util';
 import { ETH } from '../../../helpers/constants/common';
+import { I18nContext } from '../../../contexts/i18n';
+import { useDispatch } from 'react-redux';
+// import { toggleCurrencySwitch } from '../../../ducks/app/app';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
  * hex value in WEI. props.value, used as a default or forced value, should be a hex value, which
  * gets converted into a decimal value depending on the currency (ETH or Fiat).
  */
-export default class CurrencyInput extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+ export default function CurrencyInput ({
+  hexValue,           // value !
+  preferredCurrency,  // nativeCurrency !
+  secondaryCurrency,  // currentCurrency !
+  hideSecondary,      // hideFiat !
+  featureSecondary,   // useFiat !
+  conversionRate,     // conversionRate !
+  primarySuffix,      // nativeSuffix !
+  secondarySuffix,    // fiatSuffix !
+  onChange,
+  onPreferenceToggle,
+  }) {
 
-  static propTypes = {
-    conversionRate: PropTypes.number,
-    currentCurrency: PropTypes.string,
-    nativeCurrency: PropTypes.string,
-    onChange: PropTypes.func,
-    useFiat: PropTypes.bool,
-    hideFiat: PropTypes.bool,
-    value: PropTypes.string,
-    fiatSuffix: PropTypes.string,
-    nativeSuffix: PropTypes.string,
-  };
+  const t = useContext(I18nContext);
 
-  constructor(props) {
-    super(props);
+  // const dispatch = useDispatch();
 
-    const { value: hexValue } = props;
-    const decimalValue = hexValue ? this.getDecimalValue(props) : 0;
+  const [isSwapped, setSwapped] = useState(false);
+  const [hexValueNew, setHexValueNew] = useState('');
+  const [decimalValue, setDecimalValue] = useState(0);
 
-    this.state = {
-      decimalValue,
-      hexValue,
-      isSwapped: false,
-    };
-  }
+  useEffect(() => {
+    const decimalValueString = shouldUseFiat()
+    ? getValueFromWeiHex({
+        value: hexValue,
+        toCurrency: secondaryCurrency,
+        conversionRate,
+        numberOfDecimals: 2,
+      })
+    : getValueFromWeiHex({
+        value: hexValue,
+        toCurrency: ETH,
+        numberOfDecimals: 8,
+      });
+      setHexValueNew(hexValue)
+      setDecimalValue(Number(decimalValueString));
+  }, [hexValue]);
 
-  componentDidUpdate(prevProps) {
-    const { value: prevPropsHexValue } = prevProps;
-    const { value: propsHexValue } = this.props;
-    const { hexValue: stateHexValue } = this.state;
+  // const getDecimalValue = () => {
+  //   const decimalValueString = shouldUseFiat()
+  //     ? getValueFromWeiHex({
+  //         value: hexValue,
+  //         toCurrency: secondaryCurrency,
+  //         conversionRate,
+  //         numberOfDecimals: 2,
+  //       })
+  //     : getValueFromWeiHex({
+  //         value: hexValue,
+  //         toCurrency: ETH,
+  //         numberOfDecimals: 8,
+  //       });
 
-    if (
-      prevPropsHexValue !== propsHexValue &&
-      propsHexValue !== stateHexValue
-    ) {
-      const decimalValue = this.getDecimalValue(this.props);
-      this.setState({ hexValue: propsHexValue, decimalValue });
-    }
-  }
+  //   return Number(decimalValueString) || 0;
+  // }
 
-  getDecimalValue(props) {
-    const { value: hexValue, currentCurrency, conversionRate } = props;
-    const decimalValueString = this.shouldUseFiat()
-      ? getValueFromWeiHex({
-          value: hexValue,
-          toCurrency: currentCurrency,
-          conversionRate,
-          numberOfDecimals: 2,
-        })
-      : getValueFromWeiHex({
-          value: hexValue,
-          toCurrency: ETH,
-          numberOfDecimals: 8,
-        });
-
-    return Number(decimalValueString) || 0;
-  }
-
-  shouldUseFiat = () => {
-    const { useFiat, hideFiat } = this.props;
-    const { isSwapped } = this.state || {};
-
-    if (hideFiat) {
+  const shouldUseFiat = () => {
+    if (hideSecondary) {
       return false;
     }
 
-    return isSwapped ? !useFiat : useFiat;
+    if (preferredCurrency === ETH && featureSecondary === true) {
+      return true;
+    } else if (preferredCurrency === ETH && featureSecondary === false) {
+      return false;
+    }
+
+    if (isSwapped) {
+      return true
+    }
+  };
+  const swap = () => {
+    
+      
+    
+    // dispatch(toggleCurrencySwitch(!isSwapped))
+    onPreferenceToggle(!isSwapped);
+    setSwapped(!isSwapped);
+    handleChange(decimalValue);
+
   };
 
-  swap = () => {
-    const { isSwapped, decimalValue } = this.state;
-    this.setState({ isSwapped: !isSwapped }, () => {
-      this.handleChange(decimalValue);
-    });
-  };
 
-  handleChange = (decimalValue) => {
-    const {
-      currentCurrency: fromCurrency,
-      conversionRate,
-      onChange,
-    } = this.props;
-
-    const hexValue = this.shouldUseFiat()
+  const handleChange = (decimalValue) => {console.log("decimalValue", decimalValue)
+    const hexValue = shouldUseFiat()
       ? getWeiHexFromDecimalValue({
           value: decimalValue,
-          fromCurrency,
+          fromCurrency: secondaryCurrency,
           conversionRate,
           invertConversionRate: true,
         })
@@ -113,60 +112,76 @@ export default class CurrencyInput extends PureComponent {
           fromDenomination: ETH,
           conversionRate,
         });
-
-    this.setState({ hexValue, decimalValue });
-    onChange(hexValue);
+        console.log(hexValue)
+      setHexValueNew(hexValue);
+      setDecimalValue(decimalValue);
+      onChange(hexValue);
   };
 
-  renderConversionComponent() {
-    const { currentCurrency, nativeCurrency, hideFiat } = this.props;
-    const { hexValue } = this.state;
+  const renderConversionComponent = () => {
     let currency, numberOfDecimals;
 
-    if (hideFiat) {
+    if (hideSecondary) {
       return (
         <div className="currency-input__conversion-component">
-          {this.context.t('noConversionRateAvailable')}
+          {t('noConversionRateAvailable')}
         </div>
       );
     }
 
-    if (this.shouldUseFiat()) {
+    if (shouldUseFiat()) {
       // Display ETH
-      currency = nativeCurrency || ETH;
+      currency = preferredCurrency || ETH;
       numberOfDecimals = 8;
     } else {
       // Display Fiat
-      currency = currentCurrency;
+      currency = secondaryCurrency;
       numberOfDecimals = 2;
     }
-
+    console.log()
     return (
       <CurrencyDisplay
         className="currency-input__conversion-component"
         currency={currency}
-        value={hexValue}
+        value={hexValueNew}
         numberOfDecimals={numberOfDecimals}
       />
     );
   }
 
-  render() {
-    const { fiatSuffix, nativeSuffix, ...restProps } = this.props;
-    const { decimalValue } = this.state;
-
-    return (
-      <UnitInput
-        {...restProps}
-        suffix={this.shouldUseFiat() ? fiatSuffix : nativeSuffix}
-        onChange={this.handleChange}
-        value={decimalValue}
-        actionComponent={
-          <div className="currency-input__swap-component" onClick={this.swap} />
-        }
-      >
-        {this.renderConversionComponent()}
-      </UnitInput>
-    );
-  }
+  return (
+    <UnitInput
+    {...{
+      hexValue,           
+      preferredCurrency,  
+      secondaryCurrency,  
+      hideSecondary,      
+      featureSecondary,   
+      conversionRate, 
+      onChange,
+      onPreferenceToggle,
+    }}
+      suffix={shouldUseFiat() ? secondarySuffix : primarySuffix}
+      onChange={handleChange}
+      value={decimalValue}
+      actionComponent={
+        <div className="currency-input__swap-component" onClick={swap} />
+      }
+    >
+      {renderConversionComponent()}
+    </UnitInput>
+  );
 }
+
+CurrencyInput.propTypes = {
+  hexValue: PropTypes.string,
+  preferredCurrency: PropTypes.string,
+  secondaryCurrency: PropTypes.string,
+  hideSecondary: PropTypes.bool,
+  featureSecondary: PropTypes.bool,
+  conversionRate: PropTypes.number,
+  primarySuffix: PropTypes.string,
+  secondarySuffix: PropTypes.string,
+  onChange: PropTypes.func,
+  onPreferenceToggle: PropTypes.func,
+};

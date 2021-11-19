@@ -10,22 +10,22 @@ const mapStateToProps = (state) => {
   const showFiat = getShouldShowFiat(state);
 
   return {
-    nativeCurrency,
-    currentCurrency,
+    preferredCurrency: nativeCurrency,
+    secondaryCurrency: currentCurrency,
     conversionRate,
-    hideFiat: !showFiat,
+    hideSecondary: !showFiat,
   };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { nativeCurrency, currentCurrency } = stateProps;
+  const { preferredCurrency, secondaryCurrency } = stateProps;
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    nativeSuffix: nativeCurrency || ETH,
-    fiatSuffix: currentCurrency.toUpperCase(),
+    primarySuffix: preferredCurrency || ETH,
+    secondarySuffix: secondaryCurrency.toUpperCase(),
   };
 };
 
