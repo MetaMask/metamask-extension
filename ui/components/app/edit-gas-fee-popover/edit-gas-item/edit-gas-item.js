@@ -21,12 +21,12 @@ import I18nValue from '../../../ui/i18n-value';
 import InfoTooltip from '../../../ui/info-tooltip';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 
-import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 import Typography from '../../../ui/typography';
 import {
   COLORS,
   FONT_WEIGHT,
 } from '../../../../helpers/constants/design-system';
+import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
 const EditGasItem = ({ priorityLevel }) => {
   const {
@@ -36,7 +36,7 @@ const EditGasItem = ({ priorityLevel }) => {
     maxFeePerGas: maxFeePerGasValue,
     maxPriorityFeePerGas: maxPriorityFeePerGasValue,
     updateTransactionUsingGasFeeEstimates,
-    transaction: { dappSuggestedGasFees },
+    transaction: { dappSuggestedGasFees, origin },
   } = useGasFeeContext();
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
@@ -54,9 +54,13 @@ const EditGasItem = ({ priorityLevel }) => {
     priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
     dappSuggestedGasFees
   ) {
-    maxFeePerGas = hexWEIToDecGWEI(dappSuggestedGasFees.maxFeePerGas);
+    maxFeePerGas = hexWEIToDecGWEI(
+      dappSuggestedGasFees.maxFeePerGas ?? dappSuggestedGasFees.gasPrice,
+    );
     maxPriorityFeePerGas = hexWEIToDecGWEI(
-      dappSuggestedGasFees.maxPriorityFeePerGas,
+      dappSuggestedGasFees.maxPriorityFeePerGas ??
+        // TODO should this default back to something else? Will definitely be too high in this case
+        dappSuggestedGasFees.gasPrice,
     );
   } else if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
     if (estimateUsed === PRIORITY_LEVELS.CUSTOM) {
@@ -98,6 +102,41 @@ const EditGasItem = ({ priorityLevel }) => {
     } else {
       updateTransactionUsingGasFeeEstimates(priorityLevel);
       closeModal('editGasFee');
+    }
+  };
+
+  const toolTipMessage = () => {
+    switch (priorityLevel) {
+      case PRIORITY_LEVELS.LOW:
+        return t('lowGasSettingToolTipMessage', [
+          <span key={priorityLevel}>
+            <b>{t('low')}</b>
+          </span>,
+        ]);
+      case PRIORITY_LEVELS.MEDIUM:
+        return t('mediumGasSettingToolTipMessage', [
+          <span key={priorityLevel}>
+            <b>{t('medium')}</b>
+          </span>,
+        ]);
+      case PRIORITY_LEVELS.HIGH:
+        return t('highGasSettingToolTipMessage', [
+          <span key={priorityLevel}>
+            <b>{t('high')}</b>
+          </span>,
+        ]);
+      case PRIORITY_LEVELS.CUSTOM:
+        return t('customGasSettingToolTipMessage', [
+          <span key={priorityLevel}>
+            <b>{t('custom')}</b>
+          </span>,
+        ]);
+      case PRIORITY_LEVELS.DAPP_SUGGESTED:
+        return t('dappSuggestedGasSettingToolTipMessage', [
+          <span key={origin}>{origin}</span>,
+        ]);
+      default:
+        return '';
     }
   };
 
@@ -153,24 +192,27 @@ const EditGasItem = ({ priorityLevel }) => {
       </span>
       <span className="edit-gas-item__tooltip">
         <InfoTooltip
-          wide
           contentText={
             <div className="edit-gas-item__tooltip__container">
-              <img
-                alt=""
-                width={110}
-                src={`./images/curve-${priorityLevel}.svg`}
-              />
+              {priorityLevel !== PRIORITY_LEVELS.CUSTOM &&
+              priorityLevel !== PRIORITY_LEVELS.DAPP_SUGGESTED ? (
+                <img
+                  alt=""
+                  width={130}
+                  src={`./images/curve-${priorityLevel}.svg`}
+                />
+              ) : null}
+              {priorityLevel === PRIORITY_LEVELS.HIGH ? (
+                <div className="edit-gas-item__tooltip__container__dialog">
+                  <Typography fontSize="12px" color={COLORS.WHITE}>
+                    {t('highGasSettingToolTipDialog')}
+                  </Typography>
+                </div>
+              ) : null}
               <div className="edit-gas-item__tooltip__container__message">
-                <Typography fontSize="12px">
-                  {t(`${priorityLevel}GasSettingToolTipMessage`, [
-                    <span>
-                      <b>{t(priorityLevel)}</b>
-                    </span>,
-                  ])}
-                </Typography>
+                <Typography fontSize="12px">{toolTipMessage()}</Typography>
               </div>
-              {priorityLevel !== PRIORITY_LEVELS.CUSTOM ? (
+              {priorityLevel === PRIORITY_LEVELS.CUSTOM ? null : (
                 <div className="edit-gas-item__tooltip__container__values">
                   <div>
                     <Typography
@@ -227,7 +269,7 @@ const EditGasItem = ({ priorityLevel }) => {
                     </Typography>
                   </div>
                 </div>
-              ) : null}
+              )}
             </div>
           }
           position="top"
