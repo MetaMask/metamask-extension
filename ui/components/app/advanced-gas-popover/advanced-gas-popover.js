@@ -4,7 +4,6 @@ import FormField from '../../ui/form-field';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Popover from '../../ui/popover';
-import Typography from '../../ui/typography';
 import I18nValue from '../../ui/i18n-value';
 import {
   decGWEIToHexWEI,
@@ -14,16 +13,13 @@ import {
   divideCurrencies,
   multiplyCurrencies,
 } from '../../../../shared/modules/conversion.utils';
-import {
-  COLORS,
-  FONT_WEIGHT,
-  TYPOGRAPHY,
-} from '../../../helpers/constants/design-system';
+import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { SECONDARY } from '../../../helpers/constants/common';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
+import AdvancedGasInputSubtext from './advanced-gas-input-subtext';
 
 const AdvancedGasPopover = ({ onClose }) => {
   const t = useI18nContext();
@@ -209,50 +205,10 @@ const AdvancedGasPopover = ({ onClose }) => {
           numeric
           bottomBorder
           inputDetails={
-            <Box className="advanced-gas-popover__input-subtext">
-              <Box className="advanced-gas-popover__input-subtext">
-                <Typography
-                  tag={TYPOGRAPHY.Paragraph}
-                  variant={TYPOGRAPHY.H8}
-                  color={COLORS.UI4}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  boxProps={{ marginRight: 1 }}
-                >
-                  <I18nValue messageKey="currentTitle" />
-                </Typography>
-                <Typography
-                  tag={TYPOGRAPHY.Paragraph}
-                  variant={TYPOGRAPHY.H8}
-                  color={COLORS.UI4}
-                  boxProps={{ marginRight: 1 }}
-                >
-                  {`${estimatedBaseFeeInDecGWEI} GWEI`}
-                </Typography>
-                <img height="18" src="./images/high-arrow.svg" alt="" />
-              </Box>
-              <Box
-                marginLeft={4}
-                className="advanced-gas-popover__input-subtext"
-              >
-                <Typography
-                  tag={TYPOGRAPHY.Paragraph}
-                  variant={TYPOGRAPHY.H8}
-                  color={COLORS.UI4}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  boxProps={{ marginRight: 1 }}
-                >
-                  <I18nValue messageKey="twelveHrTitle" />
-                </Typography>
-                <Typography
-                  tag={TYPOGRAPHY.Paragraph}
-                  variant={TYPOGRAPHY.H8}
-                  color={COLORS.UI4}
-                  boxProps={{ marginRight: 1 }}
-                >
-                  23-359 GWEI
-                </Typography>
-              </Box>
-            </Box>
+            <AdvancedGasInputSubtext
+              currentData={`${estimatedBaseFeeInDecGWEI} GWEI`}
+              tweleveHrData="23-359 GWEI"
+            />
           }
         />
         <FormField
@@ -269,50 +225,10 @@ const AdvancedGasPopover = ({ onClose }) => {
           numeric
           bottomBorder
           inputDetails={
-            <Box className="advanced-gas-popover__input-subtext">
-              <Box className="advanced-gas-popover__input-subtext">
-                <Typography
-                  tag={TYPOGRAPHY.Paragraph}
-                  variant={TYPOGRAPHY.H8}
-                  color={COLORS.UI4}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  boxProps={{ marginRight: 1 }}
-                >
-                  <I18nValue messageKey="currentTitle" />
-                </Typography>
-                <Typography
-                  tag={TYPOGRAPHY.Paragraph}
-                  variant={TYPOGRAPHY.H8}
-                  color={COLORS.UI4}
-                  boxProps={{ marginRight: 1 }}
-                >
-                  1-18 GWEI
-                </Typography>
-                <img height="18" src="./images/low-arrow.svg" alt="" />
-              </Box>
-              <Box
-                marginLeft={4}
-                className="advanced-gas-popover__input-subtext"
-              >
-                <Typography
-                  tag={TYPOGRAPHY.Paragraph}
-                  variant={TYPOGRAPHY.H8}
-                  color={COLORS.UI4}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  boxProps={{ marginRight: 1 }}
-                >
-                  <I18nValue messageKey="twelveHrTitle" />
-                </Typography>
-                <Typography
-                  tag={TYPOGRAPHY.Paragraph}
-                  variant={TYPOGRAPHY.H8}
-                  color={COLORS.UI4}
-                  boxProps={{ marginRight: 1 }}
-                >
-                  0.1-127 GWEI
-                </Typography>
-              </Box>
-            </Box>
+            <AdvancedGasInputSubtext
+              currentData="1-18 GWEI"
+              tweleveHrData="0.1-127 GWEI"
+            />
           }
         />
       </Box>
