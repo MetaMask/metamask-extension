@@ -1,6 +1,5 @@
 import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { text } from '@storybook/addon-knobs';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../popover';
 import Button from '../button';
@@ -23,10 +22,7 @@ const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
     <div className="nickname-popover">
       <Popover onClose={onClose} className="nickname-popover__popover-wrap">
         <Identicon
-          address={text(
-            'Address',
-            '0x5e6DaAD1BE117e26590F9eEcD509336ABFBe5966',
-          )}
+          address={address}
           diameter={36}
           className="nickname-popover__identicon"
         />
