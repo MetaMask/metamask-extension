@@ -44,6 +44,7 @@ class ImportToken extends Component {
     chainId: PropTypes.string,
     rpcPrefs: PropTypes.object,
     tokenList: PropTypes.object,
+    useTokenDetection: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -391,26 +392,28 @@ class ImportToken extends Component {
   }
 
   renderSearchToken() {
-    const { tokenList, history } = this.props;
+    const { tokenList, history, useTokenDetection } = this.props;
     const { tokenSelectorError, selectedTokens, searchResults } = this.state;
     return (
       <div className="import-token__search-token">
-        <ActionableMessage
-          message={this.context.t('tokenDetectionAnnouncement', [
-            <Button
-              type="link"
-              key="token-detection-announcement"
-              className="import-token__link"
-              onClick={() => history.push(EXPERIMENTAL_ROUTE)}
-            >
-              {this.context.t('enableFromSettings')}
-            </Button>,
-          ])}
-          withRightButton
-          useIcon
-          iconFillColor="#037DD6"
-          className="import-token__token-detection-announcement"
-        />
+        {!useTokenDetection && (
+          <ActionableMessage
+            message={this.context.t('tokenDetectionAnnouncement', [
+              <Button
+                type="link"
+                key="token-detection-announcement"
+                className="import-token__link"
+                onClick={() => history.push(EXPERIMENTAL_ROUTE)}
+              >
+                {this.context.t('enableFromSettings')}
+              </Button>,
+            ])}
+            withRightButton
+            useIcon
+            iconFillColor="#037DD6"
+            className="import-token__token-detection-announcement"
+          />
+        )}
         <TokenSearch
           onSearch={({ results = [] }) =>
             this.setState({ searchResults: results })
