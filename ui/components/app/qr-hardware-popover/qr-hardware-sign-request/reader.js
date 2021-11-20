@@ -16,25 +16,20 @@ const Reader = ({
     cancelQRHardwareSignRequest();
   };
 
-  const handleSuccess = (ur) => {
-    return new Promise((resolve, reject) => {
-      if (ur.type === 'eth-signature') {
-        const ethSignature = ETHSignature.fromCBOR(ur.cbor);
-        const buffer = ethSignature.getRequestId();
-        const signId = uuid.stringify(buffer);
-        if (signId === requestId) {
-          submitQRHardwareSignature(signId, ur.cbor.toString('hex'))
-            .then(resolve)
-            .catch(reject);
-        } else {
-          setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
-          reject(new Error(t('QRHardwareMismatchedSignId')));
-        }
-      } else {
-        setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
-        reject(new Error(t('unknownQrCode')));
+  const handleSuccess = async (ur) => {
+    if (ur.type === 'eth-signature') {
+      const ethSignature = ETHSignature.fromCBOR(ur.cbor);
+      const buffer = ethSignature.getRequestId();
+      const signId = uuid.stringify(buffer);
+      if (signId === requestId) {
+        return await submitQRHardwareSignature(signId, ur.cbor.toString('hex'));
       }
-    });
+      setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
+      throw new Error(t('QRHardwareMismatchedSignId'));
+    } else {
+      setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
+      throw new Error(t('unknownQrCode'));
+    }
   };
 
   return (
