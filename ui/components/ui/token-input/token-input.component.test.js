@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { shallow, mount } from 'enzyme';
-import sinon from 'sinon';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import UnitInput from '../unit-input';
