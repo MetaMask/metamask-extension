@@ -207,12 +207,12 @@ describe('TokenInput Component', () => {
   });
 
   describe('handling actions', () => {
-    const handleChangeSpy = sinon.spy();
-    const handleBlurSpy = sinon.spy();
+    const handleChangeSpy = jest.fn();
+    const handleBlurSpy = jest.fn();
 
     afterEach(() => {
-      handleChangeSpy.resetHistory();
-      handleBlurSpy.resetHistory();
+      handleChangeSpy.mockClear();
+      handleBlurSpy.mockClear();
     });
 
     it('should call onChange on input changes with the hex value for ETH', () => {
@@ -238,8 +238,8 @@ describe('TokenInput Component', () => {
       );
 
       expect(wrapper).toHaveLength(1);
-      expect(handleChangeSpy.callCount).toStrictEqual(0);
-      expect(handleBlurSpy.callCount).toStrictEqual(0);
+      expect(handleChangeSpy.mock.calls).toHaveLength(0);
+      expect(handleBlurSpy.mock.calls).toHaveLength(0);
 
       const tokenInputInstance = wrapper.find(TokenInput).at(0).instance();
       expect(tokenInputInstance.state.decimalValue).toStrictEqual(0);
@@ -250,13 +250,13 @@ describe('TokenInput Component', () => {
       const input = wrapper.find('input');
       expect(input.props().value).toStrictEqual(0);
 
-      input.simulate('change', { target: { value: 1 } });
-      expect(handleChangeSpy.callCount).toStrictEqual(1);
-      expect(handleChangeSpy.calledWith('2710')).toStrictEqual(true);
+      input.simulate('change', { target: { value: '1' } });
+      expect(handleChangeSpy.mock.calls).toHaveLength(1);
+      expect(handleChangeSpy.mock.calls[0][0]).toStrictEqual('2710');
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
         '2ETH',
       );
-      expect(tokenInputInstance.state.decimalValue).toStrictEqual(1);
+      expect(tokenInputInstance.state.decimalValue).toStrictEqual('1');
       expect(tokenInputInstance.state.hexValue).toStrictEqual('2710');
     });
 
@@ -285,8 +285,8 @@ describe('TokenInput Component', () => {
       );
 
       expect(wrapper).toHaveLength(1);
-      expect(handleChangeSpy.callCount).toStrictEqual(0);
-      expect(handleBlurSpy.callCount).toStrictEqual(0);
+      expect(handleChangeSpy.mock.calls).toHaveLength(0);
+      expect(handleBlurSpy.mock.calls).toHaveLength(0);
 
       const tokenInputInstance = wrapper.find(TokenInput).at(0).instance();
       expect(tokenInputInstance.state.decimalValue).toStrictEqual(0);
@@ -297,13 +297,13 @@ describe('TokenInput Component', () => {
       const input = wrapper.find('input');
       expect(input.props().value).toStrictEqual(0);
 
-      input.simulate('change', { target: { value: 1 } });
-      expect(handleChangeSpy.callCount).toStrictEqual(1);
-      expect(handleChangeSpy.calledWith('2710')).toStrictEqual(true);
+      input.simulate('change', { target: { value: '1' } });
+      expect(handleChangeSpy.mock.calls).toHaveLength(1);
+      expect(handleChangeSpy.mock.calls[0][0]).toStrictEqual('2710');
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
         '$462.12USD',
       );
-      expect(tokenInputInstance.state.decimalValue).toStrictEqual(1);
+      expect(tokenInputInstance.state.decimalValue).toStrictEqual('1');
       expect(tokenInputInstance.state.hexValue).toStrictEqual('2710');
     });
 
