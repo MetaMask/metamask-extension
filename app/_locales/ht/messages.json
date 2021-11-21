@@ -29,9 +29,6 @@
   "addToken": {
     "message": "Ajoute Token"
   },
-  "addTokens": {
-    "message": "Ajoute Token"
-  },
   "amount": {
     "message": "Kantite lajan"
   },
@@ -139,9 +136,6 @@
   "customGas": {
     "message": "Koutim Gaz"
   },
-  "customRPC": {
-    "message": "Koutim RPC"
-  },
   "customToken": {
     "message": "Koutim Token"
   },
@@ -150,9 +144,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desimal yo dwe omwen 0, epi pa dwe plis pase 36."
-  },
-  "defaultNetwork": {
-    "message": "Dfo rezo a pou tranzaksyon Ether se Mainnet."
   },
   "depositEther": {
     "message": "Depo Ether"
@@ -311,7 +302,7 @@
   "ledgerAccountRestriction": {
     "message": "Ou bezwen sèvi ak dènye kont ou anvan ou ka ajoute yon nouvo."
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Èske ou ta renmen ajoute sa nan tokens?"
   },
   "links": {
@@ -495,9 +486,6 @@
   "revealSeedWordsDescription": {
     "message": "Si ou pa janm chanje navigatè ou deplase òdinatè, ou pral bezwen fraz seed la pou ka gen aksè a kont ou. Sere yo on kote an sekirite e an sekrè."
   },
-  "revealSeedWordsTitle": {
-    "message": "Seed Fraz"
-  },
   "revealSeedWordsWarning": {
     "message": "Yo ka itilize mo sa pou vòlè kont ou."
   },
@@ -537,9 +525,6 @@
   "selectAnAccount": {
     "message": "Chwazi yon kont"
   },
-  "selectAnAccountHelp": {
-    "message": "Chwazi kont pou wè nan MetaMask"
-  },
   "selectHdPath": {
     "message": "Chwazi chemen HD"
   },
@@ -554,9 +539,6 @@
   },
   "sendTokens": {
     "message": "Voye Tokens"
-  },
-  "sentEther": {
-    "message": "Voye ether"
   },
   "separateEachWord": {
     "message": "Separe chak mo ak yon sèl espas"
@@ -694,14 +676,8 @@
   "viewAccount": {
     "message": "Wè Kont"
   },
-  "viewOnEtherscan": {
-    "message": "Wè sou Etherscan"
-  },
   "visitWebSite": {
     "message": "Vizite sit entènèt nou an"
-  },
-  "walletSeed": {
-    "message": "Bous Seed"
   },
   "welcome": {
     "message": "Byenveni nan MetaMask"

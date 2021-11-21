@@ -5,6 +5,7 @@ import ActionableMessage from '.';
 
 export default {
   title: 'ActionableMessage',
+  id: __filename,
 };
 
 export const NoAction = () => (

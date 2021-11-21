@@ -224,7 +224,7 @@ export default class ChooseAccount extends Component {
           <div className="permissions-connect-choose-account__bottom-buttons">
             <Button
               onClick={() => cancelPermissionsRequest(permissionsRequestId)}
-              type="default"
+              type="secondary"
             >
               {t('cancel')}
             </Button>

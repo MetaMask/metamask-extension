@@ -33,7 +33,7 @@ export default function ListItem({
         }
       }}
     >
-      {icon && <div className="list-item__icon">{icon}</div>}
+      {icon ? <div className="list-item__icon">{icon}</div> : null}
       <div className="list-item__heading">
         {React.isValidElement(title) ? (
           title
@@ -44,12 +44,16 @@ export default function ListItem({
           <div className="list-item__heading-wrap">{titleIcon}</div>
         )}
       </div>
-      {subtitle && <div className="list-item__subheading">{subtitle}</div>}
-      {children && <div className="list-item__actions">{children}</div>}
-      {midContent && <div className="list-item__mid-content">{midContent}</div>}
-      {rightContent && (
+      {subtitle ? (
+        <div className="list-item__subheading">{subtitle}</div>
+      ) : null}
+      {children ? <div className="list-item__actions">{children}</div> : null}
+      {midContent ? (
+        <div className="list-item__mid-content">{midContent}</div>
+      ) : null}
+      {rightContent ? (
         <div className="list-item__right-content">{rightContent}</div>
-      )}
+      ) : null}
     </div>
   );
 }

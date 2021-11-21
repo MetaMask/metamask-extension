@@ -4,6 +4,7 @@ import ErrorMessage from '.';
 
 export default {
   title: 'ErrorMessage',
+  id: __filename,
 };
 
 export const primaryType = () => (

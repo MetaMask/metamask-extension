@@ -13,6 +13,17 @@ $justify-content:
   space-between,
   space-evenly;
 
+$flex-direction:
+  row,
+  row-reverse,
+  column,
+  column-reverse;
+
+$flex-wrap:
+  wrap,
+  wrap-reverse,
+  nowrap;
+
 $fractions: (
   1\/2: 50%,
   1\/3: 33.333333%,
@@ -70,3 +81,5 @@ $directions: top, right, bottom, left;
 $display: block, grid, flex, inline-block, inline-grid, inline-flex, list-item;
 $text-align: left, right, center, justify, end;
 $font-weight: bold, normal, 100, 200, 300, 400, 500, 600, 700, 800, 900;
+$font-style: normal, italic, oblique;
+$font-size: 12px;

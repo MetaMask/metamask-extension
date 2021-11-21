@@ -17,6 +17,7 @@ describe('Typed Message Manager', function () {
   beforeEach(async function () {
     typedMessageManager = new TypedMessageManager({
       getCurrentChainId: sinon.fake.returns('0x1'),
+      metricsEvent: sinon.fake(),
     });
 
     msgParamsV1 = {

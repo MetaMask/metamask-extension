@@ -1,0 +1,18 @@
+diff --git a/node_modules/abort-controller/browser.js b/node_modules/abort-controller/browser.js
+index b0c5ec3..c8c8018 100644
+--- a/node_modules/abort-controller/browser.js
++++ b/node_modules/abort-controller/browser.js
+@@ -2,12 +2,7 @@
+ "use strict"
+ 
+ /*eslint-disable @mysticatea/prettier */
+-const { AbortController, AbortSignal } =
+-    typeof self !== "undefined" ? self :
+-    typeof window !== "undefined" ? window :
+-    /* otherwise */ undefined
++const { AbortController } = globalThis;
+ /*eslint-enable @mysticatea/prettier */
+ 
+ module.exports = AbortController
+-module.exports.AbortSignal = AbortSignal
+-module.exports.default = AbortController

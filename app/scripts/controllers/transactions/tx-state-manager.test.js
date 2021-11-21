@@ -24,7 +24,7 @@ function generateTransactions(
     to,
     from,
     status,
-    type = TRANSACTION_TYPES.SENT_ETHER,
+    type = TRANSACTION_TYPES.SIMPLE_SEND,
     nonce = (i) => `${i}`,
   },
 ) {
@@ -653,7 +653,7 @@ describe('TransactionStateManager', function () {
             ? TRANSACTION_STATUSES.DROPPED
             : TRANSACTION_STATUSES.CONFIRMED,
         type: (i) =>
-          i === 1 ? TRANSACTION_TYPES.CANCEL : TRANSACTION_STATUSES.SENT_ETHER,
+          i === 1 ? TRANSACTION_TYPES.CANCEL : TRANSACTION_TYPES.SIMPLE_SEND,
       });
       txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions();
@@ -693,7 +693,7 @@ describe('TransactionStateManager', function () {
         type: (i) =>
           i === 1 || i === 5
             ? TRANSACTION_TYPES.CANCEL
-            : TRANSACTION_STATUSES.SENT_ETHER,
+            : TRANSACTION_TYPES.SIMPLE_SEND,
       });
       txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions({
@@ -737,7 +737,7 @@ describe('TransactionStateManager', function () {
         type: (i) =>
           i === 1 || i === 5
             ? TRANSACTION_TYPES.CANCEL
-            : TRANSACTION_STATUSES.SENT_ETHER,
+            : TRANSACTION_TYPES.SIMPLE_SEND,
       });
       txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions({

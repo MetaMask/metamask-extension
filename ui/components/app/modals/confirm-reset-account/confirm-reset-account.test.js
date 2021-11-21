@@ -25,7 +25,7 @@ describe('Confirm Reset Account', () => {
 
   it('hides modal when nevermind button is clicked', () => {
     const nevermind = wrapper.find(
-      '.btn-default.modal-container__footer-button',
+      '.btn-secondary.modal-container__footer-button',
     );
     nevermind.simulate('click');
 
@@ -33,7 +33,9 @@ describe('Confirm Reset Account', () => {
   });
 
   it('resets account and hides modal when reset button is clicked', async () => {
-    const reset = wrapper.find('.btn-danger.modal-container__footer-button');
+    const reset = wrapper.find(
+      '.btn-danger-primary.modal-container__footer-button',
+    );
     reset.simulate('click');
 
     expect(await props.resetAccount.calledOnce).toStrictEqual(true);

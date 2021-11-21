@@ -7,6 +7,7 @@ import ButtonGroup from '.';
 
 export default {
   title: 'ButtonGroup',
+  id: __filename,
 };
 
 export const withButtons = () => (

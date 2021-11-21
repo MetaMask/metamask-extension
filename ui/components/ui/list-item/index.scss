@@ -97,13 +97,13 @@
     white-space: nowrap;
   }
 
-  @media (max-width: 575px) {
+  @media (max-width: $break-small) {
     &__mid-content {
       display: none;
     }
   }
 
-  @media (min-width: 576px) {
+  @media (min-width: $break-large) {
     grid-template-areas:
       'icon head     head     head     head     mid mid mid mid right right right'
       'icon sub      sub      sub      sub      mid mid mid mid right right right'
@@ -115,7 +115,7 @@
   grid-template-areas: 'icon head     head     head     head     head     head     head     right right right right';
   align-items: center;
 
-  @media (min-width: 576px) {
+  @media (min-width: $break-large) {
     grid-template-areas: 'icon head     head     head     head     mid mid mid mid right right right';
   }
 }

@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Button from '../../../components/ui/button';
+import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
@@ -11,7 +12,7 @@ export default class SelectHardware extends Component {
   static propTypes = {
     connectToHardwareWallet: PropTypes.func.isRequired,
     browserSupported: PropTypes.bool.isRequired,
-    useLedgerLive: PropTypes.bool.isRequired,
+    ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
   };
 
   state = {
@@ -42,6 +43,23 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToLatticeButton() {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === 'lattice',
+        })}
+        onClick={(_) => this.setState({ selectedDevice: 'lattice' })}
+      >
+        <img
+          className="hw-connect__btn__img"
+          src="images/lattice-logo.png"
+          alt=""
+        />
+      </button>
+    );
+  }
+
   renderConnectToLedgerButton() {
     return (
       <button
@@ -65,6 +83,12 @@ export default class SelectHardware extends Component {
         <div className="hw-connect__btn-wrapper">
           {this.renderConnectToLedgerButton()}
           {this.renderConnectToTrezorButton()}
+        </div>
+        <div
+          className="hw-connect__btn-wrapper"
+          style={{ margin: '10px 0 0 0' }}
+        >
+          {this.renderConnectToLatticeButton()}
         </div>
       </>
     );
@@ -129,6 +153,8 @@ export default class SelectHardware extends Component {
         return this.renderLedgerTutorialSteps();
       case 'trezor':
         return this.renderTrezorTutorialSteps();
+      case 'lattice':
+        return this.renderLatticeTutorialSteps();
       default:
         return '';
     }
@@ -136,7 +162,7 @@ export default class SelectHardware extends Component {
 
   renderLedgerTutorialSteps() {
     const steps = [];
-    if (this.props.useLedgerLive) {
+    if (this.props.ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE) {
       steps.push({
         title: this.context.t('step1LedgerWallet'),
         message: this.context.t('step1LedgerWalletMsg', [
@@ -169,6 +195,46 @@ export default class SelectHardware extends Component {
         </a>,
       ]),
     });
+
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <div className="hw-connect" key={index}>
+            <h3 className="hw-connect__title">{step.title}</h3>
+            <p className="hw-connect__msg">{step.message}</p>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  renderLatticeTutorialSteps() {
+    const steps = [
+      {
+        asset: 'connect-lattice',
+        dimensions: { width: '225px', height: '75px' },
+        title: this.context.t('step1LatticeWallet'),
+        message: this.context.t('step1LatticeWalletMsg', [
+          <a
+            className="hw-connect__msg-link"
+            href="https://metamask.zendesk.com/hc/en-us/articles/4408552261275"
+            rel="noopener noreferrer"
+            target="_blank"
+            key="lattice-setup-link"
+          >
+            {this.context.t('hardwareWalletSupportLinkConversion')}
+          </a>,
+        ]),
+      },
+    ];
 
     return (
       <div className="hw-tutorial">
@@ -235,7 +301,7 @@ export default class SelectHardware extends Component {
       <div className="new-external-account-form">
         {this.renderHeader()}
         {this.renderButtons()}
-        {this.state.selectedDevice && this.renderTutorialsteps()}
+        {this.state.selectedDevice ? this.renderTutorialsteps() : null}
         {this.renderContinueButton()}
       </div>
     );

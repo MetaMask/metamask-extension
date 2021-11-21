@@ -52,9 +52,6 @@
   "addNetwork": {
     "message": "Magdagdag ng Network"
   },
-  "addRecipient": {
-    "message": "Magdagdag ng Recipient"
-  },
   "addSuggestedTokens": {
     "message": "Magdagdag ng Mga Iminumungkahing Token"
   },
@@ -66,9 +63,6 @@
   },
   "addToken": {
     "message": "Magdagdag ng Token"
-  },
-  "addTokens": {
-    "message": "Magdagdag ng Mga Token"
   },
   "advanced": {
     "message": "Advanced"
@@ -103,10 +97,6 @@
   "allowExternalExtensionTo": {
     "message": "Payagan ang external extension na ito na:"
   },
-  "allowOriginSpendToken": {
-    "message": "Payagan ang $1 na gastusin ang iyong $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Payagan ang site na ito na:"
   },
@@ -116,9 +106,6 @@
   },
   "amount": {
     "message": "Halaga"
-  },
-  "amountWithColon": {
-    "message": "Halaga:"
   },
   "appDescription": {
     "message": "Ethereum Wallet sa iyong Browser",
@@ -402,9 +389,6 @@
   "customGasSubTitle": {
     "message": "Kapag dinagdagan ang bayarin, mababawasan ang mga oras ng pagproseso, pero hindi ito garantisado."
   },
-  "customRPC": {
-    "message": "Custom na RPC"
-  },
   "customSpendLimit": {
     "message": "Custom na Limitasyon sa Paggastos"
   },
@@ -439,9 +423,6 @@
   },
   "decryptRequest": {
     "message": "I-decrypt ang request"
-  },
-  "defaultNetwork": {
-    "message": "Ang default na network para sa mga transaksyon ng Ether ay ang Main Net."
   },
   "delete": {
     "message": "I-delete"
@@ -872,7 +853,7 @@
   "letsGoSetUp": {
     "message": "Sige, simulan na nating mag-set up!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
   "links": {
@@ -960,9 +941,6 @@
   "metametricsOptInDescription": {
     "message": "Gustong kunin ng MetaMask ang data ng paggamit para mas maunawaan kung paano ginagamit ng mga user namin ang extension. Gagamitin ang data na ito para patuloy na mapahusay ang kakayahang magamit at karanasan ng user sa paggamit ng produkto namin at Ethereum ecosystem."
   },
-  "mobileSyncText": {
-    "message": "Pakilagay ang iyong password para makumpirmang ikaw nga ito!"
-  },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
   },
@@ -1009,9 +987,6 @@
   },
   "newContract": {
     "message": "Bagong Kontrata"
-  },
-  "newNetwork": {
-    "message": "Bagong Network"
   },
   "newPassword": {
     "message": "Bagong password (min na 8 char)"
@@ -1090,17 +1065,8 @@
     "message": "Isasara ng \"$1\" ang tab na ito at ididirekta ka pabalik sa $2",
     "description": "Return the user to the site that initiated onboarding"
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Available lang sa mainnet"
-  },
   "onlyConnectTrust": {
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL ng Block Explorer (opsyonal)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolo ng Currency (opsyonal)"
   },
   "origin": {
     "message": "Pinagmulan"
@@ -1256,9 +1222,6 @@
   "revealSeedWordsDescription": {
     "message": "Kung magpapalit ka man ng browser o computer, kakailanganin mo ang Secret Recovery Phrase na ito para ma-access ang iyong mga account. I-save ang mga iyon sa isang ligtas at sikretong lugar."
   },
-  "revealSeedWordsTitle": {
-    "message": "Secret Recovery Phrase"
-  },
   "revealSeedWordsWarning": {
     "message": "Magagamit ang mga salitang ito para manakaw ang lahat ng iyong account."
   },
@@ -1301,9 +1264,6 @@
   "searchTokens": {
     "message": "Maghanap ng Mga Token"
   },
-  "secretBackupPhrase": {
-    "message": "Lihim na Phrase sa Pag-back up"
-  },
   "secretBackupPhraseDescription": {
     "message": "Pinapadali ng iyong lihim na phrase sa pag-back up na i-back up at i-restore ang iyong account."
   },
@@ -1337,9 +1297,6 @@
   "selectAnAccount": {
     "message": "Pumili ng Account"
   },
-  "selectAnAccountHelp": {
-    "message": "Piliin ang account na titingnan sa MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Pakipili ang bawat phrase para matiyak na tama ito."
   },
@@ -1367,9 +1324,6 @@
   },
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
-  },
-  "sentEther": {
-    "message": "nagpadala ng ether"
   },
   "separateEachWord": {
     "message": "Paghiwa-hiwalayin ang bawat salita gamit ang espasyo"
@@ -1519,10 +1473,6 @@
     "message": "Walang available na token na tumutugma sa $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Sinusuri ang $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapCustom": {
     "message": "custom"
   },
@@ -1560,9 +1510,6 @@
   },
   "swapFetchingTokens": {
     "message": "Kinukuha ang mga token..."
-  },
-  "swapFinalizing": {
-    "message": "Isinasapinal..."
   },
   "swapLowSlippageError": {
     "message": "Maaaring hindi magtagumpay ang transaksyon, masyadong mababa ang max na slippage."
@@ -1777,9 +1724,6 @@
     "message": "Para kay/sa: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "Para kay/sa:"
-  },
   "token": {
     "message": "Token"
   },
@@ -1851,10 +1795,6 @@
     "message": "Nagkaproblema kami sa pag-load ng mga balanse ng iyong token. Puwede mong tingnan ang mga iyon ",
     "description": "Followed by a link (here) to view token balances"
   },
-  "trustSiteApprovePermission": {
-    "message": "Pinagkakatiwalaan mo ba ang site na ito? Sa pamamagitan ng pagbibigay ng pahintulot na ito, pinapayagan mo ang $1 na i-withdraw ang iyong $2 at i-automate ang mga transaksyon para sa iyo.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
-  },
   "tryAgain": {
     "message": "Subukan ulit"
   },
@@ -1922,23 +1862,11 @@
   "viewContact": {
     "message": "Tingnan ang Contact"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tingnan sa $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Tingnan sa Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Tingnan sa Explorer"
-  },
   "visitWebSite": {
     "message": "Bisitahin ang aming website"
   },
   "walletConnectionGuide": {
     "message": "ang aming gabay sa pagkonekta ng hardware wallet"
-  },
-  "walletSeed": {
-    "message": "Secret Recovery Phrase"
   },
   "walletSeedRestore": {
     "message": "Recovery Phrase ng Wallet Secret"

@@ -289,4 +289,6 @@ export {
   toNegative,
   subtractCurrencies,
   decGWEIToHexWEI,
+  toBigNumber,
+  toNormalizedDenomination,
 };

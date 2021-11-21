@@ -8,7 +8,6 @@ import Button from '../../../ui/button';
 function mapStateToProps(state) {
   return {
     token: state.appState.modal.modalState.props.token,
-    assetImages: state.metamask.assetImages,
   };
 }
 
@@ -31,19 +30,18 @@ class HideTokenConfirmationModal extends Component {
   static propTypes = {
     hideToken: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
-    assetImages: PropTypes.object.isRequired,
     token: PropTypes.shape({
       symbol: PropTypes.string,
       address: PropTypes.string,
+      image: PropTypes.string,
     }),
   };
 
   state = {};
 
   render() {
-    const { token, hideToken, hideModal, assetImages } = this.props;
-    const { symbol, address } = token;
-    const image = assetImages[address];
+    const { token, hideToken, hideModal } = this.props;
+    const { symbol, address, image } = token;
 
     return (
       <div className="hide-token-confirmation">
@@ -63,7 +61,7 @@ class HideTokenConfirmationModal extends Component {
           </div>
           <div className="hide-token-confirmation__buttons">
             <Button
-              type="default"
+              type="secondary"
               className="hide-token-confirmation__button"
               data-testid="hide-token-confirmation__cancel"
               onClick={() => hideModal()}
@@ -71,7 +69,7 @@ class HideTokenConfirmationModal extends Component {
               {this.context.t('cancel')}
             </Button>
             <Button
-              type="secondary"
+              type="primary"
               className="hide-token-confirmation__button"
               data-testid="hide-token-confirmation__hide"
               onClick={() => hideToken(address)}

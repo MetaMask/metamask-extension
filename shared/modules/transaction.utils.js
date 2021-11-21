@@ -38,3 +38,23 @@ export function isLegacyTransaction(transaction) {
       isHexString(transaction.txParams.gasPrice))
   );
 }
+
+/**
+ * Determine if a transactions gas fees in txParams match those in its dappSuggestedGasFees property
+ * @param {import("../constants/transaction").TransactionMeta} transaction -
+ *  the transaction to check
+ * @returns {boolean} true if both the txParams and dappSuggestedGasFees are objects with truthy gas fee properties,
+ *   and those properties are strictly equal
+ */
+export function txParamsAreDappSuggested(transaction) {
+  const { gasPrice, maxPriorityFeePerGas, maxFeePerGas } =
+    transaction?.txParams || {};
+  return (
+    (gasPrice && gasPrice === transaction?.dappSuggestedGasFees?.gasPrice) ||
+    (maxPriorityFeePerGas &&
+      maxFeePerGas &&
+      transaction?.dappSuggestedGasFees?.maxPriorityFeePerGas ===
+        maxPriorityFeePerGas &&
+      transaction?.dappSuggestedGasFees?.maxFeePerGas === maxFeePerGas)
+  );
+}

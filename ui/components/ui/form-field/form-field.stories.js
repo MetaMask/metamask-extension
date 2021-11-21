@@ -6,6 +6,7 @@ import FormField from '.';
 
 export default {
   title: 'FormField',
+  id: __filename,
 };
 
 export const Plain = ({ ...props }) => {

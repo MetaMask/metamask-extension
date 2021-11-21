@@ -5,6 +5,7 @@ import ColorIndicator from './color-indicator';
 
 export default {
   title: 'ColorIndicator',
+  id: __filename,
 };
 
 export const colorIndicator = () => (

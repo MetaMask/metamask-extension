@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 
-import { addToAddressBook } from '../../../store/actions';
+import { addToAddressBook, cancelTx } from '../../../store/actions';
 import { resetSendState, signTransaction } from '../../../ducks/send';
 
 let mapDispatchToProps;
@@ -14,6 +14,7 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../../../store/actions.js', () => ({
   addToAddressBook: jest.fn(),
+  cancelTx: jest.fn(),
 }));
 
 jest.mock('../../../ducks/metamask/metamask', () => ({
@@ -24,6 +25,8 @@ jest.mock('../../../ducks/send', () => ({
   getGasPrice: (s) => `mockGasPrice:${s}`,
   getSendTo: (s) => `mockTo:${s}`,
   getSendErrors: (s) => `mockSendErrors:${s}`,
+  getSendStage: (s) => `mockStage:${s}`,
+  getDraftTransaction: (s) => ({ id: `draftTransaction:${s}` }),
   resetSendState: jest.fn(),
   signTransaction: jest.fn(),
 }));
@@ -50,6 +53,16 @@ describe('send-footer container', () => {
         mapDispatchToPropsObject.resetSendState();
         expect(dispatchSpy.calledOnce).toStrictEqual(true);
         expect(resetSendState).toHaveBeenCalled();
+      });
+    });
+
+    describe('cancelTx()', () => {
+      it('should dispatch an action', () => {
+        const draftTansaction = { id: 'ID' };
+        mapDispatchToPropsObject.cancelTx(draftTansaction);
+        expect(dispatchSpy.calledOnce).toStrictEqual(true);
+        expect(cancelTx).toHaveBeenCalledTimes(1);
+        expect(cancelTx).toHaveBeenCalledWith(draftTansaction);
       });
     });
 

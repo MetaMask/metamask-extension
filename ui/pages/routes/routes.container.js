@@ -8,7 +8,6 @@ import {
   submittedPendingTransactionsSelector,
 } from '../../selectors';
 import {
-  hideSidebar,
   lockMetamask,
   setCurrentCurrency,
   setLastActiveTime,
@@ -20,17 +19,10 @@ import Routes from './routes.component';
 
 function mapStateToProps(state) {
   const { appState } = state;
-  const {
-    sidebar,
-    alertOpen,
-    alertMessage,
-    isLoading,
-    loadingMessage,
-  } = appState;
+  const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = 0 } = getPreferences(state);
 
   return {
-    sidebar,
     alertOpen,
     alertMessage,
     textDirection: state.metamask.textDirection,
@@ -52,7 +44,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     lockMetaMask: () => dispatch(lockMetamask(false)),
-    hideSidebar: () => dispatch(hideSidebar()),
     setCurrentCurrencyToUSD: () => dispatch(setCurrentCurrency('usd')),
     setMouseUserState: (isMouseUser) =>
       dispatch(setMouseUserState(isMouseUser)),

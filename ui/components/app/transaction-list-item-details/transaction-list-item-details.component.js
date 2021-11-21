@@ -3,15 +3,17 @@ import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import SenderToRecipient from '../../ui/sender-to-recipient';
-import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
+import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import Copy from '../../ui/icon/copy-icon.component';
+import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { getURLHostName } from '../../../helpers/utils/util';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -31,7 +33,6 @@ export default class TransactionListItemDetails extends PureComponent {
     showSpeedUp: PropTypes.bool,
     showRetry: PropTypes.bool,
     isEarliestNonce: PropTypes.bool,
-    cancelDisabled: PropTypes.bool,
     primaryCurrency: PropTypes.string,
     transactionGroup: PropTypes.object,
     title: PropTypes.string.isRequired,
@@ -65,9 +66,7 @@ export default class TransactionListItemDetails extends PureComponent {
       properties: {
         link_type: 'Transaction Block Explorer',
         action: 'Transaction Details',
-        block_explorer_domain: blockExplorerLink
-          ? new URL(blockExplorerLink)?.hostname
-          : '',
+        block_explorer_domain: getURLHostName(blockExplorerLink),
       },
     });
 
@@ -115,38 +114,6 @@ export default class TransactionListItemDetails extends PureComponent {
     }
   }
 
-  renderCancel() {
-    const { t } = this.context;
-    const { showCancel, cancelDisabled } = this.props;
-
-    if (!showCancel) {
-      return null;
-    }
-
-    return cancelDisabled ? (
-      <Tooltip title={t('notEnoughGas')} position="bottom">
-        <div>
-          <Button
-            type="raised"
-            onClick={this.handleCancel}
-            className="transaction-list-item-details__header-button"
-            disabled
-          >
-            {t('cancel')}
-          </Button>
-        </div>
-      </Tooltip>
-    ) : (
-      <Button
-        type="raised"
-        onClick={this.handleCancel}
-        className="transaction-list-item-details__header-button"
-      >
-        {t('cancel')}
-      </Button>
-    );
-  }
-
   render() {
     const { t } = this.context;
     const { justCopied } = this.state;
@@ -164,6 +131,7 @@ export default class TransactionListItemDetails extends PureComponent {
       title,
       onClose,
       recipientNickname,
+      showCancel,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -179,14 +147,20 @@ export default class TransactionListItemDetails extends PureComponent {
             <div className="transaction-list-item-details__header-buttons">
               {showSpeedUp && (
                 <Button
-                  type="raised"
+                  type="primary"
                   onClick={this.handleRetry}
-                  className="transaction-list-item-details__header-button"
+                  className="transaction-list-item-details__header-button-rounded-button"
                 >
                   {t('speedUp')}
                 </Button>
               )}
-              {this.renderCancel()}
+              {showCancel && (
+                <CancelButton
+                  transaction={transaction}
+                  cancelTransaction={this.handleCancel}
+                  detailsModal
+                />
+              )}
               <Tooltip
                 wrapperClassName="transaction-list-item-details__header-button"
                 containerClassName="transaction-list-item-details__header-button-tooltip-container"
@@ -207,8 +181,13 @@ export default class TransactionListItemDetails extends PureComponent {
                 containerClassName="transaction-list-item-details__header-button-tooltip-container"
                 title={
                   blockExplorerUrl
-                    ? t('viewOnCustomBlockExplorer', [blockExplorerUrl])
-                    : t('viewOnEtherscan')
+                    ? t('viewOnCustomBlockExplorer', [
+                        t('blockExplorerTransactionAction'),
+                        blockExplorerUrl,
+                      ])
+                    : t('viewOnEtherscan', [
+                        t('blockExplorerTransactionAction'),
+                      ])
                 }
               >
                 <Button
@@ -236,7 +215,7 @@ export default class TransactionListItemDetails extends PureComponent {
             <div className="transaction-list-item-details__sender-to-recipient-container">
               <SenderToRecipient
                 warnUserOnAccountMismatch={false}
-                variant={FLAT_VARIANT}
+                variant={DEFAULT_VARIANT}
                 addressOnly
                 recipientEns={recipientEns}
                 recipientAddress={recipientAddress}

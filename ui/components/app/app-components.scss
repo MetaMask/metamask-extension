@@ -1,7 +1,7 @@
 /** Please import your files in alphabetical order **/
 @import 'account-list-item/index';
 @import 'account-menu/index';
-@import 'add-token-button/index';
+@import 'import-token-link/index';
 @import 'advanced-gas-controls/index';
 @import 'alerts/alerts';
 @import 'app-header/index';
@@ -13,6 +13,8 @@
 @import 'connected-status-indicator/index';
 @import 'edit-gas-display/index';
 @import 'edit-gas-display-education/index';
+@import 'edit-gas-fee-popover/index';
+@import 'edit-gas-fee-popover/edit-gas-item/index';
 @import 'gas-customization/gas-modal-page-container/index';
 @import 'gas-customization/gas-price-button-group/index';
 @import 'gas-customization/index';
@@ -30,7 +32,6 @@
 @import 'recovery-phrase-reminder/index';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
-@import 'sidebars/index';
 @import 'signature-request/index';
 @import 'signature-request-original/index';
 @import 'tab-bar/index';
@@ -47,3 +48,4 @@
 @import 'transaction-total-banner/index';
 @import 'wallet-overview/index';
 @import 'whats-new-popup/index';
+@import 'loading-network-screen/index'

@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEqual } from 'lodash';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes';
+import { SEND_STAGES } from '../../../ducks/send';
 
 export default class SendFooter extends Component {
   static propTypes = {
@@ -13,9 +17,12 @@ export default class SendFooter extends Component {
     sign: PropTypes.func,
     to: PropTypes.string,
     toAccounts: PropTypes.array,
+    sendStage: PropTypes.string,
     sendErrors: PropTypes.object,
     gasEstimateType: PropTypes.string,
     mostRecentOverviewPage: PropTypes.string.isRequired,
+    cancelTx: PropTypes.func,
+    draftTransactionID: PropTypes.string,
   };
 
   static contextTypes = {
@@ -24,9 +31,21 @@ export default class SendFooter extends Component {
   };
 
   onCancel() {
-    const { resetSendState, history, mostRecentOverviewPage } = this.props;
+    const {
+      cancelTx,
+      draftTransactionID,
+      history,
+      mostRecentOverviewPage,
+      resetSendState,
+      sendStage,
+    } = this.props;
+
+    if (draftTransactionID) cancelTx({ id: draftTransactionID });
     resetSendState();
-    history.push(mostRecentOverviewPage);
+
+    const nextRoute =
+      sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
+    history.push(nextRoute);
   }
 
   async onSubmit(event) {
@@ -85,11 +104,14 @@ export default class SendFooter extends Component {
   }
 
   render() {
+    const { t } = this.context;
+    const { sendStage } = this.props;
     return (
       <PageContainerFooter
         onCancel={() => this.onCancel()}
         onSubmit={(e) => this.onSubmit(e)}
         disabled={this.props.disabled}
+        cancelText={sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
       />
     );
   }

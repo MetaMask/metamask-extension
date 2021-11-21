@@ -57,7 +57,7 @@
     padding-bottom: 0;
   }
 
-  @media (min-width: 576px) {
+  @media (min-width: $break-large) {
     &__warning-tooltip {
       display: none;
     }

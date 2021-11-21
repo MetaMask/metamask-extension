@@ -1,0 +1,41 @@
+.onboarding-metametrics {
+  width: 600px;
+
+  ul {
+    margin: 24px 0 0 0;
+
+    li {
+      padding-bottom: 20px;
+      display: flex;
+    }
+  }
+
+  .fa {
+    width: 16px;
+  }
+
+  .fa-check {
+    margin-inline-end: 12px;
+    color: #1acc56;
+  }
+
+  .fa-times {
+    margin-inline-end: 12px;
+    color: #d0021b;
+  }
+
+  &__terms a {
+    color: $Blue-500;
+  }
+
+  &__buttons {
+    margin: 24px auto 0 auto;
+    justify-content: space-between;
+    display: flex;
+
+    button {
+      margin-bottom: 24px;
+      width: 200px;
+    }
+  }
+}

@@ -44,7 +44,7 @@ export default class PageContainerFooter extends Component {
         <footer>
           {!hideCancel && (
             <Button
-              type={cancelButtonType || 'default'}
+              type={cancelButtonType || 'secondary'}
               large={buttonSizeLarge}
               className={classnames(
                 'page-container__footer-button',
@@ -58,7 +58,7 @@ export default class PageContainerFooter extends Component {
           )}
 
           <Button
-            type={submitButtonType || 'secondary'}
+            type={submitButtonType || 'primary'}
             large={buttonSizeLarge}
             className={classnames(
               'page-container__footer-button',

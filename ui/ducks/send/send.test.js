@@ -51,6 +51,7 @@ import sendReducer, {
   getSendAmount,
   getIsBalanceInsufficient,
   getSendMaxModeState,
+  getDraftTransactionID,
   sendAmountIsInError,
   getSendHexData,
   getSendTo,
@@ -628,6 +629,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '',
             tokens: [],
+            useTokenDetection: true,
+            tokenAddressList: [],
           },
         };
 
@@ -649,6 +652,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '0x55',
             tokens: [],
+            useTokenDetection: true,
+            tokenAddressList: [],
           },
         };
 
@@ -671,6 +676,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '',
             tokens: [],
+            useTokenDetection: true,
+            tokenAddressList: [],
           },
         };
 
@@ -698,6 +705,8 @@ describe('Send Slice', () => {
           payload: {
             chainId: '0x4',
             tokens: [],
+            useTokenDetection: true,
+            tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
           },
         };
 
@@ -1085,8 +1094,18 @@ describe('Send Slice', () => {
             gasEstimateType: GAS_ESTIMATE_TYPES.NONE,
             gasFeeEstimates: {},
             networkDetails: {
-              EIPS: {},
+              EIPS: {
+                1559: true,
+              },
             },
+            selectedAddress: '0xAddress',
+            identities: { '0xAddress': { address: '0xAddress' } },
+            keyrings: [
+              {
+                type: 'HD Key Tree',
+                accounts: ['0xAddress'],
+              },
+            ],
             accounts: {
               '0xAddress': {
                 address: '0xAddress',
@@ -1098,13 +1117,37 @@ describe('Send Slice', () => {
                 '0xAddress': '0x0',
               },
             },
-            selectedAddress: '0xAddress',
             provider: {
               chainId: '0x4',
             },
+            useTokenDetection: true,
+            tokenList: {
+              0x514910771af9ca656af840dff83e8264ecf986ca: {
+                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                symbol: 'LINK',
+                decimals: 18,
+                name: 'Chainlink',
+                iconUrl:
+                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                aggregators: [
+                  'airswapLight',
+                  'bancor',
+                  'cmc',
+                  'coinGecko',
+                  'kleros',
+                  'oneInch',
+                  'paraswap',
+                  'pmm',
+                  'totle',
+                  'zapper',
+                  'zerion',
+                  'zeroEx',
+                ],
+                occurrences: 12,
+              },
+            },
           },
           send: initialState,
-
           gas: {
             basicEstimateStatus: 'LOADING',
             basicEstimatesStatus: {
@@ -1476,6 +1519,31 @@ describe('Send Slice', () => {
             chainId: '',
           },
           tokens: [],
+          useTokenDetection: true,
+          tokenList: {
+            '0x514910771af9ca656af840dff83e8264ecf986ca': {
+              address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+              symbol: 'LINK',
+              decimals: 18,
+              name: 'Chainlink',
+              iconUrl: 'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+              aggregators: [
+                'airswapLight',
+                'bancor',
+                'cmc',
+                'coinGecko',
+                'kleros',
+                'oneInch',
+                'paraswap',
+                'pmm',
+                'totle',
+                'zapper',
+                'zerion',
+                'zeroEx',
+              ],
+              occurrences: 12,
+            },
+          },
         },
       };
 
@@ -1504,6 +1572,8 @@ describe('Send Slice', () => {
         expect(store.getActions()[1].payload).toStrictEqual({
           chainId: '',
           tokens: [],
+          useTokenDetection: true,
+          tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
         });
       });
     });
@@ -1556,6 +1626,7 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {},
+            identities: {},
             provider: {
               chainId: '0x1',
             },
@@ -1670,6 +1741,7 @@ describe('Send Slice', () => {
         const tokenState = {
           metamask: {
             addressBook: {},
+            identities: {},
             blockGasLimit: '',
             selectedAddress: '',
             provider: {
@@ -1724,10 +1796,37 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {},
+            identities: {},
             provider: {
               chainId: '',
             },
             tokens: [],
+            useTokenDetection: true,
+            tokenList: {
+              0x514910771af9ca656af840dff83e8264ecf986ca: {
+                address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                symbol: 'LINK',
+                decimals: 18,
+                name: 'Chainlink',
+                iconUrl:
+                  'https://s3.amazonaws.com/airswap-token-images/LINK.png',
+                aggregators: [
+                  'airswapLight',
+                  'bancor',
+                  'cmc',
+                  'coinGecko',
+                  'kleros',
+                  'oneInch',
+                  'paraswap',
+                  'pmm',
+                  'totle',
+                  'zapper',
+                  'zerion',
+                  'zeroEx',
+                ],
+                occurrences: 12,
+              },
+            },
           },
           send: {
             asset: {
@@ -2362,6 +2461,21 @@ describe('Send Slice', () => {
             },
           }),
         ).toBe(true);
+      });
+
+      it('has a selector to get the draft transaction ID', () => {
+        expect(getDraftTransactionID({ send: initialState })).toBeNull();
+        expect(
+          getDraftTransactionID({
+            send: {
+              ...initialState,
+              draftTransaction: {
+                ...initialState.draftTransaction,
+                id: 'ID',
+              },
+            },
+          }),
+        ).toBe('ID');
       });
 
       it('has a selector to get the user entered hex data', () => {

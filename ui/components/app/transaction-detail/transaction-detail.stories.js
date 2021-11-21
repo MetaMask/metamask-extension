@@ -6,6 +6,7 @@ import TransactionDetail from '.';
 
 export default {
   title: 'Transaction Detail',
+  id: __filename,
 };
 
 const rows = [

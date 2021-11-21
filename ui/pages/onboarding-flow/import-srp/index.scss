@@ -1,0 +1,78 @@
+.import-srp {
+  width: 625px;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin: 20px auto;
+    max-width: 500px;
+
+    a {
+      color: $Blue-500;
+
+      &:hover {
+        cursor: pointer;
+        color: $Blue-300;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    max-width: 400px;
+    margin: auto;
+
+    &--link {
+      @include H6;
+
+      margin-bottom: 12px;
+    }
+  }
+}
+
+.srp-text-area {
+  position: relative;
+  height: 100px;
+  width: 325px;
+  margin: 12px 0 42px 0;
+
+  &__textarea {
+    @include Paragraph;
+
+    border: 1px solid #cdcdcd;
+    border-radius: 10px;
+    background-color: #fff;
+    padding: 12px 24px 12px 12px;
+    resize: none;
+    width: 100%;
+    height: 100%;
+
+    &--blur {
+      color: transparent;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    &--error {
+      border: 1px solid $error-1;
+    }
+
+    &__error-message {
+      @include H7;
+
+      color: $error-1;
+    }
+  }
+
+  button {
+    background-color: transparent;
+    position: absolute;
+    right: 0;
+    top: 5px;
+  }
+}

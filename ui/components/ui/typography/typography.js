@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import {
   COLORS,
   FONT_WEIGHT,
+  FONT_STYLE,
   TEXT_ALIGN,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
-import Box from '../box';
+import Box, { MultipleSizes } from '../box';
 
 const { H6, H7, H8, H9 } = TYPOGRAPHY;
 
@@ -18,17 +19,22 @@ export default function Typography({
   tag,
   children,
   fontWeight = 'normal',
+  fontStyle = 'normal',
+  fontSize,
   align,
   boxProps = {},
+  margin = [1, 0],
 }) {
   const computedClassName = classnames(
     'typography',
     className,
     `typography--${variant}`,
     `typography--weight-${fontWeight}`,
+    `typography--style-${fontStyle}`,
     {
       [`typography--align-${align}`]: Boolean(align),
       [`typography--color-${color}`]: Boolean(color),
+      [`typography--size-${fontSize}`]: Boolean(fontSize),
     },
   );
 
@@ -41,7 +47,7 @@ export default function Typography({
   }
 
   return (
-    <Box margin={[1, 0]} {...boxProps}>
+    <Box margin={margin} {...boxProps}>
       {(boxClassName) => (
         <Tag className={classnames(boxClassName, computedClassName)}>
           {children}
@@ -60,7 +66,10 @@ Typography.propTypes = {
   boxProps: PropTypes.shape({
     ...Box.propTypes,
   }),
+  margin: MultipleSizes,
   fontWeight: PropTypes.oneOf(Object.values(FONT_WEIGHT)),
+  fontStyle: PropTypes.oneOf(Object.values(FONT_STYLE)),
+  fontSize: PropTypes.string,
   tag: PropTypes.oneOf([
     'p',
     'h1',
@@ -73,5 +82,6 @@ Typography.propTypes = {
     'div',
     'dt',
     'dd',
+    'i',
   ]),
 };

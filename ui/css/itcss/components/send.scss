@@ -785,13 +785,14 @@
     width: 56px;
     height: 20px;
     margin-top: 5px;
+    border-radius: 100px;
 
     &__button {
       width: 56px;
       height: 20px;
       position: absolute;
       border: 1px solid #b0d7f2;
-      border-radius: 6px;
+      border-radius: 100px;
       cursor: pointer;
       top: 0;
       left: 0;

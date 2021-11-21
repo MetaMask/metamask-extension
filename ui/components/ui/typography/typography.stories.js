@@ -10,6 +10,7 @@ import Typography from '.';
 
 export default {
   title: 'Typography',
+  id: __filename,
 };
 
 export const list = () => (

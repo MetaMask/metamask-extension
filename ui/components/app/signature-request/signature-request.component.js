@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
+import LedgerInstructionField from '../ledger-instruction-field';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from './signature-request.constants';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
@@ -15,35 +14,15 @@ export default class SignatureRequest extends PureComponent {
       balance: PropTypes.string,
       name: PropTypes.string,
     }).isRequired,
-
-    clearConfirmTransaction: PropTypes.func.isRequired,
+    isLedgerWallet: PropTypes.bool,
     cancel: PropTypes.func.isRequired,
     sign: PropTypes.func.isRequired,
+    hardwareWalletRequiresConnection: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  };
-
-  componentDidMount() {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
-  }
-
-  _beforeUnload = (event) => {
-    const { clearConfirmTransaction, cancel } = this.props;
-    const { metricsEvent } = this.context;
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Sign Request',
-        name: 'Cancel Sig Request Via Notification Close',
-      },
-    });
-    clearConfirmTransaction();
-    cancel(event);
   };
 
   formatWallet(wallet) {
@@ -57,22 +36,46 @@ export default class SignatureRequest extends PureComponent {
     const {
       fromAccount,
       txData: {
-        msgParams: { data, origin },
+        msgParams: { data, origin, version },
+        type,
       },
       cancel,
       sign,
+      isLedgerWallet,
+      hardwareWalletRequiresConnection,
     } = this.props;
     const { address: fromAddress } = fromAccount;
     const { message, domain = {} } = JSON.parse(data);
+    const { metricsEvent } = this.context;
 
     const onSign = (event) => {
-      window.removeEventListener('beforeunload', this._beforeUnload);
       sign(event);
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Sign Request',
+          name: 'Confirm',
+        },
+        customVariables: {
+          type,
+          version,
+        },
+      });
     };
 
     const onCancel = (event) => {
-      window.removeEventListener('beforeunload', this._beforeUnload);
       cancel(event);
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Sign Request',
+          name: 'Cancel',
+        },
+        customVariables: {
+          type,
+          version,
+        },
+      });
     };
 
     return (
@@ -97,8 +100,17 @@ export default class SignatureRequest extends PureComponent {
             {this.formatWallet(fromAddress)}
           </div>
         </div>
+        {isLedgerWallet ? (
+          <div className="confirm-approve-content__ledger-instruction-wrapper">
+            <LedgerInstructionField showDataInstruction />
+          </div>
+        ) : null}
         <Message data={message} />
-        <Footer cancelAction={onCancel} signAction={onSign} />
+        <Footer
+          cancelAction={onCancel}
+          signAction={onSign}
+          disabled={hardwareWalletRequiresConnection}
+        />
       </div>
     );
   }

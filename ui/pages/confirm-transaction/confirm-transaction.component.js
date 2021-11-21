@@ -28,6 +28,8 @@ import {
 import {
   disconnectGasFeeEstimatePoller,
   getGasFeeEstimatesAndStartPolling,
+  addPollingTokenToAppState,
+  removePollingTokenFromAppState,
 } from '../../store/actions';
 import ConfTx from './conf-tx';
 
@@ -57,6 +59,14 @@ export default class ConfirmTransaction extends Component {
     this.state = {};
   }
 
+  _beforeUnload = () => {
+    this._isMounted = false;
+    if (this.state.pollingToken) {
+      disconnectGasFeeEstimatePoller(this.state.pollingToken);
+      removePollingTokenFromAppState(this.state.pollingToken);
+    }
+  };
+
   componentDidMount() {
     this._isMounted = true;
     const {
@@ -75,10 +85,14 @@ export default class ConfirmTransaction extends Component {
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
       if (this._isMounted) {
         this.setState({ pollingToken });
+        addPollingTokenToAppState(pollingToken);
       } else {
         disconnectGasFeeEstimatePoller(pollingToken);
+        removePollingTokenFromAppState(pollingToken);
       }
     });
+
+    window.addEventListener('beforeunload', this._beforeUnload);
 
     if (!totalUnapprovedCount && !sendTo) {
       history.replace(mostRecentOverviewPage);
@@ -96,10 +110,8 @@ export default class ConfirmTransaction extends Component {
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
-    if (this.state.pollingToken) {
-      disconnectGasFeeEstimatePoller(this.state.pollingToken);
-    }
+    this._beforeUnload();
+    window.removeEventListener('beforeunload', this._beforeUnload);
   }
 
   componentDidUpdate(prevProps) {

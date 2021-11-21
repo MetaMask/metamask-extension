@@ -38,7 +38,6 @@ describe('Hide token', function () {
         await driver.clickElement('[data-testid="asset-options__button"]');
 
         await driver.clickElement('[data-testid="asset-options__hide"]');
-
         // wait for confirm hide modal to be visible
         const confirmHideModal = await driver.findVisibleElement('span .modal');
 
@@ -78,11 +77,11 @@ describe('Add existing token using search', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement({ text: 'Add Token', tag: 'button' });
+        await driver.clickElement({ text: 'import tokens', tag: 'a' });
         await driver.fill('#search-tokens', 'BAT');
         await driver.clickElement({ text: 'BAT', tag: 'span' });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Add Tokens', tag: 'button' });
+        await driver.clickElement({ text: 'Import Tokens', tag: 'button' });
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',

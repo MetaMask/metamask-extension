@@ -1,4 +1,6 @@
 .recovery-phrase {
+  max-width: 600px;
+
   &__tips {
     flex-direction: column;
 
@@ -10,7 +12,7 @@
 
   &__chips {
     display: grid;
-    grid-template-columns: 160px 160px 160px;
+    grid-template-columns: 190px 190px 190px;
     justify-items: center;
     align-items: center;
     row-gap: 16px;
@@ -74,14 +76,20 @@
       align-items: center;
 
       &--button {
+        @include H6;
+
         background-color: transparent;
         border: none;
         display: flex;
         justify-content: space-evenly;
-        width: 40%;
+        width: 32%;
         color: $primary-blue;
         cursor: pointer;
         margin-bottom: 24px;
+
+        svg {
+          width: 15px;
+        }
 
         &:active {
           color: $ui-black;

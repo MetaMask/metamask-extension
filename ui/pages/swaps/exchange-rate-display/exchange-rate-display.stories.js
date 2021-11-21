@@ -4,6 +4,7 @@ import ExchangeRateDisplay from './exchange-rate-display';
 
 export default {
   title: 'ExchangeRateDisplay',
+  id: __filename,
 };
 
 export const Default = () => {

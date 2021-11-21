@@ -10,6 +10,7 @@ const containerStyle = {
 
 export default {
   title: 'Signature Request',
+  id: __filename,
 };
 
 export const FirstLook = () => {

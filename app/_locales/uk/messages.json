@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Додати мережу"
   },
-  "addRecipient": {
-    "message": "Додати отримувача"
-  },
   "addSuggestedTokens": {
     "message": "Додати рекомендовані токени"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Додати токен"
-  },
-  "addTokens": {
-    "message": "Додати токени"
   },
   "advanced": {
     "message": "Розширені"
@@ -263,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Збільшення комісії може призвести до зменшення часу обробки, але це не гарантується."
   },
-  "customRPC": {
-    "message": "Налаштувати RPC"
-  },
   "customToken": {
     "message": "Користувацький токен"
   },
@@ -274,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Кількість розрядів після коми: від 0 до 36."
-  },
-  "defaultNetwork": {
-    "message": "Мережа для транзакцій з Ether за замовчуванням - Main Net."
   },
   "delete": {
     "message": "Видалити"
@@ -543,7 +531,7 @@
   "letsGoSetUp": {
     "message": "Так, давайте налаштуємо!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ви б хотіли додати ці токени?"
   },
   "links": {
@@ -584,9 +572,6 @@
   },
   "metamaskVersion": {
     "message": "Версія MetaMask"
-  },
-  "mobileSyncText": {
-    "message": "Введіть пароль, щоб підтвердити свою особу!"
   },
   "mustSelectOne": {
     "message": "Слід вибрати хоча б 1 токен."
@@ -631,9 +616,6 @@
   },
   "newContract": {
     "message": "Новий контракт"
-  },
-  "newNetwork": {
-    "message": "Нова мережа"
   },
   "newPassword": {
     "message": "Новий пароль (мінімум 8 символів)"
@@ -682,12 +664,6 @@
   },
   "on": {
     "message": "Увімкнути"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Блокувати Explorer URL (не обов'язково)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Символ (не обов'язково)"
   },
   "origin": {
     "message": "Походження"
@@ -808,9 +784,6 @@
   "revealSeedWordsDescription": {
     "message": "При зміні браузера або комп'ютера, вам знадобиться seed-фраза для отримання доступу до ваших облікових записів. Збережіть її у надійному місці."
   },
-  "revealSeedWordsTitle": {
-    "message": "Мнемонічна фраза"
-  },
   "revealSeedWordsWarning": {
     "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи."
   },
@@ -847,9 +820,6 @@
   "searchTokens": {
     "message": "Шукати токени"
   },
-  "secretBackupPhrase": {
-    "message": "Секретна резервна фраза"
-  },
   "secretBackupPhraseDescription": {
     "message": "Ваша секретна резервна фраза дозволяє легко створити резервну копію та відновити обліковий запис."
   },
@@ -874,9 +844,6 @@
   "selectAnAccount": {
     "message": "Виберіть обліковий запис"
   },
-  "selectAnAccountHelp": {
-    "message": "Оберіть обліковий запис для перегляду в MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Виберіть кожну фразу, щоб переконатися, що вона правильна."
   },
@@ -897,9 +864,6 @@
   },
   "sendTokens": {
     "message": "Надіслати токени"
-  },
-  "sentEther": {
-    "message": "надісланий ефір"
   },
   "separateEachWord": {
     "message": "Відділіть кожне слово одним пробілом"
@@ -1139,20 +1103,8 @@
   "viewContact": {
     "message": "Переглянути контакт"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Дивитись на $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Дивитись на Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Дивитись в Explorer"
-  },
   "visitWebSite": {
     "message": "Відвідайте наш веб-сайт"
-  },
-  "walletSeed": {
-    "message": "Seed гаманця"
   },
   "welcome": {
     "message": "Ласкаво просимо до MetaMask"

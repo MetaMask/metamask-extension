@@ -15,15 +15,15 @@ import {
 } from '../../../helpers/constants/design-system';
 
 export default function RecoveryPhraseChips({
-  seedPhrase,
-  seedPhraseRevealed,
+  secretRecoveryPhrase,
+  phraseRevealed,
   confirmPhase,
   setInputValue,
   inputValue,
   indicesToCheck,
 }) {
   const t = useI18nContext();
-  const hideSeedPhrase = seedPhraseRevealed === false;
+  const hideSeedPhrase = phraseRevealed === false;
   return (
     <Box
       borderColor={COLORS.UI2}
@@ -36,11 +36,12 @@ export default function RecoveryPhraseChips({
       className="recovery-phrase__secret"
     >
       <div
+        data-testid="recovery-phrase-chips"
         className={classnames('recovery-phrase__chips', {
           'recovery-phrase__chips--hidden': hideSeedPhrase,
         })}
       >
-        {seedPhrase.map((word, index) => {
+        {secretRecoveryPhrase.map((word, index) => {
           if (
             confirmPhase &&
             indicesToCheck &&
@@ -52,6 +53,7 @@ export default function RecoveryPhraseChips({
                   {`${index + 1}.`}
                 </div>
                 <ChipWithInput
+                  dataTestId={`recovery-phrase-input-${index}`}
                   borderColor={COLORS.PRIMARY1}
                   className="recovery-phrase__chip--with-input"
                   inputValue={inputValue[index]}
@@ -67,7 +69,11 @@ export default function RecoveryPhraseChips({
               <div className="recovery-phrase__chip-item__number">
                 {`${index + 1}.`}
               </div>
-              <Chip className="recovery-phrase__chip" borderColor={COLORS.UI3}>
+              <Chip
+                dataTestId={`recovery-phrase-chip-${index}`}
+                className="recovery-phrase__chip"
+                borderColor={COLORS.UI3}
+              >
                 {word}
               </Chip>
             </div>
@@ -92,8 +98,8 @@ export default function RecoveryPhraseChips({
 }
 
 RecoveryPhraseChips.propTypes = {
-  seedPhrase: PropTypes.array,
-  seedPhraseRevealed: PropTypes.bool,
+  secretRecoveryPhrase: PropTypes.array,
+  phraseRevealed: PropTypes.bool,
   confirmPhase: PropTypes.bool,
   setInputValue: PropTypes.func,
   inputValue: PropTypes.string,

@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import {
   toggleAccountMenu,
   showAccountDetail,
-  hideSidebar,
   lockMetamask,
   hideWarning,
 } from '../../../store/actions';
@@ -46,13 +45,11 @@ function mapDispatchToProps(dispatch) {
     toggleAccountMenu: () => dispatch(toggleAccountMenu()),
     showAccountDetail: (address) => {
       dispatch(showAccountDetail(address));
-      dispatch(hideSidebar());
       dispatch(toggleAccountMenu());
     },
     lockMetamask: () => {
       dispatch(lockMetamask());
       dispatch(hideWarning());
-      dispatch(hideSidebar());
       dispatch(toggleAccountMenu());
     },
   };

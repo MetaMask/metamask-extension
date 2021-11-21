@@ -52,9 +52,6 @@
   "addNetwork": {
     "message": "添加网络"
   },
-  "addRecipient": {
-    "message": "添加接收方"
-  },
   "addSuggestedTokens": {
     "message": "添加推荐代币"
   },
@@ -65,9 +62,6 @@
     "message": "如：John D."
   },
   "addToken": {
-    "message": "添加代币"
-  },
-  "addTokens": {
     "message": "添加代币"
   },
   "advanced": {
@@ -109,10 +103,6 @@
   "allowExternalExtensionTo": {
     "message": "允许这个外部扩展到："
   },
-  "allowOriginSpendToken": {
-    "message": "允许 $1 使用您的 $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "允许本网站："
   },
@@ -122,9 +112,6 @@
   },
   "amount": {
     "message": "数额"
-  },
-  "amountWithColon": {
-    "message": "数额："
   },
   "appDescription": {
     "message": "以太坊浏览器插件",
@@ -411,9 +398,6 @@
   "customGasSubTitle": {
     "message": "提升费用可能会缩短处理时间，但不保证绝对有效。"
   },
-  "customRPC": {
-    "message": "自定义 RPC"
-  },
   "customSpendLimit": {
     "message": "自定义消费限额"
   },
@@ -448,9 +432,6 @@
   },
   "decryptRequest": {
     "message": "解密请求"
-  },
-  "defaultNetwork": {
-    "message": "默认以太坊（Ether）交易网络为主网。"
   },
   "delete": {
     "message": "删除"
@@ -522,7 +503,7 @@
     "message": "编辑权限"
   },
   "encryptionPublicKeyNotice": {
-    "message": "$1 希望得到您的加密公钥。同意后该网站将可以想您发送加密信息。",
+    "message": "$1 希望得到您的加密公钥。同意后该网站将可以向您发送加密信息。",
     "description": "$1 is the web3 site name"
   },
   "encryptionPublicKeyRequest": {
@@ -875,7 +856,7 @@
   "letsGoSetUp": {
     "message": "第一次，立即开始设置！"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "您想添加这些代币吗？"
   },
   "links": {
@@ -963,9 +944,6 @@
   "metametricsOptInDescription": {
     "message": "MetaMask 希望收集使用数据，以更好地了解我们的用户如何与扩展进行互动。这些数据将被用于持续改进我们产品和 Ethereum 生态系统的可用性和用户体验。"
   },
-  "mobileSyncText": {
-    "message": "请输入密码确认个人身份！"
-  },
   "mustSelectOne": {
     "message": "至少选择 1 种代币。"
   },
@@ -1012,9 +990,6 @@
   },
   "newContract": {
     "message": "新合约"
-  },
-  "newNetwork": {
-    "message": "新增网络"
   },
   "newPassword": {
     "message": "新密码（至少 8 个字符）"
@@ -1093,17 +1068,8 @@
     "message": "“$1”会关闭此标签，直接回到 $2",
     "description": "Return the user to the site that initiated onboarding"
   },
-  "onlyAvailableOnMainnet": {
-    "message": "仅在主网（mainnet）上提供"
-  },
   "onlyConnectTrust": {
     "message": "只连接您信任的网站。"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "区块浏览器 URL（选填）"
-  },
-  "optionalCurrencySymbol": {
-    "message": "符号（选填）"
   },
   "origin": {
     "message": "来源"
@@ -1259,9 +1225,6 @@
   "revealSeedWordsDescription": {
     "message": "如果您更换浏览器或计算机，则需要使用此账户助记词访问您的帐户。请将它们保存在安全秘密的地方。"
   },
-  "revealSeedWordsTitle": {
-    "message": "账户助记词"
-  },
   "revealSeedWordsWarning": {
     "message": "该账户助记词可以用来窃取您的所有帐户"
   },
@@ -1304,9 +1267,6 @@
   "searchTokens": {
     "message": "搜索代币"
   },
-  "secretBackupPhrase": {
-    "message": "账户助记词"
-  },
   "secretBackupPhraseDescription": {
     "message": "您的账户助记词可以帮助您轻松备份和恢复个人账户。"
   },
@@ -1340,9 +1300,6 @@
   "selectAnAccount": {
     "message": "选择一个账户"
   },
-  "selectAnAccountHelp": {
-    "message": "选择在 MetaMask 中查看的账户"
-  },
   "selectEachPhrase": {
     "message": "请选择每个单词，以确保其正确性。"
   },
@@ -1370,9 +1327,6 @@
   },
   "sendTokens": {
     "message": "发送代币"
-  },
-  "sentEther": {
-    "message": "发送 Ether"
   },
   "separateEachWord": {
     "message": "用空格分隔每个单词"
@@ -1525,10 +1479,6 @@
     "message": "没有匹配的代币符合 $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "正在检查 $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapCustom": {
     "message": "自定义"
   },
@@ -1566,9 +1516,6 @@
   },
   "swapFetchingTokens": {
     "message": "获取代币中……"
-  },
-  "swapFinalizing": {
-    "message": "确定中……"
   },
   "swapLowSlippageError": {
     "message": "交易可能失败，最大滑点过低。"
@@ -1801,9 +1748,6 @@
     "message": "至：$1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "至："
-  },
   "token": {
     "message": "代币"
   },
@@ -1875,10 +1819,6 @@
     "message": "我们无法加载您的代币余额。您可以查看它们",
     "description": "Followed by a link (here) to view token balances"
   },
-  "trustSiteApprovePermission": {
-    "message": "您信任这个网站吗？授权即表示您允许 $1 提取您的 $2，并为您自动进行交易。",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
-  },
   "tryAgain": {
     "message": "重试"
   },
@@ -1946,23 +1886,11 @@
   "viewContact": {
     "message": "查看联系人"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "在 $1 查看"
-  },
-  "viewOnEtherscan": {
-    "message": "在 Etherscan（以太坊浏览器）上查看"
-  },
-  "viewinExplorer": {
-    "message": "在浏览器中查看"
-  },
   "visitWebSite": {
     "message": "访问我们的网站"
   },
   "walletConnectionGuide": {
     "message": "我们的硬件钱包连接指南"
-  },
-  "walletSeed": {
-    "message": "账户助记词"
   },
   "web3ShimUsageNotification": {
     "message": "我们发现当前的网站尝试使用已经删除的 window.web3 API。如果这个网站网站已经无法正常使用，请点击 $1 获取更多信息。",

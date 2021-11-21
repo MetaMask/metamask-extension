@@ -3,6 +3,7 @@ import CircleIcon from './circle-icon.component';
 
 export default {
   title: 'CircleIcon',
+  id: __filename,
 };
 
 export const basicCircleIcon = () => (

@@ -3,20 +3,25 @@
 //
 // run any task with "yarn build ${taskName}"
 //
+const path = require('path');
 const livereload = require('gulp-livereload');
+const minimist = require('minimist');
+const { sync: globby } = require('globby');
 const {
   createTask,
   composeSeries,
   composeParallel,
-  detectAndRunEntryTask,
+  runTask,
 } = require('./task');
 const createManifestTasks = require('./manifest');
 const createScriptTasks = require('./scripts');
 const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
+const { BuildType, getBrowserVersionMap } = require('./utils');
 
-// packages required dynamically via browserify configuration in dependencies
+// Packages required dynamically via browserify configuration in dependencies
+// Required for LavaMoat policy generation
 require('loose-envify');
 require('@babel/plugin-proposal-object-rest-spread');
 require('@babel/plugin-transform-runtime');
@@ -26,20 +31,66 @@ require('@babel/plugin-proposal-nullish-coalescing-operator');
 require('@babel/preset-env');
 require('@babel/preset-react');
 require('@babel/core');
+// ESLint-related
+require('@babel/eslint-parser');
+require('@babel/eslint-plugin');
+require('@metamask/eslint-config');
+require('@metamask/eslint-config-nodejs');
+require('eslint');
+require('eslint-config-prettier');
+require('eslint-import-resolver-node');
+require('eslint-plugin-import');
+require('eslint-plugin-node');
+require('eslint-plugin-prettier');
+require('eslint-plugin-react');
+require('eslint-plugin-react-hooks');
 
-const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
+defineAndRunBuildTasks();
 
-defineAllTasks();
-detectAndRunEntryTask();
+function defineAndRunBuildTasks() {
+  const {
+    buildType,
+    entryTask,
+    isLavaMoat,
+    shouldIncludeLockdown,
+    shouldLintFenceFiles,
+    skipStats,
+  } = parseArgv();
 
-function defineAllTasks() {
-  const staticTasks = createStaticAssetTasks({ livereload, browserPlatforms });
-  const manifestTasks = createManifestTasks({ browserPlatforms });
+  const browserPlatforms = ['firefox', 'chrome', 'brave', 'opera'];
+
+  const browserVersionMap = getBrowserVersionMap(browserPlatforms);
+
+  const ignoredFiles = getIgnoredFiles(buildType);
+
+  const staticTasks = createStaticAssetTasks({
+    livereload,
+    browserPlatforms,
+    shouldIncludeLockdown,
+    buildType,
+  });
+
+  const manifestTasks = createManifestTasks({
+    browserPlatforms,
+    browserVersionMap,
+    buildType,
+  });
+
   const styleTasks = createStyleTasks({ livereload });
-  const scriptTasks = createScriptTasks({ livereload, browserPlatforms });
+
+  const scriptTasks = createScriptTasks({
+    browserPlatforms,
+    buildType,
+    ignoredFiles,
+    isLavaMoat,
+    livereload,
+    shouldLintFenceFiles,
+  });
+
   const { clean, reload, zip } = createEtcTasks({
     livereload,
     browserPlatforms,
+    buildType,
   });
 
   // build for development (livereload)
@@ -96,4 +147,95 @@ function defineAllTasks() {
 
   // special build for minimal CI testing
   createTask('styles', styleTasks.prod);
+
+  // Finally, start the build process by running the entry task.
+  runTask(entryTask, { skipStats });
+}
+
+function parseArgv() {
+  const NamedArgs = {
+    BuildType: 'build-type',
+    LintFenceFiles: 'lint-fence-files',
+    Lockdown: 'lockdown',
+    SkipStats: 'skip-stats',
+  };
+
+  const argv = minimist(process.argv.slice(2), {
+    boolean: [
+      NamedArgs.LintFenceFiles,
+      NamedArgs.Lockdown,
+      NamedArgs.SkipStats,
+    ],
+    string: [NamedArgs.BuildType],
+    default: {
+      [NamedArgs.BuildType]: BuildType.main,
+      [NamedArgs.LintFenceFiles]: true,
+      [NamedArgs.Lockdown]: true,
+      [NamedArgs.SkipStats]: false,
+    },
+  });
+
+  if (argv._.length !== 1) {
+    throw new Error(
+      `Metamask build: Expected a single positional argument, but received "${argv._.length}" arguments.`,
+    );
+  }
+
+  const entryTask = argv._[0];
+  if (!entryTask) {
+    throw new Error('MetaMask build: No entry task specified.');
+  }
+
+  const buildType = argv[NamedArgs.BuildType];
+  if (!(buildType in BuildType)) {
+    throw new Error(`MetaMask build: Invalid build type: "${buildType}"`);
+  }
+
+  // Manually default this to `false` for dev builds only.
+  const shouldLintFenceFiles = process.argv.includes(
+    `--${NamedArgs.LintFenceFiles}`,
+  )
+    ? argv[NamedArgs.LintFenceFiles]
+    : !/dev/iu.test(entryTask);
+
+  return {
+    buildType,
+    entryTask,
+    isLavaMoat: process.argv[0].includes('lavamoat'),
+    shouldIncludeLockdown: argv[NamedArgs.Lockdown],
+    shouldLintFenceFiles,
+    skipStats: argv[NamedArgs.SkipStats],
+  };
+}
+
+/**
+ * Gets the files to be ignored by the current build, if any.
+ *
+ * @param {string} buildType - The type of the current build.
+ * @returns {string[] | null} The array of files to be ignored by the current
+ * build, or `null` if no files are to be ignored.
+ */
+function getIgnoredFiles(currentBuildType) {
+  const excludedFiles = Object.values(BuildType)
+    // This filter removes "main" and the current build type. The files of any
+    // build types that remain in the array will be excluded. "main" is the
+    // default build type, and has no files that are excluded from other builds.
+    .filter(
+      (buildType) =>
+        buildType !== BuildType.main && buildType !== currentBuildType,
+    )
+    // Compute globs targeting files for exclusion for each excluded build
+    // type.
+    .reduce((excludedGlobs, excludedBuildType) => {
+      return excludedGlobs.concat([
+        `../../app/**/${excludedBuildType}/**`,
+        `../../shared/**/${excludedBuildType}/**`,
+        `../../ui/**/${excludedBuildType}/**`,
+      ]);
+    }, [])
+    // This creates absolute paths of the form:
+    // PATH_TO_REPOSITORY_ROOT/app/**/${excludedBuildType}/**
+    .map((pathGlob) => path.resolve(__dirname, pathGlob));
+
+  return globby(excludedFiles);
 }

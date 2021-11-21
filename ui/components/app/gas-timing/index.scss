@@ -11,6 +11,12 @@
 
   &--negative {
     color: $error-1;
+    font-weight: bold;
+  }
+
+  &--negative-V2 {
+    color: $secondary-1;
+    font-weight: bold;
   }
 
   .info-tooltip {

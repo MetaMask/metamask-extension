@@ -30,7 +30,9 @@ describe('getFetchWithTimeout', function () {
       throw new Error('Request should throw');
     };
 
-    await expect(fetchWithTimeoutThrowsError()).rejects.toThrow('Aborted');
+    await expect(fetchWithTimeoutThrowsError()).rejects.toThrow(
+      'The user aborted a request.',
+    );
   });
 
   it('should abort the request when the custom timeout is hit', async function () {
@@ -48,7 +50,9 @@ describe('getFetchWithTimeout', function () {
       throw new Error('Request should be aborted');
     };
 
-    await expect(fetchWithTimeoutThrowsError()).rejects.toThrow('Aborted');
+    await expect(fetchWithTimeoutThrowsError()).rejects.toThrow(
+      'The user aborted a request.',
+    );
   });
 
   it('throws on invalid timeout', async function () {

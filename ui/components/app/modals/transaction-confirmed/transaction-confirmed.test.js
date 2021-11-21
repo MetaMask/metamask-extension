@@ -17,9 +17,7 @@ describe('Transaction Confirmed', () => {
         },
       },
     );
-    const submit = wrapper.find(
-      '.btn-secondary.modal-container__footer-button',
-    );
+    const submit = wrapper.find('.btn-primary.modal-container__footer-button');
     submit.simulate('click');
 
     expect(props.onSubmit.calledOnce).toStrictEqual(true);

@@ -12,7 +12,12 @@ function start() {
   const hash = window.location.hash.substring(1);
   const suspect = querystring.parse(hash);
 
-  document.getElementById('csdbLink').href = `https://cryptoscamdb.org/search`;
+  const newIssueLink = document.getElementById('new-issue-link');
+  const newIssueUrl = `https://github.com/MetaMask/eth-phishing-detect/issues/new`;
+  const newIssueParams = `?title=[Legitimate%20Site%20Blocked]%20${encodeURIComponent(
+    suspect.hostname,
+  )}&body=${encodeURIComponent(suspect.href)}`;
+  newIssueLink.href = `${newIssueUrl}${newIssueParams}`;
 
   global.platform = new ExtensionPlatform();
 

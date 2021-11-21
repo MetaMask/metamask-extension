@@ -13,9 +13,17 @@ import {
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  TRUNCATED_ADDRESS_START_CHARS,
+  TRUNCATED_NAME_CHAR_LIMIT,
+  TRUNCATED_ADDRESS_END_CHARS,
+} from '../../../shared/constants/labels';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
+  if (!date) {
+    return '';
+  }
   return DateTime.fromMillis(date).toFormat(format);
 }
 
@@ -24,6 +32,9 @@ export function formatDateWithYearContext(
   formatThisYear = 'MMM d',
   fallback = 'MMM d, y',
 ) {
+  if (!date) {
+    return '';
+  }
   const dateTime = DateTime.fromMillis(date);
   const now = DateTime.local();
   return dateTime.toFormat(
@@ -48,6 +59,12 @@ export function isDefaultMetaMaskChain(chainId) {
   }
 
   return false;
+}
+
+// Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
+export function isEqualCaseInsensitive(value1, value2) {
+  if (typeof value1 !== 'string' || typeof value2 !== 'string') return false;
+  return value1.toLowerCase() === value2.toLowerCase();
 }
 
 export function valuesFor(obj) {
@@ -208,11 +225,13 @@ export function exportAsFile(filename, data, type = 'text/csv') {
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  if (address.length < 11) {
+  if (address.length < TRUNCATED_NAME_CHAR_LIMIT) {
     return address;
   }
 
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  return `${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
+    -TRUNCATED_ADDRESS_END_CHARS,
+  )}`;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {
@@ -345,3 +364,63 @@ export function constructTxParams({
   }
   return addHexPrefixToObjectValues(txParams);
 }
+
+export function bnGreaterThan(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).gt(b, 10);
+}
+
+export function bnLessThan(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).lt(b, 10);
+}
+
+export function bnGreaterThanEqualTo(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).gte(b, 10);
+}
+
+export function bnLessThanEqualTo(a, b) {
+  if (a === null || a === undefined || b === null || b === undefined) {
+    return null;
+  }
+  return new BigNumber(a, 10).lte(b, 10);
+}
+
+export function getURL(url) {
+  try {
+    return new URL(url);
+  } catch (err) {
+    return '';
+  }
+}
+
+export function getURLHost(url) {
+  return getURL(url)?.host || '';
+}
+
+export function getURLHostName(url) {
+  return getURL(url)?.hostname || '';
+}
+
+// Once we reach this threshold, we switch to higher unit
+const MINUTE_CUTOFF = 90 * 60;
+const SECOND_CUTOFF = 90;
+
+export const toHumanReadableTime = (t, milliseconds) => {
+  if (milliseconds === undefined || milliseconds === null) return '';
+  const seconds = Math.ceil(milliseconds / 1000);
+  if (seconds <= SECOND_CUTOFF) {
+    return t('gasTimingSecondsShort', [seconds]);
+  }
+  if (seconds <= MINUTE_CUTOFF) {
+    return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
+  }
+  return t('gasTimingHoursShort', [Math.ceil(seconds / 3600)]);
+};

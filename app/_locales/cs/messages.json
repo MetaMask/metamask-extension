@@ -11,9 +11,6 @@
   "addToken": {
     "message": "Přidat token"
   },
-  "addTokens": {
-    "message": "Přidat tokeny"
-  },
   "amount": {
     "message": "Částka"
   },
@@ -91,9 +88,6 @@
   "customGas": {
     "message": "Nastavit palivo"
   },
-  "customRPC": {
-    "message": "Vlastní RPC"
-  },
   "customToken": {
     "message": "Vlastní token"
   },
@@ -102,9 +96,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desetinných míst musí být od 0 do 36."
-  },
-  "defaultNetwork": {
-    "message": "Výchozí síť pro Etherové transakce je Main Net."
   },
   "depositEther": {
     "message": "Vložit Ether"
@@ -214,7 +205,7 @@
   "learnMore": {
     "message": "Zjistěte více."
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
   "links": {
@@ -434,9 +425,6 @@
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
-  },
-  "walletSeed": {
-    "message": "Klíčová fráze peněženky"
   },
   "welcome": {
     "message": "Vítejte v MetaMask"

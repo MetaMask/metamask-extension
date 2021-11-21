@@ -57,7 +57,7 @@ const SelectQuotePopover = ({
   const footer = (
     <>
       <Button
-        type="default"
+        type="secondary"
         className="page-container__footer-button select-quote-popover__button"
         onClick={onClose}
       >
@@ -65,7 +65,7 @@ const SelectQuotePopover = ({
       </Button>
 
       <Button
-        type="confirm"
+        type="primary"
         className="page-container__footer-button select-quote-popover__button"
         onClick={onSubmitClick}
       >

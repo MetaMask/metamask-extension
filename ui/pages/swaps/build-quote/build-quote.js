@@ -19,6 +19,10 @@ import SlippageButtons from '../slippage-buttons';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
+import {
+  VIEW_QUOTE_ROUTE,
+  LOADING_QUOTES_ROUTE,
+} from '../../../helpers/constants/routes';
 
 import {
   fetchQuotesAndSetQuoteState,
@@ -29,6 +33,8 @@ import {
   getBalanceError,
   getTopAssets,
   getFetchParams,
+  getQuotes,
+  setReviewSwapClickedTimestamp,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -36,6 +42,8 @@ import {
   getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
+  getUseTokenDetection,
+  getTokenList,
 } from '../../../selectors';
 
 import {
@@ -43,6 +51,10 @@ import {
   hexToDecimal,
 } from '../../../helpers/utils/conversions.util';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
+import {
+  getURLHostName,
+  isEqualCaseInsensitive,
+} from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
@@ -52,10 +64,23 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../../shared/modules/swaps.utils';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import {
+  SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+} from '../../../../shared/constants/swaps';
 
-import { resetSwapsPostFetchState, removeToken } from '../../../store/actions';
-import { fetchTokenPrice, fetchTokenBalance } from '../swaps.util';
+import {
+  resetSwapsPostFetchState,
+  removeToken,
+  setBackgroundSwapRouteState,
+  clearSwapsQuotes,
+  stopPollingForQuotes,
+} from '../../../store/actions';
+import {
+  fetchTokenPrice,
+  fetchTokenBalance,
+  shouldEnableDirectWrapping,
+} from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 
 const fuseSearchKeys = [
@@ -66,6 +91,8 @@ const fuseSearchKeys = [
 
 const MAX_ALLOWED_SLIPPAGE = 15;
 
+let timeoutIdForQuotesPrefetching;
+
 export default function BuildQuote({
   inputValue,
   onInputChange,
@@ -75,6 +102,7 @@ export default function BuildQuote({
   selectedAccountAddress,
   isFeatureFlagLoaded,
   tokenFromError,
+  shuffledTokensList,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -97,6 +125,10 @@ export default function BuildQuote({
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const tokenList = useSelector(getTokenList);
+  const useTokenDetection = useSelector(getUseTokenDetection);
+  const quotes = useSelector(getQuotes, isEqual);
+  const areQuotesPresent = Object.keys(quotes).length > 0;
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -130,15 +162,19 @@ export default function BuildQuote({
     conversionRate,
     currentCurrency,
     chainId,
+    tokenList,
+    useTokenDetection,
   );
 
   const tokensToSearch = useTokensToSearch({
     usersTokens: memoizedUsersTokens,
     topTokens: topAssets,
+    shuffledTokensList,
   });
   const selectedToToken =
-    tokensToSearch.find(({ address }) => address === toToken?.address) ||
-    toToken;
+    tokensToSearch.find(({ address }) =>
+      isEqualCaseInsensitive(address, toToken?.address),
+    ) || toToken;
   const toTokenIsNotDefault =
     selectedToToken?.address &&
     !isSwapsDefaultTokenAddress(selectedToToken?.address, chainId);
@@ -152,6 +188,7 @@ export default function BuildQuote({
     decimals: fromTokenDecimals,
     balance: rawFromTokenBalance,
   } = selectedFromToken || {};
+  const { address: toTokenAddress } = selectedToToken || {};
 
   const fromTokenBalance =
     rawFromTokenBalance &&
@@ -193,8 +230,8 @@ export default function BuildQuote({
     }
     if (
       token?.address &&
-      !memoizedUsersTokens.find(
-        (usersToken) => usersToken.address === token.address,
+      !memoizedUsersTokens.find((usersToken) =>
+        isEqualCaseInsensitive(usersToken.address, token.address),
       )
     ) {
       fetchTokenBalance(token.address, selectedAccountAddress).then(
@@ -238,7 +275,7 @@ export default function BuildQuote({
   );
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? new URL(blockExplorerTokenLink).hostname
+    ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
   const blockExplorerLinkClickedEvent = useNewMetricEvent({
@@ -247,9 +284,7 @@ export default function BuildQuote({
     properties: {
       link_type: 'Token Tracker',
       action: 'Swaps Confirmation',
-      block_explorer_domain: blockExplorerTokenLink
-        ? new URL(blockExplorerTokenLink)?.hostname
-        : '',
+      block_explorer_domain: getURLHostName(blockExplorerTokenLink),
     },
   });
 
@@ -267,12 +302,12 @@ export default function BuildQuote({
   );
 
   const hideDropdownItemIf = useCallback(
-    (item) => item.address === fromTokenAddress,
+    (item) => isEqualCaseInsensitive(item.address, fromTokenAddress),
     [fromTokenAddress],
   );
 
-  const tokensWithBalancesFromToken = tokensWithBalances.find(
-    (token) => token.address === fromToken?.address,
+  const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
+    isEqualCaseInsensitive(token.address, fromToken?.address),
   );
   const previousTokensWithBalancesFromToken = usePrevious(
     tokensWithBalancesFromToken,
@@ -283,9 +318,10 @@ export default function BuildQuote({
       tokensWithBalancesFromToken?.address,
       chainId,
     );
-    const addressesAreTheSame =
-      tokensWithBalancesFromToken?.address ===
-      previousTokensWithBalancesFromToken?.address;
+    const addressesAreTheSame = isEqualCaseInsensitive(
+      tokensWithBalancesFromToken?.address,
+      previousTokensWithBalancesFromToken?.address,
+    );
     const balanceHasChanged =
       tokensWithBalancesFromToken?.balance !==
       previousTokensWithBalancesFromToken?.balance;
@@ -334,6 +370,7 @@ export default function BuildQuote({
 
   useEffect(() => {
     dispatch(resetSwapsPostFetchState());
+    dispatch(setReviewSwapClickedTimestamp());
   }, [dispatch]);
 
   const BlockExplorerLink = () => {
@@ -370,7 +407,58 @@ export default function BuildQuote({
 
   const swapYourTokenBalance = t('swapYourTokenBalance', [
     fromTokenString || '0',
-    fromTokenSymbol,
+    fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol || '',
+  ]);
+
+  const isDirectWrappingEnabled = shouldEnableDirectWrapping(
+    chainId,
+    fromTokenAddress,
+    selectedToToken.address,
+  );
+  const isReviewSwapButtonDisabled =
+    tokenFromError ||
+    !isFeatureFlagLoaded ||
+    !Number(inputValue) ||
+    !selectedToToken?.address ||
+    Number(maxSlippage) < 0 ||
+    Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
+    (toTokenIsNotDefault && occurrences < 2 && !verificationClicked);
+
+  // It's triggered every time there is a change in form values (token from, token to, amount and slippage).
+  useEffect(() => {
+    dispatch(clearSwapsQuotes());
+    dispatch(stopPollingForQuotes());
+    const prefetchQuotesWithoutRedirecting = async () => {
+      const pageRedirectionDisabled = true;
+      await dispatch(
+        fetchQuotesAndSetQuoteState(
+          history,
+          inputValue,
+          maxSlippage,
+          metaMetricsEvent,
+          pageRedirectionDisabled,
+        ),
+      );
+    };
+    // Delay fetching quotes until a user is done typing an input value. If they type a new char in less than a second,
+    // we will cancel previous setTimeout call and start running a new one.
+    timeoutIdForQuotesPrefetching = setTimeout(() => {
+      timeoutIdForQuotesPrefetching = null;
+      if (!isReviewSwapButtonDisabled) {
+        // Only do quotes prefetching if the Review Swap button is enabled.
+        prefetchQuotesWithoutRedirecting();
+      }
+    }, 1000);
+    return () => clearTimeout(timeoutIdForQuotesPrefetching);
+  }, [
+    dispatch,
+    history,
+    maxSlippage,
+    metaMetricsEvent,
+    isReviewSwapButtonDisabled,
+    inputValue,
+    fromTokenAddress,
+    toTokenAddress,
   ]);
 
   return (
@@ -381,6 +469,7 @@ export default function BuildQuote({
           {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
             <div
               className="build-quote__max-button"
+              data-testid="build-quote__max-button"
               onClick={() =>
                 onInputChange(fromTokenBalance || '0', fromTokenBalance)
               }
@@ -406,7 +495,9 @@ export default function BuildQuote({
               !Object.keys(topAssets).length)
           }
           selectPlaceHolderText={t('swapSelect')}
-          hideItemIf={(item) => item.address === selectedToToken?.address}
+          hideItemIf={(item) =>
+            isEqualCaseInsensitive(item.address, selectedToToken?.address)
+          }
           listContainerClassName="build-quote__open-dropdown"
           autoFocus
         />
@@ -550,37 +641,45 @@ export default function BuildQuote({
               )}
             </div>
           ))}
-        <div className="build-quote__slippage-buttons-container">
-          <SlippageButtons
-            onSelect={(newSlippage) => {
-              setMaxSlippage(newSlippage);
-            }}
-            maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
-            currentSlippage={maxSlippage}
-          />
-        </div>
+        {!isDirectWrappingEnabled && (
+          <div className="build-quote__slippage-buttons-container">
+            <SlippageButtons
+              onSelect={(newSlippage) => {
+                setMaxSlippage(newSlippage);
+              }}
+              maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
+              currentSlippage={maxSlippage}
+            />
+          </div>
+        )}
       </div>
       <SwapsFooter
-        onSubmit={() => {
-          dispatch(
-            fetchQuotesAndSetQuoteState(
-              history,
-              inputValue,
-              maxSlippage,
-              metaMetricsEvent,
-            ),
-          );
+        onSubmit={async () => {
+          // We need this to know how long it took to go from clicking on the Review Swap button to rendered View Quote page.
+          dispatch(setReviewSwapClickedTimestamp(Date.now()));
+          // In case that quotes prefetching is waiting to be executed, but hasn't started yet,
+          // we want to cancel it and fetch quotes from here.
+          if (timeoutIdForQuotesPrefetching) {
+            clearTimeout(timeoutIdForQuotesPrefetching);
+            dispatch(
+              fetchQuotesAndSetQuoteState(
+                history,
+                inputValue,
+                maxSlippage,
+                metaMetricsEvent,
+              ),
+            );
+          } else if (areQuotesPresent) {
+            // If there are prefetched quotes already, go directly to the View Quote page.
+            history.push(VIEW_QUOTE_ROUTE);
+          } else {
+            // If the "Review Swap" button was clicked while quotes are being fetched, go to the Loading Quotes page.
+            await dispatch(setBackgroundSwapRouteState('loading'));
+            history.push(LOADING_QUOTES_ROUTE);
+          }
         }}
         submitText={t('swapReviewSwap')}
-        disabled={
-          tokenFromError ||
-          !isFeatureFlagLoaded ||
-          !Number(inputValue) ||
-          !selectedToToken?.address ||
-          Number(maxSlippage) < 0 ||
-          Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
-          (toTokenIsNotDefault && occurrences < 2 && !verificationClicked)
-        }
+        disabled={isReviewSwapButtonDisabled}
         hideCancel
         showTermsOfService
       />
@@ -597,4 +696,5 @@ BuildQuote.propTypes = {
   selectedAccountAddress: PropTypes.string,
   isFeatureFlagLoaded: PropTypes.bool.isRequired,
   tokenFromError: PropTypes.string,
+  shuffledTokensList: PropTypes.array,
 };

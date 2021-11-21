@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import Typography from '../typography/typography';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
+const DECIMAL_REGEX = /\.(\d*)/u;
+
 export default function NumericInput({
   detailText = '',
   value = 0,
@@ -11,6 +13,7 @@ export default function NumericInput({
   error = '',
   autoFocus = false,
   allowDecimals = true,
+  disabled = false,
 }) {
   return (
     <div
@@ -25,10 +28,14 @@ export default function NumericInput({
           }
         }}
         onChange={(e) => {
-          onChange?.(parseFloat(e.target.value, 10));
+          const newValue = e.target.value;
+          const match = DECIMAL_REGEX.exec(newValue);
+          if (match?.[1]?.length >= 15) return;
+          onChange?.(parseFloat(newValue || 0, 10));
         }}
         min="0"
         autoFocus={autoFocus}
+        disabled={disabled}
       />
       {detailText && (
         <Typography color={COLORS.UI4} variant={TYPOGRAPHY.H7} tag="span">
@@ -40,10 +47,11 @@ export default function NumericInput({
 }
 
 NumericInput.propTypes = {
-  value: PropTypes.number,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   detailText: PropTypes.string,
   onChange: PropTypes.func,
   error: PropTypes.string,
   autoFocus: PropTypes.bool,
   allowDecimals: PropTypes.bool,
+  disabled: PropTypes.bool,
 };

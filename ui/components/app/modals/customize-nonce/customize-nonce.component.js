@@ -37,11 +37,8 @@ const CustomizeNonce = ({
         hideModal();
       }}
       submitText={t('save')}
-      submitType="primary"
       onCancel={() => hideModal()}
       cancelText={t('cancel')}
-      cancelType="secondary"
-      rounded
       contentClass="customize-nonce-modal-content"
       containerClass="customize-nonce-modal-container"
     >

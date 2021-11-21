@@ -20,13 +20,13 @@
       pointer-events: none;
     }
 
-    @media screen and (max-width: 576px) {
+    @media screen and (max-width: $break-small) {
       overflow-y: auto;
       max-height: 420px;
     }
   }
 
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     width: 348px;
   }
 
@@ -68,7 +68,7 @@
     background: linear-gradient(90deg, $Blue-500 0%, $Blue-400 101.32%);
 
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       @include H6;
 
       margin-bottom: 0;
@@ -171,7 +171,7 @@
     margin-top: 8px;
     margin-bottom: 28px;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       &--thin {
         min-height: 36px;
       }
@@ -201,7 +201,7 @@
     max-width: 311px;
     margin-bottom: 8px;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       margin-bottom: 0;
     }
   }
@@ -223,7 +223,7 @@
   &__thin-swaps-footer {
     max-height: 82px;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       height: 72px;
     }
   }

@@ -4,6 +4,7 @@ import CountdownTimer from './countdown-timer';
 
 export default {
   title: 'CountdownTimer',
+  id: __filename,
 };
 
 const getTimeStartedFromDecrimentSeconds = (seconds) =>
