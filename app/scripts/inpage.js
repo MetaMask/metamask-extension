@@ -1,7 +1,13 @@
+const harden = require('@agoric/harden')
+import ObjectMultiplex from 'obj-multiplex'
+import pump from 'pump'
+
+/*global Web3*/
+
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
-let __define;
+let __define
 
 /**
  * Caches reference to global define object and deletes it to
@@ -9,48 +15,41 @@ let __define;
  * AMD's define function
  */
 const cleanContextForImports = () => {
-  __define = global.define;
+  __define = global.define
   try {
-    global.define = undefined;
+    global.define = undefined
   } catch (_) {
-    console.warn('MetaMask - global.define could not be deleted.');
+    console.warn('MetaMask - global.define could not be deleted.')
   }
-};
+}
 
 /**
  * Restores global define object from cached reference
  */
 const restoreContextAfterImports = () => {
   try {
-    global.define = __define;
+    global.define = __define
   } catch (_) {
-    console.warn('MetaMask - global.define could not be overwritten.');
+    console.warn('MetaMask - global.define could not be overwritten.')
   }
-};
+}
 
-cleanContextForImports();
+cleanContextForImports()
 
-/* eslint-disable import/first */
-import log from 'loglevel';
-import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
+import log from 'loglevel'
+import LocalMessageDuplexStream from 'post-message-stream'
+const makeCapTpFromStream = require('captp-stream');
 
-restoreContextAfterImports();
+restoreContextAfterImports()
 
-log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
+log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
-//
-// setup plugin communication
-//
+const metamaskStream = new LocalMessageDuplexStream({
+  name: 'inpage',
+  target: 'contentscript',
+})
 
-// setup background connection
-const metamaskStream = new WindowPostMessageStream({
-  name: 'metamask-inpage',
-  target: 'metamask-contentscript',
-});
+console.log('INJECTING PROVIDER!')
+const cProvider = makeCapTpFromStream('client', metamaskStream, harden({}));
+window.cProvider = cProvider
 
-initializeProvider({
-  connectionStream: metamaskStream,
-  logger: log,
-  shouldShimWeb3: true,
-});
