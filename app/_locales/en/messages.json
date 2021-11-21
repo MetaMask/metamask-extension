@@ -173,6 +173,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approvalAndAggregatorTxFeeCost": {
     "message": "Approval and aggregator network fee"
   },
@@ -193,7 +201,7 @@
     "message": "Approved"
   },
   "approvedAmountWithColon": {
-    "message": "Approved Amount:"
+    "message": "Approved amount:"
   },
   "asset": {
     "message": "Asset"
@@ -573,6 +581,9 @@
   "dappSuggested": {
     "message": "Site suggested"
   },
+  "dappSuggestedShortLabel": {
+    "message": "Site"
+  },
   "dappSuggestedTooltip": {
     "message": "$1 has recommended this price.",
     "description": "$1 represents the Dapp's origin"
@@ -609,10 +620,6 @@
   "decryptRequest": {
     "message": "Decrypt request"
   },
-  "defaultNetwork": {
-    "message": "The default network for Ether transactions is Mainnet. You can also $1 test networks $2.",
-    "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
-  },
   "delete": {
     "message": "Delete"
   },
@@ -636,9 +643,6 @@
   },
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
-  },
-  "disable": {
-    "message": "disable"
   },
   "disconnect": {
     "message": "Disconnect"
@@ -708,6 +712,9 @@
   },
   "editGasEducationModalTitle": {
     "message": "How to choose?"
+  },
+  "editGasFeeModalTitle": {
+    "message": "Edit gas fee"
   },
   "editGasHigh": {
     "message": "High"
@@ -790,9 +797,6 @@
   },
   "editPermission": {
     "message": "Edit Permission"
-  },
-  "enable": {
-    "message": "enable"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -1013,6 +1017,9 @@
     "message": "Gas limit must be at least $1",
     "description": "$1 is the custom gas limit, in decimal."
   },
+  "gasOption": {
+    "message": "Gas option"
+  },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },
@@ -1031,11 +1038,16 @@
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
-  "gasPriceLabel": {
-    "message": "Gas price"
+  "gasTimingHoursShort": {
+    "message": "$1 hrs",
+    "description": "$1 represents a number of hours"
   },
   "gasTimingMinutes": {
     "message": "$1 minutes",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingMinutesShort": {
+    "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
   "gasTimingNegative": {
@@ -1048,6 +1060,10 @@
   },
   "gasTimingSeconds": {
     "message": "$1 seconds",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingSecondsShort": {
+    "message": "$1 sec",
     "description": "$1 represents a number of seconds"
   },
   "gasTimingVeryPositive": {
@@ -1088,7 +1104,7 @@
     "message": "Goerli Test Network"
   },
   "grantedToWithColon": {
-    "message": "Granted To:"
+    "message": "Granted to:"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -1588,6 +1604,12 @@
   "newContract": {
     "message": "New Contract"
   },
+  "newNFTsDetected": {
+    "message": "New NFTs detected"
+  },
+  "newNFTsDetectedInfo": {
+    "message": "One or more new NFTs were detected in your wallet."
+  },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
   },
@@ -1867,7 +1889,7 @@
     "message": "You have approved this permission"
   },
   "permissionRequest": {
-    "message": "Permission Request"
+    "message": "Permission request"
   },
   "permissionUncheckedIconDescription": {
     "message": "You have not approved this permission"
@@ -2182,6 +2204,9 @@
   "selectHdPath": {
     "message": "Select HD Path"
   },
+  "selectNFTPrivacyPreference": {
+    "message": "Select NFT privacy preference"
+  },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
   },
@@ -2243,6 +2268,9 @@
   },
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
+  },
+  "showHide": {
+    "message": "Show/hide"
   },
   "showIncomingTransactions": {
     "message": "Show Incoming Transactions"
@@ -2792,6 +2820,9 @@
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
+  "time": {
+    "message": "Time"
+  },
   "tips": {
     "message": "Tips"
   },
@@ -2801,6 +2832,10 @@
   "toAddress": {
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toggleTestNetworks": {
+    "message": "$1 test networks",
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
@@ -2887,7 +2922,7 @@
     "message": "Transaction encountered an error."
   },
   "transactionFee": {
-    "message": "Transaction Fee"
+    "message": "Transaction fee"
   },
   "transactionHistoryBaseFee": {
     "message": "Base Fee (GWEI)"

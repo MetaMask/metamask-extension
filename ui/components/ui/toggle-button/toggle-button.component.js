@@ -53,6 +53,12 @@ const ToggleButton = (props) => {
 
   return (
     <div
+      tabIndex="0"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          onToggle(value);
+        }
+      }}
       className={classnames('toggle-button', `toggle-button--${modifier}`, {
         'toggle-button--disabled': disabled,
       })}

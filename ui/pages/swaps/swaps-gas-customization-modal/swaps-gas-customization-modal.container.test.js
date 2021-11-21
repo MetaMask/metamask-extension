@@ -19,7 +19,7 @@ describe('GasCustomizationModalContainer', () => {
     expect(getByText('Advanced')).toBeInTheDocument();
     expect(getByText('Estimated Processing Times')).toBeInTheDocument();
     expect(getByText('Send Amount')).toBeInTheDocument();
-    expect(getByText('Transaction Fee')).toBeInTheDocument();
+    expect(getByText('Transaction fee')).toBeInTheDocument();
     expect(
       getByTestId('gas-modal-content__info-row__send-info'),
     ).toMatchSnapshot();

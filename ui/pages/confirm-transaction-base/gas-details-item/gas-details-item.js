@@ -26,12 +26,11 @@ const GasDetailsItem = ({
   isMainnet,
   maxFeePerGas,
   maxPriorityFeePerGas,
-  supportsEIP1559,
   txData,
   useNativeCurrencyAsPrimaryCurrency,
 }) => {
   const t = useI18nContext();
-  const { estimateToUse } = useGasFeeContext();
+  const { estimateUsed } = useGasFeeContext();
 
   return (
     <TransactionDetailItem
@@ -96,12 +95,12 @@ const GasDetailsItem = ({
           key="editGasSubTextFeeLabel"
           display="inline-flex"
           className={classNames('gas-details-item__gasfee-label', {
-            'gas-details-item__gas-fee-warning': estimateToUse === 'high',
+            'gas-details-item__gas-fee-warning': estimateUsed === 'high',
           })}
         >
           <Box marginRight={1}>
             <b>
-              {estimateToUse === 'high' && '⚠ '}
+              {estimateUsed === 'high' && '⚠ '}
               <I18nValue messageKey="editGasSubTextFeeLabel" />
             </b>
           </Box>
@@ -120,16 +119,14 @@ const GasDetailsItem = ({
         </Box>,
       ])}
       subTitle={
-        supportsEIP1559 && (
-          <GasTiming
-            maxPriorityFeePerGas={hexWEIToDecGWEI(
-              maxPriorityFeePerGas || txData.txParams.maxPriorityFeePerGas,
-            )}
-            maxFeePerGas={hexWEIToDecGWEI(
-              maxFeePerGas || txData.txParams.maxFeePerGas,
-            )}
-          />
-        )
+        <GasTiming
+          maxPriorityFeePerGas={hexWEIToDecGWEI(
+            maxPriorityFeePerGas || txData.txParams.maxPriorityFeePerGas,
+          )}
+          maxFeePerGas={hexWEIToDecGWEI(
+            maxFeePerGas || txData.txParams.maxFeePerGas,
+          )}
+        />
       }
     />
   );
@@ -141,7 +138,6 @@ GasDetailsItem.propTypes = {
   isMainnet: PropTypes.bool,
   maxFeePerGas: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
-  supportsEIP1559: PropTypes.bool,
   txData: PropTypes.object,
   useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
 };

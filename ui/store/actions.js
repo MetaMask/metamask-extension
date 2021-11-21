@@ -1292,6 +1292,79 @@ export function addToken(
   };
 }
 
+export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot add collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot add collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await promisifiedBackground.addCollectible(address, tokenID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function removeAndIgnoreCollectible(
+  address,
+  tokenID,
+  dontShowLoadingIndicator,
+) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot ignore collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot ignore collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await promisifiedBackground.removeAndIgnoreCollectible(address, tokenID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot remove collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot remove collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await promisifiedBackground.removeCollectible(address, tokenID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function removeToken(address) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
@@ -1353,12 +1426,6 @@ export function acceptWatchAsset(suggestedAssetID) {
       dispatch(hideLoadingIndication());
     }
     dispatch(closeCurrentNotificationWindow());
-  };
-}
-
-export function addKnownMethodData(fourBytePrefix, methodData) {
-  return () => {
-    background.addKnownMethodData(fourBytePrefix, methodData);
   };
 }
 
@@ -1655,12 +1722,6 @@ export function showNetworkDropdown() {
 export function hideNetworkDropdown() {
   return {
     type: actionConstants.NETWORK_DROPDOWN_CLOSE,
-  };
-}
-
-export function hideTestNetMessage() {
-  return {
-    type: actionConstants.HIDE_TESTNET_MESSAGE,
   };
 }
 
@@ -2409,19 +2470,6 @@ export function removePermissionsFor(domains) {
   };
 }
 
-/**
- * Clears all permissions for all domains.
- */
-export function clearPermissions() {
-  return (dispatch) => {
-    background.clearPermissions((err) => {
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
-  };
-}
-
 // Pending Approvals
 
 /**
@@ -2936,4 +2984,8 @@ export async function setWeb3ShimUsageAlertDismissed(origin) {
 // DetectTokenController
 export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
+}
+
+export function hideTestNetMessage() {
+  return promisifiedBackground.setShowTestnetMessageInDropdown(false);
 }

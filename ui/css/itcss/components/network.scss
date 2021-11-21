@@ -128,6 +128,12 @@
   width: 100%;
 }
 
+.network-dropdown-list {
+  max-height: 330px;
+  overflow-y: auto;
+  margin-bottom: 8px;
+}
+
 .network-dropdown-divider {
   width: 100%;
   height: 1px;
@@ -160,7 +166,6 @@
   &--link {
     color: $white;
     cursor: pointer;
-    font-weight: bold;
     text-decoration: underline;
 
     &:hover {
@@ -168,12 +173,14 @@
     }
   }
 
-  &--close {
-    color: $white;
+  &--dismiss {
+    color: inherit;
     background: inherit;
     position: absolute;
-    top: 64px;
+    top: 63px;
     right: 10px;
+    border: 1px solid $dusty-gray;
+    border-radius: 10px;
   }
 }
 
