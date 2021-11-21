@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
 
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     .page-container {
       max-height: none;
       min-height: auto;

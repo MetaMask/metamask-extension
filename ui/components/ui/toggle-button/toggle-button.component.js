@@ -34,7 +34,7 @@ const colors = {
     base: '#037DD6',
   },
   inactiveThumb: {
-    base: '#037DD6',
+    base: '#6A737D',
   },
   active: {
     base: '#ffffff',
@@ -53,6 +53,12 @@ const ToggleButton = (props) => {
 
   return (
     <div
+      tabIndex="0"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          onToggle(value);
+        }
+      }}
       className={classnames('toggle-button', `toggle-button--${modifier}`, {
         'toggle-button--disabled': disabled,
       })}

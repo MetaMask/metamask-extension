@@ -22,6 +22,7 @@ const buttonStyle = {
 
 export default {
   title: 'Mascot',
+  id: __filename,
 };
 
 export function Demo() {

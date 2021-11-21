@@ -7,7 +7,7 @@ const { hideBin } = require('yargs/helpers');
 const ttest = require('ttest');
 const { retry } = require('../../development/lib/retry');
 const { exitWithError } = require('../../development/lib/exit-with-error');
-const { withFixtures } = require('./helpers');
+const { withFixtures, tinyDelayMs } = require('./helpers');
 const { PAGES } = require('./webdriver/driver');
 
 const DEFAULT_NUM_SAMPLES = 20;
@@ -16,6 +16,7 @@ const ALL_PAGES = Object.values(PAGES);
 async function measurePage(pageName) {
   let metrics;
   await withFixtures({ fixtures: 'imported-account' }, async ({ driver }) => {
+    await driver.delay(tinyDelayMs);
     await driver.navigate();
     await driver.fill('#password', 'correct horse battery staple');
     await driver.press('#password', driver.Key.ENTER);
@@ -62,7 +63,7 @@ async function profilePageLoad(pages, numSamples, retries) {
     const runResults = [];
     for (let i = 0; i < numSamples; i += 1) {
       let result;
-      await retry(retries, async () => {
+      await retry({ retries }, async () => {
         result = await measurePage(pageName);
       });
       runResults.push(result);

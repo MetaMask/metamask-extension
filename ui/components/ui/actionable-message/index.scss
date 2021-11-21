@@ -17,6 +17,10 @@
     justify-content: normal;
   }
 
+  &--with-icon.actionable-message--with-right-button {
+    padding-left: 32px;
+  }
+
   svg {
     width: 16px;
     height: 16px;
@@ -78,6 +82,15 @@
     button {
       background: $Red-500;
       color: #fff;
+    }
+  }
+
+  &--info {
+    background: $Green-000;
+    border: 1px solid $Green-200;
+
+    .actionable-message__message {
+      color: $Black-100;
     }
   }
 

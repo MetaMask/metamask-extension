@@ -70,12 +70,6 @@ export default class PermissionPageContainerContent extends PureComponent {
     );
   }
 
-  getAccountDescriptor(identity) {
-    return `${identity.label} (...${identity.address.slice(
-      identity.address.length - 4,
-    )})`;
-  }
-
   renderAccountTooltip(textContent) {
     const { selectedIdentities } = this.props;
     const { t } = this.context;
@@ -90,7 +84,7 @@ export default class PermissionPageContainerContent extends PureComponent {
             {selectedIdentities.slice(0, 6).map((identity, index) => {
               return (
                 <div key={`tooltip-identity-${index}`}>
-                  {this.getAccountDescriptor(identity)}
+                  {identity.addressLabel}
                 </div>
               );
             })}
@@ -126,7 +120,7 @@ export default class PermissionPageContainerContent extends PureComponent {
         ),
       ]);
     }
-    return t('connectTo', [this.getAccountDescriptor(selectedIdentities[0])]);
+    return t('connectTo', [selectedIdentities[0]?.addressLabel]);
   }
 
   render() {

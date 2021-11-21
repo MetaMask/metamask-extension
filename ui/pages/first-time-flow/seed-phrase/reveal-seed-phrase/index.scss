@@ -1,5 +1,5 @@
 .reveal-seed-phrase {
-  @media screen and (max-width: 576px) {
+  @media screen and (max-width: $break-small) {
     display: flex;
     flex-direction: column;
     width: 96%;

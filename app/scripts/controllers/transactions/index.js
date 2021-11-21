@@ -26,10 +26,13 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_ENVELOPE_TYPES,
 } from '../../../../shared/constants/transaction';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import {
   GAS_LIMITS,
   GAS_ESTIMATE_TYPES,
+  GAS_RECOMMENDATIONS,
+  CUSTOM_GAS_ESTIMATE,
 } from '../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import {
@@ -39,6 +42,7 @@ import {
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
 } from '../../../../shared/constants/network';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
+import { readAddressAsContract } from '../../../../shared/modules/contract-utils';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -405,8 +409,9 @@ export default class TransactionController extends EventEmitter {
    * @returns {Promise<object>} resolves with txMeta
    */
   async addTxGasDefaults(txMeta, getCodeResponse) {
-    const eip1559Compatibility = await this.getEIP1559Compatibility();
-
+    const eip1559Compatibility =
+      txMeta.txParams.type !== TRANSACTION_ENVELOPE_TYPES.LEGACY &&
+      (await this.getEIP1559Compatibility());
     const {
       gasPrice: defaultGasPrice,
       maxFeePerGas: defaultMaxFeePerGas,
@@ -433,7 +438,20 @@ export default class TransactionController extends EventEmitter {
       ) {
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
+        txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
       } else {
+        if (
+          (defaultMaxFeePerGas &&
+            defaultMaxPriorityFeePerGas &&
+            !txMeta.txParams.maxFeePerGas &&
+            !txMeta.txParams.maxPriorityFeePerGas) ||
+          txMeta.origin === 'metamask'
+        ) {
+          txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
+        } else {
+          txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
+        }
+
         if (defaultMaxFeePerGas && !txMeta.txParams.maxFeePerGas) {
           // If the dapp has not set the gasPrice or the maxFeePerGas, then we set maxFeePerGas
           // with the one returned by the gasFeeController, if that is available.
@@ -571,7 +589,7 @@ export default class TransactionController extends EventEmitter {
       return {};
     } else if (
       txMeta.txParams.to &&
-      txMeta.type === TRANSACTION_TYPES.SENT_ETHER &&
+      txMeta.type === TRANSACTION_TYPES.SIMPLE_SEND &&
       chainType !== 'custom'
     ) {
       // if there's data in the params, but there's no contract code, it's not a valid transaction
@@ -634,6 +652,14 @@ export default class TransactionController extends EventEmitter {
       newGasParams.gas = customGasSettings?.gas ?? GAS_LIMITS.SIMPLE;
     }
 
+    if (customGasSettings.estimateSuggested) {
+      newGasParams.estimateSuggested = customGasSettings.estimateSuggested;
+    }
+
+    if (customGasSettings.estimateUsed) {
+      newGasParams.estimateUsed = customGasSettings.estimateUsed;
+    }
+
     if (isEIP1559Transaction(originalTxMeta)) {
       previousGasParams.maxFeePerGas = txParams.maxFeePerGas;
       previousGasParams.maxPriorityFeePerGas = txParams.maxPriorityFeePerGas;
@@ -680,7 +706,11 @@ export default class TransactionController extends EventEmitter {
    *  params instead of allowing this method to generate them
    * @returns {txMeta}
    */
-  async createCancelTransaction(originalTxId, customGasSettings) {
+  async createCancelTransaction(
+    originalTxId,
+    customGasSettings,
+    { estimatedBaseFee } = {},
+  ) {
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
     const { from, nonce } = txParams;
@@ -710,6 +740,10 @@ export default class TransactionController extends EventEmitter {
       type: TRANSACTION_TYPES.CANCEL,
     });
 
+    if (estimatedBaseFee) {
+      newTxMeta.estimatedBaseFee = estimatedBaseFee;
+    }
+
     this.addTransaction(newTxMeta);
     await this.approveTransaction(newTxMeta.id);
     return newTxMeta;
@@ -725,7 +759,11 @@ export default class TransactionController extends EventEmitter {
    *  params instead of allowing this method to generate them
    * @returns {txMeta}
    */
-  async createSpeedUpTransaction(originalTxId, customGasSettings) {
+  async createSpeedUpTransaction(
+    originalTxId,
+    customGasSettings,
+    { estimatedBaseFee } = {},
+  ) {
     const originalTxMeta = this.txStateManager.getTransaction(originalTxId);
     const { txParams } = originalTxMeta;
 
@@ -744,6 +782,10 @@ export default class TransactionController extends EventEmitter {
       status: TRANSACTION_STATUSES.APPROVED,
       type: TRANSACTION_TYPES.RETRY,
     });
+
+    if (estimatedBaseFee) {
+      newTxMeta.estimatedBaseFee = estimatedBaseFee;
+    }
 
     this.addTransaction(newTxMeta);
     await this.approveTransaction(newTxMeta.id);
@@ -1162,7 +1204,7 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * @typedef { 'transfer' | 'approve' | 'transferfrom' | 'contractInteraction'| 'sentEther' } InferrableTransactionTypes
+   * @typedef { 'transfer' | 'approve' | 'transferfrom' | 'contractInteraction'| 'simpleSend' } InferrableTransactionTypes
    */
 
   /**
@@ -1204,23 +1246,21 @@ export default class TransactionController extends EventEmitter {
       result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
     }
 
-    let code;
+    let contractCode;
+
     if (!result) {
-      try {
-        code = await this.query.getCode(to);
-      } catch (e) {
-        code = null;
-        log.warn(e);
-      }
+      const {
+        contractCode: resultCode,
+        isContractAddress,
+      } = await readAddressAsContract(this.query, to);
 
-      const codeIsEmpty = !code || code === '0x' || code === '0x0';
-
-      result = codeIsEmpty
-        ? TRANSACTION_TYPES.SENT_ETHER
-        : TRANSACTION_TYPES.CONTRACT_INTERACTION;
+      contractCode = resultCode;
+      result = isContractAddress
+        ? TRANSACTION_TYPES.CONTRACT_INTERACTION
+        : TRANSACTION_TYPES.SIMPLE_SEND;
     }
 
-    return { type: result, getCodeResponse: code };
+    return { type: result, getCodeResponse: contractCode };
   }
 
   /**
@@ -1354,13 +1394,24 @@ export default class TransactionController extends EventEmitter {
    * @param {Object} extraParams - optional props and values to include in sensitiveProperties
    */
   _trackTransactionMetricsEvent(txMeta, event, extraParams = {}) {
+    if (!txMeta) {
+      return;
+    }
+
     const {
       type,
       time,
       status,
       chainId,
       origin: referrer,
-      txParams: { gasPrice, gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas },
+      txParams: {
+        gasPrice,
+        gas: gasLimit,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        estimateSuggested,
+        estimateUsed,
+      },
       metamaskNetworkId: network,
     } = txMeta;
     const source = referrer === 'metamask' ? 'user' : 'dapp';
@@ -1372,6 +1423,14 @@ export default class TransactionController extends EventEmitter {
       gasParams.max_priority_fee_per_gas = maxPriorityFeePerGas;
     } else {
       gasParams.gas_price = gasPrice;
+    }
+
+    if (estimateSuggested) {
+      gasParams.estimate_suggested = estimateSuggested;
+    }
+
+    if (estimateUsed) {
+      gasParams.estimate_used = estimateUsed;
     }
 
     const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
@@ -1389,8 +1448,8 @@ export default class TransactionController extends EventEmitter {
       sensitiveProperties: {
         status,
         transaction_envelope_type: isEIP1559Transaction(txMeta)
-          ? 'fee-market'
-          : 'legacy',
+          ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
+          : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
         first_seen: time,
         gas_limit: gasLimit,
         ...gasParamsInGwei,
@@ -1408,6 +1467,8 @@ export default class TransactionController extends EventEmitter {
     for (const param in gasParams) {
       if (isHexString(gasParams[param])) {
         gasValuesInGwei[param] = hexWEIToDecGWEI(gasParams[param]);
+      } else {
+        gasValuesInGwei[param] = gasParams[param];
       }
     }
     return gasValuesInGwei;

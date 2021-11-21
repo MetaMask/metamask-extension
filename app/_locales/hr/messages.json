@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Dodaj mrežu"
   },
-  "addRecipient": {
-    "message": "Dodaj primatelja"
-  },
   "addSuggestedTokens": {
     "message": "Dodaj predložene tokene"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Dodaj token"
-  },
-  "addTokens": {
-    "message": "Dodaj tokene"
   },
   "advanced": {
     "message": "Napredno"
@@ -263,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Povećavanjem se naknade može smanjiti vrijeme obrade, ali se ne jamči."
   },
-  "customRPC": {
-    "message": "Prilagođeni RPC"
-  },
   "customToken": {
     "message": "Prilagođeni token"
   },
@@ -274,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalni brojevni ne smiju biti 0 i ne smiju prekoračivati 36."
-  },
-  "defaultNetwork": {
-    "message": "Zadana je mreža za transakcije Ether glavna mreža."
   },
   "delete": {
     "message": "Izbriši"
@@ -539,7 +527,7 @@
   "letsGoSetUp": {
     "message": "Da, obavimo postavljanje!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Želite li dodati ove tokene?"
   },
   "links": {
@@ -577,9 +565,6 @@
   },
   "metamaskVersion": {
     "message": "Inačica usluge MetaMask"
-  },
-  "mobileSyncText": {
-    "message": "Upišite svoju lozinku kako biste potvrdili da ste to vi!"
   },
   "mustSelectOne": {
     "message": "Mora se odabrati barem jedan token."
@@ -624,9 +609,6 @@
   },
   "newContract": {
     "message": "Novi ugovor"
-  },
-  "newNetwork": {
-    "message": "Nova mreža"
   },
   "newPassword": {
     "message": "Nova lozinka (najmanje osam znakova)"
@@ -675,12 +657,6 @@
   },
   "on": {
     "message": "Uključi"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokiraj Explorerov URL (neobavezno)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (neobavezno)"
   },
   "origin": {
     "message": "Podrijetlo"
@@ -801,9 +777,6 @@
   "revealSeedWordsDescription": {
     "message": "Ako ikada promijenite preglednike ili računala, trebate ovu početnu rečenicu za pristupanje svojim računima. Spremite ih negdje na sigurno i tajno mjesto."
   },
-  "revealSeedWordsTitle": {
-    "message": "Početna rečenica"
-  },
   "revealSeedWordsWarning": {
     "message": "Ove se riječi mogu upotrijebiti za krađu vaših računa."
   },
@@ -840,9 +813,6 @@
   "searchTokens": {
     "message": "Pretraži tokene"
   },
-  "secretBackupPhrase": {
-    "message": "Alternativna tajna rečenica"
-  },
   "secretBackupPhraseDescription": {
     "message": "Vašom se alternativnom tajnom rečenicom jednostavno sigurnosno kopira i obnavlja vaš račun."
   },
@@ -867,9 +837,6 @@
   "selectAnAccount": {
     "message": "Odaberi račun"
   },
-  "selectAnAccountHelp": {
-    "message": "Odaberi račun za prikaz u usluzi MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Odaberite svaku rečenicu kako biste provjerili je li točna."
   },
@@ -890,9 +857,6 @@
   },
   "sendTokens": {
     "message": "Pošalji tokene"
-  },
-  "sentEther": {
-    "message": "pošalji ether"
   },
   "separateEachWord": {
     "message": "Odvojite pojedinačne riječi jednim razmakom"
@@ -1129,20 +1093,8 @@
   "viewContact": {
     "message": "Prikaži kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Prikaži u $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Prikaži na Etherscanu"
-  },
-  "viewinExplorer": {
-    "message": "Prikaži u Exploreru"
-  },
   "visitWebSite": {
     "message": "Posjetite naše mrežno mjesto"
-  },
-  "walletSeed": {
-    "message": "Početni novčanik"
   },
   "welcome": {
     "message": "Dobro došli u uslugu MetaMask"

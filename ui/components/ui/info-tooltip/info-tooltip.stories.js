@@ -4,6 +4,7 @@ import InfoTooltip from './info-tooltip';
 
 export default {
   title: 'InfoTooltip',
+  id: __filename,
 };
 
 export const Top = () => (

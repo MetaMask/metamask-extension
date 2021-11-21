@@ -4,11 +4,19 @@ import SenderToRecipient from '../../ui/sender-to-recipient';
 import { PageContainerFooter } from '../../ui/page-container';
 import EditGasPopover from '../edit-gas-popover';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import { GasFeeContextProvider } from '../../../contexts/gasFee';
+import ErrorMessage from '../../ui/error-message';
+import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import Dialog from '../../ui/dialog';
+import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
   ConfirmPageContainerNavigation,
 } from '.';
+
+// eslint-disable-next-line prefer-destructuring
+const EIP_1559_V2 = process.env.EIP_1559_V2;
 
 export default class ConfirmPageContainer extends Component {
   static contextTypes = {
@@ -41,7 +49,6 @@ export default class ConfirmPageContainer extends Component {
     detailsComponent: PropTypes.node,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
-    assetImage: PropTypes.string,
     warning: PropTypes.string,
     unapprovedTxCount: PropTypes.number,
     origin: PropTypes.string.isRequired,
@@ -66,6 +73,9 @@ export default class ConfirmPageContainer extends Component {
     handleCloseEditGas: PropTypes.func,
     // Gas Popover
     currentTransaction: PropTypes.object.isRequired,
+    showAddToAddressBookModal: PropTypes.func,
+    contact: PropTypes.object,
+    isOwnedAccount: PropTypes.bool,
   };
 
   render() {
@@ -95,7 +105,6 @@ export default class ConfirmPageContainer extends Component {
       identiconAddress,
       nonce,
       unapprovedTxCount,
-      assetImage,
       warning,
       totalTx,
       positionOfCurrentTx,
@@ -114,92 +123,124 @@ export default class ConfirmPageContainer extends Component {
       editingGas,
       handleCloseEditGas,
       currentTransaction,
+      showAddToAddressBookModal,
+      contact = {},
+      isOwnedAccount,
     } = this.props;
-    const renderAssetImage = contentComponent || !identiconAddress;
+
+    const showAddToAddressDialog =
+      !contact.name && toAddress && !isOwnedAccount && !hideSenderToRecipient;
+
+    const shouldDisplayWarning =
+      contentComponent && disabled && (errorKey || errorMessage);
+
+    const hideTitle =
+      (currentTransaction.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
+        currentTransaction.type === TRANSACTION_TYPES.DEPLOY_CONTRACT) &&
+      currentTransaction.txParams?.value === '0x0';
 
     return (
-      <div className="page-container">
-        <ConfirmPageContainerNavigation
-          totalTx={totalTx}
-          positionOfCurrentTx={positionOfCurrentTx}
-          nextTxId={nextTxId}
-          prevTxId={prevTxId}
-          showNavigation={showNavigation}
-          onNextTx={(txId) => onNextTx(txId)}
-          firstTx={firstTx}
-          lastTx={lastTx}
-          ofText={ofText}
-          requestsWaitingText={requestsWaitingText}
-        />
-        <ConfirmPageContainerHeader
-          showEdit={showEdit}
-          onEdit={() => onEdit()}
-          showAccountInHeader={showAccountInHeader}
-          accountAddress={fromAddress}
-        >
-          {hideSenderToRecipient ? null : (
-            <SenderToRecipient
-              senderName={fromName}
-              senderAddress={fromAddress}
-              recipientName={toName}
-              recipientAddress={toAddress}
-              recipientEns={toEns}
-              recipientNickname={toNickname}
-              assetImage={renderAssetImage ? assetImage : undefined}
+      <GasFeeContextProvider transaction={currentTransaction}>
+        <div className="page-container">
+          <ConfirmPageContainerNavigation
+            totalTx={totalTx}
+            positionOfCurrentTx={positionOfCurrentTx}
+            nextTxId={nextTxId}
+            prevTxId={prevTxId}
+            showNavigation={showNavigation}
+            onNextTx={(txId) => onNextTx(txId)}
+            firstTx={firstTx}
+            lastTx={lastTx}
+            ofText={ofText}
+            requestsWaitingText={requestsWaitingText}
+          />
+          <ConfirmPageContainerHeader
+            showEdit={showEdit}
+            onEdit={() => onEdit()}
+            showAccountInHeader={showAccountInHeader}
+            accountAddress={fromAddress}
+          >
+            {hideSenderToRecipient ? null : (
+              <SenderToRecipient
+                senderName={fromName}
+                senderAddress={fromAddress}
+                recipientName={toName}
+                recipientAddress={toAddress}
+                recipientEns={toEns}
+                recipientNickname={toNickname}
+              />
+            )}
+          </ConfirmPageContainerHeader>
+          <div>
+            {showAddToAddressDialog && (
+              <Dialog
+                type="message"
+                className="send__dialog"
+                onClick={() => showAddToAddressBookModal()}
+              >
+                {this.context.t('newAccountDetectedDialogMessage')}
+              </Dialog>
+            )}
+          </div>
+          {contentComponent || (
+            <ConfirmPageContainerContent
+              action={action}
+              title={title}
+              titleComponent={titleComponent}
+              subtitleComponent={subtitleComponent}
+              hideSubtitle={hideSubtitle}
+              detailsComponent={detailsComponent}
+              dataComponent={dataComponent}
+              errorMessage={errorMessage}
+              errorKey={errorKey}
+              identiconAddress={identiconAddress}
+              nonce={nonce}
+              warning={warning}
+              onCancelAll={onCancelAll}
+              onCancel={onCancel}
+              cancelText={this.context.t('reject')}
+              onSubmit={onSubmit}
+              submitText={this.context.t('confirm')}
+              disabled={disabled}
+              unapprovedTxCount={unapprovedTxCount}
+              rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
+              origin={origin}
+              ethGasPriceWarning={ethGasPriceWarning}
+              hideTitle={hideTitle}
             />
           )}
-        </ConfirmPageContainerHeader>
-        {contentComponent || (
-          <ConfirmPageContainerContent
-            action={action}
-            title={title}
-            titleComponent={titleComponent}
-            subtitleComponent={subtitleComponent}
-            hideSubtitle={hideSubtitle}
-            detailsComponent={detailsComponent}
-            dataComponent={dataComponent}
-            errorMessage={errorMessage}
-            errorKey={errorKey}
-            identiconAddress={identiconAddress}
-            nonce={nonce}
-            assetImage={assetImage}
-            warning={warning}
-            onCancelAll={onCancelAll}
-            onCancel={onCancel}
-            cancelText={this.context.t('reject')}
-            onSubmit={onSubmit}
-            submitText={this.context.t('confirm')}
-            disabled={disabled}
-            unapprovedTxCount={unapprovedTxCount}
-            rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
-            origin={origin}
-            ethGasPriceWarning={ethGasPriceWarning}
-          />
-        )}
-        {contentComponent && (
-          <PageContainerFooter
-            onCancel={onCancel}
-            cancelText={this.context.t('reject')}
-            onSubmit={onSubmit}
-            submitText={this.context.t('confirm')}
-            submitButtonType="confirm"
-            disabled={disabled}
-          >
-            {unapprovedTxCount > 1 && (
-              <a onClick={onCancelAll}>
-                {this.context.t('rejectTxsN', [unapprovedTxCount])}
-              </a>
-            )}
-          </PageContainerFooter>
-        )}
-        {editingGas && (
-          <EditGasPopover
-            mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
-            onClose={handleCloseEditGas}
-            transaction={currentTransaction}
-          />
-        )}
-      </div>
+          {shouldDisplayWarning && (
+            <div className="confirm-approve-content__warning">
+              <ErrorMessage errorKey={errorKey} />
+            </div>
+          )}
+          {contentComponent && (
+            <PageContainerFooter
+              onCancel={onCancel}
+              cancelText={this.context.t('reject')}
+              onSubmit={onSubmit}
+              submitText={this.context.t('confirm')}
+              disabled={disabled}
+            >
+              {unapprovedTxCount > 1 && (
+                <a onClick={onCancelAll}>
+                  {this.context.t('rejectTxsN', [unapprovedTxCount])}
+                </a>
+              )}
+            </PageContainerFooter>
+          )}
+          {editingGas && !EIP_1559_V2 && (
+            <EditGasPopover
+              mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+              onClose={handleCloseEditGas}
+              transaction={currentTransaction}
+            />
+          )}
+          {editingGas && EIP_1559_V2 && (
+            <EditGasFeePopover onClose={handleCloseEditGas} />
+          )}
+        </div>
+      </GasFeeContextProvider>
     );
   }
 }

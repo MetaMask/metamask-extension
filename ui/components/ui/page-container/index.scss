@@ -104,6 +104,10 @@
     color: $black;
     font-weight: 500;
     margin-right: 1.5rem;
+
+    &--no-margin-right {
+      margin-right: 0;
+    }
   }
 
   &__subtitle {
@@ -184,7 +188,7 @@
   }
 }
 
-@media screen and (max-width: 575px) {
+@media screen and (max-width: $break-small) {
   .page-container {
     height: 100%;
     width: 100%;
@@ -195,7 +199,7 @@
   }
 }
 
-@media screen and (min-width: 576px) {
+@media screen and (min-width: $break-large) {
   .page-container {
     max-height: 82vh;
     min-height: 570px;

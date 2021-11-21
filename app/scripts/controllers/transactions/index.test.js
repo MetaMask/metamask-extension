@@ -12,9 +12,15 @@ import {
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  TRANSACTION_ENVELOPE_TYPES,
 } from '../../../../shared/constants/transaction';
+
 import { SECOND } from '../../../../shared/constants/time';
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import {
+  GAS_ESTIMATE_TYPES,
+  GAS_RECOMMENDATIONS,
+} from '../../../../shared/constants/gas';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import TransactionController, { TRANSACTION_EVENTS } from '.';
 
@@ -525,6 +531,58 @@ describe('Transaction Controller', function () {
       stub2.restore();
     });
 
+    it('should not add maxFeePerGas and maxPriorityFeePerGas to type-0 transactions', async function () {
+      const TEST_GASPRICE = '0x12a05f200';
+
+      const stub1 = sinon
+        .stub(txController, 'getEIP1559Compatibility')
+        .returns(true);
+
+      const stub2 = sinon
+        .stub(txController, '_getDefaultGasFees')
+        .callsFake(() => ({ gasPrice: TEST_GASPRICE }));
+
+      txController.txStateManager._addTransactionsToState([
+        {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+            type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+          },
+          history: [{}],
+        },
+      ]);
+      const txMeta = {
+        id: 1,
+        txParams: {
+          from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+        },
+        history: [{}],
+      };
+      providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' };
+      providerResultStub.eth_estimateGas = '5209';
+
+      const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta);
+
+      assert.equal(
+        txMetaWithDefaults.txParams.maxFeePerGas,
+        undefined,
+        'should not have maxFeePerGas',
+      );
+      assert.equal(
+        txMetaWithDefaults.txParams.maxPriorityFeePerGas,
+        undefined,
+        'should not have max priority fee per gas',
+      );
+      stub1.restore();
+      stub2.restore();
+    });
+
     it('should not add gasPrice if the fee data is available from the dapp', async function () {
       const TEST_GASPRICE = '0x12a05f200';
       const TEST_MAX_FEE_PER_GAS = '0x12a05f200';
@@ -716,8 +774,8 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
-        transaction_envelope_type: 'legacy',
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
         origin: 'metamask',
         chainId: currentChainId,
         time: 1624408066355,
@@ -947,6 +1005,8 @@ describe('Transaction Controller', function () {
         to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
         gas: '0x5209',
         gasPrice: '0xa',
+        estimateSuggested: GAS_RECOMMENDATIONS.MEDIUM,
+        estimateUsed: GAS_RECOMMENDATIONS.HIGH,
       };
       txController.txStateManager._addTransactionsToState([
         {
@@ -1239,7 +1299,7 @@ describe('Transaction Controller', function () {
         data: '',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         getCodeResponse: null,
       });
     });
@@ -1285,7 +1345,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         getCodeResponse: '0x',
       });
     });
@@ -1296,7 +1356,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         getCodeResponse: null,
       });
     });
@@ -1499,7 +1559,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         origin: 'metamask',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1513,13 +1573,13 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'metamask',
           source: 'user',
-          type: 'sentEther',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
         },
         sensitiveProperties: {
           gas_price: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
-          transaction_envelope_type: 'legacy',
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
           status: 'unapproved',
         },
       };
@@ -1546,7 +1606,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1560,13 +1620,13 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          type: 'sentEther',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
         },
         sensitiveProperties: {
           gas_price: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
-          transaction_envelope_type: 'legacy',
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
           status: 'unapproved',
         },
       };
@@ -1593,7 +1653,7 @@ describe('Transaction Controller', function () {
           gas: '0x7b0d',
           nonce: '0x4b',
         },
-        type: 'sentEther',
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1606,7 +1666,7 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          type: 'sentEther',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
           chain_id: '0x2a',
         },
         sensitiveProperties: {
@@ -1615,7 +1675,7 @@ describe('Transaction Controller', function () {
           gas_price: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
-          transaction_envelope_type: 'legacy',
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
           status: 'unapproved',
         },
       };
@@ -1646,8 +1706,10 @@ describe('Transaction Controller', function () {
           maxPriorityFeePerGas: '0x77359400',
           gas: '0x7b0d',
           nonce: '0x4b',
+          estimateSuggested: GAS_RECOMMENDATIONS.MEDIUM,
+          estimateUsed: GAS_RECOMMENDATIONS.HIGH,
         },
-        type: 'sentEther',
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         origin: 'other',
         chainId: currentChainId,
         time: 1624408066355,
@@ -1661,7 +1723,7 @@ describe('Transaction Controller', function () {
           network: '42',
           referrer: 'other',
           source: 'dapp',
-          type: 'sentEther',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -1670,8 +1732,10 @@ describe('Transaction Controller', function () {
           max_priority_fee_per_gas: '2',
           gas_limit: '0x7b0d',
           first_seen: 1624408066355,
-          transaction_envelope_type: 'fee-market',
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET,
           status: 'unapproved',
+          estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
+          estimate_used: GAS_RECOMMENDATIONS.HIGH,
         },
       };
 
@@ -1735,6 +1799,23 @@ describe('Transaction Controller', function () {
       };
       const expectedParams = {
         gas_price: '15',
+      };
+      const result = txController._getGasValuesInGWEI(params);
+      assert.deepEqual(result, expectedParams);
+    });
+
+    it('converts gas values in hex GWEi to dec GWEI, retains estimate fields', function () {
+      const params = {
+        max_fee_per_gas: '0x77359400',
+        max_priority_fee_per_gas: '0x77359400',
+        estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
+        estimate_used: GAS_RECOMMENDATIONS.HIGH,
+      };
+      const expectedParams = {
+        max_fee_per_gas: '2',
+        max_priority_fee_per_gas: '2',
+        estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
+        estimate_used: GAS_RECOMMENDATIONS.HIGH,
       };
       const result = txController._getGasValuesInGWEI(params);
       assert.deepEqual(result, expectedParams);

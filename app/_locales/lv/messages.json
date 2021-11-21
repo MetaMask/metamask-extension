@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Pievienot tīklu"
   },
-  "addRecipient": {
-    "message": "Pievienot saņēmēju"
-  },
   "addSuggestedTokens": {
     "message": "Pievienot ieteiktos marķierus"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Pievienot žetonu"
-  },
-  "addTokens": {
-    "message": "Pievienot marķierus"
   },
   "advanced": {
     "message": "Papildu"
@@ -263,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Nodevas palielināšana var saīsināt apstrādes laiku, bet ne garantēti."
   },
-  "customRPC": {
-    "message": "Pielāgots RPC izsaukums"
-  },
   "customToken": {
     "message": "Pielāgots marķieris"
   },
@@ -274,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
-  },
-  "defaultNetwork": {
-    "message": "Galvenais Ether darījumu tīkls ir Main Net."
   },
   "delete": {
     "message": "Dzēst"
@@ -539,7 +527,7 @@
   "letsGoSetUp": {
     "message": "Jā, sāksim iestatīšanu!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
   },
   "links": {
@@ -580,9 +568,6 @@
   },
   "metamaskVersion": {
     "message": "MetaMask versija"
-  },
-  "mobileSyncText": {
-    "message": "Lūdzu, ievadiet paroli, lai apstiprinātu, ka tas esat jūs."
   },
   "mustSelectOne": {
     "message": "Jāatlasa vismaz 1 marķieris."
@@ -627,9 +612,6 @@
   },
   "newContract": {
     "message": "Jauns līgums"
-  },
-  "newNetwork": {
-    "message": "Jauns tīkls"
   },
   "newPassword": {
     "message": "Jauna parole (vism. 8 rakstzīmes)"
@@ -678,12 +660,6 @@
   },
   "on": {
     "message": "Iesl."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Bloķēt Explorer URL (pēc izvēles)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbols (neobligāti)"
   },
   "origin": {
     "message": "Avots"
@@ -804,9 +780,6 @@
   "revealSeedWordsDescription": {
     "message": "Ja mainīsiet pārlūku vai datoru, jūsu kontu piekļuvei būs nepieciešama šī atkopšanas frāze. Saglabājiet to drošā un slepenā vietā!"
   },
-  "revealSeedWordsTitle": {
-    "message": "Atkopšanas frāze"
-  },
   "revealSeedWordsWarning": {
     "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai."
   },
@@ -843,9 +816,6 @@
   "searchTokens": {
     "message": "Meklēt marķierus"
   },
-  "secretBackupPhrase": {
-    "message": "Slepenā rezerves frāze"
-  },
   "secretBackupPhraseDescription": {
     "message": "Ar slepeno atgūšanas frāzi ir vieglāk dublēt un atjaunot kontu."
   },
@@ -870,9 +840,6 @@
   "selectAnAccount": {
     "message": "Atlasiet kontu"
   },
-  "selectAnAccountHelp": {
-    "message": "Atlasiet kontu, ko skatīt MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Lūdzu, atlasiet katru frāzi, lai pārliecinātos par tās pareizību."
   },
@@ -893,9 +860,6 @@
   },
   "sendTokens": {
     "message": "Nosūtīt marķierus"
-  },
-  "sentEther": {
-    "message": "nosūtītie ether"
   },
   "separateEachWord": {
     "message": "Atdaliet katru vārdu ar vienu atstarpi"
@@ -1135,20 +1099,8 @@
   "viewContact": {
     "message": "Skatīt līgumu"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Skatīt $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Skatīt Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Skatīt Explorer"
-  },
   "visitWebSite": {
     "message": "Apmeklējiet mūsu tīmekļa vietni"
-  },
-  "walletSeed": {
-    "message": "Maka atkopšanas frāze"
   },
   "welcome": {
     "message": "Laipni lūgti MetaMask"

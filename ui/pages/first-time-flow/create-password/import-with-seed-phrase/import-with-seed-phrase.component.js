@@ -142,7 +142,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
 
       setSeedPhraseBackedUp(true).then(async () => {
         initializeThreeBox();
-        history.push(INITIALIZE_END_OF_FLOW_ROUTE);
+        history.replace(INITIALIZE_END_OF_FLOW_ROUTE);
       });
     } catch (error) {
       this.setState({ seedPhraseError: error.message });
@@ -239,7 +239,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
         </div>
         <div className="first-time-flow__text-block">{t('secretPhrase')}</div>
         <div className="first-time-flow__textarea-wrapper">
-          <label>{t('walletSeed')}</label>
+          <label>{t('secretRecoveryPhrase')}</label>
           {showSeedPhrase ? (
             <textarea
               className="first-time-flow__textarea"
@@ -258,7 +258,9 @@ export default class ImportWithSeedPhrase extends PureComponent {
               autoComplete="off"
             />
           )}
-          {seedPhraseError && <span className="error">{seedPhraseError}</span>}
+          {seedPhraseError ? (
+            <span className="error">{seedPhraseError}</span>
+          ) : null}
           <div
             className="first-time-flow__checkbox-container"
             onClick={this.toggleShowSeedPhrase}

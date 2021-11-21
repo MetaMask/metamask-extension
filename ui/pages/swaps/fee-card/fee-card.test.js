@@ -1,6 +1,14 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { useSelector } from 'react-redux';
+
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import {
+  getGasEstimateType,
+  getGasFeeEstimates,
+  getIsGasEstimatesLoading,
+} from '../../../ducks/metamask/metamask';
 
 import {
   renderWithProvider,
@@ -9,25 +17,39 @@ import {
   MOCKS,
 } from '../../../../test/jest';
 import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../helpers/constants/transactions';
 import FeeCard from '.';
 
 const middleware = [thunk];
 
-jest.mock('../../../hooks/useGasFeeEstimates', () => {
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
+
   return {
-    useGasFeeEstimates: () => {
-      return {
-        gasFeeEstimates: MOCKS.createGasFeeEstimatesForFeeMarket(),
-        gasEstimateType: 'fee-market',
-        estimatedGasFeeTimeBounds: undefined,
-        isGasEstimatesLoading: false,
-      };
-    },
+    ...actual,
+    useSelector: jest.fn(),
   };
 });
 
+const generateUseSelectorRouter = () => (selector) => {
+  if (selector === checkNetworkAndAccountSupports1559) {
+    return true;
+  }
+  if (selector === getGasEstimateType) {
+    return TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET;
+  }
+  if (selector === getGasFeeEstimates) {
+    return MOCKS.createGasFeeEstimatesForFeeMarket();
+  }
+  if (selector === getIsGasEstimatesLoading) {
+    return false;
+  }
+  return undefined;
+};
+
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest.fn(),
 });
 
 const createProps = (customProps = {}) => {
@@ -58,13 +80,14 @@ const createProps = (customProps = {}) => {
     onQuotesClick: jest.fn(),
     tokenConversionRate: 0.015,
     chainId: MAINNET_CHAIN_ID,
-    EIP1559Network: false,
+    networkAndAccountSupports1559: false,
     ...customProps,
   };
 };
 
 describe('FeeCard', () => {
   it('renders the component with initial props', () => {
+    useSelector.mockImplementation(generateUseSelectorRouter());
     const props = createProps();
     const { getByText } = renderWithProvider(<FeeCard {...props} />);
     expect(getByText('Using the best quote')).toBeInTheDocument();
@@ -89,7 +112,7 @@ describe('FeeCard', () => {
   it('renders the component with EIP-1559 enabled', () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const props = createProps({
-      EIP1559Network: true,
+      networkAndAccountSupports1559: true,
       maxPriorityFeePerGasDecGWEI: '3',
       maxFeePerGasDecGWEI: '4',
     });

@@ -1,9 +1,14 @@
+import EventEmitter from 'safe-event-emitter';
 import ExtensionPlatform from '../platforms/extension';
 
 const NOTIFICATION_HEIGHT = 620;
 const NOTIFICATION_WIDTH = 360;
 
-export default class NotificationManager {
+export const NOTIFICATION_MANAGER_EVENTS = {
+  POPUP_CLOSED: 'onPopupClosed',
+};
+
+export default class NotificationManager extends EventEmitter {
   /**
    * A collection of methods for controlling the showing and hiding of the notification popup.
    *
@@ -12,7 +17,9 @@ export default class NotificationManager {
    */
 
   constructor() {
+    super();
     this.platform = new ExtensionPlatform();
+    this.platform.addOnRemovedListener(this._onWindowClosed.bind(this));
   }
 
   /**
@@ -59,6 +66,13 @@ export default class NotificationManager {
         await this.platform.updateWindowPosition(popupWindow.id, left, top);
       }
       this._popupId = popupWindow.id;
+    }
+  }
+
+  _onWindowClosed(windowId) {
+    if (windowId === this._popupId) {
+      this._popupId = undefined;
+      this.emit(NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED);
     }
   }
 

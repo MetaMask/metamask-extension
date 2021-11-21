@@ -30,7 +30,7 @@
     padding-left: 12px;
     padding-right: 12px;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       width: auto;
     }
   }

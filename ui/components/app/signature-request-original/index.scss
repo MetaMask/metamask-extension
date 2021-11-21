@@ -182,6 +182,7 @@
 
   &__notice {
     color: $dusty-gray;
+    padding: 0 10px;
   }
 
   &__warning {
@@ -228,6 +229,7 @@
     cursor: pointer;
     text-decoration: underline;
     color: $primary-blue;
+    margin-inline-start: 3px;
   }
 
   &__footer {

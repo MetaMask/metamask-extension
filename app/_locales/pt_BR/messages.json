@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Adicionar rede"
   },
-  "addRecipient": {
-    "message": "Adicionar destinatário"
-  },
   "addSuggestedTokens": {
     "message": "Adicionar tokens sugeridos"
   },
@@ -93,9 +90,6 @@
   },
   "addToken": {
     "message": "Adicionar token"
-  },
-  "addTokens": {
-    "message": "Adicionar tokens"
   },
   "advanced": {
     "message": "Avançadas"
@@ -136,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "Permitir que esta extensão externa:"
   },
-  "allowOriginSpendToken": {
-    "message": "Permitir que $1 gaste seus(suas) $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Permitir que este site:"
   },
@@ -149,9 +139,6 @@
   },
   "amount": {
     "message": "Valor"
-  },
-  "amountWithColon": {
-    "message": "Valor:"
   },
   "appDescription": {
     "message": "Uma carteira do Ethereum no seu navegador",
@@ -480,9 +467,6 @@
   "customGasSubTitle": {
     "message": "Aumentar a taxa pode diminuir o tempo de processamento, mas não é garantia."
   },
-  "customRPC": {
-    "message": "RPC personalizada"
-  },
   "customSpendLimit": {
     "message": "Limite de gastos personalizado"
   },
@@ -517,9 +501,6 @@
   },
   "decryptRequest": {
     "message": "Descriptografar solicitação"
-  },
-  "defaultNetwork": {
-    "message": "A rede padrão das transações em ether é a Mainnet."
   },
   "delete": {
     "message": "Excluir"
@@ -1010,12 +991,6 @@
   "ledgerAccountRestriction": {
     "message": "Você precisa usar sua última conta antes de adicionar uma nova."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Usar Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "A nova ponte do Ledger Live permite utilizar seu Ledger mais facilmente.  Disponível somente no Chrome."
-  },
   "ledgerLiveApp": {
     "message": "Aplicativo Ledger Live"
   },
@@ -1028,7 +1003,7 @@
   "letsGoSetUp": {
     "message": "Sim, vamos fazer a configuração!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Você gostaria de adicionar esses tokens?"
   },
   "links": {
@@ -1127,9 +1102,6 @@
     "message": "Verifique os detalhes da rede",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mobileSyncText": {
-    "message": "Informe sua senha para confirmar que é você mesmo!"
-  },
   "mustSelectOne": {
     "message": "Selecione pelo menos 1 token."
   },
@@ -1207,9 +1179,6 @@
   },
   "newContract": {
     "message": "Novo contrato"
-  },
-  "newNetwork": {
-    "message": "Nova rede"
   },
   "newPassword": {
     "message": "Nova senha (mín. 8 caract.)"
@@ -1346,17 +1315,8 @@
   "onlyAddTrustedNetworks": {
     "message": "Um provedor de rede mal-intencionado pode mentir sobre o estado do blockchain e gravar a atividade da sua rede. Adicione somente as redes em que você confia."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Disponível somente na mainnet"
-  },
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em quem você confia."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL do Block Explorer (opcional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Símbolo de moeda (opcional)"
   },
   "origin": {
     "message": "Origem"
@@ -1539,9 +1499,6 @@
   "revealSeedWordsDescription": {
     "message": "Se você alguma vez mudou de navegador ou trocou de computador, precisará dessa Frase de recuperação secreta para acessar suas contas. Salve-as em um lugar seguro e secreto."
   },
-  "revealSeedWordsTitle": {
-    "message": "Frase de recuperação secreta"
-  },
   "revealSeedWordsWarning": {
     "message": "Essas palavras podem ser usadas para roubar todas as suas contas."
   },
@@ -1583,9 +1540,6 @@
   },
   "searchTokens": {
     "message": "Buscar tokens"
-  },
-  "secretBackupPhrase": {
-    "message": "Frase secreta de backup"
   },
   "secretBackupPhraseDescription": {
     "message": "Sua frase secreta de backup facilita fazer o backup e a restauração da sua conta."
@@ -1662,13 +1616,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "Esta conta já foi conectada ao MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Selecione uma conta a ser exibida no MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Não está vendo sua conta? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "Selecione cada frase para garantir que esteja correta."
   },
@@ -1696,9 +1643,6 @@
   },
   "sendTokens": {
     "message": "Enviar tokens"
-  },
-  "sentEther": {
-    "message": "ether enviado"
   },
   "separateEachWord": {
     "message": "Separe cada palavra com um único espaço"
@@ -1879,10 +1823,6 @@
     "message": "Nenhum token disponível correspondente a $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Verificando $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Confirme com sua carteira de hardware"
   },
@@ -1933,9 +1873,6 @@
   },
   "swapFetchingTokens": {
     "message": "Fetch dos tokens..."
-  },
-  "swapFinalizing": {
-    "message": "Finalizando..."
   },
   "swapFromTo": {
     "message": "O swap de $1 para $2",
@@ -2159,12 +2096,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Permitir que este site mude a rede?"
   },
-  "switchLedgerPaths": {
-    "message": "Mudar caminhos do Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Selecione o caminho do Ledger para ver outras contas"
-  },
   "switchNetwork": {
     "message": "Trocar de rede"
   },
@@ -2234,9 +2165,6 @@
   "toAddress": {
     "message": "Até: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Até:"
   },
   "token": {
     "message": "Token"
@@ -2314,10 +2242,6 @@
   "troubleTokenBalances": {
     "message": "Tivemos dificuldade para carregar os saldos do seu token. Você pode exibi-los ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "Você confia neste site? Ao conceder esta permissão, você está permitindo que $1 saque seus(suas) $2 e automatize as transações por você.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Tente novamente"
@@ -2408,23 +2332,11 @@
   "viewMore": {
     "message": "Exibir Mais"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Exibir em $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Exibir no Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Exibir no Explorer"
-  },
   "visitWebSite": {
     "message": "Visite nosso website"
   },
   "walletConnectionGuide": {
     "message": "nosso guia de conexão com a carteira de hardware"
-  },
-  "walletSeed": {
-    "message": "Frase de recuperação secreta"
   },
   "walletSeedRestore": {
     "message": "Frase de recuperação secreta da carteira"

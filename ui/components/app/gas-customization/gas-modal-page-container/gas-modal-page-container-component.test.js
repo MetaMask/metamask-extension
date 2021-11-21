@@ -13,6 +13,7 @@ jest.mock('../../../../store/actions', () => ({
   getGasFeeEstimatesAndStartPolling: jest
     .fn()
     .mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
 }));
 
 const propsMethodSpies = {

@@ -24,6 +24,19 @@ export default function SeedPhraseIntro() {
     history.push(INITIALIZE_SEED_PHRASE_ROUTE);
   };
 
+  const subtitles = {
+    en: 'English',
+    es: 'Spanish',
+    hi: 'Hindi',
+    id: 'Indonesian',
+    ja: 'Japanese',
+    ko: 'Korean',
+    pt: 'Portuguese',
+    ru: 'Russian',
+    tl: 'Tagalog',
+    vi: 'Vietnamese',
+  };
+
   return (
     <div className="seed-phrase-intro">
       <div className="seed-phrase-intro__sections">
@@ -49,13 +62,18 @@ export default function SeedPhraseIntro() {
                 type="video/webm"
                 src="./images/videos/recovery-onboarding/video.webm"
               />
-              <track
-                default
-                srcLang="en"
-                label="English"
-                kind="subtitles"
-                src="./images/videos/recovery-onboarding/subtitles-en.vtt"
-              />
+              {Object.keys(subtitles).map((key) => {
+                return (
+                  <track
+                    default
+                    srcLang={key}
+                    label={subtitles[key]}
+                    key={`${key}-subtitles`}
+                    kind="subtitles"
+                    src={`./images/videos/recovery-onboarding/subtitles/${key}.vtt`}
+                  />
+                );
+              })}
             </video>
           </Box>
           <Box width={BLOCK_SIZES.ONE_THIRD}>

@@ -1,0 +1,38 @@
+.creation-successful {
+  img {
+    align-self: center;
+  }
+
+  max-width: 575px;
+
+  ul {
+    list-style-type: disc;
+    max-width: 500px;
+  }
+
+  li {
+    margin-left: 25px;
+
+    a {
+      justify-content: flex-start;
+      padding: 0;
+    }
+  }
+
+  &__bold {
+    font-weight: bold;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+
+    button {
+      margin-top: 14px;
+      max-width: 60%;
+      padding: 18px 0;
+    }
+  }
+}

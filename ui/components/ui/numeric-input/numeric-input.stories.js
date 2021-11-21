@@ -3,6 +3,7 @@ import NumericInput from '.';
 
 export default {
   title: 'NumericInput',
+  id: __filename,
 };
 
 const onChange = (e) => console.log('changed value: ', e.target.value);

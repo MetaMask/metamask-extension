@@ -40,6 +40,7 @@ export const SAFE_METHODS = [
   'eth_coinbase',
   'eth_decrypt',
   'eth_estimateGas',
+  'eth_feeHistory',
   'eth_gasPrice',
   'eth_getBalance',
   'eth_getBlockByHash',

@@ -18,7 +18,7 @@
       justify-content: space-between;
       align-items: center;
 
-      @media screen and (max-width: 576px) {
+      @media screen and (max-width: $break-small) {
         @include H8;
       }
 
@@ -108,6 +108,10 @@
 
       i {
         font-size: $font-size-h8;
+      }
+
+      &--hidden {
+        display: none;
       }
     }
 

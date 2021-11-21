@@ -15,6 +15,7 @@ import {
   getShowWhatsNewPopup,
   getSortedNotificationsToShow,
   getShowRecoveryPhraseReminder,
+  getNewNetworkAdded,
 } from '../../selectors';
 
 import {
@@ -28,6 +29,7 @@ import {
   setAlertEnabledness,
   setRecoveryPhraseReminderHasBeenShown,
   setRecoveryPhraseReminderLastShown,
+  setNewNetworkAdded,
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -46,7 +48,7 @@ import Home from './home.component';
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
   const {
-    suggestedTokens,
+    suggestedAssets,
     seedPhraseBackedUp,
     tokens,
     threeBoxSynced,
@@ -83,7 +85,7 @@ const mapStateToProps = (state) => {
 
   return {
     forgottenPassword,
-    suggestedTokens,
+    suggestedAssets,
     swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder:
@@ -112,6 +114,7 @@ const mapStateToProps = (state) => {
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
+    newNetworkAdded: getNewNetworkAdded(state),
   };
 };
 
@@ -141,6 +144,9 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
     dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
+  setNewNetworkAdded: (newNetwork) => {
+    dispatch(setNewNetworkAdded(newNetwork));
+  },
 });
 
 export default compose(

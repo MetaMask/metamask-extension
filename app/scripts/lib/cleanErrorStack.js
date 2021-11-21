@@ -14,7 +14,7 @@ export default function cleanErrorStack(err) {
     err.stack = err.message;
   } else if (msg === '') {
     err.stack = err.name;
-  } else {
+  } else if (!err.stack) {
     err.stack = `${err.name}: ${err.message}`;
   }
 

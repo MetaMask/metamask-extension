@@ -43,7 +43,7 @@ describe('AwaitingSwap', () => {
     );
     expect(getByText('Transaction complete')).toBeInTheDocument();
     expect(getByText('tokens received: ETH')).toBeInTheDocument();
-    expect(getByText('View at etherscan.io')).toBeInTheDocument();
+    expect(getByText('View Swap at etherscan.io')).toBeInTheDocument();
     expect(getByText('Create a new swap')).toBeInTheDocument();
   });
 });

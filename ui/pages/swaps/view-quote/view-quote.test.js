@@ -14,7 +14,7 @@ jest.mock('../../../components/ui/info-tooltip/info-tooltip-icon', () => () =>
   '<InfoTooltipIcon />',
 );
 
-jest.mock('../../../hooks/useGasFeeInputs', () => {
+jest.mock('../../../hooks/gasFeeInput/useGasFeeInputs', () => {
   return {
     useGasFeeInputs: () => {
       return {
@@ -47,6 +47,7 @@ setBackgroundConnection({
   getGasFeeEstimatesAndStartPolling: jest.fn(),
   updateTransaction: jest.fn(),
   getGasFeeTimeEstimate: jest.fn(),
+  setSwapsQuotesPollingLimitEnabled: jest.fn(),
 });
 
 describe('ViewQuote', () => {

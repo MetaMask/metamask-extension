@@ -20,7 +20,6 @@ export default class ConfirmPageContainerContent extends Component {
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
     nonce: PropTypes.string,
-    assetImage: PropTypes.string,
     subtitleComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     titleComponent: PropTypes.node,
@@ -36,6 +35,7 @@ export default class ConfirmPageContainerContent extends Component {
     disabled: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
+    hideTitle: PropTypes.boolean,
   };
 
   renderContent() {
@@ -77,7 +77,6 @@ export default class ConfirmPageContainerContent extends Component {
       hideSubtitle,
       identiconAddress,
       nonce,
-      assetImage,
       detailsComponent,
       dataComponent,
       warning,
@@ -91,11 +90,12 @@ export default class ConfirmPageContainerContent extends Component {
       rejectNText,
       origin,
       ethGasPriceWarning,
+      hideTitle,
     } = this.props;
 
     return (
       <div className="confirm-page-container-content">
-        {warning && <ConfirmPageContainerWarning warning={warning} />}
+        {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
@@ -111,8 +111,8 @@ export default class ConfirmPageContainerContent extends Component {
           hideSubtitle={hideSubtitle}
           identiconAddress={identiconAddress}
           nonce={nonce}
-          assetImage={assetImage}
           origin={origin}
+          hideTitle={hideTitle}
         />
         {this.renderContent()}
         {(errorKey || errorMessage) && (
@@ -125,10 +125,11 @@ export default class ConfirmPageContainerContent extends Component {
           cancelText={cancelText}
           onSubmit={onSubmit}
           submitText={submitText}
-          submitButtonType="confirm"
           disabled={disabled}
         >
-          {unapprovedTxCount > 1 && <a onClick={onCancelAll}>{rejectNText}</a>}
+          {unapprovedTxCount > 1 ? (
+            <a onClick={onCancelAll}>{rejectNText}</a>
+          ) : null}
         </PageContainerFooter>
       </div>
     );

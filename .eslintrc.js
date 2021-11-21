@@ -1,3 +1,5 @@
+const { version: reactVersion } = require('react/package.json');
+
 module.exports = {
   root: true,
   parser: '@babel/eslint-parser',
@@ -33,6 +35,7 @@ module.exports = {
     'nyc_output/**',
     '.vscode/**',
     'lavamoat/*/policy.json',
+    'storybook-build/**',
   ],
 
   extends: [
@@ -52,6 +55,26 @@ module.exports = {
     'default-param-last': 'off',
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
+
+    // This is the same as our default config, but for the noted exceptions
+    'spaced-comment': [
+      'error',
+      'always',
+      {
+        markers: [
+          'global',
+          'globals',
+          'eslint',
+          'eslint-disable',
+          '*package',
+          '!',
+          ',',
+          // Local additions
+          '/:', // This is for our code fences
+        ],
+        exceptions: ['=', '-'],
+      },
+    ],
 
     'import/no-unassigned-import': 'off',
 
@@ -112,6 +135,9 @@ module.exports = {
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
         'shared/**/*.test.js',
+        'development/**/*.test.js',
+        'app/scripts/migrations/*.test.js',
+        'app/scripts/platforms/*.test.js',
       ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
@@ -129,7 +155,14 @@ module.exports = {
       },
     },
     {
-      files: ['ui/**/*.test.js', 'ui/__mocks__/*.js', 'shared/**/*.test.js'],
+      files: [
+        'ui/**/*.test.js',
+        'ui/__mocks__/*.js',
+        'shared/**/*.test.js',
+        'development/**/*.test.js',
+        'app/scripts/migrations/*.test.js',
+        'app/scripts/platforms/*.test.js',
+      ],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
         'jest/no-restricted-matchers': 'off',
@@ -155,22 +188,41 @@ module.exports = {
         'nyc.config.js',
         'stylelint.config.js',
         'app/scripts/lockdown-run.js',
+        'app/scripts/lockdown-more.js',
         'development/**/*.js',
         'test/e2e/**/*.js',
-        'test/lib/wait-until-called.js',
         'test/env.js',
         'test/setup.js',
+        'test/helpers/protect-intrinsics-helpers.js',
+        'test/lib/wait-until-called.js',
         'jest.config.js',
       ],
       parserOptions: {
         sourceType: 'script',
       },
     },
+    {
+      files: [
+        'app/scripts/lockdown-run.js',
+        'app/scripts/lockdown-more.js',
+        'test/helpers/protect-intrinsics-helpers.js',
+        'test/unit-global/protect-intrinsics.test.js',
+      ],
+      globals: {
+        harden: 'readonly',
+        Compartment: 'readonly',
+      },
+    },
   ],
 
   settings: {
     react: {
-      version: 'detect',
+      // If this is set to 'detect', ESLint will import React in order to find
+      // its version. Because we run ESLint in the build system under LavaMoat,
+      // this means that detecting the React version requires a LavaMoat policy
+      // for all of React, in the build system. That's a no-go, so we grab it
+      // from React's package.json.
+      version: reactVersion,
     },
   },
 };

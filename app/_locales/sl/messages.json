@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Dodaj omrežje"
   },
-  "addRecipient": {
-    "message": "Dodaj prejemnika"
-  },
   "addSuggestedTokens": {
     "message": "Dodaj priporočene žetone"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Dodaj žeton"
-  },
-  "addTokens": {
-    "message": "Dodaj žetone"
   },
   "advanced": {
     "message": "Napredno"
@@ -263,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Povečanje lahko skrajša čas obdelave, vendar ni zagotovljeno."
   },
-  "customRPC": {
-    "message": "RPC po meri"
-  },
   "customToken": {
     "message": "Žeton po meri"
   },
@@ -274,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalk mora biti med 0 in 36."
-  },
-  "defaultNetwork": {
-    "message": "Privzeto omrežje za transkacije je glavno omrežje."
   },
   "delete": {
     "message": "Izbriši"
@@ -537,7 +525,7 @@
   "letsGoSetUp": {
     "message": "Lotimo se nastavitev!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Želite dodati te žetone?"
   },
   "links": {
@@ -572,9 +560,6 @@
   },
   "metamaskVersion": {
     "message": "Različica"
-  },
-  "mobileSyncText": {
-    "message": "Vnesite geslo in potrdite, da ste to vi."
   },
   "mustSelectOne": {
     "message": "Izbran mora biti vsaj 1 žeton."
@@ -619,9 +604,6 @@
   },
   "newContract": {
     "message": "Nova pogodba"
-  },
-  "newNetwork": {
-    "message": "Novo omrežje"
   },
   "newPassword": {
     "message": "Novo geslo (min 8 znakov)"
@@ -670,12 +652,6 @@
   },
   "on": {
     "message": "Vklopljeno"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokiraj URL Explorerja (poljubno)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (nezahtevano)"
   },
   "origin": {
     "message": "Izvor"
@@ -832,9 +808,6 @@
   "searchTokens": {
     "message": "Iskanje žetonov"
   },
-  "secretBackupPhrase": {
-    "message": "Skrivno geslo za varnostno kopiranje"
-  },
   "secretBackupPhraseDescription": {
     "message": "Vaše skrivno geslo za varnostno kopiranje olajša varnostno kopiranje in obnovitev računa."
   },
@@ -859,9 +832,6 @@
   "selectAnAccount": {
     "message": "Izberi račun"
   },
-  "selectAnAccountHelp": {
-    "message": "Izberi račun za prikaz v MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Izberite vsako geslo ter se prepričajte, da je pravilno."
   },
@@ -882,9 +852,6 @@
   },
   "sendTokens": {
     "message": "Pošlji žetone"
-  },
-  "sentEther": {
-    "message": "poslani ether"
   },
   "separateEachWord": {
     "message": "Vsako besedo ločite z enim presledkom"
@@ -1123,15 +1090,6 @@
   },
   "viewContact": {
     "message": "Ogled stika"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Ogled na $1 "
-  },
-  "viewOnEtherscan": {
-    "message": "Poglej na Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Ogled v Explorerju"
   },
   "visitWebSite": {
     "message": "Obiščite našo spletno stran"

@@ -36,41 +36,44 @@ export default class AccountImportSubview extends Component {
   render() {
     const menuItems = this.getMenuItemTexts();
     const { type } = this.state;
+    const { t } = this.context;
 
     return (
-      <div className="new-account-import-form">
-        <div className="new-account-import-disclaimer">
-          <span>{this.context.t('importAccountMsg')}</span>
-          <span
-            style={{
-              cursor: 'pointer',
-              textDecoration: 'underline',
-            }}
-            onClick={() => {
-              global.platform.openTab({
-                url:
-                  'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
-              });
-            }}
-          >
-            {this.context.t('here')}
-          </span>
-        </div>
-        <div className="new-account-import-form__select-section">
-          <div className="new-account-import-form__select-label">
-            {this.context.t('selectType')}
+      <>
+        <div className="page-container__header">
+          <div className="page-container__title">{t('importAccount')}</div>
+          <div className="page-container__subtitle">
+            {t('importAccountMsg')}
+            <span
+              className="new-account-info-link"
+              onClick={() => {
+                global.platform.openTab({
+                  url:
+                    'https://metamask.zendesk.com/hc/en-us/articles/360015289932',
+                });
+              }}
+            >
+              {t('here')}
+            </span>
           </div>
-          <Dropdown
-            className="new-account-import-form__select"
-            options={menuItems.map((text) => ({ value: text }))}
-            selectedOption={type || menuItems[0]}
-            onChange={(value) => {
-              this.setState({ type: value });
-            }}
-          />
         </div>
-        {this.renderImportView()}
-      </div>
+        <div className="new-account-import-form">
+          <div className="new-account-import-form__select-section">
+            <div className="new-account-import-form__select-label">
+              {t('selectType')}
+            </div>
+            <Dropdown
+              className="new-account-import-form__select"
+              options={menuItems.map((text) => ({ value: text }))}
+              selectedOption={type || menuItems[0]}
+              onChange={(value) => {
+                this.setState({ type: value });
+              }}
+            />
+          </div>
+          {this.renderImportView()}
+        </div>
+      </>
     );
   }
 }

@@ -10,7 +10,7 @@
     justify-content: space-between;
   }
 
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     width: 426px;
     flex: 1;
 
@@ -101,7 +101,7 @@
     align-items: center;
     margin-top: 12px;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       border-top: none;
     }
 
@@ -115,7 +115,7 @@
     }
   }
 
-  @media screen and (max-width: 575px) {
+  @media screen and (max-width: $break-small) {
     &__title {
       position: initial;
     }

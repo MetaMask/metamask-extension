@@ -9,6 +9,7 @@ import proxyquire from 'proxyquire';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPE_RPC } from '../../shared/constants/network';
+import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
 import { addHexPrefix } from './lib/util';
 
 const Ganache = require('../../test/e2e/ganache');
@@ -91,7 +92,6 @@ const MetaMaskController = proxyquire('./metamask-controller', {
 
 const currentNetworkId = '42';
 const DEFAULT_LABEL = 'Account 1';
-const DEFAULT_LABEL_2 = 'Account 2';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -360,7 +360,7 @@ describe('MetaMaskController', function () {
       });
     });
 
-    it('should restore any consecutive accounts with balances', async function () {
+    it('should restore any consecutive accounts with balances without extra zero balance accounts', async function () {
       sandbox.stub(metamaskController, 'getBalance');
       metamaskController.getBalance.withArgs(TEST_ADDRESS).callsFake(() => {
         return Promise.resolve('0x14ced5122ce0a000');
@@ -386,7 +386,6 @@ describe('MetaMaskController', function () {
       delete identities[TEST_ADDRESS].lastSelected;
       assert.deepEqual(identities, {
         [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
-        [TEST_ADDRESS_2]: { address: TEST_ADDRESS_2, name: DEFAULT_LABEL_2 },
       });
     });
   });
@@ -508,11 +507,11 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring');
       await metamaskController.connectHardware('trezor', 0).catch(() => null);
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware',
+        KEYRING_TYPES.TREZOR,
       );
       assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        ['Trezor Hardware'],
+        [KEYRING_TYPES.TREZOR],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -521,11 +520,11 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.keyringController, 'addNewKeyring');
       await metamaskController.connectHardware('ledger', 0).catch(() => null);
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Ledger Hardware',
+        KEYRING_TYPES.LEDGER,
       );
       assert.deepEqual(
         metamaskController.keyringController.addNewKeyring.getCall(0).args,
-        ['Ledger Hardware'],
+        [KEYRING_TYPES.LEDGER],
       );
       assert.equal(keyrings.length, 1);
     });
@@ -569,7 +568,7 @@ describe('MetaMaskController', function () {
       await metamaskController.connectHardware('trezor', 0).catch(() => null);
       await metamaskController.forgetDevice('trezor');
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware',
+        KEYRING_TYPES.TREZOR,
       );
 
       assert.deepEqual(keyrings[0].accounts, []);
@@ -628,7 +627,7 @@ describe('MetaMaskController', function () {
 
     it('should set unlockedAccount in the keyring', async function () {
       const keyrings = await metamaskController.keyringController.getKeyringsByType(
-        'Trezor Hardware',
+        KEYRING_TYPES.TREZOR,
       );
       assert.equal(keyrings[0].unlockedAccount, accountToUnlock);
     });
@@ -836,7 +835,8 @@ describe('MetaMaskController', function () {
     let msgParams, metamaskMsgs, messages, msgId;
 
     const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-    const data = '0x43727970746f6b697474696573';
+    const data =
+      '0x0000000000000000000000000000000000000043727970746f6b697474696573';
 
     beforeEach(async function () {
       sandbox.stub(metamaskController, 'getBalance');
@@ -884,6 +884,19 @@ describe('MetaMaskController', function () {
       const msgIdInt = parseInt(msgId, 10);
       metamaskController.cancelMessage(msgIdInt, noop);
       assert.equal(messages[0].status, TRANSACTION_STATUSES.REJECTED);
+    });
+
+    it('checks message length', async function () {
+      msgParams = {
+        from: address,
+        data: '0xDEADBEEF',
+      };
+
+      try {
+        await metamaskController.newUnsignedMessage(msgParams);
+      } catch (error) {
+        assert.equal(error.message, 'eth_sign requires 32 byte message hash');
+      }
     });
 
     it('errors when signing a message', async function () {

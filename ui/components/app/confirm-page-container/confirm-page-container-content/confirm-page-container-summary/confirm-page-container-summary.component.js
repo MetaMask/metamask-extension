@@ -1,3 +1,4 @@
+/* eslint-disable no-negated-condition */
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -13,8 +14,8 @@ const ConfirmPageContainerSummary = (props) => {
     className,
     identiconAddress,
     nonce,
-    assetImage,
     origin,
+    hideTitle,
   } = props;
 
   return (
@@ -36,12 +37,13 @@ const ConfirmPageContainerSummary = (props) => {
             className="confirm-page-container-summary__identicon"
             diameter={36}
             address={identiconAddress}
-            image={assetImage}
           />
         )}
-        <div className="confirm-page-container-summary__title-text">
-          {titleComponent || title}
-        </div>
+        {!hideTitle ? (
+          <div className="confirm-page-container-summary__title-text">
+            {titleComponent || title}
+          </div>
+        ) : null}
       </div>
       {hideSubtitle || (
         <div className="confirm-page-container-summary__subtitle">
@@ -61,8 +63,8 @@ ConfirmPageContainerSummary.propTypes = {
   className: PropTypes.string,
   identiconAddress: PropTypes.string,
   nonce: PropTypes.string,
-  assetImage: PropTypes.string,
   origin: PropTypes.string.isRequired,
+  hideTitle: PropTypes.boolean,
 };
 
 export default ConfirmPageContainerSummary;

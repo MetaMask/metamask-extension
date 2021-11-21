@@ -3,6 +3,7 @@ import TransactionTotalBanner from '.';
 
 export default {
   title: 'Transaction Total Banner',
+  id: __filename,
 };
 
 export const basic = () => {

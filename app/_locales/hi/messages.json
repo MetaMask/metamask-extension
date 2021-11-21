@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "नेटवर्क जोड़ें"
   },
-  "addRecipient": {
-    "message": "प्राप्तकर्ता को जोड़ें"
-  },
   "addSuggestedTokens": {
     "message": "सुझाए गए टोकन जोड़ें"
   },
@@ -92,9 +89,6 @@
     "message": "जैसे जॉन डी."
   },
   "addToken": {
-    "message": "टोकन जोड़ें"
-  },
-  "addTokens": {
     "message": "टोकन जोड़ें"
   },
   "advanced": {
@@ -136,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "इस बाहरी एक्सटेंशन को इसकी अनुमति दें:"
   },
-  "allowOriginSpendToken": {
-    "message": "$1 को आपका $2 खर्च करने की अनुमति दें?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "इस साइट को इसकी अनुमति दें:"
   },
@@ -149,9 +139,6 @@
   },
   "amount": {
     "message": "राशि"
-  },
-  "amountWithColon": {
-    "message": "राशि:"
   },
   "appDescription": {
     "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
@@ -480,9 +467,6 @@
   "customGasSubTitle": {
     "message": "शुल्क बढ़ाने से प्रसंस्करण समय में कमी हो सकती है, लेकिन इसकी गारंटी नहीं होती है।"
   },
-  "customRPC": {
-    "message": "कस्टम RPC"
-  },
   "customSpendLimit": {
     "message": "कस्टम खर्च सीमा"
   },
@@ -517,9 +501,6 @@
   },
   "decryptRequest": {
     "message": "अनुरोध डिक्रिप्ट करें"
-  },
-  "defaultNetwork": {
-    "message": "Ether के लेनदेन के लिए डिफ़ॉल्ट नेटवर्क Main Net है।"
   },
   "delete": {
     "message": "हटाएँ"
@@ -1010,12 +991,6 @@
   "ledgerAccountRestriction": {
     "message": "नया खाता जोड़ने से पहले आपको अपने अंतिम खाते का उपयोग करना होगा।"
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Ledger Live का उपयोग करें"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "नया Ledger Live ब्रिज आपको अपने लेजर का अधिक आसानी से उपयोग करने की अनुमति देता है।  केवल Chrome में उपलब्ध है।"
-  },
   "ledgerLiveApp": {
     "message": "Ledger Live ऐप"
   },
@@ -1028,7 +1003,7 @@
   "letsGoSetUp": {
     "message": "हाँ, आइए सेट करते हैं!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "क्या आप इन टोकन को जोड़ना चाहते हैं?"
   },
   "links": {
@@ -1127,9 +1102,6 @@
     "message": "नेटवर्क विवरण सत्यापित करें",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mobileSyncText": {
-    "message": "कृपया यह पुष्टि करने के लिए अपना पासवर्ड दर्ज करें कि यह आप ही हैं!"
-  },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन का चयन करना चाहिए।"
   },
@@ -1207,9 +1179,6 @@
   },
   "newContract": {
     "message": "नया अनुबंध"
-  },
-  "newNetwork": {
-    "message": "नया नेटवर्क"
   },
   "newPassword": {
     "message": "नया पासवर्ड (न्यूनतम 8 वर्ण)"
@@ -1346,17 +1315,8 @@
   "onlyAddTrustedNetworks": {
     "message": "एक दुर्भावनापूर्ण नेटवर्क प्रदाता ब्लॉकचेन की स्थिति के बारे में झूठ बोल सकता है और आपकी नेटवर्क गतिविधि को रिकॉर्ड कर सकता है। केवल उन कस्टम नेटवर्क को जोड़ें, जिन पर आप भरोसा करते हैं।"
   },
-  "onlyAvailableOnMainnet": {
-    "message": "केवल मेननेट पर उपलब्ध है"
-  },
   "onlyConnectTrust": {
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं।"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "ब्लॉक एक्सप्लोरर URL (वैकल्पिक)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "मुद्रा प्रतीक (वैकल्पिक)"
   },
   "origin": {
     "message": "उत्पत्ति"
@@ -1539,9 +1499,6 @@
   "revealSeedWordsDescription": {
     "message": "यदि आप कभी ब्राउज़र बदलते हैं या कंप्यूटर को स्थानांतरित करते हैं, तो आपको अपने खातों तक पहुँचने के लिए इस गुप्त रिकवरी फ्रेज़ की आवश्यकता होगी। उन्हें कहीं सुरक्षित और गोपनीय तरीके से सहेजें।"
   },
-  "revealSeedWordsTitle": {
-    "message": "गुप्त रिकवरी फ्रेज़"
-  },
   "revealSeedWordsWarning": {
     "message": "इन शब्दों का उपयोग आपके सभी खातों को चुराने के लिए किया जा सकता है।"
   },
@@ -1583,9 +1540,6 @@
   },
   "searchTokens": {
     "message": "टोकन खोजें"
-  },
-  "secretBackupPhrase": {
-    "message": "गुप्त बैकअप वाक्यांश"
   },
   "secretBackupPhraseDescription": {
     "message": "आपका गुप्त बैकअप वाक्यांश आपके खाते का बैकअप लेना और पुनर्स्थापित करना आसान बनाता है।"
@@ -1662,13 +1616,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "यह खाता पहले ही MetaMask से जुड़ा हुआ है"
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask में देखने के लिए खाते का चयन करें।"
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "अपना खाता नहीं देख पा रहे हैं? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "कृपया प्रत्येक वाक्यांश का चयन करें, ताकि यह सुनिश्चित हो सके कि यह सही है।"
   },
@@ -1696,9 +1643,6 @@
   },
   "sendTokens": {
     "message": "टोकन भेजें"
-  },
-  "sentEther": {
-    "message": "Ether भेजा गया"
   },
   "separateEachWord": {
     "message": "प्रत्येक शब्द को एक रिक्ति से अलग करें"
@@ -1879,10 +1823,6 @@
     "message": "$1 के मिलान वाले कोई भी टोकन उपलब्ध नहीं हैं",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "$1 की जाँच की जा रही है",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "अपने हार्डवेयर वॉलेट से पुष्टि करें"
   },
@@ -1933,9 +1873,6 @@
   },
   "swapFetchingTokens": {
     "message": "टोकन प्राप्त किए जा रहे हैं..."
-  },
-  "swapFinalizing": {
-    "message": "अंतिम रूप दिया जा रहा है..."
   },
   "swapFromTo": {
     "message": "$1 से $2 का स्वैप",
@@ -2159,12 +2096,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "इस साइट को नेटवर्क स्विच करने की अनुमति दें?"
   },
-  "switchLedgerPaths": {
-    "message": "Ledger पथ स्विच करें"
-  },
-  "switchLedgerPathsText": {
-    "message": "अन्य खाते देखने के लिए Ledger पथ का चयन करें"
-  },
   "switchNetwork": {
     "message": "नेटवर्क स्विच करें"
   },
@@ -2234,9 +2165,6 @@
   "toAddress": {
     "message": "प्रति: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "प्रति:"
   },
   "token": {
     "message": "टोकन"
@@ -2314,10 +2242,6 @@
   "troubleTokenBalances": {
     "message": "हमें आपके टोकन की शेषराशि लोड करने में परेशानी हुई। आप उन्हें देख सकते हैं ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "क्या आप इस साइट पर भरोसा करते हैं? यह अनुमति देकर, आप $1 को अपने $2 की निकासी करने और आपके लिए लेनदेनों को स्वचालित करने की अनुमति दे रहे हैं।",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "पुनः प्रयास करें"
@@ -2408,23 +2332,11 @@
   "viewMore": {
     "message": "और देखें"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1 पर देखें"
-  },
-  "viewOnEtherscan": {
-    "message": "Etherscan पर देखें"
-  },
-  "viewinExplorer": {
-    "message": "एक्सप्लोरर में देखें"
-  },
   "visitWebSite": {
     "message": "हमारी वेबसाइट पर जाएँ"
   },
   "walletConnectionGuide": {
     "message": "हमारी हार्डवेयर वॉलेट कनेक्शन गाइड"
-  },
-  "walletSeed": {
-    "message": "गुप्त रिकवरी फ्रेज़"
   },
   "walletSeedRestore": {
     "message": "वॉलेट का गुप्त रिकवरी फ्रेज़"

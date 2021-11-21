@@ -140,7 +140,6 @@ export default class MetaMetricsOptInModal extends Component {
                 });
               }}
               submitText={t('affirmAgree')}
-              submitButtonType="confirm"
               disabled={false}
             />
           </div>

@@ -1,36 +1,25 @@
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
+import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
-export default function LoadingHeartBeat({ active }) {
-  const heartNode = useRef(null);
+const BASE_CLASS = 'loading-heartbeat';
+const LOADING_CLASS = `${BASE_CLASS}--active`;
 
-  const LOADING_CLASS = 'loading-heartbeat--active';
-
-  // When the loading animation completes, remove the className to disappear again
-  useEffect(() => {
-    const eventName = 'animationend';
-    const node = heartNode?.current;
-    const eventHandler = () => {
-      node?.classList.remove(LOADING_CLASS);
-    };
-
-    node?.addEventListener(eventName, eventHandler);
-    return () => {
-      node?.removeEventListener(eventName, eventHandler);
-    };
-  }, [heartNode]);
+export default function LoadingHeartBeat() {
+  useShouldAnimateGasEstimations();
+  const active = useSelector(getGasLoadingAnimationIsShowing);
 
   return (
     <div
       className={classNames('loading-heartbeat', {
         [LOADING_CLASS]: active,
       })}
-      ref={heartNode}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
     ></div>
   );
 }
-
-LoadingHeartBeat.propTypes = {
-  active: PropTypes.bool,
-};

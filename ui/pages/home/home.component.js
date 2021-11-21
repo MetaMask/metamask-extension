@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
+import CollectiblesList from '../../components/app/collectibles-list';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
@@ -15,6 +16,11 @@ import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
+import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import Typography from '../../components/ui/typography/typography';
+import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
+
+import { isBeta } from '../../helpers/utils/build-types';
 
 import {
   ASSET_ROUTE,
@@ -29,7 +35,9 @@ import {
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
+  ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
+import BetaHomeFooter from './beta-home-footer.component';
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
@@ -46,7 +54,7 @@ export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
-    suggestedTokens: PropTypes.object,
+    suggestedAssets: PropTypes.array,
     unconfirmedTransactionsCount: PropTypes.number,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
@@ -81,9 +89,12 @@ export default class Home extends PureComponent {
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
     seedPhraseBackedUp: PropTypes.bool.isRequired,
+    newNetworkAdded: PropTypes.string,
+    setNewNetworkAdded: PropTypes.func.isRequired,
   };
 
   state = {
+    // eslint-disable-next-line react/no-unused-state
     mounted: false,
     canShowBlockageNotification: true,
   };
@@ -93,7 +104,7 @@ export default class Home extends PureComponent {
       firstPermissionsRequestId,
       history,
       isNotification,
-      suggestedTokens = {},
+      suggestedAssets = [],
       totalUnapprovedCount,
       unconfirmedTransactionsCount,
       haveSwapsQuotes,
@@ -102,6 +113,7 @@ export default class Home extends PureComponent {
       pendingConfirmations,
     } = this.props;
 
+    // eslint-disable-next-line react/no-unused-state
     this.setState({ mounted: true });
     if (isNotification && totalUnapprovedCount === 0) {
       global.platform.closeCurrentWindow();
@@ -115,7 +127,7 @@ export default class Home extends PureComponent {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
     } else if (unconfirmedTransactionsCount > 0) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
-    } else if (Object.keys(suggestedTokens).length > 0) {
+    } else if (suggestedAssets.length > 0) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     } else if (pendingConfirmations.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
@@ -126,7 +138,7 @@ export default class Home extends PureComponent {
     {
       firstPermissionsRequestId,
       isNotification,
-      suggestedTokens,
+      suggestedAssets,
       totalUnapprovedCount,
       unconfirmedTransactionsCount,
       haveSwapsQuotes,
@@ -141,7 +153,7 @@ export default class Home extends PureComponent {
       } else if (
         firstPermissionsRequestId ||
         unconfirmedTransactionsCount > 0 ||
-        Object.keys(suggestedTokens).length > 0 ||
+        suggestedAssets.length > 0 ||
         (!isNotification &&
           (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
       ) {
@@ -194,10 +206,36 @@ export default class Home extends PureComponent {
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
       infuraBlocked,
+      newNetworkAdded,
+      setNewNetworkAdded,
     } = this.props;
-
     return (
       <MultipleNotifications>
+        {newNetworkAdded ? (
+          <ActionableMessage
+            type="info"
+            className="home__new-network-notification"
+            message={
+              <div className="home__new-network-notification-message">
+                <img
+                  src="./images/check_circle.svg"
+                  className="home__new-network-notification-message--image"
+                />
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                >
+                  {this.context.t('newNetworkAdded', [newNetworkAdded])}
+                </Typography>
+                <button
+                  className="fas fa-times home__close"
+                  title={t('close')}
+                  onClick={() => setNewNetworkAdded('')}
+                />
+              </div>
+            }
+          />
+        ) : null}
         {shouldShowWeb3ShimUsageNotification ? (
           <HomeNotification
             descriptionText={t('web3ShimUsageNotification', [
@@ -392,6 +430,20 @@ export default class Home extends PureComponent {
                   }
                 />
               </Tab>
+              {process.env.COLLECTIBLES_V1 ? (
+                <Tab
+                  activeClassName="home__tab--active"
+                  className="home__tab"
+                  data-testid="home__nfts-tab"
+                  name={t('nfts')}
+                >
+                  <CollectiblesList
+                    onAddNFT={() => {
+                      history.push(ADD_COLLECTIBLE_ROUTE);
+                    }}
+                  />
+                </Tab>
+              ) : null}
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
@@ -402,16 +454,20 @@ export default class Home extends PureComponent {
               </Tab>
             </Tabs>
             <div className="home__support">
-              {t('needHelp', [
-                <a
-                  href="https://support.metamask.io"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key="need-help-link"
-                >
-                  {t('needHelpLinkText')}
-                </a>,
-              ])}
+              {isBeta() ? (
+                <BetaHomeFooter />
+              ) : (
+                t('needHelp', [
+                  <a
+                    href="https://support.metamask.io"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    key="need-help-link"
+                  >
+                    {t('needHelpLinkText')}
+                  </a>,
+                ])
+              )}
             </div>
           </div>
 

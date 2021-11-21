@@ -1,7 +1,7 @@
 import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import deepFreeze from 'deep-freeze-strict';
 
-import { ApprovalController } from '@metamask/controllers';
+import { ApprovalController, ControllerMessenger } from '@metamask/controllers';
 
 import _getRestrictedMethods from '../../app/scripts/controllers/permissions/restrictedMethods';
 
@@ -70,6 +70,7 @@ const getRestrictedMethods = (permController) => {
 export function getPermControllerOpts() {
   return {
     approvals: new ApprovalController({
+      messenger: new ControllerMessenger(),
       showApprovalRequest: noop,
     }),
     getKeyringAccounts: async () => [...keyringAccounts],

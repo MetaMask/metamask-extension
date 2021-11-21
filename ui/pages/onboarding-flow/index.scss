@@ -1,0 +1,35 @@
+@import 'recovery-phrase/index';
+@import 'onboarding-app-header/index';
+@import 'secure-your-wallet/index';
+@import 'privacy-settings/index';
+@import 'create-password/index';
+@import 'creation-successful/index';
+@import 'welcome/index';
+@import 'import-srp/index';
+@import 'pin-extension/index';
+@import 'metametrics/index';
+
+.onboarding-flow {
+  width: 100%;
+  background-color: $white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__wrapper {
+    margin-top: 40px;
+    padding: 32px;
+    border: 1px solid $Grey-100;
+    border-radius: 20px;
+  }
+
+  &__twitter-button {
+    margin-bottom: 40px;
+    vertical-align: middle;
+
+    img {
+      margin-left: 5px;
+    }
+  }
+}

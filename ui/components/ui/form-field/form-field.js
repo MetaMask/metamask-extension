@@ -16,6 +16,7 @@ import NumericInput from '../numeric-input/numeric-input.component';
 import InfoTooltip from '../info-tooltip/info-tooltip';
 
 export default function FormField({
+  dataTestId,
   titleText,
   titleUnit,
   tooltipText,
@@ -28,6 +29,7 @@ export default function FormField({
   autoFocus,
   password,
   allowDecimals,
+  disabled,
 }) {
   return (
     <div
@@ -81,6 +83,7 @@ export default function FormField({
             detailText={detailText}
             autoFocus={autoFocus}
             allowDecimals={allowDecimals}
+            disabled={disabled}
           />
         ) : (
           <input
@@ -91,6 +94,8 @@ export default function FormField({
             value={value}
             type={password ? 'password' : 'text'}
             autoFocus={autoFocus}
+            disabled={disabled}
+            data-testid={dataTestId}
           />
         )}
         {error && (
@@ -108,18 +113,20 @@ export default function FormField({
 }
 
 FormField.propTypes = {
+  dataTestId: PropTypes.string,
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   titleUnit: PropTypes.string,
   tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   titleDetail: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   error: PropTypes.string,
   onChange: PropTypes.func,
-  value: PropTypes.number,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   detailText: PropTypes.string,
   autoFocus: PropTypes.bool,
   numeric: PropTypes.bool,
   password: PropTypes.bool,
   allowDecimals: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 FormField.defaultProps = {
@@ -135,4 +142,5 @@ FormField.defaultProps = {
   numeric: false,
   password: false,
   allowDecimals: true,
+  disabled: false,
 };

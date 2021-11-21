@@ -42,14 +42,14 @@ describe('Editing Confirm Transaction', function () {
         );
         await driver.fill('.unit-input__input', '2.2');
 
-        await driver.clickElement('.advanced-gas-options-btn');
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+
         await driver.delay(regularDelayMs);
 
-        // wait for gas modal to be visible
-        const gasModal = await driver.findVisibleElement('span .modal');
+        await driver.clickElement({ text: 'Edit', tag: 'button' });
 
-        const [gasPriceInput, gasLimitInput] = await driver.findElements(
-          '.advanced-gas-inputs__gas-edit-row__input',
+        const [gasLimitInput, gasPriceInput] = await driver.findElements(
+          'input[type="number"]',
         );
 
         await gasPriceInput.fill('8');
@@ -59,19 +59,16 @@ describe('Editing Confirm Transaction', function () {
         await driver.delay(largeDelayMs);
 
         await driver.clickElement({ text: 'Save', tag: 'button' });
-        // Wait for gas modal to be removed from DOM
-        await gasModal.waitForElementState('hidden');
-        await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // has correct updated value on the confirm screen the transaction
         const editedTransactionAmounts = await driver.findElements(
-          '.currency-display-component__text',
+          '.transaction-detail-item__row .transaction-detail-item__detail-text .currency-display-component__text',
         );
         const editedTransactionAmount = editedTransactionAmounts[0];
-        assert.equal(await editedTransactionAmount.getText(), '2.2');
+        assert.equal(await editedTransactionAmount.getText(), '0.0008');
 
         const editedTransactionFee = editedTransactionAmounts[1];
-        assert.equal(await editedTransactionFee.getText(), '0.0008');
+        assert.equal(await editedTransactionFee.getText(), '2.2008');
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });

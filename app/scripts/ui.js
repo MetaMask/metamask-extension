@@ -1,5 +1,4 @@
 // polyfills
-import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
 import '@formatjs/intl-relativetimeformat/polyfill';
 
 // dev only, "react-devtools" import is skipped in prod builds

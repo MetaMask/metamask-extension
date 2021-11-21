@@ -38,31 +38,6 @@ describe('App State', () => {
     expect(newState.networkDropdownOpen).toStrictEqual(false);
   });
 
-  it('opens sidebar', () => {
-    const value = {
-      transitionName: 'sidebar-right',
-      type: 'wallet-view',
-      isOpen: true,
-    };
-    const state = reduceApp(metamaskState, {
-      type: actions.SIDEBAR_OPEN,
-      value,
-    });
-
-    expect(state.sidebar).toStrictEqual(value);
-  });
-
-  it('closes sidebar', () => {
-    const openSidebar = { sidebar: { isOpen: true } };
-    const state = { ...metamaskState, ...openSidebar };
-
-    const newState = reduceApp(state, {
-      type: actions.SIDEBAR_CLOSE,
-    });
-
-    expect(newState.sidebar.isOpen).toStrictEqual(false);
-  });
-
   it('opens alert', () => {
     const state = reduceApp(metamaskState, {
       type: actions.ALERT_OPEN,
@@ -280,6 +255,7 @@ describe('App State', () => {
     const hdPaths = {
       trezor: "m/44'/60'/0'/0",
       ledger: "m/44'/60'/0'",
+      lattice: "m/44'/60'/0'/0",
     };
     const state = reduceApp(metamaskState, {
       type: actions.SET_HARDWARE_WALLET_DEFAULT_HD_PATH,

@@ -27,11 +27,6 @@ describe('Token Cell', () => {
         type: 'mainnet',
       },
     },
-    appState: {
-      sidebar: {
-        isOpen: true,
-      },
-    },
   };
 
   const middlewares = [thunk];

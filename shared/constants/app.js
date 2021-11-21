@@ -11,6 +11,17 @@ export const ENVIRONMENT_TYPE_NOTIFICATION = 'notification';
 export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
 export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
+/**
+ * The distribution this build is intended for.
+ *
+ * This should be kept in-sync with the `BuildType` map in `development/build/utils.js`.
+ */
+export const BuildType = {
+  beta: 'beta',
+  flask: 'flask',
+  main: 'main',
+};
+
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
 export const PLATFORM_EDGE = 'Edge';
@@ -29,4 +40,10 @@ export const MESSAGE_TYPE = {
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
+};
+
+export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
+  [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
+  [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
+  [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
 };

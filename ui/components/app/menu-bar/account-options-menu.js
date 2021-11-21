@@ -6,6 +6,7 @@ import { getAccountLink } from '@metamask/etherscan-link';
 
 import { showModal } from '../../../store/actions';
 import { CONNECTED_ROUTE } from '../../../helpers/constants/routes';
+import { getURLHostName } from '../../../helpers/utils/util';
 import { Menu, MenuItem } from '../../ui/menu';
 import {
   getCurrentChainId,
@@ -33,14 +34,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const { address } = selectedIdentity;
   const addressLink = getAccountLink(address, chainId, rpcPrefs);
   const { blockExplorerUrl } = rpcPrefs;
-
-  const getBlockExplorerUrlHost = () => {
-    try {
-      return new URL(blockExplorerUrl)?.hostname;
-    } catch (err) {
-      return '';
-    }
-  };
+  const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
 
   const openFullscreenEvent = useMetricEvent({
     eventOpts: {
@@ -71,12 +65,11 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
     properties: {
       link_type: 'Account Tracker',
       action: 'Account Options',
-      block_explorer_domain: addressLink ? new URL(addressLink)?.hostname : '',
+      block_explorer_domain: getURLHostName(addressLink),
     },
   });
 
   const isRemovable = keyring.type !== 'HD Key Tree';
-  const blockExplorerUrlSubTitle = getBlockExplorerUrlHost();
 
   return (
     <Menu
@@ -84,6 +77,27 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
       className="account-options-menu"
       onHide={onClose}
     >
+      <MenuItem
+        onClick={() => {
+          blockExplorerLinkClickedEvent();
+          global.platform.openTab({
+            url: addressLink,
+          });
+          onClose();
+        }}
+        subtitle={
+          blockExplorerUrlSubTitle ? (
+            <span className="account-options-menu__explorer-origin">
+              {blockExplorerUrlSubTitle}
+            </span>
+          ) : null
+        }
+        iconClassName="fas fa-external-link-alt"
+      >
+        {rpcPrefs.blockExplorerUrl
+          ? t('viewinExplorer', [t('blockExplorerAccountAction')])
+          : t('viewOnEtherscan', [t('blockExplorerAccountAction')])}
+      </MenuItem>
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           onClick={() => {
@@ -106,25 +120,6 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         iconClassName="fas fa-qrcode"
       >
         {t('accountDetails')}
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          blockExplorerLinkClickedEvent();
-          global.platform.openTab({
-            url: addressLink,
-          });
-          onClose();
-        }}
-        subtitle={
-          blockExplorerUrlSubTitle ? (
-            <span className="account-options-menu__explorer-origin">
-              {blockExplorerUrlSubTitle}
-            </span>
-          ) : null
-        }
-        iconClassName="fas fa-external-link-alt"
-      >
-        {rpcPrefs.blockExplorerUrl ? t('viewinExplorer') : t('viewOnEtherscan')}
       </MenuItem>
       <MenuItem
         data-testid="account-options-menu__connected-sites"

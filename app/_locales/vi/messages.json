@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Thêm mạng"
   },
-  "addRecipient": {
-    "message": "Thêm người nhận"
-  },
   "addSuggestedTokens": {
     "message": "Thêm token được đề xuất"
   },
@@ -92,9 +89,6 @@
     "message": "ví dụ: John D."
   },
   "addToken": {
-    "message": "Thêm token"
-  },
-  "addTokens": {
     "message": "Thêm token"
   },
   "advanced": {
@@ -136,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "Cho phép tiện ích bên ngoài này:"
   },
-  "allowOriginSpendToken": {
-    "message": "Cho phép $1 chi tiêu $2 của bạn?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Cho phép trang web này:"
   },
@@ -149,9 +139,6 @@
   },
   "amount": {
     "message": "Số tiền"
-  },
-  "amountWithColon": {
-    "message": "Số tiền:"
   },
   "appDescription": {
     "message": "Ví Ethereum trên trình duyệt của bạn",
@@ -480,9 +467,6 @@
   "customGasSubTitle": {
     "message": "Việc tăng phí có thể giúp giảm thời gian xử lý, nhưng điều này không được đảm bảo."
   },
-  "customRPC": {
-    "message": "RPC tùy chỉnh"
-  },
   "customSpendLimit": {
     "message": "Giới hạn chi tiêu tùy chỉnh"
   },
@@ -517,9 +501,6 @@
   },
   "decryptRequest": {
     "message": "Yêu cầu của Decrypt"
-  },
-  "defaultNetwork": {
-    "message": "Mạng mặc định cho các giao dịch Ether là Mạng chính thức."
   },
   "delete": {
     "message": "Xóa"
@@ -1010,12 +991,6 @@
   "ledgerAccountRestriction": {
     "message": "Bạn cần sử dụng tài khoản gần đây nhất thì mới có thể thêm một tài khoản mới."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Dùng Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "Cầu Ledger Live mới cho phép bạn dùng Ledger dễ dàng hơn.  Chỉ có trong Chrome."
-  },
   "ledgerLiveApp": {
     "message": "Ứng dụng Ledger Live"
   },
@@ -1028,7 +1003,7 @@
   "letsGoSetUp": {
     "message": "Có, hãy thiết lập!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Bạn có muốn thêm những token này không?"
   },
   "links": {
@@ -1127,9 +1102,6 @@
     "message": "xác minh thông tin về mạng",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mobileSyncText": {
-    "message": "Vui lòng nhập mật khẩu để xác nhận đây là bạn!"
-  },
   "mustSelectOne": {
     "message": "Phải chọn ít nhất 1 token."
   },
@@ -1207,9 +1179,6 @@
   },
   "newContract": {
     "message": "Hợp đồng mới"
-  },
-  "newNetwork": {
-    "message": "Mạng mới"
   },
   "newPassword": {
     "message": "Mật khẩu mới (tối thiểu 8 ký tự)"
@@ -1346,17 +1315,8 @@
   "onlyAddTrustedNetworks": {
     "message": "Một nhà cung cấp mạng độc hại có thể nói dối về trạng thái của chuỗi khối và ghi lại hoạt động của bạn trên mạng. Chỉ thêm các mạng tùy chỉnh mà bạn tin tưởng."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Chỉ có trên mạng chính thức"
-  },
   "onlyConnectTrust": {
     "message": "Chỉ kết nối với các trang web mà bạn tin tưởng."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL trình khám phá khối (không bắt buộc)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Ký hiệu tiền tệ (không bắt buộc)"
   },
   "origin": {
     "message": "Nguồn gốc"
@@ -1539,9 +1499,6 @@
   "revealSeedWordsDescription": {
     "message": "Nếu thay đổi trình duyệt hoặc chuyển máy tính, bạn sẽ cần Cụm mật khẩu khôi phục bí mật này để truy cập tài khoản của mình. Hãy lưu Cụm mật khẩu khôi phục bí mật này ở nơi an toàn và bí mật."
   },
-  "revealSeedWordsTitle": {
-    "message": "Cụm mật khẩu khôi phục bí mật"
-  },
   "revealSeedWordsWarning": {
     "message": "Kẻ xấu có thể dùng các từ này để đánh cắp tất cả các tài khoản của bạn."
   },
@@ -1583,9 +1540,6 @@
   },
   "searchTokens": {
     "message": "Tìm kiếm token"
-  },
-  "secretBackupPhrase": {
-    "message": "Cụm mật khẩu sao lưu bí mật"
   },
   "secretBackupPhraseDescription": {
     "message": "Cụm mật khẩu sao lưu bí mật giúp việc sao lưu và khôi phục tài khoản trở nên dễ dàng."
@@ -1662,13 +1616,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "Tài khoản này đã được kết nối với MetaMask"
   },
-  "selectAnAccountHelp": {
-    "message": "Chọn một tài khoản để xem trong MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Bạn không thấy tài khoản của mình? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "Vui lòng chọn từng cụm mật khẩu theo thứ tự để đảm bảo sự chính xác."
   },
@@ -1696,9 +1643,6 @@
   },
   "sendTokens": {
     "message": "Gửi token"
-  },
-  "sentEther": {
-    "message": "đã gửi ether"
   },
   "separateEachWord": {
     "message": "Phân tách mỗi từ bằng một dấu cách"
@@ -1879,10 +1823,6 @@
     "message": "Không có token nào khớp với $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Đang kiểm tra $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Xác nhận ví cứng của bạn"
   },
@@ -1933,9 +1873,6 @@
   },
   "swapFetchingTokens": {
     "message": "Đang tìm nạp token..."
-  },
-  "swapFinalizing": {
-    "message": "Đang hoàn tất..."
   },
   "swapFromTo": {
     "message": "Giao dịch hoán đổi $1 sang $2",
@@ -2159,12 +2096,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Cho phép trang web này chuyển mạng?"
   },
-  "switchLedgerPaths": {
-    "message": "Chuyển đường dẫn Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Chọn đường dẫn Ledger để xem các tài khoản khác"
-  },
   "switchNetwork": {
     "message": "Chuyển mạng"
   },
@@ -2234,9 +2165,6 @@
   "toAddress": {
     "message": "Đến: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Đến:"
   },
   "token": {
     "message": "Token"
@@ -2314,10 +2242,6 @@
   "troubleTokenBalances": {
     "message": "Chúng tôi đã gặp phải vấn đề khi tải số dư token của bạn. Bạn có thể xem số dư ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "Bạn có tin tưởng trang web này không? Bằng việc cấp quyền này, bạn sẽ cho phép $1 rút $2 của bạn và tự động thực hiện các giao dịch cho bạn.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Thử lại"
@@ -2408,23 +2332,11 @@
   "viewMore": {
     "message": "Xem thêm"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Xem tại $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Xem trên Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Xem trên trình khám phá"
-  },
   "visitWebSite": {
     "message": "Truy cập trang web của chúng tôi"
   },
   "walletConnectionGuide": {
     "message": "hướng dẫn của chúng tôi về cách kết nối ví cứng"
-  },
-  "walletSeed": {
-    "message": "Cụm mật khẩu khôi phục bí mật"
   },
   "walletSeedRestore": {
     "message": "Cụm mật khẩu khôi phục bí mật của ví"

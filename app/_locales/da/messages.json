@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Tilføj netværk"
   },
-  "addRecipient": {
-    "message": "Tilføj modtager"
-  },
   "addSuggestedTokens": {
     "message": "Tilføj foreslåede tokens"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Tilføj Polet"
-  },
-  "addTokens": {
-    "message": "Tilføj tokens"
   },
   "advanced": {
     "message": "Avanceret"
@@ -263,9 +257,6 @@
   "customGasSubTitle": {
     "message": "Forøgelse af gebyr kan mindske bearbejdningstiden, men det er ikke en garanti."
   },
-  "customRPC": {
-    "message": "Tilpasset RPC"
-  },
   "customToken": {
     "message": "Brugerdefineret Token"
   },
@@ -274,9 +265,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Decimaler skal være mindst 0 og højst 36."
-  },
-  "defaultNetwork": {
-    "message": "Standardnetværket for Ether-transaktioner er Main Net."
   },
   "delete": {
     "message": "Slet"
@@ -536,7 +524,7 @@
   "letsGoSetUp": {
     "message": "Ja, lad os komme i gang!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
   },
   "loadMore": {
@@ -568,9 +556,6 @@
   },
   "metamaskDescription": {
     "message": "Som forbinder dig til Ethereum og de decentraliserede internet."
-  },
-  "mobileSyncText": {
-    "message": "Indtast din adgangskode for at bekræfte, at det er dig!"
   },
   "mustSelectOne": {
     "message": "Skal vælge mindst 1 token."
@@ -615,9 +600,6 @@
   },
   "newContract": {
     "message": "Ny Kontrakt"
-  },
-  "newNetwork": {
-    "message": "Nyt Netværk"
   },
   "newPassword": {
     "message": "Ny adgangskode (min. 8 tegn)"
@@ -666,12 +648,6 @@
   },
   "on": {
     "message": "Til"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blok-stifinder-URL (valgfrit)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (valgfrit)"
   },
   "parameters": {
     "message": "Parametre"
@@ -789,9 +765,6 @@
   "revealSeedWordsDescription": {
     "message": "Hvis du nogensinde skifter browsere eller flytter computere, har du brug for denne backupsætning for at få adgang til dine konti. Gem den et sted sikkert og hemmeligt."
   },
-  "revealSeedWordsTitle": {
-    "message": "Backupsætning"
-  },
   "revealSeedWordsWarning": {
     "message": "Disse ord kan bruges til at stjæle alle dine konti."
   },
@@ -828,9 +801,6 @@
   "searchTokens": {
     "message": "Søg efter tokens"
   },
-  "secretBackupPhrase": {
-    "message": "Hemmelig backup-sætning"
-  },
   "secretBackupPhraseDescription": {
     "message": "Din hemmelige backup-sætning gør det nemt at lave backup og gendanne din konto."
   },
@@ -855,9 +825,6 @@
   "selectAnAccount": {
     "message": "Vælg en Konto"
   },
-  "selectAnAccountHelp": {
-    "message": "Vælg kontoen der skal vises i MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Vælg venligst hver sætning, for at sikre at de er korrekte."
   },
@@ -875,9 +842,6 @@
   },
   "sendTokens": {
     "message": "Send tokens"
-  },
-  "sentEther": {
-    "message": "sendte ether"
   },
   "separateEachWord": {
     "message": "Separer hvert ord med et enkelt mellemrum"
@@ -1108,20 +1072,8 @@
   "viewContact": {
     "message": "Vis kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Se på $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Se på Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Vis i stifinder"
-  },
   "visitWebSite": {
     "message": "Besøg vores webside"
-  },
-  "walletSeed": {
-    "message": "Tegnebogs-seed"
   },
   "welcome": {
     "message": "Velkommen til MetaMask"

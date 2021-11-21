@@ -10,6 +10,11 @@ import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 const logWeb3ShimUsage = {
   methodNames: [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE],
   implementation: logWeb3ShimUsageHandler,
+  hookNames: {
+    sendMetrics: true,
+    getWeb3ShimUsageState: true,
+    setWeb3ShimUsageRecorded: true,
+  },
 };
 export default logWeb3ShimUsage;
 

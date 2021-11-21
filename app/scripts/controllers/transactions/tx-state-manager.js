@@ -447,7 +447,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusRejected(txId) {
-    this._setTransactionStatus(txId, 'rejected');
+    this._setTransactionStatus(txId, TRANSACTION_STATUSES.REJECTED);
     this._deleteTransaction(txId);
   }
 
@@ -521,7 +521,7 @@ export default class TransactionStateManager extends EventEmitter {
 
     const txMeta = this.getTransaction(txId);
     txMeta.err = {
-      message: error.toString(),
+      message: error.message?.toString() || error.toString(),
       rpc: error.value,
       stack: error.stack,
     };

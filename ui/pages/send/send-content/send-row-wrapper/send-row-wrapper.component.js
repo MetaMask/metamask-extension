@@ -30,7 +30,7 @@ export default class SendRowWrapper extends Component {
         <div className="send-v2__form-field-container">
           <div className="send-v2__form-field">{formField}</div>
           <div>
-            {showError && <SendRowErrorMessage errorType={errorType} />}
+            {showError ? <SendRowErrorMessage errorType={errorType} /> : null}
           </div>
         </div>
       </div>
@@ -50,7 +50,7 @@ export default class SendRowWrapper extends Component {
       <div className="send-v2__form-row">
         <div className="send-v2__form-label">
           {label}
-          {showError && <SendRowErrorMessage errorType={errorType} />}
+          {showError ? <SendRowErrorMessage errorType={errorType} /> : null}
           {customLabelContent}
         </div>
         <div className="send-v2__form-field">{formField}</div>

@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import getCaretCoordinates from 'textarea-caret';
+import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -115,7 +115,7 @@ export default class UnlockPage extends Component {
       height: '60px',
       fontWeight: '400',
       boxShadow: 'none',
-      borderRadius: '4px',
+      borderRadius: '100px',
     };
 
     return (
@@ -123,7 +123,6 @@ export default class UnlockPage extends Component {
         type="submit"
         style={style}
         disabled={!this.state.password}
-        fullWidth
         variant="contained"
         size="large"
         onClick={this.handleSubmit}

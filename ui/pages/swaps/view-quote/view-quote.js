@@ -10,7 +10,7 @@ import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
+import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 import FeeCard from '../fee-card';
 import EditGasPopover from '../../../components/app/edit-gas-popover/edit-gas-popover.component';
@@ -26,6 +26,7 @@ import {
   getCustomSwapsGas, // Gas limit.
   getCustomMaxFeePerGas,
   getCustomMaxPriorityFeePerGas,
+  getSwapsUserFeeLevel,
   getDestinationTokenInfo,
   getUsedSwapsGasPrice,
   getTopQuote,
@@ -34,6 +35,7 @@ import {
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
   getSwapsQuoteRefreshTime,
+  getReviewSwapClickedTimestamp,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -48,13 +50,17 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
-import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
+import {
+  toPrecisionWithoutTrailingZeros,
+  isEqualCaseInsensitive,
+} from '../../../helpers/utils/util';
 
 import {
   safeRefetchQuotes,
   setCustomApproveTxData,
   setSwapsErrorKey,
   showModal,
+  setSwapsQuotesPollingLimitEnabled,
 } from '../../../store/actions';
 import {
   ASSET_ROUTE,
@@ -87,7 +93,10 @@ import {
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
-import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  GAS_RECOMMENDATIONS,
+} from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import ViewQuotePriceDifference from './view-quote-price-difference';
@@ -104,12 +113,17 @@ export default function ViewQuote() {
   const [warningHidden, setWarningHidden] = useState(false);
   const [originalApproveAmount, setOriginalApproveAmount] = useState(null);
   const [showEditGasPopover, setShowEditGasPopover] = useState(false);
+  // We need to have currentTimestamp in state, otherwise it would change with each rerender.
+  const [currentTimestamp] = useState(Date.now());
 
   const [
     acknowledgedPriceDifference,
     setAcknowledgedPriceDifference,
   ] = useState(false);
-  const priceDifferenceRiskyBuckets = ['high', 'medium'];
+  const priceDifferenceRiskyBuckets = [
+    GAS_RECOMMENDATIONS.HIGH,
+    GAS_RECOMMENDATIONS.MEDIUM,
+  ];
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const quotes = useSelector(getQuotes, isEqual);
@@ -128,6 +142,7 @@ export default function ViewQuote() {
   const customMaxGas = useSelector(getCustomSwapsGas);
   const customMaxFeePerGas = useSelector(getCustomMaxFeePerGas);
   const customMaxPriorityFeePerGas = useSelector(getCustomMaxPriorityFeePerGas);
+  const swapsUserFeeLevel = useSelector(getSwapsUserFeeLevel);
   const tokenConversionRates = useSelector(getTokenExchangeRates);
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
   const { balance: ethBalance } = useSelector(getSelectedAccount);
@@ -148,12 +163,15 @@ export default function ViewQuote() {
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
+  const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
 
   let gasFeeInputs;
   if (networkAndAccountSupports1559) {
     // For Swaps we want to get 'high' estimations by default.
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    gasFeeInputs = useGasFeeInputs('high');
+    gasFeeInputs = useGasFeeInputs(GAS_RECOMMENDATIONS.HIGH, {
+      userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
+    });
   }
 
   const { isBestQuote } = usedQuote;
@@ -205,8 +223,8 @@ export default function ViewQuote() {
   const balanceToken =
     fetchParamsSourceToken === defaultSwapsToken.address
       ? defaultSwapsToken
-      : tokensWithBalances.find(
-          ({ address }) => address === fetchParamsSourceToken,
+      : tokensWithBalances.find(({ address }) =>
+          isEqualCaseInsensitive(address, fetchParamsSourceToken),
         );
 
   const selectedFromToken = balanceToken || usedQuote.sourceTokenInfo;
@@ -367,6 +385,9 @@ export default function ViewQuote() {
   const showInsufficientWarning =
     (balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden;
 
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
+
   const numberOfQuotes = Object.values(quotes).length;
   const bestQuoteReviewedEventSent = useRef();
   const eventObjectBase = {
@@ -380,10 +401,10 @@ export default function ViewQuote() {
     response_time: fetchParams?.responseTime,
     best_quote_source: topQuote?.aggregator,
     available_quotes: numberOfQuotes,
+    is_hardware_wallet: hardwareWalletUsed,
+    hardware_wallet_type: hardwareWalletType,
   };
 
-  const hardwareWalletUsed = useSelector(isHardwareWallet);
-  const hardwareWalletType = useSelector(getHardwareWalletType);
   const allAvailableQuotesOpened = useNewMetricEvent({
     event: 'All Available Quotes Opened',
     category: 'swaps',
@@ -394,8 +415,6 @@ export default function ViewQuote() {
         usedQuote?.aggregator === topQuote?.aggregator
           ? null
           : usedQuote?.aggregator,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
   });
   const quoteDetailsOpened = useNewMetricEvent({
@@ -408,8 +427,6 @@ export default function ViewQuote() {
         usedQuote?.aggregator === topQuote?.aggregator
           ? null
           : usedQuote?.aggregator,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
   });
   const editSpendLimitOpened = useNewMetricEvent({
@@ -420,8 +437,6 @@ export default function ViewQuote() {
       custom_spend_limit_set: originalApproveAmount === approveAmount,
       custom_spend_limit_amount:
         originalApproveAmount === approveAmount ? null : approveAmount,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
   });
 
@@ -431,10 +446,18 @@ export default function ViewQuote() {
     sensitiveProperties: {
       ...eventObjectBase,
       network_fees: feeInFiat,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
   });
+
+  const viewQuotePageLoadedEvent = useNewMetricEvent({
+    event: 'View Quote Page Loaded',
+    category: 'swaps',
+    sensitiveProperties: {
+      ...eventObjectBase,
+      response_time: currentTimestamp - reviewSwapClickedTimestamp,
+    },
+  });
+
   useEffect(() => {
     if (
       !bestQuoteReviewedEventSent.current &&
@@ -575,8 +598,8 @@ export default function ViewQuote() {
   useEffect(() => {
     if (
       acknowledgedPriceDifference &&
-      lastPriceDifferenceBucket === 'medium' &&
-      priceSlippageBucket === 'high'
+      lastPriceDifferenceBucket === GAS_RECOMMENDATIONS.MEDIUM &&
+      priceSlippageBucket === GAS_RECOMMENDATIONS.HIGH
     ) {
       setAcknowledgedPriceDifference(false);
     }
@@ -649,6 +672,14 @@ export default function ViewQuote() {
     setShowEditGasPopover(false);
   };
 
+  useEffect(() => {
+    // Thanks to the next line we will only do quotes polling 3 times before showing a Quote Timeout modal.
+    dispatch(setSwapsQuotesPollingLimitEnabled(true));
+    if (reviewSwapClickedTimestamp) {
+      viewQuotePageLoadedEvent();
+    }
+  }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
+
   return (
     <div className="view-quote">
       <div
@@ -670,6 +701,7 @@ export default function ViewQuote() {
         {showEditGasPopover && networkAndAccountSupports1559 && (
           <EditGasPopover
             transaction={{
+              userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
               txParams: {
                 maxFeePerGas,
                 maxPriorityFeePerGas,
@@ -677,7 +709,7 @@ export default function ViewQuote() {
               },
             }}
             minimumGasLimit={usedGasLimit}
-            defaultEstimateToUse="high"
+            defaultEstimateToUse={GAS_RECOMMENDATIONS.HIGH}
             mode={EDIT_GAS_MODES.SWAPS}
             confirmButtonText={t('submit')}
             onClose={onCloseEditGasPopover}

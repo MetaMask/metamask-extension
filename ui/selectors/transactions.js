@@ -281,11 +281,17 @@ export const nonceSortedTransactionsSelector = createSelector(
           nonceProps.initialTransaction = transaction;
         }
 
-        if (type === TRANSACTION_TYPES.RETRY) {
+        if (
+          type === TRANSACTION_TYPES.RETRY &&
+          status in PRIORITY_STATUS_HASH
+        ) {
           nonceProps.hasRetried = true;
         }
 
-        if (type === TRANSACTION_TYPES.CANCEL) {
+        if (
+          type === TRANSACTION_TYPES.CANCEL &&
+          status in PRIORITY_STATUS_HASH
+        ) {
           nonceProps.hasCancelled = true;
         }
       } else {
@@ -294,8 +300,12 @@ export const nonceSortedTransactionsSelector = createSelector(
           transactions: [transaction],
           initialTransaction: transaction,
           primaryTransaction: transaction,
-          hasRetried: transaction.type === TRANSACTION_TYPES.RETRY,
-          hasCancelled: transaction.type === TRANSACTION_TYPES.CANCEL,
+          hasRetried:
+            transaction.type === TRANSACTION_TYPES.RETRY &&
+            transaction.status in PRIORITY_STATUS_HASH,
+          hasCancelled:
+            transaction.type === TRANSACTION_TYPES.CANCEL &&
+            transaction.status in PRIORITY_STATUS_HASH,
         };
 
         insertOrderedNonce(orderedNonces, nonce);

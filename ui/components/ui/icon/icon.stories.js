@@ -12,6 +12,7 @@ import InfoIconInverted from './info-icon-inverted.component';
 
 export default {
   title: 'Icon',
+  id: __filename,
 };
 
 export const copy = () => (

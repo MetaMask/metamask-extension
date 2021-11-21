@@ -79,9 +79,6 @@
   "addNetwork": {
     "message": "Tambahkan Jaringan"
   },
-  "addRecipient": {
-    "message": "Tambahkan Penerima"
-  },
   "addSuggestedTokens": {
     "message": "Tambahkan Token yang Disarankan"
   },
@@ -92,9 +89,6 @@
     "message": "contoh: John D."
   },
   "addToken": {
-    "message": "Tambahkan Token"
-  },
-  "addTokens": {
     "message": "Tambahkan Token"
   },
   "advanced": {
@@ -136,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "Izinkan ekstensi eksternal ini untuk:"
   },
-  "allowOriginSpendToken": {
-    "message": "Izinkan $1 untuk menggunakan $2 Anda?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Izinkan situs ini untuk:"
   },
@@ -149,9 +139,6 @@
   },
   "amount": {
     "message": "Jumlah"
-  },
-  "amountWithColon": {
-    "message": "Jumlah:"
   },
   "appDescription": {
     "message": "Dompet Ethereum di Browser Anda",
@@ -480,9 +467,6 @@
   "customGasSubTitle": {
     "message": "Menaikkan biaya dapat mengurangi waktu pemrosesan, namun tidak dijamin."
   },
-  "customRPC": {
-    "message": "RPC Kustom"
-  },
   "customSpendLimit": {
     "message": "Batas Penggunaan Kustom"
   },
@@ -517,9 +501,6 @@
   },
   "decryptRequest": {
     "message": "Dekrip permintaan"
-  },
-  "defaultNetwork": {
-    "message": "Jaringan default untuk transaksi Ether adalah Jaringan Utama."
   },
   "delete": {
     "message": "Hapus"
@@ -1010,12 +991,6 @@
   "ledgerAccountRestriction": {
     "message": "Anda perlu memanfaatkan akun terakhir Anda sebelum menambahkan yang baru."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Gunakan Ledger Live"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "Jembatan Ledger Live baru memungkinkan Anda untuk menggunakan Ledger Anda dengan lebih mudah.  Hanya tersedia di Chrome."
-  },
   "ledgerLiveApp": {
     "message": "Aplikasi Ledger Live"
   },
@@ -1028,7 +1003,7 @@
   "letsGoSetUp": {
     "message": "Ya, mari siap-siap!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
   },
   "links": {
@@ -1127,9 +1102,6 @@
     "message": "verifikasi detail jaringan",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "mobileSyncText": {
-    "message": "Masukkan kata sandi Anda untuk memastikan ini adalah Anda!"
-  },
   "mustSelectOne": {
     "message": "Harus memilih sekurangnya 1 token."
   },
@@ -1207,9 +1179,6 @@
   },
   "newContract": {
     "message": "Kontrak Baru"
-  },
-  "newNetwork": {
-    "message": "Jaringan Baru"
   },
   "newPassword": {
     "message": "Kata sandi baru (min. 8 karakter)"
@@ -1346,17 +1315,8 @@
   "onlyAddTrustedNetworks": {
     "message": "Penyedia jaringan jahat dapat berbohong tentang status blockchain dan merekam aktivitas jaringan Anda. Hanya tambahkan jaringan kustom yang Anda percayai."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Hanya tersedia di mainnet"
-  },
   "onlyConnectTrust": {
     "message": "Hanya hubungkan ke situs yang Anda percayai."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL Block Explorer (opsional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol Mata Uang (opsional)"
   },
   "origin": {
     "message": "Asal"
@@ -1539,9 +1499,6 @@
   "revealSeedWordsDescription": {
     "message": "Jika Anda pernah mengubah browser atau mengganti komputer, Anda akan memerlukan Frasa Pemulihan Rahasia ini untuk mengakses akun Anda. Simpan di tempat yang aman dan rahasia."
   },
-  "revealSeedWordsTitle": {
-    "message": "Frasa Pemulihan Rahasia"
-  },
   "revealSeedWordsWarning": {
     "message": "Kata-kata ini dapat digunakan untuk mencuri semua akun Anda."
   },
@@ -1583,9 +1540,6 @@
   },
   "searchTokens": {
     "message": "Cari Token"
-  },
-  "secretBackupPhrase": {
-    "message": "Frasa Cadangan Rahasia"
   },
   "secretBackupPhraseDescription": {
     "message": "Frasa cadangan rahasia Anda memudahkan untuk mencadangkan dan memulihkan akun Anda."
@@ -1662,13 +1616,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "Akun ini sudah terhubung ke MetaMask."
   },
-  "selectAnAccountHelp": {
-    "message": "Pilih akun untuk dilihat di MetaMask."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "Tidak melihat akun Anda? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "Pilih masing-masing frasa untuk memastikan kebenarannya."
   },
@@ -1696,9 +1643,6 @@
   },
   "sendTokens": {
     "message": "Kirim Token"
-  },
-  "sentEther": {
-    "message": "ether terkirim"
   },
   "separateEachWord": {
     "message": "Pisahkan setiap kata dengan satu spasi"
@@ -1879,10 +1823,6 @@
     "message": "Tidak ada token yang cocok yang tersedia $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
-  "swapCheckingQuote": {
-    "message": "Memeriksa $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
-  },
   "swapConfirmWithHwWallet": {
     "message": "Konfirmasikan dengan dompet perangkat keras Anda"
   },
@@ -1933,9 +1873,6 @@
   },
   "swapFetchingTokens": {
     "message": "Mengambil token..."
-  },
-  "swapFinalizing": {
-    "message": "Menyelesaikan..."
   },
   "swapFromTo": {
     "message": "Penukaran dari $1 ke $2",
@@ -2159,12 +2096,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Izinkan situs ini untuk beralih jaringan?"
   },
-  "switchLedgerPaths": {
-    "message": "Beralih jalur Ledger"
-  },
-  "switchLedgerPathsText": {
-    "message": "Pilih jalur Ledger untuk melihat akun lain"
-  },
   "switchNetwork": {
     "message": "Beralih jaringan"
   },
@@ -2234,9 +2165,6 @@
   "toAddress": {
     "message": "Untuk: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "Untuk:"
   },
   "token": {
     "message": "Token"
@@ -2314,10 +2242,6 @@
   "troubleTokenBalances": {
     "message": "Kami mengalami masalah saat memuat saldo token Anda. Anda dapat melihatnya ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "Anda percaya situs ini? Dengan memberikan izin ini, Anda mengizinkan $1 untuk menarik $2 Anda dan mengotomatiskan transaksi untuk Anda.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "Coba lagi"
@@ -2408,23 +2332,11 @@
   "viewMore": {
     "message": "Lihat Selengkapnya"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Lihat di $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Lihat di Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Lihat di Explorer"
-  },
   "visitWebSite": {
     "message": "Kunjungi situs web kami"
   },
   "walletConnectionGuide": {
     "message": "panduan koneksi dompet perangkat keras kami"
-  },
-  "walletSeed": {
-    "message": "Frasa Pemulihan Rahasia"
   },
   "walletSeedRestore": {
     "message": "Frasa Pemulihan Rahasia Dompet"

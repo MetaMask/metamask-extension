@@ -26,12 +26,15 @@ export default class TransactionBreakdown extends PureComponent {
     isTokenApprove: PropTypes.bool,
     gas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    maxFeePerGas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     baseFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     priorityFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     hexGasTotal: PropTypes.string,
     isEIP1559Transaction: PropTypes.bool,
+    isMultiLayerFeeNetwork: PropTypes.bool,
+    l1HexGasTotal: PropTypes.string,
   };
 
   static defaultProps = {
@@ -43,6 +46,7 @@ export default class TransactionBreakdown extends PureComponent {
     const {
       gas,
       gasPrice,
+      maxFeePerGas,
       primaryCurrency,
       className,
       nonce,
@@ -55,6 +59,8 @@ export default class TransactionBreakdown extends PureComponent {
       priorityFee,
       hexGasTotal,
       isEIP1559Transaction,
+      isMultiLayerFeeNetwork,
+      l1HexGasTotal,
     } = this.props;
     return (
       <div className={classnames('transaction-breakdown', className)}>
@@ -75,7 +81,11 @@ export default class TransactionBreakdown extends PureComponent {
           </span>
         </TransactionBreakdownRow>
         <TransactionBreakdownRow
-          title={`${t('gasLimit')} (${t('units')})`}
+          title={
+            isMultiLayerFeeNetwork
+              ? t('transactionHistoryL2GasLimitLabel')
+              : `${t('gasLimit')} (${t('units')})`
+          }
           className="transaction-breakdown__row-title"
         >
           {typeof gas === 'undefined' ? (
@@ -98,42 +108,40 @@ export default class TransactionBreakdown extends PureComponent {
             />
           </TransactionBreakdownRow>
         )}
-        {isEIP1559Transaction && (
+        {isEIP1559Transaction && typeof baseFee !== 'undefined' ? (
           <TransactionBreakdownRow title={t('transactionHistoryBaseFee')}>
-            {typeof baseFee === 'undefined' ? (
-              '?'
-            ) : (
-              <CurrencyDisplay
-                className="transaction-breakdown__value"
-                data-testid="transaction-breakdown__base-fee"
-                currency={nativeCurrency}
-                denomination={GWEI}
-                value={baseFee}
-                numberOfDecimals={10}
-                hideLabel
-              />
-            )}
+            <CurrencyDisplay
+              className="transaction-breakdown__value"
+              data-testid="transaction-breakdown__base-fee"
+              currency={nativeCurrency}
+              denomination={GWEI}
+              value={baseFee}
+              numberOfDecimals={10}
+              hideLabel
+            />
           </TransactionBreakdownRow>
-        )}
-        {isEIP1559Transaction && (
+        ) : null}
+        {isEIP1559Transaction && typeof priorityFee !== 'undefined' ? (
           <TransactionBreakdownRow title={t('transactionHistoryPriorityFee')}>
-            {typeof priorityFee === 'undefined' ? (
-              '?'
-            ) : (
-              <CurrencyDisplay
-                className="transaction-breakdown__value"
-                data-testid="transaction-breakdown__priority-fee"
-                currency={nativeCurrency}
-                denomination={GWEI}
-                value={priorityFee}
-                numberOfDecimals={10}
-                hideLabel
-              />
-            )}
+            <CurrencyDisplay
+              className="transaction-breakdown__value"
+              data-testid="transaction-breakdown__priority-fee"
+              currency={nativeCurrency}
+              denomination={GWEI}
+              value={priorityFee}
+              numberOfDecimals={10}
+              hideLabel
+            />
           </TransactionBreakdownRow>
-        )}
+        ) : null}
         {!isEIP1559Transaction && (
-          <TransactionBreakdownRow title={t('advancedGasPriceTitle')}>
+          <TransactionBreakdownRow
+            title={
+              isMultiLayerFeeNetwork
+                ? t('transactionHistoryL2GasPriceLabel')
+                : t('advancedGasPriceTitle')
+            }
+          >
             {typeof gasPrice === 'undefined' ? (
               '?'
             ) : (
@@ -143,15 +151,14 @@ export default class TransactionBreakdown extends PureComponent {
                 currency={nativeCurrency}
                 denomination={GWEI}
                 value={gasPrice}
+                numberOfDecimals={9}
                 hideLabel
               />
             )}
           </TransactionBreakdownRow>
         )}
         {isEIP1559Transaction && (
-          <TransactionBreakdownRow
-            title={t('transactionHistoryEffectiveGasPrice')}
-          >
+          <TransactionBreakdownRow title={t('transactionHistoryTotalGasFee')}>
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
               data-testid="transaction-breakdown__effective-gas-price"
@@ -170,11 +177,49 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
+        {isEIP1559Transaction && (
+          <TransactionBreakdownRow title={t('transactionHistoryMaxFeePerGas')}>
+            <UserPreferencedCurrencyDisplay
+              className="transaction-breakdown__value"
+              currency={nativeCurrency}
+              denomination={ETH}
+              numberOfDecimals={9}
+              value={maxFeePerGas}
+              type={PRIMARY}
+            />
+            {showFiat && (
+              <UserPreferencedCurrencyDisplay
+                className="transaction-breakdown__value"
+                type={SECONDARY}
+                value={maxFeePerGas}
+              />
+            )}
+          </TransactionBreakdownRow>
+        )}
+        {isMultiLayerFeeNetwork && (
+          <TransactionBreakdownRow title={t('transactionHistoryL1GasLabel')}>
+            <UserPreferencedCurrencyDisplay
+              className="transaction-breakdown__value"
+              data-testid="transaction-breakdown__l1-gas-total"
+              numberOfDecimals={18}
+              value={l1HexGasTotal}
+              type={PRIMARY}
+            />
+            {showFiat && (
+              <UserPreferencedCurrencyDisplay
+                className="transaction-breakdown__value"
+                type={SECONDARY}
+                value={l1HexGasTotal}
+              />
+            )}
+          </TransactionBreakdownRow>
+        )}
         <TransactionBreakdownRow title={t('total')}>
           <UserPreferencedCurrencyDisplay
             className="transaction-breakdown__value transaction-breakdown__value--eth-total"
             type={PRIMARY}
             value={totalInHex}
+            numberOfDecimals={isMultiLayerFeeNetwork ? 18 : null}
           />
           {showFiat && (
             <UserPreferencedCurrencyDisplay
