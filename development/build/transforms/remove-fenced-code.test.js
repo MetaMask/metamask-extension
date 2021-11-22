@@ -161,6 +161,28 @@ describe('build/transforms/remove-fenced-code', () => {
       });
     });
 
+    it('handles error during code fence removal or parsing', async () => {
+      const fileContent = getMinimalFencedCode().concat(
+        '///: END:ONLY_INCLUDE_IN',
+      );
+
+      const stream = createRemoveFencedCodeTransform('main')(mockJsFileName);
+
+      await new Promise((resolve) => {
+        stream.on('error', (error) => {
+          expect(error.message).toStrictEqual(
+            expect.stringContaining(
+              'A valid fence consists of two fence lines, but the file contains an uneven number, "3", of fence lines.',
+            ),
+          );
+          expect(lintTransformedFileMock).toHaveBeenCalledTimes(0);
+          resolve();
+        });
+
+        stream.end(fileContent);
+      });
+    });
+
     it('handles transformed file lint failure', async () => {
       lintTransformedFileMock.mockImplementationOnce(() =>
         Promise.reject(new Error('lint failure')),
