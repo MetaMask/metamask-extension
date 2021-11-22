@@ -92,6 +92,8 @@ export default class Home extends PureComponent {
     newNetworkAdded: PropTypes.string,
     setNewNetworkAdded: PropTypes.func.isRequired,
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
+    newCollectibleAddedMessage: PropTypes.string,
+    setNewCollectibleAddedMessage: PropTypes.func.isRequired,
   };
 
   state = {
@@ -225,9 +227,42 @@ export default class Home extends PureComponent {
       infuraBlocked,
       newNetworkAdded,
       setNewNetworkAdded,
+      newCollectibleAddedMessage,
+      setNewCollectibleAddedMessage,
     } = this.props;
     return (
       <MultipleNotifications>
+        {newCollectibleAddedMessage ? (
+          <ActionableMessage
+            type={newCollectibleAddedMessage === 'success' ? 'info' : 'warning'}
+            className="home__new-network-notification"
+            message={
+              <div className="home__new-network-notification-message">
+                {newCollectibleAddedMessage === 'success' ? (
+                  <img
+                    src="./images/check_circle.svg"
+                    className="home__new-network-notification-message--image"
+                  />
+                ) : null}
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  fontWeight={FONT_WEIGHT.NORMAL}
+                >
+                  {newCollectibleAddedMessage === 'success'
+                    ? t('newCollectibleAddedMessage')
+                    : t('newCollectibleAddFailed', [
+                        newCollectibleAddedMessage,
+                      ])}
+                </Typography>
+                <button
+                  className="fas fa-times home__close"
+                  title={t('close')}
+                  onClick={() => setNewCollectibleAddedMessage('')}
+                />
+              </div>
+            }
+          />
+        ) : null}
         {newNetworkAdded ? (
           <ActionableMessage
             type="info"
@@ -242,7 +277,7 @@ export default class Home extends PureComponent {
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
-                  {this.context.t('newNetworkAdded', [newNetworkAdded])}
+                  {t('newNetworkAdded', [newNetworkAdded])}
                 </Typography>
                 <button
                   className="fas fa-times home__close"
