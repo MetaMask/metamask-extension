@@ -8,8 +8,6 @@ import {
 } from '../../../helpers/utils/conversions.util';
 import { ETH } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
-import { useDispatch } from 'react-redux';
-// import { toggleCurrencySwitch } from '../../../ducks/app/app';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -17,59 +15,40 @@ import { useDispatch } from 'react-redux';
  * gets converted into a decimal value depending on the currency (ETH or Fiat).
  */
  export default function CurrencyInput ({
-  hexValue,           // value !
-  preferredCurrency,  // nativeCurrency !
-  secondaryCurrency,  // currentCurrency !
-  hideSecondary,      // hideFiat !
-  featureSecondary,   // useFiat !
-  conversionRate,     // conversionRate !
-  primarySuffix,      // nativeSuffix !
-  secondarySuffix,    // fiatSuffix !
+  hexValue,           
+  preferredCurrency,  
+  secondaryCurrency,  
+  hideSecondary,      
+  featureSecondary,   
+  conversionRate,     
+  primarySuffix,      
+  secondarySuffix,    
   onChange,
   onPreferenceToggle,
   }) {
 
   const t = useContext(I18nContext);
 
-  // const dispatch = useDispatch();
-
   const [isSwapped, setSwapped] = useState(false);
-  const [hexValueNew, setHexValueNew] = useState('');
-  const [decimalValue, setDecimalValue] = useState(0);
+  const [newHexValue, setNewHexValue] = useState(hexValue);
 
-  useEffect(() => {
+  const getDecimalValue = () => {
     const decimalValueString = shouldUseFiat()
-    ? getValueFromWeiHex({
-        value: hexValue,
-        toCurrency: secondaryCurrency,
-        conversionRate,
-        numberOfDecimals: 2,
-      })
-    : getValueFromWeiHex({
-        value: hexValue,
-        toCurrency: ETH,
-        numberOfDecimals: 8,
-      });
-      setHexValueNew(hexValue)
-      setDecimalValue(Number(decimalValueString));
-  }, [hexValue]);
+      ? getValueFromWeiHex({
+          value: hexValue,
+          toCurrency: secondaryCurrency,
+          conversionRate,
+          numberOfDecimals: 2,
+        })
+      : getValueFromWeiHex({
+          value: hexValue,
+          toCurrency: ETH,
+          numberOfDecimals: 8,
+        });
 
-  // const getDecimalValue = () => {
-  //   const decimalValueString = shouldUseFiat()
-  //     ? getValueFromWeiHex({
-  //         value: hexValue,
-  //         toCurrency: secondaryCurrency,
-  //         conversionRate,
-  //         numberOfDecimals: 2,
-  //       })
-  //     : getValueFromWeiHex({
-  //         value: hexValue,
-  //         toCurrency: ETH,
-  //         numberOfDecimals: 8,
-  //       });
-
-  //   return Number(decimalValueString) || 0;
-  // }
+    return Number(decimalValueString) || 0;
+  }
+  
 
   const shouldUseFiat = () => {
     if (hideSecondary) {
@@ -81,24 +60,24 @@ import { useDispatch } from 'react-redux';
     } else if (preferredCurrency === ETH && featureSecondary === false) {
       return false;
     }
-
-    if (isSwapped) {
-      return true
-    }
   };
-  const swap = () => {
-    
-      
-    
-    // dispatch(toggleCurrencySwitch(!isSwapped))
-    onPreferenceToggle(!isSwapped);
+
+  const initialDecimalValue = hexValue ? getDecimalValue() : 0;
+  const [decimalValue, setDecimalValue] = useState(initialDecimalValue);
+
+  const swap = async () => {
+    await onPreferenceToggle(!featureSecondary);
     setSwapped(!isSwapped);
-    handleChange(decimalValue);
-
   };
 
+  useEffect(() => {
+    if (isSwapped) {
+      handleChange(decimalValue);
+    }
+  }, [isSwapped])
 
-  const handleChange = (decimalValue) => {console.log("decimalValue", decimalValue)
+
+  const handleChange = (decimalValue) => {
     const hexValue = shouldUseFiat()
       ? getWeiHexFromDecimalValue({
           value: decimalValue,
@@ -112,8 +91,8 @@ import { useDispatch } from 'react-redux';
           fromDenomination: ETH,
           conversionRate,
         });
-        console.log(hexValue)
-      setHexValueNew(hexValue);
+
+      setNewHexValue(hexValue);
       setDecimalValue(decimalValue);
       onChange(hexValue);
   };
@@ -138,12 +117,12 @@ import { useDispatch } from 'react-redux';
       currency = secondaryCurrency;
       numberOfDecimals = 2;
     }
-    console.log()
+
     return (
       <CurrencyDisplay
         className="currency-input__conversion-component"
         currency={currency}
-        value={hexValueNew}
+        value={newHexValue}
         numberOfDecimals={numberOfDecimals}
       />
     );
