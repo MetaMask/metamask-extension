@@ -72,7 +72,6 @@ describe('NetworkStatus', () => {
         estimatedBaseFee: '0.0012',
       },
     });
-    console.log(document.body.innerHTML);
     expect(screen.queryByText('0.01 GWEI')).toBeInTheDocument();
   });
 });
