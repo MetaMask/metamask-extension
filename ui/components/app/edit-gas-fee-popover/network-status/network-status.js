@@ -14,8 +14,9 @@ const NetworkStatus = () => {
   if (gasFeeEstimates?.estimatedBaseFee) {
     // estimatedBaseFee is not likely to be below 1, value .01 is used as test networks sometimes
     // show have small values for it and more decimal places may cause UI to look broken.
-    estBaseFee = toBigNumber.dec(gasFeeEstimates?.estimatedBaseFee).toFixed(2);
-    estBaseFee = estBaseFee < 0.01 ? 0.01 : estBaseFee.toFixed(2);
+    estBaseFee = toBigNumber.dec(gasFeeEstimates?.estimatedBaseFee);
+    estBaseFee =
+      estBaseFee.greaterThan(0.01) < 0.01 ? 0.01 : estBaseFee.toFixed(2);
   }
 
   return (
