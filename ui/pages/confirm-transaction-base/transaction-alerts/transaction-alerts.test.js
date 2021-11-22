@@ -17,7 +17,7 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
-const render = (props, state) => {
+const render = ({ props, state }) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -47,14 +47,14 @@ const render = (props, state) => {
 
 describe('TransactionAlerts', () => {
   it('should returning warning message for low gas estimate', () => {
-    render({ transaction: { userFeeLevel: 'low' } });
+    render({ props: { transaction: { userFeeLevel: 'low' } } });
     expect(
       document.getElementsByClassName('actionable-message--warning'),
     ).toHaveLength(1);
   });
 
   it('should return null for gas estimate other than low', () => {
-    render({ transaction: { userFeeLevel: 'high' } });
+    render({ props: { transaction: { userFeeLevel: 'high' } } });
     expect(
       document.getElementsByClassName('actionable-message--warning'),
     ).toHaveLength(0);
@@ -62,31 +62,37 @@ describe('TransactionAlerts', () => {
 
   it('should not show insufficient balance message if transaction value is less than balance', () => {
     render({
-      transaction: { userFeeLevel: 'high', txParams: { value: '0x64' } },
+      props: {
+        transaction: { userFeeLevel: 'high', txParams: { value: '0x64' } },
+      },
     });
     expect(screen.queryByText('Insufficient funds.')).not.toBeInTheDocument();
   });
 
   it('should show insufficient balance message if transaction value is more than balance', () => {
     render({
-      transaction: { userFeeLevel: 'high', txParams: { value: '0x5208' } },
+      props: {
+        transaction: { userFeeLevel: 'high', txParams: { value: '0x5208' } },
+      },
     });
     expect(screen.queryByText('Insufficient funds.')).toBeInTheDocument();
   });
 
   it('should show pending transaction message if there are >= 1 pending transactions', () => {
-    render(undefined, {
-      currentNetworkTxList: [
-        {
-          id: 0,
-          time: 0,
-          txParams: {
-            from: '0xAddress',
-            to: '0xRecipient',
+    render({
+      state: {
+        currentNetworkTxList: [
+          {
+            id: 0,
+            time: 0,
+            txParams: {
+              from: '0xAddress',
+              to: '0xRecipient',
+            },
+            status: TRANSACTION_STATUSES.SUBMITTED,
           },
-          status: TRANSACTION_STATUSES.SUBMITTED,
-        },
-      ],
+        ],
+      },
     });
     expect(
       screen.queryByText('You have (1) pending transaction(s).'),
