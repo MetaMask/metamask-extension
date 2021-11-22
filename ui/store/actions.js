@@ -1292,6 +1292,79 @@ export function addToken(
   };
 }
 
+export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot add collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot add collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await promisifiedBackground.addCollectible(address, tokenID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function removeAndIgnoreCollectible(
+  address,
+  tokenID,
+  dontShowLoadingIndicator,
+) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot ignore collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot ignore collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await promisifiedBackground.removeAndIgnoreCollectible(address, tokenID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot remove collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot remove collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await promisifiedBackground.removeCollectible(address, tokenID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function removeToken(address) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());

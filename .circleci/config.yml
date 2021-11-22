@@ -12,7 +12,7 @@ executors:
       NODE_OPTIONS: --max_old_space_size=2048
   shellcheck:
     docker:
-      - image: koalaman/shellcheck-alpine@sha256:35882cba254810c7de458528011e935ba2c4f3ebcb224275dfa7ebfa930ef294
+      - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
 
 workflows:
   test_and_release:
@@ -25,7 +25,9 @@ workflows:
               only:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
       - prep-deps
-      - test-deps-audit
+      - test-deps-audit:
+          requires:
+            - prep-deps
       - test-deps-depcheck:
           requires:
             - prep-deps
