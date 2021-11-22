@@ -4,16 +4,18 @@ import Spinner from '../../ui/spinner';
 import ErrorMessage from '../../ui/error-message';
 import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
 import { useSelector } from 'react-redux';
+import * as Codec from '@truffle/codec';
 import { forAddress } from '@truffle/decoder';
+import inspect from 'browser-util-inspect';
 import { getSelectedAccount, getCurrentChainId } from '../../../selectors';
 import { FETCH_PROJECT_INFO_URI, TX_EXTRA_URI } from './constants';
 import { hexToDecimal } from '../../../helpers/utils/conversions.util';
-import { ethers } from 'ethers';
 import { I18nContext } from '../../../contexts/i18n';
-import { renderTree, transformTxDecoding } from './transaction-decoding.util';
+import { transformTxDecoding } from './transaction-decoding.util';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
+import Address from './components/decoding/address';
 import CopyRawData from './components/ui/copy-raw-data/';
-import { render } from 'enzyme';
 
 export default function TransactionDecoding({
   to = '',
@@ -21,7 +23,6 @@ export default function TransactionDecoding({
   title = '',
 }) {
   const t = useContext(I18nContext);
-  const bottomEl = useRef(null);
   const [tx, setTx] = useState([]);
   const { address: from } = useSelector(getSelectedAccount);
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
@@ -34,36 +35,39 @@ export default function TransactionDecoding({
     (async () => {
       setLoading(true);
       try {
-        // const { info: projectInfo } = await fetchWithCache(
-        //   FETCH_PROJECT_INFO_URI +
-        //     '?' +
-        //     new URLSearchParams({
-        //       to,
-        //       ['network-id']: chainId,
-        //     }),
-        //   { method: 'GET' },
-        // );
-
         const request_url =
-          TX_EXTRA_URI +
+          FETCH_PROJECT_INFO_URI +
           '?' +
           new URLSearchParams({
             to,
-            from,
-            data,
+            ['network-id']: chainId,
           });
 
-        const response = await fetchWithCache(request_url, {
-          method: 'GET',
-        });
+        const response = await fetchWithCache(request_url, { method: 'GET' });
 
         if (!response) {
           throw new Error(`Decoding error: request time out !`);
         }
 
-        if (!response?.decoding) {
+        if (!response.info) {
           throw new Error(`Decoding error: ${response}`);
         }
+
+        const { info: projectInfo } = response;
+
+        // creating instance of the truffle decoder
+        const decoder = await forAddress(to, {
+          provider: global.ethereumProvider,
+          projectInfo,
+        });
+
+        // decode tx input data
+        const decoding = await decoder.decodeTransaction({
+          from,
+          to,
+          input: data,
+          blockNumber: null,
+        });
 
         // fake await
         await new Promise((resolve) => {
@@ -71,14 +75,8 @@ export default function TransactionDecoding({
         });
 
         // transform tx decoding arguments into tree data
-        const params = transformTxDecoding(response?.decoding?.arguments);
+        const params = transformTxDecoding(decoding?.arguments);
         setTx(params);
-
-        // const decoder = await forAddress(to, {
-        //   provider: global.ethereumProvider,
-        //   projectInfo,
-        // });
-        // console.log('🚀 decoder', decoder);
 
         setLoading(false);
       } catch (error) {
@@ -86,32 +84,108 @@ export default function TransactionDecoding({
         setError(true);
         setErrorMessage(error?.message);
       }
-
-      // console.log('🚀 ~  global.ethereumProvider', global.ethereumProvider);
-
-      // const provider = new ethers.providers.InfuraWebSocketProvider(
-      //   chainId,
-      //   'e24b1e96c17e4aa995ad8c0ee861667c',
-      // );
-
-      // // build the strucutre of the tx
-      // const tx = {
-      //   from,
-      //   to,
-      //   input: data,
-      //   blockNumber: null,
-      // };
     })();
   }, [to, chainId, data]);
 
-  useEffect(() => {
-    if (!loading && !error && tx) {
-      scrollToBottom();
-    }
-  }, [loading, error, tx]);
+  // ***********************************************************
+  // component rendering methods
+  // ***********************************************************
+  const renderLeaf = ({ name, kind, typeClass, value }) => {
+    switch (kind) {
+      case 'error':
+        return (
+          <span className="sol-item solidity-error">
+            <span>Malformed data</span>
+          </span>
+        );
 
-  const scrollToBottom = () => {
-    bottomEl && bottomEl.current.scrollIntoView({ behavior: 'smooth' });
+      default:
+        switch (typeClass) {
+          case 'int':
+            return (
+              <span className="sol-item solidity-int">
+                {[value.asBN || value.asString].toString()}
+              </span>
+            );
+
+          case 'uint':
+            return (
+              <span className="sol-item solidity-uint">
+                {[value.asBN || value.asString].toString()}
+              </span>
+            );
+
+          case 'bytes':
+            return (
+              <span className="sol-item solidity-bytes">{value.asHex}</span>
+            );
+
+          case 'array':
+            return (
+              <details>
+                <summary className="typography--weight-bold typography--color-black">
+                  {name}:{' '}
+                </summary>
+                <ol>
+                  {value.map((itemValue) => {
+                    return (
+                      <li>
+                        {renderLeaf({
+                          typeClass: itemValue.type.typeClass,
+                          value: itemValue.value,
+                          kind: itemValue.kind,
+                        })}
+                      </li>
+                    );
+                  })}
+                </ol>
+              </details>
+            );
+
+          case 'address':
+            const address = value?.asAddress;
+            return (
+              <Address
+                addressOnly={true}
+                checksummedRecipientAddress={toChecksumHexAddress(address)}
+              />
+            );
+
+          default:
+            return (
+              <pre className="sol-item solidity-raw">
+                {inspect(new Codec.Format.Utils.Inspect.ResultInspector(value))}
+              </pre>
+            );
+        }
+    }
+  };
+
+  const renderTree = (
+    { name, kind, typeClass, type, value, children },
+    index,
+  ) => {
+    return children ? (
+      <li>
+        <details open={index === 0 ? 'open' : ''}>
+          <summary>{name}: </summary>
+          <ol>{children.map(renderTree)}</ol>
+        </details>
+      </li>
+    ) : (
+      <li className="solidity-value">
+        <div className="solidity-named-item solidity-item">
+          {typeClass !== 'array' && !Array.isArray(value) ? (
+            <span className="param-name typography--weight-bold typography--color-black">
+              {name}:{' '}
+            </span>
+          ) : null}
+          <span className="sol-item solidity-uint">
+            {renderLeaf({ name, typeClass, type, value, kind })}
+          </span>
+        </div>
+      </li>
+    );
   };
 
   const renderTransactionDecoding = () => {
@@ -128,7 +202,7 @@ export default function TransactionDecoding({
         <div className="tx-insight-content__tree-component">
           <ol>{tx.map(renderTree)}</ol>
         </div>
-        <div ref={bottomEl} className="tx-insight-content__copy-raw-tx">
+        <div className="tx-insight-content__copy-raw-tx">
           <CopyRawData data={data} />
         </div>
       </div>
@@ -152,4 +226,5 @@ export default function TransactionDecoding({
 TransactionDecoding.propTypes = {
   to: PropTypes.string.isRequired,
   inputData: PropTypes.string.isRequired,
+  title: PropTypes.string,
 };
