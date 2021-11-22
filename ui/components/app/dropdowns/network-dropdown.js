@@ -7,7 +7,10 @@ import classnames from 'classnames';
 import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
+import {
+  NETWORK_TYPE_RPC,
+  LOCALHOST_RPC_URL,
+} from '../../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
 
 import ColorIndicator from '../../ui/color-indicator';
@@ -278,6 +281,12 @@ class NetworkDropdown extends Component {
       hideTestNetMessage,
     } = this.props;
     const rpcListDetail = this.props.frequentRpcListDetail;
+    const rpcListDetailWithoutLocalHost = rpcListDetail.filter(
+      (rpc) => rpc.rpcUrl !== LOCALHOST_RPC_URL,
+    );
+    const rpcListDetailForLocalHost = rpcListDetail.filter(
+      (rpc) => rpc.rpcUrl === LOCALHOST_RPC_URL,
+    );
     const isOpen = this.props.networkDropdownOpen;
     const { t } = this.context;
 
@@ -340,7 +349,10 @@ class NetworkDropdown extends Component {
         <div className="network-dropdown-list">
           {this.renderNetworkEntry('mainnet')}
 
-          {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
+          {this.renderCustomRpcList(
+            rpcListDetailWithoutLocalHost,
+            this.props.provider,
+          )}
 
           <div
             className={classnames('network-dropdown-testnets', {
@@ -351,7 +363,10 @@ class NetworkDropdown extends Component {
             {this.renderNetworkEntry('kovan')}
             {this.renderNetworkEntry('rinkeby')}
             {this.renderNetworkEntry('goerli')}
-            {this.renderNetworkEntry('localhost')}
+            {this.renderCustomRpcList(
+              rpcListDetailForLocalHost,
+              this.props.provider,
+            )}
           </div>
         </div>
 
