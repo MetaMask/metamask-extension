@@ -354,7 +354,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const { send, metamask } = state;
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
-    if (send.stage !== SEND_STAGES.EDIT) {
+    if (send.stage) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: send.gas.gasPrice,
         blockGasLimit: metamask.currentBlockGasLimit,

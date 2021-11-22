@@ -1180,6 +1180,9 @@
   "gasOption": {
     "message": "Gas option"
   },
+  "gasLimitIsLessThenCalculatedGasLimit": {
+    "message": "Gas limit must be equal or greater than $1"
+  },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },

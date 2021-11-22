@@ -98,6 +98,7 @@ export default function EditGasPopover({
     setGasPrice,
     gasLimit,
     setGasLimit,
+    properGasLimit,
     estimateToUse,
     setEstimateToUse,
     estimatedMinimumFiat,
@@ -283,6 +284,7 @@ export default function EditGasPopover({
               setGasPrice={setGasPrice}
               gasLimit={gasLimit}
               setGasLimit={setGasLimit}
+              properGasLimit={properGasLimit}
               estimateToUse={estimateToUse}
               setEstimateToUse={setEstimateToUse}
               estimatedMinimumFiat={estimatedMinimumFiat}

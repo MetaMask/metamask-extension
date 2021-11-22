@@ -57,6 +57,7 @@ export default function EditGasDisplay({
   setGasPrice,
   gasLimit,
   setGasLimit,
+  properGasLimit,
   estimateToUse,
   setEstimateToUse,
   estimatedMinimumFiat,
@@ -107,6 +108,12 @@ export default function EditGasDisplay({
       dappSuggestedAndTxParamGasFeesAreTheSame,
   );
 
+  let showTopWarning, warningMessage;
+  if (gasLimit < properGasLimit) {
+    showTopWarning = true;
+    warningMessage = t('gasLimitIsLessThenCalculatedGasLimit', [properGasLimit]);
+  }
+
   const showTopError =
     (balanceError || estimatesUnavailableWarning) &&
     (!isGasEstimatesLoading || txParamsHaveBeenCustomized);
@@ -144,6 +151,16 @@ export default function EditGasDisplay({
         {showTopError && (
           <div className="edit-gas-display__warning">
             <ErrorMessage errorKey={errorKey} />
+          </div>
+        )}
+        {showTopWarning && (
+          <div className="edit-gas-display__warning">
+            <ActionableMessage
+              className="actionable-message--warning"
+              message={warningMessage}
+              iconFillColor="#f8c000"
+              useIcon
+            />
           </div>
         )}
         {requireDappAcknowledgement && !isGasEstimatesLoading && (
@@ -330,6 +347,7 @@ EditGasDisplay.propTypes = {
   setGasPrice: PropTypes.func,
   gasLimit: PropTypes.number,
   setGasLimit: PropTypes.func,
+  properGasLimit: PropTypes.number,
   estimateToUse: PropTypes.string,
   setEstimateToUse: PropTypes.func,
   estimatedMinimumFiat: PropTypes.string,
