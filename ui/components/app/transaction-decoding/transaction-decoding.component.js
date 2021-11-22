@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../../ui/spinner';
 import ErrorMessage from '../../ui/error-message';
@@ -13,9 +13,15 @@ import { I18nContext } from '../../../contexts/i18n';
 import { renderTree, transformTxDecoding } from './transaction-decoding.util';
 
 import CopyRawData from './components/ui/copy-raw-data/';
+import { render } from 'enzyme';
 
-export default function TransactionDecoding({ to = '', inputData: data = '' }) {
+export default function TransactionDecoding({
+  to = '',
+  inputData: data = '',
+  title = '',
+}) {
   const t = useContext(I18nContext);
+  const bottomEl = useRef(null);
   const [tx, setTx] = useState([]);
   const { address: from } = useSelector(getSelectedAccount);
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
@@ -98,27 +104,48 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     })();
   }, [to, chainId, data]);
 
-  return (
+  useEffect(() => {
+    if (!loading && !error && tx) {
+      scrollToBottom();
+    }
+  }, [loading, error, tx]);
+
+  const scrollToBottom = () => {
+    bottomEl && bottomEl.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const renderTransactionDecoding = () => {
+    return loading ? (
+      <div className="tx-insight-loading">
+        <Spinner color="#F7C06C" />
+      </div>
+    ) : error ? (
+      <div className="tx-insight-error">
+        <ErrorMessage errorMessage={errorMessage} />
+      </div>
+    ) : (
+      <div className="tx-insight-content">
+        <div className="tx-insight-content__tree-component">
+          <ol>{tx.map(renderTree)}</ol>
+        </div>
+        <div ref={bottomEl} className="tx-insight-content__copy-raw-tx">
+          <CopyRawData data={data} />
+        </div>
+      </div>
+    );
+  };
+
+  return title ? (
     <div className="tx-insight">
-      {loading ? (
-        <div className="tx-insight-loading">
-          <Spinner color="#F7C06C" />
-        </div>
-      ) : error ? (
-        <div className="tx-insight-error">
-          <ErrorMessage errorMessage={errorMessage} />
-        </div>
-      ) : (
-        <div className="tx-insight-content">
-          <div className="tx-insight-content__tree-component">
-            <ol>{tx.map(renderTree)}</ol>
-          </div>
-          <div className="tx-insight-content__copy-raw-tx">
-            <CopyRawData data={data} />
-          </div>
-        </div>
-      )}
+      <details>
+        <summary className="tx-insight-title typography--weight-bold typography--color-black">
+          {title}:{' '}
+        </summary>
+        {renderTransactionDecoding()}
+      </details>
     </div>
+  ) : (
+    <div className="tx-insight">{renderTransactionDecoding()}</div>
   );
 }
 

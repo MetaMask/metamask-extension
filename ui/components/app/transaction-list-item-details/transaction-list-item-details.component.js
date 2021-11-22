@@ -14,6 +14,7 @@ import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
+import TransactionDecoding from '../transaction-decoding';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -256,6 +257,11 @@ export default class TransactionListItemDetails extends PureComponent {
                 onCancel={this.handleCancel}
                 onRetry={this.handleRetry}
                 isEarliestNonce={isEarliestNonce}
+              />
+              <TransactionDecoding
+                title="Transaction data"
+                to={transactionGroup.initialTransaction.txParams?.to}
+                inputData={transactionGroup.initialTransaction.txParams?.data}
               />
             </div>
           </div>
