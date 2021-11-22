@@ -545,7 +545,7 @@ export default class MetamaskController extends EventEmitter {
       getProviderConfig: this.networkController.getProviderConfig.bind(
         this.networkController,
       ),
-      tokenRatesStore: this.tokenRatesController.state,
+      getTokenRatesState: () => this.tokenRatesController.state,
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
       ),
