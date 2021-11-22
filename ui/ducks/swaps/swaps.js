@@ -255,7 +255,7 @@ export const getSmartTransactionsError = (state) =>
 export const getSmartTransactionsErrorMessageDismissed = (state) =>
   state.appState.smartTransactionsErrorMessageDismissed;
 
-export const getSmartTransactionsFeatureEnabled = (state) => {
+export const getSmartTransactionsEnabled = (state) => {
   const hardwareWalletUsed = isHardwareWallet(state);
   const chainId = getCurrentChainId(state);
   const isAllowedNetwork = [MAINNET_CHAIN_ID, RINKEBY_CHAIN_ID].includes(
@@ -265,20 +265,14 @@ export const getSmartTransactionsFeatureEnabled = (state) => {
     state.metamask.swapsState?.swapsFeatureFlags?.smart_transactions
       ?.extension_active;
   const { smartTransactionsLiveness } = state.appState;
+  const smartTransactionsError = getSmartTransactionsError(state);
   return Boolean(
     isAllowedNetwork &&
       !hardwareWalletUsed &&
       smartTransactionsFeatureFlagEnabled &&
-      smartTransactionsLiveness,
+      smartTransactionsLiveness &&
+      !smartTransactionsError,
   );
-};
-
-export const getSmartTransactionsEnabled = (state) => {
-  const smartTransactionsFeatureEnabled = getSmartTransactionsFeatureEnabled(
-    state,
-  );
-  const smartTransactionsError = getSmartTransactionsError(state);
-  return Boolean(smartTransactionsFeatureEnabled && !smartTransactionsError);
 };
 
 export const getSwapsQuoteRefreshTime = (state) =>
