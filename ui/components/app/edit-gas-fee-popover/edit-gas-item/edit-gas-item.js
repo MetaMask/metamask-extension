@@ -18,15 +18,10 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import I18nValue from '../../../ui/i18n-value';
-import InfoTooltip from '../../../ui/info-tooltip';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 
-import Typography from '../../../ui/typography';
-import {
-  COLORS,
-  FONT_WEIGHT,
-} from '../../../../helpers/constants/design-system';
-import EditGasToolTip from '../edit-gas-tooltip';
+import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
+import InfoTooltip from '../../../ui/info-tooltip';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
 const EditGasItem = ({ priorityLevel }) => {
@@ -152,17 +147,23 @@ const EditGasItem = ({ priorityLevel }) => {
           '--'
         )}
       </span>
-      <span className="edit-gas-item__tooltip">
-        <EditGasToolTip
-          priorityLevel={priorityLevel}
-          gasContext={{
-            gasLimit,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-            maxFeePerGasValue,
-            maxPriorityFeePerGasValue,
-            origin,
-          }}
+      <span className="edit-gas-item__tooltip" data-testid="gas-tooltip">
+        <InfoTooltip
+          contentText={
+            <EditGasToolTip
+              t={t}
+              priorityLevel={priorityLevel}
+              gasContext={{
+                gasLimit,
+                maxFeePerGas,
+                maxPriorityFeePerGas,
+                maxFeePerGasValue,
+                maxPriorityFeePerGasValue,
+                origin,
+              }}
+            />
+          }
+          position="top"
         />
       </span>
     </button>
