@@ -49,7 +49,6 @@ import CanceledIcon from './canceled-icon';
 import UnknownIcon from './unknown-icon';
 import ArrowIcon from './arrow-icon';
 import TimerIcon from './timer-icon';
-import BackgroundAnimation from './background-animation';
 
 const TOTAL_WAITING_TIME_IN_SEC = 180;
 
@@ -321,10 +320,8 @@ export default function SmartTransactionStatus() {
         </Box>
         <Box
           marginTop={3}
-          className="smart-transaction-status__background-animation"
-        >
-          <BackgroundAnimation position="top" />
-        </Box>
+          className="smart-transaction-status__background-animation smart-transaction-status__background-animation--top"
+        ></Box>
         {icon && (
           <Box marginTop={3} marginBottom={2}>
             {icon}
@@ -387,10 +384,8 @@ export default function SmartTransactionStatus() {
         )}
         <Box
           marginTop={3}
-          className="smart-transaction-status__background-animation"
-        >
-          <BackgroundAnimation position="bottom" />
-        </Box>
+          className="smart-transaction-status__background-animation smart-transaction-status__background-animation--bottom"
+        ></Box>
         {subDescription && (
           <Typography
             variant={TYPOGRAPHY.H7}
