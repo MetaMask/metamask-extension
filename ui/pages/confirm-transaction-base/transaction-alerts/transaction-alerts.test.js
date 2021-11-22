@@ -106,9 +106,9 @@ describe('TransactionAlerts', () => {
       ).toBeInTheDocument();
     });
 
-    it('should not show options to proceed anyways if compoennt prop proceedTransaction is already true', () => {
+    it('should not show options to proceed anyways if compoennt prop userAcknowledgedGasMissing is already true', () => {
       render({ transaction: { simulationFails: true } }, undefined, {
-        proceedTransaction: true,
+        userAcknowledgedGasMissing: true,
       });
       expect(
         screen.queryByText(
@@ -120,13 +120,13 @@ describe('TransactionAlerts', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('should call prop enableProceedTransaction if proceed anyways option is clicked', () => {
-      const enableProceedTransaction = jest.fn();
+    it('should call prop setUserAcknowledgedGasMissing if proceed anyways option is clicked', () => {
+      const setUserAcknowledgedGasMissing = jest.fn();
       render({ transaction: { simulationFails: true } }, undefined, {
-        enableProceedTransaction,
+        setUserAcknowledgedGasMissing,
       });
       fireEvent.click(screen.queryByText('I want to proceed anyway'));
-      expect(enableProceedTransaction).toHaveBeenCalledTimes(1);
+      expect(setUserAcknowledgedGasMissing).toHaveBeenCalledTimes(1);
     });
   });
 });

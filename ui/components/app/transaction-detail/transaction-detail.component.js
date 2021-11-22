@@ -13,7 +13,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 export default function TransactionDetail({
   rows = [],
   onEdit,
-  proceedTransaction,
+  userAcknowledgedGasMissing,
 }) {
   // eslint-disable-next-line prefer-destructuring
   const EIP_1559_V2 = process.env.EIP_1559_V2;
@@ -28,7 +28,7 @@ export default function TransactionDetail({
     transaction,
   } = useGasFeeContext();
 
-  const editEnabled = !hasSimulationError || proceedTransaction;
+  const editEnabled = !hasSimulationError || userAcknowledgedGasMissing;
 
   if (editEnabled && EIP_1559_V2 && estimateUsed) {
     return (
@@ -91,5 +91,5 @@ export default function TransactionDetail({
 TransactionDetail.propTypes = {
   rows: PropTypes.arrayOf(TransactionDetailItem).isRequired,
   onEdit: PropTypes.func,
-  proceedTransaction: PropTypes.bool.isRequired,
+  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
 };

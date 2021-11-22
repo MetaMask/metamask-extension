@@ -143,7 +143,7 @@ export default class ConfirmTransactionBase extends Component {
     submitWarning: '',
     ethGasPriceWarning: '',
     editingGas: false,
-    proceedTransaction: false,
+    userAcknowledgedGasMissing: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -321,7 +321,7 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
     } = this.props;
     const { t } = this.context;
-    const { proceedTransaction } = this.state;
+    const { userAcknowledgedGasMissing } = this.state;
 
     const renderTotalMaxAmount = () => {
       if (
@@ -417,16 +417,15 @@ export default class ConfirmTransactionBase extends Component {
       <div className="confirm-page-container-content__details">
         {EIP_1559_V2 && (
           <TransactionAlerts
-            enableProceedTransaction={() => {
-              console.log('updating state');
-              this.setState({ proceedTransaction: true });
+            setUserAcknowledgedGasMissing={() => {
+              this.setState({ userAcknowledgedGasMissing: true });
             }}
-            proceedTransaction={proceedTransaction}
+            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           />
         )}
         <TransactionDetail
           onEdit={() => this.handleEditGas()}
-          proceedTransaction={proceedTransaction}
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           rows={[
             EIP_1559_V2 ? (
               <GasDetailsItem
@@ -436,7 +435,7 @@ export default class ConfirmTransactionBase extends Component {
                 isMainnet={isMainnet}
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
-                proceedTransaction={proceedTransaction}
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
                 supportsEIP1559={supportsEIP1559}
                 txData={txData}
                 useNativeCurrencyAsPrimaryCurrency={
@@ -930,7 +929,7 @@ export default class ConfirmTransactionBase extends Component {
       submitWarning,
       ethGasPriceWarning,
       editingGas,
-      proceedTransaction,
+      userAcknowledgedGasMissing,
     } = this.state;
 
     const { name } = methodData;
@@ -994,7 +993,7 @@ export default class ConfirmTransactionBase extends Component {
           submitting ||
           hardwareWalletRequiresConnection ||
           (gasIsLoading && !gasFeeIsCustom) ||
-          (Boolean(txData?.simulationFails) && !proceedTransaction)
+          (Boolean(txData?.simulationFails) && !userAcknowledgedGasMissing)
         }
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}

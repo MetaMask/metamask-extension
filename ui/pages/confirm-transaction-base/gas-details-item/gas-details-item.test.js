@@ -40,7 +40,7 @@ const render = (props, componentProps) => {
     <GasFeeContextProvider {...props}>
       <GasDetailsItem
         txData={{ txParams: {} }}
-        proceedTransaction={false}
+        userAcknowledgedGasMissing={false}
         {...componentProps}
       />
     </GasFeeContextProvider>,

@@ -1,63 +1,55 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
-import { COLORS } from '../../../helpers/constants/design-system';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { COLORS } from '../../helpers/constants/design-system';
+import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
+import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
+import { useI18nContext } from '../../hooks/useI18nContext';
 
-import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography/typography';
-import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
-import I18nValue from '../../../components/ui/i18n-value';
-import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
-import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
-import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
-import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
-import { useGasFeeContext } from '../../../contexts/gasFee';
+import Box from '../../components/ui/box';
+import GasTiming from '../../components/app/gas-timing/gas-timing.component';
+import I18nValue from '../../components/ui/i18n-value';
+import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
+import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
+import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
+import Typography from '../../components/ui/typography/typography';
+import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 
 const HeartBeat = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
 
-const GasDetailsItem = ({
+const GasDetailItem = ({
   hexMaximumTransactionFee,
   hexMinimumTransactionFee,
   isMainnet,
   maxFeePerGas,
   maxPriorityFeePerGas,
-  userAcknowledgedGasMissing,
+  supportsEIP1559,
   txData,
   useNativeCurrencyAsPrimaryCurrency,
 }) => {
   const t = useI18nContext();
-  const { estimateUsed, hasSimulationError } = useGasFeeContext();
-
-  if (hasSimulationError && !userAcknowledgedGasMissing) return null;
-
   return (
     <TransactionDetailItem
       key="gas-item"
       detailTitle={
-        <Box display="flex">
+        <Box display="flex" alignItems="center">
           <Box marginRight={1}>
             <I18nValue messageKey="transactionDetailGasHeadingV2" />
           </Box>
-          <span className="gas-details-item__estimate">
+          <Typography fontWeight={400} fontStyle="italic" fontSize="12px">
             (<I18nValue messageKey="transactionDetailGasInfoV2" />)
-          </span>
+          </Typography>
           <InfoTooltip
             contentText={
               <>
-                <Typography fontSize="12px">
+                <p>
                   {t('transactionDetailGasTooltipIntro', [
                     isMainnet ? t('networkNameEthereum') : '',
                   ])}
-                </Typography>
-                <Typography fontSize="12px">
-                  {t('transactionDetailGasTooltipExplanation')}
-                </Typography>
-                <Typography fontSize="12px">
+                </p>
+                <p>{t('transactionDetailGasTooltipExplanation')}</p>
+                <p>
                   <a
                     href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
                     target="_blank"
@@ -65,16 +57,16 @@ const GasDetailsItem = ({
                   >
                     {t('transactionDetailGasTooltipConversion')}
                   </a>
-                </Typography>
+                </p>
               </>
             }
-            position="bottom"
+            position="top"
           />
         </Box>
       }
       detailTitleColor={COLORS.BLACK}
       detailText={
-        <div className="gas-details-item__currency-container">
+        <div className="confirm-page-container-content__currency-container">
           <HeartBeat />
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
@@ -84,7 +76,7 @@ const GasDetailsItem = ({
         </div>
       }
       detailTotal={
-        <div className="gas-details-item__currency-container">
+        <div className="confirm-page-container-content__currency-container">
           <HeartBeat />
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
@@ -94,22 +86,15 @@ const GasDetailsItem = ({
         </div>
       }
       subText={t('editGasSubTextFee', [
-        <Box
-          key="editGasSubTextFeeLabel"
-          display="inline-flex"
-          className={classNames('gas-details-item__gasfee-label', {
-            'gas-details-item__gas-fee-warning': estimateUsed === 'high',
-          })}
-        >
+        <Box key="editGasSubTextFeeLabel" display="inline-flex">
           <Box marginRight={1}>
             <b>
-              {estimateUsed === 'high' && '⚠ '}
               <I18nValue messageKey="editGasSubTextFeeLabel" />
             </b>
           </Box>
           <div
             key="editGasSubTextFeeValue"
-            className="gas-details-item__currency-container"
+            className="confirm-page-container-content__currency-container"
           >
             <HeartBeat />
             <UserPreferencedCurrencyDisplay
@@ -122,28 +107,30 @@ const GasDetailsItem = ({
         </Box>,
       ])}
       subTitle={
-        <GasTiming
-          maxPriorityFeePerGas={hexWEIToDecGWEI(
-            maxPriorityFeePerGas || txData.txParams.maxPriorityFeePerGas,
-          )}
-          maxFeePerGas={hexWEIToDecGWEI(
-            maxFeePerGas || txData.txParams.maxFeePerGas,
-          )}
-        />
+        supportsEIP1559 && (
+          <GasTiming
+            maxPriorityFeePerGas={hexWEIToDecGWEI(
+              maxPriorityFeePerGas || txData.txParams.maxPriorityFeePerGas,
+            )}
+            maxFeePerGas={hexWEIToDecGWEI(
+              maxFeePerGas || txData.txParams.maxFeePerGas,
+            )}
+          />
+        )
       }
     />
   );
 };
 
-GasDetailsItem.propTypes = {
+GasDetailItem.propTypes = {
   hexMaximumTransactionFee: PropTypes.string,
   hexMinimumTransactionFee: PropTypes.string,
   isMainnet: PropTypes.bool,
   maxFeePerGas: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
-  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
+  supportsEIP1559: PropTypes.bool,
   txData: PropTypes.object,
   useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
 };
 
-export default GasDetailsItem;
+export default GasDetailItem;

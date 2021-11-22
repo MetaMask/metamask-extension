@@ -11,8 +11,8 @@ import ErrorMessage from '../../../components/ui/error-message';
 import I18nValue from '../../../components/ui/i18n-value';
 
 const TransactionAlerts = ({
-  proceedTransaction,
-  enableProceedTransaction,
+  userAcknowledgedGasMissing,
+  setUserAcknowledgedGasMissing,
 }) => {
   const { balanceError, estimateUsed, hasSimulationError } = useGasFeeContext();
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
@@ -27,11 +27,11 @@ const TransactionAlerts = ({
           iconFillColor="#d73a49"
           type="danger"
           primaryActionV2={
-            proceedTransaction
+            userAcknowledgedGasMissing
               ? undefined
               : {
-                  label: t('proceedTransaction'),
-                  onClick: enableProceedTransaction,
+                  label: t('proceedWithTransaction'),
+                  onClick: setUserAcknowledgedGasMissing,
                 }
           }
         />
@@ -81,8 +81,8 @@ const TransactionAlerts = ({
 };
 
 TransactionAlerts.propTypes = {
-  proceedTransaction: PropTypes.bool,
-  enableProceedTransaction: PropTypes.func,
+  userAcknowledgedGasMissing: PropTypes.bool,
+  setUserAcknowledgedGasMissing: PropTypes.func,
 };
 
 export default TransactionAlerts;

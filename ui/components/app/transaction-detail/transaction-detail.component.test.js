@@ -98,15 +98,15 @@ describe('TransactionDetail', () => {
     expect(screen.queryByText('Edit')).toBeInTheDocument();
   });
 
-  it('should not render edit link if transaction has SimulationError and prop proceedTransaction is false', () => {
+  it('should not render edit link if transaction has SimulationError and prop userAcknowledgedGasMissing is false', () => {
     render({ transaction: { simulationFails: true } });
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
-  it('should render edit link if prop proceedTransaction is true even if transaction has SimulationError', () => {
+  it('should render edit link if prop userAcknowledgedGasMissing is true even if transaction has SimulationError', () => {
     render(
       { transaction: { simulationFails: true } },
-      { proceedTransaction: true },
+      { userAcknowledgedGasMissing: true },
     );
     expect(screen.queryByRole('button')).toBeInTheDocument();
   });
