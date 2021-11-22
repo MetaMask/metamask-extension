@@ -152,13 +152,21 @@ class NetworkDropdown extends Component {
     );
   }
 
-  renderCustomRpcList(rpcListDetail, provider) {
+  renderCustomRpcList(rpcListDetail, provider, opts = {}) {
     const reversedRpcListDetail = rpcListDetail.slice().reverse();
 
     return reversedRpcListDetail.map((entry) => {
       const { rpcUrl, chainId, ticker = 'ETH', nickname = '' } = entry;
       const isCurrentRpcTarget =
         provider.type === NETWORK_TYPE_RPC && rpcUrl === provider.rpcUrl;
+
+      let borderColor = COLORS.UI2;
+      if (isCurrentRpcTarget) {
+        borderColor = COLORS.WHITE;
+      }
+      if (opts.isLocalHost) {
+        borderColor = 'localhost';
+      }
 
       return (
         <DropdownMenuItem
@@ -183,10 +191,10 @@ class NetworkDropdown extends Component {
             <div className="network-check__transparent">✓</div>
           )}
           <ColorIndicator
-            color={COLORS.UI2}
+            color={opts.isLocalHost ? 'localhost' : COLORS.UI2}
             size={SIZES.LG}
             type={ColorIndicator.TYPES.FILLED}
-            borderColor={isCurrentRpcTarget ? COLORS.WHITE : COLORS.UI2}
+            borderColor={borderColor}
           />
           <span
             className="network-name-item"
@@ -366,6 +374,7 @@ class NetworkDropdown extends Component {
             {this.renderCustomRpcList(
               rpcListDetailForLocalHost,
               this.props.provider,
+              { isLocalHost: true },
             )}
           </div>
         </div>
