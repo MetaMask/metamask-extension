@@ -26,6 +26,7 @@ export default function ActionableMessage({
   type = 'default',
   useIcon = false,
   iconFillColor = '',
+  roundedButtons,
 }) {
   const actionableMessageClassName = classnames(
     'actionable-message',
@@ -34,6 +35,9 @@ export default function ActionableMessage({
     className,
     { 'actionable-message--with-icon': useIcon },
   );
+
+  const onlyOneAction =
+    (primaryAction && !secondaryAction) || (secondaryAction && !primaryAction);
 
   return (
     <div className={actionableMessageClassName}>
@@ -47,12 +51,19 @@ export default function ActionableMessage({
       )}
       <div className="actionable-message__message">{message}</div>
       {(primaryAction || secondaryAction) && (
-        <div className="actionable-message__actions">
+        <div
+          className={classnames('actionable-message__actions', {
+            'actionable-message__actions--single': onlyOneAction,
+          })}
+        >
           {primaryAction && (
             <button
               className={classnames(
                 'actionable-message__action',
                 'actionable-message__action--primary',
+                {
+                  'actionable-message__action--rounded': roundedButtons,
+                },
               )}
               onClick={primaryAction.onClick}
             >
@@ -64,6 +75,9 @@ export default function ActionableMessage({
               className={classnames(
                 'actionable-message__action',
                 'actionable-message__action--secondary',
+                {
+                  'actionable-message__action--rounded': roundedButtons,
+                },
               )}
               onClick={secondaryAction.onClick}
             >
@@ -92,4 +106,5 @@ ActionableMessage.propTypes = {
   infoTooltipText: PropTypes.string,
   useIcon: PropTypes.bool,
   iconFillColor: PropTypes.string,
+  roundedButtons: PropTypes.bool,
 };

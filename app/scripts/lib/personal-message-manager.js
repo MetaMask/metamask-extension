@@ -40,13 +40,14 @@ export default class PersonalMessageManager extends EventEmitter {
    * @property {Array} messages Holds all messages that have been created by this PersonalMessageManager
    *
    */
-  constructor() {
+  constructor({ metricsEvent }) {
     super();
     this.memStore = new ObservableStore({
       unapprovedPersonalMsgs: {},
       unapprovedPersonalMsgCount: 0,
     });
     this.messages = [];
+    this.metricsEvent = metricsEvent;
   }
 
   /**
@@ -105,6 +106,9 @@ export default class PersonalMessageManager extends EventEmitter {
                 'MetaMask Message Signature: User denied message signature.',
               ),
             );
+            return;
+          case 'errored':
+            reject(new Error(`MetaMask Message Signature: ${data.error}`));
             return;
           default:
             reject(
@@ -238,8 +242,32 @@ export default class PersonalMessageManager extends EventEmitter {
    * @param {number} msgId - The id of the PersonalMessage to reject.
    *
    */
-  rejectMsg(msgId) {
+  rejectMsg(msgId, reason = undefined) {
+    if (reason) {
+      const msg = this.getMsg(msgId);
+      this.metricsEvent({
+        event: reason,
+        category: 'Transactions',
+        properties: {
+          action: 'Sign Request',
+          type: msg.type,
+        },
+      });
+    }
     this._setMsgStatus(msgId, 'rejected');
+  }
+
+  /**
+   * Sets a Message status to 'errored' via a call to this._setMsgStatus.
+   *
+   * @param {number} msgId - The id of the Message to error
+   *
+   */
+  errorMessage(msgId, error) {
+    const msg = this.getMsg(msgId);
+    msg.error = error;
+    this._updateMsg(msg);
+    this._setMsgStatus(msgId, 'errored');
   }
 
   /**

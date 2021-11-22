@@ -16,6 +16,7 @@ import NumericInput from '../numeric-input/numeric-input.component';
 import InfoTooltip from '../info-tooltip/info-tooltip';
 
 export default function FormField({
+  dataTestId,
   titleText,
   titleUnit,
   tooltipText,
@@ -94,6 +95,7 @@ export default function FormField({
             type={password ? 'password' : 'text'}
             autoFocus={autoFocus}
             disabled={disabled}
+            data-testid={dataTestId}
           />
         )}
         {error && (
@@ -111,6 +113,7 @@ export default function FormField({
 }
 
 FormField.propTypes = {
+  dataTestId: PropTypes.string,
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   titleUnit: PropTypes.string,
   tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),

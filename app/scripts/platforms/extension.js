@@ -162,6 +162,10 @@ export default class ExtensionPlatform {
     }
   }
 
+  addOnRemovedListener(listener) {
+    extension.windows.onRemoved.addListener(listener);
+  }
+
   getAllWindows() {
     return new Promise((resolve, reject) => {
       extension.windows.getAll((windows) => {

@@ -67,9 +67,17 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 * The `allow-scripts` configuration in `package.json`
   * Run `yarn allow-scripts auto` to update the `allow-scripts` configuration automatically. This config determines whether the package's install/postinstall scripts are allowed to run. Review each new package to determine whether the install script needs to run or not, testing if necessary.
   * Unfortunately, `yarn allow-scripts auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.
-* The LavaMoat auto-generated policy in `lavamoat/node/policy.json`
-  * Run `yarn lavamoat:auto` to re-generate this policy file. Review the changes to determine whether the access granted to each package seems appropriate.
-  * Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.
+* The LavaMoat policy files. The _tl;dr_ is to run `yarn lavamoat:auto` to update these files, but there can be devils in the details. Continue reading for more information.
+  * There are two sets of LavaMoat policy files:
+    * The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:background:auto`.
+      * These should be regenerated whenever the production dependencies for the background change.
+    * The build system LavaMoat policy file (`lavamoat/build-system/policy.json`), which is re-generated using `yarn lavamoat:build:auto`.
+      * This should be regenerated whenever the dependencies used by the build system itself change.
+  * Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
+  * Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms.
+  macOS and Windows users may see extraneous changes relating to optional dependencies.
+  * Keep in mind that any kind of dynamic import or dynamic use of globals may elude LavaMoat's static analysis.
+  Refer to the LavaMoat documentation or ask for help if you run into any issues.
 
 ## Architecture
 

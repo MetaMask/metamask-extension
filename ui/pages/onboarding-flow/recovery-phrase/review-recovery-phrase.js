@@ -96,6 +96,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               {copied ? t('copiedExclamation') : t('copyToClipboard')}
             </Button>
             <Button
+              data-testid="recovery-phrase-next"
               type="primary"
               className="recovery-phrase__footer--button"
               onClick={() => {
@@ -107,6 +108,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
           </div>
         ) : (
           <Button
+            data-testid="recovery-phrase-reveal"
             type="primary"
             className="recovery-phrase__footer--button"
             onClick={() => {
