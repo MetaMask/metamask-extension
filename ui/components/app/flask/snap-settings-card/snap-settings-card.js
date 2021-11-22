@@ -51,46 +51,28 @@ const SnapSettingsCard = ({
   buttonProps,
   chipProps,
 }) => {
-  const [chipStatus, setChipStatus] = useState({
-    label: STATUSES.INSTALLING,
-    indicatorColor: STATUS_COLORS[STATUSES.INSTALLING],
-  });
+  const [chipStatus, setChipStatus] = useState(STATUSES.INSTALLING);
 
   const handleStatus = useCallback(() => {
     switch (status) {
       case STATUSES.INSTALLING: {
-        setChipStatus({
-          label: STATUSES.INSTALLING,
-          indicatorColor: STATUS_COLORS[STATUSES.INSTALLING],
-        });
+        setChipStatus(STATUSES.INSTALLING);
         break;
       }
       case STATUSES.RUNNING: {
-        setChipStatus({
-          label: STATUSES.RUNNING,
-          indicatorColor: STATUS_COLORS[STATUSES.RUNNING],
-        });
+        setChipStatus(STATUSES.RUNNING);
         break;
       }
       case STATUSES.STOPPED: {
-        setChipStatus({
-          label: STATUSES.STOPPED,
-          indicatorColor: STATUS_COLORS[STATUSES.STOPPED],
-        });
+        setChipStatus(STATUSES.STOPPED);
         break;
       }
       case STATUSES.CRASHED: {
-        setChipStatus({
-          label: STATUSES.CRASHED,
-          indicatorColor: STATUS_COLORS[STATUSES.CRASHED],
-        });
+        setChipStatus(STATUSES.CRASHED);
         break;
       }
       default: {
-        setChipStatus({
-          label: STATUSES.INSTALLING,
-          indicatorColor: STATUS_COLORS[STATUSES.INSTALLING],
-        });
+        setChipStatus(STATUSES.INSTALLING);
       }
     }
   }, [status]);
@@ -167,7 +149,7 @@ const SnapSettingsCard = ({
               leftIcon={
                 <Box paddingLeft={1}>
                   <ColorIndicator
-                    color={chipStatus.indicatorColor}
+                    color={STATUS_COLORS[chipStatus]}
                     type={ColorIndicator.TYPES.FILLED}
                   />
                 </Box>
