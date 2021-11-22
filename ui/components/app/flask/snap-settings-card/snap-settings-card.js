@@ -154,7 +154,7 @@ const SnapSettingsCard = ({
                   />
                 </Box>
               }
-              label={chipStatus.label}
+              label={chipStatus}
               labelProps={{
                 color: COLORS.UI4,
                 margin: [0, 1],
