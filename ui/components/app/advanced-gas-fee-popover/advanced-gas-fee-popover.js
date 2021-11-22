@@ -6,12 +6,12 @@ import Button from '../../ui/button';
 import I18nValue from '../../ui/i18n-value';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-const AdvancedGasPopover = ({ onClose }) => {
+const AdvancedGasFeePopover = ({ onClose }) => {
   const t = useI18nContext();
 
   return (
     <Popover
-      className="advanced-gas-popover"
+      className="advanced-gas-fee-popover"
       title={t('advancedGasFeeModalTitle')}
       onBack={() => onClose()}
       onClose={() => onClose()}
@@ -21,13 +21,13 @@ const AdvancedGasPopover = ({ onClose }) => {
         </Button>
       }
     >
-      <Box className="advanced-gas-popover" margin={4}></Box>
+      <Box className="advanced-gas-fee-popover" margin={4}></Box>
     </Popover>
   );
 };
 
-AdvancedGasPopover.propTypes = {
+AdvancedGasFeePopover.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default AdvancedGasPopover;
+export default AdvancedGasFeePopover;
