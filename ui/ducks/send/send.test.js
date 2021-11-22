@@ -1293,9 +1293,6 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[2].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1345,9 +1342,6 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[2].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1388,15 +1382,12 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(3);
         expect(actionResult[0].type).toStrictEqual('send/updateSendAmount');
         expect(actionResult[1].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[2].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1450,7 +1441,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(3);
 
         expect(actionResult[0].type).toStrictEqual('send/updateAsset');
         expect(actionResult[0].payload).toStrictEqual({
@@ -1462,9 +1453,6 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[2].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1492,7 +1480,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(6);
+        expect(actionResult).toHaveLength(5);
         expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
         expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
         expect(actionResult[2].payload).toStrictEqual({
@@ -1504,9 +1492,6 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[4].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1659,15 +1644,12 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(3);
         expect(actionResult[0].type).toStrictEqual('send/updateRecipient');
         expect(actionResult[1].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[2].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1727,7 +1709,7 @@ describe('Send Slice', () => {
         );
 
         const actionResult = store.getActions();
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(3);
         expect(actionResult[0].type).toStrictEqual('send/updateRecipient');
         expect(actionResult[0].payload.address).toStrictEqual(
           TEST_RECIPIENT_ADDRESS,
@@ -1777,15 +1759,12 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(4);
+        expect(actionResult).toHaveLength(3);
         expect(actionResult[0].type).toStrictEqual('send/updateRecipient');
         expect(actionResult[1].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[2].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1851,7 +1830,7 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(7);
+        expect(actionResult).toHaveLength(6);
         expect(actionResult[0].type).toStrictEqual(
           'send/updateRecipientUserInput',
         );
@@ -1861,13 +1840,10 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[3].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[4].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
-        expect(actionResult[5].type).toStrictEqual('ENS/resetEnsResolution');
-        expect(actionResult[6].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual('ENS/resetEnsResolution');
+        expect(actionResult[5].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });
@@ -1934,16 +1910,13 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(4);
         expect(actionResult[0].type).toStrictEqual('send/updateAmountMode');
         expect(actionResult[1].type).toStrictEqual('send/updateAmountToMax');
         expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[3].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[4].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1981,16 +1954,13 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(4);
         expect(actionResult[0].type).toStrictEqual('send/updateAmountMode');
         expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
         expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[3].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[4].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -2217,7 +2187,7 @@ describe('Send Slice', () => {
         );
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(7);
+        expect(actionResult).toHaveLength(6);
         expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
         expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
         expect(actionResult[2].type).toStrictEqual('send/updateAsset');
@@ -2235,13 +2205,10 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[4].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
-        expect(actionResult[6].type).toStrictEqual('send/editTransaction');
-        expect(actionResult[6].payload).toStrictEqual({
+        expect(actionResult[5].type).toStrictEqual('send/editTransaction');
+        expect(actionResult[5].payload).toStrictEqual({
           address: '0xrecipientaddress', // getting address from tokenData does .toLowerCase
           amount: '0x3a98',
           data: '',
@@ -2252,7 +2219,7 @@ describe('Send Slice', () => {
           nickname: '',
         });
 
-        const action = actionResult[6];
+        const action = actionResult[5];
 
         const result = sendReducer(initialState, action);
 
