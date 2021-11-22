@@ -9,7 +9,7 @@ import StatusSlider from './status-slider';
 
 const NetworkStatus = () => {
   const { gasFeeEstimates } = useGasFeeContext();
-  let estBaseFee;
+  let estBaseFee = 0;
   if (gasFeeEstimates?.estimatedBaseFee) {
     // estimatedBaseFee is not likely to be below 1, value .01 is used as test networks sometimes
     // show have small values for it and more decimal places may cause UI to look broken.
@@ -31,7 +31,7 @@ const NetworkStatus = () => {
       <div className="network-status__info">
         <div className="network-status__info__field">
           <span className="network-status__info__field-data">
-            {estBaseFee && `${estBaseFee} GWEI`}
+            {estBaseFee >= 0.01 && `${estBaseFee} GWEI`}
           </span>
           <span className="network-status__info__field-label">Base fee</span>
         </div>
