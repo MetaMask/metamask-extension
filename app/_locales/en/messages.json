@@ -2314,6 +2314,9 @@
   "signed": {
     "message": "Signed"
   },
+  "simulationErrorMessage": {
+    "message": "This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended."
+  },
   "skip": {
     "message": "Skip"
   },
@@ -2976,6 +2979,9 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "tryAnywayOption": {
+    "message": "I will try anyway"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"

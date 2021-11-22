@@ -38,14 +38,22 @@
   &__actions {
     display: flex;
     width: 80%;
-    justify-content: space-evenly;
+    justify-content: flex-end;
     align-items: center;
     margin-top: 10px;
     color: $Blue-600;
+
+    &--single {
+      width: 100%;
+    }
   }
 
   &__action {
     font-weight: bold;
+
+    &--rounded {
+      border-radius: 8px;
+    }
   }
 
   &__info-tooltip-wrapper {
