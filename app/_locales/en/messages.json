@@ -1167,6 +1167,9 @@
   "gasLimitInfoTooltipContent": {
     "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
   },
+  "gasLimitIsLessThenCalculatedGasLimit": {
+    "message": "Gas limit must be equal or greater than $1"
+  },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
   },
@@ -1179,9 +1182,6 @@
   },
   "gasOption": {
     "message": "Gas option"
-  },
-  "gasLimitIsLessThenCalculatedGasLimit": {
-    "message": "Gas limit must be equal or greater than $1"
   },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
