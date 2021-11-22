@@ -207,11 +207,9 @@ describe('TokenInput Component', () => {
 
   describe('handling actions', () => {
     const handleChangeSpy = jest.fn();
-    const handleBlurSpy = jest.fn();
 
     afterEach(() => {
       handleChangeSpy.mockClear();
-      handleBlurSpy.mockClear();
     });
 
     it('should call onChange on input changes with the hex value for ETH', () => {
@@ -238,7 +236,6 @@ describe('TokenInput Component', () => {
 
       expect(wrapper).toHaveLength(1);
       expect(handleChangeSpy.mock.calls).toHaveLength(0);
-      expect(handleBlurSpy.mock.calls).toHaveLength(0);
 
       const tokenInputInstance = wrapper.find(TokenInput).at(0).instance();
       expect(tokenInputInstance.state.decimalValue).toStrictEqual(0);
@@ -285,7 +282,6 @@ describe('TokenInput Component', () => {
 
       expect(wrapper).toHaveLength(1);
       expect(handleChangeSpy.mock.calls).toHaveLength(0);
-      expect(handleBlurSpy.mock.calls).toHaveLength(0);
 
       const tokenInputInstance = wrapper.find(TokenInput).at(0).instance();
       expect(tokenInputInstance.state.decimalValue).toStrictEqual(0);
@@ -342,6 +338,86 @@ describe('TokenInput Component', () => {
       expect(tokenInputInstance.find(UnitInput).props().value).toStrictEqual(
         '1',
       );
+    });
+  });
+
+  describe('Token Input Decimals Check', () => {
+    const handleChangeSpy = jest.fn();
+
+    afterEach(() => {
+      handleChangeSpy.mockClear();
+    });
+
+    it('should render incorrect hex onChange when input decimals is more than token decimals', () => {
+      const mockStore = {
+        metamask: {
+          currentCurrency: 'usd',
+          conversionRate: 231.06,
+        },
+      };
+      const store = configureMockStore()(mockStore);
+      const wrapper = mount(
+        <Provider store={store}>
+          <TokenInput
+            onChange={handleChangeSpy}
+            token={{
+              address: '0x1',
+              decimals: 4,
+              symbol: 'ABC',
+            }}
+            tokenExchangeRates={{ '0x1': 2 }}
+            showFiat
+            currentCurrency="usd"
+          />
+        </Provider>,
+      );
+
+      expect(wrapper).toHaveLength(1);
+      expect(handleChangeSpy.mock.calls).toHaveLength(0);
+
+      const input = wrapper.find('input');
+      expect(input.props().value).toStrictEqual(0);
+
+      input.simulate('change', { target: { value: '1.11111' } });
+      expect(handleChangeSpy.mock.calls).toHaveLength(1);
+
+      expect(handleChangeSpy.mock.calls[0][0]).toStrictEqual(
+        '2b67.1999999999999999999a',
+      );
+    });
+
+    it('should render correct hex onChange when input decimals is more than token decimals by omitting excess fractional part on blur', () => {
+      const mockStore = {
+        metamask: {
+          currentCurrency: 'usd',
+          conversionRate: 231.06,
+        },
+      };
+      const store = configureMockStore()(mockStore);
+
+      const wrapper = mount(
+        <Provider store={store}>
+          <TokenInput
+            onChange={handleChangeSpy}
+            token={{
+              address: '0x1',
+              decimals: 4,
+              symbol: 'ABC',
+            }}
+            tokenExchangeRates={{ '0x1': 2 }}
+            showFiat
+            currentCurrency="usd"
+          />
+        </Provider>,
+      );
+      expect(wrapper).toHaveLength(1);
+
+      const input = wrapper.find('input');
+
+      input.simulate('blur', { target: { value: '1.11111' } });
+
+      expect(handleChangeSpy.mock.calls).toHaveLength(1);
+      expect(handleChangeSpy.mock.calls[0][0]).toStrictEqual('2b67');
     });
   });
 });
