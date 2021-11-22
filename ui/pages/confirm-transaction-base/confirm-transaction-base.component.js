@@ -58,7 +58,8 @@ import GasDetailsItem from './gas-details-item';
 import TransactionAlerts from './transaction-alerts';
 
 // eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2 = process.env.EIP_1559_V2;
+const EIP_1559_V2_ENABLED =
+  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
@@ -428,7 +429,9 @@ export default class ConfirmTransactionBase extends Component {
           onEdit={() => this.handleEditGas()}
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           rows={[
-            EIP_1559_V2 && supportsEIP1559 && !isLegacyTransaction(txData) ? (
+            EIP_1559_V2_ENABLED &&
+            supportsEIP1559 &&
+            !isLegacyTransaction(txData) ? (
               <GasDetailsItem
                 key="gas_details"
                 hexMaximumTransactionFee={hexMaximumTransactionFee}

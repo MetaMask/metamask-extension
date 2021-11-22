@@ -1,9 +1,14 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 
-import { ETH } from '../../../helpers/constants/common';
-import { TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
+import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import {
+  TRANSACTION_ENVELOPE_TYPES,
+  TRANSACTION_STATUSES,
+} from '../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import mockEstimates from '../../../../test/data/mock-estimates.json';
+import mockState from '../../../../test/data/mock-state.json';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
 
@@ -17,28 +22,30 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
-const render = (props, state, componentProps) => {
+const render = (transactionProps, state, componentProps) => {
   const store = configureStore({
     metamask: {
-      nativeCurrency: ETH,
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
-      provider: {},
-      cachedBalances: {},
+      ...mockState.metamask,
       accounts: {
-        '0xAddress': {
-          address: '0xAddress',
+        [mockState.metamask.selectedAddress]: {
+          address: mockState.metamask.selectedAddress,
           balance: '0x1F4',
         },
       },
-      selectedAddress: '0xAddress',
+      gasFeeEstimates: mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET],
       ...state,
     },
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider {...props}>
+    <GasFeeContextProvider
+      transaction={{
+        txParams: {
+          type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+        },
+        ...transactionProps,
+      }}
+    >
       <TransactionAlerts {...componentProps} />
     </GasFeeContextProvider>,
     store,
@@ -46,15 +53,23 @@ const render = (props, state, componentProps) => {
 };
 
 describe('TransactionAlerts', () => {
+  beforeEach(() => {
+    process.env.EIP_1559_V2 = true;
+  });
+
+  afterEach(() => {
+    process.env.EIP_1559_V2 = false;
+  });
+
   it('should returning warning message for low gas estimate', () => {
-    render({ transaction: { userFeeLevel: 'low' } });
+    render({ userFeeLevel: 'low' });
     expect(
       document.getElementsByClassName('actionable-message--warning'),
     ).toHaveLength(1);
   });
 
   it('should return null for gas estimate other than low', () => {
-    render({ transaction: { userFeeLevel: 'high' } });
+    render({ userFeeLevel: 'high' });
     expect(
       document.getElementsByClassName('actionable-message--warning'),
     ).toHaveLength(0);
@@ -62,14 +77,16 @@ describe('TransactionAlerts', () => {
 
   it('should not show insufficient balance message if transaction value is less than balance', () => {
     render({
-      transaction: { userFeeLevel: 'high', txParams: { value: '0x64' } },
+      userFeeLevel: 'high',
+      txParams: { value: '0x64' },
     });
     expect(screen.queryByText('Insufficient funds.')).not.toBeInTheDocument();
   });
 
   it('should show insufficient balance message if transaction value is more than balance', () => {
     render({
-      transaction: { userFeeLevel: 'high', txParams: { value: '0x5208' } },
+      userFeeLevel: 'high',
+      txParams: { value: '0x5208' },
     });
     expect(screen.queryByText('Insufficient funds.')).toBeInTheDocument();
   });
@@ -81,7 +98,7 @@ describe('TransactionAlerts', () => {
           id: 0,
           time: 0,
           txParams: {
-            from: '0xAddress',
+            from: mockState.metamask.selectedAddress,
             to: '0xRecipient',
           },
           status: TRANSACTION_STATUSES.SUBMITTED,
@@ -95,7 +112,7 @@ describe('TransactionAlerts', () => {
 
   describe('SimulationError Message', () => {
     it('should show simulation error message along with option to proceed anyway if transaction.simulationFails is true', () => {
-      render({ transaction: { simulationFails: true } });
+      render({ simulationFails: true });
       expect(
         screen.queryByText(
           'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -107,7 +124,7 @@ describe('TransactionAlerts', () => {
     });
 
     it('should not show options to proceed anyways if compoennt prop userAcknowledgedGasMissing is already true', () => {
-      render({ transaction: { simulationFails: true } }, undefined, {
+      render({ simulationFails: true }, undefined, {
         userAcknowledgedGasMissing: true,
       });
       expect(
@@ -122,13 +139,30 @@ describe('TransactionAlerts', () => {
 
     it('should call prop setUserAcknowledgedGasMissing if proceed anyways option is clicked', () => {
       const setUserAcknowledgedGasMissing = jest.fn();
-      render({ transaction: { simulationFails: true } }, undefined, {
+      render({ simulationFails: true }, undefined, {
         setUserAcknowledgedGasMissing,
       });
       fireEvent.click(screen.queryByText('I want to proceed anyway'));
       expect(setUserAcknowledgedGasMissing).toHaveBeenCalledTimes(1);
     });
+
+    it('should return null if process.env.EIP_1559_V2 is false', () => {
+      process.env.EIP_1559_V2 = false;
+      const { container } = render({
+        txParams: {
+          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+        },
+      });
+      expect(container.firstChild).toBeNull();
+    });
+
+    it('should return null for legacy transactions', () => {
+      const { container } = render({
+        txParams: {
+          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+        },
+      });
+      expect(container.firstChild).toBeNull();
+    });
   });
 });
-
-// V@ T
