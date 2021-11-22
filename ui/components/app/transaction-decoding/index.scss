@@ -162,6 +162,15 @@
           word-break: break-all;
         }
       }
+
+      .solidity-error {
+        display: flex;
+        align-items: center;
+        & > .error-message__icon {
+          width: 14px;
+          margin-right: 5px;
+        }
+      }
     
       .eth-tx-params details > summary {
         color: black;
