@@ -9,10 +9,10 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 
-const AdvancedGasInputSubtext = ({ currentData = '', tweleveHrData = '' }) => {
+const AdvancedGasFeeInputSubtext = ({ currentData = '', tweleveHrData = '' }) => {
   return (
-    <Box className="advanced-gas-popover__input-subtext">
-      <Box className="advanced-gas-popover__input-subtext">
+    <Box className="advanced-gas-fee-popover__input-subtext">
+      <Box className="advanced-gas-fee-popover__input-subtext">
         <Typography
           tag={TYPOGRAPHY.Paragraph}
           variant={TYPOGRAPHY.H8}
@@ -32,7 +32,7 @@ const AdvancedGasInputSubtext = ({ currentData = '', tweleveHrData = '' }) => {
         </Typography>
         <img height="18" src="./images/high-arrow.svg" alt="" />
       </Box>
-      <Box marginLeft={4} className="advanced-gas-popover__input-subtext">
+      <Box marginLeft={4} className="advanced-gas-fee-popover__input-subtext">
         <Typography
           tag={TYPOGRAPHY.Paragraph}
           variant={TYPOGRAPHY.H8}
@@ -55,9 +55,9 @@ const AdvancedGasInputSubtext = ({ currentData = '', tweleveHrData = '' }) => {
   );
 };
 
-AdvancedGasInputSubtext.propTypes = {
+AdvancedGasFeeInputSubtext.propTypes = {
   currentData: PropTypes.string,
   tweleveHrData: PropTypes.string,
 };
 
-export default AdvancedGasInputSubtext;
+export default AdvancedGasFeeInputSubtext;

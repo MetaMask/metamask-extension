@@ -19,9 +19,9 @@ import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import AdvancedGasInputSubtext from './advanced-gas-input-subtext';
+import AdvancedGasFeeInputSubtext from './advanced-gas-fee-input-subtext';
 
-const AdvancedGasPopover = ({ onClose }) => {
+const AdvancedGasFeePopover = ({ onClose }) => {
   const t = useI18nContext();
   const {
     maxPriorityFeePerGas,
@@ -157,12 +157,12 @@ const AdvancedGasPopover = ({ onClose }) => {
 
   return (
     <Popover
-      className="advanced-gas-popover"
+      className="advanced-gas-fee-popover"
       title={t('advancedGasFeeModalTitle')}
       onBack={() => onClose()}
       onClose={() => onClose()}
     >
-      <Box className="advanced-gas-popover" margin={4}>
+      <Box className="advanced-gas-fee-popover" margin={4}>
         <FormField
           onChange={(value) => {
             onManualChange?.();
@@ -177,7 +177,7 @@ const AdvancedGasPopover = ({ onClose }) => {
           titleDetail={
             editingInGwei ? (
               <Button
-                className="advanced-gas-popover__edit-link"
+                className="advanced-gas-fee-popover__edit-link"
                 type="link"
                 onClick={() => updateBaseFeeMode(false)}
               >
@@ -185,7 +185,7 @@ const AdvancedGasPopover = ({ onClose }) => {
               </Button>
             ) : (
               <Button
-                className="advanced-gas-popover__edit-link"
+                className="advanced-gas-fee-popover__edit-link"
                 type="link"
                 onClick={() => updateBaseFeeMode(true)}
               >
@@ -205,7 +205,7 @@ const AdvancedGasPopover = ({ onClose }) => {
           numeric
           bottomBorder
           inputDetails={
-            <AdvancedGasInputSubtext
+            <AdvancedGasFeeInputSubtext
               currentData={`${estimatedBaseFeeInDecGWEI} GWEI`}
               tweleveHrData="23-359 GWEI"
             />
@@ -225,7 +225,7 @@ const AdvancedGasPopover = ({ onClose }) => {
           numeric
           bottomBorder
           inputDetails={
-            <AdvancedGasInputSubtext
+            <AdvancedGasFeeInputSubtext
               currentData="1-18 GWEI"
               tweleveHrData="0.1-127 GWEI"
             />
@@ -236,8 +236,8 @@ const AdvancedGasPopover = ({ onClose }) => {
   );
 };
 
-AdvancedGasPopover.propTypes = {
+AdvancedGasFeePopover.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default AdvancedGasPopover;
+export default AdvancedGasFeePopover;

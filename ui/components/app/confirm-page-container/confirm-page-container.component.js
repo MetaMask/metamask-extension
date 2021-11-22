@@ -14,7 +14,7 @@ import {
   ConfirmPageContainerContent,
   ConfirmPageContainerNavigation,
 } from '.';
-
+import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 // eslint-disable-next-line prefer-destructuring
 const EIP_1559_V2 = process.env.EIP_1559_V2;
 
@@ -237,7 +237,7 @@ export default class ConfirmPageContainer extends Component {
             />
           )}
           {editingGas && EIP_1559_V2 && (
-            <EditGasFeePopover onClose={handleCloseEditGas} />
+            <AdvancedGasFeePopover onClose={handleCloseEditGas} />
           )}
         </div>
       </GasFeeContextProvider>
