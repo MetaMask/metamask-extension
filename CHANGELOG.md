@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.7.0]
-### Added
-- [#12545](https://github.com/MetaMask/metamask-extension/pull/12545): Add warning to confirm transaction screen for low and high gas values
-
 ### Changed
 - [#12643](https://github.com/MetaMask/metamask-extension/pull/12643): Reject popup confirmations on close
 - [#12566](https://github.com/MetaMask/metamask-extension/pull/12566): Enable LavaMoat for the webapp background
@@ -23,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#12727](https://github.com/MetaMask/metamask-extension/pull/12727): Make toggle buttons keyboard accessible
 - [#12729](https://github.com/MetaMask/metamask-extension/pull/12729): Swaps: Fix issue with wrapping and unwrapping when an address contains uppercase characters
 - [#12631](https://github.com/MetaMask/metamask-extension/pull/12631): Fix bug preventing sending high precision decimal amounts of tokens in the send flow
+
 ## [10.6.2]
 ### Fixed
 - [#12770](https://github.com/MetaMask/metamask-extension/pull/12770): Fixed display of best quote in swaps quotes modal
@@ -2621,8 +2619,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.7.0...HEAD
-[10.7.0]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...v10.7.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.2...HEAD
+[10.7.0]: https://github.com/MetaMask/metamask-extension/compare/v10.6.2...v10.7.0
 [10.6.2]: https://github.com/MetaMask/metamask-extension/compare/v10.6.1...v10.6.2
 [10.6.1]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...v10.6.1
 [10.6.0]: https://github.com/MetaMask/metamask-extension/compare/v10.5.2...v10.6.0
