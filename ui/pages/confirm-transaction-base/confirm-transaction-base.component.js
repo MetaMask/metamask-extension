@@ -20,6 +20,7 @@ import {
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
+import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import TextField from '../../components/ui/text-field';
 import {
   TRANSACTION_TYPES,
@@ -415,19 +416,17 @@ export default class ConfirmTransactionBase extends Component {
 
     return (
       <div className="confirm-page-container-content__details">
-        {EIP_1559_V2 && (
-          <TransactionAlerts
-            setUserAcknowledgedGasMissing={() => {
-              this.setState({ userAcknowledgedGasMissing: true });
-            }}
-            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          />
-        )}
+        <TransactionAlerts
+          setUserAcknowledgedGasMissing={() => {
+            this.setState({ userAcknowledgedGasMissing: true });
+          }}
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+        />
         <TransactionDetail
           onEdit={() => this.handleEditGas()}
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           rows={[
-            EIP_1559_V2 ? (
+            EIP_1559_V2 && supportsEIP1559 && !isLegacyTransaction(txData) ? (
               <GasDetailsItem
                 key="gas_details"
                 hexMaximumTransactionFee={hexMaximumTransactionFee}
@@ -436,8 +435,6 @@ export default class ConfirmTransactionBase extends Component {
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
                 userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-                supportsEIP1559={supportsEIP1559}
-                txData={txData}
                 useNativeCurrencyAsPrimaryCurrency={
                   useNativeCurrencyAsPrimaryCurrency
                 }

@@ -38,7 +38,8 @@ export default class ConfirmPageContainerContent extends Component {
     disabled: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
-    hideTitle: PropTypes.boolean,
+    hideTitle: PropTypes.bool,
+    supportsEIP1559V2: PropTypes.bool,
   };
 
   renderContent() {
@@ -94,6 +95,7 @@ export default class ConfirmPageContainerContent extends Component {
       origin,
       ethGasPriceWarning,
       hideTitle,
+      supportsEIP1559V2,
     } = this.props;
 
     return (
@@ -118,7 +120,7 @@ export default class ConfirmPageContainerContent extends Component {
           hideTitle={hideTitle}
         />
         {this.renderContent()}
-        {!EIP_1559_V2 && (errorKey || errorMessage) && (
+        {supportsEIP1559V2 && (errorKey || errorMessage) && (
           <div className="confirm-page-container-content__error-container">
             <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
           </div>

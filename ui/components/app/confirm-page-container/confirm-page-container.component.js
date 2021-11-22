@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import SenderToRecipient from '../../ui/sender-to-recipient';
-import { PageContainerFooter } from '../../ui/page-container';
-import EditGasPopover from '../edit-gas-popover';
+
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import ErrorMessage from '../../ui/error-message';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import SenderToRecipient from '../../ui/sender-to-recipient';
+
+import { PageContainerFooter } from '../../ui/page-container';
 import Dialog from '../../ui/dialog';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
+import EditGasPopover from '../edit-gas-popover';
+import ErrorMessage from '../../ui/error-message';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -76,6 +79,7 @@ export default class ConfirmPageContainer extends Component {
     showAddToAddressBookModal: PropTypes.func,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
+    networkAndAccountSupportsEIP1559: PropTypes.bool,
   };
 
   render() {
@@ -126,6 +130,7 @@ export default class ConfirmPageContainer extends Component {
       showAddToAddressBookModal,
       contact = {},
       isOwnedAccount,
+      networkAndAccountSupportsEIP1559,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -138,6 +143,11 @@ export default class ConfirmPageContainer extends Component {
       (currentTransaction.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
         currentTransaction.type === TRANSACTION_TYPES.DEPLOY_CONTRACT) &&
       currentTransaction.txParams?.value === '0x0';
+
+    const supportsEIP1559V2 =
+      networkAndAccountSupportsEIP1559 &&
+      !isLegacyTransaction(currentTransaction?.txParams) &&
+      EIP_1559_V2;
 
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
@@ -207,6 +217,7 @@ export default class ConfirmPageContainer extends Component {
               origin={origin}
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
+              supportsEIP1559V2={supportsEIP1559V2}
             />
           )}
           {shouldDisplayWarning && (
@@ -229,14 +240,14 @@ export default class ConfirmPageContainer extends Component {
               )}
             </PageContainerFooter>
           )}
-          {editingGas && !EIP_1559_V2 && (
+          {editingGas && !supportsEIP1559V2 && (
             <EditGasPopover
               mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
               onClose={handleCloseEditGas}
               transaction={currentTransaction}
             />
           )}
-          {editingGas && EIP_1559_V2 && (
+          {editingGas && supportsEIP1559V2 && (
             <EditGasFeePopover onClose={handleCloseEditGas} />
           )}
         </div>

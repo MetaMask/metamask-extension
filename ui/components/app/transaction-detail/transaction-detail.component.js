@@ -15,9 +15,6 @@ export default function TransactionDetail({
   onEdit,
   userAcknowledgedGasMissing,
 }) {
-  // eslint-disable-next-line prefer-destructuring
-  const EIP_1559_V2 = process.env.EIP_1559_V2;
-
   const t = useI18nContext();
   const {
     gasLimit,
@@ -25,12 +22,13 @@ export default function TransactionDetail({
     hasSimulationError,
     maxFeePerGas,
     maxPriorityFeePerGas,
+    supportsEIP1559V2,
     transaction,
   } = useGasFeeContext();
 
   const editEnabled = !hasSimulationError || userAcknowledgedGasMissing;
 
-  if (editEnabled && EIP_1559_V2 && estimateUsed) {
+  if (supportsEIP1559V2 && editEnabled && estimateUsed) {
     return (
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
