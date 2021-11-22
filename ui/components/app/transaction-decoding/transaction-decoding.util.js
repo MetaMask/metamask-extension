@@ -42,7 +42,7 @@ export const transformTxDecoding = (params) => {
 
 export const renderLeaf = ({ name, kind, typeClass, value }) => {
   switch (kind) {
-    case 'value':
+    case 'error':
       return (
         <span className="sol-item solidity-error">
           <span>Malformed data</span>
