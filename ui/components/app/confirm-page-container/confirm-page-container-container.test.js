@@ -10,6 +10,14 @@ import ConfirmPageContainer, {
   ConfirmPageContainerNavigation,
 } from '.';
 
+jest.mock('../../../store/actions', () => ({
+  disconnectGasFeeEstimatePoller: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
+}));
+
 describe('Confirm Page Container Container Test', () => {
   let wrapper;
 
@@ -31,6 +39,8 @@ describe('Confirm Page Container Container Test', () => {
       selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
       addressBook: [],
       chainId: 'test',
+      identities: [],
+      featureFlags: {},
     },
   };
 

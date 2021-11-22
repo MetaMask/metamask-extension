@@ -424,11 +424,35 @@ describe('Swaps Util', () => {
       ).toBe(true);
     });
 
+    it('returns true if swapping from ETH with uppercase chars to WETH', () => {
+      const ethAddressWithUpperCaseChars =
+        '0X0000000000000000000000000000000000000000';
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          ethAddressWithUpperCaseChars,
+          WETH_CONTRACT_ADDRESS,
+        ),
+      ).toBe(true);
+    });
+
     it('returns true if swapping from WETH to ETH', () => {
       expect(
         shouldEnableDirectWrapping(
           MAINNET_CHAIN_ID,
           WETH_CONTRACT_ADDRESS,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
+        ),
+      ).toBe(true);
+    });
+
+    it('returns true if swapping from WETH with uppercase chars to ETH', () => {
+      const wethContractAddressWithUpperCaseChars =
+        '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+      expect(
+        shouldEnableDirectWrapping(
+          MAINNET_CHAIN_ID,
+          wethContractAddressWithUpperCaseChars,
           SWAPS_CHAINID_DEFAULT_TOKEN_MAP[MAINNET_CHAIN_ID]?.address,
         ),
       ).toBe(true);

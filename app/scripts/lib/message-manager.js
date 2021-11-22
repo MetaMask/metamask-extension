@@ -35,13 +35,14 @@ export default class MessageManager extends EventEmitter {
    * @property {Array} messages Holds all messages that have been created by this MessageManager
    *
    */
-  constructor() {
+  constructor({ metricsEvent }) {
     super();
     this.memStore = new ObservableStore({
       unapprovedMsgs: {},
       unapprovedMsgCount: 0,
     });
     this.messages = [];
+    this.metricsEvent = metricsEvent;
   }
 
   /**
@@ -78,9 +79,9 @@ export default class MessageManager extends EventEmitter {
    * @returns {promise} after signature has been
    *
    */
-  addUnapprovedMessageAsync(msgParams, req) {
-    return new Promise((resolve, reject) => {
-      const msgId = this.addUnapprovedMessage(msgParams, req);
+  async addUnapprovedMessageAsync(msgParams, req) {
+    const msgId = this.addUnapprovedMessage(msgParams, req);
+    return await new Promise((resolve, reject) => {
       // await finished
       this.once(`${msgId}:finished`, (data) => {
         switch (data.status) {
@@ -91,6 +92,10 @@ export default class MessageManager extends EventEmitter {
               ethErrors.provider.userRejectedRequest(
                 'MetaMask Message Signature: User denied message signature.',
               ),
+            );
+          case 'errored':
+            return reject(
+              new Error(`MetaMask Message Signature: ${data.error}`),
             );
           default:
             return reject(
@@ -217,8 +222,32 @@ export default class MessageManager extends EventEmitter {
    * @param {number} msgId - The id of the Message to reject.
    *
    */
-  rejectMsg(msgId) {
+  rejectMsg(msgId, reason = undefined) {
+    if (reason) {
+      const msg = this.getMsg(msgId);
+      this.metricsEvent({
+        event: reason,
+        category: 'Transactions',
+        properties: {
+          action: 'Sign Request',
+          type: msg.type,
+        },
+      });
+    }
     this._setMsgStatus(msgId, 'rejected');
+  }
+
+  /**
+   * Sets a Message status to 'errored' via a call to this._setMsgStatus.
+   *
+   * @param {number} msgId - The id of the Message to error
+   *
+   */
+  errorMessage(msgId, error) {
+    const msg = this.getMsg(msgId);
+    msg.error = error;
+    this._updateMsg(msg);
+    this._setMsgStatus(msgId, 'errored');
   }
 
   /**
@@ -292,7 +321,7 @@ export default class MessageManager extends EventEmitter {
  * @returns {string} A hex string conversion of the buffer data
  *
  */
-function normalizeMsgData(data) {
+export function normalizeMsgData(data) {
   if (data.slice(0, 2) === '0x') {
     // data is already hex
     return data;

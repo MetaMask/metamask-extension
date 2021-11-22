@@ -37,6 +37,7 @@ jest.mock('react-redux', () => {
   return {
     ...actual,
     useSelector: jest.fn(),
+    useDispatch: () => jest.fn(),
   };
 });
 

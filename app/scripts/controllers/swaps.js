@@ -28,6 +28,7 @@ import {
 } from '../../../ui/pages/swaps/swaps.util';
 import fetchWithCache from '../../../ui/helpers/utils/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
+import { isEqualCaseInsensitive } from '../../../ui/helpers/utils/util';
 import { NETWORK_EVENTS } from './network';
 
 // The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator
@@ -91,7 +92,7 @@ export default class SwapsController {
     networkController,
     provider,
     getProviderConfig,
-    tokenRatesStore,
+    getTokenRatesState,
     fetchTradesInfo = defaultFetchTradesInfo,
     getCurrentChainId,
     getEIP1559GasFeeEstimates,
@@ -105,7 +106,7 @@ export default class SwapsController {
     this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
 
     this.getBufferedGasLimit = getBufferedGasLimit;
-    this.tokenRatesStore = tokenRatesStore;
+    this.getTokenRatesState = getTokenRatesState;
 
     this.pollCount = 0;
     this.getProviderConfig = getProviderConfig;
@@ -280,7 +281,7 @@ export default class SwapsController {
 
       // For a user to be able to swap a token, they need to have approved the MetaSwap contract to withdraw that token.
       // _getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is greater
-      // than 0, it means that approval has already occured and is not needed. Otherwise, for tokens to be swapped, a new
+      // than 0, it means that approval has already occurred and is not needed. Otherwise, for tokens to be swapped, a new
       // call of the ERC-20 approve method is required.
       approvalRequired =
         allowance.eq(0) &&
@@ -610,7 +611,9 @@ export default class SwapsController {
   }
 
   async _findTopQuoteAndCalculateSavings(quotes = {}) {
-    const tokenConversionRates = this.tokenRatesStore.contractExchangeRates;
+    const {
+      contractExchangeRates: tokenConversionRates,
+    } = this.getTokenRatesState();
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
@@ -734,7 +737,12 @@ export default class SwapsController {
         decimalAdjustedDestinationAmount,
       );
 
-      const tokenConversionRate = tokenConversionRates[destinationToken];
+      const tokenConversionRate =
+        tokenConversionRates[
+          Object.keys(tokenConversionRates).find((tokenAddress) =>
+            isEqualCaseInsensitive(tokenAddress, destinationToken),
+          )
+        ];
       const conversionRateForSorting = tokenConversionRate || 1;
 
       const ethValueOfTokens = decimalAdjustedDestinationAmount.times(
@@ -777,7 +785,17 @@ export default class SwapsController {
       isSwapsDefaultTokenAddress(
         newQuotes[topAggId].destinationToken,
         chainId,
-      ) || Boolean(tokenConversionRates[newQuotes[topAggId]?.destinationToken]);
+      ) ||
+      Boolean(
+        tokenConversionRates[
+          Object.keys(tokenConversionRates).find((tokenAddress) =>
+            isEqualCaseInsensitive(
+              tokenAddress,
+              newQuotes[topAggId]?.destinationToken,
+            ),
+          )
+        ],
+      );
 
     let savings = null;
 
