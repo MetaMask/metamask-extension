@@ -120,7 +120,7 @@ export default class ConfirmPageContainerContent extends Component {
           hideTitle={hideTitle}
         />
         {this.renderContent()}
-        {supportsEIP1559V2 && (errorKey || errorMessage) && (
+        {!supportsEIP1559V2 && (errorKey || errorMessage) && (
           <div className="confirm-page-container-content__error-container">
             <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
           </div>

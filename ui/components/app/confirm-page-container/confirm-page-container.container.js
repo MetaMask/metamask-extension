@@ -1,9 +1,5 @@
 import { connect } from 'react-redux';
-import {
-  checkNetworkAndAccountSupports1559,
-  getAccountsWithLabels,
-  getAddressBookEntry,
-} from '../../../selectors';
+import { getAccountsWithLabels, getAddressBookEntry } from '../../../selectors';
 import * as actions from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
 
@@ -18,7 +14,6 @@ function mapStateToProps(state, ownProps) {
       .map((accountWithLabel) => accountWithLabel.address)
       .includes(to),
     to,
-    networkAndAccountSupportsEIP1559: checkNetworkAndAccountSupports1559(state),
   };
 }
 

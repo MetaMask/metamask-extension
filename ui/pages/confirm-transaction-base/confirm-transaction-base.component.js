@@ -20,13 +20,15 @@ import {
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
-import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import TextField from '../../components/ui/text-field';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
-import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
+import {
+  getTransactionTypeTitle,
+  isLegacyTransaction,
+} from '../../helpers/utils/transactions.util';
 import { toBuffer } from '../../../shared/modules/buffer-utils';
 
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
@@ -919,6 +921,7 @@ export default class ConfirmTransactionBase extends Component {
       gasFeeIsCustom,
       nativeCurrency,
       hardwareWalletRequiresConnection,
+      supportsEIP1559,
     } = this.props;
     const {
       submitting,
@@ -1002,6 +1005,9 @@ export default class ConfirmTransactionBase extends Component {
         editingGas={editingGas}
         handleCloseEditGas={() => this.handleCloseEditGas()}
         currentTransaction={txData}
+        supportsEIP1559V2={
+          EIP_1559_V2 && supportsEIP1559 && !isLegacyTransaction(txData)
+        }
       />
     );
   }

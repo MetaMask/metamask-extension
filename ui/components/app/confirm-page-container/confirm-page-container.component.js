@@ -79,7 +79,7 @@ export default class ConfirmPageContainer extends Component {
     showAddToAddressBookModal: PropTypes.func,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
-    networkAndAccountSupportsEIP1559: PropTypes.bool,
+    supportsEIP1559V2: PropTypes.bool,
   };
 
   render() {
@@ -130,7 +130,7 @@ export default class ConfirmPageContainer extends Component {
       showAddToAddressBookModal,
       contact = {},
       isOwnedAccount,
-      networkAndAccountSupportsEIP1559,
+      supportsEIP1559V2,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -143,11 +143,6 @@ export default class ConfirmPageContainer extends Component {
       (currentTransaction.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
         currentTransaction.type === TRANSACTION_TYPES.DEPLOY_CONTRACT) &&
       currentTransaction.txParams?.value === '0x0';
-
-    const supportsEIP1559V2 =
-      networkAndAccountSupportsEIP1559 &&
-      !isLegacyTransaction(currentTransaction?.txParams) &&
-      EIP_1559_V2;
 
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
