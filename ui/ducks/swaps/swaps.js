@@ -249,6 +249,12 @@ export const getSwapsFeatureIsLive = (state) =>
 export const getUseNewSwapsApi = (state) =>
   state.metamask.swapsState.useNewSwapsApi;
 
+export const getSmartTransactionsError = (state) =>
+  state.appState.smartTransactionsError;
+
+export const getSmartTransactionsErrorMessageDismissed = (state) =>
+  state.appState.smartTransactionsErrorMessageDismissed;
+
 export const getSmartTransactionsEnabled = (state) => {
   const hardwareWalletUsed = isHardwareWallet(state);
   const chainId = getCurrentChainId(state);
@@ -258,7 +264,8 @@ export const getSmartTransactionsEnabled = (state) => {
   const smartTransactionsFeatureFlagEnabled =
     state.metamask.swapsState?.swapsFeatureFlags?.smart_transactions
       ?.extension_active;
-  const { smartTransactionsLiveness, smartTransactionsError } = state.appState;
+  const { smartTransactionsLiveness } = state.appState;
+  const smartTransactionsError = getSmartTransactionsError(state);
   return Boolean(
     isAllowedNetwork &&
       !hardwareWalletUsed &&

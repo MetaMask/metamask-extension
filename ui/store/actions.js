@@ -3154,6 +3154,12 @@ export function fetchSmartTransactionsLiveness() {
   };
 }
 
+export function dismissSmartTransactionsErrorMessage() {
+  return {
+    type: actionConstants.DISMISS_SMART_TRANSACTIONS_ERROR_MESSAGE,
+  };
+}
+
 // DetectTokenController
 export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();

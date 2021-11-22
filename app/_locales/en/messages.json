@@ -2383,6 +2383,12 @@
   "smartTransactionsYouCanOptOut": {
     "message": "You can opt-out in advanced settings any time."
   },
+  "smartTransactionsAlert": {
+    "message": "Smart Transactions Alert"
+  },
+  "smartTransactionsUnavailable": {
+    "message": "Smart transactions are temporarily unavailable. You can still swap using the normal method or wait until smart transactions are available for cheaper transaction fees and reduced chances of failure."
+  },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
