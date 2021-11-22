@@ -50,7 +50,7 @@ export const smartTransactionsListSelector = (state) =>
     .map((stx) => ({
       ...stx,
       transactionType: 'smart',
-      status: stx.status.startsWith('cancelled') ? 'cancelled' : stx.status,
+      status: stx.status?.startsWith('cancelled') ? 'cancelled' : stx.status,
     }));
 
 export const selectedAddressTxListSelector = createSelector(

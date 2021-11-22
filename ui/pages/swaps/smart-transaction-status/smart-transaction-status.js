@@ -71,7 +71,7 @@ export default function SmartTransactionStatus() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
-  let smartTransactionStatus = '';
+  let smartTransactionStatus = 'pending';
   let latestSmartTransaction = {};
   let latestSmartTransactionUuid;
 
@@ -92,7 +92,7 @@ export default function SmartTransactionStatus() {
     // and without this code a user would briefly (~1 - 2s) see a status page for the previous smart transaction.
     latestSmartTransaction = {};
     latestSmartTransactionUuid = null;
-    smartTransactionStatus = '';
+    smartTransactionStatus = 'pending';
   }
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
     () => {
