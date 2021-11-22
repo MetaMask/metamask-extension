@@ -1306,10 +1306,47 @@ export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
     try {
-      await promisifiedBackground.addCollectible(address, tokenID);
+      return await promisifiedBackground.addCollectible(address, tokenID);
     } catch (error) {
       log.error(error);
       dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function addCollectibleVerifyOwnership(
+  address,
+  tokenID,
+  dontShowLoadingIndicator,
+) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot add collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot add collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      return await promisifiedBackground.addCollectibleVerifyOwnership(
+        address,
+        tokenID,
+      );
+    } catch (error) {
+      if (
+        error.message.includes('This collectible is not owned by the user') ||
+        error.message.includes('Unable to verify ownership.')
+      ) {
+        throw error;
+      } else {
+        log.error(error);
+        dispatch(displayWarning(error.message));
+      }
     } finally {
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
@@ -2536,6 +2573,13 @@ export function setNewNetworkAdded(newNetworkAdded) {
   return {
     type: actionConstants.SET_NEW_NETWORK_ADDED,
     value: newNetworkAdded,
+  };
+}
+
+export function setNewCollectibleAddedMessage(newCollectibleAddedMessage) {
+  return {
+    type: actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE,
+    value: newCollectibleAddedMessage,
   };
 }
 
