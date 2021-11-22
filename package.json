@@ -91,7 +91,8 @@
     "netmask": "^2.0.1",
     "pubnub/superagent-proxy": "^3.0.0",
     "pull-ws": "^3.3.2",
-    "ws": "^7.4.6"
+    "ws": "^7.4.6",
+    "json-schema": "^0.4.0"
   },
   "dependencies": {
     "3box": "^1.10.2",
