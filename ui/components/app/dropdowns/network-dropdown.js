@@ -351,7 +351,6 @@ class NetworkDropdown extends Component {
             {this.renderNetworkEntry('kovan')}
             {this.renderNetworkEntry('rinkeby')}
             {this.renderNetworkEntry('goerli')}
-            {this.renderNetworkEntry('localhost')}
           </div>
         </div>
 
