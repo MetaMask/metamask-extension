@@ -526,6 +526,7 @@
         "ethjs-util": true,
         "events": true,
         "human-standard-collectible-abi": true,
+        "human-standard-multi-collectible-abi": true,
         "human-standard-token-abi": true,
         "immer": true,
         "isomorphic-fetch": true,
