@@ -10,7 +10,7 @@ import AddRecipient from './add-recipient.component';
 const store = configureStore(testData);
 
 export default {
-  title: 'Pages/Send/Send Content/Add Recipient',
+  title: 'Pages/Send/SendContent/AddRecipient',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };

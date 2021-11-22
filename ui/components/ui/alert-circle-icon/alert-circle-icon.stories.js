@@ -2,7 +2,7 @@ import React from 'react';
 import AlertCircleIcon from './alert-circle-icon.component';
 
 export default {
-  title: 'Components/UI/Alert Circle Icon',
+  title: 'Components/UI/AlertCircleIcon',
   id: __filename,
 };
 

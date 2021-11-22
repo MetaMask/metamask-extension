@@ -2,7 +2,7 @@ import React from 'react';
 import PrivacySettings from './privacy-settings';
 
 export default {
-  title: 'Pages/Onboarding Flow/Privacy Settings',
+  title: 'Pages/OnboardingFlow/PrivacySettings',
   id: __filename,
 };
 

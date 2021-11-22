@@ -6,7 +6,7 @@ import mockQuoteData from './mock-quote-data';
 import SelectQuotePopover from '.';
 
 export default {
-  title: 'Pages/Swaps/Select Quote Popover',
+  title: 'Pages/Swaps/SelectQuotePopover',
   id: __filename,
 };
 

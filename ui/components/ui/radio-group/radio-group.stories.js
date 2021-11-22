@@ -3,7 +3,7 @@ import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
 import RadioGroup from '.';
 
 export default {
-  title: 'Components/UI/Radio Group',
+  title: 'Components/UI/RadioGroup',
   id: __filename,
 };
 

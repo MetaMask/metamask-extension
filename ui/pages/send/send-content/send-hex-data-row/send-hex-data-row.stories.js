@@ -3,7 +3,7 @@ import { boolean } from '@storybook/addon-knobs';
 import SendHexDataRow from './send-hex-data-row.component';
 
 export default {
-  title: 'Pages/Send/Send Content/Send Hex Data Row',
+  title: 'Pages/Send/SendContent/SendHexDataRow',
   id: __filename,
 };
 

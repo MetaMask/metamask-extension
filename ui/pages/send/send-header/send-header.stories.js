@@ -15,7 +15,7 @@ import { ASSET_TYPES, SEND_STAGES } from '../../../ducks/send';
 import SendHeader from './send-header.component';
 
 export default {
-  title: 'Pages/Send/Send Header',
+  title: 'Pages/Send/SendHeader',
   id: __filename,
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import OnboardingWelcome from './welcome';
 
 export default {
-  title: 'Pages/Onboarding Flow/Welcome',
+  title: 'Pages/OnboardingFlow/Welcome',
   id: __filename,
 };
 

@@ -24,7 +24,7 @@ addParameters({
   },
   options: {
     storySort: {
-      order: ['Getting Started'], 
+      order: ['Getting Started', 'Components', ['UI', 'App'], 'Pages'],
     },
   },
 });

@@ -3,7 +3,7 @@ import { text } from '@storybook/addon-knobs';
 import ErrorMessage from '.';
 
 export default {
-  title: 'Components/UI/Error Message',
+  title: 'Components/UI/ErrorMessage',
   id: __filename,
 };
 

@@ -11,7 +11,7 @@ import testData from '../../../../../.storybook/test-data';
 import SendAmountRow from './send-amount-row.component';
 
 export default {
-  title: 'Pages/Send/Send Content/Send Amount Row',
+  title: 'Pages/Send/SendContent/SendAmountRow',
   id: __filename,
 };
 

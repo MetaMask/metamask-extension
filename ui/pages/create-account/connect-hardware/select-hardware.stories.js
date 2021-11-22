@@ -4,7 +4,7 @@ import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wa
 import SelectHardware from './select-hardware';
 
 export default {
-  title: 'Pages/Create Account/Connect Hardware/Select Hardware',
+  title: 'Pages/CreateAccount/ConnectHardware/SelectHardware',
   id: __filename,
 };
 

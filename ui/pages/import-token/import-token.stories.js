@@ -4,7 +4,7 @@ import { boolean } from '@storybook/addon-knobs';
 import ImportToken from './import-token.component';
 
 export default {
-  title: 'Pages/Import Token',
+  title: 'Pages/ImportToken',
   id: __filename,
 };
 

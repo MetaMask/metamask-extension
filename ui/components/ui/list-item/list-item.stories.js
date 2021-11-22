@@ -10,7 +10,7 @@ import Button from '../button';
 import ListItem from './list-item.component';
 
 export default {
-  title: 'Components/UI/List Item',
+  title: 'Components/UI/ListItem',
   id: __filename,
 };
 

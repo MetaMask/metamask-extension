@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import MobileSyncPage from './mobile-sync.component';
 
 export default {
-  title: 'Pages/Mobile Sync',
+  title: 'Pages/MobileSync',
   id: __filename,
 };
 

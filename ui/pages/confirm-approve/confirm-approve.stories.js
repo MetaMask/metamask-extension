@@ -11,7 +11,7 @@ import { domainMetadata } from '../../../.storybook/initial-states/approval-scre
 import ConfirmApprove from '.';
 
 export default {
-  title: 'Pages/Confirm Approve',
+  title: 'Pages/ConfirmApprove',
   id: __filename,
 };
 

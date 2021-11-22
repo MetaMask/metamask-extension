@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import UnlockPage from './unlock-page.component';
 
 export default {
-  title: 'Pages/Unlock Page',
+  title: 'Pages/UnlockPage',
   id: __filename,
 };
 

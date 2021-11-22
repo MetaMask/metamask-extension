@@ -10,7 +10,7 @@ import ContactListTab from './contact-list-tab.component';
 const store = configureStore(testData);
 
 export default {
-  title: 'Pages/Settings/Contact List Tab',
+  title: 'Pages/Settings/ContactListTab',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };

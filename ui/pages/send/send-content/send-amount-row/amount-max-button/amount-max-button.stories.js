@@ -13,7 +13,7 @@ import { AMOUNT_MODES, SEND_STATUSES } from '../../../../../ducks/send';
 import AmountMaxButton from './amount-max-button';
 
 export default {
-  title: 'Pages/Send/Send Content/Send Amount Row/Amount Max Button',
+  title: 'Pages/Send/SendContent/SendAmountRow/AmountMaxButton',
   id: __filename,
 };
 

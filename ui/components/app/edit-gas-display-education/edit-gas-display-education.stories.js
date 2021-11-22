@@ -2,7 +2,7 @@ import React from 'react';
 import EditGasDisplayEducation from '.';
 
 export default {
-  title: 'Components/App/Edit Gas Display Education',
+  title: 'Components/App/EditGasDisplayEducation',
   id: __filename,
 };
 

@@ -4,7 +4,7 @@ import { text } from '@storybook/addon-knobs';
 import ActionableMessage from '.';
 
 export default {
-  title: 'Components/UI/Actionable Message',
+  title: 'Components/UI/ActionableMessage',
   id: __filename,
 };
 

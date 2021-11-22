@@ -15,7 +15,7 @@ const containerStyle = {
 };
 
 export default {
-  title: 'Pages/Swaps/Fee Card',
+  title: 'Pages/Swaps/FeeCard',
   id: __filename,
 };
 

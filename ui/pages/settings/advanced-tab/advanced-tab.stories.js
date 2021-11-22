@@ -3,7 +3,7 @@ import { text, boolean } from '@storybook/addon-knobs';
 import AdvancedTab from './advanced-tab.component';
 
 export default {
-  title: 'Pages/Settings/Advanced Tab',
+  title: 'Pages/Settings/AdvancedTab',
   id: __filename,
 };
 

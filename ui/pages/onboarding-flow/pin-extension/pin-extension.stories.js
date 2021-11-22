@@ -2,7 +2,7 @@ import React from 'react';
 import OnboardingPinExtension from './pin-extension';
 
 export default {
-  title: 'Pages/Onboarding Flow/Pin Extension',
+  title: 'Pages/OnboardingFlow/PinExtension',
   id: __filename,
 };
 

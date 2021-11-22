@@ -8,7 +8,7 @@ import {
 import DefinitionList from './definition-list';
 
 export default {
-  title: 'Components/UI/Definition List',
+  title: 'Components/UI/DefinitionList',
   id: __filename,
 };
 
