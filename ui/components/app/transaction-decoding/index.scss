@@ -1,17 +1,11 @@
-// @import 'components/address/index'; 
-
+//styling for ui components
 @import './components/ui/copy-raw-data/index';
-.tx-insight-wrapper {
+
+//styling for decoding components
+@import './components/decoding/address/index';
+
+.tx-insight {
   overflow-x: hidden;
-  // styling for address component
-  .tx-insight-component-address {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      &__sender-icon {
-        padding-right: 5px;
-      }
-  }
 
   &-loading {
     display: flex;
@@ -26,14 +20,14 @@
 
   .tx-insight-content {
     &__tree-component {
-      .sender-to-recipient__party {
-        display: flex;
-        align-items: center;
-      }
+      // .sender-to-recipient__party {
+      //   display: flex;
+      //   align-items: center;
+      // }
   
-      .sender-to-recipient__sender-icon {
-        padding: 0 5px 0 0;
-      }
+      // .sender-to-recipient__sender-icon {
+      //   padding: 0 5px 0 0;
+      // }
   
       font-size: 0.875rem;
       line-height: 175%;

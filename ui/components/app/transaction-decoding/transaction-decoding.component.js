@@ -25,10 +25,6 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
 
   const transformTxDecoding = (params) => {
     return params.map((node) => {
-      console.log(
-        '🚀 ~ file: transaction-decoding.component.js ~ line 28 ~ returnparams.map ~ node',
-        node,
-      );
       const nodeName = node.name;
       const nodeValue = node.value;
       const nodeKind = nodeValue.kind;
@@ -156,16 +152,17 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      // const { info: projectInfo } = await fetchWithCache(
-      //   FETCH_PROJECT_INFO_URI +
-      //     '?' +
-      //     new URLSearchParams({
-      //       to,
-      //       ['network-id']: chainId,
-      //     }),
-      //   { method: 'GET' },
-      // );
       try {
+        // const { info: projectInfo } = await fetchWithCache(
+        //   FETCH_PROJECT_INFO_URI +
+        //     '?' +
+        //     new URLSearchParams({
+        //       to,
+        //       ['network-id']: chainId,
+        //     }),
+        //   { method: 'GET' },
+        // );
+
         const request_url =
           TX_EXTRA_URI +
           '?' +
@@ -174,7 +171,11 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
             from,
             data,
           });
-        console.log('request_url', request_url);
+
+        console.log(
+          '🚀 ~ file: transaction-decoding.component.js ~ line 167 ~ request_url',
+          request_url,
+        );
 
         const response = await fetchWithCache(request_url, {
           method: 'GET',
@@ -197,6 +198,12 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         const params = transformTxDecoding(response?.decoding?.arguments);
         setTx(params);
 
+        // const decoder = await forAddress(to, {
+        //   provider: global.ethereumProvider,
+        //   projectInfo,
+        // });
+        // console.log('🚀 decoder', decoder);
+
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -211,11 +218,6 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       //   'e24b1e96c17e4aa995ad8c0ee861667c',
       // );
 
-      // const decoder = await forAddress(to, {
-      //   provider,
-      //   projectInfo,
-      // });
-
       // // build the strucutre of the tx
       // const tx = {
       //   from,
@@ -227,15 +229,17 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   }, [to, chainId, data]);
 
   return (
-    <div className="tx-insight-wrapper">
+    <div className="tx-insight">
       {loading ? (
-        <div className="tx-insight-wrapper-loading">
+        <div className="tx-insight-loading">
           <Spinner color="#F7C06C" />
         </div>
       ) : error ? (
-        <ErrorMessage errorMessage={errorMessage} />
+        <div className="tx-insight-error">
+          <ErrorMessage errorMessage={errorMessage} />
+        </div>
       ) : (
-        <div className="tx-insight-wrapper-content">
+        <div className="tx-insight-content">
           <div className="tx-insight-content__tree-component">
             <ol>{tx.map(renderTreeItems)}</ol>
           </div>
