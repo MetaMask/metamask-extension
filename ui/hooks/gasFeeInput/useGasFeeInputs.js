@@ -75,7 +75,8 @@ export function useGasFeeInputs(
   editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
 ) {
   // eslint-disable-next-line prefer-destructuring
-  const EIP_1559_V2 = process.env.EIP_1559_V2;
+  const EIP_1559_V2_ENABLED =
+    process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
@@ -307,8 +308,7 @@ export function useGasFeeInputs(
     hasGasErrors,
     hasSimulationError,
     supportsEIP1559,
-    supportsEIP1559V2:
-      supportsEIP1559 && (EIP_1559_V2 === true || EIP_1559_V2 === 'true'),
+    supportsEIP1559V2: supportsEIP1559 && EIP_1559_V2_ENABLED,
     updateTransactionUsingGasFeeEstimates,
   };
 }

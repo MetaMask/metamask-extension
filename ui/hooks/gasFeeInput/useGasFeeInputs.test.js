@@ -332,16 +332,6 @@ describe('useGasFeeInputs', () => {
       process.env.EIP_1559_V2 = false;
     });
 
-    it('return false if process.env.EIP_1559_V2 is false', () => {
-      process.env.EIP_1559_V2 = false;
-      const { result } = renderHook(() =>
-        useGasFeeInputs(null, {
-          txParams: { type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET },
-        }),
-      );
-      expect(result.current.supportsEIP1559V2).toBe(false);
-    });
-
     it('return true for fee_market transaction', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs(null, {

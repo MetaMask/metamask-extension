@@ -146,16 +146,6 @@ describe('TransactionAlerts', () => {
       expect(setUserAcknowledgedGasMissing).toHaveBeenCalledTimes(1);
     });
 
-    it('should return null if process.env.EIP_1559_V2 is false', () => {
-      process.env.EIP_1559_V2 = false;
-      const { container } = render({
-        txParams: {
-          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
-        },
-      });
-      expect(container.firstChild).toBeNull();
-    });
-
     it('should return null for legacy transactions', () => {
       const { container } = render({
         txParams: {

@@ -17,7 +17,7 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
-const render = (props, componentProps) => {
+const render = (props) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -37,12 +37,8 @@ const render = (props, componentProps) => {
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider {...props}>
-      <GasDetailsItem
-        txData={{ txParams: {} }}
-        userAcknowledgedGasMissing={false}
-        {...componentProps}
-      />
+    <GasFeeContextProvider {...props} transaction={{ txParams: {}, ...props }}>
+      <GasDetailsItem userAcknowledgedGasMissing={false} />
     </GasFeeContextProvider>,
     store,
   );
@@ -60,14 +56,14 @@ describe('GasDetailsItem', () => {
   });
 
   it('should show warning icon if estimates are high', async () => {
-    render({ defaultEstimateToUse: 'high' });
+    render({ userFeeLevel: 'high' });
     await waitFor(() => {
       expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
     });
   });
 
   it('should not show warning icon if estimates are not high', async () => {
-    render({ defaultEstimateToUse: 'low' });
+    render({ userFeeLevel: 'low' });
     await waitFor(() => {
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
     });
@@ -75,8 +71,8 @@ describe('GasDetailsItem', () => {
 
   it('should return null if there is simulationError and user has not selected proceed anyway', () => {
     const { container } = render({
-      defaultEstimateToUse: 'low',
-      transaction: { simulationFails: true },
+      userFeeLevel: 'low',
+      simulationFails: true,
     });
     expect(container.innerHTML).toHaveLength(0);
   });

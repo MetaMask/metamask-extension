@@ -1009,7 +1009,7 @@ export default class ConfirmTransactionBase extends Component {
         handleCloseEditGas={() => this.handleCloseEditGas()}
         currentTransaction={txData}
         supportsEIP1559V2={
-          EIP_1559_V2 && supportsEIP1559 && !isLegacyTransaction(txData)
+          EIP_1559_V2_ENABLED && supportsEIP1559 && !isLegacyTransaction(txData)
         }
       />
     );
