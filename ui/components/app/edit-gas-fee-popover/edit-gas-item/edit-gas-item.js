@@ -104,6 +104,7 @@ const EditGasItem = ({ priorityLevel, onClose }) => {
       }
       onClick={onOptionSelect}
       aria-label={priorityLevel}
+      autoFocus={priorityLevel === estimateUsed}
     >
       <span className="edit-gas-item__name">
         <span
