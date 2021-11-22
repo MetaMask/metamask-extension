@@ -62,7 +62,7 @@ describe('Editing Confirm Transaction', function () {
 
         // has correct updated value on the confirm screen the transaction
         const editedTransactionAmounts = await driver.findElements(
-          '.transaction-detail-item__row .transaction-detail-item__detail-text .currency-display-component__text',
+          '.transaction-detail-item__row .transaction-detail-item__detail-values .currency-display-component__text:last-of-type',
         );
         const editedTransactionAmount = editedTransactionAmounts[0];
         assert.equal(await editedTransactionAmount.getText(), '0.0008');
