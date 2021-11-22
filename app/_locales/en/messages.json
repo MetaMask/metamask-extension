@@ -1954,7 +1954,7 @@
   "privateNetwork": {
     "message": "Private Network"
   },
-  "proceedTransaction": {
+  "proceedWithTransaction": {
     "message": "I want to proceed anyway"
   },
   "proposedApprovalLimit": {
