@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.6.1]
+### Fixed
+- [#12573](https://github.com/MetaMask/metamask-extension/pull/12573): Ensure metrics api errors do not impact user experience
+
 ## [10.6.0]
 ### Added
 - [#12053](https://github.com/MetaMask/metamask-extension/pull/12053): Add support for GridPlus Lattice1 hardware wallet
@@ -2594,7 +2598,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.1...HEAD
+[10.6.1]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...v10.6.1
 [10.6.0]: https://github.com/MetaMask/metamask-extension/compare/v10.5.2...v10.6.0
 [10.5.2]: https://github.com/MetaMask/metamask-extension/compare/v10.5.1...v10.5.2
 [10.5.1]: https://github.com/MetaMask/metamask-extension/compare/v10.5.0...v10.5.1

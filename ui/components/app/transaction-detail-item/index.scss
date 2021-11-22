@@ -5,12 +5,15 @@
 
   &__row {
     display: flex;
+    justify-content: space-between;
     grid-gap: 5px;
   }
 
-  &__title {
-    flex-grow: 1;
-    word-break: break-word;
+  &__detail-values {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    width: 65%;
   }
 
   .info-tooltip {
@@ -20,19 +23,6 @@
     path {
       fill: $ui-3;
     }
-  }
-
-  &__total {
-    font-weight: bold;
-    color: $ui-black;
-  }
-
-  &__subtitle {
-    flex-grow: 1;
-  }
-
-  &__subtext {
-    text-align: end;
   }
 
   .currency-display-component {
