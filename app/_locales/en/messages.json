@@ -49,6 +49,9 @@
   "addANetwork": {
     "message": "Add a network"
   },
+  "addANickname": {
+    "message": "Add a nickname"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -84,6 +87,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
+  },
+  "addMemo": {
+    "message": "Add memo"
   },
   "addNFT": {
     "message": "Add NFT"
@@ -694,6 +700,9 @@
   },
   "edit": {
     "message": "Edit"
+  },
+  "editAddressNickname": {
+    "message": "Edit address nickname"
   },
   "editContact": {
     "message": "Edit Contact"
@@ -1647,6 +1656,9 @@
   "nfts": {
     "message": "NFTs"
   },
+  "nickname": {
+    "message": "Nickname"
+  },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
@@ -2326,6 +2338,9 @@
   "signed": {
     "message": "Signed"
   },
+  "simulationErrorMessage": {
+    "message": "This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended."
+  },
   "skip": {
     "message": "Skip"
   },
@@ -2991,6 +3006,9 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "tryAnywayOption": {
+    "message": "I will try anyway"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
