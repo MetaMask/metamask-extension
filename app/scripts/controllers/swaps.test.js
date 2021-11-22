@@ -82,12 +82,12 @@ const MOCK_FETCH_METADATA = {
   chainId: MAINNET_CHAIN_ID,
 };
 
-const MOCK_TOKEN_RATES_STORE = {
+const MOCK_TOKEN_RATES_STORE = () => ({
   contractExchangeRates: {
     '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
     '0x1111111111111111111111111111111111111111': 0.1,
   },
-};
+});
 
 const MOCK_GET_PROVIDER_CONFIG = () => ({ type: 'FAKE_NETWORK' });
 
@@ -161,7 +161,7 @@ describe('SwapsController', function () {
       networkController: getMockNetworkController(),
       provider,
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
-      tokenRatesStore: MOCK_TOKEN_RATES_STORE,
+      getTokenRatesState: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
       getCurrentChainId: getCurrentChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
@@ -211,7 +211,7 @@ describe('SwapsController', function () {
         networkController,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
-        tokenRatesStore: MOCK_TOKEN_RATES_STORE,
+        getTokenRatesState: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
@@ -235,7 +235,7 @@ describe('SwapsController', function () {
         networkController,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
-        tokenRatesStore: MOCK_TOKEN_RATES_STORE,
+        getTokenRatesState: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
@@ -259,7 +259,7 @@ describe('SwapsController', function () {
         networkController,
         provider,
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
-        tokenRatesStore: MOCK_TOKEN_RATES_STORE,
+        getTokenRatesState: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
         getCurrentChainId: getCurrentChainIdStub,
       });
@@ -816,9 +816,10 @@ describe('SwapsController', function () {
           .stub(swapsController, '_getERC20Allowance')
           .resolves(ethers.BigNumber.from(1));
 
-        swapsController.tokenRatesStore = {
+        swapsController.getTokenRatesState = () => ({
           contractExchangeRates: {},
-        };
+        });
+
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
           MOCK_FETCH_PARAMS,
           MOCK_FETCH_METADATA,
