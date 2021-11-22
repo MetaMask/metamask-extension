@@ -107,6 +107,9 @@ export default class PersonalMessageManager extends EventEmitter {
               ),
             );
             return;
+          case 'errored':
+            reject(new Error(`MetaMask Message Signature: ${data.error}`));
+            return;
           default:
             reject(
               new Error(
@@ -252,6 +255,19 @@ export default class PersonalMessageManager extends EventEmitter {
       });
     }
     this._setMsgStatus(msgId, 'rejected');
+  }
+
+  /**
+   * Sets a Message status to 'errored' via a call to this._setMsgStatus.
+   *
+   * @param {number} msgId - The id of the Message to error
+   *
+   */
+  errorMessage(msgId, error) {
+    const msg = this.getMsg(msgId);
+    msg.error = error;
+    this._updateMsg(msg);
+    this._setMsgStatus(msgId, 'errored');
   }
 
   /**

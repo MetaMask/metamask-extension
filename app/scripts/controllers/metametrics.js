@@ -15,6 +15,10 @@ const defaultCaptureException = (err) => {
   });
 };
 
+const exceptionsToFilter = {
+  [`You must pass either an "anonymousId" or a "userId".`]: true,
+};
+
 /**
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsContext} MetaMetricsContext
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
@@ -61,7 +65,13 @@ export default class MetaMetricsController {
     initState,
     captureException = defaultCaptureException,
   }) {
-    this._captureException = captureException;
+    this._captureException = (err) => {
+      // This is a temporary measure. Currently there are errors flooding sentry due to a problem in how we are tracking anonymousId
+      // We intend on removing this as soon as we understand how to correctly solve that problem.
+      if (!exceptionsToFilter[err.message]) {
+        captureException(err);
+      }
+    };
     const prefState = preferencesStore.getState();
     this.chainId = getCurrentChainId();
     this.network = getNetworkIdentifier();
