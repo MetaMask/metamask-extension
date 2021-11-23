@@ -17,7 +17,7 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
-const render = (props, componentProps) => {
+const render = ({ contextProps, componentProps }) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -37,7 +37,7 @@ const render = (props, componentProps) => {
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider {...props}>
+    <GasFeeContextProvider {...contextProps}>
       <GasDetailsItem
         txData={{ txParams: {} }}
         userAcknowledgedGasMissing={false}
@@ -60,31 +60,43 @@ describe('GasDetailsItem', () => {
   });
 
   it('should show warning icon if estimates are high', async () => {
-    render({ defaultEstimateToUse: 'high' });
+    render({ contextProps: { defaultEstimateToUse: 'high' } });
     await waitFor(() => {
       expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
     });
   });
 
   it('should not show warning icon if estimates are not high', async () => {
-    render({ defaultEstimateToUse: 'low' });
+    render({ contextProps: { defaultEstimateToUse: 'low' } });
     await waitFor(() => {
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
     });
   });
 
-  it('should return null if there is simulationError and user has not selected proceed anyway', () => {
+  it('should return null if there is simulationError and user has not acknowledged gasMissing warning', () => {
     const { container } = render({
-      defaultEstimateToUse: 'low',
-      transaction: { simulationFails: true },
+      contextProps: {
+        defaultEstimateToUse: 'low',
+        transaction: { simulationFails: true },
+      },
     });
     expect(container.innerHTML).toHaveLength(0);
   });
 
-  it('should not return null even if there is simulationError if user selected proceedAnyways', async () => {
+  it('should not return null even if there is simulationError if user acknowledged gasMissing warning', async () => {
     render();
     await waitFor(() => {
       expect(screen.queryByText('Gas')).toBeInTheDocument();
     });
+  });
+
+  it('should should render gas fee details', () => {
+    render({
+      hexMinimumTransactionFee: '0x1ca62a4f7800',
+      hexMaximumTransactionFee: '0x290ee75e3d900',
+    });
+    expect(screen.queryAllByText('0.000031')).toHaveLength(2);
+    expect(screen.queryByText('ETH')).toBeInTheDocument();
+    expect(screen.queryByText('0.000722')).toBeInTheDocument();
   });
 });

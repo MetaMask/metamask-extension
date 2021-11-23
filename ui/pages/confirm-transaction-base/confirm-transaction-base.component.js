@@ -577,7 +577,6 @@ export default class ConfirmTransactionBase extends Component {
         )}
         <TransactionDetail
           disabled={isDisabled()}
-          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           onEdit={
             renderSimulationFailureWarning ? null : () => this.handleEditGas()
           }
@@ -1018,14 +1017,13 @@ export default class ConfirmTransactionBase extends Component {
         lastTx={lastTx}
         ofText={ofText}
         requestsWaitingText={requestsWaitingText}
-        hideUserAcknowledgeGasMissingOption={!isDisabled()}
+        hideUserAcknowledgedGasMissing={!isDisabled()}
         disabled={
           renderSimulationFailureWarning ||
           !valid ||
           submitting ||
           hardwareWalletRequiresConnection ||
-          (gasIsLoading && !gasFeeIsCustom) ||
-          (Boolean(txData?.simulationFails) && !userAcknowledgedGasMissing)
+          (gasIsLoading && !gasFeeIsCustom)
         }
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}

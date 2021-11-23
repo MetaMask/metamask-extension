@@ -39,7 +39,7 @@ export default class ConfirmPageContainerContent extends Component {
     setUserAcknowledgedGasMissing: PropTypes.func,
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
-    hideUserAcknowledgeGasMissingOption: PropTypes.bool,
+    hideUserAcknowledgedGasMissing: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
     hideTitle: PropTypes.boolean,
@@ -100,10 +100,10 @@ export default class ConfirmPageContainerContent extends Component {
       ethGasPriceWarning,
       hideTitle,
       setUserAcknowledgedGasMissing,
-      hideUserAcknowledgeGasMissingOption,
+      hideUserAcknowledgedGasMissing,
     } = this.props;
 
-    const primaryAction = hideUserAcknowledgeGasMissingOption
+    const primaryAction = hideUserAcknowledgedGasMissing
       ? null
       : {
           label: this.context.t('tryAnywayOption'),

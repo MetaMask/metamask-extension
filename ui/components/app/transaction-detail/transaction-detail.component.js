@@ -22,15 +22,12 @@ export default function TransactionDetail({
   const {
     gasLimit,
     estimateUsed,
-    hasSimulationError,
     maxFeePerGas,
     maxPriorityFeePerGas,
     transaction,
   } = useGasFeeContext();
 
-  const editEnabled = !hasSimulationError || userAcknowledgedGasMissing;
-
-  if (editEnabled && EIP_1559_V2 && estimateUsed) {
+  if (onEdit && EIP_1559_V2 && estimateUsed) {
     return (
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
@@ -78,7 +75,7 @@ export default function TransactionDetail({
 
   return (
     <div className="transaction-detail">
-      {editEnabled && onEdit && (
+      {onEdit && (
         <div className="transaction-detail-edit">
           <button onClick={onEdit}>{t('edit')}</button>
         </div>
@@ -91,5 +88,4 @@ export default function TransactionDetail({
 TransactionDetail.propTypes = {
   rows: PropTypes.arrayOf(TransactionDetailItem).isRequired,
   onEdit: PropTypes.func,
-  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
 };

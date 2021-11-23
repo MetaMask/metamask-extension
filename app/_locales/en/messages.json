@@ -2354,11 +2354,10 @@
     "message": "Signed"
   },
   "simulationErrorMessage": {
-<<<<<<< HEAD
-    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
-=======
     "message": "This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended."
->>>>>>> 994a7d5458101f73f96bc7d660fc6d80d8676836
+  },
+  "simulationErrorMessageV2": {
+    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "skip": {
     "message": "Skip"
