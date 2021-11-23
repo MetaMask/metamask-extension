@@ -384,6 +384,9 @@ export function getEnsResolutionByAddress(state, address) {
   return state.metamask.ensResolutionsByAddress[address] || '';
 }
 
+export const curriedGetEnsResolutionByAddress = (address) => (state) =>
+  getEnsResolutionByAddress(state, address);
+
 export function getAddressBookEntry(state, address) {
   const addressBook = getAddressBook(state);
   const entry = addressBook.find((contact) =>
@@ -1118,3 +1121,6 @@ export function getBlockExplorerLinkText(
 
   return blockExplorerLinkText;
 }
+
+export const getBlockExplorerLinkTextForAccountDetailsModal = (state) =>
+  getBlockExplorerLinkText(state, true);

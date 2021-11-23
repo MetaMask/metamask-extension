@@ -17,7 +17,17 @@ class EditableLabel extends Component {
   state = {
     isEditing: false,
     value: this.props.defaultValue || '',
+    hasAlreadyUpdatedOnce: false,
   };
+
+  componentDidUpdate(_prevProps, prevState) {
+    if (!prevState.hasAlreadyUpdatedOnce) {
+      this.setState({
+        value: this.props.defaultValue,
+        hasAlreadyUpdatedOnce: true,
+      });
+    }
+  }
 
   handleSubmit() {
     const { value } = this.state;

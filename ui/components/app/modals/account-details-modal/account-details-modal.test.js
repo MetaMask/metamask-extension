@@ -1,7 +1,7 @@
 import React from 'react';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
-import AccountDetailsModal from './account-details-modal.container';
+import AccountDetailsModal from './account-details-modal';
 
 describe('Account Details Modal', () => {
   let wrapper;
