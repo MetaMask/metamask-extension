@@ -62,14 +62,14 @@ describe('TransactionAlerts', () => {
   });
 
   it('should returning warning message for low gas estimate', () => {
-    render({ transactionProps: { transaction: { userFeeLevel: 'low' } } });
+    render({ transactionProps: { userFeeLevel: 'low' } });
     expect(
       document.getElementsByClassName('actionable-message--warning'),
     ).toHaveLength(1);
   });
 
   it('should return null for gas estimate other than low', () => {
-    render({ transactionProps: { transaction: { userFeeLevel: 'high' } } });
+    render({ transactionProps: { userFeeLevel: 'high' } });
     expect(
       document.getElementsByClassName('actionable-message--warning'),
     ).toHaveLength(0);
@@ -78,7 +78,8 @@ describe('TransactionAlerts', () => {
   it('should not show insufficient balance message if transaction value is less than balance', () => {
     render({
       transactionProps: {
-        transaction: { userFeeLevel: 'high', txParams: { value: '0x64' } },
+        userFeeLevel: 'high',
+        txParams: { value: '0x64' },
       },
     });
     expect(screen.queryByText('Insufficient funds.')).not.toBeInTheDocument();
@@ -87,7 +88,8 @@ describe('TransactionAlerts', () => {
   it('should show insufficient balance message if transaction value is more than balance', () => {
     render({
       transactionProps: {
-        transaction: { userFeeLevel: 'high', txParams: { value: '0x5208' } },
+        userFeeLevel: 'high',
+        txParams: { value: '0x5208' },
       },
     });
     expect(screen.queryByText('Insufficient funds.')).toBeInTheDocument();
