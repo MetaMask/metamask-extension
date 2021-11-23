@@ -41,7 +41,7 @@ const EditGasItem = ({ priorityLevel }) => {
   let maxPriorityFeePerGas;
   let minWaitTime;
 
-  if (gasFeeEstimates[priorityLevel]) {
+  if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
   } else if (
     priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
@@ -95,15 +95,20 @@ const EditGasItem = ({ priorityLevel }) => {
   };
 
   return (
-    <div
+    <button
       className={classNames('edit-gas-item', {
         'edit-gas-item-selected': priorityLevel === estimateUsed,
         'edit-gas-item-disabled':
           priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
           !dappSuggestedGasFees,
       })}
-      role="button"
+      disabled={
+        priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
+        !dappSuggestedGasFees
+      }
       onClick={onOptionSelect}
+      aria-label={priorityLevel}
+      autoFocus={priorityLevel === estimateUsed}
     >
       <span className="edit-gas-item__name">
         <span
@@ -142,7 +147,7 @@ const EditGasItem = ({ priorityLevel }) => {
       <span className="edit-gas-item__tooltip">
         <InfoTooltip position="top" />
       </span>
-    </div>
+    </button>
   );
 };
 
