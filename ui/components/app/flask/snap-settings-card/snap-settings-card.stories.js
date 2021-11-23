@@ -1,7 +1,7 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
 
-// import README from './README.mdx';
+import README from './README.mdx';
 import SnapSettingsCard from '.';
 
 export default {
@@ -10,7 +10,7 @@ export default {
   component: SnapSettingsCard,
   parameters: {
     docs: {
-      //   page: README,
+      page: README,
     },
   },
   argTypes: {
@@ -20,7 +20,7 @@ export default {
     description: {
       control: 'text',
     },
-    iconUrl: {
+    icon: {
       control: 'text',
     },
     dateAdded: {
@@ -92,9 +92,61 @@ DefaultStory.args = {
   name: 'Snap name',
   description:
     'This snap provides developers everywhere access to an entirely new data storage paradigm, even letting your programs store data autonomously.',
-  iconUrl: 'AST.png',
+  icon: 'AST.png',
   dateAdded: d,
   version: '10.5.1234',
   url: 'https://metamask.io/',
   status: 'stopped',
 };
+
+export const Status = () => (
+  <>
+    <SnapSettingsCard
+      name="Installing snap"
+      description="This snap is Installing"
+      icon="AST.png"
+      dateAdded={d}
+      version="10.5.1234"
+      url="https://metamask.io/"
+      status="installing"
+      cardProps={{
+        marginBottom: 3,
+      }}
+    />
+    <SnapSettingsCard
+      isEnabled
+      name="Running snap"
+      description="This snap is Running"
+      icon="AST.png"
+      dateAdded={d}
+      version="10.5.1234"
+      url="https://metamask.io/"
+      status="running"
+      cardProps={{
+        marginBottom: 3,
+      }}
+    />
+    <SnapSettingsCard
+      name="Stopped snap"
+      description="This snap is stopped"
+      icon="AST.png"
+      dateAdded={d}
+      version="10.5.1234"
+      url="https://metamask.io/"
+      status="stopped"
+      cardProps={{
+        marginBottom: 3,
+      }}
+    />
+    <SnapSettingsCard
+      isEnabled
+      name="Crashed snap"
+      description="This snap is Crashed"
+      icon="AST.png"
+      dateAdded={d}
+      version="10.5.1234"
+      url="https://metamask.io/"
+      status="crashed"
+    />
+  </>
+);

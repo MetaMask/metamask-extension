@@ -11,6 +11,7 @@ describe('SnapSettingsCard', () => {
     version: '10.5.1234',
     url: 'https://metamask.io',
     status: 'stopped',
+    icon: './AST.png',
   };
   it('should render the SnapsSettingCard without crashing', () => {
     const { getByText } = render(<SnapSettingsCard {...args} />);
@@ -59,5 +60,17 @@ describe('SnapSettingsCard', () => {
     );
     fireEvent.click(seeDetailsBtn);
     expect(onClick).toHaveBeenCalled();
+  });
+
+  it('should render an icon image', () => {
+    const { getByAltText } = render(<SnapSettingsCard {...args} />);
+    const image = getByAltText(args.name);
+    expect(image).toBeDefined();
+    expect(image).toHaveAttribute('src', args.icon);
+  });
+
+  it('should render the icon fallback using the first letter of the name', () => {
+    const { getByText } = render(<SnapSettingsCard {...args} icon="" />);
+    expect(getByText('S')).toBeDefined();
   });
 });

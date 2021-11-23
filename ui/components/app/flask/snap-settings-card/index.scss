@@ -1,4 +1,5 @@
 $version-max-width: 56px; // Increase to show more of the version number
+$body-line-clamp: 4; // Number of lines in card body before truncating
 
 .snap-settings-card {
   &__title {
@@ -17,10 +18,9 @@ $version-max-width: 56px; // Increase to show more of the version number
 
   &__body {
     overflow: hidden;
-    max-height: 90px;
     /* stylelint-disable */
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: $body-line-clamp;
     -webkit-box-orient: vertical;
     /* stylelint-enable */
   }

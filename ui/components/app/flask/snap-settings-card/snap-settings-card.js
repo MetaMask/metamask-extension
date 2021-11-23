@@ -4,7 +4,8 @@ import classnames from 'classnames';
 
 import Card from '../../../ui/card';
 import Box from '../../../ui/box';
-import SiteIcon from '../../../ui/site-icon';
+import IconWithFallback from '../../../ui/icon-with-fallback';
+import IconBorder from '../../../ui/icon-border';
 import Typography from '../../../ui/typography/typography';
 import ToggleButton from '../../../ui/toggle-button';
 import Chip from '../../../ui/chip';
@@ -37,7 +38,7 @@ const STATUS_COLORS = {
 const SnapSettingsCard = ({
   name,
   description,
-  iconUrl,
+  icon,
   dateAdded,
   version,
   url,
@@ -92,7 +93,9 @@ const SnapSettingsCard = ({
         marginBottom={4}
       >
         <Box>
-          <SiteIcon url={iconUrl} size={32} name={name} />
+          <IconBorder size={32}>
+            <IconWithFallback icon={icon} size={32} name={name} />
+          </IconBorder>
         </Box>
         <Typography
           boxProps={{
@@ -209,15 +212,15 @@ SnapSettingsCard.propTypes = {
    */
   name: PropTypes.string,
   /**
-   * Description of the snap. Truncates after 4 lines.
+   * Description of the snap. Truncates after 4 lines
    */
   description: PropTypes.string,
   /**
-   * Image url for the snap icon
+   * Image source of the snap icon for the IconWithFallback component
    */
-  iconUrl: PropTypes.string,
+  icon: PropTypes.string,
   /**
-   * Date the snap was added. Date will need formatting.
+   * Date the snap was added. Date will need formatting
    */
   dateAdded: PropTypes.string,
   /**
@@ -229,7 +232,7 @@ SnapSettingsCard.propTypes = {
    */
   url: PropTypes.string,
   /**
-   * The onChange function for the ToggleButton
+   * The onChange function for the ToggleButton component
    */
   onToggle: PropTypes.func,
   /**
