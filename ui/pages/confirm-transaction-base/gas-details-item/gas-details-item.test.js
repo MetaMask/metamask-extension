@@ -17,7 +17,7 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
-const render = ({ contextProps, componentProps }) => {
+const render = ({ componentProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -92,8 +92,10 @@ describe('GasDetailsItem', () => {
 
   it('should should render gas fee details', () => {
     render({
-      hexMinimumTransactionFee: '0x1ca62a4f7800',
-      hexMaximumTransactionFee: '0x290ee75e3d900',
+      componentProps: {
+        hexMinimumTransactionFee: '0x1ca62a4f7800',
+        hexMaximumTransactionFee: '0x290ee75e3d900',
+      },
     });
     expect(screen.queryAllByText('0.000031')).toHaveLength(2);
     expect(screen.queryByText('ETH')).toBeInTheDocument();
