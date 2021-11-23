@@ -7,10 +7,10 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  ONBOARDING_EXPERIMENTAL_AREA, // eslint-disable-line no-unused-vars
+  ONBOARDING_EXPERIMENTAL_AREA,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
-  ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
+  ONBOARDING_WELCOME_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import {
@@ -21,7 +21,6 @@ import {
 } from '../../../ducks/metamask/metamask';
 
 export default function OnboardingFlowSwitch() {
-  /* eslint-disable prefer-const */
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isInitialized = useSelector(getIsInitialized);
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);

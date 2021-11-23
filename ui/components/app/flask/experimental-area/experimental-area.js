@@ -1,4 +1,3 @@
-/* eslint-disable no-irregular-whitespace */
 import React, { useMemo, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -46,11 +45,13 @@ MMMm*mMMMMMMMMMMm**......**mMMMMMMMMMMm*mMMM
 MMMMMMMMMMMMMMMMMm/....../mMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMmmmmmmmmMMMMMMMMMMMMMMMMMM`;
 
+/* eslint-disable no-irregular-whitespace */
 const EXPERIMENTAL_AREA = `█▄█ █▀█ █░█ ▀ █▀█ █▀▀   █▀▀ █▄░█ ▀█▀ █▀▀ █▀█ █ █▄░█ █▀▀   ▄▀█ █▄░█
 ░█░ █▄█ █▄█ ░ █▀▄ ██▄   ██▄ █░▀█ ░█░ ██▄ █▀▄ █ █░▀█ █▄█   █▀█ █░▀█
 
 █▀▀ ▀▄▀ █▀█ █▀▀ █▀█ █ █▀▄▀█ █▀▀ █▄░█ ▀█▀ ▄▀█ █░░   ▄▀█ █▀█ █▀▀ ▄▀█
 ██▄ █░█ █▀▀ ██▄ █▀▄ █ █░▀░█ ██▄ █░▀█ ░█░ █▀█ █▄▄   █▀█ █▀▄ ██▄ █▀█`;
+/* eslint-enable no-irregular-whitespace */
 
 export default function ExperimentalArea({ redirectTo }) {
   const t = useContext(I18nContext);
@@ -81,7 +82,7 @@ export default function ExperimentalArea({ redirectTo }) {
         {t('flaskExperimentalText5')}
       </div>
       <Button type="primary" onClick={onClick}>
-        {t('IUnderstand')}
+        {t('userAccepts')}
       </Button>
     </div>
   );
