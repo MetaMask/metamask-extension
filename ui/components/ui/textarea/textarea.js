@@ -29,6 +29,7 @@ const TextArea = ({
     `textarea--resize-${resize}`,
     {
       'textarea--scrollable': scrollable,
+      'textarea--not-scrollable': !scrollable,
     },
   );
   return (

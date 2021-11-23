@@ -15,6 +15,10 @@
     overflow-y: scroll;
   }
 
+  &--not-scrollable {
+    overflow-y: hidden;
+  }
+
   @each $size in design-system.$resize {
     &--resize-#{$size} {
       resize: $size;
