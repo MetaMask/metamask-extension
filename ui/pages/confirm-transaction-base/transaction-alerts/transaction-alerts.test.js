@@ -103,7 +103,7 @@ describe('TransactionAlerts', () => {
             id: 0,
             time: 0,
             txParams: {
-              from: '0xAddress',
+              from: mockState.metamask.selectedAddress,
               to: '0xRecipient',
             },
             status: TRANSACTION_STATUSES.SUBMITTED,
