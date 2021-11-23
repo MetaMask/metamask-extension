@@ -22,7 +22,7 @@ describe('Confirm Page Container Content', () => {
     const mockOnCancel = jest.fn();
     const mockOnCancelAll = jest.fn();
     const mockOnSubmit = jest.fn();
-    const mockOnConfirmAnyways = jest.fn();
+    const mockSetUserAcknowledgedGasMissing = jest.fn();
     props = {
       action: ' Withdraw Stake',
       errorMessage: null,
@@ -32,7 +32,7 @@ describe('Confirm Page Container Content', () => {
       onCancel: mockOnCancel,
       cancelText: 'Reject',
       onSubmit: mockOnSubmit,
-      onConfirmAnyways: mockOnConfirmAnyways,
+      setUserAcknowledgedGasMissing: mockSetUserAcknowledgedGasMissing,
       submitText: 'Confirm',
       disabled: true,
       origin: 'http://localhost:4200',
@@ -63,7 +63,7 @@ describe('Confirm Page Container Content', () => {
 
     const iWillTryButton = getByText('I will try anyway');
     fireEvent.click(iWillTryButton);
-    expect(props.onConfirmAnyways).toHaveBeenCalledTimes(1);
+    expect(props.setUserAcknowledgedGasMissing).toHaveBeenCalledTimes(1);
 
     const cancelButton = getByText('Reject');
     fireEvent.click(cancelButton);
