@@ -17,11 +17,7 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import Address from './components/decoding/address';
 import CopyRawData from './components/ui/copy-raw-data/';
 
-export default function TransactionDecoding({
-  to = '',
-  inputData: data = '',
-  title = '',
-}) {
+export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const t = useContext(I18nContext);
   const [tx, setTx] = useState([]);
   const { address: from } = useSelector(getSelectedAccount);
@@ -209,22 +205,10 @@ export default function TransactionDecoding({
     );
   };
 
-  return title ? (
-    <div className="tx-insight">
-      <details>
-        <summary className="tx-insight-title typography--weight-bold typography--color-black">
-          {title}:{' '}
-        </summary>
-        {renderTransactionDecoding()}
-      </details>
-    </div>
-  ) : (
-    <div className="tx-insight">{renderTransactionDecoding()}</div>
-  );
+  return <div className="tx-insight">{renderTransactionDecoding()}</div>;
 }
 
 TransactionDecoding.propTypes = {
   to: PropTypes.string.isRequired,
   inputData: PropTypes.string.isRequired,
-  title: PropTypes.string,
 };

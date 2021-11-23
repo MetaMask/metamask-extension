@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import SenderToRecipient from '../../ui/sender-to-recipient';
+import Disclosure from '../../ui/disclosure';
 import { FLAT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
@@ -251,18 +252,22 @@ export default class TransactionListItemDetails extends PureComponent {
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
               />
-              <TransactionActivityLog
-                transactionGroup={transactionGroup}
-                className="transaction-list-item-details__transaction-activity-log"
-                onCancel={this.handleCancel}
-                onRetry={this.handleRetry}
-                isEarliestNonce={isEarliestNonce}
-              />
-              <TransactionDecoding
-                title="Transaction data"
-                to={transactionGroup.initialTransaction.txParams?.to}
-                inputData={transactionGroup.initialTransaction.txParams?.data}
-              />
+              <Disclosure title="Activity log" size="small">
+                <TransactionActivityLog
+                  transactionGroup={transactionGroup}
+                  className="transaction-list-item-details__transaction-activity-log"
+                  onCancel={this.handleCancel}
+                  onRetry={this.handleRetry}
+                  isEarliestNonce={isEarliestNonce}
+                />
+              </Disclosure>
+              <Disclosure title="Transaction data" size="small">
+                <TransactionDecoding
+                  title="Transaction data"
+                  to={transactionGroup.initialTransaction.txParams?.to}
+                  inputData={transactionGroup.initialTransaction.txParams?.data}
+                />
+              </Disclosure>
             </div>
           </div>
         </div>

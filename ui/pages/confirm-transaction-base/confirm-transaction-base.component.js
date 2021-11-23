@@ -26,6 +26,7 @@ import CopyRawData from '../../components/app/transaction-decoding/components/ui
 
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
+import Disclosure from '../../components/ui/disclosure';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
@@ -567,7 +568,9 @@ export default class ConfirmTransactionBase extends Component {
               {functionType}
             </span>
           </div>
-          <TransactionDecoding to={txParams?.to} inputData={txParams?.data} />
+          <Disclosure>
+            <TransactionDecoding to={txParams?.to} inputData={txParams?.data} />
+          </Disclosure>
         </div>
       )
     );

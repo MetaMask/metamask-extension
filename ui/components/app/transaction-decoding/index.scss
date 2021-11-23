@@ -6,7 +6,6 @@
 
 .tx-insight {
   overflow-x: hidden;
-
   &-loading {
     display: flex;
     justify-content: center;
@@ -23,25 +22,6 @@
   }
 
   & > details > summary {
-    position: relative;
-    &::-webkit-details-marker, &::marker {
-      display: none;
-      content: '';
-    }
-    &::before {
-      position: absolute;
-      content: " ";
-      flex: 0 0 auto;
-      height: 16px;
-      width: 16px;
-      background-image: url("images/icons/expand.svg");
-      background-size: contain;
-      background-repeat: no-repeat;
-      cursor: pointer;
-      left: 0;
-      top: 2px;
-    }
-
     &.tx-insight-title {
       font-size: 14px;
       position: relative;
@@ -60,22 +40,11 @@
 
   .tx-insight-content {
     &__tree-component {
-      // .sender-to-recipient__party {
-      //   display: flex;
-      //   align-items: center;
-      // }
-  
-      // .sender-to-recipient__sender-icon {
-      //   padding: 0 5px 0 0;
-      // }
-  
-      font-size: 0.875rem;
       line-height: 175%;
       
       & > ol {
         padding-left: 0;
       }
-      
       .eth-tx-params {
         padding: 8px;
         width: 343px;
@@ -95,49 +64,13 @@
         padding-left: 22px;
         margin-left: 4px;
       }
-  
-      // details > summary::-webkit-details-marker, details > summary::marker {
-      //   display: none;
-      //   content: '';
-      // }
-    
+
       details > summary {
         position: relative;
         cursor: pointer;
         padding-bottom: 5px;
-        // padding-left: 20px;
-        // &::before {
-        //   position: absolute;
-        //   content: " ";
-        //   flex: 0 0 auto;
-        //   height: 16px;
-        //   width: 16px;
-        //   background-image: url("images/icons/expand.svg");
-        //   background-size: contain;
-        //   background-repeat: no-repeat;
-        //   cursor: pointer;
-        //   left: 0;
-        //   top: 7px;
-        // }
       }
-    
-      // details[open] > summary {
-      //   &::before {
-      //     position: absolute;
-      //     content: " ";
-      //     flex: 0 0 auto;
-      //     height: 16px;
-      //     width: 16px;
-      //     background-image: url("images/icons/collapse.svg");
-      //     background-size: contain;
-      //     background-repeat: no-repeat;
-      //     cursor: pointer;
-      //     left: 0;
-      //     top: 7px;
-      //   }
-      // }
       
-    
       .eth-tx-params .solidity-func-name {
         width: fit-content;
         padding: 4px;
