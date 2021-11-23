@@ -1,5 +1,5 @@
 /**
- * Accounts can be instantiated from simple, HD or the two hardware wallet
+ * Accounts can be instantiated from simple, HD or the multiple hardware wallet
  * keyring types. Both simple and HD are treated as default but we do special
  * case accounts managed by a hardware wallet.
  */
@@ -7,6 +7,14 @@ export const KEYRING_TYPES = {
   LEDGER: 'Ledger Hardware',
   TREZOR: 'Trezor Hardware',
   LATTICE: 'Lattice Hardware',
+  QR: 'QR Hardware Wallet Device',
+};
+
+export const DEVICE_NAMES = {
+  LEDGER: 'ledger',
+  TREZOR: 'trezor',
+  QR: 'QR Hardware',
+  LATTICE: 'lattice',
 };
 
 /**

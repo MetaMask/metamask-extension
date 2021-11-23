@@ -91,6 +91,7 @@ export default class Home extends PureComponent {
     seedPhraseBackedUp: PropTypes.bool.isRequired,
     newNetworkAdded: PropTypes.string,
     setNewNetworkAdded: PropTypes.func.isRequired,
+    isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -99,7 +100,7 @@ export default class Home extends PureComponent {
     canShowBlockageNotification: true,
   };
 
-  componentDidMount() {
+  checkStatusAndNavigate() {
     const {
       firstPermissionsRequestId,
       history,
@@ -111,11 +112,13 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       pendingConfirmations,
+      isSigningQRHardwareTransaction,
     } = this.props;
-
-    // eslint-disable-next-line react/no-unused-state
-    this.setState({ mounted: true });
-    if (isNotification && totalUnapprovedCount === 0) {
+    if (
+      isNotification &&
+      totalUnapprovedCount === 0 &&
+      !isSigningQRHardwareTransaction
+    ) {
       global.platform.closeCurrentWindow();
     } else if (!isNotification && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
@@ -134,6 +137,12 @@ export default class Home extends PureComponent {
     }
   }
 
+  componentDidMount() {
+    // eslint-disable-next-line react/no-unused-state
+    this.setState({ mounted: true });
+    this.checkStatusAndNavigate();
+  }
+
   static getDerivedStateFromProps(
     {
       firstPermissionsRequestId,
@@ -144,11 +153,16 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
+      isSigningQRHardwareTransaction,
     },
     { mounted },
   ) {
     if (!mounted) {
-      if (isNotification && totalUnapprovedCount === 0) {
+      if (
+        isNotification &&
+        totalUnapprovedCount === 0 &&
+        !isSigningQRHardwareTransaction
+      ) {
         return { closing: true };
       } else if (
         firstPermissionsRequestId ||
@@ -169,11 +183,14 @@ export default class Home extends PureComponent {
       showRestorePrompt,
       threeBoxLastUpdated,
       threeBoxSynced,
+      isNotification,
     } = this.props;
 
     if (!prevState.closing && this.state.closing) {
       global.platform.closeCurrentWindow();
     }
+
+    isNotification && this.checkStatusAndNavigate();
 
     if (threeBoxSynced && showRestorePrompt && threeBoxLastUpdated === null) {
       setupThreeBox();

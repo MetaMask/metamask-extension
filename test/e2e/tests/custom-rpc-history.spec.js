@@ -84,7 +84,7 @@ describe('Stores custom RPC history', function () {
         await rpcUrlInput.clear();
         await rpcUrlInput.sendKeys(duplicateRpcUrl);
         await driver.findElement({
-          text: 'This URL is currently used by the localhost network.',
+          text: 'This URL is currently used by the Localhost 8545 network.',
           tag: 'h6',
         });
       },
@@ -123,7 +123,8 @@ describe('Stores custom RPC history', function () {
         await chainIdInput.clear();
         await chainIdInput.sendKeys(duplicateChainId);
         await driver.findElement({
-          text: 'This Chain ID is currently used by the localhost network.',
+          text:
+            'This Chain ID is currently used by the Localhost 8545 network.',
           tag: 'h6',
         });
       },
