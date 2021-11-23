@@ -422,7 +422,9 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const renderGasDetailsItem = () => {
-      return EIP_1559_V2 ? (
+      return EIP_1559_V2_ENABLED &&
+        supportsEIP1559 &&
+        !isLegacyTransaction(txData) ? (
         <GasDetailsItem
           key="gas_details"
           hexMaximumTransactionFee={hexMaximumTransactionFee}
@@ -584,10 +586,7 @@ export default class ConfirmTransactionBase extends Component {
           }
           rows={[
             renderSimulationFailureWarning && simulationFailureWarning(),
-            EIP_1559_V2_ENABLED &&
-              supportsEIP1559 &&
-              !renderSimulationFailureWarning &&
-              renderGasDetailsItem(),
+            !renderSimulationFailureWarning && renderGasDetailsItem(),
             !renderSimulationFailureWarning && isMultiLayerFeeNetwork && (
               <MultiLayerFeeMessage
                 transaction={txData}
