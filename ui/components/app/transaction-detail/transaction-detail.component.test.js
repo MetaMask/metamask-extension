@@ -107,12 +107,13 @@ describe('TransactionDetail', () => {
       contextProps: {
         transaction: {
           simulationFails: true,
+          userFeeLevel: 'low',
         },
       },
       componentProps: { userAcknowledgedGasMissing: false },
     });
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
-    expect(screen.queryByText('Edit')).not.toBeInTheDocument();
+    expect(screen.queryByText('Low')).not.toBeInTheDocument();
   });
 
   it('should render edit link if userAcknowledgedGasMissing is true even if transaction has simulation error', () => {
@@ -120,6 +121,7 @@ describe('TransactionDetail', () => {
       contextProps: {
         transaction: {
           simulationFails: true,
+          userFeeLevel: 'low',
         },
       },
       componentProps: { userAcknowledgedGasMissing: true },
