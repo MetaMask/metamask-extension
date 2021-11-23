@@ -8,7 +8,8 @@ import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import ErrorMessage from '../../ui/error-message';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import Dialog from '../../ui/dialog';
-import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
+import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
+import EditGasFeePopover from '../edit-gas-fee-popover';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -236,9 +237,8 @@ export default class ConfirmPageContainer extends Component {
               transaction={currentTransaction}
             />
           )}
-          {editingGas && EIP_1559_V2 && (
-            <EditGasFeePopover onClose={handleCloseEditGas} />
-          )}
+          <EditGasFeePopover />
+          <AdvancedGasFeePopover />
         </div>
       </GasFeeContextProvider>
     );

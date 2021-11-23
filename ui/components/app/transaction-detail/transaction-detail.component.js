@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { useGasFeeContext } from '../../../contexts/gasFee';
+import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import Typography from '../../ui/typography/typography';
 
@@ -22,12 +23,13 @@ export default function TransactionDetail({ rows = [], onEdit }) {
     maxPriorityFeePerGas,
     transaction,
   } = useGasFeeContext();
+  const { openModal } = useTransactionModalContext();
 
   if (EIP_1559_V2 && estimateUsed) {
     return (
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
-          <button onClick={onEdit}>
+          <button onClick={() => openModal('editGasFee')}>
             <span className="transaction-detail-edit-V2__icon">
               {`${PRIORITY_LEVEL_ICON_MAP[estimateUsed]} `}
             </span>
@@ -37,7 +39,9 @@ export default function TransactionDetail({ rows = [], onEdit }) {
             <i className="fas fa-chevron-right asset-list-item__chevron-right" />
           </button>
           {estimateUsed === 'custom' && onEdit && (
-            <button onClick={onEdit}>{t('edit')}</button>
+            <button onClick={() => openModal('advancedGasFee')}>
+              {t('edit')}
+            </button>
           )}
           {estimateUsed === 'dappSuggested' && (
             <InfoTooltip

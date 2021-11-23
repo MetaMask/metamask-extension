@@ -163,6 +163,9 @@
   "advanced": {
     "message": "Advanced"
   },
+  "advancedGasFeeModalTitle": {
+    "message": "Advanced gas fee"
+  },
   "advancedGasPriceTitle": {
     "message": "Gas price"
   },

@@ -25,9 +25,11 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
+import { getMethodName } from '../../helpers/utils/metrics';
 import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
 import { toBuffer } from '../../../shared/modules/buffer-utils';
 
+import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
@@ -913,6 +915,7 @@ export default class ConfirmTransactionBase extends Component {
   render() {
     const { t } = this.context;
     const {
+      actionKey,
       fromName,
       fromAddress,
       toName,
@@ -976,71 +979,65 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
     return (
-      <ConfirmPageContainer
-        fromName={fromName}
-        fromAddress={fromAddress}
-        showAccountInHeader={showAccountInHeader}
-        toName={toName}
-        toAddress={toAddress}
-        toEns={toEns}
-        toNickname={toNickname}
-        showEdit={Boolean(onEdit)}
-        action={functionType}
-        title={title}
-        titleComponent={this.renderTitleComponent()}
-        subtitleComponent={this.renderSubtitleComponent()}
-        hideSubtitle={hideSubtitle}
-        detailsComponent={this.renderDetails()}
-        dataComponent={this.renderData(functionType)}
-        contentComponent={contentComponent}
-        nonce={customNonceValue || nonce}
-        unapprovedTxCount={unapprovedTxCount}
-        identiconAddress={identiconAddress}
-        errorMessage={submitError}
-        errorKey={errorKey}
-        hasSimulationError={hasSimulationError}
-        warning={submitWarning}
-        totalTx={totalTx}
-        positionOfCurrentTx={positionOfCurrentTx}
-        nextTxId={nextTxId}
-        prevTxId={prevTxId}
-        showNavigation={showNavigation}
-        onNextTx={(txId) => this.handleNextTx(txId)}
-        firstTx={firstTx}
-        lastTx={lastTx}
-        ofText={ofText}
-        requestsWaitingText={requestsWaitingText}
-        hideConfirmAnyways={!isDisabled()}
-        disabled={
-          renderSimulationFailureWarning ||
-          !valid ||
-          submitting ||
-          hardwareWalletRequiresConnection ||
-          (gasIsLoading && !gasFeeIsCustom)
-        }
-        onEdit={() => this.handleEdit()}
-        onCancelAll={() => this.handleCancelAll()}
-        onCancel={() => this.handleCancel()}
-        onSubmit={() => this.handleSubmit()}
-        onConfirmAnyways={() => this.handleConfirmAnyways()}
-        hideSenderToRecipient={hideSenderToRecipient}
-        origin={txData.origin}
-        ethGasPriceWarning={ethGasPriceWarning}
-        editingGas={editingGas}
-        handleCloseEditGas={() => this.handleCloseEditGas()}
-        currentTransaction={txData}
-      />
+      <TransactionModalContextProvider
+        actionKey={actionKey}
+        methodData={methodData}
+      >
+        <ConfirmPageContainer
+          fromName={fromName}
+          fromAddress={fromAddress}
+          showAccountInHeader={showAccountInHeader}
+          toName={toName}
+          toAddress={toAddress}
+          toEns={toEns}
+          toNickname={toNickname}
+          showEdit={Boolean(onEdit)}
+          action={functionType}
+          title={title}
+          titleComponent={this.renderTitleComponent()}
+          subtitleComponent={this.renderSubtitleComponent()}
+          hideSubtitle={hideSubtitle}
+          detailsComponent={this.renderDetails()}
+          dataComponent={this.renderData(functionType)}
+          contentComponent={contentComponent}
+          nonce={customNonceValue || nonce}
+          unapprovedTxCount={unapprovedTxCount}
+          identiconAddress={identiconAddress}
+          errorMessage={submitError}
+          errorKey={errorKey}
+          hasSimulationError={hasSimulationError}
+          warning={submitWarning}
+          totalTx={totalTx}
+          positionOfCurrentTx={positionOfCurrentTx}
+          nextTxId={nextTxId}
+          prevTxId={prevTxId}
+          showNavigation={showNavigation}
+          onNextTx={(txId) => this.handleNextTx(txId)}
+          firstTx={firstTx}
+          lastTx={lastTx}
+          ofText={ofText}
+          requestsWaitingText={requestsWaitingText}
+          hideConfirmAnyways={!isDisabled()}
+          disabled={
+            renderSimulationFailureWarning ||
+            !valid ||
+            submitting ||
+            hardwareWalletRequiresConnection ||
+            (gasIsLoading && !gasFeeIsCustom)
+          }
+          onEdit={() => this.handleEdit()}
+          onCancelAll={() => this.handleCancelAll()}
+          onCancel={() => this.handleCancel()}
+          onSubmit={() => this.handleSubmit()}
+          onConfirmAnyways={() => this.handleConfirmAnyways()}
+          hideSenderToRecipient={hideSenderToRecipient}
+          origin={txData.origin}
+          ethGasPriceWarning={ethGasPriceWarning}
+          editingGas={editingGas}
+          handleCloseEditGas={() => this.handleCloseEditGas()}
+          currentTransaction={txData}
+        />
+      </TransactionModalContextProvider>
     );
   }
-}
-
-export function getMethodName(camelCase) {
-  if (!camelCase || typeof camelCase !== 'string') {
-    return '';
-  }
-
-  return camelCase
-    .replace(/([a-z])([A-Z])/gu, '$1 $2')
-    .replace(/([A-Z])([a-z])/gu, ' $1$2')
-    .replace(/ +/gu, ' ');
 }
