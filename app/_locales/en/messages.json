@@ -1594,6 +1594,9 @@
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
+  "mainnetToken": {
+    "message": "This is a mainnet token"
+  },
   "makeAnotherSwap": {
     "message": "Create a new swap"
   },

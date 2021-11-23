@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import contractMap from '@metamask/contract-metadata';
 import {
   checkExistingAddresses,
   getURLHostName,
@@ -64,6 +65,7 @@ class ImportToken extends Component {
     forceEditSymbol: false,
     symbolAutoFilled: false,
     decimalAutoFilled: false,
+    mainnetTokenWarning: null,
   };
 
   componentDidMount() {
@@ -134,6 +136,12 @@ class ImportToken extends Component {
     );
   }
 
+  hasWarning() {
+    const { mainnetTokenWarning } = this.state;
+
+    return mainnetTokenWarning;
+  }
+
   hasSelected() {
     const { customAddress = '', selectedTokens = {} } = this.state;
     return customAddress || Object.keys(selectedTokens).length > 0;
@@ -192,6 +200,7 @@ class ImportToken extends Component {
       tokenSelectorError: null,
       symbolAutoFilled: false,
       decimalAutoFilled: false,
+      mainnetTokenWarning: null,
     });
 
     const addressIsValid = isValidHexAddress(customAddress, {
@@ -199,10 +208,31 @@ class ImportToken extends Component {
     });
     const standardAddress = addHexPrefix(customAddress).toLowerCase();
 
+    function isMainnetToken(key, address) {
+      if (key !== address) return false;
+      return true;
+    }
+
+    let mainnetToken;
+
+    Object.keys(contractMap).find(
+      (key) => (mainnetToken = isMainnetToken(key, customAddress)),
+    );
+
     switch (true) {
       case !addressIsValid:
         this.setState({
           customAddressError: this.context.t('invalidAddress'),
+          customSymbol: '',
+          customDecimals: 0,
+          customSymbolError: null,
+          customDecimalsError: null,
+        });
+
+        break;
+      case mainnetToken:
+        this.setState({
+          mainnetTokenWarning: this.context.t('mainnetToken'),
           customSymbol: '',
           customDecimals: 0,
           customSymbolError: null,
@@ -270,6 +300,7 @@ class ImportToken extends Component {
       forceEditSymbol,
       symbolAutoFilled,
       decimalAutoFilled,
+      mainnetTokenWarning,
     } = this.state;
 
     const { chainId, rpcPrefs } = this.props;
@@ -310,7 +341,7 @@ class ImportToken extends Component {
           type="text"
           value={customAddress}
           onChange={(e) => this.handleCustomAddressChange(e.target.value)}
-          error={customAddressError}
+          error={customAddressError || mainnetTokenWarning}
           fullWidth
           autoFocus
           margin="normal"
