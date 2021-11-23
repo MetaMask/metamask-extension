@@ -17,7 +17,7 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
-const render = ({ props, state }) => {
+const render = ({ props, state } = {}) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,

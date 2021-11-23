@@ -17,7 +17,7 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
-const render = ({ componentProps, contextProps }) => {
+const render = ({ componentProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
