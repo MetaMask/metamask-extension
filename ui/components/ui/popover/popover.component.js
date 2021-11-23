@@ -22,9 +22,6 @@ const Popover = ({
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
 
-  useEffect(() => {
-    document.getElementsByClassName('popover-container')[0].focus();
-  }, []);
   return (
     <div className="popover-container">
       {CustomBackground ? (
