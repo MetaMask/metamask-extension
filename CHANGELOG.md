@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.6.2]
+### Fixed
+- [#12770](https://github.com/MetaMask/metamask-extension/pull/12770): Fixed display of best quote in swaps quotes modal
+- [#12786](https://github.com/MetaMask/metamask-extension/pull/12786): Ensure there is a single localhost option in network selector and that it is clickable
+
 ## [10.6.1]
 ### Fixed
 - [#12573](https://github.com/MetaMask/metamask-extension/pull/12573): Ensure metrics api errors do not impact user experience
@@ -2598,7 +2603,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.2...HEAD
+[10.6.2]: https://github.com/MetaMask/metamask-extension/compare/v10.6.1...v10.6.2
 [10.6.1]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...v10.6.1
 [10.6.0]: https://github.com/MetaMask/metamask-extension/compare/v10.5.2...v10.6.0
 [10.5.2]: https://github.com/MetaMask/metamask-extension/compare/v10.5.1...v10.5.2
