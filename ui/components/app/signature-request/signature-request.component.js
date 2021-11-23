@@ -25,10 +25,6 @@ export default class SignatureRequest extends PureComponent {
      */
     isLedgerWallet: PropTypes.bool,
     /**
-     * Handler for clearing confirmed transaction
-     */
-    clearConfirmTransaction: PropTypes.func.isRequired,
-    /**
      * Handler for cancel button
      */
     cancel: PropTypes.func.isRequired,
