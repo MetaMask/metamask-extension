@@ -15,7 +15,7 @@ class EditableLabel extends Component {
     hasAlreadyUpdatedOnce: false,
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_prevProps, prevState) {
     if (!prevState.hasAlreadyUpdatedOnce) {
       this.setState({
         value: this.props.defaultValue,

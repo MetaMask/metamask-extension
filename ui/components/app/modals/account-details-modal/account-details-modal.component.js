@@ -38,7 +38,7 @@ export default function AccountDetailsModal(props, context) {
   }
 
   const hasNickName = (accountLabel) => {
-    const regExp = /Account [1-9][0-9]*$/;
+    const regExp = /Account [1-9][0-9]*$/u;
     return regExp.test(accountLabel);
   };
 
