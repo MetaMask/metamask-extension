@@ -1,4 +1,4 @@
-import React, { PureComponent, useEffect } from 'react';
+import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -21,10 +21,6 @@ const Popover = ({
 }) => {
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
-
-  useEffect(() => {
-    document.getElementsByClassName('popover-container')[0].focus();
-  }, []);
   return (
     <div className="popover-container">
       {CustomBackground ? (
