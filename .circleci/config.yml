@@ -31,6 +31,9 @@ workflows:
       - test-deps-depcheck:
           requires:
             - prep-deps
+      - test-yarn-dedupe:
+          requires:
+            - prep-deps
       - validate-lavamoat-config:
           filters:
             branches:
@@ -332,6 +335,16 @@ jobs:
           root: .
           paths:
             - storybook-build
+
+  test-yarn-dedupe:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Detect yarn lock deduplications
+          command: yarn yarn-deduplicate && git diff --exit-code yarn.lock
 
   test-lint:
     executor: node-browsers
