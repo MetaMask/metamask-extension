@@ -16,7 +16,7 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
-const render = ({ contextProps, componentProps }) => {
+const render = ({ componentProps, contextProps }) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -109,8 +109,8 @@ describe('TransactionDetail', () => {
 
   it('should render edit link if prop userAcknowledgedGasMissing is true even if transaction has SimulationError', () => {
     render({
-      contextProps: { transaction: { simulationFails: true } },
       componentProps: { userAcknowledgedGasMissing: true },
+      contextProps: { transaction: { simulationFails: true } },
     });
     expect(screen.queryByRole('button')).toBeInTheDocument();
   });
