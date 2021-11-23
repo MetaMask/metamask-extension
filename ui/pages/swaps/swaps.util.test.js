@@ -91,8 +91,8 @@ describe('Swaps Util', () => {
       },
     };
     it('should fetch trade info on prod', async () => {
-      nock('https://api.metaswap.codefi.network')
-        .get('/trades')
+      nock('https://api2.metaswap.codefi.network')
+        .get('/networks/1/trades')
         .query(true)
         .reply(200, MOCK_TRADE_RESPONSE_2);
 
@@ -117,9 +117,9 @@ describe('Swaps Util', () => {
 
   describe('fetchTokens', () => {
     beforeAll(() => {
-      nock('https://api.metaswap.codefi.network')
+      nock('https://api2.metaswap.codefi.network')
         .persist()
-        .get('/tokens')
+        .get('/networks/1/tokens')
         .reply(200, TOKENS);
     });
 
@@ -136,9 +136,9 @@ describe('Swaps Util', () => {
 
   describe('fetchAggregatorMetadata', () => {
     beforeAll(() => {
-      nock('https://api.metaswap.codefi.network')
+      nock('https://api2.metaswap.codefi.network')
         .persist()
-        .get('/aggregatorMetadata')
+        .get('/networks/1/aggregatorMetadata')
         .reply(200, AGGREGATOR_METADATA);
     });
 
@@ -155,9 +155,9 @@ describe('Swaps Util', () => {
 
   describe('fetchTopAssets', () => {
     beforeAll(() => {
-      nock('https://api.metaswap.codefi.network')
+      nock('https://api2.metaswap.codefi.network')
         .persist()
-        .get('/topAssets')
+        .get('/networks/1/topAssets')
         .reply(200, TOP_ASSETS);
     });
 
