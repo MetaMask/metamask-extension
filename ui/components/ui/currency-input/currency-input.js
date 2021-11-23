@@ -1,4 +1,4 @@
-import React, { PureComponent, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import UnitInput from '../unit-input';
 import CurrencyDisplay from '../currency-display';
@@ -14,23 +14,30 @@ import { I18nContext } from '../../../contexts/i18n';
  * hex value in WEI. props.value, used as a default or forced value, should be a hex value, which
  * gets converted into a decimal value depending on the currency (ETH or Fiat).
  */
- export default function CurrencyInput ({
-  hexValue,           
-  preferredCurrency,  
-  secondaryCurrency,  
-  hideSecondary,      
-  featureSecondary,   
-  conversionRate,     
-  primarySuffix,      
-  secondarySuffix,    
+export default function CurrencyInput({
+  hexValue,
+  preferredCurrency,
+  secondaryCurrency,
+  hideSecondary,
+  featureSecondary,
+  conversionRate,
+  primarySuffix,
+  secondarySuffix,
   onChange,
   onPreferenceToggle,
-  }) {
-
+}) {
   const t = useContext(I18nContext);
 
   const [isSwapped, setSwapped] = useState(false);
   const [newHexValue, setNewHexValue] = useState(hexValue);
+
+  const shouldUseFiat = () => {
+    if (hideSecondary) {
+      return false;
+    }
+
+    return Boolean(featureSecondary);
+  };
 
   const getDecimalValue = () => {
     const decimalValueString = shouldUseFiat()
@@ -47,19 +54,6 @@ import { I18nContext } from '../../../contexts/i18n';
         });
 
     return Number(decimalValueString) || 0;
-  }
-  
-
-  const shouldUseFiat = () => {
-    if (hideSecondary) {
-      return false;
-    }
-
-    if (preferredCurrency === ETH && featureSecondary === true) {
-      return true;
-    } else if (preferredCurrency === ETH && featureSecondary === false) {
-      return false;
-    }
   };
 
   const initialDecimalValue = hexValue ? getDecimalValue() : 0;
@@ -70,32 +64,31 @@ import { I18nContext } from '../../../contexts/i18n';
     setSwapped(!isSwapped);
   };
 
-  useEffect(() => {
-    if (isSwapped) {
-      handleChange(decimalValue);
-    }
-  }, [isSwapped])
-
-
-  const handleChange = (decimalValue) => {
-    const hexValue = shouldUseFiat()
+  const handleChange = (newDecimalValue) => {
+    const hexValueNew = shouldUseFiat()
       ? getWeiHexFromDecimalValue({
-          value: decimalValue,
+          value: newDecimalValue,
           fromCurrency: secondaryCurrency,
           conversionRate,
           invertConversionRate: true,
         })
       : getWeiHexFromDecimalValue({
-          value: decimalValue,
+          value: newDecimalValue,
           fromCurrency: ETH,
           fromDenomination: ETH,
           conversionRate,
         });
 
-      setNewHexValue(hexValue);
-      setDecimalValue(decimalValue);
-      onChange(hexValue);
+    setNewHexValue(hexValueNew);
+    setDecimalValue(newDecimalValue);
+    onChange(hexValueNew);
   };
+
+  useEffect(() => {
+    if (isSwapped) {
+      handleChange(decimalValue);
+    }
+  }, [isSwapped]);
 
   const renderConversionComponent = () => {
     let currency, numberOfDecimals;
@@ -126,20 +119,20 @@ import { I18nContext } from '../../../contexts/i18n';
         numberOfDecimals={numberOfDecimals}
       />
     );
-  }
+  };
 
   return (
     <UnitInput
-    {...{
-      hexValue,           
-      preferredCurrency,  
-      secondaryCurrency,  
-      hideSecondary,      
-      featureSecondary,   
-      conversionRate, 
-      onChange,
-      onPreferenceToggle,
-    }}
+      {...{
+        hexValue,
+        preferredCurrency,
+        secondaryCurrency,
+        hideSecondary,
+        featureSecondary,
+        conversionRate,
+        onChange,
+        onPreferenceToggle,
+      }}
       suffix={shouldUseFiat() ? secondarySuffix : primarySuffix}
       onChange={handleChange}
       value={decimalValue}

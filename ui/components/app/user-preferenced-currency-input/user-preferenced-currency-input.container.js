@@ -18,4 +18,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserPreferencedCurrencyInput);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(UserPreferencedCurrencyInput);

@@ -9,12 +9,19 @@ export default class UserPreferencedCurrencyInput extends PureComponent {
   };
 
   render() {
-    const { useNativeCurrencyAsPrimaryCurrency, sendInputCurrencySwitched, ...restProps } = this.props;
-    
+    const {
+      useNativeCurrencyAsPrimaryCurrency,
+      sendInputCurrencySwitched,
+      ...restProps
+    } = this.props;
+
     return (
       <CurrencyInput
         {...restProps}
-        featureSecondary={((useNativeCurrencyAsPrimaryCurrency && sendInputCurrencySwitched) || (!useNativeCurrencyAsPrimaryCurrency && !sendInputCurrencySwitched)) ? true : false}
+        featureSecondary={Boolean(
+          (useNativeCurrencyAsPrimaryCurrency && sendInputCurrencySwitched) ||
+            (!useNativeCurrencyAsPrimaryCurrency && !sendInputCurrencySwitched),
+        )}
       />
     );
   }

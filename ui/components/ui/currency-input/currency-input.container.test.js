@@ -33,9 +33,9 @@ describe('CurrencyInput container', () => {
         },
         expected: {
           conversionRate: 280.45,
-          currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
-          hideFiat: false,
+          secondaryCurrency: 'usd',
+          preferredCurrency: 'ETH',
+          hideSecondary: false,
         },
       },
       // Test # 2
@@ -57,9 +57,9 @@ describe('CurrencyInput container', () => {
         },
         expected: {
           conversionRate: 280.45,
-          currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
-          hideFiat: true,
+          secondaryCurrency: 'usd',
+          preferredCurrency: 'ETH',
+          hideSecondary: true,
         },
       },
       // Test # 3
@@ -81,9 +81,9 @@ describe('CurrencyInput container', () => {
         },
         expected: {
           conversionRate: 280.45,
-          currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
-          hideFiat: false,
+          secondaryCurrency: 'usd',
+          preferredCurrency: 'ETH',
+          hideSecondary: false,
         },
       },
       // Test # 4
@@ -105,9 +105,9 @@ describe('CurrencyInput container', () => {
         },
         expected: {
           conversionRate: 280.45,
-          currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
-          hideFiat: false,
+          secondaryCurrency: 'usd',
+          preferredCurrency: 'ETH',
+          hideSecondary: false,
         },
       },
     ];
@@ -127,40 +127,41 @@ describe('CurrencyInput container', () => {
         mock: {
           stateProps: {
             conversionRate: 280.45,
-            currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            secondaryCurrency: 'usd',
+            preferredCurrency: 'ETH',
           },
           dispatchProps: {},
           ownProps: {},
         },
         expected: {
           conversionRate: 280.45,
-          currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
+          secondaryCurrency: 'usd',
+          preferredCurrency: 'ETH',
           // useFiat: true,
-          nativeSuffix: 'ETH',
-          fiatSuffix: 'USD',
+          primarySuffix: 'ETH',
+          secondarySuffix: 'USD',
         },
       },
       // Test # 1
       {
-        comment: 'should return the correct props when useFiat is true',
+        comment:
+          'should return the correct props when featureSecondary is true',
         mock: {
           stateProps: {
             conversionRate: 280.45,
-            currentCurrency: 'usd',
-            nativeCurrency: 'ETH',
+            secondaryCurrency: 'usd',
+            preferredCurrency: 'ETH',
           },
           dispatchProps: {},
-          ownProps: { useFiat: true },
+          ownProps: { featureSecondary: true },
         },
         expected: {
           conversionRate: 280.45,
-          currentCurrency: 'usd',
-          nativeCurrency: 'ETH',
-          useFiat: true,
-          nativeSuffix: 'ETH',
-          fiatSuffix: 'USD',
+          secondaryCurrency: 'usd',
+          preferredCurrency: 'ETH',
+          featureSecondary: true,
+          primarySuffix: 'ETH',
+          secondarySuffix: 'USD',
         },
       },
     ];

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { ETH } from '../../../helpers/constants/common';
 import { getShouldShowFiat } from '../../../selectors';
-import CurrencyInput from './currency-input.component';
+import CurrencyInput from './currency-input';
 
 const mapStateToProps = (state) => {
   const {
