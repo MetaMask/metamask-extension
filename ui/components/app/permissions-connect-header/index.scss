@@ -9,20 +9,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    .icon-with-fallback__identicon-container,
-    .icon-with-fallback__identicon-border {
-      height: 64px;
-      width: 64px;
-    }
-
-    .icon-with-fallback__identicon-border {
-      border: 1px solid $Grey-100;
-    }
-
-    .icon-with-fallback__identicon-container {
-      margin-bottom: 8px;
-    }
   }
 
   &__title {
@@ -33,22 +19,11 @@
     margin-top: 16px;
   }
 
-  &__text,
   &__subtitle {
     @include H6;
 
     text-align: center;
     color: $Grey-500;
-  }
-
-  &__text {
-    width: 100%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    margin-top: 8px;
-
-    /*rtl:ignore*/
-    direction: rtl;
   }
 
   &__subtitle {

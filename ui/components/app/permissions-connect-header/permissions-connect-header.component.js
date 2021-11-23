@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import SiteIcon from '../../ui/site-icon';
+import Chip from '../../ui/chip';
+import IconWithFallback from '../../ui/icon-with-fallback/icon-with-fallback.component';
 
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
@@ -22,8 +23,10 @@ export default class PermissionsConnectHeader extends Component {
 
     return (
       <div className="permissions-connect-header__icon">
-        <SiteIcon icon={icon} name={iconName} size={64} />
-        <div className="permissions-connect-header__text">{siteOrigin}</div>
+        <Chip
+          label={siteOrigin}
+          leftIcon={<IconWithFallback icon={icon} name={iconName} size={32} />}
+        />
       </div>
     );
   }
