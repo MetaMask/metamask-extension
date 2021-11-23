@@ -97,8 +97,9 @@ describe('GasDetailsItem', () => {
         hexMaximumTransactionFee: '0x290ee75e3d900',
       },
     });
-    expect(screen.queryAllByText('0.000031')).toHaveLength(2);
+    console.log(document.body.innerHTML);
+    expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
     expect(screen.queryByText('ETH')).toBeInTheDocument();
-    expect(screen.queryByText('0.000722')).toBeInTheDocument();
+    expect(screen.queryByTitle('0.0007223')).toBeInTheDocument();
   });
 });
