@@ -4,7 +4,6 @@ import { PRIORITY_LEVELS } from '../../../../shared/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 
-import Popover from '../../ui/popover';
 import I18nValue from '../../ui/i18n-value';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import Popover from '../../ui/popover';
