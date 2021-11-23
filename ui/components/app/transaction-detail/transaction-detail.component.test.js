@@ -102,9 +102,29 @@ describe('TransactionDetail', () => {
     expect(screen.queryByText('Edit')).toBeInTheDocument();
   });
 
-  it('should not render edit link if onEdit prop is missing', () => {
-    render({ componentProps: { onEdit: undefined } });
+  it('should not render edit link if transaction has simulation error and prop userAcknowledgedGasMissing is false', () => {
+    render({
+      contextProps: {
+        transaction: {
+          simulationFails: true,
+        },
+      },
+      componentProps: { userAcknowledgedGasMissing: false },
+    });
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
     expect(screen.queryByText('Edit')).not.toBeInTheDocument();
+  });
+
+  it('should render edit link if userAcknowledgedGasMissing is true even if transaction has simulation error', () => {
+    render({
+      contextProps: {
+        transaction: {
+          simulationFails: true,
+        },
+      },
+      componentProps: { userAcknowledgedGasMissing: true },
+    });
+    expect(screen.queryByRole('button')).toBeInTheDocument();
+    expect(screen.queryByText('Low')).toBeInTheDocument();
   });
 });
