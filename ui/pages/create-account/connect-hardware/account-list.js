@@ -4,9 +4,8 @@ import { getAccountLink } from '@metamask/etherscan-link';
 
 import Button from '../../../components/ui/button';
 import Checkbox from '../../../components/ui/check-box';
-import Dropdown from '../../../components/ui/dropdown';
-
 import { getURLHostName } from '../../../helpers/utils/util';
+import ConnectHardwarePathSelector from './connect-hardware-path';
 
 import { DEVICE_NAMES } from '../../../../shared/constants/hardware-wallets';
 
@@ -43,14 +42,16 @@ class AccountList extends Component {
         </h3>
         <p className="hw-connect__msg">{this.context.t('selectPathHelp')}</p>
         <div className="hw-connect__hdPath">
-          <Dropdown
+          <ConnectHardwarePathSelector
             className="hw-connect__hdPath__select"
-            options={hdPaths[device.toLowerCase()]}
-            selectedOption={pathValue || selectedPath}
+            device={device}
             onChange={(value) => {
               this.setPath(value);
               onPathChange(value);
             }}
+            hdPaths={hdPaths}
+            pathValue={pathValue}
+            selectedPath={selectedPath}
           />
         </div>
       </div>

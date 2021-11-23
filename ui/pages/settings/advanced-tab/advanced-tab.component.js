@@ -6,8 +6,6 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
 import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
-import Dropdown from '../../../components/ui/dropdown';
-import Dialog from '../../../components/ui/dialog';
 
 import { getPlatform } from '../../../../app/scripts/lib/util';
 
@@ -17,10 +15,7 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
-import {
-  LEDGER_TRANSPORT_TYPES,
-  LEDGER_USB_VENDOR_ID,
-} from '../../../../shared/constants/hardware-wallets';
+import LedgerTransportDropdown from './ledger-transport-dropdown';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -50,7 +45,6 @@ export default class AdvancedTab extends PureComponent {
     threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
-    ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
     setLedgerTransportPreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
@@ -62,7 +56,6 @@ export default class AdvancedTab extends PureComponent {
     lockTimeError: '',
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
-    showLedgerTransportWarning: false,
   };
 
   settingsRefs = Array(
@@ -465,42 +458,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderLedgerLiveControl() {
-    const { t } = this.context;
-    const {
-      ledgerTransportType,
-      setLedgerTransportPreference,
-      userHasALedgerAccount,
-    } = this.props;
-
-    const LEDGER_TRANSPORT_NAMES = {
-      LIVE: t('ledgerLive'),
-      WEBHID: t('webhid'),
-      U2F: t('u2f'),
-    };
-
-    const transportTypeOptions = [
-      {
-        name: LEDGER_TRANSPORT_NAMES.LIVE,
-        value: LEDGER_TRANSPORT_TYPES.LIVE,
-      },
-      {
-        name: LEDGER_TRANSPORT_NAMES.U2F,
-        value: LEDGER_TRANSPORT_TYPES.U2F,
-      },
-    ];
-
-    if (window.navigator.hid) {
-      transportTypeOptions.push({
-        name: LEDGER_TRANSPORT_NAMES.WEBHID,
-        value: LEDGER_TRANSPORT_TYPES.WEBHID,
-      });
-    }
-
-    const recommendedLedgerOption = window.navigator.hid
-      ? LEDGER_TRANSPORT_NAMES.WEBHID
-      : LEDGER_TRANSPORT_NAMES.U2F;
-
     return (
+<<<<<<< HEAD
       <div ref={this.settingsRefs[11]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('preferredLedgerConnectionType')}</span>
@@ -553,6 +512,10 @@ export default class AdvancedTab extends PureComponent {
             ) : null}
           </div>
         </div>
+=======
+      <div>
+        <LedgerTransportDropdown />
+>>>>>>> 79b87564c (Progress)
       </div>
     );
   }
