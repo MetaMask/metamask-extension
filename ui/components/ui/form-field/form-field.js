@@ -114,6 +114,10 @@ export default function FormField({
 
 FormField.propTypes = {
   /**
+   * Identifier for testing purpose
+   */
+  dataTestId: PropTypes.string,
+  /**
    * Form Fields Title
    */
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
