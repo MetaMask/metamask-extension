@@ -1,7 +1,7 @@
 import React from 'react';
-import configureMockStore from 'redux-mock-store';
 import sinon from 'sinon';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import configureStore from '../../../../store/store';
+import { renderWithProvider } from '../../../../../test/jest';
 import EditGasToolTip from './edit-gas-tooltip';
 
 const LOW_GAS_OPTION = {
@@ -40,7 +40,7 @@ const renderComponent = (props) => {
     },
   };
 
-  const store = configureMockStore()(mockStore);
+  const store = configureStore(mockStore);
 
   return renderWithProvider(
     <EditGasToolTip {...props} t={sinon.stub()} />,

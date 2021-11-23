@@ -52,37 +52,35 @@ const EditGasToolTip = ({ priorityLevel, gasContext, t }) => {
     }
   };
   return (
-    <div className="tooltip__container">
+    <div className="edit-gas-tooltip__container">
       {priorityLevel !== PRIORITY_LEVELS.CUSTOM &&
       priorityLevel !== PRIORITY_LEVELS.DAPP_SUGGESTED ? (
         <img alt="" width={130} src={`./images/curve-${priorityLevel}.svg`} />
       ) : null}
       {priorityLevel === PRIORITY_LEVELS.HIGH ? (
-        <div className="tooltip__container__dialog">
+        <div className="edit-gas-tooltip__container__dialog">
           <Typography fontSize="12px" color={COLORS.WHITE}>
             {t('highGasSettingToolTipDialog')}
           </Typography>
         </div>
       ) : null}
-      <div className="tooltip__container__message">
+      <div className="edit-gas-tooltip__container__message">
         <Typography fontSize="12px">{toolTipMessage()}</Typography>
       </div>
       {priorityLevel === PRIORITY_LEVELS.CUSTOM ? null : (
-        <div className="tooltip__container__values">
+        <div className="edit-gas-tooltip__container__values">
           <div>
             <Typography
               fontSize="12px"
               fontWeight={FONT_WEIGHT.BOLD}
-              margin={0}
-              className="tooltip__container__label"
+              className="edit-gas-tooltip__container__label"
             >
               {t('maxBaseFee')}
             </Typography>
             <Typography
               fontSize="12px"
               color={COLORS.NEUTRAL_GREY}
-              margin={0}
-              className="tooltip__container__value"
+              className="edit-gas-tooltip__container__value"
             >
               {maxFeePerGas ?? maxFeePerGasValue}
             </Typography>
@@ -91,16 +89,14 @@ const EditGasToolTip = ({ priorityLevel, gasContext, t }) => {
             <Typography
               fontSize="12px"
               fontWeight={FONT_WEIGHT.BOLD}
-              margin={0}
-              className="tooltip__container__label"
+              className="edit-gas-tooltip__container__label"
             >
               {t('priorityFee')}
             </Typography>
             <Typography
               fontSize="12px"
               color={COLORS.NEUTRAL_GREY}
-              margin={0}
-              className="tooltip__container__value"
+              className="edit-gas-tooltip__container__value"
             >
               {maxPriorityFeePerGas ?? maxPriorityFeePerGasValue}
             </Typography>
@@ -109,16 +105,14 @@ const EditGasToolTip = ({ priorityLevel, gasContext, t }) => {
             <Typography
               fontSize="12px"
               fontWeight={FONT_WEIGHT.BOLD}
-              margin={0}
-              className="tooltip__container__label"
+              className="edit-gas-tooltip__container__label"
             >
               {t('gasLimit')}
             </Typography>
             <Typography
               fontSize="12px"
               color={COLORS.NEUTRAL_GREY}
-              margin={0}
-              className="tooltip__container__value"
+              className="edit-gas-tooltip__container__value"
             >
               {gasLimit}
             </Typography>
