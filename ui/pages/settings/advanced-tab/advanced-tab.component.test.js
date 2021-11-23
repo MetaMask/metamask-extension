@@ -2,7 +2,6 @@ import React from 'react';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import TextField from '../../../components/ui/text-field';
-import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
 import ToggleButton from '../../../components/ui/toggle-button';
 import AdvancedTab from './advanced-tab.component';
 
@@ -23,7 +22,6 @@ describe('AdvancedTab Component', () => {
         showTestNetworks={false}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
-        ledgerTransportType={LEDGER_TRANSPORT_TYPES.U2F}
         setLedgerTransportPreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}
@@ -51,7 +49,6 @@ describe('AdvancedTab Component', () => {
         setThreeBoxSyncingPermission={() => undefined}
         threeBoxDisabled
         threeBoxSyncingAllowed={false}
-        ledgerTransportType={LEDGER_TRANSPORT_TYPES.U2F}
         setLedgerTransportPreference={() => undefined}
         setDismissSeedBackUpReminder={() => undefined}
         dismissSeedBackUpReminder={false}

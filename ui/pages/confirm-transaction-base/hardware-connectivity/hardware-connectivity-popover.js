@@ -1,16 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
+import LedgerTransportDropdown from '../../settings/advanced-tab/ledger-transport-dropdown';
+import ConnectHardwarePathSelector from '../../create-account/connect-hardware/connect-hardware-path';
 
 import Typography from '../../../components/ui/typography/typography';
 import { TYPOGRAPHY, COLORS } from '../../../helpers/constants/design-system';
 
+import { LEDGER_HD_PATHS } from '../../create-account/connect-hardware';
+import { useSelector } from 'react-redux';
+
 export default function HardwareConnectivityPopover({ onClose, onSave }) {
+  const [pathValue, setPathValue] = useState(); // TODO: Initial value?
+
   const t = useI18nContext();
+
+  const onPathChange = (value) => {
+    setPathValue(value);
+  };
 
   return (
     <Popover
@@ -32,14 +43,13 @@ export default function HardwareConnectivityPopover({ onClose, onSave }) {
         <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
           {t('hardwareWalletConnectivityAdvancedPathDescription')}
         </Typography>
-        <div>(TODO: Dropdown here)</div>
-        <Typography variant={TYPOGRAPHY.H6}>
-          {t('hardwareWalletConnectivityAdvancedMethodSelect')}
-        </Typography>
-        <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
-          {t('hardwareWalletConnectivityAdvancedMethodSelectDescription')}
-        </Typography>
-        <div>(TODO: Radio buttons here)</div>
+        <ConnectHardwarePathSelector
+          device="ledger"
+          options={LEDGER_HD_PATHS}
+          onChange={onPathChange}
+          selectedOption={pathValue}
+        />
+        <LedgerTransportDropdown />
       </div>
     </Popover>
   );
