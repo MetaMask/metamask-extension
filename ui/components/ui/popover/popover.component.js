@@ -21,7 +21,6 @@ const Popover = ({
 }) => {
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
-
   return (
     <div className="popover-container">
       {CustomBackground ? (
