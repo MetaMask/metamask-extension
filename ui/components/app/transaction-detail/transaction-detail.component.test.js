@@ -108,9 +108,11 @@ describe('TransactionDetail', () => {
 
   it('should render edit link with text edit for legacy transactions', () => {
     render({
-      transaction: {
-        userFeeLevel: 'low',
-        txParams: { type: TRANSACTION_ENVELOPE_TYPES.LEGACY },
+      contextProps: {
+        transaction: {
+          userFeeLevel: 'low',
+          txParams: { type: TRANSACTION_ENVELOPE_TYPES.LEGACY },
+        },
       },
     });
     expect(screen.queryByText('🐢')).not.toBeInTheDocument();

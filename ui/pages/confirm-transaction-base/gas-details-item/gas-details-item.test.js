@@ -37,12 +37,8 @@ const render = ({ componentProps, contextProps } = {}) => {
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider {...contextProps}>
-      <GasDetailsItem
-        txData={{ txParams: {} }}
-        userAcknowledgedGasMissing={false}
-        {...componentProps}
-      />
+    <GasFeeContextProvider transaction={{ txParams: {} }} {...contextProps}>
+      <GasDetailsItem userAcknowledgedGasMissing={false} {...componentProps} />
     </GasFeeContextProvider>,
     store,
   );
@@ -97,7 +93,6 @@ describe('GasDetailsItem', () => {
         hexMaximumTransactionFee: '0x290ee75e3d900',
       },
     });
-    console.log(document.body.innerHTML);
     expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
     expect(screen.queryByText('ETH')).toBeInTheDocument();
     expect(screen.queryByTitle('0.0007223')).toBeInTheDocument();
