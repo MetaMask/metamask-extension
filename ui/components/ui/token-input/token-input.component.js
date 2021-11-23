@@ -80,8 +80,10 @@ export default class TokenInput extends PureComponent {
 
     let newDecimalValue = decimalValue;
 
-    if (newDecimalValue.split('.').length > 1) {
-      const decimalsPlaces = newDecimalValue.split('.')[1].length;
+    const newDecimalValueBreakdown = newDecimalValue.split('.');
+
+    if (newDecimalValueBreakdown.length > 1) {
+      const decimalsPlaces = newDecimalValueBreakdown[1].length;
 
       if (decimals && applyDecimals && decimalsPlaces > decimals) {
         newDecimalValue = parseFloat(decimalValue).toFixed(decimals);
