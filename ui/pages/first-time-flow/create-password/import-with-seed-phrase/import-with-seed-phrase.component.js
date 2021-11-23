@@ -10,6 +10,10 @@ import {
 
 const { isValidMnemonic } = ethers.utils;
 
+function clearClipboard() {
+  window.navigator.clipboard.writeText('');
+}
+
 export default class ImportWithSeedPhrase extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -244,6 +248,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
             <textarea
               className="first-time-flow__textarea"
               onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
+              onPaste={clearClipboard}
               value={this.state.seedPhrase}
               placeholder={t('seedPhrasePlaceholder')}
               autoComplete="off"
@@ -256,6 +261,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
               value={this.state.seedPhrase}
               placeholder={t('seedPhrasePlaceholderPaste')}
               autoComplete="off"
+              onPaste={clearClipboard}
             />
           )}
           {seedPhraseError ? (
