@@ -6,8 +6,12 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   ONBOARDING_EXPERIMENTAL_AREA, // eslint-disable-line no-unused-vars
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
   ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
