@@ -90,15 +90,17 @@ describe('GasDetailsItem', () => {
     });
   });
 
-  it('should should render gas fee details', () => {
+  it('should should render gas fee details', async () => {
     render({
       componentProps: {
         hexMinimumTransactionFee: '0x1ca62a4f7800',
         hexMaximumTransactionFee: '0x290ee75e3d900',
       },
     });
-    expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
-    expect(screen.queryByText('ETH')).toBeInTheDocument();
-    expect(screen.queryByTitle('0.0007223')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
+      expect(screen.queryByText('ETH')).toBeInTheDocument();
+      expect(screen.queryByTitle('0.0007223')).toBeInTheDocument();
+    });
   });
 });
