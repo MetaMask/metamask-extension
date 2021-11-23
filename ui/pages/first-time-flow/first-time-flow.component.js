@@ -13,9 +13,13 @@ import {
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   INITIALIZE_EXPERIMENTAL_AREA,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
-import ExperimentalArea from '../../components/app/experimental-area';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import ExperimentalArea from '../../components/app/flask/experimental-area';
+///: END:ONLY_INCLUDE_IN
 import FirstTimeFlowSwitch from './first-time-flow-switch';
 import Welcome from './welcome';
 import SelectAction from './select-action';
@@ -164,6 +168,9 @@ export default class FirstTimeFlow extends PureComponent {
             component={EndOfFlow}
           />
           <Route exact path={INITIALIZE_WELCOME_ROUTE} component={Welcome} />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          }
           <Route
             exact
             path={INITIALIZE_EXPERIMENTAL_AREA}
@@ -174,6 +181,9 @@ export default class FirstTimeFlow extends PureComponent {
               />
             )}
           />
+          {
+            ///: END:ONLY_INCLUDE_IN
+          }
           <Route
             exact
             path={INITIALIZE_METAMETRICS_OPT_IN_ROUTE}
