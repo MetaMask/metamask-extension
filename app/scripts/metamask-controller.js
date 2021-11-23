@@ -15,6 +15,7 @@ import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
+import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
 import { ethErrors } from 'eth-rpc-errors';
@@ -41,7 +42,10 @@ import {
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
-import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
+import {
+  DEVICE_NAMES,
+  KEYRING_TYPES,
+} from '../../shared/constants/hardware-wallets';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
@@ -286,6 +290,8 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
+    this.qrHardwareKeyring = new QRHardwareKeyring();
+
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
@@ -293,6 +299,7 @@ export default class MetamaskController extends EventEmitter {
       onInactiveTimeout: () => this.setLocked(),
       showUnlockRequest: opts.showUserConfirmation,
       preferencesStore: this.preferencesController.store,
+      qrHardwareStore: this.qrHardwareKeyring.getMemStore(),
     });
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
@@ -432,6 +439,7 @@ export default class MetamaskController extends EventEmitter {
       TrezorKeyring,
       LedgerBridgeKeyring,
       LatticeKeyring,
+      QRHardwareKeyring,
     ];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
@@ -936,6 +944,28 @@ export default class MetamaskController extends EventEmitter {
       establishLedgerTransportPreference: nodeify(
         this.establishLedgerTransportPreference,
         this,
+      ),
+
+      // qr hardware devices
+      submitQRHardwareCryptoHDKey: nodeify(
+        this.qrHardwareKeyring.submitCryptoHDKey,
+        this.qrHardwareKeyring,
+      ),
+      submitQRHardwareCryptoAccount: nodeify(
+        this.qrHardwareKeyring.submitCryptoAccount,
+        this.qrHardwareKeyring,
+      ),
+      cancelSyncQRHardware: nodeify(
+        this.qrHardwareKeyring.cancelSync,
+        this.qrHardwareKeyring,
+      ),
+      submitQRHardwareSignature: nodeify(
+        this.qrHardwareKeyring.submitSignature,
+        this.qrHardwareKeyring,
+      ),
+      cancelQRHardwareSignRequest: nodeify(
+        this.qrHardwareKeyring.cancelSignRequest,
+        this.qrHardwareKeyring,
       ),
 
       // mobile
@@ -1647,13 +1677,16 @@ export default class MetamaskController extends EventEmitter {
   async getKeyringForDevice(deviceName, hdPath = null) {
     let keyringName = null;
     switch (deviceName) {
-      case 'trezor':
+      case DEVICE_NAMES.TREZOR:
         keyringName = TrezorKeyring.type;
         break;
-      case 'ledger':
+      case DEVICE_NAMES.LEDGER:
         keyringName = LedgerBridgeKeyring.type;
         break;
-      case 'lattice':
+      case DEVICE_NAMES.QR:
+        keyringName = QRHardwareKeyring.type;
+        break;
+      case DEVICE_NAMES.LATTICE:
         keyringName = LatticeKeyring.type;
         break;
       default:
@@ -1670,7 +1703,7 @@ export default class MetamaskController extends EventEmitter {
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath);
     }
-    if (deviceName === 'lattice') {
+    if (deviceName === DEVICE_NAMES.LATTICE) {
       keyring.appName = 'MetaMask';
     }
     keyring.network = this.networkController.getProviderConfig().type;
@@ -1741,6 +1774,18 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * get hardware account label
+   *
+   * @return string label
+   * */
+
+  getAccountLabel(name, index, hdPathDescription) {
+    return `${name[0].toUpperCase()}${name.slice(1)} ${
+      parseInt(index, 10) + 1
+    } ${hdPathDescription || ''}`.trim();
+  }
+
+  /**
    * Imports an account from a Trezor or Ledger device.
    *
    * @returns {} keyState
@@ -1760,10 +1805,12 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(newAccounts);
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
-        const label = `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
-          parseInt(index, 10) + 1
-        } ${hdPathDescription || ''}`.trim();
-        // Set the account label to Trezor 1 /  Ledger 1, etc
+        const label = this.getAccountLabel(
+          deviceName === DEVICE_NAMES.QR ? keyring.getName() : deviceName,
+          index,
+          hdPathDescription,
+        );
+        // Set the account label to Trezor 1 /  Ledger 1 / QR Hardware 1, etc
         this.preferencesController.setAccountLabel(address, label);
         // Select the account
         this.preferencesController.setSelectedAddress(address);
@@ -2177,6 +2224,12 @@ export default class MetamaskController extends EventEmitter {
             new Error('Lattice does not support eth_getEncryptionPublicKey.'),
           );
         });
+      }
+
+      case KEYRING_TYPES.QR: {
+        return Promise.reject(
+          new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
+        );
       }
 
       default: {

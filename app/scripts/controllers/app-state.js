@@ -16,6 +16,7 @@ export default class AppStateController extends EventEmitter {
       onInactiveTimeout,
       showUnlockRequest,
       preferencesStore,
+      qrHardwareStore,
     } = opts;
     super();
 
@@ -32,6 +33,7 @@ export default class AppStateController extends EventEmitter {
       recoveryPhraseReminderLastShown: new Date().getTime(),
       showTestnetMessageInDropdown: true,
       ...initState,
+      qrHardware: {},
     });
     this.timer = null;
 
@@ -46,6 +48,10 @@ export default class AppStateController extends EventEmitter {
       if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
         this._setInactiveTimeout(preferences.autoLockTimeLimit);
       }
+    });
+
+    qrHardwareStore.subscribe((state) => {
+      this.store.updateState({ qrHardware: state });
     });
 
     const { preferences } = preferencesStore.getState();
