@@ -127,7 +127,7 @@ describe('TransactionAlerts', () => {
       ).toBeInTheDocument();
     });
 
-    it('should not show options to proceed anyways if compoennt prop userAcknowledgedGasMissing is already true', () => {
+    it('should not show options to acknowledge gas-missing warning if component prop userAcknowledgedGasMissing is already true', () => {
       render({
         componentProps: {
           userAcknowledgedGasMissing: true,
@@ -144,7 +144,7 @@ describe('TransactionAlerts', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('should call prop setUserAcknowledgedGasMissing if proceed anyways option is clicked', () => {
+    it('should call prop setUserAcknowledgedGasMissing if option to acknowledge gas-missing warning is clicked', () => {
       const setUserAcknowledgedGasMissing = jest.fn();
       render({
         componentProps: {

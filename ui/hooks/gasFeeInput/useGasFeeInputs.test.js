@@ -332,7 +332,7 @@ describe('useGasFeeInputs', () => {
       process.env.EIP_1559_V2 = false;
     });
 
-    it('return true for fee_market transaction', () => {
+    it('return true for fee_market transaction type', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs(null, {
           txParams: { type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET },
@@ -341,7 +341,7 @@ describe('useGasFeeInputs', () => {
       expect(result.current.supportsEIP1559V2).toBe(true);
     });
 
-    it('return false for legacy transaction', () => {
+    it('return false for legacy transaction type', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs(null, {
           txParams: { type: TRANSACTION_ENVELOPE_TYPES.LEGACY },
