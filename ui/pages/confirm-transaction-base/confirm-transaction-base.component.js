@@ -322,12 +322,12 @@ export default class ConfirmTransactionBase extends Component {
 
     const { valid } = this.getErrorKey();
     const isDisabled = () => {
-      return this.state.userAcknowledgedGasMissing ? false : !valid;
+      return userAcknowledgedGasMissing ? false : !valid;
     };
 
     const hasSimulationError = Boolean(txData.simulationFails);
     const renderSimulationFailureWarning =
-      hasSimulationError && !this.state.userAcknowledgedGasMissing;
+      hasSimulationError && !userAcknowledgedGasMissing;
 
     const renderTotalMaxAmount = () => {
       if (
