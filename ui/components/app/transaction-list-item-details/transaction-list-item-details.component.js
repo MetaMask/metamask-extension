@@ -144,8 +144,7 @@ export default class TransactionListItemDetails extends PureComponent {
     return (
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
-          <div className="transaction-list-item-details__header">
-            <div>{t('details')}</div>
+          <div className="transaction-list-item-details__operations">
             <div className="transaction-list-item-details__header-buttons">
               {showSpeedUp && (
                 <Button
@@ -163,43 +162,6 @@ export default class TransactionListItemDetails extends PureComponent {
                   detailsModal
                 />
               )}
-              <Tooltip
-                wrapperClassName="transaction-list-item-details__header-button"
-                containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                title={
-                  justCopied ? t('copiedTransactionId') : t('copyTransactionId')
-                }
-              >
-                <Button
-                  type="raised"
-                  onClick={this.handleCopyTxId}
-                  disabled={!hash}
-                >
-                  <Copy size={10} color="#3098DC" />
-                </Button>
-              </Tooltip>
-              <Tooltip
-                wrapperClassName="transaction-list-item-details__header-button"
-                containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                title={
-                  blockExplorerUrl
-                    ? t('viewOnCustomBlockExplorer', [
-                        t('blockExplorerTransactionAction'),
-                        blockExplorerUrl,
-                      ])
-                    : t('viewOnEtherscan', [
-                        t('blockExplorerTransactionAction'),
-                      ])
-                }
-              >
-                <Button
-                  type="raised"
-                  onClick={this.handleBlockExplorerClick}
-                  disabled={!hash}
-                >
-                  <img src="./images/arrow-popout.svg" alt="" />
-                </Button>
-              </Tooltip>
               {showRetry && (
                 <Tooltip title={t('retryTransaction')}>
                   <Button
@@ -213,7 +175,43 @@ export default class TransactionListItemDetails extends PureComponent {
               )}
             </div>
           </div>
+          <div className="transaction-list-item-details__header">
+            <div className="transaction-list-item-details__tx-status">
+              <div>Status</div>
+              <div>Canceled</div>
+            </div>
+            <div className="transaction-list-item-details__tx-hash">
+              <div>
+                <Button
+                  type="link"
+                  onClick={this.handleBlockExplorerClick}
+                  disabled={!hash}
+                >
+                  View on block explorer
+                </Button>
+              </div>
+              <div>
+                <Tooltip
+                  wrapperClassName="transaction-list-item-details__header-button"
+                  containerClassName="transaction-list-item-details__header-button-tooltip-container"
+                  title={justCopied ? t('copiedTransactionId') : null}
+                >
+                  <Button
+                    type="link"
+                    onClick={this.handleCopyTxId}
+                    disabled={!hash}
+                  >
+                    {t('copyTransactionId')}
+                  </Button>
+                </Tooltip>
+              </div>
+            </div>
+          </div>
           <div className="transaction-list-item-details__body">
+            <div className="transaction-list-item-details__sender-to-recipient-header">
+              <div>From</div>
+              <div>To</div>
+            </div>
             <div className="transaction-list-item-details__sender-to-recipient-container">
               <SenderToRecipient
                 warnUserOnAccountMismatch={false}
