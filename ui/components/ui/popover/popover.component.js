@@ -1,4 +1,4 @@
-import React, { PureComponent, useEffect } from 'react';
+import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
