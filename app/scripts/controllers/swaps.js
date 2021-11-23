@@ -746,7 +746,7 @@ export default class SwapsController {
       const conversionRateForSorting = tokenConversionRate || 1;
 
       const ethValueOfTokens = decimalAdjustedDestinationAmount.times(
-        conversionRateForSorting,
+        conversionRateForSorting.toString(10),
         10,
       );
 
@@ -768,7 +768,7 @@ export default class SwapsController {
         quote.ethValueOfTokens = ethValueOfTokens.toString(10);
         quote.overallValueOfQuote = overallValueOfQuoteForSorting.toString(10);
         quote.metaMaskFeeInEth = metaMaskFeeInTokens
-          .times(conversionRateForCalculations)
+          .times(conversionRateForCalculations.toString(10))
           .toString(10);
       }
 

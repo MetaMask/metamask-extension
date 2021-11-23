@@ -1327,9 +1327,12 @@
   "learmMoreAboutGas": {
     "message": "Want to $1 about gas?"
   },
+<<<<<<< HEAD
   "learnCancelSpeeedup": {
     "message": "Learn how to $1"
   },
+=======
+>>>>>>> fbc6f4e603c6f5f4054a52f17c792bf4ef54c462
   "learnMore": {
     "message": "learn more"
   },
