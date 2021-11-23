@@ -29,7 +29,7 @@ const TransactionAlerts = ({
           iconFillColor="#d73a49"
           type="danger"
           primaryActionV2={
-            userAcknowledgedGasMissing
+            userAcknowledgedGasMissing === true
               ? undefined
               : {
                   label: t('proceedWithTransaction'),
@@ -43,6 +43,8 @@ const TransactionAlerts = ({
           message={
             <Typography
               className="transaction-alerts__pending-transactions"
+              align="left"
+              fontSize="12px"
               margin={[0, 0]}
             >
               <strong>
@@ -75,7 +77,11 @@ const TransactionAlerts = ({
       {balanceError && <ErrorMessage errorKey={INSUFFICIENT_FUNDS_ERROR_KEY} />}
       {estimateUsed === PRIORITY_LEVELS.LOW && (
         <ActionableMessage
-          message={<I18nValue messageKey="lowPriorityMessage" />}
+          message={
+            <Typography align="left" fontSize="12px" margin={[0, 0]}>
+              <I18nValue messageKey="lowPriorityMessage" />
+            </Typography>
+          }
           useIcon
           iconFillColor="#f8c000"
           type="warning"

@@ -82,7 +82,7 @@ export default function TransactionDetail({
 
   return (
     <div className="transaction-detail">
-      {onEdit && (
+      {editEnabled && (
         <div className="transaction-detail-edit">
           <button onClick={onEdit}>{t('edit')}</button>
         </div>

@@ -573,7 +573,9 @@ export default class ConfirmTransactionBase extends Component {
       <div className="confirm-page-container-content__details">
         {EIP_1559_V2 && (
           <TransactionAlerts
-            setUserAcknowledgedGasMissing={this.setUserAcknowledgedGasMissing}
+            setUserAcknowledgedGasMissing={() =>
+              this.setUserAcknowledgedGasMissing()
+            }
             userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           />
         )}
