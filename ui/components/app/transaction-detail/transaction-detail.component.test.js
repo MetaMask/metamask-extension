@@ -20,7 +20,7 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
-const render = (props, componentProps) => {
+const render = ({ contextProps, componentProps }) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -35,7 +35,7 @@ const render = (props, componentProps) => {
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider {...props}>
+    <GasFeeContextProvider {...contextProps}>
       <TransactionDetail
         onEdit={() => {
           console.log('on edit');
@@ -58,28 +58,30 @@ describe('TransactionDetail', () => {
   });
 
   it('should render edit link with text low if low gas estimates are selected', () => {
-    render({ transaction: { userFeeLevel: 'low' } });
+    render({ contextProps: { transaction: { userFeeLevel: 'low' } } });
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
   });
 
   it('should render edit link with text markey if medium gas estimates are selected', () => {
-    render({ transaction: { userFeeLevel: 'medium' } });
+    render({ contextProps: { transaction: { userFeeLevel: 'medium' } } });
     expect(screen.queryByText('🦊')).toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
   });
 
   it('should render edit link with text agressive if high gas estimates are selected', () => {
-    render({ transaction: { userFeeLevel: 'high' } });
+    render({ contextProps: { transaction: { userFeeLevel: 'high' } } });
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
   });
 
   it('should render edit link with text Site suggested if site suggested estimated are used', () => {
     render({
-      transaction: {
-        dappSuggestedGasFees: { maxFeePerGas: 1, maxPriorityFeePerGas: 1 },
-        txParams: { maxFeePerGas: 1, maxPriorityFeePerGas: 1 },
+      contextProps: {
+        transaction: {
+          dappSuggestedGasFees: { maxFeePerGas: 1, maxPriorityFeePerGas: 1 },
+          txParams: { maxFeePerGas: 1, maxPriorityFeePerGas: 1 },
+        },
       },
     });
     expect(screen.queryByText('🌐')).toBeInTheDocument();
@@ -89,7 +91,9 @@ describe('TransactionDetail', () => {
 
   it('should render edit link with text advance if custom gas estimates are used', () => {
     render({
-      defaultEstimateToUse: 'custom',
+      contextProps: {
+        defaultEstimateToUse: 'custom',
+      },
     });
     expect(screen.queryByText('⚙')).toBeInTheDocument();
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
@@ -97,15 +101,15 @@ describe('TransactionDetail', () => {
   });
 
   it('should not render edit link if transaction has SimulationError and prop userAcknowledgedGasMissing is false', () => {
-    render({ transaction: { simulationFails: true } });
+    render({ contextProps: { transaction: { simulationFails: true } } });
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
   });
 
   it('should render edit link if prop userAcknowledgedGasMissing is true even if transaction has SimulationError', () => {
-    render(
-      { transaction: { simulationFails: true } },
-      { userAcknowledgedGasMissing: true },
-    );
+    render({
+      contextProps: { transaction: { simulationFails: true } },
+      componentProps: { userAcknowledgedGasMissing: true },
+    });
     expect(screen.queryByRole('button')).toBeInTheDocument();
   });
 

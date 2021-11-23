@@ -29,7 +29,7 @@ const TransactionAlerts = ({
     <div className="transaction-alerts">
       {hasSimulationError && (
         <ActionableMessage
-          message={<I18nValue messageKey="simulationErrorMessage" />}
+          message={<I18nValue messageKey="simulationErrorMessageV2" />}
           useIcon
           iconFillColor="#d73a49"
           type="danger"

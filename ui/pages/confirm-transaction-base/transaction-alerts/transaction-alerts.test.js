@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 import {
@@ -22,7 +22,7 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
-const render = (transactionProps, state, componentProps) => {
+const render = ({ componentProps, transactionProps, state }) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -62,14 +62,14 @@ describe('TransactionAlerts', () => {
   });
 
   it('should returning warning message for low gas estimate', () => {
-    render({ userFeeLevel: 'low' });
+    render({ transactionProps: { transaction: { userFeeLevel: 'low' } } });
     expect(
       document.getElementsByClassName('actionable-message--warning'),
     ).toHaveLength(1);
   });
 
   it('should return null for gas estimate other than low', () => {
-    render({ userFeeLevel: 'high' });
+    render({ transactionProps: { transaction: { userFeeLevel: 'high' } } });
     expect(
       document.getElementsByClassName('actionable-message--warning'),
     ).toHaveLength(0);
@@ -77,33 +77,37 @@ describe('TransactionAlerts', () => {
 
   it('should not show insufficient balance message if transaction value is less than balance', () => {
     render({
-      userFeeLevel: 'high',
-      txParams: { value: '0x64' },
+      transactionProps: {
+        transaction: { userFeeLevel: 'high', txParams: { value: '0x64' } },
+      },
     });
     expect(screen.queryByText('Insufficient funds.')).not.toBeInTheDocument();
   });
 
   it('should show insufficient balance message if transaction value is more than balance', () => {
     render({
-      userFeeLevel: 'high',
-      txParams: { value: '0x5208' },
+      transactionProps: {
+        transaction: { userFeeLevel: 'high', txParams: { value: '0x5208' } },
+      },
     });
     expect(screen.queryByText('Insufficient funds.')).toBeInTheDocument();
   });
 
   it('should show pending transaction message if there are >= 1 pending transactions', () => {
-    render(undefined, {
-      currentNetworkTxList: [
-        {
-          id: 0,
-          time: 0,
-          txParams: {
-            from: mockState.metamask.selectedAddress,
-            to: '0xRecipient',
+    render({
+      state: {
+        currentNetworkTxList: [
+          {
+            id: 0,
+            time: 0,
+            txParams: {
+              from: '0xAddress',
+              to: '0xRecipient',
+            },
+            status: TRANSACTION_STATUSES.SUBMITTED,
           },
-          status: TRANSACTION_STATUSES.SUBMITTED,
-        },
-      ],
+        ],
+      },
     });
     expect(
       screen.queryByText('You have (1) pending transaction(s).'),
@@ -112,7 +116,7 @@ describe('TransactionAlerts', () => {
 
   describe('SimulationError Message', () => {
     it('should show simulation error message along with option to proceed anyway if transaction.simulationFails is true', () => {
-      render({ simulationFails: true });
+      render({ transactionProps: { simulationFails: true } });
       expect(
         screen.queryByText(
           'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
@@ -124,8 +128,11 @@ describe('TransactionAlerts', () => {
     });
 
     it('should not show options to proceed anyways if compoennt prop userAcknowledgedGasMissing is already true', () => {
-      render({ simulationFails: true }, undefined, {
-        userAcknowledgedGasMissing: true,
+      render({
+        componentProps: {
+          userAcknowledgedGasMissing: true,
+        },
+        transactionProps: { simulationFails: true },
       });
       expect(
         screen.queryByText(
@@ -139,8 +146,11 @@ describe('TransactionAlerts', () => {
 
     it('should call prop setUserAcknowledgedGasMissing if proceed anyways option is clicked', () => {
       const setUserAcknowledgedGasMissing = jest.fn();
-      render({ simulationFails: true }, undefined, {
-        setUserAcknowledgedGasMissing,
+      render({
+        componentProps: {
+          setUserAcknowledgedGasMissing,
+        },
+        transactionProps: { simulationFails: true },
       });
       fireEvent.click(screen.queryByText('I want to proceed anyway'));
       expect(setUserAcknowledgedGasMissing).toHaveBeenCalledTimes(1);
@@ -148,8 +158,10 @@ describe('TransactionAlerts', () => {
 
     it('should return null for legacy transactions', () => {
       const { container } = render({
-        txParams: {
-          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+        transactionProps: {
+          txParams: {
+            type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+          },
         },
       });
       expect(container.firstChild).toBeNull();
