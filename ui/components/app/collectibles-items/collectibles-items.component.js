@@ -21,7 +21,28 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
   const t = useI18nContext();
-  const collections = {};
+  const collections = {
+    Opensea: {
+      icon: './images/opensea-icon.svg',
+      collectibles: [
+        { icon: './images/kitty-1.svg', backgroundColor: COLORS.PRIMARY1 },
+        { icon: './images/kitty-2.svg', backgroundColor: COLORS.ALERT3 },
+        { icon: './images/kitty-3.svg', backgroundColor: COLORS.SUCCESS1 },
+        { icon: './images/kitty-1.svg', backgroundColor: COLORS.ERROR3 },
+        { icon: './images/kitty-2.svg', backgroundColor: COLORS.ALERT3 },
+        { icon: './images/kitty-3.svg', backgroundColor: COLORS.SUCCESS1 },
+        { icon: './images/kitty-1.svg', backgroundColor: COLORS.ERROR3 },
+        { icon: './images/kitty-2.svg', backgroundColor: COLORS.ALERT3 },
+      ],
+    },
+    CryptoKitties: {
+      icon: './images/opensea-icon.svg',
+      collectibles: [
+        { icon: './images/kitty-1.svg', backgroundColor: COLORS.PRIMARY1 },
+        { icon: './images/kitty-2.svg', backgroundColor: COLORS.ALERT3 },
+      ],
+    },
+  };
   const defaultDropdownState = {};
 
   Object.keys(collections).forEach((key) => {

@@ -16,7 +16,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function CollectiblesTab({ onAddNFT }) {
-  const collectibles = [];
+  const collectibles = [1];
   const newNFTsDetected = false;
   const t = useI18nContext();
 
