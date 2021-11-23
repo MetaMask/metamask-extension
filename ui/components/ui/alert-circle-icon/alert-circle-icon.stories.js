@@ -3,7 +3,7 @@ import README from './README.mdx';
 import AlertCircleIcon from './alert-circle-icon.component';
 
 export default {
-  title: 'Components/UI/Alert Circle Icon',
+  title: 'Components/UI/AlertCircleIcon',
   id: __filename,
   component: AlertCircleIcon,
   parameters: {
@@ -17,13 +17,11 @@ export default {
 };
 
 export const DefaultStory = (args) => <AlertCircleIcon type={args.type} />;
+
 DefaultStory.storyName = 'Default';
 
-DefaultStory.args = {
-  type: 'danger',
-};
-
 export const Warning = (args) => <AlertCircleIcon type={args.type} />;
+
 Warning.args = {
   type: 'warning',
 };

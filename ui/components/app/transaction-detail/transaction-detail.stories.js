@@ -1,11 +1,12 @@
 import React from 'react';
+import { action } from '@storybook/addon-actions';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetail from '.';
 
 export default {
-  title: 'Transaction Detail',
+  title: 'Components/App/TransactionDetail',
   id: __filename,
 };
 
@@ -43,7 +44,7 @@ const rows = [
   />,
 ];
 
-export const basic = () => {
+export const DefaultStory = () => {
   return (
     <div style={{ width: '400px' }}>
       <TransactionDetail rows={rows} />
@@ -51,10 +52,12 @@ export const basic = () => {
   );
 };
 
-export const editable = () => {
+DefaultStory.storyName = 'Default';
+
+export const Editable = () => {
   return (
     <div style={{ width: '400px' }}>
-      <TransactionDetail rows={rows} onEdit={() => console.log('Edit!')} />
+      <TransactionDetail rows={rows} onEdit={() => action('Edit!')()} />
     </div>
   );
 };

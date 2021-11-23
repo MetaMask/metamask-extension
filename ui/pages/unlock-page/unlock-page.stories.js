@@ -3,11 +3,11 @@ import { action } from '@storybook/addon-actions';
 import UnlockPage from './unlock-page.component';
 
 export default {
-  title: 'UnlockPage',
+  title: 'Pages/UnlockPage',
   id: __filename,
 };
 
-export const UnlockPageComponent = () => {
+export const DefaultStory = () => {
   return (
     <UnlockPage
       onSubmit={action('Login')}
@@ -19,3 +19,5 @@ export const UnlockPageComponent = () => {
     />
   );
 };
+
+DefaultStory.storyName = 'Default';

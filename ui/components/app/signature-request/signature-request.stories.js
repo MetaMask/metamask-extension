@@ -9,11 +9,11 @@ const containerStyle = {
 };
 
 export default {
-  title: 'Signature Request',
+  title: 'Components/App/SignatureRequest',
   id: __filename,
 };
 
-export const FirstLook = () => {
+export const DefaultStory = () => {
   return (
     <div style={containerStyle}>
       <SignatureRequest
@@ -36,3 +36,5 @@ export const FirstLook = () => {
     </div>
   );
 };
+
+DefaultStory.storyName = 'Default';

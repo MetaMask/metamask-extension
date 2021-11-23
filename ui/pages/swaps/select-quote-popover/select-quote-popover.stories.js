@@ -6,11 +6,11 @@ import mockQuoteData from './mock-quote-data';
 import SelectQuotePopover from '.';
 
 export default {
-  title: 'SelectQuotePopover',
+  title: 'Pages/Swaps/SelectQuotePopover',
   id: __filename,
 };
 
-export const Default = () => {
+export const DefaultStory = () => {
   const [showPopover, setShowPopover] = useState(false);
 
   return (
@@ -28,3 +28,5 @@ export const Default = () => {
     </div>
   );
 };
+
+DefaultStory.storyName = 'Default';
