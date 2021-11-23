@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 
 import { PRIORITY_LEVELS } from '../../../../shared/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Popover from '../../ui/popover';
 import I18nValue from '../../ui/i18n-value';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
+import Popover from '../../ui/popover';
+import Typography from '../../ui/typography/typography';
 
+import { COLORS } from '../../../helpers/constants/design-system';
 import EditGasItem from './edit-gas-item';
+import NetworkStatus from './network-status';
 
 const EditGasFeePopover = ({ onClose }) => {
   const t = useI18nContext();
@@ -54,6 +57,27 @@ const EditGasFeePopover = ({ onClose }) => {
               priorityLevel={PRIORITY_LEVELS.CUSTOM}
               onClose={onClose}
             />
+            <NetworkStatus />
+            <Typography
+              className="edit-gas-fee-popover__know-more"
+              align="center"
+              color={COLORS.UI4}
+              fontSize="12px"
+            >
+              <I18nValue
+                messageKey="learmMoreAboutGas"
+                options={[
+                  <a
+                    key="learnMoreLink"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://metamask.zendesk.com/hc/en-us/articles/4404600179227-User-Guide-Gas"
+                  >
+                    <I18nValue messageKey="learnMore" />
+                  </a>,
+                ]}
+              />
+            </Typography>
           </div>
         </div>
       </>
