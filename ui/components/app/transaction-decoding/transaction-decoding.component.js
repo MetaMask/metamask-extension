@@ -119,9 +119,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           case 'array':
             return (
               <details>
-                <summary className="typography--weight-bold typography--color-black">
-                  {name}:{' '}
-                </summary>
+                <summary className="typography--color-black">{name}: </summary>
                 <ol>
                   {value.map((itemValue) => {
                     return (
@@ -172,9 +170,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       <li className="solidity-value">
         <div className="solidity-named-item solidity-item">
           {typeClass !== 'array' && !Array.isArray(value) ? (
-            <span className="param-name typography--weight-bold typography--color-black">
-              {name}:{' '}
-            </span>
+            <span className="param-name typography--color-black">{name}: </span>
           ) : null}
           <span className="sol-item solidity-uint">
             {renderLeaf({ name, typeClass, type, value, kind })}

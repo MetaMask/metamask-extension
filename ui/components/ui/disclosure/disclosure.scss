@@ -1,6 +1,5 @@
 .disclosure {
     margin: 12px 0;
-    padding-bottom: 7px;
     cursor: pointer;
     font-size: 14px;
 
@@ -34,12 +33,6 @@
 
     }
     &__content {
-        .transaction-list-item-details__transaction-activity-log {
-            padding-left: 0;
-        }
-        .transaction-activity-log__title {
-            display: none;
-        }
         margin-left: 12px;
         font-size: 14px;
         &.small {

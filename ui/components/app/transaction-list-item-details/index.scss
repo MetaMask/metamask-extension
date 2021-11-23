@@ -1,4 +1,9 @@
 .transaction-list-item-details {
+
+  div.disclosure + div.disclosure {
+    margin-top: 0;
+  }
+
   &__header {
     margin: 8px 16px;
     display: flex;
@@ -53,6 +58,11 @@
   &__transaction-activity-log {
     flex: 2;
     min-width: 0;
-    padding-left: 12px;
+    .transaction-activity-log__activities-container {
+      padding-top: 0; 
+    }
+    .transaction-activity-log__title {
+      display: none;
+    }
   }
 }
