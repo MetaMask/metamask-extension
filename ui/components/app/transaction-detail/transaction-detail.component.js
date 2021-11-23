@@ -10,11 +10,7 @@ import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export default function TransactionDetail({
-  rows = [],
-  onEdit,
-  userAcknowledgedGasMissing,
-}) {
+export default function TransactionDetail({ rows = [], onEdit }) {
   // eslint-disable-next-line prefer-destructuring
   const EIP_1559_V2 = process.env.EIP_1559_V2;
 
