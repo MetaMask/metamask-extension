@@ -6,8 +6,6 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import TextField from '../../../components/ui/text-field';
 import Button from '../../../components/ui/button';
 import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
-import Dropdown from '../../../components/ui/dropdown';
-import Dialog from '../../../components/ui/dialog';
 
 import { getPlatform } from '../../../../app/scripts/lib/util';
 
@@ -17,11 +15,8 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
-import {
-  LEDGER_TRANSPORT_TYPES,
-  LEDGER_USB_VENDOR_ID,
-} from '../../../../shared/constants/hardware-wallets';
 import { EVENT } from '../../../../shared/constants/metametrics';
+import LedgerTransportDropdown from './ledger-transport-dropdown';
 
 export default class AdvancedTab extends PureComponent {
   static contextTypes = {
@@ -51,7 +46,6 @@ export default class AdvancedTab extends PureComponent {
     threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
-    ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
     setLedgerTransportPreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
@@ -65,7 +59,6 @@ export default class AdvancedTab extends PureComponent {
     lockTimeError: '',
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
-    showLedgerTransportWarning: false,
   };
 
   settingsRefs = Array(
@@ -468,94 +461,9 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderLedgerLiveControl() {
-    const { t } = this.context;
-    const {
-      ledgerTransportType,
-      setLedgerTransportPreference,
-      userHasALedgerAccount,
-    } = this.props;
-
-    const LEDGER_TRANSPORT_NAMES = {
-      LIVE: t('ledgerLive'),
-      WEBHID: t('webhid'),
-      U2F: t('u2f'),
-    };
-
-    const transportTypeOptions = [
-      {
-        name: LEDGER_TRANSPORT_NAMES.LIVE,
-        value: LEDGER_TRANSPORT_TYPES.LIVE,
-      },
-      {
-        name: LEDGER_TRANSPORT_NAMES.U2F,
-        value: LEDGER_TRANSPORT_TYPES.U2F,
-      },
-    ];
-
-    if (window.navigator.hid) {
-      transportTypeOptions.push({
-        name: LEDGER_TRANSPORT_NAMES.WEBHID,
-        value: LEDGER_TRANSPORT_TYPES.WEBHID,
-      });
-    }
-
-    const recommendedLedgerOption = window.navigator.hid
-      ? LEDGER_TRANSPORT_NAMES.WEBHID
-      : LEDGER_TRANSPORT_NAMES.U2F;
-
     return (
-      <div ref={this.settingsRefs[11]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('preferredLedgerConnectionType')}</span>
-          <div className="settings-page__content-description">
-            {t('ledgerConnectionPreferenceDescription', [
-              recommendedLedgerOption,
-              <Button
-                key="ledger-connection-settings-learn-more"
-                type="link"
-                href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="settings-page__inline-link"
-              >
-                {t('learnMore')}
-              </Button>,
-            ])}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Dropdown
-              id="select-ledger-transport-type"
-              options={transportTypeOptions}
-              selectedOption={ledgerTransportType}
-              onChange={async (transportType) => {
-                if (
-                  ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE &&
-                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID
-                ) {
-                  this.setState({ showLedgerTransportWarning: true });
-                }
-                setLedgerTransportPreference(transportType);
-                if (
-                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
-                  userHasALedgerAccount
-                ) {
-                  await window.navigator.hid.requestDevice({
-                    filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
-                  });
-                }
-              }}
-            />
-            {this.state.showLedgerTransportWarning ? (
-              <Dialog type="message">
-                <div className="settings-page__content-item-dialog">
-                  {t('ledgerTransportChangeWarning')}
-                </div>
-              </Dialog>
-            ) : null}
-          </div>
-        </div>
+      <div>
+        <LedgerTransportDropdown />
       </div>
     );
   }
