@@ -54,8 +54,8 @@ export const TransactionModalContextProvider = ({
   return (
     <TransactionModalContext.Provider
       value={{
-        currentModal: openModals[openModals.length - 1],
         closeModal,
+        currentModal: openModals[openModals.length - 1],
         openModal,
       }}
     >
@@ -69,7 +69,7 @@ export function useTransactionModalContext() {
 }
 
 TransactionModalContextProvider.propTypes = {
-  children: PropTypes.node.isRequired,
   actionKey: PropTypes.string,
+  children: PropTypes.node.isRequired,
   methodData: PropTypes.object,
 };

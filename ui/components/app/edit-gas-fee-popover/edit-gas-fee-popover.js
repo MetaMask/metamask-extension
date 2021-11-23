@@ -11,7 +11,7 @@ import EditGasItem from './edit-gas-item';
 
 const EditGasFeePopover = () => {
   const t = useI18nContext();
-  const { currentModal, closeModal } = useTransactionModalContext();
+  const { closeModal, currentModal } = useTransactionModalContext();
 
   if (currentModal !== 'editGasFee') return null;
 

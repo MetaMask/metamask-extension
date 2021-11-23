@@ -29,12 +29,7 @@ export default function TransactionDetail({ rows = [], onEdit }) {
     return (
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
-          <button
-            onClick={() => {
-              onEdit();
-              openModal('editGasFee');
-            }}
-          >
+          <button onClick={() => openModal('editGasFee')}>
             <span className="transaction-detail-edit-V2__icon">
               {`${PRIORITY_LEVEL_ICON_MAP[estimateUsed]} `}
             </span>
@@ -44,12 +39,7 @@ export default function TransactionDetail({ rows = [], onEdit }) {
             <i className="fas fa-chevron-right asset-list-item__chevron-right" />
           </button>
           {estimateUsed === 'custom' && onEdit && (
-            <button
-              onClick={() => {
-                onEdit();
-                openModal('advancedGasFee');
-              }}
-            >
+            <button onClick={() => openModal('advancedGasFee')}>
               {t('edit')}
             </button>
           )}

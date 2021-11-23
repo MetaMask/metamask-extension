@@ -1,19 +1,20 @@
 import React from 'react';
 
-import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 
-import Popover from '../../ui/popover';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import I18nValue from '../../ui/i18n-value';
+import Popover from '../../ui/popover';
 
 const AdvancedGasFeePopover = () => {
   const t = useI18nContext();
-  const { currentModal, closeModal } = useTransactionModalContext();
+  const { closeModal, currentModal } = useTransactionModalContext();
 
   if (currentModal !== 'advancedGasFee') return null;
 
+  // todo: align styles to edit gas fee modal
   return (
     <Popover
       className="advanced-gas-fee-popover"
