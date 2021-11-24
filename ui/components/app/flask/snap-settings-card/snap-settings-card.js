@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+
 import Card from '../../../ui/card';
 import Box from '../../../ui/box';
 import IconWithFallback from '../../../ui/icon-with-fallback';
@@ -52,6 +54,7 @@ const SnapSettingsCard = ({
   buttonProps,
   chipProps,
 }) => {
+  const t = useI18nContext();
   const [chipStatus, setChipStatus] = useState(STATUSES.INSTALLING);
 
   const handleStatus = useCallback(() => {
@@ -92,11 +95,13 @@ const SnapSettingsCard = ({
         alignItems={ALIGN_ITEMS.CENTER}
         marginBottom={4}
       >
-        <Box>
-          <IconBorder size={32}>
-            <IconWithFallback icon={icon} size={32} name={name} />
-          </IconBorder>
-        </Box>
+        {(icon || name) && (
+          <Box>
+            <IconBorder size={32}>
+              <IconWithFallback icon={icon} size={32} name={name} />
+            </IconBorder>
+          </Box>
+        )}
         <Typography
           boxProps={{
             marginLeft: 4,
@@ -145,7 +150,7 @@ const SnapSettingsCard = ({
                 onClick={onClick}
                 {...buttonProps}
               >
-                See Details
+                {t('flaskSnapSettingsCardButtonCta')}
               </Button>
             </Box>
             <Chip
@@ -181,8 +186,9 @@ const SnapSettingsCard = ({
                 tag="span"
                 className="snap-settings-card__date-added"
               >
-                {dateAdded && `Added on`} {dateAdded} {dateAdded && `from`}{' '}
-                {url}
+                {`${
+                  dateAdded && t('flaskSnapSettingsCardDateAddedOn')
+                } ${dateAdded} ${url && t('flaskSnapSettingsCardFrom')} ${url}`}
               </Typography>
               <Typography
                 boxProps={{
