@@ -1,5 +1,6 @@
+/* eslint-disable import/unambiguous */
 module.exports = {
-  collectCoverageFrom: ['<rootDir>/ui/**/*.js', '<rootDir>/shared/**/*.js'],
+  collectCoverageFrom: ['<rootDir>/ui/**/*.js'],
   coverageDirectory: './jest-coverage/main',
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
   coverageReporters: ['json', 'lcov', 'text', 'clover'],
@@ -16,12 +17,7 @@ module.exports = {
   restoreMocks: true,
   setupFiles: ['<rootDir>/test/setup.js', '<rootDir>/test/env.js'],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
-  testMatch: [
-    '<rootDir>/ui/**/*.test.js',
-    '<rootDir>/shared/**/*.test.js',
-    '<rootDir>/app/scripts/migrations/*.test.js',
-    '<rootDir>/app/scripts/platforms/*.test.js',
-  ],
+  testMatch: ['<rootDir>/ui/**/*stories.test.js'],
   testTimeout: 2500,
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',

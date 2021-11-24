@@ -56,9 +56,12 @@ workflows:
       - prep-build-test-metrics:
           requires:
             - prep-deps
-      - prep-build-storybook:
+      - test-storybook:
           requires:
             - prep-deps
+      - prep-build-storybook:
+          requires:
+            - test-storybook
       - test-lint:
           requires:
             - prep-deps
@@ -335,6 +338,16 @@ jobs:
           root: .
           paths:
             - storybook-build
+  
+  test-storybook:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Test Storybook
+          command: yarn storybook:test
 
   test-yarn-dedupe:
     executor: node-browsers
