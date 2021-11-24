@@ -95,5 +95,5 @@ export default function TransactionDetail({
 TransactionDetail.propTypes = {
   rows: PropTypes.arrayOf(TransactionDetailItem).isRequired,
   onEdit: PropTypes.func,
-  userAcknowledgedGasMissing: PropTypes.bool,
+  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
 };
