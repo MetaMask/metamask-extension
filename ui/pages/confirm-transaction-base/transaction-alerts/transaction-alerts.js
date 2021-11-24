@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
+import { PRIORITY_LEVELS } from '../../../../shared/constants/gas';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import { submittedPendingTransactionsSelector } from '../../../selectors/transactions';
 import { useGasFeeContext } from '../../../contexts/gasFee';
@@ -9,6 +10,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import ErrorMessage from '../../../components/ui/error-message';
 import I18nValue from '../../../components/ui/i18n-value';
+import Typography from '../../../components/ui/typography';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
@@ -34,7 +36,7 @@ const TransactionAlerts = ({
           iconFillColor="#d73a49"
           type="danger"
           primaryActionV2={
-            userAcknowledgedGasMissing
+            userAcknowledgedGasMissing === true
               ? undefined
               : {
                   label: t('proceedWithTransaction'),
@@ -46,7 +48,12 @@ const TransactionAlerts = ({
       {pendingTransactions?.length > 0 && (
         <ActionableMessage
           message={
-            <div className="transaction-alerts__pending-transactions">
+            <Typography
+              className="transaction-alerts__pending-transactions"
+              align="left"
+              fontSize="12px"
+              margin={[0, 0]}
+            >
               <strong>
                 <I18nValue
                   messageKey="pendingTransaction"
@@ -67,7 +74,7 @@ const TransactionAlerts = ({
                   </a>,
                 ]}
               />
-            </div>
+            </Typography>
           }
           useIcon
           iconFillColor="#f8c000"
@@ -75,9 +82,13 @@ const TransactionAlerts = ({
         />
       )}
       {balanceError && <ErrorMessage errorKey={INSUFFICIENT_FUNDS_ERROR_KEY} />}
-      {estimateUsed === 'low' && (
+      {estimateUsed === PRIORITY_LEVELS.LOW && (
         <ActionableMessage
-          message={<I18nValue messageKey="lowPriorityMessage" />}
+          message={
+            <Typography align="left" fontSize="12px" margin={[0, 0]}>
+              <I18nValue messageKey="lowPriorityMessage" />
+            </Typography>
+          }
           useIcon
           iconFillColor="#f8c000"
           type="warning"

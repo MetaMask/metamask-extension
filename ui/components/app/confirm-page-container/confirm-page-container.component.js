@@ -10,6 +10,7 @@ import Dialog from '../../ui/dialog';
 import ErrorMessage from '../../ui/error-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 
+import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 
@@ -240,9 +241,8 @@ export default class ConfirmPageContainer extends Component {
               transaction={currentTransaction}
             />
           )}
-          {editingGas && supportsEIP1559V2 && (
-            <EditGasFeePopover onClose={handleCloseEditGas} />
-          )}
+          <EditGasFeePopover />
+          <AdvancedGasFeePopover />
         </div>
       </GasFeeContextProvider>
     );

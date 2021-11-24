@@ -3,6 +3,7 @@ import React, {
   createContext,
   useEffect,
   useCallback,
+  useContext,
   useState,
 } from 'react';
 import { useSelector } from 'react-redux';
@@ -123,6 +124,10 @@ export function MetaMetricsProvider({ children }) {
 }
 
 MetaMetricsProvider.propTypes = { children: PropTypes.node };
+
+export function useMetaMetricsContext() {
+  return useContext(MetaMetricsContext);
+}
 
 export class LegacyMetaMetricsProvider extends Component {
   static propTypes = {

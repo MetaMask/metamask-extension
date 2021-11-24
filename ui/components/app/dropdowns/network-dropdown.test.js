@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import Button from '../../ui/button';
 import { mountWithRouter } from '../../../../test/lib/render-helpers';
 import ColorIndicator from '../../ui/color-indicator';
+import { LOCALHOST_RPC_URL } from '../../../../shared/constants/network';
 import NetworkDropdown from './network-dropdown';
 import { DropdownMenuItem } from './dropdown';
 
@@ -55,6 +56,7 @@ describe('Network Dropdown', () => {
         frequentRpcListDetail: [
           { chainId: '0x1a', rpcUrl: 'http://localhost:7545' },
           { rpcUrl: 'http://localhost:7546' },
+          { rpcUrl: LOCALHOST_RPC_URL, nickname: 'localhost' },
         ],
       },
       appState: {

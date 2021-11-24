@@ -16,6 +16,13 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
+jest.mock('../../../contexts/transaction-modal', () => ({
+  useTransactionModalContext: () => ({
+    closeModal: () => undefined,
+    currentModal: 'editGasFee',
+  }),
+}));
+
 const MOCK_FEE_ESTIMATE = {
   low: {
     minWaitTimeEstimate: 360000,
