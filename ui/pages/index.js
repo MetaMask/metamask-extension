@@ -15,6 +15,11 @@ import {
 import ErrorPage from './error';
 import Routes from './routes';
 
+const Random = () => {
+  console.log('random render');
+  return null;
+};
+
 class Index extends PureComponent {
   state = {};
 
@@ -29,6 +34,8 @@ class Index extends PureComponent {
   render() {
     const { error, errorId } = this.state;
     const { store } = this.props;
+
+    console.log('base route');
 
     if (error) {
       return (
@@ -51,6 +58,7 @@ class Index extends PureComponent {
                 <NewLegacyMetaMetricsProvider>
                   <I18nProvider>
                     <LegacyI18nProvider>
+                      <Random />
                       <Routes />
                     </LegacyI18nProvider>
                   </I18nProvider>
