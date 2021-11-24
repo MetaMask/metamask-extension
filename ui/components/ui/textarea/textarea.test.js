@@ -12,20 +12,23 @@ describe('TextArea', () => {
   const text =
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporld, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporld, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporld';
   const onChange = jest.fn();
-  const args = {
-    name: 'Text area',
-    value: text,
-    resize: RESIZE.BOTH,
-    scrollable: false,
-    boxProps: {
-      borderColor: COLORS.UI3,
-      borderRadius: SIZES.SM,
-      borderStyle: BORDER_STYLE.SOLID,
-      padding: [2, 4],
-    },
-    height: '100px',
-    onChange,
-  };
+  let args;
+  beforeEach(() => {
+    args = {
+      name: 'Text area',
+      value: text,
+      resize: RESIZE.BOTH,
+      scrollable: false,
+      boxProps: {
+        borderColor: COLORS.UI3,
+        borderRadius: SIZES.SM,
+        borderStyle: BORDER_STYLE.SOLID,
+        padding: [2, 4],
+      },
+      height: '100px',
+      onChange,
+    };
+  });
   it('should render the TextArea component without crashing', () => {
     const { getByText } = render(<TextArea {...args} />);
     expect(getByText(text)).toBeDefined();
@@ -61,7 +64,6 @@ describe('TextArea', () => {
   });
 
   it('should NOT be able to scroll when given a false value for scrollable', () => {
-    args.scrollable = false;
     const { container } = render(<TextArea {...args} />);
     const doesScroll = container.firstChild.classList.contains(
       'textarea--scrollable',
