@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - [##12822](https://github.com/MetaMask/metamask-extension/pull/#12822): Fix `replaceChildren` and `function.prototype.apply` errors that could make the app unusable on older browsers due to a bug in our logo component.
 - [#61e0526d5](https://github.com/MetaMask/metamask-extension/pull/61e0526d5): Fix requesting of swaps quotes for token pairs that have highly precise exchange rates.
+- [##12773](https://github.com/MetaMask/metamask-extension/pull/#12773): Prevent token input in send flow from adding arbitary trailing decimal values to input
 
 ## [10.6.2]
 ### Fixed
