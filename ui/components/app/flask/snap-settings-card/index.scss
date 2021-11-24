@@ -10,10 +10,10 @@ $body-line-clamp: 4; // Number of lines in card body before truncating
 
   &__toggle-container {
     margin-left: auto;
-  }
 
-  &__toggle-container__toggle-button {
-    margin-right: -12px; // react-toggle-button width fix
+    &__toggle-button {
+      margin-right: -12px; // react-toggle-button width fix
+    }
   }
 
   &__body {
