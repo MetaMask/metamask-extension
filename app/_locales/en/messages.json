@@ -1167,8 +1167,8 @@
   "gasLimitInfoTooltipContent": {
     "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
   },
-  "gasLimitIsLessThenCalculatedGasLimit": {
-    "message": "Gas limit must be equal or greater than $1"
+  "gasLimitRecommended": {
+    "message": "Recommended gas limit is $1. If the gas limit is less than estimated transaction can fail."
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"

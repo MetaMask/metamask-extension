@@ -111,9 +111,7 @@ export default function EditGasDisplay({
   let showTopWarning, warningMessage;
   if (gasLimit < properGasLimit) {
     showTopWarning = true;
-    warningMessage = t('gasLimitIsLessThenCalculatedGasLimit', [
-      properGasLimit,
-    ]);
+    warningMessage = t('gasLimitRecommended', [properGasLimit]);
   }
 
   const showTopError =
