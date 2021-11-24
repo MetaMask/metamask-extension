@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
-import NewCollectiblesNotice from '../new-collectibles-notice';
+import CollectiblesDetectionNotice from '../collectibles-detection-notice';
 import CollectiblesItems from '../collectibles-items';
 import {
   COLORS,
@@ -14,24 +16,61 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  getCollectibles,
+  getCollectibleContracts,
+  getCollectiblesDetectionNoticeDismissed,
+} from '../../../ducks/metamask/metamask';
+import { getIsMainnet, getUseCollectibleDetection } from '../../../selectors';
+import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
+import { detectCollectibles } from '../../../store/actions';
 
 export default function CollectiblesTab({ onAddNFT }) {
-  const collectibles = [];
-  const newNFTsDetected = false;
+  const collectibles = useSelector(getCollectibles);
+  const collectibleContracts = useSelector(getCollectibleContracts);
+  const useCollectibleDetection = useSelector(getUseCollectibleDetection);
+  const isMainnet = useSelector(getIsMainnet);
+  const collectibleDetectionNoticeDismissed = useSelector(
+    getCollectiblesDetectionNoticeDismissed,
+  );
+  const history = useHistory();
   const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const collections = {};
+  collectibles.forEach((collectible) => {
+    if (collections[collectible.address]) {
+      collections[collectible.address].collectibles.push(collectible);
+    } else {
+      const collectionContract = collectibleContracts.find(
+        ({ address }) => address === collectible.address,
+      );
+      collections[collectible.address] = {
+        collectionName: collectionContract?.name || collectible.name,
+        collectionImage:
+          collectionContract?.logo || collectible.collectionImage,
+        collectibles: [collectible],
+      };
+    }
+  });
 
   return (
     <div className="collectibles-tab">
       {collectibles.length > 0 ? (
         <CollectiblesItems
+          collections={collections}
           onAddNFT={onAddNFT}
-          onRefreshList={() => {
-            console.log('refreshing collectibles');
-          }}
+          useCollectibleDetection={useCollectibleDetection}
+          onRefreshList={() => dispatch(detectCollectibles())}
+          onEnableAutoDetect={() => history.push(EXPERIMENTAL_ROUTE)}
         />
       ) : (
         <Box padding={[6, 12, 6, 12]}>
-          {newNFTsDetected ? <NewCollectiblesNotice /> : null}
+          {isMainnet &&
+          !useCollectibleDetection &&
+          !collectibleDetectionNoticeDismissed ? (
+            <CollectiblesDetectionNotice />
+          ) : null}
           <Box justifyContent={JUSTIFY_CONTENT.CENTER}>
             <img src="./images/no-nfts.svg" />
           </Box>
@@ -56,7 +95,7 @@ export default function CollectiblesTab({ onAddNFT }) {
               href="https://metamask.zendesk.com/hc/en-us/articles/360058238591-NFT-tokens-in-MetaMask-wallet"
               style={{ padding: 0, fontSize: '1rem' }}
             >
-              {t('learnMore')}
+              {t('learnMoreUpperCase')}
             </Button>
           </Box>
           <Box

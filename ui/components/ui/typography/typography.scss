@@ -39,6 +39,12 @@
     }
   }
 
+  @each $overflow in design-system.$overflow-wrap {
+    &--overflowwrap-#{$overflow} {
+      overflow-wrap: $overflow;
+    }
+  }
+
   @for $i from 1 through 8 {
     &--spacing-#{$i} {
       margin: #{$i * 4}px auto;

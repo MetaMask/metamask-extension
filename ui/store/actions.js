@@ -2203,6 +2203,16 @@ export function setOpenSeaEnabled(val) {
   };
 }
 
+export function detectCollectibles() {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.detectCollectibles`);
+    await promisifiedBackground.detectCollectibles();
+    dispatch(hideLoadingIndication());
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function setAdvancedGasFee(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -3042,8 +3052,13 @@ export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
 }
 
+// App state
 export function hideTestNetMessage() {
   return promisifiedBackground.setShowTestnetMessageInDropdown(false);
+}
+
+export function setCollectiblesDetectionNoticeDismissed() {
+  return promisifiedBackground.setCollectiblesDetectionNoticeDismissed(true);
 }
 
 // QR Hardware Wallets

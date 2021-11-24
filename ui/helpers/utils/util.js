@@ -3,6 +3,7 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
+import { util } from '@metamask/controllers';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
   GOERLI_CHAIN_ID,
@@ -546,3 +547,15 @@ export const sanitizeMessage = (msg, baseType, types) => {
   });
   return sanitizedMessage;
 };
+
+export function getAssetImageURL(image, ipfsGateway) {
+  let result = image;
+  if (!image || !ipfsGateway || typeof image !== 'string') {
+    return '';
+  }
+
+  if (image.startsWith('ipfs://')) {
+    result = util.getFormattedIpfsUrl(ipfsGateway, image, true);
+  }
+  return result;
+}
