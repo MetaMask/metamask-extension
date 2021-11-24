@@ -38,6 +38,7 @@ const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
     numberOfDecimals,
     multiplicandBase: 16,
     multiplierBase: 10,
+    fromNumericBase: 'hex',
     toNumericBase: 'dec',
     fromDenomination: 'WEI',
     toDenomination: 'GWEI',
