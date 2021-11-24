@@ -7,12 +7,9 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { clearClipboard } from '../../../../helpers/utils/util';
 
 const { isValidMnemonic } = ethers.utils;
-
-function clearClipboard() {
-  window.navigator.clipboard.writeText('');
-}
 
 export default class ImportWithSeedPhrase extends PureComponent {
   static contextTypes = {
