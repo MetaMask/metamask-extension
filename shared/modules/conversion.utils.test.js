@@ -177,7 +177,7 @@ describe('conversion utils', () => {
       expect(result.toNumber()).toStrictEqual(3);
     });
 
-    it('should correctly divide hexadecimal values', () => {
+    it('should correctly divide hexadecimal value from decimal value', () => {
       const result = divideCurrencies(1000, 0xa, {
         dividendBase: 16,
         divisorBase: 16,
@@ -185,7 +185,7 @@ describe('conversion utils', () => {
       expect(result.toNumber()).toStrictEqual(0x100);
     });
 
-    it('should correctly divide hexadecimal value from decimal value', () => {
+    it('should correctly divide hexadecimal values', () => {
       const result = divideCurrencies(0x3e8, 0xa, {
         dividendBase: 16,
         divisorBase: 16,
