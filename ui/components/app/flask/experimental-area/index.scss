@@ -13,32 +13,32 @@
   }
 
   .experimental-text {
-    padding: 20px;
+    padding: 16px;
     font-family: monospace;
     margin: auto;
     line-height: 16px;
   }
 
   .text {
-    padding: 20px;
+    padding: 16px;
     max-width: 670px;
   }
 
   ul {
-    padding: 20px 0;
+    padding: 16px 0;
   }
 
   li {
     list-style-type: disc;
-    padding-left: 10px;
+    padding-left: 8px;
     list-style-position: inside;
   }
 
   button {
     background-color: $flask-purple !important;
     border: 0 !important;
-    color: #f2f3f4;
+    color: $ui-1;
     width: 200px;
-    padding-bottom: 20px;
+    padding-bottom: 16px;
   }
 }
