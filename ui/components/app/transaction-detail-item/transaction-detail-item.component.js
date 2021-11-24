@@ -72,11 +72,29 @@ export default function TransactionDetailItem({
 }
 
 TransactionDetailItem.propTypes = {
+  /**
+   * Show title with text or react child
+   */
   detailTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Customize color of the title
+   */
   detailTitleColor: PropTypes.string,
+  /**
+   * Show amount on the left
+   */
   detailText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show total amount
+   */
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Add subtitle could be react child or text
+   */
   subTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show subtitle text could be react child or text
+   */
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   boldHeadings: PropTypes.bool,
   flexWidthValues: PropTypes.bool,
