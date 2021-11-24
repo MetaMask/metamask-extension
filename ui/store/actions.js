@@ -808,6 +808,15 @@ export function txError(err) {
   };
 }
 
+export function removeSnapError(msgData) {
+  return (dispatch) => {
+    return promisifiedBackground
+      .removeSnapError(msgData)
+      .then(() => updateMetamaskStateFromBackground())
+      .then((newState) => dispatch(updateMetamaskState(newState)));
+  };
+}
+
 export function cancelMsg(msgData) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());

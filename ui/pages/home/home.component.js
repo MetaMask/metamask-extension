@@ -85,12 +85,15 @@ export default class Home extends PureComponent {
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
     notificationsToShow: PropTypes.bool.isRequired,
+    errorsToShow: PropTypes.object.isRequired,
+    shouldShowErrors: PropTypes.object.isRequired,
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
     seedPhraseBackedUp: PropTypes.bool.isRequired,
     newNetworkAdded: PropTypes.string,
     setNewNetworkAdded: PropTypes.func.isRequired,
+    removeSnapError: PropTypes.func.isRequired,
   };
 
   state = {
@@ -205,12 +208,30 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
+      removeSnapError,
       infuraBlocked,
       newNetworkAdded,
       setNewNetworkAdded,
+      shouldShowErrors,
+      errorsToShow,
     } = this.props;
     return (
       <MultipleNotifications>
+        {shouldShowErrors
+          ? Object.entries(errorsToShow).map(([errorId, error]) => {
+              return (
+                <HomeNotification
+                  infoText={error.data.snapName}
+                  descriptionText={error.message}
+                  ignoreText={t('dismiss')}
+                  onIgnore={() => {
+                    removeSnapError(errorId);
+                  }}
+                  key="home-error-message"
+                />
+              );
+            })
+          : null}
         {newNetworkAdded ? (
           <ActionableMessage
             type="info"
