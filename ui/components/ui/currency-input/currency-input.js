@@ -59,6 +59,12 @@ export default function CurrencyInput({
   const initialDecimalValue = hexValue ? getDecimalValue() : 0;
   const [decimalValue, setDecimalValue] = useState(initialDecimalValue);
 
+  useEffect(() => {
+    setNewHexValue(hexValue);
+    const newDecimalValue = getDecimalValue();
+    setDecimalValue(newDecimalValue);
+  }, [hexValue]);
+
   const swap = async () => {
     await onPreferenceToggle(!featureSecondary);
     setSwapped(!isSwapped);
