@@ -28,9 +28,10 @@ export default function TransactionDetail({
   } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
 
-  const editEnabled = !hasSimulationError || userAcknowledgedGasMissing;
+  if (EIP_1559_V2 && estimateUsed) {
+    const editEnabled = !hasSimulationError || userAcknowledgedGasMissing;
+    if (!editEnabled) return null;
 
-  if (editEnabled && supportsEIP1559V2 && estimateUsed) {
     return (
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
@@ -93,5 +94,5 @@ export default function TransactionDetail({
 TransactionDetail.propTypes = {
   rows: PropTypes.arrayOf(TransactionDetailItem).isRequired,
   onEdit: PropTypes.func,
-  userAcknowledgedGasMissing: PropTypes.bool,
+  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
 };

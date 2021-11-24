@@ -56,7 +56,11 @@ const TransactionAlerts = ({
             >
               <strong>
                 <I18nValue
-                  messageKey="pendingTransaction"
+                  messageKey={
+                    pendingTransactions?.length === 1
+                      ? 'pendingTransactionSingle'
+                      : 'pendingTransactionMultiple'
+                  }
                   options={[pendingTransactions?.length]}
                 />
               </strong>{' '}
