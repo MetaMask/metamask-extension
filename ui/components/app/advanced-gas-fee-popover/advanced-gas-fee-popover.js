@@ -8,11 +8,13 @@ import Button from '../../ui/button';
 import I18nValue from '../../ui/i18n-value';
 import Popover from '../../ui/popover';
 
+import AdvancedGasFeeInputs from './advanced-gas-fee-inputs';
+
 const AdvancedGasFeePopover = () => {
   const t = useI18nContext();
   const { closeModal, currentModal } = useTransactionModalContext();
 
-  if (currentModal !== 'advancedGasFee') return null;
+  // if (currentModal !== 'advancedGasFee') return null;
 
   // todo: align styles to edit gas fee modal
   return (
@@ -27,7 +29,9 @@ const AdvancedGasFeePopover = () => {
         </Button>
       }
     >
-      <Box className="advanced-gas-fee-popover" margin={4}></Box>
+      <Box className="advanced-gas-fee-popover" margin={4}>
+        <AdvancedGasFeeInputs />
+      </Box>
     </Popover>
   );
 };

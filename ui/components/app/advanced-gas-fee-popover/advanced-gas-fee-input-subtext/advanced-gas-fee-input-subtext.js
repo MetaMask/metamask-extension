@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import I18nValue from '../../../ui/i18n-value';
@@ -8,8 +7,16 @@ import {
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { hexWEIToDecGWEI } from '../../../../helpers/utils/conversions.util';
 
-const AdvancedGasFeeInputSubtext = ({ currentData = '', tweleveHrData = '' }) => {
+const AdvancedGasFeeInputSubtext = () => {
+  const { estimatedBaseFee } = useGasFeeContext();
+
+  const estimatedBaseFeeInDecGWEI = hexWEIToDecGWEI(estimatedBaseFee, {
+    numberOfDecimals: 6,
+  });
+
   return (
     <Box className="advanced-gas-fee-popover__input-subtext">
       <Box className="advanced-gas-fee-popover__input-subtext">
@@ -28,7 +35,7 @@ const AdvancedGasFeeInputSubtext = ({ currentData = '', tweleveHrData = '' }) =>
           color={COLORS.UI4}
           boxProps={{ marginRight: 1 }}
         >
-          {currentData}
+          {estimatedBaseFeeInDecGWEI}
         </Typography>
         <img height="18" src="./images/high-arrow.svg" alt="" />
       </Box>
@@ -48,16 +55,11 @@ const AdvancedGasFeeInputSubtext = ({ currentData = '', tweleveHrData = '' }) =>
           color={COLORS.UI4}
           boxProps={{ marginRight: 1 }}
         >
-          {tweleveHrData}
+          23-359 GWEI
         </Typography>
       </Box>
     </Box>
   );
-};
-
-AdvancedGasFeeInputSubtext.propTypes = {
-  currentData: PropTypes.string,
-  tweleveHrData: PropTypes.string,
 };
 
 export default AdvancedGasFeeInputSubtext;

@@ -1,14 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
 import FormField from '../../../ui/form-field';
 import Box from '../../../ui/box';
 import Button from '../../../ui/button';
-import Popover from '../../../ui/popover';
 import I18nValue from '../../../ui/i18n-value';
-import {
-  decGWEIToHexWEI,
-  hexWEIToDecGWEI,
-} from '../../../../helpers/utils/conversions.util';
+import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
 import {
   divideCurrencies,
   multiplyCurrencies,
@@ -21,7 +16,7 @@ import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferenced
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
 
-const AdvancedGasFeePopover = ({ onClose }) => {
+const AdvancedGasFeeInputs = () => {
   const t = useI18nContext();
   const {
     maxPriorityFeePerGas,
@@ -33,9 +28,6 @@ const AdvancedGasFeePopover = ({ onClose }) => {
   const [editingInGwei, setEditingInGwei] = useState(false);
   const [priorityFee, setPriorityFee] = useState(maxPriorityFeePerGas);
 
-  const estimatedBaseFeeInDecGWEI = hexWEIToDecGWEI(estimatedBaseFee, {
-    numberOfDecimals: 6,
-  });
   const baseFeeMultiplier = divideCurrencies(
     decGWEIToHexWEI(maxFeePerGas),
     estimatedBaseFee,
@@ -70,11 +62,11 @@ const AdvancedGasFeePopover = ({ onClose }) => {
   );
   const baseFeeFiatMessage =
     parseFloat(baseFeeInFiat.split('$')[1]) >= 0.01
-      ? t('fiatApproxValueShown', [baseFeeInFiat])
+      ? `≈ ${baseFeeInFiat}`
       : t('fiatValueLowerThanDecimalsShown');
   const priorityFeeFiatMessage =
     parseFloat(priorityFeeInFiat.split('$')[1]) >= 0.01
-      ? t('fiatApproxValueShown', [priorityFeeInFiat])
+      ? `≈ ${priorityFeeInFiat}`
       : t('fiatValueLowerThanDecimalsShown');
 
   const setBaseFee = useCallback(
@@ -156,88 +148,69 @@ const AdvancedGasFeePopover = ({ onClose }) => {
   );
 
   return (
-    <Popover
-      className="advanced-gas-fee-popover"
-      title={t('advancedGasFeeModalTitle')}
-      onBack={() => onClose()}
-      onClose={() => onClose()}
-    >
-      <Box className="advanced-gas-fee-popover" margin={4}>
-        <FormField
-          onChange={(value) => {
-            onManualChange?.();
-            setBaseFee(value);
-          }}
-          titleFontSize={TYPOGRAPHY.H7}
-          titleText={t('maxBaseFee')}
-          titleUnit={
-            editingInGwei ? t('gweiInParanthesis') : t('multiplierInParathesis')
-          }
-          tooltipText={t('advancedBaseGasFeeToolTip')}
-          titleDetail={
-            editingInGwei ? (
-              <Button
-                className="advanced-gas-fee-popover__edit-link"
-                type="link"
-                onClick={() => updateBaseFeeMode(false)}
-              >
-                <I18nValue messageKey="editInMultiplier" />
-              </Button>
-            ) : (
-              <Button
-                className="advanced-gas-fee-popover__edit-link"
-                type="link"
-                onClick={() => updateBaseFeeMode(true)}
-              >
-                <I18nValue messageKey="editInGwei" />
-              </Button>
-            )
-          }
-          value={editingInGwei ? maxBaseFeeGWEI : maxBaseFeeMultiplier}
-          detailText={
-            editingInGwei
-              ? t('baseFeeFiatFromMultiplier', [
-                  maxBaseFeeMultiplier,
-                  baseFeeFiatMessage,
-                ])
-              : t('baseFeeFiatFromGwei', [baseFee, baseFeeFiatMessage])
-          }
-          numeric
-          bottomBorder
-          inputDetails={
-            <AdvancedGasFeeInputSubtext
-              currentData={`${estimatedBaseFeeInDecGWEI} GWEI`}
-              tweleveHrData="23-359 GWEI"
-            />
-          }
-        />
-        <FormField
-          onChange={(value) => {
-            onManualChange?.();
-            setPriorityFee(value);
-          }}
-          titleFontSize={TYPOGRAPHY.H7}
-          titleText={t('priorityFee')}
-          titleUnit={t('gweiInParanthesis')}
-          tooltipText={t('advancedPriorityFeeToolTip')}
-          value={priorityFee}
-          detailText={priorityFeeFiatMessage}
-          numeric
-          bottomBorder
-          inputDetails={
-            <AdvancedGasFeeInputSubtext
-              currentData="1-18 GWEI"
-              tweleveHrData="0.1-127 GWEI"
-            />
-          }
-        />
-      </Box>
-    </Popover>
+    <Box className="advanced-gas-fee-popover" margin={4}>
+      <FormField
+        onChange={(value) => {
+          onManualChange?.();
+          setBaseFee(value);
+        }}
+        titleFontSize={TYPOGRAPHY.H7}
+        titleText={t('maxBaseFee')}
+        titleUnit={editingInGwei ? 'GWEI' : `(${t('multiplier')})`}
+        tooltipText={t('advancedBaseGasFeeToolTip')}
+        titleDetail={
+          editingInGwei ? (
+            <Button
+              className="advanced-gas-fee-popover__edit-link"
+              type="link"
+              onClick={() => updateBaseFeeMode(false)}
+            >
+              <I18nValue messageKey="editInMultiplier" />
+            </Button>
+          ) : (
+            <Button
+              className="advanced-gas-fee-popover__edit-link"
+              type="link"
+              onClick={() => updateBaseFeeMode(true)}
+            >
+              <I18nValue messageKey="editInGwei" />
+            </Button>
+          )
+        }
+        value={editingInGwei ? maxBaseFeeGWEI : maxBaseFeeMultiplier}
+        detailText={
+          editingInGwei
+            ? `${maxBaseFeeMultiplier}x ${baseFeeFiatMessage}`
+            : `${baseFee} GWEI ${baseFeeFiatMessage}`
+        }
+        numeric
+        bottomBorder
+        inputDetails={<AdvancedGasFeeInputSubtext />}
+      />
+      <FormField
+        onChange={(value) => {
+          onManualChange?.();
+          setPriorityFee(value);
+        }}
+        titleFontSize={TYPOGRAPHY.H7}
+        titleText={t('priorityFee')}
+        titleUnit={t('gweiInParanthesis')}
+        tooltipText={t('advancedPriorityFeeToolTip')}
+        value={priorityFee}
+        detailText={priorityFeeFiatMessage}
+        numeric
+        bottomBorder
+        inputDetails={
+          <AdvancedGasFeeInputSubtext
+            currentData="1-18 GWEI"
+            tweleveHrData="0.1-127 GWEI"
+          />
+        }
+      />
+    </Box>
   );
 };
 
-AdvancedGasFeePopover.propTypes = {
-  onClose: PropTypes.func,
-};
+AdvancedGasFeeInputs.propTypes = {};
 
-export default AdvancedGasFeePopover;
+export default AdvancedGasFeeInputs;
