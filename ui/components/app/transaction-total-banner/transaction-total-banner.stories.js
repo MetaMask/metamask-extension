@@ -6,7 +6,7 @@ export default {
   id: __filename,
 };
 
-export const basic = () => {
+export const DefaultStory = () => {
   return (
     <TransactionTotalBanner
       total="~18.73"
@@ -19,3 +19,5 @@ export const basic = () => {
     />
   );
 };
+
+DefaultStory.storyName = 'Default';
