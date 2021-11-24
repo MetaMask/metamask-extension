@@ -1046,9 +1046,6 @@
     "message": "Fiat",
     "description": "Exchange type"
   },
-  "fiatValueLowerThanDecimalsShown": {
-    "message": "<= $0.01"
-  },
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"

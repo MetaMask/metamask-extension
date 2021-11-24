@@ -20,27 +20,16 @@ import I18nValue from '../../../ui/i18n-value';
 
 import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
 
-const AdvancedGasFeeInputBaseFee = () => {
-  const t = useI18nContext();
-  const { estimatedBaseFee, onManualChange, maxFeePerGas } = useGasFeeContext();
+const devideCurrencyValues = (value, baseFee) =>
+  divideCurrencies(decGWEIToHexWEI(value), baseFee, {
+    numberOfDecimals: 6,
+    dividendBase: 16,
+    divisorBase: 16,
+    toNumericBase: 'dec',
+  });
 
-  const [editingInGwei, setEditingInGwei] = useState(false);
-
-  const baseFeeMultiplier = divideCurrencies(
-    decGWEIToHexWEI(maxFeePerGas),
-    estimatedBaseFee,
-    {
-      numberOfDecimals: 6,
-      dividendBase: 16,
-      divisorBase: 16,
-      toNumericBase: 'dec',
-    },
-  );
-  const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(
-    baseFeeMultiplier,
-  );
-
-  const baseFee = multiplyCurrencies(estimatedBaseFee, maxBaseFeeMultiplier, {
+const multiplyCurrencyValues = (baseFee, value) =>
+  multiplyCurrencies(baseFee, value, {
     numberOfDecimals: 6,
     multiplicandBase: 16,
     multiplierBase: 10,
@@ -48,101 +37,47 @@ const AdvancedGasFeeInputBaseFee = () => {
     fromDenomination: 'WEI',
     toDenomination: 'GWEI',
   });
-  const [maxBaseFeeGWEI, setMaxBaseFeeGWEI] = useState(baseFee);
+
+const AdvancedGasFeeInputBaseFee = () => {
+  const t = useI18nContext();
+  const { estimatedBaseFee, maxFeePerGas } = useGasFeeContext();
+
+  const [editingInGwei, setEditingInGwei] = useState(false);
+
+  const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(
+    devideCurrencyValues(maxFeePerGas, estimatedBaseFee),
+  );
+  const [maxBaseFeeGWEI, setMaxBaseFeeGWEI] = useState(
+    multiplyCurrencyValues(estimatedBaseFee, maxBaseFeeMultiplier),
+  );
+
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
   const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
-    decGWEIToHexWEI(baseFee),
+    decGWEIToHexWEI(maxBaseFeeGWEI),
     { currency, numberOfDecimals },
   );
-  const baseFeeFiatMessage =
-    parseFloat(baseFeeInFiat.split('$')[1]) >= 0.01
-      ? `≈ ${baseFeeInFiat}`
-      : t('fiatValueLowerThanDecimalsShown');
 
-  const setBaseFee = useCallback(
+  const updateBaseFee = useCallback(
     (value) => {
-      let baseFeeValue = value;
       if (editingInGwei) {
-        baseFeeValue = divideCurrencies(
-          decGWEIToHexWEI(value),
-          estimatedBaseFee,
-          {
-            numberOfDecimals: 6,
-            dividendBase: 16,
-            divisorBase: 16,
-            toNumericBase: 'dec',
-          },
-        );
         setMaxBaseFeeGWEI(value);
-        setMaxBaseFeeMultiplier(baseFeeValue);
+        setMaxBaseFeeMultiplier(devideCurrencyValues(value, estimatedBaseFee));
       } else {
-        baseFeeValue = multiplyCurrencies(estimatedBaseFee, value, {
-          numberOfDecimals: 6,
-          multiplicandBase: 16,
-          multiplierBase: 10,
-          toNumericBase: 'dec',
-          fromDenomination: 'WEI',
-          toDenomination: 'GWEI',
-        });
         setMaxBaseFeeMultiplier(value);
-        setMaxBaseFeeGWEI(baseFeeValue);
+        setMaxBaseFeeGWEI(multiplyCurrencyValues(estimatedBaseFee, value));
       }
     },
     [
-      estimatedBaseFee,
       editingInGwei,
-      setMaxBaseFeeGWEI,
-      setMaxBaseFeeMultiplier,
-    ],
-  );
-
-  const updateBaseFeeMode = useCallback(
-    (value) => {
-      if (value) {
-        const baseFeeGwei = multiplyCurrencies(
-          estimatedBaseFee,
-          maxBaseFeeMultiplier,
-          {
-            numberOfDecimals: 6,
-            multiplicandBase: 16,
-            multiplierBase: 10,
-            toNumericBase: 'dec',
-            fromDenomination: 'WEI',
-            toDenomination: 'GWEI',
-          },
-        );
-        setMaxBaseFeeGWEI(baseFeeGwei);
-      } else {
-        const baseFeeMul = divideCurrencies(
-          decGWEIToHexWEI(maxBaseFeeGWEI),
-          estimatedBaseFee,
-          {
-            numberOfDecimals: 6,
-            dividendBase: 16,
-            divisorBase: 16,
-            toNumericBase: 'dec',
-          },
-        );
-        setMaxBaseFeeMultiplier(baseFeeMul);
-      }
-      setEditingInGwei(value);
-    },
-    [
       estimatedBaseFee,
-      maxBaseFeeMultiplier,
-      maxBaseFeeGWEI,
       setMaxBaseFeeGWEI,
       setMaxBaseFeeMultiplier,
-      setEditingInGwei,
     ],
   );
 
   return (
     <FormField
-      onChange={(value) => {
-        onManualChange?.();
-        setBaseFee(value);
-      }}
+      onChange={updateBaseFee}
       titleFontSize={TYPOGRAPHY.H7}
       titleText={t('maxBaseFee')}
       titleUnit={editingInGwei ? 'GWEI' : `(${t('multiplier')})`}
@@ -152,7 +87,7 @@ const AdvancedGasFeeInputBaseFee = () => {
           <Button
             className="advanced-gas-fee-popover__edit-link"
             type="link"
-            onClick={() => updateBaseFeeMode(false)}
+            onClick={() => setEditingInGwei(true)}
           >
             <I18nValue messageKey="editInMultiplier" />
           </Button>
@@ -160,7 +95,7 @@ const AdvancedGasFeeInputBaseFee = () => {
           <Button
             className="advanced-gas-fee-popover__edit-link"
             type="link"
-            onClick={() => updateBaseFeeMode(true)}
+            onClick={() => setEditingInGwei(false)}
           >
             <I18nValue messageKey="editInGwei" />
           </Button>
@@ -169,8 +104,8 @@ const AdvancedGasFeeInputBaseFee = () => {
       value={editingInGwei ? maxBaseFeeGWEI : maxBaseFeeMultiplier}
       detailText={
         editingInGwei
-          ? `${maxBaseFeeMultiplier}x ${baseFeeFiatMessage}`
-          : `${baseFee} GWEI ${baseFeeFiatMessage}`
+          ? `${maxBaseFeeMultiplier}x ${`≈ ${baseFeeInFiat}`}`
+          : `${maxBaseFeeGWEI} GWEI ${`≈ ${baseFeeInFiat}`}`
       }
       numeric
       bottomBorder

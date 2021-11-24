@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import FormField from '../../../ui/form-field';
-import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
-import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+
 import { SECONDARY } from '../../../../helpers/constants/common';
+import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
+import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
-import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
+import FormField from '../../../ui/form-field';
+
 import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
 
 const AdvancedGasFeeInputPriorityFee = () => {
   const t = useI18nContext();
-  const { maxPriorityFeePerGas, onManualChange } = useGasFeeContext();
+  const { maxPriorityFeePerGas } = useGasFeeContext();
 
   const [priorityFee, setPriorityFee] = useState(maxPriorityFeePerGas);
 
@@ -22,23 +24,15 @@ const AdvancedGasFeeInputPriorityFee = () => {
     { currency, numberOfDecimals },
   );
 
-  const priorityFeeFiatMessage =
-    parseFloat(priorityFeeInFiat.split('$')[1]) >= 0.01
-      ? `≈ ${priorityFeeInFiat}`
-      : t('fiatValueLowerThanDecimalsShown');
-
   return (
     <FormField
-      onChange={(value) => {
-        onManualChange?.();
-        setPriorityFee(value);
-      }}
+      onChange={setPriorityFee}
       titleFontSize={TYPOGRAPHY.H7}
       titleText={t('priorityFee')}
       titleUnit={t('gweiInParanthesis')}
       tooltipText={t('advancedPriorityFeeToolTip')}
       value={priorityFee}
-      detailText={priorityFeeFiatMessage}
+      detailText={`≈ ${priorityFeeInFiat}`}
       numeric
       bottomBorder
       inputDetails={
