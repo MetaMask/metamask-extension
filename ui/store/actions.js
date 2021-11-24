@@ -3001,15 +3001,15 @@ const isPersistentError = (e) => {
   return e.message?.includes(persistentError);
 };
 
-export function fetchUnsignedTransactionsAndEstimates(unsignedTransaction) {
+export function fetchSmartTransactionFees(unsignedTransaction) {
   return async (dispatch) => {
     try {
-      const unsignedTransactionsAndEstimates = await promisifiedBackground.getUnsignedTransactionsAndEstimates(
+      const smartTransactionFees = await promisifiedBackground.fetchSmartTransactionFees(
         unsignedTransaction,
       );
       dispatch({
-        type: actionConstants.SET_UNSIGNED_TRANSACTIONS_AND_ESTIMATES,
-        payload: unsignedTransactionsAndEstimates,
+        type: actionConstants.SET_SMART_TRANSACTION_FEES,
+        payload: smartTransactionFees,
       });
     } catch (e) {
       log.error(e);
@@ -3051,16 +3051,16 @@ const createSignedTransactions = async (
 
 export function signAndSendSmartTransaction({
   unsignedTransaction,
-  unsignedTransactionsAndEstimates,
+  smartTransactionFees,
 }) {
   return async (dispatch) => {
     const signedTransactions = await createSignedTransactions(
       unsignedTransaction,
-      unsignedTransactionsAndEstimates.fees,
+      smartTransactionFees.fees,
     );
     const signedCanceledTransactions = await createSignedTransactions(
       unsignedTransaction,
-      unsignedTransactionsAndEstimates.cancelFees,
+      smartTransactionFees.cancelFees,
       true,
     );
     try {

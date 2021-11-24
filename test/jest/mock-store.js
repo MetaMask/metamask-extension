@@ -1,6 +1,6 @@
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
 
-const createGetTransactionsApiResponse = () => {
+const createGetSmartTransactionFeesApiResponse = () => {
   return {
     cancelFees: [
       { maxFeePerGas: 2100001000, maxPriorityFeePerGas: 466503987 },
@@ -385,7 +385,7 @@ export const createSwapsMockStore = () => {
       },
     },
     appState: {
-      unsignedTransactionsAndEstimates: createGetTransactionsApiResponse(),
+      smartTransactionFees: createGetSmartTransactionFeesApiResponse(),
       modal: {
         open: true,
         modalState: {

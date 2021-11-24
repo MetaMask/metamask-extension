@@ -1331,8 +1331,8 @@ export default class MetamaskController extends EventEmitter {
         smartTransactionsController.setOptInState,
         smartTransactionsController,
       ),
-      getUnsignedTransactionsAndEstimates: nodeify(
-        smartTransactionsController.getUnsignedTransactionsAndEstimates,
+      fetchSmartTransactionFees: nodeify(
+        smartTransactionsController.getFees,
         smartTransactionsController,
       ),
       submitSignedTransactions: nodeify(
