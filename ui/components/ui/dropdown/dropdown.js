@@ -41,17 +41,38 @@ const Dropdown = ({
 };
 
 Dropdown.propTypes = {
+  /**
+   * Add CSS class to the component
+   */
   className: PropTypes.string,
+  /**
+   * Check if component disabled
+   */
   disabled: PropTypes.bool,
+  /**
+   * Show title of the component
+   */
   title: PropTypes.string,
+  /**
+   * On options change handler
+   */
   onChange: PropTypes.func.isRequired,
+  /**
+   * Predefined options for component
+   */
   options: PropTypes.arrayOf(
     PropTypes.exact({
       name: PropTypes.string,
       value: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  /**
+   * Selected options of dropdown
+   */
   selectedOption: PropTypes.string,
+  /**
+   * Add inline style for the component
+   */
   style: PropTypes.object,
 };
 
