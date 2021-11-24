@@ -25,7 +25,7 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical }) => {
 };
 
 AdvancedGasFeeInputSubtext.propTypes = {
-  latest: PropTypes.number,
+  latest: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   historical: PropTypes.string,
 };
 
