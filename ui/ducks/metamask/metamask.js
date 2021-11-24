@@ -256,6 +256,8 @@ export const getUnconnectedAccountAlertShown = (state) =>
 
 export const getTokens = (state) => state.metamask.tokens;
 
+export const getCollectibles = (state) => state.metamask.collectibles;
+
 export function getBlockGasLimit(state) {
   return state.metamask.currentBlockGasLimit;
 }

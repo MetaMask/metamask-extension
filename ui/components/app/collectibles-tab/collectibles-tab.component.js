@@ -14,11 +14,14 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCollectibles } from '../../../ducks/metamask/metamask';
+import { useSelector } from 'react-redux';
 
 export default function CollectiblesTab({ onAddNFT }) {
   const collectibles = [];
   const newNFTsDetected = false;
   const t = useI18nContext();
+  const collectiblesTEST = useSelector(getCollectibles);
 
   return (
     <div className="collectibles-tab">
