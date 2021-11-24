@@ -70,6 +70,8 @@ export default function DropdownInputPair({
     );
   }, [inputValue, inputRef]);
 
+  console.log('dropdown input pair render');
+
   return (
     <div className="dropdown-input-pair">
       <DropdownSearchList
