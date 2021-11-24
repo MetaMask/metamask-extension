@@ -186,32 +186,36 @@ export default class MetamaskController extends EventEmitter {
     this.assetsContractController = new AssetsContractController();
     this.assetsContractController.configure({ provider: this.provider });
 
-    this.collectiblesController = new CollectiblesController({
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
-      onNetworkStateChange: this.networkController.store.subscribe.bind(
-        this.networkController.store,
-      ),
-      getAssetName: this.assetsContractController.getAssetName.bind(
-        this.assetsContractController,
-      ),
-      getAssetSymbol: this.assetsContractController.getAssetSymbol.bind(
-        this.assetsContractController,
-      ),
-      getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
-        this.assetsContractController,
-      ),
-      getOwnerOf: this.assetsContractController.getOwnerOf.bind(
-        this.assetsContractController,
-      ),
-      balanceOfERC1155Collectible: this.assetsContractController.balanceOfERC1155Collectible.bind(
-        this.assetsContractController,
-      ),
-      uriERC1155Collectible: this.assetsContractController.uriERC1155Collectible.bind(
-        this.assetsContractController,
-      ),
-    });
+    this.collectiblesController = new CollectiblesController(
+      {
+        onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+          this.preferencesController.store,
+        ),
+        onNetworkStateChange: this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
+        getAssetName: this.assetsContractController.getAssetName.bind(
+          this.assetsContractController,
+        ),
+        getAssetSymbol: this.assetsContractController.getAssetSymbol.bind(
+          this.assetsContractController,
+        ),
+        getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
+          this.assetsContractController,
+        ),
+        getOwnerOf: this.assetsContractController.getOwnerOf.bind(
+          this.assetsContractController,
+        ),
+        balanceOfERC1155Collectible: this.assetsContractController.balanceOfERC1155Collectible.bind(
+          this.assetsContractController,
+        ),
+        uriERC1155Collectible: this.assetsContractController.uriERC1155Collectible.bind(
+          this.assetsContractController,
+        ),
+      },
+      {},
+      initState.CollectiblesController,
+    );
 
     process.env.COLLECTIBLES_V1 &&
       (this.collectibleDetectionController = new CollectibleDetectionController(
@@ -589,7 +593,7 @@ export default class MetamaskController extends EventEmitter {
         console.error(error);
       }
     });
-    
+
     this.networkController.lookupNetwork();
     this.messageManager = new MessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(

@@ -18,15 +18,24 @@ import { getCollectibles } from '../../../ducks/metamask/metamask';
 import { useSelector } from 'react-redux';
 
 export default function CollectiblesTab({ onAddNFT }) {
-  const collectibles = [];
+  const collectibles = useSelector(getCollectibles);
   const newNFTsDetected = false;
   const t = useI18nContext();
-  const collectiblesTEST = useSelector(getCollectibles);
+  const collections = {};
+  collectibles.map(collectible => {
+    const collection = collections[collectible.address];
+    if(!collection){
+      collection = [collectible]
+    } else {
+      collection.push(collectible)
+    }
+  })
 
   return (
     <div className="collectibles-tab">
       {collectibles.length > 0 ? (
         <CollectiblesItems
+        collections={collections}
           onAddNFT={onAddNFT}
           onRefreshList={() => {
             console.log('refreshing collectibles');
