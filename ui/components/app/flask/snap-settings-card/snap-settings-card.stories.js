@@ -5,7 +5,7 @@ import README from './README.mdx';
 import SnapSettingsCard from '.';
 
 export default {
-  title: 'App/Flask/SnapSettingsCard',
+  title: 'Components/App/Flask/SnapSettingsCard',
   id: __filename,
   component: SnapSettingsCard,
   parameters: {
