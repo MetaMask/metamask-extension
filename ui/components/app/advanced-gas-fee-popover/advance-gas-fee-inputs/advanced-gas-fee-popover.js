@@ -1,25 +1,25 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
-import FormField from '../../ui/form-field';
-import Box from '../../ui/box';
-import Button from '../../ui/button';
-import Popover from '../../ui/popover';
-import I18nValue from '../../ui/i18n-value';
+import FormField from '../../../ui/form-field';
+import Box from '../../../ui/box';
+import Button from '../../../ui/button';
+import Popover from '../../../ui/popover';
+import I18nValue from '../../../ui/i18n-value';
 import {
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
-} from '../../../helpers/utils/conversions.util';
+} from '../../../../helpers/utils/conversions.util';
 import {
   divideCurrencies,
   multiplyCurrencies,
-} from '../../../../shared/modules/conversion.utils';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
-import { SECONDARY } from '../../../helpers/constants/common';
-import { useGasFeeContext } from '../../../contexts/gasFee';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
-import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import AdvancedGasFeeInputSubtext from './advanced-gas-fee-input-subtext';
+} from '../../../../../shared/modules/conversion.utils';
+import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import { SECONDARY } from '../../../../helpers/constants/common';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
+import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
+import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
 
 const AdvancedGasFeePopover = ({ onClose }) => {
   const t = useI18nContext();
