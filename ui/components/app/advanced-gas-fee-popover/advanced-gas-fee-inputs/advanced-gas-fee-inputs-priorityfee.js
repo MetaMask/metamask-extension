@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
 import { SECONDARY } from '../../../../helpers/constants/common';
-import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
@@ -21,8 +20,12 @@ const AdvancedGasFeeInputPriorityFee = () => {
   const { estimateUsed, maxPriorityFeePerGas } = useGasFeeContext();
 
   const [priorityFee, setPriorityFee] = useState(() => {
-    if (estimateUsed === PRIORITY_LEVELS.CUSTOM) return maxPriorityFeePerGas;
-    return advancedGasFeeValues.priorityFee;
+    if (
+      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
+      advancedGasFeeValues?.priorityFee
+    )
+      return advancedGasFeeValues.priorityFee;
+    return maxPriorityFeePerGas;
   });
 
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
@@ -35,14 +38,12 @@ const AdvancedGasFeeInputPriorityFee = () => {
   return (
     <FormField
       onChange={setPriorityFee}
-      titleFontSize={TYPOGRAPHY.H7}
       titleText={t('priorityFee')}
-      titleUnit={t('gweiInParanthesis')}
+      titleUnit="(GWEI)"
       tooltipText={t('advancedPriorityFeeToolTip')}
       value={priorityFee}
       detailText={`≈ ${priorityFeeInFiat}`}
       numeric
-      bottomBorder
       inputDetails={
         <AdvancedGasFeeInputSubtext
           latest="1-18 GWEI"

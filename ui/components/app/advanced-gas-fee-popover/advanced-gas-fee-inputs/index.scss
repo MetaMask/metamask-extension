@@ -1,8 +1,22 @@
 .advanced-gas-fee-input {
-  &__edit-link {
+  a.advanced-gas-fee-input__edit-link {
     display: inline;
     font-size: 12px;
     padding: 0;
     white-space: nowrap;
+  }
+
+  .form-field__heading-title > h6 {
+    font-size: 12px;
+  }
+
+  &__border {
+    padding-bottom: 20px;
+    border-bottom: 1px solid $Grey-100;
+  }
+
+  &__separator {
+    border-top: 1px solid $ui-grey;
+    margin: 24px 0 16px 0;
   }
 }

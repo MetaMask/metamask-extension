@@ -8,6 +8,7 @@ const AdvancedGasFeeInputs = () => {
   return (
     <Box className="advanced-gas-fee-input" margin={4}>
       <AdvancedGasFeeInputBaseFee />
+      <div className="advanced-gas-fee-input__separator" />
       <AdvancedGasFeeInputPriorityFee />
     </Box>
   );

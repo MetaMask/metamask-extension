@@ -14,7 +14,7 @@ const AdvancedGasFeePopover = () => {
   const t = useI18nContext();
   const { closeModal, currentModal } = useTransactionModalContext();
 
-  if (currentModal !== 'advancedGasFee') return null;
+  // if (currentModal !== 'advancedGasFee') return null;
 
   return (
     <Popover
@@ -28,7 +28,7 @@ const AdvancedGasFeePopover = () => {
         </Button>
       }
     >
-      <Box className="advanced-gas-fee-popover" margin={4}>
+      <Box className="advanced-gas-fee-popover__wrapper">
         <AdvancedGasFeeInputs />
       </Box>
     </Popover>

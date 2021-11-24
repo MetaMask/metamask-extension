@@ -7,7 +7,6 @@ import {
   multiplyCurrencies,
 } from '../../../../../shared/modules/conversion.utils';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
-import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import {
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
@@ -23,13 +22,16 @@ import I18nValue from '../../../ui/i18n-value';
 import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 
-const devideCurrencyValues = (value, baseFee, numberOfDecimals) =>
-  divideCurrencies(decGWEIToHexWEI(value), baseFee, {
-    numberOfDecimals,
-    dividendBase: 16,
-    divisorBase: 16,
-    toNumericBase: 'dec',
-  });
+const devideCurrencyValues = (value, baseFee, numberOfDecimals) => {
+  if (baseFee > 1)
+    return divideCurrencies(decGWEIToHexWEI(value), baseFee, {
+      numberOfDecimals,
+      dividendBase: 16,
+      divisorBase: 16,
+      toNumericBase: 'dec',
+    });
+  return 1;
+};
 
 const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
   multiplyCurrencies(baseFee, value, {
@@ -57,22 +59,29 @@ const AdvancedGasFeeInputBaseFee = () => {
   const [editingInGwei, setEditingInGwei] = useState(false);
 
   const [maxBaseFeeGWEI, setMaxBaseFeeGWEI] = useState(() => {
-    if (estimateUsed === PRIORITY_LEVELS.CUSTOM) return estimatedBaseFee;
-    return multiplyCurrencyValues(
-      estimatedBaseFee,
-      advancedGasFeeValues.maxBaseFee,
-      numberOfDecimalsPrimary,
-    );
+    if (
+      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
+      advancedGasFeeValues?.maxBaseFee
+    )
+      return multiplyCurrencyValues(
+        estimatedBaseFee,
+        advancedGasFeeValues.maxBaseFee,
+        numberOfDecimalsPrimary,
+      );
+    return estimatedBaseFee;
   });
 
   const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(() => {
-    if (estimateUsed === PRIORITY_LEVELS.CUSTOM)
-      return devideCurrencyValues(
-        maxFeePerGas,
-        estimatedBaseFee,
-        numberOfDecimalsPrimary,
-      );
-    return advancedGasFeeValues.maxBaseFee;
+    if (
+      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
+      advancedGasFeeValues?.maxBaseFee
+    )
+      return advancedGasFeeValues.maxBaseFee;
+    return devideCurrencyValues(
+      maxFeePerGas,
+      estimatedBaseFee,
+      numberOfDecimalsPrimary,
+    );
   });
 
   const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
@@ -114,28 +123,19 @@ const AdvancedGasFeeInputBaseFee = () => {
   return (
     <FormField
       onChange={updateBaseFee}
-      titleFontSize={TYPOGRAPHY.H7}
       titleText={t('maxBaseFee')}
       titleUnit={editingInGwei ? 'GWEI' : `(${t('multiplier')})`}
       tooltipText={t('advancedBaseGasFeeToolTip')}
       titleDetail={
-        editingInGwei ? (
-          <Button
-            className="advanced-gas-fee-input__edit-link"
-            type="link"
-            onClick={() => setEditingInGwei(true)}
-          >
-            <I18nValue messageKey="editInMultiplier" />
-          </Button>
-        ) : (
-          <Button
-            className="advanced-gas-fee-input__edit-link"
-            type="link"
-            onClick={() => setEditingInGwei(false)}
-          >
-            <I18nValue messageKey="editInGwei" />
-          </Button>
-        )
+        <Button
+          className="advanced-gas-fee-input__edit-link"
+          type="link"
+          onClick={() => setEditingInGwei(!editingInGwei)}
+        >
+          <I18nValue
+            messageKey={editingInGwei ? 'editInMultiplier' : 'editInGwei'}
+          />
+        </Button>
       }
       value={editingInGwei ? maxBaseFeeGWEI : maxBaseFeeMultiplier}
       detailText={
@@ -144,7 +144,6 @@ const AdvancedGasFeeInputBaseFee = () => {
           : `${maxBaseFeeGWEI} GWEI ${`≈ ${baseFeeInFiat}`}`
       }
       numeric
-      bottomBorder
       inputDetails={
         <AdvancedGasFeeInputSubtext
           latest={hexWEIToDecGWEI(estimatedBaseFee)}
@@ -156,5 +155,3 @@ const AdvancedGasFeeInputBaseFee = () => {
 };
 
 export default AdvancedGasFeeInputBaseFee;
-
-// todo: prepopulate default values from preference controller here
