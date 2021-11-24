@@ -18,7 +18,13 @@ const ErrorMessage = (props, context) => {
 };
 
 ErrorMessage.propTypes = {
+  /**
+   * Show error message content
+   */
   errorMessage: PropTypes.string,
+  /**
+   * Show error message content with translate key
+   */
   errorKey: PropTypes.string,
 };
 
