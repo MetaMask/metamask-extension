@@ -8,8 +8,7 @@
 
   .logo {
     padding: 20px;
-    size: 10px;
-    line-height: 10px;
+    line-height: 0.625rem;
     font-family: monospace;
   }
 
@@ -22,11 +21,11 @@
 
   .text {
     padding: 20px;
-    width: 670px;
+    max-width: 670px;
   }
 
   ul {
-    padding: 20px 0 20px 0;
+    padding: 20px 0;
   }
 
   li {
@@ -40,5 +39,6 @@
     border: 0 !important;
     color: #f2f3f4;
     width: 200px;
+    padding-bottom: 20px;
   }
 }

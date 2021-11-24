@@ -41,7 +41,6 @@ const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
 const ADD_COLLECTIBLE_ROUTE = '/add-collectible';
 
 const INITIALIZE_ROUTE = '/initialize';
-const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome';
 const INITIALIZE_UNLOCK_ROUTE = '/initialize/unlock';
 const INITIALIZE_CREATE_PASSWORD_ROUTE = '/initialize/create-password';
@@ -56,7 +55,6 @@ const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm';
 const INITIALIZE_METAMETRICS_OPT_IN_ROUTE = '/initialize/metametrics-opt-in';
 
 const ONBOARDING_ROUTE = '/onboarding';
-const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
 const ONBOARDING_CONFIRM_SRP_ROUTE = '/onboarding/confirm-recovery-phrase';
 const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
@@ -71,6 +69,11 @@ const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
+const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+///: END:ONLY_INCLUDE_IN
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 const CONFIRM_SEND_ETHER_PATH = '/send-ether';
@@ -174,7 +177,6 @@ export {
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
   INITIALIZE_ROUTE,
-  INITIALIZE_EXPERIMENTAL_AREA,
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,
   INITIALIZE_CREATE_PASSWORD_ROUTE,
@@ -224,7 +226,6 @@ export {
   SWAPS_MAINTENANCE_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
   ONBOARDING_ROUTE,
-  ONBOARDING_EXPERIMENTAL_AREA,
   ONBOARDING_HELP_US_IMPROVE_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
@@ -238,4 +239,8 @@ export {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_METAMETRICS,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  INITIALIZE_EXPERIMENTAL_AREA,
+  ONBOARDING_EXPERIMENTAL_AREA,
+  ///: END:ONLY_INCLUDE_IN
 };
