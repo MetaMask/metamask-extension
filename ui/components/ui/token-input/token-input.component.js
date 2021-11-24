@@ -82,7 +82,7 @@ export default class TokenInput extends PureComponent {
 
     let newDecimalValue = decimalValue;
 
-    if (decimals && applyDecimals) {
+    if (decimals && decimalValue && applyDecimals) {
       newDecimalValue = new BigNumber(decimalValue, 10).toFixed(decimals);
     }
 
