@@ -30,9 +30,10 @@ export default function TransactionDetail({
   } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
 
-  const editEnabled = !hasSimulationError || userAcknowledgedGasMissing;
+  if (EIP_1559_V2 && estimateUsed) {
+    const editEnabled = !hasSimulationError || userAcknowledgedGasMissing;
+    if (!editEnabled) return null;
 
-  if (editEnabled && EIP_1559_V2 && estimateUsed) {
     return (
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
@@ -82,7 +83,7 @@ export default function TransactionDetail({
 
   return (
     <div className="transaction-detail">
-      {editEnabled && (
+      {onEdit && (
         <div className="transaction-detail-edit">
           <button onClick={onEdit}>{t('edit')}</button>
         </div>
