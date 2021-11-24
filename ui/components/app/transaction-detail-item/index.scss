@@ -14,6 +14,10 @@
     flex-wrap: wrap;
     justify-content: end;
     width: 55%;
+
+    &--flex-width {
+      width: auto;
+    }
   }
 
   .info-tooltip {
