@@ -909,6 +909,10 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.setUseTokenDetection,
         this.preferencesController,
       ),
+      setUseCollectibleDetection: nodeify(
+        this.preferencesController.setUseCollectibleDetection,
+        this.preferencesController,
+      ),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),

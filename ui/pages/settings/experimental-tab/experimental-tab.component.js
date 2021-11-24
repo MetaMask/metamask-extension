@@ -11,6 +11,8 @@ export default class ExperimentalTab extends PureComponent {
   static propTypes = {
     useTokenDetection: PropTypes.bool,
     setUseTokenDetection: PropTypes.func,
+    useCollectibleDetection: PropTypes.bool,
+    setUseCollectibleDetection: PropTypes.func,
   };
 
   renderTokenDetectionToggle() {
@@ -48,10 +50,46 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  renderCollectibleDetectionToggle() {
+    const { t } = this.context;
+    const { useCollectibleDetection, setUseCollectibleDetection } = this.props;
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('useCollectibleDetection')}</span>
+          <div className="settings-page__content-description">
+            {t('useCollectibleDetectionDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={useCollectibleDetection}
+              onToggle={(value) => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Settings',
+                    action: 'Collectible Detection',
+                    name: 'Collectible Detection',
+                  },
+                });
+                setUseCollectibleDetection(!value);
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="settings-page__body">
         {this.renderTokenDetectionToggle()}
+        {this.renderCollectibleDetectionToggle()}
       </div>
     );
   }
