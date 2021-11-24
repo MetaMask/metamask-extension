@@ -3999,10 +3999,10 @@
     color "^0.11.3"
     mersenne-twister "^1.1.0"
 
-"@metamask/logo@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/logo/-/logo-3.1.0.tgz#6b7b9b90b6d846583558de855511d34796735855"
-  integrity sha512-W0FBwIaG1pC4Vk/ZdUJYv7PDjnAbQJro3yhEXN7WXEdz8kyVcxFb6dj0Dpe6ytaveYiqIL6+iDDWMevzU2MpVw==
+"@metamask/logo@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@metamask/logo/-/logo-3.1.1.tgz#0a40bcfc462a70aa2110efc737767ca7ba188fa3"
+  integrity sha512-8/ObOWyBtwbe3/r9QbXMs+aKK2EgcYp2NiF4fm1xIO/c3aBMN5wBc2zUnl1lpHU71l70/OH5cxHbyDYoEgdMoA==
   dependencies:
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"
