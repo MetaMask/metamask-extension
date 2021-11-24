@@ -14,16 +14,32 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCollectibles } from '../../../ducks/metamask/metamask';
+import { useSelector } from 'react-redux';
 
 export default function CollectiblesTab({ onAddNFT }) {
-  const collectibles = [];
+  const collectibles = useSelector(getCollectibles);
   const newNFTsDetected = false;
   const t = useI18nContext();
+  const collections = {};
+
+  collectibles.forEach((collectible) => {
+    if (!collections[collectible.address]) {
+      collections[collectible.address] = {
+        collectionName: collectible.collectionName,
+        collectionImage: collectible.collectionImage,
+        collectibles: [collectible],
+      };
+    } else {
+      collections[collectible.address].collectibles.push(collectible);
+    }
+  });
 
   return (
     <div className="collectibles-tab">
       {collectibles.length > 0 ? (
         <CollectiblesItems
+          collections={collections}
           onAddNFT={onAddNFT}
           onRefreshList={() => {
             console.log('refreshing collectibles');

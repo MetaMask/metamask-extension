@@ -19,9 +19,12 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
-export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
+export default function CollectiblesItems({
+  onAddNFT,
+  onRefreshList,
+  collections,
+}) {
   const t = useI18nContext();
-  const collections = {};
   const defaultDropdownState = {};
 
   Object.keys(collections).forEach((key) => {
@@ -38,9 +41,8 @@ export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
       <Box padding={[4, 6, 4, 6]} flexDirection={FLEX_DIRECTION.COLUMN}>
         <>
           {Object.keys(collections).map((key, index) => {
-            const { icon, collectibles } = collections[key];
+            const { collectibles, collectionName, collectionImage } = collections[key]
             const isExpanded = dropdownState[key];
-
             return (
               <div key={`collection-${index}`}>
                 <Box
@@ -51,13 +53,14 @@ export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
                   justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
                 >
                   <Box alignItems={ALIGN_ITEMS.CENTER}>
-                    <img width="28" src={icon} />
+                    // todo backup image?
+                    <img width="28" src={collectionImage} />
                     <Typography
                       color={COLORS.BLACK}
                       variant={TYPOGRAPHY.H4}
                       margin={[0, 0, 0, 2]}
                     >
-                      {`${key} (${collectibles.length})`}
+                      {`${collectionName} (${collectibles.length})`}
                     </Typography>
                   </Box>
                   <Box alignItems={ALIGN_ITEMS.FLEX_END}>
@@ -83,7 +86,7 @@ export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
                             borderRadius={SIZES.MD}
                             backgroundColor={collectible.backgroundColor}
                           >
-                            <img src={collectible.icon} />
+                            <img width="40px" src={collectible.image} />
                           </Box>
                         </Box>
                       );
