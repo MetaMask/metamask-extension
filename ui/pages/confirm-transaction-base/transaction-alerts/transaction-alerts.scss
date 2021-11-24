@@ -1,0 +1,17 @@
+.transaction-alerts {
+  margin-top: 20px;
+
+  &--separator {
+    margin-top: 12px;
+  }
+
+  & strong {
+    font-weight: bold;
+  }
+
+  &__pending-transactions {
+    & a {
+      color: $primary-1;
+    }
+  }
+}

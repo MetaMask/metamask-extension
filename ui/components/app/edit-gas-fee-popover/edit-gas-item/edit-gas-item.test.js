@@ -82,6 +82,7 @@ const renderComponent = (props, transactionProps, gasFeeContextProps) => {
 describe('EditGasItem', () => {
   it('should renders low gas estimate option for priorityLevel low', () => {
     renderComponent({ priorityLevel: 'low' });
+    expect(screen.queryByRole('button', { name: 'low' })).toBeInTheDocument();
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
     expect(screen.queryByText('5 min')).toBeInTheDocument();
@@ -90,6 +91,9 @@ describe('EditGasItem', () => {
 
   it('should renders market gas estimate option for priorityLevel medium', () => {
     renderComponent({ priorityLevel: 'medium' });
+    expect(
+      screen.queryByRole('button', { name: 'medium' }),
+    ).toBeInTheDocument();
     expect(screen.queryByText('🦊')).toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
     expect(screen.queryByText('5 min')).toBeInTheDocument();
@@ -98,6 +102,7 @@ describe('EditGasItem', () => {
 
   it('should renders aggressive gas estimate option for priorityLevel high', () => {
     renderComponent({ priorityLevel: 'high' });
+    expect(screen.queryByRole('button', { name: 'high' })).toBeInTheDocument();
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
     expect(screen.queryByText('15 sec')).toBeInTheDocument();
@@ -116,6 +121,9 @@ describe('EditGasItem', () => {
       { priorityLevel: 'dappSuggested' },
       { dappSuggestedGasFees: DAPP_SUGGESTED_ESTIMATE },
     );
+    expect(
+      screen.queryByRole('button', { name: 'dappSuggested' }),
+    ).toBeInTheDocument();
     expect(screen.queryByText('🌐')).toBeInTheDocument();
     expect(screen.queryByText('Site')).toBeInTheDocument();
     expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
@@ -130,6 +138,9 @@ describe('EditGasItem', () => {
 
   it('should renders advance gas estimate option for priorityLevel custom', () => {
     renderComponent({ priorityLevel: 'custom' });
+    expect(
+      screen.queryByRole('button', { name: 'custom' }),
+    ).toBeInTheDocument();
     expect(screen.queryByText('⚙')).toBeInTheDocument();
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
     // below value of custom gas fee estimate is default obtained from state.metamask.advancedGasFee

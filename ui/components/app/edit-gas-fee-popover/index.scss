@@ -1,7 +1,5 @@
 .edit-gas-fee-popover {
-  @media screen and (min-width: $break-large) {
-    max-height: 84vh;
-  }
+  height: 540px;
 
   &__wrapper {
     border-top: 1px solid $ui-grey;
@@ -9,6 +7,11 @@
 
   &__content {
     padding: 16px 12px;
+
+    & .error-message {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
 
     &__header {
       color: $ui-4;
@@ -36,5 +39,13 @@
       border-top: 1px solid $ui-grey;
       margin: 8px 12px;
     }
+  }
+
+  &__network-status {
+    margin-top: 36px;
+  }
+
+  &__know-more a {
+    color: $primary-1;
   }
 }

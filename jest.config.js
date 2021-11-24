@@ -23,4 +23,8 @@ module.exports = {
     '<rootDir>/app/scripts/platforms/*.test.js',
   ],
   testTimeout: 2500,
+  transform: {
+    '^.+\\.[tj]sx?$': 'babel-jest',
+    '^.+\\.mdx$': '@storybook/addon-docs/jest-transform-mdx',
+  },
 };

@@ -49,6 +49,7 @@ import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
 } from '../ducks/app/app';
+import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -80,6 +81,48 @@ export function getMetricsNetworkIdentifier(state) {
 export function getCurrentChainId(state) {
   const { chainId } = state.metamask.provider;
   return chainId;
+}
+
+export function getCurrentQRHardwareState(state) {
+  const { qrHardware } = state.metamask;
+  return qrHardware || {};
+}
+
+export function hasUnsignedQRHardwareTransaction(state) {
+  const { txParams } = state.confirmTransaction.txData;
+  if (!txParams) return false;
+  const { from } = txParams;
+  const { keyrings } = state.metamask;
+  const qrKeyring = keyrings.find((kr) => kr.type === KEYRING_TYPES.QR);
+  if (!qrKeyring) return false;
+  return Boolean(
+    qrKeyring.accounts.find(
+      (account) => account.toLowerCase() === from.toLowerCase(),
+    ),
+  );
+}
+
+export function hasUnsignedQRHardwareMessage(state) {
+  const { type, msgParams } = state.confirmTransaction.txData;
+  if (!type || !msgParams) {
+    return false;
+  }
+  const { from } = msgParams;
+  const { keyrings } = state.metamask;
+  const qrKeyring = keyrings.find((kr) => kr.type === KEYRING_TYPES.QR);
+  if (!qrKeyring) return false;
+  switch (type) {
+    case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
+    case MESSAGE_TYPE.ETH_SIGN:
+    case MESSAGE_TYPE.PERSONAL_SIGN:
+      return Boolean(
+        qrKeyring.accounts.find(
+          (account) => account.toLowerCase() === from.toLowerCase(),
+        ),
+      );
+    default:
+      return false;
+  }
 }
 
 export function getCurrentKeyring(state) {

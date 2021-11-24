@@ -239,6 +239,7 @@ export default class AccountMenu extends Component {
       case KEYRING_TYPES.TREZOR:
       case KEYRING_TYPES.LEDGER:
       case KEYRING_TYPES.LATTICE:
+      case KEYRING_TYPES.QR:
         label = t('hardware');
         break;
       case 'Simple Key Pair':
