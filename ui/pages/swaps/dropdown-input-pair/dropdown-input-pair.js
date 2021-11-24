@@ -123,6 +123,8 @@ export default function DropdownInputPair({
   );
 }
 
+DropdownInputPair.whyDidYouRender = true;
+
 DropdownInputPair.propTypes = {
   itemsToSearch: PropTypes.array,
   onInputChange: PropTypes.func,

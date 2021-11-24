@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
@@ -43,6 +43,7 @@ import {
   getFromTokenInputValue,
   getFromTokenError,
   getMaxSlippage,
+  getIsFeatureFlagLoaded,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -105,7 +106,6 @@ let timeoutIdForQuotesPrefetching;
 export default function BuildQuote({
   ethBalance,
   selectedAccountAddress,
-  isFeatureFlagLoaded,
   shuffledTokensList,
 }) {
   const t = useContext(I18nContext);
@@ -118,21 +118,22 @@ export default function BuildQuote({
   );
   const [verificationClicked, setVerificationClicked] = useState(false);
 
+  const isFeatureFlagLoaded = useSelector(getIsFeatureFlagLoaded);
   const balanceError = useSelector(getBalanceError);
-  const fetchParams = useSelector(getFetchParams);
+  const fetchParams = useSelector(getFetchParams, isEqual);
   const { sourceTokenInfo = {}, destinationTokenInfo = {} } =
     fetchParams?.metaData || {};
-  const tokens = useSelector(getTokens);
+  const tokens = useSelector(getTokens, isEqual);
   const topAssets = useSelector(getTopAssets);
-  const fromToken = useSelector(getFromToken);
+  const fromToken = useSelector(getFromToken, isEqual);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const fromTokenError = useSelector(getFromTokenError);
   const maxSlippage = useSelector(getMaxSlippage);
   const toToken = useSelector(getToToken) || destinationTokenInfo;
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const tokenList = useSelector(getTokenList);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
+  const tokenList = useSelector(getTokenList, isEqual);
   const useTokenDetection = useSelector(getUseTokenDetection);
   const quotes = useSelector(getQuotes, isEqual);
   const areQuotesPresent = Object.keys(quotes).length > 0;
@@ -723,9 +724,10 @@ export default function BuildQuote({
   );
 }
 
+BuildQuote.whyDidYouRender = true;
+
 BuildQuote.propTypes = {
   ethBalance: PropTypes.string,
   selectedAccountAddress: PropTypes.string,
-  isFeatureFlagLoaded: PropTypes.bool.isRequired,
   shuffledTokensList: PropTypes.array,
 };

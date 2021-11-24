@@ -395,5 +395,3 @@ export default class Routes extends Component {
     }
   }
 }
-
-Routes.whyDidYouRender = true;

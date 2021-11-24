@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
   Switch,
   Route,
@@ -7,7 +7,7 @@ import {
   useHistory,
   Redirect,
 } from 'react-router-dom';
-import { shuffle } from 'lodash';
+import { shuffle, isEqual } from 'lodash';
 import { I18nContext } from '../../contexts/i18n';
 import {
   getSelectedAccount,
@@ -92,16 +92,16 @@ export default function Swap() {
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE;
   const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
 
-  const fetchParams = useSelector(getFetchParams);
+  const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
 
-  const routeState = useSelector(getBackgroundSwapRouteState);
-  const selectedAccount = useSelector(getSelectedAccount);
-  const quotes = useSelector(getQuotes);
-  const txList = useSelector(currentNetworkTxListSelector);
+  const routeState = useSelector(getBackgroundSwapRouteState, shallowEqual);
+  const selectedAccount = useSelector(getSelectedAccount, shallowEqual);
+  const quotes = useSelector(getQuotes, isEqual);
+  const txList = useSelector(currentNetworkTxListSelector, shallowEqual);
   const tradeTxId = useSelector(getTradeTxId);
   const approveTxId = useSelector(getApproveTxId);
-  const aggregatorMetadata = useSelector(getAggregatorMetadata);
+  const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   let swapsErrorKey = useSelector(getSwapsErrorKey);
   const swapsEnabled = useSelector(getSwapsFeatureIsLive);
@@ -110,7 +110,7 @@ export default function Swap() {
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
-  const tokenList = useSelector(getTokenList);
+  const tokenList = useSelector(getTokenList, isEqual);
   const listTokenValues = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
@@ -261,7 +261,7 @@ export default function Swap() {
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
-  console.log('swap render');
+  console.log('swaps render');
 
   return (
     <div className="swaps">
@@ -297,7 +297,6 @@ export default function Swap() {
                 } else if (routeState === 'loading' && aggregatorMetadata) {
                   return <Redirect to={{ pathname: LOADING_QUOTES_ROUTE }} />;
                 }
-                console.log('feature toggle render');
 
                 return (
                   <BuildQuote
