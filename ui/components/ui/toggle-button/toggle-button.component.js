@@ -47,7 +47,7 @@ const colors = {
 };
 
 const ToggleButton = (props) => {
-  const { value, onToggle, offLabel, onLabel, disabled } = props;
+  const { value, onToggle, offLabel, onLabel, disabled, className } = props;
 
   const modifier = value ? 'on' : 'off';
 
@@ -59,9 +59,14 @@ const ToggleButton = (props) => {
           onToggle(value);
         }
       }}
-      className={classnames('toggle-button', `toggle-button--${modifier}`, {
-        'toggle-button--disabled': disabled,
-      })}
+      className={classnames(
+        'toggle-button',
+        `toggle-button--${modifier}`,
+        {
+          'toggle-button--disabled': disabled,
+        },
+        className,
+      )}
     >
       <ReactToggleButton
         value={value}
@@ -87,6 +92,7 @@ ToggleButton.propTypes = {
   offLabel: PropTypes.string,
   onLabel: PropTypes.string,
   disabled: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 export default ToggleButton;
