@@ -1,0 +1,27 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import SiteIcon from '.';
+
+# SiteIcon
+
+SiteIcon uses the `IconBorder` and `IconWithFallback` components to create an icon within a gray ellipse
+
+<Canvas>
+  <Story id="ui-components-ui-site-icon-site-icon-stories-js--default-story" />
+</Canvas>
+
+## Component API
+
+<ArgsTable of={SiteIcon} />
+
+## Usage
+
+The following describes the props and example usage for this component.
+
+### Fallback
+
+`SiteIcon` wraps the `IconWithFallback` component which has a fallback `onError` and will display the first letter of the `name` prop
+
+<Canvas>
+  <Story id="ui-components-ui-site-icon-site-icon-stories-js--fallback" />
+</Canvas>
