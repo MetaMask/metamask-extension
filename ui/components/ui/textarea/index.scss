@@ -4,13 +4,8 @@
   display: block;
   box-shadow: none;
   color: design-system.$black;
-
-  // not sure why this mixin isn't working: @include H6;
+  @include design-system.H6;
   font-size: 1rem;
-  line-height: 140%;
-  font-style: normal;
-  font-weight: normal;
-
   &--scrollable {
     overflow-y: scroll;
   }
