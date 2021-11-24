@@ -4,29 +4,29 @@ import PropTypes from 'prop-types';
 import Box from '../../../ui/box';
 import I18nValue from '../../../ui/i18n-value';
 
-const AdvancedGasFeeInputSubtext = ({ currentValue, rangeValue }) => {
+const AdvancedGasFeeInputSubtext = ({ latest, historical }) => {
   return (
     <Box className="advanced-gas-fee-input-subtext">
       <Box display="flex" alignItems="center">
         <span className="advanced-gas-fee-input-subtext__label">
           <I18nValue messageKey="currentTitle" />
         </span>
-        <span>{currentValue}</span>
+        <span>{latest}</span>
         <img src="./images/high-arrow.svg" alt="" />
       </Box>
       <Box>
         <span className="advanced-gas-fee-input-subtext__label">
           <I18nValue messageKey="twelveHrTitle" />
         </span>
-        <span>{rangeValue}</span>
+        <span>{historical}</span>
       </Box>
     </Box>
   );
 };
 
 AdvancedGasFeeInputSubtext.propTypes = {
-  currentValue: PropTypes.number,
-  rangeValue: PropTypes.string,
+  latest: PropTypes.number,
+  historical: PropTypes.string,
 };
 
 export default AdvancedGasFeeInputSubtext;

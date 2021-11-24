@@ -1,8 +1,8 @@
-.advanced-gas-fee-popover {
-  & &__edit-link {
-    @include H7;
-
+.advanced-gas-fee-input {
+  &__edit-link {
     display: inline;
-    padding: 0 5px 16px;
+    font-size: 12px;
+    padding: 0;
+    white-space: nowrap;
   }
 }

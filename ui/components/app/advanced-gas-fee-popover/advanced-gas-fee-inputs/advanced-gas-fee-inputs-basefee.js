@@ -1,10 +1,12 @@
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
 import {
   divideCurrencies,
   multiplyCurrencies,
 } from '../../../../../shared/modules/conversion.utils';
-import { SECONDARY } from '../../../../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import {
   decGWEIToHexWEI,
@@ -19,18 +21,19 @@ import FormField from '../../../ui/form-field';
 import I18nValue from '../../../ui/i18n-value';
 
 import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
+import { getAdvancedGasFeeValues } from '../../../../selectors';
 
-const devideCurrencyValues = (value, baseFee) =>
+const devideCurrencyValues = (value, baseFee, numberOfDecimals) =>
   divideCurrencies(decGWEIToHexWEI(value), baseFee, {
-    numberOfDecimals: 6,
+    numberOfDecimals,
     dividendBase: 16,
     divisorBase: 16,
     toNumericBase: 'dec',
   });
 
-const multiplyCurrencyValues = (baseFee, value) =>
+const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
   multiplyCurrencies(baseFee, value, {
-    numberOfDecimals: 6,
+    numberOfDecimals,
     multiplicandBase: 16,
     multiplierBase: 10,
     toNumericBase: 'dec',
@@ -40,36 +43,69 @@ const multiplyCurrencyValues = (baseFee, value) =>
 
 const AdvancedGasFeeInputBaseFee = () => {
   const t = useI18nContext();
-  const { estimatedBaseFee, maxFeePerGas } = useGasFeeContext();
+  const { estimatedBaseFee, estimateUsed, maxFeePerGas } = useGasFeeContext();
+  const {
+    numberOfDecimals: numberOfDecimalsPrimary,
+  } = useUserPreferencedCurrency(PRIMARY);
+  const {
+    currency,
+    numberOfDecimals: numberOfDecimalsFiat,
+  } = useUserPreferencedCurrency(SECONDARY);
+
+  const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
   const [editingInGwei, setEditingInGwei] = useState(false);
 
-  const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(
-    devideCurrencyValues(maxFeePerGas, estimatedBaseFee),
-  );
-  const [maxBaseFeeGWEI, setMaxBaseFeeGWEI] = useState(
-    multiplyCurrencyValues(estimatedBaseFee, maxBaseFeeMultiplier),
-  );
+  const [maxBaseFeeGWEI, setMaxBaseFeeGWEI] = useState(() => {
+    if (estimateUsed === PRIORITY_LEVELS.CUSTOM) return estimatedBaseFee;
+    return multiplyCurrencyValues(
+      estimatedBaseFee,
+      advancedGasFeeValues.maxBaseFee,
+      numberOfDecimalsPrimary,
+    );
+  });
 
-  const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
+  const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(() => {
+    if (estimateUsed === PRIORITY_LEVELS.CUSTOM)
+      return devideCurrencyValues(
+        maxFeePerGas,
+        estimatedBaseFee,
+        numberOfDecimalsPrimary,
+      );
+    return advancedGasFeeValues.maxBaseFee;
+  });
+
   const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
     decGWEIToHexWEI(maxBaseFeeGWEI),
-    { currency, numberOfDecimals },
+    { currency, numberOfDecimalsFiat },
   );
 
   const updateBaseFee = useCallback(
     (value) => {
       if (editingInGwei) {
         setMaxBaseFeeGWEI(value);
-        setMaxBaseFeeMultiplier(devideCurrencyValues(value, estimatedBaseFee));
+        setMaxBaseFeeMultiplier(
+          devideCurrencyValues(
+            value,
+            estimatedBaseFee,
+            numberOfDecimalsPrimary,
+          ),
+        );
       } else {
         setMaxBaseFeeMultiplier(value);
-        setMaxBaseFeeGWEI(multiplyCurrencyValues(estimatedBaseFee, value));
+        setMaxBaseFeeGWEI(
+          multiplyCurrencyValues(
+            estimatedBaseFee,
+            value,
+            numberOfDecimalsPrimary,
+          ),
+        );
       }
     },
     [
       editingInGwei,
       estimatedBaseFee,
+      numberOfDecimalsPrimary,
       setMaxBaseFeeGWEI,
       setMaxBaseFeeMultiplier,
     ],
@@ -85,7 +121,7 @@ const AdvancedGasFeeInputBaseFee = () => {
       titleDetail={
         editingInGwei ? (
           <Button
-            className="advanced-gas-fee-popover__edit-link"
+            className="advanced-gas-fee-input__edit-link"
             type="link"
             onClick={() => setEditingInGwei(true)}
           >
@@ -93,7 +129,7 @@ const AdvancedGasFeeInputBaseFee = () => {
           </Button>
         ) : (
           <Button
-            className="advanced-gas-fee-popover__edit-link"
+            className="advanced-gas-fee-input__edit-link"
             type="link"
             onClick={() => setEditingInGwei(false)}
           >
@@ -111,8 +147,8 @@ const AdvancedGasFeeInputBaseFee = () => {
       bottomBorder
       inputDetails={
         <AdvancedGasFeeInputSubtext
-          currentValue={hexWEIToDecGWEI(estimatedBaseFee)}
-          rangeValue="23-359 GWEI"
+          latest={hexWEIToDecGWEI(estimatedBaseFee)}
+          historical="23-359 GWEI"
         />
       }
     />
@@ -120,3 +156,5 @@ const AdvancedGasFeeInputBaseFee = () => {
 };
 
 export default AdvancedGasFeeInputBaseFee;
+
+// todo: prepopulate default values from preference controller here

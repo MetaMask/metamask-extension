@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
 import { SECONDARY } from '../../../../helpers/constants/common';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
+import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -13,9 +16,14 @@ import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
 
 const AdvancedGasFeeInputPriorityFee = () => {
   const t = useI18nContext();
-  const { maxPriorityFeePerGas } = useGasFeeContext();
+  const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
-  const [priorityFee, setPriorityFee] = useState(maxPriorityFeePerGas);
+  const { estimateUsed, maxPriorityFeePerGas } = useGasFeeContext();
+
+  const [priorityFee, setPriorityFee] = useState(() => {
+    if (estimateUsed === PRIORITY_LEVELS.CUSTOM) return maxPriorityFeePerGas;
+    return advancedGasFeeValues.priorityFee;
+  });
 
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
 
@@ -37,8 +45,8 @@ const AdvancedGasFeeInputPriorityFee = () => {
       bottomBorder
       inputDetails={
         <AdvancedGasFeeInputSubtext
-          currentValue="1-18 GWEI"
-          rangeValue="23-359 GWEI"
+          latest="1-18 GWEI"
+          historical="23-359 GWEI"
         />
       }
     />
