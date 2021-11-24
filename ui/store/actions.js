@@ -70,19 +70,6 @@ export function tryUnlockMetamask(password) {
         return forceUpdateMetamaskState(dispatch);
       })
       .then(() => {
-        return new Promise((resolve, reject) => {
-          background.verifySeedPhrase((err) => {
-            if (err) {
-              dispatch(displayWarning(err.message));
-              reject(err);
-              return;
-            }
-
-            resolve();
-          });
-        });
-      })
-      .then(() => {
         dispatch(hideLoadingIndication());
       })
       .catch((err) => {

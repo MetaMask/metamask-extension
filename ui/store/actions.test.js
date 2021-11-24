@@ -45,14 +45,10 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls submitPassword and verifySeedPhrase', async () => {
+    it('calls submitPassword', async () => {
       const store = mockStore();
 
       const submitPassword = background.submitPassword.callsFake((_, cb) =>
-        cb(),
-      );
-
-      const verifySeedPhrase = background.verifySeedPhrase.callsFake((cb) =>
         cb(),
       );
 
@@ -72,7 +68,6 @@ describe('Actions', () => {
       await store.dispatch(actions.tryUnlockMetamask());
 
       expect(submitPassword.callCount).toStrictEqual(1);
-      expect(verifySeedPhrase.callCount).toStrictEqual(1);
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
@@ -87,36 +82,6 @@ describe('Actions', () => {
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
         { type: 'UNLOCK_IN_PROGRESS' },
-        { type: 'UNLOCK_FAILED', value: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await expect(
-        store.dispatch(actions.tryUnlockMetamask('test')),
-      ).rejects.toThrow('error');
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-
-    it('displays warning error and unlock failed when verifySeed fails', async () => {
-      const store = mockStore();
-
-      background.submitPassword.callsFake((_, cb) => cb());
-      background.verifySeedPhrase.callsFake((cb) => {
-        cb(new Error('error'));
-      });
-
-      actions._setBackgroundConnection(background);
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', value: undefined },
-        { type: 'UNLOCK_IN_PROGRESS' },
-        { type: 'UNLOCK_SUCCEEDED', value: undefined },
-        {
-          type: 'UPDATE_METAMASK_STATE',
-          value: baseMockState,
-        },
-        { type: 'DISPLAY_WARNING', value: 'error' },
         { type: 'UNLOCK_FAILED', value: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
