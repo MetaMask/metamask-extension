@@ -4,8 +4,11 @@
   display: block;
   box-shadow: none;
   color: design-system.$black;
+
   @include design-system.H6;
+
   font-size: 1rem;
+
   &--scrollable {
     overflow-y: scroll;
   }
