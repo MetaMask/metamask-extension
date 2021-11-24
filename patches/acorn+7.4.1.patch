@@ -1,8 +1,8 @@
 diff --git a/node_modules/acorn/dist/acorn.js b/node_modules/acorn/dist/acorn.js
-index 256e515..bd57333 100644
+index 0523f0e..9d3d5c2 100644
 --- a/node_modules/acorn/dist/acorn.js
 +++ b/node_modules/acorn/dist/acorn.js
-@@ -1811,7 +1811,7 @@
+@@ -1835,7 +1835,7 @@
        if (checkClashes) {
          if (has(checkClashes, expr.name))
            { this.raiseRecoverable(expr.start, "Argument name clash"); }
