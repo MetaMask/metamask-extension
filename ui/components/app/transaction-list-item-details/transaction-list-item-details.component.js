@@ -16,7 +16,6 @@ import { SECOND } from '../../../../shared/constants/time';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
 import TransactionDecoding from '../transaction-decoding';
-
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -46,6 +45,7 @@ export default class TransactionListItemDetails extends PureComponent {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
     recipientNickname: PropTypes.string,
+    transactionStatus: PropTypes.node,
   };
 
   state = {
@@ -134,6 +134,7 @@ export default class TransactionListItemDetails extends PureComponent {
       onClose,
       recipientNickname,
       showCancel,
+      transactionStatus: TransactionStatus,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -178,7 +179,9 @@ export default class TransactionListItemDetails extends PureComponent {
           <div className="transaction-list-item-details__header">
             <div className="transaction-list-item-details__tx-status">
               <div>Status</div>
-              <div>Canceled</div>
+              <div>
+                <TransactionStatus />
+              </div>
             </div>
             <div className="transaction-list-item-details__tx-hash">
               <div>
@@ -187,14 +190,14 @@ export default class TransactionListItemDetails extends PureComponent {
                   onClick={this.handleBlockExplorerClick}
                   disabled={!hash}
                 >
-                  View on block explorer
+                  {t('viewOnBlockExplorer')}
                 </Button>
               </div>
               <div>
                 <Tooltip
                   wrapperClassName="transaction-list-item-details__header-button"
                   containerClassName="transaction-list-item-details__header-button-tooltip-container"
-                  title={justCopied ? t('copiedTransactionId') : null}
+                  title={justCopied ? t('copiedExclamation') : null}
                 >
                   <Button
                     type="link"

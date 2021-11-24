@@ -35,6 +35,9 @@
       font-size: 14px;
       color: $Black-100;
       font-weight: bold;
+    }    
+    & > div:last-child {
+      font-weight: bold;
     }
   }
 
