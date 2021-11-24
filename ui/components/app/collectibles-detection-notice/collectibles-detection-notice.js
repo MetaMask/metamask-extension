@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Dialog from '../../ui/dialog';
 import Typography from '../../ui/typography/typography';
@@ -10,13 +11,22 @@ import {
   DISPLAY,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import Button from '../../ui/button';
+import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
+import { setCollectiblesDetectionNoticeDismissed } from '../../../store/actions';
 
-export default function NewCollectiblesNotice() {
+export default function CollectiblesDetectionNotice() {
   const t = useI18nContext();
+  const history = useHistory();
 
   return (
-    <Box marginBottom={8}>
-      <Dialog type="message">
+    <Box marginBottom={8} className="collectibles-detection-notice">
+      <Dialog type="message" className="collectibles-detection-notice__message">
+        <button
+          onClick={() => setCollectiblesDetectionNoticeDismissed()}
+          className="collectibles-detection-notice__message__close-button"
+          data-testid="collectibles-detection-notice-close"
+        />
         <Box display={DISPLAY.FLEX}>
           <Box paddingTop={2}>
             <i style={{ fontSize: '1rem' }} className="fa fa-info-circle" />
@@ -25,7 +35,7 @@ export default function NewCollectiblesNotice() {
             <Typography
               color={COLORS.BLACK}
               align={TEXT_ALIGN.LEFT}
-              variant={TYPOGRAPHY.Paragraph}
+              variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
             >
               {t('newNFTsDetected')}
@@ -33,21 +43,20 @@ export default function NewCollectiblesNotice() {
             <Typography
               color={COLORS.BLACK}
               align={TEXT_ALIGN.LEFT}
-              variant={TYPOGRAPHY.Paragraph}
+              variant={TYPOGRAPHY.H6}
               boxProps={{ marginBottom: 4 }}
             >
               {t('newNFTsDetectedInfo')}
             </Typography>
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                console.log('show preference popover');
+            <Button
+              type="link"
+              onClick={() => {
+                history.push(EXPERIMENTAL_ROUTE);
               }}
-              style={{ fontSize: '.9rem' }}
+              className="collectibles-detection-notice__message__link"
             >
               {t('selectNFTPrivacyPreference')}
-            </a>
+            </Button>
           </Box>
         </Box>
       </Dialog>
