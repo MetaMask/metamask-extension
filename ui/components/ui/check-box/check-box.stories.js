@@ -1,16 +1,10 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
-import { boolean, select, text } from '@storybook/addon-knobs';
+import README from './README.mdx';
 import CheckBox, {
   CHECKED,
   INDETERMINATE,
   UNCHECKED,
 } from './check-box.component';
-
-export default {
-  title: 'Check Box',
-  id: __filename,
-};
 
 const checkboxOptions = {
   [CHECKED]: CHECKED,
@@ -20,11 +14,36 @@ const checkboxOptions = {
   False: false,
 };
 
-export const primaryType = () => (
-  <CheckBox
-    checked={select('checked state', checkboxOptions, UNCHECKED)}
-    disabled={boolean('Disabled', false)}
-    id={text('ID', 'checkboxId')}
-    onClick={action('checkbox clicked')}
-  />
+export default {
+  title: 'Components/UI/Check Box',
+  id: __filename,
+  component: CheckBox,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    className: { control: 'text' },
+    disabled: { control: 'boolean' },
+    id: { control: 'text' },
+    onClick: { action: 'clicked' },
+    checked: {
+      options: ['CHECKED', 'INDETERMINATE', 'UNCHECKED', 'True', 'False'],
+      control: 'select',
+    },
+    title: { control: 'text' },
+    dataTestId: { control: 'text' },
+  },
+};
+
+export const DefaultStory = (args) => (
+  <CheckBox {...args} checked={checkboxOptions[args.checked]} />
 );
+
+DefaultStory.storyName = 'Default';
+DefaultStory.args = {
+  checked: UNCHECKED,
+  disabled: false,
+  id: 'checkboxID',
+};
