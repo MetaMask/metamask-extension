@@ -17,7 +17,7 @@ jest.mock('../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
 }));
 
-const render = ({ props, state }) => {
+const render = ({ props, state } = {}) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -95,7 +95,7 @@ describe('TransactionAlerts', () => {
       },
     });
     expect(
-      screen.queryByText('You have (1) pending transaction(s).'),
+      screen.queryByText('You have (1) pending transaction.'),
     ).toBeInTheDocument();
   });
 });

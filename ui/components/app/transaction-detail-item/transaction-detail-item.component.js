@@ -36,7 +36,7 @@ export default function TransactionDetailItem({
             color={COLORS.BLACK}
             fontWeight={FONT_WEIGHT.BOLD}
             variant={TYPOGRAPHY.H6}
-            margin={[1, 1]}
+            margin={[1, 0, 1, 1]}
           >
             {detailTotal}
           </Typography>

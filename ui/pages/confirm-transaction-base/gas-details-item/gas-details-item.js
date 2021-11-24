@@ -26,11 +26,14 @@ const GasDetailsItem = ({
   isMainnet,
   maxFeePerGas,
   maxPriorityFeePerGas,
+  userAcknowledgedGasMissing,
   txData,
   useNativeCurrencyAsPrimaryCurrency,
 }) => {
   const t = useI18nContext();
-  const { estimateUsed } = useGasFeeContext();
+  const { estimateUsed, hasSimulationError } = useGasFeeContext();
+
+  if (hasSimulationError && !userAcknowledgedGasMissing) return null;
 
   return (
     <TransactionDetailItem
@@ -138,6 +141,7 @@ GasDetailsItem.propTypes = {
   isMainnet: PropTypes.bool,
   maxFeePerGas: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
+  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
   txData: PropTypes.object,
   useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
 };

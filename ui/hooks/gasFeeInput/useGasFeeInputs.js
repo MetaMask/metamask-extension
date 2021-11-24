@@ -186,6 +186,7 @@ export function useGasFeeInputs(
     gasErrors,
     gasWarnings,
     hasGasErrors,
+    hasSimulationError,
   } = useGasFeeErrors({
     gasEstimateType,
     gasFeeEstimates,
@@ -301,6 +302,7 @@ export function useGasFeeInputs(
     gasErrors,
     gasWarnings,
     hasGasErrors,
+    hasSimulationError,
     supportsEIP1559,
     updateTransactionUsingGasFeeEstimates,
   };

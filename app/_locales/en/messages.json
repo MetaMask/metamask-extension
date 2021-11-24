@@ -1382,7 +1382,8 @@
     "message": "Want to $1 about gas?"
   },
   "learnCancelSpeeedup": {
-    "message": "Learn how to $1"
+    "message": "Learn how to $1",
+    "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "learn more"
@@ -1969,11 +1970,15 @@
   "pending": {
     "message": "Pending"
   },
-  "pendingTransaction": {
-    "message": "You have ($1) pending transaction(s)."
-  },
   "pendingTransactionInfo": {
     "message": "This transaction will not process until that one is complete."
+  },
+  "pendingTransactionMultiple": {
+    "message": "You have ($1) pending transactions."
+  },
+  "pendingTransactionSingle": {
+    "message": "You have (1) pending transaction.",
+    "description": "$1 is count of pending transactions"
   },
   "permissionCheckedIconDescription": {
     "message": "You have approved this permission"
@@ -2019,6 +2024,9 @@
   },
   "privateNetwork": {
     "message": "Private Network"
+  },
+  "proceedWithTransaction": {
+    "message": "I want to proceed anyway"
   },
   "proposedApprovalLimit": {
     "message": "Proposed Approval Limit"
@@ -2406,6 +2414,9 @@
   },
   "simulationErrorMessage": {
     "message": "This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended."
+  },
+  "simulationErrorMessageV2": {
+    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "skip": {
     "message": "Skip"
