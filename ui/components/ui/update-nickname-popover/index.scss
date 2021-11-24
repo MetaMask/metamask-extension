@@ -1,0 +1,56 @@
+
+.update-nickname {
+  &__wrapper {
+    height: 620px;
+    width: 360px;
+    border-radius: 0;
+
+    .popover-header {
+      border-bottom: 1px solid #d2d8dd;
+      margin-bottom: 16px;
+      border-radius: 0;
+    }
+  }
+
+  &__cancel {
+    margin-right: 16px;
+  }
+
+  &__content {
+    padding: 0 20px 20px 20px;
+    position: relative;
+
+    &__indenticon {
+      margin-bottom: 16px;
+    }
+
+    &__text-area-wrapper {
+      height: 96px !important;
+    }
+
+    &__text-area {
+      line-height: initial !important;
+    }
+
+    &__address {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #bbc0c5;
+      margin-bottom: 16px;
+    }
+
+    &__label,
+    &__label--capitalized {
+      text-transform: capitalize;
+      margin-top: 16px;
+      color: #24292e;
+      font-size: 14px;
+    }
+
+    &__nickname-label {
+      margin-bottom: 8px;
+      color: #24292e;
+      font-size: 14px;
+    }
+  }
+}

@@ -1,4 +1,49 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "Error"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "Incongruent transaction data. Please check the transaction details."
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "No more accounts. If you would like to access another account unlisted below, please reconnect your hardware wallet and select it."
+  },
+  "QRHardwareScanInstructions": {
+    "message": "Place the QR code in front of your camera. The screen is blurred, but it will not affect the reading."
+  },
+  "QRHardwareSignRequestCancel": {
+    "message": "Reject"
+  },
+  "QRHardwareSignRequestDescription": {
+    "message": "After you’ve signed with your wallet, click on 'Get Signature' to receive the signature"
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "Get Signature"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "Scan the QR code with your wallet"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "Request Signature"
+  },
+  "QRHardwareUnknownQRCodeTitle": {
+    "message": "Error"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "Invalid QR code. Please scan the sync QR code of the hardware wallet."
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scan QR Code"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "Connect an airgapped hardware wallet that communicates through QR-codes. Officially supported airgapped hardware wallets include:"
+  },
+  "QRHardwareWalletSteps1Title": {
+    "message": "QR-based HW Wallet"
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "AirGap Vault & Ngrave (Coming Soon)"
+  },
   "about": {
     "message": "About"
   },
@@ -49,6 +94,9 @@
   "addANetwork": {
     "message": "Add a network"
   },
+  "addANickname": {
+    "message": "Add a nickname"
+  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -84,6 +132,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
+  },
+  "addMemo": {
+    "message": "Add memo"
   },
   "addNFT": {
     "message": "Add NFT"
@@ -334,6 +385,9 @@
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
   },
+  "busy": {
+    "message": "Busy"
+  },
   "buy": {
     "message": "Buy"
   },
@@ -363,6 +417,9 @@
   },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
+  },
+  "cancelSpeedUp": {
+    "message": "cancel or speed up a tranaction."
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
@@ -711,6 +768,9 @@
   },
   "edit": {
     "message": "Edit"
+  },
+  "editAddressNickname": {
+    "message": "Edit address nickname"
   },
   "editContact": {
     "message": "Edit Contact"
@@ -1330,6 +1390,12 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
+  "keystone": {
+    "message": "Keystone"
+  },
+  "keystoneTutorial": {
+    "message": " (Tutorials)"
+  },
   "knownAddressRecipient": {
     "message": "Known contract address."
   },
@@ -1345,8 +1411,14 @@
   "layer1Fees": {
     "message": "Layer 1 fees"
   },
+  "learmMoreAboutGas": {
+    "message": "Want to $1 about gas?"
+  },
+  "learnCancelSpeeedup": {
+    "message": "Learn how to $1"
+  },
   "learnMore": {
-    "message": "Learn more"
+    "message": "learn more"
   },
   "learnScamRisk": {
     "message": "scams and security risks."
@@ -1615,6 +1687,9 @@
   "networkSettingsDescription": {
     "message": "Add and edit custom RPC networks"
   },
+  "networkStatus": {
+    "message": "Network status"
+  },
   "networkURL": {
     "message": "Network URL"
   },
@@ -1677,6 +1752,9 @@
   "nfts": {
     "message": "NFTs"
   },
+  "nickname": {
+    "message": "Nickname"
+  },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
@@ -1715,6 +1793,9 @@
   },
   "nonceFieldHeading": {
     "message": "Custom Nonce"
+  },
+  "notBusy": {
+    "message": "Not busy"
   },
   "notCurrentAccount": {
     "message": "Is this the correct account? It's different from the currently selected account in your wallet"
@@ -1923,6 +2004,12 @@
   },
   "pending": {
     "message": "Pending"
+  },
+  "pendingTransaction": {
+    "message": "You have ($1) pending transaction(s)."
+  },
+  "pendingTransactionInfo": {
+    "message": "This transaction will not process until that one is complete."
   },
   "permissionCheckedIconDescription": {
     "message": "You have approved this permission"
@@ -2356,6 +2443,9 @@
   "signed": {
     "message": "Signed"
   },
+  "simulationErrorMessage": {
+    "message": "This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended."
+  },
   "skip": {
     "message": "Skip"
   },
@@ -2407,6 +2497,9 @@
   },
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
+  },
+  "stable": {
+    "message": "Stable"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -3018,6 +3111,9 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "tryAnywayOption": {
+    "message": "I will try anyway"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
