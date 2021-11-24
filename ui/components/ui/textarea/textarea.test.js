@@ -38,7 +38,7 @@ describe('TextArea', () => {
     fireEvent.change(container.firstChild, { target: { value: 'abc' } });
     expect(onChange).toHaveBeenCalled();
   });
-  it('should not be able resize if resize prop is RESIZE.NONE', () => {
+  it('should not be able to resize if the resize prop is RESIZE.NONE', () => {
     args.resize = RESIZE.NONE;
     const { container } = render(<TextArea {...args} />);
     const classList = [...container.firstChild.classList];
@@ -48,7 +48,7 @@ describe('TextArea', () => {
     expect(matches).toHaveLength(1);
     expect(matches[0]).toStrictEqual('textarea--resize-none');
   });
-  it('should be able to resize both height and width if resize prop is RESIZE.BOTH', () => {
+  it('should be able to resize both height and width if the resize prop is RESIZE.BOTH', () => {
     args.resize = RESIZE.BOTH;
     const { container } = render(<TextArea {...args} />);
     const classList = [...container.firstChild.classList];
@@ -58,7 +58,7 @@ describe('TextArea', () => {
     expect(matches).toHaveLength(1);
     expect(matches[0]).toStrictEqual('textarea--resize-both');
   });
-  it('should be able to resize only width if resize prop is RESIZE.HORIZONTAL', () => {
+  it('should only be able to resize width if the resize prop is RESIZE.HORIZONTAL', () => {
     args.resize = RESIZE.HORIZONTAL;
     const { container } = render(<TextArea {...args} />);
     const classList = [...container.firstChild.classList];
@@ -68,7 +68,7 @@ describe('TextArea', () => {
     expect(matches).toHaveLength(1);
     expect(matches[0]).toStrictEqual('textarea--resize-horizontal');
   });
-  it('should be able to resize only height if resize prop is RESIZE.VERTICAL', () => {
+  it('should only be able to resize height if the resize prop is RESIZE.VERTICAL', () => {
     args.resize = RESIZE.VERTICAL;
     const { container } = render(<TextArea {...args} />);
     const classList = [...container.firstChild.classList];
