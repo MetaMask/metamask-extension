@@ -95,7 +95,7 @@ describe('TransactionAlerts', () => {
       },
     });
     expect(
-      screen.queryByText('You have (1) pending transaction(s).'),
+      screen.queryByText('You have (1) pending transaction.'),
     ).toBeInTheDocument();
   });
 });
