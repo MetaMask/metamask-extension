@@ -167,7 +167,7 @@
     "message": "Any difference between your max base fee and the current base fee will be refunded after completion."
   },
   "advancedGasFeeModalTitle": {
-    "message": "Advanced Gas Fee"
+    "message": "Advanced gas fee"
   },
   "advancedGasPriceTitle": {
     "message": "Gas price"

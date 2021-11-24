@@ -5,15 +5,4 @@
     display: inline;
     padding: 0 5px 16px;
   }
-
-  &__input-subtext {
-    display: flex;
-  }
-
-  .popover-header {
-    border-radius: 0;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom: 1px solid $Grey-200;
-  }
 }

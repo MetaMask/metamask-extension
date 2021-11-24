@@ -14,9 +14,8 @@ const AdvancedGasFeePopover = () => {
   const t = useI18nContext();
   const { closeModal, currentModal } = useTransactionModalContext();
 
-  // if (currentModal !== 'advancedGasFee') return null;
+  if (currentModal !== 'advancedGasFee') return null;
 
-  // todo: align styles to edit gas fee modal
   return (
     <Popover
       className="advanced-gas-fee-popover"

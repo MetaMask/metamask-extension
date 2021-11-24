@@ -1,65 +1,32 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import Box from '../../../ui/box';
-import Typography from '../../../ui/typography';
 import I18nValue from '../../../ui/i18n-value';
-import {
-  COLORS,
-  FONT_WEIGHT,
-  TYPOGRAPHY,
-} from '../../../../helpers/constants/design-system';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
-import { hexWEIToDecGWEI } from '../../../../helpers/utils/conversions.util';
 
-const AdvancedGasFeeInputSubtext = () => {
-  const { estimatedBaseFee } = useGasFeeContext();
-
-  const estimatedBaseFeeInDecGWEI = hexWEIToDecGWEI(estimatedBaseFee, {
-    numberOfDecimals: 6,
-  });
-
+const AdvancedGasFeeInputSubtext = ({ currentValue, rangeValue }) => {
   return (
-    <Box className="advanced-gas-fee-popover__input-subtext">
-      <Box className="advanced-gas-fee-popover__input-subtext">
-        <Typography
-          tag={TYPOGRAPHY.Paragraph}
-          variant={TYPOGRAPHY.H8}
-          color={COLORS.UI4}
-          fontWeight={FONT_WEIGHT.BOLD}
-          boxProps={{ marginRight: 1 }}
-        >
+    <Box className="advanced-gas-fee-input-subtext">
+      <Box display="flex" alignItems="center">
+        <span className="advanced-gas-fee-input-subtext__label">
           <I18nValue messageKey="currentTitle" />
-        </Typography>
-        <Typography
-          tag={TYPOGRAPHY.Paragraph}
-          variant={TYPOGRAPHY.H8}
-          color={COLORS.UI4}
-          boxProps={{ marginRight: 1 }}
-        >
-          {estimatedBaseFeeInDecGWEI}
-        </Typography>
-        <img height="18" src="./images/high-arrow.svg" alt="" />
+        </span>
+        <span>{currentValue}</span>
+        <img src="./images/high-arrow.svg" alt="" />
       </Box>
-      <Box marginLeft={4} className="advanced-gas-fee-popover__input-subtext">
-        <Typography
-          tag={TYPOGRAPHY.Paragraph}
-          variant={TYPOGRAPHY.H8}
-          color={COLORS.UI4}
-          fontWeight={FONT_WEIGHT.BOLD}
-          boxProps={{ marginRight: 1 }}
-        >
+      <Box>
+        <span className="advanced-gas-fee-input-subtext__label">
           <I18nValue messageKey="twelveHrTitle" />
-        </Typography>
-        <Typography
-          tag={TYPOGRAPHY.Paragraph}
-          variant={TYPOGRAPHY.H8}
-          color={COLORS.UI4}
-          boxProps={{ marginRight: 1 }}
-        >
-          23-359 GWEI
-        </Typography>
+        </span>
+        <span>{rangeValue}</span>
       </Box>
     </Box>
   );
+};
+
+AdvancedGasFeeInputSubtext.propTypes = {
+  currentValue: PropTypes.number,
+  rangeValue: PropTypes.string,
 };
 
 export default AdvancedGasFeeInputSubtext;
