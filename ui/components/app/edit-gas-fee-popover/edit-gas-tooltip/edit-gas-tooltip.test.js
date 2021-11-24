@@ -2,40 +2,51 @@ import React from 'react';
 import sinon from 'sinon';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/jest';
+import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import EditGasToolTip from './edit-gas-tooltip';
 
+jest.mock('../../../../store/actions', () => ({
+  disconnectGasFeeEstimatePoller: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
+  getGasFeeTimeEstimate: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve('unknown')),
+}));
+
 const LOW_GAS_OPTION = {
-  gasLimit: 21000,
   maxFeePerGas: '2.010203381',
   maxPriorityFeePerGas: '1.20004164',
-  maxFeePerGasValue: '2.383812808',
-  maxPriorityFeePerGasValue: '1.5',
-  origin: 'metamask',
 };
 
 const MEDIUM_GAS_OPTION = {
-  gasLimit: 21000,
   maxFeePerGas: '2.383812808',
   maxPriorityFeePerGas: '1.5',
-  maxFeePerGasValue: '2.383812808',
-  maxPriorityFeePerGasValue: '1.5',
-  origin: 'metamask',
 };
 
 const HIGH_GAS_OPTION = {
-  gasLimit: 21000,
   maxFeePerGas: '2.920638342',
   maxPriorityFeePerGas: '2',
-  maxFeePerGasValue: '2.383812808',
-  maxPriorityFeePerGasValue: '1.5',
-  origin: 'metamask',
 };
 
-const renderComponent = (props) => {
+const renderComponent = (props, transactionProps, gasFeeContextProps) => {
   const mockStore = {
     metamask: {
-      provider: {
-        type: 'test',
+      provider: {},
+      cachedBalances: {},
+      accounts: {
+        '0xAddress': {
+          address: '0xAddress',
+          balance: '0x176e5b6f173ebe66',
+        },
+      },
+      selectedAddress: '0xAddress',
+      featureFlags: { advancedInlineGas: true },
+      advancedGasFee: {
+        maxBaseFee: '1.5',
+        priorityFee: '2',
       },
     },
   };
@@ -43,7 +54,12 @@ const renderComponent = (props) => {
   const store = configureStore(mockStore);
 
   return renderWithProvider(
-    <EditGasToolTip {...props} t={sinon.stub()} />,
+    <GasFeeContextProvider
+      transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
+      {...gasFeeContextProps}
+    >
+      <EditGasToolTip {...props} t={sinon.stub()} />
+    </GasFeeContextProvider>,
     store,
   );
 };
@@ -52,7 +68,7 @@ describe('EditGasToolTip', () => {
   it('should render correct values for priorityLevel low', () => {
     const { queryByText } = renderComponent({
       priorityLevel: 'low',
-      gasContext: LOW_GAS_OPTION,
+      ...LOW_GAS_OPTION,
     });
 
     expect(queryByText('2.010203381')).toBeInTheDocument();
@@ -63,7 +79,7 @@ describe('EditGasToolTip', () => {
   it('should render correct values for priorityLevel medium', () => {
     const { queryByText } = renderComponent({
       priorityLevel: 'medium',
-      gasContext: MEDIUM_GAS_OPTION,
+      ...MEDIUM_GAS_OPTION,
     });
     expect(queryByText('2.383812808')).toBeInTheDocument();
     expect(queryByText('1.5')).toBeInTheDocument();
@@ -73,7 +89,7 @@ describe('EditGasToolTip', () => {
   it('should render correct values for priorityLevel high', () => {
     const { queryByText } = renderComponent({
       priorityLevel: 'high',
-      gasContext: HIGH_GAS_OPTION,
+      ...HIGH_GAS_OPTION,
     });
     expect(queryByText('2.920638342')).toBeInTheDocument();
     expect(queryByText('2')).toBeInTheDocument();

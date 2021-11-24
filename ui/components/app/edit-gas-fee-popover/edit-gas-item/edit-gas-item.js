@@ -32,7 +32,7 @@ const EditGasItem = ({ priorityLevel }) => {
     maxFeePerGas: maxFeePerGasValue,
     maxPriorityFeePerGas: maxPriorityFeePerGasValue,
     updateTransactionUsingGasFeeEstimates,
-    transaction: { dappSuggestedGasFees, origin },
+    transaction: { dappSuggestedGasFees },
   } = useGasFeeContext();
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
@@ -153,14 +153,8 @@ const EditGasItem = ({ priorityLevel }) => {
             <EditGasToolTip
               t={t}
               priorityLevel={priorityLevel}
-              gasContext={{
-                gasLimit,
-                maxFeePerGas,
-                maxPriorityFeePerGas,
-                maxFeePerGasValue,
-                maxPriorityFeePerGasValue,
-                origin,
-              }}
+              maxFeePerGas={maxFeePerGas}
+              maxPriorityFeePerGas={maxPriorityFeePerGas}
             />
           }
           position="top"

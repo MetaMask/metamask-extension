@@ -6,16 +6,23 @@ import {
   FONT_WEIGHT,
 } from '../../../../helpers/constants/design-system';
 import Typography from '../../../ui/typography';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
 
-const EditGasToolTip = ({ priorityLevel, gasContext, t }) => {
+const EditGasToolTip = ({
+  priorityLevel,
+  // maxFeePerGas & maxPriorityFeePerGas are derived from conditional logic
+  // related to the source of the estimates. We pass these values from the
+  // the parent component (edit-gas-item) rather than recalculate them
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+  t,
+}) => {
   const {
     gasLimit,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    maxFeePerGasValue,
-    maxPriorityFeePerGasValue,
-    origin,
-  } = gasContext;
+    maxFeePerGas: maxFeePerGasValue,
+    maxPriorityFeePerGas: maxPriorityFeePerGasValue,
+    transaction: { origin },
+  } = useGasFeeContext();
 
   const toolTipMessage = () => {
     switch (priorityLevel) {
@@ -125,14 +132,8 @@ const EditGasToolTip = ({ priorityLevel, gasContext, t }) => {
 
 EditGasToolTip.propTypes = {
   priorityLevel: PropTypes.string,
-  gasContext: {
-    gasLimit: PropTypes.number,
-    maxFeePerGas: PropTypes.string,
-    maxPriorityFeePerGas: PropTypes.string,
-    maxFeePerGasValue: PropTypes.string,
-    maxPriorityFeePerGasValue: PropTypes.string,
-    origin: PropTypes.string,
-  },
+  maxFeePerGas: PropTypes.string,
+  maxPriorityFeePerGas: PropTypes.string,
   t: PropTypes.func,
 };
 
