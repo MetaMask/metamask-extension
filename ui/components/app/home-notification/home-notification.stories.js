@@ -39,5 +39,10 @@ export const DefaultStory = (args) => (
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  ignoreText: 'foo',
+    acceptText: 'Accept text',
+  checkboxText: 'Checkbox text',
+  checkboxTooltipText: 'Checkbox tooltip text',
+  ignoreText: 'Ignore text',
+  infoText: 'Info text',
+  descriptionText: 'Description text',
 };
