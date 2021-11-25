@@ -208,16 +208,15 @@ class ImportToken extends Component {
     });
     const standardAddress = addHexPrefix(customAddress).toLowerCase();
 
-    function isMainnetToken(key, address) {
-      if (key !== address) return false;
-      return true;
-    }
+    let isMainnetToken = false;
 
-    let mainnetToken;
+    Object.keys(contractMap).forEach((key) => {
+      if (key.toLowerCase() === customAddress.toLowerCase()) {
+        isMainnetToken = true;
+      }
+    });
 
-    Object.keys(contractMap).find(
-      (key) => (mainnetToken = isMainnetToken(key, customAddress)),
-    );
+    const isMainnetNetwork = this.props.chainId === '0x1';
 
     switch (true) {
       case !addressIsValid:
@@ -230,7 +229,7 @@ class ImportToken extends Component {
         });
 
         break;
-      case mainnetToken:
+      case isMainnetToken && !isMainnetNetwork:
         this.setState({
           mainnetTokenWarning: this.context.t('mainnetToken'),
           customSymbol: '',
