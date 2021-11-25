@@ -46,7 +46,7 @@ const DAPP_SUGGESTED_ESTIMATE = {
   maxPriorityFeePerGas: '0x59682f00',
 };
 
-const renderComponent = (props, transactionProps, gasFeeContextProps) => {
+const renderComponent = (componentProps, transactionProps) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -71,9 +71,8 @@ const renderComponent = (props, transactionProps, gasFeeContextProps) => {
   return renderWithProvider(
     <GasFeeContextProvider
       transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
-      {...gasFeeContextProps}
     >
-      <EditGasItem priorityLevel="low" {...props} />
+      <EditGasItem priorityLevel="low" {...componentProps} />
     </GasFeeContextProvider>,
     store,
   );
@@ -137,7 +136,7 @@ describe('EditGasItem', () => {
   });
 
   it('should renders advance gas estimate option for priorityLevel custom', () => {
-    renderComponent({ priorityLevel: 'custom' });
+    renderComponent({ priorityLevel: 'custom' }, { userFeeLevel: 'high' });
     expect(
       screen.queryByRole('button', { name: 'custom' }),
     ).toBeInTheDocument();
