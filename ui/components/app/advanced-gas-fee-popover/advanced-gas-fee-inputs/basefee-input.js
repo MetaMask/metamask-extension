@@ -7,10 +7,7 @@ import {
   multiplyCurrencies,
 } from '../../../../../shared/modules/conversion.utils';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
-import {
-  decGWEIToHexWEI,
-  hexWEIToDecGWEI,
-} from '../../../../helpers/utils/conversions.util';
+import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
@@ -22,16 +19,16 @@ import I18nValue from '../../../ui/i18n-value';
 import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 
-const divideCurrencyValues = (value, baseFee, numberOfDecimals) => {
-  if (baseFee > 1) {
-    return divideCurrencies(value, baseFee, {
-      numberOfDecimals,
-      dividendBase: 10,
-      divisorBase: 10,
-      toNumericBase: 'dec',
-    });
+const divideCurrencyValues = (value, baseFee) => {
+  if (baseFee === 0) {
+    return 0;
   }
-  return 0;
+  return divideCurrencies(value, baseFee, {
+    numberOfDecimals: 2,
+    dividendBase: 10,
+    divisorBase: 10,
+    toNumericBase: 'dec',
+  });
 };
 
 const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
@@ -80,11 +77,7 @@ const BasefeeInput = () => {
     ) {
       return advancedGasFeeValues.maxBaseFee;
     }
-    return divideCurrencyValues(
-      maxFeePerGas,
-      estimatedBaseFee,
-      numberOfDecimalsPrimary,
-    );
+    return divideCurrencyValues(maxFeePerGas, estimatedBaseFee);
   });
 
   const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
