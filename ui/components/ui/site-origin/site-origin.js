@@ -5,7 +5,7 @@ import IconWithFallback from '../icon-with-fallback';
 
 export default function SiteOrigin({ siteOrigin, iconSrc, iconName }) {
   return (
-    <div className='site-origin'>
+    <div className="site-origin">
       <Chip
         label={siteOrigin}
         leftIcon={<IconWithFallback icon={iconSrc} name={iconName} size={32} />}
