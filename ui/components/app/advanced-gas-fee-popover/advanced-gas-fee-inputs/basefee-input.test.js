@@ -74,7 +74,7 @@ describe('BasefeeInput', () => {
       },
     });
     fireEvent.click(screen.queryByText('Edit in GWEI'));
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(50);
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
 
   it('should show current value of estimatedBaseFee in subtext', () => {

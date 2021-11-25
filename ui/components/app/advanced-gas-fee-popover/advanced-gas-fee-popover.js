@@ -22,8 +22,8 @@ const AdvancedGasFeePopover = () => {
       title={t('advancedGasFeeModalTitle')}
       onBack={() => closeModal('advancedGasFee')}
       onClose={() => {
-        closeModal('advancedGasFee');
         closeModal('editGasFee');
+        closeModal('advancedGasFee');
       }}
       footer={
         <Button type="primary">

@@ -27,7 +27,6 @@ const divideCurrencyValues = (value, baseFee) => {
     numberOfDecimals: 2,
     dividendBase: 10,
     divisorBase: 10,
-    toNumericBase: 'dec',
   });
 };
 
@@ -36,8 +35,6 @@ const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
     numberOfDecimals,
     multiplicandBase: 10,
     multiplierBase: 10,
-    toNumericBase: 'dec',
-    toDenomination: 'GWEI',
   });
 
 const BasefeeInput = () => {
@@ -67,7 +64,7 @@ const BasefeeInput = () => {
         numberOfDecimalsPrimary,
       );
     }
-    return estimatedBaseFee;
+    return maxFeePerGas;
   });
 
   const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(() => {
@@ -89,13 +86,7 @@ const BasefeeInput = () => {
     (value) => {
       if (editingInGwei) {
         setMaxBaseFeeGWEI(value);
-        setMaxBaseFeeMultiplier(
-          divideCurrencyValues(
-            value,
-            estimatedBaseFee,
-            numberOfDecimalsPrimary,
-          ),
-        );
+        setMaxBaseFeeMultiplier(divideCurrencyValues(value, estimatedBaseFee));
       } else {
         setMaxBaseFeeMultiplier(value);
         setMaxBaseFeeGWEI(

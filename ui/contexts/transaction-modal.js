@@ -40,6 +40,7 @@ export const TransactionModalContextProvider = ({
     if (openModals < 0) return;
     const modals = [...openModals];
     modals.splice(index, 1);
+    console.log('modals =', modals);
     setOpenModals(modals);
   };
 
