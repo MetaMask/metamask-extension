@@ -2,7 +2,7 @@ module.exports = {
   displayName: '/development',
   collectCoverageFrom: ['<rootDir>/**/*.js'],
   coverageDirectory: '../jest-coverage/development/',
-  coverageReporters: ['json', 'lcov', 'text', 'clover'],
+  coverageReporters: ['html', 'text-summary'],
   coverageThreshold: {
     './development/build/transforms/**/*.js': {
       branches: 100,
