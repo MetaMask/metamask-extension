@@ -22,12 +22,11 @@ export default function CollectiblesTab({ onAddNFT }) {
   const newNFTsDetected = false;
   const t = useI18nContext();
   const collections = {};
-  collectibles.map(collectible => {
-    const collection = collections[collectible.address];
-    if(!collection){
-      collection = [collectible]
+  collectibles.forEach(collectible => {
+    if(!collections[collectible.address]){
+      collections[collectible.address] = [collectible]
     } else {
-      collection.push(collectible)
+      collections[collectible.address].push(collectible)
     }
   })
 

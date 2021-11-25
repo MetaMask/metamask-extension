@@ -19,9 +19,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
-export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
+export default function CollectiblesItems({ onAddNFT, onRefreshList, collections }) {
   const t = useI18nContext();
-  const collections = {};
   const defaultDropdownState = {};
 
   Object.keys(collections).forEach((key) => {
@@ -35,7 +34,7 @@ export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
       <Box padding={[4, 6, 4, 6]} flexDirection={FLEX_DIRECTION.COLUMN}>
         <>
           {Object.keys(collections).map((key, index) => {
-            const { icon, collectibles } = collections[key];
+            const [...collectibles] = collections[key];
             const isExpanded = dropdownState[key];
 
             return (
@@ -48,7 +47,7 @@ export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
                   justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
                 >
                   <Box alignItems={ALIGN_ITEMS.CENTER}>
-                    <img width="28" src={icon} />
+                    <img width="28" src={collectibles[0]?.image} />
                     <Typography
                       color={COLORS.BLACK}
                       variant={TYPOGRAPHY.H4}
@@ -84,7 +83,7 @@ export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
                             borderRadius={SIZES.MD}
                             backgroundColor={collectible.backgroundColor}
                           >
-                            <img src={collectible.icon} />
+                            <img width='40px' src={collectible.image} />
                           </Box>
                         </Box>
                       );
