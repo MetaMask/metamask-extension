@@ -19,14 +19,15 @@
     font-family: monospace;
     font-size: $font-size-h5;
     margin: auto;
-    line-height: .875em;
+    line-height: 0.875em;
     margin-bottom: 32px;
   }
 
   .text {
+    @include H5;
+
     padding: 16px;
     max-width: 670px;
-    @include H5;
   }
 
   ul {
