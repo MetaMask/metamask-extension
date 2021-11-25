@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
@@ -14,21 +15,26 @@ import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
+import { useGasFeeContext } from '../../../contexts/gasFee';
 
 const HeartBeat = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
 
-const GasDetailItem = ({
+const GasDetailsItem = ({
   hexMaximumTransactionFee,
   hexMinimumTransactionFee,
   isMainnet,
   maxFeePerGas,
   maxPriorityFeePerGas,
-  supportsEIP1559,
+  userAcknowledgedGasMissing,
   txData,
   useNativeCurrencyAsPrimaryCurrency,
 }) => {
   const t = useI18nContext();
+  const { estimateUsed, hasSimulationError } = useGasFeeContext();
+
+  if (hasSimulationError && !userAcknowledgedGasMissing) return null;
+
   return (
     <TransactionDetailItem
       key="gas-item"
@@ -62,7 +68,7 @@ const GasDetailItem = ({
                 </Typography>
               </>
             }
-            position="top"
+            position="bottom"
           />
         </Box>
       }
@@ -88,9 +94,18 @@ const GasDetailItem = ({
         </div>
       }
       subText={t('editGasSubTextFee', [
-        <Box key="editGasSubTextFeeLabel" display="inline-flex">
-          <Box marginRight={1} className="gas-details-item__gasfee-label">
-            <I18nValue messageKey="editGasSubTextFeeLabel" />
+        <Box
+          key="editGasSubTextFeeLabel"
+          display="inline-flex"
+          className={classNames('gas-details-item__gasfee-label', {
+            'gas-details-item__gas-fee-warning': estimateUsed === 'high',
+          })}
+        >
+          <Box marginRight={1}>
+            <b>
+              {estimateUsed === 'high' && '⚠ '}
+              <I18nValue messageKey="editGasSubTextFeeLabel" />
+            </b>
           </Box>
           <div
             key="editGasSubTextFeeValue"
@@ -107,30 +122,28 @@ const GasDetailItem = ({
         </Box>,
       ])}
       subTitle={
-        supportsEIP1559 && (
-          <GasTiming
-            maxPriorityFeePerGas={hexWEIToDecGWEI(
-              maxPriorityFeePerGas || txData.txParams.maxPriorityFeePerGas,
-            )}
-            maxFeePerGas={hexWEIToDecGWEI(
-              maxFeePerGas || txData.txParams.maxFeePerGas,
-            )}
-          />
-        )
+        <GasTiming
+          maxPriorityFeePerGas={hexWEIToDecGWEI(
+            maxPriorityFeePerGas || txData.txParams.maxPriorityFeePerGas,
+          )}
+          maxFeePerGas={hexWEIToDecGWEI(
+            maxFeePerGas || txData.txParams.maxFeePerGas,
+          )}
+        />
       }
     />
   );
 };
 
-GasDetailItem.propTypes = {
+GasDetailsItem.propTypes = {
   hexMaximumTransactionFee: PropTypes.string,
   hexMinimumTransactionFee: PropTypes.string,
   isMainnet: PropTypes.bool,
   maxFeePerGas: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
-  supportsEIP1559: PropTypes.bool,
+  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
   txData: PropTypes.object,
   useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
 };
 
-export default GasDetailItem;
+export default GasDetailsItem;

@@ -41,11 +41,16 @@ class RemoveFencedCodeTransform extends Transform {
   // stream, immediately before the "end" event is emitted.
   // It applies the transform to the concatenated file contents.
   _flush(end) {
-    const [fileContent, didModify] = removeFencedCode(
-      this.filePath,
-      this.buildType,
-      Buffer.concat(this._fileBuffers).toString('utf8'),
-    );
+    let fileContent, didModify;
+    try {
+      [fileContent, didModify] = removeFencedCode(
+        this.filePath,
+        this.buildType,
+        Buffer.concat(this._fileBuffers).toString('utf8'),
+      );
+    } catch (error) {
+      return end(error);
+    }
 
     const pushAndEnd = () => {
       this.push(fileContent);
@@ -53,12 +58,11 @@ class RemoveFencedCodeTransform extends Transform {
     };
 
     if (this.shouldLintTransformedFiles && didModify) {
-      lintTransformedFile(fileContent, this.filePath)
+      return lintTransformedFile(fileContent, this.filePath)
         .then(pushAndEnd)
         .catch((error) => end(error));
-    } else {
-      pushAndEnd();
     }
+    return pushAndEnd();
   }
 }
 

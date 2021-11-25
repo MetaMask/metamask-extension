@@ -358,10 +358,14 @@ function createFactoredBuild({
     // lavamoat will add lavapack but it will be removed by bify-module-groups
     // we will re-add it later by installing a lavapack runtime
     const lavamoatOpts = {
-      policy: path.resolve(__dirname, '../../lavamoat/browserify/policy.json'),
+      policy: path.resolve(
+        __dirname,
+        `../../lavamoat/browserify/${buildType}/policy.json`,
+      ),
+      policyName: buildType,
       policyOverride: path.resolve(
         __dirname,
-        '../../lavamoat/browserify/policy-override.json',
+        `../../lavamoat/browserify/${buildType}/policy-override.json`,
       ),
       writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
     };
@@ -456,7 +460,7 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              useLavamoat: true,
             });
             break;
           }

@@ -203,6 +203,7 @@ const TextField = ({
   min,
   max,
   autoComplete,
+  onPaste,
   ...textFieldProps
 }) => {
   const inputProps = themeToInputProps[theme]({
@@ -214,6 +215,16 @@ const TextField = ({
     max,
     autoComplete,
   });
+
+  if (onPaste) {
+    if (!inputProps.InputProps) {
+      inputProps.InputProps = {};
+    }
+    if (!inputProps.InputProps.inputProps) {
+      inputProps.InputProps.inputProps = {};
+    }
+    inputProps.InputProps.inputProps.onPaste = onPaste;
+  }
 
   return (
     <MaterialTextField
@@ -241,6 +252,7 @@ TextField.propTypes = {
   min: PropTypes.number,
   max: PropTypes.number,
   autoComplete: PropTypes.string,
+  onPaste: PropTypes.func,
 };
 
 export default withStyles(styles)(TextField);

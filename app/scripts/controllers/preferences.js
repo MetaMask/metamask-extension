@@ -37,6 +37,7 @@ export default class PreferencesController {
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
+      advancedGasFee: null,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -127,6 +128,16 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
+  }
+
+  /**
+   * Setter for the `advancedGasFee` property
+   *
+   * @param {object} val - holds the maxBaseFee and PriorityFee that the user set as default advanced settings.
+   *
+   */
+  setAdvancedGasFee(val) {
+    this.store.updateState({ advancedGasFee: val });
   }
 
   /**

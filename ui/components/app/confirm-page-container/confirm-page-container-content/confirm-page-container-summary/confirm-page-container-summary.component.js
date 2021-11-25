@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Identicon from '../../../../ui/identicon';
 
+// eslint-disable-next-line prefer-destructuring
+const EIP_1559_V2 = process.env.EIP_1559_V2;
+
 const ConfirmPageContainerSummary = (props) => {
   const {
     action,
@@ -45,7 +48,7 @@ const ConfirmPageContainerSummary = (props) => {
           </div>
         ) : null}
       </div>
-      {hideSubtitle || (
+      {!hideSubtitle && !EIP_1559_V2 && (
         <div className="confirm-page-container-summary__subtitle">
           {subtitleComponent}
         </div>
