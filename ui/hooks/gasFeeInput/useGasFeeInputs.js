@@ -104,6 +104,12 @@ export function useGasFeeInputs(
   const [estimateUsed, setEstimateUsed] = useState(() => {
     if (areDappSuggestedAndTxParamGasFeesTheSame(transaction)) {
       return 'dappSuggested';
+    } else if (
+      userPrefersAdvancedGas &&
+      transaction?.txParams?.maxPriorityFeePerGas &&
+      transaction?.txParams?.maxFeePerGas
+    ) {
+      return 'custom';
     }
     return estimateToUse;
   });
@@ -116,10 +122,16 @@ export function useGasFeeInputs(
   useEffect(() => {
     if (areDappSuggestedAndTxParamGasFeesTheSame(transaction)) {
       setEstimateUsed('dappSuggested');
+    } else if (
+      userPrefersAdvancedGas &&
+      transaction?.txParams?.maxPriorityFeePerGas &&
+      transaction?.txParams?.maxFeePerGas
+    ) {
+      setEstimateUsed('custom');
     } else if (transaction?.userFeeLevel) {
       setEstimateUsed(transaction?.userFeeLevel);
     }
-  }, [setEstimateUsed, transaction]);
+  }, [setEstimateUsed, transaction, userPrefersAdvancedGas]);
 
   const [gasLimit, setGasLimit] = useState(() =>
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),

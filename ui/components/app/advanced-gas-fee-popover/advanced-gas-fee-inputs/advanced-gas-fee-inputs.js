@@ -1,15 +1,15 @@
 import React from 'react';
 
 import Box from '../../../ui/box';
-import AdvancedGasFeeInputBaseFee from './advanced-gas-fee-inputs-basefee';
-import AdvancedGasFeeInputPriorityFee from './advanced-gas-fee-inputs-priorityfee';
+import BasefeeInput from './basefee-input';
+import PriorityFeeInput from './priorityfee-input';
 
 const AdvancedGasFeeInputs = () => {
   return (
     <Box className="advanced-gas-fee-input" margin={4}>
-      <AdvancedGasFeeInputBaseFee />
+      <BasefeeInput />
       <div className="advanced-gas-fee-input__separator" />
-      <AdvancedGasFeeInputPriorityFee />
+      <PriorityFeeInput />
     </Box>
   );
 };

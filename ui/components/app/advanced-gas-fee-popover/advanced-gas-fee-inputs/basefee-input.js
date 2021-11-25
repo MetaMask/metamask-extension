@@ -44,7 +44,7 @@ const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
     toDenomination: 'GWEI',
   });
 
-const AdvancedGasFeeInputBaseFee = () => {
+const BasefeeInput = () => {
   const t = useI18nContext();
   const { estimatedBaseFee, estimateUsed, maxFeePerGas } = useGasFeeContext();
   const {
@@ -155,4 +155,4 @@ const AdvancedGasFeeInputBaseFee = () => {
   );
 };
 
-export default AdvancedGasFeeInputBaseFee;
+export default BasefeeInput;

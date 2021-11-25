@@ -13,7 +13,7 @@ import FormField from '../../../ui/form-field';
 
 import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
 
-const AdvancedGasFeeInputPriorityFee = () => {
+const PriorityFeeInput = () => {
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
@@ -54,6 +54,4 @@ const AdvancedGasFeeInputPriorityFee = () => {
   );
 };
 
-AdvancedGasFeeInputPriorityFee.propTypes = {};
-
-export default AdvancedGasFeeInputPriorityFee;
+export default PriorityFeeInput;
