@@ -121,7 +121,7 @@ export function useGasFeeInputs(
     if (transaction?.userFeeLevel) {
       setEstimateUsed(transaction?.userFeeLevel);
     }
-  }, [setEstimateUsed, transaction]);
+  }, [setEstimateUsed, transaction, userPrefersAdvancedGas]);
 
   const [gasLimit, setGasLimit] = useState(() =>
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
