@@ -37,6 +37,11 @@
     list-style-type: disc;
     padding-left: 8px;
     list-style-position: inside;
+    margin-bottom: 8px;
+
+    &:nth-last-child(1) {
+      margin-bottom: 0;
+    }
   }
 
   button {
