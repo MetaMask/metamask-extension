@@ -26,8 +26,12 @@ export default {
   },
 };
 
+const noop = () => {
+  // noop
+};
+
 export const DefaultStory = (args) => (
-  <HomeNotification {...args} onAccept={() => {}} onIgnore={() => {}} />
+  <HomeNotification {...args} onAccept={noop} onIgnore={noop} />
 );
 
 DefaultStory.storyName = 'Default';
