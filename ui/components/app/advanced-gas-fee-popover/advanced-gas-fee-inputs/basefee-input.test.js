@@ -1,13 +1,14 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
+import { GAS_ESTIMATE_TYPES } from '../../../../../shared/constants/gas';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
+import configureStore from '../../../../store/store';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../../shared/constants/gas';
+import { AdvanceGasFeePopoverContextProvider } from '../context';
 import BasefeeInput from './basefee-input';
 
 jest.mock('../../../../store/actions', () => ({
@@ -16,6 +17,7 @@ jest.mock('../../../../store/actions', () => ({
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
 }));
 
 const render = (txProps) => {
@@ -42,7 +44,9 @@ const render = (txProps) => {
         ...txProps,
       }}
     >
-      <BasefeeInput />
+      <AdvanceGasFeePopoverContextProvider>
+        <BasefeeInput />
+      </AdvanceGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
     store,
   );

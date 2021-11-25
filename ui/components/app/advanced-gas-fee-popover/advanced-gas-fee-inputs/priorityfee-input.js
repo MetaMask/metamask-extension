@@ -41,7 +41,6 @@ const PriorityFeeInput = () => {
 
   const updatePriorityFee = (value) => {
     setPriorityFee(value);
-    setMaxPriorityFeePerGas(value);
     setDirty(true);
   };
 

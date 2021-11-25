@@ -101,7 +101,6 @@ const BasefeeInput = () => {
       }
       setMaxBaseFeeGWEI(baseFeeInGWEI);
       setMaxBaseFeeMultiplier(baseFeeMultiplierValue);
-      setMaxFeePerGas(baseFeeInGWEI);
       setDirty(true);
     },
     [
@@ -110,7 +109,6 @@ const BasefeeInput = () => {
       numberOfDecimalsPrimary,
       setMaxBaseFeeGWEI,
       setMaxBaseFeeMultiplier,
-      setMaxFeePerGas,
       setDirty,
     ],
   );
