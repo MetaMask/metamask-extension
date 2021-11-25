@@ -12,7 +12,11 @@ import AdvancedGasFeeInputs from './advanced-gas-fee-inputs';
 
 const AdvancedGasFeePopover = () => {
   const t = useI18nContext();
-  const { closeModal, currentModal } = useTransactionModalContext();
+  const {
+    closeModal,
+    closeAllModals,
+    currentModal,
+  } = useTransactionModalContext();
 
   if (currentModal !== 'advancedGasFee') return null;
 
@@ -21,10 +25,7 @@ const AdvancedGasFeePopover = () => {
       className="advanced-gas-fee-popover"
       title={t('advancedGasFeeModalTitle')}
       onBack={() => closeModal('advancedGasFee')}
-      onClose={() => {
-        closeModal('editGasFee');
-        closeModal('advancedGasFee');
-      }}
+      onClose={closeAllModals}
       footer={
         <Button type="primary">
           <I18nValue messageKey="save" />

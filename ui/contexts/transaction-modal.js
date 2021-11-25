@@ -40,8 +40,11 @@ export const TransactionModalContextProvider = ({
     if (openModals < 0) return;
     const modals = [...openModals];
     modals.splice(index, 1);
-    console.log('modals =', modals);
     setOpenModals(modals);
+  };
+
+  const closeAllModals = () => {
+    setOpenModals([]);
   };
 
   const openModal = (modalName) => {
@@ -56,6 +59,7 @@ export const TransactionModalContextProvider = ({
     <TransactionModalContext.Provider
       value={{
         closeModal,
+        closeAllModals,
         currentModal: openModals[openModals.length - 1],
         openModal,
       }}

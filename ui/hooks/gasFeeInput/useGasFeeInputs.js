@@ -102,16 +102,13 @@ export function useGasFeeInputs(
   });
 
   const [estimateUsed, setEstimateUsed] = useState(() => {
+    if (estimateToUse) {
+      return estimateToUse;
+    }
     if (areDappSuggestedAndTxParamGasFeesTheSame(transaction)) {
       return 'dappSuggested';
-    } else if (
-      userPrefersAdvancedGas &&
-      transaction?.txParams?.maxPriorityFeePerGas &&
-      transaction?.txParams?.maxFeePerGas
-    ) {
-      return 'custom';
     }
-    return estimateToUse;
+    return 'custom';
   });
 
   /**
@@ -120,15 +117,7 @@ export function useGasFeeInputs(
    * so that transaction is source of truth whenever possible.
    */
   useEffect(() => {
-    if (areDappSuggestedAndTxParamGasFeesTheSame(transaction)) {
-      setEstimateUsed('dappSuggested');
-    } else if (
-      userPrefersAdvancedGas &&
-      transaction?.txParams?.maxPriorityFeePerGas &&
-      transaction?.txParams?.maxFeePerGas
-    ) {
-      setEstimateUsed('custom');
-    } else if (transaction?.userFeeLevel) {
+    if (transaction?.userFeeLevel) {
       setEstimateUsed(transaction?.userFeeLevel);
     }
   }, [setEstimateUsed, transaction, userPrefersAdvancedGas]);
@@ -229,7 +218,6 @@ export function useGasFeeInputs(
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    gasFeeEstimates,
     supportsEIP1559,
     transaction,
   });
