@@ -27,7 +27,7 @@ const divideCurrencyValues = (value, baseFee) => {
     numberOfDecimals: 2,
     dividendBase: 10,
     divisorBase: 10,
-  });
+  }).toNumber();
 };
 
 const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
@@ -35,7 +35,7 @@ const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
     numberOfDecimals,
     multiplicandBase: 10,
     multiplierBase: 10,
-  });
+  }).toNumber();
 
 const BasefeeInput = () => {
   const t = useI18nContext();

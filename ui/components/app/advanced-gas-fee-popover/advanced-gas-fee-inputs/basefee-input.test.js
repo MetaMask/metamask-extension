@@ -38,9 +38,7 @@ const render = (txProps) => {
   return renderWithProvider(
     <GasFeeContextProvider
       transaction={{
-        txParams: {
-          userFeeLevel: 'high',
-        },
+        userFeeLevel: 'custom',
         ...txProps,
       }}
     >
@@ -52,15 +50,16 @@ const render = (txProps) => {
 
 describe('BasefeeInput', () => {
   it('should renders advancedGasFee.baseFee value if current estimate used is not custom', () => {
-    render();
+    render({
+      userFeeLevel: 'high',
+    });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
   });
 
-  it('should renders priorityfee values from transaction if current estimate used is custom', () => {
+  it('should renders baseFee values from transaction if current estimate used is custom', () => {
     render({
       txParams: {
         maxFeePerGas: '0x174876E800',
-        maxPriorityFeePerGas: '0x174876E800',
       },
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
@@ -70,18 +69,44 @@ describe('BasefeeInput', () => {
     render({
       txParams: {
         maxFeePerGas: '0x174876E800',
-        maxPriorityFeePerGas: '0x174876E800',
       },
     });
     fireEvent.click(screen.queryByText('Edit in GWEI'));
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
 
+  it('should correctly update GWEI value if multiplier is changed', () => {
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 4 },
+    });
+    fireEvent.click(screen.queryByText('Edit in GWEI'));
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(200);
+  });
+
+  it('should correctly update multiplier value if GWEI is changed', () => {
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
+    fireEvent.click(screen.queryByText('Edit in GWEI'));
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 200 },
+    });
+    fireEvent.click(screen.queryByText('Edit in multiplier'));
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(4);
+  });
+
   it('should show current value of estimatedBaseFee in subtext', () => {
     render({
       txParams: {
         maxFeePerGas: '0x174876E800',
-        maxPriorityFeePerGas: '0x174876E800',
       },
     });
     expect(screen.queryByText('50')).toBeInTheDocument();

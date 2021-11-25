@@ -37,9 +37,7 @@ const render = (txProps) => {
   return renderWithProvider(
     <GasFeeContextProvider
       transaction={{
-        txParams: {
-          userFeeLevel: 'high',
-        },
+        userFeeLevel: 'custom',
         ...txProps,
       }}
     >
@@ -51,14 +49,15 @@ const render = (txProps) => {
 
 describe('PriprityfeeInput', () => {
   it('should renders advancedGasFee.priorityfee value if current estimate used is not custom', () => {
-    render();
+    render({
+      userFeeLevel: 'high',
+    });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
 
   it('should renders priorityfee value from transaction if current estimate used is custom', () => {
     render({
       txParams: {
-        maxFeePerGas: '0x77359400',
         maxPriorityFeePerGas: '0x77359400',
       },
     });
