@@ -3,7 +3,7 @@ import React from 'react';
 import HomeNotification from './home-notification.component';
 
 export default {
-  title: 'UI/HomeNotification',
+  title: 'Components/App/HomeNotification',
   id: __filename,
   component: HomeNotification,
   parameters: {},
