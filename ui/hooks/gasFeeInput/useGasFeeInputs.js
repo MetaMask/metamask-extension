@@ -214,7 +214,10 @@ export function useGasFeeInputs(
     }
   }, [minimumGasLimit, gasErrors.gasLimit, transaction]);
 
-  const { updateTransactionUsingGasFeeEstimates } = useTransactionFunctions({
+  const {
+    updateTransaction,
+    updateTransactionUsingPriorityLevel,
+  } = useTransactionFunctions({
     defaultEstimateToUse,
     gasLimit,
     transaction,
@@ -302,6 +305,7 @@ export function useGasFeeInputs(
     hasSimulationError,
     supportsEIP1559,
     supportsEIP1559V2: supportsEIP1559 && EIP_1559_V2_ENABLED,
-    updateTransactionUsingGasFeeEstimates,
+    updateTransaction,
+    updateTransactionUsingPriorityLevel,
   };
 }

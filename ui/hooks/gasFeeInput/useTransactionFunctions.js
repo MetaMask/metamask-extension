@@ -41,7 +41,7 @@ export const useTransactionFunctions = ({
     [defaultEstimateToUse, dispatch, gasLimit, transaction],
   );
 
-  const updateTransactionUsingGasFeeEstimates = useCallback(
+  const updateTransactionUsingPriorityLevel = useCallback(
     (gasFeeEstimateToUse) => {
       if (gasFeeEstimateToUse === PRIORITY_LEVELS.DAPP_SUGGESTED) {
         const {
@@ -60,5 +60,5 @@ export const useTransactionFunctions = ({
     [transaction?.dappSuggestedGasFees, updateTransaction],
   );
 
-  return { updateTransactionUsingGasFeeEstimates };
+  return { updateTransaction, updateTransactionUsingPriorityLevel };
 };

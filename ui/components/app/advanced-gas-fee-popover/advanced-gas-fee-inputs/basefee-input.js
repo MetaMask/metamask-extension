@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
@@ -8,6 +8,7 @@ import {
 } from '../../../../../shared/modules/conversion.utils';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
+import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
@@ -16,8 +17,8 @@ import Button from '../../../ui/button';
 import FormField from '../../../ui/form-field';
 import I18nValue from '../../../ui/i18n-value';
 
+import { useAdvanceGasFeePopoverContext } from '../context';
 import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
-import { getAdvancedGasFeeValues } from '../../../../selectors';
 
 const divideCurrencyValues = (value, baseFee) => {
   if (baseFee === 0) {
@@ -40,6 +41,7 @@ const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
 const BasefeeInput = () => {
   const t = useI18nContext();
   const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
+  const { setDirty, setMaxFeePerGas } = useAdvanceGasFeePopoverContext();
   const { estimatedBaseFee } = gasFeeEstimates;
   const {
     numberOfDecimals: numberOfDecimalsPrimary,
@@ -84,19 +86,22 @@ const BasefeeInput = () => {
 
   const updateBaseFee = useCallback(
     (value) => {
+      let baseFeeInGWEI;
+      let baseFeeMultiplierValue;
       if (editingInGwei) {
-        setMaxBaseFeeGWEI(value);
-        setMaxBaseFeeMultiplier(divideCurrencyValues(value, estimatedBaseFee));
+        baseFeeInGWEI = value;
+        baseFeeMultiplierValue = divideCurrencyValues(value, estimatedBaseFee);
       } else {
-        setMaxBaseFeeMultiplier(value);
-        setMaxBaseFeeGWEI(
-          multiplyCurrencyValues(
-            estimatedBaseFee,
-            value,
-            numberOfDecimalsPrimary,
-          ),
+        baseFeeInGWEI = multiplyCurrencyValues(
+          estimatedBaseFee,
+          value,
+          numberOfDecimalsPrimary,
         );
+        baseFeeMultiplierValue = value;
       }
+      setMaxBaseFeeGWEI(baseFeeInGWEI);
+      setMaxBaseFeeMultiplier(baseFeeMultiplierValue);
+      setDirty(true);
     },
     [
       editingInGwei,
@@ -104,8 +109,13 @@ const BasefeeInput = () => {
       numberOfDecimalsPrimary,
       setMaxBaseFeeGWEI,
       setMaxBaseFeeMultiplier,
+      setDirty,
     ],
   );
+
+  useEffect(() => {
+    setMaxFeePerGas(maxBaseFeeGWEI);
+  }, [maxBaseFeeGWEI, setMaxFeePerGas]);
 
   return (
     <FormField

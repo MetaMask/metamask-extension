@@ -30,7 +30,7 @@ const EditGasItem = ({ priorityLevel }) => {
     gasLimit,
     maxFeePerGas: maxFeePerGasValue,
     maxPriorityFeePerGas: maxPriorityFeePerGasValue,
-    updateTransactionUsingGasFeeEstimates,
+    updateTransactionUsingPriorityLevel,
     transaction: { dappSuggestedGasFees },
   } = useGasFeeContext();
   const t = useI18nContext();
@@ -89,7 +89,7 @@ const EditGasItem = ({ priorityLevel }) => {
     if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
       openModal('advancedGasFee');
     } else {
-      updateTransactionUsingGasFeeEstimates(priorityLevel);
+      updateTransactionUsingPriorityLevel(priorityLevel);
       closeModal('editGasFee');
     }
   };

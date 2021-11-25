@@ -167,7 +167,6 @@ export default class PendingTransactionTracker extends EventEmitter {
   async _checkPendingTx(txMeta) {
     const txHash = txMeta.hash;
     const txId = txMeta.id;
-
     // Only check submitted txs
     if (txMeta.status !== TRANSACTION_STATUSES.SUBMITTED) {
       return;

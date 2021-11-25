@@ -295,6 +295,7 @@ export default class TransactionStateManager extends EventEmitter {
 
     // commit txMeta to state
     const txId = txMeta.id;
+
     this.store.updateState({
       transactions: {
         ...this.store.getState().transactions,
