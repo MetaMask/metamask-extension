@@ -26,6 +26,7 @@
   .text {
     padding: 16px;
     max-width: 670px;
+    @include H5;
   }
 
   ul {
