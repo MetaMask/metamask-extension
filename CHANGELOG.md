@@ -7,16 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.6.4]
-### Uncategorized
-- Version v10.6.3 RC ([#12830](https://github.com/MetaMask/metamask-extension/pull/12830))
-- Ensure that handleChange in token-input.component handles empty values ([#12835](https://github.com/MetaMask/metamask-extension/pull/12835))
-- Update changelog
-- Convert token input to BigNumber to handle decimals. ([#12773](https://github.com/MetaMask/metamask-extension/pull/12773))
-- We shouldn't be changing decimal places as user type, we should do that on blur. ([#12631](https://github.com/MetaMask/metamask-extension/pull/12631))
-- Update changelog for v10.6.3
-- Bump @metmamask/logo to v3.1.1 ([#12822](https://github.com/MetaMask/metamask-extension/pull/12822))
-- Fix "BigNumber Error: times() number type has more than 15 significant digits:" ([#12802](https://github.com/MetaMask/metamask-extension/pull/12802))
-- Version v10.6.3
+### Changed
+- [#12752](https://github.com/MetaMask/metamask-extension/pull/12752): Update link, in the add network flow, to the article with information about network security risks
 
 ## [10.6.3]
 ### Fixed
