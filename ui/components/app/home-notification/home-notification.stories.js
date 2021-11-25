@@ -39,7 +39,7 @@ export const DefaultStory = (args) => (
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-    acceptText: 'Accept text',
+  acceptText: 'Accept text',
   checkboxText: 'Checkbox text',
   checkboxTooltipText: 'Checkbox tooltip text',
   ignoreText: 'Ignore text',
