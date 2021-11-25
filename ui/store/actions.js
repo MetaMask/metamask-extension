@@ -808,6 +808,7 @@ export function txError(err) {
   };
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function removeSnapError(msgData) {
   return (dispatch) => {
     return promisifiedBackground
@@ -816,6 +817,7 @@ export function removeSnapError(msgData) {
       .then((newState) => dispatch(updateMetamaskState(newState)));
   };
 }
+///: END:ONLY_INCLUDE_IN
 
 export function cancelMsg(msgData) {
   return async (dispatch) => {

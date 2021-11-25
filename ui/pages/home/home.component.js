@@ -89,15 +89,17 @@ export default class Home extends PureComponent {
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
     notificationsToShow: PropTypes.bool.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
     errorsToShow: PropTypes.object.isRequired,
     shouldShowErrors: PropTypes.object.isRequired,
+    removeSnapError: PropTypes.func.isRequired,
+    ///: END:ONLY_INCLUDE_IN
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
     seedPhraseBackedUp: PropTypes.bool.isRequired,
     newNetworkAdded: PropTypes.string,
     setNewNetworkAdded: PropTypes.func.isRequired,
-    removeSnapError: PropTypes.func.isRequired,
   };
 
   state = {
@@ -212,48 +214,54 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       removeSnapError,
+      errorsToShow,
+      shouldShowErrors,
+      ///: END:ONLY_INCLUDE_IN
       infuraBlocked,
       newNetworkAdded,
       setNewNetworkAdded,
-      shouldShowErrors,
-      errorsToShow,
     } = this.props;
     return (
       <MultipleNotifications>
-        {shouldShowErrors
-          ? Object.entries(errorsToShow).map(([errorId, error]) => {
-              return (
-                <HomeNotification
-                  classNames={['home__error-message']}
-                  infoText={error.data.snapName}
-                  descriptionText={
-                    <>
-                      <Typography
-                        color={COLORS.UI1}
-                        variant={TYPOGRAPHY.H5}
-                        fontWeight={FONT_WEIGHT.NORMAL}
-                      >
-                        Something Went Wrong
-                      </Typography>
-                      <Typography
-                        color={COLORS.UI1}
-                        variant={TYPOGRAPHY.H7}
-                        fontWeight={FONT_WEIGHT.NORMAL}
-                      >
-                        Snap Error: {error.message}. Error Code: {error.code}
-                      </Typography>
-                    </>
-                  }
-                  onIgnore={() => {
-                    removeSnapError(errorId);
-                  }}
-                  ignoreText="Dismiss"
-                  key="home-error-message"
-                />
-              );
-            })
-          : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          shouldShowErrors
+            ? Object.entries(errorsToShow).map(([errorId, error]) => {
+                return (
+                  <HomeNotification
+                    classNames={['home__error-message']}
+                    infoText={error.data.snapName}
+                    descriptionText={
+                      <>
+                        <Typography
+                          color={COLORS.UI1}
+                          variant={TYPOGRAPHY.H5}
+                          fontWeight={FONT_WEIGHT.NORMAL}
+                        >
+                          Something Went Wrong
+                        </Typography>
+                        <Typography
+                          color={COLORS.UI1}
+                          variant={TYPOGRAPHY.H7}
+                          fontWeight={FONT_WEIGHT.NORMAL}
+                        >
+                          Snap Error: {error.message}. Error Code: {error.code}
+                        </Typography>
+                      </>
+                    }
+                    onIgnore={() => {
+                      removeSnapError(errorId);
+                    }}
+                    ignoreText="Dismiss"
+                    key="home-error-message"
+                  />
+                );
+              })
+            : null
+          ///: END:ONLY_INCLUDE_IN
+        }
         {newNetworkAdded ? (
           <ActionableMessage
             type="info"
