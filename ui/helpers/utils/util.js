@@ -424,3 +424,7 @@ export const toHumanReadableTime = (t, milliseconds) => {
   }
   return t('gasTimingHoursShort', [Math.ceil(seconds / 3600)]);
 };
+
+export function clearClipboard() {
+  window.navigator.clipboard.writeText('');
+}
