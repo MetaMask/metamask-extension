@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.6.4]
+### Uncategorized
+- Version v10.6.3 RC ([#12830](https://github.com/MetaMask/metamask-extension/pull/12830))
+- Ensure that handleChange in token-input.component handles empty values ([#12835](https://github.com/MetaMask/metamask-extension/pull/12835))
+- Update changelog
+- Convert token input to BigNumber to handle decimals. ([#12773](https://github.com/MetaMask/metamask-extension/pull/12773))
+- We shouldn't be changing decimal places as user type, we should do that on blur. ([#12631](https://github.com/MetaMask/metamask-extension/pull/12631))
+- Update changelog for v10.6.3
+- Bump @metmamask/logo to v3.1.1 ([#12822](https://github.com/MetaMask/metamask-extension/pull/12822))
+- Fix "BigNumber Error: times() number type has more than 15 significant digits:" ([#12802](https://github.com/MetaMask/metamask-extension/pull/12802))
+- Version v10.6.3
+
 ## [10.6.3]
 ### Fixed
 - [##12822](https://github.com/MetaMask/metamask-extension/pull/#12822): Fix `replaceChildren` and `function.prototype.apply` errors that could make the app unusable on older browsers due to a bug in our logo component.
@@ -2609,7 +2621,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.4...HEAD
+[10.6.4]: https://github.com/MetaMask/metamask-extension/compare/v10.6.3...v10.6.4
 [10.6.3]: https://github.com/MetaMask/metamask-extension/compare/v10.6.2...v10.6.3
 [10.6.2]: https://github.com/MetaMask/metamask-extension/compare/v10.6.1...v10.6.2
 [10.6.1]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...v10.6.1
