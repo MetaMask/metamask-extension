@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
-import { I18nContext } from '../../../contexts/i18n';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const PERMISSION_TYPES = {
   eth_accounts: {
@@ -9,27 +10,23 @@ const PERMISSION_TYPES = {
   },
 };
 
-function Permission({ leftIcon, label, rightIcon = null }) {
-  const t = useContext(I18nContext);
+export default function PermissionsConnectPermissionList({ permissions }) {
+  const t = useI18nContext();
   return (
-    <div className="permission">
-      <i className={leftIcon} />
-      {t(label)}
-      <i className={rightIcon} />
+    <div className="permissions-connect-permission-list">
+      {Object.keys(permissions)
+        .map((permission) => PERMISSION_TYPES[permission])
+        .map((permission) => (
+          <div className="permission" key={permission.label}>
+            <i className={permission.leftIcon} />
+            {t(permission.label)}
+            <i className={permission.rightIcon} />
+          </div>
+        ))}
     </div>
   );
 }
 
-export default function PermissionsConnectPermissionList({ permissions }) {
-  return (
-    <div class="permissions-connect-permission-list">
-      {Object.keys(permissions).map((permission) => PERMISSION_TYPES[permission]).map((permission) => (
-        <Permission
-          leftIcon={permission.leftIcon}
-          label={permission.label}
-          rightIcon={permission.rightIcon}
-        />
-      ))}
-    </div>
-  );
-}
+PermissionsConnectPermissionList.propTypes = {
+  permissions: PropTypes.array.isRequired,
+};
