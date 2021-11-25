@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { addHexPrefix } from 'ethereumjs-util';
 
@@ -34,6 +34,7 @@ const getMaxPriorityFeePerGasFromTransaction = (transaction) => {
  *  method to update the maxPriorityFeePerGas.
  */
 export function useMaxPriorityFeePerGasInput({
+  EIP_1559_V2,
   estimateToUse,
   gasEstimateType,
   gasFeeEstimates,
@@ -60,6 +61,16 @@ export function useMaxPriorityFeePerGasInput({
       return maxPriorityFeePerGasFromTransaction;
     return null;
   });
+
+  useEffect(() => {
+    if (EIP_1559_V2) {
+      setMaxPriorityFeePerGas(maxPriorityFeePerGasFromTransaction);
+    }
+  }, [
+    EIP_1559_V2,
+    maxPriorityFeePerGasFromTransaction,
+    setMaxPriorityFeePerGas,
+  ]);
 
   const maxPriorityFeePerGasToUse =
     maxPriorityFeePerGas ??
