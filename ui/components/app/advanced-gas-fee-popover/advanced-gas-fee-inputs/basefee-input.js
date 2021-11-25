@@ -22,31 +22,31 @@ import I18nValue from '../../../ui/i18n-value';
 import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 
-const devideCurrencyValues = (value, baseFee, numberOfDecimals) => {
-  if (baseFee > 1)
-    return divideCurrencies(decGWEIToHexWEI(value), baseFee, {
+const divideCurrencyValues = (value, baseFee, numberOfDecimals) => {
+  if (baseFee > 1) {
+    return divideCurrencies(value, baseFee, {
       numberOfDecimals,
-      dividendBase: 16,
-      divisorBase: 16,
+      dividendBase: 10,
+      divisorBase: 10,
       toNumericBase: 'dec',
     });
-  return 1;
+  }
+  return 0;
 };
 
 const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
   multiplyCurrencies(baseFee, value, {
     numberOfDecimals,
-    multiplicandBase: 16,
+    multiplicandBase: 10,
     multiplierBase: 10,
-    fromNumericBase: 'hex',
     toNumericBase: 'dec',
-    fromDenomination: 'WEI',
     toDenomination: 'GWEI',
   });
 
 const BasefeeInput = () => {
   const t = useI18nContext();
-  const { estimatedBaseFee, estimateUsed, maxFeePerGas } = useGasFeeContext();
+  const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
+  const { estimatedBaseFee } = gasFeeEstimates;
   const {
     numberOfDecimals: numberOfDecimalsPrimary,
   } = useUserPreferencedCurrency(PRIMARY);
@@ -63,12 +63,13 @@ const BasefeeInput = () => {
     if (
       estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
       advancedGasFeeValues?.maxBaseFee
-    )
+    ) {
       return multiplyCurrencyValues(
         estimatedBaseFee,
         advancedGasFeeValues.maxBaseFee,
         numberOfDecimalsPrimary,
       );
+    }
     return estimatedBaseFee;
   });
 
@@ -76,9 +77,10 @@ const BasefeeInput = () => {
     if (
       estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
       advancedGasFeeValues?.maxBaseFee
-    )
+    ) {
       return advancedGasFeeValues.maxBaseFee;
-    return devideCurrencyValues(
+    }
+    return divideCurrencyValues(
       maxFeePerGas,
       estimatedBaseFee,
       numberOfDecimalsPrimary,
@@ -95,7 +97,7 @@ const BasefeeInput = () => {
       if (editingInGwei) {
         setMaxBaseFeeGWEI(value);
         setMaxBaseFeeMultiplier(
-          devideCurrencyValues(
+          divideCurrencyValues(
             value,
             estimatedBaseFee,
             numberOfDecimalsPrimary,
@@ -147,7 +149,7 @@ const BasefeeInput = () => {
       numeric
       inputDetails={
         <AdvancedGasFeeInputSubtext
-          latest={hexWEIToDecGWEI(estimatedBaseFee)}
+          latest={estimatedBaseFee}
           historical="23-359 GWEI"
         />
       }
