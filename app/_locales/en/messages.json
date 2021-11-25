@@ -1,4 +1,49 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "Error"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "Incongruent transaction data. Please check the transaction details."
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "No more accounts. If you would like to access another account unlisted below, please reconnect your hardware wallet and select it."
+  },
+  "QRHardwareScanInstructions": {
+    "message": "Place the QR code in front of your camera. The screen is blurred, but it will not affect the reading."
+  },
+  "QRHardwareSignRequestCancel": {
+    "message": "Reject"
+  },
+  "QRHardwareSignRequestDescription": {
+    "message": "After you’ve signed with your wallet, click on 'Get Signature' to receive the signature"
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "Get Signature"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "Scan the QR code with your wallet"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "Request Signature"
+  },
+  "QRHardwareUnknownQRCodeTitle": {
+    "message": "Error"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "Invalid QR code. Please scan the sync QR code of the hardware wallet."
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scan QR Code"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "Connect an airgapped hardware wallet that communicates through QR-codes. Officially supported airgapped hardware wallets include:"
+  },
+  "QRHardwareWalletSteps1Title": {
+    "message": "QR-based HW Wallet"
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "AirGap Vault & Ngrave (Coming Soon)"
+  },
   "about": {
     "message": "About"
   },
@@ -43,8 +88,14 @@
   "activityLog": {
     "message": "activity log"
   },
+  "add": {
+    "message": "Add"
+  },
   "addANetwork": {
     "message": "Add a network"
+  },
+  "addANickname": {
+    "message": "Add a nickname"
   },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
@@ -82,6 +133,9 @@
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
+  "addMemo": {
+    "message": "Add memo"
+  },
   "addNFT": {
     "message": "Add NFT"
   },
@@ -100,11 +154,17 @@
   "addToken": {
     "message": "Add Token"
   },
+  "address": {
+    "message": "Address"
+  },
   "addressBookIcon": {
     "message": "Address book icon"
   },
   "advanced": {
     "message": "Advanced"
+  },
+  "advancedGasFeeModalTitle": {
+    "message": "Advanced gas fee"
   },
   "advancedGasPriceTitle": {
     "message": "Gas price"
@@ -166,6 +226,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approvalAndAggregatorTxFeeCost": {
     "message": "Approval and aggregator network fee"
@@ -303,6 +371,9 @@
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
   },
+  "busy": {
+    "message": "Busy"
+  },
   "buy": {
     "message": "Buy"
   },
@@ -332,6 +403,9 @@
   },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
+  },
+  "cancelSpeedUp": {
+    "message": "cancel or speed up a tranaction."
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
@@ -549,6 +623,9 @@
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
   },
+  "custom": {
+    "message": "Advanced"
+  },
   "customGas": {
     "message": "Customize Gas"
   },
@@ -560,6 +637,16 @@
   },
   "customToken": {
     "message": "Custom Token"
+  },
+  "dappSuggested": {
+    "message": "Site suggested"
+  },
+  "dappSuggestedShortLabel": {
+    "message": "Site"
+  },
+  "dappSuggestedTooltip": {
+    "message": "$1 has recommended this price.",
+    "description": "$1 represents the Dapp's origin"
   },
   "data": {
     "message": "Data"
@@ -665,6 +752,9 @@
   "edit": {
     "message": "Edit"
   },
+  "editAddressNickname": {
+    "message": "Edit address nickname"
+  },
   "editContact": {
     "message": "Edit Contact"
   },
@@ -685,6 +775,9 @@
   },
   "editGasEducationModalTitle": {
     "message": "How to choose?"
+  },
+  "editGasFeeModalTitle": {
+    "message": "Edit gas fee"
   },
   "editGasHigh": {
     "message": "High"
@@ -891,6 +984,9 @@
   "etherscanView": {
     "message": "View account on Etherscan"
   },
+  "etherscanViewOn": {
+    "message": "View on Etherscan"
+  },
   "expandView": {
     "message": "Expand view"
   },
@@ -984,6 +1080,9 @@
     "message": "Gas limit must be at least $1",
     "description": "$1 is the custom gas limit, in decimal."
   },
+  "gasOption": {
+    "message": "Gas option"
+  },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },
@@ -1002,8 +1101,16 @@
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
+  "gasTimingHoursShort": {
+    "message": "$1 hrs",
+    "description": "$1 represents a number of hours"
+  },
   "gasTimingMinutes": {
     "message": "$1 minutes",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingMinutesShort": {
+    "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
   "gasTimingNegative": {
@@ -1016,6 +1123,10 @@
   },
   "gasTimingSeconds": {
     "message": "$1 seconds",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingSecondsShort": {
+    "message": "$1 sec",
     "description": "$1 represents a number of seconds"
   },
   "gasTimingVeryPositive": {
@@ -1100,8 +1211,14 @@
   "hideZeroBalanceTokens": {
     "message": "Hide Tokens Without Balance"
   },
+  "high": {
+    "message": "Aggressive"
+  },
   "history": {
     "message": "History"
+  },
+  "id": {
+    "message": "ID"
   },
   "import": {
     "message": "Import",
@@ -1117,7 +1234,7 @@
     "message": "import using Secret Recovery Phrase"
   },
   "importAccountMsg": {
-    "message": " Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts "
+    "message": "Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts"
   },
   "importAccountSeedPhrase": {
     "message": "Import a wallet with Secret Recovery Phrase"
@@ -1240,6 +1357,12 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
+  "keystone": {
+    "message": "Keystone"
+  },
+  "keystoneTutorial": {
+    "message": " (Tutorials)"
+  },
   "knownAddressRecipient": {
     "message": "Known contract address."
   },
@@ -1255,8 +1378,15 @@
   "layer1Fees": {
     "message": "Layer 1 fees"
   },
+  "learmMoreAboutGas": {
+    "message": "Want to $1 about gas?"
+  },
+  "learnCancelSpeeedup": {
+    "message": "Learn how to $1",
+    "description": "$1 is link to cancel or speed up transactions"
+  },
   "learnMore": {
-    "message": "Learn more"
+    "message": "learn more"
   },
   "learnScamRisk": {
     "message": "scams and security risks."
@@ -1336,6 +1466,12 @@
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
+  "low": {
+    "message": "Low"
+  },
+  "lowPriorityMessage": {
+    "message": "Future transactions will queue after this one. This price was last seen was some time ago."
+  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
@@ -1349,11 +1485,17 @@
   "max": {
     "message": "Max"
   },
+  "maxBaseFee": {
+    "message": "Max base fee"
+  },
   "maxFee": {
     "message": "Max fee"
   },
   "maxPriorityFee": {
     "message": "Max priority fee"
+  },
+  "medium": {
+    "message": "Market"
   },
   "memo": {
     "message": "memo"
@@ -1510,6 +1652,9 @@
   "networkSettingsDescription": {
     "message": "Add and edit custom RPC networks"
   },
+  "networkStatus": {
+    "message": "Network status"
+  },
   "networkURL": {
     "message": "Network URL"
   },
@@ -1538,6 +1683,12 @@
   "newContract": {
     "message": "New Contract"
   },
+  "newNFTsDetected": {
+    "message": "New NFTs detected"
+  },
+  "newNFTsDetectedInfo": {
+    "message": "One or more new NFTs were detected in your wallet."
+  },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
   },
@@ -1560,8 +1711,14 @@
     "message": "Nonce is higher than suggested nonce of $1",
     "description": "The next nonce according to MetaMask's internal logic"
   },
+  "nftTokenIdPlaceholder": {
+    "message": "Enter the collectible ID"
+  },
   "nfts": {
     "message": "NFTs"
+  },
+  "nickname": {
+    "message": "Nickname"
   },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
@@ -1601,6 +1758,9 @@
   },
   "nonceFieldHeading": {
     "message": "Custom Nonce"
+  },
+  "notBusy": {
+    "message": "Not busy"
   },
   "notCurrentAccount": {
     "message": "Is this the correct account? It's different from the currently selected account in your wallet"
@@ -1810,6 +1970,16 @@
   "pending": {
     "message": "Pending"
   },
+  "pendingTransactionInfo": {
+    "message": "This transaction will not process until that one is complete."
+  },
+  "pendingTransactionMultiple": {
+    "message": "You have ($1) pending transactions."
+  },
+  "pendingTransactionSingle": {
+    "message": "You have (1) pending transaction.",
+    "description": "$1 is count of pending transactions"
+  },
   "permissionCheckedIconDescription": {
     "message": "You have approved this permission"
   },
@@ -1854,6 +2024,9 @@
   },
   "privateNetwork": {
     "message": "Private Network"
+  },
+  "proceedWithTransaction": {
+    "message": "I want to proceed anyway"
   },
   "proposedApprovalLimit": {
     "message": "Proposed Approval Limit"
@@ -2129,6 +2302,9 @@
   "selectHdPath": {
     "message": "Select HD Path"
   },
+  "selectNFTPrivacyPreference": {
+    "message": "Select NFT privacy preference"
+  },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
   },
@@ -2236,6 +2412,12 @@
   "signed": {
     "message": "Signed"
   },
+  "simulationErrorMessage": {
+    "message": "This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended."
+  },
+  "simulationErrorMessageV2": {
+    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
+  },
   "skip": {
     "message": "Skip"
   },
@@ -2287,6 +2469,9 @@
   },
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
+  },
+  "stable": {
+    "message": "Stable"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -2742,6 +2927,9 @@
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
+  "time": {
+    "message": "Time"
+  },
   "tips": {
     "message": "Tips"
   },
@@ -2895,6 +3083,9 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "tryAnywayOption": {
+    "message": "I will try anyway"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"

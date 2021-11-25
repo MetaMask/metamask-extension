@@ -103,6 +103,7 @@ export default function SecureYourWallet() {
         className="secure-your-wallet__actions"
       >
         <Button
+          data-testid="secure-wallet-later"
           type="secondary"
           rounded
           large
@@ -110,7 +111,13 @@ export default function SecureYourWallet() {
         >
           {t('seedPhraseIntroNotRecommendedButtonCopy')}
         </Button>
-        <Button type="primary" rounded large onClick={handleClickRecommended}>
+        <Button
+          data-testid="secure-wallet-recommended"
+          type="primary"
+          rounded
+          large
+          onClick={handleClickRecommended}
+        >
           {t('seedPhraseIntroRecommendedButtonCopy')}
         </Button>
       </Box>

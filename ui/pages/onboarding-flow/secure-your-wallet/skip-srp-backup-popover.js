@@ -33,6 +33,7 @@ export default function SkipSRPBackup({ handleClose }) {
             {t('goBack')}
           </Button>
           <Button
+            data-testid="skip-srp-backup"
             disabled={!checked}
             type="primary"
             rounded

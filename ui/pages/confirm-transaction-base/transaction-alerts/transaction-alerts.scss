@@ -1,0 +1,21 @@
+.transaction-alerts {
+  text-align: left;
+
+  & > *:first-of-type {
+    margin-top: 20px;
+  }
+
+  & > *:not(:first-of-type) {
+    margin-top: 12px;
+  }
+
+  & strong {
+    font-weight: bold;
+  }
+
+  &__pending-transactions {
+    & a {
+      color: $primary-1;
+    }
+  }
+}

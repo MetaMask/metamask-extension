@@ -18,6 +18,7 @@ import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
 import MobileSyncPage from '../mobile-sync';
 import ImportTokenPage from '../import-token';
+import AddCollectiblePage from '../add-collectible';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account';
@@ -55,6 +56,7 @@ import {
   CONFIRM_IMPORT_TOKEN_ROUTE,
   INITIALIZE_ROUTE,
   ONBOARDING_ROUTE,
+  ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
 
 import {
@@ -64,6 +66,7 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
+import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -155,6 +158,13 @@ export default class Routes extends Component {
           component={ImportTokenPage}
           exact
         />
+        {process.env.COLLECTIBLES_V1 ? (
+          <Authenticated
+            path={ADD_COLLECTIBLE_ROUTE}
+            component={AddCollectiblePage}
+            exact
+          />
+        ) : null}
         <Authenticated
           path={CONFIRM_IMPORT_TOKEN_ROUTE}
           component={ConfirmImportTokenPage}
@@ -312,6 +322,7 @@ export default class Routes extends Component {
           }
         }}
       >
+        <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() && (

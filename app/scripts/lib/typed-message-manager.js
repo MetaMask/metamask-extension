@@ -32,7 +32,7 @@ export default class TypedMessageManager extends EventEmitter {
   /**
    * Controller in charge of managing - storing, adding, removing, updating - TypedMessage.
    */
-  constructor({ getCurrentChainId }) {
+  constructor({ getCurrentChainId, metricEvents }) {
     super();
     this._getCurrentChainId = getCurrentChainId;
     this.memStore = new ObservableStore({
@@ -40,6 +40,7 @@ export default class TypedMessageManager extends EventEmitter {
       unapprovedTypedMessagesCount: 0,
     });
     this.messages = [];
+    this.metricEvents = metricEvents;
   }
 
   /**
@@ -301,7 +302,19 @@ export default class TypedMessageManager extends EventEmitter {
    * @param {number} msgId - The id of the TypedMessage to reject.
    *
    */
-  rejectMsg(msgId) {
+  rejectMsg(msgId, reason = undefined) {
+    if (reason) {
+      const msg = this.getMsg(msgId);
+      this.metricsEvent({
+        event: reason,
+        category: 'Transactions',
+        properties: {
+          action: 'Sign Request',
+          version: msg.msgParams.version,
+          type: msg.type,
+        },
+      });
+    }
     this._setMsgStatus(msgId, 'rejected');
   }
 
