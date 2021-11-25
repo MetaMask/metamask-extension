@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Chip from '../../../ui/chip';
 import Box from '../../../ui/box';
-import NpmIcon from '../../../ui/icon/npm-icon';
+import NpmIcon from '../icons/npm-icon';
 import Typography from '../../../ui/typography';
 import {
   COLORS,
