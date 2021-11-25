@@ -41,12 +41,14 @@ export default function OnboardingFlowSwitch() {
 
   if (!isInitialized) {
     let redirect;
+    /* eslint-disable prefer-const */
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     redirect = <Redirect to={{ pathname: ONBOARDING_EXPERIMENTAL_AREA }} />;
     ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
     redirect = <Redirect to={{ pathname: ONBOARDING_WELCOME_ROUTE }} />;
     ///: END:ONLY_INCLUDE_IN
+    /* eslint-enable prefer-const */
     return redirect;
   }
 

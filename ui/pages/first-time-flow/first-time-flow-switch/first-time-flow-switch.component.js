@@ -43,6 +43,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
     }
 
     if (!isInitialized) {
+      /* eslint-disable prefer-const */
       let redirect;
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       redirect = <Redirect to={{ pathname: INITIALIZE_EXPERIMENTAL_AREA }} />;
@@ -50,6 +51,7 @@ export default class FirstTimeFlowSwitch extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IN(main,beta)
       redirect = <Redirect to={{ pathname: INITIALIZE_WELCOME_ROUTE }} />;
       ///: END:ONLY_INCLUDE_IN
+      /* eslint-enable prefer-const */
       return redirect;
     }
 
