@@ -30,6 +30,7 @@ import {
   setRecoveryPhraseReminderHasBeenShown,
   setRecoveryPhraseReminderLastShown,
   setNewNetworkAdded,
+  removeSnapError,
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -111,6 +112,8 @@ const mapStateToProps = (state) => {
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
     notificationsToShow: getSortedNotificationsToShow(state).length > 0,
+    errorsToShow: metamask.snapErrors,
+    shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
@@ -130,6 +133,7 @@ const mapDispatchToProps = (dispatch) => ({
       }
     });
   },
+  removeSnapError: (id) => dispatch(removeSnapError(id)),
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
   setConnectedStatusPopoverHasBeenShown: () =>
