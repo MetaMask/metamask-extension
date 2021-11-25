@@ -1,12 +1,14 @@
 .permissions-connect-permission-list {
   .permission {
+    @include H6;
+
     width: 100%;
     padding-bottom: 16px;
     border-bottom: 1px solid $Grey-100;
     display: flex;
     flex-direction: row;
     align-items: center;
-    color: $black;
+    color: $Black-100;
 
     i {
       display: block;
@@ -14,6 +16,7 @@
       min-width: 16px;
       min-height: 16px;
       color: $Grey-500;
+      font-size: 1rem;
     }
   }
 }

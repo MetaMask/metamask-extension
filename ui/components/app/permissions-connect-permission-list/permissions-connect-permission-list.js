@@ -28,5 +28,5 @@ export default function PermissionsConnectPermissionList({ permissions }) {
 }
 
 PermissionsConnectPermissionList.propTypes = {
-  permissions: PropTypes.array.isRequired,
+  permissions: PropTypes.object.isRequired,
 };

@@ -5,15 +5,17 @@ import IconWithFallback from '../icon-with-fallback';
 
 export default function SiteOrigin({ siteOrigin, iconSrc, iconName }) {
   return (
-    <Chip
-      label={siteOrigin}
-      leftIcon={<IconWithFallback icon={iconSrc} name={iconName} size={32} />}
-    />
+    <div className='site-origin'>
+      <Chip
+        label={siteOrigin}
+        leftIcon={<IconWithFallback icon={iconSrc} name={iconName} size={32} />}
+      />
+    </div>
   );
 }
 
 SiteOrigin.propTypes = {
   siteOrigin: PropTypes.string.isRequired,
-  iconName: PropTypes.string.isRequired,
-  iconSrc: PropTypes.string.isRequired,
+  iconName: PropTypes.string,
+  iconSrc: PropTypes.string,
 };
