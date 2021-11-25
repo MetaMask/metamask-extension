@@ -47,7 +47,7 @@ export default class SignatureRequest extends PureComponent {
       hardwareWalletRequiresConnection,
     } = this.props;
     const { address: fromAddress } = fromAccount;
-    const { message, domain = {}, types, pri } = JSON.parse(data);
+    const { message, domain = {}, types, primaryType } = JSON.parse(data);
     const { metricsEvent } = this.context;
 
     const mapType = (msgType, definedType) => {
@@ -65,28 +65,36 @@ export default class SignatureRequest extends PureComponent {
         ) && msgType === "string") {
         return true;
       }
-      
+
       return false;
     }
 
     const sanitizeMessage = () => {
       let sanitizedMessage = TypedDataUtils.sanitizeData(JSON.parse(data));
-      const msgKeys = Object.keys(message);
-      const msgTypes = Object.values(message).map(value => typeof (value));
-      msgKeys.forEach((msgKey, index) => {        
-        const definedType = types.find(type => type.name === msgKey);
+      const msgKeys = Object.keys(message);      
+      const msgTypes = Object.values(message).map(value => typeof (value));            
+      const primaryTypeType = types[primaryType];
+      msgKeys.forEach((msgKey, index) => {
+        const definedType = Object.values(primaryTypeType).find(ptt => ptt.name === msgKey);        
         const valueType = msgTypes[index];
+        alert(definedType.type);
+        alert(valueType);
 
-        if (definedType === valueType) {
-          sanitizedMessage[msgKey] = message[msgKey];
-        } else if (definedType.indexOf("[]") && valueType === "array") {
-          sanitizedMessage[msgKey] = message[msgKey];
-        } else if(mapType(valueType, definedType)) {
-          sanitizedMessage[msgKey] = message[msgKey];
-        } else {
-          // if we get here we can't find or map the type....what should we do ??
+        if (definedType) {
+          if (definedType === valueType) {
+            sanitizedMessage[msgKey] = message[msgKey];
+          } else if (definedType.indexOf("[]") && valueType === "array") {
+            sanitizedMessage[msgKey] = message[msgKey];
+          } else if (mapType(valueType, definedType)) {
+            sanitizedMessage[msgKey] = message[msgKey];
+          }
         }
+
+        alert(definedType.type);
+        // if we get here we can't find or map the type....what should we do ??        
       });
+
+      return sanitizedMessage;
     }
 
     const onSign = (event) => {
