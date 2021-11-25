@@ -35,16 +35,10 @@ export function generateHistoryEntry(previousState, newState, note) {
   const entry = jsonDiffer.compare(previousState, newState);
   // Add a note to the first op, since it breaks if we append it to the entry
   if (entry[0]) {
-    entry[0].timestamp = Date.now();
     if (note) {
       entry[0].note = note;
-      if (
-        note.toLowerCase().includes('setting status to confirmed') ||
-        note.toLowerCase().includes('transactions#confirmtransaction')
-      ) {
-        entry[0].timestamp = newState.time;
-      }
     }
+    entry[0].timestamp = Date.now();
   }
   return entry;
 }
