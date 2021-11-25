@@ -37,8 +37,3 @@ const AdvancedGasFeePopover = () => {
 };
 
 export default AdvancedGasFeePopover;
-
-/**
- * TODO:
- * test coverage component to enabling / disabling of save button
- */
