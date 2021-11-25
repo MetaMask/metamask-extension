@@ -22,16 +22,18 @@ export default {
     },
     infoText: {
       control: 'text',
+    onAccept: {
+      action: 'onAccept',
+    },
+    onIgnore: {
+      action: 'onIgnore',
+    },
     },
   },
 };
 
-const noop = () => {
-  // noop
-};
-
 export const DefaultStory = (args) => (
-  <HomeNotification {...args} onAccept={noop} onIgnore={noop} />
+  <HomeNotification {...args} />
 );
 
 DefaultStory.storyName = 'Default';
