@@ -62,15 +62,6 @@ export default class PermissionPageContainer extends Component {
     return Object.keys(props.request.permissions || {});
   }
 
-  onPermissionToggle = (methodName) => {
-    this.setState({
-      selectedPermissions: {
-        ...this.state.selectedPermissions,
-        [methodName]: !this.state.selectedPermissions[methodName],
-      },
-    });
-  };
-
   componentDidMount() {
     this.context.metricsEvent({
       eventOpts: {
@@ -129,7 +120,6 @@ export default class PermissionPageContainer extends Component {
           requestMetadata={requestMetadata}
           domainMetadata={targetDomainMetadata}
           selectedPermissions={this.state.selectedPermissions}
-          onPermissionToggle={this.onPermissionToggle}
           selectedIdentities={selectedIdentities}
           allIdentitiesSelected={allIdentitiesSelected}
         />

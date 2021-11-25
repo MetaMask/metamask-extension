@@ -1,7 +1,19 @@
 .permissions-connect-permission-list {
   .permission {
     width: 100%;
-    padding: 14px;
-    border: 0 0 1px 0 $Grey-100;
+    padding-bottom: 16px;
+    border-bottom: 1px solid $Grey-100;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: $black;
+
+    i {
+      display: block;
+      padding: 16px;
+      min-width: 16px;
+      min-height: 16px;
+      color: $Grey-500;
+    }
   }
 }
