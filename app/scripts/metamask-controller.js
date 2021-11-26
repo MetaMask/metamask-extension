@@ -1021,9 +1021,11 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: (cb) => cb(null, this.getState()),
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
       removeSnapError: nodeify(
         this.snapController.removeSnapError.bind(this.snapController),
       ),
+      ///: END:ONLY_INCLUDE_IN
       setCurrentCurrency: nodeify(
         this.currencyRateController.setCurrentCurrency.bind(
           this.currencyRateController,
