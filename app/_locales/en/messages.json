@@ -3148,6 +3148,12 @@
   "urlExistsErrorMsg": {
     "message": "This URL is currently used by the $1 network."
   },
+  "useCollectibleDetection": {
+    "message": "Autodetect NFTs"
+  },
+  "useCollectibleDetectionDescription": {
+    "message": "Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services."
+  },
   "usePhishingDetection": {
     "message": "Use Phishing Detection"
   },

@@ -37,6 +37,7 @@ export default class PreferencesController {
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
+      useCollectibleDetection: false,
       advancedGasFee: null,
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -128,6 +129,16 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
+  }
+
+  /**
+   * Setter for the `useCollectibleDetection` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to autodetect collectibles.
+   *
+   */
+  setUseCollectibleDetection(val) {
+    this.store.updateState({ useCollectibleDetection: val });
   }
 
   /**

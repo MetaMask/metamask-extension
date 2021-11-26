@@ -2153,6 +2153,19 @@ export function setUseTokenDetection(val) {
   };
 }
 
+export function setUseCollectibleDetection(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseCollectibleDetection`);
+    background.setUseCollectibleDetection(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
 export function setAdvancedGasFee(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
