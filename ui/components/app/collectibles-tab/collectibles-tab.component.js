@@ -22,19 +22,24 @@ export default function CollectiblesTab({ onAddNFT }) {
   const newNFTsDetected = false;
   const t = useI18nContext();
   const collections = {};
-  collectibles.forEach(collectible => {
-    if(!collections[collectible.address]){
-      collections[collectible.address] = [collectible]
+
+  collectibles.forEach((collectible) => {
+    if (!collections[collectible.address]) {
+      collections[collectible.address] = {
+        collectionName: collectible.collectionName,
+        collectionImage: collectible.collectionImage,
+        collectibles: [collectible],
+      };
     } else {
-      collections[collectible.address].push(collectible)
+      collections[collectible.address].collectibles.push(collectible);
     }
-  })
+  });
 
   return (
     <div className="collectibles-tab">
       {collectibles.length > 0 ? (
         <CollectiblesItems
-        collections={collections}
+          collections={collections}
           onAddNFT={onAddNFT}
           onRefreshList={() => {
             console.log('refreshing collectibles');
