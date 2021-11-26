@@ -11,6 +11,7 @@ import ActionableMessage from '../../../components/ui/actionable-message/actiona
 import ErrorMessage from '../../../components/ui/error-message';
 import I18nValue from '../../../components/ui/i18n-value';
 import Typography from '../../../components/ui/typography';
+import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
@@ -49,10 +50,11 @@ const TransactionAlerts = ({
         <ActionableMessage
           message={
             <Typography
-              className="transaction-alerts__pending-transactions"
               align="left"
-              fontSize="12px"
+              className="transaction-alerts__pending-transactions"
               margin={[0, 0]}
+              tag={TYPOGRAPHY.Paragraph}
+              variant={TYPOGRAPHY.H7}
             >
               <strong>
                 <I18nValue
@@ -89,7 +91,12 @@ const TransactionAlerts = ({
       {estimateUsed === PRIORITY_LEVELS.LOW && (
         <ActionableMessage
           message={
-            <Typography align="left" fontSize="12px" margin={[0, 0]}>
+            <Typography
+              align="left"
+              margin={[0, 0]}
+              tag={TYPOGRAPHY.Paragraph}
+              variant={TYPOGRAPHY.H7}
+            >
               <I18nValue messageKey="lowPriorityMessage" />
             </Typography>
           }

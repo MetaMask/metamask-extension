@@ -11,13 +11,18 @@ import { updateTransaction as updateTransactionFn } from '../../store/actions';
 export const useTransactionFunctions = ({
   defaultEstimateToUse,
   gasFeeEstimates,
-  gasLimit,
+  gasLimit: gasLimitInTransaction,
   transaction,
 }) => {
   const dispatch = useDispatch();
 
   const updateTransaction = useCallback(
-    (estimateUsed, maxFeePerGas, maxPriorityFeePerGas) => {
+    (
+      estimateUsed,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      gasLimit = gasLimitInTransaction,
+    ) => {
       const newGasSettings = {
         gas: decimalToHex(gasLimit),
         gasLimit: decimalToHex(gasLimit),
@@ -42,7 +47,7 @@ export const useTransactionFunctions = ({
 
       dispatch(updateTransactionFn(updatedTxMeta));
     },
-    [defaultEstimateToUse, dispatch, gasLimit, transaction],
+    [defaultEstimateToUse, dispatch, gasLimitInTransaction, transaction],
   );
 
   const updateTransactionUsingGasFeeEstimates = useCallback(

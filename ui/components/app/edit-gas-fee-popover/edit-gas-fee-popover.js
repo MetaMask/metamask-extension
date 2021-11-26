@@ -9,7 +9,7 @@ import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography/typography';
 
-import { COLORS } from '../../../helpers/constants/design-system';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import EditGasItem from './edit-gas-item';
@@ -57,7 +57,8 @@ const EditGasFeePopover = () => {
               className="edit-gas-fee-popover__know-more"
               align="center"
               color={COLORS.UI4}
-              fontSize="12px"
+              tag={TYPOGRAPHY.Paragraph}
+              variant={TYPOGRAPHY.H7}
             >
               <I18nValue
                 messageKey="learmMoreAboutGas"
