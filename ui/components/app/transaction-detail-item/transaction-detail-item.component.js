@@ -16,7 +16,7 @@ export default function TransactionDetailItem({
   detailTotal = '',
   subTitle = '',
   subText = '',
-  noBold = false,
+  boldHeadings = true,
   flexWidthValues = false,
 }) {
   return (
@@ -24,7 +24,7 @@ export default function TransactionDetailItem({
       <div className="transaction-detail-item__row">
         <Typography
           color={detailTitleColor}
-          fontWeight={noBold ? FONT_WEIGHT.NORMAL : FONT_WEIGHT.BOLD}
+          fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
           variant={TYPOGRAPHY.H6}
         >
           {detailTitle}
@@ -41,7 +41,7 @@ export default function TransactionDetailItem({
           )}
           <Typography
             color={COLORS.BLACK}
-            fontWeight={noBold ? FONT_WEIGHT.NORMAL : FONT_WEIGHT.BOLD}
+            fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
             variant={TYPOGRAPHY.H6}
             margin={[1, 1]}
           >
@@ -73,6 +73,6 @@ TransactionDetailItem.propTypes = {
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  noBold: PropTypes.bool,
+  boldHeadings: PropTypes.bool,
   flexWidthValues: PropTypes.bool,
 };
