@@ -115,27 +115,24 @@ export function useGasFeeInputs(
     return PRIORITY_LEVELS.CUSTOM;
   });
 
+  const [gasLimit, setGasLimit] = useState(() =>
+    Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
+  );
+
   /**
    * In EIP-1559 V2 designs change to gas estimate is always updated to transaction
    * Thus callback setEstimateToUse can be deprecate in favour of this useEffect
    * so that transaction is source of truth whenever possible.
    */
   useEffect(() => {
-    if (EIP_1559_V2 && transaction?.userFeeLevel) {
-      setEstimateUsed(transaction?.userFeeLevel);
-      setInternalEstimateToUse(transaction?.userFeeLevel);
-    }
-  }, [setEstimateUsed, transaction]);
-
-  const [gasLimit, setGasLimit] = useState(() =>
-    Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
-  );
-
-  useEffect(() => {
-    if (EIP_1559_V2 && transaction?.userFeeLevel) {
+    if (EIP_1559_V2) {
+      if (transaction?.userFeeLevel) {
+        setEstimateUsed(transaction?.userFeeLevel);
+        setInternalEstimateToUse(transaction?.userFeeLevel);
+      }
       setGasLimit(Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')));
     }
-  }, [setGasLimit, transaction]);
+  }, [setEstimateUsed, setGasLimit, setInternalEstimateToUse, transaction]);
 
   const {
     gasPrice,
