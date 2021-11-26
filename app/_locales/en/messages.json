@@ -139,6 +139,9 @@
   "addNFT": {
     "message": "Add NFT"
   },
+  "addNFTLowerCase": {
+    "message": "add NFT"
+  },
   "addNetwork": {
     "message": "Add Network"
   },
