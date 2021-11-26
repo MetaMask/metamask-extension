@@ -144,12 +144,10 @@ const MODALS = {
 
   SHOW_NICKNAME_MODAL: {
     contents: <AccountNicknameModal />,
-    ...accountModalStyle,
   },
 
   ADD_UPDATE_NICKNAME_MODAL: {
     contents: <UpdateAccountNicknameModal />,
-    ...accountModalStyle,
   },
 
   NEW_ACCOUNT: {
