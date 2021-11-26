@@ -103,6 +103,18 @@ export function RecipientWithAddress({
   recipientName,
   showNicknameModal,
 }) {
+  console.log(
+    '🚀 ~ file: sender-to-recipient.component.js ~ line 106 ~ recipientNickname',
+    recipientNickname,
+  );
+  console.log(
+    '🚀 ~ file: sender-to-recipient.component.js ~ line 106 ~ recipientEns',
+    recipientEns,
+  );
+  console.log(
+    '🚀 ~ file: sender-to-recipient.component.js ~ line 106 ~ recipientName',
+    recipientName,
+  );
   const t = useI18nContext();
 
   return (
@@ -112,7 +124,7 @@ export function RecipientWithAddress({
         // show account nickname popover
         showNicknameModal(
           checksummedRecipientAddress,
-          recipientNickname ? recipientNickname : null,
+          recipientNickname || recipientEns || recipientName || null,
         );
         if (onRecipientClick) {
           onRecipientClick();
