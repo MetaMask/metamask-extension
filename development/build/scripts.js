@@ -200,18 +200,18 @@ function createScriptTasks({
     // this can run whenever
     const disableConsoleSubtask = createTask(
       `${taskPrefix}:disable-console`,
-      createTaskForBundleDisableConsole({ devMode }),
+      createTaskForBundleDisableConsole({ devMode, testing }),
     );
 
     // this can run whenever
     const installSentrySubtask = createTask(
       `${taskPrefix}:sentry`,
-      createTaskForBundleSentry({ devMode }),
+      createTaskForBundleSentry({ devMode, testing }),
     );
 
     const phishingDetectSubtask = createTask(
       `${taskPrefix}:phishing-detect`,
-      createTaskForBundlePhishingDetect({ devMode }),
+      createTaskForBundlePhishingDetect({ devMode, testing }),
     );
 
     // task for initiating browser livereload
@@ -248,7 +248,7 @@ function createScriptTasks({
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
 
-  function createTaskForBundleDisableConsole({ devMode }) {
+  function createTaskForBundleDisableConsole({ devMode, testing }) {
     const label = 'disable-console';
     return createNormalBundle({
       browserPlatforms,
@@ -258,11 +258,12 @@ function createScriptTasks({
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
+      testing,
       shouldLintFenceFiles,
     });
   }
 
-  function createTaskForBundleSentry({ devMode }) {
+  function createTaskForBundleSentry({ devMode, testing }) {
     const label = 'sentry-install';
     return createNormalBundle({
       browserPlatforms,
@@ -272,11 +273,12 @@ function createScriptTasks({
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
+      testing,
       shouldLintFenceFiles,
     });
   }
 
-  function createTaskForBundlePhishingDetect({ devMode }) {
+  function createTaskForBundlePhishingDetect({ devMode, testing }) {
     const label = 'phishing-detect';
     return createNormalBundle({
       buildType,
@@ -286,6 +288,7 @@ function createScriptTasks({
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
+      testing,
       shouldLintFenceFiles,
     });
   }
