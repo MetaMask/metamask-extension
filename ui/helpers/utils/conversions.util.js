@@ -153,6 +153,15 @@ export function decETHToDecWEI(decEth) {
   });
 }
 
+export function decETHToDecGWEI(decEth) {
+  return conversionUtil(decEth, {
+    fromNumericBase: 'dec',
+    toNumericBase: 'dec',
+    fromDenomination: 'ETH',
+    toDenomination: 'GWEI',
+  });
+}
+
 export function hexWEIToDecETH(hexWEI) {
   return conversionUtil(hexWEI, {
     fromNumericBase: 'hex',

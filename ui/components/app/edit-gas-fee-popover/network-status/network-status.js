@@ -5,11 +5,11 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import I18nValue from '../../../ui/i18n-value';
 import Typography from '../../../ui/typography/typography';
 
+import { decETHToDecGWEI } from '../../../../helpers/utils/conversions.util';
 import StatusSlider from './status-slider';
 
 const NetworkStatus = () => {
   const { gasFeeEstimates } = useGasFeeContext();
-
   return (
     <div className="network-status">
       <Typography
@@ -25,7 +25,7 @@ const NetworkStatus = () => {
         <div className="network-status__info__field">
           <span className="network-status__info__field-data">
             {gasFeeEstimates?.estimatedBaseFee &&
-              `${gasFeeEstimates?.estimatedBaseFee} GWEI`}
+              `${decETHToDecGWEI(gasFeeEstimates?.estimatedBaseFee)} GWEI`}
           </span>
           <span className="network-status__info__field-label">Base fee</span>
         </div>
