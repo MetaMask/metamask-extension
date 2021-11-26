@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -15,7 +16,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCollectibles } from '../../../ducks/metamask/metamask';
-import { useSelector } from 'react-redux';
 
 export default function CollectiblesTab({ onAddNFT }) {
   const collectibles = useSelector(getCollectibles);
@@ -24,14 +24,14 @@ export default function CollectiblesTab({ onAddNFT }) {
   const collections = {};
 
   collectibles.forEach((collectible) => {
-    if (!collections[collectible.address]) {
+    if (collections[collectible.address]) {
+      collections[collectible.address].collectibles.push(collectible);
+    } else {
       collections[collectible.address] = {
         collectionName: collectible.collectionName,
         collectionImage: collectible.collectionImage,
         collectibles: [collectible],
       };
-    } else {
-      collections[collectible.address].collectibles.push(collectible);
     }
   });
 

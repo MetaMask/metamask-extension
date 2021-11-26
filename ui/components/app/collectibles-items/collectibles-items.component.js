@@ -19,6 +19,10 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 
+const width =
+  getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+    ? BLOCK_SIZES.ONE_THIRD
+    : BLOCK_SIZES.ONE_SIXTH;
 export default function CollectiblesItems({
   onAddNFT,
   onRefreshList,
@@ -32,16 +36,16 @@ export default function CollectiblesItems({
   });
 
   const [dropdownState, setDropdownState] = useState(defaultDropdownState);
-  const width =
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-      ? BLOCK_SIZES.ONE_THIRD
-      : BLOCK_SIZES.ONE_SIXTH;
   return (
     <div className="collectibles-items">
       <Box padding={[4, 6, 4, 6]} flexDirection={FLEX_DIRECTION.COLUMN}>
         <>
           {Object.keys(collections).map((key, index) => {
-            const { collectibles, collectionName, collectionImage } = collections[key]
+            const {
+              collectibles,
+              collectionName,
+              collectionImage,
+            } = collections[key];
             const isExpanded = dropdownState[key];
             return (
               <div key={`collection-${index}`}>
@@ -53,7 +57,6 @@ export default function CollectiblesItems({
                   justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
                 >
                   <Box alignItems={ALIGN_ITEMS.CENTER}>
-                    // todo backup image?
                     <img width="28" src={collectionImage} />
                     <Typography
                       color={COLORS.BLACK}
@@ -81,12 +84,26 @@ export default function CollectiblesItems({
                   <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP}>
                     {collectibles.map((collectible, i) => {
                       return (
-                        <Box width={width} padding={2} key={`collectible-${i}`}>
+                        <Box
+                          width={width}
+                          padding={2}
+                          margin={2}
+                          key={`collectible-${i}`}
+                        >
                           <Box
                             borderRadius={SIZES.MD}
                             backgroundColor={collectible.backgroundColor}
+                            display={DISPLAY.FLEX}
+                            justifyContent={JUSTIFY_CONTENT.CENTER}
+                            padding={1}
+                            width={BLOCK_SIZES.FULL}
                           >
-                            <img width="40px" src={collectible.image} />
+                            <img
+                              className="collectibles-items__image"
+                              width="100%"
+                              height="100%"
+                              src={collectible.image}
+                            />
                           </Box>
                         </Box>
                       );
@@ -148,4 +165,5 @@ export default function CollectiblesItems({
 CollectiblesItems.propTypes = {
   onAddNFT: PropTypes.func.isRequired,
   onRefreshList: PropTypes.func.isRequired,
+  collections: PropTypes.array,
 };
