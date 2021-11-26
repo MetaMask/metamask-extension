@@ -16,6 +16,10 @@ export default function Chip({
   leftIcon,
   rightIcon,
   onClick,
+  onBlur,
+  onMouseEnter,
+  onMouseLeave,
+  onFocus,
 }) {
   const onKeyPress = (event) => {
     if (event.key === 'Enter' && onClick) {
@@ -38,6 +42,10 @@ export default function Chip({
       })}
       role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
+      onBlur={onBlur}
+      onMouseLeave={onMouseLeave}
+      onFocus={onFocus}
+      onMouseEnter={onMouseEnter}
     >
       {leftIcon ? <div className="chip__left-icon">{leftIcon}</div> : null}
       {children ?? (
@@ -99,4 +107,20 @@ Chip.propTypes = {
    * The onClick handler to be passed to the Chip component
    */
   onClick: PropTypes.func,
+  /**
+   * The onMouseEnter handler to be passed to the Chip component
+   */
+  onMouseEnter: PropTypes.func,
+  /**
+   * The onMouseLeave handler to be passed to the Chip component
+   */
+  onMouseLeave: PropTypes.func,
+  /**
+   * The onFocus handler to be passed to the Chip component
+   */
+  onFocus: PropTypes.func,
+  /**
+   * The onBlur handler to be passed to the Chip component
+   */
+  onBlur: PropTypes.func,
 };
