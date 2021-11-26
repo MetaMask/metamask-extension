@@ -87,6 +87,10 @@
     color: $scorpion;
     margin-top: 15px;
     padding: 0 20px;
+
+    &__error {
+      border: 1px solid $monzo;
+    }
   }
 
   &__buttons {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import Button from '../../components/ui/button';
 
 export default class NewAccountCreateForm extends Component {
@@ -16,7 +17,15 @@ export default class NewAccountCreateForm extends Component {
 
   render() {
     const { newAccountName, defaultAccountName } = this.state;
-    const { history, createAccount, mostRecentOverviewPage } = this.props;
+    const {
+      history,
+      createAccount,
+      mostRecentOverviewPage,
+      accounts,
+    } = this.props;
+
+    const accountsNames = accounts.map((item) => item.name);
+
     const createClick = (_) => {
       createAccount(newAccountName || defaultAccountName)
         .then(() => {
@@ -50,7 +59,11 @@ export default class NewAccountCreateForm extends Component {
         </div>
         <div>
           <input
-            className="new-account-create-form__input"
+            className={classnames('new-account-create-form__input', {
+              'new-account-create-form__input__error': accountsNames.includes(
+                newAccountName,
+              ),
+            })}
             value={newAccountName}
             placeholder={defaultAccountName}
             onChange={(event) =>
@@ -58,6 +71,13 @@ export default class NewAccountCreateForm extends Component {
             }
             autoFocus
           />
+          {accountsNames.includes(newAccountName) ? (
+            <div
+              className={classnames('send-v2__error', 'send-v2__error-amount')}
+            >
+              {this.context.t('accountNameDuplicate')}
+            </div>
+          ) : null}
           <div className="new-account-create-form__buttons">
             <Button
               type="secondary"
@@ -72,6 +92,7 @@ export default class NewAccountCreateForm extends Component {
               large
               className="new-account-create-form__button"
               onClick={createClick}
+              disabled={Boolean(accountsNames.includes(newAccountName))}
             >
               {this.context.t('create')}
             </Button>
@@ -87,6 +108,7 @@ NewAccountCreateForm.propTypes = {
   newAccountNumber: PropTypes.number,
   history: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
+  accounts: PropTypes.array,
 };
 
 NewAccountCreateForm.contextTypes = {

@@ -73,6 +73,9 @@
   "accountName": {
     "message": "Account Name"
   },
+  "accountNameDuplicate": {
+    "message": "This account name already exists"
+  },
   "accountOptions": {
     "message": "Account Options"
   },
