@@ -14,6 +14,7 @@ const AdvancedGasFeeSaveButton = () => {
   const { updateTransaction } = useGasFeeContext();
   const {
     isDirty,
+    gasLimit,
     maxFeePerGas,
     maxPriorityFeePerGas,
   } = useAdvanceGasFeePopoverContext();
@@ -23,6 +24,7 @@ const AdvancedGasFeeSaveButton = () => {
       PRIORITY_LEVELS.CUSTOM,
       decGWEIToHexWEI(maxFeePerGas),
       decGWEIToHexWEI(maxPriorityFeePerGas),
+      gasLimit,
     );
     closeModal('advancedGasFee');
   };

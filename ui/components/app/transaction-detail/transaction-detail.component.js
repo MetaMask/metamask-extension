@@ -7,7 +7,7 @@ import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import Typography from '../../ui/typography/typography';
 
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -36,7 +36,9 @@ export default function TransactionDetail({
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
           <button onClick={() => openModal('editGasFee')}>
-            <span className="transaction-detail-edit-V2__icon">
+            <span
+              className={`transaction-detail-edit-V2__icon transaction-detail-edit-V2__icon-${estimateUsed}`}
+            >
               {`${PRIORITY_LEVEL_ICON_MAP[estimateUsed]} `}
             </span>
             <span className="transaction-detail-edit-V2__label">
@@ -53,19 +55,32 @@ export default function TransactionDetail({
             <InfoTooltip
               contentText={
                 <div className="transaction-detail-edit-V2__tooltip">
-                  <Typography fontSize="12px" color={COLORS.GREY}>
+                  <Typography
+                    tag={TYPOGRAPHY.Paragraph}
+                    variant={TYPOGRAPHY.H7}
+                    color={COLORS.GREY}
+                  >
                     {t('dappSuggestedTooltip', [transaction.origin])}
                   </Typography>
-                  <Typography fontSize="12px">
-                    <b>{t('maxBaseFee')}</b>
+                  <Typography
+                    tag={TYPOGRAPHY.Paragraph}
+                    variant={TYPOGRAPHY.H7}
+                  >
+                    <strong>{t('maxBaseFee')}</strong>
                     {maxFeePerGas}
                   </Typography>
-                  <Typography fontSize="12px">
-                    <b>{t('maxPriorityFee')}</b>
+                  <Typography
+                    tag={TYPOGRAPHY.Paragraph}
+                    variant={TYPOGRAPHY.H7}
+                  >
+                    <strong>{t('maxPriorityFee')}</strong>
                     {maxPriorityFeePerGas}
                   </Typography>
-                  <Typography fontSize="12px">
-                    <b>{t('gasLimit')}</b>
+                  <Typography
+                    tag={TYPOGRAPHY.Paragraph}
+                    variant={TYPOGRAPHY.H7}
+                  >
+                    <strong>{t('gasLimit')}</strong>
                     {gasLimit}
                   </Typography>
                 </div>

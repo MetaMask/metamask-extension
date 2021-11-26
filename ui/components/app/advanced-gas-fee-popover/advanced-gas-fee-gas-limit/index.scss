@@ -1,0 +1,13 @@
+.advanced-gas-fee-gas-limit {
+  white-space: nowrap;
+
+  > * {
+    margin-right: 4px;
+  }
+
+  a.advanced-gas-fee-gas-limit__edit-link {
+    @include H7;
+    padding: 0;
+    width: auto;
+  }
+}

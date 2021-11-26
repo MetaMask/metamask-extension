@@ -125,16 +125,17 @@ export function useGasFeeInputs(
       setEstimateUsed(transaction?.userFeeLevel);
       setInternalEstimateToUse(transaction?.userFeeLevel);
     }
-  }, [
-    setEstimateUsed,
-    setInternalEstimateToUse,
-    transaction,
-    userPrefersAdvancedGas,
-  ]);
+  }, [setEstimateUsed, transaction]);
 
   const [gasLimit, setGasLimit] = useState(() =>
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
   );
+
+  useEffect(() => {
+    if (EIP_1559_V2 && transaction?.userFeeLevel) {
+      setGasLimit(Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')));
+    }
+  }, [setGasLimit, transaction]);
 
   const {
     gasPrice,
