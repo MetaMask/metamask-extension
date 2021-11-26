@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { hideModal } from '../../../../store/actions';
+import * as actions from '../../../../store/actions';
 import UpdateAccountNicknameModal from './update-account-nickname-modal.component';
 
 function mapStateToProps(state) {
@@ -13,6 +14,8 @@ function mapDispatchToProps(dispatch) {
     hideModal: () => {
       dispatch(hideModal());
     },
+    addToAddressBook: (recipient, nickname, memo) =>
+      dispatch(actions.addToAddressBook(recipient, nickname, memo)),
   };
 }
 

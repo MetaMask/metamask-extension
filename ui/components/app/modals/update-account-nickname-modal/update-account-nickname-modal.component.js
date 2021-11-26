@@ -4,11 +4,19 @@ import classnames from 'classnames';
 import UpdateNicknamePopover from '../../../ui/update-nickname-popover';
 
 const AccountNicknameModal = (props, context) => {
-  const { className, address, nickname, hideModal } = props;
+  console.log(
+    '🚀 ~ file: update-account-nickname-modal.component.js ~ line 7 ~ AccountNicknameModal ~ props',
+    props,
+  );
+  const { className, address, nickname, hideModal, addToAddressBook } = props;
 
   return (
     <div className={classnames(className, 'account-nickname-modal')}>
-      <UpdateNicknamePopover address={address} onClose={hideModal} />
+      <UpdateNicknamePopover
+        address={address}
+        onClose={hideModal}
+        onAdd={addToAddressBook}
+      />
     </div>
   );
 };
