@@ -15,9 +15,9 @@ import {
   SIZES,
   FLEX_WRAP,
 } from '../../../helpers/constants/design-system';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
   const t = useI18nContext();
@@ -29,7 +29,10 @@ export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
   });
 
   const [dropdownState, setDropdownState] = useState(defaultDropdownState);
-
+  const width =
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+      ? BLOCK_SIZES.ONE_THIRD
+      : BLOCK_SIZES.ONE_SIXTH;
   return (
     <div className="collectibles-items">
       <Box padding={[4, 6, 4, 6]} flexDirection={FLEX_DIRECTION.COLUMN}>
@@ -74,10 +77,6 @@ export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
                 {isExpanded ? (
                   <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP}>
                     {collectibles.map((collectible, i) => {
-                      const width =
-                        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                          ? BLOCK_SIZES.ONE_THIRD
-                          : BLOCK_SIZES.ONE_SIXTH;
                       return (
                         <Box width={width} padding={2} key={`collectible-${i}`}>
                           <Box
@@ -114,7 +113,7 @@ export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
                 <Button
                   type="link"
                   onClick={onRefreshList}
-                  style={{ padding: '5px' }}
+                  style={{ padding: '4px' }}
                 >
                   {t('refreshList')}
                 </Button>
@@ -130,9 +129,9 @@ export default function CollectiblesItems({ onAddNFT, onRefreshList }) {
                 <Button
                   type="link"
                   onClick={onAddNFT}
-                  style={{ padding: '5px' }}
+                  style={{ padding: '4px' }}
                 >
-                  {t('addNFT').toLowerCase()}
+                  {t('addNFTLowerCase')}
                 </Button>
               </Box>
             </Box>
