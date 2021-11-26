@@ -88,10 +88,13 @@ export default function CurrencyInput({
     setNewHexValue(hexValueNew);
     setDecimalValue(newDecimalValue);
     onChange(hexValueNew);
+    setSwapped(!isSwapped);
   };
 
   useEffect(() => {
-    handleChange(decimalValue);
+    if (isSwapped) {
+      handleChange(decimalValue);
+    }
   }, [isSwapped]);
 
   const renderConversionComponent = () => {

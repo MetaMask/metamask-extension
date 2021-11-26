@@ -190,7 +190,7 @@ describe('CurrencyInput Component', () => {
       expect(input.props().value).toStrictEqual(0);
 
       input.simulate('change', { target: { value: 1 } });
-      expect(handleChangeSpy.callCount).toStrictEqual(1);
+      expect(handleChangeSpy.callCount).toStrictEqual(2);
       expect(handleChangeSpy.calledWith('de0b6b3a7640000')).toStrictEqual(true);
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
         '1USD',
@@ -230,7 +230,7 @@ describe('CurrencyInput Component', () => {
       expect(input.props().value).toStrictEqual(0);
 
       input.simulate('change', { target: { value: 1 } });
-      expect(handleChangeSpy.callCount).toStrictEqual(1);
+      expect(handleChangeSpy.callCount).toStrictEqual(2);
       expect(handleChangeSpy.calledWith('f602f2234d0ea')).toStrictEqual(true);
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
         '0.00432788ETH',
@@ -307,7 +307,7 @@ describe('CurrencyInput Component', () => {
       expect(input.props().value).toStrictEqual(0);
 
       input.simulate('change', { target: { value: 1 } });
-      expect(handleChangeSpy.callCount).toStrictEqual(1);
+      expect(handleChangeSpy.callCount).toStrictEqual(2);
       expect(handleChangeSpy.calledWith('de0b6b3a7640000')).toStrictEqual(
         false,
       );
