@@ -67,7 +67,6 @@ Typography.propTypes = {
   margin: MultipleSizes,
   fontWeight: PropTypes.oneOf(Object.values(FONT_WEIGHT)),
   fontStyle: PropTypes.oneOf(Object.values(FONT_STYLE)),
-  fontSize: PropTypes.string,
   tag: PropTypes.oneOf([
     'p',
     'h1',

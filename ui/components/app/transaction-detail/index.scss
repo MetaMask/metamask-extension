@@ -42,10 +42,11 @@
 
     &__icon {
       @include Paragraph;
+
       line-height: 1;
       position: absolute;
       left: -16px;
-      top: 0px;
+      top: 0;
 
       &-custom {
         font-size: 1.35rem;

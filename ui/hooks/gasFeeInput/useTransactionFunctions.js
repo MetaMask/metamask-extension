@@ -47,7 +47,7 @@ export const useTransactionFunctions = ({
 
       dispatch(updateTransactionFn(updatedTxMeta));
     },
-    [defaultEstimateToUse, dispatch, transaction],
+    [defaultEstimateToUse, dispatch, gasLimitInTransaction, transaction],
   );
 
   const updateTransactionUsingGasFeeEstimates = useCallback(
