@@ -20,6 +20,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#12727](https://github.com/MetaMask/metamask-extension/pull/12727): Make toggle buttons keyboard accessible
 - [#12729](https://github.com/MetaMask/metamask-extension/pull/12729): Swaps: Fix issue with wrapping and unwrapping when an address contains uppercase characters
 - [#12631](https://github.com/MetaMask/metamask-extension/pull/12631): Fix bug preventing sending high precision decimal amounts of tokens in the send flow
+## [10.6.4]
+### Changed
+- [#12752](https://github.com/MetaMask/metamask-extension/pull/12752): Update link, in the add network flow, to the article with information about network security risks
+
+## [10.6.3]
+### Fixed
+- [##12822](https://github.com/MetaMask/metamask-extension/pull/#12822): Fix `replaceChildren` and `function.prototype.apply` errors that could make the app unusable on older browsers due to a bug in our logo component.
+- [#61e0526d5](https://github.com/MetaMask/metamask-extension/pull/61e0526d5): Fix requesting of swaps quotes for token pairs that have highly precise exchange rates.
+- [##12773](https://github.com/MetaMask/metamask-extension/pull/#12773): Prevent token input in send flow from adding arbitary trailing decimal values to input
 
 ## [10.6.2]
 ### Fixed
@@ -2620,6 +2629,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.7.0...HEAD
 [10.7.0]: https://github.com/MetaMask/metamask-extension/compare/v10.6.2...v10.7.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.6.4...HEAD
+[10.6.4]: https://github.com/MetaMask/metamask-extension/compare/v10.6.3...v10.6.4
+[10.6.3]: https://github.com/MetaMask/metamask-extension/compare/v10.6.2...v10.6.3
 [10.6.2]: https://github.com/MetaMask/metamask-extension/compare/v10.6.1...v10.6.2
 [10.6.1]: https://github.com/MetaMask/metamask-extension/compare/v10.6.0...v10.6.1
 [10.6.0]: https://github.com/MetaMask/metamask-extension/compare/v10.5.2...v10.6.0
