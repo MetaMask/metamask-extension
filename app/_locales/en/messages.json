@@ -1680,6 +1680,12 @@
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
   },
+  "newCollectibleAddFailed": {
+    "message": "Collectible was not added because: $1"
+  },
+  "newCollectibleAddedMessage": {
+    "message": "Collectible was successfully added!"
+  },
   "newContact": {
     "message": "New Contact"
   },

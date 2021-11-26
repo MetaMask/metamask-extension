@@ -735,6 +735,10 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
   );
 }
 
+export function getNewCollectibleAddedMessage(state) {
+  return state.appState.newCollectibleAddedMessage;
+}
+
 /**
  * To retrieve the name of the new Network added using add network form
  * @param {*} state

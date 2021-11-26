@@ -183,7 +183,9 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokensController,
     });
 
-    this.assetsContractController = new AssetsContractController();
+    this.assetsContractController = new AssetsContractController({
+      provider: this.provider,
+    });
 
     this.collectiblesController = new CollectiblesController({
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
@@ -588,6 +590,7 @@ export default class MetamaskController extends EventEmitter {
         console.error(error);
       }
     });
+
     this.networkController.lookupNetwork();
     this.messageManager = new MessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -1043,6 +1046,11 @@ export default class MetamaskController extends EventEmitter {
       // CollectiblesController
       addCollectible: nodeify(
         collectiblesController.addCollectible,
+        collectiblesController,
+      ),
+
+      addCollectibleVerifyOwnership: nodeify(
+        collectiblesController.addCollectibleVerifyOwnership,
         collectiblesController,
       ),
 
