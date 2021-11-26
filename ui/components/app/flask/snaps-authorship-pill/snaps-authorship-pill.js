@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import Chip from '../../../ui/chip';
 import Box from '../../../ui/box';
 import NpmIcon from '../icons/npm-icon';
@@ -10,7 +11,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 const SnapsAuthorshipPill = ({ packageName, className }) => {
-  const [isHovering, setIsHovering] = useState(false);
   return (
     <Chip
       leftIcon={
@@ -18,12 +18,8 @@ const SnapsAuthorshipPill = ({ packageName, className }) => {
           <NpmIcon />
         </Box>
       }
-      className={className}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
-      onFocus={() => setIsHovering(true)}
-      onBlur={() => setIsHovering(false)}
-      backgroundColor={isHovering ? COLORS.UI1 : COLORS.WHITE}
+      className={classnames(className, `snaps-authorship-pill`)}
+      backgroundColor={COLORS.WHITE}
     >
       <Typography
         className="chip__label"
