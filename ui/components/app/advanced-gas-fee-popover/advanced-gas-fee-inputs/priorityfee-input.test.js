@@ -47,7 +47,7 @@ const render = (txProps) => {
   );
 };
 
-describe('PriprityfeeInput', () => {
+describe('PriorityfeeInput', () => {
   it('should renders advancedGasFee.priorityfee value if current estimate used is not custom', () => {
     render({
       userFeeLevel: 'high',
