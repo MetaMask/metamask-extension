@@ -21,7 +21,9 @@ import Typography from '../../components/ui/typography/typography';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
   COLORS,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
 
 import { isBeta } from '../../helpers/utils/build-types';
