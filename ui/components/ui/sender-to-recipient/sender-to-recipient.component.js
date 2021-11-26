@@ -101,30 +101,19 @@ export function RecipientWithAddress({
   recipientNickname,
   recipientEns,
   recipientName,
+  showNicknameModal,
 }) {
   const t = useI18nContext();
-  const [addressCopied, setAddressCopied] = useState(false);
 
-  let tooltipHtml = <p>{t('copiedExclamation')}</p>;
-  if (!addressCopied) {
-    if (addressOnly && !recipientNickname && !recipientEns) {
-      tooltipHtml = <p>{t('copyAddress')}</p>;
-    } else {
-      tooltipHtml = (
-        <p>
-          {shortenAddress(checksummedRecipientAddress)}
-          <br />
-          {t('copyAddress')}
-        </p>
-      );
-    }
-  }
   return (
     <div
       className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
       onClick={() => {
-        setAddressCopied(true);
-        copyToClipboard(checksummedRecipientAddress);
+        // show account nickname popover
+        showNicknameModal(
+          checksummedRecipientAddress,
+          recipientNickname ? recipientNickname : null,
+        );
         if (onRecipientClick) {
           onRecipientClick();
         }
@@ -133,25 +122,16 @@ export function RecipientWithAddress({
       <div className="sender-to-recipient__sender-icon">
         <Identicon address={checksummedRecipientAddress} diameter={24} />
       </div>
-      <Tooltip
-        position="bottom"
-        html={tooltipHtml}
-        offset={-10}
-        wrapperClassName="sender-to-recipient__tooltip-wrapper"
-        containerClassName="sender-to-recipient__tooltip-container"
-        onHidden={() => setAddressCopied(false)}
-      >
-        <div className="sender-to-recipient__name">
-          {addressOnly
-            ? recipientNickname ||
-              recipientEns ||
-              shortenAddress(checksummedRecipientAddress)
-            : recipientNickname ||
-              recipientEns ||
-              recipientName ||
-              t('newContract')}
-        </div>
-      </Tooltip>
+      <div className="sender-to-recipient__name">
+        {addressOnly
+          ? recipientNickname ||
+            recipientEns ||
+            shortenAddress(checksummedRecipientAddress)
+          : recipientNickname ||
+            recipientEns ||
+            recipientName ||
+            t('newContract')}
+      </div>
     </div>
   );
 }
@@ -163,6 +143,7 @@ RecipientWithAddress.propTypes = {
   recipientNickname: PropTypes.string,
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,
+  showNicknameModal: PropTypes.func,
 };
 
 function Arrow({ variant }) {
@@ -195,6 +176,7 @@ export default function SenderToRecipient({
   recipientAddress,
   variant,
   warnUserOnAccountMismatch,
+  showNicknameModal,
 }) {
   const t = useI18nContext();
   const checksummedSenderAddress = toChecksumHexAddress(senderAddress);
@@ -219,6 +201,7 @@ export default function SenderToRecipient({
           recipientNickname={recipientNickname}
           recipientEns={recipientEns}
           recipientName={recipientName}
+          showNicknameModal={showNicknameModal}
         />
       ) : (
         <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
@@ -247,4 +230,5 @@ SenderToRecipient.propTypes = {
   onRecipientClick: PropTypes.func,
   onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
+  showNicknameModal: PropTypes.func,
 };
