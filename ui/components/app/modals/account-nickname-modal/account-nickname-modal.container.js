@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { hideModal } from '../../../../store/actions';
+import { hideModal, showModal } from '../../../../store/actions';
 import AccountNicknameModal from './account-nickname-modal.component';
 
 function mapStateToProps(state) {
@@ -13,6 +13,14 @@ function mapDispatchToProps(dispatch) {
     hideModal: () => {
       dispatch(hideModal());
     },
+    addNicknameModal: (address, nickname) =>
+      dispatch(
+        showModal({
+          name: 'ADD_UPDATE_NICKNAME_MODAL',
+          address,
+          nickname,
+        }),
+      ),
   };
 }
 
