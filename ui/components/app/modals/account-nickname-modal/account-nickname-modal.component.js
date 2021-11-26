@@ -8,12 +8,19 @@ export default class AccountNicknameModal extends Component {
     hideModal: PropTypes.func.isRequired,
     addNicknameModal: PropTypes.func.isRequired,
     address: PropTypes.string.isRequired,
+    nickname: PropTypes.string.isRequired,
     className: PropTypes.string,
   };
 
   render() {
     const { t } = this.context;
-    const { className, address, hideModal, addNicknameModal } = this.props;
+    const {
+      className,
+      address,
+      hideModal,
+      addNicknameModal,
+      nickname,
+    } = this.props;
 
     return (
       <div
@@ -24,6 +31,7 @@ export default class AccountNicknameModal extends Component {
           address={address}
           onClose={hideModal}
           onAdd={addNicknameModal}
+          nickname={nickname}
         />
       </div>
     );

@@ -14,6 +14,7 @@ const AccountNicknameModal = (props, context) => {
     <div className={classnames(className, 'account-nickname-modal')}>
       <UpdateNicknamePopover
         address={address}
+        nickname={nickname}
         onClose={hideModal}
         onAdd={addToAddressBook}
       />

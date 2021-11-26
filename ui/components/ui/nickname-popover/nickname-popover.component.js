@@ -8,12 +8,17 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import CopyIcon from '../icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
-const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
+const NicknamePopover = ({
+  address,
+  nickname,
+  onClose = null,
+  onAdd = null,
+}) => {
   const t = useContext(I18nContext);
 
   const onAddClick = useCallback(() => {
     onClose();
-    onAdd(address);
+    onAdd(address, nickname);
   }, [address, onClose, onAdd]);
 
   const [copied, handleCopy] = useCopyToClipboard();
@@ -27,7 +32,7 @@ const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
           className="nickname-popover__identicon"
         />
         <div className="nickname-popover__address">
-          {shortenAddress(address)}
+          {nickname ? nickname : shortenAddress(address)}
         </div>
         <div className="nickname-popover__public-address">
           <div className="nickname-popover__public-address__constant">
@@ -51,7 +56,7 @@ const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
           className="nickname-popover__footer-button"
           onClick={onAddClick}
         >
-          {t('addANickname')}
+          {nickname ? t('editANickname') : t('addANickname')}
         </Button>
       </Popover>
     </div>
@@ -60,6 +65,7 @@ const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
 
 NicknamePopover.propTypes = {
   address: PropTypes.string,
+  nickname: PropTypes.string,
   onClose: PropTypes.func,
   onAdd: PropTypes.func,
 };
