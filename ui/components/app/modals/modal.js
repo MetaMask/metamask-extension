@@ -30,6 +30,8 @@ import AddToAddressBookModal from './add-to-addressbook-modal';
 import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
+import AccountNicknameModal from './account-nickname-modal';
+import UpdateAccountNicknameModal from './update-account-nickname-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -138,6 +140,16 @@ const MODALS = {
     contentStyle: {
       borderRadius: '10px',
     },
+  },
+
+  SHOW_NICKNAME_MODAL: {
+    contents: <AccountNicknameModal />,
+    ...accountModalStyle,
+  },
+
+  ADD_UPDATE_NICKNAME_MODAL: {
+    contents: <UpdateAccountNicknameModal />,
+    ...accountModalStyle,
   },
 
   NEW_ACCOUNT: {

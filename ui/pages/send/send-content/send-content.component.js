@@ -22,7 +22,7 @@ export default class SendContent extends Component {
 
   static propTypes = {
     isAssetSendable: PropTypes.bool,
-    showAddToAddressBookModal: PropTypes.func,
+    updateAccountNicknameModal: PropTypes.func,
     showHexData: PropTypes.bool,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
@@ -83,7 +83,7 @@ export default class SendContent extends Component {
     const { t } = this.context;
     const {
       isOwnedAccount,
-      showAddToAddressBookModal,
+      updateAccountNicknameModal,
       contact = {},
     } = this.props;
 
@@ -95,7 +95,7 @@ export default class SendContent extends Component {
       <Dialog
         type="message"
         className="send__dialog"
-        onClick={showAddToAddressBookModal}
+        onClick={updateAccountNicknameModal}
       >
         {t('newAccountDetectedDialogMessage')}
       </Dialog>

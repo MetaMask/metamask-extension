@@ -40,11 +40,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    showAddToAddressBookModal: (recipient) =>
+    updateAccountNicknameModal: (address) =>
       dispatch(
         actions.showModal({
-          name: 'ADD_TO_ADDRESSBOOK',
-          recipient,
+          name: 'ADD_UPDATE_NICKNAME_MODAL',
+          address,
         }),
       ),
   };
@@ -55,8 +55,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   return {
     ...ownProps,
     ...restStateProps,
-    showAddToAddressBookModal: () =>
-      dispatchProps.showAddToAddressBookModal(to),
+    updateAccountNicknameModal: () =>
+      dispatchProps.updateAccountNicknameModal(to),
   };
 }
 
