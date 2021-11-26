@@ -124,7 +124,7 @@ export default function CurrencyInput({
       />
     );
   };
-  
+
   return (
     <UnitInput
       {...{
