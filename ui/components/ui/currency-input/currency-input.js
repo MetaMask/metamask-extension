@@ -91,9 +91,7 @@ export default function CurrencyInput({
   };
 
   useEffect(() => {
-    if (isSwapped) {
-      handleChange(decimalValue);
-    }
+    handleChange(decimalValue);
   }, [isSwapped]);
 
   const renderConversionComponent = () => {
@@ -126,7 +124,7 @@ export default function CurrencyInput({
       />
     );
   };
-
+  
   return (
     <UnitInput
       {...{
