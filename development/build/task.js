@@ -50,7 +50,7 @@ function createTask(taskName, taskFn) {
 
 function runInChildProcess(
   task,
-  { buildType, isLavaMoat, policyOnly, shouldLintFenceFiles },
+  { buildType, isLavaMoat, shouldLintFenceFiles },
 ) {
   const taskName = typeof task === 'string' ? task : task.taskName;
   if (!taskName) {
@@ -74,7 +74,6 @@ function runInChildProcess(
           '--lint-fence-files',
           shouldLintFenceFiles,
           '--skip-stats',
-          ...(policyOnly ? ['--policy-only'] : []),
         ],
         {
           env: process.env,
@@ -91,7 +90,6 @@ function runInChildProcess(
           '--lint-fence-files',
           shouldLintFenceFiles,
           '--skip-stats',
-          ...(policyOnly ? ['--policy-only'] : []),
         ],
         {
           env: process.env,

@@ -134,10 +134,6 @@ function getSegmentWriteKey({ buildType, environment }) {
   throw new Error(`Invalid build type: '${buildType}'`);
 }
 
-const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
-  callback(),
-);
-
 module.exports = createScriptTasks;
 
 function createScriptTasks({
@@ -147,7 +143,6 @@ function createScriptTasks({
   isLavaMoat,
   livereload,
   shouldLintFenceFiles,
-  policyOnly,
 }) {
   // internal tasks
   const core = {
@@ -190,7 +185,6 @@ function createScriptTasks({
           return `./app/scripts/${label}.js`;
         }),
         ignoredFiles,
-        policyOnly,
         shouldLintFenceFiles,
         testing,
       }),
@@ -247,7 +241,6 @@ function createScriptTasks({
       runInChildProcess(subtask, {
         buildType,
         isLavaMoat,
-        policyOnly,
         shouldLintFenceFiles,
       }),
     );
@@ -266,7 +259,6 @@ function createScriptTasks({
       ignoredFiles,
       label,
       testing,
-      policyOnly,
       shouldLintFenceFiles,
     });
   }
@@ -282,7 +274,6 @@ function createScriptTasks({
       ignoredFiles,
       label,
       testing,
-      policyOnly,
       shouldLintFenceFiles,
     });
   }
@@ -298,7 +289,6 @@ function createScriptTasks({
       ignoredFiles,
       label,
       testing,
-      policyOnly,
       shouldLintFenceFiles,
     });
   }
@@ -316,7 +306,6 @@ function createScriptTasks({
         entryFilepath: `./app/scripts/${inpage}.js`,
         label: inpage,
         ignoredFiles,
-        policyOnly,
         shouldLintFenceFiles,
         testing,
       }),
@@ -328,7 +317,6 @@ function createScriptTasks({
         entryFilepath: `./app/scripts/${contentscript}.js`,
         label: contentscript,
         ignoredFiles,
-        policyOnly,
         shouldLintFenceFiles,
         testing,
       }),
@@ -342,7 +330,6 @@ function createFactoredBuild({
   devMode,
   entryFiles,
   ignoredFiles,
-  policyOnly,
   shouldLintFenceFiles,
   testing,
 }) {
@@ -362,7 +349,6 @@ function createFactoredBuild({
       devMode,
       envVars,
       ignoredFiles,
-      policyOnly,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
@@ -434,17 +420,12 @@ function createFactoredBuild({
       // setup bundle destination
       browserPlatforms.forEach((platform) => {
         const dest = `./dist/${platform}/`;
-        const destination = policyOnly ? noopWriteStream : gulp.dest(dest);
-        pipeline.get('dest').push(destination);
+        pipeline.get('dest').push(gulp.dest(dest));
       });
     });
 
     // wait for bundle completion for postprocessing
     events.on('bundleDone', () => {
-      // Skip HTML generation if nothing is to be written to disk
-      if (policyOnly) {
-        return;
-      }
       const commonSet = sizeGroupMap.get('common');
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
@@ -518,7 +499,6 @@ function createNormalBundle({
   extraEntries = [],
   ignoredFiles,
   label,
-  policyOnly,
   modulesToExpose,
   shouldLintFenceFiles,
   testing,
@@ -539,7 +519,6 @@ function createNormalBundle({
       devMode,
       envVars,
       ignoredFiles,
-      policyOnly,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
@@ -564,8 +543,7 @@ function createNormalBundle({
       // setup bundle destination
       browserPlatforms.forEach((platform) => {
         const dest = `./dist/${platform}/`;
-        const destination = policyOnly ? noopWriteStream : gulp.dest(dest);
-        pipeline.get('dest').push(destination);
+        pipeline.get('dest').push(gulp.dest(dest));
       });
     });
 
@@ -595,7 +573,6 @@ function setupBundlerDefaults(
     devMode,
     envVars,
     ignoredFiles,
-    policyOnly,
     minify,
     reloadOnChange,
     shouldLintFenceFiles,
@@ -639,14 +616,12 @@ function setupBundlerDefaults(
     setupReloadOnChange(buildConfiguration);
   }
 
-  if (!policyOnly) {
-    if (minify) {
-      setupMinification(buildConfiguration);
-    }
-
-    // Setup source maps
-    setupSourcemaps(buildConfiguration, { devMode });
+  if (minify) {
+    setupMinification(buildConfiguration);
   }
+
+  // Setup source maps
+  setupSourcemaps(buildConfiguration, { devMode });
 }
 
 function setupReloadOnChange({ bundlerOpts, events }) {
