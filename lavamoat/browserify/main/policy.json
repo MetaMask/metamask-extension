@@ -925,7 +925,6 @@
     },
     "async-mutex": {
       "globals": {
-        "clearTimeout": true,
         "setTimeout": true
       },
       "packages": {
@@ -3421,6 +3420,13 @@
         "timers-browserify": true
       }
     },
+    "nonce-tracker": {
+      "packages": {
+        "assert": true,
+        "await-semaphore": true,
+        "ethjs-query": true
+      }
+    },
     "number-to-bn": {
       "packages": {
         "bn.js": true,
@@ -4220,13 +4226,6 @@
         "lodash": true,
         "process": true,
         "symbol-observable": true
-      }
-    },
-    "redux-logger": {
-      "globals": {
-        "console": true,
-        "define": true,
-        "performance": true
       }
     },
     "regenerator-runtime": {

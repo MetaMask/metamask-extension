@@ -10,14 +10,7 @@ module.exports = function (api) {
           },
         },
       ],
-      [
-        '@babel/preset-react',
-        {
-          runtime: 'automatic',
-          development: process.env.NODE_ENV === 'development',
-          importSource: '@welldone-software/why-did-you-render',
-        },
-      ],
+      '@babel/preset-react',
     ],
     plugins: [
       '@babel/plugin-transform-runtime',

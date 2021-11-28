@@ -261,7 +261,6 @@ export default function Swap() {
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
-  console.log('swaps render');
 
   return (
     <div className="swaps">

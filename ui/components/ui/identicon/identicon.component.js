@@ -95,8 +95,6 @@ export default class Identicon extends PureComponent {
       useTokenDetection,
       tokenList,
     } = this.props;
-    console.log('token list', Object.values(tokenList).length);
-
     if (image) {
       return this.renderImage();
     }

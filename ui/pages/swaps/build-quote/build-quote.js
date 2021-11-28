@@ -496,8 +496,6 @@ export default function BuildQuote({
     toTokenAddress,
   ]);
 
-  console.log('build quote render');
-
   return (
     <div className="build-quote">
       <div className="build-quote__content">
@@ -723,8 +721,6 @@ export default function BuildQuote({
     </div>
   );
 }
-
-BuildQuote.whyDidYouRender = true;
 
 BuildQuote.propTypes = {
   ethBalance: PropTypes.string,

@@ -70,8 +70,6 @@ export default function DropdownInputPair({
     );
   }, [inputValue, inputRef]);
 
-  console.log('dropdown input pair render');
-
   return (
     <div className="dropdown-input-pair">
       <DropdownSearchList
@@ -122,8 +120,6 @@ export default function DropdownInputPair({
     </div>
   );
 }
-
-DropdownInputPair.whyDidYouRender = true;
 
 DropdownInputPair.propTypes = {
   itemsToSearch: PropTypes.array,

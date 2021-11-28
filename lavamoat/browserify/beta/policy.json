@@ -925,7 +925,6 @@
     },
     "async-mutex": {
       "globals": {
-        "clearTimeout": true,
         "setTimeout": true
       },
       "packages": {
@@ -3419,6 +3418,13 @@
         "process": true,
         "promise": true,
         "timers-browserify": true
+      }
+    },
+    "nonce-tracker": {
+      "packages": {
+        "assert": true,
+        "await-semaphore": true,
+        "ethjs-query": true
       }
     },
     "number-to-bn": {

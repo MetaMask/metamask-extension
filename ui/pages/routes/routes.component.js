@@ -311,7 +311,6 @@ export default class Routes extends Component {
         ? this.getConnectingLabel(loadingMessage)
         : null;
 
-    console.log('render routes');
     return (
       <div
         className={classnames('app', {
@@ -344,10 +343,7 @@ export default class Routes extends Component {
         {process.env.ONBOARDING_V2 && this.showOnboardingHeader() && (
           <OnboardingAppHeader />
         )}
-        <NetworkDropdown
-        // provider={provider}
-        // frequentRpcListDetail={frequentRpcListDetail}
-        />
+        <NetworkDropdown />
         <AccountMenu />
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
