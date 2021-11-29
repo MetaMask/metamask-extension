@@ -2,13 +2,9 @@ import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
-import { Menu, MenuItem } from '../../../components/ui/menu';
+import { Menu, MenuItem } from '../../ui/menu';
 
-const CollectibleOptions = ({
-  onRemove,
-  onReportAsScam,
-  onViewOnOpensea,
-}) => {
+const CollectibleOptions = ({ onRemove, onReportAsScam, onViewOnOpensea }) => {
   const t = useContext(I18nContext);
   const [
     collectibleOptionsButtonElement,
@@ -23,7 +19,6 @@ const CollectibleOptions = ({
         data-testid="collectible-options__button"
         onClick={() => setCollectibleOptionsOpen(true)}
         ref={setCollectibleOptionsButtonElement}
-        title={t('collectibleOptions')}
       />
       {collectibleOptionsOpen ? (
         <Menu
@@ -38,7 +33,7 @@ const CollectibleOptions = ({
               onViewOnOpensea();
             }}
           >
-            {t('accountDetails')}
+            {t('viewOnOpensea')}
           </MenuItem>
           <MenuItem
             iconClassName="fas fa-external-link-alt collectible-options__icon"

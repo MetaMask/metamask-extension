@@ -3,6 +3,7 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
+import { util } from '@metamask/controllers';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
   GOERLI_CHAIN_ID,
@@ -18,7 +19,6 @@ import {
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
-import { util } from '@metamask/controllers';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {

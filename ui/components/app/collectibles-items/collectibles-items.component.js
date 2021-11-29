@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { util } from '@metamask/controllers';
+import { history } from 'globalthis/implementation';
+import { useHistory } from 'react-router';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -21,9 +23,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getIpfsGateway } from '../../../selectors';
-import { history } from 'globalthis/implementation';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
-import { useHistory } from 'react-router';
 import { getAssetImageURL } from '../../../helpers/utils/util';
 
 const width =
@@ -100,8 +100,11 @@ export default function CollectiblesItems({
                 {isExpanded ? (
                   <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP}>
                     {collectibles.map((collectible, i) => {
-                      let { image, address, tokenId } = collectible;
-                      const collectibleImage = getAssetImageURL(image, ipfsGateway)
+                      const { image, address, tokenId } = collectible;
+                      const collectibleImage = getAssetImageURL(
+                        image,
+                        ipfsGateway,
+                      );
                       return (
                         <Box
                           width={width}
