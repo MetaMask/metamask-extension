@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function PermissionsConnectPermissionList({ permissions }) {
   const t = useI18nContext();
 
-  const PERMISSION_TYPES = {
-    eth_accounts: {
-      leftIcon: 'fas fa-eye',
-      label: t('eth_accounts'),
-      rightIcon: null,
-    },
-  };
+  const PERMISSION_TYPES = useMemo(() => {
+    return {
+      eth_accounts: {
+        leftIcon: 'fas fa-eye',
+        label: t('eth_accounts'),
+        rightIcon: null,
+      },
+    };
+  }, [t]);
 
   return (
     <div className="permissions-connect-permission-list">
