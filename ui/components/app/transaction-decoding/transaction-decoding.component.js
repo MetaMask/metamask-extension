@@ -39,14 +39,28 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
             ['network-id']: chainId,
           });
 
-        const response = await fetchWithCache(request_url, { method: 'GET' });
+        const response = await fetchWithCache(
+          request_url,
+          { method: 'GET' },
+          { suppressAutomaticThrowing: true },
+        );
 
         if (!response) {
-          throw new Error(`Decoding error: request time out !`);
+          throw new Error(`Request timeout !`);
         }
 
-        if (!response.info) {
-          throw new Error(`Decoding error: ${response}`);
+        // code execution error
+        if (!response.statusCode && !response.info) {
+          throw new Error(`Error: ${response}`);
+        }
+
+        // server decoding error
+        if (
+          response.statusCode &&
+          response.statusCode !== 200 &&
+          !response.info
+        ) {
+          throw new Error(`Error ${response.statusCode}: ${response.message}`);
         }
 
         const { info: projectInfo } = response;
