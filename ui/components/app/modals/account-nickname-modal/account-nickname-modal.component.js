@@ -46,7 +46,7 @@ AccountNicknameModal.propTypes = {
   hideModal: PropTypes.func.isRequired,
   addNicknameModal: PropTypes.func.isRequired,
   address: PropTypes.string.isRequired,
-  nickname: PropTypes.string.isRequired,
+  nickname: PropTypes.string,
   className: PropTypes.string,
 };
 
