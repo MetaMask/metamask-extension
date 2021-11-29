@@ -62,7 +62,7 @@ export default function TransactionDetailItem({
           variant={TYPOGRAPHY.H7}
           color={COLORS.UI4}
           align="end"
-          className="transaction-detail-item__row__subText"
+          className="transaction-detail-item__row-subText"
         >
           {subText}
         </Typography>
