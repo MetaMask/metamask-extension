@@ -16,9 +16,16 @@ const TransactionAlerts = ({
   userAcknowledgedGasMissing,
   setUserAcknowledgedGasMissing,
 }) => {
-  const { balanceError, estimateUsed, hasSimulationError } = useGasFeeContext();
+  const {
+    balanceError,
+    estimateUsed,
+    hasSimulationError,
+    supportsEIP1559V2,
+  } = useGasFeeContext();
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
   const t = useI18nContext();
+
+  if (!supportsEIP1559V2) return null;
 
   return (
     <div className="transaction-alerts">

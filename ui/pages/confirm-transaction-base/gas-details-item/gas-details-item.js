@@ -27,11 +27,10 @@ const GasDetailsItem = ({
   maxFeePerGas,
   maxPriorityFeePerGas,
   userAcknowledgedGasMissing,
-  txData,
   useNativeCurrencyAsPrimaryCurrency,
 }) => {
   const t = useI18nContext();
-  const { estimateUsed, hasSimulationError } = useGasFeeContext();
+  const { estimateUsed, hasSimulationError, transaction } = useGasFeeContext();
 
   if (hasSimulationError && !userAcknowledgedGasMissing) return null;
 
@@ -124,10 +123,10 @@ const GasDetailsItem = ({
       subTitle={
         <GasTiming
           maxPriorityFeePerGas={hexWEIToDecGWEI(
-            maxPriorityFeePerGas || txData.txParams.maxPriorityFeePerGas,
+            maxPriorityFeePerGas || transaction.txParams.maxPriorityFeePerGas,
           )}
           maxFeePerGas={hexWEIToDecGWEI(
-            maxFeePerGas || txData.txParams.maxFeePerGas,
+            maxFeePerGas || transaction.txParams.maxFeePerGas,
           )}
         />
       }
@@ -142,7 +141,6 @@ GasDetailsItem.propTypes = {
   maxFeePerGas: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
   userAcknowledgedGasMissing: PropTypes.bool.isRequired,
-  txData: PropTypes.object,
   useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
 };
 

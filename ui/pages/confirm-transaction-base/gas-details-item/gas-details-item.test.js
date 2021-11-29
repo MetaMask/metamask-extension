@@ -37,12 +37,8 @@ const render = ({ componentProps, contextProps } = {}) => {
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider {...contextProps}>
-      <GasDetailsItem
-        txData={{ txParams: {} }}
-        userAcknowledgedGasMissing={false}
-        {...componentProps}
-      />
+    <GasFeeContextProvider transaction={{ txParams: {} }} {...contextProps}>
+      <GasDetailsItem userAcknowledgedGasMissing={false} {...componentProps} />
     </GasFeeContextProvider>,
     store,
   );
@@ -60,14 +56,18 @@ describe('GasDetailsItem', () => {
   });
 
   it('should show warning icon if estimates are high', async () => {
-    render({ contextProps: { defaultEstimateToUse: 'high' } });
+    render({
+      contextProps: { transaction: { txParams: {}, userFeeLevel: 'high' } },
+    });
     await waitFor(() => {
       expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
     });
   });
 
   it('should not show warning icon if estimates are not high', async () => {
-    render({ contextProps: { defaultEstimateToUse: 'low' } });
+    render({
+      contextProps: { transaction: { txParams: {}, userFeeLevel: 'low' } },
+    });
     await waitFor(() => {
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
     });
@@ -76,8 +76,11 @@ describe('GasDetailsItem', () => {
   it('should return null if there is simulationError and user has not acknowledged gasMissing warning', () => {
     const { container } = render({
       contextProps: {
-        defaultEstimateToUse: 'low',
-        transaction: { simulationFails: true },
+        transaction: {
+          txParams: {},
+          simulationFails: true,
+          userFeeLevel: 'low',
+        },
       },
     });
     expect(container.innerHTML).toHaveLength(0);

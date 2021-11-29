@@ -3,9 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Identicon from '../../../../ui/identicon';
-
-// eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2 = process.env.EIP_1559_V2;
+import { useGasFeeContext } from '../../../../../contexts/gasFee';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -20,6 +18,8 @@ const ConfirmPageContainerSummary = (props) => {
     origin,
     hideTitle,
   } = props;
+
+  const { supportsEIP1559V2 } = useGasFeeContext();
 
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
@@ -48,7 +48,7 @@ const ConfirmPageContainerSummary = (props) => {
           </div>
         ) : null}
       </div>
-      {!hideSubtitle && !EIP_1559_V2 && (
+      {!hideSubtitle && !supportsEIP1559V2 && (
         <div className="confirm-page-container-summary__subtitle">
           {subtitleComponent}
         </div>
