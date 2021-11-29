@@ -2607,6 +2607,11 @@
         "which": true
       }
     },
+    "globalthis": {
+      "packages": {
+        "define-properties": true
+      }
+    },
     "globby": {
       "builtin": {
         "fs.Stats": true,

@@ -8,7 +8,7 @@ module.exports = {
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
   coverageReporters: ['html', 'text-summary'],
   coverageThreshold: {
-    'global': {
+    global: {
       branches: 35,
       functions: 37,
       lines: 43,
