@@ -1,5 +1,6 @@
 .site-origin {
   max-width: 300px;
+
   .chip__left-icon {
     padding: 4px 0 4px 8px;
   }
@@ -13,6 +14,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+
     /*rtl:ignore*/
     direction: rtl;
   }
