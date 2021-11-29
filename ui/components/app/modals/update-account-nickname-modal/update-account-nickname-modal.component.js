@@ -4,12 +4,20 @@ import classnames from 'classnames';
 import UpdateNicknamePopover from '../../../ui/update-nickname-popover';
 
 const AccountNicknameModal = (props, context) => {
-  const { addressBookEntry, addToAddressBook, hideModal, className } = props;
+  const {
+    address,
+    addressBookEntry,
+    addToAddressBook,
+    hideModal,
+    className,
+  } = props;
 
   return (
     <div className={classnames(className, 'account-nickname-modal')}>
       <UpdateNicknamePopover
-        address={addressBookEntry?.address}
+        address={
+          addressBookEntry?.address ? addressBookEntry?.address : address
+        }
         nickname={addressBookEntry?.name}
         memo={addressBookEntry?.memo}
         onClose={hideModal}
