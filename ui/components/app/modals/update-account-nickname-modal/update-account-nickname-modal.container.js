@@ -4,8 +4,19 @@ import * as actions from '../../../../store/actions';
 import UpdateAccountNicknameModal from './update-account-nickname-modal.component';
 
 function mapStateToProps(state) {
+  const { metamask } = state;
+
+  const {
+    addressBook,
+    provider: { chainId },
+  } = metamask;
+  const address = state.appState?.modal?.modalState?.props?.address;
+  const addressBookEntryObject =
+    addressBook && addressBook[chainId] && addressBook[chainId][address];
+
   return {
-    ...(state.appState.modal.modalState.props || {}),
+    ...(state.appState?.modal?.modalState?.props || {}),
+    addressBookEntry: addressBookEntryObject,
   };
 }
 
