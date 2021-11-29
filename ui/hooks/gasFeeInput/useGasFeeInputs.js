@@ -120,7 +120,7 @@ export function useGasFeeInputs(
     if (transaction?.userFeeLevel) {
       setEstimateUsed(transaction?.userFeeLevel);
     }
-  }, [setEstimateUsed, transaction, userPrefersAdvancedGas]);
+  }, [setEstimateUsed, transaction]);
 
   const [gasLimit, setGasLimit] = useState(() =>
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
@@ -216,10 +216,6 @@ export function useGasFeeInputs(
   const { updateTransactionUsingGasFeeEstimates } = useTransactionFunctions({
     defaultEstimateToUse,
     gasLimit,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    supportsEIP1559,
     transaction,
   });
 
