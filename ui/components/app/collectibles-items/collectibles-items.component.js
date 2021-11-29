@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { util } from '@metamask/controllers';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -18,6 +20,7 @@ import {
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getIpfsGateway } from '../../../selectors';
 
 const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -30,6 +33,7 @@ export default function CollectiblesItems({
 }) {
   const t = useI18nContext();
   const defaultDropdownState = {};
+  const ipfsGateway = useSelector(getIpfsGateway);
 
   Object.keys(collections).forEach((key) => {
     defaultDropdownState[key] = true;
@@ -46,6 +50,7 @@ export default function CollectiblesItems({
               collectionName,
               collectionImage,
             } = collections[key];
+
             const isExpanded = dropdownState[key];
             return (
               <div key={`collection-${index}`}>
@@ -57,7 +62,14 @@ export default function CollectiblesItems({
                   justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
                 >
                   <Box alignItems={ALIGN_ITEMS.CENTER}>
-                    <img width="28" src={collectionImage} />
+                    {collectionImage ? (
+                      <img
+                        style={{ width: '24px', borderRadius: '50%' }}
+                        src={collectionImage}
+                      />
+                    ) : (
+                      <div className="collection-icon">{collectionName[0]}</div>
+                    )}
                     <Typography
                       color={COLORS.BLACK}
                       variant={TYPOGRAPHY.H4}
@@ -83,6 +95,15 @@ export default function CollectiblesItems({
                 {isExpanded ? (
                   <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP}>
                     {collectibles.map((collectible, i) => {
+                      let { image } = collectible;
+                      if (collectible?.image.startsWith('ipfs://')) {
+                        const contentIdentifier = util.getIpfsUrlContentIdentifier(
+                          collectible.image,
+                        );
+                        image = ipfsGateway.endsWith('/')
+                          ? ipfsGateway + contentIdentifier
+                          : `${ipfsGateway}/${contentIdentifier}`;
+                      }
                       return (
                         <Box
                           width={width}
@@ -99,10 +120,8 @@ export default function CollectiblesItems({
                             width={BLOCK_SIZES.FULL}
                           >
                             <img
-                              className="collectibles-items__image"
-                              width="100%"
-                              height="100%"
-                              src={collectible.image}
+                              className="collectibles-items__image"                     
+                              src={image}
                             />
                           </Box>
                         </Box>
@@ -151,7 +170,7 @@ export default function CollectiblesItems({
                   onClick={onAddNFT}
                   style={{ padding: '4px' }}
                 >
-                  {t('addNFTLowerCase')}
+                  {t('importNFTs')}
                 </Button>
               </Box>
             </Box>

@@ -258,6 +258,9 @@ export const getTokens = (state) => state.metamask.tokens;
 
 export const getCollectibles = (state) => state.metamask.collectibles;
 
+export const getCollectibleContracts = (state) =>
+  state.metamask.collectibleContracts;
+
 export function getBlockGasLimit(state) {
   return state.metamask.currentBlockGasLimit;
 }

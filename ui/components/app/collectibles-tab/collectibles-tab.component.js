@@ -15,10 +15,14 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCollectibles } from '../../../ducks/metamask/metamask';
+import {
+  getCollectibles,
+  getCollectibleContracts,
+} from '../../../ducks/metamask/metamask';
 
 export default function CollectiblesTab({ onAddNFT }) {
   const collectibles = useSelector(getCollectibles);
+  const collectibleContracts = useSelector(getCollectibleContracts);
   const newNFTsDetected = false;
   const t = useI18nContext();
   const collections = {};
@@ -27,9 +31,13 @@ export default function CollectiblesTab({ onAddNFT }) {
     if (collections[collectible.address]) {
       collections[collectible.address].collectibles.push(collectible);
     } else {
+      const collectionContract = collectibleContracts.find(
+        ({ address }) => address === collectible.address,
+      );
       collections[collectible.address] = {
-        collectionName: collectible.collectionName,
-        collectionImage: collectible.collectionImage,
+        collectionName: collectionContract?.name || collectible.name,
+        collectionImage:
+          collectionContract?.logo || collectible.collectionImage,
         collectibles: [collectible],
       };
     }
