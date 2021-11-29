@@ -92,34 +92,36 @@ const GasDetailsItem = ({
           />
         </div>
       }
-      subText={t('editGasSubTextFee', [
-        <Box
-          key="editGasSubTextFeeLabel"
-          display="inline-flex"
-          className={classNames('gas-details-item__gasfee-label', {
-            'gas-details-item__gas-fee-warning': estimateUsed === 'high',
-          })}
-        >
-          <Box marginRight={1}>
-            <b>
-              {estimateUsed === 'high' && '⚠ '}
-              <I18nValue messageKey="editGasSubTextFeeLabel" />
-            </b>
-          </Box>
-          <div
-            key="editGasSubTextFeeValue"
-            className="gas-details-item__currency-container"
+      subText={
+        <>
+          <Box
+            key="editGasSubTextFeeLabel"
+            display="inline-flex"
+            className={classNames('gas-details-item__gasfee-label', {
+              'gas-details-item__gas-fee-warning': estimateUsed === 'high',
+            })}
           >
-            <HeartBeat />
-            <UserPreferencedCurrencyDisplay
-              key="editGasSubTextFeeAmount"
-              type={PRIMARY}
-              value={hexMaximumTransactionFee}
-              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-            />
-          </div>
-        </Box>,
-      ])}
+            <Box marginRight={1}>
+              <b>
+                {estimateUsed === 'high' && '⚠ '}
+                <I18nValue messageKey="editGasSubTextFeeLabel" />
+              </b>
+            </Box>
+            <div
+              key="editGasSubTextFeeValue"
+              className="gas-details-item__currency-container"
+            >
+              <HeartBeat />
+              <UserPreferencedCurrencyDisplay
+                key="editGasSubTextFeeAmount"
+                type={PRIMARY}
+                value={hexMaximumTransactionFee}
+                hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+              />
+            </div>
+          </Box>
+        </>
+      }
       subTitle={
         <GasTiming
           maxPriorityFeePerGas={hexWEIToDecGWEI(

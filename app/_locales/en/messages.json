@@ -166,6 +166,9 @@
   "advanced": {
     "message": "Advanced"
   },
+  "advancedBaseGasFeeToolTip": {
+    "message": "Any difference between your max base fee and the current base fee will be refunded after completion."
+  },
   "advancedGasFeeModalTitle": {
     "message": "Advanced gas fee"
   },
@@ -174,6 +177,9 @@
   },
   "advancedOptions": {
     "message": "Advanced Options"
+  },
+  "advancedPriorityFeeToolTip": {
+    "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
   "advancedSettingsDescription": {
     "message": "Access developer features, download State Logs, Reset Account, setup test networks and custom RPC"
@@ -623,6 +629,9 @@
   "currentLanguage": {
     "message": "Current Language"
   },
+  "currentTitle": {
+    "message": "Current:"
+  },
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
   },
@@ -827,17 +836,9 @@
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
-  "editGasSubTextAmount": {
-    "message": "$1 $2",
-    "description": "$1 will be passed the editGasSubTextAmountLabel and $2 will be passed the amount in either cryptocurrency or fiat"
-  },
   "editGasSubTextAmountLabel": {
     "message": "Max amount:",
     "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
-  },
-  "editGasSubTextFee": {
-    "message": "$1 $2",
-    "description": "$1 will be passed the editGasSubTextFeeLabel and $2 will be passed the fee amount in either cryptocurrency or fiat"
   },
   "editGasSubTextFeeLabel": {
     "message": "Max fee:",
@@ -854,6 +855,12 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
+  },
+  "editInGwei": {
+    "message": "Edit in GWEI"
+  },
+  "editInMultiplier": {
+    "message": "Edit in multiplier"
   },
   "editNonceField": {
     "message": "Edit Nonce"
@@ -1593,6 +1600,9 @@
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
+  "multiplier": {
+    "message": "multiplier"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -2020,6 +2030,9 @@
   },
   "primaryCurrencySettingDescription": {
     "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
+  },
+  "priorityFee": {
+    "message": "Priority Fee"
   },
   "privacyMsg": {
     "message": "Privacy Policy"
@@ -3098,6 +3111,9 @@
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
+  },
+  "twelveHrTitle": {
+    "message": "12hr:"
   },
   "typePassword": {
     "message": "Type your MetaMask password"

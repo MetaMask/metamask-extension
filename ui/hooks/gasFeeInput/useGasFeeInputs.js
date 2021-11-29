@@ -5,9 +5,9 @@ import {
   CUSTOM_GAS_ESTIMATE,
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
 } from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
-import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../helpers/utils/confirm-tx.util';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
@@ -106,10 +106,10 @@ export function useGasFeeInputs(
   });
 
   const [estimateUsed, setEstimateUsed] = useState(() => {
-    if (areDappSuggestedAndTxParamGasFeesTheSame(transaction)) {
-      return 'dappSuggested';
+    if (estimateToUse) {
+      return estimateToUse;
     }
-    return estimateToUse;
+    return PRIORITY_LEVELS.CUSTOM;
   });
 
   /**
@@ -118,9 +118,7 @@ export function useGasFeeInputs(
    * so that transaction is source of truth whenever possible.
    */
   useEffect(() => {
-    if (areDappSuggestedAndTxParamGasFeesTheSame(transaction)) {
-      setEstimateUsed('dappSuggested');
-    } else if (transaction?.userFeeLevel) {
+    if (transaction?.userFeeLevel) {
       setEstimateUsed(transaction?.userFeeLevel);
     }
   }, [setEstimateUsed, transaction]);
@@ -219,11 +217,6 @@ export function useGasFeeInputs(
   const { updateTransactionUsingGasFeeEstimates } = useTransactionFunctions({
     defaultEstimateToUse,
     gasLimit,
-    gasPrice,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    gasFeeEstimates,
-    supportsEIP1559,
     transaction,
   });
 

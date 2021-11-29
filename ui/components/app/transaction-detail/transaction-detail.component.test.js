@@ -1,7 +1,10 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import {
+  GAS_ESTIMATE_TYPES,
+  PRIORITY_LEVELS,
+} from '../../../../shared/constants/gas';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../../shared/constants/transaction';
 
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -79,6 +82,7 @@ describe('TransactionDetail', () => {
     render({
       contextProps: {
         transaction: {
+          userFeeLevel: PRIORITY_LEVELS.DAPP_SUGGESTED,
           dappSuggestedGasFees: { maxFeePerGas: 1, maxPriorityFeePerGas: 1 },
           txParams: { maxFeePerGas: 1, maxPriorityFeePerGas: 1 },
         },

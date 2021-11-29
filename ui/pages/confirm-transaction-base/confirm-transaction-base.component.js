@@ -514,22 +514,26 @@ export default class ConfirmTransactionBase extends Component {
             </div>
           }
           subText={
-            !isMultiLayerFeeNetwork &&
-            t('editGasSubTextFee', [
-              <b key="editGasSubTextFeeLabel">{t('editGasSubTextFeeLabel')}</b>,
-              <div
-                key="editGasSubTextFeeValue"
-                className="confirm-page-container-content__currency-container"
-              >
-                {renderHeartBeatIfNotInTest()}
-                <UserPreferencedCurrencyDisplay
-                  key="editGasSubTextFeeAmount"
-                  type={PRIMARY}
-                  value={hexMaximumTransactionFee}
-                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                />
-              </div>,
-            ])
+            !isMultiLayerFeeNetwork && (
+              <>
+                <b key="editGasSubTextFeeLabel">
+                  {t('editGasSubTextFeeLabel')}
+                </b>
+                ,
+                <div
+                  key="editGasSubTextFeeValue"
+                  className="confirm-page-container-content__currency-container"
+                >
+                  {renderHeartBeatIfNotInTest()}
+                  <UserPreferencedCurrencyDisplay
+                    key="editGasSubTextFeeAmount"
+                    type={PRIMARY}
+                    value={hexMaximumTransactionFee}
+                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                  />
+                </div>
+              </>
+            )
           }
           subTitle={
             <>
@@ -606,12 +610,14 @@ export default class ConfirmTransactionBase extends Component {
                 detailText={renderTotalDetailText()}
                 detailTotal={renderTotalDetailTotal()}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
-                subText={t('editGasSubTextAmount', [
-                  <b key="editGasSubTextAmountLabel">
-                    {t('editGasSubTextAmountLabel')}
-                  </b>,
-                  renderTotalMaxAmount(),
-                ])}
+                subText={
+                  <>
+                    <b key="editGasSubTextAmountLabel">
+                      {t('editGasSubTextAmountLabel')}
+                    </b>
+                    {renderTotalMaxAmount()}
+                  </>
+                }
               />
             ),
           ]}

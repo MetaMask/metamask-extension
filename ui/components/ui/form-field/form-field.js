@@ -30,6 +30,7 @@ export default function FormField({
   password,
   allowDecimals,
   disabled,
+  inputDetails,
 }) {
   return (
     <div
@@ -107,6 +108,7 @@ export default function FormField({
             {error}
           </Typography>
         )}
+        {inputDetails}
       </label>
     </div>
   );
@@ -127,6 +129,7 @@ FormField.propTypes = {
   password: PropTypes.bool,
   allowDecimals: PropTypes.bool,
   disabled: PropTypes.bool,
+  inputDetails: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
 };
 
 FormField.defaultProps = {
@@ -143,4 +146,5 @@ FormField.defaultProps = {
   password: false,
   allowDecimals: true,
   disabled: false,
+  inputDetails: '',
 };
