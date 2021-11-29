@@ -13,6 +13,7 @@ const NicknamePopover = ({
   nickname,
   onClose = null,
   onAdd = null,
+  explorerLink,
 }) => {
   const t = useContext(I18nContext);
 
@@ -49,7 +50,20 @@ const NicknamePopover = ({
           </button>
         </div>
         <div className="nickname-popover__view-on-block-explorer">
-          {t('viewOnBlockExplorer')}
+          <Button
+            type="link"
+            className="nickname-popover__etherscan-link"
+            onClick={() => {
+              global.platform.openTab({
+                url: explorerLink,
+              });
+            }}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={t('etherscanView')}
+          >
+            {t('viewOnBlockExplorer')}
+          </Button>
         </div>
         <Button
           type="primary"
@@ -68,6 +82,7 @@ NicknamePopover.propTypes = {
   nickname: PropTypes.string,
   onClose: PropTypes.func,
   onAdd: PropTypes.func,
+  explorerLink: PropTypes.string,
 };
 
 export default NicknamePopover;
