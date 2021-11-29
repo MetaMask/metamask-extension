@@ -20,6 +20,9 @@
   &__data {
     padding: 16px;
     color: $oslo-gray;
+    & > .disclosure {
+      margin-top: 0;
+    }
   }
 
   &__data-box {
