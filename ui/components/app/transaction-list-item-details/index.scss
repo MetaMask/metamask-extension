@@ -98,6 +98,17 @@
 
   &__sender-to-recipient-container {
     margin-bottom: 8px;
+    .sender-to-recipient {
+      .sender-to-recipient__party {
+        border: none;
+        &--sender {
+          padding-left: 0;
+        }
+        &--recipient {
+          padding-right: 0;
+        }
+      }
+    }
   }
 
   &__cards-container {
