@@ -1,8 +1,13 @@
 .site-origin {
-  max-width: 400px;
+  max-width: 300px;
   .chip__left-icon {
     padding: 4px 0 4px 8px;
   }
+
+  .chip {
+    width: auto !important;
+  }
+
   span {
     display: inline-block;
     text-overflow: ellipsis;
