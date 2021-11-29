@@ -30,6 +30,8 @@ import CollectibleOptions from './collectible-options';
 import { createCustomTokenTrackerLink } from '@metamask/etherscan-link';
 import { removeAndIgnoreCollectible } from '../../../store/actions';
 import {
+  GOERLI_CHAIN_ID,
+  KOVAN_CHAIN_ID,
   MAINNET,
   POLYGON_CHAIN_ID,
   RINKEBY_CHAIN_ID,
@@ -54,12 +56,12 @@ export default function CollectibleDetails({ collectible }) {
   const collectibleImageURL = getAssetImageURL(image, ipfsGateway);
   const dispatch = useDispatch();
 
-  onRemove = () => {
+  const onRemove = () => {
     dispatch(removeAndIgnoreCollectible(address, tokenId));
     history.push(DEFAULT_ROUTE);
   };
 
-  getOpenSeaLink = () => {
+  const getOpenSeaLink = () => {
     switch (currentNetwork) {
       case MAINNET:
         return `https://opensea.io/assets/${address}/${tokenId}`;
@@ -75,6 +77,8 @@ export default function CollectibleDetails({ collectible }) {
     }
   };
 
+  const openSeaLink = getOpenSeaLink();
+
   return (
     <>
       <AssetNavigation
@@ -84,8 +88,8 @@ export default function CollectibleDetails({ collectible }) {
         optionsButton={
           <CollectibleOptions
             onViewOnOpensea={
-              getOpenSeaLink()
-                ? global.platform.openTab({ url: getOpenSeaLink() })
+              openSeaLink
+                ? () => global.platform.openTab({ url: openSeaLink })
                 : null
             }
             onRemove={onRemove}
