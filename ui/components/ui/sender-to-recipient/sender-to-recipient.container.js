@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { getAccountsWithLabels, getAddressBookEntry } from '../../../selectors';
 import * as actions from '../../../store/actions';
 import SenderToRecipient from './sender-to-recipient.component';
 
