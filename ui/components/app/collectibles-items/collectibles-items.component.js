@@ -21,6 +21,10 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getIpfsGateway } from '../../../selectors';
+import { history } from 'globalthis/implementation';
+import { ASSET_ROUTE } from '../../../helpers/constants/routes';
+import { useHistory } from 'react-router';
+import { getAssetImageURL } from '../../../helpers/utils/util';
 
 const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -38,6 +42,7 @@ export default function CollectiblesItems({
   Object.keys(collections).forEach((key) => {
     defaultDropdownState[key] = true;
   });
+  const history = useHistory();
 
   const [dropdownState, setDropdownState] = useState(defaultDropdownState);
   return (
@@ -95,15 +100,8 @@ export default function CollectiblesItems({
                 {isExpanded ? (
                   <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP}>
                     {collectibles.map((collectible, i) => {
-                      let { image } = collectible;
-                      if (collectible?.image.startsWith('ipfs://')) {
-                        const contentIdentifier = util.getIpfsUrlContentIdentifier(
-                          collectible.image,
-                        );
-                        image = ipfsGateway.endsWith('/')
-                          ? ipfsGateway + contentIdentifier
-                          : `${ipfsGateway}/${contentIdentifier}`;
-                      }
+                      let { image, address, tokenId } = collectible;
+                      const collectibleImage = getAssetImageURL(image, ipfsGateway)
                       return (
                         <Box
                           width={width}
@@ -120,8 +118,13 @@ export default function CollectiblesItems({
                             width={BLOCK_SIZES.FULL}
                           >
                             <img
-                              className="collectibles-items__image"                     
-                              src={image}
+                              onClick={() =>
+                                history.push(
+                                  `${ASSET_ROUTE}/${address}/${tokenId}`,
+                                )
+                              }
+                              className="collectibles-items__image"
+                              src={collectibleImage}
                             />
                           </Box>
                         </Box>

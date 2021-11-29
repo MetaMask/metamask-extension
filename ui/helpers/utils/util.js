@@ -18,6 +18,7 @@ import {
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
+import { util } from '@metamask/controllers';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -427,4 +428,15 @@ export const toHumanReadableTime = (t, milliseconds) => {
 
 export function clearClipboard() {
   window.navigator.clipboard.writeText('');
+}
+
+export function getAssetImageURL(image, ipfsGateway) {
+  let result = image;
+  if (image.startsWith('ipfs://')) {
+    const contentIdentifier = util.getIpfsUrlContentIdentifier(image);
+    result = ipfsGateway.endsWith('/')
+      ? ipfsGateway + contentIdentifier
+      : `${ipfsGateway}/${contentIdentifier}`;
+  }
+  return result;
 }
