@@ -42,7 +42,7 @@ const AccountNicknameModal = ({
   );
 };
 
-AccountNicknameModal.PropTypes = {
+AccountNicknameModal.propTypes = {
   hideModal: PropTypes.func.isRequired,
   addNicknameModal: PropTypes.func.isRequired,
   address: PropTypes.string.isRequired,
