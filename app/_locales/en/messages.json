@@ -841,8 +841,7 @@
     "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
   "editGasSubTextFeeLabel": {
-    "message": "Max fee:",
-    "description": "$1 represents a dollar amount"
+    "message": "Max fee:"
   },
   "editGasTitle": {
     "message": "Edit priority"

@@ -7,6 +7,15 @@
     display: flex;
     justify-content: space-between;
     grid-gap: 5px;
+
+    &-subText {
+      display: flex;
+      align-items: center;
+
+      .currency-display-component {
+        margin-left: 4px;
+      }
+    }
   }
 
   &__detail-values {
