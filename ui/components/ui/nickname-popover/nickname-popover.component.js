@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
+import Tooltip from '../tooltip';
 import Popover from '../popover';
 import Button from '../button';
 import Identicon from '../identicon/identicon.component';
@@ -39,16 +40,23 @@ const NicknamePopover = ({
           <div className="nickname-popover__public-address__constant">
             {address}
           </div>
-          <button
-            type="link"
-            onClick={() => {
-              handleCopy(address);
-            }}
+
+          <Tooltip
+            position="bottom"
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
           >
-            <CopyIcon size={11} color="#989a9b" />
-          </button>
+            <button
+              type="link"
+              onClick={() => {
+                handleCopy(address);
+              }}
+              title=""
+            >
+              <CopyIcon size={11} color="#989a9b" />
+            </button>
+          </Tooltip>
         </div>
+
         <div className="nickname-popover__view-on-block-explorer">
           <Button
             type="link"
