@@ -2,16 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-const PERMISSION_TYPES = {
-  eth_accounts: {
-    leftIcon: 'fas fa-eye',
-    label: 'eth_accounts',
-    rightIcon: null,
-  },
-};
-
 export default function PermissionsConnectPermissionList({ permissions }) {
   const t = useI18nContext();
+
+  const PERMISSION_TYPES = {
+    eth_accounts: {
+      leftIcon: 'fas fa-eye',
+      label: t('eth_accounts'),
+      rightIcon: null,
+    },
+  };
+
   return (
     <div className="permissions-connect-permission-list">
       {Object.keys(permissions)
@@ -19,7 +20,7 @@ export default function PermissionsConnectPermissionList({ permissions }) {
         .map((permission) => (
           <div className="permission" key={permission.label}>
             <i className={permission.leftIcon} />
-            {t(permission.label)}
+            {permission.label}
             <i className={permission.rightIcon} />
           </div>
         ))}
@@ -28,5 +29,5 @@ export default function PermissionsConnectPermissionList({ permissions }) {
 }
 
 PermissionsConnectPermissionList.propTypes = {
-  permissions: PropTypes.object.isRequired,
+  permissions: PropTypes.objectOf(PropTypes.bool).isRequired,
 };

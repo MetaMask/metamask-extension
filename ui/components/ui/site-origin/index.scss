@@ -1,5 +1,14 @@
 .site-origin {
+  max-width: 400px;
   .chip__left-icon {
-    padding: 12px 0 12px 12px;
+    padding: 4px 0 4px 8px;
+  }
+  span {
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    /*rtl:ignore*/
+    direction: rtl;
   }
 }
