@@ -1,39 +1,53 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { getAccountLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
+import {
+  getRpcPrefsForCurrentProvider,
+  getCurrentChainId,
+} from '../../../../selectors';
 import NicknamePopover from '../../../ui/nickname-popover';
 
-export default class AccountNicknameModal extends Component {
-  static propTypes = {
-    hideModal: PropTypes.func.isRequired,
-    addNicknameModal: PropTypes.func.isRequired,
-    address: PropTypes.string.isRequired,
-    nickname: PropTypes.string.isRequired,
-    className: PropTypes.string,
-  };
+const AccountNicknameModal = ({
+  hideModal,
+  addNicknameModal,
+  address,
+  nickname,
+  className,
+}) => {
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const chainId = useSelector(getCurrentChainId);
 
-  render() {
-    const { t } = this.context;
-    const {
-      className,
-      address,
-      hideModal,
-      addNicknameModal,
-      nickname,
-    } = this.props;
+  const explorerLink = getAccountLink(
+    address,
+    chainId,
+    { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
+    null,
+  );
 
-    return (
-      <div
-        className={classnames(className, 'account-nickname-modal')}
-        style={{ borderRadius: '4px' }}
-      >
-        <NicknamePopover
-          address={address}
-          onClose={hideModal}
-          onAdd={addNicknameModal}
-          nickname={nickname}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div
+      className={classnames(className, 'account-nickname-modal')}
+      style={{ borderRadius: '4px' }}
+    >
+      <NicknamePopover
+        address={address}
+        onClose={hideModal}
+        onAdd={addNicknameModal}
+        nickname={nickname}
+        explorerLink={explorerLink}
+      />
+    </div>
+  );
+};
+
+AccountNicknameModal.PropTypes = {
+  hideModal: PropTypes.func.isRequired,
+  addNicknameModal: PropTypes.func.isRequired,
+  address: PropTypes.string.isRequired,
+  nickname: PropTypes.string.isRequired,
+  className: PropTypes.string,
+};
+
+export default AccountNicknameModal;

@@ -57,6 +57,11 @@
     margin-top: 12px;
   }
 
+  &__etherscan-link {
+    @include H7;
+    padding: 0;
+  }
+
   &__footer-button {
     margin-top: 16px;
     width: 152px;
