@@ -14,7 +14,7 @@ import { useAdvanceGasFeePopoverContext } from '../context';
 const validateGasLimit = (gasLimit) =>
   gasLimit < GAS_LIMIT.MIN || gasLimit > GAS_LIMIT.MAX
     ? 'editGasLimitOutOfBoundsV2'
-    : '';
+    : undefined;
 
 const AdvancedGasFeeGasLimit = () => {
   const t = useI18nContext();

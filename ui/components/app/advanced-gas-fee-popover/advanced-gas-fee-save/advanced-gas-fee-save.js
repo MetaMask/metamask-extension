@@ -31,7 +31,7 @@ const AdvancedGasFeeSaveButton = () => {
   };
 
   return (
-    <Button type="primary" disabled={!isDirty && !hasError} onClick={onSave}>
+    <Button type="primary" disabled={!isDirty || hasError} onClick={onSave}>
       <I18nValue messageKey="save" />
     </Button>
   );

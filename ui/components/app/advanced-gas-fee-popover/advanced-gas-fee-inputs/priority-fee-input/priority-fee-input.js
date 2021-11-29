@@ -36,7 +36,7 @@ const validatePriorityFee = (value, gasFeeEstimates) => {
   ) {
     return 'editGasMaxPriorityFeeHighV2';
   }
-  return '';
+  return undefined;
 };
 
 const PriorityFeeInput = () => {

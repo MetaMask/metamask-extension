@@ -41,6 +41,28 @@ const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
     multiplierBase: 10,
   }).toNumber();
 
+const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
+  if (bnGreaterThan(maxPriorityFeePerGas, value)) {
+    return 'editGasMaxBaseFeeImbalance';
+  }
+  if (
+    gasFeeEstimates?.low &&
+    bnLessThan(value, gasFeeEstimates.low.suggestedMaxFeePerGas)
+  ) {
+    return 'editGasMaxBaseFeeLow';
+  }
+  if (
+    gasFeeEstimates?.high &&
+    bnGreaterThan(
+      value,
+      gasFeeEstimates.high.suggestedMaxFeePerGas * HIGH_FEE_WARNING_MULTIPLIER,
+    )
+  ) {
+    return 'editGasMaxBaseFeeHigh';
+  }
+  return undefined;
+};
+
 const BaseFeeInput = () => {
   const t = useI18nContext();
   const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
