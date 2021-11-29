@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
-import Tooltip from '../../../../../ui/tooltip/tooltip';
 import { shortenAddress } from '../../../../../../helpers/utils/util';
 import Identicon from '../../../../../ui/identicon';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -13,6 +12,7 @@ const Address = ({
   recipientNickname,
   recipientEns,
   recipientName,
+  showNicknameModal,
 }) => {
   const t = useI18nContext();
   const [addressCopied, setAddressCopied] = useState(false);
@@ -35,24 +35,25 @@ const Address = ({
       <div className="tx-insight-component-address__sender-icon">
         <Identicon address={checksummedRecipientAddress} diameter={18} />
       </div>
-      <Tooltip
-        position="right"
-        html={tooltipHtml}
-        wrapperClassName="tx-insight-component-address__tooltip-wrapper"
-        containerClassName="tx-insight-component-address__tooltip-container"
-        onHidden={() => setAddressCopied(false)}
+
+      <div
+        className="address__name"
+        onClick={() => {
+          showNicknameModal(
+            checksummedRecipientAddress,
+            recipientNickname ? recipientNickname : null,
+          );
+        }}
       >
-        <div className="address__name">
-          {addressOnly
-            ? recipientNickname ||
-              recipientEns ||
-              shortenAddress(checksummedRecipientAddress)
-            : recipientNickname ||
-              recipientEns ||
-              recipientName ||
-              t('newContract')}
-        </div>
-      </Tooltip>
+        {addressOnly
+          ? recipientNickname ||
+            recipientEns ||
+            shortenAddress(checksummedRecipientAddress)
+          : recipientNickname ||
+            recipientEns ||
+            recipientName ||
+            t('newContract')}
+      </div>
     </div>
   );
 };
@@ -64,6 +65,7 @@ Address.propTypes = {
   recipientNickname: PropTypes.string,
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,
+  showNicknameModal: PropTypes.func,
 };
 
 export default Address;
