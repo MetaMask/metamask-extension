@@ -700,6 +700,15 @@ export function getUseTokenDetection(state) {
 }
 
 /**
+ * To get the useCollectibleDetection flag which determines whether we autodetect NFTs
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseCollectibleDetection(state) {
+  return Boolean(state.metamask.useCollectibleDetection);
+}
+
+/**
  * To retrieve the tokenList produced by TokenListcontroller
  * @param {*} state
  * @returns {Object}
@@ -724,6 +733,10 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
     transportTypePreferenceIsWebHID &&
     (webHidIsNotConnected || transportIsNotSuccessfullyCreated)
   );
+}
+
+export function getNewCollectibleAddedMessage(state) {
+  return state.appState.newCollectibleAddedMessage;
 }
 
 /**

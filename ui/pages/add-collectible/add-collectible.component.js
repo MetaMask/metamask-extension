@@ -1,27 +1,43 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 import Box from '../../components/ui/box';
 import TextField from '../../components/ui/text-field';
 import PageContainer from '../../components/ui/page-container';
+import {
+  addCollectibleVerifyOwnership,
+  setNewCollectibleAddedMessage,
+} from '../../store/actions';
 
 export default function AddCollectible() {
   const t = useI18nContext();
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const [address, setAddress] = useState('');
   const [tokenId, setTokenId] = useState('');
+
+  const handleAddCollectible = async () => {
+    try {
+      await dispatch(addCollectibleVerifyOwnership(address, tokenId));
+    } catch (error) {
+      const { message } = error;
+      dispatch(setNewCollectibleAddedMessage(message));
+      history.push(DEFAULT_ROUTE);
+      return;
+    }
+    dispatch(setNewCollectibleAddedMessage('success'));
+    history.push(DEFAULT_ROUTE);
+  };
 
   return (
     <PageContainer
       title={t('addNFT')}
       onSubmit={() => {
-        console.log(
-          `Adding collectible with ID: ${tokenId} and address ${address}`,
-        );
-        history.push(DEFAULT_ROUTE);
+        handleAddCollectible();
       }}
       submitText={t('add')}
       onCancel={() => {

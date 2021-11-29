@@ -7,9 +7,6 @@ import ActionableMessage from '../../../ui/actionable-message/actionable-message
 import { PageContainerFooter } from '../../../ui/page-container';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
-// eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2 = process.env.EIP_1559_V2;
-
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
@@ -42,7 +39,8 @@ export default class ConfirmPageContainerContent extends Component {
     hideUserAcknowledgedGasMissing: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
-    hideTitle: PropTypes.boolean,
+    hideTitle: PropTypes.bool,
+    supportsEIP1559V2: PropTypes.bool,
   };
 
   renderContent() {
@@ -101,6 +99,7 @@ export default class ConfirmPageContainerContent extends Component {
       hideTitle,
       setUserAcknowledgedGasMissing,
       hideUserAcknowledgedGasMissing,
+      supportsEIP1559V2,
     } = this.props;
 
     const primaryAction = hideUserAcknowledgedGasMissing
@@ -141,11 +140,13 @@ export default class ConfirmPageContainerContent extends Component {
           hideTitle={hideTitle}
         />
         {this.renderContent()}
-        {!EIP_1559_V2 && !hasSimulationError && (errorKey || errorMessage) && (
-          <div className="confirm-page-container-content__error-container">
-            <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
-          </div>
-        )}
+        {!supportsEIP1559V2 &&
+          !hasSimulationError &&
+          (errorKey || errorMessage) && (
+            <div className="confirm-page-container-content__error-container">
+              <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
+            </div>
+          )}
         <PageContainerFooter
           onCancel={onCancel}
           cancelText={cancelText}
