@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Chip from '../../../ui/chip';
 import Box from '../../../ui/box';
-import NpmIcon from '../icons/npm-icon';
 import Typography from '../../../ui/typography';
 import {
   COLORS,
@@ -15,7 +14,7 @@ const SnapsAuthorshipPill = ({ packageName, className }) => {
     <Chip
       leftIcon={
         <Box paddingLeft={2}>
-          <NpmIcon />
+          <i className="fab fa-npm"></i>
         </Box>
       }
       className={classnames(className, `snaps-authorship-pill`)}
