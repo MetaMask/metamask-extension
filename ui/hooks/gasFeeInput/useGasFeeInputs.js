@@ -5,9 +5,9 @@ import {
   CUSTOM_GAS_ESTIMATE,
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
 } from '../../../shared/constants/gas';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
-import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../helpers/utils/confirm-tx.util';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
@@ -105,10 +105,7 @@ export function useGasFeeInputs(
     if (estimateToUse) {
       return estimateToUse;
     }
-    if (areDappSuggestedAndTxParamGasFeesTheSame(transaction)) {
-      return 'dappSuggested';
-    }
-    return 'custom';
+    return PRIORITY_LEVELS.CUSTOM;
   });
 
   /**

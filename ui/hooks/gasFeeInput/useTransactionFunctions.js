@@ -49,7 +49,7 @@ export const useTransactionFunctions = ({
           maxPriorityFeePerGas,
         } = transaction?.dappSuggestedGasFees;
         updateTransaction(
-          PRIORITY_LEVELS.CUSTOM,
+          PRIORITY_LEVELS.DAPP_SUGGESTED,
           maxFeePerGas,
           maxPriorityFeePerGas,
         );
