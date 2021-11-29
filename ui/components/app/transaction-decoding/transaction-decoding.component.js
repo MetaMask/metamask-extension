@@ -160,11 +160,11 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
               <details>
                 <summary className="typography--color-black">{name}: </summary>
                 <ol>
-                  {value.map((itemValue) => {
+                  {value.map((itemValue, index) => {
                     return (
-                      <li>
+                      <li key={`${itemValue.type?.typeClass}-${index}`}>
                         {renderLeaf({
-                          typeClass: itemValue.type.typeClass,
+                          typeClass: itemValue.type?.typeClass,
                           value: itemValue.value,
                           kind: itemValue.kind,
                         })}
@@ -199,7 +199,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     index,
   ) => {
     return children ? (
-      <li>
+      <li key={`${typeClass}-${index}`}>
         <details open={index === 0 ? 'open' : ''}>
           <summary>{name}: </summary>
           <ol>{children.map(renderTree)}</ol>
