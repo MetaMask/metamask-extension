@@ -519,7 +519,6 @@ export default class ConfirmTransactionBase extends Component {
                 <b key="editGasSubTextFeeLabel">
                   {t('editGasSubTextFeeLabel')}
                 </b>
-                ,
                 <div
                   key="editGasSubTextFeeValue"
                   className="confirm-page-container-content__currency-container"
