@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 import Typography from '../../ui/typography/typography';
 import {
@@ -15,18 +16,24 @@ export default function TransactionDetailItem({
   detailTotal = '',
   subTitle = '',
   subText = '',
+  boldHeadings = true,
+  flexWidthValues = false,
 }) {
   return (
     <div className="transaction-detail-item">
       <div className="transaction-detail-item__row">
         <Typography
           color={detailTitleColor}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
           variant={TYPOGRAPHY.H6}
         >
           {detailTitle}
         </Typography>
-        <div className="transaction-detail-item__detail-values">
+        <div
+          className={classnames('transaction-detail-item__detail-values', {
+            'transaction-detail-item__detail-values--flex-width': flexWidthValues,
+          })}
+        >
           {detailText && (
             <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
               {detailText}
@@ -34,7 +41,7 @@ export default function TransactionDetailItem({
           )}
           <Typography
             color={COLORS.BLACK}
-            fontWeight={FONT_WEIGHT.BOLD}
+            fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
             variant={TYPOGRAPHY.H6}
             margin={[1, 0, 1, 1]}
           >
@@ -66,4 +73,6 @@ TransactionDetailItem.propTypes = {
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  boldHeadings: PropTypes.bool,
+  flexWidthValues: PropTypes.bool,
 };
