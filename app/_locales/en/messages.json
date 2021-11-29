@@ -3223,6 +3223,9 @@
   "viewMore": {
     "message": "View More"
   },
+  "viewOnBlockExplorer": {
+    "message": "View on block explorer"
+  },
   "viewOnCustomBlockExplorer": {
     "message": "View $1 at $2",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
