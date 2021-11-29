@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import UpdateNicknamePopover from '../../../ui/update-nickname-popover';
 
@@ -25,6 +25,14 @@ const AccountNicknameModal = (props, context) => {
       />
     </div>
   );
+};
+
+AccountNicknameModal.propTypes = {
+  address: PropTypes.string.isRequired,
+  addressBookEntry: PropTypes.object,
+  addToAddressBook: PropTypes.func.isRequired,
+  hideModal: PropTypes.func.isRequired,
+  className: PropTypes.string,
 };
 
 export default AccountNicknameModal;
