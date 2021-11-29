@@ -15,6 +15,7 @@ const AdvancedGasFeeSaveButton = () => {
   const {
     isDirty,
     gasLimit,
+    hasError,
     maxFeePerGas,
     maxPriorityFeePerGas,
   } = useAdvanceGasFeePopoverContext();
@@ -30,7 +31,7 @@ const AdvancedGasFeeSaveButton = () => {
   };
 
   return (
-    <Button type="primary" disabled={!isDirty} onClick={onSave}>
+    <Button type="primary" disabled={!isDirty && !hasError} onClick={onSave}>
       <I18nValue messageKey="save" />
     </Button>
   );

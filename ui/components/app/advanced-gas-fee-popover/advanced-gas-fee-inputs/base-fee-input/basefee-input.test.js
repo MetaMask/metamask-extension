@@ -115,4 +115,58 @@ describe('BaseFeeInput', () => {
     });
     expect(screen.queryByText('50')).toBeInTheDocument();
   });
+
+  it('should show error if base if is less than suggested low value', () => {
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 3 },
+    });
+    expect(
+      screen.queryByText('Max base fee is low for current network conditions'),
+    ).not.toBeInTheDocument();
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 0.01 },
+    });
+    expect(
+      screen.queryByText('Max base fee is low for current network conditions'),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.queryByText('Edit in GWEI'));
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 10 },
+    });
+    expect(
+      screen.queryByText('Max base fee is low for current network conditions'),
+    ).toBeInTheDocument();
+  });
+
+  it('should show error if base if is more than suggested high value', () => {
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 3 },
+    });
+    expect(
+      screen.queryByText('Max base fee is higher than necessary'),
+    ).not.toBeInTheDocument();
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 10 },
+    });
+    fireEvent.click(screen.queryByText('Edit in GWEI'));
+    expect(
+      screen.queryByText('Max base fee is higher than necessary'),
+    ).toBeInTheDocument();
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 500 },
+    });
+    expect(
+      screen.queryByText('Max base fee is higher than necessary'),
+    ).toBeInTheDocument();
+  });
 });

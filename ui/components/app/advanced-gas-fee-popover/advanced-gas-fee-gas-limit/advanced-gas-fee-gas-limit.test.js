@@ -65,4 +65,33 @@ describe('AdvancedGasFeeGasLimit', () => {
     fireEvent.click(screen.queryByText('Edit'));
     expect(document.getElementsByTagName('input')[0]).toHaveValue(21000);
   });
+
+  it('should show error if gas limit is not in range', () => {
+    render();
+    fireEvent.click(screen.queryByText('Edit'));
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 20000 },
+    });
+    expect(
+      screen.queryByText(
+        'Gas limit must be greater than 20999 and less than 7920027',
+      ),
+    ).toBeInTheDocument();
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 8000000 },
+    });
+    expect(
+      screen.queryByText(
+        'Gas limit must be greater than 20999 and less than 7920027',
+      ),
+    ).toBeInTheDocument();
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 7000000 },
+    });
+    expect(
+      screen.queryByText(
+        'Gas limit must be greater than 20999 and less than 7920027',
+      ),
+    ).not.toBeInTheDocument();
+  });
 });

@@ -8,7 +8,11 @@ const MIN_GAS_PRICE_DEC = '0';
 const MIN_GAS_PRICE_HEX = parseInt(MIN_GAS_PRICE_DEC, 10).toString(16);
 const MIN_GAS_LIMIT_DEC = '21000';
 const MIN_GAS_LIMIT_HEX = parseInt(MIN_GAS_LIMIT_DEC, 10).toString(16);
-
+const GAS_LIMIT = {
+  MIN: 20999,
+  MAX: 7920027,
+};
+const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 const MIN_GAS_PRICE_GWEI = addHexPrefix(
   conversionUtil(MIN_GAS_PRICE_HEX, {
     fromDenomination: 'WEI',
@@ -45,6 +49,8 @@ const ENS_UNKNOWN_ERROR = 'ensUnknownError';
 const ENS_REGISTRATION_ERROR = 'ensRegistrationError';
 
 export {
+  GAS_LIMIT,
+  HIGH_FEE_WARNING_MULTIPLIER,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
