@@ -1387,6 +1387,9 @@
   "knownAddressRecipient": {
     "message": "Known contract address."
   },
+  "reportAsScam": {
+    "message": "Report as Scam"
+  },
   "knownTokenWarning": {
     "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent."
   },
@@ -2156,6 +2159,9 @@
   },
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+  },
+  "removeNFT": {
+    "message": "Remove NFT"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"

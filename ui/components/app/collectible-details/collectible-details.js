@@ -15,36 +15,43 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAssetImageURL } from '../../../helpers/utils/util';
 import { useSelector } from 'react-redux';
-import { getIpfsGateway } from '../../../selectors';
+import { getIpfsGateway, getSelectedIdentity } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
+import { getCollectibles } from '../../../ducks/metamask/metamask';
+import AssetOptions from '../../../pages/asset/components/asset-options';
+import CollectibleOptions from './collectible-options';
 
 export default function CollectibleDetails({ collectible }) {
   const { image, name, standard, description, address, tokenId } = collectible;
   const t = useI18nContext();
   const ipfsGateway = useSelector(getIpfsGateway);
-
+  const collectibleContracts = useSelector(getCollectibles);
+  const collectibleContractName = collectibleContracts.find(
+    ({ address }) => address === collectible.address,
+  )?.name;
+  const selectedAccountName = useSelector(
+    (state) => getSelectedIdentity(state).name,
+  );
   const collectibleImage = getAssetImageURL(image, ipfsGateway);
 
   return (
     <>
       <AssetNavigation
         accountName={selectedAccountName}
-        assetName={name}
+        assetName={collectibleContractName}
         onBack={() => history.push(DEFAULT_ROUTE)}
         optionsButton={
-          <AssetOptions
+          <CollectibleOptions
             onRemove={() =>
-              dispatch(showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
+              // dispatch(showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
             }
-            isEthNetwork={!rpcPrefs.blockExplorerUrl}
-            onClickBlockExplorer={() => {
-              blockExplorerLinkClickedEvent();
-              global.platform.openTab({ url: tokenTrackerLink });
+            onReportAsScam={() => {
+              // blockExplorerLinkClickedEvent();
+              // global.platform.openTab({ url: tokenTrackerLink });
             }}
-            onViewAccountDetails={() => {
-              dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
+            onViewOnOpensea={() => {
+              // dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
             }}
-            tokenSymbol={token.symbol}
           />
         }
       />
