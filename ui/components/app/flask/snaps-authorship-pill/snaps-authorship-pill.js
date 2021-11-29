@@ -14,7 +14,7 @@ const SnapsAuthorshipPill = ({ packageName, className }) => {
     <Chip
       leftIcon={
         <Box paddingLeft={2}>
-          <i className="fab fa-npm"></i>
+          <i className="fab fa-npm fa-lg snaps-authorship-icon"></i>
         </Box>
       }
       className={classnames(className, `snaps-authorship-pill`)}
