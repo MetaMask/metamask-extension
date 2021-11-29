@@ -5,7 +5,11 @@ import { getStorageItem, setStorageItem } from './storage-helpers';
 const fetchWithCache = async (
   url,
   fetchOptions = {},
-  { cacheRefreshTime = MINUTE * 6, timeout = SECOND * 30 } = {},
+  {
+    cacheRefreshTime = MINUTE * 6,
+    timeout = SECOND * 30,
+    suppressAutomaticThrowing = false,
+  } = {},
 ) => {
   if (
     fetchOptions.body ||
@@ -38,7 +42,7 @@ const fetchWithCache = async (
     mode: 'cors',
     ...fetchOptions,
   });
-  if (!response.ok) {
+  if (!suppressAutomaticThrowing && !response.ok) {
     throw new Error(
       `Fetch failed with status '${response.status}': '${response.statusText}'`,
     );
