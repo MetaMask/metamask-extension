@@ -25,16 +25,18 @@ const CollectibleOptions = ({ onRemove, onReportAsScam, onViewOnOpensea }) => {
           anchorElement={collectibleOptionsButtonElement}
           onHide={() => setCollectibleOptionsOpen(false)}
         >
-          <MenuItem
-            iconClassName="fas fa-qrcode"
-            data-testid="collectible-options__view-on-opensea"
-            onClick={() => {
-              setCollectibleOptionsOpen(false);
-              onViewOnOpensea();
-            }}
-          >
-            {t('viewOnOpensea')}
-          </MenuItem>
+          {onViewOnOpensea ? (
+            <MenuItem
+              iconClassName="fas fa-qrcode"
+              data-testid="collectible-options__view-on-opensea"
+              onClick={() => {
+                setCollectibleOptionsOpen(false);
+                onViewOnOpensea();
+              }}
+            >
+              {t('viewOnOpensea')}
+            </MenuItem>
+          ) : null}
           <MenuItem
             iconClassName="fas fa-external-link-alt collectible-options__icon"
             data-testid="collectible-options__etherscan"

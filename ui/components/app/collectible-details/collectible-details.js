@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
@@ -18,6 +18,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAssetImageURL, shortenAddress } from '../../../helpers/utils/util';
 import {
+  getCurrentChainId,
   getIpfsGateway,
   getRpcPrefsForCurrentProvider,
   getSelectedIdentity,
@@ -26,6 +27,14 @@ import AssetNavigation from '../../../pages/asset/components/asset-navigation';
 import { getCollectibleContracts } from '../../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import CollectibleOptions from './collectible-options';
+import { createCustomTokenTrackerLink } from '@metamask/etherscan-link';
+import { removeAndIgnoreCollectible } from '../../../store/actions';
+import {
+  MAINNET,
+  POLYGON_CHAIN_ID,
+  RINKEBY_CHAIN_ID,
+  ROPSTEN_CHAIN_ID,
+} from '../../../../shared/constants/network';
 
 export default function CollectibleDetails({ collectible }) {
   const { image, name, standard, description, address, tokenId } = collectible;
@@ -34,6 +43,8 @@ export default function CollectibleDetails({ collectible }) {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const ipfsGateway = useSelector(getIpfsGateway);
   const collectibleContracts = useSelector(getCollectibleContracts);
+  const currentNetwork = useSelector(getCurrentChainId);
+
   const collectibleContractName = collectibleContracts.find(
     ({ address }) => address === collectible.address,
   )?.name;
@@ -41,6 +52,29 @@ export default function CollectibleDetails({ collectible }) {
     (state) => getSelectedIdentity(state).name,
   );
   const collectibleImageURL = getAssetImageURL(image, ipfsGateway);
+  const dispatch = useDispatch();
+
+  onRemove = () => {
+    dispatch(removeAndIgnoreCollectible(address, tokenId));
+    history.push(DEFAULT_ROUTE);
+  };
+
+  getOpenSeaLink = () => {
+    switch (currentNetwork) {
+      case MAINNET:
+        return `https://opensea.io/assets/${address}/${tokenId}`;
+      case POLYGON_CHAIN_ID:
+        return `https://opensea.io/assets/matic/${address}/${tokenId}`;
+      case GOERLI_CHAIN_ID:
+      case KOVAN_CHAIN_ID:
+      case ROPSTEN_CHAIN_ID:
+      case RINKEBY_CHAIN_ID:
+        return `https://testnets.opensea.io/assets/matic/${address}/${tokenId}`;
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
       <AssetNavigation
@@ -49,17 +83,18 @@ export default function CollectibleDetails({ collectible }) {
         onBack={() => history.push(DEFAULT_ROUTE)}
         optionsButton={
           <CollectibleOptions
-            onRemove={() => {}}
+            onViewOnOpensea={
+              getOpenSeaLink()
+                ? global.platform.openTab({ url: getOpenSeaLink() })
+                : null
+            }
+            onRemove={onRemove}
             onReportAsScam={() => {}}
-            onViewOnOpensea={() => {}}
           />
         }
       />
       <Box padding={[4, 2, 4, 2]}>
-        <div
-          // flexDirection={FLEX_DIRECTION.ROW} display={DISPLAY.FLEX}
-          className="collectible-details"
-        >
+        <div className="collectible-details">
           <Box margin={3} padding={2} justifyContent={JUSTIFY_CONTENT.CENTER}>
             <img style={{ width: '14rem' }} src={collectibleImageURL} />
           </Box>
@@ -93,22 +128,6 @@ export default function CollectibleDetails({ collectible }) {
         </div>
         <Box margin={4} alignItems={ALIGN_ITEMS.FLEX_START}>
           <Box width={BLOCK_SIZES.ONE_THIRD}>
-            {/* <Typography
-              color={COLORS.BLACK}
-              variant={TYPOGRAPHY.H6}
-              fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{ marginBottom: 3 }}
-            >
-              {t('lastSold')}
-            </Typography>
-            <Typography
-              color={COLORS.BLACK}
-              variant={TYPOGRAPHY.H6}
-              fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{ marginBottom: 3 }}
-            >
-              {t('lastPriceSold')}
-            </Typography> */}
             <Typography
               color={COLORS.BLACK}
               variant={TYPOGRAPHY.H6}
@@ -117,14 +136,6 @@ export default function CollectibleDetails({ collectible }) {
             >
               {t('source')}
             </Typography>
-            {/* <Typography
-              color={COLORS.BLACK}
-              variant={TYPOGRAPHY.H6}
-              fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{ marginBottom: 3 }}
-            >
-              {t('link')}
-            </Typography> */}
             <Typography
               color={COLORS.BLACK}
               variant={TYPOGRAPHY.H6}
@@ -134,25 +145,10 @@ export default function CollectibleDetails({ collectible }) {
             </Typography>
           </Box>
           <Box width={BLOCK_SIZES.TWO_THIRDS}>
-            {/* <Typography
-              color={COLORS.UI3}
-              variant={TYPOGRAPHY.H6}
-              boxProps={{ marginBottom: 3 }}
-            >
-              {lastSold}
-            </Typography>
-            <Typography
-              color={COLORS.UI3}
-              variant={TYPOGRAPHY.H6}
-              boxProps={{ marginBottom: 3 }}
-            >
-              {lastPriceSold}
-            </Typography>  */}
             <Typography
               color={COLORS.PRIMARY1}
               variant={TYPOGRAPHY.H6}
               boxProps={{ marginBottom: 3 }}
-              // className="collectible-details__source"
               overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             >
               <a
@@ -163,22 +159,17 @@ export default function CollectibleDetails({ collectible }) {
                 {image}
               </a>
             </Typography>
-            {/* <Typography
-              color={COLORS.PRIMARY1}
-              variant={TYPOGRAPHY.H6}
-              boxProps={{ marginBottom: 3 }}
-            >
-              {link}
-            </Typography> */}
             <Typography
               color={COLORS.UI3}
               variant={TYPOGRAPHY.H6}
               overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-              // className="collectible-details__address"
             >
               <a
                 target="_blank"
-                href={rpcPrefs.blockExplorerUrl}
+                href={createCustomTokenTrackerLink(
+                  address,
+                  rpcPrefs.blockExplorerUrl,
+                )}
                 rel="noopener noreferrer"
               >
                 {shortenAddress(address)}
