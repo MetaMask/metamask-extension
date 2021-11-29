@@ -8,7 +8,10 @@ import * as Codec from '@truffle/codec';
 import { forAddress } from '@truffle/decoder';
 import inspect from 'browser-util-inspect';
 import { getSelectedAccount, getCurrentChainId } from '../../../selectors';
-import { FETCH_PROJECT_INFO_URI, TX_EXTRA_URI } from './constants';
+import {
+  FETCH_PROJECT_INFO_URI,
+  FETCH_SUPPORTED_NETWORKS_URI,
+} from './constants';
 import { hexToDecimal } from '../../../helpers/utils/conversions.util';
 import { I18nContext } from '../../../contexts/i18n';
 import { transformTxDecoding } from './transaction-decoding.util';
@@ -21,7 +24,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const t = useContext(I18nContext);
   const [tx, setTx] = useState([]);
   const { address: from } = useSelector(getSelectedAccount);
-  const chainId = hexToDecimal(useSelector(getCurrentChainId));
+  const network = hexToDecimal(useSelector(getCurrentChainId));
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -31,12 +34,34 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     (async () => {
       setLoading(true);
       try {
+        const networks = await fetchWithCache(
+          FETCH_SUPPORTED_NETWORKS_URI,
+          { method: 'GET' },
+          { suppressAutomaticThrowing: true },
+        );
+
+        if (!networks) {
+          throw new Error(
+            `Request timeout: unable to get list of supported networks !`,
+          );
+        }
+
+        if (
+          !networks.some(
+            (n) => n.active && Number(n.chainId) === Number(network),
+          )
+        ) {
+          throw new Error(
+            `Transaction decoding is not available for chainId ${network}`,
+          );
+        }
+
         const request_url =
           FETCH_PROJECT_INFO_URI +
           '?' +
           new URLSearchParams({
             to,
-            ['network-id']: chainId,
+            ['network-id']: network,
           });
 
         const response = await fetchWithCache(
@@ -95,7 +120,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         setErrorMessage(error?.message);
       }
     })();
-  }, [to, chainId, data]);
+  }, [to, network, data]);
 
   // ***********************************************************
   // component rendering methods
