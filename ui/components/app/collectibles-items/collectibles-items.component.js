@@ -155,7 +155,7 @@ export default function CollectiblesItems({
                   <Button
                     type="link"
                     onClick={onRefreshList}
-                    style={{ padding: '4px' }}
+                    style={{ padding: '4px', fontSize: '16px' }}
                   >
                     {t('refreshList')}
                   </Button>
@@ -165,7 +165,7 @@ export default function CollectiblesItems({
                   <Button
                     type="link"
                     onClick={onEnableAutoDetect}
-                    style={{ padding: '4px' }}
+                    style={{ padding: '4px', fontSize: '16px' }}
                   >
                     {t('enableAutoDetect')}
                   </Button>
@@ -182,7 +182,7 @@ export default function CollectiblesItems({
                 <Button
                   type="link"
                   onClick={onAddNFT}
-                  style={{ padding: '4px' }}
+                  style={{ padding: '4px', fontSize: '16px' }}
                 >
                   {t('importNFTs')}
                 </Button>

@@ -69,7 +69,7 @@ export default function CollectibleDetails({ collectible }) {
 
   const getOpenSeaLink = () => {
     switch (currentNetwork) {
-      case MAINNET:
+      case MAINNET_CHAIN_ID:
         return `https://opensea.io/assets/${address}/${tokenId}`;
       case POLYGON_CHAIN_ID:
         return `https://opensea.io/assets/matic/${address}/${tokenId}`;
@@ -149,14 +149,14 @@ export default function CollectibleDetails({ collectible }) {
               color={COLORS.BLACK}
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{ marginBottom: 3, width: BLOCK_SIZES.ONE_THIRD }}
+              boxProps={{ marginBottom: 3, width: BLOCK_SIZES.ONE_FOURTH }}
             >
               {t('source')}
             </Typography>
             <Typography
               color={COLORS.PRIMARY1}
               variant={TYPOGRAPHY.H6}
-              boxProps={{ marginBottom: 3, width: BLOCK_SIZES.TWO_THIRDS }}
+              boxProps={{ marginBottom: 3, width: BLOCK_SIZES.THREE_FOURTHS }}
               overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             >
               <a
@@ -174,7 +174,7 @@ export default function CollectibleDetails({ collectible }) {
               color={COLORS.BLACK}
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{ width: BLOCK_SIZES.ONE_THIRD }}
+              boxProps={{ width: BLOCK_SIZES.ONE_FOURTH }}
             >
               {t('contractAddress')}
             </Typography>
@@ -182,7 +182,7 @@ export default function CollectibleDetails({ collectible }) {
               color={COLORS.UI3}
               variant={TYPOGRAPHY.H6}
               overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-              boxProps={{ width: BLOCK_SIZES.TWO_THIRDS }}
+              boxProps={{ width: BLOCK_SIZES.THREE_FOURTHS }}
             >
               <a
                 target="_blank"
