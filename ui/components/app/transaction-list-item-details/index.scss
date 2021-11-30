@@ -1,5 +1,4 @@
 .transaction-list-item-details {
-
   div.disclosure + div.disclosure {
     margin-top: 0;
   }
@@ -20,6 +19,7 @@
     color: $Black-100;
     font-weight: bold;
     padding-bottom: 7px;
+
     & > div:first-child {
       flex: 1;
     }
@@ -31,11 +31,13 @@
     align-items: flex-start;
     height: 44px;
     justify-content: space-between;
+
     & > div:first-child {
       font-size: 14px;
       color: $Black-100;
       font-weight: bold;
-    }    
+    }
+
     & > div:last-child {
       font-weight: bold;
     }
@@ -45,11 +47,13 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+
     .btn-link {
       font-size: 12px;
       line-height: 100%;
       padding: 0;
     }
+
     & > div:first-child {
       padding-bottom: 16px;
     }
@@ -98,12 +102,15 @@
 
   &__sender-to-recipient-container {
     margin-bottom: 8px;
+
     .sender-to-recipient {
       .sender-to-recipient__party {
         border: none;
+
         &--sender {
           padding-left: 0;
         }
+
         &--recipient {
           padding-right: 0;
         }
@@ -126,9 +133,11 @@
   &__transaction-activity-log {
     flex: 2;
     min-width: 0;
+
     .transaction-activity-log__activities-container {
-      padding-top: 0; 
+      padding-top: 0;
     }
+
     .transaction-activity-log__title {
       display: none;
     }

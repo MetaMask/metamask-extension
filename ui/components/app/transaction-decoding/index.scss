@@ -6,12 +6,13 @@
 
 .tx-insight {
   overflow-x: hidden;
+
   &-loading {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100px;
-  
+
     .spinner {
       width: 30px;
     }
@@ -28,7 +29,7 @@
       margin: 12px 0 4px;
       padding-left: 22px;
       cursor: pointer;
-  
+
       & + .tx-insight-content {
         padding-left: 14px;
         padding-top: 5px;
@@ -36,15 +37,16 @@
     }
   }
 
-  
+
 
   .tx-insight-content {
     &__tree-component {
       line-height: 175%;
-      
+
       & > ol {
         padding-left: 0;
       }
+
       .eth-tx-params {
         padding: 8px;
         width: 343px;
@@ -59,7 +61,7 @@
         font-size: 14px;
         line-height: 172%;
       }
-    
+
       ol ol {
         padding-left: 22px;
         margin-left: 4px;
@@ -70,62 +72,62 @@
         cursor: pointer;
         padding-bottom: 5px;
       }
-      
+
       .eth-tx-params .solidity-func-name {
         width: fit-content;
         padding: 4px;
         text-transform: uppercase;
-        border:1px solid rgb(149, 149, 149);
-        color:rgb(149,149,149);
+        border: 1px solid rgb(149, 149, 149);
+        color: rgb(149, 149, 149);
         border-radius: 4px;
       }
-    
+
       .eth-tx-params .sol-value {
         display: flex;
         flex-flow: row wrap;
       }
-    
+
       .eth-tx-params .sol-value > {
         overflow: ellipses;
       }
-    
+
       .eth-tx-params ol {
         list-style: none;
-        padding: 0px;
+        padding: 0;
         max-width: inherit;
       }
-    
+
       .eth-tx-params > ol {
         margin-left: 16px;
       }
-    
-      /* 
+
+      /*
       Use this parameter to change the indentation!! */
       .eth-tx-params ol ol:not(:first-child) {
         padding-left: 8px;
       }
-    
+
       pre.solidity-raw {
         text-align: left;
       }
-    
+
       .solidity-address {
         display: flex;
         flex-direction: row;
       }
-    
+
       .solidity-address :first-child {
         width: 16px;
         height: 16px;
-        margin: 0px 8px;
+        margin: 0 8px;
       }
-    
+
       .solidity-item .param-name {
         padding-right: 4px;
       }
-    
+
       .solidity-value {
-        color: #6A737D;
+        color: #6a737d;
         overflow-x: hidden;
         padding-bottom: 5px;
 
@@ -139,29 +141,29 @@
       .solidity-error {
         display: flex;
         align-items: center;
+
         & > .error-message__icon {
           width: 14px;
           margin-right: 5px;
         }
       }
-    
+
       .eth-tx-params details > summary {
         color: black;
         font-family: sans-serif;
       }
-    
+
       .eth-tx-params footer {
         text-align: center;
         color: #8d959e;
       }
-    
+
       .eth-tx-params footer a {
         text-align: center;
         color: #8d959e;
       }
     }
   }
-  
 }
 
 
