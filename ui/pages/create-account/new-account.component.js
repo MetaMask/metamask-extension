@@ -26,6 +26,10 @@ export default class NewAccountCreateForm extends Component {
 
     const accountsNames = accounts.map((item) => item.name);
 
+    const accountCreateButtonDisabled = () => {
+      return Boolean(accountsNames.includes(newAccountName));
+    };
+
     const createClick = (_) => {
       createAccount(newAccountName || defaultAccountName)
         .then(() => {
@@ -92,7 +96,7 @@ export default class NewAccountCreateForm extends Component {
               large
               className="new-account-create-form__button"
               onClick={createClick}
-              disabled={Boolean(accountsNames.includes(newAccountName))}
+              disabled={accountCreateButtonDisabled}
             >
               {this.context.t('create')}
             </Button>
