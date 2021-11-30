@@ -142,9 +142,12 @@ export function getParticipateInMetaMetrics(state) {
 }
 
 export function isEIP1559Account(state) {
-  // Trezor does not support 1559 at this time
-  const currentKeyring = getCurrentKeyring(state);
-  return currentKeyring && currentKeyring.type !== KEYRING_TYPES.TREZOR;
+  const keyring = getCurrentKeyring(state);
+
+  if (keyring?.type === KEYRING_TYPES.TREZOR) {
+    return state.metamask.trezorModel === 'T';
+  }
+  return true;
 }
 
 /**

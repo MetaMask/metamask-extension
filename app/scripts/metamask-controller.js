@@ -1718,6 +1718,11 @@ export default class MetamaskController extends EventEmitter {
     if (deviceName === DEVICE_NAMES.LATTICE) {
       keyring.appName = 'MetaMask';
     }
+    if (deviceName === 'trezor') {
+      const model = keyring.getModel();
+      this.appStateController.setTrezorModel(model);
+    }
+
     keyring.network = this.networkController.getProviderConfig().type;
 
     return keyring;
@@ -2386,7 +2391,11 @@ export default class MetamaskController extends EventEmitter {
     const address =
       fromAddress || this.preferencesController.getSelectedAddress();
     const keyring = await this.keyringController.getKeyringForAccount(address);
-    return keyring.type !== KEYRING_TYPES.TREZOR;
+    if (keyring.type === KEYRING_TYPES.TREZOR) {
+      const model = keyring.getModel();
+      return model === 'T';
+    }
+    return true;
   }
 
   //=============================================================================
