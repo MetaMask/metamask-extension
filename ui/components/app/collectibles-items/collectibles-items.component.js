@@ -117,7 +117,7 @@ export default function CollectiblesItems({
                             backgroundColor={collectible.backgroundColor}
                             display={DISPLAY.FLEX}
                             justifyContent={JUSTIFY_CONTENT.CENTER}
-                            padding={1}
+                            padding={2}
                             width={BLOCK_SIZES.FULL}
                           >
                             <img
