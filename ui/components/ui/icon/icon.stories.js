@@ -1,5 +1,5 @@
 import React from 'react';
-import { color, number, select } from '@storybook/addon-knobs';
+import { color, number } from '@storybook/addon-knobs';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import ApproveIcon from './approve-icon.component';
