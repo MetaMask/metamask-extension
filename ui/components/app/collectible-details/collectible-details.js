@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { createCustomTokenTrackerLink } from '@metamask/etherscan-link';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
 import {
@@ -12,11 +13,14 @@ import {
   JUSTIFY_CONTENT,
   FLEX_DIRECTION,
   ALIGN_ITEMS,
-  DISPLAY,
   OVERFLOW_WRAP,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAssetImageURL, shortenAddress } from '../../../helpers/utils/util';
+import {
+  getAssetImageURL,
+  isEqualCaseInsensitive,
+  shortenAddress,
+} from '../../../helpers/utils/util';
 import {
   getCurrentChainId,
   getIpfsGateway,
@@ -26,8 +30,6 @@ import {
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
 import { getCollectibleContracts } from '../../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import CollectibleOptions from './collectible-options';
-import { createCustomTokenTrackerLink } from '@metamask/etherscan-link';
 import { removeAndIgnoreCollectible } from '../../../store/actions';
 import {
   GOERLI_CHAIN_ID,
@@ -37,9 +39,10 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../../shared/constants/network';
+import CollectibleOptions from './collectible-options';
 
 export default function CollectibleDetails({ collectible }) {
-  const { image, name, standard, description, address, tokenId } = collectible;
+  const { image, name, description, address, tokenId } = collectible;
   const t = useI18nContext();
   const history = useHistory();
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
@@ -48,7 +51,8 @@ export default function CollectibleDetails({ collectible }) {
   const currentNetwork = useSelector(getCurrentChainId);
 
   const collectibleContractName = collectibleContracts.find(
-    ({ address }) => address === collectible.address,
+    ({ address: contractAddress }) =>
+      isEqualCaseInsensitive(contractAddress, address),
   )?.name;
   const selectedAccountName = useSelector(
     (state) => getSelectedIdentity(state).name,
@@ -93,7 +97,6 @@ export default function CollectibleDetails({ collectible }) {
                 : null
             }
             onRemove={onRemove}
-            onReportAsScam={() => {}}
           />
         }
       />
@@ -185,24 +188,11 @@ export default function CollectibleDetails({ collectible }) {
             </Typography>
           </Box>
         </Box>
-        {/* <Box marginTop={6} justifyContent={JUSTIFY_CONTENT.CENTER}> */}
-        {/* <Button type="primary" onClick={onSendNFT}>
-          {t('send')}
-        </Button> */}
-        {/* </Box> */}
       </Box>
     </>
   );
 }
 
 CollectibleDetails.propTypes = {
-  name: PropTypes.string,
-  address: PropTypes.string,
-  tokenId: PropTypes.string,
-  imageURL: PropTypes.string,
-  description: PropTypes.string,
-  lastSold: PropTypes.string,
-  lastPriceSold: PropTypes.string,
-  link: PropTypes.string,
-  // onSendNFT: PropTypes.func.isRequired,
+  collectible: PropTypes.object,
 };

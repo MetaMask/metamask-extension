@@ -19,10 +19,6 @@ const Asset = () => {
     isEqualCaseInsensitive(address, asset),
   );
 
-  // const collectibleContract = collectibleContracts.find(({ address }) =>
-  //   isEqualCaseInsensitive(address, asset),
-  // );
-
   const collectible = collectibles.find(
     ({ address, tokenId }) =>
       isEqualCaseInsensitive(address, asset) && id === tokenId,

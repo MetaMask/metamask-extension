@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { util } from '@metamask/controllers';
-import { history } from 'globalthis/implementation';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';

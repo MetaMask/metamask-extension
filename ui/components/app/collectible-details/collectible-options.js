@@ -37,16 +37,6 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
               {t('viewOnOpensea')}
             </MenuItem>
           ) : null}
-          {/* <MenuItem
-            iconClassName="fas fa-external-link-alt collectible-options__icon"
-            data-testid="collectible-options__etherscan"
-            onClick={() => {
-              setCollectibleOptionsOpen(false);
-              onReportAsScam();
-            }}
-          >
-            {t('reportAsScam')}
-          </MenuItem> */}
           <MenuItem
             iconClassName="fas fa-trash-alt collectible-options__icon"
             data-testid="collectible-options__hide"
@@ -65,7 +55,6 @@ const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
 
 CollectibleOptions.propTypes = {
   onRemove: PropTypes.func.isRequired,
-  onReportAsScam: PropTypes.func.isRequired,
   onViewOnOpensea: PropTypes.func.isRequired,
 };
 
