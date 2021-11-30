@@ -42,7 +42,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
 
         if (!networks) {
           throw new Error(
-            t('transactionDecodingSupportedNetworksTimeoutError')
+            t('transactionDecodingSupportedNetworksTimeoutError'),
           );
         }
 
@@ -52,7 +52,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           )
         ) {
           throw new Error(
-            t('transactionDecodingUnsupportedNetworkError', network)
+            t('transactionDecodingUnsupportedNetworkError', [network]),
           );
         }
 
