@@ -45,10 +45,8 @@ export default class AdvancedTab extends PureComponent {
     threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
-    setLedgerTransportPreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
-    userHasALedgerAccount: PropTypes.bool.isRequired,
   };
 
   state = {
