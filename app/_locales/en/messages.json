@@ -590,6 +590,9 @@
   "copyPrivateKey": {
     "message": "This is your private key (click to copy)"
   },
+  "copyRawTransactionData": {
+    "message": "Copy raw transaction data"
+  },
   "copyToClipboard": {
     "message": "Copy to clipboard"
   },
@@ -2145,6 +2148,9 @@
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
   },
+  "requestTimeout": {
+    "message": "Request timeout"
+  },
   "required": {
     "message": "Required"
   },
@@ -3012,6 +3018,15 @@
   },
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionData": {
+    "message": "Transaction data"
+  },
+  "transactionDecodingSupportedNetworksTimeoutError": {
+    "message": "Request timeout: unable to get list of supported networks!"
+  },
+  "transactionDecodingUnsupportedNetworkError": {
+    "message": "Transaction decoding is not available for chainId $1"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site suggested"
