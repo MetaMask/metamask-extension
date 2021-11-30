@@ -9,13 +9,13 @@ import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
-import Copy from '../../ui/icon/copy-icon.component';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
 import TransactionDecoding from '../transaction-decoding';
+
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -126,7 +126,6 @@ export default class TransactionListItemDetails extends PureComponent {
       showRetry,
       recipientEns,
       recipientAddress,
-      rpcPrefs: { blockExplorerUrl } = {},
       senderAddress,
       isEarliestNonce,
       senderNickname,
@@ -212,8 +211,8 @@ export default class TransactionListItemDetails extends PureComponent {
           </div>
           <div className="transaction-list-item-details__body">
             <div className="transaction-list-item-details__sender-to-recipient-header">
-              <div>t('from')</div>
-              <div>t('to')</div>
+              <div>{t('from')}</div>
+              <div>{t('to')}</div>
             </div>
             <div className="transaction-list-item-details__sender-to-recipient-container">
               <SenderToRecipient
