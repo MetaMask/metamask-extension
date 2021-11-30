@@ -5,8 +5,6 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
-import { TypedDataUtils } from 'eth-sig-util';
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
@@ -53,39 +51,48 @@ export default class SignatureRequest extends PureComponent {
     const mapType = (msgType, definedType) => {
       // try and map it to a solidity type
       if (
-        (
-          definedType.type.indexOf("int") >= 0 ||
-          definedType.type.indexOf("fixed") >= 0
-        ) && msgType === "number") {
+        (definedType.type.indexOf('int') >= 0 ||
+          definedType.type.indexOf('fixed') >= 0) &&
+        msgType === 'number'
+      ) {
         return true;
       } else if (
-        (
-          definedType.type.indexOf("bytes") >= 0 ||
-          definedType.type === "address"
-        ) && msgType === "string") {
+        (definedType.type.indexOf('bytes') >= 0 ||
+          definedType.type === 'address') &&
+        msgType === 'string'
+      ) {
         return true;
       }
 
       return false;
-    }
+    };
 
     const sanitizeMessage = (msg, baseType) => {
-      let sanitizedMessage = {};
+      const sanitizedMessage = {};
       const msgKeys = Object.keys(msg);
-      const msgTypes = Object.values(msg).map(value => typeof (value));
+      const msgTypes = Object.values(msg).map((value) => typeof value);
       const baseTypeType = types[baseType];
       msgKeys.forEach((msgKey, index) => {
         const valueType = msgTypes[index];
         if (baseTypeType) {
-          const definedType = Object.values(baseTypeType).find(ptt => ptt.name === msgKey);          
+          const definedType = Object.values(baseTypeType).find(
+            (ptt) => ptt.name === msgKey,
+          );
 
           if (definedType) {
             if (definedType.type === valueType) {
               sanitizedMessage[msgKey] = msg[msgKey];
-            } else if (definedType.type.indexOf("[]") && valueType === "object" && Array.isArray(msg[msgKey])) {
+            } else if (
+              definedType.type.indexOf('[]') &&
+              valueType === 'object' &&
+              Array.isArray(msg[msgKey])
+            ) {
               sanitizedMessage[msgKey] = msg[msgKey];
-            } else if (valueType === "object") {
-              sanitizedMessage[msgKey] = sanitizeMessage(msg[msgKey], definedType.type);
+            } else if (valueType === 'object') {
+              sanitizedMessage[msgKey] = sanitizeMessage(
+                msg[msgKey],
+                definedType.type,
+              );
             } else if (mapType(valueType, definedType)) {
               sanitizedMessage[msgKey] = msg[msgKey];
             }
@@ -94,7 +101,7 @@ export default class SignatureRequest extends PureComponent {
       });
 
       return sanitizedMessage;
-    }
+    };
 
     const onSign = (event) => {
       sign(event);
@@ -127,7 +134,7 @@ export default class SignatureRequest extends PureComponent {
     };
 
     return (
-      <div className="signature-request page-container" >
+      <div className="signature-request page-container">
         <Header fromAccount={fromAccount} />
         <div className="signature-request-content">
           <div className="signature-request-content__title">
@@ -159,7 +166,7 @@ export default class SignatureRequest extends PureComponent {
           signAction={onSign}
           disabled={hardwareWalletRequiresConnection}
         />
-      </div >
+      </div>
     );
   }
 }
