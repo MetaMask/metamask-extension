@@ -19,9 +19,8 @@ const NicknamePopover = ({
   const t = useContext(I18nContext);
 
   const onAddClick = useCallback(() => {
-    onClose();
-    onAdd(address, nickname);
-  }, [address, onClose, onAdd]);
+    onAdd();
+  }, [address, onAdd]);
 
   const [copied, handleCopy] = useCopyToClipboard();
 
