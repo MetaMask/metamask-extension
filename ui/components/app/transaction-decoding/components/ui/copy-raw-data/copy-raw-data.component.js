@@ -6,7 +6,7 @@ import { I18nContext } from '../../../../../../contexts/i18n';
 
 import { useCopyToClipboard } from '../../../../../../hooks/useCopyToClipboard';
 
-const CopyRawData = (data) => {
+const CopyRawData = ({ data }) => {
   const t = useContext(I18nContext);
   const [copied, handleCopy] = useCopyToClipboard();
 
