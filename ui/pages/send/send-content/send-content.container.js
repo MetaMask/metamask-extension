@@ -37,4 +37,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(SendContent);
+export default connect(mapStateToProps)(SendContent);

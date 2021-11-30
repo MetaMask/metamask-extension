@@ -58,7 +58,6 @@ describe('Confirm Page Container Container Test', () => {
     handleCloseEditGas: sinon.spy(),
     // Gas Popover
     currentTransaction: {},
-    showAddToAddressBookModal: sinon.spy(),
     contact: undefined,
     isOwnedAccount: false,
   };
@@ -116,12 +115,6 @@ describe('Confirm Page Container Container Test', () => {
     expect(wrapper.find(Dialog).getElements()[0].props.children).toStrictEqual(
       'newAccountDetectedDialogMessage',
     );
-  });
-
-  it('should simulate click on Dialog', () => {
-    const DialogWrapper = wrapper.find(Dialog);
-    DialogWrapper.first().simulate('click');
-    expect(props.showAddToAddressBookModal.calledOnce).toStrictEqual(true);
   });
 
   it('should not show add to address dialog if contact is not undefined', () => {
