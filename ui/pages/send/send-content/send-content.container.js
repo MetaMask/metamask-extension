@@ -13,7 +13,6 @@ import {
   getSendAsset,
 } from '../../../ducks/send';
 
-import * as actions from '../../../store/actions';
 import SendContent from './send-content.component';
 
 function mapStateToProps(state) {
@@ -38,30 +37,4 @@ function mapStateToProps(state) {
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    updateAccountNicknameModal: (address) =>
-      dispatch(
-        actions.showModal({
-          name: 'ADD_UPDATE_NICKNAME_MODAL',
-          address,
-        }),
-      ),
-  };
-}
-
-function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { to, ...restStateProps } = stateProps;
-  return {
-    ...ownProps,
-    ...restStateProps,
-    updateAccountNicknameModal: () =>
-      dispatchProps.updateAccountNicknameModal(to),
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(SendContent);
+export default connect(mapStateToProps, null)(SendContent);

@@ -38,17 +38,7 @@ const NicknamePopovers = ({ address, onClose }) => {
     null,
   );
 
-  if (popoverToDisplay === SHOW_NICKNAME_POPOVER) {
-    return (
-      <NicknamePopover
-        address={address}
-        nickname={recipientNickname || null}
-        onClose={onClose}
-        onAdd={() => setPopoverToDisplay(ADD_NICKNAME_POPOVER)}
-        explorerLink={explorerLink}
-      />
-    );
-  } else if (popoverToDisplay === ADD_NICKNAME_POPOVER) {
+  if (popoverToDisplay === ADD_NICKNAME_POPOVER) {
     return (
       <UpdateNicknamePopover
         address={address}
@@ -58,6 +48,16 @@ const NicknamePopovers = ({ address, onClose }) => {
         onAdd={(recipient, nickname, memo) =>
           dispatch(addToAddressBook(recipient, nickname, memo))
         }
+      />
+    );
+  } else if (popoverToDisplay === SHOW_NICKNAME_POPOVER) {
+    return (
+      <NicknamePopover
+        address={address}
+        nickname={recipientNickname || null}
+        onClose={onClose}
+        onAdd={() => setPopoverToDisplay(ADD_NICKNAME_POPOVER)}
+        explorerLink={explorerLink}
       />
     );
   }
