@@ -16,7 +16,6 @@ const Address = ({
   recipientName,
 }) => {
   const t = useI18nContext();
-  const [addressCopied, setAddressCopied] = useState(false);
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
 
   const addressBook = useSelector(getAddressBook);
@@ -29,7 +28,6 @@ const Address = ({
     <div
       className="tx-insight tx-insight-component tx-insight-component-address"
       onClick={() => {
-        setAddressCopied(true);
         copyToClipboard(checksummedRecipientAddress);
         if (onRecipientClick) {
           onRecipientClick();
