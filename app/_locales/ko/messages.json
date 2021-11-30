@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "복사 완료!"
   },
-  "copiedTransactionId": {
-    "message": "거래 ID 복사됨"
-  },
   "copyAddress": {
     "message": "주소를 클립보드에 복사"
   },
