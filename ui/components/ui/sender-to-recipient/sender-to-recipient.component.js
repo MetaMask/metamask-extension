@@ -8,12 +8,12 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import NicknamePopovers from '../../app/modals/nickname-popovers';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
   FLAT_VARIANT,
 } from './sender-to-recipient.constants';
-import NicknamePopovers from '../../app/modals/nickname-popovers';
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',
