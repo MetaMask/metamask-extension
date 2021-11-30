@@ -2203,16 +2203,13 @@ export function setOpenSeaEnabled(val) {
   };
 }
 
-export function detectCollectibles(val) {
-  return (dispatch) => {
+export function detectCollectibles() {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.detectCollectibles`);
-    background.detectCollectibles(val, (err) => {
-      dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
+    await promisifiedBackground.detectCollectibles();
+    dispatch(hideLoadingIndication());
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 

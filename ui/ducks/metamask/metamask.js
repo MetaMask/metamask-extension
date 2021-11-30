@@ -256,10 +256,44 @@ export const getUnconnectedAccountAlertShown = (state) =>
 
 export const getTokens = (state) => state.metamask.tokens;
 
-export const getCollectibles = (state) => state.metamask.collectibles;
+export const getCollectibles = (state) => {
+  const {
+    metamask: {
+      allCollectibles,
+      provider: { chainId },
+      selectedAddress,
+    },
+  } = state;
 
-export const getCollectibleContracts = (state) =>
-  state.metamask.collectibleContracts;
+  let decFormattedChainId;
+  if (typeof chainId === 'string' && isHexString(chainId)) {
+    decFormattedChainId = `${parseInt(chainId, 16)}`;
+  } else if (typeof chainId === 'number') {
+    decFormattedChainId = `${chainId}`;
+  }
+
+  return allCollectibles?.[selectedAddress]?.[decFormattedChainId] || [];
+};
+
+export const getCollectibleContracts = (state) => {
+  const {
+    metamask: {
+      allCollectibleContracts,
+      provider: { chainId },
+      selectedAddress,
+    },
+  } = state;
+
+  let decFormattedChainId;
+  if (typeof chainId === 'string' && isHexString(chainId)) {
+    decFormattedChainId = `${parseInt(chainId, 16)}`;
+  } else if (typeof chainId === 'number') {
+    decFormattedChainId = `${chainId}`;
+  }
+  return (
+    allCollectibleContracts?.[selectedAddress]?.[decFormattedChainId] || []
+  );
+};
 
 export function getBlockGasLimit(state) {
   return state.metamask.currentBlockGasLimit;
