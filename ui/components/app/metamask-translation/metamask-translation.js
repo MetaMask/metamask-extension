@@ -69,6 +69,9 @@ export default function MetaMaskTranslation({ translationKey, variables }) {
 }
 
 MetaMaskTranslation.propTypes = {
+  /**
+   * Translation object key
+   */
   translationKey: PropTypes.string.isRequired,
   variables: PropTypes.arrayOf(
     PropTypes.oneOfType([
