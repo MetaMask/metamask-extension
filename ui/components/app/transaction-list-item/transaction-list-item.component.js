@@ -219,7 +219,7 @@ export default function TransactionListItem({
               error={err}
               date={date}
               status={displayedStatusKey}
-              statusOnly={true}
+              statusOnly
             />
           )}
         />
