@@ -1,1 +1,1 @@
-export { default } from './address.container';
+export { default } from './address.component';
