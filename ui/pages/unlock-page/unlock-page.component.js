@@ -14,11 +14,29 @@ export default class UnlockPage extends Component {
   };
 
   static propTypes = {
+    /**
+     * History router for redirect after action
+     */
     history: PropTypes.object.isRequired,
+    /**
+     * Check if account is unlocked
+     */
     isUnlocked: PropTypes.bool,
+    /**
+     * Restore account button handler
+     */
     onRestore: PropTypes.func,
+    /**
+     * Submit button handler
+     */
     onSubmit: PropTypes.func,
+    /**
+     * Force update metamask data state
+     */
     forceUpdateMetamaskState: PropTypes.func,
+    /**
+     * Show options in modal handler
+     */
     showOptInModal: PropTypes.func,
   };
 
