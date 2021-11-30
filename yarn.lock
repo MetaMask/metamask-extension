@@ -4016,7 +4016,7 @@
   resolved "https://registry.yarnpkg.com/@truffle/error/-/error-0.0.14.tgz#59683b5407bede7bddf16d80dc5592f9c5e5fa05"
   integrity sha512-utJx+SZYoMqk8wldQG4gCVKhV8GwMJbWY7sLXFT/D8wWZTnE2peX7URFJh/cxkjTRCO328z1s2qewkhyVsu2HA==
 
-"@truffle/source-map-utils@^1.3.62", "@truffle/source-map-utils@^1.3.63":
+"@truffle/source-map-utils@^1.3.63":
   version "1.3.63"
   resolved "https://registry.yarnpkg.com/@truffle/source-map-utils/-/source-map-utils-1.3.63.tgz#6fa26d6b7a0874e99d6d78a5cacc13903dbcffd4"
   integrity sha512-JmRnhONsjAdB5sTDl2xy7DUoIxg2KUGpXsPcu1EggBcojY1fZoD3wsdWWLysRDW5Od+npn/BWSdjzGdQknyVPA==

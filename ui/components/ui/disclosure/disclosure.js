@@ -6,17 +6,17 @@ const Disclosure = ({ children, title, size }) => {
   const disclosureFooterEl = useRef(null);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    if (open) {
-      scrollToBottom();
-    }
-  }, [open]);
-
   const scrollToBottom = () => {
     disclosureFooterEl &&
       disclosureFooterEl.current &&
       disclosureFooterEl.current.scrollIntoView({ behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    if (open) {
+      scrollToBottom();
+    }
+  }, [open]);
 
   return (
     <div className="disclosure" onClick={() => setOpen((state) => !state)}>

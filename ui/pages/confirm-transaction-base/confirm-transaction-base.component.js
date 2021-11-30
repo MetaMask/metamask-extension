@@ -146,7 +146,6 @@ export default class ConfirmTransactionBase extends Component {
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
-    chainId: PropTypes.string,
   };
 
   state = {
@@ -639,12 +638,7 @@ export default class ConfirmTransactionBase extends Component {
 
   renderData(functionType) {
     const { t } = this.context;
-    const {
-      txData: { txParams } = {},
-      methodData: { params } = {},
-      hideData,
-      dataComponent,
-    } = this.props;
+    const { txData: { txParams } = {}, hideData, dataComponent } = this.props;
 
     if (hideData) {
       return null;
