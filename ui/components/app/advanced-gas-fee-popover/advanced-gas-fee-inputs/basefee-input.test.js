@@ -9,7 +9,7 @@ import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 
 import { AdvanceGasFeePopoverContextProvider } from '../context';
-import BasefeeInput from './basefee-input';
+import BaseFeeInput from './base-fee-input/base-fee-input';
 
 jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
@@ -45,14 +45,14 @@ const render = (txProps) => {
       }}
     >
       <AdvanceGasFeePopoverContextProvider>
-        <BasefeeInput />
+        <BaseFeeInput />
       </AdvanceGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
     store,
   );
 };
 
-describe('BasefeeInput', () => {
+describe('BaseFeeInput', () => {
   it('should renders advancedGasFee.baseFee value if current estimate used is not custom', () => {
     render({
       userFeeLevel: 'high',

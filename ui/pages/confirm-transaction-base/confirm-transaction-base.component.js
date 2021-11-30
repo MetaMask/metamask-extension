@@ -516,9 +516,9 @@ export default class ConfirmTransactionBase extends Component {
           subText={
             !isMultiLayerFeeNetwork && (
               <>
-                <b key="editGasSubTextFeeLabel">
+                <strong key="editGasSubTextFeeLabel">
                   {t('editGasSubTextFeeLabel')}
-                </b>
+                </strong>
                 <div
                   key="editGasSubTextFeeValue"
                   className="confirm-page-container-content__currency-container"
@@ -611,9 +611,9 @@ export default class ConfirmTransactionBase extends Component {
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
                   <>
-                    <b key="editGasSubTextAmountLabel">
+                    <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
-                    </b>
+                    </strong>
                     {renderTotalMaxAmount()}
                   </>
                 }

@@ -49,21 +49,18 @@ const PriorityFeeInput = () => {
   }, [priorityFee, setMaxPriorityFeePerGas]);
 
   return (
-    <FormField
-      onChange={updatePriorityFee}
-      titleText={t('priorityFee')}
-      titleUnit="(GWEI)"
-      tooltipText={t('advancedPriorityFeeToolTip')}
-      value={priorityFee}
-      detailText={`≈ ${priorityFeeInFiat}`}
-      numeric
-      inputDetails={
-        <AdvancedGasFeeInputSubtext
-          latest="1-18 GWEI"
-          historical="23-359 GWEI"
-        />
-      }
-    />
+    <>
+      <FormField
+        onChange={updatePriorityFee}
+        titleText={t('priorityFee')}
+        titleUnit="(GWEI)"
+        tooltipText={t('advancedPriorityFeeToolTip')}
+        value={priorityFee}
+        detailText={`≈ ${priorityFeeInFiat}`}
+        numeric
+      />
+      <AdvancedGasFeeInputSubtext latest="1-18 GWEI" historical="23-359 GWEI" />
+    </>
   );
 };
 

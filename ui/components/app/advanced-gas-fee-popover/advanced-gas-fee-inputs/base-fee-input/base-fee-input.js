@@ -1,24 +1,24 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
+import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
 import {
   divideCurrencies,
   multiplyCurrencies,
-} from '../../../../../shared/modules/conversion.utils';
-import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
-import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
-import { getAdvancedGasFeeValues } from '../../../../selectors';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
-import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
-import Button from '../../../ui/button';
-import FormField from '../../../ui/form-field';
-import I18nValue from '../../../ui/i18n-value';
+} from '../../../../../../shared/modules/conversion.utils';
+import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
+import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
+import { getAdvancedGasFeeValues } from '../../../../../selectors';
+import { useGasFeeContext } from '../../../../../contexts/gasFee';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
+import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
+import Button from '../../../../ui/button';
+import FormField from '../../../../ui/form-field';
+import I18nValue from '../../../../ui/i18n-value';
 
-import { useAdvanceGasFeePopoverContext } from '../context';
-import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
+import { useAdvanceGasFeePopoverContext } from '../../context';
+import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 
 const divideCurrencyValues = (value, baseFee) => {
   if (baseFee === 0) {
@@ -38,7 +38,7 @@ const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
     multiplierBase: 10,
   }).toNumber();
 
-const BasefeeInput = () => {
+const BaseFeeInput = () => {
   const t = useI18nContext();
   const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
   const { setDirty, setMaxFeePerGas } = useAdvanceGasFeePopoverContext();
@@ -118,37 +118,37 @@ const BasefeeInput = () => {
   }, [maxBaseFeeGWEI, setMaxFeePerGas]);
 
   return (
-    <FormField
-      onChange={updateBaseFee}
-      titleText={t('maxBaseFee')}
-      titleUnit={editingInGwei ? 'GWEI' : `(${t('multiplier')})`}
-      tooltipText={t('advancedBaseGasFeeToolTip')}
-      titleDetail={
-        <Button
-          className="advanced-gas-fee-input__edit-link"
-          type="link"
-          onClick={() => setEditingInGwei(!editingInGwei)}
-        >
-          <I18nValue
-            messageKey={editingInGwei ? 'editInMultiplier' : 'editInGwei'}
-          />
-        </Button>
-      }
-      value={editingInGwei ? maxBaseFeeGWEI : maxBaseFeeMultiplier}
-      detailText={
-        editingInGwei
-          ? `${maxBaseFeeMultiplier}x ${`≈ ${baseFeeInFiat}`}`
-          : `${maxBaseFeeGWEI} GWEI ${`≈ ${baseFeeInFiat}`}`
-      }
-      numeric
-      inputDetails={
-        <AdvancedGasFeeInputSubtext
-          latest={estimatedBaseFee}
-          historical="23-359 GWEI"
-        />
-      }
-    />
+    <>
+      <FormField
+        onChange={updateBaseFee}
+        titleText={t('maxBaseFee')}
+        titleUnit={editingInGwei ? 'GWEI' : `(${t('multiplier')})`}
+        tooltipText={t('advancedBaseGasFeeToolTip')}
+        titleDetail={
+          <Button
+            className="advanced-gas-fee-input__edit-link"
+            type="link"
+            onClick={() => setEditingInGwei(!editingInGwei)}
+          >
+            <I18nValue
+              messageKey={editingInGwei ? 'editInMultiplier' : 'editInGwei'}
+            />
+          </Button>
+        }
+        value={editingInGwei ? maxBaseFeeGWEI : maxBaseFeeMultiplier}
+        detailText={
+          editingInGwei
+            ? `${maxBaseFeeMultiplier}x ${`≈ ${baseFeeInFiat}`}`
+            : `${maxBaseFeeGWEI} GWEI ${`≈ ${baseFeeInFiat}`}`
+        }
+        numeric
+      />
+      <AdvancedGasFeeInputSubtext
+        latest={estimatedBaseFee}
+        historical="23-359 GWEI"
+      />
+    </>
   );
 };
 
-export default BasefeeInput;
+export default BaseFeeInput;
