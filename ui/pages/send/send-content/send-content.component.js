@@ -27,7 +27,6 @@ export default class SendContent extends Component {
 
   static propTypes = {
     isAssetSendable: PropTypes.bool,
-    updateAccountNicknameModal: PropTypes.func,
     showHexData: PropTypes.bool,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
