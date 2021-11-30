@@ -228,7 +228,6 @@ export default function BuildQuote({
       const newBalanceError = new BigNumber(newInputValue || 0).gt(
         balance || 0,
       );
-      console.log(`newBalanceError`, newBalanceError);
       // "setBalanceError" is just a warning, a user can still click on the "Review Swap" button.
       if (balanceError !== newBalanceError) {
         dispatch(setBalanceError(newBalanceError));
