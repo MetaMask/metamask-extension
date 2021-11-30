@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, regularDelayMs } = require('../helpers');
+const { withFixtures, regularDelayMs, largeDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
 describe('Metamask Import UI', function () {
@@ -318,6 +318,7 @@ describe('Metamask Import UI', function () {
 
         // should open the TREZOR Connect popup
         await driver.clickElement('.hw-connect__btn:nth-of-type(2)');
+        await driver.delay(largeDelayMs * 2);
         await driver.clickElement({ text: 'Continue', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         const allWindows = await driver.getAllWindowHandles();
