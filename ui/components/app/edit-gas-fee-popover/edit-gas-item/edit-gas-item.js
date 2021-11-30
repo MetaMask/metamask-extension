@@ -44,16 +44,18 @@ const EditGasItem = ({ priorityLevel }) => {
 
   if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
-    maxPriorityFeePerGas =
-      gasFeeEstimates[priorityLevel].suggestedMaxPriorityFeePerGas;
-  } else if (
-    priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
-    dappSuggestedGasFees
-  ) {
-    maxFeePerGas = hexWEIToDecGWEI(dappSuggestedGasFees.maxFeePerGas);
-    maxPriorityFeePerGas = hexWEIToDecGWEI(
-      dappSuggestedGasFees.maxPriorityFeePerGas,
-    );
+  } else if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
+    if (estimateUsed === PRIORITY_LEVELS.DAPP_SUGGESTED) {
+      maxFeePerGas = maxFeePerGasValue;
+      maxPriorityFeePerGas = maxPriorityFeePerGasValue;
+    } else if (dappSuggestedGasFees) {
+      maxFeePerGas = hexWEIToDecGWEI(
+        dappSuggestedGasFees.maxFeePerGas || dappSuggestedGasFees.gasPrice,
+      );
+      maxPriorityFeePerGas = hexWEIToDecGWEI(
+        dappSuggestedGasFees.maxPriorityFeePerGas || maxFeePerGas,
+      );
+    }
   } else if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
     if (estimateUsed === PRIORITY_LEVELS.CUSTOM) {
       maxFeePerGas = maxFeePerGasValue;

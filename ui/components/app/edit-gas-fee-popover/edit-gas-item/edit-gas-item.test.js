@@ -118,7 +118,10 @@ describe('EditGasItem', () => {
   it('should renders site gas estimate option for priorityLevel dappSuggested', () => {
     renderComponent(
       { priorityLevel: 'dappSuggested' },
-      { dappSuggestedGasFees: DAPP_SUGGESTED_ESTIMATE },
+      {
+        dappSuggestedGasFees: DAPP_SUGGESTED_ESTIMATE,
+        txParams: { gas: '0x5208', ...DAPP_SUGGESTED_ESTIMATE },
+      },
     );
     expect(
       screen.queryByRole('button', { name: 'dappSuggested' }),
