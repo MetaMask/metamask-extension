@@ -10,7 +10,7 @@ import configureStore from '../../../../../store/store';
 import { AdvanceGasFeePopoverContextProvider } from '../../context';
 import PriorityfeeInput from './priority-fee-input';
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()
