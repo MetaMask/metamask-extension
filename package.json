@@ -1,7 +1,7 @@
 {
   "name": "metamask-crx",
   "version": "10.6.4",
-  "homepage": "https://metamask.github.io/metamask-storybook",
+  "homepage": ".",
   "private": true,
   "repository": {
     "type": "git",
