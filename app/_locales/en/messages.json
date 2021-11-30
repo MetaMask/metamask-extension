@@ -876,6 +876,9 @@
   "enableOpenSeaAPI": {
     "message": "Enable OpenSea API"
   },
+  "enableOpenSeaAPIDescription": {
+    "message": "Enable OpenSea API Description (TODO)"
+  },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is the web3 site name"

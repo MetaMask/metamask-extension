@@ -278,6 +278,7 @@ describe('preferences controller', function () {
         preferencesController.store.getState().useCollectibleDetection,
         false,
       );
+      preferencesController.setOpenSeaEnabled(true);
       preferencesController.setUseCollectibleDetection(true);
       assert.equal(
         preferencesController.store.getState().useCollectibleDetection,
