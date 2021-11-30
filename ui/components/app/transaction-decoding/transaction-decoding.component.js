@@ -34,17 +34,9 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     (async () => {
       setLoading(true);
       try {
-        const networks = await fetchWithCache(
-          FETCH_SUPPORTED_NETWORKS_URI,
-          { method: 'GET' },
-          { suppressAutomaticThrowing: true },
-        );
-
-        if (!networks) {
-          throw new Error(
-            t('transactionDecodingSupportedNetworksTimeoutError'),
-          );
-        }
+        const networks = await fetchWithCache(FETCH_SUPPORTED_NETWORKS_URI, {
+          method: 'GET',
+        });
 
         if (
           !networks.some(
@@ -64,29 +56,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
             ['network-id']: network,
           });
 
-        const response = await fetchWithCache(
-          request_url,
-          { method: 'GET' },
-          { suppressAutomaticThrowing: true },
-        );
-
-        if (!response) {
-          throw new Error(t('requestTimeout'));
-        }
-
-        // code execution error
-        if (!response.statusCode && !response.info) {
-          throw new Error(`Error: ${response}`);
-        }
-
-        // server decoding error
-        if (
-          response.statusCode &&
-          response.statusCode !== 200 &&
-          !response.info
-        ) {
-          throw new Error(`Error ${response.statusCode}: ${response.message}`);
-        }
+        const response = await fetchWithCache(request_url, { method: 'GET' });
 
         const { info: projectInfo } = response;
 

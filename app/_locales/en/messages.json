@@ -2145,11 +2145,11 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "requests waiting to be acknowledged"
-  },
   "requestTimeout": {
     "message": "Request timeout"
+  },
+  "requestsAwaitingAcknowledgement": {
+    "message": "requests waiting to be acknowledged"
   },
   "required": {
     "message": "Required"
@@ -3021,9 +3021,6 @@
   },
   "transactionData": {
     "message": "Transaction data"
-  },
-  "transactionDecodingSupportedNetworksTimeoutError": {
-    "message": "Request timeout: unable to get list of supported networks!"
   },
   "transactionDecodingUnsupportedNetworkError": {
     "message": "Transaction decoding is not available for chainId $1"
