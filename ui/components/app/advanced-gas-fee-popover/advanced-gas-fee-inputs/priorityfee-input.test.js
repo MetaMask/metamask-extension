@@ -8,7 +8,7 @@ import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 
 import { AdvanceGasFeePopoverContextProvider } from '../context';
-import PriprityfeeInput from './priorityfee-input';
+import PriorityfeeInput from './priorityfee-input';
 
 jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
@@ -44,7 +44,7 @@ const render = (txProps) => {
       }}
     >
       <AdvanceGasFeePopoverContextProvider>
-        <PriprityfeeInput />
+        <PriorityfeeInput />
       </AdvanceGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
     store,
