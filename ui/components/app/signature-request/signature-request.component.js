@@ -68,39 +68,43 @@ export default class SignatureRequest extends PureComponent {
     };
 
     const sanitizeMessage = (msg, baseType) => {
-      const sanitizedMessage = {};
-      const msgKeys = Object.keys(msg);
-      const msgTypes = Object.values(msg).map((value) => typeof value);
-      const baseTypeType = types[baseType];
-      msgKeys.forEach((msgKey, index) => {
-        const valueType = msgTypes[index];
-        if (baseTypeType) {
-          const definedType = Object.values(baseTypeType).find(
-            (ptt) => ptt.name === msgKey,
-          );
+      if (version === 'V4') {
+        const sanitizedMessage = {};
+        console.log(version);
+        const msgKeys = Object.keys(msg);
+        const msgTypes = Object.values(msg).map((value) => typeof value);
+        const baseTypeType = types[baseType];
+        msgKeys.forEach((msgKey, index) => {
+          const valueType = msgTypes[index];
+          if (baseTypeType) {
+            const definedType = Object.values(baseTypeType).find(
+              (ptt) => ptt.name === msgKey,
+            );
 
-          if (definedType) {
-            if (definedType.type === valueType) {
-              sanitizedMessage[msgKey] = msg[msgKey];
-            } else if (
-              definedType.type.indexOf('[]') &&
-              valueType === 'object' &&
-              Array.isArray(msg[msgKey])
-            ) {
-              sanitizedMessage[msgKey] = msg[msgKey];
-            } else if (valueType === 'object') {
-              sanitizedMessage[msgKey] = sanitizeMessage(
-                msg[msgKey],
-                definedType.type,
-              );
-            } else if (mapType(valueType, definedType)) {
-              sanitizedMessage[msgKey] = msg[msgKey];
+            if (definedType) {
+              if (definedType.type === valueType) {
+                sanitizedMessage[msgKey] = msg[msgKey];
+              } else if (
+                definedType.type.indexOf('[]') &&
+                valueType === 'object' &&
+                Array.isArray(msg[msgKey])
+              ) {
+                sanitizedMessage[msgKey] = msg[msgKey];
+              } else if (valueType === 'object') {
+                sanitizedMessage[msgKey] = sanitizeMessage(
+                  msg[msgKey],
+                  definedType.type,
+                );
+              } else if (mapType(valueType, definedType)) {
+                sanitizedMessage[msgKey] = msg[msgKey];
+              }
             }
           }
-        }
-      });
+        });
 
-      return sanitizedMessage;
+        return sanitizedMessage;
+      }
+      return msg;
     };
 
     const onSign = (event) => {
