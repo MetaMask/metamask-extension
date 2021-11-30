@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import README from './README.mdx';
 import DropdownInputPair from '.';
 
 const tokens = [
@@ -115,6 +116,27 @@ const tokens = [
 export default {
   title: 'Pages/Swaps/DropdownInputPair',
   id: __filename,
+  component: DropdownInputPair,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    itemsToSearch: { control: 'array' },
+    onInputChange: { action: 'onInputChange' },
+    inputValue: { control: 'text' },
+    onSelect: { action: 'onSelect' },
+    leftValue: { control: 'text' },
+    selectedItem: { control: 'object' },
+    SearchListPlaceholder: { action: 'SearchListPlaceHolder' },
+    maxListItems: { control: 'number' },
+    selectPlaceHolderText: { control: 'text' },
+    loading: { control: 'boolean' },
+    hideItemIf: { action: 'hideItemIf' },
+    listContainerClassName: { control: 'text' },
+    autoFocus: { control: 'boolean' },
+  },
 };
 
 const tokensToSearch = tokens.map((token) => ({
@@ -127,9 +149,8 @@ const tokensToSearch = tokens.map((token) => ({
   rightSecondaryLabel: `$${(Math.random() * 1000).toFixed(2)}`,
 }));
 
-export const DefaultStory = () => {
+export const DefaultStory = (args) => {
   const [inputValue, setInputValue] = useState();
-
   return (
     <div
       style={{
@@ -141,15 +162,19 @@ export const DefaultStory = () => {
       }}
     >
       <DropdownInputPair
-        startingItem={tokensToSearch[0]}
-        itemsToSearch={tokensToSearch}
-        maxListItems={tokensToSearch.length}
-        defaultToAll
-        onInputChange={(value) => setInputValue(value)}
+        {...args}
         inputValue={inputValue}
+        onInputChange={(value) => setInputValue(value)}
       />
     </div>
   );
 };
 
 DefaultStory.storyName = 'Default';
+
+DefaultStory.args = {
+  startingItem: tokensToSearch[0],
+  itemsToSearch: tokensToSearch,
+  maxListItems: tokensToSearch.length,
+  selectedItem: tokensToSearch[0],
+};
