@@ -42,7 +42,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
 
         if (!networks) {
           throw new Error(
-            `Request timeout: unable to get list of supported networks !`,
+            t('transactionDecodingSupportedNetworksTimeoutError')
           );
         }
 
@@ -52,7 +52,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           )
         ) {
           throw new Error(
-            `Transaction decoding is not available for chainId ${network}`,
+            t('transactionDecodingUnsupportedNetworkError', network)
           );
         }
 
@@ -71,7 +71,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         );
 
         if (!response) {
-          throw new Error(`Request timeout !`);
+          throw new Error(t('requestTimeout'));
         }
 
         // code execution error
