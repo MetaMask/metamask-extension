@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Dialog from '../../../components/ui/dialog';
@@ -22,9 +22,12 @@ export default function LedgerTransportDropdown() {
   const [showLedgerTransportWarning, setShowLedgerTransportWarning] = useState(
     false,
   );
+
   const [ledgerTransportType, setLedgerTransportType] = useState(
     useSelector(getLedgerTransportType),
   );
+
+  const dispatch = useDispatch();
 
   const t = useI18nContext();
 
@@ -92,7 +95,7 @@ export default function LedgerTransportDropdown() {
                 setShowLedgerTransportWarning(true);
               }
               setLedgerTransportType(transportType);
-              setLedgerTransportPreference(transportType);
+              dispatch(setLedgerTransportPreference(transportType));
               if (
                 transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
                 userHasALedgerAccount

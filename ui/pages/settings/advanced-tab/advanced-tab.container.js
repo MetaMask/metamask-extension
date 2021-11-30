@@ -12,12 +12,10 @@ import {
   turnThreeBoxSyncingOnAndInitialize,
   setUseNonceField,
   setIpfsGateway,
-  setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
   setUseTokenDetection,
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
-import { doesUserHaveALedgerAccount } from '../../../ducks/metamask/metamask';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -41,8 +39,6 @@ export const mapStateToProps = (state) => {
     autoLockTimeLimit = 0,
   } = getPreferences(state);
 
-  const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
-
   return {
     warning,
     sendHexData,
@@ -56,8 +52,6 @@ export const mapStateToProps = (state) => {
     ipfsGateway,
     ledgerTransportType,
     dismissSeedBackUpReminder,
-    userHasALedgerAccount,
-    useTokenDetection,
   };
 };
 
@@ -89,9 +83,6 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value));
-    },
-    setLedgerTransportPreference: (value) => {
-      return dispatch(setLedgerTransportPreference(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));
