@@ -69,29 +69,28 @@ export default class SignatureRequest extends PureComponent {
       return false;
     }
 
-    const sanitizeMessage = () => {
-      let sanitizedMessage = TypedDataUtils.sanitizeData(JSON.parse(data));
-      const msgKeys = Object.keys(message);      
-      const msgTypes = Object.values(message).map(value => typeof (value));            
-      const primaryTypeType = types[primaryType];
+    const sanitizeMessage = (msg, baseType) => {
+      let sanitizedMessage = {};
+      const msgKeys = Object.keys(msg);
+      const msgTypes = Object.values(msg).map(value => typeof (value));
+      const baseTypeType = types[baseType];
       msgKeys.forEach((msgKey, index) => {
-        const definedType = Object.values(primaryTypeType).find(ptt => ptt.name === msgKey);        
         const valueType = msgTypes[index];
-        alert(definedType.type);
-        alert(valueType);
+        if (baseTypeType) {
+          const definedType = Object.values(baseTypeType).find(ptt => ptt.name === msgKey);          
 
-        if (definedType) {
-          if (definedType === valueType) {
-            sanitizedMessage[msgKey] = message[msgKey];
-          } else if (definedType.indexOf("[]") && valueType === "array") {
-            sanitizedMessage[msgKey] = message[msgKey];
-          } else if (mapType(valueType, definedType)) {
-            sanitizedMessage[msgKey] = message[msgKey];
+          if (definedType) {
+            if (definedType.type === valueType) {
+              sanitizedMessage[msgKey] = msg[msgKey];
+            } else if (definedType.type.indexOf("[]") && valueType === "object" && Array.isArray(msg[msgKey])) {
+              sanitizedMessage[msgKey] = msg[msgKey];
+            } else if (valueType === "object") {
+              sanitizedMessage[msgKey] = sanitizeMessage(msg[msgKey], definedType.type);
+            } else if (mapType(valueType, definedType)) {
+              sanitizedMessage[msgKey] = msg[msgKey];
+            }
           }
         }
-
-        alert(definedType.type);
-        // if we get here we can't find or map the type....what should we do ??        
       });
 
       return sanitizedMessage;
@@ -154,7 +153,7 @@ export default class SignatureRequest extends PureComponent {
             <LedgerInstructionField showDataInstruction />
           </div>
         ) : null}
-        <Message data={sanitizeMessage()} />
+        <Message data={sanitizeMessage(message, primaryType)} />
         <Footer
           cancelAction={onCancel}
           signAction={onSign}
