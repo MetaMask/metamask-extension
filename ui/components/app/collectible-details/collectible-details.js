@@ -105,7 +105,11 @@ export default function CollectibleDetails({ collectible }) {
           <Box margin={3} padding={2} justifyContent={JUSTIFY_CONTENT.CENTER}>
             <img style={{ width: '14rem' }} src={collectibleImageURL} />
           </Box>
-          <Box margin={3} flexDirection={FLEX_DIRECTION.COLUMN}>
+          <Box
+            margin={3}
+            flexDirection={FLEX_DIRECTION.COLUMN}
+            width={BLOCK_SIZES.TWO_THIRDS}
+          >
             <Typography
               color={COLORS.BLACK}
               variant={TYPOGRAPHY.H4}
@@ -117,6 +121,7 @@ export default function CollectibleDetails({ collectible }) {
               color={COLORS.UI3}
               variant={TYPOGRAPHY.H5}
               boxProps={{ marginTop: 2, marginBottom: 3 }}
+              overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             >
               {`#${tokenId}`}
             </Typography>
@@ -162,6 +167,7 @@ export default function CollectibleDetails({ collectible }) {
                 target="_blank"
                 href={collectibleImageURL}
                 rel="noopener noreferrer"
+                style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
               >
                 {image}
               </a>

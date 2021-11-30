@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { isValidHexAddress } from '@metamask/controllers/dist/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
@@ -19,6 +20,7 @@ export default function AddCollectible() {
 
   const [address, setAddress] = useState('');
   const [tokenId, setTokenId] = useState('');
+  const [disabled, setDisabled] = useState(true);
 
   const handleAddCollectible = async () => {
     try {
@@ -31,6 +33,24 @@ export default function AddCollectible() {
     }
     dispatch(setNewCollectibleAddedMessage('success'));
     history.push(DEFAULT_ROUTE);
+  };
+
+  const validateAndSetAddress = (val) => {
+    if (isValidHexAddress(val) && tokenId) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+    setAddress(val);
+  };
+
+  const validateAndSetTokenId = (val) => {
+    if (isValidHexAddress(address) && val) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+    setTokenId(val);
   };
 
   return (
@@ -46,7 +66,7 @@ export default function AddCollectible() {
       onClose={() => {
         history.push(DEFAULT_ROUTE);
       }}
-      disabled={false}
+      disabled={disabled}
       contentComponent={
         <Box padding={4}>
           <Box>
@@ -56,7 +76,7 @@ export default function AddCollectible() {
               placeholder="0x..."
               type="text"
               value={address}
-              onChange={(e) => setAddress(e.target.value)}
+              onChange={(e) => validateAndSetAddress(e.target.value)}
               fullWidth
               autoFocus
               margin="normal"
@@ -69,7 +89,7 @@ export default function AddCollectible() {
               placeholder={t('nftTokenIdPlaceholder')}
               type="number"
               value={tokenId}
-              onChange={(e) => setTokenId(e.target.value)}
+              onChange={(e) => validateAndSetTokenId(e.target.value)}
               fullWidth
               margin="normal"
             />
