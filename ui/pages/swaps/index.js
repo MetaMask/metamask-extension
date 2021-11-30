@@ -95,7 +95,7 @@ export default function Swap() {
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
 
-  const routeState = useSelector(getBackgroundSwapRouteState, shallowEqual);
+  const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount, shallowEqual);
   const quotes = useSelector(getQuotes, isEqual);
   const txList = useSelector(currentNetworkTxListSelector, shallowEqual);

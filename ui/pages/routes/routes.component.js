@@ -286,12 +286,12 @@ export default class Routes extends Component {
     );
   }
 
-  async onAppHeaderClick() {
+  onAppHeaderClick = async () => {
     const { prepareToLeaveSwaps } = this.props;
     if (this.onSwapsPage()) {
       await prepareToLeaveSwaps();
     }
-  }
+  };
 
   render() {
     const {
