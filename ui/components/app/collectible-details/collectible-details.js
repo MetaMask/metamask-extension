@@ -34,7 +34,7 @@ import { removeAndIgnoreCollectible } from '../../../store/actions';
 import {
   GOERLI_CHAIN_ID,
   KOVAN_CHAIN_ID,
-  MAINNET,
+  MAINNET_CHAIN_ID,
   POLYGON_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
