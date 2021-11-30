@@ -1,1 +1,1 @@
-export { default } from './sender-to-recipient.container';
+export { default } from './sender-to-recipient.component';
