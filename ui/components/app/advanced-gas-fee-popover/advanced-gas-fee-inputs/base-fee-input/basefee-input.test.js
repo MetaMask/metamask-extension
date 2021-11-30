@@ -1,15 +1,15 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockEstimates from '../../../../../test/data/mock-estimates.json';
-import mockState from '../../../../../test/data/mock-state.json';
-import { GasFeeContextProvider } from '../../../../contexts/gasFee';
-import configureStore from '../../../../store/store';
+import { GAS_ESTIMATE_TYPES } from '../../../../../../shared/constants/gas';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import mockEstimates from '../../../../../../test/data/mock-estimates.json';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
+import configureStore from '../../../../../store/store';
 
-import { AdvanceGasFeePopoverContextProvider } from '../context';
-import BaseFeeInput from './base-fee-input/base-fee-input';
+import { AdvanceGasFeePopoverContextProvider } from '../../context';
+import BaseFeeInput from './base-fee-input';
 
 jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),

@@ -14,6 +14,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
 import Button from '../../../../ui/button';
+import Box from '../../../../ui/box';
 import FormField from '../../../../ui/form-field';
 import I18nValue from '../../../../ui/i18n-value';
 
@@ -118,7 +119,7 @@ const BaseFeeInput = () => {
   }, [maxBaseFeeGWEI, setMaxFeePerGas]);
 
   return (
-    <>
+    <Box className="base-fee-input">
       <FormField
         onChange={updateBaseFee}
         titleText={t('maxBaseFee')}
@@ -126,7 +127,7 @@ const BaseFeeInput = () => {
         tooltipText={t('advancedBaseGasFeeToolTip')}
         titleDetail={
           <Button
-            className="advanced-gas-fee-input__edit-link"
+            className="base-fee-input__edit-link"
             type="link"
             onClick={() => setEditingInGwei(!editingInGwei)}
           >
@@ -147,7 +148,7 @@ const BaseFeeInput = () => {
         latest={estimatedBaseFee}
         historical="23-359 GWEI"
       />
-    </>
+    </Box>
   );
 };
 

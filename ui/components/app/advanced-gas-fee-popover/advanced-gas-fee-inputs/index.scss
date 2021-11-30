@@ -1,11 +1,10 @@
 .advanced-gas-fee-inputs {
-  .form-field__heading-title > h6 {
-    font-size: $font-size-h7;
+  .form-field {
+    margin-bottom: 4px;
   }
 
-  &__border {
-    padding-bottom: 16px;
-    border-bottom: 1px solid $Grey-100;
+  .form-field__heading-title > h6 {
+    font-size: $font-size-h7;
   }
 
   &__separator {
