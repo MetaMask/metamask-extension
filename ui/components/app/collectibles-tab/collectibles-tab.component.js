@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -19,13 +20,19 @@ import {
   getCollectibles,
   getCollectibleContracts,
 } from '../../../ducks/metamask/metamask';
+import { getUseCollectibleDetection } from '../../../selectors';
+import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
+import { detectCollectibles } from '../../../store/actions';
 
 export default function CollectiblesTab({ onAddNFT }) {
   const collectibles = useSelector(getCollectibles);
   const collectibleContracts = useSelector(getCollectibleContracts);
+  const useCollectibleDetection = useSelector(getUseCollectibleDetection);
+  const history = useHistory();
   const newNFTsDetected = false;
   const t = useI18nContext();
   const collections = {};
+  const dispatch = useDispatch();
 
   collectibles.forEach((collectible) => {
     if (collections[collectible.address]) {
@@ -49,9 +56,9 @@ export default function CollectiblesTab({ onAddNFT }) {
         <CollectiblesItems
           collections={collections}
           onAddNFT={onAddNFT}
-          onRefreshList={() => {
-            console.log('refreshing collectibles');
-          }}
+          useCollectibleDetection={useCollectibleDetection}
+          onRefreshList={() => dispatch(detectCollectibles())}
+          onEnableAutoDetect={() => history.push(EXPERIMENTAL_ROUTE)}
         />
       ) : (
         <Box padding={[6, 12, 6, 12]}>

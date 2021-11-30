@@ -2203,6 +2203,19 @@ export function setOpenSeaEnabled(val) {
   };
 }
 
+export function detectCollectibles(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.detectCollectibles`);
+    background.detectCollectibles(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
 export function setAdvancedGasFee(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());

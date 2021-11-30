@@ -32,6 +32,8 @@ export default function CollectiblesItems({
   onAddNFT,
   onRefreshList,
   collections,
+  useCollectibleDetection,
+  onEnableAutoDetect,
 }) {
   const t = useI18nContext();
   const defaultDropdownState = {};
@@ -152,15 +154,28 @@ export default function CollectiblesItems({
               alignItems={ALIGN_ITEMS.CENTER}
               justifyContent={JUSTIFY_CONTENT.CENTER}
             >
-              <Box justifyContent={JUSTIFY_CONTENT.FLEX_END}>
-                <Button
-                  type="link"
-                  onClick={onRefreshList}
-                  style={{ padding: '4px' }}
-                >
-                  {t('refreshList')}
-                </Button>
-              </Box>
+              {' '}
+              {useCollectibleDetection ? (
+                <Box justifyContent={JUSTIFY_CONTENT.FLEX_END}>
+                  <Button
+                    type="link"
+                    onClick={onRefreshList}
+                    style={{ padding: '4px' }}
+                  >
+                    {t('refreshList')}
+                  </Button>
+                </Box>
+              ) : (
+                <Box justifyContent={JUSTIFY_CONTENT.FLEX_END}>
+                  <Button
+                    type="link"
+                    onClick={onEnableAutoDetect}
+                    style={{ padding: '4px' }}
+                  >
+                    {t('enableAutoDetect')}
+                  </Button>
+                </Box>
+              )}
               <Typography
                 color={COLORS.UI3}
                 variant={TYPOGRAPHY.H4}
@@ -189,4 +204,6 @@ CollectiblesItems.propTypes = {
   onAddNFT: PropTypes.func.isRequired,
   onRefreshList: PropTypes.func.isRequired,
   collections: PropTypes.array,
+  onEnableAutoDetect: PropTypes.func.isRequired,
+  useCollectibleDetection: PropTypes.func.isRequired,
 };

@@ -873,6 +873,9 @@
   "editPermission": {
     "message": "Edit Permission"
   },
+  "enableAutoDetect": {
+    "message": " Enable Autodetect"
+  },
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
