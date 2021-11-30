@@ -286,6 +286,22 @@ describe('preferences controller', function () {
     });
   });
 
+  describe('setOpenSeaEnabled', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.openSeaEnabled, false);
+    });
+
+    it('should set the openSeaEnabled property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().openSeaEnabled,
+        false,
+      );
+      preferencesController.setOpenSeaEnabled(true);
+      assert.equal(preferencesController.store.getState().openSeaEnabled, true);
+    });
+  });
+
   describe('setAdvancedGasFee', function () {
     it('should default to null', function () {
       const state = preferencesController.store.getState();

@@ -916,6 +916,10 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.setUseCollectibleDetection,
         this.preferencesController,
       ),
+      setOpenSeaEnabled: nodeify(
+        this.preferencesController.setOpenSeaEnabled,
+        this.preferencesController,
+      ),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
