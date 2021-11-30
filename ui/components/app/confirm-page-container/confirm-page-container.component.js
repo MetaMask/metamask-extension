@@ -191,7 +191,7 @@ export default class ConfirmPageContainer extends Component {
                 >
                   {this.context.t('newAccountDetectedDialogMessage')}
                 </Dialog>
-                {showNicknamePopovers ? (
+                {this.state.showNicknamePopovers ? (
                   <NicknamePopovers
                     onClose={() =>
                       this.setState({ showNicknamePopovers: false })
