@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { createCustomTokenTrackerLink } from '@metamask/etherscan-link';
+import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
 import {
@@ -186,14 +186,13 @@ export default function CollectibleDetails({ collectible }) {
             >
               <a
                 target="_blank"
-                href={
-                  rpcPrefs?.blockExplorerUrl
-                    ? createCustomTokenTrackerLink(
-                        address,
-                        rpcPrefs.blockExplorerUrl,
-                      )
-                    : null
-                }
+                href={getTokenTrackerLink(
+                  address,
+                  currentNetwork,
+                  null,
+                  null,
+                  rpcPrefs,
+                )}
                 rel="noopener noreferrer"
               >
                 {getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
