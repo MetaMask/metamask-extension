@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
-import { SECONDARY } from '../../../../helpers/constants/common';
-import { decGWEIToHexWEI } from '../../../../helpers/utils/conversions.util';
-import { getAdvancedGasFeeValues } from '../../../../selectors';
-import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
-import FormField from '../../../ui/form-field';
+import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
+import { SECONDARY } from '../../../../../helpers/constants/common';
+import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
+import { getAdvancedGasFeeValues } from '../../../../../selectors';
+import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
+import { useGasFeeContext } from '../../../../../contexts/gasFee';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
+import FormField from '../../../../ui/form-field';
 
-import { useAdvanceGasFeePopoverContext } from '../context';
-import AdvancedGasFeeInputSubtext from '../advanced-gas-fee-input-subtext';
+import { useAdvanceGasFeePopoverContext } from '../../context';
+import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 
 const PriorityFeeInput = () => {
   const t = useI18nContext();

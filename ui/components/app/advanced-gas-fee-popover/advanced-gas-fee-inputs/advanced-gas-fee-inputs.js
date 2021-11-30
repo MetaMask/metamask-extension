@@ -2,7 +2,7 @@ import React from 'react';
 
 import Box from '../../../ui/box';
 import BaseFeeInput from './base-fee-input';
-import PriorityFeeInput from './priorityfee-input';
+import PriorityFeeInput from './priority-fee-input';
 
 const AdvancedGasFeeInputs = () => {
   return (
