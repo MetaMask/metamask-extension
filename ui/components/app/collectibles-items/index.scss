@@ -1,6 +1,6 @@
 .collectibles-items {
   &__image {
-    border-radius: 10px;
+    border-radius: 0.625rem;
     width: 100%;
     height: 100%;
   }
@@ -8,9 +8,9 @@
 
 .collection-icon {
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  padding: 8px;
+  width: 2rem;
+  height: 2rem;
+  padding: 0.5rem;
   background: $ui-4;
   color: $ui-white;
   text-align: center;

@@ -1396,12 +1396,6 @@
   "lastConnected": {
     "message": "Last Connected"
   },
-  "lastPriceSold": {
-    "message": "Last price sold"
-  },
-  "lastSold": {
-    "message": "Last sold"
-  },
   "layer1Fees": {
     "message": "Layer 1 fees"
   },

@@ -67,7 +67,7 @@ export default function CollectiblesItems({
                   <Box alignItems={ALIGN_ITEMS.CENTER}>
                     {collectionImage ? (
                       <img
-                        style={{ width: '24px', borderRadius: '50%' }}
+                        style={{ width: '1.5rem', borderRadius: '50%' }}
                         src={collectionImage}
                       />
                     ) : (
@@ -106,7 +106,7 @@ export default function CollectiblesItems({
                       return (
                         <Box
                           width={width}
-                          padding={2}
+                          padding={1}
                           margin={2}
                           key={`collectible-${i}`}
                         >
