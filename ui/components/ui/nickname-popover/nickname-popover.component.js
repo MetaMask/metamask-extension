@@ -20,7 +20,7 @@ const NicknamePopover = ({
 
   const onAddClick = useCallback(() => {
     onAdd();
-  }, [address, onAdd]);
+  }, [onAdd]);
 
   const [copied, handleCopy] = useCopyToClipboard();
 
@@ -33,7 +33,7 @@ const NicknamePopover = ({
           className="nickname-popover__identicon"
         />
         <div className="nickname-popover__address">
-          {nickname ? nickname : shortenAddress(address)}
+          {nickname || shortenAddress(address)}
         </div>
         <div className="nickname-popover__public-address">
           <div className="nickname-popover__public-address__constant">
