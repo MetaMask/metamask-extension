@@ -12,8 +12,8 @@ import {
   FONT_WEIGHT,
   JUSTIFY_CONTENT,
   FLEX_DIRECTION,
-  ALIGN_ITEMS,
   OVERFLOW_WRAP,
+  DISPLAY,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -39,6 +39,8 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
 } from '../../../../shared/constants/network';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import CollectibleOptions from './collectible-options';
 
 export default function CollectibleDetails({ collectible }) {
@@ -82,7 +84,6 @@ export default function CollectibleDetails({ collectible }) {
   };
 
   const openSeaLink = getOpenSeaLink();
-
   return (
     <>
       <AssetNavigation
@@ -108,7 +109,11 @@ export default function CollectibleDetails({ collectible }) {
           <Box
             margin={3}
             flexDirection={FLEX_DIRECTION.COLUMN}
-            width={BLOCK_SIZES.TWO_THIRDS}
+            width={
+              getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                ? BLOCK_SIZES.THREE_FOURTHS
+                : BLOCK_SIZES.HALF
+            }
           >
             <Typography
               color={COLORS.BLACK}
@@ -138,29 +143,20 @@ export default function CollectibleDetails({ collectible }) {
             </Typography>
           </Box>
         </div>
-        <Box margin={4} alignItems={ALIGN_ITEMS.FLEX_START}>
-          <Box width={BLOCK_SIZES.ONE_THIRD}>
+        <Box margin={4}>
+          <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
               color={COLORS.BLACK}
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{ marginBottom: 3 }}
+              boxProps={{ marginBottom: 3, width: BLOCK_SIZES.ONE_THIRD }}
             >
               {t('source')}
             </Typography>
             <Typography
-              color={COLORS.BLACK}
-              variant={TYPOGRAPHY.H6}
-              fontWeight={FONT_WEIGHT.BOLD}
-            >
-              {t('contractAddress')}
-            </Typography>
-          </Box>
-          <Box width={BLOCK_SIZES.TWO_THIRDS}>
-            <Typography
               color={COLORS.PRIMARY1}
               variant={TYPOGRAPHY.H6}
-              boxProps={{ marginBottom: 3 }}
+              boxProps={{ marginBottom: 3, width: BLOCK_SIZES.TWO_THIRDS }}
               overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             >
               <a
@@ -172,10 +168,21 @@ export default function CollectibleDetails({ collectible }) {
                 {image}
               </a>
             </Typography>
+          </Box>
+          <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+            <Typography
+              color={COLORS.BLACK}
+              variant={TYPOGRAPHY.H6}
+              fontWeight={FONT_WEIGHT.BOLD}
+              boxProps={{ width: BLOCK_SIZES.ONE_THIRD }}
+            >
+              {t('contractAddress')}
+            </Typography>
             <Typography
               color={COLORS.UI3}
               variant={TYPOGRAPHY.H6}
               overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+              boxProps={{ width: BLOCK_SIZES.TWO_THIRDS }}
             >
               <a
                 target="_blank"
@@ -189,7 +196,9 @@ export default function CollectibleDetails({ collectible }) {
                 }
                 rel="noopener noreferrer"
               >
-                {shortenAddress(address)}
+                {getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                  ? shortenAddress(address)
+                  : address}
               </a>
             </Typography>
           </Box>
