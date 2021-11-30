@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../pages/send/send.constants';
+import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
 import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
 import {
   divideCurrencies,
   multiplyCurrencies,
 } from '../../../../../../shared/modules/conversion.utils';
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
-import { bnGreaterThan, bnLessThan } from '../../../../helpers/utils/util';
+import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
