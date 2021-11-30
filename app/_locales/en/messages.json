@@ -176,6 +176,12 @@
   "advancedGasPriceTitle": {
     "message": "Gas price"
   },
+  "advancedGassFeeDefaultOptIn": {
+    "message": "Use the “new values” and advanced setting as default."
+  },
+  "advancedGassFeeDefaultOptOut": {
+    "message": "Always use these values and advanced setting as default."
+  },
   "advancedOptions": {
     "message": "Advanced Options"
   },
