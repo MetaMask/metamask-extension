@@ -96,7 +96,7 @@ export default class NewAccountCreateForm extends Component {
               large
               className="new-account-create-form__button"
               onClick={createClick}
-              disabled={accountCreateButtonDisabled}
+              disabled={accountCreateButtonDisabled()}
             >
               {this.context.t('create')}
             </Button>
