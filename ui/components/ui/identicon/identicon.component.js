@@ -12,15 +12,45 @@ const getStyles = (diameter) => ({
 
 export default class Identicon extends PureComponent {
   static propTypes = {
+    /**
+     * Check if adding border
+     */
     addBorder: PropTypes.bool,
+    /**
+     * Add address for identicon user
+     */
     address: PropTypes.string,
+    /**
+     * Add custom css class
+     */
     className: PropTypes.string,
+    /**
+     * Add custom diameter
+     */
     diameter: PropTypes.number,
+    /**
+     * Add custom image from file path
+     */
     image: PropTypes.string,
+    /**
+     * Check if use blockie
+     */
     useBlockie: PropTypes.bool,
+    /**
+     * Show alt text content
+     */
     alt: PropTypes.string,
+    /**
+     * Check if show image border
+     */
     imageBorder: PropTypes.bool,
+    /**
+     * Check if use token detection
+     */
     useTokenDetection: PropTypes.bool,
+    /**
+     * Add list of token in object
+     */
     tokenList: PropTypes.object,
   };
 
