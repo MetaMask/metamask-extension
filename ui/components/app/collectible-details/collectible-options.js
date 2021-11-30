@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../ui/menu';
 
-const CollectibleOptions = ({ onRemove, onReportAsScam, onViewOnOpensea }) => {
+const CollectibleOptions = ({ onRemove, onViewOnOpensea }) => {
   const t = useContext(I18nContext);
   const [
     collectibleOptionsButtonElement,
@@ -37,7 +37,7 @@ const CollectibleOptions = ({ onRemove, onReportAsScam, onViewOnOpensea }) => {
               {t('viewOnOpensea')}
             </MenuItem>
           ) : null}
-          <MenuItem
+          {/* <MenuItem
             iconClassName="fas fa-external-link-alt collectible-options__icon"
             data-testid="collectible-options__etherscan"
             onClick={() => {
@@ -46,7 +46,7 @@ const CollectibleOptions = ({ onRemove, onReportAsScam, onViewOnOpensea }) => {
             }}
           >
             {t('reportAsScam')}
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem
             iconClassName="fas fa-trash-alt collectible-options__icon"
             data-testid="collectible-options__hide"

@@ -71,7 +71,7 @@ export default function CollectibleDetails({ collectible }) {
       case KOVAN_CHAIN_ID:
       case ROPSTEN_CHAIN_ID:
       case RINKEBY_CHAIN_ID:
-        return `https://testnets.opensea.io/assets/matic/${address}/${tokenId}`;
+        return `https://testnets.opensea.io/assets/${address}/${tokenId}`;
       default:
         return null;
     }
@@ -170,10 +170,14 @@ export default function CollectibleDetails({ collectible }) {
             >
               <a
                 target="_blank"
-                href={createCustomTokenTrackerLink(
-                  address,
-                  rpcPrefs.blockExplorerUrl,
-                )}
+                href={
+                  rpcPrefs?.blockExplorerUrl
+                    ? createCustomTokenTrackerLink(
+                        address,
+                        rpcPrefs.blockExplorerUrl,
+                      )
+                    : null
+                }
                 rel="noopener noreferrer"
               >
                 {shortenAddress(address)}
