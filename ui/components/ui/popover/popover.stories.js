@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import README from './README.mdx';
 import Popover from './popover.component';
 
@@ -38,18 +38,24 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => (
-  <div style={containerStyle}>
-    <Popover
-      {...args}
-      title={args.title}
-      subtitle={args.subtitle}
-      footer={args.footer}
-    >
-      {args.children}
-    </Popover>
-  </div>
-);
+export const DefaultStory = (args) => {
+  const [isShowPopover, setIsShowPopover] = useState(true);
+  return (
+    <div style={containerStyle}>
+      {isShowPopover && (
+        <Popover
+          {...args}
+          onClose={() => setIsShowPopover(false)}
+          title={args.title}
+          subtitle={args.subtitle}
+          footer={args.footer}
+        >
+          {args.children}
+        </Popover>
+      )}
+    </div>
+  );
+};
 
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
