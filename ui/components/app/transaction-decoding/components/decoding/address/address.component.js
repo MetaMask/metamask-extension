@@ -25,11 +25,6 @@ const Address = ({
   );
   const recipientNickname = addressBookEntryObject?.name;
 
-  let tooltipHtml = <p>{t('copiedExclamation')}</p>;
-  if (!addressCopied) {
-    tooltipHtml = '';
-  }
-
   return (
     <div
       className="tx-insight tx-insight-component tx-insight-component-address"
