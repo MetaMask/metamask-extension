@@ -430,6 +430,15 @@ export function clearClipboard() {
   window.navigator.clipboard.writeText('');
 }
 
+export function getValidIpfsGatewayFormat(ipfsGateway) {
+  if (ipfsGateway.endsWith('/ipfs/')) {
+    return ipfsGateway;
+  } else if (ipfsGateway.endsWith('/')) {
+    return `${ipfsGateway}ipfs/`;
+  }
+  return `${ipfsGateway}/ipfs/`;
+}
+
 export function getAssetImageURL(image, ipfsGateway) {
   let result = image;
   if (!image || !ipfsGateway || typeof image !== 'string') {
@@ -438,9 +447,7 @@ export function getAssetImageURL(image, ipfsGateway) {
 
   if (image.startsWith('ipfs://')) {
     const contentIdentifier = util.getIpfsUrlContentIdentifier(image);
-    result = ipfsGateway.endsWith('/')
-      ? ipfsGateway + contentIdentifier
-      : `${ipfsGateway}/${contentIdentifier}`;
+    result = `${getValidIpfsGatewayFormat(ipfsGateway)}${contentIdentifier}`;
   }
   return result;
 }
