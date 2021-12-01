@@ -4,9 +4,8 @@ import SignatureRequest from './signature-request.component';
 import Message from './signature-request-message';
 
 describe('Signature Request Component', () => {
-
   describe('render', () => {
-    const fromAddress = '0x123456789abcdef';    
+    const fromAddress = '0x123456789abcdef';
     const messageData = {
       domain: {
         chainId: 97,
@@ -55,8 +54,8 @@ describe('Signature Request Component', () => {
           { name: 'name', type: 'string' },
           { name: 'wallets', type: 'address[]' },
         ],
-      }
-    }
+      },
+    };
 
     it('should render a div with one child', () => {
       const wrapper = shallowWithContext(
@@ -83,8 +82,8 @@ describe('Signature Request Component', () => {
     it('should render a div message parsed', () => {
       const msgParams = {
         data: JSON.stringify(messageData),
-        version: "V4",
-        origin: "test",
+        version: 'V4',
+        origin: 'test',
       };
       const wrapper = shallowWithContext(
         <SignatureRequest
@@ -93,7 +92,7 @@ describe('Signature Request Component', () => {
           cancel={() => undefined}
           sign={() => undefined}
           txData={{
-            msgParams: msgParams
+            msgParams,
           }}
           fromAccount={{ address: fromAddress }}
         />,
@@ -104,22 +103,22 @@ describe('Signature Request Component', () => {
       expect(wrapper.hasClass('signature-request')).toStrictEqual(true);
       const messageWrapper = wrapper.find(Message);
       expect(messageWrapper).toHaveLength(1);
-      const data = messageWrapper.props().data;
-      expect(data.contents).toEqual("Hello, Bob!");
-      expect(data.from.name).toEqual("Cow");
+      const { data } = messageWrapper.props();
+      expect(data.contents).toStrictEqual('Hello, Bob!');
+      expect(data.from.name).toStrictEqual('Cow');
       expect(data.from.wallets).toBeDefined();
-      expect(data.to).toBeDefined();      
+      expect(data.to).toBeDefined();
     });
 
     it('should render a div message parsed without typeless data', () => {
-      messageData['do_not_display'] = "one";
-      messageData['do_not_display_2'] = {
-        'do_not_display': 'two'
+      messageData.do_not_display = 'one';
+      messageData.do_not_display_2 = {
+        do_not_display: 'two',
       };
       const msgParams = {
         data: JSON.stringify(messageData),
-        version: "V4",
-        origin: "test",
+        version: 'V4',
+        origin: 'test',
       };
       const wrapper = shallowWithContext(
         <SignatureRequest
@@ -128,7 +127,7 @@ describe('Signature Request Component', () => {
           cancel={() => undefined}
           sign={() => undefined}
           txData={{
-            msgParams: msgParams
+            msgParams,
           }}
           fromAccount={{ address: fromAddress }}
         />,
@@ -139,14 +138,14 @@ describe('Signature Request Component', () => {
       expect(wrapper.hasClass('signature-request')).toStrictEqual(true);
       const messageWrapper = wrapper.find(Message);
       expect(messageWrapper).toHaveLength(1);
-      const data = messageWrapper.props().data;
-      expect(data.contents).toEqual("Hello, Bob!");
-      expect(data.from.name).toEqual("Cow");
+      const { data } = messageWrapper.props();
+      expect(data.contents).toStrictEqual('Hello, Bob!');
+      expect(data.from.name).toStrictEqual('Cow');
       expect(data.from.wallets).toBeDefined();
-      expect(data.to).toBeDefined();      
+      expect(data.to).toBeDefined();
 
       expect(data.do_not_display).toBeUndefined();
       expect(data.do_not_display2).toBeUndefined();
-    });    
+    });
   });
 });

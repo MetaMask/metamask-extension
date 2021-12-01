@@ -67,21 +67,6 @@ export default class SignatureRequest extends PureComponent {
       return false;
     };
 
-    const sanitizeArray = (arrayMsg, baseType) => {
-      const sanitizedMessage = {};
-
-      arrayMsg.forEach((msg, index) => {
-        let valueType = typeof msg;
-        if (valueType === "object") {
-          sanitizedMessage[index] = sanitizeMessage(msg, baseType);
-        } else if (mapType(valueType, {type: baseType})) {
-          sanitizedMessage[index] = msg;
-        }
-      });
-
-      return sanitizedMessage;
-    }
-
     const sanitizeMessage = (msg, baseType) => {
       if (version === 'V4') {
         const sanitizedMessage = {};
@@ -103,7 +88,25 @@ export default class SignatureRequest extends PureComponent {
                 valueType === 'object' &&
                 Array.isArray(msg[msgKey])
               ) {
-                sanitizedMessage[msgKey] = sanitizeArray(msg[msgKey], definedType.type.replace('[]', ''));
+                const sanitizedArrayMessage = {};
+                const definedArrayType = definedType.type.replace('[]', '');
+                const arrayMsg = msg[msgKey];
+
+                arrayMsg.forEach((msgArray, arrIndex) => {
+                  const arrValueType = typeof msgArray;
+                  if (arrValueType === 'object') {
+                    sanitizedArrayMessage[arrIndex] = sanitizeMessage(
+                      msgArray,
+                      definedArrayType,
+                    );
+                  } else if (
+                    mapType(arrValueType, { type: definedArrayType })
+                  ) {
+                    sanitizedArrayMessage[arrIndex] = msgArray;
+                  }
+                });
+
+                sanitizedMessage[msgKey] = sanitizedArrayMessage;
               } else if (valueType === 'object') {
                 sanitizedMessage[msgKey] = sanitizeMessage(
                   msg[msgKey],
@@ -182,7 +185,7 @@ export default class SignatureRequest extends PureComponent {
         <Footer
           cancelAction={onCancel}
           signAction={onSign}
-          disabled={hardwareWalletRequiresConnection()}
+          disabled={hardwareWalletRequiresConnection}
         />
       </div>
     );
