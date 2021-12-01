@@ -36,20 +36,12 @@ export default function AddCollectible() {
   };
 
   const validateAndSetAddress = (val) => {
-    if (isValidHexAddress(val) && tokenId) {
-      setDisabled(false);
-    } else {
-      setDisabled(true);
-    }
+    setDisabled(isValidHexAddress(val) && tokenId);
     setAddress(val);
   };
 
   const validateAndSetTokenId = (val) => {
-    if (isValidHexAddress(address) && val) {
-      setDisabled(false);
-    } else {
-      setDisabled(true);
-    }
+    setDisabled(isValidHexAddress(address) && val);
     setTokenId(val);
   };
 
