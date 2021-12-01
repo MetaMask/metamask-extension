@@ -12,7 +12,7 @@ const CopyRawData = ({ data }) => {
 
   return (
     <div className="copy-raw-data">
-      <Tooltip position="right" title={copied ? 'Copied!' : ''}>
+      <Tooltip position="right" title={copied ? t('copiedExclamation') : ''}>
         <button
           onClick={() => {
             handleCopy(data);

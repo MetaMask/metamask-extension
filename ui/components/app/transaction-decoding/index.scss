@@ -27,11 +27,11 @@
       font-size: 14px;
       position: relative;
       margin: 12px 0 4px;
-      padding-left: 22px;
+      padding-inline-start: 22px;
       cursor: pointer;
 
       & + .tx-insight-content {
-        padding-left: 14px;
+        padding-inline-start: 14px;
         padding-top: 5px;
       }
     }
