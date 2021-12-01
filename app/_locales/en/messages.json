@@ -320,6 +320,9 @@
   "balanceOutdated": {
     "message": "Balance may be outdated"
   },
+  "baseFee": {
+    "message": "Base fee"
+  },
   "basic": {
     "message": "Basic"
   },
@@ -1728,6 +1731,17 @@
   "networkStatus": {
     "message": "Network status"
   },
+  "networkStatusBaseFeeTooltip": {
+    "message": "The base fee is set by the network and changes every 8-12 seconds. Our $1 and $2 options account for sudden increases.",
+    "description": "$1 and $2 are bold text for Medium and Aggressive respectively."
+  },
+  "networkStatusPriorityFeeTooltip": {
+    "message": "Range of prority fees (aka “miner tip”). This goes to miners and incentivizes them to prioritize your transaction."
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "Gas fees are $1 relative to the past 24 hours.",
+    "description": "$1 is networks stability value - stable, low, high"
+  },
   "networkURL": {
     "message": "Network URL"
   },
@@ -2090,6 +2104,9 @@
   },
   "priorityFee": {
     "message": "Priority Fee"
+  },
+  "priorityFeeProperCase": {
+    "message": "Priority fee"
   },
   "privacyMsg": {
     "message": "Privacy Policy"

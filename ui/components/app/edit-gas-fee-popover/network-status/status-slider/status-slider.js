@@ -1,6 +1,7 @@
 import React from 'react';
 
 import I18nValue from '../../../../ui/i18n-value';
+import { NetworkStabilityTooltip } from '../tooltips';
 
 const GRADIENT_COLORS = [
   '#037DD6',
@@ -15,38 +16,60 @@ const GRADIENT_COLORS = [
   '#C54055',
 ];
 
+const StatusInfo = {
+  low: {
+    statusLabel: 'notBusy',
+    tooltipLabel: 'stable',
+    color: GRADIENT_COLORS[0],
+  },
+  stable: {
+    statusLabel: 'stable',
+    tooltipLabel: 'stable',
+    color: GRADIENT_COLORS[4],
+  },
+  high: {
+    statusLabel: 'busy',
+    tooltipLabel: 'stable',
+    color: GRADIENT_COLORS[9],
+  },
+};
+
+const getStatusInfo = (status) => {
+  if (status <= 0.33) {
+    return StatusInfo.low;
+  } else if (status > 0.66) {
+    return StatusInfo.high;
+  }
+  return StatusInfo.stable;
+};
+
 const StatusSlider = () => {
-  // todo: value below to be replaced with dynamic values from api once it is available
-  // corresponding test cases also to be added
   const statusValue = 0.5;
   const sliderValueNumeric = Math.round(statusValue * 10);
 
-  let statusLabel = 'stable';
-  if (statusValue <= 0.33) {
-    statusLabel = 'notBusy';
-  } else if (statusValue > 0.66) {
-    statusLabel = 'busy';
-  }
+  const statusInfo = getStatusInfo(statusValue);
 
   return (
-    <div className="status-slider">
-      <div className="status-slider__arrow-border">
+    <NetworkStabilityTooltip statusInfo={statusInfo}>
+      <div className="status-slider">
+        <div className="status-slider__arrow-border">
+          <div
+            className="status-slider__arrow"
+            style={{
+              borderTopColor: GRADIENT_COLORS[sliderValueNumeric],
+              marginLeft: `${sliderValueNumeric * 10}%`,
+            }}
+          />
+        </div>
+        <div className="status-slider__line" />
         <div
-          className="status-slider__arrow"
-          style={{
-            borderTopColor: GRADIENT_COLORS[sliderValueNumeric],
-            marginLeft: `${sliderValueNumeric * 10}%`,
-          }}
-        />
+          className="status-slider__label"
+          style={{ color: GRADIENT_COLORS[sliderValueNumeric] }}
+        >
+          <I18nValue messageKey={statusInfo?.statusLabel} />
+        </div>
       </div>
-      <div className="status-slider__line" />
-      <div
-        className="status-slider__label"
-        style={{ color: GRADIENT_COLORS[sliderValueNumeric] }}
-      >
-        <I18nValue messageKey={statusLabel} />
-      </div>
-    </div>
+    </NetworkStabilityTooltip>
   );
 };
 

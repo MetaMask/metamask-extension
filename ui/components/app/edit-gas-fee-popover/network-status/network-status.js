@@ -8,6 +8,7 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import I18nValue from '../../../ui/i18n-value';
 import Typography from '../../../ui/typography/typography';
 
+import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
 import StatusSlider from './status-slider';
 
 const NetworkStatus = () => {
@@ -27,18 +28,22 @@ const NetworkStatus = () => {
       <div className="network-status__info">
         <div className="network-status__info__field">
           <span className="network-status__info__field-data">
-            {gasFeeEstimates?.estimatedBaseFee &&
-              `${gasFeeEstimates?.estimatedBaseFee} GWEI`}
+            <BaseFeeTooltip>
+              {gasFeeEstimates?.estimatedBaseFee &&
+                `${gasFeeEstimates?.estimatedBaseFee} GWEI`}
+            </BaseFeeTooltip>
           </span>
-          <span className="network-status__info__field-label">Base fee</span>
+          <span className="network-status__info__field-label">
+            <I18nValue messageKey="baseFee" />
+          </span>
         </div>
         <div className="network-status__info__separator" />
         <div className="network-status__info__field network-status__info__field--priority-fee">
           <span className="network-status__info__field-data">
-            0.5 - 22 GWEI
+            <PriorityFeeTooltip>0.5 - 22 GWEI</PriorityFeeTooltip>
           </span>
           <span className="network-status__info__field-label">
-            Priority fee
+            <I18nValue messageKey="priorityFeeProperCase" />
           </span>
         </div>
         <div className="network-status__info__separator" />
