@@ -108,9 +108,8 @@ export default function EditGasDisplay({
       dappSuggestedAndTxParamGasFeesAreTheSame,
   );
 
-  let showTopWarning, warningMessage;
+  let warningMessage;
   if (gasLimit < properGasLimit) {
-    showTopWarning = true;
     warningMessage = t('gasLimitRecommended', [properGasLimit]);
   }
 
@@ -153,7 +152,7 @@ export default function EditGasDisplay({
             <ErrorMessage errorKey={errorKey} />
           </div>
         )}
-        {showTopWarning && (
+        {warningMessage && (
           <div className="edit-gas-display__warning">
             <ActionableMessage
               className="actionable-message--warning"
