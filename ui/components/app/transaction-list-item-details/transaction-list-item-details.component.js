@@ -13,7 +13,7 @@ import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 import { SECOND } from '../../../../shared/constants/time';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import { getURLHostName } from '../../../helpers/utils/util';
+import { getURLHostName, getURLWithHash } from '../../../helpers/utils/util';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -69,6 +69,15 @@ export default class TransactionListItemDetails extends PureComponent {
         block_explorer_domain: getURLHostName(blockExplorerLink),
       },
     });
+
+    if (rpcPrefs?.blockExplorerUrl) {
+      if (rpcPrefs?.blockExplorerUrl.match(/\/#/u)) {
+        global.platform.openTab({
+          url: getURLWithHash(blockExplorerLink),
+        });
+        return;
+      }
+    }
 
     global.platform.openTab({
       url: blockExplorerLink,

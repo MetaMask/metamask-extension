@@ -405,6 +405,10 @@ export function getURLHost(url) {
   return getURL(url)?.host || '';
 }
 
+export function getURLWithHash(url) {
+  return `${getURL(url)?.origin}/#${getURL(url)?.pathname}` || '';
+}
+
 export function getURLHostName(url) {
   return getURL(url)?.hostname || '';
 }
