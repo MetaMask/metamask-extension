@@ -17516,10 +17516,10 @@ latest-version@^5.0.0:
   dependencies:
     package-json "^6.3.0"
 
-lavamoat-browserify@^14.0.3:
-  version "14.0.3"
-  resolved "https://registry.yarnpkg.com/lavamoat-browserify/-/lavamoat-browserify-14.0.3.tgz#1f179ec34f18a433f6c8348d5e271b6a8e58bc09"
-  integrity sha512-TFRW6BV1n980g6rcKq90rjYyIbGumATc/7y6//qRXXBUSxRKAvTmyzVE19kNS5xdhWPlneDddf+YOZLwI8n1Gw==
+lavamoat-browserify@^14.1.0:
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/lavamoat-browserify/-/lavamoat-browserify-14.1.0.tgz#bfe11d83e1c4cab295f87a0446c8f5ece7a3b20e"
+  integrity sha512-Q6DaR5ETmvUkrPnW6p1bXrDZxFh1eJr8aJB903iDozAYT6ftbHnvZL8pOCvCt80LW6Tj72I+tlbo0Ig9xjEzyA==
   dependencies:
     "@lavamoat/lavapack" "^2.0.3"
     JSONStream "^1.3.5"
