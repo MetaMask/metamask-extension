@@ -57,6 +57,7 @@ const SnapSettingsCard = ({
   const t = useI18nContext();
   const [chipStatus, setChipStatus] = useState(STATUSES.INSTALLING);
 
+  // TODO: use state directly in place of memoization
   const handleStatus = useCallback(() => {
     switch (status) {
       case STATUSES.INSTALLING: {
