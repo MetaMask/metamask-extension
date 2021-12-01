@@ -15,8 +15,10 @@ import log from 'loglevel';
 import TrezorKeyring from 'eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
+import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
+import { ethErrors } from 'eth-rpc-errors';
 import { captureException } from '@sentry/browser';
 import {
   AddressBookController,
@@ -29,6 +31,9 @@ import {
   TokenListController,
   TokensController,
   TokenRatesController,
+  CollectiblesController,
+  AssetsContractController,
+  CollectibleDetectionController,
 } from '@metamask/controllers';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
 import {
@@ -37,7 +42,10 @@ import {
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
 import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
-import { KEYRING_TYPES } from '../../shared/constants/hardware-wallets';
+import {
+  DEVICE_NAMES,
+  KEYRING_TYPES,
+} from '../../shared/constants/hardware-wallets';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
@@ -61,7 +69,7 @@ import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import ThreeBoxController from './controllers/threebox';
 import IncomingTransactionsController from './controllers/incoming-transactions';
-import MessageManager from './lib/message-manager';
+import MessageManager, { normalizeMsgData } from './lib/message-manager';
 import DecryptMessageManager from './lib/decrypt-message-manager';
 import EncryptionPublicKeyManager from './lib/encryption-public-key-manager';
 import PersonalMessageManager from './lib/personal-message-manager';
@@ -175,6 +183,59 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokensController,
     });
 
+    this.assetsContractController = new AssetsContractController({
+      provider: this.provider,
+    });
+
+    this.collectiblesController = new CollectiblesController({
+      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
+      getAssetName: this.assetsContractController.getAssetName.bind(
+        this.assetsContractController,
+      ),
+      getAssetSymbol: this.assetsContractController.getAssetSymbol.bind(
+        this.assetsContractController,
+      ),
+      getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
+        this.assetsContractController,
+      ),
+      getOwnerOf: this.assetsContractController.getOwnerOf.bind(
+        this.assetsContractController,
+      ),
+      balanceOfERC1155Collectible: this.assetsContractController.balanceOfERC1155Collectible.bind(
+        this.assetsContractController,
+      ),
+      uriERC1155Collectible: this.assetsContractController.uriERC1155Collectible.bind(
+        this.assetsContractController,
+      ),
+    });
+
+    process.env.COLLECTIBLES_V1 &&
+      (this.collectibleDetectionController = new CollectibleDetectionController(
+        {
+          onCollectiblesStateChange: (listener) =>
+            this.collectiblesController.subscribe(listener),
+          onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+            this.preferencesController.store,
+          ),
+          onNetworkStateChange: this.networkController.store.subscribe.bind(
+            this.networkController.store,
+          ),
+          getOpenSeaApiKey: () => this.collectiblesController.openSeaApiKey,
+          getBalancesInSingleCall: this.assetsContractController.getBalancesInSingleCall.bind(
+            this.assetsContractController,
+          ),
+          addCollectible: this.collectiblesController.addCollectible.bind(
+            this.collectiblesController,
+          ),
+          getCollectiblesState: () => this.collectiblesController.state,
+        },
+      ));
+
     this.metaMetricsController = new MetaMetricsController({
       segment,
       preferencesStore: this.preferencesController.store,
@@ -231,6 +292,8 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
+    this.qrHardwareKeyring = new QRHardwareKeyring();
+
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
@@ -238,6 +301,7 @@ export default class MetamaskController extends EventEmitter {
       onInactiveTimeout: () => this.setLocked(),
       showUnlockRequest: opts.showUserConfirmation,
       preferencesStore: this.preferencesController.store,
+      qrHardwareStore: this.qrHardwareKeyring.getMemStore(),
     });
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
@@ -377,6 +441,7 @@ export default class MetamaskController extends EventEmitter {
       TrezorKeyring,
       LedgerBridgeKeyring,
       LatticeKeyring,
+      QRHardwareKeyring,
     ];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
@@ -525,6 +590,7 @@ export default class MetamaskController extends EventEmitter {
         console.error(error);
       }
     });
+
     this.networkController.lookupNetwork();
     this.messageManager = new MessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -611,6 +677,7 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
+      CollectiblesController: this.collectiblesController,
     });
 
     this.memStore = new ComposableObservableStore({
@@ -645,6 +712,7 @@ export default class MetamaskController extends EventEmitter {
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
+        CollectiblesController: this.collectiblesController,
       },
       controllerMessenger: this.controllerMessenger,
     });
@@ -826,6 +894,7 @@ export default class MetamaskController extends EventEmitter {
       threeBoxController,
       txController,
       tokensController,
+      collectiblesController,
     } = this;
 
     return {
@@ -841,6 +910,14 @@ export default class MetamaskController extends EventEmitter {
       setUsePhishDetect: this.setUsePhishDetect.bind(this),
       setUseTokenDetection: nodeify(
         this.preferencesController.setUseTokenDetection,
+        this.preferencesController,
+      ),
+      setUseCollectibleDetection: nodeify(
+        this.preferencesController.setUseCollectibleDetection,
+        this.preferencesController,
+      ),
+      setOpenSeaEnabled: nodeify(
+        this.preferencesController.setOpenSeaEnabled,
         this.preferencesController,
       ),
       setIpfsGateway: this.setIpfsGateway.bind(this),
@@ -878,6 +955,28 @@ export default class MetamaskController extends EventEmitter {
       establishLedgerTransportPreference: nodeify(
         this.establishLedgerTransportPreference,
         this,
+      ),
+
+      // qr hardware devices
+      submitQRHardwareCryptoHDKey: nodeify(
+        this.qrHardwareKeyring.submitCryptoHDKey,
+        this.qrHardwareKeyring,
+      ),
+      submitQRHardwareCryptoAccount: nodeify(
+        this.qrHardwareKeyring.submitCryptoAccount,
+        this.qrHardwareKeyring,
+      ),
+      cancelSyncQRHardware: nodeify(
+        this.qrHardwareKeyring.cancelSync,
+        this.qrHardwareKeyring,
+      ),
+      submitQRHardwareSignature: nodeify(
+        this.qrHardwareKeyring.submitSignature,
+        this.qrHardwareKeyring,
+      ),
+      cancelQRHardwareSignRequest: nodeify(
+        this.qrHardwareKeyring.cancelSignRequest,
+        this.qrHardwareKeyring,
       ),
 
       // mobile
@@ -948,6 +1047,27 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
 
+      // CollectiblesController
+      addCollectible: nodeify(
+        collectiblesController.addCollectible,
+        collectiblesController,
+      ),
+
+      addCollectibleVerifyOwnership: nodeify(
+        collectiblesController.addCollectibleVerifyOwnership,
+        collectiblesController,
+      ),
+
+      removeAndIgnoreCollectible: nodeify(
+        collectiblesController.removeAndIgnoreCollectible,
+        collectiblesController,
+      ),
+
+      removeCollectible: nodeify(
+        collectiblesController.removeCollectible,
+        collectiblesController,
+      ),
+
       // AddressController
       setAddressBook: nodeify(
         this.addressBookController.set,
@@ -1008,9 +1128,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
       createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
-      isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
-      getPendingNonce: nodeify(this.getPendingNonce, this),
       getNextNonce: nodeify(this.getNextNonce, this),
       addUnapprovedTransaction: nodeify(
         txController.addUnapprovedTransaction,
@@ -1092,13 +1210,6 @@ export default class MetamaskController extends EventEmitter {
       // permissions
       approvePermissionsRequest: nodeify(
         permissionsController.approvePermissionsRequest,
-        permissionsController,
-      ),
-      clearPermissions: permissionsController.clearPermissions.bind(
-        permissionsController,
-      ),
-      getApprovedAccounts: nodeify(
-        permissionsController.getAccounts,
         permissionsController,
       ),
       rejectPermissionsRequest: nodeify(
@@ -1255,6 +1366,14 @@ export default class MetamaskController extends EventEmitter {
         this.detectTokensController.detectNewTokens,
         this.detectTokensController,
       ),
+
+      // DetectCollectibleController
+      detectCollectibles: process.env.COLLECTIBLES_V1
+        ? nodeify(
+            this.collectibleDetectionController.detectCollectibles,
+            this.collectibleDetectionController,
+          )
+        : null,
     };
   }
 
@@ -1574,13 +1693,16 @@ export default class MetamaskController extends EventEmitter {
   async getKeyringForDevice(deviceName, hdPath = null) {
     let keyringName = null;
     switch (deviceName) {
-      case 'trezor':
+      case DEVICE_NAMES.TREZOR:
         keyringName = TrezorKeyring.type;
         break;
-      case 'ledger':
+      case DEVICE_NAMES.LEDGER:
         keyringName = LedgerBridgeKeyring.type;
         break;
-      case 'lattice':
+      case DEVICE_NAMES.QR:
+        keyringName = QRHardwareKeyring.type;
+        break;
+      case DEVICE_NAMES.LATTICE:
         keyringName = LatticeKeyring.type;
         break;
       default:
@@ -1597,9 +1719,14 @@ export default class MetamaskController extends EventEmitter {
     if (hdPath && keyring.setHdPath) {
       keyring.setHdPath(hdPath);
     }
-    if (deviceName === 'lattice') {
+    if (deviceName === DEVICE_NAMES.LATTICE) {
       keyring.appName = 'MetaMask';
     }
+    if (deviceName === 'trezor') {
+      const model = keyring.getModel();
+      this.appStateController.setTrezorModel(model);
+    }
+
     keyring.network = this.networkController.getProviderConfig().type;
 
     return keyring;
@@ -1668,6 +1795,18 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * get hardware account label
+   *
+   * @return string label
+   * */
+
+  getAccountLabel(name, index, hdPathDescription) {
+    return `${name[0].toUpperCase()}${name.slice(1)} ${
+      parseInt(index, 10) + 1
+    } ${hdPathDescription || ''}`.trim();
+  }
+
+  /**
    * Imports an account from a Trezor or Ledger device.
    *
    * @returns {} keyState
@@ -1687,10 +1826,12 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setAddresses(newAccounts);
     newAccounts.forEach((address) => {
       if (!oldAccounts.includes(address)) {
-        const label = `${deviceName[0].toUpperCase()}${deviceName.slice(1)} ${
-          parseInt(index, 10) + 1
-        } ${hdPathDescription || ''}`.trim();
-        // Set the account label to Trezor 1 /  Ledger 1, etc
+        const label = this.getAccountLabel(
+          deviceName === DEVICE_NAMES.QR ? keyring.getName() : deviceName,
+          index,
+          hdPathDescription,
+        );
+        // Set the account label to Trezor 1 /  Ledger 1 / QR Hardware 1, etc
         this.preferencesController.setAccountLabel(address, label);
         // Select the account
         this.preferencesController.setSelectedAddress(address);
@@ -1852,14 +1993,22 @@ export default class MetamaskController extends EventEmitter {
    * @param {Object} msgParams - The params passed to eth_sign.
    * @param {Function} cb - The callback function called with the signature.
    */
-  newUnsignedMessage(msgParams, req) {
-    const promise = this.messageManager.addUnapprovedMessageAsync(
-      msgParams,
-      req,
-    );
-    this.sendUpdate();
-    this.opts.showUserConfirmation();
-    return promise;
+  async newUnsignedMessage(msgParams, req) {
+    const data = normalizeMsgData(msgParams.data);
+    let promise;
+    // 64 hex + "0x" at the beginning
+    // This is needed because Ethereum's EcSign works only on 32 byte numbers
+    // For 67 length see: https://github.com/MetaMask/metamask-extension/pull/12679/files#r749479607
+    if (data.length === 66 || data.length === 67) {
+      promise = this.messageManager.addUnapprovedMessageAsync(msgParams, req);
+      this.sendUpdate();
+      this.opts.showUserConfirmation();
+    } else {
+      throw ethErrors.rpc.invalidParams(
+        'eth_sign requires 32 byte message hash',
+      );
+    }
+    return await promise;
   }
 
   /**
@@ -1868,24 +2017,23 @@ export default class MetamaskController extends EventEmitter {
    * @param {Object} msgParams - The params passed to eth_call.
    * @returns {Promise<Object>} Full state update.
    */
-  signMessage(msgParams) {
+  async signMessage(msgParams) {
     log.info('MetaMaskController - signMessage');
     const msgId = msgParams.metamaskId;
-
-    // sets the status op the message to 'approved'
-    // and removes the metamaskId for signing
-    return this.messageManager
-      .approveMessage(msgParams)
-      .then((cleanMsgParams) => {
-        // signs the message
-        return this.keyringController.signMessage(cleanMsgParams);
-      })
-      .then((rawSig) => {
-        // tells the listener that the message has been signed
-        // and can be returned to the dapp
-        this.messageManager.setMsgStatusSigned(msgId, rawSig);
-        return this.getState();
-      });
+    try {
+      // sets the status op the message to 'approved'
+      // and removes the metamaskId for signing
+      const cleanMsgParams = await this.messageManager.approveMessage(
+        msgParams,
+      );
+      const rawSig = await this.keyringController.signMessage(cleanMsgParams);
+      this.messageManager.setMsgStatusSigned(msgId, rawSig);
+      return this.getState();
+    } catch (error) {
+      log.info('MetaMaskController - eth_sign failed', error);
+      this.messageManager.errorMessage(msgId, error);
+      throw error;
+    }
   }
 
   /**
@@ -1932,23 +2080,27 @@ export default class MetamaskController extends EventEmitter {
    * @param {Object} msgParams - The params of the message to sign & return to the Dapp.
    * @returns {Promise<Object>} A full state update.
    */
-  signPersonalMessage(msgParams) {
+  async signPersonalMessage(msgParams) {
     log.info('MetaMaskController - signPersonalMessage');
     const msgId = msgParams.metamaskId;
     // sets the status op the message to 'approved'
     // and removes the metamaskId for signing
-    return this.personalMessageManager
-      .approveMessage(msgParams)
-      .then((cleanMsgParams) => {
-        // signs the message
-        return this.keyringController.signPersonalMessage(cleanMsgParams);
-      })
-      .then((rawSig) => {
-        // tells the listener that the message has been signed
-        // and can be returned to the dapp
-        this.personalMessageManager.setMsgStatusSigned(msgId, rawSig);
-        return this.getState();
-      });
+    try {
+      const cleanMsgParams = await this.personalMessageManager.approveMessage(
+        msgParams,
+      );
+      const rawSig = await this.keyringController.signPersonalMessage(
+        cleanMsgParams,
+      );
+      // tells the listener that the message has been signed
+      // and can be returned to the dapp
+      this.personalMessageManager.setMsgStatusSigned(msgId, rawSig);
+      return this.getState();
+    } catch (error) {
+      log.info('MetaMaskController - eth_personalSign failed', error);
+      this.personalMessageManager.errorMessage(msgId, error);
+      throw error;
+    }
   }
 
   /**
@@ -2095,6 +2247,12 @@ export default class MetamaskController extends EventEmitter {
         });
       }
 
+      case KEYRING_TYPES.QR: {
+        return Promise.reject(
+          new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
+        );
+      }
+
       default: {
         const promise = this.encryptionPublicKeyManager.addUnapprovedMessageAsync(
           msgParams,
@@ -2237,7 +2395,11 @@ export default class MetamaskController extends EventEmitter {
     const address =
       fromAddress || this.preferencesController.getSelectedAddress();
     const keyring = await this.keyringController.getKeyringForAccount(address);
-    return keyring.type !== KEYRING_TYPES.TREZOR;
+    if (keyring.type === KEYRING_TYPES.TREZOR) {
+      const model = keyring.getModel();
+      return model === 'T';
+    }
+    return true;
   }
 
   //=============================================================================

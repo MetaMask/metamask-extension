@@ -237,9 +237,6 @@ const getSwapsState = (state) => state.metamask.swapsState;
 export const getSwapsFeatureIsLive = (state) =>
   state.metamask.swapsState.swapsFeatureIsLive;
 
-export const getUseNewSwapsApi = (state) =>
-  state.metamask.swapsState.useNewSwapsApi;
-
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
 
@@ -403,7 +400,6 @@ export const fetchSwapsLiveness = () => {
   return async (dispatch, getState) => {
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
@@ -431,7 +427,6 @@ export const fetchQuotesAndSetQuoteState = (
     const chainId = getCurrentChainId(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
@@ -655,7 +650,6 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     );
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
@@ -913,13 +907,12 @@ export function fetchMetaSwapsGasPriceEstimates() {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    const useNewSwapsApi = getUseNewSwapsApi(state);
 
     dispatch(swapGasPriceEstimatesFetchStarted());
 
     let priceEstimates;
     try {
-      priceEstimates = await fetchSwapsGasPrices(chainId, useNewSwapsApi);
+      priceEstimates = await fetchSwapsGasPrices(chainId);
     } catch (e) {
       log.warn('Fetching swaps gas prices failed:', e);
 

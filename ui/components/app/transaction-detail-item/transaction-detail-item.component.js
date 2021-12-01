@@ -26,44 +26,34 @@ export default function TransactionDetailItem({
           color={detailTitleColor}
           fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
           variant={TYPOGRAPHY.H6}
-          className="transaction-detail-item__title"
         >
           {detailTitle}
         </Typography>
-        {detailText && (
-          <div
-            className={classnames('transaction-detail-item__detail-values', {
-              'transaction-detail-item__detail-values--flex-width': flexWidthValues,
-            })}
-          >
-            <Typography
-              fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
-              variant={TYPOGRAPHY.H6}
-              className="transaction-detail-item__detail-text"
-              color={COLORS.UI4}
-            >
+        <div
+          className={classnames('transaction-detail-item__detail-values', {
+            'transaction-detail-item__detail-values--flex-width': flexWidthValues,
+          })}
+        >
+          {detailText && (
+            <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
               {detailText}
             </Typography>
-          </div>
-        )}
-        <Typography
-          color={COLORS.BLACK}
-          fontWeight={FONT_WEIGHT.BOLD}
-          variant={TYPOGRAPHY.H6}
-          className="transaction-detail-item__total"
-        >
-          {detailTotal}
-        </Typography>
+          )}
+          <Typography
+            color={COLORS.BLACK}
+            fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
+            variant={TYPOGRAPHY.H6}
+            margin={[1, 0, 1, 1]}
+          >
+            {detailTotal}
+          </Typography>
+        </div>
       </div>
       <div className="transaction-detail-item__row">
         {React.isValidElement(subTitle) ? (
-          <div className="transaction-detail-item__subtitle">{subTitle}</div>
+          <div>{subTitle}</div>
         ) : (
-          <Typography
-            variant={TYPOGRAPHY.H7}
-            className="transaction-detail-item__subtitle"
-            color={COLORS.UI4}
-          >
+          <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4}>
             {subTitle}
           </Typography>
         )}
@@ -71,7 +61,8 @@ export default function TransactionDetailItem({
         <Typography
           variant={TYPOGRAPHY.H7}
           color={COLORS.UI4}
-          className="transaction-detail-item__subtext"
+          align="end"
+          className="transaction-detail-item__row-subText"
         >
           {subText}
         </Typography>

@@ -13,6 +13,10 @@
 @import 'connected-status-indicator/index';
 @import 'edit-gas-display/index';
 @import 'edit-gas-display-education/index';
+@import 'edit-gas-fee-popover/index';
+@import 'edit-gas-fee-popover/edit-gas-item/index';
+@import 'edit-gas-fee-popover/network-status/index';
+@import 'edit-gas-fee-popover/network-status/status-slider/index';
 @import 'gas-customization/gas-modal-page-container/index';
 @import 'gas-customization/gas-price-button-group/index';
 @import 'gas-customization/index';
@@ -46,4 +50,8 @@
 @import 'transaction-total-banner/index';
 @import 'wallet-overview/index';
 @import 'whats-new-popup/index';
-@import 'loading-network-screen/index'
+@import 'loading-network-screen/index';
+@import 'advanced-gas-fee-popover/index';
+@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/index';
+@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/base-fee-input/index';
+@import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';

@@ -3,9 +3,21 @@ import PropTypes from 'prop-types';
 
 export default class CircleIcon extends PureComponent {
   static propTypes = {
+    /**
+     * add size (px) for the image container
+     */
     size: PropTypes.string,
+    /**
+     * add css classname for the component based on the parent css
+     */
     circleClass: PropTypes.string,
+    /**
+     * image source path
+     */
     iconSource: PropTypes.string.isRequired,
+    /**
+     * add size (px) for the image
+     */
     iconSize: PropTypes.string,
   };
 

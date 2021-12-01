@@ -34,6 +34,7 @@ const mapStateToProps = (state) => {
     chainId,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
     tokenList,
+    useTokenDetection,
   };
 };
 

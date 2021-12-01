@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import SenderToRecipient from '../../ui/sender-to-recipient';
-import { PageContainerFooter } from '../../ui/page-container';
-import EditGasPopover from '../edit-gas-popover';
+
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import ErrorMessage from '../../ui/error-message';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+
+import { PageContainerFooter } from '../../ui/page-container';
 import Dialog from '../../ui/dialog';
+import ErrorMessage from '../../ui/error-message';
+import SenderToRecipient from '../../ui/sender-to-recipient';
+
+import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
+import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
+import EditGasPopover from '../edit-gas-popover';
+
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -72,6 +78,7 @@ export default class ConfirmPageContainer extends Component {
     showAddToAddressBookModal: PropTypes.func,
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
+    supportsEIP1559V2: PropTypes.bool,
   };
 
   render() {
@@ -122,6 +129,7 @@ export default class ConfirmPageContainer extends Component {
       showAddToAddressBookModal,
       contact = {},
       isOwnedAccount,
+      supportsEIP1559V2,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -203,6 +211,7 @@ export default class ConfirmPageContainer extends Component {
               origin={origin}
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
+              supportsEIP1559V2={supportsEIP1559V2}
             />
           )}
           {shouldDisplayWarning && (
@@ -225,13 +234,15 @@ export default class ConfirmPageContainer extends Component {
               )}
             </PageContainerFooter>
           )}
-          {editingGas && (
+          {editingGas && !supportsEIP1559V2 && (
             <EditGasPopover
               mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
               onClose={handleCloseEditGas}
               transaction={currentTransaction}
             />
           )}
+          <EditGasFeePopover />
+          <AdvancedGasFeePopover />
         </div>
       </GasFeeContextProvider>
     );
