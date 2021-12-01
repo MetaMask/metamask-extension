@@ -24,7 +24,6 @@ describe('Typography', () => {
         <Typography tag="div">div tag</Typography>
         <Typography tag="dt">dt tag</Typography>
         <Typography tag="dd">dd tag</Typography>
-        <Typography tag="i">i tag</Typography>
       </>,
     );
     expect(container.querySelector('p')).toBeDefined();

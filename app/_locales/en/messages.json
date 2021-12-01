@@ -139,6 +139,9 @@
   "addNFT": {
     "message": "Add NFT"
   },
+  "addNFTLowerCase": {
+    "message": "add NFT"
+  },
   "addNetwork": {
     "message": "Add Network"
   },
@@ -163,6 +166,9 @@
   "advanced": {
     "message": "Advanced"
   },
+  "advancedBaseGasFeeToolTip": {
+    "message": "Any difference between your max base fee and the current base fee will be refunded after completion."
+  },
   "advancedGasFeeModalTitle": {
     "message": "Advanced gas fee"
   },
@@ -171,6 +177,9 @@
   },
   "advancedOptions": {
     "message": "Advanced Options"
+  },
+  "advancedPriorityFeeToolTip": {
+    "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
   "advancedSettingsDescription": {
     "message": "Access developer features, download State Logs, Reset Account, setup test networks and custom RPC"
@@ -620,6 +629,9 @@
   "currentLanguage": {
     "message": "Current Language"
   },
+  "currentTitle": {
+    "message": "Current:"
+  },
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
   },
@@ -824,21 +836,12 @@
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
-  "editGasSubTextAmount": {
-    "message": "$1 $2",
-    "description": "$1 will be passed the editGasSubTextAmountLabel and $2 will be passed the amount in either cryptocurrency or fiat"
-  },
   "editGasSubTextAmountLabel": {
     "message": "Max amount:",
     "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
-  "editGasSubTextFee": {
-    "message": "$1 $2",
-    "description": "$1 will be passed the editGasSubTextFeeLabel and $2 will be passed the fee amount in either cryptocurrency or fiat"
-  },
   "editGasSubTextFeeLabel": {
-    "message": "Max fee:",
-    "description": "$1 represents a dollar amount"
+    "message": "Max fee:"
   },
   "editGasTitle": {
     "message": "Edit priority"
@@ -851,6 +854,12 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
+  },
+  "editInGwei": {
+    "message": "Edit in GWEI"
+  },
+  "editInMultiplier": {
+    "message": "Edit in multiplier"
   },
   "editNonceField": {
     "message": "Edit Nonce"
@@ -1382,7 +1391,8 @@
     "message": "Want to $1 about gas?"
   },
   "learnCancelSpeeedup": {
-    "message": "Learn how to $1"
+    "message": "Learn how to $1",
+    "description": "$1 is link to cancel or speed up transactions"
   },
   "learnMore": {
     "message": "learn more"
@@ -1589,6 +1599,9 @@
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
+  "multiplier": {
+    "message": "multiplier"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -1675,6 +1688,12 @@
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
+  },
+  "newCollectibleAddFailed": {
+    "message": "Collectible was not added because: $1"
+  },
+  "newCollectibleAddedMessage": {
+    "message": "Collectible was successfully added!"
   },
   "newContact": {
     "message": "New Contact"
@@ -1969,11 +1988,15 @@
   "pending": {
     "message": "Pending"
   },
-  "pendingTransaction": {
-    "message": "You have ($1) pending transaction(s)."
-  },
   "pendingTransactionInfo": {
     "message": "This transaction will not process until that one is complete."
+  },
+  "pendingTransactionMultiple": {
+    "message": "You have ($1) pending transactions."
+  },
+  "pendingTransactionSingle": {
+    "message": "You have (1) pending transaction.",
+    "description": "$1 is count of pending transactions"
   },
   "permissionCheckedIconDescription": {
     "message": "You have approved this permission"
@@ -2007,6 +2030,9 @@
   "primaryCurrencySettingDescription": {
     "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
   },
+  "priorityFee": {
+    "message": "Priority Fee"
+  },
   "privacyMsg": {
     "message": "Privacy Policy"
   },
@@ -2019,6 +2045,9 @@
   },
   "privateNetwork": {
     "message": "Private Network"
+  },
+  "proceedWithTransaction": {
+    "message": "I want to proceed anyway"
   },
   "proposedApprovalLimit": {
     "message": "Proposed Approval Limit"
@@ -2406,6 +2435,9 @@
   },
   "simulationErrorMessage": {
     "message": "This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended."
+  },
+  "simulationErrorMessageV2": {
+    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "skip": {
     "message": "Skip"
@@ -3079,6 +3111,9 @@
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
   },
+  "twelveHrTitle": {
+    "message": "12hr:"
+  },
   "typePassword": {
     "message": "Type your MetaMask password"
   },
@@ -3137,6 +3172,12 @@
   "urlExistsErrorMsg": {
     "message": "This URL is currently used by the $1 network."
   },
+  "useCollectibleDetection": {
+    "message": "Autodetect NFTs"
+  },
+  "useCollectibleDetectionDescription": {
+    "message": "Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services."
+  },
   "usePhishingDetection": {
     "message": "Use Phishing Detection"
   },
@@ -3181,6 +3222,9 @@
   },
   "viewMore": {
     "message": "View More"
+  },
+  "viewOnBlockExplorer": {
+    "message": "View on block explorer"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View $1 at $2",

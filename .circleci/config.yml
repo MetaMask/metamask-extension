@@ -203,7 +203,7 @@ jobs:
           - build-artifacts
 
   validate-lavamoat-config:
-    executor: node-browsers
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:

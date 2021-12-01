@@ -61,7 +61,6 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: true,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
@@ -81,7 +80,6 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: false,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       featureFlagsResponse.ethereum.extension_active = false;
@@ -102,7 +100,6 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: false,
-        useNewSwapsApi: false,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       featureFlagsResponse.ethereum.extension_active = false;
@@ -124,7 +121,6 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: false,
-        useNewSwapsApi: false,
       };
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         replyWithError: true,
@@ -143,7 +139,6 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: true,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
@@ -207,22 +202,6 @@ describe('Ducks - Swaps', () => {
       const swapsFeatureIsLive = false;
       state.metamask.swapsState.swapsFeatureIsLive = swapsFeatureIsLive;
       expect(swaps.getSwapsFeatureIsLive(state)).toBe(swapsFeatureIsLive);
-    });
-  });
-
-  describe('getUseNewSwapsApi', () => {
-    it('returns true for "useNewSwapsApi"', () => {
-      const state = createSwapsMockStore();
-      const useNewSwapsApi = true;
-      state.metamask.swapsState.useNewSwapsApi = useNewSwapsApi;
-      expect(swaps.getUseNewSwapsApi(state)).toBe(useNewSwapsApi);
-    });
-
-    it('returns false for "useNewSwapsApi"', () => {
-      const state = createSwapsMockStore();
-      const useNewSwapsApi = false;
-      state.metamask.swapsState.useNewSwapsApi = useNewSwapsApi;
-      expect(swaps.getUseNewSwapsApi(state)).toBe(useNewSwapsApi);
     });
   });
 

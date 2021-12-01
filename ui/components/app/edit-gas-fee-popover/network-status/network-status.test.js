@@ -57,21 +57,10 @@ describe('NetworkStatus', () => {
     expect(screen.queryByText('Priority fee')).toBeInTheDocument();
   });
 
-  it('should renders current base fee value rounded to 2 decimal places', () => {
+  it('should renders current base fee value', () => {
     renderComponent();
     expect(
-      screen.queryByText(
-        `${parseFloat(MOCK_FEE_ESTIMATE.estimatedBaseFee).toFixed(2)} GWEI`,
-      ),
+      screen.queryByText(`${MOCK_FEE_ESTIMATE.estimatedBaseFee} GWEI`),
     ).toBeInTheDocument();
-  });
-
-  it('should .01 as estimates base fee if estimated base fee is < .01', () => {
-    renderComponent({
-      gasFeeEstimates: {
-        estimatedBaseFee: '0.0012',
-      },
-    });
-    expect(screen.queryByText('0.01 GWEI')).toBeInTheDocument();
   });
 });

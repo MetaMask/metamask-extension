@@ -221,7 +221,6 @@ export const createSwapsMockStore = () => {
         topAggId: 'TEST_AGG_BEST',
         routeState: '',
         swapsFeatureIsLive: false,
-        useNewSwapsApi: false,
       },
       useTokenDetection: true,
       tokenList: {

@@ -35,7 +35,6 @@ import {
   prepareToLeaveSwaps,
   fetchAndSetSwapsGasPriceInfo,
   fetchSwapsLiveness,
-  getUseNewSwapsApi,
   getFromToken,
   getReviewSwapClickedTimestamp,
 } from '../../ducks/swaps/swaps';
@@ -117,8 +116,6 @@ export default function Swap() {
   const swapsEnabled = useSelector(getSwapsFeatureIsLive);
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const useNewSwapsApi = useSelector(getUseNewSwapsApi);
-  const prevUseNewSwapsApi = useRef(useNewSwapsApi);
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
@@ -194,35 +191,24 @@ export default function Swap() {
 
   // eslint-disable-next-line
   useEffect(() => {
-    if (isFeatureFlagLoaded && prevUseNewSwapsApi.current === useNewSwapsApi) {
-      fetchTokens(chainId, useNewSwapsApi)
-        .then((tokens) => {
-          dispatch(setSwapsTokens(tokens));
-        })
-        .catch((error) => console.error(error));
-      fetchTopAssets(chainId, useNewSwapsApi).then((topAssets) => {
-        dispatch(setTopAssets(topAssets));
-      });
-      fetchAggregatorMetadata(chainId, useNewSwapsApi).then(
-        (newAggregatorMetadata) => {
-          dispatch(setAggregatorMetadata(newAggregatorMetadata));
-        },
-      );
-      if (!networkAndAccountSupports1559) {
-        dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
-      }
-      return () => {
-        dispatch(prepareToLeaveSwaps());
-      };
+    fetchTokens(chainId)
+      .then((tokens) => {
+        dispatch(setSwapsTokens(tokens));
+      })
+      .catch((error) => console.error(error));
+    fetchTopAssets(chainId).then((topAssets) => {
+      dispatch(setTopAssets(topAssets));
+    });
+    fetchAggregatorMetadata(chainId).then((newAggregatorMetadata) => {
+      dispatch(setAggregatorMetadata(newAggregatorMetadata));
+    });
+    if (!networkAndAccountSupports1559) {
+      dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
     }
-    prevUseNewSwapsApi.current = useNewSwapsApi;
-  }, [
-    dispatch,
-    chainId,
-    isFeatureFlagLoaded,
-    useNewSwapsApi,
-    networkAndAccountSupports1559,
-  ]);
+    return () => {
+      dispatch(prepareToLeaveSwaps());
+    };
+  }, [dispatch, chainId, networkAndAccountSupports1559]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);

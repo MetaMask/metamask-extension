@@ -26,7 +26,10 @@ import {
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
 import { getMethodName } from '../../helpers/utils/metrics';
-import { getTransactionTypeTitle } from '../../helpers/utils/transactions.util';
+import {
+  getTransactionTypeTitle,
+  isLegacyTransaction,
+} from '../../helpers/utils/transactions.util';
 import { toBuffer } from '../../../shared/modules/buffer-utils';
 
 import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
@@ -57,7 +60,8 @@ import GasDetailsItem from './gas-details-item';
 import TransactionAlerts from './transaction-alerts';
 
 // eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2 = process.env.EIP_1559_V2;
+const EIP_1559_V2_ENABLED =
+  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
@@ -145,7 +149,7 @@ export default class ConfirmTransactionBase extends Component {
     submitWarning: '',
     ethGasPriceWarning: '',
     editingGas: false,
-    confirmAnyways: false,
+    userAcknowledgedGasMissing: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -290,8 +294,8 @@ export default class ConfirmTransactionBase extends Component {
     this.setState({ editingGas: false });
   }
 
-  handleConfirmAnyways() {
-    this.setState({ confirmAnyways: true });
+  setUserAcknowledgedGasMissing() {
+    this.setState({ userAcknowledgedGasMissing: true });
   }
 
   renderDetails() {
@@ -318,15 +322,16 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
     } = this.props;
     const { t } = this.context;
+    const { userAcknowledgedGasMissing } = this.state;
 
     const { valid } = this.getErrorKey();
     const isDisabled = () => {
-      return this.state.confirmAnyways ? false : !valid;
+      return userAcknowledgedGasMissing ? false : !valid;
     };
 
     const hasSimulationError = Boolean(txData.simulationFails);
     const renderSimulationFailureWarning =
-      hasSimulationError && !this.state.confirmAnyways;
+      hasSimulationError && !userAcknowledgedGasMissing;
 
     const renderTotalMaxAmount = () => {
       if (
@@ -419,7 +424,9 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const renderGasDetailsItem = () => {
-      return EIP_1559_V2 ? (
+      return EIP_1559_V2_ENABLED &&
+        supportsEIP1559 &&
+        !isLegacyTransaction(txData) ? (
         <GasDetailsItem
           key="gas_details"
           hexMaximumTransactionFee={hexMaximumTransactionFee}
@@ -432,6 +439,7 @@ export default class ConfirmTransactionBase extends Component {
           useNativeCurrencyAsPrimaryCurrency={
             useNativeCurrencyAsPrimaryCurrency
           }
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
         />
       ) : (
         <TransactionDetailItem
@@ -506,22 +514,25 @@ export default class ConfirmTransactionBase extends Component {
             </div>
           }
           subText={
-            !isMultiLayerFeeNetwork &&
-            t('editGasSubTextFee', [
-              <b key="editGasSubTextFeeLabel">{t('editGasSubTextFeeLabel')}</b>,
-              <div
-                key="editGasSubTextFeeValue"
-                className="confirm-page-container-content__currency-container"
-              >
-                {renderHeartBeatIfNotInTest()}
-                <UserPreferencedCurrencyDisplay
-                  key="editGasSubTextFeeAmount"
-                  type={PRIMARY}
-                  value={hexMaximumTransactionFee}
-                  hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                />
-              </div>,
-            ])
+            !isMultiLayerFeeNetwork && (
+              <>
+                <strong key="editGasSubTextFeeLabel">
+                  {t('editGasSubTextFeeLabel')}
+                </strong>
+                <div
+                  key="editGasSubTextFeeValue"
+                  className="confirm-page-container-content__currency-container"
+                >
+                  {renderHeartBeatIfNotInTest()}
+                  <UserPreferencedCurrencyDisplay
+                    key="editGasSubTextFeeAmount"
+                    type={PRIMARY}
+                    value={hexMaximumTransactionFee}
+                    hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                  />
+                </div>
+              </>
+            )
           }
           subTitle={
             <>
@@ -559,7 +570,7 @@ export default class ConfirmTransactionBase extends Component {
           type="danger"
           primaryAction={{
             label: this.context.t('tryAnywayOption'),
-            onClick: () => this.handleConfirmAnyways(),
+            onClick: () => this.setUserAcknowledgedGasMissing(),
           }}
           message={this.context.t('simulationErrorMessage')}
           roundedButtons
@@ -569,9 +580,15 @@ export default class ConfirmTransactionBase extends Component {
 
     return (
       <div className="confirm-page-container-content__details">
-        {EIP_1559_V2 && <TransactionAlerts />}
+        <TransactionAlerts
+          setUserAcknowledgedGasMissing={() =>
+            this.setUserAcknowledgedGasMissing()
+          }
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+        />
         <TransactionDetail
           disabled={isDisabled()}
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           onEdit={
             renderSimulationFailureWarning ? null : () => this.handleEditGas()
           }
@@ -592,12 +609,14 @@ export default class ConfirmTransactionBase extends Component {
                 detailText={renderTotalDetailText()}
                 detailTotal={renderTotalDetailTotal()}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
-                subText={t('editGasSubTextAmount', [
-                  <b key="editGasSubTextAmountLabel">
-                    {t('editGasSubTextAmountLabel')}
-                  </b>,
-                  renderTotalMaxAmount(),
-                ])}
+                subText={
+                  <>
+                    <strong key="editGasSubTextAmountLabel">
+                      {t('editGasSubTextAmountLabel')}
+                    </strong>
+                    {renderTotalMaxAmount()}
+                  </>
+                }
               />
             ),
           ]}
@@ -939,6 +958,7 @@ export default class ConfirmTransactionBase extends Component {
       gasFeeIsCustom,
       nativeCurrency,
       hardwareWalletRequiresConnection,
+      supportsEIP1559,
     } = this.props;
     const {
       submitting,
@@ -946,14 +966,14 @@ export default class ConfirmTransactionBase extends Component {
       submitWarning,
       ethGasPriceWarning,
       editingGas,
-      confirmAnyways,
+      userAcknowledgedGasMissing,
     } = this.state;
 
     const { name } = methodData;
     const { valid, errorKey } = this.getErrorKey();
     const hasSimulationError = Boolean(txData.simulationFails);
     const renderSimulationFailureWarning =
-      hasSimulationError && !confirmAnyways;
+      hasSimulationError && !userAcknowledgedGasMissing;
     const {
       totalTx,
       positionOfCurrentTx,
@@ -967,7 +987,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.getNavigateTxData();
 
     const isDisabled = () => {
-      return confirmAnyways ? false : !valid;
+      return userAcknowledgedGasMissing ? false : !valid;
     };
 
     let functionType = getMethodName(name);
@@ -1017,7 +1037,7 @@ export default class ConfirmTransactionBase extends Component {
           lastTx={lastTx}
           ofText={ofText}
           requestsWaitingText={requestsWaitingText}
-          hideConfirmAnyways={!isDisabled()}
+          hideUserAcknowledgedGasMissing={!isDisabled()}
           disabled={
             renderSimulationFailureWarning ||
             !valid ||
@@ -1029,13 +1049,18 @@ export default class ConfirmTransactionBase extends Component {
           onCancelAll={() => this.handleCancelAll()}
           onCancel={() => this.handleCancel()}
           onSubmit={() => this.handleSubmit()}
-          onConfirmAnyways={() => this.handleConfirmAnyways()}
+          setUserAcknowledgedGasMissing={this.setUserAcknowledgedGasMissing}
           hideSenderToRecipient={hideSenderToRecipient}
           origin={txData.origin}
           ethGasPriceWarning={ethGasPriceWarning}
           editingGas={editingGas}
           handleCloseEditGas={() => this.handleCloseEditGas()}
           currentTransaction={txData}
+          supportsEIP1559V2={
+            EIP_1559_V2_ENABLED &&
+            supportsEIP1559 &&
+            !isLegacyTransaction(txData)
+          }
         />
       </TransactionModalContextProvider>
     );
