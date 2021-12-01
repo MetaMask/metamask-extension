@@ -43,6 +43,7 @@ export default function TransactionStatus({
   error,
   isEarliestNonce,
   className,
+  statusOnly,
 }) {
   const t = useI18nContext();
   const tooltipText = error?.rpc?.message || error?.message;
@@ -54,7 +55,9 @@ export default function TransactionStatus({
   }
 
   const statusText =
-    statusKey === TRANSACTION_STATUSES.CONFIRMED ? date : t(statusKey);
+    statusKey === TRANSACTION_STATUSES.CONFIRMED && !statusOnly
+      ? date
+      : t(statusKey);
 
   return (
     <Tooltip
@@ -62,6 +65,7 @@ export default function TransactionStatus({
       title={tooltipText}
       wrapperClassName={classnames(
         'transaction-status',
+        `transaction-status--${statusKey}`,
         className,
         statusToClassNameHash[statusKey],
       )}
@@ -77,4 +81,5 @@ TransactionStatus.propTypes = {
   date: PropTypes.string,
   error: PropTypes.object,
   isEarliestNonce: PropTypes.bool,
+  statusOnly: PropTypes.bool,
 };

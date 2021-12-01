@@ -712,6 +712,15 @@ export function getUseCollectibleDetection(state) {
 }
 
 /**
+ * To get the openSeaEnabled flag which determines whether we use OpenSea's API
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getOpenSeaEnabled(state) {
+  return Boolean(state.metamask.openSeaEnabled);
+}
+
+/**
  * To retrieve the tokenList produced by TokenListcontroller
  * @param {*} state
  * @returns {Object}

@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Copiat!"
   },
-  "copiedTransactionId": {
-    "message": "ID-ul tranzacției a fost copiat"
-  },
   "copyAddress": {
     "message": "Copiere adresă în clipboard"
   },

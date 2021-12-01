@@ -2190,6 +2190,29 @@ export function setUseCollectibleDetection(val) {
   };
 }
 
+export function setOpenSeaEnabled(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setOpenSeaEnabled`);
+    background.setOpenSeaEnabled(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function detectCollectibles() {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.detectCollectibles`);
+    await promisifiedBackground.detectCollectibles();
+    dispatch(hideLoadingIndication());
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function setAdvancedGasFee(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());

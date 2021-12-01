@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Копирано!"
   },
-  "copiedTransactionId": {
-    "message": "Копиран идентификационен номер на транзакцията"
-  },
   "copyAddress": {
     "message": "Копирайте адреса в клипборда"
   },

@@ -209,9 +209,6 @@
   "copiedExclamation": {
     "message": "Copié!"
   },
-  "copiedTransactionId": {
-    "message": "ID de transaction copié"
-  },
   "copyAddress": {
     "message": "Copier l'addresse dans le presse-papier"
   },

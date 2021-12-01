@@ -1,7 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent } from '@testing-library/react';
 
 import {
   renderWithProvider,
@@ -13,11 +12,7 @@ import BuildQuote from '.';
 const middleware = [thunk];
 const createProps = (customProps = {}) => {
   return {
-    inputValue: '5',
-    onInputChange: jest.fn(),
     ethBalance: '0x8',
-    setMaxSlippage: jest.fn(),
-    maxSlippage: 15,
     selectedAccountAddress: 'selectedAccountAddress',
     isFeatureFlagLoaded: false,
     shuffledTokensList: [],
@@ -48,29 +43,5 @@ describe('BuildQuote', () => {
     expect(
       document.querySelector('.slippage-buttons__button-group'),
     ).toMatchSnapshot();
-  });
-
-  it('clicks on the max button', () => {
-    const store = configureMockStore(middleware)(createSwapsMockStore());
-    const props = createProps();
-    const { getByTestId } = renderWithProvider(
-      <BuildQuote {...props} />,
-      store,
-    );
-    fireEvent.click(getByTestId('build-quote__max-button'));
-    expect(props.onInputChange).toHaveBeenCalled();
-  });
-
-  it('types a number inside the input field', () => {
-    const store = configureMockStore(middleware)(createSwapsMockStore());
-    const props = createProps();
-    const { getByDisplayValue } = renderWithProvider(
-      <BuildQuote {...props} />,
-      store,
-    );
-    fireEvent.change(getByDisplayValue('5'), {
-      target: { value: '8' },
-    });
-    expect(props.onInputChange).toHaveBeenCalled();
   });
 });

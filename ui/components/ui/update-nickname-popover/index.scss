@@ -3,12 +3,19 @@
   &__wrapper {
     height: 620px;
     width: 360px;
-    border-radius: 0;
+    border-radius: 10px;
+    max-height: 100vh;
+    width: auto;
 
     .popover-header {
       border-bottom: 1px solid #d2d8dd;
       margin-bottom: 16px;
-      border-radius: 0;
+      border-radius: 10px;
+    }
+
+    @media screen and (max-width: $break-small) {
+      width: 96%;
+      height: 96%;
     }
   }
 
@@ -37,6 +44,7 @@
       font-size: 13px;
       color: #bbc0c5;
       margin-bottom: 16px;
+      overflow-wrap: break-word;
     }
 
     &__label,

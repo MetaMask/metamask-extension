@@ -197,9 +197,6 @@
   "copiedExclamation": {
     "message": "Nakopya!"
   },
-  "copiedTransactionId": {
-    "message": "Nakopya ang Transaction ID"
-  },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },

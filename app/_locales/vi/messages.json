@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "Đã sao chép!"
   },
-  "copiedTransactionId": {
-    "message": "Đã sao chép mã giao dịch"
-  },
   "copyAddress": {
     "message": "Sao chép địa chỉ vào khay nhớ tạm"
   },

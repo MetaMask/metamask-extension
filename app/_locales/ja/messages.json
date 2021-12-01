@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "コピーされました!"
   },
-  "copiedTransactionId": {
-    "message": "コピーされたトランザクション ID"
-  },
   "copyAddress": {
     "message": "アドレスをクリップボードにコピー"
   },

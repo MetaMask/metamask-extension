@@ -50,6 +50,8 @@ export default function setupEnsIpfsResolver({
 
   async function attemptResolve({ tabId, name, pathname, search, fragment }) {
     const ipfsGateway = getIpfsGateway();
+    const ipfsGatewayHost = new URL(ipfsGateway)?.host;
+
     extension.tabs.update(tabId, { url: `loading.html` });
     let url = `https://app.ens.domains/name/${name}`;
     try {
@@ -61,7 +63,7 @@ export default function setupEnsIpfsResolver({
         const resolvedUrl = `https://${hash}.${type.slice(
           0,
           4,
-        )}.${ipfsGateway}${pathname}${search || ''}${fragment || ''}`;
+        )}.${ipfsGatewayHost}${pathname}${search || ''}${fragment || ''}`;
         try {
           // check if ipfs gateway has result
           const response = await fetchWithTimeout(resolvedUrl, {
