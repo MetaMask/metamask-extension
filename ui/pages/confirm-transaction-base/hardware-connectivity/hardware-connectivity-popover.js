@@ -31,5 +31,4 @@ export default function HardwareConnectivityPopover({ onClose }) {
 
 HardwareConnectivityPopover.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onSave: PropTypes.func.isRequired,
 };

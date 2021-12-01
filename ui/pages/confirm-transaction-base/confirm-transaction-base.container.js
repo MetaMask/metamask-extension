@@ -12,6 +12,7 @@ import {
   getNextNonce,
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
+  connectHardware,
 } from '../../store/actions';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
@@ -293,6 +294,8 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
     },
     showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
+    connectHardwareWallet: (deviceName) =>
+      dispatch(connectHardware(deviceName)),
   };
 };
 

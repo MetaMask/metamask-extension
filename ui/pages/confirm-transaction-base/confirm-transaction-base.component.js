@@ -332,6 +332,7 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       showBuyModal,
       isBuyableChain,
+      connectHardwareWallet,
     } = this.props;
     const { showingHardwareConnectionContents } = this.state;
     const { t } = this.context;
@@ -587,7 +588,10 @@ export default class ConfirmTransactionBase extends Component {
         <div className="confirm-page-container-content__details">
           <HardwareConnectivityContent
             deviceName="Ledger"
-            onConnectClick={() => {}}
+            onConnectClick={async () => {
+              await connectHardwareWallet('ledger');
+              this.setState({ showingHardwareConnectionAdvancedPopover: false });
+            }}
             onAdvancedClick={() => {
               this.setState({ showingHardwareConnectionAdvancedPopover: true });
             }}
@@ -1152,6 +1156,9 @@ export default class ConfirmTransactionBase extends Component {
           showingHardwareConnectionContents={showingHardwareConnectionContents}
           showingHardwareConnectionAdvancedPopover={
             showingHardwareConnectionAdvancedPopover
+          }
+          closeHardwareConnectionAdvancedPopover={() =>
+            this.setState({ showingHardwareConnectionAdvancedPopover: false })
           }
         />
       </TransactionModalContextProvider>

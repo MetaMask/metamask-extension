@@ -101,6 +101,7 @@ export default class ConfirmPageContainer extends Component {
     // Hardware
     showingHardwareConnectionContents: PropTypes.bool,
     showingHardwareConnectionAdvancedPopover: PropTypes.bool,
+    closeHardwareConnectionAdvancedPopover: PropTypes.func,
   };
 
   render() {
@@ -159,6 +160,7 @@ export default class ConfirmPageContainer extends Component {
       networkIdentifier,
       showingHardwareConnectionContents,
       showingHardwareConnectionAdvancedPopover,
+      closeHardwareConnectionAdvancedPopover,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -345,7 +347,7 @@ export default class ConfirmPageContainer extends Component {
           )}
           {showingHardwareConnectionAdvancedPopover ? (
             <HardwareConnectivityPopover
-              onClose={onHardwareConnectivityClose}
+              onClose={closeHardwareConnectionAdvancedPopover}
             />
           ) : null}
         </div>
