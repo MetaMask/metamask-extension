@@ -1,0 +1,41 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import SnapSettingsCard from '.';
+
+# SnapSettingsCard
+
+A card component that displays information and the status of a snap. The `SnapSettingsCard` component is made up of the `Card`, `IconBorder`, `IconWithFallback`, `ToggleButton`, `Chip`, `ColorIndicator` and `Button` components
+
+<Canvas>
+  <Story id="ui-components-app-flask-snap-settings-card-snap-settings-card-stories-js--default-story" />
+</Canvas>
+
+## Component API
+
+<ArgsTable of={SnapSettingsCard} />
+
+## Usage
+
+The following describes the props and example usage for this component.
+
+### Status
+
+There are 4 statuses the `SnapSettingsCard` can have: `'installing'`,`'running'`,`'stopped'` and `'crashed'`.
+
+<Canvas>
+  <Story id="ui-components-app-flask-snap-settings-card-snap-settings-card-stories-js--status" />
+</Canvas>
+
+### isEnabled / onToggle
+
+Use the `isEnabled` and `onToggle` to control the `ToggleButton` component inside of the `SnapSettingsCard`
+
+```jsx
+const [isEnabled, setIsEnabled] = React.useState(false);
+
+const handleOnToggle = () => {
+  setIsEnabled(!isEnabled);
+};
+
+return <SnapSettingsCard isEnabled={isEnabled} onToggle={handleOnToggle} />;
+```

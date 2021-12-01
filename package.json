@@ -248,6 +248,7 @@
     "@storybook/addon-knobs": "^6.3.1",
     "@storybook/addons": "^6.3.12",
     "@storybook/api": "^6.3.12",
+    "@storybook/client-api": "^6.3.12",
     "@storybook/components": "^6.3.12",
     "@storybook/core": "^6.3.12",
     "@storybook/core-events": "^6.3.0",
