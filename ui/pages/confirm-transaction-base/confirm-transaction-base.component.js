@@ -961,7 +961,6 @@ export default class ConfirmTransactionBase extends Component {
       gasFeeIsCustom,
       nativeCurrency,
       hardwareWalletRequiresConnection,
-      supportsEIP1559,
     } = this.props;
     const {
       submitting,

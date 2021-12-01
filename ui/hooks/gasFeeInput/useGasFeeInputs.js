@@ -23,9 +23,6 @@ import { useMaxPriorityFeePerGasInput } from './useMaxPriorityFeePerGasInput';
 import { useGasEstimates } from './useGasEstimates';
 import { useTransactionFunctions } from './useTransactionFunctions';
 
-// eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2 = process.env.EIP_1559_V2;
-
 /**
  * @typedef {Object} GasFeeInputReturnType
  * @property {DecGweiString} [maxFeePerGas] - the maxFeePerGas input value.
