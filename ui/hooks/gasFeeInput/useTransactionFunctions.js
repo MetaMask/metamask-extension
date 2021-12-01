@@ -17,12 +17,12 @@ export const useTransactionFunctions = ({
   const dispatch = useDispatch();
 
   const updateTransaction = useCallback(
-    (
+    ({
       estimateUsed,
       maxFeePerGas,
       maxPriorityFeePerGas,
       gasLimit = gasLimitInTransaction,
-    ) => {
+    }) => {
       const newGasSettings = {
         gas: decimalToHex(gasLimit),
         gasLimit: decimalToHex(gasLimit),
@@ -57,21 +57,21 @@ export const useTransactionFunctions = ({
           maxFeePerGas,
           maxPriorityFeePerGas,
         } = transaction?.dappSuggestedGasFees;
-        updateTransaction(
-          PRIORITY_LEVELS.DAPP_SUGGESTED,
+        updateTransaction({
+          estimateUsed: PRIORITY_LEVELS.DAPP_SUGGESTED,
           maxFeePerGas,
           maxPriorityFeePerGas,
-        );
+        });
       } else {
         const {
           suggestedMaxFeePerGas,
           suggestedMaxPriorityFeePerGas,
         } = gasFeeEstimates[gasFeeEstimateToUse];
-        updateTransaction(
-          gasFeeEstimateToUse,
-          decGWEIToHexWEI(suggestedMaxFeePerGas),
-          decGWEIToHexWEI(suggestedMaxPriorityFeePerGas),
-        );
+        updateTransaction({
+          estimateUsed: gasFeeEstimateToUse,
+          maxFeePerGas: decGWEIToHexWEI(suggestedMaxFeePerGas),
+          maxPriorityFeePerGas: decGWEIToHexWEI(suggestedMaxPriorityFeePerGas),
+        });
       }
     },
     [gasFeeEstimates, transaction?.dappSuggestedGasFees, updateTransaction],

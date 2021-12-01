@@ -20,12 +20,12 @@ const AdvancedGasFeeSaveButton = () => {
   } = useAdvanceGasFeePopoverContext();
 
   const onSave = () => {
-    updateTransaction(
-      PRIORITY_LEVELS.CUSTOM,
-      decGWEIToHexWEI(maxFeePerGas),
-      decGWEIToHexWEI(maxPriorityFeePerGas),
+    updateTransaction({
+      estimateUsed: PRIORITY_LEVELS.CUSTOM,
+      maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
+      maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
       gasLimit,
-    );
+    });
     closeModal('advancedGasFee');
   };
 

@@ -424,9 +424,7 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const renderGasDetailsItem = () => {
-      return EIP_1559_V2_ENABLED &&
-        supportsEIP1559 &&
-        !isLegacyTransaction(txData) ? (
+      return this.supportsEIP1559V2 ? (
         <GasDetailsItem
           key="gas_details"
           hexMaximumTransactionFee={hexMaximumTransactionFee}
@@ -931,6 +929,11 @@ export default class ConfirmTransactionBase extends Component {
     this._removeBeforeUnload();
   }
 
+  supportsEIP1559V2 =
+    EIP_1559_V2_ENABLED &&
+    this.props.supportsEIP1559 &&
+    !isLegacyTransaction(this.props.txData);
+
   render() {
     const { t } = this.context;
     const {
@@ -998,6 +1001,7 @@ export default class ConfirmTransactionBase extends Component {
         functionType = t('contractInteraction');
       }
     }
+
     return (
       <TransactionModalContextProvider
         actionKey={actionKey}
@@ -1056,11 +1060,7 @@ export default class ConfirmTransactionBase extends Component {
           editingGas={editingGas}
           handleCloseEditGas={() => this.handleCloseEditGas()}
           currentTransaction={txData}
-          supportsEIP1559V2={
-            EIP_1559_V2_ENABLED &&
-            supportsEIP1559 &&
-            !isLegacyTransaction(txData)
-          }
+          supportsEIP1559V2={this.supportsEIP1559V2}
         />
       </TransactionModalContextProvider>
     );

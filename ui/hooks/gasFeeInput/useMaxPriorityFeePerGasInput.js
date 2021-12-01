@@ -34,7 +34,7 @@ const getMaxPriorityFeePerGasFromTransaction = (transaction) => {
  *  method to update the maxPriorityFeePerGas.
  */
 export function useMaxPriorityFeePerGasInput({
-  EIP_1559_V2,
+  supportsEIP1559V2,
   estimateToUse,
   gasEstimateType,
   gasFeeEstimates,
@@ -63,13 +63,13 @@ export function useMaxPriorityFeePerGasInput({
   });
 
   useEffect(() => {
-    if (EIP_1559_V2) {
+    if (supportsEIP1559V2) {
       setMaxPriorityFeePerGas(maxPriorityFeePerGasFromTransaction);
     }
   }, [
-    EIP_1559_V2,
     maxPriorityFeePerGasFromTransaction,
     setMaxPriorityFeePerGas,
+    supportsEIP1559V2,
   ]);
 
   const maxPriorityFeePerGasToUse =
