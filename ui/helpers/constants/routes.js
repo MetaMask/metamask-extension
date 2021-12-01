@@ -70,6 +70,11 @@ const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
+const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+///: END:ONLY_INCLUDE_IN
+
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 const CONFIRM_SEND_ETHER_PATH = '/send-ether';
 const CONFIRM_SEND_TOKEN_PATH = '/send-token';
@@ -234,4 +239,8 @@ export {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_METAMETRICS,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  INITIALIZE_EXPERIMENTAL_AREA,
+  ONBOARDING_EXPERIMENTAL_AREA,
+  ///: END:ONLY_INCLUDE_IN
 };

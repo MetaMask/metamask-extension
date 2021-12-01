@@ -1056,6 +1056,21 @@
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
   },
+  "flaskExperimentalText1": {
+    "message": "Using Flask can greatly increase your risk of fund loss:"
+  },
+  "flaskExperimentalText2": {
+    "message": "if you use it to install non-trustworthy Snaps"
+  },
+  "flaskExperimentalText3": {
+    "message": "if you do not review confirmations before approving changes"
+  },
+  "flaskExperimentalText4": {
+    "message": "if you interact with unfamiliar smart contracts"
+  },
+  "flaskExperimentalText5": {
+    "message": "Using Flask gives you much greater discretion in using the power of MetaMask, and that discretion is yours. Do you accept these risks as well as extra responsibility for your wallet's safety?"
+  },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
   },
@@ -3216,6 +3231,9 @@
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
+  },
+  "userAccepts": {
+    "message": "I accept"
   },
   "userName": {
     "message": "Username"
