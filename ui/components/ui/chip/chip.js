@@ -16,6 +16,7 @@ export default function Chip({
   leftIcon,
   rightIcon,
   onClick,
+  maxContent = true,
 }) {
   const onKeyPress = (event) => {
     if (event.key === 'Enter' && onClick) {
@@ -35,6 +36,7 @@ export default function Chip({
         'chip--with-right-icon': Boolean(rightIcon),
         [`chip--border-color-${borderColor}`]: true,
         [`chip--background-color-${backgroundColor}`]: true,
+        'chip--max-conent': maxContent,
       })}
       role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
@@ -99,4 +101,9 @@ Chip.propTypes = {
    * The onClick handler to be passed to the Chip component
    */
   onClick: PropTypes.func,
+  /**
+   * If the width: max-content; is used in css.
+   * max-content can overflow the parent's width and break designs
+   */
+  maxContent: PropTypes.bool,
 };

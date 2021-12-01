@@ -17,15 +17,13 @@ export default function PermissionsConnectPermissionList({ permissions }) {
 
   return (
     <div className="permissions-connect-permission-list">
-      {Object.keys(permissions)
-        .map((permission) => PERMISSION_TYPES[permission])
-        .map((permission) => (
-          <div className="permission" key={permission.label}>
-            <i className={permission.leftIcon} />
-            {permission.label}
-            <i className={permission.rightIcon} />
-          </div>
-        ))}
+      {Object.keys(permissions).map((permission) => (
+        <div className="permission" key={PERMISSION_TYPES[permission].label}>
+          <i className={PERMISSION_TYPES[permission].leftIcon} />
+          {PERMISSION_TYPES[permission].label}
+          <i className={PERMISSION_TYPES[permission].rightIcon} />
+        </div>
+      ))}
     </div>
   );
 }

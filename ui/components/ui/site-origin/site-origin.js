@@ -8,6 +8,7 @@ export default function SiteOrigin({ siteOrigin, iconSrc, iconName }) {
     <div className="site-origin">
       <Chip
         label={siteOrigin}
+        maxContent={false}
         leftIcon={<IconWithFallback icon={iconSrc} name={iconName} size={32} />}
       />
     </div>
