@@ -1,7 +1,7 @@
 /* eslint-disable import/unambiguous */
 module.exports = {
   coverageDirectory: './jest-coverage/storybook',
-  coverageReporters: ['json', 'lcov', 'text', 'clover'],
+  coverageReporters: ['html', 'text-summary'],
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,
