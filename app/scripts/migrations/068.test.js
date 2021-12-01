@@ -1,3 +1,4 @@
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import migration68 from './068';
 
 describe('migration #68', () => {
@@ -15,8 +16,8 @@ describe('migration #68', () => {
     });
   });
 
-  it('should set preference ipfsGateway to "https://cloudflare-ipfs.com/ipfs/" if ipfsGateway is old default dweb.link', async () => {
-    const expectedValue = 'https://cloudflare-ipfs.com/ipfs/';
+  it('should set preference ipfsGateway to "https://cloudflare-ipfs.com" if ipfsGateway is old default dweb.link', async () => {
+    const expectedValue = IPFS_DEFAULT_GATEWAY_URL; // = https://cloudflare-ipfs.com
     const oldStorage = {
       meta: {},
       data: {
@@ -35,7 +36,7 @@ describe('migration #68', () => {
   });
 
   it('should update preference ipfsGateway to a full url version of user set ipfsGateway if ipfsGateway is not old default dweb.link', async () => {
-    const expectedValue = 'https://random.ipfs/ipfs/';
+    const expectedValue = 'https://random.ipfs/';
     const oldStorage = {
       meta: {},
       data: {

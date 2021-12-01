@@ -41,7 +41,10 @@ import {
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
-import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
+import {
+  IPFS_DEFAULT_GATEWAY_URL,
+  MAINNET_CHAIN_ID,
+} from '../../shared/constants/network';
 import {
   DEVICE_NAMES,
   KEYRING_TYPES,
@@ -189,9 +192,17 @@ export default class MetamaskController extends EventEmitter {
 
     this.collectiblesController = new CollectiblesController(
       {
-        onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-          this.preferencesController.store,
-        ),
+        onPreferencesStateChange: (cb) =>
+          this.preferencesController.store.subscribe((preferencesState) => {
+            const { ipfsGateway } = this.preferencesController.store.getState();
+            const modifiedPreferencesState = {
+              ...preferencesState,
+              ipfsGateway: ipfsGateway.endsWith('/ipfs/')
+                ? ipfsGateway
+                : `${ipfsGateway}/ipfs/`,
+            };
+            return cb(modifiedPreferencesState);
+          }),
         onNetworkStateChange: this.networkController.store.subscribe.bind(
           this.networkController.store,
         ),
@@ -214,7 +225,7 @@ export default class MetamaskController extends EventEmitter {
           this.assetsContractController,
         ),
       },
-      {},
+      { ipfsGateway: `${IPFS_DEFAULT_GATEWAY_URL}/ipfs/` },
       initState.CollectiblesController,
     );
 

@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 
 const version = 68;
 
@@ -31,7 +32,7 @@ function transformState(state) {
 
   if (oldIpfsGateWay && oldIpfsGateWay !== 'dweb.link') {
     const newIpfsGateway = new URL(
-      `${addUrlProtocolPrefix(oldIpfsGateWay)}/ipfs/`,
+      addUrlProtocolPrefix(oldIpfsGateWay),
     ).toString();
     newState = {
       ...state,
@@ -50,7 +51,7 @@ function transformState(state) {
         ...PreferencesController,
         preferences: {
           ...preferences,
-          ipfsGateway: 'https://cloudflare-ipfs.com/ipfs/',
+          ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
         },
       },
     };
