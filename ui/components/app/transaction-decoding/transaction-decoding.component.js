@@ -71,11 +71,6 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           blockNumber: null,
         });
 
-        // fake await
-        await new Promise((resolve) => {
-          setTimeout(() => resolve(true), 500);
-        });
-
         // transform tx decoding arguments into tree data
         const params = transformTxDecoding(decoding?.arguments);
         setTx(params);
