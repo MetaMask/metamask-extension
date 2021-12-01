@@ -7,87 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.8.0]
-### Uncategorized
-- Update Jest coverage reporters ([#12845](https://github.com/MetaMask/metamask-extension/pull/12845))
-- Convert nonce background calls to async/await ([#12853](https://github.com/MetaMask/metamask-extension/pull/12853))
-- update chromedriver to v96 ([#12921](https://github.com/MetaMask/metamask-extension/pull/12921))
-- Feature: Transaction Insights ([#12881](https://github.com/MetaMask/metamask-extension/pull/12881))
-- Sync develop with master ([#12917](https://github.com/MetaMask/metamask-extension/pull/12917))
-- Implement Flask onboarding UI ([#12745](https://github.com/MetaMask/metamask-extension/pull/12745))
-- Swaps optimizations ([#12842](https://github.com/MetaMask/metamask-extension/pull/12842))
-- Feat/collectibles display ([#12873](https://github.com/MetaMask/metamask-extension/pull/12873))
-- Merge branch 'develop' into master-sync
-- deps - bump lavamoat for logging bug fix ([#12915](https://github.com/MetaMask/metamask-extension/pull/12915))
-- add openSeaEnabled preference ([#12909](https://github.com/MetaMask/metamask-extension/pull/12909))
-- Add delay to account for remote call made by trezor keyring ([#12913](https://github.com/MetaMask/metamask-extension/pull/12913))
-- Implementing save button on advance gas fee modal ([#12854](https://github.com/MetaMask/metamask-extension/pull/12854))
-- Send all swaps requests to api2, remove useNewSwapsApi boolean ([#12792](https://github.com/MetaMask/metamask-extension/pull/12792))
-- Remove invalid Jest storybook coverage config ([#12846](https://github.com/MetaMask/metamask-extension/pull/12846))
-- Format shared/modules/*.tests to use jest arrow functions and use stricter comparative matcher ([#12908](https://github.com/MetaMask/metamask-extension/pull/12908))
-- Remove unnecessary unlock step ([#12840](https://github.com/MetaMask/metamask-extension/pull/12840))
-- Add support for eip-1559 on Trezor ([#12627](https://github.com/MetaMask/metamask-extension/pull/12627))
-- Use node-browsers-medium-plus executor for validate-lavamoat-config job ([#12884](https://github.com/MetaMask/metamask-extension/pull/12884))
-- Created a Nickname popover ([#12632](https://github.com/MetaMask/metamask-extension/pull/12632))
-- Removing un-necessary comma ([#12883](https://github.com/MetaMask/metamask-extension/pull/12883))
-- Removing the token detection announcement when the token detection is ON ([#12776](https://github.com/MetaMask/metamask-extension/pull/12776))
-- EIP-1559 V2 : Advanced gas fee modal - Max base fee and Priority fee inputs ([#12619](https://github.com/MetaMask/metamask-extension/pull/12619))
-- Legacy transactions to use old transaction flow ([#12782](https://github.com/MetaMask/metamask-extension/pull/12782))
-- Fix LavaMoat background policy generation ([#12844](https://github.com/MetaMask/metamask-extension/pull/12844))
-- Feat/add collectible manually ([#12834](https://github.com/MetaMask/metamask-extension/pull/12834))
-- Fix environment variables used during test builds ([#12855](https://github.com/MetaMask/metamask-extension/pull/12855))
-- Adding collectibles items overview ([#12506](https://github.com/MetaMask/metamask-extension/pull/12506))
-- add and hook up setting to toggle on/off collectible autodetection ([#12839](https://github.com/MetaMask/metamask-extension/pull/12839))
-- remove hiring link from readme ([#12798](https://github.com/MetaMask/metamask-extension/pull/12798))
-- Sync master with develop ([#12858](https://github.com/MetaMask/metamask-extension/pull/12858))
-- Fix: markdown ([#12861](https://github.com/MetaMask/metamask-extension/pull/12861))
-- Remove _removeBeforeUnload calls in confirm-encryption-public-key.component.js and confirm-decrypt-message.component.js ([#12825](https://github.com/MetaMask/metamask-extension/pull/12825))
-- Sync develop with master ([#12851](https://github.com/MetaMask/metamask-extension/pull/12851))
-- Ignore sentry server errors in e2e tests ([#12843](https://github.com/MetaMask/metamask-extension/pull/12843))
-- checkbox storybook ([#12757](https://github.com/MetaMask/metamask-extension/pull/12757))
-- Adding className to togglebutton ([#12838](https://github.com/MetaMask/metamask-extension/pull/12838))
-- Fix button-group.stories for new Storybook documentation ([#12621](https://github.com/MetaMask/metamask-extension/pull/12621))
-- Ensure that handleChange in token-input.component handles empty values ([#12835](https://github.com/MetaMask/metamask-extension/pull/12835))
-- Updating IconWithFallback to functional component, adding stories and docs ([#12797](https://github.com/MetaMask/metamask-extension/pull/12797))
-- Convert token input to BigNumber to handle decimals. ([#12773](https://github.com/MetaMask/metamask-extension/pull/12773))
-- Clear the clipboard after the seed phrase is pasted ([#12828](https://github.com/MetaMask/metamask-extension/pull/12828))
-- Confirm transaction page - onchain failure handling ([#12743](https://github.com/MetaMask/metamask-extension/pull/12743))
-- Bump @metmamask/logo to v3.1.1 ([#12822](https://github.com/MetaMask/metamask-extension/pull/12822))
-- Add storybook render tests with CI integration ([#12477](https://github.com/MetaMask/metamask-extension/pull/12477))
-- Updating tags in Typography component ([#12682](https://github.com/MetaMask/metamask-extension/pull/12682))
-- ci - enforce yarn lock deduplications ([#12737](https://github.com/MetaMask/metamask-extension/pull/12737))
-- Eip1559 v2 12593 ([#12719](https://github.com/MetaMask/metamask-extension/pull/12719))
-- Adding the AdvancedGasFeePopover template ([#12780](https://github.com/MetaMask/metamask-extension/pull/12780))
-- Introduce QR based signer into MetaMask ([#12065](https://github.com/MetaMask/metamask-extension/pull/12065))
-- Adding network status section on edit gas fee modal ([#12704](https://github.com/MetaMask/metamask-extension/pull/12704))
-- Fix "BigNumber Error: times() number type has more than 15 significant digits:" ([#12802](https://github.com/MetaMask/metamask-extension/pull/12802))
-- Sync `master` with `develop` ([#12793](https://github.com/MetaMask/metamask-extension/pull/12793))
-- circle-icon ([#12650](https://github.com/MetaMask/metamask-extension/pull/12650))
-- alert-circle-icon ([#12651](https://github.com/MetaMask/metamask-extension/pull/12651))
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Remove localhost from default network list ([#12790](https://github.com/MetaMask/metamask-extension/pull/12790))
-- Confirm transaction screen - wrap lengthier values ([#12733](https://github.com/MetaMask/metamask-extension/pull/12733))
-- Sync `master` with `develop` ([#12772](https://github.com/MetaMask/metamask-extension/pull/12772))
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Add fixed json-schema to resolutions file to resolve security issue ([#12787](https://github.com/MetaMask/metamask-extension/pull/12787))
-- Create an "Add a Nickname" popover (also support edit) #12528 ([#12644](https://github.com/MetaMask/metamask-extension/pull/12644))
-- Increase friction to bypass estimated revert ([#12576](https://github.com/MetaMask/metamask-extension/pull/12576))
-- Ensure that metametrics error related to anonymousId is not sent to sentry ([#12763](https://github.com/MetaMask/metamask-extension/pull/12763))
-- Improve code fence transform error handling ([#12742](https://github.com/MetaMask/metamask-extension/pull/12742))
-- Add CollectiblesController & CollectibleDetectionController ([#12443](https://github.com/MetaMask/metamask-extension/pull/12443))
-- Fix: eth_sign does not validate input ([#12679](https://github.com/MetaMask/metamask-extension/pull/12679))
-- Update `improved-yarn-audit` and ignore 2 advisories ([#12765](https://github.com/MetaMask/metamask-extension/pull/12765))
-- ci - update shellcheck ([#12739](https://github.com/MetaMask/metamask-extension/pull/12739))
-- deps - bump @lavamoat/lavapack for bug fix ([#12751](https://github.com/MetaMask/metamask-extension/pull/12751))
-- Don't dispatch hideTestNetMessage ([#12748](https://github.com/MetaMask/metamask-extension/pull/12748))
-- ci - fix yarn-audit ([#12738](https://github.com/MetaMask/metamask-extension/pull/12738))
-- Edit gas fee modal more changes ([#12660](https://github.com/MetaMask/metamask-extension/pull/12660))
-- Adding new nfts detected notice ([#12721](https://github.com/MetaMask/metamask-extension/pull/12721))
-- Adding edit gas fee modal ([#12624](https://github.com/MetaMask/metamask-extension/pull/12624))
-- Remove unused background API methods ([#12731](https://github.com/MetaMask/metamask-extension/pull/12731))
+### Added
+- [#12881](https://github.com/MetaMask/metamask-extension/pull/12881): Feature: Transaction Insights
+  - Users can now see much greater details on contract interaction transactions
+  - These transaction details are integrated with new popups for viewing and editing address book information
+  - These details are also viewable within the transaction details popup
+- [#12627](https://github.com/MetaMask/metamask-extension/pull/12627): Add support for eip-1559 on Trezor
+- [#12065](https://github.com/MetaMask/metamask-extension/pull/12065): Support QR code based hardware wallet signing
+  - Includes specific support for the Keystone hardware wallet
+
+### Changed
+- [#12842](https://github.com/MetaMask/metamask-extension/pull/12842): Improve performance of the swaps feature
+- [#12776](https://github.com/MetaMask/metamask-extension/pull/12776): Hide the token detection announcement when the token detection is ON
+- [#12828](https://github.com/MetaMask/metamask-extension/pull/12828): Clear the clipboard after the seed phrase is pasted into the import flow
+- [#12576](https://github.com/MetaMask/metamask-extension/pull/12576): Show warning message when gas estimation estimates fail
+
+### Fixed
+- [#12802](https://github.com/MetaMask/metamask-extension/pull/12802): Fix bug causing occasional swaps failures for token pairs with highly precise exchange rates
+- [#12679](https://github.com/MetaMask/metamask-extension/pull/12679): Ensure eth_sign callback fires even when data submitted is invalid
 
 ## [10.7.0]
 ### Changed
-- [#12643](https://github.com/MetaMask/metamask-extension/pull/12643): Reject popup confirmations on close
 - [#12566](https://github.com/MetaMask/metamask-extension/pull/12566): Enable LavaMoat for the webapp background
 - [#12399](https://github.com/MetaMask/metamask-extension/pull/12399): Update the "Account Details" view
   - Change "Close" icon color from gray -> black
