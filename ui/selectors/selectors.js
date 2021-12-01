@@ -802,3 +802,25 @@ export function getIsAdvancedGasFeeDefault(state) {
     Boolean(advancedGasFee?.maxBaseFee) && Boolean(advancedGasFee?.priorityFee)
   );
 }
+
+/**
+ *  To check if the specific accountName is included in the accountsNames array which is consisted of the current user's accounts
+ *  @returns Boolean
+ */
+
+export function accountNameExists(accounts, accountName) {
+  const accountsNames = accounts.map((item) => item.name);
+
+  return accountsNames.includes(accountName);
+}
+
+/**
+ *  To get the current user's account names not including the current checked one
+ *  @returns Array
+ */
+
+export function getAccountsNames(accounts, name) {
+  return Object.values(accounts)
+    .map((item) => item.name)
+    .filter((itemName) => itemName !== name);
+}

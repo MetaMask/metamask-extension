@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Button from '../../components/ui/button';
+import { accountNameExists } from '../../selectors';
 
 export default class NewAccountCreateForm extends Component {
   static defaultProps = {
@@ -23,12 +24,6 @@ export default class NewAccountCreateForm extends Component {
       mostRecentOverviewPage,
       accounts,
     } = this.props;
-
-    const accountsNames = accounts.map((item) => item.name);
-
-    const accountCreateButtonDisabled = () => {
-      return Boolean(accountsNames.includes(newAccountName));
-    };
 
     const createClick = (_) => {
       createAccount(newAccountName || defaultAccountName)
@@ -64,7 +59,8 @@ export default class NewAccountCreateForm extends Component {
         <div>
           <input
             className={classnames('new-account-create-form__input', {
-              'new-account-create-form__input__error': accountsNames.includes(
+              'new-account-create-form__input__error': accountNameExists(
+                accounts,
                 newAccountName,
               ),
             })}
@@ -75,7 +71,7 @@ export default class NewAccountCreateForm extends Component {
             }
             autoFocus
           />
-          {accountsNames.includes(newAccountName) ? (
+          {accountNameExists(accounts, newAccountName) ? (
             <div
               className={classnames('send-v2__error', 'send-v2__error-amount')}
             >
@@ -96,7 +92,7 @@ export default class NewAccountCreateForm extends Component {
               large
               className="new-account-create-form__button"
               onClick={createClick}
-              disabled={accountCreateButtonDisabled()}
+              disabled={accountNameExists(accounts, newAccountName)}
             >
               {this.context.t('create')}
             </Button>
