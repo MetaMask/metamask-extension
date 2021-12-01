@@ -1,0 +1,26 @@
+.collectible-details {
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (min-width: $break-large) {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__address {
+    overflow-wrap: break-word;
+  }
+}
+
+.collectible-options {
+  &__button {
+    font-size: $font-size-paragraph;
+    color: $Black-100;
+    background-color: inherit;
+    padding: 2px 0 2px 8px;
+  }
+
+  &__icon {
+    font-weight: 900;
+  }
+}

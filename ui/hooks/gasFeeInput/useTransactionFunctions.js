@@ -3,15 +3,15 @@ import { useDispatch } from 'react-redux';
 
 import { PRIORITY_LEVELS } from '../../../shared/constants/gas';
 import {
-  decGWEIToHexWEI,
   decimalToHex,
+  decGWEIToHexWEI,
 } from '../../helpers/utils/conversions.util';
 import { updateTransaction as updateTransactionFn } from '../../store/actions';
 
 export const useTransactionFunctions = ({
   defaultEstimateToUse,
-  gasLimit,
   gasFeeEstimates,
+  gasLimit,
   transaction,
 }) => {
   const dispatch = useDispatch();
@@ -23,9 +23,13 @@ export const useTransactionFunctions = ({
         gasLimit: decimalToHex(gasLimit),
         estimateSuggested: defaultEstimateToUse,
         estimateUsed,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
       };
+      if (maxFeePerGas) {
+        newGasSettings.maxFeePerGas = maxFeePerGas;
+      }
+      if (maxPriorityFeePerGas) {
+        newGasSettings.maxPriorityFeePerGas = maxPriorityFeePerGas;
+      }
 
       const updatedTxMeta = {
         ...transaction,
@@ -49,7 +53,7 @@ export const useTransactionFunctions = ({
           maxPriorityFeePerGas,
         } = transaction?.dappSuggestedGasFees;
         updateTransaction(
-          PRIORITY_LEVELS.CUSTOM,
+          PRIORITY_LEVELS.DAPP_SUGGESTED,
           maxFeePerGas,
           maxPriorityFeePerGas,
         );
@@ -68,5 +72,5 @@ export const useTransactionFunctions = ({
     [gasFeeEstimates, transaction?.dappSuggestedGasFees, updateTransaction],
   );
 
-  return { updateTransactionUsingGasFeeEstimates };
+  return { updateTransaction, updateTransactionUsingGasFeeEstimates };
 };

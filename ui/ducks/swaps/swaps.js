@@ -94,6 +94,10 @@ const initialState = {
   balanceError: false,
   fetchingQuotes: false,
   fromToken: null,
+  fromTokenInputValue: '',
+  fromTokenError: null,
+  isFeatureFlagLoaded: false,
+  maxSlippage: 3,
   quotesFetchStartTime: null,
   reviewSwapClickedTimestamp: null,
   topAssets: {},
@@ -136,6 +140,18 @@ const slice = createSlice({
     },
     setFromToken: (state, action) => {
       state.fromToken = action.payload;
+    },
+    setFromTokenInputValue: (state, action) => {
+      state.fromTokenInputValue = action.payload;
+    },
+    setFromTokenError: (state, action) => {
+      state.fromTokenError = action.payload;
+    },
+    setIsFeatureFlagLoaded: (state, action) => {
+      state.isFeatureFlagLoaded = action.payload;
+    },
+    setMaxSlippage: (state, action) => {
+      state.maxSlippage = action.payload;
     },
     setQuotesFetchStartTime: (state, action) => {
       state.quotesFetchStartTime = action.payload;
@@ -186,6 +202,16 @@ export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata;
 export const getBalanceError = (state) => state.swaps.balanceError;
 
 export const getFromToken = (state) => state.swaps.fromToken;
+
+export const getFromTokenError = (state) => state.swaps.fromTokenError;
+
+export const getFromTokenInputValue = (state) =>
+  state.swaps.fromTokenInputValue;
+
+export const getIsFeatureFlagLoaded = (state) =>
+  state.swaps.isFeatureFlagLoaded;
+
+export const getMaxSlippage = (state) => state.swaps.maxSlippage;
 
 export const getTopAssets = (state) => state.swaps.topAssets;
 
@@ -401,6 +427,10 @@ const {
   setBalanceError,
   setFetchingQuotes,
   setFromToken,
+  setFromTokenError,
+  setFromTokenInputValue,
+  setIsFeatureFlagLoaded,
+  setMaxSlippage,
   setQuotesFetchStartTime,
   setReviewSwapClickedTimestamp,
   setTopAssets,
@@ -417,6 +447,10 @@ export {
   setBalanceError,
   setFetchingQuotes,
   setFromToken as setSwapsFromToken,
+  setFromTokenError,
+  setFromTokenInputValue,
+  setIsFeatureFlagLoaded,
+  setMaxSlippage,
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
   setReviewSwapClickedTimestamp,
   setTopAssets,
@@ -488,6 +522,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       );
     }
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
+    dispatch(setIsFeatureFlagLoaded(true));
     return swapsLivenessForNetwork;
   };
 };

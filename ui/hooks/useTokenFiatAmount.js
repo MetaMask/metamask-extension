@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import {
   getTokenExchangeRates,
   getCurrentCurrency,
@@ -29,7 +29,10 @@ export function useTokenFiatAmount(
   overrides = {},
   hideCurrencySymbol,
 ) {
-  const contractExchangeRates = useSelector(getTokenExchangeRates);
+  const contractExchangeRates = useSelector(
+    getTokenExchangeRates,
+    shallowEqual,
+  );
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const userPrefersShownFiat = useSelector(getShouldShowFiat);

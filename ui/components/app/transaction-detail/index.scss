@@ -17,7 +17,6 @@
   }
 
   &-edit-V2 {
-    margin-bottom: 10px;
     display: flex;
     align-items: baseline;
     justify-content: flex-end;
@@ -65,5 +64,9 @@
         min-width: 60%;
       }
     }
+  }
+
+  &-rows {
+    margin-top: 10px;
   }
 }

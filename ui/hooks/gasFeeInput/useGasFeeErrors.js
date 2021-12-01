@@ -262,5 +262,6 @@ export function useGasFeeErrors({
     gasWarnings,
     balanceError,
     estimatesUnavailableWarning,
+    hasSimulationError: Boolean(transaction?.simulationFails),
   };
 }

@@ -4,7 +4,8 @@
 .typography {
   @include design-system.Paragraph;
 
-  & b {
+  & b,
+  & strong {
     font-weight: 700;
   }
 
@@ -41,6 +42,12 @@
   @each $alignment in design-system.$text-align {
     &--align-#{$alignment} {
       text-align: $alignment;
+    }
+  }
+
+  @each $overflow in design-system.$overflow-wrap {
+    &--overflowwrap-#{$overflow} {
+      overflow-wrap: $overflow;
     }
   }
 

@@ -260,7 +260,6 @@ export default class ConfirmDecryptMessage extends Component {
           large
           className="request-decrypt-message__footer__cancel-button"
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await cancelDecryptMessage(txData, event);
             metricsEvent({
               eventOpts: {
@@ -280,7 +279,6 @@ export default class ConfirmDecryptMessage extends Component {
           large
           className="request-decrypt-message__footer__sign-button"
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await decryptMessage(txData, event);
             metricsEvent({
               eventOpts: {

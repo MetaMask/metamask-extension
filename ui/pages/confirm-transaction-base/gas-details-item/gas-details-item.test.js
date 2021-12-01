@@ -17,7 +17,7 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
-const render = (props) => {
+const render = ({ componentProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -37,8 +37,8 @@ const render = (props) => {
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider {...props}>
-      <GasDetailsItem txData={{ txParams: {} }} {...props} />
+    <GasFeeContextProvider transaction={{ txParams: {} }} {...contextProps}>
+      <GasDetailsItem userAcknowledgedGasMissing={false} {...componentProps} />
     </GasFeeContextProvider>,
     store,
   );
@@ -56,16 +56,54 @@ describe('GasDetailsItem', () => {
   });
 
   it('should show warning icon if estimates are high', async () => {
-    render({ defaultEstimateToUse: 'high' });
+    render({
+      contextProps: { transaction: { txParams: {}, userFeeLevel: 'high' } },
+    });
     await waitFor(() => {
       expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
     });
   });
 
   it('should not show warning icon if estimates are not high', async () => {
-    render({ defaultEstimateToUse: 'low' });
+    render({
+      contextProps: { transaction: { txParams: {}, userFeeLevel: 'low' } },
+    });
     await waitFor(() => {
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
+    });
+  });
+
+  it('should return null if there is simulationError and user has not acknowledged gasMissing warning', () => {
+    const { container } = render({
+      contextProps: {
+        transaction: {
+          txParams: {},
+          simulationFails: true,
+          userFeeLevel: 'low',
+        },
+      },
+    });
+    expect(container.innerHTML).toHaveLength(0);
+  });
+
+  it('should not return null even if there is simulationError if user acknowledged gasMissing warning', async () => {
+    render();
+    await waitFor(() => {
+      expect(screen.queryByText('Gas')).toBeInTheDocument();
+    });
+  });
+
+  it('should should render gas fee details', async () => {
+    render({
+      componentProps: {
+        hexMinimumTransactionFee: '0x1ca62a4f7800',
+        hexMaximumTransactionFee: '0x290ee75e3d900',
+      },
+    });
+    await waitFor(() => {
+      expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
+      expect(screen.queryByText('ETH')).toBeInTheDocument();
+      expect(screen.queryByTitle('0.0007223')).toBeInTheDocument();
     });
   });
 });

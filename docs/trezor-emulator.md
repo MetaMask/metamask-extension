@@ -13,7 +13,7 @@ Follow this instructions: https://github.com/trezor/trezor-core/blob/master/docs
 
 ## 3 - Restart the bridge with emulator support (Mac OSx instructions)
 
-`
+```
     # stop any existing instance of trezord
     killall trezord
 
@@ -22,4 +22,4 @@ Follow this instructions: https://github.com/trezor/trezor-core/blob/master/docs
 
     # launch the emulator
     ~/trezor-core/emu.sh
-`
+````

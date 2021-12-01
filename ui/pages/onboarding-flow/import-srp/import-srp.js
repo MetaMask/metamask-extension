@@ -16,6 +16,7 @@ import {
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import { clearClipboard } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
@@ -86,6 +87,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
               onChange={({ target: { value } }) =>
                 handleSecretRecoveryPhraseChange(value)
               }
+              onPaste={clearClipboard}
               autoComplete="off"
               autoCorrect="off"
             />
