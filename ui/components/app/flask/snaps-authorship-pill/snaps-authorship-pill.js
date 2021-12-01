@@ -11,14 +11,18 @@ import {
 
 const SnapsAuthorshipPill = ({ packageName, className, url }) => {
   return (
-    <a href={url}>
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={classnames(className, `snaps-authorship-pill`)}
+    >
       <Chip
         leftIcon={
           <Box paddingLeft={2}>
-            <i className="fab fa-npm fa-lg snaps-authorship-icon"></i>
+            <i className="fab fa-npm fa-lg snaps-authorship-icon" />
           </Box>
         }
-        className={classnames(className, `snaps-authorship-pill`)}
         backgroundColor={COLORS.WHITE}
       >
         <Typography
