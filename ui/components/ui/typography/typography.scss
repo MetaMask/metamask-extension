@@ -4,7 +4,8 @@
 .typography {
   @include design-system.Paragraph;
 
-  & b {
+  & b,
+  & strong {
     font-weight: 700;
   }
 

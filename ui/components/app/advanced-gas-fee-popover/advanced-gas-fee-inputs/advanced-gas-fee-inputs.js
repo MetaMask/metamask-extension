@@ -1,14 +1,14 @@
 import React from 'react';
 
 import Box from '../../../ui/box';
-import BasefeeInput from './basefee-input';
-import PriorityFeeInput from './priorityfee-input';
+import BaseFeeInput from './base-fee-input';
+import PriorityFeeInput from './priority-fee-input';
 
 const AdvancedGasFeeInputs = () => {
   return (
-    <Box className="advanced-gas-fee-input" margin={4}>
-      <BasefeeInput />
-      <div className="advanced-gas-fee-input__separator" />
+    <Box className="advanced-gas-fee-inputs" margin={4}>
+      <BaseFeeInput />
+      <div className="advanced-gas-fee-inputs__separator" />
       <PriorityFeeInput />
     </Box>
   );

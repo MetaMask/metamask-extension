@@ -1,21 +1,23 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
-import mockEstimates from '../../../../../test/data/mock-estimates.json';
-import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import configureStore from '../../../../store/store';
-import { GasFeeContextProvider } from '../../../../contexts/gasFee';
+import { GAS_ESTIMATE_TYPES } from '../../../../../../shared/constants/gas';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import mockEstimates from '../../../../../../test/data/mock-estimates.json';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
+import configureStore from '../../../../../store/store';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../../shared/constants/gas';
-import BasefeeInput from './basefee-input';
+import { AdvanceGasFeePopoverContextProvider } from '../../context';
+import BaseFeeInput from './base-fee-input';
 
-jest.mock('../../../../store/actions', () => ({
+jest.mock('../../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
 }));
 
 const render = (txProps) => {
@@ -42,13 +44,15 @@ const render = (txProps) => {
         ...txProps,
       }}
     >
-      <BasefeeInput />
+      <AdvanceGasFeePopoverContextProvider>
+        <BaseFeeInput />
+      </AdvanceGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
     store,
   );
 };
 
-describe('BasefeeInput', () => {
+describe('BaseFeeInput', () => {
   it('should renders advancedGasFee.baseFee value if current estimate used is not custom', () => {
     render({
       userFeeLevel: 'high',
