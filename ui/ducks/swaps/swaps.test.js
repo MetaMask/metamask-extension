@@ -79,7 +79,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(3);
+      expect(mockDispatch).toHaveBeenCalledTimes(4);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -100,7 +100,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(3);
+      expect(mockDispatch).toHaveBeenCalledTimes(4);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -122,7 +122,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(3);
+      expect(mockDispatch).toHaveBeenCalledTimes(4);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
@@ -168,7 +168,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock2.isDone()).toBe(false); // Second API call wasn't made, cache was used instead.
-      expect(mockDispatch).toHaveBeenCalledTimes(6);
+      expect(mockDispatch).toHaveBeenCalledTimes(8);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(setSwapsFeatureFlags).toHaveBeenCalledWith(featureFlagsResponse);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
