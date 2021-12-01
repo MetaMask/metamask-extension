@@ -24,6 +24,12 @@ const Address = ({
   );
   const recipientNickname = addressBookEntryObject?.name;
 
+  const recipientToRender = addressOnly
+    ? recipientNickname ||
+      recipientEns ||
+      shortenAddress(checksummedRecipientAddress)
+    : recipientNickname || recipientEns || recipientName || t('newContract');
+
   return (
     <div
       className="tx-insight tx-insight-component tx-insight-component-address"
@@ -42,14 +48,7 @@ const Address = ({
         className="address__name"
         onClick={() => setShowNicknamePopovers(true)}
       >
-        {addressOnly
-          ? recipientNickname ||
-            recipientEns ||
-            shortenAddress(checksummedRecipientAddress)
-          : recipientNickname ||
-            recipientEns ||
-            recipientName ||
-            t('newContract')}
+        {recipientToRender}
       </div>
       {showNicknamePopovers ? (
         <NicknamePopovers
