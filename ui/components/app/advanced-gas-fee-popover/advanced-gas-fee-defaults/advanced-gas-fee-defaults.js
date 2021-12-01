@@ -20,10 +20,7 @@ const AdvancedGasFeeDefaults = () => {
   const isAdvancedGasFeeDefault = useSelector(getIsAdvancedGasFeeDefault);
   const [defaultValues, setDefaultValues] = useState(isAdvancedGasFeeDefault);
 
-  const {
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-  } = useAdvanceGasFeePopoverContext();
+  const { maxBaseFee, maxPriorityFeePerGas } = useAdvanceGasFeePopoverContext();
 
   const updateDefaultSettings = useCallback(
     (value) => {
@@ -31,7 +28,7 @@ const AdvancedGasFeeDefaults = () => {
       if (value) {
         dispatch(
           setAdvancedGasFee({
-            maxBaseFee: maxFeePerGas,
+            maxBaseFee,
             priorityFee: maxPriorityFeePerGas,
           }),
         );
@@ -39,7 +36,7 @@ const AdvancedGasFeeDefaults = () => {
         dispatch(setAdvancedGasFee(null));
       }
     },
-    [maxFeePerGas, maxPriorityFeePerGas, setDefaultValues, dispatch],
+    [maxBaseFee, maxPriorityFeePerGas, setDefaultValues, dispatch],
   );
 
   return (
