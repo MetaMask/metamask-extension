@@ -47,9 +47,6 @@
   "about": {
     "message": "About"
   },
-  "aboutSettingsDescription": {
-    "message": "Version, support center, and contact info"
-  },
   "acceleratingATransaction": {
     "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
-  "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup test networks and custom RPC"
-  },
   "affirmAgree": {
     "message": "I Agree"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "Alerts"
-  },
-  "alertsSettingsDescription": {
-    "message": "Enable or disable each alert"
   },
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
@@ -574,9 +565,6 @@
   },
   "contacts": {
     "message": "Contacts"
-  },
-  "contactsSettingsDescription": {
-    "message": "Add, edit, remove, and manage your contacts"
   },
   "continue": {
     "message": "Continue"
@@ -1111,9 +1099,6 @@
   "experimental": {
     "message": "Experimental"
   },
-  "experimentalSettingsDescription": {
-    "message": "Token detection & more"
-  },
   "exportPrivateKey": {
     "message": "Export Private Key"
   },
@@ -1308,9 +1293,6 @@
   },
   "general": {
     "message": "General"
-  },
-  "generalSettingsDescription": {
-    "message": "Currency conversion, primary currency, language, blockies identicon"
   },
   "getEther": {
     "message": "Get Ether"
@@ -1862,9 +1844,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
-  },
-  "networkSettingsDescription": {
-    "message": "Add and edit custom RPC networks"
   },
   "networkStatus": {
     "message": "Network status"
@@ -2466,9 +2445,6 @@
   },
   "securityAndPrivacy": {
     "message": "Security & Privacy"
-  },
-  "securitySettingsDescription": {
-    "message": "Privacy settings and wallet Secret Recovery Phrase"
   },
   "seedPhraseConfirm": {
     "message": "Confirm Secret Recovery Phrase"

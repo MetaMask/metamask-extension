@@ -47,9 +47,6 @@
   "about": {
     "message": "À propos"
   },
-  "aboutSettingsDescription": {
-    "message": "Version, centre d’assistance et coordonnées"
-  },
   "acceleratingATransaction": {
     "message": "* Accélérer une transaction en utilisant un prix de l’essence plus élevé augmente ses chances d’être traitée plus rapidement par le réseau, mais ce n’est pas toujours garanti."
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
-  "advancedSettingsDescription": {
-    "message": "Accédez aux fonctionnalités pour les développeurs, téléchargez les journaux d’état, réinitialisez votre compte, configurez testnets et personnalisez RPC"
-  },
   "affirmAgree": {
     "message": "Je suis d’accord"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "Alertes"
-  },
-  "alertsSettingsDescription": {
-    "message": "Activez ou désactivez chaque alerte"
   },
   "allowExternalExtensionTo": {
     "message": "Autoriser cette extension externe à :"
@@ -550,9 +541,6 @@
   },
   "contacts": {
     "message": "Contacts"
-  },
-  "contactsSettingsDescription": {
-    "message": "Ajoutez, modifiez, supprimez et gérez vos contacts"
   },
   "continue": {
     "message": "Continuer"
@@ -1045,9 +1033,6 @@
   "experimental": {
     "message": "Expérimental"
   },
-  "experimentalSettingsDescription": {
-    "message": "Détection de jetons et plus encore"
-  },
   "exportPrivateKey": {
     "message": "Exporter la clé privée"
   },
@@ -1216,9 +1201,6 @@
   },
   "general": {
     "message": "Général"
-  },
-  "generalSettingsDescription": {
-    "message": "Conversion de devise, devise principale, langue, blockies identicon"
   },
   "getEther": {
     "message": "Obtenir des Ether"
@@ -1739,9 +1721,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "L’ID de la chaîne est utilisé pour la signature des transactions. Il doit correspondre à l’ID de la chaîne renvoyé par le réseau. Vous pouvez saisir un numéro décimal ou hexadécimal avec le préfixe « 0x », mais nous afficherons le numéro en décimal."
-  },
-  "networkSettingsDescription": {
-    "message": "Ajoutez et modifiez des réseaux RPC personnalisés"
   },
   "networkStatus": {
     "message": "Statut du réseau"
@@ -2340,9 +2319,6 @@
   },
   "securityAndPrivacy": {
     "message": "Sécurité et confidentialité"
-  },
-  "securitySettingsDescription": {
-    "message": "Paramètres de confidentialité et phrase de départ du portefeuille"
   },
   "seedPhraseConfirm": {
     "message": "Confirmer la phrase secrète de récupération"

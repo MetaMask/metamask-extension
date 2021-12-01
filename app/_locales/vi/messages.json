@@ -47,9 +47,6 @@
   "about": {
     "message": "Giới thiệu"
   },
-  "aboutSettingsDescription": {
-    "message": "Phiên bản, trung tâm trợ giúp và thông tin liên hệ"
-  },
   "acceleratingATransaction": {
     "message": "* Việc đẩy nhanh giao dịch bằng cách sử dụng giá gas cao hơn sẽ tăng khả năng được mạng xử lý nhanh hơn, nhưng không phải lúc nào điều này cũng được đảm bảo."
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Phí ưu tiên (hay còn được gọi là \"phí khích lệ thợ đào\") được chuyển trực tiếp cho các thợ đào và khuyến khích họ ưu tiên giao dịch của bạn."
   },
-  "advancedSettingsDescription": {
-    "message": "Truy cập các tính năng dành cho nhà phát triển, tải về Nhật ký trạng thái, Đặt lại tài khoản, thiết lập mạng thử nghiệm và RPC tùy chỉnh"
-  },
   "affirmAgree": {
     "message": "Tôi đồng ý"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "Cảnh báo"
-  },
-  "alertsSettingsDescription": {
-    "message": "Bật hoặc tắt từng cảnh báo"
   },
   "allowExternalExtensionTo": {
     "message": "Cho phép tiện ích bên ngoài này:"
@@ -550,9 +541,6 @@
   },
   "contacts": {
     "message": "Danh bạ"
-  },
-  "contactsSettingsDescription": {
-    "message": "Thêm, chỉnh sửa, xóa và quản lý danh bạ của bạn"
   },
   "continue": {
     "message": "Tiếp tục"
@@ -1045,9 +1033,6 @@
   "experimental": {
     "message": "Thử nghiệm"
   },
-  "experimentalSettingsDescription": {
-    "message": "Phát hiện token và hơn thế nữa"
-  },
   "exportPrivateKey": {
     "message": "Xuất khóa riêng tư"
   },
@@ -1216,9 +1201,6 @@
   },
   "general": {
     "message": "Chung"
-  },
-  "generalSettingsDescription": {
-    "message": "Quy đổi tiền, đơn vị tiền chính, ngôn ngữ, biểu tượng nhận dạng kiểu blockies"
   },
   "getEther": {
     "message": "Nhận Ether"
@@ -1739,9 +1721,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "Mã chuỗi được dùng để ký các giao dịch. Giá trị này phải khớp với mã chuỗi do mạng trả về. Bạn có thể nhập một số thập phân hoặc số thập lục phân bắt đầu bằng “0x” nhưng chúng tôi sẽ hiển thị số ở dạng thập phân."
-  },
-  "networkSettingsDescription": {
-    "message": "Thêm và chỉnh sửa mạng RPC tùy chỉnh"
   },
   "networkStatus": {
     "message": "Trạng thái mạng"
@@ -2340,9 +2319,6 @@
   },
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
-  },
-  "securitySettingsDescription": {
-    "message": "Các cài đặt quyền riêng tư và Cụm mật khẩu khôi phục bí mật của ví"
   },
   "seedPhraseConfirm": {
     "message": "Xác nhận Cụm Mật Khẩu Khôi Phục Bí Mật"

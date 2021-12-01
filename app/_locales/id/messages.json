@@ -47,9 +47,6 @@
   "about": {
     "message": "Tentang"
   },
-  "aboutSettingsDescription": {
-    "message": "Versi, pusat dukungan, dan informasi kontak"
-  },
   "acceleratingATransaction": {
     "message": "* Mempercepat transaksi dengan biaya gas yang lebih tinggi akan meningkatkan peluang untuk diproses oleh jaringan lebih cepat, namun tidak selalu terjamin."
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Biaya prioritas (alias “tip penambang”) langsung masuk ke penambang dan memberi insentif kepada mereka untuk memprioritaskan transaksi Anda."
   },
-  "advancedSettingsDescription": {
-    "message": "Akses fitur pengembang, unduh Log Status, Atur Ulang Akun, siapkan testnet, dan sesuaikan RPC"
-  },
   "affirmAgree": {
     "message": "Saya Setuju"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "Peringatan"
-  },
-  "alertsSettingsDescription": {
-    "message": "Aktifkan atau nonaktifkan setiap peringatan"
   },
   "allowExternalExtensionTo": {
     "message": "Izinkan ekstensi eksternal ini untuk:"
@@ -550,9 +541,6 @@
   },
   "contacts": {
     "message": "Kontak"
-  },
-  "contactsSettingsDescription": {
-    "message": "Tambah, edit, hapus, dan kelola kontak Anda"
   },
   "continue": {
     "message": "Lanjutkan"
@@ -1045,9 +1033,6 @@
   "experimental": {
     "message": "Eksperimental"
   },
-  "experimentalSettingsDescription": {
-    "message": "Deteksi token & lainnya"
-  },
   "exportPrivateKey": {
     "message": "Ekspor Kunci Privat"
   },
@@ -1216,9 +1201,6 @@
   },
   "general": {
     "message": "Umum"
-  },
-  "generalSettingsDescription": {
-    "message": "Konversi mata uang, mata uang utama, bahasa, blockies identicon"
   },
   "getEther": {
     "message": "Dapatkan Ether"
@@ -1739,9 +1721,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "ID rantai digunakan untuk menandatangani transaksi. Harus cocok dengan ID rantai yang dikembalikan oleh jaringan. Anda dapat memasukkan bilangan heksadesimal berawalan '0x' atau desimal, namun kami akan menampilkan bilangan tersebut dalam desimal."
-  },
-  "networkSettingsDescription": {
-    "message": "Tambahkan dan edit jaringan RPC kustom"
   },
   "networkStatus": {
     "message": "Status jaringan"
@@ -2340,9 +2319,6 @@
   },
   "securityAndPrivacy": {
     "message": "Keamanan & Privasi"
-  },
-  "securitySettingsDescription": {
-    "message": "Pengaturan privasi dan Frasa Pemulihan Rahasia dompet"
   },
   "seedPhraseConfirm": {
     "message": "Konfirmasikan Frasa Pemulihan Rahasia"

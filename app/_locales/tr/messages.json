@@ -47,9 +47,6 @@
   "about": {
     "message": "Hakkında"
   },
-  "aboutSettingsDescription": {
-    "message": "Sürüm, destek merkezi ve iletişim bilgileri"
-  },
   "acceleratingATransaction": {
     "message": "* Daha yüksek bir gaz fiyatı kullanarak bir işlemi hızlandırmak ağ tarafından daha hızlı işlenme şansını artırır ancak her zaman garanti etmez."
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Maks. öncelik ücreti (başka bir deyişle \"madenci bahşişi\") doğrudan madencilere gider ve işleminizin öncelikli olarak gerçekleştirilmesini teşvik eder."
   },
-  "advancedSettingsDescription": {
-    "message": "Geliştirici özelliklerine erişim sağlayın, Durum Günlüklerini indirin, Hesabı Sıfırlayın, test ağlarını ve özel RPC'yi kurun"
-  },
   "affirmAgree": {
     "message": "Kabul Ediyorum"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "Uyarılar"
-  },
-  "alertsSettingsDescription": {
-    "message": "Her bir uyarıyı etkinleştir veya devre dışı bırak"
   },
   "allowExternalExtensionTo": {
     "message": "Bu harici uzantının şunu yapmasına izin ver:"
@@ -550,9 +541,6 @@
   },
   "contacts": {
     "message": "Kişiler"
-  },
-  "contactsSettingsDescription": {
-    "message": "Kişilerinizi ekleyin, düzenleyin, silin ve yönetin"
   },
   "continue": {
     "message": "Devam et"
@@ -1045,9 +1033,6 @@
   "experimental": {
     "message": "Deneysel"
   },
-  "experimentalSettingsDescription": {
-    "message": "Token algılama ve daha fazlası"
-  },
   "exportPrivateKey": {
     "message": "Özel anahtarı dışa aktar"
   },
@@ -1216,9 +1201,6 @@
   },
   "general": {
     "message": "Genel"
-  },
-  "generalSettingsDescription": {
-    "message": "Para birimi dönüşümü, ana para birimi, dil, blockies identicon"
   },
   "getEther": {
     "message": "Ether Al"
@@ -1739,9 +1721,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "İşlemlerin imzalanması için kullanılan zincir kimliği. Ağ tarafından yanıt olarak sunulan zincir kimliği ile uyumlu olmalıdır. Bir ondalık ya da \"0x\" ön ekli on altılık sayı girebilirsiniz ancak biz sayıyı ondalık olarak gösteririz."
-  },
-  "networkSettingsDescription": {
-    "message": "Özel RPC ağlarını ekle ve düzenle"
   },
   "networkStatus": {
     "message": "Ağ durumu"
@@ -2340,9 +2319,6 @@
   },
   "securityAndPrivacy": {
     "message": "Güvenlik ve Gizlilik"
-  },
-  "securitySettingsDescription": {
-    "message": "Gizlilik ayarları ve cüzdan Gizli Kurtarma İfadesi"
   },
   "seedPhraseConfirm": {
     "message": "Gizli Kurtarma İfadesini Onayla"
