@@ -1,0 +1,21 @@
+.accreditation {
+    display: flex;
+    font-size: 12px;
+    display: flex;
+    margin-top: 10px;
+    &__tooltip {
+        padding-right: 5px;
+    }
+    &__title {
+        color: $ui-black;
+        display: flex;
+        .accreditation__link {
+            padding: 0 4px;
+            text-transform: capitalize;
+            .accreditation__etherscan-link {
+                @include H7;
+                padding: 0;
+            }
+        }
+    }
+}
