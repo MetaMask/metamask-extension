@@ -3,6 +3,7 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
+import { util } from '@metamask/controllers';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
   GOERLI_CHAIN_ID,
@@ -427,4 +428,19 @@ export const toHumanReadableTime = (t, milliseconds) => {
 
 export function clearClipboard() {
   window.navigator.clipboard.writeText('');
+}
+
+export function getAssetImageURL(image, ipfsGateway) {
+  let result = image;
+  if (!image || !ipfsGateway || typeof image !== 'string') {
+    return '';
+  }
+
+  if (image.startsWith('ipfs://')) {
+    const contentIdentifier = util.getIpfsUrlContentIdentifier(image);
+    result = ipfsGateway.endsWith('/')
+      ? ipfsGateway + contentIdentifier
+      : `${ipfsGateway}/${contentIdentifier}`;
+  }
+  return result;
 }

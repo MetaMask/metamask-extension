@@ -61,7 +61,7 @@ export default class PreferencesController {
         hideZeroBalanceTokens: false,
       },
       // ENS decentralized website resolution
-      ipfsGateway: 'dweb.link',
+      ipfsGateway: 'https://cloudflare-ipfs.com/ipfs/',
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
         ? LEDGER_TRANSPORT_TYPES.WEBHID

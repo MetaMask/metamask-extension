@@ -139,9 +139,6 @@
   "addNFT": {
     "message": "Add NFT"
   },
-  "addNFTLowerCase": {
-    "message": "add NFT"
-  },
   "addNetwork": {
     "message": "Add Network"
   },
@@ -354,10 +351,6 @@
     "message": "Swap",
     "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
   },
-  "blockExplorerTransactionAction": {
-    "message": "Transaction",
-    "description": "This is used with viewOnCustomBlockExplorer and viewOnEtherscan e.g View Transaction on Etherscan"
-  },
   "blockExplorerUrl": {
     "message": "Block Explorer URL"
   },
@@ -569,6 +562,9 @@
   "contract": {
     "message": "Contract"
   },
+  "contractAddress": {
+    "message": "Contract address"
+  },
   "contractAddressError": {
     "message": "You are sending tokens to the token's contract address. This may result in the loss of these tokens."
   },
@@ -581,14 +577,14 @@
   "copiedExclamation": {
     "message": "Copied!"
   },
-  "copiedTransactionId": {
-    "message": "Copied Transaction ID"
-  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
   "copyPrivateKey": {
     "message": "This is your private key (click to copy)"
+  },
+  "copyRawTransactionData": {
+    "message": "Copy raw transaction data"
   },
   "copyToClipboard": {
     "message": "Copy to clipboard"
@@ -666,6 +662,9 @@
   "dataBackupFoundInfo": {
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
   },
+  "dataHex": {
+    "message": "Hex"
+  },
   "decimal": {
     "message": "Token Decimal"
   },
@@ -706,6 +705,9 @@
   },
   "depositEther": {
     "message": "Deposit Ether"
+  },
+  "description": {
+    "message": "Description"
   },
   "details": {
     "message": "Details"
@@ -763,6 +765,9 @@
   },
   "edit": {
     "message": "Edit"
+  },
+  "editANickname": {
+    "message": "Edit nickname"
   },
   "editAddressNickname": {
     "message": "Edit address nickname"
@@ -869,6 +874,9 @@
   },
   "editPermission": {
     "message": "Edit Permission"
+  },
+  "enableAutoDetect": {
+    "message": " Enable Autodetect"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -1049,6 +1057,21 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "flaskExperimentalText1": {
+    "message": "Using Flask can greatly increase your risk of fund loss:"
+  },
+  "flaskExperimentalText2": {
+    "message": "if you use it to install non-trustworthy Snaps"
+  },
+  "flaskExperimentalText3": {
+    "message": "if you do not review confirmations before approving changes"
+  },
+  "flaskExperimentalText4": {
+    "message": "if you interact with unfamiliar smart contracts"
+  },
+  "flaskExperimentalText5": {
+    "message": "Using Flask gives you much greater discretion in using the power of MetaMask, and that discretion is yours. Do you accept these risks as well as extra responsibility for your wallet's safety?"
   },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
@@ -1268,6 +1291,9 @@
   "importMyWallet": {
     "message": "Import My Wallet"
   },
+  "importNFTs": {
+    "message": "Import NFTs"
+  },
   "importTokenQuestion": {
     "message": "Import token?"
   },
@@ -1459,6 +1485,9 @@
   },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
+  },
+  "link": {
+    "message": "Link"
   },
   "links": {
     "message": "Links"
@@ -2142,6 +2171,9 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
+  "removeNFT": {
+    "message": "Remove NFT"
+  },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
   },
@@ -2459,6 +2491,9 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
+  },
+  "source": {
+    "message": "Source"
   },
   "speedUp": {
     "message": "Speed Up"
@@ -3008,6 +3043,12 @@
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
   },
+  "transactionData": {
+    "message": "Transaction data"
+  },
+  "transactionDecodingUnsupportedNetworkError": {
+    "message": "Transaction decoding is not available for chainId $1"
+  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site suggested"
   },
@@ -3197,6 +3238,9 @@
   "usedByClients": {
     "message": "Used by a variety of different clients"
   },
+  "userAccepts": {
+    "message": "I accept"
+  },
   "userName": {
     "message": "Username"
   },
@@ -3237,6 +3281,9 @@
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnOpensea": {
+    "message": "View on Opensea"
   },
   "viewinExplorer": {
     "message": "View $1 in Explorer",

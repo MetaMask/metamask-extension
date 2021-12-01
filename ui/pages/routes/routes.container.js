@@ -5,7 +5,6 @@ import {
   getNetworkIdentifier,
   getPreferences,
   isNetworkLoading,
-  submittedPendingTransactionsSelector,
 } from '../../selectors';
 import {
   lockMetamask,
@@ -29,15 +28,14 @@ function mapStateToProps(state) {
     isLoading,
     loadingMessage,
     isUnlocked: state.metamask.isUnlocked,
-    submittedPendingTransactions: submittedPendingTransactionsSelector(state),
     isNetworkLoading: isNetworkLoading(state),
-    provider: state.metamask.provider,
-    frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     currentCurrency: state.metamask.currentCurrency,
     isMouseUser: state.appState.isMouseUser,
-    providerId: getNetworkIdentifier(state),
     autoLockTimeLimit,
-    browserEnvironment: state.metamask.browserEnvironment,
+    browserEnvironmentOs: state.metamask.browserEnvironment?.os,
+    browserEnvironmentContainter: state.metamask.browserEnvironment?.browser,
+    providerId: getNetworkIdentifier(state),
+    providerType: state.metamask.provider?.type,
   };
 }
 

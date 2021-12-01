@@ -29,7 +29,8 @@
     },
     "eslint-module-utils": {
       "packages": {
-        "eslint-import-resolver-node": true
+        "eslint-import-resolver-node": true,
+        "@babel/eslint-parser": true
       }
     },
     "node-sass": {

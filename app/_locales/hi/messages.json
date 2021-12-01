@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "कॉपी किया गया!"
   },
-  "copiedTransactionId": {
-    "message": "कॉपी की गई लेनदेन ID"
-  },
   "copyAddress": {
     "message": "क्लिपबोर्ड पर पता कॉपी करें"
   },
