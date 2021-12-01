@@ -430,6 +430,13 @@ export function clearClipboard() {
   window.navigator.clipboard.writeText('');
 }
 
+export function addUrlProtocolPrefix(urlString) {
+  if (!urlString.match(/(^http:\/\/)|(^https:\/\/)/u)) {
+    return `https://${urlString}`;
+  }
+  return urlString;
+}
+
 export function getAssetImageURL(image, ipfsGateway) {
   let result = image;
   if (!image || !ipfsGateway || typeof image !== 'string') {
@@ -438,9 +445,7 @@ export function getAssetImageURL(image, ipfsGateway) {
 
   if (image.startsWith('ipfs://')) {
     const contentIdentifier = util.getIpfsUrlContentIdentifier(image);
-    result = ipfsGateway.endsWith('/')
-      ? ipfsGateway + contentIdentifier
-      : `${ipfsGateway}/${contentIdentifier}`;
+    result = util.getFormattedIpfsURL(ipfsGateway, contentIdentifier);
   }
   return result;
 }

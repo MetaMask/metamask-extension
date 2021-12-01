@@ -265,14 +265,7 @@ export const getCollectibles = (state) => {
     },
   } = state;
 
-  let decFormattedChainId;
-  if (typeof chainId === 'string' && isHexString(chainId)) {
-    decFormattedChainId = `${parseInt(chainId, 16)}`;
-  } else if (typeof chainId === 'number') {
-    decFormattedChainId = `${chainId}`;
-  }
-
-  return allCollectibles?.[selectedAddress]?.[decFormattedChainId] || [];
+  return allCollectibles?.[selectedAddress]?.[chainId] || [];
 };
 
 export const getCollectibleContracts = (state) => {
@@ -284,15 +277,7 @@ export const getCollectibleContracts = (state) => {
     },
   } = state;
 
-  let decFormattedChainId;
-  if (typeof chainId === 'string' && isHexString(chainId)) {
-    decFormattedChainId = `${parseInt(chainId, 16)}`;
-  } else if (typeof chainId === 'number') {
-    decFormattedChainId = `${chainId}`;
-  }
-  return (
-    allCollectibleContracts?.[selectedAddress]?.[decFormattedChainId] || []
-  );
+  return allCollectibleContracts?.[selectedAddress]?.[chainId] || [];
 };
 
 export function getBlockGasLimit(state) {
