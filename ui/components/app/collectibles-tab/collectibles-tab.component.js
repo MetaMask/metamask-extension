@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import NewCollectiblesNotice from '../new-collectibles-notice';
+import CollectiblesItems from '../collectibles-items';
 import {
   COLORS,
   TYPOGRAPHY,
@@ -13,16 +16,50 @@ import {
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  getCollectibles,
+  getCollectibleContracts,
+} from '../../../ducks/metamask/metamask';
+import { getUseCollectibleDetection } from '../../../selectors';
+import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
+import { detectCollectibles } from '../../../store/actions';
 
-export default function CollectiblesList({ onAddNFT }) {
-  const collectibles = [];
-  const newNFTsDetected = true;
+export default function CollectiblesTab({ onAddNFT }) {
+  const collectibles = useSelector(getCollectibles);
+  const collectibleContracts = useSelector(getCollectibleContracts);
+  const useCollectibleDetection = useSelector(getUseCollectibleDetection);
+  const history = useHistory();
+  const newNFTsDetected = false;
   const t = useI18nContext();
+  const collections = {};
+  const dispatch = useDispatch();
+
+  collectibles.forEach((collectible) => {
+    if (collections[collectible.address]) {
+      collections[collectible.address].collectibles.push(collectible);
+    } else {
+      const collectionContract = collectibleContracts.find(
+        ({ address }) => address === collectible.address,
+      );
+      collections[collectible.address] = {
+        collectionName: collectionContract?.name || collectible.name,
+        collectionImage:
+          collectionContract?.logo || collectible.collectionImage,
+        collectibles: [collectible],
+      };
+    }
+  });
 
   return (
-    <div className="collectibles-list">
+    <div className="collectibles-tab">
       {collectibles.length > 0 ? (
-        <span>{JSON.stringify(collectibles)}</span>
+        <CollectiblesItems
+          collections={collections}
+          onAddNFT={onAddNFT}
+          useCollectibleDetection={useCollectibleDetection}
+          onRefreshList={() => dispatch(detectCollectibles())}
+          onEnableAutoDetect={() => history.push(EXPERIMENTAL_ROUTE)}
+        />
       ) : (
         <Box padding={[6, 12, 6, 12]}>
           {newNFTsDetected ? <NewCollectiblesNotice /> : null}
@@ -79,6 +116,6 @@ export default function CollectiblesList({ onAddNFT }) {
   );
 }
 
-CollectiblesList.propTypes = {
+CollectiblesTab.propTypes = {
   onAddNFT: PropTypes.func.isRequired,
 };

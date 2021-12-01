@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Kimásolva!"
   },
-  "copiedTransactionId": {
-    "message": "Másolt tranzakció-azonosító"
-  },
   "copyAddress": {
     "message": "Másolja a címet a vágólapra"
   },

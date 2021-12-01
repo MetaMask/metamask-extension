@@ -92,8 +92,8 @@ describe('Swaps Util', () => {
       },
     };
     it('should fetch trade info on prod', async () => {
-      nock('https://api.metaswap.codefi.network')
-        .get('/trades')
+      nock('https://api2.metaswap.codefi.network')
+        .get('/networks/1/trades')
         .query(true)
         .reply(200, MOCK_TRADE_RESPONSE_2);
 
@@ -118,9 +118,9 @@ describe('Swaps Util', () => {
 
   describe('fetchTokens', () => {
     beforeAll(() => {
-      nock('https://api.metaswap.codefi.network')
+      nock('https://api2.metaswap.codefi.network')
         .persist()
-        .get('/tokens')
+        .get('/networks/1/tokens')
         .reply(200, TOKENS);
     });
 
@@ -137,9 +137,9 @@ describe('Swaps Util', () => {
 
   describe('fetchAggregatorMetadata', () => {
     beforeAll(() => {
-      nock('https://api.metaswap.codefi.network')
+      nock('https://api2.metaswap.codefi.network')
         .persist()
-        .get('/aggregatorMetadata')
+        .get('/networks/1/aggregatorMetadata')
         .reply(200, AGGREGATOR_METADATA);
     });
 
@@ -156,9 +156,9 @@ describe('Swaps Util', () => {
 
   describe('fetchTopAssets', () => {
     beforeAll(() => {
-      nock('https://api.metaswap.codefi.network')
+      nock('https://api2.metaswap.codefi.network')
         .persist()
-        .get('/topAssets')
+        .get('/networks/1/topAssets')
         .reply(200, TOP_ASSETS);
     });
 
@@ -328,7 +328,6 @@ describe('Swaps Util', () => {
     it('returns info that Swaps are enabled and cannot use API v2 for localhost chain ID', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: false,
       };
       expect(
         getSwapsLivenessForNetwork(
@@ -341,7 +340,6 @@ describe('Swaps Util', () => {
     it('returns info that Swaps are enabled and cannot use API v2 for Rinkeby chain ID', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: false,
       };
       expect(
         getSwapsLivenessForNetwork(
@@ -354,7 +352,6 @@ describe('Swaps Util', () => {
     it('returns info that Swaps are disabled and cannot use API v2 if network name is not found', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: false,
-        useNewSwapsApi: false,
       };
       expect(
         getSwapsLivenessForNetwork(
@@ -367,7 +364,6 @@ describe('Swaps Util', () => {
     it('returns info that Swaps are enabled and can use API v2 for mainnet chain ID', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: true,
       };
       expect(
         getSwapsLivenessForNetwork(
@@ -380,7 +376,6 @@ describe('Swaps Util', () => {
     it('returns info that Swaps are enabled but can only use API v1 for mainnet chain ID', () => {
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: false,
       };
       const swapsFeatureFlags = MOCKS.createFeatureFlagsResponse();
       swapsFeatureFlags[ETHEREUM].extension_active = false;

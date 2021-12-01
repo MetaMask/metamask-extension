@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "কপি করা হয়েছে!"
   },
-  "copiedTransactionId": {
-    "message": "কপি করা লেনদেনের আইডি"
-  },
   "copyAddress": {
     "message": "ক্লিপবোর্ডে ঠিকানা কপি করুন"
   },

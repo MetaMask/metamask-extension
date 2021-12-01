@@ -7,9 +7,6 @@ import ActionableMessage from '../../../ui/actionable-message/actionable-message
 import { PageContainerFooter } from '../../../ui/page-container';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
-// eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2 = process.env.EIP_1559_V2;
-
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
@@ -18,6 +15,7 @@ export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
     action: PropTypes.string,
     dataComponent: PropTypes.node,
+    dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
@@ -36,13 +34,14 @@ export default class ConfirmPageContainerContent extends Component {
     onCancel: PropTypes.func,
     cancelText: PropTypes.string,
     onSubmit: PropTypes.func,
-    onConfirmAnyways: PropTypes.func,
+    setUserAcknowledgedGasMissing: PropTypes.func,
     submitText: PropTypes.string,
     disabled: PropTypes.bool,
-    hideConfirmAnyways: PropTypes.bool,
+    hideUserAcknowledgedGasMissing: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     rejectNText: PropTypes.string,
-    hideTitle: PropTypes.boolean,
+    hideTitle: PropTypes.bool,
+    supportsEIP1559V2: PropTypes.bool,
   };
 
   renderContent() {
@@ -56,7 +55,7 @@ export default class ConfirmPageContainerContent extends Component {
 
   renderTabs() {
     const { t } = this.context;
-    const { detailsComponent, dataComponent } = this.props;
+    const { detailsComponent, dataComponent, dataHexComponent } = this.props;
 
     return (
       <Tabs>
@@ -68,6 +67,12 @@ export default class ConfirmPageContainerContent extends Component {
         </Tab>
         <Tab className="confirm-page-container-content__tab" name={t('data')}>
           {dataComponent}
+        </Tab>
+        <Tab
+          className="confirm-page-container-content__tab"
+          name={t('dataHex')}
+        >
+          {dataHexComponent}
         </Tab>
       </Tabs>
     );
@@ -99,15 +104,16 @@ export default class ConfirmPageContainerContent extends Component {
       origin,
       ethGasPriceWarning,
       hideTitle,
-      onConfirmAnyways,
-      hideConfirmAnyways,
+      setUserAcknowledgedGasMissing,
+      hideUserAcknowledgedGasMissing,
+      supportsEIP1559V2,
     } = this.props;
 
-    const primaryAction = hideConfirmAnyways
+    const primaryAction = hideUserAcknowledgedGasMissing
       ? null
       : {
           label: this.context.t('tryAnywayOption'),
-          onClick: onConfirmAnyways,
+          onClick: setUserAcknowledgedGasMissing,
         };
 
     return (
@@ -141,11 +147,13 @@ export default class ConfirmPageContainerContent extends Component {
           hideTitle={hideTitle}
         />
         {this.renderContent()}
-        {!EIP_1559_V2 && !hasSimulationError && (errorKey || errorMessage) && (
-          <div className="confirm-page-container-content__error-container">
-            <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
-          </div>
-        )}
+        {!supportsEIP1559V2 &&
+          !hasSimulationError &&
+          (errorKey || errorMessage) && (
+            <div className="confirm-page-container-content__error-container">
+              <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
+            </div>
+          )}
         <PageContainerFooter
           onCancel={onCancel}
           cancelText={cancelText}

@@ -43,6 +43,10 @@ export const TransactionModalContextProvider = ({
     setOpenModals(modals);
   };
 
+  const closeAllModals = () => {
+    setOpenModals([]);
+  };
+
   const openModal = (modalName) => {
     if (openModals.includes(modalName)) return;
     captureEvent();
@@ -55,6 +59,7 @@ export const TransactionModalContextProvider = ({
     <TransactionModalContext.Provider
       value={{
         closeModal,
+        closeAllModals,
         currentModal: openModals[openModals.length - 1],
         openModal,
       }}

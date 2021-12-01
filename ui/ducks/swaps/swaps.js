@@ -94,6 +94,10 @@ const initialState = {
   balanceError: false,
   fetchingQuotes: false,
   fromToken: null,
+  fromTokenInputValue: '',
+  fromTokenError: null,
+  isFeatureFlagLoaded: false,
+  maxSlippage: 3,
   quotesFetchStartTime: null,
   reviewSwapClickedTimestamp: null,
   topAssets: {},
@@ -136,6 +140,18 @@ const slice = createSlice({
     },
     setFromToken: (state, action) => {
       state.fromToken = action.payload;
+    },
+    setFromTokenInputValue: (state, action) => {
+      state.fromTokenInputValue = action.payload;
+    },
+    setFromTokenError: (state, action) => {
+      state.fromTokenError = action.payload;
+    },
+    setIsFeatureFlagLoaded: (state, action) => {
+      state.isFeatureFlagLoaded = action.payload;
+    },
+    setMaxSlippage: (state, action) => {
+      state.maxSlippage = action.payload;
     },
     setQuotesFetchStartTime: (state, action) => {
       state.quotesFetchStartTime = action.payload;
@@ -186,6 +202,16 @@ export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata;
 export const getBalanceError = (state) => state.swaps.balanceError;
 
 export const getFromToken = (state) => state.swaps.fromToken;
+
+export const getFromTokenError = (state) => state.swaps.fromTokenError;
+
+export const getFromTokenInputValue = (state) =>
+  state.swaps.fromTokenInputValue;
+
+export const getIsFeatureFlagLoaded = (state) =>
+  state.swaps.isFeatureFlagLoaded;
+
+export const getMaxSlippage = (state) => state.swaps.maxSlippage;
 
 export const getTopAssets = (state) => state.swaps.topAssets;
 
@@ -245,9 +271,6 @@ const getSwapsState = (state) => state.metamask.swapsState;
 
 export const getSwapsFeatureIsLive = (state) =>
   state.metamask.swapsState.swapsFeatureIsLive;
-
-export const getUseNewSwapsApi = (state) =>
-  state.metamask.swapsState.useNewSwapsApi;
 
 export const getSmartTransactionsError = (state) =>
   state.appState.smartTransactionsError;
@@ -404,6 +427,10 @@ const {
   setBalanceError,
   setFetchingQuotes,
   setFromToken,
+  setFromTokenError,
+  setFromTokenInputValue,
+  setIsFeatureFlagLoaded,
+  setMaxSlippage,
   setQuotesFetchStartTime,
   setReviewSwapClickedTimestamp,
   setTopAssets,
@@ -420,6 +447,10 @@ export {
   setBalanceError,
   setFetchingQuotes,
   setFromToken as setSwapsFromToken,
+  setFromTokenError,
+  setFromTokenInputValue,
+  setIsFeatureFlagLoaded,
+  setMaxSlippage,
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
   setReviewSwapClickedTimestamp,
   setTopAssets,
@@ -475,7 +506,6 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
   return async (dispatch, getState) => {
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
@@ -492,6 +522,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       );
     }
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
+    dispatch(setIsFeatureFlagLoaded(true));
     return swapsLivenessForNetwork;
   };
 };
@@ -508,7 +539,6 @@ export const fetchQuotesAndSetQuoteState = (
     const chainId = getCurrentChainId(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
@@ -824,7 +854,6 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     );
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
@@ -1085,13 +1114,12 @@ export function fetchMetaSwapsGasPriceEstimates() {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    const useNewSwapsApi = getUseNewSwapsApi(state);
 
     dispatch(swapGasPriceEstimatesFetchStarted());
 
     let priceEstimates;
     try {
-      priceEstimates = await fetchSwapsGasPrices(chainId, useNewSwapsApi);
+      priceEstimates = await fetchSwapsGasPrices(chainId);
     } catch (e) {
       log.warn('Fetching swaps gas prices failed:', e);
 

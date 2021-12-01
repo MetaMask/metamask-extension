@@ -14,6 +14,7 @@ export default function MultilayerFeeMessage({
   transaction,
   layer2fee,
   nativeCurrency,
+  plainStyle,
 }) {
   const t = useContext(I18nContext);
 
@@ -57,12 +58,16 @@ export default function MultilayerFeeMessage({
         key="total-item"
         detailTitle={t('layer1Fees')}
         detailTotal={layer1Total}
+        noBold={plainStyle}
+        flexWidthValues={plainStyle}
       />
       <TransactionDetailItem
         key="total-item"
         detailTitle={t('total')}
         detailTotal={totalInEth}
         subTitle={t('transactionDetailMultiLayerTotalSubtitle')}
+        noBold={plainStyle}
+        flexWidthValues={plainStyle}
       />
     </>
   );
@@ -72,4 +77,5 @@ MultilayerFeeMessage.propTypes = {
   transaction: PropTypes.object,
   layer2fee: PropTypes.string,
   nativeCurrency: PropTypes.string,
+  plainStyle: PropTypes.bool,
 };

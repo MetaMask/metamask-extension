@@ -1,7 +1,11 @@
 .transaction-alerts {
-  margin-top: 20px;
+  text-align: left;
 
-  &--separator {
+  & > *:first-of-type {
+    margin-top: 20px;
+  }
+
+  & > *:not(:first-of-type) {
     margin-top: 12px;
   }
 

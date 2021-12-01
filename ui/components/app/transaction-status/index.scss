@@ -1,6 +1,10 @@
 .transaction-status {
   display: inline;
 
+  &--confirmed {
+    color: $success-3;
+  }
+
   &--unapproved {
     color: $Orange-500;
   }
