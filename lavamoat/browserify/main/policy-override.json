@@ -50,6 +50,22 @@
       "globals": {
         "localStorage": true
       }
+    },
+    "react-dom": {
+      "globals": {
+        "HTMLIFrameElement": true
+      }
+    },
+    "react-devtools": {
+      "packages": {
+        "react-devtools-core": true
+      }
+    },
+    "react-devtools-core": {
+      "globals": {
+        "setTimeout": true,
+        "WebSocket": true
+      }
     }
   }
 }
