@@ -182,7 +182,7 @@ export default class SignatureRequest extends PureComponent {
         <Footer
           cancelAction={onCancel}
           signAction={onSign}
-          disabled={hardwareWalletRequiresConnection}
+          disabled={hardwareWalletRequiresConnection()}
         />
       </div>
     );
