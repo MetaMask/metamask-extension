@@ -126,11 +126,11 @@ const tokensToSearch = tokens.map((token) => ({
 }));
 
 export default {
-  title: 'BuildQuote',
+  title: 'Pages/Swaps/BuildQuote',
   id: __filename,
 };
 
-export const Default = () => {
+export const DefaultStory = () => {
   const [inputValue, onInputChange] = useState(null);
   const [selectedFromToken, setSelectedFromToken] = useState(null);
   const formattedSwapFromFiatValue = `$${(Number(inputValue) * 4).toFixed(2)}`;
@@ -195,3 +195,5 @@ export const Default = () => {
     </div>
   );
 };
+
+DefaultStory.storyName = 'Default';

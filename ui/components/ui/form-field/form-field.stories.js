@@ -5,11 +5,11 @@ import { select } from '@storybook/addon-knobs';
 import FormField from '.';
 
 export default {
-  title: 'FormField',
+  title: 'Components/UI/FormField',
   id: __filename,
 };
 
-export const Plain = ({ ...props }) => {
+export const DefaultStory = ({ ...props }) => {
   const options = { text: false, numeric: true };
   const [value, setValue] = useState('');
   return (
@@ -24,6 +24,8 @@ export const Plain = ({ ...props }) => {
     </div>
   );
 };
+
+DefaultStory.storyName = 'Default';
 
 export const FormFieldWithTitleDetail = () => {
   const [clicked, setClicked] = useState(false);
@@ -40,7 +42,7 @@ export const FormFieldWithTitleDetail = () => {
     checkmark: <i className="fas fa-check" />,
   };
   return (
-    <Plain
+    <DefaultStory
       titleText="Title"
       titleDetail={
         detailOptions[
@@ -52,5 +54,5 @@ export const FormFieldWithTitleDetail = () => {
 };
 
 export const FormFieldWithError = () => {
-  return <Plain titleText="Title" error="Incorrect Format" />;
+  return <DefaultStory titleText="Title" error="Incorrect Format" />;
 };

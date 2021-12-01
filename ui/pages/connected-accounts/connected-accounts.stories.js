@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import ConnectedAccounts from './connected-accounts.component';
 
 export default {
-  title: 'Connected Accounts',
+  title: 'Pages/ConnectedAccounts',
   id: __filename,
 };
 
@@ -17,7 +17,7 @@ const identities = {
   name: 'Account 1',
   address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
 };
-export const ConnectedAccountComponent = () => {
+export const DefaultStory = () => {
   return (
     <ConnectedAccounts
       connectedAccounts={account}
@@ -29,3 +29,5 @@ export const ConnectedAccountComponent = () => {
     />
   );
 };
+
+DefaultStory.storyName = 'Default';

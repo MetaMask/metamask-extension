@@ -11,7 +11,7 @@ import README from './README.mdx';
 import Chip from '.';
 
 export default {
-  title: 'UI/Chip',
+  title: 'Components/UI/Chip',
   id: __filename,
   component: Chip,
   parameters: {

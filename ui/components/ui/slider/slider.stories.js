@@ -1,16 +1,19 @@
 import React from 'react';
+import { action } from '@storybook/addon-actions';
 import Slider from '.';
 
 export default {
-  title: 'Slider',
+  title: 'Components/UI/Slider',
   id: __filename,
 };
 
-export const slider = () => <Slider />;
+export const DefaultStory = () => <Slider />;
 
-export const sliderWithSteps = () => <Slider step={10} />;
+DefaultStory.storyName = 'Default';
 
-export const sliderWithHeader = () => (
+export const WithSteps = () => <Slider step={10} />;
+
+export const WithHeader = () => (
   <Slider
     titleText="Slider Title Text"
     tooltipText="Slider Tooltip Text"
@@ -19,7 +22,7 @@ export const sliderWithHeader = () => (
   />
 );
 
-export const sliderWithFooter = () => (
+export const WithFooter = () => (
   <Slider
     titleText="Slider Title Text"
     tooltipText="Slider Tooltip Text"
@@ -27,7 +30,7 @@ export const sliderWithFooter = () => (
     titleDetail="100 GWEI"
     infoText="Footer Info Text"
     onEdit={() => {
-      console.log('on edit click');
+      action('On edit click')();
     }}
   />
 );

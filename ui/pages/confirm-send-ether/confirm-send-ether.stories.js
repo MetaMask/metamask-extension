@@ -6,7 +6,7 @@ import { updateTransactionParams } from '../../store/actions';
 import ConfirmSendEther from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/ConfirmSendEther',
   id: __filename,
 };
 
@@ -48,10 +48,12 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const SendEther = () => {
+export const DefaultStory = () => {
   return (
     <PageSet>
       <ConfirmSendEther />
     </PageSet>
   );
 };
+
+DefaultStory.storyName = 'Default';
