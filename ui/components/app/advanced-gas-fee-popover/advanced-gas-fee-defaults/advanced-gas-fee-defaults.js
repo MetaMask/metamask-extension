@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
@@ -10,12 +10,38 @@ import {
   FLEX_DIRECTION,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
-
+import { useAdvanceGasFeePopoverContext } from '../context';
 import { getIsAdvancedGasFeeDefault } from '../../../../selectors';
+import { setAdvancedGasFee } from '../../../../store/actions';
 
 const AdvancedGasFeeDefaults = () => {
+  const dispatch = useDispatch();
+
   const isAdvancedGasFeeDefault = useSelector(getIsAdvancedGasFeeDefault);
   const [defaultValues, setDefaultValues] = useState(isAdvancedGasFeeDefault);
+
+  const {
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+  } = useAdvanceGasFeePopoverContext();
+
+  const updateDefaultSettings = useCallback(
+    (value) => {
+      setDefaultValues(value);
+      if (value) {
+        dispatch(
+          setAdvancedGasFee({
+            maxBaseFee: maxFeePerGas,
+            priorityFee: maxPriorityFeePerGas,
+          }),
+        );
+      } else {
+        dispatch(setAdvancedGasFee(null));
+      }
+    },
+    [maxFeePerGas, maxPriorityFeePerGas, setDefaultValues, dispatch],
+  );
+
   return (
     <Box
       display={DISPLAY.FLEX}
@@ -31,7 +57,7 @@ const AdvancedGasFeeDefaults = () => {
         <CheckBox
           checked={defaultValues}
           className="advanced-gas-fee-defaults__checkbox"
-          onClick={() => setDefaultValues((checked) => !checked)}
+          onClick={() => updateDefaultSettings(!defaultValues)}
         />
         <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4}>
           {defaultValues ? (
