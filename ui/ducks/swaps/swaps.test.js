@@ -341,14 +341,12 @@ describe('Ducks - Swaps', () => {
     });
   });
 
-  describe('getUnsignedTransactionsAndEstimates', () => {
+  describe('getSmartTransactionFees', () => {
     it('returns unsigned transactions and estimates', () => {
       const state = createSwapsMockStore();
-      const unsignedTransactionsAndEstimates = swaps.getUnsignedTransactionsAndEstimates(
-        state,
-      );
-      expect(unsignedTransactionsAndEstimates).toMatchObject(
-        state.appState.unsignedTransactionsAndEstimates,
+      const smartTransactionFees = swaps.getSmartTransactionFees(state);
+      expect(smartTransactionFees).toMatchObject(
+        state.appState.smartTransactionFees,
       );
     });
   });

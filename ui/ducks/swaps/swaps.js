@@ -369,8 +369,8 @@ export const getPendingSmartTransactions = (state) => {
   return currentSmartTransactions.filter((stx) => stx.status === 'pending');
 };
 
-export const getUnsignedTransactionsAndEstimates = (state) => {
-  return state.appState.unsignedTransactionsAndEstimates;
+export const getSmartTransactionFees = (state) => {
+  return state.appState.smartTransactionFees;
 };
 
 export const getSwapsRefreshStates = (state) => {
@@ -727,7 +727,7 @@ export const fetchQuotesAndSetQuoteState = (
 
 export const signAndSendSwapsSmartTransaction = ({
   unsignedTransaction,
-  unsignedTransactionsAndEstimates,
+  smartTransactionFees,
   metaMetricsEvent,
 }) => {
   return async (dispatch, getState) => {
@@ -747,7 +747,7 @@ export const signAndSendSwapsSmartTransaction = ({
       const uuid = await dispatch(
         signAndSendSmartTransaction({
           unsignedTransaction,
-          unsignedTransactionsAndEstimates,
+          smartTransactionFees,
         }),
       );
       // update stx with data

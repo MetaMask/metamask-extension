@@ -12,19 +12,23 @@
     "@babel/core": {
       "builtin": {
         "fs": true,
+        "module": true,
         "path": true,
-        "url": true
+        "url": true,
+        "v8": true
       },
       "globals": {
         "console.log": true,
         "process.cwd": true,
         "process.env.BABEL_ENV": true,
         "process.env.BABEL_SHOW_CONFIG_FOR": true,
-        "process.env.NODE_ENV": true
+        "process.env.NODE_ENV": true,
+        "process.versions.node": true
       },
       "packages": {
         "@babel/code-frame": true,
         "@babel/generator": true,
+        "@babel/helper-compilation-targets": true,
         "@babel/helper-module-transforms": true,
         "@babel/helpers": true,
         "@babel/parser": true,
@@ -35,8 +39,6 @@
         "debug": true,
         "gensync": true,
         "json5": true,
-        "lodash": true,
-        "resolve": true,
         "semver": true,
         "source-map": true
       }
@@ -76,22 +78,9 @@
         "@babel/types": true
       }
     },
-    "@babel/helper-builder-react-jsx": {
-      "packages": {
-        "@babel/helper-annotate-as-pure": true,
-        "@babel/types": true
-      }
-    },
-    "@babel/helper-builder-react-jsx-experimental": {
-      "packages": {
-        "@babel/helper-annotate-as-pure": true,
-        "@babel/helper-module-imports": true,
-        "@babel/types": true
-      }
-    },
     "@babel/helper-compilation-targets": {
       "globals": {
-        "console.log": true,
+        "console.warn": true,
         "process.versions.node": true
       },
       "packages": {
@@ -107,6 +96,7 @@
       },
       "packages": {
         "@babel/core": true,
+        "@babel/helper-annotate-as-pure": true,
         "@babel/helper-function-name": true,
         "@babel/helper-member-expression-to-functions": true,
         "@babel/helper-optimise-call-expression": true,
@@ -121,11 +111,22 @@
         "regexpu-core": true
       }
     },
-    "@babel/helper-define-map": {
+    "@babel/helper-define-polyfill-provider": {
+      "builtin": {
+        "path": true
+      },
+      "globals": {
+        "console.log": true,
+        "console.warn": true,
+        "process.exitCode": "write",
+        "process.versions.node": true
+      },
       "packages": {
-        "@babel/helper-function-name": true,
-        "@babel/types": true,
-        "lodash": true
+        "@babel/core": true,
+        "@babel/helper-compilation-targets": true,
+        "@babel/helper-plugin-utils": true,
+        "lodash.debounce": true,
+        "resolve": true
       }
     },
     "@babel/helper-explode-assignable-expression": {
@@ -177,8 +178,7 @@
         "@babel/helper-validator-identifier": true,
         "@babel/template": true,
         "@babel/traverse": true,
-        "@babel/types": true,
-        "lodash": true
+        "@babel/types": true
       }
     },
     "@babel/helper-optimise-call-expression": {
@@ -237,6 +237,14 @@
         "js-tokens": true
       }
     },
+    "@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-skip-transparent-expression-wrappers": true,
+        "@babel/plugin-proposal-optional-chaining": true
+      }
+    },
     "@babel/plugin-proposal-async-generator-functions": {
       "packages": {
         "@babel/core": true,
@@ -249,6 +257,13 @@
       "packages": {
         "@babel/helper-create-class-features-plugin": true,
         "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-proposal-class-static-block": {
+      "packages": {
+        "@babel/helper-create-class-features-plugin": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-syntax-class-static-block": true
       }
     },
     "@babel/plugin-proposal-dynamic-import": {
@@ -292,7 +307,9 @@
     },
     "@babel/plugin-proposal-object-rest-spread": {
       "packages": {
+        "@babel/compat-data": true,
         "@babel/core": true,
+        "@babel/helper-compilation-targets": true,
         "@babel/helper-plugin-utils": true,
         "@babel/plugin-syntax-object-rest-spread": true,
         "@babel/plugin-transform-parameters": true
@@ -318,6 +335,14 @@
         "@babel/helper-plugin-utils": true
       }
     },
+    "@babel/plugin-proposal-private-property-in-object": {
+      "packages": {
+        "@babel/helper-annotate-as-pure": true,
+        "@babel/helper-create-class-features-plugin": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-syntax-private-property-in-object": true
+      }
+    },
     "@babel/plugin-proposal-unicode-property-regex": {
       "packages": {
         "@babel/helper-create-regexp-features-plugin": true,
@@ -330,6 +355,11 @@
       }
     },
     "@babel/plugin-syntax-class-properties": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-syntax-class-static-block": {
       "packages": {
         "@babel/helper-plugin-utils": true
       }
@@ -384,6 +414,11 @@
         "@babel/helper-plugin-utils": true
       }
     },
+    "@babel/plugin-syntax-private-property-in-object": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
     "@babel/plugin-syntax-top-level-await": {
       "packages": {
         "@babel/helper-plugin-utils": true
@@ -418,7 +453,6 @@
       "packages": {
         "@babel/core": true,
         "@babel/helper-annotate-as-pure": true,
-        "@babel/helper-define-map": true,
         "@babel/helper-function-name": true,
         "@babel/helper-optimise-call-expression": true,
         "@babel/helper-plugin-utils": true,
@@ -554,7 +588,9 @@
     },
     "@babel/plugin-transform-react-display-name": {
       "builtin": {
-        "path": true
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true
       },
       "packages": {
         "@babel/core": true,
@@ -564,30 +600,15 @@
     "@babel/plugin-transform-react-jsx": {
       "packages": {
         "@babel/core": true,
-        "@babel/helper-builder-react-jsx": true,
-        "@babel/helper-builder-react-jsx-experimental": true,
+        "@babel/helper-annotate-as-pure": true,
+        "@babel/helper-module-imports": true,
         "@babel/helper-plugin-utils": true,
         "@babel/plugin-syntax-jsx": true
       }
     },
     "@babel/plugin-transform-react-jsx-development": {
       "packages": {
-        "@babel/core": true,
-        "@babel/helper-builder-react-jsx-experimental": true,
-        "@babel/helper-plugin-utils": true,
-        "@babel/plugin-syntax-jsx": true
-      }
-    },
-    "@babel/plugin-transform-react-jsx-self": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/helper-plugin-utils": true
-      }
-    },
-    "@babel/plugin-transform-react-jsx-source": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/helper-plugin-utils": true
+        "@babel/plugin-transform-react-jsx": true
       }
     },
     "@babel/plugin-transform-react-pure-annotations": {
@@ -673,11 +694,12 @@
       "packages": {
         "@babel/compat-data": true,
         "@babel/helper-compilation-targets": true,
-        "@babel/helper-module-imports": true,
         "@babel/helper-plugin-utils": true,
         "@babel/helper-validator-option": true,
+        "@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining": true,
         "@babel/plugin-proposal-async-generator-functions": true,
         "@babel/plugin-proposal-class-properties": true,
+        "@babel/plugin-proposal-class-static-block": true,
         "@babel/plugin-proposal-dynamic-import": true,
         "@babel/plugin-proposal-export-namespace-from": true,
         "@babel/plugin-proposal-json-strings": true,
@@ -688,9 +710,11 @@
         "@babel/plugin-proposal-optional-catch-binding": true,
         "@babel/plugin-proposal-optional-chaining": true,
         "@babel/plugin-proposal-private-methods": true,
+        "@babel/plugin-proposal-private-property-in-object": true,
         "@babel/plugin-proposal-unicode-property-regex": true,
         "@babel/plugin-syntax-async-generators": true,
         "@babel/plugin-syntax-class-properties": true,
+        "@babel/plugin-syntax-class-static-block": true,
         "@babel/plugin-syntax-dynamic-import": true,
         "@babel/plugin-syntax-export-namespace-from": true,
         "@babel/plugin-syntax-json-strings": true,
@@ -700,6 +724,7 @@
         "@babel/plugin-syntax-object-rest-spread": true,
         "@babel/plugin-syntax-optional-catch-binding": true,
         "@babel/plugin-syntax-optional-chaining": true,
+        "@babel/plugin-syntax-private-property-in-object": true,
         "@babel/plugin-syntax-top-level-await": true,
         "@babel/plugin-transform-arrow-functions": true,
         "@babel/plugin-transform-async-to-generator": true,
@@ -735,6 +760,9 @@
         "@babel/plugin-transform-unicode-regex": true,
         "@babel/preset-modules": true,
         "@babel/types": true,
+        "babel-plugin-polyfill-corejs2": true,
+        "babel-plugin-polyfill-corejs3": true,
+        "babel-plugin-polyfill-regenerator": true,
         "core-js-compat": true,
         "semver": true
       }
@@ -742,11 +770,10 @@
     "@babel/preset-react": {
       "packages": {
         "@babel/helper-plugin-utils": true,
+        "@babel/helper-validator-option": true,
         "@babel/plugin-transform-react-display-name": true,
         "@babel/plugin-transform-react-jsx": true,
         "@babel/plugin-transform-react-jsx-development": true,
-        "@babel/plugin-transform-react-jsx-self": true,
-        "@babel/plugin-transform-react-jsx-source": true,
         "@babel/plugin-transform-react-pure-annotations": true
       }
     },
@@ -760,13 +787,13 @@
     "@babel/traverse": {
       "globals": {
         "console.log": true,
-        "console.trace": true,
-        "process.env.NODE_ENV": true
+        "console.trace": true
       },
       "packages": {
         "@babel/code-frame": true,
         "@babel/generator": true,
         "@babel/helper-function-name": true,
+        "@babel/helper-hoist-variables": true,
         "@babel/helper-split-export-declaration": true,
         "@babel/parser": true,
         "@babel/types": true,
@@ -781,7 +808,6 @@
       },
       "packages": {
         "@babel/helper-validator-identifier": true,
-        "lodash": true,
         "to-fast-properties": true
       }
     },
@@ -945,11 +971,6 @@
         "define": true
       }
     },
-    "acorn-dynamic-import": {
-      "packages": {
-        "acorn": true
-      }
-    },
     "acorn-jsx": {
       "packages": {
         "acorn": true
@@ -958,7 +979,6 @@
     "acorn-node": {
       "packages": {
         "acorn": true,
-        "acorn-dynamic-import": true,
         "acorn-walk": true,
         "xtend": true
       }
@@ -1117,11 +1137,31 @@
       "packages": {
         "browserslist": true,
         "caniuse-lite": true,
-        "colorette": true,
         "normalize-range": true,
         "num2fraction": true,
+        "picocolors": true,
         "postcss": true,
         "postcss-value-parser": true
+      }
+    },
+    "babel-plugin-polyfill-corejs2": {
+      "packages": {
+        "@babel/compat-data": true,
+        "@babel/core": true,
+        "@babel/helper-define-polyfill-provider": true,
+        "semver": true
+      }
+    },
+    "babel-plugin-polyfill-corejs3": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-define-polyfill-provider": true,
+        "core-js-compat": true
+      }
+    },
+    "babel-plugin-polyfill-regenerator": {
+      "packages": {
+        "@babel/helper-define-polyfill-provider": true
       }
     },
     "babelify": {
@@ -1675,7 +1715,7 @@
     },
     "deps-sort": {
       "packages": {
-        "shasum": true,
+        "shasum-object": true,
         "through2": true
       }
     },
@@ -1773,15 +1813,9 @@
       }
     },
     "es-abstract": {
-      "globals": {
-        "AggregateError": true,
-        "FinalizationRegistry": true,
-        "WeakRef": true
-      },
       "packages": {
         "call-bind": true,
         "es-to-primitive": true,
-        "function-bind": true,
         "get-intrinsic": true,
         "has": true,
         "has-symbols": true,
@@ -3069,7 +3103,6 @@
     "labeled-stream-splicer": {
       "packages": {
         "inherits": true,
-        "isarray": true,
         "stream-splicer": true
       }
     },
@@ -3194,6 +3227,12 @@
     "lodash": {
       "globals": {
         "define": true
+      }
+    },
+    "lodash.debounce": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
       }
     },
     "log-symbols": {
@@ -3489,7 +3528,6 @@
       "packages": {
         "call-bind": true,
         "define-properties": true,
-        "es-abstract": true,
         "has-symbols": true,
         "object-keys": true
       }
@@ -3532,14 +3570,6 @@
       "packages": {
         "for-own": true,
         "make-iterator": true
-      }
-    },
-    "object.values": {
-      "packages": {
-        "call-bind": true,
-        "define-properties": true,
-        "es-abstract": true,
-        "has": true
       }
     },
     "once": {
@@ -3670,6 +3700,16 @@
         "through": true
       }
     },
+    "picocolors": {
+      "builtin": {
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
+      }
+    },
     "picomatch": {
       "builtin": {
         "path.basename": true,
@@ -3727,6 +3767,7 @@
       },
       "packages": {
         "chalk": true,
+        "picocolors": true,
         "source-map": true,
         "supports-color": true
       }
@@ -3767,13 +3808,9 @@
       }
     },
     "postcss-selector-parser": {
-      "builtin": {
-        "util.deprecate": true
-      },
       "packages": {
         "cssesc": true,
-        "indexes-of": true,
-        "uniq": true
+        "util-deprecate": true
       }
     },
     "postcss-syntax": {
@@ -3859,6 +3896,11 @@
         "duplexify": true,
         "inherits": true,
         "pump": true
+      }
+    },
+    "qs": {
+      "packages": {
+        "side-channel": true
       }
     },
     "quote-stream": {
@@ -4270,6 +4312,17 @@
       },
       "packages": {
         "json-stable-stringify": true
+      }
+    },
+    "shasum-object": {
+      "builtin": {
+        "crypto.createHash": true
+      },
+      "globals": {
+        "Buffer.isBuffer": true
+      },
+      "packages": {
+        "fast-safe-stringify": true
       }
     },
     "shebang-command": {
@@ -5200,8 +5253,8 @@
     "yaml": {
       "globals": {
         "Buffer": true,
-        "_YAML_SILENCE_DEPRECATION_WARNINGS": true,
-        "_YAML_SILENCE_WARNINGS": true,
+        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
+        "YAML_SILENCE_WARNINGS": true,
         "atob": true,
         "btoa": true,
         "console.warn": true,

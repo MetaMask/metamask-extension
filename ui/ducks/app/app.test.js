@@ -329,8 +329,8 @@ describe('App State', () => {
     expect(state.isMouseUser).toStrictEqual(true);
   });
 
-  it('smart transactions - SET_UNSIGNED_TRANSACTIONS_AND_ESTIMATES', () => {
-    const createGetTransactionsApiResponse = () => {
+  it('smart transactions - SET_SMART_TRANSACTION_FEES', () => {
+    const createGetSmartTransactionFeesApiResponse = () => {
       return {
         cancelFees: [
           { maxFeePerGas: 2100001000, maxPriorityFeePerGas: 466503987 },
@@ -380,11 +380,11 @@ describe('App State', () => {
       };
     };
     const state = reduceApp(metamaskState, {
-      type: actions.SET_UNSIGNED_TRANSACTIONS_AND_ESTIMATES,
-      payload: createGetTransactionsApiResponse(),
+      type: actions.SET_SMART_TRANSACTION_FEES,
+      payload: createGetSmartTransactionFeesApiResponse(),
     });
-    expect(state.unsignedTransactionsAndEstimates).toMatchObject(
-      createGetTransactionsApiResponse(),
+    expect(state.smartTransactionFees).toMatchObject(
+      createGetSmartTransactionFeesApiResponse(),
     );
   });
 

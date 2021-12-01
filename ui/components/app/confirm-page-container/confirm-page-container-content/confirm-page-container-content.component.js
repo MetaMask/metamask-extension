@@ -7,6 +7,9 @@ import ActionableMessage from '../../../ui/actionable-message/actionable-message
 import { PageContainerFooter } from '../../../ui/page-container';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
+// eslint-disable-next-line prefer-destructuring
+const EIP_1559_V2 = process.env.EIP_1559_V2;
+
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
@@ -138,7 +141,7 @@ export default class ConfirmPageContainerContent extends Component {
           hideTitle={hideTitle}
         />
         {this.renderContent()}
-        {(errorKey || errorMessage) && !hasSimulationError && (
+        {!EIP_1559_V2 && !hasSimulationError && (errorKey || errorMessage) && (
           <div className="confirm-page-container-content__error-container">
             <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
           </div>

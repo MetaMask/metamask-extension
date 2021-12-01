@@ -30,6 +30,7 @@ import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-accoun
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
+  DEVICE_NAMES,
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
@@ -415,7 +416,7 @@ export function connectHardware(deviceName, page, hdPath, t) {
         await promisifiedBackground.establishLedgerTransportPreference();
       }
       if (
-        deviceName === 'ledger' &&
+        deviceName === DEVICE_NAMES.LEDGER &&
         ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
       ) {
         const connectedDevices = await window.navigator.hid.requestDevice({
@@ -444,7 +445,8 @@ export function connectHardware(deviceName, page, hdPath, t) {
         dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
         throw new Error(t('ledgerDeviceOpenFailureMessage'));
       } else {
-        dispatch(displayWarning(error.message));
+        if (deviceName !== DEVICE_NAMES.QR)
+          dispatch(displayWarning(error.message));
         throw error;
       }
     } finally {
@@ -2999,15 +3001,15 @@ const isPersistentError = (e) => {
   return e.message?.includes(persistentError);
 };
 
-export function fetchUnsignedTransactionsAndEstimates(unsignedTransaction) {
+export function fetchSmartTransactionFees(unsignedTransaction) {
   return async (dispatch) => {
     try {
-      const unsignedTransactionsAndEstimates = await promisifiedBackground.getUnsignedTransactionsAndEstimates(
+      const smartTransactionFees = await promisifiedBackground.fetchSmartTransactionFees(
         unsignedTransaction,
       );
       dispatch({
-        type: actionConstants.SET_UNSIGNED_TRANSACTIONS_AND_ESTIMATES,
-        payload: unsignedTransactionsAndEstimates,
+        type: actionConstants.SET_SMART_TRANSACTION_FEES,
+        payload: smartTransactionFees,
       });
     } catch (e) {
       log.error(e);
@@ -3049,16 +3051,16 @@ const createSignedTransactions = async (
 
 export function signAndSendSmartTransaction({
   unsignedTransaction,
-  unsignedTransactionsAndEstimates,
+  smartTransactionFees,
 }) {
   return async (dispatch) => {
     const signedTransactions = await createSignedTransactions(
       unsignedTransaction,
-      unsignedTransactionsAndEstimates.fees,
+      smartTransactionFees.fees,
     );
     const signedCanceledTransactions = await createSignedTransactions(
       unsignedTransaction,
-      unsignedTransactionsAndEstimates.cancelFees,
+      smartTransactionFees.cancelFees,
       true,
     );
     try {
@@ -3167,4 +3169,31 @@ export async function detectNewTokens() {
 
 export function hideTestNetMessage() {
   return promisifiedBackground.setShowTestnetMessageInDropdown(false);
+}
+
+// QR Hardware Wallets
+export async function submitQRHardwareCryptoHDKey(cbor) {
+  await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);
+}
+
+export async function submitQRHardwareCryptoAccount(cbor) {
+  await promisifiedBackground.submitQRHardwareCryptoAccount(cbor);
+}
+
+export function cancelSyncQRHardware() {
+  return async (dispatch) => {
+    dispatch(hideLoadingIndication());
+    await promisifiedBackground.cancelSyncQRHardware();
+  };
+}
+
+export async function submitQRHardwareSignature(requestId, cbor) {
+  await promisifiedBackground.submitQRHardwareSignature(requestId, cbor);
+}
+
+export function cancelQRHardwareSignRequest() {
+  return async (dispatch) => {
+    dispatch(hideLoadingIndication());
+    await promisifiedBackground.cancelQRHardwareSignRequest();
+  };
 }

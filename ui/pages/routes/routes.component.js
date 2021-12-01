@@ -66,6 +66,7 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
+import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -321,6 +322,7 @@ export default class Routes extends Component {
           }
         }}
       >
+        <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() && (
