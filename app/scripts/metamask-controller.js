@@ -41,7 +41,10 @@ import {
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
-import { MAINNET_CHAIN_ID } from '../../shared/constants/network';
+import {
+  IPFS_DEFAULT_GATEWAY_URL,
+  MAINNET_CHAIN_ID,
+} from '../../shared/constants/network';
 import {
   DEVICE_NAMES,
   KEYRING_TYPES,
@@ -187,32 +190,44 @@ export default class MetamaskController extends EventEmitter {
       provider: this.provider,
     });
 
-    this.collectiblesController = new CollectiblesController({
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
-      onNetworkStateChange: this.networkController.store.subscribe.bind(
-        this.networkController.store,
-      ),
-      getAssetName: this.assetsContractController.getAssetName.bind(
-        this.assetsContractController,
-      ),
-      getAssetSymbol: this.assetsContractController.getAssetSymbol.bind(
-        this.assetsContractController,
-      ),
-      getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
-        this.assetsContractController,
-      ),
-      getOwnerOf: this.assetsContractController.getOwnerOf.bind(
-        this.assetsContractController,
-      ),
-      balanceOfERC1155Collectible: this.assetsContractController.balanceOfERC1155Collectible.bind(
-        this.assetsContractController,
-      ),
-      uriERC1155Collectible: this.assetsContractController.uriERC1155Collectible.bind(
-        this.assetsContractController,
-      ),
-    });
+    this.collectiblesController = new CollectiblesController(
+      {
+        onPreferencesStateChange: (cb) =>
+          this.preferencesController.store.subscribe((preferencesState) => {
+            const { ipfsGateway } = this.preferencesController.store.getState();
+            const modifiedPreferencesState = {
+              ...preferencesState,
+              ipfsGateway: ipfsGateway.endsWith('/ipfs/')
+                ? ipfsGateway
+                : `${ipfsGateway}/ipfs/`,
+            };
+            return cb(modifiedPreferencesState);
+          }),
+        onNetworkStateChange: this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
+        getAssetName: this.assetsContractController.getAssetName.bind(
+          this.assetsContractController,
+        ),
+        getAssetSymbol: this.assetsContractController.getAssetSymbol.bind(
+          this.assetsContractController,
+        ),
+        getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
+          this.assetsContractController,
+        ),
+        getOwnerOf: this.assetsContractController.getOwnerOf.bind(
+          this.assetsContractController,
+        ),
+        balanceOfERC1155Collectible: this.assetsContractController.balanceOfERC1155Collectible.bind(
+          this.assetsContractController,
+        ),
+        uriERC1155Collectible: this.assetsContractController.uriERC1155Collectible.bind(
+          this.assetsContractController,
+        ),
+      },
+      { ipfsGateway: `${IPFS_DEFAULT_GATEWAY_URL}/ipfs/` },
+      initState.CollectiblesController,
+    );
 
     process.env.COLLECTIBLES_V1 &&
       (this.collectibleDetectionController = new CollectibleDetectionController(

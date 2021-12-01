@@ -139,9 +139,6 @@
   "addNFT": {
     "message": "Add NFT"
   },
-  "addNFTLowerCase": {
-    "message": "add NFT"
-  },
   "addNetwork": {
     "message": "Add Network"
   },
@@ -569,6 +566,9 @@
   "contract": {
     "message": "Contract"
   },
+  "contractAddress": {
+    "message": "Contract address"
+  },
   "contractAddressError": {
     "message": "You are sending tokens to the token's contract address. This may result in the loss of these tokens."
   },
@@ -706,6 +706,9 @@
   },
   "depositEther": {
     "message": "Deposit Ether"
+  },
+  "description": {
+    "message": "Description"
   },
   "details": {
     "message": "Details"
@@ -869,6 +872,9 @@
   },
   "editPermission": {
     "message": "Edit Permission"
+  },
+  "enableAutoDetect": {
+    "message": " Enable Autodetect"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -1268,6 +1274,9 @@
   "importMyWallet": {
     "message": "Import My Wallet"
   },
+  "importNFTs": {
+    "message": "Import NFTs"
+  },
   "importTokenQuestion": {
     "message": "Import token?"
   },
@@ -1459,6 +1468,9 @@
   },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
+  },
+  "link": {
+    "message": "Link"
   },
   "links": {
     "message": "Links"
@@ -2142,6 +2154,9 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
+  "removeNFT": {
+    "message": "Remove NFT"
+  },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
   },
@@ -2459,6 +2474,9 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
+  },
+  "source": {
+    "message": "Source"
   },
   "speedUp": {
     "message": "Speed Up"
@@ -3239,6 +3257,9 @@
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnOpensea": {
+    "message": "View on Opensea"
   },
   "viewinExplorer": {
     "message": "View $1 in Explorer",

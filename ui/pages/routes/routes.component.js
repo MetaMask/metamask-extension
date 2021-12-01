@@ -184,7 +184,8 @@ export default class Routes extends Component {
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}
         />
-        <Authenticated path={`${ASSET_ROUTE}/:asset`} component={Asset} />
+        <Authenticated path={`${ASSET_ROUTE}/:asset/:id`} component={Asset} />
+        <Authenticated path={`${ASSET_ROUTE}/:asset/`} component={Asset} />
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
