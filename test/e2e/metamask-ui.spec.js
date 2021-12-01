@@ -349,7 +349,7 @@ describe('MetaMask', function () {
     });
 
     it('displays the token transfer data', async function () {
-      await driver.clickElement({ text: 'Data', tag: 'button' });
+      await driver.clickElement({ text: 'Hex', tag: 'button' });
       await driver.delay(regularDelayMs);
 
       const functionType = await driver.findElement(
