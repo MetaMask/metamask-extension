@@ -2,11 +2,14 @@ import React from 'react';
 import SnapsAuthorshipPill from '.';
 
 export default {
-  title: 'App/Flask/SnapsAuthorshipPill',
+  title: 'Components/App/Flask/SnapsAuthorshipPill',
   id: __filename,
   component: SnapsAuthorshipPill,
   argTypes: {
     packageName: {
+      control: 'text',
+    },
+    url: {
       control: 'text',
     },
   },
@@ -18,4 +21,5 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   packageName: 'npm-package-name',
+  url: 'https://www.npmjs.com/package/@airswap/protocols',
 };

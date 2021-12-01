@@ -9,26 +9,28 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 
-const SnapsAuthorshipPill = ({ packageName, className }) => {
+const SnapsAuthorshipPill = ({ packageName, className, url }) => {
   return (
-    <Chip
-      leftIcon={
-        <Box paddingLeft={2}>
-          <i className="fab fa-npm fa-lg snaps-authorship-icon"></i>
-        </Box>
-      }
-      className={classnames(className, `snaps-authorship-pill`)}
-      backgroundColor={COLORS.WHITE}
-    >
-      <Typography
-        className="chip__label"
-        variant={TYPOGRAPHY.H7}
-        tag="span"
-        color={COLORS.UI4}
+    <a href={url}>
+      <Chip
+        leftIcon={
+          <Box paddingLeft={2}>
+            <i className="fab fa-npm fa-lg snaps-authorship-icon"></i>
+          </Box>
+        }
+        className={classnames(className, `snaps-authorship-pill`)}
+        backgroundColor={COLORS.WHITE}
       >
-        {packageName}
-      </Typography>
-    </Chip>
+        <Typography
+          className="chip__label"
+          variant={TYPOGRAPHY.H7}
+          tag="span"
+          color={COLORS.UI4}
+        >
+          {packageName}
+        </Typography>
+      </Chip>
+    </a>
   );
 };
 
@@ -41,6 +43,10 @@ SnapsAuthorshipPill.propTypes = {
    * The className of the SnapsAuthorshipPill
    */
   className: PropTypes.string,
+  /**
+   * The className of the SnapsAuthorshipPill
+   */
+  url: PropTypes.string,
 };
 
 export default SnapsAuthorshipPill;
