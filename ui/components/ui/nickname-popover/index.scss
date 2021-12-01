@@ -1,10 +1,11 @@
 .nickname-popover {
   &__popover-wrap {
     height: 232px;
-    border-radius: 8px;
+    border-radius: 4px;
     background: $ui-white;
     display: flex;
     justify-content: center;
+    width: auto;
 
     .popover-header {
       padding: 16px 16px 0 0;
@@ -55,6 +56,12 @@
 
     color: $primary-1;
     margin-top: 12px;
+  }
+
+  &__etherscan-link {
+    @include H7;
+
+    padding: 0;
   }
 
   &__footer-button {

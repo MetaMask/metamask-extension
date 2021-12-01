@@ -344,9 +344,6 @@
   "copiedExclamation": {
     "message": "Nakopya na!"
   },
-  "copiedTransactionId": {
-    "message": "Nakopya ang ID ng Transaksyon"
-  },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },

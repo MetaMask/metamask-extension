@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Nukopijuota!"
   },
-  "copiedTransactionId": {
-    "message": "Nukopijuotas operacijos ID"
-  },
   "copyAddress": {
     "message": "Kopijuoti adresą į iškarpinę"
   },

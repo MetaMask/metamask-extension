@@ -395,9 +395,6 @@
   "copiedExclamation": {
     "message": "已复制"
   },
-  "copiedTransactionId": {
-    "message": "交易 ID 复制成功"
-  },
   "copyAddress": {
     "message": "复制地址到剪贴板"
   },

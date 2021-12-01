@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "¡Copiado!"
   },
-  "copiedTransactionId": {
-    "message": "Id. de transacción copiado"
-  },
   "copyAddress": {
     "message": "Copiar dirección al Portapapeles"
   },

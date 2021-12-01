@@ -209,9 +209,6 @@
   "copiedExclamation": {
     "message": "Kopiert!"
   },
-  "copiedTransactionId": {
-    "message": "Transaktions-ID kopiert"
-  },
   "copyAddress": {
     "message": "Adresse in die Zwischenablage kopieren"
   },

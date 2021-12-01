@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Kopeeritud!"
   },
-  "copiedTransactionId": {
-    "message": "Kopeeritud tehingu ID"
-  },
   "copyAddress": {
     "message": "Kopeeri aadress lõikelauale"
   },
