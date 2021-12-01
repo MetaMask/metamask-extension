@@ -2190,6 +2190,19 @@ export function setUseCollectibleDetection(val) {
   };
 }
 
+export function setOpenSeaEnabled(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setOpenSeaEnabled`);
+    background.setOpenSeaEnabled(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
 export function setAdvancedGasFee(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
