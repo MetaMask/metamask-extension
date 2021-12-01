@@ -472,7 +472,7 @@ function createFactoredBuild({
               groupSet,
               commonSet,
               browserPlatforms,
-              useLavamoat: false,
+              useLavamoat: true,
             });
             break;
           }
