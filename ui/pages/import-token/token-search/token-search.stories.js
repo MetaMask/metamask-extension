@@ -2,10 +2,12 @@ import React from 'react';
 import TokenSearch from './token-search.component';
 
 export default {
-  title: 'TokenSearch',
+  title: 'Pages/ImportToken/TokenSearch',
   id: __filename,
 };
 
-export const TokenSearchComponent = () => {
+export const DefaultStory = () => {
   return <TokenSearch />;
 };
+
+DefaultStory.storyName = 'Default';

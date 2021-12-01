@@ -2,7 +2,7 @@ import React from 'react';
 import CollectibleDetails from './collectible-details';
 
 export default {
-  title: 'Collectibles Detail',
+  title: 'Components/App/CollectibleDetails',
   id: __filename,
 };
 
