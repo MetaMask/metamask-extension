@@ -48,7 +48,7 @@ SnapsAuthorshipPill.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * The className of the SnapsAuthorshipPill
+   * The url of the snap's package
    */
   url: PropTypes.string,
 };
