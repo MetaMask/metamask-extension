@@ -674,15 +674,17 @@ export default class ConfirmTransactionBase extends Component {
       return null;
     }
 
+    const functionParams = params
+      ? `(${params.map(({ type }) => type).join(', ')}`
+      : '';
+
     return (
       dataHexComponent || (
         <div className="confirm-page-container-content__data">
           <div className="confirm-page-container-content__data-box-label">
             {`${t('functionType')}:`}
             <span className="confirm-page-container-content__function-type">
-              {`${functionType} (${
-                params ? params.map(({ type }) => type).join(', ') : null
-              })`}
+              {`${functionType} ${functionParams}`}
             </span>
           </div>
           {params && (
