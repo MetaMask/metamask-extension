@@ -2135,15 +2135,15 @@ export function setUseBlockie(val) {
 }
 
 export function setUseNonceField(val) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNonceField`);
-    background.setUseNonceField(val, (err) => {
-      dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
+    try {
+      await background.setUseNonceField(val);
+    } catch (error) {
+      dispatch(displayWarning(error.message));
+    }
+    dispatch(hideLoadingIndication());
     dispatch({
       type: actionConstants.SET_USE_NONCEFIELD,
       value: val,
@@ -2857,19 +2857,17 @@ export function setNextNonce(nextNonce) {
 }
 
 export function getNextNonce() {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const address = getState().metamask.selectedAddress;
-    return new Promise((resolve, reject) => {
-      background.getNextNonce(address, (err, nextNonce) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        dispatch(setNextNonce(nextNonce));
-        resolve(nextNonce);
-      });
-    });
+    let nextNonce;
+    try {
+      nextNonce = await promisifiedBackground.getNextNonce(address);
+    } catch (error) {
+      dispatch(displayWarning(error.message));
+      throw error;
+    }
+    dispatch(setNextNonce(nextNonce));
+    return nextNonce;
   };
 }
 
