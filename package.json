@@ -306,7 +306,7 @@
     "jest": "^26.6.3",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
-    "lavamoat": "^5.3.4",
+    "lavamoat": "^5.3.5",
     "lavamoat-browserify": "^14.0.3",
     "lavamoat-viz": "^6.0.9",
     "lockfile-lint": "^4.0.0",
