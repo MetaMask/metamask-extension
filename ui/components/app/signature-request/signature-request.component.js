@@ -67,10 +67,24 @@ export default class SignatureRequest extends PureComponent {
       return false;
     };
 
+    const sanitizeArray = (arrayMsg, baseType) => {
+      const sanitizedMessage = {};
+
+      arrayMsg.forEach((msg, index) => {
+        let valueType = typeof msg;
+        if (valueType === "object") {
+          sanitizedMessage[index] = sanitizeMessage(msg, baseType);
+        } else if (mapType(valueType, {type: baseType})) {
+          sanitizedMessage[index] = msg;
+        }
+      });
+
+      return sanitizedMessage;
+    }
+
     const sanitizeMessage = (msg, baseType) => {
       if (version === 'V4') {
         const sanitizedMessage = {};
-        console.log(version);
         const msgKeys = Object.keys(msg);
         const msgTypes = Object.values(msg).map((value) => typeof value);
         const baseTypeType = types[baseType];
@@ -89,7 +103,7 @@ export default class SignatureRequest extends PureComponent {
                 valueType === 'object' &&
                 Array.isArray(msg[msgKey])
               ) {
-                sanitizedMessage[msgKey] = msg[msgKey];
+                sanitizedMessage[msgKey] = sanitizeArray(msg[msgKey], definedType.type.replace('[]', ''));
               } else if (valueType === 'object') {
                 sanitizedMessage[msgKey] = sanitizeMessage(
                   msg[msgKey],
