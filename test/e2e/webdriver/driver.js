@@ -29,6 +29,10 @@ function wrapElementWithAPI(element, driver) {
   return element;
 }
 
+/**
+ * For Selenium WebDriver API documentation, see:
+ * https://www.selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
+ */
 class Driver {
   /**
    * @param {!ThenableWebDriver} driver - A {@code WebDriver} instance
@@ -47,6 +51,10 @@ class Driver {
       BACK_SPACE: '\uE003',
       ENTER: '\uE007',
     };
+  }
+
+  async executeAsyncScript(script, ...args) {
+    return this.driver.executeAsyncScript(script, args);
   }
 
   async executeScript(script, ...args) {

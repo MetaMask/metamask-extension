@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import sinon from 'sinon';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 import PersonalMessageManager from './personal-message-manager';
 
@@ -6,7 +7,7 @@ describe('Personal Message Manager', function () {
   let messageManager;
 
   beforeEach(function () {
-    messageManager = new PersonalMessageManager();
+    messageManager = new PersonalMessageManager({ metricsEvent: sinon.fake() });
   });
 
   describe('#getMsgList', function () {

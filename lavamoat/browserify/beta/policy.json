@@ -325,6 +325,7 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/bytes": true,
         "@ethersproject/keccak256": true,
+        "@ethersproject/logger": true,
         "@ethersproject/sha2": true,
         "@ethersproject/strings": true
       }
@@ -1555,11 +1556,15 @@
     },
     "eth-json-rpc-middleware": {
       "globals": {
+        "URL": true,
+        "btoa": true,
         "console.error": true,
         "fetch": true,
         "setTimeout": true
       },
       "packages": {
+        "@metamask/safe-event-emitter": true,
+        "browser-resolve": true,
         "btoa": true,
         "clone": true,
         "eth-rpc-errors": true,

@@ -27,38 +27,72 @@ describe('Metamask Import UI', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        // clicks the continue button on the welcome screen
-        await driver.findElement('.welcome-page__header');
-        await driver.clickElement({
-          text: enLocaleMessages.getStarted.message,
-          tag: 'button',
-        });
+        if (process.env.ONBOARDING_V2 === '1') {
+          // welcome
+          await driver.clickElement('[data-testid="onboarding-import-wallet"]');
 
-        // clicks the "Import Wallet" option
-        await driver.clickElement({ text: 'Import wallet', tag: 'button' });
+          // metrics
+          await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
-        // clicks the "No thanks" option on the metametrics opt-in screen
-        await driver.clickElement('.btn-secondary');
+          // import with recovery phrase
+          await driver.fill('[data-testid="import-srp-text"]', testSeedPhrase);
+          await driver.clickElement('[data-testid="import-srp-confirm"]');
 
-        // Import Secret Recovery Phrase
-        await driver.fill(
-          'input[placeholder="Paste Secret Recovery Phrase from clipboard"]',
-          testSeedPhrase,
-        );
+          // create password
+          await driver.fill(
+            '[data-testid="create-password-new"]',
+            'correct horse battery staple',
+          );
+          await driver.fill(
+            '[data-testid="create-password-confirm"]',
+            'correct horse battery staple',
+          );
+          await driver.clickElement('[data-testid="create-password-terms"]');
+          await driver.clickElement('[data-testid="create-password-import"]');
 
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.fill('#confirm-password', 'correct horse battery staple');
+          // complete
+          await driver.clickElement('[data-testid="onboarding-complete-done"]');
 
-        await driver.clickElement('.first-time-flow__terms');
+          // pin extension
+          await driver.clickElement('[data-testid="pin-extension-next"]');
+          await driver.clickElement('[data-testid="pin-extension-done"]');
+        } else {
+          // clicks the continue button on the welcome screen
+          await driver.findElement('.welcome-page__header');
+          await driver.clickElement({
+            text: enLocaleMessages.getStarted.message,
+            tag: 'button',
+          });
 
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+          // clicks the "Import Wallet" option
+          await driver.clickElement({ text: 'Import wallet', tag: 'button' });
 
-        // clicks through the success screen
-        await driver.findElement({ text: 'Congratulations', tag: 'div' });
-        await driver.clickElement({
-          text: enLocaleMessages.endOfFlowMessage10.message,
-          tag: 'button',
-        });
+          // clicks the "No thanks" option on the metametrics opt-in screen
+          await driver.clickElement('.btn-secondary');
+
+          // Import Secret Recovery Phrase
+          await driver.fill(
+            'input[placeholder="Paste Secret Recovery Phrase from clipboard"]',
+            testSeedPhrase,
+          );
+
+          await driver.fill('#password', 'correct horse battery staple');
+          await driver.fill(
+            '#confirm-password',
+            'correct horse battery staple',
+          );
+
+          await driver.clickElement('.first-time-flow__terms');
+
+          await driver.clickElement({ text: 'Import', tag: 'button' });
+
+          // clicks through the success screen
+          await driver.findElement({ text: 'Congratulations', tag: 'div' });
+          await driver.clickElement({
+            text: enLocaleMessages.endOfFlowMessage10.message,
+            tag: 'button',
+          });
+        }
 
         // Show account information
         await driver.clickElement(
@@ -233,10 +267,15 @@ describe('Metamask Import UI', function () {
         // should remove the account
         await driver.clickElement({ text: 'Remove', tag: 'button' });
 
-        const currentActiveAccountName = await driver.findElement(
-          '.selected-account__name',
+        // Wait until selected account switches away from removed account to first account
+        await driver.waitForSelector(
+          {
+            css: '.selected-account__name',
+            text: 'Account 1',
+          },
+          { timeout: 10000 },
         );
-        assert.equal(await currentActiveAccountName.getText(), 'Account 1');
+
         await driver.delay(regularDelayMs);
         await driver.clickElement('.account-menu__icon');
 

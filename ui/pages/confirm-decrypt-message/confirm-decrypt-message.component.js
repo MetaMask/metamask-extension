@@ -9,9 +9,7 @@ import Identicon from '../../components/ui/identicon';
 import Tooltip from '../../components/ui/tooltip';
 import Copy from '../../components/ui/icon/copy-icon.component';
 
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { SECOND } from '../../../shared/constants/time';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmDecryptMessage extends Component {
@@ -42,44 +40,6 @@ export default class ConfirmDecryptMessage extends Component {
     fromAccount: this.props.fromAccount,
     copyToClipboardPressed: false,
     hasCopied: false,
-  };
-
-  componentDidMount = () => {
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
-  };
-
-  componentWillUnmount = () => {
-    this._removeBeforeUnload();
-  };
-
-  _beforeUnload = async (event) => {
-    const {
-      clearConfirmTransaction,
-      cancelDecryptMessage,
-      txData,
-    } = this.props;
-    const { metricsEvent } = this.context;
-    await cancelDecryptMessage(txData, event);
-    metricsEvent({
-      eventOpts: {
-        category: 'Messages',
-        action: 'Decrypt Message Request',
-        name: 'Cancel Via Notification Close',
-      },
-    });
-    clearConfirmTransaction();
-  };
-
-  _removeBeforeUnload = () => {
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
-      window.removeEventListener('beforeunload', this._beforeUnload);
-    }
   };
 
   copyMessage = () => {
@@ -300,7 +260,6 @@ export default class ConfirmDecryptMessage extends Component {
           large
           className="request-decrypt-message__footer__cancel-button"
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await cancelDecryptMessage(txData, event);
             metricsEvent({
               eventOpts: {
@@ -320,7 +279,6 @@ export default class ConfirmDecryptMessage extends Component {
           large
           className="request-decrypt-message__footer__sign-button"
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await decryptMessage(txData, event);
             metricsEvent({
               eventOpts: {

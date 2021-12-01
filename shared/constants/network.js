@@ -161,3 +161,13 @@ export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
   [OPTIMISM_CHAIN_ID]: 1,
   [OPTIMISM_TESTNET_CHAIN_ID]: 1,
 };
+
+/**
+ * Ethereum JSON-RPC methods that are known to exist but that we intentionally
+ * do not support.
+ */
+export const UNSUPPORTED_RPC_METHODS = new Set([
+  // This is implemented later in our middleware stack – specifically, in
+  // eth-json-rpc-middleware – but our UI does not support it.
+  'eth_signTransaction',
+]);

@@ -7,7 +7,7 @@ import { debounce } from 'lodash';
 import createEngineStream from 'json-rpc-middleware-stream/engineStream';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
-import providerAsMiddleware from 'eth-json-rpc-middleware/providerAsMiddleware';
+import { providerAsMiddleware } from 'eth-json-rpc-middleware';
 import KeyringController from 'eth-keyring-controller';
 import { Mutex } from 'await-semaphore';
 import { stripHexPrefix } from 'ethereumjs-util';
@@ -526,13 +526,32 @@ export default class MetamaskController extends EventEmitter {
       }
     });
     this.networkController.lookupNetwork();
-    this.messageManager = new MessageManager();
-    this.personalMessageManager = new PersonalMessageManager();
-    this.decryptMessageManager = new DecryptMessageManager();
-    this.encryptionPublicKeyManager = new EncryptionPublicKeyManager();
+    this.messageManager = new MessageManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
+    this.personalMessageManager = new PersonalMessageManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
+    this.decryptMessageManager = new DecryptMessageManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
+    this.encryptionPublicKeyManager = new EncryptionPublicKeyManager({
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
     this.typedMessageManager = new TypedMessageManager({
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
+      ),
+      metricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
       ),
     });
 
@@ -923,6 +942,10 @@ export default class MetamaskController extends EventEmitter {
       setDismissSeedBackUpReminder: nodeify(
         this.preferencesController.setDismissSeedBackUpReminder,
         this.preferencesController,
+      ),
+      setAdvancedGasFee: nodeify(
+        preferencesController.setAdvancedGasFee,
+        preferencesController,
       ),
 
       // AddressController
