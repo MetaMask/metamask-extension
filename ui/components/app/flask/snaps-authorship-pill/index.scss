@@ -3,7 +3,8 @@
 .snaps-authorship-pill {
   display: inline-block;
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     .chip {
       background-color: $ui-1;
     }
