@@ -13,7 +13,7 @@ import README from './README.mdx';
 import Textarea from '.';
 
 export default {
-  title: 'UI/Textarea',
+  title: 'Components/UI/Textarea',
   id: __filename,
   component: Textarea,
   parameters: {
