@@ -3,26 +3,20 @@
 
   @include H7;
 
+  .transaction-detail-rows {
+    margin-top: 8px;
+
+    .transaction-detail-item {
+      &:last-of-type {
+        margin-bottom: 8px;
+      }
+    }
+  }  
+
   &__savings-and-quotes-header {
     display: flex;
     position: relative;
     align-items: center;
-  }
-
-  &__savings-and-quotes-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    left: 58px;
-    height: 39px;
-    background: $Blue-000;
-    border: 1px solid $Blue-500;
-    border-top-right-radius: 8px;
-    border-top-left-radius: 8px;
-    border-bottom: 0;
-    padding-left: 16px;
-    padding-right: 16px;
   }
 
   &__savings-text {
@@ -59,12 +53,7 @@
   }
 
   &__main {
-    border: 1px solid $Blue-500;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    width: 100%;
-    max-width: 311px;
-    padding: 16px 16px 12px 16px;
+    border-top: 1px solid #bbc0c5;
   }
 
   &__row-header {
@@ -108,7 +97,7 @@
 
   &__row-label {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 
     img {
       height: 10px;

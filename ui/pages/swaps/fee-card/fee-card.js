@@ -12,7 +12,6 @@ import {
 } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
-import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
 import Typography from '../../../components/ui/typography';
 import {
   COLORS,
@@ -32,23 +31,12 @@ export default function FeeCard({
   tokenApprovalSourceTokenSymbol,
   onTokenApprovalClick,
   metaMaskFee,
-  isBestQuote,
   numberOfQuotes,
   onQuotesClick,
-  tokenConversionRate,
   chainId,
   networkAndAccountSupports1559,
-  maxPriorityFeePerGasDecGWEI,
-  maxFeePerGasDecGWEI,
 }) {
   const t = useContext(I18nContext);
-
-  let bestQuoteText = '';
-  if (isBestQuote && tokenConversionRate) {
-    bestQuoteText = t('swapUsingBestQuote');
-  } else if (tokenConversionRate) {
-    bestQuoteText = t('swapBetterQuoteAvailable');
-  }
 
   const getTranslatedNetworkName = () => {
     switch (chainId) {
@@ -74,29 +62,6 @@ export default function FeeCard({
 
   return (
     <div className="fee-card">
-      <div
-        className="fee-card__savings-and-quotes-header"
-        data-testid="fee-card__savings-and-quotes-header"
-      >
-        <div className="fee-card__savings-and-quotes-row">
-          {bestQuoteText && (
-            <p className="fee-card__savings-text">{bestQuoteText}</p>
-          )}
-          {numberOfQuotes > 1 && (
-            <div
-              className="fee-card__quote-link-container"
-              onClick={onQuotesClick}
-            >
-              <p className="fee-card__quote-link-text">
-                {t('swapNQuotes', [numberOfQuotes])}
-              </p>
-              <div className="fee-card__caret-right">
-                <i className="fa fa-angle-up" />
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
       <div className="fee-card__main">
         {networkAndAccountSupports1559 && (
           <TransactionDetail
@@ -143,12 +108,6 @@ export default function FeeCard({
                 }
                 detailText={primaryFee.fee}
                 detailTotal={secondaryFee.fee}
-                subTitle={
-                  <GasTiming
-                    maxPriorityFeePerGas={maxPriorityFeePerGasDecGWEI}
-                    maxFeePerGas={maxFeePerGasDecGWEI}
-                  />
-                }
                 subText={
                   secondaryFee?.maxFee !== undefined && (
                     <>
@@ -270,9 +229,19 @@ export default function FeeCard({
           </div>
         )}
         <div className="fee-card__top-bordered-row">
+          {numberOfQuotes > 1 && (
+            <div
+              className="fee-card__quote-link-container"
+              onClick={onQuotesClick}
+            >
+              <p className="fee-card__quote-link-text">
+                {t('swapNQuotes', [numberOfQuotes])}
+              </p>
+            </div>
+          )}
           <div className="fee-card__row-label">
             <div className="fee-card__row-header-text">
-              {t('swapQuoteIncludesRate', [metaMaskFee])}
+              {t('swapIncludesMMFee', [metaMaskFee])}
             </div>
             <InfoTooltip
               position="top"
@@ -301,12 +270,8 @@ FeeCard.propTypes = {
   tokenApprovalSourceTokenSymbol: PropTypes.string,
   onTokenApprovalClick: PropTypes.func,
   metaMaskFee: PropTypes.string.isRequired,
-  isBestQuote: PropTypes.bool,
   onQuotesClick: PropTypes.func.isRequired,
   numberOfQuotes: PropTypes.number.isRequired,
-  tokenConversionRate: PropTypes.number,
   chainId: PropTypes.string.isRequired,
   networkAndAccountSupports1559: PropTypes.bool.isRequired,
-  maxPriorityFeePerGasDecGWEI: PropTypes.string,
-  maxFeePerGasDecGWEI: PropTypes.string,
 };
