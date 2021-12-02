@@ -114,6 +114,14 @@ ActionableMessage.propTypes = {
     onClick: PropTypes.func,
   }),
   /**
+   * Another style of primary action.
+   * This probably shouldn't have been added. A `children` prop might have been more appropriate.
+   */
+  primaryActionV2: PropTypes.shape({
+    label: PropTypes.string,
+    onClick: PropTypes.func,
+  }),
+  /**
    * Second button props that have label and onClick props
    */
   secondaryAction: PropTypes.shape({
