@@ -122,13 +122,13 @@ export function getActivities(transaction, isFirstTransaction = false) {
               const gasFee =
                 cachedGasLimit === '0x0' && cachedGasPrice === '0x0'
                   ? getHexGasTotal({
-                    gasLimit: paramsGasLimit,
-                    gasPrice: paramsEip1559Price || paramsGasPrice,
-                  })
+                      gasLimit: paramsGasLimit,
+                      gasPrice: paramsEip1559Price || paramsGasPrice,
+                    })
                   : getHexGasTotal({
-                    gasLimit: cachedGasLimit,
-                    gasPrice: cachedGasPrice,
-                  });
+                      gasLimit: cachedGasLimit,
+                      gasPrice: cachedGasPrice,
+                    });
 
               if (value in statusHash) {
                 let eventKey = statusHash[value];
@@ -226,12 +226,12 @@ export function getActivities(transaction, isFirstTransaction = false) {
   // so we add an error entry to the Activity Log.
   return status === '0x0'
     ? historyActivities.concat({
-      id,
-      hash,
-      chainId,
-      metamaskNetworkId,
-      eventKey: TRANSACTION_ERRORED_EVENT,
-    })
+        id,
+        hash,
+        chainId,
+        metamaskNetworkId,
+        eventKey: TRANSACTION_ERRORED_EVENT,
+      })
     : historyActivities;
 }
 
