@@ -8,6 +8,9 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import SnapInstall from './snap-install/snap-install';
+///: END:ONLY_INCLUDE_IN
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
@@ -30,6 +33,10 @@ export default class PermissionConnect extends Component {
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    snapInstallPath: PropTypes.string.isRequired,
+    isSnap: PropTypes.bool.isRequired,
+    ///: END:ONLY_INCLUDE_IN
     page: PropTypes.string.isRequired,
     targetSubjectMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
@@ -79,6 +86,10 @@ export default class PermissionConnect extends Component {
   componentDidMount() {
     const {
       confirmPermissionPath,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      snapInstallPath,
+      isSnap,
+      ///: END:ONLY_INCLUDE_IN
       getCurrentWindowTab,
       getRequestAccountTabIds,
       permissionsRequest,
@@ -100,7 +111,15 @@ export default class PermissionConnect extends Component {
     }
 
     if (page === '1' && !isRequestingAccounts) {
-      history.push(confirmPermissionPath);
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      if (isSnap) {
+        history.push(snapInstallPath);
+      } else {
+        ///: END:ONLY_INCLUDE_IN
+        history.push(confirmPermissionPath);
+        ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      }
+      ///: END:ONLY_INCLUDE_IN
     }
   }
 
@@ -207,6 +226,9 @@ export default class PermissionConnect extends Component {
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      snapInstallPath,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
       selectedAccountAddresses,
@@ -267,6 +289,29 @@ export default class PermissionConnect extends Component {
                 />
               )}
             />
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            }
+            <Route
+              path={snapInstallPath}
+              exact
+              render={() => (
+                <SnapInstall
+                  request={permissionsRequest || {}}
+                  approveSnapInstall={(...args) => {
+                    approvePermissionsRequest(...args);
+                    this.redirect(true);
+                  }}
+                  rejectSnapInstall={(requestId) =>
+                    this.cancelPermissionsRequest(requestId)
+                  }
+                  targetSubjectMetadata={targetSubjectMetadata}
+                />
+              )}
+            />
+            {
+              ///: END:ONLY_INCLUDE_IN
+            }
           </Switch>
         )}
       </div>
