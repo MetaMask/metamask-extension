@@ -11,19 +11,28 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 import { useAdvanceGasFeePopoverContext } from '../context';
-import { getIsAdvancedGasFeeDefault } from '../../../../selectors';
+import {
+  getIsAdvancedGasFeeDefault,
+  getAdvancedGasFeeValues,
+} from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
 
 const AdvancedGasFeeDefaults = () => {
   const dispatch = useDispatch();
 
-  const isAdvancedGasFeeDefault = useSelector(getIsAdvancedGasFeeDefault);
-  const [defaultValues, setDefaultValues] = useState(isAdvancedGasFeeDefault);
-
   const {
     baseFeeMultiplier,
     maxPriorityFeePerGas,
   } = useAdvanceGasFeePopoverContext();
+  const isAdvancedGasFeeDefault = useSelector(getIsAdvancedGasFeeDefault);
+  const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
+  console.log(
+    isAdvancedGasFeeDefault,
+    advancedGasFeeValues,
+    baseFeeMultiplier,
+    maxPriorityFeePerGas,
+  );
+  const [defaultValues, setDefaultValues] = useState(isAdvancedGasFeeDefault);
 
   const updateDefaultSettings = useCallback(
     (value) => {
@@ -45,28 +54,21 @@ const AdvancedGasFeeDefaults = () => {
   return (
     <Box
       display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
-      margin={4}
+      flexDirection={FLEX_DIRECTION.ROW}
+      className="advanced-gas-fee-defaults"
     >
-      <div className="advanced-gas-fee-defaults__separator" />
-      <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
-        className="advanced-gas-fee-defaults"
-      >
-        <CheckBox
-          checked={defaultValues}
-          className="advanced-gas-fee-defaults__checkbox"
-          onClick={() => updateDefaultSettings(!defaultValues)}
-        />
-        <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4}>
-          {defaultValues ? (
-            <I18nValue messageKey="advancedGassFeeDefaultOptOut" />
-          ) : (
-            <I18nValue messageKey="advancedGassFeeDefaultOptIn" />
-          )}
-        </Typography>
-      </Box>
+      <CheckBox
+        checked={defaultValues}
+        className="advanced-gas-fee-defaults__checkbox"
+        onClick={() => updateDefaultSettings(!defaultValues)}
+      />
+      <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4}>
+        {defaultValues ? (
+          <I18nValue messageKey="advancedGassFeeDefaultOptOut" />
+        ) : (
+          <I18nValue messageKey="advancedGassFeeDefaultOptIn" />
+        )}
+      </Typography>
     </Box>
   );
 };
