@@ -29,6 +29,10 @@
     color: $Grey-500;
     font-weight: bold;
     cursor: pointer;
+
+    i {
+      margin-right: 10px;
+    }
   }
 
   &__page-count {

@@ -36,7 +36,7 @@ export default function Chip({
         'chip--with-right-icon': Boolean(rightIcon),
         [`chip--border-color-${borderColor}`]: true,
         [`chip--background-color-${backgroundColor}`]: true,
-        'chip--max-conent': maxContent,
+        'chip--max-content': maxContent,
       })}
       role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
