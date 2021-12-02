@@ -2,10 +2,12 @@ import React from 'react';
 import AccountListItem from './account-list-item';
 
 export default {
-  title: 'AccountListItem',
+  title: 'Components/App/AccountListItem',
   id: __filename,
 };
 
-export const AccountListItemComponent = () => {
+export const DefaultStory = () => {
   return <AccountListItem />;
 };
+
+DefaultStory.storyName = 'Default';

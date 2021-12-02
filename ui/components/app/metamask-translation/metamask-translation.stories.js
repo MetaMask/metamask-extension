@@ -5,7 +5,7 @@ import en from '../../../../app/_locales/en/messages.json';
 import MetaMaskTranslation from './metamask-translation';
 
 export default {
-  title: 'MetaMaskTranslation',
+  title: 'Components/App/MetamaskTranslation',
   id: __filename,
 };
 
@@ -19,7 +19,7 @@ const { keysWithSubstitution, keysWithoutSubstitution } = groupBy(
   },
 );
 
-export const withoutSubstitutions = () => (
+export const WithoutSubstitutions = () => (
   <MetaMaskTranslation
     translationKey={select(
       'translationKey',
@@ -29,7 +29,7 @@ export const withoutSubstitutions = () => (
   />
 );
 
-export const withSubstitutions = () => (
+export const WithSubstitutions = () => (
   <MetaMaskTranslation
     translationKey={select(
       'translationKey',
@@ -40,7 +40,7 @@ export const withSubstitutions = () => (
   />
 );
 
-export const withTemplate = () => (
+export const WithTemplate = () => (
   <MetaMaskTranslation
     translationKey={select(
       'translationKey',

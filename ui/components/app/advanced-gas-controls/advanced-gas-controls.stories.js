@@ -3,14 +3,16 @@ import React from 'react';
 import AdvancedGasControls from '.';
 
 export default {
-  title: 'Advanced Gas Controls',
+  title: 'Components/App/AdvancedGasControls',
   id: __filename,
 };
 
-export const simple = () => {
+export const DefaultStory = () => {
   return (
     <div style={{ width: '600px' }}>
       <AdvancedGasControls />
     </div>
   );
 };
+
+DefaultStory.storyName = 'Default';

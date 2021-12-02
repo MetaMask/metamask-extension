@@ -3,11 +3,11 @@ import { action } from '@storybook/addon-actions';
 import { Menu, MenuItem } from '.';
 
 export default {
-  title: 'Menu',
+  title: 'Components/UI/Menu',
   id: __filename,
 };
 
-export const Basic = () => {
+export const DefaultStory = () => {
   return (
     <Menu onHide={action('Hide')}>
       <MenuItem iconClassName="fas fa-bullseye" onClick={action('Menu Item 1')}>
@@ -20,6 +20,8 @@ export const Basic = () => {
     </Menu>
   );
 };
+
+DefaultStory.storyName = 'Default';
 
 export const Anchored = () => {
   const [anchorElement, setAnchorElement] = useState(null);
