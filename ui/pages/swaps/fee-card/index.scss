@@ -53,7 +53,10 @@
   }
 
   &__main {
-    border-top: 1px solid #bbc0c5;
+    .transaction-detail {
+      border-top: 1px solid #bbc0c5;
+      border-bottom: 1px solid #bbc0c5;
+    }
   }
 
   &__row-header {

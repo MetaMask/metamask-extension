@@ -153,7 +153,7 @@ export default function FeeCard({
             </div>
           </div>
         )}
-        <div className="fee-card__top-bordered-row">
+        <div className="fee-card__row-header">
           {numberOfQuotes > 1 && (
             <div
               className="fee-card__quote-link-container"
