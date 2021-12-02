@@ -174,7 +174,7 @@ export default class PermissionConnect extends Component {
             className="permissions-connect__back"
             onClick={() => this.goBack()}
           >
-            <i className="fas fa-chevron-left" />
+            <i className="fas fa-chevron-left"></i>
             {t('back')}
           </div>
         ) : null}
