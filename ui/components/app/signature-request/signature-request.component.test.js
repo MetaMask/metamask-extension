@@ -109,7 +109,6 @@ describe('Signature Request Component', () => {
       expect(data.from.wallets).toBeDefined();
       expect(data.from.wallets).toHaveLength(2);
       expect(data.to).toBeDefined();
-      expect(data.to).toHaveLength(1);
       const dataTo = data.to;
       expect(dataTo[0].name).toStrictEqual('Bob');;
       expect(dataTo[0].wallets).toHaveLength(3);
@@ -149,7 +148,6 @@ describe('Signature Request Component', () => {
       expect(data.from.wallets).toBeDefined();
       expect(data.from.wallets).toHaveLength(2);
       expect(data.to).toBeDefined();
-      expect(data.to).toHaveLength(1);
       const dataTo = data.to;
       expect(dataTo[0].name).toStrictEqual('Bob');;
       expect(dataTo[0].wallets).toHaveLength(3);
