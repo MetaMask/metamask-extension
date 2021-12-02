@@ -2,12 +2,16 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  SUBJECT_TYPES,
+} from '../../../shared/constants/app';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
+import SnapInstall from './snap-install/snap-install';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
@@ -30,6 +34,7 @@ export default class PermissionConnect extends Component {
     history: PropTypes.object.isRequired,
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
+    snapInstallPath: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
     targetSubjectMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
@@ -39,6 +44,7 @@ export default class PermissionConnect extends Component {
       subjectType: PropTypes.string,
     }),
     isRequestingAccounts: PropTypes.bool.isRequired,
+    isSnap: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -79,12 +85,14 @@ export default class PermissionConnect extends Component {
   componentDidMount() {
     const {
       confirmPermissionPath,
+      snapInstallPath,
       getCurrentWindowTab,
       getRequestAccountTabIds,
       permissionsRequest,
       page,
       history,
       isRequestingAccounts,
+      isSnap,
     } = this.props;
     getCurrentWindowTab();
     getRequestAccountTabIds();
@@ -100,7 +108,11 @@ export default class PermissionConnect extends Component {
     }
 
     if (page === '1' && !isRequestingAccounts) {
-      history.push(confirmPermissionPath);
+      if (isSnap) {
+        history.push(snapInstallPath);
+      } else {
+        history.push(confirmPermissionPath);
+      }
     }
   }
 
@@ -207,6 +219,7 @@ export default class PermissionConnect extends Component {
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
+      snapInstallPath,
     } = this.props;
     const {
       selectedAccountAddresses,
@@ -263,6 +276,23 @@ export default class PermissionConnect extends Component {
                   selectedIdentities={accounts.filter((account) =>
                     selectedAccountAddresses.has(account.address),
                   )}
+                  targetSubjectMetadata={targetSubjectMetadata}
+                />
+              )}
+            />
+            <Route
+              path={snapInstallPath}
+              exact
+              render={() => (
+                <SnapInstall
+                  request={permissionsRequest || {}}
+                  approveSnapInstall={(...args) => {
+                    approvePermissionsRequest(...args);
+                    this.redirect(true);
+                  }}
+                  rejectSnapInstall={(requestId) =>
+                    this.cancelPermissionsRequest(requestId)
+                  }
                   targetSubjectMetadata={targetSubjectMetadata}
                 />
               )}

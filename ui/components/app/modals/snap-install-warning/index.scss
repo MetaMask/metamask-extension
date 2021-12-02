@@ -1,0 +1,18 @@
+.snap-install-warning {
+  .header {
+    @include H4;
+
+    font-weight: bold;
+  }
+  .subheader {
+    padding: 16px 0;
+    @include H6;
+  }
+  .checkbox-label {
+    @include H7;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 0 16px;
+  }
+}

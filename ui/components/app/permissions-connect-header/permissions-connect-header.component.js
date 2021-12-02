@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import SiteOrigin from '../../ui/site-origin/site-origin';
+import SiteOrigin from '../../ui/site-origin';
+import SnapsAuthorshipPill from '../flask/snaps-authorship-pill';
 
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
@@ -9,6 +10,7 @@ export default class PermissionsConnectHeader extends Component {
     siteOrigin: PropTypes.string.isRequired,
     headerTitle: PropTypes.node,
     headerText: PropTypes.string,
+    npmPackageName: PropTypes.string,
   };
 
   static defaultProps = {
@@ -28,11 +30,18 @@ export default class PermissionsConnectHeader extends Component {
   }
 
   render() {
-    const { headerTitle, headerText } = this.props;
+    const { headerTitle, headerText, npmPackageName } = this.props;
+    const npmPackageUrl = `https://www.npmjs.com/package/${npmPackageName}`;
     return (
       <div className="permissions-connect-header">
         {this.renderHeaderIcon()}
         <div className="permissions-connect-header__title">{headerTitle}</div>
+        {npmPackageName ? (
+          <SnapsAuthorshipPill
+            packageName={npmPackageName}
+            url={npmPackageUrl}
+          />
+        ) : null}
         <div className="permissions-connect-header__subtitle">{headerText}</div>
       </div>
     );

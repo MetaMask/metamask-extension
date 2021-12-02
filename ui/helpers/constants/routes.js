@@ -28,6 +28,7 @@ const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 const SEND_ROUTE = '/send';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
+const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 const SWAPS_ROUTE = '/swaps';
@@ -213,6 +214,7 @@ export {
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
+  CONNECT_SNAP_INSTALL_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   PATH_NAME_MAP,

@@ -20,6 +20,7 @@ import {
 import {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
+  CONNECT_SNAP_INSTALL_ROUTE,
 } from '../../helpers/constants/routes';
 import { SUBJECT_TYPES } from '../../../shared/constants/app';
 import PermissionApproval from './permissions-connect.component';
@@ -64,6 +65,11 @@ const mapStateToProps = (state, ownProps) => {
     }
   }
 
+  const isSnap = Boolean(
+    targetSubjectMetadata &&
+      targetSubjectMetadata.subjectType === SUBJECT_TYPES.SNAP,
+  );
+
   const accountsWithLabels = getAccountsWithLabels(state);
 
   const lastConnectedInfo = getLastConnectedInfo(state) || {};
@@ -78,18 +84,22 @@ const mapStateToProps = (state, ownProps) => {
 
   const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
   const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
+  const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
 
   let page = '';
   if (pathname === connectPath) {
     page = '1';
   } else if (pathname === confirmPermissionPath) {
     page = '2';
+  } else if (pathname === snapInstallPath) {
+    page = '3';
   } else {
     throw new Error('Incorrect path for permissions-connect component');
   }
 
   return {
     isRequestingAccounts,
+    isSnap,
     permissionsRequest,
     permissionsRequestId,
     accounts: accountsWithLabels,
@@ -101,6 +111,7 @@ const mapStateToProps = (state, ownProps) => {
     lastConnectedInfo,
     connectPath,
     confirmPermissionPath,
+    snapInstallPath,
     page,
     targetSubjectMetadata,
   };
