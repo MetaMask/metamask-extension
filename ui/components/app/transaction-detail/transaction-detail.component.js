@@ -107,7 +107,13 @@ export default function TransactionDetail({
 }
 
 TransactionDetail.propTypes = {
+  /**
+   * Show item content for transaction detail
+   */
   rows: PropTypes.arrayOf(TransactionDetailItem).isRequired,
+  /**
+   * Edit transaction handler
+   */
   onEdit: PropTypes.func,
   userAcknowledgedGasMissing: PropTypes.bool.isRequired,
 };
