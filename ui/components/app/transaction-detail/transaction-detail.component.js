@@ -108,11 +108,11 @@ export default function TransactionDetail({
 
 TransactionDetail.propTypes = {
   /**
-   * Show item content for transaction detail
+   * Show item content for transaction detail. Array of TransactionDetailItem components
    */
   rows: PropTypes.arrayOf(TransactionDetailItem).isRequired,
   /**
-   * Edit transaction handler
+   * onClick handler for the Edit link
    */
   onEdit: PropTypes.func,
   userAcknowledgedGasMissing: PropTypes.bool.isRequired,
