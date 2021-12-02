@@ -47,82 +47,54 @@ export default class SignatureRequest extends PureComponent {
     const { address: fromAddress } = fromAccount;
     const { message, domain = {}, types, primaryType } = JSON.parse(data);
     const { metricsEvent } = this.context;
-
-    const mapType = (msgType, definedType) => {
-      // try and map it to a solidity type
-      if (
-        (definedType.type.indexOf('int') >= 0 ||
-          definedType.type.indexOf('fixed') >= 0) &&
-        msgType === 'number'
-      ) {
-        return true;
-      } else if (
-        (definedType.type.indexOf('bytes') >= 0 ||
-          definedType.type === 'address') &&
-        msgType === 'string'
-      ) {
-        return true;
-      }
-
-      return false;
-    };
+    
 
     const sanitizeMessage = (msg, baseType) => {
       if (version === 'V4') {
-        const sanitizedMessage = {};
+        const sanitizedMessage = {};        
         const msgKeys = Object.keys(msg);
-        const msgTypes = Object.values(msg).map((value) => typeof value);
         const baseTypeType = types[baseType];
-        msgKeys.forEach((msgKey, index) => {
-          const valueType = msgTypes[index];
+
+        msgKeys.forEach((msgKey) => {
           if (baseTypeType) {
             const definedType = Object.values(baseTypeType).find(
               (ptt) => ptt.name === msgKey,
             );
 
-            if (definedType) {
-              if (definedType.type === valueType) {
-                sanitizedMessage[msgKey] = msg[msgKey];
-              } else if (
-                definedType.type.indexOf('[]') &&
-                valueType === 'object' &&
-                Array.isArray(msg[msgKey])
-              ) {
-                const sanitizedArrayMessage = {};
-                const definedArrayType = definedType.type.replace('[]', '');
-                const arrayMsg = msg[msgKey];
+            if(definedType) {
+              // key has a type. check if the definedType is nested type, strip []
+              const nestedType = Object.values(baseTypeType).find(
+                (ptt) => ptt.name === definedType.type.replace('[]', ''),
+              );           
 
-                arrayMsg.forEach((msgArray, arrIndex) => {
-                  const arrValueType = typeof msgArray;
-                  if (arrValueType === 'object') {
-                    sanitizedArrayMessage[arrIndex] = sanitizeMessage(
-                      msgArray,
-                      definedArrayType,
-                    );
-                  } else if (
-                    mapType(arrValueType, { type: definedArrayType })
-                  ) {
-                    sanitizedArrayMessage[arrIndex] = msgArray;
-                  }
-                });
-
-                sanitizedMessage[msgKey] = sanitizedArrayMessage;
-              } else if (valueType === 'object') {
-                sanitizedMessage[msgKey] = sanitizeMessage(
-                  msg[msgKey],
-                  definedType.type,
-                );
-              } else if (mapType(valueType, definedType)) {
+              if(nestedType) {                
+                if(definedType.type.indexOf('[]') > 0) {
+                  // nested array
+                  const sanitizedArrayMessage = {};
+                  const definedArrayType = definedType.type.replace('[]', '');
+                  const arrayMsg = msg[msgKey];
+                  arrayMsg.forEach((msgArray, arrIndex) => {
+                      sanitizedArrayMessage[arrIndex] = sanitizeMessage(
+                        msgArray,
+                        definedArrayType,
+                      );
+                  });                
+                  sanitizedMessage[msgKey] = sanitizedArrayMessage;  
+                } else {
+                  // nested object
+                  sanitizedMessage[msgKey] = sanitizeMessage(msg[msgKey], definedType.type);
+                }
+              } else {
                 sanitizedMessage[msgKey] = msg[msgKey];
-              }
-            }
-          }
+              }  // endif (nestedType)     
+            } // endif (definedType)     
+          } // endif (baseTypeType)     
         });
-
         return sanitizedMessage;
-      }
+      } // end if (version === 'V4')
+
       return msg;
-    };
+    }
 
     const onSign = (event) => {
       sign(event);

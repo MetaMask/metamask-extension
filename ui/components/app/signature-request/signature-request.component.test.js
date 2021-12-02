@@ -107,12 +107,17 @@ describe('Signature Request Component', () => {
       expect(data.contents).toStrictEqual('Hello, Bob!');
       expect(data.from.name).toStrictEqual('Cow');
       expect(data.from.wallets).toBeDefined();
+      expect(data.from.wallets).toHaveLength(2);
       expect(data.to).toBeDefined();
+      expect(data.to).toHaveLength(1);
+      const dataTo = data.to;
+      expect(dataTo[0].name).toStrictEqual('Bob');;
+      expect(dataTo[0].wallets).toHaveLength(3);
     });
 
     it('should render a div message parsed without typeless data', () => {
-      messageData.do_not_display = 'one';
-      messageData.do_not_display_2 = {
+      messageData.message.do_not_display = 'one';
+      messageData.message.do_not_display_2 = {
         do_not_display: 'two',
       };
       const msgParams = {
@@ -142,7 +147,12 @@ describe('Signature Request Component', () => {
       expect(data.contents).toStrictEqual('Hello, Bob!');
       expect(data.from.name).toStrictEqual('Cow');
       expect(data.from.wallets).toBeDefined();
+      expect(data.from.wallets).toHaveLength(2);
       expect(data.to).toBeDefined();
+      expect(data.to).toHaveLength(1);
+      const dataTo = data.to;
+      expect(dataTo[0].name).toStrictEqual('Bob');;
+      expect(dataTo[0].wallets).toHaveLength(3);
 
       expect(data.do_not_display).toBeUndefined();
       expect(data.do_not_display2).toBeUndefined();
