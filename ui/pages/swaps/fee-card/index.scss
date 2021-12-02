@@ -75,7 +75,6 @@
   &__row-header-text,
   &__row-header-text--bold {
     margin-right: 4px;
-    cursor: pointer;
   }
 
   &__row-header-text--bold {
@@ -93,6 +92,10 @@
   &__top-bordered-row {
     border-top: 1px solid #bbc0c5;
     padding-top: 12px;
+
+    .info-tooltip {
+      padding-top: 2px;
+    }
   }
 
   &__row-label {
