@@ -30,7 +30,6 @@ import {
   getDestinationTokenInfo,
   getUsedSwapsGasPrice,
   getTopQuote,
-  navigateBackToBuildQuote,
   signAndSendTransactions,
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
@@ -732,7 +731,6 @@ export default function ViewQuote() {
           <CountdownTimer
             timeStarted={quotesLastFetched}
             warningTime="0:30"
-            infoTooltipLabelKey="swapQuotesAreRefreshed"
             labelKey="swapNewQuoteIn"
           />
         </div>
@@ -778,7 +776,7 @@ export default function ViewQuote() {
               setSelectQuotePopoverShown(true);
             }}
             chainId={chainId}
-            networkAndAccountSupports1559={networkAndAccountSupports1559}
+            isBestQuote={isBestQuote}
           />
         </div>
       </div>
@@ -794,7 +792,7 @@ export default function ViewQuote() {
           }
         }}
         submitText={t('swap')}
-        onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
+        hideCancel
         disabled={
           submitClicked ||
           balanceError ||
