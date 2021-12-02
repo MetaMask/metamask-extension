@@ -103,25 +103,25 @@ export default function ActionableMessage({
 
 ActionableMessage.propTypes = {
   /**
-   * text inside actionable message
+   * Text inside actionable message
    */
   message: PropTypes.node.isRequired,
   /**
-   * first button props that have label and onClick props
+   * First button props that have label and onClick props
    */
   primaryAction: PropTypes.shape({
     label: PropTypes.string,
     onClick: PropTypes.func,
   }),
   /**
-   * second button props that have label and onClick props
+   * Second button props that have label and onClick props
    */
   secondaryAction: PropTypes.shape({
     label: PropTypes.string,
     onClick: PropTypes.func,
   }),
   /**
-   * add css classname for the component based on the parent css
+   * Additional css className for the component based on the parent css
    */
   className: PropTypes.string,
   /**
@@ -144,5 +144,8 @@ ActionableMessage.propTypes = {
    * change tooltip icon color
    */
   iconFillColor: PropTypes.string,
+  /**
+   * Whether the buttons are rounded
+   */
   roundedButtons: PropTypes.bool,
 };
