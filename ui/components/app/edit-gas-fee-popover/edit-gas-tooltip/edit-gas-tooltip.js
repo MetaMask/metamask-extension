@@ -21,7 +21,7 @@ const EditGasToolTip = ({
     gasLimit,
     maxFeePerGas: maxFeePerGasValue,
     maxPriorityFeePerGas: maxPriorityFeePerGasValue,
-    transaction: { origin },
+    transaction,
   } = useGasFeeContext();
 
   const toolTipMessage = () => {
@@ -51,9 +51,11 @@ const EditGasToolTip = ({
           </span>,
         ]);
       case PRIORITY_LEVELS.DAPP_SUGGESTED:
-        return t('dappSuggestedGasSettingToolTipMessage', [
-          <span key={origin}>{origin}</span>,
-        ]);
+        return transaction?.origin
+          ? t('dappSuggestedGasSettingToolTipMessage', [
+              <span key={transaction?.origin}>{transaction?.origin}</span>,
+            ])
+          : null;
       default:
         return '';
     }
@@ -62,7 +64,7 @@ const EditGasToolTip = ({
     <div className="edit-gas-tooltip__container">
       {priorityLevel !== PRIORITY_LEVELS.CUSTOM &&
       priorityLevel !== PRIORITY_LEVELS.DAPP_SUGGESTED ? (
-        <img alt="" width={130} src={`./images/curve-${priorityLevel}.svg`} />
+        <img alt="" src={`./images/curve-${priorityLevel}.svg`} />
       ) : null}
       {priorityLevel === PRIORITY_LEVELS.HIGH ? (
         <div className="edit-gas-tooltip__container__dialog">

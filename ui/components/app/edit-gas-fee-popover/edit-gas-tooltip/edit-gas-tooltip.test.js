@@ -1,5 +1,4 @@
 import React from 'react';
-import sinon from 'sinon';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/jest';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
@@ -58,7 +57,7 @@ const renderComponent = (props, transactionProps, gasFeeContextProps) => {
       transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
       {...gasFeeContextProps}
     >
-      <EditGasToolTip {...props} t={sinon.stub()} />
+      <EditGasToolTip {...props} t={jest.fn()} />
     </GasFeeContextProvider>,
     store,
   );
