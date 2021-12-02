@@ -84,7 +84,7 @@ const BaseFeeInput = () => {
     maxPriorityFeePerGas,
     setErrorValue,
     setMaxFeePerGas,
-    setMaxBaseFee,
+    setBaseFeeMultiplier,
   } = useAdvancedGasFeePopoverContext();
 
   const {
@@ -103,7 +103,6 @@ const BaseFeeInput = () => {
   } = useUserPreferencedCurrency(SECONDARY);
 
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-  const isAdvancedGasFeeDefault = useSelector(getIsAdvancedGasFeeDefault);
 
   const [editingInGwei, setEditingInGwei] = useState(false);
 
@@ -181,7 +180,7 @@ const BaseFeeInput = () => {
     if (baseFeeTrend !== 'level' && baseFeeTrend !== feeTrend) {
       setFeeTrend(baseFeeTrend);
     }
-    setMaxBaseFee(maxBaseFeeMultiplier);
+    setBaseFeeMultiplier(maxBaseFeeMultiplier);
   }, [
     feeTrend,
     editingInGwei,
@@ -194,7 +193,7 @@ const BaseFeeInput = () => {
     setErrorValue,
     setMaxFeePerGas,
     setFeeTrend,
-    setMaxBaseFee,
+    setBaseFeeMultiplier,
   ]);
 
   return (
