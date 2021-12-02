@@ -128,13 +128,6 @@ describe('EditGasItem', () => {
     expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
   });
 
-  it('should disable site gas estimate option for is transaction does not have dappSuggestedGasFees', async () => {
-    renderComponent({ priorityLevel: 'dappSuggested' });
-    expect(
-      document.getElementsByClassName('edit-gas-item-disabled'),
-    ).toHaveLength(1);
-  });
-
   it('should renders advance gas estimate option for priorityLevel custom', () => {
     renderComponent({ priorityLevel: 'custom' }, { userFeeLevel: 'high' });
     expect(
