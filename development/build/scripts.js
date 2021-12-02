@@ -366,6 +366,7 @@ function createFactoredBuild({
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      testing,
     });
 
     // set bundle entries
@@ -543,6 +544,7 @@ function createNormalBundle({
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      testing,
     });
 
     // set bundle entries
@@ -599,6 +601,7 @@ function setupBundlerDefaults(
     minify,
     reloadOnChange,
     shouldLintFenceFiles,
+    testing,
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
@@ -620,7 +623,7 @@ function setupBundlerDefaults(
   });
 
   // Ensure react-devtools are not included in non-dev builds
-  if (!devMode) {
+  if (!devMode || testing) {
     bundlerOpts.manualIgnore.push('react-devtools');
   }
 
