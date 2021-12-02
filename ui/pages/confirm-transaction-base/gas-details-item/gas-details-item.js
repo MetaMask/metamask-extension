@@ -17,8 +17,7 @@ import TransactionDetailItem from '../../../components/app/transaction-detail-it
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 
-const HeartBeat = () =>
-  process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
+const HeartBeat = () => (process.env.IN_TEST ? null : <LoadingHeartBeat />);
 
 const GasDetailsItem = ({
   hexMaximumTransactionFee,
