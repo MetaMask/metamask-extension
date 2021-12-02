@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
 import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
@@ -77,6 +77,8 @@ const validateBaseFee = (
 
 const BaseFeeInput = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
+
   const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
   const {
     maxPriorityFeePerGas,
@@ -101,6 +103,7 @@ const BaseFeeInput = () => {
   } = useUserPreferencedCurrency(SECONDARY);
 
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
+  const isAdvancedGasFeeDefault = useSelector(getIsAdvancedGasFeeDefault);
 
   const [editingInGwei, setEditingInGwei] = useState(false);
 
