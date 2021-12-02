@@ -3,9 +3,6 @@ import React, { PureComponent } from 'react';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { getPermissionLocaleMessage } from '../../../../helpers/utils/util';
-///: END:ONLY_INCLUDE_IN
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
@@ -31,6 +28,8 @@ export default class PermissionPageContainerContent extends PureComponent {
   };
 
   renderRequestedPermissions() {
+    const { selectedPermissions } = this.props;
+
     return (
       <div className="permission-approval-container__content__requested">
         <PermissionsConnectPermissionList permissions={selectedPermissions} />

@@ -2601,12 +2601,7 @@
     semver "^7.3.5"
     yargs "^17.0.1"
 
-"@metamask/contract-metadata@^1.19.0", "@metamask/contract-metadata@^1.28.0", "@metamask/contract-metadata@^1.30.0":
-  version "1.30.0"
-  resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.30.0.tgz#fa8e1b0c3e7aaa963986088f691fb553ffbe3904"
-  integrity sha512-b2usYW/ptQYnE6zhUmr4T+nvOAQJK5ABcpKudyQANpy4K099elpv4aN0WcrcOcwV99NHOdMzFP3ZuG0HoAyOBQ==
-
-"@metamask/contract-metadata@^1.29.0":
+"@metamask/contract-metadata@^1.19.0", "@metamask/contract-metadata@^1.28.0", "@metamask/contract-metadata@^1.29.0", "@metamask/contract-metadata@^1.30.0":
   version "1.31.0"
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.31.0.tgz#9e3e46de7a955ea1ca61f7db20d9a17b5e91d3d0"
   integrity sha512-4FBJkg/vDiYp/thIiZknxrJ0lfsj2eWIPenwlNZmoqOhoL4VqhK5eKWxi+EuGMvv9taP+QBRk6Key7wC1uL78A==
@@ -2811,16 +2806,7 @@
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"
 
-"@metamask/object-multiplex@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/object-multiplex/-/object-multiplex-1.1.0.tgz#6b1507c4d10caafd2ea82dd2a5360b91631e036e"
-  integrity sha512-ImDw5+NdO5qnzmK/rpSlPmQMQm6HIC6wAHdR9nBaDK8TpeuRik5H8DCUcoNrxSeUAk1iHwchZ03lpZu6mZfrdw==
-  dependencies:
-    end-of-stream "^1.4.4"
-    once "^1.4.0"
-    readable-stream "^2.3.3"
-
-"@metamask/object-multiplex@^1.2.0":
+"@metamask/object-multiplex@^1.1.0", "@metamask/object-multiplex@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@metamask/object-multiplex/-/object-multiplex-1.2.0.tgz#38fc15c142f61939391e1b9a8eed679696c7e4f4"
   integrity sha512-hksV602d3NWE2Q30Mf2Np1WfVKaGqfJRy9vpHAmelbaD0OkDt06/0KQkRR6UVYdMbTbkuEu8xN5JDUU80inGwQ==
@@ -4404,11 +4390,6 @@
   version "12.19.15"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.19.15.tgz#0de7e978fb43db62da369db18ea088a63673c182"
   integrity sha512-lowukE3GUI+VSYSu6VcBXl14d61Rp5hA1D+61r16qnwC0lYNSqdxcvRh0pswejorHfS+HgwBasM8jLXz0/aOsw==
-
-"@types/node@^14.0.10":
-  version "14.17.27"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.27.tgz#5054610d37bb5f6e21342d0e6d24c494231f3b85"
-  integrity sha512-94+Ahf9IcaDuJTle/2b+wzvjmutxXAEXU6O81JHblYXUg2BDG+dnBy7VxIPHKAyEEDHzCMQydTJuWvrE+Aanzw==
 
 "@types/node@^8.10.11":
   version "8.10.48"
@@ -17470,7 +17451,7 @@ k-bucket@^5.0.0:
   dependencies:
     randombytes "^2.0.3"
 
-keccak@3.0.1, keccak@^3.0.0, keccak@^3.0.1:
+keccak@3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/keccak/-/keccak-3.0.1.tgz#ae30a0e94dbe43414f741375cff6d64c8bea0bff"
   integrity sha512-epq90L9jlFWCW7+pQa6JOnKn2Xgl2mtI664seYR6MHskvI9agt7AnDqmAlp9TqU4/caMYbA08Hi5DMZAl5zdkA==
@@ -17488,7 +17469,7 @@ keccak@^1.0.2:
     nan "^2.2.1"
     safe-buffer "^5.1.0"
 
-keccak@^3.0.2:
+keccak@^3.0.0, keccak@^3.0.1, keccak@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/keccak/-/keccak-3.0.2.tgz#4c2c6e8c54e04f2670ee49fa734eb9da152206e0"
   integrity sha512-PyKKjkH53wDMLGrvmRGSNWgmSxZOUqbnXwKL9tmgbFYA1iAYqW21kfR7mZXV0MlESiefxQQE9X9fTa3X+2MPDQ==
@@ -20045,12 +20026,7 @@ nanoid@^2.0.0, nanoid@^2.1.6:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-2.1.11.tgz#ec24b8a758d591561531b4176a01e3ab4f0f0280"
   integrity sha512-s/snB+WGm6uwi0WjsZdaVcuf3KJXlfGl2LcxgwkEwJF0D/BWzVWAZW/XY4bFaiR7s0Jk3FPvlnepg1H1b1UwlA==
 
-nanoid@^3.1.12, nanoid@^3.1.23:
-  version "3.1.23"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.23.tgz#f744086ce7c2bc47ee0a8472574d5c78e4183a81"
-  integrity sha512-FiB0kzdP0FFVGDKlRLEQ1BgDzU87dy5NnzjeW9YZNt+/c3+q82EQDUwniSAUxp/F0gFNI1ZhKU1FqYsMuqZVnw==
-
-nanoid@^3.1.28:
+nanoid@^3.1.12, nanoid@^3.1.23, nanoid@^3.1.28:
   version "3.1.30"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.30.tgz#63f93cc548d2a113dc5dfbc63bfa09e2b9b64362"
   integrity sha512-zJpuPDwOv8D2zq2WRoMe1HsfZthVewpel9CAvTfc/2mBD1uUT/agc5f7GHGWXlYkFvi1mVxe4IjvP2HNrop7nQ==
@@ -25006,11 +24982,7 @@ scss-parser@^1.0.4:
   dependencies:
     invariant "2.2.4"
 
-<<<<<<< HEAD
-secp256k1@4.0.2, secp256k1@^4.0.0, secp256k1@^4.0.1:
-=======
-secp256k1@4.0.2, secp256k1@^4.0.1, secp256k1@^4.0.2:
->>>>>>> 40ae1d3fe (snaps packages @0.3.1 (#12610) (squashed))
+secp256k1@4.0.2, secp256k1@^4.0.0, secp256k1@^4.0.1, secp256k1@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-4.0.2.tgz#15dd57d0f0b9fdb54ac1fa1694f40e5e9a54f4a1"
   integrity sha512-UDar4sKvWAksIlfX3xIaQReADn+WFnHvbVujpcbr+9Sf/69odMwy2MUsz5CKLQgX9nsIyrjuxL2imVyoNHa3fg==
