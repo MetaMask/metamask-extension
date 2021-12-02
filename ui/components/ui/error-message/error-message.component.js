@@ -19,11 +19,11 @@ const ErrorMessage = (props, context) => {
 
 ErrorMessage.propTypes = {
   /**
-   * Show error message content
+   * The text content for the error message
    */
   errorMessage: PropTypes.string,
   /**
-   * Show error message content with translate key
+   * The translate key for localization. Uses context.t(). Will override the error message
    */
   errorKey: PropTypes.string,
 };
