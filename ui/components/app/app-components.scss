@@ -7,8 +7,6 @@
 @import 'app-header/index';
 @import 'asset-list-item/asset-list-item';
 @import 'confirm-page-container/index';
-@import 'collectibles-items/index';
-@import 'collectible-details/index';
 @import 'connected-accounts-list/index';
 @import 'connected-accounts-permissions/index';
 @import 'connected-sites-list/index';
@@ -19,6 +17,7 @@
 @import 'edit-gas-fee-popover/edit-gas-item/index';
 @import 'edit-gas-fee-popover/network-status/index';
 @import 'edit-gas-fee-popover/network-status/status-slider/index';
+@import 'flask/snaps-authorship-pill/index';
 @import 'gas-customization/gas-modal-page-container/index';
 @import 'gas-customization/gas-price-button-group/index';
 @import 'gas-customization/index';
@@ -33,6 +32,7 @@
 @import 'permission-page-container/index';
 @import 'permissions-connect-footer/index';
 @import 'permissions-connect-header/index';
+@import 'permissions-connect-permission-list/index';
 @import 'recovery-phrase-reminder/index';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';

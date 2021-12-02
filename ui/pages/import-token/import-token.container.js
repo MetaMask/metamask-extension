@@ -22,9 +22,7 @@ const mapStateToProps = (state) => {
   const showSearchTabCustomNetwork =
     useTokenDetection && Boolean(Object.keys(tokenList).length);
   const showSearchTab =
-    getIsMainnet(state) ||
-    showSearchTabCustomNetwork ||
-    process.env.IN_TEST === 'true';
+    getIsMainnet(state) || showSearchTabCustomNetwork || process.env.IN_TEST;
   return {
     identities,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),

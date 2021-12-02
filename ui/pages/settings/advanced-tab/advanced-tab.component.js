@@ -566,7 +566,10 @@ export default class AdvancedTab extends PureComponent {
   }
 
   handleIpfsGatewaySave() {
-    this.props.setIpfsGateway(this.state.ipfsGateway);
+    const url = new URL(addUrlProtocolPrefix(this.state.ipfsGateway));
+    const { host } = url;
+
+    this.props.setIpfsGateway(host);
   }
 
   renderIpfsGatewayControl() {
