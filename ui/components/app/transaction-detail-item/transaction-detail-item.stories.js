@@ -1,6 +1,8 @@
 import React from 'react';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
-import GasTiming from '../gas-timing/gas-timing.component';
+
+import { COLORS } from '../../../helpers/constants/design-system';
+
 import README from './README.mdx';
 import TransactionDetailItem from '.';
 
@@ -15,7 +17,12 @@ export default {
   },
   argTypes: {
     detailTitle: { control: 'object' },
-    detailTitleColor: { control: 'text' },
+    detailTitleColor: {
+      control: {
+        type: 'select',
+      },
+      options: Object.values(COLORS),
+    },
     detailText: { control: 'text' },
     detailTotal: { control: 'text' },
     subTitle: { control: 'object' },
@@ -44,10 +51,12 @@ DefaultStory.args = {
   ),
   detailText: '16565.30',
   detailTotal: '0.0089 ETH',
-  subTitle: <GasTiming maxPriorityFeePerGas="1" />,
+  subTitle: 'Likely in < 30 seconds',
+  boldHeadings: true,
+  flexWidthValues: false,
   subText: (
-    <>
+    <span>
       From <strong>$16565 - $19000</strong>
-    </>
+    </span>
   ),
 };
