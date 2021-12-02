@@ -45,7 +45,6 @@ DefaultStory.args = {
   disabled: false,
   title: 'Test Dropdown Name',
   options: namedOptions,
-  required: false,
   selectedOption: namedOptions[0].value,
 };
 
@@ -55,7 +54,6 @@ OptionsWithoutNames.args = {
   disabled: false,
   title: 'Test Dropdown Name',
   options: unnamedOptions,
-  required: false,
   selectedOption: unnamedOptions[0].value,
 };
 
@@ -65,7 +63,6 @@ OptionsWithLongNames.args = {
   disabled: false,
   title: 'Test Dropdown Name',
   options: namedOptionsWithVeryLongNames,
-  required: false,
   selectedOption: namedOptionsWithVeryLongNames[0].value,
 };
 
@@ -77,7 +74,6 @@ OptionsWithLongNamesAndShortWidth.args = {
   disabled: false,
   title: 'Test Dropdown Name',
   options: namedOptionsWithVeryLongNames,
-  required: false,
   selectedOption: namedOptionsWithVeryLongNames[0].value,
   style: { width: '200px' },
 };

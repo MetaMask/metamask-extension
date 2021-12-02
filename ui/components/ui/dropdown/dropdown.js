@@ -4,10 +4,10 @@ import classnames from 'classnames';
 
 const Dropdown = ({
   className,
-  disabled,
+  disabled = false,
   onChange,
   options,
-  selectedOption,
+  selectedOption = null,
   style,
   title,
 }) => {
@@ -42,15 +42,15 @@ const Dropdown = ({
 
 Dropdown.propTypes = {
   /**
-   * Add CSS class to the component
+   * Additional css className to add to root of Dropdown component
    */
   className: PropTypes.string,
   /**
-   * Check if component disabled
+   * Disable dropdown by setting to true
    */
   disabled: PropTypes.bool,
   /**
-   * Show title of the component
+   * Title of the dropdown
    */
   title: PropTypes.string,
   /**
@@ -74,14 +74,6 @@ Dropdown.propTypes = {
    * Add inline style for the component
    */
   style: PropTypes.object,
-};
-
-Dropdown.defaultProps = {
-  className: undefined,
-  disabled: false,
-  title: undefined,
-  selectedOption: null,
-  style: undefined,
 };
 
 export default Dropdown;
