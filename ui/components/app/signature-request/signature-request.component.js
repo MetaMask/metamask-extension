@@ -48,7 +48,14 @@ export default class SignatureRequest extends PureComponent {
     const { message, domain = {}, types, primaryType } = JSON.parse(data);
     const { metricsEvent } = this.context;
 
-    const solidityTypes = ['bool', 'int', 'fixed', 'address', 'bytes', 'string'];
+    const solidityTypes = [
+      'bool',
+      'int',
+      'fixed',
+      'address',
+      'bytes',
+      'string',
+    ];
     const sanitizeMessage = (msg, baseType) => {
       if (version === 'V4') {
         const sanitizedMessage = {};
@@ -79,23 +86,28 @@ export default class SignatureRequest extends PureComponent {
                   sanitizedMessage[msgKey] = sanitizedArrayMessage;
                 } else {
                   // nested object
-                  sanitizedMessage[msgKey] = sanitizeMessage(msg[msgKey], definedType.type);
+                  sanitizedMessage[msgKey] = sanitizeMessage(
+                    msg[msgKey],
+                    definedType.type,
+                  );
                 }
               } else {
-                // check if it's a valid solidity type                
-                const isSolidityType = solidityTypes.some(solidityType => definedType.type.indexOf(solidityType) >= 0);
+                // check if it's a valid solidity type
+                const isSolidityType = solidityTypes.some(
+                  (solidityType) => definedType.type.indexOf(solidityType) >= 0,
+                );
                 if (isSolidityType) {
                   sanitizedMessage[msgKey] = msg[msgKey];
                 }
-              }  // endif (nestedType)     
-            } // endif (definedType)     
-          } // endif (baseTypeType)     
+              } // endif (nestedType)
+            } // endif (definedType)
+          } // endif (baseTypeType)
         });
         return sanitizedMessage;
       } // end if (version === 'V4')
 
       return msg;
-    }
+    };
 
     const onSign = (event) => {
       sign(event);
