@@ -1,5 +1,6 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
@@ -10,12 +11,13 @@ import {
   FLEX_DIRECTION,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
-import { useAdvanceGasFeePopoverContext } from '../context';
 import {
   getIsAdvancedGasFeeDefault,
   getAdvancedGasFeeValues,
 } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
+
+import { useAdvanceGasFeePopoverContext } from '../context';
 
 const AdvancedGasFeeDefaults = () => {
   const dispatch = useDispatch();
@@ -26,41 +28,23 @@ const AdvancedGasFeeDefaults = () => {
   } = useAdvanceGasFeePopoverContext();
   const isAdvancedGasFeeDefault = useSelector(getIsAdvancedGasFeeDefault);
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-  const [defaultValues, setDefaultValues] = useState(isAdvancedGasFeeDefault);
 
-  const updateDefaultSettings = useCallback(
-    (value) => {
-      setDefaultValues(value);
-      if (value) {
-        dispatch(
-          setAdvancedGasFee({
-            maxBaseFee: baseFeeMultiplier,
-            priorityFee: maxPriorityFeePerGas,
-          }),
-        );
-      } else {
-        dispatch(setAdvancedGasFee(null));
-      }
-    },
-    [baseFeeMultiplier, maxPriorityFeePerGas, setDefaultValues, dispatch],
-  );
-
-  useEffect(() => {
-    if (
-      !isAdvancedGasFeeDefault ||
-      advancedGasFeeValues.maxBaseFee !== baseFeeMultiplier ||
-      advancedGasFeeValues.priorityFee !== maxPriorityFeePerGas
-    ) {
-      setDefaultValues(false);
+  const updateDefaultSettings = (value) => {
+    if (value) {
+      dispatch(
+        setAdvancedGasFee({
+          maxBaseFee: baseFeeMultiplier,
+          priorityFee: maxPriorityFeePerGas,
+        }),
+      );
     } else {
-      setDefaultValues(true);
+      dispatch(setAdvancedGasFee(null));
     }
-  }, [
-    baseFeeMultiplier,
-    maxPriorityFeePerGas,
-    advancedGasFeeValues,
-    isAdvancedGasFeeDefault,
-  ]);
+  };
+  const defaultPreference =
+    isAdvancedGasFeeDefault &&
+    advancedGasFeeValues.maxBaseFee === baseFeeMultiplier &&
+    advancedGasFeeValues.priorityFee === maxPriorityFeePerGas;
 
   return (
     <Box
@@ -69,16 +53,18 @@ const AdvancedGasFeeDefaults = () => {
       className="advanced-gas-fee-defaults"
     >
       <CheckBox
-        checked={defaultValues}
+        checked={defaultPreference}
         className="advanced-gas-fee-defaults__checkbox"
-        onClick={() => updateDefaultSettings(!defaultValues)}
+        onClick={() => updateDefaultSettings(!defaultPreference)}
       />
       <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4}>
-        {defaultValues ? (
-          <I18nValue messageKey="advancedGassFeeDefaultOptOut" />
-        ) : (
-          <I18nValue messageKey="advancedGassFeeDefaultOptIn" />
-        )}
+        <I18nValue
+          messageKey={
+            defaultPreference
+              ? 'advancedGasFeeDefaultOptOut'
+              : 'advancedGasFeeDefaultOptIn'
+          }
+        />
       </Typography>
     </Box>
   );
