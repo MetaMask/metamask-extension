@@ -18,6 +18,7 @@
 @import 'edit-gas-fee-popover/network-status/index';
 @import 'edit-gas-fee-popover/network-status/status-slider/index';
 @import 'flask/snaps-authorship-pill/index';
+@import 'edit-gas-fee-popover/edit-gas-tooltip/index';
 @import 'gas-customization/gas-modal-page-container/index';
 @import 'gas-customization/gas-price-button-group/index';
 @import 'gas-customization/index';
@@ -32,6 +33,7 @@
 @import 'permission-page-container/index';
 @import 'permissions-connect-footer/index';
 @import 'permissions-connect-header/index';
+@import 'permissions-connect-permission-list/index';
 @import 'recovery-phrase-reminder/index';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
@@ -55,6 +57,7 @@
 @import 'loading-network-screen/index';
 @import 'flask/experimental-area/index';
 @import 'advanced-gas-fee-popover/index';
+@import 'advanced-gas-fee-popover/advanced-gas-fee-gas-limit/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/base-fee-input/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';

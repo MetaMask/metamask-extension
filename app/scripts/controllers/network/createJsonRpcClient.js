@@ -10,7 +10,7 @@ import {
 import { PollingBlockTracker } from 'eth-block-tracker';
 import { SECOND } from '../../../../shared/constants/time';
 
-const inTest = process.env.IN_TEST === 'true';
+const inTest = process.env.IN_TEST;
 const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
 const getTestMiddlewares = () => {
   return inTest ? [createEstimateGasDelayTestMiddleware()] : [];

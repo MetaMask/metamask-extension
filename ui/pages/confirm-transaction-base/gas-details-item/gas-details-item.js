@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { COLORS } from '../../../helpers/constants/design-system';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -17,8 +17,7 @@ import TransactionDetailItem from '../../../components/app/transaction-detail-it
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 
-const HeartBeat = () =>
-  process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
+const HeartBeat = () => (process.env.IN_TEST ? null : <LoadingHeartBeat />);
 
 const GasDetailsItem = ({
   hexMaximumTransactionFee,
@@ -48,15 +47,15 @@ const GasDetailsItem = ({
           <InfoTooltip
             contentText={
               <>
-                <Typography fontSize="12px">
+                <Typography tag={TYPOGRAPHY.Paragraph} variant={TYPOGRAPHY.H7}>
                   {t('transactionDetailGasTooltipIntro', [
                     isMainnet ? t('networkNameEthereum') : '',
                   ])}
                 </Typography>
-                <Typography fontSize="12px">
+                <Typography tag={TYPOGRAPHY.Paragraph} variant={TYPOGRAPHY.H7}>
                   {t('transactionDetailGasTooltipExplanation')}
                 </Typography>
-                <Typography fontSize="12px">
+                <Typography tag={TYPOGRAPHY.Paragraph} variant={TYPOGRAPHY.H7}>
                   <a
                     href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
                     target="_blank"

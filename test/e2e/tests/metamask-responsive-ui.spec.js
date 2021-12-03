@@ -226,7 +226,7 @@ describe('Metamask Responsive UI', function () {
 
         const inputAmount = await driver.fill('.unit-input__input', '1');
 
-        const inputValue = await inputAmount.getAttribute('value');
+        const inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
 
         // confirming transcation

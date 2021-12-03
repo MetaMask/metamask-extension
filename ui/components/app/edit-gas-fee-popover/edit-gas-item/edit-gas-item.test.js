@@ -111,7 +111,7 @@ describe('EditGasItem', () => {
   it('should highlight option is priorityLevel is currently selected', () => {
     renderComponent({ priorityLevel: 'high' }, { userFeeLevel: 'high' });
     expect(
-      document.getElementsByClassName('edit-gas-item-selected'),
+      document.getElementsByClassName('edit-gas-item--selected'),
     ).toHaveLength(1);
   });
 

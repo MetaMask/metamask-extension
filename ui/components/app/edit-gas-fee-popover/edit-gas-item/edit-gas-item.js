@@ -18,9 +18,10 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import I18nValue from '../../../ui/i18n-value';
-import InfoTooltip from '../../../ui/info-tooltip';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 
+import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
+import InfoTooltip from '../../../ui/info-tooltip';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
 const EditGasItem = ({ priorityLevel }) => {
@@ -43,6 +44,8 @@ const EditGasItem = ({ priorityLevel }) => {
 
   if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
+    maxPriorityFeePerGas =
+      gasFeeEstimates[priorityLevel].suggestedMaxPriorityFeePerGas;
   } else if (
     priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
     dappSuggestedGasFees
@@ -144,8 +147,18 @@ const EditGasItem = ({ priorityLevel }) => {
           '--'
         )}
       </span>
-      <span className="edit-gas-item__tooltip">
-        <InfoTooltip position="top" />
+      <span className="edit-gas-item__tooltip" data-testid="gas-tooltip">
+        <InfoTooltip
+          contentText={
+            <EditGasToolTip
+              t={t}
+              priorityLevel={priorityLevel}
+              maxFeePerGas={maxFeePerGas}
+              maxPriorityFeePerGas={maxPriorityFeePerGas}
+            />
+          }
+          position="top"
+        />
       </span>
     </button>
   );

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 export const AdvanceGasFeePopoverContext = createContext({});
 
 export const AdvanceGasFeePopoverContextProvider = ({ children }) => {
+  const [gasLimit, setGasLimit] = useState();
   const [maxFeePerGas, setMaxFeePerGas] = useState();
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState();
   const [isDirty, setDirty] = useState();
@@ -11,10 +12,12 @@ export const AdvanceGasFeePopoverContextProvider = ({ children }) => {
   return (
     <AdvanceGasFeePopoverContext.Provider
       value={{
+        gasLimit,
         isDirty,
         maxFeePerGas,
         maxPriorityFeePerGas,
         setDirty,
+        setGasLimit,
         setMaxPriorityFeePerGas,
         setMaxFeePerGas,
       }}

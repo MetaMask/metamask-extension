@@ -50,7 +50,7 @@ describe('Address Book', function () {
         const inputAmount = await driver.findElement('.unit-input__input');
         await inputAmount.fill('1');
 
-        const inputValue = await inputAmount.getAttribute('value');
+        const inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
