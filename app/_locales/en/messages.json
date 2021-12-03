@@ -167,7 +167,7 @@
     "message": "Advanced"
   },
   "advancedBaseGasFeeToolTip": {
-    "message": "Any difference between your max base fee and the current base fee will be refunded after completion."
+    "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
   },
   "advancedGasFeeModalTitle": {
     "message": "Advanced gas fee"
