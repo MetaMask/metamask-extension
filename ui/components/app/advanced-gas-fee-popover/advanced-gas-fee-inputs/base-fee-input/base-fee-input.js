@@ -20,7 +20,7 @@ import Box from '../../../../ui/box';
 import FormField from '../../../../ui/form-field';
 import I18nValue from '../../../../ui/i18n-value';
 
-import { useAdvanceGasFeePopoverContext } from '../../context';
+import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 
 const divideCurrencyValues = (value, baseFee) => {
@@ -60,7 +60,7 @@ const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
   ) {
     return 'editGasMaxBaseFeeHigh';
   }
-  return undefined;
+  return null;
 };
 
 const BaseFeeInput = () => {
@@ -71,7 +71,7 @@ const BaseFeeInput = () => {
     setHasError,
     setMaxFeePerGas,
     maxPriorityFeePerGas,
-  } = useAdvanceGasFeePopoverContext();
+  } = useAdvancedGasFeePopoverContext();
 
   const { estimatedBaseFee } = gasFeeEstimates;
   const [baseFeeError, setBaseFeeError] = useState();

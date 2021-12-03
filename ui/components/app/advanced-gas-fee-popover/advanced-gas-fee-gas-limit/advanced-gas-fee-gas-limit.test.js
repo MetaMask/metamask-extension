@@ -8,7 +8,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 
-import { AdvanceGasFeePopoverContextProvider } from '../context';
+import { AdvancedGasFeePopoverContextProvider } from '../context';
 import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 
 jest.mock('../../../../store/actions', () => ({
@@ -45,9 +45,9 @@ const render = (txProps) => {
         ...txProps,
       }}
     >
-      <AdvanceGasFeePopoverContextProvider>
+      <AdvancedGasFeePopoverContextProvider>
         <AdvancedGasFeeGasLimit />
-      </AdvanceGasFeePopoverContextProvider>
+      </AdvancedGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
     store,
   );

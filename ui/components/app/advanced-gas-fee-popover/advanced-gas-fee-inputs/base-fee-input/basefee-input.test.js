@@ -8,7 +8,7 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import configureStore from '../../../../../store/store';
 
-import { AdvanceGasFeePopoverContextProvider } from '../../context';
+import { AdvancedGasFeePopoverContextProvider } from '../../context';
 import BaseFeeInput from './base-fee-input';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -44,9 +44,9 @@ const render = (txProps) => {
         ...txProps,
       }}
     >
-      <AdvanceGasFeePopoverContextProvider>
+      <AdvancedGasFeePopoverContextProvider>
         <BaseFeeInput />
-      </AdvanceGasFeePopoverContextProvider>
+      </AdvancedGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
     store,
   );
@@ -116,7 +116,7 @@ describe('BaseFeeInput', () => {
     expect(screen.queryByText('50')).toBeInTheDocument();
   });
 
-  it('should show error if base if is less than suggested low value', () => {
+  it('should show error if base fee is less than suggested low value', () => {
     render({
       txParams: {
         maxFeePerGas: '0x174876E800',

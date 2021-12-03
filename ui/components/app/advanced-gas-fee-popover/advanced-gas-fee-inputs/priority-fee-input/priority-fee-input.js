@@ -13,7 +13,7 @@ import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferen
 import FormField from '../../../../ui/form-field';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 
-import { useAdvanceGasFeePopoverContext } from '../../context';
+import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 
 const validatePriorityFee = (value, gasFeeEstimates) => {
@@ -36,7 +36,7 @@ const validatePriorityFee = (value, gasFeeEstimates) => {
   ) {
     return 'editGasMaxPriorityFeeHighV2';
   }
-  return undefined;
+  return null;
 };
 
 const PriorityFeeInput = () => {
@@ -46,7 +46,7 @@ const PriorityFeeInput = () => {
     setDirty,
     setHasError,
     setMaxPriorityFeePerGas,
-  } = useAdvanceGasFeePopoverContext();
+  } = useAdvancedGasFeePopoverContext();
   const {
     estimateUsed,
     gasFeeEstimates,

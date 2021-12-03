@@ -9,12 +9,12 @@ import FormField from '../../../ui/form-field';
 import I18nValue from '../../../ui/i18n-value';
 import Typography from '../../../ui/typography';
 
-import { useAdvanceGasFeePopoverContext } from '../context';
+import { useAdvancedGasFeePopoverContext } from '../context';
 
 const validateGasLimit = (gasLimit) =>
   gasLimit < GAS_LIMIT.MIN || gasLimit > GAS_LIMIT.MAX
     ? 'editGasLimitOutOfBoundsV2'
-    : undefined;
+    : null;
 
 const AdvancedGasFeeGasLimit = () => {
   const t = useI18nContext();
@@ -22,7 +22,7 @@ const AdvancedGasFeeGasLimit = () => {
     setDirty,
     setGasLimit: setGasLimitInContext,
     setHasError,
-  } = useAdvanceGasFeePopoverContext();
+  } = useAdvancedGasFeePopoverContext();
   const { gasLimit: gasLimitInTransaction } = useGasFeeContext();
   const [isEditing, setEditing] = useState(false);
   const [gasLimit, setGasLimit] = useState(gasLimitInTransaction);
