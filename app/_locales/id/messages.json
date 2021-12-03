@@ -1878,10 +1878,6 @@
     "message": "Kami menemukan harga terbaik dari sumber likuiditas teratas, setiap waktu. Biaya sebesar $1% otomatis diperhitungkan ke kuota ini.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotes": {
-    "message": "$1 kuota",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapNewQuoteIn": {
     "message": "Kuota baru di $1",
     "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
@@ -1982,9 +1978,6 @@
   },
   "swapSwapTo": {
     "message": "Tukar untuk"
-  },
-  "swapThisWillAllowApprove": {
-    "message": "Ini akan memungkinkan $1 untuk ditukar."
   },
   "swapToConfirmWithHwWallet": {
     "message": "untuk mengonfirmasikan dengan dompet perangkat keras Anda"

@@ -1878,10 +1878,6 @@
     "message": "Hinahanap namin ang pinakasulit na presyo mula sa mga nangungunang pinagkukunan ng liquidity, sa lahat ng pagkakataon. Awtomatikong fina-factor ang bayaring $1% sa quote na ito.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotes": {
-    "message": "$1 quote",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapNewQuoteIn": {
     "message": "Mga bagong quote sa $1",
     "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
@@ -1982,9 +1978,6 @@
   },
   "swapSwapTo": {
     "message": "I-swap sa"
-  },
-  "swapThisWillAllowApprove": {
-    "message": "Mabibigyang-daan nito ang $1 na ma-swap."
   },
   "swapToConfirmWithHwWallet": {
     "message": "para kumpirmahin ang iyong hardware wallet"

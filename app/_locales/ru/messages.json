@@ -1878,10 +1878,6 @@
     "message": "Мы всегда находим лучшую цену из лучших источников ликвидности. В эту котировку автоматически включается комиссия в размере $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotes": {
-    "message": "Котировок: $1",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapNewQuoteIn": {
     "message": "Новые котировки в $1",
     "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
@@ -1982,9 +1978,6 @@
   },
   "swapSwapTo": {
     "message": "Своп на"
-  },
-  "swapThisWillAllowApprove": {
-    "message": "Это позволит обмен $1."
   },
   "swapToConfirmWithHwWallet": {
     "message": "подтвердить с помощью аппаратного кошелька"

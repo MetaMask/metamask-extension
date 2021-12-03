@@ -2717,10 +2717,6 @@
     "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into this quote.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotes": {
-    "message": "$1 quotes",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapNQuotesWithDot": {
     "message": "$1 quotes.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
@@ -2825,9 +2821,6 @@
   },
   "swapSwapTo": {
     "message": "Swap to"
-  },
-  "swapThisWillAllowApprove": {
-    "message": "This will allow $1 to be swapped."
   },
   "swapToConfirmWithHwWallet": {
     "message": "to confirm with your hardware wallet"

@@ -1878,10 +1878,6 @@
     "message": "हम हर बार शीर्ष चलनिधि स्रोतों से सबसे अच्छे मूल्य पाते हैं। इस उद्धरण में $1% का शुल्क स्वतः ही शामिल हो जाता है।",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotes": {
-    "message": "$1 उद्धरण",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapNewQuoteIn": {
     "message": "$1 में नए उद्धरण",
     "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
@@ -1982,9 +1978,6 @@
   },
   "swapSwapTo": {
     "message": "इसमें स्वैप करें"
-  },
-  "swapThisWillAllowApprove": {
-    "message": "यह $1 को स्वैप करने की अनुमति देगा।"
   },
   "swapToConfirmWithHwWallet": {
     "message": "अपने हार्डवेयर वॉलेट से पुष्टि करने के लिए"

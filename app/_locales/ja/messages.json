@@ -1878,10 +1878,6 @@
     "message": "当社は毎回最上位の流動性のソースから最良の価格を見つけます。$1 の手数料が自動的にこの見積もりに含まれます。",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotes": {
-    "message": "$1 の見積もり",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapNewQuoteIn": {
     "message": "$1 での新規の見積もり",
     "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
@@ -1982,9 +1978,6 @@
   },
   "swapSwapTo": {
     "message": "スワップ先"
-  },
-  "swapThisWillAllowApprove": {
-    "message": "これにより、$1 のスワップが可能になります。"
   },
   "swapToConfirmWithHwWallet": {
     "message": "ハードウェア ウォレットで確認する"

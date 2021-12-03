@@ -1878,10 +1878,6 @@
     "message": "Encontramos o melhor preço das principais fontes de liquidez – todas as vezes. Uma taxa de $1% é automaticamente fatorada nesta cotação.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotes": {
-    "message": "$1 cotações",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapNewQuoteIn": {
     "message": "Novas cotações em $1",
     "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
@@ -1982,9 +1978,6 @@
   },
   "swapSwapTo": {
     "message": "Swap para"
-  },
-  "swapThisWillAllowApprove": {
-    "message": "isso permitirá o swap de $1."
   },
   "swapToConfirmWithHwWallet": {
     "message": "para confirmar com sua carteira de hardware"

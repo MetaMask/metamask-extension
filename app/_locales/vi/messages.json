@@ -1878,10 +1878,6 @@
     "message": "Chúng tôi luôn tìm giá tốt nhất từ các nguồn thanh khoản hàng đầu. Phí $1% được tự động tính vào báo giá này.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotes": {
-    "message": "$1 báo giá",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapNewQuoteIn": {
     "message": "Báo giá mới sẽ có sau $1",
     "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
@@ -1982,9 +1978,6 @@
   },
   "swapSwapTo": {
     "message": "Hoán đổi sang"
-  },
-  "swapThisWillAllowApprove": {
-    "message": "Thao tác này sẽ cho phép hoán đổi $1."
   },
   "swapToConfirmWithHwWallet": {
     "message": "để xác nhận ví cứng của bạn"

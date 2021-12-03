@@ -1517,10 +1517,6 @@
     "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotes": {
-    "message": "$1 quotazioni",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapNewQuoteIn": {
     "message": "Nuove quotazioni in $1",
     "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
@@ -1609,9 +1605,6 @@
   },
   "swapSwapTo": {
     "message": "Scambia a"
-  },
-  "swapThisWillAllowApprove": {
-    "message": "Questo permetterà di scambiare $1."
   },
   "swapTokenAvailable": {
     "message": "I $1 sono stati aggiunti al tuo account.",
