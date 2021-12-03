@@ -556,6 +556,16 @@
         "hdkey": true
       }
     },
+    "@metamask/eth-sig-util": {
+      "packages": {
+        "buffer": true,
+        "ethereumjs-abi": true,
+        "ethereumjs-util": true,
+        "ethjs-util": true,
+        "tweetnacl": true,
+        "tweetnacl-util": true
+      }
+    },
     "@metamask/eth-token-tracker": {
       "globals": {
         "console.warn": true
@@ -608,6 +618,14 @@
         "@metamask/safe-event-emitter": true,
         "stream-browserify": true,
         "through2": true
+      }
+    },
+    "@metamask/quai-hd-keyring": {
+      "packages": {
+        "@metamask/eth-sig-util": true,
+        "bip39": true,
+        "eth-simple-keyring": true,
+        "ethereumjs-wallet": true
       }
     },
     "@metamask/safe-event-emitter": {
@@ -933,6 +951,7 @@
     },
     "bip39": {
       "packages": {
+        "buffer": true,
         "create-hash": true,
         "pbkdf2": true,
         "randombytes": true,
@@ -1579,6 +1598,7 @@
     },
     "eth-keyring-controller": {
       "packages": {
+        "@metamask/quai-hd-keyring": true,
         "bip39": true,
         "browser-passworder": true,
         "eth-hd-keyring": true,

@@ -333,18 +333,15 @@ export function importNewAccount(strategy, args) {
   };
 }
 
-export function addNewAccount(bytePrefix) {
-  log.debug(`background.addNewAccount`, bytePrefix);
+export function addNewAccount(range) {
+  log.debug(`background.addNewAccount`, range);
   return async (dispatch, getState) => {
     const oldIdentities = getState().metamask.identities;
     dispatch(showLoadingIndication());
 
     let newIdentities;
     try {
-      console.log(bytePrefix);
-      const { identities } = await promisifiedBackground.addNewAccount(
-        bytePrefix,
-      );
+      const { identities } = await promisifiedBackground.addNewAccount(range);
       newIdentities = identities;
     } catch (error) {
       dispatch(displayWarning(error.message));
