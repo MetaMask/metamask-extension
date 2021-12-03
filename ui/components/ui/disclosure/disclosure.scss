@@ -1,7 +1,7 @@
 .disclosure {
   margin: 12px 0;
   cursor: pointer;
-  font-size: 14px;
+  @include H6;
 
   &--no-margin {
     margin-top: 0;
@@ -17,6 +17,8 @@
     position: relative;
     padding-left: 24px;
     padding-bottom: 10px;
+    color: $ui-black;
+    font-weight: bold;
 
     &::-webkit-details-marker,
     &::marker {
