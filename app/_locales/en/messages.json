@@ -637,6 +637,10 @@
   "customGas": {
     "message": "Customize Gas"
   },
+  "customGasSettingToolTipMessage": {
+    "message": "Use $1 to customise the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+  },
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
@@ -648,6 +652,10 @@
   },
   "dappSuggested": {
     "message": "Site suggested"
+  },
+  "dappSuggestedGasSettingToolTipMessage": {
+    "message": "$1 has suggested this price.",
+    "description": "$1 is url for the dapp that has suggested gas settings"
   },
   "dappSuggestedShortLabel": {
     "message": "Site"
@@ -1258,6 +1266,13 @@
   "high": {
     "message": "Aggressive"
   },
+  "highGasSettingToolTipDialog": {
+    "message": "High probability, even in volatile markets"
+  },
+  "highGasSettingToolTipMessage": {
+    "message": "Use $1 to cover surges in network traffic due to things like popular NFT drops.",
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+  },
   "history": {
     "message": "History"
   },
@@ -1513,6 +1528,10 @@
   "low": {
     "message": "Low"
   },
+  "lowGasSettingToolTipMessage": {
+    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredicible.",
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+  },
   "lowPriorityMessage": {
     "message": "Future transactions will queue after this one. This price was last seen was some time ago."
   },
@@ -1540,6 +1559,10 @@
   },
   "medium": {
     "message": "Market"
+  },
+  "mediumGasSettingToolTipMessage": {
+    "message": "Use $1 for fast processing at current market price.",
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
   },
   "memo": {
     "message": "memo"
