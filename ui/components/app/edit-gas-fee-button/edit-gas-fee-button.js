@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import {
+  EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
+} from '../../../../shared/constants/gas';
 import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
 import { useGasFeeContext } from '../../../contexts/gasFee';
@@ -12,6 +16,7 @@ import Typography from '../../ui/typography/typography';
 export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   const t = useI18nContext();
   const {
+    editGasMode,
     gasLimit,
     hasSimulationError,
     estimateUsed,
@@ -28,13 +33,23 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
     return null;
   }
 
+  let icon = estimateUsed;
+  let title = estimateUsed;
+  if (
+    estimateUsed === PRIORITY_LEVELS.HIGH &&
+    editGasMode === EDIT_GAS_MODES.SWAPS
+  ) {
+    icon = 'swapSuggested';
+    title = 'swapSuggested';
+  }
+
   return (
     <div className="edit-gas-fee-button">
       <button onClick={() => openModal('editGasFee')}>
         <span className="edit-gas-fee-button__icon">
-          {`${PRIORITY_LEVEL_ICON_MAP[estimateUsed]} `}
+          {`${PRIORITY_LEVEL_ICON_MAP[icon]} `}
         </span>
-        <span className="edit-gas-fee-button__label">{t(estimateUsed)}</span>
+        <span className="edit-gas-fee-button__label">{t(title)}</span>
         <i className="fas fa-chevron-right asset-list-item__chevron-right" />
       </button>
       {estimateUsed === 'custom' && (

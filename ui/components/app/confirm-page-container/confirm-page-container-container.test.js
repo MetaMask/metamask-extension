@@ -41,6 +41,7 @@ describe('Confirm Page Container Container Test', () => {
       chainId: 'test',
       identities: [],
       featureFlags: {},
+      swapsState: {},
     },
   };
 

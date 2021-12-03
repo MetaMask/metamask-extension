@@ -37,5 +37,6 @@ export const PRIORITY_LEVEL_ICON_MAP = {
   medium: '🦊',
   high: '🦍',
   dappSuggested: '🌐',
+  swapSuggested: '🔄',
   custom: '⚙',
 };

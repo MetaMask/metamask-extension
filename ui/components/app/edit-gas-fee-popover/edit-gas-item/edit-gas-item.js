@@ -4,7 +4,10 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 
 import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
-import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
+} from '../../../../../shared/constants/gas';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import {
@@ -26,6 +29,7 @@ import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
 const EditGasItem = ({ priorityLevel }) => {
   const {
+    editGasMode,
     estimateUsed,
     gasFeeEstimates,
     gasLimit,
@@ -104,6 +108,18 @@ const EditGasItem = ({ priorityLevel }) => {
     return null;
   }
 
+  let icon = priorityLevel;
+  let title = priorityLevel;
+  if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
+    title = 'dappSuggestedShortLabel';
+  } else if (
+    priorityLevel === PRIORITY_LEVELS.HIGH &&
+    editGasMode === EDIT_GAS_MODES.SWAPS
+  ) {
+    icon = 'swapSuggested';
+    title = 'swapSuggested';
+  }
+
   return (
     <button
       className={classNames('edit-gas-item', {
@@ -117,22 +133,16 @@ const EditGasItem = ({ priorityLevel }) => {
         <span
           className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
         >
-          {PRIORITY_LEVEL_ICON_MAP[priorityLevel]}
+          {PRIORITY_LEVEL_ICON_MAP[icon]}
         </span>
-        <I18nValue
-          messageKey={
-            priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED
-              ? 'dappSuggestedShortLabel'
-              : priorityLevel
-          }
-        />
+        <I18nValue messageKey={title} />
       </span>
       <span
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
       >
-        {minWaitTime
-          ? minWaitTime && toHumanReadableTime(t, minWaitTime)
-          : '--'}
+        {editGasMode !== EDIT_GAS_MODES.SWAPS && (
+          <>{minWaitTime ? toHumanReadableTime(t, minWaitTime) : '--'}</>
+        )}
       </span>
       <span
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}
@@ -147,6 +157,7 @@ const EditGasItem = ({ priorityLevel }) => {
           '--'
         )}
       </span>
+      {/* todo: tooltip in case of swap suggested */}
       <span className="edit-gas-item__tooltip" data-testid="gas-tooltip">
         <InfoTooltip
           contentText={

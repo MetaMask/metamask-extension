@@ -47,6 +47,7 @@ const renderComponent = (props, transactionProps, gasFeeContextProps) => {
         maxBaseFee: '1.5',
         priorityFee: '2',
       },
+      swapsState: {},
     },
   };
 

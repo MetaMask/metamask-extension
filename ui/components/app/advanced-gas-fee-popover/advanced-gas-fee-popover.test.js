@@ -40,6 +40,7 @@ const render = () => {
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates,
+      swapsState: {},
     },
   });
 

@@ -31,6 +31,7 @@ const render = ({ componentProps, contextProps } = {}) => {
         },
       },
       gasFeeEstimates: mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET],
+      swapsState: {},
     },
   });
 

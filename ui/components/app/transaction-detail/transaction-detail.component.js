@@ -11,7 +11,7 @@ import TransactionDetailItem from '../transaction-detail-item/transaction-detail
 export default function TransactionDetail({
   rows = [],
   onEdit,
-  userAcknowledgedGasMissing,
+  userAcknowledgedGasMissing = false,
 }) {
   const t = useI18nContext();
   const { supportsEIP1559V2 } = useGasFeeContext();
@@ -38,5 +38,5 @@ export default function TransactionDetail({
 TransactionDetail.propTypes = {
   rows: PropTypes.arrayOf(TransactionDetailItem).isRequired,
   onEdit: PropTypes.func,
-  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
+  userAcknowledgedGasMissing: PropTypes.bool,
 };

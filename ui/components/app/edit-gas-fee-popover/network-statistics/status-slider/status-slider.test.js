@@ -32,6 +32,7 @@ const renderComponent = () => {
         },
       },
       selectedAddress: '0xAddress',
+      swapsState: {},
     },
   });
 
