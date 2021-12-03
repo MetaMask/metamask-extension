@@ -1,6 +1,7 @@
 .disclosure {
   margin: 12px 0;
   cursor: pointer;
+
   @include H6;
 
   &--no-margin {
