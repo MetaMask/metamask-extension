@@ -115,5 +115,9 @@ TransactionDetail.propTypes = {
    * onClick handler for the Edit link
    */
   onEdit: PropTypes.func,
+  /**
+   * If there is a error in getting correct estimates we show a message to the user
+   * which they can acknowledge and proceed with their transaction
+   */
   userAcknowledgedGasMissing: PropTypes.bool.isRequired,
 };
