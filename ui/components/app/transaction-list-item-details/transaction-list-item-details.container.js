@@ -6,11 +6,16 @@ import {
 } from '../../../selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import TransactionListItemDetails from './transaction-list-item-details.component';
+import { combineTransactionHistories } from '../transaction-activity-log/transaction-activity-log.util';
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state;
   const { ensResolutionsByAddress } = metamask;
-  const { recipientAddress, senderAddress } = ownProps;
+  const {
+    recipientAddress,
+    senderAddress,
+    transactionGroup: { transactions = [] },
+  } = ownProps;
   let recipientEns;
   if (recipientAddress) {
     const address = toChecksumHexAddress(recipientAddress);
@@ -31,6 +36,7 @@ const mapStateToProps = (state, ownProps) => {
     recipientEns,
     senderNickname: getNickName(senderAddress),
     recipientNickname: recipientAddress ? getNickName(recipientAddress) : null,
+    activities: combineTransactionHistories(transactions),
   };
 };
 
