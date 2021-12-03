@@ -1343,12 +1343,6 @@
   "pending": {
     "message": "Tunda"
   },
-  "permissionCheckedIconDescription": {
-    "message": "Anda telah menyetujui izin ini"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Anda belum menyetujui izin ini"
-  },
   "permissions": {
     "message": "Izin"
   },

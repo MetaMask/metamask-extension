@@ -989,7 +989,7 @@
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
   "eth_accounts": {
-    "message": "View the addresses of your permitted accounts (required)",
+    "message": "See address, account balance, activity and initiate transactions",
     "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
@@ -2036,14 +2036,8 @@
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
   },
-  "permissionCheckedIconDescription": {
-    "message": "You have approved this permission"
-  },
   "permissionRequest": {
     "message": "Permission request"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "You have not approved this permission"
   },
   "permissions": {
     "message": "Permissions"

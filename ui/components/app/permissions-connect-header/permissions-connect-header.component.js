@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import SiteIcon from '../../ui/site-icon';
+import SiteOrigin from '../../ui/site-origin/site-origin';
 
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
@@ -22,8 +22,7 @@ export default class PermissionsConnectHeader extends Component {
 
     return (
       <div className="permissions-connect-header__icon">
-        <SiteIcon icon={icon} name={iconName} size={64} />
-        <div className="permissions-connect-header__text">{siteOrigin}</div>
+        <SiteOrigin siteOrigin={siteOrigin} iconSrc={icon} name={iconName} />
       </div>
     );
   }
