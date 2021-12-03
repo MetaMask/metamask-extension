@@ -333,6 +333,7 @@ export function useGasFeeInputs(
     gasWarnings,
     hasGasErrors,
     hasSimulationError,
+    minimumGasLimit,
     supportsEIP1559,
     supportsEIP1559V2,
     updateTransaction,

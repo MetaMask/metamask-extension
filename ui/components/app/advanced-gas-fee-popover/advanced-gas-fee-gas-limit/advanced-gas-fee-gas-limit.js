@@ -11,8 +11,8 @@ import Typography from '../../../ui/typography';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
 
-const validateGasLimit = (gasLimit) =>
-  gasLimit < GAS_LIMIT.MIN || gasLimit > GAS_LIMIT.MAX
+const validateGasLimit = (gasLimit, minimumGasLimit) =>
+  gasLimit < minimumGasLimit || GAS_LIMIT.MIN || gasLimit > GAS_LIMIT.MAX
     ? 'editGasLimitOutOfBoundsV2'
     : null;
 
@@ -23,7 +23,10 @@ const AdvancedGasFeeGasLimit = () => {
     setGasLimit: setGasLimitInContext,
     setHasError,
   } = useAdvancedGasFeePopoverContext();
-  const { gasLimit: gasLimitInTransaction } = useGasFeeContext();
+  const {
+    gasLimit: gasLimitInTransaction,
+    minimumGasLimit,
+  } = useGasFeeContext();
   const [isEditing, setEditing] = useState(false);
   const [gasLimit, setGasLimit] = useState(gasLimitInTransaction);
   const [gasLimitError, setGasLimitError] = useState();
@@ -35,10 +38,10 @@ const AdvancedGasFeeGasLimit = () => {
 
   useEffect(() => {
     setGasLimitInContext(gasLimit);
-    const error = validateGasLimit(gasLimit);
+    const error = validateGasLimit(gasLimit, minimumGasLimit);
     setGasLimitError(error);
     setHasError(Boolean(error));
-  }, [gasLimit, setGasLimitInContext, setHasError]);
+  }, [gasLimit, minimumGasLimit, setGasLimitInContext, setHasError]);
 
   if (isEditing) {
     return (
