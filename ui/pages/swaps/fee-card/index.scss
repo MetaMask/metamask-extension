@@ -36,6 +36,8 @@
     @include H7;
 
     color: $Blue-500;
+    cursor: pointer;
+    padding-right: 4px;
   }
 
   &__caret-right {
@@ -56,6 +58,7 @@
     .transaction-detail {
       border-top: 1px solid #bbc0c5;
       border-bottom: 1px solid #bbc0c5;
+      margin-bottom: 12px;
     }
   }
 
@@ -84,6 +87,16 @@
     color: $Black-100;
   }
 
+  &__row-header-text {
+    display: block;
+    white-space: nowrap;
+
+    .info-tooltip {
+      padding-left: 4px;
+      padding-bottom: 2px;
+    }
+  }
+
   &__row,
   &__top-bordered-row {
     display: flex;
@@ -94,11 +107,7 @@
 
   &__top-bordered-row {
     border-top: 1px solid #bbc0c5;
-    padding-top: 12px;
-
-    .info-tooltip {
-      padding-top: 2px;
-    }
+    padding-top: 12px;   
   }
 
   &__row-label {

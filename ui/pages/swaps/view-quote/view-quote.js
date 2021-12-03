@@ -571,12 +571,6 @@ export default function ViewQuote() {
         );
   };
 
-  const tokenApprovalTextComponent = (
-    <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
-      {sourceTokenSymbol}
-    </span>
-  );
-
   const actionableBalanceErrorMessage = tokenBalanceUnavailable
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
     : t('swapApproveNeedMoreTokens', [
@@ -766,7 +760,6 @@ export default function ViewQuote() {
             hideTokenApprovalRow={
               !approveTxParams || (balanceError && !warningHidden)
             }
-            tokenApprovalTextComponent={tokenApprovalTextComponent}
             tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
             onTokenApprovalClick={onFeeCardTokenApprovalClick}
             metaMaskFee={String(metaMaskFee)}

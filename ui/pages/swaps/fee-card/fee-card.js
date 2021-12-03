@@ -27,7 +27,6 @@ export default function FeeCard({
   secondaryFee,
   hideTokenApprovalRow,
   onFeeCardMaxRowClick,
-  tokenApprovalTextComponent,
   tokenApprovalSourceTokenSymbol,
   onTokenApprovalClick,
   metaMaskFee,
@@ -59,6 +58,12 @@ export default function FeeCard({
     category: 'Swaps',
     event: 'Clicked "Gas Fees: Learn More" Link',
   });
+
+  const tokenApprovalTextComponent = (
+    <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
+      {t('enableToken', [tokenApprovalSourceTokenSymbol])}
+    </span>
+  );
 
   return (
     <div className="fee-card">
@@ -135,15 +140,15 @@ export default function FeeCard({
           <div className="fee-card__row-header">
             <div className="fee-card__row-label">
               <div className="fee-card__row-header-text">
-                {t('swapThisWillAllowApprove', [tokenApprovalTextComponent])}
+                {t('swapEnableTokenForSwapping', [tokenApprovalTextComponent])}
+                <InfoTooltip
+                  position="top"
+                  contentText={t('swapEnableDescription', [
+                    tokenApprovalSourceTokenSymbol,
+                  ])}
+                  containerClassName="fee-card__info-tooltip-container"
+                />
               </div>
-              <InfoTooltip
-                position="top"
-                contentText={t('swapEnableDescription', [
-                  tokenApprovalSourceTokenSymbol,
-                ])}
-                containerClassName="fee-card__info-tooltip-container"
-              />
             </div>
             <div
               className="fee-card__link"
@@ -154,27 +159,25 @@ export default function FeeCard({
           </div>
         )}
         <div className="fee-card__row-header">
-          {numberOfQuotes > 1 && (
-            <div
-              className="fee-card__quote-link-container"
-              onClick={onQuotesClick}
-            >
-              <p className="fee-card__quote-link-text">
-                {isBestQuote
-                  ? t('swapBestOfNQuotes', [numberOfQuotes])
-                  : t('swapNQuotes', [numberOfQuotes])}
-              </p>
-            </div>
-          )}
           <div className="fee-card__row-label">
             <div className="fee-card__row-header-text">
+              {numberOfQuotes > 1 && (
+                <span
+                  onClick={onQuotesClick}
+                  className="fee-card__quote-link-text"
+                >
+                  {isBestQuote
+                    ? t('swapBestOfNQuotes', [numberOfQuotes])
+                    : t('swapNQuotesWithDot', [numberOfQuotes])}
+                </span>
+              )}
               {t('swapIncludesMMFee', [metaMaskFee])}
+              <InfoTooltip
+                position="top"
+                contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
+                wrapperClassName="fee-card__info-tooltip-container"
+              />
             </div>
-            <InfoTooltip
-              position="top"
-              contentText={t('swapMetaMaskFeeDescription', [metaMaskFee])}
-              wrapperClassName="fee-card__info-tooltip-container"
-            />
           </div>
         </div>
       </div>
@@ -193,7 +196,6 @@ FeeCard.propTypes = {
   }),
   onFeeCardMaxRowClick: PropTypes.func.isRequired,
   hideTokenApprovalRow: PropTypes.bool.isRequired,
-  tokenApprovalTextComponent: PropTypes.node,
   tokenApprovalSourceTokenSymbol: PropTypes.string,
   onTokenApprovalClick: PropTypes.func,
   metaMaskFee: PropTypes.string.isRequired,
