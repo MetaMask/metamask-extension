@@ -3158,11 +3158,17 @@ export function updateSmartTransaction(uuid, txData) {
 }
 
 export function fetchSmartTransactionsStatus(uuids) {
-  return async () => {
+  return async (dispatch) => {
     try {
       await promisifiedBackground.fetchSmartTransactionsStatus(uuids);
     } catch (e) {
       log.error(e);
+      if (isPersistentError(e)) {
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: e.message,
+        });
+      }
     }
   };
 }
