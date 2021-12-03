@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
@@ -26,12 +26,6 @@ const AdvancedGasFeeDefaults = () => {
   } = useAdvanceGasFeePopoverContext();
   const isAdvancedGasFeeDefault = useSelector(getIsAdvancedGasFeeDefault);
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-  console.log(
-    isAdvancedGasFeeDefault,
-    advancedGasFeeValues,
-    baseFeeMultiplier,
-    maxPriorityFeePerGas,
-  );
   const [defaultValues, setDefaultValues] = useState(isAdvancedGasFeeDefault);
 
   const updateDefaultSettings = useCallback(
@@ -50,6 +44,23 @@ const AdvancedGasFeeDefaults = () => {
     },
     [baseFeeMultiplier, maxPriorityFeePerGas, setDefaultValues, dispatch],
   );
+
+  useEffect(() => {
+    if (
+      !isAdvancedGasFeeDefault ||
+      advancedGasFeeValues.maxBaseFee !== baseFeeMultiplier ||
+      advancedGasFeeValues.priorityFee !== maxPriorityFeePerGas
+    ) {
+      setDefaultValues(false);
+    } else {
+      setDefaultValues(true);
+    }
+  }, [
+    baseFeeMultiplier,
+    maxPriorityFeePerGas,
+    advancedGasFeeValues,
+    isAdvancedGasFeeDefault,
+  ]);
 
   return (
     <Box

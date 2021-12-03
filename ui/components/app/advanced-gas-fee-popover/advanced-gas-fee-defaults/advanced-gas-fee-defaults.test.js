@@ -10,6 +10,7 @@ import { AdvanceGasFeePopoverContextProvider } from '../context';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 
+import AdvancedGasFeeInputs from '../advanced-gas-fee-inputs';
 import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 
 jest.mock('../../../../store/actions', () => ({
@@ -41,9 +42,14 @@ const render = (defaultGasParams) => {
     <GasFeeContextProvider
       transaction={{
         userFeeLevel: 'custom',
+        txParams: {
+          maxFeePerGas: '0x174876E800',
+          maxPriorityFeePerGas: '0x77359400',
+        },
       }}
     >
       <AdvanceGasFeePopoverContextProvider>
+        <AdvancedGasFeeInputs />
         <AdvancedGasFeeDefaults />
       </AdvanceGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
@@ -61,7 +67,9 @@ describe('AdvancedGasFeeDefaults', () => {
     ).toBeInTheDocument();
   });
   it('should renders correct message when the default values are set', () => {
-    render({ advancedGasFee: { maxBaseFee: 2, priorityFee: 1.5 } });
+    render({
+      advancedGasFee: { maxBaseFee: 2, priorityFee: 2 },
+    });
 
     expect(
       screen.queryByText(
