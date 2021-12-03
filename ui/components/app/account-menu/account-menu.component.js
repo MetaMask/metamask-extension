@@ -228,7 +228,10 @@ export default class AccountMenu extends Component {
 
   getContext(address) {
     let context = QUAI_CONTEXTS.filter((obj) => {
-      return obj.byte == address.substring(0, 4);
+      let num = parseInt(Number('0x' + address.substring(2, 4)), 10);
+      let start = parseInt(Number('0x' + obj.byte[0]), 10);
+      let end = parseInt(Number('0x' + obj.byte[1]), 10);
+      return num >= start && num <= end;
     });
     console.log(context);
     if (!context || !context[0]) {

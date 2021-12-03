@@ -78,6 +78,7 @@ import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
+import { address } from '../../development/mock-3box';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1279,10 +1280,14 @@ export default class MetamaskController extends EventEmitter {
       if (accounts.length > 0) {
         vault = await this.keyringController.fullUpdate();
       } else {
+        console.log('Start create address in vault, 100 addresses');
         vault = await this.keyringController.createNewVaultAndKeychain(
           password,
+          ['14', '1d'],
         );
+        console.log('Stop create address in vault, 100 addresses');
         const addresses = await this.keyringController.getAccounts();
+
         this.preferencesController.setAddresses(addresses);
         this.selectFirstIdentity();
       }
@@ -1709,36 +1714,29 @@ export default class MetamaskController extends EventEmitter {
    *
    * @returns {} keyState
    */
-  async addNewAccount(bytePrefix) {
+  async addNewAccount(range) {
     const primaryKeyring = this.keyringController.getKeyringsByType(
       'HD Key Tree',
     )[0];
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
+
     const { keyringController } = this;
-    let validByte = false;
     const oldAccounts = await keyringController.getAccounts();
-    let keyState;
-    while (!validByte) {
-      keyState = await keyringController.addNewAccount(
-        primaryKeyring,
-        bytePrefix,
-      );
-      let newAccounts = await keyringController.getAccounts();
+    let keyState = await keyringController.addNewAccountByByteRange(
+      primaryKeyring,
+      range,
+    );
+    await this.verifySeedPhrase();
 
-      await this.verifySeedPhrase();
-
-      for (let i = 0; i < newAccounts.length; i++) {
-        let address = newAccounts[i];
-        if (!oldAccounts.includes(address)) {
-          if (address.substring(0, 4) == bytePrefix) {
-            this.preferencesController.setSelectedAddress(address);
-            validByte = true;
-          } else {
-            await keyringController.removeAccount(address);
-          }
-        }
+    for (let i = 0; i < newAccounts.length; i++) {
+      let address = newAccounts[i];
+      let num = parseInt(Number('0x' + address.substring(2, 4)), 10);
+      let start = parseInt(Number('0x' + obj.byte[0]), 10);
+      let end = parseInt(Number('0x' + obj.byte[1]), 10);
+      if (!oldAccounts.includes(address) && num >= start && num <= end) {
+        this.preferencesController.setSelectedAddress(address);
       }
     }
 

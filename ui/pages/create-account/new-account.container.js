@@ -20,10 +20,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     createAccount: (newAccountName, chainValue) => {
-      let bytePrefix = QUAI_CONTEXTS.filter((obj) => {
+      let range = QUAI_CONTEXTS.filter((obj) => {
         return obj.value == chainValue;
       })[0].byte;
-      return dispatch(actions.addNewAccount(bytePrefix)).then(
+      return dispatch(actions.addNewAccount(range)).then(
         (newAccountAddress) => {
           if (newAccountName) {
             dispatch(
