@@ -5,8 +5,8 @@ import {
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import TransactionListItemDetails from './transaction-list-item-details.component';
 import { combineTransactionHistories } from '../transaction-activity-log/transaction-activity-log.util';
+import TransactionListItemDetails from './transaction-list-item-details.component';
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state;
