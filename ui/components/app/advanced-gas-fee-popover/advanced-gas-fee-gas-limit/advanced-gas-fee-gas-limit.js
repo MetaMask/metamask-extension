@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
 import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { bnGreaterThan, bnLessThan } from '../../../../helpers/utils/util';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { GAS_LIMIT } from '../../../../pages/send/send.constants';
+import { MAX_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 import Button from '../../../ui/button';
 import FormField from '../../../ui/form-field';
 import I18nValue from '../../../ui/i18n-value';
@@ -11,10 +12,12 @@ import Typography from '../../../ui/typography';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
 
-const validateGasLimit = (gasLimit, minimumGasLimit) =>
-  gasLimit < minimumGasLimit || GAS_LIMIT.MIN || gasLimit > GAS_LIMIT.MAX
+const validateGasLimit = (gasLimit, minimumGasLimit) => {
+  return bnLessThan(gasLimit, minimumGasLimit) ||
+    bnGreaterThan(gasLimit, MAX_GAS_LIMIT_DEC)
     ? 'editGasLimitOutOfBoundsV2'
     : null;
+};
 
 const AdvancedGasFeeGasLimit = () => {
   const t = useI18nContext();
@@ -47,7 +50,9 @@ const AdvancedGasFeeGasLimit = () => {
     return (
       <FormField
         error={
-          gasLimitError ? t(gasLimitError, [GAS_LIMIT.MIN, GAS_LIMIT.MAX]) : ''
+          gasLimitError
+            ? t(gasLimitError, [minimumGasLimit - 1, MAX_GAS_LIMIT_DEC])
+            : ''
         }
         onChange={updateGasLimit}
         titleText={t('gasLimitV2')}

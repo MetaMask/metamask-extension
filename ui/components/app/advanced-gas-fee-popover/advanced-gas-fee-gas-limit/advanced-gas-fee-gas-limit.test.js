@@ -20,7 +20,7 @@ jest.mock('../../../../store/actions', () => ({
   removePollingTokenFromAppState: jest.fn(),
 }));
 
-const render = (txProps) => {
+const render = (contextProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -42,8 +42,8 @@ const render = (txProps) => {
       transaction={{
         userFeeLevel: 'custom',
         txParams: { gas: '0x5208' },
-        ...txProps,
       }}
+      {...contextProps}
     >
       <AdvancedGasFeePopoverContextProvider>
         <AdvancedGasFeeGasLimit />
@@ -93,5 +93,18 @@ describe('AdvancedGasFeeGasLimit', () => {
         'Gas limit must be greater than 20999 and less than 7920027',
       ),
     ).not.toBeInTheDocument();
+  });
+
+  it('should validate gas limit against minimumGasLimit it is passed to context', () => {
+    render({ minimumGasLimit: '0x7530' });
+    fireEvent.click(screen.queryByText('Edit'));
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 25000 },
+    });
+    expect(
+      screen.queryByText(
+        'Gas limit must be greater than 29999 and less than 7920027',
+      ),
+    ).toBeInTheDocument();
   });
 });
