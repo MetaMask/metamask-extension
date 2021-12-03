@@ -5,7 +5,7 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import Button from '../../../components/ui/button';
 import Checkbox from '../../../components/ui/check-box';
 import { getURLHostName } from '../../../helpers/utils/util';
-import ConnectHardwarePathSelector from './connect-hardware-path';
+import Dropdown from '../../../components/ui/dropdown';
 
 import { DEVICE_NAMES } from '../../../../shared/constants/hardware-wallets';
 
@@ -34,7 +34,6 @@ class AccountList extends Component {
   renderHdPathSelector() {
     const { device, selectedPath, hdPaths, onPathChange } = this.props;
     const { pathValue } = this.state;
-
     return (
       <div>
         <h3 className="hw-connect__hdPath__title">
@@ -42,16 +41,14 @@ class AccountList extends Component {
         </h3>
         <p className="hw-connect__msg">{this.context.t('selectPathHelp')}</p>
         <div className="hw-connect__hdPath">
-          <ConnectHardwarePathSelector
+          <Dropdown
             className="hw-connect__hdPath__select"
-            device={device}
+            options={hdPaths[device.toLowerCase()]}
+            selectedOption={pathValue || selectedPath}
             onChange={(value) => {
               this.setPath(value);
               onPathChange(value);
             }}
-            hdPaths={hdPaths}
-            pathValue={pathValue}
-            selectedPath={selectedPath}
           />
         </div>
       </div>
