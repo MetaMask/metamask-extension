@@ -90,46 +90,48 @@ export default class ChooseAccount extends Component {
     const { accounts, nativeCurrency, addressLastConnectedMap } = this.props;
     const { selectedAccounts } = this.state;
     return (
-      <div className="permissions-connect-choose-account__accounts-list">
-        {accounts.map((account, index) => {
-          const { address, addressLabel, balance } = account;
-          return (
-            <div
-              key={`permissions-connect-choose-account-${index}`}
-              onClick={() => this.handleAccountClick(address)}
-              className="permissions-connect-choose-account__account"
-            >
-              <div className="permissions-connect-choose-account__account-info-wrapper">
-                <CheckBox
-                  className="permissions-connect-choose-account__list-check-box"
-                  checked={selectedAccounts.has(address)}
-                />
-                <Identicon diameter={34} address={address} />
-                <div className="permissions-connect-choose-account__account__info">
-                  <div className="permissions-connect-choose-account__account__label">
-                    {addressLabel}
-                  </div>
-                  <UserPreferencedCurrencyDisplay
-                    className="permissions-connect-choose-account__account__balance"
-                    type={PRIMARY}
-                    value={balance}
-                    style={{ color: '#6A737D' }}
-                    suffix={nativeCurrency}
+      <div className="permissions-connect-choose-account__accounts-list-wrapper">
+        <div className="permissions-connect-choose-account__accounts-list">
+          {accounts.map((account, index) => {
+            const { address, addressLabel, balance } = account;
+            return (
+              <div
+                key={`permissions-connect-choose-account-${index}`}
+                onClick={() => this.handleAccountClick(address)}
+                className="permissions-connect-choose-account__account"
+              >
+                <div className="permissions-connect-choose-account__account-info-wrapper">
+                  <CheckBox
+                    className="permissions-connect-choose-account__list-check-box"
+                    checked={selectedAccounts.has(address)}
                   />
+                  <Identicon diameter={34} address={address} />
+                  <div className="permissions-connect-choose-account__account__info">
+                    <div className="permissions-connect-choose-account__account__label">
+                      {addressLabel}
+                    </div>
+                    <UserPreferencedCurrencyDisplay
+                      className="permissions-connect-choose-account__account__balance"
+                      type={PRIMARY}
+                      value={balance}
+                      style={{ color: '#6A737D' }}
+                      suffix={nativeCurrency}
+                    />
+                  </div>
                 </div>
+                {addressLastConnectedMap[address] ? (
+                  <Tooltip
+                    title={`${this.context.t('lastConnected')} ${
+                      addressLastConnectedMap[address]
+                    }`}
+                  >
+                    <i className="fa fa-info-circle" />
+                  </Tooltip>
+                ) : null}
               </div>
-              {addressLastConnectedMap[address] ? (
-                <Tooltip
-                  title={`${this.context.t('lastConnected')} ${
-                    addressLastConnectedMap[address]
-                  }`}
-                >
-                  <i className="fa fa-info-circle" />
-                </Tooltip>
-              ) : null}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     );
   };

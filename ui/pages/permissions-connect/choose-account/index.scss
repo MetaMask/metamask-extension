@@ -42,6 +42,11 @@
     color: $Grey-500;
   }
 
+  &__accounts-list-wrapper {
+    width: 92%;
+    display: flex;
+  }
+
   &__accounts-list {
     flex: 2 1 0;
     width: 92%;
