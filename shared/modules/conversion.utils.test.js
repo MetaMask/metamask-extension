@@ -1,5 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { addCurrencies, conversionUtil } from './conversion.utils';
+import {
+  addCurrencies,
+  conversionUtil,
+  divideCurrencies,
+} from './conversion.utils';
 
 describe('conversion utils', () => {
   describe('addCurrencies()', () => {
@@ -161,6 +165,41 @@ describe('conversion utils', () => {
           invertConversionRate: true,
         }),
       ).toStrictEqual('1.5');
+    });
+  });
+
+  describe('divideCurrencies()', () => {
+    it('should correctly divide decimal values', () => {
+      const result = divideCurrencies(9, 3, {
+        dividendBase: 10,
+        divisorBase: 10,
+      });
+      expect(result.toNumber()).toStrictEqual(3);
+    });
+
+    it('should correctly divide hexadecimal values', () => {
+      const result = divideCurrencies(1000, 0xa, {
+        dividendBase: 16,
+        divisorBase: 16,
+      });
+      expect(result.toNumber()).toStrictEqual(0x100);
+    });
+
+    it('should correctly divide hexadecimal value from decimal value', () => {
+      const result = divideCurrencies(0x3e8, 0xa, {
+        dividendBase: 16,
+        divisorBase: 16,
+      });
+      expect(result.toNumber()).toStrictEqual(0x100);
+    });
+
+    it('should throw error for wrong base value', () => {
+      expect(() => {
+        divideCurrencies(0x3e8, 0xa, {
+          dividendBase: 10.5,
+          divisorBase: 7,
+        });
+      }).toThrow('Must specify valid dividendBase and divisorBase');
     });
   });
 });

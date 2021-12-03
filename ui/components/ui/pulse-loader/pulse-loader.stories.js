@@ -2,8 +2,10 @@ import React from 'react';
 import PulseLoader from '.';
 
 export default {
-  title: 'PulseLoader',
+  title: 'Components/UI/PulseLoader',
   id: __filename,
 };
 
-export const common = () => <PulseLoader />;
+export const DefaultStory = () => <PulseLoader />;
+
+DefaultStory.storyName = 'Default';

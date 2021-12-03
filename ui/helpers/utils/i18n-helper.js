@@ -32,7 +32,7 @@ export const getMessage = (localeCode, localeMessages, key, substitutions) => {
         );
         Sentry.captureException(missingMessageErrors[key]);
         log.error(missingMessageErrors[key]);
-        if (process.env.IN_TEST === 'true') {
+        if (process.env.IN_TEST) {
           throw missingMessageErrors[key];
         }
       }

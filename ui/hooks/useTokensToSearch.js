@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
 import { isEqual, shuffle, uniqBy } from 'lodash';
@@ -94,8 +94,8 @@ export function useTokensToSearch({
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
-  const tokenList = useSelector(getTokenList);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, shallowEqual);
+  const tokenList = useSelector(getTokenList, isEqual);
   const useTokenDetection = useSelector(getUseTokenDetection);
   // token from dynamic api list is fetched when useTokenDetection is true
   const shuffledTokenList = useTokenDetection
@@ -115,7 +115,7 @@ export function useTokensToSearch({
   );
   const memoizedDefaultToken = useEqualityCheck(defaultToken);
 
-  const swapsTokens = useSelector(getSwapsTokens) || [];
+  const swapsTokens = useSelector(getSwapsTokens, isEqual) || [];
 
   const tokensToSearch = swapsTokens.length
     ? swapsTokens
@@ -154,15 +154,15 @@ export function useTokensToSearch({
         tokenList,
         useTokenDetection,
       );
-      if (
+      if (memoizedTopTokens[token.address.toLowerCase()]) {
+        tokensToSearchBuckets.top[
+          memoizedTopTokens[token.address.toLowerCase()].index
+        ] = renderableDataToken;
+      } else if (
         isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
         usersTokensAddressMap[token.address.toLowerCase()]
       ) {
         tokensToSearchBuckets.owned.push(renderableDataToken);
-      } else if (memoizedTopTokens[token.address.toLowerCase()]) {
-        tokensToSearchBuckets.top[
-          memoizedTopTokens[token.address.toLowerCase()].index
-        ] = renderableDataToken;
       } else {
         tokensToSearchBuckets.others.push(renderableDataToken);
       }

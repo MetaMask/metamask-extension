@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Kopieret!"
   },
-  "copiedTransactionId": {
-    "message": "Kopieret transaktions-id"
-  },
   "copyAddress": {
     "message": "Kopier adresse til udklipsholder"
   },

@@ -1,0 +1,57 @@
+$version-max-width: 56px; // Increase to show more of the version number
+$body-line-clamp: 4; // Number of lines in card body before truncating
+
+.snap-settings-card {
+  &__title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__toggle-container {
+    margin-left: auto;
+
+    &__toggle-button {
+      margin-right: -12px; // react-toggle-button width fix
+    }
+  }
+
+  &__body {
+    overflow: hidden;
+    /* stylelint-disable */
+    display: -webkit-box;
+    -webkit-line-clamp: $body-line-clamp;
+    -webkit-box-orient: vertical;
+    /* stylelint-enable */
+  }
+
+  &__version.box {
+    margin-left: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: $version-max-width;
+    flex: 0 0 $version-max-width;
+    text-align: right;
+  }
+
+  &__chip.chip {
+    margin: 0;
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    text-transform: capitalize;
+  }
+
+  &__button.button {
+    padding: 4px 16px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &__date-added {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

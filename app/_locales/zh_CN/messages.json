@@ -395,9 +395,6 @@
   "copiedExclamation": {
     "message": "已复制"
   },
-  "copiedTransactionId": {
-    "message": "交易 ID 复制成功"
-  },
   "copyAddress": {
     "message": "复制地址到剪贴板"
   },
@@ -1146,12 +1143,6 @@
   },
   "pending": {
     "message": "待处理"
-  },
-  "permissionCheckedIconDescription": {
-    "message": "您已同意该权限"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "您还未同意该权限"
   },
   "permissions": {
     "message": "权限"

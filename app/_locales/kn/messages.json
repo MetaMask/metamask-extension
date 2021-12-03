@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "ನಕಲಿಸಲಾಗಿದೆ!"
   },
-  "copiedTransactionId": {
-    "message": "ವ್ಯವಹಾರ ID ಅನ್ನು ನಕಲಿಸಲಾಗಿದೆ"
-  },
   "copyAddress": {
     "message": "ವಿಳಾಸವನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
   },

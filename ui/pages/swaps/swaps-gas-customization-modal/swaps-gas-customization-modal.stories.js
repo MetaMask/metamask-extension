@@ -19,7 +19,7 @@ import GasModalPageContainer from './swaps-gas-customization-modal.component';
 const store = configureStore(testData);
 
 export default {
-  title: 'Swap',
+  title: 'Pages/Swaps/GasModalPageContainer',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
@@ -38,7 +38,7 @@ const sumHexWEIsToRenderableEth = (hexWEIs, currencySymbol = 'ETH') => {
   );
 };
 
-export const GasModalPageContainerComponent = () => {
+export const DefaultStory = () => {
   // Send Amount Data
   const hexWei = getWeiHexFromDecimalValue({
     value: String(number('Send Amount (this should be static)', 0.01)),
@@ -63,8 +63,6 @@ export const GasModalPageContainerComponent = () => {
 
   const { metamask } = store.getState();
   const { currentCurrency, conversionRate } = metamask;
-
-  console.log('metamask', store.getState());
 
   useEffect(() => {
     // Transfer Fee
@@ -141,11 +139,9 @@ export const GasModalPageContainerComponent = () => {
         buttonDataLoading: true,
       }}
       setSwapsCustomizationModalPrice={(newPrice) => {
-        console.log('updatedPrice', newPrice);
         setGasPrice(newPrice);
       }}
       setSwapsCustomizationModalLimit={(newLimit) => {
-        console.log('updatedLimit', newLimit);
         setGasLimit(newLimit);
       }}
       customGasPrice={gasPrice}
@@ -156,3 +152,5 @@ export const GasModalPageContainerComponent = () => {
     />
   );
 };
+
+DefaultStory.storyName = 'Default';

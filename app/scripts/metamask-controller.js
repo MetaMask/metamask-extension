@@ -183,7 +183,9 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokensController,
     });
 
-    this.assetsContractController = new AssetsContractController();
+    this.assetsContractController = new AssetsContractController({
+      provider: this.provider,
+    });
 
     this.collectiblesController = new CollectiblesController({
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
@@ -588,6 +590,7 @@ export default class MetamaskController extends EventEmitter {
         console.error(error);
       }
     });
+
     this.networkController.lookupNetwork();
     this.messageManager = new MessageManager({
       metricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -909,6 +912,14 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.setUseTokenDetection,
         this.preferencesController,
       ),
+      setUseCollectibleDetection: nodeify(
+        this.preferencesController.setUseCollectibleDetection,
+        this.preferencesController,
+      ),
+      setOpenSeaEnabled: nodeify(
+        this.preferencesController.setOpenSeaEnabled,
+        this.preferencesController,
+      ),
       setIpfsGateway: this.setIpfsGateway.bind(this),
       setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
       setCurrentLocale: this.setCurrentLocale.bind(this),
@@ -1039,6 +1050,11 @@ export default class MetamaskController extends EventEmitter {
       // CollectiblesController
       addCollectible: nodeify(
         collectiblesController.addCollectible,
+        collectiblesController,
+      ),
+
+      addCollectibleVerifyOwnership: nodeify(
+        collectiblesController.addCollectibleVerifyOwnership,
         collectiblesController,
       ),
 
@@ -1706,6 +1722,11 @@ export default class MetamaskController extends EventEmitter {
     if (deviceName === DEVICE_NAMES.LATTICE) {
       keyring.appName = 'MetaMask';
     }
+    if (deviceName === 'trezor') {
+      const model = keyring.getModel();
+      this.appStateController.setTrezorModel(model);
+    }
+
     keyring.network = this.networkController.getProviderConfig().type;
 
     return keyring;
@@ -2374,7 +2395,11 @@ export default class MetamaskController extends EventEmitter {
     const address =
       fromAddress || this.preferencesController.getSelectedAddress();
     const keyring = await this.keyringController.getKeyringForAccount(address);
-    return keyring.type !== KEYRING_TYPES.TREZOR;
+    if (keyring.type === KEYRING_TYPES.TREZOR) {
+      const model = keyring.getModel();
+      return model === 'T';
+    }
+    return true;
   }
 
   //=============================================================================

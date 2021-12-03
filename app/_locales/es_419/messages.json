@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "¡Copiado!"
   },
-  "copiedTransactionId": {
-    "message": "Id. de transacción copiado"
-  },
   "copyAddress": {
     "message": "Copiar dirección al Portapapeles"
   },
@@ -1345,12 +1342,6 @@
   },
   "pending": {
     "message": "Pendiente"
-  },
-  "permissionCheckedIconDescription": {
-    "message": "Aprobó este permiso"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "No aprobó este permiso"
   },
   "permissions": {
     "message": "Permisos"

@@ -349,14 +349,14 @@ describe('MetaMask', function () {
     });
 
     it('displays the token transfer data', async function () {
-      await driver.clickElement({ text: 'Data', tag: 'button' });
+      await driver.clickElement({ text: 'Hex', tag: 'button' });
       await driver.delay(regularDelayMs);
 
       const functionType = await driver.findElement(
         '.confirm-page-container-content__function-type',
       );
       const functionTypeText = await functionType.getText();
-      assert.equal(functionTypeText, 'Transfer');
+      assert(functionTypeText.match('Transfer'));
 
       const tokenAmount = await driver.findElement(
         '.confirm-page-container-summary__title-text',

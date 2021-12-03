@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "Скопировано!"
   },
-  "copiedTransactionId": {
-    "message": "Скопированный идентификатор транзакции"
-  },
   "copyAddress": {
     "message": "Скопировать адрес в буфер обмена"
   },
@@ -1345,12 +1342,6 @@
   },
   "pending": {
     "message": "В ожидании"
-  },
-  "permissionCheckedIconDescription": {
-    "message": "Вы одобрили это разрешение"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Вы не одобрили это разрешение"
   },
   "permissions": {
     "message": "Разрешения"

@@ -254,12 +254,28 @@
       color: #000;
     }
 
-    &__secondary-fee {
+    &__secondary-fee,
+    &__labelled-fee {
       @include H6;
 
       font-weight: normal;
       color: #8c8e94;
     }
+
+    &__labelled-fee {
+      display: flex;
+      justify-content: space-between;
+
+      h6.typography--h6 {
+        font-weight: normal;
+      }
+    }
+  }
+
+  &__transaction-details-extra-content {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
   }
 
   &__view-full-tx-button-wrapper {

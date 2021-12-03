@@ -7,30 +7,38 @@ import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import Typography from '../../ui/typography/typography';
 
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export default function TransactionDetail({ rows = [], onEdit }) {
-  // eslint-disable-next-line prefer-destructuring
-  const EIP_1559_V2 = process.env.EIP_1559_V2;
-
+export default function TransactionDetail({
+  rows = [],
+  onEdit,
+  userAcknowledgedGasMissing,
+}) {
   const t = useI18nContext();
   const {
     gasLimit,
+    hasSimulationError,
     estimateUsed,
     maxFeePerGas,
     maxPriorityFeePerGas,
+    supportsEIP1559V2,
     transaction,
   } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
 
-  if (EIP_1559_V2 && estimateUsed) {
+  if (supportsEIP1559V2 && estimateUsed) {
+    const editEnabled = !hasSimulationError || userAcknowledgedGasMissing;
+    if (!editEnabled) return null;
+
     return (
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
           <button onClick={() => openModal('editGasFee')}>
-            <span className="transaction-detail-edit-V2__icon">
+            <span
+              className={`transaction-detail-edit-V2__icon transaction-detail-edit-V2__icon-${estimateUsed}`}
+            >
               {`${PRIORITY_LEVEL_ICON_MAP[estimateUsed]} `}
             </span>
             <span className="transaction-detail-edit-V2__label">
@@ -47,19 +55,32 @@ export default function TransactionDetail({ rows = [], onEdit }) {
             <InfoTooltip
               contentText={
                 <div className="transaction-detail-edit-V2__tooltip">
-                  <Typography fontSize="12px" color={COLORS.GREY}>
+                  <Typography
+                    tag={TYPOGRAPHY.Paragraph}
+                    variant={TYPOGRAPHY.H7}
+                    color={COLORS.GREY}
+                  >
                     {t('dappSuggestedTooltip', [transaction.origin])}
                   </Typography>
-                  <Typography fontSize="12px">
-                    <b>{t('maxBaseFee')}</b>
+                  <Typography
+                    tag={TYPOGRAPHY.Paragraph}
+                    variant={TYPOGRAPHY.H7}
+                  >
+                    <strong>{t('maxBaseFee')}</strong>
                     {maxFeePerGas}
                   </Typography>
-                  <Typography fontSize="12px">
-                    <b>{t('maxPriorityFee')}</b>
+                  <Typography
+                    tag={TYPOGRAPHY.Paragraph}
+                    variant={TYPOGRAPHY.H7}
+                  >
+                    <strong>{t('maxPriorityFee')}</strong>
                     {maxPriorityFeePerGas}
                   </Typography>
-                  <Typography fontSize="12px">
-                    <b>{t('gasLimit')}</b>
+                  <Typography
+                    tag={TYPOGRAPHY.Paragraph}
+                    variant={TYPOGRAPHY.H7}
+                  >
+                    <strong>{t('gasLimit')}</strong>
                     {gasLimit}
                   </Typography>
                 </div>
@@ -88,4 +109,5 @@ export default function TransactionDetail({ rows = [], onEdit }) {
 TransactionDetail.propTypes = {
   rows: PropTypes.arrayOf(TransactionDetailItem).isRequired,
   onEdit: PropTypes.func,
+  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
 };

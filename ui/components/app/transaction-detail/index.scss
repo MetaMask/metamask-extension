@@ -17,7 +17,6 @@
   }
 
   &-edit-V2 {
-    margin-bottom: 10px;
     display: flex;
     align-items: baseline;
     justify-content: flex-end;
@@ -32,6 +31,7 @@
       background: transparent;
       border: 0;
       padding-inline-end: 0;
+      position: relative;
       white-space: pre;
     }
 
@@ -41,7 +41,18 @@
     }
 
     &__icon {
-      font-size: 1rem;
+      @include Paragraph;
+
+      line-height: 1;
+      position: absolute;
+      left: -16px;
+      top: 0;
+
+      &-custom {
+        font-size: 1.35rem;
+        left: -12px;
+        top: -2px;
+      }
     }
 
     &__label {
@@ -65,5 +76,9 @@
         min-width: 60%;
       }
     }
+  }
+
+  &-rows {
+    margin-top: 10px;
   }
 }

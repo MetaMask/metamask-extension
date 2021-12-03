@@ -4,6 +4,7 @@ import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import NewCollectiblesNotice from '../new-collectibles-notice';
+import CollectiblesItems from '../collectibles-items';
 import {
   COLORS,
   TYPOGRAPHY,
@@ -14,15 +15,20 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export default function CollectiblesList({ onAddNFT }) {
+export default function CollectiblesTab({ onAddNFT }) {
   const collectibles = [];
-  const newNFTsDetected = true;
+  const newNFTsDetected = false;
   const t = useI18nContext();
 
   return (
-    <div className="collectibles-list">
+    <div className="collectibles-tab">
       {collectibles.length > 0 ? (
-        <span>{JSON.stringify(collectibles)}</span>
+        <CollectiblesItems
+          onAddNFT={onAddNFT}
+          onRefreshList={() => {
+            console.log('refreshing collectibles');
+          }}
+        />
       ) : (
         <Box padding={[6, 12, 6, 12]}>
           {newNFTsDetected ? <NewCollectiblesNotice /> : null}
@@ -79,6 +85,6 @@ export default function CollectiblesList({ onAddNFT }) {
   );
 }
 
-CollectiblesList.propTypes = {
+CollectiblesTab.propTypes = {
   onAddNFT: PropTypes.func.isRequired,
 };

@@ -3,29 +3,38 @@ import { useDispatch } from 'react-redux';
 
 import { PRIORITY_LEVELS } from '../../../shared/constants/gas';
 import {
-  decGWEIToHexWEI,
   decimalToHex,
+  decGWEIToHexWEI,
 } from '../../helpers/utils/conversions.util';
 import { updateTransaction as updateTransactionFn } from '../../store/actions';
 
 export const useTransactionFunctions = ({
   defaultEstimateToUse,
-  gasLimit,
   gasFeeEstimates,
+  gasLimit: gasLimitInTransaction,
   transaction,
 }) => {
   const dispatch = useDispatch();
 
   const updateTransaction = useCallback(
-    (estimateUsed, maxFeePerGas, maxPriorityFeePerGas) => {
+    ({
+      estimateUsed,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      gasLimit = gasLimitInTransaction,
+    }) => {
       const newGasSettings = {
         gas: decimalToHex(gasLimit),
         gasLimit: decimalToHex(gasLimit),
         estimateSuggested: defaultEstimateToUse,
         estimateUsed,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
       };
+      if (maxFeePerGas) {
+        newGasSettings.maxFeePerGas = maxFeePerGas;
+      }
+      if (maxPriorityFeePerGas) {
+        newGasSettings.maxPriorityFeePerGas = maxPriorityFeePerGas;
+      }
 
       const updatedTxMeta = {
         ...transaction,
@@ -38,7 +47,7 @@ export const useTransactionFunctions = ({
 
       dispatch(updateTransactionFn(updatedTxMeta));
     },
-    [defaultEstimateToUse, dispatch, gasLimit, transaction],
+    [defaultEstimateToUse, dispatch, gasLimitInTransaction, transaction],
   );
 
   const updateTransactionUsingGasFeeEstimates = useCallback(
@@ -48,25 +57,25 @@ export const useTransactionFunctions = ({
           maxFeePerGas,
           maxPriorityFeePerGas,
         } = transaction?.dappSuggestedGasFees;
-        updateTransaction(
-          PRIORITY_LEVELS.CUSTOM,
+        updateTransaction({
+          estimateUsed: PRIORITY_LEVELS.DAPP_SUGGESTED,
           maxFeePerGas,
           maxPriorityFeePerGas,
-        );
+        });
       } else {
         const {
           suggestedMaxFeePerGas,
           suggestedMaxPriorityFeePerGas,
         } = gasFeeEstimates[gasFeeEstimateToUse];
-        updateTransaction(
-          gasFeeEstimateToUse,
-          decGWEIToHexWEI(suggestedMaxFeePerGas),
-          decGWEIToHexWEI(suggestedMaxPriorityFeePerGas),
-        );
+        updateTransaction({
+          estimateUsed: gasFeeEstimateToUse,
+          maxFeePerGas: decGWEIToHexWEI(suggestedMaxFeePerGas),
+          maxPriorityFeePerGas: decGWEIToHexWEI(suggestedMaxPriorityFeePerGas),
+        });
       }
     },
     [gasFeeEstimates, transaction?.dappSuggestedGasFees, updateTransaction],
   );
 
-  return { updateTransactionUsingGasFeeEstimates };
+  return { updateTransaction, updateTransactionUsingGasFeeEstimates };
 };

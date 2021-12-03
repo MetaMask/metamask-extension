@@ -44,9 +44,16 @@ const LATTICE_HD_PATHS = [
   { name: `Ledger Legacy (${LATTICE_MEW_PATH})`, value: LATTICE_MEW_PATH },
 ];
 
+const TREZOR_TESTNET_PATH = `m/44'/1'/0'/0`;
+const TREZOR_HD_PATHS = [
+  { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
+  { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
+];
+
 const HD_PATHS = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
+  trezor: TREZOR_HD_PATHS,
 };
 
 class ConnectHardwareForm extends Component {

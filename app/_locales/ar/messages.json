@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "تم النسخ."
   },
-  "copiedTransactionId": {
-    "message": "تم نسخ معرف المعاملة"
-  },
   "copyAddress": {
     "message": "نسخ العنوان إلى الحافظة"
   },

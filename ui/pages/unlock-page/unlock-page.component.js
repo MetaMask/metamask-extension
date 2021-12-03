@@ -126,7 +126,6 @@ export default class UnlockPage extends Component {
         variant="contained"
         size="large"
         onClick={this.handleSubmit}
-        disableRipple
       >
         {this.context.t('unlock')}
       </Button>

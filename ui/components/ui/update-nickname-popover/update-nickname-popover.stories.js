@@ -5,7 +5,7 @@ import Button from '../button';
 import UpdateNicknamePopover from '.';
 
 export default {
-  title: 'UpdateNickname',
+  title: 'Components/UI/UpdateNickname',
   id: __filename,
 };
 

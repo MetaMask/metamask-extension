@@ -1,8 +1,9 @@
 .icon-border {
   border-radius: 50%;
-  border: 1px solid #f2f3f4;
-  background: #ececf0;
+  border: 1px solid $ui-1;
+  background: $ui-1;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
