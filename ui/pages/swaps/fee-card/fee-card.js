@@ -60,7 +60,7 @@ export default function FeeCard({
   });
 
   const tokenApprovalTextComponent = (
-    <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
+    <span key="fee-card-approve-symbol" className="fee-card__bold">
       {t('enableToken', [tokenApprovalSourceTokenSymbol])}
     </span>
   );

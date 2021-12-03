@@ -65,10 +65,7 @@ const createProps = (customProps = {}) => {
     hideTokenApprovalRow: false,
     onFeeCardMaxRowClick: jest.fn(),
     tokenApprovalTextComponent: (
-      <span
-        key="swaps-view-quote-approve-symbol-1"
-        className="view-quote__bold"
-      >
+      <span key="fee-card-approve-symbol" className="fee-card__bold">
         ABC
       </span>
     ),
