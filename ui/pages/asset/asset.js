@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
-import CollectibleDetails from '../../components/app/collectible-details/collectible-details';
-import { getCollectibles, getTokens } from '../../ducks/metamask/metamask';
+import { getTokens } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
@@ -12,16 +11,10 @@ import TokenAsset from './components/token-asset';
 const Asset = () => {
   const nativeCurrency = useSelector((state) => state.metamask.nativeCurrency);
   const tokens = useSelector(getTokens);
-  const collectibles = useSelector(getCollectibles);
-  const { asset, id } = useParams();
+  const { asset } = useParams();
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, asset),
-  );
-
-  const collectible = collectibles.find(
-    ({ address, tokenId }) =>
-      isEqualCaseInsensitive(address, asset) && id === tokenId,
   );
 
   useEffect(() => {
@@ -32,8 +25,6 @@ const Asset = () => {
   let content;
   if (token) {
     content = <TokenAsset token={token} />;
-  } else if (collectible) {
-    content = <CollectibleDetails collectible={collectible} />;
   } else if (asset === nativeCurrency) {
     content = <NativeAsset nativeCurrency={nativeCurrency} />;
   } else {

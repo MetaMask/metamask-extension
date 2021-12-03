@@ -1343,12 +1343,6 @@
   "pending": {
     "message": "Đang chờ xử lý"
   },
-  "permissionCheckedIconDescription": {
-    "message": "Bạn đã phê duyệt quyền này"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Bạn chưa phê duyệt quyền này"
-  },
   "permissions": {
     "message": "Quyền"
   },

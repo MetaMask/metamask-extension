@@ -4,11 +4,11 @@ import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetailItem from '.';
 
 export default {
-  title: 'Transaction Detail Item',
+  title: 'Components/App/TransactionDetailItem',
   id: __filename,
 };
 
-export const basic = () => {
+export const DefaultStory = () => {
   return (
     <div style={{ width: '400px' }}>
       <TransactionDetailItem
@@ -32,3 +32,5 @@ export const basic = () => {
     </div>
   );
 };
+
+DefaultStory.storyName = 'Default';
