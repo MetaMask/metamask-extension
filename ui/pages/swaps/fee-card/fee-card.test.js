@@ -90,13 +90,13 @@ describe('FeeCard', () => {
     useSelector.mockImplementation(generateUseSelectorRouter());
     const props = createProps();
     const { getByText } = renderWithProvider(<FeeCard {...props} />);
-    expect(getByText('Best of 6 quotes')).toBeInTheDocument();
+    expect(getByText('Best of 6 quotes.')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
     expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
     expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
     expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
-    expect(getByText('Includes a 0.875% MetaMask fee')).toBeInTheDocument();
+    expect(getByText('Includes a 0.875% MetaMask fee.')).toBeInTheDocument();
     expect(
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
@@ -110,13 +110,13 @@ describe('FeeCard', () => {
       maxFeePerGasDecGWEI: '4',
     });
     const { getByText } = renderWithProvider(<FeeCard {...props} />, store);
-    expect(getByText('Best of 6 quotes')).toBeInTheDocument();
+    expect(getByText('Best of 6 quotes.')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
     expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
     expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
     expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
-    expect(getByText('Includes a 0.875% MetaMask fee')).toBeInTheDocument();
+    expect(getByText('Includes a 0.875% MetaMask fee.')).toBeInTheDocument();
     expect(
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
