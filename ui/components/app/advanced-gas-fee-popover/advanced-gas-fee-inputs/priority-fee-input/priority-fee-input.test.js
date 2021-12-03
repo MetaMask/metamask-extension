@@ -1,5 +1,4 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
 
 import { GAS_ESTIMATE_TYPES } from '../../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
@@ -63,53 +62,9 @@ describe('PriorityfeeInput', () => {
   it('should renders priorityfee value from transaction if current estimate used is custom', () => {
     render({
       txParams: {
-        maxPriorityFeePerGas: '0x12A05F200',
+        maxPriorityFeePerGas: '0x77359400',
       },
     });
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(5);
-  });
-
-  it('should show error if value is 0', () => {
-    render({
-      txParams: {
-        maxPriorityFeePerGas: '0x12A05F200',
-      },
-    });
-    fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 0 },
-    });
-    expect(
-      screen.queryByText('Priority fee must be at least 1 GWEI'),
-    ).toBeInTheDocument();
-  });
-
-  it('should show error if value is less than suggested low fee estimate', () => {
-    render({
-      txParams: {
-        maxPriorityFeePerGas: '0x12A05F200',
-      },
-    });
-    fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 2 },
-    });
-    expect(
-      screen.queryByText('Priority fee is low for current network conditions'),
-    ).toBeInTheDocument();
-  });
-
-  it('should show error if value is greater than suggested high fee estimate', () => {
-    render({
-      txParams: {
-        maxPriorityFeePerGas: '0x12A05F200',
-      },
-    });
-    fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 20 },
-    });
-    expect(
-      screen.queryByText(
-        'Priority fee is higher than necessary. You may pay more than needed',
-      ),
-    ).toBeInTheDocument();
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
   });
 });

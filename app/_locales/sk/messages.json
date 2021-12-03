@@ -212,9 +212,6 @@
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
-  "copiedTransactionId": {
-    "message": "Kopírované ID transakcie"
-  },
   "copyAddress": {
     "message": "Kopírovať adresu do schránky"
   },

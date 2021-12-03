@@ -15,11 +15,11 @@ import { ASSET_TYPES, SEND_STAGES } from '../../../ducks/send';
 import SendHeader from './send-header.component';
 
 export default {
-  title: 'SendHeader',
+  title: 'Pages/Send/SendHeader',
   id: __filename,
 };
 
-export const SendHeaderComponent = () => {
+export const DefaultStory = () => {
   const store = createStore(
     combineReducers({ send: sendSBReducer, history: historySBReducer }),
   );
@@ -52,3 +52,5 @@ export const SendHeaderComponent = () => {
     </Provider>
   );
 };
+
+DefaultStory.storyName = 'Default';

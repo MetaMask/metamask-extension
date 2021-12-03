@@ -1,17 +1,7 @@
 /* eslint-disable import/unambiguous */
 module.exports = {
-  collectCoverageFrom: ['<rootDir>/ui/**/*.js'],
-  coverageDirectory: './jest-coverage/main',
-  coveragePathIgnorePatterns: ['.stories.js', '.snap'],
-  coverageReporters: ['json', 'lcov', 'text', 'clover'],
-  coverageThreshold: {
-    global: {
-      branches: 35,
-      functions: 37,
-      lines: 43,
-      statements: 43,
-    },
-  },
+  coverageDirectory: './jest-coverage/storybook',
+  coverageReporters: ['html', 'text-summary'],
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,

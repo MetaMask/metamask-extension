@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "कॉपी किया गया!"
   },
-  "copiedTransactionId": {
-    "message": "कॉपी की गई लेनदेन ID"
-  },
   "copyAddress": {
     "message": "क्लिपबोर्ड पर पता कॉपी करें"
   },
@@ -1345,12 +1342,6 @@
   },
   "pending": {
     "message": "लंबित"
-  },
-  "permissionCheckedIconDescription": {
-    "message": "आपने इस अनुमति को अनुमोदित कर दिया है"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "आपने इस अनुमति को अनुमोदित नहीं किया है"
   },
   "permissions": {
     "message": "अनुमतियाँ"

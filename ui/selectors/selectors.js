@@ -142,9 +142,12 @@ export function getParticipateInMetaMetrics(state) {
 }
 
 export function isEIP1559Account(state) {
-  // Trezor does not support 1559 at this time
-  const currentKeyring = getCurrentKeyring(state);
-  return currentKeyring && currentKeyring.type !== KEYRING_TYPES.TREZOR;
+  const keyring = getCurrentKeyring(state);
+
+  if (keyring?.type === KEYRING_TYPES.TREZOR) {
+    return state.metamask.trezorModel === 'T';
+  }
+  return true;
 }
 
 /**
@@ -706,6 +709,15 @@ export function getUseTokenDetection(state) {
  */
 export function getUseCollectibleDetection(state) {
   return Boolean(state.metamask.useCollectibleDetection);
+}
+
+/**
+ * To get the openSeaEnabled flag which determines whether we use OpenSea's API
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getOpenSeaEnabled(state) {
+  return Boolean(state.metamask.openSeaEnabled);
 }
 
 /**

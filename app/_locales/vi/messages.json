@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "Đã sao chép!"
   },
-  "copiedTransactionId": {
-    "message": "Đã sao chép mã giao dịch"
-  },
   "copyAddress": {
     "message": "Sao chép địa chỉ vào khay nhớ tạm"
   },
@@ -1345,12 +1342,6 @@
   },
   "pending": {
     "message": "Đang chờ xử lý"
-  },
-  "permissionCheckedIconDescription": {
-    "message": "Bạn đã phê duyệt quyền này"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Bạn chưa phê duyệt quyền này"
   },
   "permissions": {
     "message": "Quyền"

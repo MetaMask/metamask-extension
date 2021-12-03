@@ -32,6 +32,7 @@ export default class AppStateController extends EventEmitter {
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
       showTestnetMessageInDropdown: true,
+      trezorModel: null,
       ...initState,
       qrHardware: {},
     });
@@ -242,5 +243,13 @@ export default class AppStateController extends EventEmitter {
    */
   setShowTestnetMessageInDropdown(showTestnetMessageInDropdown) {
     this.store.updateState({ showTestnetMessageInDropdown });
+  }
+
+  /**
+   * Sets a property indicating the model of the user's Trezor hardware wallet
+   * @returns {void}
+   */
+  setTrezorModel(trezorModel) {
+    this.store.updateState({ trezorModel });
   }
 }

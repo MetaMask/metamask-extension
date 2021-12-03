@@ -10,12 +10,12 @@ import SendAssetRow from './send-asset-row.component';
 const store = configureStore(testData);
 
 export default {
-  title: 'SendAssetRow',
+  title: 'Pages/Send/SendContent/SendAssetRow',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-export const SendAssetRowComponent = () => {
+export const DefaultStory = () => {
   const { metamask } = store.getState();
 
   const { identities, assetImages, tokens } = metamask;
@@ -34,3 +34,5 @@ export const SendAssetRowComponent = () => {
     />
   );
 };
+
+DefaultStory.storyName = 'Default';

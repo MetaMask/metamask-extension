@@ -4,11 +4,11 @@ import { text } from '@storybook/addon-knobs';
 import ActionableMessage from '.';
 
 export default {
-  title: 'ActionableMessage',
+  title: 'Components/UI/ActionableMessage',
   id: __filename,
 };
 
-export const NoAction = () => (
+export const DefaultStory = () => (
   <div style={{ height: '200px', width: '200px' }}>
     <ActionableMessage
       message={text(
@@ -18,6 +18,8 @@ export const NoAction = () => (
     />
   </div>
 );
+
+DefaultStory.storyName = 'Default';
 
 export const OneAction = () => (
   <div style={{ height: '200px', width: '250px' }}>
@@ -70,7 +72,7 @@ export const LeftAligned = () => (
   </div>
 );
 
-export const withIcon = () => (
+export const WithIcon = () => (
   <div style={{ height: '200px', width: '300px' }}>
     <ActionableMessage
       message={text(

@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
+import Tooltip from '../tooltip';
 import Popover from '../popover';
 import Button from '../button';
 import Identicon from '../identicon/identicon.component';
@@ -8,13 +9,18 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import CopyIcon from '../icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
-const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
+const NicknamePopover = ({
+  address,
+  nickname,
+  onClose = null,
+  onAdd = null,
+  explorerLink,
+}) => {
   const t = useContext(I18nContext);
 
   const onAddClick = useCallback(() => {
-    onAdd(address);
-    onClose();
-  }, [address, onClose, onAdd]);
+    onAdd();
+  }, [onAdd]);
 
   const [copied, handleCopy] = useCopyToClipboard();
 
@@ -27,31 +33,51 @@ const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
           className="nickname-popover__identicon"
         />
         <div className="nickname-popover__address">
-          {shortenAddress(address)}
+          {nickname || shortenAddress(address)}
         </div>
         <div className="nickname-popover__public-address">
           <div className="nickname-popover__public-address__constant">
             {address}
           </div>
-          <button
-            type="link"
-            onClick={() => {
-              handleCopy(address);
-            }}
+
+          <Tooltip
+            position="bottom"
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
           >
-            <CopyIcon size={11} color="#989a9b" />
-          </button>
+            <button
+              type="link"
+              onClick={() => {
+                handleCopy(address);
+              }}
+              title=""
+            >
+              <CopyIcon size={11} color="#989a9b" />
+            </button>
+          </Tooltip>
         </div>
+
         <div className="nickname-popover__view-on-block-explorer">
-          {t('viewOnBlockExplorer')}
+          <Button
+            type="link"
+            className="nickname-popover__etherscan-link"
+            onClick={() => {
+              global.platform.openTab({
+                url: explorerLink,
+              });
+            }}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={t('etherscanView')}
+          >
+            {t('viewOnBlockExplorer')}
+          </Button>
         </div>
         <Button
           type="primary"
           className="nickname-popover__footer-button"
           onClick={onAddClick}
         >
-          {t('addANickname')}
+          {nickname ? t('editANickname') : t('addANickname')}
         </Button>
       </Popover>
     </div>
@@ -60,8 +86,10 @@ const NicknamePopover = ({ address, onClose = null, onAdd = null }) => {
 
 NicknamePopover.propTypes = {
   address: PropTypes.string,
+  nickname: PropTypes.string,
   onClose: PropTypes.func,
   onAdd: PropTypes.func,
+  explorerLink: PropTypes.string,
 };
 
 export default NicknamePopover;

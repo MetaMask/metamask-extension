@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  METASWAP_CHAINID_API_HOST_MAP,
   ALLOWED_CONTRACT_ADDRESSES,
   SWAPS_WRAPPED_TOKENS_ADDRESSES,
   ETHEREUM,
@@ -79,14 +78,8 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-export const getBaseApi = function (
-  type,
-  chainId = MAINNET_CHAIN_ID,
-  useNewSwapsApi = false,
-) {
-  const baseUrl = useNewSwapsApi
-    ? getBaseUrlForNewSwapsApi(type, chainId)
-    : METASWAP_CHAINID_API_HOST_MAP[chainId];
+export const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
+  const baseUrl = getBaseUrlForNewSwapsApi(type, chainId);
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   if (!baseUrl) {
     throw new Error(`Swaps API calls are disabled for chainId: ${chainId}`);
@@ -300,7 +293,7 @@ export async function fetchTradesInfo(
     fromAddress,
     exchangeList,
   },
-  { chainId, useNewSwapsApi },
+  { chainId },
 ) {
   const urlParams = {
     destinationToken,
@@ -319,11 +312,7 @@ export async function fetchTradesInfo(
   }
 
   const queryString = new URLSearchParams(urlParams).toString();
-  const tradeURL = `${getBaseApi(
-    'trade',
-    chainId,
-    useNewSwapsApi,
-  )}${queryString}`;
+  const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
   const tradesResponse = await fetchWithCache(
     tradeURL,
     { method: 'GET', headers: clientIdHeader },
@@ -367,8 +356,8 @@ export async function fetchTradesInfo(
   return newQuotes;
 }
 
-export async function fetchToken(contractAddress, chainId, useNewSwapsApi) {
-  const tokenUrl = getBaseApi('token', chainId, useNewSwapsApi);
+export async function fetchToken(contractAddress, chainId) {
+  const tokenUrl = getBaseApi('token', chainId);
   const token = await fetchWithCache(
     `${tokenUrl}?address=${contractAddress}`,
     { method: 'GET', headers: clientIdHeader },
@@ -377,8 +366,8 @@ export async function fetchToken(contractAddress, chainId, useNewSwapsApi) {
   return token;
 }
 
-export async function fetchTokens(chainId, useNewSwapsApi) {
-  const tokensUrl = getBaseApi('tokens', chainId, useNewSwapsApi);
+export async function fetchTokens(chainId) {
+  const tokensUrl = getBaseApi('tokens', chainId);
   const tokens = await fetchWithCache(
     tokensUrl,
     { method: 'GET', headers: clientIdHeader },
@@ -399,12 +388,8 @@ export async function fetchTokens(chainId, useNewSwapsApi) {
   return filteredTokens;
 }
 
-export async function fetchAggregatorMetadata(chainId, useNewSwapsApi) {
-  const aggregatorMetadataUrl = getBaseApi(
-    'aggregatorMetadata',
-    chainId,
-    useNewSwapsApi,
-  );
+export async function fetchAggregatorMetadata(chainId) {
+  const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', chainId);
   const aggregators = await fetchWithCache(
     aggregatorMetadataUrl,
     { method: 'GET', headers: clientIdHeader },
@@ -425,8 +410,8 @@ export async function fetchAggregatorMetadata(chainId, useNewSwapsApi) {
   return filteredAggregators;
 }
 
-export async function fetchTopAssets(chainId, useNewSwapsApi) {
-  const topAssetsUrl = getBaseApi('topAssets', chainId, useNewSwapsApi);
+export async function fetchTopAssets(chainId) {
+  const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response = await fetchWithCache(
     topAssetsUrl,
     { method: 'GET', headers: clientIdHeader },
@@ -473,8 +458,8 @@ export async function fetchTokenBalance(address, userAddress) {
   return usersToken;
 }
 
-export async function fetchSwapsGasPrices(chainId, useNewSwapsApi) {
-  const gasPricesUrl = getBaseApi('gasPrices', chainId, useNewSwapsApi);
+export async function fetchSwapsGasPrices(chainId) {
+  const gasPricesUrl = getBaseApi('gasPrices', chainId);
   const response = await fetchWithCache(
     gasPricesUrl,
     { method: 'GET', headers: clientIdHeader },
@@ -816,7 +801,7 @@ export const getNetworkNameByChainId = (chainId) => {
  * It returns info about if Swaps are enabled and if we should use our new APIs for it.
  * @param {object} swapsFeatureFlags
  * @param {string} chainId
- * @returns object with 2 items: "swapsFeatureIsLive" and "useNewSwapsApi"
+ * @returns object with 2 items: "swapsFeatureIsLive"
  */
 export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
   const networkName = getNetworkNameByChainId(chainId);
@@ -824,14 +809,12 @@ export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
   if ([LOCALHOST_CHAIN_ID, RINKEBY_CHAIN_ID].includes(chainId)) {
     return {
       swapsFeatureIsLive: true,
-      useNewSwapsApi: false,
     };
   }
   // If a network name is not found in the list of feature flags, disable Swaps.
   if (!swapsFeatureFlags[networkName]) {
     return {
       swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
     };
   }
   const isNetworkEnabledForNewApi =
@@ -839,12 +822,10 @@ export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
   if (isNetworkEnabledForNewApi) {
     return {
       swapsFeatureIsLive: true,
-      useNewSwapsApi: true,
     };
   }
   return {
     swapsFeatureIsLive: swapsFeatureFlags[networkName].fallback_to_v1,
-    useNewSwapsApi: false,
   };
 };
 

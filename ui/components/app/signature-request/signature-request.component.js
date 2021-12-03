@@ -17,7 +17,7 @@ export default class SignatureRequest extends PureComponent {
     isLedgerWallet: PropTypes.bool,
     cancel: PropTypes.func.isRequired,
     sign: PropTypes.func.isRequired,
-    hardwareWalletRequiresConnection: PropTypes.func.isRequired,
+    hardwareWalletRequiresConnection: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {

@@ -2,8 +2,11 @@
 
 .transaction-breakdown {
   &__title {
-    border-bottom: 1px solid #d8d8d8;
     padding-bottom: 4px;
+    padding-top: 8px;
+    font-size: 14px;
+    color: $Black-100;
+    font-weight: bold;
     text-transform: capitalize;
   }
 
@@ -15,12 +18,17 @@
     display: flex;
     justify-content: flex-end;
     text-align: end;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
     &--eth-total {
-      font-weight: 500;
+      font-weight: bold;
+      color: $Black-100;
+    }
+
+    &--amount {
+      font-weight: bold;
+      color: $Black-100;
     }
   }
 }
