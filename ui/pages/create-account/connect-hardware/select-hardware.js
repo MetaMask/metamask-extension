@@ -2,7 +2,10 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Button from '../../../components/ui/button';
-import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wallets';
+import {
+  DEVICE_NAMES,
+  LEDGER_TRANSPORT_TYPES,
+} from '../../../../shared/constants/hardware-wallets';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
@@ -30,9 +33,9 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === 'trezor',
+          selected: this.state.selectedDevice === DEVICE_NAMES.TREZOR,
         })}
-        onClick={(_) => this.setState({ selectedDevice: 'trezor' })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.TREZOR })}
       >
         <img
           className="hw-connect__btn__img"
@@ -47,9 +50,9 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === 'lattice',
+          selected: this.state.selectedDevice === DEVICE_NAMES.LATTICE,
         })}
-        onClick={(_) => this.setState({ selectedDevice: 'lattice' })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.LATTICE })}
       >
         <img
           className="hw-connect__btn__img"
@@ -64,14 +67,31 @@ export default class SelectHardware extends Component {
     return (
       <button
         className={classnames('hw-connect__btn', {
-          selected: this.state.selectedDevice === 'ledger',
+          selected: this.state.selectedDevice === DEVICE_NAMES.LEDGER,
         })}
-        onClick={(_) => this.setState({ selectedDevice: 'ledger' })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.LEDGER })}
       >
         <img
           className="hw-connect__btn__img"
           src="images/ledger-logo.svg"
           alt="Ledger"
+        />
+      </button>
+    );
+  }
+
+  renderConnectToQRButton() {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === DEVICE_NAMES.QR,
+        })}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.QR })}
+      >
+        <img
+          className="hw-connect__btn__img"
+          src="images/qrcode-wallet-logo.svg"
+          alt="QRCode"
         />
       </button>
     );
@@ -89,6 +109,7 @@ export default class SelectHardware extends Component {
           style={{ margin: '10px 0 0 0' }}
         >
           {this.renderConnectToLatticeButton()}
+          {this.renderConnectToQRButton()}
         </div>
       </>
     );
@@ -149,12 +170,14 @@ export default class SelectHardware extends Component {
 
   renderTutorialsteps() {
     switch (this.state.selectedDevice) {
-      case 'ledger':
+      case DEVICE_NAMES.LEDGER:
         return this.renderLedgerTutorialSteps();
-      case 'trezor':
+      case DEVICE_NAMES.TREZOR:
         return this.renderTrezorTutorialSteps();
-      case 'lattice':
+      case DEVICE_NAMES.LATTICE:
         return this.renderLatticeTutorialSteps();
+      case DEVICE_NAMES.QR:
+        return this.renderQRHardwareWalletSteps();
       default:
         return '';
     }
@@ -281,6 +304,65 @@ export default class SelectHardware extends Component {
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             <h3 className="hw-connect__title">{step.title}</h3>
+            <p className="hw-connect__msg">{step.message}</p>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  renderQRHardwareWalletSteps() {
+    const steps = [];
+    steps.push(
+      {
+        title: this.context.t('QRHardwareWalletSteps1Title'),
+        message: this.context.t('QRHardwareWalletSteps1Description'),
+      },
+      {
+        message: (
+          <>
+            <a
+              className="hw-connect__msg-link"
+              href="https://keyst.one"
+              rel="noopener noreferrer"
+              target="_blank"
+              key="keystone-support-link"
+            >
+              {this.context.t('keystone')}
+            </a>
+            <a
+              className="hw-connect__msg-link"
+              href="https://keyst.one/mm"
+              rel="noopener noreferrer"
+              target="_blank"
+              key="keystone-tutorial-link"
+            >
+              {this.context.t('keystoneTutorial')}
+            </a>
+          </>
+        ),
+      },
+      {
+        message: this.context.t('QRHardwareWalletSteps2Description'),
+      },
+      {
+        asset: 'qrcode-wallet-demo',
+        dimensions: { width: '225px', height: '75px' },
+      },
+    );
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <div className="hw-connect" key={index}>
+            {step.title && <h3 className="hw-connect__title">{step.title}</h3>}
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img

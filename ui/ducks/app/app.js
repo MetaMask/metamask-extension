@@ -55,6 +55,7 @@ export default function reduceApp(state = {}, action) {
     ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
+    newCollectibleAddedMessage: '',
     ...state,
   };
 
@@ -288,6 +289,12 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         newNetworkAdded: action.value,
+      };
+
+    case actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE:
+      return {
+        ...appState,
+        newCollectibleAddedMessage: action.value,
       };
 
     case actionConstants.LOADING_METHOD_DATA_STARTED:

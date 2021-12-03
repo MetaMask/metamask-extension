@@ -16,6 +16,7 @@ export default class AppStateController extends EventEmitter {
       onInactiveTimeout,
       showUnlockRequest,
       preferencesStore,
+      qrHardwareStore,
     } = opts;
     super();
 
@@ -31,7 +32,9 @@ export default class AppStateController extends EventEmitter {
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
       showTestnetMessageInDropdown: true,
+      trezorModel: null,
       ...initState,
+      qrHardware: {},
     });
     this.timer = null;
 
@@ -46,6 +49,10 @@ export default class AppStateController extends EventEmitter {
       if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
         this._setInactiveTimeout(preferences.autoLockTimeLimit);
       }
+    });
+
+    qrHardwareStore.subscribe((state) => {
+      this.store.updateState({ qrHardware: state });
     });
 
     const { preferences } = preferencesStore.getState();
@@ -236,5 +243,13 @@ export default class AppStateController extends EventEmitter {
    */
   setShowTestnetMessageInDropdown(showTestnetMessageInDropdown) {
     this.store.updateState({ showTestnetMessageInDropdown });
+  }
+
+  /**
+   * Sets a property indicating the model of the user's Trezor hardware wallet
+   * @returns {void}
+   */
+  setTrezorModel(trezorModel) {
+    this.store.updateState({ trezorModel });
   }
 }

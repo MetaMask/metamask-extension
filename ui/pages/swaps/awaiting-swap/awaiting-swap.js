@@ -26,6 +26,8 @@ import {
   navigateBackToBuildQuote,
   prepareForRetryGetQuotes,
   prepareToLeaveSwaps,
+  getFromTokenInputValue,
+  getMaxSlippage,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
 import Box from '../../../components/ui/box';
@@ -58,8 +60,6 @@ export default function AwaitingSwap({
   txHash,
   tokensReceived,
   submittingSwap,
-  inputValue,
-  maxSlippage,
 }) {
   const t = useContext(I18nContext);
   const metaMetricsEvent = useContext(MetaMetricsContext);
@@ -69,6 +69,8 @@ export default function AwaitingSwap({
 
   const fetchParams = useSelector(getFetchParams);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
+  const fromTokenInputValue = useSelector(getFromTokenInputValue);
+  const maxSlippage = useSelector(getMaxSlippage);
   const usedQuote = useSelector(getUsedQuote);
   const approveTxParams = useSelector(getApproveTxParams);
   const swapsGasPrice = useSelector(getUsedSwapsGasPrice);
@@ -283,7 +285,7 @@ export default function AwaitingSwap({
             await dispatch(
               fetchQuotesAndSetQuoteState(
                 history,
-                inputValue,
+                fromTokenInputValue,
                 maxSlippage,
                 metaMetricsEvent,
               ),
@@ -321,6 +323,4 @@ AwaitingSwap.propTypes = {
     CONTRACT_DATA_DISABLED_ERROR,
   ]),
   submittingSwap: PropTypes.bool,
-  inputValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  maxSlippage: PropTypes.number,
 };

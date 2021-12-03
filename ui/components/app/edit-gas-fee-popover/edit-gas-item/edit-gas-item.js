@@ -16,13 +16,14 @@ import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { toHumanReadableTime } from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import I18nValue from '../../../ui/i18n-value';
 import InfoTooltip from '../../../ui/info-tooltip';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
-const EditGasItem = ({ priorityLevel, onClose }) => {
+const EditGasItem = ({ priorityLevel }) => {
   const {
     estimateUsed,
     gasFeeEstimates,
@@ -34,11 +35,13 @@ const EditGasItem = ({ priorityLevel, onClose }) => {
   } = useGasFeeContext();
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
+  const { closeModal, openModal } = useTransactionModalContext();
+
   let maxFeePerGas;
   let maxPriorityFeePerGas;
   let minWaitTime;
 
-  if (gasFeeEstimates[priorityLevel]) {
+  if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
   } else if (
     priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
@@ -83,23 +86,29 @@ const EditGasItem = ({ priorityLevel, onClose }) => {
     : null;
 
   const onOptionSelect = () => {
-    if (priorityLevel !== PRIORITY_LEVELS.CUSTOM) {
+    if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
+      openModal('advancedGasFee');
+    } else {
       updateTransactionUsingGasFeeEstimates(priorityLevel);
+      closeModal('editGasFee');
     }
-    // todo: open advance modal if priorityLevel is custom
-    onClose();
   };
 
   return (
-    <div
+    <button
       className={classNames('edit-gas-item', {
         'edit-gas-item-selected': priorityLevel === estimateUsed,
         'edit-gas-item-disabled':
           priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
           !dappSuggestedGasFees,
       })}
-      role="button"
+      disabled={
+        priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
+        !dappSuggestedGasFees
+      }
       onClick={onOptionSelect}
+      aria-label={priorityLevel}
+      autoFocus={priorityLevel === estimateUsed}
     >
       <span className="edit-gas-item__name">
         <span
@@ -138,13 +147,12 @@ const EditGasItem = ({ priorityLevel, onClose }) => {
       <span className="edit-gas-item__tooltip">
         <InfoTooltip position="top" />
       </span>
-    </div>
+    </button>
   );
 };
 
 EditGasItem.propTypes = {
   priorityLevel: PropTypes.string,
-  onClose: PropTypes.func,
 };
 
 export default EditGasItem;

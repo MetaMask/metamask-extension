@@ -13,6 +13,7 @@ import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import Identicon from '../../../components/ui/identicon';
+import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import CopyIcon from '../../../components/ui/icon/copy-icon.component';
 import {
   TYPOGRAPHY,
@@ -61,6 +62,8 @@ export default class ConfirmApproveContent extends Component {
     chainId: PropTypes.string,
     rpcPrefs: PropTypes.object,
     isContract: PropTypes.bool,
+    hexTransactionTotal: PropTypes.string,
+    isMultiLayerFeeNetwork: PropTypes.bool,
   };
 
   state = {
@@ -121,20 +124,40 @@ export default class ConfirmApproveContent extends Component {
       nativeCurrency,
       ethTransactionTotal,
       fiatTransactionTotal,
+      hexTransactionTotal,
+      txData,
+      isMultiLayerFeeNetwork,
     } = this.props;
     return (
       <div className="confirm-approve-content__transaction-details-content">
-        <div className="confirm-approve-content__small-text">
-          {t('feeAssociatedRequest')}
-        </div>
-        <div className="confirm-approve-content__transaction-details-content__fee">
-          <div className="confirm-approve-content__transaction-details-content__primary-fee">
-            {formatCurrency(fiatTransactionTotal, currentCurrency)}
+        {isMultiLayerFeeNetwork ? (
+          <div className="confirm-approve-content__transaction-details-extra-content">
+            <div className="confirm-approve-content__transaction-details-content__labelled-fee">
+              <span>{t('transactionDetailLayer2GasHeading')}</span>
+              {`${ethTransactionTotal} ${nativeCurrency}`}
+            </div>
+            <MultiLayerFeeMessage
+              transaction={txData}
+              layer2fee={hexTransactionTotal}
+              nativeCurrency={nativeCurrency}
+              plainStyle
+            />
           </div>
-          <div className="confirm-approve-content__transaction-details-content__secondary-fee">
-            {`${ethTransactionTotal} ${nativeCurrency}`}
-          </div>
-        </div>
+        ) : (
+          <>
+            <div className="confirm-approve-content__small-text">
+              {t('feeAssociatedRequest')}
+            </div>
+            <div className="confirm-approve-content__transaction-details-content__fee">
+              <div className="confirm-approve-content__transaction-details-content__primary-fee">
+                {formatCurrency(fiatTransactionTotal, currentCurrency)}
+              </div>
+              <div className="confirm-approve-content__transaction-details-content__secondary-fee">
+                {`${ethTransactionTotal} ${nativeCurrency}`}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     );
   }

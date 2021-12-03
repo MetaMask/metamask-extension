@@ -37,7 +37,7 @@ exports[`SearchableItemList renders the component with initial props 2`] = `
   tabindex="0"
 >
   <img
-    alt=""
+    alt="primaryLabel"
     class="url-icon"
     src="iconUrl"
   />

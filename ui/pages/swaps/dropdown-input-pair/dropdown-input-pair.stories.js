@@ -113,7 +113,7 @@ const tokens = [
 ];
 
 export default {
-  title: 'DropdownInputPair',
+  title: 'Pages/Swaps/DropdownInputPair',
   id: __filename,
 };
 
@@ -127,7 +127,7 @@ const tokensToSearch = tokens.map((token) => ({
   rightSecondaryLabel: `$${(Math.random() * 1000).toFixed(2)}`,
 }));
 
-export const Basic = () => {
+export const DefaultStory = () => {
   const [inputValue, setInputValue] = useState();
 
   return (
@@ -151,3 +151,5 @@ export const Basic = () => {
     </div>
   );
 };
+
+DefaultStory.storyName = 'Default';

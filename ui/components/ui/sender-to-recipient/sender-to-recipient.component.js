@@ -8,6 +8,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import NicknamePopovers from '../../app/modals/nickname-popovers';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
@@ -94,7 +95,7 @@ SenderAddress.propTypes = {
   warnUserOnAccountMismatch: PropTypes.bool,
 };
 
-function RecipientWithAddress({
+export function RecipientWithAddress({
   checksummedRecipientAddress,
   onRecipientClick,
   addressOnly,
@@ -103,44 +104,22 @@ function RecipientWithAddress({
   recipientName,
 }) {
   const t = useI18nContext();
-  const [addressCopied, setAddressCopied] = useState(false);
+  const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
 
-  let tooltipHtml = <p>{t('copiedExclamation')}</p>;
-  if (!addressCopied) {
-    if (addressOnly && !recipientNickname && !recipientEns) {
-      tooltipHtml = <p>{t('copyAddress')}</p>;
-    } else {
-      tooltipHtml = (
-        <p>
-          {shortenAddress(checksummedRecipientAddress)}
-          <br />
-          {t('copyAddress')}
-        </p>
-      );
-    }
-  }
   return (
-    <div
-      className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
-      onClick={() => {
-        setAddressCopied(true);
-        copyToClipboard(checksummedRecipientAddress);
-        if (onRecipientClick) {
-          onRecipientClick();
-        }
-      }}
-    >
-      <div className="sender-to-recipient__sender-icon">
-        <Identicon address={checksummedRecipientAddress} diameter={24} />
-      </div>
-      <Tooltip
-        position="bottom"
-        html={tooltipHtml}
-        offset={-10}
-        wrapperClassName="sender-to-recipient__tooltip-wrapper"
-        containerClassName="sender-to-recipient__tooltip-container"
-        onHidden={() => setAddressCopied(false)}
+    <>
+      <div
+        className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
+        onClick={() => {
+          setShowNicknamePopovers(true);
+          if (onRecipientClick) {
+            onRecipientClick();
+          }
+        }}
       >
+        <div className="sender-to-recipient__sender-icon">
+          <Identicon address={checksummedRecipientAddress} diameter={24} />
+        </div>
         <div className="sender-to-recipient__name">
           {addressOnly
             ? recipientNickname ||
@@ -151,8 +130,14 @@ function RecipientWithAddress({
               recipientName ||
               t('newContract')}
         </div>
-      </Tooltip>
-    </div>
+      </div>
+      {showNicknamePopovers ? (
+        <NicknamePopovers
+          onClose={() => setShowNicknamePopovers(false)}
+          address={checksummedRecipientAddress}
+        />
+      ) : null}
+    </>
   );
 }
 

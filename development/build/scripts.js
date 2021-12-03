@@ -134,6 +134,10 @@ function getSegmentWriteKey({ buildType, environment }) {
   throw new Error(`Invalid build type: '${buildType}'`);
 }
 
+const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
+  callback(),
+);
+
 module.exports = createScriptTasks;
 
 function createScriptTasks({
@@ -143,6 +147,7 @@ function createScriptTasks({
   isLavaMoat,
   livereload,
   shouldLintFenceFiles,
+  policyOnly,
 }) {
   // internal tasks
   const core = {
@@ -185,6 +190,7 @@ function createScriptTasks({
           return `./app/scripts/${label}.js`;
         }),
         ignoredFiles,
+        policyOnly,
         shouldLintFenceFiles,
         testing,
       }),
@@ -200,18 +206,18 @@ function createScriptTasks({
     // this can run whenever
     const disableConsoleSubtask = createTask(
       `${taskPrefix}:disable-console`,
-      createTaskForBundleDisableConsole({ devMode }),
+      createTaskForBundleDisableConsole({ devMode, testing }),
     );
 
     // this can run whenever
     const installSentrySubtask = createTask(
       `${taskPrefix}:sentry`,
-      createTaskForBundleSentry({ devMode }),
+      createTaskForBundleSentry({ devMode, testing }),
     );
 
     const phishingDetectSubtask = createTask(
       `${taskPrefix}:phishing-detect`,
-      createTaskForBundlePhishingDetect({ devMode }),
+      createTaskForBundlePhishingDetect({ devMode, testing }),
     );
 
     // task for initiating browser livereload
@@ -241,6 +247,7 @@ function createScriptTasks({
       runInChildProcess(subtask, {
         buildType,
         isLavaMoat,
+        policyOnly,
         shouldLintFenceFiles,
       }),
     );
@@ -248,7 +255,7 @@ function createScriptTasks({
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
 
-  function createTaskForBundleDisableConsole({ devMode }) {
+  function createTaskForBundleDisableConsole({ devMode, testing }) {
     const label = 'disable-console';
     return createNormalBundle({
       browserPlatforms,
@@ -258,11 +265,13 @@ function createScriptTasks({
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
+      testing,
+      policyOnly,
       shouldLintFenceFiles,
     });
   }
 
-  function createTaskForBundleSentry({ devMode }) {
+  function createTaskForBundleSentry({ devMode, testing }) {
     const label = 'sentry-install';
     return createNormalBundle({
       browserPlatforms,
@@ -272,11 +281,13 @@ function createScriptTasks({
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
+      testing,
+      policyOnly,
       shouldLintFenceFiles,
     });
   }
 
-  function createTaskForBundlePhishingDetect({ devMode }) {
+  function createTaskForBundlePhishingDetect({ devMode, testing }) {
     const label = 'phishing-detect';
     return createNormalBundle({
       buildType,
@@ -286,6 +297,8 @@ function createScriptTasks({
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
+      testing,
+      policyOnly,
       shouldLintFenceFiles,
     });
   }
@@ -303,6 +316,7 @@ function createScriptTasks({
         entryFilepath: `./app/scripts/${inpage}.js`,
         label: inpage,
         ignoredFiles,
+        policyOnly,
         shouldLintFenceFiles,
         testing,
       }),
@@ -314,6 +328,7 @@ function createScriptTasks({
         entryFilepath: `./app/scripts/${contentscript}.js`,
         label: contentscript,
         ignoredFiles,
+        policyOnly,
         shouldLintFenceFiles,
         testing,
       }),
@@ -327,6 +342,7 @@ function createFactoredBuild({
   devMode,
   entryFiles,
   ignoredFiles,
+  policyOnly,
   shouldLintFenceFiles,
   testing,
 }) {
@@ -346,6 +362,7 @@ function createFactoredBuild({
       devMode,
       envVars,
       ignoredFiles,
+      policyOnly,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
@@ -417,12 +434,17 @@ function createFactoredBuild({
       // setup bundle destination
       browserPlatforms.forEach((platform) => {
         const dest = `./dist/${platform}/`;
-        pipeline.get('dest').push(gulp.dest(dest));
+        const destination = policyOnly ? noopWriteStream : gulp.dest(dest);
+        pipeline.get('dest').push(destination);
       });
     });
 
     // wait for bundle completion for postprocessing
     events.on('bundleDone', () => {
+      // Skip HTML generation if nothing is to be written to disk
+      if (policyOnly) {
+        return;
+      }
       const commonSet = sizeGroupMap.get('common');
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
@@ -496,6 +518,7 @@ function createNormalBundle({
   extraEntries = [],
   ignoredFiles,
   label,
+  policyOnly,
   modulesToExpose,
   shouldLintFenceFiles,
   testing,
@@ -516,6 +539,7 @@ function createNormalBundle({
       devMode,
       envVars,
       ignoredFiles,
+      policyOnly,
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
@@ -540,7 +564,8 @@ function createNormalBundle({
       // setup bundle destination
       browserPlatforms.forEach((platform) => {
         const dest = `./dist/${platform}/`;
-        pipeline.get('dest').push(gulp.dest(dest));
+        const destination = policyOnly ? noopWriteStream : gulp.dest(dest);
+        pipeline.get('dest').push(destination);
       });
     });
 
@@ -570,6 +595,7 @@ function setupBundlerDefaults(
     devMode,
     envVars,
     ignoredFiles,
+    policyOnly,
     minify,
     reloadOnChange,
     shouldLintFenceFiles,
@@ -613,12 +639,14 @@ function setupBundlerDefaults(
     setupReloadOnChange(buildConfiguration);
   }
 
-  if (minify) {
-    setupMinification(buildConfiguration);
-  }
+  if (!policyOnly) {
+    if (minify) {
+      setupMinification(buildConfiguration);
+    }
 
-  // Setup source maps
-  setupSourcemaps(buildConfiguration, { devMode });
+    // Setup source maps
+    setupSourcemaps(buildConfiguration, { devMode });
+  }
 }
 
 function setupReloadOnChange({ bundlerOpts, events }) {
@@ -751,7 +779,7 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
-    IN_TEST: testing ? 'true' : false,
+    IN_TEST: testing,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},

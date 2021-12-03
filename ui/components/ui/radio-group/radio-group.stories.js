@@ -3,11 +3,11 @@ import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
 import RadioGroup from '.';
 
 export default {
-  title: 'RadioGroup',
+  title: 'Components/UI/RadioGroup',
   id: __filename,
 };
 
-export const radioGroup = () => {
+export const DefaultStory = () => {
   return (
     <div className="radio-group" style={{ minWidth: '600px' }}>
       <RadioGroup
@@ -26,3 +26,5 @@ export const radioGroup = () => {
     </div>
   );
 };
+
+DefaultStory.storyName = 'Default';

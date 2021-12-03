@@ -6,7 +6,7 @@ export default class SignatureRequestFooter extends PureComponent {
   static propTypes = {
     cancelAction: PropTypes.func.isRequired,
     signAction: PropTypes.func.isRequired,
-    disabled: PropTypes.boolean,
+    disabled: PropTypes.bool,
   };
 
   static contextTypes = {

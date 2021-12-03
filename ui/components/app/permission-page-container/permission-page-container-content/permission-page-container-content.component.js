@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
-import CheckBox from '../../../ui/check-box';
+import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
@@ -14,7 +14,6 @@ export default class PermissionPageContainerContent extends PureComponent {
       origin: PropTypes.string.isRequired,
     }),
     selectedPermissions: PropTypes.object.isRequired,
-    onPermissionToggle: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
   };
@@ -29,43 +28,11 @@ export default class PermissionPageContainerContent extends PureComponent {
   };
 
   renderRequestedPermissions() {
-    const { selectedPermissions, onPermissionToggle } = this.props;
-    const { t } = this.context;
-
-    const items = Object.keys(selectedPermissions).map((permissionName) => {
-      const description = t(permissionName);
-      // don't allow deselecting eth_accounts
-      const isDisabled = permissionName === 'eth_accounts';
-      const isChecked = Boolean(selectedPermissions[permissionName]);
-      const title = isChecked
-        ? t('permissionCheckedIconDescription')
-        : t('permissionUncheckedIconDescription');
-
-      return (
-        <div
-          className="permission-approval-container__content__permission"
-          key={permissionName}
-          onClick={() => {
-            if (!isDisabled) {
-              onPermissionToggle(permissionName);
-            }
-          }}
-        >
-          <CheckBox
-            disabled={isDisabled}
-            id={permissionName}
-            className="permission-approval-container__checkbox"
-            checked={isChecked}
-            title={title}
-          />
-          <label htmlFor={permissionName}>{description}</label>
-        </div>
-      );
-    });
+    const { selectedPermissions } = this.props;
 
     return (
       <div className="permission-approval-container__content__requested">
-        {items}
+        <PermissionsConnectPermissionList permissions={selectedPermissions} />
       </div>
     );
   }

@@ -6,7 +6,7 @@ import README from './README.mdx';
 import Button from '.';
 
 export default {
-  title: 'Button',
+  title: 'Components/UI/Button',
   id: __filename,
   component: Button,
   parameters: {

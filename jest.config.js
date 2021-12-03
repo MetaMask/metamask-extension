@@ -2,7 +2,7 @@ module.exports = {
   collectCoverageFrom: ['<rootDir>/ui/**/*.js', '<rootDir>/shared/**/*.js'],
   coverageDirectory: './jest-coverage/main',
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
-  coverageReporters: ['json', 'lcov', 'text', 'clover'],
+  coverageReporters: ['html', 'text-summary'],
   coverageThreshold: {
     global: {
       branches: 35,
@@ -23,4 +23,8 @@ module.exports = {
     '<rootDir>/app/scripts/platforms/*.test.js',
   ],
   testTimeout: 2500,
+  transform: {
+    '^.+\\.[tj]sx?$': 'babel-jest',
+    '^.+\\.mdx$': '@storybook/addon-docs/jest-transform-mdx',
+  },
 };

@@ -31,6 +31,9 @@ workflows:
       - test-deps-depcheck:
           requires:
             - prep-deps
+      - test-yarn-dedupe:
+          requires:
+            - prep-deps
       - validate-lavamoat-config:
           filters:
             branches:
@@ -53,9 +56,12 @@ workflows:
       - prep-build-test-metrics:
           requires:
             - prep-deps
-      - prep-build-storybook:
+      - test-storybook:
           requires:
             - prep-deps
+      - prep-build-storybook:
+          requires:
+            - test-storybook
       - test-lint:
           requires:
             - prep-deps
@@ -197,7 +203,7 @@ jobs:
           - build-artifacts
 
   validate-lavamoat-config:
-    executor: node-browsers
+    executor: node-browsers-medium-plus
     steps:
       - checkout
       - attach_workspace:
@@ -332,6 +338,26 @@ jobs:
           root: .
           paths:
             - storybook-build
+  
+  test-storybook:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Test Storybook
+          command: yarn storybook:test
+
+  test-yarn-dedupe:
+    executor: node-browsers
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Detect yarn lock deduplications
+          command: yarn yarn-deduplicate && git diff --exit-code yarn.lock
 
   test-lint:
     executor: node-browsers

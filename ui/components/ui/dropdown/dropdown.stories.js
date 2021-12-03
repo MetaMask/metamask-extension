@@ -4,7 +4,7 @@ import { boolean, select, text } from '@storybook/addon-knobs';
 import Dropdown from '.';
 
 export default {
-  title: 'Dropdown',
+  title: 'Components/UI/Dropdown',
   id: __filename,
 };
 
@@ -23,7 +23,7 @@ const namedOptionsWithVeryLongNames = unnamedOptions.map((option, index) => {
   };
 });
 
-export const simple = () => (
+export const DefaultStory = () => (
   <Dropdown
     disabled={boolean('Disabled', false)}
     title={text('Title', 'Test dropdown name')}
@@ -38,7 +38,9 @@ export const simple = () => (
   />
 );
 
-export const optionsWithoutNames = () => (
+DefaultStory.storyName = 'Default';
+
+export const OptionsWithoutNames = () => (
   <Dropdown
     disabled={boolean('Disabled', false)}
     title={text('Title', 'Test dropdown name')}
@@ -53,7 +55,7 @@ export const optionsWithoutNames = () => (
   />
 );
 
-export const optionsWithLongNames = () => (
+export const OptionsWithLongNames = () => (
   <Dropdown
     disabled={boolean('Disabled', false)}
     title={text('Title', 'Test dropdown name')}
@@ -68,7 +70,7 @@ export const optionsWithLongNames = () => (
   />
 );
 
-export const optionsWithLongNamesAndShortWidth = () => (
+export const OptionsWithLongNamesAndShortWidth = () => (
   <Dropdown
     disabled={boolean('Disabled', false)}
     title={text('Title', 'Test dropdown name')}

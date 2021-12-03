@@ -31,6 +31,7 @@ import {
   getNextSuggestedNonce,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
+  getIsMultiLayerFeeNetwork,
 } from '../../selectors';
 
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
@@ -64,6 +65,7 @@ export default function ConfirmApprove() {
   const customNonceValue = useSelector(getCustomNonceValue);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
 
   const fromAddressIsLedger = useSelector(isAddressLedgerByFromAddress(from));
 
@@ -71,9 +73,11 @@ export default function ConfirmApprove() {
     currentNetworkTxList.find(
       ({ id }) => id === (Number(paramsTransactionId) || transactionId),
     ) || {};
-  const { ethTransactionTotal, fiatTransactionTotal } = useSelector((state) =>
-    transactionFeeSelector(state, transaction),
-  );
+  const {
+    ethTransactionTotal,
+    fiatTransactionTotal,
+    hexTransactionTotal,
+  } = useSelector((state) => transactionFeeSelector(state, transaction));
 
   const currentToken = (tokens &&
     tokens.find(({ address }) =>
@@ -207,6 +211,7 @@ export default function ConfirmApprove() {
             nativeCurrency={nativeCurrency}
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
+            hexTransactionTotal={hexTransactionTotal}
             useNonceField={useNonceField}
             nextNonce={nextNonce}
             customNonceValue={customNonceValue}
@@ -240,6 +245,7 @@ export default function ConfirmApprove() {
             chainId={chainId}
             rpcPrefs={rpcPrefs}
             isContract={isContract}
+            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
           />
           {showCustomizeGasPopover && (
             <EditGasPopover

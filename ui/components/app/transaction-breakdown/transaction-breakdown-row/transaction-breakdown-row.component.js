@@ -7,14 +7,19 @@ export default class TransactionBreakdownRow extends PureComponent {
     title: PropTypes.string,
     children: PropTypes.node,
     className: PropTypes.string,
+    divider: PropTypes.bool,
   };
 
   render() {
-    const { title, children, className } = this.props;
+    const { title, children, className, divider = false } = this.props;
 
     return (
       <div
-        className={classnames('transaction-breakdown-row', className)}
+        className={classnames(
+          'transaction-breakdown-row',
+          divider ? 'transaction-breakdown-row--with-bottom-border' : '',
+          className,
+        )}
         data-testid="transaction-breakdown-row"
       >
         <div
