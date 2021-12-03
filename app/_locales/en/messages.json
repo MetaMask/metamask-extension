@@ -1132,6 +1132,9 @@
     "message": "Gas limit must be at least $1",
     "description": "$1 is the custom gas limit, in decimal."
   },
+  "gasLimitV2": {
+    "message": "Gas limit"
+  },
   "gasOption": {
     "message": "Gas option"
   },

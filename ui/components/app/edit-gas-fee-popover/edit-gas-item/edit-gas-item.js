@@ -100,7 +100,7 @@ const EditGasItem = ({ priorityLevel }) => {
   return (
     <button
       className={classNames('edit-gas-item', {
-        'edit-gas-item-selected': priorityLevel === estimateUsed,
+        'edit-gas-item--selected': priorityLevel === estimateUsed,
         'edit-gas-item-disabled':
           priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
           !dappSuggestedGasFees,
