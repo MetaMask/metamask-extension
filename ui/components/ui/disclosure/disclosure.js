@@ -19,7 +19,10 @@ const Disclosure = ({ children, title, size }) => {
   }, [open]);
 
   return (
-    <div className="disclosure" onClick={() => setOpen((state) => !state)}>
+    <div
+      className="disclosure disclosure--no-margin"
+      onClick={() => setOpen((state) => !state)}
+    >
       {title ? (
         <details>
           <summary className="disclosure__title disclosure__summary typography--weight-bold typography--color-black">
@@ -41,11 +44,13 @@ Disclosure.propTypes = {
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
   size: PropTypes.string,
+  className: PropTypes.string,
 };
 
 Disclosure.defaultProps = {
   size: 'normal',
   title: null,
+  className: '',
 };
 
 export default Disclosure;

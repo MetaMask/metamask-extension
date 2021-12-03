@@ -3,6 +3,10 @@
   cursor: pointer;
   font-size: 14px;
 
+  &--no-margin {
+    margin-top: 0;
+  }
+
   & > details[open] > summary {
     &::before {
       background-image: url("images/icons/collapse.svg");
