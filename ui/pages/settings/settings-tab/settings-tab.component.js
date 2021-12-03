@@ -37,24 +37,32 @@ export default class SettingsTab extends PureComponent {
     currentLocale: PropTypes.string,
     useBlockie: PropTypes.bool,
     currentCurrency: PropTypes.string,
-    conversionDate: PropTypes.number,
     nativeCurrency: PropTypes.string,
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
     setUseNativeCurrencyAsPrimaryCurrencyPreference: PropTypes.func,
     hideZeroBalanceTokens: PropTypes.bool,
     setHideZeroBalanceTokens: PropTypes.func,
+    lastFetchedConversionDate: PropTypes.number,
   };
 
   renderCurrentConversion() {
     const { t } = this.context;
-    const { currentCurrency, conversionDate, setCurrentCurrency } = this.props;
+    const {
+      currentCurrency,
+      setCurrentCurrency,
+      lastFetchedConversionDate,
+    } = this.props;
 
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('currencyConversion')}</span>
           <span className="settings-page__content-description">
-            {t('updatedWithDate', [Date(conversionDate)])}
+            {lastFetchedConversionDate
+              ? t('updatedWithDate', [
+                  new Date(lastFetchedConversionDate * 1000).toString(),
+                ])
+              : t('noConversionDateAvailable')}
           </span>
         </div>
         <div className="settings-page__content-item">

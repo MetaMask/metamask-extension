@@ -9,11 +9,11 @@ import {
 import Typography from '.';
 
 export default {
-  title: 'Typography',
+  title: 'Components/UI/Typography',
   id: __filename,
 };
 
-export const list = () => (
+export const List = () => (
   <div style={{ width: '80%', flexDirection: 'column' }}>
     {Object.values(TYPOGRAPHY).map((variant) => (
       <div key={variant} style={{ width: '100%' }}>

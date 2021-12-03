@@ -68,7 +68,7 @@ const EIP_1559_V2_ENABLED =
   process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
 const renderHeartBeatIfNotInTest = () =>
-  process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
+  process.env.IN_TEST ? null : <LoadingHeartBeat />;
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {

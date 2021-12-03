@@ -29,7 +29,7 @@ const EditGasFeePopover = () => {
       className="edit-gas-fee-popover"
     >
       <>
-        {process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />}
+        {process.env.IN_TEST ? null : <LoadingHeartBeat />}
         <div className="edit-gas-fee-popover__wrapper">
           <div className="edit-gas-fee-popover__content">
             {balanceError && (
