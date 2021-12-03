@@ -107,7 +107,7 @@ const EditGasItem = ({ priorityLevel }) => {
   return (
     <button
       className={classNames('edit-gas-item', {
-        'edit-gas-item-selected': priorityLevel === estimateUsed,
+        'edit-gas-item--selected': priorityLevel === estimateUsed,
       })}
       onClick={onOptionSelect}
       aria-label={priorityLevel}
