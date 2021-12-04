@@ -30,7 +30,7 @@ const AdvancedGasFeePopover = () => {
         onClose={closeAllModals}
         footer={<AdvancedGasFeeSaveButton />}
       >
-        <Box className="advanced-gas-fee-popover__wrapper" margin={4}>
+        <Box margin={4}>
           <AdvancedGasFeeInputs />
           <div className="advanced-gas-fee-popover__separator" />
           <AdvancedGasFeeDefaults />
