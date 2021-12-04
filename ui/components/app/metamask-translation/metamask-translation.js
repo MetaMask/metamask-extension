@@ -73,6 +73,9 @@ MetaMaskTranslation.propTypes = {
    * Translation object key
    */
   translationKey: PropTypes.string.isRequired,
+  /**
+   * Array of variables for the MetaMaskTranslation component
+   */
   variables: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.string,

@@ -2,7 +2,7 @@ import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
 import MetaMaskTranslation from '.';
 
-# Metamask Translation
+# MetaMask Translation
 
 MetaMaskTranslation is a simple helper Component for adding full translation
 support to the template system. We do pass the translation function to the
@@ -25,4 +25,12 @@ trees to contain.
 
 ## Component API
 
+<!--
+ArgsTable doesn't work with SectionShape
 <ArgsTable of={MetaMaskTranslation} />
+-->
+
+| Name             | Description                                                                                             |
+| ---------------- | ------------------------------------------------------------------------------------------------------- |
+| `translationKey` | Translation object key `string`                                                                         |
+| `variables`      | Array of variables for the MetaMaskTranslation. Can be an array of `string`, `number` or `SectionShape` |
