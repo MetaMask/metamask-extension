@@ -13,11 +13,12 @@ const getStyles = (diameter) => ({
 export default class Identicon extends PureComponent {
   static propTypes = {
     /**
-     * Check if adding border
+     * Adds blue border around the Identicon used for selected account.
+     * Increases the width and height of the Identicon by 8px
      */
     addBorder: PropTypes.bool,
     /**
-     * Add address for identicon user
+     * Address used for generating random image
      */
     address: PropTypes.string,
     /**
@@ -25,19 +26,20 @@ export default class Identicon extends PureComponent {
      */
     className: PropTypes.string,
     /**
-     * Add custom diameter
+     * Sets the width and height of the inner img element
+     * If addBorder is true will increase components height and width by 8px
      */
     diameter: PropTypes.number,
     /**
-     * Add custom image from file path
+     * Used as the image source of the Identicon
      */
     image: PropTypes.string,
     /**
-     * Check if use blockie
+     * Use the blockie type random image generator
      */
     useBlockie: PropTypes.bool,
     /**
-     * Show alt text content
+     * The alt text of the image
      */
     alt: PropTypes.string,
     /**
@@ -125,6 +127,8 @@ export default class Identicon extends PureComponent {
       useTokenDetection,
       tokenList,
     } = this.props;
+    const size = diameter + 8;
+
     if (image) {
       return this.renderImage();
     }
@@ -141,6 +145,7 @@ export default class Identicon extends PureComponent {
       return (
         <div
           className={classnames({ 'identicon__address-wrapper': addBorder })}
+          style={getStyles(size)}
         >
           {useBlockie ? this.renderBlockie() : this.renderJazzicon()}
         </div>
