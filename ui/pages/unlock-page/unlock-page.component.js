@@ -19,15 +19,15 @@ export default class UnlockPage extends Component {
      */
     history: PropTypes.object.isRequired,
     /**
-     * Check if account is unlocked
+     * If isUnlocked is true will redirect to most recent route in history
      */
     isUnlocked: PropTypes.bool,
     /**
-     * Restore account button handler
+     * onClick handler for "import using Secret Recovery Phrase" link
      */
     onRestore: PropTypes.func,
     /**
-     * Submit button handler
+     * onSumbit handler when form is submitted
      */
     onSubmit: PropTypes.func,
     /**
@@ -35,7 +35,7 @@ export default class UnlockPage extends Component {
      */
     forceUpdateMetamaskState: PropTypes.func,
     /**
-     * Show options in modal handler
+     * Event handler to show metametrics modal
      */
     showOptInModal: PropTypes.func,
   };
