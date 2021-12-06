@@ -38,6 +38,7 @@ export default class SendContent extends Component {
     asset: PropTypes.object,
     to: PropTypes.string,
     assetError: PropTypes.string,
+    recipient: PropTypes.object,
   };
 
   render() {
@@ -88,7 +89,7 @@ export default class SendContent extends Component {
 
   maybeRenderAddContact() {
     const { t } = this.context;
-    const { isOwnedAccount, contact = {}, to } = this.props;
+    const { isOwnedAccount, contact = {}, to, recipient } = this.props;
     const { showNicknamePopovers } = this.state;
 
     if (isOwnedAccount || contact.name) {
@@ -97,6 +98,11 @@ export default class SendContent extends Component {
 
     return (
       <>
+      {recipient.warning === 'knownAddressRecipient' ? (
+      <Dialog type="warning" className="send__error-dialog">
+        {t(recipient.warning)}
+      </Dialog>
+      ) : (
         <Dialog
           type="message"
           className="send__dialog"
@@ -104,6 +110,7 @@ export default class SendContent extends Component {
         >
           {t('newAccountDetectedDialogMessage')}
         </Dialog>
+        )}
         {showNicknamePopovers ? (
           <NicknamePopovers
             onClose={() => this.setState({ showNicknamePopovers: false })}

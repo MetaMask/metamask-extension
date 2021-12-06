@@ -30,6 +30,7 @@ export default class AddRecipient extends Component {
       error: PropTypes.string,
       warning: PropTypes.string,
     }),
+    updateRecipientUserInput: PropTypes.func,
   };
 
   constructor(props) {
@@ -65,6 +66,7 @@ export default class AddRecipient extends Component {
 
   selectRecipient = (address, nickname = '') => {
     this.props.updateRecipient({ address, nickname });
+    this.props.updateRecipientUserInput(address);
   };
 
   searchForContacts = () => {

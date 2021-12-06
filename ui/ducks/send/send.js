@@ -937,7 +937,7 @@ const slice = createSlice({
     },
     updateRecipient: (state, action) => {
       state.recipient.error = null;
-      state.recipient.userInput = '';
+      state.recipient.userInput = state.recipient.userInput ?? '';
       state.recipient.address = action.payload.address ?? '';
       state.recipient.nickname = action.payload.nickname ?? '';
 

@@ -16,6 +16,14 @@ describe('SendContent Component', () => {
     gasIsExcessive: false,
     networkAndAccountSupports1559: true,
     asset: { type: 'NATIVE' },
+    recipient: {
+      mode: 'CONTACT_LIST',
+      userInput: '0x31A2764925BD47CCBd57b2F277702dB46e9C5F66',
+      address: '0x31A2764925BD47CCBd57b2F277702dB46e9C5F66',
+      nickname: 'John Doe',
+      error: null,
+      warning: null,
+    },
   };
 
   beforeEach(() => {
