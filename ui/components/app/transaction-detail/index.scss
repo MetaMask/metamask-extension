@@ -35,6 +35,10 @@
       white-space: pre;
     }
 
+    &__edit-button {
+      margin-left: 8px;
+    }
+
     i {
       color: $primary-1;
       margin-right: 2px;
