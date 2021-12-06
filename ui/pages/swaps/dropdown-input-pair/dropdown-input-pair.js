@@ -147,7 +147,7 @@ DropdownInputPair.propTypes = {
    */
   selectedItem: PropTypes.object,
   /**
-   * Handler for SearchListPlaceholder
+   * Doesn't look like this is used
    */
   SearchListPlaceholder: PropTypes.func,
   /**

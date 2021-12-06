@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useArgs } from '@storybook/client-api';
+
 import README from './README.mdx';
 import DropdownInputPair from '.';
 
@@ -129,11 +131,9 @@ export default {
     onSelect: { action: 'onSelect' },
     leftValue: { control: 'text' },
     selectedItem: { control: 'object' },
-    SearchListPlaceholder: { action: 'SearchListPlaceHolder' },
     maxListItems: { control: 'number' },
     selectPlaceHolderText: { control: 'text' },
     loading: { control: 'boolean' },
-    hideItemIf: { action: 'hideItemIf' },
     listContainerClassName: { control: 'text' },
     autoFocus: { control: 'boolean' },
   },
@@ -150,31 +150,26 @@ const tokensToSearch = tokens.map((token) => ({
 }));
 
 export const DefaultStory = (args) => {
-  const [inputValue, setInputValue] = useState();
+  const [
+    { inputValue, selectedItem = tokensToSearch[0] },
+    updateArgs,
+  ] = useArgs();
   return (
-    <div
-      style={{
-        height: '600px',
-        width: '357px',
-        display: 'flex',
-        justifyContent: 'center',
-        flexFlow: 'column',
+    <DropdownInputPair
+      {...args}
+      inputValue={inputValue}
+      onInputChange={(value) => {
+        updateArgs({ ...args, inputValue: value });
       }}
-    >
-      <DropdownInputPair
-        {...args}
-        inputValue={inputValue}
-        onInputChange={(value) => setInputValue(value)}
-      />
-    </div>
+      selectedItem={selectedItem}
+    />
   );
 };
 
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  startingItem: tokensToSearch[0],
   itemsToSearch: tokensToSearch,
   maxListItems: tokensToSearch.length,
-  selectedItem: tokensToSearch[0],
+  loading: false,
 };
