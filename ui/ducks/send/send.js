@@ -69,6 +69,7 @@ import {
   calcTokenAmount,
   getTokenAddressParam,
   getTokenValueParam,
+  getTokenMetadata,
 } from '../../helpers/utils/token-util';
 import {
   checkExistingAddresses,
@@ -382,6 +383,7 @@ export const draftTransactionInitialState = {
     error: null,
     nickname: '',
     warning: null,
+    recipientWarningAcknowledged: false,
   },
   status: SEND_STATUSES.VALID,
   transactionType: TRANSACTION_ENVELOPE_TYPES.LEGACY,
@@ -1154,6 +1156,20 @@ const slice = createSlice({
       state.recipientInput = '';
       state.recipientMode = action.payload;
     },
+
+    updateRecipientWarning: (state, action) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.recipient.warning = action.payload;
+    },
+
+    acknowledgeRecipientWarning: (state) => {
+      const draftTransaction =
+        state.draftTransactions[state.currentTransactionUUID];
+      draftTransaction.recipient.recipientWarningAcknowledged = true;
+      slice.caseReducers.validateSendState(state);
+    },
+
     /**
      * Updates the value of the recipientInput key with what the user has
      * typed into the recipient input field in the UI.
@@ -1316,10 +1332,13 @@ const slice = createSlice({
           draftTransaction.recipient.error = null;
           draftTransaction.recipient.warning = null;
         } else {
-          const isSendingToken =
-            draftTransaction.asset.type === ASSET_TYPES.TOKEN ||
-            draftTransaction.asset.type === ASSET_TYPES.COLLECTIBLE;
-          const { chainId, tokens, tokenAddressList } = action.payload;
+          const {
+            chainId,
+            tokens,
+            tokenAddressList,
+            isProbablyAnAssetContract,
+          } = action.payload;
+
           if (
             isBurnAddress(state.recipientInput) ||
             (!isValidHexAddress(state.recipientInput, {
@@ -1331,10 +1350,9 @@ const slice = createSlice({
               ? INVALID_RECIPIENT_ADDRESS_ERROR
               : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
           } else if (
-            isSendingToken &&
             isOriginContractAddress(
               state.recipientInput,
-              draftTransaction.asset.details.address,
+              draftTransaction.asset?.details?.address,
             )
           ) {
             draftTransaction.recipient.error = CONTRACT_ADDRESS_ERROR;
@@ -1342,12 +1360,12 @@ const slice = createSlice({
             draftTransaction.recipient.error = null;
           }
           if (
-            isSendingToken &&
-            isValidHexAddress(state.recipientInput) &&
-            (tokenAddressList.find((address) =>
-              isEqualCaseInsensitive(address, state.recipientInput),
-            ) ||
-              checkExistingAddresses(state.recipientInput, tokens))
+            (isValidHexAddress(state.recipientInput) &&
+              (tokenAddressList.find((address) =>
+                isEqualCaseInsensitive(address, state.recipientInput),
+              ) ||
+                checkExistingAddresses(state.recipientInput, tokens))) ||
+            isProbablyAnAssetContract
           ) {
             draftTransaction.recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
           } else {
@@ -1355,6 +1373,7 @@ const slice = createSlice({
           }
         }
       }
+      slice.caseReducers.validateSendState(state);
     },
     /**
      * Checks if the draftTransaction is currently valid. The following list of
@@ -1390,6 +1409,12 @@ const slice = createSlice({
         case new BigNumber(draftTransaction.gas.gasLimit, 16).lessThan(
           new BigNumber(state.gasLimitMinimum),
         ):
+          draftTransaction.status = SEND_STATUSES.INVALID;
+          break;
+        case draftTransaction.recipient.warning === 'loading':
+        case draftTransaction.recipient.warning ===
+          KNOWN_RECIPIENT_ADDRESS_WARNING &&
+          draftTransaction.recipient.recipientWarningAcknowledged === false:
           draftTransaction.status = SEND_STATUSES.INVALID;
           break;
         default:
@@ -1589,9 +1614,16 @@ const {
   validateRecipientUserInput,
   updateRecipientSearchMode,
   addHistoryEntry,
+  acknowledgeRecipientWarning,
 } = actions;
 
-export { useDefaultGas, useCustomGas, updateGasLimit, addHistoryEntry };
+export {
+  useDefaultGas,
+  useCustomGas,
+  updateGasLimit,
+  addHistoryEntry,
+  acknowledgeRecipientWarning,
+};
 
 // Action Creators
 
@@ -1601,14 +1633,18 @@ export { useDefaultGas, useCustomGas, updateGasLimit, addHistoryEntry };
  * passing in both the dispatch method and the payload to dispatch, which makes
  * it only applicable for use within action creators.
  */
-const debouncedValidateRecipientUserInput = debounce((dispatch, payload) => {
-  dispatch(
-    addHistoryEntry(
-      `sendFlow - user typed ${payload.userInput} into recipient input field`,
-    ),
-  );
-  dispatch(validateRecipientUserInput(payload));
-}, 300);
+const debouncedValidateRecipientUserInput = debounce(
+  (dispatch, payload, resolve) => {
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - user typed ${payload.userInput} into recipient input field`,
+      ),
+    );
+    dispatch(validateRecipientUserInput(payload));
+    resolve();
+  },
+  300,
+);
 
 /**
  * Begins a new draft transaction, derived from the txParams of an existing
@@ -1799,18 +1835,54 @@ export function updateRecipient({ address, nickname }) {
  */
 export function updateRecipientUserInput(userInput) {
   return async (dispatch, getState) => {
+    dispatch(actions.updateRecipientWarning('loading'));
     await dispatch(actions.updateRecipientUserInput(userInput));
     const state = getState();
+    const draftTransaction =
+      state[name].draftTransactions[state[name].currentTransactionUUID];
+    const sendingAddress =
+      draftTransaction.fromAccount?.address ??
+      state[name].selectedAccount.address ??
+      getSelectedAddress(state);
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
     const useTokenDetection = getUseTokenDetection(state);
-    const tokenAddressList = Object.keys(getTokenList(state));
-    debouncedValidateRecipientUserInput(dispatch, {
-      userInput,
-      chainId,
-      tokens,
-      useTokenDetection,
-      tokenAddressList,
+    const tokenMap = getTokenList(state);
+    const tokenAddressList = Object.keys(tokenMap);
+
+    const inputIsValidHexAddress = isValidHexAddress(userInput);
+    let isProbablyAnAssetContract = false;
+    if (inputIsValidHexAddress) {
+      const { symbol, decimals } = getTokenMetadata(userInput, tokenMap) || {};
+
+      isProbablyAnAssetContract = symbol && decimals !== undefined;
+
+      if (!isProbablyAnAssetContract) {
+        try {
+          const { standard } = await getTokenStandardAndDetails(
+            userInput,
+            sendingAddress,
+          );
+          isProbablyAnAssetContract = Boolean(standard);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    }
+
+    return new Promise((resolve) => {
+      debouncedValidateRecipientUserInput(
+        dispatch,
+        {
+          userInput,
+          chainId,
+          tokens,
+          useTokenDetection,
+          tokenAddressList,
+          isProbablyAnAssetContract,
+        },
+        resolve,
+      );
     });
   };
 }
@@ -2008,6 +2080,7 @@ export function updateSendHexData(hexData) {
     await dispatch(
       addHistoryEntry(`sendFlow - user added custom hexData ${hexData}`),
     );
+
     await dispatch(actions.updateUserInputHexData(hexData));
     const state = getState();
     const draftTransaction =
@@ -2484,6 +2557,11 @@ export function getIsUsingMyAccountForRecipientSearch(state) {
  */
 export function getRecipientUserInput(state) {
   return state[name].recipientInput;
+}
+
+export function getRecipientWarningAcknowledgement(state) {
+  return getCurrentDraftTransaction(state).recipient
+    .recipientWarningAcknowledged;
 }
 
 // Overall validity and stage selectors
