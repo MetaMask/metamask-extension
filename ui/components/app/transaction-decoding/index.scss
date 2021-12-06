@@ -45,15 +45,17 @@
       margin-left: 4px;
     }
 
-    details > summary {
+    &__solidity-raw {
+      @include H6;
+      text-align: left;
+      white-space: pre-wrap;
+    }
+
+    &__summary {
       position: relative;
       cursor: pointer;
       padding-bottom: 5px;
       color: $ui-black;
-    }
-
-    pre.solidity-raw {
-      text-align: left;
     }
 
     &__solidity-value {

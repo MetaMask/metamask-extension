@@ -100,25 +100,31 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         switch (typeClass) {
           case 'int':
             return (
-              <span className="solidity-int">
+              <span className="tx-insight-content__solidity-int">
                 {[value.asBN || value.asString].toString()}
               </span>
             );
 
           case 'uint':
             return (
-              <span className="solidity-uint">
+              <span className="tx-insight-content__solidity-uint">
                 {[value.asBN || value.asString].toString()}
               </span>
             );
 
           case 'bytes':
-            return <span className="solidity-bytes">{value.asHex}</span>;
+            return (
+              <span className="tx-insight-content__solidity-bytes">
+                {value.asHex}
+              </span>
+            );
 
           case 'array':
             return (
               <details>
-                <summary>{name}: </summary>
+                <summary className="tx-insight-content__summary">
+                  {name}:{' '}
+                </summary>
                 <ol>
                   {value.map((itemValue, index) => {
                     return (
@@ -146,7 +152,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           }
           default:
             return (
-              <pre className="solidity-raw">
+              <pre className="tx-insight-content__solidity-raw">
                 {inspect(new Codec.Format.Utils.Inspect.ResultInspector(value))}
               </pre>
             );
@@ -161,7 +167,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     return children ? (
       <li key={`${typeClass}-${index}`}>
         <details open={index === 0 ? 'open' : ''}>
-          <summary>{name}: </summary>
+          <summary className="tx-insight-content__summary">{name}: </summary>
           <ol>{children.map(renderTree)}</ol>
         </details>
       </li>
