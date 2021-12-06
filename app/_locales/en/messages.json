@@ -320,6 +320,9 @@
   "balanceOutdated": {
     "message": "Balance may be outdated"
   },
+  "baseFee": {
+    "message": "Base fee"
+  },
   "basic": {
     "message": "Basic"
   },
@@ -1276,6 +1279,9 @@
     "message": "Use $1 to cover surges in network traffic due to things like popular NFT drops.",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
   },
+  "highLowercase": {
+    "message": "high"
+  },
   "history": {
     "message": "History"
   },
@@ -1535,6 +1541,9 @@
     "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredicible.",
     "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
   },
+  "lowLowercase": {
+    "message": "low"
+  },
   "lowPriorityMessage": {
     "message": "Future transactions will queue after this one. This price was last seen was some time ago."
   },
@@ -1727,6 +1736,17 @@
   },
   "networkStatus": {
     "message": "Network status"
+  },
+  "networkStatusBaseFeeTooltip": {
+    "message": "The base fee is set by the network and changes every 13-14 seconds. Our $1 and $2 options account for sudden increases.",
+    "description": "$1 and $2 are bold text for Medium and Aggressive respectively."
+  },
+  "networkStatusPriorityFeeTooltip": {
+    "message": "Range of priority fees (aka “miner tip”). This goes to miners and incentivizes them to prioritize your transaction."
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "Gas fees are $1 relative to the past 72 hours.",
+    "description": "$1 is networks stability value - stable, low, high"
   },
   "networkURL": {
     "message": "Network URL"
@@ -2089,6 +2109,9 @@
     "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
   },
   "priorityFee": {
+    "message": "Priority fee"
+  },
+  "priorityFeeProperCase": {
     "message": "Priority Fee"
   },
   "privacyMsg": {
@@ -2551,6 +2574,9 @@
   },
   "stable": {
     "message": "Stable"
+  },
+  "stableLowercase": {
+    "message": "stable"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."

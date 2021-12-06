@@ -1,4 +1,4 @@
-.network-status {
+.network-statistics {
   margin: 24px 0 12px;
 
   &__info {
@@ -37,5 +37,9 @@
         margin-top: 4px;
       }
     }
+  }
+
+  &__tooltip-label {
+    font-weight: 700;
   }
 }

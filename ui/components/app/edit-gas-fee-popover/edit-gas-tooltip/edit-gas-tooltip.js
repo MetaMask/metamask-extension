@@ -101,7 +101,7 @@ const EditGasToolTip = ({
               fontWeight={FONT_WEIGHT.BOLD}
               className="edit-gas-tooltip__container__label"
             >
-              {t('priorityFee')}
+              {t('priorityFeeProperCase')}
             </Typography>
             <Typography
               variant={TYPOGRAPHY.H7}
