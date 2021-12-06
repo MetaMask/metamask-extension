@@ -1,0 +1,30 @@
+div .view-snap-subheader {
+    @media screen and (max-width: $break-small) {
+        display: flex;
+        margin-right: 0px;
+        padding-right: 24px;
+        padding-left: 24px;
+    }
+}
+
+.view-snap-content-container {
+    @media screen and (max-width: $break-small) {
+        width: 100%;
+    }
+}
+
+.settings-page__content-item.view-snap-section {
+    border-bottom: 1px solid #D8D8D8;
+    padding-bottom: 18px;
+    margin-bottom: 16px;
+}
+
+.view-snap-section.snap-permission-list {
+    padding-bottom: 0px;
+}
+
+.settings-page__content-item .permissions-connect-permission-list .permission {
+    &:last-child {
+        border-bottom: none;
+    }
+}

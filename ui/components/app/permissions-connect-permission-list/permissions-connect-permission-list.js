@@ -10,15 +10,15 @@ export default function PermissionsConnectPermissionList({ permissions }) {
   // TODO:flask Fix Snap permission labels and support namespaced permissions
   const PERMISSION_TYPES = useMemo(() => {
     return {
-      eth_accounts: {
+      'eth_accounts': {
         leftIcon: 'fas fa-eye',
         label: t('eth_accounts'),
         rightIcon: null,
       },
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      snap_confirm: {
+      'snap_confirm': {
         leftIcon: 'fas fa-eye',
-        label: 'snap_confirm',
+        label: t('snap_confirm'),
         rightIcon: null,
       },
       // TODO: We need a function to pass substitutions to `t` for this.
@@ -27,7 +27,7 @@ export default function PermissionsConnectPermissionList({ permissions }) {
         label: 'snap_getBip44Entropy_*',
         rightIcon: null,
       },
-      snap_manageState: {
+      'snap_manageState': {
         leftIcon: 'fas fa-eye',
         label: 'snap_manageState',
         rightIcon: null,
@@ -63,13 +63,13 @@ export default function PermissionsConnectPermissionList({ permissions }) {
 
   return (
     <div className="permissions-connect-permission-list">
-      {Object.keys(permissions).map((permission) => {
+      {Object.keys(permissions).map((permission, idx) => {
         const { label, leftIcon, rightIcon } = PERMISSION_TYPES[
           getPermissionKey(permission)
         ];
 
         return (
-          <div className="permission" key={label}>
+          <div className="permission" key={idx}>
             <i className={leftIcon} />
             {label}
             <i className={rightIcon} />
