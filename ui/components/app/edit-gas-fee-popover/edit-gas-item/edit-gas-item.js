@@ -44,7 +44,10 @@ const EditGasItem = ({ priorityLevel }) => {
 
   if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
-  } else if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
+  } else if (
+    priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
+    dappSuggestedGasFees
+  ) {
     maxFeePerGas = hexWEIToDecGWEI(
       dappSuggestedGasFees.maxFeePerGas || dappSuggestedGasFees.gasPrice,
     );
