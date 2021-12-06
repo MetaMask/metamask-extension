@@ -37,67 +37,44 @@
     }
   }
 
-
-
   .tx-insight-content {
-    &__tree-component {
-      line-height: 175%;
+    line-height: 175%;
 
-      ol ol {
-        padding-left: 22px;
-        margin-left: 4px;
-      }
+    ol ol {
+      padding-left: 22px;
+      margin-left: 4px;
+    }
 
-      details > summary {
-        position: relative;
-        cursor: pointer;
-        padding-bottom: 5px;
-        color: $ui-black;
-      }
+    details > summary {
+      position: relative;
+      cursor: pointer;
+      padding-bottom: 5px;
+      color: $ui-black;
+    }
 
-      pre.solidity-raw {
-        text-align: left;
-      }
+    pre.solidity-raw {
+      text-align: left;
+    }
 
-      .solidity-address {
-        display: flex;
-        flex-direction: row;
-      }
+    &__solidity-value {
+      color: $Grey-500;
+      overflow-x: hidden;
+      padding-bottom: 5px;
+    }
 
-      .solidity-address :first-child {
-        width: 16px;
-        height: 16px;
-        margin: 0 8px;
-      }
-
-      .solidity-item .param-name {
+    &__solidity-item {
+      display: flex;
+      flex-wrap: wrap;
+      word-break: break-all;
+      &--param-name {
         padding-right: 4px;
         color: $ui-black;
       }
+    }
 
-      .solidity-value {
-        color: $Grey-500;
-        overflow-x: hidden;
-        padding-bottom: 5px;
-
-        & > div {
-          display: flex;
-          flex-wrap: wrap;
-          word-break: break-all;
-        }
-      }
-
-      .solidity-error {
-        display: flex;
-        align-items: center;
-
-        & > .error-message__icon {
-          width: 14px;
-          margin-right: 5px;
-        }
-      }
+    &__solidity-error {
+      display: flex;
+      align-items: center;
     }
   }
 }
-
-

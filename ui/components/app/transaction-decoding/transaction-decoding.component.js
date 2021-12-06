@@ -91,7 +91,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     switch (kind) {
       case 'error':
         return (
-          <span className="solidity-error">
+          <span className="tx-insight-content__solidity-error">
             <span>Malformed data</span>
           </span>
         );
@@ -166,12 +166,14 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         </details>
       </li>
     ) : (
-      <li className="solidity-value">
-        <div className="solidity-item">
+      <li className="tx-insight-content__solidity-value">
+        <div className="tx-insight-content__solidity-item">
           {typeClass !== 'array' && !Array.isArray(value) ? (
-            <span className="param-name">{name}: </span>
+            <span className="tx-insight-content__solidity-item--param-name">
+              {name}:{' '}
+            </span>
           ) : null}
-          <span className="solidity-uint">
+          <span className="tx-insight-content__solidity-item--param-value">
             {renderLeaf({ name, typeClass, type, value, kind })}
           </span>
         </div>
@@ -197,14 +199,14 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     }
 
     return (
-      <div className="tx-insight-content">
-        <div className="tx-insight-content__tree-component">
+      <>
+        <div className="tx-insight-content">
           <ol>{tx.map(renderTree)}</ol>
         </div>
-        <div className="tx-insight-content__copy-raw-tx">
+        <div className="tx-insight-copy-raw-tx">
           <CopyRawData data={data} />
         </div>
-      </div>
+      </>
     );
   };
 
