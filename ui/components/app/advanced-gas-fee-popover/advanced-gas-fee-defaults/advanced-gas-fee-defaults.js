@@ -17,7 +17,7 @@ import {
 } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
 
-import { useAdvanceGasFeePopoverContext } from '../context';
+import { useAdvancedGasFeePopoverContext } from '../context';
 
 const AdvancedGasFeeDefaults = () => {
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const AdvancedGasFeeDefaults = () => {
   const {
     baseFeeMultiplier,
     maxPriorityFeePerGas,
-  } = useAdvanceGasFeePopoverContext();
+  } = useAdvancedGasFeePopoverContext();
   const isAdvancedGasFeeDefault = useSelector(getIsAdvancedGasFeeDefault);
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
