@@ -97,18 +97,18 @@ const EditGasItem = ({ priorityLevel }) => {
     }
   };
 
+  if (
+    priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
+    !dappSuggestedGasFees
+  ) {
+    return null;
+  }
+
   return (
     <button
       className={classNames('edit-gas-item', {
         'edit-gas-item--selected': priorityLevel === estimateUsed,
-        'edit-gas-item-disabled':
-          priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
-          !dappSuggestedGasFees,
       })}
-      disabled={
-        priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
-        !dappSuggestedGasFees
-      }
       onClick={onOptionSelect}
       aria-label={priorityLevel}
       autoFocus={priorityLevel === estimateUsed}

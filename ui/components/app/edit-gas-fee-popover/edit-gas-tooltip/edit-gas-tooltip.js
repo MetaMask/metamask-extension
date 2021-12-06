@@ -4,6 +4,7 @@ import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
 import {
   COLORS,
   FONT_WEIGHT,
+  TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 import Typography from '../../../ui/typography';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
@@ -68,26 +69,26 @@ const EditGasToolTip = ({
       ) : null}
       {priorityLevel === PRIORITY_LEVELS.HIGH ? (
         <div className="edit-gas-tooltip__container__dialog">
-          <Typography fontSize="12px" color={COLORS.WHITE}>
+          <Typography variant={TYPOGRAPHY.H7} color={COLORS.WHITE}>
             {t('highGasSettingToolTipDialog')}
           </Typography>
         </div>
       ) : null}
       <div className="edit-gas-tooltip__container__message">
-        <Typography fontSize="12px">{toolTipMessage()}</Typography>
+        <Typography variant={TYPOGRAPHY.H7}>{toolTipMessage()}</Typography>
       </div>
       {priorityLevel === PRIORITY_LEVELS.CUSTOM ? null : (
         <div className="edit-gas-tooltip__container__values">
           <div>
             <Typography
-              fontSize="12px"
+              variant={TYPOGRAPHY.H7}
               fontWeight={FONT_WEIGHT.BOLD}
               className="edit-gas-tooltip__container__label"
             >
               {t('maxBaseFee')}
             </Typography>
             <Typography
-              fontSize="12px"
+              variant={TYPOGRAPHY.H7}
               color={COLORS.NEUTRAL_GREY}
               className="edit-gas-tooltip__container__value"
             >
@@ -96,14 +97,14 @@ const EditGasToolTip = ({
           </div>
           <div>
             <Typography
-              fontSize="12px"
+              variant={TYPOGRAPHY.H7}
               fontWeight={FONT_WEIGHT.BOLD}
               className="edit-gas-tooltip__container__label"
             >
               {t('priorityFee')}
             </Typography>
             <Typography
-              fontSize="12px"
+              variant={TYPOGRAPHY.H7}
               color={COLORS.NEUTRAL_GREY}
               className="edit-gas-tooltip__container__value"
             >
@@ -112,14 +113,14 @@ const EditGasToolTip = ({
           </div>
           <div>
             <Typography
-              fontSize="12px"
+              variant={TYPOGRAPHY.H7}
               fontWeight={FONT_WEIGHT.BOLD}
               className="edit-gas-tooltip__container__label"
             >
               {t('gasLimit')}
             </Typography>
             <Typography
-              fontSize="12px"
+              variant={TYPOGRAPHY.H7}
               color={COLORS.NEUTRAL_GREY}
               className="edit-gas-tooltip__container__value"
             >
