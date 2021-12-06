@@ -254,7 +254,7 @@ export default class TransactionListItemDetails extends PureComponent {
               />
               {transactionGroup.initialTransaction.type !==
                 TRANSACTION_TYPES.INCOMING && (
-                <Disclosure title="Activity log" size="small">
+                <Disclosure title={t('activityLog')} size="small">
                   <TransactionActivityLog
                     transactionGroup={transactionGroup}
                     className="transaction-list-item-details__transaction-activity-log"
