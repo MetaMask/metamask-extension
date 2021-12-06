@@ -1,6 +1,6 @@
 # Add Custom Build to Firefox
 
-Go to the url `about:debugging`.
+Go to the url `about:debugging#addons`.
 
 Click the button `Load Temporary Add-On`.
 
