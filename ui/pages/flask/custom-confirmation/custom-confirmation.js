@@ -5,12 +5,17 @@ import SiteOrigin from '../../../components/ui/site-origin/site-origin';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextArea from '../../../components/ui/textarea/textarea';
 import { RESIZE } from '../../../helpers/constants/design-system';
+import { useSelector } from 'react-redux';
+import { getDomainMetadata } from '../../../selectors';
 
 export default function CustomConfirmation() {
   const t = useI18nContext();
 
   const onCancel = useCallback(() => {}, []);
   const onSubmit = useCallback(() => {}, []);
+
+  const domainMetadata = useSelector(getDomainMetadata);
+
   return (
     <div className="page-container custom-confirmation">
       <div className="top-bar">
@@ -20,9 +25,9 @@ export default function CustomConfirmation() {
         <div className="headers">
           <div className="icon">
             <SiteOrigin
-              siteOrigin={'http://filecoin.com'}
-              iconSrc={'./metamark.svg'}
-              name={'MetaMask'}
+              siteOrigin={domainMetadata.origin}
+              iconSrc={domainMetadata.icon}
+              name={domainMetadata.iconName}
             />
           </div>
           <div className="title">A request question here?</div>
