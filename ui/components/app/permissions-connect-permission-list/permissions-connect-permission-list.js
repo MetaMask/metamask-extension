@@ -113,7 +113,7 @@ export default function PermissionsConnectPermissionList({ permissions }) {
           typeof listValue === 'function' ? listValue(permission) : listValue;
 
         return (
-          <div className="permission" key={label}>
+          <div className="permission" key={idx}>
             <i className={leftIcon} />
             {label}
             <i className={rightIcon} />
