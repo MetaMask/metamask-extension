@@ -50,6 +50,7 @@ const AdvancedGasFeeDefaults = () => {
     <Box
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.ROW}
+      marginRight={4}
       className="advanced-gas-fee-defaults"
     >
       <CheckBox
