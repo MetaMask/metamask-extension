@@ -2,6 +2,7 @@ import React, { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import BigNumber from 'bignumber.js';
 import {
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
@@ -109,7 +110,7 @@ export default function EditGasDisplay({
   );
 
   let warningMessage;
-  if (gasLimit < properGasLimit) {
+  if (new BigNumber(gasLimit).lessThan(new BigNumber(properGasLimit))) {
     warningMessage = t('gasLimitRecommended', [properGasLimit]);
   }
 

@@ -133,6 +133,10 @@ export function useGasFeeInputs(
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
   );
 
+  const properGasLimit = Number(
+    hexToDecimal(transaction?.originalGasEstimate ?? '0x0'),
+  );
+
   /**
    * In EIP-1559 V2 designs change to gas estimate is always updated to transaction
    * Thus callback setEstimateToUse can be deprecate in favour of this useEffect

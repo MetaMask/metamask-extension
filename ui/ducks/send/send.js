@@ -1549,6 +1549,7 @@ export function signTransaction() {
         gas: txParams.gas,
       };
       const unapprovedTx = unapprovedTxs[id];
+      unapprovedTx.originalGasEstimate = eip1559OnlyTxParamsToUpdate.gas;
       const editingTx = {
         ...unapprovedTx,
         txParams: Object.assign(

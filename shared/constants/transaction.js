@@ -219,6 +219,8 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  *  TransactionMeta object.
  * @property {string} origin - A string representing the interface that
  *  suggested the transaction.
+ * @property {string} originalGasEstimate - A string representing the original
+ * gas estimation on the transaction metadata.
  * @property {Object} nonceDetails - A metadata object containing information
  *  used to derive the suggested nonce, useful for debugging nonce issues.
  * @property {string} rawTx - A hex string of the final signed transaction,
