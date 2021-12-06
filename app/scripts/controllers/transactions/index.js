@@ -33,6 +33,7 @@ import {
   GAS_ESTIMATE_TYPES,
   GAS_RECOMMENDATIONS,
   CUSTOM_GAS_ESTIMATE,
+  PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import {
@@ -438,7 +439,11 @@ export default class TransactionController extends EventEmitter {
       ) {
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
-        txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
+        if (process.env.EIP_1559_V2) {
+          txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
+        } else {
+          txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
+        }
       } else {
         if (
           (defaultMaxFeePerGas &&
@@ -448,6 +453,8 @@ export default class TransactionController extends EventEmitter {
           txMeta.origin === 'metamask'
         ) {
           txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
+        } else if (process.env.EIP_1559_V2) {
+          txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
         } else {
           txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         }

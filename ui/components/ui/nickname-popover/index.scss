@@ -1,0 +1,74 @@
+.nickname-popover {
+  &__popover-wrap {
+    height: 232px;
+    border-radius: 4px;
+    background: $ui-white;
+    display: flex;
+    justify-content: center;
+    width: auto;
+
+    .popover-header {
+      padding: 16px 16px 0 0;
+    }
+
+    .popover-content {
+      margin-top: -15px;
+      align-items: center;
+    }
+  }
+
+  &__address {
+    @include H4;
+
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    color: $Black-100;
+    padding-top: 8px;
+  }
+
+  &__public-address {
+    @include H7;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-height: 25px;
+    background: $Grey-000;
+    border-radius: 40px;
+    padding-left: 8px;
+    padding-right: 2px;
+    margin-top: 8px;
+
+    button {
+      background: none;
+    }
+
+    &__constant {
+      @include H8;
+
+      color: $Grey-500;
+    }
+  }
+
+  &__view-on-block-explorer {
+    @include H7;
+
+    color: $primary-1;
+    margin-top: 12px;
+  }
+
+  &__etherscan-link {
+    @include H7;
+
+    padding: 0;
+  }
+
+  &__footer-button {
+    margin-top: 16px;
+    width: 152px;
+    height: 40px;
+    border-radius: 100px;
+    background: $primary-1;
+  }
+}

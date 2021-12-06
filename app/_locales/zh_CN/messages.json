@@ -1,4 +1,46 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "非法交易"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "扫描的签名二维码不属于当前交易，请检查交易详情后重试。"
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "暂无更多账户，若想切换到其他账户，请在硬件钱包中选择想要的账户重新同步。"
+  },
+  "QRHardwareScanInstructions": {
+    "message": "为了保护您的隐私，屏幕是模糊的，但不影响对二维码的读取。"
+  },
+  "QRHardwareSignRequestCancel": {
+    "message": "拒绝该交易"
+  },
+  "QRHardwareSignRequestDescription": {
+    "message": "硬件钱包扫描上方二维码完成签名后，点击“获取签名”按钮扫描已签名的二维码"
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "获取签名"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "用硬件钱包扫描二维码"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "获取签名"
+  },
+  "QRHardwareUnknownQRCodeTitle": {
+    "message": "非法二维码"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "请扫描硬件钱包的同步二维码。"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "扫描二维码"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "该类硬件钱包通过二维码实现通讯交互，做到完全脱网。官方支持的钱包有："
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "AirGap Vault & Ngrave (即将上线)"
+  },
   "about": {
     "message": "关于"
   },
@@ -352,9 +394,6 @@
   },
   "copiedExclamation": {
     "message": "已复制"
-  },
-  "copiedTransactionId": {
-    "message": "交易 ID 复制成功"
   },
   "copyAddress": {
     "message": "复制地址到剪贴板"
@@ -835,6 +874,12 @@
     "message": "JSON 文件",
     "description": "format for importing an account"
   },
+  "keystone": {
+    "message": "铠石钱包"
+  },
+  "keystoneTutorial": {
+    "message": " （使用教程）"
+  },
   "knownAddressRecipient": {
     "message": "已知接收方地址。"
   },
@@ -1098,12 +1143,6 @@
   },
   "pending": {
     "message": "待处理"
-  },
-  "permissionCheckedIconDescription": {
-    "message": "您已同意该权限"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "您还未同意该权限"
   },
   "permissions": {
     "message": "权限"

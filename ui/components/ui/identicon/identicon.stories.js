@@ -3,7 +3,7 @@ import { text, boolean, number } from '@storybook/addon-knobs';
 import Identicon from './identicon.component';
 
 export default {
-  title: 'Identicon',
+  title: 'Components/UI/Identicon',
   id: __filename,
 };
 
@@ -13,7 +13,7 @@ const diameterOptions = {
   max: 200,
   step: 1,
 };
-export const standard = () => (
+export const DefaultStory = () => (
   <Identicon
     addBorder={boolean('Add Border', Identicon.defaultProps.addBorder)}
     address={text('Address', '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1')}
@@ -26,9 +26,11 @@ export const standard = () => (
   />
 );
 
-export const image = () => <Identicon image="./images/eth_logo.svg" />;
+DefaultStory.storyName = 'Default';
 
-export const blockie = () => (
+export const Image = () => <Identicon image="./images/eth_logo.svg" />;
+
+export const Blockie = () => (
   <Identicon
     address={text('Address', '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1')}
     useBlockie={boolean('Use Blockie', true)}
@@ -38,7 +40,7 @@ export const blockie = () => (
 // The border size is hard-coded in CSS, and was designed with this size identicon in mind
 const withBorderDiameter = 32;
 
-export const withBorder = () => (
+export const WithBorder = () => (
   <Identicon
     addBorder={boolean('Add Border', true)}
     address={text('Address', '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1')}

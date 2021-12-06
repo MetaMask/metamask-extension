@@ -215,9 +215,6 @@
   "copiedExclamation": {
     "message": "S'ha copiat!"
   },
-  "copiedTransactionId": {
-    "message": "ID de transacció copiada"
-  },
   "copyAddress": {
     "message": "Copiar adreça al porta-retalls"
   },

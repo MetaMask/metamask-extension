@@ -9,7 +9,6 @@ import { usePrevious } from '../../../../hooks/usePrevious';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { fetchToken } from '../../swaps.util';
 import { getCurrentChainId } from '../../../../selectors/selectors';
-import { getUseNewSwapsApi } from '../../../../ducks/swaps/swaps';
 
 const renderAdornment = () => (
   <InputAdornment position="start" style={{ marginRight: '12px' }}>
@@ -29,7 +28,6 @@ export default function ListItemSearch({
   const fuseRef = useRef();
   const [searchQuery, setSearchQuery] = useState('');
   const chainId = useSelector(getCurrentChainId);
-  const useNewSwapsApi = useSelector(getUseNewSwapsApi);
 
   /**
    * Search a custom token for import based on a contract address.
@@ -38,7 +36,7 @@ export default function ListItemSearch({
   const handleSearchTokenForImport = async (contractAddress) => {
     setSearchQuery(contractAddress);
     try {
-      const token = await fetchToken(contractAddress, chainId, useNewSwapsApi);
+      const token = await fetchToken(contractAddress, chainId);
       if (token) {
         token.primaryLabel = token.symbol;
         token.secondaryLabel = token.name;

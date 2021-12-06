@@ -607,12 +607,12 @@ describe('MetaMaskController', function () {
       sinon.spy(metamaskController.preferencesController, 'setSelectedAddress');
       sinon.spy(metamaskController.preferencesController, 'setAccountLabel');
       await metamaskController
-        .connectHardware('trezor', 0, `m/44/0'/0'`)
+        .connectHardware('trezor', 0, `m/44'/1'/0'/0`)
         .catch(() => null);
       await metamaskController.unlockHardwareWalletAccount(
         accountToUnlock,
         'trezor',
-        `m/44/0'/0'`,
+        `m/44'/1'/0'/0`,
       );
     });
 
@@ -835,7 +835,8 @@ describe('MetaMaskController', function () {
     let msgParams, metamaskMsgs, messages, msgId;
 
     const address = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-    const data = '0x43727970746f6b697474696573';
+    const data =
+      '0x0000000000000000000000000000000000000043727970746f6b697474696573';
 
     beforeEach(async function () {
       sandbox.stub(metamaskController, 'getBalance');
@@ -883,6 +884,19 @@ describe('MetaMaskController', function () {
       const msgIdInt = parseInt(msgId, 10);
       metamaskController.cancelMessage(msgIdInt, noop);
       assert.equal(messages[0].status, TRANSACTION_STATUSES.REJECTED);
+    });
+
+    it('checks message length', async function () {
+      msgParams = {
+        from: address,
+        data: '0xDEADBEEF',
+      };
+
+      try {
+        await metamaskController.newUnsignedMessage(msgParams);
+      } catch (error) {
+        assert.equal(error.message, 'eth_sign requires 32 byte message hash');
+      }
     });
 
     it('errors when signing a message', async function () {

@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Скопійовано!"
   },
-  "copiedTransactionId": {
-    "message": "ID Скопійованої транзакції"
-  },
   "copyAddress": {
     "message": "Копіювати адресу в буфер обміну"
   },

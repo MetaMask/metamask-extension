@@ -1,9 +1,80 @@
 .transaction-list-item-details {
+  div.disclosure + div.disclosure {
+    margin-top: 0;
+  }
+
+  .sender-to-recipient--flat .sender-to-recipient__party.sender-to-recipient__party--sender {
+    padding: 0;
+    justify-content: flex-start;
+  }
+
+  .sender-to-recipient--flat .sender-to-recipient__party.sender-to-recipient__party--recipient {
+    padding: 0;
+    justify-content: flex-end;
+  }
+
+  &__sender-to-recipient-header {
+    display: flex;
+    font-size: 14px;
+    color: $Black-100;
+    font-weight: bold;
+    padding-bottom: 7px;
+
+    & > div:first-child {
+      flex: 1;
+    }
+  }
+
+  &__tx-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 44px;
+    justify-content: space-between;
+
+    & > div:first-child {
+      font-size: 14px;
+      color: $Black-100;
+      font-weight: bold;
+    }
+
+    & > div:last-child {
+      font-weight: bold;
+    }
+  }
+
+  &__tx-hash {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .btn-link {
+      font-size: 12px;
+      line-height: 100%;
+      padding: 0;
+    }
+
+    & > div:first-child {
+      padding-bottom: 16px;
+    }
+  }
+
+  &__operations {
+    margin: 0 0 16px 16px;
+    display: flex;
+    justify-content: end;
+  }
+
   &__header {
+    font-size: 12px;
     margin: 8px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  &__body {
+    padding: 8px 16px;
   }
 
   &__header-buttons {
@@ -31,12 +102,25 @@
 
   &__sender-to-recipient-container {
     margin-bottom: 8px;
+
+    .sender-to-recipient {
+      .sender-to-recipient__party {
+        border: none;
+
+        &--sender {
+          padding-left: 0;
+        }
+
+        &--recipient {
+          padding-right: 0;
+        }
+      }
+    }
   }
 
   &__cards-container {
     display: flex;
     flex-direction: column;
-    padding: 8px 16px;
   }
 
   &__transaction-breakdown {
@@ -49,5 +133,13 @@
   &__transaction-activity-log {
     flex: 2;
     min-width: 0;
+
+    .transaction-activity-log__activities-container {
+      padding-top: 0;
+    }
+
+    .transaction-activity-log__title {
+      display: none;
+    }
   }
 }

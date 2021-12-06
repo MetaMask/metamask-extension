@@ -10,6 +10,7 @@ import {
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
 import Button from '../../components/ui/button';
+import { clearClipboard } from '../../helpers/utils/util';
 
 const { isValidMnemonic } = ethers.utils;
 
@@ -173,6 +174,7 @@ class RestoreVaultPage extends Component {
               {showSeedPhrase ? (
                 <textarea
                   className="import-account__secret-phrase"
+                  onPaste={clearClipboard}
                   onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
                   value={seedPhrase}
                   autoFocus
@@ -182,6 +184,7 @@ class RestoreVaultPage extends Component {
                 <TextField
                   className="import-account__textarea import-account__seedphrase"
                   type="password"
+                  onPaste={clearClipboard}
                   onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
                   value={seedPhrase}
                   autoFocus

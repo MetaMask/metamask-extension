@@ -19,6 +19,7 @@ const typeHash = {
 export default function ActionableMessage({
   message = '',
   primaryAction = null,
+  primaryActionV2 = null,
   secondaryAction = null,
   className = '',
   infoTooltipText = '',
@@ -26,6 +27,7 @@ export default function ActionableMessage({
   type = 'default',
   useIcon = false,
   iconFillColor = '',
+  roundedButtons,
 }) {
   const actionableMessageClassName = classnames(
     'actionable-message',
@@ -34,6 +36,9 @@ export default function ActionableMessage({
     className,
     { 'actionable-message--with-icon': useIcon },
   );
+
+  const onlyOneAction =
+    (primaryAction && !secondaryAction) || (secondaryAction && !primaryAction);
 
   return (
     <div className={actionableMessageClassName}>
@@ -46,13 +51,29 @@ export default function ActionableMessage({
         />
       )}
       <div className="actionable-message__message">{message}</div>
+      {primaryActionV2 && (
+        <button
+          className="actionable-message__action-v2"
+          onClick={primaryActionV2.onClick}
+        >
+          {primaryActionV2.label}
+        </button>
+      )}
       {(primaryAction || secondaryAction) && (
-        <div className="actionable-message__actions">
+        <div
+          className={classnames('actionable-message__actions', {
+            'actionable-message__actions--single': onlyOneAction,
+          })}
+        >
           {primaryAction && (
             <button
               className={classnames(
                 'actionable-message__action',
                 'actionable-message__action--primary',
+                `actionable-message__action-${type}`,
+                {
+                  'actionable-message__action--rounded': roundedButtons,
+                },
               )}
               onClick={primaryAction.onClick}
             >
@@ -64,6 +85,10 @@ export default function ActionableMessage({
               className={classnames(
                 'actionable-message__action',
                 'actionable-message__action--secondary',
+                `actionable-message__action-${type}`,
+                {
+                  'actionable-message__action--rounded': roundedButtons,
+                },
               )}
               onClick={secondaryAction.onClick}
             >
@@ -82,6 +107,10 @@ ActionableMessage.propTypes = {
     label: PropTypes.string,
     onClick: PropTypes.func,
   }),
+  primaryActionV2: PropTypes.shape({
+    label: PropTypes.string,
+    onClick: PropTypes.func,
+  }),
   secondaryAction: PropTypes.shape({
     label: PropTypes.string,
     onClick: PropTypes.func,
@@ -92,4 +121,5 @@ ActionableMessage.propTypes = {
   infoTooltipText: PropTypes.string,
   useIcon: PropTypes.bool,
   iconFillColor: PropTypes.string,
+  roundedButtons: PropTypes.bool,
 };

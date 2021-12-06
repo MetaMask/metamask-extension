@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "Disalin!"
   },
-  "copiedTransactionId": {
-    "message": "ID Transaksi yang Disalin"
-  },
   "copyAddress": {
     "message": "Salin alamat ke clipboard"
   },
@@ -1345,12 +1342,6 @@
   },
   "pending": {
     "message": "Tunda"
-  },
-  "permissionCheckedIconDescription": {
-    "message": "Anda telah menyetujui izin ini"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Anda belum menyetujui izin ini"
   },
   "permissions": {
     "message": "Izin"

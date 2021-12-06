@@ -56,7 +56,7 @@ const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 
 // state persistence
-const inTest = process.env.IN_TEST === 'true';
+const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
 

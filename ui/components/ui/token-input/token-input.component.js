@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
 import UnitInput from '../unit-input';
 import CurrencyDisplay from '../currency-display';
 import { getWeiHexFromDecimalValue } from '../../../helpers/utils/conversions.util';
@@ -7,6 +8,7 @@ import {
   conversionUtil,
   multiplyCurrencies,
 } from '../../../../shared/modules/conversion.utils';
+
 import { ETH } from '../../../helpers/constants/common';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 
@@ -80,8 +82,8 @@ export default class TokenInput extends PureComponent {
 
     let newDecimalValue = decimalValue;
 
-    if (decimals && applyDecimals) {
-      newDecimalValue = parseFloat(decimalValue).toFixed(decimals);
+    if (decimals && decimalValue && applyDecimals) {
+      newDecimalValue = new BigNumber(decimalValue, 10).toFixed(decimals);
     }
 
     const multiplier = Math.pow(10, Number(decimals || 0));

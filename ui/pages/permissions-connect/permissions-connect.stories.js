@@ -6,7 +6,7 @@ import { PageContainerFooter } from '../../components/ui/page-container';
 import ChooseAccount from './choose-account';
 
 export default {
-  title: 'Permissions Connect',
+  title: 'Pages/PermissionsConnect',
   id: __filename,
 };
 

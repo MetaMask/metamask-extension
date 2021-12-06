@@ -6,7 +6,7 @@ import { updateMetamaskState } from '../../store/actions';
 import ConfirmEncryptionPublicKey from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/ConfirmEncryptionPublicKey',
   id: __filename,
 };
 
@@ -38,10 +38,12 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const ConfirmEncryption = () => {
+export const DefaultStory = () => {
   return (
     <PageSet>
       <ConfirmEncryptionPublicKey />
     </PageSet>
   );
 };
+
+DefaultStory.storyName = 'Default';

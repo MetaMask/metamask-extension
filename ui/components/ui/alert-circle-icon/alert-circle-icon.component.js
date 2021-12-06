@@ -15,6 +15,9 @@ const typeConfig = {
 
 export default class AlertCircleIcon extends Component {
   static propTypes = {
+    /**
+     * giving different alert icon for the component
+     */
     type: PropTypes.oneOf(Object.keys(typeConfig)).isRequired,
   };
 

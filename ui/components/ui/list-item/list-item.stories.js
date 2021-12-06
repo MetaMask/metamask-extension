@@ -10,7 +10,7 @@ import Button from '../button';
 import ListItem from './list-item.component';
 
 export default {
-  title: 'ListItem',
+  title: 'Components/UI/ListItem',
   id: __filename,
 };
 
@@ -31,7 +31,7 @@ Currencies.propTypes = {
 const okColor = '#2F80ED';
 const failColor = '#D73A49';
 
-export const send = () => (
+export const SendComponent = () => (
   <ListItem
     icon={<Send color={okColor} size={28} />}
     titleIcon={<Preloader size={16} color="#D73A49" />}
@@ -54,7 +54,7 @@ export const send = () => (
   </ListItem>
 );
 
-export const pending = () => (
+export const PendingComponent = () => (
   <ListItem
     icon={<Interaction color={failColor} size={28} />}
     title={text('title', 'Hatch Turtles')}
@@ -74,7 +74,7 @@ export const pending = () => (
   />
 );
 
-export const approve = () => (
+export const ApproveComponent = () => (
   <ListItem
     icon={<Approve color={okColor} size={28} />}
     title={text('title', 'Approve spend limit')}
@@ -89,7 +89,7 @@ export const approve = () => (
   />
 );
 
-export const receive = () => (
+export const ReceiveComponent = () => (
   <ListItem
     icon={<Receive color={okColor} size={28} />}
     title={text('title', 'Hatch Turtles')}
