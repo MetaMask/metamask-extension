@@ -75,7 +75,7 @@ const render = (txProps) => {
 
 describe('EditGasFeePopover', () => {
   it('should renders low / medium / high options', () => {
-    render();
+    render({ dappSuggestedGasFees: {} });
 
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('🦊')).toBeInTheDocument();

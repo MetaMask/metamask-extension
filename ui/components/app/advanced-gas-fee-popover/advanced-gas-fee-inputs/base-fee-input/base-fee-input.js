@@ -183,11 +183,7 @@ const BaseFeeInput = () => {
           </Button>
         }
         value={editingInGwei ? maxBaseFeeGWEI : maxBaseFeeMultiplier}
-        detailText={
-          editingInGwei
-            ? `${maxBaseFeeMultiplier}x ${`≈ ${baseFeeInFiat}`}`
-            : `${maxBaseFeeGWEI} GWEI ${`≈ ${baseFeeInFiat}`}`
-        }
+        detailText={`≈ ${baseFeeInFiat}`}
         numeric
       />
       <AdvancedGasFeeInputSubtext
