@@ -8,7 +8,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 
-import { AdvanceGasFeePopoverContextProvider } from '../context';
+import { AdvancedGasFeePopoverContextProvider } from '../context';
 import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 
 jest.mock('../../../../store/actions', () => ({
@@ -20,7 +20,7 @@ jest.mock('../../../../store/actions', () => ({
   removePollingTokenFromAppState: jest.fn(),
 }));
 
-const render = (txProps) => {
+const render = (contextProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -42,12 +42,12 @@ const render = (txProps) => {
       transaction={{
         userFeeLevel: 'custom',
         txParams: { gas: '0x5208' },
-        ...txProps,
       }}
+      {...contextProps}
     >
-      <AdvanceGasFeePopoverContextProvider>
+      <AdvancedGasFeePopoverContextProvider>
         <AdvancedGasFeeGasLimit />
-      </AdvanceGasFeePopoverContextProvider>
+      </AdvancedGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
     store,
   );
@@ -64,5 +64,47 @@ describe('AdvancedGasFeeGasLimit', () => {
     expect(document.getElementsByTagName('input')).toHaveLength(0);
     fireEvent.click(screen.queryByText('Edit'));
     expect(document.getElementsByTagName('input')[0]).toHaveValue(21000);
+  });
+
+  it('should show error if gas limit is not in range', () => {
+    render();
+    fireEvent.click(screen.queryByText('Edit'));
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 20000 },
+    });
+    expect(
+      screen.queryByText(
+        'Gas limit must be greater than 20999 and less than 7920027',
+      ),
+    ).toBeInTheDocument();
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 8000000 },
+    });
+    expect(
+      screen.queryByText(
+        'Gas limit must be greater than 20999 and less than 7920027',
+      ),
+    ).toBeInTheDocument();
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 7000000 },
+    });
+    expect(
+      screen.queryByText(
+        'Gas limit must be greater than 20999 and less than 7920027',
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  it('should validate gas limit against minimumGasLimit it is passed to context', () => {
+    render({ minimumGasLimit: '0x7530' });
+    fireEvent.click(screen.queryByText('Edit'));
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 25000 },
+    });
+    expect(
+      screen.queryByText(
+        'Gas limit must be greater than 29999 and less than 7920027',
+      ),
+    ).toBeInTheDocument();
   });
 });

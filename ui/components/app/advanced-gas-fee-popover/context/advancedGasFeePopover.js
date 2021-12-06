@@ -1,36 +1,39 @@
 import React, { createContext, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
-export const AdvanceGasFeePopoverContext = createContext({});
+export const AdvancedGasFeePopoverContext = createContext({});
 
-export const AdvanceGasFeePopoverContextProvider = ({ children }) => {
+export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
   const [gasLimit, setGasLimit] = useState();
   const [maxFeePerGas, setMaxFeePerGas] = useState();
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState();
   const [isDirty, setDirty] = useState();
+  const [hasError, setHasError] = useState(false);
 
   return (
-    <AdvanceGasFeePopoverContext.Provider
+    <AdvancedGasFeePopoverContext.Provider
       value={{
         gasLimit,
+        hasError,
         isDirty,
         maxFeePerGas,
         maxPriorityFeePerGas,
         setDirty,
         setGasLimit,
+        setHasError,
         setMaxPriorityFeePerGas,
         setMaxFeePerGas,
       }}
     >
       {children}
-    </AdvanceGasFeePopoverContext.Provider>
+    </AdvancedGasFeePopoverContext.Provider>
   );
 };
 
-export function useAdvanceGasFeePopoverContext() {
-  return useContext(AdvanceGasFeePopoverContext);
+export function useAdvancedGasFeePopoverContext() {
+  return useContext(AdvancedGasFeePopoverContext);
 }
 
-AdvanceGasFeePopoverContextProvider.propTypes = {
+AdvancedGasFeePopoverContextProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };

@@ -24,6 +24,21 @@ import { useGasEstimates } from './useGasEstimates';
 import { useTransactionFunctions } from './useTransactionFunctions';
 
 /**
+ * In EIP_1559_V2 implementation as used by useGasfeeInputContext() the use of this hook is evolved.
+ * It is no longer used to keep transient state of advance gas fee inputs.
+ * Transient state of inputs is maintained locally in /ui/components/app/advance-gas-fee-popover component.
+ *
+ * This hook is used now as source of shared data about transaction, it shares details of gas fee in transaction,
+ * estimate used, is EIP-1559 supported and other details. It also  have methods to update transaction.
+ *
+ * Transaction is used as single source of truth and as transaction is updated the fields shared by hook are
+ * also updated using useEffect hook.
+ *
+ * It will be useful to plan a task to create a new hook of this shared information from this hook.
+ * Methods like setEstimateToUse, onManualChange are deprecated in context of EIP_1559_V2 implementation.
+ */
+
+/**
  * @typedef {Object} GasFeeInputReturnType
  * @property {DecGweiString} [maxFeePerGas] - the maxFeePerGas input value.
  * @property {string} [maxFeePerGasFiat] - the maxFeePerGas converted to the
@@ -318,24 +333,10 @@ export function useGasFeeInputs(
     gasWarnings,
     hasGasErrors,
     hasSimulationError,
+    minimumGasLimitDec: hexToDecimal(minimumGasLimit),
     supportsEIP1559,
     supportsEIP1559V2,
     updateTransaction,
     updateTransactionUsingGasFeeEstimates,
   };
 }
-
-/**
- * In EIP_1559_V2 implementation as used by useGasfeeInputContext() the use of this hook is evolved.
- * It is no longer used to keep transient state of advance gas fee inputs.
- * Transient state of inputs is maintained locally in /ui/components/app/advance-gas-fee-popover component.
- *
- * This hook is used now as source of shared data about transaction, it shares details of gas fee in transaction,
- * estimate used, is EIP-1559 supported and other details. It also  have methods to update transaction.
- *
- * Transaction is used as single source of truth and as transaction is updated the fields shared by hook are
- * also updated using useEffect hook.
- *
- * It will be useful to plan a task to create a new hook of this shared information from this hook.
- * Methods like setEstimateToUse, onManualChange are deprecated in context of EIP_1559_V2 implementation.
- */
