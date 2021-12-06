@@ -23,10 +23,10 @@ const Accreditation = ({ fetchVia, address }) => {
         <div className="accreditation__prefix">
           {t('transactionDecodingAccreditationVerified')}
         </div>
-        <div className="accreditation__link">
+        <div className="accreditation__content">
           <Button
             type="link"
-            className="accreditation__etherscan-link"
+            className="accreditation__content--link"
             onClick={() => {
               global.platform.openTab({
                 url: addressLink,
@@ -53,7 +53,7 @@ const Accreditation = ({ fetchVia, address }) => {
           <i className="fa fa-info-circle" />
         </Tooltip>
       </div>
-      <div className="accreditation__title">
+      <div className="accreditation__info">
         <AccreditationLink />
       </div>
     </div>

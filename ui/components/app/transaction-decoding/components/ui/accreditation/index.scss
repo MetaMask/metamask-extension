@@ -8,19 +8,20 @@
     padding-right: 5px;
   }
 
-  &__title {
+  &__info {
     color: $ui-black;
     display: flex;
+    flex-wrap: wrap;
+  }
 
-    .accreditation__link {
-      padding: 0 4px;
-      text-transform: capitalize;
+  &__content {
+    padding: 0 4px;
+    text-transform: capitalize;
 
-      .accreditation__etherscan-link {
-        @include H7;
+    &--link.btn-link {
+      @include H7;
 
-        padding: 0;
-      }
+      padding: 0;
     }
   }
 }
