@@ -93,7 +93,7 @@ const PriorityFeeInput = () => {
       <FormField
         error={priorityFeeError ? t(priorityFeeError) : ''}
         onChange={updatePriorityFee}
-        titleText={t('priorityFee')}
+        titleText={t('priorityFeeProperCase')}
         titleUnit="(GWEI)"
         tooltipText={t('advancedPriorityFeeToolTip')}
         value={priorityFee}
