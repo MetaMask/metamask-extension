@@ -6,7 +6,7 @@ import { ETH } from '../../../../helpers/constants/common';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 
-import NetworkStatus from './network-status';
+import NetworkStatistics from './network-statistics';
 
 jest.mock('../../../../store/actions', () => ({
   disconnectGasFeeEstimatePoller: jest.fn(),
@@ -44,13 +44,13 @@ const renderComponent = (props) => {
 
   return renderWithProvider(
     <GasFeeContextProvider>
-      <NetworkStatus />
+      <NetworkStatistics />
     </GasFeeContextProvider>,
     store,
   );
 };
 
-describe('NetworkStatus', () => {
+describe('NetworkStatistics', () => {
   it('should renders labels', () => {
     renderComponent();
     expect(screen.queryByText('Base fee')).toBeInTheDocument();

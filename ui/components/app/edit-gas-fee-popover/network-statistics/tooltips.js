@@ -66,9 +66,9 @@ export const NetworkStabilityTooltip = ({ children, statusInfo }) => {
         <strong
           key="network-status__tooltip"
           className="network-status__tooltip-label"
-          style={{ color: statusInfo?.color }}
+          style={{ color: statusInfo.color }}
         >
-          {t(statusInfo?.tooltipLabel)}
+          {t(statusInfo.tooltipLabel)}
         </strong>,
       ])}
     >

@@ -16,31 +16,31 @@ const GRADIENT_COLORS = [
   '#C54055',
 ];
 
-const StatusInfo = {
+const STATUS_INFO = {
   low: {
     statusLabel: 'notBusy',
-    tooltipLabel: 'stable',
+    tooltipLabel: 'lowLowercase',
     color: GRADIENT_COLORS[0],
   },
   stable: {
     statusLabel: 'stable',
-    tooltipLabel: 'stable',
+    tooltipLabel: 'stableLowercase',
     color: GRADIENT_COLORS[4],
   },
   high: {
     statusLabel: 'busy',
-    tooltipLabel: 'stable',
+    tooltipLabel: 'highLowercase',
     color: GRADIENT_COLORS[9],
   },
 };
 
 const getStatusInfo = (status) => {
   if (status <= 0.33) {
-    return StatusInfo.low;
+    return STATUS_INFO.low;
   } else if (status > 0.66) {
-    return StatusInfo.high;
+    return STATUS_INFO.high;
   }
-  return StatusInfo.stable;
+  return STATUS_INFO.stable;
 };
 
 const StatusSlider = () => {
@@ -66,7 +66,7 @@ const StatusSlider = () => {
           className="status-slider__label"
           style={{ color: GRADIENT_COLORS[sliderValueNumeric] }}
         >
-          <I18nValue messageKey={statusInfo?.statusLabel} />
+          <I18nValue messageKey={statusInfo.statusLabel} />
         </div>
       </div>
     </NetworkStabilityTooltip>
