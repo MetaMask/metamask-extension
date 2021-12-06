@@ -1,0 +1,60 @@
+.custom-confirmation {
+  .top-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 16px 16px 0 16px;
+    align-items: center;
+
+    .page-count {
+      @include H7;
+
+      color: $Grey-500;
+      grid-column: 2;
+      justify-self: end;
+      font-weight: bold;
+    }
+  }
+  .page-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+
+    .headers {
+      .icon {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .title {
+        @include H3;
+        text-align: center;
+        color: $Black-100;
+        margin-top: 16px;
+      }
+      .subtitle {
+        @include H6;
+
+        text-align: center;
+        color: $Grey-500;
+        margin-top: 4px;
+      }
+
+      .text-area {
+        padding: 16px 32px;
+        border-top: 1px solid $Grey-100;
+        border-bottom: 1px solid $Grey-100;
+        margin: 24px 0 16px 0;
+
+        .text {
+          font-family: monospace !important;
+          overflow-wrap: break-word;
+          overflow-y: scroll;
+          max-height: 400px;
+          padding-right: 4px;
+          font-size: 0.875rem;
+        }
+      }
+    }
+  }
+}
