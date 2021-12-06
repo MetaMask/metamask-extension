@@ -32,7 +32,7 @@ const Address = ({
 
   return (
     <div
-      className="tx-insight tx-insight-component tx-insight-component-address"
+      className="tx-insight-content__address"
       onClick={() => {
         copyToClipboard(checksummedRecipientAddress);
         if (onRecipientClick) {
@@ -40,7 +40,7 @@ const Address = ({
         }
       }}
     >
-      <div className="tx-insight-component-address__sender-icon">
+      <div className="tx-insight-content__address--sender-icon">
         <Identicon address={checksummedRecipientAddress} diameter={18} />
       </div>
 

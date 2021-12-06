@@ -1,12 +1,10 @@
-.tx-insight-content {
-  .tx-insight-component-address {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    overflow: visible;
+.tx-insight-content__address {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  overflow: visible;
 
-    &__sender-icon {
-      padding-right: 5px;
-    }
+  &--sender-icon {
+    padding-right: 5px;
   }
 }
