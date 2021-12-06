@@ -91,7 +91,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
     switch (kind) {
       case 'error':
         return (
-          <span className="sol-item solidity-error">
+          <span className="solidity-error">
             <span>Malformed data</span>
           </span>
         );
@@ -100,27 +100,25 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         switch (typeClass) {
           case 'int':
             return (
-              <span className="sol-item solidity-int">
+              <span className="solidity-int">
                 {[value.asBN || value.asString].toString()}
               </span>
             );
 
           case 'uint':
             return (
-              <span className="sol-item solidity-uint">
+              <span className="solidity-uint">
                 {[value.asBN || value.asString].toString()}
               </span>
             );
 
           case 'bytes':
-            return (
-              <span className="sol-item solidity-bytes">{value.asHex}</span>
-            );
+            return <span className="solidity-bytes">{value.asHex}</span>;
 
           case 'array':
             return (
               <details>
-                <summary className="typography--color-black">{name}: </summary>
+                <summary>{name}: </summary>
                 <ol>
                   {value.map((itemValue, index) => {
                     return (
@@ -148,7 +146,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           }
           default:
             return (
-              <pre className="sol-item solidity-raw">
+              <pre className="solidity-raw">
                 {inspect(new Codec.Format.Utils.Inspect.ResultInspector(value))}
               </pre>
             );
@@ -169,11 +167,11 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       </li>
     ) : (
       <li className="solidity-value">
-        <div className="solidity-named-item solidity-item">
+        <div className="solidity-item">
           {typeClass !== 'array' && !Array.isArray(value) ? (
-            <span className="param-name typography--color-black">{name}: </span>
+            <span className="param-name">{name}: </span>
           ) : null}
-          <span className="sol-item solidity-uint">
+          <span className="solidity-uint">
             {renderLeaf({ name, typeClass, type, value, kind })}
           </span>
         </div>
