@@ -34,9 +34,7 @@ function mapStateToProps(state) {
 
   const addressBook = getAddressBook(state);
 
-  const ownedAccounts = accountsWithSendEtherInfoSelector(state).sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
+  const ownedAccounts = accountsWithSendEtherInfoSelector(state);
 
   return {
     addressBook,
