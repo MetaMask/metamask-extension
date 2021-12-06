@@ -427,6 +427,9 @@
   "chainIdExistsErrorMsg": {
     "message": "This Chain ID is currently used by the $1 network."
   },
+  "chooseAccounts": {
+    "message": "Choose the account(s) to use on this site"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
