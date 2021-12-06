@@ -11,10 +11,7 @@ import {
   FLEX_DIRECTION,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
-import {
-  getIsAdvancedGasFeeDefault,
-  getAdvancedGasFeeValues,
-} from '../../../../selectors';
+import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
@@ -26,7 +23,6 @@ const AdvancedGasFeeDefaults = () => {
     baseFeeMultiplier,
     maxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
-  const isAdvancedGasFeeDefault = useSelector(getIsAdvancedGasFeeDefault);
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
   const updateDefaultSettings = (value) => {
@@ -42,7 +38,7 @@ const AdvancedGasFeeDefaults = () => {
     }
   };
   const defaultPreference =
-    isAdvancedGasFeeDefault &&
+    Boolean(advancedGasFeeValues) &&
     advancedGasFeeValues.maxBaseFee === baseFeeMultiplier &&
     advancedGasFeeValues.priorityFee === maxPriorityFeePerGas;
 

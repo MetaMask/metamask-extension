@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
 
-import { AdvanceGasFeePopoverContextProvider } from '../context';
+import { AdvancedGasFeePopoverContextProvider } from '../context';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 
@@ -48,10 +48,10 @@ const render = (defaultGasParams) => {
         },
       }}
     >
-      <AdvanceGasFeePopoverContextProvider>
+      <AdvancedGasFeePopoverContextProvider>
         <AdvancedGasFeeInputs />
         <AdvancedGasFeeDefaults />
-      </AdvanceGasFeePopoverContextProvider>
+      </AdvancedGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
     store,
   );
