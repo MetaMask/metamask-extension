@@ -6,10 +6,8 @@ const Disclosure = ({ children, title, size }) => {
   return (
     <div className="disclosure disclosure--no-margin">
       {title ? (
-        <details>
-          <summary className="disclosure__title disclosure__summary">
-            {title}:{' '}
-          </summary>
+        <details classNmae="disclosure__details">
+          <summary className="disclosure__details--summary">{title}: </summary>
           <div className={classnames('disclosure__content', size)}>
             {children}
           </div>
