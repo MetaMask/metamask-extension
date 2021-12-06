@@ -625,6 +625,7 @@ function setupBundlerDefaults(
   // Ensure react-devtools are not included in non-dev builds
   if (!devMode || testing) {
     bundlerOpts.manualIgnore.push('react-devtools');
+    bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
 
   // Inject environment variables via node-style `process.env`
