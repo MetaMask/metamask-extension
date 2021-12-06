@@ -98,18 +98,18 @@ export default class SendContent extends Component {
 
     return (
       <>
-      {recipient.warning === 'knownAddressRecipient' ? (
-      <Dialog type="warning" className="send__error-dialog">
-        {t(recipient.warning)}
-      </Dialog>
-      ) : (
-        <Dialog
-          type="message"
-          className="send__dialog"
-          onClick={() => this.setState({ showNicknamePopovers: true })}
-        >
-          {t('newAccountDetectedDialogMessage')}
-        </Dialog>
+        {recipient.warning === 'knownAddressRecipient' ? (
+          <Dialog type="warning" className="send__error-dialog">
+            {t(recipient.warning)}
+          </Dialog>
+        ) : (
+          <Dialog
+            type="message"
+            className="send__dialog"
+            onClick={() => this.setState({ showNicknamePopovers: true })}
+          >
+            {t('newAccountDetectedDialogMessage')}
+          </Dialog>
         )}
         {showNicknamePopovers ? (
           <NicknamePopovers
