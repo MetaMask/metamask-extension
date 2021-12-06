@@ -172,9 +172,7 @@ export default function GasTiming({
           toHumanReadableTime(Number(customEstimatedTime?.upperTimeBound), t),
         ]);
       }
-    }
-    // code below needs to cleaned-up once EIP_1559_V2 flag is removed
-    else if (supportsEIP1559V2) {
+    } else if (supportsEIP1559V2) {
       text = t('gasTimingNegative', [
         toHumanReadableTime(low.maxWaitTimeEstimate, t),
       ]);
