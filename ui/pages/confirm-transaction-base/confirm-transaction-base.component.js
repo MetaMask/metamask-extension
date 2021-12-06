@@ -677,7 +677,7 @@ export default class ConfirmTransactionBase extends Component {
       dataHexComponent,
     } = this.props;
 
-    if (hideData) {
+    if (hideData || !txParams.to) {
       return null;
     }
 
