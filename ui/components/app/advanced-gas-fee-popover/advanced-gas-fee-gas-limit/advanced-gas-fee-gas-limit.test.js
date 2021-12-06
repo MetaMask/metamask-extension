@@ -96,7 +96,7 @@ describe('AdvancedGasFeeGasLimit', () => {
   });
 
   it('should validate gas limit against minimumGasLimit it is passed to context', () => {
-    render({ minimumGasLimitDec: '0x7530' });
+    render({ minimumGasLimit: '0x7530' });
     fireEvent.click(screen.queryByText('Edit'));
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 25000 },
