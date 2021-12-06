@@ -64,8 +64,7 @@ import GasDetailsItem from './gas-details-item';
 import TransactionAlerts from './transaction-alerts';
 
 // eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2_ENABLED =
-  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
+const EIP_1559_V2_ENABLED = process.env.EIP_1559_V2;
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;

@@ -74,8 +74,8 @@ export function useGasFeeInputs(
   minimumGasLimit = '0x5208',
   editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
 ) {
-  // eslint-disable-next-line prefer-destructuring
   const EIP_1559_V2_ENABLED =
+    // This is a string in unit tests but is a boolean in the browser
     process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
   const supportsEIP1559 =
