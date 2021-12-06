@@ -85,7 +85,8 @@ class RestoreVaultPage extends Component {
     this.setState({ confirmPassword, confirmPasswordError });
   }
 
-  handleImport = () => {
+  handleImport = (event) => {
+    event.preventDefault();
     const { password, seedPhrase, disabled } = this.state;
     if (disabled) return;
     const {
