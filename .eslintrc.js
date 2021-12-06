@@ -138,6 +138,7 @@ module.exports = {
         'development/**/*.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
+        'app/scripts/lib/**/*.test.js',
       ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
@@ -162,6 +163,7 @@ module.exports = {
         'development/**/*.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
+        'app/scripts/lib/**/*.test.js',
       ],
       extends: ['@metamask/eslint-config-jest'],
       rules: {

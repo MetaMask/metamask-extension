@@ -27,7 +27,7 @@
     "test:unit": "./test/test-unit-combined.sh",
     "test:unit:jest": "./test/test-unit-jest.sh",
     "test:unit:global": "mocha test/unit-global/*.test.js",
-    "test:unit:mocha": "mocha './app/**/*.test.js'",
+    "test:unit:mocha": "mocha --config '.mocharc.js' './app/**/*.test.js'",
     "test:unit:lax": "mocha --config '.mocharc.lax.js' './app/**/*.test.js'",
     "test:unit:strict": "mocha './app/scripts/controllers/permissions/*.test.js'",
     "test:e2e:chrome": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js",

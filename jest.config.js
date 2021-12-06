@@ -21,6 +21,7 @@ module.exports = {
     '<rootDir>/shared/**/*.test.js',
     '<rootDir>/app/scripts/migrations/*.test.js',
     '<rootDir>/app/scripts/platforms/*.test.js',
+    '<rootDir>/app/scripts/lib/**/*.test.js',
   ],
   testTimeout: 2500,
   transform: {
