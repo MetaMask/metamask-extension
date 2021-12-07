@@ -50,10 +50,8 @@ const Accreditation = ({ fetchVia, address }) => {
 
   return (
     <div className="accreditation">
-      <div className="accreditation__tooltip">
-        <Tooltip position="top" arrow>
-          <i className="fa fa-info-circle" />
-        </Tooltip>
+      <div className="accreditation__icon">
+        <i className="fa fa-info-circle" />
       </div>
       <div className="accreditation__info">
         <AccreditationLink />
