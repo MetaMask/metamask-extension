@@ -122,17 +122,56 @@ export default function DropdownInputPair({
 }
 
 DropdownInputPair.propTypes = {
+  /**
+   * Give items data for the component
+   */
   itemsToSearch: PropTypes.array,
+  /**
+   * Handler for input change
+   */
   onInputChange: PropTypes.func,
+  /**
+   * Show input value content
+   */
   inputValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  /**
+   * Handler for onSelect
+   */
   onSelect: PropTypes.func,
+  /**
+   * Set value to left
+   */
   leftValue: PropTypes.string,
+  /**
+   * Show selected item
+   */
   selectedItem: PropTypes.object,
+  /**
+   * Doesn't look like this is used
+   */
   SearchListPlaceholder: PropTypes.func,
+  /**
+   * Define maximum item per list
+   */
   maxListItems: PropTypes.number,
+  /**
+   * Show select placeholder text
+   */
   selectPlaceHolderText: PropTypes.string,
+  /**
+   * Check if the component is loading
+   */
   loading: PropTypes.bool,
+  /**
+   * Handler for hide item
+   */
   hideItemIf: PropTypes.func,
+  /**
+   * Add custom CSS class for list container
+   */
   listContainerClassName: PropTypes.string,
+  /**
+   * Check if the component is auto focus
+   */
   autoFocus: PropTypes.bool,
 };
