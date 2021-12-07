@@ -37,6 +37,7 @@ const AdvancedGasFeeDefaults = () => {
       dispatch(setAdvancedGasFee(null));
     }
   };
+  const handleUpdateDefaultSettings = () => updateDefaultSettings(!defaultPreference);
   const defaultPreference =
     Boolean(advancedGasFeeValues) &&
     advancedGasFeeValues.maxBaseFee === baseFeeMultiplier &&
@@ -52,7 +53,7 @@ const AdvancedGasFeeDefaults = () => {
       <CheckBox
         checked={defaultPreference}
         className="advanced-gas-fee-defaults__checkbox"
-        onClick={() => updateDefaultSettings(!defaultPreference)}
+        onClick={handleUpdateDefaultSettings}
       />
       <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
         <I18nValue
