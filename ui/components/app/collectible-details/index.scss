@@ -2,6 +2,10 @@
   display: flex;
   flex-direction: column;
 
+  &__image {
+    width: 14rem;
+  }
+
   @media screen and (min-width: $break-large) {
     display: flex;
     flex-direction: row;

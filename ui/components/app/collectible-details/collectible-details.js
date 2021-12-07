@@ -104,7 +104,10 @@ export default function CollectibleDetails({ collectible }) {
       <Box padding={[4, 2, 4, 2]}>
         <div className="collectible-details">
           <Box margin={3} padding={2} justifyContent={JUSTIFY_CONTENT.CENTER}>
-            <img style={{ width: '14rem' }} src={collectibleImageURL} />
+            <img
+              className="collectible-details__image"
+              src={collectibleImageURL}
+            />
           </Box>
           <Box
             margin={3}
