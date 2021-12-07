@@ -262,6 +262,21 @@ export function stripHttpsScheme(urlString) {
 }
 
 /**
+ * Strips `https` schemes from URL strings, if the URL does not have a port.
+ * This is useful
+ *
+ * @param {string} urlString - The URL string to strip the scheme from.
+ * @returns {string} The URL string, without the scheme, if it was stripped.
+ */
+export function stripHttpsSchemeWithoutPort(urlString) {
+  if (getURL(urlString).port) {
+    return urlString;
+  }
+
+  return stripHttpsScheme(urlString);
+}
+
+/**
  * Checks whether a URL-like value (object or string) is an extension URL.
  *
  * @param {string | URL | object} urlLike - The URL-like value to test.

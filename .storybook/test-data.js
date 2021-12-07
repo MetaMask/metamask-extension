@@ -1013,34 +1013,25 @@ const state = {
       goerli: null,
       mainnet: 10902989,
     },
-    permissionsRequests: [],
-    permissionsDescriptions: {},
-    domains: {
+    subjects: {
       'https://app.uniswap.org': {
-        permissions: [
-          {
-            '@context': ['https://github.com/MetaMask/rpc-cap'],
+        permissions: {
+          'eth_accounts': {
             invoker: 'https://app.uniswap.org',
             parentCapability: 'eth_accounts',
             id: 'a7342e4b-beae-4525-a36c-c0635fd03359',
             date: 1620710693178,
             caveats: [
               {
-                type: 'limitResponseLength',
-                value: 1,
-                name: 'primaryAccountOnly',
-              },
-              {
-                type: 'filterResponse',
+                type: 'restrictReturnedAccounts',
                 value: ['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'],
-                name: 'exposedAccounts',
               },
             ],
           },
-        ],
+        },
       },
     },
-    permissionsLog: [
+    permissionActivityLog: [
       {
         id: 522690215,
         method: 'eth_accounts',
@@ -1171,7 +1162,7 @@ const state = {
         success: true,
       },
     ],
-    permissionsHistory: {
+    permissionHistory: {
       'https://metamask.github.io': {
         eth_accounts: {
           lastApproved: 1620710693213,
@@ -1181,7 +1172,7 @@ const state = {
         },
       },
     },
-    domainMetadata: {
+    subjectMetadata: {
       'https://metamask.github.io': {
         name: 'E2E Test Dapp',
         icon: 'https://metamask.github.io/test-dapp/metamask-fox.svg',

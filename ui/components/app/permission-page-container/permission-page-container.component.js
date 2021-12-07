@@ -13,10 +13,9 @@ export default class PermissionPageContainer extends Component {
     allIdentitiesSelected: PropTypes.bool,
     request: PropTypes.object,
     requestMetadata: PropTypes.object,
-    targetDomainMetadata: PropTypes.shape({
+    targetSubjectMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
       icon: PropTypes.string,
-      host: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
     }),
@@ -88,6 +87,9 @@ export default class PermissionPageContainer extends Component {
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
+      approvedAccounts: selectedIdentities.map(
+        (selectedIdentity) => selectedIdentity.address,
+      ),
     };
 
     Object.keys(this.state.selectedPermissions).forEach((key) => {
@@ -97,10 +99,7 @@ export default class PermissionPageContainer extends Component {
     });
 
     if (Object.keys(request.permissions).length > 0) {
-      approvePermissionsRequest(
-        request,
-        selectedIdentities.map((selectedIdentity) => selectedIdentity.address),
-      );
+      approvePermissionsRequest(request);
     } else {
       rejectPermissionsRequest(request.metadata.id);
     }
@@ -109,7 +108,7 @@ export default class PermissionPageContainer extends Component {
   render() {
     const {
       requestMetadata,
-      targetDomainMetadata,
+      targetSubjectMetadata,
       selectedIdentities,
       allIdentitiesSelected,
     } = this.props;
@@ -118,7 +117,7 @@ export default class PermissionPageContainer extends Component {
       <div className="page-container permission-approval-container">
         <PermissionPageContainerContent
           requestMetadata={requestMetadata}
-          domainMetadata={targetDomainMetadata}
+          subjectMetadata={targetSubjectMetadata}
           selectedPermissions={this.state.selectedPermissions}
           selectedIdentities={selectedIdentities}
           allIdentitiesSelected={allIdentitiesSelected}

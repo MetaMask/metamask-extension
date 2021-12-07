@@ -508,8 +508,8 @@ export function getCustomNonceValue(state) {
   return String(state.metamask.customNonceValue);
 }
 
-export function getDomainMetadata(state) {
-  return state.metamask.domainMetadata;
+export function getSubjectMetadata(state) {
+  return state.metamask.subjectMetadata;
 }
 
 export function getRpcPrefsForCurrentProvider(state) {

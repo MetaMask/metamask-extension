@@ -24,7 +24,7 @@ describe('Account Menu', () => {
 
   const props = {
     isAccountMenuOpen: true,
-    addressConnectedDomainMap: {},
+    addressConnectedSubjectMap: {},
     accounts: [
       {
         address: '0x00',

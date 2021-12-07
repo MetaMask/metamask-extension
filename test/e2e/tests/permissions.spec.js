@@ -62,11 +62,11 @@ describe('Permissions', function () {
           tag: 'h2',
         });
         await driver.waitForSelector({
-          css: '.connected-sites-list__domain-name',
+          css: '.connected-sites-list__subject-name',
           text: '127.0.0.1:8080',
         });
         const domains = await driver.findClickableElements(
-          '.connected-sites-list__domain-name',
+          '.connected-sites-list__subject-name',
         );
         assert.equal(domains.length, 1);
 

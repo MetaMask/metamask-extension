@@ -196,7 +196,7 @@ export default function ConfirmationPage() {
             label={stripHttpsScheme(originMetadata.origin)}
             leftIcon={
               <SiteIcon
-                icon={originMetadata.icon}
+                icon={originMetadata.iconUrl}
                 name={originMetadata.hostname}
                 size={32}
               />

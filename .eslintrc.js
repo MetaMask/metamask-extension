@@ -22,6 +22,7 @@ module.exports = {
 
   ignorePatterns: [
     '!.eslintrc.js',
+    '!.mocharc.js',
     'node_modules/**',
     'dist/**',
     'builds/**',
@@ -136,9 +137,10 @@ module.exports = {
         'ui/__mocks__/*.js',
         'shared/**/*.test.js',
         'development/**/*.test.js',
+        'app/scripts/lib/**/*.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
-        'app/scripts/lib/**/*.test.js',
+        'app/scripts/controllers/permissions/*.test.js',
       ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
@@ -161,9 +163,10 @@ module.exports = {
         'ui/__mocks__/*.js',
         'shared/**/*.test.js',
         'development/**/*.test.js',
+        'app/scripts/lib/**/*.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
-        'app/scripts/lib/**/*.test.js',
+        'app/scripts/controllers/permissions/*.test.js',
       ],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
@@ -186,7 +189,9 @@ module.exports = {
     {
       files: [
         '.eslintrc.js',
+        '.mocharc.js',
         'babel.config.js',
+        'jest.config.js',
         'nyc.config.js',
         'stylelint.config.js',
         'app/scripts/lockdown-run.js',
@@ -197,7 +202,6 @@ module.exports = {
         'test/setup.js',
         'test/helpers/protect-intrinsics-helpers.js',
         'test/lib/wait-until-called.js',
-        'jest.config.js',
       ],
       parserOptions: {
         sourceType: 'script',
