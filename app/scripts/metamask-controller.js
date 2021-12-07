@@ -85,9 +85,7 @@ import PersonalMessageManager from './lib/personal-message-manager';
 import TypedMessageManager from './lib/typed-message-manager';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
-import PermissionLogController from './controllers/permissions/permission-log';
 import SwapsController from './controllers/swaps';
-import { NOTIFICATION_NAMES } from './controllers/permissions/enums';
 import { nodeify, nodeifyObject } from './lib/nodeify';
 import accountImporter from './account-import-strategies';
 import seedPhraseVerifier from './lib/seed-phrase-verifier';
@@ -101,6 +99,8 @@ import {
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
+  PermissionLogController,
+  NOTIFICATION_NAMES,
   unrestrictedMethods,
 } from './controllers/permissions';
 
