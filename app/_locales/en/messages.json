@@ -845,7 +845,7 @@
     "message": "Max priority fee must be greater than 0 GWEI"
   },
   "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Priority fee must be at least 1 GWEI"
+    "message": "Priority fee must be greater than 0."
   },
   "editGasMaxPriorityFeeHigh": {
     "message": "Max priority fee is higher than necessary. You may pay more than needed."

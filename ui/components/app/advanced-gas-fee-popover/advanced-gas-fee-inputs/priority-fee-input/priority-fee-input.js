@@ -43,8 +43,7 @@ const PriorityFeeInput = () => {
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const {
-    setDirty,
-    setHasError,
+    setErrorValue,
     setMaxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
   const {
@@ -72,18 +71,20 @@ const PriorityFeeInput = () => {
 
   const updatePriorityFee = (value) => {
     setPriorityFee(value);
-    setDirty(true);
   };
 
   useEffect(() => {
     setMaxPriorityFeePerGas(priorityFee);
     const error = validatePriorityFee(priorityFee, gasFeeEstimates);
+    setErrorValue(
+      'maxPriorityFeePerGas',
+      error === 'editGasMaxPriorityFeeBelowMinimumV2',
+    );
     setPriorityFeeError(error);
-    setHasError(Boolean(error));
   }, [
     gasFeeEstimates,
     priorityFee,
-    setHasError,
+    setErrorValue,
     setMaxPriorityFeePerGas,
     setPriorityFeeError,
   ]);

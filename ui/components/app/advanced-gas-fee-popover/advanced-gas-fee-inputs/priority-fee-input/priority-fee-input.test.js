@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent, screen } from '@testing-library/react';
 
 import { GAS_ESTIMATE_TYPES } from '../../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
@@ -66,5 +67,22 @@ describe('PriorityfeeInput', () => {
       },
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
+  });
+
+  it('should show error if value entered is 0', () => {
+    render({
+      txParams: {
+        maxPriorityFeePerGas: '0x174876E800',
+      },
+    });
+    expect(
+      screen.queryByText('Priority fee must be greater than 0.'),
+    ).not.toBeInTheDocument();
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 0 },
+    });
+    expect(
+      screen.queryByText('Priority fee must be greater than 0.'),
+    ).toBeInTheDocument();
   });
 });

@@ -36,7 +36,6 @@ const render = () => {
           balance: '0x1F4',
         },
       },
-      advancedGasFee: { priorityFee: 100 },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates,
@@ -46,7 +45,7 @@ const render = () => {
   return renderWithProvider(
     <GasFeeContextProvider
       transaction={{
-        userFeeLevel: 'custom',
+        userFeeLevel: 'high',
       }}
     >
       <AdvancedGasFeePopover />
@@ -56,16 +55,16 @@ const render = () => {
 };
 
 describe('AdvancedGasFeePopover', () => {
-  it('should renders save button disabled by default', () => {
+  it('should renders save button enabled by default', () => {
     render();
-    expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: 'Save' })).not.toBeDisabled();
   });
 
-  it('should enable save button as input value is changed', () => {
+  it('should disable save button if base fee 0 is entered', () => {
     render();
     fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 3 },
+      target: { value: 0 },
     });
-    expect(screen.queryByRole('button', { name: 'Save' })).not.toBeDisabled();
+    expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
   });
 });
