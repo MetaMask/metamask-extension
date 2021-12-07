@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { ComposedStore, ObservableStore } from '@metamask/obs-store';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine';
+import { providerFromEngine } from 'eth-json-rpc-middleware';
 import log from 'loglevel';
 import {
   createSwappableProxy,
@@ -33,7 +33,7 @@ const env = process.env.METAMASK_ENV;
 const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
 let defaultProviderConfigOpts;
-if (process.env.IN_TEST === 'true') {
+if (process.env.IN_TEST) {
   defaultProviderConfigOpts = {
     type: NETWORK_TYPE_RPC,
     rpcUrl: 'http://localhost:8545',
@@ -430,7 +430,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   _setProviderAndBlockTracker({ provider, blockTracker }) {
-    // update or intialize proxies
+    // update or initialize proxies
     if (this._providerProxy) {
       this._providerProxy.setTarget(provider);
     } else {

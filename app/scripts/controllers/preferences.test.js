@@ -266,4 +266,64 @@ describe('preferences controller', function () {
       );
     });
   });
+
+  describe('setUseCollectibleDetection', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.useCollectibleDetection, false);
+    });
+
+    it('should set the useCollectibleDetection property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().useCollectibleDetection,
+        false,
+      );
+      preferencesController.setOpenSeaEnabled(true);
+      preferencesController.setUseCollectibleDetection(true);
+      assert.equal(
+        preferencesController.store.getState().useCollectibleDetection,
+        true,
+      );
+    });
+  });
+
+  describe('setOpenSeaEnabled', function () {
+    it('should default to false', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.openSeaEnabled, false);
+    });
+
+    it('should set the openSeaEnabled property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().openSeaEnabled,
+        false,
+      );
+      preferencesController.setOpenSeaEnabled(true);
+      assert.equal(preferencesController.store.getState().openSeaEnabled, true);
+    });
+  });
+
+  describe('setAdvancedGasFee', function () {
+    it('should default to null', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.advancedGasFee, null);
+    });
+
+    it('should set the setAdvancedGasFee property in state', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.advancedGasFee, null);
+      preferencesController.setAdvancedGasFee({
+        maxBaseFee: '1.5',
+        priorityFee: '2',
+      });
+      assert.equal(
+        preferencesController.store.getState().advancedGasFee.maxBaseFee,
+        '1.5',
+      );
+      assert.equal(
+        preferencesController.store.getState().advancedGasFee.priorityFee,
+        '2',
+      );
+    });
+  });
 });

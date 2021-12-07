@@ -1,18 +1,18 @@
 import React, { useEffect } from 'react';
 import { addDecorator, addParameters } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withKnobs } from '@storybook/addon-knobs';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
 import localeList from '../app/_locales/index.json';
 import * as allLocales from './locales';
 import { I18nProvider, LegacyI18nProvider } from './i18n';
-import MetaMetricsProviderStorybook from './metametrics'
+import MetaMetricsProviderStorybook from './metametrics';
 import testData from './test-data.js';
-import { Router } from "react-router-dom";
-import { createBrowserHistory } from "history";
-import { _setBackgroundConnection } from '../ui/store/actions'
+import { Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import { _setBackgroundConnection } from '../ui/store/actions';
+import MetaMaskStorybookTheme from './metamask-storybook-theme';
 
 addParameters({
   backgrounds: {
@@ -21,6 +21,14 @@ addParameters({
       { name: 'light', value: '#FFFFFF' },
       { name: 'dark', value: '#333333' },
     ],
+  },
+  docs: {
+    theme: MetaMaskStorybookTheme,
+  },
+  options: {
+    storySort: {
+      order: ['Getting Started', 'Components', ['UI', 'App'], 'Pages'],
+    },
   },
 });
 
@@ -38,28 +46,24 @@ export const globalTypes = {
   },
 };
 
-const styles = {
-  height: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-};
-
 export const getNewState = (state, props) => {
   return Object.assign(state, props);
-}
+};
 
 export const store = configureStore(testData);
 const history = createBrowserHistory();
-const proxiedBackground = new Proxy({}, {
+const proxiedBackground = new Proxy(
+  {},
+  {
     get(_, method) {
-      return function() {
-        action(`Background call: ${method}`)()
-        return new Promise(() => {})
-      }
-    }
-  })
-_setBackgroundConnection(proxiedBackground)
+      return function () {
+        action(`Background call: ${method}`)();
+        return new Promise(() => {});
+      };
+    },
+  },
+);
+_setBackgroundConnection(proxiedBackground);
 
 const metamaskDecorator = (story, context) => {
   const currentLocale = context.globals.locale;
@@ -73,9 +77,7 @@ const metamaskDecorator = (story, context) => {
             current={current}
             en={allLocales.en}
           >
-            <LegacyI18nProvider>
-              <div style={styles}>{story()}</div>
-            </LegacyI18nProvider>
+            <LegacyI18nProvider>{story()}</LegacyI18nProvider>
           </I18nProvider>
         </MetaMetricsProviderStorybook>
       </Router>
@@ -83,5 +85,4 @@ const metamaskDecorator = (story, context) => {
   );
 };
 
-addDecorator(withKnobs);
 addDecorator(metamaskDecorator);

@@ -1,7 +1,7 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getAddressBookEntryName } from '../../selectors';
+import { getAddressBookEntryOrAccountName } from '../../selectors';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -47,6 +47,10 @@ const ROUTES_TO_I18N_KEYS = {
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps;
   const { pathname } = location;
+  const {
+    metamask: { conversionDate },
+  } = state;
+
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
 
   const isAddressEntryPage = pathNameTail.includes('0x');
@@ -72,7 +76,7 @@ const mapStateToProps = (state, ownProps) => {
   let initialBreadCrumbRoute;
   let initialBreadCrumbKey;
 
-  const addressName = getAddressBookEntryName(
+  const addressName = getAddressBookEntryOrAccountName(
     state,
     !isBurnAddress(pathNameTail) &&
       isValidHexAddress(pathNameTail, { mixedCaseUseChecksum: true })
@@ -91,6 +95,7 @@ const mapStateToProps = (state, ownProps) => {
     initialBreadCrumbKey,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     addNewNetwork,
+    conversionDate,
   };
 };
 

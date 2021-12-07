@@ -10,6 +10,14 @@ import ConfirmPageContainer, {
   ConfirmPageContainerNavigation,
 } from '.';
 
+jest.mock('../../../store/actions', () => ({
+  disconnectGasFeeEstimatePoller: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
+}));
+
 describe('Confirm Page Container Container Test', () => {
   let wrapper;
 
@@ -31,6 +39,8 @@ describe('Confirm Page Container Container Test', () => {
       selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
       addressBook: [],
       chainId: 'test',
+      identities: [],
+      featureFlags: {},
     },
   };
 
@@ -48,7 +58,6 @@ describe('Confirm Page Container Container Test', () => {
     handleCloseEditGas: sinon.spy(),
     // Gas Popover
     currentTransaction: {},
-    showAddToAddressBookModal: sinon.spy(),
     contact: undefined,
     isOwnedAccount: false,
   };
@@ -106,12 +115,6 @@ describe('Confirm Page Container Container Test', () => {
     expect(wrapper.find(Dialog).getElements()[0].props.children).toStrictEqual(
       'newAccountDetectedDialogMessage',
     );
-  });
-
-  it('should simulate click on Dialog', () => {
-    const DialogWrapper = wrapper.find(Dialog);
-    DialogWrapper.first().simulate('click');
-    expect(props.showAddToAddressBookModal.calledOnce).toStrictEqual(true);
   });
 
   it('should not show add to address dialog if contact is not undefined', () => {

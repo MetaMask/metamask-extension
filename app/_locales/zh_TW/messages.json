@@ -227,9 +227,6 @@
   "copiedExclamation": {
     "message": "已複製！"
   },
-  "copiedTransactionId": {
-    "message": "已複製的交易 ID"
-  },
   "copyAddress": {
     "message": "複製到剪貼簿"
   },
@@ -274,9 +271,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "小數點後位數至少為0, 最多為36."
-  },
-  "defaultNetwork": {
-    "message": "預設以太幣交易網路為主網路"
   },
   "delete": {
     "message": "刪除"
@@ -667,12 +661,6 @@
   },
   "on": {
     "message": "開啟"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "區塊鏈瀏覽器 URL（非必要）"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (可選)"
   },
   "origin": {
     "message": "來源"

@@ -1,7 +1,9 @@
+/* eslint-disable no-negated-condition */
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Identicon from '../../../../ui/identicon';
+import { useGasFeeContext } from '../../../../../contexts/gasFee';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -14,7 +16,10 @@ const ConfirmPageContainerSummary = (props) => {
     identiconAddress,
     nonce,
     origin,
+    hideTitle,
   } = props;
+
+  const { supportsEIP1559V2 } = useGasFeeContext();
 
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
@@ -37,11 +42,13 @@ const ConfirmPageContainerSummary = (props) => {
             address={identiconAddress}
           />
         )}
-        <div className="confirm-page-container-summary__title-text">
-          {titleComponent || title}
-        </div>
+        {!hideTitle ? (
+          <div className="confirm-page-container-summary__title-text">
+            {titleComponent || title}
+          </div>
+        ) : null}
       </div>
-      {hideSubtitle || (
+      {!hideSubtitle && !supportsEIP1559V2 && (
         <div className="confirm-page-container-summary__subtitle">
           {subtitleComponent}
         </div>
@@ -60,6 +67,7 @@ ConfirmPageContainerSummary.propTypes = {
   identiconAddress: PropTypes.string,
   nonce: PropTypes.string,
   origin: PropTypes.string.isRequired,
+  hideTitle: PropTypes.boolean,
 };
 
 export default ConfirmPageContainerSummary;

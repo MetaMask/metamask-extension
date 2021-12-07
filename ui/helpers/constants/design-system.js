@@ -10,7 +10,8 @@ export const COLORS = {
   UI3: 'ui-3',
   UI4: 'ui-4',
   BLACK: 'black',
-  GRAY: 'gray',
+  GREY: 'grey',
+  NEUTRAL_GREY: 'neutral-grey',
   WHITE: 'white',
   PRIMARY1: 'primary-1',
   PRIMARY2: 'primary-2',
@@ -96,6 +97,12 @@ export const FLEX_DIRECTION = {
   COLUMN_REVERSE: 'column-reverse',
 };
 
+export const FLEX_WRAP = {
+  WRAP: 'wrap',
+  WRAP_REVERSE: 'wrap-reverse',
+  NO_WRAP: 'nowrap',
+};
+
 export const DISPLAY = {
   BLOCK: 'block',
   FLEX: 'flex',
@@ -176,4 +183,13 @@ export const SEVERITIES = {
   WARNING: 'warning',
   INFO: 'info',
   SUCCESS: 'success',
+};
+
+export const RESIZE = {
+  NONE: 'none',
+  BOTH: 'both',
+  HORIZONTAL: 'horizontal',
+  VERTICAL: 'vertical',
+  INITIAL: 'initial',
+  INHERIT: 'inherit',
 };

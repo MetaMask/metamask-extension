@@ -31,6 +31,7 @@ import {
   doesAddressRequireLedgerHidConnection,
   getUseTokenDetection,
   getTokenList,
+  getIsMultiLayerFeeNetwork,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -48,6 +49,7 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
+import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
@@ -118,7 +120,10 @@ const mapStateToProps = (state, ownProps) => {
     shortenAddress(toChecksumHexAddress(toAddress));
 
   const checksummedAddress = toChecksumHexAddress(toAddress);
-  const addressBookObject = addressBook[checksummedAddress];
+  const addressBookObject =
+    addressBook &&
+    addressBook[chainId] &&
+    addressBook[chainId][checksummedAddress];
   const toEns = ensResolutionsByAddress[checksummedAddress] || '';
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
@@ -168,7 +173,7 @@ const mapStateToProps = (state, ownProps) => {
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
   const { useNativeCurrencyAsPrimaryCurrency } = getPreferences(state);
   const gasFeeIsCustom =
-    fullTxData.userFeeLevel === 'custom' ||
+    fullTxData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
     txParamsAreDappSuggested(fullTxData);
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
@@ -177,6 +182,8 @@ const mapStateToProps = (state, ownProps) => {
     state,
     fromAddress,
   );
+
+  const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
   return {
     balance,
@@ -226,6 +233,8 @@ const mapStateToProps = (state, ownProps) => {
     showLedgerSteps: fromAddressIsLedger,
     nativeCurrency,
     hardwareWalletRequiresConnection,
+    isMultiLayerFeeNetwork,
+    chainId,
   };
 };
 

@@ -5,7 +5,7 @@ import { boolean, text } from '@storybook/addon-knobs';
 import ToggleButton from './toggle-button.component';
 
 export default {
-  title: 'ToggleButton',
+  title: 'Components/UI/ToggleButton',
   component: ToggleButton,
   id: __filename,
 };
@@ -27,6 +27,4 @@ export const DefaultStory = () => {
   );
 };
 
-DefaultStory.story = {
-  name: 'Default',
-};
+DefaultStory.storyName = 'Default';

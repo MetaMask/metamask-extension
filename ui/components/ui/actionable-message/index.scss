@@ -38,14 +38,37 @@
   &__actions {
     display: flex;
     width: 80%;
-    justify-content: space-evenly;
+    justify-content: flex-end;
     align-items: center;
     margin-top: 10px;
     color: $Blue-600;
+
+    &--single {
+      width: 100%;
+    }
   }
 
   &__action {
     font-weight: bold;
+
+    &--rounded {
+      border-radius: 8px;
+    }
+
+    &-danger {
+      background: $Red-500;
+      color: #fff;
+    }
+  }
+
+  &__action-v2 {
+    color: $primary-1;
+    background: none;
+    border: none;
+    font-size: 12px;
+    align-self: baseline;
+    padding: 0;
+    margin-top: 12px;
   }
 
   &__info-tooltip-wrapper {
@@ -77,11 +100,6 @@
     .actionable-message__message {
       color: $Black-100;
       text-align: left;
-    }
-
-    button {
-      background: $Red-500;
-      color: #fff;
     }
   }
 

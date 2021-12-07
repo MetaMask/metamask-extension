@@ -215,9 +215,6 @@
   "copiedExclamation": {
     "message": "Έγινε αντιγραφή!"
   },
-  "copiedTransactionId": {
-    "message": "Αντιγράφηκε το Αναγνωριστικό Συναλλαγής"
-  },
   "copyAddress": {
     "message": "Αντιγράψτε τη διεύθυνση στο πρόχειρο"
   },
@@ -262,9 +259,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Τα δεκαδικά πρέπει να είναι τουλάχιστον 0 και όχι πάνω από 36."
-  },
-  "defaultNetwork": {
-    "message": "Το προεπιλεγμένο δίκτυο για συναλλαγές Ether είναι το Mainnet."
   },
   "delete": {
     "message": "Διαγραφή"
@@ -665,12 +659,6 @@
   "on": {
     "message": "Ενεργό"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Σύμβολο (προαιρετικό)"
-  },
   "origin": {
     "message": "Προέλευση"
   },
@@ -849,9 +837,6 @@
   },
   "selectAnAccount": {
     "message": "Επιλέξτε Λογαριασμό"
-  },
-  "selectAnAccountHelp": {
-    "message": "Επιλέξτε τον λογαριασμό για προβολή στο MetaMask"
   },
   "selectEachPhrase": {
     "message": "Παρακαλούμε επιλέξτε κάθε φράση, για να βεβαιωθείτε ότι είναι σωστή."

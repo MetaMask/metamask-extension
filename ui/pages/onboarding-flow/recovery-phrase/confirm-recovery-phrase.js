@@ -83,6 +83,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       />
       <div className="recovery-phrase__footer">
         <Button
+          data-testid="recovery-phrase-confirm"
           type="primary"
           className="recovery-phrase__footer--button"
           onClick={() => {

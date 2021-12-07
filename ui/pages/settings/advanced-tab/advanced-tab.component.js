@@ -9,6 +9,10 @@ import { MOBILE_SYNC_ROUTE } from '../../../helpers/constants/routes';
 import Dropdown from '../../../components/ui/dropdown';
 import Dialog from '../../../components/ui/dialog';
 
+import { getPlatform } from '../../../../app/scripts/lib/util';
+
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+
 import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
@@ -43,7 +47,7 @@ export default class AdvancedTab extends PureComponent {
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
     ledgerTransportType: PropTypes.oneOf(Object.values(LEDGER_TRANSPORT_TYPES)),
-    setLedgerLivePreference: PropTypes.func.isRequired,
+    setLedgerTransportPreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     userHasALedgerAccount: PropTypes.bool.isRequired,
@@ -56,6 +60,15 @@ export default class AdvancedTab extends PureComponent {
     ipfsGatewayError: '',
     showLedgerTransportWarning: false,
   };
+
+  showTestNetworksRef = React.createRef();
+
+  componentDidMount() {
+    if (window.location.hash.match(/show-testnets/u)) {
+      this.showTestNetworksRef.current.scrollIntoView({ behavior: 'smooth' });
+      this.showTestNetworksRef.current.focus();
+    }
+  }
 
   renderMobileSync() {
     const { t } = this.context;
@@ -230,6 +243,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
+        ref={this.showTestNetworksRef}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
@@ -432,7 +446,7 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     const {
       ledgerTransportType,
-      setLedgerLivePreference,
+      setLedgerTransportPreference,
       userHasALedgerAccount,
     } = this.props;
 
@@ -497,7 +511,7 @@ export default class AdvancedTab extends PureComponent {
                 ) {
                   this.setState({ showLedgerTransportWarning: true });
                 }
-                setLedgerLivePreference(transportType);
+                setLedgerTransportPreference(transportType);
                 if (
                   transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
                   userHasALedgerAccount
@@ -634,6 +648,8 @@ export default class AdvancedTab extends PureComponent {
   render() {
     const { warning } = this.props;
 
+    const notUsingFirefox = getPlatform() !== PLATFORM_FIREFOX;
+
     return (
       <div className="settings-page__body">
         {warning ? <div className="settings-tab__error">{warning}</div> : null}
@@ -648,7 +664,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderThreeBoxControl()}
         {this.renderIpfsGatewayControl()}
-        {this.renderLedgerLiveControl()}
+        {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}
       </div>
     );

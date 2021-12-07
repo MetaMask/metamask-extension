@@ -31,6 +31,22 @@ export const GAS_RECOMMENDATIONS = {
 };
 
 /**
+ * These represent types of gas estimation
+ */
+export const PRIORITY_LEVELS = {
+  LOW: 'low',
+  MEDIUM: 'medium',
+  HIGH: 'high',
+  CUSTOM: 'custom',
+  DAPP_SUGGESTED: 'dappSuggested',
+};
+
+/**
+ * Represents the user customizing their gas preference
+ */
+export const CUSTOM_GAS_ESTIMATE = 'custom';
+
+/**
  * These represent the different edit modes presented in the UI
  */
 export const EDIT_GAS_MODES = {

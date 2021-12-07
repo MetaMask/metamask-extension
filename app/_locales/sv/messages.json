@@ -212,9 +212,6 @@
   "copiedExclamation": {
     "message": "Kopierades!"
   },
-  "copiedTransactionId": {
-    "message": "Kopierade transaktions-ID"
-  },
   "copyAddress": {
     "message": "Kopiera adress till urklipp"
   },
@@ -259,9 +256,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalerna måste vara minst 0 och inte över 36."
-  },
-  "defaultNetwork": {
-    "message": "Standardnätverket för Ether-transaktioner är Mainnet."
   },
   "delete": {
     "message": "Radera"
@@ -652,12 +646,6 @@
   "on": {
     "message": "På"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (valfritt)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (frivillig)"
-  },
   "origin": {
     "message": "Ursprung"
   },
@@ -836,9 +824,6 @@
   },
   "selectAnAccount": {
     "message": "Välj ett konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Välj konto att visa i MetaMask"
   },
   "selectEachPhrase": {
     "message": "Välj varje fras för att säkerställa att den är korrekt."

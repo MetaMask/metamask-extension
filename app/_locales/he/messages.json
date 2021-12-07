@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "הועתק!"
   },
-  "copiedTransactionId": {
-    "message": "מזהה עסקה הועתק"
-  },
   "copyAddress": {
     "message": "העתק כתובת ללוח"
   },
@@ -265,9 +262,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "מספרים עשרוניים חייבים להיות לפחות 0 ולא מעל 36."
-  },
-  "defaultNetwork": {
-    "message": "רשת ברירת המחדל לעסקאות Ether היא Mainnet."
   },
   "delete": {
     "message": "מחיקה"
@@ -665,12 +659,6 @@
   "on": {
     "message": "פועל"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "חסום כתובת URL של אקספלורר (אופציונלי)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "סמל (אופציונלי)"
-  },
   "origin": {
     "message": "מקור"
   },
@@ -846,9 +834,6 @@
   },
   "selectAnAccount": {
     "message": "בחר חשבון"
-  },
-  "selectAnAccountHelp": {
-    "message": "בחר את החשבון לצפייה ב- MetaMask"
   },
   "selectEachPhrase": {
     "message": "נא לבחור כל צירוף מילים כדי להבטיח שהוא נכון."

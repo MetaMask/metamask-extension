@@ -203,6 +203,7 @@ const TextField = ({
   min,
   max,
   autoComplete,
+  onPaste,
   ...textFieldProps
 }) => {
   const inputProps = themeToInputProps[theme]({
@@ -214,6 +215,16 @@ const TextField = ({
     max,
     autoComplete,
   });
+
+  if (onPaste) {
+    if (!inputProps.InputProps) {
+      inputProps.InputProps = {};
+    }
+    if (!inputProps.InputProps.inputProps) {
+      inputProps.InputProps.inputProps = {};
+    }
+    inputProps.InputProps.inputProps.onPaste = onPaste;
+  }
 
   return (
     <MaterialTextField
@@ -232,15 +243,37 @@ TextField.defaultProps = {
 };
 
 TextField.propTypes = {
+  /**
+   * Show error message
+   */
   error: PropTypes.string,
+  /**
+   * Add custom CSS class
+   */
   classes: PropTypes.object,
   dir: PropTypes.string,
+  /**
+   * Give theme to the text field
+   */
   theme: PropTypes.oneOf(['bordered', 'material', 'material-white-padded']),
   startAdornment: PropTypes.element,
+  /**
+   * Show large label
+   */
   largeLabel: PropTypes.bool,
+  /**
+   * Define min number input
+   */
   min: PropTypes.number,
+  /**
+   * Define max number input
+   */
   max: PropTypes.number,
+  /**
+   * Show auto complete text
+   */
   autoComplete: PropTypes.string,
+  onPaste: PropTypes.func,
 };
 
 export default withStyles(styles)(TextField);

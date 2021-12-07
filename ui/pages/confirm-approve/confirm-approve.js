@@ -15,35 +15,44 @@ import {
   getTokenValueParam,
 } from '../../helpers/utils/token-util';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
+import { GasFeeContextProvider } from '../../contexts/gasFee';
+import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
-import { getTokens, getNativeCurrency } from '../../ducks/metamask/metamask';
+import {
+  getTokens,
+  getNativeCurrency,
+  isAddressLedger,
+} from '../../ducks/metamask/metamask';
 import {
   transactionFeeSelector,
   txDataSelector,
   getCurrentCurrency,
-  getDomainMetadata,
+  getSubjectMetadata,
   getUseNonceField,
   getCustomNonceValue,
   getNextSuggestedNonce,
-  doesAddressRequireLedgerHidConnection,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
+  getIsMultiLayerFeeNetwork,
+  checkNetworkAndAccountSupports1559,
 } from '../../selectors';
-
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
-
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
-import Loading from '../../components/ui/loading-screen';
+import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover';
+import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
+import Loading from '../../components/ui/loading-screen';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
-const doesAddressRequireLedgerHidConnectionByFromAddress = (address) => (
-  state,
-) => {
-  return doesAddressRequireLedgerHidConnection(state, address);
+const isAddressLedgerByFromAddress = (address) => (state) => {
+  return isAddressLedger(state, address);
 };
+
+// eslint-disable-next-line prefer-destructuring
+const EIP_1559_V2_ENABLED =
+  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
 export default function ConfirmApprove() {
   const dispatch = useDispatch();
@@ -56,25 +65,32 @@ export default function ConfirmApprove() {
   const currentCurrency = useSelector(getCurrentCurrency);
   const nativeCurrency = useSelector(getNativeCurrency);
   const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
-  const domainMetadata = useSelector(getDomainMetadata);
+  const subjectMetadata = useSelector(getSubjectMetadata);
   const tokens = useSelector(getTokens);
   const useNonceField = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-
-  const ledgerWalletRequiredHidConnection = useSelector(
-    doesAddressRequireLedgerHidConnectionByFromAddress(from),
+  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
+  const networkAndAccountSupports1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
   );
+
+  const fromAddressIsLedger = useSelector(isAddressLedgerByFromAddress(from));
 
   const transaction =
     currentNetworkTxList.find(
       ({ id }) => id === (Number(paramsTransactionId) || transactionId),
     ) || {};
-  const { ethTransactionTotal, fiatTransactionTotal } = useSelector((state) =>
-    transactionFeeSelector(state, transaction),
-  );
+  const {
+    ethTransactionTotal,
+    fiatTransactionTotal,
+    hexTransactionTotal,
+  } = useSelector((state) => transactionFeeSelector(state, transaction));
+
+  const supportsEIP1559V2 =
+    EIP_1559_V2_ENABLED && networkAndAccountSupports1559;
 
   const currentToken = (tokens &&
     tokens.find(({ address }) =>
@@ -145,11 +161,9 @@ export default function ConfirmApprove() {
   }, [checkIfContract]);
 
   const { origin } = transaction;
-  const formattedOrigin = origin
-    ? origin[0].toUpperCase() + origin.slice(1)
-    : '';
+  const formattedOrigin = origin || '';
 
-  const { icon: siteImage = '' } = domainMetadata[origin] || {};
+  const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
 
   const tokensText = `${Number(tokenAmount)} ${tokenSymbol}`;
   const tokenBalance = tokenTrackerBalance
@@ -162,101 +176,106 @@ export default function ConfirmApprove() {
   return tokenSymbol === undefined ? (
     <Loading />
   ) : (
-    <ConfirmTransactionBase
-      toAddress={toAddress}
-      identiconAddress={tokenAddress}
-      showAccountInHeader
-      title={tokensText}
-      contentComponent={
-        <>
-          <ConfirmApproveContent
-            decimals={decimals}
-            siteImage={siteImage}
-            setCustomAmount={setCustomPermissionAmount}
-            customTokenAmount={String(customPermissionAmount)}
-            tokenAmount={tokenAmount}
-            origin={formattedOrigin}
-            tokenSymbol={tokenSymbol}
-            tokenImage={tokenImage}
-            tokenBalance={tokenBalance}
-            showCustomizeGasModal={approveTransaction}
-            showEditApprovalPermissionModal={({
-              /* eslint-disable no-shadow */
-              customTokenAmount,
-              decimals,
-              origin,
-              setCustomAmount,
-              tokenAmount,
-              tokenBalance,
-              tokenSymbol,
-              /* eslint-enable no-shadow */
-            }) =>
-              dispatch(
-                showModal({
-                  name: 'EDIT_APPROVAL_PERMISSION',
-                  customTokenAmount,
-                  decimals,
-                  origin,
-                  setCustomAmount,
-                  tokenAmount,
-                  tokenBalance,
-                  tokenSymbol,
-                }),
-              )
-            }
-            data={customData || data}
-            toAddress={toAddress}
-            currentCurrency={currentCurrency}
-            nativeCurrency={nativeCurrency}
-            ethTransactionTotal={ethTransactionTotal}
-            fiatTransactionTotal={fiatTransactionTotal}
-            useNonceField={useNonceField}
-            nextNonce={nextNonce}
-            customNonceValue={customNonceValue}
-            updateCustomNonce={(value) => {
-              dispatch(updateCustomNonce(value));
-            }}
-            getNextNonce={() => dispatch(getNextNonce())}
-            showCustomizeNonceModal={({
-              /* eslint-disable no-shadow */
-              useNonceField,
-              nextNonce,
-              customNonceValue,
-              updateCustomNonce,
-              getNextNonce,
-              /* eslint-disable no-shadow */
-            }) =>
-              dispatch(
-                showModal({
-                  name: 'CUSTOMIZE_NONCE',
-                  useNonceField,
-                  nextNonce,
-                  customNonceValue,
-                  updateCustomNonce,
-                  getNextNonce,
-                }),
-              )
-            }
-            warning={submitWarning}
-            txData={transaction}
-            ledgerWalletRequiredHidConnection={
-              ledgerWalletRequiredHidConnection
-            }
-            chainId={chainId}
-            rpcPrefs={rpcPrefs}
-            isContract={isContract}
-          />
-          {showCustomizeGasPopover && (
-            <EditGasPopover
-              onClose={closeCustomizeGasPopover}
-              mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
-              transaction={transaction}
+    <GasFeeContextProvider transaction={transaction}>
+      <ConfirmTransactionBase
+        toAddress={toAddress}
+        identiconAddress={tokenAddress}
+        showAccountInHeader
+        title={tokensText}
+        contentComponent={
+          <TransactionModalContextProvider captureEventEnabled={false}>
+            <ConfirmApproveContent
+              decimals={decimals}
+              siteImage={siteImage}
+              setCustomAmount={setCustomPermissionAmount}
+              customTokenAmount={String(customPermissionAmount)}
+              tokenAmount={tokenAmount}
+              origin={formattedOrigin}
+              tokenSymbol={tokenSymbol}
+              tokenImage={tokenImage}
+              tokenBalance={tokenBalance}
+              showCustomizeGasModal={approveTransaction}
+              showEditApprovalPermissionModal={({
+                /* eslint-disable no-shadow */
+                customTokenAmount,
+                decimals,
+                origin,
+                setCustomAmount,
+                tokenAmount,
+                tokenBalance,
+                tokenSymbol,
+                /* eslint-enable no-shadow */
+              }) =>
+                dispatch(
+                  showModal({
+                    name: 'EDIT_APPROVAL_PERMISSION',
+                    customTokenAmount,
+                    decimals,
+                    origin,
+                    setCustomAmount,
+                    tokenAmount,
+                    tokenBalance,
+                    tokenSymbol,
+                  }),
+                )
+              }
+              data={customData || data}
+              toAddress={toAddress}
+              currentCurrency={currentCurrency}
+              nativeCurrency={nativeCurrency}
+              ethTransactionTotal={ethTransactionTotal}
+              fiatTransactionTotal={fiatTransactionTotal}
+              hexTransactionTotal={hexTransactionTotal}
+              useNonceField={useNonceField}
+              nextNonce={nextNonce}
+              customNonceValue={customNonceValue}
+              updateCustomNonce={(value) => {
+                dispatch(updateCustomNonce(value));
+              }}
+              getNextNonce={() => dispatch(getNextNonce())}
+              showCustomizeNonceModal={({
+                /* eslint-disable no-shadow */
+                useNonceField,
+                nextNonce,
+                customNonceValue,
+                updateCustomNonce,
+                getNextNonce,
+                /* eslint-disable no-shadow */
+              }) =>
+                dispatch(
+                  showModal({
+                    name: 'CUSTOMIZE_NONCE',
+                    useNonceField,
+                    nextNonce,
+                    customNonceValue,
+                    updateCustomNonce,
+                    getNextNonce,
+                  }),
+                )
+              }
+              warning={submitWarning}
+              txData={transaction}
+              fromAddressIsLedger={fromAddressIsLedger}
+              chainId={chainId}
+              rpcPrefs={rpcPrefs}
+              isContract={isContract}
+              isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
+              supportsEIP1559V2={supportsEIP1559V2}
             />
-          )}
-        </>
-      }
-      hideSenderToRecipient
-      customTxParamsData={customData}
-    />
+            {showCustomizeGasPopover && !supportsEIP1559V2 && (
+              <EditGasPopover
+                onClose={closeCustomizeGasPopover}
+                mode={EDIT_GAS_MODES.MODIFY_IN_PLACE}
+                transaction={transaction}
+              />
+            )}
+            <EditGasFeePopover />
+            <AdvancedGasFeePopover />
+          </TransactionModalContextProvider>
+        }
+        hideSenderToRecipient
+        customTxParamsData={customData}
+      />
+    </GasFeeContextProvider>
   );
 }

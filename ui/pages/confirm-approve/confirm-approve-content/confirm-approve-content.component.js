@@ -11,8 +11,10 @@ import { ellipsify } from '../../send/send.utils';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
+import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import Identicon from '../../../components/ui/identicon';
+import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import CopyIcon from '../../../components/ui/icon/copy-icon.component';
 import {
   TYPOGRAPHY,
@@ -56,11 +58,14 @@ export default class ConfirmApproveContent extends Component {
     showCustomizeNonceModal: PropTypes.func,
     warning: PropTypes.string,
     txData: PropTypes.object,
-    ledgerWalletRequiredHidConnection: PropTypes.bool,
+    fromAddressIsLedger: PropTypes.bool,
     tokenImage: PropTypes.string,
     chainId: PropTypes.string,
     rpcPrefs: PropTypes.object,
     isContract: PropTypes.bool,
+    hexTransactionTotal: PropTypes.string,
+    isMultiLayerFeeNetwork: PropTypes.bool,
+    supportsEIP1559V2: PropTypes.bool,
   };
 
   state = {
@@ -73,11 +78,13 @@ export default class ConfirmApproveContent extends Component {
     symbol,
     title,
     showEdit,
+    showAdvanceGasFeeOptions = false,
     onEditClick,
     content,
     footer,
     noBorder,
   }) {
+    const { supportsEIP1559V2 } = this.props;
     const { t } = this.context;
     return (
       <div
@@ -94,7 +101,7 @@ export default class ConfirmApproveContent extends Component {
             <div className="confirm-approve-content__card-header__title">
               {title}
             </div>
-            {showEdit && (
+            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559V2) && (
               <Box width={BLOCK_SIZES.ONE_SIXTH}>
                 <Button
                   type="link"
@@ -104,6 +111,9 @@ export default class ConfirmApproveContent extends Component {
                   {t('edit')}
                 </Button>
               </Box>
+            )}
+            {showEdit && showAdvanceGasFeeOptions && supportsEIP1559V2 && (
+              <EditGasFeeButton />
             )}
           </div>
         )}
@@ -121,20 +131,40 @@ export default class ConfirmApproveContent extends Component {
       nativeCurrency,
       ethTransactionTotal,
       fiatTransactionTotal,
+      hexTransactionTotal,
+      txData,
+      isMultiLayerFeeNetwork,
     } = this.props;
     return (
       <div className="confirm-approve-content__transaction-details-content">
-        <div className="confirm-approve-content__small-text">
-          {t('feeAssociatedRequest')}
-        </div>
-        <div className="confirm-approve-content__transaction-details-content__fee">
-          <div className="confirm-approve-content__transaction-details-content__primary-fee">
-            {formatCurrency(fiatTransactionTotal, currentCurrency)}
+        {isMultiLayerFeeNetwork ? (
+          <div className="confirm-approve-content__transaction-details-extra-content">
+            <div className="confirm-approve-content__transaction-details-content__labelled-fee">
+              <span>{t('transactionDetailLayer2GasHeading')}</span>
+              {`${ethTransactionTotal} ${nativeCurrency}`}
+            </div>
+            <MultiLayerFeeMessage
+              transaction={txData}
+              layer2fee={hexTransactionTotal}
+              nativeCurrency={nativeCurrency}
+              plainStyle
+            />
           </div>
-          <div className="confirm-approve-content__transaction-details-content__secondary-fee">
-            {`${ethTransactionTotal} ${nativeCurrency}`}
-          </div>
-        </div>
+        ) : (
+          <>
+            <div className="confirm-approve-content__small-text">
+              {t('feeAssociatedRequest')}
+            </div>
+            <div className="confirm-approve-content__transaction-details-content__fee">
+              <div className="confirm-approve-content__transaction-details-content__primary-fee">
+                {formatCurrency(fiatTransactionTotal, currentCurrency)}
+              </div>
+              <div className="confirm-approve-content__transaction-details-content__secondary-fee">
+                {`${ethTransactionTotal} ${nativeCurrency}`}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     );
   }
@@ -147,8 +177,11 @@ export default class ConfirmApproveContent extends Component {
       tokenSymbol,
       origin,
       toAddress,
+      isContract,
     } = this.props;
-
+    const displayedAddress = isContract
+      ? `${t('contract')} (${addressSummary(toAddress)})`
+      : addressSummary(toAddress);
     return (
       <div className="flex-column">
         <div className="confirm-approve-content__small-text">
@@ -156,7 +189,7 @@ export default class ConfirmApproveContent extends Component {
         </div>
         <div className="flex-row">
           <div className="confirm-approve-content__label">
-            {t('amountWithColon')}
+            {t('approvedAmountWithColon')}
           </div>
           <div className="confirm-approve-content__medium-text">
             {`${Number(customTokenAmount || tokenAmount)} ${tokenSymbol}`}
@@ -164,10 +197,31 @@ export default class ConfirmApproveContent extends Component {
         </div>
         <div className="flex-row">
           <div className="confirm-approve-content__label">
-            {t('toWithColon')}
+            {t('grantedToWithColon')}
           </div>
           <div className="confirm-approve-content__medium-text">
-            {addressSummary(toAddress)}
+            {`${displayedAddress}`}
+          </div>
+          <div className="confirm-approve-content__medium-text">
+            <Button
+              type="link"
+              className="confirm-approve-content__copy-address"
+              onClick={() => {
+                this.setState({ copied: true });
+                this.copyTimeout = setTimeout(
+                  () => this.setState({ copied: false }),
+                  SECOND * 3,
+                );
+                copyToClipboard(toAddress);
+              }}
+              title={
+                this.state.copied
+                  ? t('copiedExclamation')
+                  : t('copyToClipboard')
+              }
+            >
+              <CopyIcon size={14} color="#6a737d" />
+            </Button>
           </div>
         </div>
       </div>
@@ -257,7 +311,7 @@ export default class ConfirmApproveContent extends Component {
       useNonceField,
       warning,
       txData,
-      ledgerWalletRequiredHidConnection,
+      fromAddressIsLedger,
       tokenImage,
       toAddress,
       chainId,
@@ -396,8 +450,9 @@ export default class ConfirmApproveContent extends Component {
         <div className="confirm-approve-content__card-wrapper">
           {this.renderApproveContentCard({
             symbol: <i className="fa fa-tag" />,
-            title: 'Transaction Fee',
+            title: t('transactionFee'),
             showEdit: true,
+            showAdvanceGasFeeOptions: true,
             onEditClick: showCustomizeGasModal,
             content: this.renderTransactionDetailsContent(),
             noBorder: useNonceField || !showFullTxDetails,
@@ -455,7 +510,7 @@ export default class ConfirmApproveContent extends Component {
             })}
         </div>
 
-        {ledgerWalletRequiredHidConnection ? (
+        {fromAddressIsLedger ? (
           <div className="confirm-approve-content__ledger-instruction-wrapper">
             <LedgerInstructionField
               showDataInstruction={Boolean(txData.txParams?.data)}
@@ -468,7 +523,7 @@ export default class ConfirmApproveContent extends Component {
             <div className="confirm-approve-content__permission">
               {this.renderApproveContentCard({
                 symbol: <img src="./images/user-check.svg" alt="" />,
-                title: 'Permission',
+                title: t('permissionRequest'),
                 content: this.renderPermissionContent(),
                 showEdit: true,
                 onEditClick: () =>

@@ -31,10 +31,9 @@ export default class PermissionConnect extends Component {
     connectPath: PropTypes.string.isRequired,
     confirmPermissionPath: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
-    targetDomainMetadata: PropTypes.shape({
+    targetSubjectMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
-      icon: PropTypes.string,
-      host: PropTypes.string.isRequired,
+      iconUrl: PropTypes.string,
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
     }),
@@ -56,7 +55,7 @@ export default class PermissionConnect extends Component {
     selectedAccountAddresses: new Set([this.props.currentAddress]),
     permissionsApproved: null,
     origin: this.props.origin,
-    targetDomainMetadata: this.props.targetDomainMetadata || {},
+    targetSubjectMetadata: this.props.targetSubjectMetadata || {},
   };
 
   beforeUnload = () => {
@@ -97,14 +96,14 @@ export default class PermissionConnect extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { permissionsRequest, targetDomainMetadata } = props;
-    const { targetDomainMetadata: savedMetadata } = state;
+    const { permissionsRequest, targetSubjectMetadata } = props;
+    const { targetSubjectMetadata: savedMetadata } = state;
 
     if (
       permissionsRequest &&
-      savedMetadata.origin !== targetDomainMetadata?.origin
+      savedMetadata.origin !== targetSubjectMetadata?.origin
     ) {
-      return { targetDomainMetadata };
+      return { targetSubjectMetadata };
     }
     return null;
   }
@@ -174,7 +173,7 @@ export default class PermissionConnect extends Component {
             className="permissions-connect__back"
             onClick={() => this.goBack()}
           >
-            <i className="fas fa-chevron-left" />
+            <i className="fas fa-chevron-left"></i>
             {t('back')}
           </div>
         ) : null}
@@ -202,14 +201,14 @@ export default class PermissionConnect extends Component {
       selectedAccountAddresses,
       permissionsApproved,
       redirecting,
-      targetDomainMetadata,
+      targetSubjectMetadata,
     } = this.state;
 
     return (
       <div className="permissions-connect">
         {this.renderTopBar()}
         {redirecting && permissionsApproved ? (
-          <PermissionsRedirect domainMetadata={targetDomainMetadata} />
+          <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
         ) : (
           <Switch>
             <Route
@@ -233,7 +232,7 @@ export default class PermissionConnect extends Component {
                   }
                   permissionsRequestId={permissionsRequestId}
                   selectedAccountAddresses={selectedAccountAddresses}
-                  targetDomainMetadata={targetDomainMetadata}
+                  targetSubjectMetadata={targetSubjectMetadata}
                 />
               )}
             />
@@ -253,7 +252,7 @@ export default class PermissionConnect extends Component {
                   selectedIdentities={accounts.filter((account) =>
                     selectedAccountAddresses.has(account.address),
                   )}
-                  targetDomainMetadata={targetDomainMetadata}
+                  targetSubjectMetadata={targetSubjectMetadata}
                 />
               )}
             />

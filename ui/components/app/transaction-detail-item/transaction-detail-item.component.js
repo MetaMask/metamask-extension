@@ -1,11 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 import Typography from '../../ui/typography/typography';
 import {
   COLORS,
   FONT_WEIGHT,
   TYPOGRAPHY,
+  DISPLAY,
+  FLEX_WRAP,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 
 export default function TransactionDetailItem({
@@ -15,45 +19,49 @@ export default function TransactionDetailItem({
   detailTotal = '',
   subTitle = '',
   subText = '',
+  boldHeadings = true,
+  flexWidthValues = false,
 }) {
   return (
     <div className="transaction-detail-item">
       <div className="transaction-detail-item__row">
         <Typography
           color={detailTitleColor}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
           variant={TYPOGRAPHY.H6}
-          className="transaction-detail-item__title"
+          boxProps={{
+            display: DISPLAY.FLEX,
+            flexWrap: FLEX_WRAP.NO_WRAP,
+            alignItems: ALIGN_ITEMS.CENTER,
+          }}
         >
           {detailTitle}
         </Typography>
-        {detailText && (
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            className="transaction-detail-item__detail-text"
-            color={COLORS.UI4}
-          >
-            {detailText}
-          </Typography>
-        )}
-        <Typography
-          color={COLORS.BLACK}
-          fontWeight={FONT_WEIGHT.BOLD}
-          variant={TYPOGRAPHY.H6}
-          className="transaction-detail-item__total"
+        <div
+          className={classnames('transaction-detail-item__detail-values', {
+            'transaction-detail-item__detail-values--flex-width': flexWidthValues,
+          })}
         >
-          {detailTotal}
-        </Typography>
+          {detailText && (
+            <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
+              {detailText}
+            </Typography>
+          )}
+          <Typography
+            color={COLORS.BLACK}
+            fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
+            variant={TYPOGRAPHY.H6}
+            margin={[1, 0, 1, 1]}
+          >
+            {detailTotal}
+          </Typography>
+        </div>
       </div>
       <div className="transaction-detail-item__row">
         {React.isValidElement(subTitle) ? (
-          <div className="transaction-detail-item__subtitle">{subTitle}</div>
+          <div>{subTitle}</div>
         ) : (
-          <Typography
-            variant={TYPOGRAPHY.H7}
-            className="transaction-detail-item__subtitle"
-            color={COLORS.UI4}
-          >
+          <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4}>
             {subTitle}
           </Typography>
         )}
@@ -61,7 +69,8 @@ export default function TransactionDetailItem({
         <Typography
           variant={TYPOGRAPHY.H7}
           color={COLORS.UI4}
-          className="transaction-detail-item__subtext"
+          align="end"
+          className="transaction-detail-item__row-subText"
         >
           {subText}
         </Typography>
@@ -71,10 +80,36 @@ export default function TransactionDetailItem({
 }
 
 TransactionDetailItem.propTypes = {
+  /**
+   * Detail title text wrapped in Typography component.
+   */
   detailTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * The color of the detailTitle text accepts all Typography color props
+   */
   detailTitleColor: PropTypes.string,
+  /**
+   * Text to show on the left of the detailTotal. Wrapped in Typography component.
+   */
   detailText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Total amount to show. Wrapped in Typography component. Will be bold if boldHeadings is true
+   */
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Subtitle text. Checks if React.isValidElement before displaying. Displays under detailTitle
+   */
   subTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Text to show under detailTotal. Wrapped in Typography component.
+   */
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Whether detailTotal is bold or not. Defaults to true
+   */
+  boldHeadings: PropTypes.bool,
+  /**
+   * Changes width to auto for transaction-detail-item__detail-values
+   */
+  flexWidthValues: PropTypes.bool,
 };

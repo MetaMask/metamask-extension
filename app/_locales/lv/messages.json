@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Nokopēts!"
   },
-  "copiedTransactionId": {
-    "message": "Nokopētais darījuma ID"
-  },
   "copyAddress": {
     "message": "Iekopēt adresi starpliktuvē"
   },
@@ -265,9 +262,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
-  },
-  "defaultNetwork": {
-    "message": "Galvenais Ether darījumu tīkls ir Mainnet."
   },
   "delete": {
     "message": "Dzēst"
@@ -664,12 +658,6 @@
   "on": {
     "message": "Iesl."
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Bloķēt Explorer URL (pēc izvēles)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbols (neobligāti)"
-  },
   "origin": {
     "message": "Avots"
   },
@@ -848,9 +836,6 @@
   },
   "selectAnAccount": {
     "message": "Atlasiet kontu"
-  },
-  "selectAnAccountHelp": {
-    "message": "Atlasiet kontu, ko skatīt MetaMask"
   },
   "selectEachPhrase": {
     "message": "Lūdzu, atlasiet katru frāzi, lai pārliecinātos par tās pareizību."

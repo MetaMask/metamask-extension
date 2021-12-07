@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useArgs } from '@storybook/client-api';
+
+import README from './README.mdx';
 import DropdownInputPair from '.';
 
 const tokens = [
@@ -113,8 +116,27 @@ const tokens = [
 ];
 
 export default {
-  title: 'DropdownInputPair',
+  title: 'Pages/Swaps/DropdownInputPair',
   id: __filename,
+  component: DropdownInputPair,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    itemsToSearch: { control: 'array' },
+    onInputChange: { action: 'onInputChange' },
+    inputValue: { control: 'text' },
+    onSelect: { action: 'onSelect' },
+    leftValue: { control: 'text' },
+    selectedItem: { control: 'object' },
+    maxListItems: { control: 'number' },
+    selectPlaceHolderText: { control: 'text' },
+    loading: { control: 'boolean' },
+    listContainerClassName: { control: 'text' },
+    autoFocus: { control: 'boolean' },
+  },
 };
 
 const tokensToSearch = tokens.map((token) => ({
@@ -127,27 +149,27 @@ const tokensToSearch = tokens.map((token) => ({
   rightSecondaryLabel: `$${(Math.random() * 1000).toFixed(2)}`,
 }));
 
-export const Basic = () => {
-  const [inputValue, setInputValue] = useState();
-
+export const DefaultStory = (args) => {
+  const [
+    { inputValue, selectedItem = tokensToSearch[0] },
+    updateArgs,
+  ] = useArgs();
   return (
-    <div
-      style={{
-        height: '600px',
-        width: '357px',
-        display: 'flex',
-        justifyContent: 'center',
-        flexFlow: 'column',
+    <DropdownInputPair
+      {...args}
+      inputValue={inputValue}
+      onInputChange={(value) => {
+        updateArgs({ ...args, inputValue: value });
       }}
-    >
-      <DropdownInputPair
-        startingItem={tokensToSearch[0]}
-        itemsToSearch={tokensToSearch}
-        maxListItems={tokensToSearch.length}
-        defaultToAll
-        onInputChange={(value) => setInputValue(value)}
-        inputValue={inputValue}
-      />
-    </div>
+      selectedItem={selectedItem}
+    />
   );
+};
+
+DefaultStory.storyName = 'Default';
+
+DefaultStory.args = {
+  itemsToSearch: tokensToSearch,
+  maxListItems: tokensToSearch.length,
+  loading: false,
 };

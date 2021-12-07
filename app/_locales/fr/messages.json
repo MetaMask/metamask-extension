@@ -209,9 +209,6 @@
   "copiedExclamation": {
     "message": "Copié!"
   },
-  "copiedTransactionId": {
-    "message": "ID de transaction copié"
-  },
   "copyAddress": {
     "message": "Copier l'addresse dans le presse-papier"
   },
@@ -256,9 +253,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Les décimales doivent être plus grandes que 0 et inférieures à 36."
-  },
-  "defaultNetwork": {
-    "message": "Le réseau par défaut pour les transactions Ether est le \"Réseau principal Ethereum\"."
   },
   "delete": {
     "message": "Supprimer"
@@ -650,12 +644,6 @@
   "on": {
     "message": "Activé"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL de l'explorateur de blocs (facultatif)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbole (facultatif)"
-  },
   "origin": {
     "message": "Origine"
   },
@@ -834,9 +822,6 @@
   },
   "selectAnAccount": {
     "message": "Selectionner un compte"
-  },
-  "selectAnAccountHelp": {
-    "message": "Selectionner le compte à afficher dans MetaMask"
   },
   "selectEachPhrase": {
     "message": "Veuillez sélectionner chaque phrase afin de vous assurer qu'elle est correcte."

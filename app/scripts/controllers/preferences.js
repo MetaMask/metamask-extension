@@ -37,6 +37,9 @@ export default class PreferencesController {
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
+      useCollectibleDetection: false,
+      openSeaEnabled: false,
+      advancedGasFee: null,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -127,6 +130,45 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
+  }
+
+  /**
+   * Setter for the `useCollectibleDetection` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to autodetect collectibles.
+   *
+   */
+  setUseCollectibleDetection(val) {
+    const { openSeaEnabled } = this.store.getState();
+    if (val && !openSeaEnabled) {
+      throw new Error(
+        'useCollectibleDetection cannot be enabled if openSeaEnabled is false',
+      );
+    }
+    this.store.updateState({ useCollectibleDetection: val });
+  }
+
+  /**
+   * Setter for the `openSeaEnabled` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to use the OpenSea API for collectibles data.
+   *
+   */
+  setOpenSeaEnabled(val) {
+    this.store.updateState({ openSeaEnabled: val });
+    if (!val) {
+      this.store.updateState({ useCollectibleDetection: false });
+    }
+  }
+
+  /**
+   * Setter for the `advancedGasFee` property
+   *
+   * @param {object} val - holds the maxBaseFee and PriorityFee that the user set as default advanced settings.
+   *
+   */
+  setAdvancedGasFee(val) {
+    this.store.updateState({ advancedGasFee: val });
   }
 
   /**

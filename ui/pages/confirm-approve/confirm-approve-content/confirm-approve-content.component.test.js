@@ -58,7 +58,7 @@ describe('ConfirmApproveContent Component', () => {
 
     const editButtons = getAllByText('Edit');
 
-    expect(queryByText('Transaction Fee')).toBeInTheDocument();
+    expect(queryByText('Transaction fee')).toBeInTheDocument();
     expect(
       queryByText('A fee is associated with this request.'),
     ).toBeInTheDocument();
@@ -70,5 +70,15 @@ describe('ConfirmApproveContent Component', () => {
     expect(queryByText('2')).toBeInTheDocument();
     fireEvent.click(editButtons[1]);
     expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(1);
+
+    const showHideTxDetails = getByText('View full transaction details');
+    expect(queryByText('Permission request')).not.toBeInTheDocument();
+    expect(queryByText('Approved amount:')).not.toBeInTheDocument();
+    expect(queryByText('Granted to:')).not.toBeInTheDocument();
+    fireEvent.click(showHideTxDetails);
+    expect(getByText('Permission request')).toBeInTheDocument();
+    expect(getByText('Approved amount:')).toBeInTheDocument();
+    expect(getByText('Granted to:')).toBeInTheDocument();
+    expect(getByText('0x9bc5...fef4')).toBeInTheDocument();
   });
 });

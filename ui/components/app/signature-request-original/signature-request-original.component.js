@@ -5,11 +5,8 @@ import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
 
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  MESSAGE_TYPE,
-} from '../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { getURLHostName } from '../../../helpers/utils/util';
 import Identicon from '../../ui/identicon';
 import AccountListItem from '../account-list-item';
 import { conversionUtil } from '../../../../shared/modules/conversion.utils';
@@ -36,43 +33,14 @@ export default class SignatureRequestOriginal extends Component {
     requesterAddress: PropTypes.string,
     sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
-    domainMetadata: PropTypes.object,
+    subjectMetadata: PropTypes.object,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isLedgerWallet: PropTypes.bool,
+    nativeCurrency: PropTypes.string.isRequired,
   };
 
   state = {
     fromAccount: this.props.fromAccount,
-  };
-
-  componentDidMount = () => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
-  };
-
-  componentWillUnmount = () => {
-    this._removeBeforeUnload();
-  };
-
-  _beforeUnload = (event) => {
-    const { clearConfirmTransaction, cancel } = this.props;
-    const { metricsEvent } = this.context;
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Sign Request',
-        name: 'Cancel Sig Request Via Notification Close',
-      },
-    });
-    clearConfirmTransaction();
-    cancel(event);
-  };
-
-  _removeBeforeUnload = () => {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.removeEventListener('beforeunload', this._beforeUnload);
-    }
   };
 
   renderHeader = () => {
@@ -108,12 +76,12 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderBalance = () => {
-    const { conversionRate } = this.props;
+    const { conversionRate, nativeCurrency } = this.props;
     const {
       fromAccount: { balance },
     } = this.state;
 
-    const balanceInEther = conversionUtil(balance, {
+    const balanceInBaseAsset = conversionUtil(balance, {
       fromNumericBase: 'hex',
       toNumericBase: 'dec',
       fromDenomination: 'WEI',
@@ -127,7 +95,7 @@ export default class SignatureRequestOriginal extends Component {
           {`${this.context.t('balance')}:`}
         </div>
         <div className="request-signature__balance-value">
-          {`${balanceInEther} ETH`}
+          {`${balanceInBaseAsset} ${nativeCurrency}`}
         </div>
       </div>
     );
@@ -154,11 +122,11 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderOriginInfo = () => {
-    const { txData, domainMetadata } = this.props;
+    const { txData, subjectMetadata } = this.props;
     const { t } = this.context;
 
-    const originMetadata = txData.msgParams.origin
-      ? domainMetadata?.[txData.msgParams.origin]
+    const targetSubjectMetadata = txData.msgParams.origin
+      ? subjectMetadata?.[txData.msgParams.origin]
       : null;
 
     return (
@@ -166,10 +134,13 @@ export default class SignatureRequestOriginal extends Component {
         <div className="request-signature__origin-label">
           {`${t('origin')}:`}
         </div>
-        {originMetadata?.icon ? (
+        {targetSubjectMetadata?.iconUrl ? (
           <SiteIcon
-            icon={originMetadata.icon}
-            name={originMetadata.hostname}
+            icon={targetSubjectMetadata.iconUrl}
+            name={
+              getURLHostName(targetSubjectMetadata.origin) ||
+              targetSubjectMetadata.origin
+            }
             size={24}
           />
         ) : null}
@@ -300,7 +271,6 @@ export default class SignatureRequestOriginal extends Component {
           large
           className="request-signature__footer__cancel-button"
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await cancel(event);
             metricsEvent({
               eventOpts: {
@@ -325,7 +295,6 @@ export default class SignatureRequestOriginal extends Component {
           className="request-signature__footer__sign-button"
           disabled={hardwareWalletRequiresConnection}
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await sign(event);
             metricsEvent({
               eventOpts: {

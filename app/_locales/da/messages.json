@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Kopieret!"
   },
-  "copiedTransactionId": {
-    "message": "Kopieret transaktions-id"
-  },
   "copyAddress": {
     "message": "Kopier adresse til udklipsholder"
   },
@@ -265,9 +262,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Decimaler skal være mindst 0 og højst 36."
-  },
-  "defaultNetwork": {
-    "message": "Standardnetværket for Ether-transaktioner er Mainnet."
   },
   "delete": {
     "message": "Slet"
@@ -652,12 +646,6 @@
   "on": {
     "message": "Til"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Blok-stifinder-URL (valgfrit)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (valgfrit)"
-  },
   "parameters": {
     "message": "Parametre"
   },
@@ -833,9 +821,6 @@
   },
   "selectAnAccount": {
     "message": "Vælg en Konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Vælg kontoen der skal vises i MetaMask"
   },
   "selectEachPhrase": {
     "message": "Vælg venligst hver sætning, for at sikre at de er korrekte."

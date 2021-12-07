@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Copiat!"
   },
-  "copiedTransactionId": {
-    "message": "ID-ul tranzacției a fost copiat"
-  },
   "copyAddress": {
     "message": "Copiere adresă în clipboard"
   },
@@ -265,9 +262,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
-  },
-  "defaultNetwork": {
-    "message": "Rețeaua implicită pentru tranzacțiile cu Ether este Mainnet."
   },
   "delete": {
     "message": "Șterge"
@@ -655,12 +649,6 @@
   "on": {
     "message": "Activat"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "URL explorator bloc (opțional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (opțional)"
-  },
   "origin": {
     "message": "Origine"
   },
@@ -839,9 +827,6 @@
   },
   "selectAnAccount": {
     "message": "Selectați un cont"
-  },
-  "selectAnAccountHelp": {
-    "message": "Selectați contul de vizualizat în MetaMask"
   },
   "selectEachPhrase": {
     "message": "Vă rugăm să selectați fiecare expresie pentru a vă asigura că este corectă."

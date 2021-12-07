@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
@@ -34,6 +34,7 @@ const getMaxFeePerGasFromTransaction = (transaction) => {
  *  method to update the setMaxFeePerGas.
  */
 export function useMaxFeePerGasInput({
+  supportsEIP1559V2,
   estimateToUse,
   gasEstimateType,
   gasFeeEstimates,
@@ -64,6 +65,12 @@ export function useMaxFeePerGasInput({
       return maxFeePerGasFromTransaction;
     return null;
   });
+
+  useEffect(() => {
+    if (supportsEIP1559V2) {
+      setMaxFeePerGas(maxFeePerGasFromTransaction);
+    }
+  }, [maxFeePerGasFromTransaction, setMaxFeePerGas, supportsEIP1559V2]);
 
   let gasSettings = {
     gasLimit: decimalToHex(gasLimit),

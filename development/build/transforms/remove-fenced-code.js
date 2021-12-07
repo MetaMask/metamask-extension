@@ -41,11 +41,16 @@ class RemoveFencedCodeTransform extends Transform {
   // stream, immediately before the "end" event is emitted.
   // It applies the transform to the concatenated file contents.
   _flush(end) {
-    const [fileContent, didModify] = removeFencedCode(
-      this.filePath,
-      this.buildType,
-      Buffer.concat(this._fileBuffers).toString('utf8'),
-    );
+    let fileContent, didModify;
+    try {
+      [fileContent, didModify] = removeFencedCode(
+        this.filePath,
+        this.buildType,
+        Buffer.concat(this._fileBuffers).toString('utf8'),
+      );
+    } catch (error) {
+      return end(error);
+    }
 
     const pushAndEnd = () => {
       this.push(fileContent);
@@ -53,12 +58,11 @@ class RemoveFencedCodeTransform extends Transform {
     };
 
     if (this.shouldLintTransformedFiles && didModify) {
-      lintTransformedFile(fileContent, this.filePath)
+      return lintTransformedFile(fileContent, this.filePath)
         .then(pushAndEnd)
         .catch((error) => end(error));
-    } else {
-      pushAndEnd();
     }
+    return pushAndEnd();
   }
 }
 
@@ -408,7 +412,9 @@ function multiSplice(toSplice, splicingIndices) {
   // pushes the substring between each "end" index and the next "begin" index
   // to the array of retained substrings.
   if (splicingIndices.length > 2) {
-    for (let i = 1; i < splicingIndices.length; i += 2) {
+    // Note the boundary index of "splicingIndices.length - 1". This loop must
+    // not iterate over the last element of the array.
+    for (let i = 1; i < splicingIndices.length - 1; i += 2) {
       retainedSubstrings.push(
         toSplice.substring(splicingIndices[i], splicingIndices[i + 1]),
       );

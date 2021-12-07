@@ -1,0 +1,51 @@
+.edit-gas-fee-popover {
+  height: 500px;
+
+  &__wrapper {
+    border-top: 1px solid $ui-grey;
+  }
+
+  &__content {
+    padding: 16px 12px;
+
+    & .error-message {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    &__header {
+      color: $ui-4;
+      font-size: 10px;
+      font-weight: 700;
+      margin: 0 12px;
+
+      &-option {
+        display: inline-block;
+        width: 36%;
+      }
+
+      &-time {
+        display: inline-block;
+        width: 24%;
+      }
+
+      &-max-fee {
+        display: inline-block;
+        width: 30%;
+      }
+    }
+
+    &__separator {
+      border-top: 1px solid $ui-grey;
+      margin: 8px 12px;
+    }
+  }
+
+  &__network-status {
+    margin-top: 36px;
+  }
+
+  &__know-more a {
+    color: $primary-1;
+  }
+}

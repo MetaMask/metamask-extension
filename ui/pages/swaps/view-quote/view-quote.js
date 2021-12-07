@@ -1,5 +1,5 @@
 import React, { useState, useContext, useMemo, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
@@ -30,7 +30,6 @@ import {
   getDestinationTokenInfo,
   getUsedSwapsGasPrice,
   getTopQuote,
-  navigateBackToBuildQuote,
   signAndSendTransactions,
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
@@ -80,7 +79,6 @@ import {
   hexToDecimal,
   getValueFromWeiHex,
   decGWEIToHexWEI,
-  hexWEIToDecGWEI,
   addHexes,
 } from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
@@ -93,7 +91,10 @@ import {
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
-import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  GAS_RECOMMENDATIONS,
+} from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import ViewQuotePriceDifference from './view-quote-price-difference';
@@ -117,7 +118,10 @@ export default function ViewQuote() {
     acknowledgedPriceDifference,
     setAcknowledgedPriceDifference,
   ] = useState(false);
-  const priceDifferenceRiskyBuckets = ['high', 'medium'];
+  const priceDifferenceRiskyBuckets = [
+    GAS_RECOMMENDATIONS.HIGH,
+    GAS_RECOMMENDATIONS.MEDIUM,
+  ];
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const quotes = useSelector(getQuotes, isEqual);
@@ -137,24 +141,24 @@ export default function ViewQuote() {
   const customMaxFeePerGas = useSelector(getCustomMaxFeePerGas);
   const customMaxPriorityFeePerGas = useSelector(getCustomMaxPriorityFeePerGas);
   const swapsUserFeeLevel = useSelector(getSwapsUserFeeLevel);
-  const tokenConversionRates = useSelector(getTokenExchangeRates);
+  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
-  const { balance: ethBalance } = useSelector(getSelectedAccount);
+  const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
   const conversionRate = useSelector(conversionRateSelector);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const swapsTokens = useSelector(getTokens);
+  const swapsTokens = useSelector(getTokens, isEqual);
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
   const balanceError = useSelector(getBalanceError);
-  const fetchParams = useSelector(getFetchParams);
-  const approveTxParams = useSelector(getApproveTxParams);
-  const selectedQuote = useSelector(getSelectedQuote);
-  const topQuote = useSelector(getTopQuote);
+  const fetchParams = useSelector(getFetchParams, isEqual);
+  const approveTxParams = useSelector(getApproveTxParams, shallowEqual);
+  const selectedQuote = useSelector(getSelectedQuote, isEqual);
+  const topQuote = useSelector(getTopQuote, isEqual);
   const usedQuote = selectedQuote || topQuote;
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
@@ -163,8 +167,8 @@ export default function ViewQuote() {
   if (networkAndAccountSupports1559) {
     // For Swaps we want to get 'high' estimations by default.
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    gasFeeInputs = useGasFeeInputs('high', {
-      userFeeLevel: swapsUserFeeLevel || 'high',
+    gasFeeInputs = useGasFeeInputs(GAS_RECOMMENDATIONS.HIGH, {
+      userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
     });
   }
 
@@ -339,7 +343,7 @@ export default function ViewQuote() {
       )
     : null;
 
-  const destinationToken = useSelector(getDestinationTokenInfo);
+  const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
 
   useEffect(() => {
     if (insufficientTokens || insufficientEth) {
@@ -567,12 +571,6 @@ export default function ViewQuote() {
         );
   };
 
-  const tokenApprovalTextComponent = (
-    <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
-      {sourceTokenSymbol}
-    </span>
-  );
-
   const actionableBalanceErrorMessage = tokenBalanceUnavailable
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
     : t('swapApproveNeedMoreTokens', [
@@ -592,8 +590,8 @@ export default function ViewQuote() {
   useEffect(() => {
     if (
       acknowledgedPriceDifference &&
-      lastPriceDifferenceBucket === 'medium' &&
-      priceSlippageBucket === 'high'
+      lastPriceDifferenceBucket === GAS_RECOMMENDATIONS.MEDIUM &&
+      priceSlippageBucket === GAS_RECOMMENDATIONS.HIGH
     ) {
       setAcknowledgedPriceDifference(false);
     }
@@ -695,7 +693,7 @@ export default function ViewQuote() {
         {showEditGasPopover && networkAndAccountSupports1559 && (
           <EditGasPopover
             transaction={{
-              userFeeLevel: swapsUserFeeLevel || 'high',
+              userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
               txParams: {
                 maxFeePerGas,
                 maxPriorityFeePerGas,
@@ -703,7 +701,7 @@ export default function ViewQuote() {
               },
             }}
             minimumGasLimit={usedGasLimit}
-            defaultEstimateToUse="high"
+            defaultEstimateToUse={GAS_RECOMMENDATIONS.HIGH}
             mode={EDIT_GAS_MODES.SWAPS}
             confirmButtonText={t('submit')}
             onClose={onCloseEditGasPopover}
@@ -727,7 +725,6 @@ export default function ViewQuote() {
           <CountdownTimer
             timeStarted={quotesLastFetched}
             warningTime="0:30"
-            infoTooltipLabelKey="swapQuotesAreRefreshed"
             labelKey="swapNewQuoteIn"
           />
         </div>
@@ -763,25 +760,16 @@ export default function ViewQuote() {
             hideTokenApprovalRow={
               !approveTxParams || (balanceError && !warningHidden)
             }
-            tokenApprovalTextComponent={tokenApprovalTextComponent}
             tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
             onTokenApprovalClick={onFeeCardTokenApprovalClick}
             metaMaskFee={String(metaMaskFee)}
-            isBestQuote={isBestQuote}
             numberOfQuotes={Object.values(quotes).length}
             onQuotesClick={() => {
               allAvailableQuotesOpened();
               setSelectQuotePopoverShown(true);
             }}
-            tokenConversionRate={
-              destinationTokenSymbol === defaultSwapsToken.symbol
-                ? 1
-                : memoizedTokenConversionRates[destinationToken.address]
-            }
             chainId={chainId}
-            networkAndAccountSupports1559={networkAndAccountSupports1559}
-            maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(maxPriorityFeePerGas)}
-            maxFeePerGasDecGWEI={hexWEIToDecGWEI(maxFeePerGas)}
+            isBestQuote={isBestQuote}
           />
         </div>
       </div>
@@ -797,7 +785,7 @@ export default function ViewQuote() {
           }
         }}
         submitText={t('swap')}
-        onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
+        hideCancel
         disabled={
           submitClicked ||
           balanceError ||

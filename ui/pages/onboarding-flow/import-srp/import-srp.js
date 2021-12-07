@@ -16,6 +16,7 @@ import {
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
+import { clearClipboard } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
@@ -78,6 +79,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
               />
             </button>
             <textarea
+              data-testid="import-srp-text"
               className={classnames('srp-text-area__textarea', {
                 'srp-text-area__textarea--blur': !revealSRP,
                 'srp-text-area__textarea--error': error,
@@ -85,6 +87,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
               onChange={({ target: { value } }) =>
                 handleSecretRecoveryPhraseChange(value)
               }
+              onPaste={clearClipboard}
               autoComplete="off"
               autoCorrect="off"
             />
@@ -96,10 +99,11 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
           </div>
           <Button
             type="primary"
+            data-testid="import-srp-confirm"
             large
             onClick={() => {
               submitSecretRecoveryPhrase(secretRecoveryPhrase);
-              history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
+              history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
             }}
             disabled={error || secretRecoveryPhrase.length === 0}
           >

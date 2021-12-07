@@ -301,4 +301,43 @@ describe('util', () => {
       });
     });
   });
+
+  describe('toHumanReadableTime()', () => {
+    const t = (key, number) => {
+      switch (key) {
+        case 'gasTimingSecondsShort':
+          return `${number} sec`;
+        case 'gasTimingMinutesShort':
+          return `${number} min`;
+        case 'gasTimingHoursShort':
+          return `${number} hrs`;
+        default:
+          return '';
+      }
+    };
+    it('should return empty string if milliseconds passed is undefined', () => {
+      expect(util.toHumanReadableTime(t)).toStrictEqual('');
+    });
+    it('should return rounded value for time', () => {
+      expect(util.toHumanReadableTime(t, 6300)).toStrictEqual('7 sec');
+    });
+    it('should return value in seconds for milliseconds passed is < 9000', () => {
+      expect(util.toHumanReadableTime(t, 6000)).toStrictEqual('6 sec');
+    });
+    it('should return value in seconds for milliseconds passed is > 6000 and <= 9000', () => {
+      expect(util.toHumanReadableTime(t, 9000)).toStrictEqual('9 sec');
+    });
+    it('should return value in minutes for milliseconds passed is > 90000', () => {
+      expect(util.toHumanReadableTime(t, 90001)).toStrictEqual('2 min');
+    });
+    it('should return value in minutes for milliseconds passed is > 90000 and <= 5400000', () => {
+      expect(util.toHumanReadableTime(t, 5400000)).toStrictEqual('90 min');
+    });
+    it('should return value in hours for milliseconds passed is > 5400000', () => {
+      expect(util.toHumanReadableTime(t, 5400001)).toStrictEqual('2 hrs');
+    });
+    it('should return value in hours for milliseconds passed very high above 5400000', () => {
+      expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
+    });
+  });
 });

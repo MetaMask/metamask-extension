@@ -48,10 +48,13 @@ Options:
                       Defaults to `false` if the entry task is `dev` or
                       `testDev`, and `true` otherwise.
                                                    [boolean] [default: <varies>]
-  --omit-lockdown     Whether to omit SES lockdown files from the extension
-                      bundle. Useful when linking dependencies that are
-                      incompatible with lockdown.
-                                                      [boolean] [default: false]
+  --lockdown          Whether to include SES lockdown files in the extension
+                      bundle. Setting this to `false` is useful e.g. when
+                      linking dependencies that are incompatible with lockdown.
+                                                       [boolean] [default: true]
+  --policy-only       Stops the build after generating the LavaMoat policy,
+                      skipping any writes to disk.
+                                                       [boolean] [deafult: false]
   --skip-stats        Whether to refrain from logging build progress. Mostly
                       used internally.
                                                       [boolean] [default: false]

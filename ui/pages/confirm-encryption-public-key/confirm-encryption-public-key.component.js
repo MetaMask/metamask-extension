@@ -5,8 +5,6 @@ import AccountListItem from '../../components/app/account-list-item';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { conversionUtil } from '../../../shared/modules/conversion.utils';
 
 export default class ConfirmEncryptionPublicKey extends Component {
@@ -28,47 +26,9 @@ export default class ConfirmEncryptionPublicKey extends Component {
     history: PropTypes.object.isRequired,
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
-    domainMetadata: PropTypes.object,
+    subjectMetadata: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     nativeCurrency: PropTypes.string.isRequired,
-  };
-
-  componentDidMount = () => {
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
-  };
-
-  componentWillUnmount = () => {
-    this._removeBeforeUnload();
-  };
-
-  _beforeUnload = async (event) => {
-    const {
-      clearConfirmTransaction,
-      cancelEncryptionPublicKey,
-      txData,
-    } = this.props;
-    const { metricsEvent } = this.context;
-    await cancelEncryptionPublicKey(txData, event);
-    metricsEvent({
-      eventOpts: {
-        category: 'Messages',
-        action: 'Encryption public key Request',
-        name: 'Cancel Via Notification Close',
-      },
-    });
-    clearConfirmTransaction();
-  };
-
-  _removeBeforeUnload = () => {
-    if (
-      getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_NOTIFICATION
-    ) {
-      window.removeEventListener('beforeunload', this._beforeUnload);
-    }
   };
 
   renderHeader = () => {
@@ -153,22 +113,22 @@ export default class ConfirmEncryptionPublicKey extends Component {
   };
 
   renderBody = () => {
-    const { domainMetadata, txData } = this.props;
+    const { subjectMetadata, txData } = this.props;
     const { t } = this.context;
 
-    const originMetadata = domainMetadata[txData.origin];
+    const targetSubjectMetadata = subjectMetadata[txData.origin];
     const notice = t('encryptionPublicKeyNotice', [txData.origin]);
-    const name = originMetadata?.hostname || txData.origin;
+    const name = targetSubjectMetadata?.hostname || txData.origin;
 
     return (
       <div className="request-encryption-public-key__body">
         {this.renderAccountInfo()}
         <div className="request-encryption-public-key__visual">
           <section>
-            {originMetadata?.icon ? (
+            {targetSubjectMetadata?.iconUrl ? (
               <img
                 className="request-encryption-public-key__visual-identicon"
-                src={originMetadata.icon}
+                src={targetSubjectMetadata.iconUrl}
                 alt=""
               />
             ) : (
@@ -203,7 +163,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
           large
           className="request-encryption-public-key__footer__cancel-button"
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await cancelEncryptionPublicKey(txData, event);
             metricsEvent({
               eventOpts: {
@@ -223,7 +182,6 @@ export default class ConfirmEncryptionPublicKey extends Component {
           large
           className="request-encryption-public-key__footer__sign-button"
           onClick={async (event) => {
-            this._removeBeforeUnload();
             await encryptionPublicKey(txData, event);
             this.context.metricsEvent({
               eventOpts: {

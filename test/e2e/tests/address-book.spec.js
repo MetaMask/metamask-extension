@@ -34,20 +34,23 @@ describe('Address Book', function () {
         await driver.clickElement('.dialog.send__dialog.dialog--message');
 
         // wait for address book modal to be visible
-        const addressModal = await driver.findElement('span .modal');
+        const addressModal = await driver.findElement('.nickname-popover');
 
-        await driver.findElement('.add-to-address-book-modal');
-        await driver.fill('.add-to-address-book-modal__input', 'Test Name 1');
-        await driver.clickElement(
-          '.add-to-address-book-modal__footer .btn-primary',
+        await driver.clickElement('.nickname-popover__footer-button');
+        await driver.findElement('.update-nickname__wrapper');
+
+        await driver.fill(
+          '.update-nickname__content__text-field input',
+          'Test Name 1',
         );
+        await driver.clickElement('.update-nickname__save');
         // wait for address book modal to be removed from DOM
         await addressModal.waitForElementState('hidden');
 
         const inputAmount = await driver.findElement('.unit-input__input');
         await inputAmount.fill('1');
 
-        const inputValue = await inputAmount.getAttribute('value');
+        const inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
 
         await driver.clickElement({ text: 'Next', tag: 'button' });

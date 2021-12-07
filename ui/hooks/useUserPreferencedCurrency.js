@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import {
   getPreferences,
   getShouldShowFiat,
@@ -37,7 +37,10 @@ import { PRIMARY, SECONDARY, ETH } from '../helpers/constants/common';
  */
 export function useUserPreferencedCurrency(type, opts = {}) {
   const nativeCurrency = useSelector(getNativeCurrency);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(
+    getPreferences,
+    shallowEqual,
+  );
   const showFiat = useSelector(getShouldShowFiat);
   const currentCurrency = useSelector(getCurrentCurrency);
 
@@ -49,7 +52,7 @@ export function useUserPreferencedCurrency(type, opts = {}) {
   ) {
     // Display ETH
     currency = nativeCurrency || ETH;
-    numberOfDecimals = opts.numberOfDecimals || opts.ethNumberOfDecimals || 6;
+    numberOfDecimals = opts.numberOfDecimals || opts.ethNumberOfDecimals || 8;
   } else if (
     (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||
     (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency)

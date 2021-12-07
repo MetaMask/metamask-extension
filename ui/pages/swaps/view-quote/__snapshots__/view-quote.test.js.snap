@@ -12,7 +12,7 @@ exports[`ViewQuote renders the component with EIP-1559 enabled 1`] = `
     10
   </span>
   <img
-    alt=""
+    alt="DAI"
     class="url-icon main-quote-summary__icon"
     src="https://foo.bar/logo.png"
   />
@@ -72,35 +72,6 @@ exports[`ViewQuote renders the component with EIP-1559 enabled 2`] = `
 </div>
 `;
 
-exports[`ViewQuote renders the component with EIP-1559 enabled 3`] = `
-<div
-  class="fee-card__savings-and-quotes-header"
-  data-testid="fee-card__savings-and-quotes-header"
->
-  <div
-    class="fee-card__savings-and-quotes-row"
-  >
-    
-    <div
-      class="fee-card__quote-link-container"
-    >
-      <p
-        class="fee-card__quote-link-text"
-      >
-        3 quotes
-      </p>
-      <div
-        class="fee-card__caret-right"
-      >
-        <i
-          class="fa fa-angle-up"
-        />
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
 exports[`ViewQuote renders the component with initial props 1`] = `
 <div
   class="main-quote-summary__source-row"
@@ -113,7 +84,7 @@ exports[`ViewQuote renders the component with initial props 1`] = `
     10
   </span>
   <img
-    alt=""
+    alt="DAI"
     class="url-icon main-quote-summary__icon"
     src="https://foo.bar/logo.png"
   />
@@ -168,80 +139,6 @@ exports[`ViewQuote renders the component with initial props 2`] = `
           fill="#037DD6"
         />
       </svg>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`ViewQuote renders the component with initial props 3`] = `
-<div
-  class="fee-card__savings-and-quotes-header"
-  data-testid="fee-card__savings-and-quotes-header"
->
-  <div
-    class="fee-card__savings-and-quotes-row"
-  >
-    
-    <div
-      class="fee-card__quote-link-container"
-    >
-      <p
-        class="fee-card__quote-link-text"
-      >
-        3 quotes
-      </p>
-      <div
-        class="fee-card__caret-right"
-      >
-        <i
-          class="fa fa-angle-up"
-        />
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`ViewQuote renders the component with initial props 4`] = `
-<div
-  class="fee-card__row-header"
-  data-testid="fee-card__row-header"
->
-  <div>
-    <div
-      class="fee-card__row-header-text--bold"
-    >
-      Estimated network fee
-    </div>
-    <div
-      class="info-tooltip"
-    >
-      <div
-        class="fee-card__row-label fee-card__info-tooltip-container"
-      >
-        <div
-          aria-describedby="tippy-tooltip-2"
-          class="info-tooltip__tooltip-container fee-card__info-tooltip-content-container"
-          data-original-title="null"
-          data-tooltipped=""
-          style="display: inline;"
-          tabindex="0"
-        >
-          &lt;InfoTooltipIcon /&gt;
-        </div>
-      </div>
-    </div>
-  </div>
-  <div>
-    <div
-      class="fee-card__row-header-secondary--bold"
-    >
-      0 ETH
-    </div>
-    <div
-      class="fee-card__row-header-primary--bold"
-    >
-      0
     </div>
   </div>
 </div>

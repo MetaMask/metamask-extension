@@ -1,8 +1,9 @@
 import EventEmitter from 'events';
 import React, { useContext, useRef, useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
@@ -26,6 +27,8 @@ import {
   navigateBackToBuildQuote,
   prepareForRetryGetQuotes,
   prepareToLeaveSwaps,
+  getFromTokenInputValue,
+  getMaxSlippage,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
 import Box from '../../../components/ui/box';
@@ -58,8 +61,6 @@ export default function AwaitingSwap({
   txHash,
   tokensReceived,
   submittingSwap,
-  inputValue,
-  maxSlippage,
 }) {
   const t = useContext(I18nContext);
   const metaMetricsEvent = useContext(MetaMetricsContext);
@@ -67,15 +68,17 @@ export default function AwaitingSwap({
   const dispatch = useDispatch();
   const animationEventEmitter = useRef(new EventEmitter());
 
-  const fetchParams = useSelector(getFetchParams);
+  const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
-  const usedQuote = useSelector(getUsedQuote);
-  const approveTxParams = useSelector(getApproveTxParams);
+  const fromTokenInputValue = useSelector(getFromTokenInputValue);
+  const maxSlippage = useSelector(getMaxSlippage);
+  const usedQuote = useSelector(getUsedQuote, isEqual);
+  const approveTxParams = useSelector(getApproveTxParams, shallowEqual);
   const swapsGasPrice = useSelector(getUsedSwapsGasPrice);
   const currentCurrency = useSelector(getCurrentCurrency);
   const usdConversionRate = useSelector(getUSDConversionRate);
   const chainId = useSelector(getCurrentChainId);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
 
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
     false,
@@ -283,7 +286,7 @@ export default function AwaitingSwap({
             await dispatch(
               fetchQuotesAndSetQuoteState(
                 history,
-                inputValue,
+                fromTokenInputValue,
                 maxSlippage,
                 metaMetricsEvent,
               ),
@@ -321,6 +324,4 @@ AwaitingSwap.propTypes = {
     CONTRACT_DATA_DISABLED_ERROR,
   ]),
   submittingSwap: PropTypes.bool,
-  inputValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  maxSlippage: PropTypes.number,
 };

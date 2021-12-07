@@ -13,7 +13,6 @@
     height: 100%;
     padding-left: 20px;
     padding-right: 20px;
-    justify-content: space-between;
 
     &_modal > div:not(.view-quote__warning-wrapper) {
       opacity: 0.6;
@@ -169,7 +168,7 @@
     justify-content: center;
     max-width: 340px;
     margin-top: 8px;
-    margin-bottom: 28px;
+    margin-bottom: 8px;
 
     @media screen and (min-width: $break-large) {
       &--thin {
@@ -185,12 +184,8 @@
   }
 
   &__countdown-timer-container {
-    width: 152px;
-    min-height: 32px;
     display: flex;
     justify-content: center;
-    border-radius: 42px;
-    background: #f2f3f4;
     margin-top: 8px;
   }
 

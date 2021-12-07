@@ -1626,6 +1626,7 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {},
+            identities: {},
             provider: {
               chainId: '0x1',
             },
@@ -1740,6 +1741,7 @@ describe('Send Slice', () => {
         const tokenState = {
           metamask: {
             addressBook: {},
+            identities: {},
             blockGasLimit: '',
             selectedAddress: '',
             provider: {
@@ -1794,6 +1796,7 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {},
+            identities: {},
             provider: {
               chainId: '',
             },

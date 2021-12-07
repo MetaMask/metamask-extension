@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Nukopijuota!"
   },
-  "copiedTransactionId": {
-    "message": "Nukopijuotas operacijos ID"
-  },
   "copyAddress": {
     "message": "Kopijuoti adresą į iškarpinę"
   },
@@ -265,9 +262,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Turi būti bent 0 skaitmenų po kablelio, bet ne daugiau kaip 36."
-  },
-  "defaultNetwork": {
-    "message": "Numatytasis „Ether“ operacijų tinklas yra pagrindinis tinklas."
   },
   "delete": {
     "message": "Ištrinti"
@@ -668,12 +662,6 @@
   "on": {
     "message": "Įjungta"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokuoti naršyklės URL (pasirinktinai)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolis (nebūtinas)"
-  },
   "origin": {
     "message": "Kilmė"
   },
@@ -852,9 +840,6 @@
   },
   "selectAnAccount": {
     "message": "Pasirinkite paskyrą"
-  },
-  "selectAnAccountHelp": {
-    "message": "Pasirinkite paskyrą peržiūrėti „MetaMask“"
   },
   "selectEachPhrase": {
     "message": "Pasirinkite kiekvieną frazę, kad patikrintumėte, ar ji tinkama"

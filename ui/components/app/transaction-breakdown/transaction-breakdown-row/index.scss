@@ -1,20 +1,22 @@
 .transaction-breakdown-row {
   @include H7;
 
-  color: $scorpion;
+  color: $Grey-500;
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
 
-  &:not(:last-child) {
+  &--with-bottom-border {
     border-bottom: 1px solid #d8d8d8;
   }
 
   &__title {
     padding-right: 8px;
+    min-width: 40%;
   }
 
   &__value {
     min-width: 0;
+    word-break: break-word;
   }
 }

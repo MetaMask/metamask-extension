@@ -212,9 +212,6 @@
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
-  "copiedTransactionId": {
-    "message": "Kopírované ID transakcie"
-  },
   "copyAddress": {
     "message": "Kopírovať adresu do schránky"
   },
@@ -259,9 +256,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desetinných míst musí být od 0 do 36."
-  },
-  "defaultNetwork": {
-    "message": "Výchozí síť pro Etherové transakce je Mainnet."
   },
   "delete": {
     "message": "Odstrániť"
@@ -637,12 +631,6 @@
   "on": {
     "message": "Zapnuté"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokovať URL Explorera (voliteľné)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (voliteľné)"
-  },
   "origin": {
     "message": "Pôvod"
   },
@@ -815,9 +803,6 @@
   },
   "selectAnAccount": {
     "message": "Vybrať účet"
-  },
-  "selectAnAccountHelp": {
-    "message": "Vyberte účet, ktorý chcete zobraziť v MetaMask"
   },
   "selectEachPhrase": {
     "message": "Vyberte každú frázu, aby ste sa uistili, že je správna."

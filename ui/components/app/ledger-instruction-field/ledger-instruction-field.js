@@ -5,6 +5,7 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
   WEBHID_CONNECTED_STATUSES,
+  TRANSPORT_STATES,
 } from '../../../../shared/constants/hardware-wallets';
 import {
   PLATFORM_FIREFOX,
@@ -14,6 +15,8 @@ import {
 import {
   setLedgerWebHidConnectedStatus,
   getLedgerWebHidConnectedStatus,
+  setLedgerTransportStatus,
+  getLedgerTransportStatus,
 } from '../../../ducks/app/app';
 
 import Typography from '../../ui/typography/typography';
@@ -30,6 +33,7 @@ import {
   getEnvironmentType,
 } from '../../../../app/scripts/lib/util';
 import { getLedgerTransportType } from '../../../ducks/metamask/metamask';
+import { attemptLedgerTransportCreation } from '../../../store/actions';
 
 const renderInstructionStep = (text, show = true, color = COLORS.PRIMARY3) => {
   return (
@@ -52,6 +56,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
 
   const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);
   const ledgerTransportType = useSelector(getLedgerTransportType);
+  const transportStatus = useSelector(getLedgerTransportStatus);
   const environmentType = getEnvironmentType();
   const environmentTypeIsFullScreen =
     environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
@@ -75,8 +80,45 @@ export default function LedgerInstructionField({ showDataInstruction }) {
         );
       }
     };
+    const determineTransportStatus = async () => {
+      if (
+        ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
+        webHidConnectedStatus === WEBHID_CONNECTED_STATUSES.CONNECTED &&
+        transportStatus === TRANSPORT_STATES.NONE
+      ) {
+        try {
+          const transportedCreated = await attemptLedgerTransportCreation();
+          dispatch(
+            setLedgerTransportStatus(
+              transportedCreated
+                ? TRANSPORT_STATES.VERIFIED
+                : TRANSPORT_STATES.UNKNOWN_FAILURE,
+            ),
+          );
+        } catch (e) {
+          if (e.message.match('Failed to open the device')) {
+            dispatch(
+              setLedgerTransportStatus(TRANSPORT_STATES.DEVICE_OPEN_FAILURE),
+            );
+          } else if (e.message.match('the device is already open')) {
+            dispatch(setLedgerTransportStatus(TRANSPORT_STATES.VERIFIED));
+          } else {
+            dispatch(
+              setLedgerTransportStatus(TRANSPORT_STATES.UNKNOWN_FAILURE),
+            );
+          }
+        }
+      }
+    };
+    determineTransportStatus();
     initialConnectedDeviceCheck();
-  }, [dispatch, ledgerTransportType, webHidConnectedStatus]);
+  }, [dispatch, ledgerTransportType, webHidConnectedStatus, transportStatus]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(setLedgerTransportStatus(TRANSPORT_STATES.NONE));
+    };
+  }, [dispatch]);
 
   const usingLedgerLive = ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE;
   const usingWebHID = ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID;
@@ -103,6 +145,23 @@ export default function LedgerInstructionField({ showDataInstruction }) {
             {renderInstructionStep(
               `- ${t('ledgerConnectionInstructionStepFour')}`,
               showDataInstruction,
+            )}
+            {renderInstructionStep(
+              <span>
+                <Button
+                  type="link"
+                  onClick={async () => {
+                    if (environmentTypeIsFullScreen) {
+                      window.location.reload();
+                    } else {
+                      global.platform.openExtensionInBrowser(null, null, true);
+                    }
+                  }}
+                >
+                  {t('ledgerConnectionInstructionCloseOtherApps')}
+                </Button>
+              </span>,
+              transportStatus === TRANSPORT_STATES.DEVICE_OPEN_FAILURE,
             )}
             {renderInstructionStep(
               <span>

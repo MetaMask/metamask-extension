@@ -7,7 +7,7 @@ import { updateMetamaskState } from '../../store/actions';
 import ConfirmAddSuggestedToken from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/ConfirmAddSuggestedToken',
   id: __filename,
 };
 
@@ -42,7 +42,7 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const AddSuggestedToken = () => {
+export const DefaultStory = () => {
   const state = store.getState();
   store.dispatch(
     updateMetamaskState(
@@ -58,3 +58,5 @@ export const AddSuggestedToken = () => {
     </PageSet>
   );
 };
+
+DefaultStory.storyName = 'Default';

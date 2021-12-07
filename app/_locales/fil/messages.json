@@ -197,9 +197,6 @@
   "copiedExclamation": {
     "message": "Nakopya!"
   },
-  "copiedTransactionId": {
-    "message": "Nakopya ang Transaction ID"
-  },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
@@ -244,9 +241,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Ang mga decimal ay hindi dapat bumaba sa 0, at hindi lumampas sa 36."
-  },
-  "defaultNetwork": {
-    "message": "Ang default na network para sa mga transaksyon ng Ether ay Mainnet."
   },
   "delete": {
     "message": "I-delete"
@@ -602,12 +596,6 @@
   "on": {
     "message": "Naka-on"
   },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (opsyonal)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolo (opsyonal)"
-  },
   "origin": {
     "message": "Pinanggalingan"
   },
@@ -773,9 +761,6 @@
   },
   "selectAnAccount": {
     "message": "Pumili ng Account"
-  },
-  "selectAnAccountHelp": {
-    "message": "Piliin ang account na titingnan sa MetaMask"
   },
   "selectEachPhrase": {
     "message": "Pakipili ang bawat parirala para tiyaking tama ito."

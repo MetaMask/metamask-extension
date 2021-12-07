@@ -25,11 +25,11 @@ describe('ConfirmSeedPhrase Component', () => {
 
   it('should add/remove selected on click', () => {
     const metricsEventSpy = sinon.spy();
-    const pushSpy = sinon.spy();
+    const replaceSpy = sinon.spy();
     const root = shallowRender(
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { push: pushSpy },
+        history: { replace: replaceSpy },
       },
       {
         metricsEvent: metricsEventSpy,
@@ -58,11 +58,11 @@ describe('ConfirmSeedPhrase Component', () => {
 
   it('should render correctly on hover', () => {
     const metricsEventSpy = sinon.spy();
-    const pushSpy = sinon.spy();
+    const replaceSpy = sinon.spy();
     const root = shallowRender(
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { push: pushSpy },
+        history: { replace: replaceSpy },
       },
       {
         metricsEvent: metricsEventSpy,
@@ -93,11 +93,11 @@ describe('ConfirmSeedPhrase Component', () => {
 
   it('should insert seed in place on drop', () => {
     const metricsEventSpy = sinon.spy();
-    const pushSpy = sinon.spy();
+    const replaceSpy = sinon.spy();
     const root = shallowRender(
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { push: pushSpy },
+        history: { replace: replaceSpy },
       },
       {
         metricsEvent: metricsEventSpy,
@@ -138,12 +138,12 @@ describe('ConfirmSeedPhrase Component', () => {
       '豬',
     ];
     const metricsEventSpy = sinon.spy();
-    const pushSpy = sinon.spy();
+    const replaceSpy = sinon.spy();
     const initialize3BoxSpy = sinon.spy();
     const root = shallowRender(
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { push: pushSpy },
+        history: { replace: replaceSpy },
         setSeedPhraseBackedUp: () => Promise.resolve(),
         initializeThreeBox: initialize3BoxSpy,
       },
@@ -174,6 +174,6 @@ describe('ConfirmSeedPhrase Component', () => {
       },
     });
     expect(initialize3BoxSpy.calledOnce).toStrictEqual(true);
-    expect(pushSpy.args[0][0]).toStrictEqual('/initialize/end-of-flow');
+    expect(replaceSpy.args[0][0]).toStrictEqual('/initialize/end-of-flow');
   });
 });

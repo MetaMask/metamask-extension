@@ -1,51 +1,111 @@
-/* eslint-disable react/prop-types */
-
 import React, { useState } from 'react';
-import { select, text } from '@storybook/addon-knobs';
+
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+
 import ApproveIcon from '../icon/approve-icon.component';
 import Identicon from '../identicon/identicon.component';
 import { ChipWithInput } from './chip-with-input';
+
+import README from './README.mdx';
+
 import Chip from '.';
 
 export default {
-  title: 'Chip',
+  title: 'Components/UI/Chip',
   id: __filename,
+  component: Chip,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    leftIcon: {
+      control: {
+        type: 'select',
+      },
+      options: ['ApproveIcon'],
+      mapping: {
+        ApproveIcon: <ApproveIcon size={24} color="#4cd964" />,
+      },
+    },
+    rightIcon: {
+      control: {
+        type: 'select',
+      },
+      options: ['Identicon'],
+      mapping: {
+        Identicon: (
+          <Identicon
+            address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+            diameter={25}
+          />
+        ),
+      },
+    },
+    label: {
+      control: 'text',
+    },
+    labelProps: {
+      color: {
+        control: {
+          type: 'select',
+        },
+        options: Object.values(COLORS),
+      },
+      variant: {
+        color: {
+          control: {
+            type: 'select',
+          },
+          options: Object.values(TYPOGRAPHY),
+        },
+      },
+    },
+    borderColor: {
+      control: {
+        type: 'select',
+      },
+      options: Object.values(COLORS),
+    },
+    backgroundColor: {
+      control: {
+        type: 'select',
+      },
+      options: Object.values(COLORS),
+    },
+    children: {
+      control: 'text',
+    },
+  },
 };
 
-export const Plain = ({
-  leftIcon,
-  rightIcon,
-  label = 'Hello',
-  borderColor = COLORS.UI1,
-  fontColor = COLORS.BLACK,
-}) => (
-  <Chip
-    leftIcon={leftIcon}
-    rightIcon={rightIcon}
-    label={text('label', label)}
-    labelProps={{
-      color: select('color', COLORS, fontColor),
-      variant: select('typography', TYPOGRAPHY, TYPOGRAPHY.H6),
-    }}
-    borderColor={select('borderColor', COLORS, borderColor)}
-  />
-);
+export const DefaultStory = (args) => <Chip {...args} />;
+
+DefaultStory.storyName = 'Default';
+
+DefaultStory.args = {
+  label: 'Chip',
+  borderColor: COLORS.UI3,
+  backgroundColor: COLORS.UI1,
+  labelProps: {
+    color: COLORS.BLACK,
+    variant: TYPOGRAPHY.H6,
+  },
+};
 
 export const WithLeftIcon = () => (
-  <Plain
+  <Chip
     label="Done!"
     borderColor={COLORS.SUCCESS3}
-    fontColor={COLORS.SUCCESS3}
     leftIcon={<ApproveIcon size={24} color="#4cd964" />}
   />
 );
 
 export const WithRightIcon = () => (
-  <Plain
+  <Chip
     label="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
     borderColor={COLORS.UI4}
-    fontColor={COLORS.UI4}
     rightIcon={
       <Identicon
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
@@ -56,10 +116,9 @@ export const WithRightIcon = () => (
 );
 
 export const WithBothIcons = () => (
-  <Plain
+  <Chip
     label="Account 1"
     borderColor={COLORS.UI4}
-    fontColor={COLORS.UI4}
     rightIcon={
       <svg
         width="10"
@@ -82,13 +141,17 @@ export const WithBothIcons = () => (
     }
   />
 );
-export const WithInput = () => {
-  const [inputValue, setInputValue] = useState('');
+export const WithInput = (args) => {
+  const [inputValue, setInputValue] = useState('Chip with input');
   return (
     <ChipWithInput
+      {...args}
       inputValue={inputValue}
       setInputValue={setInputValue}
-      borderColor={select('borderColor', COLORS, COLORS.UI3)}
     />
   );
+};
+
+WithInput.args = {
+  borderColor: COLORS.UI3,
 };

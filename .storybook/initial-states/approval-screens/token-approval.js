@@ -46,7 +46,7 @@ export const currentNetworkTxListSample = {
   ]
 }
 
-export const domainMetadata = {
+export const subjectMetadata = {
   "https://metamask.github.io": {
     "name": "E2E Test Dapp",
     "icon": "https://metamask.github.io/test-dapp/metamask-fox.svg",
