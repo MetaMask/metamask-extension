@@ -20,28 +20,30 @@ const Accreditation = ({ fetchVia, address }) => {
   const AccreditationLink = () => {
     return (
       <>
-        <div className="accreditation__prefix">
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          className="accreditation__prefix"
+          boxProps={{ margin: 0 }}
+        >
           {t('transactionDecodingAccreditationVerified')}
-        </div>
-        <div className="accreditation__content">
-          <Button
-            type="link"
-            className="accreditation__content--link"
-            onClick={() => {
-              global.platform.openTab({
-                url: addressLink,
-              });
-            }}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={t('etherscanView')}
-          >
-            {fetchVia}
-          </Button>
-        </div>
-        <div className="accreditation__suffix">
+        </Typography>
+        <Button
+          type="link"
+          className="accreditation__link"
+          onClick={() => {
+            global.platform.openTab({
+              url: addressLink,
+            });
+          }}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={t('etherscanView')}
+        >
+          {fetchVia}
+        </Button>
+        <Typography variant={TYPOGRAPHY.H7} boxProps={{ margin: 0 }}>
           {t('transactionDecodingAccreditationDecoded')}
-        </div>
+        </Typography>
       </>
     );
   };
