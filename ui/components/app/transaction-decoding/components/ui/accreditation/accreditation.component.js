@@ -8,8 +8,10 @@ import {
 } from '../../../../../../selectors';
 import { I18nContext } from '../../../../../../contexts/i18n';
 
+import { TYPOGRAPHY } from '../../../../../../helpers/constants/design-system';
+
 import Button from '../../../../../ui/button';
-import Tooltip from '../../../../../ui/tooltip';
+import Typography from '../../../../../ui/typography';
 
 const Accreditation = ({ fetchVia, address }) => {
   const t = useContext(I18nContext);
