@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import isEqual from 'lodash/isEqual';
 
 import { I18nContext } from '../../../contexts/i18n';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
@@ -35,9 +36,9 @@ export default function AwaitingSignatures() {
   const t = useContext(I18nContext);
   const history = useHistory();
   const dispatch = useDispatch();
-  const fetchParams = useSelector(getFetchParams);
+  const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
-  const approveTxParams = useSelector(getApproveTxParams);
+  const approveTxParams = useSelector(getApproveTxParams, shallowEqual);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const needsTwoConfirmations = Boolean(approveTxParams);

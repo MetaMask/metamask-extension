@@ -1,5 +1,5 @@
 import React, { useState, useContext, useMemo, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
@@ -141,24 +141,24 @@ export default function ViewQuote() {
   const customMaxFeePerGas = useSelector(getCustomMaxFeePerGas);
   const customMaxPriorityFeePerGas = useSelector(getCustomMaxPriorityFeePerGas);
   const swapsUserFeeLevel = useSelector(getSwapsUserFeeLevel);
-  const tokenConversionRates = useSelector(getTokenExchangeRates);
+  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
-  const { balance: ethBalance } = useSelector(getSelectedAccount);
+  const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
   const conversionRate = useSelector(conversionRateSelector);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const swapsTokens = useSelector(getTokens);
+  const swapsTokens = useSelector(getTokens, isEqual);
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
   const balanceError = useSelector(getBalanceError);
-  const fetchParams = useSelector(getFetchParams);
-  const approveTxParams = useSelector(getApproveTxParams);
-  const selectedQuote = useSelector(getSelectedQuote);
-  const topQuote = useSelector(getTopQuote);
+  const fetchParams = useSelector(getFetchParams, isEqual);
+  const approveTxParams = useSelector(getApproveTxParams, shallowEqual);
+  const selectedQuote = useSelector(getSelectedQuote, isEqual);
+  const topQuote = useSelector(getTopQuote, isEqual);
   const usedQuote = selectedQuote || topQuote;
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
@@ -343,7 +343,7 @@ export default function ViewQuote() {
       )
     : null;
 
-  const destinationToken = useSelector(getDestinationTokenInfo);
+  const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
 
   useEffect(() => {
     if (insufficientTokens || insufficientEth) {
