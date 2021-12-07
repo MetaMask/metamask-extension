@@ -465,7 +465,36 @@ const solidityTypes = () => {
   const bytes = Array.from(new Array(32)).map(
     (_, index) => `bytes${index + 1}`,
   );
-  return [...types, ...ints, ...uints, ...bytes];
+
+  /**
+   * fixed and ufixed
+   * This value type also can be declared keywords such as ufixedMxN and fixedMxN.
+   * The M represents the amount of bits that the type takes,
+   * with N representing the number of decimal points that are available.
+   *  M has to be divisible by 8, and a number from 8 to 256.
+   * N has to be a value between 0 and 80, also being inclusive.
+   */
+  const fixedM = Array.from(new Array(32)).map(
+    (_, index) => `fixed${(index + 1) * 8}`,
+  );
+  const ufixedM = Array.from(new Array(32)).map(
+    (_, index) => `ufixed${(index + 1) * 8}`,
+  );
+  const fixed = Array.from(new Array(80)).map((_, index) =>
+    fixedM.map((aFixedM) => `${aFixedM}x${index + 1}`),
+  );
+  const ufixed = Array.from(new Array(80)).map((_, index) =>
+    ufixedM.map((auFixedM) => `${auFixedM}x${index + 1}`),
+  );
+
+  return [
+    ...types,
+    ...ints,
+    ...uints,
+    ...bytes,
+    ...fixed.flat(),
+    ...ufixed.flat(),
+  ];
 };
 
 export const sanitizeMessage = (msg, baseType, types) => {

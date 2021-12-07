@@ -369,10 +369,6 @@ describe('util', () => {
         { name: 'chainId', type: 'uint256' },
         { name: 'verifyingContract', type: 'address' },
       ],
-      Group: [
-        { name: 'name', type: 'string' },
-        { name: 'members', type: 'Person[]' },
-      ],
       Mail: [
         { name: 'from', type: 'Person' },
         { name: 'to', type: 'Person[]' },
