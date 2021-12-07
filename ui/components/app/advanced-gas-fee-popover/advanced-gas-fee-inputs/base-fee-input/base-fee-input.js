@@ -73,13 +73,15 @@ const validateBaseFee = (
 const BaseFeeInput = () => {
   const t = useI18nContext();
   const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
+  console.log(JSON.stringify(gasFeeEstimates));
   const {
     maxPriorityFeePerGas,
     setErrorValue,
     setMaxFeePerGas,
   } = useAdvancedGasFeePopoverContext();
 
-  const { estimatedBaseFee } = gasFeeEstimates;
+  const { estimatedBaseFee, historicalBaseFeeRange } = gasFeeEstimates;
+  const [lowHistorical, highHistorical] = historicalBaseFeeRange;
   const [baseFeeError, setBaseFeeError] = useState();
   const {
     numberOfDecimals: numberOfDecimalsPrimary,
@@ -198,8 +200,8 @@ const BaseFeeInput = () => {
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={estimatedBaseFee}
-        historical="23-359 GWEI"
+        latest={`${estimatedBaseFee}`}
+        historical={`${lowHistorical}-${highHistorical}`}
       />
     </Box>
   );
