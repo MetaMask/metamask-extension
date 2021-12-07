@@ -86,7 +86,6 @@ import TypedMessageManager from './lib/typed-message-manager';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
-import { nodeify, nodeifyObject } from './lib/nodeify';
 import accountImporter from './account-import-strategies';
 import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
@@ -985,485 +984,400 @@ export default class MetamaskController extends EventEmitter {
    */
   getApi() {
     const {
+      addressBookController,
       alertController,
       approvalController,
+      appStateController,
+      collectiblesController,
+      collectibleDetectionController,
+      currencyRateController,
+      detectTokensController,
+      ensController,
+      gasFeeController,
       keyringController,
       metaMetricsController,
       networkController,
+      notificationController,
       onboardingController,
       permissionController,
       preferencesController,
+      qrHardwareKeyring,
       swapsController,
       threeBoxController,
-      txController,
       tokensController,
-      collectiblesController,
+      txController,
     } = this;
 
     return {
       // etc
-      getState: (cb) => cb(null, this.getState()),
-      setCurrentCurrency: nodeify(
-        this.currencyRateController.setCurrentCurrency.bind(
-          this.currencyRateController,
-        ),
+      getState: this.getState.bind(this),
+      setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
+        currencyRateController,
       ),
-      setUseBlockie: this.setUseBlockie.bind(this),
-      setUseNonceField: this.setUseNonceField.bind(this),
-      setUsePhishDetect: this.setUsePhishDetect.bind(this),
-      setUseTokenDetection: nodeify(
-        this.preferencesController.setUseTokenDetection,
-        this.preferencesController,
+      setUseBlockie: preferencesController.setUseBlockie.bind(
+        preferencesController,
       ),
-      setUseCollectibleDetection: nodeify(
-        this.preferencesController.setUseCollectibleDetection,
-        this.preferencesController,
+      setUseNonceField: preferencesController.setUseNonceField.bind(
+        preferencesController,
       ),
-      setOpenSeaEnabled: nodeify(
-        this.preferencesController.setOpenSeaEnabled,
-        this.preferencesController,
+      setUsePhishDetect: preferencesController.setUsePhishDetect.bind(
+        preferencesController,
       ),
-      setIpfsGateway: this.setIpfsGateway.bind(this),
-      setParticipateInMetaMetrics: this.setParticipateInMetaMetrics.bind(this),
-      setCurrentLocale: this.setCurrentLocale.bind(this),
+      setUseTokenDetection: preferencesController.setUseTokenDetection.bind(
+        preferencesController,
+      ),
+      setUseCollectibleDetection: preferencesController.setUseCollectibleDetection.bind(
+        preferencesController,
+      ),
+      setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
+        preferencesController,
+      ),
+      setIpfsGateway: preferencesController.setIpfsGateway.bind(
+        preferencesController,
+      ),
+      setParticipateInMetaMetrics: metaMetricsController.setParticipateInMetaMetrics.bind(
+        metaMetricsController,
+      ),
+      setCurrentLocale: preferencesController.setCurrentLocale.bind(
+        preferencesController,
+      ),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       safelistPhishingDomain: this.safelistPhishingDomain.bind(this),
-      getRequestAccountTabIds: (cb) => cb(null, this.getRequestAccountTabIds()),
-      getOpenMetamaskTabsIds: (cb) => cb(null, this.getOpenMetamaskTabsIds()),
+      getRequestAccountTabIds: this.getRequestAccountTabIds,
+      getOpenMetamaskTabsIds: this.getOpenMetamaskTabsIds,
 
       // primary HD keyring management
-      addNewAccount: nodeify(this.addNewAccount, this),
-      verifySeedPhrase: nodeify(this.verifySeedPhrase, this),
-      resetAccount: nodeify(this.resetAccount, this),
-      removeAccount: nodeify(this.removeAccount, this),
-      importAccountWithStrategy: nodeify(this.importAccountWithStrategy, this),
+      addNewAccount: this.addNewAccount.bind(this),
+      verifySeedPhrase: this.verifySeedPhrase.bind(this),
+      resetAccount: this.resetAccount.bind(this),
+      removeAccount: this.removeAccount.bind(this),
+      importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
 
       // hardware wallets
-      connectHardware: nodeify(this.connectHardware, this),
-      forgetDevice: nodeify(this.forgetDevice, this),
-      checkHardwareStatus: nodeify(this.checkHardwareStatus, this),
-      unlockHardwareWalletAccount: nodeify(
-        this.unlockHardwareWalletAccount,
+      connectHardware: this.connectHardware.bind(this),
+      forgetDevice: this.forgetDevice.bind(this),
+      checkHardwareStatus: this.checkHardwareStatus.bind(this),
+      unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
+      setLedgerTransportPreference: this.setLedgerTransportPreference.bind(
         this,
       ),
-      setLedgerTransportPreference: nodeify(
-        this.setLedgerTransportPreference,
+      attemptLedgerTransportCreation: this.attemptLedgerTransportCreation.bind(
         this,
       ),
-      attemptLedgerTransportCreation: nodeify(
-        this.attemptLedgerTransportCreation,
-        this,
-      ),
-      establishLedgerTransportPreference: nodeify(
-        this.establishLedgerTransportPreference,
+      establishLedgerTransportPreference: this.establishLedgerTransportPreference.bind(
         this,
       ),
 
       // qr hardware devices
-      submitQRHardwareCryptoHDKey: nodeify(
-        this.qrHardwareKeyring.submitCryptoHDKey,
-        this.qrHardwareKeyring,
+      submitQRHardwareCryptoHDKey: qrHardwareKeyring.submitCryptoHDKey.bind(
+        qrHardwareKeyring,
       ),
-      submitQRHardwareCryptoAccount: nodeify(
-        this.qrHardwareKeyring.submitCryptoAccount,
-        this.qrHardwareKeyring,
+      submitQRHardwareCryptoAccount: qrHardwareKeyring.submitCryptoAccount.bind(
+        qrHardwareKeyring,
       ),
-      cancelSyncQRHardware: nodeify(
-        this.qrHardwareKeyring.cancelSync,
-        this.qrHardwareKeyring,
+      cancelSyncQRHardware: qrHardwareKeyring.cancelSync.bind(
+        qrHardwareKeyring,
       ),
-      submitQRHardwareSignature: nodeify(
-        this.qrHardwareKeyring.submitSignature,
-        this.qrHardwareKeyring,
+      submitQRHardwareSignature: qrHardwareKeyring.submitSignature.bind(
+        qrHardwareKeyring,
       ),
-      cancelQRHardwareSignRequest: nodeify(
-        this.qrHardwareKeyring.cancelSignRequest,
-        this.qrHardwareKeyring,
+      cancelQRHardwareSignRequest: qrHardwareKeyring.cancelSignRequest.bind(
+        qrHardwareKeyring,
       ),
 
       // mobile
-      fetchInfoToSync: nodeify(this.fetchInfoToSync, this),
+      fetchInfoToSync: this.fetchInfoToSync.bind(this),
 
       // vault management
-      submitPassword: nodeify(this.submitPassword, this),
-      verifyPassword: nodeify(this.verifyPassword, this),
+      submitPassword: this.submitPassword.bind(this),
+      verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setProviderType: nodeify(
-        networkController.setProviderType,
+      setProviderType: networkController.setProviderType.bind(
         networkController,
       ),
-      rollbackToPreviousProvider: nodeify(
-        networkController.rollbackToPreviousProvider,
+      rollbackToPreviousProvider: networkController.rollbackToPreviousProvider.bind(
         networkController,
       ),
-      setCustomRpc: nodeify(this.setCustomRpc, this),
-      updateAndSetCustomRpc: nodeify(this.updateAndSetCustomRpc, this),
-      delCustomRpc: nodeify(this.delCustomRpc, this),
+      setCustomRpc: this.setCustomRpc.bind(this),
+      updateAndSetCustomRpc: this.updateAndSetCustomRpc.bind(this),
+      delCustomRpc: this.delCustomRpc.bind(this),
 
       // PreferencesController
-      setSelectedAddress: nodeify(
-        preferencesController.setSelectedAddress,
+      setSelectedAddress: preferencesController.setSelectedAddress.bind(
         preferencesController,
       ),
-      addToken: nodeify(tokensController.addToken, tokensController),
-      rejectWatchAsset: nodeify(
-        tokensController.rejectWatchAsset,
+      addToken: tokensController.addToken.bind(tokensController),
+      rejectWatchAsset: tokensController.rejectWatchAsset.bind(
         tokensController,
       ),
-      acceptWatchAsset: nodeify(
-        tokensController.acceptWatchAsset,
+      acceptWatchAsset: tokensController.acceptWatchAsset.bind(
         tokensController,
       ),
-      updateTokenType: nodeify(
-        tokensController.updateTokenType,
-        tokensController,
-      ),
-      removeToken: nodeify(
-        tokensController.removeAndIgnoreToken,
-        tokensController,
-      ),
-      setAccountLabel: nodeify(
-        preferencesController.setAccountLabel,
+      updateTokenType: tokensController.updateTokenType.bind(tokensController),
+      removeToken: tokensController.removeAndIgnoreToken.bind(tokensController),
+      setAccountLabel: preferencesController.setAccountLabel.bind(
         preferencesController,
       ),
-      setFeatureFlag: nodeify(
-        preferencesController.setFeatureFlag,
+      setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
       ),
-      setPreference: nodeify(
-        preferencesController.setPreference,
+      setPreference: preferencesController.setPreference.bind(
         preferencesController,
       ),
 
-      addKnownMethodData: nodeify(
-        preferencesController.addKnownMethodData,
+      addKnownMethodData: preferencesController.addKnownMethodData.bind(
         preferencesController,
       ),
-      setDismissSeedBackUpReminder: nodeify(
-        this.preferencesController.setDismissSeedBackUpReminder,
-        this.preferencesController,
+      setDismissSeedBackUpReminder: preferencesController.setDismissSeedBackUpReminder.bind(
+        preferencesController,
       ),
-      setAdvancedGasFee: nodeify(
-        preferencesController.setAdvancedGasFee,
+      setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
         preferencesController,
       ),
 
       // CollectiblesController
-      addCollectible: nodeify(
-        collectiblesController.addCollectible,
+      addCollectible: collectiblesController.addCollectible.bind(
         collectiblesController,
       ),
 
-      addCollectibleVerifyOwnership: nodeify(
-        collectiblesController.addCollectibleVerifyOwnership,
+      addCollectibleVerifyOwnership: collectiblesController.addCollectibleVerifyOwnership.bind(
         collectiblesController,
       ),
 
-      removeAndIgnoreCollectible: nodeify(
-        collectiblesController.removeAndIgnoreCollectible,
+      removeAndIgnoreCollectible: collectiblesController.removeAndIgnoreCollectible.bind(
         collectiblesController,
       ),
 
-      removeCollectible: nodeify(
-        collectiblesController.removeCollectible,
+      removeCollectible: collectiblesController.removeCollectible.bind(
         collectiblesController,
       ),
 
       // AddressController
-      setAddressBook: nodeify(
-        this.addressBookController.set,
-        this.addressBookController,
-      ),
-      removeFromAddressBook: nodeify(
-        this.addressBookController.delete,
-        this.addressBookController,
+      setAddressBook: addressBookController.set.bind(addressBookController),
+      removeFromAddressBook: addressBookController.delete.bind(
+        addressBookController,
       ),
 
       // AppStateController
-      setLastActiveTime: nodeify(
-        this.appStateController.setLastActiveTime,
-        this.appStateController,
+      setLastActiveTime: appStateController.setLastActiveTime.bind(
+        appStateController,
       ),
-      setDefaultHomeActiveTabName: nodeify(
-        this.appStateController.setDefaultHomeActiveTabName,
-        this.appStateController,
+      setDefaultHomeActiveTabName: appStateController.setDefaultHomeActiveTabName.bind(
+        appStateController,
       ),
-      setConnectedStatusPopoverHasBeenShown: nodeify(
-        this.appStateController.setConnectedStatusPopoverHasBeenShown,
-        this.appStateController,
+      setConnectedStatusPopoverHasBeenShown: appStateController.setConnectedStatusPopoverHasBeenShown.bind(
+        appStateController,
       ),
-      setRecoveryPhraseReminderHasBeenShown: nodeify(
-        this.appStateController.setRecoveryPhraseReminderHasBeenShown,
-        this.appStateController,
+      setRecoveryPhraseReminderHasBeenShown: appStateController.setRecoveryPhraseReminderHasBeenShown.bind(
+        appStateController,
       ),
-      setRecoveryPhraseReminderLastShown: nodeify(
-        this.appStateController.setRecoveryPhraseReminderLastShown,
-        this.appStateController,
+      setRecoveryPhraseReminderLastShown: appStateController.setRecoveryPhraseReminderLastShown.bind(
+        appStateController,
       ),
-      setShowTestnetMessageInDropdown: nodeify(
-        this.appStateController.setShowTestnetMessageInDropdown,
-        this.appStateController,
+      setShowTestnetMessageInDropdown: appStateController.setShowTestnetMessageInDropdown.bind(
+        appStateController,
       ),
 
       // EnsController
-      tryReverseResolveAddress: nodeify(
-        this.ensController.reverseResolveAddress,
-        this.ensController,
+      tryReverseResolveAddress: ensController.reverseResolveAddress.bind(
+        ensController,
       ),
 
       // KeyringController
-      setLocked: nodeify(this.setLocked, this),
-      createNewVaultAndKeychain: nodeify(this.createNewVaultAndKeychain, this),
-      createNewVaultAndRestore: nodeify(this.createNewVaultAndRestore, this),
-      exportAccount: nodeify(
-        keyringController.exportAccount,
-        keyringController,
-      ),
+      setLocked: this.setLocked.bind(this),
+      createNewVaultAndKeychain: this.createNewVaultAndKeychain.bind(this),
+      createNewVaultAndRestore: this.createNewVaultAndRestore.bind(this),
+      exportAccount: keyringController.exportAccount.bind(keyringController),
 
       // txController
-      cancelTransaction: nodeify(txController.cancelTransaction, txController),
-      updateTransaction: nodeify(txController.updateTransaction, txController),
-      updateAndApproveTransaction: nodeify(
-        txController.updateAndApproveTransaction,
+      cancelTransaction: txController.cancelTransaction.bind(txController),
+      updateTransaction: txController.updateTransaction.bind(txController),
+      updateAndApproveTransaction: txController.updateAndApproveTransaction.bind(
         txController,
       ),
-      createCancelTransaction: nodeify(this.createCancelTransaction, this),
-      createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
-      estimateGas: nodeify(this.estimateGas, this),
-      getNextNonce: nodeify(this.getNextNonce, this),
-      addUnapprovedTransaction: nodeify(
-        txController.addUnapprovedTransaction,
+      createCancelTransaction: this.createCancelTransaction.bind(this),
+      createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
+      estimateGas: this.estimateGas.bind(this),
+      getNextNonce: this.getNextNonce.bind(this),
+      addUnapprovedTransaction: txController.addUnapprovedTransaction.bind(
         txController,
       ),
 
       // messageManager
-      signMessage: nodeify(this.signMessage, this),
+      signMessage: this.signMessage.bind(this),
       cancelMessage: this.cancelMessage.bind(this),
 
       // personalMessageManager
-      signPersonalMessage: nodeify(this.signPersonalMessage, this),
+      signPersonalMessage: this.signPersonalMessage.bind(this),
       cancelPersonalMessage: this.cancelPersonalMessage.bind(this),
 
       // typedMessageManager
-      signTypedMessage: nodeify(this.signTypedMessage, this),
+      signTypedMessage: this.signTypedMessage.bind(this),
       cancelTypedMessage: this.cancelTypedMessage.bind(this),
 
       // decryptMessageManager
-      decryptMessage: nodeify(this.decryptMessage, this),
-      decryptMessageInline: nodeify(this.decryptMessageInline, this),
+      decryptMessage: this.decryptMessage.bind(this),
+      decryptMessageInline: this.decryptMessageInline.bind(this),
       cancelDecryptMessage: this.cancelDecryptMessage.bind(this),
 
       // EncryptionPublicKeyManager
-      encryptionPublicKey: nodeify(this.encryptionPublicKey, this),
+      encryptionPublicKey: this.encryptionPublicKey.bind(this),
       cancelEncryptionPublicKey: this.cancelEncryptionPublicKey.bind(this),
 
       // onboarding controller
-      setSeedPhraseBackedUp: nodeify(
-        onboardingController.setSeedPhraseBackedUp,
+      setSeedPhraseBackedUp: onboardingController.setSeedPhraseBackedUp.bind(
         onboardingController,
       ),
-      completeOnboarding: nodeify(
-        onboardingController.completeOnboarding,
+      completeOnboarding: onboardingController.completeOnboarding.bind(
         onboardingController,
       ),
-      setFirstTimeFlowType: nodeify(
-        onboardingController.setFirstTimeFlowType,
+      setFirstTimeFlowType: onboardingController.setFirstTimeFlowType.bind(
         onboardingController,
       ),
 
       // alert controller
-      setAlertEnabledness: nodeify(
-        alertController.setAlertEnabledness,
+      setAlertEnabledness: alertController.setAlertEnabledness.bind(
         alertController,
       ),
-      setUnconnectedAccountAlertShown: nodeify(
-        alertController.setUnconnectedAccountAlertShown,
+      setUnconnectedAccountAlertShown: alertController.setUnconnectedAccountAlertShown.bind(
         alertController,
       ),
-      setWeb3ShimUsageAlertDismissed: nodeify(
-        alertController.setWeb3ShimUsageAlertDismissed,
+      setWeb3ShimUsageAlertDismissed: alertController.setWeb3ShimUsageAlertDismissed.bind(
         alertController,
       ),
 
       // 3Box
-      setThreeBoxSyncingPermission: nodeify(
-        threeBoxController.setThreeBoxSyncingPermission,
+      setThreeBoxSyncingPermission: threeBoxController.setThreeBoxSyncingPermission.bind(
         threeBoxController,
       ),
-      restoreFromThreeBox: nodeify(
-        threeBoxController.restoreFromThreeBox,
+      restoreFromThreeBox: threeBoxController.restoreFromThreeBox.bind(
         threeBoxController,
       ),
-      setShowRestorePromptToFalse: nodeify(
-        threeBoxController.setShowRestorePromptToFalse,
+      setShowRestorePromptToFalse: threeBoxController.setShowRestorePromptToFalse.bind(
         threeBoxController,
       ),
-      getThreeBoxLastUpdated: nodeify(
-        threeBoxController.getLastUpdated,
+      getThreeBoxLastUpdated: threeBoxController.getLastUpdated.bind(
         threeBoxController,
       ),
-      turnThreeBoxSyncingOn: nodeify(
-        threeBoxController.turnThreeBoxSyncingOn,
+      turnThreeBoxSyncingOn: threeBoxController.turnThreeBoxSyncingOn.bind(
         threeBoxController,
       ),
-      initializeThreeBox: nodeify(this.initializeThreeBox, this),
+      initializeThreeBox: this.initializeThreeBox.bind(this),
 
       // permissions
       removePermissionsFor: permissionController.revokePermissions.bind(
         permissionController,
       ),
-      approvePermissionsRequest: nodeify(
-        permissionController.acceptPermissionsRequest,
+      approvePermissionsRequest: permissionController.acceptPermissionsRequest.bind(
         permissionController,
       ),
-      rejectPermissionsRequest: nodeify(
-        permissionController.rejectPermissionsRequest,
+      rejectPermissionsRequest: permissionController.rejectPermissionsRequest.bind(
         permissionController,
       ),
-      ...nodeifyObject(getPermissionBackgroundApiMethods(permissionController)),
+      ...getPermissionBackgroundApiMethods(permissionController),
 
       // swaps
-      fetchAndSetQuotes: nodeify(
-        swapsController.fetchAndSetQuotes,
+      fetchAndSetQuotes: swapsController.fetchAndSetQuotes.bind(
         swapsController,
       ),
-      setSelectedQuoteAggId: nodeify(
-        swapsController.setSelectedQuoteAggId,
+      setSelectedQuoteAggId: swapsController.setSelectedQuoteAggId.bind(
         swapsController,
       ),
-      resetSwapsState: nodeify(
-        swapsController.resetSwapsState,
+      resetSwapsState: swapsController.resetSwapsState.bind(swapsController),
+      setSwapsTokens: swapsController.setSwapsTokens.bind(swapsController),
+      clearSwapsQuotes: swapsController.clearSwapsQuotes.bind(swapsController),
+      setApproveTxId: swapsController.setApproveTxId.bind(swapsController),
+      setTradeTxId: swapsController.setTradeTxId.bind(swapsController),
+      setSwapsTxGasPrice: swapsController.setSwapsTxGasPrice.bind(
         swapsController,
       ),
-      setSwapsTokens: nodeify(swapsController.setSwapsTokens, swapsController),
-      clearSwapsQuotes: nodeify(
-        swapsController.clearSwapsQuotes,
+      setSwapsTxGasLimit: swapsController.setSwapsTxGasLimit.bind(
         swapsController,
       ),
-      setApproveTxId: nodeify(swapsController.setApproveTxId, swapsController),
-      setTradeTxId: nodeify(swapsController.setTradeTxId, swapsController),
-      setSwapsTxGasPrice: nodeify(
-        swapsController.setSwapsTxGasPrice,
+      setSwapsTxMaxFeePerGas: swapsController.setSwapsTxMaxFeePerGas.bind(
         swapsController,
       ),
-      setSwapsTxGasLimit: nodeify(
-        swapsController.setSwapsTxGasLimit,
+      setSwapsTxMaxFeePriorityPerGas: swapsController.setSwapsTxMaxFeePriorityPerGas.bind(
         swapsController,
       ),
-      setSwapsTxMaxFeePerGas: nodeify(
-        swapsController.setSwapsTxMaxFeePerGas,
+      safeRefetchQuotes: swapsController.safeRefetchQuotes.bind(
         swapsController,
       ),
-      setSwapsTxMaxFeePriorityPerGas: nodeify(
-        swapsController.setSwapsTxMaxFeePriorityPerGas,
+      stopPollingForQuotes: swapsController.stopPollingForQuotes.bind(
         swapsController,
       ),
-      safeRefetchQuotes: nodeify(
-        swapsController.safeRefetchQuotes,
+      setBackgroundSwapRouteState: swapsController.setBackgroundSwapRouteState.bind(
         swapsController,
       ),
-      stopPollingForQuotes: nodeify(
-        swapsController.stopPollingForQuotes,
+      resetPostFetchState: swapsController.resetPostFetchState.bind(
         swapsController,
       ),
-      setBackgroundSwapRouteState: nodeify(
-        swapsController.setBackgroundSwapRouteState,
+      setSwapsErrorKey: swapsController.setSwapsErrorKey.bind(swapsController),
+      setInitialGasEstimate: swapsController.setInitialGasEstimate.bind(
         swapsController,
       ),
-      resetPostFetchState: nodeify(
-        swapsController.resetPostFetchState,
+      setCustomApproveTxData: swapsController.setCustomApproveTxData.bind(
         swapsController,
       ),
-      setSwapsErrorKey: nodeify(
-        swapsController.setSwapsErrorKey,
+      setSwapsLiveness: swapsController.setSwapsLiveness.bind(swapsController),
+      setSwapsUserFeeLevel: swapsController.setSwapsUserFeeLevel.bind(
         swapsController,
       ),
-      setInitialGasEstimate: nodeify(
-        swapsController.setInitialGasEstimate,
-        swapsController,
-      ),
-      setCustomApproveTxData: nodeify(
-        swapsController.setCustomApproveTxData,
-        swapsController,
-      ),
-      setSwapsLiveness: nodeify(
-        swapsController.setSwapsLiveness,
-        swapsController,
-      ),
-      setSwapsUserFeeLevel: nodeify(
-        swapsController.setSwapsUserFeeLevel,
-        swapsController,
-      ),
-      setSwapsQuotesPollingLimitEnabled: nodeify(
-        swapsController.setSwapsQuotesPollingLimitEnabled,
+      setSwapsQuotesPollingLimitEnabled: swapsController.setSwapsQuotesPollingLimitEnabled.bind(
         swapsController,
       ),
 
       // MetaMetrics
-      trackMetaMetricsEvent: nodeify(
-        metaMetricsController.trackEvent,
+      trackMetaMetricsEvent: metaMetricsController.trackEvent.bind(
         metaMetricsController,
       ),
-      trackMetaMetricsPage: nodeify(
-        metaMetricsController.trackPage,
+      trackMetaMetricsPage: metaMetricsController.trackPage.bind(
         metaMetricsController,
       ),
 
       // approval controller
-      resolvePendingApproval: nodeify(
-        approvalController.accept,
+      resolvePendingApproval: approvalController.accept.bind(
         approvalController,
       ),
-      rejectPendingApproval: nodeify(
-        approvalController.reject,
-        approvalController,
-      ),
+      rejectPendingApproval: approvalController.reject.bind(approvalController),
 
       // Notifications
-      updateViewedNotifications: nodeify(
-        this.notificationController.updateViewed,
-        this.notificationController,
+      updateViewedNotifications: notificationController.updateViewed.bind(
+        notificationController,
       ),
 
       // GasFeeController
-      getGasFeeEstimatesAndStartPolling: nodeify(
-        this.gasFeeController.getGasFeeEstimatesAndStartPolling,
-        this.gasFeeController,
+      getGasFeeEstimatesAndStartPolling: gasFeeController.getGasFeeEstimatesAndStartPolling.bind(
+        gasFeeController,
       ),
 
-      disconnectGasFeeEstimatePoller: nodeify(
-        this.gasFeeController.disconnectPoller,
-        this.gasFeeController,
+      disconnectGasFeeEstimatePoller: gasFeeController.disconnectPoller.bind(
+        gasFeeController,
       ),
 
-      getGasFeeTimeEstimate: nodeify(
-        this.gasFeeController.getTimeEstimate,
-        this.gasFeeController,
+      getGasFeeTimeEstimate: gasFeeController.getTimeEstimate.bind(
+        gasFeeController,
       ),
 
-      addPollingTokenToAppState: nodeify(
-        this.appStateController.addPollingToken,
-        this.appStateController,
+      addPollingTokenToAppState: appStateController.addPollingToken.bind(
+        appStateController,
       ),
 
-      removePollingTokenFromAppState: nodeify(
-        this.appStateController.removePollingToken,
-        this.appStateController,
+      removePollingTokenFromAppState: appStateController.removePollingToken.bind(
+        appStateController,
       ),
 
       // DetectTokenController
-      detectNewTokens: nodeify(
-        this.detectTokensController.detectNewTokens,
-        this.detectTokensController,
+      detectNewTokens: detectTokensController.detectNewTokens.bind(
+        detectTokensController,
       ),
 
       // DetectCollectibleController
       detectCollectibles: process.env.COLLECTIBLES_V1
-        ? nodeify(
-            this.collectibleDetectionController.detectCollectibles,
-            this.collectibleDetectionController,
+        ? collectibleDetectionController.detectCollectibles.bind(
+            collectibleDetectionController,
           )
         : null,
     };
@@ -2175,13 +2089,10 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {string} msgId - The id of the message to cancel.
    */
-  cancelMessage(msgId, cb) {
+  cancelMessage(msgId) {
     const { messageManager } = this;
     messageManager.rejectMsg(msgId);
-    if (!cb || typeof cb !== 'function') {
-      return;
-    }
-    cb(null, this.getState());
+    return this.getState();
   }
 
   // personal_sign methods:
@@ -2240,15 +2151,11 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Used to cancel a personal_sign type message.
    * @param {string} msgId - The ID of the message to cancel.
-   * @param {Function} cb - The callback function called with a full state update.
    */
-  cancelPersonalMessage(msgId, cb) {
+  cancelPersonalMessage(msgId) {
     const messageManager = this.personalMessageManager;
     messageManager.rejectMsg(msgId);
-    if (!cb || typeof cb !== 'function') {
-      return;
-    }
-    cb(null, this.getState());
+    return this.getState();
   }
 
   // eth_decrypt methods
@@ -2332,15 +2239,11 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Used to cancel a eth_decrypt type message.
    * @param {string} msgId - The ID of the message to cancel.
-   * @param {Function} cb - The callback function called with a full state update.
    */
-  cancelDecryptMessage(msgId, cb) {
+  cancelDecryptMessage(msgId) {
     const messageManager = this.decryptMessageManager;
     messageManager.rejectMsg(msgId);
-    if (!cb || typeof cb !== 'function') {
-      return;
-    }
-    cb(null, this.getState());
+    return this.getState();
   }
 
   // eth_getEncryptionPublicKey methods
@@ -2437,15 +2340,11 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Used to cancel a eth_getEncryptionPublicKey type message.
    * @param {string} msgId - The ID of the message to cancel.
-   * @param {Function} cb - The callback function called with a full state update.
    */
-  cancelEncryptionPublicKey(msgId, cb) {
+  cancelEncryptionPublicKey(msgId) {
     const messageManager = this.encryptionPublicKeyManager;
     messageManager.rejectMsg(msgId);
-    if (!cb || typeof cb !== 'function') {
-      return;
-    }
-    cb(null, this.getState());
+    return this.getState();
   }
 
   // eth_signTypedData methods
@@ -2507,15 +2406,11 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Used to cancel a eth_signTypedData type message.
    * @param {string} msgId - The ID of the message to cancel.
-   * @param {Function} cb - The callback function called with a full state update.
    */
-  cancelTypedMessage(msgId, cb) {
+  cancelTypedMessage(msgId) {
     const messageManager = this.typedMessageManager;
     messageManager.rejectMsg(msgId);
-    if (!cb || typeof cb !== 'function') {
-      return;
-    }
-    cb(null, this.getState());
+    return this.getState();
   }
 
   /**
@@ -2613,20 +2508,18 @@ export default class MetamaskController extends EventEmitter {
    * Allows a user to begin the seed phrase recovery process.
    * @param {Function} cb - A callback function called when complete.
    */
-  markPasswordForgotten(cb) {
+  markPasswordForgotten() {
     this.preferencesController.setPasswordForgotten(true);
     this.sendUpdate();
-    cb();
   }
 
   /**
    * Allows a user to end the seed phrase recovery process.
    * @param {Function} cb - A callback function called when complete.
    */
-  unMarkPasswordForgotten(cb) {
+  unMarkPasswordForgotten() {
     this.preferencesController.setPasswordForgotten(false);
     this.sendUpdate();
-    cb();
   }
 
   //=============================================================================
@@ -3321,74 +3214,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Sets whether or not to use the blockie identicon format.
-   * @param {boolean} val - True for bockie, false for jazzicon.
-   * @param {Function} cb - A callback function called when complete.
-   */
-  setUseBlockie(val, cb) {
-    try {
-      this.preferencesController.setUseBlockie(val);
-      cb(null);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  /**
-   * Sets whether or not to use the nonce field.
-   * @param {boolean} val - True for nonce field, false for not nonce field.
-   * @param {Function} cb - A callback function called when complete.
-   */
-  setUseNonceField(val, cb) {
-    try {
-      this.preferencesController.setUseNonceField(val);
-      cb(null);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  /**
-   * Sets whether or not to use phishing detection.
-   * @param {boolean} val
-   * @param {Function} cb
-   */
-  setUsePhishDetect(val, cb) {
-    try {
-      this.preferencesController.setUsePhishDetect(val);
-      cb(null);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  /**
-   * Sets the IPFS gateway to use for ENS content resolution.
-   * @param {string} val - the host of the gateway to set
-   * @param {Function} cb - A callback function called when complete.
-   */
-  setIpfsGateway(val, cb) {
-    try {
-      this.preferencesController.setIpfsGateway(val);
-      cb(null);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  /**
    * Sets the Ledger Live preference to use for Ledger hardware wallet support
    * @param {bool} bool - the value representing if the users wants to use Ledger Live
    */
@@ -3409,42 +3234,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return undefined;
-  }
-
-  /**
-   * Sets whether or not the user will have usage data tracked with MetaMetrics
-   * @param {boolean} bool - True for users that wish to opt-in, false for users that wish to remain out.
-   * @param {Function} cb - A callback function called when complete.
-   */
-  setParticipateInMetaMetrics(bool, cb) {
-    try {
-      const metaMetricsId = this.metaMetricsController.setParticipateInMetaMetrics(
-        bool,
-      );
-      cb(null, metaMetricsId);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
-  }
-
-  /**
-   * A method for setting a user's current locale, affecting the language rendered.
-   * @param {string} key - Locale identifier.
-   * @param {Function} cb - A callback function called when complete.
-   */
-  setCurrentLocale(key, cb) {
-    try {
-      const direction = this.preferencesController.setCurrentLocale(key);
-      cb(null, direction);
-      return;
-    } catch (err) {
-      cb(err);
-      // eslint-disable-next-line no-useless-return
-      return;
-    }
   }
 
   /**
