@@ -37,11 +37,13 @@ const AdvancedGasFeeDefaults = () => {
       dispatch(setAdvancedGasFee(null));
     }
   };
-  const handleUpdateDefaultSettings = () => updateDefaultSettings(!defaultPreference);
   const defaultPreference =
     Boolean(advancedGasFeeValues) &&
     advancedGasFeeValues.maxBaseFee === baseFeeMultiplier &&
     advancedGasFeeValues.priorityFee === maxPriorityFeePerGas;
+
+  const handleUpdateDefaultSettings = () =>
+    updateDefaultSettings(!defaultPreference);
 
   return (
     <Box
