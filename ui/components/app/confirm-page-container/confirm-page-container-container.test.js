@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { mountWithRouter } from '../../../../test/lib/render-helpers';
 import Dialog from '../../ui/dialog';
+import NicknamePopovers from '../modals/nickname-popovers';
 import ConfirmPageContainer, {
   ConfirmPageContainerHeader,
   ConfirmPageContainerNavigation,
@@ -35,6 +36,10 @@ describe('Confirm Page Container Container Test', () => {
           balance: '0x03',
         },
       },
+      frequentRpcListDetail: [
+        { chainId: '0x1a', rpcUrl: 'http://localhost:7545' },
+        { rpcUrl: 'http://localhost:7546' },
+      ],
       cachedBalances: {},
       selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
       addressBook: [],
@@ -115,6 +120,15 @@ describe('Confirm Page Container Container Test', () => {
     expect(wrapper.find(Dialog).getElements()[0].props.children).toStrictEqual(
       'newAccountDetectedDialogMessage',
     );
+  });
+
+  it('should simulate click on Dialog', () => {
+    expect(wrapper.find(NicknamePopovers)).toHaveLength(0);
+
+    const DialogWrapper = wrapper.find(Dialog);
+    DialogWrapper.first().simulate('click');
+
+    expect(wrapper.find(NicknamePopovers)).toHaveLength(1);
   });
 
   it('should not show add to address dialog if contact is not undefined', () => {
