@@ -540,7 +540,7 @@ export const sanitizeMessage = (msg, baseType, types) => {
     } else {
       // check if it's a valid solidity type
       const isSolidityType = solidityTypes().includes(
-        definedType.type.replace('[]', ''),
+        definedType.type.replace(/\[\]$/u, ''),
       );
       if (isSolidityType) {
         sanitizedMessage[msgKey] = msg[msgKey];
