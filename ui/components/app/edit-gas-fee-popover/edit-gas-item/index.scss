@@ -27,6 +27,11 @@
     font-weight: bold;
     white-space: nowrap;
     width: 36%;
+
+    &__sufix {
+      font-weight: 400;
+      margin-left: 4px;
+    }
   }
 
   &__icon {

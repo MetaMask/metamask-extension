@@ -780,6 +780,9 @@
   "editAddressNickname": {
     "message": "Edit address nickname"
   },
+  "editCancellationGasFeeModalTitle": {
+    "message": "Edit cancellation gas fee"
+  },
   "editContact": {
     "message": "Edit Contact"
   },
@@ -904,6 +907,9 @@
   },
   "editPermission": {
     "message": "Edit Permission"
+  },
+  "editSpeedUpEditGasFeeModalTitle": {
+    "message": "Edit speed up gas fee"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -1677,6 +1683,12 @@
   },
   "metametricsTitle": {
     "message": "Join 6M+ users to improve MetaMask"
+  },
+  "minimum": {
+    "message": "minimum"
+  },
+  "minimumCancelSpeedupGasFee": {
+    "message": "+10%"
   },
   "mismatchedChain": {
     "message": "The network details for this chain ID do not match our records. We recommend that you $1 before proceeding.",

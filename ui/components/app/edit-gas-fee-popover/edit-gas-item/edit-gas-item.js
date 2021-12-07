@@ -8,6 +8,10 @@ import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
 } from '../../../../../shared/constants/gas';
+import {
+  ALIGN_ITEMS,
+  DISPLAY,
+} from '../../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import {
@@ -20,11 +24,11 @@ import { toHumanReadableTime } from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
-import I18nValue from '../../../ui/i18n-value';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 
-import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
+import Box from '../../../ui/box';
 import InfoTooltip from '../../../ui/info-tooltip';
+import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
 const EditGasItem = ({ priorityLevel }) => {
@@ -109,15 +113,27 @@ const EditGasItem = ({ priorityLevel }) => {
   }
 
   let icon = priorityLevel;
-  let title = priorityLevel;
+  let title = t(priorityLevel);
   if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
-    title = 'dappSuggestedShortLabel';
+    title = t('dappSuggestedShortLabel');
+  } else if (
+    priorityLevel === PRIORITY_LEVELS.LOW &&
+    (editGasMode === EDIT_GAS_MODES.CANCEL ||
+      editGasMode === EDIT_GAS_MODES.SPEED_UP)
+  ) {
+    icon = null;
+    title = (
+      <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+        {t('minimumCancelSpeedupGasFee')}
+        <span className="edit-gas-item__name__sufix">({t('minimum')})</span>
+      </Box>
+    );
   } else if (
     priorityLevel === PRIORITY_LEVELS.HIGH &&
     editGasMode === EDIT_GAS_MODES.SWAPS
   ) {
     icon = 'swapSuggested';
-    title = 'swapSuggested';
+    title = t('swapSuggested');
   }
 
   return (
@@ -130,12 +146,14 @@ const EditGasItem = ({ priorityLevel }) => {
       autoFocus={priorityLevel === estimateUsed}
     >
       <span className="edit-gas-item__name">
-        <span
-          className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
-        >
-          {PRIORITY_LEVEL_ICON_MAP[icon]}
-        </span>
-        <I18nValue messageKey={title} />
+        {icon && (
+          <span
+            className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
+          >
+            {PRIORITY_LEVEL_ICON_MAP[icon]}
+          </span>
+        )}
+        {title}
       </span>
       <span
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
