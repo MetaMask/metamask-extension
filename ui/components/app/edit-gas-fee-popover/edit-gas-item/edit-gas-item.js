@@ -36,11 +36,12 @@ const EditGasItem = ({ priorityLevel }) => {
     maxFeePerGas: maxFeePerGasValue,
     maxPriorityFeePerGas: maxPriorityFeePerGasValue,
     updateTransactionUsingGasFeeEstimates,
-    transaction: { dappSuggestedGasFees },
+    transaction,
   } = useGasFeeContext();
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const { closeModal, openModal } = useTransactionModalContext();
+  const { dappSuggestedGasFees } = transaction;
 
   let maxFeePerGas;
   let maxPriorityFeePerGas;
@@ -164,8 +165,13 @@ const EditGasItem = ({ priorityLevel }) => {
             <EditGasToolTip
               t={t}
               priorityLevel={priorityLevel}
-              maxFeePerGas={maxFeePerGas}
-              maxPriorityFeePerGas={maxPriorityFeePerGas}
+              maxFeePerGas={maxFeePerGas || maxFeePerGasValue}
+              maxPriorityFeePerGas={
+                maxPriorityFeePerGas || maxPriorityFeePerGasValue
+              }
+              editGasMode={editGasMode}
+              gasLimit={gasLimit}
+              transaction={transaction}
             />
           }
           position="top"
