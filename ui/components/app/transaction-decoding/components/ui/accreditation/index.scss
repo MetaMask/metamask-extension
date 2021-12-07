@@ -1,11 +1,10 @@
 .accreditation {
   display: flex;
-  font-size: 0.75rem;
-  display: flex;
-  margin-top: 10px;
+  align-items: center;
+  margin-top: 8px;
 
-  &__tooltip {
-    padding-right: 5px;
+  &__icon {
+    margin-right: 8px;
   }
 
   &__info {
@@ -14,14 +13,10 @@
     flex-wrap: wrap;
   }
 
-  &__content {
+  &__link.btn-link {
+    @include H7;
     padding: 0 4px;
-    text-transform: capitalize;
-
-    &--link.btn-link {
-      @include H7;
-
-      padding: 0;
-    }
+    width: auto;
   }
 }
+
