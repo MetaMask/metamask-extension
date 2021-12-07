@@ -1,10 +1,6 @@
 import React from 'react';
-import { store } from '../../../../.storybook/preview';
 import README from './README.mdx';
 import AccountListItem from './account-list-item';
-
-const { metamask } = store.getState();
-const { addresses } = metamask;
 
 export default {
   title: 'Components/App/AccountListItem',
@@ -21,9 +17,14 @@ export default {
     },
     className: { control: 'text' },
     displayAddress: { control: 'boolean' },
-    handleClick: { action: 'clicked' },
-    icon: { control: 'object' },
+    handleClick: { action: 'handleClick' },
   },
+};
+
+const account = {
+  name: 'Account 2',
+  address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+  balance: '0x2d3142f5000',
 };
 
 export const DefaultStory = (args) => {
@@ -32,7 +33,7 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
-  account: Object.values(addresses)[0],
+  account,
   displayAddress: false,
 };
 
