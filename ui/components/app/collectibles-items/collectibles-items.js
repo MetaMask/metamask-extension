@@ -59,6 +59,7 @@ export default function CollectiblesItems({
             const isExpanded = dropdownState[key];
             return (
               <div
+                className="collectibles-items__item"
                 key={`collection-${index}`}
                 onClick={() => {
                   setDropdownState((_dropdownState) => ({
@@ -78,10 +79,13 @@ export default function CollectiblesItems({
                     {collectionImage ? (
                       <img
                         style={{ width: '1.5rem', borderRadius: '50%' }}
-                        src={collectionImage}
+                        src="images/icon-48.png"
+                        className="collectibles-items__item__collection-image"
                       />
                     ) : (
-                      <div className="collection-icon">{collectionName[0]}</div>
+                      <div className="collectibles-items__item__collection-image-alt">
+                        {collectionName[0]}
+                      </div>
                     )}
                     <Typography
                       color={COLORS.BLACK}
@@ -111,7 +115,6 @@ export default function CollectiblesItems({
                         <Box width={width} margin={1} key={`collectible-${i}`}>
                           <Box
                             borderRadius={SIZES.MD}
-                            backgroundColor={collectible.backgroundColor}
                             display={DISPLAY.FLEX}
                             justifyContent={JUSTIFY_CONTENT.CENTER}
                             padding={2}
@@ -151,27 +154,20 @@ export default function CollectiblesItems({
               alignItems={ALIGN_ITEMS.CENTER}
               justifyContent={JUSTIFY_CONTENT.CENTER}
             >
-              {useCollectibleDetection ? (
-                <Box justifyContent={JUSTIFY_CONTENT.FLEX_END}>
-                  <Button
-                    type="link"
-                    onClick={onRefreshList}
-                    style={{ padding: '4px', fontSize: '16px' }}
-                  >
+              <Box
+                className="collectibles-items__link"
+                justifyContent={JUSTIFY_CONTENT.FLEX_END}
+              >
+                {useCollectibleDetection ? (
+                  <Button type="link" onClick={onRefreshList}>
                     {t('refreshList')}
                   </Button>
-                </Box>
-              ) : (
-                <Box justifyContent={JUSTIFY_CONTENT.FLEX_END}>
-                  <Button
-                    type="link"
-                    onClick={onEnableAutoDetect}
-                    style={{ padding: '4px', fontSize: '16px' }}
-                  >
+                ) : (
+                  <Button type="link" onClick={onEnableAutoDetect}>
                     {t('enableAutoDetect')}
                   </Button>
-                </Box>
-              )}
+                )}
+              </Box>
               <Typography
                 color={COLORS.UI3}
                 variant={TYPOGRAPHY.H4}
@@ -179,7 +175,10 @@ export default function CollectiblesItems({
               >
                 {t('or')}
               </Typography>
-              <Box justifyContent={JUSTIFY_CONTENT.FLEX_START}>
+              <Box
+                justifyContent={JUSTIFY_CONTENT.FLEX_START}
+                className="collectibles-items__link"
+              >
                 <Button
                   type="link"
                   onClick={onAddNFT}

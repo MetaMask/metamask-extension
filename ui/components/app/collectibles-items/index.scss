@@ -4,15 +4,29 @@
     width: 100%;
     height: 100%;
   }
-}
 
-.collection-icon {
-  border-radius: 50%;
-  width: 2rem;
-  height: 2rem;
-  padding: 0.5rem;
-  background: $ui-4;
-  color: $ui-white;
-  text-align: center;
-  line-height: 1;
+  &__link {
+    a {
+      padding: 4px;
+      font-size: 16px;
+    }
+  }
+
+  &__item {
+    &__collection-image {
+      width: 1.5rem;
+      border-radius: 50%;
+    }
+
+    &__collection-image-alt {
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      padding: 0.5rem;
+      background: $ui-4;
+      color: $ui-white;
+      text-align: center;
+      line-height: 1;
+    }
+  }
 }
