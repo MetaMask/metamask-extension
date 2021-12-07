@@ -91,8 +91,8 @@ export function addressSummary(
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
-        checked.length - lastSegLength,
-      )}`
+      checked.length - lastSegLength,
+    )}`
     : '...';
 }
 
@@ -515,34 +515,37 @@ export const sanitizeMessage = (msg, baseType, types) => {
       (baseTypeDefinition) => baseTypeDefinition.name === msgKey,
     );
 
-    if (definedType) {
-      // key has a type. check if the definedType is also a type
-      const nestedTypeDefinition = types[definedType.type.replace('[]', '')];
-      if (nestedTypeDefinition) {
-        if (definedType.type.indexOf('[]') > 0) {
-          // nested array
-          const definedArrayType = definedType.type.replace('[]', '');
-          sanitizedMessage[msgKey] = msg[msgKey].map((value) =>
-            sanitizeMessage(value, definedArrayType, types),
-          );
-        } else {
-          // nested object
-          sanitizedMessage[msgKey] = sanitizeMessage(
-            msg[msgKey],
-            definedType.type,
-            types,
-          );
-        }
-      } else {
-        // check if it's a valid solidity type
-        const isSolidityType = solidityTypes().includes(
-          definedType.type.replace('[]', ''),
+    if (!definedType) {
+      return sanitizedMessage;
+    }
+
+    // key has a type. check if the definedType is also a type
+    const nestedTypeDefinition = types[definedType.type.replace('[]', '')];
+
+    if (nestedTypeDefinition) {
+      if (definedType.type.indexOf('[]') > 0) {
+        // nested array
+        const definedArrayType = definedType.type.replace('[]', '');
+        sanitizedMessage[msgKey] = msg[msgKey].map((value) =>
+          sanitizeMessage(value, definedArrayType, types),
         );
-        if (isSolidityType) {
-          sanitizedMessage[msgKey] = msg[msgKey];
-        }
-      } // endif (nestedType)
-    } // endif (definedType)
+      } else {
+        // nested object
+        sanitizedMessage[msgKey] = sanitizeMessage(
+          msg[msgKey],
+          definedType.type,
+          types,
+        );
+      }
+    } else {
+      // check if it's a valid solidity type
+      const isSolidityType = solidityTypes().includes(
+        definedType.type.replace('[]', ''),
+      );
+      if (isSolidityType) {
+        sanitizedMessage[msgKey] = msg[msgKey];
+      }
+    }
   });
   return sanitizedMessage;
 };
