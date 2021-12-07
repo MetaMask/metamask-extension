@@ -54,7 +54,7 @@ const AdvancedGasFeeDefaults = () => {
         className="advanced-gas-fee-defaults__checkbox"
         onClick={() => updateDefaultSettings(!defaultPreference)}
       />
-      <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4}>
+      <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
         <I18nValue
           messageKey={
             defaultPreference
