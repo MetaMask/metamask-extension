@@ -46,7 +46,6 @@ export default class TransactionListItemDetails extends PureComponent {
     senderNickname: PropTypes.string.isRequired,
     recipientNickname: PropTypes.string,
     transactionStatus: PropTypes.func,
-    activities: PropTypes.array,
   };
 
   state = {
@@ -135,7 +134,6 @@ export default class TransactionListItemDetails extends PureComponent {
       recipientNickname,
       showCancel,
       transactionStatus: TransactionStatus,
-      activities,
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -257,7 +255,8 @@ export default class TransactionListItemDetails extends PureComponent {
                 className="transaction-list-item-details__transaction-breakdown"
               />
 
-              {activities.length > 0 ? (
+              {transactionGroup.initialTransaction.type !==
+                TRANSACTION_TYPES.INCOMING && (
                 <Disclosure title="Activity log" size="small">
                   <TransactionActivityLog
                     transactionGroup={transactionGroup}
@@ -267,7 +266,7 @@ export default class TransactionListItemDetails extends PureComponent {
                     isEarliestNonce={isEarliestNonce}
                   />
                 </Disclosure>
-              ) : null}
+              )}
 
               {transactionGroup.initialTransaction?.txParams?.data ? (
                 <Disclosure title="Transaction data" size="small">

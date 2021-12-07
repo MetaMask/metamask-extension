@@ -5,17 +5,12 @@ import {
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { combineTransactionHistories } from '../transaction-activity-log/transaction-activity-log.util';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
 const mapStateToProps = (state, ownProps) => {
   const { metamask } = state;
   const { ensResolutionsByAddress } = metamask;
-  const {
-    recipientAddress,
-    senderAddress,
-    transactionGroup: { transactions = [] },
-  } = ownProps;
+  const { recipientAddress, senderAddress } = ownProps;
   let recipientEns;
   if (recipientAddress) {
     const address = toChecksumHexAddress(recipientAddress);
@@ -36,7 +31,6 @@ const mapStateToProps = (state, ownProps) => {
     recipientEns,
     senderNickname: getNickName(senderAddress),
     recipientNickname: recipientAddress ? getNickName(recipientAddress) : null,
-    activities: combineTransactionHistories(transactions),
   };
 };
 
