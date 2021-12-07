@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
+import Button from '../button';
+import Box from '../box';
 import README from './README.mdx';
 import Popover from './popover.component';
-
-const containerStyle = {
-  width: 800,
-  height: 600,
-  background: 'pink',
-  position: 'relative',
-};
-
-const mainWrapperStyle = {
-  padding: '0 24px 24px',
-};
 
 export default {
   title: 'Components/UI/Popover',
@@ -39,9 +30,12 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  const [isShowPopover, setIsShowPopover] = useState(true);
+  const [isShowPopover, setIsShowPopover] = useState(false);
   return (
-    <div style={containerStyle}>
+    <div>
+      <Button style={{ width: 'auto' }} onClick={() => setIsShowPopover(true)}>
+        Show Popover
+      </Button>
       {isShowPopover && (
         <Popover
           {...args}
@@ -64,7 +58,7 @@ DefaultStory.args = {
   footer: <button>Example Footer</button>,
   showArrow: false,
   children: (
-    <main style={mainWrapperStyle}>
+    <Box padding={4}>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Semper eget duis at
@@ -81,20 +75,6 @@ DefaultStory.args = {
         vulputate. Ornare arcu odio ut sem nulla pharetra. Eget nullam non nisi
         est sit. Leo vel fringilla est ullamcorper eget nulla.
       </p>
-      <p>
-        Mattis pellentesque id nibh tortor id. Commodo sed egestas egestas
-        fringilla phasellus. Semper eget duis at tellus at urna. Tristique nulla
-        aliquet enim tortor at auctor urna nunc. Pellentesque habitant morbi
-        tristique senectus et netus et. Turpis egestas sed tempus urna et
-        pharetra pharetra massa massa. Mi eget mauris pharetra et ultrices neque
-        ornare aenean. Facilisis volutpat est velit egestas dui id ornare arcu
-        odio. Lacus sed turpis tincidunt id aliquet risus feugiat in. Cras
-        tincidunt lobortis feugiat vivamus. Blandit libero volutpat sed cras
-        ornare arcu. Facilisi morbi tempus iaculis urna id volutpat. Risus
-        viverra adipiscing at in tellus. Leo vel orci porta non pulvinar neque.
-        Malesuada fames ac turpis egestas integer. Euismod nisi porta lorem
-        mollis aliquam.
-      </p>
-    </main>
+    </Box>
   ),
 };

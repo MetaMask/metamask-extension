@@ -122,6 +122,9 @@ Popover.propTypes = {
    * Check if component would show arror
    */
   showArrow: PropTypes.bool,
+  /**
+   * The ref of the popover-wrap element
+   */
   popoverRef: PropTypes.shape({
     current: PropTypes.instanceOf(window.Element),
   }),
