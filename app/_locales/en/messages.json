@@ -881,6 +881,10 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
+  "enableToken": {
+    "message": "enable $1",
+    "description": "$1 is a token symbol, e.g. ETH"
+  },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is the web3 site name"
@@ -2605,8 +2609,9 @@
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "A better quote is available"
+  "swapBestOfNQuotes": {
+    "message": "Best of $1 quotes.",
+    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
@@ -2637,12 +2642,9 @@
     "message": "This is required and gives MetaMask permission to swap your $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
-  "swapEstimatedNetworkFee": {
-    "message": "Estimated network fee"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "The “$1” is what we expect the actual fee to be. The exact amount depends on network conditions.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
+  "swapEnableTokenForSwapping": {
+    "message": "This will $1 for swapping",
+    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
   "swapEstimatedNetworkFees": {
     "message": "Estimated network fees"
@@ -2689,15 +2691,12 @@
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high."
   },
+  "swapIncludesMMFee": {
+    "message": "Includes a $1% MetaMask fee.",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
-  },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1” is the most you’ll spend. When the network is volatile this can be a large amount.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "Max network fee"
   },
   "swapMaxSlippage": {
     "message": "Max slippage"
@@ -2709,12 +2708,9 @@
     "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into this quote.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotes": {
-    "message": "$1 quotes",
+  "swapNQuotesWithDot": {
+    "message": "$1 quotes.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "The network fee covers the cost of processing your swap and storing it on the $1 network. MetaMask does not profit from this fee."
   },
   "swapNewQuoteIn": {
     "message": "New quotes in $1",
@@ -2750,19 +2746,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"slippage tolerance\" setting."
   },
-  "swapQuoteIncludesRate": {
-    "message": "Quote includes a $1% MetaMask fee",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "Quote $1 of $2",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Quote source"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "Quotes are refreshed often to reflect current market conditions."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Please request new quotes to get the latest rates."
@@ -2824,9 +2813,6 @@
   "swapSwapTo": {
     "message": "Swap to"
   },
-  "swapThisWillAllowApprove": {
-    "message": "This will allow $1 to be swapped."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "to confirm with your hardware wallet"
   },
@@ -2868,9 +2854,6 @@
   },
   "swapUnknown": {
     "message": "Unknown"
-  },
-  "swapUsingBestQuote": {
-    "message": "Using the best quote"
   },
   "swapVerifyTokenExplanation": {
     "message": "Multiple tokens can use the same name and symbol. Check $1 to verify this is the token you're looking for.",

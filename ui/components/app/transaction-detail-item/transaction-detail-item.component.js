@@ -7,6 +7,9 @@ import {
   COLORS,
   FONT_WEIGHT,
   TYPOGRAPHY,
+  DISPLAY,
+  FLEX_WRAP,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 
 export default function TransactionDetailItem({
@@ -26,6 +29,11 @@ export default function TransactionDetailItem({
           color={detailTitleColor}
           fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
           variant={TYPOGRAPHY.H6}
+          boxProps={{
+            display: DISPLAY.FLEX,
+            flexWrap: FLEX_WRAP.NO_WRAP,
+            alignItems: ALIGN_ITEMS.CENTER,
+          }}
         >
           {detailTitle}
         </Typography>

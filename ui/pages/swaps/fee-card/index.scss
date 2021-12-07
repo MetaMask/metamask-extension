@@ -3,26 +3,20 @@
 
   @include H7;
 
+  .transaction-detail-rows {
+    margin-top: 8px;
+
+    .transaction-detail-item {
+      &:last-of-type {
+        margin-bottom: 8px;
+      }
+    }
+  }
+
   &__savings-and-quotes-header {
     display: flex;
     position: relative;
     align-items: center;
-  }
-
-  &__savings-and-quotes-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    left: 58px;
-    height: 39px;
-    background: $Blue-000;
-    border: 1px solid $Blue-500;
-    border-top-right-radius: 8px;
-    border-top-left-radius: 8px;
-    border-bottom: 0;
-    padding-left: 16px;
-    padding-right: 16px;
   }
 
   &__savings-text {
@@ -42,6 +36,8 @@
     @include H7;
 
     color: $Blue-500;
+    cursor: pointer;
+    padding-right: 4px;
   }
 
   &__caret-right {
@@ -59,12 +55,11 @@
   }
 
   &__main {
-    border: 1px solid $Blue-500;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    width: 100%;
-    max-width: 311px;
-    padding: 16px 16px 12px 16px;
+    .transaction-detail {
+      border-top: 1px solid #bbc0c5;
+      border-bottom: 1px solid #bbc0c5;
+      margin-bottom: 12px;
+    }
   }
 
   &__row-header {
@@ -86,11 +81,20 @@
   &__row-header-text,
   &__row-header-text--bold {
     margin-right: 4px;
-    cursor: pointer;
   }
 
   &__row-header-text--bold {
     color: $Black-100;
+  }
+
+  &__row-header-text {
+    display: block;
+    white-space: nowrap;
+
+    .info-tooltip {
+      padding-left: 4px;
+      padding-bottom: 2px;
+    }
   }
 
   &__row,
@@ -103,12 +107,12 @@
 
   &__top-bordered-row {
     border-top: 1px solid #bbc0c5;
-    padding-top: 10px;
+    padding-top: 12px;
   }
 
   &__row-label {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 
     img {
       height: 10px;
