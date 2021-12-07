@@ -4,10 +4,10 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  max-height: 196px;
-  min-height: 196px;
   width: 100%;
   color: $Black-100;
+  margin-top: 28px;
+  margin-bottom: 56px;
 
   &__source-row,
   &__destination-row {
@@ -96,7 +96,7 @@
   }
 
   &__quote-large-number {
-    font-size: 60px;
+    font-size: 50px;
     line-height: 48px;
   }
 

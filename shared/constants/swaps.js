@@ -84,12 +84,7 @@ export const WBNB_CONTRACT_ADDRESS =
 export const WMATIC_CONTRACT_ADDRESS =
   '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270';
 
-const METASWAP_ETH_API_HOST = 'https://api.metaswap.codefi.network';
-
-const METASWAP_BSC_API_HOST = 'https://bsc-api.metaswap.codefi.network';
-
 const SWAPS_TESTNET_CHAIN_ID = '0x539';
-const SWAPS_TESTNET_HOST = 'https://metaswap-api.airswap-dev.codefi.network';
 
 export const SWAPS_API_V2_BASE_URL = 'https://api2.metaswap.codefi.network';
 export const SWAPS_DEV_API_V2_BASE_URL =
@@ -109,14 +104,6 @@ export const ALLOWED_SWAPS_CHAIN_IDS = {
   [BSC_CHAIN_ID]: true,
   [POLYGON_CHAIN_ID]: true,
   [RINKEBY_CHAIN_ID]: true,
-};
-
-// This is mapping for v1 URLs and will be removed once we migrate to v2.
-export const METASWAP_CHAINID_API_HOST_MAP = {
-  [MAINNET_CHAIN_ID]: METASWAP_ETH_API_HOST,
-  [SWAPS_TESTNET_CHAIN_ID]: `${SWAPS_API_V2_BASE_URL}/networks/1`,
-  [BSC_CHAIN_ID]: METASWAP_BSC_API_HOST,
-  [RINKEBY_CHAIN_ID]: SWAPS_TESTNET_HOST,
 };
 
 export const SWAPS_CHAINID_CONTRACT_ADDRESS_MAP = {

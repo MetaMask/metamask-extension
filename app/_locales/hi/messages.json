@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "कॉपी किया गया!"
   },
-  "copiedTransactionId": {
-    "message": "कॉपी की गई लेनदेन ID"
-  },
   "copyAddress": {
     "message": "क्लिपबोर्ड पर पता कॉपी करें"
   },
@@ -1346,12 +1343,6 @@
   "pending": {
     "message": "लंबित"
   },
-  "permissionCheckedIconDescription": {
-    "message": "आपने इस अनुमति को अनुमोदित कर दिया है"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "आपने इस अनुमति को अनुमोदित नहीं किया है"
-  },
   "permissions": {
     "message": "अनुमतियाँ"
   },
@@ -1816,9 +1807,6 @@
     "message": "इस स्वैप को पूरा करने के लिए आपको $1 और $2 की आवश्यकता होगी",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "एक बेहतर उद्धरण उपलब्ध है"
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "$1 के मिलान वाले कोई भी टोकन उपलब्ध नहीं हैं",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1844,13 +1832,6 @@
   "swapEnableDescription": {
     "message": "यह आवश्यक है और MetaMask को आपके $1 को स्वैप करने की अनुमति देता है।",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFee": {
-    "message": "अनुमानित नेटवर्क शुल्क"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "“$1” वह शुल्क है, जिसकी हम वास्तविक रूप से उम्मीद करते हैं। सटीक राशि नेटवर्क की स्थितियों पर निर्भर करती है।",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "अनुमानित नेटवर्क शुल्क"
@@ -1887,13 +1868,6 @@
   "swapLowSlippageError": {
     "message": "लेनदेन विफल हो सकता है, अधिकतम स्लिपेज बहुत कम हो सकता है।"
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "आप सबसे अधिक “$1” खर्च करते हैं। जब नेटवर्क अस्थिर होता है, तो यह एक बड़ी राशि हो सकती है।",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "अधिकतम नेटवर्क शुल्क"
-  },
   "swapMaxSlippage": {
     "message": "अधिकतम स्लिपेज"
   },
@@ -1903,13 +1877,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "हम हर बार शीर्ष चलनिधि स्रोतों से सबसे अच्छे मूल्य पाते हैं। इस उद्धरण में $1% का शुल्क स्वतः ही शामिल हो जाता है।",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 उद्धरण",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "नेटवर्क शुल्क आपके स्वैप को संसाधित करने के शुल्क और उसे $1 नेटवर्क पर संग्रह करने को कवर करता है। MetaMask इस शुल्क से लाभ नहीं कमाता है।"
   },
   "swapNewQuoteIn": {
     "message": "$1 में नए उद्धरण",
@@ -1945,19 +1912,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे \"स्लिपेज\" कहा जाता है। यदि स्लिपेज आपकी \"स्लिपेज टॉलरेंस\" सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः रद्द हो जाएगा।"
   },
-  "swapQuoteIncludesRate": {
-    "message": "उद्धरण में $1% का MetaMask शुल्क शामिल है",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "$2 में से $1 उद्धरण",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "उद्धरण का स्रोत"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "वर्तमान बाजार की स्थितियों को प्रतिबिंबित करने के लिए उद्धरण अक्सर ताज़ा होते रहते हैं।"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "कृपया नवीनतम दरों को प्राप्त करने के लिए नए उद्धरणों का अनुरोध करें।"
@@ -2019,9 +1979,6 @@
   "swapSwapTo": {
     "message": "इसमें स्वैप करें"
   },
-  "swapThisWillAllowApprove": {
-    "message": "यह $1 को स्वैप करने की अनुमति देगा।"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "अपने हार्डवेयर वॉलेट से पुष्टि करने के लिए"
   },
@@ -2059,9 +2016,6 @@
   },
   "swapUnknown": {
     "message": "अज्ञात"
-  },
-  "swapUsingBestQuote": {
-    "message": "सर्वोत्तम उद्धरण का उपयोग करना"
   },
   "swapVerifyTokenExplanation": {
     "message": "एकाधिक टोकन एक ही नाम और प्रतीक का उपयोग कर सकते हैं। यह सत्यापित करने के लिए $1 की जाँच करें कि यह वही टोकन है, जिसकी आप तलाश कर रहे हैं।",

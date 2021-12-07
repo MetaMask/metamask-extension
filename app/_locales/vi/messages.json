@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "Đã sao chép!"
   },
-  "copiedTransactionId": {
-    "message": "Đã sao chép mã giao dịch"
-  },
   "copyAddress": {
     "message": "Sao chép địa chỉ vào khay nhớ tạm"
   },
@@ -1346,12 +1343,6 @@
   "pending": {
     "message": "Đang chờ xử lý"
   },
-  "permissionCheckedIconDescription": {
-    "message": "Bạn đã phê duyệt quyền này"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Bạn chưa phê duyệt quyền này"
-  },
   "permissions": {
     "message": "Quyền"
   },
@@ -1816,9 +1807,6 @@
     "message": "Bạn cần $1 $2 nữa để hoàn tất giao dịch hoán đổi này",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "Có một báo giá tốt hơn"
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "Không có token nào khớp với $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1844,13 +1832,6 @@
   "swapEnableDescription": {
     "message": "Thao tác này là bắt buộc và cấp cho MetaMask quyền hoán đổi $1 của bạn.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFee": {
-    "message": "Phí mạng ước tính"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "“$1” là giá trị mà chúng tôi dự kiến sẽ là khoản phí thực sự. Số tiền chính xác phụ thuộc vào tình trạng mạng.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "Phí mạng ước tính"
@@ -1887,13 +1868,6 @@
   "swapLowSlippageError": {
     "message": "Giao dịch có thể không thành công, mức trượt giá tối đa quá thấp."
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1” là mức chi tiêu cao nhất của bạn. Khi mạng không ổn định, đây có thể là số tiền lớn.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "Phí mạng tối đa"
-  },
   "swapMaxSlippage": {
     "message": "Mức trượt giá tối đa"
   },
@@ -1903,13 +1877,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "Chúng tôi luôn tìm giá tốt nhất từ các nguồn thanh khoản hàng đầu. Phí $1% được tự động tính vào báo giá này.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 báo giá",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "Phí mạng dùng để chi trả chi phí xử lý giao dịch hoán đổi của bạn và lưu trữ giao dịch đó trên mạng $1. MetaMask không thu lợi từ khoản phí này."
   },
   "swapNewQuoteIn": {
     "message": "Báo giá mới sẽ có sau $1",
@@ -1945,19 +1912,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "Khi giá giữa thời điểm đặt lệnh và thời điểm xác nhận lệnh thay đổi, hiện tượng này được gọi là \"trượt giá\". Giao dịch hoán đổi của bạn sẽ tự động hủy nếu mức trượt giá vượt quá \"mức trượt giá cho phép\" đã đặt."
   },
-  "swapQuoteIncludesRate": {
-    "message": "Báo giá có bao gồm khoản phí $1% cho MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "Báo giá $1/$2",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Nguồn báo giá"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "Báo giá được làm mới thường xuyên để thể hiện tình trạng hiện tại của thị trường."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Vui lòng yêu cầu báo giá mới để biết các mức tỷ lệ mới nhất."
@@ -2019,9 +1979,6 @@
   "swapSwapTo": {
     "message": "Hoán đổi sang"
   },
-  "swapThisWillAllowApprove": {
-    "message": "Thao tác này sẽ cho phép hoán đổi $1."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "để xác nhận ví cứng của bạn"
   },
@@ -2059,9 +2016,6 @@
   },
   "swapUnknown": {
     "message": "Không xác định"
-  },
-  "swapUsingBestQuote": {
-    "message": "Sử dụng báo giá tốt nhất"
   },
   "swapVerifyTokenExplanation": {
     "message": "Nhiều token có thể dùng cùng một tên và ký hiệu. Hãy kiểm tra $1 để xác minh xem đây có phải là token bạn đang tìm kiếm không.",

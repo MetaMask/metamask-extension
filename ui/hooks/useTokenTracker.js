@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import TokenTracker from '@metamask/eth-token-tracker';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { getCurrentChainId, getSelectedAddress } from '../selectors';
 import { SECOND } from '../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../helpers/utils/util';
@@ -12,7 +12,7 @@ export function useTokenTracker(
   hideZeroBalanceTokens = false,
 ) {
   const chainId = useSelector(getCurrentChainId);
-  const userAddress = useSelector(getSelectedAddress);
+  const userAddress = useSelector(getSelectedAddress, shallowEqual);
   const [loading, setLoading] = useState(() => tokens?.length >= 0);
   const [tokensWithBalances, setTokensWithBalances] = useState([]);
   const [error, setError] = useState(null);

@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "복사 완료!"
   },
-  "copiedTransactionId": {
-    "message": "거래 ID 복사됨"
-  },
   "copyAddress": {
     "message": "주소를 클립보드에 복사"
   },
@@ -1346,12 +1343,6 @@
   "pending": {
     "message": "보류 중"
   },
-  "permissionCheckedIconDescription": {
-    "message": "이 권한을 승인했습니다."
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "이 권한을 승인하지 않았습니다."
-  },
   "permissions": {
     "message": "권한"
   },
@@ -1816,9 +1807,6 @@
     "message": "이 스왑을 완료하려면 $1개의 추가 $2이(가) 필요합니다.",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "더 나은 견적이 있습니다."
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "$1와(과) 일치하는 토큰이 없습니다.",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1844,13 +1832,6 @@
   "swapEnableDescription": {
     "message": "필수이며 MetaMask에게 $1을(를) 스왑할 권한을 부여합니다.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFee": {
-    "message": "예상 네트워크 수수료"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "'$1'은(는) 당사가 예상하는 실제 수수료입니다. 정확한 금액은 네트워크 상태에 따라 달라집니다.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "예상 네트워크 수수료"
@@ -1887,13 +1868,6 @@
   "swapLowSlippageError": {
     "message": "거래가 실패할 수도 있습니다. 최대 슬리패지가 너무 낮습니다."
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1”이(가) 최대 지출 금액입니다. 네트워크가 불안정한 경우 금액이 증가할 수 있습니다.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "최대 네트워크 수수료"
-  },
   "swapMaxSlippage": {
     "message": "최대 슬리패지"
   },
@@ -1903,13 +1877,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "당사는 매번 최상의 유동성 소스에서 최적의 가격을 찾습니다. 이 견적에는 $1%의 수수료가 자동으로 반영됩니다.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 견적",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "네트워크 수수료에는 스왑을 처리하고 $1 네트워크에 보관하는 비용이 포함됩니다. MetaMask는 이 수수료로 수익을 얻지 않습니다."
   },
   "swapNewQuoteIn": {
     "message": "$1의 새 견적",
@@ -1945,19 +1912,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 \"슬리패지\"라고 합니다. 슬리패지가 \"최대 슬리패지\" 설정을 초과하면 스왑이 자동으로 취소됩니다."
   },
-  "swapQuoteIncludesRate": {
-    "message": "견적에는 $1% MetaMask 요금이 포함됩니다.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "$2의 $1 견적",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "견적 소스"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "견적은 현재 시장 상황을 반영하도록 자주 갱신됩니다."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "새 견적을 요청해 최신 요율을 확인하세요."
@@ -2019,9 +1979,6 @@
   "swapSwapTo": {
     "message": "다음으로 스왑"
   },
-  "swapThisWillAllowApprove": {
-    "message": "$1이(가) 스왑될 수 있도록 허용합니다."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 확인하기 위해"
   },
@@ -2059,9 +2016,6 @@
   },
   "swapUnknown": {
     "message": "알 수 없음"
-  },
-  "swapUsingBestQuote": {
-    "message": "최고 견적을 사용 중"
   },
   "swapVerifyTokenExplanation": {
     "message": "여러 토큰이 같은 이름과 기호를 사용할 수 있습니다. $1을(를) 확인하여 원하는 토큰인지 확인하세요.",

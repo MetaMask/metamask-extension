@@ -7,6 +7,7 @@ import {
   INITIALIZE_SELECT_ACTION_ROUTE,
   INITIALIZE_END_OF_FLOW_ROUTE,
 } from '../../../../helpers/constants/routes';
+import { clearClipboard } from '../../../../helpers/utils/util';
 
 const { isValidMnemonic } = ethers.utils;
 
@@ -244,6 +245,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
             <textarea
               className="first-time-flow__textarea"
               onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
+              onPaste={clearClipboard}
               value={this.state.seedPhrase}
               placeholder={t('seedPhrasePlaceholder')}
               autoComplete="off"
@@ -256,6 +258,7 @@ export default class ImportWithSeedPhrase extends PureComponent {
               value={this.state.seedPhrase}
               placeholder={t('seedPhrasePlaceholderPaste')}
               autoComplete="off"
+              onPaste={clearClipboard}
             />
           )}
           {seedPhraseError ? (

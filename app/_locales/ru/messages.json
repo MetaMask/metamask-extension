@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "Скопировано!"
   },
-  "copiedTransactionId": {
-    "message": "Скопированный идентификатор транзакции"
-  },
   "copyAddress": {
     "message": "Скопировать адрес в буфер обмена"
   },
@@ -1346,12 +1343,6 @@
   "pending": {
     "message": "В ожидании"
   },
-  "permissionCheckedIconDescription": {
-    "message": "Вы одобрили это разрешение"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Вы не одобрили это разрешение"
-  },
   "permissions": {
     "message": "Разрешения"
   },
@@ -1816,9 +1807,6 @@
     "message": "Вам нужно еще $1 $2 для завершения этого свопа",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "Есть лучшая котировка"
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "Нет доступных токенов соответствующих $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1844,13 +1832,6 @@
   "swapEnableDescription": {
     "message": "Это необходимо и дает MetaMask разрешение на своп вашего $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFee": {
-    "message": "Ориентировочная комиссия сети"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "«$1» — это ожидаемая нами реальная комиссия. Точная сумма зависит от условий сети.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "Ориентировочные комиссии сети"
@@ -1887,13 +1868,6 @@
   "swapLowSlippageError": {
     "message": "Транзакции могут завершиться неудачей, максимальное проскальзывание слишком мало."
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "«$1» — это максимальная сумма, которую вы потратите. Когда сеть нестабильна, это может быть большая сумма.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "Максимальная комиссия за сеть"
-  },
   "swapMaxSlippage": {
     "message": "Максимальное проскальзывание"
   },
@@ -1903,13 +1877,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "Мы всегда находим лучшую цену из лучших источников ликвидности. В эту котировку автоматически включается комиссия в размере $1%.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "Котировок: $1",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "Сетевая комиссия покрывает стоимость обработки вашего свопа и его хранения в сети $1. MetaMask не получает прибыли от этой комиссии."
   },
   "swapNewQuoteIn": {
     "message": "Новые котировки в $1",
@@ -1945,19 +1912,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "Изменение цены в период между размещением заказа и подтверждением называется проскальзыванием. Своп будет автоматически отменен, если фактическое проскальзывание превысит установленное допустимое значение."
   },
-  "swapQuoteIncludesRate": {
-    "message": "Котировка включает $1% MetaMask fee",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "Котировка $1 из $2",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Источник котировки"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "Котировки часто обновляются, чтобы отражать текущие рыночные условия."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Запрашивайте новые котировки, чтобы узнать последние цены."
@@ -2019,9 +1979,6 @@
   "swapSwapTo": {
     "message": "Своп на"
   },
-  "swapThisWillAllowApprove": {
-    "message": "Это позволит обмен $1."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "подтвердить с помощью аппаратного кошелька"
   },
@@ -2059,9 +2016,6 @@
   },
   "swapUnknown": {
     "message": "Неизвестный"
-  },
-  "swapUsingBestQuote": {
-    "message": "Используется лучшая котировка"
   },
   "swapVerifyTokenExplanation": {
     "message": "Несколько токенов могут использовать одно и то же имя и символ. Убедитесь, что это именно тот токен, который вы ищете, на $1.",

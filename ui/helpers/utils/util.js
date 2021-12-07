@@ -262,6 +262,21 @@ export function stripHttpsScheme(urlString) {
 }
 
 /**
+ * Strips `https` schemes from URL strings, if the URL does not have a port.
+ * This is useful
+ *
+ * @param {string} urlString - The URL string to strip the scheme from.
+ * @returns {string} The URL string, without the scheme, if it was stripped.
+ */
+export function stripHttpsSchemeWithoutPort(urlString) {
+  if (getURL(urlString).port) {
+    return urlString;
+  }
+
+  return stripHttpsScheme(urlString);
+}
+
+/**
  * Checks whether a URL-like value (object or string) is an extension URL.
  *
  * @param {string | URL | object} urlLike - The URL-like value to test.
@@ -407,4 +422,24 @@ export function getURLHost(url) {
 
 export function getURLHostName(url) {
   return getURL(url)?.hostname || '';
+}
+
+// Once we reach this threshold, we switch to higher unit
+const MINUTE_CUTOFF = 90 * 60;
+const SECOND_CUTOFF = 90;
+
+export const toHumanReadableTime = (t, milliseconds) => {
+  if (milliseconds === undefined || milliseconds === null) return '';
+  const seconds = Math.ceil(milliseconds / 1000);
+  if (seconds <= SECOND_CUTOFF) {
+    return t('gasTimingSecondsShort', [seconds]);
+  }
+  if (seconds <= MINUTE_CUTOFF) {
+    return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
+  }
+  return t('gasTimingHoursShort', [Math.ceil(seconds / 3600)]);
+};
+
+export function clearClipboard() {
+  window.navigator.clipboard.writeText('');
 }

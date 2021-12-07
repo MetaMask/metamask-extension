@@ -3,7 +3,7 @@ import React from 'react';
 import TransactionList from '.';
 
 export default {
-  title: 'Transaction List',
+  title: 'Components/App/TransactionList',
   id: __filename,
 };
 
@@ -11,10 +11,12 @@ const PageSet = ({ children }) => {
   return children;
 };
 
-export const TxList = () => {
+export const DefaultStory = () => {
   return (
     <PageSet>
       <TransactionList />
     </PageSet>
   );
 };
+
+DefaultStory.storyName = 'Default';

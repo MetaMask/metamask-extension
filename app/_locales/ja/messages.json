@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "コピーされました!"
   },
-  "copiedTransactionId": {
-    "message": "コピーされたトランザクション ID"
-  },
   "copyAddress": {
     "message": "アドレスをクリップボードにコピー"
   },
@@ -1346,12 +1343,6 @@
   "pending": {
     "message": "処理"
   },
-  "permissionCheckedIconDescription": {
-    "message": "この許可の承認が完了しました。"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "この許可の承認が完了していません。"
-  },
   "permissions": {
     "message": "許可"
   },
@@ -1816,9 +1807,6 @@
     "message": "このスワップを完了するには、さらに $1 個の $2 が必要です。",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "より適切な見積もりが利用可能です"
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "$1 と一致するトークンがありません",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1844,13 +1832,6 @@
   "swapEnableDescription": {
     "message": "これは必須であり、$1 をスワップするための MetaMask 許可を付与します。",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFee": {
-    "message": "推定のネットワーク手数料"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "“$1” は予定する実際の手数料です。正確な額はネットワークの状態によって異なります。",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "推定のネットワーク手数料"
@@ -1887,13 +1868,6 @@
   "swapLowSlippageError": {
     "message": "トランザクションが失敗する可能性があります。最大スリッページが低すぎます。"
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1” は使用する最大量です。ネットワークが不安定なときは、これは大きな量になることがあります。",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "最大ネットワーク手数料"
-  },
   "swapMaxSlippage": {
     "message": "最大スリッページ"
   },
@@ -1903,13 +1877,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "当社は毎回最上位の流動性のソースから最良の価格を見つけます。$1 の手数料が自動的にこの見積もりに含まれます。",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 の見積もり",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "ネットワーク手数料には、スワップを処理して $1 ネットワーク上に保管する費用も含まれています。MetaMask は手数料から利益を得ません。"
   },
   "swapNewQuoteIn": {
     "message": "$1 での新規の見積もり",
@@ -1945,19 +1912,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "注文した時点と注文が承認された時点で価格が変わることを \"スリッページ\" と呼びます。スリッページが \"最大スリッページ\" 設定を超える場合、スワップは自動的にキャンセルされます。"
   },
-  "swapQuoteIncludesRate": {
-    "message": "見積もりには $1% の MetaMask 手数料が含まれています",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "$2 個中の $1 個の見積もり",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "見積もりのソース"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "現在のマーケット状態を反映するために、見積もりはたびたび更新されます。"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "最新のレートを取得するには、新しい見積もりを要求してください。"
@@ -2019,9 +1979,6 @@
   "swapSwapTo": {
     "message": "スワップ先"
   },
-  "swapThisWillAllowApprove": {
-    "message": "これにより、$1 のスワップが可能になります。"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "ハードウェア ウォレットで確認する"
   },
@@ -2059,9 +2016,6 @@
   },
   "swapUnknown": {
     "message": "不明です"
-  },
-  "swapUsingBestQuote": {
-    "message": "最良の見積もりを使用する"
   },
   "swapVerifyTokenExplanation": {
     "message": "複数のトークンが同じ名前とシンボルを使用できます。$1 をチェックして、これが探しているトークンであることを確認します。",

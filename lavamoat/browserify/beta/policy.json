@@ -412,6 +412,47 @@
         "Intl.getCanonicalLocales": true
       }
     },
+    "@keystonehq/base-eth-keyring": {
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@keystonehq/bc-ur-registry-eth": true,
+        "buffer": true,
+        "ethereumjs-util": true,
+        "hdkey": true,
+        "uuid": true
+      }
+    },
+    "@keystonehq/bc-ur-registry": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "@ngraveio/bc-ur": true,
+        "bs58check": true,
+        "buffer": true
+      }
+    },
+    "@keystonehq/bc-ur-registry-eth": {
+      "packages": {
+        "@keystonehq/bc-ur-registry": true,
+        "buffer": true,
+        "ethereumjs-util": true,
+        "hdkey": true,
+        "uuid": true
+      }
+    },
+    "@keystonehq/metamask-airgapped-keyring": {
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@keystonehq/base-eth-keyring": true,
+        "@keystonehq/bc-ur-registry-eth": true,
+        "@metamask/obs-store": true,
+        "buffer": true,
+        "events": true,
+        "rlp": true,
+        "uuid": true
+      }
+    },
     "@material-ui/core": {
       "globals": {
         "Image": true,
@@ -507,7 +548,6 @@
         "@metamask/contract-metadata": true,
         "abort-controller": true,
         "async-mutex": true,
-        "await-semaphore": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eth-json-rpc-infura": true,
@@ -517,15 +557,14 @@
         "eth-query": true,
         "eth-rpc-errors": true,
         "eth-sig-util": true,
-        "ethereumjs-tx": true,
         "ethereumjs-util": true,
         "ethereumjs-wallet": true,
         "ethers": true,
-        "ethjs-query": true,
         "ethjs-unit": true,
         "ethjs-util": true,
         "events": true,
         "human-standard-collectible-abi": true,
+        "human-standard-multi-collectible-abi": true,
         "human-standard-token-abi": true,
         "immer": true,
         "isomorphic-fetch": true,
@@ -600,6 +639,16 @@
         "gl-vec3": true
       }
     },
+    "@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "end-of-stream": true,
+        "once": true,
+        "readable-stream": true
+      }
+    },
     "@metamask/obs-store": {
       "globals": {
         "localStorage": true
@@ -610,12 +659,64 @@
         "through2": true
       }
     },
+    "@metamask/post-message-stream": {
+      "globals": {
+        "addEventListener": true,
+        "location.origin": true,
+        "onmessage": "write",
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "readable-stream": true
+      }
+    },
     "@metamask/safe-event-emitter": {
       "globals": {
         "setTimeout": true
       },
       "packages": {
         "events": true
+      }
+    },
+    "@ngraveio/bc-ur": {
+      "packages": {
+        "@apocentre/alias-sampling": true,
+        "assert": true,
+        "bignumber.js": true,
+        "buffer": true,
+        "cbor-sync": true,
+        "crc": true,
+        "jsbi": true,
+        "sha.js": true
+      }
+    },
+    "@metamask/snap-controllers": {
+      "globals": {
+        "URL": true,
+        "Worker": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controllers": true,
+        "@metamask/object-multiplex": true,
+        "@metamask/obs-store": true,
+        "@metamask/post-message-stream": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/snap-workers": true,
+        "deep-freeze-strict": true,
+        "eth-rpc-errors": true,
+        "fast-deep-equal": true,
+        "immer": true,
+        "json-rpc-engine": true,
+        "json-rpc-middleware-stream": true,
+        "nanoid": true,
+        "pump": true
       }
     },
     "@popperjs/core": {
@@ -735,6 +836,23 @@
       "packages": {
         "is-buffer": true,
         "util": true
+      }
+    },
+    "@zxing/browser": {
+      "globals": {
+        "HTMLElement": true,
+        "HTMLImageElement": true,
+        "HTMLVideoElement": true,
+        "URL.createObjectURL": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "document": true,
+        "navigator": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@zxing/library": true
       }
     },
     "@zxing/library": {
@@ -974,6 +1092,9 @@
       }
     },
     "bn.js": {
+      "globals": {
+        "Buffer": true
+      },
       "packages": {
         "browser-resolve": true
       }
@@ -1098,6 +1219,20 @@
         "buffer": true
       }
     },
+    "call-bind": {
+      "packages": {
+        "function-bind": true,
+        "get-intrinsic": true
+      }
+    },
+    "cbor-sync": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "buffer": true
+      }
+    },
     "cids": {
       "packages": {
         "buffer": true,
@@ -1159,7 +1294,7 @@
     },
     "copy-to-clipboard": {
       "globals": {
-        "clipboardData.setData": true,
+        "clipboardData": true,
         "console.error": true,
         "console.warn": true,
         "document.body.appendChild": true,
@@ -1188,6 +1323,11 @@
     "core-util-is": {
       "packages": {
         "is-buffer": true
+      }
+    },
+    "crc": {
+      "packages": {
+        "buffer": true
       }
     },
     "crc-32": {
@@ -1489,12 +1629,6 @@
         "prr": true
       }
     },
-    "es-abstract": {
-      "packages": {
-        "function-bind": true,
-        "has-symbols": true
-      }
-    },
     "eth-block-tracker": {
       "globals": {
         "clearTimeout": true,
@@ -1679,13 +1813,6 @@
       "packages": {
         "bn.js": true,
         "buffer": true,
-        "ethereumjs-util": true
-      }
-    },
-    "ethereumjs-tx": {
-      "packages": {
-        "buffer": true,
-        "ethereum-common": true,
         "ethereumjs-util": true
       }
     },
@@ -1933,6 +2060,18 @@
         "webkitRTCSessionDescription": true
       }
     },
+    "get-intrinsic": {
+      "globals": {
+        "AggregateError": true,
+        "FinalizationRegistry": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "function-bind": true,
+        "has": true,
+        "has-symbols": true
+      }
+    },
     "get-params": {
       "globals": {
         "GetParams": "write"
@@ -1975,6 +2114,11 @@
         "sparse-array": true
       }
     },
+    "has": {
+      "packages": {
+        "function-bind": true
+      }
+    },
     "has-binary2": {
       "globals": {
         "Blob": true,
@@ -2006,6 +2150,7 @@
     "hdkey": {
       "packages": {
         "assert": true,
+        "bs58check": true,
         "coinstring": true,
         "crypto-browserify": true,
         "safe-buffer": true,
@@ -2497,6 +2642,7 @@
     },
     "is-regex": {
       "packages": {
+        "call-bind": true,
         "has-symbols": true
       }
     },
@@ -2558,6 +2704,11 @@
         "console.warn": true
       }
     },
+    "jsbi": {
+      "globals": {
+        "define": true
+      }
+    },
     "json-rpc-engine": {
       "packages": {
         "@metamask/safe-event-emitter": true,
@@ -2566,7 +2717,11 @@
       }
     },
     "json-rpc-middleware-stream": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
+        "@metamask/safe-event-emitter": true,
         "readable-stream": true
       }
     },
@@ -3768,6 +3923,17 @@
         "define": true
       }
     },
+    "qrcode.react": {
+      "globals": {
+        "Path2D": true,
+        "devicePixelRatio": true
+      },
+      "packages": {
+        "prop-types": true,
+        "qr.js": true,
+        "react": true
+      }
+    },
     "rabin-wasm": {
       "globals": {
         "Blob": true,
@@ -4074,8 +4240,7 @@
         "console": true
       },
       "packages": {
-        "@babel/runtime": true,
-        "symbol-observable": true
+        "@babel/runtime": true
       }
     },
     "redux-devtools-core": {
@@ -4114,8 +4279,8 @@
     },
     "regexp.prototype.flags": {
       "packages": {
-        "define-properties": true,
-        "es-abstract": true
+        "call-bind": true,
+        "define-properties": true
       }
     },
     "relative-url": {
@@ -4168,15 +4333,6 @@
         "__DEV__": true,
         "__fbBatchedBridgeConfig": true,
         "console": true
-      }
-    },
-    "rpc-cap": {
-      "packages": {
-        "@metamask/controllers": true,
-        "eth-rpc-errors": true,
-        "is-subset": true,
-        "json-rpc-engine": true,
-        "uuid": true
       }
     },
     "safe-buffer": {

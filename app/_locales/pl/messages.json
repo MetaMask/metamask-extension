@@ -218,9 +218,6 @@
   "copiedExclamation": {
     "message": "Skopiowane!"
   },
-  "copiedTransactionId": {
-    "message": "Skopiowano identyfikator transakcji"
-  },
   "copyAddress": {
     "message": "Skopiuj adres do schowka"
   },

@@ -37,6 +37,7 @@ jest.mock('react-redux', () => {
   return {
     ...actual,
     useSelector: jest.fn(),
+    useDispatch: () => jest.fn(),
   };
 });
 
@@ -313,6 +314,40 @@ describe('useGasFeeInputs', () => {
       expect(result.current.maxPriorityFeePerGasFiat).toBe('');
       expect(result.current.estimatedMaximumFiat).toBe('');
       expect(result.current.estimatedMinimumFiat).toBe('');
+    });
+  });
+
+  describe('supportsEIP1559V2', () => {
+    beforeEach(() => {
+      configureEIP1559();
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          checkNetworkAndAccountSupports1559Response: true,
+        }),
+      );
+      process.env.EIP_1559_V2 = true;
+    });
+
+    afterEach(() => {
+      process.env.EIP_1559_V2 = false;
+    });
+
+    it('return true for fee_market transaction type', () => {
+      const { result } = renderHook(() =>
+        useGasFeeInputs(null, {
+          txParams: { type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET },
+        }),
+      );
+      expect(result.current.supportsEIP1559V2).toBe(true);
+    });
+
+    it('return false for legacy transaction type', () => {
+      const { result } = renderHook(() =>
+        useGasFeeInputs(null, {
+          txParams: { type: TRANSACTION_ENVELOPE_TYPES.LEGACY },
+        }),
+      );
+      expect(result.current.supportsEIP1559V2).toBe(false);
     });
   });
 });

@@ -5,7 +5,7 @@ import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 import FeeCard from './fee-card';
 
 const tokenApprovalTextComponent = (
-  <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
+  <span key="fee-card-approve-symbol" className="view-quote__bold">
     ABC
   </span>
 );
@@ -15,7 +15,7 @@ const containerStyle = {
 };
 
 export default {
-  title: 'FeeCard',
+  title: 'Pages/Swaps/FeeCard',
   id: __filename,
 };
 

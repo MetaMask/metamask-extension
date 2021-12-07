@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { GAS_ESTIMATE_TYPES, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   conversionLessThan,
@@ -249,7 +249,7 @@ export function useGasFeeErrors({
     [gasErrors, gasWarnings],
   );
 
-  const { balance: ethBalance } = useSelector(getSelectedAccount);
+  const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
   const balanceError = hasBalanceError(
     minimumCostInHexWei,
     transaction,
@@ -262,5 +262,6 @@ export function useGasFeeErrors({
     gasWarnings,
     balanceError,
     estimatesUnavailableWarning,
+    hasSimulationError: Boolean(transaction?.simulationFails),
   };
 }

@@ -29,6 +29,7 @@ import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-accoun
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import {
+  DEVICE_NAMES,
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
@@ -67,19 +68,6 @@ export function tryUnlockMetamask(password) {
       .then(() => {
         dispatch(unlockSucceeded());
         return forceUpdateMetamaskState(dispatch);
-      })
-      .then(() => {
-        return new Promise((resolve, reject) => {
-          background.verifySeedPhrase((err) => {
-            if (err) {
-              dispatch(displayWarning(err.message));
-              reject(err);
-              return;
-            }
-
-            resolve();
-          });
-        });
       })
       .then(() => {
         dispatch(hideLoadingIndication());
@@ -414,7 +402,7 @@ export function connectHardware(deviceName, page, hdPath, t) {
         await promisifiedBackground.establishLedgerTransportPreference();
       }
       if (
-        deviceName === 'ledger' &&
+        deviceName === DEVICE_NAMES.LEDGER &&
         ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID
       ) {
         const connectedDevices = await window.navigator.hid.requestDevice({
@@ -443,7 +431,8 @@ export function connectHardware(deviceName, page, hdPath, t) {
         dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
         throw new Error(t('ledgerDeviceOpenFailureMessage'));
       } else {
-        dispatch(displayWarning(error.message));
+        if (deviceName !== DEVICE_NAMES.QR)
+          dispatch(displayWarning(error.message));
         throw error;
       }
     } finally {
@@ -1292,6 +1281,116 @@ export function addToken(
   };
 }
 
+export function addCollectible(address, tokenID, dontShowLoadingIndicator) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot add collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot add collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await promisifiedBackground.addCollectible(address, tokenID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function addCollectibleVerifyOwnership(
+  address,
+  tokenID,
+  dontShowLoadingIndicator,
+) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot add collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot add collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await promisifiedBackground.addCollectibleVerifyOwnership(
+        address,
+        tokenID,
+      );
+    } catch (error) {
+      if (
+        error.message.includes('This collectible is not owned by the user') ||
+        error.message.includes('Unable to verify ownership.')
+      ) {
+        throw error;
+      } else {
+        log.error(error);
+        dispatch(displayWarning(error.message));
+      }
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function removeAndIgnoreCollectible(
+  address,
+  tokenID,
+  dontShowLoadingIndicator,
+) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot ignore collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot ignore collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await promisifiedBackground.removeAndIgnoreCollectible(address, tokenID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
+  return async (dispatch) => {
+    if (!address) {
+      throw new Error('MetaMask - Cannot remove collectible without address');
+    }
+    if (!tokenID) {
+      throw new Error('MetaMask - Cannot remove collectible without tokenID');
+    }
+    if (!dontShowLoadingIndicator) {
+      dispatch(showLoadingIndication());
+    }
+    try {
+      await promisifiedBackground.removeCollectible(address, tokenID);
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function removeToken(address) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
@@ -1353,12 +1452,6 @@ export function acceptWatchAsset(suggestedAssetID) {
       dispatch(hideLoadingIndication());
     }
     dispatch(closeCurrentNotificationWindow());
-  };
-}
-
-export function addKnownMethodData(fourBytePrefix, methodData) {
-  return () => {
-    background.addKnownMethodData(fourBytePrefix, methodData);
   };
 }
 
@@ -2042,15 +2135,15 @@ export function setUseBlockie(val) {
 }
 
 export function setUseNonceField(val) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNonceField`);
-    background.setUseNonceField(val, (err) => {
-      dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
+    try {
+      await background.setUseNonceField(val);
+    } catch (error) {
+      dispatch(displayWarning(error.message));
+    }
+    dispatch(hideLoadingIndication());
     dispatch({
       type: actionConstants.SET_USE_NONCEFIELD,
       value: val,
@@ -2076,6 +2169,32 @@ export function setUseTokenDetection(val) {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseTokenDetection`);
     background.setUseTokenDetection(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function setUseCollectibleDetection(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUseCollectibleDetection`);
+    background.setUseCollectibleDetection(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function setOpenSeaEnabled(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setOpenSeaEnabled`);
+    background.setOpenSeaEnabled(val, (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err.message));
@@ -2358,12 +2477,11 @@ export function requestAccountsPermissionWithId(origin) {
 
 /**
  * Approves the permissions request.
- * @param {Object} request - The permissions request to approve
- * @param {string[]} accounts - The accounts to expose, if any.
+ * @param {Object} request - The permissions request to approve.
  */
-export function approvePermissionsRequest(request, accounts) {
+export function approvePermissionsRequest(request) {
   return (dispatch) => {
-    background.approvePermissionsRequest(request, accounts, (err) => {
+    background.approvePermissionsRequest(request, (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
@@ -2393,22 +2511,9 @@ export function rejectPermissionsRequest(requestId) {
 /**
  * Clears the given permissions for the given origin.
  */
-export function removePermissionsFor(domains) {
+export function removePermissionsFor(subjects) {
   return (dispatch) => {
-    background.removePermissionsFor(domains, (err) => {
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
-  };
-}
-
-/**
- * Clears all permissions for all domains.
- */
-export function clearPermissions() {
-  return (dispatch) => {
-    background.clearPermissions((err) => {
+    background.removePermissionsFor(subjects, (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
@@ -2480,6 +2585,13 @@ export function setNewNetworkAdded(newNetworkAdded) {
   return {
     type: actionConstants.SET_NEW_NETWORK_ADDED,
     value: newNetworkAdded,
+  };
+}
+
+export function setNewCollectibleAddedMessage(newCollectibleAddedMessage) {
+  return {
+    type: actionConstants.SET_NEW_COLLECTIBLE_ADDED_MESSAGE,
+    value: newCollectibleAddedMessage,
   };
 }
 
@@ -2734,19 +2846,17 @@ export function setNextNonce(nextNonce) {
 }
 
 export function getNextNonce() {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const address = getState().metamask.selectedAddress;
-    return new Promise((resolve, reject) => {
-      background.getNextNonce(address, (err, nextNonce) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        dispatch(setNextNonce(nextNonce));
-        resolve(nextNonce);
-      });
-    });
+    let nextNonce;
+    try {
+      nextNonce = await promisifiedBackground.getNextNonce(address);
+    } catch (error) {
+      dispatch(displayWarning(error.message));
+      throw error;
+    }
+    dispatch(setNextNonce(nextNonce));
+    return nextNonce;
   };
 }
 
@@ -2934,4 +3044,31 @@ export async function detectNewTokens() {
 
 export function hideTestNetMessage() {
   return promisifiedBackground.setShowTestnetMessageInDropdown(false);
+}
+
+// QR Hardware Wallets
+export async function submitQRHardwareCryptoHDKey(cbor) {
+  await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);
+}
+
+export async function submitQRHardwareCryptoAccount(cbor) {
+  await promisifiedBackground.submitQRHardwareCryptoAccount(cbor);
+}
+
+export function cancelSyncQRHardware() {
+  return async (dispatch) => {
+    dispatch(hideLoadingIndication());
+    await promisifiedBackground.cancelSyncQRHardware();
+  };
+}
+
+export async function submitQRHardwareSignature(requestId, cbor) {
+  await promisifiedBackground.submitQRHardwareSignature(requestId, cbor);
+}
+
+export function cancelQRHardwareSignRequest() {
+  return async (dispatch) => {
+    dispatch(hideLoadingIndication());
+    await promisifiedBackground.cancelQRHardwareSignRequest();
+  };
 }

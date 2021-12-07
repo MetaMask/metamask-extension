@@ -227,9 +227,6 @@
   "copiedExclamation": {
     "message": "已複製！"
   },
-  "copiedTransactionId": {
-    "message": "已複製的交易 ID"
-  },
   "copyAddress": {
     "message": "複製到剪貼簿"
   },

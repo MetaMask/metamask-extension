@@ -3,6 +3,9 @@ import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Unlock from '../unlock-page';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ONBOARDING_EXPERIMENTAL_AREA,
+  ///: END:ONLY_INCLUDE_IN
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,
@@ -30,6 +33,9 @@ import {
 import { getFirstTimeFlowTypeRoute } from '../../selectors';
 import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import ExperimentalArea from '../../components/app/flask/experimental-area';
+///: END:ONLY_INCLUDE_IN
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -161,6 +167,21 @@ export default function OnboardingFlow() {
             path={ONBOARDING_METAMETRICS}
             component={MetaMetricsComponent}
           />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          }
+          <Route
+            path={ONBOARDING_EXPERIMENTAL_AREA}
+            render={(routeProps) => (
+              <ExperimentalArea
+                {...routeProps}
+                redirectTo={ONBOARDING_WELCOME_ROUTE}
+              />
+            )}
+          />
+          {
+            ///: END:ONLY_INCLUDE_IN
+          }
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>
       </div>

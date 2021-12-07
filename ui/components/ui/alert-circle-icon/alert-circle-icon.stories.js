@@ -1,11 +1,27 @@
 import React from 'react';
+import README from './README.mdx';
 import AlertCircleIcon from './alert-circle-icon.component';
 
 export default {
-  title: 'AlertCircleIcon',
+  title: 'Components/UI/AlertCircleIcon',
   id: __filename,
+  component: AlertCircleIcon,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    type: { options: ['warning', 'danger'], control: { type: 'select' } },
+  },
 };
 
-export const dangerCircleIcon = () => <AlertCircleIcon type="danger" />;
+export const DefaultStory = (args) => <AlertCircleIcon type={args.type} />;
 
-export const warningCircleIcon = () => <AlertCircleIcon type="warning" />;
+DefaultStory.storyName = 'Default';
+
+export const Warning = (args) => <AlertCircleIcon type={args.type} />;
+
+Warning.args = {
+  type: 'warning',
+};

@@ -4,7 +4,8 @@
 .typography {
   @include design-system.Paragraph;
 
-  & b {
+  & b,
+  & strong {
     font-weight: 700;
   }
 
@@ -29,12 +30,6 @@
   @each $style in design-system.$font-style {
     &--style-#{$style} {
       font-style: $style;
-    }
-  }
-
-  @each $size in design-system.$font-size {
-    &--size-#{$size} {
-      font-size: $size;
     }
   }
 

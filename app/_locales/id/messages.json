@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "Disalin!"
   },
-  "copiedTransactionId": {
-    "message": "ID Transaksi yang Disalin"
-  },
   "copyAddress": {
     "message": "Salin alamat ke clipboard"
   },
@@ -1346,12 +1343,6 @@
   "pending": {
     "message": "Tunda"
   },
-  "permissionCheckedIconDescription": {
-    "message": "Anda telah menyetujui izin ini"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Anda belum menyetujui izin ini"
-  },
   "permissions": {
     "message": "Izin"
   },
@@ -1816,9 +1807,6 @@
     "message": "Anda memerlukan $1 lagi $2 untuk menyelesaikan penukaran ini",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "Kuota yang lebih baik tersedia"
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "Tidak ada token yang cocok yang tersedia $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1844,13 +1832,6 @@
   "swapEnableDescription": {
     "message": "Ini wajib dan memberikan MetaMask izin untuk menukar $1 Anda.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFee": {
-    "message": "Biaya jaringan yang diperkirakan"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "“$1” adalah yang kami harapkan untuk biaya yang seharusnya. Jumlah yang tepat tergantung pada kondisi jaringan.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "Biaya jaringan yang diperkirakan"
@@ -1887,13 +1868,6 @@
   "swapLowSlippageError": {
     "message": "Transaksi bisa gagal, slippage maks. terlalu rendah."
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1” adalah yang paling banyak yang akan Anda gunakan. Bila jaringan tidak stabil ini bisa menjadi jumlah yang besar.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "Biaya jaringan maks."
-  },
   "swapMaxSlippage": {
     "message": "Maks. slippage"
   },
@@ -1903,13 +1877,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "Kami menemukan harga terbaik dari sumber likuiditas teratas, setiap waktu. Biaya sebesar $1% otomatis diperhitungkan ke kuota ini.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 kuota",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "Biaya jaringan mencakup biaya pemrosesan penukaran Anda dan menyimpannya di jaringan $1. MetaMask tidak mendapatkan keuntungan dari biaya ini."
   },
   "swapNewQuoteIn": {
     "message": "Kuota baru di $1",
@@ -1945,19 +1912,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "Jika harga berubah antara waktu pesanan Anda ditempatkan dan dikonfirmasi, ini disebut \"slippage\". Penukaran Anda akan otomatis dibatalkan jika slippage melebihi pengaturan \"toleransi slippage\"."
   },
-  "swapQuoteIncludesRate": {
-    "message": "Kuota mencakup biaya MetaMask $1%",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "Kuota $1 dari $2",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Sumber kuota"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "Kuota disegarkan sering kali untuk menerapkan kondisi pasar terkini."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Silakan minta kuota baru untuk mendapatkan tarif terbaru."
@@ -2019,9 +1979,6 @@
   "swapSwapTo": {
     "message": "Tukar untuk"
   },
-  "swapThisWillAllowApprove": {
-    "message": "Ini akan memungkinkan $1 untuk ditukar."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "untuk mengonfirmasikan dengan dompet perangkat keras Anda"
   },
@@ -2059,9 +2016,6 @@
   },
   "swapUnknown": {
     "message": "Tidak diketahui"
-  },
-  "swapUsingBestQuote": {
-    "message": "Menggunakan kuota terbaik"
   },
   "swapVerifyTokenExplanation": {
     "message": "Beberapa token dapat menggunakan simbol dan nama yang sama. Periksa $1 untuk memverifikasi inilah token yang Anda cari.",

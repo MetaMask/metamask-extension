@@ -416,9 +416,6 @@
   "copiedExclamation": {
     "message": "Copiado!"
   },
-  "copiedTransactionId": {
-    "message": "ID da transação copiado"
-  },
   "copyAddress": {
     "message": "Copiar endereço para área de transferência"
   },
@@ -1346,12 +1343,6 @@
   "pending": {
     "message": "Pendente"
   },
-  "permissionCheckedIconDescription": {
-    "message": "Você aprovou esta permissão"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Você não aprovou esta permissão"
-  },
   "permissions": {
     "message": "Permissões"
   },
@@ -1816,9 +1807,6 @@
     "message": "Você precisa de $1 mais $2 para concluir este swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "Uma cotação melhor está disponível"
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "Nenhum token disponível correspondente a $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1844,13 +1832,6 @@
   "swapEnableDescription": {
     "message": "Isso é obrigatório e dá ao MetaMask permissão para fazer o swap do seu $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFee": {
-    "message": "Taxa de rede estimada"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "O “$1” é o que esperamos que a taxa real seja. O valor exato depende das condições de rede.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "Taxas de rede estimadas"
@@ -1887,13 +1868,6 @@
   "swapLowSlippageError": {
     "message": "A transação pode falhar; slippage máximo baixo demais."
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1” é o máximo que você gastará. Quando a rede for volátil, esse poderá ser um grande valor.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "Taxa máxima de rede"
-  },
   "swapMaxSlippage": {
     "message": "Slippage máximo"
   },
@@ -1903,13 +1877,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "Encontramos o melhor preço das principais fontes de liquidez – todas as vezes. Uma taxa de $1% é automaticamente fatorada nesta cotação.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 cotações",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "A taxa de rede abrange o custo de processamento do seu swap e o armazenamento dele na rede $1. O MetaMask não lucra com essa taxa."
   },
   "swapNewQuoteIn": {
     "message": "Novas cotações em $1",
@@ -1945,19 +1912,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "Quando o preço varia entre o momento em que seu pedido é feito e o momento em que é confirmado, isso recebe o nome de \"slippage\". Seu swap será automaticamente cancelado se o slippage for superior à configuração \"tolerância de slippage\"."
   },
-  "swapQuoteIncludesRate": {
-    "message": "A cotação inclui uma taxa de $1% do MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "Cotação $1 de $2",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Fonte da cotação"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "As cotações são atualizadas com frequência para refletir as condições atuais do mercado."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Solicite novas cotações para obter as tarifas mais recentes."
@@ -2019,9 +1979,6 @@
   "swapSwapTo": {
     "message": "Swap para"
   },
-  "swapThisWillAllowApprove": {
-    "message": "isso permitirá o swap de $1."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "para confirmar com sua carteira de hardware"
   },
@@ -2059,9 +2016,6 @@
   },
   "swapUnknown": {
     "message": "Desconhecido"
-  },
-  "swapUsingBestQuote": {
-    "message": "Usando a melhor cotação"
   },
   "swapVerifyTokenExplanation": {
     "message": "Vários tokens podem usar o mesmo nome e símbolo. Confira $1 para verificar se esse é o token que você está buscando.",

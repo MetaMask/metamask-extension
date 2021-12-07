@@ -10,12 +10,12 @@ import AddRecipient from './add-recipient.component';
 const store = configureStore(testData);
 
 export default {
-  title: 'AddRecipient',
+  title: 'Pages/Send/SendContent/AddRecipient',
   id: __filename,
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-export const AddRecipientComponent = () => {
+export const DefaultStory = () => {
   const { metamask } = store.getState();
   const { addressBook, recipient } = metamask;
   return (
@@ -35,3 +35,5 @@ export const AddRecipientComponent = () => {
     </div>
   );
 };
+
+DefaultStory.storyName = 'Default';

@@ -1,4 +1,49 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "Error"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "Incongruent transaction data. Please check the transaction details."
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "No more accounts. If you would like to access another account unlisted below, please reconnect your hardware wallet and select it."
+  },
+  "QRHardwareScanInstructions": {
+    "message": "Place the QR code in front of your camera. The screen is blurred, but it will not affect the reading."
+  },
+  "QRHardwareSignRequestCancel": {
+    "message": "Reject"
+  },
+  "QRHardwareSignRequestDescription": {
+    "message": "After you’ve signed with your wallet, click on 'Get Signature' to receive the signature"
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "Get Signature"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "Scan the QR code with your wallet"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "Request Signature"
+  },
+  "QRHardwareUnknownQRCodeTitle": {
+    "message": "Error"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "Invalid QR code. Please scan the sync QR code of the hardware wallet."
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scan QR Code"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "Connect an airgapped hardware wallet that communicates through QR-codes. Officially supported airgapped hardware wallets include:"
+  },
+  "QRHardwareWalletSteps1Title": {
+    "message": "QR-based HW Wallet"
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "AirGap Vault & Ngrave (Coming Soon)"
+  },
   "about": {
     "message": "About"
   },
@@ -41,13 +86,16 @@
     "message": "Activity"
   },
   "activityLog": {
-    "message": "activity log"
+    "message": "Activity log"
   },
   "add": {
     "message": "Add"
   },
   "addANetwork": {
     "message": "Add a network"
+  },
+  "addANickname": {
+    "message": "Add a nickname"
   },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
@@ -85,8 +133,14 @@
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
+  "addMemo": {
+    "message": "Add memo"
+  },
   "addNFT": {
     "message": "Add NFT"
+  },
+  "addNFTLowerCase": {
+    "message": "add NFT"
   },
   "addNetwork": {
     "message": "Add Network"
@@ -112,11 +166,20 @@
   "advanced": {
     "message": "Advanced"
   },
+  "advancedBaseGasFeeToolTip": {
+    "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
+  },
+  "advancedGasFeeModalTitle": {
+    "message": "Advanced gas fee"
+  },
   "advancedGasPriceTitle": {
     "message": "Gas price"
   },
   "advancedOptions": {
     "message": "Advanced Options"
+  },
+  "advancedPriorityFeeToolTip": {
+    "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
   "advancedSettingsDescription": {
     "message": "Access developer features, download State Logs, Reset Account, setup test networks and custom RPC"
@@ -257,6 +320,9 @@
   "balanceOutdated": {
     "message": "Balance may be outdated"
   },
+  "baseFee": {
+    "message": "Base fee"
+  },
   "basic": {
     "message": "Basic"
   },
@@ -291,10 +357,6 @@
     "message": "Swap",
     "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
   },
-  "blockExplorerTransactionAction": {
-    "message": "Transaction",
-    "description": "This is used with viewOnCustomBlockExplorer and viewOnEtherscan e.g View Transaction on Etherscan"
-  },
   "blockExplorerUrl": {
     "message": "Block Explorer URL"
   },
@@ -316,6 +378,9 @@
   },
   "builtAroundTheWorld": {
     "message": "MetaMask is designed and built around the world."
+  },
+  "busy": {
+    "message": "Busy"
   },
   "buy": {
     "message": "Buy"
@@ -346,6 +411,9 @@
   },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
+  },
+  "cancelSpeedUp": {
+    "message": "cancel or speed up a tranaction."
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
@@ -512,14 +580,14 @@
   "copiedExclamation": {
     "message": "Copied!"
   },
-  "copiedTransactionId": {
-    "message": "Copied Transaction ID"
-  },
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
   "copyPrivateKey": {
     "message": "This is your private key (click to copy)"
+  },
+  "copyRawTransactionData": {
+    "message": "Copy raw transaction data"
   },
   "copyToClipboard": {
     "message": "Copy to clipboard"
@@ -560,6 +628,9 @@
   "currentLanguage": {
     "message": "Current Language"
   },
+  "currentTitle": {
+    "message": "Current:"
+  },
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
   },
@@ -568,6 +639,10 @@
   },
   "customGas": {
     "message": "Customize Gas"
+  },
+  "customGasSettingToolTipMessage": {
+    "message": "Use $1 to customise the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
   },
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
@@ -581,6 +656,13 @@
   "dappSuggested": {
     "message": "Site suggested"
   },
+  "dappSuggestedGasSettingToolTipMessage": {
+    "message": "$1 has suggested this price.",
+    "description": "$1 is url for the dapp that has suggested gas settings"
+  },
+  "dappSuggestedShortLabel": {
+    "message": "Site"
+  },
   "dappSuggestedTooltip": {
     "message": "$1 has recommended this price.",
     "description": "$1 represents the Dapp's origin"
@@ -590,6 +672,9 @@
   },
   "dataBackupFoundInfo": {
     "message": "Some of your account data was backed up during a previous installation of MetaMask. This could include your settings, contacts, and tokens. Would you like to restore this data now?"
+  },
+  "dataHex": {
+    "message": "Hex"
   },
   "decimal": {
     "message": "Token Decimal"
@@ -689,6 +774,12 @@
   "edit": {
     "message": "Edit"
   },
+  "editANickname": {
+    "message": "Edit nickname"
+  },
+  "editAddressNickname": {
+    "message": "Edit address nickname"
+  },
   "editContact": {
     "message": "Edit Contact"
   },
@@ -710,17 +801,33 @@
   "editGasEducationModalTitle": {
     "message": "How to choose?"
   },
+  "editGasFeeModalTitle": {
+    "message": "Edit gas fee"
+  },
   "editGasHigh": {
     "message": "High"
   },
   "editGasLimitOutOfBounds": {
     "message": "Gas limit must be at least $1"
   },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "Gas limit must be greater than $1 and less than $2",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
   "editGasLimitTooltip": {
     "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
   },
   "editGasLow": {
     "message": "Low"
+  },
+  "editGasMaxBaseFeeHigh": {
+    "message": "Max base fee is higher than necessary"
+  },
+  "editGasMaxBaseFeeImbalance": {
+    "message": "Max base fee cannot be lower than priority fee"
+  },
+  "editGasMaxBaseFeeLow": {
+    "message": "Max base fee is low for current network conditions"
   },
   "editGasMaxFeeHigh": {
     "message": "Max fee is higher than necessary"
@@ -737,11 +844,20 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Max priority fee must be greater than 0 GWEI"
   },
+  "editGasMaxPriorityFeeBelowMinimumV2": {
+    "message": "Priority fee must be at least 1 GWEI"
+  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Max priority fee is higher than necessary. You may pay more than needed."
   },
+  "editGasMaxPriorityFeeHighV2": {
+    "message": "Priority fee is higher than necessary. You may pay more than needed"
+  },
   "editGasMaxPriorityFeeLow": {
     "message": "Max priority fee is low for current network conditions"
+  },
+  "editGasMaxPriorityFeeLowV2": {
+    "message": "Priority fee is low for current network conditions"
   },
   "editGasMaxPriorityFeeTooltip": {
     "message": "Max priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction. You’ll most often pay your max setting"
@@ -755,21 +871,12 @@
   "editGasPriceTooltip": {
     "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
   },
-  "editGasSubTextAmount": {
-    "message": "$1 $2",
-    "description": "$1 will be passed the editGasSubTextAmountLabel and $2 will be passed the amount in either cryptocurrency or fiat"
-  },
   "editGasSubTextAmountLabel": {
     "message": "Max amount:",
     "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
   },
-  "editGasSubTextFee": {
-    "message": "$1 $2",
-    "description": "$1 will be passed the editGasSubTextFeeLabel and $2 will be passed the fee amount in either cryptocurrency or fiat"
-  },
   "editGasSubTextFeeLabel": {
-    "message": "Max fee:",
-    "description": "$1 represents a dollar amount"
+    "message": "Max fee:"
   },
   "editGasTitle": {
     "message": "Edit priority"
@@ -783,6 +890,12 @@
   "editGasTooLowWarningTooltip": {
     "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
   },
+  "editInGwei": {
+    "message": "Edit in GWEI"
+  },
+  "editInMultiplier": {
+    "message": "Edit in multiplier"
+  },
   "editNonceField": {
     "message": "Edit Nonce"
   },
@@ -794,6 +907,16 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Enable OpenSea API"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
+  },
+  "enableToken": {
+    "message": "enable $1",
+    "description": "$1 is a token symbol, e.g. ETH"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
@@ -903,7 +1026,7 @@
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
   "eth_accounts": {
-    "message": "View the addresses of your permitted accounts (required)",
+    "message": "See address, account balance, activity and initiate transactions",
     "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
@@ -966,6 +1089,33 @@
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
   },
+  "flaskExperimentalText1": {
+    "message": "Using Flask can greatly increase your risk of fund loss:"
+  },
+  "flaskExperimentalText2": {
+    "message": "if you use it to install non-trustworthy Snaps"
+  },
+  "flaskExperimentalText3": {
+    "message": "if you do not review confirmations before approving changes"
+  },
+  "flaskExperimentalText4": {
+    "message": "if you interact with unfamiliar smart contracts"
+  },
+  "flaskExperimentalText5": {
+    "message": "Using Flask gives you much greater discretion in using the power of MetaMask, and that discretion is yours. Do you accept these risks as well as extra responsibility for your wallet's safety?"
+  },
+  "flaskSnapSettingsCardButtonCta": {
+    "message": "See details",
+    "description": "Call to action a user can take to see more information about the Snap that is installed"
+  },
+  "flaskSnapSettingsCardDateAddedOn": {
+    "message": "Added on",
+    "description": "Start of the sentence describing when and where snap was added"
+  },
+  "flaskSnapSettingsCardFrom": {
+    "message": "from",
+    "description": "Part of the sentence describing when and where snap was added"
+  },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
   },
@@ -1011,6 +1161,12 @@
     "message": "Gas limit must be at least $1",
     "description": "$1 is the custom gas limit, in decimal."
   },
+  "gasLimitV2": {
+    "message": "Gas limit"
+  },
+  "gasOption": {
+    "message": "Gas option"
+  },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
   },
@@ -1029,11 +1185,16 @@
   "gasPriceInfoTooltipContent": {
     "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
   },
-  "gasPriceLabel": {
-    "message": "Gas price"
+  "gasTimingHoursShort": {
+    "message": "$1 hrs",
+    "description": "$1 represents a number of hours"
   },
   "gasTimingMinutes": {
     "message": "$1 minutes",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingMinutesShort": {
+    "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
   "gasTimingNegative": {
@@ -1046,6 +1207,10 @@
   },
   "gasTimingSeconds": {
     "message": "$1 seconds",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingSecondsShort": {
+    "message": "$1 sec",
     "description": "$1 represents a number of seconds"
   },
   "gasTimingVeryPositive": {
@@ -1132,6 +1297,16 @@
   },
   "high": {
     "message": "Aggressive"
+  },
+  "highGasSettingToolTipDialog": {
+    "message": "High probability, even in volatile markets"
+  },
+  "highGasSettingToolTipMessage": {
+    "message": "Use $1 to cover surges in network traffic due to things like popular NFT drops.",
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+  },
+  "highLowercase": {
+    "message": "high"
   },
   "history": {
     "message": "History"
@@ -1276,6 +1451,12 @@
     "message": "JSON File",
     "description": "format for importing an account"
   },
+  "keystone": {
+    "message": "Keystone"
+  },
+  "keystoneTutorial": {
+    "message": " (Tutorials)"
+  },
   "knownAddressRecipient": {
     "message": "Known contract address."
   },
@@ -1291,8 +1472,15 @@
   "layer1Fees": {
     "message": "Layer 1 fees"
   },
+  "learmMoreAboutGas": {
+    "message": "Want to $1 about gas?"
+  },
+  "learnCancelSpeeedup": {
+    "message": "Learn how to $1",
+    "description": "$1 is link to cancel or speed up transactions"
+  },
   "learnMore": {
-    "message": "Learn more"
+    "message": "learn more"
   },
   "learnScamRisk": {
     "message": "scams and security risks."
@@ -1375,6 +1563,13 @@
   "low": {
     "message": "Low"
   },
+  "lowGasSettingToolTipMessage": {
+    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredicible.",
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+  },
+  "lowLowercase": {
+    "message": "low"
+  },
   "lowPriorityMessage": {
     "message": "Future transactions will queue after this one. This price was last seen was some time ago."
   },
@@ -1402,6 +1597,10 @@
   },
   "medium": {
     "message": "Market"
+  },
+  "mediumGasSettingToolTipMessage": {
+    "message": "Use $1 for fast processing at current market price.",
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
   },
   "memo": {
     "message": "memo"
@@ -1496,6 +1695,9 @@
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
+  "multiplier": {
+    "message": "multiplier"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -1558,6 +1760,20 @@
   "networkSettingsDescription": {
     "message": "Add and edit custom RPC networks"
   },
+  "networkStatus": {
+    "message": "Network status"
+  },
+  "networkStatusBaseFeeTooltip": {
+    "message": "The base fee is set by the network and changes every 13-14 seconds. Our $1 and $2 options account for sudden increases.",
+    "description": "$1 and $2 are bold text for Medium and Aggressive respectively."
+  },
+  "networkStatusPriorityFeeTooltip": {
+    "message": "Range of priority fees (aka “miner tip”). This goes to miners and incentivizes them to prioritize your transaction."
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "Gas fees are $1 relative to the past 72 hours.",
+    "description": "$1 is networks stability value - stable, low, high"
+  },
   "networkURL": {
     "message": "Network URL"
   },
@@ -1580,11 +1796,23 @@
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
   },
+  "newCollectibleAddFailed": {
+    "message": "Collectible was not added because: $1"
+  },
+  "newCollectibleAddedMessage": {
+    "message": "Collectible was successfully added!"
+  },
   "newContact": {
     "message": "New Contact"
   },
   "newContract": {
     "message": "New Contract"
+  },
+  "newNFTsDetected": {
+    "message": "New NFTs detected"
+  },
+  "newNFTsDetectedInfo": {
+    "message": "One or more new NFTs were detected in your wallet."
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
@@ -1614,6 +1842,9 @@
   "nfts": {
     "message": "NFTs"
   },
+  "nickname": {
+    "message": "Nickname"
+  },
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
@@ -1622,6 +1853,9 @@
   },
   "noAlreadyHaveSeed": {
     "message": "No, I already have a Secret Recovery Phrase"
+  },
+  "noConversionDateAvailable": {
+    "message": "No Currency Conversion Date Available"
   },
   "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
@@ -1652,6 +1886,9 @@
   },
   "nonceFieldHeading": {
     "message": "Custom Nonce"
+  },
+  "notBusy": {
+    "message": "Not busy"
   },
   "notCurrentAccount": {
     "message": "Is this the correct account? It's different from the currently selected account in your wallet"
@@ -1861,14 +2098,18 @@
   "pending": {
     "message": "Pending"
   },
-  "permissionCheckedIconDescription": {
-    "message": "You have approved this permission"
+  "pendingTransactionInfo": {
+    "message": "This transaction will not process until that one is complete."
+  },
+  "pendingTransactionMultiple": {
+    "message": "You have ($1) pending transactions."
+  },
+  "pendingTransactionSingle": {
+    "message": "You have (1) pending transaction.",
+    "description": "$1 is count of pending transactions"
   },
   "permissionRequest": {
     "message": "Permission request"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "You have not approved this permission"
   },
   "permissions": {
     "message": "Permissions"
@@ -1893,6 +2134,12 @@
   "primaryCurrencySettingDescription": {
     "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
   },
+  "priorityFee": {
+    "message": "Priority fee"
+  },
+  "priorityFeeProperCase": {
+    "message": "Priority Fee"
+  },
   "privacyMsg": {
     "message": "Privacy Policy"
   },
@@ -1905,6 +2152,9 @@
   },
   "privateNetwork": {
     "message": "Private Network"
+  },
+  "proceedWithTransaction": {
+    "message": "I want to proceed anyway"
   },
   "proposedApprovalLimit": {
     "message": "Proposed Approval Limit"
@@ -2180,6 +2430,9 @@
   "selectHdPath": {
     "message": "Select HD Path"
   },
+  "selectNFTPrivacyPreference": {
+    "message": "Select NFT privacy preference"
+  },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
   },
@@ -2287,6 +2540,12 @@
   "signed": {
     "message": "Signed"
   },
+  "simulationErrorMessage": {
+    "message": "This transaction is expected to fail. Trying to execute it is expected to be expensive but fail, and is not recommended."
+  },
+  "simulationErrorMessageV2": {
+    "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
+  },
   "skip": {
     "message": "Skip"
   },
@@ -2338,6 +2597,12 @@
   },
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
+  },
+  "stable": {
+    "message": "Stable"
+  },
+  "stableLowercase": {
+    "message": "stable"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -2427,8 +2692,9 @@
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "A better quote is available"
+  "swapBestOfNQuotes": {
+    "message": "Best of $1 quotes.",
+    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
@@ -2459,12 +2725,9 @@
     "message": "This is required and gives MetaMask permission to swap your $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
-  "swapEstimatedNetworkFee": {
-    "message": "Estimated network fee"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "The “$1” is what we expect the actual fee to be. The exact amount depends on network conditions.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
+  "swapEnableTokenForSwapping": {
+    "message": "This will $1 for swapping",
+    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
   "swapEstimatedNetworkFees": {
     "message": "Estimated network fees"
@@ -2511,15 +2774,12 @@
   "swapHighSlippageWarning": {
     "message": "Slippage amount is very high."
   },
+  "swapIncludesMMFee": {
+    "message": "Includes a $1% MetaMask fee.",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
-  },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1” is the most you’ll spend. When the network is volatile this can be a large amount.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "Max network fee"
   },
   "swapMaxSlippage": {
     "message": "Max slippage"
@@ -2531,12 +2791,9 @@
     "message": "We find the best price from the top liquidity sources, every time. A fee of $1% is automatically factored into this quote.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
-  "swapNQuotes": {
-    "message": "$1 quotes",
+  "swapNQuotesWithDot": {
+    "message": "$1 quotes.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "The network fee covers the cost of processing your swap and storing it on the $1 network. MetaMask does not profit from this fee."
   },
   "swapNewQuoteIn": {
     "message": "New quotes in $1",
@@ -2572,19 +2829,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"slippage tolerance\" setting."
   },
-  "swapQuoteIncludesRate": {
-    "message": "Quote includes a $1% MetaMask fee",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "Quote $1 of $2",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Quote source"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "Quotes are refreshed often to reflect current market conditions."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Please request new quotes to get the latest rates."
@@ -2646,9 +2896,6 @@
   "swapSwapTo": {
     "message": "Swap to"
   },
-  "swapThisWillAllowApprove": {
-    "message": "This will allow $1 to be swapped."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "to confirm with your hardware wallet"
   },
@@ -2690,9 +2937,6 @@
   },
   "swapUnknown": {
     "message": "Unknown"
-  },
-  "swapUsingBestQuote": {
-    "message": "Using the best quote"
   },
   "swapVerifyTokenExplanation": {
     "message": "Multiple tokens can use the same name and symbol. Check $1 to verify this is the token you're looking for.",
@@ -2793,6 +3037,9 @@
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
+  "time": {
+    "message": "Time"
+  },
   "tips": {
     "message": "Tips"
   },
@@ -2845,6 +3092,18 @@
   },
   "transactionCreated": {
     "message": "Transaction created with a value of $1 at $2."
+  },
+  "transactionData": {
+    "message": "Transaction data"
+  },
+  "transactionDecodingAccreditationDecoded": {
+    "message": "Decoded by Truffle"
+  },
+  "transactionDecodingAccreditationVerified": {
+    "message": "Verified contract on"
+  },
+  "transactionDecodingUnsupportedNetworkError": {
+    "message": "Transaction decoding is not available for chainId $1"
   },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site suggested"
@@ -2947,8 +3206,17 @@
   "tryAgain": {
     "message": "Try again"
   },
+  "tryAnywayOption": {
+    "message": "I will try anyway"
+  },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
+  },
+  "twelveHrTitle": {
+    "message": "12hr:"
+  },
+  "txInsightsNotSupported": {
+    "message": "Transaction insights not supported for this contract at this time."
   },
   "typePassword": {
     "message": "Type your MetaMask password"
@@ -3008,6 +3276,12 @@
   "urlExistsErrorMsg": {
     "message": "This URL is currently used by the $1 network."
   },
+  "useCollectibleDetection": {
+    "message": "Autodetect NFTs"
+  },
+  "useCollectibleDetectionDescription": {
+    "message": "Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services."
+  },
   "usePhishingDetection": {
     "message": "Use Phishing Detection"
   },
@@ -3022,6 +3296,9 @@
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
+  },
+  "userAccepts": {
+    "message": "I accept"
   },
   "userName": {
     "message": "Username"
@@ -3052,6 +3329,9 @@
   },
   "viewMore": {
     "message": "View More"
+  },
+  "viewOnBlockExplorer": {
+    "message": "View on block explorer"
   },
   "viewOnCustomBlockExplorer": {
     "message": "View $1 at $2",

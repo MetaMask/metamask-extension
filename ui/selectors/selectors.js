@@ -49,6 +49,7 @@ import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
 } from '../ducks/app/app';
+import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -82,6 +83,48 @@ export function getCurrentChainId(state) {
   return chainId;
 }
 
+export function getCurrentQRHardwareState(state) {
+  const { qrHardware } = state.metamask;
+  return qrHardware || {};
+}
+
+export function hasUnsignedQRHardwareTransaction(state) {
+  const { txParams } = state.confirmTransaction.txData;
+  if (!txParams) return false;
+  const { from } = txParams;
+  const { keyrings } = state.metamask;
+  const qrKeyring = keyrings.find((kr) => kr.type === KEYRING_TYPES.QR);
+  if (!qrKeyring) return false;
+  return Boolean(
+    qrKeyring.accounts.find(
+      (account) => account.toLowerCase() === from.toLowerCase(),
+    ),
+  );
+}
+
+export function hasUnsignedQRHardwareMessage(state) {
+  const { type, msgParams } = state.confirmTransaction.txData;
+  if (!type || !msgParams) {
+    return false;
+  }
+  const { from } = msgParams;
+  const { keyrings } = state.metamask;
+  const qrKeyring = keyrings.find((kr) => kr.type === KEYRING_TYPES.QR);
+  if (!qrKeyring) return false;
+  switch (type) {
+    case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
+    case MESSAGE_TYPE.ETH_SIGN:
+    case MESSAGE_TYPE.PERSONAL_SIGN:
+      return Boolean(
+        qrKeyring.accounts.find(
+          (account) => account.toLowerCase() === from.toLowerCase(),
+        ),
+      );
+    default:
+      return false;
+  }
+}
+
 export function getCurrentKeyring(state) {
   const identity = getSelectedIdentity(state);
 
@@ -99,9 +142,12 @@ export function getParticipateInMetaMetrics(state) {
 }
 
 export function isEIP1559Account(state) {
-  // Trezor does not support 1559 at this time
-  const currentKeyring = getCurrentKeyring(state);
-  return currentKeyring && currentKeyring.type !== KEYRING_TYPES.TREZOR;
+  const keyring = getCurrentKeyring(state);
+
+  if (keyring?.type === KEYRING_TYPES.TREZOR) {
+    return state.metamask.trezorModel === 'T';
+  }
+  return true;
 }
 
 /**
@@ -462,8 +508,8 @@ export function getCustomNonceValue(state) {
   return String(state.metamask.customNonceValue);
 }
 
-export function getDomainMetadata(state) {
-  return state.metamask.domainMetadata;
+export function getSubjectMetadata(state) {
+  return state.metamask.subjectMetadata;
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
@@ -657,6 +703,24 @@ export function getUseTokenDetection(state) {
 }
 
 /**
+ * To get the useCollectibleDetection flag which determines whether we autodetect NFTs
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseCollectibleDetection(state) {
+  return Boolean(state.metamask.useCollectibleDetection);
+}
+
+/**
+ * To get the openSeaEnabled flag which determines whether we use OpenSea's API
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getOpenSeaEnabled(state) {
+  return Boolean(state.metamask.openSeaEnabled);
+}
+
+/**
  * To retrieve the tokenList produced by TokenListcontroller
  * @param {*} state
  * @returns {Object}
@@ -681,6 +745,10 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
     transportTypePreferenceIsWebHID &&
     (webHidIsNotConnected || transportIsNotSuccessfullyCreated)
   );
+}
+
+export function getNewCollectibleAddedMessage(state) {
+  return state.appState.newCollectibleAddedMessage;
 }
 
 /**

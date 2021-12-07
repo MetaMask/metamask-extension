@@ -52,7 +52,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         );
         await amountMax.click();
 
-        let inputValue = await inputAmount.getAttribute('value');
+        let inputValue = await inputAmount.getProperty('value');
 
         assert(Number(inputValue) > 24);
 
@@ -62,7 +62,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
 
         await inputAmount.fill('1');
 
-        inputValue = await inputAmount.getAttribute('value');
+        inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
 
         // Continue to next screen
@@ -119,7 +119,7 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
         const inputAmount = await driver.findElement('.unit-input__input');
         await inputAmount.fill('1');
 
-        const inputValue = await inputAmount.getAttribute('value');
+        const inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
 
         // Continue to next screen

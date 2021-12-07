@@ -344,9 +344,6 @@
   "copiedExclamation": {
     "message": "Nakopya na!"
   },
-  "copiedTransactionId": {
-    "message": "Nakopya ang ID ng Transaksyon"
-  },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
@@ -1096,12 +1093,6 @@
   "pending": {
     "message": "Nakabinbin"
   },
-  "permissionCheckedIconDescription": {
-    "message": "Inaprubahan mo ang pahintulot na ito"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Hindi mo inaprubahan ang pahintulot na ito"
-  },
   "permissions": {
     "message": "Mga Pahintulot"
   },
@@ -1486,13 +1477,6 @@
     "message": "Kinakailangan ito at nagbibigay ito ng pahintulot sa MetaMask na i-swap ang iyong $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
-  "swapEstimatedNetworkFee": {
-    "message": "Tinatayang bayarin sa network"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "Ang “$1” ay ang inaasahan naming magiging aktuwal na bayarin. Ang eksaktong halaga ay nakadepende sa mga kundisyon ng network.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
-  },
   "swapEstimatedNetworkFees": {
     "message": "Mga tinatayang bayarin sa network"
   },
@@ -1514,13 +1498,6 @@
   "swapLowSlippageError": {
     "message": "Maaaring hindi magtagumpay ang transaksyon, masyadong mababa ang max na slippage."
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "Aang “$1” ay ang pinakamalaking gagastusin mo. Kapag volatile ang network, maaaring malaking halaga ito.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "Max na bayarin sa network"
-  },
   "swapMaxSlippage": {
     "message": "Max na slippage"
   },
@@ -1530,9 +1507,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "Hinahanap namin ang pinakasulit na presyo mula sa mga nangungunang pinagkukunan ng liquidity, sa lahat ng pagkakataon. Ang bayarin na $1% ay awtomatikong fina-factor sa bawat quote, na sumusuporta sa kasalukuyang development para mas mapahusay ang MetaMask.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNetworkFeeSummary": {
-    "message": "Kasama sa bayarin sa network ang gastusin sa pagproseso ng iyong pag-swap at pag-store nito sa $1 network. Hindi kumikita ang MetaMask mula sa bayaring ito."
   },
   "swapNewQuoteIn": {
     "message": "Mga bagong quote sa $1",
@@ -1551,19 +1525,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "Kung magbabago ang presyo sa pagitan ng oras ng pag-order mo at sa oras na nakumpirma ito, tinatawag itong \"slippage\". Awtomatikong makakansela ang iyong Pag-swap kung lalampas ang slippage sa iyong setting na \"max slippage\"."
   },
-  "swapQuoteIncludesRate": {
-    "message": "Kasama sa quote ang $1% bayarin sa MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "Quote $1 ng $2",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Pinagkunan ng quote"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "Madalas na nire-refresh ang mga quote para maipakita ang mga kasalukuyang kundisyon ng market."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Mag-request ng mga bagong quote para makuha ang mga pinakabagong rate."
@@ -1618,9 +1585,6 @@
   },
   "swapSwapTo": {
     "message": "Palitan ng"
-  },
-  "swapThisWillAllowApprove": {
-    "message": "Mabibigyang-daan nito ang $1 na ma-swap."
   },
   "swapTokenAvailable": {
     "message": "Naidagdag na ang $1 sa iyong account.",

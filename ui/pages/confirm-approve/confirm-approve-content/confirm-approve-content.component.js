@@ -11,6 +11,7 @@ import { ellipsify } from '../../send/send.utils';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
+import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import Identicon from '../../../components/ui/identicon';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
@@ -64,6 +65,7 @@ export default class ConfirmApproveContent extends Component {
     isContract: PropTypes.bool,
     hexTransactionTotal: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
+    supportsEIP1559V2: PropTypes.bool,
   };
 
   state = {
@@ -76,11 +78,13 @@ export default class ConfirmApproveContent extends Component {
     symbol,
     title,
     showEdit,
+    showAdvanceGasFeeOptions = false,
     onEditClick,
     content,
     footer,
     noBorder,
   }) {
+    const { supportsEIP1559V2 } = this.props;
     const { t } = this.context;
     return (
       <div
@@ -97,7 +101,7 @@ export default class ConfirmApproveContent extends Component {
             <div className="confirm-approve-content__card-header__title">
               {title}
             </div>
-            {showEdit && (
+            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559V2) && (
               <Box width={BLOCK_SIZES.ONE_SIXTH}>
                 <Button
                   type="link"
@@ -107,6 +111,9 @@ export default class ConfirmApproveContent extends Component {
                   {t('edit')}
                 </Button>
               </Box>
+            )}
+            {showEdit && showAdvanceGasFeeOptions && supportsEIP1559V2 && (
+              <EditGasFeeButton />
             )}
           </div>
         )}
@@ -445,6 +452,7 @@ export default class ConfirmApproveContent extends Component {
             symbol: <i className="fa fa-tag" />,
             title: t('transactionFee'),
             showEdit: true,
+            showAdvanceGasFeeOptions: true,
             onEditClick: showCustomizeGasModal,
             content: this.renderTransactionDetailsContent(),
             noBorder: useNonceField || !showFullTxDetails,
