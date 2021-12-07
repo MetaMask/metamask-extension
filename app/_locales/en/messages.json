@@ -3096,6 +3096,12 @@
   "transactionData": {
     "message": "Transaction data"
   },
+  "transactionDecodingAccreditationDecoded": {
+    "message": "Decoded by Truffle"
+  },
+  "transactionDecodingAccreditationVerified": {
+    "message": "Verified contract on"
+  },
   "transactionDecodingUnsupportedNetworkError": {
     "message": "Transaction decoding is not available for chainId $1"
   },
