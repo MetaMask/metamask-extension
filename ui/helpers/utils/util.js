@@ -91,8 +91,8 @@ export function addressSummary(
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
-      checked.length - lastSegLength,
-    )}`
+        checked.length - lastSegLength,
+      )}`
     : '...';
 }
 
@@ -445,7 +445,16 @@ export function clearClipboard() {
 }
 
 const solidityTypes = () => {
-  const types = ['bool', 'address', 'string', 'bytes', 'int', 'uint', 'fixed', 'ufixed'];
+  const types = [
+    'bool',
+    'address',
+    'string',
+    'bytes',
+    'int',
+    'uint',
+    'fixed',
+    'ufixed',
+  ];
 
   const ints = Array.from(new Array(32)).map(
     (_, index) => `int${(index + 1) * 8}`,
@@ -457,7 +466,7 @@ const solidityTypes = () => {
     (_, index) => `bytes${index + 1}`,
   );
   return [...types, ...ints, ...uints, ...bytes];
-}
+};
 
 export const sanitizeMessage = (msg, baseType, types) => {
   let baseTypeDefinitions;
@@ -484,18 +493,22 @@ export const sanitizeMessage = (msg, baseType, types) => {
         if (definedType.type.indexOf('[]') > 0) {
           // nested array
           const definedArrayType = definedType.type.replace('[]', '');
-          sanitizedMessage[msgKey] = msg[msgKey].map((value) => sanitizeMessage(value, definedArrayType, types));
+          sanitizedMessage[msgKey] = msg[msgKey].map((value) =>
+            sanitizeMessage(value, definedArrayType, types),
+          );
         } else {
           // nested object
           sanitizedMessage[msgKey] = sanitizeMessage(
             msg[msgKey],
             definedType.type,
-            types
+            types,
           );
         }
       } else {
         // check if it's a valid solidity type
-        const isSolidityType = solidityTypes().includes(definedType.type.replace('[]', ''));
+        const isSolidityType = solidityTypes().includes(
+          definedType.type.replace('[]', ''),
+        );
         if (isSolidityType) {
           sanitizedMessage[msgKey] = msg[msgKey];
         }

@@ -2,10 +2,10 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Identicon from '../../ui/identicon';
 import LedgerInstructionField from '../ledger-instruction-field';
+import { sanitizeMessage } from '../../../helpers/utils/util';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
-import { sanitizeMessage } from '../../../helpers/utils/util';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
@@ -46,7 +46,7 @@ export default class SignatureRequest extends PureComponent {
       hardwareWalletRequiresConnection,
     } = this.props;
     const { address: fromAddress } = fromAccount;
-    const { message, domain = {}, types, primaryType } = JSON.parse(data);
+    const { message, domain = {}, primaryType } = JSON.parse(data);
     const { metricsEvent } = this.context;
 
     const onSign = (event) => {
