@@ -93,7 +93,7 @@ export function useMaxPriorityFeePerGasInput({
       gasFeeEstimates,
       gasEstimateType,
       estimateToUse,
-      initialMaxMaxPriorityFeePerGas,
+      initialMaxMaxPriorityFeePerGas || 0,
     );
 
   // We need to display the estimated fiat currency impact of the

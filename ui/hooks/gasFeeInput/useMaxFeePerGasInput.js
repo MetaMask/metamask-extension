@@ -131,7 +131,7 @@ export function useMaxFeePerGasInput({
       gasFeeEstimates,
       gasEstimateType,
       estimateToUse,
-      initialMaxFeePerGas,
+      initialMaxFeePerGas || 0,
     );
 
   return {
