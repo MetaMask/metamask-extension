@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Button from '../../components/ui/button';
-import { accountNameExists } from '../../selectors';
 
 export default class NewAccountCreateForm extends Component {
   static defaultProps = {
@@ -49,6 +48,12 @@ export default class NewAccountCreateForm extends Component {
             },
           });
         });
+    };
+
+    const accountNameExists = (allAccounts, accountName) => {
+      const accountsNames = allAccounts.map((item) => item.name);
+
+      return accountsNames.includes(accountName);
     };
 
     return (

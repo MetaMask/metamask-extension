@@ -8,7 +8,6 @@ import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
-import { getAccountsNames } from '../../../../selectors';
 
 export default class AccountDetailsModal extends Component {
   static propTypes = {
@@ -41,6 +40,12 @@ export default class AccountDetailsModal extends Component {
     const keyring = keyrings.find((kr) => {
       return kr.accounts.includes(address);
     });
+
+    const getAccountsNames = (allAccounts, currentName) => {
+      return Object.values(allAccounts)
+        .map((item) => item.name)
+        .filter((itemName) => itemName !== currentName);
+    };
 
     let exportPrivateKeyFeatureEnabled = true;
     // This feature is disabled for hardware wallets
