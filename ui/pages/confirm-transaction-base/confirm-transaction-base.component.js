@@ -638,11 +638,20 @@ export default class ConfirmTransactionBase extends Component {
 
   renderData(functionType) {
     const { t } = this.context;
-    const { txData: { txParams } = {}, hideData, dataComponent } = this.props;
+    const {
+      txData: { txParams } = {},
+      methodData: { params } = {},
+      hideData,
+      dataComponent,
+    } = this.props;
 
     if (hideData) {
       return null;
     }
+
+    const functionParams = params?.length
+      ? `(${params.map(({ type }) => type).join(', ')})`
+      : '';
 
     return (
       dataComponent || (
@@ -650,7 +659,7 @@ export default class ConfirmTransactionBase extends Component {
           <div className="confirm-page-container-content__data-box-label">
             {`${t('functionType')}:`}
             <span className="confirm-page-container-content__function-type">
-              {functionType}
+              {`${functionType} ${functionParams}`}
             </span>
           </div>
           <Disclosure>
@@ -670,12 +679,12 @@ export default class ConfirmTransactionBase extends Component {
       dataHexComponent,
     } = this.props;
 
-    if (hideData) {
+    if (hideData || !txParams.to) {
       return null;
     }
 
-    const functionParams = params
-      ? `(${params.map(({ type }) => type).join(', ')}`
+    const functionParams = params?.length
+      ? `(${params.map(({ type }) => type).join(', ')})`
       : '';
 
     return (

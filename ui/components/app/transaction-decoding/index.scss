@@ -37,7 +37,9 @@
     }
   }
 
-
+  &-error {
+    cursor: auto;
+  }
 
   .tx-insight-content {
     &__tree-component {
