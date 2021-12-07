@@ -340,4 +340,101 @@ describe('util', () => {
       expect(util.toHumanReadableTime(t, 7200000)).toStrictEqual('2 hrs');
     });
   });
+  describe('sanitizeMessage', () => {
+    const message = {
+      contents: 'Hello, Bob!',
+      from: {
+        name: 'Cow',
+        wallets: [
+          '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+          '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+        ],
+      },
+      to: [
+        {
+          name: 'Bob',
+          wallets: [
+            '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+            '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+            '0xB0B0b0b0b0b0B000000000000000000000000000',
+          ],
+        },
+      ],
+    };
+    const primaryType = 'Mail';
+    const types = {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      Group: [
+        { name: 'name', type: 'string' },
+        { name: 'members', type: 'Person[]' },
+      ],
+      Mail: [
+        { name: 'from', type: 'Person' },
+        { name: 'to', type: 'Person[]' },
+        { name: 'contents', type: 'string' },
+      ],
+      Person: [
+        { name: 'name', type: 'string' },
+        { name: 'wallets', type: 'address[]' },
+      ],
+    };
+
+    it('should return same message if types is not defined', () => {
+      const result = util.sanitizeMessage(message, primaryType, null);
+      expect(result.contents).toStrictEqual('Hello, Bob!');
+      expect(result.from.name).toStrictEqual('Cow');
+      expect(result.from.wallets).toHaveLength(2);
+      expect(result.to).toHaveLength(1);
+      expect(result.to[0].name).toStrictEqual('Bob');
+      expect(result.to[0].wallets).toHaveLength(3);
+    });
+
+    it('should return same message if base type is not defined', () => {
+      const result = util.sanitizeMessage(message, null, types);
+      expect(result.contents).toStrictEqual('Hello, Bob!');
+      expect(result.from.name).toStrictEqual('Cow');
+      expect(result.from.wallets).toHaveLength(2);
+      expect(result.to).toHaveLength(1);
+      expect(result.to[0].name).toStrictEqual('Bob');
+      expect(result.to[0].wallets).toHaveLength(3);
+    });
+
+    it('should return parsed message if types is defined', () => {
+      const result = util.sanitizeMessage(message, primaryType, types);
+      expect(result.contents).toStrictEqual('Hello, Bob!');
+      expect(result.from.name).toStrictEqual('Cow');
+      expect(result.from.wallets).toHaveLength(2);
+      expect(result.to).toHaveLength(1);
+      expect(result.to[0].name).toStrictEqual('Bob');
+      expect(result.to[0].wallets).toHaveLength(3);
+    });
+
+    it('should return ignore message data with unknown types', () => {
+      message.do_not_display = 'one';
+      message.do_not_display_2 = {
+        do_not_display: 'two',
+      };
+
+      // result will contain the do_not_displays because no type definition
+      let result = util.sanitizeMessage(message, primaryType, null);
+      expect(result.do_not_display).toStrictEqual('one');
+      expect(result.do_not_display_2.do_not_display).toStrictEqual('two');
+
+      // result will NOT contain the do_not_displays because type definition
+      result = util.sanitizeMessage(message, primaryType, types);
+      expect(result.contents).toStrictEqual('Hello, Bob!');
+      expect(result.from.name).toStrictEqual('Cow');
+      expect(result.from.wallets).toHaveLength(2);
+      expect(result.to).toHaveLength(1);
+      expect(result.to[0].name).toStrictEqual('Bob');
+      expect(result.to[0].wallets).toHaveLength(3);
+      expect(result.do_not_display).toBeUndefined();
+      expect(result.do_not_display_2).toBeUndefined();
+    });
+  });
 });

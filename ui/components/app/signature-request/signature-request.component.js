@@ -5,6 +5,7 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
+import { sanitizeMessage } from '../../../helpers/utils/util';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
@@ -47,69 +48,6 @@ export default class SignatureRequest extends PureComponent {
     const { address: fromAddress } = fromAccount;
     const { message, domain = {}, types, primaryType } = JSON.parse(data);
     const { metricsEvent } = this.context;
-
-    const solidityTypes = [
-      'bool',
-      'int',
-      'fixed',
-      'address',
-      'bytes',
-      'string',
-    ];
-    const sanitizeMessage = (msg, baseType) => {
-      let baseTypeType;
-      if (types) {
-        baseTypeType = types[baseType];
-        if (!baseTypeType) {
-          return msg;
-        }
-      } else {
-        return msg;
-      }
-
-      const sanitizedMessage = {};
-      const msgKeys = Object.keys(msg);
-      msgKeys.forEach((msgKey) => {
-        const definedType = Object.values(baseTypeType).find(
-          (ptt) => ptt.name === msgKey,
-        );
-
-        if (definedType) {
-          // key has a type. check if the definedType is also a type
-          const nestedTypeType = types[definedType.type.replace('[]', '')];
-          if (nestedTypeType) {
-            if (definedType.type.indexOf('[]') > 0) {
-              // nested array
-              const sanitizedArrayMessage = {};
-              const definedArrayType = definedType.type.replace('[]', '');
-              const arrayMsg = msg[msgKey];
-              arrayMsg.forEach((msgArray, arrIndex) => {
-                sanitizedArrayMessage[arrIndex] = sanitizeMessage(
-                  msgArray,
-                  definedArrayType,
-                );
-              });
-              sanitizedMessage[msgKey] = sanitizedArrayMessage;
-            } else {
-              // nested object
-              sanitizedMessage[msgKey] = sanitizeMessage(
-                msg[msgKey],
-                definedType.type,
-              );
-            }
-          } else {
-            // check if it's a valid solidity type
-            const isSolidityType = solidityTypes.some(
-              (solidityType) => definedType.type.indexOf(solidityType) >= 0,
-            );
-            if (isSolidityType) {
-              sanitizedMessage[msgKey] = msg[msgKey];
-            }
-          } // endif (nestedType)
-        } // endif (definedType)
-      });
-      return sanitizedMessage;
-    };
 
     const onSign = (event) => {
       sign(event);
