@@ -3209,6 +3209,9 @@
   "twelveHrTitle": {
     "message": "12hr:"
   },
+  "txInsightsNotSupported": {
+    "message": "Transaction insights not supported for this contract at this time."
+  },
   "typePassword": {
     "message": "Type your MetaMask password"
   },

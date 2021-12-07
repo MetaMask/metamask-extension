@@ -79,7 +79,11 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       } catch (error) {
         setLoading(false);
         setError(true);
-        setErrorMessage(error?.message);
+        if (error?.message.match('400')) {
+          setErrorMessage(t('txInsightsNotSupported'));
+        } else {
+          setErrorMessage(error?.message);
+        }
       }
     })();
   }, [t, from, to, network, data]);
