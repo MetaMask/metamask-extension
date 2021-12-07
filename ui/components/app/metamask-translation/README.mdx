@@ -1,0 +1,36 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import MetaMaskTranslation from '.';
+
+# MetaMask Translation
+
+MetaMaskTranslation is a simple helper component for adding full translation
+support to the template system. We do pass the translation function to the
+template getValues function, but passing it React components as variables
+would require React to be in scope, and breaks the object pattern paradigm.
+
+This component gets around that by converting variables that are templates
+themselves into tiny React trees. This component does additional validation
+to make sure that the tree has a single root node, with maximum two leaves.
+Each subnode can have a maximum of one child that must be a string.
+
+This enforces a maximum recursion depth of 2, preventing translation strings
+from being performance hogs. We could further limit this, and also attenuate
+the safeComponentList for what kind of components we allow these special
+trees to contain.
+
+<Canvas>
+  <Story id="ui-components-app-metamask-translation-metamask-translation-stories-js--default-story" />
+</Canvas>
+
+## Component API
+
+<!--
+ArgsTable doesn't work with SectionShape
+<ArgsTable of={MetaMaskTranslation} />
+-->
+
+| Name             | Description                                                                                             |
+| ---------------- | ------------------------------------------------------------------------------------------------------- |
+| `translationKey` | Translation object key `string`                                                                         |
+| `variables`      | Array of variables for the MetaMaskTranslation. Can be an array of `string`, `number` or `SectionShape` |
