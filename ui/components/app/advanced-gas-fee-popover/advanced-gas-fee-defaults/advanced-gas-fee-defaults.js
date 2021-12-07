@@ -60,9 +60,9 @@ const AdvancedGasFeeDefaults = () => {
       <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
         <I18nValue
           messageKey={
-            defaultPreference
-              ? 'advancedGasFeeDefaultOptOut'
-              : 'advancedGasFeeDefaultOptIn'
+            !defaultPreference && Boolean(advancedGasFeeValues)
+              ? 'advancedGasFeeDefaultOptIn'
+              : 'advancedGasFeeDefaultOptOut'
           }
         />
       </Typography>

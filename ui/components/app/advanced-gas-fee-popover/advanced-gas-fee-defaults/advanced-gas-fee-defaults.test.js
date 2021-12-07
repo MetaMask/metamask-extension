@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 
 import { GAS_ESTIMATE_TYPES } from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -59,10 +59,9 @@ const render = (defaultGasParams) => {
 describe('AdvancedGasFeeDefaults', () => {
   it('should renders correct message when the default is not set', () => {
     render({ advancedGasFee: null });
-
     expect(
       screen.queryByText(
-        'Use the “new values” and advanced setting as default.',
+        'Always use these values and advanced setting as default.',
       ),
     ).toBeInTheDocument();
   });
@@ -70,10 +69,65 @@ describe('AdvancedGasFeeDefaults', () => {
     render({
       advancedGasFee: { maxBaseFee: 2, priorityFee: 2 },
     });
-
     expect(
       screen.queryByText(
         'Always use these values and advanced setting as default.',
+      ),
+    ).toBeInTheDocument();
+  });
+  it('should renders correct message when checkbox is selected and default values are saved', () => {
+    render({
+      advancedGasFee: null,
+    });
+    expect(
+      screen.queryByText(
+        'Always use these values and advanced setting as default.',
+      ),
+    ).toBeInTheDocument();
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 3 },
+    });
+    fireEvent.change(document.getElementsByTagName('input')[1], {
+      target: { value: 4 },
+    });
+  });
+  it('should renders correct message when the default values are set and the maxBaseFee values are updated', () => {
+    render({
+      advancedGasFee: { maxBaseFee: 2, priorityFee: 2 },
+    });
+    expect(document.getElementsByTagName('input')[2]).toBeChecked();
+    expect(
+      screen.queryByText(
+        'Always use these values and advanced setting as default.',
+      ),
+    ).toBeInTheDocument();
+    fireEvent.change(document.getElementsByTagName('input')[0], {
+      target: { value: 4 },
+    });
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(4);
+    expect(
+      screen.queryByText(
+        'Update the values used by advanced settings by default.',
+      ),
+    ).toBeInTheDocument();
+  });
+  it('should renders correct message when the default values are set and the priorityFee values are updated', () => {
+    render({
+      advancedGasFee: { maxBaseFee: 2, priorityFee: 2 },
+    });
+    expect(document.getElementsByTagName('input')[2]).toBeChecked();
+    expect(
+      screen.queryByText(
+        'Always use these values and advanced setting as default.',
+      ),
+    ).toBeInTheDocument();
+    fireEvent.change(document.getElementsByTagName('input')[1], {
+      target: { value: 4 },
+    });
+    expect(document.getElementsByTagName('input')[1]).toHaveValue(4);
+    expect(
+      screen.queryByText(
+        'Update the values used by advanced settings by default.',
       ),
     ).toBeInTheDocument();
   });

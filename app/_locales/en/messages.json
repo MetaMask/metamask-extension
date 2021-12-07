@@ -171,7 +171,7 @@
     "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
   },
   "advancedGasFeeDefaultOptIn": {
-    "message": "Use the “new values” and advanced setting as default."
+    "message": "Update the values used by advanced settings by default."
   },
   "advancedGasFeeDefaultOptOut": {
     "message": "Always use these values and advanced setting as default."
