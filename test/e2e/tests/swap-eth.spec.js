@@ -27,23 +27,14 @@ describe('Swap Eth for another Token', function () {
           xpath:
             "//*[contains(text(),'Swap')]/preceding-sibling::div[@class='icon-button__circle']",
         });
+        
+        await driver.clickElement('[class*="dropdown-search-list"] + div[class*="MuiFormControl-root MuiTextField-root"]');
+        await driver.fill('input[placeholder*="0"]','2');
+        await driver.clickElement('[class="dropdown-search-list__closed-primary-label dropdown-search-list__select-default"]');
+        await driver.fill('[placeholder="Search for a token"]','MATIC');
         await driver.clickElement({
           xpath:
-            "//*[contains(@class,'dropdown-search-list')]/following-sibling::div[contains(@class,'MuiFormControl-root MuiTextField-root')]",
-        });
-        await driver.fill({ xpath:
-          "//input[contains(@placeholder,'0')]",
-        },
-          '2',
-        );
-        await driver.clickElement({
-          xpath:
-            "//*[contains(@class,'dropdown-search-list__closed-primary-label')][contains(text(),'Select a token')]",
-        });
-        await driver.fill('[placeholder="Search for a token"]','Dai');
-        await driver.clickElement({
-          xpath:
-            "//*[contains(@class,'searchable-item-list__secondary-label')][contains(text(),'Dai')]",
+            "//*[contains(@class,'searchable-item-list__primary-label')][contains(text(),'MATIC')]",
         });
         await driver.delay(.5);
         await driver.clickElement('[data-testid="page-container-footer-next"]');
