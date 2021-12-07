@@ -19,7 +19,7 @@ const Accreditation = ({ fetchVia, address }) => {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const addressLink = getAccountLink(address, chainId, rpcPrefs);
 
-  const AccreditationLink = () => {
+  const EtherscanNotice = () => {
     return (
       <>
         <Typography
@@ -41,13 +41,35 @@ const Accreditation = ({ fetchVia, address }) => {
           rel="noopener noreferrer"
           title={t('etherscanView')}
         >
-          {fetchVia}
+          Etherscan
         </Button>
-        <Typography variant={TYPOGRAPHY.H7} boxProps={{ margin: 0 }}>
-          {t('transactionDecodingAccreditationDecoded')}
-        </Typography>
       </>
     );
+  };
+
+  const TruffleNotice = () => {
+    return (
+      <Typography variant={TYPOGRAPHY.H7} boxProps={{ margin: 0 }}>
+        {t('transactionDecodingAccreditationDecoded')}
+      </Typography>
+    );
+  };
+
+  const AccreditationLink = () => {
+    switch (fetchVia) {
+      case 'etherscan': {
+        return (
+          <>
+            <EtherscanNotice />
+            <br />
+            <TruffleNotice />
+          </>
+        );
+      }
+      default: {
+        return <TruffleNotice />;
+      }
+    }
   };
 
   return (
