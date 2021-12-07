@@ -30,16 +30,19 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  const [isShowPopover, setIsShowPopover] = useState(false);
+  const [isShowingPopover, setIsShowingPopover] = useState(false);
   return (
     <div>
-      <Button style={{ width: 'auto' }} onClick={() => setIsShowPopover(true)}>
+      <Button
+        style={{ width: 'auto' }}
+        onClick={() => setIsShowingPopover(true)}
+      >
         Show Popover
       </Button>
-      {isShowPopover && (
+      {isShowingPopover && (
         <Popover
           {...args}
-          onClose={() => setIsShowPopover(false)}
+          onClose={() => setIsShowingPopover(false)}
           title={args.title}
           subtitle={args.subtitle}
           footer={args.footer}
