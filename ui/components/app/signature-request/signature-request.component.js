@@ -46,7 +46,7 @@ export default class SignatureRequest extends PureComponent {
       hardwareWalletRequiresConnection,
     } = this.props;
     const { address: fromAddress } = fromAccount;
-    const { message, domain = {}, primaryType } = JSON.parse(data);
+    const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const { metricsEvent } = this.context;
 
     const onSign = (event) => {
@@ -106,7 +106,7 @@ export default class SignatureRequest extends PureComponent {
             <LedgerInstructionField showDataInstruction />
           </div>
         ) : null}
-        <Message data={sanitizeMessage(message, primaryType)} />
+        <Message data={sanitizeMessage(message, primaryType, types)} />
         <Footer
           cancelAction={onCancel}
           signAction={onSign}
