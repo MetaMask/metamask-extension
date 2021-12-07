@@ -91,8 +91,8 @@ export function addressSummary(
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
-      checked.length - lastSegLength,
-    )}`
+        checked.length - lastSegLength,
+      )}`
     : '...';
 }
 
@@ -516,7 +516,7 @@ export const sanitizeMessage = (msg, baseType, types) => {
     );
 
     if (!definedType) {
-      return sanitizedMessage;
+      return;
     }
 
     // key has a type. check if the definedType is also a type
