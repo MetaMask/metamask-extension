@@ -12,6 +12,7 @@ import {
 import Typography from '../../../ui/typography';
 
 const EditGasToolTip = ({
+  gasLimit,
   priorityLevel,
   // maxFeePerGas & maxPriorityFeePerGas are derived from conditional logic
   // related to the source of the estimates. We pass these values from the
@@ -19,7 +20,6 @@ const EditGasToolTip = ({
   maxFeePerGas,
   maxPriorityFeePerGas,
   editGasMode,
-  gasLimit,
   transaction,
   t,
 }) => {
@@ -38,6 +38,7 @@ const EditGasToolTip = ({
           </span>,
         ]);
       case PRIORITY_LEVELS.HIGH:
+        console.log('--------', editGasMode === EDIT_GAS_MODES.SWAPS);
         if (editGasMode === EDIT_GAS_MODES.SWAPS) {
           return t('swapSuggestedGasSettingToolTipMessage');
         }

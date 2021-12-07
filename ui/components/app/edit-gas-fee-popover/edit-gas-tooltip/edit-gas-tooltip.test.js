@@ -31,7 +31,7 @@ const HIGH_GAS_OPTION = {
   maxPriorityFeePerGas: '2',
 };
 
-const renderComponent = (componentProps, gasFeeContextProps) => {
+const renderComponent = (componentProps) => {
   const mockStore = {
     metamask: {
       provider: {},
@@ -44,10 +44,6 @@ const renderComponent = (componentProps, gasFeeContextProps) => {
       },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
-      advancedGasFee: {
-        maxBaseFee: '1.5',
-        priorityFee: '2',
-      },
       swapsState: {},
     },
   };
@@ -55,11 +51,8 @@ const renderComponent = (componentProps, gasFeeContextProps) => {
   const store = configureStore(mockStore);
 
   return renderWithProvider(
-    <GasFeeContextProvider
-      transaction={{ txParams: { gas: '0x5208' } }}
-      {...gasFeeContextProps}
-    >
-      <EditGasToolTip {...componentProps} t={jest.fn()} />
+    <GasFeeContextProvider transaction={{ txParams: { gas: '0x5208' } }}>
+      <EditGasToolTip {...componentProps} t={jest.fn()} gasLimit="21000" />
     </GasFeeContextProvider>,
     store,
   );
@@ -98,13 +91,12 @@ describe('EditGasToolTip', () => {
   });
 
   it('should render correct tooltip for swaps', () => {
-    const { queryByText } = renderComponent(
-      {
-        priorityLevel: 'high',
-        ...HIGH_GAS_OPTION,
-      },
-      { editGasMode: EDIT_GAS_MODES.SWAPS },
-    );
+    const { queryByText } = renderComponent({
+      priorityLevel: 'high',
+      editGasMode: EDIT_GAS_MODES.SWAPS,
+      ...HIGH_GAS_OPTION,
+    });
+
     expect(
       queryByText(
         'Swaps are complex and time sensitive transactions. We recommend this gas fee for a good balance between cost and confidence of a successful Swap.',
