@@ -179,13 +179,15 @@ export default class TransactionListItemDetails extends PureComponent {
           </div>
           <div className="transaction-list-item-details__header">
             <div className="transaction-list-item-details__tx-status">
-              <div>Status</div>
-              <div>
+              <div className="transaction-list-item-details__tx-status-label">
+                Status
+              </div>
+              <div className="transaction-list-item-details__tx-status-value">
                 <TransactionStatus />
               </div>
             </div>
             <div className="transaction-list-item-details__tx-hash">
-              <div>
+              <div className="transaction-list-item-details__tx-hash-explorer">
                 <Button
                   type="link"
                   onClick={this.handleBlockExplorerClick}
@@ -194,7 +196,7 @@ export default class TransactionListItemDetails extends PureComponent {
                   {t('viewOnBlockExplorer')}
                 </Button>
               </div>
-              <div>
+              <div className="transaction-list-item-details__tx-hash-id">
                 <Tooltip
                   wrapperClassName="transaction-list-item-details__header-button"
                   containerClassName="transaction-list-item-details__header-button-tooltip-container"
