@@ -341,44 +341,50 @@ describe('util', () => {
     });
   });
   describe('sanitizeMessage', () => {
-    const message = {
-      contents: 'Hello, Bob!',
-      from: {
-        name: 'Cow',
-        wallets: [
-          '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-          '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
-        ],
-      },
-      to: [
-        {
-          name: 'Bob',
+    let message;
+    let primaryType;
+    let types;
+
+    beforeEach(() => {
+      message = {
+        contents: 'Hello, Bob!',
+        from: {
+          name: 'Cow',
           wallets: [
-            '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
-            '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
-            '0xB0B0b0b0b0b0B000000000000000000000000000',
+            '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+            '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
           ],
         },
-      ],
-    };
-    const primaryType = 'Mail';
-    const types = {
-      EIP712Domain: [
-        { name: 'name', type: 'string' },
-        { name: 'version', type: 'string' },
-        { name: 'chainId', type: 'uint256' },
-        { name: 'verifyingContract', type: 'address' },
-      ],
-      Mail: [
-        { name: 'from', type: 'Person' },
-        { name: 'to', type: 'Person[]' },
-        { name: 'contents', type: 'string' },
-      ],
-      Person: [
-        { name: 'name', type: 'string' },
-        { name: 'wallets', type: 'address[]' },
-      ],
-    };
+        to: [
+          {
+            name: 'Bob',
+            wallets: [
+              '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+              '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+              '0xB0B0b0b0b0b0B000000000000000000000000000',
+            ],
+          },
+        ],
+      };
+      primaryType = 'Mail';
+      types = {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' },
+        ],
+        Mail: [
+          { name: 'from', type: 'Person' },
+          { name: 'to', type: 'Person[]' },
+          { name: 'contents', type: 'string' },
+        ],
+        Person: [
+          { name: 'name', type: 'string' },
+          { name: 'wallets', type: 'address[]' },
+        ],
+      };
+    });
 
     it('should return same message if types is not defined', () => {
       const result = util.sanitizeMessage(message, primaryType, null);
