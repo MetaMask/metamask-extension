@@ -22,6 +22,7 @@ module.exports = {
 
   ignorePatterns: [
     '!.eslintrc.js',
+    '!.mocharc.js',
     'node_modules/**',
     'dist/**',
     'builds/**',
@@ -188,7 +189,9 @@ module.exports = {
     {
       files: [
         '.eslintrc.js',
+        '.mocharc.js',
         'babel.config.js',
+        'jest.config.js',
         'nyc.config.js',
         'stylelint.config.js',
         'app/scripts/lockdown-run.js',
@@ -199,7 +202,6 @@ module.exports = {
         'test/setup.js',
         'test/helpers/protect-intrinsics-helpers.js',
         'test/lib/wait-until-called.js',
-        'jest*.config.js',
       ],
       parserOptions: {
         sourceType: 'script',
