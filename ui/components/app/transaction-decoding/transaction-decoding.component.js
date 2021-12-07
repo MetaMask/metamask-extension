@@ -6,16 +6,15 @@ import { useSelector } from 'react-redux';
 import * as Codec from '@truffle/codec';
 import Spinner from '../../ui/spinner';
 import ErrorMessage from '../../ui/error-message';
-import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
 import { getSelectedAccount, getCurrentChainId } from '../../../selectors';
 import { hexToDecimal } from '../../../helpers/utils/conversions.util';
 import { I18nContext } from '../../../contexts/i18n';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { transformTxDecoding } from './transaction-decoding.util';
 import {
-  FETCH_PROJECT_INFO_URI,
-  FETCH_SUPPORTED_NETWORKS_URI,
-} from './constants';
+  transformTxDecoding,
+  fetchSupportedNetworks,
+  fetchProjectInfo,
+} from './transaction-decoding.util';
 
 import Address from './components/decoding/address';
 import CopyRawData from './components/ui/copy-raw-data';
@@ -33,31 +32,18 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   useEffect(() => {
     (async () => {
       setLoading(true);
+
       try {
-        const networks = await fetchWithCache(FETCH_SUPPORTED_NETWORKS_URI, {
-          method: 'GET',
-        });
+        // check if decoding service is available for current network
+        await fetchSupportedNetworks(
+          network,
+          t('transactionDecodingUnsupportedNetworkError', [network]),
+        );
 
-        if (
-          !networks.some(
-            (n) => n.active && Number(n.chainId) === Number(network),
-          )
-        ) {
-          throw new Error(
-            t('transactionDecodingUnsupportedNetworkError', [network]),
-          );
-        }
+        // fetch project-info for correspondent contract address
+        const projectInfo = await fetchProjectInfo(to, network);
 
-        const requestUrl = `${FETCH_PROJECT_INFO_URI}?${new URLSearchParams({
-          to,
-          'network-id': network,
-        })}`;
-
-        const response = await fetchWithCache(requestUrl, { method: 'GET' });
-
-        const { info: projectInfo } = response;
-
-        // creating instance of the truffle decoder
+        // creating an instance of the truffle decoder
         const decoder = await forAddress(to, {
           provider: global.ethereumProvider,
           projectInfo,
@@ -74,7 +60,6 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         // transform tx decoding arguments into tree data
         const params = transformTxDecoding(decoding?.arguments);
         setTx(params);
-
         setLoading(false);
       } catch (error) {
         setLoading(false);
