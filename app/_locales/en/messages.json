@@ -3429,5 +3429,14 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "notifications9Title": {
+    "message": "👓 We are making transactions easier to read."
+  },
+  "notifications9DescriptionOne": {
+    "message": "We now provide you with more insights on the 'Data' tab when confirming smart contract transactions."
+  },
+  "notifications9DescriptionTwo": {
+    "message": "You can now get a better understanding of your transaction’s details before confirming, and more easily add transaction addresses to your address book, helping you make safe and informed decisions."
   }
 }
