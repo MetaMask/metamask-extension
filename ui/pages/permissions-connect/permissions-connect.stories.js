@@ -22,7 +22,7 @@ export const ChooseAccountComponent = () => {
         ])
       }
       targetSubjectMetadata={{
-        iconUrl: './gnosis.svg',
+        icon: './gnosis.svg',
         name: 'Gnosis - Manage Digital Assets',
         origin: 'https://gnosis-safe.io',
       }}
