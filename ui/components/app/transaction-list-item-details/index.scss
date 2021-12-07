@@ -1,5 +1,4 @@
 .transaction-list-item-details {
-
   &__sender-to-recipient-header {
     display: flex;
     font-size: 14px;
@@ -36,7 +35,8 @@
       padding-bottom: 16px;
     }
 
-    &-explorer, &-id {
+    &-explorer,
+    &-id {
       .btn-link {
         font-size: 0.75rem;
         line-height: 100%;

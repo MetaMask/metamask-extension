@@ -47,6 +47,7 @@
 
     &__solidity-raw {
       @include H6;
+
       text-align: left;
       white-space: pre-wrap;
     }
@@ -68,6 +69,7 @@
       display: flex;
       flex-wrap: wrap;
       word-break: break-all;
+
       &--param-name {
         padding-right: 4px;
         color: $ui-black;
