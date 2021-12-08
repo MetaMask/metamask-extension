@@ -362,11 +362,7 @@ class NetworkDropdown extends Component {
             this.props.provider,
           )}
 
-          <div
-            className={classnames('network-dropdown-testnets', {
-              'network-dropdown-testnets--no-visibility': !shouldShowTestNetworks,
-            })}
-          >
+          {shouldShowTestNetworks && (<>
             {this.renderNetworkEntry('ropsten')}
             {this.renderNetworkEntry('kovan')}
             {this.renderNetworkEntry('rinkeby')}
@@ -376,7 +372,7 @@ class NetworkDropdown extends Component {
               this.props.provider,
               { isLocalHost: true },
             )}
-          </div>
+          </>)}
         </div>
 
         {this.renderAddCustomButton()}
