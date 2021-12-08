@@ -1,4 +1,5 @@
 import { permissionRpcMethods } from '@metamask/snap-controllers';
+import { selectHooks } from '@metamask/rpc-methods';
 import { ethErrors } from 'eth-rpc-errors';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 import localHandlers from './handlers';
@@ -48,24 +49,4 @@ export default function createMethodMiddleware(hooks) {
 
     return next();
   };
-}
-
-/**
- * Returns the subset of the specified `hooks` that are included in the
- * `hookNames` object. This is a Principle of Least Authority (POLA) measure
- * to ensure that each RPC method implementation only has access to the
- * API "hooks" it needs to do its job.
- *
- * @param {Record<string, unknown>} hooks - The hooks to select from.
- * @param {Record<string, true>} hookNames - The names of the hooks to select.
- * @returns {Record<string, unknown> | undefined} The selected hooks.
- */
-function selectHooks(hooks, hookNames) {
-  if (hookNames) {
-    return Object.keys(hookNames).reduce((hookSubset, hookName) => {
-      hookSubset[hookName] = hooks[hookName];
-      return hookSubset;
-    }, {});
-  }
-  return undefined;
 }
