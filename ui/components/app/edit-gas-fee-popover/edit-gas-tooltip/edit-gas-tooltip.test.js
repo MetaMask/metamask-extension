@@ -52,7 +52,7 @@ const renderComponent = (componentProps) => {
 
   return renderWithProvider(
     <GasFeeContextProvider transaction={{ txParams: { gas: '0x5208' } }}>
-      <EditGasToolTip {...componentProps} t={jest.fn()} gasLimit="21000" />
+      <EditGasToolTip {...componentProps} t={jest.fn()} gasLimit={21000} />
     </GasFeeContextProvider>,
     store,
   );
@@ -88,19 +88,5 @@ describe('EditGasToolTip', () => {
     expect(queryByText('2.920638342')).toBeInTheDocument();
     expect(queryByText('2')).toBeInTheDocument();
     expect(queryByText('21000')).toBeInTheDocument();
-  });
-
-  it('should render correct tooltip for swaps', () => {
-    const { queryByText } = renderComponent({
-      priorityLevel: 'high',
-      editGasMode: EDIT_GAS_MODES.SWAPS,
-      ...HIGH_GAS_OPTION,
-    });
-
-    expect(
-      queryByText(
-        'Swaps are complex and time sensitive transactions. We recommend this gas fee for a good balance between cost and confidence of a successful Swap.',
-      ),
-    ).toBeInTheDocument();
   });
 });

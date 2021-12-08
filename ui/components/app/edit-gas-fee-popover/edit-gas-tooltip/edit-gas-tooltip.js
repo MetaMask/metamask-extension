@@ -38,7 +38,6 @@ const EditGasToolTip = ({
           </span>,
         ]);
       case PRIORITY_LEVELS.HIGH:
-        console.log('--------', editGasMode === EDIT_GAS_MODES.SWAPS);
         if (editGasMode === EDIT_GAS_MODES.SWAPS) {
           return t('swapSuggestedGasSettingToolTipMessage');
         }
