@@ -1,51 +1,89 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
 
 import { renderWithProvider } from '../../../../../../test/jest';
-import { ETH } from '../../../../../helpers/constants/common';
-import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
+import { GasFeeContext } from '../../../../../contexts/gasFee';
 import configureStore from '../../../../../store/store';
 
 import StatusSlider from './status-slider';
 
-jest.mock('../../../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
-    .fn()
-    .mockImplementation(() => Promise.resolve()),
-  addPollingTokenToAppState: jest.fn(),
-  getGasFeeTimeEstimate: jest
-    .fn()
-    .mockImplementation(() => Promise.resolve('unknown')),
-}));
-
-const renderComponent = () => {
-  const store = configureStore({
-    metamask: {
-      nativeCurrency: ETH,
-      provider: {},
-      cachedBalances: {},
-      accounts: {
-        '0xAddress': {
-          address: '0xAddress',
-          balance: '0x176e5b6f173ebe66',
-        },
-      },
-      selectedAddress: '0xAddress',
-    },
-  });
-
-  return renderWithProvider(
-    <GasFeeContextProvider>
+const renderComponent = ({ networkCongestion }) => {
+  const component = (
+    <GasFeeContext.Provider value={{ gasFeeEstimates: { networkCongestion } }}>
       <StatusSlider />
-    </GasFeeContextProvider>,
-    store,
+    </GasFeeContext.Provider>
   );
+
+  const store = configureStore();
+
+  return renderWithProvider(component, store);
 };
 
-describe('NetworkStatus', () => {
-  it('should renders stable for statusValue > 0.33 and <= 0.66', () => {
-    renderComponent();
-    expect(screen.queryByText('Stable')).toBeInTheDocument();
+describe('StatusSlider', () => {
+  it('should show "Not busy" when networkCongestion is less than 0.33', () => {
+    const { queryByText } = renderComponent({ networkCongestion: 0.32 });
+    expect(queryByText('Not busy')).toBeInTheDocument();
+  });
+
+  it('should show "Not busy" when networkCongestion is 0.33', () => {
+    const { queryByText } = renderComponent({ networkCongestion: 0.33 });
+    expect(queryByText('Not busy')).toBeInTheDocument();
+  });
+
+  it('should show "Stable" when networkCongestion is between 0.33 and 0.66', () => {
+    const { queryByText } = renderComponent({ networkCongestion: 0.5 });
+    expect(queryByText('Stable')).toBeInTheDocument();
+  });
+
+  it('should show "Stable" when networkCongestion is 0.66', () => {
+    const { queryByText } = renderComponent({ networkCongestion: 0.66 });
+    expect(queryByText('Stable')).toBeInTheDocument();
+  });
+
+  it('should show "Busy" when networkCongestion is greater than 0.66', () => {
+    const { queryByText } = renderComponent({ networkCongestion: 0.67 });
+    expect(queryByText('Busy')).toBeInTheDocument();
+  });
+
+  it('should show "Stable" if networkCongestion has not been set yet', () => {
+    const { getByText } = renderComponent({});
+    expect(getByText('Stable')).toBeInTheDocument();
+  });
+
+  it('should position the arrow based on converting networkCongestion to a percentage rounded to the nearest 10', () => {
+    const { getByTestId } = renderComponent({ networkCongestion: 0.23 });
+    expect(getByTestId('status-slider-arrow-border')).toHaveStyle(
+      'margin-left: 20%',
+    );
+  });
+
+  it('should position the arrow in the middle if networkCongestion has not been set yet', () => {
+    const { getByTestId } = renderComponent({});
+    expect(getByTestId('status-slider-arrow-border')).toHaveStyle(
+      'margin-left: 50%',
+    );
+  });
+
+  it('should color the arrow and label based on converting networkCongestion to a percentage rounded to the nearest 10', () => {
+    const { getByTestId } = renderComponent({ networkCongestion: 0.23 });
+    expect(getByTestId('status-slider-arrow')).toHaveStyle(
+      'border-top-color: #2D70BA',
+    );
+    expect(getByTestId('status-slider-label')).toHaveStyle('color: #2D70BA');
+  });
+
+  it('should color the arrow and label for the end position if networkCongestion rounds to 100%', () => {
+    const { getByTestId } = renderComponent({ networkCongestion: 0.95 });
+    expect(getByTestId('status-slider-arrow')).toHaveStyle(
+      'border-top-color: #D73A49',
+    );
+    expect(getByTestId('status-slider-label')).toHaveStyle('color: #D73A49');
+  });
+
+  it('should color the arrow and label for the middle position if networkCongestion has not been set yet', () => {
+    const { getByTestId } = renderComponent({});
+    expect(getByTestId('status-slider-arrow')).toHaveStyle(
+      'border-top-color: #6A5D92',
+    );
+    expect(getByTestId('status-slider-label')).toHaveStyle('color: #6A5D92');
   });
 });
