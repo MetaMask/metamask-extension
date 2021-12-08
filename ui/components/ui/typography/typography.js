@@ -83,6 +83,6 @@ Typography.propTypes = {
     'div',
     'dt',
     'dd',
-    'i',
+    'i', // used for fontawesome
   ]),
 };

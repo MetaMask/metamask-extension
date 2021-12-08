@@ -177,4 +177,5 @@ Box.propTypes = {
   height: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
   backgroundColor: PropTypes.oneOf(Object.values(COLORS)),
   className: PropTypes.string,
+  Tag: PropTypes.string,
 };
