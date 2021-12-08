@@ -12,9 +12,12 @@ import Typography from '../../../components/ui/typography/typography';
 import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
 import I18nValue from '../../../components/ui/i18n-value';
 import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
+import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import { useGasFeeContext } from '../../../contexts/gasFee';
+
+const HeartBeat = () => (process.env.IN_TEST ? null : <LoadingHeartBeat />);
 
 const GasDetailsItem = ({
   hexMaximumTransactionFee,
@@ -70,6 +73,7 @@ const GasDetailsItem = ({
       detailTitleColor={COLORS.BLACK}
       detailText={
         <div className="gas-details-item__currency-container">
+          <HeartBeat />
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
             value={hexMinimumTransactionFee}
@@ -79,6 +83,7 @@ const GasDetailsItem = ({
       }
       detailTotal={
         <div className="gas-details-item__currency-container">
+          <HeartBeat />
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
             value={hexMinimumTransactionFee}
@@ -105,6 +110,7 @@ const GasDetailsItem = ({
               key="editGasSubTextFeeValue"
               className="gas-details-item__currency-container"
             >
+              <HeartBeat />
               <UserPreferencedCurrencyDisplay
                 key="editGasSubTextFeeAmount"
                 type={PRIMARY}
