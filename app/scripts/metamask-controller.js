@@ -58,7 +58,10 @@ import {
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
-import { POLLING_TOKEN_ENVIRONMENT_TYPES } from '../../shared/constants/app';
+import {
+  POLLING_TOKEN_ENVIRONMENT_TYPES,
+  SUBJECT_TYPES,
+} from '../../shared/constants/app';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
@@ -2634,7 +2637,12 @@ export default class MetamaskController extends EventEmitter {
    */
   setupProviderConnection(outStream, sender, isInternal) {
     const origin = isInternal ? 'metamask' : new URL(sender.url).origin;
+    let subjectType = isInternal
+      ? SUBJECT_TYPES.INTERNAL
+      : SUBJECT_TYPES.WEBSITE;
+
     if (sender.id !== this.extension.runtime.id) {
+      subjectType = SUBJECT_TYPES.EXTENSION;
       this.subjectMetadataController.addSubjectMetadata(origin, {
         extensionId: sender.id,
       });
@@ -2649,7 +2657,7 @@ export default class MetamaskController extends EventEmitter {
       origin,
       location: sender.url,
       tabId,
-      isInternal,
+      subjectType,
     });
 
     // setup connection
@@ -2672,14 +2680,15 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * A method for creating a provider that is safely restricted for the requesting domain.
+   * A method for creating a provider that is safely restricted for the requesting subject.
+   *
    * @param {Object} options - Provider engine options
    * @param {string} options.origin - The origin of the sender
    * @param {string} options.location - The full URL of the sender
+   * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
-   * @param {boolean} [options.isInternal] - True if called for a connection to an internal process
    **/
-  setupProviderEngine({ origin, location, tabId, isInternal = false }) {
+  setupProviderEngine({ origin, location, subjectType, tabId }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
     const { provider, blockTracker } = this;
@@ -2714,6 +2723,8 @@ export default class MetamaskController extends EventEmitter {
     engine.push(
       createMethodMiddleware({
         origin,
+
+        subjectType,
 
         // Miscellaneous
         addSubjectMetadata: this.subjectMetadataController.addSubjectMetadata.bind(
@@ -2796,7 +2807,7 @@ export default class MetamaskController extends EventEmitter {
     // filter and subscription polyfills
     engine.push(filterMiddleware);
     engine.push(subscriptionManager.middleware);
-    if (!isInternal) {
+    if (subjectType !== SUBJECT_TYPES.INTERNAL) {
       // permissions
       engine.push(
         this.permissionController.createPermissionMiddleware({
