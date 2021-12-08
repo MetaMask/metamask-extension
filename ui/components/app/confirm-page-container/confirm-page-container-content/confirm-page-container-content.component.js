@@ -68,12 +68,14 @@ export default class ConfirmPageContainerContent extends Component {
         <Tab className="confirm-page-container-content__tab" name={t('data')}>
           {dataComponent}
         </Tab>
-        <Tab
-          className="confirm-page-container-content__tab"
-          name={t('dataHex')}
-        >
-          {dataHexComponent}
-        </Tab>
+        {dataHexComponent && (
+          <Tab
+            className="confirm-page-container-content__tab"
+            name={t('dataHex')}
+          >
+            {dataHexComponent}
+          </Tab>
+        )}
       </Tabs>
     );
   }

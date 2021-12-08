@@ -1,0 +1,23 @@
+.accreditation {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+
+  &__icon {
+    margin-right: 8px;
+  }
+
+  &__info {
+    color: $ui-black;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__link.btn-link {
+    @include H7;
+
+    padding: 0 4px;
+    width: auto;
+  }
+}
+

@@ -11366,9 +11366,9 @@ eth-json-rpc-middleware@^6.0.0:
     safe-event-emitter "^1.0.1"
 
 eth-json-rpc-middleware@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-8.0.0.tgz#d2a50a5fceca996ddc9d6775d53cf7e341500a88"
-  integrity sha512-G0693ZsEXzERrvE6mb2fevDvSE2gs1ClqFnh/r6/RUYq3y1uzK/5klRsfQvQPCGM9q2FEBKxWYdbIjMZAXWcDQ==
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/eth-json-rpc-middleware/-/eth-json-rpc-middleware-8.0.1.tgz#b3761620d3e5dda3f5bed3fd953dc326c7dcee44"
+  integrity sha512-Ar/Sp1J9H0RT3TmzVBr//UW3Lf4TowUJMyu9bqffKV0iLdFwbE6k07NxchPEzO8D918uS2LdyIyZh4v6avGHwA==
   dependencies:
     "@metamask/safe-event-emitter" "^2.0.0"
     btoa "^1.2.1"

@@ -1,33 +1,75 @@
 import React from 'react';
+import README from './README.mdx';
 import TextField from '.';
 
 export default {
   title: 'Components/UI/TextField',
   id: __filename,
+  component: TextField,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    error: { control: 'text' },
+    classes: { control: 'object' },
+    dir: { control: 'text' },
+    theme: {
+      control: 'select',
+      options: ['bordered', 'material', 'material-white-padded'],
+    },
+    startAdornment: { control: 'element' },
+    largeLabel: { control: 'boolean' },
+    min: { control: 'number' },
+    max: { control: 'number' },
+    autoComplete: { control: 'text' },
+  },
 };
 
-export const DefaultStory = () => <TextField label="Text" type="text" />;
-
+export const DefaultStory = (args) => <TextField {...args} />;
 DefaultStory.storyName = 'Default';
+DefaultStory.args = {
+  label: 'Text',
+  type: 'text',
+};
 
-export const Password = () => <TextField label="Password" type="password" />;
+export const Password = (args) => <TextField {...args} />;
+Password.args = {
+  label: 'Password',
+  type: 'password',
+};
+export const Error = (args) => <TextField {...args} />;
+Error.args = {
+  type: 'text',
+  label: 'Name',
+  error: 'Invalid Value',
+};
+export const MascaraText = (args) => <TextField {...args} />;
+MascaraText.args = {
+  label: 'Text',
+  type: 'text',
+  largeLabel: true,
+};
 
-export const Error = () => (
-  <TextField type="text" label="Name" error="Invalid value" />
-);
+export const MaterialText = (args) => <TextField {...args} />;
+MaterialText.args = {
+  label: 'Text',
+  type: 'text',
+  theme: 'material',
+};
 
-export const MascaraText = () => (
-  <TextField label="Text" type="text" largeLabel />
-);
+export const MaterialPassword = (args) => <TextField {...args} />;
+MaterialPassword.args = {
+  label: 'Password',
+  type: 'password',
+  theme: 'material',
+};
 
-export const MaterialText = () => (
-  <TextField label="Text" type="text" theme="material" />
-);
-
-export const MaterialPassword = () => (
-  <TextField label="Password" type="password" theme="material" />
-);
-
-export const MaterialError = () => (
-  <TextField type="text" label="Name" error="Invalid value" theme="material" />
-);
+export const MaterialError = (args) => <TextField {...args} />;
+MaterialError.args = {
+  type: 'text',
+  label: 'Name',
+  error: 'Invalid Value',
+  theme: 'material',
+};

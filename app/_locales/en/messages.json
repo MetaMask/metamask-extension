@@ -86,7 +86,7 @@
     "message": "Activity"
   },
   "activityLog": {
-    "message": "activity log"
+    "message": "Activity log"
   },
   "add": {
     "message": "Add"
@@ -3111,6 +3111,12 @@
   "transactionData": {
     "message": "Transaction data"
   },
+  "transactionDecodingAccreditationDecoded": {
+    "message": "Decoded by Truffle"
+  },
+  "transactionDecodingAccreditationVerified": {
+    "message": "Verified contract on"
+  },
   "transactionDecodingUnsupportedNetworkError": {
     "message": "Transaction decoding is not available for chainId $1"
   },
@@ -3223,6 +3229,9 @@
   },
   "twelveHrTitle": {
     "message": "12hr:"
+  },
+  "txInsightsNotSupported": {
+    "message": "Transaction insights not supported for this contract at this time."
   },
   "typePassword": {
     "message": "Type your MetaMask password"
