@@ -31,10 +31,9 @@ export default class ChooseAccount extends Component {
     cancelPermissionsRequest: PropTypes.func.isRequired,
     permissionsRequestId: PropTypes.string.isRequired,
     selectedAccountAddresses: PropTypes.object.isRequired,
-    targetDomainMetadata: PropTypes.shape({
+    targetSubjectMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
-      icon: PropTypes.string,
-      host: PropTypes.string.isRequired,
+      iconUrl: PropTypes.string,
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
     }),
@@ -199,7 +198,7 @@ export default class ChooseAccount extends Component {
       selectAccounts,
       permissionsRequestId,
       cancelPermissionsRequest,
-      targetDomainMetadata,
+      targetSubjectMetadata,
       accounts,
     } = this.props;
     const { selectedAccounts } = this.state;
@@ -207,15 +206,15 @@ export default class ChooseAccount extends Component {
     return (
       <div className="permissions-connect-choose-account">
         <PermissionsConnectHeader
-          icon={targetDomainMetadata.icon}
-          iconName={targetDomainMetadata.name}
+          icon={targetSubjectMetadata.iconUrl}
+          iconName={targetSubjectMetadata.name}
           headerTitle={t('connectWithMetaMask')}
           headerText={
             accounts.length > 0
               ? t('selectAccounts')
               : t('connectAccountOrCreate')
           }
-          siteOrigin={targetDomainMetadata.origin}
+          siteOrigin={targetSubjectMetadata.origin}
         />
         {this.renderAccountsListHeader()}
         {this.renderAccountsList()}

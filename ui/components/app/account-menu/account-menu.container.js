@@ -8,7 +8,7 @@ import {
   hideWarning,
 } from '../../../store/actions';
 import {
-  getAddressConnectedDomainMap,
+  getAddressConnectedSubjectMap,
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
@@ -31,7 +31,7 @@ function mapStateToProps(state) {
 
   return {
     isAccountMenuOpen,
-    addressConnectedDomainMap: getAddressConnectedDomainMap(state),
+    addressConnectedSubjectMap: getAddressConnectedSubjectMap(state),
     originOfCurrentTab: origin,
     selectedAddress,
     keyrings: getMetaMaskKeyrings(state),

@@ -1,74 +1,85 @@
-import { strict as assert } from 'assert';
-import nodeify from './nodeify';
+import { nodeify, nodeifyObject } from './nodeify';
 
-describe('nodeify', function () {
-  const obj = {
-    foo: 'bar',
-    promiseFunc(a) {
-      const solution = this.foo + a;
-      return Promise.resolve(solution);
-    },
+describe('nodeify', () => {
+  const getObject = () => {
+    return {
+      foo: 'bar',
+      promiseFunc(a) {
+        const solution = this.foo + a;
+        return Promise.resolve(solution);
+      },
+    };
   };
 
-  it('should retain original context', function (done) {
+  it('should retain original context', () => {
+    const obj = getObject();
     const nodified = nodeify(obj.promiseFunc, obj);
-    nodified('baz', (err, res) => {
-      if (!err) {
-        assert.equal(res, 'barbaz');
-        done();
-        return;
-      }
-
-      done(new Error(err.toString()));
+    nodified('baz', (_, res) => {
+      expect(res).toStrictEqual('barbaz');
     });
   });
 
-  it('no callback - should allow the last argument to not be a function', function (done) {
+  it('no callback - should allow the last argument to not be a function', async () => {
+    const obj = getObject();
     const nodified = nodeify(obj.promiseFunc, obj);
-    try {
+    await expect(() => {
       nodified('baz');
-      done();
-    } catch (err) {
-      done(
-        new Error(
-          'should not have thrown if the last argument is not a function',
-        ),
-      );
-    }
+    }).not.toThrow();
   });
 
-  it('sync functions - returns value', function (done) {
+  it('sync functions - returns value', async () => {
     const nodified = nodeify(() => 42);
-    try {
-      nodified((err, result) => {
-        if (err) {
-          done(new Error(`should not have thrown any error: ${err.message}`));
-          return;
-        }
-        assert.equal(42, result, 'got expected result');
-      });
-      done();
-    } catch (err) {
-      done(new Error(`should not have thrown any error: ${err.message}`));
-    }
+    nodified((_, result) => {
+      expect(42).toStrictEqual(result);
+    });
   });
 
-  it('sync functions - handles errors', function (done) {
+  it('sync functions - handles errors', () => {
     const nodified = nodeify(() => {
       throw new Error('boom!');
     });
-    try {
-      nodified((err, result) => {
-        if (result) {
-          done(new Error('should not have returned any result'));
-          return;
-        }
-        assert.ok(err, 'got expected error');
-        assert.ok(err.message.includes('boom!'), 'got expected error message');
-      });
-      done();
-    } catch (err) {
-      done(new Error(`should not have thrown any error: ${err.message}`));
-    }
+    nodified((err, _) => {
+      expect(err.message).toStrictEqual('boom!');
+    });
+  });
+
+  describe('nodeifyObject', () => {
+    it('nodeifies every function of an object', async () => {
+      const obj = {
+        notFunction: 'bar',
+        syncFunction: () => 'hello',
+        asyncFunction: async () => 'goodbye',
+      };
+
+      const nodeified = nodeifyObject(obj, null);
+      expect(nodeified.notFunction).toStrictEqual(obj.notFunction);
+
+      await Promise.all([
+        new Promise((resolve, reject) => {
+          nodeified.syncFunction((err, result) => {
+            if (err) {
+              reject(
+                new Error(`should not have thrown any error: ${err.message}`),
+              );
+              return;
+            }
+            expect(result).toStrictEqual('hello');
+            resolve();
+          });
+        }),
+        new Promise((resolve, reject) => {
+          nodeified.asyncFunction((err, result) => {
+            if (err) {
+              reject(
+                new Error(`should not have thrown any error: ${err.message}`),
+              );
+              return;
+            }
+            expect(result).toStrictEqual('goodbye');
+            resolve();
+          });
+        }),
+      ]);
+    });
   });
 });

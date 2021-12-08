@@ -6,7 +6,7 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import Button from '../../../ui/button';
 import I18nValue from '../../../ui/i18n-value';
 
-import { useAdvanceGasFeePopoverContext } from '../context';
+import { useAdvancedGasFeePopoverContext } from '../context';
 import { decGWEIToHexWEI } from '../../../../../shared/modules/conversion.utils';
 
 const AdvancedGasFeeSaveButton = () => {
@@ -15,9 +15,10 @@ const AdvancedGasFeeSaveButton = () => {
   const {
     isDirty,
     gasLimit,
+    hasError,
     maxFeePerGas,
     maxPriorityFeePerGas,
-  } = useAdvanceGasFeePopoverContext();
+  } = useAdvancedGasFeePopoverContext();
 
   const onSave = () => {
     updateTransaction({
@@ -30,7 +31,7 @@ const AdvancedGasFeeSaveButton = () => {
   };
 
   return (
-    <Button type="primary" disabled={!isDirty} onClick={onSave}>
+    <Button type="primary" disabled={!isDirty || hasError} onClick={onSave}>
       <I18nValue messageKey="save" />
     </Button>
   );

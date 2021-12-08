@@ -39,6 +39,7 @@ import {
   getSmartTransactionsEnabled,
   getSmartTransactionsError,
   getSmartTransactionsErrorMessageDismissed,
+  navigateBackToBuildQuote,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
@@ -102,6 +103,7 @@ export default function Swap() {
   const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
   const isSmartTransactionStatusRoute =
     pathname === SMART_TRANSACTION_STATUS_ROUTE;
+  const isViewQuoteRoute = pathname === VIEW_QUOTE_ROUTE;
 
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
@@ -290,22 +292,29 @@ export default function Swap() {
     <div className="swaps">
       <div className="swaps__container">
         <div className="swaps__header">
+          <div
+            className="swaps__header-edit"
+            onClick={async () => {
+              await dispatch(navigateBackToBuildQuote(history));
+            }}
+          >
+            {isViewQuoteRoute && t('edit')}
+          </div>
           <div className="swaps__title">{t('swap')}</div>
-          {!isAwaitingSwapRoute &&
-            !isAwaitingSignaturesRoute &&
-            !isSmartTransactionStatusRoute && (
-              <div
-                className="swaps__header-cancel"
-                onClick={async () => {
-                  clearTemporaryTokenRef.current();
-                  dispatch(clearSwapsState());
-                  await dispatch(resetBackgroundSwapsState());
-                  history.push(DEFAULT_ROUTE);
-                }}
-              >
-                {t('cancel')}
-              </div>
-            )}
+          <div
+            className="swaps__header-cancel"
+            onClick={async () => {
+              clearTemporaryTokenRef.current();
+              dispatch(clearSwapsState());
+              await dispatch(resetBackgroundSwapsState());
+              history.push(DEFAULT_ROUTE);
+            }}
+          >
+            {!isAwaitingSwapRoute &&
+              !isAwaitingSignaturesRoute &&
+              !isSmartTransactionStatusRoute &&
+              t('cancel')}
+          </div>
         </div>
         <div className="swaps__content">
           {showSmartTransactionsErrorMessage && (

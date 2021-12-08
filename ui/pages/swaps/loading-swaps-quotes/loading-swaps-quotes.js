@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { shuffle } from 'lodash';
 import { useHistory } from 'react-router-dom';
+import isEqual from 'lodash/isEqual';
 import {
   navigateBackToBuildQuote,
   getFetchParams,
@@ -32,7 +33,7 @@ export default function LoadingSwapsQuotes({
   const history = useHistory();
   const animationEventEmitter = useRef(new EventEmitter());
 
-  const fetchParams = useSelector(getFetchParams);
+  const fetchParams = useSelector(getFetchParams, isEqual);
   const quotesFetchStartTime = useSelector(getQuotesFetchStartTime);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);

@@ -23,7 +23,26 @@ See the [Button](https://metamask.github.io/metamask-storybook/index.html?path=/
 
 ## Creating a Story
 
-[Component Story Format (CSF)](https://storybook.js.org/docs/react/api/csf) is the recommended way to write stories. It's an open standard based on ES6 modules. The below example is of the Button component and it explains how we should write our stories.
+[Component Story Format (CSF)](https://storybook.js.org/docs/react/api/csf) is the recommended way to write stories. It's an open standard based on ES6 modules.
+
+A story can be as simple as:
+
+```jsx
+import React from 'react';
+import MyComponent from '.';
+
+export default {
+  title: 'Components/UI/MyComponent', // title should follow the folder structure location of the component. Don't use spaces.
+  id: __filename,
+};
+
+export const DefaultStory = () => <MyComponent />;
+
+DefaultStory.storyName = 'Default';
+```
+
+For a more in-depth and higher quality form of story and documentation, you can use controls and MDX docs.
+The example below displays the Button component and it explains how we should write our stories:
 
 ```jsx
 // Button component example story
@@ -38,12 +57,14 @@ import Button from '.';
 
 // The default storybook component export should always follow the same template
 export default {
-  title: 'Button', // The `title` effects the components tile and location in storybook
+  // The `title` effects the components tile and location in storybook
+  // It should follow the folder structure location of the component. Don't use spaces.
+  title: 'Components/UI/Button',
   id: __filename, // The file name id is used to track what storybook files have changed in CI
   component: Button, // The component you are documenting
   parameters: {
     docs: {
-      page: README, // Reference to the mdx file docs page
+      page: README, // Reference to the docs page MDX file
     },
   },
   // the controls plugin argTypes are used for the interactivity of the component
@@ -148,7 +169,7 @@ Buttons communicate actions that users can take.
 
 ## Component API
 
-<!-- Display the component api using the ArgsTable  -->
+<!-- Display the component api using the ArgsTable. Use JSDoc style comments in the PropTypes of your component to add descriptions for props  -->
 
 <ArgsTable of={Button} />
 

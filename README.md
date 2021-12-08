@@ -61,6 +61,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 
 * `yarn.lock`:
   * Run `yarn setup` again after your changes to ensure `yarn.lock` has been properly updated.
+  * Run `yarn yarn-deduplicate` to remove duplicate dependencies from the lockfile.
 * The `allow-scripts` configuration in `package.json`
   * Run `yarn allow-scripts auto` to update the `allow-scripts` configuration automatically. This config determines whether the package's install/postinstall scripts are allowed to run. Review each new package to determine whether the install script needs to run or not, testing if necessary.
   * Unfortunately, `yarn allow-scripts auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.

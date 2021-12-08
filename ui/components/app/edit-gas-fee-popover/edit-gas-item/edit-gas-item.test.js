@@ -118,7 +118,10 @@ describe('EditGasItem', () => {
   it('should renders site gas estimate option for priorityLevel dappSuggested', () => {
     renderComponent(
       { priorityLevel: 'dappSuggested' },
-      { dappSuggestedGasFees: DAPP_SUGGESTED_ESTIMATE },
+      {
+        dappSuggestedGasFees: DAPP_SUGGESTED_ESTIMATE,
+        txParams: { gas: '0x5208', ...DAPP_SUGGESTED_ESTIMATE },
+      },
     );
     expect(
       screen.queryByRole('button', { name: 'dappSuggested' }),
@@ -126,13 +129,6 @@ describe('EditGasItem', () => {
     expect(screen.queryByText('🌐')).toBeInTheDocument();
     expect(screen.queryByText('Site')).toBeInTheDocument();
     expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
-  });
-
-  it('should disable site gas estimate option for is transaction does not have dappSuggestedGasFees', async () => {
-    renderComponent({ priorityLevel: 'dappSuggested' });
-    expect(
-      document.getElementsByClassName('edit-gas-item-disabled'),
-    ).toHaveLength(1);
   });
 
   it('should renders advance gas estimate option for priorityLevel custom', () => {

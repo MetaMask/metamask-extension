@@ -64,8 +64,7 @@ import GasDetailsItem from './gas-details-item';
 import TransactionAlerts from './transaction-alerts';
 
 // eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2_ENABLED =
-  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
+const EIP_1559_V2_ENABLED = process.env.EIP_1559_V2;
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -636,11 +635,20 @@ export default class ConfirmTransactionBase extends Component {
 
   renderData(functionType) {
     const { t } = this.context;
-    const { txData: { txParams } = {}, hideData, dataComponent } = this.props;
+    const {
+      txData: { txParams } = {},
+      methodData: { params } = {},
+      hideData,
+      dataComponent,
+    } = this.props;
 
     if (hideData) {
       return null;
     }
+
+    const functionParams = params?.length
+      ? `(${params.map(({ type }) => type).join(', ')})`
+      : '';
 
     return (
       dataComponent || (
@@ -648,7 +656,7 @@ export default class ConfirmTransactionBase extends Component {
           <div className="confirm-page-container-content__data-box-label">
             {`${t('functionType')}:`}
             <span className="confirm-page-container-content__function-type">
-              {functionType}
+              {`${functionType} ${functionParams}`}
             </span>
           </div>
           <Disclosure>
@@ -668,12 +676,12 @@ export default class ConfirmTransactionBase extends Component {
       dataHexComponent,
     } = this.props;
 
-    if (hideData) {
+    if (hideData || !txParams.to) {
       return null;
     }
 
-    const functionParams = params
-      ? `(${params.map(({ type }) => type).join(', ')}`
+    const functionParams = params?.length
+      ? `(${params.map(({ type }) => type).join(', ')})`
       : '';
 
     return (

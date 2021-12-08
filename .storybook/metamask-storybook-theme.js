@@ -7,4 +7,8 @@ export default create({
   base: 'light',
   brandTitle: 'MetaMask Storybook',
   brandImage: logo,
+
+  // Typography
+  fontBase: 'Euclid, Roboto, Helvetica, Arial, sans-serif',
+  fontCode: 'Inconsolata, monospace',
 });

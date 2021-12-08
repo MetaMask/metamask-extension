@@ -1,8 +1,11 @@
+import { permissionRpcMethods } from '@metamask/snap-controllers';
 import { ethErrors } from 'eth-rpc-errors';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
-import handlers from './handlers';
+import localHandlers from './handlers';
 
-const handlerMap = handlers.reduce((map, handler) => {
+const allHandlers = [...localHandlers, ...permissionRpcMethods.handlers];
+
+const handlerMap = allHandlers.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
     map.set(methodName, handler);
   }
@@ -10,23 +13,17 @@ const handlerMap = handlers.reduce((map, handler) => {
 }, new Map());
 
 /**
- * Returns a middleware that implements the RPC methods defined in the handlers
- * directory.
- *
- * The purpose of this middleware is to create portable RPC method
- * implementations that are decoupled from the rest of our background
- * architecture.
+ * Creates a json-rpc-engine middleware of RPC method implementations.
  *
  * Handlers consume functions that hook into the background, and only depend
  * on their signatures, not e.g. controller internals.
  *
- * Eventually, we'll want to extract this middleware into its own package.
- *
- * @param {Object} opts - The middleware options
+ * @param {Record<string, unknown>} hooks - Required "hooks" into our
+ * controllers.
  * @returns {(req: Object, res: Object, next: Function, end: Function) => void}
  */
-export default function createMethodMiddleware(opts) {
-  return function methodMiddleware(req, res, next, end) {
+export default function createMethodMiddleware(hooks) {
+  return async function methodMiddleware(req, res, next, end) {
     // Reject unsupported methods.
     if (UNSUPPORTED_RPC_METHODS.has(req.method)) {
       return end(ethErrors.rpc.methodNotSupported());
@@ -35,7 +32,18 @@ export default function createMethodMiddleware(opts) {
     const handler = handlerMap.get(req.method);
     if (handler) {
       const { implementation, hookNames } = handler;
-      return implementation(req, res, next, end, selectHooks(opts, hookNames));
+      try {
+        // Implementations may or may not be async, so we must await them.
+        return await implementation(
+          req,
+          res,
+          next,
+          end,
+          selectHooks(hooks, hookNames),
+        );
+      } catch (error) {
+        return end(error);
+      }
     }
 
     return next();

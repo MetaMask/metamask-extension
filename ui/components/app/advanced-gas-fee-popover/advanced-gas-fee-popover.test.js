@@ -64,7 +64,7 @@ describe('AdvancedGasFeePopover', () => {
   it('should enable save button as input value is changed', () => {
     render();
     fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 4 },
+      target: { value: 3 },
     });
     expect(screen.queryByRole('button', { name: 'Save' })).not.toBeDisabled();
   });

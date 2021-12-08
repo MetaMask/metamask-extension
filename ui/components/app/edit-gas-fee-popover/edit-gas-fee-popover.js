@@ -13,7 +13,7 @@ import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import EditGasItem from './edit-gas-item';
-import NetworkStatus from './network-status';
+import NetworkStatistics from './network-statistics';
 
 const EditGasFeePopover = () => {
   const { balanceError } = useGasFeeContext();
@@ -52,7 +52,7 @@ const EditGasFeePopover = () => {
             <div className="edit-gas-fee-popover__content__separator" />
             <EditGasItem priorityLevel={PRIORITY_LEVELS.DAPP_SUGGESTED} />
             <EditGasItem priorityLevel={PRIORITY_LEVELS.CUSTOM} />
-            <NetworkStatus />
+            <NetworkStatistics />
             <Typography
               className="edit-gas-fee-popover__know-more"
               align="center"

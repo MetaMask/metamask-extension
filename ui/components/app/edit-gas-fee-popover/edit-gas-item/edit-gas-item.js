@@ -44,15 +44,15 @@ const EditGasItem = ({ priorityLevel }) => {
 
   if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
-    maxPriorityFeePerGas =
-      gasFeeEstimates[priorityLevel].suggestedMaxPriorityFeePerGas;
   } else if (
     priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
     dappSuggestedGasFees
   ) {
-    maxFeePerGas = hexWEIToDecGWEI(dappSuggestedGasFees.maxFeePerGas);
+    maxFeePerGas = hexWEIToDecGWEI(
+      dappSuggestedGasFees.maxFeePerGas || dappSuggestedGasFees.gasPrice,
+    );
     maxPriorityFeePerGas = hexWEIToDecGWEI(
-      dappSuggestedGasFees.maxPriorityFeePerGas,
+      dappSuggestedGasFees.maxPriorityFeePerGas || maxFeePerGas,
     );
   } else if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
     if (estimateUsed === PRIORITY_LEVELS.CUSTOM) {
@@ -97,18 +97,18 @@ const EditGasItem = ({ priorityLevel }) => {
     }
   };
 
+  if (
+    priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
+    !dappSuggestedGasFees
+  ) {
+    return null;
+  }
+
   return (
     <button
       className={classNames('edit-gas-item', {
         'edit-gas-item--selected': priorityLevel === estimateUsed,
-        'edit-gas-item-disabled':
-          priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
-          !dappSuggestedGasFees,
       })}
-      disabled={
-        priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
-        !dappSuggestedGasFees
-      }
       onClick={onOptionSelect}
       aria-label={priorityLevel}
       autoFocus={priorityLevel === estimateUsed}

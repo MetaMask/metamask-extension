@@ -65,10 +65,7 @@ const createProps = (customProps = {}) => {
     hideTokenApprovalRow: false,
     onFeeCardMaxRowClick: jest.fn(),
     tokenApprovalTextComponent: (
-      <span
-        key="swaps-view-quote-approve-symbol-1"
-        className="view-quote__bold"
-      >
+      <span key="fee-card-approve-symbol" className="fee-card__bold">
         ABC
       </span>
     ),
@@ -90,20 +87,13 @@ describe('FeeCard', () => {
     useSelector.mockImplementation(generateUseSelectorRouter());
     const props = createProps();
     const { getByText } = renderWithProvider(<FeeCard {...props} />);
-    expect(getByText('Using the best quote')).toBeInTheDocument();
-    expect(getByText('6 quotes')).toBeInTheDocument();
-    expect(getByText('Max network fee')).toBeInTheDocument();
-    expect(getByText('Estimated network fee')).toBeInTheDocument();
+    expect(getByText('Best of 6 quotes.')).toBeInTheDocument();
+    expect(getByText('Estimated gas fee')).toBeInTheDocument();
+    expect(getByText('Max fee')).toBeInTheDocument();
     expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
-    expect(getByText(props.primaryFee.maxFee)).toBeInTheDocument();
     expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
-    expect(getByText(props.secondaryFee.maxFee)).toBeInTheDocument();
-    expect(
-      getByText('Quote includes a 0.875% MetaMask fee'),
-    ).toBeInTheDocument();
-    expect(
-      document.querySelector('.fee-card__savings-and-quotes-header'),
-    ).toMatchSnapshot();
+    expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
+    expect(getByText('Includes a 0.875% MetaMask fee.')).toBeInTheDocument();
     expect(
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
@@ -117,19 +107,13 @@ describe('FeeCard', () => {
       maxFeePerGasDecGWEI: '4',
     });
     const { getByText } = renderWithProvider(<FeeCard {...props} />, store);
-    expect(getByText('Using the best quote')).toBeInTheDocument();
-    expect(getByText('6 quotes')).toBeInTheDocument();
+    expect(getByText('Best of 6 quotes.')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
-    expect(getByText('Maybe in 5 minutes')).toBeInTheDocument();
+    expect(getByText('Max fee')).toBeInTheDocument();
     expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
     expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
     expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
-    expect(
-      getByText('Quote includes a 0.875% MetaMask fee'),
-    ).toBeInTheDocument();
-    expect(
-      document.querySelector('.fee-card__savings-and-quotes-header'),
-    ).toMatchSnapshot();
+    expect(getByText('Includes a 0.875% MetaMask fee.')).toBeInTheDocument();
     expect(
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
