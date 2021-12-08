@@ -275,7 +275,7 @@ export default function ViewQuote() {
     const maxPriorityFeePerGasDecWEI =
       highestEstimatedFee?.maxPriorityFeePerGas;
     maxPriorityFeePerGas = decWEIToHexWEI(maxPriorityFeePerGasDecWEI);
-    maxGasLimit = smartTransactionFees.gasLimit;
+    maxGasLimit = `0x${decimalToHex(smartTransactionFees.gasLimit || 0)}`;
   }
 
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
