@@ -81,20 +81,56 @@ const Popover = ({
 };
 
 Popover.propTypes = {
+  /**
+   * Show title of the popover
+   */
   title: PropTypes.string,
+  /**
+   * Show subtitle label on popover
+   */
   subtitle: PropTypes.string,
+  /**
+   * Show children content could be react child or text
+   */
   children: PropTypes.node,
+  /**
+   * Show footer content could be react child or text
+   */
   footer: PropTypes.node,
+  /**
+   * Add custom CSS class for footer
+   */
   footerClassName: PropTypes.string,
+  /**
+   * onBack handler
+   */
   onBack: PropTypes.func,
+  /**
+   * onClose handler
+   */
   onClose: PropTypes.func,
   CustomBackground: PropTypes.func,
+  /**
+   * Add custom CSS class for content
+   */
   contentClassName: PropTypes.string,
+  /**
+   * Add custom CSS class
+   */
   className: PropTypes.string,
+  /**
+   * Check if component would show arror
+   */
   showArrow: PropTypes.bool,
+  /**
+   * The ref of the popover-wrap element
+   */
   popoverRef: PropTypes.shape({
     current: PropTypes.instanceOf(window.Element),
   }),
+  /**
+   * Check if use centered title
+   */
   centerTitle: PropTypes.bool,
 };
 

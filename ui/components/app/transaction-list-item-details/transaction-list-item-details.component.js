@@ -252,15 +252,18 @@ export default class TransactionListItemDetails extends PureComponent {
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
               />
-              <Disclosure title="Activity log" size="small">
-                <TransactionActivityLog
-                  transactionGroup={transactionGroup}
-                  className="transaction-list-item-details__transaction-activity-log"
-                  onCancel={this.handleCancel}
-                  onRetry={this.handleRetry}
-                  isEarliestNonce={isEarliestNonce}
-                />
-              </Disclosure>
+              {transactionGroup.initialTransaction.type !==
+                TRANSACTION_TYPES.INCOMING && (
+                <Disclosure title={t('activityLog')} size="small">
+                  <TransactionActivityLog
+                    transactionGroup={transactionGroup}
+                    className="transaction-list-item-details__transaction-activity-log"
+                    onCancel={this.handleCancel}
+                    onRetry={this.handleRetry}
+                    isEarliestNonce={isEarliestNonce}
+                  />
+                </Disclosure>
+              )}
               {transactionGroup.initialTransaction?.txParams?.data ? (
                 <Disclosure title="Transaction data" size="small">
                   <TransactionDecoding
