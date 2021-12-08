@@ -8,15 +8,33 @@ import Message from './signature-request-message';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
+    /**
+     * The display content of transaction data
+     */
     txData: PropTypes.object.isRequired,
+    /**
+     * The display content of sender account
+     */
     fromAccount: PropTypes.shape({
       address: PropTypes.string.isRequired,
       balance: PropTypes.string,
       name: PropTypes.string,
     }).isRequired,
+    /**
+     * Check if the wallet is ledget wallet or not
+     */
     isLedgerWallet: PropTypes.bool,
+    /**
+     * Handler for cancel button
+     */
     cancel: PropTypes.func.isRequired,
+    /**
+     * Handler for sign button
+     */
     sign: PropTypes.func.isRequired,
+    /**
+     * Whether the hardware wallet requires a connection disables the sign button if true.
+     */
     hardwareWalletRequiresConnection: PropTypes.bool.isRequired,
   };
 
