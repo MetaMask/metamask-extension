@@ -2477,12 +2477,11 @@ export function requestAccountsPermissionWithId(origin) {
 
 /**
  * Approves the permissions request.
- * @param {Object} request - The permissions request to approve
- * @param {string[]} accounts - The accounts to expose, if any.
+ * @param {Object} request - The permissions request to approve.
  */
-export function approvePermissionsRequest(request, accounts) {
+export function approvePermissionsRequest(request) {
   return (dispatch) => {
-    background.approvePermissionsRequest(request, accounts, (err) => {
+    background.approvePermissionsRequest(request, (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
@@ -2512,9 +2511,9 @@ export function rejectPermissionsRequest(requestId) {
 /**
  * Clears the given permissions for the given origin.
  */
-export function removePermissionsFor(domains) {
+export function removePermissionsFor(subjects) {
   return (dispatch) => {
-    background.removePermissionsFor(domains, (err) => {
+    background.removePermissionsFor(subjects, (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }

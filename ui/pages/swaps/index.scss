@@ -68,6 +68,8 @@
     font-weight: bold;
     color: $Black-100;
     margin-top: -5px;
+    flex: 1;
+    text-align: center;
   }
 
   &__header {
@@ -80,6 +82,7 @@
     background: $Grey-000;
     width: 100%;
     position: relative;
+    flex-direction: row;
 
     @media screen and (min-width: $break-large) {
       padding-top: 8px;
@@ -93,7 +96,17 @@
 
     color: $Blue-500;
     cursor: pointer;
-    position: absolute;
-    right: 24px;
+    padding-right: 24px;
+    flex: 1;
+    text-align: right;
+  }
+
+  &__header-edit {
+    @include H7;
+
+    color: $Blue-500;
+    cursor: pointer;
+    padding-left: 24px;
+    flex: 1;
   }
 }

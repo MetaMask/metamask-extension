@@ -19,10 +19,14 @@ import {
 
 import Address from './components/decoding/address';
 import CopyRawData from './components/ui/copy-raw-data';
+import Accreditation from './components/ui/accreditation';
 
 export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const t = useContext(I18nContext);
   const [tx, setTx] = useState([]);
+  const [sourceAddress, setSourceAddress] = useState('');
+  const [sourceFetchedVia, setSourceFetchedVia] = useState('');
+
   const { address: from } = useSelector(getSelectedAccount);
   const network = hexToDecimal(useSelector(getCurrentChainId));
 
@@ -55,7 +59,16 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
 
         const response = await fetchWithCache(requestUrl, { method: 'GET' });
 
-        const { info: projectInfo } = response;
+        const { info: projectInfo, fetchedVia, address } = response;
+
+        // update source information
+        if (address) {
+          setSourceAddress(address);
+        }
+
+        if (fetchedVia) {
+          setSourceFetchedVia(fetchedVia);
+        }
 
         // creating instance of the truffle decoder
         const decoder = await forAddress(to, {
@@ -79,7 +92,11 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       } catch (error) {
         setLoading(false);
         setError(true);
-        setErrorMessage(error?.message);
+        if (error?.message.match('400')) {
+          setErrorMessage(t('txInsightsNotSupported'));
+        } else {
+          setErrorMessage(error?.message);
+        }
       }
     })();
   }, [t, from, to, network, data]);
@@ -206,6 +223,14 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         <div className="tx-insight-content__copy-raw-tx">
           <CopyRawData data={data} />
         </div>
+        {sourceFetchedVia && sourceAddress ? (
+          <div className="tx-insight-content__accreditation">
+            <Accreditation
+              address={sourceAddress}
+              fetchVia={sourceFetchedVia}
+            />
+          </div>
+        ) : null}
       </div>
     );
   };

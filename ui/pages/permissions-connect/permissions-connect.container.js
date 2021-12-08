@@ -4,7 +4,7 @@ import {
   getPermissionsRequests,
   getAccountsWithLabels,
   getLastConnectedInfo,
-  getDomainMetadata,
+  getSubjectMetadata,
   getSelectedAddress,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
@@ -41,15 +41,15 @@ const mapStateToProps = (state, ownProps) => {
   const { origin } = metadata;
   const nativeCurrency = getNativeCurrency(state);
 
-  const domainMetadata = getDomainMetadata(state);
+  const subjectMetadata = getSubjectMetadata(state);
 
-  let targetDomainMetadata = null;
+  let targetSubjectMetadata = null;
   if (origin) {
-    if (domainMetadata[origin]) {
-      targetDomainMetadata = { ...domainMetadata[origin], origin };
+    if (subjectMetadata[origin]) {
+      targetSubjectMetadata = { ...subjectMetadata[origin], origin };
     } else {
       const targetUrl = new URL(origin);
-      targetDomainMetadata = {
+      targetSubjectMetadata = {
         host: targetUrl.host,
         name: targetUrl.hostname,
         origin,
@@ -94,14 +94,14 @@ const mapStateToProps = (state, ownProps) => {
     connectPath,
     confirmPermissionPath,
     page,
-    targetDomainMetadata,
+    targetSubjectMetadata,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    approvePermissionsRequest: (request, accounts) =>
-      dispatch(approvePermissionsRequest(request, accounts)),
+    approvePermissionsRequest: (request) =>
+      dispatch(approvePermissionsRequest(request)),
     rejectPermissionsRequest: (requestId) =>
       dispatch(rejectPermissionsRequest(requestId)),
     showNewAccountModal: ({ onCreateNewAccount, newAccountNumber }) => {

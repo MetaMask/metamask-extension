@@ -548,7 +548,6 @@
         "@metamask/contract-metadata": true,
         "abort-controller": true,
         "async-mutex": true,
-        "await-semaphore": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eth-json-rpc-infura": true,
@@ -558,11 +557,9 @@
         "eth-query": true,
         "eth-rpc-errors": true,
         "eth-sig-util": true,
-        "ethereumjs-tx": true,
         "ethereumjs-util": true,
         "ethereumjs-wallet": true,
         "ethers": true,
-        "ethjs-query": true,
         "ethjs-unit": true,
         "ethjs-util": true,
         "events": true,
@@ -642,6 +639,16 @@
         "gl-vec3": true
       }
     },
+    "@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "end-of-stream": true,
+        "once": true,
+        "readable-stream": true
+      }
+    },
     "@metamask/obs-store": {
       "globals": {
         "localStorage": true
@@ -650,6 +657,18 @@
         "@metamask/safe-event-emitter": true,
         "stream-browserify": true,
         "through2": true
+      }
+    },
+    "@metamask/post-message-stream": {
+      "globals": {
+        "addEventListener": true,
+        "location.origin": true,
+        "onmessage": "write",
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "readable-stream": true
       }
     },
     "@metamask/safe-event-emitter": {
@@ -670,6 +689,34 @@
         "crc": true,
         "jsbi": true,
         "sha.js": true
+      }
+    },
+    "@metamask/snap-controllers": {
+      "globals": {
+        "URL": true,
+        "Worker": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controllers": true,
+        "@metamask/object-multiplex": true,
+        "@metamask/obs-store": true,
+        "@metamask/post-message-stream": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/snap-workers": true,
+        "deep-freeze-strict": true,
+        "eth-rpc-errors": true,
+        "fast-deep-equal": true,
+        "immer": true,
+        "json-rpc-engine": true,
+        "json-rpc-middleware-stream": true,
+        "nanoid": true,
+        "pump": true
       }
     },
     "@popperjs/core": {
@@ -1769,13 +1816,6 @@
         "ethereumjs-util": true
       }
     },
-    "ethereumjs-tx": {
-      "packages": {
-        "buffer": true,
-        "ethereum-common": true,
-        "ethereumjs-util": true
-      }
-    },
     "ethereumjs-util": {
       "packages": {
         "assert": true,
@@ -2677,7 +2717,11 @@
       }
     },
     "json-rpc-middleware-stream": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
+        "@metamask/safe-event-emitter": true,
         "readable-stream": true
       }
     },
@@ -4289,15 +4333,6 @@
         "__DEV__": true,
         "__fbBatchedBridgeConfig": true,
         "console": true
-      }
-    },
-    "rpc-cap": {
-      "packages": {
-        "@metamask/controllers": true,
-        "eth-rpc-errors": true,
-        "is-subset": true,
-        "json-rpc-engine": true,
-        "uuid": true
       }
     },
     "safe-buffer": {

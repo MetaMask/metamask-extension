@@ -11,7 +11,7 @@ import ColorIndicator from '../../ui/color-indicator';
 import { COLORS } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getAddressConnectedDomainMap,
+  getAddressConnectedSubjectMap,
   getOriginOfCurrentTab,
   getSelectedAddress,
 } from '../../../selectors';
@@ -20,17 +20,17 @@ export default function ConnectedStatusIndicator({ onClick }) {
   const t = useI18nContext();
 
   const selectedAddress = useSelector(getSelectedAddress);
-  const addressConnectedDomainMap = useSelector(getAddressConnectedDomainMap);
+  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
-  const selectedAddressDomainMap = addressConnectedDomainMap[selectedAddress];
+  const selectedAddressSubjectMap = addressConnectedSubjectMap[selectedAddress];
   const currentTabIsConnectedToSelectedAddress = Boolean(
-    selectedAddressDomainMap && selectedAddressDomainMap[originOfCurrentTab],
+    selectedAddressSubjectMap && selectedAddressSubjectMap[originOfCurrentTab],
   );
   let status;
   if (currentTabIsConnectedToSelectedAddress) {
     status = STATUS_CONNECTED;
-  } else if (findKey(addressConnectedDomainMap, originOfCurrentTab)) {
+  } else if (findKey(addressConnectedSubjectMap, originOfCurrentTab)) {
     status = STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   } else {
     status = STATUS_NOT_CONNECTED;
