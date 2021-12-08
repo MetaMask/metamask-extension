@@ -102,7 +102,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           networkDetails: {
-            EIPS: { 1559: undefined },
+            EIPS: { 1559: false },
           },
         },
       });
