@@ -14,7 +14,6 @@ import {
   ALIGN_ITEMS,
   DISPLAY,
   BLOCK_SIZES,
-  SIZES,
   FLEX_WRAP,
 } from '../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -105,19 +104,23 @@ export default function CollectiblesItems({
                 {isExpanded ? (
                   <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP}>
                     {collectibles.map((collectible, i) => {
-                      const { image, address, tokenId } = collectible;
+                      const {
+                        image,
+                        address,
+                        tokenId,
+                        backgroundColor,
+                      } = collectible;
                       const collectibleImage = getAssetImageURL(
                         image,
                         ipfsGateway,
                       );
                       return (
                         <Box width={width} margin={1} key={`collectible-${i}`}>
-                          <Box
-                            borderRadius={SIZES.MD}
-                            display={DISPLAY.FLEX}
-                            justifyContent={JUSTIFY_CONTENT.CENTER}
-                            padding={2}
-                            width={BLOCK_SIZES.FULL}
+                          <div
+                            className="collectibles-items__image__wrapper"
+                            style={{
+                              backgroundColor,
+                            }}
                           >
                             <img
                               onClick={() =>
@@ -128,7 +131,7 @@ export default function CollectiblesItems({
                               className="collectibles-items__image"
                               src={collectibleImage}
                             />
-                          </Box>
+                          </div>
                         </Box>
                       );
                     })}
