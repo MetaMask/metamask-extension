@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Identicon from '../../ui/identicon';
 import LedgerInstructionField from '../ledger-instruction-field';
+import { sanitizeMessage } from '../../../helpers/utils/util';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
@@ -63,7 +64,7 @@ export default class SignatureRequest extends PureComponent {
       hardwareWalletRequiresConnection,
     } = this.props;
     const { address: fromAddress } = fromAccount;
-    const { message, domain = {} } = JSON.parse(data);
+    const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const { metricsEvent } = this.context;
 
     const onSign = (event) => {
@@ -123,7 +124,7 @@ export default class SignatureRequest extends PureComponent {
             <LedgerInstructionField showDataInstruction />
           </div>
         ) : null}
-        <Message data={message} />
+        <Message data={sanitizeMessage(message, primaryType, types)} />
         <Footer
           cancelAction={onCancel}
           signAction={onSign}
