@@ -86,6 +86,8 @@ export default function Box({
   children,
   className,
   backgroundColor,
+  Tag = 'div',
+  ...props
 }) {
   const boxClassName = classnames('box', className, {
     // ---Borders---
@@ -141,7 +143,11 @@ export default function Box({
   if (typeof children === 'function') {
     return children(boxClassName);
   }
-  return <div className={boxClassName}>{children}</div>;
+  return (
+    <Tag className={boxClassName} {...props}>
+      {children}
+    </Tag>
+  );
 }
 
 Box.propTypes = {
