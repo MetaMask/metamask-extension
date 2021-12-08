@@ -564,6 +564,7 @@
         "ethjs-util": true,
         "events": true,
         "human-standard-collectible-abi": true,
+        "human-standard-multi-collectible-abi": true,
         "human-standard-token-abi": true,
         "immer": true,
         "isomorphic-fetch": true,
@@ -1227,12 +1228,6 @@
         "randombytes": true
       }
     },
-    "browserify-sha3": {
-      "packages": {
-        "js-sha3": true,
-        "safe-buffer": true
-      }
-    },
     "browserify-sign": {
       "packages": {
         "bn.js": true,
@@ -1800,8 +1795,6 @@
         "results": "write"
       },
       "packages": {
-        "@metamask/safe-event-emitter": true,
-        "async-mutex": true,
         "await-semaphore": true,
         "eth-json-rpc-middleware": true,
         "eth-query": true,
@@ -1966,7 +1959,6 @@
         "ethjs-util": true,
         "is-buffer": true,
         "keccak": true,
-        "keccakjs": true,
         "rlp": true,
         "safe-buffer": true,
         "secp256k1": true
@@ -2973,11 +2965,6 @@
         "stream-browserify": true
       }
     },
-    "keccakjs": {
-      "packages": {
-        "browserify-sha3": true
-      }
-    },
     "latency-monitor": {
       "globals": {
         "clearInterval": true,
@@ -3898,7 +3885,6 @@
       },
       "packages": {
         "create-hash": true,
-        "is-buffer": true,
         "process": true,
         "ripemd160": true,
         "safe-buffer": true,
