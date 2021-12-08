@@ -144,8 +144,8 @@ export default class Identicon extends PureComponent {
 
       return (
         <div
-          className={classnames({ 'identicon__address-wrapper': addBorder })}
-          style={getStyles(size)}
+          className={addBorder ? 'identicon__address-wrapper' : null}
+          style={addBorder ? getStyles(size) : null}
         >
           {useBlockie ? this.renderBlockie() : this.renderJazzicon()}
         </div>
