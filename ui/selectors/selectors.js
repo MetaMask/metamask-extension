@@ -647,6 +647,7 @@ function getAllowedNotificationIds(state) {
     6: false,
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
+    9: getIsMainnet(state),
   };
 }
 
