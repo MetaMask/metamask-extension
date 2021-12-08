@@ -140,9 +140,9 @@ function TransactionListItemInner({
   }, [isUnapproved, history, id]);
 
   const speedUpButton = useMemo(() => {
-    if (!shouldShowSpeedUp || !isPending || isUnapproved) {
-      return null;
-    }
+    // if (!shouldShowSpeedUp || !isPending || isUnapproved) {
+    //   return null;
+    // }
     return (
       <Button
         type="primary"
@@ -213,12 +213,10 @@ function TransactionListItemInner({
       >
         <div className="transaction-list-item__pending-actions">
           {speedUpButton}
-          {showCancelButton && (
-            <CancelButton
-              transaction={transactionGroup.primaryTransaction}
-              cancelTransaction={cancelTransaction}
-            />
-          )}
+          <CancelButton
+            transaction={transactionGroup.primaryTransaction}
+            cancelTransaction={cancelTransaction}
+          />
         </div>
       </ListItem>
       {showDetails && (

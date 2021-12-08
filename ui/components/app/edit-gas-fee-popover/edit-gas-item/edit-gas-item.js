@@ -31,7 +31,7 @@ import InfoTooltip from '../../../ui/info-tooltip';
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
-const EditGasItem = ({ priorityLevel }) => {
+const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
   const {
     editGasMode,
     estimateUsed,
@@ -51,7 +51,7 @@ const EditGasItem = ({ priorityLevel }) => {
   let minWaitTime;
 
   if (gasFeeEstimates?.[priorityLevel]) {
-    maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
+    maxFeePerGas = gasFeeEstimates[priorityLevel]?.suggestedMaxFeePerGas;
   } else if (
     priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
     dappSuggestedGasFees
@@ -97,6 +97,7 @@ const EditGasItem = ({ priorityLevel }) => {
     : null;
 
   const onOptionSelect = () => {
+    if (disabled) return;
     if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
       openModal('advancedGasFee');
     } else {
@@ -139,11 +140,14 @@ const EditGasItem = ({ priorityLevel }) => {
   return (
     <button
       className={classNames('edit-gas-item', {
-        'edit-gas-item--selected': priorityLevel === estimateUsed,
+        'edit-gas-item--selected':
+          !estimateIsStale && priorityLevel === estimateUsed,
+        'edit-gas-item--disabled': disabled,
       })}
       onClick={onOptionSelect}
       aria-label={priorityLevel}
       autoFocus={priorityLevel === estimateUsed}
+      disabled={disabled}
     >
       <span className="edit-gas-item__name">
         {icon && (
@@ -194,7 +198,9 @@ const EditGasItem = ({ priorityLevel }) => {
 };
 
 EditGasItem.propTypes = {
+  disabled: PropTypes.bool,
   priorityLevel: PropTypes.string,
+  estimateIsStale: PropTypes.bool,
 };
 
 export default EditGasItem;

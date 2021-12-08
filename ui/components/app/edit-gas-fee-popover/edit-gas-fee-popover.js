@@ -24,6 +24,7 @@ import NetworkStatistics from './network-statistics';
 const EditGasFeePopover = () => {
   const {
     balanceError,
+    estimateUsed,
     editGasMode,
     gasFeeEstimates,
     transaction,
@@ -31,32 +32,38 @@ const EditGasFeePopover = () => {
   } = useGasFeeContext();
   const t = useI18nContext();
   const { closeModal, currentModal } = useTransactionModalContext();
-  const [marketOptionHidden, setMarketOptionHidden] = useState(false);
-  const [defaultSetForCancelSpeedup, setDefaultSetForCancelSpeedup] = useState(
-    false,
-  );
+  const [marketOptionDisabled, setMarketOptionDisabled] = useState(false);
+  const [
+    cancelSpeedUpEstimateUpdated,
+    setCancelSpeedUpEstimateUpdated,
+  ] = useState(false);
+  const [
+    cancelSpeedUpDefaultEstimate,
+    setCancelSpeedUpDefaultEstimate,
+  ] = useState();
 
   useEffect(() => {
     if (
       currentModal !== 'editGasFee' ||
       (editGasMode !== EDIT_GAS_MODES.CANCEL &&
         editGasMode !== EDIT_GAS_MODES.SPEED_UP) ||
-      defaultSetForCancelSpeedup
+      cancelSpeedUpDefaultEstimate
     )
       return;
+
     let { maxFeePerGas: maxFeePerGasInTransaction } = transaction.txParams;
-    const maxFeePerGasMedium = gasFeeEstimates.medium.suggestedMaxFeePerGas;
-    const maxFeePerGasAggressive = gasFeeEstimates.high.suggestedMaxFeePerGas;
     maxFeePerGasInTransaction = new BigNumber(
       hexWEIToDecGWEI(maxFeePerGasInTransaction),
     ).times(1.1);
-    const gasUsedGreaterThanAggressive = bnGreaterThan(
-      maxFeePerGasInTransaction,
-      maxFeePerGasAggressive,
-    );
+    const maxFeePerGasMedium = gasFeeEstimates.medium.suggestedMaxFeePerGas;
     const gasUsedGreaterThanMedium = bnGreaterThan(
       maxFeePerGasInTransaction,
       maxFeePerGasMedium,
+    );
+    const maxFeePerGasAggressive = gasFeeEstimates.high.suggestedMaxFeePerGas;
+    const gasUsedGreaterThanAggressive = bnGreaterThan(
+      maxFeePerGasInTransaction,
+      maxFeePerGasAggressive,
     );
 
     if (
@@ -64,21 +71,34 @@ const EditGasFeePopover = () => {
       editGasMode === EDIT_GAS_MODES.SPEED_UP
     ) {
       updateTransactionUsingGasFeeEstimates(PRIORITY_LEVELS.HIGH);
-      setMarketOptionHidden(true);
+      setCancelSpeedUpDefaultEstimate(PRIORITY_LEVELS.HIGH);
+      setMarketOptionDisabled(true);
     } else if (gasUsedGreaterThanMedium) {
       updateTransactionUsingGasFeeEstimates(PRIORITY_LEVELS.LOW);
-      setMarketOptionHidden(true);
+      setCancelSpeedUpDefaultEstimate(PRIORITY_LEVELS.LOW);
+      setMarketOptionDisabled(true);
     } else {
       updateTransactionUsingGasFeeEstimates(PRIORITY_LEVELS.MEDIUM);
+      setCancelSpeedUpDefaultEstimate(PRIORITY_LEVELS.MEDIUM);
     }
-    setDefaultSetForCancelSpeedup(true);
   }, [
     currentModal,
-    defaultSetForCancelSpeedup,
+    cancelSpeedUpDefaultEstimate,
     editGasMode,
     gasFeeEstimates,
     transaction.txParams,
     updateTransactionUsingGasFeeEstimates,
+  ]);
+
+  useEffect(() => {
+    if (cancelSpeedUpEstimateUpdated || !cancelSpeedUpDefaultEstimate) return;
+    setCancelSpeedUpEstimateUpdated(
+      cancelSpeedUpDefaultEstimate === estimateUsed,
+    );
+  }, [
+    cancelSpeedUpDefaultEstimate,
+    cancelSpeedUpEstimateUpdated,
+    estimateUsed,
   ]);
 
   if (currentModal !== 'editGasFee') return null;
@@ -89,6 +109,11 @@ const EditGasFeePopover = () => {
   } else if (editGasMode === EDIT_GAS_MODES.SPEED_UP) {
     popupTitle = 'editSpeedUpEditGasFeeModalTitle';
   }
+
+  const estimateIsStale =
+    (editGasMode === EDIT_GAS_MODES.CANCEL ||
+      editGasMode === EDIT_GAS_MODES.SPEED_UP) &&
+    !cancelSpeedUpEstimateUpdated;
 
   return (
     <Popover
@@ -117,17 +142,31 @@ const EditGasFeePopover = () => {
               </span>
             </div>
             {editGasMode !== EDIT_GAS_MODES.SWAPS && (
-              <EditGasItem priorityLevel={PRIORITY_LEVELS.LOW} />
+              <EditGasItem
+                estimateIsStale={estimateIsStale}
+                priorityLevel={PRIORITY_LEVELS.LOW}
+              />
             )}
-            {!marketOptionHidden && (
-              <EditGasItem priorityLevel={PRIORITY_LEVELS.MEDIUM} />
-            )}
-            <EditGasItem priorityLevel={PRIORITY_LEVELS.HIGH} />
+            <EditGasItem
+              estimateIsStale={estimateIsStale}
+              disabled={marketOptionDisabled}
+              priorityLevel={PRIORITY_LEVELS.MEDIUM}
+            />
+            <EditGasItem
+              estimateIsStale={estimateIsStale}
+              priorityLevel={PRIORITY_LEVELS.HIGH}
+            />
             <div className="edit-gas-fee-popover__content__separator" />
             {editGasMode !== EDIT_GAS_MODES.SWAPS && (
-              <EditGasItem priorityLevel={PRIORITY_LEVELS.DAPP_SUGGESTED} />
+              <EditGasItem
+                estimateIsStale={estimateIsStale}
+                priorityLevel={PRIORITY_LEVELS.DAPP_SUGGESTED}
+              />
             )}
-            <EditGasItem priorityLevel={PRIORITY_LEVELS.CUSTOM} />
+            <EditGasItem
+              estimateIsStale={estimateIsStale}
+              priorityLevel={PRIORITY_LEVELS.CUSTOM}
+            />
             <NetworkStatistics />
             <Typography
               className="edit-gas-fee-popover__know-more"

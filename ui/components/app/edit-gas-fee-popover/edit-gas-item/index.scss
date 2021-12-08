@@ -19,6 +19,12 @@
     background-color: $ui-1;
   }
 
+  &--disabled {
+    cursor: default;
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
   &__name {
     display: inline-flex;
     align-items: center;
