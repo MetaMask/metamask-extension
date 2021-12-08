@@ -520,14 +520,14 @@ export const sanitizeMessage = (msg, baseType, types) => {
     }
 
     // key has a type. check if the definedType is also a type
-    const nestedTypeDefinition = types[definedType.type.replace('[]', '')];
+    const nestedType = definedType.type.replace(/\[\]$/u, '');
+    const nestedTypeDefinition = types[nestedType];
 
     if (nestedTypeDefinition) {
-      if (definedType.type.indexOf('[]') > 0) {
+      if (definedType.type.endsWith('[]') > 0) {
         // nested array
-        const definedArrayType = definedType.type.replace('[]', '');
         sanitizedMessage[msgKey] = msg[msgKey].map((value) =>
-          sanitizeMessage(value, definedArrayType, types),
+          sanitizeMessage(value, nestedType, types),
         );
       } else {
         // nested object
@@ -539,9 +539,7 @@ export const sanitizeMessage = (msg, baseType, types) => {
       }
     } else {
       // check if it's a valid solidity type
-      const isSolidityType = solidityTypes().includes(
-        definedType.type.replace(/\[\]$/u, ''),
-      );
+      const isSolidityType = solidityTypes().includes(nestedType);
       if (isSolidityType) {
         sanitizedMessage[msgKey] = msg[msgKey];
       }
