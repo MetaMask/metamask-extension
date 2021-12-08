@@ -5,7 +5,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import ErrorMessage from '../../ui/error-message';
 import I18nValue from '../../ui/i18n-value';
-import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import Popover from '../../ui/popover';
 import Typography from '../../ui/typography/typography';
 
@@ -29,7 +28,6 @@ const EditGasFeePopover = () => {
       className="edit-gas-fee-popover"
     >
       <>
-        {process.env.IN_TEST ? null : <LoadingHeartBeat />}
         <div className="edit-gas-fee-popover__wrapper">
           <div className="edit-gas-fee-popover__content">
             {balanceError && (

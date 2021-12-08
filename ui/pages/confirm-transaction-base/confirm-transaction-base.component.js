@@ -1092,7 +1092,7 @@ export default class ConfirmTransactionBase extends Component {
             !valid ||
             submitting ||
             hardwareWalletRequiresConnection ||
-            (gasIsLoading && !gasFeeIsCustom)
+            (!this.supportsEIP1559V2 && gasIsLoading && !gasFeeIsCustom)
           }
           onEdit={() => this.handleEdit()}
           onCancelAll={() => this.handleCancelAll()}
