@@ -78,8 +78,7 @@ export default function CollectiblesItems({
                   <Box alignItems={ALIGN_ITEMS.CENTER}>
                     {collectionImage ? (
                       <img
-                        style={{ width: '1.5rem', borderRadius: '50%' }}
-                        src="images/icon-48.png"
+                        src={collectionImage}
                         className="collectibles-items__item__collection-image"
                       />
                     ) : (
@@ -179,11 +178,7 @@ export default function CollectiblesItems({
                 justifyContent={JUSTIFY_CONTENT.FLEX_START}
                 className="collectibles-items__link"
               >
-                <Button
-                  type="link"
-                  onClick={onAddNFT}
-                  style={{ padding: '4px', fontSize: '16px' }}
-                >
+                <Button type="link" onClick={onAddNFT}>
                   {t('importNFTs')}
                 </Button>
               </Box>
