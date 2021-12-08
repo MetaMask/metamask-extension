@@ -59,32 +59,28 @@ export function useMaxPriorityFeePerGasInput({
 
   const showFiat = useSelector(getShouldShowFiat);
 
-  let initialMaxMaxPriorityFeePerGas;
+  let initialMaxPriorityFeePerGas;
   if (editGasMode === EDIT_GAS_MODES.SWAPS && supportsEIP1559V2) {
-    initialMaxMaxPriorityFeePerGas = swapCustomMaxPriorityFeePerGas
+    initialMaxPriorityFeePerGas = swapCustomMaxPriorityFeePerGas
       ? Number(hexWEIToDecGWEI(swapCustomMaxPriorityFeePerGas))
       : null;
   } else {
-    initialMaxMaxPriorityFeePerGas = supportsEIP1559
+    initialMaxPriorityFeePerGas = supportsEIP1559
       ? getMaxPriorityFeePerGasFromTransaction(transaction)
       : 0;
   }
 
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(() => {
-    if (initialMaxMaxPriorityFeePerGas && feeParamsAreCustom(transaction))
-      return initialMaxMaxPriorityFeePerGas;
+    if (initialMaxPriorityFeePerGas && feeParamsAreCustom(transaction))
+      return initialMaxPriorityFeePerGas;
     return null;
   });
 
   useEffect(() => {
     if (supportsEIP1559V2) {
-      setMaxPriorityFeePerGas(initialMaxMaxPriorityFeePerGas);
+      setMaxPriorityFeePerGas(initialMaxPriorityFeePerGas);
     }
-  }, [
-    initialMaxMaxPriorityFeePerGas,
-    setMaxPriorityFeePerGas,
-    supportsEIP1559V2,
-  ]);
+  }, [initialMaxPriorityFeePerGas, setMaxPriorityFeePerGas, supportsEIP1559V2]);
 
   const maxPriorityFeePerGasToUse =
     maxPriorityFeePerGas ??
@@ -93,7 +89,7 @@ export function useMaxPriorityFeePerGasInput({
       gasFeeEstimates,
       gasEstimateType,
       estimateToUse,
-      initialMaxMaxPriorityFeePerGas || 0,
+      initialMaxPriorityFeePerGas || 0,
     );
 
   // We need to display the estimated fiat currency impact of the

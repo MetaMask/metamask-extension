@@ -141,9 +141,8 @@ const EditGasItem = ({ priorityLevel }) => {
       <span
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
       >
-        {editGasMode !== EDIT_GAS_MODES.SWAPS && (
-          <>{minWaitTime ? toHumanReadableTime(t, minWaitTime) : '--'}</>
-        )}
+        {editGasMode !== EDIT_GAS_MODES.SWAPS &&
+          (minWaitTime ? toHumanReadableTime(t, minWaitTime) : '--')}
       </span>
       <span
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}
@@ -158,17 +157,14 @@ const EditGasItem = ({ priorityLevel }) => {
           '--'
         )}
       </span>
-      {/* todo: tooltip in case of swap suggested */}
       <span className="edit-gas-item__tooltip" data-testid="gas-tooltip">
         <InfoTooltip
           contentText={
             <EditGasToolTip
               t={t}
               priorityLevel={priorityLevel}
-              maxFeePerGas={maxFeePerGas || maxFeePerGasValue}
-              maxPriorityFeePerGas={
-                maxPriorityFeePerGas || maxPriorityFeePerGasValue
-              }
+              maxFeePerGas={maxFeePerGas}
+              maxPriorityFeePerGas={maxPriorityFeePerGas}
               editGasMode={editGasMode}
               gasLimit={gasLimit}
               transaction={transaction}

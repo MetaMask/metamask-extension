@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsMainnet } from '../../../../selectors';
 import Box from '../../../../components/ui/box';
@@ -23,15 +24,15 @@ const GasDetailsItemTitle = () => {
       <InfoTooltip
         contentText={
           <>
-            <Typography fontSize="12px">
+            <Typography variant={TYPOGRAPHY.H7}>
               {t('transactionDetailGasTooltipIntro', [
                 isMainnet ? t('networkNameEthereum') : '',
               ])}
             </Typography>
-            <Typography fontSize="12px">
+            <Typography variant={TYPOGRAPHY.H7}>
               {t('transactionDetailGasTooltipExplanation')}
             </Typography>
-            <Typography fontSize="12px">
+            <Typography variant={TYPOGRAPHY.H7}>
               <a
                 href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
                 target="_blank"
