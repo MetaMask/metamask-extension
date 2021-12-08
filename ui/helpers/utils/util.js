@@ -502,7 +502,7 @@ export const sanitizeMessage = (msg, baseType, types) => {
   if (types) {
     baseTypeDefinitions = types[baseType];
     if (!baseTypeDefinitions) {
-      return msg;
+      throw new Error(`Invalid types definition found for msg: ${msg}`);
     }
   } else {
     return msg;
