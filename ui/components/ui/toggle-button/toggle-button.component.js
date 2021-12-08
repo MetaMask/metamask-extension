@@ -87,11 +87,29 @@ const ToggleButton = (props) => {
 };
 
 ToggleButton.propTypes = {
+  /**
+   * ToggleButton value
+   */
   value: PropTypes.bool,
+  /**
+   * The onChange handler of the ToggleButton
+   */
   onToggle: PropTypes.func,
+  /**
+   * Label text when toggle is off
+   */
   offLabel: PropTypes.string,
+  /**
+   * Label text when toggle is on
+   */
   onLabel: PropTypes.string,
+  /**
+   * Disables ToggleButton if true. Set to false as default
+   */
   disabled: PropTypes.bool,
+  /**
+   * Additional className to add to the ToggleButton
+   */
   className: PropTypes.string,
 };
 
