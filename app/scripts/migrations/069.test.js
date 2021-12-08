@@ -38,7 +38,9 @@ describe('migration #69', () => {
               origin: 'https://ascii-tree-generator.com',
               extensionId: 'ascii-tree-generator-extension',
             },
-            'https://caniuse.com': 'bad data',
+            'https://null.com': null,
+            'https://foo.com': 'bad data',
+            'https://bar.com': ['bad data'],
           },
         },
       },
@@ -68,7 +70,9 @@ describe('migration #69', () => {
               extensionId: 'ascii-tree-generator-extension',
               subjectType: SUBJECT_TYPES.EXTENSION,
             },
-            'https://caniuse.com': 'bad data',
+            'https://null.com': null,
+            'https://foo.com': 'bad data',
+            'https://bar.com': ['bad data'],
           },
         },
       },
@@ -92,7 +96,6 @@ describe('migration #69', () => {
       },
       data: {
         FooController: { a: 'b' },
-        SubjectMetadataController: { subjectMetadata: {} },
       },
     });
   });

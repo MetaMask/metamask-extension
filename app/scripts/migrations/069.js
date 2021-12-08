@@ -19,22 +19,23 @@ export default {
 };
 
 function transformState(state) {
-  const { SubjectMetadataController = {} } = state;
-  const { subjectMetadata = {} } = SubjectMetadataController;
+  if (typeof state?.SubjectMetadataController?.subjectMetadata === 'object') {
+    const {
+      SubjectMetadataController: { subjectMetadata },
+    } = state;
 
-  // mutate SubjectMetadataController.subjectMetadata in place
-  Object.values(subjectMetadata).forEach((metadata) => {
-    if (metadata && typeof metadata === 'object' && !Array.isArray(metadata)) {
-      metadata.subjectType = metadata.extensionId
-        ? SUBJECT_TYPES.EXTENSION
-        : SUBJECT_TYPES.WEBSITE;
-    }
-  });
-
-  return {
-    ...state,
-    SubjectMetadataController: {
-      subjectMetadata,
-    },
-  };
+    // mutate SubjectMetadataController.subjectMetadata in place
+    Object.values(subjectMetadata).forEach((metadata) => {
+      if (
+        metadata &&
+        typeof metadata === 'object' &&
+        !Array.isArray(metadata)
+      ) {
+        metadata.subjectType = metadata.extensionId
+          ? SUBJECT_TYPES.EXTENSION
+          : SUBJECT_TYPES.WEBSITE;
+      }
+    });
+  }
+  return state;
 }
