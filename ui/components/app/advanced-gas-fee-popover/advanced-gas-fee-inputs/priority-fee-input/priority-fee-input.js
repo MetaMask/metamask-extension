@@ -108,8 +108,12 @@ const PriorityFeeInput = () => {
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={`${lowLatest}-${highLatest} GWEI`}
-        historical={`${lowHistorical}-${highHistorical} GWEI`}
+        latest={`${parseFloat(lowLatest).toFixed(2)} - ${parseFloat(
+          highLatest,
+        ).toFixed(2)} GWEI`}
+        historical={`${parseFloat(lowHistorical).toFixed(2)} - ${parseFloat(
+          highHistorical,
+        ).toFixed(2)} GWEI`}
       />
     </>
   );
