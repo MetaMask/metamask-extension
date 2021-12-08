@@ -362,17 +362,19 @@ class NetworkDropdown extends Component {
             this.props.provider,
           )}
 
-          {shouldShowTestNetworks && (<>
-            {this.renderNetworkEntry('ropsten')}
-            {this.renderNetworkEntry('kovan')}
-            {this.renderNetworkEntry('rinkeby')}
-            {this.renderNetworkEntry('goerli')}
-            {this.renderCustomRpcList(
-              rpcListDetailForLocalHost,
-              this.props.provider,
-              { isLocalHost: true },
-            )}
-          </>)}
+          {shouldShowTestNetworks && (
+            <>
+              {this.renderNetworkEntry('ropsten')}
+              {this.renderNetworkEntry('kovan')}
+              {this.renderNetworkEntry('rinkeby')}
+              {this.renderNetworkEntry('goerli')}
+              {this.renderCustomRpcList(
+                rpcListDetailForLocalHost,
+                this.props.provider,
+                { isLocalHost: true },
+              )}
+            </>
+          )}
         </div>
 
         {this.renderAddCustomButton()}
