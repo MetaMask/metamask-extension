@@ -84,7 +84,7 @@ const BaseFeeInput = () => {
     setMaxFeePerGas,
   } = useAdvancedGasFeePopoverContext();
 
-  const { estimatedBaseFee, historicalBaseFeeRange } = gasFeeEstimates;
+  const { estimatedBaseFee, historicalBaseFeeRange, baseFeeTrend } = gasFeeEstimates;
   const [baseFeeError, setBaseFeeError] = useState();
   const {
     numberOfDecimals: numberOfDecimalsPrimary,
@@ -208,6 +208,7 @@ const BaseFeeInput = () => {
           2,
         )} GWEI`}
         historical={renderFeeRange(historicalBaseFeeRange)}
+        feeTrend={baseFeeTrend}
       />
     </Box>
   );
