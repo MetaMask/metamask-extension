@@ -25,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - [#12802](https://github.com/MetaMask/metamask-extension/pull/12802): Fix bug causing occasional swaps failures for token pairs with highly precise exchange rates
 - [#12679](https://github.com/MetaMask/metamask-extension/pull/12679): Ensure eth_sign callback fires even when data submitted is invalid
+## [10.7.1]
+### Fixed
+- [#13005](https://github.com/MetaMask/metamask-extension/pull/13005): Fix connection to RPC urls with query strings.
 
 ## [10.7.0]
 ### Changed
@@ -2650,6 +2653,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.8.0...HEAD
 [10.8.0]: https://github.com/MetaMask/metamask-extension/compare/v10.7.0...v10.8.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.7.1...HEAD
+[10.7.1]: https://github.com/MetaMask/metamask-extension/compare/v10.7.0...v10.7.1
 [10.7.0]: https://github.com/MetaMask/metamask-extension/compare/v10.6.4...v10.7.0
 [10.6.4]: https://github.com/MetaMask/metamask-extension/compare/v10.6.3...v10.6.4
 [10.6.3]: https://github.com/MetaMask/metamask-extension/compare/v10.6.2...v10.6.3
