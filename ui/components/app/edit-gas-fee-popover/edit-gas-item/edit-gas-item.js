@@ -25,8 +25,6 @@ import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
 import InfoTooltip from '../../../ui/info-tooltip';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
-const HeartBeat = () => (process.env.IN_TEST ? null : <LoadingHeartBeat />);
-
 const EditGasItem = ({ priorityLevel }) => {
   const {
     estimateUsed,
@@ -142,7 +140,7 @@ const EditGasItem = ({ priorityLevel }) => {
       >
         {hexMaximumTransactionFee ? (
           <div>
-            <HeartBeat />
+            <LoadingHeartBeat />
             <UserPreferencedCurrencyDisplay
               key="editGasSubTextFeeAmount"
               type={PRIMARY}

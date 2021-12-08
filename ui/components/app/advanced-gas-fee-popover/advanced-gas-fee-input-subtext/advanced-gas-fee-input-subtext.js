@@ -5,14 +5,12 @@ import Box from '../../../ui/box';
 import I18nValue from '../../../ui/i18n-value';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 
-const HeartBeat = () => (process.env.IN_TEST ? null : <LoadingHeartBeat />);
-
 const AdvancedGasFeeInputSubtext = ({ latest, historical }) => {
   return (
     <Box className="advanced-gas-fee-input-subtext">
       <Box display="flex" alignItems="center">
         <span className="advanced-gas-fee-input-subtext__label">
-          <HeartBeat />
+          <LoadingHeartBeat />
           <I18nValue messageKey="currentTitle" />
         </span>
         <span>{latest}</span>
@@ -20,7 +18,7 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical }) => {
       </Box>
       <Box>
         <span className="advanced-gas-fee-input-subtext__label">
-          <HeartBeat />
+          <LoadingHeartBeat />
           <I18nValue messageKey="twelveHrTitle" />
         </span>
         <span>{historical}</span>
