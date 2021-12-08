@@ -1976,6 +1976,15 @@
     "message": "Ledger connection improvement",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
   },
+  "notifications9DescriptionOne": {
+    "message": "We now provide you with more insights on the 'Data' tab when confirming smart contract transactions."
+  },
+  "notifications9DescriptionTwo": {
+    "message": "You can now get a better understanding of your transaction’s details before confirming, and more easily add transaction addresses to your address book, helping you make safe and informed decisions."
+  },
+  "notifications9Title": {
+    "message": "👓 We are making transactions easier to read."
+  },
   "ofTextNofM": {
     "message": "of"
   },
