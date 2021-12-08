@@ -45,6 +45,15 @@ export const MESSAGE_TYPE = {
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
 };
 
+/**
+ * The different kinds of third-party subjects that MetaMask may interact with.
+ */
+export const SUBJECT_TYPES = {
+  WEBSITE: 'website',
+  EXTENSION: 'extension',
+  INTERNAL: 'internal',
+};
+
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
