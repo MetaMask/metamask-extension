@@ -233,6 +233,7 @@ export default class MetamaskController extends EventEmitter {
           this.assetsContractController,
         ),
       },
+      {},
       initState.CollectiblesController,
     );
 

@@ -41,7 +41,7 @@ import {
 } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import CollectibleOptions from './collectible-options';
+import CollectibleOptions from '../collectible-options/collectible-options';
 
 export default function CollectibleDetails({ collectible }) {
   const { image, name, description, address, tokenId } = collectible;
@@ -166,7 +166,7 @@ export default function CollectibleDetails({ collectible }) {
                 target="_blank"
                 href={collectibleImageURL}
                 rel="noopener noreferrer"
-                style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+                className="collectible-details__image-link"
               >
                 {image}
               </a>
