@@ -1186,11 +1186,9 @@ export default class MetamaskController extends EventEmitter {
       setShowTestnetMessageInDropdown: appStateController.setShowTestnetMessageInDropdown.bind(
         appStateController,
       ),
-      setCollectiblesDetectionNoticeDismissed: nodeify(
-        this.appStateController.setCollectiblesDetectionNoticeDismissed,
-        this.appStateController,
+      setCollectiblesDetectionNoticeDismissed: appStateController.setCollectiblesDetectionNoticeDismissed.bind(
+        appStateController,
       ),
-
       // EnsController
       tryReverseResolveAddress: ensController.reverseResolveAddress.bind(
         ensController,
