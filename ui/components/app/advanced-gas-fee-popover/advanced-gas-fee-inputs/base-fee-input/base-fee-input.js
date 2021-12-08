@@ -171,12 +171,14 @@ const BaseFeeInput = () => {
     );
   }, [
     editingInGwei,
+    baseFeeTrend,
     gasFeeEstimates,
     maxBaseFeeGWEI,
     maxPriorityFeePerGas,
     setBaseFeeError,
     setErrorValue,
     setMaxFeePerGas,
+    setFeeTrendsData,
   ]);
 
   return (

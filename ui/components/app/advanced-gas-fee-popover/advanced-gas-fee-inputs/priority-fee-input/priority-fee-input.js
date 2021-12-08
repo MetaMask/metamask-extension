@@ -46,6 +46,7 @@ const PriorityFeeInput = () => {
   const {
     setErrorValue,
     setMaxPriorityFeePerGas,
+    setFeeTrendsData,
   } = useAdvancedGasFeePopoverContext();
   const {
     estimateUsed,
@@ -88,11 +89,13 @@ const PriorityFeeInput = () => {
     );
     setPriorityFeeError(error);
   }, [
+    priorityFeeTrend,
     gasFeeEstimates,
     priorityFee,
     setErrorValue,
     setMaxPriorityFeePerGas,
     setPriorityFeeError,
+    setFeeTrendsData,
   ]);
 
   return (

@@ -32,6 +32,7 @@ export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
         setGasLimit,
         setMaxPriorityFeePerGas,
         setMaxFeePerGas,
+        setFeeTrendsData,
       }}
     >
       {children}
