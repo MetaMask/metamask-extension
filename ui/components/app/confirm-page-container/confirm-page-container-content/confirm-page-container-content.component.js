@@ -200,7 +200,7 @@ export default class ConfirmPageContainerContent extends Component {
           hideCancel={isFailedTransaction}
           submitButtonType={isFailedTransaction ? 'default' : 'confirm'}
         >
-          {unapprovedTxCount > 1 ? (
+          {unapprovedTxCount > 1 && !isFailedTransaction ? (
             <a onClick={onCancelAll}>{rejectNText}</a>
           ) : null}
         </PageContainerFooter>
