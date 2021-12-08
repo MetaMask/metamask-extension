@@ -58,28 +58,6 @@ describe('Signature Request Component', () => {
       };
     });
 
-    it('should render a div with one child', () => {
-      const wrapper = shallowWithContext(
-        <SignatureRequest
-          hardwareWalletRequiresConnection={() => false}
-          clearConfirmTransaction={() => undefined}
-          cancel={() => undefined}
-          sign={() => undefined}
-          txData={{
-            msgParams: {
-              data: '{"message": {"from": {"name": "hello"}}}',
-              from: fromAddress,
-            },
-          }}
-          fromAccount={{ address: fromAddress }}
-        />,
-      );
-
-      expect(wrapper.is('div')).toStrictEqual(true);
-      expect(wrapper).toHaveLength(1);
-      expect(wrapper.hasClass('signature-request')).toStrictEqual(true);
-    });
-
     it('should render a div message parsed', () => {
       const msgParams = {
         data: JSON.stringify(messageData),

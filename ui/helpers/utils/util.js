@@ -498,14 +498,13 @@ const solidityTypes = () => {
 };
 
 export const sanitizeMessage = (msg, baseType, types) => {
-  let baseTypeDefinitions;
-  if (types) {
-    baseTypeDefinitions = types[baseType];
-    if (!baseTypeDefinitions) {
-      throw new Error(`Invalid types definition found for msg: ${msg}`);
-    }
-  } else {
-    return msg;
+  if (!types) {
+    throw new Error(`Invalid types definition`);
+  }
+
+  const baseTypeDefinitions = types[baseType];
+  if (!baseTypeDefinitions) {
+    throw new Error(`Invalid primary type definition`);
   }
 
   const sanitizedMessage = {};

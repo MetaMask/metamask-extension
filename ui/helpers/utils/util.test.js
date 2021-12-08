@@ -386,24 +386,16 @@ describe('util', () => {
       };
     });
 
-    it('should return same message if types is not defined', () => {
-      const result = util.sanitizeMessage(message, primaryType, null);
-      expect(result.contents).toStrictEqual('Hello, Bob!');
-      expect(result.from.name).toStrictEqual('Cow');
-      expect(result.from.wallets).toHaveLength(2);
-      expect(result.to).toHaveLength(1);
-      expect(result.to[0].name).toStrictEqual('Bob');
-      expect(result.to[0].wallets).toHaveLength(3);
+    it('should throw an error if types is undefined', () => {
+      expect(() =>
+        util.sanitizeMessage(message, primaryType, undefined),
+      ).toThrow('Invalid types definition');
     });
 
-    it('should return same message if base type is not defined', () => {
-      const result = util.sanitizeMessage(message, null, types);
-      expect(result.contents).toStrictEqual('Hello, Bob!');
-      expect(result.from.name).toStrictEqual('Cow');
-      expect(result.from.wallets).toHaveLength(2);
-      expect(result.to).toHaveLength(1);
-      expect(result.to[0].name).toStrictEqual('Bob');
-      expect(result.to[0].wallets).toHaveLength(3);
+    it('should throw an error if base type is not defined', () => {
+      expect(() => util.sanitizeMessage(message, undefined, types)).toThrow(
+        'Invalid primary type definition',
+      );
     });
 
     it('should return parsed message if types is defined', () => {
@@ -422,13 +414,8 @@ describe('util', () => {
         do_not_display: 'two',
       };
 
-      // result will contain the do_not_displays because no type definition
-      let result = util.sanitizeMessage(message, primaryType, null);
-      expect(result.do_not_display).toStrictEqual('one');
-      expect(result.do_not_display_2.do_not_display).toStrictEqual('two');
-
       // result will NOT contain the do_not_displays because type definition
-      result = util.sanitizeMessage(message, primaryType, types);
+      const result = util.sanitizeMessage(message, primaryType, types);
       expect(result.contents).toStrictEqual('Hello, Bob!');
       expect(result.from.name).toStrictEqual('Cow');
       expect(result.from.wallets).toHaveLength(2);
