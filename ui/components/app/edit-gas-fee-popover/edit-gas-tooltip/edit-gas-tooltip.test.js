@@ -1,5 +1,4 @@
 import React from 'react';
-import { EDIT_GAS_MODES } from '../../../../../shared/constants/gas';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/jest';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
