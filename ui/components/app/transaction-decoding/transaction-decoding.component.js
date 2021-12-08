@@ -41,7 +41,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
         );
 
         // fetch project-info for correspondent contract address
-        const projectInfo = await fetchProjectInfo(to, network);
+        const { info: projectInfo } = await fetchProjectInfo(to, network);
 
         // creating an instance of the truffle decoder
         const decoder = await forAddress(to, {

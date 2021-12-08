@@ -64,9 +64,5 @@ export const fetchProjectInfo = async (to, network) => {
     throw new Error('Project info is not available !');
   }
 
-  return response.info;
+  return response;
 };
-
-// *********************************************
-// truffle decoding utils
-// *********************************************
