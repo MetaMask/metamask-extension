@@ -269,7 +269,7 @@ export const getCollectibles = (state) => {
     },
   } = state;
 
-  return allCollectibles?.[selectedAddress]?.[chainId] || [];
+  return allCollectibles?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export const getCollectibleContracts = (state) => {
@@ -281,7 +281,7 @@ export const getCollectibleContracts = (state) => {
     },
   } = state;
 
-  return allCollectibleContracts?.[selectedAddress]?.[chainId] || [];
+  return allCollectibleContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export function getBlockGasLimit(state) {
