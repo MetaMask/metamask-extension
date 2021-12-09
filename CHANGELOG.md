@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Users can now see much greater details on contract interaction transactions
   - These transaction details are integrated with new popups for viewing and editing address book information
   - These details are also viewable within the transaction details popup
-- [#12627](https://github.com/MetaMask/metamask-extension/pull/12627): Add support for eip-1559 on Trezor Model T
+- [#12627](https://github.com/MetaMask/metamask-extension/pull/12627): Add support for eip-1559 on Trezor Model T and Trezor Model One
 - [#12065](https://github.com/MetaMask/metamask-extension/pull/12065): Support QR code based hardware wallet signing
   - Includes specific support for the Keystone hardware wallet
 
