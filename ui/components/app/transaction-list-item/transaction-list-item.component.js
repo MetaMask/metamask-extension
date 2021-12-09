@@ -30,6 +30,7 @@ import Button from '../../ui/button';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
 import EditGasFeePopover from '../edit-gas-fee-popover';
+import CancelSpeedupPopover from '../cancel-speedup-popover';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -74,7 +75,7 @@ function TransactionListItemInner({
       speedUpMetricsEvent();
       if (supportsEIP1559V2) {
         setEditGasMode(EDIT_GAS_MODES.SPEED_UP);
-        openModal('editGasFee');
+        openModal('cancelSpeedupTransaction');
       } else {
         setShowRetryEditGasPopover(true);
       }
@@ -88,7 +89,7 @@ function TransactionListItemInner({
       cancelMetricsEvent();
       if (supportsEIP1559V2) {
         setEditGasMode(EDIT_GAS_MODES.CANCEL);
-        openModal('editGasFee');
+        openModal('cancelSpeedupTransaction');
       } else {
         setShowCancelEditGasPopover(true);
       }
@@ -279,6 +280,7 @@ const TransactionListItem = (props) => {
     >
       <TransactionModalContextProvider captureEventEnabled={false}>
         <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
+        <CancelSpeedupPopover />
         <EditGasFeePopover />
         <AdvancedGasFeePopover />
       </TransactionModalContextProvider>

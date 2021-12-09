@@ -41,7 +41,7 @@ const Popover = ({
                 centerTitle ? 'center' : '',
               )}
             >
-              <h2 title={title}>
+              <h2 title="popover">
                 {onBack ? (
                   <button
                     className="fas fa-chevron-left popover-header__button"
@@ -84,7 +84,7 @@ Popover.propTypes = {
   /**
    * Show title of the popover
    */
-  title: PropTypes.string,
+  title: PropTypes.node,
   /**
    * Show subtitle label on popover
    */

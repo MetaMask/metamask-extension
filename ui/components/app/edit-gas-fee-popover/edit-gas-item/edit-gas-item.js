@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 
@@ -51,6 +52,7 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
   let maxPriorityFeePerGas;
   let minWaitTime;
 
+  console.log('priorityLevel = ', priorityLevel);
   if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel]?.suggestedMaxFeePerGas;
   } else if (
@@ -73,6 +75,17 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
         parseFloat(advancedGasFeeValues.maxBaseFee);
       maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
     }
+  } else if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
+    console.log('-1-', transaction.previousGas);
+    maxFeePerGas = new BigNumber(
+      hexWEIToDecGWEI(transaction.previousGas?.maxFeePerGas),
+    )
+      .times(1.1)
+      .toNumber();
+    console.log('maxFeePerGas -', maxFeePerGas);
+    maxPriorityFeePerGas = hexWEIToDecGWEI(
+      transaction.previousGas?.maxPriorityFeePerGas,
+    );
   }
 
   const { waitTimeEstimate } = useCustomTimeEstimate({
@@ -118,11 +131,7 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
   let title = t(priorityLevel);
   if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
     title = t('dappSuggestedShortLabel');
-  } else if (
-    priorityLevel === PRIORITY_LEVELS.LOW &&
-    (editGasMode === EDIT_GAS_MODES.CANCEL ||
-      editGasMode === EDIT_GAS_MODES.SPEED_UP)
-  ) {
+  } else if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
     icon = null;
     title = (
       <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>

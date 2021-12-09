@@ -253,6 +253,8 @@ export function useGasFeeInputs(
     editGasMode,
     gasFeeEstimates,
     gasLimit,
+    maxPriorityFeePerGas,
+    minimumGasLimit,
     transaction,
   });
 

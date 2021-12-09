@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -5,6 +6,7 @@ import { EDIT_GAS_MODES, PRIORITY_LEVELS } from '../../../shared/constants/gas';
 import {
   decimalToHex,
   decGWEIToHexWEI,
+  hexWEIToDecGWEI,
 } from '../../helpers/utils/conversions.util';
 import {
   updateCustomSwapsEIP1559GasParams,
@@ -16,7 +18,9 @@ export const useTransactionFunctions = ({
   defaultEstimateToUse,
   editGasMode,
   gasFeeEstimates,
-  gasLimit: gasLimitInTransaction,
+  gasLimit: gasLimitValue,
+  maxPriorityFeePerGas: maxPriorityFeePerGasValue,
+  minimumGasLimit,
   transaction,
 }) => {
   const dispatch = useDispatch();
@@ -24,13 +28,14 @@ export const useTransactionFunctions = ({
   const updateTransaction = useCallback(
     ({
       estimateUsed,
+      gasLimit,
       maxFeePerGas,
       maxPriorityFeePerGas,
-      gasLimit = gasLimitInTransaction,
+      txMeta,
     }) => {
       const newGasSettings = {
-        gas: decimalToHex(gasLimit),
-        gasLimit: decimalToHex(gasLimit),
+        gas: decimalToHex(gasLimit || gasLimitValue),
+        gasLimit: decimalToHex(gasLimit || gasLimitValue),
         estimateSuggested: defaultEstimateToUse,
         estimateUsed,
       };
@@ -38,7 +43,8 @@ export const useTransactionFunctions = ({
         newGasSettings.maxFeePerGas = maxFeePerGas;
       }
       if (maxPriorityFeePerGas) {
-        newGasSettings.maxPriorityFeePerGas = maxPriorityFeePerGas;
+        newGasSettings.maxPriorityFeePerGas =
+          maxPriorityFeePerGas || decGWEIToHexWEI(maxPriorityFeePerGasValue);
       }
 
       const updatedTxMeta = {
@@ -48,6 +54,7 @@ export const useTransactionFunctions = ({
           ...transaction.txParams,
           ...newGasSettings,
         },
+        ...txMeta,
       };
 
       if (editGasMode === EDIT_GAS_MODES.SWAPS) {
@@ -63,24 +70,59 @@ export const useTransactionFunctions = ({
       defaultEstimateToUse,
       dispatch,
       editGasMode,
-      gasLimitInTransaction,
+      gasLimitValue,
+      maxPriorityFeePerGasValue,
       transaction,
     ],
   );
 
   const updateTransactionUsingGasFeeEstimates = useCallback(
     (gasFeeEstimateToUse) => {
-      if (gasFeeEstimateToUse === PRIORITY_LEVELS.DAPP_SUGGESTED) {
+      if (gasFeeEstimateToUse === PRIORITY_LEVELS.MINIMUM) {
+        console.log(transaction);
+        const {
+          maxFeePerGas,
+          maxPriorityFeePerGas,
+          gasLimit,
+        } = transaction?.txParams;
+        const txMeta = {};
+        console.log('gasLimit = ', gasLimit);
+        if (!transaction.previousGas) {
+          txMeta.previousGas = {
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+            gasLimit,
+          };
+        }
+        updateTransaction({
+          estimateUsed: gasFeeEstimateToUse,
+          gasLimit:
+            editGasMode === EDIT_GAS_MODES.CANCEL
+              ? minimumGasLimit
+              : transaction.previousGas?.gasLimit || gasLimit,
+          maxFeePerGas: decGWEIToHexWEI(
+            new BigNumber(
+              hexWEIToDecGWEI(
+                transaction.previousGas?.maxPriorityFeePerGas ||
+                  maxPriorityFeePerGas,
+              ),
+            ).times(1.1),
+          ),
+          maxPriorityFeePerGas:
+            transaction.previousGas?.maxFeePerGas || maxFeePerGas,
+          txMeta,
+        });
+      } else if (gasFeeEstimateToUse === PRIORITY_LEVELS.DAPP_SUGGESTED) {
         const {
           maxFeePerGas,
           maxPriorityFeePerGas,
         } = transaction?.dappSuggestedGasFees;
         updateTransaction({
-          estimateUsed: PRIORITY_LEVELS.DAPP_SUGGESTED,
+          estimateUsed: gasFeeEstimateToUse,
           maxFeePerGas,
           maxPriorityFeePerGas,
         });
-      } else {
+      } else if (gasFeeEstimates[gasFeeEstimateToUse]) {
         const {
           suggestedMaxFeePerGas,
           suggestedMaxPriorityFeePerGas,
@@ -92,7 +134,13 @@ export const useTransactionFunctions = ({
         });
       }
     },
-    [gasFeeEstimates, transaction?.dappSuggestedGasFees, updateTransaction],
+    [
+      editGasMode,
+      gasFeeEstimates,
+      minimumGasLimit,
+      transaction,
+      updateTransaction,
+    ],
   );
 
   return { updateTransaction, updateTransactionUsingGasFeeEstimates };

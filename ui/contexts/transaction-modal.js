@@ -63,6 +63,7 @@ export const TransactionModalContextProvider = ({
         closeAllModals,
         currentModal: openModals[openModals.length - 1],
         openModal,
+        openModalCount: openModals.length,
       }}
     >
       {children}

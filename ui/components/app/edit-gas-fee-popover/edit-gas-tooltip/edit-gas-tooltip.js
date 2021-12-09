@@ -141,8 +141,8 @@ const EditGasToolTip = ({
 
 EditGasToolTip.propTypes = {
   priorityLevel: PropTypes.string,
-  maxFeePerGas: PropTypes.string,
-  maxPriorityFeePerGas: PropTypes.string,
+  maxFeePerGas: PropTypes.number,
+  maxPriorityFeePerGas: PropTypes.number,
   t: PropTypes.func,
   editGasMode: PropTypes.string,
   gasLimit: PropTypes.number,
