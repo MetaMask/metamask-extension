@@ -365,12 +365,15 @@ export default class ConfirmTransactionBase extends Component {
         secondaryTotalTextOverride === undefined
       ) {
         return (
-          <UserPreferencedCurrencyDisplay
-            type={PRIMARY}
-            key="total-detail-value"
-            value={hexTransactionTotal}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-          />
+          <div className="confirm-page-container-content__total-value">
+            <LoadingHeartBeat />
+            <UserPreferencedCurrencyDisplay
+              type={PRIMARY}
+              key="total-detail-value"
+              value={hexTransactionTotal}
+              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            />
+          </div>
         );
       }
       return useNativeCurrencyAsPrimaryCurrency
@@ -384,12 +387,15 @@ export default class ConfirmTransactionBase extends Component {
         secondaryTotalTextOverride === undefined
       ) {
         return (
-          <UserPreferencedCurrencyDisplay
-            type={SECONDARY}
-            key="total-detail-text"
-            value={hexTransactionTotal}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-          />
+          <div className="confirm-page-container-content__total-value">
+            <LoadingHeartBeat />
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              key="total-detail-text"
+              value={hexTransactionTotal}
+              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            />
+          </div>
         );
       }
       return useNativeCurrencyAsPrimaryCurrency
@@ -612,12 +618,13 @@ export default class ConfirmTransactionBase extends Component {
                 detailTotal={renderTotalDetailTotal()}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
-                  <>
+                  <div className="confirm-page-container-content__total-amount">
+                    <LoadingHeartBeat />
                     <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
                     </strong>
                     {renderTotalMaxAmount()}
-                  </>
+                  </div>
                 }
               />
             ),

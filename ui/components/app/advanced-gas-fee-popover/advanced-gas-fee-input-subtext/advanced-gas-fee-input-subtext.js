@@ -10,18 +10,24 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical }) => {
     <Box className="advanced-gas-fee-input-subtext">
       <Box display="flex" alignItems="center">
         <span className="advanced-gas-fee-input-subtext__label">
-          <LoadingHeartBeat />
           <I18nValue messageKey="currentTitle" />
         </span>
-        <span>{latest}</span>
+        <span className="advanced-gas-fee-input-subtext__value">
+          {' '}
+          <LoadingHeartBeat />
+          {latest}
+        </span>
         <img src="./images/high-arrow.svg" alt="" />
       </Box>
       <Box>
         <span className="advanced-gas-fee-input-subtext__label">
-          <LoadingHeartBeat />
           <I18nValue messageKey="twelveHrTitle" />
         </span>
-        <span>{historical}</span>
+        <span className="advanced-gas-fee-input-subtext__value">
+          <LoadingHeartBeat />
+
+          {historical}
+        </span>
       </Box>
     </Box>
   );

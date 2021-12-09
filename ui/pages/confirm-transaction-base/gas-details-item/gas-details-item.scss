@@ -11,7 +11,8 @@
     color: $secondary-1;
   }
 
-  &__currency-container {
+  &__currency-container,
+  &__gasfee-label {
     position: relative;
   }
 }

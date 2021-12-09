@@ -98,6 +98,7 @@ const GasDetailsItem = ({
               'gas-details-item__gas-fee-warning': estimateUsed === 'high',
             })}
           >
+            <LoadingHeartBeat />
             <Box marginRight={1}>
               <strong>
                 {estimateUsed === 'high' && '⚠ '}

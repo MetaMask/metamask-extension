@@ -139,7 +139,7 @@ const EditGasItem = ({ priorityLevel }) => {
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}
       >
         {hexMaximumTransactionFee ? (
-          <div>
+          <div className="edit-gas-item__maxfee">
             <LoadingHeartBeat />
             <UserPreferencedCurrencyDisplay
               key="editGasSubTextFeeAmount"
