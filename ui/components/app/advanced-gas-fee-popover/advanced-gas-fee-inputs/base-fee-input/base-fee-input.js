@@ -79,9 +79,11 @@ const BaseFeeInput = () => {
   const t = useI18nContext();
   const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
   const {
+    feeTrends,
     maxPriorityFeePerGas,
     setErrorValue,
     setMaxFeePerGas,
+    setFeeTrendsValue,
   } = useAdvancedGasFeePopoverContext();
 
   const { estimatedBaseFee, historicalBaseFeeRange, baseFeeTrend } = gasFeeEstimates;
@@ -169,6 +171,7 @@ const BaseFeeInput = () => {
       error === 'editGasMaxBaseFeeGWEIImbalance' ||
         error === 'editGasMaxBaseFeeMultiplierImbalance',
     );
+    setFeeTrendsValue('baseFeeTrend', baseFeeTrend);
   }, [
     editingInGwei,
     baseFeeTrend,
@@ -178,7 +181,7 @@ const BaseFeeInput = () => {
     setBaseFeeError,
     setErrorValue,
     setMaxFeePerGas,
-    setFeeTrendsData,
+    setFeeTrendsValue,
   ]);
 
   return (

@@ -44,9 +44,10 @@ const PriorityFeeInput = () => {
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const {
+    feeTrends,
     setErrorValue,
     setMaxPriorityFeePerGas,
-    setFeeTrendsData,
+    setFeeTrendsValue,
   } = useAdvancedGasFeePopoverContext();
   const {
     estimateUsed,
@@ -88,6 +89,7 @@ const PriorityFeeInput = () => {
       error === 'editGasMaxPriorityFeeBelowMinimumV2',
     );
     setPriorityFeeError(error);
+    setFeeTrendsValue('priorityFeeTrend', priorityFeeTrend);
   }, [
     priorityFeeTrend,
     gasFeeEstimates,
@@ -95,7 +97,7 @@ const PriorityFeeInput = () => {
     setErrorValue,
     setMaxPriorityFeePerGas,
     setPriorityFeeError,
-    setFeeTrendsData,
+    setFeeTrendsValue,
   ]);
 
   return (

@@ -11,6 +11,10 @@ export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
     maxFeePerGas: false,
     maxPriorityFeePerGas: false,
   });
+  const [feeTrends, setFeeTrends] = useState({
+    baseFeeTrend: '',
+    priorityFeeTrend: '',
+  });
 
   const setErrorValue = useCallback(
     (field, value) => {
@@ -21,10 +25,20 @@ export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
     [errors, setErrors],
   );
 
+  const setFeeTrendsValue = useCallback(
+    (field, value) => {
+      if (value !== 'level' && feeTrends[field] !== value) {
+        setFeeTrends({ ...feeTrends, [field]: value });
+      }
+    },
+    [feeTrends, setFeeTrends],
+  );
+
   return (
     <AdvancedGasFeePopoverContext.Provider
       value={{
         gasLimit,
+        feeTrends,
         hasErrors: errors.maxFeePerGas || errors.maxPriorityFeePerGas,
         maxFeePerGas,
         maxPriorityFeePerGas,
@@ -32,7 +46,7 @@ export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
         setGasLimit,
         setMaxPriorityFeePerGas,
         setMaxFeePerGas,
-        setFeeTrendsData,
+        setFeeTrendsValue,
       }}
     >
       {children}
