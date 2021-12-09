@@ -11,7 +11,6 @@ import I18nValue from '../../../ui/i18n-value';
 import Typography from '../../../ui/typography';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
-import { EDIT_GAS_MODES } from '../../../../../shared/constants/gas';
 
 const validateGasLimit = (gasLimit, minimumGasLimitDec) => {
   return bnLessThan(gasLimit, minimumGasLimitDec) ||
@@ -26,16 +25,11 @@ const AdvancedGasFeeGasLimit = () => {
     setGasLimit: setGasLimitInContext,
   } = useAdvancedGasFeePopoverContext();
   const {
-    editGasMode,
     gasLimit: gasLimitInTransaction,
     minimumGasLimitDec,
   } = useGasFeeContext();
   const [isEditing, setEditing] = useState(false);
-  const [gasLimit, setGasLimit] = useState(
-    editGasMode === EDIT_GAS_MODES.CANCEL
-      ? minimumGasLimitDec
-      : gasLimitInTransaction,
-  );
+  const [gasLimit, setGasLimit] = useState(gasLimitInTransaction);
   const [gasLimitError, setGasLimitError] = useState();
 
   const updateGasLimit = (value) => {

@@ -35,7 +35,7 @@ import InfoTooltip from '../../../ui/info-tooltip';
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
-const EditGasItem = ({ priorityLevel, estimateIsStale }) => {
+const EditGasItem = ({ priorityLevel }) => {
   const {
     editGasMode,
     estimateUsed,
@@ -79,6 +79,7 @@ const EditGasItem = ({ priorityLevel, estimateIsStale }) => {
       maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
     }
   } else if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
+    // todo: review
     maxFeePerGas = new BigNumber(
       hexWEIToDecGWEI(transaction.previousGas?.maxFeePerGas),
     )
@@ -122,8 +123,9 @@ const EditGasItem = ({ priorityLevel, estimateIsStale }) => {
   };
 
   if (
-    editGasMode === EDIT_GAS_MODES.CANCEL ||
-    editGasMode === EDIT_GAS_MODES.SPEED_UP
+    (editGasMode === EDIT_GAS_MODES.CANCEL ||
+      editGasMode === EDIT_GAS_MODES.SPEED_UP) &&
+    priorityLevel === PRIORITY_LEVELS.MEDIUM
   ) {
     let { maxFeePerGas: maxFeePerGasInTransaction } = transaction.txParams;
     maxFeePerGasInTransaction = new BigNumber(
@@ -165,8 +167,7 @@ const EditGasItem = ({ priorityLevel, estimateIsStale }) => {
   return (
     <button
       className={classNames('edit-gas-item', {
-        'edit-gas-item--selected':
-          !estimateIsStale && priorityLevel === estimateUsed,
+        'edit-gas-item--selected': priorityLevel === estimateUsed,
         'edit-gas-item--disabled': disabled,
       })}
       onClick={onOptionSelect}
@@ -225,7 +226,6 @@ const EditGasItem = ({ priorityLevel, estimateIsStale }) => {
 
 EditGasItem.propTypes = {
   priorityLevel: PropTypes.string,
-  estimateIsStale: PropTypes.bool,
 };
 
 export default EditGasItem;

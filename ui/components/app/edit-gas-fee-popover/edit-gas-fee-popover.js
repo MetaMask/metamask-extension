@@ -39,6 +39,7 @@ const EditGasFeePopover = () => {
   return (
     <Popover
       title={t(popupTitle)}
+      // below logic ensures that back button is visible only if there are other modals open before this.
       onBack={openModalCount === 1 ? undefined : () => closeModal('editGasFee')}
       onClose={closeAllModals}
       className="edit-gas-fee-popover"
