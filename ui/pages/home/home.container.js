@@ -16,6 +16,9 @@ import {
   getSortedNotificationsToShow,
   getShowRecoveryPhraseReminder,
   getNewNetworkAdded,
+  hasUnsignedQRHardwareTransaction,
+  hasUnsignedQRHardwareMessage,
+  getNewCollectibleAddedMessage,
 } from '../../selectors';
 
 import {
@@ -30,6 +33,7 @@ import {
   setRecoveryPhraseReminderHasBeenShown,
   setRecoveryPhraseReminderLastShown,
   setNewNetworkAdded,
+  setNewCollectibleAddedMessage,
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -83,6 +87,10 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       WEB3_SHIM_USAGE_ALERT_STATES.RECORDED;
 
+  const isSigningQRHardwareTransaction =
+    hasUnsignedQRHardwareTransaction(state) ||
+    hasUnsignedQRHardwareMessage(state);
+
   return {
     forgottenPassword,
     suggestedAssets,
@@ -115,6 +123,8 @@ const mapStateToProps = (state) => {
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
     newNetworkAdded: getNewNetworkAdded(state),
+    isSigningQRHardwareTransaction,
+    newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
   };
 };
 
@@ -146,6 +156,9 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
   setNewNetworkAdded: (newNetwork) => {
     dispatch(setNewNetworkAdded(newNetwork));
+  },
+  setNewCollectibleAddedMessage: (message) => {
+    dispatch(setNewCollectibleAddedMessage(message));
   },
 });
 

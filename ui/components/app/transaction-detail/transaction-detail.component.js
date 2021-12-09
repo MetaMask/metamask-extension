@@ -1,48 +1,43 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import { I18nContext } from '../../../contexts/i18n';
 import { useGasFeeContext } from '../../../contexts/gasFee';
+import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import Typography from '../../ui/typography/typography';
 
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import { COLORS } from '../../../helpers/constants/design-system';
+import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
-const GasLevelIconMap = {
-  low: '🐢',
-  medium: '🦊',
-  high: '🦍',
-  dappSuggested: '🌐',
-  custom: '⚙',
-};
-
-export default function TransactionDetail({ rows = [], onEdit }) {
-  // eslint-disable-next-line prefer-destructuring
-  const EIP_1559_V2 = process.env.EIP_1559_V2;
-
-  const t = useContext(I18nContext);
+export default function TransactionDetail({
+  rows = [],
+  onEdit,
+  userAcknowledgedGasMissing,
+}) {
+  const t = useI18nContext();
   const {
-    estimateToUse,
     gasLimit,
-    gasPrice,
-    isUsingDappSuggestedGasFees,
+    hasSimulationError,
+    estimateUsed,
     maxFeePerGas,
     maxPriorityFeePerGas,
+    supportsEIP1559V2,
     transaction,
-    supportsEIP1559,
   } = useGasFeeContext();
-  const estimateUsed = isUsingDappSuggestedGasFees
-    ? 'dappSuggested'
-    : estimateToUse;
+  const { openModal } = useTransactionModalContext();
 
-  if (EIP_1559_V2 && estimateUsed) {
+  if (supportsEIP1559V2 && estimateUsed) {
+    const editEnabled = !hasSimulationError || userAcknowledgedGasMissing;
+    if (!editEnabled) return null;
+
     return (
       <div className="transaction-detail">
         <div className="transaction-detail-edit-V2">
-          <button onClick={onEdit}>
+          <button onClick={() => openModal('editGasFee')}>
             <span className="transaction-detail-edit-V2__icon">
-              {`${GasLevelIconMap[estimateUsed]} `}
+              {`${PRIORITY_LEVEL_ICON_MAP[estimateUsed]} `}
             </span>
             <span className="transaction-detail-edit-V2__label">
               {t(estimateUsed)}
@@ -50,7 +45,9 @@ export default function TransactionDetail({ rows = [], onEdit }) {
             <i className="fas fa-chevron-right asset-list-item__chevron-right" />
           </button>
           {estimateUsed === 'custom' && onEdit && (
-            <button onClick={onEdit}>{t('edit')}</button>
+            <button onClick={() => openModal('advancedGasFee')}>
+              {t('edit')}
+            </button>
           )}
           {estimateUsed === 'dappSuggested' && (
             <InfoTooltip
@@ -59,23 +56,14 @@ export default function TransactionDetail({ rows = [], onEdit }) {
                   <Typography fontSize="12px" color={COLORS.GREY}>
                     {t('dappSuggestedTooltip', [transaction.origin])}
                   </Typography>
-                  {supportsEIP1559 ? (
-                    <>
-                      <Typography fontSize="12px">
-                        <b>{t('maxBaseFee')}</b>
-                        {maxFeePerGas}
-                      </Typography>
-                      <Typography fontSize="12px">
-                        <b>{t('maxPriorityFee')}</b>
-                        {maxPriorityFeePerGas}
-                      </Typography>
-                    </>
-                  ) : (
-                    <Typography fontSize="12px">
-                      <b>{t('gasPriceLabel')}</b>
-                      {gasPrice}
-                    </Typography>
-                  )}
+                  <Typography fontSize="12px">
+                    <b>{t('maxBaseFee')}</b>
+                    {maxFeePerGas}
+                  </Typography>
+                  <Typography fontSize="12px">
+                    <b>{t('maxPriorityFee')}</b>
+                    {maxPriorityFeePerGas}
+                  </Typography>
                   <Typography fontSize="12px">
                     <b>{t('gasLimit')}</b>
                     {gasLimit}
@@ -106,4 +94,5 @@ export default function TransactionDetail({ rows = [], onEdit }) {
 TransactionDetail.propTypes = {
   rows: PropTypes.arrayOf(TransactionDetailItem).isRequired,
   onEdit: PropTypes.func,
+  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
 };

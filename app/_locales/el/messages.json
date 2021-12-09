@@ -215,9 +215,6 @@
   "copiedExclamation": {
     "message": "Έγινε αντιγραφή!"
   },
-  "copiedTransactionId": {
-    "message": "Αντιγράφηκε το Αναγνωριστικό Συναλλαγής"
-  },
   "copyAddress": {
     "message": "Αντιγράψτε τη διεύθυνση στο πρόχειρο"
   },

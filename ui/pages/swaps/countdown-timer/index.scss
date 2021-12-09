@@ -1,7 +1,6 @@
 .countdown-timer {
   @include H7;
 
-  font-weight: bold;
   display: flex;
   justify-content: center;
 
@@ -15,6 +14,7 @@
 
     > span {
       display: flex;
+      padding-left: 4px;
     }
 
     &--warning {
@@ -27,6 +27,7 @@
   &__time {
     @include H7;
 
+    font-weight: bold;
     width: 24px;
     margin-left: 4px;
     margin-right: 2px;

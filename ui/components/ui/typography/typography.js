@@ -79,9 +79,11 @@ Typography.propTypes = {
     'h5',
     'h6',
     'span',
+    'strong',
+    'em',
+    'li',
     'div',
     'dt',
     'dd',
-    'i',
   ]),
 };

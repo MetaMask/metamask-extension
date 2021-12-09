@@ -66,6 +66,7 @@ import {
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
+import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -76,8 +77,6 @@ export default class Routes extends Component {
     alertMessage: PropTypes.string,
     textDirection: PropTypes.string,
     isNetworkLoading: PropTypes.bool,
-    provider: PropTypes.object,
-    frequentRpcListDetail: PropTypes.array,
     alertOpen: PropTypes.bool,
     isUnlocked: PropTypes.bool,
     setLastActiveTime: PropTypes.func,
@@ -87,10 +86,12 @@ export default class Routes extends Component {
     isMouseUser: PropTypes.bool,
     setMouseUserState: PropTypes.func,
     providerId: PropTypes.string,
+    providerType: PropTypes.string,
     autoLockTimeLimit: PropTypes.number,
     pageChanged: PropTypes.func.isRequired,
     prepareToLeaveSwaps: PropTypes.func,
-    browserEnvironment: PropTypes.object,
+    browserEnvironmentOs: PropTypes.string,
+    browserEnvironmentBrowser: PropTypes.string,
   };
 
   static contextTypes = {
@@ -285,6 +286,13 @@ export default class Routes extends Component {
     );
   }
 
+  onAppHeaderClick = async () => {
+    const { prepareToLeaveSwaps } = this.props;
+    if (this.onSwapsPage()) {
+      await prepareToLeaveSwaps();
+    }
+  };
+
   render() {
     const {
       isLoading,
@@ -293,19 +301,16 @@ export default class Routes extends Component {
       textDirection,
       loadingMessage,
       isNetworkLoading,
-      provider,
-      frequentRpcListDetail,
       setMouseUserState,
       isMouseUser,
-      prepareToLeaveSwaps,
-      browserEnvironment,
+      browserEnvironmentOs: os,
+      browserEnvironmentBrowser: browser,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
         : null;
 
-    const { os, browser } = browserEnvironment;
     return (
       <div
         className={classnames('app', {
@@ -321,17 +326,14 @@ export default class Routes extends Component {
           }
         }}
       >
+        <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() && (
           <AppHeader
             hideNetworkIndicator={this.onInitializationUnlockPage()}
             disableNetworkIndicator={this.onSwapsPage()}
-            onClick={async () => {
-              if (this.onSwapsPage()) {
-                await prepareToLeaveSwaps();
-              }
-            }}
+            onClick={this.onAppHeaderClick}
             disabled={
               this.onConfirmPage() ||
               (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
@@ -341,10 +343,7 @@ export default class Routes extends Component {
         {process.env.ONBOARDING_V2 && this.showOnboardingHeader() && (
           <OnboardingAppHeader />
         )}
-        <NetworkDropdown
-          provider={provider}
-          frequentRpcListDetail={frequentRpcListDetail}
-        />
+        <NetworkDropdown />
         <AccountMenu />
         <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
@@ -374,9 +373,9 @@ export default class Routes extends Component {
     if (loadingMessage) {
       return loadingMessage;
     }
-    const { provider, providerId } = this.props;
+    const { providerType, providerId } = this.props;
 
-    switch (provider.type) {
+    switch (providerType) {
       case 'mainnet':
         return this.context.t('connectingToMainnet');
       case 'ropsten':
@@ -389,23 +388,6 @@ export default class Routes extends Component {
         return this.context.t('connectingToGoerli');
       default:
         return this.context.t('connectingTo', [providerId]);
-    }
-  }
-
-  getNetworkName() {
-    switch (this.props.provider.type) {
-      case 'mainnet':
-        return this.context.t('mainnet');
-      case 'ropsten':
-        return this.context.t('ropsten');
-      case 'kovan':
-        return this.context.t('kovan');
-      case 'rinkeby':
-        return this.context.t('rinkeby');
-      case 'goerli':
-        return this.context.t('goerli');
-      default:
-        return this.context.t('unknownNetwork');
     }
   }
 }

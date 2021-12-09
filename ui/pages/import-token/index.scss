@@ -21,7 +21,7 @@
   }
 
   &__search-token {
-    padding: 0 16px 16px 16px;
+    padding: 16px 16px 16px 16px;
   }
 
   &__token-list {
@@ -57,5 +57,6 @@
 
   &__token-detection-announcement {
     margin-bottom: 16px;
+    margin-top: 0;
   }
 }

@@ -131,7 +131,6 @@ const EMPTY_INIT_STATE = {
     topAggId: null,
     routeState: '',
     swapsFeatureIsLive: true,
-    useNewSwapsApi: false,
     swapsQuoteRefreshTime: 60000,
     swapsQuotePrefetchingRefreshTime: 60000,
     swapsUserFeeLevel: '',
@@ -707,7 +706,6 @@ describe('SwapsController', function () {
         assert.strictEqual(
           fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
             ...MOCK_FETCH_METADATA,
-            useNewSwapsApi: false,
           }),
           true,
         );
@@ -885,7 +883,6 @@ describe('SwapsController', function () {
         const tokens = 'test';
         const fetchParams = 'test';
         const swapsFeatureIsLive = false;
-        const useNewSwapsApi = false;
         const swapsQuoteRefreshTime = 0;
         const swapsQuotePrefetchingRefreshTime = 0;
         swapsController.store.updateState({
@@ -893,7 +890,6 @@ describe('SwapsController', function () {
             tokens,
             fetchParams,
             swapsFeatureIsLive,
-            useNewSwapsApi,
             swapsQuoteRefreshTime,
             swapsQuotePrefetchingRefreshTime,
           },

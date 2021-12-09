@@ -61,7 +61,6 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: true,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
@@ -72,7 +71,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(2);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
@@ -81,7 +80,6 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: false,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       featureFlagsResponse.ethereum.extension_active = false;
@@ -93,7 +91,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(2);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
@@ -102,7 +100,6 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: false,
-        useNewSwapsApi: false,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       featureFlagsResponse.ethereum.extension_active = false;
@@ -115,7 +112,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(2);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
@@ -124,7 +121,6 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: false,
-        useNewSwapsApi: false,
       };
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
         replyWithError: true,
@@ -134,7 +130,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock.isDone()).toBe(true);
-      expect(mockDispatch).toHaveBeenCalledTimes(1);
+      expect(mockDispatch).toHaveBeenCalledTimes(2);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
@@ -143,7 +139,6 @@ describe('Ducks - Swaps', () => {
       const mockDispatch = jest.fn();
       const expectedSwapsLiveness = {
         swapsFeatureIsLive: true,
-        useNewSwapsApi: true,
       };
       const featureFlagsResponse = MOCKS.createFeatureFlagsResponse();
       const featureFlagApiNock = mockFeatureFlagsApiResponse({
@@ -159,7 +154,7 @@ describe('Ducks - Swaps', () => {
         createGetState(),
       );
       expect(featureFlagApiNock2.isDone()).toBe(false); // Second API call wasn't made, cache was used instead.
-      expect(mockDispatch).toHaveBeenCalledTimes(2);
+      expect(mockDispatch).toHaveBeenCalledTimes(4);
       expect(setSwapsLiveness).toHaveBeenCalledWith(expectedSwapsLiveness);
       expect(swapsLiveness).toMatchObject(expectedSwapsLiveness);
     });
@@ -207,22 +202,6 @@ describe('Ducks - Swaps', () => {
       const swapsFeatureIsLive = false;
       state.metamask.swapsState.swapsFeatureIsLive = swapsFeatureIsLive;
       expect(swaps.getSwapsFeatureIsLive(state)).toBe(swapsFeatureIsLive);
-    });
-  });
-
-  describe('getUseNewSwapsApi', () => {
-    it('returns true for "useNewSwapsApi"', () => {
-      const state = createSwapsMockStore();
-      const useNewSwapsApi = true;
-      state.metamask.swapsState.useNewSwapsApi = useNewSwapsApi;
-      expect(swaps.getUseNewSwapsApi(state)).toBe(useNewSwapsApi);
-    });
-
-    it('returns false for "useNewSwapsApi"', () => {
-      const state = createSwapsMockStore();
-      const useNewSwapsApi = false;
-      state.metamask.swapsState.useNewSwapsApi = useNewSwapsApi;
-      expect(swaps.getUseNewSwapsApi(state)).toBe(useNewSwapsApi);
     });
   });
 

@@ -5,19 +5,24 @@
 
   &__row {
     display: flex;
+    justify-content: space-between;
     grid-gap: 5px;
-  }
 
-  &__title {
-    flex-grow: 1;
-    word-break: break-word;
+    &-subText {
+      display: flex;
+      align-items: center;
+
+      .currency-display-component {
+        margin-left: 4px;
+      }
+    }
   }
 
   &__detail-values {
     display: flex;
     flex-wrap: wrap;
     justify-content: end;
-    width: 55%;
+    width: 52%;
 
     &--flex-width {
       width: auto;
@@ -31,19 +36,6 @@
     path {
       fill: $ui-3;
     }
-  }
-
-  &__total {
-    font-weight: bold;
-    color: $ui-black;
-  }
-
-  &__subtitle {
-    flex-grow: 1;
-  }
-
-  &__subtext {
-    text-align: end;
   }
 
   .currency-display-component {

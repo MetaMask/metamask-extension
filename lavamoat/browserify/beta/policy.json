@@ -412,6 +412,47 @@
         "Intl.getCanonicalLocales": true
       }
     },
+    "@keystonehq/base-eth-keyring": {
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@keystonehq/bc-ur-registry-eth": true,
+        "buffer": true,
+        "ethereumjs-util": true,
+        "hdkey": true,
+        "uuid": true
+      }
+    },
+    "@keystonehq/bc-ur-registry": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "@ngraveio/bc-ur": true,
+        "bs58check": true,
+        "buffer": true
+      }
+    },
+    "@keystonehq/bc-ur-registry-eth": {
+      "packages": {
+        "@keystonehq/bc-ur-registry": true,
+        "buffer": true,
+        "ethereumjs-util": true,
+        "hdkey": true,
+        "uuid": true
+      }
+    },
+    "@keystonehq/metamask-airgapped-keyring": {
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@keystonehq/base-eth-keyring": true,
+        "@keystonehq/bc-ur-registry-eth": true,
+        "@metamask/obs-store": true,
+        "buffer": true,
+        "events": true,
+        "rlp": true,
+        "uuid": true
+      }
+    },
     "@material-ui/core": {
       "globals": {
         "Image": true,
@@ -526,6 +567,7 @@
         "ethjs-util": true,
         "events": true,
         "human-standard-collectible-abi": true,
+        "human-standard-multi-collectible-abi": true,
         "human-standard-token-abi": true,
         "immer": true,
         "isomorphic-fetch": true,
@@ -616,6 +658,18 @@
       },
       "packages": {
         "events": true
+      }
+    },
+    "@ngraveio/bc-ur": {
+      "packages": {
+        "@apocentre/alias-sampling": true,
+        "assert": true,
+        "bignumber.js": true,
+        "buffer": true,
+        "cbor-sync": true,
+        "crc": true,
+        "jsbi": true,
+        "sha.js": true
       }
     },
     "@popperjs/core": {
@@ -735,6 +789,83 @@
       "packages": {
         "is-buffer": true,
         "util": true
+      }
+    },
+    "@truffle/abi-utils": {
+      "packages": {
+        "change-case": true,
+        "faker": true,
+        "fast-check": true
+      }
+    },
+    "@truffle/code-utils": {
+      "packages": {
+        "buffer": true,
+        "cbor": true
+      }
+    },
+    "@truffle/codec": {
+      "packages": {
+        "@truffle/abi-utils": true,
+        "@truffle/compile-common": true,
+        "big.js": true,
+        "bn.js": true,
+        "buffer": true,
+        "cbor": true,
+        "debug": true,
+        "lodash.clonedeep": true,
+        "lodash.escaperegexp": true,
+        "lodash.partition": true,
+        "lodash.sum": true,
+        "semver": true,
+        "utf8": true,
+        "util": true,
+        "web3-utils": true
+      }
+    },
+    "@truffle/compile-common": {
+      "packages": {
+        "@truffle/error": true,
+        "colors": true,
+        "path-browserify": true
+      }
+    },
+    "@truffle/decoder": {
+      "packages": {
+        "@truffle/abi-utils": true,
+        "@truffle/codec": true,
+        "@truffle/compile-common": true,
+        "@truffle/source-map-utils": true,
+        "bn.js": true,
+        "debug": true,
+        "web3-utils": true
+      }
+    },
+    "@truffle/source-map-utils": {
+      "packages": {
+        "@truffle/code-utils": true,
+        "@truffle/codec": true,
+        "debug": true,
+        "json-pointer": true,
+        "node-interval-tree": true,
+        "web3-utils": true
+      }
+    },
+    "@zxing/browser": {
+      "globals": {
+        "HTMLElement": true,
+        "HTMLImageElement": true,
+        "HTMLVideoElement": true,
+        "URL.createObjectURL": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "document": true,
+        "navigator": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@zxing/library": true
       }
     },
     "@zxing/library": {
@@ -922,6 +1053,11 @@
         "buffer": true
       }
     },
+    "big.js": {
+      "globals": {
+        "define": true
+      }
+    },
     "bignumber.js": {
       "globals": {
         "crypto": true,
@@ -974,6 +1110,9 @@
       }
     },
     "bn.js": {
+      "globals": {
+        "Buffer": true
+      },
       "packages": {
         "browser-resolve": true
       }
@@ -1098,6 +1237,62 @@
         "buffer": true
       }
     },
+    "call-bind": {
+      "packages": {
+        "function-bind": true,
+        "get-intrinsic": true
+      }
+    },
+    "camel-case": {
+      "packages": {
+        "no-case": true,
+        "upper-case": true
+      }
+    },
+    "cbor": {
+      "globals": {
+        "TextDecoder": true
+      },
+      "packages": {
+        "bignumber.js": true,
+        "buffer": true,
+        "is-buffer": true,
+        "nofilter": true,
+        "stream-browserify": true,
+        "url": true,
+        "util": true
+      }
+    },
+    "cbor-sync": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "buffer": true
+      }
+    },
+    "change-case": {
+      "packages": {
+        "camel-case": true,
+        "constant-case": true,
+        "dot-case": true,
+        "header-case": true,
+        "is-lower-case": true,
+        "is-upper-case": true,
+        "lower-case": true,
+        "lower-case-first": true,
+        "no-case": true,
+        "param-case": true,
+        "pascal-case": true,
+        "path-case": true,
+        "sentence-case": true,
+        "snake-case": true,
+        "swap-case": true,
+        "title-case": true,
+        "upper-case": true,
+        "upper-case-first": true
+      }
+    },
     "cids": {
       "packages": {
         "buffer": true,
@@ -1152,6 +1347,22 @@
         "color-name": true
       }
     },
+    "colors": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "os-browserify": true,
+        "process": true,
+        "util": true
+      }
+    },
+    "constant-case": {
+      "packages": {
+        "snake-case": true,
+        "upper-case": true
+      }
+    },
     "cookiejar": {
       "globals": {
         "console.warn": true
@@ -1159,7 +1370,7 @@
     },
     "copy-to-clipboard": {
       "globals": {
-        "clipboardData.setData": true,
+        "clipboardData": true,
         "console.error": true,
         "console.warn": true,
         "document.body.appendChild": true,
@@ -1188,6 +1399,11 @@
     "core-util-is": {
       "packages": {
         "is-buffer": true
+      }
+    },
+    "crc": {
+      "packages": {
+        "buffer": true
       }
     },
     "crc-32": {
@@ -1406,6 +1622,11 @@
         "@babel/runtime": true
       }
     },
+    "dot-case": {
+      "packages": {
+        "no-case": true
+      }
+    },
     "drbg.js": {
       "packages": {
         "buffer": true,
@@ -1487,12 +1708,6 @@
     "errno": {
       "packages": {
         "prr": true
-      }
-    },
-    "es-abstract": {
-      "packages": {
-        "function-bind": true,
-        "has-symbols": true
       }
     },
     "eth-block-tracker": {
@@ -1660,6 +1875,11 @@
         "events": true,
         "hdkey": true,
         "trezor-connect": true
+      }
+    },
+    "ethereum-bloom-filters": {
+      "packages": {
+        "js-sha3": true
       }
     },
     "ethereum-cryptography": {
@@ -1886,6 +2106,24 @@
         "chrome": true
       }
     },
+    "faker": {
+      "globals": {
+        "console.error": true,
+        "console.log": true,
+        "dbg": "write"
+      }
+    },
+    "fast-check": {
+      "globals": {
+        "clearTimeout": true,
+        "console.log": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "buffer": true,
+        "pure-rand": true
+      }
+    },
     "fast-json-patch": {
       "globals": {
         "addEventListener": true,
@@ -1933,6 +2171,18 @@
         "webkitRTCSessionDescription": true
       }
     },
+    "get-intrinsic": {
+      "globals": {
+        "AggregateError": true,
+        "FinalizationRegistry": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "function-bind": true,
+        "has": true,
+        "has-symbols": true
+      }
+    },
     "get-params": {
       "globals": {
         "GetParams": "write"
@@ -1975,6 +2225,11 @@
         "sparse-array": true
       }
     },
+    "has": {
+      "packages": {
+        "function-bind": true
+      }
+    },
     "has-binary2": {
       "globals": {
         "Blob": true,
@@ -2006,10 +2261,17 @@
     "hdkey": {
       "packages": {
         "assert": true,
+        "bs58check": true,
         "coinstring": true,
         "crypto-browserify": true,
         "safe-buffer": true,
         "secp256k1": true
+      }
+    },
+    "header-case": {
+      "packages": {
+        "no-case": true,
+        "upper-case": true
       }
     },
     "heap": {
@@ -2495,9 +2757,20 @@
         "multihashes": true
       }
     },
+    "is-lower-case": {
+      "packages": {
+        "lower-case": true
+      }
+    },
     "is-regex": {
       "packages": {
+        "call-bind": true,
         "has-symbols": true
+      }
+    },
+    "is-upper-case": {
+      "packages": {
+        "upper-case": true
       }
     },
     "iso-random-stream": {
@@ -2556,6 +2829,16 @@
     "jsan": {
       "globals": {
         "console.warn": true
+      }
+    },
+    "jsbi": {
+      "globals": {
+        "define": true
+      }
+    },
+    "json-pointer": {
+      "packages": {
+        "foreach": true
       }
     },
     "json-rpc-engine": {
@@ -2645,6 +2928,7 @@
       "packages": {
         "buffer": true,
         "inherits": true,
+        "readable-stream": true,
         "safe-buffer": true,
         "stream-browserify": true
       }
@@ -3099,10 +3383,20 @@
         "util": true
       }
     },
+    "lower-case-first": {
+      "packages": {
+        "lower-case": true
+      }
+    },
     "lru": {
       "packages": {
         "events": true,
         "inherits": true
+      }
+    },
+    "lru-cache": {
+      "packages": {
+        "yallist": true
       }
     },
     "ltgt": {
@@ -3274,6 +3568,11 @@
         "crypto-browserify": true
       }
     },
+    "no-case": {
+      "packages": {
+        "lower-case": true
+      }
+    },
     "node-forge": {
       "globals": {
         "Blob": true,
@@ -3298,6 +3597,11 @@
         "timers-browserify": true
       }
     },
+    "node-interval-tree": {
+      "packages": {
+        "shallowequal": true
+      }
+    },
     "nodeify": {
       "globals": {
         "setTimeout": true
@@ -3307,6 +3611,13 @@
         "process": true,
         "promise": true,
         "timers-browserify": true
+      }
+    },
+    "nofilter": {
+      "packages": {
+        "buffer": true,
+        "stream-browserify": true,
+        "util": true
       }
     },
     "nonce-tracker": {
@@ -3504,6 +3815,11 @@
         "p-map": true
       }
     },
+    "param-case": {
+      "packages": {
+        "no-case": true
+      }
+    },
     "parse-asn1": {
       "packages": {
         "asn1.js": true,
@@ -3513,9 +3829,20 @@
         "pbkdf2": true
       }
     },
+    "pascal-case": {
+      "packages": {
+        "camel-case": true,
+        "upper-case-first": true
+      }
+    },
     "path-browserify": {
       "packages": {
         "process": true
+      }
+    },
+    "path-case": {
+      "packages": {
+        "no-case": true
       }
     },
     "path-to-regexp": {
@@ -3766,6 +4093,17 @@
     "qrcode-generator": {
       "globals": {
         "define": true
+      }
+    },
+    "qrcode.react": {
+      "globals": {
+        "Path2D": true,
+        "devicePixelRatio": true
+      },
+      "packages": {
+        "prop-types": true,
+        "qr.js": true,
+        "react": true
       }
     },
     "rabin-wasm": {
@@ -4074,8 +4412,7 @@
         "console": true
       },
       "packages": {
-        "@babel/runtime": true,
-        "symbol-observable": true
+        "@babel/runtime": true
       }
     },
     "redux-devtools-core": {
@@ -4114,8 +4451,8 @@
     },
     "regexp.prototype.flags": {
       "packages": {
-        "define-properties": true,
-        "es-abstract": true
+        "call-bind": true,
+        "define-properties": true
       }
     },
     "relative-url": {
@@ -4260,7 +4597,14 @@
         "console": true
       },
       "packages": {
+        "lru-cache": true,
         "process": true
+      }
+    },
+    "sentence-case": {
+      "packages": {
+        "no-case": true,
+        "upper-case-first": true
       }
     },
     "set-immediate-shim": {
@@ -4305,6 +4649,11 @@
         "inherits": true,
         "randombytes": true,
         "readable-stream": true
+      }
+    },
+    "snake-case": {
+      "packages": {
+        "no-case": true
       }
     },
     "socket.io-client": {
@@ -4457,6 +4806,12 @@
         "component-emitter": true
       }
     },
+    "swap-case": {
+      "packages": {
+        "lower-case": true,
+        "upper-case": true
+      }
+    },
     "textarea-caret": {
       "globals": {
         "document.body.appendChild": true,
@@ -4501,6 +4856,12 @@
     "tiny-warning": {
       "globals": {
         "console": true
+      }
+    },
+    "title-case": {
+      "packages": {
+        "no-case": true,
+        "upper-case": true
       }
     },
     "toggle-selection": {
@@ -4595,6 +4956,11 @@
     "uport-base64url": {
       "packages": {
         "buffer": true
+      }
+    },
+    "upper-case-first": {
+      "packages": {
+        "upper-case": true
       }
     },
     "url": {
@@ -4709,6 +5075,21 @@
         "readable-stream": true,
         "util": true,
         "uuid": true
+      }
+    },
+    "web3-utils": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "bn.js": true,
+        "eth-lib": true,
+        "ethereum-bloom-filters": true,
+        "ethjs-unit": true,
+        "is-buffer": true,
+        "number-to-bn": true,
+        "randombytes": true,
+        "utf8": true
       }
     },
     "webrtcsupport": {

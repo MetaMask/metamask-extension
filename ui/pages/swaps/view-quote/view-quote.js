@@ -30,7 +30,6 @@ import {
   getDestinationTokenInfo,
   getUsedSwapsGasPrice,
   getTopQuote,
-  navigateBackToBuildQuote,
   signAndSendTransactions,
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
@@ -80,7 +79,6 @@ import {
   hexToDecimal,
   getValueFromWeiHex,
   decGWEIToHexWEI,
-  hexWEIToDecGWEI,
   addHexes,
 } from '../../../helpers/utils/conversions.util';
 import MainQuoteSummary from '../main-quote-summary';
@@ -573,12 +571,6 @@ export default function ViewQuote() {
         );
   };
 
-  const tokenApprovalTextComponent = (
-    <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
-      {sourceTokenSymbol}
-    </span>
-  );
-
   const actionableBalanceErrorMessage = tokenBalanceUnavailable
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
     : t('swapApproveNeedMoreTokens', [
@@ -733,7 +725,6 @@ export default function ViewQuote() {
           <CountdownTimer
             timeStarted={quotesLastFetched}
             warningTime="0:30"
-            infoTooltipLabelKey="swapQuotesAreRefreshed"
             labelKey="swapNewQuoteIn"
           />
         </div>
@@ -769,25 +760,16 @@ export default function ViewQuote() {
             hideTokenApprovalRow={
               !approveTxParams || (balanceError && !warningHidden)
             }
-            tokenApprovalTextComponent={tokenApprovalTextComponent}
             tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
             onTokenApprovalClick={onFeeCardTokenApprovalClick}
             metaMaskFee={String(metaMaskFee)}
-            isBestQuote={isBestQuote}
             numberOfQuotes={Object.values(quotes).length}
             onQuotesClick={() => {
               allAvailableQuotesOpened();
               setSelectQuotePopoverShown(true);
             }}
-            tokenConversionRate={
-              destinationTokenSymbol === defaultSwapsToken.symbol
-                ? 1
-                : memoizedTokenConversionRates[destinationToken.address]
-            }
             chainId={chainId}
-            networkAndAccountSupports1559={networkAndAccountSupports1559}
-            maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(maxPriorityFeePerGas)}
-            maxFeePerGasDecGWEI={hexWEIToDecGWEI(maxFeePerGas)}
+            isBestQuote={isBestQuote}
           />
         </div>
       </div>
@@ -803,7 +785,7 @@ export default function ViewQuote() {
           }
         }}
         submitText={t('swap')}
-        onCancel={async () => await dispatch(navigateBackToBuildQuote(history))}
+        hideCancel
         disabled={
           submitClicked ||
           balanceError ||

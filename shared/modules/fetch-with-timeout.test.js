@@ -2,8 +2,8 @@ import nock from 'nock';
 import { MILLISECOND, SECOND } from '../constants/time';
 import getFetchWithTimeout from './fetch-with-timeout';
 
-describe('getFetchWithTimeout', function () {
-  it('fetches a url', async function () {
+describe('getFetchWithTimeout', () => {
+  it('fetches a url', async () => {
     nock('https://api.infura.io').get('/money').reply(200, '{"hodl": false}');
 
     const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
@@ -15,7 +15,7 @@ describe('getFetchWithTimeout', function () {
     });
   });
 
-  it('throws when the request hits a custom timeout', async function () {
+  it('throws when the request hits a custom timeout', async () => {
     nock('https://api.infura.io')
       .get('/moon')
       .delay(SECOND * 2)
@@ -23,19 +23,14 @@ describe('getFetchWithTimeout', function () {
 
     const fetchWithTimeout = getFetchWithTimeout(MILLISECOND * 123);
 
-    const fetchWithTimeoutThrowsError = async () => {
+    await expect(async () => {
       await fetchWithTimeout('https://api.infura.io/moon').then((r) =>
         r.json(),
       );
-      throw new Error('Request should throw');
-    };
-
-    await expect(fetchWithTimeoutThrowsError()).rejects.toThrow(
-      'The user aborted a request.',
-    );
+    }).rejects.toThrow('The user aborted a request.');
   });
 
-  it('should abort the request when the custom timeout is hit', async function () {
+  it('should abort the request when the custom timeout is hit', async () => {
     nock('https://api.infura.io')
       .get('/moon')
       .delay(SECOND * 2)
@@ -43,29 +38,24 @@ describe('getFetchWithTimeout', function () {
 
     const fetchWithTimeout = getFetchWithTimeout(MILLISECOND * 123);
 
-    const fetchWithTimeoutThrowsError = async () => {
+    await expect(async () => {
       await fetchWithTimeout('https://api.infura.io/moon').then((r) =>
         r.json(),
       );
-      throw new Error('Request should be aborted');
-    };
-
-    await expect(fetchWithTimeoutThrowsError()).rejects.toThrow(
-      'The user aborted a request.',
-    );
+    }).rejects.toThrow('The user aborted a request.');
   });
 
-  it('throws on invalid timeout', async function () {
-    expect(() => getFetchWithTimeout()).toThrow(
+  it('throws on invalid timeout', async () => {
+    await expect(() => getFetchWithTimeout()).toThrow(
       'Must specify positive integer timeout.',
     );
-    expect(() => getFetchWithTimeout(-1)).toThrow(
+    await expect(() => getFetchWithTimeout(-1)).toThrow(
       'Must specify positive integer timeout.',
     );
-    expect(() => getFetchWithTimeout({})).toThrow(
+    await expect(() => getFetchWithTimeout({})).toThrow(
       'Must specify positive integer timeout.',
     );
-    expect(() => getFetchWithTimeout(true)).toThrow(
+    await expect(() => getFetchWithTimeout(true)).toThrow(
       'Must specify positive integer timeout.',
     );
   });
