@@ -2445,9 +2445,6 @@
   "selectAHigherGasFee": {
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
   },
-  "selectAccounts": {
-    "message": "Select account(s)"
-  },
   "selectAll": {
     "message": "Select all"
   },
