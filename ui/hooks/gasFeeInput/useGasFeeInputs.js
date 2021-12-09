@@ -254,7 +254,6 @@ export function useGasFeeInputs(
     gasFeeEstimates,
     gasLimit,
     maxPriorityFeePerGas,
-    minimumGasLimit,
     transaction,
   });
 

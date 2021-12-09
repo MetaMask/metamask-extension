@@ -109,8 +109,6 @@ export default CancelSpeedupPopover;
 
 /**
  * todo
- *       // disable market option
 cancel, speedup submit
-for cancel set gas limit to min
 loader on edit fee
  */

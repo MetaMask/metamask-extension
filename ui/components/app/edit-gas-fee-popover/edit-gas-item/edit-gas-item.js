@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
@@ -21,7 +21,10 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
-import { toHumanReadableTime } from '../../../../helpers/utils/util';
+import {
+  bnGreaterThan,
+  toHumanReadableTime,
+} from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
@@ -32,7 +35,7 @@ import InfoTooltip from '../../../ui/info-tooltip';
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
-const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
+const EditGasItem = ({ priorityLevel, estimateIsStale }) => {
   const {
     editGasMode,
     estimateUsed,
@@ -46,13 +49,13 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const { closeModal, openModal } = useTransactionModalContext();
+  const [disabled, setDisabled] = useState(false);
   const { dappSuggestedGasFees } = transaction;
 
   let maxFeePerGas;
   let maxPriorityFeePerGas;
   let minWaitTime;
 
-  console.log('priorityLevel = ', priorityLevel);
   if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel]?.suggestedMaxFeePerGas;
   } else if (
@@ -76,13 +79,11 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
       maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
     }
   } else if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
-    console.log('-1-', transaction.previousGas);
     maxFeePerGas = new BigNumber(
       hexWEIToDecGWEI(transaction.previousGas?.maxFeePerGas),
     )
       .times(1.1)
       .toNumber();
-    console.log('maxFeePerGas -', maxFeePerGas);
     maxPriorityFeePerGas = hexWEIToDecGWEI(
       transaction.previousGas?.maxPriorityFeePerGas,
     );
@@ -119,6 +120,20 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
       closeModal('editGasFee');
     }
   };
+
+  if (
+    editGasMode === EDIT_GAS_MODES.CANCEL ||
+    editGasMode === EDIT_GAS_MODES.SPEED_UP
+  ) {
+    let { maxFeePerGas: maxFeePerGasInTransaction } = transaction.txParams;
+    maxFeePerGasInTransaction = new BigNumber(
+      hexWEIToDecGWEI(maxFeePerGasInTransaction),
+    ).times(1.1);
+    const maxFeePerGasMedium = gasFeeEstimates.medium?.suggestedMaxFeePerGas;
+    if (bnGreaterThan(maxFeePerGasInTransaction, maxFeePerGasMedium)) {
+      setDisabled(true);
+    }
+  }
 
   if (
     priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
@@ -209,7 +224,6 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
 };
 
 EditGasItem.propTypes = {
-  disabled: PropTypes.bool,
   priorityLevel: PropTypes.string,
   estimateIsStale: PropTypes.bool,
 };
