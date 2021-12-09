@@ -47,7 +47,7 @@ export default function CollectiblesItems({
   const [dropdownState, setDropdownState] = useState(defaultDropdownState);
   return (
     <div className="collectibles-items">
-      <Box padding={[4, 6, 4, 6]} flexDirection={FLEX_DIRECTION.COLUMN}>
+      <Box padding={[6, 4]} flexDirection={FLEX_DIRECTION.COLUMN}>
         <>
           {Object.keys(collections).map((key, index) => {
             const {
@@ -69,11 +69,11 @@ export default function CollectiblesItems({
                 }}
               >
                 <Box
-                  marginTop={4}
-                  marginBottom={4}
+                  marginBottom={2}
                   display={DISPLAY.FLEX}
                   alignItems={ALIGN_ITEMS.CENTER}
                   justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+                  className="collectibles-items__item__accordion-title"
                 >
                   <Box
                     alignItems={ALIGN_ITEMS.CENTER}
@@ -91,7 +91,7 @@ export default function CollectiblesItems({
                     )}
                     <Typography
                       color={COLORS.BLACK}
-                      variant={TYPOGRAPHY.H4}
+                      variant={TYPOGRAPHY.H5}
                       margin={[0, 0, 0, 2]}
                     >
                       {`${collectionName} (${collectibles.length})`}
@@ -99,15 +99,14 @@ export default function CollectiblesItems({
                   </Box>
                   <Box alignItems={ALIGN_ITEMS.FLEX_END}>
                     <i
-                      className={classnames(
-                        `fa fa-lg fa-chevron-${isExpanded ? 'down' : 'right'}`,
-                        'collectibles-items__item__collection-header',
-                      )}
+                      className={`fa fa-chevron-${
+                        isExpanded ? 'down' : 'right'
+                      }`}
                     />
                   </Box>
                 </Box>
                 {isExpanded ? (
-                  <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP}>
+                  <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
                     {collectibles.map((collectible, i) => {
                       const {
                         image,
@@ -120,7 +119,7 @@ export default function CollectiblesItems({
                         ipfsGateway,
                       );
                       return (
-                        <Box width={width} margin={1} key={`collectible-${i}`}>
+                        <Box width={width} key={`collectible-${i}`}>
                           <div
                             className="collectibles-items__image__wrapper"
                             style={{

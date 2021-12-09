@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import Box from '../../ui/box';
+import Card from '../../ui/card';
 import Typography from '../../ui/typography/typography';
 import {
   COLORS,
@@ -101,34 +102,34 @@ export default function CollectibleDetails({ collectible }) {
           />
         }
       />
-      <Box padding={[4, 2, 4, 2]}>
-        <div className="collectible-details">
-          <Box margin={3} padding={2} justifyContent={JUSTIFY_CONTENT.CENTER}>
+      <Box className="collectible-details">
+        <div className="collectible-details__top-section">
+          <Card
+            padding={0}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+            className="collectible-details__card"
+          >
             <img
               className="collectible-details__image"
               src={collectibleImageURL}
             />
-          </Box>
+          </Card>
           <Box
-            margin={3}
             flexDirection={FLEX_DIRECTION.COLUMN}
-            width={
-              getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                ? BLOCK_SIZES.THREE_FOURTHS
-                : BLOCK_SIZES.HALF
-            }
+            className="collectible-details__top-section__info"
           >
             <Typography
               color={COLORS.BLACK}
               variant={TYPOGRAPHY.H4}
               fontWeight={FONT_WEIGHT.BOLD}
+              boxProps={{ margin: 0, marginBottom: 4 }}
             >
               {name}
             </Typography>
             <Typography
               color={COLORS.UI3}
               variant={TYPOGRAPHY.H5}
-              boxProps={{ marginTop: 2, marginBottom: 3 }}
+              boxProps={{ margin: 0, marginBottom: 4 }}
               overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             >
               {`#${tokenId}`}
@@ -138,28 +139,41 @@ export default function CollectibleDetails({ collectible }) {
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               className="collectible-details__description"
+              boxProps={{ margin: 0, marginBottom: 2 }}
             >
               {t('description')}
             </Typography>
-            <Typography color={COLORS.UI3} variant={TYPOGRAPHY.H6}>
+            <Typography
+              color={COLORS.UI4}
+              variant={TYPOGRAPHY.H6}
+              boxProps={{ margin: 0 }}
+            >
               {description}
             </Typography>
           </Box>
         </div>
-        <Box margin={4}>
+        <Box>
           <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
             <Typography
               color={COLORS.BLACK}
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{ marginBottom: 3, width: BLOCK_SIZES.ONE_FOURTH }}
+              boxProps={{
+                margin: 0,
+                marginBottom: 4,
+                marginRight: 2,
+              }}
+              className="collectible-details__link-title"
             >
               {t('source')}
             </Typography>
             <Typography
               color={COLORS.PRIMARY1}
               variant={TYPOGRAPHY.H6}
-              boxProps={{ marginBottom: 3, width: BLOCK_SIZES.THREE_FOURTHS }}
+              boxProps={{
+                margin: 0,
+                marginBottom: 4,
+              }}
               overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             >
               <a
@@ -177,7 +191,12 @@ export default function CollectibleDetails({ collectible }) {
               color={COLORS.BLACK}
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{ width: BLOCK_SIZES.ONE_FOURTH }}
+              boxProps={{
+                margin: 0,
+                marginBottom: 4,
+                marginRight: 2,
+              }}
+              className="collectible-details__link-title"
             >
               {t('contractAddress')}
             </Typography>
@@ -185,10 +204,14 @@ export default function CollectibleDetails({ collectible }) {
               color={COLORS.UI3}
               variant={TYPOGRAPHY.H6}
               overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-              boxProps={{ width: BLOCK_SIZES.THREE_FOURTHS }}
+              boxProps={{
+                margin: 0,
+                marginBottom: 4,
+              }}
             >
               <a
                 target="_blank"
+                className="collectible-details__contract-link"
                 href={getTokenTrackerLink(
                   address,
                   currentNetwork,
