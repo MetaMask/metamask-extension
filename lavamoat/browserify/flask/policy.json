@@ -2961,6 +2961,7 @@
       "packages": {
         "buffer": true,
         "inherits": true,
+        "readable-stream": true,
         "safe-buffer": true,
         "stream-browserify": true
       }
