@@ -4,10 +4,10 @@ import classnames from 'classnames';
 
 const Dropdown = ({
   className,
-  disabled,
+  disabled = false,
   onChange,
   options,
-  selectedOption,
+  selectedOption = null,
   style,
   title,
 }) => {
@@ -41,26 +41,39 @@ const Dropdown = ({
 };
 
 Dropdown.propTypes = {
+  /**
+   * Additional css className to add to root of Dropdown component
+   */
   className: PropTypes.string,
+  /**
+   * Disable dropdown by setting to true
+   */
   disabled: PropTypes.bool,
+  /**
+   * Title of the dropdown
+   */
   title: PropTypes.string,
+  /**
+   * On options change handler
+   */
   onChange: PropTypes.func.isRequired,
+  /**
+   * Predefined options for component
+   */
   options: PropTypes.arrayOf(
     PropTypes.exact({
       name: PropTypes.string,
       value: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  /**
+   * Selected options of dropdown
+   */
   selectedOption: PropTypes.string,
+  /**
+   * Add inline style for the component
+   */
   style: PropTypes.object,
-};
-
-Dropdown.defaultProps = {
-  className: undefined,
-  disabled: false,
-  title: undefined,
-  selectedOption: null,
-  style: undefined,
 };
 
 export default Dropdown;

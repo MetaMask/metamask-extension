@@ -845,7 +845,7 @@
     "message": "Max priority fee must be greater than 0 GWEI"
   },
   "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Priority fee must be at least 1 GWEI"
+    "message": "Priority fee must be greater than 0."
   },
   "editGasMaxPriorityFeeHigh": {
     "message": "Max priority fee is higher than necessary. You may pay more than needed."
@@ -1976,6 +1976,15 @@
     "message": "Ledger connection improvement",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
   },
+  "notifications9DescriptionOne": {
+    "message": "We now provide you with more insights on the 'Data' tab when confirming smart contract transactions."
+  },
+  "notifications9DescriptionTwo": {
+    "message": "You can now get a better understanding of your transaction’s details before confirming, and more easily add transaction addresses to your address book, helping you make safe and informed decisions."
+  },
+  "notifications9Title": {
+    "message": "👓 We are making transactions easier to read."
+  },
   "ofTextNofM": {
     "message": "of"
   },
@@ -3100,7 +3109,7 @@
     "message": "Decoded by Truffle"
   },
   "transactionDecodingAccreditationVerified": {
-    "message": "Verified contract on"
+    "message": "Verified contract on $1"
   },
   "transactionDecodingUnsupportedNetworkError": {
     "message": "Transaction decoding is not available for chainId $1"

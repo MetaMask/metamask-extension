@@ -12,7 +12,7 @@ import {
  * Controller with middleware for logging requests and responses to restricted
  * and permissions-related methods.
  */
-export default class PermissionLogController {
+export class PermissionLogController {
   /**
    * @param {{ restrictedMethods: Set<string>, initState: Record<string, unknown> }} options - Options bag.
    */

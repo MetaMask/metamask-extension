@@ -12,6 +12,7 @@ const sendMetadata = {
   implementation: sendMetadataHandler,
   hookNames: {
     addSubjectMetadata: true,
+    subjectType: true,
   },
 };
 export default sendMetadata;
@@ -20,6 +21,7 @@ export default sendMetadata;
  * @typedef {Record<string, Function>} SendMetadataOptions
  * @property {Function} addSubjectMetadata - A function that records subject
  * metadata, bound to the requesting origin.
+ * @property {string} subjectType - The type of the requesting origin / subject.
  */
 
 /**
@@ -29,11 +31,23 @@ export default sendMetadata;
  * @param {Function} end - The json-rpc-engine 'end' callback.
  * @param {SendMetadataOptions} options
  */
-function sendMetadataHandler(req, res, _next, end, { addSubjectMetadata }) {
+function sendMetadataHandler(
+  req,
+  res,
+  _next,
+  end,
+  { addSubjectMetadata, subjectType },
+) {
   const { params } = req;
   if (params && typeof params === 'object' && !Array.isArray(params)) {
     const { icon = null, name = null, ...remainingParams } = params;
-    addSubjectMetadata({ ...remainingParams, iconUrl: icon, name });
+
+    addSubjectMetadata({
+      ...remainingParams,
+      iconUrl: icon,
+      name,
+      subjectType,
+    });
   } else {
     return end(ethErrors.rpc.invalidParams({ data: params }));
   }

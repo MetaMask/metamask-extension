@@ -13,9 +13,8 @@ const AdvancedGasFeeSaveButton = () => {
   const { closeModal } = useTransactionModalContext();
   const { updateTransaction } = useGasFeeContext();
   const {
-    isDirty,
     gasLimit,
-    hasError,
+    hasErrors,
     maxFeePerGas,
     maxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
@@ -31,7 +30,7 @@ const AdvancedGasFeeSaveButton = () => {
   };
 
   return (
-    <Button type="primary" disabled={!isDirty || hasError} onClick={onSave}>
+    <Button type="primary" disabled={hasErrors} onClick={onSave}>
       <I18nValue messageKey="save" />
     </Button>
   );
