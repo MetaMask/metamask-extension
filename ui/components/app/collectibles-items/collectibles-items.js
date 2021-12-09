@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import classnames from 'classnames';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -74,7 +75,10 @@ export default function CollectiblesItems({
                   alignItems={ALIGN_ITEMS.CENTER}
                   justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
                 >
-                  <Box alignItems={ALIGN_ITEMS.CENTER}>
+                  <Box
+                    alignItems={ALIGN_ITEMS.CENTER}
+                    className="collectibles-items__item__collection-header"
+                  >
                     {collectionImage ? (
                       <img
                         src={collectionImage}
@@ -95,9 +99,10 @@ export default function CollectiblesItems({
                   </Box>
                   <Box alignItems={ALIGN_ITEMS.FLEX_END}>
                     <i
-                      className={`fa fa-lg fa-chevron-${
-                        isExpanded ? 'down' : 'right'
-                      }`}
+                      className={classnames(
+                        `fa fa-lg fa-chevron-${isExpanded ? 'down' : 'right'}`,
+                        'collectibles-items__item__collection-header',
+                      )}
                     />
                   </Box>
                 </Box>
