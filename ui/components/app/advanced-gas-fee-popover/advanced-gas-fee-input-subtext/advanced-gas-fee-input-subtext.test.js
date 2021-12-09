@@ -8,6 +8,15 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import configureStore from '../../../../store/store';
 import AdvancedGasFeeInputSubtext from './advanced-gas-fee-input-subtext';
 
+jest.mock('../../../../store/actions', () => ({
+  disconnectGasFeeEstimatePoller: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
+  removePollingTokenFromAppState: jest.fn(),
+}));
+
 const render = () => {
   const store = configureStore({
     metamask: {
