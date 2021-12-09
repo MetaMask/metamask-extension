@@ -40,6 +40,9 @@ export const MESSAGE_TYPE = {
   LOG_WEB3_SHIM_USAGE: 'metamask_logWeb3ShimUsage',
   PERSONAL_SIGN: 'personal_sign',
   SEND_METADATA: 'metamask_sendDomainMetadata',
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SNAP_CONFIRM: 'snap_confirm',
+  ///: END:ONLY_INCLUDE_IN
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',

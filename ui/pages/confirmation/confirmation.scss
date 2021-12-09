@@ -1,4 +1,5 @@
 @import 'components/confirmation-footer/confirmation-footer';
+@import 'templates/flask/snap-confirm/index';
 
 .confirmation-page {
   width: 100%;
@@ -20,7 +21,6 @@
 
   &__content {
     grid-area: content;
-    padding: 16px 16px 0;
     min-width: 0;
 
     & > :last-child {

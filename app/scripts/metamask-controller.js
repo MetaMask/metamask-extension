@@ -64,6 +64,9 @@ import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  MESSAGE_TYPE,
+  ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
 } from '../../shared/constants/app';
@@ -896,7 +899,12 @@ export default class MetamaskController extends EventEmitter {
       getSnap: _getSnap,
       getSnapRpcHandler: _getSnapRpcHandler,
       getSnapState: _getSnapState,
-      showConfirmation: window.confirm, // TODO:flask Use custom confirmation
+      showConfirmation: (origin, prompt, title, subtitle) =>
+        this.approvalController.addAndShowApprovalRequest({
+          origin,
+          type: MESSAGE_TYPE.SNAP_CONFIRM,
+          requestData: { prompt, title, subtitle },
+        }),
       updateSnapState: _updateSnapState,
     });
   }
