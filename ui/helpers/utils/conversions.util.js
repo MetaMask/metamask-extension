@@ -7,6 +7,16 @@ import {
 } from '../../../shared/modules/conversion.utils';
 import { formatCurrency } from './confirm-tx.util';
 
+export function toHex(value) {
+  let result = value;
+  if (!result) return result;
+  if (result !== typeof 'string') {
+    result = String(result);
+  }
+  if (result.startsWith('0x')) return result;
+  return decimalToHex(result);
+}
+
 export function bnToHex(inputBn) {
   return addHexPrefix(inputBn.toString(16));
 }

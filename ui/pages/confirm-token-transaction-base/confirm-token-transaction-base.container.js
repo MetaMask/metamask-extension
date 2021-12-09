@@ -5,8 +5,8 @@ import {
   contractExchangeRateSelector,
   transactionFeeSelector,
 } from '../../selectors';
-import { getTokens } from '../../ducks/metamask/metamask';
-import { getTokenData } from '../../helpers/utils/transactions.util';
+import { getCollectibles, getTokens } from '../../ducks/metamask/metamask';
+import { getTransactionData } from '../../helpers/utils/transactions.util';
 import {
   calcTokenAmount,
   getTokenAddressParam,
@@ -49,27 +49,51 @@ const mapStateToProps = (state, ownProps) => {
     hexMaximumTransactionFee,
   } = transactionFeeSelector(state, transaction);
   const tokens = getTokens(state);
+  const collectibles = getCollectibles(state);
+
   const currentToken = tokens?.find(({ address }) =>
     isEqualCaseInsensitive(tokenAddress, address),
   );
-  const { decimals, symbol: tokenSymbol } = currentToken || {};
+  const currentCollectible = collectibles?.find(({ address }) =>
+    isEqualCaseInsensitive(tokenAddress, address),
+  );
 
+  let image,
+    tokenId,
+    collectibleName,
+    tokenValue,
+    tokenAmount,
+    contractExchangeRate,
+    title,
+    subtitle;
+
+  const transactionData = getTransactionData(data);
+  const toAddress = getTokenAddressParam(transactionData);
   const ethTransactionTotalMaxAmount = Number(
     hexWEIToDecETH(hexMaximumTransactionFee),
   ).toFixed(6);
 
-  const tokenData = getTokenData(data);
-  const tokenValue = getTokenValueParam(tokenData);
-  const toAddress = getTokenAddressParam(tokenData);
-  const tokenAmount =
-    tokenData && calcTokenAmount(tokenValue, decimals).toFixed();
-  const contractExchangeRate = contractExchangeRateSelector(state);
+  if (currentCollectible) {
+    ({ image, tokenId, name: collectibleName } = currentCollectible || {});
+
+    title = collectibleName;
+    subtitle = `#${tokenId}`;
+  } else if (currentToken) {
+    const { decimals, symbol: tokenSymbol } = currentToken || {};
+    tokenValue = getTokenValueParam(transactionData);
+    tokenAmount =
+      transactionData && calcTokenAmount(tokenValue, decimals).toFixed();
+    contractExchangeRate = contractExchangeRateSelector(state);
+    title = `${tokenAmount} ${tokenSymbol}`;
+  }
 
   return {
+    title,
+    subtitle,
+    image,
     toAddress,
     tokenAddress,
     tokenAmount,
-    tokenSymbol,
     currentCurrency,
     conversionRate,
     contractExchangeRate,

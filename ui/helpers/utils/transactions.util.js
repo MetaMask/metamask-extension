@@ -32,7 +32,7 @@ const hstInterface = new ethers.utils.Interface(abi);
 /**
  * @returns {EthersContractCall | undefined}
  */
-export function getTokenData(data) {
+export function getTransactionData(data) {
   try {
     return hstInterface.parseTransaction({ data });
   } catch (error) {

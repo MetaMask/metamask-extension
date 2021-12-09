@@ -25,7 +25,7 @@ import {
 import { getIsMainnet, getUseCollectibleDetection } from '../../../selectors';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import {
-  checkAndUpdateCollectiblesOwnershipStatus,
+  checkAndUpdateAllCollectiblesOwnershipStatus,
   detectCollectibles,
 } from '../../../store/actions';
 
@@ -77,7 +77,7 @@ export default function CollectiblesTab({ onAddNFT }) {
     if (isMainnet) {
       dispatch(detectCollectibles());
     }
-    checkAndUpdateCollectiblesOwnershipStatus();
+    checkAndUpdateAllCollectiblesOwnershipStatus();
   };
 
   return (

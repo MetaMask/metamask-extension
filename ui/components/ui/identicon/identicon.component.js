@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Jazzicon from '../jazzicon';
+import { getAssetImageURL } from '../../../helpers/utils/util';
 import BlockieIdenticon from './blockieIdenticon';
 
 const getStyles = (diameter) => ({
@@ -54,6 +55,10 @@ export default class Identicon extends PureComponent {
      * Add list of token in object
      */
     tokenList: PropTypes.object,
+    /**
+     * User preferred IPFS gateway
+     */
+    ipfsGateway: PropTypes.string,
   };
 
   static defaultProps = {
@@ -68,7 +73,12 @@ export default class Identicon extends PureComponent {
   };
 
   renderImage() {
-    const { className, diameter, image, alt, imageBorder } = this.props;
+    const { className, diameter, alt, imageBorder, ipfsGateway } = this.props;
+    let { image } = this.props;
+
+    if (image.startsWith('ipfs://ipfs/') || image.startsWith('ipfs://')) {
+      image = getAssetImageURL(image, ipfsGateway);
+    }
 
     return (
       <img

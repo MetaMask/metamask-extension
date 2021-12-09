@@ -20,7 +20,7 @@ $spacer-break-small: 16px;
       flex-direction: row;
     }
 
-    &__info {
+    &-info {
       @media screen and (min-width: $break-large) {
         max-width: calc(100% - #{$card-width-break-large} - #{$spacer-break-large});
         flex: 0 0 calc(100% - #{$card-width-break-large} - #{$spacer-break-large});
@@ -65,5 +65,9 @@ $spacer-break-small: 16px;
   &__link-title {
     flex: 0 0 $link-title-width;
     max-width: 0 0 $link-title-width;
+  }
+
+  &__send-button {
+    margin-right: 8px;
   }
 }

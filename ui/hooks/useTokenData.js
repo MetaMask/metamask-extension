@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { getTokenData } from '../helpers/utils/transactions.util';
+import { getTransactionData } from '../helpers/utils/transactions.util';
 
 /**
  * useTokenData
@@ -18,6 +18,6 @@ export function useTokenData(transactionData, isTokenTransaction = true) {
     if (!isTokenTransaction || !transactionData) {
       return null;
     }
-    return getTokenData(transactionData);
+    return getTransactionData(transactionData);
   }, [isTokenTransaction, transactionData]);
 }

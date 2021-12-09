@@ -44,6 +44,7 @@ import {
 } from '../../../../shared/constants/network';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
 import { readAddressAsContract } from '../../../../shared/modules/contract-utils';
+import { isEqualCaseInsensitive } from '../../../../ui/helpers/utils/util';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -1252,7 +1253,7 @@ export default class TransactionController extends EventEmitter {
       TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
       TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
       TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
-    ].find((methodName) => methodName === name && name.toLowerCase());
+    ].find((methodName) => isEqualCaseInsensitive(methodName, name));
 
     let result;
     if (data && tokenMethodName) {

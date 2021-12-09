@@ -2643,14 +2643,15 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
-"@metamask/controllers@^23.0.0":
-  version "23.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-23.0.0.tgz#81ea9fa37924a14b08668f37e7e31f46091aa610"
-  integrity sha512-6hKh5H0HM1YLTOdfuD8gRXGCG3brEhTagup204SrlmwabTReaIIb/zXTat7jCs6ZvN362a44GO5mboZ6W9MhIA==
+"@metamask/controllers@^23.1.0":
+  version "23.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-23.1.0.tgz#78f5134a64e91ad03fd2b59da7315a4ef423be31"
+  integrity sha512-RnfBDwnf1kDw8MCi1SmiJoI4mcimrGFbrqTxQ13s4REev/RFZeXilSgQrztC2kRJ5jySd3n21cjt8hptvnn5pg==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
     "@metamask/contract-metadata" "^1.31.0"
+    "@metamask/metamask-eth-abis" "^2.1.0"
     "@types/uuid" "^8.3.0"
     abort-controller "^3.0.0"
     async-mutex "^0.2.6"
@@ -2667,9 +2668,6 @@
     ethereumjs-wallet "^1.0.1"
     ethers "^5.4.1"
     ethjs-unit "^0.1.6"
-    human-standard-collectible-abi "^1.0.2"
-    human-standard-multi-collectible-abi "^1.0.4"
-    human-standard-token-abi "^2.0.0"
     immer "^9.0.6"
     isomorphic-fetch "^3.0.0"
     jsonschema "^1.2.4"
@@ -2758,6 +2756,11 @@
   dependencies:
     gl-mat4 "1.1.4"
     gl-vec3 "1.0.3"
+
+"@metamask/metamask-eth-abis@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/metamask-eth-abis/-/metamask-eth-abis-2.1.0.tgz#316c2e72373506f1a0120b76e432760a27eb6806"
+  integrity sha512-T8LBEB0PQo0N1tZQKZ2K8BGmv+IDLcXkzt8Pn7x0YnwZD6YpCIvKqYM3iy2fJ6wFXeCvRKqpn4K6EqwnkSJAbQ==
 
 "@metamask/object-multiplex@^1.1.0":
   version "1.1.0"
@@ -14731,11 +14734,6 @@ human-standard-collectible-abi@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/human-standard-collectible-abi/-/human-standard-collectible-abi-1.0.2.tgz#077bae9ed1b0b0b82bc46932104b4b499c941aa0"
   integrity sha512-nD3ITUuSAIBgkaCm9J2BGwlHL8iEzFjJfTleDAC5Wi8RBJEXXhxV0JeJjd95o+rTwf98uTE5MW+VoBKOIYQh0g==
-
-human-standard-multi-collectible-abi@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/human-standard-multi-collectible-abi/-/human-standard-multi-collectible-abi-1.0.4.tgz#981625bc1a6bea5fef90567f9e12c11581fac497"
-  integrity sha512-ylR9JDXClDJAxWD/QJxsjXJJdLTUmhipTquMAgrfybXL3qX3x3P/vmKg92A7qFu7SqVOf2hyv5dA8vX0j+0Thg==
 
 human-standard-token-abi@^1.0.2:
   version "1.0.2"
