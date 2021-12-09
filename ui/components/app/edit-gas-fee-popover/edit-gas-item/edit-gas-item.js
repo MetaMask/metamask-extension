@@ -170,13 +170,11 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}
       >
         {hexMaximumTransactionFee ? (
-          <div>
-            <UserPreferencedCurrencyDisplay
-              key="editGasSubTextFeeAmount"
-              type={PRIMARY}
-              value={hexMaximumTransactionFee}
-            />
-          </div>
+          <UserPreferencedCurrencyDisplay
+            key="editGasSubTextFeeAmount"
+            type={PRIMARY}
+            value={hexMaximumTransactionFee}
+          />
         ) : (
           '--'
         )}

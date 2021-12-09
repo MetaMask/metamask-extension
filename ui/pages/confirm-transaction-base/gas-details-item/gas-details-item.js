@@ -73,7 +73,7 @@ const GasDetailsItem = ({
               key="editGasSubTextFeeValue"
               className="gas-details-item__currency-container"
             >
-              <LoadingHeartBeat />
+              <HeartBeat />
               <UserPreferencedCurrencyDisplay
                 key="editGasSubTextFeeAmount"
                 type={PRIMARY}
