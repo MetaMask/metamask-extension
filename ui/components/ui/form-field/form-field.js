@@ -31,6 +31,7 @@ export default function FormField({
   allowDecimals,
   disabled,
   placeholder,
+  warning,
 }) {
   return (
     <div
@@ -111,6 +112,15 @@ export default function FormField({
             {error}
           </Typography>
         )}
+        {warning && (
+          <Typography
+            color={COLORS.ALERT3}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__warning"
+          >
+            {warning}
+          </Typography>
+        )}
       </label>
     </div>
   );
@@ -141,6 +151,10 @@ FormField.propTypes = {
    * Show error message
    */
   error: PropTypes.string,
+  /**
+   * Show warning message
+   */
+  warning: PropTypes.string,
   /**
    * Handler when fields change
    */

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import validUrl from 'valid-url';
 import log from 'loglevel';
 import classnames from 'classnames';
+import { debounce } from 'lodash';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   isPrefixedFormattedHexString,
@@ -26,6 +27,7 @@ import {
   DEFAULT_ROUTE,
   NETWORKS_ROUTE,
 } from '../../../../helpers/constants/routes';
+import fetchWithCache from '../../../../helpers/utils/fetch-with-cache';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -83,6 +85,7 @@ const NetworksForm = ({
     selectedNetwork?.blockExplorerUrl || '',
   );
   const [errors, setErrors] = useState({});
+  const [warnings, setWarnings] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resetForm = useCallback(() => {
@@ -92,6 +95,7 @@ const NetworksForm = ({
     setTicker(selectedNetwork?.ticker);
     setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
     setErrors({});
+    setWarnings({});
     setIsSubmitting(false);
   }, [selectedNetwork, selectedNetworkName]);
 
@@ -184,6 +188,20 @@ const NetworksForm = ({
     });
   };
 
+  const setWarningTo = (warningKey, warningVal) => {
+    setWarnings({ ...warnings, [warningKey]: warningVal });
+  };
+
+  const setWarningEmpty = (warningKey) => {
+    setWarnings({
+      ...warnings,
+      [warningKey]: {
+        msg: '',
+        key: '',
+      },
+    });
+  };
+
   const hasError = (errorKey, errorKeyVal) => {
     return errors[errorKey]?.key === errorKeyVal;
   };
@@ -253,6 +271,67 @@ const NetworksForm = ({
       key: errorKey,
       msg: errorMessage,
     });
+  };
+
+  /**
+   * Validates the ticker symbol by checking it against the nativeCurrency.symbol return
+   * value from chainid.network trusted chain data
+   * Assumes that all strings are non-empty and correctly formatted.
+   *
+   * @param {string} formChainId - The Chain ID currently entered in the form.
+   * @param {string} formTickerSymbol - The ticker/currency symbol currently entered in the form.
+   */
+  const validateTickerSymbolOnChange = async (
+    formChainId,
+    formTickerSymbol,
+  ) => {
+    let warningKey;
+    let warningMessage;
+    let safeChainsList;
+    let providerError;
+
+    try {
+      safeChainsList = await fetchWithCache(
+        'https://chainid.network/chains.json',
+      );
+    } catch (err) {
+      log.warn('Failed to fetch the chainList from chainid.network', err);
+      providerError = err;
+    }
+
+    if (providerError || !Array.isArray(safeChainsList)) {
+      warningKey = 'failedToFetchTickerSymbolData';
+      warningMessage = t('failedToFetchTickerSymbolData');
+    } else {
+      const matchedChain = safeChainsList?.find(
+        (chain) => chain.chainId.toString() === formChainId,
+      );
+
+      if (matchedChain === undefined) {
+        warningKey = 'failedToFetchTickerSymbolData';
+        warningMessage = t('failedToFetchTickerSymbolData');
+      } else {
+        const returnedTickerSymbol = matchedChain.nativeCurrency?.symbol;
+        if (returnedTickerSymbol !== formTickerSymbol) {
+          warningKey = 'chainListReturnedDifferentTickerSymbol';
+          warningMessage = t('chainListReturnedDifferentTickerSymbol', [
+            formChainId,
+            returnedTickerSymbol,
+          ]);
+        }
+      }
+    }
+
+    if (warningKey) {
+      setWarningTo('ticker', {
+        key: warningKey,
+        msg: warningMessage,
+      });
+      return false;
+    }
+
+    setWarningEmpty('ticker');
+    return true;
   };
 
   /**
@@ -453,7 +532,12 @@ const NetworksForm = ({
   const deletable = !isCurrentRpcTarget && !viewOnly && !addNewNetwork;
   const stateUnchanged = stateIsUnchanged();
   const isSubmitDisabled =
-    hasErrors() || isSubmitting || stateUnchanged || !rpcUrl || !chainId;
+    hasErrors() ||
+    isSubmitting ||
+    stateUnchanged ||
+    !rpcUrl ||
+    !chainId ||
+    !ticker;
 
   return (
     <div
@@ -501,6 +585,9 @@ const NetworksForm = ({
           onChange={(value) => {
             setChainId(value);
             validateChainIdOnChange(value);
+            if (ticker && value) {
+              debounce(validateTickerSymbolOnChange(value, ticker), 500);
+            }
           }}
           titleText={t('chainId')}
           value={chainId}
@@ -508,10 +595,16 @@ const NetworksForm = ({
           tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
         />
         <FormField
-          error={errors.ticker?.msg || ''}
-          onChange={setTicker}
+          warning={warnings.ticker?.msg || ''}
+          onChange={(value) => {
+            setTicker(value);
+            if (chainId && value) {
+              debounce(validateTickerSymbolOnChange(chainId, value), 500);
+            } else {
+              setWarningEmpty('ticker');
+            }
+          }}
           titleText={t('currencySymbol')}
-          titleUnit={t('optionalWithParanthesis')}
           value={ticker}
           disabled={viewOnly}
         />
