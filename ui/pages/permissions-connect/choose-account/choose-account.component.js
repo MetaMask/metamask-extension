@@ -94,6 +94,9 @@ const ChooseAccount = ({
 };
 
 ChooseAccount.propTypes = {
+  /**
+   * Array of user account objects
+   */
   accounts: PropTypes.arrayOf(
     PropTypes.shape({
       address: PropTypes.string,
@@ -102,13 +105,37 @@ ChooseAccount.propTypes = {
       balance: PropTypes.string,
     }),
   ).isRequired,
+  /**
+   * Function to select an account
+   */
   selectAccounts: PropTypes.func.isRequired,
+  /**
+   * Function to select a new account via modal
+   */
   selectNewAccountViaModal: PropTypes.func.isRequired,
+  /**
+   * Native currency of current chain
+   */
   nativeCurrency: PropTypes.string.isRequired,
+  /**
+   * A map of the last connected addresses
+   */
   addressLastConnectedMap: PropTypes.object,
+  /**
+   * Function to cancel permission request
+   */
   cancelPermissionsRequest: PropTypes.func.isRequired,
+  /**
+   * Permission request Id
+   */
   permissionsRequestId: PropTypes.string.isRequired,
+  /**
+   * Currently selected account addresses
+   */
   selectedAccountAddresses: PropTypes.object.isRequired,
+  /**
+   * Domain data used to display site-origin pill
+   */
   targetDomainMetadata: PropTypes.shape({
     extensionId: PropTypes.string,
     icon: PropTypes.string,
