@@ -136,12 +136,6 @@ class ImportToken extends Component {
     );
   }
 
-  hasWarning() {
-    const { mainnetTokenWarning } = this.state;
-
-    return mainnetTokenWarning;
-  }
-
   hasSelected() {
     const { customAddress = '', selectedTokens = {} } = this.state;
     return customAddress || Object.keys(selectedTokens).length > 0;
@@ -208,13 +202,9 @@ class ImportToken extends Component {
     });
     const standardAddress = addHexPrefix(customAddress).toLowerCase();
 
-    let isMainnetToken = false;
-
-    Object.keys(contractMap).forEach((key) => {
-      if (key.toLowerCase() === customAddress.toLowerCase()) {
-        isMainnetToken = true;
-      }
-    });
+    const isMainnetToken = Object.keys(contractMap).some(
+      (key) => key.toLowerCase() === customAddress.toLowerCase(),
+    );
 
     const isMainnetNetwork = this.props.chainId === '0x1';
 
