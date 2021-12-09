@@ -13,7 +13,6 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical }) => {
           <I18nValue messageKey="currentTitle" />
         </span>
         <span className="advanced-gas-fee-input-subtext__value">
-          {' '}
           <LoadingHeartBeat />
           {latest}
         </span>
@@ -25,7 +24,6 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical }) => {
         </span>
         <span className="advanced-gas-fee-input-subtext__value">
           <LoadingHeartBeat />
-
           {historical}
         </span>
       </Box>
