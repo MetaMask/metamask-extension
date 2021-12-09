@@ -27,22 +27,24 @@ const Accreditation = ({ fetchVia, address }) => {
           className="accreditation__prefix"
           boxProps={{ margin: 0 }}
         >
-          {t('transactionDecodingAccreditationVerified')}
+          {t('transactionDecodingAccreditationVerified', [
+            <Button
+              type="link"
+              className="accreditation__link"
+              onClick={() => {
+                global.platform.openTab({
+                  url: addressLink,
+                });
+              }}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={t('etherscanView')}
+              key="accreditation-link-button"
+            >
+              {fetchVia}
+            </Button>,
+          ])}
         </Typography>
-        <Button
-          type="link"
-          className="accreditation__link"
-          onClick={() => {
-            global.platform.openTab({
-              url: addressLink,
-            });
-          }}
-          target="_blank"
-          rel="noopener noreferrer"
-          title={t('etherscanView')}
-        >
-          {fetchVia}
-        </Button>
         <Typography variant={TYPOGRAPHY.H7} boxProps={{ margin: 0 }}>
           {t('transactionDecodingAccreditationDecoded')}
         </Typography>

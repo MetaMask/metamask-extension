@@ -38,6 +38,14 @@ export const UI_NOTIFICATIONS = {
     id: 8,
     date: '2021-11-01',
   },
+  9: {
+    id: 9,
+    date: '2021-12-07',
+    image: {
+      src: 'images/txinsights.png',
+      width: '80%',
+    },
+  },
 };
 
 export const getTranslatedUINoficiations = (t, locale) => {
@@ -112,6 +120,17 @@ export const getTranslatedUINoficiations = (t, locale) => {
         new Date(UI_NOTIFICATIONS[8].date),
       ),
       actionText: t('notifications8ActionText'),
+    },
+    9: {
+      ...UI_NOTIFICATIONS[9],
+      title: t('notifications9Title'),
+      description: [
+        t('notifications9DescriptionOne'),
+        t('notifications9DescriptionTwo'),
+      ],
+      date: new Intl.DateTimeFormat(formattedLocale).format(
+        new Date(UI_NOTIFICATIONS[9].date),
+      ),
     },
   };
 };

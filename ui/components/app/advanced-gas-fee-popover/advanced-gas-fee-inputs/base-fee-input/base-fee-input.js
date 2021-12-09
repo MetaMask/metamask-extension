@@ -67,10 +67,9 @@ const BaseFeeInput = () => {
   const t = useI18nContext();
   const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
   const {
-    setDirty,
-    setHasError,
-    setMaxFeePerGas,
     maxPriorityFeePerGas,
+    setErrorValue,
+    setMaxFeePerGas,
   } = useAdvancedGasFeePopoverContext();
 
   const { estimatedBaseFee } = gasFeeEstimates;
@@ -133,7 +132,6 @@ const BaseFeeInput = () => {
       }
       setMaxBaseFeeGWEI(baseFeeInGWEI);
       setMaxBaseFeeMultiplier(baseFeeMultiplierValue);
-      setDirty(true);
     },
     [
       editingInGwei,
@@ -141,7 +139,6 @@ const BaseFeeInput = () => {
       numberOfDecimalsPrimary,
       setMaxBaseFeeGWEI,
       setMaxBaseFeeMultiplier,
-      setDirty,
     ],
   );
 
@@ -152,14 +149,15 @@ const BaseFeeInput = () => {
       gasFeeEstimates,
       maxPriorityFeePerGas,
     );
+
     setBaseFeeError(error);
-    setHasError(Boolean(error));
+    setErrorValue('maxFeePerGas', error === 'editGasMaxBaseFeeImbalance');
   }, [
     gasFeeEstimates,
     maxBaseFeeGWEI,
     maxPriorityFeePerGas,
-    setHasError,
     setBaseFeeError,
+    setErrorValue,
     setMaxFeePerGas,
   ]);
 
