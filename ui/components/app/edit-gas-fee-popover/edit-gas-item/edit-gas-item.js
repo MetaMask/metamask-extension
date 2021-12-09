@@ -19,7 +19,6 @@ import {
   decimalToHex,
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util';
-import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { toHumanReadableTime } from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
@@ -172,7 +171,6 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
       >
         {hexMaximumTransactionFee ? (
           <div>
-            <LoadingHeartBeat />
             <UserPreferencedCurrencyDisplay
               key="editGasSubTextFeeAmount"
               type={PRIMARY}
