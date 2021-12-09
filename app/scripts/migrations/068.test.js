@@ -210,7 +210,7 @@ function getOldState() {
           permissions: [
             {
               '@context': ['https://github.com/MetaMask/rpc-cap'],
-              'caveats': [
+              caveats: [
                 {
                   name: 'primaryAccountOnly',
                   type: 'limitResponseLength',
@@ -222,10 +222,10 @@ function getOldState() {
                   value: ['0xc42edfcc21ed14dda456aa0756c153f7985d8813'],
                 },
               ],
-              'date': 1597334833084,
-              'id': 'e01bada4-ddc7-47b6-be67-d4603733e0e9',
-              'invoker': 'https://faucet.metamask.io',
-              'parentCapability': 'eth_accounts',
+              date: 1597334833084,
+              id: 'e01bada4-ddc7-47b6-be67-d4603733e0e9',
+              invoker: 'https://faucet.metamask.io',
+              parentCapability: 'eth_accounts',
             },
           ],
         },
@@ -233,7 +233,7 @@ function getOldState() {
           permissions: [
             {
               '@context': ['https://github.com/MetaMask/rpc-cap'],
-              'caveats': [
+              caveats: [
                 {
                   name: 'primaryAccountOnly',
                   type: 'limitResponseLength',
@@ -245,10 +245,10 @@ function getOldState() {
                   value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
                 },
               ],
-              'date': 1616006369498,
-              'id': '3d0bdc27-e8e4-4fb0-a24b-340d61f6a3fa',
-              'invoker': 'https://metamask.github.io',
-              'parentCapability': 'eth_accounts',
+              date: 1616006369498,
+              id: '3d0bdc27-e8e4-4fb0-a24b-340d61f6a3fa',
+              invoker: 'https://metamask.github.io',
+              parentCapability: 'eth_accounts',
             },
           ],
         },
@@ -256,7 +256,7 @@ function getOldState() {
           permissions: [
             {
               '@context': ['https://github.com/MetaMask/rpc-cap'],
-              'caveats': [
+              caveats: [
                 {
                   name: 'primaryAccountOnly',
                   type: 'limitResponseLength',
@@ -268,10 +268,10 @@ function getOldState() {
                   value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
                 },
               ],
-              'date': 1605908022382,
-              'id': '88c5de24-11a9-4f1e-9651-b072f4c11928',
-              'invoker': 'https://xdai.io',
-              'parentCapability': 'eth_accounts',
+              date: 1605908022382,
+              id: '88c5de24-11a9-4f1e-9651-b072f4c11928',
+              invoker: 'https://xdai.io',
+              parentCapability: 'eth_accounts',
             },
           ],
         },
@@ -388,7 +388,7 @@ function getOldState() {
             result: [
               {
                 '@context': ['https://github.com/MetaMask/rpc-cap'],
-                'caveats': [
+                caveats: [
                   {
                     name: 'primaryAccountOnly',
                     type: 'limitResponseLength',
@@ -400,10 +400,10 @@ function getOldState() {
                     value: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
                   },
                 ],
-                'date': 1616006369498,
-                'id': '3d0bdc27-e8e4-4fb0-a24b-340d61f6a3fa',
-                'invoker': 'https://metamask.github.io',
-                'parentCapability': 'eth_accounts',
+                date: 1616006369498,
+                id: '3d0bdc27-e8e4-4fb0-a24b-340d61f6a3fa',
+                invoker: 'https://metamask.github.io',
+                parentCapability: 'eth_accounts',
               },
             ],
           },
