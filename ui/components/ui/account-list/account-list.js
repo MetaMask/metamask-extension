@@ -138,13 +138,37 @@ AccountList.propTypes = {
       balance: PropTypes.string,
     }),
   ).isRequired,
+  /**
+   * Function to select a new account via modal
+   */
   selectNewAccountViaModal: PropTypes.func.isRequired,
+  /**
+   * A map of the last connected addresses
+   */
   addressLastConnectedMap: PropTypes.object,
+  /**
+   * Native currency of current chain
+   */
   nativeCurrency: PropTypes.string.isRequired,
+  /**
+   * Currently selected accounts
+   */
   selectedAccounts: PropTypes.object.isRequired,
+  /**
+   * Function to check if all accounts are selected
+   */
   allAreSelected: PropTypes.func.isRequired,
+  /**
+   * Function to deselect all accounts
+   */
   deselectAll: PropTypes.func.isRequired,
+  /**
+   * Function to select all accounts
+   */
   selectAll: PropTypes.func.isRequired,
+  /**
+   * Function to handle account click
+   */
   handleAccountClick: PropTypes.func.isRequired,
 };
 
