@@ -5,7 +5,7 @@ import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
-import { COLORS } from '../../../helpers/constants/design-system';
+import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -59,18 +59,18 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
         <InfoTooltip
           contentText={
             <div className="edit-gas-fee-button__tooltip">
-              <Typography fontSize="12px" color={COLORS.GREY}>
+              <Typography variant={TYPOGRAPHY.H7} color={COLORS.GREY}>
                 {t('dappSuggestedTooltip', [transaction.origin])}
               </Typography>
-              <Typography fontSize="12px">
+              <Typography variant={TYPOGRAPHY.H7}>
                 <b>{t('maxBaseFee')}</b>
                 {maxFeePerGas}
               </Typography>
-              <Typography fontSize="12px">
+              <Typography variant={TYPOGRAPHY.H7}>
                 <b>{t('maxPriorityFee')}</b>
                 {maxPriorityFeePerGas}
               </Typography>
-              <Typography fontSize="12px">
+              <Typography variant={TYPOGRAPHY.H7}>
                 <b>{t('gasLimit')}</b>
                 {gasLimit}
               </Typography>

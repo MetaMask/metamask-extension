@@ -2911,6 +2911,9 @@
   "swapSuggested": {
     "message": "Swap suggested"
   },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "Swaps are complex and time sensitive transactions. We recommend this gas fee for a good balance between cost and confidence of a successful Swap."
+  },
   "swapSwapFrom": {
     "message": "Swap from"
   },

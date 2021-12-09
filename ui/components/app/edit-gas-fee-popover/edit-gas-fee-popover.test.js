@@ -135,7 +135,7 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
   });
 
-  it('should not show time estimates fpr swaps', () => {
+  it('should not show time estimates for swaps', () => {
     render({
       contextProps: { editGasMode: EDIT_GAS_MODES.SWAPS },
     });

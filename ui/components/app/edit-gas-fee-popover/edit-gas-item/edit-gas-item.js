@@ -41,11 +41,12 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
     maxFeePerGas: maxFeePerGasValue,
     maxPriorityFeePerGas: maxPriorityFeePerGasValue,
     updateTransactionUsingGasFeeEstimates,
-    transaction: { dappSuggestedGasFees },
+    transaction,
   } = useGasFeeContext();
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const { closeModal, openModal } = useTransactionModalContext();
+  const { dappSuggestedGasFees } = transaction;
 
   let maxFeePerGas;
   let maxPriorityFeePerGas;
@@ -163,9 +164,8 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
       <span
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
       >
-        {editGasMode !== EDIT_GAS_MODES.SWAPS && (
-          <>{minWaitTime ? toHumanReadableTime(t, minWaitTime) : '--'}</>
-        )}
+        {editGasMode !== EDIT_GAS_MODES.SWAPS &&
+          (minWaitTime ? toHumanReadableTime(t, minWaitTime) : '--')}
       </span>
       <span
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}
@@ -183,7 +183,6 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
           '--'
         )}
       </span>
-      {/* todo: tooltip in case of swap suggested */}
       <span className="edit-gas-item__tooltip" data-testid="gas-tooltip">
         <InfoTooltip
           contentText={
@@ -192,6 +191,9 @@ const EditGasItem = ({ disabled, priorityLevel, estimateIsStale }) => {
               priorityLevel={priorityLevel}
               maxFeePerGas={maxFeePerGas}
               maxPriorityFeePerGas={maxPriorityFeePerGas}
+              editGasMode={editGasMode}
+              gasLimit={gasLimit}
+              transaction={transaction}
             />
           }
           position="top"

@@ -353,7 +353,7 @@ describe('useGasFeeInputs', () => {
   });
 
   describe('editGasMode', () => {
-    it('shoud return editGasMode passed', () => {
+    it('should return editGasMode passed', () => {
       const { result } = renderHook(() =>
         useGasFeeInputs(undefined, undefined, undefined, EDIT_GAS_MODES.SWAPS),
       );

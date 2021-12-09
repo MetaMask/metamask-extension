@@ -115,7 +115,7 @@ describe('EditGasItem', () => {
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
   });
 
-  it('should renders priorityLevel high as swap suggested for swaps', () => {
+  it('should render priorityLevel high as "Swap suggested" for swaps', () => {
     renderComponent({
       componentProps: { priorityLevel: 'high' },
       contextProps: { editGasMode: EDIT_GAS_MODES.SWAPS },
