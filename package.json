@@ -116,6 +116,7 @@
     "@metamask/obs-store": "^5.0.0",
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/providers": "^8.1.1",
+    "@metamask/rpc-methods": "^0.5.0",
     "@metamask/snap-controllers": "^0.4.0",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",

@@ -625,6 +625,16 @@
         "mersenne-twister": true
       }
     },
+    "@metamask/key-tree": {
+      "packages": {
+        "bip39": true,
+        "buffer": true,
+        "crypto-browserify": true,
+        "is-buffer": true,
+        "keccak": true,
+        "secp256k1": true
+      }
+    },
     "@metamask/logo": {
       "globals": {
         "addEventListener": true,
@@ -669,6 +679,13 @@
       },
       "packages": {
         "readable-stream": true
+      }
+    },
+    "@metamask/rpc-methods": {
+      "packages": {
+        "@metamask/key-tree": true,
+        "@metamask/snap-controllers": true,
+        "eth-rpc-errors": true
       }
     },
     "@metamask/safe-event-emitter": {
@@ -1115,6 +1132,7 @@
     },
     "bip39": {
       "packages": {
+        "buffer": true,
         "create-hash": true,
         "pbkdf2": true,
         "randombytes": true,
