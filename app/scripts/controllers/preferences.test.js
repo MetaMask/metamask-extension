@@ -31,6 +31,7 @@ describe('preferences controller', function () {
       .callsFake(() => ({ type: 'mainnet' }));
 
     preferencesController = new PreferencesController({
+      initLangCode: 'en_US',
       migrateAddressBookState,
       network,
       provider,
@@ -39,6 +40,30 @@ describe('preferences controller', function () {
 
   afterEach(function () {
     sinon.restore();
+  });
+
+  describe('useBlockie', function () {
+    it('defaults useBlockie to false', function () {
+      assert.equal(preferencesController.store.getState().useBlockie, false);
+    });
+
+    it('setUseBlockie to true', function () {
+      preferencesController.setUseBlockie(true);
+      assert.equal(preferencesController.store.getState().useBlockie, true);
+    });
+  });
+
+  describe('setCurrentLocale', function () {
+    it('checks the default currentLocale', function () {
+      const { currentLocale } = preferencesController.store.getState();
+      assert.equal(currentLocale, 'en_US');
+    });
+
+    it('sets current locale in preferences controller', function () {
+      preferencesController.setCurrentLocale('ja');
+      const { currentLocale } = preferencesController.store.getState();
+      assert.equal(currentLocale, 'ja');
+    });
   });
 
   describe('setAddresses', function () {

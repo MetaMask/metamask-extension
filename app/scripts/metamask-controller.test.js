@@ -33,22 +33,32 @@ const firstTimeState = {
 const ganacheServer = new Ganache();
 
 const threeBoxSpies = {
-  init: sinon.stub(),
-  getThreeBoxSyncingState: sinon.stub().returns(true),
-  turnThreeBoxSyncingOn: sinon.stub(),
   _registerUpdates: sinon.spy(),
+  init: sinon.stub(),
+  getLastUpdated: sinon.stub(),
+  getThreeBoxSyncingState: sinon.stub().returns(true),
+  restoreFromThreeBox: sinon.stub(),
+  setShowRestorePromptToFalse: sinon.stub(),
+  setThreeBoxSyncingPermission: sinon.stub(),
+  turnThreeBoxSyncingOn: sinon.stub(),
 };
 
 class ThreeBoxControllerMock {
   constructor() {
+    this._registerUpdates = threeBoxSpies._registerUpdates;
+    this.init = threeBoxSpies.init;
+    this.getLastUpdated = threeBoxSpies.getLastUpdated;
+    this.getThreeBoxSyncingState = threeBoxSpies.getThreeBoxSyncingState;
+    this.restoreFromThreeBox = threeBoxSpies.restoreFromThreeBox;
+    this.setShowRestorePromptToFalse =
+      threeBoxSpies.setShowRestorePromptToFalse;
+    this.setThreeBoxSyncingPermission =
+      threeBoxSpies.setThreeBoxSyncingPermission;
     this.store = {
       subscribe: () => undefined,
       getState: () => ({}),
     };
-    this.init = threeBoxSpies.init;
-    this.getThreeBoxSyncingState = threeBoxSpies.getThreeBoxSyncingState;
     this.turnThreeBoxSyncingOn = threeBoxSpies.turnThreeBoxSyncingOn;
-    this._registerUpdates = threeBoxSpies._registerUpdates;
   }
 }
 
@@ -423,35 +433,10 @@ describe('MetaMaskController', function () {
   });
 
   describe('#getApi', function () {
-    it('getState', function (done) {
-      let state;
+    it('getState', function () {
       const getApi = metamaskController.getApi();
-      getApi.getState((err, res) => {
-        if (err) {
-          done(err);
-        } else {
-          state = res;
-        }
-      });
+      const state = getApi.getState();
       assert.deepEqual(state, metamaskController.getState());
-      done();
-    });
-  });
-
-  describe('preferencesController', function () {
-    it('defaults useBlockie to false', function () {
-      assert.equal(
-        metamaskController.preferencesController.store.getState().useBlockie,
-        false,
-      );
-    });
-
-    it('setUseBlockie to true', function () {
-      metamaskController.setUseBlockie(true, noop);
-      assert.equal(
-        metamaskController.preferencesController.store.getState().useBlockie,
-        true,
-      );
     });
   });
 
@@ -810,21 +795,6 @@ describe('MetaMaskController', function () {
     });
     it('should return address', async function () {
       assert.equal(ret, '0x1');
-    });
-  });
-
-  describe('#setCurrentLocale', function () {
-    it('checks the default currentLocale', function () {
-      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState()
-        .currentLocale;
-      assert.equal(preferenceCurrentLocale, 'en_US');
-    });
-
-    it('sets current locale in preferences controller', function () {
-      metamaskController.setCurrentLocale('ja', noop);
-      const preferenceCurrentLocale = metamaskController.preferencesController.store.getState()
-        .currentLocale;
-      assert.equal(preferenceCurrentLocale, 'ja');
     });
   });
 

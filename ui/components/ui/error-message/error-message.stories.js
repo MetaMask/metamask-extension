@@ -1,14 +1,26 @@
 import React from 'react';
-import { text } from '@storybook/addon-knobs';
+import README from './README.mdx';
 import ErrorMessage from '.';
 
 export default {
   title: 'Components/UI/ErrorMessage',
   id: __filename,
+  component: ErrorMessage,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    errorMessage: { control: 'text' },
+    errorKey: { control: 'text' },
+  },
 };
 
-export const DefaultStory = () => (
-  <ErrorMessage errorMessage={text('Error Message:', 'There was an error!')} />
-);
+export const DefaultStory = (args) => <ErrorMessage {...args} />;
 
 DefaultStory.storyName = 'Default';
+
+DefaultStory.args = {
+  errorMessage: 'There was an error!',
+};

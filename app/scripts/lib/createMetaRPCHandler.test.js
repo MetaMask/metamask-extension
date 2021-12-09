@@ -16,11 +16,11 @@ describe('createMetaRPCHandler', () => {
       params: ['bar'],
     });
   });
-  it('can write the response to the outstream when api callback is called', () => {
+  it('can write the response to the outstream', () => {
     const api = {
-      foo: (param1, cb) => {
+      foo: (param1) => {
         expect(param1).toStrictEqual('bar');
-        cb(null, 'foobarbaz');
+        return 'foobarbaz';
       },
     };
     const streamTest = createThoughStream();
@@ -35,11 +35,31 @@ describe('createMetaRPCHandler', () => {
       streamTest.end();
     });
   });
-  it('can write the error to the outstream when api callback is called with an error', () => {
+  it('can write an async response to the outstream', () => {
     const api = {
-      foo: (param1, cb) => {
+      foo: async (param1) => {
         expect(param1).toStrictEqual('bar');
-        cb(new Error('foo-error'));
+        await new Promise((resolve) => setTimeout(() => resolve(), 100));
+        return 'foobarbaz';
+      },
+    };
+    const streamTest = createThoughStream();
+    const handler = createMetaRPCHandler(api, streamTest);
+    handler({
+      id: 1,
+      method: 'foo',
+      params: ['bar'],
+    });
+    streamTest.on('data', (data) => {
+      expect(data.result).toStrictEqual('foobarbaz');
+      streamTest.end();
+    });
+  });
+  it('can write the error to the outstream when method throws an error', () => {
+    const api = {
+      foo: (param1) => {
+        expect(param1).toStrictEqual('bar');
+        throw new Error('foo-error');
       },
     };
     const streamTest = createThoughStream();
@@ -56,9 +76,9 @@ describe('createMetaRPCHandler', () => {
   });
   it('can not throw an error for writing an error after end', () => {
     const api = {
-      foo: (param1, cb) => {
+      foo: (param1) => {
         expect(param1).toStrictEqual('bar');
-        cb(new Error('foo-error'));
+        throw new Error('foo-error');
       },
     };
     const streamTest = createThoughStream();
@@ -74,11 +94,11 @@ describe('createMetaRPCHandler', () => {
   });
   it('can not throw an error for write after end', () => {
     const api = {
-      foo: (param1, cb) => {
+      foo: (param1) => {
         expect(param1).toStrictEqual('bar');
-        cb(undefined, {
+        return {
           foo: 'bar',
-        });
+        };
       },
     };
     const streamTest = createThoughStream();

@@ -10,14 +10,15 @@
   &__info {
     color: $ui-black;
     display: flex;
+    flex-flow: column;
     flex-wrap: wrap;
   }
 
   &__link.btn-link {
     @include H7;
 
+    display: inherit;
     padding: 0 4px;
-    width: auto;
   }
 }
 
