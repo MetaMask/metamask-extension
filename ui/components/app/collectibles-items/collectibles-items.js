@@ -30,7 +30,7 @@ const width =
 export default function CollectiblesItems({
   onAddNFT,
   onRefreshList,
-  collections,
+  collections = {},
   useCollectibleDetection,
   onEnableAutoDetect,
 }) {
@@ -194,9 +194,9 @@ export default function CollectiblesItems({
 }
 
 CollectiblesItems.propTypes = {
+  collections: PropTypes.object,
   onAddNFT: PropTypes.func.isRequired,
   onRefreshList: PropTypes.func.isRequired,
-  collections: PropTypes.array,
   useCollectibleDetection: PropTypes.bool.isRequired,
   onEnableAutoDetect: PropTypes.func.isRequired,
 };

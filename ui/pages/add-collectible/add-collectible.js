@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { isValidHexAddress } from '@metamask/controllers/dist/util';
+import { util } from '@metamask/controllers';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
@@ -36,12 +36,12 @@ export default function AddCollectible() {
   };
 
   const validateAndSetAddress = (val) => {
-    setDisabled(!isValidHexAddress(val) || !tokenId);
+    setDisabled(!util.isValidHexAddress(val) || !tokenId);
     setAddress(val);
   };
 
   const validateAndSetTokenId = (val) => {
-    setDisabled(!isValidHexAddress(address) || !val);
+    setDisabled(!util.isValidHexAddress(address) || !val);
     setTokenId(val);
   };
 

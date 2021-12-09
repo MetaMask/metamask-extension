@@ -549,13 +549,12 @@ export const sanitizeMessage = (msg, baseType, types) => {
 };
 
 export function getAssetImageURL(image, ipfsGateway) {
-  let result = image;
   if (!image || !ipfsGateway || typeof image !== 'string') {
     return '';
   }
 
   if (image.startsWith('ipfs://')) {
-    result = util.getFormattedIpfsUrl(ipfsGateway, image, true);
+    return util.getFormattedIpfsUrl(ipfsGateway, image, true);
   }
-  return result;
+  return image;
 }

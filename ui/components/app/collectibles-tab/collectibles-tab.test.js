@@ -176,23 +176,15 @@ describe('Collectible Items', () => {
     setCollectiblesDetectionNoticeDismissed: setCollectiblesDetectionNoticeDismissedStub,
     detectCollectibles: detectCollectiblesStub,
   });
-
-  const useHistoryOriginal = reactRouterDom.useHistory;
   const historyPushMock = jest.fn();
 
-  beforeAll(() => {
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: historyPushMock });
-  });
+  jest
+    .spyOn(reactRouterDom, 'useHistory')
+    .mockImplementation()
+    .mockReturnValue({ push: historyPushMock });
 
   afterEach(() => {
     jest.clearAllMocks();
-  });
-
-  afterAll(() => {
-    reactRouterDom.useHistory = useHistoryOriginal;
   });
 
   describe('Collectibles Detection Notice', () => {
