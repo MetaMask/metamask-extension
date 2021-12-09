@@ -141,12 +141,7 @@ export function getParticipateInMetaMetrics(state) {
   return Boolean(state.metamask.participateInMetaMetrics);
 }
 
-export function isEIP1559Account(state) {
-  const keyring = getCurrentKeyring(state);
-
-  if (keyring?.type === KEYRING_TYPES.TREZOR) {
-    return state.metamask.trezorModel === 'T';
-  }
+export function isEIP1559Account() {
   return true;
 }
 
