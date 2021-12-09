@@ -1595,9 +1595,6 @@
   "selectAHigherGasFee": {
     "message": "Chọn phí gas cao hơn để tăng tốc quá trình xử lý giao dịch của bạn.*"
   },
-  "selectAccounts": {
-    "message": "Chọn (các) tài khoản"
-  },
   "selectAll": {
     "message": "Chọn tất cả"
   },

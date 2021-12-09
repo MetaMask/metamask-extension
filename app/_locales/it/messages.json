@@ -1288,9 +1288,6 @@
   "selectAHigherGasFee": {
     "message": "Seleziona un costo in gas maggiore per accelerare l'elaborazione della transazione.*"
   },
-  "selectAccounts": {
-    "message": "Seleziona account"
-  },
   "selectAll": {
     "message": "Seleziona tutti"
   },

@@ -1595,9 +1595,6 @@
   "selectAHigherGasFee": {
     "message": "Pilih biaya jaringan yang lebih tinggi untuk mempercepat pemrosesan transaksi Anda.*"
   },
-  "selectAccounts": {
-    "message": "Pilih akun"
-  },
   "selectAll": {
     "message": "Pilih semua"
   },

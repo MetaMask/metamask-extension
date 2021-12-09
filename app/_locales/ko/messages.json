@@ -1595,9 +1595,6 @@
   "selectAHigherGasFee": {
     "message": "높은 Gas 수수료를 선택하면 거래 처리 속도를 높일 수 있습니다.*"
   },
-  "selectAccounts": {
-    "message": "계정 선택"
-  },
   "selectAll": {
     "message": "모두 선택"
   },

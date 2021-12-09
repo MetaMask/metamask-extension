@@ -1330,9 +1330,6 @@
   "selectAHigherGasFee": {
     "message": "选择更高的燃料费用，提高交易处理速度。*"
   },
-  "selectAccounts": {
-    "message": "选择账户"
-  },
   "selectAll": {
     "message": "全部选择"
   },
