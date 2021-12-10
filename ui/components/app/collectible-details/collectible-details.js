@@ -9,7 +9,6 @@ import Typography from '../../ui/typography/typography';
 import {
   COLORS,
   TYPOGRAPHY,
-  BLOCK_SIZES,
   FONT_WEIGHT,
   JUSTIFY_CONTENT,
   FLEX_DIRECTION,
