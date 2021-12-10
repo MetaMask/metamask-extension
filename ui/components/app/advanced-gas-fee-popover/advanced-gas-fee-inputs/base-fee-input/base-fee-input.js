@@ -41,9 +41,16 @@ const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
     multiplierBase: 10,
   }).toNumber();
 
-const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
+const validateBaseFee = (
+  editingInGwei,
+  value,
+  gasFeeEstimates,
+  maxPriorityFeePerGas,
+) => {
   if (bnGreaterThan(maxPriorityFeePerGas, value)) {
-    return 'editGasMaxBaseFeeImbalance';
+    return editingInGwei
+      ? 'editGasMaxBaseFeeGWEIImbalance'
+      : 'editGasMaxBaseFeeMultiplierImbalance';
   }
   if (
     gasFeeEstimates?.low &&
@@ -145,14 +152,20 @@ const BaseFeeInput = () => {
   useEffect(() => {
     setMaxFeePerGas(maxBaseFeeGWEI);
     const error = validateBaseFee(
+      editingInGwei,
       maxBaseFeeGWEI,
       gasFeeEstimates,
       maxPriorityFeePerGas,
     );
 
     setBaseFeeError(error);
-    setErrorValue('maxFeePerGas', error === 'editGasMaxBaseFeeImbalance');
+    setErrorValue(
+      'maxFeePerGas',
+      error === 'editGasMaxBaseFeeGWEIImbalance' ||
+        error === 'editGasMaxBaseFeeMultiplierImbalance',
+    );
   }, [
+    editingInGwei,
     gasFeeEstimates,
     maxBaseFeeGWEI,
     maxPriorityFeePerGas,

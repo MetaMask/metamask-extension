@@ -820,14 +820,17 @@
   "editGasLow": {
     "message": "Low"
   },
+  "editGasMaxBaseFeeGWEIImbalance": {
+    "message": "Max base fee cannot be lower than priority fee"
+  },
   "editGasMaxBaseFeeHigh": {
     "message": "Max base fee is higher than necessary"
   },
-  "editGasMaxBaseFeeImbalance": {
-    "message": "Max base fee cannot be lower than priority fee"
-  },
   "editGasMaxBaseFeeLow": {
     "message": "Max base fee is low for current network conditions"
+  },
+  "editGasMaxBaseFeeMultiplierImbalance": {
+    "message": "Multiplier is low relative to Priority fee"
   },
   "editGasMaxFeeHigh": {
     "message": "Max fee is higher than necessary"

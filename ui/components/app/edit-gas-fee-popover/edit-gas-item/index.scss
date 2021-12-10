@@ -39,6 +39,10 @@
     }
   }
 
+  &__maxfee {
+    position: relative;
+  }
+
   &__time-estimate {
     display: inline-block;
     text-align: left;
