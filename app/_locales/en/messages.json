@@ -830,7 +830,7 @@
     "message": "Max base fee is low for current network conditions"
   },
   "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "Multiplier is low relative to \"Priority fee\""
+    "message": "Multiplier is low relative to Priority fee"
   },
   "editGasMaxFeeHigh": {
     "message": "Max fee is higher than necessary"
