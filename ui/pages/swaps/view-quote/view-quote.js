@@ -399,6 +399,8 @@ export default function ViewQuote() {
     response_time: fetchParams?.responseTime,
     best_quote_source: topQuote?.aggregator,
     available_quotes: numberOfQuotes,
+  };
+  const properties = {
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
   };
@@ -406,6 +408,7 @@ export default function ViewQuote() {
   const allAvailableQuotesOpened = useNewMetricEvent({
     event: 'All Available Quotes Opened',
     category: 'swaps',
+    properties,
     sensitiveProperties: {
       ...eventObjectBase,
       other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
@@ -418,6 +421,7 @@ export default function ViewQuote() {
   const quoteDetailsOpened = useNewMetricEvent({
     event: 'Quote Details Opened',
     category: 'swaps',
+    properties,
     sensitiveProperties: {
       ...eventObjectBase,
       other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
@@ -441,6 +445,7 @@ export default function ViewQuote() {
   const bestQuoteReviewedEvent = useNewMetricEvent({
     event: 'Best Quote Reviewed',
     category: 'swaps',
+    properties,
     sensitiveProperties: {
       ...eventObjectBase,
       network_fees: feeInFiat,
@@ -450,6 +455,7 @@ export default function ViewQuote() {
   const viewQuotePageLoadedEvent = useNewMetricEvent({
     event: 'View Quote Page Loaded',
     category: 'swaps',
+    properties,
     sensitiveProperties: {
       ...eventObjectBase,
       response_time: currentTimestamp - reviewSwapClickedTimestamp,

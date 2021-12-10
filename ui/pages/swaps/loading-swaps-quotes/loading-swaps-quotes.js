@@ -38,6 +38,10 @@ export default function LoadingSwapsQuotes({
   const quotesRequestCancelledEventConfig = {
     event: 'Quotes Request Cancelled',
     category: 'swaps',
+    properties: {
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+    },
     sensitiveProperties: {
       token_from: fetchParams?.sourceTokenInfo?.symbol,
       token_from_amount: fetchParams?.value,
@@ -46,8 +50,6 @@ export default function LoadingSwapsQuotes({
       slippage: fetchParams?.slippage,
       custom_slippage: fetchParams?.slippage !== 2,
       response_time: Date.now() - quotesFetchStartTime,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
   };
 

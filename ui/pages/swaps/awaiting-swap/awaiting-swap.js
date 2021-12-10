@@ -103,6 +103,10 @@ export default function AwaitingSwap({
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const properties = {
+    is_hardware_wallet: hardwareWalletUsed,
+    hardware_wallet_type: hardwareWalletType,
+  };
   const sensitiveProperties = {
     token_from: sourceTokenInfo?.symbol,
     token_from_amount: fetchParams?.value,
@@ -111,16 +115,16 @@ export default function AwaitingSwap({
     slippage: fetchParams?.slippage,
     custom_slippage: fetchParams?.slippage === 2,
     gas_fees: feeinUnformattedFiat,
-    is_hardware_wallet: hardwareWalletUsed,
-    hardware_wallet_type: hardwareWalletType,
   };
   const quotesExpiredEvent = useNewMetricEvent({
     event: 'Quotes Timed Out',
+    properties,
     sensitiveProperties,
     category: 'swaps',
   });
   const makeAnotherSwapEvent = useNewMetricEvent({
     event: 'Make Another Swap',
+    properties,
     sensitiveProperties,
     category: 'swaps',
   });

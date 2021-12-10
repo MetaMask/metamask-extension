@@ -45,6 +45,10 @@ export default function AwaitingSignatures() {
 
   const awaitingSignaturesEvent = useNewMetricEvent({
     event: 'Awaiting Signature(s) on a HW wallet',
+    properties: {
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+    },
     sensitiveProperties: {
       needs_two_confirmations: needsTwoConfirmations,
       token_from: sourceTokenInfo?.symbol,
@@ -53,8 +57,6 @@ export default function AwaitingSignatures() {
       request_type: fetchParams?.balanceError ? 'Quote' : 'Order',
       slippage: fetchParams?.slippage,
       custom_slippage: fetchParams?.slippage === 2,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
     category: 'swaps',
   });

@@ -207,6 +207,10 @@ export default function Swap() {
   const exitedSwapsEvent = useNewMetricEvent({
     event: 'Exited Swaps',
     category: 'swaps',
+    properties: {
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+    },
     sensitiveProperties: {
       token_from: fetchParams?.sourceTokenInfo?.symbol,
       token_from_amount: fetchParams?.value,
@@ -215,8 +219,6 @@ export default function Swap() {
       slippage: fetchParams?.slippage,
       custom_slippage: fetchParams?.slippage !== 2,
       current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
   });
   const exitEventRef = useRef();

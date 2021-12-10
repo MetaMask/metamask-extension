@@ -58,12 +58,14 @@ export default function DropdownSearchList({
 
   const tokenImportedEvent = useNewMetricEvent({
     event: 'Token Imported',
+    properties: {
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+    },
     sensitiveProperties: {
       symbol: tokenForImport?.symbol,
       address: tokenForImport?.address,
       chain_id: chainId,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: hardwareWalletType,
     },
     category: 'swaps',
   });

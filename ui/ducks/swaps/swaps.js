@@ -568,6 +568,10 @@ export const fetchQuotesAndSetQuoteState = (
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
+      properties: {
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: hardwareWalletType,
+      },
       sensitiveProperties: {
         token_from: fromTokenSymbol,
         token_from_amount: String(inputValue),
@@ -575,8 +579,6 @@ export const fetchQuotesAndSetQuoteState = (
         request_type: balanceError ? 'Quote' : 'Order',
         slippage: maxSlippage,
         custom_slippage: maxSlippage !== 2,
-        is_hardware_wallet: hardwareWalletUsed,
-        hardware_wallet_type: hardwareWalletType,
         anonymizedData: true,
       },
     });
@@ -619,6 +621,10 @@ export const fetchQuotesAndSetQuoteState = (
         metaMetricsEvent({
           event: 'No Quotes Available',
           category: 'swaps',
+          properties: {
+            is_hardware_wallet: hardwareWalletUsed,
+            hardware_wallet_type: hardwareWalletType,
+          },
           sensitiveProperties: {
             token_from: fromTokenSymbol,
             token_from_amount: String(inputValue),
@@ -626,8 +632,6 @@ export const fetchQuotesAndSetQuoteState = (
             request_type: balanceError ? 'Quote' : 'Order',
             slippage: maxSlippage,
             custom_slippage: maxSlippage !== 2,
-            is_hardware_wallet: hardwareWalletUsed,
-            hardware_wallet_type: hardwareWalletType,
           },
         });
         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
@@ -637,6 +641,10 @@ export const fetchQuotesAndSetQuoteState = (
         metaMetricsEvent({
           event: 'Quotes Received',
           category: 'swaps',
+          properties: {
+            is_hardware_wallet: hardwareWalletUsed,
+            hardware_wallet_type: hardwareWalletType,
+          },
           sensitiveProperties: {
             token_from: fromTokenSymbol,
             token_from_amount: String(inputValue),
@@ -651,8 +659,6 @@ export const fetchQuotesAndSetQuoteState = (
             response_time: Date.now() - fetchStartTime,
             best_quote_source: newSelectedQuote.aggregator,
             available_quotes: Object.values(fetchedQuotes)?.length,
-            is_hardware_wallet: hardwareWalletUsed,
-            hardware_wallet_type: hardwareWalletType,
             anonymizedData: true,
           },
         });
@@ -810,8 +816,6 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       performance_savings: usedQuote.savings?.performance,
       fee_savings: usedQuote.savings?.fee,
       median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
-      is_hardware_wallet: hardwareWalletUsed,
-      hardware_wallet_type: getHardwareWalletType(state),
     };
     if (networkAndAccountSupports1559) {
       swapMetaData.max_fee_per_gas = maxFeePerGas;
@@ -822,6 +826,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     metaMetricsEvent({
       event: 'Swap Started',
       category: 'swaps',
+      properties: {
+        is_hardware_wallet: hardwareWalletUsed,
+        hardware_wallet_type: getHardwareWalletType(state),
+      },
       sensitiveProperties: swapMetaData,
     });
 
