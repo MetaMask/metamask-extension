@@ -30,10 +30,10 @@ const Asset = () => {
   }, []);
 
   let content;
-  if (token) {
-    content = <TokenAsset token={token} />;
-  } else if (collectible) {
+  if (collectible) {
     content = <CollectibleDetails collectible={collectible} />;
+  } else if (token) {
+    content = <TokenAsset token={token} />;
   } else if (asset === nativeCurrency) {
     content = <NativeAsset nativeCurrency={nativeCurrency} />;
   } else {

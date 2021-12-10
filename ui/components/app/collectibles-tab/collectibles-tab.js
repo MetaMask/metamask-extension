@@ -14,6 +14,7 @@ import {
   JUSTIFY_CONTENT,
   FLEX_DIRECTION,
   FONT_WEIGHT,
+  ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -54,16 +55,14 @@ export default function CollectiblesTab({ onAddNFT }) {
     }
   });
 
+  const onEnableAutoDetect = () => {
+    history.push(EXPERIMENTAL_ROUTE);
+  };
+
   return (
     <div className="collectibles-tab">
       {collectibles.length > 0 ? (
-        <CollectiblesItems
-          collections={collections}
-          onAddNFT={onAddNFT}
-          useCollectibleDetection={useCollectibleDetection}
-          onRefreshList={() => dispatch(detectCollectibles())}
-          onEnableAutoDetect={() => history.push(EXPERIMENTAL_ROUTE)}
-        />
+        <CollectiblesItems collections={collections} />
       ) : (
         <Box padding={[6, 12, 6, 12]}>
           {isMainnet &&
@@ -98,28 +97,58 @@ export default function CollectiblesTab({ onAddNFT }) {
               {t('learnMoreUpperCase')}
             </Button>
           </Box>
+        </Box>
+      )}
+      <Box
+        marginBottom={4}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+      >
+        <Typography
+          color={COLORS.UI3}
+          variant={TYPOGRAPHY.H5}
+          align={TEXT_ALIGN.CENTER}
+        >
+          {t('missingNFT')}
+        </Typography>
+        <Box
+          alignItems={ALIGN_ITEMS.CENTER}
+          justifyContent={JUSTIFY_CONTENT.CENTER}
+        >
           <Box
-            marginBottom={4}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            className="collectibles-tab__link"
+            justifyContent={JUSTIFY_CONTENT.FLEX_END}
           >
-            <Typography
-              color={COLORS.UI3}
-              variant={TYPOGRAPHY.H5}
-              align={TEXT_ALIGN.CENTER}
-            >
-              {t('missingNFT')}
-            </Typography>
-            <Button
-              type="link"
-              onClick={onAddNFT}
-              style={{ padding: 0, fontSize: '1rem' }}
-            >
-              {t('addNFT')}
+            {useCollectibleDetection ? (
+              <Button
+                type="link"
+                onClick={() => dispatch(detectCollectibles())}
+              >
+                {t('refreshList')}
+              </Button>
+            ) : (
+              <Button type="link" onClick={onEnableAutoDetect}>
+                {t('enableAutoDetect')}
+              </Button>
+            )}
+          </Box>
+          <Typography
+            color={COLORS.UI3}
+            variant={TYPOGRAPHY.H4}
+            align={TEXT_ALIGN.CENTER}
+          >
+            {t('or')}
+          </Typography>
+          <Box
+            justifyContent={JUSTIFY_CONTENT.FLEX_START}
+            className="collectibles-tab__link"
+          >
+            <Button type="link" onClick={onAddNFT}>
+              {t('importNFTs')}
             </Button>
           </Box>
         </Box>
-      )}
+      </Box>
     </div>
   );
 }

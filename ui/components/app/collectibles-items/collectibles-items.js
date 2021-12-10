@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
-import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import {
   COLORS,
   TYPOGRAPHY,
-  TEXT_ALIGN,
   JUSTIFY_CONTENT,
   FLEX_DIRECTION,
   ALIGN_ITEMS,
@@ -17,7 +15,6 @@ import {
   FLEX_WRAP,
 } from '../../../helpers/constants/design-system';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getIpfsGateway } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
@@ -27,14 +24,7 @@ const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
     ? BLOCK_SIZES.ONE_THIRD
     : BLOCK_SIZES.ONE_SIXTH;
-export default function CollectiblesItems({
-  onAddNFT,
-  onRefreshList,
-  collections = {},
-  useCollectibleDetection,
-  onEnableAutoDetect,
-}) {
-  const t = useI18nContext();
+export default function CollectiblesItems({ collections = {} }) {
   const defaultDropdownState = {};
   const ipfsGateway = useSelector(getIpfsGateway);
 
@@ -143,53 +133,6 @@ export default function CollectiblesItems({
               </div>
             );
           })}
-          <Box
-            marginTop={6}
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            justifyContent={JUSTIFY_CONTENT.CENTER}
-          >
-            <Typography
-              color={COLORS.UI3}
-              variant={TYPOGRAPHY.H5}
-              align={TEXT_ALIGN.CENTER}
-            >
-              {t('missingNFT')}
-            </Typography>
-            <Box
-              alignItems={ALIGN_ITEMS.CENTER}
-              justifyContent={JUSTIFY_CONTENT.CENTER}
-            >
-              <Box
-                className="collectibles-items__link"
-                justifyContent={JUSTIFY_CONTENT.FLEX_END}
-              >
-                {useCollectibleDetection ? (
-                  <Button type="link" onClick={onRefreshList}>
-                    {t('refreshList')}
-                  </Button>
-                ) : (
-                  <Button type="link" onClick={onEnableAutoDetect}>
-                    {t('enableAutoDetect')}
-                  </Button>
-                )}
-              </Box>
-              <Typography
-                color={COLORS.UI3}
-                variant={TYPOGRAPHY.H4}
-                align={TEXT_ALIGN.CENTER}
-              >
-                {t('or')}
-              </Typography>
-              <Box
-                justifyContent={JUSTIFY_CONTENT.FLEX_START}
-                className="collectibles-items__link"
-              >
-                <Button type="link" onClick={onAddNFT}>
-                  {t('importNFTs')}
-                </Button>
-              </Box>
-            </Box>
-          </Box>
         </>
       </Box>
     </div>
@@ -218,8 +161,4 @@ CollectiblesItems.propTypes = {
     collectionImage: PropTypes.string,
     collectionName: PropTypes.string,
   }),
-  onAddNFT: PropTypes.func.isRequired,
-  onRefreshList: PropTypes.func.isRequired,
-  useCollectibleDetection: PropTypes.bool.isRequired,
-  onEnableAutoDetect: PropTypes.func.isRequired,
 };
