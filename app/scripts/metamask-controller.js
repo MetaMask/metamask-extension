@@ -2680,15 +2680,32 @@ export default class MetamaskController extends EventEmitter {
    */
 
   /**
+   * A Snap sender object.
+   * @typedef {Object} SnapSender
+   * @property {string} snapId - The ID of the snap.
+   */
+
+  /**
    * Used to create a multiplexed stream for connecting to an untrusted context
    * like a Dapp or other extension.
-   * @param {*} connectionStream - The Duplex stream to connect to.
-   * @param {MessageSender} sender - The sender of the messages on this stream
+   * @param options - Optiosn bag.
+   * @param {ReadableStream} options.connectionStream - The Duplex stream to connect to.
+   * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
+   * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
-  setupUntrustedCommunication(connectionStream, sender, isSnap = false) {
+  setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
     const { usePhishDetect } = this.preferencesController.store.getState();
 
-    if (!isSnap) {
+    let _subjectType;
+    if (subjectType) {
+      _subjectType = subjectType;
+    } else if (sender.id && sender.id !== this.extension.runtime.id) {
+      _subjectType = SUBJECT_TYPES.EXTENSION;
+    } else {
+      _subjectType = SUBJECT_TYPES.WEBSITE;
+    }
+
+    if (sender.url) {
       const { hostname } = new URL(sender.url);
       // Check if new connection is blocked if phishing detection is on
       if (usePhishDetect && this.phishingController.test(hostname)) {
@@ -2705,12 +2722,11 @@ export default class MetamaskController extends EventEmitter {
     this.setupProviderConnection(
       mux.createStream('metamask-provider'),
       sender,
-      false,
-      isSnap,
+      _subjectType,
     );
 
     // TODO:LegacyProvider: Delete
-    if (!isSnap) {
+    if (sender.url) {
       // legacy streams
       this.setupPublicConfig(mux.createStream('publicConfig'));
     }
@@ -2730,7 +2746,11 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream);
     // connect features
     this.setupControllerConnection(mux.createStream('controller'));
-    this.setupProviderConnection(mux.createStream('provider'), sender, true);
+    this.setupProviderConnection(
+      mux.createStream('provider'),
+      sender,
+      SUBJECT_TYPES.INTERNAL,
+    );
   }
 
   /**
@@ -2786,46 +2806,24 @@ export default class MetamaskController extends EventEmitter {
   /**
    * A method for serving our ethereum provider over a given stream.
    * @param {*} outStream - The stream to provide over.
-   * @param {MessageSender} sender - The sender of the messages on this stream
-   * @param {boolean} isInternal - True if this is a connection with an internal process
+   * @param {MessageSender | SnapSender} sender - The sender of the messages on this stream
+   * @param {string} subjectType - The type of the sender, i.e. subject.
    */
-  setupProviderConnection(
-    outStream,
-    sender,
-    isInternal = false,
-    isSnap = false,
-  ) {
-    let subjectType;
-    if (isInternal) {
-      subjectType = SUBJECT_TYPES.INTERNAL;
-    } else if (isSnap) {
-      subjectType = SUBJECT_TYPES.SNAP;
-    } else if (sender.id && sender.id !== this.extension.runtime.id) {
-      subjectType = SUBJECT_TYPES.EXTENSION;
-    } else {
-      subjectType = SUBJECT_TYPES.WEBSITE;
-    }
-
+  setupProviderConnection(outStream, sender, subjectType) {
     let origin;
     if (subjectType === SUBJECT_TYPES.INTERNAL) {
       origin = 'metamask';
     }
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     else if (subjectType === SUBJECT_TYPES.SNAP) {
-      try {
-        origin = new URL(sender.url).toString();
-      } catch (_) {
-        // TODO: Sometimes the origin isn't an URL, and we should probably
-        // handle it better than by means of this hack.
-        origin = sender.url;
-      }
+      origin = sender.snapId;
     }
     ///: END:ONLY_INCLUDE_IN
     else {
       origin = new URL(sender.url).origin;
     }
 
-    if (!isSnap && sender.id !== this.extension.runtime.id) {
+    if (sender.id && sender.id !== this.extension.runtime.id) {
       this.subjectMetadataController.addSubjectMetadata(origin, {
         extensionId: sender.id,
         subjectType: SUBJECT_TYPES.EXTENSION,
@@ -2839,9 +2837,9 @@ export default class MetamaskController extends EventEmitter {
 
     const engine = this.setupProviderEngine({
       origin,
-      location: sender.url,
-      tabId,
+      sender,
       subjectType,
+      tabId,
     });
 
     // setup connection
@@ -2875,12 +2873,12 @@ export default class MetamaskController extends EventEmitter {
   /**
    * For snaps running in workers.
    */
-  setupSnapProvider(snapName, connectionStream) {
-    const sender = {
-      hostname: snapName,
-      url: snapName,
-    };
-    this.setupUntrustedCommunication(connectionStream, sender, true);
+  setupSnapProvider(snapId, connectionStream) {
+    this.setupUntrustedCommunication({
+      connectionStream,
+      sender: { snapId },
+      subjectType: SUBJECT_TYPES.SNAP,
+    });
   }
   ///: END:ONLY_INCLUDE_IN
 
@@ -2889,11 +2887,11 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {Object} options - Provider engine options
    * @param {string} options.origin - The origin of the sender
-   * @param {string} options.location - The full URL of the sender
+   * @param {MessageSender | SnapSender} options.sender - The sender object.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    **/
-  setupProviderEngine({ origin, location, subjectType, tabId }) {
+  setupProviderEngine({ origin, subjectType, sender, tabId }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
     const { blockTracker, provider } = this;
@@ -2926,7 +2924,7 @@ export default class MetamaskController extends EventEmitter {
     if (subjectType === SUBJECT_TYPES.WEBSITE) {
       engine.push(
         createOnboardingMiddleware({
-          location,
+          location: sender.url,
           registerOnboarding: this.onboardingController.registerOnboarding,
         }),
       );
