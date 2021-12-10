@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-
+import { uniq } from 'lodash';
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
 import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
 import { SECONDARY } from '../../../../../helpers/constants/common';
@@ -12,6 +12,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import FormField from '../../../../ui/form-field';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
+import { toBigNumber } from '../../../../../../shared/modules/conversion.utils';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
@@ -39,6 +40,15 @@ const validatePriorityFee = (value, gasFeeEstimates) => {
   return null;
 };
 
+function roundToDecimalPlacesRemovingExtraZeroes(
+  numberish,
+  numberOfDecimalPlaces,
+) {
+  return toBigNumber.dec(
+    toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces),
+  );
+}
+
 const PriorityFeeInput = () => {
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
@@ -55,8 +65,6 @@ const PriorityFeeInput = () => {
     latestPriorityFeeRange,
     historicalPriorityFeeRange,
   } = gasFeeEstimates;
-  const [lowLatest, highLatest] = latestPriorityFeeRange;
-  const [lowHistorical, highHistorical] = historicalPriorityFeeRange;
   const [priorityFeeError, setPriorityFeeError] = useState();
 
   const [priorityFee, setPriorityFee] = useState(() => {
@@ -77,6 +85,16 @@ const PriorityFeeInput = () => {
 
   const updatePriorityFee = (value) => {
     setPriorityFee(value);
+  };
+
+  const renderPriorityFeeRange = (feeRange) => {
+    if (feeRange) {
+      const formattedRange = uniq(
+        feeRange.map((fee) => roundToDecimalPlacesRemovingExtraZeroes(fee, 2)),
+      ).join(' - ');
+      return `${formattedRange} GWEI`;
+    }
+    return null;
   };
 
   useEffect(() => {
@@ -108,12 +126,8 @@ const PriorityFeeInput = () => {
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={`${parseFloat(lowLatest).toFixed(2)} - ${parseFloat(
-          highLatest,
-        ).toFixed(2)} GWEI`}
-        historical={`${parseFloat(lowHistorical).toFixed(2)} - ${parseFloat(
-          highHistorical,
-        ).toFixed(2)} GWEI`}
+        latest={renderPriorityFeeRange(latestPriorityFeeRange)}
+        historical={renderPriorityFeeRange(historicalPriorityFeeRange)}
       />
     </>
   );

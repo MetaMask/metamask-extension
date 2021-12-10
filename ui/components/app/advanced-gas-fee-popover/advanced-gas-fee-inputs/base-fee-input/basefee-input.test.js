@@ -113,7 +113,7 @@ describe('BaseFeeInput', () => {
         maxFeePerGas: '0x174876E800',
       },
     });
-    expect(screen.queryByText('50.00 GWEI')).toBeInTheDocument();
+    expect(screen.queryByText('50 GWEI')).toBeInTheDocument();
   });
   it('should show 12hr range value in subtext', () => {
     render({
@@ -121,7 +121,7 @@ describe('BaseFeeInput', () => {
         maxFeePerGas: '0x174876E800',
       },
     });
-    expect(screen.queryByText('50.00 - 100.00 GWEI')).toBeInTheDocument();
+    expect(screen.queryByText('50 - 100 GWEI')).toBeInTheDocument();
   });
   it('should show error if base fee is less than suggested low value', () => {
     render({
