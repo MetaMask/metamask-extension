@@ -49,6 +49,8 @@ const CancelSpeedupPopover = () => {
       maxFeePerGasAggressive,
     );
 
+    // for speed-up transaction if gas used in transaction + 10%
+    // is greater than aggressive use aggressive estimates
     if (
       gasUsedGreaterThanAggressive &&
       editGasMode === EDIT_GAS_MODES.SPEED_UP
