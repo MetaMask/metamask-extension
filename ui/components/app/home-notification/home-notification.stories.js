@@ -61,26 +61,27 @@ WithIgnoreCheckbox.args = {
 export const OnlyDescription = Template.bind({});
 OnlyDescription.storyName = 'OnlyDescription';
 OnlyDescription.args = {
-  descriptionText: 'Non-Interactive notification',
+  descriptionText: 'Non-Interactive notification.',
 };
 
 export const DescriptionAndInfo = Template.bind({});
 DescriptionAndInfo.storyName = 'DescriptionAndInfo';
 DescriptionAndInfo.args = {
-  descriptionText: 'Non-Interactive notification',
+  descriptionText: 'Non-Interactive notification.',
   infoText: 'Info text',
 };
 
 export const OnlyAccept = Template.bind({});
 OnlyAccept.storyName = 'OnlyAccept';
 OnlyAccept.args = {
-  acceptText: 'Accept text',
-  descriptionText: 'Description text',
+  acceptText: 'Mandatory Action',
+  descriptionText:
+    "The 'Accept' action for this notification is strongly recommended, so there is no option to dismiss",
 };
 
 export const OnlyIgnore = Template.bind({});
 OnlyIgnore.storyName = 'OnlyIgnore';
 OnlyIgnore.args = {
-  descriptionText: 'Description text',
-  ignoreText: 'Ignore text',
+  descriptionText: 'This is a dismissable notification.',
+  ignoreText: 'Dismiss',
 };
