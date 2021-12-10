@@ -15,6 +15,7 @@ import {
   decimalToHex,
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util';
+import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { toHumanReadableTime } from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
@@ -150,11 +151,14 @@ const EditGasItem = ({ priorityLevel }) => {
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}
       >
         {hexMaximumTransactionFee ? (
-          <UserPreferencedCurrencyDisplay
-            key="editGasSubTextFeeAmount"
-            type={PRIMARY}
-            value={hexMaximumTransactionFee}
-          />
+          <div className="edit-gas-item__maxfee">
+            <LoadingHeartBeat />
+            <UserPreferencedCurrencyDisplay
+              key="editGasSubTextFeeAmount"
+              type={PRIMARY}
+              value={hexMaximumTransactionFee}
+            />
+          </div>
         ) : (
           '--'
         )}

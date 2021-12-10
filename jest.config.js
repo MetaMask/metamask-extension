@@ -8,7 +8,7 @@ module.exports = {
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
   coverageReporters: ['html', 'text-summary'],
   coverageThreshold: {
-    'global': {
+    global: {
       branches: 35,
       functions: 37,
       lines: 43,
@@ -32,6 +32,7 @@ module.exports = {
     '<rootDir>/app/scripts/lib/**/*.test.js',
     '<rootDir>/app/scripts/migrations/*.test.js',
     '<rootDir>/app/scripts/platforms/*.test.js',
+    '<rootDir>app/scripts/controllers/network/**/*.test.js',
     '<rootDir>/app/scripts/controllers/permissions/*.test.js',
   ],
   testTimeout: 2500,

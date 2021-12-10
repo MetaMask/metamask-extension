@@ -116,6 +116,7 @@
     "@metamask/obs-store": "^5.0.0",
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/providers": "^8.1.1",
+    "@metamask/rpc-methods": "^0.5.0",
     "@metamask/snap-controllers": "^0.4.0",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
@@ -149,7 +150,7 @@
     "eth-query": "^2.1.2",
     "eth-rpc-errors": "^4.0.2",
     "eth-sig-util": "^3.0.0",
-    "eth-trezor-keyring": "^0.9.0",
+    "eth-trezor-keyring": "^0.9.1",
     "ethereum-ens-network-map": "^1.0.2",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^7.0.10",
@@ -231,10 +232,10 @@
     "@lavamoat/allow-scripts": "^1.0.6",
     "@lavamoat/lavapack": "^2.0.4",
     "@metamask/auto-changelog": "^2.1.0",
-    "@metamask/eslint-config": "^6.0.0",
-    "@metamask/eslint-config-jest": "^6.0.0",
-    "@metamask/eslint-config-mocha": "^6.0.0",
-    "@metamask/eslint-config-nodejs": "^6.0.0",
+    "@metamask/eslint-config": "^8.0.0",
+    "@metamask/eslint-config-jest": "^8.0.0",
+    "@metamask/eslint-config-mocha": "^8.0.0",
+    "@metamask/eslint-config-nodejs": "^8.0.0",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/test-dapp": "^4.0.1",
     "@sentry/cli": "^1.58.0",
@@ -380,7 +381,9 @@
       "@lavamoat/preinstall-always-fail": false,
       "fsevents": false,
       "node-hid": false,
-      "usb": false
+      "usb": false,
+      "blake-hash": false,
+      "protobufjs": false
     }
   }
 }

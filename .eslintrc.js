@@ -87,6 +87,27 @@ module.exports = {
 
     'node/no-process-env': 'off',
 
+    // TODO: remove this override
+    'padding-line-between-statements': [
+      'error',
+      {
+        blankLine: 'always',
+        prev: 'directive',
+        next: '*',
+      },
+      {
+        blankLine: 'any',
+        prev: 'directive',
+        next: 'directive',
+      },
+      // Disabled temporarily to reduce conflicts while PR queue is large
+      // {
+      //   blankLine: 'always',
+      //   prev: ['multiline-block-like', 'multiline-expression'],
+      //   next: ['multiline-block-like', 'multiline-expression'],
+      // },
+    ],
+
     // TODO: re-enable these rules
     'node/no-sync': 'off',
     'node/no-unpublished-import': 'off',
@@ -140,6 +161,7 @@ module.exports = {
         'app/scripts/lib/**/*.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
+        'app/scripts/controllers/network/**/*.test.js',
         'app/scripts/controllers/permissions/*.test.js',
       ],
       extends: ['@metamask/eslint-config-mocha'],
@@ -166,6 +188,7 @@ module.exports = {
         'app/scripts/lib/**/*.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
+        'app/scripts/controllers/network/**/*.test.js',
         'app/scripts/controllers/permissions/*.test.js',
       ],
       extends: ['@metamask/eslint-config-jest'],

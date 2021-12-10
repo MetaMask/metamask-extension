@@ -39,8 +39,8 @@ Password.args = {
   label: 'Password',
   type: 'password',
 };
-export const Error = (args) => <TextField {...args} />;
-Error.args = {
+export const TextError = (args) => <TextField {...args} />;
+TextError.args = {
   type: 'text',
   label: 'Name',
   error: 'Invalid Value',

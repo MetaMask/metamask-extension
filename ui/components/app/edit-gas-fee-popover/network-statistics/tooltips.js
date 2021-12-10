@@ -57,7 +57,7 @@ PriorityFeeTooltip.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export const NetworkStabilityTooltip = ({ children, statusInfo }) => {
+export const NetworkStabilityTooltip = ({ children, color, tooltipLabel }) => {
   const t = useI18nContext();
 
   return (
@@ -66,9 +66,9 @@ export const NetworkStabilityTooltip = ({ children, statusInfo }) => {
         <strong
           key="network-status__tooltip"
           className="network-status__tooltip-label"
-          style={{ color: statusInfo.color }}
+          style={{ color }}
         >
-          {t(statusInfo.tooltipLabel)}
+          {t(tooltipLabel)}
         </strong>,
       ])}
     >
@@ -79,5 +79,6 @@ export const NetworkStabilityTooltip = ({ children, statusInfo }) => {
 
 NetworkStabilityTooltip.propTypes = {
   children: PropTypes.node.isRequired,
-  statusInfo: PropTypes.object,
+  color: PropTypes.string.isRequired,
+  tooltipLabel: PropTypes.string.isRequired,
 };

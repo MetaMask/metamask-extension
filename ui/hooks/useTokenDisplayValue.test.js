@@ -118,20 +118,20 @@ const tests = [
 ];
 
 describe('useTokenDisplayValue', () => {
-  tests.forEach((test, idx) => {
-    describe(`when input is decimals: ${test.token.decimals} and value: ${test.tokenValue}`, () => {
-      it(`should return ${test.displayValue} as displayValue`, () => {
+  tests.forEach(({ displayValue, token, tokenData, tokenValue }, idx) => {
+    describe(`when input is decimals: ${token.decimals} and value: ${tokenValue}`, () => {
+      it(`should return ${displayValue} as displayValue`, () => {
         const getTokenValueStub = sinon.stub(tokenUtil, 'getTokenValueParam');
         const getTokenDataStub = sinon.stub(txUtil, 'getTokenData');
 
-        getTokenDataStub.callsFake(() => test.tokenData);
-        getTokenValueStub.callsFake(() => test.tokenValue);
+        getTokenDataStub.callsFake(() => tokenData);
+        getTokenValueStub.callsFake(() => tokenValue);
 
         const { result } = renderHook(() =>
-          useTokenDisplayValue(`${idx}-fakestring`, test.token),
+          useTokenDisplayValue(`${idx}-fakestring`, token),
         );
         sinon.restore();
-        expect(result.current).toStrictEqual(test.displayValue);
+        expect(result.current).toStrictEqual(displayValue);
       });
     });
   });

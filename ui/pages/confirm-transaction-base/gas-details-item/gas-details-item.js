@@ -15,8 +15,6 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import GasDetailsItemTitle from './gas-details-item-title';
 
-const HeartBeat = () => (process.env.IN_TEST ? null : <LoadingHeartBeat />);
-
 const GasDetailsItem = ({
   hexMaximumTransactionFee,
   hexMinimumTransactionFee,
@@ -36,7 +34,7 @@ const GasDetailsItem = ({
       detailTitleColor={COLORS.BLACK}
       detailText={
         <div className="gas-details-item__currency-container">
-          <HeartBeat />
+          <LoadingHeartBeat />
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
             value={hexMinimumTransactionFee}
@@ -46,7 +44,7 @@ const GasDetailsItem = ({
       }
       detailTotal={
         <div className="gas-details-item__currency-container">
-          <HeartBeat />
+          <LoadingHeartBeat />
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
             value={hexMinimumTransactionFee}
@@ -63,6 +61,7 @@ const GasDetailsItem = ({
               'gas-details-item__gas-fee-warning': estimateUsed === 'high',
             })}
           >
+            <LoadingHeartBeat />
             <Box marginRight={1}>
               <strong>
                 {estimateUsed === 'high' && '⚠ '}
@@ -73,7 +72,7 @@ const GasDetailsItem = ({
               key="editGasSubTextFeeValue"
               className="gas-details-item__currency-container"
             >
-              <HeartBeat />
+              <LoadingHeartBeat />
               <UserPreferencedCurrencyDisplay
                 key="editGasSubTextFeeAmount"
                 type={PRIMARY}
