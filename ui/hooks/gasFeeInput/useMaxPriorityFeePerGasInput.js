@@ -3,14 +3,12 @@ import { useEffect, useState } from 'react';
 
 import { addHexPrefix } from 'ethereumjs-util';
 
-import { EDIT_GAS_MODES } from '../../../shared/constants/gas';
 import { SECONDARY } from '../../helpers/constants/common';
 import { hexWEIToDecGWEI } from '../../helpers/utils/conversions.util';
 import {
   checkNetworkAndAccountSupports1559,
   getShouldShowFiat,
 } from '../../selectors';
-import { getCustomMaxPriorityFeePerGas } from '../../ducks/swaps/swaps';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
 
@@ -36,7 +34,6 @@ const getMaxPriorityFeePerGasFromTransaction = (transaction) => {
  *  method to update the maxPriorityFeePerGas.
  */
 export function useMaxPriorityFeePerGasInput({
-  editGasMode,
   estimateToUse,
   gasEstimateType,
   gasFeeEstimates,
@@ -44,10 +41,6 @@ export function useMaxPriorityFeePerGasInput({
   supportsEIP1559V2,
   transaction,
 }) {
-  const swapCustomMaxPriorityFeePerGas = useSelector(
-    getCustomMaxPriorityFeePerGas,
-  );
-
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
@@ -59,16 +52,9 @@ export function useMaxPriorityFeePerGasInput({
 
   const showFiat = useSelector(getShouldShowFiat);
 
-  let initialMaxPriorityFeePerGas;
-  if (editGasMode === EDIT_GAS_MODES.SWAPS && supportsEIP1559V2) {
-    initialMaxPriorityFeePerGas = swapCustomMaxPriorityFeePerGas
-      ? Number(hexWEIToDecGWEI(swapCustomMaxPriorityFeePerGas))
-      : null;
-  } else {
-    initialMaxPriorityFeePerGas = supportsEIP1559
-      ? getMaxPriorityFeePerGasFromTransaction(transaction)
-      : 0;
-  }
+  const initialMaxPriorityFeePerGas = supportsEIP1559
+    ? getMaxPriorityFeePerGasFromTransaction(transaction)
+    : 0;
 
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(() => {
     if (initialMaxPriorityFeePerGas && feeParamsAreCustom(transaction))
@@ -77,7 +63,7 @@ export function useMaxPriorityFeePerGasInput({
   });
 
   useEffect(() => {
-    if (supportsEIP1559V2) {
+    if (supportsEIP1559V2 && initialMaxPriorityFeePerGas) {
       setMaxPriorityFeePerGas(initialMaxPriorityFeePerGas);
     }
   }, [initialMaxPriorityFeePerGas, setMaxPriorityFeePerGas, supportsEIP1559V2]);
