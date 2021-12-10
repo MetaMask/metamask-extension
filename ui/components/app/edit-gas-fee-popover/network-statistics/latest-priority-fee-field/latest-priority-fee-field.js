@@ -1,20 +1,9 @@
 import React from 'react';
+import { uniq } from 'lodash';
 import { toBigNumber } from '../../../../../../shared/modules/conversion.utils';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import I18nValue from '../../../../ui/i18n-value';
 import { PriorityFeeTooltip } from '../tooltips';
-
-function uniq(values) {
-  const uniqueValues = [];
-  const seenValues = new Set();
-  values.forEach((value) => {
-    if (!seenValues.has(value)) {
-      uniqueValues.push(value);
-      seenValues.add(value);
-    }
-  });
-  return uniqueValues;
-}
 
 function roundToDecimalPlacesRemovingExtraZeroes(
   numberish,
