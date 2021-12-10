@@ -33,7 +33,6 @@ const render = ({ componentProps, contextProps } = {}) => {
         },
       },
       selectedAddress: '0xAddress',
-      swapsState: {},
     },
   });
 
