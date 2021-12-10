@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
 
-import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
 import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
@@ -15,12 +13,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../helpers/constants/common';
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-  hexWEIToDecGWEI,
-} from '../../../../helpers/utils/conversions.util';
-import { getAdvancedGasFeeValues } from '../../../../selectors';
+import { hexWEIToDecGWEI } from '../../../../helpers/utils/conversions.util';
 import {
   bnGreaterThan,
   toHumanReadableTime,
@@ -33,7 +26,7 @@ import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-disp
 import Box from '../../../ui/box';
 import InfoTooltip from '../../../ui/info-tooltip';
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
-import { useCustomTimeEstimate } from './useCustomTimeEstimate';
+import { useGasItemFeeDetails } from './useGasItemFeeDetails';
 
 const EditGasItem = ({ priorityLevel }) => {
   const {
@@ -41,82 +34,23 @@ const EditGasItem = ({ priorityLevel }) => {
     estimateUsed,
     gasFeeEstimates,
     gasLimit,
-    maxFeePerGas: maxFeePerGasValue,
-    maxPriorityFeePerGas: maxPriorityFeePerGasValue,
     updateTransactionUsingDAPPSuggestedValues,
     updateTransactionUsingEstimate,
     transaction,
   } = useGasFeeContext();
   const t = useI18nContext();
-  const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const { closeModal, openModal } = useTransactionModalContext();
   const [disabled, setDisabled] = useState(false);
   const { dappSuggestedGasFees } = transaction;
 
-  let maxFeePerGas;
-  let maxPriorityFeePerGas;
-  let minWaitTime;
-
-  // todo: extract into separate hook
-  if (gasFeeEstimates?.[priorityLevel]) {
-    maxFeePerGas = gasFeeEstimates[priorityLevel]?.suggestedMaxFeePerGas;
-  } else if (
-    priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
-    dappSuggestedGasFees
-  ) {
-    maxFeePerGas = hexWEIToDecGWEI(
-      dappSuggestedGasFees.maxFeePerGas || dappSuggestedGasFees.gasPrice,
-    );
-    maxPriorityFeePerGas = hexWEIToDecGWEI(
-      dappSuggestedGasFees.maxPriorityFeePerGas || maxFeePerGas,
-    );
-  } else if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
-    if (estimateUsed === PRIORITY_LEVELS.CUSTOM) {
-      maxFeePerGas = maxFeePerGasValue;
-      maxPriorityFeePerGas = maxPriorityFeePerGasValue;
-    } else if (advancedGasFeeValues) {
-      maxFeePerGas =
-        gasFeeEstimates.estimatedBaseFee *
-        parseFloat(advancedGasFeeValues.maxBaseFee);
-      maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
-    }
-  } else if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
-    // todo: review
-    // todo: add time estimate
-    maxFeePerGas = new BigNumber(
-      hexWEIToDecGWEI(transaction.previousGas?.maxFeePerGas),
-    )
-      .times(1.1)
-      .toNumber();
-    maxPriorityFeePerGas = hexWEIToDecGWEI(
-      transaction.previousGas?.maxPriorityFeePerGas,
-    );
-  }
-
-  const { waitTimeEstimate } = useCustomTimeEstimate({
-    gasFeeEstimates,
+  const {
     maxFeePerGas,
     maxPriorityFeePerGas,
-  });
-
-  if (gasFeeEstimates[priorityLevel]) {
-    minWaitTime =
-      priorityLevel === PRIORITY_LEVELS.HIGH
-        ? gasFeeEstimates?.high.minWaitTimeEstimate
-        : gasFeeEstimates?.low.maxWaitTimeEstimate;
-  } else {
-    minWaitTime = waitTimeEstimate;
-  }
-
-  const hexMaximumTransactionFee = maxFeePerGas
-    ? getMaximumGasTotalInHexWei({
-        gasLimit: decimalToHex(gasLimit),
-        maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
-      })
-    : null;
+    minWaitTime,
+    hexMaximumTransactionFee,
+  } = useGasItemFeeDetails(priorityLevel);
 
   const onOptionSelect = () => {
-    if (disabled) return;
     if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
       openModal('advancedGasFee');
     } else {
