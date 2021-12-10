@@ -22,6 +22,7 @@ const AdvancedGasFeeDefaults = () => {
   const dispatch = useDispatch();
 
   const {
+    hasErrors,
     baseFeeMultiplier,
     maxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
@@ -58,6 +59,7 @@ const AdvancedGasFeeDefaults = () => {
         checked={defaultPreference}
         className="advanced-gas-fee-defaults__checkbox"
         onClick={handleUpdateDefaultSettings}
+        disabled={hasErrors}
       />
       <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
         {!defaultPreference && Boolean(advancedGasFeeValues) ? (
