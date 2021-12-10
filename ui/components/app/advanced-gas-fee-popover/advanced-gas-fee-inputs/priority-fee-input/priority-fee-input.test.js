@@ -68,7 +68,22 @@ describe('PriorityfeeInput', () => {
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
   });
-
+  it('should show current priority fee range in subtext', () => {
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
+    expect(screen.queryByText('1.00 - 20.00 GWEI')).toBeInTheDocument();
+  });
+  it('should show 12hr range value in subtext', () => {
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
+    expect(screen.queryByText('2.00 - 125.00 GWEI')).toBeInTheDocument();
+  });
   it('should show error if value entered is 0', () => {
     render({
       txParams: {
