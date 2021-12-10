@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { uniq } from 'lodash';
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
 import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
 import {
   divideCurrencies,
   multiplyCurrencies,
-  toBigNumber,
 } from '../../../../../../shared/modules/conversion.utils';
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
@@ -24,6 +22,10 @@ import I18nValue from '../../../../ui/i18n-value';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
+import {
+  roundToDecimalPlacesRemovingExtraZeroes,
+  renderFeeRange,
+} from '../advanced-gas-fee-inputs.util';
 
 const divideCurrencyValues = (value, baseFee) => {
   if (baseFee === 0) {
@@ -71,15 +73,6 @@ const validateBaseFee = (
   }
   return null;
 };
-
-function roundToDecimalPlacesRemovingExtraZeroes(
-  numberish,
-  numberOfDecimalPlaces,
-) {
-  return toBigNumber.dec(
-    toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces),
-  );
-}
 
 const BaseFeeInput = () => {
   const t = useI18nContext();
@@ -160,25 +153,6 @@ const BaseFeeInput = () => {
     ],
   );
 
-  const renderBaseFeeRange = () => {
-    if (historicalBaseFeeRange) {
-      const formattedRange = uniq(
-        historicalBaseFeeRange.map((fee) =>
-          roundToDecimalPlacesRemovingExtraZeroes(fee, 2),
-        ),
-      ).join(' - ');
-      return `${formattedRange} GWEI`;
-    }
-    return null;
-  };
-
-  const renderEstimatdBaseFee = () => {
-    return `${roundToDecimalPlacesRemovingExtraZeroes(
-      estimatedBaseFee,
-      2,
-    )} GWEI`;
-  };
-
   useEffect(() => {
     setMaxFeePerGas(maxBaseFeeGWEI);
     const error = validateBaseFee(
@@ -228,8 +202,11 @@ const BaseFeeInput = () => {
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={renderEstimatdBaseFee()}
-        historical={renderBaseFeeRange()}
+        latest={`${roundToDecimalPlacesRemovingExtraZeroes(
+          estimatedBaseFee,
+          2,
+        )} GWEI`}
+        historical={renderFeeRange(historicalBaseFeeRange)}
       />
     </Box>
   );

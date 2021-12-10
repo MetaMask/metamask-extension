@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { uniq } from 'lodash';
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
 import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
 import { SECONDARY } from '../../../../../helpers/constants/common';
@@ -12,10 +11,10 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import FormField from '../../../../ui/form-field';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
-import { toBigNumber } from '../../../../../../shared/modules/conversion.utils';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
+import { renderFeeRange } from '../advanced-gas-fee-inputs.util';
 
 const validatePriorityFee = (value, gasFeeEstimates) => {
   if (value <= 0) {
@@ -39,15 +38,6 @@ const validatePriorityFee = (value, gasFeeEstimates) => {
   }
   return null;
 };
-
-function roundToDecimalPlacesRemovingExtraZeroes(
-  numberish,
-  numberOfDecimalPlaces,
-) {
-  return toBigNumber.dec(
-    toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces),
-  );
-}
 
 const PriorityFeeInput = () => {
   const t = useI18nContext();
@@ -87,16 +77,6 @@ const PriorityFeeInput = () => {
     setPriorityFee(value);
   };
 
-  const renderPriorityFeeRange = (feeRange) => {
-    if (feeRange) {
-      const formattedRange = uniq(
-        feeRange.map((fee) => roundToDecimalPlacesRemovingExtraZeroes(fee, 2)),
-      ).join(' - ');
-      return `${formattedRange} GWEI`;
-    }
-    return null;
-  };
-
   useEffect(() => {
     setMaxPriorityFeePerGas(priorityFee);
     const error = validatePriorityFee(priorityFee, gasFeeEstimates);
@@ -126,8 +106,8 @@ const PriorityFeeInput = () => {
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={renderPriorityFeeRange(latestPriorityFeeRange)}
-        historical={renderPriorityFeeRange(historicalPriorityFeeRange)}
+        latest={renderFeeRange(latestPriorityFeeRange)}
+        historical={renderFeeRange(historicalPriorityFeeRange)}
       />
     </>
   );
