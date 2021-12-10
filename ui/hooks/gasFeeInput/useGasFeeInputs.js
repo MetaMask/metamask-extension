@@ -246,6 +246,8 @@ export function useGasFeeInputs(
   }, [minimumGasLimit, gasErrors.gasLimit, transaction]);
 
   const {
+    cancelTransaction,
+    speedupTransaction,
     updateTransaction,
     updateTransactionToMinimumGasFee,
     updateTransactionUsingDAPPSuggestedValues,
@@ -253,9 +255,11 @@ export function useGasFeeInputs(
   } = useTransactionFunctions({
     defaultEstimateToUse,
     editGasMode,
+    estimatedBaseFee,
     gasFeeEstimates,
     gasLimit,
     maxPriorityFeePerGas,
+    minimumGasLimit,
     transaction,
   });
 
@@ -343,6 +347,8 @@ export function useGasFeeInputs(
     minimumGasLimitDec: hexToDecimal(minimumGasLimit),
     supportsEIP1559,
     supportsEIP1559V2,
+    cancelTransaction,
+    speedupTransaction,
     updateTransaction,
     updateTransactionToMinimumGasFee,
     updateTransactionUsingDAPPSuggestedValues,

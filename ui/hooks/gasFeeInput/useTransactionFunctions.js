@@ -7,6 +7,8 @@ import {
   decGWEIToHexWEI,
 } from '../../helpers/utils/conversions.util';
 import {
+  createCancelTransaction,
+  createSpeedUpTransaction,
   updateCustomSwapsEIP1559GasParams,
   updateSwapsUserFeeLevel,
   updateTransaction as updateTransactionFn,
@@ -16,6 +18,7 @@ import { useIncrementedGasFees } from '../useIncrementedGasFees';
 export const useTransactionFunctions = ({
   defaultEstimateToUse,
   editGasMode,
+  estimatedBaseFee,
   gasFeeEstimates,
   gasLimit: gasLimitValue,
   maxPriorityFeePerGas: maxPriorityFeePerGasValue,
@@ -76,7 +79,22 @@ export const useTransactionFunctions = ({
 
   const customGasSettings = useIncrementedGasFees(transaction);
 
-  // todo: review
+  const cancelTransaction = useCallback(() => {
+    dispatch(
+      createCancelTransaction(transaction.id, transaction.txParams, {
+        estimatedBaseFee,
+      }),
+    );
+  }, [dispatch, estimatedBaseFee, transaction]);
+
+  const speedupTransaction = useCallback(() => {
+    dispatch(
+      createSpeedUpTransaction(transaction.id, transaction.txParams, {
+        estimatedBaseFee,
+      }),
+    );
+  }, [dispatch, estimatedBaseFee, transaction]);
+
   const updateTransactionToMinimumGasFee = useCallback(() => {
     const {
       maxFeePerGas,
@@ -127,6 +145,8 @@ export const useTransactionFunctions = ({
   }, [transaction, updateTransaction]);
 
   return {
+    cancelTransaction,
+    speedupTransaction,
     updateTransaction,
     updateTransactionToMinimumGasFee,
     updateTransactionUsingDAPPSuggestedValues,

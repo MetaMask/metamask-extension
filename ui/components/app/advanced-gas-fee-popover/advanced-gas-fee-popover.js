@@ -13,8 +13,8 @@ import AdvancedGasFeeSaveButton from './advanced-gas-fee-save';
 const AdvancedGasFeePopover = () => {
   const t = useI18nContext();
   const {
-    closeModal,
     closeAllModals,
+    closeModal,
     currentModal,
   } = useTransactionModalContext();
 

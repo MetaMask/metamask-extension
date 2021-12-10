@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
-import BigNumber from 'bignumber.js';
 import { useSelector } from 'react-redux';
+import BigNumber from 'bignumber.js';
+import React, { useEffect } from 'react';
 
 import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
-import { getAppIsLoading } from '../../../selectors';
 import { bnGreaterThan } from '../../../helpers/utils/util';
+import { getAppIsLoading } from '../../../selectors';
 import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useGasFeeContext } from '../../../contexts/gasFee';
@@ -16,16 +16,30 @@ import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import Spinner from '../../ui/spinner';
 
+const gasUsedGreaterThanEstimate = (transaction, gasFeeEstimates, estimate) => {
+  let { maxFeePerGas: maxFeePerGasInTransaction } = transaction.txParams;
+  maxFeePerGasInTransaction = new BigNumber(
+    hexWEIToDecGWEI(maxFeePerGasInTransaction),
+  ).times(1.1);
+
+  const maxFeePerGasFromEstimate =
+    gasFeeEstimates[estimate]?.suggestedMaxFeePerGas;
+  return bnGreaterThan(maxFeePerGasInTransaction, maxFeePerGasFromEstimate);
+};
+
 const CancelSpeedupPopover = () => {
   const {
     editGasMode,
     gasFeeEstimates,
     transaction,
+    cancelTransaction,
+    speedupTransaction,
     updateTransaction,
+    updateTransactionToMinimumGasFee,
     updateTransactionUsingEstimate,
   } = useGasFeeContext();
   const t = useI18nContext();
-  const { openModal, closeModal, currentModal } = useTransactionModalContext();
+  const { closeModal, currentModal, openModal } = useTransactionModalContext();
   const appIsLoading = useSelector(getAppIsLoading);
 
   useEffect(() => {
@@ -38,40 +52,31 @@ const CancelSpeedupPopover = () => {
     )
       return;
 
-    let { maxFeePerGas: maxFeePerGasInTransaction } = transaction.txParams;
-    maxFeePerGasInTransaction = new BigNumber(
-      hexWEIToDecGWEI(maxFeePerGasInTransaction),
-    ).times(1.1);
-
-    const maxFeePerGasAggressive = gasFeeEstimates.high?.suggestedMaxFeePerGas;
-    const gasUsedGreaterThanAggressive = bnGreaterThan(
-      maxFeePerGasInTransaction,
-      maxFeePerGasAggressive,
+    const gasUsedGreaterThanAggressive = gasUsedGreaterThanEstimate(
+      transaction,
+      gasFeeEstimates,
+      PRIORITY_LEVELS.HIGH,
     );
-
-    // for speed-up transaction if gas used in transaction + 10%
-    // is greater than aggressive use aggressive estimates
-    if (
-      gasUsedGreaterThanAggressive &&
-      editGasMode === EDIT_GAS_MODES.SPEED_UP
-    ) {
-      updateTransactionUsingEstimate(PRIORITY_LEVELS.HIGH);
+    if (gasUsedGreaterThanAggressive) {
+      if (editGasMode === EDIT_GAS_MODES.SPEED_UP) {
+        updateTransactionUsingEstimate(PRIORITY_LEVELS.HIGH);
+        return;
+      }
+      updateTransactionToMinimumGasFee();
       return;
     }
 
-    const maxFeePerGasMedium = gasFeeEstimates.medium?.suggestedMaxFeePerGas;
-    const gasUsedGreaterThanMedium = bnGreaterThan(
-      maxFeePerGasInTransaction,
-      maxFeePerGasMedium,
+    const gasUsedGreaterThanMedium = gasUsedGreaterThanEstimate(
+      transaction,
+      gasFeeEstimates,
+      PRIORITY_LEVELS.MEDIUM,
     );
     if (gasUsedGreaterThanMedium) {
       updateTransactionUsingEstimate(PRIORITY_LEVELS.MINIMUM);
       return;
     }
 
-    updateTransactionUsingEstimate(PRIORITY_LEVELS.MEDIUM, {
-      previousMaxFeePerGas: transaction.txParams.maxFeePerGas,
-    });
+    updateTransactionUsingEstimate(PRIORITY_LEVELS.MEDIUM);
   }, [
     appIsLoading,
     currentModal,
@@ -79,10 +84,19 @@ const CancelSpeedupPopover = () => {
     gasFeeEstimates,
     transaction,
     updateTransaction,
+    updateTransactionToMinimumGasFee,
     updateTransactionUsingEstimate,
   ]);
 
   if (currentModal !== 'cancelSpeedupTransaction') return null;
+
+  const submitTransactionChange = () => {
+    if (editGasMode === EDIT_GAS_MODES.CANCEL) {
+      cancelTransaction();
+      return;
+    }
+    speedupTransaction();
+  };
 
   return (
     <Popover
@@ -99,6 +113,9 @@ const CancelSpeedupPopover = () => {
               openModal('editGasFee');
             }}
           >
+            act
+          </Button>
+          <Button type="primary" onClick={submitTransactionChange}>
             Submit
           </Button>
         </div>
@@ -108,9 +125,3 @@ const CancelSpeedupPopover = () => {
 };
 
 export default CancelSpeedupPopover;
-
-/**
- * todo
-cancel, speedup submit
-loader on edit fee
- */
