@@ -22,7 +22,7 @@ const CancelSpeedupPopover = () => {
     gasFeeEstimates,
     transaction,
     updateTransaction,
-    updateTransactionUsingGasFeeEstimates,
+    updateTransactionUsingEstimate,
   } = useGasFeeContext();
   const t = useI18nContext();
   const { openModal, closeModal, currentModal } = useTransactionModalContext();
@@ -53,7 +53,7 @@ const CancelSpeedupPopover = () => {
       gasUsedGreaterThanAggressive &&
       editGasMode === EDIT_GAS_MODES.SPEED_UP
     ) {
-      updateTransactionUsingGasFeeEstimates(PRIORITY_LEVELS.HIGH);
+      updateTransactionUsingEstimate(PRIORITY_LEVELS.HIGH);
       return;
     }
 
@@ -63,11 +63,11 @@ const CancelSpeedupPopover = () => {
       maxFeePerGasMedium,
     );
     if (gasUsedGreaterThanMedium) {
-      updateTransactionUsingGasFeeEstimates(PRIORITY_LEVELS.MINIMUM);
+      updateTransactionUsingEstimate(PRIORITY_LEVELS.MINIMUM);
       return;
     }
 
-    updateTransactionUsingGasFeeEstimates(PRIORITY_LEVELS.MEDIUM, {
+    updateTransactionUsingEstimate(PRIORITY_LEVELS.MEDIUM, {
       previousMaxFeePerGas: transaction.txParams.maxFeePerGas,
     });
   }, [
@@ -77,7 +77,7 @@ const CancelSpeedupPopover = () => {
     gasFeeEstimates,
     transaction,
     updateTransaction,
-    updateTransactionUsingGasFeeEstimates,
+    updateTransactionUsingEstimate,
   ]);
 
   if (currentModal !== 'cancelSpeedupTransaction') return null;

@@ -75,53 +75,61 @@ export const useTransactionFunctions = ({
   );
 
   const customGasSettings = useIncrementedGasFees(transaction);
-  // todo: break into 3 fns
-  const updateTransactionUsingGasFeeEstimates = useCallback(
+
+  // todo: review
+  const updateTransactionToMinimumGasFee = useCallback(() => {
+    const {
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      gasLimit,
+    } = transaction?.txParams;
+    const txMeta = {};
+    if (!transaction.previousGas) {
+      txMeta.previousGas = {
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        gasLimit,
+      };
+    }
+    updateTransaction({
+      estimateUsed: PRIORITY_LEVELS.MINIMUM,
+      ...transaction.txParams,
+      ...customGasSettings,
+      txMeta,
+    });
+  }, [customGasSettings, transaction, updateTransaction]);
+
+  const updateTransactionUsingEstimate = useCallback(
     (gasFeeEstimateToUse) => {
-      if (gasFeeEstimateToUse === PRIORITY_LEVELS.MINIMUM) {
-        const {
-          maxFeePerGas,
-          maxPriorityFeePerGas,
-          gasLimit,
-        } = transaction?.txParams;
-        const txMeta = {};
-        if (!transaction.previousGas) {
-          txMeta.previousGas = {
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-            gasLimit,
-          };
-        }
-        updateTransaction({
-          estimateUsed: gasFeeEstimateToUse,
-          ...transaction.txParams,
-          ...customGasSettings,
-          txMeta,
-        });
-      } else if (gasFeeEstimateToUse === PRIORITY_LEVELS.DAPP_SUGGESTED) {
-        const {
-          maxFeePerGas,
-          maxPriorityFeePerGas,
-        } = transaction?.dappSuggestedGasFees;
-        updateTransaction({
-          estimateUsed: gasFeeEstimateToUse,
-          maxFeePerGas,
-          maxPriorityFeePerGas,
-        });
-      } else if (gasFeeEstimates[gasFeeEstimateToUse]) {
-        const {
-          suggestedMaxFeePerGas,
-          suggestedMaxPriorityFeePerGas,
-        } = gasFeeEstimates[gasFeeEstimateToUse];
-        updateTransaction({
-          estimateUsed: gasFeeEstimateToUse,
-          maxFeePerGas: decGWEIToHexWEI(suggestedMaxFeePerGas),
-          maxPriorityFeePerGas: decGWEIToHexWEI(suggestedMaxPriorityFeePerGas),
-        });
-      }
+      const {
+        suggestedMaxFeePerGas,
+        suggestedMaxPriorityFeePerGas,
+      } = gasFeeEstimates[gasFeeEstimateToUse];
+      updateTransaction({
+        estimateUsed: gasFeeEstimateToUse,
+        maxFeePerGas: decGWEIToHexWEI(suggestedMaxFeePerGas),
+        maxPriorityFeePerGas: decGWEIToHexWEI(suggestedMaxPriorityFeePerGas),
+      });
     },
-    [customGasSettings, gasFeeEstimates, transaction, updateTransaction],
+    [gasFeeEstimates, updateTransaction],
   );
 
-  return { updateTransaction, updateTransactionUsingGasFeeEstimates };
+  const updateTransactionUsingDAPPSuggestedValues = useCallback(() => {
+    const {
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+    } = transaction?.dappSuggestedGasFees;
+    updateTransaction({
+      estimateUsed: PRIORITY_LEVELS.DAPP_SUGGESTED,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+    });
+  }, [transaction, updateTransaction]);
+
+  return {
+    updateTransaction,
+    updateTransactionToMinimumGasFee,
+    updateTransactionUsingDAPPSuggestedValues,
+    updateTransactionUsingEstimate,
+  };
 };

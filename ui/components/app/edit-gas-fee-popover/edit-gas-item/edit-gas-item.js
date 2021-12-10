@@ -43,7 +43,8 @@ const EditGasItem = ({ priorityLevel }) => {
     gasLimit,
     maxFeePerGas: maxFeePerGasValue,
     maxPriorityFeePerGas: maxPriorityFeePerGasValue,
-    updateTransactionUsingGasFeeEstimates,
+    updateTransactionUsingDAPPSuggestedValues,
+    updateTransactionUsingEstimate,
     transaction,
   } = useGasFeeContext();
   const t = useI18nContext();
@@ -56,6 +57,7 @@ const EditGasItem = ({ priorityLevel }) => {
   let maxPriorityFeePerGas;
   let minWaitTime;
 
+  // todo: extract into separate hook
   if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel]?.suggestedMaxFeePerGas;
   } else if (
@@ -80,6 +82,7 @@ const EditGasItem = ({ priorityLevel }) => {
     }
   } else if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
     // todo: review
+    // todo: add time estimate
     maxFeePerGas = new BigNumber(
       hexWEIToDecGWEI(transaction.previousGas?.maxFeePerGas),
     )
@@ -117,11 +120,17 @@ const EditGasItem = ({ priorityLevel }) => {
     if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
       openModal('advancedGasFee');
     } else {
-      updateTransactionUsingGasFeeEstimates(priorityLevel);
       closeModal('editGasFee');
+      if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
+        updateTransactionUsingDAPPSuggestedValues();
+      } else {
+        updateTransactionUsingEstimate(priorityLevel);
+      }
     }
   };
 
+  // For cancel and sepped-up medium option is disabled if
+  // gas used in transaction + 10% is greater tham medium estimate
   if (
     (editGasMode === EDIT_GAS_MODES.CANCEL ||
       editGasMode === EDIT_GAS_MODES.SPEED_UP) &&

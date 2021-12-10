@@ -247,7 +247,9 @@ export function useGasFeeInputs(
 
   const {
     updateTransaction,
-    updateTransactionUsingGasFeeEstimates,
+    updateTransactionToMinimumGasFee,
+    updateTransactionUsingDAPPSuggestedValues,
+    updateTransactionUsingEstimate,
   } = useTransactionFunctions({
     defaultEstimateToUse,
     editGasMode,
@@ -342,6 +344,8 @@ export function useGasFeeInputs(
     supportsEIP1559,
     supportsEIP1559V2,
     updateTransaction,
-    updateTransactionUsingGasFeeEstimates,
+    updateTransactionToMinimumGasFee,
+    updateTransactionUsingDAPPSuggestedValues,
+    updateTransactionUsingEstimate,
   };
 }
