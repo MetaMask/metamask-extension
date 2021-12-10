@@ -689,6 +689,9 @@ export default function ViewQuote() {
     },
   };
 
+  const supportsEIP1559V2 =
+    EIP_1559_V2_ENABLED && networkAndAccountSupports1559;
+
   return (
     <GasFeeContextProvider
       editGasMode={EDIT_GAS_MODES.SWAPS}
@@ -713,7 +716,7 @@ export default function ViewQuote() {
               />
             )}
 
-            {!EIP_1559_V2_ENABLED &&
+            {!supportsEIP1559V2 &&
               showEditGasPopover &&
               networkAndAccountSupports1559 && (
                 <EditGasPopover
@@ -725,8 +728,12 @@ export default function ViewQuote() {
                   onClose={onCloseEditGasPopover}
                 />
               )}
-            <EditGasFeePopover />
-            <AdvancedGasFeePopover />
+            {supportsEIP1559V2 && (
+              <>
+                <EditGasFeePopover />
+                <AdvancedGasFeePopover />
+              </>
+            )}
 
             <div
               className={classnames('view-quote__warning-wrapper', {
@@ -793,9 +800,7 @@ export default function ViewQuote() {
                 }}
                 chainId={chainId}
                 isBestQuote={isBestQuote}
-                supportsEIP1559V2={
-                  EIP_1559_V2_ENABLED && networkAndAccountSupports1559
-                }
+                supportsEIP1559V2={supportsEIP1559V2}
               />
             </div>
           </div>

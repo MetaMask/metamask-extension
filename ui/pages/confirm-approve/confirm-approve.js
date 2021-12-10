@@ -269,8 +269,12 @@ export default function ConfirmApprove() {
                 transaction={transaction}
               />
             )}
-            <EditGasFeePopover />
-            <AdvancedGasFeePopover />
+            {supportsEIP1559V2 && (
+              <>
+                <EditGasFeePopover />
+                <AdvancedGasFeePopover />
+              </>
+            )}
           </TransactionModalContextProvider>
         }
         hideSenderToRecipient
