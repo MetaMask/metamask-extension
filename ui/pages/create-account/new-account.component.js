@@ -56,6 +56,8 @@ export default class NewAccountCreateForm extends Component {
       return accountsNames.includes(accountName);
     };
 
+    const existingAccountName = accountNameExists(accounts, newAccountName);
+
     return (
       <div className="new-account-create-form">
         <div className="new-account-create-form__input-label">
@@ -64,10 +66,7 @@ export default class NewAccountCreateForm extends Component {
         <div>
           <input
             className={classnames('new-account-create-form__input', {
-              'new-account-create-form__input__error': accountNameExists(
-                accounts,
-                newAccountName,
-              ),
+              'new-account-create-form__input__error': existingAccountName,
             })}
             value={newAccountName}
             placeholder={defaultAccountName}
@@ -76,9 +75,12 @@ export default class NewAccountCreateForm extends Component {
             }
             autoFocus
           />
-          {accountNameExists(accounts, newAccountName) ? (
+          {existingAccountName ? (
             <div
-              className={classnames('send-v2__error', 'send-v2__error-amount')}
+              className={classnames(
+                ' new-account-create-form__error',
+                ' new-account-create-form__error-amount',
+              )}
             >
               {this.context.t('accountNameDuplicate')}
             </div>
@@ -97,7 +99,7 @@ export default class NewAccountCreateForm extends Component {
               large
               className="new-account-create-form__button"
               onClick={createClick}
-              disabled={accountNameExists(accounts, newAccountName)}
+              disabled={existingAccountName}
             >
               {this.context.t('create')}
             </Button>

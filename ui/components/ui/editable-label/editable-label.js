@@ -85,18 +85,21 @@ class EditableLabel extends Component {
     const { className, accountsNames } = this.props;
 
     return (
-      <div>
+      <>
         <div className={classnames('editable-label', className)}>
           {isEditing ? this.renderEditing() : this.renderReadonly()}
         </div>
         {accountsNames.includes(value) ? (
           <div
-            className={classnames('send-v2__error', 'send-v2__error-amount')}
+            className={classnames(
+              'editable-label__error',
+              'editable-label__error-amount',
+            )}
           >
             {this.context.t('accountNameDuplicate')}
           </div>
         ) : null}
-      </div>
+      </>
     );
   }
 }

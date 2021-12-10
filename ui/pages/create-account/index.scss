@@ -89,8 +89,19 @@
     padding: 0 20px;
 
     &__error {
-      border: 1px solid $monzo;
+      border: 1px solid $error-3;
     }
+  }
+
+  &__error {
+    @include H7;
+
+    left: 8px;
+    color: $red;
+  }
+
+  &__error-amount {
+    margin-top: 5px;
   }
 
   &__buttons {
