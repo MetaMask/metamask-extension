@@ -105,10 +105,9 @@ describe('AdvancedGasFeeDefaults', () => {
       target: { value: 4 },
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(4);
+    expect(screen.queryByText('new values')).toBeInTheDocument();
     expect(
-      screen.queryByText(
-        'Update the values used by advanced settings by default.',
-      ),
+      screen.queryByText('Save these as my default for "Advanced"'),
     ).toBeInTheDocument();
   });
   it('should renders correct message when the default values are set and the priorityFee values are updated', () => {
@@ -125,10 +124,9 @@ describe('AdvancedGasFeeDefaults', () => {
       target: { value: 4 },
     });
     expect(document.getElementsByTagName('input')[1]).toHaveValue(4);
+    expect(screen.queryByText('new values')).toBeInTheDocument();
     expect(
-      screen.queryByText(
-        'Update the values used by advanced settings by default.',
-      ),
+      screen.queryByText('Save these as my default for "Advanced"'),
     ).toBeInTheDocument();
   });
 });

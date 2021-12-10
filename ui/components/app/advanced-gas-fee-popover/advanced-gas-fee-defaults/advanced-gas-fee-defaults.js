@@ -15,8 +15,10 @@ import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const AdvancedGasFeeDefaults = () => {
+  const t = useI18nContext();
   const dispatch = useDispatch();
 
   const {
@@ -58,13 +60,16 @@ const AdvancedGasFeeDefaults = () => {
         onClick={handleUpdateDefaultSettings}
       />
       <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
-        <I18nValue
-          messageKey={
-            !defaultPreference && Boolean(advancedGasFeeValues)
-              ? 'advancedGasFeeDefaultOptIn'
-              : 'advancedGasFeeDefaultOptOut'
-          }
-        />
+        {!defaultPreference && Boolean(advancedGasFeeValues) ? (
+          <I18nValue
+            messageKey="advancedGasFeeDefaultOptIn"
+            options={[
+              <strong key="default-value-change">{t('newValues')}</strong>,
+            ]}
+          />
+        ) : (
+          <I18nValue messageKey="advancedGasFeeDefaultOptOut" />
+        )}
       </Typography>
     </Box>
   );
