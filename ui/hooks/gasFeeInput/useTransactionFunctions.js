@@ -77,6 +77,7 @@ export const useTransactionFunctions = ({
     ],
   );
 
+  // logic to run on previous value always
   const customGasSettings = useIncrementedGasFees(transaction);
 
   const cancelTransaction = useCallback(() => {

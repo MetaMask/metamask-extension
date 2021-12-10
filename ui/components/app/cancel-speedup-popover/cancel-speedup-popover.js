@@ -16,6 +16,7 @@ import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import Spinner from '../../ui/spinner';
 
+// todo: extract to util
 const gasUsedGreaterThanEstimate = (transaction, gasFeeEstimates, estimate) => {
   let { maxFeePerGas: maxFeePerGasInTransaction } = transaction.txParams;
   maxFeePerGasInTransaction = new BigNumber(
