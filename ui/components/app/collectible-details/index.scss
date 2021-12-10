@@ -18,8 +18,13 @@ $spacer-break-small: 16px;
     @media screen and (min-width: $break-large) {
       margin-bottom: $spacer-break-large;
       flex-direction: row;
-      max-width: calc(100% - $card-width-break-large - $spacer-break-large);
-      flex: 0 0 calc(100% - $card-width-break-large - $spacer-break-large);
+    }
+
+    &__info {
+      @media screen and (min-width: $break-large) {
+        max-width: calc(100% - #{$card-width-break-large} - #{$spacer-break-large});
+        flex: 0 0 calc(100% - #{$card-width-break-large} - #{$spacer-break-large});
+      }
     }
   }
 
@@ -65,4 +70,3 @@ $spacer-break-small: 16px;
     max-width: 0 0 $link-title-width;
   }
 }
-
