@@ -18,6 +18,8 @@ $spacer-break-small: 16px;
     @media screen and (min-width: $break-large) {
       margin-bottom: $spacer-break-large;
       flex-direction: row;
+      max-width: calc(100% - $card-width-break-large - $spacer-break-large);
+      flex: 0 0 calc(100% - $card-width-break-large - $spacer-break-large);
     }
   }
 
@@ -30,6 +32,7 @@ $spacer-break-small: 16px;
       margin-bottom: 0;
       max-width: $card-width-break-large;
       flex: 0 0 $card-width-break-large;
+      height: $card-width-break-large;
     }
   }
 
