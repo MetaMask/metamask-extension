@@ -40,13 +40,13 @@ const AdvancedGasFeeDefaults = () => {
       dispatch(setAdvancedGasFee(null));
     }
   };
-  const defaultPreference =
+  const isDefaultSettingsSelected =
     Boolean(advancedGasFeeValues) &&
     advancedGasFeeValues.maxBaseFee === baseFeeMultiplier &&
     advancedGasFeeValues.priorityFee === maxPriorityFeePerGas;
 
   const handleUpdateDefaultSettings = () =>
-    updateDefaultSettings(!defaultPreference);
+    updateDefaultSettings(!isDefaultSettingsSelected);
 
   return (
     <Box
@@ -56,13 +56,13 @@ const AdvancedGasFeeDefaults = () => {
       className="advanced-gas-fee-defaults"
     >
       <CheckBox
-        checked={defaultPreference}
+        checked={isDefaultSettingsSelected}
         className="advanced-gas-fee-defaults__checkbox"
         onClick={handleUpdateDefaultSettings}
         disabled={hasErrors}
       />
       <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
-        {!defaultPreference && Boolean(advancedGasFeeValues) ? (
+        {!isDefaultSettingsSelected && Boolean(advancedGasFeeValues) ? (
           <I18nValue
             messageKey="advancedGasFeeDefaultOptIn"
             options={[
