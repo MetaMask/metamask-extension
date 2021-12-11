@@ -413,7 +413,7 @@
     "message": "Cancel transaction"
   },
   "cancelSpeedUp": {
-    "message": "cancel or speed up a tranaction."
+    "message": "cancel or speed up a transaction."
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
@@ -872,7 +872,7 @@
     "message": "Gas price must be greater than 0"
   },
   "editGasPriceTooltip": {
-    "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay pay per unit of gas."
+    "message": "This network requires a “Gas price” field when submitting a transaction. Gas price is the amount you will pay per unit of gas."
   },
   "editGasSubTextAmountLabel": {
     "message": "Max amount:",
@@ -888,7 +888,7 @@
     "message": "Unknown processing time"
   },
   "editGasTooLowTooltip": {
-    "message": "Your max fee or max priority fee may be low for current market conditions. We don't know when (or if) your transaction will be processed. "
+    "message": "Your max fee or max priority fee may be low for current market conditions. We don't know when (or if) your transaction will be processed."
   },
   "editGasTooLowWarningTooltip": {
     "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
@@ -1003,7 +1003,7 @@
     "description": "Displayed error message for debugging purposes. $1 is the error message"
   },
   "errorName": {
-    "message": "Code: $1",
+    "message": "Name: $1",
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
   "errorPageMessage": {
@@ -1489,7 +1489,7 @@
     "message": "scams and security risks."
   },
   "ledgerAccountRestriction": {
-    "message": "You need to make use your last account before you can add a new one."
+    "message": "You need to use your last account before you can add a new one."
   },
   "ledgerConnectionInstructionCloseOtherApps": {
     "message": "Close any other software connected to your device and then click here to refresh."
@@ -1518,7 +1518,7 @@
   },
   "ledgerLive": {
     "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
+    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect an user's Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -1676,7 +1676,7 @@
     "message": "MetaMask would like to gather usage data to better understand how our users interact with the extension. This data will be used to continually improve the usability and user experience of our product and the Ethereum ecosystem."
   },
   "metametricsOptInDescription2": {
-    "message": "We would like to gather basic usage data to improve the usability of our product.  These metrics will..."
+    "message": "We would like to gather basic usage data to improve the usability of our product. These metrics will..."
   },
   "metametricsTitle": {
     "message": "Join 6M+ users to improve MetaMask"
@@ -1940,7 +1940,7 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionThree": {
-    "message": "When interacting with your Ledger account in MetaMask, a new tab will open and you will be asked to open the Ledger Live app.  Once the app opens, you'll be asked to allow a WebSocket connection to your MetaMask account.  That's all!",
+    "message": "When interacting with your Ledger account in MetaMask, a new tab will open and you will be asked to open the Ledger Live app.  Once the app opens, you'll be asked to allow a WebSocket connection to your MetaMask account. That's all!",
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionTwo": {
@@ -2253,7 +2253,7 @@
     "message": "Remove account"
   },
   "removeAccountDescription": {
-    "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+    "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down."
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -2659,7 +2659,7 @@
     "message": "Plug in Ledger wallet"
   },
   "step2LedgerWalletMsg": {
-    "message": "Connect your wallet directly to your computer.  Unlock your Ledger and open the Ethereum app. For more on using your hardware wallet device, $1.",
+    "message": "Connect your wallet directly to your computer. Unlock your Ledger and open the Ethereum app. For more on using your hardware wallet device, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "storePhrase": {
@@ -2698,7 +2698,7 @@
   },
   "swapApproval": {
     "message": "Approve $1 for swaps",
-    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
+    "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped. $1 is the symbol of a token that has been approved."
   },
   "swapApproveNeedMoreTokens": {
     "message": "You need $1 more $2 to complete this swap",
@@ -2809,7 +2809,7 @@
   },
   "swapNewQuoteIn": {
     "message": "New quotes in $1",
-    "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
+    "description": "Tells the user the amount of time until the currently displayed quotes are updated. $1 is a timer that is counting down from 1:00 to 0:00"
   },
   "swapOnceTransactionHasProcess": {
     "message": "Your $1 will be added to your account once this transaction has processed.",
@@ -3250,7 +3250,7 @@
     "message": "There was an error while trying to access your camera. Please try again..."
   },
   "unknownCameraErrorTitle": {
-    "message": "Ooops! Something went wrong...."
+    "message": "Ooops! Something went wrong..."
   },
   "unknownNetwork": {
     "message": "Unknown Private Network"
