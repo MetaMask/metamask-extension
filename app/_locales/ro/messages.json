@@ -1,4 +1,49 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "Eroare"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "Datele tranzacției nu se potrivesc. Verifică detaliile tranzacției."
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "Niciun cont rămas. Dacă ai vrea să accesezi alt cont care nu este listat mai jos, reconectează-ți portofelul hardware și selectează-l."
+  },
+  "QRHardwareScanInstructions": {
+    "message": "Plasează codul QR în fața camerei tale. Ecranul este blurat, dar acest lucru nu va afecta citirea."
+  },
+  "QRHardwareSignRequestCancel": {
+    "message": "Respinge"
+  },
+  "QRHardwareSignRequestDescription": {
+    "message": "După ce ai semnat cu portofelul tău, dă click pe „Obține semnătura” pentru a primi semnătura"
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "Obține semnătura"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "Scanează codul QR cu portofelul tău"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "Solicită semnătura"
+  },
+  "QRHardwareUnknownQRCodeTitle": {
+    "message": "Eroare"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "Cod QR nevalid. Scanează codul QR al portofelului hardware."
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scanează codul QR"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "Conectează un portofel „air-gapped” (care nu necesită o conexiune directă la un PC) care comunică prin coduri QR. Portofelele hardware „air-gapped” acceptate includ:"
+  },
+  "QRHardwareWalletSteps1Title": {
+    "message": "Portofel hardware bazat pe coduri QR"
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "AirGap Vault & Ngrave (În curând)"
+  },
   "about": {
     "message": "Despre"
   },
@@ -6,84 +51,235 @@
     "message": "Versiune, centru de asistență și date de contact"
   },
   "acceleratingATransaction": {
-    "message": "* Accelerarea unei tranzacții folosind un preț în gas mai mare îi crește șansele de a fi procesată mai rapid de rețea, însă acest lucru nu este garantat întotdeauna."
+    "message": "* Accelerarea tranzacției folosind un preț în gaz mai ridicat va crește șansele ei de a fi procesată mai rapid în rețea, dar acest lucru nu este întotdeauna garantat."
+  },
+  "acceptTermsOfUse": {
+    "message": "Am citit și sunt de acord cu $1",
+    "description": "$1 este mesajul `terms`"
+  },
+  "accessAndSpendNotice": {
+    "message": "$1 poate accesa și cheltui maxim această sumă",
+    "description": "$1 este URL-ul site-ului care cere permisiunea de a cheltui"
   },
   "accessingYourCamera": {
-    "message": "Se accesează camera dvs..."
+    "message": "Se accesează camera ta..."
   },
   "account": {
-    "message": "Cont"
+    "message": "Contul"
   },
   "accountDetails": {
-    "message": "Detalii cont"
+    "message": "Detaliile contului"
   },
   "accountName": {
     "message": "Numele contului"
   },
   "accountOptions": {
-    "message": "Opțiuni cont"
+    "message": "Setările contului"
   },
   "accountSelectionRequired": {
-    "message": "Trebuie să selectați un cont!"
+    "message": "Trebuie să alegi un cont!"
+  },
+  "active": {
+    "message": "Activ"
+  },
+  "activity": {
+    "message": "Activitate"
   },
   "activityLog": {
-    "message": "jurnal activitate"
+    "message": "Jurnalul activităților"
+  },
+  "add": {
+    "message": "Adaugă"
+  },
+  "addANetwork": {
+    "message": "Adaugă o rețea"
+  },
+  "addANickname": {
+    "message": "Adaugă o poreclă"
   },
   "addAcquiredTokens": {
-    "message": "Adăugați token-urile pe care le-ați achiziționat folosind MetaMask"
+    "message": "Adaugă token-urile pe care le-ai obținut folosind MetaMask"
   },
   "addAlias": {
-    "message": "Adăugare alias"
+    "message": "Adaugă un alias"
+  },
+  "addContact": {
+    "message": "Adaugă un contact"
+  },
+  "addCustomToken": {
+    "message": "Adaugă un token personalizat"
+  },
+  "addCustomTokenByContractAddress": {
+    "message": "Nu poți găsi un token? Poți adăuga manual un token prin copierea adresei lui. Adresa contractului pentru un token se poate găsi pe $1.",
+    "description": "$1 este un explorator blockchain pentru o anumită rețea (de exemplu, Etherscan pentru Ethereum)"
+  },
+  "addEthereumChainConfirmationDescription": {
+    "message": "Acest lucru va permite ca rețeaua să fie folosită în MetaMask."
+  },
+  "addEthereumChainConfirmationRisks": {
+    "message": "MetaMask nu verifică rețelele personalizate."
+  },
+  "addEthereumChainConfirmationRisksLearnMore": {
+    "message": "Află mai multe despre $1.",
+    "description": "$1 este un link cu un text furnizat de cheia 'addEthereumChainConfirmationRisksLearnMoreLink'"
+  },
+  "addEthereumChainConfirmationRisksLearnMoreLink": {
+    "message": "înșelătorii și riscurile de securitate ale rețelei",
+    "description": "Link-ul textului pentru cheia de traducere 'addEthereumChainConfirmationRisksLearnMore'"
+  },
+  "addEthereumChainConfirmationTitle": {
+    "message": "Permiți ca acest site să adauge o rețea?"
+  },
+  "addFriendsAndAddresses": {
+    "message": "Adaugă prieteni și adrese în care ai încredere"
+  },
+  "addMemo": {
+    "message": "Adaugă un memo"
+  },
+  "addNFT": {
+    "message": "Adaugă un NFT"
+  },
+  "addNFTLowerCase": {
+    "message": "adaugă un NFT"
   },
   "addNetwork": {
-    "message": "Adăugați rețea"
+    "message": "Adaugă o rețea"
   },
   "addSuggestedTokens": {
-    "message": "Adăugați indicativele sugerate"
+    "message": "Adaugă token-uri sugerate"
   },
   "addToAddressBook": {
-    "message": "Adăugați în agendă"
+    "message": "Adaugă la agendă"
   },
   "addToAddressBookModalPlaceholder": {
-    "message": "de ex. John D."
+    "message": "ex. Andei P."
   },
   "addToken": {
-    "message": "Adăugare simbol"
+    "message": "Adaugă un token"
+  },
+  "address": {
+    "message": "Adresă"
+  },
+  "addressBookIcon": {
+    "message": "Iconiță pentru agendă"
   },
   "advanced": {
-    "message": "Avansate"
+    "message": "Avansat"
+  },
+  "advancedBaseGasFeeToolTip": {
+    "message": "Atunci când tranzacția ta este inclusă în bloc, orice diferență dintre taxa de bază maximă și taxă de bază reală va fi rambursată. Suma totală este calculată ca fiind taxa de bază maximă (în GWEI) * limita de gaz."
+  },
+  "advancedGasFeeModalTitle": {
+    "message": "Taxă de gaz avansată"
+  },
+  "advancedGasPriceTitle": {
+    "message": "Prețul gazului"
   },
   "advancedOptions": {
-    "message": "Opțiuni avansate"
+    "message": "Setări avansate"
+  },
+  "advancedPriorityFeeToolTip": {
+    "message": "Taxă de prioritate (sau „bacșișul minerilor”) merge direct la mineri, stimulându-i astfel să îți prioritizeze tranzacția."
   },
   "advancedSettingsDescription": {
-    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat"
+    "message": "Accesează funcționalități pentru dezvoltatori, descarcă jurnalele de stare, resetează-ți contul, configurează rețele de test și RPC-uri personalizate"
+  },
+  "affirmAgree": {
+    "message": "Sunt de acord"
+  },
+  "aggregatorFeeCost": {
+    "message": "Taxă pentru agregarea în rețea"
+  },
+  "alertDisableTooltip": {
+    "message": "Aceasta poate fi dezactivată în „Setări > Alerte”"
+  },
+  "alertSettingsUnconnectedAccount": {
+    "message": "Navigarea pe un website folosind un cont neconectat"
+  },
+  "alertSettingsUnconnectedAccountDescription": {
+    "message": "Această alerta apare în popup atunci când navighezi pe un site web3, dar contul curent selectat nu este conectat."
+  },
+  "alertSettingsWeb3ShimUsage": {
+    "message": "Un website încearcă să folosească API-ul vechi window.web3, care nu mai este folosit"
+  },
+  "alertSettingsWeb3ShimUsageDescription": {
+    "message": "Această alertă este afișată în popup atunci când navighezi pe un site web3 care încearcă să folosească API-ul vechi window.web3 care nu mai este folosit și care poate determina rezultate și funcționalități eronate."
+  },
+  "alerts": {
+    "message": "Alerte"
+  },
+  "alertsSettingsDescription": {
+    "message": "Activează sau dezactivează fiecare alertă"
+  },
+  "allowExternalExtensionTo": {
+    "message": "Permite această extensie externă să:"
+  },
+  "allowSpendToken": {
+    "message": "Oferi permisiunea să îți acceseze token-ul $1?",
+    "description": "$1 este simbolul token-ului care cere să fie cheltuit"
+  },
+  "allowThisSiteTo": {
+    "message": "Permite acestui website să:"
+  },
+  "allowWithdrawAndSpend": {
+    "message": "Permite ca $1 să retragă și cheltuiască următoarea sumă:",
+    "description": "$1 este URL-ul site-ului care a cerut permisiunea să „retragă și cheltuiască”"
   },
   "amount": {
     "message": "Sumă"
   },
   "appDescription": {
-    "message": "Un portofel Ethereum în browserul dvs.",
-    "description": "The description of the application"
+    "message": "Un portofel Ethereum în browser-ul tău",
+    "description": "Descrierea aplicației"
   },
   "appName": {
     "message": "MetaMask",
-    "description": "The name of the application"
+    "description": "Numele aplicației"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "Numele aplicației (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "Numele aplicației (Flask)"
+  },
+  "approvalAndAggregatorTxFeeCost": {
+    "message": "Taxă pentru aprobarea și agregarea în rețea"
+  },
+  "approvalTxGasCost": {
+    "message": "Costul gazului pentru aprobarea tranzacției"
   },
   "approve": {
-    "message": "Aprobați"
+    "message": "Aprobă limita de cheltuieli"
+  },
+  "approveButtonText": {
+    "message": "Aprobă"
+  },
+  "approveSpendLimit": {
+    "message": "Aprobă limita de cheltuieli pentru $1",
+    "description": "$1 este simbolul token-ului care este în curs de aprobare"
   },
   "approved": {
-    "message": "Aprobat"
+    "message": "Aprobată"
+  },
+  "approvedAmountWithColon": {
+    "message": "Suma aprobată"
   },
   "asset": {
     "message": "Activ"
   },
+  "assetOptions": {
+    "message": "Setările activelor"
+  },
+  "assets": {
+    "message": "Active"
+  },
   "attemptToCancel": {
-    "message": "Încercați să anulați?"
+    "message": "Încerci anularea?"
   },
   "attemptToCancelDescription": {
-    "message": "Trimiterea acestei încercări nu garantează că tranzacția dvs. originală va fi anulată. Dacă încercarea de anulare va reuși, vi se va percepe taxa tranzacției de mai sus."
+    "message": "Trimiterea acestei încercări nu îți garantează faptul că tranzacția ta originală va fi anulată. Dacă încercarea de anulare are succes, ți se va percepe taxa pentru tranzacție de mai sus."
   },
   "attemptingConnect": {
     "message": "Se încearcă conectarea la blockchain."
@@ -91,29 +287,32 @@
   "attributions": {
     "message": "Atribuții"
   },
+  "authorizedPermissions": {
+    "message": "Ai autorizat următoarele permisiuni"
+  },
   "autoLockTimeLimit": {
-    "message": "Temporizator deconectare automată (minute)"
+    "message": "Timer pentru auto-blocare (minute)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Setați perioada de inactivitate în minute înainte ca MetaMask să se deconecteze automat"
+    "message": "Setează timpul de inactivitate înainte ca MetaMask să se blocheze."
   },
   "average": {
-    "message": "Mediu"
+    "message": "În medie"
   },
   "back": {
     "message": "Înapoi"
   },
   "backToAll": {
-    "message": "Înapoi la toate"
+    "message": "Înapoi la început"
   },
   "backupApprovalInfo": {
-    "message": "Acest cod secret este necesar pentru recuperarea portofelului în cazul în care pierdeți dispozitivul, uitați parola, trebuie să reinstalați MetaMask sau vreți să accesați portofelul de pe alt dispozitiv."
+    "message": "Acest cod secret este necesar pentru a-ți recupera portofelul în cazul în care îți pierzi dispozitivul, uiți parola, trebuie să reinstalezi MetaMask sau vrei să îți accesezi portofelul pe alt dispozitiv."
   },
   "backupApprovalNotice": {
-    "message": "Creați o copie de rezervă a codului de recuperare secret pentru a vă menține portofelul și fondurile în siguranță."
+    "message": "Fă-ți o copie de rezervă pentru Fraza Secretă de Recuperare pentru a-ți păstra portofelul și fondurile în siguranță."
   },
   "backupNow": {
-    "message": "Creați o copie de rezervă acum"
+    "message": "Fă o copie de rezervă acum"
   },
   "balance": {
     "message": "Sold"
@@ -121,463 +320,1468 @@
   "balanceOutdated": {
     "message": "Se poate ca soldul să nu fie actualizat"
   },
+  "baseFee": {
+    "message": "Taxă de bază"
+  },
   "basic": {
     "message": "De bază"
   },
+  "betaMetamaskDescription": {
+    "message": "MetaMask este un portofel sigur în care au încredere milioane de utilizatori, cu scopul de a face lumea web3 accesibilă tuturor."
+  },
+  "betaMetamaskDescriptionExplanation": {
+    "message": "Folosește această versiune pentru a testa următoarele funcționalități înainte de lansarea lor. Utilizarea acestora, împreună cu feedback-ul tău, ne ajută să construim cea mai bună versiune posibilă a MetaMask. Folosirea MetaMask Beta face subiectul $1 noștri standard și ai $2. Fiind o versiune Beta, există un risc mare să apară probleme neprevăzute. Continuând, accepți și iei la cunoștință aceste riscuri, precum și riscurile care fac parte din Termenii noștri standard și din Termenii beta.",
+    "description": "$1 reprezintă traducerea cheii „betaMetamaskDescriptionExplanationTermsLinkText”. $2 reprezintă traducerea cheii „betaMetamaskDescriptionExplanationBetaTermsLinkText”"
+  },
+  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
+    "message": "Termenilor Beta suplimentari"
+  },
+  "betaMetamaskDescriptionExplanationTermsLinkText": {
+    "message": "Termenilor"
+  },
+  "betaMetamaskVersion": {
+    "message": "Versiunea Beta MetaMask"
+  },
+  "betaWelcome": {
+    "message": "Bun venit pe MetaMask Beta"
+  },
+  "blockExplorerAccountAction": {
+    "message": "contul",
+    "description": "Acesta este folosit cu „viewOnEtherscan” și „viewInExplorer” (de exemplu, „Vezi contul în Explorer”)"
+  },
+  "blockExplorerAssetAction": {
+    "message": "activul",
+    "description": "Acesta este folosit cu „viewOnEtherscan„ și „viewInExplorer” (de exemplu, „Vezi activul în Explorer”)"
+  },
+  "blockExplorerSwapAction": {
+    "message": "schimbul",
+    "description": "Acesta este cu „viewOnEtherscan” și „viewInExplorer” (de exemplu, „Vezi schimbul în Explorer”)"
+  },
   "blockExplorerUrl": {
-    "message": "Explorator blocuri"
+    "message": "URL-ul exploratorului de blocuri"
+  },
+  "blockExplorerUrlDefinition": {
+    "message": "URL-ul folosit ca și explorator de blocuri pentru această rețea."
   },
   "blockExplorerView": {
-    "message": "Vizualizare cont la $1",
-    "description": "$1 replaced by URL for custom block explorer"
+    "message": "Vezi contul pe $1",
+    "description": "$1 este înlocuit de URL-ul pentru exploratorul de blocuri personalizat"
   },
   "blockiesIdenticon": {
     "message": "Folosește Blockies Identicon"
   },
   "browserNotSupported": {
-    "message": "Browserul dvs. nu este compatibil..."
+    "message": "Browser-ul tău nu este acceptat..."
+  },
+  "buildContactList": {
+    "message": "Construiește-ți agenda"
+  },
+  "builtAroundTheWorld": {
+    "message": "MetaMask este proiectat și construit în jurul lumii."
+  },
+  "busy": {
+    "message": "Ocupat"
+  },
+  "buy": {
+    "message": "Cumpără"
+  },
+  "buyWithTransak": {
+    "message": "Cumpără ETH cu Transak"
+  },
+  "buyWithTransakDescription": {
+    "message": "Transak acceptă carduri de debit și transferuri bancare (în funcție de locație) în peste 59 de țări. ETH se depozitează direct în contul tău MetaMask."
   },
   "buyWithWyre": {
-    "message": "Cumpărați ETH cu Wyre"
+    "message": "Cumpără ETH cu Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vă permite să folosiți un card de credit pentru a depune ETH direct în contul dvs. MetaMask."
+    "message": "Wyre permite folosirea unui card de debit pentru a depozita direct în contul tău MetaMask."
   },
   "bytes": {
     "message": "Octeți"
   },
+  "canToggleInSettings": {
+    "message": "Poți reactiva această notificare în „Setări -> Alerte”"
+  },
   "cancel": {
-    "message": "Anulare"
+    "message": "Anulează"
+  },
+  "cancelEdit": {
+    "message": "Anulează editarea"
+  },
+  "cancelPopoverTitle": {
+    "message": "Anulează tranzacția"
+  },
+  "cancelSpeedUp": {
+    "message": "anulează sau accelerează o tranzacție."
   },
   "cancellationGasFee": {
-    "message": "Taxă de anulare în gaz"
+    "message": "Taxă de gaz pentru anulare."
   },
   "cancelled": {
-    "message": "Anulat"
+    "message": "Anulată"
   },
   "chainId": {
-    "message": "ID lanț"
+    "message": "ID-ul lanțului"
+  },
+  "chainIdDefinition": {
+    "message": "ID-ul lanțului este folosit pentru a semna tranzacțiile din această rețea."
+  },
+  "chainIdExistsErrorMsg": {
+    "message": "Acest ID al lanțului este deja folosit de către rețeaua $1."
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Trebuie să folosiți MetaMask în Google Chrome pentru a vă conecta la portofelul hardware."
+    "message": "Va trebui să folosești MetaMask pe Google Chrome pentru a-ți conecta portofelul hardware."
+  },
+  "clickToConnectLedgerViaWebHID": {
+    "message": "Click aici pentru a conecta Ledger prin WebHID",
+    "description": "Text pe care se poate da click pentru a deschide un popup în browser, cu scopul de a conecta dispozitivul Ledger prin WebHID"
   },
   "clickToRevealSeed": {
-    "message": "Faceți clic aici pentru a arăta cuvintele secrete"
+    "message": "Click aici pentru a dezvălui cuvintele secrete"
   },
   "close": {
     "message": "Închide"
   },
   "confirm": {
-    "message": "Confirmați"
+    "message": "Confirmă"
   },
   "confirmPassword": {
-    "message": "Confirmare parolă"
+    "message": "Confirmă parola"
+  },
+  "confirmRecoveryPhrase": {
+    "message": "Confirmă Fraza Secretă de Recuperare"
   },
   "confirmSecretBackupPhrase": {
-    "message": "Confirmați expresia dvs. secretă de rezervă"
+    "message": "Confirmă-ți Fraza Secretă de Recuperare"
   },
   "confirmed": {
-    "message": "Confirmat"
+    "message": "Confirmată"
+  },
+  "confusableUnicode": {
+    "message": "„$1” seamănă cu „$2”."
+  },
+  "confusableZeroWidthUnicode": {
+    "message": "Caracter nul găsit."
+  },
+  "confusingEnsDomain": {
+    "message": "Am detectat un caracter confundabil în numele ENS. Verifică numele ENS pentru a preveni o eventuală înșelătorie."
   },
   "congratulations": {
     "message": "Felicitări"
   },
   "connect": {
-    "message": "Conectează-te"
+    "message": "Conectează"
+  },
+  "connectAccountOrCreate": {
+    "message": "Conectează contul sau creează unul nou"
   },
   "connectHardwareWallet": {
-    "message": "Conectare portofel hardware"
+    "message": "Conectează un portofel hardware"
+  },
+  "connectManually": {
+    "message": "Conectează-te manual la site-ul curent"
+  },
+  "connectTo": {
+    "message": "Conectează-te la $1",
+    "description": "$1 este numele site-ului/aplicației web3 pe care utilizatorul o poate conecta la MetaMask"
+  },
+  "connectToAll": {
+    "message": "Conectează-te la toate $1",
+    "description": "$1 va fi înlocuit de traducerea cheii „connectToAllAccounts”"
+  },
+  "connectToAllAccounts": {
+    "message": "conturile tale",
+    "description": "va înlocui $1 din cheia „connectToAll”, completând fraza „conectează-te la toate conturile tale”"
+  },
+  "connectToMultiple": {
+    "message": "Conectează-te la $1",
+    "description": "$1 va fi înlocuit de traducerea cheii „connectToMultipleNumberOfAccounts”"
+  },
+  "connectToMultipleNumberOfAccounts": {
+    "message": "$1 conturi",
+    "description": "$1 este numărul de conturi la care site-ul/aplicația web3 solicită să se conecteze; acesta va înlocui $1 din cheia „connectToMultiple”"
+  },
+  "connectWithMetaMask": {
+    "message": "Conectează-te cu MetaMask"
+  },
+  "connectedAccountsDescriptionPlural": {
+    "message": "Ai $1 conturi conectate la acest site.",
+    "description": "$1 este numărul de conturi"
+  },
+  "connectedAccountsDescriptionSingular": {
+    "message": "Ai 1 cont conectat la acest site."
+  },
+  "connectedAccountsEmptyDescription": {
+    "message": "MetaMask nu este conectat la acest site. Pentru a te conecta la un site web3, găsește și dă click pe butonul de conectare."
+  },
+  "connectedSites": {
+    "message": "Site-uri conectate"
+  },
+  "connectedSitesDescription": {
+    "message": "$1 este conectat la aceste site-uri. Acestea pot vedea adresa contului tău.",
+    "description": "$1 este numele contului"
+  },
+  "connectedSitesEmptyDescription": {
+    "message": "$1 nu este conectat la vreun site.",
+    "description": "$1 este numele contului"
+  },
+  "connecting": {
+    "message": "Se conectează..."
   },
   "connectingTo": {
     "message": "Se conectează la $1"
   },
   "connectingToGoerli": {
-    "message": "Se conectează la rețeaua de test Goerli"
+    "message": "Se conectează la Rețeaua de Test Goerli"
   },
   "connectingToKovan": {
-    "message": "Se conectează la rețeaua de test Kovan"
+    "message": "Se conectează la Rețeaua de Test Kovan"
   },
   "connectingToMainnet": {
-    "message": "Se conectează la rețeaua Ethereum principală"
+    "message": "Se conectează la Rețeaua Principală Ethereum"
   },
   "connectingToRinkeby": {
-    "message": "Se conectează la Rețeaua de test Rinkeby"
+    "message": "Se conectează la Rețeaua de Test Rinkeby"
   },
   "connectingToRopsten": {
-    "message": "Se conectează la rețeaua de test Ropsten"
+    "message": "Se conectează la Rețeaua de Test Ropsten"
+  },
+  "contactUs": {
+    "message": "Contactează-ne"
+  },
+  "contacts": {
+    "message": "Contacte"
+  },
+  "contactsSettingsDescription": {
+    "message": "Adaugă, editează, șterge și administrează-ți contactele"
+  },
+  "continue": {
+    "message": "Continuă"
+  },
+  "continueToTransak": {
+    "message": "Continuă pe Transak"
   },
   "continueToWyre": {
-    "message": "Continuați la Wyre"
+    "message": "Continuă pe Wyre"
+  },
+  "contract": {
+    "message": "Contract"
+  },
+  "contractAddressError": {
+    "message": "Trimiți token-uri către adresa contractului. Această acțiune poate determina pierderea acestor token-uri."
   },
   "contractDeployment": {
-    "message": "Implementarea contractului"
+    "message": "Lansarea contractului"
   },
   "contractInteraction": {
-    "message": "Interacțiune contract"
+    "message": "Interacțiunea contractului"
   },
   "copiedExclamation": {
-    "message": "Copiat!"
+    "message": "Copiată!"
   },
   "copyAddress": {
-    "message": "Copiere adresă în clipboard"
+    "message": "Copiază adresa în clipboard"
   },
   "copyPrivateKey": {
-    "message": "Aceasta este cheia dumneavoastră privată (clic pentru a copia)"
+    "message": "Aceasta este cheia ta privată (click pentru a o copia)"
+  },
+  "copyRawTransactionData": {
+    "message": "Copiază datele brute ale tranzacției"
   },
   "copyToClipboard": {
-    "message": "Copiați în clipboard"
+    "message": "Copiază în clipboard"
   },
   "copyTransactionId": {
-    "message": "Copiați ID-ul tranzacției"
+    "message": "Copiază ID-ul tranzacției"
   },
   "create": {
-    "message": "Creați"
+    "message": "Creează"
   },
   "createAWallet": {
-    "message": "Creați un portofel"
+    "message": "Creează un portofel"
   },
   "createAccount": {
-    "message": "Creați cont"
+    "message": "Creează un cont"
+  },
+  "createNewWallet": {
+    "message": "Creează un portofel nou"
   },
   "createPassword": {
-    "message": "Creare parolă"
+    "message": "Creează o parolă"
   },
   "currencyConversion": {
-    "message": "Schimb valutar"
+    "message": "Conversie valutară"
+  },
+  "currencySymbol": {
+    "message": "Simbolul valutei"
+  },
+  "currencySymbolDefinition": {
+    "message": "Simbolul afișat pentru moneda acestei rețele"
+  },
+  "currentAccountNotConnected": {
+    "message": "Contul tău curent nu este conectat"
+  },
+  "currentExtension": {
+    "message": "Extensia paginii curente"
   },
   "currentLanguage": {
-    "message": "Limba actuală"
+    "message": "Limba curentă"
+  },
+  "currentTitle": {
+    "message": "Curent:"
+  },
+  "currentlyUnavailable": {
+    "message": "Indisponibilă în această rețea"
+  },
+  "custom": {
+    "message": "avansat"
   },
   "customGas": {
-    "message": "Particularizați Gas"
+    "message": "Personalizează gazul"
+  },
+  "customGasSettingToolTipMessage": {
+    "message": "Folosește $1 pentru a personaliza prețul gazului. Această funcționalitate poate crea confuzii dacă nu ești familiarizat cu ea. Interacționează pe propria ta răspundere.",
+    "description": "$1 este cheia „advanced” (text: „avansat”) care este separată de fraza principală pentru ca aceasta să fie îngroșată în varianta finală"
   },
   "customGasSubTitle": {
-    "message": "Creșterea taxei poate reduce timpii de procesare, dar acest lucru nu este garantat."
+    "message": "Mărirea taxei poate să micșoreze timpul de procesare, dar nu este garantat."
+  },
+  "customSpendLimit": {
+    "message": "Limită de cheltuieli personalizată"
   },
   "customToken": {
     "message": "Token personalizat"
   },
+  "dappSuggested": {
+    "message": "Sugerat de site"
+  },
+  "dappSuggestedGasSettingToolTipMessage": {
+    "message": "$1 a sugerat acest preț.",
+    "description": "$1 este URL-ul pentru aplicația descentralizată (dapp) care a sugerat setările gazului."
+  },
+  "dappSuggestedShortLabel": {
+    "message": "Site"
+  },
+  "dappSuggestedTooltip": {
+    "message": "$1 a recomandat acest preț.",
+    "description": "$1 reprezintă originea aplicației descentralizate (dapp)"
+  },
+  "data": {
+    "message": "Date"
+  },
+  "dataBackupFoundInfo": {
+    "message": "O parte din datele contului tău a fost salvată în timpul unei instalări anterioare a MetaMask. Salvarea include setările, contactele și token-urile tale. Vrei să restabilești aceste date acum?"
+  },
+  "dataHex": {
+    "message": "Hex"
+  },
   "decimal": {
-    "message": "Zecimale de precizie"
+    "message": "Numărul de zecimale a token-ului"
   },
   "decimalsMustZerotoTen": {
-    "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
+    "message": "Numărul de zecimale trebuie să fie între 0 și 36."
+  },
+  "decrypt": {
+    "message": "Decriptează"
+  },
+  "decryptCopy": {
+    "message": "Copiază mesajul criptat"
+  },
+  "decryptInlineError": {
+    "message": "Mesajul nu poate fi decriptat din cauza unei erori: $1",
+    "description": "$1 este mesajul de eroare"
+  },
+  "decryptMessageNotice": {
+    "message": "$1 vrea să citească acest mesaj pentru a completa acțiunea ta",
+    "description": "$1 este numele site-ului web3"
+  },
+  "decryptMetamask": {
+    "message": "Decriptează mesajul"
+  },
+  "decryptRequest": {
+    "message": "Decriptează cererea"
   },
   "delete": {
     "message": "Șterge"
   },
   "deleteAccount": {
-    "message": "Ștergeți cont"
+    "message": "Șterge contul"
   },
   "deleteNetwork": {
-    "message": "Ștergeți rețeaua?"
+    "message": "Ștergi rețeaua?"
   },
   "deleteNetworkDescription": {
-    "message": "Sigur vreți să ștergeți această rețea?"
+    "message": "Ești sigur că vrei să ștergi această rețea?"
   },
   "depositEther": {
-    "message": "Depuneți Ether"
+    "message": "Depozitează Ether"
   },
   "details": {
     "message": "Detalii"
   },
   "directDepositEther": {
-    "message": "Depuneți direct Ether"
+    "message": "Depozitează direct Ether"
   },
   "directDepositEtherExplainer": {
-    "message": "Dacă deja aveți Ether, cel mai rapid mod de a avea Ether în portofelul nou prin depunere directă."
+    "message": "Dacă ai deja Ether, cea mai rapidă metodă de a-l pune în noul tău portofel este prin depozit direct."
+  },
+  "disconnect": {
+    "message": "Deconectează-te"
+  },
+  "disconnectAllAccounts": {
+    "message": "Deconectează toate conturile"
+  },
+  "disconnectAllAccountsConfirmationDescription": {
+    "message": "Ești sigur că vrei să te deconectezi? S-ar putea să pierzi anumite funcționalități din site."
+  },
+  "disconnectPrompt": {
+    "message": "Deconectează $1"
+  },
+  "disconnectThisAccount": {
+    "message": "Deconectează acest cont"
+  },
+  "dismiss": {
+    "message": "Înlătură"
+  },
+  "dismissReminderDescriptionField": {
+    "message": "Activează acest câmp pentru a înlătura mesajul de memento pentru salvarea Frazei Secrete de Recuperare. Îți recomandăm cu tărie să îți salvezi Fraza Secretă de Recuperare pentru a evita pierderea fondurilor tale."
+  },
+  "dismissReminderField": {
+    "message": "Înlătura memento-ul pentru salvarea Frazei Secrete de Recuperare"
+  },
+  "domain": {
+    "message": "Domeniu"
   },
   "done": {
-    "message": "Efectuat"
+    "message": "Gata"
+  },
+  "dontShowThisAgain": {
+    "message": "Nu mai afișa asta"
   },
   "downloadGoogleChrome": {
-    "message": "Descărcare Google Chrome"
+    "message": "Descarcă Google Chrome"
   },
   "downloadSecretBackup": {
-    "message": "Descărcați această expresie secretă de rezervă și păstrați-o în siguranță pe o unitate de disc sau un mediu de stocare criptat."
+    "message": "Descarcă această Frază Secretă de Recuperare și păstreaz-o în siguranță pe un hard extern criptat sau un alt mediu de stocare sigur."
   },
   "downloadStateLogs": {
-    "message": "Descărcați jurnalele de stare"
+    "message": "Descarcă jurnalele de stare"
   },
   "dropped": {
-    "message": "Pierdut"
+    "message": "Abandonat"
   },
   "edit": {
     "message": "Editează"
   },
+  "editANickname": {
+    "message": "Editează porecla"
+  },
+  "editAddressNickname": {
+    "message": "Editează adresa poreclei"
+  },
   "editContact": {
-    "message": "Editați contact"
+    "message": "Editează contactul"
+  },
+  "editGasEducationButtonText": {
+    "message": "Cum ar trebui să aleg?"
+  },
+  "editGasEducationHighExplanation": {
+    "message": "Aceasta este cea mai bună variantă pentru tranzacții sensibile la timp (precum schimburile) deoarece crește probabilitatea ca acestea să reușească. Dacă procesarea unui schimb durează prea mult, s-ar putea ca acesta să eșueze, iar tu să pierzi o parte din taxa ta de gaz."
+  },
+  "editGasEducationLowExplanation": {
+    "message": "O taxă mai mică de gaz ar trebui folosită doar atunci când timpul de procesare nu este atât de important. Taxele mai mici fac predicția ca tranzacția să reușească mai grea."
+  },
+  "editGasEducationMediumExplanation": {
+    "message": "O taxă medie de gaz este bună pentru trimiterea, retragerea și alte tranzacții în care timpul de procesare nu este atât de important. Această setare va determina, în cele mai multe cazuri, o tranzacție reușită."
+  },
+  "editGasEducationModalIntro": {
+    "message": "Selectarea taxei de gaz potrivite depinde de tipul tranzacției și cât de importantă este aceasta pentru tine."
+  },
+  "editGasEducationModalTitle": {
+    "message": "Cum să aleg?"
+  },
+  "editGasFeeModalTitle": {
+    "message": "Editează taxa de gaz"
+  },
+  "editGasHigh": {
+    "message": "Ridicată"
+  },
+  "editGasLimitOutOfBounds": {
+    "message": "Limita de gaz trebuie să fie cel puțin $1"
+  },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "Limita de gaz trebuie să fie mai mare de $1 și mai mică decât $2",
+    "description": "$1 este limita de gaz minimă, iar $2 este limita maximă"
+  },
+  "editGasLimitTooltip": {
+    "message": "Limita de gaz reprezintă suma maximă de unități de gaz pe care ești dispus să le folosești. Unitățile de gaz sunt un multiplu pentru „Maximul taxei de prioritate” și „Taxa maximă”."
+  },
+  "editGasLow": {
+    "message": "Scăzută"
+  },
+  "editGasMaxBaseFeeGWEIImbalance": {
+    "message": "Taxa de bază maximă nu poate fi mai mică decât taxa de prioritate"
+  },
+  "editGasMaxBaseFeeHigh": {
+    "message": "Taxa de bază maximă este mai mare decât este necesar"
+  },
+  "editGasMaxBaseFeeLow": {
+    "message": "Taxa de bază maximă este prea mică pentru condițiile actuale ale rețelei"
+  },
+  "editGasMaxBaseFeeMultiplierImbalance": {
+    "message": "Multiplul este relativ scăzut față de Taxa de prioritate"
+  },
+  "editGasMaxFeeHigh": {
+    "message": "Taxa maximă este mai mare decât este necesar"
+  },
+  "editGasMaxFeeLow": {
+    "message": "Taxa maximă este prea mică pentru condițiile actuale ale rețelei"
+  },
+  "editGasMaxFeePriorityImbalance": {
+    "message": "Taxa maximă nu poate fi maică decât Taxa de prioritate maximă"
+  },
+  "editGasMaxFeeTooltip": {
+    "message": "Taxa maximă reprezintă cât vei plăti cel mai mult (taxa de bază + taxa de prioritate)."
+  },
+  "editGasMaxPriorityFeeBelowMinimum": {
+    "message": "Taxa de prioritate maximă trebuie să fie mai mare de 0 GWEI"
+  },
+  "editGasMaxPriorityFeeBelowMinimumV2": {
+    "message": "Taxa de prioritate trebuie să fie mai mare de 0."
+  },
+  "editGasMaxPriorityFeeHigh": {
+    "message": "Taxa de prioritate maximă este mai mare decât este necesar. S-ar putea să plătești mai mult decât este nevoie."
+  },
+  "editGasMaxPriorityFeeHighV2": {
+    "message": "Taxa de prioritate este mai mare decât este necesar. S-ar putea să plătești mai mult decât este nevoie."
+  },
+  "editGasMaxPriorityFeeLow": {
+    "message": "Taxa de prioritate maximă este prea mică pentru condițiile actuale ale rețelei"
+  },
+  "editGasMaxPriorityFeeLowV2": {
+    "message": "Taxa de prioritate este prea mică pentru condițiile actuale ale rețelei"
+  },
+  "editGasMaxPriorityFeeTooltip": {
+    "message": "Taxa de prioritate maximă (sau „bacșișul minerilor”) merge direct la mineri, stimulându-i astfel să îți prioritizeze tranzacția. De cele mai multe ori, vei plăti suma maximă din setări."
+  },
+  "editGasMedium": {
+    "message": "Medie"
+  },
+  "editGasPriceTooLow": {
+    "message": "Prețul gazului trebuie să fie mai mare decât 0"
+  },
+  "editGasPriceTooltip": {
+    "message": "Această rețea are nevoie de un câmp pentru „Prețul gazului” la trimiterea unei tranzacții. Prețul gazului este suma pe care o vei plăti per unitatea de gaz."
+  },
+  "editGasSubTextAmountLabel": {
+    "message": "Suma maximă:",
+    "description": "Aceasta este înlocuirea părții $1 din cheia „editGasSubTextAmount”"
+  },
+  "editGasSubTextFeeLabel": {
+    "message": "Taxa maximă:"
+  },
+  "editGasTitle": {
+    "message": "Editează prioritatea"
+  },
+  "editGasTooLow": {
+    "message": "Timp de procesare necunoscut"
+  },
+  "editGasTooLowTooltip": {
+    "message": "Taxa ta maximă sau taxa de prioritate maximă ar putea să fie prea mică pentru condițiile actuale ale rețelei. Nu știm când (sau dacă) tranzacția ta va fi procesată."
+  },
+  "editGasTooLowWarningTooltip": {
+    "message": "Acest lucru își micșorează taxa maximă, dar dacă traficul rețelei crește, tranzacția ta s-ar putea să fie întârziată sau să eșueze."
+  },
+  "editInGwei": {
+    "message": "Editează în GWEI"
+  },
+  "editInMultiplier": {
+    "message": "Editează în multiplu"
+  },
+  "editNonceField": {
+    "message": "Editează Nonce"
+  },
+  "editNonceMessage": {
+    "message": "Această este o funcționalitate avansată, folosește-o cu precauție."
+  },
+  "editPermission": {
+    "message": "Editează permisiunea"
+  },
+  "enableFromSettings": {
+    "message": "Activeaz-o din Setări."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Activează API-ul OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Folosește API-ul OpenSea pentru a prelua date despre NFT-uri. Auto-detectarea NFT-urilor se bazează pe API-ul OpenSea și nu va fi disponibilă atunci când această opțiune este dezactivată."
+  },
+  "enableToken": {
+    "message": "activa $1",
+    "description": "$1 este simbolul unui token, de exemplu ETH"
+  },
+  "encryptionPublicKeyNotice": {
+    "message": "$1 vrea cheia ta de criptare publică. Dacă ești de acord, acest site va putea să compună mesaje criptate pentru tine.",
+    "description": "$1 este numele site-ului web3"
+  },
+  "encryptionPublicKeyRequest": {
+    "message": "Cere cheia de criptare publică"
   },
   "endOfFlowMessage1": {
-    "message": "Ați trecut testul – păstrați expresia sursă în siguranță, este răspunderea dvs.!"
+    "message": "Ai trecut de test - păstrează-ți Fraza Secretă de Recuperare în siguranță, este responsabilitatea ta!"
   },
   "endOfFlowMessage10": {
-    "message": "Gata"
+    "message": "Totul e gata"
   },
   "endOfFlowMessage2": {
-    "message": "Sfaturi despre stocarea în siguranță"
+    "message": "Sfaturi pentru a o păstra în siguranță"
   },
   "endOfFlowMessage3": {
-    "message": "Salvează o copie de siguranță în mai multe locuri."
+    "message": "Salvează o copie de rezervă în mai multe locuri."
   },
   "endOfFlowMessage4": {
-    "message": "Nu comunicați niciodată fraza cuiva."
+    "message": "Nu o spune nimănui."
   },
   "endOfFlowMessage5": {
-    "message": "Aveți grijă la phishing! MetaMask nu vă va cere niciodată în mod spontan expresia sursă."
+    "message": "Ai grijă de înșelătorii! MetaMask nu îți va cere niciodată Fraza Secretă de Recuperare."
   },
   "endOfFlowMessage6": {
-    "message": "Dacă trebuie să vă salvați din nou fraza seed, puteți să o găsiți în Setări -> Securitate."
+    "message": "Dacă trebuie să faci o copie de rezervă pentru Fraza ta Secretă de Recuperare, o poți găsi în „Setări -> Securitate”."
+  },
+  "endOfFlowMessage7": {
+    "message": "Dacă ai întrebări sau observi ceva în neregulă, contactează asistența $1.",
+    "description": "$1 este un link pe care se poate da click, având textul definit de cheia „here”. Link-ul va deschide un formular unde utilizatorii pot trimite o sesizare."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask nu vă poate recupera expresia sursă. Aflați mai multe."
+    "message": "MetaMask nu îți poate recupera Fraza Secretă de Recuperare."
   },
   "endOfFlowMessage9": {
-    "message": "Aflați mai multe."
+    "message": "Află mai multe"
+  },
+  "endpointReturnedDifferentChainId": {
+    "message": "Endpoint-ul a returnat un ID al lanțului diferit: $1",
+    "description": "$1 este valoarea returnată a „eth_chainId” de la un endpoint RPC"
+  },
+  "ensIllegalCharacter": {
+    "message": "Caracter ilegal pentru ENS."
   },
   "ensNotFoundOnCurrentNetwork": {
-    "message": "Numele ENS nu s-a găsit pe rețeaua curentă. Încercați să comutați la Rețeaua Ethereum principală."
+    "message": "Numele ENS nu s-a găsit pe rețeaua actuală. Încearcă să treci pe Rețeaua Principală Ethereum."
+  },
+  "ensNotSupportedOnNetwork": {
+    "message": "Rețeaua nu acceptă ENS"
   },
   "ensRegistrationError": {
     "message": "Eroare la înregistrarea numelui ENS"
   },
+  "ensUnknownError": {
+    "message": "Căutarea numelui ENS a eșuat."
+  },
   "enterAnAlias": {
-    "message": "Introduceți un alias"
+    "message": "Introdu un alias"
+  },
+  "enterMaxSpendLimit": {
+    "message": "Introdu limita maximă de cheltuieli"
   },
   "enterPassword": {
-    "message": "Introduceți parola"
+    "message": "Introdu-ți parola"
   },
   "enterPasswordContinue": {
-    "message": "Introduceți parola pentru a continua"
+    "message": "Introdu-ți parola pentru a continua"
+  },
+  "errorCode": {
+    "message": "Codul: $1",
+    "description": "Codul erorii afișate, folosit pentru depanare. $1 este codul erorii"
+  },
+  "errorDetails": {
+    "message": "Detalii despre eroare",
+    "description": "Titlul pentru secțiunea care afișează detalii despre eroare, folosită pentru depanare"
+  },
+  "errorMessage": {
+    "message": "Mesajul: $1",
+    "description": "Mesajul erorii afișate, folosit pentru depanare. $1 este mesajul erorii"
+  },
+  "errorName": {
+    "message": "Nume: $1",
+    "description": "Numele erorii afișate, folosit pentru depanare. $1 este numele erorii"
+  },
+  "errorPageMessage": {
+    "message": "Încarcă din nou reîmprospătând pagina, sau contactează asistența $1.",
+    "description": "Mesaj afișat pe pagina generică de eroare în ecran complet sau în interfața popup pentru notificări, iar $1 este un link pe care se poate da click, având textul definit de cheia „here”. Link-ul va deschide un formular unde utilizatorii pot trimite sesizări."
+  },
+  "errorPagePopupMessage": {
+    "message": "Încearcă din nou închizând și redeschizând popup-ul, sau contactează asistența $1.",
+    "description": "Mesaj afișat în interfața popup pentru notificări, iar $1 este un link pe care se poate da click, având textul definit de cheia „here”. Link-ul va deschide un formular unde utilizatorii pot trimite sesizări."
+  },
+  "errorPageTitle": {
+    "message": "MetaMask a întâmpinat o eroare",
+    "description": "Titlul paginii generice de eroare"
+  },
+  "errorStack": {
+    "message": "Stivă:",
+    "description": "Titlul stivei de erori, afișată pentru depanare"
   },
   "estimatedProcessingTimes": {
-    "message": "Timpi estimativi de procesare"
+    "message": "Timpii estimați de procesare"
+  },
+  "ethGasPriceFetchWarning": {
+    "message": "Prețul de rezervă al gazului este furnizat deoarece principalul serviciu de estimare a gazului nu este disponibil momentan."
+  },
+  "eth_accounts": {
+    "message": "Să vadă adresele tale, soldul contului, activitatea și să inițieze tranzacții",
+    "description": "Descrierea permisiunii „eth_accounts”"
   },
   "ethereumPublicAddress": {
-    "message": "Adresa publică Ethereum"
+    "message": "Adresa Publică Ethereum"
+  },
+  "etherscan": {
+    "message": "Etherscan"
   },
   "etherscanView": {
-    "message": "Vizualizare cont pe Etherscan"
+    "message": "Vezi contul pe Etherscan"
+  },
+  "etherscanViewOn": {
+    "message": "Vezi pe Etherscan"
   },
   "expandView": {
-    "message": "Extindeți vizualizarea"
+    "message": "Extinde vizualizarea"
+  },
+  "experimental": {
+    "message": "Experimental"
+  },
+  "experimentalSettingsDescription": {
+    "message": "Detectarea token-urilor și mai multe"
   },
   "exportPrivateKey": {
-    "message": "Exportați cheia privată"
+    "message": "Exportă cheia privată"
+  },
+  "externalExtension": {
+    "message": "Extensie externă"
+  },
+  "extraApprovalGas": {
+    "message": "+$1 gaz pentru aprobare",
+    "description": "Exprimă o sumă suplimentară de gaz pe care utilizatorul va trebui să o plătească în plus față de suma afișată. $1 este o sumă de gaz în zecimale"
   },
   "failed": {
     "message": "Eșuat"
   },
+  "failedToFetchChainId": {
+    "message": "Nu s-a putut prelua ID-ul lanțului. Este URL-ul RPC corect?"
+  },
+  "failureMessage": {
+    "message": "Ceva nu a mers bine și nu am putut completa acțiunea"
+  },
+  "fakeTokenWarning": {
+    "message": "Oricine poate crea un token, inclusiv variante false ale token-urilor existente. Află mai multe $1"
+  },
   "fast": {
-    "message": "Rapid"
+    "message": "Rapidă"
+  },
+  "fastest": {
+    "message": "Cea mai rapidă"
+  },
+  "feeAssociatedRequest": {
+    "message": "O taxă este asociată cu această cerere."
+  },
+  "fiat": {
+    "message": "Valută",
+    "description": "Timpul schimbului valutar"
   },
   "fileImportFail": {
-    "message": "Importarea fișierului nu funcționează? Dați clic aici!",
-    "description": "Helps user import their account from a JSON file"
+    "message": "Importul de fișiere nu funcționează? Click aici1",
+    "description": "Ajută utilizatorii să își importe conturile dintr-un fișier JSON"
+  },
+  "flaskExperimentalText1": {
+    "message": "Folosirea Flask poate crește considerabil riscul de a-ți pierde fondurile:"
+  },
+  "flaskExperimentalText2": {
+    "message": "dacă îl folosești pentru a instala Snaps (plugin-uri) de neîncredere"
+  },
+  "flaskExperimentalText3": {
+    "message": "dacă nu îți verifici confirmările înainte de a aproba schimbări"
+  },
+  "flaskExperimentalText4": {
+    "message": "dacă interacționezi cu contracte inteligente necunoscute"
+  },
+  "flaskExperimentalText5": {
+    "message": "Folosirea Flask îți oferă o discreție mai mare în folosirea Metamask, iar discreția este a ta. Accepți aceste riscuri, precum și responsabilitatea suplimentară în ceea ce privește siguranța portofelului tău?"
+  },
+  "flaskSnapSettingsCardButtonCta": {
+    "message": "Vezi detalii",
+    "description": "Buton „call-to-action” pe care utilizatorii îl pot folosi pentru a vedea mai multe informații despre Snap-ul instalat"
+  },
+  "flaskSnapSettingsCardDateAddedOn": {
+    "message": "Adăugat pe",
+    "description": "Începutul frazei care descrier când și de unde a fost adăugat Snap-ul"
+  },
+  "flaskSnapSettingsCardFrom": {
+    "message": "de la",
+    "description": "Parte a frazei care descrie când și de unde a fost adăugat Snap-ul"
+  },
+  "followUsOnTwitter": {
+    "message": "Urmărește-ne Twitter"
+  },
+  "forbiddenIpfsGateway": {
+    "message": "Gateway IPFS nepermis: Te rugăm să specifici un gateway CID"
   },
   "forgetDevice": {
-    "message": "Uită dispozitivul"
+    "message": "Uită acest dispozitiv"
   },
   "from": {
     "message": "De la"
   },
+  "fromAddress": {
+    "message": "De la: $1",
+    "description": "$1 este adresa inclusă în eticheta „De la”. De obicei, este prescurtată folosind „shortenAddress”"
+  },
+  "functionApprove": {
+    "message": "Funcție: Aprobă"
+  },
   "functionType": {
-    "message": "Tip funcție"
+    "message": "Tipul funcției"
+  },
+  "gasDisplayAcknowledgeDappButtonText": {
+    "message": "Editează taxa de gaz sugerată"
+  },
+  "gasDisplayDappWarning": {
+    "message": "Această taxă de gaz a fost sugerată de $1. Schimbarea ei poate cauza probleme cu tranzacția ta. Te rugăm să contactezi $1 dacă ai întrebări.",
+    "description": "$1 reprezintă originea aplicației descentralizate (dapp)"
+  },
+  "gasEstimatesUnavailableWarning": {
+    "message": "Estimările noastre pentru taxe scăzute, medii și ridicate nu sunt disponibile."
   },
   "gasLimit": {
-    "message": "Limită gas"
+    "message": "Limita de gaz"
   },
   "gasLimitInfoTooltipContent": {
-    "message": "Limita gaz este numărul maxim de unități de gaz pe care sunteți dispus(ă) să le cheltuiți."
+    "message": "Limita de gaz este suma maximă de unități de gaz pe care ești dispus să le cheltuiești."
   },
   "gasLimitTooLow": {
-    "message": "Limita de gaz trebuie să fie de cel puțin 21.000"
+    "message": "Limita de gaz trebuie să fie cel puțin 21000"
+  },
+  "gasLimitTooLowWithDynamicFee": {
+    "message": "Limita de gaz trebuie să fie cel puțin $1",
+    "description": "$1 este limita de gaz personalizată, cu zecimale."
+  },
+  "gasLimitV2": {
+    "message": "Limita de gaz"
+  },
+  "gasOption": {
+    "message": "Opțiunea de gaz"
   },
   "gasPrice": {
-    "message": "Preț gas (GWEI)"
+    "message": "Prețul gazului (GWEI)"
+  },
+  "gasPriceExcessive": {
+    "message": "Taxa de gaz este setată prea mare. Consideră scăderea sumei."
+  },
+  "gasPriceExcessiveInput": {
+    "message": "Prețul gazului este excesiv"
   },
   "gasPriceExtremelyLow": {
-    "message": "Prețul gaz este foarte scăzut"
+    "message": "Prețul gazului este prea mic"
+  },
+  "gasPriceFetchFailed": {
+    "message": "Estimarea prețului gazului a eșuat din cauza unei erori de rețea."
   },
   "gasPriceInfoTooltipContent": {
-    "message": "Prețul în gas indică suma Ether pe care doriți să o plătiți pentru fiecare unitate gas."
+    "message": "Prețul gazului specifică suma de Ether pe care ești dispus să o plătești pentru fiecare unitate de gaz."
+  },
+  "gasTimingHoursShort": {
+    "message": "$1 ore",
+    "description": "$1 reprezintă un număr de ore"
+  },
+  "gasTimingMinutes": {
+    "message": "$1 minute",
+    "description": "$1 reprezintă un număr de minute"
+  },
+  "gasTimingMinutesShort": {
+    "message": "$1 min",
+    "description": "$1 reprezintă un număr de minute"
+  },
+  "gasTimingNegative": {
+    "message": "Posibil în $1",
+    "description": "$1 reprezintă o perioadă de timp"
+  },
+  "gasTimingPositive": {
+    "message": "Probabil în < $1",
+    "description": "$1 reprezintă o perioadă de timp"
+  },
+  "gasTimingSeconds": {
+    "message": "$1 secunde",
+    "description": "$1 reprezintă un număr de secunde"
+  },
+  "gasTimingSecondsShort": {
+    "message": "$1 sec",
+    "description": "$1 reprezintă un număr de secunde"
+  },
+  "gasTimingVeryPositive": {
+    "message": "Foarte probabil în < $1",
+    "description": "$1 reprezintă o perioadă de timp"
   },
   "gasUsed": {
-    "message": "Suma gaz folosită"
+    "message": "Gaz folosit"
+  },
+  "gdprMessage": {
+    "message": "Aceste date sunt agregate și anonime, având scopul Regulamentului General privind Protecția Datelor (UE) 2016/679. Pentru mai multe informații legate de politicile noastre de confidențialitate, te rugăm să verific $1.",
+    "description": "$1 face referire la mesajul „gdprMessagePrivacyPolicy”, traducerea fiind folosită exclusiv în contextul frazei „gdprMessage”"
+  },
+  "gdprMessagePrivacyPolicy": {
+    "message": "Politica noastră de confidențialitate",
+    "description": "Această traducere are rolul de a fi folosită exclusiv ca și o înlocuire a $1 în traducerea cheii „gdprMessage”"
+  },
+  "general": {
+    "message": "General"
   },
   "generalSettingsDescription": {
-    "message": "Schimb valutar, moneda principală, limba, blockies identicon"
+    "message": "Conversie valutară, moneda principală, limbă, blockies identicon"
   },
   "getEther": {
-    "message": "Obțineți Ether"
+    "message": "Obține Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Obțineți Ether de la un robinet pentru $1",
-    "description": "Displays network name for Ether faucet"
+    "message": "Obține Ether de la un robinet pentru $1",
+    "description": "Afișează numele rețelei pentru robinetul Ether"
   },
   "getStarted": {
     "message": "Începe"
   },
+  "goBack": {
+    "message": "Înapoi"
+  },
   "goerli": {
-    "message": "Rețea de test Goerli"
+    "message": "Rețeaua de Test Goerli"
+  },
+  "grantedToWithColon": {
+    "message": "Oferit lui:"
   },
   "happyToSeeYou": {
-    "message": "Ne pare bine să vă vedem."
+    "message": "Ne bucurăm să te vedem."
+  },
+  "hardware": {
+    "message": "Hardware"
   },
   "hardwareWalletConnected": {
-    "message": "Portofelul hardware a fost conectat"
+    "message": "Portofel Hardware conectat"
+  },
+  "hardwareWalletLegacyDescription": {
+    "message": "(original)",
+    "description": "Text care reprezintă calea MEW"
+  },
+  "hardwareWalletSupportLinkConversion": {
+    "message": "click aici"
   },
   "hardwareWallets": {
-    "message": "Conectați un portofel hardware"
+    "message": "Conectează un portofel hardware"
   },
   "hardwareWalletsMsg": {
-    "message": "Selectați un portofel hardware pe care doriți să îl folosiți cu MetaMask"
+    "message": "Alege un portofel hardware pe care ai vrea să-l folosești cu MetaMask."
   },
   "here": {
     "message": "aici",
-    "description": "as in -click here- for more information (goes with troubleTokenBalances)"
+    "description": "Folosit în fraza „click aici” pentru mai multe informații (este folosit împreună cu cheia „troubleTokenBalances”)"
   },
   "hexData": {
-    "message": "Date hexazecimale"
+    "message": "Date Hex"
   },
   "hide": {
     "message": "Ascunde"
   },
   "hideTokenPrompt": {
-    "message": "Ascunde simbol?"
+    "message": "Ascunzi token-ul?"
+  },
+  "hideTokenSymbol": {
+    "message": "Ascunde $1",
+    "description": "$1 este simbolul unui token (de exemplu, „DAI”)"
+  },
+  "hideZeroBalanceTokens": {
+    "message": "Ascunde token-urile fără sold"
+  },
+  "high": {
+    "message": "Agresivă"
+  },
+  "highGasSettingToolTipDialog": {
+    "message": "Probabilitate mare, chiar și în piețe volatile"
+  },
+  "highGasSettingToolTipMessage": {
+    "message": "Folosește $1 pentru a acoperi creșterea traficului în rețea cauzat de evenimente precum apariția unor NFT-uri populare.",
+    "description": "$1 este cheia „high” (text: „Agresivă”) separată aici pentru a putea fi îngroșată în fraza finală"
+  },
+  "highLowercase": {
+    "message": "agresivă"
   },
   "history": {
     "message": "Istoric"
   },
+  "id": {
+    "message": "ID"
+  },
   "import": {
     "message": "Importă",
-    "description": "Button to import an account from a selected file"
+    "description": "Buton pentru a importa un cont folosind un fișier selectat"
   },
   "importAccount": {
-    "message": "Importare cont"
+    "message": "Importă un cont"
+  },
+  "importAccountError": {
+    "message": "Eroare la importarea contului."
+  },
+  "importAccountLinkText": {
+    "message": "importă folosind o Frază Secretă de Recuperare"
   },
   "importAccountMsg": {
-    "message": "Conturile importate nu vor fi asociate cu seedphrase-ul contului dumneavoastră MetaMask creat inițial. Aflați mai multe despre conturile importate"
+    "message": "Conturile importate nu vor fi asociate cu Fraza Secretă de Recuperare a contului original MetaMask creat. Află mai multe despre conturile importate"
   },
   "importAccountSeedPhrase": {
-    "message": "Importați un cont cu fraza seed"
+    "message": "Importă un portofel folosind o Frază Secretă de Recuperare"
+  },
+  "importAccountText": {
+    "message": "sau $1",
+    "description": "$1 reprezintă text-ul de la cheia „importAccountLinkText”, folosit ca link"
+  },
+  "importExistingWalletDescription": {
+    "message": "Introdu Fraza ta Secretă de Recuperare (cunoscută ca și „Seed Phrase”) pe care ai primit-o când ți-ai creat portofelul. $1",
+    "description": "$1 reprezintă cuvintele „Află mai multe” de la cheia „learnMore” care sunt separate aici pentru a putea fi adăugate ca și un link"
+  },
+  "importExistingWalletTitle": {
+    "message": "Importă un portofel existent folosind o Frază Secretă de Recuperare"
+  },
+  "importMyWallet": {
+    "message": "Importă portofelul meu"
+  },
+  "importTokenQuestion": {
+    "message": "Imporți token-ul?"
+  },
+  "importTokenWarning": {
+    "message": "Oricine poate crea un token cu orice nume, inclusiv variante false ale token-urilor existente. Adaugă și fă schimburi pe propria răspundere!"
+  },
+  "importTokens": {
+    "message": "importă token-uri"
+  },
+  "importTokensCamelCase": {
+    "message": "Importă token-uri"
   },
   "importWallet": {
-    "message": "Importați portofel"
+    "message": "Importă portofelul"
+  },
+  "importYourExisting": {
+    "message": "Importă-ți portofelul existent folosind o Frază Secretă de Recuperare"
   },
   "imported": {
-    "message": "Importate",
-    "description": "status showing that an account has been fully loaded into the keyring"
+    "message": "Importat",
+    "description": "Status care arată că un cont a fost încărcat cu succes în breloc"
+  },
+  "infuraBlockedNotification": {
+    "message": "MetaMask nu se poate conecta la host-ul din blockchain. Vezi posibilele motive $1.",
+    "description": "$1 este un link cu un text definit de cheia „here”"
   },
   "initialTransactionConfirmed": {
-    "message": "Tranzacția inițială a fost confirmată de rețea. Clic pe OK pentru a reveni."
+    "message": "Tranzacția ta inițială a fost confirmată de către rețea. Dă click pe „OK” pentru a merge înapoi."
   },
   "insufficientBalance": {
-    "message": "Sold insuficient."
+    "message": "Fonduri insuficiente."
   },
   "insufficientFunds": {
     "message": "Fonduri insuficiente."
   },
+  "insufficientFundsForGas": {
+    "message": "Fonduri insuficiente pentru gaz"
+  },
   "insufficientTokens": {
-    "message": "Tokenuri insuficiente."
+    "message": "Token-uri insuficiente."
   },
   "invalidAddress": {
     "message": "Adresă nevalidă"
   },
   "invalidAddressRecipient": {
-    "message": "Adresa destinatarului nu este validă"
+    "message": "Adresa destinatarului este nevalidă"
   },
   "invalidAddressRecipientNotEthNetwork": {
-    "message": "Nu este rețea ETH, setați pe minuscule"
+    "message": "Nu este o rețea ETH, setează la minuscule"
   },
   "invalidBlockExplorerURL": {
-    "message": "URL Block Explorer nevalid"
+    "message": "URL nevalid pentru exploratorul de blocuri"
+  },
+  "invalidChainIdTooBig": {
+    "message": "ID al lanțului nevalid. ID-ul lanțului este prea mare."
+  },
+  "invalidCustomNetworkAlertContent1": {
+    "message": "ID-ul lanțului pentru rețeaua personalizată „$1” trebuie să fie reintrodus.",
+    "description": "$1 este numele/identificatorul rețelei"
+  },
+  "invalidCustomNetworkAlertContent2": {
+    "message": "Pentru a te proteja de furnizorii rău-intenționați sau cu probleme, ID-urile lanțurilor sunt obligatorii pentru toate rețelele personalizate."
+  },
+  "invalidCustomNetworkAlertContent3": {
+    "message": "Mergi la „Setări > Rețea” și introdu ID-ul lanțului. Poți găsi ID-urile lanțurilor pentru cele mai populare rețele pe $1.",
+    "description": "$1 este un link către https://chainid.network"
+  },
+  "invalidCustomNetworkAlertTitle": {
+    "message": "Rețea personalizată nevalidă."
+  },
+  "invalidHexNumber": {
+    "message": "Număr hexadecimal nevalid."
+  },
+  "invalidHexNumberLeadingZeros": {
+    "message": "Număr hexadecimal nevalid. Șterge toate zerourile de la început."
+  },
+  "invalidIpfsGateway": {
+    "message": "Gateway IPFS nevalid: Valoarea trebuie să fie un URL valid."
+  },
+  "invalidNumber": {
+    "message": "Număr nevalid. Introdu un număr cu zecimale sau un număr în hexadecimal care începe cu prefixul „0x”."
+  },
+  "invalidNumberLeadingZeros": {
+    "message": "Număr nevalid. Șterge toate zerourile de la început."
   },
   "invalidRPC": {
     "message": "URL RPC nevalid"
   },
   "invalidSeedPhrase": {
-    "message": "Expresie sursă nevalidă"
+    "message": "Frază Secretă de Recuperare nevalidă"
+  },
+  "ipfsGateway": {
+    "message": "Gateway IPFS"
+  },
+  "ipfsGatewayDescription": {
+    "message": "Introdu URL-ul gateway-ului IPFS CID pentru a folosi conținutul ENS."
+  },
+  "jsDeliver": {
+    "message": "jsDeliver"
   },
   "jsonFile": {
     "message": "Fișier JSON",
-    "description": "format for importing an account"
+    "description": "Formatul pentru importarea unui cont"
+  },
+  "keystone": {
+    "message": "Keystone"
+  },
+  "keystoneTutorial": {
+    "message": " (Tutoriale)"
   },
   "knownAddressRecipient": {
-    "message": "Adresa cunoscută din contract."
+    "message": "Adresă a contractului cunoscută."
+  },
+  "knownTokenWarning": {
+    "message": "Această acțiune va edita token-urile deja listate în portofelul tău și care pot fi folosite pentru a te păcăli. Aprobă doar dacă ești sigur că vrei să schimb ceea ce reprezintă aceste token-uri."
   },
   "kovan": {
-    "message": "Rețea de test Kovan"
+    "message": "Rețeaua de Test Kovan"
+  },
+  "lastConnected": {
+    "message": "Ultima dată conectat"
+  },
+  "layer1Fees": {
+    "message": "Taxe pentru Nivelul 1"
+  },
+  "learmMoreAboutGas": {
+    "message": "Vrei să $1 despre gaz?"
+  },
+  "learnCancelSpeeedup": {
+    "message": "Află cum să $1",
+    "description": "$1 este un link pentru a anula sau accelera tranzacțiile"
   },
   "learnMore": {
-    "message": "Aflați mai multe"
+    "message": "Află mai multe"
+  },
+  "learnScamRisk": {
+    "message": "înșelătorii și riscuri de securitate."
   },
   "ledgerAccountRestriction": {
-    "message": "Trebuie să folosiți ultimul cont înainte să adăugați altul."
+    "message": "Trebuie să îți folosești ultimul cont înainte de a adăuga unul nou."
+  },
+  "ledgerConnectionInstructionCloseOtherApps": {
+    "message": "Închide orice alt software conectat la dispozitivul tău, după care dă click aici pentru a reîmprospăta."
+  },
+  "ledgerConnectionInstructionHeader": {
+    "message": "Înainte de a confirma:"
+  },
+  "ledgerConnectionInstructionStepFour": {
+    "message": "Activează „date pentru contractele inteligente (smart contract data)” sau „semnare oarbă (blind signing)” pe dispozitivul tău Ledger"
+  },
+  "ledgerConnectionInstructionStepOne": {
+    "message": "Activează „Folosește Ledger Live” în „Setări > Avansat”"
+  },
+  "ledgerConnectionInstructionStepThree": {
+    "message": "Conectează-ți dispozitivul Ledger și alege aplicația Ethereum"
+  },
+  "ledgerConnectionInstructionStepTwo": {
+    "message": "Deschide și deblochează aplicația „Ledger Live”"
+  },
+  "ledgerConnectionPreferenceDescription": {
+    "message": "Personalizează modul în care conectezi dispozitivul tău Ledger la MetaMask. $1 e recomandat, dar există și alte opțiuni. Află mai multe aici: $2",
+    "description": "O descriere care apare sub un dropdown unde utilizatorii pot alege dintre 3 opțiuni (Ledger Live, U2F sau WebHID), în funcție de ceea ce suportă browser-ul acestora. $1 este opțiunea recomandată pentru browser, va fi WebHID sau U2f. $2 este un link către un articol unde utilizatorii pot afla mai multe, dar va fi traducerea mesajului „learnMore”."
+  },
+  "ledgerDeviceOpenFailureMessage": {
+    "message": "Dispozitivul Ledger nu s-a putut deschide. Se poate ca dispozitivul tău Ledger să fie conectat la alte aplicații software. Te rugăm să închizi Ledger Live sau orice altă aplicație care este conectată la dispozitivul tău Ledger, iar apoi încearcă să te conectezi din nou."
+  },
+  "ledgerLive": {
+    "message": "Ledger Live",
+    "description": "Numele aplicației desktop care poate fi folosită cu dispozitivul tău Ledger. O putem folosi, de asemenea, pentru a conecta dispozitivul Ledger al unui utilizator la MetaMask."
+  },
+  "ledgerLiveApp": {
+    "message": "Aplicația Ledger Live"
+  },
+  "ledgerLocked": {
+    "message": "Nu se poate conecta la dispozitivul Ledger. Te rugăm să te asiguri că dispozitivul tău este deblocat, iar aplicația Ethereum este deschisă."
+  },
+  "ledgerTimeout": {
+    "message": "Ledger Live ia prea mult să răspundă, sau conexiunea a expirat. Asigură-te că aplicația Ledger Live este deschisă, iar dispozitivul tău este deblocat."
+  },
+  "ledgerTransportChangeWarning": {
+    "message": "Dacă aplicația Ledger Live este deschisă, te rugăm să deconectezi orice conexiune Ledger Live deschisă, iar apoi închide aplicația Ledger Live."
+  },
+  "ledgerWebHIDNotConnectedErrorMessage": {
+    "message": "Dispozitivul Ledger nu a fost conectat. Dacă vrei să îți conectezi dispozitivul Ledger, dă click pe „Continua” din nou pentru a aproba conexiunea HID",
+    "description": "Un mesaj de eroare afișat utilizatorilor în timpul flow-ului de conectare hardware"
   },
   "letsGoSetUp": {
-    "message": "Da, hai să configurăm!"
+    "message": "Da, hai să-l configurăm!"
   },
   "likeToImportTokens": {
-    "message": "Adăugați aceste indicative?"
+    "message": "Vrei să imporți aceste token-uri?"
   },
   "links": {
     "message": "Link-uri"
   },
   "loadMore": {
-    "message": "Încărcați mai multe"
+    "message": "Încarcă mai multe"
   },
   "loading": {
-    "message": "Se încarcă…"
+    "message": "Se încarcă..."
   },
   "loadingTokens": {
     "message": "Se încarcă token-urile..."
   },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
   "lock": {
-    "message": "Deconectați-vă"
+    "message": "Blochează"
+  },
+  "lockTimeTooGreat": {
+    "message": "Timpul de blocare este prea mare"
+  },
+  "low": {
+    "message": "Scăzută"
+  },
+  "lowGasSettingToolTipMessage": {
+    "message": "Folosește $1 pentru a aștepta pentru un preț mai scăzut. Estimările de timp sunt mult mai puțin precise deoarece prețurile sunt oarecum imprevizibile.",
+    "description": "$1 este cheia „low” separată aici pentru a putea fi îngroșată"
+  },
+  "lowLowercase": {
+    "message": "scăzută"
+  },
+  "lowPriorityMessage": {
+    "message": "Următoarele tranzacții se vor procesa după aceasta. Prețul a fost văzut ultima dată acum ceva vreme."
   },
   "mainnet": {
-    "message": "Rețeaua Ethereum principală"
+    "message": "Rețeaua Principală Ethereum"
+  },
+  "makeAnotherSwap": {
+    "message": "Creează un nou schimb"
+  },
+  "makeSureNoOneWatching": {
+    "message": "Asigură-te că nimeni nu îți privește ecranul",
+    "description": "Atenționare pentru utilizatori pentru a avea grijă la crearea și salvarea noii lor Fraze Secrete de Recuperare"
   },
   "max": {
-    "message": "Maximum"
+    "message": "Max"
+  },
+  "maxBaseFee": {
+    "message": "Taxa de bază maximă"
+  },
+  "maxFee": {
+    "message": "Taxa maximă"
+  },
+  "maxPriorityFee": {
+    "message": "Taxa de prioritate maximă"
+  },
+  "medium": {
+    "message": "Piață"
+  },
+  "mediumGasSettingToolTipMessage": {
+    "message": "Folosește $1 pentru procesare rapidă la prețul actual de pe piață.",
+    "description": "$1 este cheia „medium” (text: „Piață”) separată aici pentru a putea fi îngroșată"
   },
   "memo": {
-    "message": "notă"
+    "message": "memo"
   },
   "memorizePhrase": {
-    "message": "Memorați această expresie."
+    "message": "Reține această frază."
   },
   "message": {
     "message": "Mesaj"
   },
+  "metaMaskConnectStatusParagraphOne": {
+    "message": "Acum ai mai mult control asupra conexiunilor tale în MetaMask."
+  },
+  "metaMaskConnectStatusParagraphThree": {
+    "message": "Dă click pe el pentru a-ți administra conturile conectate."
+  },
+  "metaMaskConnectStatusParagraphTwo": {
+    "message": "Butonul pentru status-ul conexiunii arată dacă website-ul pe care îl vizitezi este conectat la contul tău selectat în momentul acesta."
+  },
   "metamaskDescription": {
-    "message": "Vă conectăm la Ethereum și la Internetul descentralizat."
+    "message": "Te conectăm la Ethereum și la Rețeaua Descentralizată."
+  },
+  "metamaskSwapsOfflineDescription": {
+    "message": "MetaMask Swaps este sub mentenanță. Revino mai târziu."
   },
   "metamaskVersion": {
-    "message": "Versiune MetaMask"
+    "message": "Versiunea MetaMask"
+  },
+  "metametricsCommitmentsAllowOptOut": {
+    "message": "Îți permite întotdeauna să te dezabonezi din Setări"
+  },
+  "metametricsCommitmentsAllowOptOut2": {
+    "message": "Îți permite întotdeauna să te dezabonezi din Setări"
+  },
+  "metametricsCommitmentsBoldNever": {
+    "message": "Niciodată",
+    "description": "Această frază este tradusă separat de unele angajamente ca să fie îngroșată"
+  },
+  "metametricsCommitmentsIntro": {
+    "message": "MetaMask..."
+  },
+  "metametricsCommitmentsNeverCollect": {
+    "message": "Niciodată nu colectează chei, adrese, tranzacții, solduri, hash-uri sau informații personale"
+  },
+  "metametricsCommitmentsNeverCollectIP": {
+    "message": "$1 nu va colecta adresa ta IP completă",
+    "description": "$1 este cuvântul îngroșat „Niciodată”, de la cheia „metametricsCommitmentsBoldNever”"
+  },
+  "metametricsCommitmentsNeverCollectKeysEtc": {
+    "message": "$1 nu va colecta chei, adrese, tranzacții, solduri, hash-uri sau informații personal",
+    "description": "$1 este cuvântul îngroșat „Niciodată”, de la cheia „metametricsCommitmentsBoldNever”"
+  },
+  "metametricsCommitmentsNeverIP": {
+    "message": "Niciodată nu va colecta adresa ta IP completă"
+  },
+  "metametricsCommitmentsNeverSell": {
+    "message": "Niciodată nu va vinde date pentru profit. Niciodată!"
+  },
+  "metametricsCommitmentsNeverSellDataForProfit": {
+    "message": "$1 nu va vinde date pentru profit. Niciodată!",
+    "description": "$1 este cuvântul îngroșat „Niciodată”, de la cheia „metametricsCommitmentsBoldNever”"
+  },
+  "metametricsCommitmentsSendAnonymizedEvents": {
+    "message": "Trimite click-uri anonime și evenimente pe pagini"
+  },
+  "metametricsHelpImproveMetaMask": {
+    "message": "Ajută-ne să îmbunătățim MetaMask"
+  },
+  "metametricsOptInDescription": {
+    "message": "MetaMask ar dori să colecteze date de folosire pentru a înțelege mai bine cum interacționează utilizatorii noștri cu extensia. Aceste date vor fi folosite în continuare pentru a îmbunătăți utilizarea și experiența utilizatorilor care folosesc produsul nostru, cât și a ecosistemului Ethereum."
+  },
+  "metametricsOptInDescription2": {
+    "message": "Am dori să colectăm date de bază de folosire pentru a îmbunătăți utilizarea produsului nostru. Aceste metrici vor..."
+  },
+  "metametricsTitle": {
+    "message": "Alătură-te celor peste 6M+ de utilizatori la îmbunătățirea MetaMask"
+  },
+  "mismatchedChain": {
+    "message": "Detaliile rețelei pentru acest ID al lanțului nu se potrivesc cu datele pe care le avem noi. Îți recomandăm să $1 înainte de a merge mai departe.",
+    "description": "$1 este un link, având textul definit de cheia „mismatchedChainLinkText”"
+  },
+  "mismatchedChainLinkText": {
+    "message": "verifici detaliile rețelei",
+    "description": "Reprezintă link-ul textului pentru cheia „mismatchedChain”. Acest text va fi introdus înăuntrul traducerii pentru acea cheie."
+  },
+  "missingNFT": {
+    "message": "Nu îți vezi NFT-ul?"
+  },
+  "missingToken": {
+    "message": "Nu îți vezi token-ul?"
+  },
+  "mobileSyncWarning": {
+    "message": "Funcționalitatea „Sincronizează cu extensia” este temporar dezactivată. Dacă vrei să îți folosești portofelul de pe aplicația mobilă MetaMask: mergi înapoi la setările de configurare ale portofelului și alege opțiunea „Importă cu Fraza Secretă de Recuperare”. Folosește-ți fraza secretă a portofelului tău din extensie pentru a-ți importa ulterior portofelul pe telefon."
+  },
+  "multiplier": {
+    "message": "multiplu"
   },
   "mustSelectOne": {
-    "message": "Trebuie să selectați cel puțin 1 simbol."
+    "message": "Trebuie să alegi cel puțin 1 token."
   },
   "myAccounts": {
     "message": "Conturile mele"
   },
+  "name": {
+    "message": "Nume"
+  },
   "needEtherInWallet": {
-    "message": "Pentru a interacționa cu aplicațiile descentralizate prin intermediul MetaMask, trebuie să aveți Ether în portofel."
+    "message": "Pentru a interacționa cu aplicațiile descentralizate folosind MetaMask, vei avea nevoie de Ether în portofelul tău."
+  },
+  "needHelp": {
+    "message": "Ai nevoie de ajutor? Contactează $1",
+    "description": "$1 reprezintă cheia „needHelpLinkText”, textul care vine în locul link-ului pentru asistență"
+  },
+  "needHelpFeedback": {
+    "message": "Trimite feedback-ul tău"
+  },
+  "needHelpLinkText": {
+    "message": "Asistența MetaMask"
+  },
+  "needHelpSubmitTicket": {
+    "message": "Trimite o sesizare"
   },
   "needImportFile": {
-    "message": "Trebuie să selectați un fișier pentru importare.",
-    "description": "User is important an account and needs to add a file to continue"
+    "message": "Trebuie să alegi un fișier.",
+    "description": "Mesaj afișat atunci când utilizatorul trebuie să adauge un fișier pentru a continua"
   },
   "negativeETH": {
-    "message": "Nu se pot trimite sume negative de ETH."
+    "message": "Nu poți trimite sume negative de ETH."
+  },
+  "networkDetails": {
+    "message": "Detalii despre rețea"
   },
   "networkName": {
     "message": "Numele rețelei"
   },
+  "networkNameBSC": {
+    "message": "BSC"
+  },
+  "networkNameDefinition": {
+    "message": "Numele asociat acestei rețele."
+  },
+  "networkNameEthereum": {
+    "message": "Ethereum"
+  },
+  "networkNamePolygon": {
+    "message": "Polygon"
+  },
+  "networkNameRinkeby": {
+    "message": "Rinkeby"
+  },
+  "networkNameTestnet": {
+    "message": "Rețea de Test"
+  },
+  "networkSettingsChainIdDescription": {
+    "message": "ID-ul lanțului este folosit pentru semnarea tranzacțiilor. Trebuie să coincidă cu ID-ul lanțului returnat de către rețea. Poți introduce un număr cu zecimale sau în hexadecimal, cu prefixul „0x”, dar îl vom afișa în zecimale."
+  },
   "networkSettingsDescription": {
-    "message": "Adăugați și editați rețelele RPC particularizate"
+    "message": "Adaugă și editează rețele RPC personalizate"
+  },
+  "networkStatus": {
+    "message": "Starea rețelei"
+  },
+  "networkStatusBaseFeeTooltip": {
+    "message": "Taxa de bază este setată de rețea și se schimbă odată la 13-14 secunde. Opțiunile $1 și $2 sunt predispuse la creșteri bruște.",
+    "description": "$1 și $2 sunt cuvinte îngroșate pentru Medie și Agresivă"
+  },
+  "networkStatusPriorityFeeTooltip": {
+    "message": "Intervalul pentru taxele de prioritate (sau „bacșișul minerilor”). Această sumă merge la mineri, stimulându-i astfel să îți prioritizeze tranzacția."
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "Taxele de gaz sunt $1, raportate la ultimele 72 de ore.",
+    "description": "$1 reprezintă stabilitatea rețelei - stabile, scăzute, ridicate"
+  },
+  "networkURL": {
+    "message": "URL-ul rețelei"
+  },
+  "networkURLDefinition": {
+    "message": "URL-ul folosit pentru a accesa rețeaua."
   },
   "networks": {
     "message": "Rețele"
@@ -589,11 +1793,17 @@
     "message": "Cont nou"
   },
   "newAccountDetectedDialogMessage": {
-    "message": "A fost detectată o adresă nouă! Faceți clic aici pentru a o adăuga în agenda dvs."
+    "message": "Adresă nouă detectată! Click aici pentru a o adăuga în agenda ta."
   },
   "newAccountNumberName": {
-    "message": "Cont $1",
-    "description": "Default name of next account to be created on create account screen"
+    "message": "Contul $1",
+    "description": "Numele implicit al următorului cont care urmează să fie creat în ecranul „Creează un cont”"
+  },
+  "newCollectibleAddFailed": {
+    "message": "NFT-ul nu a fost adăugat deoarece: $1"
+  },
+  "newCollectibleAddedMessage": {
+    "message": "NFT-ul a fost adăugat cu succes!"
   },
   "newContact": {
     "message": "Contact nou"
@@ -601,53 +1811,270 @@
   "newContract": {
     "message": "Contract nou"
   },
+  "newNFTsDetected": {
+    "message": "NFT-uri noi detectate"
+  },
+  "newNFTsDetectedInfo": {
+    "message": "S-a detectat unul sau mai multe NFT-uri noi în portofelul tău."
+  },
+  "newNetworkAdded": {
+    "message": "„$1” a fost adăugat cu succes!"
+  },
   "newPassword": {
-    "message": "Parola Nouă (minimum 8 caractere)"
+    "message": "Parola nouă (minim 8 caractere)"
   },
   "newToMetaMask": {
-    "message": "Nefamiliarizat cu MetaMask?"
+    "message": "Ești nou pe MetaMask?"
   },
   "newTotal": {
-    "message": "Total nou"
+    "message": "Totalul nou"
   },
   "newTransactionFee": {
-    "message": "Taxă nouă de tranzacție"
+    "message": "Taxa de tranzacție nouă"
   },
   "next": {
-    "message": "Înainte"
+    "message": "Continuă"
+  },
+  "nextNonceWarning": {
+    "message": "Nonce este mai mare decât valoarea nonce recomandată de $1",
+    "description": "Următorul nonce, conform logicii interne MetaMask"
+  },
+  "nftTokenIdPlaceholder": {
+    "message": "Introdu ID-ul NFT-ului"
+  },
+  "nfts": {
+    "message": "NFT-uri"
+  },
+  "nickname": {
+    "message": "Poreclă"
+  },
+  "noAccountsFound": {
+    "message": "Nu s-a găsit niciun cont care să îndeplinească criteriul de căutare"
   },
   "noAddressForName": {
-    "message": "Nu a fost configurată nicio adresă pentru acest nume."
+    "message": "Nu a fost setată nicio adresă pentru acest nume."
   },
   "noAlreadyHaveSeed": {
-    "message": "Nu, am deja o expresie sursă"
+    "message": "Nu, am deja o Frază Secretă de Recuperare"
+  },
+  "noConversionDateAvailable": {
+    "message": "Nu există date disponibile despre conversia valutară"
   },
   "noConversionRateAvailable": {
-    "message": "Nici o rată de conversie disponibilă"
+    "message": "Nu există o rată de conversie disponibilă"
+  },
+  "noNFTs": {
+    "message": "Niciun NFT încă"
+  },
+  "noThanks": {
+    "message": "Nu, mulțumesc"
   },
   "noTransactions": {
-    "message": "Nu aveți tranzacții"
+    "message": "Nu ai nicio tranzacție"
   },
   "noWebcamFound": {
-    "message": "Webcam-ul computerului dvs. nu a fost găsit. Vă rugăm să încercați din nou."
+    "message": "Camera video a computer-ului tău nu a putut fi găsită. Încearcă din nou."
   },
   "noWebcamFoundTitle": {
-    "message": "Camera web nu a fost găsită"
+    "message": "Nu s-a găsit webcam-ul"
+  },
+  "nonce": {
+    "message": "Nonce"
+  },
+  "nonceField": {
+    "message": "Personalizează valoarea nonce a tranzacției"
+  },
+  "nonceFieldDescription": {
+    "message": "Activează această opțiune pentru a schimba valoarea nonce (numărul tranzacției) în ecranele de confirmare. Aceasta este o funcționalitate avansată, folosește-o cu atenție."
+  },
+  "nonceFieldHeading": {
+    "message": "Nonce personalizat"
+  },
+  "notBusy": {
+    "message": "Liber"
+  },
+  "notCurrentAccount": {
+    "message": "Ești sigur că e contul corect? Acesta este diferit față de contul selectat în portofelul tău"
   },
   "notEnoughGas": {
-    "message": "Gas insuficient"
+    "message": "Nu ai destul gaz"
+  },
+  "notifications1Description": {
+    "message": "Utilizatorii aplicației mobile MetaMask pot să schimbe token-uri în interiorul portofelului lor mobil. Scanează codul QR pentru a obține aplicația mobilă și începe să faci schimburi.",
+    "description": "Descrierea unei notificări din popup-ul „Ce e nou”. Descrie funcționalitatea de schimb de token-uri pe aplicația mobilă."
+  },
+  "notifications1Title": {
+    "message": "Schimbul pe aplicația mobilă este aici!",
+    "description": "Titlul unei notificări din popup-ul „Ce e nou”. Anunță utilizatorii că acum pot folosi aplicația mobilă MetaMask pentru a face schimburi."
+  },
+  "notifications3ActionText": {
+    "message": "Citește mai multe",
+    "description": "Textul de pe butonul sau link-ul „call-to-action” din notificarea „Rămâi în siguranță”. După ce este apăsat, utilizatorii vor fi redirecționați la o pagină despre securitate pe site-ul asistenței MetaMask."
+  },
+  "notifications3Description": {
+    "message": "Rămâi conectat la noutățile despre cele mai bune practici ale MetaMask pentru securitate și obține cele mai noi sfaturi de securitate de la asistența oficială MetaMask.",
+    "description": "Descrierea unei notificări din popup-ul „Ce e nou”. Descrie informația despre securitate pe care o pot obține din pagina pentru asistență."
+  },
+  "notifications3Title": {
+    "message": "Rămâi în siguranță",
+    "description": "Titlul unei notificări din popup-ul „Ce e nou”. Încurajează utilizatorii să considere securitatea."
+  },
+  "notifications4ActionText": {
+    "message": "Începe să faci schimburi",
+    "description": "Textul de pe butonul sau link-ul „call-to-action” din notificarea „Schimbă pe Binance Smart Chain!”. După ce dau click, utilizatorii vor fi redirecționați către o pagină în care pot schimba token-uri pe Binance Smart Chain."
+  },
+  "notifications4Description": {
+    "message": "Obține cele mai bune prețuri la schimburile de token-uri direct din portofelul tău. MetaMask te conectează la mai mulți agregatori de schimb descentralizați și creatori de piață profesioniști pe Binance Smart Chain.",
+    "description": "Descrierea unei notificări din popup-ul „Ce e nou”."
+  },
+  "notifications4Title": {
+    "message": "Schimbă pe Binance Smart Chain!",
+    "description": "Titlul unei notificări din popup-ul „Ce e nou”. Încureajează utilizatorii să facă schimburi pe Binance Smart Chain."
+  },
+  "notifications5Description": {
+    "message": "„Fraza Seed” și-a schimbat numele în „Fraza Secretă e Recuperare”.",
+    "description": "Descrierea unei notificări din popup-ul „Ce e nou”. Descrie actualizarea legată de schimbarea numelui pentru fraza seed."
+  },
+  "notifications6DescriptionOne": {
+    "message": "Începând cu Chrome 91, API-ul care a activat suportul pentru Ledger (U2F) nu mai oferă suport pentru portofelele hardware. MetaMask a implementat o nouă aplicație Ledger Live care îți permite să te conectezi în continuare la dispozitivul tău Ledger prin aplicație pentru Desktop Ledger Live.",
+    "description": "Descrierea unei notificări din popup-ul „Ce e nou”. Descrie actualizarea legată de suportul pentru Ledger."
+  },
+  "notifications6DescriptionThree": {
+    "message": "Atunci când interacționezi cu contul tău Ledger în MetaMask, se va deschide o filă nouă și ți se va cere să deschizi aplicația Ledger Live. Odată ce aplicația se deschide, ți se va cere să permiți o conexiune WebSocket la contul tău MetaMask. Asta e tot!",
+    "description": "Descrierea unei notificări din popup-ul „Ce e nou”. Descrie actualizarea legată de suportul pentru Ledger."
+  },
+  "notifications6DescriptionTwo": {
+    "message": "Poți activa suportul pentru Ledger Live dând click pe „Setări > Avansat > Folosește Ledger Live”.",
+    "description": "Descrierea unei notificări din popup-ul „Ce e nou”. Descrie actualizarea legată de suportul pentru Ledger."
+  },
+  "notifications6Title": {
+    "message": "Actualizare legată de suportul Ledger pentru utilizatorii Chrome",
+    "description": "Titlul unei notificări din popup-ul „Ce e nou”. Anunță utilizatorii de actualizarea legată de suportul pentru Ledger."
+  },
+  "notifications7DescriptionOne": {
+    "message": "MetaMask v10.1.0 a inclus suport pentru tranzacțiile EIP-1559 cu ajutorul dispozitivelor Ledger.",
+    "description": "Descrierea unei notificări din popup-ul „Ce e nou”. Descrie schimbările pentru Ledger și EIP-1559 în v10.1.0"
+  },
+  "notifications7DescriptionTwo": {
+    "message": "Pentru a completa tranzacții în Rețeaua Principală Ethereum, asigură-te că dispozitivul tău Ledger este la zi cu cea mai nouă versiune disponibilă.",
+    "description": "Descrierea unei notificări din popup-ul „Ce e nou”. Descriea necesitatea actualizării dispozitivelor Ledger."
+  },
+  "notifications7Title": {
+    "message": "Actualizare de software pentru Ledger",
+    "description": "Titlul unei notificări din popup-ul „Ce e nou”. Anunță utilizatorii Ledger de necesitatea unei actualizări."
+  },
+  "notifications8ActionText": {
+    "message": "Mergi la Setări avansate",
+    "description": "Descrierea unui buton de acțiune care apare în popup-ul „Ce e nou”. Anunță utilizatorii că dacă fac click pe el, aceștia vor fi redirecționați către pagina Setărilor avansate."
+  },
+  "notifications8DescriptionOne": {
+    "message": "Începând cu MetaMask v10.4.0, nu vei mai avea nevoie de Ledger Live pentru a-ți conecta dispozitivul Ledger la MetaMask.",
+    "description": "Descrierea unei notificări din popup-ul „Ce e nou”. Descrie schimbările legate de modul în care nu mai este nevoie de Ledger Live pentru a conecta dispozitivul la MetaMask."
+  },
+  "notifications8DescriptionTwo": {
+    "message": "Pentru o experiență mai simplă și stabilă pentru dispozitivul tău Ledger, mergi la fila Setărilor avansate și schimbă „Tipul preferat al conexiunii Ledger” în „WebHID”.",
+    "description": "Descrierea unei notificări din popup-ul „Ce e nou”. Descrie cum utilizatorii pot dezactiva setarea Ledger Live."
+  },
+  "notifications8Title": {
+    "message": "Îmbunătățiri la conectarea Ledger",
+    "description": "Titlul unei notificări din popup-ul „Ce e nou”. Anunță utilizatorii Ledger că există îmbunătățiri în modul în care pot să-și conecteze dispozitivul."
+  },
+  "notifications9DescriptionOne": {
+    "message": "Acum îți oferim mai multe informații despre fila „Date” atunci când confirmi tranzacțiile cu contracte inteligente."
+  },
+  "notifications9DescriptionTwo": {
+    "message": "Acum poți înțelege mai bine detaliile tranzacției tale înainte de a confirma și să adaugi mai ușor adrese în agenda ta, ajutându-te să iei decizii în siguranță."
+  },
+  "notifications9Title": {
+    "message": "👓 Facem tranzacțiile mai ușor de citit"
   },
   "ofTextNofM": {
-    "message": "din"
+    "message": "al"
   },
   "off": {
     "message": "Oprit"
   },
+  "offlineForMaintenance": {
+    "message": "Offline pentru mentenanță"
+  },
   "ok": {
-    "message": "OK"
+    "message": "Ok"
   },
   "on": {
-    "message": "Activat"
+    "message": "Pornit"
+  },
+  "onboardingCreateWallet": {
+    "message": "Creează un portofel nou"
+  },
+  "onboardingImportWallet": {
+    "message": "Importă un portofel existent"
+  },
+  "onboardingPinExtensionBillboardAccess": {
+    "message": "Acces complet"
+  },
+  "onboardingPinExtensionBillboardDescription": {
+    "message": "Aceste extensii pot vedea și face schimb de informații"
+  },
+  "onboardingPinExtensionBillboardDescription2": {
+    "message": "pe acest site."
+  },
+  "onboardingPinExtensionBillboardTitle": {
+    "message": "Extensii"
+  },
+  "onboardingPinExtensionChrome": {
+    "message": "Dă click pe iconița pentru extensii din browser"
+  },
+  "onboardingPinExtensionDescription": {
+    "message": "Fixează MetaMask în browser-ul tău pentru a fi accesibilă și a vedea mai bine confirmările pentru tranzacții."
+  },
+  "onboardingPinExtensionDescription2": {
+    "message": "Poți deschide MetaMask dând click pe extensie, accesându-ți astfel portofelul cu un singur click."
+  },
+  "onboardingPinExtensionDescription3": {
+    "message": "Dă click pe iconița pentru extensii din browser pentru a o accesa instant"
+  },
+  "onboardingPinExtensionLabel": {
+    "message": "Fixează MetaMask"
+  },
+  "onboardingPinExtensionStep1": {
+    "message": "1"
+  },
+  "onboardingPinExtensionStep2": {
+    "message": "2"
+  },
+  "onboardingPinExtensionTitle": {
+    "message": "Instalarea MetaMask este completă!"
+  },
+  "onboardingReturnNotice": {
+    "message": "„$1” va închide această filă și te va redirecționa înapoi la $2",
+    "description": "Returnează utilizatorul la site-ul anterior accesat"
+  },
+  "onboardingShowIncomingTransactionsDescription": {
+    "message": "Afișarea tranzacțiilor în portofelul tău se bazează pe comunicarea cu $1. Etherscan va avea acces la adresa ta Ethereum și la IP-ul tău public. Vezi $2.",
+    "description": "$1 este un link, având textul definit de cheia „etherscan”. $2 este un link, având textul definit de cheia „privacyMsg”."
+  },
+  "onboardingUsePhishingDetectionDescription": {
+    "message": "Alertele pentru detectarea înșelătoriilor se bazează pe comunicarea cu $1. jsDeliver va avea acces la IP-ul tău public. Vezi $2.",
+    "description": "$1 resprezintă cuvântul „jsDeliver”, din cheia „jsDeliver”, iar $2 sunt cuvintele „Politica de confidențialitate”, din cheia „privacyMsg”. Ambele sunt separate aici pentru a putea fi incluse într-un link."
+  },
+  "onlyAddTrustedNetworks": {
+    "message": "Un furnizor de rețea rău intenționat poate minți cu privire la starea blockchain-ului și poate înregistra activitatea în rețea. Adăugă numai rețele personalizate în care ai încredere."
+  },
+  "onlyConnectTrust": {
+    "message": "Conectează-te doar la site-uri în care ai încredere."
+  },
+  "openFullScreenForLedgerWebHid": {
+    "message": "Deschide MetaMask în ecran complet pentru a-ți conecta dispozitivul Ledger prin WebHID.",
+    "description": "Mesaj afișat utilizatorului în ecranul de confirmare atunci când acesta are deschis MetaMask într-o fereastră popup, dar are nevoie să își conecteze dispozitivul Ledger prin WebHID."
+  },
+  "optional": {
+    "message": "Opțional"
+  },
+  "optionalWithParanthesis": {
+    "message": "(Opțional)"
+  },
+  "or": {
+    "message": "sau"
   },
   "origin": {
     "message": "Origine"
@@ -656,93 +2083,180 @@
     "message": "Parametri"
   },
   "participateInMetaMetrics": {
-    "message": "Participați la MetaMetrics"
+    "message": "Participă în MetaMetrics"
   },
   "participateInMetaMetricsDescription": {
-    "message": "Alăturați-vă MetaMetrics pentru a ne ajuta să îmbunătățim MetaMask."
+    "message": "Participă în MetaMetrics pentru a ne ajuta să îmbunătățim MetaMask"
   },
   "password": {
-    "message": "Parolă"
+    "message": "Parola"
   },
   "passwordNotLongEnough": {
-    "message": "Parola nu este suficient de lungă"
+    "message": "Parola nu este destul de lungă"
+  },
+  "passwordSetupDetails": {
+    "message": "Parola va debloca portofelul tău MetaMask doar pe acest dispozitiv. MetaMask nu poate recupera această parolă."
+  },
+  "passwordTermsWarning": {
+    "message": "Înțeleg că MetaMask nu poate recupera această parolă pentru mine. $1"
   },
   "passwordsDontMatch": {
     "message": "Parolele nu se potrivesc"
   },
   "pastePrivateKey": {
-    "message": "Lipiți aici șirul de chei private:",
-    "description": "For importing an account from a private key"
+    "message": "Lipește cheia ta privată aici:",
+    "description": "Pentru a importa un cont folosind o cheie privată"
   },
   "pending": {
-    "message": "în așteptare"
+    "message": "În așteptare"
+  },
+  "pendingTransactionInfo": {
+    "message": "Tranzacția nu se va procesa până când aceea este completă."
+  },
+  "pendingTransactionMultiple": {
+    "message": "Ai ($1) tranzacții în așteptare."
+  },
+  "pendingTransactionSingle": {
+    "message": "Ai (1) tranzacție în așteptare.",
+    "description": "$1 este numărul de tranzacții în așteptare"
+  },
+  "permissionRequest": {
+    "message": "Cerere de permisiune"
+  },
+  "permissions": {
+    "message": "Permisiuni"
   },
   "personalAddressDetected": {
-    "message": "A fost detectată o adresă personală. Introduceți adresa de contract indicativ."
+    "message": "Adresă personală detectată. Introdu adresa contractului pentru token."
+  },
+  "plusXMore": {
+    "message": "+ încă $1",
+    "description": "$1 este numărul articolelor suplimentare existente, dar neafișate, dintr-o lista: acest mesaj va fi afișat în locul acelor articole"
+  },
+  "preferredLedgerConnectionType": {
+    "message": "Tipul preferat al conexiunii Ledger",
+    "description": "Titlul unui dropdown în secțiunea de setări avansate. Apare deasupra mesajului „ledgerConnectionPreferenceDescription”."
   },
   "prev": {
-    "message": "Ant"
+    "message": "Înapoi"
   },
   "primaryCurrencySetting": {
-    "message": "Moneda principală"
+    "message": "Moneda curentă"
   },
   "primaryCurrencySettingDescription": {
-    "message": "Selectați nativ pentru a prioritiza valorile afișate în moneda nativă a lanțului (ex. ETH). Selectați Fiat pentru a prioritiza valorile afișate în moneda selectată fiat."
+    "message": "Alege moneda nativă pentru a prioritiza afișarea valorilor în moneda nativă a lanțului (de exemplu, ETH). Alege Valută pentru a prioritiza afișarea valorilor în valuta selectată."
+  },
+  "priorityFee": {
+    "message": "Taxa de prioritate"
+  },
+  "priorityFeeProperCase": {
+    "message": "Taxa de prioritate"
   },
   "privacyMsg": {
-    "message": "Politica de Confidențialitate"
+    "message": "Politica de confidențialitate"
   },
   "privateKey": {
-    "message": "Cheie privată",
-    "description": "select this type of file to use to import an account"
+    "message": "Cheia privată",
+    "description": "Selectează acest tip de fișier pentru a-l folosi la importul unui cont"
   },
   "privateKeyWarning": {
-    "message": "Avertisment: nu dezvăluiți niciodată această cheie. Oricine are cheile dvs. private poate fura orice activ din contul dvs."
+    "message": "ATENȚIE: niciodată să faci publică această cheie. Oricine are cheile tale private poate să fure orice activ din contul tău."
   },
   "privateNetwork": {
     "message": "Rețea privată"
   },
+  "proceedWithTransaction": {
+    "message": "Vreau să continui oricum"
+  },
+  "proposedApprovalLimit": {
+    "message": "Limita de aprobare propusă"
+  },
+  "provide": {
+    "message": "Furnizează"
+  },
+  "publicAddress": {
+    "message": "Adresa publică"
+  },
   "queue": {
-    "message": "Coadă"
+    "message": "Coadă de așteptare"
+  },
+  "queued": {
+    "message": "În coada de așteptare"
   },
   "readdToken": {
-    "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."
+    "message": "Poți readăuga acest token în viitor, mergând la secțiunea „Importă un token” în meniul de opțiuni al conturilor tale."
+  },
+  "receive": {
+    "message": "Primește"
   },
   "recents": {
     "message": "Recente"
   },
   "recipientAddressPlaceholder": {
-    "message": "Căutare, adresa publică (0x) sau ENS"
+    "message": "Caută adrese publice (0x) sau ENS"
+  },
+  "recommendedGasLabel": {
+    "message": "Recomandat"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "Începe aici"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "Am înțeles"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "Păstrează-ți întotdeauna Fraza Secretă de Recuperare în siguranță, într-un loc unde doar tu ai acces"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "Ai nevoie de o copie de siguranță a Frazei tale Secrete de Recuperare?"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "Niciodată nu împărtăși Fraza ta Secretă de Recuperare cu cineva"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "Echipa MetaMask nu îți va cere niciodată Fraza ta Secretă de Recuperare"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "Fraza ta Secretă de Recuperare controlează toate conturile tale."
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "Protejează-ți fondurile"
+  },
+  "refreshList": {
+    "message": "Actualizează lista"
   },
   "reject": {
-    "message": "Respingeți"
+    "message": "Respinge"
   },
   "rejectAll": {
-    "message": "Respingere toate"
+    "message": "Respinge-le pe toate"
   },
   "rejectTxsDescription": {
-    "message": "Sunteți pe cale să respingeți în grup $1 (de) tranzacții."
+    "message": "Ești pe cale să respingi toate cele $1 tranzacții."
   },
   "rejectTxsN": {
-    "message": "Respingeți $1 (de) tranzacții"
+    "message": "Respinge $1 tranzacții"
   },
   "rejected": {
-    "message": "Respins"
+    "message": "Respinsă"
+  },
+  "remember": {
+    "message": "Remember:"
   },
   "remindMeLater": {
     "message": "Reamintește-mi mai târziu"
   },
   "remove": {
-    "message": "Elimină"
+    "message": "Șterge"
   },
   "removeAccount": {
-    "message": "Eliminați contul"
+    "message": "Șterge contul"
   },
   "removeAccountDescription": {
-    "message": "Acest cont va fi eliminat din portofelul dvs. Înainte de a continua, vă rugăm să vă asigurați că aveți expresia seed inițială sau cheia privată pentru acest cont importat. Puteți importa sau crea conturi din nou din meniul derulant al contului."
+    "message": "Acest cont va fi șters din portofelul tău. Asigură-te că ai Fraza Secretă de Recuperare originală sau cheia privată pentru acest cont importat înainte de a continua. Poți importa sau crea conturi din nou din dropdown-ul cu conturi."
   },
   "requestsAwaitingAcknowledgement": {
-    "message": "solicitări care așteaptă să fie confirmate"
+    "message": "cereri care așteaptă să fie acceptate"
   },
   "required": {
     "message": "Obligatoriu"
@@ -751,34 +2265,44 @@
     "message": "Resetează"
   },
   "resetAccount": {
-    "message": "Resetare cont"
+    "message": "Resetează-ți contul"
   },
   "resetAccountDescription": {
-    "message": "Resetarea contului va duce la ștergerea istoricului tranzacțiilor dvs."
+    "message": "Resetarea contului tău va reseta istoricul tranzacțiilor tale. Soldurile din conturile tale vor rămâne neschimbate și nu va fi nevoie să îți reintroduci Fraza Secretă de Recuperare."
   },
   "restore": {
     "message": "Restabilește"
   },
   "restoreAccountWithSeed": {
-    "message": "Restaurați-vă contul folosind fraza inițială"
+    "message": "Restabilește-ți contul cu Fraza Secretă de Recuperare"
+  },
+  "restoreWalletPreferences": {
+    "message": "O copie de rezervă a datelor tale din $1 a fost găsită. Vrei să restabilești preferințele portofelului tău?",
+    "description": "$1 este data la care s-a realizat copia de rezervă"
+  },
+  "retryTransaction": {
+    "message": "Reîncearcă tranzacția"
+  },
+  "reusedTokenNameWarning": {
+    "message": "Un token de aici folosește un simbol care este deja folosit la un alt token pe care îl urmărești. Acest lucru poate crea confuzii sau să fie o potențială înșelătorie."
   },
   "revealSeedWords": {
-    "message": "Arată cuvintele din seed"
+    "message": "Dezvăluie Fraza Secretă de Recuperare"
   },
   "revealSeedWordsDescription": {
-    "message": "Dacă schimbați vreodată browserele sau vă mutați la alt computer, veți avea nevoie de această expresie sursă pentru a vă accesa conturile. Salvați-o într-un loc sigur și secret."
+    "message": "Dacă schimbi vreodată browser-ul sau computer-ul, vei avea nevoie de Fraza Secretă de Recuperare pentru a-ți accesa conturile. Salvează-o undeva în siguranță, unde doar tu ai acces."
   },
   "revealSeedWordsWarning": {
-    "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile."
+    "message": "Aceste cuvinte pot fi folosite pentru a-ți fura toate conturile."
   },
   "revealSeedWordsWarningTitle": {
-    "message": "NU împărtășiți această expresie nimănui!"
+    "message": "NU ARĂTA NICIODATĂ cuiva această fraza!"
   },
   "rinkeby": {
-    "message": "Rețea test Rinkeby"
+    "message": "Rețeaua de Test Rinkeby"
   },
   "ropsten": {
-    "message": "Rețea de testare Ropsten"
+    "message": "Rețeaua de Test Ropstenk"
   },
   "rpcUrl": {
     "message": "URL RPC nou"
@@ -787,302 +2311,1088 @@
     "message": "Salvează"
   },
   "saveAsCsvFile": {
-    "message": "Salvați ca fișier CSV "
+    "message": "Salvează ca fișier CSV"
   },
   "scanInstructions": {
-    "message": "Așezați codul QR în fața camerei"
+    "message": "Pune codul QR în fața camerei tale"
   },
   "scanQrCode": {
-    "message": "Scanați codul QR"
+    "message": "Scanează codul QR"
+  },
+  "scrollDown": {
+    "message": "Derulează în jos"
   },
   "search": {
     "message": "Caută"
   },
+  "searchAccounts": {
+    "message": "Caută conturi"
+  },
   "searchResults": {
-    "message": "Rezultate căutare"
+    "message": "Rezultatele căutării"
   },
   "searchTokens": {
-    "message": "Căutați token-uri"
+    "message": "Caută token-uri"
   },
   "secretBackupPhraseDescription": {
-    "message": "Expresia dvs. secretă de rezervă înlesnește crearea unei copii de rezervă a contului dvs. și restabilirea acestuia."
+    "message": "Fraza ta Secretă de Recuperare face crearea unei copii de securitate și restabilirea contului tău mai ușoară."
   },
   "secretBackupPhraseWarning": {
-    "message": "ATENȚIE: Nu dezvăluiți niciodată expresia dvs. de rezervă. Oricine are această expresie vă poate lua Ether-ul pentru totdeauna."
+    "message": "ATENȚIE: Niciodată nu dezvălui cuiva Fraza ta Secretă de Recuperare. Oricine care are această frază poate să-ți fure Ether-ul pentru totdeauna."
+  },
+  "secretPhrase": {
+    "message": "Doar primul cont din acest portofel se va încărca automat. După completarea acestui proces, pentru a adăuga conturi suplimentare, dă click pe meniul dropdown, iar apoi selectează „Creează un cont”."
+  },
+  "secretPhraseWarning": {
+    "message": "Dacă restabilești folosind o alta Frază Secretă de Recuperare, portofelul tău curent, împreună cu conturile și activele tale vor fi șterse din această aplicație permanent. Această acțiune nu poate fi a anulată ulterior."
+  },
+  "secretRecoveryPhrase": {
+    "message": "Fraza Secretă de Recuperare"
+  },
+  "secureWallet": {
+    "message": "Îmbunătățește securitate portofelului"
   },
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
   "securitySettingsDescription": {
-    "message": "Setările de confidențialitate și fraza seed a portofelului"
+    "message": "Setări de confidențialitate și Fraza Secretă de Recuperare a portofelului"
+  },
+  "seedPhraseConfirm": {
+    "message": "Confirmă Fraza Secretă de Recuperare"
+  },
+  "seedPhraseEnterMissingWords": {
+    "message": "Confirmă Fraza Secretă de Recuperare"
+  },
+  "seedPhraseIntroNotRecommendedButtonCopy": {
+    "message": "Reamintește-mi mai târziu (nerecomandat)"
+  },
+  "seedPhraseIntroRecommendedButtonCopy": {
+    "message": "Îmbunătățește-ți securitatea portofelului (recomandat)"
+  },
+  "seedPhraseIntroSidebarBulletFour": {
+    "message": "Scrie-o pe o foaie și păstreaz-o în mai multe locuri secrete."
+  },
+  "seedPhraseIntroSidebarBulletOne": {
+    "message": "Păstreaz-o într-un manager de parole."
+  },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "Păstreaz-o într-o cutie de depozitare."
+  },
+  "seedPhraseIntroSidebarBulletTwo": {
+    "message": "Păstreaz-o într-un seif bancar."
+  },
+  "seedPhraseIntroSidebarCopyOne": {
+    "message": "Fraza ta Secretă de Recuperare este o frază alcătuită din 12 cuvinte care este „cheia principală” către portofelul și fondurile tale"
+  },
+  "seedPhraseIntroSidebarCopyThree": {
+    "message": "Dacă cineva îți cere fraza de recuperare, cel mai probabil încearcă să te păcălească și să îți fure fondurile din portofel"
+  },
+  "seedPhraseIntroSidebarCopyTwo": {
+    "message": "Niciodată nu îți face publică Fraza Secretă de Recuperare, nici măcar pe MetaMask!"
+  },
+  "seedPhraseIntroSidebarTitleOne": {
+    "message": "Ce este o Frază Secretă de Recuperare?"
+  },
+  "seedPhraseIntroSidebarTitleThree": {
+    "message": "Ar trebui să îmi fac Fraza Secretă de Recuperare publică?"
+  },
+  "seedPhraseIntroSidebarTitleTwo": {
+    "message": "Cum îmi salvez Fraza Secretă de Recuperare?"
+  },
+  "seedPhraseIntroTitle": {
+    "message": "Îmbunătățește-ți securitatea portofelului"
+  },
+  "seedPhraseIntroTitleCopy": {
+    "message": "Înainte de a începe, urmărește acest videoclip scurt pentru a afla mai multe despre Fraza ta Secretă de Recuperare și cum să îți păstrezi portofelul în siguranță."
   },
   "seedPhrasePlaceholder": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
+    "message": "Separă fiecare cuvânt cu un singur spațiu"
+  },
+  "seedPhrasePlaceholderPaste": {
+    "message": "Lipește Fraza Secretă de Recuperare din clipboard"
   },
   "seedPhraseReq": {
-    "message": "Expresiile seed sunt lungi de 12 cuvinte"
+    "message": "Frazele Secrete de Recuperare conțin 12, 15, 18, 21 sau 24 de cuvinte"
+  },
+  "seedPhraseWriteDownDetails": {
+    "message": "Notează-ți această Frază Secretă de Recuperare formată din 12 cuvinte și salveaz-o într-un loc în care ai încredere și în care doar tu să ai acces."
+  },
+  "seedPhraseWriteDownHeader": {
+    "message": "Notează-ți Fraza Secretă de Recuperare"
   },
   "selectAHigherGasFee": {
-    "message": "Selectați o taxă gas mai mare pentru a accelera procesarea tranzacției.*"
+    "message": "Alege o taxă de gaz mai ridicată pentru a accelera procesarea tranzacției tale.*"
+  },
+  "selectAccounts": {
+    "message": "Alege conturile"
+  },
+  "selectAll": {
+    "message": "Alege-le pe toate"
   },
   "selectAnAccount": {
-    "message": "Selectați un cont"
+    "message": "Alege un cont"
+  },
+  "selectAnAccountAlreadyConnected": {
+    "message": "Acest cont a fost deja conectat la MetaMask"
   },
   "selectEachPhrase": {
-    "message": "Vă rugăm să selectați fiecare expresie pentru a vă asigura că este corectă."
+    "message": "Te rugăm să alegi fiecare frază în ordine pentru a ne asigura că este corectă."
   },
   "selectHdPath": {
-    "message": "Selectare cale HD"
+    "message": "Alege calea HD"
+  },
+  "selectNFTPrivacyPreference": {
+    "message": "Alege preferința de confidențialitate pentru NFT-uri"
   },
   "selectPathHelp": {
-    "message": "Dacă nu vedeți mai jos conturile dvs. Ledger existente, încercați să comutați calea la „Legacy (MEW / MyCrypto)”"
+    "message": "Dacă nu vezi conturile la care te aștepți, încearcă să schimbi calea HD."
   },
   "selectType": {
-    "message": "Selectați tipul"
+    "message": "Alege tipul"
+  },
+  "selectingAllWillAllow": {
+    "message": "Selectarea tuturor conturilor va permite acestui site să vadă toate conturile tale curente. Asigură-te că ai încredere în acest site."
   },
   "send": {
     "message": "Trimite"
   },
   "sendAmount": {
-    "message": "Suma trimisă"
+    "message": "Trimite o sumă"
+  },
+  "sendSpecifiedTokens": {
+    "message": "Trimite $1",
+    "description": "Simbolul token-ului specificat"
+  },
+  "sendTo": {
+    "message": "Trimite către"
   },
   "sendTokens": {
-    "message": "Trimiteți indicative"
+    "message": "Trimite token-uri"
+  },
+  "sendingNativeAsset": {
+    "message": "Se trimite $1",
+    "description": "$1 reprezintă simbolul monedei native pentru rețeaua curentă (de exemplu, ETH sau BNB)"
   },
   "separateEachWord": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
+    "message": "Separă fiecare cuvânt cu un singur spațiu"
+  },
+  "setAdvancedPrivacySettings": {
+    "message": "Configurează setările avansate de confidențialitate"
+  },
+  "setAdvancedPrivacySettingsDetails": {
+    "message": "MetaMask folosește aceste servicii terțe pentru a îmbunătăți utilizarea și siguranța produsului."
   },
   "settings": {
     "message": "Setări"
   },
+  "show": {
+    "message": "Arată"
+  },
   "showAdvancedGasInline": {
-    "message": "Controale avansate pentru gas"
+    "message": "Control avansat al gazului"
   },
   "showAdvancedGasInlineDescription": {
-    "message": "Selectați aceasta pentru a arăta prețul gasului și comenzile de limitare direct pe ecranele de trimitere și confirmare."
+    "message": "Selectează asta pentru a afișa prețul gazului și pentru a limita controlul direct din ecranele de trimitere și confirmare."
   },
   "showFiatConversionInTestnets": {
-    "message": "Afișează conversiile pe rețelele de test (testnets)"
+    "message": "Arată conversia pe rețelele de test"
   },
   "showFiatConversionInTestnetsDescription": {
-    "message": "Selectați pentru a afișa conversia fiat pe Testnets"
+    "message": "Selectează asta pentru a afișa conversia în valută pe rețelele de test"
   },
   "showHexData": {
-    "message": "Arată datele hex"
+    "message": "Arată date Hex"
   },
   "showHexDataDescription": {
-    "message": "Selectați această opțiune pentru a arăta câmpul de date hexazecimale în ecranul de trimitere."
+    "message": "Selectează asta pentru a afișa câmpul pentru datele hex în ecranul de trimitere"
+  },
+  "showHide": {
+    "message": "Arată/ascunde"
+  },
+  "showIncomingTransactions": {
+    "message": "Arată tranzacțiile primite"
+  },
+  "showIncomingTransactionsDescription": {
+    "message": "Selectează asta pentru a folosi Etherscan la afișarea tranzacțiilor primite în lista de tranzacții"
+  },
+  "showPermissions": {
+    "message": "Arată permisiunile"
   },
   "showPrivateKeys": {
-    "message": "Afișați cheile private"
+    "message": "Arată cheile private"
+  },
+  "showRecommendations": {
+    "message": "Arată recomandările"
+  },
+  "showSeedPhrase": {
+    "message": "Arată Fraza Secretă de Recuperare"
+  },
+  "showTestnetNetworks": {
+    "message": "Arată rețelele de test"
+  },
+  "showTestnetNetworksDescription": {
+    "message": "Selectează asta pentru a afișa rețelele de test în lista rețelelor"
   },
   "sigRequest": {
-    "message": "Solicitare de semnătură"
+    "message": "Cerere de semnătură"
   },
   "sign": {
-    "message": "Semnați"
+    "message": "Semnează"
   },
   "signNotice": {
-    "message": "Semnarea acestui mesaj poate avea efecte secundare periculoase. Semnați mesajele numai de pe site-urile în care aveți încredere deplină să vă acceseze întregul cont. Această metodă periculoasă va fi eliminată într-o versiune viitoare."
+    "message": "Semnarea acestui mesaj poate fi periculos. Această semnătură poate realiza orice operațiune în numele contului tău, inclusiv preluarea controlului complet al contului tău și activelor tale de către site-ul care a inițiat cererea. Semnează acest mesaj doar dacă știi ce faci, sau ai încredere deplină în site-ul care a inițiat cererea."
   },
   "signatureRequest": {
-    "message": "Cerere semnătură"
+    "message": "Cerere de semnătură"
+  },
+  "signatureRequest1": {
+    "message": "Mesaj"
   },
   "signed": {
     "message": "Semnat"
   },
+  "simulationErrorMessage": {
+    "message": "Se așteaptă ca această tranzacție să eșueze. Încercarea de a o executa se așteaptă a fi scumpă și nu este recomandată."
+  },
+  "simulationErrorMessageV2": {
+    "message": "Nu am putut estima gazul. S-ar putea să fie o eroare în contract, iar tranzacția să eșueze."
+  },
+  "skip": {
+    "message": "Sari peste"
+  },
+  "skipAccountSecurity": {
+    "message": "Sari peste securitatea contului?"
+  },
+  "skipAccountSecurityDetails": {
+    "message": "Am luat la cunoștință că până ce nu îmi creez o copie de securitate a Frazei mele Secrete de Recuperare, s-ar putea să pierd accesul la conturile mele și la toate activele lor."
+  },
   "slow": {
-    "message": "Lent"
+    "message": "Lentă"
   },
   "somethingWentWrong": {
-    "message": "Hopa! A apărut o eroare."
+    "message": "Oops! Ceva nu a mers bine!"
   },
   "speedUp": {
-    "message": "Accelerați"
+    "message": "Accelerează"
   },
   "speedUpCancellation": {
-    "message": "Accelerați această anulare"
+    "message": "Accelerează această anulare"
+  },
+  "speedUpExplanation": {
+    "message": "Am actualizat taxa de gaz în funcție de condițiile din rețea și am mărit-o cu 10% (solicitată de rețea)."
+  },
+  "speedUpPopoverTitle": {
+    "message": "Accelerează tranzacția"
+  },
+  "speedUpTooltipText": {
+    "message": "Noua taxă de gaz"
   },
   "speedUpTransaction": {
-    "message": "Accelerați această tranzacție"
+    "message": "Accelerează această tranzacție"
+  },
+  "spendLimitAmount": {
+    "message": "Limita de cheltuieli"
+  },
+  "spendLimitInsufficient": {
+    "message": "Limită de cheltuieli insuficientă"
+  },
+  "spendLimitInvalid": {
+    "message": "Limită de cheltuieli nevalidă; trebuie să fie un număr pozitiv"
+  },
+  "spendLimitPermission": {
+    "message": "Permisiune pentru limita de cheltuieli"
+  },
+  "spendLimitRequestedBy": {
+    "message": "Limita de cheltuieli solicitată de $1",
+    "description": "Originea site-ului care solicită limita de cheltuieli"
+  },
+  "spendLimitTooLarge": {
+    "message": "Limită de cheltuieli prea mare"
+  },
+  "stable": {
+    "message": "Stabilă"
+  },
+  "stableLowercase": {
+    "message": "stabilă"
   },
   "stateLogError": {
-    "message": "Eroare la recuperarea înregistrărilor de stare."
+    "message": "Eroare la preluarea jurnalelor de stare."
+  },
+  "stateLogFileName": {
+    "message": "Jurnalele de stare MetaMask"
   },
   "stateLogs": {
     "message": "Jurnale de stare"
   },
   "stateLogsDescription": {
-    "message": "Jurnalele de stare conțin adresele contului dvs. public și tranzacțiile trimise."
+    "message": "Jurnalele de stare conțin adresele publice ale conturilor tale și tranzacțiile trimise."
+  },
+  "statusConnected": {
+    "message": "Conectat"
+  },
+  "statusNotConnected": {
+    "message": "Neconectat"
+  },
+  "step1LatticeWallet": {
+    "message": "Asigură-te că dispozitivul tău Latticel este pregătit de conectare"
+  },
+  "step1LatticeWalletMsg": {
+    "message": "Poți să conectezi MetaMask la dispozitivul tău Latticel odată ce este configurat și online. Deblochează-ți dispozitivul și pregătește-ți ID-ul dispozitivul. Pentru a afla mai multe despre portofelele hardware, $1",
+    "description": "$1 reprezintă cheia „hardwareWalletSupportLinkConversion”"
+  },
+  "step1LedgerWallet": {
+    "message": "Descarcă aplicația Ledger"
+  },
+  "step1LedgerWalletMsg": {
+    "message": "Descarc-o, configureaz-o și introdu-ți parola pentru a debloca $1.",
+    "description": "$1 reprezintă cheia „ledgerLiveApp”"
+  },
+  "step1TrezorWallet": {
+    "message": "Introdu portofelul Trezor"
+  },
+  "step1TrezorWalletMsg": {
+    "message": "Conectează-ți portofelul direct la computer-ul tău. Pentru a afla mai multe despre portofelele hardware, $1",
+    "description": "$1 reprezintă cheia „hardwareWalletSupportLinkConversion”"
+  },
+  "step2LedgerWallet": {
+    "message": "Introdu portofelul Ledger"
+  },
+  "step2LedgerWalletMsg": {
+    "message": "Conectează-ți portofelul direct la computer-ul tău. Deblochează-ți dispozitivul Ledger și deschide aplicația Ethereum. Pentru a afla mai multe despre folosirea portofelelor hardware, $1.",
+    "description": "$1 reprezintă cheia „hardwareWalletSupportLinkConversion”"
   },
   "storePhrase": {
-    "message": "Păstrați această expresie într-un program de gestionare a parolelor cum ar fi 1Password."
+    "message": "Păstrează această frază într-un manager de parole precum 1Password."
+  },
+  "submit": {
+    "message": "Trimite"
   },
   "submitted": {
     "message": "Trimis"
   },
+  "support": {
+    "message": "Asistență"
+  },
   "supportCenter": {
-    "message": "Accesați centrul de asistență"
+    "message": "Vizitează Centrul nostru de asistență"
+  },
+  "swap": {
+    "message": "Schimbul"
+  },
+  "swapAdvancedSlippageInfo": {
+    "message": "Atunci când prețul se schimbă între timpul plasării comenzii tale și timpul confirmării acesteia, are loc o „alunecare” (slippage). Schimbul tău va fi anulat automat dacă alunecarea depășește „alunecarea maximă” impusă de tine."
+  },
+  "swapAggregator": {
+    "message": "Agregator"
+  },
+  "swapAllowSwappingOf": {
+    "message": "Permite schimbul de $1",
+    "description": "Afișează utilizatorului faptul că trebuie să permită unui token să participe la schimb în portofelul lui hardware"
+  },
+  "swapAmountReceived": {
+    "message": "Sumă garantată"
+  },
+  "swapAmountReceivedInfo": {
+    "message": "Aceasta este suma minimă pe care o vei primi. S-ar putea să primești mai mult, în funcție de alunecare."
+  },
+  "swapApproval": {
+    "message": "Aprobă $1 pentru schimburi",
+    "description": "Folosit în lista de tranzcții pentru a descrie o tranzacție care urmează să folosească un token într-un schimb. $1 este simbolul token-ului care a fost aprobat."
+  },
+  "swapApproveNeedMoreTokens": {
+    "message": "Ai nevoie de încă $1 $2 pentru a completa schimbul",
+    "description": "Anunță utilizatorul de câte unități din token-ul respectiv are nevoie pentru un anumit schimb. $1 este numărul de token-uri, iar $2 este simbolul token-ului."
+  },
+  "swapBestOfNQuotes": {
+    "message": "Cele mai bune cotații, din totalul de $1.",
+    "description": "$1 este numărul de cotații pe care utilizatorul îl poate selecta la deschiderea listei de cotații în ecranul „Vezi cotațiile”"
+  },
+  "swapBuildQuotePlaceHolderText": {
+    "message": "Nu s-au găsit token-uri disponibile pentru $1",
+    "description": "Anunță utilizatorul că o anumită căutare pentru un token nu a returnat niciun token din listele noastre. $1 poate fi orice frază sau un text"
+  },
+  "swapConfirmWithHwWallet": {
+    "message": "Confirmă cu portofelul tău hardware"
+  },
+  "swapContractDataDisabledErrorDescription": {
+    "message": "În aplicația Ethereum de pe dispozitivul tău Ledger, mergi la „Setări” și permite datele contractelor. Apoi, încearcă să faci schimbul din nou."
+  },
+  "swapContractDataDisabledErrorTitle": {
+    "message": "Datele contractelor nu sunt activate pe dispozitivul tău Ledger."
+  },
+  "swapCustom": {
+    "message": "personalizat"
+  },
+  "swapDecentralizedExchange": {
+    "message": "Schimb descentralizat"
+  },
+  "swapDirectContract": {
+    "message": "Contract direct"
+  },
+  "swapEditLimit": {
+    "message": "Editează limita"
+  },
+  "swapEnableDescription": {
+    "message": "Aceasta este obligatorie și oferă permisiunea ca MetaMask să schimbe $1.",
+    "description": "Anunță utilizatorul despre necesitatea aprobării tranzacției pentru schimburi. $1 va fi simbolul token-ului aprobat pentru schimburi."
+  },
+  "swapEnableTokenForSwapping": {
+    "message": "Asta va $1 pentru schimburi",
+    "description": "$1 este cheia „enableToken” (de exemplu, „activa ETH”)"
+  },
+  "swapEstimatedNetworkFees": {
+    "message": "Taxele estimate ale rețelei"
+  },
+  "swapEstimatedNetworkFeesInfo": {
+    "message": "Aceasta este o estimare a taxei rețelei care va fi folosită pentru completarea schimbului. Suma actuală poate diferi în funcție de condițiile rețelei."
+  },
+  "swapFailedErrorDescriptionWithSupportLink": {
+    "message": "Tranzacțiile eșuate sunt un lucru normal și suntem aici să te ajutăm. Dacă problema persistă, poți să ne contactezi pe $1.",
+    "description": "Acest mesaj este afișat utilizatorului dacă schimbul lui eșuează. $1 va fi înlocuit de „support.metamask.io”"
+  },
+  "swapFailedErrorTitle": {
+    "message": "Schimb eșuat"
+  },
+  "swapFetchingQuotes": {
+    "message": "Se preiau cotațiile"
+  },
+  "swapFetchingQuotesErrorDescription": {
+    "message": "Hmmm... ceva nu a mers bine. Încearcă din nou, iar dacă problema persistă, contactează asistența."
+  },
+  "swapFetchingQuotesErrorTitle": {
+    "message": "Eroare la preluarea cotațiilor"
+  },
+  "swapFetchingTokens": {
+    "message": "Se preiau token-urile..."
+  },
+  "swapFromTo": {
+    "message": "Schimbul din $1 în $2",
+    "description": "Anunța utilizatorul că trebuie să confirme schimbul a două token-uri în portofelul lui hardware. $1 este token-ul care este schimbat, iar $2 este token-ul în care se schimbă"
+  },
+  "swapGasFeesDetails": {
+    "message": "Taxele de gaz sunt estimate și vor fluctua în funcție de traficul rețelei și complexitatea rețelei."
+  },
+  "swapGasFeesLearnMore": {
+    "message": "Află mai multe despre taxele de gaz"
+  },
+  "swapGasFeesSplit": {
+    "message": "Taxele de gaz din ecranul anterior sunt împărțite între aceste două tranzacții."
+  },
+  "swapGasFeesSummary": {
+    "message": "Taxele de gaz sunt plătite minerilor crypto care procesează tranzacțiile în rețeaua $1. MetaMask nu profită din urma taxelor de gaz.",
+    "description": "$1 este rețeaua selectată (de exemplu, Ethereum sau BSC)"
+  },
+  "swapHighSlippageWarning": {
+    "message": "Procentajul de alunecare este foarte mare."
+  },
+  "swapIncludesMMFee": {
+    "message": "Include o taxă de $1% percepută de MetaMask.",
+    "description": "Oferă informații despre taxa pe care MetaMask o percepe pentru schimburi. $1 este un număr cu zecimale."
+  },
+  "swapLowSlippageError": {
+    "message": "Tranzacția poate eșua, alunecarea maximă este prea mică."
+  },
+  "swapMaxSlippage": {
+    "message": "Alunecarea maximă"
+  },
+  "swapMetaMaskFee": {
+    "message": "Taxa MetaMask"
+  },
+  "swapMetaMaskFeeDescription": {
+    "message": "Găsim cel mai bun preț din surse de lichidare de top, de fiecare dată. O taxă de $1% este inclusă automat în această cotație.",
+    "description": "Oferă informații despre taxa pe care MetaMask o percepe pentru schimburi. $1 este un număr cu zecimale."
+  },
+  "swapNQuotesWithDot": {
+    "message": "$1 cotații.",
+    "description": "$1 este numărul de cotații pe care utilizatorul le poate selecta din lista de cotații din ecranul „Vezi cotația”"
+  },
+  "swapNewQuoteIn": {
+    "message": "Cotații noi $1",
+    "description": "Anunță utilizatorul perioada de timp până când cotațiile afișate se vor actualiza. $1 este un timer care numără de la 1:00 și până la 0:00"
+  },
+  "swapOnceTransactionHasProcess": {
+    "message": "Token-ul tău $1 va fi adăugat la contul tău odată ce tranzacția se procesează.",
+    "description": "Acest mesaj comunică token-ul care ese transferat. Este afișat în ecranul de așteptare al schimbului. $1 va fi un simbol al unui token."
+  },
+  "swapPriceDifference": {
+    "message": "Ești pe cale să schimbi $1 $2 (~$3) pentru $4 $5 (~$6).",
+    "description": "Acest mesaj reprezintă alunecarea de preț pentru schimb. $1 și $4 sunt un număr (de exemplu, 2.89), $2 și $5 sunt simboluri (de exemplu, ETH), iar $3 și $6 sunt sumele în valută."
+  },
+  "swapPriceDifferenceTitle": {
+    "message": "Diferență de preț de ~$1%",
+    "description": "$1 este un număr (de exemplu, 1.23) care reprezintă diferența de preț."
+  },
+  "swapPriceImpactTooltip": {
+    "message": "Impactul prețului este diferența între prețul actual din piață și suma obținută în timpul execuției tranzacției. Impactul prețului este o funcție de mărimea schimbului tău, relativ la mărimea fondului de lichiditate."
+  },
+  "swapPriceUnavailableDescription": {
+    "message": "Impactul prețului nu a putut fi determinat din cauza lipsei datelor despre prețul pieței. Confirmă faptul că ești confortabil cu suma de token-uri pe care urmează să o primești, înainte de a schimba."
+  },
+  "swapPriceUnavailableTitle": {
+    "message": "Verifică-ți rata înainte de a continua"
+  },
+  "swapProcessing": {
+    "message": "Se procesează"
+  },
+  "swapQuoteDetails": {
+    "message": "Detalii despre cotație"
+  },
+  "swapQuoteDetailsSlippageInfo": {
+    "message": "Atunci când prețul se schimbă între timpul plasării comenzii tale și timpul confirmării acesteia, are loc o „alunecare” (slippage). Schimbul tău va fi anulat automat dacă alunecarea depășește „toleranța alunecării” impusă de tine."
+  },
+  "swapQuoteNofN": {
+    "message": "Cotația $1 din $2",
+    "description": "Un contor pentru cotațiile afișate utilizatorului în timp ce așteaptă celelalte cotații să se încarce. $1 este numărul de cotații deja încărcate, iar $2 este numărul total de cotații."
+  },
+  "swapQuoteSource": {
+    "message": "Sursa cotației"
+  },
+  "swapQuotesExpiredErrorDescription": {
+    "message": "Te rugăm să ceri cotații noi pentru a primi cele mai noi rate."
+  },
+  "swapQuotesExpiredErrorTitle": {
+    "message": "Timpul de expirare a cotațiilor"
+  },
+  "swapQuotesNotAvailableErrorDescription": {
+    "message": "Încearcă să ajustezi suma sau setările alunecării, iar după încearcă din nou."
+  },
+  "swapQuotesNotAvailableErrorTitle": {
+    "message": "Nicio cotație disponibilă"
+  },
+  "swapRate": {
+    "message": "Rată"
+  },
+  "swapReceiving": {
+    "message": "În curs de primire"
+  },
+  "swapReceivingInfoTooltip": {
+    "message": "Aceasta este o estimare. Suma exactă depinde de alunecare."
+  },
+  "swapRequestForQuotation": {
+    "message": "Cere cotații"
+  },
+  "swapReviewSwap": {
+    "message": "Revizuiește schimbul"
+  },
+  "swapSearchForAToken": {
+    "message": "Caută un token"
+  },
+  "swapSelect": {
+    "message": "Alege"
+  },
+  "swapSelectAQuote": {
+    "message": "Alege o cotație"
+  },
+  "swapSelectAToken": {
+    "message": "Alege un token"
+  },
+  "swapSelectQuotePopoverDescription": {
+    "message": "Mai jos sunt toate cotațiile preluate de la multiple surse de lichidare."
+  },
+  "swapSlippageNegative": {
+    "message": "Alunecarea trebuie să fie mai mare sau egală cu 0"
+  },
+  "swapSource": {
+    "message": "Sursă de lichidare"
+  },
+  "swapSourceInfo": {
+    "message": "Căutăm surse de lichidare multiple (schimburi, agregatori și creatori de piață profesioniști) pentru a găsi cele mai bune rate și cele mai mici taxe de rețea."
+  },
+  "swapSwapFrom": {
+    "message": "Schimbă din"
+  },
+  "swapSwapSwitch": {
+    "message": "Schimbă din și în token-uri"
+  },
+  "swapSwapTo": {
+    "message": "Schimbă în"
+  },
+  "swapToConfirmWithHwWallet": {
+    "message": "pentru a confirma cu portofelul tău hardware"
+  },
+  "swapTokenAvailable": {
+    "message": "Cele $1 au fost adăugate la contul tău.",
+    "description": "Acest mesaj este afișat după ce un schimb reușit are loc și comunică numărul exact de token-uri pe care utilizatorul l-a primit în urma schimbului. $1 este numărul de token-uri cu zecimale, urmat de simbolul token-ului."
+  },
+  "swapTokenBalanceUnavailable": {
+    "message": "Nu am putut prelua soldul tău de $1",
+    "description": "Acest mesaj comunică utilizatorului că soldul acestuia pentru un anumit token nu este disponibil momentan. $1 reprezintă simbolul token-ului."
+  },
+  "swapTokenToToken": {
+    "message": "Schimbă $1 în $2",
+    "description": "Folosit în lista de tranzacții pentru a descrie un schimb. $1 și $2 sunt simbolurile token-urilor implicate în schimb."
+  },
+  "swapTokenVerificationAddedManually": {
+    "message": "Acest token a fost adăugat manual."
+  },
+  "swapTokenVerificationMessage": {
+    "message": "Întotdeauna confirmă adresa token-ului pe $1.",
+    "description": "Informă utilizatorul de Etherescan ca fiind un loc unde pot verifica informația despre un token. $1 este înlocuit de „Etherscan”, urmat de o iconiță de informații care afișează mai multe atunci când mouse-ul e pus pe ea."
+  },
+  "swapTokenVerificationOnlyOneSource": {
+    "message": "Verificată doar de 1 sursă."
+  },
+  "swapTokenVerificationSources": {
+    "message": "Verificată de $1 surse.",
+    "description": "Indică numărul de surse care recunosc simbolul și adresa unui anumit token. $1 este un număr cu zecimale."
+  },
+  "swapTooManyDecimalsError": {
+    "message": "$1 permite până la $2 zecimale",
+    "description": "$1 este simbolul token-ului, iar $2 este numărul maxim de zecimale permis pentru token"
+  },
+  "swapTransactionComplete": {
+    "message": "Tranzacție completă"
+  },
+  "swapTwoTransactions": {
+    "message": "2 tranzacții"
+  },
+  "swapUnknown": {
+    "message": "Necunoscut"
+  },
+  "swapVerifyTokenExplanation": {
+    "message": "Mai multe token-uri pot folosi același nume și simbol. Verifică pe $1 faptul că acesta este token-ul pe care îl cauți.",
+    "description": "Acesta este un mesaj care apare pe un tooltip lângă mesajul „verifyThisTokenOn”. Oferă utilizatorului mai multe informații despre de ce ar trebui să verifice token-ul într-un explorator de blocuri. $1 va fi numele sau url-ul exploratorului de blocuri, care va fi „etherscan” sau un explorator de blocuri specificat pentru o anumită rețea personalizată."
+  },
+  "swapYourTokenBalance": {
+    "message": "$1 $2 disponibil pentru schimb",
+    "description": "Anunță utilizatorul cât de mult dintr-un token are în soldul său. $1 este un număr cu zecimale care reprezintă numărul de token-uri, iar $2 este simbolul token-ului."
+  },
+  "swapZeroSlippage": {
+    "message": "0% alunecare"
+  },
+  "swapsAdvancedOptions": {
+    "message": "Opțiuni avansate"
+  },
+  "swapsExcessiveSlippageWarning": {
+    "message": "Procentul de alunecare este prea mare și va determina o rată slabă. Te rugăm să reduci toleranța alunecării la o valoare sub 15%."
+  },
+  "swapsMaxSlippage": {
+    "message": "Toleranța alunecării"
+  },
+  "swapsNotEnoughForTx": {
+    "message": "Nu ai destul $1 pentru a completa această tranzacție",
+    "description": "Anunță utilizatorul că nu are destule token-uri pentru un schimb. $1 este simbolul token-ului"
+  },
+  "swapsViewInActivity": {
+    "message": "Vezi în activitate"
+  },
+  "switchEthereumChainConfirmationDescription": {
+    "message": "Asta va schimba rețeaua selectat din MetaMask într-o rețea adăugată anterior:"
+  },
+  "switchEthereumChainConfirmationTitle": {
+    "message": "Permiți acestui site să schimbe rețeaua?"
+  },
+  "switchNetwork": {
+    "message": "Schimbă rețeaua"
   },
   "switchNetworks": {
-    "message": "Schimbați rețelele"
+    "message": "Schimbă rețeaua"
+  },
+  "switchToThisAccount": {
+    "message": "Schimbă la acest cont"
+  },
+  "switchingNetworksCancelsPendingConfirmations": {
+    "message": "Schimbarea rețelei va anula toate tranzacțiile aflate în așteptare"
   },
   "symbol": {
-    "message": "Simbol"
+    "message": "Simbolul"
   },
   "symbolBetweenZeroTwelve": {
-    "message": "Simbolul trebuie să fie de 11 caractere sau mai puțin."
+    "message": "Simbolul trebuie să aibă cel mult 11 caractere."
+  },
+  "syncFailed": {
+    "message": "Sincronizarea a eșuat"
+  },
+  "syncInProgress": {
+    "message": "Sincronizare în curs"
   },
   "syncWithMobile": {
-    "message": "Sincronizați cu dispozitivul mobil"
+    "message": "Sincronizează cu aplicația mobilă"
   },
   "syncWithMobileBeCareful": {
-    "message": "Asigurați-vă că nimeni altcineva nu poate vedea ecranul dvs. când scanați acest cod"
+    "message": "Asigură-te că nimeni nu se uită la ecranul tău atunci când scanezi acest cod"
   },
   "syncWithMobileComplete": {
-    "message": "Datele dvs. au fost sincronizate cu succes. Bucurați-vă de aplicația mobilă MetaMask!"
+    "message": "Datele tale au fost sincronizate cu succes. Bucură-te de aplicația mobilă MetaMask!"
   },
   "syncWithMobileDesc": {
-    "message": "Vă puteți sincroniza conturile și informațiile cu dispozitivul dvs. mobil. Deschideți aplicația mobilă MetaMask, mergeți la „Setări” și atingeți „Sincronizare de la extensia de browser”"
+    "message": "Îți poți sincroniza conturile și informațiile cu dispozitivul tău mobil. Deschide aplicația mobilă MetaMask, mergi la „Setări” și apasă pe „Sincronizează din extensia browser”"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Dacă deschideți aplicația pentru mobil MetaMask pentru prima oară, urmați pașii afișați pe telefonul dvs."
+    "message": "Dacă deschizi pentru prima dată aplicația mobilă MetaMask, doar urmărește pașii din telefonul tău."
   },
   "syncWithMobileScanThisCode": {
-    "message": "Scanați acest cod folosind aplicația dvs. mobilă MetaMask"
+    "message": "Scanează acest cod cu aplicația ta mobilă MetaMask"
   },
   "syncWithMobileTitle": {
-    "message": "Sincronizați cu mobilul"
+    "message": "Sincronizează cu aplicația mobilă"
+  },
+  "syncWithThreeBox": {
+    "message": "Sincronizează datele cu 3Box (experimental)"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "Activează pentru a avea setările salvate cu 3Box. Funcționalitatea este momentan experimentală, așa că folosește-o pe propria răspundere."
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "3Box a fost dezactivat din cauza unei erori apărute în timpul primei sincronizări"
   },
   "terms": {
-    "message": "Termeni și condiții"
+    "message": "Termenii de utilizare"
+  },
+  "termsOfService": {
+    "message": "Termenii serviciului"
   },
   "testFaucet": {
-    "message": "Robinet de testare"
+    "message": "Robinet de test"
   },
   "thisWillCreate": {
-    "message": "Această acțiune va crea un nou portofel și o nouă fraza inițială."
+    "message": "Acesta va crea un portofel nou și o nouă Frază Secretă de Recuperare"
+  },
+  "time": {
+    "message": "Timp"
   },
   "tips": {
-    "message": "Cadouri bănești"
+    "message": "Sfaturi"
   },
   "to": {
     "message": "Către"
   },
+  "toAddress": {
+    "message": "Către: $1",
+    "description": "$1 este adresa inclusă în eticheta „Către”. De obicei, este prescurtată folosind „shortenAddress”"
+  },
+  "toggleTestNetworks": {
+    "message": "$1 rețele de test",
+    "description": "$1 este un link definit de cheia „showHide”. Link-ul va deschide pagina de setări avansate, unde utilizatorii pot activa sau dezactiva afișarea rețelelor de test din lista dropdown cu rețele."
+  },
   "token": {
-    "message": "Indicativ"
+    "message": "Token"
   },
   "tokenAlreadyAdded": {
-    "message": "Token-ul a fost adăugat deja."
+    "message": "Token-ul a fost deja adăugat."
   },
   "tokenContractAddress": {
-    "message": "Adresa din contractul de token"
+    "message": "Adresa contractului pentru token"
+  },
+  "tokenDecimalFetchFailed": {
+    "message": "Zecimalele pentru token sunt obligatorii."
+  },
+  "tokenDetectionAnnouncement": {
+    "message": "Nouă! Detectare de token-uri îmbunătățită pe Rețeaua Principala Ethereum, ca parte dintr-o funcționalitate experimentală. $1"
   },
   "tokenSymbol": {
-    "message": "Simbol token"
+    "message": "Simbolul token-ului"
+  },
+  "tooltipApproveButton": {
+    "message": "Sunt de acord"
+  },
+  "total": {
+    "message": "Total"
   },
   "transaction": {
-    "message": "tranzacție"
+    "message": "tranzacția"
   },
   "transactionCancelAttempted": {
-    "message": "Tentativă de anulare a tranzacției cu o taxă gas de $1 la $2"
+    "message": "Încercare de anulare a tranzacției cu o taxă de gaz estimată de $1, la $2"
   },
   "transactionCancelSuccess": {
-    "message": "Tranzacția a fost anulată cu succes la $2"
+    "message": "Tranzacție anulată cu succes la $2"
   },
   "transactionConfirmed": {
     "message": "Tranzacție confirmată la $2."
   },
   "transactionCreated": {
-    "message": "Tranzacție creată cu o valoare de $1 la $2."
+    "message": "Tranzacție creată cu o valoare de $1, la $2."
+  },
+  "transactionData": {
+    "message": "Date despre tranzacție"
+  },
+  "transactionDecodingAccreditationDecoded": {
+    "message": "Decodificat de Truffle"
+  },
+  "transactionDecodingAccreditationVerified": {
+    "message": "Contract verificat pe $1"
+  },
+  "transactionDecodingUnsupportedNetworkError": {
+    "message": "Decodificarea tranzacției nu este disponibilă pentru ID-ul lanțului $1"
+  },
+  "transactionDetailDappGasMoreInfo": {
+    "message": "Sugerat de site"
+  },
+  "transactionDetailDappGasTooltip": {
+    "message": "Editează pentru a folosi taxa de gaz recomandată de MetaMask, bazată pe cel mai recent bloc."
+  },
+  "transactionDetailGasHeading": {
+    "message": "Taxă de gaz estimată"
+  },
+  "transactionDetailGasHeadingV2": {
+    "message": "Gaz"
+  },
+  "transactionDetailGasInfoV2": {
+    "message": "estimată"
+  },
+  "transactionDetailGasTooltipConversion": {
+    "message": "Află mai mult despre taxele de gaz"
+  },
+  "transactionDetailGasTooltipExplanation": {
+    "message": "Taxele de gaz sunt setate de rețea și fluctuează în funcție de traficul rețelei și complexitatea tranzacției."
+  },
+  "transactionDetailGasTooltipIntro": {
+    "message": "Taxele de gaz sunt plătite minerilor crypto care procesează tranzacțiile în rețeaua $1. MetaMask nu profită din urma taxelor de gaz"
+  },
+  "transactionDetailGasTotalSubtitle": {
+    "message": "Suma + taxa de gaz"
+  },
+  "transactionDetailLayer2GasHeading": {
+    "message": "Taxa de gaz (Nivel 2)"
+  },
+  "transactionDetailMultiLayerTotalSubtitle": {
+    "message": "Sumă + taxe"
   },
   "transactionDropped": {
-    "message": "Tranzacție abandonată la $2."
+    "message": "Tranzacție eșuată la $2."
   },
   "transactionError": {
-    "message": "Eroare de tranzacție. Excepție lansată în codul contractului."
+    "message": "Eroare la executarea tranzacției. S-a aruncat o excepție în codul contractului."
   },
   "transactionErrorNoContract": {
-    "message": "Se încearcă apelarea unei funcții pe o adresă non-contract."
+    "message": "S-a încercat apelarea unei funcții dintr-o adresă care nu corespunde unui contract."
   },
   "transactionErrored": {
-    "message": "Tranzacția a întâlnit o eroare."
+    "message": "Tranzacția a întâmpinat o eroare."
   },
   "transactionFee": {
     "message": "Taxa tranzacției"
   },
+  "transactionHistoryBaseFee": {
+    "message": "Taxa de bază (GWEI)"
+  },
+  "transactionHistoryL1GasLabel": {
+    "message": "Totalul taxelor de gaz L1"
+  },
+  "transactionHistoryL2GasLimitLabel": {
+    "message": "Limita de gaz L2"
+  },
+  "transactionHistoryL2GasPriceLabel": {
+    "message": "Prețul gazului L2"
+  },
+  "transactionHistoryMaxFeePerGas": {
+    "message": "Taxa maximă per gaz"
+  },
+  "transactionHistoryPriorityFee": {
+    "message": "Taxa de prioritate (GWEI)"
+  },
+  "transactionHistoryTotalGasFee": {
+    "message": "Totalul taxelor de gaz"
+  },
   "transactionResubmitted": {
-    "message": "Tranzacția a fost redepusă cu taxa gaz majorată de la $1 la $2"
+    "message": "Tranzacția fost retrimisă cu o taxă de gaz mărită și estimată de $1, la $2"
   },
   "transactionSubmitted": {
-    "message": "Tranzacția a fost trimisă, cu o taxă gas de $1 la $2."
+    "message": "Tranzacția a fost trimisă cu o taxă de gaz estimată de $1, la $2."
   },
   "transactionUpdated": {
-    "message": "Tranzacție actualizată la $2."
+    "message": "Tranzacția a fost actualizată la $2."
+  },
+  "transfer": {
+    "message": "Transferă"
   },
   "transferBetweenAccounts": {
     "message": "Transferă între conturile mele"
   },
   "transferFrom": {
-    "message": "Transferați de la"
+    "message": "Transferă de la"
+  },
+  "troubleConnectingToWallet": {
+    "message": "Am întâmpinat probleme la conectarea dispozitivului tău $1. Încearcă să revizuiești $2, iar după încearcă din nou.",
+    "description": "$1 este numele portofelului hardware, iar $2 este link-ul către ghidul pentru conectarea portofelului"
   },
   "troubleTokenBalances": {
-    "message": "Am avut dificultăți cu încărcarea soldurilor dvs. de tokenuri. Le puteți vizualiza",
-    "description": "Followed by a link (here) to view token balances"
+    "message": "Am întâmpinat probleme la încărcarea soldului pentru token-urile tale. Le poți vedea ",
+    "description": "Urmat de un link (aici) pentru a vedea soldul token-urilor"
+  },
+  "trustSiteApprovePermission": {
+    "message": "Oferind permisiunea, permiți ca $1 să îți acceseze fondurile"
   },
   "tryAgain": {
     "message": "Încearcă din nou"
   },
+  "tryAnywayOption": {
+    "message": "Voi încerca oricum"
+  },
+  "turnOnTokenDetection": {
+    "message": "Activează detecția îmbunătățită a token-urilor"
+  },
+  "twelveHrTitle": {
+    "message": "12 ore:"
+  },
+  "txInsightsNotSupported": {
+    "message": "Informațiile despre tranzacție nu sunt acceptate pentru acest contract momentan."
+  },
   "typePassword": {
-    "message": "Scrieți parola dvs. pentru MetaMask"
+    "message": "Scrie-ți parola MetaMask"
+  },
+  "u2f": {
+    "message": "U2F",
+    "description": "Numele unui API pentru ca browser-ul să interacționeze cu dispozitivele care acceptă protocolul U2F. În unele browsere, îl folosim pentru a conecta MetaMask la dispozitivele Ledger."
   },
   "unapproved": {
-    "message": "Neaprobat"
+    "message": "Neaprobată"
   },
   "units": {
     "message": "unități"
   },
   "unknown": {
-    "message": "Necunoscută"
+    "message": "Necunoscut"
   },
   "unknownCameraError": {
-    "message": "A survenit o eroare la accesarea camerei. Încercați din nou..."
+    "message": "A apărut o eroare în timpul accesării camerei tale. Încearcă din nou..."
   },
   "unknownCameraErrorTitle": {
-    "message": "Hopa! A apărut o eroare..."
+    "message": "Ooops! Ceva nu a mers bine..."
   },
   "unknownNetwork": {
     "message": "Rețea privată necunoscută"
   },
   "unknownQrCode": {
-    "message": "Eroare: Acel cod QR nu a putut fi identificat"
+    "message": "Eroare: nu am putut identifica acel cod QR"
+  },
+  "unlimited": {
+    "message": "Nelimitat"
   },
   "unlock": {
     "message": "Deblochează"
   },
   "unlockMessage": {
-    "message": "Web-ul descentralizat așteaptă"
+    "message": "Rețeaua web descentralizată așteaptă"
+  },
+  "unrecognizedChain": {
+    "message": "Această rețea personalizată nu este recunoscută. Îți recomandăm să $1 înainte de a continua",
+    "description": "$1 este un link definit de cheia „unrecognizedChanLinkText”. Link-ul va deschide instrucțiuni pentru utilizatorii care vor să valideze detaliile unei rețele personalizate."
+  },
+  "unrecognizedChainLinkText": {
+    "message": "verifici detaliile rețelei",
+    "description": "Reprezintă link-ul pentru cheia „unrecognizedChain”. Textul va fi introdus înăuntrul traducerii pentru acea cheie."
+  },
+  "unsendableAsset": {
+    "message": "Trimiterea de NFT-uri (token-uri ERC-721) nu este acceptată momentan.",
+    "description": "Acesta este un mesaj de eroare pe care îl arătăm utilizatorului în cazul în care acesta încearcă să trimită un NFT, pentru care nu oferim suport momentan"
   },
   "updatedWithDate": {
-    "message": "Actualizat $1"
+    "message": "Actualizat pe $1"
   },
   "urlErrorMsg": {
-    "message": "URL necesită prefixul potrivit HTTP/HTTPS."
+    "message": "URL-urile au nevoie de prefixul corespunzător HTTP/HTTPS."
+  },
+  "urlExistsErrorMsg": {
+    "message": "Acest URL este momentan folosit de rețeaua $1."
+  },
+  "useCollectibleDetection": {
+    "message": "Detectează automat NFT-urile"
+  },
+  "useCollectibleDetectionDescription": {
+    "message": "Afișarea datelor despre NFT-uri ar putea să dezvăluie adresa ta IP serviciilor centralizate. API-uri terțe (precum OpenSea) sunt folosite pentru a detecta NFT-urile din portofelul tău. Acest lucru îți expune adresa contului tău acelor servicii. Lasă această opțiune dezactivată dacă nu vrei ca aplicația să obțină date de la acele servicii."
+  },
+  "usePhishingDetection": {
+    "message": "Folosește detecția înșelătoriilor"
+  },
+  "usePhishingDetectionDescription": {
+    "message": "Afișează o atenționare pentru domeniile predispuse la înșelătorii care vizează utilizatorii Ethereum"
+  },
+  "useTokenDetection": {
+    "message": "Folosește detecția token-urilor"
+  },
+  "useTokenDetectionDescription": {
+    "message": "Folosim API-uri terțe pentru a detecta și afișa token-urile noi trimise portofelului tău. Dezactivează dacă nu vrei ca MetaMask să obțină date de la acele servicii."
   },
   "usedByClients": {
-    "message": "Folosit de diverși clienți"
+    "message": "Folosit de o varietate de clienți diferiți"
+  },
+  "userAccepts": {
+    "message": "Sunt de acord"
   },
   "userName": {
-    "message": "Nume utilizator"
+    "message": "Numele de utilizator"
+  },
+  "verifyThisTokenDecimalOn": {
+    "message": "Numărul de zecimale al token-ului poate fi găsit pe $1",
+    "description": "Informează utilizatorul de faptul că poate verifica informațiile despre orice token pe etherscan. $1 este înlocuit cu traducerea pentru „etherscan”"
+  },
+  "verifyThisTokenOn": {
+    "message": "Verifică acest token pe $1",
+    "description": "Informează utilizatorul de faptul că poate verifica informațiile despre orice token pe etherscan. $1 este înlocuit cu traducerea pentru „etherscan”"
+  },
+  "verifyThisUnconfirmedTokenOn": {
+    "message": "Verifică acest token pe $1 și asigură-te că acesta este token-ul pe care vrei să-l schimbi.",
+    "description": "Informează utilizatorul de faptul că poate verifica informațiile despre orice token pe etherscan. $1 este înlocuit cu traducerea pentru „etherscan”"
   },
   "viewAccount": {
-    "message": "Afișați contul"
+    "message": "Vezi contul"
+  },
+  "viewAllDetails": {
+    "message": "Vezi toate detaliile"
   },
   "viewContact": {
-    "message": "Vizualizare contact"
+    "message": "Vezi contactul"
+  },
+  "viewFullTransactionDetails": {
+    "message": "Vezi detaliile complete ale tranzacției"
+  },
+  "viewMore": {
+    "message": "Vezi mai mult"
+  },
+  "viewOnBlockExplorer": {
+    "message": "Vezi pe exploratorul de blocuri"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "Vezi $1 pe $2",
+    "description": "$1 este tipul acțiunii (Contul, Tranzacția sau Schimbul), iar $2 este URL-ul exploratorului de blocuri personalizat"
+  },
+  "viewOnEtherscan": {
+    "message": "Vezi $1 pe Etherscan",
+    "description": "$1 este tipul acțiunii (Contul, Tranzacția sau Schimbul)"
+  },
+  "viewinExplorer": {
+    "message": "Vezi $1 pe explorator",
+    "description": "$1 este tipul acțiunii (Contul, Tranzacția sau Schimbul)"
   },
   "visitWebSite": {
-    "message": "Accesați site-ul nostru"
+    "message": "Vizitează site-ul nostru web"
+  },
+  "walletConnectionGuide": {
+    "message": "ghidul nostru pentru conectarea portofelelor hardware"
+  },
+  "walletCreationSuccessDetail": {
+    "message": "Ți-ai protejat cu succes portofelul. Păstrează-ți Fraza Secretă de Recuperare în siguranță -- este responsabilitatea ta!"
+  },
+  "walletCreationSuccessReminder1": {
+    "message": "MetaMask nu îți poate recupera Fraza Secretă de Recuperare."
+  },
+  "walletCreationSuccessReminder2": {
+    "message": "MetaMask nu îți va cere niciodată Fraza Secretă de Recuperare."
+  },
+  "walletCreationSuccessReminder3": {
+    "message": "$1 cu vreo persoană, sau vei risca să-ți fie furate toate fondurile",
+    "description": "$1 este separat ca și „walletCreationSuccessReminder3BoldSection” pentru a-l putea îngroșa"
+  },
+  "walletCreationSuccessReminder3BoldSection": {
+    "message": "Niciodată nu împărtăși Fraza ta Secretă de Recuperare",
+    "description": "Fraza este separată de „walletCreationSuccessReminder3” pentru a o putea îngroșa"
+  },
+  "walletCreationSuccessTitle": {
+    "message": "Crearea portofelului a fost realizată cu succes"
+  },
+  "walletSeedRestore": {
+    "message": "Fraza Secretă de Recuperare a portofelului"
+  },
+  "web3ShimUsageNotification": {
+    "message": "Am observat că site-ul web actual a încercat să folosească API-ul vechi window.web3 care nu mai este folosit. Dacă site-ul apare să fie stricat, dă click pe $1 pentru mai multe informații.",
+    "description": "$1 este un link."
+  },
+  "webhid": {
+    "message": "WebHID",
+    "description": "Se referă la o interfață pentru conectarea dispozitivelor externe la browser. Folosit pentru conectarea dispozitivului Ledger la browser. Citește mai multe aici: https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
   "welcome": {
     "message": "Bun venit la MetaMask"
@@ -1090,22 +3400,55 @@
   "welcomeBack": {
     "message": "Bine ai revenit!"
   },
+  "welcomeExploreDescription": {
+    "message": "Stochează, trimite și cheltuiește crypto și active."
+  },
+  "welcomeExploreTitle": {
+    "message": "Explorează aplicațiile descentralizate"
+  },
+  "welcomeLoginDescription": {
+    "message": "Folosește contul tău MetaMask pentru a te conecta la aplicațiile descentralizate - nu este nevoie de nicio înregistrare."
+  },
+  "welcomeLoginTitle": {
+    "message": "Spune salut noului tău portofel"
+  },
+  "welcomeToMetaMask": {
+    "message": "Haide să începem"
+  },
+  "welcomeToMetaMaskIntro": {
+    "message": "MetaMask este un portofel securizat, în care milioane de oameni au încredere și care face lumea web3 accesibilă tuturor."
+  },
+  "whatsNew": {
+    "message": "Ce e nou",
+    "description": "Acesta este titlul popup-ului care oferă utilizatorilor notificări despre funcționalitățile noi și actualizările MetaMask."
+  },
+  "whatsThis": {
+    "message": "Ce e asta?"
+  },
   "writePhrase": {
-    "message": "Scrieți această expresie pe o bucată de hârtie și păstrați-o într-un loc sigur. Dacă vreți și mai multă securitate, notați-o pe mai multe bucăți de hârtie și păstrați-le în 2 - 3 locuri diferite."
+    "message": "Notează-ți această frază pe o foaie de hârtie și păstrează-o într-un loc sigur. Dacă vrei și mai multă securitate, noteaz-o pe mai multe foi de hârtie și păstreaz-o pe fiecare în 2 - 3 locații diferite."
+  },
+  "xOfY": {
+    "message": "$1 din $2",
+    "description": "$1 și $2 sunt destinate să fie două numere, unde $2 este un total și $1 este un număr din acel total"
+  },
+  "xOfYPending": {
+    "message": "$1 din $2 în așteptare",
+    "description": "$1 și $2 sunt destinate să fie două numere, unde $2 este numărul total de cereri în așteptare, iar $1 este un număr din acel total"
   },
   "yesLetsTry": {
-    "message": "Da, să încercăm"
+    "message": "Da, hai să încercăm"
   },
   "youNeedToAllowCameraAccess": {
-    "message": "Trebuie să permiteți accesul la cameră pentru a folosi această funcție."
+    "message": "Trebuie să permiți accesul camerei tale pentru a folosi această funcționalitate."
   },
   "youSign": {
-    "message": "Semnați"
+    "message": "Semnezi"
   },
   "yourPrivateSeedPhrase": {
-    "message": "Expresia dvs. seed privată"
+    "message": "Fraza ta Secretă de Recuperare"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message": "Preț gas zero la accelerare"
+    "message": "Prețul gazului este nul la accelerare"
   }
 }
