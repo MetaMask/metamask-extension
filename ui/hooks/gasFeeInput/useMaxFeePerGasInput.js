@@ -34,12 +34,12 @@ const getMaxFeePerGasFromTransaction = (transaction) => {
  *  method to update the setMaxFeePerGas.
  */
 export function useMaxFeePerGasInput({
-  supportsEIP1559V2,
   estimateToUse,
   gasEstimateType,
   gasFeeEstimates,
   gasLimit,
   gasPrice,
+  supportsEIP1559V2,
   transaction,
 }) {
   const supportsEIP1559 =
@@ -53,7 +53,7 @@ export function useMaxFeePerGasInput({
 
   const showFiat = useSelector(getShouldShowFiat);
 
-  const maxFeePerGasFromTransaction = supportsEIP1559
+  const initialMaxFeePerGas = supportsEIP1559
     ? getMaxFeePerGasFromTransaction(transaction)
     : 0;
 
@@ -61,16 +61,16 @@ export function useMaxFeePerGasInput({
   // transitional because it is only used to modify a transaction in the
   // metamask (background) state tree.
   const [maxFeePerGas, setMaxFeePerGas] = useState(() => {
-    if (maxFeePerGasFromTransaction && feeParamsAreCustom(transaction))
-      return maxFeePerGasFromTransaction;
+    if (initialMaxFeePerGas && feeParamsAreCustom(transaction))
+      return initialMaxFeePerGas;
     return null;
   });
 
   useEffect(() => {
-    if (supportsEIP1559V2) {
-      setMaxFeePerGas(maxFeePerGasFromTransaction);
+    if (supportsEIP1559V2 && initialMaxFeePerGas) {
+      setMaxFeePerGas(initialMaxFeePerGas);
     }
-  }, [maxFeePerGasFromTransaction, setMaxFeePerGas, supportsEIP1559V2]);
+  }, [initialMaxFeePerGas, setMaxFeePerGas, supportsEIP1559V2]);
 
   let gasSettings = {
     gasLimit: decimalToHex(gasLimit),
@@ -117,7 +117,7 @@ export function useMaxFeePerGasInput({
       gasFeeEstimates,
       gasEstimateType,
       estimateToUse,
-      maxFeePerGasFromTransaction,
+      initialMaxFeePerGas || 0,
     );
 
   return {

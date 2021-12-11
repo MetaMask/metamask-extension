@@ -2,31 +2,27 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography/typography';
 import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
 import I18nValue from '../../../components/ui/i18n-value';
-import InfoTooltip from '../../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import { useGasFeeContext } from '../../../contexts/gasFee';
+import GasDetailsItemTitle from './gas-details-item-title';
 
 const GasDetailsItem = ({
   hexMaximumTransactionFee,
   hexMinimumTransactionFee,
-  isMainnet,
   maxFeePerGas,
   maxPriorityFeePerGas,
   userAcknowledgedGasMissing,
   useNativeCurrencyAsPrimaryCurrency,
 }) => {
-  const t = useI18nContext();
   const { estimateUsed, hasSimulationError, transaction } = useGasFeeContext();
 
   if (hasSimulationError && !userAcknowledgedGasMissing) return null;
@@ -34,40 +30,7 @@ const GasDetailsItem = ({
   return (
     <TransactionDetailItem
       key="gas-item"
-      detailTitle={
-        <Box display="flex">
-          <Box marginRight={1}>
-            <I18nValue messageKey="transactionDetailGasHeadingV2" />
-          </Box>
-          <span className="gas-details-item__estimate">
-            (<I18nValue messageKey="transactionDetailGasInfoV2" />)
-          </span>
-          <InfoTooltip
-            contentText={
-              <>
-                <Typography tag={TYPOGRAPHY.Paragraph} variant={TYPOGRAPHY.H7}>
-                  {t('transactionDetailGasTooltipIntro', [
-                    isMainnet ? t('networkNameEthereum') : '',
-                  ])}
-                </Typography>
-                <Typography tag={TYPOGRAPHY.Paragraph} variant={TYPOGRAPHY.H7}>
-                  {t('transactionDetailGasTooltipExplanation')}
-                </Typography>
-                <Typography tag={TYPOGRAPHY.Paragraph} variant={TYPOGRAPHY.H7}>
-                  <a
-                    href="https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('transactionDetailGasTooltipConversion')}
-                  </a>
-                </Typography>
-              </>
-            }
-            position="bottom"
-          />
-        </Box>
-      }
+      detailTitle={<GasDetailsItemTitle />}
       detailTitleColor={COLORS.BLACK}
       detailText={
         <div className="gas-details-item__currency-container">
@@ -137,7 +100,6 @@ const GasDetailsItem = ({
 GasDetailsItem.propTypes = {
   hexMaximumTransactionFee: PropTypes.string,
   hexMinimumTransactionFee: PropTypes.string,
-  isMainnet: PropTypes.bool,
   maxFeePerGas: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
   userAcknowledgedGasMissing: PropTypes.bool.isRequired,

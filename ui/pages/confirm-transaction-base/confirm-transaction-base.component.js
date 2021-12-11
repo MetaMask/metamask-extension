@@ -439,7 +439,6 @@ export default class ConfirmTransactionBase extends Component {
           key="gas_details"
           hexMaximumTransactionFee={hexMaximumTransactionFee}
           hexMinimumTransactionFee={hexMinimumTransactionFee}
-          isMainnet={isMainnet}
           maxFeePerGas={maxFeePerGas}
           maxPriorityFeePerGas={maxPriorityFeePerGas}
           supportsEIP1559={supportsEIP1559}

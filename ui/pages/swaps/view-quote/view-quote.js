@@ -81,6 +81,10 @@ import {
   decGWEIToHexWEI,
   addHexes,
 } from '../../../helpers/utils/conversions.util';
+import { GasFeeContextProvider } from '../../../contexts/gasFee';
+import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
+import AdvancedGasFeePopover from '../../../components/app/advanced-gas-fee-popover';
+import EditGasFeePopover from '../../../components/app/edit-gas-fee-popover';
 import MainQuoteSummary from '../main-quote-summary';
 import { calcGasTotal } from '../../send/send.utils';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
@@ -98,6 +102,10 @@ import {
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import ViewQuotePriceDifference from './view-quote-price-difference';
+
+// eslint-disable-next-line prefer-destructuring
+const EIP_1559_V2_ENABLED =
+  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
 export default function ViewQuote() {
   const history = useHistory();
@@ -672,93 +680,152 @@ export default function ViewQuote() {
     }
   }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
 
+  const transaction = {
+    userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
+    txParams: {
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      gas: maxGasLimit,
+    },
+  };
+
+  const supportsEIP1559V2 =
+    EIP_1559_V2_ENABLED && networkAndAccountSupports1559;
+
   return (
-    <div className="view-quote">
-      <div
-        className={classnames('view-quote__content', {
-          'view-quote__content_modal': disableSubmissionDueToPriceWarning,
-        })}
-      >
-        {selectQuotePopoverShown && (
-          <SelectQuotePopover
-            quoteDataRows={renderablePopoverData}
-            onClose={() => setSelectQuotePopoverShown(false)}
-            onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
-            swapToSymbol={destinationTokenSymbol}
-            initialAggId={usedQuote.aggregator}
-            onQuoteDetailsIsOpened={quoteDetailsOpened}
-          />
-        )}
+    <GasFeeContextProvider
+      editGasMode={EDIT_GAS_MODES.SWAPS}
+      minimumGasLimit={usedGasLimit}
+      transaction={transaction}
+    >
+      <TransactionModalContextProvider captureEventEnabled={false}>
+        <div className="view-quote">
+          <div
+            className={classnames('view-quote__content', {
+              'view-quote__content_modal': disableSubmissionDueToPriceWarning,
+            })}
+          >
+            {selectQuotePopoverShown && (
+              <SelectQuotePopover
+                quoteDataRows={renderablePopoverData}
+                onClose={() => setSelectQuotePopoverShown(false)}
+                onSubmit={(aggId) => dispatch(swapsQuoteSelected(aggId))}
+                swapToSymbol={destinationTokenSymbol}
+                initialAggId={usedQuote.aggregator}
+                onQuoteDetailsIsOpened={quoteDetailsOpened}
+              />
+            )}
 
-        {showEditGasPopover && networkAndAccountSupports1559 && (
-          <EditGasPopover
-            transaction={{
-              userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
-              txParams: {
-                maxFeePerGas,
-                maxPriorityFeePerGas,
-                gas: maxGasLimit,
-              },
-            }}
-            minimumGasLimit={usedGasLimit}
-            defaultEstimateToUse={GAS_RECOMMENDATIONS.HIGH}
-            mode={EDIT_GAS_MODES.SWAPS}
-            confirmButtonText={t('submit')}
-            onClose={onCloseEditGasPopover}
-          />
-        )}
+            {!supportsEIP1559V2 &&
+              showEditGasPopover &&
+              networkAndAccountSupports1559 && (
+                <EditGasPopover
+                  transaction={transaction}
+                  minimumGasLimit={usedGasLimit}
+                  defaultEstimateToUse={GAS_RECOMMENDATIONS.HIGH}
+                  mode={EDIT_GAS_MODES.SWAPS}
+                  confirmButtonText={t('submit')}
+                  onClose={onCloseEditGasPopover}
+                />
+              )}
+            {supportsEIP1559V2 && (
+              <>
+                <EditGasFeePopover />
+                <AdvancedGasFeePopover />
+              </>
+            )}
 
-        <div
-          className={classnames('view-quote__warning-wrapper', {
-            'view-quote__warning-wrapper--thin': !isShowingWarning,
-          })}
-        >
-          {viewQuotePriceDifferenceComponent}
-          {(showInsufficientWarning || tokenBalanceUnavailable) && (
-            <ActionableMessage
-              message={actionableBalanceErrorMessage}
-              onClose={() => setWarningHidden(true)}
+            <div
+              className={classnames('view-quote__warning-wrapper', {
+                'view-quote__warning-wrapper--thin': !isShowingWarning,
+              })}
+            >
+              {viewQuotePriceDifferenceComponent}
+              {(showInsufficientWarning || tokenBalanceUnavailable) && (
+                <ActionableMessage
+                  message={actionableBalanceErrorMessage}
+                  onClose={() => setWarningHidden(true)}
+                />
+              )}
+            </div>
+            <div className="view-quote__countdown-timer-container">
+              <CountdownTimer
+                timeStarted={quotesLastFetched}
+                warningTime="0:30"
+                labelKey="swapNewQuoteIn"
+              />
+            </div>
+            <MainQuoteSummary
+              sourceValue={calcTokenValue(
+                sourceTokenValue,
+                sourceTokenDecimals,
+              )}
+              sourceDecimals={sourceTokenDecimals}
+              sourceSymbol={sourceTokenSymbol}
+              destinationValue={calcTokenValue(
+                destinationTokenValue,
+                destinationTokenDecimals,
+              )}
+              destinationDecimals={destinationTokenDecimals}
+              destinationSymbol={destinationTokenSymbol}
+              sourceIconUrl={sourceTokenIconUrl}
+              destinationIconUrl={destinationIconUrl}
             />
-          )}
-        </div>
-        <div className="view-quote__countdown-timer-container">
-          <CountdownTimer
-            timeStarted={quotesLastFetched}
-            warningTime="0:30"
-            labelKey="swapNewQuoteIn"
-          />
-        </div>
-        <MainQuoteSummary
-          sourceValue={calcTokenValue(sourceTokenValue, sourceTokenDecimals)}
-          sourceDecimals={sourceTokenDecimals}
-          sourceSymbol={sourceTokenSymbol}
-          destinationValue={calcTokenValue(
-            destinationTokenValue,
-            destinationTokenDecimals,
-          )}
-          destinationDecimals={destinationTokenDecimals}
-          destinationSymbol={destinationTokenSymbol}
-          sourceIconUrl={sourceTokenIconUrl}
-          destinationIconUrl={destinationIconUrl}
-        />
-        <div
-          className={classnames('view-quote__fee-card-container', {
-            'view-quote__fee-card-container--three-rows':
-              approveTxParams && (!balanceError || warningHidden),
-          })}
-        >
-          <FeeCard
-            primaryFee={{
-              fee: feeInEth,
-              maxFee: maxFeeInEth,
+            <div
+              className={classnames('view-quote__fee-card-container', {
+                'view-quote__fee-card-container--three-rows':
+                  approveTxParams && (!balanceError || warningHidden),
+              })}
+            >
+              <FeeCard
+                primaryFee={{
+                  fee: feeInEth,
+                  maxFee: maxFeeInEth,
+                }}
+                secondaryFee={{
+                  fee: feeInFiat,
+                  maxFee: maxFeeInFiat,
+                }}
+                onFeeCardMaxRowClick={onFeeCardMaxRowClick}
+                hideTokenApprovalRow={
+                  !approveTxParams || (balanceError && !warningHidden)
+                }
+                tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
+                onTokenApprovalClick={onFeeCardTokenApprovalClick}
+                metaMaskFee={String(metaMaskFee)}
+                numberOfQuotes={Object.values(quotes).length}
+                onQuotesClick={() => {
+                  allAvailableQuotesOpened();
+                  setSelectQuotePopoverShown(true);
+                }}
+                chainId={chainId}
+                isBestQuote={isBestQuote}
+                supportsEIP1559V2={supportsEIP1559V2}
+              />
+            </div>
+          </div>
+          <SwapsFooter
+            onSubmit={() => {
+              setSubmitClicked(true);
+              if (!balanceError) {
+                dispatch(signAndSendTransactions(history, metaMetricsEvent));
+              } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
+                history.push(DEFAULT_ROUTE);
+              } else {
+                history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
+              }
             }}
-            secondaryFee={{
-              fee: feeInFiat,
-              maxFee: maxFeeInFiat,
-            }}
-            onFeeCardMaxRowClick={onFeeCardMaxRowClick}
-            hideTokenApprovalRow={
-              !approveTxParams || (balanceError && !warningHidden)
+            submitText={t('swap')}
+            hideCancel
+            disabled={
+              submitClicked ||
+              balanceError ||
+              tokenBalanceUnavailable ||
+              disableSubmissionDueToPriceWarning ||
+              (networkAndAccountSupports1559 &&
+                baseAndPriorityFeePerGas === undefined) ||
+              (!networkAndAccountSupports1559 &&
+                (gasPrice === null || gasPrice === undefined))
             }
             tokenApprovalSourceTokenSymbol={sourceTokenSymbol}
             onTokenApprovalClick={onFeeCardTokenApprovalClick}
@@ -772,33 +839,7 @@ export default function ViewQuote() {
             isBestQuote={isBestQuote}
           />
         </div>
-      </div>
-      <SwapsFooter
-        onSubmit={() => {
-          setSubmitClicked(true);
-          if (!balanceError) {
-            dispatch(signAndSendTransactions(history, metaMetricsEvent));
-          } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
-            history.push(DEFAULT_ROUTE);
-          } else {
-            history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
-          }
-        }}
-        submitText={t('swap')}
-        hideCancel
-        disabled={
-          submitClicked ||
-          balanceError ||
-          tokenBalanceUnavailable ||
-          disableSubmissionDueToPriceWarning ||
-          (networkAndAccountSupports1559 &&
-            baseAndPriorityFeePerGas === undefined) ||
-          (!networkAndAccountSupports1559 &&
-            (gasPrice === null || gasPrice === undefined))
-        }
-        className={isShowingWarning && 'view-quote__thin-swaps-footer'}
-        showTopBorder
-      />
-    </div>
+      </TransactionModalContextProvider>
+    </GasFeeContextProvider>
   );
 }

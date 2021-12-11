@@ -30,7 +30,7 @@ const HIGH_GAS_OPTION = {
   maxPriorityFeePerGas: '2',
 };
 
-const renderComponent = (props, transactionProps, gasFeeContextProps) => {
+const renderComponent = (componentProps) => {
   const mockStore = {
     metamask: {
       provider: {},
@@ -43,21 +43,14 @@ const renderComponent = (props, transactionProps, gasFeeContextProps) => {
       },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
-      advancedGasFee: {
-        maxBaseFee: '1.5',
-        priorityFee: '2',
-      },
     },
   };
 
   const store = configureStore(mockStore);
 
   return renderWithProvider(
-    <GasFeeContextProvider
-      transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
-      {...gasFeeContextProps}
-    >
-      <EditGasToolTip {...props} t={jest.fn()} />
+    <GasFeeContextProvider transaction={{ txParams: { gas: '0x5208' } }}>
+      <EditGasToolTip {...componentProps} t={jest.fn()} gasLimit={21000} />
     </GasFeeContextProvider>,
     store,
   );
