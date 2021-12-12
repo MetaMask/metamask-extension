@@ -70,7 +70,6 @@ const renderComponent = ({
         maxBaseFee: '1.5',
         priorityFee: '2',
       },
-      swapsState: {},
     },
   });
 

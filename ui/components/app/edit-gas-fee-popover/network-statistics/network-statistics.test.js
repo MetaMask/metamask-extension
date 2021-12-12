@@ -38,7 +38,6 @@ const renderComponent = (props) => {
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
-      swapsState: {},
       ...props,
     },
   });
