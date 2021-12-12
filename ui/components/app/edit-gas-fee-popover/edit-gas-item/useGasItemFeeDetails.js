@@ -2,18 +2,18 @@ import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
 import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
 } from '../../../../../shared/constants/gas';
+import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
 import {
   decGWEIToHexWEI,
   decimalToHex,
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util';
-import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../../helpers/utils/gas';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
+import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../../helpers/utils/gas';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
@@ -27,15 +27,16 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     maxPriorityFeePerGas: maxPriorityFeePerGasValue,
     transaction,
   } = useGasFeeContext();
-  const [estimateGreaterThaGasUse, setEstimateGreaterThaGasUse] = useState(
+  const [estimateGreaterThanGasUse, setEstimateGreaterThanGasUse] = useState(
     false,
   );
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-  const { dappSuggestedGasFees } = transaction;
 
   let maxFeePerGas;
   let maxPriorityFeePerGas;
   let minWaitTime;
+
+  const { dappSuggestedGasFees } = transaction;
 
   if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
@@ -108,12 +109,12 @@ export const useGasItemFeeDetails = (priorityLevel) => {
         gasFeeEstimates,
         priorityLevel,
       );
-      setEstimateGreaterThaGasUse(estimateGreater);
+      setEstimateGreaterThanGasUse(estimateGreater);
     }
   }, [editGasMode, gasFeeEstimates, priorityLevel, transaction]);
 
   return {
-    estimateGreaterThaGasUse,
+    estimateGreaterThanGasUse,
     maxFeePerGas,
     maxPriorityFeePerGas,
     minWaitTime,

@@ -2,6 +2,8 @@ import React, { useMemo, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 import ListItem from '../../ui/list-item';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -24,9 +26,11 @@ import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
-import EditGasPopover from '../edit-gas-popover';
+import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import Button from '../../ui/button';
+import EditGasPopover from '../edit-gas-popover';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
 import EditGasFeePopover from '../edit-gas-fee-popover';
@@ -275,6 +279,16 @@ TransactionListItemInner.propTypes = {
 const TransactionListItem = (props) => {
   const { transactionGroup } = props;
   const [editGasMode, setEditGasMode] = useState();
+  const transaction = transactionGroup.primaryTransaction;
+  const EIP_1559_V2_ENABLED =
+    process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
+
+  const supportsEIP1559 =
+    useSelector(checkNetworkAndAccountSupports1559) &&
+    !isLegacyTransaction(transaction?.txParams);
+
+  const supportsEIP1559V2 = EIP_1559_V2_ENABLED && supportsEIP1559;
+
   return (
     <GasFeeContextProvider
       transaction={transactionGroup.primaryTransaction}
@@ -282,9 +296,13 @@ const TransactionListItem = (props) => {
     >
       <TransactionModalContextProvider captureEventEnabled={false}>
         <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
-        <CancelSpeedupPopover />
-        <EditGasFeePopover />
-        <AdvancedGasFeePopover />
+        {supportsEIP1559V2 && (
+          <>
+            <CancelSpeedupPopover />
+            <EditGasFeePopover />
+            <AdvancedGasFeePopover />
+          </>
+        )}
       </TransactionModalContextProvider>
     </GasFeeContextProvider>
   );

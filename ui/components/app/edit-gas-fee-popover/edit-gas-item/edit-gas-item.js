@@ -10,8 +10,8 @@ import {
   ALIGN_ITEMS,
   DISPLAY,
 } from '../../../../helpers/constants/design-system';
-import { PRIMARY } from '../../../../helpers/constants/common';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
+import { PRIMARY } from '../../../../helpers/constants/common';
 import { toHumanReadableTime } from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -61,8 +61,9 @@ const EditGasItem = ({ priorityLevel }) => {
   const { dappSuggestedGasFees } = transaction;
 
   const {
-    // for cancel or speedup estimateGreaterThaGasUse is true if previous gas used was more than estimate
-    estimateGreaterThaGasUse,
+    // for cancel or speedup estimateGreaterThaGasUse is true if previous gas used
+    // was more than estimate for the priorityLevel
+    estimateGreaterThanGasUse,
     hexMaximumTransactionFee,
     maxFeePerGas,
     maxPriorityFeePerGas,
@@ -95,12 +96,12 @@ const EditGasItem = ({ priorityLevel }) => {
     <button
       className={classNames('edit-gas-item', {
         'edit-gas-item--selected': priorityLevel === estimateUsed,
-        'edit-gas-item--disabled': estimateGreaterThaGasUse,
+        'edit-gas-item--disabled': estimateGreaterThanGasUse,
       })}
       onClick={onOptionSelect}
       aria-label={priorityLevel}
       autoFocus={priorityLevel === estimateUsed}
-      disabled={estimateGreaterThaGasUse}
+      disabled={estimateGreaterThanGasUse}
     >
       <span className="edit-gas-item__name">
         {icon && (
