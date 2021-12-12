@@ -1,3 +1,59 @@
 .cancel-speedup-popover {
-  padding: 16px;
+  &__wrapper {
+    padding: 0 16px 16px;
+    .info-tooltip {
+      margin-left: 4px;
+    }
+  }
+
+  &__transaction-info {
+    @include H7;
+
+    background-color: #F2F4F6;
+    border-radius: 20px;
+    margin: 16px 0;
+    padding: 16px;
+    width: 100%;
+
+    &__maxfee {
+      margin-left: 12px;
+    }
+
+    &__totalfee {
+      color: $ui-4;
+
+      &__value {
+        margin-left: 4px;
+      }
+    }
+
+    &__edit-btn {
+      background: none;
+      border: none;
+      padding: none;
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    &__row {
+      width: 100%;
+    }
+
+    &__row:last-child {
+      margin-top: 8px;
+    }
+
+    &__duration {
+      background-color: $success-2;
+      border-radius: 10px;
+      color: $success-3;
+      padding: 0px 8px;
+    }
+
+    strong {
+      font-weight: 700;
+    }
+  }
 }

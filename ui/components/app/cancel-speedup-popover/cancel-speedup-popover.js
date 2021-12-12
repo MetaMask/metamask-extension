@@ -5,14 +5,25 @@ import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
+import {
+  ALIGN_ITEMS,
+  DISPLAY,
+  FLEX_DIRECTION,
+  JUSTIFY_CONTENT,
+  TYPOGRAPHY,
+} from '../../../helpers/constants/design-system';
 import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
+import Box from '../../ui/box';
 import Button from '../../ui/button';
+import I18nValue from '../../ui/i18n-value';
+import InfoTooltip from '../../ui/info-tooltip';
 import Popover from '../../ui/popover';
 import Spinner from '../../ui/spinner';
+import Typography from '../../ui/typography';
 
 const CancelSpeedupPopover = () => {
   const {
@@ -62,7 +73,7 @@ const CancelSpeedupPopover = () => {
     updateTransactionUsingEstimate,
   ]);
 
-  if (currentModal !== 'cancelSpeedupTransaction') return null;
+  // if (currentModal !== 'cancelSpeedupTransaction') return null;
 
   const submitTransactionChange = () => {
     if (editGasMode === EDIT_GAS_MODES.CANCEL) {
@@ -74,26 +85,85 @@ const CancelSpeedupPopover = () => {
 
   return (
     <Popover
-      title={<>{t(EDIT_GAS_MODES.CANCEL ? 'cancel' : 'speedUp')}</>}
+      title={
+        <>
+          {editGasMode === EDIT_GAS_MODES.CANCEL
+            ? `❌${t('cancel')}`
+            : `🚀${t('speedUp')}`}
+        </>
+      }
       onClose={() => closeModal('cancelSpeedupTransaction')}
       className="cancel-speedup-popover"
     >
-      <>
-        <div className="cancel-speedup-popover__wrapper">
-          {appIsLoading && <Spinner color="#F7C06C" />}
-          <Button
-            type="primary"
-            onClick={() => {
-              openModal('editGasFee');
-            }}
+      {appIsLoading && <Spinner color="#F7C06C" />}
+      <div className="cancel-speedup-popover__wrapper">
+        <Typography
+          boxProps={{ alignItems: ALIGN_ITEMS.CENTER, display: DISPLAY.FLEX }}
+          variant={TYPOGRAPHY.H6}
+        >
+          <I18nValue
+            messageKey="cancelSpeedUpLabel"
+            options={[
+              <strong key="cancelSpeedupReplace">
+                <I18nValue messageKey="replace" />
+              </strong>,
+            ]}
+          />
+          <InfoTooltip position="top" />
+        </Typography>
+        <Box
+          className="cancel-speedup-popover__transaction-info"
+          display={DISPLAY.FLEX}
+          alignItems={ALIGN_ITEMS.CENTER}
+          flexDirection={FLEX_DIRECTION.COLUMN}
+        >
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            className="cancel-speedup-popover__transaction-info__row"
           >
-            act
-          </Button>
-          <Button type="primary" onClick={submitTransactionChange}>
-            Submit
-          </Button>
-        </div>
-      </>
+            <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+              <strong>Gas</strong>
+              <InfoTooltip position="top" />
+            </Box>
+            <Box>
+              <button
+                className="cancel-speedup-popover__transaction-info__edit-btn"
+                onClick={() => {
+                  openModal('editGasFee');
+                }}
+                type="link"
+              >
+                <img src="images/edit.svg" alt="" />
+              </button>
+              <span className="cancel-speedup-popover__transaction-info__maxfee">
+                0.001234 ETH
+              </span>
+              <strong className="cancel-speedup-popover__transaction-info__maxfee">
+                $13.23
+              </strong>
+            </Box>
+          </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            className="cancel-speedup-popover__transaction-info__row"
+          >
+            <span className="cancel-speedup-popover__transaction-info__duration">
+              &gt; 30 seconds
+            </span>
+            <span className="cancel-speedup-popover__transaction-info__totalfee">
+              <span>Max fee</span>
+              <span className="cancel-speedup-popover__transaction-info__totalfee__value">
+                $23.30
+              </span>
+            </span>
+          </Box>
+        </Box>
+        <Button type="primary" onClick={submitTransactionChange}>
+          Submit
+        </Button>
+      </div>
     </Popover>
   );
 };

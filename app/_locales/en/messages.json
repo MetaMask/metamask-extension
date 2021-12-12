@@ -415,6 +415,10 @@
   "cancelSpeedUp": {
     "message": "cancel or speed up a tranaction."
   },
+  "cancelSpeedUpLabel": {
+    "message": "This gas fee will $1 the original.",
+    "description": "$1 is text replace in bold"
+  },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
@@ -2266,6 +2270,9 @@
   },
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+  },
+  "replace": {
+    "message": "replace"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
