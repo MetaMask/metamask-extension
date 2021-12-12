@@ -159,6 +159,7 @@ const CancelSpeedupPopover = () => {
             className="cancel-speedup-popover__transaction-info__row"
           >
             <span className="cancel-speedup-popover__transaction-info__duration">
+              {/* todo: gas timing component changes */}
               <GasTiming
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
                 maxFeePerGas={maxFeePerGas}
