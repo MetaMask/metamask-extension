@@ -25,6 +25,7 @@ import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-disp
 
 import Box from '../../../ui/box';
 import InfoTooltip from '../../../ui/info-tooltip';
+import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
 import { useGasItemFeeDetails } from './useGasItemFeeDetails';
 
@@ -138,11 +139,14 @@ const EditGasItem = ({ priorityLevel }) => {
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}
       >
         {hexMaximumTransactionFee ? (
-          <UserPreferencedCurrencyDisplay
-            key="editGasSubTextFeeAmount"
-            type={PRIMARY}
-            value={hexMaximumTransactionFee}
-          />
+          <div className="edit-gas-item__maxfee">
+            <LoadingHeartBeat />
+            <UserPreferencedCurrencyDisplay
+              key="editGasSubTextFeeAmount"
+              type={PRIMARY}
+              value={hexMaximumTransactionFee}
+            />
+          </div>
         ) : (
           '--'
         )}

@@ -29,7 +29,6 @@ const render = () => {
         },
       },
       selectedAddress: '0xAddress',
-      swapsState: {},
     },
   });
 

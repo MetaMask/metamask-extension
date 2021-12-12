@@ -43,7 +43,6 @@ const renderComponent = (componentProps) => {
       },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
-      swapsState: {},
     },
   };
 

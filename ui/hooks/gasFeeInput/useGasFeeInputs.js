@@ -170,7 +170,6 @@ export function useGasFeeInputs(
     maxFeePerGasFiat,
     setMaxFeePerGas,
   } = useMaxFeePerGasInput({
-    editGasMode,
     estimateToUse,
     gasEstimateType,
     gasFeeEstimates,
@@ -185,7 +184,6 @@ export function useGasFeeInputs(
     maxPriorityFeePerGasFiat,
     setMaxPriorityFeePerGas,
   } = useMaxPriorityFeePerGasInput({
-    editGasMode,
     estimateToUse,
     gasEstimateType,
     gasFeeEstimates,
@@ -255,7 +253,6 @@ export function useGasFeeInputs(
   } = useTransactionFunctions({
     defaultEstimateToUse,
     editGasMode,
-    estimatedBaseFee,
     gasFeeEstimates,
     gasLimit,
     maxPriorityFeePerGas,

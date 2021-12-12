@@ -28,9 +28,10 @@ export const useGasItemFeeDetails = (priorityLevel) => {
   let maxPriorityFeePerGas;
   let minWaitTime;
 
-  // todo: extract into separate hook
   if (gasFeeEstimates?.[priorityLevel]) {
-    maxFeePerGas = gasFeeEstimates[priorityLevel]?.suggestedMaxFeePerGas;
+    maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
+    maxPriorityFeePerGas =
+      gasFeeEstimates[priorityLevel].suggestedMaxPriorityFeePerGas;
   } else if (
     priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
     dappSuggestedGasFees

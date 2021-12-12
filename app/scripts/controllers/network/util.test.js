@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -7,9 +6,9 @@ import {
 
 import { formatTxMetaForRpcResult } from './util';
 
-describe('network utils', function () {
-  describe('formatTxMetaForRpcResult', function () {
-    it('should correctly format the tx meta object (EIP-1559)', function () {
+describe('network utils', () => {
+  describe('formatTxMetaForRpcResult', () => {
+    it('should correctly format the tx meta object (EIP-1559)', () => {
       const txMeta = {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -54,10 +53,10 @@ describe('network utils', function () {
         value: '0x0',
       };
       const result = formatTxMetaForRpcResult(txMeta);
-      assert.deepEqual(result, expectedResult);
+      expect(result).toStrictEqual(expectedResult);
     });
 
-    it('should correctly format the tx meta object (non EIP-1559)', function () {
+    it('should correctly format the tx meta object (non EIP-1559)', () => {
       const txMeta = {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -99,7 +98,7 @@ describe('network utils', function () {
         value: '0x0',
       };
       const result = formatTxMetaForRpcResult(txMeta);
-      assert.deepEqual(result, expectedResult);
+      expect(result).toStrictEqual(expectedResult);
     });
   });
 });
