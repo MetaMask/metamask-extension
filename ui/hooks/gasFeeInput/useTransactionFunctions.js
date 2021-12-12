@@ -6,6 +6,7 @@ import {
   decimalToHex,
   decGWEIToHexWEI,
 } from '../../helpers/utils/conversions.util';
+import { addTenPercent } from '../../helpers/utils/gas';
 import {
   createCancelTransaction,
   createSpeedUpTransaction,
@@ -13,7 +14,6 @@ import {
   updateSwapsUserFeeLevel,
   updateTransaction as updateTransactionFn,
 } from '../../store/actions';
-import { useIncrementedGasFees } from '../useIncrementedGasFees';
 
 export const useTransactionFunctions = ({
   defaultEstimateToUse,
@@ -26,14 +26,28 @@ export const useTransactionFunctions = ({
 }) => {
   const dispatch = useDispatch();
 
-  const updateTransaction = useCallback(
-    ({
-      estimateUsed,
-      gasLimit,
+  const getTxMeta = useCallback(() => {
+    if (
+      (editGasMode !== EDIT_GAS_MODES.CANCEL &&
+        editGasMode !== EDIT_GAS_MODES.SPEED_UP) ||
+      transaction.previousGas
+    ) {
+      return {};
+    }
+    const {
       maxFeePerGas,
       maxPriorityFeePerGas,
-      txMeta,
-    }) => {
+      gasLimit,
+    } = transaction?.txParams;
+    return {
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      gasLimit,
+    };
+  }, [editGasMode, transaction.previousGas, transaction?.txParams]);
+
+  const updateTransaction = useCallback(
+    ({ estimateUsed, gasLimit, maxFeePerGas, maxPriorityFeePerGas }) => {
       const newGasSettings = {
         gas: decimalToHex(gasLimit || gasLimitValue),
         gasLimit: decimalToHex(gasLimit || gasLimitValue),
@@ -47,6 +61,7 @@ export const useTransactionFunctions = ({
         newGasSettings.maxPriorityFeePerGas =
           maxPriorityFeePerGas || decGWEIToHexWEI(maxPriorityFeePerGasValue);
       }
+      const txMeta = getTxMeta();
 
       const updatedTxMeta = {
         ...transaction,
@@ -72,13 +87,11 @@ export const useTransactionFunctions = ({
       dispatch,
       editGasMode,
       gasLimitValue,
+      getTxMeta,
       maxPriorityFeePerGasValue,
       transaction,
     ],
   );
-
-  // logic to run on previous value always
-  const customGasSettings = useIncrementedGasFees(transaction);
 
   const cancelTransaction = useCallback(() => {
     dispatch(
@@ -97,26 +110,15 @@ export const useTransactionFunctions = ({
   }, [dispatch, estimatedBaseFee, transaction]);
 
   const updateTransactionToMinimumGasFee = useCallback(() => {
-    const {
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-      gasLimit,
-    } = transaction?.txParams;
-    const txMeta = {};
-    if (!transaction.previousGas) {
-      txMeta.previousGas = {
-        maxFeePerGas,
-        maxPriorityFeePerGas,
-        gasLimit,
-      };
-    }
+    const { gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas } =
+      transaction.previousGas || transaction.txParams;
     updateTransaction({
       estimateUsed: PRIORITY_LEVELS.MINIMUM,
-      ...transaction.txParams,
-      ...customGasSettings,
-      txMeta,
+      gasLimit,
+      maxFeePerGas: addTenPercent(maxFeePerGas),
+      maxPriorityFeePerGas: addTenPercent(maxPriorityFeePerGas),
     });
-  }, [customGasSettings, transaction, updateTransaction]);
+  }, [transaction, updateTransaction]);
 
   const updateTransactionUsingEstimate = useCallback(
     (gasFeeEstimateToUse) => {

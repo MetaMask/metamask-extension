@@ -1,14 +1,12 @@
 import { useSelector } from 'react-redux';
-import BigNumber from 'bignumber.js';
 import React, { useEffect } from 'react';
 
 import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
-import { bnGreaterThan } from '../../../helpers/utils/util';
+import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
 import { getAppIsLoading } from '../../../selectors';
-import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
@@ -16,25 +14,13 @@ import Button from '../../ui/button';
 import Popover from '../../ui/popover';
 import Spinner from '../../ui/spinner';
 
-// todo: extract to util
-const gasUsedGreaterThanEstimate = (transaction, gasFeeEstimates, estimate) => {
-  let { maxFeePerGas: maxFeePerGasInTransaction } = transaction.txParams;
-  maxFeePerGasInTransaction = new BigNumber(
-    hexWEIToDecGWEI(maxFeePerGasInTransaction),
-  ).times(1.1);
-
-  const maxFeePerGasFromEstimate =
-    gasFeeEstimates[estimate]?.suggestedMaxFeePerGas;
-  return bnGreaterThan(maxFeePerGasInTransaction, maxFeePerGasFromEstimate);
-};
-
 const CancelSpeedupPopover = () => {
   const {
+    cancelTransaction,
     editGasMode,
     gasFeeEstimates,
-    transaction,
-    cancelTransaction,
     speedupTransaction,
+    transaction,
     updateTransaction,
     updateTransactionToMinimumGasFee,
     updateTransactionUsingEstimate,
@@ -45,39 +31,26 @@ const CancelSpeedupPopover = () => {
 
   useEffect(() => {
     if (
-      currentModal !== 'cancelSpeedupTransaction' ||
       transaction.previousGas ||
       appIsLoading ||
       !gasFeeEstimates?.high ||
       !gasFeeEstimates?.medium
-    )
-      return;
-
-    const gasUsedGreaterThanAggressive = gasUsedGreaterThanEstimate(
-      transaction,
-      gasFeeEstimates,
-      PRIORITY_LEVELS.HIGH,
-    );
-    if (gasUsedGreaterThanAggressive) {
-      if (editGasMode === EDIT_GAS_MODES.SPEED_UP) {
-        updateTransactionUsingEstimate(PRIORITY_LEVELS.HIGH);
-        return;
-      }
-      updateTransactionToMinimumGasFee();
+    ) {
       return;
     }
 
-    const gasUsedGreaterThanMedium = gasUsedGreaterThanEstimate(
+    // If gas used previously + 10% was less than medium estimate
+    // estimate is set to medium, else minimum
+    const gasUsedGreaterThanMedium = gasEstimateGreaterThanGasUsedPlusTenPercent(
       transaction,
       gasFeeEstimates,
       PRIORITY_LEVELS.MEDIUM,
     );
     if (gasUsedGreaterThanMedium) {
-      updateTransactionUsingEstimate(PRIORITY_LEVELS.MINIMUM);
+      updateTransactionUsingEstimate(PRIORITY_LEVELS.MEDIUM);
       return;
     }
-
-    updateTransactionUsingEstimate(PRIORITY_LEVELS.MEDIUM);
+    updateTransactionUsingEstimate(PRIORITY_LEVELS.MINIMUM);
   }, [
     appIsLoading,
     currentModal,

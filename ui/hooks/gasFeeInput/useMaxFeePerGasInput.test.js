@@ -2,14 +2,10 @@ import { useSelector } from 'react-redux';
 import { act, renderHook } from '@testing-library/react-hooks';
 
 import { getMaximumGasTotalInHexWei } from '../../../shared/modules/gas.utils';
-import {
-  decimalToHex,
-  hexWEIToDecGWEI,
-} from '../../helpers/utils/conversions.util';
+import { decimalToHex } from '../../helpers/utils/conversions.util';
 import {
   GAS_RECOMMENDATIONS,
   CUSTOM_GAS_ESTIMATE,
-  EDIT_GAS_MODES,
 } from '../../../shared/constants/gas';
 
 import {
@@ -133,13 +129,5 @@ describe('useMaxFeePerGasInput', () => {
       result.current.setMaxFeePerGas(100);
     });
     expect(result.current.maxFeePerGas).toBe(100);
-  });
-
-  it('returns swapCustomMaxFeePerGas as maxFeePerGas for swaps', () => {
-    const { result } = renderUseMaxFeePerGasInputHook({
-      editGasMode: EDIT_GAS_MODES.SWAPS,
-      supportsEIP1559V2: true,
-    });
-    expect(result.current.maxFeePerGas).toBe(Number(hexWEIToDecGWEI('0x5208')));
   });
 });

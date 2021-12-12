@@ -1,27 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { addHexPrefix } from 'ethereumjs-util';
 import { useMemo } from 'react';
-import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import { isEIP1559Transaction } from '../../shared/modules/transaction.utils';
 import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
+import { addTenPercent } from '../helpers/utils/gas';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
-
-/**
- * Simple helper to save on duplication to multiply the supplied wei hex string
- * by 1.10 to get bare minimum new gas fee.
- *
- * @param {string} hexStringValue - hex value in wei to be incremented
- * @returns {string} - hex value in WEI 10% higher than the param.
- */
-function addTenPercent(hexStringValue) {
-  return addHexPrefix(
-    multiplyCurrencies(hexStringValue, 1.1, {
-      toNumericBase: 'hex',
-      multiplicandBase: 16,
-      multiplierBase: 10,
-    }),
-  );
-}
 
 /**
  * Helper that returns the higher of two options for a new gas fee:
