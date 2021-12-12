@@ -19,8 +19,7 @@
     background-color: $ui-1;
   }
 
-  &--disabled {
-    cursor: default;
+  button.edit-gas-item--disabled[disabled] {
     opacity: 0.25;
     pointer-events: none;
   }
