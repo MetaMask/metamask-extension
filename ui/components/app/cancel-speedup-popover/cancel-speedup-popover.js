@@ -22,14 +22,21 @@ import Button from '../../ui/button';
 import I18nValue from '../../ui/i18n-value';
 import InfoTooltip from '../../ui/info-tooltip';
 import Popover from '../../ui/popover';
-import Spinner from '../../ui/spinner';
 import Typography from '../../ui/typography';
+import AppLoadingSpinner from '../app-loading-spinner';
+import GasTiming from '../gas-timing';
 
 const CancelSpeedupPopover = () => {
   const {
     cancelTransaction,
     editGasMode,
+    estimatedMaximumFiat,
+    estimatedMaximumNative,
+    estimatedMinimumFiat,
+    estimatedMinimumNative,
     gasFeeEstimates,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
     speedupTransaction,
     transaction,
     updateTransaction,
@@ -95,7 +102,7 @@ const CancelSpeedupPopover = () => {
       onClose={() => closeModal('cancelSpeedupTransaction')}
       className="cancel-speedup-popover"
     >
-      {appIsLoading && <Spinner color="#F7C06C" />}
+      <AppLoadingSpinner />
       <div className="cancel-speedup-popover__wrapper">
         <Typography
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER, display: DISPLAY.FLEX }}
@@ -123,7 +130,9 @@ const CancelSpeedupPopover = () => {
             className="cancel-speedup-popover__transaction-info__row"
           >
             <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-              <strong>Gas</strong>
+              <strong>
+                <I18nValue messageKey="gas" />
+              </strong>
               <InfoTooltip position="top" />
             </Box>
             <Box>
@@ -137,10 +146,10 @@ const CancelSpeedupPopover = () => {
                 <img src="images/edit.svg" alt="" />
               </button>
               <span className="cancel-speedup-popover__transaction-info__maxfee">
-                0.001234 ETH
+                {estimatedMinimumNative}
               </span>
               <strong className="cancel-speedup-popover__transaction-info__maxfee">
-                $13.23
+                {estimatedMinimumFiat || estimatedMinimumNative}
               </strong>
             </Box>
           </Box>
@@ -150,12 +159,17 @@ const CancelSpeedupPopover = () => {
             className="cancel-speedup-popover__transaction-info__row"
           >
             <span className="cancel-speedup-popover__transaction-info__duration">
-              &gt; 30 seconds
+              <GasTiming
+                maxPriorityFeePerGas={maxPriorityFeePerGas}
+                maxFeePerGas={maxFeePerGas}
+              />
             </span>
             <span className="cancel-speedup-popover__transaction-info__totalfee">
-              <span>Max fee</span>
+              <span>
+                <I18nValue messageKey="maxFee" />
+              </span>
               <span className="cancel-speedup-popover__transaction-info__totalfee__value">
-                $23.30
+                {estimatedMaximumFiat || estimatedMaximumNative}
               </span>
             </span>
           </Box>

@@ -14,6 +14,7 @@ import Typography from '../../ui/typography/typography';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import { useGasFeeContext } from '../../../contexts/gasFee';
+import AppLoadingSpinner from '../app-loading-spinner';
 import EditGasItem from './edit-gas-item';
 import NetworkStatistics from './network-statistics';
 
@@ -45,6 +46,7 @@ const EditGasFeePopover = () => {
       className="edit-gas-fee-popover"
     >
       <>
+        <AppLoadingSpinner />
         <div className="edit-gas-fee-popover__wrapper">
           <div className="edit-gas-fee-popover__content">
             {balanceError && (

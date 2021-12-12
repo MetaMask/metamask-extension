@@ -6,6 +6,20 @@
     }
   }
 
+  &__spinner-wrapper {
+    background-color: rgba(255,255,255,0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+    .spinner  {
+      width: 50px;
+    }
+  }
+  
   &__transaction-info {
     @include H7;
 

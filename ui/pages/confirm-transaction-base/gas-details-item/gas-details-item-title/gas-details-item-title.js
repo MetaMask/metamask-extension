@@ -16,7 +16,7 @@ const GasDetailsItemTitle = () => {
   return (
     <Box display="flex">
       <Box marginRight={1}>
-        <I18nValue messageKey="transactionDetailGasHeadingV2" />
+        <I18nValue messageKey="gas" />
       </Box>
       <span className="gas-details-item-title__estimate">
         (<I18nValue messageKey="transactionDetailGasInfoV2" />)

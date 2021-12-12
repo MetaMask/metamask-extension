@@ -1151,6 +1151,9 @@
   "functionType": {
     "message": "Function Type"
   },
+  "gas": {
+    "message": "Gas"
+  },
   "gasDisplayAcknowledgeDappButtonText": {
     "message": "Edit suggested gas fee"
   },
@@ -3150,9 +3153,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
-  },
-  "transactionDetailGasHeadingV2": {
-    "message": "Gas"
   },
   "transactionDetailGasInfoV2": {
     "message": "estimated"
