@@ -6,13 +6,13 @@
   align-items: center;
 
   &__header--one-item,
-  &__header--two-items {
+  &__header--multiple-items {
     display: flex;
     flex: 0;
     margin-top: 36px;
     width: 100%;
-    padding-left: 15px;
-    padding-right: 17px;
+    padding-inline-start: 15px;
+    padding-inline-end: 17px;
   }
 
   &__header--one-item {
@@ -25,7 +25,7 @@
 
   &__select-all {
     display: flex;
-    margin-left: 16px;
+    margin-inline-start: 16px;
     align-items: center;
   }
 
@@ -68,7 +68,7 @@
     &__info {
       display: flex;
       flex-direction: column;
-      margin-left: 16px;
+      margin-inline-start: 16px;
       min-width: 0;
     }
 
@@ -105,7 +105,7 @@
   }
 
   &__list-check-box {
-    margin-right: 16px;
+    margin-inline-end: 16px;
 
     i {
       font-size: 0.8rem;
@@ -115,7 +115,7 @@
   .fa-info-circle {
     color: $Grey-200;
     cursor: pointer;
-    margin-left: 8px;
+    margin-inline-start: 8px;
     font-size: 0.9rem;
   }
 
