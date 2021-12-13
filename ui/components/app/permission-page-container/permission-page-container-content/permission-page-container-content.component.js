@@ -7,10 +7,11 @@ import PermissionsConnectPermissionList from '../../permissions-connect-permissi
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
     subjectMetadata: PropTypes.shape({
-      extensionId: PropTypes.string,
-      iconUrl: PropTypes.string,
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
+      subjectType: PropTypes.string.isRequired,
+      extensionId: PropTypes.string,
+      iconUrl: PropTypes.string,
     }),
     selectedPermissions: PropTypes.object.isRequired,
     selectedIdentities: PropTypes.array,

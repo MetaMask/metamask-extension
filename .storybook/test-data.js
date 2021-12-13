@@ -1177,11 +1177,13 @@ const state = {
         name: 'E2E Test Dapp',
         origin: 'https://metamask.github.io',
         iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+        subjectType: 'website',
       },
       'https://app.uniswap.org': {
         name: 'Uniswap',
         origin: 'https://app.uniswap.org',
         iconUrl: './UNI.png',
+        subjectType: 'website',
       },
     },
     threeBoxSyncingAllowed: false,
