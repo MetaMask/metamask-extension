@@ -117,6 +117,7 @@ export default class TransactionStateManager extends EventEmitter {
       status: TRANSACTION_STATUSES.UNAPPROVED,
       metamaskNetworkId: netId,
       originalGasEstimate: opts.txParams?.gas,
+      userEditedGasLimit: false,
       chainId,
       loadingDefaults: true,
       dappSuggestedGasFees,

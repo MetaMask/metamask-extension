@@ -137,6 +137,10 @@ export function useGasFeeInputs(
     hexToDecimal(transaction?.originalGasEstimate ?? '0x0'),
   );
 
+  const [userEditedGasLimit, setUserEditedGasLimit] = useState(() => 
+    Boolean(transaction?.userEditedGasLimit),
+  );
+
   /**
    * In EIP-1559 V2 designs change to gas estimate is always updated to transaction
    * Thus callback setEstimateToUse can be deprecate in favour of this useEffect
@@ -288,6 +292,7 @@ export function useGasFeeInputs(
     // Restore existing values
     setGasPrice(gasPrice);
     setGasLimit(gasLimit);
+    setUserEditedGasLimit(true);
     setMaxFeePerGas(maxFeePerGas);
     setMaxPriorityFeePerGas(maxPriorityFeePerGas);
     setGasPriceHasBeenManuallySet(true);
@@ -299,6 +304,7 @@ export function useGasFeeInputs(
     gasPrice,
     setGasLimit,
     gasLimit,
+    setUserEditedGasLimit,
     setMaxFeePerGas,
     maxFeePerGas,
     setMaxPriorityFeePerGas,
@@ -318,6 +324,8 @@ export function useGasFeeInputs(
     setGasPrice,
     gasLimit,
     setGasLimit,
+    properGasLimit,
+    userEditedGasLimit,
     editGasMode,
     estimateToUse,
     setEstimateToUse,

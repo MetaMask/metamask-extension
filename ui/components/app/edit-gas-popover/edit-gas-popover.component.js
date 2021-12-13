@@ -99,6 +99,7 @@ export default function EditGasPopover({
     gasLimit,
     setGasLimit,
     properGasLimit,
+    userEditedGasLimit,
     estimateToUse,
     setEstimateToUse,
     estimatedMinimumFiat,
@@ -164,6 +165,7 @@ export default function EditGasPopover({
 
     const updatedTxMeta = {
       ...updatedTransaction,
+      userEditedGasLimit: userEditedGasLimit, 
       userFeeLevel: estimateToUse || CUSTOM_GAS_ESTIMATE,
       txParams: {
         ...cleanTransactionParams,
