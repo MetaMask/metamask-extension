@@ -115,30 +115,34 @@ export default function CollectiblesTab({ onAddNFT }) {
           alignItems={ALIGN_ITEMS.CENTER}
           justifyContent={JUSTIFY_CONTENT.CENTER}
         >
-          <Box
-            className="collectibles-tab__link"
-            justifyContent={JUSTIFY_CONTENT.FLEX_END}
-          >
-            {useCollectibleDetection ? (
-              <Button
-                type="link"
-                onClick={() => dispatch(detectCollectibles())}
+          {isMainnet ? (
+            <>
+              <Box
+                className="collectibles-tab__link"
+                justifyContent={JUSTIFY_CONTENT.FLEX_END}
               >
-                {t('refreshList')}
-              </Button>
-            ) : (
-              <Button type="link" onClick={onEnableAutoDetect}>
-                {t('enableAutoDetect')}
-              </Button>
-            )}
-          </Box>
-          <Typography
-            color={COLORS.UI3}
-            variant={TYPOGRAPHY.H4}
-            align={TEXT_ALIGN.CENTER}
-          >
-            {t('or')}
-          </Typography>
+                {useCollectibleDetection ? (
+                  <Button
+                    type="link"
+                    onClick={() => dispatch(detectCollectibles())}
+                  >
+                    {t('refreshList')}
+                  </Button>
+                ) : (
+                  <Button type="link" onClick={onEnableAutoDetect}>
+                    {t('enableAutoDetect')}
+                  </Button>
+                )}
+              </Box>
+              <Typography
+                color={COLORS.UI3}
+                variant={TYPOGRAPHY.H4}
+                align={TEXT_ALIGN.CENTER}
+              >
+                {t('or')}
+              </Typography>
+            </>
+          ) : null}
           <Box
             justifyContent={JUSTIFY_CONTENT.FLEX_START}
             className="collectibles-tab__link"
