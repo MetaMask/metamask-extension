@@ -1,30 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
+} from '../../../../../shared/constants/gas';
 import {
   COLORS,
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 import Typography from '../../../ui/typography';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
 
 const EditGasToolTip = ({
+  gasLimit,
   priorityLevel,
   // maxFeePerGas & maxPriorityFeePerGas are derived from conditional logic
   // related to the source of the estimates. We pass these values from the
   // the parent component (edit-gas-item) rather than recalculate them
   maxFeePerGas,
   maxPriorityFeePerGas,
+  editGasMode,
+  transaction,
   t,
 }) => {
-  const {
-    gasLimit,
-    maxFeePerGas: maxFeePerGasValue,
-    maxPriorityFeePerGas: maxPriorityFeePerGasValue,
-    transaction,
-  } = useGasFeeContext();
-
   const toolTipMessage = () => {
     switch (priorityLevel) {
       case PRIORITY_LEVELS.LOW:
@@ -40,6 +38,9 @@ const EditGasToolTip = ({
           </span>,
         ]);
       case PRIORITY_LEVELS.HIGH:
+        if (editGasMode === EDIT_GAS_MODES.SWAPS) {
+          return t('swapSuggestedGasSettingToolTipMessage');
+        }
         return t('highGasSettingToolTipMessage', [
           <span key={priorityLevel}>
             <b>{t('high')}</b>
@@ -64,10 +65,15 @@ const EditGasToolTip = ({
   return (
     <div className="edit-gas-tooltip__container">
       {priorityLevel !== PRIORITY_LEVELS.CUSTOM &&
-      priorityLevel !== PRIORITY_LEVELS.DAPP_SUGGESTED ? (
+      priorityLevel !== PRIORITY_LEVELS.DAPP_SUGGESTED &&
+      !(
+        priorityLevel === PRIORITY_LEVELS.HIGH &&
+        editGasMode === EDIT_GAS_MODES.SWAPS
+      ) ? (
         <img alt="" src={`./images/curve-${priorityLevel}.svg`} />
       ) : null}
-      {priorityLevel === PRIORITY_LEVELS.HIGH ? (
+      {priorityLevel === PRIORITY_LEVELS.HIGH &&
+      editGasMode !== EDIT_GAS_MODES.SWAPS ? (
         <div className="edit-gas-tooltip__container__dialog">
           <Typography variant={TYPOGRAPHY.H7} color={COLORS.WHITE}>
             {t('highGasSettingToolTipDialog')}
@@ -92,7 +98,7 @@ const EditGasToolTip = ({
               color={COLORS.NEUTRAL_GREY}
               className="edit-gas-tooltip__container__value"
             >
-              {maxFeePerGas ?? maxFeePerGasValue}
+              {maxFeePerGas}
             </Typography>
           </div>
           <div>
@@ -108,7 +114,7 @@ const EditGasToolTip = ({
               color={COLORS.NEUTRAL_GREY}
               className="edit-gas-tooltip__container__value"
             >
-              {maxPriorityFeePerGas ?? maxPriorityFeePerGasValue}
+              {maxPriorityFeePerGas}
             </Typography>
           </div>
           <div>
@@ -138,6 +144,9 @@ EditGasToolTip.propTypes = {
   maxFeePerGas: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
   t: PropTypes.func,
+  editGasMode: PropTypes.string,
+  gasLimit: PropTypes.number,
+  transaction: PropTypes.object,
 };
 
 export default EditGasToolTip;

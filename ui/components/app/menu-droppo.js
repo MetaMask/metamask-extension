@@ -39,10 +39,9 @@ export default class MenuDroppoComponent extends Component {
     if (
       this.props.isOpen &&
       target !== container &&
-      !isDescendant(this.container, event.target) &&
-      this.props.onClickOutside
+      !this.container.contains(event.target)
     ) {
-      this.props.onClickOutside(event);
+      this.props.onClickOutside?.(event);
     }
   };
 
@@ -116,16 +115,4 @@ export default class MenuDroppoComponent extends Component {
       </div>
     );
   }
-}
-
-function isDescendant(parent, child) {
-  let node = child.parentNode;
-  while (node !== null) {
-    if (node === parent) {
-      return true;
-    }
-    node = node.parentNode;
-  }
-
-  return false;
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 
 import {
+  EDIT_GAS_MODES,
   GAS_ESTIMATE_TYPES,
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
@@ -85,6 +86,17 @@ describe('EditGasFeeButton', () => {
     expect(screen.queryByText('🌐')).toBeInTheDocument();
     expect(screen.queryByText('Site suggested')).toBeInTheDocument();
     expect(document.getElementsByClassName('info-tooltip')).toHaveLength(1);
+  });
+
+  it('should render edit link with text swap suggested if high gas estimates are selected for swaps', () => {
+    render({
+      contextProps: {
+        transaction: { userFeeLevel: 'high' },
+        editGasMode: EDIT_GAS_MODES.SWAPS,
+      },
+    });
+    expect(screen.queryByText('🔄')).toBeInTheDocument();
+    expect(screen.queryByText('Swap suggested')).toBeInTheDocument();
   });
 
   it('should render edit link with text advance if custom gas estimates are used', () => {
