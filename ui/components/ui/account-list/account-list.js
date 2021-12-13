@@ -35,7 +35,7 @@ const AccountList = ({
       <div
         className={classnames({
           'choose-account-list__header--one-item': accounts.length === 1,
-          'choose-account-list__header--two-items': accounts.length > 1,
+          'choose-account-list__header--multiple-items': accounts.length > 1,
         })}
       >
         {accounts.length > 1 ? (

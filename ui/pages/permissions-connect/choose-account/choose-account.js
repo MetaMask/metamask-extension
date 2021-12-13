@@ -5,6 +5,7 @@ import Button from '../../../components/ui/button';
 import PermissionsConnectHeader from '../../../components/app/permissions-connect-header';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import AccountList from '../../../components/ui/account-list';
+import AccountImportSubview from '../../create-account/import-account';
 
 const ChooseAccount = ({
   selectedAccountAddresses,
@@ -44,7 +45,7 @@ const ChooseAccount = ({
   };
 
   const allAreSelected = () => {
-    return accounts.every(({ address }) => selectedAccounts.has(address));
+    return accounts.length === selectedAccounts.size;
   };
 
   return (
