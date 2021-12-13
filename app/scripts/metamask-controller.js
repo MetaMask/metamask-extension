@@ -2817,6 +2817,10 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     else if (subjectType === SUBJECT_TYPES.SNAP) {
       origin = sender.snapId;
+      // TODO: Use a SnapController event to handle this
+      this.subjectMetadataController.addSubjectMetadata(origin, {
+        subjectType: SUBJECT_TYPES.SNAP,
+      });
     }
     ///: END:ONLY_INCLUDE_IN
     else {
