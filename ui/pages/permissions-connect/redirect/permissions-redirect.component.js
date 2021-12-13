@@ -50,6 +50,7 @@ PermissionsRedirect.propTypes = {
   subjectMetadata: PropTypes.shape({
     extensionId: PropTypes.string,
     iconUrl: PropTypes.string,
+    subjectType: PropTypes.string,
     name: PropTypes.string.isRequired,
     origin: PropTypes.string.isRequired,
   }),

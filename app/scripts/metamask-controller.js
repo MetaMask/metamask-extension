@@ -2634,6 +2634,7 @@ export default class MetamaskController extends EventEmitter {
       subjectType = SUBJECT_TYPES.EXTENSION;
       this.subjectMetadataController.addSubjectMetadata(origin, {
         extensionId: sender.id,
+        subjectType: SUBJECT_TYPES.EXTENSION,
       });
     }
 

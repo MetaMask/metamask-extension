@@ -50,9 +50,10 @@ const mapStateToProps = (state, ownProps) => {
     } else {
       const targetUrl = new URL(origin);
       targetSubjectMetadata = {
-        host: targetUrl.host,
         name: targetUrl.hostname,
         origin,
+        iconUrl: null,
+        extensionId: null,
       };
     }
   }

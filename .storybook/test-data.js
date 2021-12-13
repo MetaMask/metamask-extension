@@ -1175,15 +1175,15 @@ const state = {
     subjectMetadata: {
       'https://metamask.github.io': {
         name: 'E2E Test Dapp',
-        icon: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
-        lastUpdated: 1620723443380,
-        host: 'metamask.github.io',
+        origin: 'https://metamask.github.io',
+        iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+        subjectType: 'website',
       },
       'https://app.uniswap.org': {
         name: 'Uniswap',
-        icon: './UNI.png',
-        lastUpdated: 1620723443380,
-        host: 'app.uniswap.org',
+        origin: 'https://app.uniswap.org',
+        iconUrl: './UNI.png',
+        subjectType: 'website',
       },
     },
     threeBoxSyncingAllowed: false,
