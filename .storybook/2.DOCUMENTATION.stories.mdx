@@ -14,7 +14,7 @@ Some general documentation best practices to follow:
 
 - Put yourself in the shoes of another developer trying to use the component you just created for the first time
 - Write a brief description of the component and what it's used for in the `README.mdx` file
-- Display the component's api using the `<ArgsTable of={YourComponent} />` component from storybook docs. Add descriptions of each prop by using jsDoc style comments in the `propTypes`.
+- Display the component's API using the `<ArgsTable of={YourComponent} />` component from storybook docs. Add descriptions of each prop by using jsDoc style comments in the `propTypes`.
 - Use the [controls](https://storybook.js.org/addons/@storybook/addon-controls/) over [knobs](https://storybook.js.org/addons/@storybook/addon-knobs)(deprecated)
 - Use the [action argType annotation](https://storybook.js.org/docs/react/essentials/actions#action-argtype-annotation) over importing the actions plugin directly
 
@@ -50,7 +50,7 @@ import React from 'react';
 
 import BuyIcon from '../icon/overview-buy-icon.component';
 
-// The mdx file to document component api and usage
+// The mdx file to document component API and usage
 import README from './README.mdx';
 import Button from '.';
 
@@ -70,7 +70,7 @@ export default {
   argTypes: {
     children: { control: 'text' },
     disabled: { control: 'boolean' },
-    // use the updated action api to log actions in the actions tab
+    // use the updated action API to log actions in the actions tab
     onClick: { action: 'clicked' },
     type: {
       control: {
@@ -169,7 +169,7 @@ Buttons communicate actions that users can take.
 
 ## Component API
 
-<!-- Display the component api using the ArgsTable. Use JSDoc style comments in the PropTypes of your component to add descriptions for props. See button.component.js Button.propTypes for an example of jsDoc style comments
+<!-- Display the component API using the ArgsTable. Use JSDoc style comments in the PropTypes of your component to add descriptions for props. See button.component.js Button.propTypes for an example of jsDoc style comments
 -->
 
 <ArgsTable of={Button} />
