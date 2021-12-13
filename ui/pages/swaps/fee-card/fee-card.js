@@ -17,7 +17,7 @@ import {
   COLORS,
   TYPOGRAPHY,
   FONT_WEIGHT,
-} from '../../../helpers/consqtants/design-system';
+} from '../../../helpers/constants/design-system';
 import GasDetailsItemTitle from '../../confirm-transaction-base/gas-details-item/gas-details-item-title';
 
 const GAS_FEES_LEARN_MORE_URL =
