@@ -50,15 +50,15 @@ const ChooseAccount = ({
   return (
     <div className="permissions-connect-choose-account">
       <PermissionsConnectHeader
-        icon={targetDomainMetadata?.icon}
-        iconName={targetDomainMetadata?.name}
+        icon={targetDomainMetadata.icon}
+        iconName={targetDomainMetadata.name}
         headerTitle={t('connectWithMetaMask')}
         headerText={
           accounts.length > 0
             ? t('selectAccounts')
             : t('connectAccountOrCreate')
         }
-        siteOrigin={targetDomainMetadata?.origin}
+        siteOrigin={targetDomainMetadata.origin}
       />
       <AccountList
         accounts={accounts}
