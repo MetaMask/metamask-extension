@@ -1279,6 +1279,9 @@
   "selectAHigherGasFee": {
     "message": "Pumili ng mas malaking bayarin sa gas para mapabilis ang pagproseso ng iyong transaksyon.*"
   },
+  "selectAccounts": {
+    "message": "Pumili ng (mga) account"
+  },
   "selectAll": {
     "message": "Piliin lahat"
   },
