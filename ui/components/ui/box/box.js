@@ -86,6 +86,7 @@ export default function Box({
   children,
   className,
   backgroundColor,
+  style,
 }) {
   const boxClassName = classnames('box', className, {
     // ---Borders---
@@ -141,7 +142,11 @@ export default function Box({
   if (typeof children === 'function') {
     return children(boxClassName);
   }
-  return <div className={boxClassName}>{children}</div>;
+  return (
+    <div className={boxClassName} style={style}>
+      {children}
+    </div>
+  );
 }
 
 Box.propTypes = {
@@ -171,4 +176,8 @@ Box.propTypes = {
   height: PropTypes.oneOf(Object.values(BLOCK_SIZES)),
   backgroundColor: PropTypes.oneOf(Object.values(COLORS)),
   className: PropTypes.string,
+  /**
+   * The inline style object to pass to the root element of the Box component
+   */
+  style: PropTypes.object,
 };
