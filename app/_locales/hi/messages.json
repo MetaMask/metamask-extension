@@ -1343,12 +1343,6 @@
   "pending": {
     "message": "लंबित"
   },
-  "permissionCheckedIconDescription": {
-    "message": "आपने इस अनुमति को अनुमोदित कर दिया है"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "आपने इस अनुमति को अनुमोदित नहीं किया है"
-  },
   "permissions": {
     "message": "अनुमतियाँ"
   },

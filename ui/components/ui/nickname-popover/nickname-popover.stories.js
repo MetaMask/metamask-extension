@@ -5,11 +5,11 @@ import Button from '../button';
 import NicknamePopover from '.';
 
 export default {
-  title: 'NicknamePopover',
+  title: 'Components/UI/NicknamePopover',
   id: __filename,
 };
 
-export const Default = () => {
+export const DefaultStory = () => {
   const [showNicknamePopover, setShowNicknamePopover] = useState(false);
 
   return (
@@ -30,3 +30,5 @@ export const Default = () => {
     </div>
   );
 };
+
+DefaultStory.storyName = 'Default';

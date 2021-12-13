@@ -80,12 +80,36 @@ export default function TransactionDetailItem({
 }
 
 TransactionDetailItem.propTypes = {
+  /**
+   * Detail title text wrapped in Typography component.
+   */
   detailTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * The color of the detailTitle text accepts all Typography color props
+   */
   detailTitleColor: PropTypes.string,
+  /**
+   * Text to show on the left of the detailTotal. Wrapped in Typography component.
+   */
   detailText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Total amount to show. Wrapped in Typography component. Will be bold if boldHeadings is true
+   */
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Subtitle text. Checks if React.isValidElement before displaying. Displays under detailTitle
+   */
   subTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Text to show under detailTotal. Wrapped in Typography component.
+   */
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Whether detailTotal is bold or not. Defaults to true
+   */
   boldHeadings: PropTypes.bool,
+  /**
+   * Changes width to auto for transaction-detail-item__detail-values
+   */
   flexWidthValues: PropTypes.bool,
 };

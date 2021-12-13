@@ -41,11 +41,31 @@ class SettingsPage extends PureComponent {
     initialBreadCrumbKey: PropTypes.string,
     mostRecentOverviewPage: PropTypes.string.isRequired,
     addNewNetwork: PropTypes.bool,
+    conversionDate: PropTypes.number,
   };
 
   static contextTypes = {
     t: PropTypes.func,
   };
+
+  state = {
+    lastFetchedConversionDate: null,
+  };
+
+  componentDidMount() {
+    this.handleConversionDate();
+  }
+
+  componentDidUpdate() {
+    this.handleConversionDate();
+  }
+
+  handleConversionDate() {
+    const { conversionDate } = this.props;
+    if (conversionDate !== null) {
+      this.setState({ lastFetchedConversionDate: conversionDate });
+    }
+  }
 
   render() {
     const {
@@ -227,7 +247,16 @@ class SettingsPage extends PureComponent {
   renderContent() {
     return (
       <Switch>
-        <Route exact path={GENERAL_ROUTE} component={SettingsTab} />
+        <Route
+          exact
+          path={GENERAL_ROUTE}
+          render={(routeProps) => (
+            <SettingsTab
+              {...routeProps}
+              lastFetchedConversionDate={this.state.lastFetchedConversionDate}
+            />
+          )}
+        />
         <Route exact path={ABOUT_US_ROUTE} component={InfoTab} />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
         <Route exact path={ALERTS_ROUTE} component={AlertsTab} />
@@ -251,7 +280,14 @@ class SettingsPage extends PureComponent {
           path={`${CONTACT_VIEW_ROUTE}/:id`}
           component={ContactListTab}
         />
-        <Route component={SettingsTab} />
+        <Route
+          render={(routeProps) => (
+            <SettingsTab
+              {...routeProps}
+              lastFetchedConversionDate={this.state.lastFetchedConversionDate}
+            />
+          )}
+        />
       </Switch>
     );
   }

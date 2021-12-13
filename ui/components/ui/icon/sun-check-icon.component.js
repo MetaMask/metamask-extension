@@ -25,5 +25,8 @@ export default function SunCheck({ reverseColors }) {
 }
 
 SunCheck.propTypes = {
+  /**
+   * If true reverses the colors of the SunCheck icon
+   */
   reverseColors: PropTypes.bool,
 };

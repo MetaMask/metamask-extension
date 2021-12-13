@@ -31,7 +31,16 @@ export default function BuyIcon({
 }
 
 BuyIcon.propTypes = {
+  /**
+   * Width of the icon
+   */
   width: PropTypes.string,
+  /**
+   * Height of the icon
+   */
   height: PropTypes.string,
+  /**
+   * Fill  of the icon should be a valid design system color
+   */
   fill: PropTypes.string,
 };

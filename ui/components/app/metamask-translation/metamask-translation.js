@@ -6,7 +6,7 @@ import MetaMaskTemplateRenderer, {
 } from '../metamask-template-renderer/metamask-template-renderer';
 
 /**
- * MetaMaskTranslation is a simple helper Component for adding full translation
+ * MetaMaskTranslation is a simple helper component for adding full translation
  * support to the template system. We do pass the translation function to the
  * template getValues function, but passing it React components as variables
  * would require React to be in scope, and breaks the object pattern paradigm.
@@ -69,7 +69,13 @@ export default function MetaMaskTranslation({ translationKey, variables }) {
 }
 
 MetaMaskTranslation.propTypes = {
+  /**
+   * Translation object key
+   */
   translationKey: PropTypes.string.isRequired,
+  /**
+   * Array of variables for the MetaMaskTranslation component
+   */
   variables: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.string,

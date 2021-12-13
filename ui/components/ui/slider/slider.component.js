@@ -28,14 +28,14 @@ const styles = {
     height: 6,
   },
   thumb: {
-    'height': 20,
-    'width': 20,
-    'marginTop': -7,
-    'marginLeft': -7,
-    'backgroundColor': '#037DD6',
-    'border': '1px solid #EAF6FF',
-    'boxSizing': 'border-box',
-    'boxShadow': '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
+    height: 20,
+    width: 20,
+    marginTop: -7,
+    marginLeft: -7,
+    backgroundColor: '#037DD6',
+    border: '1px solid #EAF6FF',
+    boxSizing: 'border-box',
+    boxShadow: '0px 0px 14px 0px rgba(0, 0, 0, 0.18)',
     '&:focus, &$active': {
       height: 20,
       width: 20,
@@ -118,17 +118,53 @@ Slider.defaultProps = {
 };
 
 Slider.propTypes = {
+  /**
+   * Show edit text
+   */
   editText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show info text
+   */
   infoText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show title detail text
+   */
   titleDetail: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show title text
+   */
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show tooltip Text
+   */
   tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show value text
+   */
   valueText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Set maximum step
+   */
   max: PropTypes.number,
+  /**
+   * Set minimum step
+   */
   min: PropTypes.number,
+  /**
+   * Handler for onChange
+   */
   onChange: PropTypes.func,
+  /**
+   * Handler for onEdit
+   */
   onEdit: PropTypes.func,
+  /**
+   * Total steps
+   */
   step: PropTypes.number,
+  /**
+   * Show value on slider
+   */
   value: PropTypes.number,
 };
 

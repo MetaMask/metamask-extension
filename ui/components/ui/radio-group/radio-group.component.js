@@ -85,9 +85,21 @@ export default function RadioGroup({ options, name, selectedValue, onChange }) {
 }
 
 RadioGroup.propTypes = {
+  /**
+   * Predefined options for radio group
+   */
   options: PropTypes.array,
+  /**
+   * Show selected value
+   */
   selectedValue: PropTypes.string,
+  /**
+   * Show name as label
+   */
   name: PropTypes.string,
+  /**
+   * Handler for onChange
+   */
   onChange: PropTypes.func,
 };
 

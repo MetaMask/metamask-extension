@@ -11,6 +11,8 @@ export default function LoadingHeartBeat() {
   useShouldAnimateGasEstimations();
   const active = useSelector(getGasLoadingAnimationIsShowing);
 
+  if (process.env.IN_TEST) return null;
+
   return (
     <div
       className={classNames('loading-heartbeat', {

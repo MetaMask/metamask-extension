@@ -33,13 +33,22 @@ See the [build system readme](./development/build/README.md) for build system us
 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
 
-To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension)
-  alongside the app, use `yarn start:dev`.
-  - React DevTools will open in a separate window; no browser extension is required
-  - Redux DevTools will need to be installed as a browser extension. Open the Redux Remote Devtools to access Redux state logs. This can be done by either right clicking within the web browser to bring up the context menu, expanding the Redux DevTools panel and clicking Open Remote DevTools OR clicking the Redux DevTools extension icon and clicking Open Remote DevTools.
-    - You will also need to check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked)
+#### React and Redux DevTools
 
-[Test site](https://metamask.github.io/test-dapp/) can be used to execute different user flows.
+To start the [React DevTools](https://github.com/facebook/react-devtools), run `yarn devtools:react` with a development build installed in a browser. This will open in a separate window; no browser extension is required.
+
+To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension):
+- Install the package `remotedev-server` globally (e.g. `yarn global add remotedev-server`)
+- Install the Redux Devtools extension.
+- Open the Redux DevTools extension and check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked).
+
+Then run the command `yarn devtools:redux` with a development build installed in a browser. This will enable you to use the Redux DevTools extension to inspect MetaMask.
+
+To create a development build and run both of these tools simultaneously, run `yarn start:dev`.
+
+#### Test Dapp
+
+[This test site](https://metamask.github.io/test-dapp/) can be used to execute different user flows.
 
 ### Running Unit Tests and Linting
 
@@ -61,6 +70,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 
 * `yarn.lock`:
   * Run `yarn setup` again after your changes to ensure `yarn.lock` has been properly updated.
+  * Run `yarn yarn-deduplicate` to remove duplicate dependencies from the lockfile.
 * The `allow-scripts` configuration in `package.json`
   * Run `yarn allow-scripts auto` to update the `allow-scripts` configuration automatically. This config determines whether the package's install/postinstall scripts are allowed to run. Review each new package to determine whether the install script needs to run or not, testing if necessary.
   * Unfortunately, `yarn allow-scripts auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.

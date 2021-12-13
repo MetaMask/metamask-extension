@@ -178,10 +178,7 @@ describe('Metamask Responsive UI', function () {
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');
-        await driver.clickElement({
-          text: enLocaleMessages.restore.message,
-          tag: 'button',
-        });
+        await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
         await driver.waitForSelector({
@@ -226,7 +223,7 @@ describe('Metamask Responsive UI', function () {
 
         const inputAmount = await driver.fill('.unit-input__input', '1');
 
-        const inputValue = await inputAmount.getAttribute('value');
+        const inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
 
         // confirming transcation

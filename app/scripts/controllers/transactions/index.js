@@ -977,7 +977,7 @@ export default class TransactionController extends EventEmitter {
    * @param {number} txId - The tx's ID
    * @returns {Promise<void>}
    */
-  async confirmTransaction(txId, txReceipt, baseFeePerGas) {
+  async confirmTransaction(txId, txReceipt, baseFeePerGas, blockTimestamp) {
     // get the txReceipt before marking the transaction confirmed
     // to ensure the receipt is gotten before the ui revives the tx
     const txMeta = this.txStateManager.getTransaction(txId);
@@ -1001,6 +1001,9 @@ export default class TransactionController extends EventEmitter {
 
       if (baseFeePerGas) {
         txMeta.baseFeePerGas = baseFeePerGas;
+      }
+      if (blockTimestamp) {
+        txMeta.blockTimestamp = blockTimestamp;
       }
 
       this.txStateManager.setTxStatusConfirmed(txId);
@@ -1183,8 +1186,13 @@ export default class TransactionController extends EventEmitter {
     });
     this.pendingTxTracker.on(
       'tx:confirmed',
-      (txId, transactionReceipt, baseFeePerGas) =>
-        this.confirmTransaction(txId, transactionReceipt, baseFeePerGas),
+      (txId, transactionReceipt, baseFeePerGas, blockTimestamp) =>
+        this.confirmTransaction(
+          txId,
+          transactionReceipt,
+          baseFeePerGas,
+          blockTimestamp,
+        ),
     );
     this.pendingTxTracker.on('tx:dropped', (txId) => {
       this._dropTransaction(txId);

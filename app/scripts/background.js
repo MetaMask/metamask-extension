@@ -56,7 +56,7 @@ const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 
 // state persistence
-const inTest = process.env.IN_TEST === 'true';
+const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
 
@@ -533,13 +533,8 @@ function setupController(initState, initLangCode) {
         ),
       );
 
-    // We're specifcally avoid using approvalController directly for better
-    // Error support during rejection
-    Object.keys(
-      controller.permissionsController.approvals.state.pendingApprovals,
-    ).forEach((approvalId) =>
-      controller.permissionsController.rejectPermissionsRequest(approvalId),
-    );
+    // Finally, reject all approvals managed by the ApprovalController
+    controller.approvalController.clear();
 
     updateBadge();
   }

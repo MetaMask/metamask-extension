@@ -20,6 +20,10 @@ import {
 import { ETH } from '../../helpers/constants/common';
 
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
+import {
+  getCustomMaxFeePerGas,
+  getCustomMaxPriorityFeePerGas,
+} from '../../ducks/swaps/swaps';
 
 // Why this number?
 // 20 gwei * 21000 gasLimit = 420,000 gwei
@@ -121,6 +125,12 @@ export const generateUseSelectorRouter = ({
     return {
       balance: '0x440aa47cc2556',
     };
+  }
+  if (selector === getCustomMaxFeePerGas) {
+    return '0x5208';
+  }
+  if (selector === getCustomMaxPriorityFeePerGas) {
+    return '0x5208';
   }
   if (selector === checkNetworkAndAccountSupports1559) {
     return checkNetworkAndAccountSupports1559Response;
