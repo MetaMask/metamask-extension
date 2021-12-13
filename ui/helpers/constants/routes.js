@@ -93,7 +93,7 @@ const PATH_NAME_MAP = {
   [DEFAULT_ROUTE]: 'Home',
   [UNLOCK_ROUTE]: 'Unlock Page',
   [LOCK_ROUTE]: 'Lock Page',
-  [`${ASSET_ROUTE}/:asset`]: `Asset Page`,
+  [`${ASSET_ROUTE}/:asset/:id`]: `Asset Page`,
   [SETTINGS_ROUTE]: 'Settings Page',
   [GENERAL_ROUTE]: 'General Settings Page',
   [ADVANCED_ROUTE]: 'Advanced Settings Page',

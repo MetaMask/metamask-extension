@@ -1,0 +1,31 @@
+.collectibles-detection-notice {
+  &__message {
+    position: relative;
+    padding: 0 1rem 1rem 1rem !important;
+
+    &__close-button {
+      background-color: transparent;
+
+      &::after {
+        position: absolute;
+        content: '\00D7';
+        font-size: 29px;
+        font-weight: 200;
+        color: $black;
+        background-color: transparent;
+        top: 0;
+        right: 12px;
+        cursor: pointer;
+      }
+    }
+
+    a.collectibles-detection-notice__message__link {
+      @include H6;
+
+      width: 60%;
+      padding: 0;
+      justify-content: flex-start;
+      font-weight: bold;
+    }
+  }
+}
