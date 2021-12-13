@@ -356,7 +356,11 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const transaction = unapprovedTxs[send.draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
-    if (send.stage !== SEND_STAGES.EDIT || !transaction.dappSuggestedGasFees?.gas || !transaction.userEditedGasLimit) {
+    if (
+      send.stage !== SEND_STAGES.EDIT ||
+      !transaction.dappSuggestedGasFees?.gas ||
+      !transaction.userEditedGasLimit
+    ) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: send.gas.gasPrice,
         blockGasLimit: metamask.currentBlockGasLimit,
@@ -1549,7 +1553,9 @@ export function signTransaction() {
         from: txParams.from,
         to: txParams.to,
         value: txParams.value,
-        gas: unapprovedTx.userEditedGasLimit ? unapprovedTx.txParams.gas : txParams.gas,
+        gas: unapprovedTx.userEditedGasLimit
+          ? unapprovedTx.txParams.gas
+          : txParams.gas,
       };
       unapprovedTx.originalGasEstimate = eip1559OnlyTxParamsToUpdate.gas;
       const editingTx = {

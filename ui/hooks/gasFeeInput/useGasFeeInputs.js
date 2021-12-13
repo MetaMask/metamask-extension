@@ -137,7 +137,7 @@ export function useGasFeeInputs(
     hexToDecimal(transaction?.originalGasEstimate ?? '0x0'),
   );
 
-  const [userEditedGasLimit, setUserEditedGasLimit] = useState(() => 
+  const [userEditedGasLimit, setUserEditedGasLimit] = useState(() =>
     Boolean(transaction?.userEditedGasLimit),
   );
 

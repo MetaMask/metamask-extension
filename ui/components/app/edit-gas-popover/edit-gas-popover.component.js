@@ -165,7 +165,7 @@ export default function EditGasPopover({
 
     const updatedTxMeta = {
       ...updatedTransaction,
-      userEditedGasLimit: userEditedGasLimit, 
+      userEditedGasLimit,
       userFeeLevel: estimateToUse || CUSTOM_GAS_ESTIMATE,
       txParams: {
         ...cleanTransactionParams,
@@ -212,6 +212,7 @@ export default function EditGasPopover({
     closePopover,
     gasLimit,
     gasPrice,
+    userEditedGasLimit,
     maxFeePerGas,
     maxPriorityFeePerGas,
     supportsEIP1559,
