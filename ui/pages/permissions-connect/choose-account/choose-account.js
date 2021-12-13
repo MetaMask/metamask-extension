@@ -55,7 +55,7 @@ const ChooseAccount = ({
         headerTitle={t('connectWithMetaMask')}
         headerText={
           accounts.length > 0
-            ? t('chooseAccounts')
+            ? t('selectAccounts')
             : t('connectAccountOrCreate')
         }
         siteOrigin={targetDomainMetadata?.origin}
