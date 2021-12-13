@@ -26,6 +26,7 @@ export function useOriginMetadata(origin) {
   const minimumOriginMetadata = {
     host: url.host,
     hostname: url.hostname,
+    origin,
   };
 
   if (subjectMetadata?.[origin]) {
