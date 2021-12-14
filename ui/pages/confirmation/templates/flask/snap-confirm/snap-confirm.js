@@ -37,7 +37,7 @@ function getValues(pendingApproval, t, actions) {
         children: {
           element: 'TextArea',
           props: {
-            height: '300px',
+            height: '400px',
             value: pendingApproval.requestData.prompt,
             resize: RESIZE.VERTICAL,
             scrollable: true,
@@ -46,6 +46,34 @@ function getValues(pendingApproval, t, actions) {
         },
         props: {
           className: 'snap-confirm',
+        },
+      },
+      {
+        element: 'Typography',
+        key: 'only-interact-with-entities-you-trust',
+        children: [
+          {
+            element: 'span',
+            key: 'only-connect-trust',
+            children: `${t('onlyConnectTrust')} `,
+          },
+          {
+            element: 'a',
+            children: t('learnMore'),
+            key: 'learnMore-a-href',
+            props: {
+              href:
+                'https://metamask.zendesk.com/hc/en-us/articles/4405506066331-User-guide-Dapps',
+              target: '__blank',
+            },
+          },
+        ],
+        props: {
+          variant: TYPOGRAPHY.H7,
+          align: 'center',
+          boxProps: {
+            margin: 0,
+          },
         },
       },
     ],

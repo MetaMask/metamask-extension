@@ -121,7 +121,7 @@ export default function ConfirmationPage() {
     0,
   );
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
-  const originMetadata = useOriginMetadata(pendingConfirmation?.origin);
+  const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
 
   // Generating templatedValues is potentially expensive, and if done on every render
