@@ -2725,7 +2725,6 @@ export default class MetamaskController extends EventEmitter {
         // Miscellaneous
         addSubjectMetadata: this.subjectMetadataController.addSubjectMetadata.bind(
           this.subjectMetadataController,
-          origin,
         ),
         getProviderState: this.getProviderState.bind(this),
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
