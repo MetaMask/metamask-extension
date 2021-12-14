@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, regularDelayMs } = require('../helpers');
+const { withFixtures, regularDelayMs, tinyDelayMs, largeDelayMs } = require('../helpers');
 
 describe('Swap Eth for another Token', function () {
   const ganacheOptions = {
@@ -23,33 +23,38 @@ describe('Swap Eth for another Token', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        await driver.clickElement({
-          xpath:
-            "//*[contains(text(),'Swap')]/preceding-sibling::div[@class='icon-button__circle']",
-        });
-        
+        await driver.clickElement('.wallet-overview__buttons .icon-button:nth-child(3)');
         await driver.clickElement('[class*="dropdown-search-list"] + div[class*="MuiFormControl-root MuiTextField-root"]');
         await driver.fill('input[placeholder*="0"]','2');
         await driver.clickElement('[class="dropdown-search-list__closed-primary-label dropdown-search-list__select-default"]');
-        await driver.fill('[placeholder="Search for a token"]','MATIC');
-        await driver.clickElement({
-          xpath:
-            "//*[contains(@class,'searchable-item-list__primary-label')][contains(text(),'MATIC')]",
-        });
-        await driver.delay(.5);
+        await driver.fill('[placeholder="Search for a token"]','Dai stablecoin');
+        await driver.waitForSelector('[class="searchable-item-list__primary-label"]');
+        await driver.clickElement('[class="searchable-item-list__primary-label"]');
         await driver.clickElement('[data-testid="page-container-footer-next"]');
+        await driver.waitForSelector('[class*="box--align-items-center"]');
         const estimatedEth = await driver.waitForSelector({
-          css: '[class="fee-card__row-header-text--bold"]',
-          text: 'Estimated network fee',
+          css: '[class*="box--align-items-center"]',
+          text: 'Estimated gas fee',
         });
-        assert.equal(await estimatedEth.getText(), 'Estimated network fee');
-        await driver.delay(5000);
+        assert.equal(await estimatedEth.getText(), 'Estimated gas fee');
+        await driver.waitForSelector('[class="exchange-rate-display main-quote-summary__exchange-rate-display"]');
+        await driver.waitForSelector('[class="fee-card__info-tooltip-container"]');
+        await driver.waitForSelector('[data-testid="page-container-footer-next"]');
+        //delay needed before swapping
+        await driver.delay(largeDelayMs*2);
+        await driver.clickElement('[class="fee-card__info-tooltip-container"]');
         await driver.clickElement('[data-testid="page-container-footer-next"]');
-        const sucessfulTransaction = await driver.waitForSelector({
+        await driver.waitForSelector('[class="awaiting-swap__header"]');
+        const sucessfulTransactionMessage = await driver.waitForSelector({
           css: '[class="awaiting-swap__header"]',
           text: 'Transaction complete',
         });
-        assert.equal(await sucessfulTransaction.getText(), 'Transaction complete');
+        assert.equal(await sucessfulTransactionMessage.getText(), 'Transaction complete');
+        const sucessfulTransactionToken = await driver.waitForSelector({
+          css: '[class="awaiting-swap__amount-and-symbol"]',
+          text: 'DAI',
+        });
+        assert.equal(await sucessfulTransactionToken.getText(), 'DAI');
         await driver.clickElement('[data-testid="page-container-footer-next"]');
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const swaptotal = await driver.waitForSelector({
