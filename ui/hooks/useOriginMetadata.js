@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { getSubjectMetadata } from '../selectors';
+import { SUBJECT_TYPES } from '../../shared/constants/app';
 
 /**
  * @typedef {Object} OriginMetadata
@@ -27,6 +28,7 @@ export function useOriginMetadata(origin) {
     host: url.host,
     hostname: url.hostname,
     origin,
+    subjectType: SUBJECT_TYPES.UNKNOWN,
   };
 
   if (subjectMetadata?.[origin]) {
