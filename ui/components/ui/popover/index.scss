@@ -15,16 +15,16 @@
     position: absolute;
     width: 328px;
     max-height: 94vh;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 30px rgba($black, 0.25);
     border-radius: 10px;
-    background: white;
+    background: var(--white);
   }
 
   &-header {
     display: flex;
     padding: 24px 16px 16px;
     flex-direction: column;
-    background: white;
+    background: var(--white);
     position: relative;
     border-radius: 10px;
 
@@ -114,9 +114,9 @@
   &-arrow {
     width: 22px;
     height: 22px;
-    background: white;
+    background: var(--white);
     position: absolute;
     transform: rotate(45deg);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 30px rgba($black, 0.25);
   }
 }

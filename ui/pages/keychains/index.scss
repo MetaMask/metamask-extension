@@ -98,7 +98,7 @@
     width: 495px;
     border: 1px solid #cdcdcd;
     border-radius: 6px;
-    background-color: #fff;
+    background-color: var(--white);
     padding: 17px;
   }
 
@@ -138,7 +138,7 @@
   }
 
   &__checkbox {
-    background: #fff;
+    background: var(--white);
     border: 1px solid #cdcdcd;
     outline: none;
     box-sizing: border-box;

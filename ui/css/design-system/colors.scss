@@ -71,7 +71,7 @@
   --accent-purple: #6f42c1;
   --accent-pink: #ff45d8;
   // Neutrals
-  --neutral-white: #fff;
+  --neutral-white: var(--white);
   --neutral-black: var(--Black-100);
   --neutral-grey: var(--Grey-500);
   // Everything below this line is part of the new color system
@@ -92,7 +92,7 @@
   --success-3: #219e37;
   --ui-black: #24292e;
   --ui-grey: #d6d9dc;
-  --ui-white: #fff;
+  --ui-white: var(--white);
   --ui-1: #f2f3f4;
   --ui-2: #d6d9dc;
   --ui-3: #bbc0c5;
@@ -105,6 +105,49 @@
   --goerli: #3099f2;
   --localhost: #29b6af;
   --flask-purple: #8b45b6;
+
+  // Named colors that we should use in the UI
+  --app-background: #f7f7f7;
+  --app-header-background: var(--Grey-000);
+  --app-header-network-chip-background: var(--transparent);
+  --main-container-background: var(--white);
+  --primary-text: #4d4d4d;
+  --primary-text-emphasized: var(--black);
+  --account-menu-text: var(--white);
+  --account-button-background-hover-color: var(--Grey-000);
+  --asset-list-primary-text: var(--Black-100);
+  --asset-list-background-hover-color: var(--Grey-000);
+  --asset-breadcrumb-text: var(--Black-100);
+  --asset-menu-background: var(--white);
+  --send-header-background-color: var(--Grey-000);
+  --dropdown-list-background-color: var(--white);
+  --dropdown-list-background-hover-color: var(--Grey-000);
+  --swaps-header-background-color: var(--white);
+  --swaps-header-border-color: var(--Grey-100);
+  --network-list-selected-color: var(--black);
+  --input-background: var(--white);
+}
+
+:root.theme-dark {
+  --app-background: var(--black);
+  --app-header-background: var(--black);
+  --app-header-network-chip-background: var(--neutral-black);
+  --main-container-background: var(--neutral-black);
+  --primary-text: var(--ui-2);
+  --primary-text-emphasized: var(--white);
+  --account-menu-text: var(--primary-text-emphasized);
+  --account-button-background-hover-color: var(--black);
+  --asset-list-primary-text: var(--primary-text);
+  --asset-list-background-hover-color: var(--neutral-black);
+  --asset-breadcrumb-text: var(--Grey-100);
+  --asset-menu-background: var(--Grey-200);
+  --send-header-background-color: var(--black);
+  --dropdown-list-background-color: var(--black);
+  --dropdown-list-background-hover-color: var(--neutral-black);
+  --swaps-header-background-color: var(--Grey-700);
+  --swaps-header-border-color: var(--neutral-black);
+  --network-list-selected-color: inherit;
+  --input-background: var(--neutral-black);
 }
 
 $color-map: (

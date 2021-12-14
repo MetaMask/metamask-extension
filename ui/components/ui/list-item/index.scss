@@ -2,7 +2,7 @@
   width: 100%;
   min-height: 86px;
   margin: 0;
-  background: #fff;
+  background: var(--white);
   padding: 24px 16px;
 
   @include Paragraph;
@@ -21,7 +21,7 @@
 
   &:hover,
   &:focus-within {
-    background-color: var(--Grey-000);
+    background-color: var(--asset-list-background-hover-color);
   }
 
   &__icon {
@@ -49,6 +49,7 @@
       background: unset;
       font-size: unset;
       padding-inline-start: 0;
+      color: unset;
     }
 
     &-wrap {

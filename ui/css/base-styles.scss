@@ -6,7 +6,7 @@
 
 html,
 body {
-  color: #4d4d4d;
+  color: var(--primary-text);
   width: 100%;
   height: 100%;
   margin: 0;
@@ -58,7 +58,7 @@ html {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #f7f7f7;
+  background: var(--app-background);
 
   @media screen and (max-width: $break-small) {
     background-color: var(--white);
@@ -127,8 +127,14 @@ input.form-control {
   }
 }
 
+select,
+input,
+input.MuiInputBase-input {
+  color: var(--primary-text);
+}
+
 /** Default Typography on base elements **/
 * {
-  font-family: $font-family;
+  font-family: var(--font-family);
 }
 

@@ -182,11 +182,11 @@
   }
 
   &__item:nth-of-type(odd) {
-    background: rgba(0, 0, 0, 0.03);
+    background: rgba($black, 0.03);
   }
 
   &__item:hover {
-    background-color: rgba(0, 0, 0, 0.06);
+    background-color: rgba($black, 0.06);
   }
 
   &__item__index {
@@ -236,7 +236,7 @@
   &__button {
     @include H6;
 
-    background: #fff;
+    background: var(--white);
     height: 19px;
     display: flex;
     color: #33a4e7;

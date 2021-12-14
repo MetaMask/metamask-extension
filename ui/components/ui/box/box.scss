@@ -9,17 +9,17 @@ $attributesToApplyExtraProperties: margin;
 
 .box {
   // Padding, Margin, and Gap
-  @each $attribute in $attributes {
+  @each $attribute in  $attributes {
     @each $size in design-system.$sizes-numeric {
       &--#{$attribute}-#{$size} {
-        #{$attribute}: utilities.get-spacing($size);
+        #{ $attribute}: utilities.get-spacing($size);
       }
     }
 
     @each $size in design-system.$sizes-numeric {
       @each $direction in design-system.$directions {
         &--#{$attribute}-#{$direction}-#{$size} {
-          #{$attribute}-#{$direction}: utilities.get-spacing($size);
+          #{ $attribute}-#{$direction}: utilities.get-spacing($size);
         }
       }
     }
@@ -46,7 +46,7 @@ $attributesToApplyExtraProperties: margin;
     }
   }
 
-  @each $variant, $color in design-system.$color-map {
+  @each $variant,  $color in design-system.$color-map {
     &--border-color-#{$variant} {
       border-color: var($color);
     }
@@ -122,7 +122,7 @@ $attributesToApplyExtraProperties: margin;
     height: 100%;
   }
 
-  @each $fraction, $value in design-system.$fractions {
+  @each $fraction,  $value in design-system.$fractions {
     &--width-#{$fraction} {
       width: $value;
     }
@@ -164,7 +164,7 @@ $attributesToApplyExtraProperties: margin;
   }
 
   // background
-  @each $variant, $color in design-system.$color-map {
+  @each $variant,  $color in design-system.$color-map {
     &--background-color-#{$variant} {
       background-color: var($color);
     }

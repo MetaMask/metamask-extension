@@ -18,6 +18,7 @@
     transition: opacity 200ms ease-in-out;
     background-color: unset;
     text-align: start;
+    color: var(--primary-text);
 
     @media screen and (min-width: $break-large) {
       &:hover {

@@ -8,7 +8,7 @@
     @include Paragraph;
 
     margin-top: 18px;
-    color: #4d4d4d;
+    color: var(--primary-text);
   }
 
   &__message {

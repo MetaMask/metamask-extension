@@ -11,11 +11,11 @@
 
   @each $variant in map.keys(design-system.$typography-variants) {
     &--#{$variant} {
-      @include design-system.typography($variant);
+      @include design-system.typography( $variant);
     }
   }
 
-  @each $variant, $color in design-system.$color-map {
+  @each $variant,  $color in design-system.$color-map {
     &--color-#{$variant} {
       color: var($color);
     }

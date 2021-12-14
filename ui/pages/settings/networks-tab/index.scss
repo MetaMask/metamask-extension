@@ -247,7 +247,7 @@
 
   &__networks-list-name--selected {
     font-weight: bold;
-    color: #000;
+    color: var(--network-list-selected-color);
   }
 
   &__networks-list-name--disabled {

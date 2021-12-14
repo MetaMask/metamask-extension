@@ -2,7 +2,7 @@
   align-items: center;
   background: var(--white);
   position: relative;
-  z-index: $header-z-index;
+  z-index: var(--header-z-index);
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
@@ -10,7 +10,7 @@
 
   @media screen and (max-width: $break-small) {
     padding: 1rem;
-    z-index: $mobile-header-z-index;
+    z-index: var(--mobile-header-z-index);
   }
 
   @media screen and (min-width: $break-large) {

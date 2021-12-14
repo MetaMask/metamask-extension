@@ -14,8 +14,8 @@
 }
 
 .send-screen-card {
-  background-color: #fff;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+  background-color: var(--white);
+  box-shadow: 0 2px 4px 0 rgba($black, 0.08);
   padding: 46px 40.5px 26px;
   position: relative;
   align-items: center;
@@ -49,7 +49,7 @@
   width: 70px;
   height: 70px;
   border: 1px solid var(--alto);
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 4px 0 rgba($black, 0.2);
   position: absolute;
   top: -35px;
   z-index: 25;
@@ -153,7 +153,7 @@
     cursor: pointer;
 
     &--selected {
-      color: var(--black);
+      color: var(--primary-text-emphasized);
       cursor: default;
     }
   }
@@ -325,8 +325,8 @@
   &__content {
     width: 498px;
     height: 605px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    background-color: var(--white);
+    box-shadow: 0 2px 4px 0 rgba($black, 0.08);
     padding: 46px 40.5px 26px;
     position: relative;
     align-items: center;
@@ -406,7 +406,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: var(--white);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 4px 0 rgba($black, 0.08);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
@@ -627,7 +627,7 @@
       border: 1px solid var(--geyser);
       border-radius: 4px;
       background-color: var(--white);
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
+      box-shadow: 0 3px 6px 0 rgba($black, 0.11);
       margin-top: 11px;
       margin-left: -1px;
       overflow-y: scroll;
@@ -713,7 +713,7 @@
       border: 1px solid var(--geyser);
       border-radius: 4px;
       background-color: var(--white);
-      box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
+      box-shadow: 0 3px 6px 0 rgba($black, 0.11);
       top: 65px;
       left: 0;
       box-sizing: content-box;
@@ -802,7 +802,7 @@
       align-items: center;
       justify-content: center;
       color: #2f9ae0;
-      background: #fff;
+      background: var(--white);
 
       &__disabled {
         color: #b0d7f2;
@@ -813,7 +813,7 @@
     input:checked + &__button {
       background-color: var(--primary-blue);
       border: 1px solid var(--primary-blue);
-      color: #fff;
+      color: var(--white);
     }
   }
 
@@ -882,8 +882,8 @@
   &__customize-gas {
     border: 1px solid #d8d8d8;
     border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
+    background-color: var(--white);
+    box-shadow: 0 2px 4px 0 rgba($black, 0.14);
     display: flex;
     flex-flow: column;
 
@@ -1108,7 +1108,7 @@
   justify-content: center;
   height: 24px;
   border-radius: 4px;
-  background-color: #fff;
+  background-color: var(--white);
   position: absolute;
   right: 12px;
   top: 14px;

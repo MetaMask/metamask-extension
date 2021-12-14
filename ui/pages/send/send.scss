@@ -5,7 +5,7 @@
     position: relative;
     display: flex;
     justify-content: center;
-    background-color: var(--Grey-000);
+    background-color: var(--send-header-background-color);
     border-bottom: none;
     padding: 14px 0 3px 0;
 
@@ -39,7 +39,7 @@
     margin: 0;
     padding: 0.5rem;
     flex: 0 0 auto;
-    background-color: var(--Grey-000);
+    background-color: var(--send-header-background-color);
     border-bottom: 1px solid var(--alto);
   }
 
@@ -141,7 +141,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        color: var(--black);
+        color: var(--primary-text-emphasized);
       }
 
       &__subtitle {
@@ -167,11 +167,15 @@
     flex: 1 1 auto;
     width: 0;
     align-items: center;
-    background: var(--white);
     border-radius: 0.5rem;
     padding: 0.75rem 0.5rem;
     border: 1px solid var(--Grey-100);
     transition: border-color 150ms ease-in-out;
+
+    &,
+    input {
+      background: var(--input-background);
+    }
 
     &:focus-within {
       border-color: var(--Grey-500);

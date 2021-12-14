@@ -7,7 +7,7 @@
   background: rgba($black, 0.8);
   box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
   min-width: 150px;
-  color: var(--white);
+  color: var(--account-menu-text);
 
   @media screen and (max-width: $break-small) {
     right: calc(((100vw - 100%) / 2) + 8px);
@@ -103,7 +103,7 @@
     border: 1px solid var(--ui-white);
     background-color: transparent;
     padding: 3.5px 5px;
-    color: var(--white);
+    color: var(--account-menu-text);
     width: 59px;
 
     &:hover {
@@ -152,7 +152,7 @@
       margin-top: 5px;
       margin-right: 10px;
       background-color: var(--dusty-gray);
-      color: var(--black);
+      color: var(--primary-text-emphasized);
       font-weight: normal;
       letter-spacing: 0.5px;
       display: flex;
@@ -186,7 +186,7 @@
       .remove-account-icon::after {
         content: '\00D7';
         font-size: 25px;
-        color: var(--white);
+        color: var(--account-menu-text);
         cursor: pointer;
         position: absolute;
         margin-top: -5px;
@@ -224,7 +224,7 @@
   &__name {
     @include H4;
 
-    color: var(--white);
+    color: var(--account-menu-text);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;

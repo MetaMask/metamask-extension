@@ -72,7 +72,7 @@
     @include H6;
 
     cursor: pointer;
-    color: var(--black);
+    color: var(--primary-text-emphasized);
     height: 49px;
     border-bottom: 1px solid var(--Grey-100);
     margin-bottom: 8px;
@@ -159,7 +159,7 @@
 
     &:hover {
       border-radius: 8px;
-      background: white;
+      background: var(--white);
       border: 1px solid var(--Blue-500);
     }
   }

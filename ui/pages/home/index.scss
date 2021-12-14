@@ -6,7 +6,6 @@
 
   &__main-view {
     flex: 1 1 66.5%;
-    background: var(--white);
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -116,7 +115,7 @@
     position: absolute;
     top: 73px;
     opacity: 1;
-    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 9999px rgba($black, 0.2);
     background: none;
   }
 

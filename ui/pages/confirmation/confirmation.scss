@@ -4,7 +4,7 @@
   width: 100%;
   height: 100%;
   position: relative;
-  background: white;
+  background: var(--white);
   display: grid;
   flex-direction: column;
   grid-template-columns: 1fr;
@@ -42,7 +42,7 @@
   }
 
   &__navigation-button {
-    background-color: white;
+    background-color: var(--white);
     border-radius: 100px;
     color: var(--Grey-500);
     font-size: $font-size-h6;

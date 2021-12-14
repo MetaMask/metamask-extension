@@ -11,7 +11,7 @@
   background-image: url('/images/icons/caret-down.svg');
   background-repeat: no-repeat, repeat;
   background-position: right 18px top 50%;
-  background-color: white;
+  background-color: var(--white);
   padding: 8px 32px 8px 16px;
 
   [dir='rtl'] & {

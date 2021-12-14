@@ -4,7 +4,7 @@
   &__actions {
     display: flex;
     border-top: 1px solid var(--ui-2);
-    background-color: white;
+    background-color: var(--white);
     padding: 16px;
 
     & .button:first-child {

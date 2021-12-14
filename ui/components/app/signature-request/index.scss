@@ -54,7 +54,7 @@
     border-radius: 50%;
     border: 1px solid white;
     position: absolute;
-    box-shadow: 0 2px 2px 0.5px rgba(0, 0, 0, 0.19);
+    box-shadow: 0 2px 2px 0.5px rgba($black, 0.19);
   }
 
   &__identicon-initial {
@@ -64,7 +64,7 @@
     font-size: 60px;
     color: white;
     z-index: 1;
-    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.422);
+    text-shadow: 0 4px 6px rgba($black, 0.422);
   }
 
   &__info {

@@ -18,7 +18,7 @@
   }
 
   &--open {
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 0 14px rgba($black, 0.18);
     border: 1px solid var(--Grey-100);
   }
 
@@ -91,7 +91,7 @@
   }
 
   &__search-list--open {
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 0 14px rgba($black, 0.18);
     border: 1px solid var(--Grey-100);
   }
 
@@ -129,7 +129,7 @@
     min-height: 300px;
     position: relative;
     z-index: 1002;
-    background: white;
+    background: var(--white);
     border-radius: 6px;
     min-height: 194px;
     overflow: hidden;

@@ -1,7 +1,7 @@
 @use "design-system";
 
 .chip {
-  $self: &;
+  $self : &;
 
   border-radius: 100px;
   border: 1px solid var(--ui-1);
@@ -34,7 +34,7 @@
   &--with-left-icon {
     padding-left: 4px;
 
-    #{$self}__label {
+    #{  $self }__label {
       margin-left: 8px;
     }
   }
@@ -45,7 +45,7 @@
     background: transparent;
     text-align: center;
     width: 100%;
-    font-size: design-system.$font-size-h5;
+    font-size: $font-size-h5;
 
     &:focus {
       text-align: left;
@@ -58,7 +58,7 @@
 
   &--with-right-icon {
     padding-right: 4px;
-    #{$self}__label {
+    #{  $self }__label {
       margin-right: 8px;
     }
   }

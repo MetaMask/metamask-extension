@@ -47,7 +47,7 @@
 
     border: 1px solid #cdcdcd;
     border-radius: 10px;
-    background-color: #fff;
+    background-color: var(--white);
     padding: 12px 24px 12px 12px;
     resize: none;
     width: 100%;
@@ -55,7 +55,7 @@
 
     &--blur {
       color: transparent;
-      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+      text-shadow: 0 1px 10px rgba($black, 0.5);
     }
 
     &--error {

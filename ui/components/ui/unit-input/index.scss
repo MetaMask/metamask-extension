@@ -7,8 +7,8 @@
   min-height: 54px;
   border: 1px solid #dedede;
   border-radius: 4px;
-  background-color: #fff;
-  color: #4d4d4d;
+  background-color: var(--white);
+  color: var(--primary-text);
   padding: 8px 10px;
   position: relative;
 
@@ -37,7 +37,7 @@
   &__input {
     @include Paragraph;
 
-    color: #4d4d4d;
+    color: var(--primary-text);
     border: none;
     max-width: 15ch;
     overflow: hidden;

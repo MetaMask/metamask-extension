@@ -68,7 +68,7 @@
 
     &:hover,
     &:focus {
-      background: var(--Grey-000);
+      background: var(--dropdown-list-background-hover-color);
     }
 
     &--selected {
@@ -194,7 +194,7 @@
 
   &__list-container {
     z-index: 1002;
-    background: white;
+    background: var(--dropdown-list-background-color);
   }
 
   &__search {
@@ -202,7 +202,7 @@
   }
 
   &__item--highlighted {
-    background: var(--Grey-000);
+    background: var(--dropdown-list-background-hover-color);
   }
 
   &__identicon {

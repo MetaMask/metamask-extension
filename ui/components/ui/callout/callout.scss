@@ -1,5 +1,5 @@
 .callout {
-  $self: &;
+  $self : &;
 
   @include H7;
 
@@ -14,8 +14,8 @@
   }
 
   &--dismissible {
-    &#{$self}--first {
-      box-shadow: 0 -5px 5px -5px rgba(0, 0, 0, 0.18);
+    &#{  $self }--first {
+      box-shadow: 0 -5px 5px -5px rgba($black, 0.18);
     }
   }
 
@@ -23,11 +23,11 @@
     padding-top: 8px;
     padding-bottom: 8px;
 
-    &#{$self}--first {
+    &#{  $self }--first {
       padding-top: 16px;
     }
 
-    &#{$self}--last {
+    &#{  $self }--last {
       padding-bottom: 16px;
     }
   }

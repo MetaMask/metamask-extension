@@ -107,7 +107,7 @@
       }
 
       i {
-        font-size: $font-size-h8;
+        font-size: var(--font-size-h8);
       }
 
       &--hidden {

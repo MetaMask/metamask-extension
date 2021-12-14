@@ -115,6 +115,10 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
+
+    // if(process.env.DARK_MODE_V1) {
+    document.documentElement.classList.add('theme-dark');
+    // }
   }
 
   renderRoutes() {

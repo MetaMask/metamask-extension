@@ -103,7 +103,7 @@
           }
 
           button {
-            font-size: $font-size-h8;
+            font-size: var(--font-size-h8);
             padding: 4px 12px;
             border-radius: 42px;
           }
@@ -114,7 +114,7 @@
         .actionable-message {
           button {
             background: var(--Blue-500);
-            color: #fff;
+            color: var(--white);
           }
         }
       }
@@ -137,7 +137,7 @@
 
           button {
             background: var(--Red-500);
-            color: #fff;
+            color: var(--white);
           }
         }
       }

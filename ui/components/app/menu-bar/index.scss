@@ -11,6 +11,7 @@
     font-size: inherit;
     padding: 0 8px 0 5px;
     place-self: center end;
+    color: unset;
   }
 
   .selected-account {
@@ -20,6 +21,10 @@
 }
 
 .account-options-menu {
+  .theme-dark & {
+    background: var(--Grey-200);
+  }
+
   &__connected-sites::before {
     content: "";
     background-image: url(/images/icons/connected-sites.svg);

@@ -15,7 +15,7 @@
       -webkit-appearance: none;
       display: none;
     }
-    & #{$self}__decimal-warning {
+    & #{ $self }__decimal-warning {
       margin-top: 5px;
     }
   }

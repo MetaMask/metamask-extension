@@ -56,7 +56,7 @@
   &__siteimage-identicon {
     width: 33px;
     height: 33px;
-    border: solid #fff;
+    border: solid var(--white);
   }
 
   &__address-identicon {
@@ -222,7 +222,7 @@
       height: 14px;
       border: 2px solid var(--primary-blue);
       border-radius: 50%;
-      background: white;
+      background: var(--white);
       position: absolute;
     }
   }

@@ -200,7 +200,7 @@
 .btn-raised {
   color: var(--primary-blue);
   background-color: var(--white);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 4px rgba($black, 0.08);
   padding: 6px;
   height: initial;
   min-height: initial;
@@ -213,7 +213,7 @@
 
   height: 54px;
   width: 198px;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
+  box-shadow: 0 2px 4px 0 rgba($black, 0.14);
   color: var(--white);
   font-weight: 500;
   transition: 200ms ease-in-out;
@@ -233,7 +233,7 @@ input[type="submit"][disabled] {
   transition: box-shadow cubic-bezier(0.6, -0.28, 0.735, 0.045) 200ms;
 
   &:hover {
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 8px rgba($black, 0.1);
   }
 
   &.btn-secondary {

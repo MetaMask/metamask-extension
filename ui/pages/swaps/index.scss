@@ -35,9 +35,9 @@
 
     @media screen and (min-width: $break-large) {
       width: 460px;
-      background: white;
-      border: 1px solid var(--Grey-100);
-      box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+      background: var(--swaps-header-background-color);
+      border: 1px solid var(--swaps-header-border-color);
+      box-shadow: 0 0 7px 0 rgba($black, 0.08);
       border-radius: 8px;
       height: 620px;
     }

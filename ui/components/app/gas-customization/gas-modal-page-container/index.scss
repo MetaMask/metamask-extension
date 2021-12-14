@@ -46,7 +46,7 @@
     &__title {
       @include H5;
 
-      color: var(--black);
+      color: var(--primary-text-emphasized);
       font-weight: 500;
       display: flex;
       justify-content: center;
@@ -153,7 +153,7 @@
   }
 
   &__info-row--fade {
-    background: white;
+    background: var(--white);
     color: var(--dusty-gray);
     border-top: 1px solid var(--mischka);
   }

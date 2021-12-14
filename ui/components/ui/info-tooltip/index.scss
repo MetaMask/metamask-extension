@@ -34,9 +34,9 @@
 .tippy-tooltip {
   &#{&}-info-theme,
   &#{&}-wideInfo-theme {
-    background: white;
+    background: var(--white);
     color: black;
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 0 14px rgba($black, 0.18);
     border-radius: 8px;
     max-width: 203px;
     padding: 16px;

@@ -1,5 +1,5 @@
 .definition-list {
-  $self: &;
+  $self : &;
 
   &__term {
     display: flex;
@@ -8,10 +8,10 @@
     & i {
       color: var(--ui-3);
       margin-left: 6px;
-      font-size: $font-size-h8;
+      font-size: var(--font-size-h8);
     }
 
-    & #{$self}__tooltip-wrapper {
+    & #{  $self }__tooltip-wrapper {
       display: flex !important;
       align-items: center;
     }

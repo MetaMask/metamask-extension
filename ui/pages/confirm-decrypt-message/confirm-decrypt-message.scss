@@ -3,7 +3,7 @@
     width: 380px;
     border-radius: 8px;
     background-color: var(--white);
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 4px 0 rgba($black, 0.08);
     display: flex;
     flex-flow: column nowrap;
     z-index: 25;
@@ -178,7 +178,7 @@
     }
 
     &-cover {
-      background-color: white;
+      background-color: var(--white);
       opacity: 0.75;
       position: absolute;
       height: 100%;
@@ -195,7 +195,7 @@
 
       img {
         padding: 5px;
-        background-color: #fff;
+        background-color: var(--white);
         left: calc(50% - 24px);
         position: absolute;
         top: calc(50% - 34px);
@@ -215,7 +215,7 @@
       top: calc(50% + 5px);
       text-align: center;
       left: calc(50% - 100px);
-      background-color: white;
+      background-color: var(--white);
       border-radius: 3px;
     }
 
