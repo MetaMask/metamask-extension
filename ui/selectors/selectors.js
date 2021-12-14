@@ -790,6 +790,15 @@ export function getOpenSeaEnabled(state) {
 }
 
 /**
+ * To get the `theme` value which determines which theme is selected
+ * @param {*} state
+ * @returns Boolean
+ */
+ export function getTheme(state) {
+  return state.metamask.theme;
+}
+
+/**
  * To retrieve the tokenList produced by TokenListcontroller
  *
  * @param {*} state

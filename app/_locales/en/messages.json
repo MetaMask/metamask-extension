@@ -3420,7 +3420,7 @@
     "message": "Theme"
   },
   "themeDescription": {
-    "message": "Switch to the metamask dark mode."
+    "message": "Switch to $1 mode"
   },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
