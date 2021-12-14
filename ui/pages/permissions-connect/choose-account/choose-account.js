@@ -14,7 +14,7 @@ const ChooseAccount = ({
   selectNewAccountViaModal,
   cancelPermissionsRequest,
   permissionsRequestId,
-  targetDomainMetadata,
+  targetSubjectMetadata,
   nativeCurrency,
 }) => {
   const [selectedAccounts, setSelectedAccounts] = useState(
@@ -47,18 +47,20 @@ const ChooseAccount = ({
     return accounts.length === selectedAccounts.size;
   };
 
+  console.log(targetSubjectMetadata);
+
   return (
     <div className="permissions-connect-choose-account">
       <PermissionsConnectHeader
-        icon={targetDomainMetadata.icon}
-        iconName={targetDomainMetadata.name}
+        icon={targetSubjectMetadata?.iconUrl}
+        iconName={targetSubjectMetadata?.name}
         headerTitle={t('connectWithMetaMask')}
         headerText={
           accounts.length > 0
             ? t('selectAccounts')
             : t('connectAccountOrCreate')
         }
-        siteOrigin={targetDomainMetadata.origin}
+        siteOrigin={targetSubjectMetadata?.origin}
       />
       <AccountList
         accounts={accounts}
@@ -136,9 +138,9 @@ ChooseAccount.propTypes = {
   /**
    * Domain data used to display site-origin pill
    */
-  targetDomainMetadata: PropTypes.shape({
+  targetSubjectMetadata: PropTypes.shape({
     extensionId: PropTypes.string,
-    icon: PropTypes.string,
+    iconUrl: PropTypes.string,
     host: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     origin: PropTypes.string.isRequired,
