@@ -100,7 +100,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       <div className="permission-approval-container__content">
         <div className="permission-approval-container__content-container">
           <PermissionsConnectHeader
-            icon={subjectMetadata.iconUrl}
+            iconUrl={subjectMetadata.iconUrl}
             iconName={subjectMetadata.name}
             headerTitle={title}
             headerText={

@@ -2443,7 +2443,7 @@
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
   },
   "selectAccounts": {
-    "message": "Select account(s)"
+    "message": "Select the account(s) to use on this site"
   },
   "selectAll": {
     "message": "Select all"
