@@ -8,7 +8,7 @@ import {
 } from '../../../helpers/utils/settings-search';
 import Dropdown from '../../../components/ui/dropdown';
 
-import { THEME_NAMES, THEME_TYPE } from './experimental-tab.constant';
+import { THEME_TYPE } from './experimental-tab.constant';
 
 /*eslint-disable prefer-destructuring*/
 const DARK_MODE_V1 = process.env.DARK_MODE_V1;
