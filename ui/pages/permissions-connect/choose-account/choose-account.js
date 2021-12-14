@@ -52,7 +52,7 @@ const ChooseAccount = ({
   return (
     <div className="permissions-connect-choose-account">
       <PermissionsConnectHeader
-        icon={targetSubjectMetadata?.iconUrl}
+        iconUrl={targetSubjectMetadata?.iconUrl}
         iconName={targetSubjectMetadata?.name}
         headerTitle={t('connectWithMetaMask')}
         headerText={
@@ -141,9 +141,9 @@ ChooseAccount.propTypes = {
   targetSubjectMetadata: PropTypes.shape({
     extensionId: PropTypes.string,
     iconUrl: PropTypes.string,
-    host: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     origin: PropTypes.string.isRequired,
+    subjectType: PropTypes.string,
   }),
 };
 
