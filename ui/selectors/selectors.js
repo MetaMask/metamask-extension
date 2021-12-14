@@ -794,7 +794,7 @@ export function getOpenSeaEnabled(state) {
  * @param {*} state
  * @returns Boolean
  */
- export function getTheme(state) {
+export function getTheme(state) {
   return state.metamask.theme;
 }
 

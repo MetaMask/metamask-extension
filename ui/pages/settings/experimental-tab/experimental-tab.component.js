@@ -256,7 +256,9 @@ export default class ExperimentalTab extends PureComponent {
           <div className="settings-page__content-description">
             <I18nValue
               messageKey="themeDescription"
-              options={[Object.values(THEME_TYPE).filter(type => type !== theme),]}
+              options={[
+                Object.values(THEME_TYPE).filter((type) => type !== theme),
+              ]}
             />
           </div>
         </div>

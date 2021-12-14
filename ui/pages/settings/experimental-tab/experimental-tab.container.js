@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
     useCollectibleDetection: getUseCollectibleDetection(state),
     openSeaEnabled: getOpenSeaEnabled(state),
     eip1559V2Enabled: getEIP1559V2Enabled(state),
-    theme: getTheme(state)
+    theme: getTheme(state),
   };
 };
 
