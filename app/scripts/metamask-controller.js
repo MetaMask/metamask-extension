@@ -1420,6 +1420,8 @@ export default class MetamaskController extends EventEmitter {
       setEIP1559V2Enabled: preferencesController.setEIP1559V2Enabled.bind(
         preferencesController,
       ),
+      setTheme: preferencesController.setTheme.bind(preferencesController),
+
 
       // AssetsContractController
       getTokenStandardAndDetails: assetsContractController.getTokenStandardAndDetails.bind(

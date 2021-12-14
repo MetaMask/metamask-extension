@@ -2322,6 +2322,19 @@ export function setEIP1559V2Enabled(val) {
     } finally {
       dispatch(hideLoadingIndication());
     }
+  }
+}
+
+export function setTheme(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setMetamaskThemes`);
+    background.setTheme(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
   };
 }
 
