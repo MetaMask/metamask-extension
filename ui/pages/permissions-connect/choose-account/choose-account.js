@@ -47,8 +47,6 @@ const ChooseAccount = ({
     return accounts.length === selectedAccounts.size;
   };
 
-  console.log(targetSubjectMetadata);
-
   return (
     <div className="permissions-connect-choose-account">
       <PermissionsConnectHeader
