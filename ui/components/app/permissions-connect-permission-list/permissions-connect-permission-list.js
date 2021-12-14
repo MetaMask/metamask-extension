@@ -46,15 +46,36 @@ export default function PermissionsConnectPermissionList({ permissions }) {
     };
   }, [t]);
 
+  function getPermissionKey(permissionName) {
+    if (PERMISSION_TYPES[permissionName]) {
+      return permissionName;
+    }
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    else if (permissionName.startsWith('wallet_snap_')) {
+      return 'wallet_snap_*';
+    } else if (permissionName.startsWith('snap_getBip44Entropy_')) {
+      return 'snap_getBip44Entropy_*';
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    return UNKNOWN_PERMISSION;
+  }
+
   return (
     <div className="permissions-connect-permission-list">
-      {Object.keys(permissions).map((permission) => (
-        <div className="permission" key={PERMISSION_TYPES[permission].label}>
-          <i className={PERMISSION_TYPES[permission].leftIcon} />
-          {PERMISSION_TYPES[permission].label}
-          <i className={PERMISSION_TYPES[permission].rightIcon} />
-        </div>
-      ))}
+      {Object.keys(permissions).map((permission) => {
+        const { label, leftIcon, rightIcon } = PERMISSION_TYPES[
+          getPermissionKey(permission)
+        ];
+
+        return (
+          <div className="permission" key={label}>
+            <i className={leftIcon} />
+            {label}
+            <i className={rightIcon} />
+          </div>
+        );
+      })}
     </div>
   );
 }
