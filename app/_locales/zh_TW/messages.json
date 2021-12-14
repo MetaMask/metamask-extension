@@ -1,4 +1,49 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "錯誤"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "Incongruent transaction data. Please check the transaction details."
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "No more accounts. If you would like to access another account unlisted below, please reconnect your hardware wallet and select it."
+  },
+  "QRHardwareScanInstructions": {
+    "message": "Place the QR code in front of your camera. The screen is blurred, but it will not affect the reading."
+  },
+  "QRHardwareSignRequestCancel": {
+    "message": "拒絕"
+  },
+  "QRHardwareSignRequestDescription": {
+    "message": "After you’ve signed with your wallet, click on 'Get Signature' to receive the signature"
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "Get Signature"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "Scan the QR code with your wallet"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "Request Signature"
+  },
+  "QRHardwareUnknownQRCodeTitle": {
+    "message": "錯誤"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "Invalid QR code. Please scan the sync QR code of the hardware wallet."
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scan QR Code"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "Connect an airgapped hardware wallet that communicates through QR-codes. Officially supported airgapped hardware wallets include:"
+  },
+  "QRHardwareWalletSteps1Title": {
+    "message": "QR-based HW Wallet"
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "AirGap Vault & Ngrave (Coming Soon)"
+  },
   "about": {
     "message": "關於"
   },
@@ -33,11 +78,20 @@
   "activityLog": {
     "message": "活動紀錄"
   },
+  "add": {
+    "message": "新增"
+  },
+  "addANetwork": {
+    "message": "新增網路"
+  },
+  "addANickname": {
+    "message": "新增暱稱"
+  },
   "addAcquiredTokens": {
     "message": "將您已經擁有的代幣顯示於 MetaMask"
   },
   "addAlias": {
-    "message": "新增化名"
+    "message": "新增別名"
   },
   "addContact": {
     "message": "新增合約"
@@ -74,8 +128,29 @@
   "addToken": {
     "message": "加入代幣"
   },
+  "address": {
+    "message": "位址"
+  },
+  "addressBookIcon": {
+    "message": "位址簿圖示"
+  },
   "advanced": {
     "message": "進階"
+  },
+  "advancedBaseGasFeeToolTip": {
+    "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
+  },
+  "advancedGasFeeModalTitle": {
+    "message": "進階 Gas 價格"
+  },
+  "advancedGasPriceTitle": {
+    "message": "Gas 價格"
+  },
+  "advancedOptions": {
+    "message": "進階選項"
+  },
+  "affirmAgree": {
+    "message": "我同意"
   },
   "alertDisableTooltip": {
     "message": "這可以在「設定 > 提醒」裡變更"
@@ -133,6 +208,9 @@
   "approved": {
     "message": "已許可"
   },
+  "approvedAmountWithColon": {
+    "message": "批准的數量："
+  },
   "asset": {
     "message": "資產"
   },
@@ -167,7 +245,7 @@
     "message": "回到全部"
   },
   "backupApprovalInfo": {
-    "message": "在裝置遺失、忘記密碼、需要重新安裝 MetaMask、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
+    "message": "在裝置遺失、忘記密碼、需要重新安裝 MetaMask、或是想在另一裝置開啟錢包的情形下，您需要此助憶詞來復原錢包。"
   },
   "backupApprovalNotice": {
     "message": "備份你的助憶詞，保護你的錢包與資金。"
@@ -181,8 +259,42 @@
   "balanceOutdated": {
     "message": "顯示餘額不一定是最新資訊"
   },
+  "baseFee": {
+    "message": "基礎費用"
+  },
   "basic": {
     "message": "基本"
+  },
+  "betaMetamaskDescription": {
+    "message": "Trusted by millions, MetaMask is a secure wallet making the world of web3 accessible to all."
+  },
+  "betaMetamaskDescriptionExplanation": {
+    "message": "Use this version to test upcoming features before they’re released. Your use and feedback helps us build the best version of MetaMask possible. Your use of MetaMask Beta is subject to our standard $1 as well as our $2. As a Beta, there may be an increased risk of bugs. By proceeding, you accept and acknowledge these risks, as well as those risks found in our Terms and Beta Terms.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
+    "message": "Supplemental Beta Terms"
+  },
+  "betaMetamaskDescriptionExplanationTermsLinkText": {
+    "message": "Terms"
+  },
+  "betaMetamaskVersion": {
+    "message": "MetaMask Beta Version"
+  },
+  "betaWelcome": {
+    "message": "Welcome to MetaMask Beta"
+  },
+  "blockExplorerAccountAction": {
+    "message": "Account",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
+  },
+  "blockExplorerAssetAction": {
+    "message": "Asset",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
+  },
+  "blockExplorerSwapAction": {
+    "message": "Swap",
+    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
   },
   "blockExplorerUrl": {
     "message": "區塊鏈瀏覽器"
@@ -196,6 +308,15 @@
   },
   "browserNotSupported": {
     "message": "您的瀏覽器尚未支援..."
+  },
+  "buildContactList": {
+    "message": "建立您的聯絡人列表"
+  },
+  "builtAroundTheWorld": {
+    "message": "MetaMask 是在全世界設計與製造的。"
+  },
+  "busy": {
+    "message": "繁忙中"
   },
   "buy": {
     "message": "買"
@@ -215,6 +336,9 @@
   "cancelSpeedUp": {
     "message": "cancel or speed up a tranaction."
   },
+  "cancellationGasFee": {
+    "message": "取消交易的手續費"
+  },
   "cancelled": {
     "message": "已取消"
   },
@@ -227,6 +351,13 @@
   "chromeRequiredForHardwareWallets": {
     "message": "您需要在 Google Chrome 瀏覽器使用 MetaMask 連結您的硬體錢包。"
   },
+  "clickToConnectLedgerViaWebHID": {
+    "message": "Click here to connect your Ledger via WebHID",
+    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
+  "clickToRevealSeed": {
+    "message": "點選顯示助憶詞"
+  },
   "close": {
     "message": "關閉"
   },
@@ -235,6 +366,12 @@
   },
   "confirmPassword": {
     "message": "確認密碼"
+  },
+  "confirmRecoveryPhrase": {
+    "message": "確認助憶詞"
+  },
+  "confirmSecretBackupPhrase": {
+    "message": "確認您已經備份的助憶詞"
   },
   "confirmed": {
     "message": "已確認"
@@ -249,13 +386,13 @@
     "message": "我們在 ENS 名稱中偵測到一些容易混淆的字元。請再次確認 ENS 名稱來避免被詐騙的可能。"
   },
   "connect": {
-    "message": "連線"
+    "message": "連接"
   },
   "connectAccountOrCreate": {
     "message": "連結帳戶或建立新的"
   },
   "connectHardwareWallet": {
-    "message": "連線硬體錢包"
+    "message": "連接硬體錢包"
   },
   "connectManually": {
     "message": "手動連結到目前的網站"
@@ -349,6 +486,9 @@
   "copyPrivateKey": {
     "message": "這是您的私鑰（點擊複製）"
   },
+  "copyRawTransactionData": {
+    "message": "複製原始交易資料"
+  },
   "copyToClipboard": {
     "message": "複製到剪貼簿"
   },
@@ -360,6 +500,9 @@
   },
   "createAccount": {
     "message": "建立帳戶"
+  },
+  "createNewWallet": {
+    "message": "建立新的錢包"
   },
   "createPassword": {
     "message": "建立密碼"
@@ -388,8 +531,34 @@
   "customSpendingCap": {
     "message": "自訂花費上限"
   },
+  "customSpendLimit": {
+    "message": "自訂花費上限"
+  },
   "customToken": {
     "message": "自訂代幣"
+  },
+  "dappSuggested": {
+    "message": "Site suggested"
+  },
+  "dappSuggestedGasSettingToolTipMessage": {
+    "message": "$1 has suggested this price.",
+    "description": "$1 is url for the dapp that has suggested gas settings"
+  },
+  "dappSuggestedShortLabel": {
+    "message": "Site"
+  },
+  "dappSuggestedTooltip": {
+    "message": "$1 has recommended this price.",
+    "description": "$1 represents the Dapp's origin"
+  },
+  "data": {
+    "message": "資料"
+  },
+  "dataBackupFoundInfo": {
+    "message": "您的部分帳戶資料曾經在之前安裝 MetaMask 時做過備份。裡面包含您的設定、聯絡人與代幣。您現在要還原這些資料嗎？"
+  },
+  "dataHex": {
+    "message": "十六進位"
   },
   "decimal": {
     "message": "小數點位數"
@@ -468,6 +637,9 @@
   "downloadGoogleChrome": {
     "message": "下載 Google Chrome 瀏覽器"
   },
+  "downloadSecretBackup": {
+    "message": "下載助憶詞文字檔案，並安全地保存在有加密功能的外接硬碟或其他儲存裝置。"
+  },
   "downloadStateLogs": {
     "message": "下載狀態紀錄"
   },
@@ -477,8 +649,14 @@
   "edit": {
     "message": "編輯"
   },
+  "editANickname": {
+    "message": "編輯暱稱"
+  },
+  "editAddressNickname": {
+    "message": "編輯位址暱稱"
+  },
   "editContact": {
-    "message": "編輯聯絡資訊"
+    "message": "編輯聯絡人"
   },
   "editNonceField": {
     "message": "編輯 nonce"
@@ -508,6 +686,9 @@
   },
   "ensNotFoundOnCurrentNetwork": {
     "message": "現有網路中找不到 ENS 名稱。嘗試轉換到主要以太坊網路。"
+  },
+  "ensNotSupportedOnNetwork": {
+    "message": "網路不支援 ENS"
   },
   "ensRegistrationError": {
     "message": "ENS 名稱註冊錯誤"
@@ -562,11 +743,20 @@
   "ethereumPublicAddress": {
     "message": "以太坊公開位址"
   },
+  "etherscan": {
+    "message": "Etherscan"
+  },
   "etherscanView": {
     "message": "在 Etherscan 上查看帳戶"
   },
+  "etherscanViewOn": {
+    "message": "在 Etherscan 上查看"
+  },
   "expandView": {
     "message": "展開畫面"
+  },
+  "experimental": {
+    "message": "實驗性質的"
   },
   "exportPrivateKey": {
     "message": "匯出私鑰"
@@ -616,6 +806,16 @@
   "functionType": {
     "message": "函式型別"
   },
+  "gasDisplayAcknowledgeDappButtonText": {
+    "message": "編輯建議的 gas 手續費"
+  },
+  "gasDisplayDappWarning": {
+    "message": "此 gas 手續費為 $1 所建議。修改他可能導致您的交易發生潛在問題。若您有任何疑問，請聯繫 $1 。",
+    "description": "$1 represents the Dapp's origin"
+  },
+  "gasEstimatesUnavailableWarning": {
+    "message": "我們暫時不提供低、中等、與高的交易收續費預估。"
+  },
   "gasLimit": {
     "message": "Gas 上限"
   },
@@ -647,6 +847,38 @@
   "gasPriceInfoTooltipContent": {
     "message": "Gas 價格代表願意為交易手續費付出的單位價格，價格越高交易處理速度越快。"
   },
+  "gasTimingHoursShort": {
+    "message": "$1 小時",
+    "description": "$1 represents a number of hours"
+  },
+  "gasTimingMinutes": {
+    "message": "$1 分鐘",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingMinutesShort": {
+    "message": "$1 分",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingNegative": {
+    "message": "估計還需 $1",
+    "description": "$1 represents an amount of time"
+  },
+  "gasTimingPositive": {
+    "message": "估計時間 < $1",
+    "description": "$1 represents an amount of time"
+  },
+  "gasTimingSeconds": {
+    "message": "$1 秒",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingSecondsShort": {
+    "message": "$1 秒",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingVeryPositive": {
+    "message": "估計時間 < $1",
+    "description": "$1 represents an amount of time"
+  },
   "gasUsed": {
     "message": "Gas 用量"
   },
@@ -658,6 +890,12 @@
   },
   "goerli": {
     "message": "Goerli 測試網路"
+  },
+  "grantedToWithColon": {
+    "message": "Granted to:"
+  },
+  "happyToSeeYou": {
+    "message": "我們很高興看到你。"
   },
   "hardware": {
     "message": "硬體"
@@ -708,6 +946,9 @@
   "importAccount": {
     "message": "匯入帳戶"
   },
+  "importAccountError": {
+    "message": "Error importing account."
+  },
   "importAccountMsg": {
     "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
   },
@@ -733,6 +974,9 @@
   },
   "insufficientFunds": {
     "message": "資金不足。"
+  },
+  "insufficientFundsForGas": {
+    "message": "Insufficient funds for gas"
   },
   "insufficientTokens": {
     "message": "代幣不足。"
@@ -791,6 +1035,12 @@
     "message": "JSON 格式檔案",
     "description": "format for importing an account"
   },
+  "keystone": {
+    "message": "Keystone"
+  },
+  "keystoneTutorial": {
+    "message": " (Tutorials)"
+  },
   "knownAddressRecipient": {
     "message": "已知合約位址"
   },
@@ -802,6 +1052,12 @@
   },
   "learnMore": {
     "message": "了解更多"
+  },
+  "learnMoreUpperCase": {
+    "message": "Learn more"
+  },
+  "learnScamRisk": {
+    "message": "scams and security risks."
   },
   "ledgerAccountRestriction": {
     "message": "您必須使用最後一個的帳戶才能產生新帳戶"
@@ -830,6 +1086,9 @@
   "loadingTokens": {
     "message": "載入代幣..."
   },
+  "localhost": {
+    "message": "Localhost 8545"
+  },
   "lock": {
     "message": "鎖定"
   },
@@ -844,6 +1103,22 @@
   },
   "max": {
     "message": "最大值"
+  },
+  "maxBaseFee": {
+    "message": "Max base fee"
+  },
+  "maxFee": {
+    "message": "最大費用"
+  },
+  "maxPriorityFee": {
+    "message": "最大優先費用"
+  },
+  "medium": {
+    "message": "Market"
+  },
+  "mediumGasSettingToolTipMessage": {
+    "message": "Use $1 for fast processing at current market price.",
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold font-weight"
   },
   "memo": {
     "message": "備註"
@@ -927,11 +1202,20 @@
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
   },
+  "newCollectibleAddedMessage": {
+    "message": "Collectible was successfully added!"
+  },
   "newContact": {
     "message": "新聯絡資訊"
   },
   "newContract": {
     "message": "建立新合約"
+  },
+  "newNFTsDetected": {
+    "message": "New! NFT detection"
+  },
+  "newNetworkAdded": {
+    "message": "“$1” was successfully added!"
   },
   "newPassword": {
     "message": "新密碼（至少8個字元）"
@@ -951,6 +1235,12 @@
   },
   "noAddressForName": {
     "message": "此 ENS 尚未指定位址。"
+  },
+  "noAlreadyHaveSeed": {
+    "message": "不，我已經有助憶詞"
+  },
+  "noConversionDateAvailable": {
+    "message": "No Currency Conversion Date Available"
   },
   "noConversionRateAvailable": {
     "message": "尚未有匯率比較值"
@@ -1021,6 +1311,12 @@
   "passwordNotLongEnough": {
     "message": "您所輸入的密碼長度不足"
   },
+  "passwordSetupDetails": {
+    "message": "此密碼只能在此裝置上解鎖您的 MetaMask 錢包。MetaMask 無法復原此密碼。"
+  },
+  "passwordTermsWarning": {
+    "message": "我理解 MetaMask 不能替我復原此密碼。 $1"
+  },
   "passwordsDontMatch": {
     "message": "您所輸入的密碼不一致"
   },
@@ -1049,6 +1345,12 @@
   },
   "primaryCurrencySettingDescription": {
     "message": "選擇原生來優先使用鏈上原生貨幣 (例如 ETH) 顯示金額。選擇法定貨幣來優先使用您選擇的法定貨幣顯示金額。"
+  },
+  "priorityFee": {
+    "message": "Priority fee"
+  },
+  "priorityFeeProperCase": {
+    "message": "Priority Fee"
   },
   "privacyMsg": {
     "message": "隱私政策"
@@ -1090,6 +1392,36 @@
   "recipientAddressPlaceholder": {
     "message": "搜尋、公開位址 (0x)、或 ENS"
   },
+  "recommendedGasLabel": {
+    "message": "推薦"
+  },
+  "recoveryPhraseReminderBackupStart": {
+    "message": "從這裡開始"
+  },
+  "recoveryPhraseReminderConfirm": {
+    "message": "了解"
+  },
+  "recoveryPhraseReminderHasBackedUp": {
+    "message": "總是將您的助憶詞保存在安全且秘密的地方"
+  },
+  "recoveryPhraseReminderHasNotBackedUp": {
+    "message": "需要再次備份您的助憶詞？"
+  },
+  "recoveryPhraseReminderItemOne": {
+    "message": "絕對不要跟任何人分享您的助憶詞"
+  },
+  "recoveryPhraseReminderItemTwo": {
+    "message": "MetaMask 團隊絕對不會跟您詢問助憶詞"
+  },
+  "recoveryPhraseReminderSubText": {
+    "message": "您的助憶詞能控制您全部的帳戶。"
+  },
+  "recoveryPhraseReminderTitle": {
+    "message": "保護您的資金"
+  },
+  "refreshList": {
+    "message": "Refresh list"
+  },
   "reject": {
     "message": "拒絕"
   },
@@ -1105,6 +1437,12 @@
   "rejected": {
     "message": "拒絕"
   },
+  "remember": {
+    "message": "Remember:"
+  },
+  "remindMeLater": {
+    "message": "稍後提醒我"
+  },
   "remove": {
     "message": "移除"
   },
@@ -1113,6 +1451,9 @@
   },
   "removeAccountDescription": {
     "message": "此帳戶將由錢包中移除。在繼續進行之前請確認您已經匯出並妥善備份助憶詞或私鑰。您可以從帳戶下拉選單中匯入或再次建立帳戶。"
+  },
+  "removeNFT": {
+    "message": "Remove NFT"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "請求正在等待確認"
@@ -1170,7 +1511,7 @@
     "message": "Secure Wallet"
   },
   "securityAndPrivacy": {
-    "message": "安全＆隱私"
+    "message": "安全與隱私"
   },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "寫下來並且存放在不同的秘密地點。"
@@ -1239,11 +1580,27 @@
     "message": "發送 $1",
     "description": "Symbol of the specified token"
   },
+  "sendSpecifiedTokens": {
+    "message": "發送 $1",
+    "description": "Symbol of the specified token"
+  },
+  "sendTo": {
+    "message": "Send to"
+  },
   "sendTokens": {
     "message": "發送代幣"
   },
   "settings": {
     "message": "設定"
+  },
+  "show": {
+    "message": "顯示"
+  },
+  "showAdvancedGasInline": {
+    "message": "顯示進階 gas 控制選項"
+  },
+  "showAdvancedGasInlineDescription": {
+    "message": "選擇此項會在傳送或確認畫面顯示可微調 gas 價格以及 gas 上限的功能"
   },
   "showFiatConversionInTestnets": {
     "message": "在測試網上顯示匯率"
@@ -1270,6 +1627,15 @@
   "showPrivateKeys": {
     "message": "顯示私鑰"
   },
+  "showRecommendations": {
+    "message": "Show Recommendations"
+  },
+  "showTestnetNetworks": {
+    "message": "Show test networks"
+  },
+  "showTestnetNetworksDescription": {
+    "message": "Select this to show test networks in network list"
+  },
   "sigRequest": {
     "message": "請求簽署"
   },
@@ -1288,11 +1654,23 @@
   "somethingWentWrong": {
     "message": "糟糕！出了點問題。"
   },
+  "source": {
+    "message": "Source"
+  },
   "speedUp": {
     "message": "加速"
   },
   "speedUpCancellation": {
     "message": "加速這個取消請求"
+  },
+  "speedUpExplanation": {
+    "message": "我們已經根據當前的網路狀況更新 gas 手續費。且增加至少 10% （根據網路要求）"
+  },
+  "speedUpPopoverTitle": {
+    "message": "加速交易"
+  },
+  "speedUpTooltipText": {
+    "message": "新的 gas 手續費"
   },
   "speedUpTransaction": {
     "message": "加速這筆交易"
@@ -1358,7 +1736,7 @@
     "message": "支援"
   },
   "supportCenter": {
-    "message": "造訪我們的協助中心"
+    "message": "造訪我們的支援中心"
   },
   "swapSearchNameOrAddress": {
     "message": "用名稱搜尋或貼上地址"
@@ -1387,11 +1765,56 @@
   "symbolBetweenZeroTwelve": {
     "message": "符號不得超過 11 個字元。"
   },
+  "syncFailed": {
+    "message": "同步失敗"
+  },
+  "syncInProgress": {
+    "message": "正在同步"
+  },
+  "syncWithMobile": {
+    "message": "和行動裝置同步"
+  },
+  "syncWithMobileBeCareful": {
+    "message": "掃描代碼時請確保沒有其他人在看你的螢幕"
+  },
+  "syncWithMobileComplete": {
+    "message": "你的資料已成功同步。開始活用 MetaMask 行動應用程式！"
+  },
+  "syncWithMobileDesc": {
+    "message": "你可以用行動裝置同步帳戶與資訊。開啟 MetaMask 行動應用程式，至「設定」並點擊「自瀏覽器擴充功能同步」"
+  },
+  "syncWithMobileDescNewUsers": {
+    "message": "如果您是第一次開啟 MetaMask 行動應用程式，只要跟著手機上的指示操作即可。"
+  },
+  "syncWithMobileScanThisCode": {
+    "message": "用您的 MetaMask 行動應用程式 掃描此條碼"
+  },
+  "syncWithMobileTitle": {
+    "message": "和行動裝置同步"
+  },
+  "syncWithThreeBox": {
+    "message": "與 3Box 同步資料（實驗性質）"
+  },
+  "syncWithThreeBoxDescription": {
+    "message": "啟用此選項將您的設定備份至 3Box 。這是個實驗性質的功能；請自負使用風險。"
+  },
+  "syncWithThreeBoxDisabled": {
+    "message": "因為初始同步發生錯誤，3Box 已經被停用"
+  },
   "terms": {
     "message": "使用條款"
   },
   "termsOfService": {
     "message": "服務條款"
+  },
+  "testFaucet": {
+    "message": "測試水龍頭"
+  },
+  "thisWillCreate": {
+    "message": "這將創建新的錢包與助憶詞"
+  },
+  "time": {
+    "message": "Time"
   },
   "tips": {
     "message": "提示"
@@ -1404,7 +1827,7 @@
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "token": {
-    "message": "代碼"
+    "message": "代幣"
   },
   "tokenAlreadyAdded": {
     "message": "已加入過此代幣。"
@@ -1416,7 +1839,7 @@
     "message": "需要填入代幣的小數位數。"
   },
   "tokenSymbol": {
-    "message": "代幣代號"
+    "message": "代幣符號"
   },
   "tooltipApproveButton": {
     "message": "我了解了"
@@ -1439,6 +1862,45 @@
   "transactionCreated": {
     "message": "交易建立，數量 $1 @ $2。"
   },
+  "transactionData": {
+    "message": "Transaction data"
+  },
+  "transactionDecodingAccreditationDecoded": {
+    "message": "Decoded by Truffle"
+  },
+  "transactionDecodingUnsupportedNetworkError": {
+    "message": "Transaction decoding is not available for chainId $1"
+  },
+  "transactionDetailDappGasMoreInfo": {
+    "message": "Site suggested"
+  },
+  "transactionDetailDappGasTooltip": {
+    "message": "此 gas 手續費建議是使用舊版的 gas 估算方式，可能不精確。"
+  },
+  "transactionDetailGasHeading": {
+    "message": "預估的 gas 手續費"
+  },
+  "transactionDetailGasInfoV2": {
+    "message": "estimated"
+  },
+  "transactionDetailGasTooltipConversion": {
+    "message": "了解更多關於 gas 手續費"
+  },
+  "transactionDetailGasTooltipExplanation": {
+    "message": "Gas 手續費是被網路決定的，且會受到網路交易量與交易複雜度影響而波動。"
+  },
+  "transactionDetailGasTooltipIntro": {
+    "message": "Gas 手續費將被付給在 Ethereum 網路上處理交易的礦工。MetaMask 不從 gas 手續費上盈利。"
+  },
+  "transactionDetailGasTotalSubtitle": {
+    "message": "數量 + gas 手續費"
+  },
+  "transactionDetailLayer2GasHeading": {
+    "message": "Layer 2 gas fee"
+  },
+  "transactionDetailMultiLayerTotalSubtitle": {
+    "message": "Amount + fees"
+  },
   "transactionDropped": {
     "message": "交易被捨棄 @ $2。"
   },
@@ -1453,6 +1915,27 @@
   },
   "transactionFee": {
     "message": "交易手續費"
+  },
+  "transactionHistoryBaseFee": {
+    "message": "基礎手續費 (GWEI)"
+  },
+  "transactionHistoryL1GasLabel": {
+    "message": "Total L1 Gas Fee"
+  },
+  "transactionHistoryL2GasLimitLabel": {
+    "message": "L2 Gas Limit"
+  },
+  "transactionHistoryL2GasPriceLabel": {
+    "message": "L2 Gas Price"
+  },
+  "transactionHistoryMaxFeePerGas": {
+    "message": "Max Fee Per Gas"
+  },
+  "transactionHistoryPriorityFee": {
+    "message": "優先手續費 (GWEI)"
+  },
+  "transactionHistoryTotalGasFee": {
+    "message": "Total Gas Fee"
   },
   "transactionResubmitted": {
     "message": "交易重新送出，手續費提高至 $1 @ $2"
@@ -1486,8 +1969,21 @@
   "tryAgain": {
     "message": "再試一次"
   },
+  "turnOnTokenDetection": {
+    "message": "Turn on enhanced token detection"
+  },
+  "twelveHrTitle": {
+    "message": "12hr:"
+  },
+  "txInsightsNotSupported": {
+    "message": "Transaction insights not supported for this contract at this time."
+  },
   "typePassword": {
     "message": "請輸入密碼"
+  },
+  "u2f": {
+    "message": "U2F",
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
   "unapproved": {
     "message": "未批准"
@@ -1552,11 +2048,14 @@
     "message": "在 $1 驗證這個代幣的資訊",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "viewAccount": {
+    "message": "檢視帳戶"
+  },
   "viewAllDetails": {
     "message": "查看所有詳情"
   },
   "viewContact": {
-    "message": "觀看聯絡資訊"
+    "message": "檢視聯絡資訊"
   },
   "viewMore": {
     "message": "檢視更多"
@@ -1584,7 +2083,7 @@
     "description": "$1 is a clickable link."
   },
   "welcomeBack": {
-    "message": "歡迎回來!"
+    "message": "歡迎回來！"
   },
   "whatsThis": {
     "message": "這是什麼？"
