@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -24,7 +24,10 @@ import {
 } from '../../../ducks/metamask/metamask';
 import { getIsMainnet, getUseCollectibleDetection } from '../../../selectors';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
-import { detectCollectibles } from '../../../store/actions';
+import {
+  checkAndUpdateCollectiblesOwnershipStatus,
+  detectCollectibles,
+} from '../../../store/actions';
 
 export default function CollectiblesTab({ onAddNFT }) {
   const collectibles = useSelector(getCollectibles);
@@ -38,25 +41,45 @@ export default function CollectiblesTab({ onAddNFT }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const collections = {};
-  collectibles.forEach((collectible) => {
-    if (collections[collectible.address]) {
-      collections[collectible.address].collectibles.push(collectible);
-    } else {
-      const collectionContract = collectibleContracts.find(
-        ({ address }) => address === collectible.address,
-      );
-      collections[collectible.address] = {
-        collectionName: collectionContract?.name || collectible.name,
-        collectionImage:
-          collectionContract?.logo || collectible.collectionImage,
-        collectibles: [collectible],
-      };
-    }
-  });
+  const getCollections = () => {
+    const collections = {
+      previouslyOwned: {
+        collectionName: 'Previously Owned',
+        collectibles: [],
+      },
+    };
+    collectibles.forEach((collectible) => {
+      if (collectible?.isCurrentlyOwned === false) {
+        collections.previouslyOwned.push(collectible);
+      } else if (collections[collectible.address]) {
+        collections[collectible.address].collectibles.push(collectible);
+      } else {
+        const collectionContract = collectibleContracts.find(
+          ({ address }) => address === collectible.address,
+        );
+        collections[collectible.address] = {
+          collectionName: collectionContract?.name || collectible.name,
+          collectionImage:
+            collectionContract?.logo || collectible.collectionImage,
+          collectibles: [collectible],
+        };
+      }
+    });
+    return collections;
+  };
+
+  const collections = useMemo(() => getCollections, [
+    collectibles,
+    collectibleContracts,
+  ]);
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);
+  };
+
+  const onRefresh = () => {
+    dispatch(detectCollectibles());
+    dispatch(checkAndUpdateCollectiblesOwnershipStatus());
   };
 
   return (
@@ -122,10 +145,7 @@ export default function CollectiblesTab({ onAddNFT }) {
                 justifyContent={JUSTIFY_CONTENT.FLEX_END}
               >
                 {useCollectibleDetection ? (
-                  <Button
-                    type="link"
-                    onClick={() => dispatch(detectCollectibles())}
-                  >
+                  <Button type="link" onClick={onRefresh}>
                     {t('refreshList')}
                   </Button>
                 ) : (
