@@ -94,6 +94,7 @@ export default class Routes extends Component {
     prepareToLeaveSwaps: PropTypes.func,
     browserEnvironmentOs: PropTypes.string,
     browserEnvironmentBrowser: PropTypes.string,
+    theme: PropTypes.string,
   };
 
   static contextTypes = {
@@ -313,6 +314,7 @@ export default class Routes extends Component {
       isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
+      theme,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -325,6 +327,7 @@ export default class Routes extends Component {
           [`os-${os}`]: os,
           [`browser-${browser}`]: browser,
           'mouse-user-styles': isMouseUser,
+          [`theme-${theme}`]: process.env.DARK_MODE_V1 && theme,
         })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}
