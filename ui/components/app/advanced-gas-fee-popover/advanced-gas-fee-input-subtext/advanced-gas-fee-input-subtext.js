@@ -16,7 +16,7 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical, feeTrend }) => {
           <LoadingHeartBeat />
           {latest}
         </span>
-        <img src={`./images/${feeTrend}-arrow.svg`} alt="" />
+        <img src={`./images/${feeTrend}-arrow.svg`} alt="feeTrend-arrow" />
       </Box>
       <Box>
         <span className="advanced-gas-fee-input-subtext__label">
@@ -34,7 +34,7 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical, feeTrend }) => {
 AdvancedGasFeeInputSubtext.propTypes = {
   latest: PropTypes.string,
   historical: PropTypes.string,
-  feeTrend: PropTypes.string,
+  feeTrend: PropTypes.string.isRequired,
 };
 
 export default AdvancedGasFeeInputSubtext;
