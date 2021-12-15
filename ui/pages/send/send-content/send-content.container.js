@@ -5,6 +5,7 @@ import {
   getIsEthGasPriceFetched,
   getNoGasPriceFetched,
   checkNetworkOrAccountNotSupports1559,
+  getTokenList,
 } from '../../../selectors';
 import {
   getIsBalanceInsufficient,
@@ -20,6 +21,7 @@ function mapStateToProps(state) {
   const ownedAccounts = accountsWithSendEtherInfoSelector(state);
   const to = getSendTo(state);
   const recipient = getRecipient(state);
+  const tokenAddressList = getTokenList(state);
   return {
     isOwnedAccount: Boolean(
       ownedAccounts.find(
@@ -37,6 +39,7 @@ function mapStateToProps(state) {
     asset: getSendAsset(state),
     assetError: getAssetError(state),
     recipient,
+    tokenAddressList,
   };
 }
 

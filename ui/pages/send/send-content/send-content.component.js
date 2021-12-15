@@ -10,6 +10,7 @@ import {
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
 import { ASSET_TYPES } from '../../../ducks/send';
+import { getSymbolAndDecimals } from '../../../helpers/utils/token-util';
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
@@ -18,6 +19,7 @@ import SendGasRow from './send-gas-row';
 export default class SendContent extends Component {
   state = {
     showNicknamePopovers: false,
+    isContractAddress: false,
   };
 
   static contextTypes = {
@@ -39,6 +41,7 @@ export default class SendContent extends Component {
     to: PropTypes.string,
     assetError: PropTypes.string,
     recipient: PropTypes.object,
+    tokenAddressList: PropTypes.object,
   };
 
   render() {
@@ -87,30 +90,49 @@ export default class SendContent extends Component {
     );
   }
 
+  checkContractAddress = () => {
+    const { recipient, tokenAddressList } = this.props;
+
+    getSymbolAndDecimals(recipient.userInput, tokenAddressList).then(
+      (result) => {
+        if (result.symbol !== '' && result.decimals !== '0') {
+          this.setState({ isContractAddress: true });
+        }
+      },
+    );
+  };
+
   maybeRenderAddContact() {
     const { t } = this.context;
     const { isOwnedAccount, contact = {}, to, recipient } = this.props;
-    const { showNicknamePopovers } = this.state;
+    const { showNicknamePopovers, isContractAddress } = this.state;
+
+    this.checkContractAddress();
 
     if (isOwnedAccount || contact.name) {
-      return null;
+      return recipient.warning === 'knownAddressRecipient' ||
+        isContractAddress ? (
+        <Dialog type="warning" className="send__error-dialog">
+          {t('knownAddressRecipient')}
+        </Dialog>
+      ) : null;
     }
 
     return (
       <>
-        {recipient.warning === 'knownAddressRecipient' ? (
+        {recipient.warning === 'knownAddressRecipient' || isContractAddress ? (
           <Dialog type="warning" className="send__error-dialog">
-            {t(recipient.warning)}
+            {t('knownAddressRecipient')}
           </Dialog>
-        ) : (
-          <Dialog
-            type="message"
-            className="send__dialog"
-            onClick={() => this.setState({ showNicknamePopovers: true })}
-          >
-            {t('newAccountDetectedDialogMessage')}
-          </Dialog>
-        )}
+        ) : null}
+        <Dialog
+          type="message"
+          className="send__dialog"
+          onClick={() => this.setState({ showNicknamePopovers: true })}
+        >
+          {t('newAccountDetectedDialogMessage')}
+        </Dialog>
+
         {showNicknamePopovers ? (
           <NicknamePopovers
             onClose={() => this.setState({ showNicknamePopovers: false })}
