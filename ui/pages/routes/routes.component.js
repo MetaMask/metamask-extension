@@ -102,6 +102,16 @@ export default class Routes extends Component {
     metricsEvent: PropTypes.func,
   };
 
+  componentDidUpdate(prevProps) {
+    if (process.env.DARK_MODE_V1) {
+      const { theme } = this.props;
+      if (theme !== prevProps.theme) {
+        document.documentElement.classList.remove(`theme-${prevProps.theme}`);
+        document.documentElement.classList.add(`theme-${theme}`);
+      }
+    }
+  }
+
   UNSAFE_componentWillMount() {
     const {
       currentCurrency,
@@ -320,7 +330,6 @@ export default class Routes extends Component {
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
         : null;
-
     return (
       <div
         className={classnames('app', {
