@@ -41,11 +41,11 @@
       cursor: pointer;
 
       &:hover {
-        background-color: rgba($dusty-gray, 0.05);
+        background-color: rgba($white, 0.05);
       }
 
       &:active {
-        background-color: rgba($dusty-gray, 0.1);
+        background-color: rgba($white, 0.1);
       }
     }
 
