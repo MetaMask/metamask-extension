@@ -2832,7 +2832,8 @@ export default class MetamaskController extends EventEmitter {
     else if (subjectType === SUBJECT_TYPES.SNAP) {
       origin = sender.snapId;
       // TODO: Use a SnapController event to handle this
-      this.subjectMetadataController.addSubjectMetadata(origin, {
+      this.subjectMetadataController.addSubjectMetadata({
+        origin,
         subjectType: SUBJECT_TYPES.SNAP,
       });
     }
@@ -2842,7 +2843,8 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (sender.id && sender.id !== this.extension.runtime.id) {
-      this.subjectMetadataController.addSubjectMetadata(origin, {
+      this.subjectMetadataController.addSubjectMetadata({
+        origin,
         extensionId: sender.id,
         subjectType: SUBJECT_TYPES.EXTENSION,
       });
