@@ -1163,7 +1163,7 @@ export default class MetamaskController extends EventEmitter {
 
       checkAndUpdateCollectiblesOwnershipStatus: collectiblesController.checkAndUpdateCollectiblesOwnershipStatus.bind(
         collectiblesController,
-      )
+      ),
 
       // AddressController
       setAddressBook: addressBookController.set.bind(addressBookController),

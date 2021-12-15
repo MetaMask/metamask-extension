@@ -42,15 +42,14 @@ export default function CollectiblesTab({ onAddNFT }) {
   const dispatch = useDispatch();
 
   const getCollections = () => {
-    const collections = {
-      previouslyOwned: {
-        collectionName: 'Previously Owned',
-        collectibles: [],
-      },
+    const collections = {};
+    const previouslyOwnedCollection = {
+      collectionName: 'Previously Owned',
+      collectibles: [],
     };
     collectibles.forEach((collectible) => {
       if (collectible?.isCurrentlyOwned === false) {
-        collections.previouslyOwned.push(collectible);
+        previouslyOwnedCollection.collectibles.push(collectible);
       } else if (collections[collectible.address]) {
         collections[collectible.address].collectibles.push(collectible);
       } else {
@@ -65,27 +64,34 @@ export default function CollectiblesTab({ onAddNFT }) {
         };
       }
     });
-    return collections;
+    return [collections, previouslyOwnedCollection];
   };
 
-  const collections = useMemo(() => getCollections, [
-    collectibles,
-    collectibleContracts,
-  ]);
+  // const [collections, previouslyOwnedCollection] = useMemo(
+  //   () => getCollections(),
+  //   [collectibles, collectibleContracts],
+  // ); 
+  
+  const [collections, previouslyOwnedCollection] = getCollections();
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);
   };
 
   const onRefresh = () => {
-    dispatch(detectCollectibles());
+    if (isMainnet) {
+      dispatch(detectCollectibles());
+    }
     dispatch(checkAndUpdateCollectiblesOwnershipStatus());
   };
 
   return (
     <div className="collectibles-tab">
       {collectibles.length > 0 ? (
-        <CollectiblesItems collections={collections} />
+        <CollectiblesItems
+          collections={collections}
+          previouslyOwnedCollection={previouslyOwnedCollection}
+        />
       ) : (
         <Box padding={[6, 12, 6, 12]}>
           {isMainnet &&
@@ -138,31 +144,27 @@ export default function CollectiblesTab({ onAddNFT }) {
           alignItems={ALIGN_ITEMS.CENTER}
           justifyContent={JUSTIFY_CONTENT.CENTER}
         >
-          {isMainnet ? (
-            <>
-              <Box
-                className="collectibles-tab__link"
-                justifyContent={JUSTIFY_CONTENT.FLEX_END}
-              >
-                {useCollectibleDetection ? (
-                  <Button type="link" onClick={onRefresh}>
-                    {t('refreshList')}
-                  </Button>
-                ) : (
-                  <Button type="link" onClick={onEnableAutoDetect}>
-                    {t('enableAutoDetect')}
-                  </Button>
-                )}
-              </Box>
-              <Typography
-                color={COLORS.UI3}
-                variant={TYPOGRAPHY.H4}
-                align={TEXT_ALIGN.CENTER}
-              >
-                {t('or')}
-              </Typography>
-            </>
-          ) : null}
+          <Box
+            className="collectibles-tab__link"
+            justifyContent={JUSTIFY_CONTENT.FLEX_END}
+          >
+            {isMainnet && !useCollectibleDetection ? (
+              <Button type="link" onClick={onEnableAutoDetect}>
+                {t('enableAutoDetect')}
+              </Button>
+            ) : (
+              <Button type="link" onClick={onRefresh}>
+                {t('refreshList')}
+              </Button>
+            )}
+          </Box>
+          <Typography
+            color={COLORS.UI3}
+            variant={TYPOGRAPHY.H4}
+            align={TEXT_ALIGN.CENTER}
+          >
+            {t('or')}
+          </Typography>
           <Box
             justifyContent={JUSTIFY_CONTENT.FLEX_START}
             className="collectibles-tab__link"
