@@ -1383,6 +1383,9 @@ export default class MetamaskController extends EventEmitter {
             collectibleDetectionController,
           )
         : null,
+
+      addWatchOnlyAccount: this.accountTracker.addWatchOnlyAccount.bind(this.accountTracker),
+      syncAddresses: this.preferencesController.syncAddresses.bind(this.preferencesController),
     };
   }
 

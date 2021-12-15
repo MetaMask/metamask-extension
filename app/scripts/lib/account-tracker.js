@@ -113,7 +113,7 @@ export default class AccountTracker {
 
     const accountsToRemove = [];
     locals.forEach((local) => {
-      if (!addresses.includes(local)) {
+      if (!addresses.includes(local) && !accounts[local]?.watchOnly) {
         accountsToRemove.push(local);
       }
     });
@@ -135,6 +135,21 @@ export default class AccountTracker {
     addresses.forEach((address) => {
       accounts[address] = {};
     });
+    // save accounts state
+    this.store.updateState({ accounts });
+    // fetch balances for the accounts if there is block number ready
+    if (!this._currentBlockNumber) {
+      return;
+    }
+    this._updateAccounts();
+  }
+
+  addWatchOnlyAccount(address) {
+    const { accounts } = this.store.getState();
+    // add initial state for address
+    accounts[address] = {
+      watchOnly: true,
+    };
     // save accounts state
     this.store.updateState({ accounts });
     // fetch balances for the accounts if there is block number ready
