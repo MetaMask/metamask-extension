@@ -118,6 +118,7 @@ export default class Routes extends Component {
       pageChanged,
       setCurrentCurrencyToUSD,
       history,
+      theme,
     } = this.props;
     if (!currentCurrency) {
       setCurrentCurrencyToUSD();
@@ -128,6 +129,9 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
+    if (process.env.DARK_MODE_V1 && theme) {
+      document.documentElement.classList.add(`theme-${theme}`);
+    }
   }
 
   renderRoutes() {
