@@ -20,17 +20,17 @@ jest.mock('../../../../../store/actions', () => ({
   removePollingTokenFromAppState: jest.fn(),
 }));
 
-const render = (txProps) => {
+const render = (storeProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      ...storeProps,
       accounts: {
         [mockState.metamask.selectedAddress]: {
           address: mockState.metamask.selectedAddress,
           balance: '0x1F4',
         },
       },
-      advancedGasFee: { priorityFee: 100 },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates,
@@ -41,7 +41,9 @@ const render = (txProps) => {
     <GasFeeContextProvider
       transaction={{
         userFeeLevel: 'custom',
-        ...txProps,
+        txParams: {
+          maxPriorityFeePerGas: '0x77359400',
+        },
       }}
     >
       <AdvancedGasFeePopoverContextProvider>
@@ -53,19 +55,13 @@ const render = (txProps) => {
 };
 
 describe('PriorityfeeInput', () => {
-  it('should renders advancedGasFee.priorityfee value if current estimate used is not custom', () => {
-    render({
-      userFeeLevel: 'high',
-    });
+  it('should renders advancedGasFee.priorityfee value if advancedGasFee is available', () => {
+    render({ advancedGasFee: { priorityFee: 100 } });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
 
-  it('should renders priorityfee value from transaction if current estimate used is custom', () => {
-    render({
-      txParams: {
-        maxPriorityFeePerGas: '0x77359400',
-      },
-    });
+  it('should renders priorityfee value from transaction if advancedGasFee is not available', () => {
+    render();
     expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
   });
   it('should show current priority fee range in subtext', () => {
@@ -85,11 +81,7 @@ describe('PriorityfeeInput', () => {
     expect(screen.queryByText('2 - 125 GWEI')).toBeInTheDocument();
   });
   it('should show error if value entered is 0', () => {
-    render({
-      txParams: {
-        maxPriorityFeePerGas: '0x174876E800',
-      },
-    });
+    render();
     expect(
       screen.queryByText('Priority fee must be greater than 0.'),
     ).not.toBeInTheDocument();

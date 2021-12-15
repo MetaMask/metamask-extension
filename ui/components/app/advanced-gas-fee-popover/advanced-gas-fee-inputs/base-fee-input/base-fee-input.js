@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
-import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
 import {
   divideCurrencies,
   multiplyCurrencies,
@@ -77,7 +76,7 @@ const validateBaseFee = (
 const BaseFeeInput = () => {
   const t = useI18nContext();
 
-  const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
+  const { gasFeeEstimates, maxFeePerGas } = useGasFeeContext();
   const {
     maxPriorityFeePerGas,
     setErrorValue,
@@ -105,10 +104,7 @@ const BaseFeeInput = () => {
   const [editingInGwei, setEditingInGwei] = useState(false);
 
   const [maxBaseFeeGWEI, setMaxBaseFeeGWEI] = useState(() => {
-    if (
-      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
-      advancedGasFeeValues?.maxBaseFee
-    ) {
+    if (advancedGasFeeValues?.maxBaseFee) {
       return multiplyCurrencyValues(
         estimatedBaseFee,
         advancedGasFeeValues.maxBaseFee,
@@ -119,10 +115,7 @@ const BaseFeeInput = () => {
   });
 
   const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(() => {
-    if (
-      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
-      advancedGasFeeValues?.maxBaseFee
-    ) {
+    if (advancedGasFeeValues?.maxBaseFee) {
       return advancedGasFeeValues.maxBaseFee;
     }
     return divideCurrencyValues(maxFeePerGas, estimatedBaseFee);
