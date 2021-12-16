@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import UnitInput from '../unit-input';
 import CurrencyDisplay from '../currency-display';
 import {
@@ -8,6 +9,11 @@ import {
 } from '../../../helpers/utils/conversions.util';
 import { ETH } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
+import {
+  getConversionRate,
+  getNativeCurrency,
+} from '../../../ducks/metamask/metamask';
+import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -16,17 +22,19 @@ import { I18nContext } from '../../../contexts/i18n';
  */
 export default function CurrencyInput({
   hexValue,
-  preferredCurrency,
-  secondaryCurrency,
-  hideSecondary,
   featureSecondary,
-  conversionRate,
-  primarySuffix,
-  secondarySuffix,
   onChange,
   onPreferenceToggle,
 }) {
   const t = useContext(I18nContext);
+
+  const preferredCurrency = useSelector(getNativeCurrency);
+  const secondaryCurrency = useSelector(getCurrentCurrency);
+  const conversionRate = useSelector(getConversionRate);
+  const showFiat = useSelector(getShouldShowFiat);
+  const hideSecondary = !showFiat;
+  const primarySuffix = preferredCurrency || ETH;
+  const secondarySuffix = secondaryCurrency.toUpperCase();
 
   const [isSwapped, setSwapped] = useState(false);
   const [newHexValue, setNewHexValue] = useState(hexValue);
@@ -63,6 +71,7 @@ export default function CurrencyInput({
     setNewHexValue(hexValue);
     const newDecimalValue = getDecimalValue();
     setDecimalValue(newDecimalValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hexValue]);
 
   const swap = async () => {
@@ -95,6 +104,7 @@ export default function CurrencyInput({
     if (isSwapped) {
       handleChange(decimalValue);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSwapped]);
 
   const renderConversionComponent = () => {
@@ -154,13 +164,7 @@ export default function CurrencyInput({
 
 CurrencyInput.propTypes = {
   hexValue: PropTypes.string,
-  preferredCurrency: PropTypes.string,
-  secondaryCurrency: PropTypes.string,
-  hideSecondary: PropTypes.bool,
   featureSecondary: PropTypes.bool,
-  conversionRate: PropTypes.number,
-  primarySuffix: PropTypes.string,
-  secondarySuffix: PropTypes.string,
   onChange: PropTypes.func,
   onPreferenceToggle: PropTypes.func,
 };
