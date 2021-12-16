@@ -2139,7 +2139,7 @@ export function setUseNonceField(val) {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNonceField`);
     try {
-      await background.setUseNonceField(val);
+      await promisifiedBackground.setUseNonceField(val);
     } catch (error) {
       dispatch(displayWarning(error.message));
     }
