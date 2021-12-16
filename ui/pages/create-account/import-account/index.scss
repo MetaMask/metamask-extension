@@ -35,7 +35,7 @@
     align-items: center;
   }
 
-  &__private-key-password-container {
+  &__private-key-password-container, &__public-address-text-container {
     display: flex;
     flex-flow: column;
     align-items: center;
@@ -49,14 +49,14 @@
     align-self: flex-start;
   }
 
-  &__private-key {
+  &__private-key, &__public-address {
     display: flex;
     flex-flow: column;
     align-items: flex-start;
     margin-top: 34px;
   }
 
-  &__input-password {
+  &__input-password, &__input-text {
     @include Paragraph;
 
     height: 54px;

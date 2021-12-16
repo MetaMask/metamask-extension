@@ -128,9 +128,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     );
   }
 
-  await actions.addWatchOnlyAccount();
-  await actions.syncAddresses();
-
   backgroundConnection.onNotification((data) => {
     if (data.method === 'sendUpdate') {
       store.dispatch(actions.updateMetamaskState(data.params[0]));

@@ -966,6 +966,9 @@
   "ensIllegalCharacter": {
     "message": "Illegal Character for ENS."
   },
+  "ensName": {
+    "message": "ENS Name"
+  },
   "ensNotFoundOnCurrentNetwork": {
     "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
   },
@@ -2106,6 +2109,9 @@
   "pastePrivateKey": {
     "message": "Paste your private key string here:",
     "description": "For importing an account from a private key"
+  },
+  "pastePublicAddress": {
+    "message": "Paste the public address to watch here:"
   },
   "pending": {
     "message": "Pending"
