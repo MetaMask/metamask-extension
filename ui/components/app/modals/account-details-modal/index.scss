@@ -36,4 +36,21 @@
     margin-top: 7px;
     width: 286px;
   }
+
+  & &__button--red {
+    margin-top: 17px;
+    padding: 10px 22px;
+    width: 284px;
+    border-color: lighten($monzo, 10%) !important;
+    color: $monzo;
+
+    &:active {
+      background: lighten($monzo, 55%);
+      border-color: $monzo;
+    }
+
+    &:hover {
+      border-color: $monzo;
+    }
+  }
 }

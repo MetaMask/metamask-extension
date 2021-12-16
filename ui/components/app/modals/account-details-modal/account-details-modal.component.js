@@ -14,6 +14,7 @@ export default class AccountDetailsModal extends Component {
     selectedIdentity: PropTypes.object,
     chainId: PropTypes.string,
     showExportPrivateKeyModal: PropTypes.func,
+    showStopWatchingModal: PropTypes.func,
     setAccountLabel: PropTypes.func,
     keyrings: PropTypes.array,
     rpcPrefs: PropTypes.object,
@@ -29,6 +30,7 @@ export default class AccountDetailsModal extends Component {
       selectedIdentity,
       chainId,
       showExportPrivateKeyModal,
+      showStopWatchingModal,
       setAccountLabel,
       keyrings,
       rpcPrefs,
@@ -96,6 +98,14 @@ export default class AccountDetailsModal extends Component {
             {this.context.t('exportPrivateKey')}
           </Button>
         ) : null}
+
+        <Button
+          type="secondary"
+          className="account-details-modal__button--red"
+          onClick={() => showStopWatchingModal()}
+        >
+          {this.context.t('stopWatching')}
+        </Button>
       </AccountModalContainer>
     );
   }

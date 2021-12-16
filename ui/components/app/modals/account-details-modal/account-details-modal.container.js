@@ -22,6 +22,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' })),
     setAccountLabel: (address, label) =>
       dispatch(setAccountLabel(address, label)),
+    showStopWatchingModal: () =>
+      dispatch(showModal({ name: 'CONFIRM_STOP_WATCHING' })),
   };
 };
 

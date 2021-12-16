@@ -2668,6 +2668,15 @@
     "message": "Connect your wallet directly to your computer.  Unlock your Ledger and open the Ethereum app. For more on using your hardware wallet device, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stopWatching": {
+    "message": "Stop Watching"
+  },
+  "stopWatchingDescription": {
+    "message": "This account will be removed from your account list. You wont be able to view the tokens & NFT's for this account."
+  },
+  "stopWatchingTitle": {
+    "message": "Do you want to stop watching this account?"
+  },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
   },

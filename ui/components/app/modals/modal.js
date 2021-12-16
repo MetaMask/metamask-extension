@@ -19,6 +19,7 @@ import QRScanner from './qr-scanner';
 
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
+import ConfirmStopWatching from './confirm-stop-watching';
 import TransactionConfirmed from './transaction-confirmed';
 import CancelTransaction from './cancel-transaction';
 
@@ -213,6 +214,19 @@ const MODALS = {
 
   CONFIRM_RESET_ACCOUNT: {
     contents: <ConfirmResetAccount />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CONFIRM_STOP_WATCHING: {
+    contents: <ConfirmStopWatching />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
