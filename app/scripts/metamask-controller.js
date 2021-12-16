@@ -1384,8 +1384,15 @@ export default class MetamaskController extends EventEmitter {
           )
         : null,
 
-      addWatchOnlyAccount: this.accountTracker.addWatchOnlyAccount.bind(this.accountTracker),
-      syncAddresses: this.preferencesController.syncAddresses.bind(this.preferencesController),
+      addWatchOnlyAccount: this.accountTracker.addWatchOnlyAccount.bind(
+        this.accountTracker,
+      ),
+      removeWatchOnlyAccount: this.accountTracker.removeAccount.bind(
+        this.accountTracker,
+      ),
+      syncAddresses: this.preferencesController.syncAddresses.bind(
+        this.preferencesController,
+      ),
     };
   }
 

@@ -3066,12 +3066,28 @@ export async function submitQRHardwareSignature(requestId, cbor) {
   await promisifiedBackground.submitQRHardwareSignature(requestId, cbor);
 }
 
-export async function addWatchOnlyAccount() {
-  await promisifiedBackground.addWatchOnlyAccount('0x22413ebf616e49bf71b2799c005fa2c46c6863a5');
+export function addWatchOnlyAccount(
+  address = '0x22413ebf616e49bf71b2799c005fa2c46c6863a5',
+) {
+  return async () => {
+    await promisifiedBackground.addWatchOnlyAccount(address);
+  };
 }
 
-export async function syncAddresses() {
-  await promisifiedBackground.syncAddresses(['0x22413ebf616e49bf71b2799c005fa2c46c6863a5']);
+export async function syncAddresses(
+  addresses = ['0x22413ebf616e49bf71b2799c005fa2c46c6863a5'],
+) {
+  return async () => {
+    await promisifiedBackground.syncAddresses(addresses);
+  };
+}
+
+export function removeWatchOnlyAccount(
+  addresses = ['0x22413ebf616e49bf71b2799c005fa2c46c6863a5'],
+) {
+  return async () => {
+    await promisifiedBackground.removeWatchOnlyAccount(addresses);
+  };
 }
 
 export function cancelQRHardwareSignRequest() {
@@ -3080,4 +3096,3 @@ export function cancelQRHardwareSignRequest() {
     await promisifiedBackground.cancelQRHardwareSignRequest();
   };
 }
-
