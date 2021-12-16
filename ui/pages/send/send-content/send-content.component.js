@@ -92,6 +92,7 @@ export default class SendContent extends Component {
 
   checkContractAddress = () => {
     const { recipient, tokenAddressList } = this.props;
+
     getSymbolAndDecimals(recipient.userInput, tokenAddressList).then(
       (result) => {
         if (result.symbol !== '' && result.decimals !== '0') {
