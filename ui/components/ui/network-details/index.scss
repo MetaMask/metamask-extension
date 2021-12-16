@@ -1,0 +1,154 @@
+.network-details {
+  &__wrapper {
+    height: 488px;
+    width: 300px;
+    border-radius: 10px;
+    max-height: 100vh;
+
+    @media screen and (max-width: $break-small) {
+      width: 96%;
+      height: 96%;
+    }
+  }
+
+  &__header {
+    display: flex;
+    width: 175px;
+    height: 32px;
+    background: #f2f3f4;
+    border-radius: 16px;
+    margin-left: 63px;
+    margin-top: 24px;
+    font-size: 12px;
+    padding-top: 7px;
+    justify-content: center;
+
+    & .identicon__image-border {
+      margin-right: 8px;
+    }
+  }
+
+  &__footer {
+    padding: 16px;
+    height: 70px;
+  }
+
+  &__cancel {
+    margin-right: 16px;
+  }
+
+  &__title {
+    @include H4;
+
+    display: flex;
+    justify-content: center;
+    color: #000;
+    margin-top: 16px;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  &__subtitle {
+    @include H7;
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-left: 5px;
+  }
+
+  &__info {
+    padding-top: 24px;
+    font-size: 12px;
+
+    &__link-section {
+      display: flex;
+      flex-direction: row;
+      margin-left: 19px;
+
+      &__link {
+        padding: 0;
+        font-size: 12px;
+        color: #037dd6;
+        border: 1px solid transparent;
+        background-color: transparent;
+        margin-right: 18px;
+      }
+
+      &__learn-label {
+        white-space: nowrap;
+        padding-top: 1px;
+      }
+    }
+
+    &__icon {
+      width: 10px;
+    }
+
+    &__bold-label {
+      font-weight: 600;
+      display: flex;
+      margin-left: 24px;
+      color: #24292e;
+
+      & .fa-info-circle {
+        color: #b8b8b8;
+        width: 10px;
+        height: 10px;
+        margin-left: 4px;
+      }
+    }
+  }
+
+  &__content {
+    margin: 32px 24px 30px 24px;
+    width: 248px;
+    height: 170px;
+    border: 1px solid #d6d9dc;
+    border-radius: 9px;
+    position: relative;
+    padding-left: 16px;
+    padding-top: 12px;
+
+    &__indenticon {
+      margin-bottom: 16px;
+    }
+
+    &__address {
+      margin-top: 4px;
+      font-size: 10px;
+      color: #6a737d;
+      margin-bottom: 12px;
+      overflow-wrap: break-word;
+    }
+
+    &__label,
+    &__label--capitalized {
+      @include H8;
+
+      color: #24292e;
+      font-weight: 600;
+
+      & .info-icon {
+        width: 8px;
+        height: 8px;
+        fill: #6a737d;
+      }
+    }
+
+    &__nickname-label {
+      margin-bottom: 8px;
+      color: #24292e;
+      font-size: 14px;
+    }
+
+    &__view-all {
+      border: 1px solid transparent;
+      background-color: transparent;
+      display: flex;
+      justify-content: flex-start;
+      padding: 0;
+      font-size: 12px;
+    }
+  }
+}

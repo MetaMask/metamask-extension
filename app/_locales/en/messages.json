@@ -753,6 +753,9 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
+  "doesNotVerify": {
+    "message": " MetaMask does not verify any networks."
+  },
   "domain": {
     "message": "Domain"
   },
@@ -1486,6 +1489,9 @@
   },
   "learmMoreAboutGas": {
     "message": "Want to $1 about gas?"
+  },
+  "learnAbout": {
+    "message": "Learn about"
   },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
@@ -2331,6 +2337,12 @@
   "saveAsCsvFile": {
     "message": "Save as CSV File"
   },
+  "scamAndNetworkRisks": {
+    "message": "scams and network security risks."
+  },
+  "scamsAndNetwork": {
+    "message": "These networks are not hosted or endorsed by MetaMask, they are merely commonly used custom networks. This network will have the ability to associate your IP address and network activity. Every network has its own security tradeoffs. Understand the risks before adding & using this network. Learn more"
+  },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"
   },
@@ -3073,6 +3085,9 @@
   "testFaucet": {
     "message": "Test Faucet"
   },
+  "thisAllows": {
+    "message": "This allows this network to be used within MetaMask."
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
@@ -3415,6 +3430,9 @@
   },
   "walletSeedRestore": {
     "message": "Wallet Secret Recovery Phrase"
+  },
+  "wantToAddNetwork": {
+    "message": "Want to add this network?"
   },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
