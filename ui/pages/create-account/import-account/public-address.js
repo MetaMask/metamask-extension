@@ -20,6 +20,7 @@ class PublicAddressImportView extends Component {
 
   static propTypes = {
     addWatchOnlyAccount: PropTypes.func.isRequired,
+    addAddresses: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     displayWarning: PropTypes.func.isRequired,
     setSelectedAddress: PropTypes.func.isRequired,
@@ -41,10 +42,14 @@ class PublicAddressImportView extends Component {
       mostRecentOverviewPage,
       setSelectedAddress,
       firstAddress,
+      addAddresses,
     } = this.props;
     const { t } = this.context;
 
-    addWatchOnlyAccount(publicAddress)
+    Promise.all([
+      addWatchOnlyAccount(publicAddress),
+      addAddresses(publicAddress),
+    ])
       .then(() => {
         this.context.metricsEvent({
           eventOpts: {
@@ -186,7 +191,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     addWatchOnlyAccount: (publicAddress) =>
-      dispatch(actions.addWatchOnlyAccount(publicAddress)),
+      dispatch(actions.addWatchOnlyAccount(publicAddress.toLowerCase())),
+    addAddresses: (publicAddress) =>
+      dispatch(actions.addAddresses([publicAddress.toLowerCase()])),
     displayWarning: (message) =>
       dispatch(actions.displayWarning(message || null)),
     setSelectedAddress: (address) =>

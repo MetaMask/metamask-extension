@@ -3074,11 +3074,11 @@ export function addWatchOnlyAccount(
   };
 }
 
-export async function syncAddresses(
+export function addAddresses(
   addresses = ['0x22413ebf616e49bf71b2799c005fa2c46c6863a5'],
 ) {
   return async () => {
-    await promisifiedBackground.syncAddresses(addresses);
+    await promisifiedBackground.addAddresses(addresses);
   };
 }
 

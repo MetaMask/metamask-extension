@@ -127,9 +127,14 @@ export function hasUnsignedQRHardwareMessage(state) {
 
 export function getCurrentKeyring(state) {
   const identity = getSelectedIdentity(state);
+  const accounts = getMetaMaskAccounts(state);
 
   if (!identity) {
     return null;
+  }
+
+  if (accounts[identity.address]?.watchOnly) {
+    return {};
   }
 
   const keyring = findKeyringForAddress(state, identity.address);
@@ -285,17 +290,30 @@ export function getMetaMaskCachedBalances(state) {
   );
 }
 
+const getWatchOnlyAddresses = (state) => {
+  const accounts = getMetaMaskAccounts(state)
+  return Object.values(accounts)
+    .filter(account => account.watchOnly)
+    .map(account => account.address)
+}
 /**
  * Get ordered (by keyrings) accounts with identity and balance
  */
 export const getMetaMaskAccountsOrdered = createSelector(
+  getWatchOnlyAddresses,
   getMetaMaskKeyrings,
   getMetaMaskIdentities,
   getMetaMaskAccounts,
-  (keyrings, identities, accounts) =>
+  (watchOnlyAccounts, keyrings, identities, accounts) =>
     keyrings
-      .reduce((list, keyring) => list.concat(keyring.accounts), [])
-      .filter((address) => Boolean(identities[address]))
+      .reduce((list, keyring) => list.concat(keyring.accounts), [...watchOnlyAccounts])
+      .filter((address) => {
+        console.log('----')
+        console.log('identities', identities)
+        console.log('address', address)
+        console.log('identities[address]', identities[address])
+        return Boolean(identities[address])
+      })
       .map((address) => ({ ...identities[address], ...accounts[address] })),
 );
 
