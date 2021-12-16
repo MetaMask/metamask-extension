@@ -507,11 +507,6 @@ export function getSubjectMetadata(state) {
   return state.metamask.subjectMetadata;
 }
 
-// TODO:current
-// You're trying to cache blob URLs for SVG icons and also just create a selector
-// to replace all assignments of the form "targetSubjectMetadata = subjectMetadata[origin]"
-export const getTargetSubjectMetadtata = createSelector();
-
 export function getRpcPrefsForCurrentProvider(state) {
   const { frequentRpcListDetail, provider } = state.metamask;
   const selectRpcInfo = frequentRpcListDetail.find(
