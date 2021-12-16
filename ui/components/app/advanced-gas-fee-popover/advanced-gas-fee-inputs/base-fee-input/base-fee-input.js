@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
 import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
 import {
@@ -25,7 +26,7 @@ import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 import {
   roundToDecimalPlacesRemovingExtraZeroes,
   renderFeeRange,
-} from '../advanced-gas-fee-inputs.util';
+} from '../utils';
 
 const divideCurrencyValues = (value, baseFee) => {
   if (baseFee === 0) {
