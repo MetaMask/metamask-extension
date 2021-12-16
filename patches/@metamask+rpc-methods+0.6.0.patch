@@ -1,0 +1,20 @@
+diff --git a/node_modules/@metamask/rpc-methods/dist/restricted/confirm.js b/node_modules/@metamask/rpc-methods/dist/restricted/confirm.js
+index 1b118fa..22e6842 100644
+--- a/node_modules/@metamask/rpc-methods/dist/restricted/confirm.js
++++ b/node_modules/@metamask/rpc-methods/dist/restricted/confirm.js
+@@ -48,13 +48,13 @@ function getValidatedParams(params) {
+             message: 'Must specify a non-empty string "prompt" less than 40 characters long.',
+         });
+     }
+-    if (!description &&
++    if (description &&
+         (typeof description !== 'string' || description.length > 140)) {
+         throw eth_rpc_errors_1.ethErrors.rpc.invalidParams({
+             message: '"description" must be a string no more than 140 characters long if specified.',
+         });
+     }
+-    if (!textAreaContent &&
++    if (textAreaContent &&
+         (typeof textAreaContent !== 'string' || textAreaContent.length > 1800)) {
+         throw eth_rpc_errors_1.ethErrors.rpc.invalidParams({
+             message: '"textAreaContent" must be a string no more than 1800 characters long if specified.',

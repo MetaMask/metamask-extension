@@ -148,6 +148,10 @@ export default class MetamaskController extends EventEmitter {
     this.extension = opts.extension;
     this.platform = opts.platform;
     const initState = opts.initState || {};
+    // TODO:temp
+    delete initState.PermissionController;
+    delete initState.SnapController;
+    delete initState.SubjectMetadataController;
     const version = this.platform.getVersion();
     this.recordFirstTimeInfo(initState);
 
@@ -540,7 +544,7 @@ export default class MetamaskController extends EventEmitter {
     this.workerController = new IframeExecutionEnvironmentService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
-        'https://metamask.github.io/iframe-execution-environment/',
+        'https://metamask.github.io/iframe-execution-environment/0.3.0',
       ),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ServiceMessenger',
@@ -553,6 +557,10 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: [
         'ServiceMessenger:unhandledError',
         'ServiceMessenger:unresponsive',
+      ],
+      allowedActions: [
+        `${this.permissionController.name}:hasPermission`,
+        `${this.permissionController.name}:getEndowments`,
       ],
     });
 
@@ -903,11 +911,11 @@ export default class MetamaskController extends EventEmitter {
       getSnap: _getSnap,
       getSnapRpcHandler: _getSnapRpcHandler,
       getSnapState: _getSnapState,
-      showConfirmation: (origin, prompt, title, subtitle) =>
+      showConfirmation: (origin, confirmationData) =>
         this.approvalController.addAndShowApprovalRequest({
           origin,
           type: MESSAGE_TYPE.SNAP_CONFIRM,
-          requestData: { prompt, title, subtitle },
+          requestData: confirmationData,
         }),
       updateSnapState: _updateSnapState,
     });
@@ -977,6 +985,22 @@ export default class MetamaskController extends EventEmitter {
       },
       getPermittedAccountsByOrigin,
     );
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapAdded`,
+      (snapId, snap) => {
+        const { manifest: { proposedName }, svgIcon, version } = snap;
+        this.subjectMetadataController.addSubjectMetadata({
+          subjectType: SUBJECT_TYPES.SNAP,
+          name: proposedName,
+          origin: snapId,
+          version,
+          svgIcon,
+        });
+      },
+    );
+    ///: END:ONLY_INCLUDE_IN
   }
 
   /**
@@ -2831,11 +2855,6 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     else if (subjectType === SUBJECT_TYPES.SNAP) {
       origin = sender.snapId;
-      // TODO: Use a SnapController event to handle this
-      this.subjectMetadataController.addSubjectMetadata({
-        origin,
-        subjectType: SUBJECT_TYPES.SNAP,
-      });
     }
     ///: END:ONLY_INCLUDE_IN
     else {
@@ -2882,11 +2901,8 @@ export default class MetamaskController extends EventEmitter {
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  /**
-   * For snaps running in workers.
-   */
-  onExecutionEnvironmentError(snapName, error) {
-    this.snapController.stopPlugin(snapName);
+  onExecutionEnvironmentError(snapId, error) {
+    this.snapController.stopPlugin(snapId);
     this.snapController.addSnapError(error);
   }
 
