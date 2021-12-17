@@ -229,10 +229,11 @@ export function tryReverseResolveAddress(address) {
 
 export function ensLookup(name) {
   return () => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       background.ensLookup(name, (err, address) => {
         if (err) {
           log.error(err);
+          reject(err);
         }
         resolve(address);
       });

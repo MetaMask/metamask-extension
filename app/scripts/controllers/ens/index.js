@@ -93,6 +93,7 @@ export default class EnsController {
       return result
     } catch (e) {
       console.log('e', e)
+      throw new Error(e);
     }
   }
 
