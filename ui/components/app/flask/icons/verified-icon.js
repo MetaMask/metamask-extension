@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default function VerifiedIcon({ className, color }) {
+export default function VerifiedIcon({ className, color = '#4CD964' }) {
   return (
     <svg
       className={className}
@@ -18,10 +18,6 @@ export default function VerifiedIcon({ className, color }) {
     </svg>
   );
 }
-
-VerifiedIcon.defaultProps = {
-  color: '#4CD964',
-};
 
 VerifiedIcon.propTypes = {
   className: PropTypes.string,

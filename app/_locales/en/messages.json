@@ -2608,7 +2608,8 @@
     "message": "Slow"
   },
   "snapAccess": {
-    "message": "$1 snap has access to:"
+    "message": "$1 snap has access to:",
+    "description": "$1 represents the name of the snap"
   },
   "snap_clearState": {
     "message": "Clear its stored data from your device.",

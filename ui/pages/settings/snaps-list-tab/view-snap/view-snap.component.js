@@ -79,7 +79,6 @@ ViewSnap.propTypes = {
   snap: PropTypes.object,
   onRemove: PropTypes.func,
   onToggle: PropTypes.func,
-  // listRoute: PropTypes.string.isRequired,
 };
 
 export default React.memo(ViewSnap);
