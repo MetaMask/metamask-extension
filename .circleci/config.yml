@@ -72,18 +72,18 @@ workflows:
       - test-lint-changelog:
           requires:
             - prep-deps
-      - test-e2e-chrome:
-          requires:
-            - prep-build-test
-      - test-e2e-firefox:
-          requires:
-            - prep-build-test
-      - test-e2e-chrome-metrics:
-          requires:
-            - prep-build-test-metrics
-      - test-e2e-firefox-metrics:
-          requires:
-            - prep-build-test-metrics
+      # - test-e2e-chrome:
+      #     requires:
+      #       - prep-build-test
+      # - test-e2e-firefox:
+      #     requires:
+      #       - prep-build-test
+      # - test-e2e-chrome-metrics:
+      #     requires:
+      #       - prep-build-test-metrics
+      # - test-e2e-firefox-metrics:
+      #     requires:
+      #       - prep-build-test-metrics
       - test-unit:
           requires:
             - prep-deps
@@ -126,10 +126,10 @@ workflows:
             - test-mozilla-lint
             - test-mozilla-lint-beta
             - test-mozilla-lint-flask
-            - test-e2e-chrome
-            - test-e2e-firefox
-            - test-e2e-chrome-metrics
-            - test-e2e-firefox-metrics
+            # - test-e2e-chrome
+            # - test-e2e-firefox
+            # - test-e2e-chrome-metrics
+            # - test-e2e-firefox-metrics
       - benchmark:
           requires:
             - prep-build-test
