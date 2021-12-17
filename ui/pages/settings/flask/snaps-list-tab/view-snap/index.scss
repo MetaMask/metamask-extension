@@ -1,46 +1,46 @@
 div .view-snap-subheader {
-    @media screen and (max-width: $break-small) {
-        display: flex;
-        margin-right: 0px;
-        padding: 0 24px;
-    }
+  @media screen and (max-width: $break-small) {
+    display: flex;
+    margin-right: 0;
+    padding: 0 24px;
+  }
 }
 
 .view-snap-content-container {
-    @media screen and (max-width: $break-small) {
-        width: 100%;
-    }
+  @media screen and (max-width: $break-small) {
+    width: 100%;
+  }
 }
 
 .settings-page__content-item.view-snap-section {
-    border-bottom: 1px solid #D8D8D8;
-    padding-bottom: 18px;
-    margin-bottom: 16px;
+  border-bottom: 1px solid #d8d8d8;
+  padding-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .view-snap-section.snap-permission-list {
-    padding-bottom: 0px;
+  padding-bottom: 0;
 }
 
 .settings-page__content-item .permissions-connect-permission-list .permission {
-    &:last-child {
-        border-bottom: none;
-    }
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .view-snap__remove__button {
-    @media screen and (max-width: $break-small) {
-        align-self: center;
-    }
+  @media screen and (max-width: $break-small) {
+    align-self: center;
+  }
 }
 
 .view-snap-section {
-    .connected-sites-list__content-row {
-        border-top: none;
-        border-bottom: 1px solid #D6D9DC;
+  .connected-sites-list__content-row {
+    border-top: none;
+    border-bottom: 1px solid #d6d9dc;
 
-        &:last-child {
-            border-bottom: none;
-        }
+    &:last-child {
+      border-bottom: none;
     }
+  }
 }
