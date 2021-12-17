@@ -8,7 +8,7 @@ import {
 import DefinitionList from './definition-list';
 
 export default {
-  title: 'Definition List',
+  title: 'Components/UI/DefinitionList',
   id: __filename,
 };
 
@@ -25,23 +25,25 @@ const basic = {
 const advanced = {
   'Network Name': 'Ethereum Mainnet',
   'Chain ID': '1',
-  'Ticker': 'ETH',
+  Ticker: 'ETH',
 };
 
 const tooltips = {
   'Network Name': 'The name that is associated with this network',
   'Chain ID': 'The numeric value representing the ID of this network',
-  'Ticker': 'The currency symbol of the primary currency for this network',
+  Ticker: 'The currency symbol of the primary currency for this network',
 };
 
-export const definitionList = () => (
+export const DefaultStory = () => (
   <DefinitionList
     dictionary={object('dictionary', basic)}
     gapSize={select('gapSize', SIZES, SIZES.SM)}
   />
 );
 
-export const withTooltips = () => (
+DefaultStory.storyName = 'Default';
+
+export const WithTooltips = () => (
   <DefinitionList
     dictionary={object('dictionary', advanced)}
     tooltips={object('tooltips', tooltips)}
@@ -49,7 +51,7 @@ export const withTooltips = () => (
   />
 );
 
-export const withTypographyControl = () => (
+export const WithTypographyControl = () => (
   <DefinitionList
     dictionary={object('dictionary', advanced)}
     tooltips={object('tooltips', tooltips)}

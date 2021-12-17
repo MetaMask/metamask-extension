@@ -7,4 +7,8 @@
     border-top: 1px solid $ui-grey;
     margin: 24px 0 16px 0;
   }
+
+  .form-field__heading-title > h6 {
+    font-size: $font-size-h7;
+  }
 }

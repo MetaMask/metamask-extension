@@ -33,10 +33,7 @@ const SEGMENT_FLUSH_INTERVAL = SECOND * 5;
  * @param {number} flushInterval - ms interval to flush queue and send to segment
  * @returns {SegmentInterface}
  */
-export const createSegmentMock = (
-  flushAt = SEGMENT_FLUSH_AT,
-  flushInterval = SEGMENT_FLUSH_INTERVAL,
-) => {
+export const createSegmentMock = (flushAt = SEGMENT_FLUSH_AT) => {
   const segmentMock = {
     // Internal queue to keep track of events and properly mimic segment's
     // queueing behavior.
@@ -77,8 +74,7 @@ export const createSegmentMock = (
       // noop
     },
   };
-  // Mimic the flushInterval behavior with an interval
-  setInterval(segmentMock.flush, flushInterval);
+
   return segmentMock;
 };
 

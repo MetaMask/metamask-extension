@@ -1343,12 +1343,6 @@
   "pending": {
     "message": "Pendiente"
   },
-  "permissionCheckedIconDescription": {
-    "message": "Aprobó este permiso"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "No aprobó este permiso"
-  },
   "permissions": {
     "message": "Permisos"
   },

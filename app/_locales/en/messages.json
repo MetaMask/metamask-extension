@@ -73,6 +73,10 @@
   "accountName": {
     "message": "Account Name"
   },
+  "accountNameDuplicate": {
+    "message": "This account name already exists",
+    "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
+  },
   "accountOptions": {
     "message": "Account Options"
   },
@@ -139,9 +143,6 @@
   "addNFT": {
     "message": "Add NFT"
   },
-  "addNFTLowerCase": {
-    "message": "add NFT"
-  },
   "addNetwork": {
     "message": "Add Network"
   },
@@ -167,7 +168,7 @@
     "message": "Advanced"
   },
   "advancedBaseGasFeeToolTip": {
-    "message": "Any difference between your max base fee and the current base fee will be refunded after completion."
+    "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
   },
   "advancedGasFeeModalTitle": {
     "message": "Advanced gas fee"
@@ -319,6 +320,9 @@
   },
   "balanceOutdated": {
     "message": "Balance may be outdated"
+  },
+  "baseFee": {
+    "message": "Base fee"
   },
   "basic": {
     "message": "Basic"
@@ -565,6 +569,9 @@
   "contract": {
     "message": "Contract"
   },
+  "contractAddress": {
+    "message": "Contract address"
+  },
   "contractAddressError": {
     "message": "You are sending tokens to the token's contract address. This may result in the loss of these tokens."
   },
@@ -637,6 +644,10 @@
   "customGas": {
     "message": "Customize Gas"
   },
+  "customGasSettingToolTipMessage": {
+    "message": "Use $1 to customise the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
+  },
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
@@ -648,6 +659,10 @@
   },
   "dappSuggested": {
     "message": "Site suggested"
+  },
+  "dappSuggestedGasSettingToolTipMessage": {
+    "message": "$1 has suggested this price.",
+    "description": "$1 is url for the dapp that has suggested gas settings"
   },
   "dappSuggestedShortLabel": {
     "message": "Site"
@@ -705,6 +720,9 @@
   },
   "depositEther": {
     "message": "Deposit Ether"
+  },
+  "description": {
+    "message": "Description"
   },
   "details": {
     "message": "Details"
@@ -799,11 +817,27 @@
   "editGasLimitOutOfBounds": {
     "message": "Gas limit must be at least $1"
   },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "Gas limit must be greater than $1 and less than $2",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
   "editGasLimitTooltip": {
     "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
   },
   "editGasLow": {
     "message": "Low"
+  },
+  "editGasMaxBaseFeeGWEIImbalance": {
+    "message": "Max base fee cannot be lower than priority fee"
+  },
+  "editGasMaxBaseFeeHigh": {
+    "message": "Max base fee is higher than necessary"
+  },
+  "editGasMaxBaseFeeLow": {
+    "message": "Max base fee is low for current network conditions"
+  },
+  "editGasMaxBaseFeeMultiplierImbalance": {
+    "message": "Multiplier is low relative to Priority fee"
   },
   "editGasMaxFeeHigh": {
     "message": "Max fee is higher than necessary"
@@ -820,11 +854,20 @@
   "editGasMaxPriorityFeeBelowMinimum": {
     "message": "Max priority fee must be greater than 0 GWEI"
   },
+  "editGasMaxPriorityFeeBelowMinimumV2": {
+    "message": "Priority fee must be greater than 0."
+  },
   "editGasMaxPriorityFeeHigh": {
     "message": "Max priority fee is higher than necessary. You may pay more than needed."
   },
+  "editGasMaxPriorityFeeHighV2": {
+    "message": "Priority fee is higher than necessary. You may pay more than needed"
+  },
   "editGasMaxPriorityFeeLow": {
     "message": "Max priority fee is low for current network conditions"
+  },
+  "editGasMaxPriorityFeeLowV2": {
+    "message": "Priority fee is low for current network conditions"
   },
   "editGasMaxPriorityFeeTooltip": {
     "message": "Max priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction. You’ll most often pay your max setting"
@@ -871,6 +914,9 @@
   },
   "editPermission": {
     "message": "Edit Permission"
+  },
+  "enableAutoDetect": {
+    "message": " Enable Autodetect"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -993,7 +1039,7 @@
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
   "eth_accounts": {
-    "message": "View the addresses of your permitted accounts (required)",
+    "message": "See address, account balance, activity and initiate transactions",
     "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
@@ -1071,6 +1117,18 @@
   "flaskExperimentalText5": {
     "message": "Using Flask gives you much greater discretion in using the power of MetaMask, and that discretion is yours. Do you accept these risks as well as extra responsibility for your wallet's safety?"
   },
+  "flaskSnapSettingsCardButtonCta": {
+    "message": "See details",
+    "description": "Call to action a user can take to see more information about the Snap that is installed"
+  },
+  "flaskSnapSettingsCardDateAddedOn": {
+    "message": "Added on",
+    "description": "Start of the sentence describing when and where snap was added"
+  },
+  "flaskSnapSettingsCardFrom": {
+    "message": "from",
+    "description": "Part of the sentence describing when and where snap was added"
+  },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
   },
@@ -1115,6 +1173,9 @@
   "gasLimitTooLowWithDynamicFee": {
     "message": "Gas limit must be at least $1",
     "description": "$1 is the custom gas limit, in decimal."
+  },
+  "gasLimitV2": {
+    "message": "Gas limit"
   },
   "gasOption": {
     "message": "Gas option"
@@ -1250,6 +1311,16 @@
   "high": {
     "message": "Aggressive"
   },
+  "highGasSettingToolTipDialog": {
+    "message": "High probability, even in volatile markets"
+  },
+  "highGasSettingToolTipMessage": {
+    "message": "Use $1 to cover surges in network traffic due to things like popular NFT drops.",
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+  },
+  "highLowercase": {
+    "message": "high"
+  },
   "history": {
     "message": "History"
   },
@@ -1288,6 +1359,9 @@
   },
   "importMyWallet": {
     "message": "Import My Wallet"
+  },
+  "importNFTs": {
+    "message": "Import NFTs"
   },
   "importTokenQuestion": {
     "message": "Import token?"
@@ -1424,6 +1498,9 @@
   "learnMore": {
     "message": "learn more"
   },
+  "learnMoreUpperCase": {
+    "message": "Learn more"
+  },
   "learnScamRisk": {
     "message": "scams and security risks."
   },
@@ -1481,6 +1558,9 @@
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
   },
+  "link": {
+    "message": "Link"
+  },
   "links": {
     "message": "Links"
   },
@@ -1504,6 +1584,13 @@
   },
   "low": {
     "message": "Low"
+  },
+  "lowGasSettingToolTipMessage": {
+    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredicible.",
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+  },
+  "lowLowercase": {
+    "message": "low"
   },
   "lowPriorityMessage": {
     "message": "Future transactions will queue after this one. This price was last seen was some time ago."
@@ -1532,6 +1619,10 @@
   },
   "medium": {
     "message": "Market"
+  },
+  "mediumGasSettingToolTipMessage": {
+    "message": "Use $1 for fast processing at current market price.",
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
   },
   "memo": {
     "message": "memo"
@@ -1694,6 +1785,17 @@
   "networkStatus": {
     "message": "Network status"
   },
+  "networkStatusBaseFeeTooltip": {
+    "message": "The base fee is set by the network and changes every 13-14 seconds. Our $1 and $2 options account for sudden increases.",
+    "description": "$1 and $2 are bold text for Medium and Aggressive respectively."
+  },
+  "networkStatusPriorityFeeTooltip": {
+    "message": "Range of priority fees (aka “miner tip”). This goes to miners and incentivizes them to prioritize your transaction."
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "Gas fees are $1 relative to the past 72 hours.",
+    "description": "$1 is networks stability value - stable, low, high"
+  },
   "networkURL": {
     "message": "Network URL"
   },
@@ -1729,10 +1831,10 @@
     "message": "New Contract"
   },
   "newNFTsDetected": {
-    "message": "New NFTs detected"
+    "message": "New! NFT detection"
   },
   "newNFTsDetectedInfo": {
-    "message": "One or more new NFTs were detected in your wallet."
+    "message": "Allow MetaMask to automatically detect NFTs from Opensea and display in your MetaMask wallet."
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
@@ -1773,6 +1875,9 @@
   },
   "noAlreadyHaveSeed": {
     "message": "No, I already have a Secret Recovery Phrase"
+  },
+  "noConversionDateAvailable": {
+    "message": "No Currency Conversion Date Available"
   },
   "noConversionRateAvailable": {
     "message": "No Conversion Rate Available"
@@ -2034,14 +2139,8 @@
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
   },
-  "permissionCheckedIconDescription": {
-    "message": "You have approved this permission"
-  },
   "permissionRequest": {
     "message": "Permission request"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "You have not approved this permission"
   },
   "permissions": {
     "message": "Permissions"
@@ -2067,6 +2166,9 @@
     "message": "Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency."
   },
   "priorityFee": {
+    "message": "Priority fee"
+  },
+  "priorityFeeProperCase": {
     "message": "Priority Fee"
   },
   "privacyMsg": {
@@ -2171,6 +2273,9 @@
   },
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
+  },
+  "removeNFT": {
+    "message": "Remove NFT"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -2342,7 +2447,7 @@
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
   },
   "selectAccounts": {
-    "message": "Select account(s)"
+    "message": "Select the account(s) to use on this site"
   },
   "selectAll": {
     "message": "Select all"
@@ -2360,7 +2465,7 @@
     "message": "Select HD Path"
   },
   "selectNFTPrivacyPreference": {
-    "message": "Select NFT privacy preference"
+    "message": "Turn on NFT detection in Settings"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
@@ -2490,6 +2595,9 @@
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
+  "source": {
+    "message": "Source"
+  },
   "speedUp": {
     "message": "Speed Up"
   },
@@ -2529,6 +2637,9 @@
   },
   "stable": {
     "message": "Stable"
+  },
+  "stableLowercase": {
+    "message": "stable"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
@@ -2812,6 +2923,12 @@
   },
   "swapSourceInfo": {
     "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to find the best rates and lowest network fees."
+  },
+  "swapSuggested": {
+    "message": "Swap suggested"
+  },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "Swaps are complex and time sensitive transactions. We recommend this gas fee for a good balance between cost and confidence of a successful Swap."
   },
   "swapSwapFrom": {
     "message": "Swap from"
@@ -3266,6 +3383,9 @@
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnOpensea": {
+    "message": "View on Opensea"
   },
   "viewinExplorer": {
     "message": "View $1 in Explorer",

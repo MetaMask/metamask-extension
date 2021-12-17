@@ -2,7 +2,7 @@ import React from 'react';
 import TransactionTotalBanner from '.';
 
 export default {
-  title: 'Transaction Total Banner',
+  title: 'Components/App/TransactionTotalBanner',
   id: __filename,
 };
 

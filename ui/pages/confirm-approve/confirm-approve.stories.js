@@ -7,11 +7,11 @@ import { updateMetamaskState } from '../../store/actions';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
 import { store, getNewState } from '../../../.storybook/preview';
 
-import { domainMetadata } from '../../../.storybook/initial-states/approval-screens/token-approval';
+import { subjectMetadata } from '../../../.storybook/initial-states/approval-screens/token-approval';
 import ConfirmApprove from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/ConfirmApprove',
   id: __filename,
 };
 
@@ -20,7 +20,7 @@ const txId = 7900715443136469;
 
 const PageSet = ({ children }) => {
   const origin = text('Origin', 'https://metamask.github.io');
-  const domainIconUrl = text(
+  const subjectIconUrl = text(
     'Icon URL',
     'https://metamask.github.io/test-dapp/metamask-fox.svg',
   );
@@ -43,27 +43,27 @@ const PageSet = ({ children }) => {
     store.dispatch(
       updateMetamaskState(
         getNewState(state.metamask, {
-          domainMetadata: {
+          subjectMetadata: {
             [origin]: {
-              icon: domainIconUrl,
+              iconUrl: subjectIconUrl,
             },
           },
         }),
       ),
     );
-  }, [domainIconUrl, origin, state.metamask]);
+  }, [subjectIconUrl, origin, state.metamask]);
 
   const params = useParams();
   params.id = txId;
   return children;
 };
 
-export const ApproveTokens = () => {
+export const DefaultStory = () => {
   const state = store.getState();
   store.dispatch(
     updateMetamaskState(
       getNewState(state.metamask, {
-        domainMetadata,
+        subjectMetadata,
       }),
     ),
   );
@@ -73,3 +73,5 @@ export const ApproveTokens = () => {
     </PageSet>
   );
 };
+
+DefaultStory.storyName = 'Default';

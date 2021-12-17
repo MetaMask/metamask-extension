@@ -1,5 +1,9 @@
 module.exports = {
-  collectCoverageFrom: ['<rootDir>/ui/**/*.js', '<rootDir>/shared/**/*.js'],
+  collectCoverageFrom: [
+    '<rootDir>/app/scripts/controllers/permissions/*.js',
+    '<rootDir>/shared/**/*.js',
+    '<rootDir>/ui/**/*.js',
+  ],
   coverageDirectory: './jest-coverage/main',
   coveragePathIgnorePatterns: ['.stories.js', '.snap'],
   coverageReporters: ['html', 'text-summary'],
@@ -10,6 +14,12 @@ module.exports = {
       lines: 43,
       statements: 43,
     },
+    './app/scripts/controllers/permissions/*.js': {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
   },
   // TODO: enable resetMocks
   // resetMocks: true,
@@ -19,8 +29,11 @@ module.exports = {
   testMatch: [
     '<rootDir>/ui/**/*.test.js',
     '<rootDir>/shared/**/*.test.js',
+    '<rootDir>/app/scripts/lib/**/*.test.js',
     '<rootDir>/app/scripts/migrations/*.test.js',
     '<rootDir>/app/scripts/platforms/*.test.js',
+    '<rootDir>app/scripts/controllers/network/**/*.test.js',
+    '<rootDir>/app/scripts/controllers/permissions/*.test.js',
   ],
   testTimeout: 2500,
   transform: {

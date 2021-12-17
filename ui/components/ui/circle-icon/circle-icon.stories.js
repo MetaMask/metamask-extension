@@ -3,7 +3,7 @@ import README from './README.mdx';
 import CircleIcon from './circle-icon.component';
 
 export default {
-  title: 'Components/UI/Circle Icon',
+  title: 'Components/UI/CircleIcon',
   id: __filename,
   component: CircleIcon,
   parameters: {

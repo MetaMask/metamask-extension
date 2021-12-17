@@ -24,9 +24,10 @@
   }
 
   &__back {
-    @include H6;
+    @include H7;
 
-    color: $Grey-600;
+    color: $Grey-500;
+    font-weight: bold;
     cursor: pointer;
 
     i {
@@ -37,7 +38,7 @@
   &__page-count {
     @include H7;
 
-    color: #6a737d;
+    color: $Grey-500;
     grid-column: 2;
     justify-self: end;
     font-weight: bold;

@@ -660,8 +660,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: test:coverage
-          command: yarn test:coverage
+          name: test:coverage:mocha
+          command: yarn test:coverage:mocha
       - run:
           name: test:coverage:jest
           command: yarn test:coverage:jest

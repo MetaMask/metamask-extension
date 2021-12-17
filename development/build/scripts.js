@@ -366,6 +366,7 @@ function createFactoredBuild({
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      testing,
     });
 
     // set bundle entries
@@ -543,6 +544,7 @@ function createNormalBundle({
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      testing,
     });
 
     // set bundle entries
@@ -599,6 +601,7 @@ function setupBundlerDefaults(
     minify,
     reloadOnChange,
     shouldLintFenceFiles,
+    testing,
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
@@ -620,8 +623,9 @@ function setupBundlerDefaults(
   });
 
   // Ensure react-devtools are not included in non-dev builds
-  if (!devMode) {
+  if (!devMode || testing) {
     bundlerOpts.manualIgnore.push('react-devtools');
+    bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
 
   // Inject environment variables via node-style `process.env`
@@ -779,7 +783,7 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
-    IN_TEST: testing ? 'true' : false,
+    IN_TEST: testing,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},

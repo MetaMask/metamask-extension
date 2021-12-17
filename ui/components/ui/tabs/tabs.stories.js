@@ -4,7 +4,7 @@ import Tab from './tab/tab.component';
 import Tabs from './tabs.component';
 
 export default {
-  title: 'Tabs',
+  title: 'Components/UI/Tabs',
   id: __filename,
 };
 
@@ -16,15 +16,15 @@ function renderTab(id) {
   );
 }
 
-export const twoTabs = () => {
+export const TwoTabs = () => {
   return <Tabs>{['A', 'B'].map(renderTab)}</Tabs>;
 };
 
-export const manyTabs = () => {
+export const ManyTabs = () => {
   return <Tabs>{['A', 'B', 'C', 'D', 'E'].map(renderTab)}</Tabs>;
 };
 
-export const singleTab = () => {
+export const SingleTab = () => {
   return (
     <Tabs>
       <Tab name={text('Name', 'Single A')}>

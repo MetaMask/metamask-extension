@@ -23,6 +23,7 @@ const { BuildType, getBrowserVersionMap } = require('./utils');
 // Packages required dynamically via browserify configuration in dependencies
 // Required for LavaMoat policy generation
 require('loose-envify');
+require('globalthis');
 require('@babel/plugin-proposal-object-rest-spread');
 require('@babel/plugin-transform-runtime');
 require('@babel/plugin-proposal-class-properties');

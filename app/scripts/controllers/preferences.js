@@ -3,7 +3,10 @@ import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
 import { ethers } from 'ethers';
 import log from 'loglevel';
-import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
+import {
+  IPFS_DEFAULT_GATEWAY_URL,
+  NETWORK_TYPE_TO_ID_MAP,
+} from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 import { NETWORK_EVENTS } from './network';
@@ -61,7 +64,7 @@ export default class PreferencesController {
         hideZeroBalanceTokens: false,
       },
       // ENS decentralized website resolution
-      ipfsGateway: 'dweb.link',
+      ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
         ? LEDGER_TRANSPORT_TYPES.WEBHID

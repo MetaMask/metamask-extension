@@ -1343,12 +1343,6 @@
   "pending": {
     "message": "処理"
   },
-  "permissionCheckedIconDescription": {
-    "message": "この許可の承認が完了しました。"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "この許可の承認が完了していません。"
-  },
   "permissions": {
     "message": "許可"
   },

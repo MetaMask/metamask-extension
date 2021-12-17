@@ -6,29 +6,31 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import Button from '../../../ui/button';
 import I18nValue from '../../../ui/i18n-value';
 
-import { useAdvanceGasFeePopoverContext } from '../context';
+import { useAdvancedGasFeePopoverContext } from '../context';
 import { decGWEIToHexWEI } from '../../../../../shared/modules/conversion.utils';
 
 const AdvancedGasFeeSaveButton = () => {
   const { closeModal } = useTransactionModalContext();
   const { updateTransaction } = useGasFeeContext();
   const {
-    isDirty,
+    gasLimit,
+    hasErrors,
     maxFeePerGas,
     maxPriorityFeePerGas,
-  } = useAdvanceGasFeePopoverContext();
+  } = useAdvancedGasFeePopoverContext();
 
   const onSave = () => {
-    updateTransaction(
-      PRIORITY_LEVELS.CUSTOM,
-      decGWEIToHexWEI(maxFeePerGas),
-      decGWEIToHexWEI(maxPriorityFeePerGas),
-    );
+    updateTransaction({
+      estimateUsed: PRIORITY_LEVELS.CUSTOM,
+      maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
+      maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
+      gasLimit,
+    });
     closeModal('advancedGasFee');
   };
 
   return (
-    <Button type="primary" disabled={!isDirty} onClick={onSave}>
+    <Button type="primary" disabled={hasErrors} onClick={onSave}>
       <I18nValue messageKey="save" />
     </Button>
   );
