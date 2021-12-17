@@ -6,7 +6,9 @@ import ConfirmStopWatching from './confirm-stop-watching.component';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    stopWatching: () => dispatch(removeWatchOnlyAccount()),
+    stopWatching: (address) => {
+      return dispatch(removeWatchOnlyAccount(address));
+    },
   };
 };
 

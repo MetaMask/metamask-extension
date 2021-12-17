@@ -1393,6 +1393,9 @@ export default class MetamaskController extends EventEmitter {
       addAddresses: this.preferencesController.addAddresses.bind(
         this.preferencesController,
       ),
+      removeAddress: this.preferencesController.removeAddress.bind(
+        this.preferencesController,
+      ),
     };
   }
 

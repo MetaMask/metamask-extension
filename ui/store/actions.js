@@ -3066,27 +3066,22 @@ export async function submitQRHardwareSignature(requestId, cbor) {
   await promisifiedBackground.submitQRHardwareSignature(requestId, cbor);
 }
 
-export function addWatchOnlyAccount(
-  address = '0x22413ebf616e49bf71b2799c005fa2c46c6863a5',
-) {
+export function addWatchOnlyAccount(address) {
   return async () => {
     await promisifiedBackground.addWatchOnlyAccount(address);
   };
 }
 
-export function addAddresses(
-  addresses = ['0x22413ebf616e49bf71b2799c005fa2c46c6863a5'],
-) {
+export function addAddresses(addresses) {
   return async () => {
     await promisifiedBackground.addAddresses(addresses);
   };
 }
 
-export function removeWatchOnlyAccount(
-  addresses = ['0x22413ebf616e49bf71b2799c005fa2c46c6863a5'],
-) {
+export function removeWatchOnlyAccount(address) {
   return async () => {
-    await promisifiedBackground.removeWatchOnlyAccount(addresses);
+    await promisifiedBackground.removeWatchOnlyAccount([address]);
+    await promisifiedBackground.removeAddress(address);
   };
 }
 

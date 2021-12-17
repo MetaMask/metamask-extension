@@ -105,7 +105,7 @@ export default class AccountDetailsModal extends Component {
           <Button
             type="secondary"
             className="account-details-modal__button--red"
-            onClick={() => showStopWatchingModal()}
+            onClick={() => showStopWatchingModal(address)}
           >
             {this.context.t('stopWatching')}
           </Button>

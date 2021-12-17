@@ -6,6 +6,7 @@ export default class ConfirmStopWatching extends PureComponent {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     stopWatching: PropTypes.func.isRequired,
+    address: PropTypes.string.isRequired,
   };
 
   static contextTypes = {
@@ -13,7 +14,9 @@ export default class ConfirmStopWatching extends PureComponent {
   };
 
   handleStop = () => {
-    this.props.stopWatching().then(() => this.props.hideModal());
+    this.props
+      .stopWatching(this.props.address)
+      .then(() => this.props.hideModal());
   };
 
   render() {
