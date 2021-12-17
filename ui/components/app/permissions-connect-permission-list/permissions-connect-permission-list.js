@@ -10,13 +10,13 @@ export default function PermissionsConnectPermissionList({ permissions }) {
   // TODO:flask Fix Snap permission labels and support namespaced permissions
   const PERMISSION_TYPES = useMemo(() => {
     return {
-      'eth_accounts': {
+      eth_accounts: {
         leftIcon: 'fas fa-eye',
         label: t('eth_accounts'),
         rightIcon: null,
       },
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      'snap_confirm': {
+      snap_confirm: {
         leftIcon: 'fas fa-eye',
         label: t('snap_confirm'),
         rightIcon: null,
@@ -27,7 +27,7 @@ export default function PermissionsConnectPermissionList({ permissions }) {
         label: 'snap_getBip44Entropy_*',
         rightIcon: null,
       },
-      'snap_manageState': {
+      snap_manageState: {
         leftIcon: 'fas fa-eye',
         label: 'snap_manageState',
         rightIcon: null,
