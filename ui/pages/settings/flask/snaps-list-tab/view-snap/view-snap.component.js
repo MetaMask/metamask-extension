@@ -13,7 +13,13 @@ import ToggleButton from '../../../../../components/ui/toggle-button';
 import PermissionsConnectPermissionList from '../../../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
 import ConnectedSitesList from '../../../../../components/app/connected-sites-list';
 
-function ViewSnap({ snap, onRemove, onToggle }) {
+function ViewSnap({
+  snap,
+  onRemove,
+  onToggle,
+  connectedSubjects,
+  onDisconnect,
+}) {
   const t = useI18nContext();
 
   return (
@@ -53,7 +59,19 @@ function ViewSnap({ snap, onRemove, onToggle }) {
           </Box>
         </div>
         <div className="settings-page__content-item view-snap-section">
-          <Typography variant={TYPOGRAPHY.H4}>{t('connectedSites')}</Typography>
+          <Box width="11/12">
+            <Typography variant={TYPOGRAPHY.H4}>
+              {t('connectedSites')}
+            </Typography>
+            <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
+              {t('connectedSnapSites', [snap.name])}
+            </Typography>
+            <ConnectedSitesList
+              connectedSubjects={connectedSubjects}
+              onDisconnect={onDisconnect}
+              isSnap
+            />
+          </Box>
         </div>
         <div className="settings-page__content-item">
           <Typography variant={TYPOGRAPHY.H4}>{t('removeSnap')}</Typography>
@@ -84,6 +102,14 @@ ViewSnap.propTypes = {
   snap: PropTypes.object,
   onRemove: PropTypes.func,
   onToggle: PropTypes.func,
+  connectedSubjects: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      iconUrl: PropTypes.string,
+      origin: PropTypes.string,
+    }),
+  ).isRequired,
+  onDisconnect: PropTypes.func,
 };
 
 export default React.memo(ViewSnap);

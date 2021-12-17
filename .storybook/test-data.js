@@ -1067,6 +1067,17 @@ const state = {
           },
         },
       },
+      "local:http://localhost:8080/": {
+        permissions: {
+          'snap_confirm': {
+            invoker: "local:http://localhost:8080/",
+            parentCapability: 'snap_confirm',
+            id: 'a7342F4b-beae-4525-a36c-c0635fd03359',
+            date: 1620710693178,
+            caveats: []
+          },
+        },
+      },
     },
     permissionActivityLog: [
       {
@@ -1209,20 +1220,6 @@ const state = {
         },
       },
     },
-    subjectMetadata: {
-      'https://metamask.github.io': {
-        name: 'E2E Test Dapp',
-        origin: 'https://metamask.github.io',
-        iconUrl: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
-        subjectType: 'website',
-      },
-      'https://app.uniswap.org': {
-        name: 'Uniswap',
-        origin: 'https://app.uniswap.org',
-        iconUrl: './UNI.png',
-        subjectType: 'website',
-      },
-    },
     threeBoxSyncingAllowed: false,
     showRestorePrompt: true,
     threeBoxLastUpdated: 0,
@@ -1249,6 +1246,31 @@ const state = {
     ensResolutionsByAddress: {},
     pendingApprovals: {},
     pendingApprovalCount: 0,
+    subjectMetadata: {
+      "http://localhost:8080": {
+        extensionId: null,
+        iconUrl: null,
+        name: "Hello, Snaps!",
+        origin: "http://localhost:8080",
+        subjectType: "website"
+      },
+      "https://metamask.github.io": {
+        extensionId: null,
+        iconUrl: null,
+        name: "Snaps Iframe Execution Environment",
+        origin: "https://metamask.github.io",
+        subjectType: "website"
+      },
+      "local:http://localhost:8080/": {
+        extensionId: null,
+        iconUrl: null,
+        name: "MetaMask Example Snap",
+        origin: "local:http://localhost:8080/",
+        subjectType: "snap",
+        svgIcon: "<svg>...</svg>",
+        version: "0.6.0"
+      }
+    }
   },
   appState: {
     shouldClose: false,

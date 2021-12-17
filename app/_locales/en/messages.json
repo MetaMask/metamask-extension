@@ -519,6 +519,10 @@
   "connectedSites": {
     "message": "Connected sites"
   },
+  "connectedSnapSites": {
+    "message": "$1 snap is connected to these sites. They have access to the permissions listed above.",
+    "description": "$1 represents the name of the snap"
+  },
   "connectedSitesDescription": {
     "message": "$1 is connected to these sites. They can view your account address.",
     "description": "$1 is the account name"
