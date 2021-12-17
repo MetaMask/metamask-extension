@@ -171,10 +171,16 @@ export default class IncomingTransactionsController {
       const currentState = this.store.getState();
       const currentBlock = parseInt(this.blockTracker.getCurrentBlock(), 16);
 
+      const incomingTransactionsForAddress = Object.values(currentState.incomingTransactions).filter(tx => tx.txParams.to === address)
+
+      const noTransactionsForAddress = incomingTransactionsForAddress.length === 0
+
       const mostRecentlyFetchedBlock =
         currentState.incomingTxLastFetchedBlockByChainId[chainId];
       const blockToFetchFrom =
-        mostRecentlyFetchedBlock ?? newBlockNumberDec ?? currentBlock;
+        noTransactionsForAddress
+        ? currentBlock - 300000
+        : mostRecentlyFetchedBlock ?? newBlockNumberDec ?? currentBlock;
 
       const newIncomingTxs = await this._getNewIncomingTransactions(
         address,
