@@ -20,7 +20,7 @@ const mapStateToProps = (state, ownProps) => {
   const envIsPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const onClick = (_, snap) => {
     const route = `${SNAPS_VIEW_ROUTE}/${window.btoa(
-      unescape(encodeURIComponent(snap.name)),
+      unescape(encodeURIComponent(snap.id)),
     )}`;
     history.push(route);
   };
@@ -39,7 +39,7 @@ const mapStateToProps = (state, ownProps) => {
               const decoded = decodeURIComponent(
                 escape(window.atob(pathNameTail)),
               );
-              return snap.name === decoded;
+              return snap.id === decoded;
             })
         : undefined,
     viewingSnap,
