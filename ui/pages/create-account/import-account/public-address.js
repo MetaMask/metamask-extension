@@ -34,6 +34,7 @@ class PublicAddressImportView extends Component {
   state = { isEmpty: true, validAddress: false };
 
   watchAccount() {
+    const { ensAddress, ensName } = this.state
     const publicAddress = this.inputRef.current.value;
     const {
       addWatchOnlyAccount,
@@ -47,8 +48,8 @@ class PublicAddressImportView extends Component {
     const { t } = this.context;
 
     Promise.all([
-      addWatchOnlyAccount(publicAddress),
-      addAddresses(publicAddress),
+      addWatchOnlyAccount(ensAddress || publicAddress),
+      addAddresses(ensAddress || publicAddress, ensName || null),
     ])
       .then(() => {
         this.context.metricsEvent({
@@ -60,6 +61,7 @@ class PublicAddressImportView extends Component {
         });
         history.push(mostRecentOverviewPage);
         displayWarning(null);
+        setSelectedAddress(ensAddress || publicAddress);
       })
       .catch((err) => {
         displayWarning(err.message || t('importAccountError'));
@@ -104,12 +106,22 @@ class PublicAddressImportView extends Component {
     }
   };
 
-  onChange = ({ target: { value } }) => {
-    const { displayWarning } = this.props;
+  onChange = async ({ target: { value } }) => {
+    const { displayWarning, ensLookup } = this.props;
     const { t } = this.context;
     const input = value.trim();
     this.setState({ validAddress: false });
-    if (
+
+    if (input.match(/\.eth/)) {
+      let address
+      try {
+        address = await ensLookup(input);
+        this.setState({ validAddress: true, ensAddress: address, ensName: input });
+        displayWarning(null);
+      } catch (e) {
+        displayWarning('ENS Address lookup failed');
+      }
+    } else if (
       !isBurnAddress(input) &&
       isValidHexAddress(input, { mixedCaseUseChecksum: true })
     ) {
@@ -196,6 +208,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.addAddresses([publicAddress.toLowerCase()])),
     displayWarning: (message) =>
       dispatch(actions.displayWarning(message || null)),
+    ensLookup: (name) => dispatch(actions.ensLookup(name)),
     setSelectedAddress: (address) =>
       dispatch(actions.setSelectedAddress(address)),
   };

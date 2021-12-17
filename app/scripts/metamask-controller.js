@@ -1187,6 +1187,7 @@ export default class MetamaskController extends EventEmitter {
       tryReverseResolveAddress: ensController.reverseResolveAddress.bind(
         ensController,
       ),
+      ensLookup: ensController.ensLookup.bind(ensController),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),

@@ -87,6 +87,15 @@ export default class EnsController {
     return domain;
   }
 
+  async ensLookup (name) {
+    try {
+      const result = await this._ens.lookup(name);
+      return result
+    } catch (e) {
+      console.log('e', e)
+    }
+  }
+
   _updateResolutionsByAddress(address, domain) {
     const oldState = this.store.getState();
     this.store.putState({
