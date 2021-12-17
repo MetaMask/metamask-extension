@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.8.1]
+### Fixed
+- [#13107](https://github.com/MetaMask/metamask-extension/pull/13107): Fix the Use Custom Nonce toggle
+
 ## [10.8.0]
 ### Added
 - [#12881](https://github.com/MetaMask/metamask-extension/pull/12881): Feature: Transaction Insights
@@ -2652,7 +2656,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.8.1...HEAD
+[10.8.1]: https://github.com/MetaMask/metamask-extension/compare/v10.8.0...v10.8.1
 [10.8.0]: https://github.com/MetaMask/metamask-extension/compare/v10.7.1...v10.8.0
 [10.7.1]: https://github.com/MetaMask/metamask-extension/compare/v10.7.0...v10.7.1
 [10.7.0]: https://github.com/MetaMask/metamask-extension/compare/v10.6.4...v10.7.0
