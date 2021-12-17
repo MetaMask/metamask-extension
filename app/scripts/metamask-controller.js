@@ -59,6 +59,9 @@ import {
 import {
   CaveatTypes,
   RestrictedMethods,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  EndowmentPermissions,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -118,7 +121,8 @@ import {
   PermissionLogController,
   unrestrictedMethods,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  buildSnapPermissionSpecifications,
+  buildSnapEndowmentSpecifications,
+  buildSnapRestrictedMethodSpecifications,
   ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 
@@ -561,6 +565,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.snapController = new SnapController({
+      endowmentPermissionNames: Object.keys(EndowmentPermissions),
       terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
         this.workerController,
       ),
@@ -900,21 +905,24 @@ export default class MetamaskController extends EventEmitter {
     const _updateSnapState = (...args) =>
       this.snapController.updateSnapState(...args);
 
-    return buildSnapPermissionSpecifications({
-      addSnap: _addSnap,
-      clearSnapState: (fromSubject) => _updateSnapState(fromSubject, {}),
-      getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
-      getSnap: _getSnap,
-      getSnapRpcHandler: _getSnapRpcHandler,
-      getSnapState: _getSnapState,
-      showConfirmation: (origin, confirmationData) =>
-        this.approvalController.addAndShowApprovalRequest({
-          origin,
-          type: MESSAGE_TYPE.SNAP_CONFIRM,
-          requestData: confirmationData,
-        }),
-      updateSnapState: _updateSnapState,
-    });
+    return {
+      ...buildSnapEndowmentSpecifications(),
+      ...buildSnapRestrictedMethodSpecifications({
+        addSnap: _addSnap,
+        clearSnapState: (fromSubject) => _updateSnapState(fromSubject, {}),
+        getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
+        getSnap: _getSnap,
+        getSnapRpcHandler: _getSnapRpcHandler,
+        getSnapState: _getSnapState,
+        showConfirmation: (origin, confirmationData) =>
+          this.approvalController.addAndShowApprovalRequest({
+            origin,
+            type: MESSAGE_TYPE.SNAP_CONFIRM,
+            requestData: confirmationData,
+          }),
+        updateSnapState: _updateSnapState,
+      }),
+    };
   }
   ///: END:ONLY_INCLUDE_IN
 
