@@ -25,9 +25,14 @@ function ViewSnap({
   return (
     <div className="settings-page__content-row">
       <div className="settings-page__subheader view-snap-subheader">
-        <Typography variant={TYPOGRAPHY.H3}>{snap.name}</Typography>
+        <Typography variant={TYPOGRAPHY.H3}>
+          {snap.manifest.proposedName}
+        </Typography>
         <Box paddingLeft={2}>
-          <SnapsAuthorshipPill packageName={snap.name} url={snap.name} />
+          <SnapsAuthorshipPill
+            packageName={snap.manifest.proposedName}
+            url={snap.manifest.repository.url}
+          />
         </Box>
         <Box paddingLeft={4} className="snap-settings-card__toggle-container">
           <ToggleButton
@@ -44,17 +49,17 @@ function ViewSnap({
             color={COLORS.UI4}
             boxProps={{ marginTop: 6 }}
           >
-            {snap.description}
+            {snap.manifest.description}
           </Typography>
         </div>
         <div className="settings-page__content-item view-snap-section snap-permission-list">
           <Typography variant={TYPOGRAPHY.H4}>{t('permissions')}</Typography>
           <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
-            {t('snapAccess', [snap.name])}
+            {t('snapAccess', [snap.manifest.proposedName])}
           </Typography>
           <Box width="10/12">
             <PermissionsConnectPermissionList
-              permissions={snap.initialPermissions}
+              permissions={snap.manifest.initialPermissions}
             />
           </Box>
         </div>
@@ -64,7 +69,7 @@ function ViewSnap({
               {t('connectedSites')}
             </Typography>
             <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
-              {t('connectedSnapSites', [snap.name])}
+              {t('connectedSnapSites', [snap.manifest.proposedName])}
             </Typography>
             <ConnectedSitesList
               connectedSubjects={connectedSubjects}

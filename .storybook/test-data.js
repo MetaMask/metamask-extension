@@ -102,41 +102,43 @@ const state = {
       swapsFeatureIsLive: false,
       swapsQuoteRefreshTime: 60000,
     },
-    snaps: {
-      "foo": {
-        name: 'foo',
-        permissionName: 'foo_bar',
-        status: 'installing',
-        enabled: true,
-        version: '0.0.0-development',
-        description: 'this is a snap description',
-        initialPermissions: {
-          snap_confirm: {}
+    "snapStates": {},
+    "snaps": {
+      "local:http://localhost:8080/": {
+        "enabled": true,
+        "id": "local:http://localhost:8080/",
+        "initialPermissions": {
+          "snap_confirm": {}
         },
-      },
-      "bar": {
-        name: 'bar',
-        permissionName: 'foo_bar',
-        status: 'crashed',
-        enabled: false,
-        version: '0.0.0-development',
-        description: 'this is a snap description',
-        initialPermissions: {
-          snap_confirm: {}
+        "manifest": {
+          "description": "An example MetaMask Snap.",
+          "initialPermissions": {
+            "snap_confirm": {}
+          },
+          "manifestVersion": "0.1",
+          "proposedName": "MetaMask Example Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "iconPath": "images/icon.svg",
+                "packageName": "@metamask/example-snap",
+                "registry": "https://registry.npmjs.org/"
+              }
+            },
+            "shasum": "3lEt0yUu080DwV78neROaAAIQWXukSkMnP4OBhOhBnE="
+          },
+          "version": "0.6.0"
         },
-      },
-      "filecoin": {
-        name: 'Filecoin',
-        permissionName: 'Filecoin',
-        status: 'running',
-        enabled: true,
-        version: 'Added on July 27, 2054 from https://filecoin.io',
-        description: 'This is the snap description. The swap provides developers everywhere access to an entirely new data storage paradigm, even letting your programs store data autonomously.  This is the snap description. The swap provides developers everywhere access to an entirely new data storage paradigm, even letting your programs store data autonomously.',
-        initialPermissions: {
-          snap_confirm: {},
-          eth_accounts: {},
-          snap_manageState: {},
-        }
+        "permissionName": "wallet_snap_local:http://localhost:8080/",
+        "sourceCode": "(...)",
+        "status": "stopped",
+        "svgIcon": "<svg>...</svg>",
+        "version": "0.6.0"
       },
     },
     accountArray: [
