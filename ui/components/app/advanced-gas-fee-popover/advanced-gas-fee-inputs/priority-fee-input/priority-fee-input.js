@@ -15,6 +15,7 @@ import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
+import { renderFeeRange } from '../utils';
 
 const validatePriorityFee = (value, gasFeeEstimates) => {
   if (value <= 0) {
@@ -51,6 +52,10 @@ const PriorityFeeInput = () => {
     gasFeeEstimates,
     maxPriorityFeePerGas,
   } = useGasFeeContext();
+  const {
+    latestPriorityFeeRange,
+    historicalPriorityFeeRange,
+  } = gasFeeEstimates;
   const [priorityFeeError, setPriorityFeeError] = useState();
 
   const [priorityFee, setPriorityFee] = useState(() => {
@@ -101,7 +106,10 @@ const PriorityFeeInput = () => {
         detailText={`≈ ${priorityFeeInFiat}`}
         numeric
       />
-      <AdvancedGasFeeInputSubtext latest="1-18 GWEI" historical="23-359 GWEI" />
+      <AdvancedGasFeeInputSubtext
+        latest={renderFeeRange(latestPriorityFeeRange)}
+        historical={renderFeeRange(historicalPriorityFeeRange)}
+      />
     </>
   );
 };

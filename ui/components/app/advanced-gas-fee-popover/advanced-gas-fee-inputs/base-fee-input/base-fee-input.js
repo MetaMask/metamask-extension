@@ -10,6 +10,7 @@ import {
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
+
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -22,6 +23,10 @@ import I18nValue from '../../../../ui/i18n-value';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
+import {
+  roundToDecimalPlacesRemovingExtraZeroes,
+  renderFeeRange,
+} from '../utils';
 
 const divideCurrencyValues = (value, baseFee) => {
   if (baseFee === 0) {
@@ -79,7 +84,7 @@ const BaseFeeInput = () => {
     setMaxFeePerGas,
   } = useAdvancedGasFeePopoverContext();
 
-  const { estimatedBaseFee } = gasFeeEstimates;
+  const { estimatedBaseFee, historicalBaseFeeRange } = gasFeeEstimates;
   const [baseFeeError, setBaseFeeError] = useState();
   const {
     numberOfDecimals: numberOfDecimalsPrimary,
@@ -198,8 +203,11 @@ const BaseFeeInput = () => {
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={estimatedBaseFee}
-        historical="23-359 GWEI"
+        latest={`${roundToDecimalPlacesRemovingExtraZeroes(
+          estimatedBaseFee,
+          2,
+        )} GWEI`}
+        historical={renderFeeRange(historicalBaseFeeRange)}
       />
     </Box>
   );
