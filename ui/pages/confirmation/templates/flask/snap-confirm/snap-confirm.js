@@ -4,12 +4,14 @@ import {
 } from '../../../../../helpers/constants/design-system';
 
 function getValues(pendingApproval, t, actions) {
+  const { prompt, description, textAreaContent } = pendingApproval.requestData;
+
   return {
     content: [
       {
         element: 'Typography',
         key: 'title',
-        children: pendingApproval.requestData.title,
+        children: prompt,
         props: {
           variant: TYPOGRAPHY.H3,
           align: 'center',
@@ -19,35 +21,43 @@ function getValues(pendingApproval, t, actions) {
           },
         },
       },
-      {
-        element: 'Typography',
-        key: 'subtitle',
-        children: pendingApproval.requestData.subtitle,
-        props: {
-          variant: TYPOGRAPHY.H6,
-          align: 'center',
-          boxProps: {
-            margin: [0, 0, 4],
-          },
-        },
-      },
-      {
-        element: 'div',
-        key: 'text-area',
-        children: {
-          element: 'TextArea',
-          props: {
-            height: '400px',
-            value: pendingApproval.requestData.prompt,
-            resize: RESIZE.VERTICAL,
-            scrollable: true,
-            className: 'text',
-          },
-        },
-        props: {
-          className: 'snap-confirm',
-        },
-      },
+      ...(description
+        ? [
+            {
+              element: 'Typography',
+              key: 'subtitle',
+              children: description,
+              props: {
+                variant: TYPOGRAPHY.H6,
+                align: 'center',
+                boxProps: {
+                  margin: [0, 0, 4],
+                },
+              },
+            },
+          ]
+        : []),
+      ...(textAreaContent
+        ? [
+            {
+              element: 'div',
+              key: 'text-area',
+              children: {
+                element: 'TextArea',
+                props: {
+                  height: '400px',
+                  value: textAreaContent,
+                  resize: RESIZE.VERTICAL,
+                  scrollable: true,
+                  className: 'text',
+                },
+              },
+              props: {
+                className: 'snap-confirm',
+              },
+            },
+          ]
+        : []),
       {
         element: 'Typography',
         key: 'only-interact-with-entities-you-trust',

@@ -273,7 +273,7 @@ export default class Home extends PureComponent {
                 return (
                   <HomeNotification
                     classNames={['home__error-message']}
-                    infoText={error.data.snapName}
+                    infoText={error.data.snapId}
                     descriptionText={
                       <>
                         <Typography
