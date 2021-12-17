@@ -33,3 +33,14 @@ div .view-snap-subheader {
         align-self: center;
     }
 }
+
+.view-snap-section {
+    .connected-sites-list__content-row {
+        border-top: none;
+        border-bottom: 1px solid #D6D9DC;
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+}
