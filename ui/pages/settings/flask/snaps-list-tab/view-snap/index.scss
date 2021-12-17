@@ -27,3 +27,9 @@ div .view-snap-subheader {
         border-bottom: none;
     }
 }
+
+.view-snap__remove__button {
+    @media screen and (max-width: $break-small) {
+        align-self: center;
+    }
+}

@@ -8,7 +8,7 @@ import {
   SNAPS_VIEW_ROUTE,
   SNAPS_LIST_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { disableSnap, enableSnap, removeSnap } from '../../../../store/actions';
+import { disableSnap, enableSnap } from '../../../../store/actions';
 import SnapListTab from './snap-list-tab.component';
 
 const mapStateToProps = (state, ownProps) => {
