@@ -39,7 +39,7 @@ const SnapListTab = ({
         onToggle={(event) => onToggle(event, currentSnap)}
         onRemove={(event) => {
           onRemove(event, currentSnap);
-          dispatch(removeSnap(currentSnap.name));
+          dispatch(removeSnap(currentSnap.id));
         }}
       />
     );
@@ -75,9 +75,9 @@ const SnapListTab = ({
                   onToggle={(event) => {
                     onToggle(event, snap);
                   }}
-                  description={snap.description}
-                  url={snap.name}
-                  name={snap.name}
+                  description={snap.manifest.description}
+                  url={snap.id}
+                  name={snap.manifest.proposedName}
                   status={snap.status}
                   version={snap.version}
                   onClick={(event) => {

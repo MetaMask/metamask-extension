@@ -8,13 +8,16 @@ import ViewSnap from './view-snap.component';
 const mapStateToProps = (state, ownProps) => {
   const { snap } = ownProps;
   const subjectMetadata = getSubjectMetadata(state);
-  const connectedSubjects = [];
-  Object.entries(subjectMetadata).forEach(([_, entry]) => {
-    if (entry.subjectType === 'snap') {
-      const { iconUrl, name, origin } = entry;
-      connectedSubjects.push({ iconUrl, name, origin });
-    }
-  });
+  const connectedSubjects = Object.entries(subjectMetadata).reduce(
+    (val, [_, currSnap]) => {
+      if (currSnap.subjectType === 'snap') {
+        const { iconUrl, name, origin } = currSnap;
+        return [...val, { iconUrl, name, origin }];
+      }
+      return val;
+    },
+    [],
+  );
   return {
     snap,
     connectedSubjects,
