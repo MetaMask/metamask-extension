@@ -19,8 +19,8 @@ export default class AccountImportSubview extends Component {
     return [
       this.context.t('privateKey'),
       this.context.t('jsonFile'),
-      this.context.t('publicAddress'),
-      this.context.t('ensName'),
+      `${this.context.t('publicAddress')} - 👀`,
+      `${this.context.t('ensName')} - 👀`,
     ];
   }
 
@@ -34,8 +34,8 @@ export default class AccountImportSubview extends Component {
         return <PrivateKeyImportView />;
       case this.context.t('jsonFile'):
         return <JsonImportView />;
-      case this.context.t('ensName'):
-      case this.context.t('publicAddress'):
+      case `${this.context.t('publicAddress')} - 👀`:
+      case `${this.context.t('ensName')} - 👀`:
         return <PublicAddressImportView />;
       default:
         return <JsonImportView />;
