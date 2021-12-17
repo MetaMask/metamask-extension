@@ -1,6 +1,13 @@
-import { buildSnapPermissionSpecifications } from './snap-permissions';
+import {
+  EndowmentPermissions,
+  RestrictedMethods,
+} from '../../../../../shared/constants/permissions';
+import {
+  buildSnapEndowmentSpecifications,
+  buildSnapRestrictedMethodSpecifications,
+} from './snap-permissions';
 
-describe('buildSnapPermissionSpecifications', () => {
+describe('buildSnapRestrictedMethodSpecifications', () => {
   it('creates valid permission specification objects', () => {
     const hooks = {
       addSnap: () => undefined,
@@ -13,7 +20,12 @@ describe('buildSnapPermissionSpecifications', () => {
       updateSnapState: () => undefined,
     };
 
-    const specifications = buildSnapPermissionSpecifications(hooks);
+    const specifications = buildSnapRestrictedMethodSpecifications(hooks);
+
+    const allRestrictedMethods = Object.keys(RestrictedMethods);
+    Object.keys(specifications).forEach((permissionKey) =>
+      expect(allRestrictedMethods).toContain(permissionKey),
+    );
 
     Object.values(specifications).forEach((specification) => {
       expect(specification).toMatchObject({
@@ -22,5 +34,13 @@ describe('buildSnapPermissionSpecifications', () => {
         allowedCaveats: null,
       });
     });
+  });
+});
+
+describe('buildSnapEndowmentSpecifications', () => {
+  it('creates valid permission specification objects', () => {
+    expect(
+      Object.keys(buildSnapEndowmentSpecifications()).sort(),
+    ).toStrictEqual(Object.keys(EndowmentPermissions).sort());
   });
 });
