@@ -227,6 +227,20 @@ export function tryReverseResolveAddress(address) {
   };
 }
 
+export function ensLookup(name) {
+  return () => {
+    return new Promise((resolve, reject) => {
+      background.ensLookup(name, (err, address) => {
+        if (err) {
+          log.error(err);
+          reject(err);
+        }
+        resolve(address);
+      });
+    });
+  };
+}
+
 export function fetchInfoToSync() {
   return (dispatch) => {
     log.debug(`background.fetchInfoToSync`);
@@ -3072,9 +3086,9 @@ export function addWatchOnlyAccount(address) {
   };
 }
 
-export function addAddresses(addresses) {
+export function addAddresses(addresses, customName) {
   return async () => {
-    await promisifiedBackground.addAddresses(addresses);
+    await promisifiedBackground.addAddresses(addresses, customName);
   };
 }
 

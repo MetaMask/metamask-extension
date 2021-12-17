@@ -249,7 +249,7 @@ export default class PreferencesController {
    * @param {string[]} addresses - An array of hex addresses
    *
    */
-  addAddresses(addresses) {
+  addAddresses(addresses, customName) {
     const { identities } = this.store.getState();
     addresses.forEach((address) => {
       // skip if already exists
@@ -259,7 +259,7 @@ export default class PreferencesController {
       // add missing identity
       const identityCount = Object.keys(identities).length;
 
-      identities[address] = { name: `Account ${identityCount + 1}`, address };
+      identities[address] = { name: customName || `Account ${identityCount + 1}`, address };
     });
     this.store.updateState({ identities });
   }
