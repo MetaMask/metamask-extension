@@ -13,6 +13,7 @@ import {
   getCurrentKeyring,
   getRpcPrefsForCurrentProvider,
   getSelectedIdentity,
+  isWatchOnlyAddress,
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -31,6 +32,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const selectedIdentity = useSelector(getSelectedIdentity);
+  const isWatchOnly = useSelector(isWatchOnlyAddress);
   const { address } = selectedIdentity;
   const addressLink = getAccountLink(address, chainId, rpcPrefs);
   const { blockExplorerUrl } = rpcPrefs;
@@ -69,7 +71,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
     },
   });
 
-  const isRemovable = keyring.type !== 'HD Key Tree';
+  const isRemovable = keyring.type !== 'HD Key Tree' && !isWatchOnly;
 
   return (
     <Menu
@@ -121,17 +123,19 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
       >
         {t('accountDetails')}
       </MenuItem>
-      <MenuItem
-        data-testid="account-options-menu__connected-sites"
-        onClick={() => {
-          openConnectedSitesEvent();
-          history.push(CONNECTED_ROUTE);
-          onClose();
-        }}
-        iconClassName="account-options-menu__connected-sites"
-      >
-        {t('connectedSites')}
-      </MenuItem>
+      {!isWatchOnly ? (
+        <MenuItem
+          data-testid="account-options-menu__connected-sites"
+          onClick={() => {
+            openConnectedSitesEvent();
+            history.push(CONNECTED_ROUTE);
+            onClose();
+          }}
+          iconClassName="account-options-menu__connected-sites"
+        >
+          {t('connectedSites')}
+        </MenuItem>
+      ) : null}
       {isRemovable ? (
         <MenuItem
           data-testid="account-options-menu__remove-account"

@@ -290,12 +290,19 @@ export function getMetaMaskCachedBalances(state) {
   );
 }
 
-const getWatchOnlyAddresses = (state) => {
-  const accounts = getMetaMaskAccounts(state)
+export function getWatchOnlyAddresses(state) {
+  const accounts = getMetaMaskAccounts(state);
   return Object.values(accounts)
-    .filter(account => account.watchOnly)
-    .map(account => account.address)
+    .filter((account) => account.watchOnly)
+    .map((account) => account.address);
 }
+
+export function isWatchOnlyAddress(state) {
+  const selectedIdentity = getSelectedIdentity(state);
+  const watchOnlyAddresses = getWatchOnlyAddresses(state);
+  return watchOnlyAddresses.includes(selectedIdentity.address);
+}
+
 /**
  * Get ordered (by keyrings) accounts with identity and balance
  */

@@ -20,6 +20,7 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { showModal } from '../../../store/actions';
 import {
   isBalanceCached,
+  isWatchOnlyAddress,
   getSelectedAccount,
   getShouldShowFiat,
   getIsMainnet,
@@ -65,6 +66,7 @@ const EthOverview = ({ className }) => {
   const isTestnetChain = useSelector(getIsTestnet);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const isWatchOnly = useSelector(isWatchOnlyAddress);
 
   const enteredSwapsEvent = useNewMetricEvent({
     event: 'Swaps Opened',
@@ -118,7 +120,7 @@ const EthOverview = ({ className }) => {
           <IconButton
             className="eth-overview__button"
             Icon={BuyIcon}
-            disabled={!(isMainnetChain || isTestnetChain)}
+            disabled={!(isMainnetChain || isTestnetChain) || isWatchOnly}
             label={t('buy')}
             onClick={() => {
               depositEvent();
@@ -127,6 +129,7 @@ const EthOverview = ({ className }) => {
           />
           <IconButton
             className="eth-overview__button"
+            disabled={isWatchOnly}
             data-testid="eth-overview-send"
             Icon={SendIcon}
             label={t('send')}
@@ -137,7 +140,7 @@ const EthOverview = ({ className }) => {
           />
           <IconButton
             className="eth-overview__button"
-            disabled={!isSwapsChain}
+            disabled={!isSwapsChain || isWatchOnly}
             Icon={SwapIcon}
             onClick={() => {
               if (isSwapsChain) {

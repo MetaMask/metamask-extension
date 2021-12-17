@@ -23,6 +23,7 @@ import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import {
   getCurrentKeyring,
   getIsSwapsChain,
+  isWatchOnlyAddress,
 } from '../../../selectors/selectors';
 
 import SwapIcon from '../../ui/icon/swap-icon.component';
@@ -53,6 +54,7 @@ const TokenOverview = ({ className, token }) => {
     token.symbol,
   );
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const isWatchOnly = useSelector(isWatchOnlyAddress);
   const enteredSwapsEvent = useNewMetricEvent({
     event: 'Swaps Opened',
     properties: { source: 'Token View', active_currency: token.symbol },
@@ -95,11 +97,11 @@ const TokenOverview = ({ className, token }) => {
             Icon={SendIcon}
             label={t('send')}
             data-testid="eth-overview-send"
-            disabled={token.isERC721}
+            disabled={token.isERC721 || isWatchOnly}
           />
           <IconButton
             className="token-overview__button"
-            disabled={!isSwapsChain}
+            disabled={!isSwapsChain || isWatchOnly}
             Icon={SwapIcon}
             onClick={() => {
               if (isSwapsChain) {

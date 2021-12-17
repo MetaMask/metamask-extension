@@ -13,6 +13,7 @@ import {
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
   getSelectedAddress,
+  getWatchOnlyAddresses,
 } from '../../../selectors';
 import AccountMenu from './account-menu.component';
 
@@ -31,6 +32,7 @@ function mapStateToProps(state) {
 
   return {
     isAccountMenuOpen,
+    watchOnlyAddresses: getWatchOnlyAddresses(state),
     addressConnectedSubjectMap: getAddressConnectedSubjectMap(state),
     originOfCurrentTab: origin,
     selectedAddress,

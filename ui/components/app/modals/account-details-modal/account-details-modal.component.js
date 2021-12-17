@@ -12,6 +12,7 @@ import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 export default class AccountDetailsModal extends Component {
   static propTypes = {
     selectedIdentity: PropTypes.object,
+    isWatchOnly: PropTypes.bool,
     chainId: PropTypes.string,
     showExportPrivateKeyModal: PropTypes.func,
     showStopWatchingModal: PropTypes.func,
@@ -28,6 +29,7 @@ export default class AccountDetailsModal extends Component {
   render() {
     const {
       selectedIdentity,
+      isWatchOnly,
       chainId,
       showExportPrivateKeyModal,
       showStopWatchingModal,
@@ -42,8 +44,8 @@ export default class AccountDetailsModal extends Component {
     });
 
     let exportPrivateKeyFeatureEnabled = true;
-    // This feature is disabled for hardware wallets
-    if (isHardwareKeyring(keyring?.type)) {
+    // This feature is disabled for hardware wallets and watch only accounts
+    if (isHardwareKeyring(keyring?.type) || isWatchOnly) {
       exportPrivateKeyFeatureEnabled = false;
     }
 
@@ -99,13 +101,15 @@ export default class AccountDetailsModal extends Component {
           </Button>
         ) : null}
 
-        <Button
-          type="secondary"
-          className="account-details-modal__button--red"
-          onClick={() => showStopWatchingModal()}
-        >
-          {this.context.t('stopWatching')}
-        </Button>
+        {isWatchOnly ? (
+          <Button
+            type="secondary"
+            className="account-details-modal__button--red"
+            onClick={() => showStopWatchingModal()}
+          >
+            {this.context.t('stopWatching')}
+          </Button>
+        ) : null}
       </AccountModalContainer>
     );
   }

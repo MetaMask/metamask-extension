@@ -65,6 +65,7 @@ export default class AccountMenu extends Component {
     accounts: PropTypes.array,
     history: PropTypes.object,
     isAccountMenuOpen: PropTypes.bool,
+    watchOnlyAddresses: PropTypes.array,
     keyrings: PropTypes.array,
     lockMetamask: PropTypes.func,
     selectedAddress: PropTypes.string,
@@ -149,6 +150,7 @@ export default class AccountMenu extends Component {
       showAccountDetail,
       addressConnectedSubjectMap,
       originOfCurrentTab,
+      watchOnlyAddresses,
     } = this.props;
     const { searchQuery } = this.state;
 
@@ -168,6 +170,7 @@ export default class AccountMenu extends Component {
 
     return filteredIdentities.map((identity) => {
       const isSelected = identity.address === selectedAddress;
+      const isIdentityWatchOnly = watchOnlyAddresses.includes(identity.address)
 
       const simpleAddress = identity.address.substring(2).toLowerCase();
 
@@ -203,7 +206,11 @@ export default class AccountMenu extends Component {
           </div>
           <Identicon address={identity.address} diameter={24} />
           <div className="account-menu__account-info">
-            <div className="account-menu__name">{identity.name || ''}</div>
+            <div className="account-menu__name">
+              {!isIdentityWatchOnly ? (
+                identity.name || ''
+              )  : <div className="account-menu__name-icon">{identity.name || ''} - 👀</div> }
+            </div>
             <UserPreferencedCurrencyDisplay
               className="account-menu__balance"
               value={identity.balance}
