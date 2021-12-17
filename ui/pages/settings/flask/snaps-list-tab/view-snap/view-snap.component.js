@@ -11,6 +11,7 @@ import SnapsAuthorshipPill from '../../../../../components/app/flask/snaps-autho
 import Box from '../../../../../components/ui/box';
 import ToggleButton from '../../../../../components/ui/toggle-button';
 import PermissionsConnectPermissionList from '../../../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
+import ConnectedSitesList from '../../../../../components/app/connected-sites-list';
 
 function ViewSnap({ snap, onRemove, onToggle }) {
   const t = useI18nContext();
@@ -55,12 +56,16 @@ function ViewSnap({ snap, onRemove, onToggle }) {
           <Typography variant={TYPOGRAPHY.H4}>{t('connectedSites')}</Typography>
         </div>
         <div className="settings-page__content-item">
-          <Typography variant={TYPOGRAPHY.H4}>{t('removeSnaps')}</Typography>
-          <div className="view-snap__remove__description">
+          <Typography variant={TYPOGRAPHY.H4}>{t('removeSnap')}</Typography>
+          <Typography
+            variant={TYPOGRAPHY.H6}
+            color={COLORS.UI4}
+            boxProps={{ paddingBottom: 3 }}
+          >
             {t('removeSnapDescription')}
-          </div>
+          </Typography>
           <Button
-            className="settings-page__header view-snap__remove__button"
+            className="view-snap__remove__button"
             type="danger"
             css={{
               maxWidth: '175px',
