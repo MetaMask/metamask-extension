@@ -95,7 +95,10 @@ export default class SendContent extends Component {
 
     getSymbolAndDecimals(recipient.userInput, tokenAddressList).then(
       (result) => {
-        if ((result.symbol !== undefined && result.symbol !== '') || (result.decimals !== undefined && result.decimals !== '')) {
+        if (
+          (result.symbol !== undefined && result.symbol !== '') ||
+          (result.decimals !== undefined && result.decimals !== '')
+        ) {
           this.setState({ isContractAddress: true });
         }
       },
