@@ -426,45 +426,4 @@ describe('util', () => {
       expect(result.do_not_display_2).toBeUndefined();
     });
   });
-
-  describe('getPermissionLocaleMessageKey', () => {
-    it('should handle non-namespaced permissions', () => {
-      const translationMock = jest.fn();
-
-      [
-        'snap_clearState',
-        'snap_confirm',
-        'snap_getState',
-        'snap_updateState',
-      ].forEach((permissionName) => {
-        util.getPermissionLocaleMessage(translationMock, permissionName);
-        expect(translationMock).toHaveBeenCalledWith(permissionName);
-        translationMock.mockRestore();
-      });
-    });
-
-    it('should handle namespaced permissions', () => {
-      const translationMock = jest.fn();
-
-      [
-        ['wallet_snap_fooSnap', 'wallet_snap_'],
-        ['snap_getBip44Entropy_461', 'snap_getBip44Entropy_'],
-      ].forEach(([permissionName, namespacePrefix]) => {
-        util.getPermissionLocaleMessage(translationMock, permissionName);
-        expect(translationMock).toHaveBeenCalledWith(namespacePrefix, [
-          permissionName.replace(namespacePrefix, ''),
-        ]);
-        translationMock.mockRestore();
-      });
-    });
-
-    it('should handle unknown permissions', () => {
-      const translationMock = jest.fn();
-
-      util.getPermissionLocaleMessage(translationMock, 'wallet_fooBar');
-      expect(translationMock).toHaveBeenCalledWith('unknownPermission', [
-        'wallet_fooBar',
-      ]);
-    });
-  });
 });
