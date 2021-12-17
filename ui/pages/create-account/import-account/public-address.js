@@ -204,8 +204,8 @@ function mapDispatchToProps(dispatch) {
   return {
     addWatchOnlyAccount: (publicAddress) =>
       dispatch(actions.addWatchOnlyAccount(publicAddress.toLowerCase())),
-    addAddresses: (publicAddress) =>
-      dispatch(actions.addAddresses([publicAddress.toLowerCase()])),
+    addAddresses: (publicAddress, ensName) =>
+      dispatch(actions.addAddresses([publicAddress.toLowerCase()], ensName)),
     displayWarning: (message) =>
       dispatch(actions.displayWarning(message || null)),
     ensLookup: (name) => dispatch(actions.ensLookup(name)),
