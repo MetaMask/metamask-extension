@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SnapSettingsCard from '../../../components/app/flask/snap-settings-card';
-import { removeSnap } from '../../../store/actions';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import Typography from '../../../components/ui/typography/typography';
+import SnapSettingsCard from '../../../../components/app/flask/snap-settings-card';
+import { removeSnap } from '../../../../store/actions';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Typography from '../../../../components/ui/typography/typography';
 import {
   TYPOGRAPHY,
   COLORS,
   FLEX_DIRECTION,
-} from '../../../helpers/constants/design-system';
-import Box from '../../../components/ui/box';
+} from '../../../../helpers/constants/design-system';
+import Box from '../../../../components/ui/box';
 import ViewSnap from './view-snap';
 
 const propTypes = {
