@@ -4,7 +4,7 @@ import SiteOrigin from '../../ui/site-origin/site-origin';
 
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
-    icon: PropTypes.string,
+    iconUrl: PropTypes.string,
     iconName: PropTypes.string.isRequired,
     siteOrigin: PropTypes.string.isRequired,
     headerTitle: PropTypes.node,
@@ -12,17 +12,17 @@ export default class PermissionsConnectHeader extends Component {
   };
 
   static defaultProps = {
-    icon: null,
+    iconUrl: null,
     headerTitle: '',
     headerText: '',
   };
 
   renderHeaderIcon() {
-    const { icon, iconName, siteOrigin } = this.props;
+    const { iconUrl, iconName, siteOrigin } = this.props;
 
     return (
       <div className="permissions-connect-header__icon">
-        <SiteOrigin siteOrigin={siteOrigin} iconSrc={icon} name={iconName} />
+        <SiteOrigin siteOrigin={siteOrigin} iconSrc={iconUrl} name={iconName} />
       </div>
     );
   }

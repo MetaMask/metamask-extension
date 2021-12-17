@@ -73,6 +73,10 @@
   "accountName": {
     "message": "Account Name"
   },
+  "accountNameDuplicate": {
+    "message": "This account name already exists",
+    "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
+  },
   "accountOptions": {
     "message": "Account Options"
   },
@@ -138,9 +142,6 @@
   },
   "addNFT": {
     "message": "Add NFT"
-  },
-  "addNFTLowerCase": {
-    "message": "add NFT"
   },
   "addNetwork": {
     "message": "Add Network"
@@ -568,6 +569,9 @@
   "contract": {
     "message": "Contract"
   },
+  "contractAddress": {
+    "message": "Contract address"
+  },
   "contractAddressError": {
     "message": "You are sending tokens to the token's contract address. This may result in the loss of these tokens."
   },
@@ -716,6 +720,9 @@
   },
   "depositEther": {
     "message": "Deposit Ether"
+  },
+  "description": {
+    "message": "Description"
   },
   "details": {
     "message": "Details"
@@ -907,6 +914,9 @@
   },
   "editPermission": {
     "message": "Edit Permission"
+  },
+  "enableAutoDetect": {
+    "message": " Enable Autodetect"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -1353,6 +1363,9 @@
   "importMyWallet": {
     "message": "Import My Wallet"
   },
+  "importNFTs": {
+    "message": "Import NFTs"
+  },
   "importTokenQuestion": {
     "message": "Import token?"
   },
@@ -1488,6 +1501,9 @@
   "learnMore": {
     "message": "learn more"
   },
+  "learnMoreUpperCase": {
+    "message": "Learn more"
+  },
   "learnScamRisk": {
     "message": "scams and security risks."
   },
@@ -1544,6 +1560,9 @@
   },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
+  },
+  "link": {
+    "message": "Link"
   },
   "links": {
     "message": "Links"
@@ -1815,10 +1834,10 @@
     "message": "New Contract"
   },
   "newNFTsDetected": {
-    "message": "New NFTs detected"
+    "message": "New! NFT detection"
   },
   "newNFTsDetectedInfo": {
-    "message": "One or more new NFTs were detected in your wallet."
+    "message": "Allow MetaMask to automatically detect NFTs from Opensea and display in your MetaMask wallet."
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
@@ -2261,6 +2280,9 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
+  "removeNFT": {
+    "message": "Remove NFT"
+  },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
   },
@@ -2431,7 +2453,7 @@
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
   },
   "selectAccounts": {
-    "message": "Select account(s)"
+    "message": "Select the account(s) to use on this site"
   },
   "selectAll": {
     "message": "Select all"
@@ -2449,7 +2471,7 @@
     "message": "Select HD Path"
   },
   "selectNFTPrivacyPreference": {
-    "message": "Select NFT privacy preference"
+    "message": "Turn on NFT detection in Settings"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
@@ -2578,6 +2600,9 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
+  },
+  "source": {
+    "message": "Source"
   },
   "speedUp": {
     "message": "Speed Up"
@@ -3373,6 +3398,9 @@
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnOpensea": {
+    "message": "View on Opensea"
   },
   "viewinExplorer": {
     "message": "View $1 in Explorer",

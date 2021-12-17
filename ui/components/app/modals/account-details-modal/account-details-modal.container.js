@@ -5,6 +5,7 @@ import {
   getRpcPrefsForCurrentProvider,
   getCurrentChainId,
   isWatchOnlyAddress,
+  getMetaMaskAccountsOrdered,
 } from '../../../../selectors';
 import AccountDetailsModal from './account-details-modal.component';
 
@@ -15,6 +16,7 @@ const mapStateToProps = (state) => {
     keyrings: state.metamask.keyrings,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
     isWatchOnly: isWatchOnlyAddress(state),
+    accounts: getMetaMaskAccountsOrdered(state),
   };
 };
 

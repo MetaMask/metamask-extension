@@ -2153,7 +2153,7 @@ export function setUseNonceField(val) {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNonceField`);
     try {
-      await background.setUseNonceField(val);
+      await promisifiedBackground.setUseNonceField(val);
     } catch (error) {
       dispatch(displayWarning(error.message));
     }
@@ -2214,6 +2214,16 @@ export function setOpenSeaEnabled(val) {
         dispatch(displayWarning(err.message));
       }
     });
+  };
+}
+
+export function detectCollectibles() {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.detectCollectibles`);
+    await promisifiedBackground.detectCollectibles();
+    dispatch(hideLoadingIndication());
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -3056,8 +3066,13 @@ export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
 }
 
+// App state
 export function hideTestNetMessage() {
   return promisifiedBackground.setShowTestnetMessageInDropdown(false);
+}
+
+export function setCollectiblesDetectionNoticeDismissed() {
+  return promisifiedBackground.setCollectiblesDetectionNoticeDismissed(true);
 }
 
 // QR Hardware Wallets
