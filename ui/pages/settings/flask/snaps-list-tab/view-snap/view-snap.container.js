@@ -11,7 +11,7 @@ const mapStateToProps = (state, ownProps) => {
   const connectedSubjects = [];
   Object.entries(subjectMetadata).forEach(([_, entry]) => {
     if (entry.subjectType === 'snap') {
-      const { iconUrl, name, origin} = entry;
+      const { iconUrl, name, origin } = entry;
       connectedSubjects.push({ iconUrl, name, origin });
     }
   });
