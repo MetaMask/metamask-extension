@@ -199,10 +199,8 @@ export default class MetamaskController extends EventEmitter {
 
     // now we can initialize the RPC provider, which other controllers require
     this.initializeProvider();
-    this.provider =
-      this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
+    this.provider = this.networkController.getProviderAndBlockTracker().provider;
+    this.blockTracker = this.networkController.getProviderAndBlockTracker().blockTracker;
 
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
@@ -230,10 +228,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.collectiblesController = new CollectiblesController(
       {
-        onPreferencesStateChange:
-          this.preferencesController.store.subscribe.bind(
-            this.preferencesController.store,
-          ),
+        onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+          this.preferencesController.store,
+        ),
         onNetworkStateChange: this.networkController.store.subscribe.bind(
           this.networkController.store,
         ),
@@ -243,21 +240,18 @@ export default class MetamaskController extends EventEmitter {
         getAssetSymbol: this.assetsContractController.getAssetSymbol.bind(
           this.assetsContractController,
         ),
-        getCollectibleTokenURI:
-          this.assetsContractController.getCollectibleTokenURI.bind(
-            this.assetsContractController,
-          ),
+        getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
+          this.assetsContractController,
+        ),
         getOwnerOf: this.assetsContractController.getOwnerOf.bind(
           this.assetsContractController,
         ),
-        balanceOfERC1155Collectible:
-          this.assetsContractController.balanceOfERC1155Collectible.bind(
-            this.assetsContractController,
-          ),
-        uriERC1155Collectible:
-          this.assetsContractController.uriERC1155Collectible.bind(
-            this.assetsContractController,
-          ),
+        balanceOfERC1155Collectible: this.assetsContractController.balanceOfERC1155Collectible.bind(
+          this.assetsContractController,
+        ),
+        uriERC1155Collectible: this.assetsContractController.uriERC1155Collectible.bind(
+          this.assetsContractController,
+        ),
       },
       {},
       initState.CollectiblesController,
@@ -268,18 +262,16 @@ export default class MetamaskController extends EventEmitter {
         {
           onCollectiblesStateChange: (listener) =>
             this.collectiblesController.subscribe(listener),
-          onPreferencesStateChange:
-            this.preferencesController.store.subscribe.bind(
-              this.preferencesController.store,
-            ),
+          onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
+            this.preferencesController.store,
+          ),
           onNetworkStateChange: this.networkController.store.subscribe.bind(
             this.networkController.store,
           ),
           getOpenSeaApiKey: () => this.collectiblesController.openSeaApiKey,
-          getBalancesInSingleCall:
-            this.assetsContractController.getBalancesInSingleCall.bind(
-              this.assetsContractController,
-            ),
+          getBalancesInSingleCall: this.assetsContractController.getBalancesInSingleCall.bind(
+            this.assetsContractController,
+          ),
           addCollectible: this.collectiblesController.addCollectible.bind(
             this.collectiblesController,
           ),
@@ -324,12 +316,12 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
         NETWORK_EVENTS.NETWORK_DID_CHANGE,
       ),
-      getCurrentNetworkEIP1559Compatibility:
-        this.networkController.getEIP1559Compatibility.bind(
-          this.networkController,
-        ),
-      getCurrentAccountEIP1559Compatibility:
-        this.getCurrentAccountEIP1559Compatibility.bind(this),
+      getCurrentNetworkEIP1559Compatibility: this.networkController.getEIP1559Compatibility.bind(
+        this.networkController,
+      ),
+      getCurrentAccountEIP1559Compatibility: this.getCurrentAccountEIP1559Compatibility.bind(
+        this,
+      ),
       legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
       EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
       getCurrentNetworkLegacyGasAPICompatibility: () => {
@@ -369,8 +361,8 @@ export default class MetamaskController extends EventEmitter {
     });
     this.tokenListController = new TokenListController({
       chainId: hexToDecimal(this.networkController.getCurrentChainId()),
-      useStaticTokenList:
-        !this.preferencesController.store.getState().useTokenDetection,
+      useStaticTokenList: !this.preferencesController.store.getState()
+        .useTokenDetection,
       onNetworkStateChange: (cb) =>
         this.networkController.store.subscribe((networkState) => {
           const modifiedNetworkState = {
@@ -386,8 +378,8 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.store.subscribe((preferencesState) => {
           const modifiedPreferencesState = {
             ...preferencesState,
-            useStaticTokenList:
-              !this.preferencesController.store.getState().useTokenDetection,
+            useStaticTokenList: !this.preferencesController.store.getState()
+              .useTokenDetection,
           };
           return cb(modifiedPreferencesState);
         }),
@@ -599,11 +591,12 @@ export default class MetamaskController extends EventEmitter {
       },
       // TODO:flask Fix in skunkworks (SnapController)
       requestPermissions: async (snapId, requestedPermissions) => {
-        const [approvedPermissions] =
-          await this.permissionController.requestPermissions(
-            { origin: snapId },
-            requestedPermissions,
-          );
+        const [
+          approvedPermissions,
+        ] = await this.permissionController.requestPermissions(
+          { origin: snapId },
+          requestedPermissions,
+        );
 
         return Object.values(approvedPermissions);
       },
@@ -652,12 +645,12 @@ export default class MetamaskController extends EventEmitter {
       getProviderConfig: this.networkController.getProviderConfig.bind(
         this.networkController,
       ),
-      getCurrentNetworkEIP1559Compatibility:
-        this.networkController.getEIP1559Compatibility.bind(
-          this.networkController,
-        ),
-      getCurrentAccountEIP1559Compatibility:
-        this.getCurrentAccountEIP1559Compatibility.bind(this),
+      getCurrentNetworkEIP1559Compatibility: this.networkController.getEIP1559Compatibility.bind(
+        this.networkController,
+      ),
+      getCurrentAccountEIP1559Compatibility: this.getCurrentAccountEIP1559Compatibility.bind(
+        this,
+      ),
       networkStore: this.networkController.networkStore,
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
@@ -674,8 +667,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       getParticipateInMetrics: () =>
         this.metaMetricsController.state.participateInMetaMetrics,
-      getEIP1559GasFeeEstimates:
-        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
+      getEIP1559GasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
+        this.gasFeeController,
+      ),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -685,8 +679,7 @@ export default class MetamaskController extends EventEmitter {
         status === TRANSACTION_STATUSES.FAILED
       ) {
         const txMeta = this.txController.txStateManager.getTransaction(txId);
-        const frequentRpcListDetail =
-          this.preferencesController.getFrequentRpcListDetail();
+        const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail();
         let rpcPrefs = {};
         if (txMeta.chainId) {
           const rpcSettings = frequentRpcListDetail.find(
@@ -772,8 +765,9 @@ export default class MetamaskController extends EventEmitter {
       getCurrentChainId: this.networkController.getCurrentChainId.bind(
         this.networkController,
       ),
-      getEIP1559GasFeeEstimates:
-        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
+      getEIP1559GasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
+        this.gasFeeController,
+      ),
     });
 
     // ensure accountTracker updates balances after network change
@@ -841,8 +835,8 @@ export default class MetamaskController extends EventEmitter {
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController.store,
         OnboardingController: this.onboardingController.store,
-        IncomingTransactionsController:
-          this.incomingTransactionsController.store,
+        IncomingTransactionsController: this.incomingTransactionsController
+          .store,
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController.store,
         SubjectMetadataController: this.subjectMetadataController,
@@ -1031,8 +1025,7 @@ export default class MetamaskController extends EventEmitter {
       // account mgmt
       getAccounts: async ({ origin }) => {
         if (origin === 'metamask') {
-          const selectedAddress =
-            this.preferencesController.getSelectedAddress();
+          const selectedAddress = this.preferencesController.getSelectedAddress();
           return selectedAddress ? [selectedAddress] : [];
         } else if (this.isUnlocked()) {
           return await this.getPermittedAccounts(origin);
@@ -1058,8 +1051,9 @@ export default class MetamaskController extends EventEmitter {
           },
         })[0],
     };
-    const providerProxy =
-      this.networkController.initializeProvider(providerOpts);
+    const providerProxy = this.networkController.initializeProvider(
+      providerOpts,
+    );
     return providerProxy;
   }
 
@@ -1199,20 +1193,18 @@ export default class MetamaskController extends EventEmitter {
       setUseTokenDetection: preferencesController.setUseTokenDetection.bind(
         preferencesController,
       ),
-      setUseCollectibleDetection:
-        preferencesController.setUseCollectibleDetection.bind(
-          preferencesController,
-        ),
+      setUseCollectibleDetection: preferencesController.setUseCollectibleDetection.bind(
+        preferencesController,
+      ),
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
-      setParticipateInMetaMetrics:
-        metaMetricsController.setParticipateInMetaMetrics.bind(
-          metaMetricsController,
-        ),
+      setParticipateInMetaMetrics: metaMetricsController.setParticipateInMetaMetrics.bind(
+        metaMetricsController,
+      ),
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
         preferencesController,
       ),
@@ -1234,24 +1226,32 @@ export default class MetamaskController extends EventEmitter {
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
-      setLedgerTransportPreference:
-        this.setLedgerTransportPreference.bind(this),
-      attemptLedgerTransportCreation:
-        this.attemptLedgerTransportCreation.bind(this),
-      establishLedgerTransportPreference:
-        this.establishLedgerTransportPreference.bind(this),
+      setLedgerTransportPreference: this.setLedgerTransportPreference.bind(
+        this,
+      ),
+      attemptLedgerTransportCreation: this.attemptLedgerTransportCreation.bind(
+        this,
+      ),
+      establishLedgerTransportPreference: this.establishLedgerTransportPreference.bind(
+        this,
+      ),
 
       // qr hardware devices
-      submitQRHardwareCryptoHDKey:
-        qrHardwareKeyring.submitCryptoHDKey.bind(qrHardwareKeyring),
-      submitQRHardwareCryptoAccount:
-        qrHardwareKeyring.submitCryptoAccount.bind(qrHardwareKeyring),
-      cancelSyncQRHardware:
-        qrHardwareKeyring.cancelSync.bind(qrHardwareKeyring),
-      submitQRHardwareSignature:
-        qrHardwareKeyring.submitSignature.bind(qrHardwareKeyring),
-      cancelQRHardwareSignRequest:
-        qrHardwareKeyring.cancelSignRequest.bind(qrHardwareKeyring),
+      submitQRHardwareCryptoHDKey: qrHardwareKeyring.submitCryptoHDKey.bind(
+        qrHardwareKeyring,
+      ),
+      submitQRHardwareCryptoAccount: qrHardwareKeyring.submitCryptoAccount.bind(
+        qrHardwareKeyring,
+      ),
+      cancelSyncQRHardware: qrHardwareKeyring.cancelSync.bind(
+        qrHardwareKeyring,
+      ),
+      submitQRHardwareSignature: qrHardwareKeyring.submitSignature.bind(
+        qrHardwareKeyring,
+      ),
+      cancelQRHardwareSignRequest: qrHardwareKeyring.cancelSignRequest.bind(
+        qrHardwareKeyring,
+      ),
 
       // mobile
       fetchInfoToSync: this.fetchInfoToSync.bind(this),
@@ -1261,10 +1261,12 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setProviderType:
-        networkController.setProviderType.bind(networkController),
-      rollbackToPreviousProvider:
-        networkController.rollbackToPreviousProvider.bind(networkController),
+      setProviderType: networkController.setProviderType.bind(
+        networkController,
+      ),
+      rollbackToPreviousProvider: networkController.rollbackToPreviousProvider.bind(
+        networkController,
+      ),
       setCustomRpc: this.setCustomRpc.bind(this),
       updateAndSetCustomRpc: this.updateAndSetCustomRpc.bind(this),
       delCustomRpc: this.delCustomRpc.bind(this),
@@ -1274,10 +1276,12 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       addToken: tokensController.addToken.bind(tokensController),
-      rejectWatchAsset:
-        tokensController.rejectWatchAsset.bind(tokensController),
-      acceptWatchAsset:
-        tokensController.acceptWatchAsset.bind(tokensController),
+      rejectWatchAsset: tokensController.rejectWatchAsset.bind(
+        tokensController,
+      ),
+      acceptWatchAsset: tokensController.acceptWatchAsset.bind(
+        tokensController,
+      ),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       removeToken: tokensController.removeAndIgnoreToken.bind(tokensController),
       setAccountLabel: preferencesController.setAccountLabel.bind(
@@ -1293,10 +1297,9 @@ export default class MetamaskController extends EventEmitter {
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
         preferencesController,
       ),
-      setDismissSeedBackUpReminder:
-        preferencesController.setDismissSeedBackUpReminder.bind(
-          preferencesController,
-        ),
+      setDismissSeedBackUpReminder: preferencesController.setDismissSeedBackUpReminder.bind(
+        preferencesController,
+      ),
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
         preferencesController,
       ),
@@ -1306,15 +1309,13 @@ export default class MetamaskController extends EventEmitter {
         collectiblesController,
       ),
 
-      addCollectibleVerifyOwnership:
-        collectiblesController.addCollectibleVerifyOwnership.bind(
-          collectiblesController,
-        ),
+      addCollectibleVerifyOwnership: collectiblesController.addCollectibleVerifyOwnership.bind(
+        collectiblesController,
+      ),
 
-      removeAndIgnoreCollectible:
-        collectiblesController.removeAndIgnoreCollectible.bind(
-          collectiblesController,
-        ),
+      removeAndIgnoreCollectible: collectiblesController.removeAndIgnoreCollectible.bind(
+        collectiblesController,
+      ),
 
       removeCollectible: collectiblesController.removeCollectible.bind(
         collectiblesController,
@@ -1327,33 +1328,31 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // AppStateController
-      setLastActiveTime:
-        appStateController.setLastActiveTime.bind(appStateController),
-      setDefaultHomeActiveTabName:
-        appStateController.setDefaultHomeActiveTabName.bind(appStateController),
-      setConnectedStatusPopoverHasBeenShown:
-        appStateController.setConnectedStatusPopoverHasBeenShown.bind(
-          appStateController,
-        ),
-      setRecoveryPhraseReminderHasBeenShown:
-        appStateController.setRecoveryPhraseReminderHasBeenShown.bind(
-          appStateController,
-        ),
-      setRecoveryPhraseReminderLastShown:
-        appStateController.setRecoveryPhraseReminderLastShown.bind(
-          appStateController,
-        ),
-      setShowTestnetMessageInDropdown:
-        appStateController.setShowTestnetMessageInDropdown.bind(
-          appStateController,
-        ),
-      setCollectiblesDetectionNoticeDismissed:
-        appStateController.setCollectiblesDetectionNoticeDismissed.bind(
-          appStateController,
-        ),
+      setLastActiveTime: appStateController.setLastActiveTime.bind(
+        appStateController,
+      ),
+      setDefaultHomeActiveTabName: appStateController.setDefaultHomeActiveTabName.bind(
+        appStateController,
+      ),
+      setConnectedStatusPopoverHasBeenShown: appStateController.setConnectedStatusPopoverHasBeenShown.bind(
+        appStateController,
+      ),
+      setRecoveryPhraseReminderHasBeenShown: appStateController.setRecoveryPhraseReminderHasBeenShown.bind(
+        appStateController,
+      ),
+      setRecoveryPhraseReminderLastShown: appStateController.setRecoveryPhraseReminderLastShown.bind(
+        appStateController,
+      ),
+      setShowTestnetMessageInDropdown: appStateController.setShowTestnetMessageInDropdown.bind(
+        appStateController,
+      ),
+      setCollectiblesDetectionNoticeDismissed: appStateController.setCollectiblesDetectionNoticeDismissed.bind(
+        appStateController,
+      ),
       // EnsController
-      tryReverseResolveAddress:
-        ensController.reverseResolveAddress.bind(ensController),
+      tryReverseResolveAddress: ensController.reverseResolveAddress.bind(
+        ensController,
+      ),
 
       // KeyringController
       setLocked: this.setLocked.bind(this),
@@ -1364,14 +1363,16 @@ export default class MetamaskController extends EventEmitter {
       // txController
       cancelTransaction: txController.cancelTransaction.bind(txController),
       updateTransaction: txController.updateTransaction.bind(txController),
-      updateAndApproveTransaction:
-        txController.updateAndApproveTransaction.bind(txController),
+      updateAndApproveTransaction: txController.updateAndApproveTransaction.bind(
+        txController,
+      ),
       createCancelTransaction: this.createCancelTransaction.bind(this),
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
-      addUnapprovedTransaction:
-        txController.addUnapprovedTransaction.bind(txController),
+      addUnapprovedTransaction: txController.addUnapprovedTransaction.bind(
+        txController,
+      ),
 
       // messageManager
       signMessage: this.signMessage.bind(this),
@@ -1395,47 +1396,55 @@ export default class MetamaskController extends EventEmitter {
       cancelEncryptionPublicKey: this.cancelEncryptionPublicKey.bind(this),
 
       // onboarding controller
-      setSeedPhraseBackedUp:
-        onboardingController.setSeedPhraseBackedUp.bind(onboardingController),
-      completeOnboarding:
-        onboardingController.completeOnboarding.bind(onboardingController),
-      setFirstTimeFlowType:
-        onboardingController.setFirstTimeFlowType.bind(onboardingController),
+      setSeedPhraseBackedUp: onboardingController.setSeedPhraseBackedUp.bind(
+        onboardingController,
+      ),
+      completeOnboarding: onboardingController.completeOnboarding.bind(
+        onboardingController,
+      ),
+      setFirstTimeFlowType: onboardingController.setFirstTimeFlowType.bind(
+        onboardingController,
+      ),
 
       // alert controller
-      setAlertEnabledness:
-        alertController.setAlertEnabledness.bind(alertController),
-      setUnconnectedAccountAlertShown:
-        alertController.setUnconnectedAccountAlertShown.bind(alertController),
-      setWeb3ShimUsageAlertDismissed:
-        alertController.setWeb3ShimUsageAlertDismissed.bind(alertController),
+      setAlertEnabledness: alertController.setAlertEnabledness.bind(
+        alertController,
+      ),
+      setUnconnectedAccountAlertShown: alertController.setUnconnectedAccountAlertShown.bind(
+        alertController,
+      ),
+      setWeb3ShimUsageAlertDismissed: alertController.setWeb3ShimUsageAlertDismissed.bind(
+        alertController,
+      ),
 
       // 3Box
-      setThreeBoxSyncingPermission:
-        threeBoxController.setThreeBoxSyncingPermission.bind(
-          threeBoxController,
-        ),
-      restoreFromThreeBox:
-        threeBoxController.restoreFromThreeBox.bind(threeBoxController),
-      setShowRestorePromptToFalse:
-        threeBoxController.setShowRestorePromptToFalse.bind(threeBoxController),
-      getThreeBoxLastUpdated:
-        threeBoxController.getLastUpdated.bind(threeBoxController),
-      turnThreeBoxSyncingOn:
-        threeBoxController.turnThreeBoxSyncingOn.bind(threeBoxController),
+      setThreeBoxSyncingPermission: threeBoxController.setThreeBoxSyncingPermission.bind(
+        threeBoxController,
+      ),
+      restoreFromThreeBox: threeBoxController.restoreFromThreeBox.bind(
+        threeBoxController,
+      ),
+      setShowRestorePromptToFalse: threeBoxController.setShowRestorePromptToFalse.bind(
+        threeBoxController,
+      ),
+      getThreeBoxLastUpdated: threeBoxController.getLastUpdated.bind(
+        threeBoxController,
+      ),
+      turnThreeBoxSyncingOn: threeBoxController.turnThreeBoxSyncingOn.bind(
+        threeBoxController,
+      ),
       initializeThreeBox: this.initializeThreeBox.bind(this),
 
       // permissions
-      removePermissionsFor:
-        permissionController.revokePermissions.bind(permissionController),
-      approvePermissionsRequest:
-        permissionController.acceptPermissionsRequest.bind(
-          permissionController,
-        ),
-      rejectPermissionsRequest:
-        permissionController.rejectPermissionsRequest.bind(
-          permissionController,
-        ),
+      removePermissionsFor: permissionController.revokePermissions.bind(
+        permissionController,
+      ),
+      approvePermissionsRequest: permissionController.acceptPermissionsRequest.bind(
+        permissionController,
+      ),
+      rejectPermissionsRequest: permissionController.rejectPermissionsRequest.bind(
+        permissionController,
+      ),
       ...getPermissionBackgroundApiMethods(permissionController),
 
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -1449,41 +1458,55 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IN
 
       // swaps
-      fetchAndSetQuotes:
-        swapsController.fetchAndSetQuotes.bind(swapsController),
-      setSelectedQuoteAggId:
-        swapsController.setSelectedQuoteAggId.bind(swapsController),
+      fetchAndSetQuotes: swapsController.fetchAndSetQuotes.bind(
+        swapsController,
+      ),
+      setSelectedQuoteAggId: swapsController.setSelectedQuoteAggId.bind(
+        swapsController,
+      ),
       resetSwapsState: swapsController.resetSwapsState.bind(swapsController),
       setSwapsTokens: swapsController.setSwapsTokens.bind(swapsController),
       clearSwapsQuotes: swapsController.clearSwapsQuotes.bind(swapsController),
       setApproveTxId: swapsController.setApproveTxId.bind(swapsController),
       setTradeTxId: swapsController.setTradeTxId.bind(swapsController),
-      setSwapsTxGasPrice:
-        swapsController.setSwapsTxGasPrice.bind(swapsController),
-      setSwapsTxGasLimit:
-        swapsController.setSwapsTxGasLimit.bind(swapsController),
-      setSwapsTxMaxFeePerGas:
-        swapsController.setSwapsTxMaxFeePerGas.bind(swapsController),
-      setSwapsTxMaxFeePriorityPerGas:
-        swapsController.setSwapsTxMaxFeePriorityPerGas.bind(swapsController),
-      safeRefetchQuotes:
-        swapsController.safeRefetchQuotes.bind(swapsController),
-      stopPollingForQuotes:
-        swapsController.stopPollingForQuotes.bind(swapsController),
-      setBackgroundSwapRouteState:
-        swapsController.setBackgroundSwapRouteState.bind(swapsController),
-      resetPostFetchState:
-        swapsController.resetPostFetchState.bind(swapsController),
+      setSwapsTxGasPrice: swapsController.setSwapsTxGasPrice.bind(
+        swapsController,
+      ),
+      setSwapsTxGasLimit: swapsController.setSwapsTxGasLimit.bind(
+        swapsController,
+      ),
+      setSwapsTxMaxFeePerGas: swapsController.setSwapsTxMaxFeePerGas.bind(
+        swapsController,
+      ),
+      setSwapsTxMaxFeePriorityPerGas: swapsController.setSwapsTxMaxFeePriorityPerGas.bind(
+        swapsController,
+      ),
+      safeRefetchQuotes: swapsController.safeRefetchQuotes.bind(
+        swapsController,
+      ),
+      stopPollingForQuotes: swapsController.stopPollingForQuotes.bind(
+        swapsController,
+      ),
+      setBackgroundSwapRouteState: swapsController.setBackgroundSwapRouteState.bind(
+        swapsController,
+      ),
+      resetPostFetchState: swapsController.resetPostFetchState.bind(
+        swapsController,
+      ),
       setSwapsErrorKey: swapsController.setSwapsErrorKey.bind(swapsController),
-      setInitialGasEstimate:
-        swapsController.setInitialGasEstimate.bind(swapsController),
-      setCustomApproveTxData:
-        swapsController.setCustomApproveTxData.bind(swapsController),
+      setInitialGasEstimate: swapsController.setInitialGasEstimate.bind(
+        swapsController,
+      ),
+      setCustomApproveTxData: swapsController.setCustomApproveTxData.bind(
+        swapsController,
+      ),
       setSwapsLiveness: swapsController.setSwapsLiveness.bind(swapsController),
-      setSwapsUserFeeLevel:
-        swapsController.setSwapsUserFeeLevel.bind(swapsController),
-      setSwapsQuotesPollingLimitEnabled:
-        swapsController.setSwapsQuotesPollingLimitEnabled.bind(swapsController),
+      setSwapsUserFeeLevel: swapsController.setSwapsUserFeeLevel.bind(
+        swapsController,
+      ),
+      setSwapsQuotesPollingLimitEnabled: swapsController.setSwapsQuotesPollingLimitEnabled.bind(
+        swapsController,
+      ),
 
       // MetaMetrics
       trackMetaMetricsEvent: metaMetricsController.trackEvent.bind(
@@ -1494,8 +1517,9 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // approval controller
-      resolvePendingApproval:
-        approvalController.accept.bind(approvalController),
+      resolvePendingApproval: approvalController.accept.bind(
+        approvalController,
+      ),
       rejectPendingApproval: approvalController.reject.bind(approvalController),
 
       // Notifications
@@ -1504,22 +1528,25 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // GasFeeController
-      getGasFeeEstimatesAndStartPolling:
-        gasFeeController.getGasFeeEstimatesAndStartPolling.bind(
-          gasFeeController,
-        ),
+      getGasFeeEstimatesAndStartPolling: gasFeeController.getGasFeeEstimatesAndStartPolling.bind(
+        gasFeeController,
+      ),
 
-      disconnectGasFeeEstimatePoller:
-        gasFeeController.disconnectPoller.bind(gasFeeController),
+      disconnectGasFeeEstimatePoller: gasFeeController.disconnectPoller.bind(
+        gasFeeController,
+      ),
 
-      getGasFeeTimeEstimate:
-        gasFeeController.getTimeEstimate.bind(gasFeeController),
+      getGasFeeTimeEstimate: gasFeeController.getTimeEstimate.bind(
+        gasFeeController,
+      ),
 
-      addPollingTokenToAppState:
-        appStateController.addPollingToken.bind(appStateController),
+      addPollingTokenToAppState: appStateController.addPollingToken.bind(
+        appStateController,
+      ),
 
-      removePollingTokenFromAppState:
-        appStateController.removePollingToken.bind(appStateController),
+      removePollingTokenFromAppState: appStateController.removePollingToken.bind(
+        appStateController,
+      ),
 
       // DetectTokenController
       detectNewTokens: detectTokensController.detectNewTokens.bind(
@@ -1614,8 +1641,9 @@ export default class MetamaskController extends EventEmitter {
         ethQuery,
       );
 
-      const primaryKeyring =
-        keyringController.getKeyringsByType('HD Key Tree')[0];
+      const primaryKeyring = keyringController.getKeyringsByType(
+        'HD Key Tree',
+      )[0];
       if (!primaryKeyring) {
         throw new Error('MetamaskController - No HD Key Tree found');
       }
@@ -1640,8 +1668,7 @@ export default class MetamaskController extends EventEmitter {
       // keyring's iframe and have the setting initialized properly
       // Optimistically called to not block Metamask login due to
       // Ledger Keyring GitHub downtime
-      const transportPreference =
-        this.preferencesController.getLedgerTransportPreference();
+      const transportPreference = this.preferencesController.getLedgerTransportPreference();
       this.setLedgerTransportPreference(transportPreference);
 
       // set new identities
@@ -1733,10 +1760,12 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // Accounts
-    const hdKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
-    const simpleKeyPairKeyrings =
-      this.keyringController.getKeyringsByType('Simple Key Pair');
+    const hdKeyring = this.keyringController.getKeyringsByType(
+      'HD Key Tree',
+    )[0];
+    const simpleKeyPairKeyrings = this.keyringController.getKeyringsByType(
+      'Simple Key Pair',
+    );
     const hdAccounts = await hdKeyring.getAccounts();
     const simpleKeyPairKeyringAccounts = await Promise.all(
       simpleKeyPairKeyrings.map((keyring) => keyring.getAccounts()),
@@ -1793,8 +1822,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     try {
-      const threeBoxSyncingAllowed =
-        this.threeBoxController.getThreeBoxSyncingState();
+      const threeBoxSyncingAllowed = this.threeBoxController.getThreeBoxSyncingState();
       if (threeBoxSyncingAllowed && !this.threeBoxController.box) {
         // 'await' intentionally omitted to avoid waiting for initialization
         this.threeBoxController.init();
@@ -1810,8 +1838,7 @@ export default class MetamaskController extends EventEmitter {
     // keyring's iframe and have the setting initialized properly
     // Optimistically called to not block Metamask login due to
     // Ledger Keyring GitHub downtime
-    const transportPreference =
-      this.preferencesController.getLedgerTransportPreference();
+    const transportPreference = this.preferencesController.getLedgerTransportPreference();
 
     this.setLedgerTransportPreference(transportPreference);
 
@@ -1907,8 +1934,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async establishLedgerTransportPreference() {
-    const transportPreference =
-      this.preferencesController.getLedgerTransportPreference();
+    const transportPreference = this.preferencesController.getLedgerTransportPreference();
     return await this.setLedgerTransportPreference(transportPreference);
   }
 
@@ -2022,8 +2048,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {} keyState
    */
   async addNewAccount() {
-    const primaryKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const primaryKeyring = this.keyringController.getKeyringsByType(
+      'HD Key Tree',
+    )[0];
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2055,8 +2082,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} Seed phrase to be confirmed by the user.
    */
   async verifySeedPhrase() {
-    const primaryKeyring =
-      this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    const primaryKeyring = this.keyringController.getKeyringsByType(
+      'HD Key Tree',
+    )[0];
     if (!primaryKeyring) {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
@@ -2470,11 +2498,10 @@ export default class MetamaskController extends EventEmitter {
       }
 
       default: {
-        const promise =
-          this.encryptionPublicKeyManager.addUnapprovedMessageAsync(
-            msgParams,
-            req,
-          );
+        const promise = this.encryptionPublicKeyManager.addUnapprovedMessageAsync(
+          msgParams,
+          req,
+        );
         this.sendUpdate();
         this.opts.showUserConfirmation();
         return promise;
@@ -2958,10 +2985,9 @@ export default class MetamaskController extends EventEmitter {
         subjectType,
 
         // Miscellaneous
-        addSubjectMetadata:
-          this.subjectMetadataController.addSubjectMetadata.bind(
-            this.subjectMetadataController,
-          ),
+        addSubjectMetadata: this.subjectMetadataController.addSubjectMetadata.bind(
+          this.subjectMetadataController,
+        ),
         getProviderState: this.getProviderState.bind(this),
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
@@ -2969,10 +2995,9 @@ export default class MetamaskController extends EventEmitter {
         handleWatchAssetRequest: this.tokensController.watchAsset.bind(
           this.tokensController,
         ),
-        requestUserApproval:
-          this.approvalController.addAndShowApprovalRequest.bind(
-            this.approvalController,
-          ),
+        requestUserApproval: this.approvalController.addAndShowApprovalRequest.bind(
+          this.approvalController,
+        ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -2987,12 +3012,11 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
-        requestAccountsPermission:
-          this.permissionController.requestPermissions.bind(
-            this.permissionController,
-            { origin },
-            { eth_accounts: {} },
-          ),
+        requestAccountsPermission: this.permissionController.requestPermissions.bind(
+          this.permissionController,
+          { origin },
+          { eth_accounts: {} },
+        ),
 
         // Custom RPC-related
         addCustomRpc: async ({
@@ -3032,10 +3056,9 @@ export default class MetamaskController extends EventEmitter {
         getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
           this.alertController,
         ),
-        setWeb3ShimUsageRecorded:
-          this.alertController.setWeb3ShimUsageRecorded.bind(
-            this.alertController,
-          ),
+        setWeb3ShimUsageRecorded: this.alertController.setWeb3ShimUsageRecorded.bind(
+          this.alertController,
+        ),
       }),
     );
 
@@ -3049,11 +3072,12 @@ export default class MetamaskController extends EventEmitter {
         ),
         // TODO:flask Fix in skunkworks (rpc-methods)
         requestPermissions: async (requestedPermissions) => {
-          const [approvedPermissions] =
-            await this.permissionController.requestPermissions(
-              { origin },
-              requestedPermissions,
-            );
+          const [
+            approvedPermissions,
+          ] = await this.permissionController.requestPermissions(
+            { origin },
+            requestedPermissions,
+          );
 
           return Object.values(approvedPermissions);
         },
@@ -3327,8 +3351,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<number>}
    */
   async getPendingNonce(address) {
-    const { nonceDetails, releaseLock } =
-      await this.txController.nonceTracker.getNonceLock(address);
+    const {
+      nonceDetails,
+      releaseLock,
+    } = await this.txController.nonceTracker.getNonceLock(address);
     const pendingNonce = nonceDetails.params.highestSuggested;
 
     releaseLock();
@@ -3440,8 +3466,7 @@ export default class MetamaskController extends EventEmitter {
     nickname = '',
     rpcPrefs = {},
   ) {
-    const frequentRpcListDetail =
-      this.preferencesController.getFrequentRpcListDetail();
+    const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail();
     const rpcSettings = frequentRpcListDetail.find(
       (rpc) => rpcUrl === rpc.rpcUrl,
     );
@@ -3489,8 +3514,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Object} rpcInfo found in the frequentRpcList
    */
   findCustomRpcBy(rpcInfo) {
-    const frequentRpcListDetail =
-      this.preferencesController.getFrequentRpcListDetail();
+    const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail();
     for (const existingRpcInfo of frequentRpcListDetail) {
       for (const key of Object.keys(rpcInfo)) {
         if (existingRpcInfo[key] === rpcInfo[key]) {
@@ -3510,10 +3534,10 @@ export default class MetamaskController extends EventEmitter {
    * @param {bool} bool - the value representing if the users wants to use Ledger Live
    */
   async setLedgerTransportPreference(transportType) {
-    const currentValue =
-      this.preferencesController.getLedgerTransportPreference();
-    const newValue =
-      this.preferencesController.setLedgerTransportPreference(transportType);
+    const currentValue = this.preferencesController.getLedgerTransportPreference();
+    const newValue = this.preferencesController.setLedgerTransportPreference(
+      transportType,
+    );
 
     const keyring = await this.getKeyringForDevice('ledger');
     if (keyring?.updateTransportMethod) {
@@ -3575,8 +3599,9 @@ export default class MetamaskController extends EventEmitter {
   onEnvironmentTypeClosed(environmentType) {
     const appStatePollingTokenType =
       POLLING_TOKEN_ENVIRONMENT_TYPES[environmentType];
-    const pollingTokensToDisconnect =
-      this.appStateController.store.getState()[appStatePollingTokenType];
+    const pollingTokensToDisconnect = this.appStateController.store.getState()[
+      appStatePollingTokenType
+    ];
     pollingTokensToDisconnect.forEach((pollingToken) => {
       this.gasFeeController.disconnectPoller(pollingToken);
       this.appStateController.removePollingToken(
