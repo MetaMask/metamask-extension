@@ -35,6 +35,7 @@
 
   &__disconnect {
     @include H7;
+
     cursor: pointer;
     color: $primary-1;
     padding-left: 24px;
