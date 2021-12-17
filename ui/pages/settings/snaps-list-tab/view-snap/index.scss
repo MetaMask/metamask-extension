@@ -2,8 +2,7 @@ div .view-snap-subheader {
     @media screen and (max-width: $break-small) {
         display: flex;
         margin-right: 0px;
-        padding-right: 24px;
-        padding-left: 24px;
+        padding: 0 24px;
     }
 }
 
