@@ -1,3 +1,5 @@
+import { RestrictedMethods } from './permissions';
+
 /**
  * A string representing the type of environment the application is currently running in
  * popup - When the user click's the icon in their browser's extension bar; the default view
@@ -31,7 +33,7 @@ export const PLATFORM_OPERA = 'Opera';
 
 export const MESSAGE_TYPE = {
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',
-  ETH_ACCOUNTS: 'eth_accounts',
+  ETH_ACCOUNTS: RestrictedMethods.eth_accounts,
   ETH_DECRYPT: 'eth_decrypt',
   ETH_GET_ENCRYPTION_PUBLIC_KEY: 'eth_getEncryptionPublicKey',
   ETH_REQUEST_ACCOUNTS: 'eth_requestAccounts',
@@ -41,12 +43,12 @@ export const MESSAGE_TYPE = {
   LOG_WEB3_SHIM_USAGE: 'metamask_logWeb3ShimUsage',
   PERSONAL_SIGN: 'personal_sign',
   SEND_METADATA: 'metamask_sendDomainMetadata',
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SNAP_CONFIRM: 'snap_confirm',
-  ///: END:ONLY_INCLUDE_IN
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SNAP_CONFIRM: RestrictedMethods.snap_confirm,
+  ///: END:ONLY_INCLUDE_IN
 };
 
 /**
