@@ -2615,10 +2615,6 @@
     "message": "$1 snap has access to:",
     "description": "$1 represents the name of the snap"
   },
-  "snap_clearState": {
-    "message": "Clear its stored data from your device.",
-    "description": "The description for the `snap_clearState` permission"
-  },
   "snap_confirm": {
     "message": "Display a confirmation in MetaMask.",
     "description": "The description for the `snap_confirm` permission"
@@ -2626,14 +2622,6 @@
   "snap_getBip44Entropy_": {
     "message": "Manage keys for the $1 protocol.",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "snap_getState": {
-    "message": "Access its stored data on your device.",
-    "description": "The description for the `snap_updateState` permission"
-  },
-  "snap_updateState": {
-    "message": "Store data on your device.",
-    "description": "The description for the `snap_updateState` permission"
   },
   "snaps": {
     "message": "Snaps"
@@ -3334,10 +3322,6 @@
   },
   "unknownNetwork": {
     "message": "Unknown Private Network"
-  },
-  "unknownPermission": {
-    "message": "Unknown permission: $1",
-    "description": "$1 is the name of a requested permission that is not recognized."
   },
   "unknownQrCode": {
     "message": "Error: We couldn't identify that QR code"
