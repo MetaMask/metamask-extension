@@ -1,14 +1,14 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 
 import {
   SNAPS_VIEW_ROUTE,
   SNAPS_LIST_ROUTE,
-} from '../../../helpers/constants/routes';
-import { disableSnap, enableSnap, removeSnap } from '../../../store/actions';
+} from '../../../../helpers/constants/routes';
+import { disableSnap, enableSnap, removeSnap } from '../../../../store/actions';
 import SnapListTab from './snap-list-tab.component';
 
 const mapStateToProps = (state, ownProps) => {

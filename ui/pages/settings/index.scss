@@ -3,8 +3,8 @@
 @import 'networks-tab/index';
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
-@import 'snaps-list-tab/index';
-@import 'snaps-list-tab/view-snap/index';
+@import 'flask/snaps-list-tab/index';
+@import 'flask/snaps-list-tab/view-snap/index';
 
 .settings-page {
   position: relative;
