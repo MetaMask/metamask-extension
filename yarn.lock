@@ -2726,17 +2726,17 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/iframe-execution-environment-service@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@metamask/iframe-execution-environment-service/-/iframe-execution-environment-service-0.6.0.tgz#39c9ef250558292e98e809ef07be1ae21348ceea"
-  integrity sha512-UAvMXlkmWXYdO/nvm6P2sLf/CqaF3G7AvDUcuCIhLM/aRxAPQiapwvFpnkSaLrbps4ps2LiMIoFfAUkbaA9ipQ==
+"@metamask/iframe-execution-environment-service@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@metamask/iframe-execution-environment-service/-/iframe-execution-environment-service-0.6.1.tgz#3dc88fc6e880cc528bec8d1f5b43bf8c2f971229"
+  integrity sha512-uIrXwTOzfYEdRwo6t0XqMe1D4NtpJNgSLB8FMNe190hN4P3x5V8HEJ7e9EUD6NcZTUQu3DsbWfhNdt9UxQYrlw==
   dependencies:
     "@metamask/controllers" "^17.0.0"
     "@metamask/object-multiplex" "^1.2.0"
     "@metamask/post-message-stream" "^4.0.0"
-    "@metamask/snap-controllers" "^0.6.0"
-    "@metamask/snap-types" "^0.6.0"
-    "@metamask/snap-workers" "^0.6.0"
+    "@metamask/snap-controllers" "^0.6.1"
+    "@metamask/snap-types" "^0.6.1"
+    "@metamask/snap-workers" "^0.6.1"
     eth-rpc-errors "^4.0.3"
     json-rpc-engine "^6.1.0"
     json-rpc-middleware-stream "^3.0.0"
@@ -2825,13 +2825,13 @@
     pump "^3.0.0"
     webextension-polyfill-ts "^0.25.0"
 
-"@metamask/rpc-methods@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.6.0.tgz#9fffdbff0aead2b61823427a58df514029ca7d0f"
-  integrity sha512-duJ/5G7BMtS9kv5U4duPK7Y5yBowLtLAosJfb0QQaUpxmdFSmI0se3HP6jcaXGv4yxIJprslBbstAnvfuB/LCw==
+"@metamask/rpc-methods@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.6.1.tgz#7fa7d1220845719bdad5613003dd2e5126d1f06c"
+  integrity sha512-9b6K9IV5hFXXThGkEGuNiiD00y0NiCWfAn9JJRrxa+/dqa2+YUQKDBJ3dF3WE7W77jq3VoGWC2oJhhLwI0FCZA==
   dependencies:
     "@metamask/key-tree" "^3.0.1"
-    "@metamask/snap-controllers" "^0.6.0"
+    "@metamask/snap-controllers" "^0.6.1"
     eth-rpc-errors "^4.0.2"
 
 "@metamask/safe-event-emitter@^2.0.0":
@@ -2839,17 +2839,17 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
-"@metamask/snap-controllers@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.6.0.tgz#f6f60c7769c3f1063998a192f30002df04bd424d"
-  integrity sha512-4al2qxf6oWfE//KAkkeN8Vz8eyXoRmpkm2MpAZfQgKP/QnRT99df7bCk6aMTXNmduhv+XDIbbRAj3xTlUh21zA==
+"@metamask/snap-controllers@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.6.1.tgz#8f7094f3c00294155c7f7b6902be0d34ded56a25"
+  integrity sha512-xwmhcj3xPXCOOz/nFYSnnbt0P4/r+iJyQANBppTLl5zkInvom8sDpZPbvtgBCj815of4KuFNxFsbVBD5Emz0cQ==
   dependencies:
     "@metamask/controllers" "^17.0.0"
     "@metamask/object-multiplex" "^1.1.0"
     "@metamask/obs-store" "^7.0.0"
     "@metamask/post-message-stream" "4.0.0"
     "@metamask/safe-event-emitter" "^2.0.0"
-    "@metamask/snap-workers" "^0.6.0"
+    "@metamask/snap-workers" "^0.6.1"
     "@types/deep-freeze-strict" "^1.1.0"
     ajv "^8.8.2"
     concat-stream "^2.0.0"
@@ -2866,17 +2866,17 @@
     semver "^7.3.5"
     tar-stream "^2.2.0"
 
-"@metamask/snap-types@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.6.0.tgz#bed342e8c2159f220d91bd3b5d4bce2c766201c4"
-  integrity sha512-bPAeYhHbUIDj2wXgYDyFhTscMb1+hkzFW71i57ziL8IozsfVo4BgRDSkeHoM2oLBQyl5lw4KcLpvRHsfMkQhxA==
+"@metamask/snap-types@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.6.1.tgz#a15268e3a941e5e16038ff290ab1d6c9d3aa606e"
+  integrity sha512-2WwoULxqqW9RogsJzw+DX5uAlkVBYAwcsY+XDJO957jkfZHYEevxCW0xdzXOCyS0EovIoKtPo1kGUOy/gqdJBw==
   dependencies:
     "@metamask/controllers" "^17.0.0"
 
-"@metamask/snap-workers@^0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-workers/-/snap-workers-0.6.0.tgz#44529084a10f4408632fa09cf56130b5bfde294e"
-  integrity sha512-P/vg/24zqRhC9LOpQVzkX613x8hbxuHHsFwk58Z/VZw6Rp9JhXJN1eYf6xlCNDcuW8At/nWpRa8HBTvDRn7oiw==
+"@metamask/snap-workers@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-workers/-/snap-workers-0.6.1.tgz#633d160d500edcf7481d95f7a32fceeaa6000df2"
+  integrity sha512-DTlfFDds7mKUxAGUJ13w/CYmN6SaGQ9cH54nICfwgFTL5QS+9A8wgtbHP39TAjCQKQj/qyZwWrvALG5bKX21WA==
 
 "@metamask/test-dapp@^4.0.1":
   version "4.0.1"
