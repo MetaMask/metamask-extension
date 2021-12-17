@@ -170,7 +170,7 @@ export default class AccountMenu extends Component {
 
     return filteredIdentities.map((identity) => {
       const isSelected = identity.address === selectedAddress;
-      const isIdentityWatchOnly = watchOnlyAddresses.includes(identity.address)
+      const isIdentityWatchOnly = watchOnlyAddresses.includes(identity.address);
 
       const simpleAddress = identity.address.substring(2).toLowerCase();
 
@@ -209,7 +209,11 @@ export default class AccountMenu extends Component {
             <div className="account-menu__name">
               {!isIdentityWatchOnly ? (
                 identity.name || ''
-              )  : <div className="account-menu__name-icon">{identity.name || ''} - 👀</div> }
+              ) : (
+                <div className="account-menu__name-icon">
+                  {identity.name || ''} - 👀
+                </div>
+              )}
             </div>
             <UserPreferencedCurrencyDisplay
               className="account-menu__balance"
@@ -217,7 +221,7 @@ export default class AccountMenu extends Component {
               type={PRIMARY}
             />
           </div>
-          {this.renderKeyringType(keyring)}
+          {this.renderKeyringType(keyring, identity.address)}
           {iconAndNameForOpenSubject ? (
             <div className="account-menu__icon-list">
               <SiteIcon
@@ -232,29 +236,34 @@ export default class AccountMenu extends Component {
     });
   }
 
-  renderKeyringType(keyring) {
+  renderKeyringType(keyring, address) {
     const { t } = this.context;
+    const { watchOnlyAddresses } = this.props;
+    const isIdentityWatchOnly = watchOnlyAddresses.includes(address);
 
-    // Sometimes keyrings aren't loaded yet
-    if (!keyring) {
-      return null;
-    }
-
-    const { type } = keyring;
     let label;
-
-    switch (type) {
-      case KEYRING_TYPES.TREZOR:
-      case KEYRING_TYPES.LEDGER:
-      case KEYRING_TYPES.LATTICE:
-      case KEYRING_TYPES.QR:
-        label = t('hardware');
-        break;
-      case 'Simple Key Pair':
-        label = t('imported');
-        break;
-      default:
+    if (isIdentityWatchOnly) {
+      label = 'Watching';
+    } else {
+      // Sometimes keyrings aren't loaded yet
+      if (!keyring) {
         return null;
+      }
+      const { type } = keyring;
+
+      switch (type) {
+        case KEYRING_TYPES.TREZOR:
+        case KEYRING_TYPES.LEDGER:
+        case KEYRING_TYPES.LATTICE:
+        case KEYRING_TYPES.QR:
+          label = t('hardware');
+          break;
+        case 'Simple Key Pair':
+          label = t('imported');
+          break;
+        default:
+          return null;
+      }
     }
 
     return <div className="keyring-label allcaps">{label}</div>;
