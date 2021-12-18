@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { memoize } from 'lodash';
+///: END:ONLY_INCLUDE_IN
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   MAINNET_CHAIN_ID,
