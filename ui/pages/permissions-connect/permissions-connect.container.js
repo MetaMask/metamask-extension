@@ -1,15 +1,15 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  getPermissionsRequests,
   getAccountsWithLabels,
   getLastConnectedInfo,
-  getSubjectMetadata,
+  getPermissionsRequests,
   getSelectedAddress,
+  getTargetSubjectMetadata,
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 
-import { formatDate } from '../../helpers/utils/util';
+import { formatDate, getURLHostName } from '../../helpers/utils/util';
 import {
   approvePermissionsRequest,
   rejectPermissionsRequest,
@@ -46,23 +46,13 @@ const mapStateToProps = (state, ownProps) => {
   const { origin } = metadata;
   const nativeCurrency = getNativeCurrency(state);
 
-  const subjectMetadata = getSubjectMetadata(state);
-
-  let targetSubjectMetadata = null;
-  if (origin) {
-    if (subjectMetadata[origin]) {
-      targetSubjectMetadata = subjectMetadata[origin];
-    } else {
-      const targetUrl = new URL(origin);
-      targetSubjectMetadata = {
-        name: targetUrl.hostname,
-        origin,
-        iconUrl: null,
-        extensionId: null,
-        subjectType: SUBJECT_TYPES.UNKNOWN,
-      };
-    }
-  }
+  const targetSubjectMetadata = getTargetSubjectMetadata(state, origin) ?? {
+    name: getURLHostName(origin) || origin,
+    origin,
+    iconUrl: null,
+    extensionId: null,
+    subjectType: SUBJECT_TYPES.UNKNOWN,
+  };
 
   const accountsWithLabels = getAccountsWithLabels(state);
 
