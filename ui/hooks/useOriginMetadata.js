@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { getSubjectMetadata } from '../selectors';
+import { getTargetSubjectMetadata } from '../selectors';
 import { SUBJECT_TYPES } from '../../shared/constants/app';
 
 /**
@@ -18,8 +18,9 @@ import { SUBJECT_TYPES } from '../../shared/constants/app';
  *  current origin
  */
 export function useOriginMetadata(origin) {
-  const subjectMetadata = useSelector(getSubjectMetadata);
-  const targetSubjectMetadata = subjectMetadata?.[origin];
+  const targetSubjectMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, origin),
+  );
 
   if (!origin) {
     return null;
@@ -40,7 +41,7 @@ export function useOriginMetadata(origin) {
   if (targetSubjectMetadata && minimumOriginMetadata) {
     return {
       ...minimumOriginMetadata,
-      ...subjectMetadata[origin],
+      ...targetSubjectMetadata,
     };
   } else if (targetSubjectMetadata) {
     return targetSubjectMetadata;
