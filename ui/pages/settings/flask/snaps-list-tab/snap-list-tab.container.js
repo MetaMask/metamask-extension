@@ -55,6 +55,7 @@ const mapDispatchToProps = (dispatch) => ({
       dispatch(enableSnap(snap.id));
     }
   },
+  dispatch,
 });
 
 export default compose(
