@@ -2,13 +2,15 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
   RestrictedMethods,
-  EndowmentPermissions,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  EndowmentPermissions,
   PermissionNamespaces,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/permissions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { coinTypeToProtocolName } from '../../../helpers/utils/util';
+///: END:ONLY_INCLUDE_IN
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 

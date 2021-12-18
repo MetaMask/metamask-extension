@@ -16,13 +16,9 @@ export const I18nProvider = (props) => {
   const en = useSelector(getEnLocaleMessages);
 
   const t = useMemo(() => {
-    return (key, ...args) => {
-      const _key = key && key.endsWith('*') ? key.slice(0, -1) : key;
-      return (
-        getMessage(currentLocale, current, _key, ...args) ||
-        getMessage(currentLocale, en, _key, ...args)
-      );
-    };
+    return (key, ...args) =>
+      getMessage(currentLocale, current, key, ...args) ||
+      getMessage(currentLocale, en, key, ...args);
   }, [currentLocale, current, en]);
 
   return (
