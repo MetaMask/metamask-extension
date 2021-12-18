@@ -152,6 +152,10 @@ export default class MetamaskController extends EventEmitter {
     this.extension = opts.extension;
     this.platform = opts.platform;
     const initState = opts.initState || {};
+    // TODO:temp
+    delete initState.PermissionController;
+    delete initState.SnapController;
+    delete initState.SubjectMetadataController;
     const version = this.platform.getVersion();
     this.recordFirstTimeInfo(initState);
 
@@ -565,7 +569,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.snapController = new SnapController({
-      endowmentPermissionNames: Object.keys(EndowmentPermissions),
+      endowmentPermissionNames: Object.values(EndowmentPermissions),
       terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
         this.workerController,
       ),
