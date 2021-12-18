@@ -2854,6 +2854,11 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
+"@metamask/slip44@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/slip44/-/slip44-1.0.0.tgz#62197528352332d821e4f5a632945270548600fc"
+  integrity sha512-NRZNGKls+KCsnC4sb25Kc151DkLxbMaoqmqM4ITD5H9A+LQL3bJhYHD3l/hA54EVkWt3D1+PGPKfpXxsr9id1g==
+
 "@metamask/snap-controllers@^0.6.1":
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.6.1.tgz#8f7094f3c00294155c7f7b6902be0d34ded56a25"
