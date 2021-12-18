@@ -103,7 +103,7 @@ export default function PermissionsConnectPermissionList({ permissions }) {
 
   return (
     <div className="permissions-connect-permission-list">
-      {Object.keys(permissions).map((permission) => {
+      {Object.keys(permissions).map((permission, idx) => {
         const listValue =
           PERMISSION_LIST_VALUES[
             getPermissionKey(permission, PERMISSION_LIST_VALUES)
