@@ -689,10 +689,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Biaya jaringan cadangan diberikan karena layanan estimasi biaya jaringan utama tidak tersedia saat ini."
   },
-  "eth_accounts": {
-    "message": "Lihat alamat akun Anda yang diizinkan (wajib)",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Alamat Publik Ethereum"
   },
@@ -1350,6 +1346,10 @@
   },
   "pending": {
     "message": "Tunda"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Lihat alamat akun Anda yang diizinkan (wajib)",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Izin"
