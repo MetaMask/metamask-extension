@@ -689,10 +689,6 @@
   "ethGasPriceFetchWarning": {
     "message": "बैकअप गैस की कीमत प्रदान की जाती है क्योंकि मुख्य गैस अनुमान सर्विस अभी उपलब्ध नहीं है।"
   },
-  "eth_accounts": {
-    "message": "अपने अनुमत खातों के पते देखें (आवश्यक)",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Ethereum सार्वजनिक पता"
   },
@@ -1350,6 +1346,10 @@
   },
   "pending": {
     "message": "लंबित"
+  },
+  "permission_ethereumAccounts": {
+    "message": "अपने अनुमत खातों के पते देखें (आवश्यक)",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "अनुमतियाँ"
