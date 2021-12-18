@@ -6,7 +6,7 @@ import { removePermittedAccount } from '../../../../../store/actions';
 import ViewSnap from './view-snap.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { snap } = ownProps;
+  const { snap, onRemove, onToggle } = ownProps;
   const subjectMetadata = getSubjectMetadata(state);
   const connectedSubjects = Object.entries(subjectMetadata).reduce(
     (val, [_, currSnap]) => {
@@ -20,6 +20,8 @@ const mapStateToProps = (state, ownProps) => {
   );
   return {
     snap,
+    onRemove,
+    onToggle,
     connectedSubjects,
   };
 };

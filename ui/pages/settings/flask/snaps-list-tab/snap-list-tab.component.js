@@ -32,14 +32,15 @@ const SnapListTab = ({
   dispatch,
 }) => {
   const t = useI18nContext();
-  if (viewingSnap) {
+  if (viewingSnap && currentSnap) {
     return (
       <ViewSnap
         snap={currentSnap}
         onToggle={(event) => onToggle(event, currentSnap)}
-        onRemove={() => {
-          onRemove();
-          dispatch(removeSnap(currentSnap.id));
+        onRemove={(event) => {
+          dispatch(removeSnap(currentSnap.id)).then(() => {
+            onRemove(event, currentSnap);
+          });
         }}
       />
     );
