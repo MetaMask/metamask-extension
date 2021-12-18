@@ -8,6 +8,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/permissions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { coinTypeToProtocolName } from '../../../helpers/utils/util';
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
@@ -62,7 +63,10 @@ export default function PermissionsConnectPermissionList({ permissions }) {
         const coinType = permissionName.split('_').slice(-1);
         return {
           leftIcon: 'fas fa-door-open',
-          label: t('permission_manageBip44Keys', [coinType]),
+          label: t('permission_manageBip44Keys', [
+            coinTypeToProtocolName(coinType) ||
+              `${coinType} (Unrecognized protocol)`,
+          ]),
           rightIcon: null,
         };
       },

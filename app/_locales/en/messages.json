@@ -2155,7 +2155,7 @@
     "description": "The description for the `eth_accounts` permission"
   },
   "permission_manageBip44Keys": {
-    "message": "Manage keys for the $1 protocol.",
+    "message": "Manage your \"$1\" keys.",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
   "permission_manageState": {
