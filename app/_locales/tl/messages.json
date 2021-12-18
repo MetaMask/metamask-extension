@@ -584,10 +584,6 @@
   "estimatedProcessingTimes": {
     "message": "Mga Tinatantyang Tagal ng Pagproseso"
   },
-  "eth_accounts": {
-    "message": "Tingnan ang mga address ng iyong mga pinapayagang account (kinakailangan)",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Pampublikong Address ng Ethereum"
   },
@@ -1100,6 +1096,10 @@
   },
   "pending": {
     "message": "Nakabinbin"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Tingnan ang mga address ng iyong mga pinapayagang account (kinakailangan)",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Mga Pahintulot"
