@@ -16,7 +16,12 @@ import {
   TRANSPORT_STATES,
 } from '../../shared/constants/hardware-wallets';
 
-import { SUBJECT_TYPES, MESSAGE_TYPE } from '../../shared/constants/app';
+import {
+  MESSAGE_TYPE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SUBJECT_TYPES,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -509,6 +514,7 @@ export function getSubjectMetadata(state) {
   return state.metamask.subjectMetadata;
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 /**
  * @param {string} svgString - The raw SVG string to make embeddable.
  * @returns {string} The embeddable SVG string.
@@ -516,6 +522,7 @@ export function getSubjectMetadata(state) {
 const getEmbeddableSvg = memoize(
   (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
 );
+///: END:ONLY_INCLUDE_IN
 
 export function getTargetSubjectMetadata(state, origin) {
   const metadata = getSubjectMetadata(state)[origin];
