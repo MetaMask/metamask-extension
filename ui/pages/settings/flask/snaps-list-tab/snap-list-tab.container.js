@@ -50,9 +50,9 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => ({
   onToggle: (_, snap) => {
     if (snap.enabled) {
-      dispatch(disableSnap(snap.name));
+      dispatch(disableSnap(snap.id));
     } else {
-      dispatch(enableSnap(snap.name));
+      dispatch(enableSnap(snap.id));
     }
   },
 });
