@@ -37,8 +37,8 @@ const SnapListTab = ({
       <ViewSnap
         snap={currentSnap}
         onToggle={(event) => onToggle(event, currentSnap)}
-        onRemove={(event) => {
-          onRemove(event, currentSnap);
+        onRemove={() => {
+          onRemove();
           dispatch(removeSnap(currentSnap.id));
         }}
       />
