@@ -1,4 +1,7 @@
 import { createSelector } from 'reselect';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { memoize } from 'lodash';
+///: END:ONLY_INCLUDE_IN
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   MAINNET_CHAIN_ID,
@@ -16,11 +19,18 @@ import {
 } from '../../shared/constants/hardware-wallets';
 
 import {
+  MESSAGE_TYPE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SUBJECT_TYPES,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../shared/constants/app';
+
+import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
+
+import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
-
-import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
 import {
   shortenAddress,
@@ -49,7 +59,6 @@ import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
 } from '../ducks/app/app';
-import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -523,6 +532,31 @@ export function getCustomNonceValue(state) {
 
 export function getSubjectMetadata(state) {
   return state.metamask.subjectMetadata;
+}
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * @param {string} svgString - The raw SVG string to make embeddable.
+ * @returns {string} The embeddable SVG string.
+ */
+const getEmbeddableSvg = memoize(
+  (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
+);
+///: END:ONLY_INCLUDE_IN
+
+export function getTargetSubjectMetadata(state, origin) {
+  const metadata = getSubjectMetadata(state)[origin];
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  if (metadata?.subjectType === SUBJECT_TYPES.SNAP) {
+    const { svgIcon, ...remainingMetadata } = metadata;
+    return {
+      ...remainingMetadata,
+      iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
+    };
+  }
+  ///: END:ONLY_INCLUDE_IN
+  return metadata;
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
