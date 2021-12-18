@@ -13,6 +13,11 @@ export const RestrictedMethods = Object.freeze({
 });
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
+export const PermissionNamespaces = Object.freeze({
+  snap_getBip44Entropy_: 'snap_getBip44Entropy_*',
+  wallet_snap_: 'wallet_snap_*',
+});
+
 export const EndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
 });
