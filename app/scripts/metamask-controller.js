@@ -994,10 +994,9 @@ export default class MetamaskController extends EventEmitter {
     // Record Snap metadata whenever a Snap is added to state.
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapAdded`,
-      (snapId, snap) => {
+      (snapId, snap, svgIcon = null) => {
         const {
           manifest: { proposedName },
-          svgIcon,
           version,
         } = snap;
         this.subjectMetadataController.addSubjectMetadata({
