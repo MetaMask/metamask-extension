@@ -1,12 +1,15 @@
-import { restrictedMethodBuilders, selectHooks } from '@metamask/rpc-methods';
-import { endowmentBuilders } from '@metamask/snap-controllers';
+import {
+  restrictedMethodPermissionBuilders,
+  selectHooks,
+} from '@metamask/rpc-methods';
+import { endowmentPermissionBuilders } from '@metamask/snap-controllers';
 
 /**
  * @returns {Record<string, Record<string, unknown>>} All endowment permission
  * specifications.
  */
 export const buildSnapEndowmentSpecifications = () =>
-  Object.values(endowmentBuilders.builders).reduce(
+  Object.values(endowmentPermissionBuilders).reduce(
     (allSpecifications, { targetKey, specificationBuilder }) => {
       allSpecifications[targetKey] = specificationBuilder();
       return allSpecifications;
@@ -31,7 +34,7 @@ export const buildSnapEndowmentSpecifications = () =>
  * restricted method implementations.
  */
 export function buildSnapRestrictedMethodSpecifications(hooks) {
-  return Object.values(restrictedMethodBuilders).reduce(
+  return Object.values(restrictedMethodPermissionBuilders).reduce(
     (specifications, { targetKey, specificationBuilder, methodHooks }) => {
       specifications[targetKey] = specificationBuilder({
         methodHooks: selectHooks(hooks, methodHooks),
