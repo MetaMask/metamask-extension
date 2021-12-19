@@ -30,7 +30,9 @@ import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
 import ExperimentalTab from './experimental-tab';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapListTab from './flask/snaps-list-tab';
+///: END:ONLY_INCLUDE_IN
 
 class SettingsPage extends PureComponent {
   static propTypes = {
