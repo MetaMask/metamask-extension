@@ -2,7 +2,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { getSubjectMetadata } from '../../../../../selectors';
-import { removePermittedAccount } from '../../../../../store/actions';
+import { removePermissionsFor } from '../../../../../store/actions';
 import ViewSnap from './view-snap.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -28,8 +28,12 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onDisconnect: (origin, address) => {
-      dispatch(removePermittedAccount(origin, address));
+    onDisconnect: (connectedOrigin, snapPermissionName) => {
+      dispatch(
+        removePermissionsFor({
+          [connectedOrigin]: [snapPermissionName],
+        }),
+      );
     },
   };
 };

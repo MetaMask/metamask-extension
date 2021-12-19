@@ -140,6 +140,46 @@ const state = {
         "svgIcon": "<svg>...</svg>",
         "version": "0.6.0"
       },
+      "Filecoin Snap": {
+        "enabled": true,
+        "id": "npm:http://localhost:8080/",
+        "initialPermissions": {
+          "snap_confirm": {},
+          "eth_accounts": {},
+          "snap_manageState": {},
+        },
+        "manifest": {
+          "description": "This swap provides developers everywhere access to an entirely new data storage paradigm, even letting your programs store data autonomously. Learn more.",
+          "initialPermissions": {
+            "snap_confirm": {},
+            "eth_accounts": {},
+            "snap_manageState": {},
+          },
+          "manifestVersion": "0.1",
+          "proposedName": "Filecoin Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/snaps-skunkworks.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "iconPath": "images/icon.svg",
+                "packageName": "@metamask/example-snap",
+                "registry": "https://registry.npmjs.org/"
+              }
+            },
+            "shasum": "3lEt0yUu080DwV78neROaAAIQWXukSkMnP4OBhOhBnE="
+          },
+          "version": "0.6.0"
+        },
+        "permissionName": "wallet_snap_npm:http://localhost:8080/",
+        "sourceCode": "(...)",
+        "status": "stopped",
+        "svgIcon": "<svg>...</svg>",
+        "version": "0.6.0"
+      },
     },
     accountArray: [
       {
