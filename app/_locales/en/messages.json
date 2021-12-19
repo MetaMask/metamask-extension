@@ -2667,6 +2667,9 @@
   "snapRequestsPermission": {
     "message": "This snap is requesting the following permissions:"
   },
+  "snapsSettingsDescription": {
+    "message": "Manage your Snaps"
+  },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
