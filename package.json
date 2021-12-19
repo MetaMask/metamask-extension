@@ -118,7 +118,7 @@
     "@metamask/post-message-stream": "^4.0.0",
     "@metamask/providers": "^8.1.1",
     "@metamask/rpc-methods": "^0.6.2",
-    "@metamask/slip44": "^1.0.0",
+    "@metamask/slip44": "^2.0.0",
     "@metamask/snap-controllers": "^0.6.2",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
