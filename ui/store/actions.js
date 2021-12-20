@@ -842,6 +842,15 @@ export function removeSnap(snapId) {
 export async function removeSnapError(msgData) {
   return promisifiedBackground.removeSnapError(msgData);
 }
+
+export function removeSnapPermissionsFromSubjects(permissionName) {
+  return (dispatch) => {
+    return promisifiedBackground
+      .revokePermissionsForAllSubjects(permissionName)
+      .then(() => updateMetamaskStateFromBackground())
+      .then((newState) => dispatch(updateMetamaskState(newState)));
+  };
+}
 ///: END:ONLY_INCLUDE_IN
 
 export function cancelMsg(msgData) {

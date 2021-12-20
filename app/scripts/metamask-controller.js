@@ -1455,6 +1455,9 @@ export default class MetamaskController extends EventEmitter {
       disableSnap: this.snapController.disableSnap.bind(this.snapController),
       enableSnap: this.snapController.enableSnap.bind(this.snapController),
       removeSnap: this.snapController.removeSnap.bind(this.snapController),
+      revokePermissionsForAllSubjects: this.permissionController.revokePermissionForAllSubjects.bind(
+        this.permissionController,
+      ),
       ///: END:ONLY_INCLUDE_IN
 
       // swaps

@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SnapSettingsCard from '../../../../components/app/flask/snap-settings-card';
-import { removePermissionsFor, removeSnap } from '../../../../store/actions';
+import {
+  removeSnap,
+  removeSnapPermissionsFromSubjects,
+} from '../../../../store/actions';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Typography from '../../../../components/ui/typography/typography';
 import {
@@ -39,7 +42,9 @@ const SnapListTab = ({
         onToggle={(event) => onToggle(event, currentSnap)}
         onRemove={async (event) => {
           await dispatch(removeSnap(currentSnap.id));
-          await dispatch(removePermissionsFor(currentSnap.permissionName));
+          await dispatch(
+            removeSnapPermissionsFromSubjects(currentSnap.permissionName),
+          );
           onRemove(event, currentSnap);
         }}
       />
