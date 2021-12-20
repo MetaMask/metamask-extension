@@ -1,19 +1,28 @@
 import { useSelector } from 'react-redux';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { getAppIsLoading } from '../../../selectors';
 import Spinner from '../../ui/spinner';
 
-const AppLoadingSpinner = () => {
+const AppLoadingSpinner = ({ className }) => {
   const appIsLoading = useSelector(getAppIsLoading);
 
   if (!appIsLoading) return null;
 
   return (
-    <div className="app-loading-spinner__wrapper">
+    <div
+      className={`${className} app-loading-spinner`}
+      role="alert"
+      aria-busy="true"
+    >
       <Spinner color="#F7C06C" />
     </div>
   );
+};
+
+AppLoadingSpinner.propTypes = {
+  className: PropTypes.string,
 };
 
 export default AppLoadingSpinner;

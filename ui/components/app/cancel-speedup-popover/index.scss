@@ -6,18 +6,9 @@
     }
   }
 
-  &__spinner-wrapper {
-    background-color: rgba(255,255,255,0.75);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    height: 100%;
-    width: 100%;
-
-    .spinner  {
-      width: 50px;
-    }
+  &__spinner {
+    margin-top: -30px;
+    height: calc(100% + 30px);
   }
   
   &__transaction-info {

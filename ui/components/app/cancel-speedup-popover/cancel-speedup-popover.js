@@ -102,7 +102,7 @@ const CancelSpeedupPopover = () => {
       onClose={() => closeModal('cancelSpeedupTransaction')}
       className="cancel-speedup-popover"
     >
-      <AppLoadingSpinner />
+      <AppLoadingSpinner className="cancel-speedup-popover__spinner" />
       <div className="cancel-speedup-popover__wrapper">
         <Typography
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER, display: DISPLAY.FLEX }}
