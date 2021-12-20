@@ -34,4 +34,15 @@
     cursor: pointer;
     color: $dusty-gray;
   }
+
+  &__error {
+    @include H7;
+
+    left: 8px;
+    color: $red;
+  }
+
+  &__error-amount {
+    margin-top: 5px;
+  }
 }

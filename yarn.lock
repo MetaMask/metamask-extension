@@ -2601,7 +2601,7 @@
     semver "^7.3.5"
     yargs "^17.0.1"
 
-"@metamask/contract-metadata@^1.29.0", "@metamask/contract-metadata@^1.30.0", "@metamask/contract-metadata@^1.31.0":
+"@metamask/contract-metadata@^1.29.0", "@metamask/contract-metadata@^1.31.0":
   version "1.31.0"
   resolved "https://registry.yarnpkg.com/@metamask/contract-metadata/-/contract-metadata-1.31.0.tgz#9e3e46de7a955ea1ca61f7db20d9a17b5e91d3d0"
   integrity sha512-4FBJkg/vDiYp/thIiZknxrJ0lfsj2eWIPenwlNZmoqOhoL4VqhK5eKWxi+EuGMvv9taP+QBRk6Key7wC1uL78A==
@@ -2643,14 +2643,14 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
-"@metamask/controllers@^20.1.0":
-  version "20.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-20.1.0.tgz#1d8386dc22d14f9fd9feb8b3cc8314d663587550"
-  integrity sha512-Z/7uLGXZWbCBbtCybR3jo1bx3mcvZRUSm1i43od4dnJoQo2+Veq4ePrFVgPKS3WtLIM/hzZuI7UTAQ9HNX9aew==
+"@metamask/controllers@^22.0.0":
+  version "22.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-22.0.0.tgz#54f172be2ae7e32ce47536a1ff06e35cc6ee3c80"
+  integrity sha512-5m4aT+B87IOAvvlbfgqI5n7Pd6VSQUjHBfm34qMBBL5jjUFUSfK6BL0h6ef2jxTE2VCuyBibQ8A7sETQ1+Hd+Q==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
-    "@metamask/contract-metadata" "^1.30.0"
+    "@metamask/contract-metadata" "^1.31.0"
     "@types/uuid" "^8.3.0"
     abort-controller "^3.0.0"
     async-mutex "^0.2.6"
@@ -2669,11 +2669,12 @@
     ethjs-unit "^0.1.6"
     ethjs-util "^0.1.6"
     human-standard-collectible-abi "^1.0.2"
-    human-standard-multi-collectible-abi "^1.0.2"
+    human-standard-multi-collectible-abi "^1.0.4"
     human-standard-token-abi "^2.0.0"
     immer "^9.0.6"
     isomorphic-fetch "^3.0.0"
     jsonschema "^1.2.4"
+    multiformats "^9.5.2"
     nanoid "^3.1.12"
     punycode "^2.1.1"
     single-call-balance-checker-abi "^1.0.0"
@@ -14732,10 +14733,10 @@ human-standard-collectible-abi@^1.0.2:
   resolved "https://registry.yarnpkg.com/human-standard-collectible-abi/-/human-standard-collectible-abi-1.0.2.tgz#077bae9ed1b0b0b82bc46932104b4b499c941aa0"
   integrity sha512-nD3ITUuSAIBgkaCm9J2BGwlHL8iEzFjJfTleDAC5Wi8RBJEXXhxV0JeJjd95o+rTwf98uTE5MW+VoBKOIYQh0g==
 
-human-standard-multi-collectible-abi@^1.0.2:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/human-standard-multi-collectible-abi/-/human-standard-multi-collectible-abi-1.0.3.tgz#be5896b13f8622289cff70040e478366931bf3d7"
-  integrity sha512-1VXqats7JQqDZozLKhpmFG0S33hVePrkLNRJNKfJTxewR0heYKjSoz72kqs+6O/Tywi0zW4fWe7dfTaPX4j7gQ==
+human-standard-multi-collectible-abi@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/human-standard-multi-collectible-abi/-/human-standard-multi-collectible-abi-1.0.4.tgz#981625bc1a6bea5fef90567f9e12c11581fac497"
+  integrity sha512-ylR9JDXClDJAxWD/QJxsjXJJdLTUmhipTquMAgrfybXL3qX3x3P/vmKg92A7qFu7SqVOf2hyv5dA8vX0j+0Thg==
 
 human-standard-token-abi@^1.0.2:
   version "1.0.2"
@@ -17385,9 +17386,9 @@ just-map-keys@^1.1.0:
   integrity sha512-oNKi+4y7fr8lXnhKYpBbCkiwHRVkAnx0VDkCeTDtKKMzGr1Lz1Yym+RSieKUTKim68emC5Yxrb4YmiF9STDO+g==
 
 just-safe-set@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/just-safe-set/-/just-safe-set-2.1.0.tgz#237234e681a4f330b5dfa71a5251f34962813ef9"
-  integrity sha512-wSTg/2bQpzyivBYbWPqQgafdfxW0tr3hX9qYGDRS2ws+AXwc7tvn8ABqkp8iPQHChjj4F5JvL3t0FQLbcNuKig==
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/just-safe-set/-/just-safe-set-2.2.3.tgz#b717b71a7237ff9f4b9d1220128a576001a11535"
+  integrity sha512-6zAkfGKRjB766zXv/UVSGOFKSAqakhwLQDyIR9bmIhJ/e6jS3Ci1VxYTqaiooYZZUw3VLg0sZva8PE6JX/iu2w==
 
 k-bucket@^5.0.0:
   version "5.0.0"
@@ -19811,6 +19812,11 @@ multicodec@^3.0.1:
   dependencies:
     uint8arrays "^2.1.5"
     varint "^6.0.0"
+
+multiformats@^9.5.2:
+  version "9.5.2"
+  resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-9.5.2.tgz#14256e49bac8b6a5ecb558c4d3c347bb94873d65"
+  integrity sha512-nLQ9s7YOVtZdeNOVvCkNyFiZdS3wyq0gvCIvdm7Zy1zw3zBoColJKjMkIPXNdTqT7ruuq+G7HrezIN0cXiAZ0w==
 
 multihashes@^0.4.12, multihashes@^0.4.15, multihashes@~0.4.12, multihashes@~0.4.13, multihashes@~0.4.14, multihashes@~0.4.15:
   version "0.4.15"

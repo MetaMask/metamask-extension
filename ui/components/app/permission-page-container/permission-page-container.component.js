@@ -14,10 +14,11 @@ export default class PermissionPageContainer extends Component {
     request: PropTypes.object,
     requestMetadata: PropTypes.object,
     targetSubjectMetadata: PropTypes.shape({
-      extensionId: PropTypes.string,
-      icon: PropTypes.string,
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
+      subjectType: PropTypes.string.isRequired,
+      extensionId: PropTypes.string,
+      iconUrl: PropTypes.string,
     }),
   };
 

@@ -36,6 +36,7 @@ export default class PermissionConnect extends Component {
       iconUrl: PropTypes.string,
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
+      subjectType: PropTypes.string,
     }),
   };
 

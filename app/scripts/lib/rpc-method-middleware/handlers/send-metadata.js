@@ -38,7 +38,7 @@ function sendMetadataHandler(
   end,
   { addSubjectMetadata, subjectType },
 ) {
-  const { params } = req;
+  const { origin, params } = req;
   if (params && typeof params === 'object' && !Array.isArray(params)) {
     const { icon = null, name = null, ...remainingParams } = params;
 
@@ -47,6 +47,7 @@ function sendMetadataHandler(
       iconUrl: icon,
       name,
       subjectType,
+      origin,
     });
   } else {
     return end(ethErrors.rpc.invalidParams({ data: params }));

@@ -21,6 +21,7 @@ import {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
 } from '../../helpers/constants/routes';
+import { SUBJECT_TYPES } from '../../../shared/constants/app';
 import PermissionApproval from './permissions-connect.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -46,13 +47,15 @@ const mapStateToProps = (state, ownProps) => {
   let targetSubjectMetadata = null;
   if (origin) {
     if (subjectMetadata[origin]) {
-      targetSubjectMetadata = { ...subjectMetadata[origin], origin };
+      targetSubjectMetadata = subjectMetadata[origin];
     } else {
       const targetUrl = new URL(origin);
       targetSubjectMetadata = {
-        host: targetUrl.host,
         name: targetUrl.hostname,
         origin,
+        iconUrl: null,
+        extensionId: null,
+        subjectType: SUBJECT_TYPES.UNKNOWN,
       };
     }
   }

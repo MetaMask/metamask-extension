@@ -17,13 +17,14 @@
     text-align: center;
     color: $Black-100;
     margin-top: 16px;
+    font-weight: bold;
   }
 
   &__subtitle {
     @include H6;
 
     text-align: center;
-    color: $Grey-500;
+    color: $Black-100;
   }
 
   &__subtitle {

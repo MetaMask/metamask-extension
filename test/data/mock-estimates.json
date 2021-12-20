@@ -20,7 +20,13 @@
         "suggestedMaxPriorityFeePerGas": "10",
         "suggestedMaxFeePerGas": "100"
       },
-      "estimatedBaseFee": "50"
+      "estimatedBaseFee": "50",
+      "networkCongestion": 0.5184,
+      "latestPriorityFeeRange": ["1", "20"],
+      "historicalPriorityFeeRange": ["2", "125"],
+      "historicalBaseFeeRange": ["50", "100"],
+      "priorityFeeTrend": "up",
+      "baseFeeTrend": "down"
     },
     "estimatedGasFeeTimeBounds": {}
   }

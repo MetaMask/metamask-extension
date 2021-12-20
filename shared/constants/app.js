@@ -50,9 +50,10 @@ export const MESSAGE_TYPE = {
  * third parties and itself (e.g. when the background communicated with the UI).
  */
 export const SUBJECT_TYPES = {
-  WEBSITE: 'website',
   EXTENSION: 'extension',
   INTERNAL: 'internal',
+  UNKNOWN: 'unknown',
+  WEBSITE: 'website',
 };
 
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
