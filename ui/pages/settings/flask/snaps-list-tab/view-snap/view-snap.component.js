@@ -23,82 +23,86 @@ function ViewSnap({
   const t = useI18nContext();
 
   return (
-    <div className="settings-page__content-row">
-      <div className="settings-page__subheader view-snap-subheader">
-        <Typography variant={TYPOGRAPHY.H3}>
-          {snap.manifest.proposedName}
-        </Typography>
-        <Box paddingLeft={2}>
-          <SnapsAuthorshipPill
-            packageName={snap.manifest.proposedName}
-            url={snap.manifest.repository.url}
-          />
-        </Box>
-        <Box paddingLeft={4} className="snap-settings-card__toggle-container">
-          <ToggleButton
-            value={snap.enabled}
-            onToggle={onToggle}
-            className="snap-settings-card__toggle-container__toggle-button"
-          />
+    <div className="settings-page__body">
+      <div className="settings-page__content-row">
+        <div className="settings-page__subheader view-snap-subheader">
+          <Typography variant={TYPOGRAPHY.H3}>
+            {snap.manifest.proposedName}
+          </Typography>
+          <Box paddingLeft={2}>
+            <SnapsAuthorshipPill
+              packageName={snap.manifest.proposedName}
+              url={snap.manifest.repository.url}
+            />
+          </Box>
+          <Box paddingLeft={4} className="snap-settings-card__toggle-container">
+            <ToggleButton
+              value={snap.enabled}
+              onToggle={onToggle}
+              className="snap-settings-card__toggle-container__toggle-button"
+            />
+          </Box>
+        </div>
+        <Box className="view-snap-content-container" width="7/12">
+          <div className="settings-page__content-item view-snap-section">
+            <Typography
+              variant={TYPOGRAPHY.H6}
+              color={COLORS.UI4}
+              boxProps={{ marginTop: 6 }}
+            >
+              {snap.manifest.description}
+            </Typography>
+          </div>
+          <div className="settings-page__content-item view-snap-section snap-permission-list">
+            <Typography variant={TYPOGRAPHY.H4}>{t('permissions')}</Typography>
+            <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
+              {t('snapAccess', [snap.manifest.proposedName])}
+            </Typography>
+            <Box width="10/12">
+              <PermissionsConnectPermissionList
+                permissions={snap.manifest.initialPermissions}
+              />
+            </Box>
+          </div>
+          <div className="settings-page__content-item view-snap-section">
+            <Box width="11/12">
+              <Typography variant={TYPOGRAPHY.H4}>
+                {t('connectedSites')}
+              </Typography>
+              <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
+                {t('connectedSnapSites', [snap.manifest.proposedName])}
+              </Typography>
+              <ConnectedSitesList
+                connectedSubjects={connectedSubjects}
+                onDisconnect={(origin) => {
+                  onDisconnect(origin, snap.permissionName);
+                }}
+                isSnap
+              />
+            </Box>
+          </div>
+          <div className="settings-page__content-item">
+            <Typography variant={TYPOGRAPHY.H4}>{t('removeSnap')}</Typography>
+            <Typography
+              variant={TYPOGRAPHY.H6}
+              color={COLORS.UI4}
+              boxProps={{ paddingBottom: 3 }}
+            >
+              {t('removeSnapDescription')}
+            </Typography>
+            <Button
+              className="view-snap__remove__button"
+              type="danger"
+              css={{
+                maxWidth: '175px',
+              }}
+              onClick={onRemove}
+            >
+              {t('removeSnap')}
+            </Button>
+          </div>
         </Box>
       </div>
-      <Box className="view-snap-content-container" width="7/12">
-        <div className="settings-page__content-item view-snap-section">
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            color={COLORS.UI4}
-            boxProps={{ marginTop: 6 }}
-          >
-            {snap.manifest.description}
-          </Typography>
-        </div>
-        <div className="settings-page__content-item view-snap-section snap-permission-list">
-          <Typography variant={TYPOGRAPHY.H4}>{t('permissions')}</Typography>
-          <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
-            {t('snapAccess', [snap.manifest.proposedName])}
-          </Typography>
-          <Box width="10/12">
-            <PermissionsConnectPermissionList
-              permissions={snap.manifest.initialPermissions}
-            />
-          </Box>
-        </div>
-        <div className="settings-page__content-item view-snap-section">
-          <Box width="11/12">
-            <Typography variant={TYPOGRAPHY.H4}>
-              {t('connectedSites')}
-            </Typography>
-            <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
-              {t('connectedSnapSites', [snap.manifest.proposedName])}
-            </Typography>
-            <ConnectedSitesList
-              connectedSubjects={connectedSubjects}
-              onDisconnect={onDisconnect}
-              isSnap
-            />
-          </Box>
-        </div>
-        <div className="settings-page__content-item">
-          <Typography variant={TYPOGRAPHY.H4}>{t('removeSnap')}</Typography>
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            color={COLORS.UI4}
-            boxProps={{ paddingBottom: 3 }}
-          >
-            {t('removeSnapDescription')}
-          </Typography>
-          <Button
-            className="view-snap__remove__button"
-            type="danger"
-            css={{
-              maxWidth: '175px',
-            }}
-            onClick={onRemove}
-          >
-            {t('removeSnap')}
-          </Button>
-        </div>
-      </Box>
     </div>
   );
 }

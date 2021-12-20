@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SnapSettingsCard from '../../../../components/app/flask/snap-settings-card';
-import { removeSnap } from '../../../../store/actions';
+import { removePermissionsFor, removeSnap } from '../../../../store/actions';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Typography from '../../../../components/ui/typography/typography';
 import {
@@ -37,10 +37,10 @@ const SnapListTab = ({
       <ViewSnap
         snap={currentSnap}
         onToggle={(event) => onToggle(event, currentSnap)}
-        onRemove={(event) => {
-          dispatch(removeSnap(currentSnap.id)).then(() => {
-            onRemove(event, currentSnap);
-          });
+        onRemove={async (event) => {
+          await dispatch(removeSnap(currentSnap.id));
+          await dispatch(removePermissionsFor(currentSnap.permissionName));
+          onRemove(event, currentSnap);
         }}
       />
     );
@@ -48,12 +48,8 @@ const SnapListTab = ({
   return (
     <>
       {Object.entries(snaps).length ? (
-        <>
-          <Box
-            display="flex"
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            paddingTop={2}
-          >
+        <div className="settings-page__body">
+          <Box display="flex" flexDirection={FLEX_DIRECTION.COLUMN}>
             <Typography variant={TYPOGRAPHY.H5} marginBottom={2}>
               {t('expandExperience')}
             </Typography>
@@ -88,18 +84,13 @@ const SnapListTab = ({
               );
             })}
           </div>
-        </>
+        </div>
       ) : (
-        <Box
-          width="full"
-          height="full"
-          justifyContent="center"
-          alignItems="center"
-        >
+        <div className="no-snap-container">
           <Typography variant={TYPOGRAPHY.H4} color={COLORS.UI4}>
             {t('noSnaps')}
           </Typography>
-        </Box>
+        </div>
       )}
     </>
   );

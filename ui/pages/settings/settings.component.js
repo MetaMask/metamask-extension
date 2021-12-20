@@ -135,7 +135,7 @@ class SettingsPage extends PureComponent {
       titleText = t('snaps');
     } else if (isPopup && addressName) {
       titleText = t('details');
-    } else if (pathnameI18nKey && isPopup) {
+    } else if (pathnameI18nKey && pathnameI18nKey !== 'snaps' && isPopup) {
       titleText = t(pathnameI18nKey);
     } else {
       titleText = t('settings');

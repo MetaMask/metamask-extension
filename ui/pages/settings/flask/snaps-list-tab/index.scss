@@ -10,3 +10,11 @@
 .view-snap__remove__button {
   max-width: 175px;
 }
+
+.no-snap-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding-top: 50%;
+  justify-content: center;
+}

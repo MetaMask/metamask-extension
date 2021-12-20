@@ -2647,6 +2647,10 @@
   "slow": {
     "message": "Slow"
   },
+  "snapAccess": {
+    "message": "$1 snap has access to:",
+    "description": "$1 represents the name of the snap"
+  },
   "snaps": {
     "message": "Snaps"
   },
