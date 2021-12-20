@@ -55,7 +55,7 @@ const PriorityFeeInput = () => {
   const {
     latestPriorityFeeRange,
     historicalPriorityFeeRange,
-    priorityFeeTrend
+    priorityFeeTrend,
   } = gasFeeEstimates;
   const [feeTrend, setFeeTrend] = useState(priorityFeeTrend);
   const [priorityFeeError, setPriorityFeeError] = useState();
