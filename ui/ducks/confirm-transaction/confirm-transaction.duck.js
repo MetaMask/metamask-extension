@@ -14,7 +14,7 @@ import {
 } from '../../helpers/utils/confirm-tx.util';
 
 import {
-  getTransactionData,
+  parseTransactionData,
   sumHexes,
 } from '../../helpers/utils/transactions.util';
 
@@ -285,7 +285,7 @@ export function setTransactionToConfirm(transactionId) {
       if (txParams.data) {
         const { to: tokenAddress, data } = txParams;
 
-        const tokenData = getTransactionData(data);
+        const tokenData = parseTransactionData(data);
         const tokens = getTokens(state);
         const currentToken = tokens?.find(({ address }) =>
           isEqualCaseInsensitive(tokenAddress, address),

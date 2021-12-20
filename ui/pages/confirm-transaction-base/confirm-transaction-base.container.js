@@ -97,6 +97,7 @@ const mapStateToProps = (state, ownProps) => {
     Object.values(unapprovedTxs).find(
       ({ id }) => id === (transactionId || Number(paramsTransactionId)),
     ) || {};
+
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -106,9 +107,8 @@ const mapStateToProps = (state, ownProps) => {
     data,
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
-
-  const { balance } = accounts[fromAddress];
-  const { name: fromName } = identities[fromAddress];
+  const accountData = accounts[fromAddress];
+  const identity = identities[fromAddress];
   const toAddress = propsToAddress || txParamsToAddress;
 
   const tokenList = getTokenList(state);
@@ -159,7 +159,7 @@ const mapStateToProps = (state, ownProps) => {
   const insufficientBalance = !isBalanceSufficient({
     amount,
     gasTotal: calcGasTotal(gasLimit, gasPrice),
-    balance,
+    balance: accountData?.balance,
     conversionRate,
   });
 
@@ -177,8 +177,8 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const isCollectibleTransfer = Boolean(
-    allCollectibleContracts?.[selectedAddress]?.[chainId].find((contract) => {
-      return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
+    allCollectibleContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
+      return isEqualCaseInsensitive(contract.address, fullTxData?.txParams?.to);
     }),
   );
 
@@ -201,9 +201,9 @@ const mapStateToProps = (state, ownProps) => {
   const eip1559V2Enabled = getEIP1559V2Enabled(state);
 
   return {
-    balance,
+    balance: accountData?.balance,
     fromAddress,
-    fromName,
+    fromName: identity?.name,
     toAddress,
     toEns,
     toName,

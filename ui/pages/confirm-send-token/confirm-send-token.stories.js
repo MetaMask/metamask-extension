@@ -1,5 +1,5 @@
 import React from 'react';
-import ConfirmSendToken from './confirm-send-token.component';
+import ConfirmSendToken from './confirm-send-token';
 
 export default {
   title: 'Pages/ConfirmSendToken',

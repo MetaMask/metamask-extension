@@ -4,13 +4,13 @@ import {
   calcTokenValue,
   getTokenAddressParam,
 } from '../../helpers/utils/token-util';
-import { getTransactionData } from '../../helpers/utils/transactions.util';
+import { parseTransactionData } from '../../helpers/utils/transactions.util';
 
 export function getCustomTxParamsData(
   data,
   { customPermissionAmount, decimals },
 ) {
-  const tokenData = getTransactionData(data);
+  const tokenData = parseTransactionData(data);
 
   if (!tokenData) {
     throw new Error('Invalid data');

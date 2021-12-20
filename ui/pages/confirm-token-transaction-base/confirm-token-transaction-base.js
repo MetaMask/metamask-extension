@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
+import { useSelector } from 'react-redux';
 import { I18nContext } from '../../contexts/i18n';
 import ConfirmTransactionBase from '../confirm-transaction-base';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
@@ -10,26 +11,57 @@ import {
   addFiat,
   roundExponential,
 } from '../../helpers/utils/confirm-tx.util';
-import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util';
-import { ETH, PRIMARY } from '../../helpers/constants/common';
+import {
+  getWeiHexFromDecimalValue,
+  hexWEIToDecETH,
+} from '../../helpers/utils/conversions.util';
+import {
+  ERC1155,
+  ERC20,
+  ERC721,
+  ETH,
+  PRIMARY,
+} from '../../helpers/constants/common';
+import {
+  contractExchangeRateSelector,
+  getCurrentCurrency,
+} from '../../selectors';
+import {
+  getConversionRate,
+  getNativeCurrency,
+} from '../../ducks/metamask/metamask';
 
 export default function ConfirmTokenTransactionBase({
-  image,
-  title,
-  subtitle,
+  image = '',
+  assetName,
   toAddress,
   tokenAddress,
   tokenAmount = '0',
-  fiatTransactionTotal,
-  ethTransactionTotal,
-  ethTransactionTotalMaxAmount,
-  contractExchangeRate,
-  conversionRate,
-  currentCurrency,
-  nativeCurrency,
+  tokenSymbol,
+  tokenId,
+  assetStandard,
   onEdit,
+  ethTransactionTotal,
+  fiatTransactionTotal,
+  hexMaximumTransactionFee,
 }) {
   const t = useContext(I18nContext);
+  const contractExchangeRate = useSelector(contractExchangeRateSelector);
+  const nativeCurrency = useSelector(getNativeCurrency);
+  const currentCurrency = useSelector(getCurrentCurrency);
+  const conversionRate = useSelector(getConversionRate);
+
+  const ethTransactionTotalMaxAmount = Number(
+    hexWEIToDecETH(hexMaximumTransactionFee),
+  ).toFixed(6);
+
+  let title, subtitle;
+  if (assetStandard === ERC721 || assetStandard === ERC1155) {
+    title = assetName;
+    subtitle = `#${tokenId}`;
+  } else if (assetStandard === ERC20) {
+    title = `${tokenAmount} ${tokenSymbol}`;
+  }
 
   const hexWeiValue = useMemo(() => {
     if (tokenAmount === '0' || !contractExchangeRate) {
@@ -105,17 +137,15 @@ export default function ConfirmTokenTransactionBase({
 
 ConfirmTokenTransactionBase.propTypes = {
   image: PropTypes.string,
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
-  tokenAddress: PropTypes.string,
+  assetName: PropTypes.string,
   toAddress: PropTypes.string,
+  tokenAddress: PropTypes.string,
   tokenAmount: PropTypes.string,
-  fiatTransactionTotal: PropTypes.string,
-  ethTransactionTotal: PropTypes.string,
-  contractExchangeRate: PropTypes.number,
-  conversionRate: PropTypes.number,
-  currentCurrency: PropTypes.string,
+  tokenSymbol: PropTypes.string,
+  tokenId: PropTypes.string,
+  assetStandard: PropTypes.string,
   onEdit: PropTypes.func,
-  nativeCurrency: PropTypes.string,
-  ethTransactionTotalMaxAmount: PropTypes.string,
+  ethTransactionTotal: PropTypes.string,
+  fiatTransactionTotal: PropTypes.string,
+  hexMaximumTransactionFee: PropTypes.string,
 };

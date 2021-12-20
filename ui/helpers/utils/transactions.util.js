@@ -33,7 +33,7 @@ const hstInterface = new ethers.utils.Interface(abi);
  * @param data
  * @returns {EthersContractCall | undefined}
  */
-export function getTransactionData(data) {
+export function parseTransactionData(data) {
   try {
     return hstInterface.parseTransaction({ data });
   } catch (error) {

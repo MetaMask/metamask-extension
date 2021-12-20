@@ -7,9 +7,9 @@ import {
 import * as utils from './transactions.util';
 
 describe('Transactions utils', () => {
-  describe('getTransactionData', () => {
+  describe('parseTransactionData', () => {
     it('should return token data', () => {
-      const tokenData = utils.getTransactionData(
+      const tokenData = utils.parseTransactionData(
         '0xa9059cbb00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000004e20',
       );
       expect(tokenData).toStrictEqual(expect.anything());
@@ -22,7 +22,7 @@ describe('Transactions utils', () => {
     });
 
     it('should not throw errors when called without arguments', () => {
-      expect(() => utils.getTransactionData()).not.toThrow();
+      expect(() => utils.parseTransactionData()).not.toThrow();
     });
   });
 

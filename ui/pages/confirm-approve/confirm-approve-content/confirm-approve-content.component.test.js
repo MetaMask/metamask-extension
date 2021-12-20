@@ -16,6 +16,7 @@ const props = {
   tokenAmount: '10',
   origin: 'https://metamask.github.io/test-dapp/',
   tokenSymbol: 'TST',
+  assetStandard: 'ERC20',
   tokenImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
   tokenBalance: '15',
   showCustomizeGasModal: jest.fn(),
