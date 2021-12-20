@@ -53,7 +53,7 @@ const SnapListTab = ({
   return (
     <>
       {Object.entries(snaps).length ? (
-        <div className="settings-page__body">
+        <div className="snap-settings-page__body">
           <Box display="flex" flexDirection={FLEX_DIRECTION.COLUMN}>
             <Typography variant={TYPOGRAPHY.H5} marginBottom={2}>
               {t('expandExperience')}

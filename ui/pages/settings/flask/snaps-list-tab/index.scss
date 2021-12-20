@@ -18,3 +18,11 @@
   padding-top: 50%;
   justify-content: center;
 }
+
+.snap-settings-page__body {
+  padding: 12px 18px;
+
+  @media screen and (min-width: $break-large) {
+    padding: 12px;
+  }
+}

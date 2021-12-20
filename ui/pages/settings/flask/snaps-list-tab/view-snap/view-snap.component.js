@@ -23,7 +23,7 @@ function ViewSnap({
   const t = useI18nContext();
 
   return (
-    <div className="settings-page__body">
+    <div className="snap-settings-page__body">
       <div className="settings-page__content-row">
         <div className="settings-page__subheader view-snap-subheader">
           <Typography variant={TYPOGRAPHY.H3}>
