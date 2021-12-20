@@ -86,12 +86,11 @@ export default function SnapInstall({
         ) : null}
         <PermissionsConnectFooter />
         <PageContainerFooter
-          cancelButtonTyype="default"
+          cancelButtonType="default"
           onCancel={onCancel}
           cancelText={t('cancel')}
           onSubmit={shouldShowWarning ? showWarning : onSubmit}
           submitText={t('approveAndInstall')}
-          buttonsSizeLarge={false}
         />
       </div>
     </div>

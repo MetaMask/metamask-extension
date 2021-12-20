@@ -58,7 +58,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const isSnap = targetSubjectMetadata?.subjectType === SUBJECT_TYPES.SNAP;
+  const isSnap = targetSubjectMetadata.subjectType === SUBJECT_TYPES.SNAP;
   ///: END:ONLY_INCLUDE_IN
 
   const accountsWithLabels = getAccountsWithLabels(state);
@@ -79,6 +79,12 @@ const mapStateToProps = (state, ownProps) => {
   const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
   ///: END:ONLY_INCLUDE_IN
 
+  let totalPages = 1 + isRequestingAccounts;
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  totalPages += isSnap;
+  ///: END:ONLY_INCLUDE_IN
+  totalPages = totalPages.toString();
+
   let page = '';
   if (pathname === connectPath) {
     page = '1';
@@ -86,7 +92,7 @@ const mapStateToProps = (state, ownProps) => {
     page = '2';
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
   } else if (pathname === snapInstallPath) {
-    page = '3';
+    page = isRequestingAccounts ? '3' : '2';
     ///: END:ONLY_INCLUDE_IN
   } else {
     throw new Error('Incorrect path for permissions-connect component');
@@ -109,6 +115,7 @@ const mapStateToProps = (state, ownProps) => {
     lastConnectedInfo,
     connectPath,
     confirmPermissionPath,
+    totalPages,
     page,
     targetSubjectMetadata,
   };

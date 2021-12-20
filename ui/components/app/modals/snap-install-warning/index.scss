@@ -1,16 +1,4 @@
 .snap-install-warning {
-  .header {
-    @include H4;
-
-    font-weight: bold;
-  }
-
-  .subheader {
-    @include H6;
-
-    padding: 16px 0;
-  }
-
   .checkbox-label {
     @include H7;
 

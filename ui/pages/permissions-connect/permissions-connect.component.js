@@ -37,6 +37,7 @@ export default class PermissionConnect extends Component {
     snapInstallPath: PropTypes.string.isRequired,
     isSnap: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IN
+    totalPages: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
     targetSubjectMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
@@ -192,7 +193,7 @@ export default class PermissionConnect extends Component {
 
   renderTopBar() {
     const { redirecting } = this.state;
-    const { page, isRequestingAccounts } = this.props;
+    const { page, isRequestingAccounts, totalPages } = this.props;
     const { t } = this.context;
     return redirecting ? null : (
       <div className="permissions-connect__top-bar">
@@ -207,7 +208,7 @@ export default class PermissionConnect extends Component {
         ) : null}
         {isRequestingAccounts ? (
           <div className="permissions-connect__page-count">
-            {t('xOfY', [page, '2'])}
+            {t('xOfY', [page, totalPages])}
           </div>
         ) : null}
       </div>
