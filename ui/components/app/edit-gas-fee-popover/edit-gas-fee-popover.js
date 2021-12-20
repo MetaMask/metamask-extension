@@ -22,8 +22,8 @@ const EditGasFeePopover = () => {
   const { balanceError, editGasMode } = useGasFeeContext();
   const t = useI18nContext();
   const {
-    closeModal,
     closeAllModals,
+    closeModal,
     currentModal,
     openModalCount,
   } = useTransactionModalContext();
