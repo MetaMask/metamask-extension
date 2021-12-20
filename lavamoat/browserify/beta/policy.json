@@ -534,6 +534,7 @@
     "@metamask/controllers": {
       "globals": {
         "Headers": true,
+        "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -569,6 +570,7 @@
         "immer": true,
         "isomorphic-fetch": true,
         "jsonschema": true,
+        "multiformats": true,
         "nanoid": true,
         "punycode": true,
         "single-call-balance-checker-abi": true,
@@ -3548,6 +3550,13 @@
         "varint": true
       }
     },
+    "multiformats": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "console.warn": true
+      }
+    },
     "multihashes": {
       "packages": {
         "bs58": true,
@@ -3613,6 +3622,11 @@
         "crypto": true,
         "msCrypto": true,
         "navigator": true
+      }
+    },
+    "no-case": {
+      "packages": {
+        "lower-case": true
       }
     },
     "no-case": {
