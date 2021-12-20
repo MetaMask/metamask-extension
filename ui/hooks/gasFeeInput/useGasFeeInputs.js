@@ -133,9 +133,7 @@ export function useGasFeeInputs(
     Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
   );
 
-  const properGasLimit = Number(
-    hexToDecimal(transaction?.originalGasEstimate ?? '0x0'),
-  );
+  const properGasLimit = Number(hexToDecimal(transaction?.originalGasEstimate));
 
   const [userEditedGasLimit, setUserEditedGasLimit] = useState(() =>
     Boolean(transaction?.userEditedGasLimit),
