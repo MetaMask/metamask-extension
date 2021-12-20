@@ -1,1 +1,1 @@
-export { default } from './collectibles-tab.component';
+export { default } from './collectibles-tab';

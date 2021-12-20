@@ -48,9 +48,9 @@ export const currentNetworkTxListSample = {
 
 export const subjectMetadata = {
   "https://metamask.github.io": {
+    "origin": "https://metamask.github.io",
     "name": "E2E Test Dapp",
-    "icon": "https://metamask.github.io/test-dapp/metamask-fox.svg",
-    "lastUpdated": 1620723443380,
-    "host": "metamask.github.io"
+    "iconUrl": "https://metamask.github.io/test-dapp/metamask-fox.svg",
+    "subjectType": "website"
   }
 }

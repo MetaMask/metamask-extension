@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import I18nValue from '../../../../ui/i18n-value';
 import { NetworkStabilityTooltip } from '../tooltips';
 
@@ -14,57 +15,70 @@ const GRADIENT_COLORS = [
   '#9A4D71',
   '#B44561',
   '#C54055',
+  '#D73A49',
 ];
 
-const STATUS_INFO = {
-  low: {
-    statusLabel: 'notBusy',
-    tooltipLabel: 'lowLowercase',
-    color: GRADIENT_COLORS[0],
-  },
-  stable: {
+const determineStatusInfo = (givenNetworkCongestion) => {
+  const networkCongestion = givenNetworkCongestion ?? 0.5;
+  const colorIndex = Math.round(networkCongestion * 10);
+  const color = GRADIENT_COLORS[colorIndex];
+  const sliderTickValue = colorIndex * 10;
+
+  if (networkCongestion <= 0.33) {
+    return {
+      statusLabel: 'notBusy',
+      tooltipLabel: 'lowLowercase',
+      color,
+      sliderTickValue,
+    };
+  } else if (networkCongestion > 0.66) {
+    return {
+      statusLabel: 'busy',
+      tooltipLabel: 'highLowercase',
+      color,
+      sliderTickValue,
+    };
+  }
+  return {
     statusLabel: 'stable',
     tooltipLabel: 'stableLowercase',
-    color: GRADIENT_COLORS[4],
-  },
-  high: {
-    statusLabel: 'busy',
-    tooltipLabel: 'highLowercase',
-    color: GRADIENT_COLORS[9],
-  },
-};
-
-const getStatusInfo = (status) => {
-  if (status <= 0.33) {
-    return STATUS_INFO.low;
-  } else if (status > 0.66) {
-    return STATUS_INFO.high;
-  }
-  return STATUS_INFO.stable;
+    color,
+    sliderTickValue,
+  };
 };
 
 const StatusSlider = () => {
-  const statusValue = 0.5;
-  const sliderValueNumeric = Math.round(statusValue * 10);
-
-  const statusInfo = getStatusInfo(statusValue);
+  const { gasFeeEstimates } = useGasFeeContext();
+  const statusInfo = determineStatusInfo(gasFeeEstimates.networkCongestion);
 
   return (
-    <NetworkStabilityTooltip statusInfo={statusInfo}>
+    <NetworkStabilityTooltip
+      color={statusInfo.color}
+      tooltipLabel={statusInfo.tooltipLabel}
+    >
       <div className="status-slider">
-        <div className="status-slider__arrow-border">
+        <div className="status-slider__arrow-container">
           <div
-            className="status-slider__arrow"
+            className="status-slider__arrow-border"
             style={{
-              borderTopColor: GRADIENT_COLORS[sliderValueNumeric],
-              marginLeft: `${sliderValueNumeric * 10}%`,
+              marginLeft: `${statusInfo.sliderTickValue}%`,
             }}
-          />
+            data-testid="status-slider-arrow-border"
+          >
+            <div
+              className="status-slider__arrow"
+              style={{
+                borderTopColor: statusInfo.color,
+              }}
+              data-testid="status-slider-arrow"
+            />
+          </div>
         </div>
         <div className="status-slider__line" />
         <div
           className="status-slider__label"
-          style={{ color: GRADIENT_COLORS[sliderValueNumeric] }}
+          style={{ color: statusInfo.color }}
+          data-testid="status-slider-label"
         >
           <I18nValue messageKey={statusInfo.statusLabel} />
         </div>

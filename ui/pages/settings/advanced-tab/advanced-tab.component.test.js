@@ -7,12 +7,12 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import AdvancedTab from './advanced-tab.component';
 
 describe('AdvancedTab Component', () => {
-  let root;
+  let component;
   let setAutoLockTimeLimitSpy = sinon.spy();
   const toggleTestnet = sinon.spy();
 
   beforeAll(() => {
-    root = shallow(
+    component = shallow(
       <AdvancedTab
         ipfsGateway=""
         setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
@@ -37,12 +37,12 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should render correctly when threeBoxFeatureFlag', () => {
-    expect(root.find('.settings-page__content-row')).toHaveLength(13);
+    expect(component.find('.settings-page__content-row')).toHaveLength(13);
   });
 
   it('should update autoLockTimeLimit', () => {
     setAutoLockTimeLimitSpy = sinon.spy();
-    root = shallow(
+    component = shallow(
       <AdvancedTab
         ipfsGateway=""
         setAutoLockTimeLimit={setAutoLockTimeLimitSpy}
@@ -64,18 +64,18 @@ describe('AdvancedTab Component', () => {
       },
     );
 
-    const autoTimeout = root.find('.settings-page__content-row').at(8);
+    const autoTimeout = component.find('.settings-page__content-row').at(8);
     const textField = autoTimeout.find(TextField);
 
     textField.props().onChange({ target: { value: 1440 } });
-    expect(root.state().autoLockTimeLimit).toStrictEqual(1440);
+    expect(component.state().autoLockTimeLimit).toStrictEqual(1440);
 
     autoTimeout.find('.settings-tab__rpc-save-button').simulate('click');
     expect(setAutoLockTimeLimitSpy.args[0][0]).toStrictEqual(1440);
   });
 
   it('should toggle show test networks', () => {
-    const testNetworks = root.find('.settings-page__content-row').at(6);
+    const testNetworks = component.find('.settings-page__content-row').at(6);
     const toggleButton = testNetworks.find(ToggleButton);
     toggleButton.first().simulate('toggle');
     expect(toggleTestnet.calledOnce).toStrictEqual(true);

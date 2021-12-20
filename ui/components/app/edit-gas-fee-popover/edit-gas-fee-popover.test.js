@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
+import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { ETH } from '../../../helpers/constants/common';
 import configureStore from '../../../store/store';
@@ -45,7 +46,7 @@ const MOCK_FEE_ESTIMATE = {
   estimatedBaseFee: '50',
 };
 
-const render = (txProps) => {
+const render = ({ txProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -66,6 +67,7 @@ const render = (txProps) => {
   return renderWithProvider(
     <GasFeeContextProvider
       transaction={{ txParams: { gas: '0x5208' }, ...txProps }}
+      {...contextProps}
     >
       <EditGasFeePopover />
     </GasFeeContextProvider>,
@@ -75,7 +77,7 @@ const render = (txProps) => {
 
 describe('EditGasFeePopover', () => {
   it('should renders low / medium / high options', () => {
-    render({ dappSuggestedGasFees: {} });
+    render({ txProps: { dappSuggestedGasFees: {} } });
 
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('🦊')).toBeInTheDocument();
@@ -103,12 +105,40 @@ describe('EditGasFeePopover', () => {
   });
 
   it('should not show insufficient balance message if transaction value is less than balance', () => {
-    render({ userFeeLevel: 'high', txParams: { value: '0x64' } });
+    render({ txProps: { userFeeLevel: 'high', txParams: { value: '0x64' } } });
     expect(screen.queryByText('Insufficient funds.')).not.toBeInTheDocument();
   });
 
   it('should show insufficient balance message if transaction value is more than balance', () => {
-    render({ userFeeLevel: 'high', txParams: { value: '0x5208' } });
+    render({
+      txProps: { userFeeLevel: 'high', txParams: { value: '0x5208' } },
+    });
     expect(screen.queryByText('Insufficient funds.')).toBeInTheDocument();
+  });
+
+  it('should not show low, aggressive and dapp-suggested options for swap', () => {
+    render({
+      contextProps: { editGasMode: EDIT_GAS_MODES.SWAPS },
+    });
+    expect(screen.queryByText('🐢')).not.toBeInTheDocument();
+    expect(screen.queryByText('🦊')).toBeInTheDocument();
+    expect(screen.queryByText('🦍')).not.toBeInTheDocument();
+    expect(screen.queryByText('🌐')).not.toBeInTheDocument();
+    expect(screen.queryByText('🔄')).toBeInTheDocument();
+    expect(screen.queryByText('⚙')).toBeInTheDocument();
+    expect(screen.queryByText('Low')).not.toBeInTheDocument();
+    expect(screen.queryByText('Market')).toBeInTheDocument();
+    expect(screen.queryByText('Aggressive')).not.toBeInTheDocument();
+    expect(screen.queryByText('Site')).not.toBeInTheDocument();
+    expect(screen.queryByText('Swap suggested')).toBeInTheDocument();
+    expect(screen.queryByText('Advanced')).toBeInTheDocument();
+  });
+
+  it('should not show time estimates for swaps', () => {
+    render({
+      contextProps: { editGasMode: EDIT_GAS_MODES.SWAPS },
+    });
+    expect(screen.queryByText('Time')).not.toBeInTheDocument();
+    expect(screen.queryByText('Max fee')).toBeInTheDocument();
   });
 });

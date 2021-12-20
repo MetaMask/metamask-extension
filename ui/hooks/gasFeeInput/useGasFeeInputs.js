@@ -170,12 +170,12 @@ export function useGasFeeInputs(
     maxFeePerGasFiat,
     setMaxFeePerGas,
   } = useMaxFeePerGasInput({
-    supportsEIP1559V2,
     estimateToUse,
     gasEstimateType,
     gasFeeEstimates,
     gasLimit,
     gasPrice,
+    supportsEIP1559V2,
     transaction,
   });
 
@@ -184,11 +184,11 @@ export function useGasFeeInputs(
     maxPriorityFeePerGasFiat,
     setMaxPriorityFeePerGas,
   } = useMaxPriorityFeePerGasInput({
-    supportsEIP1559V2,
     estimateToUse,
     gasEstimateType,
     gasFeeEstimates,
     gasLimit,
+    supportsEIP1559V2,
     transaction,
   });
 
@@ -248,6 +248,7 @@ export function useGasFeeInputs(
     updateTransactionUsingGasFeeEstimates,
   } = useTransactionFunctions({
     defaultEstimateToUse,
+    editGasMode,
     gasFeeEstimates,
     gasLimit,
     transaction,
@@ -313,6 +314,7 @@ export function useGasFeeInputs(
     setGasPrice,
     gasLimit,
     setGasLimit,
+    editGasMode,
     estimateToUse,
     setEstimateToUse,
     estimatedMinimumFiat,

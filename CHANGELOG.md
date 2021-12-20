@@ -6,13 +6,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.8.1]
+### Fixed
+- [#13107](https://github.com/MetaMask/metamask-extension/pull/13107): Fix the Use Custom Nonce toggle
+
+## [10.8.0]
+### Added
+- [#12881](https://github.com/MetaMask/metamask-extension/pull/12881): Feature: Transaction Insights
+  - Users can now see much greater details on contract interaction transactions
+  - These transaction details are integrated with new popups for viewing and editing address book information
+  - These details are also viewable within the transaction details popup
+- [#12627](https://github.com/MetaMask/metamask-extension/pull/12627): Add support for eip-1559 on Trezor Model T and Trezor Model One
+- [#12065](https://github.com/MetaMask/metamask-extension/pull/12065): Support QR code based hardware wallet signing
+  - Includes specific support for the Keystone hardware wallet
+
+### Changed
+- [#12842](https://github.com/MetaMask/metamask-extension/pull/12842): Improve performance of the swaps feature
+- [#12776](https://github.com/MetaMask/metamask-extension/pull/12776): Hide the token detection announcement when the token detection is ON
+- [#12828](https://github.com/MetaMask/metamask-extension/pull/12828): Clear the clipboard after the seed phrase is pasted into the import flow
+- [#12576](https://github.com/MetaMask/metamask-extension/pull/12576): Show warning message when gas estimation estimates fail
+
+### Fixed
+- [#12802](https://github.com/MetaMask/metamask-extension/pull/12802): Fix bug causing occasional swaps failures for token pairs with highly precise exchange rates
+- [#12679](https://github.com/MetaMask/metamask-extension/pull/12679): Ensure eth_sign callback fires even when data submitted is invalid
+
 ## [10.7.1]
 ### Fixed
 - [#13005](https://github.com/MetaMask/metamask-extension/pull/13005): Fix connection to RPC urls with query strings.
 
 ## [10.7.0]
 ### Changed
-- [#12643](https://github.com/MetaMask/metamask-extension/pull/12643): Reject popup confirmations on close
 - [#12566](https://github.com/MetaMask/metamask-extension/pull/12566): Enable LavaMoat for the webapp background
 - [#12399](https://github.com/MetaMask/metamask-extension/pull/12399): Update the "Account Details" view
   - Change "Close" icon color from gray -> black
@@ -2633,7 +2656,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.7.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.8.1...HEAD
+[10.8.1]: https://github.com/MetaMask/metamask-extension/compare/v10.8.0...v10.8.1
+[10.8.0]: https://github.com/MetaMask/metamask-extension/compare/v10.7.1...v10.8.0
 [10.7.1]: https://github.com/MetaMask/metamask-extension/compare/v10.7.0...v10.7.1
 [10.7.0]: https://github.com/MetaMask/metamask-extension/compare/v10.6.4...v10.7.0
 [10.6.4]: https://github.com/MetaMask/metamask-extension/compare/v10.6.3...v10.6.4

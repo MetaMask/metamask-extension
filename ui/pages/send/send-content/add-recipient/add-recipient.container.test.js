@@ -12,7 +12,7 @@ jest.mock('react-redux', () => ({
 jest.mock('../../../../selectors', () => ({
   getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
   getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
-  accountsWithSendEtherInfoSelector: () => [
+  getMetaMaskAccountsOrdered: () => [
     { name: `account1:mockState` },
     { name: `account2:mockState` },
   ],

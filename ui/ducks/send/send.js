@@ -419,6 +419,7 @@ export const initializeSendState = createAsyncThunk(
       send: { asset, stage, recipient, amount, draftTransaction },
       metamask,
     } = state;
+
     // First determine the correct from address. For new sends this is always
     // the currently selected account and switching accounts switches the from
     // address. If editing an existing transaction (by clicking 'edit' on the
@@ -707,6 +708,7 @@ const slice = createSlice({
       state.recipient.nickname = action.payload.nickname;
       state.draftTransaction.id = action.payload.id;
       state.draftTransaction.txParams.from = action.payload.from;
+      state.draftTransaction.userInputHexData = action.payload.data;
       slice.caseReducers.updateDraftTransaction(state);
     },
     /**
@@ -1601,6 +1603,7 @@ export function editTransaction(
     const { txParams } = transaction;
     if (assetType === ASSET_TYPES.NATIVE) {
       const {
+        data,
         from,
         gas: gasLimit,
         gasPrice,
@@ -1610,6 +1613,7 @@ export function editTransaction(
       const nickname = getAddressBookEntry(state, address)?.name ?? '';
       await dispatch(
         actions.editTransaction({
+          data,
           id: transactionId,
           gasLimit,
           gasPrice,
@@ -1624,7 +1628,13 @@ export function editTransaction(
         `send/editTransaction dispatched with assetType 'TOKEN' but missing assetData or assetDetails parameter`,
       );
     } else {
-      const { from, to: tokenAddress, gas: gasLimit, gasPrice } = txParams;
+      const {
+        data,
+        from,
+        to: tokenAddress,
+        gas: gasLimit,
+        gasPrice,
+      } = txParams;
       const tokenAmountInDec = getTokenValueParam(tokenData);
       const address = getTokenAddressParam(tokenData);
       const nickname = getAddressBookEntry(state, address)?.name ?? '';
@@ -1645,6 +1655,7 @@ export function editTransaction(
 
       await dispatch(
         actions.editTransaction({
+          data,
           id: transactionId,
           gasLimit,
           gasPrice,

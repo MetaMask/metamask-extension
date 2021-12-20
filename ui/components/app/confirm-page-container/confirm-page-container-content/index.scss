@@ -91,7 +91,9 @@
     margin-top: auto;
   }
 
-  &__currency-container {
+  &__currency-container,
+  &__total-amount,
+  &__total-value {
     position: relative;
   }
 }

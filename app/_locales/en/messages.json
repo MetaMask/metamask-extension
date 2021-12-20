@@ -73,6 +73,10 @@
   "accountName": {
     "message": "Account Name"
   },
+  "accountNameDuplicate": {
+    "message": "This account name already exists",
+    "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
+  },
   "accountOptions": {
     "message": "Account Options"
   },
@@ -138,9 +142,6 @@
   },
   "addNFT": {
     "message": "Add NFT"
-  },
-  "addNFTLowerCase": {
-    "message": "add NFT"
   },
   "addNetwork": {
     "message": "Add Network"
@@ -571,6 +572,9 @@
   "contract": {
     "message": "Contract"
   },
+  "contractAddress": {
+    "message": "Contract address"
+  },
   "contractAddressError": {
     "message": "You are sending tokens to the token's contract address. This may result in the loss of these tokens."
   },
@@ -723,6 +727,9 @@
   "depositEther": {
     "message": "Deposit Ether"
   },
+  "description": {
+    "message": "Description"
+  },
   "details": {
     "message": "Details"
   },
@@ -826,14 +833,17 @@
   "editGasLow": {
     "message": "Low"
   },
+  "editGasMaxBaseFeeGWEIImbalance": {
+    "message": "Max base fee cannot be lower than priority fee"
+  },
   "editGasMaxBaseFeeHigh": {
     "message": "Max base fee is higher than necessary"
   },
-  "editGasMaxBaseFeeImbalance": {
-    "message": "Max base fee cannot be lower than priority fee"
-  },
   "editGasMaxBaseFeeLow": {
     "message": "Max base fee is low for current network conditions"
+  },
+  "editGasMaxBaseFeeMultiplierImbalance": {
+    "message": "Multiplier is low relative to Priority fee"
   },
   "editGasMaxFeeHigh": {
     "message": "Max fee is higher than necessary"
@@ -851,7 +861,7 @@
     "message": "Max priority fee must be greater than 0 GWEI"
   },
   "editGasMaxPriorityFeeBelowMinimumV2": {
-    "message": "Priority fee must be at least 1 GWEI"
+    "message": "Priority fee must be greater than 0."
   },
   "editGasMaxPriorityFeeHigh": {
     "message": "Max priority fee is higher than necessary. You may pay more than needed."
@@ -910,6 +920,9 @@
   },
   "editPermission": {
     "message": "Edit Permission"
+  },
+  "enableAutoDetect": {
+    "message": " Enable Autodetect"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -1356,6 +1369,9 @@
   "importMyWallet": {
     "message": "Import My Wallet"
   },
+  "importNFTs": {
+    "message": "Import NFTs"
+  },
   "importTokenQuestion": {
     "message": "Import token?"
   },
@@ -1494,6 +1510,9 @@
   "learnMoreWithDot": {
     "message": "Learn more."
   },
+  "learnMoreUpperCase": {
+    "message": "Learn more"
+  },
   "learnScamRisk": {
     "message": "scams and security risks."
   },
@@ -1550,6 +1569,9 @@
   },
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
+  },
+  "link": {
+    "message": "Link"
   },
   "links": {
     "message": "Links"
@@ -1821,10 +1843,10 @@
     "message": "New Contract"
   },
   "newNFTsDetected": {
-    "message": "New NFTs detected"
+    "message": "New! NFT detection"
   },
   "newNFTsDetectedInfo": {
-    "message": "One or more new NFTs were detected in your wallet."
+    "message": "Allow MetaMask to automatically detect NFTs from Opensea and display in your MetaMask wallet."
   },
   "newNetworkAdded": {
     "message": "“$1” was successfully added!"
@@ -1990,6 +2012,15 @@
   "notifications8Title": {
     "message": "Ledger connection improvement",
     "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
+  },
+  "notifications9DescriptionOne": {
+    "message": "We now provide you with more insights on the 'Data' tab when confirming smart contract transactions."
+  },
+  "notifications9DescriptionTwo": {
+    "message": "You can now get a better understanding of your transaction’s details before confirming, and more easily add transaction addresses to your address book, helping you make safe and informed decisions."
+  },
+  "notifications9Title": {
+    "message": "👓 We are making transactions easier to read."
   },
   "ofTextNofM": {
     "message": "of"
@@ -2258,6 +2289,9 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
+  "removeNFT": {
+    "message": "Remove NFT"
+  },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
   },
@@ -2428,7 +2462,7 @@
     "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
   },
   "selectAccounts": {
-    "message": "Select account(s)"
+    "message": "Select the account(s) to use on this site"
   },
   "selectAll": {
     "message": "Select all"
@@ -2446,7 +2480,7 @@
     "message": "Select HD Path"
   },
   "selectNFTPrivacyPreference": {
-    "message": "Select NFT privacy preference"
+    "message": "Turn on NFT detection in Settings"
   },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path."
@@ -2608,6 +2642,9 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
+  },
+  "source": {
+    "message": "Source"
   },
   "speedUp": {
     "message": "Speed Up"
@@ -2982,6 +3019,12 @@
   "swapSourceInfo": {
     "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to find the best rates and lowest network fees."
   },
+  "swapSuggested": {
+    "message": "Swap suggested"
+  },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "Swaps are complex and time sensitive transactions. We recommend this gas fee for a good balance between cost and confidence of a successful Swap."
+  },
   "swapSwapFrom": {
     "message": "Swap from"
   },
@@ -3195,7 +3238,7 @@
     "message": "Decoded by Truffle"
   },
   "transactionDecodingAccreditationVerified": {
-    "message": "Verified contract on"
+    "message": "Verified contract on $1"
   },
   "transactionDecodingUnsupportedNetworkError": {
     "message": "Transaction decoding is not available for chainId $1"
@@ -3435,6 +3478,9 @@
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnOpensea": {
+    "message": "View on Opensea"
   },
   "viewinExplorer": {
     "message": "View $1 in Explorer",

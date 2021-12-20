@@ -486,14 +486,14 @@ describe('custom-gas selectors', () => {
       },
     ];
     it('should return renderable data about basic estimates', () => {
-      tests.forEach((test) => {
+      tests.forEach(({ expectedResult, mockState, useFastestButtons }) => {
         expect(
           getRenderableBasicEstimateData(
-            test.mockState,
+            mockState,
             GAS_LIMITS.SIMPLE,
-            test.useFastestButtons,
+            useFastestButtons,
           ),
-        ).toStrictEqual(test.expectedResult);
+        ).toStrictEqual(expectedResult);
       });
     });
   });
@@ -747,10 +747,10 @@ describe('custom-gas selectors', () => {
       },
     ];
     it('should return renderable data about basic estimates appropriate for buttons with less info', () => {
-      tests.forEach((test) => {
+      tests.forEach(({ expectedResult, mockState }) => {
         expect(
-          getRenderableEstimateDataForSmallButtonsFromGWEI(test.mockState),
-        ).toStrictEqual(test.expectedResult);
+          getRenderableEstimateDataForSmallButtonsFromGWEI(mockState),
+        ).toStrictEqual(expectedResult);
       });
     });
   });

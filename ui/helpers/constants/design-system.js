@@ -172,6 +172,11 @@ export const FONT_WEIGHT = {
   900: 900,
 };
 
+export const OVERFLOW_WRAP = {
+  BREAK_WORD: 'break-word',
+  NORMAL: 'normal',
+};
+
 export const FONT_STYLE = {
   ITALIC: 'italic',
   NORMAL: 'normal',

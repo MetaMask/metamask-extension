@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
+import { EDIT_GAS_MODES } from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { ETH } from '../../../../helpers/constants/common';
 import configureStore from '../../../../store/store';
@@ -46,7 +47,11 @@ const DAPP_SUGGESTED_ESTIMATE = {
   maxPriorityFeePerGas: '0x59682f00',
 };
 
-const renderComponent = (componentProps, transactionProps) => {
+const renderComponent = ({
+  componentProps,
+  transactionProps,
+  contextProps,
+} = {}) => {
   const store = configureStore({
     metamask: {
       nativeCurrency: ETH,
@@ -71,6 +76,7 @@ const renderComponent = (componentProps, transactionProps) => {
   return renderWithProvider(
     <GasFeeContextProvider
       transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
+      {...contextProps}
     >
       <EditGasItem priorityLevel="low" {...componentProps} />
     </GasFeeContextProvider>,
@@ -80,7 +86,7 @@ const renderComponent = (componentProps, transactionProps) => {
 
 describe('EditGasItem', () => {
   it('should renders low gas estimate option for priorityLevel low', () => {
-    renderComponent({ priorityLevel: 'low' });
+    renderComponent({ componentProps: { priorityLevel: 'low' } });
     expect(screen.queryByRole('button', { name: 'low' })).toBeInTheDocument();
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
@@ -89,7 +95,7 @@ describe('EditGasItem', () => {
   });
 
   it('should renders market gas estimate option for priorityLevel medium', () => {
-    renderComponent({ priorityLevel: 'medium' });
+    renderComponent({ componentProps: { priorityLevel: 'medium' } });
     expect(
       screen.queryByRole('button', { name: 'medium' }),
     ).toBeInTheDocument();
@@ -100,7 +106,7 @@ describe('EditGasItem', () => {
   });
 
   it('should renders aggressive gas estimate option for priorityLevel high', () => {
-    renderComponent({ priorityLevel: 'high' });
+    renderComponent({ componentProps: { priorityLevel: 'high' } });
     expect(screen.queryByRole('button', { name: 'high' })).toBeInTheDocument();
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
@@ -108,21 +114,33 @@ describe('EditGasItem', () => {
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
   });
 
+  it('should render priorityLevel high as "Swap suggested" for swaps', () => {
+    renderComponent({
+      componentProps: { priorityLevel: 'high' },
+      contextProps: { editGasMode: EDIT_GAS_MODES.SWAPS },
+    });
+    expect(screen.queryByRole('button', { name: 'high' })).toBeInTheDocument();
+    expect(screen.queryByText('🔄')).toBeInTheDocument();
+    expect(screen.queryByText('Swap suggested')).toBeInTheDocument();
+    expect(screen.queryByText('15 sec')).not.toBeInTheDocument();
+    expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
+  });
+
   it('should highlight option is priorityLevel is currently selected', () => {
-    renderComponent({ priorityLevel: 'high' }, { userFeeLevel: 'high' });
+    renderComponent({
+      componentProps: { priorityLevel: 'high' },
+      transactionProps: { userFeeLevel: 'high' },
+    });
     expect(
       document.getElementsByClassName('edit-gas-item--selected'),
     ).toHaveLength(1);
   });
 
   it('should renders site gas estimate option for priorityLevel dappSuggested', () => {
-    renderComponent(
-      { priorityLevel: 'dappSuggested' },
-      {
-        dappSuggestedGasFees: DAPP_SUGGESTED_ESTIMATE,
-        txParams: { gas: '0x5208', ...DAPP_SUGGESTED_ESTIMATE },
-      },
-    );
+    renderComponent({
+      componentProps: { priorityLevel: 'dappSuggested' },
+      transactionProps: { dappSuggestedGasFees: DAPP_SUGGESTED_ESTIMATE },
+    });
     expect(
       screen.queryByRole('button', { name: 'dappSuggested' }),
     ).toBeInTheDocument();
@@ -132,7 +150,10 @@ describe('EditGasItem', () => {
   });
 
   it('should renders advance gas estimate option for priorityLevel custom', () => {
-    renderComponent({ priorityLevel: 'custom' }, { userFeeLevel: 'high' });
+    renderComponent({
+      componentProps: { priorityLevel: 'custom' },
+      transactionProps: { userFeeLevel: 'high' },
+    });
     expect(
       screen.queryByRole('button', { name: 'custom' }),
     ).toBeInTheDocument();

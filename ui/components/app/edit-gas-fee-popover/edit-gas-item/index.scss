@@ -25,6 +25,7 @@
     color: $ui-black;
     font-size: 12px;
     font-weight: bold;
+    white-space: nowrap;
     width: 36%;
   }
 
@@ -37,6 +38,10 @@
       font-size: 32px;
       line-height: 1;
     }
+  }
+
+  &__maxfee {
+    position: relative;
   }
 
   &__time-estimate {

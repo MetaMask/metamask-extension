@@ -15,9 +15,10 @@ import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
+import { renderFeeRange } from '../utils';
 
 const validatePriorityFee = (value, gasFeeEstimates) => {
-  if (value < 1) {
+  if (value <= 0) {
     return 'editGasMaxPriorityFeeBelowMinimumV2';
   }
   if (
@@ -43,8 +44,7 @@ const PriorityFeeInput = () => {
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const {
-    setDirty,
-    setHasError,
+    setErrorValue,
     setMaxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
   const {
@@ -52,6 +52,10 @@ const PriorityFeeInput = () => {
     gasFeeEstimates,
     maxPriorityFeePerGas,
   } = useGasFeeContext();
+  const {
+    latestPriorityFeeRange,
+    historicalPriorityFeeRange,
+  } = gasFeeEstimates;
   const [priorityFeeError, setPriorityFeeError] = useState();
 
   const [priorityFee, setPriorityFee] = useState(() => {
@@ -72,18 +76,20 @@ const PriorityFeeInput = () => {
 
   const updatePriorityFee = (value) => {
     setPriorityFee(value);
-    setDirty(true);
   };
 
   useEffect(() => {
     setMaxPriorityFeePerGas(priorityFee);
     const error = validatePriorityFee(priorityFee, gasFeeEstimates);
+    setErrorValue(
+      'maxPriorityFeePerGas',
+      error === 'editGasMaxPriorityFeeBelowMinimumV2',
+    );
     setPriorityFeeError(error);
-    setHasError(Boolean(error));
   }, [
     gasFeeEstimates,
     priorityFee,
-    setHasError,
+    setErrorValue,
     setMaxPriorityFeePerGas,
     setPriorityFeeError,
   ]);
@@ -100,7 +106,10 @@ const PriorityFeeInput = () => {
         detailText={`≈ ${priorityFeeInFiat}`}
         numeric
       />
-      <AdvancedGasFeeInputSubtext latest="1-18 GWEI" historical="23-359 GWEI" />
+      <AdvancedGasFeeInputSubtext
+        latest={renderFeeRange(latestPriorityFeeRange)}
+        historical={renderFeeRange(historicalPriorityFeeRange)}
+      />
     </>
   );
 };

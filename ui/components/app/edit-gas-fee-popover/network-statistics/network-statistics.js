@@ -9,7 +9,8 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import I18nValue from '../../../ui/i18n-value';
 import Typography from '../../../ui/typography/typography';
 
-import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
+import { BaseFeeTooltip } from './tooltips';
+import LatestPriorityFeeField from './latest-priority-fee-field';
 import StatusSlider from './status-slider';
 
 const NetworkStatistics = () => {
@@ -38,14 +39,7 @@ const NetworkStatistics = () => {
           </span>
         </div>
         <div className="network-statistics__info__separator" />
-        <div className="network-statistics__info__field network-statistics__info__field--priority-fee">
-          <span className="network-statistics__info__field-data">
-            <PriorityFeeTooltip>0.5 - 22 GWEI</PriorityFeeTooltip>
-          </span>
-          <span className="network-statistics__info__field-label">
-            <I18nValue messageKey="priorityFee" />
-          </span>
-        </div>
+        <LatestPriorityFeeField />
         <div className="network-statistics__info__separator" />
         <div className="network-statistics__info__field">
           <StatusSlider />

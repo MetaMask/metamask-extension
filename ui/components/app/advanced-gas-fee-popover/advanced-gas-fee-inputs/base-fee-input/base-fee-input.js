@@ -10,6 +10,7 @@ import {
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
+
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -22,6 +23,10 @@ import I18nValue from '../../../../ui/i18n-value';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
+import {
+  roundToDecimalPlacesRemovingExtraZeroes,
+  renderFeeRange,
+} from '../utils';
 
 const divideCurrencyValues = (value, baseFee) => {
   if (baseFee === 0) {
@@ -41,9 +46,16 @@ const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
     multiplierBase: 10,
   }).toNumber();
 
-const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
+const validateBaseFee = (
+  editingInGwei,
+  value,
+  gasFeeEstimates,
+  maxPriorityFeePerGas,
+) => {
   if (bnGreaterThan(maxPriorityFeePerGas, value)) {
-    return 'editGasMaxBaseFeeImbalance';
+    return editingInGwei
+      ? 'editGasMaxBaseFeeGWEIImbalance'
+      : 'editGasMaxBaseFeeMultiplierImbalance';
   }
   if (
     gasFeeEstimates?.low &&
@@ -67,13 +79,12 @@ const BaseFeeInput = () => {
   const t = useI18nContext();
   const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
   const {
-    setDirty,
-    setHasError,
-    setMaxFeePerGas,
     maxPriorityFeePerGas,
+    setErrorValue,
+    setMaxFeePerGas,
   } = useAdvancedGasFeePopoverContext();
 
-  const { estimatedBaseFee } = gasFeeEstimates;
+  const { estimatedBaseFee, historicalBaseFeeRange } = gasFeeEstimates;
   const [baseFeeError, setBaseFeeError] = useState();
   const {
     numberOfDecimals: numberOfDecimalsPrimary,
@@ -133,7 +144,6 @@ const BaseFeeInput = () => {
       }
       setMaxBaseFeeGWEI(baseFeeInGWEI);
       setMaxBaseFeeMultiplier(baseFeeMultiplierValue);
-      setDirty(true);
     },
     [
       editingInGwei,
@@ -141,25 +151,31 @@ const BaseFeeInput = () => {
       numberOfDecimalsPrimary,
       setMaxBaseFeeGWEI,
       setMaxBaseFeeMultiplier,
-      setDirty,
     ],
   );
 
   useEffect(() => {
     setMaxFeePerGas(maxBaseFeeGWEI);
     const error = validateBaseFee(
+      editingInGwei,
       maxBaseFeeGWEI,
       gasFeeEstimates,
       maxPriorityFeePerGas,
     );
+
     setBaseFeeError(error);
-    setHasError(Boolean(error));
+    setErrorValue(
+      'maxFeePerGas',
+      error === 'editGasMaxBaseFeeGWEIImbalance' ||
+        error === 'editGasMaxBaseFeeMultiplierImbalance',
+    );
   }, [
+    editingInGwei,
     gasFeeEstimates,
     maxBaseFeeGWEI,
     maxPriorityFeePerGas,
-    setHasError,
     setBaseFeeError,
+    setErrorValue,
     setMaxFeePerGas,
   ]);
 
@@ -187,8 +203,11 @@ const BaseFeeInput = () => {
         numeric
       />
       <AdvancedGasFeeInputSubtext
-        latest={estimatedBaseFee}
-        historical="23-359 GWEI"
+        latest={`${roundToDecimalPlacesRemovingExtraZeroes(
+          estimatedBaseFee,
+          2,
+        )} GWEI`}
+        historical={renderFeeRange(historicalBaseFeeRange)}
       />
     </Box>
   );
