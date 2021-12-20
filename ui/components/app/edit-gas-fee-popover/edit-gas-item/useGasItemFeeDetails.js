@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -13,7 +12,10 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
-import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../../helpers/utils/gas';
+import {
+  addTenPercent,
+  gasEstimateGreaterThanGasUsedPlusTenPercent,
+} from '../../../../helpers/utils/gas';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
@@ -63,13 +65,11 @@ export const useGasItemFeeDetails = (priorityLevel) => {
       maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
     }
   } else if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
-    maxFeePerGas = new BigNumber(
-      hexWEIToDecGWEI(transaction.previousGas?.maxFeePerGas),
-    )
-      .times(1.1)
-      .toNumber();
+    maxFeePerGas = hexWEIToDecGWEI(
+      addTenPercent(transaction.previousGas?.maxFeePerGas),
+    );
     maxPriorityFeePerGas = hexWEIToDecGWEI(
-      transaction.previousGas?.maxPriorityFeePerGas,
+      addTenPercent(transaction.previousGas?.maxPriorityFeePerGas),
     );
   }
 
