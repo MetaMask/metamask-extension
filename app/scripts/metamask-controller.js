@@ -1370,10 +1370,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Smart Transactions
-      setSmartTransactionsOptInStatus: smartTransactionsController.setSmartTransactionsOptInStatus.bind(
+      setSmartTransactionsOptInStatus: smartTransactionsController.setOptInState.bind(
         smartTransactionsController,
       ),
-      fetchSmartTransactionFees: smartTransactionsController.fetchSmartTransactionFees.bind(
+      fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
         smartTransactionsController,
       ),
       submitSignedTransactions: smartTransactionsController.submitSignedTransactions.bind(
@@ -1385,7 +1385,7 @@ export default class MetamaskController extends EventEmitter {
       cancelSmartTransaction: smartTransactionsController.cancelSmartTransaction.bind(
         smartTransactionsController,
       ),
-      fetchSmartTransactionsLiveness: smartTransactionsController.fetchSmartTransactionsLiveness.bind(
+      fetchSmartTransactionsLiveness: smartTransactionsController.fetchLiveness.bind(
         smartTransactionsController,
       ),
       updateSmartTransaction: smartTransactionsController.updateSmartTransaction.bind(
