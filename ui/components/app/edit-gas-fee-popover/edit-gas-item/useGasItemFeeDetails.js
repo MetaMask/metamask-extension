@@ -68,6 +68,7 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     priorityLevel === PRIORITY_LEVELS.MINIMUM &&
     transaction.previousGas
   ) {
+    console.log('into if');
     maxFeePerGas = hexWEIToDecGWEI(
       addTenPercent(transaction.previousGas.maxFeePerGas),
     );

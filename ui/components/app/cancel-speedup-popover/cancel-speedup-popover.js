@@ -38,7 +38,7 @@ const CancelSpeedupPopover = () => {
     updateTransactionUsingEstimate,
   } = useGasFeeContext();
   const t = useI18nContext();
-  const { closeModal, currentModal, openModal } = useTransactionModalContext();
+  const { closeModal, currentModal } = useTransactionModalContext();
   const appIsLoading = useSelector(getAppIsLoading);
 
   useEffect(() => {
@@ -101,7 +101,7 @@ const CancelSpeedupPopover = () => {
         <Typography
           boxProps={{ alignItems: ALIGN_ITEMS.CENTER, display: DISPLAY.FLEX }}
           variant={TYPOGRAPHY.H6}
-          margin={[0, 0, 4, 0]}
+          margin={[0, 0, 2, 0]}
         >
           <I18nValue
             messageKey="cancelSpeedUpLabel"
@@ -113,19 +113,36 @@ const CancelSpeedupPopover = () => {
           />
           <InfoTooltip
             position="top"
-            contentText="To cancel a transaction the gas fee must be increased by at least 10% for it to be recognized by the network."
+            contentText={
+              <Box>
+                {t('cancelSpeedUpTransactionTooltip', [
+                  EDIT_GAS_MODES.CANCEL ? t('cancel') : t('speedUp'),
+                ])}
+                <div>
+                  <a
+                    href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('learnMoreUpperCase')}
+                  </a>
+                </div>
+              </Box>
+            }
           />
         </Typography>
+        <div className="cancel-speedup-popover__separator" />
         <Box
           display={DISPLAY.FLEX}
           alignItems={ALIGN_ITEMS.CENTER}
           flexDirection={FLEX_DIRECTION.COLUMN}
+          marginTop={4}
         >
           <EditGasFeeButton />
           <GasDetailsItem />
         </Box>
         <Button type="primary" onClick={submitTransactionChange}>
-          Submit
+          <I18nValue messageKey="submit" />
         </Button>
       </div>
     </Popover>

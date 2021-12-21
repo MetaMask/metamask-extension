@@ -40,9 +40,11 @@ export const useTransactionFunctions = ({
       gasLimit,
     } = transaction?.txParams;
     return {
-      maxFeePerGas,
-      maxPriorityFeePerGas,
-      gasLimit,
+      previousGas: {
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        gasLimit,
+      },
     };
   }, [editGasMode, transaction.previousGas, transaction?.txParams]);
 

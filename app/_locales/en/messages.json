@@ -420,6 +420,10 @@
     "message": "This gas fee will $1 the original.",
     "description": "$1 is text 'replace' in bold"
   },
+  "cancelSpeedUpTransactionTooltip": {
+    "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
+    "description": "$1 is string 'cancel' or 'speed up'"
+  },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
@@ -1722,6 +1726,9 @@
   },
   "minimumCancelSpeedupGasFee": {
     "message": "+10%"
+  },
+  "minimumEstimate": {
+    "message": "10% Minimum"
   },
   "mismatchedChain": {
     "message": "The network details for this chain ID do not match our records. We recommend that you $1 before proceeding.",

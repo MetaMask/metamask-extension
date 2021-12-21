@@ -41,14 +41,19 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   ) {
     icon = 'swapSuggested';
     title = 'swapSuggested';
+  } else if (estimateUsed === PRIORITY_LEVELS.MINIMUM) {
+    icon = undefined;
+    title = 'minimumEstimate';
   }
 
   return (
     <div className="edit-gas-fee-button">
       <button onClick={() => openModal('editGasFee')}>
-        <span className="edit-gas-fee-button__icon">
-          {`${PRIORITY_LEVEL_ICON_MAP[icon]} `}
-        </span>
+        {icon && (
+          <span className="edit-gas-fee-button__icon">
+            {`${PRIORITY_LEVEL_ICON_MAP[icon]} `}
+          </span>
+        )}
         <span className="edit-gas-fee-button__label">{t(title)}</span>
         <i className="fas fa-chevron-right asset-list-item__chevron-right" />
       </button>

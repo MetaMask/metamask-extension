@@ -52,6 +52,7 @@ const EditGasItem = ({ priorityLevel }) => {
     editGasMode,
     estimateUsed,
     gasLimit,
+    updateTransactionToMinimumGasFee,
     updateTransactionUsingDAPPSuggestedValues,
     updateTransactionUsingEstimate,
     transaction,
@@ -82,7 +83,10 @@ const EditGasItem = ({ priorityLevel }) => {
       openModal('advancedGasFee');
     } else {
       closeModal('editGasFee');
-      if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
+
+      if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
+        updateTransactionToMinimumGasFee();
+      } else if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
         updateTransactionUsingDAPPSuggestedValues();
       } else {
         updateTransactionUsingEstimate(priorityLevel);

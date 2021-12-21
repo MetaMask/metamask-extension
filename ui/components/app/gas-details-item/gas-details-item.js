@@ -17,7 +17,7 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import GasDetailsItemTitle from './gas-details-item-title';
 
-const GasDetailsItem = ({ userAcknowledgedGasMissing }) => {
+const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
   const {
     estimateUsed,
     hasSimulationError,
@@ -102,7 +102,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing }) => {
 };
 
 GasDetailsItem.propTypes = {
-  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
+  userAcknowledgedGasMissing: PropTypes.bool,
 };
 
 export default GasDetailsItem;

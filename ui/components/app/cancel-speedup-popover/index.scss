@@ -7,12 +7,21 @@
     }
   }
 
-  .edit0gas-fee-button {
+  .edit-gas-fee-button {
     align-self: flex-end;
+  }
+
+  .transaction-detail-item {
+    padding-top: 10px;
   }
 
   &__spinner {
     margin-top: -30px;
     height: calc(100% + 30px);
+  }
+
+  &__separator {
+    border-bottom: 1px solid #CCD3D8;
+    width: 100%;
   }
 }
