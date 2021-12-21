@@ -55,7 +55,9 @@ const PriorityFeeInput = () => {
   const {
     latestPriorityFeeRange,
     historicalPriorityFeeRange,
+    priorityFeeTrend,
   } = gasFeeEstimates;
+  const [feeTrend, setFeeTrend] = useState(priorityFeeTrend);
   const [priorityFeeError, setPriorityFeeError] = useState();
 
   const [priorityFee, setPriorityFee] = useState(() => {
@@ -86,12 +88,18 @@ const PriorityFeeInput = () => {
       error === 'editGasMaxPriorityFeeBelowMinimumV2',
     );
     setPriorityFeeError(error);
+    if (priorityFeeTrend !== 'level' && priorityFeeTrend !== feeTrend) {
+      setFeeTrend(priorityFeeTrend);
+    }
   }, [
+    feeTrend,
+    priorityFeeTrend,
     gasFeeEstimates,
     priorityFee,
     setErrorValue,
     setMaxPriorityFeePerGas,
     setPriorityFeeError,
+    setFeeTrend,
   ]);
 
   return (
@@ -109,6 +117,7 @@ const PriorityFeeInput = () => {
       <AdvancedGasFeeInputSubtext
         latest={renderFeeRange(latestPriorityFeeRange)}
         historical={renderFeeRange(historicalPriorityFeeRange)}
+        feeTrend={feeTrend}
       />
     </>
   );
