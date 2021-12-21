@@ -92,7 +92,11 @@ const SnapListTab = ({
         </div>
       ) : (
         <div className="no-snap-container">
-          <Typography variant={TYPOGRAPHY.H4} color={COLORS.UI4}>
+          <Typography
+            className="no-snaps-text"
+            variant={TYPOGRAPHY.H4}
+            color={COLORS.UI4}
+          >
             {t('noSnaps')}
           </Typography>
         </div>
