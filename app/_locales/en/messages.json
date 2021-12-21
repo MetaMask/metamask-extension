@@ -252,16 +252,13 @@
     "message": "Approval Tx Gas Cost"
   },
   "approve": {
-    "message": "Approve"
+    "message": "Approve spend limit"
   },
   "approveAndInstall": {
     "message": "Approve & Install"
   },
   "approveButtonText": {
     "message": "Approve"
-  },
-  "approveLimit": {
-    "message": "Approve spend limit"
   },
   "approveSpendLimit": {
     "message": "Approve $1 spend limit",
