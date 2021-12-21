@@ -87,7 +87,7 @@ function getValues(pendingApproval, t, actions) {
         },
       },
     ],
-    approvalText: t('sign'),
+    approvalText: t('approve'),
     cancelText: t('reject'),
     onApprove: () => actions.resolvePendingApproval(pendingApproval.id, true),
     onCancel: () => actions.resolvePendingApproval(pendingApproval.id, false),
