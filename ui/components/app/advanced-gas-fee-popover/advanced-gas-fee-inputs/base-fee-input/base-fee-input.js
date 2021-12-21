@@ -10,7 +10,6 @@ import {
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
-
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -77,11 +76,13 @@ const validateBaseFee = (
 
 const BaseFeeInput = () => {
   const t = useI18nContext();
+
   const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
   const {
     maxPriorityFeePerGas,
     setErrorValue,
     setMaxFeePerGas,
+    setBaseFeeMultiplier,
   } = useAdvancedGasFeePopoverContext();
 
   const {
@@ -177,6 +178,7 @@ const BaseFeeInput = () => {
     if (baseFeeTrend !== 'level' && baseFeeTrend !== feeTrend) {
       setFeeTrend(baseFeeTrend);
     }
+    setBaseFeeMultiplier(maxBaseFeeMultiplier);
   }, [
     feeTrend,
     editingInGwei,
@@ -184,14 +186,16 @@ const BaseFeeInput = () => {
     gasFeeEstimates,
     maxBaseFeeGWEI,
     maxPriorityFeePerGas,
+    maxBaseFeeMultiplier,
     setBaseFeeError,
     setErrorValue,
     setMaxFeePerGas,
     setFeeTrend,
+    setBaseFeeMultiplier,
   ]);
 
   return (
-    <Box className="base-fee-input">
+    <Box className="base-fee-input" margin={[0, 2]}>
       <FormField
         error={baseFeeError ? t(baseFeeError) : ''}
         onChange={updateBaseFee}

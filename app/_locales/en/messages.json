@@ -170,6 +170,12 @@
   "advancedBaseGasFeeToolTip": {
     "message": "When your transaction gets included in the block, any difference between your max base fee and the actual base fee will be refunded. Total amount is calculated as max base fee (in GWEI) * gas limit."
   },
+  "advancedGasFeeDefaultOptIn": {
+    "message": "Save these $1 as my default for \"Advanced\""
+  },
+  "advancedGasFeeDefaultOptOut": {
+    "message": "Always use these values and advanced setting as default."
+  },
   "advancedGasFeeModalTitle": {
     "message": "Advanced gas fee"
   },
@@ -1850,6 +1856,9 @@
   },
   "newTransactionFee": {
     "message": "New Transaction Fee"
+  },
+  "newValues": {
+    "message": "new values"
   },
   "next": {
     "message": "Next"
