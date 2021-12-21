@@ -1,20 +1,5 @@
 .collectibles-items {
-  &__image__wrapper {
-    border-radius: 4px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    cursor: pointer;
-  }
-
-  &__image {
-    border-radius: 4px;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-  }
-
-  &__item {
+  &__collection {
     margin-bottom: 24px;
 
     &__accordion-title {
@@ -36,6 +21,25 @@
       color: $ui-white;
       text-align: center;
       line-height: 1;
+    }
+
+    &__item {
+      align-self: center;
+
+      &__wrapper {
+        border-radius: 4px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      &__image {
+        border-radius: 4px;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
     }
   }
 }
