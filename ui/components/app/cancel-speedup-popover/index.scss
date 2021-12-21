@@ -1,6 +1,7 @@
 .cancel-speedup-popover {
   &__wrapper {
     padding: 0 16px 16px;
+
     .info-tooltip {
       margin-left: 4px;
     }
@@ -10,11 +11,11 @@
     margin-top: -30px;
     height: calc(100% + 30px);
   }
-  
+
   &__transaction-info {
     @include H7;
 
-    background-color: #F2F4F6;
+    background-color: #f2f4f6;
     border-radius: 20px;
     margin: 16px 0;
     padding: 16px;
@@ -54,7 +55,7 @@
       background-color: $success-2;
       border-radius: 10px;
       color: $success-3;
-      padding: 0px 8px;
+      padding: 0 8px;
     }
 
     strong {
