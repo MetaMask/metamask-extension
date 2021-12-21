@@ -12,8 +12,8 @@ export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
 ) => {
   let { maxFeePerGas: maxFeePerGasInTransaction } = transaction.txParams;
   maxFeePerGasInTransaction = new BigNumber(
-    hexWEIToDecGWEI(maxFeePerGasInTransaction),
-  ).times(1.1);
+    hexWEIToDecGWEI(addTenPercent(maxFeePerGasInTransaction)),
+  );
 
   const maxFeePerGasFromEstimate =
     gasFeeEstimates[estimate]?.suggestedMaxFeePerGas;
