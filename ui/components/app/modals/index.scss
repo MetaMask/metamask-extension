@@ -13,6 +13,7 @@
 @import 'transaction-confirmed/index';
 @import 'customize-nonce/index';
 @import 'convert-token-to-nft-modal/index';
+@import 'snap-install-warning/index';
 
 .modal {
   z-index: 1050;
@@ -44,4 +45,3 @@
     outline: none !important;
   }
 }
-
