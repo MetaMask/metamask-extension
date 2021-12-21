@@ -28,6 +28,14 @@
     "message": "மேடமஸ்க் ",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "ஒப்புதல்"
   },
