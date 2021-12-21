@@ -1,0 +1,46 @@
+.snap-install {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  box-shadow: none;
+  border: none;
+
+  .snap-requests-permission {
+    @include H7;
+
+    padding: 16px;
+  }
+
+  .permissions-connect-permission-list {
+    padding: 0 24px;
+  }
+
+  .source-code {
+    @include H7;
+
+    display: flex;
+    color: $ui-4;
+
+    .link {
+      color: $primary-blue;
+      margin-inline-start: 4px;
+      cursor: pointer;
+    }
+  }
+
+  .page-container__footer {
+    width: 100%;
+  }
+
+  .footers,
+  .headers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.permissions-connect-header {
+  align-items: center;
+}

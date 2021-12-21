@@ -125,5 +125,5 @@ export default function PermissionsConnectPermissionList({ permissions }) {
 }
 
 PermissionsConnectPermissionList.propTypes = {
-  permissions: PropTypes.objectOf(PropTypes.bool).isRequired,
+  permissions: PropTypes.object.isRequired, // TODO(ritave): Currently some properties are boolean, some are {} empty objects, fix the issue at root cause.
 };
