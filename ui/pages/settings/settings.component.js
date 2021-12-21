@@ -165,7 +165,7 @@ class SettingsPage extends PureComponent {
     } else if (initialBreadCrumbKey) {
       subheaderText = t(initialBreadCrumbKey);
     } else {
-      subheaderText = t(pathnameI18nKey || 'contacts');
+      subheaderText = t(pathnameI18nKey || 'general');
     }
 
     return (
@@ -302,14 +302,16 @@ class SettingsPage extends PureComponent {
         />
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          <>
-            <Route exact path={SNAPS_LIST_ROUTE} component={SnapListTab} />
-            <Route
-              exact
-              path={`${SNAPS_VIEW_ROUTE}/:id`}
-              component={SnapListTab}
-            />
-          </>
+          <Route exact path={SNAPS_LIST_ROUTE} component={SnapListTab} />
+          ///: END:ONLY_INCLUDE_IN
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          <Route
+            exact
+            path={`${SNAPS_VIEW_ROUTE}/:id`}
+            component={SnapListTab}
+          />
           ///: END:ONLY_INCLUDE_IN
         }
         <Route

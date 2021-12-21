@@ -89,12 +89,14 @@ const SnapSettingsCard = ({
           {name}
         </Typography>
         <Box paddingLeft={4} className="snap-settings-card__toggle-container">
-          <ToggleButton
-            value={isEnabled}
-            onToggle={onToggle}
-            className="snap-settings-card__toggle-container__toggle-button"
-            {...toggleButtonProps}
-          />
+          <Tooltip interactive position="bottom" html={t('snapsToggle')}>
+            <ToggleButton
+              value={isEnabled}
+              onToggle={onToggle}
+              className="snap-settings-card__toggle-container__toggle-button"
+              {...toggleButtonProps}
+            />
+          </Tooltip>
         </Box>
       </Box>
       <Typography
