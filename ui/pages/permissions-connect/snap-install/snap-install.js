@@ -45,9 +45,10 @@ export default function SnapInstall({
   const shouldShowWarning = useMemo(
     () =>
       Boolean(
-        Object.keys(request.permissions).find((v) =>
-          v.startsWith('snap_getBip44Entropy_'),
-        ),
+        request.permissions &&
+          Object.keys(request.permissions).find((v) =>
+            v.startsWith('snap_getBip44Entropy_'),
+          ),
       ),
     [request.permissions],
   );
@@ -66,7 +67,9 @@ export default function SnapInstall({
         <div className="snap-requests-permission">
           {t('snapRequestsPermission')}
         </div>
-        <PermissionsConnectPermissionList permissions={request.permissions} />
+        <PermissionsConnectPermissionList
+          permissions={request.permissions || {}}
+        />
       </div>
       <div className="footers">
         {targetSubjectMetadata.sourceCode ? (
@@ -105,7 +108,6 @@ SnapInstall.propTypes = {
     iconUrl: PropTypes.string,
     name: PropTypes.string,
     origin: PropTypes.string.isRequired,
-    permissions: PropTypes.object.isRequired,
     sourceCode: PropTypes.string,
   }).isRequired,
 };

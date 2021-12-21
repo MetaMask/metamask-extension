@@ -86,6 +86,7 @@ export default class PermissionConnect extends Component {
 
   componentDidMount() {
     const {
+      connectPath,
       confirmPermissionPath,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       snapInstallPath,
@@ -94,7 +95,6 @@ export default class PermissionConnect extends Component {
       getCurrentWindowTab,
       getRequestAccountTabIds,
       permissionsRequest,
-      page,
       history,
       isRequestingAccounts,
     } = this.props;
@@ -111,7 +111,7 @@ export default class PermissionConnect extends Component {
       window.addEventListener('beforeunload', this.beforeUnload);
     }
 
-    if (page === '1' && !isRequestingAccounts) {
+    if (history.location.pathname === connectPath && !isRequestingAccounts) {
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       if (isSnap) {
         history.push(snapInstallPath);
