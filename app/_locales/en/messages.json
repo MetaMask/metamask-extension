@@ -2674,6 +2674,9 @@
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
   },
+  "snapsStatus": {
+    "message": "Snap status is dependent on activity."
+  },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },

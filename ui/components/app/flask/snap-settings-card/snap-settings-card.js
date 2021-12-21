@@ -13,12 +13,14 @@ import ToggleButton from '../../../ui/toggle-button';
 import Chip from '../../../ui/chip';
 import ColorIndicator from '../../../ui/color-indicator';
 import Button from '../../../ui/button';
+import Tooltip from '../../../ui/tooltip';
 
 import {
   COLORS,
   TYPOGRAPHY,
   FONT_WEIGHT,
   ALIGN_ITEMS,
+  JUSTIFY_CONTENT,
   DISPLAY,
   TEXT_ALIGN,
 } from '../../../../helpers/constants/design-system';
@@ -113,6 +115,7 @@ const SnapSettingsCard = ({
           <Box
             display={DISPLAY.FLEX}
             alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
             marginBottom={4}
           >
             <Box>
@@ -124,24 +127,26 @@ const SnapSettingsCard = ({
                 {t('flaskSnapSettingsCardButtonCta')}
               </Button>
             </Box>
-            <Chip
-              leftIcon={
-                <Box paddingLeft={1}>
-                  <ColorIndicator
-                    color={STATUS_COLORS[status]}
-                    type={ColorIndicator.TYPES.FILLED}
-                  />
-                </Box>
-              }
-              label={status}
-              labelProps={{
-                color: COLORS.UI4,
-                margin: [0, 1],
-              }}
-              backgroundColor={COLORS.UI1}
-              className="snap-settings-card__chip"
-              {...chipProps}
-            />
+            <Tooltip interactive position="bottom" html={t('snapsStatus')}>
+              <Chip
+                leftIcon={
+                  <Box paddingLeft={1}>
+                    <ColorIndicator
+                      color={STATUS_COLORS[status]}
+                      type={ColorIndicator.TYPES.FILLED}
+                    />
+                  </Box>
+                }
+                label={status}
+                labelProps={{
+                  color: COLORS.UI4,
+                  margin: [0, 1],
+                }}
+                backgroundColor={COLORS.UI1}
+                className="snap-settings-card__chip"
+                {...chipProps}
+              />
+            </Tooltip>
           </Box>
         </Box>
         <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
