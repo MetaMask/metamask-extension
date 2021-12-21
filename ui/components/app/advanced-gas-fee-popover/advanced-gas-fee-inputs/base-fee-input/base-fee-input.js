@@ -113,6 +113,12 @@ const BaseFeeInput = () => {
         advancedGasFeeValues.maxBaseFee,
         numberOfDecimalsPrimary,
       );
+    } else if (advancedGasFeeValues?.maxBaseFee === maxFeePerGas) {
+      return multiplyCurrencyValues(
+        estimatedBaseFee,
+        maxFeePerGas,
+        numberOfDecimalsPrimary,
+      );
     }
     return maxFeePerGas;
   });
@@ -123,6 +129,8 @@ const BaseFeeInput = () => {
       advancedGasFeeValues?.maxBaseFee
     ) {
       return advancedGasFeeValues.maxBaseFee;
+    } else if (advancedGasFeeValues?.maxBaseFee === maxFeePerGas) {
+      return maxFeePerGas;
     }
     return divideCurrencyValues(maxFeePerGas, estimatedBaseFee);
   });
