@@ -89,7 +89,7 @@ const mapStateToProps = (state, ownProps) => {
   if (pathname === connectPath) {
     page = '1';
   } else if (pathname === confirmPermissionPath) {
-    page = '2';
+    page = isRequestingAccounts ? '2' : '1';
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
   } else if (pathname === snapInstallPath) {
     page = isRequestingAccounts ? '3' : '2';

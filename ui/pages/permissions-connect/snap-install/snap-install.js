@@ -52,6 +52,8 @@ export default function SnapInstall({
     [request.permissions],
   );
 
+  console.log(request, targetSubjectMetadata);
+
   return (
     <div className="page-container snap-install">
       <div className="headers">
@@ -60,7 +62,7 @@ export default function SnapInstall({
           iconName={targetSubjectMetadata.name}
           headerTitle={t('snapInstall')}
           headerText={null} // TODO(ritave): Add header text when snaps support description
-          siteOrigin={targetSubjectMetadata.name}
+          siteOrigin={targetSubjectMetadata.origin}
           npmPackageName={npmId}
         />
         <div className="snap-requests-permission">
