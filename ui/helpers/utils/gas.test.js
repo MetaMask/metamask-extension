@@ -44,5 +44,9 @@ describe('Gas utils', () => {
       const result = addTenPercent('0x59682f00');
       expect(result).toStrictEqual('0x62590080');
     });
+    it('should return undefined if undefined value is passed', () => {
+      const result = addTenPercent(undefined);
+      expect(result).toBeUndefined();
+    });
   });
 });

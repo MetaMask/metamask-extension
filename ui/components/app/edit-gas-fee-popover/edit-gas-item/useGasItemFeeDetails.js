@@ -64,12 +64,15 @@ export const useGasItemFeeDetails = (priorityLevel) => {
         parseFloat(advancedGasFeeValues.maxBaseFee);
       maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
     }
-  } else if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
+  } else if (
+    priorityLevel === PRIORITY_LEVELS.MINIMUM &&
+    transaction.previousGas
+  ) {
     maxFeePerGas = hexWEIToDecGWEI(
-      addTenPercent(transaction.previousGas?.maxFeePerGas),
+      addTenPercent(transaction.previousGas.maxFeePerGas),
     );
     maxPriorityFeePerGas = hexWEIToDecGWEI(
-      addTenPercent(transaction.previousGas?.maxPriorityFeePerGas),
+      addTenPercent(transaction.previousGas.maxPriorityFeePerGas),
     );
   }
 

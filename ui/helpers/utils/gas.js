@@ -28,6 +28,7 @@ export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
  * @returns {string} - hex value in WEI 10% higher than the param.
  */
 export function addTenPercent(hexStringValue) {
+  if (hexStringValue === undefined) return undefined;
   return addHexPrefix(
     multiplyCurrencies(hexStringValue, 1.1, {
       toNumericBase: 'hex',

@@ -146,6 +146,7 @@ const EditGasItem = ({ priorityLevel }) => {
               editGasMode={editGasMode}
               gasLimit={gasLimit}
               transaction={transaction}
+              estimateGreaterThanGasUse={estimateGreaterThanGasUse}
             />
           }
           position="top"

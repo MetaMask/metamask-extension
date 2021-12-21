@@ -1,29 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
 
 import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
+import { getPreferences } from '../../../selectors';
 
-import Box from '../../../components/ui/box';
-import GasTiming from '../../../components/app/gas-timing/gas-timing.component';
-import I18nValue from '../../../components/ui/i18n-value';
-import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
-import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
-import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
+import Box from '../../ui/box';
+import GasTiming from '../gas-timing/gas-timing.component';
+import I18nValue from '../../ui/i18n-value';
+import LoadingHeartBeat from '../../ui/loading-heartbeat';
+import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import GasDetailsItemTitle from './gas-details-item-title';
 
-const GasDetailsItem = ({
-  hexMaximumTransactionFee,
-  hexMinimumTransactionFee,
-  maxFeePerGas,
-  maxPriorityFeePerGas,
-  userAcknowledgedGasMissing,
-  useNativeCurrencyAsPrimaryCurrency,
-}) => {
-  const { estimateUsed, hasSimulationError, transaction } = useGasFeeContext();
+const GasDetailsItem = ({ userAcknowledgedGasMissing }) => {
+  const {
+    estimateUsed,
+    hasSimulationError,
+    maximumCostInHexWei: hexMaximumTransactionFee,
+    minimumCostInHexWei: hexMinimumTransactionFee,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    transaction,
+  } = useGasFeeContext();
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   if (hasSimulationError && !userAcknowledgedGasMissing) return null;
 
@@ -98,12 +102,7 @@ const GasDetailsItem = ({
 };
 
 GasDetailsItem.propTypes = {
-  hexMaximumTransactionFee: PropTypes.string,
-  hexMinimumTransactionFee: PropTypes.string,
-  maxFeePerGas: PropTypes.string,
-  maxPriorityFeePerGas: PropTypes.string,
   userAcknowledgedGasMissing: PropTypes.bool.isRequired,
-  useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
 };
 
 export default GasDetailsItem;

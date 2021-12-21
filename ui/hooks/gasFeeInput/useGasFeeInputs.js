@@ -198,6 +198,7 @@ export function useGasFeeInputs(
     estimatedMinimumFiat,
     estimatedMaximumNative,
     estimatedMinimumNative,
+    maximumCostInHexWei,
     minimumCostInHexWei,
   } = useGasEstimates({
     editGasMode,
@@ -328,6 +329,8 @@ export function useGasFeeInputs(
     estimatedMaximumNative,
     estimatedMinimumNative,
     isGasEstimatesLoading,
+    maximumCostInHexWei,
+    minimumCostInHexWei,
     estimateUsed,
     gasFeeEstimates,
     gasEstimateType,

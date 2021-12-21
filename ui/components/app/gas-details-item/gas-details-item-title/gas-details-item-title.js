@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsMainnet } from '../../../../selectors';
-import Box from '../../../../components/ui/box';
-import I18nValue from '../../../../components/ui/i18n-value';
-import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
-import Typography from '../../../../components/ui/typography/typography';
+import Box from '../../../ui/box';
+import I18nValue from '../../../ui/i18n-value';
+import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
+import Typography from '../../../ui/typography/typography';
 
 const GasDetailsItemTitle = () => {
   const t = useI18nContext();

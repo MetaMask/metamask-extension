@@ -7,59 +7,12 @@
     }
   }
 
+  .edit0gas-fee-button {
+    align-self: flex-end;
+  }
+
   &__spinner {
     margin-top: -30px;
     height: calc(100% + 30px);
-  }
-
-  &__transaction-info {
-    @include H7;
-
-    background-color: #f2f4f6;
-    border-radius: 20px;
-    margin: 16px 0;
-    padding: 16px;
-    width: 100%;
-
-    &__maxfee {
-      margin-left: 12px;
-    }
-
-    &__totalfee {
-      color: $ui-4;
-
-      &__value {
-        margin-left: 4px;
-      }
-    }
-
-    &__edit-btn {
-      background: none;
-      border: none;
-      padding: none;
-
-      &:focus {
-        outline: none;
-      }
-    }
-
-    &__row {
-      width: 100%;
-    }
-
-    &__row:last-child {
-      margin-top: 8px;
-    }
-
-    &__duration {
-      background-color: $success-2;
-      border-radius: 10px;
-      color: $success-3;
-      padding: 0 8px;
-    }
-
-    strong {
-      font-weight: 700;
-    }
   }
 }
