@@ -43,8 +43,12 @@ const render = (props) => {
   return renderWithProvider(
     <GasFeeContextProvider
       transaction={{
-        userFeeLevel: 'high',
-        txParams: {},
+        userFeeLevel: 'minimum',
+        txParams: {
+          gas: '0x5208',
+          maxFeePerGas: '0x59682f10',
+          maxPriorityFeePerGas: '0x59682f00',
+        },
       }}
       editGasMode={EDIT_GAS_MODES.CANCEL}
       {...props}
@@ -56,13 +60,22 @@ const render = (props) => {
 };
 
 describe('CancelSpeedupPopover', () => {
-  it('should have ❌Cancel in header if editGasMode is cancel', () => {
-    act(async () => render());
+  it('should have ❌Cancel in header if editGasMode is cancel', async () => {
+    await act(async () => render());
     expect(screen.queryByText('❌Cancel')).toBeInTheDocument();
   });
 
-  it('should have 🚀Speed Up in header if editGasMode is speedup', () => {
-    act(async () => render({ editGasMode: EDIT_GAS_MODES.SPEED_UP }));
+  it('should have 🚀Speed Up in header if editGasMode is speedup', async () => {
+    await act(async () => render({ editGasMode: EDIT_GAS_MODES.SPEED_UP }));
     expect(screen.queryByText('🚀Speed Up')).toBeInTheDocument();
+  });
+
+  it('should show correct gas values', async () => {
+    await act(async () =>
+      render({
+        editGasMode: EDIT_GAS_MODES.SPEED_UP,
+      }),
+    );
+    expect(screen.queryByText('0.0000315 ETH')).toBeInTheDocument();
   });
 });
