@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -67,11 +67,6 @@ export default function CollectiblesTab({ onAddNFT }) {
     return [collections, previouslyOwnedCollection];
   };
 
-  // const [collections, previouslyOwnedCollection] = useMemo(
-  //   () => getCollections(),
-  //   [collectibles, collectibleContracts],
-  // ); 
-  
   const [collections, previouslyOwnedCollection] = getCollections();
 
   const onEnableAutoDetect = () => {

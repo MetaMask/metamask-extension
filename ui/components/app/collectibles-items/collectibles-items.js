@@ -31,6 +31,7 @@ export default function CollectiblesItems({
   previouslyOwnedCollection = {},
 }) {
   const defaultDropdownState = { [PREVIOUSLY_OWNED_KEY]: false };
+  const [dropdownState, setDropdownState] = useState(defaultDropdownState);
   const ipfsGateway = useSelector(getIpfsGateway);
 
   Object.keys(collections).forEach((key) => {
@@ -142,7 +143,6 @@ export default function CollectiblesItems({
     );
   };
 
-  const [dropdownState, setDropdownState] = useState(defaultDropdownState);
   return (
     <div className="collectibles-items">
       <Box padding={[6, 4]} flexDirection={FLEX_DIRECTION.COLUMN}>
@@ -175,6 +175,26 @@ export default function CollectiblesItems({
 }
 
 CollectiblesItems.propTypes = {
+  previouslyOwnedCollection: PropTypes.shape({
+    collectibles: PropTypes.arrayOf(
+      PropTypes.shape({
+        address: PropTypes.string.isRequired,
+        tokenId: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        description: PropTypes.string,
+        image: PropTypes.string,
+        standard: PropTypes.string,
+        imageThumbnail: PropTypes.string,
+        imagePreview: PropTypes.string,
+        creator: PropTypes.shape({
+          address: PropTypes.string,
+          config: PropTypes.string,
+          profile_img_url: PropTypes.string,
+        }),
+      }),
+    ),
+    collectionName: PropTypes.string,
+  }),
   collections: PropTypes.shape({
     collectibles: PropTypes.arrayOf(
       PropTypes.shape({
