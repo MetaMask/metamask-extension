@@ -206,9 +206,11 @@ export default class PermissionConnect extends Component {
             {t('back')}
           </div>
         ) : null}
-        <div className="permissions-connect__page-count">
-          {t('xOfY', [page, totalPages])}
-        </div>
+        {isRequestingAccounts ? (
+          <div className="permissions-connect__page-count">
+            {t('xOfY', [page, totalPages])}
+          </div>
+        ) : null}
       </div>
     );
   }

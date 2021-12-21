@@ -52,8 +52,6 @@ export default function SnapInstall({
     [request.permissions],
   );
 
-  console.log(request, targetSubjectMetadata);
-
   return (
     <div className="page-container snap-install">
       <div className="headers">
