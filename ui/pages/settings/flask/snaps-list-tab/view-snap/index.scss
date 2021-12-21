@@ -2,13 +2,48 @@ div .view-snap-subheader {
   @media screen and (max-width: $break-small) {
     display: flex;
     margin-right: 0;
-    padding: 0 24px;
+    padding: 0px 0px 16px;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    height: max-content;
+  }
+}
+
+.view-snap-title {
+  @media screen and (max-width: $break-small) {
+    padding-bottom: 16px;
+  }
+}
+
+.view-snap-pill-toggle-container {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  @media screen and (max-width: $break-small) {
+    width: 100%;
+    justify-content: space-between;
   }
 }
 
 .view-snap-content-container {
   @media screen and (max-width: $break-small) {
     width: 100%;
+  }
+}
+
+.view-snap-pill-container {
+  @media screen and (max-width: $break-small) {
+    padding-left: 0px;
+    display: inline-block;
+  }
+}
+
+.view-snap-toggle-container {
+  @media screen and (max-width: $break-small) {
+    padding-left: 0px;
+    margin-left: auto;
+    display: inline-block;
   }
 }
 

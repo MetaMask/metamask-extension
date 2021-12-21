@@ -12,6 +12,7 @@ import Box from '../../../../../components/ui/box';
 import ToggleButton from '../../../../../components/ui/toggle-button';
 import PermissionsConnectPermissionList from '../../../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
 import ConnectedSitesList from '../../../../../components/app/connected-sites-list';
+import Tooltip from '../../../../../components/ui/tooltip';
 
 function ViewSnap({
   snap,
@@ -26,21 +27,32 @@ function ViewSnap({
     <div className="snap-settings-page__body">
       <div className="settings-page__content-row">
         <div className="settings-page__subheader view-snap-subheader">
-          <Typography variant={TYPOGRAPHY.H3}>
+          <Typography
+            className="view-snap-title"
+            variant={TYPOGRAPHY.H3}
+            boxProps={{ textAlign: 'center' }}
+          >
             {snap.manifest.proposedName}
           </Typography>
-          <Box paddingLeft={2}>
-            <SnapsAuthorshipPill
-              packageName={snap.manifest.proposedName}
-              url={snap.manifest.repository.url}
-            />
-          </Box>
-          <Box paddingLeft={4} className="snap-settings-card__toggle-container">
-            <ToggleButton
-              value={snap.enabled}
-              onToggle={onToggle}
-              className="snap-settings-card__toggle-container__toggle-button"
-            />
+          <Box className="view-snap-pill-toggle-container">
+            <Box className="view-snap-pill-container" paddingLeft={2}>
+              <SnapsAuthorshipPill
+                packageName={snap.manifest.proposedName}
+                url={snap.manifest.repository.url}
+              />
+            </Box>
+            <Box
+              paddingLeft={4}
+              className="snap-settings-card__toggle-container view-snap-toggle-container"
+            >
+              <Tooltip interactive position="bottom" html={t('snapsToggle')}>
+                <ToggleButton
+                  value={snap.enabled}
+                  onToggle={onToggle}
+                  className="snap-settings-card__toggle-container__toggle-button"
+                />
+              </Tooltip>
+            </Box>
           </Box>
         </div>
         <Box className="view-snap-content-container" width="7/12">
