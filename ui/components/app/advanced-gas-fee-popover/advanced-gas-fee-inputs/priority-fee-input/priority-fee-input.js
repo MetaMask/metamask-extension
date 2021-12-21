@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
+import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
 import { SECONDARY } from '../../../../../helpers/constants/common';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
@@ -47,17 +48,25 @@ const PriorityFeeInput = () => {
     setErrorValue,
     setMaxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
-  const { gasFeeEstimates, maxPriorityFeePerGas } = useGasFeeContext();
+  const {
+    estimateUsed,
+    gasFeeEstimates,
+    maxPriorityFeePerGas,
+  } = useGasFeeContext();
   const {
     latestPriorityFeeRange,
     historicalPriorityFeeRange,
     priorityFeeTrend,
   } = gasFeeEstimates;
   const [feeTrend, setFeeTrend] = useState(priorityFeeTrend);
+
   const [priorityFeeError, setPriorityFeeError] = useState();
 
   const [priorityFee, setPriorityFee] = useState(() => {
-    if (advancedGasFeeValues?.priorityFee)
+    if (
+      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
+      advancedGasFeeValues?.priorityFee
+    )
       return advancedGasFeeValues.priorityFee;
     return maxPriorityFeePerGas;
   });

@@ -20,17 +20,17 @@ jest.mock('../../../../../store/actions', () => ({
   removePollingTokenFromAppState: jest.fn(),
 }));
 
-const render = (storeProps) => {
+const render = (txProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
-      ...storeProps,
       accounts: {
         [mockState.metamask.selectedAddress]: {
           address: mockState.metamask.selectedAddress,
           balance: '0x1F4',
         },
       },
+      advancedGasFee: { maxBaseFee: 2 },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates,
@@ -41,9 +41,7 @@ const render = (storeProps) => {
     <GasFeeContextProvider
       transaction={{
         userFeeLevel: 'custom',
-        txParams: {
-          maxFeePerGas: '0x174876E800',
-        },
+        ...txProps,
       }}
     >
       <AdvancedGasFeePopoverContextProvider>
@@ -55,26 +53,38 @@ const render = (storeProps) => {
 };
 
 describe('BaseFeeInput', () => {
-  it('should renders advancedGasFee.baseFee value if advancedGasFee is available', () => {
+  it('should renders advancedGasFee.baseFee value if current estimate used is not custom', () => {
     render({
-      advancedGasFee: { maxBaseFee: 4 },
+      userFeeLevel: 'high',
     });
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(4);
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
   });
 
-  it('should renders baseFee values from transaction if advancedGasFee is not available', () => {
-    render();
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(1.5);
+  it('should renders baseFee values from transaction if current estimate used is custom', () => {
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
   });
 
   it('should show GWEI value in input when Edit in GWEI link is clicked', () => {
-    render();
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
     fireEvent.click(screen.queryByText('Edit in GWEI'));
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(75);
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
 
   it('should correctly update GWEI value if multiplier is changed', () => {
-    render();
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 4 },
     });
@@ -83,8 +93,12 @@ describe('BaseFeeInput', () => {
   });
 
   it('should correctly update multiplier value if GWEI is changed', () => {
-    render();
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(1.5);
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
     fireEvent.click(screen.queryByText('Edit in GWEI'));
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 200 },
@@ -110,7 +124,11 @@ describe('BaseFeeInput', () => {
     expect(screen.queryByText('50 - 100 GWEI')).toBeInTheDocument();
   });
   it('should show error if base fee is less than suggested low value', () => {
-    render();
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 3 },
     });
@@ -133,7 +151,11 @@ describe('BaseFeeInput', () => {
   });
 
   it('should show error if base if is more than suggested high value', () => {
-    render();
+    render({
+      txParams: {
+        maxFeePerGas: '0x174876E800',
+      },
+    });
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 3 },
     });
