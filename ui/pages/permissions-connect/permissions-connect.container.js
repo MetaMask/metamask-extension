@@ -20,6 +20,9 @@ import {
 import {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  CONNECT_SNAP_INSTALL_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 import { SUBJECT_TYPES } from '../../../shared/constants/app';
 import PermissionApproval from './permissions-connect.component';
@@ -54,6 +57,10 @@ const mapStateToProps = (state, ownProps) => {
     subjectType: SUBJECT_TYPES.UNKNOWN,
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const isSnap = targetSubjectMetadata.subjectType === SUBJECT_TYPES.SNAP;
+  ///: END:ONLY_INCLUDE_IN
+
   const accountsWithLabels = getAccountsWithLabels(state);
 
   const lastConnectedInfo = getLastConnectedInfo(state) || {};
@@ -68,18 +75,35 @@ const mapStateToProps = (state, ownProps) => {
 
   const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
   const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
+  ///: END:ONLY_INCLUDE_IN
+
+  let totalPages = 1 + isRequestingAccounts;
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  totalPages += isSnap;
+  ///: END:ONLY_INCLUDE_IN
+  totalPages = totalPages.toString();
 
   let page = '';
   if (pathname === connectPath) {
     page = '1';
   } else if (pathname === confirmPermissionPath) {
-    page = '2';
+    page = isRequestingAccounts ? '2' : '1';
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  } else if (pathname === snapInstallPath) {
+    page = isRequestingAccounts ? '3' : '2';
+    ///: END:ONLY_INCLUDE_IN
   } else {
     throw new Error('Incorrect path for permissions-connect component');
   }
 
   return {
     isRequestingAccounts,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    isSnap,
+    snapInstallPath,
+    ///: END:ONLY_INCLUDE_IN
     permissionsRequest,
     permissionsRequestId,
     accounts: accountsWithLabels,
@@ -91,6 +115,7 @@ const mapStateToProps = (state, ownProps) => {
     lastConnectedInfo,
     connectPath,
     confirmPermissionPath,
+    totalPages,
     page,
     targetSubjectMetadata,
   };
