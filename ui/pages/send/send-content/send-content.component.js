@@ -19,7 +19,7 @@ import SendGasRow from './send-gas-row';
 export default class SendContent extends Component {
   state = {
     showNicknamePopovers: false,
-    isContractAddress: false,
+    isKnownContractAddress: false,
   };
 
   static contextTypes = {
@@ -70,6 +70,8 @@ export default class SendContent extends Component {
       asset.type !== ASSET_TYPES.TOKEN &&
       asset.type !== ASSET_TYPES.COLLECTIBLE;
 
+    this.checkContractAddress();
+
     return (
       <PageContainerContent>
         <div className="send-v2__form">
@@ -95,11 +97,8 @@ export default class SendContent extends Component {
 
     getSymbolAndDecimals(recipient.userInput, tokenAddressList).then(
       (result) => {
-        if (
-          (result.symbol !== undefined && result.symbol !== '') ||
-          (result.decimals !== undefined && result.decimals !== '')
-        ) {
-          this.setState({ isContractAddress: true });
+        if (result.symbol !== undefined || result.decimals !== undefined) {
+          this.setState({ isKnownContractAddress: true });
         }
       },
     );
@@ -108,13 +107,11 @@ export default class SendContent extends Component {
   maybeRenderAddContact() {
     const { t } = this.context;
     const { isOwnedAccount, contact = {}, to, recipient } = this.props;
-    const { showNicknamePopovers, isContractAddress } = this.state;
-
-    this.checkContractAddress();
+    const { showNicknamePopovers, isKnownContractAddress } = this.state;
 
     if (isOwnedAccount || contact.name) {
       return recipient.warning === 'knownAddressRecipient' ||
-        isContractAddress ? (
+        isKnownContractAddress ? (
         <Dialog type="warning" className="send__error-dialog">
           {t('knownAddressRecipient')}
         </Dialog>
@@ -123,7 +120,8 @@ export default class SendContent extends Component {
 
     return (
       <>
-        {recipient.warning === 'knownAddressRecipient' || isContractAddress ? (
+        {recipient.warning === 'knownAddressRecipient' ||
+        isKnownContractAddress ? (
           <Dialog type="warning" className="send__error-dialog">
             {t('knownAddressRecipient')}
           </Dialog>
