@@ -102,14 +102,14 @@ export function getSubjectsWithPermission(state, permissionName) {
 
   const connectedSubjects = [];
 
-  Object.entries(subjects).forEach(([subjectKey, { permissions }]) => {
+  Object.entries(subjects).forEach(([origin, { permissions }]) => {
     if (permissions[permissionName]) {
       const { extensionId, name, iconUrl } =
-        getTargetSubjectMetadata(state, subjectKey) || {};
+        getTargetSubjectMetadata(state, origin) || {};
 
       connectedSubjects.push({
         extensionId,
-        origin: subjectKey,
+        origin,
         name,
         iconUrl,
       });

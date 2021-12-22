@@ -1,28 +1,26 @@
-.snaps-list-wrapper {
-  width: auto;
-}
+.snap-list-tab {
+  &__wrapper {
+    width: auto;
+  }
 
-.snap-settings-card {
-  margin: 8px 0;
-  max-width: 344px;
-}
+  &__body {
+    padding: 12px 18px;
+  
+    @media screen and (min-width: $break-large) {
+      padding: 12px;
+    }
+  }
 
-.view-snap__remove__button {
-  max-width: 175px;
-}
+  .snap-settings-card {
+    margin: 8px 0;
+    max-width: 344px;
+  }
 
-.no-snap-container {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-}
-
-.snap-settings-page__body {
-  padding: 12px 18px;
-
-  @media screen and (min-width: $break-large) {
-    padding: 12px;
+  &__container--no-snaps {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
   }
 }

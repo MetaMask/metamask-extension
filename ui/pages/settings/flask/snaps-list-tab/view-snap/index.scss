@@ -1,84 +1,99 @@
-div .view-snap-subheader {
-  @media screen and (max-width: $break-small) {
-    display: flex;
-    margin-right: 0;
-    padding: 0 0 16px;
-    flex-direction: column;
+.view-snap {
+  padding: 12px 18px;
+
+  @media screen and (min-width: $break-large) {
+    padding: 12px;
+  }
+
+  &__subheader {
+    @include H4;
+
+    padding: 16px 4px;
+    border-bottom: 1px solid $alto;
+    margin-right: 24px;
+    height: 72px;
     align-items: center;
-    gap: 8px;
-    height: max-content;
-  }
-}
+    display: flex;
+    flex-flow: row nowrap;
 
-.view-snap-title {
-  @media screen and (max-width: $break-small) {
+    @media screen and (max-width: $break-small) {
+      margin-right: 0;
+      padding: 0 0 16px;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      height: max-content;
+    }
+  }
+
+  &__title {
+    @media screen and (max-width: $break-small) {
+      padding-bottom: 16px;
+    }
+  }
+
+  &__pill-toggle-container {
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+  
+    @media screen and (max-width: $break-small) {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  &__pill-container {
+    @media screen and (max-width: $break-small) {
+      padding-left: 0;
+      display: inline-block;
+    }
+  }
+
+  &__toggle-container {
+    @media screen and (max-width: $break-small) {
+      padding-left: 0;
+      display: inline-block;
+    }
+  }
+
+  &__content-container {
+    @media screen and (max-width: $break-small) {
+      width: 100%;
+    }
+  }
+
+  &__section {
+    border-bottom: 1px solid $Grey-100;
     padding-bottom: 16px;
+    margin-bottom: 16px;
+
+    .connected-sites-list__content-row {
+      border-top: none;
+      border-bottom: 1px solid $ui-2;
+  
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
-}
 
-.view-snap-pill-toggle-container {
-  align-items: center;
-  display: flex;
-  flex-grow: 1;
+  &__permission-list {
+    padding-bottom: 0;
 
-  @media screen and (max-width: $break-small) {
-    width: 100%;
-    justify-content: space-between;
+    .permission {
+      padding-top: 16px;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
-}
 
-.view-snap-content-container {
-  @media screen and (max-width: $break-small) {
-    width: 100%;
-  }
-}
-
-.view-snap-pill-container {
-  @media screen and (max-width: $break-small) {
-    padding-left: 0;
-    display: inline-block;
-  }
-}
-
-.view-snap-toggle-container {
-  @media screen and (max-width: $break-small) {
-    padding-left: 0;
-    margin-left: auto;
-    display: inline-block;
-  }
-}
-
-.settings-page__content-item.view-snap-section {
-  border-bottom: 1px solid #d8d8d8;
-  padding-bottom: 18px;
-  margin-bottom: 16px;
-}
-
-.view-snap-section.snap-permission-list {
-  padding-bottom: 0;
-}
-
-.settings-page__content-item .permissions-connect-permission-list .permission {
-  padding-top: 16px;
-
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.view-snap__remove__button {
-  @media screen and (max-width: $break-small) {
-    align-self: center;
-  }
-}
-
-.view-snap-section {
-  .connected-sites-list__content-row {
-    border-top: none;
-    border-bottom: 1px solid #d6d9dc;
-
-    &:last-child {
-      border-bottom: none;
+  &__remove__button {
+    max-width: 175px;
+    @media screen and (max-width: $break-small) {
+      align-self: center;
     }
   }
 }

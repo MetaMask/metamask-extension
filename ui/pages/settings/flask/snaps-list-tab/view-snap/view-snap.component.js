@@ -24,26 +24,26 @@ function ViewSnap({
   const t = useI18nContext();
 
   return (
-    <div className="snap-settings-page__body">
+    <div className="view-snap">
       <div className="settings-page__content-row">
-        <div className="settings-page__subheader view-snap-subheader">
+        <div className="view-snap__subheader">
           <Typography
-            className="view-snap-title"
+            className="view-snap__title"
             variant={TYPOGRAPHY.H3}
             boxProps={{ textAlign: 'center' }}
           >
             {snap.manifest.proposedName}
           </Typography>
-          <Box className="view-snap-pill-toggle-container">
-            <Box className="view-snap-pill-container" paddingLeft={2}>
+          <Box className="view-snap__pill-toggle-container">
+            <Box className="view-snap__pill-container" paddingLeft={2}>
               <SnapsAuthorshipPill
-                packageName={snap.manifest.proposedName}
-                url={snap.manifest.repository.url}
+                packageName={snap.id}
+                url={snap.manifest.repository?.url}
               />
             </Box>
             <Box
               paddingLeft={4}
-              className="snap-settings-card__toggle-container view-snap-toggle-container"
+              className="snap-settings-card__toggle-container view-snap__toggle-container"
             >
               <Tooltip interactive position="bottom" html={t('snapsToggle')}>
                 <ToggleButton
@@ -55,17 +55,17 @@ function ViewSnap({
             </Box>
           </Box>
         </div>
-        <Box className="view-snap-content-container" width="7/12">
-          <div className="settings-page__content-item view-snap-section">
+        <Box className="view-snap__content-container" width="7/12">
+          <div className="settings-page__content-item view-snap__section">
             <Typography
               variant={TYPOGRAPHY.H6}
               color={COLORS.UI4}
-              boxProps={{ marginTop: 6 }}
+              boxProps={{ marginTop: 5 }}
             >
               {snap.manifest.description}
             </Typography>
           </div>
-          <div className="settings-page__content-item view-snap-section snap-permission-list">
+          <div className="settings-page__content-item view-snap__section view-snap__permission-list">
             <Typography variant={TYPOGRAPHY.H4}>{t('permissions')}</Typography>
             <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
               {t('snapAccess', [snap.manifest.proposedName])}
@@ -76,7 +76,7 @@ function ViewSnap({
               />
             </Box>
           </div>
-          <div className="settings-page__content-item view-snap-section">
+          <div className="settings-page__content-item view-snap__section">
             <Box width="11/12">
               <Typography variant={TYPOGRAPHY.H4}>
                 {t('connectedSites')}
@@ -89,7 +89,6 @@ function ViewSnap({
                 onDisconnect={(origin) => {
                   onDisconnect(origin, snap.permissionName);
                 }}
-                isSnap
               />
             </Box>
           </div>
@@ -121,8 +120,8 @@ function ViewSnap({
 
 ViewSnap.propTypes = {
   snap: PropTypes.object,
-  onRemove: PropTypes.func,
-  onToggle: PropTypes.func,
+  onRemove: PropTypes.func.isRequired,
+  onToggle: PropTypes.func.isRequired,
   connectedSubjects: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
@@ -130,7 +129,7 @@ ViewSnap.propTypes = {
       origin: PropTypes.string,
     }),
   ).isRequired,
-  onDisconnect: PropTypes.func,
+  onDisconnect: PropTypes.func.isRequired,
 };
 
 export default React.memo(ViewSnap);

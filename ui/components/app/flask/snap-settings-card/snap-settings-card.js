@@ -43,7 +43,7 @@ const SnapSettingsCard = ({
   name,
   description,
   icon,
-  dateAdded,
+  dateAdded = '',
   version,
   url,
   onToggle,

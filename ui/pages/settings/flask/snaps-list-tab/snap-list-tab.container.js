@@ -18,7 +18,7 @@ const mapStateToProps = (state, ownProps) => {
   const viewingSnap = Boolean(pathname.match(SNAPS_VIEW_ROUTE));
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
   const envIsPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-  const onClick = (_, snap) => {
+  const onClick = (snap) => {
     const route = `${SNAPS_VIEW_ROUTE}/${window.btoa(
       unescape(encodeURIComponent(snap.id)),
     )}`;
@@ -34,7 +34,7 @@ const mapStateToProps = (state, ownProps) => {
     currentSnap:
       state.metamask.snaps && viewingSnap
         ? Object.entries(state.metamask.snaps)
-            .map(([_, value]) => value)
+            .map(([_, snap]) => snap)
             .find((snap) => {
               const decoded = decodeURIComponent(
                 escape(window.atob(pathNameTail)),
@@ -48,7 +48,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 const mapDispatchToProps = (dispatch) => ({
-  onToggle: (_, snap) => {
+  onToggle: (snap) => {
     if (snap.enabled) {
       dispatch(disableSnap(snap.id));
     } else {

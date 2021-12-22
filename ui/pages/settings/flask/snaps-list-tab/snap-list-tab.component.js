@@ -39,7 +39,7 @@ const SnapListTab = ({
     return (
       <ViewSnap
         snap={currentSnap}
-        onToggle={(event) => onToggle(event, currentSnap)}
+        onToggle={() => onToggle(currentSnap)}
         onRemove={async (event) => {
           await dispatch(removeSnap(currentSnap.id));
           await dispatch(
@@ -51,9 +51,9 @@ const SnapListTab = ({
     );
   }
   return (
-    <>
+    <div className="snap-list-tab">
       {Object.entries(snaps).length ? (
-        <div className="snap-settings-page__body">
+        <div className="snap-list-tab__body">
           <Box display="flex" flexDirection={FLEX_DIRECTION.COLUMN}>
             <Typography variant={TYPOGRAPHY.H5} marginBottom={2}>
               {t('expandExperience')}
@@ -66,24 +66,23 @@ const SnapListTab = ({
               {t('manageSnaps')}
             </Typography>
           </Box>
-          <div className="snaps-list-wrapper">
+          <div className="snap-list-tab__wrapper">
             {Object.entries(snaps).map(([key, snap]) => {
               return (
                 <SnapSettingsCard
                   className="snap-settings-card"
                   isEnabled={snap.enabled}
-                  dateAdded={new Date().toDateString()}
                   key={key}
-                  onToggle={(event) => {
-                    onToggle(event, snap);
+                  onToggle={() => {
+                    onToggle(snap);
                   }}
                   description={snap.manifest.description}
                   url={snap.id}
                   name={snap.manifest.proposedName}
                   status={snap.status}
                   version={snap.version}
-                  onClick={(event) => {
-                    onClick(event, snap);
+                  onClick={() => {
+                    onClick(snap);
                   }}
                 />
               );
@@ -91,17 +90,13 @@ const SnapListTab = ({
           </div>
         </div>
       ) : (
-        <div className="no-snap-container">
-          <Typography
-            className="no-snaps-text"
-            variant={TYPOGRAPHY.H4}
-            color={COLORS.UI4}
-          >
+        <div className="snap-list-tab__container--no-snaps">
+          <Typography variant={TYPOGRAPHY.H4} color={COLORS.UI4}>
             {t('noSnaps')}
           </Typography>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

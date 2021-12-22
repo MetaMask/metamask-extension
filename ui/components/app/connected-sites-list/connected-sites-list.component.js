@@ -17,11 +17,10 @@ export default class ConnectedSitesList extends Component {
       }),
     ).isRequired,
     onDisconnect: PropTypes.func.isRequired,
-    isSnap: PropTypes.bool,
   };
 
   render() {
-    const { connectedSubjects, onDisconnect, isSnap } = this.props;
+    const { connectedSubjects, onDisconnect } = this.props;
     const { t } = this.context;
 
     return (
@@ -40,20 +39,12 @@ export default class ConnectedSitesList extends Component {
                 {this.getSubjectDisplayName(subject)}
               </span>
             </div>
-            {isSnap ? (
-              <div
-                className="connected-sites-list__disconnect"
-                onClick={() => onDisconnect(subject.origin)}
-              >
-                {t('disconnect')}
-              </div>
-            ) : (
-              <i
-                className="fas fa-trash-alt connected-sites-list__trash"
-                title={t('disconnect')}
-                onClick={() => onDisconnect(subject.origin)}
-              />
-            )}
+            <div
+              className="connected-sites-list__disconnect"
+              onClick={() => onDisconnect(subject.origin)}
+            >
+              {t('disconnect')}
+            </div>
           </div>
         ))}
       </main>
