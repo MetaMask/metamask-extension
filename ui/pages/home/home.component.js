@@ -281,14 +281,14 @@ export default class Home extends PureComponent {
                           variant={TYPOGRAPHY.H5}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
-                          Something Went Wrong
+                          {t('somethingWentWrong')}
                         </Typography>
                         <Typography
                           color={COLORS.UI1}
                           variant={TYPOGRAPHY.H7}
                           fontWeight={FONT_WEIGHT.NORMAL}
                         >
-                          Snap Error: {error.message}. Error Code: {error.code}
+                          {t('snapError', [error.message, error.code])}
                         </Typography>
                       </>
                     }
