@@ -24,6 +24,13 @@ jest.mock('../../../store/actions', () => ({
   updateTransaction: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
 }));
 
+jest.mock('../../../contexts/transaction-modal', () => ({
+  useTransactionModalContext: () => ({
+    closeModal: () => undefined,
+    currentModal: 'cancelSpeedupTransaction',
+  }),
+}));
+
 const render = (props) => {
   const store = configureStore({
     metamask: {
@@ -62,7 +69,6 @@ const render = (props) => {
 describe('CancelSpeedupPopover', () => {
   it('should have ❌Cancel in header if editGasMode is cancel', async () => {
     await act(async () => render());
-    console.log(document.body.innerHTML);
     expect(screen.queryByText('❌Cancel')).toBeInTheDocument();
   });
 
@@ -77,6 +83,6 @@ describe('CancelSpeedupPopover', () => {
         editGasMode: EDIT_GAS_MODES.SPEED_UP,
       }),
     );
-    expect(screen.queryByText('0.0000315 ETH')).toBeInTheDocument();
+    expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
   });
 });

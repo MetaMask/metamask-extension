@@ -27,6 +27,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
     maxPriorityFeePerGas,
     transaction,
   } = useGasFeeContext();
+
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   if (hasSimulationError && !userAcknowledgedGasMissing) return null;

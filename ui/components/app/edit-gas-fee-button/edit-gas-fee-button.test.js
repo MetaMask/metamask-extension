@@ -108,6 +108,7 @@ describe('EditGasFeeButton', () => {
     render({
       contextProps: {
         defaultEstimateToUse: 'custom',
+        transaction: {},
       },
     });
     expect(screen.queryByText('⚙')).toBeInTheDocument();
