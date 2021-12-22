@@ -34,7 +34,7 @@
   }
 
   &__cancel {
-    margin-right: 16px;
+    margin-inline-end: 16px;
   }
 
   &__title {
@@ -54,7 +54,7 @@
     display: flex;
     align-items: center;
     text-align: center;
-    margin-left: 5px;
+    margin-inline-start: 5px;
   }
 
   &__info {
@@ -95,7 +95,7 @@
         color: #b8b8b8;
         width: 10px;
         height: 10px;
-        margin-left: 4px;
+        margin-inline-start: 4px;
       }
     }
   }
