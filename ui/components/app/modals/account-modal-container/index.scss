@@ -7,12 +7,12 @@
     align-items: center;
     position: relative;
     padding: 5px 0 31px 0;
-    border: 1px solid $silver;
+    border: 1px solid var(--silver);
     border-radius: 4px;
   }
 
   &__back {
-    color: $dusty-gray;
+    color: var(--dusty-gray);
     position: absolute;
     top: 13px;
     left: 17px;
@@ -31,7 +31,7 @@
     @include H1;
 
     background-color: transparent;
-    color: $ui-black;
+    color: var(--ui-black);
     position: absolute;
     cursor: pointer;
     top: -10px;

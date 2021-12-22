@@ -4,7 +4,7 @@
   $self: &;
 
   border-radius: 100px;
-  border: 1px solid design-system.$ui-1;
+  border: 1px solid design-system.var(--ui-1);
   padding: 8px 16px;
   margin: 0 4px;
   display: flex;

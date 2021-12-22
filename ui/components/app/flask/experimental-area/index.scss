@@ -1,5 +1,5 @@
 .experimental-area {
-  color: $flask-purple;
+  color: var(--flask-purple);
   margin: auto;
   display: flex;
   flex-direction: column;
@@ -46,9 +46,9 @@
   }
 
   button {
-    background-color: $flask-purple !important;
+    background-color: var(--flask-purple) !important;
     border: 0 !important;
-    color: $ui-1;
+    color: var(--ui-1);
     width: 200px;
   }
 }

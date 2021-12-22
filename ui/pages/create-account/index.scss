@@ -21,13 +21,13 @@
   &__header {
     display: flex;
     flex-flow: column;
-    border-bottom: 1px solid $geyser;
+    border-bottom: 1px solid var(--geyser);
   }
 
   &__title {
     @include H2;
 
-    color: $tundora;
+    color: var(--tundora);
     font-weight: 500;
     margin-top: 22px;
     margin-left: 29px;
@@ -43,19 +43,19 @@
 
       height: 54px;
       padding: 15px 10px;
-      color: $dusty-gray;
+      color: var(--dusty-gray);
       text-align: center;
       cursor: pointer;
     }
 
     &__tab:hover {
-      color: $black;
+      color: var(--black);
       border-bottom: none;
     }
 
     &__selected {
-      color: $primary-blue;
-      border-bottom: 3px solid $primary-blue;
+      color: var(--primary-blue);
+      border-bottom: 3px solid var(--primary-blue);
       cursor: initial;
       pointer-events: none;
     }
@@ -72,7 +72,7 @@
   &__input-label {
     @include Paragraph;
 
-    color: $scorpion;
+    color: var(--scorpion);
     align-self: flex-start;
   }
 
@@ -81,15 +81,15 @@
 
     height: 54px;
     width: 315.84px;
-    border: 1px solid $geyser;
+    border: 1px solid var(--geyser);
     border-radius: 4px;
-    background-color: $white;
-    color: $scorpion;
+    background-color: var(--white);
+    color: var(--scorpion);
     margin-top: 15px;
     padding: 0 20px;
 
     &__error {
-      border: 1px solid $error-3;
+      border: 1px solid var(--error-3);
     }
   }
 
@@ -97,7 +97,7 @@
     @include H7;
 
     left: 8px;
-    color: $red;
+    color: var(--red);
   }
 
   &__error-amount {

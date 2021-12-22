@@ -8,7 +8,7 @@
 
     display: flex;
     align-items: baseline;
-    color: $primary-1;
+    color: var(--primary-1);
     background: transparent;
     border: 0;
     padding-inline-end: 0;
@@ -16,7 +16,7 @@
   }
 
   i {
-    color: $primary-1;
+    color: var(--primary-1);
     margin-right: 2px;
   }
 
@@ -36,11 +36,11 @@
 
   &__tooltip {
     p {
-      color: $Grey-500;
+      color: var(--Grey-500);
     }
 
     b {
-      color: $neutral-black;
+      color: var(--neutral-black);
       display: inline-block;
       min-width: 60%;
     }

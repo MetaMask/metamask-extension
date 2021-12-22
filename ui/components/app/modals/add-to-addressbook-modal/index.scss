@@ -1,7 +1,7 @@
 .add-to-address-book-modal {
   display: flex;
   flex-flow: column nowrap;
-  background-color: $white;
+  background-color: var(--white);
   border-radius: 10px;
   box-shadow: 0 5px 16px rgba($black, 0.25);
 
@@ -9,7 +9,7 @@
     @extend %col-nowrap;
 
     padding: 1.5rem;
-    border-bottom: 1px solid $Grey-100;
+    border-bottom: 1px solid var(--Grey-100);
 
     &__header {
       @include H3;
@@ -17,22 +17,22 @@
   }
 
   &__input-label {
-    color: $Grey-600;
+    color: var(--Grey-600);
     margin-top: 1.25rem;
   }
 
   &__input {
     @include H4;
 
-    background: $white;
-    border: 1px solid $Grey-100;
+    background: var(--white);
+    border: 1px solid var(--Grey-100);
     box-sizing: border-box;
     border-radius: 8px;
     padding: 0.625rem 0.75rem;
     margin-top: 0.75rem;
 
     &::placeholder {
-      color: $Grey-300;
+      color: var(--Grey-300);
     }
   }
 

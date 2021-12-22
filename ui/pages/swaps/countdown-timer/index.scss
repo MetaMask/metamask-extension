@@ -19,7 +19,7 @@
 
     &--warning {
       .countdown-timer__time {
-        color: $Red-500;
+        color: var(--Red-500);
       }
     }
   }

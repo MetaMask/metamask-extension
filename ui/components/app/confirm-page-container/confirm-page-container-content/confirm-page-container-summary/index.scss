@@ -19,15 +19,15 @@
     @include H7;
 
     text-transform: uppercase;
-    color: $oslo-gray;
+    color: var(--oslo-gray);
     padding: 3px 8px;
-    border: 1px solid $oslo-gray;
+    border: 1px solid var(--oslo-gray);
     border-radius: 4px;
     display: inline-block;
   }
 
   &__nonce {
-    color: $oslo-gray;
+    color: var(--oslo-gray);
   }
 
   &__title {
@@ -50,13 +50,13 @@
   }
 
   &__subtitle {
-    color: $oslo-gray;
+    color: var(--oslo-gray);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   &--border {
-    border-bottom: 1px solid $geyser;
+    border-bottom: 1px solid var(--geyser);
   }
 }

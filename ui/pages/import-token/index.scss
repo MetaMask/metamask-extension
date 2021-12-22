@@ -41,7 +41,7 @@
     &__edit {
       flex: 1 1 auto;
       text-align: right;
-      color: $primary-blue;
+      color: var(--primary-blue);
       padding-right: 4px;
       cursor: pointer;
     }
@@ -51,7 +51,7 @@
     @include H7;
 
     display: inline;
-    color: $primary-blue;
+    color: var(--primary-blue);
     padding-left: 0;
   }
 

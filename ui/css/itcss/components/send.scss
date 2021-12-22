@@ -48,13 +48,13 @@
   border-radius: 50%;
   width: 70px;
   height: 70px;
-  border: 1px solid $alto;
+  border: 1px solid var(--alto);
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
   position: absolute;
   top: -35px;
   z-index: 25;
   padding: 4px;
-  background-color: $white;
+  background-color: var(--white);
 
   @media screen and (max-width: $break-small) {
     position: relative;
@@ -73,7 +73,7 @@
   .large-input {
     @include Paragraph;
 
-    border: 1px solid $dusty-gray;
+    border: 1px solid var(--dusty-gray);
     border-radius: 4px;
     margin: 4px 0 20px;
   }
@@ -89,7 +89,7 @@
   &--error {
     input,
     .send-screen-gas-input {
-      border-color: $red !important;
+      border-color: var(--red) !important;
     }
 
     .send-screen-input-wrapper__error-message {
@@ -99,7 +99,7 @@
       position: absolute;
       bottom: 4px;
       left: 8px;
-      color: $red;
+      color: var(--red);
     }
   }
 
@@ -110,7 +110,7 @@
     position: absolute;
     bottom: 4px;
     left: 8px;
-    color: $red;
+    color: var(--red);
   }
 }
 
@@ -132,7 +132,7 @@
   align-items: center;
   padding-left: 10px;
   padding-right: 12px;
-  color: $scorpion;
+  color: var(--scorpion);
 }
 
 .send-screen-amount-labels {
@@ -149,11 +149,11 @@
 
 .currency-toggle {
   &__item {
-    color: $primary-blue;
+    color: var(--primary-blue);
     cursor: pointer;
 
     &--selected {
-      color: $black;
+      color: var(--black);
       cursor: default;
     }
   }
@@ -162,7 +162,7 @@
 .send-screen-gas-input-customize {
   @include H7;
 
-  color: $primary-blue;
+  color: var(--primary-blue);
   cursor: pointer;
 }
 
@@ -182,9 +182,9 @@
   bottom: 50px;
   width: 237px;
   height: 307px;
-  background-color: $white;
+  background-color: var(--white);
   opacity: 1;
-  box-shadow: $alto 0 0 5px;
+  box-shadow: var(--alto) 0 0 5px;
   z-index: 1050;
   padding: 13px 19px;
   border-radius: 4px;
@@ -195,12 +195,12 @@
   height: 25px;
   width: 25px;
   z-index: 1200;
-  background: $white;
+  background: var(--white);
   position: absolute;
   transform: rotate(45deg);
   left: 107px;
   top: 294px;
-  box-shadow: 2px 2px 2px $alto;
+  box-shadow: 2px 2px 2px var(--alto);
 }
 
 .customize-gas-tooltip-container input[type="number"]::-webkit-inner-spin-button {
@@ -225,7 +225,7 @@
 .gas-tooltip-label {
   @include Paragraph;
 
-  color: $tundora;
+  color: var(--tundora);
 }
 
 .gas-tooltip-header {
@@ -237,7 +237,7 @@
 }
 
 .gas-tooltip-input-label i {
-  color: $silver-chalice;
+  color: var(--silver-chalice);
   margin-left: 6px;
 }
 
@@ -246,8 +246,8 @@
 
   width: 178px;
   height: 28px;
-  border: 1px solid $alto;
-  color: $nile-blue;
+  border: 1px solid var(--alto);
+  color: var(--nile-blue);
   padding-left: 8px;
 }
 
@@ -261,7 +261,7 @@
   position: absolute;
   top: 4px;
   right: 26px;
-  color: $silver-chalice;
+  color: var(--silver-chalice);
 }
 
 .gas-tooltip-input-arrows {
@@ -296,7 +296,7 @@
   &__title {
     @include H4;
 
-    color: $scorpion;
+    color: var(--scorpion);
   }
 
   &__subtitle {
@@ -357,7 +357,7 @@
   &__title {
     @include H4;
 
-    color: $scorpion;
+    color: var(--scorpion);
   }
 
   &__description,
@@ -405,7 +405,7 @@
   &__container {
     width: 380px;
     border-radius: 8px;
-    background-color: $white;
+    background-color: var(--white);
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     display: flex;
     flex-flow: column nowrap;
@@ -434,10 +434,10 @@
     border-radius: 50%;
     width: 48px;
     height: 48px;
-    border: 1px solid $alto;
+    border: 1px solid var(--alto);
     z-index: 25;
     padding: 4px;
-    background-color: $white;
+    background-color: var(--white);
   }
 
   &__send-arrow-icon {
@@ -451,7 +451,7 @@
   }
 
   &__arrow-background {
-    background-color: $white;
+    background-color: var(--white);
     height: 14px;
     width: 14px;
     position: absolute;
@@ -468,7 +468,7 @@
   &__header {
     height: 88px;
     width: 380px;
-    background-color: $athens-grey;
+    background-color: var(--athens-grey);
     position: relative;
     display: flex;
     justify-content: center;
@@ -483,7 +483,7 @@
   &__header-tip {
     height: 25px;
     width: 25px;
-    background: $athens-grey;
+    background: var(--athens-grey);
     position: absolute;
     transform: rotate(45deg);
     left: 178px;
@@ -500,7 +500,7 @@
   &__title {
     @include H3;
 
-    color: $scorpion;
+    color: var(--scorpion);
     text-align: center;
     margin-top: 25px;
   }
@@ -508,7 +508,7 @@
   &__copy {
     @include H6;
 
-    color: $gray;
+    color: var(--gray);
     text-align: center;
     margin-top: 10px;
     width: 287px;
@@ -518,7 +518,7 @@
     @include H7;
 
     left: 8px;
-    color: $red;
+    color: var(--red);
   }
 
   &__error-amount {
@@ -529,11 +529,11 @@
     @include H7;
 
     left: 8px;
-    color: $orange;
+    color: var(--orange);
   }
 
   &__error-border {
-    color: $red;
+    color: var(--red);
   }
 
   &__form {
@@ -572,21 +572,21 @@
     min-width: 0;
 
     .currency-display {
-      color: $tundora;
+      color: var(--tundora);
 
       &__currency-symbol {
-        color: $tundora;
+        color: var(--tundora);
       }
 
       &__converted-value,
       &__converted-currency {
-        color: $tundora;
+        color: var(--tundora);
       }
     }
 
     .account-list-item {
       &__account-secondary-balance {
-        color: $tundora;
+        color: var(--tundora);
       }
     }
   }
@@ -594,7 +594,7 @@
   &__form-label {
     @include Paragraph;
 
-    color: $scorpion;
+    color: var(--scorpion);
     width: 95px;
     flex: 0 0 auto;
   }
@@ -604,10 +604,10 @@
     @include H7;
 
     width: 100%;
-    border: 1px solid $alto;
+    border: 1px solid var(--alto);
     border-radius: 4px;
-    background-color: $white;
-    color: $tundora;
+    background-color: var(--white);
+    color: var(--tundora);
     position: relative;
 
     &__close-area {
@@ -624,9 +624,9 @@
       position: absolute;
       height: 220px;
       width: 100%;
-      border: 1px solid $geyser;
+      border: 1px solid var(--geyser);
       border-radius: 4px;
-      background-color: $white;
+      background-color: var(--white);
       box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
       margin-top: 11px;
       margin-left: -1px;
@@ -655,7 +655,7 @@
     }
 
     &__caret {
-      color: $silver;
+      color: var(--silver);
       padding: 0 10px;
     }
 
@@ -673,7 +673,7 @@
 
     &__asset-icon {
       .identicon {
-        border: 1px solid $alto;
+        border: 1px solid var(--alto);
       }
     }
 
@@ -710,9 +710,9 @@
       position: absolute;
       height: 220px;
       width: 100%;
-      border: 1px solid $geyser;
+      border: 1px solid var(--geyser);
       border-radius: 4px;
-      background-color: $white;
+      background-color: var(--white);
       box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.11);
       top: 65px;
       left: 0;
@@ -727,7 +727,7 @@
     }
 
     &__input-wrapper {
-      border: 1px solid $alto;
+      border: 1px solid var(--alto);
       border-radius: 4px;
       height: 100%;
 
@@ -740,7 +740,7 @@
         height: 100%;
 
         &:hover {
-          background-color: $white;
+          background-color: var(--white);
         }
       }
     }
@@ -754,8 +754,8 @@
       width: 100%;
       border: none;
       border-radius: 4px;
-      background-color: $white;
-      color: $tundora;
+      background-color: var(--white);
+      color: var(--tundora);
       padding: 10px;
     }
   }
@@ -769,10 +769,10 @@
       position: relative;
       height: 54px;
       width: 100%;
-      border: 1px solid $alto;
+      border: 1px solid var(--alto);
       border-radius: 4px;
-      background-color: $white;
-      color: $tundora;
+      background-color: var(--white);
+      color: var(--tundora);
       padding: 10px;
     }
   }
@@ -811,8 +811,8 @@
     }
 
     input:checked + &__button {
-      background-color: $primary-blue;
-      border: 1px solid $primary-blue;
+      background-color: var(--primary-blue);
+      border: 1px solid var(--primary-blue);
       color: #fff;
     }
   }
@@ -842,9 +842,9 @@
     justify-content: center;
     height: 24px;
     width: 24px;
-    border: 1px solid $primary-blue;
+    border: 1px solid var(--primary-blue);
     border-radius: 4px;
-    background-color: $white;
+    background-color: var(--white);
     position: absolute;
     right: 15px;
     top: 14px;
@@ -852,7 +852,7 @@
   }
 
   &__sliders-icon {
-    color: $primary-blue;
+    color: var(--primary-blue);
   }
 
   &__memo-text-area {
@@ -867,8 +867,8 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    border-top: 1px solid $alto;
-    background: $white;
+    border-top: 1px solid var(--alto);
+    background: var(--white);
     padding: 0 12px;
     flex-shrink: 0;
   }
@@ -896,7 +896,7 @@
       @include H3;
 
       height: 52px;
-      border-bottom: 1px solid $alto;
+      border-bottom: 1px solid var(--alto);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -913,7 +913,7 @@
     &__close::after {
       content: '\00D7';
       font-size: 1.8em;
-      color: $dusty-gray;
+      color: var(--dusty-gray);
       cursor: pointer;
       margin-right: 19.25px;
     }
@@ -938,7 +938,7 @@
       @include H3;
 
       height: 75px;
-      border-top: 1px solid $alto;
+      border-top: 1px solid var(--alto);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -969,7 +969,7 @@
     &__revert {
       @include Paragraph;
 
-      color: $silver-chalice;
+      color: var(--silver-chalice);
       margin-left: 21.25px;
     }
 
@@ -992,7 +992,7 @@
       position: absolute;
       top: -18px;
       right: 0;
-      color: $red;
+      color: var(--red);
       width: 100%;
       text-align: center;
     }
@@ -1013,7 +1013,7 @@
       @include H4;
 
       height: 26px;
-      color: $tundora;
+      color: var(--tundora);
       margin-top: 17px;
     }
 
@@ -1022,7 +1022,7 @@
 
       height: 38px;
       width: 314px;
-      color: $tundora;
+      color: var(--tundora);
       margin-top: 17px;
     }
 
@@ -1033,8 +1033,8 @@
     .customize-gas-input {
       height: 54px;
       width: 315px;
-      border: 1px solid $geyser;
-      background-color: $white;
+      border: 1px solid var(--geyser);
+      background-color: var(--white);
       padding-left: 15px;
     }
 
@@ -1044,7 +1044,7 @@
       width: 32px;
       height: 54px;
       border-left: 1px solid #dadada;
-      color: $tundora;
+      color: var(--tundora);
       right: 0;
       padding: 0;
       display: flex;
@@ -1091,9 +1091,9 @@
   justify-content: center;
   height: 24px;
   width: 24px;
-  border: 1px solid $primary-blue;
+  border: 1px solid var(--primary-blue);
   border-radius: 4px;
-  background-color: $white;
+  background-color: var(--white);
   position: absolute;
   right: 15px;
   top: 14px;
@@ -1117,5 +1117,5 @@
 }
 
 .sliders-icon {
-  color: $primary-blue;
+  color: var(--primary-blue);
 }

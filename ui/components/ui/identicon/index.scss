@@ -14,11 +14,11 @@
     border-style: solid;
     border-radius: 50%;
     border-width: 2px;
-    border-color: $primary-blue;
+    border-color: var(--primary-blue);
   }
 
   &__image-border {
-    border: 1px solid $alto;
-    background: $white;
+    border: 1px solid var(--alto);
+    background: var(--white);
   }
 }
