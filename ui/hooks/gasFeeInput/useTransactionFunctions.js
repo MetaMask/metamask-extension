@@ -46,7 +46,7 @@ export const useTransactionFunctions = ({
         gasLimit,
       },
     };
-  }, [editGasMode, transaction.previousGas, transaction?.txParams]);
+  }, [editGasMode, transaction?.previousGas, transaction?.txParams]);
 
   const updateTransaction = useCallback(
     ({ estimateUsed, gasLimit, maxFeePerGas, maxPriorityFeePerGas }) => {
