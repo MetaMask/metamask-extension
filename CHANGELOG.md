@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.8.2]
+### Fixed
+- Add missing `appName` localized messages for Flask and Beta ([#13138](https://github.com/MetaMask/metamask-extension/pull/13138))
+
 ## [10.8.1]
 ### Fixed
 - [#13107](https://github.com/MetaMask/metamask-extension/pull/13107): Fix the Use Custom Nonce toggle
@@ -2656,7 +2660,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.8.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.8.2...HEAD
+[10.8.2]: https://github.com/MetaMask/metamask-extension/compare/v10.8.1...v10.8.2
 [10.8.1]: https://github.com/MetaMask/metamask-extension/compare/v10.8.0...v10.8.1
 [10.8.0]: https://github.com/MetaMask/metamask-extension/compare/v10.7.1...v10.8.0
 [10.7.1]: https://github.com/MetaMask/metamask-extension/compare/v10.7.0...v10.7.1
