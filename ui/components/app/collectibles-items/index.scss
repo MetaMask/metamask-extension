@@ -2,17 +2,17 @@
   &__collection {
     margin-bottom: 24px;
 
-    &__accordion-title {
+    &-accordion-title {
       cursor: pointer;
     }
 
-    &__collection-image {
+    &-image {
       width: 32px;
       height: 32px;
       border-radius: 50%;
     }
 
-    &__collection-image-alt {
+    &-image-alt {
       border-radius: 50%;
       width: 32px;
       height: 32px;

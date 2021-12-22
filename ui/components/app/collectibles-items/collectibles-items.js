@@ -62,19 +62,19 @@ export default function CollectiblesItems({ collections = {} }) {
                   display={DISPLAY.FLEX}
                   alignItems={ALIGN_ITEMS.CENTER}
                   justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-                  className="collectibles-items__collection__accordion-title"
+                  className="collectibles-items__collection-accordion-title"
                 >
                   <Box
                     alignItems={ALIGN_ITEMS.CENTER}
-                    className="collectibles-items__collection__collection-header"
+                    className="collectibles-items__collection-header"
                   >
                     {collectionImage ? (
                       <img
                         src={collectionImage}
-                        className="collectibles-items__collection__collection-image"
+                        className="collectibles-items__collection-image"
                       />
                     ) : (
-                      <div className="collectibles-items__collection__collection-image-alt">
+                      <div className="collectibles-items__collection-image-alt">
                         {collectionName[0]}
                       </div>
                     )}
