@@ -1392,14 +1392,11 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
 }
 
 export function checkAndUpdateCollectiblesOwnershipStatus() {
-  return async (dispatch) => {
+  return async () => {
     try {
       await promisifiedBackground.checkAndUpdateCollectiblesOwnershipStatus();
     } catch (error) {
       log.error(error);
-      dispatch(displayWarning(error.message));
-    } finally {
-      await forceUpdateMetamaskState(dispatch);
     }
   };
 }

@@ -26,6 +26,7 @@ const width =
     : BLOCK_SIZES.ONE_SIXTH;
 
 const PREVIOUSLY_OWNED_KEY = 'previouslyOwned';
+
 export default function CollectiblesItems({
   collections = {},
   previouslyOwnedCollection = {},
