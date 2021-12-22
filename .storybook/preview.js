@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { addDecorator, addParameters } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withKnobs } from '@storybook/addon-knobs';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
 import '../ui/css/index.scss';
@@ -13,6 +12,7 @@ import testData from './test-data.js';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { _setBackgroundConnection } from '../ui/store/actions';
+import MetaMaskStorybookTheme from './metamask-storybook-theme';
 
 addParameters({
   backgrounds: {
@@ -21,6 +21,14 @@ addParameters({
       { name: 'light', value: '#FFFFFF' },
       { name: 'dark', value: '#333333' },
     ],
+  },
+  docs: {
+    theme: MetaMaskStorybookTheme,
+  },
+  options: {
+    storySort: {
+      order: ['Getting Started', 'Components', ['UI', 'App'], 'Pages'],
+    },
   },
 });
 
@@ -77,5 +85,4 @@ const metamaskDecorator = (story, context) => {
   );
 };
 
-addDecorator(withKnobs);
 addDecorator(metamaskDecorator);

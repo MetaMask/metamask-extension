@@ -534,6 +534,7 @@
     "@metamask/controllers": {
       "globals": {
         "Headers": true,
+        "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
@@ -548,7 +549,6 @@
         "@metamask/contract-metadata": true,
         "abort-controller": true,
         "async-mutex": true,
-        "await-semaphore": true,
         "buffer": true,
         "eth-ens-namehash": true,
         "eth-json-rpc-infura": true,
@@ -558,11 +558,9 @@
         "eth-query": true,
         "eth-rpc-errors": true,
         "eth-sig-util": true,
-        "ethereumjs-tx": true,
         "ethereumjs-util": true,
         "ethereumjs-wallet": true,
         "ethers": true,
-        "ethjs-query": true,
         "ethjs-unit": true,
         "ethjs-util": true,
         "events": true,
@@ -572,6 +570,7 @@
         "immer": true,
         "isomorphic-fetch": true,
         "jsonschema": true,
+        "multiformats": true,
         "nanoid": true,
         "punycode": true,
         "single-call-balance-checker-abi": true,
@@ -628,6 +627,16 @@
         "mersenne-twister": true
       }
     },
+    "@metamask/key-tree": {
+      "packages": {
+        "bip39": true,
+        "buffer": true,
+        "crypto-browserify": true,
+        "is-buffer": true,
+        "keccak": true,
+        "secp256k1": true
+      }
+    },
     "@metamask/logo": {
       "globals": {
         "addEventListener": true,
@@ -642,6 +651,16 @@
         "gl-vec3": true
       }
     },
+    "@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "end-of-stream": true,
+        "once": true,
+        "readable-stream": true
+      }
+    },
     "@metamask/obs-store": {
       "globals": {
         "localStorage": true
@@ -652,12 +671,58 @@
         "through2": true
       }
     },
+    "@metamask/post-message-stream": {
+      "globals": {
+        "addEventListener": true,
+        "location.origin": true,
+        "onmessage": "write",
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "readable-stream": true
+      }
+    },
+    "@metamask/rpc-methods": {
+      "packages": {
+        "@metamask/key-tree": true,
+        "@metamask/snap-controllers": true,
+        "eth-rpc-errors": true
+      }
+    },
     "@metamask/safe-event-emitter": {
       "globals": {
         "setTimeout": true
       },
       "packages": {
         "events": true
+      }
+    },
+    "@metamask/snap-controllers": {
+      "globals": {
+        "Worker": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controllers": true,
+        "@metamask/object-multiplex": true,
+        "@metamask/obs-store": true,
+        "@metamask/post-message-stream": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/snap-workers": true,
+        "deep-freeze-strict": true,
+        "eth-rpc-errors": true,
+        "fast-deep-equal": true,
+        "immer": true,
+        "json-rpc-engine": true,
+        "json-rpc-middleware-stream": true,
+        "nanoid": true,
+        "pump": true
       }
     },
     "@ngraveio/bc-ur": {
@@ -1069,6 +1134,7 @@
     },
     "bip39": {
       "packages": {
+        "buffer": true,
         "create-hash": true,
         "pbkdf2": true,
         "randombytes": true,
@@ -1902,13 +1968,6 @@
         "ethereumjs-util": true
       }
     },
-    "ethereumjs-tx": {
-      "packages": {
-        "buffer": true,
-        "ethereum-common": true,
-        "ethereumjs-util": true
-      }
-    },
     "ethereumjs-util": {
       "packages": {
         "assert": true,
@@ -2181,11 +2240,6 @@
         "function-bind": true,
         "has": true,
         "has-symbols": true
-      }
-    },
-    "get-params": {
-      "globals": {
-        "GetParams": "write"
       }
     },
     "graphql-request": {
@@ -2826,11 +2880,6 @@
         "process": true
       }
     },
-    "jsan": {
-      "globals": {
-        "console.warn": true
-      }
-    },
     "jsbi": {
       "globals": {
         "define": true
@@ -2849,7 +2898,11 @@
       }
     },
     "json-rpc-middleware-stream": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
+        "@metamask/safe-event-emitter": true,
         "readable-stream": true
       }
     },
@@ -3497,6 +3550,13 @@
         "varint": true
       }
     },
+    "multiformats": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "console.warn": true
+      }
+    },
     "multihashes": {
       "packages": {
         "bs58": true,
@@ -3562,10 +3622,11 @@
         "crypto": true,
         "msCrypto": true,
         "navigator": true
-      },
+      }
+    },
+    "no-case": {
       "packages": {
-        "buffer": true,
-        "crypto-browserify": true
+        "lower-case": true
       }
     },
     "no-case": {
@@ -4415,35 +4476,6 @@
         "@babel/runtime": true
       }
     },
-    "redux-devtools-core": {
-      "globals": {
-        "ErrorUtils": true,
-        "console": true,
-        "devToolsOptions": true,
-        "onerror": "write",
-        "serializeState": true
-      },
-      "packages": {
-        "get-params": true,
-        "jsan": true,
-        "lodash": true,
-        "nanoid": true,
-        "remotedev-serialize": true
-      }
-    },
-    "redux-devtools-instrument": {
-      "globals": {
-        "chrome": true,
-        "console.error": true,
-        "process": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "lodash": true,
-        "process": true,
-        "symbol-observable": true
-      }
-    },
     "regenerator-runtime": {
       "globals": {
         "regeneratorRuntime": "write"
@@ -4458,21 +4490,6 @@
     "relative-url": {
       "packages": {
         "url": true
-      }
-    },
-    "remote-redux-devtools": {
-      "globals": {
-        "console.log": true,
-        "console.warn": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "jsan": true,
-        "redux-devtools-core": true,
-        "redux-devtools-instrument": true,
-        "rn-host-detect": true,
-        "socketcluster-client": true
       }
     },
     "retimer": {
@@ -4500,22 +4517,6 @@
         "buffer": true
       }
     },
-    "rn-host-detect": {
-      "globals": {
-        "__DEV__": true,
-        "__fbBatchedBridgeConfig": true,
-        "console": true
-      }
-    },
-    "rpc-cap": {
-      "packages": {
-        "@metamask/controllers": true,
-        "eth-rpc-errors": true,
-        "is-subset": true,
-        "json-rpc-engine": true,
-        "uuid": true
-      }
-    },
     "safe-buffer": {
       "packages": {
         "buffer": true
@@ -4533,16 +4534,6 @@
     "sanitize-filename": {
       "packages": {
         "truncate-utf8-bytes": true
-      }
-    },
-    "sc-channel": {
-      "packages": {
-        "component-emitter": true
-      }
-    },
-    "sc-formatter": {
-      "globals": {
-        "Buffer": true
       }
     },
     "scheduler": {
@@ -4698,29 +4689,6 @@
         "data-queue": true,
         "debug": true,
         "pull-stream": true,
-        "uuid": true
-      }
-    },
-    "socketcluster-client": {
-      "globals": {
-        "WebSocket": true,
-        "WorkerGlobalScope": true,
-        "addEventListener": true,
-        "clearTimeout": true,
-        "localStorage": true,
-        "location": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "buffer": true,
-        "clone": true,
-        "component-emitter": true,
-        "linked-list": true,
-        "querystring-es3": true,
-        "sc-channel": true,
-        "sc-errors": true,
-        "sc-formatter": true,
         "uuid": true
       }
     },

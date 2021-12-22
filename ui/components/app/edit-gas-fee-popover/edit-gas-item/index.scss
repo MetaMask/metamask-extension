@@ -11,12 +11,12 @@
   height: 32px;
   width: 100%;
 
-  &-selected {
-    background-color: $ui-1;
+  &:hover {
+    background-color: $primary-2;
   }
 
-  &-disabled {
-    cursor: default;
+  &--selected {
+    background-color: $ui-1;
   }
 
   &__name {
@@ -25,21 +25,29 @@
     color: $ui-black;
     font-size: 12px;
     font-weight: bold;
-    width: 40%;
+    white-space: nowrap;
+    width: 36%;
   }
 
   &__icon {
+    font-size: 20px;
+    line-height: 1;
     margin-right: 4px;
 
     &-custom {
-      font-size: 20px;
-      line-height: 0;
+      font-size: 32px;
+      line-height: 1;
     }
+  }
+
+  &__maxfee {
+    position: relative;
   }
 
   &__time-estimate {
     display: inline-block;
-    width: 20%;
+    text-align: left;
+    width: 24%;
   }
 
   &__fee-estimate {

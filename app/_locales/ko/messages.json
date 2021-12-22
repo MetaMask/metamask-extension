@@ -1351,12 +1351,6 @@
   "pending": {
     "message": "보류 중"
   },
-  "permissionCheckedIconDescription": {
-    "message": "이 권한을 승인했습니다."
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "이 권한을 승인하지 않았습니다."
-  },
   "permissions": {
     "message": "권한"
   },

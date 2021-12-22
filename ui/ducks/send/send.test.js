@@ -2077,6 +2077,7 @@ describe('Send Slice', () => {
               1: {
                 id: 1,
                 txParams: {
+                  data: '',
                   from: '0xAddress',
                   to: '0xRecipientAddress',
                   gas: GAS_LIMITS.SIMPLE,
@@ -2107,6 +2108,7 @@ describe('Send Slice', () => {
         expect(actionResult[0].payload).toStrictEqual({
           address: '0xRecipientAddress',
           amount: '0xde0b6b3a7640000',
+          data: '',
           from: '0xAddress',
           gasLimit: GAS_LIMITS.SIMPLE,
           gasPrice: '0x3b9aca00',
@@ -2154,6 +2156,7 @@ describe('Send Slice', () => {
               1: {
                 id: 1,
                 txParams: {
+                  data: '',
                   from: '0xAddress',
                   to: '0xTokenAddress',
                   gas: GAS_LIMITS.SIMPLE,
@@ -2241,6 +2244,7 @@ describe('Send Slice', () => {
         expect(actionResult[6].payload).toStrictEqual({
           address: '0xrecipientaddress', // getting address from tokenData does .toLowerCase
           amount: '0x3a98',
+          data: '',
           from: '0xAddress',
           gasLimit: GAS_LIMITS.SIMPLE,
           gasPrice: '0x3b9aca00',

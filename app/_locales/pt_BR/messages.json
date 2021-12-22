@@ -1351,12 +1351,6 @@
   "pending": {
     "message": "Pendente"
   },
-  "permissionCheckedIconDescription": {
-    "message": "Você aprovou esta permissão"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Você não aprovou esta permissão"
-  },
   "permissions": {
     "message": "Permissões"
   },

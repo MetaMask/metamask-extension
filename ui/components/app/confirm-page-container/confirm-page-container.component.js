@@ -258,8 +258,12 @@ export default class ConfirmPageContainer extends Component {
               transaction={currentTransaction}
             />
           )}
-          <EditGasFeePopover />
-          <AdvancedGasFeePopover />
+          {supportsEIP1559V2 && (
+            <>
+              <EditGasFeePopover />
+              <AdvancedGasFeePopover />
+            </>
+          )}
         </div>
       </GasFeeContextProvider>
     );

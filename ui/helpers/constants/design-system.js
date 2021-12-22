@@ -11,6 +11,7 @@ export const COLORS = {
   UI4: 'ui-4',
   BLACK: 'black',
   GREY: 'grey',
+  NEUTRAL_GREY: 'neutral-grey',
   WHITE: 'white',
   PRIMARY1: 'primary-1',
   PRIMARY2: 'primary-2',
@@ -171,6 +172,11 @@ export const FONT_WEIGHT = {
   900: 900,
 };
 
+export const OVERFLOW_WRAP = {
+  BREAK_WORD: 'break-word',
+  NORMAL: 'normal',
+};
+
 export const FONT_STYLE = {
   ITALIC: 'italic',
   NORMAL: 'normal',
@@ -182,4 +188,13 @@ export const SEVERITIES = {
   WARNING: 'warning',
   INFO: 'info',
   SUCCESS: 'success',
+};
+
+export const RESIZE = {
+  NONE: 'none',
+  BOTH: 'both',
+  HORIZONTAL: 'horizontal',
+  VERTICAL: 'vertical',
+  INITIAL: 'initial',
+  INHERIT: 'inherit',
 };

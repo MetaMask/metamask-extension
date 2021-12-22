@@ -256,6 +256,34 @@ export const getUnconnectedAccountAlertShown = (state) =>
 
 export const getTokens = (state) => state.metamask.tokens;
 
+export function getCollectiblesDetectionNoticeDismissed(state) {
+  return state.metamask.collectiblesDetectionNoticeDismissed;
+}
+
+export const getCollectibles = (state) => {
+  const {
+    metamask: {
+      allCollectibles,
+      provider: { chainId },
+      selectedAddress,
+    },
+  } = state;
+
+  return allCollectibles?.[selectedAddress]?.[chainId] ?? [];
+};
+
+export const getCollectibleContracts = (state) => {
+  const {
+    metamask: {
+      allCollectibleContracts,
+      provider: { chainId },
+      selectedAddress,
+    },
+  } = state;
+
+  return allCollectibleContracts?.[selectedAddress]?.[chainId] ?? [];
+};
+
 export function getBlockGasLimit(state) {
   return state.metamask.currentBlockGasLimit;
 }

@@ -75,9 +75,7 @@ const mapStateToProps = (state) => {
 
   const firstPermissionsRequest = getFirstPermissionRequest(state);
   const firstPermissionsRequestId =
-    firstPermissionsRequest && firstPermissionsRequest.metadata
-      ? firstPermissionsRequest.metadata.id
-      : null;
+    firstPermissionsRequest?.metadata.id || null;
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =

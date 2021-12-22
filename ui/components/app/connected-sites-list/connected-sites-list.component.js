@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SiteIcon from '../../ui/site-icon';
-import { stripHttpSchemes } from '../../../helpers/utils/util';
+import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 
 export default class ConnectedSitesList extends Component {
   static contextTypes = {
@@ -9,42 +9,40 @@ export default class ConnectedSitesList extends Component {
   };
 
   static propTypes = {
-    connectedDomains: PropTypes.arrayOf(
+    connectedSubjects: PropTypes.arrayOf(
       PropTypes.shape({
         name: PropTypes.string,
-        icon: PropTypes.string,
+        iconUrl: PropTypes.string,
         origin: PropTypes.string,
-        host: PropTypes.string,
       }),
     ).isRequired,
     onDisconnect: PropTypes.func.isRequired,
-    domainHostCount: PropTypes.objectOf(PropTypes.number).isRequired,
   };
 
   render() {
-    const { connectedDomains, onDisconnect } = this.props;
+    const { connectedSubjects, onDisconnect } = this.props;
     const { t } = this.context;
 
     return (
       <main className="connected-sites-list__content-rows">
-        {connectedDomains.map((domain) => (
+        {connectedSubjects.map((subject) => (
           <div
-            key={domain.origin}
+            key={subject.origin}
             className="connected-sites-list__content-row"
           >
-            <div className="connected-sites-list__domain-info">
-              <SiteIcon icon={domain.icon} name={domain.name} size={32} />
+            <div className="connected-sites-list__subject-info">
+              <SiteIcon icon={subject.iconUrl} name={subject.name} size={32} />
               <span
-                className="connected-sites-list__domain-name"
-                title={domain.extensionId || domain.origin}
+                className="connected-sites-list__subject-name"
+                title={subject.extensionId || subject.origin}
               >
-                {this.getDomainDisplayName(domain)}
+                {this.getSubjectDisplayName(subject)}
               </span>
             </div>
             <i
               className="fas fa-trash-alt connected-sites-list__trash"
               title={t('disconnect')}
-              onClick={() => onDisconnect(domain.origin)}
+              onClick={() => onDisconnect(subject.origin)}
             />
           </div>
         ))}
@@ -52,13 +50,12 @@ export default class ConnectedSitesList extends Component {
     );
   }
 
-  getDomainDisplayName(domain) {
-    if (domain.extensionId) {
+  getSubjectDisplayName(subject) {
+    if (subject.extensionId) {
       return this.context.t('externalExtension');
     }
 
-    return this.props.domainHostCount[domain.host] > 1
-      ? domain.origin
-      : stripHttpSchemes(domain.origin);
+    // We strip https schemes only, and only if the URL has no port.
+    return stripHttpsSchemeWithoutPort(subject.origin);
   }
 }

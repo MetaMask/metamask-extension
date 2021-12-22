@@ -1152,12 +1152,6 @@
   "pending": {
     "message": "待处理"
   },
-  "permissionCheckedIconDescription": {
-    "message": "您已同意该权限"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "您还未同意该权限"
-  },
   "permissions": {
     "message": "权限"
   },

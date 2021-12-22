@@ -4,6 +4,7 @@ import {
   getSelectedIdentity,
   getRpcPrefsForCurrentProvider,
   getCurrentChainId,
+  getMetaMaskAccountsOrdered,
 } from '../../../../selectors';
 import AccountDetailsModal from './account-details-modal.component';
 
@@ -13,6 +14,7 @@ const mapStateToProps = (state) => {
     selectedIdentity: getSelectedIdentity(state),
     keyrings: state.metamask.keyrings,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
+    accounts: getMetaMaskAccountsOrdered(state),
   };
 };
 

@@ -3,14 +3,14 @@ import { number } from '@storybook/addon-knobs';
 import CountdownTimer from './countdown-timer';
 
 export default {
-  title: 'CountdownTimer',
+  title: 'Pages/Swaps/CountdownTimer',
   id: __filename,
 };
 
 const getTimeStartedFromDecrimentSeconds = (seconds) =>
   Date.now() - seconds * 1000;
 
-export const Default = () => {
+export const DefaultStory = () => {
   const timeStartedSecondDecriment = number(
     'Set timeStarted to curren time minus X seconds',
     10,
@@ -25,6 +25,8 @@ export const Default = () => {
     />
   );
 };
+
+DefaultStory.storyName = 'Default';
 
 export const CustomTimerBase = () => {
   const timeStartedSecondDecriment = number(

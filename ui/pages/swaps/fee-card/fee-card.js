@@ -18,6 +18,7 @@ import {
   TYPOGRAPHY,
   FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
+import GasDetailsItemTitle from '../../confirm-transaction-base/gas-details-item/gas-details-item-title';
 
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
@@ -34,6 +35,7 @@ export default function FeeCard({
   onQuotesClick,
   chainId,
   isBestQuote,
+  supportsEIP1559V2,
 }) {
   const t = useContext(I18nContext);
 
@@ -73,42 +75,46 @@ export default function FeeCard({
             <TransactionDetailItem
               key="gas-item"
               detailTitle={
-                <>
-                  {t('transactionDetailGasHeading')}
-                  <InfoTooltip
-                    position="top"
-                    contentText={
-                      <>
-                        <p className="fee-card__info-tooltip-paragraph">
-                          {t('swapGasFeesSummary', [
-                            getTranslatedNetworkName(),
-                          ])}
-                        </p>
-                        <p className="fee-card__info-tooltip-paragraph">
-                          {t('swapGasFeesDetails')}
-                        </p>
-                        <p className="fee-card__info-tooltip-paragraph">
-                          <a
-                            className="fee-card__link"
-                            onClick={() => {
-                              gasFeesLearnMoreLinkClickedEvent();
-                              global.platform.openTab({
-                                url: GAS_FEES_LEARN_MORE_URL,
-                              });
-                            }}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {t('swapGasFeesLearnMore')}
-                          </a>
-                        </p>
-                      </>
-                    }
-                    containerClassName="fee-card__info-tooltip-content-container"
-                    wrapperClassName="fee-card__row-label fee-card__info-tooltip-container"
-                    wide
-                  />
-                </>
+                supportsEIP1559V2 ? (
+                  <GasDetailsItemTitle />
+                ) : (
+                  <>
+                    {t('transactionDetailGasHeading')}
+                    <InfoTooltip
+                      position="top"
+                      contentText={
+                        <>
+                          <p className="fee-card__info-tooltip-paragraph">
+                            {t('swapGasFeesSummary', [
+                              getTranslatedNetworkName(),
+                            ])}
+                          </p>
+                          <p className="fee-card__info-tooltip-paragraph">
+                            {t('swapGasFeesDetails')}
+                          </p>
+                          <p className="fee-card__info-tooltip-paragraph">
+                            <a
+                              className="fee-card__link"
+                              onClick={() => {
+                                gasFeesLearnMoreLinkClickedEvent();
+                                global.platform.openTab({
+                                  url: GAS_FEES_LEARN_MORE_URL,
+                                });
+                              }}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {t('swapGasFeesLearnMore')}
+                            </a>
+                          </p>
+                        </>
+                      }
+                      containerClassName="fee-card__info-tooltip-content-container"
+                      wrapperClassName="fee-card__row-label fee-card__info-tooltip-container"
+                      wide
+                    />
+                  </>
+                )
               }
               detailText={primaryFee.fee}
               detailTotal={secondaryFee.fee}
@@ -124,12 +130,14 @@ export default function FeeCard({
                       {t('maxFee')}
                     </Typography>
                     {`: ${secondaryFee.maxFee}`}
-                    <span
-                      className="fee-card__edit-link"
-                      onClick={() => onFeeCardMaxRowClick()}
-                    >
-                      {t('edit')}
-                    </span>
+                    {!supportsEIP1559V2 && (
+                      <span
+                        className="fee-card__edit-link"
+                        onClick={() => onFeeCardMaxRowClick()}
+                      >
+                        {t('edit')}
+                      </span>
+                    )}
                   </>
                 )
               }
@@ -203,4 +211,5 @@ FeeCard.propTypes = {
   numberOfQuotes: PropTypes.number.isRequired,
   chainId: PropTypes.string.isRequired,
   isBestQuote: PropTypes.bool.isRequired,
+  supportsEIP1559V2: PropTypes.bool.isRequired,
 };

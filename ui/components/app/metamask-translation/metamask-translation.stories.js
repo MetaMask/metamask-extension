@@ -1,67 +1,47 @@
 import React from 'react';
-import { select, object } from '@storybook/addon-knobs';
 import { groupBy } from 'lodash';
 import en from '../../../../app/_locales/en/messages.json';
+import README from './README.mdx';
 import MetaMaskTranslation from './metamask-translation';
 
+const { keysWithoutSubstitution } = groupBy(Object.keys(en), (key) => {
+  if (en[key].message.includes('$1')) {
+    return 'keysWithSubstitution';
+  }
+  return 'keysWithoutSubstitution';
+});
+
 export default {
-  title: 'MetaMaskTranslation',
+  title: 'Components/App/MetamaskTranslation',
   id: __filename,
+  component: MetaMaskTranslation,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    translationKey: { options: keysWithoutSubstitution, control: 'select' },
+    variables: { control: 'array' },
+  },
 };
 
-const { keysWithSubstitution, keysWithoutSubstitution } = groupBy(
-  Object.keys(en),
-  (key) => {
-    if (en[key].message.includes('$1')) {
-      return 'keysWithSubstitution';
-    }
-    return 'keysWithoutSubstitution';
-  },
-);
+export const DefaultStory = (args) => {
+  return <MetaMaskTranslation {...args} />;
+};
 
-export const withoutSubstitutions = () => (
+DefaultStory.storyName = 'Default';
+DefaultStory.args = {
+  translationKey: keysWithoutSubstitution[0],
+};
+
+export const WithTemplate = (args) => (
   <MetaMaskTranslation
-    translationKey={select(
-      'translationKey',
-      keysWithoutSubstitution,
-      keysWithoutSubstitution[0],
-    )}
+    {...args}
+    variables={[<h1 key="link">{args.translationKey}</h1>]}
   />
 );
 
-export const withSubstitutions = () => (
-  <MetaMaskTranslation
-    translationKey={select(
-      'translationKey',
-      keysWithSubstitution,
-      keysWithSubstitution[0],
-    )}
-    variables={object('variables', [])}
-  />
-);
-
-export const withTemplate = () => (
-  <MetaMaskTranslation
-    translationKey={select(
-      'translationKey',
-      keysWithSubstitution,
-      keysWithSubstitution[0],
-    )}
-    variables={[
-      {
-        element: 'span',
-        key: 'link',
-        children: {
-          element: 'MetaMaskTranslation',
-          props: {
-            translationKey: select(
-              'innerTranslationKey',
-              keysWithoutSubstitution,
-              keysWithoutSubstitution[0],
-            ),
-          },
-        },
-      },
-    ]}
-  />
-);
+WithTemplate.args = {
+  translationKey: keysWithoutSubstitution[0],
+};

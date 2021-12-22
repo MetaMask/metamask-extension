@@ -1,0 +1,72 @@
+$card-width-break-large: 224px;
+$link-title-width: 160px;
+$spacer-break-large: 24px;
+$spacer-break-small: 16px;
+
+.collectible-details {
+  padding: 0 $spacer-break-small;
+
+  @media screen and (min-width: $break-large) {
+    padding: 0 $spacer-break-large;
+  }
+
+  &__top-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: $spacer-break-small;
+
+    @media screen and (min-width: $break-large) {
+      margin-bottom: $spacer-break-large;
+      flex-direction: row;
+    }
+
+    &__info {
+      @media screen and (min-width: $break-large) {
+        max-width: calc(100% - #{$card-width-break-large} - #{$spacer-break-large});
+        flex: 0 0 calc(100% - #{$card-width-break-large} - #{$spacer-break-large});
+      }
+    }
+  }
+
+  &__card {
+    overflow: hidden;
+    margin-bottom: $spacer-break-small;
+
+    @media screen and (min-width: $break-large) {
+      margin-right: $spacer-break-large;
+      margin-bottom: 0;
+      max-width: $card-width-break-large;
+      flex: 0 0 $card-width-break-large;
+      height: $card-width-break-large;
+    }
+  }
+
+  &__image {
+    width: 100%;
+
+    @media screen and (min-width: $break-large) {
+      width: $card-width-break-large;
+    }
+  }
+
+  &__address {
+    overflow-wrap: break-word;
+  }
+
+  &__contract-link,
+  &__image-link {
+    color: $primary-1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+
+    &:hover {
+      color: $primary-3;
+    }
+  }
+
+  &__link-title {
+    flex: 0 0 $link-title-width;
+    max-width: 0 0 $link-title-width;
+  }
+}
