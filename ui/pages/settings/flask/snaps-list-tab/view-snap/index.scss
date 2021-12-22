@@ -36,7 +36,7 @@
     align-items: center;
     display: flex;
     flex-grow: 1;
-  
+
     @media screen and (max-width: $break-small) {
       width: 100%;
       justify-content: space-between;
@@ -76,11 +76,11 @@
       height: initial;
       padding: 5px 0 16px;
     }
-    
+
     .connected-sites-list__content-row {
       border-top: none;
       border-bottom: 1px solid $ui-2;
-  
+
       &:last-child {
         border-bottom: none;
       }
@@ -106,6 +106,7 @@
 
   &__remove__button {
     max-width: 175px;
+
     @media screen and (max-width: $break-small) {
       align-self: center;
     }
