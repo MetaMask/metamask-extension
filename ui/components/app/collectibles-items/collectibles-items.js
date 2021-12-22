@@ -111,10 +111,10 @@ export default function CollectiblesItems({ collections = {} }) {
                         <Box
                           width={width}
                           key={`collectible-${i}`}
-                          className="collectibles-items__collection__item"
+                          className="collectibles-items__collection-item-wrapper"
                         >
                           <div
-                            className="collectibles-items__collection__item__wrapper"
+                            className="collectibles-items__collection-item"
                             style={{
                               backgroundColor,
                             }}
@@ -125,7 +125,7 @@ export default function CollectiblesItems({ collections = {} }) {
                                   `${ASSET_ROUTE}/${address}/${tokenId}`,
                                 )
                               }
-                              className="collectibles-items__collection__item__image"
+                              className="collectibles-items__collection-item-image"
                               src={collectibleImage}
                             />
                           </div>
