@@ -43,13 +43,10 @@ $sizes: (
     &--color-#{$variant} {
       border-color: $color;
       &#{$self}--partial-filled #{$self}__inner-circle {
-        background-color: $color;
+        background-color: var($color);
       }
       &#{$self}--filled {
-        background-color: $color;
-      }
-      & #{$self}__icon {
-        color: #{utilities.choose-contrast-color($color)};
+        background-color: var($color);
       }
     }
   }
@@ -57,7 +54,7 @@ $sizes: (
   // separate iterator to ensure borderColor takes precedence
   @each $variant, $color in design-system.$color-map {
     &--border-color-#{$variant} {
-      border-color: $color;
+      border-color: var($color);
     }
   }
 }
