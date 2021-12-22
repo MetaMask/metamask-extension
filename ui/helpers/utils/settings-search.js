@@ -9,6 +9,17 @@ import {
   EXPERIMENTAL_ROUTE,
 } from '../constants/routes';
 
+function showHideSettings(t, settings) {
+  if (!process.env.COLLECTIBLES_V1) {
+    return settings.filter(
+      (e) =>
+        e.section !== t('enableOpenSeaAPI') &&
+        e.section !== t('useCollectibleDetection'),
+    );
+  }
+  return settings;
+}
+
 export function getSettingsRoutes(t) {
   const settingsRoutesList = [
     {
@@ -311,8 +322,9 @@ export function getSettingsRoutes(t) {
       image: 'settings.svg',
     },
   ];
+
   // TODO: write to json file?
-  return settingsRoutesList;
+  return showHideSettings(t, settingsRoutesList);
 }
 
 function getFilteredSettingsRoutes(t, tabName) {
@@ -329,11 +341,16 @@ export function handleSettingsRefs(t, tabName, settingsRefs) {
     (s) => s.route.substring(1) === window.location.hash.substring(1),
   );
 
-  if (settingsRefsIndex !== -1) {
+  if (
+    settingsRefsIndex !== -1 &&
+    settingsRefs[settingsRefsIndex].current !== null
+  ) {
     settingsRefs[settingsRefsIndex].current.scrollIntoView({
       behavior: 'smooth',
     });
     settingsRefs[settingsRefsIndex].current.focus();
+    const historySettingsUrl = window.location.hash.split('#')[1];
+    window.location.hash = historySettingsUrl;
   }
 }
 
@@ -343,12 +360,16 @@ export function handleHooksSettingsRefs(t, tabName, settingsRefs, itemIndex) {
     (s) => s.route.substring(1) === window.location.hash.substring(1),
   );
 
-  if (settingsRefsIndex !== -1) {
-    if (itemIndex === settingsRefsIndex) {
-      settingsRefs.current.scrollIntoView({
-        behavior: 'smooth',
-      });
-      settingsRefs.current.focus();
-    }
+  if (
+    settingsRefsIndex !== -1 &&
+    settingsRefs !== null &&
+    itemIndex === settingsRefsIndex
+  ) {
+    settingsRefs.current.scrollIntoView({
+      behavior: 'smooth',
+    });
+    settingsRefs.current.focus();
+    const historySettingsUrl = window.location.hash.split('#')[1];
+    window.location.hash = historySettingsUrl;
   }
 }

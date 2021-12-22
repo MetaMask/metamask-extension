@@ -53,7 +53,8 @@ export default class SettingsSearchList extends Component {
                         'settings-page__header__search__list__item__section',
                         {
                           'settings-page__header__search__list__item__section-multiple-lines':
-                            tab === t('securityAndPrivacy'),
+                            tab === t('securityAndPrivacy') ||
+                            tab === t('alerts'),
                         },
                       )}
                     >

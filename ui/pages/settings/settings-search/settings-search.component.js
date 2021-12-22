@@ -32,7 +32,7 @@ export default class SettingsSearch extends Component {
     this.settingsRoutesList = Object.values(settingsRoutesList);
     this.settingsSearchFuse = new Fuse(this.settingsRoutesList, {
       shouldSort: true,
-      threshold: 0.45,
+      threshold: 0.2,
       location: 0,
       distance: 100,
       maxPatternLength: 32,
