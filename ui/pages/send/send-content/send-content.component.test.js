@@ -55,13 +55,13 @@ describe('SendContent Component', () => {
         true,
       );
       expect(
-        PageContainerContentChild.childAt(1).is(SendAssetRow),
+        PageContainerContentChild.childAt(2).is(SendAssetRow),
       ).toStrictEqual(true);
       expect(
-        PageContainerContentChild.childAt(2).is(SendAmountRow),
+        PageContainerContentChild.childAt(3).is(SendAmountRow),
       ).toStrictEqual(true);
       expect(
-        PageContainerContentChild.childAt(3).is(SendHexDataRow),
+        PageContainerContentChild.childAt(4).is(SendHexDataRow),
       ).toStrictEqual(true);
     });
 
@@ -74,10 +74,10 @@ describe('SendContent Component', () => {
         true,
       );
       expect(
-        PageContainerContentChild.childAt(1).is(SendAssetRow),
+        PageContainerContentChild.childAt(2).is(SendAssetRow),
       ).toStrictEqual(true);
       expect(
-        PageContainerContentChild.childAt(2).is(SendAmountRow),
+        PageContainerContentChild.childAt(3).is(SendAmountRow),
       ).toStrictEqual(true);
       expect(wrapper.find(SendHexDataRow)).toHaveLength(0);
     });
@@ -91,10 +91,10 @@ describe('SendContent Component', () => {
         true,
       );
       expect(
-        PageContainerContentChild.childAt(1).is(SendAssetRow),
+        PageContainerContentChild.childAt(2).is(SendAssetRow),
       ).toStrictEqual(true);
       expect(
-        PageContainerContentChild.childAt(2).is(SendAmountRow),
+        PageContainerContentChild.childAt(3).is(SendAmountRow),
       ).toStrictEqual(true);
       expect(wrapper.find(SendHexDataRow)).toHaveLength(0);
     });
@@ -108,12 +108,12 @@ describe('SendContent Component', () => {
         .find(PageContainerContent)
         .children();
       expect(
-        PageContainerContentChild.childAt(0).is(SendAssetRow),
+        PageContainerContentChild.childAt(1).is(SendAssetRow),
       ).toStrictEqual(true);
       expect(
-        PageContainerContentChild.childAt(1).is(SendAmountRow),
+        PageContainerContentChild.childAt(2).is(SendAmountRow),
       ).toStrictEqual(true);
-      expect(wrapper.find(Dialog)).toHaveLength(0);
+      expect(wrapper.find(Dialog)).toHaveLength(1);
     });
 
     it('should not render the Dialog if it is an ownedAccount', () => {
@@ -125,12 +125,12 @@ describe('SendContent Component', () => {
         .find(PageContainerContent)
         .children();
       expect(
-        PageContainerContentChild.childAt(0).is(SendAssetRow),
+        PageContainerContentChild.childAt(1).is(SendAssetRow),
       ).toStrictEqual(true);
       expect(
-        PageContainerContentChild.childAt(1).is(SendAmountRow),
+        PageContainerContentChild.childAt(2).is(SendAmountRow),
       ).toStrictEqual(true);
-      expect(wrapper.find(Dialog)).toHaveLength(0);
+      expect(wrapper.find(Dialog)).toHaveLength(1);
     });
 
     it('should render insufficient gas dialog', () => {
@@ -154,11 +154,11 @@ describe('SendContent Component', () => {
     const PageContainerContentChild = wrapper
       .find(PageContainerContent)
       .children();
-    expect(PageContainerContentChild.childAt(1).is(SendAssetRow)).toStrictEqual(
+    expect(PageContainerContentChild.childAt(2).is(SendAssetRow)).toStrictEqual(
       true,
     );
     expect(
-      PageContainerContentChild.childAt(1).find(
+      PageContainerContentChild.childAt(2).find(
         'send-v2__asset-dropdown__single-asset',
       ),
     ).toHaveLength(0);

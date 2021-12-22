@@ -70,7 +70,9 @@ export default class SendContent extends Component {
       asset.type !== ASSET_TYPES.TOKEN &&
       asset.type !== ASSET_TYPES.COLLECTIBLE;
 
-    this.checkContractAddress();
+    if (!this.state.isKnownContractAddress) {
+      this.checkContractAddress();
+    }
 
     return (
       <PageContainerContent>
