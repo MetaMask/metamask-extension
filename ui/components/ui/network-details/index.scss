@@ -17,14 +17,14 @@
     height: 32px;
     background: #f2f3f4;
     border-radius: 16px;
-    margin-left: 63px;
+    margin-inline-start: 63px;
     margin-top: 24px;
     font-size: 12px;
     padding-top: 7px;
     justify-content: center;
 
     & .identicon__image-border {
-      margin-right: 8px;
+      margin-inline-end: 8px;
     }
   }
 

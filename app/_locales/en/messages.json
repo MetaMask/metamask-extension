@@ -1491,7 +1491,7 @@
     "message": "Want to $1 about gas?"
   },
   "learnAbout": {
-    "message": "Learn about"
+    "message": "Learn about $1"
   },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",

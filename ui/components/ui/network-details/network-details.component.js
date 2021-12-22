@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
+import I18nValue from '../i18n-value';
 import Tooltip from '../tooltip';
 import Popover from '../popover';
 import Button from '../button';
@@ -66,15 +67,14 @@ const NetworkDetails = ({
           </Tooltip>
         </label>
         <div className="network-details__info__link-section">
-          <label className="network-details__info__link-section__learn-label">
-            {t('learnAbout')}
-          </label>
-          <Button
-            className="network-details__info__link-section__link"
-            type="link"
-          >
-            {t('scamAndNetworkRisks')}
-          </Button>
+          <I18nValue
+            messageKey="learnAbout"
+            options={[
+              <a href="" key="learnAboutLnk">
+                <I18nValue messageKey="scamAndNetworkRisks" />
+              </a>,
+            ]}
+          />
         </div>
       </div>
       <div className="network-details__content">
