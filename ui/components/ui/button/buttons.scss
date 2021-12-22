@@ -2,15 +2,15 @@
   Buttons
  */
 
-$hover-secondary: #b0d7f2;
-$hover-default: #b3b3b3;
-$hover-confirm: #0372c3;
-$hover-red: #feb6bf;
-$hover-red-primary: #c72837;
-$hover-orange: #ffd3b5;
-$warning-light-orange: #f8b588;
-
 .button {
+  --hover-secondary: #b0d7f2;
+  --hover-default: #b3b3b3;
+  --hover-confirm: #0372c3;
+  --hover-red: #feb6bf;
+  --hover-red-primary: #c72837;
+  --hover-orange: #ffd3b5;
+  --warning-light-orange: #f8b588;
+
   @include H6;
 
   font-weight: 500;
@@ -39,7 +39,7 @@ $warning-light-orange: #f8b588;
 
 .btn-secondary {
   color: var(--Blue-500);
-  border: 1px solid $hover-secondary;
+  border: 1px solid var(--hover-secondary);
   background-color: var(--white);
 
   &:hover {
@@ -54,13 +54,13 @@ $warning-light-orange: #f8b588;
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: $hover-secondary;
+    color: var(--hover-secondary);
   }
 }
 
 .btn-warning {
   color: var(--Orange-500);
-  border: 1px solid $hover-orange;
+  border: 1px solid var(--hover-orange);
   background-color: var(--white);
 
   &:hover {
@@ -75,13 +75,13 @@ $warning-light-orange: #f8b588;
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: $hover-orange;
+    color: var(--hover-orange);
   }
 }
 
 .btn-danger {
   color: var(--Red-500);
-  border: 1px solid $hover-red;
+  border: 1px solid var(--hover-red);
   background-color: var(--white);
 
   &:hover {
@@ -96,7 +96,7 @@ $warning-light-orange: #f8b588;
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: $hover-red;
+    color: var(--hover-red);
   }
 }
 
@@ -106,8 +106,8 @@ $warning-light-orange: #f8b588;
   background-color: var(--Red-500);
 
   &:hover {
-    border-color: $hover-red-primary;
-    background-color: $hover-red-primary;
+    border-color: var(--hover-red-primary);
+    background-color: var(--hover-red-primary);
   }
 
   &:active {
@@ -118,14 +118,14 @@ $warning-light-orange: #f8b588;
   &--disabled,
   &[disabled] {
     opacity: 1;
-    border-color: $hover-red;
-    background-color: $hover-red;
+    border-color: var(--hover-red);
+    background-color: var(--hover-red);
   }
 }
 
 .btn-default {
   color: var(--Grey-500);
-  border: 1px solid $hover-default;
+  border: 1px solid var(--hover-default);
 
   &:hover {
     border-color: var(--Grey-500);
@@ -139,7 +139,7 @@ $warning-light-orange: #f8b588;
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: $hover-default;
+    color: var(--hover-default);
   }
 }
 
@@ -149,8 +149,8 @@ $warning-light-orange: #f8b588;
   background-color: var(--Blue-500);
 
   &:hover {
-    border-color: $hover-confirm;
-    background-color: $hover-confirm;
+    border-color: var(--hover-confirm);
+    background-color: var(--hover-confirm);
   }
 
   &:active {
@@ -160,8 +160,8 @@ $warning-light-orange: #f8b588;
 
   &--disabled,
   &[disabled] {
-    border-color: $hover-secondary;
-    background-color: $hover-secondary;
+    border-color: var(--hover-secondary);
+    background-color: var(--hover-secondary);
   }
 }
 
@@ -185,7 +185,7 @@ $warning-light-orange: #f8b588;
     cursor: auto;
     opacity: 1;
     pointer-events: none;
-    color: $hover-secondary;
+    color: var(--hover-secondary);
   }
 }
 
@@ -241,8 +241,8 @@ input[type="submit"][disabled] {
 
     &--disabled,
     &[disabled] {
-      border-color: $hover-secondary;
-      color: $hover-secondary;
+      border-color: var(--hover-secondary);
+      color: var(--hover-secondary);
     }
 
     &:active {
@@ -256,7 +256,7 @@ input[type="submit"][disabled] {
     &--disabled,
     &[disabled] {
       border-color: var(--Grey-100);
-      color: $hover-default;
+      color: var(--hover-default);
     }
 
     &:active {
@@ -283,8 +283,8 @@ input[type="submit"][disabled] {
 
     &--disabled,
     &[disabled] {
-      border-color: $warning-light-orange;
-      color: $warning-light-orange;
+      border-color: var(--warning-light-orange);
+      color: var(--warning-light-orange);
     }
 
     &:active {
@@ -297,7 +297,7 @@ input[type="submit"][disabled] {
 
     &--disabled,
     &[disabled] {
-      background-color: $hover-secondary;
+      background-color: var(--hover-secondary);
     }
 
     &:active {
