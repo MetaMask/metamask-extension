@@ -120,7 +120,11 @@ export default function CollectiblesItems({
               const { image, address, tokenId, backgroundColor } = collectible;
               const collectibleImage = getAssetImageURL(image, ipfsGateway);
               return (
-                <Box width={width} key={`collectible-${i}`} className="collectibles-items__collection-item-wrapper">
+                <Box
+                  width={width}
+                  key={`collectible-${i}`}
+                  className="collectibles-items__collection-item-wrapper"
+                >
                   <div
                     className="collectibles-items__collection-item"
                     style={{

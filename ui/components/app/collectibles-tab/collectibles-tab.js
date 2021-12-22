@@ -77,7 +77,7 @@ export default function CollectiblesTab({ onAddNFT }) {
     if (isMainnet) {
       dispatch(detectCollectibles());
     }
-    dispatch(checkAndUpdateCollectiblesOwnershipStatus());
+    checkAndUpdateCollectiblesOwnershipStatus();
   };
 
   return (
