@@ -2637,6 +2637,10 @@
   "slow": {
     "message": "Slow"
   },
+  "snapError": {
+    "message": "Snap Error: '$1'. Error Code: '$2'",
+    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
+  },
   "snapInstall": {
     "message": "Install Snap"
   },
