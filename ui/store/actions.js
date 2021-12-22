@@ -813,13 +813,8 @@ export function txError(err) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-export function removeSnapError(msgData) {
-  return (dispatch) => {
-    return promisifiedBackground
-      .removeSnapError(msgData)
-      .then(() => updateMetamaskStateFromBackground())
-      .then((newState) => dispatch(updateMetamaskState(newState)));
-  };
+export async function removeSnapError(msgData) {
+  return promisifiedBackground.removeSnapError(msgData);
 }
 ///: END:ONLY_INCLUDE_IN
 
