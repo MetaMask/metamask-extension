@@ -286,8 +286,8 @@ export default class Home extends PureComponent {
                         </Typography>
                       </>
                     }
-                    onIgnore={() => {
-                      removeSnapError(errorId);
+                    onIgnore={async () => {
+                      await removeSnapError(errorId);
                     }}
                     ignoreText="Dismiss"
                     key="home-error-message"
