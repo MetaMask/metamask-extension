@@ -1,10 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import SnapSettingsCard from '../../../../components/app/flask/snap-settings-card';
-import {
-  removeSnap,
-  removeSnapPermissionsFromSubjects,
-} from '../../../../store/actions';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Typography from '../../../../components/ui/typography/typography';
 import {
@@ -13,43 +9,16 @@ import {
   FLEX_DIRECTION,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../../components/ui/box';
-import ViewSnap from './view-snap';
 
 const propTypes = {
   snaps: PropTypes.object.isRequired,
-  viewingSnap: PropTypes.bool,
-  currentSnap: PropTypes.object,
   onClick: PropTypes.func.isRequired,
-  onRemove: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
 };
 
-const SnapListTab = ({
-  snaps,
-  viewingSnap,
-  currentSnap,
-  onClick,
-  onRemove,
-  onToggle,
-  dispatch,
-}) => {
+const SnapListTab = ({ snaps, onClick, onToggle }) => {
   const t = useI18nContext();
-  if (viewingSnap && currentSnap) {
-    return (
-      <ViewSnap
-        snap={currentSnap}
-        onToggle={() => onToggle(currentSnap)}
-        onRemove={async (event) => {
-          await dispatch(removeSnap(currentSnap.id));
-          await dispatch(
-            removeSnapPermissionsFromSubjects(currentSnap.permissionName),
-          );
-          onRemove(event, currentSnap);
-        }}
-      />
-    );
-  }
+
   return (
     <div className="snap-list-tab">
       {Object.entries(snaps).length ? (

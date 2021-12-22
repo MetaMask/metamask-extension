@@ -1454,10 +1454,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       disableSnap: this.snapController.disableSnap.bind(this.snapController),
       enableSnap: this.snapController.enableSnap.bind(this.snapController),
-      removeSnap: this.snapController.removeSnap.bind(this.snapController),
-      revokePermissionsForAllSubjects: this.permissionController.revokePermissionForAllSubjects.bind(
-        this.permissionController,
-      ),
+      removeSnap: this.removeSnap.bind(this),
       ///: END:ONLY_INCLUDE_IN
 
       // swaps
@@ -3634,4 +3631,14 @@ export default class MetamaskController extends EventEmitter {
     }
     return this.keyringController.setLocked();
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  // SNAPS
+  removeSnap(snap) {
+    this.snapController.removeSnap(snap.id);
+    this.permissionController.revokePermissionForAllSubjects(
+      snap.permissionName,
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
 }

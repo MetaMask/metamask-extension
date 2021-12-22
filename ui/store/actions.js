@@ -820,16 +820,12 @@ export async function enableSnap(snapId) {
   await promisifiedBackground.enableSnap(snapId);
 }
 
-export async function removeSnap(snapId) {
-  await promisifiedBackground.removeSnap(snapId);
+export async function removeSnap(snap) {
+  await promisifiedBackground.removeSnap(snap);
 }
 
 export async function removeSnapError(msgData) {
   return promisifiedBackground.removeSnapError(msgData);
-}
-
-export async function removeSnapPermissionsFromSubjects(permissionName) {
-  await promisifiedBackground.revokePermissionsForAllSubjects(permissionName);
 }
 ///: END:ONLY_INCLUDE_IN
 

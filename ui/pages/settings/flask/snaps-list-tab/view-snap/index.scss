@@ -64,10 +64,19 @@
   }
 
   &__section {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
     border-bottom: 1px solid $Grey-100;
     padding-bottom: 16px;
     margin-bottom: 16px;
 
+    @media screen and (max-width: $break-small) {
+      height: initial;
+      padding: 5px 0 16px;
+    }
+    
     .connected-sites-list__content-row {
       border-top: none;
       border-bottom: 1px solid $ui-2;
@@ -75,6 +84,11 @@
       &:last-child {
         border-bottom: none;
       }
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+      border-bottom: none;
     }
   }
 

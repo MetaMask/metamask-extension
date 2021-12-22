@@ -13,10 +13,13 @@ import ToggleButton from '../../../../../components/ui/toggle-button';
 import PermissionsConnectPermissionList from '../../../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
 import ConnectedSitesList from '../../../../../components/app/connected-sites-list';
 import Tooltip from '../../../../../components/ui/tooltip';
+import { SNAPS_LIST_ROUTE } from '../../../../../helpers/constants/routes';
+import { removeSnap } from '../../../../../store/actions';
 
 function ViewSnap({
+  history,
+  dispatch,
   snap,
-  onRemove,
   onToggle,
   connectedSubjects,
   onDisconnect,
@@ -48,7 +51,7 @@ function ViewSnap({
               <Tooltip interactive position="bottom" html={t('snapsToggle')}>
                 <ToggleButton
                   value={snap.enabled}
-                  onToggle={onToggle}
+                  onToggle={() => onToggle(snap)}
                   className="snap-settings-card__toggle-container__toggle-button"
                 />
               </Tooltip>
@@ -56,7 +59,7 @@ function ViewSnap({
           </Box>
         </div>
         <Box className="view-snap__content-container" width="7/12">
-          <div className="settings-page__content-item view-snap__section">
+          <div className="view-snap__section">
             <Typography
               variant={TYPOGRAPHY.H6}
               color={COLORS.UI4}
@@ -65,7 +68,7 @@ function ViewSnap({
               {snap.manifest.description}
             </Typography>
           </div>
-          <div className="settings-page__content-item view-snap__section view-snap__permission-list">
+          <div className="view-snap__section view-snap__permission-list">
             <Typography variant={TYPOGRAPHY.H4}>{t('permissions')}</Typography>
             <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
               {t('snapAccess', [snap.manifest.proposedName])}
@@ -76,7 +79,7 @@ function ViewSnap({
               />
             </Box>
           </div>
-          <div className="settings-page__content-item view-snap__section">
+          <div className="view-snap__section">
             <Box width="11/12">
               <Typography variant={TYPOGRAPHY.H4}>
                 {t('connectedSites')}
@@ -92,7 +95,7 @@ function ViewSnap({
               />
             </Box>
           </div>
-          <div className="settings-page__content-item">
+          <div className="view-snap__section">
             <Typography variant={TYPOGRAPHY.H4}>{t('removeSnap')}</Typography>
             <Typography
               variant={TYPOGRAPHY.H6}
@@ -107,7 +110,10 @@ function ViewSnap({
               css={{
                 maxWidth: '175px',
               }}
-              onClick={onRemove}
+              onClick={() => {
+                dispatch(removeSnap(snap));
+                history.push(SNAPS_LIST_ROUTE);
+              }}
             >
               {t('removeSnap')}
             </Button>
@@ -119,8 +125,9 @@ function ViewSnap({
 }
 
 ViewSnap.propTypes = {
-  snap: PropTypes.object,
-  onRemove: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+  snap: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
   onToggle: PropTypes.func.isRequired,
   connectedSubjects: PropTypes.arrayOf(
     PropTypes.shape({

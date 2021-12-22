@@ -32,6 +32,7 @@ import ContactListTab from './contact-list-tab';
 import ExperimentalTab from './experimental-tab';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapListTab from './flask/snaps-list-tab';
+import ViewSnap from './flask/snaps-list-tab/view-snap';
 ///: END:ONLY_INCLUDE_IN
 
 class SettingsPage extends PureComponent {
@@ -307,11 +308,7 @@ class SettingsPage extends PureComponent {
         }
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          <Route
-            exact
-            path={`${SNAPS_VIEW_ROUTE}/:id`}
-            component={SnapListTab}
-          />
+          <Route exact path={`${SNAPS_VIEW_ROUTE}/:id`} component={ViewSnap} />
           ///: END:ONLY_INCLUDE_IN
         }
         <Route
