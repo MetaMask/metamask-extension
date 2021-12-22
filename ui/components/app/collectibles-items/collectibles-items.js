@@ -48,7 +48,7 @@ export default function CollectiblesItems({ collections = {} }) {
             const isExpanded = dropdownState[key];
             return (
               <div
-                className="collectibles-items__item"
+                className="collectibles-items__collection"
                 key={`collection-${index}`}
                 onClick={() => {
                   setDropdownState((_dropdownState) => ({
@@ -62,19 +62,19 @@ export default function CollectiblesItems({ collections = {} }) {
                   display={DISPLAY.FLEX}
                   alignItems={ALIGN_ITEMS.CENTER}
                   justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-                  className="collectibles-items__item__accordion-title"
+                  className="collectibles-items__collection-accordion-title"
                 >
                   <Box
                     alignItems={ALIGN_ITEMS.CENTER}
-                    className="collectibles-items__item__collection-header"
+                    className="collectibles-items__collection-header"
                   >
                     {collectionImage ? (
                       <img
                         src={collectionImage}
-                        className="collectibles-items__item__collection-image"
+                        className="collectibles-items__collection-image"
                       />
                     ) : (
-                      <div className="collectibles-items__item__collection-image-alt">
+                      <div className="collectibles-items__collection-image-alt">
                         {collectionName[0]}
                       </div>
                     )}
@@ -108,9 +108,13 @@ export default function CollectiblesItems({ collections = {} }) {
                         ipfsGateway,
                       );
                       return (
-                        <Box width={width} key={`collectible-${i}`}>
+                        <Box
+                          width={width}
+                          key={`collectible-${i}`}
+                          className="collectibles-items__collection-item-wrapper"
+                        >
                           <div
-                            className="collectibles-items__image__wrapper"
+                            className="collectibles-items__collection-item"
                             style={{
                               backgroundColor,
                             }}
@@ -121,7 +125,7 @@ export default function CollectiblesItems({ collections = {} }) {
                                   `${ASSET_ROUTE}/${address}/${tokenId}`,
                                 )
                               }
-                              className="collectibles-items__image"
+                              className="collectibles-items__collection-item-image"
                               src={collectibleImage}
                             />
                           </div>
