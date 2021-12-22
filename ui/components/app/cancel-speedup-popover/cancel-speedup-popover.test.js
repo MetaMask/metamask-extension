@@ -62,6 +62,7 @@ const render = (props) => {
 describe('CancelSpeedupPopover', () => {
   it('should have ❌Cancel in header if editGasMode is cancel', async () => {
     await act(async () => render());
+    console.log(document.body.innerHTML);
     expect(screen.queryByText('❌Cancel')).toBeInTheDocument();
   });
 
