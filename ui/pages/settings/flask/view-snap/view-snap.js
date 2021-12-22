@@ -1,30 +1,59 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Button from '../../../../../components/ui/button';
-import Typography from '../../../../../components/ui/typography';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useHistory, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import Button from '../../../../components/ui/button';
+import Typography from '../../../../components/ui/typography';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   TYPOGRAPHY,
   COLORS,
-} from '../../../../../helpers/constants/design-system';
-import SnapsAuthorshipPill from '../../../../../components/app/flask/snaps-authorship-pill';
-import Box from '../../../../../components/ui/box';
-import ToggleButton from '../../../../../components/ui/toggle-button';
-import PermissionsConnectPermissionList from '../../../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
-import ConnectedSitesList from '../../../../../components/app/connected-sites-list';
-import Tooltip from '../../../../../components/ui/tooltip';
-import { SNAPS_LIST_ROUTE } from '../../../../../helpers/constants/routes';
-import { removeSnap } from '../../../../../store/actions';
+} from '../../../../helpers/constants/design-system';
+import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill';
+import Box from '../../../../components/ui/box';
+import ToggleButton from '../../../../components/ui/toggle-button';
+import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
+import ConnectedSitesList from '../../../../components/app/connected-sites-list';
+import Tooltip from '../../../../components/ui/tooltip';
+import { SNAPS_LIST_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  disableSnap,
+  enableSnap,
+  removeSnap,
+  removePermissionsFor,
+} from '../../../../store/actions';
+import { getSnaps, getSubjectsWithPermission } from '../../../../selectors';
 
-function ViewSnap({
-  history,
-  dispatch,
-  snap,
-  onToggle,
-  connectedSubjects,
-  onDisconnect,
-}) {
+function ViewSnap() {
   const t = useI18nContext();
+  const history = useHistory();
+  const location = useLocation();
+  const { pathname } = location;
+  const pathNameTail = pathname.match(/[^/]+$/u)[0];
+  const snaps = useSelector(getSnaps);
+  const connectedSubjects = useSelector(getSubjectsWithPermission);
+  const snap = snaps
+    ? Object.entries(snaps)
+        .map(([_, snapState]) => snapState)
+        .find((snapState) => {
+          const decoded = decodeURIComponent(escape(window.atob(pathNameTail)));
+          return snapState.id === decoded;
+        })
+    : undefined;
+  const dispatch = useDispatch();
+  const onDisconnect = (connectedOrigin, snapPermissionName) => {
+    dispatch(
+      removePermissionsFor({
+        [connectedOrigin]: [snapPermissionName],
+      }),
+    );
+  };
+  const onToggle = () => {
+    if (snap.enabled) {
+      dispatch(disableSnap(snap.id));
+    } else {
+      dispatch(enableSnap(snap.id));
+    }
+  };
 
   return (
     <div className="view-snap">
@@ -51,7 +80,7 @@ function ViewSnap({
               <Tooltip interactive position="bottom" html={t('snapsToggle')}>
                 <ToggleButton
                   value={snap.enabled}
-                  onToggle={() => onToggle(snap)}
+                  onToggle={onToggle}
                   className="snap-settings-card__toggle-container__toggle-button"
                 />
               </Tooltip>
@@ -110,8 +139,8 @@ function ViewSnap({
               css={{
                 maxWidth: '175px',
               }}
-              onClick={() => {
-                dispatch(removeSnap(snap));
+              onClick={async () => {
+                await dispatch(removeSnap(snap));
                 history.push(SNAPS_LIST_ROUTE);
               }}
             >
@@ -123,20 +152,5 @@ function ViewSnap({
     </div>
   );
 }
-
-ViewSnap.propTypes = {
-  history: PropTypes.object.isRequired,
-  snap: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  onToggle: PropTypes.func.isRequired,
-  connectedSubjects: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      iconUrl: PropTypes.string,
-      origin: PropTypes.string,
-    }),
-  ).isRequired,
-  onDisconnect: PropTypes.func.isRequired,
-};
 
 export default React.memo(ViewSnap);

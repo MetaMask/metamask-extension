@@ -32,7 +32,7 @@ import ContactListTab from './contact-list-tab';
 import ExperimentalTab from './experimental-tab';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapListTab from './flask/snaps-list-tab';
-import ViewSnap from './flask/snaps-list-tab/view-snap';
+import ViewSnap from './flask/view-snap';
 ///: END:ONLY_INCLUDE_IN
 
 class SettingsPage extends PureComponent {

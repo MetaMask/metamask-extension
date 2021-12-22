@@ -1,5 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import SnapSettingsCard from '../../../../components/app/flask/snap-settings-card';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Typography from '../../../../components/ui/typography/typography';
@@ -9,15 +10,28 @@ import {
   FLEX_DIRECTION,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../../components/ui/box';
+import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
+import { disableSnap, enableSnap } from '../../../../store/actions';
+import { getSnaps } from '../../../../selectors';
 
-const propTypes = {
-  snaps: PropTypes.object.isRequired,
-  onClick: PropTypes.func.isRequired,
-  onToggle: PropTypes.func.isRequired,
-};
-
-const SnapListTab = ({ snaps, onClick, onToggle }) => {
+const SnapListTab = () => {
   const t = useI18nContext();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const snaps = useSelector(getSnaps);
+  const onClick = (snap) => {
+    const route = `${SNAPS_VIEW_ROUTE}/${window.btoa(
+      unescape(encodeURIComponent(snap.id)),
+    )}`;
+    history.push(route);
+  };
+  const onToggle = (snap) => {
+    if (snap.enabled) {
+      dispatch(disableSnap(snap.id));
+    } else {
+      dispatch(enableSnap(snap.id));
+    }
+  };
 
   return (
     <div className="snap-list-tab">
@@ -68,7 +82,5 @@ const SnapListTab = ({ snaps, onClick, onToggle }) => {
     </div>
   );
 };
-
-SnapListTab.propTypes = propTypes;
 
 export default SnapListTab;
