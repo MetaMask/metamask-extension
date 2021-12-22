@@ -148,7 +148,7 @@ const mapDispatchToProps = (dispatch) => ({
     });
   },
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  removeSnapError: (id) => dispatch(removeSnapError(id)),
+  removeSnapError: async (id) => await removeSnapError(id),
   ///: END:ONLY_INCLUDE_IN
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
