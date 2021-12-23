@@ -23,7 +23,7 @@ const BuildType = {
  * @param {string[]} platforms - A list of browsers to generate versions for.
  * @returns {Object} An object with the browser as the key and the browser-specific version object
  * as the value.  For example, the version `9.6.0-beta.1` would return the object
- * `{ firefox: { version: '9.6.0.beta1' }, chrome: { version: '9.6.0.1', version_name: 'beta' } }`.
+ * `{ firefox: { version: '9.6.0.beta1' }, chrome: { version: '9.6.0.1', version_name: '9.6.0-beta.1' } }`.
  */
 function getBrowserVersionMap(platforms) {
   const major = semver.major(version);
@@ -53,7 +53,7 @@ function getBrowserVersionMap(platforms) {
         versionParts.push(`${buildType}${buildVersion}`);
       } else {
         versionParts.push(buildVersion);
-        browserSpecificVersion.version_name = buildType;
+        browserSpecificVersion.version_name = version;
       }
     }
     browserSpecificVersion.version = versionParts.join('.');
