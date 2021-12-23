@@ -44,9 +44,6 @@ const defaultEstimateToUse = GAS_RECOMMENDATIONS.HIGH;
 const mode = EDIT_GAS_MODES.SWAPS;
 const confirmButtonText = 'Submit';
 const minimumGasLimit = '5700';
-const editGasDisplayProps = {
-  showEducationButton: true,
-};
 
 export const DefaultStory = (args) => {
   return (
@@ -58,39 +55,6 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
-  transaction,
-  defaultEstimateToUse,
-  mode,
-  confirmButtonText,
-  minimumGasLimit,
-};
-
-export const WithDifferentButtonText = (args) => {
-  return (
-    <div style={{ width: '600px' }}>
-      <EditGasPopover {...args} />
-    </div>
-  );
-};
-
-WithDifferentButtonText.args = {
-  transaction,
-  defaultEstimateToUse,
-  mode,
-  confirmButtonText,
-  minimumGasLimit,
-};
-
-export const WithEducationalContentFlow = (args) => {
-  return (
-    <div style={{ width: '600px' }}>
-      <EditGasPopover {...args} />
-    </div>
-  );
-};
-
-WithEducationalContentFlow.args = {
-  editGasDisplayProps,
   transaction,
   defaultEstimateToUse,
   mode,
