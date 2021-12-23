@@ -673,6 +673,12 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function getSnaps(state) {
+  return state.metamask.snaps;
+}
+///: END:ONLY_INCLUDE_IN
+
 /**
  * Get an object of notification IDs and if they are allowed or not.
  *
