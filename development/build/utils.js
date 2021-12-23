@@ -40,7 +40,7 @@ function getBrowserVersionMap(platforms) {
     [buildType, buildVersion] = prerelease;
     if (!String(buildVersion).match(/^\d+$/u)) {
       throw new Error(`Invalid prerelease build version: '${buildVersion}'`);
-    } else if (buildType !== BuildType.beta) {
+    } else if (![BuildType.beta, BuildType.flask].includes(buildType)) {
       throw new Error(`Invalid prerelease build type: ${buildType}`);
     }
   }
