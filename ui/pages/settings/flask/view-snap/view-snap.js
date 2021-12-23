@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../../../components/ui/button';
@@ -30,16 +30,21 @@ function ViewSnap() {
   const { pathname } = location;
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
   const snaps = useSelector(getSnaps);
-  const snap = snaps
-    ? Object.entries(snaps)
-        .map(([_, snapState]) => snapState)
-        .find((snapState) => {
-          const decoded = decodeURIComponent(escape(window.atob(pathNameTail)));
-          return snapState.id === decoded;
-        })
-    : undefined;
+  const snap = Object.entries(snaps)
+    .map(([_, snapState]) => snapState)
+    .find((snapState) => {
+      const decoded = decodeURIComponent(escape(window.atob(pathNameTail)));
+      return snapState.id === decoded;
+    });
+
+  useEffect(() => {
+    if (!snap) {
+      history.push(SNAPS_LIST_ROUTE);
+    }
+  }, [history, snap]);
+
   const connectedSubjects = useSelector((state) =>
-    getSubjectsWithPermission(state, snap.permissionName),
+    getSubjectsWithPermission(state, snap?.permissionName),
   );
   const dispatch = useDispatch();
   const onDisconnect = (connectedOrigin, snapPermissionName) => {
@@ -57,6 +62,9 @@ function ViewSnap() {
     }
   };
 
+  if (!snap) {
+    return null;
+  }
   return (
     <div className="view-snap">
       <div className="settings-page__content-row">
@@ -143,7 +151,6 @@ function ViewSnap() {
               }}
               onClick={async () => {
                 await dispatch(removeSnap(snap));
-                history.push(SNAPS_LIST_ROUTE);
               }}
             >
               {t('removeSnap')}
