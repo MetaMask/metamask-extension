@@ -434,7 +434,8 @@ export default class TransactionController extends EventEmitter {
       if (process.env.EIP_1559_V2 && Boolean(advancedGasFeeDefaultEIP1559V2)) {
         txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(
-          advancedGasFeeDefaultEIP1559V2.maxBaseFee,
+          advancedGasFeeDefaultEIP1559V2.maxBaseFeeGWEI ||
+            advancedGasFeeDefaultEIP1559V2.maxBaseFeeMultiplier,
         );
         txMeta.txParams.maxPriorityFeePerGas = decGWEIToHexWEI(
           advancedGasFeeDefaultEIP1559V2.priorityFee,

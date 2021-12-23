@@ -338,12 +338,18 @@ describe('preferences controller', function () {
       const state = preferencesController.store.getState();
       assert.equal(state.advancedGasFee, null);
       preferencesController.setAdvancedGasFee({
-        maxBaseFee: '1.5',
+        maxBaseFeeMultiplier: '1.5',
+        maxBaseFeeGWEI: '100',
         priorityFee: '2',
       });
       assert.equal(
-        preferencesController.store.getState().advancedGasFee.maxBaseFee,
+        preferencesController.store.getState().advancedGasFee
+          .maxBaseFeeMultiplier,
         '1.5',
+      );
+      assert.equal(
+        preferencesController.store.getState().advancedGasFee.maxBaseFeeGWEI,
+        '100',
       );
       assert.equal(
         preferencesController.store.getState().advancedGasFee.priorityFee,

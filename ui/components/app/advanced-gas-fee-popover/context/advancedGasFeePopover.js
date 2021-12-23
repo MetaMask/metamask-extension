@@ -21,19 +21,22 @@ export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
     [errors, setErrors],
   );
   const [baseFeeMultiplier, setBaseFeeMultiplier] = useState();
+  const [baseFeeGWEI, setBaseFeeGWEI] = useState();
 
   return (
     <AdvancedGasFeePopoverContext.Provider
       value={{
         gasLimit,
         hasErrors: errors.maxFeePerGas || errors.maxPriorityFeePerGas,
+        baseFeeGWEI,
+        baseFeeMultiplier,
         maxFeePerGas,
         maxPriorityFeePerGas,
         setErrorValue,
-        baseFeeMultiplier,
         setGasLimit,
         setMaxPriorityFeePerGas,
         setMaxFeePerGas,
+        setBaseFeeGWEI,
         setBaseFeeMultiplier,
       }}
     >

@@ -30,7 +30,7 @@ const render = (txProps) => {
           balance: '0x1F4',
         },
       },
-      advancedGasFee: { maxBaseFee: 2 },
+      advancedGasFee: { maxBaseFeeMultiplier: 2, maxBaseFeeGWEI: null },
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates:
         mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates,

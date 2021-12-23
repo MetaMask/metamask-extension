@@ -67,8 +67,32 @@ describe('AdvancedGasFeeDefaults', () => {
   });
   it('should renders correct message when the default values are set', () => {
     render({
-      advancedGasFee: { maxBaseFee: 2, priorityFee: 2 },
+      advancedGasFee: {
+        maxBaseFeeGWEI: null,
+        maxBaseFeeMultiplier: 2,
+        priorityFee: 2,
+      },
     });
+    expect(
+      screen.queryByText(
+        'Always use these values and advanced setting as default.',
+      ),
+    ).toBeInTheDocument();
+  });
+  it('should renders correct message when the default values is in GWEI', () => {
+    render({
+      advancedGasFee: {
+        maxBaseFeeGWEI: 100,
+        maxBaseFeeMultiplier: null,
+        priorityFee: 2,
+      },
+    });
+    expect(
+      screen.queryByText('Save these as my default for "Advanced"'),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.queryByText('Edit in GWEI'));
+    expect(document.getElementsByTagName('input')[2]).toBeChecked();
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
     expect(
       screen.queryByText(
         'Always use these values and advanced setting as default.',
@@ -93,7 +117,11 @@ describe('AdvancedGasFeeDefaults', () => {
   });
   it('should renders correct message when the default values are set and the maxBaseFee values are updated', () => {
     render({
-      advancedGasFee: { maxBaseFee: 2, priorityFee: 2 },
+      advancedGasFee: {
+        maxBaseFeeGWEI: null,
+        maxBaseFeeMultiplier: 2,
+        priorityFee: 2,
+      },
     });
     expect(document.getElementsByTagName('input')[2]).toBeChecked();
     expect(
@@ -112,7 +140,11 @@ describe('AdvancedGasFeeDefaults', () => {
   });
   it('should renders correct message when the default values are set and the priorityFee values are updated', () => {
     render({
-      advancedGasFee: { maxBaseFee: 2, priorityFee: 2 },
+      advancedGasFee: {
+        maxBaseFeeGWEI: null,
+        maxBaseFeeMultiplier: 2,
+        priorityFee: 2,
+      },
     });
     expect(document.getElementsByTagName('input')[2]).toBeChecked();
     expect(

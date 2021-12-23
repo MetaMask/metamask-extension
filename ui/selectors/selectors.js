@@ -794,15 +794,3 @@ export function getIsMultiLayerFeeNetwork(state) {
 export function getAdvancedGasFeeValues(state) {
   return state.metamask.advancedGasFee;
 }
-
-/**
- *  To check if the user has set advanced gas fee settings as default with a non empty  maxBaseFee and priotityFee.
- *  @param {*} state
- *  @returns Boolean
- */
-export function getIsAdvancedGasFeeDefault(state) {
-  const { advancedGasFee } = state.metamask;
-  return (
-    Boolean(advancedGasFee?.maxBaseFee) && Boolean(advancedGasFee?.priorityFee)
-  );
-}

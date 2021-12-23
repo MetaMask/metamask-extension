@@ -23,6 +23,7 @@ const AdvancedGasFeeDefaults = () => {
 
   const {
     hasErrors,
+    baseFeeGWEI,
     baseFeeMultiplier,
     maxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
@@ -32,7 +33,8 @@ const AdvancedGasFeeDefaults = () => {
     if (value) {
       dispatch(
         setAdvancedGasFee({
-          maxBaseFee: baseFeeMultiplier,
+          maxBaseFeeMultiplier: baseFeeMultiplier,
+          maxBaseFeeGWEI: baseFeeGWEI,
           priorityFee: maxPriorityFeePerGas,
         }),
       );
@@ -42,7 +44,8 @@ const AdvancedGasFeeDefaults = () => {
   };
   const isDefaultSettingsSelected =
     Boolean(advancedGasFeeValues) &&
-    advancedGasFeeValues.maxBaseFee === baseFeeMultiplier &&
+    advancedGasFeeValues.maxBaseFeeMultiplier === baseFeeMultiplier &&
+    advancedGasFeeValues.maxBaseFeeGWEI === baseFeeGWEI &&
     advancedGasFeeValues.priorityFee === maxPriorityFeePerGas;
 
   const handleUpdateDefaultSettings = () =>

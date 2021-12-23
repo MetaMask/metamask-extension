@@ -16,7 +16,7 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical, feeTrend }) => {
           <LoadingHeartBeat />
           {latest}
         </span>
-        <img src={`./images/${feeTrend}-arrow.svg`} alt="feeTrend-arrow" />
+        <img src={`./images/${feeTrend}-arrow.svg`} />
       </Box>
       <Box>
         <span className="advanced-gas-fee-input-subtext__label">

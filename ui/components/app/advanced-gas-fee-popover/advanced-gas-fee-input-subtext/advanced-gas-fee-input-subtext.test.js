@@ -50,6 +50,5 @@ describe('AdvancedGasFeeInputSubtext', () => {
 
     expect(screen.queryByText('Latest Value')).toBeInTheDocument();
     expect(screen.queryByText('Historical value')).toBeInTheDocument();
-    expect(screen.queryByAltText('feeTrend-arrow')).toBeInTheDocument();
   });
 });

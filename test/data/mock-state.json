@@ -162,7 +162,8 @@
     },
     "useTokenDetection": true,
     "advancedGasFee": {
-      "maxBaseFee": "1.5",
+      "maxBaseFeeMultiplier": "1.5",
+      "maxBaseFeeGWEI": "100",
       "priorityFee": "2"
     },
     "tokenList": {
