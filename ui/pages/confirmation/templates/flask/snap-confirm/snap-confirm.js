@@ -47,6 +47,7 @@ function getValues(pendingApproval, t, actions) {
                 props: {
                   height: '400px',
                   value: textAreaContent,
+                  readOnly: true,
                   resize: RESIZE.VERTICAL,
                   scrollable: true,
                   className: 'text',
