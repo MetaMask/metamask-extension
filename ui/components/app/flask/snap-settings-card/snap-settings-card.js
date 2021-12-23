@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -13,12 +13,14 @@ import ToggleButton from '../../../ui/toggle-button';
 import Chip from '../../../ui/chip';
 import ColorIndicator from '../../../ui/color-indicator';
 import Button from '../../../ui/button';
+import Tooltip from '../../../ui/tooltip';
 
 import {
   COLORS,
   TYPOGRAPHY,
   FONT_WEIGHT,
   ALIGN_ITEMS,
+  JUSTIFY_CONTENT,
   DISPLAY,
   TEXT_ALIGN,
 } from '../../../../helpers/constants/design-system';
@@ -41,7 +43,7 @@ const SnapSettingsCard = ({
   name,
   description,
   icon,
-  dateAdded,
+  dateAdded = '',
   version,
   url,
   onToggle,
@@ -55,36 +57,6 @@ const SnapSettingsCard = ({
   chipProps,
 }) => {
   const t = useI18nContext();
-  const [chipStatus, setChipStatus] = useState(STATUSES.INSTALLING);
-
-  // TODO: use state directly in place of memoization
-  const handleStatus = useCallback(() => {
-    switch (status) {
-      case STATUSES.INSTALLING: {
-        setChipStatus(STATUSES.INSTALLING);
-        break;
-      }
-      case STATUSES.RUNNING: {
-        setChipStatus(STATUSES.RUNNING);
-        break;
-      }
-      case STATUSES.STOPPED: {
-        setChipStatus(STATUSES.STOPPED);
-        break;
-      }
-      case STATUSES.CRASHED: {
-        setChipStatus(STATUSES.CRASHED);
-        break;
-      }
-      default: {
-        setChipStatus(STATUSES.INSTALLING);
-      }
-    }
-  }, [status]);
-
-  useEffect(() => {
-    handleStatus(status);
-  }, [handleStatus, status]);
 
   return (
     <Card
@@ -117,12 +89,14 @@ const SnapSettingsCard = ({
           {name}
         </Typography>
         <Box paddingLeft={4} className="snap-settings-card__toggle-container">
-          <ToggleButton
-            value={isEnabled}
-            onToggle={onToggle}
-            className="snap-settings-card__toggle-container__toggle-button"
-            {...toggleButtonProps}
-          />
+          <Tooltip interactive position="bottom" html={t('snapsToggle')}>
+            <ToggleButton
+              value={isEnabled}
+              onToggle={onToggle}
+              className="snap-settings-card__toggle-container__toggle-button"
+              {...toggleButtonProps}
+            />
+          </Tooltip>
         </Box>
       </Box>
       <Typography
@@ -143,6 +117,7 @@ const SnapSettingsCard = ({
           <Box
             display={DISPLAY.FLEX}
             alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
             marginBottom={4}
           >
             <Box>
@@ -154,24 +129,26 @@ const SnapSettingsCard = ({
                 {t('flaskSnapSettingsCardButtonCta')}
               </Button>
             </Box>
-            <Chip
-              leftIcon={
-                <Box paddingLeft={1}>
-                  <ColorIndicator
-                    color={STATUS_COLORS[chipStatus]}
-                    type={ColorIndicator.TYPES.FILLED}
-                  />
-                </Box>
-              }
-              label={chipStatus}
-              labelProps={{
-                color: COLORS.UI4,
-                margin: [0, 1],
-              }}
-              backgroundColor={COLORS.UI1}
-              className="snap-settings-card__chip"
-              {...chipProps}
-            />
+            <Tooltip interactive position="bottom" html={t('snapsStatus')}>
+              <Chip
+                leftIcon={
+                  <Box paddingLeft={1}>
+                    <ColorIndicator
+                      color={STATUS_COLORS[status]}
+                      type={ColorIndicator.TYPES.FILLED}
+                    />
+                  </Box>
+                }
+                label={status}
+                labelProps={{
+                  color: COLORS.UI4,
+                  margin: [0, 1],
+                }}
+                backgroundColor={COLORS.UI1}
+                className="snap-settings-card__chip"
+                {...chipProps}
+              />
+            </Tooltip>
           </Box>
         </Box>
         <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
