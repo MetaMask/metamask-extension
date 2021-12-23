@@ -812,30 +812,27 @@ export function txError(err) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-export async function disableSnap(snapId) {
-  return (dispatch) => {
-    return promisifiedBackground
-      .disableSnap(snapId)
-      .then(() => updateMetamaskStateFromBackground())
-      .then((newState) => dispatch(updateMetamaskState(newState)));
+export function disableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.disableSnap(snapId);
+    const newState = await updateMetamaskStateFromBackground();
+    dispatch(updateMetamaskState(newState));
   };
 }
 
-export async function enableSnap(snapId) {
-  return (dispatch) => {
-    return promisifiedBackground
-      .enableSnap(snapId)
-      .then(() => updateMetamaskStateFromBackground())
-      .then((newState) => dispatch(updateMetamaskState(newState)));
+export function enableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.enableSnap(snapId);
+    const newState = await updateMetamaskStateFromBackground();
+    dispatch(updateMetamaskState(newState));
   };
 }
 
 export async function removeSnap(snap) {
-  return (dispatch) => {
-    return promisifiedBackground
-      .removeSnap(snap)
-      .then(() => updateMetamaskStateFromBackground())
-      .then((newState) => dispatch(updateMetamaskState(newState)));
+  return async (dispatch) => {
+    await promisifiedBackground.removeSnap(snap);
+    const newState = await updateMetamaskStateFromBackground();
+    dispatch(updateMetamaskState(newState));
   };
 }
 

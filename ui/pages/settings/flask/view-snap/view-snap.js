@@ -31,6 +31,7 @@ function ViewSnap() {
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
   const snaps = useSelector(getSnaps);
   const connectedSubjects = useSelector(getSubjectsWithPermission);
+  console.log(connectedSubjects);
   const snap = snaps
     ? Object.entries(snaps)
         .map(([_, snapState]) => snapState)
