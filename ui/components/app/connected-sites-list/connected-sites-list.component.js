@@ -39,11 +39,12 @@ export default class ConnectedSitesList extends Component {
                 {this.getSubjectDisplayName(subject)}
               </span>
             </div>
-            <i
-              className="fas fa-trash-alt connected-sites-list__trash"
-              title={t('disconnect')}
+            <div
+              className="connected-sites-list__disconnect"
               onClick={() => onDisconnect(subject.origin)}
-            />
+            >
+              {t('disconnect')}
+            </div>
           </div>
         ))}
       </main>
