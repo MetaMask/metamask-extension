@@ -30,7 +30,6 @@ function ViewSnap() {
   const { pathname } = location;
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
   const snaps = useSelector(getSnaps);
-  const connectedSubjects = useSelector(getSubjectsWithPermission);
   const snap = snaps
     ? Object.entries(snaps)
         .map(([_, snapState]) => snapState)
@@ -39,6 +38,9 @@ function ViewSnap() {
           return snapState.id === decoded;
         })
     : undefined;
+  const connectedSubjects = useSelector((state) =>
+    getSubjectsWithPermission(state, snap.permissionName),
+  );
   const dispatch = useDispatch();
   const onDisconnect = (connectedOrigin, snapPermissionName) => {
     dispatch(
