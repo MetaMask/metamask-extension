@@ -553,6 +553,10 @@
     "message": "$1 is not connected to any sites.",
     "description": "$1 is the account name"
   },
+  "connectedSnapSites": {
+    "message": "$1 snap is connected to these sites. They have access to the permissions listed above.",
+    "description": "$1 represents the name of the snap"
+  },
   "connecting": {
     "message": "Connecting..."
   },
@@ -1105,6 +1109,9 @@
   },
   "etherscanViewOn": {
     "message": "View on Etherscan"
+  },
+  "expandExperience": {
+    "message": "Expand your web3 experience"
   },
   "expandView": {
     "message": "Expand view"
@@ -1683,6 +1690,9 @@
     "message": "Make sure no one is watching your screen",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manageSnaps": {
+    "message": "Manage your installed Snaps"
+  },
   "max": {
     "message": "Max"
   },
@@ -1966,6 +1976,9 @@
   },
   "noNFTs": {
     "message": "No NFTs yet"
+  },
+  "noSnaps": {
+    "message": "No Snaps installed"
   },
   "noThanks": {
     "message": "No Thanks"
@@ -2393,6 +2406,12 @@
   "replace": {
     "message": "replace"
   },
+  "removeSnap": {
+    "message": "Remove Snap"
+  },
+  "removeSnapDescription": {
+    "message": "This action will delete the snap, its data and revoke your given permissions."
+  },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
   },
@@ -2711,6 +2730,10 @@
   "slow": {
     "message": "Slow"
   },
+  "snapAccess": {
+    "message": "$1 snap has access to:",
+    "description": "$1 represents the name of the snap"
+  },
   "snapError": {
     "message": "Snap Error: '$1'. Error Code: '$2'",
     "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
@@ -2727,6 +2750,18 @@
   },
   "snapRequestsPermission": {
     "message": "This snap is requesting the following permissions:"
+  },
+  "snaps": {
+    "message": "Snaps"
+  },
+  "snapsSettingsDescription": {
+    "message": "Manage your Snaps"
+  },
+  "snapsStatus": {
+    "message": "Snap status is dependent on activity."
+  },
+  "snapsToggle": {
+    "message": "A snap will only run if it is enabled"
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
