@@ -815,24 +815,21 @@ export function txError(err) {
 export function disableSnap(snapId) {
   return async (dispatch) => {
     await promisifiedBackground.disableSnap(snapId);
-    const newState = await updateMetamaskStateFromBackground();
-    dispatch(updateMetamaskState(newState));
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export function enableSnap(snapId) {
   return async (dispatch) => {
     await promisifiedBackground.enableSnap(snapId);
-    const newState = await updateMetamaskStateFromBackground();
-    dispatch(updateMetamaskState(newState));
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
 export async function removeSnap(snap) {
   return async (dispatch) => {
     await promisifiedBackground.removeSnap(snap);
-    const newState = await updateMetamaskStateFromBackground();
-    dispatch(updateMetamaskState(newState));
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
