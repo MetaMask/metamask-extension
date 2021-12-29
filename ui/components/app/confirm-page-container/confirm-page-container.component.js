@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
 import Dialog from '../../ui/dialog';
-import ErrorMessage from '../../ui/error-message';
+import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 
 import NicknamePopovers from '../modals/nickname-popovers';
@@ -15,6 +16,10 @@ import NicknamePopovers from '../modals/nickname-popovers';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
+import ErrorMessage from '../../ui/error-message';
+import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
+import Typography from '../../ui/typography';
+import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
@@ -87,6 +92,8 @@ export default class ConfirmPageContainer extends Component {
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
+    nativeCurrency: PropTypes.string,
+    showBuyModal: PropTypes.func,
   };
 
   render() {
@@ -139,6 +146,8 @@ export default class ConfirmPageContainer extends Component {
       contact = {},
       isOwnedAccount,
       supportsEIP1559V2,
+      nativeCurrency,
+      showBuyModal,
     } = this.props;
 
     const showAddToAddressDialog =
@@ -151,6 +160,8 @@ export default class ConfirmPageContainer extends Component {
       (currentTransaction.type === TRANSACTION_TYPES.CONTRACT_INTERACTION ||
         currentTransaction.type === TRANSACTION_TYPES.DEPLOY_CONTRACT) &&
       currentTransaction.txParams?.value === '0x0';
+
+    const networkName = NETWORK_TO_NAME_MAP[currentTransaction.chainId];
 
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
@@ -235,9 +246,70 @@ export default class ConfirmPageContainer extends Component {
               hideTitle={hideTitle}
               supportsEIP1559V2={supportsEIP1559V2}
               hasTopBorder={showAddToAddressDialog}
+              currentTransaction={currentTransaction}
+              nativeCurrency={nativeCurrency}
+              networkName={networkName}
+              showBuyModal={showBuyModal}
             />
           )}
-          {shouldDisplayWarning && (
+          {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
+            <div className="confirm-approve-content__warning">
+              {currentTransaction.chainId === '0x1' ? (
+                <ActionableMessage
+                  message={
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      align="left"
+                      margin={[0, 0]}
+                    >
+                      {this.context.t('insufficientCurrency', [
+                        nativeCurrency,
+                        networkName,
+                      ])}
+                      <button
+                        key="link"
+                        type="secondary"
+                        className="confirm-approve-content__warning__link"
+                        onClick={() => showBuyModal()}
+                        style={{
+                          color: '#037dd6',
+                          padding: 0,
+                          fontSize: '12px',
+                        }}
+                      >
+                        {this.context.t('buyEth')}
+                      </button>
+
+                      {this.context.t('orDeposit')}
+                    </Typography>
+                  }
+                  useIcon
+                  iconFillColor="#d73a49"
+                  type="danger"
+                />
+              ) : (
+                <ActionableMessage
+                  message={
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      align="left"
+                      margin={[0, 0]}
+                    >
+                      {this.context.t('insufficientCurrency', [
+                        nativeCurrency,
+                        networkName,
+                      ])}
+                      {this.context.t('buyOther', [nativeCurrency])}
+                    </Typography>
+                  }
+                  useIcon
+                  iconFillColor="#d73a49"
+                  type="danger"
+                />
+              )}
+            </div>
+          )}
+          {shouldDisplayWarning && errorKey !== INSUFFICIENT_FUNDS_ERROR_KEY && (
             <div className="confirm-approve-content__warning">
               <ErrorMessage errorKey={errorKey} />
             </div>

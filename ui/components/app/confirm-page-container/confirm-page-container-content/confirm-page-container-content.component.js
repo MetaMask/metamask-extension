@@ -2,9 +2,15 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
-import ErrorMessage from '../../../ui/error-message';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
+import ErrorMessage from '../../../ui/error-message';
+import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
+import Typography from '../../../ui/typography';
+import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import I18nValue from '../../../ui/i18n-value';
+import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
+
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -44,6 +50,10 @@ export default class ConfirmPageContainerContent extends Component {
     hideTitle: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
     hasTopBorder: PropTypes.bool,
+    currentTransaction: PropTypes.string,
+    nativeCurrency: PropTypes.string,
+    networkName: PropTypes.string,
+    showBuyModal: PropTypes.func,
   };
 
   renderContent() {
@@ -113,6 +123,10 @@ export default class ConfirmPageContainerContent extends Component {
       hideUserAcknowledgedGasMissing,
       supportsEIP1559V2,
       hasTopBorder,
+      currentTransaction,
+      nativeCurrency,
+      networkName,
+      showBuyModal,
     } = this.props;
 
     const primaryAction = hideUserAcknowledgedGasMissing
@@ -160,11 +174,81 @@ export default class ConfirmPageContainerContent extends Component {
         {this.renderContent()}
         {!supportsEIP1559V2 &&
           !hasSimulationError &&
-          (errorKey || errorMessage) && (
+          (errorKey || errorMessage) &&
+          currentTransaction.type !== TRANSACTION_TYPES.SIMPLE_SEND && (
             <div className="confirm-page-container-content__error-container">
               <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
             </div>
           )}
+        {!supportsEIP1559V2 &&
+          !hasSimulationError &&
+          (errorKey || errorMessage) &&
+          errorKey === INSUFFICIENT_FUNDS_ERROR_KEY &&
+          currentTransaction.type === TRANSACTION_TYPES.SIMPLE_SEND && (
+            <div className="confirm-page-container-content__error-container">
+              {currentTransaction.chainId === '0x1' ? (
+                <ActionableMessage
+                  className="actionable-message--warning"
+                  message={
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      align="left"
+                      margin={[0, 0]}
+                    >
+                      <I18nValue
+                        messageKey="insufficientCurrency"
+                        options={[
+                          nativeCurrency,
+                          networkName,
+                          <button
+                            key="link"
+                            type="secondary"
+                            className="confirm-approve-content__warning__link"
+                            onClick={() => showBuyModal()}
+                            style={{
+                              color: '#037dd6',
+                              padding: 0,
+                              fontSize: '12px',
+                            }}
+                          >
+                            <I18nValue messageKey="buyEth" />
+                          </button>,
+                        ]}
+                      />
+                      <I18nValue messageKey="orDeposit" />
+                    </Typography>
+                  }
+                  useIcon
+                  iconFillColor="#d73a49"
+                  type="danger"
+                />
+              ) : (
+                <ActionableMessage
+                  className="actionable-message--warning"
+                  message={
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      align="left"
+                      margin={[0, 0]}
+                    >
+                      <I18nValue
+                        messageKey="insufficientCurrency"
+                        options={[nativeCurrency, networkName]}
+                      />
+                      <I18nValue
+                        messageKey="buyOther"
+                        options={[nativeCurrency]}
+                      />
+                    </Typography>
+                  }
+                  useIcon
+                  iconFillColor="#d73a49"
+                  type="danger"
+                />
+              )}
+            </div>
+          )}
+
         <PageContainerFooter
           onCancel={onCancel}
           cancelText={cancelText}

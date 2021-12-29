@@ -1102,6 +1102,7 @@ export default class ConfirmTransactionBase extends Component {
           handleCloseEditGas={() => this.handleCloseEditGas()}
           currentTransaction={txData}
           supportsEIP1559V2={this.supportsEIP1559V2}
+          nativeCurrency={nativeCurrency}
         />
       </TransactionModalContextProvider>
     );
