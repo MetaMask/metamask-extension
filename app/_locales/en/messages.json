@@ -378,6 +378,9 @@
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },
+  "attemptSendingAssets": {
+    "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
+  },
   "attributions": {
     "message": "Attributions"
   },
@@ -582,6 +585,9 @@
   },
   "clickToRevealSeed": {
     "message": "Click here to reveal secret words"
+  },
+  "clickToManuallyAdd": {
+    "message": "Click here to manually add the tokens."
   },
   "close": {
     "message": "Close"
@@ -2039,6 +2045,12 @@
     "message": "To interact with decentralized applications using MetaMask, you’ll need $1 in your wallet.",
     "description": "$1 represents the cypto symbol to be purchased"
   },
+  "nativeToken": {
+    "message": "The native token on this network is $1. It is the token used for gas fees."
+  },
+  "needEtherInWallet": {
+    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+  },
   "needHelp": {
     "message": "Need help? Contact $1",
     "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
@@ -2453,6 +2465,9 @@
   },
   "onboardingPinExtensionStep2": {
     "message": "2"
+  },
+  "onboardingPinExtensionStep3": {
+    "message": "3"
   },
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
@@ -3733,6 +3748,9 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"
   },
+  "switchedTo": {
+    "message": "You have switched to"
+  },
   "switchNetwork": {
     "message": "Switch network"
   },
@@ -3812,6 +3830,9 @@
   "themeDescription": {
     "message": "Choose your preferred MetaMask theme."
   },
+  "thingsToKeep": {
+    "message": "Things to keep in mind:"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
@@ -3877,6 +3898,9 @@
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
     "description": "$1 is the number of new tokens detected"
+  },
+  "tokenShowUp": {
+    "message": "Your tokens may not automatically show up in your wallet."
   },
   "tooltipApproveButton": {
     "message": "I understand"
