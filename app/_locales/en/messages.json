@@ -1828,10 +1828,6 @@
   "learnMore": {
     "message": "learn more"
   },
-  "learnMoreAboutGas": {
-    "message": "Want to $1 about gas?",
-    "description": "$1 will be replaced by the learnMore translation key"
-  },
   "learnMoreUpperCase": {
     "message": "Learn more"
   },
