@@ -1682,6 +1682,10 @@
   "learnMore": {
     "message": "En savoir plus"
   },
+  "learnMoreAboutGas": {
+    "message": "$1 à propos des frais de gaz?",
+    "description": "$1 will be replaced by the learnMore translation key"
+  },
   "learnMoreUpperCase": {
     "message": "En savoir plus"
   },
