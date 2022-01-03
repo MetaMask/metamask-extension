@@ -50,7 +50,7 @@ function getBrowserVersionMap(platforms) {
     const browserSpecificVersion = {};
     if (prerelease) {
       if (platform === 'firefox') {
-        versionParts.push(`${buildType}${buildVersion}`);
+        versionParts[2] = `${versionParts[2]}${buildType}${buildVersion}`;
       } else {
         versionParts.push(buildVersion);
         browserSpecificVersion.version_name = version;
