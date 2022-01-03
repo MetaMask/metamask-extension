@@ -23,8 +23,6 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
     hasSimulationError,
     maximumCostInHexWei: hexMaximumTransactionFee,
     minimumCostInHexWei: hexMinimumTransactionFee,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
     transaction,
   } = useGasFeeContext();
 
@@ -91,11 +89,9 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
       subTitle={
         <GasTiming
           maxPriorityFeePerGas={hexWEIToDecGWEI(
-            maxPriorityFeePerGas || transaction.txParams.maxPriorityFeePerGas,
+            transaction.txParams.maxPriorityFeePerGas,
           )}
-          maxFeePerGas={hexWEIToDecGWEI(
-            maxFeePerGas || transaction.txParams.maxFeePerGas,
-          )}
+          maxFeePerGas={hexWEIToDecGWEI(transaction.txParams.maxFeePerGas)}
         />
       }
     />
