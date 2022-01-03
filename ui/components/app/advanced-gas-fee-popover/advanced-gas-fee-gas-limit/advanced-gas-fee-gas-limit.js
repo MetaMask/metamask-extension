@@ -63,6 +63,7 @@ const AdvancedGasFeeGasLimit = () => {
       tag={TYPOGRAPHY.Paragraph}
       variant={TYPOGRAPHY.H7}
       className="advanced-gas-fee-gas-limit"
+      margin={[0, 2]}
     >
       <strong>
         <I18nValue messageKey="gasLimitV2" />

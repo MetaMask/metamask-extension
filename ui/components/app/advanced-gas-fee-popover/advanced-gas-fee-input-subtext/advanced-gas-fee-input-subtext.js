@@ -5,7 +5,7 @@ import Box from '../../../ui/box';
 import I18nValue from '../../../ui/i18n-value';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 
-const AdvancedGasFeeInputSubtext = ({ latest, historical }) => {
+const AdvancedGasFeeInputSubtext = ({ latest, historical, feeTrend }) => {
   return (
     <Box className="advanced-gas-fee-input-subtext">
       <Box display="flex" alignItems="center">
@@ -16,7 +16,7 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical }) => {
           <LoadingHeartBeat />
           {latest}
         </span>
-        <img src="./images/high-arrow.svg" alt="" />
+        <img src={`./images/${feeTrend}-arrow.svg`} alt="feeTrend-arrow" />
       </Box>
       <Box>
         <span className="advanced-gas-fee-input-subtext__label">
@@ -34,6 +34,7 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical }) => {
 AdvancedGasFeeInputSubtext.propTypes = {
   latest: PropTypes.string,
   historical: PropTypes.string,
+  feeTrend: PropTypes.string.isRequired,
 };
 
 export default AdvancedGasFeeInputSubtext;
