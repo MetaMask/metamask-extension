@@ -1065,6 +1065,19 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapInstalled`,
+      (snapId) => {
+        this.metaMetricsController.trackEvent({
+          event: 'Snap Installed',
+          category: 'Snaps',
+          properties: {
+            snap_id: snapId,
+          },
+        });
+      },
+    );
     ///: END:ONLY_INCLUDE_IN
   }
 
