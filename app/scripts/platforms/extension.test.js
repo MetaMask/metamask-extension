@@ -28,7 +28,7 @@ describe('extension platform', () => {
     it('should return SemVer-formatted version for Chrome style manifest of prerelease', () => {
       extension.runtime.getManifest.mockReturnValue({
         version: '1.2.3.0',
-        version_name: 'beta',
+        version_name: '1.2.3-beta.0',
       });
       const extensionPlatform = new ExtensionPlatform();
 
@@ -51,7 +51,7 @@ describe('extension platform', () => {
     it('should throw error if build version is missing from Chrome style prerelease manifest', () => {
       extension.runtime.getManifest.mockReturnValue({
         version: '1.2.3',
-        version_name: 'beta',
+        version_name: '1.2.3-beta.0',
       });
       const extensionPlatform = new ExtensionPlatform();
 
@@ -60,7 +60,7 @@ describe('extension platform', () => {
       );
     });
 
-    it('should throw error if build type is missing from Chrome style prerelease manifest', () => {
+    it('should throw error if version name is missing from Chrome style prerelease manifest', () => {
       extension.runtime.getManifest.mockReturnValue({
         version: '1.2.3.0',
       });
