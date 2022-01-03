@@ -43,10 +43,7 @@ $spacer-break-small: 16px;
 
   &__image {
     width: 100%;
-
-    @media screen and (min-width: $break-large) {
-      width: $card-width-break-large;
-    }
+    object-fit: contain;
   }
 
   &__address {
