@@ -5,6 +5,14 @@ import {
   gasEstimateGreaterThanGasUsedPlusTenPercent,
 } from './gas';
 
+jest.mock('../../../store/actions', () => ({
+  disconnectGasFeeEstimatePoller: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve()),
+  addPollingTokenToAppState: jest.fn(),
+}));
+
 describe('Gas utils', () => {
   describe('gasEstimateGreaterThanGasUsedPlusTenPercent', () => {
     const compareGas = (estimateValues) => {
@@ -30,7 +38,7 @@ describe('Gas utils', () => {
       expect(result).toStrictEqual(true);
     });
 
-    it('should return false if gas used in transaction + 10% is greater that estimate', () => {
+    it('should return false if gas used in transaction + 10% is less that estimate', () => {
       const result = compareGas({
         suggestedMaxPriorityFeePerGas: '.5',
         suggestedMaxFeePerGas: '1',

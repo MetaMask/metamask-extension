@@ -30,11 +30,11 @@ import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import Button from '../../ui/button';
-import EditGasPopover from '../edit-gas-popover';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
-import EditGasFeePopover from '../edit-gas-fee-popover';
 import CancelSpeedupPopover from '../cancel-speedup-popover';
+import EditGasFeePopover from '../edit-gas-fee-popover';
+import EditGasPopover from '../edit-gas-popover';
 
 function TransactionListItemInner({
   transactionGroup,

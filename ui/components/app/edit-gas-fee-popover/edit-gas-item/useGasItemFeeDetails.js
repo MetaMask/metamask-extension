@@ -11,11 +11,11 @@ import {
   decimalToHex,
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util';
-import { getAdvancedGasFeeValues } from '../../../../selectors';
 import {
   addTenPercent,
   gasEstimateGreaterThanGasUsedPlusTenPercent,
 } from '../../../../helpers/utils/gas';
+import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useCustomTimeEstimate } from './useCustomTimeEstimate';
 
@@ -68,12 +68,11 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     priorityLevel === PRIORITY_LEVELS.MINIMUM &&
     transaction.previousGas
   ) {
-    console.log('into if');
     maxFeePerGas = hexWEIToDecGWEI(
-      addTenPercent(transaction.previousGas.maxFeePerGas),
+      addTenPercent(transaction.previousGas?.maxFeePerGas),
     );
     maxPriorityFeePerGas = hexWEIToDecGWEI(
-      addTenPercent(transaction.previousGas.maxPriorityFeePerGas),
+      addTenPercent(transaction.previousGas?.maxPriorityFeePerGas),
     );
   }
 
@@ -100,7 +99,7 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     : null;
 
   useEffect(() => {
-    // For cancel and sepped-up medium / high option is disabled if
+    // For cancel and speed-up medium / high option is disabled if
     // gas used in transaction + 10% is greater tham estimate
     if (
       (editGasMode === EDIT_GAS_MODES.CANCEL ||

@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
 
 import {
-  GAS_RECOMMENDATIONS,
   CUSTOM_GAS_ESTIMATE,
   EDIT_GAS_MODES,
+  GAS_RECOMMENDATIONS,
 } from '../../../shared/constants/gas';
 import * as Actions from '../../store/actions';
 import {
@@ -50,21 +50,21 @@ describe('useMaxPriorityFeePerGasInput', () => {
     configureEIP1559();
   });
 
-  it('should call createCancelTransaction when cancelTransaction callback is invoked', () => {
+  it('should invoke action createCancelTransaction when cancelTransaction callback is invoked', () => {
     const mock = jest.spyOn(Actions, 'createCancelTransaction');
     const { result } = renderUseTransactionFunctions();
     result.current.cancelTransaction();
     expect(mock).toHaveBeenCalledTimes(1);
   });
 
-  it('should call createSpeedUpTransaction when speedupTransaction callback is invoked', () => {
+  it('should invoke action createSpeedUpTransaction when speedupTransaction callback is invoked', () => {
     const mock = jest.spyOn(Actions, 'createSpeedUpTransaction');
     const { result } = renderUseTransactionFunctions();
     result.current.speedupTransaction();
     expect(mock).toHaveBeenCalledTimes(1);
   });
 
-  it('should call updateTransaction with 10% increased fee when updateTransactionToMinimumGasFee callback is invoked', () => {
+  it('should invoke action updateTransaction with 10% increased fee when updateTransactionToMinimumGasFee callback is invoked', () => {
     const mock = jest.spyOn(Actions, 'updateTransaction');
     const { result } = renderUseTransactionFunctions();
     result.current.updateTransactionToMinimumGasFee();
@@ -82,7 +82,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
     });
   });
 
-  it('should call updateTransaction with estimate gas values fee when updateTransactionUsingEstimate callback is invoked', () => {
+  it('should invoke action updateTransaction with estimate gas values fee when updateTransactionUsingEstimate callback is invoked', () => {
     const mock = jest.spyOn(Actions, 'updateTransaction');
     const { result } = renderUseTransactionFunctions();
     result.current.updateTransactionUsingEstimate(GAS_RECOMMENDATIONS.LOW);
@@ -100,7 +100,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
     });
   });
 
-  it('should call updateTransaction with dappSuggestedValues values fee when updateTransactionUsingDAPPSuggestedValues callback is invoked', () => {
+  it('should invoke action updateTransaction with dappSuggestedValues values fee when updateTransactionUsingDAPPSuggestedValues callback is invoked', () => {
     const mock = jest.spyOn(Actions, 'updateTransaction');
     const { result } = renderUseTransactionFunctions({
       transaction: {

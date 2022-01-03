@@ -22,7 +22,7 @@ describe('AppLoadingSpinner', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
-  it('should show spinner is app state is loading', () => {
+  it('should show spinner if app state is loading', () => {
     render({ appState: { isLoading: true } });
     expect(screen.queryByRole('alert')).toBeInTheDocument();
   });

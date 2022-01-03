@@ -16,8 +16,8 @@ import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/ut
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
-import GasDetailsItem from '../gas-details-item';
 import EditGasFeeButton from '../edit-gas-fee-button';
+import GasDetailsItem from '../gas-details-item';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import I18nValue from '../../ui/i18n-value';
@@ -51,8 +51,8 @@ const CancelSpeedupPopover = () => {
       return;
     }
 
-    // If gas used previously + 10% was less than
-    // estimate is set to medium, else minimum
+    // If gas used previously + 10% is less than medium estimated gas
+    // estimate is set to medium, else estimate is set to minimum
     const gasUsedLessThanMedium = gasEstimateGreaterThanGasUsedPlusTenPercent(
       transaction,
       gasFeeEstimates,

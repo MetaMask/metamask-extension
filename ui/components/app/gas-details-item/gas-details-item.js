@@ -7,14 +7,14 @@ import { COLORS } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { hexWEIToDecGWEI } from '../../../helpers/utils/conversions.util';
 import { getPreferences } from '../../../selectors';
+import { useGasFeeContext } from '../../../contexts/gasFee';
 
 import Box from '../../ui/box';
-import GasTiming from '../gas-timing/gas-timing.component';
 import I18nValue from '../../ui/i18n-value';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
+import GasTiming from '../gas-timing/gas-timing.component';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import { useGasFeeContext } from '../../../contexts/gasFee';
 import GasDetailsItemTitle from './gas-details-item-title';
 
 const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
