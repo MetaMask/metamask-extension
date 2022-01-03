@@ -218,6 +218,7 @@ function setupController(initState, initLangCode) {
     initLangCode,
     // platform specific api
     platform,
+    notificationManager,
     extension,
     getRequestAccountTabIds: () => {
       return requestAccountTabIds;
@@ -484,7 +485,11 @@ function setupController(initState, initLangCode) {
 
   notificationManager.on(
     NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
-    rejectUnapprovedNotifications,
+    ({ automaticallyClosed }) => {
+      if (!automaticallyClosed) {
+        rejectUnapprovedNotifications();
+      }
+    },
   );
 
   function rejectUnapprovedNotifications() {
