@@ -2643,10 +2643,10 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
-"@metamask/controllers@^22.0.0":
-  version "22.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-22.0.0.tgz#54f172be2ae7e32ce47536a1ff06e35cc6ee3c80"
-  integrity sha512-5m4aT+B87IOAvvlbfgqI5n7Pd6VSQUjHBfm34qMBBL5jjUFUSfK6BL0h6ef2jxTE2VCuyBibQ8A7sETQ1+Hd+Q==
+"@metamask/controllers@^23.0.0":
+  version "23.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-23.0.0.tgz#81ea9fa37924a14b08668f37e7e31f46091aa610"
+  integrity sha512-6hKh5H0HM1YLTOdfuD8gRXGCG3brEhTagup204SrlmwabTReaIIb/zXTat7jCs6ZvN362a44GO5mboZ6W9MhIA==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
@@ -2667,7 +2667,6 @@
     ethereumjs-wallet "^1.0.1"
     ethers "^5.4.1"
     ethjs-unit "^0.1.6"
-    ethjs-util "^0.1.6"
     human-standard-collectible-abi "^1.0.2"
     human-standard-multi-collectible-abi "^1.0.4"
     human-standard-token-abi "^2.0.0"

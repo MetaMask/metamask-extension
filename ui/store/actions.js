@@ -1391,6 +1391,10 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
+export async function checkAndUpdateCollectiblesOwnershipStatus() {
+  await promisifiedBackground.checkAndUpdateCollectiblesOwnershipStatus();
+}
+
 export function removeToken(address) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
