@@ -3,6 +3,7 @@ import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedAddress,
+  getSubjectMetadata,
 } from '.';
 
 // selectors
@@ -15,16 +16,6 @@ import {
  */
 export function getPermissionSubjects(state) {
   return state.metamask.subjects || {};
-}
-
-/**
- * Get the permission subjects metadata object.
- *
- * @param {Object} state - The current state.
- * @returns {Object} The permission subjects metadata object.
- */
-export function getPermissionSubjectsMetadata(state) {
-  return state.metamask.subjectMetadata || {};
 }
 
 /**
@@ -82,7 +73,7 @@ export function getPermittedAccountsByOrigin(state) {
 export function getConnectedSubjectsForSelectedAddress(state) {
   const { selectedAddress } = state.metamask;
   const subjects = getPermissionSubjects(state);
-  const subjectMetadata = getPermissionSubjectsMetadata(state);
+  const subjectMetadata = getSubjectMetadata(state);
 
   const connectedSubjects = [];
 
@@ -116,7 +107,7 @@ export function getConnectedSubjectsForSelectedAddress(state) {
  * connected subject info.
  */
 export function getAddressConnectedSubjectMap(state) {
-  const subjectMetadata = getPermissionSubjectsMetadata(state);
+  const subjectMetadata = getSubjectMetadata(state);
   const accountsMap = getPermittedAccountsByOrigin(state);
   const addressConnectedIconMap = {};
 

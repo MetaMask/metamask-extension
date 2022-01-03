@@ -10,7 +10,6 @@ import {
 import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
-
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -77,14 +76,21 @@ const validateBaseFee = (
 
 const BaseFeeInput = () => {
   const t = useI18nContext();
+
   const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
   const {
     maxPriorityFeePerGas,
     setErrorValue,
     setMaxFeePerGas,
+    setBaseFeeMultiplier,
   } = useAdvancedGasFeePopoverContext();
 
-  const { estimatedBaseFee, historicalBaseFeeRange } = gasFeeEstimates;
+  const {
+    estimatedBaseFee,
+    historicalBaseFeeRange,
+    baseFeeTrend,
+  } = gasFeeEstimates;
+  const [feeTrend, setFeeTrend] = useState(baseFeeTrend);
   const [baseFeeError, setBaseFeeError] = useState();
   const {
     numberOfDecimals: numberOfDecimalsPrimary,
@@ -169,18 +175,27 @@ const BaseFeeInput = () => {
       error === 'editGasMaxBaseFeeGWEIImbalance' ||
         error === 'editGasMaxBaseFeeMultiplierImbalance',
     );
+    if (baseFeeTrend !== 'level' && baseFeeTrend !== feeTrend) {
+      setFeeTrend(baseFeeTrend);
+    }
+    setBaseFeeMultiplier(maxBaseFeeMultiplier);
   }, [
+    feeTrend,
     editingInGwei,
+    baseFeeTrend,
     gasFeeEstimates,
     maxBaseFeeGWEI,
     maxPriorityFeePerGas,
+    maxBaseFeeMultiplier,
     setBaseFeeError,
     setErrorValue,
     setMaxFeePerGas,
+    setFeeTrend,
+    setBaseFeeMultiplier,
   ]);
 
   return (
-    <Box className="base-fee-input">
+    <Box className="base-fee-input" margin={[0, 2]}>
       <FormField
         error={baseFeeError ? t(baseFeeError) : ''}
         onChange={updateBaseFee}
@@ -208,6 +223,7 @@ const BaseFeeInput = () => {
           2,
         )} GWEI`}
         historical={renderFeeRange(historicalBaseFeeRange)}
+        feeTrend={feeTrend}
       />
     </Box>
   );

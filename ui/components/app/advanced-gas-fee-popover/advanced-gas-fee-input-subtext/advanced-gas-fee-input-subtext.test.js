@@ -38,6 +38,7 @@ const render = () => {
     <AdvancedGasFeeInputSubtext
       latest="Latest Value"
       historical="Historical value"
+      feeTrend="up"
     />,
     store,
   );
@@ -45,14 +46,10 @@ const render = () => {
 
 describe('AdvancedGasFeeInputSubtext', () => {
   it('should renders latest and historical values passed', () => {
-    render(
-      <AdvancedGasFeeInputSubtext
-        latest="Latest Value"
-        historical="Historical value"
-      />,
-    );
+    render();
 
     expect(screen.queryByText('Latest Value')).toBeInTheDocument();
     expect(screen.queryByText('Historical value')).toBeInTheDocument();
+    expect(screen.queryByAltText('feeTrend-arrow')).toBeInTheDocument();
   });
 });
