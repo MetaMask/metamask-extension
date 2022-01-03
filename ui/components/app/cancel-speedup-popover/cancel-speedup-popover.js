@@ -46,7 +46,8 @@ const CancelSpeedupPopover = () => {
       transaction.previousGas ||
       appIsLoading ||
       !gasFeeEstimates?.high ||
-      !gasFeeEstimates?.medium
+      !gasFeeEstimates?.medium ||
+      currentModal !== 'cancelSpeedupTransaction'
     ) {
       return;
     }
