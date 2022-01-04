@@ -24,8 +24,8 @@ export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
  * Simple helper to save on duplication to multiply the supplied wei hex string
  * by 1.10 to get bare minimum new gas fee.
  *
- * @param {string} hexStringValue - hex value in wei to be incremented
- * @returns {string} - hex value in WEI 10% higher than the param.
+ * @param {string | undefined} hexStringValue - hex value in wei to be incremented
+ * @returns {string | undefined} - hex value in WEI 10% higher than the param.
  */
 export function addTenPercent(hexStringValue) {
   if (hexStringValue === undefined) return undefined;
