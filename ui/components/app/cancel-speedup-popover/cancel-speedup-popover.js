@@ -75,7 +75,9 @@ const CancelSpeedupPopover = () => {
     updateTransactionUsingEstimate,
   ]);
 
-  if (currentModal !== 'cancelSpeedupTransaction') return null;
+  if (currentModal !== 'cancelSpeedupTransaction') {
+    return null;
+  }
 
   const submitTransactionChange = () => {
     if (editGasMode === EDIT_GAS_MODES.CANCEL) {
