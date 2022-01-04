@@ -87,8 +87,7 @@ async function withFixtures(options, testSuite) {
       });
       await segmentServer.start(9090);
     }
-    const { mock } = driverOptions;
-    if (mock) {
+    if (driverOptions?.mock) {
       const https = await mockttp.generateCACertificate();
       mockServer = mockttp.getLocal({ https });
       await mockServer.start(8000);
