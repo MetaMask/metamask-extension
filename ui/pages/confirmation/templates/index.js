@@ -43,7 +43,7 @@ const ALLOWED_TEMPLATE_KEYS = [
  */
 export async function getTemplateAlerts(pendingApproval) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getAlerts;
-  const results = fn ? await fn(pendingApproval) : undefined;
+  const results = fn ? await fn(pendingApproval) : [];
   if (!Array.isArray(results)) {
     throw new Error(`Template alerts must be an array, received: ${results}`);
   }
