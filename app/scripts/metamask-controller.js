@@ -20,6 +20,7 @@ import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airga
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
 import { captureException } from '@sentry/browser';
+import KeevoKeyring from '@keevowallet/keevo-metamask-keyring';
 import {
   AddressBookController,
   ApprovalController,
@@ -465,6 +466,7 @@ export default class MetamaskController extends EventEmitter {
       LedgerBridgeKeyring,
       LatticeKeyring,
       QRHardwareKeyring,
+      KeevoKeyring,
     ];
     this.keyringController = new KeyringController({
       keyringTypes: additionalKeyrings,
@@ -1729,6 +1731,9 @@ export default class MetamaskController extends EventEmitter {
       case DEVICE_NAMES.LATTICE:
         keyringName = LatticeKeyring.type;
         break;
+      case DEVICE_NAMES.KEEVO:
+        keyringName = KeevoKeyring.type;
+        break;
       default:
         throw new Error(
           'MetamaskController:getKeyringForDevice - Unknown device',
@@ -2315,6 +2320,14 @@ export default class MetamaskController extends EventEmitter {
         return Promise.reject(
           new Error('QR hardware does not support eth_getEncryptionPublicKey.'),
         );
+      }
+
+      case KEYRING_TYPES.KEEVO: {
+        return new Promise((_, reject) => {
+          reject(
+            new Error('Keevo does not support eth_getEncryptionPublicKey.'),
+          );
+        });
       }
 
       default: {

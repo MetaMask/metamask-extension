@@ -97,6 +97,26 @@ export default class SelectHardware extends Component {
     );
   }
 
+  renderConnectToKeevoButton() {
+    return (
+      <button
+        className={classnames('hw-connect__btn', {
+          selected: this.state.selectedDevice === DEVICE_NAMES.KEEVO,
+        })}
+        style={{
+          marginLeft: 0
+        }}
+        onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.KEEVO })}
+      >
+        <img
+          className="hw-connect__btn__img"
+          src="images/keevo-logo.svg"
+          alt="Keevo"
+        />
+      </button>
+    );
+  }
+
   renderButtons() {
     return (
       <>
@@ -110,6 +130,15 @@ export default class SelectHardware extends Component {
         >
           {this.renderConnectToLatticeButton()}
           {this.renderConnectToQRButton()}
+        </div>
+        <div
+          className="hw-connect__btn-wrapper"
+          style={{
+            margin: '10px 0 0 0',
+            alignSelf: 'flex-start'
+          }}
+        >
+          {this.renderConnectToKeevoButton()}
         </div>
       </>
     );
@@ -178,6 +207,8 @@ export default class SelectHardware extends Component {
         return this.renderLatticeTutorialSteps();
       case DEVICE_NAMES.QR:
         return this.renderQRHardwareWalletSteps();
+      case DEVICE_NAMES.KEEVO:
+        return this.renderKeevoTutorialSteps();
       default:
         return '';
     }
@@ -358,11 +389,40 @@ export default class SelectHardware extends Component {
         dimensions: { width: '225px', height: '75px' },
       },
     );
+
     return (
       <div className="hw-tutorial">
         {steps.map((step, index) => (
           <div className="hw-connect" key={index}>
             {step.title && <h3 className="hw-connect__title">{step.title}</h3>}
+            <p className="hw-connect__msg">{step.message}</p>
+            {step.asset && (
+              <img
+                className="hw-connect__step-asset"
+                src={`images/${step.asset}.svg`}
+                {...step.dimensions}
+                alt=""
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  renderKeevoTutorialSteps() {
+    const steps = [
+      {
+        title: this.context.t('step1KeevoWallet'),
+        message: this.context.t('step1KeevoWalletMsg'),
+      },
+    ];
+
+    return (
+      <div className="hw-tutorial">
+        {steps.map((step, index) => (
+          <div className="hw-connect" key={index}>
+            <h3 className="hw-connect__title">{step.title}</h3>
             <p className="hw-connect__msg">{step.message}</p>
             {step.asset && (
               <img

@@ -44,6 +44,10 @@
     {
       "matches": ["*://connect.trezor.io/*/popup.html"],
       "js": ["vendor/trezor/content-script.js"]
+    },
+    {
+      "matches": ["*://connect.keevowallet.com/metamask/*"],
+      "js": ["vendor/keevo/content-script.js"]
     }
   ],
   "default_locale": "en",

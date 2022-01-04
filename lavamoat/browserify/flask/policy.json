@@ -412,6 +412,26 @@
         "Intl.getCanonicalLocales": true
       }
     },
+    "@keevowallet/keevo-metamask-keyring": {
+      "globals": {
+        "chrome.runtime.onConnect.addListener": true,
+        "chrome.tabs.create": true,
+        "chrome.tabs.query": true,
+        "chrome.tabs.remove": true,
+        "chrome.tabs.update": true,
+        "chrome.windows.create": true,
+        "chrome.windows.getCurrent": true
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "buffer": true,
+        "ethereum-tx-decoder": true,
+        "events": true,
+        "hdkey": true,
+        "keccak": true,
+        "secp256k1": true
+      }
+    },
     "@keystonehq/base-eth-keyring": {
       "packages": {
         "@ethereumjs/tx": true,
@@ -1961,6 +1981,11 @@
         "secp256k1": true
       }
     },
+    "ethereum-tx-decoder": {
+      "packages": {
+        "ethers": true
+      }
+    },
     "ethereumjs-abi": {
       "packages": {
         "bn.js": true,
@@ -2041,7 +2066,9 @@
         "@ethersproject/units": true,
         "@ethersproject/wallet": true,
         "@ethersproject/web": true,
-        "@ethersproject/wordlists": true
+        "@ethersproject/wordlists": true,
+        "bn.js": true,
+        "js-sha3": true
       }
     },
     "ethers-eip712": {

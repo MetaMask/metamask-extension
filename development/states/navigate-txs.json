@@ -38,7 +38,8 @@
     "defaultHdPaths": {
       "trezor": "m/44'/60'/0'/0",
       "ledger": "m/44'/60'/0'/0/0",
-      "lattice": "m/44'/60'/0'/0"
+      "lattice": "m/44'/60'/0'/0",
+      "keevo": "m/44'/60'/0'/0"
     }
   },
   "confirmTransaction": {
@@ -259,7 +260,8 @@
       "HD Key Tree",
       "Trezor Hardware",
       "Ledger Hardware",
-      "Lattice Hardware"
+      "Lattice Hardware",
+      "Keevo Hardware"
     ],
     "keyrings": [
       {
