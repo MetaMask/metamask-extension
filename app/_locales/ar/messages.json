@@ -70,6 +70,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "موافق"
   },
@@ -217,9 +225,6 @@
   },
   "copiedExclamation": {
     "message": "تم النسخ."
-  },
-  "copiedTransactionId": {
-    "message": "تم نسخ معرف المعاملة"
   },
   "copyAddress": {
     "message": "نسخ العنوان إلى الحافظة"

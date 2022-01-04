@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
+import TransactionDecoding from '../../components/app/transaction-decoding';
 import { isBalanceSufficient } from '../send/send.utils';
 import {
   addHexes,
@@ -18,9 +19,12 @@ import {
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
+import CopyRawData from '../../components/app/transaction-decoding/components/ui/copy-raw-data';
+
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import ActionableMessage from '../../components/ui/actionable-message';
+import Disclosure from '../../components/ui/disclosure';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
@@ -60,11 +64,10 @@ import GasDetailsItem from './gas-details-item';
 import TransactionAlerts from './transaction-alerts';
 
 // eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2_ENABLED =
-  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
+const EIP_1559_V2_ENABLED = process.env.EIP_1559_V2;
 
 const renderHeartBeatIfNotInTest = () =>
-  process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
+  process.env.IN_TEST ? null : <LoadingHeartBeat />;
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -110,6 +113,7 @@ export default class ConfirmTransactionBase extends Component {
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
     dataComponent: PropTypes.node,
+    dataHexComponent: PropTypes.node,
     hideData: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
     identiconAddress: PropTypes.string,
@@ -361,12 +365,15 @@ export default class ConfirmTransactionBase extends Component {
         secondaryTotalTextOverride === undefined
       ) {
         return (
-          <UserPreferencedCurrencyDisplay
-            type={PRIMARY}
-            key="total-detail-value"
-            value={hexTransactionTotal}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-          />
+          <div className="confirm-page-container-content__total-value">
+            <LoadingHeartBeat />
+            <UserPreferencedCurrencyDisplay
+              type={PRIMARY}
+              key="total-detail-value"
+              value={hexTransactionTotal}
+              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            />
+          </div>
         );
       }
       return useNativeCurrencyAsPrimaryCurrency
@@ -380,12 +387,15 @@ export default class ConfirmTransactionBase extends Component {
         secondaryTotalTextOverride === undefined
       ) {
         return (
-          <UserPreferencedCurrencyDisplay
-            type={SECONDARY}
-            key="total-detail-text"
-            value={hexTransactionTotal}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-          />
+          <div className="confirm-page-container-content__total-value">
+            <LoadingHeartBeat />
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              key="total-detail-text"
+              value={hexTransactionTotal}
+              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            />
+          </div>
         );
       }
       return useNativeCurrencyAsPrimaryCurrency
@@ -424,14 +434,11 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const renderGasDetailsItem = () => {
-      return EIP_1559_V2_ENABLED &&
-        supportsEIP1559 &&
-        !isLegacyTransaction(txData) ? (
+      return this.supportsEIP1559V2 ? (
         <GasDetailsItem
           key="gas_details"
           hexMaximumTransactionFee={hexMaximumTransactionFee}
           hexMinimumTransactionFee={hexMinimumTransactionFee}
-          isMainnet={isMainnet}
           maxFeePerGas={maxFeePerGas}
           maxPriorityFeePerGas={maxPriorityFeePerGas}
           supportsEIP1559={supportsEIP1559}
@@ -610,12 +617,13 @@ export default class ConfirmTransactionBase extends Component {
                 detailTotal={renderTotalDetailTotal()}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
-                  <>
+                  <div className="confirm-page-container-content__total-amount">
+                    <LoadingHeartBeat />
                     <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
                     </strong>
                     {renderTotalMaxAmount()}
-                  </>
+                  </div>
                 }
               />
             ),
@@ -634,7 +642,7 @@ export default class ConfirmTransactionBase extends Component {
   renderData(functionType) {
     const { t } = this.context;
     const {
-      txData: { txParams: { data } = {} } = {},
+      txData: { txParams } = {},
       methodData: { params } = {},
       hideData,
       dataComponent,
@@ -644,13 +652,51 @@ export default class ConfirmTransactionBase extends Component {
       return null;
     }
 
+    const functionParams = params?.length
+      ? `(${params.map(({ type }) => type).join(', ')})`
+      : '';
+
     return (
       dataComponent || (
         <div className="confirm-page-container-content__data">
           <div className="confirm-page-container-content__data-box-label">
             {`${t('functionType')}:`}
             <span className="confirm-page-container-content__function-type">
-              {functionType}
+              {`${functionType} ${functionParams}`}
+            </span>
+          </div>
+          <Disclosure>
+            <TransactionDecoding to={txParams?.to} inputData={txParams?.data} />
+          </Disclosure>
+        </div>
+      )
+    );
+  }
+
+  renderDataHex(functionType) {
+    const { t } = this.context;
+    const {
+      txData: { txParams } = {},
+      methodData: { params } = {},
+      hideData,
+      dataHexComponent,
+    } = this.props;
+
+    if (hideData || !txParams.to) {
+      return null;
+    }
+
+    const functionParams = params?.length
+      ? `(${params.map(({ type }) => type).join(', ')})`
+      : '';
+
+    return (
+      dataHexComponent || (
+        <div className="confirm-page-container-content__data">
+          <div className="confirm-page-container-content__data-box-label">
+            {`${t('functionType')}:`}
+            <span className="confirm-page-container-content__function-type">
+              {`${functionType} ${functionParams}`}
             </span>
           </div>
           {params && (
@@ -664,9 +710,12 @@ export default class ConfirmTransactionBase extends Component {
             </div>
           )}
           <div className="confirm-page-container-content__data-box-label">
-            {`${t('hexData')}: ${toBuffer(data).length} bytes`}
+            {`${t('hexData')}: ${toBuffer(txParams?.data).length} bytes`}
           </div>
-          <div className="confirm-page-container-content__data-box">{data}</div>
+          <div className="confirm-page-container-content__data-box">
+            {txParams?.data}
+          </div>
+          <CopyRawData data={txParams?.data} />
         </div>
       )
     );
@@ -931,6 +980,11 @@ export default class ConfirmTransactionBase extends Component {
     this._removeBeforeUnload();
   }
 
+  supportsEIP1559V2 =
+    EIP_1559_V2_ENABLED &&
+    this.props.supportsEIP1559 &&
+    !isLegacyTransaction(this.props.txData);
+
   render() {
     const { t } = this.context;
     const {
@@ -958,7 +1012,6 @@ export default class ConfirmTransactionBase extends Component {
       gasFeeIsCustom,
       nativeCurrency,
       hardwareWalletRequiresConnection,
-      supportsEIP1559,
     } = this.props;
     const {
       submitting,
@@ -998,6 +1051,7 @@ export default class ConfirmTransactionBase extends Component {
         functionType = t('contractInteraction');
       }
     }
+
     return (
       <TransactionModalContextProvider
         actionKey={actionKey}
@@ -1019,6 +1073,7 @@ export default class ConfirmTransactionBase extends Component {
           hideSubtitle={hideSubtitle}
           detailsComponent={this.renderDetails()}
           dataComponent={this.renderData(functionType)}
+          dataHexComponent={this.renderDataHex(functionType)}
           contentComponent={contentComponent}
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}
@@ -1056,11 +1111,7 @@ export default class ConfirmTransactionBase extends Component {
           editingGas={editingGas}
           handleCloseEditGas={() => this.handleCloseEditGas()}
           currentTransaction={txData}
-          supportsEIP1559V2={
-            EIP_1559_V2_ENABLED &&
-            supportsEIP1559 &&
-            !isLegacyTransaction(txData)
-          }
+          supportsEIP1559V2={this.supportsEIP1559V2}
         />
       </TransactionModalContextProvider>
     );

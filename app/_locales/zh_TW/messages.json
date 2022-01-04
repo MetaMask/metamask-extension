@@ -73,6 +73,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "批准"
   },
@@ -226,9 +234,6 @@
   },
   "copiedExclamation": {
     "message": "已複製！"
-  },
-  "copiedTransactionId": {
-    "message": "已複製的交易 ID"
   },
   "copyAddress": {
     "message": "複製到剪貼簿"

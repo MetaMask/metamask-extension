@@ -15,6 +15,7 @@ export default class ConfirmPageContainerContent extends Component {
   static propTypes = {
     action: PropTypes.string,
     dataComponent: PropTypes.node,
+    dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
@@ -54,7 +55,7 @@ export default class ConfirmPageContainerContent extends Component {
 
   renderTabs() {
     const { t } = this.context;
-    const { detailsComponent, dataComponent } = this.props;
+    const { detailsComponent, dataComponent, dataHexComponent } = this.props;
 
     return (
       <Tabs>
@@ -67,6 +68,14 @@ export default class ConfirmPageContainerContent extends Component {
         <Tab className="confirm-page-container-content__tab" name={t('data')}>
           {dataComponent}
         </Tab>
+        {dataHexComponent && (
+          <Tab
+            className="confirm-page-container-content__tab"
+            name={t('dataHex')}
+          >
+            {dataHexComponent}
+          </Tab>
+        )}
       </Tabs>
     );
   }

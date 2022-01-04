@@ -1,1 +1,1 @@
-export { default } from './add-collectible.component';
+export { default } from './add-collectible';

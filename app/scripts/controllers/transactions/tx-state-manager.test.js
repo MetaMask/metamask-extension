@@ -845,9 +845,9 @@ describe('TransactionStateManager', function () {
       );
       // modify value and updateTransaction
       updatedTx.txParams.gasPrice = desiredGasPrice;
-      const before = new Date().getTime();
+      const timeBefore = new Date().getTime();
       txStateManager.updateTransaction(updatedTx);
-      const after = new Date().getTime();
+      const timeAfter = new Date().getTime();
       // check updated value
       const result = txStateManager.getTransaction('1');
       assert.equal(
@@ -888,8 +888,8 @@ describe('TransactionStateManager', function () {
         'two history items (initial + diff) value',
       );
       assert.ok(
-        result.history[1][0].timestamp >= before &&
-          result.history[1][0].timestamp <= after,
+        result.history[1][0].timestamp >= timeBefore &&
+          result.history[1][0].timestamp <= timeAfter,
       );
     });
 

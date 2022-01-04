@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import nock from 'nock';
 import {
   KOVAN_CHAIN_ID,
@@ -27,8 +26,8 @@ const KOVAN = {
   chainId: KOVAN_CHAIN_ID,
 };
 
-describe('buy-eth-url', function () {
-  it('returns Wyre url with an ETH address for Ethereum mainnet', async function () {
+describe('buy-eth-url', () => {
+  it('returns Wyre url with an ETH address for Ethereum mainnet', async () => {
     nock(SWAPS_API_V2_BASE_URL)
       .get(
         `/networks/1/fiatOnRampUrl?serviceName=wyre&destinationAddress=${ETH_ADDRESS}`,
@@ -37,43 +36,40 @@ describe('buy-eth-url', function () {
         url: `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=ETH&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
       });
     const wyreUrl = await getBuyEthUrl(MAINNET);
-    assert.equal(
-      wyreUrl,
+    expect(wyreUrl).toStrictEqual(
       `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=ETH&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
     );
     nock.cleanAll();
   });
 
-  it('returns a fallback Wyre url if /orders/reserve API call fails', async function () {
+  it('returns a fallback Wyre url if /orders/reserve API call fails', async () => {
     const wyreUrl = await getBuyEthUrl(MAINNET);
 
-    assert.equal(
-      wyreUrl,
+    expect(wyreUrl).toStrictEqual(
       `https://pay.sendwyre.com/purchase?dest=ethereum:${ETH_ADDRESS}&destCurrency=ETH&accountId=${WYRE_ACCOUNT_ID}&paymentMethod=debit-card`,
     );
   });
 
-  it('returns Transak url with an ETH address for Ethereum mainnet', async function () {
+  it('returns Transak url with an ETH address for Ethereum mainnet', async () => {
     const transakUrl = await getBuyEthUrl({ ...MAINNET, service: 'transak' });
 
-    assert.equal(
-      transakUrl,
+    expect(transakUrl).toStrictEqual(
       `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=ETH&walletAddress=${ETH_ADDRESS}`,
     );
   });
 
-  it('returns metamask ropsten faucet for network 3', async function () {
+  it('returns metamask ropsten faucet for network 3', async () => {
     const ropstenUrl = await getBuyEthUrl(ROPSTEN);
-    assert.equal(ropstenUrl, 'https://faucet.metamask.io/');
+    expect(ropstenUrl).toStrictEqual('https://faucet.metamask.io/');
   });
 
-  it('returns rinkeby dapp for network 4', async function () {
+  it('returns rinkeby dapp for network 4', async () => {
     const rinkebyUrl = await getBuyEthUrl(RINKEBY);
-    assert.equal(rinkebyUrl, 'https://www.rinkeby.io/');
+    expect(rinkebyUrl).toStrictEqual('https://www.rinkeby.io/');
   });
 
-  it('returns kovan github test faucet for network 42', async function () {
+  it('returns kovan github test faucet for network 42', async () => {
     const kovanUrl = await getBuyEthUrl(KOVAN);
-    assert.equal(kovanUrl, 'https://github.com/kovan-testnet/faucet');
+    expect(kovanUrl).toStrictEqual('https://github.com/kovan-testnet/faucet');
   });
 });

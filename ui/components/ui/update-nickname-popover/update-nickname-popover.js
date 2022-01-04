@@ -42,14 +42,9 @@ export default function UpdateNicknamePopover({
     onClose();
   };
 
-  let title = t('addANickname');
-  if (nickname) {
-    title = t('editAddressNickname');
-  }
-
   return (
     <Popover
-      title={title}
+      title={nickname ? t('editAddressNickname') : t('addANickname')}
       onClose={closePopover}
       className="update-nickname__wrapper"
       footer={
@@ -61,7 +56,12 @@ export default function UpdateNicknamePopover({
           >
             {t('cancel')}
           </Button>
-          <Button type="primary" onClick={onSubmit} disabled={!nickname}>
+          <Button
+            className="update-nickname__save"
+            type="primary"
+            onClick={onSubmit}
+            disabled={!nicknameInput}
+          >
             {t('save')}
           </Button>
         </>

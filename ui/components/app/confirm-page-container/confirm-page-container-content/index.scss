@@ -20,6 +20,10 @@
   &__data {
     padding: 16px;
     color: $oslo-gray;
+
+    & > .disclosure {
+      margin-top: 0;
+    }
   }
 
   &__data-box {
@@ -27,9 +31,7 @@
 
     background-color: #f9fafa;
     padding: 12px;
-    margin-bottom: 16px;
     word-wrap: break-word;
-    max-height: 200px;
     overflow-y: auto;
 
     &-label {
@@ -89,7 +91,9 @@
     margin-top: auto;
   }
 
-  &__currency-container {
+  &__currency-container,
+  &__total-amount,
+  &__total-value {
     position: relative;
   }
 }

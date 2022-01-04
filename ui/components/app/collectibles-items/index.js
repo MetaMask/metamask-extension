@@ -1,1 +1,1 @@
-export { default } from './collectibles-items.component';
+export { default } from './collectibles-items';

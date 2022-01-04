@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import SiteIcon from '../../ui/site-icon';
+import SiteOrigin from '../../ui/site-origin/site-origin';
 
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
-    icon: PropTypes.string,
+    iconUrl: PropTypes.string,
     iconName: PropTypes.string.isRequired,
     siteOrigin: PropTypes.string.isRequired,
     headerTitle: PropTypes.node,
@@ -12,18 +12,17 @@ export default class PermissionsConnectHeader extends Component {
   };
 
   static defaultProps = {
-    icon: null,
+    iconUrl: null,
     headerTitle: '',
     headerText: '',
   };
 
   renderHeaderIcon() {
-    const { icon, iconName, siteOrigin } = this.props;
+    const { iconUrl, iconName, siteOrigin } = this.props;
 
     return (
       <div className="permissions-connect-header__icon">
-        <SiteIcon icon={icon} name={iconName} size={64} />
-        <div className="permissions-connect-header__text">{siteOrigin}</div>
+        <SiteOrigin siteOrigin={siteOrigin} iconSrc={iconUrl} name={iconName} />
       </div>
     );
   }

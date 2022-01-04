@@ -28,8 +28,17 @@ Interaction.defaultProps = {
 };
 
 Interaction.propTypes = {
+  /**
+   * Additional className
+   */
   className: PropTypes.string,
+  /**
+   * Size of the icon should adhere to 8px grid. e.g: 8, 16, 24, 32, 40
+   */
   size: PropTypes.number.isRequired,
+  /**
+   * Color of the icon should be a valid design system color and is required
+   */
   color: PropTypes.string.isRequired,
 };
 

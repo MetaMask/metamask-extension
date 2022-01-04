@@ -70,6 +70,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "Apstiprināt"
   },
@@ -217,9 +225,6 @@
   },
   "copiedExclamation": {
     "message": "Nokopēts!"
-  },
-  "copiedTransactionId": {
-    "message": "Nokopētais darījuma ID"
   },
   "copyAddress": {
     "message": "Iekopēt adresi starpliktuvē"

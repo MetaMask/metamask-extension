@@ -11,6 +11,7 @@ import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
 import PortStream from 'extension-port-stream';
 import { captureException } from '@sentry/browser';
 
+import { ethErrors } from 'eth-rpc-errors';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -56,7 +57,7 @@ const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 
 // state persistence
-const inTest = process.env.IN_TEST === 'true';
+const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
 
@@ -533,12 +534,9 @@ function setupController(initState, initLangCode) {
         ),
       );
 
-    // We're specifcally avoid using approvalController directly for better
-    // Error support during rejection
-    Object.keys(
-      controller.permissionsController.approvals.state.pendingApprovals,
-    ).forEach((approvalId) =>
-      controller.permissionsController.rejectPermissionsRequest(approvalId),
+    // Finally, reject all approvals managed by the ApprovalController
+    controller.approvalController.clear(
+      ethErrors.provider.userRejectedRequest(),
     );
 
     updateBadge();

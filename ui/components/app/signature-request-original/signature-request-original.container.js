@@ -7,7 +7,7 @@ import { goHome } from '../../../store/actions';
 import {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
-  getDomainMetadata,
+  getSubjectMetadata,
   doesAddressRequireLedgerHidConnection,
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
@@ -40,7 +40,7 @@ function mapStateToProps(state, ownProps) {
     nativeCurrency: getNativeCurrency(state),
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
-    domainMetadata: getDomainMetadata(state),
+    subjectMetadata: getSubjectMetadata(state),
   };
 }
 

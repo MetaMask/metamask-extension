@@ -1391,6 +1391,10 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
+export async function checkAndUpdateCollectiblesOwnershipStatus() {
+  await promisifiedBackground.checkAndUpdateCollectiblesOwnershipStatus();
+}
+
 export function removeToken(address) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
@@ -2135,15 +2139,15 @@ export function setUseBlockie(val) {
 }
 
 export function setUseNonceField(val) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNonceField`);
-    background.setUseNonceField(val, (err) => {
-      dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
+    try {
+      await promisifiedBackground.setUseNonceField(val);
+    } catch (error) {
+      dispatch(displayWarning(error.message));
+    }
+    dispatch(hideLoadingIndication());
     dispatch({
       type: actionConstants.SET_USE_NONCEFIELD,
       value: val,
@@ -2187,6 +2191,29 @@ export function setUseCollectibleDetection(val) {
         dispatch(displayWarning(err.message));
       }
     });
+  };
+}
+
+export function setOpenSeaEnabled(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setOpenSeaEnabled`);
+    background.setOpenSeaEnabled(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
+export function detectCollectibles() {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.detectCollectibles`);
+    await promisifiedBackground.detectCollectibles();
+    dispatch(hideLoadingIndication());
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -2464,12 +2491,11 @@ export function requestAccountsPermissionWithId(origin) {
 
 /**
  * Approves the permissions request.
- * @param {Object} request - The permissions request to approve
- * @param {string[]} accounts - The accounts to expose, if any.
+ * @param {Object} request - The permissions request to approve.
  */
-export function approvePermissionsRequest(request, accounts) {
+export function approvePermissionsRequest(request) {
   return (dispatch) => {
-    background.approvePermissionsRequest(request, accounts, (err) => {
+    background.approvePermissionsRequest(request, (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
@@ -2499,9 +2525,9 @@ export function rejectPermissionsRequest(requestId) {
 /**
  * Clears the given permissions for the given origin.
  */
-export function removePermissionsFor(domains) {
+export function removePermissionsFor(subjects) {
   return (dispatch) => {
-    background.removePermissionsFor(domains, (err) => {
+    background.removePermissionsFor(subjects, (err) => {
       if (err) {
         dispatch(displayWarning(err.message));
       }
@@ -2834,19 +2860,17 @@ export function setNextNonce(nextNonce) {
 }
 
 export function getNextNonce() {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const address = getState().metamask.selectedAddress;
-    return new Promise((resolve, reject) => {
-      background.getNextNonce(address, (err, nextNonce) => {
-        if (err) {
-          dispatch(displayWarning(err.message));
-          reject(err);
-          return;
-        }
-        dispatch(setNextNonce(nextNonce));
-        resolve(nextNonce);
-      });
-    });
+    let nextNonce;
+    try {
+      nextNonce = await promisifiedBackground.getNextNonce(address);
+    } catch (error) {
+      dispatch(displayWarning(error.message));
+      throw error;
+    }
+    dispatch(setNextNonce(nextNonce));
+    return nextNonce;
   };
 }
 
@@ -3032,8 +3056,13 @@ export async function detectNewTokens() {
   return promisifiedBackground.detectNewTokens();
 }
 
+// App state
 export function hideTestNetMessage() {
   return promisifiedBackground.setShowTestnetMessageInDropdown(false);
+}
+
+export function setCollectiblesDetectionNoticeDismissed() {
+  return promisifiedBackground.setCollectiblesDetectionNoticeDismissed(true);
 }
 
 // QR Hardware Wallets

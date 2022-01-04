@@ -1,0 +1,45 @@
+.network-statistics {
+  margin: 24px 0 12px;
+
+  &__info {
+    border-top: 1px solid $ui-2;
+    border-bottom: 1px solid $ui-2;
+    height: 56px;
+    display: flex;
+    align-items: center;
+
+    &__separator {
+      border-left: 1px solid $ui-2;
+      height: 65%;
+    }
+
+    &__field {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 30%;
+
+      &--priority-fee {
+        width: 40%;
+      }
+
+      &-data {
+        color: $ui-4;
+        font-size: 12px;
+        text-align: center;
+      }
+
+      &-label {
+        color: $Black-100;
+        font-size: 10px;
+        font-weight: bold;
+        margin-top: 4px;
+      }
+    }
+  }
+
+  &__tooltip-label {
+    font-weight: 700;
+  }
+}

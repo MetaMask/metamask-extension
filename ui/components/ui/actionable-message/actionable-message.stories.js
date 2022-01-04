@@ -1,85 +1,109 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
-import { text } from '@storybook/addon-knobs';
+import README from './README.mdx';
 import ActionableMessage from '.';
 
 export default {
-  title: 'ActionableMessage',
+  title: 'Components/UI/ActionableMessage',
   id: __filename,
+  component: ActionableMessage,
+  parameters: { docs: { page: README } },
+  argTypes: {
+    message: { control: 'text' },
+    'primaryAction.label': { control: 'text' },
+    'primaryAction.onClick': { action: 'primaryAction.onClick' },
+    'primaryActionV2.label': { control: 'text' },
+    'primaryActionV2.onClick': { action: 'primaryActionV2.onClick' },
+    'secondaryAction.label': { control: 'text' },
+    'secondaryAction.onClick': { action: 'secondaryAction.onClick' },
+    className: { control: 'text' },
+    type: { control: 'text' },
+    withRightButton: { control: 'boolean' },
+    infoTooltipText: { control: 'text' },
+    useIcon: { control: 'boolean' },
+    iconFillColor: { control: 'color' },
+  },
 };
 
-export const NoAction = () => (
-  <div style={{ height: '200px', width: '200px' }}>
-    <ActionableMessage
-      message={text(
-        'Message',
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      )}
-    />
-  </div>
+export const DefaultStory = (args) => (
+  <ActionableMessage
+    {...args}
+    primaryAction={{
+      label: args['primaryAction.label'],
+      onClick: args['primaryAction.onClick'],
+    }}
+    primaryActionV2={{
+      label: args['primaryActionV2.label'],
+      onClick: args['primaryActionV2.onClick'],
+    }}
+    secondaryAction={{
+      label: args['secondaryAction.label'],
+      onClick: args['secondaryAction.onClick'],
+    }}
+    message={args.message}
+  />
 );
 
-export const OneAction = () => (
-  <div style={{ height: '200px', width: '250px' }}>
-    <ActionableMessage
-      message={text(
-        'Message',
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      )}
-      primaryAction={{
-        label: text('ActionLabel', 'Dismiss'),
-        onClick: action('OneAction Click'),
-      }}
-    />
-  </div>
-);
+DefaultStory.storyName = 'Default';
 
-export const TwoActions = () => (
-  <div style={{ height: '200px', width: '300px' }}>
-    <ActionableMessage
-      message={text(
-        'Message',
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      )}
-      primaryAction={{
-        label: text('First ActionLabel', 'Dismiss'),
-        onClick: action('TwoActionsWithClassNames Click 1'),
-      }}
-      secondaryAction={{
-        label: text('Second ActionLabel', 'Okay'),
-        onClick: action('TwoActionsWithClassNames Click 2'),
-      }}
-      className="actionable-message--warning"
-    />
-  </div>
-);
+DefaultStory.args = {
+  message:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+};
 
-export const LeftAligned = () => (
-  <div style={{ height: '200px', width: '300px' }}>
-    <ActionableMessage
-      message={text(
-        'Message',
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      )}
-      primaryAction={{
-        label: text('LeftAligned Label', 'Dismiss'),
-        onClick: action('LeftAligned Click 1'),
-      }}
-      className="actionable-message--left-aligned"
-    />
-  </div>
-);
+export const OneAction = (args) => <ActionableMessage {...args} />;
 
-export const withIcon = () => (
-  <div style={{ height: '200px', width: '300px' }}>
-    <ActionableMessage
-      message={text(
-        'Message',
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      )}
-      className="actionable-message--left-aligned actionable-message--warning"
-      useIcon
-      iconFillColor="#f8c000"
-    />
-  </div>
-);
+OneAction.args = {
+  message:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  primaryAction: {
+    label: 'Dismiss',
+  },
+};
+
+export const TwoActions = (args) => <ActionableMessage {...args} />;
+
+TwoActions.args = {
+  message:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  primaryAction: {
+    label: 'Dismiss',
+  },
+  secondaryAction: {
+    label: 'Okay',
+  },
+  className: 'actionable-message--warning',
+};
+
+export const LeftAligned = (args) => <ActionableMessage {...args} />;
+
+LeftAligned.args = {
+  message:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  primaryAction: {
+    label: 'Dismiss',
+  },
+  className: 'actionable-message--left-aligned',
+};
+
+export const WithIcon = (args) => <ActionableMessage {...args} />;
+
+WithIcon.args = {
+  message:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+  className: 'actionable-message--left-aligned actionable-message--warning',
+  useIcon: true,
+  iconFillColor: '#f8c000',
+};
+
+export const PrimaryV2Action = (args) => <ActionableMessage {...args} />;
+
+PrimaryV2Action.args = {
+  message:
+    'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
+  useIcon: true,
+  iconFillColor: '#d73a49',
+  type: 'danger',
+  primaryActionV2: {
+    label: 'I want to proceed anyway',
+  },
+};

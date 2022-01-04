@@ -13,6 +13,8 @@ export default class ExperimentalTab extends PureComponent {
     setUseTokenDetection: PropTypes.func,
     useCollectibleDetection: PropTypes.bool,
     setUseCollectibleDetection: PropTypes.func,
+    setOpenSeaEnabled: PropTypes.func,
+    openSeaEnabled: PropTypes.func,
   };
 
   renderTokenDetectionToggle() {
@@ -51,8 +53,16 @@ export default class ExperimentalTab extends PureComponent {
   }
 
   renderCollectibleDetectionToggle() {
+    if (!process.env.COLLECTIBLES_V1) {
+      return null;
+    }
+
     const { t } = this.context;
-    const { useCollectibleDetection, setUseCollectibleDetection } = this.props;
+    const {
+      useCollectibleDetection,
+      setUseCollectibleDetection,
+      openSeaEnabled,
+    } = this.props;
 
     return (
       <div className="settings-page__content-row">
@@ -65,6 +75,7 @@ export default class ExperimentalTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
+              disabled={!openSeaEnabled}
               value={useCollectibleDetection}
               onToggle={(value) => {
                 this.context.metricsEvent({
@@ -85,10 +96,49 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  renderOpenSeaEnabledToggle() {
+    if (!process.env.COLLECTIBLES_V1) {
+      return null;
+    }
+    const { t } = this.context;
+    const { openSeaEnabled, setOpenSeaEnabled } = this.props;
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('enableOpenSeaAPI')}</span>
+          <div className="settings-page__content-description">
+            {t('enableOpenSeaAPIDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={openSeaEnabled}
+              onToggle={(value) => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Settings',
+                    action: 'Enabled/Disable OpenSea',
+                    name: 'Enabled/Disable OpenSea',
+                  },
+                });
+                setOpenSeaEnabled(!value);
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="settings-page__body">
         {this.renderTokenDetectionToggle()}
+        {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}
       </div>
     );

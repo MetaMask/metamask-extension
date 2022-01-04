@@ -70,6 +70,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "Potrdi"
   },
@@ -217,9 +225,6 @@
   },
   "copiedExclamation": {
     "message": "Kopirano!"
-  },
-  "copiedTransactionId": {
-    "message": "ID transakcije skopirana"
   },
   "copyAddress": {
     "message": "Kopiraj naslov v odložišče"

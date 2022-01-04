@@ -141,12 +141,7 @@ export function getParticipateInMetaMetrics(state) {
   return Boolean(state.metamask.participateInMetaMetrics);
 }
 
-export function isEIP1559Account(state) {
-  const keyring = getCurrentKeyring(state);
-
-  if (keyring?.type === KEYRING_TYPES.TREZOR) {
-    return state.metamask.trezorModel === 'T';
-  }
+export function isEIP1559Account() {
   return true;
 }
 
@@ -508,8 +503,8 @@ export function getCustomNonceValue(state) {
   return String(state.metamask.customNonceValue);
 }
 
-export function getDomainMetadata(state) {
-  return state.metamask.domainMetadata;
+export function getSubjectMetadata(state) {
+  return state.metamask.subjectMetadata;
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
@@ -647,6 +642,7 @@ function getAllowedNotificationIds(state) {
     6: false,
     7: false,
     8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
+    9: getIsMainnet(state),
   };
 }
 
@@ -709,6 +705,15 @@ export function getUseTokenDetection(state) {
  */
 export function getUseCollectibleDetection(state) {
   return Boolean(state.metamask.useCollectibleDetection);
+}
+
+/**
+ * To get the openSeaEnabled flag which determines whether we use OpenSea's API
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getOpenSeaEnabled(state) {
+  return Boolean(state.metamask.openSeaEnabled);
 }
 
 /**

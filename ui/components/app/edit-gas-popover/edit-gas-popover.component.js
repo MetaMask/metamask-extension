@@ -261,7 +261,7 @@ export default function EditGasPopover({
           <EditGasDisplayEducation />
         ) : (
           <>
-            {process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />}
+            {process.env.IN_TEST ? null : <LoadingHeartBeat />}
             <EditGasDisplay
               showEducationButton={showEducationButton}
               warning={warning}

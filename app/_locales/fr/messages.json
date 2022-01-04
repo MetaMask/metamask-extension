@@ -70,6 +70,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "Approuver"
   },
@@ -208,9 +216,6 @@
   },
   "copiedExclamation": {
     "message": "Copié!"
-  },
-  "copiedTransactionId": {
-    "message": "ID de transaction copié"
   },
   "copyAddress": {
     "message": "Copier l'addresse dans le presse-papier"

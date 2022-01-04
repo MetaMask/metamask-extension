@@ -361,6 +361,8 @@ class Driver {
       'favicon.ico - Failed to load resource: the server responded with a status of 404 (Not Found)',
       // Sentry rate limiting
       'Failed to load resource: the server responded with a status of 429',
+      // 4Byte
+      'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
     ];
     const browserLogs = await this.driver.manage().logs().get('browser');
     const errorEntries = browserLogs.filter(

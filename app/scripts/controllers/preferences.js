@@ -3,7 +3,10 @@ import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
 import { ethers } from 'ethers';
 import log from 'loglevel';
-import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
+import {
+  IPFS_DEFAULT_GATEWAY_URL,
+  NETWORK_TYPE_TO_ID_MAP,
+} from '../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 import { NETWORK_EVENTS } from './network';
@@ -38,6 +41,7 @@ export default class PreferencesController {
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
       useCollectibleDetection: false,
+      openSeaEnabled: false,
       advancedGasFee: null,
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -60,7 +64,7 @@ export default class PreferencesController {
         hideZeroBalanceTokens: false,
       },
       // ENS decentralized website resolution
-      ipfsGateway: 'dweb.link',
+      ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
         ? LEDGER_TRANSPORT_TYPES.WEBHID
@@ -138,7 +142,26 @@ export default class PreferencesController {
    *
    */
   setUseCollectibleDetection(val) {
+    const { openSeaEnabled } = this.store.getState();
+    if (val && !openSeaEnabled) {
+      throw new Error(
+        'useCollectibleDetection cannot be enabled if openSeaEnabled is false',
+      );
+    }
     this.store.updateState({ useCollectibleDetection: val });
+  }
+
+  /**
+   * Setter for the `openSeaEnabled` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to use the OpenSea API for collectibles data.
+   *
+   */
+  setOpenSeaEnabled(val) {
+    this.store.updateState({ openSeaEnabled: val });
+    if (!val) {
+      this.store.updateState({ useCollectibleDetection: false });
+    }
   }
 
   /**

@@ -28,7 +28,7 @@ export default class ComposableObservableStore extends ObservableStore {
    *   messenger, used for subscribing to events from BaseControllerV2-based
    *   controllers.
    * @param {Object} [options.state] - The initial store state
-   * @param {boolean} [options.persist] - Wether or not to apply the persistence for v2 controllers
+   * @param {boolean} [options.persist] - Whether or not to apply the persistence for v2 controllers
    */
   constructor({ config, controllerMessenger, state, persist }) {
     super(state);

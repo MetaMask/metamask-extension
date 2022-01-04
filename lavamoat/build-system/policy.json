@@ -2547,6 +2547,11 @@
         "which": true
       }
     },
+    "globalthis": {
+      "packages": {
+        "define-properties": true
+      }
+    },
     "globby": {
       "builtin": {
         "fs.Stats": true,
@@ -3128,7 +3133,8 @@
       },
       "globals": {
         "console.warn": true,
-        "process.cwd": true
+        "process.cwd": true,
+        "setTimeout": true
       },
       "packages": {
         "@lavamoat/lavapack": true,

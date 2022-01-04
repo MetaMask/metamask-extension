@@ -79,6 +79,8 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
 };
 
 export const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
+  // eslint-disable-next-line no-param-reassign
+  chainId = chainId === RINKEBY_CHAIN_ID ? MAINNET_CHAIN_ID : chainId;
   const baseUrl = getBaseUrlForNewSwapsApi(type, chainId);
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   if (!baseUrl) {

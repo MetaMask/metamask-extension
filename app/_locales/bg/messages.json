@@ -70,6 +70,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "Одобри"
   },
@@ -217,9 +225,6 @@
   },
   "copiedExclamation": {
     "message": "Копирано!"
-  },
-  "copiedTransactionId": {
-    "message": "Копиран идентификационен номер на транзакцията"
   },
   "copyAddress": {
     "message": "Копирайте адреса в клипборда"

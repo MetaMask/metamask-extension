@@ -21,7 +21,7 @@ export default class PermissionsConnectFooter extends Component {
               });
             }}
           >
-            {t('learnMore')}
+            {t('learnMoreUpperCase')}
           </div>
         </div>
       </div>

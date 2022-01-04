@@ -171,3 +171,5 @@ export const UNSUPPORTED_RPC_METHODS = new Set([
   // eth-json-rpc-middleware – but our UI does not support it.
   'eth_signTransaction',
 ]);
+
+export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
