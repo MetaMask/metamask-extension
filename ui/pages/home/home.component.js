@@ -97,10 +97,43 @@ export default class Home extends PureComponent {
   };
 
   state = {
-    // eslint-disable-next-line react/no-unused-state
-    mounted: false,
     canShowBlockageNotification: true,
+    closing: false,
+    redirecting: false,
   };
+
+  constructor(props) {
+    super(props);
+
+    const {
+      firstPermissionsRequestId,
+      haveSwapsQuotes,
+      isNotification,
+      isSigningQRHardwareTransaction,
+      showAwaitingSwapScreen,
+      suggestedAssets = [],
+      swapsFetchParams,
+      totalUnapprovedCount,
+      unconfirmedTransactionsCount,
+    } = this.props;
+
+    if (
+      isNotification &&
+      totalUnapprovedCount === 0 &&
+      !isSigningQRHardwareTransaction
+    ) {
+      this.state.closing = true;
+      global.platform.closeCurrentWindow();
+    } else if (
+      firstPermissionsRequestId ||
+      unconfirmedTransactionsCount > 0 ||
+      suggestedAssets.length > 0 ||
+      (!isNotification &&
+        (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
+    ) {
+      this.state.redirecting = true;
+    }
+  }
 
   checkStatusAndNavigate() {
     const {
@@ -140,46 +173,10 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    // eslint-disable-next-line react/no-unused-state
-    this.setState({ mounted: true });
     this.checkStatusAndNavigate();
   }
 
-  static getDerivedStateFromProps(
-    {
-      firstPermissionsRequestId,
-      isNotification,
-      suggestedAssets,
-      totalUnapprovedCount,
-      unconfirmedTransactionsCount,
-      haveSwapsQuotes,
-      showAwaitingSwapScreen,
-      swapsFetchParams,
-      isSigningQRHardwareTransaction,
-    },
-    { mounted },
-  ) {
-    if (!mounted) {
-      if (
-        isNotification &&
-        totalUnapprovedCount === 0 &&
-        !isSigningQRHardwareTransaction
-      ) {
-        return { closing: true };
-      } else if (
-        firstPermissionsRequestId ||
-        unconfirmedTransactionsCount > 0 ||
-        suggestedAssets.length > 0 ||
-        (!isNotification &&
-          (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
-      ) {
-        return { redirecting: true };
-      }
-    }
-    return null;
-  }
-
-  componentDidUpdate(_, prevState) {
+  componentDidUpdate() {
     const {
       setupThreeBox,
       showRestorePrompt,
@@ -187,10 +184,6 @@ export default class Home extends PureComponent {
       threeBoxSynced,
       isNotification,
     } = this.props;
-
-    if (!prevState.closing && this.state.closing) {
-      global.platform.closeCurrentWindow();
-    }
 
     isNotification && this.checkStatusAndNavigate();
 
