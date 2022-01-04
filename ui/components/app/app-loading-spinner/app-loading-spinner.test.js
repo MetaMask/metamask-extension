@@ -9,7 +9,6 @@ import AppLoadingSpinner from './app-loading-spinner';
 
 const render = (params) => {
   const store = configureStore({
-    metamask: mockState.metamask,
     ...params,
   });
 

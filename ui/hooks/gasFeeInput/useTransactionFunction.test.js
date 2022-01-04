@@ -100,7 +100,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
     });
   });
 
-  it('should invoke action updateTransaction with dappSuggestedValues values fee when updateTransactionUsingDAPPSuggestedValues callback is invoked', () => {
+  it('should invoke action updateTransaction with dappSuggestedValues values fee when updateTransactionUsingDappSuggestedValue callback is invoked', () => {
     const mock = jest.spyOn(Actions, 'updateTransaction');
     const { result } = renderUseTransactionFunctions({
       transaction: {
@@ -111,7 +111,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
         },
       },
     });
-    result.current.updateTransactionUsingDAPPSuggestedValues();
+    result.current.updateTransactionUsingDappSuggestedValue();
     expect(mock).toHaveBeenCalledTimes(1);
     expect(mock).toHaveBeenCalledWith({
       dappSuggestedGasFees: {
