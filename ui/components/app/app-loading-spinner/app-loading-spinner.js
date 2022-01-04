@@ -8,7 +8,9 @@ import Spinner from '../../ui/spinner';
 const AppLoadingSpinner = ({ className }) => {
   const appIsLoading = useSelector(getAppIsLoading);
 
-  if (!appIsLoading) return null;
+  if (!appIsLoading) {
+    return null;
+  }
 
   return (
     <div
