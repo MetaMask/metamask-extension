@@ -135,22 +135,26 @@ const BaseFeeInput = () => {
 
   const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(() => {
     if (estimateUsed !== PRIORITY_LEVELS.CUSTOM) {
-      if (advancedGasFeeValues?.maxBaseFeeMultiplier) {
-        return advancedGasFeeValues.maxBaseFeeMultiplier;
-      } else if (advancedGasFeeValues?.maxBaseFeeGWEI) {
-        return divideCurrencyValues(
-          advancedGasFeeValues.maxBaseFeeGWEI,
-          estimatedBaseFee,
-        );
+      if (advancedGasFeeValues) {
+        if (advancedGasFeeValues.maxBaseFeeMultiplier) {
+          return advancedGasFeeValues.maxBaseFeeMultiplier;
+        } else if (advancedGasFeeValues.maxBaseFeeGWEI) {
+          return divideCurrencyValues(
+            advancedGasFeeValues.maxBaseFeeGWEI,
+            estimatedBaseFee,
+          );
+        }
       }
     } else if (
-      advancedGasFeeValues?.maxBaseFeeMultiplier &&
-      advancedGasFeeValues?.maxBaseFeeMultiplier === maxFeePerGas
+      Boolean(advancedGasFeeValues) &&
+      advancedGasFeeValues.maxBaseFeeMultiplier &&
+      advancedGasFeeValues.maxBaseFeeMultiplier === maxFeePerGas
     ) {
       return advancedGasFeeValues.maxBaseFeeMultiplier;
     } else if (
-      advancedGasFeeValues?.maxBaseFeeGWEI &&
-      advancedGasFeeValues?.maxBaseFeeGWEI === maxFeePerGas
+      Boolean(advancedGasFeeValues) &&
+      advancedGasFeeValues.maxBaseFeeGWEI &&
+      advancedGasFeeValues.maxBaseFeeGWEI === maxFeePerGas
     ) {
       return divideCurrencyValues(
         advancedGasFeeValues.maxBaseFeeGWEI,
