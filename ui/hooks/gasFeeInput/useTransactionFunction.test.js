@@ -57,10 +57,10 @@ describe('useMaxPriorityFeePerGasInput', () => {
     expect(mock).toHaveBeenCalledTimes(1);
   });
 
-  it('should invoke action createSpeedUpTransaction when speedupTransaction callback is invoked', () => {
+  it('should invoke action createSpeedUpTransaction when speedUpTransaction callback is invoked', () => {
     const mock = jest.spyOn(Actions, 'createSpeedUpTransaction');
     const { result } = renderUseTransactionFunctions();
-    result.current.speedupTransaction();
+    result.current.speedUpTransaction();
     expect(mock).toHaveBeenCalledTimes(1);
   });
 

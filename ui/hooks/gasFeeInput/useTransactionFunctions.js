@@ -103,7 +103,7 @@ export const useTransactionFunctions = ({
     );
   }, [dispatch, estimatedBaseFee, transaction]);
 
-  const speedupTransaction = useCallback(() => {
+  const speedUpTransaction = useCallback(() => {
     dispatch(
       createSpeedUpTransaction(transaction.id, transaction.txParams, {
         estimatedBaseFee,
@@ -154,7 +154,7 @@ export const useTransactionFunctions = ({
 
   return {
     cancelTransaction,
-    speedupTransaction,
+    speedUpTransaction,
     updateTransaction,
     updateTransactionToMinimumGasFee,
     updateTransactionUsingDAPPSuggestedValues,

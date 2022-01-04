@@ -27,7 +27,7 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../contexts/transaction-modal', () => ({
   useTransactionModalContext: () => ({
     closeModal: () => undefined,
-    currentModal: 'cancelSpeedupTransaction',
+    currentModal: 'cancelSpeedUpTransaction',
   }),
 }));
 

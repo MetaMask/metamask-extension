@@ -79,7 +79,7 @@ function TransactionListItemInner({
       speedUpMetricsEvent();
       if (supportsEIP1559V2) {
         setEditGasMode(EDIT_GAS_MODES.SPEED_UP);
-        openModal('cancelSpeedupTransaction');
+        openModal('cancelSpeedUpTransaction');
       } else {
         setShowRetryEditGasPopover(true);
       }
@@ -93,7 +93,7 @@ function TransactionListItemInner({
       cancelMetricsEvent();
       if (supportsEIP1559V2) {
         setEditGasMode(EDIT_GAS_MODES.CANCEL);
-        openModal('cancelSpeedupTransaction');
+        openModal('cancelSpeedUpTransaction');
       } else {
         setShowCancelEditGasPopover(true);
       }
