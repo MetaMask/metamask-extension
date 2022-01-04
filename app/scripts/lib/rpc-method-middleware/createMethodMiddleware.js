@@ -16,7 +16,7 @@ const handlerMap = allHandlers.reduce((map, handler) => {
 const expectedHookNames = Array.from(
   new Set(
     Array.from(handlerMap.values()).reduce(
-      (acc, { hookNames = {} }) => acc.concat(Object.keys(hookNames)),
+      (allHooks, { hookNames = {} }) => allHooks.concat(Object.keys(hookNames)),
       [],
     ),
   ).values(),
