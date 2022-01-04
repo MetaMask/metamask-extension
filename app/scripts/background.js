@@ -11,6 +11,7 @@ import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
 import PortStream from 'extension-port-stream';
 import { captureException } from '@sentry/browser';
 
+import { ethErrors } from 'eth-rpc-errors';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -534,7 +535,9 @@ function setupController(initState, initLangCode) {
       );
 
     // Finally, reject all approvals managed by the ApprovalController
-    controller.approvalController.clear();
+    controller.approvalController.clear(
+      ethErrors.provider.userRejectedRequest(),
+    );
 
     updateBadge();
   }
