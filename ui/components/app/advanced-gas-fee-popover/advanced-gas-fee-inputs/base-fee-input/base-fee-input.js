@@ -104,68 +104,60 @@ const BaseFeeInput = () => {
 
   const [editingInGwei, setEditingInGwei] = useState(false);
 
-  const [maxBaseFeeGWEI, setMaxBaseFeeGWEI] = useState(() => {
-    if (estimateUsed !== PRIORITY_LEVELS.CUSTOM) {
-      if (advancedGasFeeValues?.maxBaseFeeGWEI) {
-        return advancedGasFeeValues.maxBaseFeeGWEI;
-      } else if (advancedGasFeeValues?.maxBaseFeeMultiplier) {
+  const [maxBaseFeeInGWEI, setMaxBaseFeeInGWEI] = useState(() => {
+    if (advancedGasFeeValues) {
+      const { maxBaseFeeGWEI, maxBaseFeeMultiplier } = advancedGasFeeValues;
+      if (estimateUsed !== PRIORITY_LEVELS.CUSTOM) {
+        if (maxBaseFeeGWEI) {
+          return maxBaseFeeGWEI;
+        } else if (maxBaseFeeMultiplier) {
+          return multiplyCurrencyValues(
+            estimatedBaseFee,
+            maxBaseFeeMultiplier,
+            numberOfDecimalsPrimary,
+          );
+        }
+      } else if (maxBaseFeeGWEI && maxBaseFeeGWEI === maxFeePerGas) {
+        return maxBaseFeeGWEI;
+      } else if (
+        maxBaseFeeMultiplier &&
+        maxBaseFeeMultiplier === maxFeePerGas
+      ) {
         return multiplyCurrencyValues(
           estimatedBaseFee,
-          advancedGasFeeValues.maxBaseFeeMultiplier,
+          maxBaseFeeMultiplier,
           numberOfDecimalsPrimary,
         );
       }
-    } else if (
-      advancedGasFeeValues?.maxBaseFeeGWEI &&
-      advancedGasFeeValues?.maxBaseFeeGWEI === maxFeePerGas
-    ) {
-      return advancedGasFeeValues.maxBaseFeeGWEI;
-    } else if (
-      advancedGasFeeValues?.maxBaseFeeMultiplier &&
-      advancedGasFeeValues?.maxBaseFeeMultiplier === maxFeePerGas
-    ) {
-      return multiplyCurrencyValues(
-        estimatedBaseFee,
-        advancedGasFeeValues.maxBaseFeeMultiplier,
-        numberOfDecimalsPrimary,
-      );
     }
+
     return maxFeePerGas;
   });
 
-  const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(() => {
-    if (estimateUsed !== PRIORITY_LEVELS.CUSTOM) {
-      if (advancedGasFeeValues) {
-        if (advancedGasFeeValues.maxBaseFeeMultiplier) {
-          return advancedGasFeeValues.maxBaseFeeMultiplier;
-        } else if (advancedGasFeeValues.maxBaseFeeGWEI) {
-          return divideCurrencyValues(
-            advancedGasFeeValues.maxBaseFeeGWEI,
-            estimatedBaseFee,
-          );
+  const [maxBaseFeeInMultiplier, setMaxBaseFeeInMultiplier] = useState(() => {
+    if (advancedGasFeeValues) {
+      const { maxBaseFeeGWEI, maxBaseFeeMultiplier } = advancedGasFeeValues;
+      if (estimateUsed !== PRIORITY_LEVELS.CUSTOM) {
+        if (maxBaseFeeMultiplier) {
+          return maxBaseFeeMultiplier;
+        } else if (maxBaseFeeGWEI) {
+          return divideCurrencyValues(maxBaseFeeGWEI, estimatedBaseFee);
         }
+      } else if (
+        maxBaseFeeMultiplier &&
+        maxBaseFeeMultiplier === maxFeePerGas
+      ) {
+        return maxBaseFeeMultiplier;
+      } else if (maxBaseFeeGWEI && maxBaseFeeGWEI === maxFeePerGas) {
+        return divideCurrencyValues(maxBaseFeeGWEI, estimatedBaseFee);
       }
-    } else if (
-      Boolean(advancedGasFeeValues) &&
-      advancedGasFeeValues.maxBaseFeeMultiplier &&
-      advancedGasFeeValues.maxBaseFeeMultiplier === maxFeePerGas
-    ) {
-      return advancedGasFeeValues.maxBaseFeeMultiplier;
-    } else if (
-      Boolean(advancedGasFeeValues) &&
-      advancedGasFeeValues.maxBaseFeeGWEI &&
-      advancedGasFeeValues.maxBaseFeeGWEI === maxFeePerGas
-    ) {
-      return divideCurrencyValues(
-        advancedGasFeeValues.maxBaseFeeGWEI,
-        estimatedBaseFee,
-      );
     }
+
     return divideCurrencyValues(maxFeePerGas, estimatedBaseFee);
   });
 
   const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
-    decGWEIToHexWEI(maxBaseFeeGWEI),
+    decGWEIToHexWEI(maxBaseFeeInGWEI),
     { currency, numberOfDecimalsFiat },
   );
 
@@ -184,23 +176,23 @@ const BaseFeeInput = () => {
         );
         baseFeeMultiplierValue = value;
       }
-      setMaxBaseFeeGWEI(baseFeeInGWEI);
-      setMaxBaseFeeMultiplier(baseFeeMultiplierValue);
+      setMaxBaseFeeInGWEI(baseFeeInGWEI);
+      setMaxBaseFeeInMultiplier(baseFeeMultiplierValue);
     },
     [
       editingInGwei,
       estimatedBaseFee,
       numberOfDecimalsPrimary,
-      setMaxBaseFeeGWEI,
-      setMaxBaseFeeMultiplier,
+      setMaxBaseFeeInGWEI,
+      setMaxBaseFeeInMultiplier,
     ],
   );
 
   useEffect(() => {
-    setMaxFeePerGas(maxBaseFeeGWEI);
+    setMaxFeePerGas(maxBaseFeeInGWEI);
     const error = validateBaseFee(
       editingInGwei,
-      maxBaseFeeGWEI,
+      maxBaseFeeInGWEI,
       gasFeeEstimates,
       maxPriorityFeePerGas,
     );
@@ -216,10 +208,10 @@ const BaseFeeInput = () => {
       setFeeTrend(baseFeeTrend);
     }
     if (editingInGwei) {
-      setBaseFeeGWEI(maxBaseFeeGWEI);
+      setBaseFeeGWEI(maxBaseFeeInGWEI);
       setBaseFeeMultiplier(null);
     } else {
-      setBaseFeeMultiplier(maxBaseFeeMultiplier);
+      setBaseFeeMultiplier(maxBaseFeeInMultiplier);
       setBaseFeeGWEI(null);
     }
   }, [
@@ -227,9 +219,9 @@ const BaseFeeInput = () => {
     editingInGwei,
     baseFeeTrend,
     gasFeeEstimates,
-    maxBaseFeeGWEI,
+    maxBaseFeeInGWEI,
     maxPriorityFeePerGas,
-    maxBaseFeeMultiplier,
+    maxBaseFeeInMultiplier,
     setBaseFeeError,
     setErrorValue,
     setMaxFeePerGas,
@@ -257,7 +249,7 @@ const BaseFeeInput = () => {
             />
           </Button>
         }
-        value={editingInGwei ? maxBaseFeeGWEI : maxBaseFeeMultiplier}
+        value={editingInGwei ? maxBaseFeeInGWEI : maxBaseFeeInMultiplier}
         detailText={`≈ ${baseFeeInFiat}`}
         numeric
       />
