@@ -5,14 +5,6 @@ import {
   gasEstimateGreaterThanGasUsedPlusTenPercent,
 } from './gas';
 
-jest.mock('../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
-    .fn()
-    .mockImplementation(() => Promise.resolve()),
-  addPollingTokenToAppState: jest.fn(),
-}));
-
 describe('Gas utils', () => {
   describe('gasEstimateGreaterThanGasUsedPlusTenPercent', () => {
     const compareGas = (estimateValues) => {
