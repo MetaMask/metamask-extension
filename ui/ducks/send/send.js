@@ -1092,9 +1092,6 @@ const slice = createSlice({
           }):
           state.amount.error = INSUFFICIENT_TOKENS_ERROR;
           break;
-        case state.asset.type === ASSET_TYPES.COLLECTIBLE:
-          // TODO verify that this isn't required, becuase there is no amount field
-          break;
         // if the amount is negative, set error to NEGATIVE_ETH_ERROR
         // TODO: change this to NEGATIVE_ERROR and remove the currency bias.
         case conversionGreaterThan(

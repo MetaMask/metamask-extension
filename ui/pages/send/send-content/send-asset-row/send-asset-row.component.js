@@ -66,6 +66,19 @@ export default class SendAssetRow extends Component {
 
   closeDropdown = () => this.setState({ isShowingDropdown: false });
 
+  getAssetSelected = (type, token) => {
+    switch (type) {
+      case ASSET_TYPES.NATIVE:
+        return this.props.nativeCurrency;
+      case ASSET_TYPES.TOKEN:
+        return ERC20;
+      case ASSET_TYPES.COLLECTIBLE:
+        return token?.standard;
+      default:
+        return null;
+    }
+  };
+
   selectToken = (type, token) => {
     this.setState(
       {
@@ -78,9 +91,8 @@ export default class SendAssetRow extends Component {
             action: 'Send Screen',
             name: 'User clicks "Assets" dropdown',
           },
-          // TODO UPDATE THIS EVENT
           customVariables: {
-            assetSelected: token ? ERC20 : this.props.nativeCurrency,
+            assetSelected: this.getAssetSelected(type, token),
           },
         });
         this.props.updateSendAsset({
