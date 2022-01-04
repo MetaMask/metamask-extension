@@ -1419,8 +1419,12 @@ export function updateSendAsset({ type, details }) {
           details.tokenId,
         );
       } catch (error) {
-        if (!error.message.includes('Unable to verify ownership.')) {
-          throw error;
+        if (error.message.includes('Unable to verify ownership.')) {
+          // this would indicate that either our attempts to verify ownership failed because of network issues,
+          // or, somehow a token has been added to collectibles state with an incorrect chainId.
+        } else {
+          // Any other error is unexpected and should be surfaced.
+          dispatch(displayWarning(error.message));
         }
       }
       if (isCurrentOwner) {
