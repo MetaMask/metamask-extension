@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Avslå"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skann QR-kode"
+  },
   "about": {
     "message": "Info"
   },
@@ -252,6 +258,9 @@
   },
   "currentLanguage": {
     "message": "Nåværende språk "
+  },
+  "custom": {
+    "message": "Avansert"
   },
   "customGas": {
     "message": "Tilpass Gass"
@@ -515,6 +524,9 @@
     "message": "Kovan testnettverk"
   },
   "learnMore": {
+    "message": "Lær mer"
+  },
+  "learnMoreUpperCase": {
     "message": "Lær mer"
   },
   "ledgerAccountRestriction": {

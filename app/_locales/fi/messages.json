@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Hylkää"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Lue QR-koodi"
+  },
   "about": {
     "message": "Tietoja asetuksista"
   },
@@ -255,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Nykyinen kieli"
+  },
+  "custom": {
+    "message": "Lisäasetukset"
   },
   "customGas": {
     "message": "Mukauta bensa"
@@ -528,6 +537,9 @@
     "message": "Kovanin koeverkko"
   },
   "learnMore": {
+    "message": "Lisätietoa"
+  },
+  "learnMoreUpperCase": {
     "message": "Lisätietoa"
   },
   "ledgerAccountRestriction": {

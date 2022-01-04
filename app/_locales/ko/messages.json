@@ -1,4 +1,49 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "오류"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "일치하지 않는 거래 데이터. 거래내역을 확인해주세요."
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "더 이상 계정이 없습니다. 아래 목록에 없는 다른 계정에 액세스하려면 하드웨어 지갑을 다시 연결하고 선택하세요."
+  },
+  "QRHardwareScanInstructions": {
+    "message": "QR 코드를 카메라 앞에 놓습니다. 화면이 흐릿하지만 판독에 영향을 미치지 않습니다."
+  },
+  "QRHardwareSignRequestCancel": {
+    "message": "거부"
+  },
+  "QRHardwareSignRequestDescription": {
+    "message": "지갑으로 가입한 후 '서명 받기'를 클릭하여 서명을 받으세요."
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "서명 받기"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "지갑으로 QR 코드 스캔"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "서명 요청"
+  },
+  "QRHardwareUnknownQRCodeTitle": {
+    "message": "오류"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "잘못된 QR 코드입니다. 하드웨어 지갑의 동기화 QR 코드를 스캔하세요."
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR 코드 스캔"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "QR 코드를 통해 통신하는 에어갭 하드웨어 지갑을 연결합니다. 공식적으로 지원되는 에어갭 하드웨어 지갑은 다음과 같습니다."
+  },
+  "QRHardwareWalletSteps1Title": {
+    "message": "QR 기반 HW 지갑"
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "AirGap Vault 및 Ngrave(출시 예정)"
+  },
   "about": {
     "message": "정보"
   },
@@ -28,6 +73,10 @@
   "accountName": {
     "message": "계정 이름"
   },
+  "accountNameDuplicate": {
+    "message": "이 계정 이름은 이미 존재합니다.",
+    "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
+  },
   "accountOptions": {
     "message": "계정 옵션"
   },
@@ -43,6 +92,15 @@
   "activityLog": {
     "message": "활동 로그"
   },
+  "add": {
+    "message": "추가"
+  },
+  "addANetwork": {
+    "message": "네트워크 추가"
+  },
+  "addANickname": {
+    "message": "별명 추가"
+  },
   "addAcquiredTokens": {
     "message": "MetaMask를 이용해 얻은 토큰 추가"
   },
@@ -51,6 +109,9 @@
   },
   "addContact": {
     "message": "연락처 추가"
+  },
+  "addCustomToken": {
+    "message": "맞춤형 토큰 추가"
   },
   "addCustomTokenByContractAddress": {
     "message": "이 토큰을 찾을 수 없으신가요? 토큰 주소를 붙여넣으면 토큰을 직접 추가할 수 있습니다. 토큰의 계약 주소는 $1에서 찾을 수 있습니다.",
@@ -76,6 +137,12 @@
   "addFriendsAndAddresses": {
     "message": "신뢰하는 친구와 주소 추가하기"
   },
+  "addMemo": {
+    "message": "메모 추가"
+  },
+  "addNFT": {
+    "message": "NFT 추가"
+  },
   "addNetwork": {
     "message": "네트워크 추가"
   },
@@ -91,11 +158,35 @@
   "addToken": {
     "message": "토큰 추가"
   },
+  "address": {
+    "message": "주소"
+  },
+  "addressBookIcon": {
+    "message": "주소록 아이콘"
+  },
   "advanced": {
     "message": "고급"
   },
+  "advancedBaseGasFeeToolTip": {
+    "message": "거래가 블록에 포함되면 최대 기본 요금과 실제 기본 요금 간의 차액이 환불됩니다. 총 금액은 최대 기본 요금(GWEI) * 가스 한도로 계산됩니다."
+  },
+  "advancedGasFeeDefaultOptIn": {
+    "message": "이 $1를 \"고급\"에 대한 기본값으로 저장합니다."
+  },
+  "advancedGasFeeDefaultOptOut": {
+    "message": "항상 이 값과 고급 설정을 기본값으로 사용합니다."
+  },
+  "advancedGasFeeModalTitle": {
+    "message": "고급 가스 요금"
+  },
+  "advancedGasPriceTitle": {
+    "message": "가스 가격"
+  },
   "advancedOptions": {
     "message": "고급 옵션"
+  },
+  "advancedPriorityFeeToolTip": {
+    "message": "우선 요금(일명 \"채굴자 팁\")은 채굴자에게 직접 전달되어 거래의 우선 순위를 정하도록 장려합니다."
   },
   "advancedSettingsDescription": {
     "message": "개발자 기능 액세스, 상태 로그 다운로드, 계정 재설정, 테스트넷 및 맞춤형 RPC 설정"
@@ -129,6 +220,10 @@
   },
   "allowExternalExtensionTo": {
     "message": "이 외부 확장을 통해 다음을 하도록 허용:"
+  },
+  "allowSpendToken": {
+    "message": "$1에 액세스할 수 있는 권한을 부여하시겠습니까?",
+    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowThisSiteTo": {
     "message": "이 사이트에서 다음을 하도록 허용:"
@@ -174,6 +269,9 @@
   },
   "approved": {
     "message": "승인됨"
+  },
+  "approvedAmountWithColon": {
+    "message": "승인 금액:"
   },
   "asset": {
     "message": "자산"
@@ -229,8 +327,42 @@
   "balanceOutdated": {
     "message": "최신 잔액이 아닐 수도 있습니다."
   },
+  "baseFee": {
+    "message": "기본 요금"
+  },
   "basic": {
     "message": "기본"
+  },
+  "betaMetamaskDescription": {
+    "message": "수백만 명이 신뢰하는 메타마스크(MetaMask)는 모든 사람이 web3의 세계에 접근할 수 있도록 하는 안전한 지갑입니다."
+  },
+  "betaMetamaskDescriptionExplanation": {
+    "message": "이 버전을 사용하여 출시되기 전에 예정된 기능을 테스트해보세요. 귀하의 사용 및 피드백은 가능한 최고의 메타마스크 버전을 구축하는 데 도움이 됩니다. 메타마스크 베타 사용에는 표준 $1 및 $2가 적용됩니다. 베타는 버그의 위험이 증가할 수 있습니다. 계속하면 이러한 위험과 당사 약관 및 베타 약관에 있는 위험을 수락하고 인정하는 것입니다.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
+    "message": "추가 베타 약관"
+  },
+  "betaMetamaskDescriptionExplanationTermsLinkText": {
+    "message": "약관"
+  },
+  "betaMetamaskVersion": {
+    "message": "메타마스크 베타 버전"
+  },
+  "betaWelcome": {
+    "message": "메타마스크 베타 방문을 환영합니다"
+  },
+  "blockExplorerAccountAction": {
+    "message": "계정",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
+  },
+  "blockExplorerAssetAction": {
+    "message": "자산",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
+  },
+  "blockExplorerSwapAction": {
+    "message": "스왑",
+    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
   },
   "blockExplorerUrl": {
     "message": "블록 탐색기 URL"
@@ -251,8 +383,20 @@
   "buildContactList": {
     "message": "연락처 목록 작성하기"
   },
+  "builtAroundTheWorld": {
+    "message": "메타마스크는 전 세계적으로 설계 및 구축되었습니다."
+  },
+  "busy": {
+    "message": "바쁨"
+  },
   "buy": {
     "message": "구매"
+  },
+  "buyWithTransak": {
+    "message": "Transak으로 ETH 구매"
+  },
+  "buyWithTransakDescription": {
+    "message": "Transak은 59개 이상의 국가에서 직불 카드 및 은행 송금(지역에 따라 다름)을 지원합니다. ETH는 메타마스크 계정에 예치됩니다."
   },
   "buyWithWyre": {
     "message": "Wyre로 ETH 구매"
@@ -268,6 +412,15 @@
   },
   "cancel": {
     "message": "취소"
+  },
+  "cancelEdit": {
+    "message": "편집 취소"
+  },
+  "cancelPopoverTitle": {
+    "message": "거래 취소"
+  },
+  "cancelSpeedUp": {
+    "message": "거래 취소 또는 속도 향상"
   },
   "cancellationGasFee": {
     "message": "취소 Gas 수수료"
@@ -287,6 +440,10 @@
   "chromeRequiredForHardwareWallets": {
     "message": "하드웨어 지갑에 연결하려면 Google Chrome에서 MetaMask를 사용해야 합니다."
   },
+  "clickToConnectLedgerViaWebHID": {
+    "message": "WebHID를 통해 원장을 연결하려면 여기를 클릭하세요.",
+    "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
+  },
   "clickToRevealSeed": {
     "message": "비밀 단어를 표시하려면 여기를 클릭하세요."
   },
@@ -298,6 +455,9 @@
   },
   "confirmPassword": {
     "message": "암호 확인"
+  },
+  "confirmRecoveryPhrase": {
+    "message": "비밀 복구 문구 확인"
   },
   "confirmSecretBackupPhrase": {
     "message": "비밀 백업 구문 확인"
@@ -406,11 +566,17 @@
   "continue": {
     "message": "계속"
   },
+  "continueToTransak": {
+    "message": "Transak으로 계속"
+  },
   "continueToWyre": {
     "message": "Wyre로 넘어가기"
   },
   "contract": {
     "message": "계약"
+  },
+  "contractAddress": {
+    "message": "계약 주소"
   },
   "contractAddressError": {
     "message": "토큰의 계약 주소로 토큰을 보냅니다. 이로 인해 토큰이 손실될 수 있습니다."
@@ -430,6 +596,9 @@
   "copyPrivateKey": {
     "message": "귀하의 비공개 키입니다(클릭하여 복사)"
   },
+  "copyRawTransactionData": {
+    "message": "RawTransaction 데이터 복사"
+  },
   "copyToClipboard": {
     "message": "클립보드에 복사"
   },
@@ -444,6 +613,9 @@
   },
   "createAccount": {
     "message": "계정 생성"
+  },
+  "createNewWallet": {
+    "message": "새 지갑 생성"
   },
   "createPassword": {
     "message": "암호 생성"
@@ -466,8 +638,21 @@
   "currentLanguage": {
     "message": "현재 언어"
   },
+  "currentTitle": {
+    "message": "현재:"
+  },
+  "currentlyUnavailable": {
+    "message": "이 네트워크에서 사용할 수 없음"
+  },
+  "custom": {
+    "message": "고급"
+  },
   "customGas": {
     "message": "Gas 맞춤화"
+  },
+  "customGasSettingToolTipMessage": {
+    "message": "$1을(를) 사용하여 가스 가격을 맞춤설정하세요. 익숙하지 않은 경우 혼동될 수 있습니다. 자신의 책임하에 상호 작용하세요.",
+    "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
   },
   "customGasSubTitle": {
     "message": "수수료를 올리면 처리 시간이 단축되기도 하지만 항상 그렇지는 않습니다."
@@ -478,8 +663,28 @@
   "customToken": {
     "message": "맞춤형 토큰"
   },
+  "dappSuggested": {
+    "message": "제안 사이트"
+  },
+  "dappSuggestedGasSettingToolTipMessage": {
+    "message": "$1에서 이 가격을 제안했습니다.",
+    "description": "$1 is url for the dapp that has suggested gas settings"
+  },
+  "dappSuggestedShortLabel": {
+    "message": "사이트"
+  },
+  "dappSuggestedTooltip": {
+    "message": "$1에서 이 가격을 추천했습니다.",
+    "description": "$1 represents the Dapp's origin"
+  },
+  "data": {
+    "message": "데이터"
+  },
   "dataBackupFoundInfo": {
     "message": "일부 계정 데이터가 이전의 MetaMask 설치 도중에 백업되었습니다. 여기에는 설정, 연락처, 토큰이 포함될 수 있습니다. 지금 이 데이터를 복구하시겠어요?"
+  },
+  "dataHex": {
+    "message": "Hex"
   },
   "decimal": {
     "message": "토큰 십진수"
@@ -521,6 +726,9 @@
   },
   "depositEther": {
     "message": "Ether 예치"
+  },
+  "description": {
+    "message": "설명"
   },
   "details": {
     "message": "세부 정보"
@@ -579,8 +787,130 @@
   "edit": {
     "message": "편집"
   },
+  "editANickname": {
+    "message": "별명 편집"
+  },
+  "editAddressNickname": {
+    "message": "주소 별명 편집"
+  },
   "editContact": {
     "message": "연락처 편집"
+  },
+  "editGasEducationButtonText": {
+    "message": "어떻게 선택해야 하나요?"
+  },
+  "editGasEducationHighExplanation": {
+    "message": "이것은 성공적인 거래의 가능성을 증가시키기 때문에 시간에 민감한 거래(스왑과 같은)에 가장 적합합니다. 스왑을 처리하는 데 시간이 너무 오래 걸리면 실패하고 가스 요금의 일부를 잃을 수 있습니다."
+  },
+  "editGasEducationLowExplanation": {
+    "message": "처리 시간이 덜 중요할 때만 더 낮은 가스 요금을 사용해야 합니다. 요금이 낮으면 거래가 성공할 때(또는 성공할 경우)를 예측하기 어렵습니다."
+  },
+  "editGasEducationMediumExplanation": {
+    "message": "중간 가스 요금은 송금, 인출 또는 기타 시간에 민감한 거래에 적합합니다. 이 설정은 대부분 성공적인 거래로 이어집니다."
+  },
+  "editGasEducationModalIntro": {
+    "message": "적절한 가스 요금을 선택하는 것은 거래 유형과 이것이 귀하에게 얼마나 중요한지에 따라 다릅니다."
+  },
+  "editGasEducationModalTitle": {
+    "message": "어떻게 선택하나요?"
+  },
+  "editGasFeeModalTitle": {
+    "message": "가스 요금 편집"
+  },
+  "editGasHigh": {
+    "message": "높음"
+  },
+  "editGasLimitOutOfBounds": {
+    "message": "가스 최소 한도는 $1입니다."
+  },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "가스 한도는 $1보다 크고 $2 미만이어야 합니다.",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
+  "editGasLimitTooltip": {
+    "message": "가스 한도는 사용하려는 가스의 최대 단위입니다. 가스 단위는 \"최대 우선 요금\" 및 \"최대 요금\"의 승수입니다."
+  },
+  "editGasLow": {
+    "message": "낮음"
+  },
+  "editGasMaxBaseFeeGWEIImbalance": {
+    "message": "최대 기본 요금은 우선 요금보다 낮을 수 없습니다."
+  },
+  "editGasMaxBaseFeeHigh": {
+    "message": "최대 기본 요금이 필요 이상으로 높습니다."
+  },
+  "editGasMaxBaseFeeLow": {
+    "message": "최대 기본 요금이 현재 네트워크 조건에 비해 낮습니다."
+  },
+  "editGasMaxBaseFeeMultiplierImbalance": {
+    "message": "승수가 우선 요금에 비해 낮습니다."
+  },
+  "editGasMaxFeeHigh": {
+    "message": "최대 요금이 필요 이상으로 높습니다."
+  },
+  "editGasMaxFeeLow": {
+    "message": "최대 요금이 네트워크 조건에 비해 너무 낮습니다."
+  },
+  "editGasMaxFeePriorityImbalance": {
+    "message": "최대 요금은 최대 우선 요금보다 낮을 수 없습니다."
+  },
+  "editGasMaxFeeTooltip": {
+    "message": "최대 요금은 지급할 최대 금액입니다(기본 요금 + 우선 요금)."
+  },
+  "editGasMaxPriorityFeeBelowMinimum": {
+    "message": "최대 우선 요금은 0GWEI보다 커야 합니다."
+  },
+  "editGasMaxPriorityFeeBelowMinimumV2": {
+    "message": "우선 요금은 0보다 커야 합니다."
+  },
+  "editGasMaxPriorityFeeHigh": {
+    "message": "최대 우선 요금이 필요 이상으로 높습니다. 필요 이상으로 지급될 수 있습니다."
+  },
+  "editGasMaxPriorityFeeHighV2": {
+    "message": "우선 요금이 필요 이상으로 높습니다. 필요 이상으로 지급될 수 있습니다"
+  },
+  "editGasMaxPriorityFeeLow": {
+    "message": "최대 우선 요금이 현재 네트워크 조건에 비해 낮습니다."
+  },
+  "editGasMaxPriorityFeeLowV2": {
+    "message": "우선 요금이 현재 네트워크 조건에 비해 낮습니다."
+  },
+  "editGasMaxPriorityFeeTooltip": {
+    "message": "최대 우선 요금(일명 \"채굴자 팁\")은 채굴자에게 직접 전달되며 거래의 우선 순위를 정하도록 장려합니다. 대부분의 경우 최대 설정값을 지급합니다."
+  },
+  "editGasMedium": {
+    "message": "중간"
+  },
+  "editGasPriceTooLow": {
+    "message": "가스 가격은 0보다 커야 합니다."
+  },
+  "editGasPriceTooltip": {
+    "message": "이 네트워크는 거래를 제출할 때 \"가스 가격\" 필드가 필요합니다. 가스 가격은 가스 단위당 지급할 금액입니다."
+  },
+  "editGasSubTextAmountLabel": {
+    "message": "최대 금액:",
+    "description": "This is meant to be used as the $1 substitution editGasSubTextAmount"
+  },
+  "editGasSubTextFeeLabel": {
+    "message": "최대 요금"
+  },
+  "editGasTitle": {
+    "message": "우선 순위 편집"
+  },
+  "editGasTooLow": {
+    "message": "알 수 없는 처리 시간"
+  },
+  "editGasTooLowTooltip": {
+    "message": "귀하의 최대 요금 또는 최대 우선 요금은 현재 시장 상황에 비해 낮은 것 같습니다. 귀하의 거래가 언제 진행(또는 처리)되는지 알 수 없습니다."
+  },
+  "editGasTooLowWarningTooltip": {
+    "message": "이렇게 하면 최대 요금이 낮아지지만 네트워크 트래픽이 증가하여 거래가 지연되거나 실패할 수 있습니다."
+  },
+  "editInGwei": {
+    "message": "GWEI에서 편집"
+  },
+  "editInMultiplier": {
+    "message": "승수에서 편집"
   },
   "editNonceField": {
     "message": "임시값 편집"
@@ -590,6 +920,22 @@
   },
   "editPermission": {
     "message": "권한 편집"
+  },
+  "enableAutoDetect": {
+    "message": " 자동 감지 활성화"
+  },
+  "enableFromSettings": {
+    "message": " 설정에서 이 기능을 활성화합니다."
+  },
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API 활성화"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
+  },
+  "enableToken": {
+    "message": "$1 활성화",
+    "description": "$1 is a token symbol, e.g. ETH"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1에서 귀하의 공개 암호화 키를 요구합니다. 동의를 받으면 이 사이트에서 암호화된 메시지를 작성하여 귀하에게 전송할 수 있습니다.",
@@ -633,11 +979,20 @@
     "message": "엔드포인트에서 다른 체인 ID를 반환했습니다. $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
+  "ensIllegalCharacter": {
+    "message": "ENS에 맞지 않는 문자입니다."
+  },
   "ensNotFoundOnCurrentNetwork": {
     "message": "현재 네트워크에서 ENS 이름을 찾을 수 없습니다. 이더리움 메인넷으로 전환해 보세요."
   },
+  "ensNotSupportedOnNetwork": {
+    "message": "네트워크가 ENS를 지원하지 않습니다."
+  },
   "ensRegistrationError": {
     "message": "ENS 이름 등록 중 오류 발생"
+  },
+  "ensUnknownError": {
+    "message": "ENS를 조회하지 못했습니다."
   },
   "enterAnAlias": {
     "message": "별칭 입력"
@@ -702,8 +1057,17 @@
   "etherscanView": {
     "message": "Etherscan에서 계정 보기"
   },
+  "etherscanViewOn": {
+    "message": "Etherscan에서 보기"
+  },
   "expandView": {
     "message": "보기 확장"
+  },
+  "experimental": {
+    "message": "실험적"
+  },
+  "experimentalSettingsDescription": {
+    "message": "토큰 감지 및 기타"
   },
   "exportPrivateKey": {
     "message": "비공개 키 내보내기"
@@ -724,6 +1088,9 @@
   "failureMessage": {
     "message": "문제가 발생했습니다. 작업을 완료할 수 없습니다."
   },
+  "fakeTokenWarning": {
+    "message": "기존 토큰의 가짜 버전 생성을 포함하여 누구나 토큰을 생성할 수 있습니다. $1에 대해 자세히 알아보기"
+  },
   "fast": {
     "message": "빠름"
   },
@@ -740,6 +1107,36 @@
   "fileImportFail": {
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
+  },
+  "flaskExperimentalText1": {
+    "message": "Flask를 사용하면 자금 손실 위험이 크게 증가할 수 있습니다."
+  },
+  "flaskExperimentalText2": {
+    "message": "신뢰할 수 없는 Snap을 설치하는 데 사용하는 경우"
+  },
+  "flaskExperimentalText3": {
+    "message": "변경을 승인하기 전에 확인을 검토하지 않는 경우"
+  },
+  "flaskExperimentalText4": {
+    "message": "익숙하지 않은 스마트 계약과 상호 작용하는 경우"
+  },
+  "flaskExperimentalText5": {
+    "message": "Flask를 사용하면 메타마스크의 기능을 사용하는 데 있어 훨씬 더 큰 재량권을 갖게 되며 그 재량권은 사용자의 몫입니다. 이러한 위험과 지갑의 안전에 대한 추가 책임을 받아들이십니까?"
+  },
+  "flaskSnapSettingsCardButtonCta": {
+    "message": "세부 정보 보기",
+    "description": "Call to action a user can take to see more information about the Snap that is installed"
+  },
+  "flaskSnapSettingsCardDateAddedOn": {
+    "message": "추가하기",
+    "description": "Start of the sentence describing when and where snap was added"
+  },
+  "flaskSnapSettingsCardFrom": {
+    "message": "발신",
+    "description": "Part of the sentence describing when and where snap was added"
+  },
+  "followUsOnTwitter": {
+    "message": "트위터에서 저희를 팔로우하세요."
   },
   "forbiddenIpfsGateway": {
     "message": "금지된 IPFS 게이트웨이: CID 게이트웨이를 지정하세요."
@@ -760,6 +1157,16 @@
   "functionType": {
     "message": "기능 유형"
   },
+  "gasDisplayAcknowledgeDappButtonText": {
+    "message": "제안된 가스 요금 편집"
+  },
+  "gasDisplayDappWarning": {
+    "message": "이 가스 요금은 $1에서 제안했습니다. 이를 무시하면 거래에 문제가 발생할 수 있습니다. 질문이 있는 경우 $1에 문의하세요.",
+    "description": "$1 represents the Dapp's origin"
+  },
+  "gasEstimatesUnavailableWarning": {
+    "message": "당사의 낮은, 중간 및 높은 견적을 사용할 수 없습니다."
+  },
   "gasLimit": {
     "message": "Gas 한도"
   },
@@ -772,6 +1179,12 @@
   "gasLimitTooLowWithDynamicFee": {
     "message": "Gas 한도는 $1 이상이어야 합니다.",
     "description": "$1 is the custom gas limit, in decimal."
+  },
+  "gasLimitV2": {
+    "message": "가스 한도"
+  },
+  "gasOption": {
+    "message": "가스 옵션"
   },
   "gasPrice": {
     "message": "Gas 가격(GWEI)"
@@ -790,6 +1203,38 @@
   },
   "gasPriceInfoTooltipContent": {
     "message": "Gas 가격은 각 Gas 단위에 대해 지불할 Ether 금액을 지정합니다."
+  },
+  "gasTimingHoursShort": {
+    "message": "$1 시간",
+    "description": "$1 represents a number of hours"
+  },
+  "gasTimingMinutes": {
+    "message": "$1 분",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingMinutesShort": {
+    "message": "$1 분",
+    "description": "$1 represents a number of minutes"
+  },
+  "gasTimingNegative": {
+    "message": "약 $1 후",
+    "description": "$1 represents an amount of time"
+  },
+  "gasTimingPositive": {
+    "message": "아마도 < $1 후",
+    "description": "$1 represents an amount of time"
+  },
+  "gasTimingSeconds": {
+    "message": "$1 초",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingSecondsShort": {
+    "message": "$1 초",
+    "description": "$1 represents a number of seconds"
+  },
+  "gasTimingVeryPositive": {
+    "message": "거의 < $1 후",
+    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "사용한 Gas"
@@ -818,8 +1263,14 @@
   "getStarted": {
     "message": "시작하기"
   },
+  "goBack": {
+    "message": "되돌아가기"
+  },
   "goerli": {
     "message": "Goerli 테스트 네트워크"
+  },
+  "grantedToWithColon": {
+    "message": "부여 대상:"
   },
   "happyToSeeYou": {
     "message": "반갑습니다."
@@ -863,8 +1314,24 @@
   "hideZeroBalanceTokens": {
     "message": "잔액이 없는 토큰 숨기기"
   },
+  "high": {
+    "message": "공격적"
+  },
+  "highGasSettingToolTipDialog": {
+    "message": "변동성이 큰 시장에서도 높은 확률"
+  },
+  "highGasSettingToolTipMessage": {
+    "message": "인기 있는 NFT의 하락 등으로 인한 네트워크 트래픽 급증을 커버하려면 $1을 사용하세요.",
+    "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
+  },
+  "highLowercase": {
+    "message": "높음"
+  },
   "history": {
     "message": "기록"
+  },
+  "id": {
+    "message": "ID"
   },
   "import": {
     "message": "가져오기",
@@ -872,6 +1339,9 @@
   },
   "importAccount": {
     "message": "계정 가져오기"
+  },
+  "importAccountError": {
+    "message": "계정 가져오기 오류"
   },
   "importAccountLinkText": {
     "message": "비밀 복구 구문을 사용해 가져오기"
@@ -886,11 +1356,30 @@
     "message": "또는 $1",
     "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
+  "importExistingWalletDescription": {
+    "message": "지갑을 만들 때 받은 비밀 복구 문구(시드 문구)를 입력하세요. $1",
+    "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
+  },
+  "importExistingWalletTitle": {
+    "message": "비밀 복구 문구를 사용하여 기존 지갑 가져오기"
+  },
+  "importMyWallet": {
+    "message": "내 지갑 가져오기"
+  },
+  "importNFTs": {
+    "message": "NFT 가져오기"
+  },
   "importTokenQuestion": {
     "message": "토큰을 가져오시겠어요?"
   },
   "importTokenWarning": {
     "message": "기존 토큰의 가짜 버전을 포함하여 누구나 어떤 이름으로든 토큰을 만들 수 있습니다. 추가 및 거래는 사용자의 책임입니다."
+  },
+  "importTokens": {
+    "message": "토큰 가져오기"
+  },
+  "importTokensCamelCase": {
+    "message": "토큰 가져오기"
   },
   "importWallet": {
     "message": "지갑 가져오기"
@@ -914,6 +1403,9 @@
   },
   "insufficientFunds": {
     "message": "자금이 부족합니다."
+  },
+  "insufficientFundsForGas": {
+    "message": "가스에 대한 자금 부족"
   },
   "insufficientTokens": {
     "message": "토큰이 부족합니다."
@@ -974,9 +1466,18 @@
   "ipfsGatewayDescription": {
     "message": "ENS 콘텐츠 해결에 사용할 IPFS CID 게이트웨이의 URL을 입력하세요."
   },
+  "jsDeliver": {
+    "message": "jsDeliver"
+  },
   "jsonFile": {
     "message": "JSON 파일",
     "description": "format for importing an account"
+  },
+  "keystone": {
+    "message": "Keystone"
+  },
+  "keystoneTutorial": {
+    "message": " (튜토리얼)"
   },
   "knownAddressRecipient": {
     "message": "알려진 계약 주소입니다."
@@ -990,11 +1491,56 @@
   "lastConnected": {
     "message": "마지막 연결"
   },
+  "layer1Fees": {
+    "message": "레이어 1 요금"
+  },
+  "learmMoreAboutGas": {
+    "message": "가스에 대해 $1하시겠습니까?"
+  },
+  "learnCancelSpeeedup": {
+    "message": "$1하는 방법 알아보기",
+    "description": "$1 is link to cancel or speed up transactions"
+  },
   "learnMore": {
     "message": "자세히 알아보기"
   },
+  "learnMoreUpperCase": {
+    "message": "자세히 알아보기"
+  },
+  "learnScamRisk": {
+    "message": "사기 및 보안 위험"
+  },
   "ledgerAccountRestriction": {
     "message": "새 계정을 추가하려면 먼저 마지막 계정을 사용해야 합니다."
+  },
+  "ledgerConnectionInstructionCloseOtherApps": {
+    "message": "장치에 연결된 다른 소프트웨어를 닫은 다음 여기를 클릭하여 새로 고침하세요."
+  },
+  "ledgerConnectionInstructionHeader": {
+    "message": "확인을 클릭하기 전:"
+  },
+  "ledgerConnectionInstructionStepFour": {
+    "message": "원장 장치에서 \"스마트 계약 데이터\" 또는 \"블라인드 서명\" 활성화"
+  },
+  "ledgerConnectionInstructionStepOne": {
+    "message": "설정 > 고급에서 Ledger Live 사용을 활성화하세요."
+  },
+  "ledgerConnectionInstructionStepThree": {
+    "message": "원장 장치를 연결하고 이더리움 앱을 선택하세요."
+  },
+  "ledgerConnectionInstructionStepTwo": {
+    "message": "Ledger Live 앱 열기 및 잠금 해제"
+  },
+  "ledgerConnectionPreferenceDescription": {
+    "message": "원장을 메타마스크에 연결하는 방법을 지정하세요. $1가 권장되지만 다른 옵션도 사용할 수 있습니다. 여기에서 더 알아보세요: $2",
+    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
+  },
+  "ledgerDeviceOpenFailureMessage": {
+    "message": "원장 장치를 열지 못했습니다. 귀하의 원장이 다른 소프트웨어에 연결되어 있을 수 있습니다. Ledger Live 또는 원장 장치에 연결된 다른 응용 프로그램을 닫고 다시 연결하세요."
+  },
+  "ledgerLive": {
+    "message": "Ledger Live",
+    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live 앱"
@@ -1005,11 +1551,21 @@
   "ledgerTimeout": {
     "message": "Ledger Live의 응답 시간이 너무 길거나 연결 시간을 초과하였습니다. Ledger Live 앱이 열려 있고 장치의 잠금이 해제되어 있는지 확인하세요."
   },
+  "ledgerTransportChangeWarning": {
+    "message": "Ledger Live 앱이 열려 있으면 열려 있는 Ledger Live 연결을 끊고 Ledger Live 앱을 닫으세요."
+  },
+  "ledgerWebHIDNotConnectedErrorMessage": {
+    "message": "원장 장치가 연결되지 않았습니다. 원장을 연결하려면 '계속'을 다시 클릭하고 HID 연결을 승인하세요.",
+    "description": "An error message shown to the user during the hardware connect flow."
+  },
   "letsGoSetUp": {
     "message": "설정을 시작하죠!"
   },
   "likeToImportTokens": {
     "message": "이 토큰을 추가하시겠어요?"
+  },
+  "link": {
+    "message": "링크"
   },
   "links": {
     "message": "링크"
@@ -1032,14 +1588,47 @@
   "lockTimeTooGreat": {
     "message": "잠금 시간이 너무 깁니다."
   },
+  "low": {
+    "message": "낮음"
+  },
+  "lowGasSettingToolTipMessage": {
+    "message": "$1을(를) 사용하고 더 저렴한 가격을 기다리세요. 시간 추정치는 가격을 다소 예측할 수 없기 때문에 훨씬 덜 정확합니다.",
+    "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
+  },
+  "lowLowercase": {
+    "message": "낮음"
+  },
+  "lowPriorityMessage": {
+    "message": "향후 거래는 이 거래 이후에 대기열에 추가됩니다. 이 가격은 얼마 전에 마지막으로 확인되었습니다."
+  },
   "mainnet": {
     "message": "이더리움 메인넷"
   },
   "makeAnotherSwap": {
     "message": "새 스왑 생성"
   },
+  "makeSureNoOneWatching": {
+    "message": "귀하의 화면을 보고 있는 사람이 없는지 확인하세요.",
+    "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
+  },
   "max": {
     "message": "최대"
+  },
+  "maxBaseFee": {
+    "message": "최대 기본 요금"
+  },
+  "maxFee": {
+    "message": "최대 요금"
+  },
+  "maxPriorityFee": {
+    "message": "최대 우선 요금"
+  },
+  "medium": {
+    "message": "시장"
+  },
+  "mediumGasSettingToolTipMessage": {
+    "message": "현재 시장 가격으로 빠르게 처리할 수 있도록 $1을(를) 사용하세요.",
+    "description": "$1 is key 'medium' (text: 'Market') separated here so that it can be passed in with bold fontweight"
   },
   "memo": {
     "message": "메모"
@@ -1071,12 +1660,18 @@
   "metametricsCommitmentsAllowOptOut": {
     "message": "언제든 설정을 통해 옵트아웃할 수 있습니다."
   },
+  "metametricsCommitmentsAllowOptOut2": {
+    "message": "언제든 설정을 통해 옵트아웃할 수 있습니다."
+  },
   "metametricsCommitmentsBoldNever": {
     "message": "안 함",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
     "message": "MetaMask에서는.."
+  },
+  "metametricsCommitmentsNeverCollect": {
+    "message": "키, 주소, 거래, 잔액, 해시 또는 개인 정보를 절대 수집하지 않습니다."
   },
   "metametricsCommitmentsNeverCollectIP": {
     "message": "전체 IP 주소를 절대 수집하지 않습니다.",
@@ -1085,6 +1680,12 @@
   "metametricsCommitmentsNeverCollectKeysEtc": {
     "message": "키, 주소, 거래, 잔액, 해시 또는 개인 정보를 절대 수집하지 않습니다.",
     "description": "The $1 is the bolded word 'Never', from 'metametricsCommitmentsBoldNever'"
+  },
+  "metametricsCommitmentsNeverIP": {
+    "message": "전체 IP 주소를 절대 수집하지 않습니다."
+  },
+  "metametricsCommitmentsNeverSell": {
+    "message": "수익을 위해 데이터를 절대 판매하지 않습니다. 결코 그렇지 않습니다."
   },
   "metametricsCommitmentsNeverSellDataForProfit": {
     "message": "수익을 위해 데이터를 절대 판매하지 않습니다. 결코 그렇습니다.",
@@ -1099,6 +1700,12 @@
   "metametricsOptInDescription": {
     "message": "MetaMask는 사용자가 확장 프로그램과 상호작용하는 방식을 자세히 이해하기 위해 사용 데이터를 수집하려 합니다. 이 데이터는 당사의 제품과 이더리움 에코시스템의 사용 편의성 및 사용자 경험을 지속적으로 개선하는 데 사용됩니다."
   },
+  "metametricsOptInDescription2": {
+    "message": "당사 제품의 가용성 향상을 위해 기본적인 사용 데이터를 수집하고자 합니다. 이 측정항목은..."
+  },
+  "metametricsTitle": {
+    "message": "6백만 명 이상의 사용자와 함께 메타마스크 개선에 동참하세요."
+  },
   "mismatchedChain": {
     "message": "이 체인 ID의 네트워크 세부 정보가 기록과 일치하지 않습니다. 진행하기 전에 $1을(를) 권장합니다.",
     "description": "$1 is a clickable link with text defined by the 'mismatchedChainLinkText' key"
@@ -1106,6 +1713,18 @@
   "mismatchedChainLinkText": {
     "message": "네트워크 세부 정보 검증",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
+  },
+  "missingNFT": {
+    "message": "NFT가 보이지 않나요?"
+  },
+  "missingToken": {
+    "message": "토큰이 보이지 않나요?"
+  },
+  "mobileSyncWarning": {
+    "message": "'확장 프로그램과 동기화' 기능이 일시적으로 비활성화됩니다. 메타마스크 모바일에서 확장 지갑을 사용하려면 모바일 앱에서 지갑 설정 옵션으로 돌아가 '비밀 백업 문구 가져오기' 옵션을 선택하세요. 확장 지갑의 비밀 문구를 사용하여 지갑을 모바일로 가져올 수 있습니다."
+  },
+  "multiplier": {
+    "message": "승수"
   },
   "mustSelectOne": {
     "message": "토큰을 1개 이상 선택해야 합니다."
@@ -1123,8 +1742,14 @@
     "message": "도움이 필요하신가요? $1에 문의하세요.",
     "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
   },
+  "needHelpFeedback": {
+    "message": "피드백을 공유하세요."
+  },
   "needHelpLinkText": {
     "message": "MetaMask 지원"
+  },
+  "needHelpSubmitTicket": {
+    "message": "티켓 제출"
   },
   "needImportFile": {
     "message": "가져올 파일을 선택해야 합니다.",
@@ -1148,6 +1773,12 @@
   "networkNameEthereum": {
     "message": "이더리움"
   },
+  "networkNamePolygon": {
+    "message": "Polygon"
+  },
+  "networkNameRinkeby": {
+    "message": "Rinkeby"
+  },
   "networkNameTestnet": {
     "message": "테스트넷"
   },
@@ -1156,6 +1787,20 @@
   },
   "networkSettingsDescription": {
     "message": "맞춤형 RPC 네트워크 추가 및 편집"
+  },
+  "networkStatus": {
+    "message": "네트워크 상태"
+  },
+  "networkStatusBaseFeeTooltip": {
+    "message": "기본 요금은 네트워크에 의해 설정되며 13-14초마다 변경됩니다. 당사의 $1 및 $2 옵션이 갑작스러운 증가를 설명해줍니다.",
+    "description": "$1 and $2 are bold text for Medium and Aggressive respectively."
+  },
+  "networkStatusPriorityFeeTooltip": {
+    "message": "우선 요금의 범위(일명 \"채굴자 팁\"). 이것은 채굴자에게 전달되어 거래의 우선 순위를 정하도록 장려합니다."
+  },
+  "networkStatusStabilityFeeTooltip": {
+    "message": "가스 요금이 지난 72시간에 비해 $1입니다.",
+    "description": "$1 is networks stability value - stable, low, high"
   },
   "networkURL": {
     "message": "네트워크 URL"
@@ -1179,11 +1824,26 @@
     "message": "계정 $1",
     "description": "Default name of next account to be created on create account screen"
   },
+  "newCollectibleAddFailed": {
+    "message": "다음 이유 때문에 수집 금액이 추가되지 않았습니다: $1"
+  },
+  "newCollectibleAddedMessage": {
+    "message": "수집이 성공적으로 추가되었습니다!"
+  },
   "newContact": {
     "message": "새 연락처"
   },
   "newContract": {
     "message": "새 계약"
+  },
+  "newNFTsDetected": {
+    "message": "신규! NFT 감지"
+  },
+  "newNFTsDetectedInfo": {
+    "message": "메타마스크가 Opensea에서 자동으로 NFT를 감지하고 메타마스크 지갑에 표시하도록 허용합니다."
+  },
+  "newNetworkAdded": {
+    "message": "“$1”가 성공적으로 추가되었습니다!"
   },
   "newPassword": {
     "message": "새 암호(8자 이상)"
@@ -1197,12 +1857,24 @@
   "newTransactionFee": {
     "message": "새 거래 수수료"
   },
+  "newValues": {
+    "message": "새로운 가치"
+  },
   "next": {
     "message": "다음"
   },
   "nextNonceWarning": {
     "message": "임시값이 추천 임시값($1)보다 큽니다.",
     "description": "The next nonce according to MetaMask's internal logic"
+  },
+  "nftTokenIdPlaceholder": {
+    "message": "수집 가능한 ID를 입력하세요."
+  },
+  "nfts": {
+    "message": "NFT"
+  },
+  "nickname": {
+    "message": "별명"
   },
   "noAccountsFound": {
     "message": "검색어에 해당하는 계정이 없습니다."
@@ -1213,8 +1885,14 @@
   "noAlreadyHaveSeed": {
     "message": "아니요. 이미 비밀 복구 구문이 있습니다."
   },
+  "noConversionDateAvailable": {
+    "message": "사용 가능한 통화 변환 날짜 없음"
+  },
   "noConversionRateAvailable": {
     "message": "사용 가능한 전환율이 없음"
+  },
+  "noNFTs": {
+    "message": "아직 NFT가 없음"
   },
   "noThanks": {
     "message": "괜찮습니다"
@@ -1239,6 +1917,9 @@
   },
   "nonceFieldHeading": {
     "message": "맞춤형 임시값"
+  },
+  "notBusy": {
+    "message": "바쁘지 않음"
   },
   "notCurrentAccount": {
     "message": "올바른 계정인가요? 현재 지갑에서 선택된 계정과 다릅니다."
@@ -1298,6 +1979,43 @@
     "message": "Chrome 사용자용 Ledger 지원 업데이트",
     "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
   },
+  "notifications7DescriptionOne": {
+    "message": "메타마스크 v10.1.0에는 원장 장치를 사용할 때 EIP-1559 거래을 위한 새로운 지원이 포함되었습니다.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes changes for ledger and EIP1559 in v10.1.0"
+  },
+  "notifications7DescriptionTwo": {
+    "message": "Ethereum Mainnet에서 거래를 완료하려면 원장 장치에 최신 펌웨어가 있는지 확인하세요.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the need to update ledger firmware."
+  },
+  "notifications7Title": {
+    "message": "원장 폄웨어 업데이트",
+    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users of the need to update firmware."
+  },
+  "notifications8ActionText": {
+    "message": "고급 설정으로 이동하기",
+    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced Settings page."
+  },
+  "notifications8DescriptionOne": {
+    "message": "메타마스크 v10.4.0부터는 더 이상 원장 장치를 메타마스크에 연결하기 위해 Ledger Live를 사용하지 않아도 됩니다.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
+  },
+  "notifications8DescriptionTwo": {
+    "message": "더 쉽고 안정적인 원장 경험을 위해 설정의 고급 탭으로 이동하여 '선호하는 원장 연결 유형'을 'WebHID'로 전환하세요.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
+  },
+  "notifications8Title": {
+    "message": "원장 연결 개선 사항",
+    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
+  },
+  "notifications9DescriptionOne": {
+    "message": "이제 스마트 계약 거래를 확인할 때 '데이터' 탭에서 더 많은 통찰력을 얻을 수 있습니다."
+  },
+  "notifications9DescriptionTwo": {
+    "message": "이제 확인하기 전에 거래 세부 정보를 더 잘 이해할 수 있고 주소록에 거래 주소를 더 쉽게 추가할 수 있어 안전하며 정보에 입각한 결정을 내리는 데 도움이 됩니다."
+  },
+  "notifications9Title": {
+    "message": "👓 당사는 거래를 이해하기 쉽게 도와드립니다."
+  },
   "ofTextNofM": {
     "message": "/"
   },
@@ -1313,15 +2031,78 @@
   "on": {
     "message": "켜기"
   },
+  "onboardingCreateWallet": {
+    "message": "새 지갑 생성"
+  },
+  "onboardingImportWallet": {
+    "message": "기존 지갑 가져오기"
+  },
+  "onboardingPinExtensionBillboardAccess": {
+    "message": "전체 액세스"
+  },
+  "onboardingPinExtensionBillboardDescription": {
+    "message": "이 확장 프로그램은 정보를 확인하고 변경할 수 있습니다."
+  },
+  "onboardingPinExtensionBillboardDescription2": {
+    "message": "정보를 확인하고 변경할 수 있습니다."
+  },
+  "onboardingPinExtensionBillboardTitle": {
+    "message": "확장 프로그램"
+  },
+  "onboardingPinExtensionChrome": {
+    "message": "브라우저 확장 아이콘 클릭"
+  },
+  "onboardingPinExtensionDescription": {
+    "message": "쉽게 액세스하여 거래를 확인할 있도록 브라우저에 메타마스크를 고정해 놓으세요."
+  },
+  "onboardingPinExtensionDescription2": {
+    "message": "확장 프로그램을 클릭하여 메타마스크를 열고 클릭 한 번으로 지갑에 액세스할 수 있습니다."
+  },
+  "onboardingPinExtensionDescription3": {
+    "message": "브라우저 확장 아이콘을 클릭하여 즉시 액세스하세요."
+  },
+  "onboardingPinExtensionLabel": {
+    "message": "메타마스크 고정"
+  },
+  "onboardingPinExtensionStep1": {
+    "message": "1"
+  },
+  "onboardingPinExtensionStep2": {
+    "message": "2"
+  },
+  "onboardingPinExtensionTitle": {
+    "message": "메타마스크 설치가 완료되었습니다!"
+  },
   "onboardingReturnNotice": {
     "message": "\"$1\"이(가) 이 탭을 닫고 $2로 돌아갑니다.",
     "description": "Return the user to the site that initiated onboarding"
+  },
+  "onboardingShowIncomingTransactionsDescription": {
+    "message": "지갑에 들어오는 거래를 표시하려면 $1과(와)의 통신이 필요합니다. Etherscan은 이더리움 주소와 IP 주소에 액세스할 수 있습니다. $2 보기.",
+    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
+  },
+  "onboardingUsePhishingDetectionDescription": {
+    "message": "피싱 감지 경보는 $1과(와)의 통신에 의존합니다. jsDeliver는 귀하의 IP 주소에 액세스할 수 있습니다. $2 보기.",
+    "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
   "onlyAddTrustedNetworks": {
     "message": "악성 네트워크 공급업체는 블록체인 상태를 거짓으로 보고하고 네트워크 활동을 기록할 수 있습니다. 신뢰하는 맞춤형 네트워크만 추가하세요."
   },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요."
+  },
+  "openFullScreenForLedgerWebHid": {
+    "message": "WebHID를 통해 원장을 연결하려면 전체 화면에서 메타마스크를 엽니다.",
+    "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
+  },
+  "optional": {
+    "message": "선택적"
+  },
+  "optionalWithParanthesis": {
+    "message": "(선택적)"
+  },
+  "or": {
+    "message": "또는"
   },
   "origin": {
     "message": "원본"
@@ -1341,6 +2122,12 @@
   "passwordNotLongEnough": {
     "message": "암호가 짧습니다."
   },
+  "passwordSetupDetails": {
+    "message": "이 비밀번호는 이 기기에서만 메타마스크 지갑의 잠금을 해제합니다. 메타마스크는 이 비밀번호를 복구할 수 없습니다."
+  },
+  "passwordTermsWarning": {
+    "message": "메타마스크가 이 비밀번호를 복구할 수 없음을 이해합니다. $1"
+  },
   "passwordsDontMatch": {
     "message": "암호가 일치하지 않습니다."
   },
@@ -1350,6 +2137,19 @@
   },
   "pending": {
     "message": "보류 중"
+  },
+  "pendingTransactionInfo": {
+    "message": "이 거래는 다른 거래가 완료될 때까지 처리되지 않습니다."
+  },
+  "pendingTransactionMultiple": {
+    "message": "보류 중인 ($1) 거래가 있습니다."
+  },
+  "pendingTransactionSingle": {
+    "message": "보류 중인 (1) 거래가 있습니다.",
+    "description": "$1 is count of pending transactions"
+  },
+  "permissionRequest": {
+    "message": "승인 요청"
   },
   "permissions": {
     "message": "권한"
@@ -1361,6 +2161,10 @@
     "message": "+ 그 외 $1개",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
+  "preferredLedgerConnectionType": {
+    "message": "선호하는 원장 연결 유형",
+    "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+  },
   "prev": {
     "message": "이전"
   },
@@ -1369,6 +2173,12 @@
   },
   "primaryCurrencySettingDescription": {
     "message": "체인의 고유 통화(예: ETH)로 값을 우선 표시하려면 고유를 선택합니다. 선택한 명목 통화로 값을 우선 표시하려면 명목을 선택합니다."
+  },
+  "priorityFee": {
+    "message": "우선 요금"
+  },
+  "priorityFeeProperCase": {
+    "message": "우선 요금"
   },
   "privacyMsg": {
     "message": "개인정보보호정책"
@@ -1382,6 +2192,9 @@
   },
   "privateNetwork": {
     "message": "비공개 네트워크"
+  },
+  "proceedWithTransaction": {
+    "message": "어쨌든 진행하겠습니다."
   },
   "proposedApprovalLimit": {
     "message": "제안된 승인 한도"
@@ -1410,6 +2223,9 @@
   "recipientAddressPlaceholder": {
     "message": "검색, 공개 주소(0x) 또는 ENS"
   },
+  "recommendedGasLabel": {
+    "message": "권장됨"
+  },
   "recoveryPhraseReminderBackupStart": {
     "message": "여기에서 시작"
   },
@@ -1434,6 +2250,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "자금을 지키세요"
   },
+  "refreshList": {
+    "message": "새로 고침 목록"
+  },
   "reject": {
     "message": "거부"
   },
@@ -1449,6 +2268,9 @@
   "rejected": {
     "message": "거부됨"
   },
+  "remember": {
+    "message": "알림:"
+  },
   "remindMeLater": {
     "message": "나중에 알림"
   },
@@ -1460,6 +2282,9 @@
   },
   "removeAccountDescription": {
     "message": "이 계정이 지갑에서 제거됩니다. 계속하기 전에 가져온 이 계정에 대한 원본 비밀 복구 구문이나 비공개 키가 있는지 확인하세요. 계정 드롭다운에서 계정을 가져오거나 다시 만들 수 있습니다. "
+  },
+  "removeNFT": {
+    "message": "NFT 제거"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "확인 대기 중인 요청"
@@ -1549,11 +2374,32 @@
   "secretPhrase": {
     "message": "금고를 복구하려면 비밀 구문을 여기에 입력하세요."
   },
+  "secretPhraseWarning": {
+    "message": "다른 비밀 복구 문구를 사용하여 복구하면 현재 지갑, 계정 및 자산이 이 앱에서 영구적으로 제거됩니다. 이 작업은 취소할 수 없습니다."
+  },
+  "secretRecoveryPhrase": {
+    "message": "비밀 복구 문구"
+  },
+  "secureWallet": {
+    "message": "보안 지갑"
+  },
   "securityAndPrivacy": {
     "message": "보안 및 개인정보 보호"
   },
   "securitySettingsDescription": {
     "message": "개인정보 설정 및 지갑 비밀 복구 구문"
+  },
+  "seedPhraseConfirm": {
+    "message": "비밀 복구 문구 확인"
+  },
+  "seedPhraseEnterMissingWords": {
+    "message": "비밀 북구 문구 확인"
+  },
+  "seedPhraseIntroNotRecommendedButtonCopy": {
+    "message": "나중에 알림(권장하지 않음)"
+  },
+  "seedPhraseIntroRecommendedButtonCopy": {
+    "message": "내 지갑 보호(권장)"
   },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "적어서 여러 비밀 장소에 보관하세요."
@@ -1600,6 +2446,12 @@
   "seedPhraseReq": {
     "message": "비밀 복구 구문은 12, 15, 18, 21 또는 24개의 단어를 포함합니다."
   },
+  "seedPhraseWriteDownDetails": {
+    "message": "이 12단어 비밀 복구 문구를 기록하고 귀하만 접근 가능한 믿을 만한 장소에 저장하세요."
+  },
+  "seedPhraseWriteDownHeader": {
+    "message": "비밀 복구 문구 기록"
+  },
   "selectAHigherGasFee": {
     "message": "높은 Gas 수수료를 선택하면 거래 처리 속도를 높일 수 있습니다.*"
   },
@@ -1621,6 +2473,9 @@
   "selectHdPath": {
     "message": "HD 경로 선택"
   },
+  "selectNFTPrivacyPreference": {
+    "message": "설정에서 NFT 감지 켜기"
+  },
   "selectPathHelp": {
     "message": "아래에 기존 Ledger 계정이 표시되지 않는다면 경로를 \"Legacy (MEW / MyCrypto)\"로 변경해 보세요."
   },
@@ -1640,14 +2495,30 @@
     "message": "$1 보내기",
     "description": "Symbol of the specified token"
   },
+  "sendTo": {
+    "message": "보내기 대상"
+  },
   "sendTokens": {
     "message": "토큰 보내기"
+  },
+  "sendingNativeAsset": {
+    "message": "$1 보내기",
+    "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
   "separateEachWord": {
     "message": "공백 한 칸으로 각 단어를 구분하세요."
   },
+  "setAdvancedPrivacySettings": {
+    "message": "개인정보 설정 고급 지정"
+  },
+  "setAdvancedPrivacySettingsDetails": {
+    "message": "메타마스크는 이러한 신뢰할 수 있는 타사 서비스를 사용하여 제품 가용성과 안전성을 향상합니다."
+  },
   "settings": {
     "message": "설정"
+  },
+  "show": {
+    "message": "보기"
   },
   "showAdvancedGasInline": {
     "message": "고급 Gas 제어 기능"
@@ -1667,6 +2538,9 @@
   "showHexDataDescription": {
     "message": "이 항목을 선택하면 보내기 화면에 16진수 데이터 필드가 표시됩니다."
   },
+  "showHide": {
+    "message": "보기/숨기기"
+  },
   "showIncomingTransactions": {
     "message": "수신 거래 표시"
   },
@@ -1679,8 +2553,17 @@
   "showPrivateKeys": {
     "message": "비공개 키 표시"
   },
+  "showRecommendations": {
+    "message": "추천 보기"
+  },
   "showSeedPhrase": {
     "message": "비밀 복구 구문 표시"
+  },
+  "showTestnetNetworks": {
+    "message": "테스트 네트워크 보기"
+  },
+  "showTestnetNetworksDescription": {
+    "message": "네트워크 목록에서 표시하려는 테스트 네트워크를 선택하세요."
   },
   "sigRequest": {
     "message": "서명 요청"
@@ -1700,17 +2583,44 @@
   "signed": {
     "message": "서명됨"
   },
+  "simulationErrorMessage": {
+    "message": "이 거래는 실패할 것으로 예상됩니다. 실행하려면 비용이 많이 들지만 실패할 것으로 예상되어 권장하지 않습니다."
+  },
+  "simulationErrorMessageV2": {
+    "message": "가스를 추정할 수 없었습니다. 계약에 오류가 있을 수 있으며 이 거래가 실패할 수 있습니다."
+  },
+  "skip": {
+    "message": "건너뛰기"
+  },
+  "skipAccountSecurity": {
+    "message": "계정 보안을 건너뛸까요?"
+  },
+  "skipAccountSecurityDetails": {
+    "message": "나는 내 비밀 복구 문구를 백업할 때까지 내 계정과 모든 자산을 잃을 수 있음을 이해합니다."
+  },
   "slow": {
     "message": "느림"
   },
   "somethingWentWrong": {
     "message": "이런! 문제가 발생했습니다."
   },
+  "source": {
+    "message": "소스"
+  },
   "speedUp": {
     "message": "가속화"
   },
   "speedUpCancellation": {
     "message": "이 취소 가속화"
+  },
+  "speedUpExplanation": {
+    "message": "현재 네트워크 상태를 기반으로 가스 요금을 업데이트하고 최소 10% 인상했습니다(네트워크에서 요구함)."
+  },
+  "speedUpPopoverTitle": {
+    "message": "거래 가속화"
+  },
+  "speedUpTooltipText": {
+    "message": "새로운 가스 요금"
   },
   "speedUpTransaction": {
     "message": "이 거래 가속화"
@@ -1734,6 +2644,12 @@
   "spendLimitTooLarge": {
     "message": "지출 한도가 너무 큼"
   },
+  "stable": {
+    "message": "안정적"
+  },
+  "stableLowercase": {
+    "message": "안정적"
+  },
   "stateLogError": {
     "message": "상태 로그를 가져오는 도중 오류가 발생했습니다."
   },
@@ -1751,6 +2667,13 @@
   },
   "statusNotConnected": {
     "message": "연결되지 않음"
+  },
+  "step1LatticeWallet": {
+    "message": "Lattice1을 연결할 준비가 되었는지 확인하세요."
+  },
+  "step1LatticeWalletMsg": {
+    "message": "Lattice1 장치가 설정되고 온라인 상태가 되면 메타마스크를 연결할 수 있습니다. 장치의 잠금을 해제하고 장치 ID를 준비하세요. 하드웨어 지갑 사용에 대한 자세한 내용은, $1",
+    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
     "message": "Ledger 앱 다운로드"
@@ -1815,6 +2738,10 @@
     "message": "이 스왑을 완료하려면 $1개의 추가 $2이(가) 필요합니다.",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
+  "swapBestOfNQuotes": {
+    "message": "$1의 최고 견적",
+    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
+  },
   "swapBuildQuotePlaceHolderText": {
     "message": "$1와(과) 일치하는 토큰이 없습니다.",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1834,12 +2761,19 @@
   "swapDecentralizedExchange": {
     "message": "분산형 교환"
   },
+  "swapDirectContract": {
+    "message": "직접 계약"
+  },
   "swapEditLimit": {
     "message": "한도 편집"
   },
   "swapEnableDescription": {
     "message": "필수이며 MetaMask에게 $1을(를) 스왑할 권한을 부여합니다.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
+  },
+  "swapEnableTokenForSwapping": {
+    "message": "스왑하려면 $1이(가) 필요합니다.",
+    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
   },
   "swapEstimatedNetworkFees": {
     "message": "예상 네트워크 수수료"
@@ -1854,6 +2788,9 @@
   "swapFailedErrorTitle": {
     "message": "스왑 실패"
   },
+  "swapFetchingQuotes": {
+    "message": "견적을 가져오는 중"
+  },
   "swapFetchingQuotesErrorDescription": {
     "message": "음.... 문제가 발생했습니다. 다시 시도해 보고 오류가 해결되지 않는다면 고객 지원에 문의하세요."
   },
@@ -1867,11 +2804,25 @@
     "message": "$1을(를) $2(으)로 스왑",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
+  "swapGasFeesDetails": {
+    "message": "가스 요금은 예상 가능하며 네트워크 트래픽 및 거래 복잡성에 따라 변동됩니다."
+  },
+  "swapGasFeesLearnMore": {
+    "message": "가스 요금 자세히 알아보기"
+  },
   "swapGasFeesSplit": {
     "message": "이전 화면의 Gas 수수료는 이 두 거래로 나뉩니다."
   },
+  "swapGasFeesSummary": {
+    "message": "$1 네트워크에서 거래를 처리하는 암호화폐 채굴자에게 가스 요금이 지급됩니다. 메타마스크는 가스 요금으로 이익을 얻지 않습니다.",
+    "description": "$1 is the selected network, e.g. Ethereum or BSC"
+  },
   "swapHighSlippageWarning": {
     "message": "슬리패지 금액이 아주 큽니다."
+  },
+  "swapIncludesMMFee": {
+    "message": "$1%의 메타마스크 요금이 포함됩니다.",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
   "swapLowSlippageError": {
     "message": "거래가 실패할 수도 있습니다. 최대 슬리패지가 너무 낮습니다."
@@ -1885,6 +2836,10 @@
   "swapMetaMaskFeeDescription": {
     "message": "당사는 매번 최상의 유동성 소스에서 최적의 가격을 찾습니다. 이 견적에는 $1%의 수수료가 자동으로 반영됩니다.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
+  "swapNQuotesWithDot": {
+    "message": "$1 견적.",
+    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapNewQuoteIn": {
     "message": "$1의 새 견적",
@@ -1978,6 +2933,12 @@
   "swapSourceInfo": {
     "message": "당사에서는 여러 유동성 소스(교환, 애그리게이터, 투자전문기관)를 검색하여 최상의 요율과 최저 네트워크 수수료를 찾습니다."
   },
+  "swapSuggested": {
+    "message": "제안 스왑"
+  },
+  "swapSuggestedGasSettingToolTipMessage": {
+    "message": "스왑은 복잡하고 시간에 민감한 거래입니다. 성공적인 스왑의 비용과 확신 사이의 적절한 균형을 위해 이 가스 요금을 권장합니다."
+  },
   "swapSwapFrom": {
     "message": "다음에서 스왑"
   },
@@ -2015,6 +2976,10 @@
   "swapTokenVerificationSources": {
     "message": "$1개 소스에서 확인되었습니다.",
     "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
+  },
+  "swapTooManyDecimalsError": {
+    "message": "$1은(는) 소수점 이하 $2까지 허용됩니다.",
+    "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
   },
   "swapTransactionComplete": {
     "message": "거래 완료"
@@ -2076,6 +3041,12 @@
   "symbolBetweenZeroTwelve": {
     "message": "기호는 11자 이하여야 합니다."
   },
+  "syncFailed": {
+    "message": "동기화 실패"
+  },
+  "syncInProgress": {
+    "message": "동기화 진행 중"
+  },
   "syncWithMobile": {
     "message": "모바일과 동기화"
   },
@@ -2118,6 +3089,9 @@
   "thisWillCreate": {
     "message": "새 지갑과 시드 구문을 만듭니다."
   },
+  "time": {
+    "message": "시간"
+  },
   "tips": {
     "message": "팁"
   },
@@ -2127,6 +3101,10 @@
   "toAddress": {
     "message": "수신: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+  },
+  "toggleTestNetworks": {
+    "message": "$1 테스트 네트워크",
+    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "토큰"
@@ -2139,6 +3117,9 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "필요한 토큰 십진수"
+  },
+  "tokenDetectionAnnouncement": {
+    "message": "신규! 개선된 토큰 감지는 실험적 기능으로 Ethereum Mainnet에서 사용할 수 있습니다. $1"
   },
   "tokenSymbol": {
     "message": "토큰 기호"
@@ -2164,6 +3145,51 @@
   "transactionCreated": {
     "message": "$2에서 $1 값으로 거래가 생성되었습니다."
   },
+  "transactionData": {
+    "message": "거래 데이터"
+  },
+  "transactionDecodingAccreditationDecoded": {
+    "message": "Truffle에 의한 디코딩"
+  },
+  "transactionDecodingAccreditationVerified": {
+    "message": "$1에 대한 확인된 계약"
+  },
+  "transactionDecodingUnsupportedNetworkError": {
+    "message": "ChainId $1에 대한 거래 디코딩을 사용할 수 없습니다."
+  },
+  "transactionDetailDappGasMoreInfo": {
+    "message": "제안 사이트"
+  },
+  "transactionDetailDappGasTooltip": {
+    "message": "최신 블록을 기반으로 메타마스크의 권장 가스 요금을 사용하도록 편집합니다."
+  },
+  "transactionDetailGasHeading": {
+    "message": "예상 가스 요금"
+  },
+  "transactionDetailGasHeadingV2": {
+    "message": "가스"
+  },
+  "transactionDetailGasInfoV2": {
+    "message": "예상됨"
+  },
+  "transactionDetailGasTooltipConversion": {
+    "message": "가스 요금 자세히 알아보기"
+  },
+  "transactionDetailGasTooltipExplanation": {
+    "message": "가스 요금은 네트워크에 의해 설정되며 네트워크 트래픽 및 거래의 복잡성에 따라 변동합니다."
+  },
+  "transactionDetailGasTooltipIntro": {
+    "message": "$1 네트워크에서 거래를 처리하는 암호화폐 채굴자에게 가스 요금이 지급됩니다. 메타마스크는 가스 요금으로 이익을 얻지 않습니다."
+  },
+  "transactionDetailGasTotalSubtitle": {
+    "message": "금액 + 가스 요금"
+  },
+  "transactionDetailLayer2GasHeading": {
+    "message": "Layer 2 가스 요금"
+  },
+  "transactionDetailMultiLayerTotalSubtitle": {
+    "message": "금액 + 요금"
+  },
   "transactionDropped": {
     "message": "$2에서의 거래가 중단되었습니다."
   },
@@ -2178,6 +3204,27 @@
   },
   "transactionFee": {
     "message": "거래 수수료"
+  },
+  "transactionHistoryBaseFee": {
+    "message": "기본 요금(GWEI)"
+  },
+  "transactionHistoryL1GasLabel": {
+    "message": "총 L1 가스 요금"
+  },
+  "transactionHistoryL2GasLimitLabel": {
+    "message": "L2 가스 한도"
+  },
+  "transactionHistoryL2GasPriceLabel": {
+    "message": "L2 가스 가격"
+  },
+  "transactionHistoryMaxFeePerGas": {
+    "message": "가스당 최대 요금"
+  },
+  "transactionHistoryPriorityFee": {
+    "message": "우선 요금(GWEI)"
+  },
+  "transactionHistoryTotalGasFee": {
+    "message": "총 가스 요금"
   },
   "transactionResubmitted": {
     "message": "$2에서 Gas 수수료가 $1(으)로 증가한 거래가 다시 제출되었습니다."
@@ -2205,11 +3252,30 @@
     "message": "토큰 잔액을 로드하는 도중 문제가 발생했습니다. 다음에서 잔액을 확인하세요. ",
     "description": "Followed by a link (here) to view token balances"
   },
+  "trustSiteApprovePermission": {
+    "message": "권한을 부여하면 다음 $1이(가) 귀하의 자금에 액세스할 수 있습니다."
+  },
   "tryAgain": {
     "message": "다시 시도"
   },
+  "tryAnywayOption": {
+    "message": "어쨌든 시도하겠습니다."
+  },
+  "turnOnTokenDetection": {
+    "message": "향상된 토큰 감지 켜기"
+  },
+  "twelveHrTitle": {
+    "message": "12시간:"
+  },
+  "txInsightsNotSupported": {
+    "message": "현재 이 계약에 대해 거래 인사이트가 지원되지 않습니다."
+  },
   "typePassword": {
     "message": "MetaMask 암호 입력"
+  },
+  "u2f": {
+    "message": "U2F",
+    "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
   "unapproved": {
     "message": "승인되지 않음"
@@ -2249,6 +3315,10 @@
     "message": "네트워크 세부 정보 검증",
     "description": "Serves as link text for the 'unrecognizedChain' key. This text will be embedded inside the translation for that key."
   },
+  "unsendableAsset": {
+    "message": "수집 가능한(ERC-721) 토큰 전송은 현재 지원되지 않습니다.",
+    "description": "This is an error message we show the user if they attempt to send a collectible asset type, for which currently don't support sending"
+  },
   "updatedWithDate": {
     "message": "$1에 업데이트됨"
   },
@@ -2258,14 +3328,29 @@
   "urlExistsErrorMsg": {
     "message": "이 URL은 현재 $1 네트워크에서 사용됩니다."
   },
+  "useCollectibleDetection": {
+    "message": "NFT 자동 감지"
+  },
+  "useCollectibleDetectionDescription": {
+    "message": "NFT 미디어 및 데이터를 표시하면 IP 주소가 중앙 서버에 노출될 수 있습니다. OpenSea와 같은 타사 API는 지갑에서 NFT를 감지하는 데 사용됩니다. 이렇게 하면 해당 서비스의 계정 주소가 노출됩니다. 앱이 해당 서비스에서 데이터를 가져오지 않도록 하려면 비활성화된 상태로 유지하세요."
+  },
   "usePhishingDetection": {
     "message": "피싱 감지 사용"
   },
   "usePhishingDetectionDescription": {
     "message": "이더리움 사용자를 노리는 피싱 도메인에 대한 경고를 표시합니다."
   },
+  "useTokenDetection": {
+    "message": "토큰 감지 사용"
+  },
+  "useTokenDetectionDescription": {
+    "message": "당사는 타사 API를 사용하여 지갑으로 전송된 새 토큰을 감지하고 표시합니다. 메타마스크가 해당 서비스에서 데이터를 가져오는 것을 원하지 않으면 꺼놓으세요."
+  },
   "usedByClients": {
     "message": "다양한 클라이언트에서 사용합니다."
+  },
+  "userAccepts": {
+    "message": "수락합니다."
   },
   "userName": {
     "message": "사용자 이름"
@@ -2291,14 +3376,55 @@
   "viewContact": {
     "message": "연락처 보기"
   },
+  "viewFullTransactionDetails": {
+    "message": "전체 거래 세부정보 보기"
+  },
   "viewMore": {
     "message": "더 보기"
+  },
+  "viewOnBlockExplorer": {
+    "message": "블록 탐색기에서 보기"
+  },
+  "viewOnCustomBlockExplorer": {
+    "message": "$2에서 $1 보기",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+  },
+  "viewOnEtherscan": {
+    "message": "Etherscan에서 $1 보기",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "viewOnOpensea": {
+    "message": "Opensea에서 보기"
+  },
+  "viewinExplorer": {
+    "message": "Explorer에서 $1 보기",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
     "message": "당사 웹사이트 방문하기"
   },
   "walletConnectionGuide": {
     "message": "당사의 하드웨어 지갑 연결 가이드"
+  },
+  "walletCreationSuccessDetail": {
+    "message": "지갑을 성공적으로 보호했습니다. 비밀 복구 문구를 안전하게 비밀로 유지하세요. 이는 귀하의 책임입니다!"
+  },
+  "walletCreationSuccessReminder1": {
+    "message": "메타마스크는는 비밀 복구 문구를 복구할 수 없습니다."
+  },
+  "walletCreationSuccessReminder2": {
+    "message": "메타마스크는 귀하의 비밀 복구 문구를 절대 묻지 않습니다."
+  },
+  "walletCreationSuccessReminder3": {
+    "message": "누군가와 $1 또는 귀하의 자금을 도난당할 위험이 있습니다.",
+    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
+  },
+  "walletCreationSuccessReminder3BoldSection": {
+    "message": "비밀 복구 문구를 절대 공유하지 마세요.",
+    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
+  },
+  "walletCreationSuccessTitle": {
+    "message": "지갑 생성 성공"
   },
   "walletSeedRestore": {
     "message": "지갑 비밀 복구 구문"
@@ -2307,11 +3433,33 @@
     "message": "현재의 웹사이트가 제거된 window.web3 API를 이용하려고 합니다. 이 사이트가 제대로 작동하지 않는 경우, $1을(를) 클릭해 자세히 알아보세요.",
     "description": "$1 is a clickable link."
   },
+  "webhid": {
+    "message": "WebHID",
+    "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
+  },
   "welcome": {
     "message": "MetaMask 방문을 환영합니다"
   },
   "welcomeBack": {
     "message": "재방문을 환영합니다!"
+  },
+  "welcomeExploreDescription": {
+    "message": "암호화 통화 및 자산을 저장, 전송 및 사용합니다."
+  },
+  "welcomeExploreTitle": {
+    "message": "Explore 분산화 앱"
+  },
+  "welcomeLoginDescription": {
+    "message": "메타마스크를 사용하여 분산화 앱에 로그인하세요. 가입은 필요 없습니다."
+  },
+  "welcomeLoginTitle": {
+    "message": "내 지갑 처음 알아보기"
+  },
+  "welcomeToMetaMask": {
+    "message": "시작하기"
+  },
+  "welcomeToMetaMaskIntro": {
+    "message": "수백만 명이 신뢰하는 메타마스크(MetaMask)는 모든 사람이 web3의 세계에 접근할 수 있도록 하는 안전한 지갑입니다."
   },
   "whatsNew": {
     "message": "최근 소식",

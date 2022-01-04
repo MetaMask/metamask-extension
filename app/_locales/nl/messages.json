@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Afwijzen"
+  },
   "accountDetails": {
     "message": "Accountgegevens"
   },
