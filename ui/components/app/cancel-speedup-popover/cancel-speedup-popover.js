@@ -142,8 +142,12 @@ const CancelSpeedupPopover = () => {
           flexDirection={FLEX_DIRECTION.COLUMN}
           marginTop={4}
         >
-          <EditGasFeeButton />
-          <GasDetailsItem />
+          <Box className="cancel-speedup-popover__edit-gas-button">
+            <EditGasFeeButton />
+          </Box>
+          <Box className="cancel-speedup-popover__gas-details">
+            <GasDetailsItem />
+          </Box>
         </Box>
         <Button type="primary" onClick={submitTransactionChange}>
           <I18nValue messageKey="submit" />

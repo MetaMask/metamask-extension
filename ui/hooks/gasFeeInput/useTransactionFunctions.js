@@ -140,7 +140,7 @@ export const useTransactionFunctions = ({
     [gasFeeEstimates, updateTransaction],
   );
 
-  const updateTransactionUsingDappSuggestedValue = useCallback(() => {
+  const updateTransactionUsingDAPPSuggestedValues = useCallback(() => {
     const {
       maxFeePerGas,
       maxPriorityFeePerGas,
@@ -157,7 +157,7 @@ export const useTransactionFunctions = ({
     speedUpTransaction,
     updateTransaction,
     updateTransactionToMinimumGasFee,
-    updateTransactionUsingDappSuggestedValue,
+    updateTransactionUsingDAPPSuggestedValues,
     updateTransactionUsingEstimate,
   };
 };

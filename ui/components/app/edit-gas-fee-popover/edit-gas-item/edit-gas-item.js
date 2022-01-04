@@ -53,7 +53,7 @@ const EditGasItem = ({ priorityLevel }) => {
     estimateUsed,
     gasLimit,
     updateTransactionToMinimumGasFee,
-    updateTransactionUsingDappSuggestedValue,
+    updateTransactionUsingDAPPSuggestedValues,
     updateTransactionUsingEstimate,
     transaction,
   } = useGasFeeContext();
@@ -87,7 +87,7 @@ const EditGasItem = ({ priorityLevel }) => {
       if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
         updateTransactionToMinimumGasFee();
       } else if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
-        updateTransactionUsingDappSuggestedValue();
+        updateTransactionUsingDAPPSuggestedValues();
       } else {
         updateTransactionUsingEstimate(priorityLevel);
       }
