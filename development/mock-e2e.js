@@ -11,7 +11,7 @@ function setupMocking(server) {
     },
   });
 
-  server.forOptions('/networks/1/gasPrices').thenCallback((request) => {
+  server.forOptions('https://gas-api.metaswap.codefi.network/networks/1/gasPrices').thenCallback((request) => {
     console.log(`MOCK: [${request.method}] ${request.url}`);
     return {
       headers: {
