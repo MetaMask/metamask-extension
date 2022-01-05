@@ -79,7 +79,7 @@ export default function ExperimentalArea({ redirectTo }) {
       <div className="text">
         <p>
           {t('flaskWelcomeWarning1', [
-            <b key="uninstall">{t('flaskWelcomeUninstall')}</b>,
+            <b key="doNotUse">{t('flaskWelcomeDoNotUse')}</b>,
           ])}
         </p>
         <br />
