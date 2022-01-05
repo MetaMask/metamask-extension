@@ -22,6 +22,7 @@ import {
 } from '../../selectors';
 
 import {
+  closeNotificationPopup,
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
@@ -127,6 +128,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
+  closeNotificationPopup: () => closeNotificationPopup(),
   turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
   setupThreeBox: () => {
     dispatch(getThreeBoxLastUpdated()).then((lastUpdated) => {

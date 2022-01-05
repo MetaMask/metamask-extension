@@ -23,6 +23,16 @@ export default class NotificationManager extends EventEmitter {
   }
 
   /**
+   * Mark the notification popup as having been automatically closed.
+   *
+   * This lets us differentiate between the cases where we close the
+   * notification popup v.s. when the user closes the popup window directly.
+   */
+  markAsAutomaticallyClosed() {
+    this._popupAutomaticallyClosed = true;
+  }
+
+  /**
    * Either brings an existing MetaMask notification window into focus, or creates a new notification window. New
    * notification windows are given a 'popup' type.
    *
@@ -72,7 +82,10 @@ export default class NotificationManager extends EventEmitter {
   _onWindowClosed(windowId) {
     if (windowId === this._popupId) {
       this._popupId = undefined;
-      this.emit(NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED);
+      this.emit(NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED, {
+        automaticallyClosed: this._popupAutomaticallyClosed,
+      });
+      this._popupAutomaticallyClosed = undefined;
     }
   }
 

@@ -218,6 +218,7 @@ function setupController(initState, initLangCode) {
     initLangCode,
     // platform specific api
     platform,
+    notificationManager,
     extension,
     getRequestAccountTabIds: () => {
       return requestAccountTabIds;
@@ -455,6 +456,15 @@ function setupController(initState, initLangCode) {
    */
   function updateBadge() {
     let label = '';
+    const count = getUnapprovedTransactionCount();
+    if (count) {
+      label = String(count);
+    }
+    extension.browserAction.setBadgeText({ text: label });
+    extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+  }
+
+  function getUnapprovedTransactionCount() {
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
     const { unapprovedMsgCount } = controller.messageManager;
     const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
@@ -466,7 +476,7 @@ function setupController(initState, initLangCode) {
     const pendingApprovalCount = controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
-    const count =
+    return (
       unapprovedTxCount +
       unapprovedMsgCount +
       unapprovedPersonalMsgCount +
@@ -474,17 +484,19 @@ function setupController(initState, initLangCode) {
       unapprovedEncryptionPublicKeyMsgCount +
       unapprovedTypedMessagesCount +
       pendingApprovalCount +
-      waitingForUnlockCount;
-    if (count) {
-      label = String(count);
-    }
-    extension.browserAction.setBadgeText({ text: label });
-    extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+      waitingForUnlockCount
+    );
   }
 
   notificationManager.on(
     NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
-    rejectUnapprovedNotifications,
+    ({ automaticallyClosed }) => {
+      if (!automaticallyClosed) {
+        rejectUnapprovedNotifications();
+      } else if (getUnapprovedTransactionCount() > 0) {
+        triggerUi();
+      }
+    },
   );
 
   function rejectUnapprovedNotifications() {

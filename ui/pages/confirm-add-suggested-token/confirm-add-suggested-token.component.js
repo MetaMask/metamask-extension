@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
 export default class ConfirmAddSuggestedToken extends Component {
@@ -40,11 +38,8 @@ export default class ConfirmAddSuggestedToken extends Component {
     if (suggestedAssets.length > 0) {
       return;
     }
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      global.platform.closeCurrentWindow();
-    } else {
-      history.push(mostRecentOverviewPage);
-    }
+
+    history.push(mostRecentOverviewPage);
   }
 
   getTokenName(name, symbol) {

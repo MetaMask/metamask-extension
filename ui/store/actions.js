@@ -955,7 +955,7 @@ export function cancelTxs(txDataList) {
       });
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        global.platform.closeCurrentWindow();
+        closeNotificationPopup();
       } else {
         dispatch(hideLoadingIndication());
       }
@@ -1775,7 +1775,7 @@ export function closeCurrentNotificationWindow() {
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
       !hasUnconfirmedTransactions(getState())
     ) {
-      global.platform.closeCurrentWindow();
+      closeNotificationPopup();
     }
   };
 }
@@ -3005,6 +3005,11 @@ export function getGasFeeTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
     maxPriorityFeePerGas,
     maxFeePerGas,
   );
+}
+
+export async function closeNotificationPopup() {
+  await promisifiedBackground.markNotificationPopupAsAutomaticallyClosed();
+  global.platform.closeCurrentWindow();
 }
 
 // MetaMetrics
