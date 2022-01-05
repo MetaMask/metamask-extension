@@ -39,7 +39,7 @@
     "sentry:publish": "node ./development/sentry-publish.js",
     "lint:prettier": "prettier '**/*.json'",
     "lint": "yarn lint:prettier --check '**/*.json' && eslint . --ext js,snap --cache && yarn lint:styles",
-    "lint:fix": "yarn lint:prettier --write '**/*.json' && eslint . --ext js --cache --fix",
+    "lint:fix": "yarn lint:prettier --write '**/*.json' && eslint . --ext js --cache --fix && yarn lint:styles --fix",
     "lint:changed": "{ git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep --regexp='[.]js$' | tr '\\n' '\\0' | xargs -0 eslint",
     "lint:changed:fix": "{ git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep --regexp='[.]js$' | tr '\\n' '\\0' | xargs -0 eslint --fix",
     "lint:changelog": "auto-changelog validate",
