@@ -196,9 +196,11 @@ export function getActivities(transaction, isFirstTransaction = false) {
               const filteredAcc = acc.find(
                 (ac) => ac.eventKey === TRANSACTION_CONFIRMED_EVENT,
               );
-              filteredAcc.timestamp = new Date(
-                parseInt(entry.value, 16) * 1000,
-              ).getTime();
+              if (filteredAcc !== undefined) {
+                filteredAcc.timestamp = new Date(
+                  parseInt(entry.value, 16) * 1000,
+                ).getTime();
+              }
               break;
             }
 
