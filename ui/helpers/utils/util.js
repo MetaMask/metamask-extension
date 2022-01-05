@@ -19,6 +19,7 @@ import {
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
+import { toBigNumber } from '../../../shared/modules/conversion.utils';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -557,4 +558,13 @@ export function getAssetImageURL(image, ipfsGateway) {
     return util.getFormattedIpfsUrl(ipfsGateway, image, true);
   }
   return image;
+}
+
+export function roundToDecimalPlacesRemovingExtraZeroes(
+  numberish,
+  numberOfDecimalPlaces,
+) {
+  return toBigNumber.dec(
+    toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces),
+  );
 }

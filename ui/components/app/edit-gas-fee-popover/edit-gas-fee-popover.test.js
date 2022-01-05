@@ -85,7 +85,7 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText('🦊')).toBeInTheDocument();
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('🌐')).toBeInTheDocument();
-    expect(screen.queryByText('⚙')).toBeInTheDocument();
+    expect(screen.queryByText('⚙️')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
@@ -127,7 +127,7 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText('🦍')).not.toBeInTheDocument();
     expect(screen.queryByText('🌐')).not.toBeInTheDocument();
     expect(screen.queryByText('🔄')).toBeInTheDocument();
-    expect(screen.queryByText('⚙')).toBeInTheDocument();
+    expect(screen.queryByText('⚙️')).toBeInTheDocument();
     expect(screen.queryByText('Low')).not.toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).not.toBeInTheDocument();

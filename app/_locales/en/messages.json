@@ -1737,7 +1737,7 @@
     "message": "+10%"
   },
   "minimumEstimate": {
-    "message": "10% Minimum"
+    "message": "10% (Minimum)"
   },
   "mismatchedChain": {
     "message": "The network details for this chain ID do not match our records. We recommend that you $1 before proceeding.",

@@ -158,7 +158,7 @@ describe('EditGasItem', () => {
     expect(
       screen.queryByRole('button', { name: 'custom' }),
     ).toBeInTheDocument();
-    expect(screen.queryByText('⚙')).toBeInTheDocument();
+    expect(screen.queryByText('⚙️')).toBeInTheDocument();
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
     // below value of custom gas fee estimate is default obtained from state.metamask.advancedGasFee
     expect(screen.queryByTitle('0.001575 ETH')).toBeInTheDocument();
