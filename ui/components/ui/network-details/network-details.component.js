@@ -94,7 +94,11 @@ const NetworkDetails = ({
         </div>
         <div className="network-details__content__address">{chainId}</div>
         <div className="network-details__content__address">
-          <Button className="network-details__content__view-all" type="link">
+          <Button
+            className="network-details__content__view-all"
+            type="link"
+            href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
+          >
             {t('viewAllDetails')}
           </Button>
         </div>
