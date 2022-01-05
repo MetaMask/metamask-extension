@@ -13,8 +13,8 @@ export default {
   },
   argTypes: {
     address: { control: 'text' },
-    onClose: { action: 'Close Update Nickname Popover' },
-    onAdd: { action: 'Submit Nickname' },
+    onClose: { action: 'onClose' },
+    onAdd: { action: 'onAdd' },
   },
 };
 
