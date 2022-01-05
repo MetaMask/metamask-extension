@@ -34,7 +34,7 @@ export default class PermissionConnect extends Component {
     targetSubjectMetadata: PropTypes.shape({
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
-      name: PropTypes.string.isRequired,
+      name: PropTypes.string,
       origin: PropTypes.string.isRequired,
       subjectType: PropTypes.string,
     }),
