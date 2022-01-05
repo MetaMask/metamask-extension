@@ -49,6 +49,7 @@ import CollectibleOptions from '../collectible-options/collectible-options';
 import Button from '../../ui/button';
 import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
+import { ERC721 } from '../../../helpers/constants/common';
 
 export default function CollectibleDetails({ collectible }) {
   const {
@@ -103,18 +104,17 @@ export default function CollectibleDetails({ collectible }) {
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled = standard !== 'ERC721';
+  const sendDisabled = standard !== ERC721;
   const inPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
-  const onSend = () => {
-    dispatch(
+  const onSend = async () => {
+    await dispatch(
       updateSendAsset({
         type: ASSET_TYPES.COLLECTIBLE,
         details: collectible,
       }),
-    ).then(() => {
-      history.push(SEND_ROUTE);
-    });
+    );
+    history.push(SEND_ROUTE);
   };
 
   const renderSendButton = () => {
@@ -190,7 +190,7 @@ export default function CollectibleDetails({ collectible }) {
                 boxProps={{ margin: 0 }}
                 overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
               >
-                {`#${tokenId}`}
+                #{tokenId}
               </Typography>
             </div>
             <div>

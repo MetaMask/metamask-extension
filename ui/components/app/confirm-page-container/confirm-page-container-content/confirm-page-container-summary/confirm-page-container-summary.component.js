@@ -54,7 +54,7 @@ const ConfirmPageContainerSummary = (props) => {
           </div>
         )}
       </div>
-      <div>
+      <>
         <div className="confirm-page-container-summary__title">
           {renderImage()}
           {!hideTitle ? (
@@ -63,12 +63,12 @@ const ConfirmPageContainerSummary = (props) => {
             </div>
           ) : null}
         </div>
-        {!hideSubtitle && (
+        {hideSubtitle ? null : (
           <div className="confirm-page-container-summary__subtitle">
             {subtitleComponent}
           </div>
         )}
-      </div>
+      </>
     </div>
   );
 };

@@ -1070,7 +1070,6 @@ const slice = createSlice({
     },
     resetSendState: () => initialState,
     validateAmountField: (state) => {
-      // let isCurrentOwner = false;
       switch (true) {
         // set error to INSUFFICIENT_FUNDS_ERROR if the account balance is lower
         // than the total price of the transaction inclusive of gas fees.

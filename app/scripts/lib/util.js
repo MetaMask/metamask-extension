@@ -18,6 +18,7 @@ import {
   PLATFORM_EDGE,
   PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
+import { isEqualCaseInsensitive } from '../../../ui/helpers/utils/util';
 
 /**
  * @see {@link getEnvironmentType}
@@ -158,6 +159,45 @@ function getChainType(chainId) {
   return 'custom';
 }
 
+/**
+ * Loops through the nested allCollectibles collection and finds and returns a collectible
+ * that matches the contractAddress/tokenId pair passed as args.
+ *
+ * @param {Object} allCollectibles - The collection of all collectibles the user has ever owned organized by account and chainId.
+ * @param {string} contractAddress - The address of the contract to match against.
+ * @param {string} collectibleTokenId - The collectible tokenId to match against.
+ * @returns {Object | null} - The matching collectible if found, null if not found.
+ *
+ */
+function getKnownCollectible(
+  allCollectibles,
+  contractAddress,
+  collectibleTokenId,
+) {
+  for (const account in allCollectibles) {
+    if (Object.prototype.hasOwnProperty.call(allCollectibles, account)) {
+      for (const chainId in allCollectibles[account]) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            allCollectibles[account],
+            chainId,
+          )
+        ) {
+          const matchingCollectible = allCollectibles[account][chainId].find(
+            ({ address, tokenId }) =>
+              isEqualCaseInsensitive(address, contractAddress) &&
+              tokenId === collectibleTokenId,
+          );
+          if (matchingCollectible) {
+            return matchingCollectible;
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
 export {
   getPlatform,
   getEnvironmentType,
@@ -167,4 +207,5 @@ export {
   addHexPrefix,
   bnToHex,
   getChainType,
+  getKnownCollectible,
 };

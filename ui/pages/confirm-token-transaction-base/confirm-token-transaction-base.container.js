@@ -51,27 +51,29 @@ const mapStateToProps = (state, ownProps) => {
   const tokens = getTokens(state);
   const collectibles = getCollectibles(state);
 
+  const transactionData = getTransactionData(data);
+  const toAddress = getTokenAddressParam(transactionData);
+  const tokenAmountOrTokenId = getTokenValueParam(transactionData);
+  const ethTransactionTotalMaxAmount = Number(
+    hexWEIToDecETH(hexMaximumTransactionFee),
+  ).toFixed(6);
+
   const currentToken = tokens?.find(({ address }) =>
     isEqualCaseInsensitive(tokenAddress, address),
   );
-  const currentCollectible = collectibles?.find(({ address }) =>
-    isEqualCaseInsensitive(tokenAddress, address),
+  const currentCollectible = collectibles?.find(
+    ({ address, tokenId }) =>
+      isEqualCaseInsensitive(tokenAddress, address) &&
+      tokenId === tokenAmountOrTokenId,
   );
 
   let image,
     tokenId,
     collectibleName,
-    tokenValue,
     tokenAmount,
     contractExchangeRate,
     title,
     subtitle;
-
-  const transactionData = getTransactionData(data);
-  const toAddress = getTokenAddressParam(transactionData);
-  const ethTransactionTotalMaxAmount = Number(
-    hexWEIToDecETH(hexMaximumTransactionFee),
-  ).toFixed(6);
 
   if (currentCollectible) {
     ({ image, tokenId, name: collectibleName } = currentCollectible || {});
@@ -80,9 +82,9 @@ const mapStateToProps = (state, ownProps) => {
     subtitle = `#${tokenId}`;
   } else if (currentToken) {
     const { decimals, symbol: tokenSymbol } = currentToken || {};
-    tokenValue = getTokenValueParam(transactionData);
     tokenAmount =
-      transactionData && calcTokenAmount(tokenValue, decimals).toFixed();
+      transactionData &&
+      calcTokenAmount(tokenAmountOrTokenId, decimals).toFixed();
     contractExchangeRate = contractExchangeRateSelector(state);
     title = `${tokenAmount} ${tokenSymbol}`;
   }

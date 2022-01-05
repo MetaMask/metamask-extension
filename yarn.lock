@@ -2643,10 +2643,10 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
-"@metamask/controllers@^23.1.0":
-  version "23.1.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-23.1.0.tgz#78f5134a64e91ad03fd2b59da7315a4ef423be31"
-  integrity sha512-RnfBDwnf1kDw8MCi1SmiJoI4mcimrGFbrqTxQ13s4REev/RFZeXilSgQrztC2kRJ5jySd3n21cjt8hptvnn5pg==
+"@metamask/controllers@^24.0.0":
+  version "24.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-24.0.0.tgz#380d4e10bd9b903afc38b041ea7e64b30ae34dab"
+  integrity sha512-gOTpvxQTNTrXOUpGOiRKcqHUgnjSiTgJcwNLxenZWqPIixz7eI2qHnjO7ZaGbV/baK7SOa4rRGokvsCNV0mafA==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"

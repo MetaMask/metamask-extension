@@ -34,10 +34,10 @@ export default function CollectiblesItems({
   const defaultDropdownState = { [PREVIOUSLY_OWNED_KEY]: false };
   const [dropdownState, setDropdownState] = useState(defaultDropdownState);
   const ipfsGateway = useSelector(getIpfsGateway);
-
+  const collectionsKeys = Object.keys(collections);
   // if there is only one collection present set it to open when component mounts
-  if (Object.keys(collections).length === 1) {
-    defaultDropdownState[Object.keys(collections)[0]] = true;
+  if (collectionsKeys.length === 1) {
+    defaultDropdownState[collectionsKeys[0]] = true;
   }
   const history = useHistory();
 
@@ -153,7 +153,7 @@ export default function CollectiblesItems({
     <div className="collectibles-items">
       <Box padding={[6, 4]} flexDirection={FLEX_DIRECTION.COLUMN}>
         <>
-          {Object.keys(collections).map((key) => {
+          {collectionsKeys.map((key) => {
             const {
               collectibles,
               collectionName,

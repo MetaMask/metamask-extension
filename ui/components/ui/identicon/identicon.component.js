@@ -76,7 +76,7 @@ export default class Identicon extends PureComponent {
     const { className, diameter, alt, imageBorder, ipfsGateway } = this.props;
     let { image } = this.props;
 
-    if (image.startsWith('ipfs://ipfs/') || image.startsWith('ipfs://')) {
+    if (image.toLowerCase().startsWith('ipfs://')) {
       image = getAssetImageURL(image, ipfsGateway);
     }
 

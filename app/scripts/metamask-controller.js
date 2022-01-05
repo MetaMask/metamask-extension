@@ -40,7 +40,10 @@ import {
   SubjectMetadataController,
 } from '@metamask/snap-controllers';
 
-import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import {
+  TRANSACTION_STATUSES,
+  TRANSACTION_TYPES,
+} from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -64,6 +67,8 @@ import {
 } from '../../shared/constants/app';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
+import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
+import { getTransactionData } from '../../ui/helpers/utils/transactions.util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -105,6 +110,7 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
 } from './controllers/permissions';
+import { getKnownCollectible } from './lib/util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -600,6 +606,28 @@ export default class MetamaskController extends EventEmitter {
         this.platform.showTransactionNotification(txMeta, rpcPrefs);
 
         const { txReceipt } = txMeta;
+
+        // if this is a transferFrom method generated from within the app it may be a collectible transfer transaction
+        // in which case we will want to check and update ownership status of the transferred collectible.
+        if (txMeta?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM) {
+          const transactionData = getTransactionData(txMeta?.txParams?.data);
+          const tokenAmountOrTokenId = getTokenValueParam(transactionData);
+          const contractAddress = txMeta?.txParams?.to;
+          const { allCollectibles } = this.collectiblesController.state;
+          // check if its a known collectible
+          const knownCollectible = getKnownCollectible(
+            allCollectibles,
+            contractAddress,
+            tokenAmountOrTokenId,
+          );
+          // if it is we check and update ownership status.
+          if (knownCollectible) {
+            this.collectiblesController.checkAndUpdateSingleCollectibleOwnershipStatus(
+              knownCollectible,
+            );
+          }
+        }
+
         const metamaskState = await this.getState();
 
         if (txReceipt && txReceipt.status === '0x0') {

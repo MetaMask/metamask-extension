@@ -1392,7 +1392,7 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
 }
 
 export async function checkAndUpdateAllCollectiblesOwnershipStatus() {
-  await promisifiedBackground.checkAndUpdateCollectiblesOwnershipStatus();
+  await promisifiedBackground.checkAndUpdateAllCollectiblesOwnershipStatus();
 }
 
 export async function isCollectibleOwner(

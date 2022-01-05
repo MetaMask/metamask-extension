@@ -73,11 +73,11 @@ export default function CollectiblesTab({ onAddNFT }) {
     history.push(EXPERIMENTAL_ROUTE);
   };
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     if (isMainnet) {
-      dispatch(detectCollectibles());
+      await dispatch(detectCollectibles());
     }
-    checkAndUpdateAllCollectiblesOwnershipStatus();
+    await checkAndUpdateAllCollectiblesOwnershipStatus();
   };
 
   return (

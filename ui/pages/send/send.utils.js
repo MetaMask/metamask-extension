@@ -10,6 +10,7 @@ import {
 
 import { calcTokenAmount } from '../../helpers/utils/token-util';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { ERC20, ERC721 } from '../../helpers/constants/common';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   COLLECTIBLE_TRANSFER_FROM_FUNCTION_SIGNATURE,
@@ -173,13 +174,13 @@ function generateERC721TransferData({
 
 function getAssetTransferData({ sendToken, fromAddress, toAddress, amount }) {
   switch (sendToken.standard) {
-    case 'ERC721':
+    case ERC721:
       return generateERC721TransferData({
         toAddress,
         fromAddress,
         tokenId: sendToken.tokenId,
       });
-    case 'ERC20':
+    case ERC20:
     default:
       return generateERC20TransferData({
         toAddress,
