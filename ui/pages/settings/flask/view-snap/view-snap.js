@@ -43,6 +43,7 @@ function ViewSnap() {
     }
   }, [history, snap]);
 
+  const authorshipPillUrl = `https://npmjs.com/package/${snap?.manifest.source.location.npm.packageName}`;
   const connectedSubjects = useSelector((state) =>
     getSubjectsWithPermission(state, snap?.permissionName),
   );
@@ -80,7 +81,7 @@ function ViewSnap() {
             <Box className="view-snap__pill-container" paddingLeft={2}>
               <SnapsAuthorshipPill
                 packageName={snap.id}
-                url={snap.manifest.repository?.url}
+                url={authorshipPillUrl}
               />
             </Box>
             <Box
