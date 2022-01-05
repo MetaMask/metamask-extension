@@ -1,0 +1,132 @@
+.token-details {
+  width: 359px;
+
+  @media screen and (max-width: $break-small) {
+    .page-container {
+      max-height: 82vh;
+      margin-right: auto;
+      margin-left: auto;
+    }
+  }
+
+  &__wrapper {
+    margin-left: 20px;
+    margin-right: 25px;
+  }
+
+  &__token-details-title {
+    @include H6;
+
+    color: $ui-black;
+    font-weight: bold;
+    margin-top: 17px;
+
+    &::after {
+      cursor: pointer;
+      float: right;
+      font-weight: normal;
+      font-size: 24px;
+      line-height: 24px;
+      margin-top: -5px;
+      content: '\00D7';
+    }
+  }
+
+  &__address {
+    @include H4;
+
+    margin-top: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+
+    &__token-value {
+      font-size: 32px;
+      line-height: 140.62%;
+      margin-right: 20px;
+      color: $ui-black;
+    }
+  }
+
+  &__token-current-currency {
+    @include H7;
+
+    margin-top: 15px;
+    color: $ui-4;
+  }
+
+  &__token-contract-address-title {
+    @include H9;
+
+    margin-top: 32px;
+    font-weight: bold;
+    color: $ui-4;
+  }
+
+  &__copy-token-contract-address {
+    @include H7;
+
+    margin-top: 7px;
+    display: flex;
+
+    button {
+      background: none;
+    }
+
+    &__token-address {
+      width: 222px;
+      overflow-wrap: break-word;
+      color: $ui-black;
+    }
+
+    &__copy-icon {
+      margin-left: 72px;
+    }
+  }
+
+  &__token-decimal-title {
+    @include H9;
+
+    margin-top: 16px;
+    font-weight: bold;
+    color: $ui-4;
+  }
+
+  &__token-decimals {
+    @include H7;
+
+    margin-top: 5px;
+    color: $ui-black;
+  }
+
+  &__token-network-title {
+    @include H9;
+
+    margin-top: 16px;
+    font-weight: bold;
+    color: $ui-4;
+  }
+
+  &__token-network {
+    @include H7;
+
+    margin-top: 5px;
+    color: $ui-black;
+  }
+
+  &__hide-token-button {
+    width: 319px;
+    height: 39px;
+    margin-top: 70px;
+
+    &__hide-token-text {
+      @include H6;
+
+      color: $primary-1;
+    }
+  }
+
+  .btn--rounded.btn-primary {
+    background-color: #fff;
+  }
+}

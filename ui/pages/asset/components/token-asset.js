@@ -10,10 +10,14 @@ import {
   getSelectedIdentity,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors/selectors';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  TOKEN_DETAILS,
+} from '../../../helpers/constants/routes';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { showModal } from '../../../store/actions';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
+import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
@@ -62,6 +66,16 @@ export default function TokenAsset({ token }) {
             }}
             onViewAccountDetails={() => {
               dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
+            }}
+            onViewTokenDetails={() => {
+              dispatch(
+                updateSendAsset({
+                  type: ASSET_TYPES.TOKEN,
+                  details: token,
+                }),
+              ).then(() => {
+                history.push(TOKEN_DETAILS);
+              });
             }}
             tokenSymbol={token.symbol}
           />
