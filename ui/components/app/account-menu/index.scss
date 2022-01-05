@@ -105,6 +105,14 @@
     color: $white;
     padding: 3.5px 24px;
     width: 59px;
+  
+    &:hover {
+      background-color: rgba($dusty-gray, 0.05);
+    }
+
+    &:active {
+      background-color: rgba($dusty-gray, 0.1);
+    }
   }
 
   &__item-icon {

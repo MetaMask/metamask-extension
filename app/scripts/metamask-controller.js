@@ -2816,6 +2816,10 @@ export default class MetamaskController extends EventEmitter {
           { origin },
           { eth_accounts: {} },
         ),
+        requestPermissionsForOrigin: this.permissionController.requestPermissions.bind(
+          this.permissionController,
+          { origin },
+        ),
 
         // Custom RPC-related
         addCustomRpc: async ({

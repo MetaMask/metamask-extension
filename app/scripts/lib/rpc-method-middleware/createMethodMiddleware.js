@@ -13,6 +13,12 @@ const handlerMap = allHandlers.reduce((map, handler) => {
   return map;
 }, new Map());
 
+const expectedHookNames = Array.from(
+  new Set(
+    allHandlers.map(({ hookNames }) => Object.keys(hookNames)).flat(),
+  ).values(),
+);
+
 /**
  * Creates a json-rpc-engine middleware of RPC method implementations.
  *
@@ -24,6 +30,16 @@ const handlerMap = allHandlers.reduce((map, handler) => {
  * @returns {(req: Object, res: Object, next: Function, end: Function) => void}
  */
 export default function createMethodMiddleware(hooks) {
+  // Fail immediately if we forgot to provide any expected hooks.
+  const missingHookNames = expectedHookNames.filter(
+    (hookName) => !Object.hasOwnProperty.call(hooks, hookName),
+  );
+  if (missingHookNames.length > 0) {
+    throw new Error(
+      `Missing expected hooks:\n\n${missingHookNames.join('\n')}\n`,
+    );
+  }
+
   return async function methodMiddleware(req, res, next, end) {
     // Reject unsupported methods.
     if (UNSUPPORTED_RPC_METHODS.has(req.method)) {

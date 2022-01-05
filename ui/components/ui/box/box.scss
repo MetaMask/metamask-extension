@@ -1,8 +1,11 @@
+@use "sass:list";
 @use "sass:map";
 @use "design-system";
 @use "utilities";
 
 $attributes: padding, margin, gap;
+$extraProperties: auto;
+$attributesToApplyExtraProperties: margin;
 
 .box {
   // Padding, Margin, and Gap
@@ -17,6 +20,20 @@ $attributes: padding, margin, gap;
       @each $direction in design-system.$directions {
         &--#{$attribute}-#{$direction}-#{$size} {
           #{$attribute}-#{$direction}: utilities.get-spacing($size);
+        }
+      }
+    }
+
+    @if list.index($attributesToApplyExtraProperties, $attribute) {
+      @each $property in $extraProperties {
+        &--#{$attribute}-#{$property} {
+          #{$attribute}: $property;
+        }
+
+        @each $direction in design-system.$directions {
+          &--#{$attribute}-#{$direction}-#{$property} {
+            #{$attribute}-#{$direction}: $property;
+          }
         }
       }
     }
