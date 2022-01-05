@@ -73,21 +73,28 @@ export default function SnapInstall({
       </div>
       <div className="footers">
         {targetSubjectMetadata.sourceCode ? (
-          <div className="source-code">
-            <div className="text">{t('areYouDeveloper')}</div>
-            <div
-              className="link"
-              onClick={() =>
-                global.platform.openTab({
-                  url: targetSubjectMetadata.sourceCode,
-                })
-              }
-            >
-              {t('openSourceCode')}
+          <>
+            <div className="source-code">
+              <div className="text">{t('areYouDeveloper')}</div>
+              <div
+                className="link"
+                onClick={() =>
+                  global.platform.openTab({
+                    url: targetSubjectMetadata.sourceCode,
+                  })
+                }
+              >
+                {t('openSourceCode')}
+              </div>
             </div>
+            <PermissionsConnectFooter />
+          </>
+        ) : (
+          <div className="snap-install__footer--no-source-code">
+            <PermissionsConnectFooter />
           </div>
-        ) : null}
-        <PermissionsConnectFooter />
+        )}
+
         <PageContainerFooter
           cancelButtonType="default"
           onCancel={onCancel}
