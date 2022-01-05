@@ -14,6 +14,10 @@
 
   .permissions-connect-permission-list {
     padding: 0 24px;
+
+    .permission {
+      padding: 8px 0;
+    }
   }
 
   .source-code {
@@ -38,6 +42,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .permissions-connect-footer {
+    padding-bottom: 16px;
+  }
+
+  &__footer--no-source-code {
+    padding-top: 16px;
   }
 }
 
