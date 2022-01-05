@@ -77,16 +77,18 @@ export default function ExperimentalArea({ redirectTo }) {
       <div className="logo">{METAMASK_LOGO}</div>
       <div className="experimental-text">{EXPERIMENTAL_AREA}</div>
       <div className="text">
-        {t('flaskExperimentalText1')}
-        <ul>
-          <li>{t('flaskExperimentalText2')}</li>
-          <li>{t('flaskExperimentalText3')}</li>
-          <li>{t('flaskExperimentalText4')}</li>
-        </ul>
-        {t('flaskExperimentalText5')}
+        <p>
+          {t('flaskWelcomeWarning1', [
+            <b key="doNotUse">{t('flaskWelcomeUninstall')}</b>,
+          ])}
+        </p>
+        <br />
+        <p>{t('flaskWelcomeWarning2')}</p>
+        <br />
+        <p>{t('flaskWelcomeWarning3')}</p>
       </div>
       <Button type="primary" onClick={onClick}>
-        {t('userAccepts')}
+        {t('flaskWelcomeWarningAcceptButton')}
       </Button>
     </div>
   );
