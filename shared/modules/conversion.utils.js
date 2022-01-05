@@ -120,7 +120,7 @@ const converter = ({
     convertedValue = toSpecifiedDenomination[toDenomination](convertedValue);
   }
 
-  if (numberOfDecimals) {
+  if (numberOfDecimals !== undefined && numberOfDecimals !== null) {
     convertedValue = convertedValue.round(
       numberOfDecimals,
       BigNumber.ROUND_HALF_DOWN,

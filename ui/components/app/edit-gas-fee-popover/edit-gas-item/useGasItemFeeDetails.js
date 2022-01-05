@@ -12,7 +12,7 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../helpers/utils/conversions.util';
 import {
-  addTenPercent,
+  addTenPercentAndRound,
   gasEstimateGreaterThanGasUsedPlusTenPercent,
 } from '../../../../helpers/utils/gas';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
@@ -69,10 +69,10 @@ export const useGasItemFeeDetails = (priorityLevel) => {
     transaction.previousGas
   ) {
     maxFeePerGas = hexWEIToDecGWEI(
-      addTenPercent(transaction.previousGas?.maxFeePerGas),
+      addTenPercentAndRound(transaction.previousGas?.maxFeePerGas),
     );
     maxPriorityFeePerGas = hexWEIToDecGWEI(
-      addTenPercent(transaction.previousGas?.maxPriorityFeePerGas),
+      addTenPercentAndRound(transaction.previousGas?.maxPriorityFeePerGas),
     );
   }
 
