@@ -323,6 +323,10 @@ export default function ViewQuote() {
       approveGas,
       memoizedTokenConversionRates,
       chainId,
+      smartTransactionsEnabled &&
+        smartTransactionsOptInStatus &&
+        smartTransactionFees,
+      nativeCurrencySymbol,
     );
   }, [
     quotes,
@@ -334,6 +338,10 @@ export default function ViewQuote() {
     approveGas,
     memoizedTokenConversionRates,
     chainId,
+    smartTransactionFees,
+    nativeCurrencySymbol,
+    smartTransactionsEnabled,
+    smartTransactionsOptInStatus,
   ]);
 
   const renderableDataForUsedQuote = renderablePopoverData.find(

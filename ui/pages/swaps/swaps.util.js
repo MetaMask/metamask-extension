@@ -579,6 +579,8 @@ export function quotesToRenderableData(
   approveGas,
   tokenConversionRates,
   chainId,
+  smartTransactionFees,
+  nativeCurrencySymbol,
 ) {
   return Object.values(quotes).map((quote) => {
     const {
@@ -603,11 +605,16 @@ export function quotesToRenderableData(
       destinationTokenInfo.decimals,
     ).toPrecision(8);
 
-    const {
+    let feeInFiat = null;
+    let feeInEth = null;
+    let rawNetworkFees = null;
+    let rawEthFee = null;
+
+    ({
       feeInFiat,
+      feeInEth,
       rawNetworkFees,
       rawEthFee,
-      feeInEth,
     } = getRenderableNetworkFeesForQuote({
       tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
       approveGas,
@@ -618,7 +625,17 @@ export function quotesToRenderableData(
       sourceSymbol: sourceTokenInfo.symbol,
       sourceAmount,
       chainId,
-    });
+    }));
+
+    if (smartTransactionFees) {
+      ({ feeInFiat, feeInEth } = getEstimatedFeeForSmartTransaction({
+        chainId,
+        currentCurrency,
+        conversionRate,
+        nativeCurrencySymbol,
+        estimatedFeeInWeiDec: smartTransactionFees.feeEstimate,
+      }));
+    }
 
     const slippageMultiplier = new BigNumber(100 - slippage).div(100);
     const minimumAmountReceived = new BigNumber(destinationValue)
