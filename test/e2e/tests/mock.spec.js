@@ -13,7 +13,26 @@ describe('Mock gas price', function () {
   };
 
   it('Should display a gas price of 555', async function () {
-    const driverOptions = { mock: true };
+    function mockGas(mockServer) {
+      mockServer
+        .forGet('https://gas-api.metaswap.codefi.network/networks/1/gasPrices')
+        .times(1)
+        .thenCallback((request) => {
+          console.log(`TEST: [${request.method}] ${request.url}`);
+          return {
+            headers: { 'Access-Control-Allow-Origin': '*' },
+            statusCode: 200,
+            json: {
+              SafeGasPrice: '111',
+              ProposeGasPrice: '555',
+              FastGasPrice: '999',
+            },
+          };
+        });
+    }
+    const driverOptions = {
+      mock: true,
+    };
     await withFixtures(
       {
         fixtures: 'imported-account',
@@ -21,7 +40,8 @@ describe('Mock gas price', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, _, mockServer }) => {
+        mockGas(mockServer);
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
