@@ -36,10 +36,11 @@ import {
   getSwapsQuoteRefreshTime,
   getReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
-  getSmartTransactionsEnabled,
   getSmartTransactionFees,
   signAndSendSwapsSmartTransaction,
   getSwapsRefreshStates,
+  fetchSwapsSmartTransactionFees,
+  getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -65,7 +66,6 @@ import {
   setSwapsErrorKey,
   showModal,
   setSwapsQuotesPollingLimitEnabled,
-  fetchSmartTransactionFees,
 } from '../../../store/actions';
 import {
   ASSET_ROUTE,
@@ -118,6 +118,8 @@ import ViewQuotePriceDifference from './view-quote-price-difference';
 // eslint-disable-next-line prefer-destructuring
 const EIP_1559_V2_ENABLED =
   process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
+
+let intervalId;
 
 export default function ViewQuote() {
   const history = useHistory();
@@ -185,14 +187,17 @@ export default function ViewQuote() {
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
-  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const smartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const smartTransactionFees = useSelector(getSmartTransactionFees);
   const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   const unsignedTransaction = usedQuote.trade;
 
   useEffect(() => {
-    let intervalId;
+    console.log('effect running');
     if (smartTransactionsEnabled && smartTransactionsOptInStatus) {
+      console.log('fetch stx fees');
       const unsignedTx = {
         from: unsignedTransaction.from,
         to: unsignedTransaction.to,
@@ -202,11 +207,20 @@ export default function ViewQuote() {
         chainId,
       };
       intervalId = setInterval(() => {
-        dispatch(fetchSmartTransactionFees(unsignedTx));
+        console.log('inside interval');
+        dispatch(fetchSwapsSmartTransactionFees(unsignedTx));
       }, swapsRefreshRates.stxGetTransactionsRefreshTime);
-      dispatch(fetchSmartTransactionFees(unsignedTx));
+      dispatch(fetchSwapsSmartTransactionFees(unsignedTx));
+    } else if (intervalId) {
+      console.log('clear interval');
+      clearInterval(intervalId);
+    } else {
+      console.log('no interval');
     }
-    return () => clearInterval(intervalId);
+    return () => {
+      console.log('clear interval on leave');
+      clearInterval(intervalId);
+    };
   }, [
     dispatch,
     smartTransactionsEnabled,

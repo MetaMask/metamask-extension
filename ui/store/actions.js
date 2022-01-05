@@ -3066,7 +3066,7 @@ const isPersistentError = (e) => {
 };
 
 export function fetchSmartTransactionFees(unsignedTransaction) {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       const smartTransactionFees = await promisifiedBackground.fetchSmartTransactionFees(
         unsignedTransaction,
@@ -3077,12 +3077,19 @@ export function fetchSmartTransactionFees(unsignedTransaction) {
       });
     } catch (e) {
       log.error(e);
-      if (isPersistentError(e)) {
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: e.message,
-        });
+      const state = getState();
+      const { smartTransactionsError } = state.appState;
+      if (e.message.startsWith('Fetch error:')) {
+        const errorJson = e.message.slice(12);
+        const errorObj = JSON.parse(errorJson.trim());
+        if (smartTransactionsError !== errorObj.type) {
+          dispatch({
+            type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+            payload: errorObj.type,
+          });
+        }
       }
+      throw e;
     }
   };
 }

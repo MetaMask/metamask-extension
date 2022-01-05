@@ -78,9 +78,11 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
+const TEST_CHAIN_IDS = [RINKEBY_CHAIN_ID, LOCALHOST_CHAIN_ID];
+
 export const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
   // eslint-disable-next-line no-param-reassign
-  chainId = chainId === RINKEBY_CHAIN_ID ? MAINNET_CHAIN_ID : chainId;
+  chainId = TEST_CHAIN_IDS.includes(chainId) ? MAINNET_CHAIN_ID : chainId;
   const baseUrl = getBaseUrlForNewSwapsApi(type, chainId);
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   if (!baseUrl) {
@@ -875,4 +877,16 @@ export const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
   const minutes = Math.floor(remainingTimeInSec / 60);
   const seconds = remainingTimeInSec % 60;
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
+
+const smartTransactionsErrorMap = {
+  unavailable: 'Smart Transactions are temporarily unavailable.',
+  not_enough_funds: 'Not enough funds for a smart transaction.',
+};
+
+export const smartTransactionsErrorMessages = (errorType) => {
+  return (
+    smartTransactionsErrorMap[errorType] ||
+    smartTransactionsErrorMap.unavailable
+  );
 };

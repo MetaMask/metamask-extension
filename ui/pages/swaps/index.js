@@ -37,8 +37,9 @@ import {
   getPendingSmartTransactions,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-  getSmartTransactionsError,
-  getSmartTransactionsErrorMessageDismissed,
+  getCurrentSmartTransactionsError,
+  dismissCurrentSmartTransactionsErrorMessage,
+  getCurrentSmartTransactionsErrorMessageDismissed,
   navigateBackToBuildQuote,
 } from '../../ducks/swaps/swaps';
 import {
@@ -70,7 +71,6 @@ import {
   removeToken,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
-  dismissSmartTransactionsErrorMessage,
 } from '../../store/actions';
 
 import { useNewMetricEvent } from '../../hooks/useMetricEvent';
@@ -132,12 +132,14 @@ export default function Swap() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
-  const smartTransactionsError = useSelector(getSmartTransactionsError);
+  const currentSmartTransactionsError = useSelector(
+    getCurrentSmartTransactionsError,
+  );
   const smartTransactionsErrorMessageDismissed = useSelector(
-    getSmartTransactionsErrorMessageDismissed,
+    getCurrentSmartTransactionsErrorMessageDismissed,
   );
   const showSmartTransactionsErrorMessage =
-    smartTransactionsError && !smartTransactionsErrorMessageDismissed;
+    currentSmartTransactionsError && !smartTransactionsErrorMessageDismissed;
 
   if (networkAndAccountSupports1559) {
     // This will pre-load gas fees before going to the View Quote page.
@@ -319,7 +321,7 @@ export default function Swap() {
         <div className="swaps__content">
           {showSmartTransactionsErrorMessage && (
             <ActionableMessage
-              type="danger"
+              type="warning"
               message={
                 <div className="build-quote__token-verification-warning-message">
                   <div className="build-quote__bold">
@@ -328,10 +330,11 @@ export default function Swap() {
                   <div>{t('smartTransactionsUnavailable')}</div>
                 </div>
               }
-              className="actionable-message--left-aligned actionable-message--error swaps__error-message"
+              className="actionable-message--left-aligned actionable-message--warning swaps__error-message"
               primaryAction={{
                 label: t('dismiss'),
-                onClick: () => dispatch(dismissSmartTransactionsErrorMessage()),
+                onClick: () =>
+                  dispatch(dismissCurrentSmartTransactionsErrorMessage()),
               }}
               withRightButton
             />

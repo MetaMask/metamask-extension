@@ -29,6 +29,7 @@ import {
   signAndSendSmartTransaction,
   updateSmartTransaction,
   setSmartTransactionsRefreshInterval,
+  fetchSmartTransactionFees,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -109,6 +110,8 @@ const initialState = {
     priceEstimates: {},
     fallBackPrice: null,
   },
+  currentSmartTransactionsError: '',
+  currentSmartTransactionsErrorMessageDismissed: false,
 };
 
 const slice = createSlice({
@@ -188,6 +191,12 @@ const slice = createSlice({
     retrievedFallbackSwapsGasPrice: (state, action) => {
       state.customGas.fallBackPrice = action.payload;
     },
+    setCurrentSmartTransactionsError: (state, action) => {
+      state.currentSmartTransactionsError = action.payload;
+    },
+    dismissCurrentSmartTransactionsErrorMessage: (state) => {
+      state.currentSmartTransactionsErrorMessageDismissed = true;
+    },
   },
 });
 
@@ -243,6 +252,12 @@ export const getSwapGasPriceEstimateData = (state) =>
 export const getSwapsFallbackGasPrice = (state) =>
   state.swaps.customGas.fallBackPrice;
 
+export const getCurrentSmartTransactionsError = (state) =>
+  state.swaps.currentSmartTransactionsError;
+
+export const getCurrentSmartTransactionsErrorMessageDismissed = (state) =>
+  state.swaps.currentSmartTransactionsErrorMessageDismissed;
+
 export function shouldShowCustomPriceTooLowWarning(state) {
   const { average } = getSwapGasPriceEstimateData(state);
 
@@ -286,16 +301,20 @@ export const getSmartTransactionsEnabled = (state) => {
   );
   const smartTransactionsFeatureFlagEnabled =
     state.metamask.swapsState?.swapsFeatureFlags?.smart_transactions
-      ?.extension_active;
+      ?.extension_active || true;
   const { smartTransactionsLiveness } = state.appState;
-  const smartTransactionsError = getSmartTransactionsError(state);
   return Boolean(
     isAllowedNetwork &&
       !hardwareWalletUsed &&
       smartTransactionsFeatureFlagEnabled &&
-      smartTransactionsLiveness &&
-      !smartTransactionsError,
+      smartTransactionsLiveness,
   );
+};
+
+export const getCurrentSmartTransactionsEnabled = (state) => {
+  const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
+  const currentSmartTransactionsError = getCurrentSmartTransactionsError(state);
+  return smartTransactionsEnabled && !currentSmartTransactionsError;
 };
 
 export const getSwapsQuoteRefreshTime = (state) =>
@@ -439,10 +458,13 @@ const {
   swapCustomGasModalLimitEdited,
   retrievedFallbackSwapsGasPrice,
   swapCustomGasModalClosed,
+  setCurrentSmartTransactionsError,
+  dismissCurrentSmartTransactionsErrorMessage,
 } = actions;
 
 export {
   clearSwapsState,
+  dismissCurrentSmartTransactionsErrorMessage,
   setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,
@@ -1150,5 +1172,20 @@ export function fetchMetaSwapsGasPriceEstimates() {
       }),
     );
     return priceEstimates;
+  };
+}
+
+export function fetchSwapsSmartTransactionFees(unsignedTransaction) {
+  return async (dispatch) => {
+    try {
+      await dispatch(fetchSmartTransactionFees(unsignedTransaction));
+    } catch (e) {
+      if (e.message.startsWith('Fetch error:')) {
+        const errorJson = e.message.slice(12);
+        const errorObj = JSON.parse(errorJson.trim());
+        console.log(`errorObj`, errorObj);
+        dispatch(setCurrentSmartTransactionsError(errorObj.type));
+      }
+    }
   };
 }
