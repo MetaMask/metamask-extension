@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
+import React, { Fragment, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../contexts/i18n';
 import Button from '../../../ui/button';
 
 function lineBreaksToBr(source) {
-  return source.split('\n').map((value) => {
+  return source.split('\n').map((value, index) => {
     return (
-      <>
+      <Fragment key={index}>
         {value}
         <br />
-      </>
+      </Fragment>
     );
   });
 }
