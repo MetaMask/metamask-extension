@@ -11,7 +11,7 @@ import { getSelectedAccount, getCurrentChainId } from '../../../selectors';
 import { hexToDecimal } from '../../../helpers/utils/conversions.util';
 import { I18nContext } from '../../../contexts/i18n';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { transformTxDecoding } from './transaction-decoding.util';
+import { transformTxDecoding, parameterProcessing } from './transaction-decoding.util';
 import {
   FETCH_PROJECT_INFO_URI,
   FETCH_SUPPORTED_NETWORKS_URI,
@@ -20,6 +20,7 @@ import {
 import Address from './components/decoding/address';
 import CopyRawData from './components/ui/copy-raw-data';
 import Accreditation from './components/ui/accreditation';
+
 
 export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const t = useContext(I18nContext);
@@ -33,6 +34,8 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const [loading, setLoading] = useState(false);
   const [hasError, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const [processedValues, setProcessedValues] = useState({})
 
   useEffect(() => {
     (async () => {
@@ -84,9 +87,21 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           blockNumber: null,
         });
 
+        let functionName = decoding.abi.name
+
         // transform tx decoding arguments into tree data
         const params = transformTxDecoding(decoding?.arguments);
+        
         setTx(params);
+
+        let dict = await parameterProcessing(params)
+
+        // This should become a function that simply takes an array of params and then returns the dictionary with name => what to display
+        if (functionName === "swapExactETHForTokens"){
+          
+          setProcessedValues(dict)
+        }
+        
 
         setLoading(false);
       } catch (error) {
@@ -125,7 +140,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           case 'uint':
             return (
               <span className="sol-item solidity-uint">
-                {[value.asBN || value.asString].toString()}
+                {[processedValues[name] || value.asBN || value.asString].toString()}
               </span>
             );
 

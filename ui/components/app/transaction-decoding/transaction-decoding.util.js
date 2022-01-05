@@ -1,3 +1,7 @@
+import { fetchToken, fetchTokenPrice } from '../../../../ui/pages/swaps/swaps.util'
+import BigNumber from 'bignumber.js';
+
+
 // *********************************************
 // data transformation utils
 // *********************************************
@@ -28,3 +32,15 @@ export const transformTxDecoding = (params) => {
     };
   });
 };
+
+
+export const parameterProcessing = async (params) => {
+  let dict = {}
+  let amountOut = new BigNumber(params[0].value.asBN) 
+  let addressOut = params[1].value[params[1].value.length - 1].value.asAddress
+  let tokenInfo = await fetchToken(addressOut, 1)
+  let tokenPrice = await fetchTokenPrice(addressOut, 'usd')
+  let displayAmount = amountOut.dividedBy(10**tokenInfo.decimals)
+  dict[params[0].name] = `${displayAmount.toString()} ($${displayAmount.times(tokenPrice)})`
+  return dict
+}

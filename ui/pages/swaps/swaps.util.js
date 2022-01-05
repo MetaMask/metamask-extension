@@ -440,15 +440,14 @@ export async function fetchSwapsFeatureFlags() {
   return response;
 }
 
-export async function fetchTokenPrice(address) {
-  const query = `contract_addresses=${address}&vs_currencies=eth`;
-
+export async function fetchTokenPrice(address, currency = 'eth') {
+  const query = `contract_addresses=${address}&vs_currencies=` + currency;
   const prices = await fetchWithCache(
     `https://api.coingecko.com/api/v3/simple/token_price/ethereum?${query}`,
     { method: 'GET' },
     { cacheRefreshTime: 60000 },
   );
-  return prices && prices[address]?.eth;
+  return prices && prices[address.toLowerCase()]?.[currency];
 }
 
 export async function fetchTokenBalance(address, userAddress) {
