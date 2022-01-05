@@ -16,7 +16,6 @@ describe('Mock gas price', function () {
     function mockGas(mockServer) {
       mockServer
         .forGet('https://gas-api.metaswap.codefi.network/networks/1/gasPrices')
-        .times(1)
         .thenCallback((request) => {
           console.log(`TEST: [${request.method}] ${request.url}`);
           return {
