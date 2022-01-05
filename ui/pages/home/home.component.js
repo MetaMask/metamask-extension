@@ -21,8 +21,6 @@ import ActionableMessage from '../../components/ui/actionable-message/actionable
 import Typography from '../../components/ui/typography/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 
-import { isBeta } from '../../helpers/utils/build-types';
-
 import {
   ASSET_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -38,7 +36,12 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
-import BetaHomeFooter from './beta-home-footer.component';
+///: BEGIN:ONLY_INCLUDE_IN(beta)
+import BetaHomeFooter from './beta/beta-home-footer.component';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import FlaskHomeFooter from './flask/flask-home-footer.component';
+///: END:ONLY_INCLUDE_IN
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
@@ -519,9 +522,8 @@ export default class Home extends PureComponent {
               </Tab>
             </Tabs>
             <div className="home__support">
-              {isBeta() ? (
-                <BetaHomeFooter />
-              ) : (
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(main)
                 t('needHelp', [
                   <a
                     href={SUPPORT_LINK}
@@ -532,7 +534,18 @@ export default class Home extends PureComponent {
                     {t('needHelpLinkText')}
                   </a>,
                 ])
-              )}
+                ///: END:ONLY_INCLUDE_IN
+              }
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(beta)
+                <BetaHomeFooter />
+                ///: END:ONLY_INCLUDE_IN
+              }
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(flask)
+                <FlaskHomeFooter />
+                ///: END:ONLY_INCLUDE_IN
+              }
             </div>
           </div>
 
