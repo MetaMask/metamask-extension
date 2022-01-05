@@ -4,6 +4,7 @@ import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '../../../components/ui/text-field';
 import { isEqualCaseInsensitive } from '../../../helpers/utils/util';
+import SearchIcon from '../../../components/ui/icon/search-icon.component';
 
 export default class SettingsSearch extends Component {
   static contextTypes = {
@@ -22,7 +23,7 @@ export default class SettingsSearch extends Component {
 
   state = {
     searchQuery: '',
-    searchIcon: 'images/search.svg',
+    searchIconColor: '#9b9b9b',
   };
 
   constructor(props) {
@@ -44,9 +45,9 @@ export default class SettingsSearch extends Component {
   handleSearch(searchQuery) {
     this.setState({ searchQuery });
     if (searchQuery === '') {
-      this.setState({ searchIcon: 'images/search.svg' });
+      this.setState({ searchIconColor: '#9b9b9b' });
     } else {
-      this.setState({ searchIcon: 'images/search-black.svg' });
+      this.setState({ searchIconColor: '#24292E' });
     }
     const fuseSearchResult = this.settingsSearchFuse.search(searchQuery);
     const addressSearchResult = this.settingsRoutesList.filter((routes) => {
@@ -62,9 +63,13 @@ export default class SettingsSearch extends Component {
   }
 
   renderStartAdornment() {
+    const args = {
+      color: this.state.searchIconColor,
+    };
+
     return (
       <InputAdornment position="start" style={{ marginRight: '12px' }}>
-        <img src={this.state.searchIcon} width="17" height="17" alt="" />
+        <SearchIcon {...args} />
       </InputAdornment>
     );
   }
