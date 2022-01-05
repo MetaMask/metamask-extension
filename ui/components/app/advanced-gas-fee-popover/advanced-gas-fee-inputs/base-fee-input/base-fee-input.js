@@ -117,6 +117,17 @@ const BaseFeeInput = () => {
             numberOfDecimalsPrimary,
           );
         }
+      } else if (maxBaseFeeGWEI && maxBaseFeeGWEI === maxFeePerGas) {
+        return maxBaseFeeGWEI;
+      } else if (
+        maxBaseFeeMultiplier &&
+        maxBaseFeeMultiplier === maxFeePerGas
+      ) {
+        return multiplyCurrencyValues(
+          estimatedBaseFee,
+          maxBaseFeeMultiplier,
+          numberOfDecimalsPrimary,
+        );
       }
     }
 
@@ -132,6 +143,13 @@ const BaseFeeInput = () => {
         } else if (maxBaseFeeGWEI) {
           return divideCurrencyValues(maxBaseFeeGWEI, estimatedBaseFee);
         }
+      } else if (
+        maxBaseFeeMultiplier &&
+        maxBaseFeeMultiplier === maxFeePerGas
+      ) {
+        return maxBaseFeeMultiplier;
+      } else if (maxBaseFeeGWEI && maxBaseFeeGWEI === maxFeePerGas) {
+        return divideCurrencyValues(maxBaseFeeGWEI, estimatedBaseFee);
       }
     }
 
