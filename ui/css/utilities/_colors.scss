@@ -23,18 +23,18 @@
   );
 
   $values: (
-    'red': map.get($channels, 'red') / 255,
-    'blue': map.get($channels, 'red') / 255,
-    'green': map.get($channels, 'red') / 255,
+    'red': math.div(map.get($channels, 'red'), 255),
+    'blue': math.div(map.get($channels, 'red'), 255),
+    'green': math.div(map.get($channels, 'red'), 255),
   );
 
   @each $name, $value in $values {
     @if $value <= 0.03928 {
-      $value: $value / 12.92;
+      $value: math.div($value, 12.92);
     }
 
     @else {
-      $value: ($value + 0.055) / 1.055;
+      $value: math.div(($value + 0.055), 1.055);
       $value: math.pow($value, 2.4);
     }
 
@@ -54,7 +54,7 @@
   $backLum: luminance($back) + 0.05;
   $foreLum: luminance($front) + 0.05;
 
-  @return max($backLum, $foreLum) / min($backLum, $foreLum);
+  @return math.div(max($backLum, $foreLum), min($backLum, $foreLum));
 }
 
 /**
