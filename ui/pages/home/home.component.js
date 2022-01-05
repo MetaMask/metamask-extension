@@ -57,6 +57,7 @@ function shouldCloseNotificationPopup({
     !isSigningQRHardwareTransaction
   );
 }
+
 export default class Home extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
