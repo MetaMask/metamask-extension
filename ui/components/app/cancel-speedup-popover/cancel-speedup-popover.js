@@ -45,20 +45,19 @@ const CancelSpeedupPopover = () => {
     if (
       transaction.previousGas ||
       appIsLoading ||
-      !gasFeeEstimates?.high ||
-      !gasFeeEstimates?.medium ||
       currentModal !== 'cancelSpeedUpTransaction'
     ) {
       return;
     }
-
     // If gas used previously + 10% is less than medium estimated gas
     // estimate is set to medium, else estimate is set to minimum
-    const gasUsedLessThanMedium = gasEstimateGreaterThanGasUsedPlusTenPercent(
-      transaction,
-      gasFeeEstimates,
-      PRIORITY_LEVELS.MEDIUM,
-    );
+    const gasUsedLessThanMedium =
+      gasFeeEstimates &&
+      gasEstimateGreaterThanGasUsedPlusTenPercent(
+        transaction,
+        gasFeeEstimates,
+        PRIORITY_LEVELS.MEDIUM,
+      );
     if (gasUsedLessThanMedium) {
       updateTransactionUsingEstimate(PRIORITY_LEVELS.MEDIUM);
       return;

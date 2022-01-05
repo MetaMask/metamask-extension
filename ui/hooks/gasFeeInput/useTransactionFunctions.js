@@ -6,7 +6,7 @@ import {
   decimalToHex,
   decGWEIToHexWEI,
 } from '../../helpers/utils/conversions.util';
-import { addTenPercent } from '../../helpers/utils/gas';
+import { addTenPercentAndRound } from '../../helpers/utils/gas';
 import {
   createCancelTransaction,
   createSpeedUpTransaction,
@@ -114,11 +114,12 @@ export const useTransactionFunctions = ({
   const updateTransactionToMinimumGasFee = useCallback(() => {
     const { gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas } =
       transaction.previousGas || transaction.txParams;
+
     updateTransaction({
       estimateUsed: PRIORITY_LEVELS.MINIMUM,
       gasLimit,
-      maxFeePerGas: addTenPercent(maxFeePerGas),
-      maxPriorityFeePerGas: addTenPercent(maxPriorityFeePerGas),
+      maxFeePerGas: addTenPercentAndRound(maxFeePerGas),
+      maxPriorityFeePerGas: addTenPercentAndRound(maxPriorityFeePerGas),
     });
   }, [transaction, updateTransaction]);
 
