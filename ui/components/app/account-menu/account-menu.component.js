@@ -12,7 +12,9 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import {
   PRIMARY,
   SUPPORT_LINK,
+  ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
   SUPPORT_REQUEST_LINK,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/common';
 import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
 import {
@@ -25,8 +27,6 @@ import {
 import TextField from '../../ui/text-field';
 import SearchIcon from '../../ui/search-icon';
 import Button from '../../ui/button';
-
-import { isBeta } from '../../../helpers/utils/build-types';
 
 export function AccountMenuItem(props) {
   const { icon, children, text, subText, className, onClick } = props;
@@ -325,10 +325,10 @@ export default class AccountMenu extends Component {
 
     let supportText = t('support');
     let supportLink = SUPPORT_LINK;
-    if (isBeta()) {
-      supportText = t('needHelpSubmitTicket');
-      supportLink = SUPPORT_REQUEST_LINK;
-    }
+    ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
+    supportText = t('needHelpSubmitTicket');
+    supportLink = SUPPORT_REQUEST_LINK;
+    ///: END:ONLY_INCLUDE_IN
 
     return (
       <div className="account-menu">
