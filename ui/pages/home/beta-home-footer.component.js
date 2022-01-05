@@ -1,4 +1,5 @@
 import React from 'react';
+import { SUPPORT_REQUEST_LINK } from '../../helpers/constants/common';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
 const BetaHomeFooter = () => {
@@ -6,11 +7,7 @@ const BetaHomeFooter = () => {
 
   return (
     <>
-      <a
-        href="https://metamask.zendesk.com/hc/en-us/requests/new"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a href={SUPPORT_REQUEST_LINK} target="_blank" rel="noopener noreferrer">
         {t('needHelpSubmitTicket')}
       </a>{' '}
       |{' '}

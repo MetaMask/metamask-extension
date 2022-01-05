@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
+import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
 import CollectiblesTab from '../../components/app/collectibles-tab';
@@ -523,7 +524,7 @@ export default class Home extends PureComponent {
               ) : (
                 t('needHelp', [
                   <a
-                    href="https://support.metamask.io"
+                    href={SUPPORT_LINK}
                     target="_blank"
                     rel="noopener noreferrer"
                     key="need-help-link"

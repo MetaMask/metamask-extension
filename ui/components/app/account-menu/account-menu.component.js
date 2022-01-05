@@ -9,7 +9,11 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import { PRIMARY } from '../../../helpers/constants/common';
+import {
+  PRIMARY,
+  SUPPORT_LINK,
+  SUPPORT_REQUEST_LINK,
+} from '../../../helpers/constants/common';
 import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
 import {
   SETTINGS_ROUTE,
@@ -320,10 +324,10 @@ export default class AccountMenu extends Component {
     }
 
     let supportText = t('support');
-    let supportLink = 'https://support.metamask.io';
+    let supportLink = SUPPORT_LINK;
     if (isBeta()) {
       supportText = t('needHelpSubmitTicket');
-      supportLink = 'https://metamask.zendesk.com/hc/en-us/requests/new';
+      supportLink = SUPPORT_REQUEST_LINK;
     }
 
     return (
