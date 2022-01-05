@@ -40,6 +40,7 @@ export const PRIORITY_LEVELS = {
   HIGH: 'high',
   CUSTOM: 'custom',
   DAPP_SUGGESTED: 'dappSuggested',
+  ADVANCED: 'advanced',
 };
 
 /**

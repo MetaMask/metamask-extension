@@ -35,6 +35,12 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
 
   let icon = estimateUsed;
   let title = estimateUsed;
+
+  if (estimateUsed === PRIORITY_LEVELS.ADVANCED) {
+    icon = PRIORITY_LEVELS.CUSTOM;
+    title = PRIORITY_LEVELS.CUSTOM;
+  }
+
   if (
     estimateUsed === PRIORITY_LEVELS.HIGH &&
     editGasMode === EDIT_GAS_MODES.SWAPS
@@ -57,7 +63,8 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
         <span className="edit-gas-fee-button__label">{t(title)}</span>
         <i className="fas fa-chevron-right asset-list-item__chevron-right" />
       </button>
-      {estimateUsed === 'custom' && (
+      {(estimateUsed === PRIORITY_LEVELS.CUSTOM ||
+        estimateUsed === PRIORITY_LEVELS.ADVANCED) && (
         <button onClick={() => openModal('advancedGasFee')}>{t('edit')}</button>
       )}
       {estimateUsed === 'dappSuggested' && (
