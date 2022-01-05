@@ -141,12 +141,6 @@
   background-color: $scorpion;
 }
 
-.network-dropdown-testnets {
-  &--no-visibility {
-    visibility: hidden;
-  }
-}
-
 .network-dropdown-title {
   @include H4;
 
