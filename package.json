@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.8.2",
+  "version": "10.8.2-flask.2",
   "private": true,
   "repository": {
     "type": "git",
