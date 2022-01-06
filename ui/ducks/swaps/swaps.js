@@ -1176,14 +1176,16 @@ export function fetchMetaSwapsGasPriceEstimates() {
 }
 
 export function fetchSwapsSmartTransactionFees(unsignedTransaction) {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       await dispatch(fetchSmartTransactionFees(unsignedTransaction));
     } catch (e) {
-      if (e.message.startsWith('Fetch error:')) {
+      const {
+        swaps: { isFeatureFlagLoaded },
+      } = getState();
+      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorJson = e.message.slice(12);
         const errorObj = JSON.parse(errorJson.trim());
-        console.log(`errorObj`, errorObj);
         dispatch(setCurrentSmartTransactionsError(errorObj.type));
       }
     }

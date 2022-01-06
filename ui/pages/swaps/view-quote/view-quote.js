@@ -40,7 +40,9 @@ import {
   signAndSendSwapsSmartTransaction,
   getSwapsRefreshStates,
   fetchSwapsSmartTransactionFees,
-  getCurrentSmartTransactionsEnabled,
+  getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsError,
+  getCurrentSmartTransactionsErrorMessageDismissed,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -187,17 +189,26 @@ export default function ViewQuote() {
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
-  const smartTransactionsEnabled = useSelector(
-    getCurrentSmartTransactionsEnabled,
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsError = useSelector(
+    getCurrentSmartTransactionsError,
   );
+  const currentSmartTransactionsErrorMessageDismissed = useSelector(
+    getCurrentSmartTransactionsErrorMessageDismissed,
+  );
+  const currentSmartTransactionsEnabled =
+    smartTransactionsEnabled &&
+    !(
+      currentSmartTransactionsError &&
+      (currentSmartTransactionsError !== 'not_enough_funds' ||
+        currentSmartTransactionsErrorMessageDismissed)
+    );
   const smartTransactionFees = useSelector(getSmartTransactionFees);
   const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   const unsignedTransaction = usedQuote.trade;
 
   useEffect(() => {
-    console.log('effect running');
-    if (smartTransactionsEnabled && smartTransactionsOptInStatus) {
-      console.log('fetch stx fees');
+    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
       const unsignedTx = {
         from: unsignedTransaction.from,
         to: unsignedTransaction.to,
@@ -207,23 +218,16 @@ export default function ViewQuote() {
         chainId,
       };
       intervalId = setInterval(() => {
-        console.log('inside interval');
         dispatch(fetchSwapsSmartTransactionFees(unsignedTx));
       }, swapsRefreshRates.stxGetTransactionsRefreshTime);
       dispatch(fetchSwapsSmartTransactionFees(unsignedTx));
     } else if (intervalId) {
-      console.log('clear interval');
       clearInterval(intervalId);
-    } else {
-      console.log('no interval');
     }
-    return () => {
-      console.log('clear interval on leave');
-      clearInterval(intervalId);
-    };
+    return () => clearInterval(intervalId);
   }, [
     dispatch,
-    smartTransactionsEnabled,
+    currentSmartTransactionsEnabled,
     smartTransactionsOptInStatus,
     unsignedTransaction.data,
     unsignedTransaction.from,
@@ -286,7 +290,7 @@ export default function ViewQuote() {
 
   // Smart Transactions gas fees.
   if (
-    smartTransactionsEnabled &&
+    currentSmartTransactionsEnabled &&
     smartTransactionsOptInStatus &&
     smartTransactionFees
   ) {
@@ -382,7 +386,7 @@ export default function ViewQuote() {
   });
 
   if (
-    smartTransactionsEnabled &&
+    currentSmartTransactionsEnabled &&
     smartTransactionsOptInStatus &&
     smartTransactionFees
   ) {
@@ -480,7 +484,9 @@ export default function ViewQuote() {
   }, [originalApproveAmount, approveAmount]);
 
   const showInsufficientWarning =
-    (balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden;
+    (balanceError || tokenBalanceNeeded || ethBalanceNeeded) &&
+    !warningHidden &&
+    !currentSmartTransactionsEnabled;
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
@@ -500,7 +506,7 @@ export default function ViewQuote() {
     available_quotes: numberOfQuotes,
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
-    stx_enabled: smartTransactionsEnabled,
+    stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,
   };
 
@@ -864,14 +870,14 @@ export default function ViewQuote() {
               sourceIconUrl={sourceTokenIconUrl}
               destinationIconUrl={destinationIconUrl}
             />
-            {smartTransactionsEnabled &&
+            {currentSmartTransactionsEnabled &&
               smartTransactionsOptInStatus &&
               !smartTransactionFees && (
                 <Box marginTop={0} marginBottom={10}>
                   <PulseLoader />
                 </Box>
               )}
-            {(!smartTransactionsEnabled ||
+            {(!currentSmartTransactionsEnabled ||
               !smartTransactionsOptInStatus ||
               smartTransactionFees) && (
               <div
@@ -909,7 +915,7 @@ export default function ViewQuote() {
                     maxPriorityFeePerGas,
                   )}
                   maxFeePerGasDecGWEI={hexWEIToDecGWEI(maxFeePerGas)}
-                  smartTransactionsEnabled={smartTransactionsEnabled}
+                  smartTransactionsEnabled={currentSmartTransactionsEnabled}
                   smartTransactionsOptInStatus={smartTransactionsOptInStatus}
                 />
               </div>
@@ -919,7 +925,10 @@ export default function ViewQuote() {
             onSubmit={() => {
               setSubmitClicked(true);
               if (!balanceError) {
-                if (smartTransactionsEnabled && smartTransactionsOptInStatus) {
+                if (
+                  currentSmartTransactionsEnabled &&
+                  smartTransactionsOptInStatus
+                ) {
                   dispatch(
                     signAndSendSwapsSmartTransaction({
                       unsignedTransaction,

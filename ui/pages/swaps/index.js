@@ -45,6 +45,7 @@ import {
 import {
   checkNetworkAndAccountSupports1559,
   currentNetworkTxListSelector,
+  getSwapsDefaultToken,
 } from '../../selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -123,6 +124,7 @@ export default function Swap() {
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const listTokenValues = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
@@ -321,21 +323,49 @@ export default function Swap() {
         <div className="swaps__content">
           {showSmartTransactionsErrorMessage && (
             <ActionableMessage
-              type="warning"
-              message={
-                <div className="build-quote__token-verification-warning-message">
-                  <div className="build-quote__bold">
-                    {t('smartTransactionsAlert')}
-                  </div>
-                  <div>{t('smartTransactionsUnavailable')}</div>
-                </div>
+              type={
+                currentSmartTransactionsError === 'not_enough_funds'
+                  ? 'default'
+                  : 'warning'
               }
-              className="actionable-message--left-aligned actionable-message--warning swaps__error-message"
-              primaryAction={{
-                label: t('dismiss'),
-                onClick: () =>
-                  dispatch(dismissCurrentSmartTransactionsErrorMessage()),
-              }}
+              message={
+                currentSmartTransactionsError === 'not_enough_funds' ? (
+                  <div>
+                    {t('swapApproveNeedMoreTokensSmartTransactions', [
+                      defaultSwapsToken.symbol,
+                    ])}{' '}
+                    <span
+                      onClick={() =>
+                        dispatch(dismissCurrentSmartTransactionsErrorMessage())
+                      }
+                      style={{
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Try a regular swap.
+                    </span>
+                  </div>
+                ) : (
+                  <div className="build-quote__token-verification-warning-message">
+                    <div className="build-quote__bold">
+                      {t('smartTransactionsUnavailable')}
+                    </div>
+                    <div>{t('smartTransactionsFallbackToNormal')}</div>
+                  </div>
+                )
+              }
+              className={
+                currentSmartTransactionsError !== 'not_enough_funds' &&
+                'actionable-message--left-aligned actionable-message--warning swaps__error-message'
+              }
+              primaryAction={
+                currentSmartTransactionsError !== 'not_enough_funds' && {
+                  label: t('dismiss'),
+                  onClick: () =>
+                    dispatch(dismissCurrentSmartTransactionsErrorMessage()),
+                }
+              }
               withRightButton
             />
           )}
