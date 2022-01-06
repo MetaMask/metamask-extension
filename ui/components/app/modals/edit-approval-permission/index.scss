@@ -99,7 +99,7 @@
     }
 
     &__option-label--selected {
-      color: $primary-blue;
+      color: var(--primary-blue);
     }
 
     &__option-description {
@@ -136,7 +136,7 @@
     }
 
     &__radio-button-outline--selected {
-      background: $primary-blue;
+      background: var(--primary-blue);
     }
 
     &__radio-button-fill {
@@ -150,7 +150,7 @@
     &__radio-button-dot {
       width: 8px;
       height: 8px;
-      background: $primary-blue;
+      background: var(--primary-blue);
       border-radius: 4px;
       position: absolute;
     }

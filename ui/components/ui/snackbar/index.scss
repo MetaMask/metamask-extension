@@ -2,10 +2,10 @@
   @include H7;
 
   padding: 0.75rem 1rem;
-  color: $Blue-600;
+  color: var(--Blue-600);
   min-width: 360px;
   width: fit-content;
-  background: $Blue-000;
-  border: 1px solid $Blue-200;
+  background: var(--Blue-000);
+  border: 1px solid var(--Blue-200);
   border-radius: 6px;
 }

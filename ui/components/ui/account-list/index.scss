@@ -61,7 +61,7 @@
     }
 
     &:hover {
-      background: $Grey-000;
+      background: var(--Grey-000);
       cursor: pointer;
     }
 
@@ -75,7 +75,7 @@
     &__label {
       @include H6;
 
-      color: $Black-100;
+      color: var(--Black-100);
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
@@ -84,7 +84,7 @@
     &__balance {
       @include H7;
 
-      color: $Grey-500;
+      color: var(--Grey-500);
     }
 
     &__last-connected {
@@ -93,7 +93,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      color: $primary-blue;
+      color: var(--primary-blue);
     }
   }
 
@@ -113,14 +113,14 @@
   }
 
   .fa-info-circle {
-    color: $Grey-200;
+    color: var(--Grey-200);
     cursor: pointer;
     margin-inline-start: 8px;
     font-size: 0.9rem;
   }
 
   .fa-info-circle:hover {
-    color: $Grey-300;
+    color: var(--Grey-300);
   }
 
   &__text,
@@ -130,11 +130,11 @@
   }
 
   &__text-blue {
-    color: $primary-blue;
+    color: var(--primary-blue);
     cursor: pointer;
   }
 
   &__text-grey {
-    color: $Grey-500;
+    color: var(--Grey-500);
   }
 }

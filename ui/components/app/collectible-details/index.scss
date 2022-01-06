@@ -52,13 +52,13 @@ $spacer-break-small: 16px;
 
   &__contract-link,
   &__image-link {
-    color: $primary-1;
+    color: var(--primary-1);
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: break-all;
 
     &:hover {
-      color: $primary-3;
+      color: var(--primary-3);
     }
   }
 

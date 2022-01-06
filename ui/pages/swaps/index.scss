@@ -36,7 +36,7 @@
     @media screen and (min-width: $break-large) {
       width: 460px;
       background: white;
-      border: 1px solid $Grey-100;
+      border: 1px solid var(--Grey-100);
       box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
       border-radius: 8px;
       height: 620px;
@@ -66,7 +66,7 @@
     @include H5;
 
     font-weight: bold;
-    color: $Black-100;
+    color: var(--Black-100);
     margin-top: -5px;
     flex: 1;
     text-align: center;
@@ -79,7 +79,7 @@
     align-items: center;
     padding-top: 0;
     padding-bottom: 16px;
-    background: $Grey-000;
+    background: var(--Grey-000);
     width: 100%;
     position: relative;
     flex-direction: row;
@@ -94,7 +94,7 @@
   &__header-cancel {
     @include H7;
 
-    color: $Blue-500;
+    color: var(--Blue-500);
     cursor: pointer;
     padding-right: 24px;
     flex: 1;
@@ -104,7 +104,7 @@
   &__header-edit {
     @include H7;
 
-    color: $Blue-500;
+    color: var(--Blue-500);
     cursor: pointer;
     padding-left: 24px;
     flex: 1;

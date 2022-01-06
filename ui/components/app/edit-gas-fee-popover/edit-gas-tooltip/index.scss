@@ -20,7 +20,7 @@
     }
 
     &__dialog {
-      background-color: $Orange-500;
+      background-color: var(--Orange-500);
       border-radius: 30px;
       margin: 4px 0;
       text-align: center;

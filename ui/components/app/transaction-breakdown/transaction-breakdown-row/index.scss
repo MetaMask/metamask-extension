@@ -1,7 +1,7 @@
 .transaction-breakdown-row {
   @include H7;
 
-  color: $Grey-500;
+  color: var(--Grey-500);
   display: flex;
   justify-content: space-between;
   padding: 8px 0;

@@ -4,11 +4,11 @@
   width: 600px;
 
   .control-dots .dot {
-    background: $ui-2;
+    background: var(--ui-2);
     box-shadow: none;
 
     &.selected {
-      background: $ui-4;
+      background: var(--ui-4);
     }
   }
 
@@ -18,11 +18,11 @@
   }
 
   .carousel .control-next.control-arrow::before {
-    border-left-color: $ui-3;
+    border-left-color: var(--ui-3);
   }
 
   .carousel .control-prev.control-arrow::before {
-    border-right-color: $ui-3;
+    border-right-color: var(--ui-3);
   }
 
   .carousel.carousel-slider .control-arrow:hover {

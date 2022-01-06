@@ -3,7 +3,7 @@
   justify-content: space-between;
   font: inherit;
   padding: 4px 10px 4px 10px;
-  border-bottom: 1px solid $geyser;
+  border-bottom: 1px solid var(--geyser);
   flex: 0 0 auto;
 
   &__container {
@@ -44,7 +44,7 @@
   &__longtext {
     @include H9;
 
-    color: $oslo-gray;
+    color: var(--oslo-gray);
   }
 
   &__imageflip {

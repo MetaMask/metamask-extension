@@ -21,7 +21,7 @@
   }
 
   &__separator {
-    border-bottom: 1px solid $ui-grey;
+    border-bottom: 1px solid var(--ui-grey);
     width: 100%;
   }
 }

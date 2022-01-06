@@ -16,10 +16,10 @@
 
     width: 250px;
     text-align: center;
-    border: 1px solid $alto;
+    border: 1px solid var(--alto);
 
     &--error {
-      border: 1px solid $monzo;
+      border: 1px solid var(--monzo);
     }
   }
 
@@ -32,14 +32,14 @@
 
   &__icon {
     cursor: pointer;
-    color: $dusty-gray;
+    color: var(--dusty-gray);
   }
 
   &__error {
     @include H7;
 
     left: 8px;
-    color: $red;
+    color: var(--red);
   }
 
   &__error-amount {

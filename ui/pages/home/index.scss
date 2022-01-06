@@ -6,7 +6,7 @@
 
   &__main-view {
     flex: 1 1 66.5%;
-    background: $white;
+    background: var(--white);
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -30,12 +30,12 @@
     @include H6;
 
     flex-grow: 1;
-    color: $Grey-500;
+    color: var(--Grey-500);
     font-weight: 500;
   }
 
   &__main-view &__tab--active {
-    color: $Blue-500;
+    color: var(--Blue-500);
   }
 
   &__main-view &__tab button {
@@ -50,7 +50,7 @@
 
     padding-left: 24px;
     padding-right: 24px;
-    color: $Grey-800;
+    color: var(--Grey-800);
 
     div {
       margin-bottom: 20px;
@@ -103,7 +103,7 @@
 
       a,
       a:hover {
-        color: $dodger-blue;
+        color: var(--dodger-blue);
         cursor: pointer;
       }
     }
@@ -130,7 +130,7 @@
     text-align: center;
 
     a {
-      color: $primary-1;
+      color: var(--primary-1);
     }
   }
 
@@ -148,7 +148,7 @@
   }
 
   &__close {
-    color: $ui-black;
+    color: var(--ui-black);
     background: none;
     margin-left: 20px;
   }
