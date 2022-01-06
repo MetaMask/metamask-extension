@@ -424,12 +424,14 @@ export const getSwapsRefreshStates = (state) => {
     swapsQuotePrefetchingRefreshTime,
     swapsStxGetTransactionsRefreshTime,
     swapsStxBatchStatusRefreshTime,
+    swapsStxStatusDeadline,
   } = state.metamask.swapsState;
   return {
     quoteRefreshTime: swapsQuoteRefreshTime,
     quotePrefetchingRefreshTime: swapsQuotePrefetchingRefreshTime,
     stxGetTransactionsRefreshTime: swapsStxGetTransactionsRefreshTime,
     stxBatchStatusRefreshTime: swapsStxBatchStatusRefreshTime,
+    stxStatusDeadline: swapsStxStatusDeadline,
   };
 };
 
