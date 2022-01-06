@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -28,6 +28,8 @@ import {
   checkAndUpdateAllCollectiblesOwnershipStatus,
   detectCollectibles,
 } from '../../../store/actions';
+import { usePrevious } from '../../../hooks/usePrevious';
+import { isEqual } from 'lodash';
 
 export default function CollectiblesTab({ onAddNFT }) {
   const collectibles = useSelector(getCollectibles);
@@ -40,23 +42,29 @@ export default function CollectiblesTab({ onAddNFT }) {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const [collections, setCollections] = useState({});
+  const [previouslyOwnedCollection, setPreviouslyOwnedCollection] = useState({
+    collectionName: 'Previously Owned',
+    collectibles: [],
+  });
 
   const getCollections = () => {
-    const collections = {};
-    const previouslyOwnedCollection = {
+    const newCollections = {};
+    const newPreviouslyOwnedCollections = {
       collectionName: 'Previously Owned',
       collectibles: [],
     };
+
     collectibles.forEach((collectible) => {
       if (collectible?.isCurrentlyOwned === false) {
-        previouslyOwnedCollection.collectibles.push(collectible);
-      } else if (collections[collectible.address]) {
-        collections[collectible.address].collectibles.push(collectible);
+        newPreviouslyOwnedCollections.collectibles.push(collectible);
+      } else if (newCollections[collectible.address]) {
+        newCollections[collectible.address].collectibles.push(collectible);
       } else {
         const collectionContract = collectibleContracts.find(
           ({ address }) => address === collectible.address,
         );
-        collections[collectible.address] = {
+        newCollections[collectible.address] = {
           collectionName: collectionContract?.name || collectible.name,
           collectionImage:
             collectionContract?.logo || collectible.collectionImage,
@@ -64,10 +72,16 @@ export default function CollectiblesTab({ onAddNFT }) {
         };
       }
     });
-    return [collections, previouslyOwnedCollection];
+    setCollections(newCollections);
+    setPreviouslyOwnedCollection(newPreviouslyOwnedCollections);
   };
 
-  const [collections, previouslyOwnedCollection] = getCollections();
+  const prevCollectibles = usePrevious(collectibles);
+  useEffect(() => {
+    if (!isEqual(prevCollectibles, collectibles)) {
+      getCollections();
+    }
+  }, [collectibles, prevCollectibles, getCollections]);
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);

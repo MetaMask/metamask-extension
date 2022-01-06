@@ -110,7 +110,7 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
 } from './controllers/permissions';
-import { getKnownCollectible } from './lib/util';
+import { isEqualCaseInsensitive } from '../../ui/helpers/utils/util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -609,21 +609,36 @@ export default class MetamaskController extends EventEmitter {
 
         // if this is a transferFrom method generated from within the app it may be a collectible transfer transaction
         // in which case we will want to check and update ownership status of the transferred collectible.
-        if (txMeta?.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM) {
-          const transactionData = getTransactionData(txMeta?.txParams?.data);
+        if (
+          txMeta.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM &&
+          txMeta.txParams !== undefined
+        ) {
+          const {
+            data,
+            to: contractAddress,
+            from: userAddress,
+          } = txMeta.txParams;
+          const { chainId } = txMeta;
+          const transactionData = getTransactionData(data);
           const tokenAmountOrTokenId = getTokenValueParam(transactionData);
-          const contractAddress = txMeta?.txParams?.to;
           const { allCollectibles } = this.collectiblesController.state;
+         
           // check if its a known collectible
-          const knownCollectible = getKnownCollectible(
-            allCollectibles,
-            contractAddress,
-            tokenAmountOrTokenId,
+          const knownCollectible = allCollectibles?.[userAddress]?.[
+            chainId
+          ].find(
+            ({ address, tokenId }) =>
+              isEqualCaseInsensitive(address, contractAddress) &&
+              tokenId === tokenAmountOrTokenId,
           );
+
           // if it is we check and update ownership status.
           if (knownCollectible) {
             this.collectiblesController.checkAndUpdateSingleCollectibleOwnershipStatus(
               knownCollectible,
+              false,
+              // TODO add this when checkAndUpdateSingleCollectibleOwnershipStatus is updated
+              // { userAddress, chainId },
             );
           }
         }

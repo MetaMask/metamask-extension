@@ -50,6 +50,8 @@ import Button from '../../ui/button';
 import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
 import { ERC721 } from '../../../helpers/constants/common';
+import { usePrevious } from '../../../hooks/usePrevious';
+import { isEqual } from 'lodash';
 
 export default function CollectibleDetails({ collectible }) {
   const {
@@ -83,9 +85,12 @@ export default function CollectibleDetails({ collectible }) {
     history.push(DEFAULT_ROUTE);
   };
 
+  const prevCollectible = usePrevious(collectible);
   useEffect(() => {
-    checkAndUpdateSingleCollectibleOwnershipStatus(collectible);
-  }, [collectible]);
+    if (!isEqual(prevCollectible, collectible)) {
+      checkAndUpdateSingleCollectibleOwnershipStatus(collectible);
+    }
+  }, [collectible, prevCollectible]);
 
   const getOpenSeaLink = () => {
     switch (currentNetwork) {

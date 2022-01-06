@@ -159,34 +159,7 @@ function getChainType(chainId) {
   return 'custom';
 }
 
-/**
- * Loops through the nested allCollectibles collection and finds and returns a collectible
- * that matches the contractAddress/tokenId pair passed as args.
- *
- * @param {Object} allCollectibles - The collection of all collectibles the user has ever owned organized by account and chainId.
- * @param {string} contractAddress - The address of the contract to match against.
- * @param {string} collectibleTokenId - The collectible tokenId to match against.
- * @returns {Object | undefined} - The matching collectible if found, undefined if not found.
- *
- */
-function getKnownCollectible(
-  allCollectibles,
-  contractAddress,
-  collectibleTokenId,
-) {
-  let matchedCollectible;
-  find(allCollectibles, (collectiblesByChainId) => {
-    find(collectiblesByChainId, (collectibles) => {
-      matchedCollectible = collectibles.find(
-        ({ address, tokenId }) =>
-          isEqualCaseInsensitive(address, contractAddress) &&
-          tokenId === collectibleTokenId,
-      );
-    });
-  });
 
-  return matchedCollectible;
-}
 
 export {
   getPlatform,
@@ -197,5 +170,4 @@ export {
   addHexPrefix,
   bnToHex,
   getChainType,
-  getKnownCollectible,
 };
