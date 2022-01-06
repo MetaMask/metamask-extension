@@ -136,7 +136,7 @@ const BaseFeeInput = () => {
         return divideCurrencyValues(maxBaseFeeGWEI, estimatedBaseFee);
       }
     }
-    console.log(maxFeePerGas);
+
     return divideCurrencyValues(maxFeePerGas, estimatedBaseFee);
   });
 
