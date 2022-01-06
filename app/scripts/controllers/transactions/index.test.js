@@ -659,7 +659,7 @@ describe('Transaction Controller', function () {
             suggestedMaxPriorityFeePerGas: '2',
             suggestedMaxFeePerGas: '5',
           },
-          estimatedBaseFee: '50',
+          estimatedBaseFee: 50,
         },
         gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
       }));
@@ -672,6 +672,7 @@ describe('Transaction Controller', function () {
       assert.deepEqual(defaultGasFees, {
         maxPriorityFeePerGas: EXPECTED_MAX_PRIORITY_FEE_PER_GAS,
         maxFeePerGas: EXPECTED_MAX_FEE_PER_GAS,
+        estimatedBaseFee: 50,
       });
     });
 
