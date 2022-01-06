@@ -69,6 +69,7 @@ import {
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
 import { getTransactionData } from '../../ui/helpers/utils/transactions.util';
+import { isEqualCaseInsensitive } from '../../ui/helpers/utils/util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -110,7 +111,6 @@ import {
   NOTIFICATION_NAMES,
   unrestrictedMethods,
 } from './controllers/permissions';
-import { isEqualCaseInsensitive } from '../../ui/helpers/utils/util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -622,7 +622,7 @@ export default class MetamaskController extends EventEmitter {
           const transactionData = getTransactionData(data);
           const tokenAmountOrTokenId = getTokenValueParam(transactionData);
           const { allCollectibles } = this.collectiblesController.state;
-         
+
           // check if its a known collectible
           const knownCollectible = allCollectibles?.[userAddress]?.[
             chainId

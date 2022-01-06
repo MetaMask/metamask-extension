@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -29,7 +30,6 @@ import {
   detectCollectibles,
 } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { isEqual } from 'lodash';
 
 export default function CollectiblesTab({ onAddNFT }) {
   const collectibles = useSelector(getCollectibles);
@@ -48,40 +48,40 @@ export default function CollectiblesTab({ onAddNFT }) {
     collectibles: [],
   });
 
-  const getCollections = () => {
-    const newCollections = {};
-    const newPreviouslyOwnedCollections = {
-      collectionName: 'Previously Owned',
-      collectibles: [],
-    };
-
-    collectibles.forEach((collectible) => {
-      if (collectible?.isCurrentlyOwned === false) {
-        newPreviouslyOwnedCollections.collectibles.push(collectible);
-      } else if (newCollections[collectible.address]) {
-        newCollections[collectible.address].collectibles.push(collectible);
-      } else {
-        const collectionContract = collectibleContracts.find(
-          ({ address }) => address === collectible.address,
-        );
-        newCollections[collectible.address] = {
-          collectionName: collectionContract?.name || collectible.name,
-          collectionImage:
-            collectionContract?.logo || collectible.collectionImage,
-          collectibles: [collectible],
-        };
-      }
-    });
-    setCollections(newCollections);
-    setPreviouslyOwnedCollection(newPreviouslyOwnedCollections);
-  };
-
   const prevCollectibles = usePrevious(collectibles);
   useEffect(() => {
+    const getCollections = () => {
+      const newCollections = {};
+      const newPreviouslyOwnedCollections = {
+        collectionName: 'Previously Owned',
+        collectibles: [],
+      };
+
+      collectibles.forEach((collectible) => {
+        if (collectible?.isCurrentlyOwned === false) {
+          newPreviouslyOwnedCollections.collectibles.push(collectible);
+        } else if (newCollections[collectible.address]) {
+          newCollections[collectible.address].collectibles.push(collectible);
+        } else {
+          const collectionContract = collectibleContracts.find(
+            ({ address }) => address === collectible.address,
+          );
+          newCollections[collectible.address] = {
+            collectionName: collectionContract?.name || collectible.name,
+            collectionImage:
+              collectionContract?.logo || collectible.collectionImage,
+            collectibles: [collectible],
+          };
+        }
+      });
+      setCollections(newCollections);
+      setPreviouslyOwnedCollection(newPreviouslyOwnedCollections);
+    };
+
     if (!isEqual(prevCollectibles, collectibles)) {
       getCollections();
     }
-  }, [collectibles, prevCollectibles, getCollections]);
+  }, [collectibles, prevCollectibles, collectibleContracts]);
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Card from '../../ui/card';
 import Typography from '../../ui/typography/typography';
@@ -51,7 +52,6 @@ import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
 import { ERC721 } from '../../../helpers/constants/common';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { isEqual } from 'lodash';
 
 export default function CollectibleDetails({ collectible }) {
   const {

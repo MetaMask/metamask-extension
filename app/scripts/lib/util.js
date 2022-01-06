@@ -1,7 +1,7 @@
 import extension from 'extensionizer';
 import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
-import { find, memoize } from 'lodash';
+import { memoize } from 'lodash';
 import {
   MAINNET_CHAIN_ID,
   TEST_CHAINS,
@@ -18,7 +18,6 @@ import {
   PLATFORM_EDGE,
   PLATFORM_BRAVE,
 } from '../../../shared/constants/app';
-import { isEqualCaseInsensitive } from '../../../ui/helpers/utils/util';
 
 /**
  * @see {@link getEnvironmentType}
@@ -158,8 +157,6 @@ function getChainType(chainId) {
   }
   return 'custom';
 }
-
-
 
 export {
   getPlatform,
