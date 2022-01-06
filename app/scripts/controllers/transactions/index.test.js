@@ -659,6 +659,7 @@ describe('Transaction Controller', function () {
             suggestedMaxPriorityFeePerGas: '2',
             suggestedMaxFeePerGas: '5',
           },
+          estimatedBaseFee: '50',
         },
         gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
       }));
