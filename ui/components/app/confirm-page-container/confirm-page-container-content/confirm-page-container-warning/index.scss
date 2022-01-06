@@ -1,0 +1,18 @@
+.confirm-page-container-warning {
+  background-color: #fffcdb;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid $geyser;
+  padding: 12px 24px;
+
+  &__icon {
+    flex: 0 0 auto;
+    margin-right: 16px;
+  }
+
+  &__warning {
+    @include H7;
+
+    color: #5f5922;
+  }
+}

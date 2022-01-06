@@ -1,8 +1,8 @@
 import extension from 'extensionizer';
+import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { getEnvironmentType, checkForError } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
-import { getBlockExplorerUrlForTx } from '../../../shared/modules/transaction.utils';
 
 export default class ExtensionPlatform {
   //
@@ -79,21 +79,57 @@ export default class ExtensionPlatform {
   }
 
   getVersion() {
-    return extension.runtime.getManifest().version;
+    const {
+      version,
+      version_name: versionName,
+    } = extension.runtime.getManifest();
+
+    const versionParts = version.split('.');
+    if (versionName) {
+      if (versionParts.length < 4) {
+        throw new Error(`Version missing build number: '${version}'`);
+      }
+      // On Chrome, a more descriptive representation of the version is stored
+      // in the `version_name` field for display purposes.
+      return versionName;
+    } else if (versionParts.length !== 3) {
+      throw new Error(`Invalid version: ${version}`);
+    } else if (versionParts[2].match(/[^\d]/u)) {
+      // On Firefox, the build type and build version are in the fourth part of the version.
+      const [major, minor, patchAndPrerelease] = versionParts;
+      const matches = patchAndPrerelease.match(/^(\d+)([A-Za-z]+)(\d)+$/u);
+      if (matches === null) {
+        throw new Error(`Version contains invalid prerelease: ${version}`);
+      }
+      const [, patch, buildType, buildVersion] = matches;
+      return `${major}.${minor}.${patch}-${buildType}.${buildVersion}`;
+    }
+
+    // If there is no `version_name` and there are only 3 version parts, then this is not a
+    // prerelease and the version requires no modification.
+    return version;
   }
 
-  openExtensionInBrowser(route = null, queryString = null) {
+  openExtensionInBrowser(
+    route = null,
+    queryString = null,
+    keepWindowOpen = false,
+  ) {
     let extensionURL = extension.runtime.getURL('home.html');
+
+    if (route) {
+      extensionURL += `#${route}`;
+    }
 
     if (queryString) {
       extensionURL += `?${queryString}`;
     }
 
-    if (route) {
-      extensionURL += `#${route}`;
-    }
     this.openTab({ url: extensionURL });
-    if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
+    if (
+      getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND &&
+      !keepWindowOpen
+    ) {
       window.close();
     }
   }
@@ -124,6 +160,10 @@ export default class ExtensionPlatform {
     } else if (status === TRANSACTION_STATUSES.FAILED) {
       this._showFailedTransaction(txMeta);
     }
+  }
+
+  addOnRemovedListener(listener) {
+    extension.windows.onRemoved.addListener(listener);
   }
 
   getAllWindows() {
@@ -192,7 +232,7 @@ export default class ExtensionPlatform {
   _showConfirmedTransaction(txMeta, rpcPrefs) {
     this._subscribeToNotificationClicked();
 
-    const url = getBlockExplorerUrlForTx(txMeta, rpcPrefs);
+    const url = getBlockExplorerLink(txMeta, rpcPrefs);
     const nonce = parseInt(txMeta.txParams.nonce, 16);
 
     const title = 'Confirmed transaction';
@@ -226,9 +266,9 @@ export default class ExtensionPlatform {
     }
   }
 
-  _viewOnEtherscan(txId) {
-    if (txId.startsWith('https://')) {
-      extension.tabs.create({ url: txId });
+  _viewOnEtherscan(url) {
+    if (url.startsWith('https://')) {
+      extension.tabs.create({ url });
     }
   }
 }

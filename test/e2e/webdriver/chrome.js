@@ -14,10 +14,18 @@ class ChromeDriver {
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);
-    if (port) {
-      const service = new chrome.ServiceBuilder().setPort(port);
-      builder.setChromeService(service);
+    const service = new chrome.ServiceBuilder();
+
+    // Enables Chrome logging. Default: enabled
+    // Especially useful for discovering why Chrome has crashed, but can also
+    // be useful for revealing console errors (from the page or background).
+    if (process.env.ENABLE_CHROME_LOGGING !== 'false') {
+      service.setStdio('inherit').enableChromeLogging();
     }
+    if (port) {
+      service.setPort(port);
+    }
+    builder.setChromeService(service);
     const driver = builder.build();
     const chromeDriver = new ChromeDriver(driver);
     const extensionId = await chromeDriver.getExtensionIdByName('MetaMask');

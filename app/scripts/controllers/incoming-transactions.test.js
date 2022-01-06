@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 import nock from 'nock';
@@ -19,6 +19,7 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
+import { MILLISECOND } from '../../../shared/constants/time';
 
 const IncomingTransactionsController = proxyquire('./incoming-transactions', {
   '../../../shared/modules/random-id': { default: () => 54321 },
@@ -26,7 +27,7 @@ const IncomingTransactionsController = proxyquire('./incoming-transactions', {
 
 const FAKE_CHAIN_ID = '0x1338';
 const MOCK_SELECTED_ADDRESS = '0x0101';
-const SET_STATE_TIMEOUT = 10;
+const SET_STATE_TIMEOUT = MILLISECOND * 10;
 
 const EXISTING_INCOMING_TX = { id: 777, hash: '0x123456' };
 const PREPOPULATED_INCOMING_TXS_BY_HASH = {
@@ -102,15 +103,34 @@ function getMockBlockTracker() {
 /**
  * Returns a transaction object matching the expected format returned
  * by the Etherscan API
- *
- * @param {string} [toAddress] - The hex-prefixed address of the recipient
- * @param {number} [blockNumber] - The block number for the transaction
+ * @param {Object} [params] - options bag
+ * @param {string} [params.toAddress] - The hex-prefixed address of the recipient
+ * @param {number} [params.blockNumber] - The block number for the transaction
+ * @param {boolean} [params.useEIP1559] - Use EIP-1559 gas fields
+ * @param
  *  @returns {EtherscanTransaction}
  */
-const getFakeEtherscanTransaction = (
+const getFakeEtherscanTransaction = ({
   toAddress = MOCK_SELECTED_ADDRESS,
   blockNumber = 10,
-) => {
+  useEIP1559 = false,
+  hash = '0xfake',
+} = {}) => {
+  if (useEIP1559) {
+    return {
+      blockNumber: blockNumber.toString(),
+      from: '0xfake',
+      gas: '0',
+      maxFeePerGas: '10',
+      maxPriorityFeePerGas: '1',
+      hash,
+      isError: '0',
+      nonce: '100',
+      timeStamp: '16000000000000',
+      to: toAddress,
+      value: '0',
+    };
+  }
   return {
     blockNumber: blockNumber.toString(),
     from: '0xfake',
@@ -242,7 +262,13 @@ describe('IncomingTransactionsController', function () {
           200,
           JSON.stringify({
             status: '1',
-            result: [getFakeEtherscanTransaction()],
+            result: [
+              getFakeEtherscanTransaction(),
+              getFakeEtherscanTransaction({
+                hash: '0xfakeeip1559',
+                useEIP1559: true,
+              }),
+            ],
           }),
         );
       const updateStateStub = sinon.stub(
@@ -262,6 +288,9 @@ describe('IncomingTransactionsController', function () {
 
       const actualStateWithoutGenerated = cloneDeep(actualState);
       delete actualStateWithoutGenerated?.incomingTransactions?.['0xfake']?.id;
+      delete actualStateWithoutGenerated?.incomingTransactions?.[
+        '0xfakeeip1559'
+      ]?.id;
 
       assert.ok(
         typeof generatedTxId === 'number' && generatedTxId > 0,
@@ -284,6 +313,24 @@ describe('IncomingTransactionsController', function () {
                 from: '0xfake',
                 gas: '0x0',
                 gasPrice: '0x0',
+                nonce: '0x64',
+                to: '0x0101',
+                value: '0x0',
+              },
+            },
+            '0xfakeeip1559': {
+              blockNumber: '10',
+              hash: '0xfakeeip1559',
+              metamaskNetworkId: ROPSTEN_NETWORK_ID,
+              chainId: ROPSTEN_CHAIN_ID,
+              status: TRANSACTION_STATUSES.CONFIRMED,
+              time: 16000000000000000,
+              type: TRANSACTION_TYPES.INCOMING,
+              txParams: {
+                from: '0xfake',
+                gas: '0x0',
+                maxFeePerGas: '0xa',
+                maxPriorityFeePerGas: '0x1',
                 nonce: '0x64',
                 to: '0x0101',
                 value: '0x0',
@@ -508,7 +555,11 @@ describe('IncomingTransactionsController', function () {
           200,
           JSON.stringify({
             status: '1',
-            result: [getFakeEtherscanTransaction(NEW_MOCK_SELECTED_ADDRESS)],
+            result: [
+              getFakeEtherscanTransaction({
+                toAddress: NEW_MOCK_SELECTED_ADDRESS,
+              }),
+            ],
           }),
         );
       const updateStateStub = sinon.stub(
@@ -585,7 +636,9 @@ describe('IncomingTransactionsController', function () {
       // reply with a valid request for any supported network, so that this test has every opportunity to fail
       nockEtherscanApiForAllChains({
         status: '1',
-        result: [getFakeEtherscanTransaction(NEW_MOCK_SELECTED_ADDRESS)],
+        result: [
+          getFakeEtherscanTransaction({ toAddress: NEW_MOCK_SELECTED_ADDRESS }),
+        ],
       });
       const updateStateStub = sinon.stub(
         incomingTransactionsController.store,
@@ -953,7 +1006,9 @@ describe('IncomingTransactionsController', function () {
 
   describe('_getNewIncomingTransactions', function () {
     const ADDRESS_TO_FETCH_FOR = '0xfakeaddress';
-    const FETCHED_TX = getFakeEtherscanTransaction(ADDRESS_TO_FETCH_FOR);
+    const FETCHED_TX = getFakeEtherscanTransaction({
+      toAddress: ADDRESS_TO_FETCH_FOR,
+    });
     const mockFetch = sinon.stub().returns(
       Promise.resolve({
         json: () => Promise.resolve({ status: '1', result: [FETCHED_TX] }),
@@ -1203,6 +1258,54 @@ describe('IncomingTransactionsController', function () {
           from: '0xa',
           gas: '0xb',
           gasPrice: '0xc',
+          nonce: '0xd',
+          to: '0xe',
+          value: '0xf',
+        },
+        hash: '0xg',
+        type: TRANSACTION_TYPES.INCOMING,
+      });
+    });
+
+    it('should return the expected data when the tx uses EIP-1559 fields', function () {
+      const incomingTransactionsController = new IncomingTransactionsController(
+        {
+          blockTracker: getMockBlockTracker(),
+          ...getMockNetworkControllerMethods(ROPSTEN_CHAIN_ID),
+          preferencesController: getMockPreferencesController(),
+          initState: getNonEmptyInitState(),
+        },
+      );
+
+      const result = incomingTransactionsController._normalizeTxFromEtherscan(
+        {
+          timeStamp: '4444',
+          isError: '0',
+          blockNumber: 333,
+          from: '0xa',
+          gas: '11',
+          maxFeePerGas: '12',
+          maxPriorityFeePerGas: '1',
+          nonce: '13',
+          to: '0xe',
+          value: '15',
+          hash: '0xg',
+        },
+        ROPSTEN_CHAIN_ID,
+      );
+
+      assert.deepStrictEqual(result, {
+        blockNumber: 333,
+        id: 54321,
+        metamaskNetworkId: ROPSTEN_NETWORK_ID,
+        chainId: ROPSTEN_CHAIN_ID,
+        status: TRANSACTION_STATUSES.CONFIRMED,
+        time: 4444000,
+        txParams: {
+          from: '0xa',
+          gas: '0xb',
+          maxFeePerGas: '0xc',
+          maxPriorityFeePerGas: '0x1',
           nonce: '0xd',
           to: '0xe',
           value: '0xf',

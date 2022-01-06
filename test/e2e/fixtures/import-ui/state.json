@@ -91,6 +91,25 @@
       },
       "network": "1337"
     },
+    "NotificationController": {
+      "notifications": {
+        "1": {
+          "isShown": true
+        },
+        "3": {
+          "isShown": true
+        },
+        "5": {
+          "isShown": true
+        },
+        "6": {
+          "isShown": true
+        },
+        "8": {
+          "isShown": true
+        }
+      }
+    },
     "CurrencyController": {
       "conversionDate": 1618940438.187,
       "conversionRate": 2254.54,
@@ -109,8 +128,7 @@
     },
     "MetaMetricsController": {
       "participateInMetaMetrics": false,
-      "metaMetricsId": null,
-      "metaMetricsSendCount": 1
+      "metaMetricsId": null
     },
     "PermissionsController": {
       "permissionsRequests": [],
@@ -135,7 +153,7 @@
             "gasPrice": "0x363fe1da00"
           },
           "origin": "metamask",
-          "type": "sentEther",
+          "type": "simpleSend",
           "history": [],
           "nonceDetails": {
             "params": {

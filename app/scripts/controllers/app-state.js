@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
+import { MINUTE } from '../../../shared/constants/time';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -15,6 +16,7 @@ export default class AppStateController extends EventEmitter {
       onInactiveTimeout,
       showUnlockRequest,
       preferencesStore,
+      qrHardwareStore,
     } = opts;
     super();
 
@@ -22,9 +24,18 @@ export default class AppStateController extends EventEmitter {
     this.store = new ObservableStore({
       timeoutMinutes: 0,
       connectedStatusPopoverHasBeenShown: true,
-      swapsWelcomeMessageHasBeenShown: false,
       defaultHomeActiveTabName: null,
+      browserEnvironment: {},
+      popupGasPollTokens: [],
+      notificationGasPollTokens: [],
+      fullScreenGasPollTokens: [],
+      recoveryPhraseReminderHasBeenShown: false,
+      recoveryPhraseReminderLastShown: new Date().getTime(),
+      collectiblesDetectionNoticeDismissed: false,
+      showTestnetMessageInDropdown: true,
+      trezorModel: null,
       ...initState,
+      qrHardware: {},
     });
     this.timer = null;
 
@@ -39,6 +50,10 @@ export default class AppStateController extends EventEmitter {
       if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
         this._setInactiveTimeout(preferences.autoLockTimeLimit);
       }
+    });
+
+    qrHardwareStore.subscribe((state) => {
+      this.store.updateState({ qrHardware: state });
     });
 
     const { preferences } = preferencesStore.getState();
@@ -113,11 +128,23 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Record that the user has seen the swap screen welcome message
+   * Record that the user has been shown the recovery phrase reminder
+   * @returns {void}
    */
-  setSwapsWelcomeMessageHasBeenShown() {
+  setRecoveryPhraseReminderHasBeenShown() {
     this.store.updateState({
-      swapsWelcomeMessageHasBeenShown: true,
+      recoveryPhraseReminderHasBeenShown: true,
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has seen the recovery phrase reminder
+   * @param {number} lastShown - timestamp when user was last shown the reminder
+   * @returns {void}
+   */
+  setRecoveryPhraseReminderLastShown(lastShown) {
+    this.store.updateState({
+      recoveryPhraseReminderLastShown: lastShown,
     });
   }
 
@@ -165,7 +192,76 @@ export default class AppStateController extends EventEmitter {
 
     this.timer = setTimeout(
       () => this.onInactiveTimeout(),
-      timeoutMinutes * 60 * 1000,
+      timeoutMinutes * MINUTE,
     );
+  }
+
+  /**
+   * Sets the current browser and OS environment
+   * @returns {void}
+   */
+  setBrowserEnvironment(os, browser) {
+    this.store.updateState({ browserEnvironment: { os, browser } });
+  }
+
+  /**
+   * Adds a pollingToken for a given environmentType
+   * @returns {void}
+   */
+  addPollingToken(pollingToken, pollingTokenType) {
+    const prevState = this.store.getState()[pollingTokenType];
+    this.store.updateState({
+      [pollingTokenType]: [...prevState, pollingToken],
+    });
+  }
+
+  /**
+   * removes a pollingToken for a given environmentType
+   * @returns {void}
+   */
+  removePollingToken(pollingToken, pollingTokenType) {
+    const prevState = this.store.getState()[pollingTokenType];
+    this.store.updateState({
+      [pollingTokenType]: prevState.filter((token) => token !== pollingToken),
+    });
+  }
+
+  /**
+   * clears all pollingTokens
+   * @returns {void}
+   */
+  clearPollingTokens() {
+    this.store.updateState({
+      popupGasPollTokens: [],
+      notificationGasPollTokens: [],
+      fullScreenGasPollTokens: [],
+    });
+  }
+
+  /**
+   * Sets whether the testnet dismissal link should be shown in the network dropdown
+   * @returns {void}
+   */
+  setShowTestnetMessageInDropdown(showTestnetMessageInDropdown) {
+    this.store.updateState({ showTestnetMessageInDropdown });
+  }
+
+  /**
+   * Sets a property indicating the model of the user's Trezor hardware wallet
+   * @returns {void}
+   */
+  setTrezorModel(trezorModel) {
+    this.store.updateState({ trezorModel });
+  }
+
+  /**
+   * A setter for the `collectiblesDetectionNoticeDismissed` property
+   */
+  setCollectiblesDetectionNoticeDismissed(
+    collectiblesDetectionNoticeDismissed,
+  ) {
+    this.store.updateState({
+      collectiblesDetectionNoticeDismissed,
+    });
   }
 }

@@ -1,0 +1,134 @@
+
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  color: #4d4d4d;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  overflow: auto;
+}
+
+html {
+  min-height: 500px;
+}
+
+.mouse-user-styles {
+  button:focus,
+  input:focus,
+  textarea:focus,
+  .unit-input__input,
+  .currency-display__input {
+    outline: none;
+  }
+}
+
+/*
+  This error class is used in the following files still:
+  /ui/pages/create-account/connect-hardware/index.js
+  /ui/pages/create-account/import-account/json.js
+  /ui/pages/create-account/import-account/private-key.js
+  /ui/pages/first-time-flow/create-password/import-with-seed-phrase/import-with-seed-phrase.component.js
+  /ui/pages/keychains/restore-vault.js
+*/
+.error {
+  color: #f7861c;
+  margin-top: 3px;
+  margin-bottom: 9px;
+}
+
+/*
+  This warning class is used in the following files still:
+  /ui/pages/create-account/import-account/json.js
+  /ui/pages/confirm-add-suggested-token/confirm-add-suggested-token.component.js
+*/
+.warning {
+  color: #ffae00;
+}
+
+/* stylelint-disable */
+#app-content {
+  overflow-x: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #f7f7f7;
+
+  @media screen and (max-width: $break-small) {
+    background-color: $white;
+  }
+}
+/* stylelint-enable */
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  color: #df6b0e;
+}
+
+input.large-input,
+textarea.large-input {
+  padding: 8px;
+}
+
+input.large-input {
+  height: 36px;
+}
+
+.allcaps {
+  text-transform: uppercase;
+}
+
+.input-label {
+  padding-bottom: 10px;
+  font-weight: 400;
+  display: inline-block;
+}
+
+input.form-control {
+  padding-left: 10px;
+  font-size: 14px;
+  height: 40px;
+  border: 1px solid $alto;
+  border-radius: 3px;
+  width: 100%;
+
+  &::-webkit-input-placeholder {
+    font-weight: 100;
+    color: $dusty-gray;
+  }
+
+  &::-moz-placeholder {
+    font-weight: 100;
+    color: $dusty-gray;
+  }
+
+  &:-ms-input-placeholder {
+    font-weight: 100;
+    color: $dusty-gray;
+  }
+
+  &:-moz-placeholder {
+    font-weight: 100;
+    color: $dusty-gray;
+  }
+
+  &--error {
+    border: 1px solid $monzo;
+  }
+}
+
+/** Default Typography on base elements **/
+* {
+  font-family: $font-family;
+}
+

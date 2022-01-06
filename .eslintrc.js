@@ -1,3 +1,5 @@
+const { version: reactVersion } = require('react/package.json');
+
 module.exports = {
   root: true,
   parser: '@babel/eslint-parser',
@@ -20,6 +22,7 @@ module.exports = {
 
   ignorePatterns: [
     '!.eslintrc.js',
+    '!.mocharc.js',
     'node_modules/**',
     'dist/**',
     'builds/**',
@@ -33,6 +36,7 @@ module.exports = {
     'nyc_output/**',
     '.vscode/**',
     'lavamoat/*/policy.json',
+    'storybook-build/**',
   ],
 
   extends: [
@@ -53,6 +57,26 @@ module.exports = {
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
 
+    // This is the same as our default config, but for the noted exceptions
+    'spaced-comment': [
+      'error',
+      'always',
+      {
+        markers: [
+          'global',
+          'globals',
+          'eslint',
+          'eslint-disable',
+          '*package',
+          '!',
+          ',',
+          // Local additions
+          '/:', // This is for our code fences
+        ],
+        exceptions: ['=', '-'],
+      },
+    ],
+
     'import/no-unassigned-import': 'off',
 
     'no-invalid-this': 'off',
@@ -62,6 +86,27 @@ module.exports = {
     '@babel/semi': 'off',
 
     'node/no-process-env': 'off',
+
+    // TODO: remove this override
+    'padding-line-between-statements': [
+      'error',
+      {
+        blankLine: 'always',
+        prev: 'directive',
+        next: '*',
+      },
+      {
+        blankLine: 'any',
+        prev: 'directive',
+        next: 'directive',
+      },
+      // Disabled temporarily to reduce conflicts while PR queue is large
+      // {
+      //   blankLine: 'always',
+      //   prev: ['multiline-block-like', 'multiline-expression'],
+      //   next: ['multiline-block-like', 'multiline-expression'],
+      // },
+    ],
 
     // TODO: re-enable these rules
     'node/no-sync': 'off',
@@ -108,7 +153,17 @@ module.exports = {
     },
     {
       files: ['**/*.test.js'],
-      excludedFiles: ['ui/**/*.test.js', 'ui/app/__mocks__/*.js'],
+      excludedFiles: [
+        'ui/**/*.test.js',
+        'ui/__mocks__/*.js',
+        'shared/**/*.test.js',
+        'development/**/*.test.js',
+        'app/scripts/lib/**/*.test.js',
+        'app/scripts/migrations/*.test.js',
+        'app/scripts/platforms/*.test.js',
+        'app/scripts/controllers/network/**/*.test.js',
+        'app/scripts/controllers/permissions/*.test.js',
+      ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
         'mocha/no-setup-in-describe': 'off',
@@ -125,11 +180,22 @@ module.exports = {
       },
     },
     {
-      files: ['ui/**/*.test.js', 'ui/app/__mocks__/*.js'],
+      files: [
+        'ui/**/*.test.js',
+        'ui/__mocks__/*.js',
+        'shared/**/*.test.js',
+        'development/**/*.test.js',
+        'app/scripts/lib/**/*.test.js',
+        'app/scripts/migrations/*.test.js',
+        'app/scripts/platforms/*.test.js',
+        'app/scripts/controllers/network/**/*.test.js',
+        'app/scripts/controllers/permissions/*.test.js',
+      ],
       extends: ['@metamask/eslint-config-jest'],
       rules: {
         'jest/no-restricted-matchers': 'off',
         'import/unambiguous': 'off',
+        'import/named': 'off',
       },
     },
     {
@@ -146,26 +212,46 @@ module.exports = {
     {
       files: [
         '.eslintrc.js',
+        '.mocharc.js',
         'babel.config.js',
+        'jest.config.js',
         'nyc.config.js',
         'stylelint.config.js',
-        'app/scripts/runLockdown.js',
+        'app/scripts/lockdown-run.js',
+        'app/scripts/lockdown-more.js',
         'development/**/*.js',
         'test/e2e/**/*.js',
-        'test/lib/wait-until-called.js',
         'test/env.js',
         'test/setup.js',
-        'jest.config.js',
+        'test/helpers/protect-intrinsics-helpers.js',
+        'test/lib/wait-until-called.js',
       ],
       parserOptions: {
         sourceType: 'script',
+      },
+    },
+    {
+      files: [
+        'app/scripts/lockdown-run.js',
+        'app/scripts/lockdown-more.js',
+        'test/helpers/protect-intrinsics-helpers.js',
+        'test/unit-global/protect-intrinsics.test.js',
+      ],
+      globals: {
+        harden: 'readonly',
+        Compartment: 'readonly',
       },
     },
   ],
 
   settings: {
     react: {
-      version: 'detect',
+      // If this is set to 'detect', ESLint will import React in order to find
+      // its version. Because we run ESLint in the build system under LavaMoat,
+      // this means that detecting the React version requires a LavaMoat policy
+      // for all of React, in the build system. That's a no-go, so we grab it
+      // from React's package.json.
+      version: reactVersion,
     },
   },
 };

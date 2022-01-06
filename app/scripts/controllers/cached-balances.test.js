@@ -1,4 +1,4 @@
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { KOVAN_CHAIN_ID } from '../../../shared/constants/network';
 import CachedBalancesController from './cached-balances';

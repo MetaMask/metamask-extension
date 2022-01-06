@@ -1,14 +1,17 @@
 import { createAsyncMiddleware, mergeMiddleware } from 'json-rpc-engine';
-import createFetchMiddleware from 'eth-json-rpc-middleware/fetch';
-import createBlockRefRewriteMiddleware from 'eth-json-rpc-middleware/block-ref-rewrite';
-import createBlockCacheMiddleware from 'eth-json-rpc-middleware/block-cache';
-import createInflightMiddleware from 'eth-json-rpc-middleware/inflight-cache';
-import createBlockTrackerInspectorMiddleware from 'eth-json-rpc-middleware/block-tracker-inspector';
-import providerFromMiddleware from 'eth-json-rpc-middleware/providerFromMiddleware';
+import {
+  createFetchMiddleware,
+  createBlockRefRewriteMiddleware,
+  createBlockCacheMiddleware,
+  createInflightCacheMiddleware,
+  createBlockTrackerInspectorMiddleware,
+  providerFromMiddleware,
+} from 'eth-json-rpc-middleware';
 import { PollingBlockTracker } from 'eth-block-tracker';
+import { SECOND } from '../../../../shared/constants/time';
 
-const inTest = process.env.IN_TEST === 'true';
-const blockTrackerOpts = inTest ? { pollingInterval: 1000 } : {};
+const inTest = process.env.IN_TEST;
+const blockTrackerOpts = inTest ? { pollingInterval: SECOND } : {};
 const getTestMiddlewares = () => {
   return inTest ? [createEstimateGasDelayTestMiddleware()] : [];
 };
@@ -26,7 +29,7 @@ export default function createJsonRpcClient({ rpcUrl, chainId }) {
     createChainIdMiddleware(chainId),
     createBlockRefRewriteMiddleware({ blockTracker }),
     createBlockCacheMiddleware({ blockTracker }),
-    createInflightMiddleware(),
+    createInflightCacheMiddleware(),
     createBlockTrackerInspectorMiddleware({ blockTracker }),
     fetchMiddleware,
   ]);
@@ -51,7 +54,7 @@ function createChainIdMiddleware(chainId) {
 function createEstimateGasDelayTestMiddleware() {
   return createAsyncMiddleware(async (req, _, next) => {
     if (req.method === 'eth_estimateGas') {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, SECOND * 2));
     }
     return next();
   });

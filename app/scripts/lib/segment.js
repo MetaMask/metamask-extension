@@ -1,4 +1,5 @@
 import Analytics from 'analytics-node';
+import { SECOND } from '../../../shared/constants/time';
 
 const isDevOrTestEnvironment = Boolean(
   process.env.METAMASK_DEBUG || process.env.IN_TEST,
@@ -21,7 +22,7 @@ const SEGMENT_FLUSH_AT =
 // deal with short lived sessions that happen faster than the interval
 // e.g confirmations. This is set to 5,000ms (5 seconds) arbitrarily with the
 // intent of having a value less than 10 seconds.
-const SEGMENT_FLUSH_INTERVAL = 5000;
+const SEGMENT_FLUSH_INTERVAL = SECOND * 5;
 
 /**
  * Creates a mock segment module for usage in test environments. This is used
@@ -32,10 +33,7 @@ const SEGMENT_FLUSH_INTERVAL = 5000;
  * @param {number} flushInterval - ms interval to flush queue and send to segment
  * @returns {SegmentInterface}
  */
-export const createSegmentMock = (
-  flushAt = SEGMENT_FLUSH_AT,
-  flushInterval = SEGMENT_FLUSH_INTERVAL,
-) => {
+export const createSegmentMock = (flushAt = SEGMENT_FLUSH_AT) => {
   const segmentMock = {
     // Internal queue to keep track of events and properly mimic segment's
     // queueing behavior.
@@ -76,8 +74,7 @@ export const createSegmentMock = (
       // noop
     },
   };
-  // Mimic the flushInterval behavior with an interval
-  setInterval(segmentMock.flush, flushInterval);
+
   return segmentMock;
 };
 

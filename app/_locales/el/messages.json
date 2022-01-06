@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Προσθήκη Δικτύου"
   },
-  "addRecipient": {
-    "message": "Προσθήκη Παραλήπτη"
-  },
   "addSuggestedTokens": {
     "message": "Προσθέστε τα Προτεινόμενα Tokens"
   },
@@ -51,9 +48,6 @@
     "message": "π.χ. John D."
   },
   "addToken": {
-    "message": "Προσθήκη Token"
-  },
-  "addTokens": {
     "message": "Προσθήκη Token"
   },
   "advanced": {
@@ -75,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Έγκριση"
@@ -142,9 +144,6 @@
   },
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
-  },
-  "builtInCalifornia": {
-    "message": "Το MetaMask έχει σχεδιαστεί και αναπτυχθεί στην Καλιφόρνια."
   },
   "buyWithWyre": {
     "message": "Αγοράστε ETH με το Wyre"
@@ -224,9 +223,6 @@
   "copiedExclamation": {
     "message": "Έγινε αντιγραφή!"
   },
-  "copiedTransactionId": {
-    "message": "Αντιγράφηκε το Αναγνωριστικό Συναλλαγής"
-  },
   "copyAddress": {
     "message": "Αντιγράψτε τη διεύθυνση στο πρόχειρο"
   },
@@ -263,9 +259,6 @@
   "customGasSubTitle": {
     "message": "Η αύξηση των τελών μπορεί να μειώσει τους χρόνους επεξεργασίας, αλλά αυτό δεν είναι εγγυημένο."
   },
-  "customRPC": {
-    "message": "Προσαρμοσμένο RPC"
-  },
   "customToken": {
     "message": "Προσαρμοσμένο Token"
   },
@@ -274,9 +267,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Τα δεκαδικά πρέπει να είναι τουλάχιστον 0 και όχι πάνω από 36."
-  },
-  "defaultNetwork": {
-    "message": "Το προεπιλεγμένο δίκτυο για συναλλαγές Ether είναι το Main Net."
   },
   "delete": {
     "message": "Διαγραφή"
@@ -543,7 +533,7 @@
   "letsGoSetUp": {
     "message": "Ναι, ας το εγκαταστήσουμε!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Θέλετε να προσθέσετε αυτά τα token;"
   },
   "links": {
@@ -585,20 +575,11 @@
   "metamaskVersion": {
     "message": "Έκδοση MetaMask "
   },
-  "mobileSyncText": {
-    "message": "Παρακαλούμε δώστε τον κωδικό πρόσβασής σας για να επιβεβαιώσετε ότι είστε εσείς!"
-  },
   "mustSelectOne": {
     "message": "Πρέπει να επιλέξετε 1 τουλάχιστον διακριτικό."
   },
   "myAccounts": {
     "message": "Οι Λογαριασμοί μου"
-  },
-  "myWalletAccounts": {
-    "message": "Λογαριασμοί Πορτοφολιού"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Όλοι οι λογαριασμοί σας που έχετε δημιουργήσει στο MetaMask θα προστεθούν αυτόματα σε αυτήν την ενότητα."
   },
   "needEtherInWallet": {
     "message": "Για να αλληλεπιδράσετε με αποκεντρωμένες εφαρμογές χρησιμοποιώντας το MetaMask, θα χρειαστείτε Ether στο πορτοφόλι σας."
@@ -637,9 +618,6 @@
   },
   "newContract": {
     "message": "Νέα Σύμβαση"
-  },
-  "newNetwork": {
-    "message": "Νέο Δίκτυο"
   },
   "newPassword": {
     "message": "Νέος Κωδικός Πρόσβασης (ελάχιστο 8 χαρακτήρες)"
@@ -688,12 +666,6 @@
   },
   "on": {
     "message": "Ενεργό"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Διεύθυνση URL Εξερευνητή Μπλοκ (προαιρετικό)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Σύμβολο (προαιρετικό)"
   },
   "origin": {
     "message": "Προέλευση"
@@ -757,9 +729,6 @@
   "recents": {
     "message": "Πρόσφατα"
   },
-  "recipientAddress": {
-    "message": "Διεύθυνση Παραλήπτη"
-  },
   "recipientAddressPlaceholder": {
     "message": "Αναζήτηση, δημόσια διεύθυνση (0x) ή ENS"
   },
@@ -817,9 +786,6 @@
   "revealSeedWordsDescription": {
     "message": "Εάν αλλάξετε ποτέ προγράμματα περιήγησης ή μετακινήσετε υπολογιστές, θα χρειαστείτε αυτήν τη φράση φύτρου για να αποκτήσετε πρόσβαση στους λογαριασμούς σας. Αποθηκεύστε την κάπου με ασφάλεια και μυστικότητα."
   },
-  "revealSeedWordsTitle": {
-    "message": "Φράση Επαναφοράς "
-  },
   "revealSeedWordsWarning": {
     "message": "Αυτές οι λέξεις μπορούν να χρησιμοποιηθούν για να κλαπούν όλοι οι λογαριασμοί σας."
   },
@@ -856,9 +822,6 @@
   "searchTokens": {
     "message": "Αναζήτηση Tokens"
   },
-  "secretBackupPhrase": {
-    "message": "Μυστική Φράση Αντιγράφου Ασφαλείας"
-  },
   "secretBackupPhraseDescription": {
     "message": "Η μυστική φράση δημιουργίας αντιγράφων ασφαλείας σας διευκολύνει να δημιουργήσετε αντίγραφα ασφαλείας και να επαναφέρετε τον λογαριασμού σας."
   },
@@ -883,9 +846,6 @@
   "selectAnAccount": {
     "message": "Επιλέξτε Λογαριασμό"
   },
-  "selectAnAccountHelp": {
-    "message": "Επιλέξτε τον λογαριασμό για προβολή στο MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Παρακαλούμε επιλέξτε κάθε φράση, για να βεβαιωθείτε ότι είναι σωστή."
   },
@@ -906,9 +866,6 @@
   },
   "sendTokens": {
     "message": "Στείλτε Tokens"
-  },
-  "sentEther": {
-    "message": "απεσταλμένα ether"
   },
   "separateEachWord": {
     "message": "Διαχωρίστε κάθε λέξη με ένα μόνο κενό"
@@ -1145,20 +1102,8 @@
   "viewContact": {
     "message": "Εμφάνιση Επαφής"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Προβολή σε $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Προβολή στο Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Προβολή στον Εξερευνητή"
-  },
   "visitWebSite": {
     "message": "Επισκεφθείτε τον ιστότοπό μας"
-  },
-  "walletSeed": {
-    "message": "Σπόρος Πορτοφολιού"
   },
   "welcome": {
     "message": "Καλώς ήλθατε στο MetaMask"

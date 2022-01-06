@@ -31,7 +31,7 @@ describe('Signature Request', function () {
         await driver.clickElement('#signTypedDataV4', 10000);
 
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
+        let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -60,6 +60,8 @@ describe('Signature Request', function () {
 
         // Approve signing typed data
         await driver.clickElement({ text: 'Sign', tag: 'button' }, 10000);
+        await driver.waitUntilXWindowHandles(2);
+        windowHandles = await driver.getAllWindowHandles();
 
         // switch to the Dapp and verify the signed addressed
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);

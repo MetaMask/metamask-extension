@@ -3,7 +3,7 @@ const os = require('os');
 const path = require('path');
 const { Builder, By, until } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
-const { version } = require('../../../app/manifest/_base.json');
+const { version } = require('../../../package.json');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -75,9 +75,7 @@ class FirefoxDriver {
     await this._driver.get('about:debugging#addons');
     return await this._driver
       .wait(
-        until.elementLocated(
-          By.xpath("//dl/div[contains(., 'Internal UUID')]/dd"),
-        ),
+        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
         1000,
       )
       .getText();

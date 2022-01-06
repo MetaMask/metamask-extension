@@ -1,0 +1,21 @@
+.advanced-gas-fee-input-subtext {
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+  color: $ui-4;
+  font-size: $font-size-h8;
+
+  &__label {
+    font-weight: bold;
+    margin-right: 4px;
+  }
+
+  &__value {
+    position: relative;
+  }
+
+  img {
+    height: 16px;
+    margin-right: 8px;
+  }
+}

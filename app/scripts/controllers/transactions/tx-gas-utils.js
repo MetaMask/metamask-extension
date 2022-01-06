@@ -62,8 +62,11 @@ export default class TxGasUtil {
     // `eth_estimateGas` can fail if the user has insufficient balance for the
     // value being sent, or for the gas cost. We don't want to check their
     // balance here, we just want the gas estimate. The gas price is removed
-    // to skip those balance checks. We check balance elsewhere.
+    // to skip those balance checks. We check balance elsewhere. We also delete
+    // maxFeePerGas and maxPriorityFeePerGas to support EIP-1559 txs.
     delete txParams.gasPrice;
+    delete txParams.maxFeePerGas;
+    delete txParams.maxPriorityFeePerGas;
 
     // estimate tx gas requirements
     return await this.query.estimateGas(txParams);

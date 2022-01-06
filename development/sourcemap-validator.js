@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { SourceMapConsumer } = require('source-map');
 const pify = require('pify');
+const { codeFrameColumns } = require('@babel/code-frame');
 
 const fsAsync = pify(fs);
 
@@ -20,13 +21,12 @@ start().catch((error) => {
 
 async function start() {
   const targetFiles = [
-    `background.js`,
-    // `bg-libs`, skipped because source maps are invalid due to browserify bug: https://github.com/browserify/browserify/issues/1971
+    `common-0.js`,
+    `background-0.js`,
+    `ui-0.js`,
+    'phishing-detect.js',
     // `contentscript.js`, skipped because the validator is erroneously sampling the inlined `inpage.js` script
     `inpage.js`,
-    'phishing-detect.js',
-    `ui.js`,
-    // `ui-libs.js`, skipped because source maps are invalid due to browserify bug: https://github.com/browserify/browserify/issues/1971
   ];
   let valid = true;
 
@@ -102,7 +102,6 @@ async function validateSourcemapForFile({ buildName }) {
 
   const buildLines = rawBuild.split('\n');
   const targetString = 'new Error';
-  // const targetString = 'null'
   const matchesPerLine = buildLines.map((line) =>
     indicesOf(targetString, line),
   );
@@ -114,53 +113,41 @@ async function validateSourcemapForFile({ buildName }) {
       // warn if source content is missing
       if (!result.source) {
         valid = false;
-        console.warn(
-          `!! missing source for position: ${JSON.stringify(position)}`,
+        const location = {
+          start: { line: position.line, column: position.column + 1 },
+        };
+        const codeSample = codeFrameColumns(rawBuild, location, {
+          message: `missing source for position`,
+          highlightCode: true,
+        });
+        console.error(
+          `missing source for position, in bundle "${buildName}"\n${codeSample}`,
         );
-        // const buildLine = buildLines[position.line - 1]
-        console.warn(`   origin in build:`);
-        console.warn(`   ${buildLines[position.line - 2]}`);
-        console.warn(`-> ${buildLines[position.line - 1]}`);
-        console.warn(`   ${buildLines[position.line - 0]}`);
         return;
       }
       const sourceContent = consumer.sourceContentFor(result.source);
       const sourceLines = sourceContent.split('\n');
-      const line = sourceLines[result.line - 1];
+      const sourceLine = sourceLines[result.line - 1];
       // this sometimes includes the whole line though we tried to match somewhere in the middle
-      const portion = line.slice(result.column);
-      const isMaybeValid = portion.includes(targetString);
-      if (!isMaybeValid) {
+      const portion = sourceLine.slice(result.column);
+      const foundValidSource = portion.includes(targetString);
+      if (!foundValidSource) {
         valid = false;
+        const location = {
+          start: { line: result.line + 1, column: result.column + 1 },
+        };
+        const codeSample = codeFrameColumns(sourceContent, location, {
+          message: `expected to see ${JSON.stringify(targetString)}`,
+          highlightCode: true,
+        });
         console.error(
-          `Sourcemap seems invalid:\n${getFencedCode(result.source, line)}`,
+          `Sourcemap seems invalid, ${result.source}\n${codeSample}`,
         );
       }
     });
   });
   console.log(`  checked ${sampleCount} samples`);
   return valid;
-}
-
-const CODE_FENCE_LENGTH = 80;
-const TITLE_PADDING_LENGTH = 1;
-
-function getFencedCode(filename, code) {
-  const title = `${' '.repeat(TITLE_PADDING_LENGTH)}${filename}${' '.repeat(
-    TITLE_PADDING_LENGTH,
-  )}`;
-  const openingFenceLength = Math.max(
-    CODE_FENCE_LENGTH - (filename.length + TITLE_PADDING_LENGTH * 2),
-    0,
-  );
-  const startOpeningFenceLength = Math.floor(openingFenceLength / 2);
-  const endOpeningFenceLength = Math.ceil(openingFenceLength / 2);
-  const openingFence = `${'='.repeat(
-    startOpeningFenceLength,
-  )}${title}${'='.repeat(endOpeningFenceLength)}`;
-  const closingFence = '='.repeat(CODE_FENCE_LENGTH);
-
-  return `${openingFence}\n${code}\n${closingFence}\n`;
 }
 
 function indicesOf(substring, string) {

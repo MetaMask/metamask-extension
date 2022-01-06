@@ -1,0 +1,86 @@
+.new-account-info-link {
+  cursor: pointer;
+  text-decoration: underline;
+  color: $primary-blue;
+  margin-inline-start: 4px;
+}
+
+.new-account-import-form {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  padding: 0 30px 30px;
+
+  @media screen and (max-width: $break-small) {
+    padding: 0 22px 22px;
+  }
+
+  &__select-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 29px;
+    width: 100%;
+  }
+
+  &__select-label {
+    @include Paragraph;
+
+    color: $scorpion;
+  }
+
+  &__select {
+    width: 210px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__private-key-password-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__instruction {
+    @include Paragraph;
+
+    color: $scorpion;
+    align-self: flex-start;
+  }
+
+  &__private-key {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    margin-top: 34px;
+  }
+
+  &__input-password {
+    @include Paragraph;
+
+    height: 54px;
+    width: 315px;
+    border: 1px solid $geyser;
+    border-radius: 4px;
+    background-color: $white;
+    margin-top: 16px;
+    color: $scorpion;
+    padding: 0 20px;
+  }
+
+  &__json {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin-top: 29px;
+    width: 100%;
+  }
+
+  &__buttons {
+    margin-top: 39px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+}

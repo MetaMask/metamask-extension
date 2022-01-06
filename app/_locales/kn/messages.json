@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಸೇರಿಸಿ"
   },
-  "addRecipient": {
-    "message": "ಸ್ವೀಕೃತಿದಾರರನ್ನು ಸೇರಿಸಿ"
-  },
   "addSuggestedTokens": {
     "message": "ಸೂಚಿಸಲಾದ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "ಟೋಕನ್ ಸೇರಿಸಿ"
-  },
-  "addTokens": {
-    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಿ"
   },
   "advanced": {
     "message": "ಸುಧಾರಿತ"
@@ -75,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "ಅನುಮೋದಿಸಿ"
@@ -142,9 +144,6 @@
   },
   "browserNotSupported": {
     "message": "ನಿಮ್ಮ ಬ್ರೌಸರ್ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ..."
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask ಅನ್ನು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ ಮತ್ತು ಕ್ಯಾಲಿಫೋರ್ನಿಯಾದಲ್ಲಿ ನಿರ್ಮಿಸಲಾಗಿದೆ."
   },
   "buyWithWyre": {
     "message": "Wyre ನೊಂದಿಗೆ ETH ಖರೀದಿಸಿ"
@@ -227,9 +226,6 @@
   "copiedExclamation": {
     "message": "ನಕಲಿಸಲಾಗಿದೆ!"
   },
-  "copiedTransactionId": {
-    "message": "ವ್ಯವಹಾರ ID ಅನ್ನು ನಕಲಿಸಲಾಗಿದೆ"
-  },
   "copyAddress": {
     "message": "ವಿಳಾಸವನ್ನು ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಿ"
   },
@@ -266,9 +262,6 @@
   "customGasSubTitle": {
     "message": "ಹೆಚ್ಚುತ್ತಿರುವ ಶುಲ್ಕವು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸುವ ಸಮಯದಲ್ಲಿ ಕಡಿಮೆಯಾಗುತ್ತದೆ ಆದರೆ ಇದು ಖಚಿತವಾಗಿಲ್ಲ."
   },
-  "customRPC": {
-    "message": "ಕಸ್ಟಮ್ RPC"
-  },
   "customToken": {
     "message": "ಕಸ್ಟಮ್ ಟೋಕನ್"
   },
@@ -277,9 +270,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "ದಶಮಾಂಶಗಳು ಕನಿಷ್ಟ 0 ಆಗಿರಬೇಕು ಮತ್ತು 36 ಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬಾರದು"
-  },
-  "defaultNetwork": {
-    "message": "ಎಥರ್ ವಹಿವಾಟುಗಳಿಗಾಗಿ ಡೀಫಾಲ್ಟ್ ನೆಟ್‌ವರ್ಕ್ ಪ್ರಮುಖವಾಗಿರುವ ನೆಟ್ ಆಗಿದೆ."
   },
   "delete": {
     "message": "ಅಳಿಸಿ"
@@ -546,7 +536,7 @@
   "letsGoSetUp": {
     "message": "ಹೌದು, ಹೊಂದಿಸೋಣ!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
   "links": {
@@ -588,20 +578,11 @@
   "metamaskVersion": {
     "message": "MetaMask ಆವೃತ್ತಿ"
   },
-  "mobileSyncText": {
-    "message": "ಇದು ನೀವೇ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಲು ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನಮೂದಿಸಿ!"
-  },
   "mustSelectOne": {
     "message": "ಕನಿಷ್ಟ 1 ಟೋಕನ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
   },
   "myAccounts": {
     "message": "ನನ್ನ ಖಾತೆಗಳು"
-  },
-  "myWalletAccounts": {
-    "message": "ನನ್ನ ವ್ಯಾಲೆಟ್ ಖಾತೆಗಳು"
-  },
-  "myWalletAccountsDescription": {
-    "message": "ನಿಮ್ಮ MetaMask ರಚಿಸಿದ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಈ ವಿಭಾಗಕ್ಕೆ ಸೇರಿಸಲಾಗುತ್ತದೆ."
   },
   "needEtherInWallet": {
     "message": "MetaMask ಬಳಸಿಕೊಂಡು ವಿಕೇಂದ್ರೀಕೃತ ಖಾತೆಗಳೊಂದಿಗೆ ಸಂವಹನ ನಡೆಸಲು, ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಲ್ಲಿ ನಿಮಗೆ ಎಥರ್ ಅಗತ್ಯವಿದೆ."
@@ -640,9 +621,6 @@
   },
   "newContract": {
     "message": "ಹೊಸ ಒಪ್ಪಂದ"
-  },
-  "newNetwork": {
-    "message": "ಹೊಸ ನೆಟ್‌ವರ್ಕ್"
   },
   "newPassword": {
     "message": "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ (ಕನಿಷ್ಟ 8 ಅಕ್ಷರಗಳು)"
@@ -691,12 +669,6 @@
   },
   "on": {
     "message": "ಆನ್‌"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "ಅನ್ವೇಷಕ URL ಅನ್ನು ನಿರ್ಬಂಧಿಸಿ (ಐಚ್ಛಿಕ)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "ಚಿಹ್ನೆ (ಐಚ್ಛಿಕ)"
   },
   "origin": {
     "message": "ಮೂಲ"
@@ -760,9 +732,6 @@
   "recents": {
     "message": "ಇತ್ತೀಚಿನವುಗಳು"
   },
-  "recipientAddress": {
-    "message": "ಸ್ವೀಕರಿಸುವವರ ವಿಳಾಸ"
-  },
   "recipientAddressPlaceholder": {
     "message": "ಸಾರ್ವಜನಿಕ ವಿಳಾಸ (0x) ಅಥವಾ ENS ಹುಡುಕಿ"
   },
@@ -820,9 +789,6 @@
   "revealSeedWordsDescription": {
     "message": "ನೀವು ಬ್ರೌಸರ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿದರೆ ಅಥವಾ ಕಂಪ್ಯೂಟರ್‌ಗಳನ್ನು ಸರಿಸಿದರೆ, ನಿಮ್ಮ ಖಾತೆಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ನಿಮಗೆ ಈ ಸೀಡ್ ಫ್ರೇಸ್‌ಗಳ ಅಗತ್ಯವಿರುತ್ತದೆ. ಅವುಗಳನ್ನು ಎಲ್ಲಿಯಾದರೂ ಸುರಕ್ಷಿತವಾಗಿ ಮತ್ತು ರಹಸ್ಯವಾಗಿ ಉಳಿಸಿ."
   },
-  "revealSeedWordsTitle": {
-    "message": "ಸೀಡ್ ಫ್ರೇಸ್"
-  },
   "revealSeedWordsWarning": {
     "message": "ಈ ಪದಗಳನ್ನು ನಿಮ್ಮ ಎಲ್ಲಾ ಖಾತೆಗಳನ್ನು ಕದಿಯಲು ಬಳಸಬಹುದು."
   },
@@ -859,9 +825,6 @@
   "searchTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಹುಡುಕಿ"
   },
-  "secretBackupPhrase": {
-    "message": "ರಹಸ್ಯ ಬ್ಯಾಕಪ್ ಫ್ರೇಸ್"
-  },
   "secretBackupPhraseDescription": {
     "message": "ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಬ್ಯಾಕ್ ಅಪ್ ಮತ್ತು ಮರುಸ್ಥಾಪಿಸುವುದನ್ನು ನಿಮ್ಮ ರಹಸ್ಯ ಬ್ಯಾಕಪ್ ಫ್ರೇಸ್ ಸುಲಭವಾಗಿಸುತ್ತದೆ."
   },
@@ -886,9 +849,6 @@
   "selectAnAccount": {
     "message": "ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask ನಲ್ಲಿ ವೀಕ್ಷಿಸಲು ಖಾತೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
   "selectEachPhrase": {
     "message": "ಅದು ಸರಿಯಾಗಿದೆಯೆ ಎಂಬುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು ದಯವಿಟ್ಟು ಪ್ರತಿ ಫ್ರೇಸ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ."
   },
@@ -909,9 +869,6 @@
   },
   "sendTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ"
-  },
-  "sentEther": {
-    "message": "ಕಳುಹಿಸಲಾದ ಎಥರ್"
   },
   "separateEachWord": {
     "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"
@@ -1151,20 +1108,8 @@
   "viewContact": {
     "message": "ಸಂಪರ್ಕವನ್ನು ವೀಕ್ಷಿಸಿ"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1 ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
-  },
-  "viewOnEtherscan": {
-    "message": "ಎಥೆರ್‌ಸ್ಕ್ಯಾನ್‌ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
-  },
-  "viewinExplorer": {
-    "message": "ಎಕ್ಸ್‌ಪ್ಲೋರರ್‌ನಲ್ಲಿ ವೀಕ್ಷಿಸಿ"
-  },
   "visitWebSite": {
     "message": "ನಮ್ಮ ವೆಬ್ ಸೈಟ್ ಅನ್ನು ಭೇಟಿ ಮಾಡಿ"
-  },
-  "walletSeed": {
-    "message": "ವ್ಯಾಲೆಟ್ ಸೀಡ್"
   },
   "welcome": {
     "message": "MetaMask ಗೆ ಸ್ವಾಗತ"

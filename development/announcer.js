@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { version } = require('../app/manifest/_base.json');
+const { version } = require('../package.json');
 
 const changelog = fs.readFileSync(
   path.join(__dirname, '..', 'CHANGELOG.md'),

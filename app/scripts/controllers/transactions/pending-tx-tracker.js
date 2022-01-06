@@ -136,8 +136,8 @@ export default class PendingTransactionTracker extends EventEmitter {
 
     const retryCount = txMeta.retryCount || 0;
 
-    // Exponential backoff to limit retries at publishing
-    if (txBlockDistance <= Math.pow(2, retryCount) - 1) {
+    // Exponential backoff to limit retries at publishing (capped at ~15 minutes between retries)
+    if (txBlockDistance < Math.min(50, Math.pow(2, retryCount))) {
       return undefined;
     }
 
@@ -164,6 +164,7 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @emits tx:warning
    * @private
    */
+
   async _checkPendingTx(txMeta) {
     const txHash = txMeta.hash;
     const txId = txMeta.id;
@@ -193,7 +194,21 @@ export default class PendingTransactionTracker extends EventEmitter {
     try {
       const transactionReceipt = await this.query.getTransactionReceipt(txHash);
       if (transactionReceipt?.blockNumber) {
-        this.emit('tx:confirmed', txId, transactionReceipt);
+        const {
+          baseFeePerGas,
+          timestamp: blockTimestamp,
+        } = await this.query.getBlockByHash(
+          transactionReceipt?.blockHash,
+          false,
+        );
+
+        this.emit(
+          'tx:confirmed',
+          txId,
+          transactionReceipt,
+          baseFeePerGas,
+          blockTimestamp,
+        );
         return;
       }
     } catch (err) {

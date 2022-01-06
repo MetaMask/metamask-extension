@@ -1,0 +1,160 @@
+@import './advanced-tab-content/index';
+@import './basic-tab-content/index';
+
+.gas-modal-page-container {
+  .page-container {
+    max-width: 391px;
+    min-height: 585px;
+    overflow-y: initial;
+
+    @media screen and (max-width: $break-small) {
+      &__content {
+        display: flex;
+        overflow-y: initial;
+      }
+    }
+
+    &__header {
+      padding: 0;
+      padding-top: 16px;
+
+      &--no-padding-bottom {
+        padding-bottom: 0;
+      }
+    }
+
+    &__footer {
+      footer {
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+    }
+
+    &__header-close-text {
+      @include H6;
+
+      color: #4eade7;
+      position: absolute;
+      font-size: 0.75rem;
+      top: 8px;
+      right: 16px;
+      cursor: pointer;
+      overflow: hidden;
+      width: min-content;
+    }
+
+    &__title {
+      @include H5;
+
+      color: $black;
+      font-weight: 500;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      margin-right: 0;
+    }
+
+    &__subtitle {
+      display: none;
+    }
+
+    &__tab {
+      margin-right: 0;
+    }
+
+    &__tabs {
+      margin-top: 0;
+    }
+
+    &__tab {
+      @include H6;
+
+      width: 100%;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+
+      & button {
+        font-size: unset;
+      }
+
+      &.tab--active button {
+        color: $primary-blue;
+      }
+    }
+  }
+}
+
+.gas-modal-content {
+  @media screen and (max-width: $break-small) {
+    width: 100%;
+  }
+
+  &__basic-tab {
+    height: 219px;
+  }
+
+
+  &__info-row,
+  &__info-row--fade {
+    @include H7;
+
+    width: 100%;
+    background: $polar;
+    padding: 15px 21px;
+    display: flex;
+    flex-flow: column;
+    color: $scorpion;
+
+    &__send-info,
+    &__transaction-info,
+    &__total-info,
+    &__fiat-total-info {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-between;
+    }
+
+    &__fiat-total-info {
+      justify-content: flex-end;
+    }
+
+    &__total-info {
+      &__label {
+        @include Paragraph;
+
+        @media screen and (max-width: $break-small) {
+          @include H6;
+        }
+      }
+
+      &__value {
+        @include Paragraph;
+
+        font-weight: bold;
+
+        @media screen and (max-width: $break-small) {
+          @include H6;
+        }
+      }
+    }
+
+    &__transaction-info,
+    &__send-info {
+      &__label {
+        @include H7;
+      }
+
+      &__value {
+        @include H6;
+      }
+    }
+  }
+
+  &__info-row--fade {
+    background: white;
+    color: $dusty-gray;
+    border-top: 1px solid $mischka;
+  }
+}

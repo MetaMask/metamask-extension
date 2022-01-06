@@ -72,12 +72,45 @@ export default class TransactionStateManager extends EventEmitter {
    *  overwriting default keys of the TransactionMeta
    * @returns {TransactionMeta} the default txMeta object
    */
-  generateTxMeta(opts) {
+  generateTxMeta(opts = {}) {
     const netId = this.getNetwork();
     const chainId = this.getCurrentChainId();
     if (netId === 'loading') {
       throw new Error('MetaMask is having trouble connecting to the network');
     }
+
+    let dappSuggestedGasFees = null;
+
+    // If we are dealing with a transaction suggested by a dapp and not
+    // an internally created metamask transaction, we need to keep record of
+    // the originally submitted gasParams.
+    if (
+      opts.txParams &&
+      typeof opts.origin === 'string' &&
+      opts.origin !== 'metamask'
+    ) {
+      if (typeof opts.txParams.gasPrice !== 'undefined') {
+        dappSuggestedGasFees = {
+          gasPrice: opts.txParams.gasPrice,
+        };
+      } else if (
+        typeof opts.txParams.maxFeePerGas !== 'undefined' ||
+        typeof opts.txParams.maxPriorityFeePerGas !== 'undefined'
+      ) {
+        dappSuggestedGasFees = {
+          maxPriorityFeePerGas: opts.txParams.maxPriorityFeePerGas,
+          maxFeePerGas: opts.txParams.maxFeePerGas,
+        };
+      }
+
+      if (typeof opts.txParams.gas !== 'undefined') {
+        dappSuggestedGasFees = {
+          ...dappSuggestedGasFees,
+          gas: opts.txParams.gas,
+        };
+      }
+    }
+
     return {
       id: createId(),
       time: new Date().getTime(),
@@ -85,6 +118,7 @@ export default class TransactionStateManager extends EventEmitter {
       metamaskNetworkId: netId,
       chainId,
       loadingDefaults: true,
+      dappSuggestedGasFees,
       ...opts,
     };
   }
@@ -187,28 +221,43 @@ export default class TransactionStateManager extends EventEmitter {
     const transactions = this.getTransactions({
       filterToCurrentNetwork: false,
     });
-    const txCount = transactions.length;
     const { txHistoryLimit } = this;
 
     // checks if the length of the tx history is longer then desired persistence
     // limit and then if it is removes the oldest confirmed or rejected tx.
     // Pending or unapproved transactions will not be removed by this
-    // operation.
+    // operation. For safety of presenting a fully functional transaction UI
+    // representation, this function will not break apart transactions with the
+    // same nonce, per network. Not accounting for transactions of the same
+    // nonce and network combo can result in confusing or broken experiences
+    // in the UI.
     //
     // TODO: we are already limiting what we send to the UI, and in the future
     // we will send UI only collected groups of transactions *per page* so at
     // some point in the future, this persistence limit can be adjusted. When
     // we do that I think we should figure out a better storage solution for
     // transaction history entries.
-    if (txCount > txHistoryLimit - 1) {
-      const index = transactions.findIndex((metaTx) => {
-        return getFinalStates().includes(metaTx.status);
-      });
-      if (index !== -1) {
-        this._deleteTransaction(transactions[index].id);
-      }
-    }
+    const nonceNetworkSet = new Set();
+    const txsToDelete = transactions
+      .reverse()
+      .filter((tx) => {
+        const { nonce } = tx.txParams;
+        const { chainId, metamaskNetworkId, status } = tx;
+        const key = `${nonce}-${chainId ?? metamaskNetworkId}`;
+        if (nonceNetworkSet.has(key)) {
+          return false;
+        } else if (
+          nonceNetworkSet.size < txHistoryLimit - 1 ||
+          getFinalStates().includes(status) === false
+        ) {
+          nonceNetworkSet.add(key);
+          return false;
+        }
+        return true;
+      })
+      .map((tx) => tx.id);
 
+    this._deleteTransactions(txsToDelete);
     this._addTransactionsToState([txMeta]);
     return txMeta;
   }
@@ -398,7 +447,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusRejected(txId) {
-    this._setTransactionStatus(txId, 'rejected');
+    this._setTransactionStatus(txId, TRANSACTION_STATUSES.REJECTED);
     this._deleteTransaction(txId);
   }
 
@@ -472,7 +521,7 @@ export default class TransactionStateManager extends EventEmitter {
 
     const txMeta = this.getTransaction(txId);
     txMeta.err = {
-      message: error.toString(),
+      message: error.message?.toString() || error.toString(),
       rpc: error.value,
       stack: error.stack,
     };
@@ -608,6 +657,22 @@ export default class TransactionStateManager extends EventEmitter {
   _deleteTransaction(targetTransactionId) {
     const { transactions } = this.store.getState();
     delete transactions[targetTransactionId];
+    this.store.updateState({
+      transactions,
+    });
+  }
+
+  /**
+   * removes multiple transaction from state. This is not intended for external use.
+   *
+   * @private
+   * @param {number[]} targetTransactionIds - the transactions to delete
+   */
+  _deleteTransactions(targetTransactionIds) {
+    const { transactions } = this.store.getState();
+    targetTransactionIds.forEach((transactionId) => {
+      delete transactions[transactionId];
+    });
     this.store.updateState({
       transactions,
     });

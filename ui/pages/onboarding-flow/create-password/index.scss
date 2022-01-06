@@ -1,0 +1,36 @@
+.create-password {
+  &__wrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    max-height: 750px;
+  }
+
+  &__link-text {
+    color: $primary-1;
+  }
+
+  &__form {
+    padding: 0 24px;
+
+    &--password-button {
+      background-color: transparent;
+    }
+
+    &--submit-button {
+      padding: 20px;
+    }
+
+    &--checkmark {
+      i {
+        color: $success-1;
+      }
+    }
+
+    .form-field__input {
+      height: 50px;
+    }
+  }
+}

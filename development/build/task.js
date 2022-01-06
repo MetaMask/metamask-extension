@@ -5,7 +5,6 @@ const tasks = {};
 const taskEvents = new EventEmitter();
 
 module.exports = {
-  detectAndRunEntryTask,
   tasks,
   taskEvents,
   createTask,
@@ -17,24 +16,13 @@ module.exports = {
 
 const { setupTaskDisplay } = require('./display');
 
-function detectAndRunEntryTask() {
-  // get requested task name and execute
-  const taskName = process.argv[2];
-  if (!taskName) {
-    throw new Error(`MetaMask build: No task name specified`);
-  }
-  const skipStats = process.argv.includes('--skip-stats');
-
-  runTask(taskName, { skipStats });
-}
-
 async function runTask(taskName, { skipStats } = {}) {
   if (!(taskName in tasks)) {
     throw new Error(`MetaMask build: Unrecognized task name "${taskName}"`);
   }
   if (!skipStats) {
     setupTaskDisplay(taskEvents);
-    console.log(`running task "${taskName}"...`);
+    console.log(`Running task "${taskName}"...`);
   }
   try {
     await tasks[taskName]();
@@ -60,17 +48,57 @@ function createTask(taskName, taskFn) {
   return task;
 }
 
-function runInChildProcess(task) {
+function runInChildProcess(
+  task,
+  { buildType, isLavaMoat, policyOnly, shouldLintFenceFiles },
+) {
   const taskName = typeof task === 'string' ? task : task.taskName;
   if (!taskName) {
     throw new Error(
       `MetaMask build: runInChildProcess unable to identify task name`,
     );
   }
+
   return instrumentForTaskStats(taskName, async () => {
-    const childProcess = spawn('yarn', ['build', taskName, '--skip-stats'], {
-      env: process.env,
-    });
+    let childProcess;
+    // Use the same build type for subprocesses, and only run them in LavaMoat
+    // if the parent process also ran in LavaMoat.
+    if (isLavaMoat) {
+      childProcess = spawn(
+        'yarn',
+        [
+          'build',
+          taskName,
+          '--build-type',
+          buildType,
+          '--lint-fence-files',
+          shouldLintFenceFiles,
+          '--skip-stats',
+          ...(policyOnly ? ['--policy-only'] : []),
+        ],
+        {
+          env: process.env,
+        },
+      );
+    } else {
+      childProcess = spawn(
+        'yarn',
+        [
+          'build:dev',
+          taskName,
+          '--build-type',
+          buildType,
+          '--lint-fence-files',
+          shouldLintFenceFiles,
+          '--skip-stats',
+          ...(policyOnly ? ['--policy-only'] : []),
+        ],
+        {
+          env: process.env,
+        },
+      );
+    }
+
     // forward logs to main process
     // skip the first stdout event (announcing the process command)
     childProcess.stdout.once('data', () => {
@@ -78,16 +106,18 @@ function runInChildProcess(task) {
         process.stdout.write(`${taskName}: ${data}`),
       );
     });
+
     childProcess.stderr.on('data', (data) =>
       process.stderr.write(`${taskName}: ${data}`),
     );
+
     // await end of process
     await new Promise((resolve, reject) => {
       childProcess.once('exit', (errCode) => {
         if (errCode !== 0) {
           reject(
             new Error(
-              `MetaMask build: runInChildProcess for task "${taskName}" encountered an error ${errCode}`,
+              `MetaMask build: runInChildProcess for task "${taskName}" encountered an error "${errCode}".`,
             ),
           );
           return;

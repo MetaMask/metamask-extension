@@ -1,14 +1,14 @@
 import EventEmitter from 'events';
-import assert from 'assert';
+import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
 import { ethErrors } from 'eth-rpc-errors';
 import { typedSignatureHash, TYPED_MESSAGE_SCHEMA } from 'eth-sig-util';
-import { isValidAddress } from 'ethereumjs-util';
 import log from 'loglevel';
 import jsonschema from 'jsonschema';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import createId from '../../../shared/modules/random-id';
+import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 /**
  * Represents, and contains data about, an 'eth_signTypedData' type signature request. These are created when a
@@ -32,7 +32,7 @@ export default class TypedMessageManager extends EventEmitter {
   /**
    * Controller in charge of managing - storing, adding, removing, updating - TypedMessage.
    */
-  constructor({ getCurrentChainId }) {
+  constructor({ getCurrentChainId, metricEvents }) {
     super();
     this._getCurrentChainId = getCurrentChainId;
     this.memStore = new ObservableStore({
@@ -40,6 +40,7 @@ export default class TypedMessageManager extends EventEmitter {
       unapprovedTypedMessagesCount: 0,
     });
     this.messages = [];
+    this.metricEvents = metricEvents;
   }
 
   /**
@@ -160,7 +161,8 @@ export default class TypedMessageManager extends EventEmitter {
     assert.ok('data' in params, 'Params must include a "data" field.');
     assert.ok('from' in params, 'Params must include a "from" field.');
     assert.ok(
-      typeof params.from === 'string' && isValidAddress(params.from),
+      typeof params.from === 'string' &&
+        isValidHexAddress(params.from, { allowNonPrefixed: false }),
       '"from" field must be a valid, lowercase, hexadecimal Ethereum address string.',
     );
 
@@ -195,13 +197,16 @@ export default class TypedMessageManager extends EventEmitter {
           0,
           'Signing data must conform to EIP-712 schema. See https://git.io/fNtcx.',
         );
-        const { chainId } = data.domain;
+        let { chainId } = data.domain;
         if (chainId) {
           const activeChainId = parseInt(this._getCurrentChainId(), 16);
           assert.ok(
             !Number.isNaN(activeChainId),
             `Cannot sign messages for chainId "${chainId}", because MetaMask is switching networks.`,
           );
+          if (typeof chainId === 'string') {
+            chainId = parseInt(chainId, chainId.startsWith('0x') ? 16 : 10);
+          }
           assert.equal(
             chainId,
             activeChainId,
@@ -297,7 +302,19 @@ export default class TypedMessageManager extends EventEmitter {
    * @param {number} msgId - The id of the TypedMessage to reject.
    *
    */
-  rejectMsg(msgId) {
+  rejectMsg(msgId, reason = undefined) {
+    if (reason) {
+      const msg = this.getMsg(msgId);
+      this.metricsEvent({
+        event: reason,
+        category: 'Transactions',
+        properties: {
+          action: 'Sign Request',
+          version: msg.msgParams.version,
+          type: msg.type,
+        },
+      });
+    }
     this._setMsgStatus(msgId, 'rejected');
   }
 

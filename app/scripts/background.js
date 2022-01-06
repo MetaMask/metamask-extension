@@ -2,9 +2,6 @@
  * @file The entry point for the web extension singleton process.
  */
 
-// polyfills
-import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';
-
 import endOfStream from 'end-of-stream';
 import pump from 'pump';
 import debounce from 'debounce-stream';
@@ -14,18 +11,26 @@ import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
 import PortStream from 'extension-port-stream';
 import { captureException } from '@sentry/browser';
 
+import { ethErrors } from 'eth-rpc-errors';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
 } from '../../shared/constants/app';
+import { SECOND } from '../../shared/constants/time';
+import {
+  REJECT_NOTFICIATION_CLOSE,
+  REJECT_NOTFICIATION_CLOSE_SIG,
+} from '../../shared/constants/metametrics';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
 import createStreamSink from './lib/createStreamSink';
-import NotificationManager from './lib/notification-manager';
+import NotificationManager, {
+  NOTIFICATION_MANAGER_EVENTS,
+} from './lib/notification-manager';
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
@@ -38,7 +43,7 @@ import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
 
-log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
+log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
 const platform = new ExtensionPlatform();
 
@@ -52,7 +57,7 @@ const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 
 // state persistence
-const inTest = process.env.IN_TEST === 'true';
+const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
 
@@ -125,7 +130,7 @@ async function initialize() {
   const initState = await loadStateFromPersistence();
   const initLangCode = await getFirstPreferredLangCode();
   await setupController(initState, initLangCode);
-  log.debug('MetaMask initialization complete.');
+  log.info('MetaMask initialization complete.');
 }
 
 //
@@ -213,6 +218,7 @@ function setupController(initState, initLangCode) {
     initLangCode,
     // platform specific api
     platform,
+    notificationManager,
     extension,
     getRequestAccountTabIds: () => {
       return requestAccountTabIds;
@@ -301,6 +307,24 @@ function setupController(initState, initLangCode) {
     );
   };
 
+  const onCloseEnvironmentInstances = (isClientOpen, environmentType) => {
+    // if all instances of metamask are closed we call a method on the controller to stop gasFeeController polling
+    if (isClientOpen === false) {
+      controller.onClientClosed();
+      // otherwise we want to only remove the polling tokens for the environment type that has closed
+    } else {
+      // in the case of fullscreen environment a user might have multiple tabs open so we don't want to disconnect all of
+      // its corresponding polling tokens unless all tabs are closed.
+      if (
+        environmentType === ENVIRONMENT_TYPE_FULLSCREEN &&
+        Boolean(Object.keys(openMetamaskTabsIDs).length)
+      ) {
+        return;
+      }
+      controller.onEnvironmentTypeClosed(environmentType);
+    }
+  };
+
   /**
    * A runtime.Port object, as provided by the browser:
    * @see https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
@@ -329,10 +353,11 @@ function setupController(initState, initLangCode) {
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
-
         endOfStream(portStream, () => {
           popupIsOpen = false;
-          controller.isClientOpen = isClientOpenStatus();
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
         });
       }
 
@@ -341,7 +366,12 @@ function setupController(initState, initLangCode) {
 
         endOfStream(portStream, () => {
           notificationIsOpen = false;
-          controller.isClientOpen = isClientOpenStatus();
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(
+            isClientOpen,
+            ENVIRONMENT_TYPE_NOTIFICATION,
+          );
         });
       }
 
@@ -351,7 +381,12 @@ function setupController(initState, initLangCode) {
 
         endOfStream(portStream, () => {
           delete openMetamaskTabsIDs[tabId];
-          controller.isClientOpen = isClientOpenStatus();
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(
+            isClientOpen,
+            ENVIRONMENT_TYPE_FULLSCREEN,
+          );
         });
       }
     } else {
@@ -405,9 +440,13 @@ function setupController(initState, initLangCode) {
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.approvalController.subscribe(updateBadge);
   controller.appStateController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
+    updateBadge,
+  );
+
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
     updateBadge,
   );
 
@@ -417,6 +456,15 @@ function setupController(initState, initLangCode) {
    */
   function updateBadge() {
     let label = '';
+    const count = getUnapprovedTransactionCount();
+    if (count) {
+      label = String(count);
+    }
+    extension.browserAction.setBadgeText({ text: label });
+    extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+  }
+
+  function getUnapprovedTransactionCount() {
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
     const { unapprovedMsgCount } = controller.messageManager;
     const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
@@ -428,7 +476,7 @@ function setupController(initState, initLangCode) {
     const pendingApprovalCount = controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
-    const count =
+    return (
       unapprovedTxCount +
       unapprovedMsgCount +
       unapprovedPersonalMsgCount +
@@ -436,12 +484,74 @@ function setupController(initState, initLangCode) {
       unapprovedEncryptionPublicKeyMsgCount +
       unapprovedTypedMessagesCount +
       pendingApprovalCount +
-      waitingForUnlockCount;
-    if (count) {
-      label = String(count);
-    }
-    extension.browserAction.setBadgeText({ text: label });
-    extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+      waitingForUnlockCount
+    );
+  }
+
+  notificationManager.on(
+    NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
+    ({ automaticallyClosed }) => {
+      if (!automaticallyClosed) {
+        rejectUnapprovedNotifications();
+      } else if (getUnapprovedTransactionCount() > 0) {
+        triggerUi();
+      }
+    },
+  );
+
+  function rejectUnapprovedNotifications() {
+    Object.keys(
+      controller.txController.txStateManager.getUnapprovedTxList(),
+    ).forEach((txId) =>
+      controller.txController.txStateManager.setTxStatusRejected(txId),
+    );
+    controller.messageManager.messages
+      .filter((msg) => msg.status === 'unapproved')
+      .forEach((tx) =>
+        controller.messageManager.rejectMsg(
+          tx.id,
+          REJECT_NOTFICIATION_CLOSE_SIG,
+        ),
+      );
+    controller.personalMessageManager.messages
+      .filter((msg) => msg.status === 'unapproved')
+      .forEach((tx) =>
+        controller.personalMessageManager.rejectMsg(
+          tx.id,
+          REJECT_NOTFICIATION_CLOSE_SIG,
+        ),
+      );
+    controller.typedMessageManager.messages
+      .filter((msg) => msg.status === 'unapproved')
+      .forEach((tx) =>
+        controller.typedMessageManager.rejectMsg(
+          tx.id,
+          REJECT_NOTFICIATION_CLOSE_SIG,
+        ),
+      );
+    controller.decryptMessageManager.messages
+      .filter((msg) => msg.status === 'unapproved')
+      .forEach((tx) =>
+        controller.decryptMessageManager.rejectMsg(
+          tx.id,
+          REJECT_NOTFICIATION_CLOSE,
+        ),
+      );
+    controller.encryptionPublicKeyManager.messages
+      .filter((msg) => msg.status === 'unapproved')
+      .forEach((tx) =>
+        controller.encryptionPublicKeyManager.rejectMsg(
+          tx.id,
+          REJECT_NOTFICIATION_CLOSE,
+        ),
+      );
+
+    // Finally, reject all approvals managed by the ApprovalController
+    controller.approvalController.clear(
+      ethErrors.provider.userRejectedRequest(),
+    );
+
+    updateBadge();
   }
 
   return Promise.resolve();
@@ -491,7 +601,7 @@ async function openPopup() {
         clearInterval(interval);
         resolve();
       }
-    }, 1000);
+    }, SECOND);
   });
 }
 

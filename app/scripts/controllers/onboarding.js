@@ -4,12 +4,12 @@ import log from 'loglevel';
 /**
  * @typedef {Object} InitState
  * @property {Boolean} seedPhraseBackedUp Indicates whether the user has completed the seed phrase backup challenge
+ * @property {Boolean} completedOnboarding Indicates whether the user has completed the onboarding flow
  */
 
 /**
  * @typedef {Object} OnboardingOptions
  * @property {InitState} initState The initial controller state
- * @property {PreferencesController} preferencesController Controller for managing user perferences
  */
 
 /**
@@ -28,27 +28,39 @@ export default class OnboardingController {
     };
     const initState = {
       seedPhraseBackedUp: null,
+      firstTimeFlowType: null,
+      completedOnboarding: false,
       ...opts.initState,
       ...initialTransientState,
     };
     this.store = new ObservableStore(initState);
-    this.preferencesController = opts.preferencesController;
-    this.completedOnboarding = this.preferencesController.store.getState().completedOnboarding;
-
-    this.preferencesController.store.subscribe(({ completedOnboarding }) => {
-      if (completedOnboarding !== this.completedOnboarding) {
-        this.completedOnboarding = completedOnboarding;
-        if (completedOnboarding) {
-          this.store.updateState(initialTransientState);
-        }
-      }
-    });
   }
 
   setSeedPhraseBackedUp(newSeedPhraseBackUpState) {
     this.store.updateState({
       seedPhraseBackedUp: newSeedPhraseBackUpState,
     });
+  }
+
+  // /**
+  //  * Sets the completedOnboarding state to true, indicating that the user has completed the
+  //  * onboarding process.
+  //  */
+  completeOnboarding() {
+    this.store.updateState({
+      completedOnboarding: true,
+    });
+    return Promise.resolve(true);
+  }
+
+  /**
+   * Setter for the `firstTimeFlowType` property
+   *
+   * @param {string} type - Indicates the type of first time flow - create or import - the user wishes to follow
+   *
+   */
+  setFirstTimeFlowType(type) {
+    this.store.updateState({ firstTimeFlowType: type });
   }
 
   /**

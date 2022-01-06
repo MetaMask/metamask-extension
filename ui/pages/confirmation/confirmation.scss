@@ -1,0 +1,71 @@
+@import 'components/confirmation-footer/confirmation-footer';
+
+.confirmation-page {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: white;
+  display: grid;
+  flex-direction: column;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    'navigation'
+    'content'
+    'footer';
+
+  a {
+    color: $primary-1;
+  }
+
+  &__content {
+    grid-area: content;
+    padding: 16px 16px 0;
+    min-width: 0;
+
+    & > :last-child {
+      margin-bottom: 16px;
+    }
+  }
+
+  &__navigation {
+    @include H7;
+
+    grid-area: navigation;
+    background-color: $Grey-000;
+    border-bottom: 1px solid $geyser;
+    padding: 6px 16px 5px 16px;
+    color: $Grey-500;
+    display: grid;
+    grid-template-columns: 1fr minmax(0, auto) minmax(0, auto);
+    align-items: center;
+  }
+
+  &__navigation-button {
+    background-color: white;
+    border-radius: 100px;
+    color: $Grey-500;
+    font-size: $font-size-h6;
+    height: 20px;
+    width: 20px;
+    padding: 0;
+
+    &:disabled {
+      cursor: not-allowed;
+      background-color: $Grey-100;
+      color: $Grey-300;
+    }
+  }
+
+  &__navigation &__navigation-button:last-child {
+    margin-left: 8px;
+  }
+
+  .chip {
+    max-width: 100%;
+
+    &__label {
+      word-break: break-all;
+    }
+  }
+}

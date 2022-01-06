@@ -1,5 +1,5 @@
 diff --git a/node_modules/regenerator-runtime/runtime.js b/node_modules/regenerator-runtime/runtime.js
-index 547b8c6..c53a471 100644
+index 547b8c6..885626e 100644
 --- a/node_modules/regenerator-runtime/runtime.js
 +++ b/node_modules/regenerator-runtime/runtime.js
 @@ -5,7 +5,7 @@
@@ -65,3 +65,12 @@ index 547b8c6..c53a471 100644
  
    function pushTryEntry(locs) {
      var entry = { tryLoc: locs[0] };
+@@ -733,7 +734,7 @@ var runtime = (function (exports) {
+ ));
+ 
+ try {
+-  regeneratorRuntime = runtime;
++  globalThis.regeneratorRuntime = runtime;
+ } catch (accidentalStrictMode) {
+   // This module should not be running in strict mode, so the above
+   // assignment should always work unless something is misconfigured. Just

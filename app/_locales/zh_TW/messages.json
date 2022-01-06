@@ -41,9 +41,6 @@
   "addNetwork": {
     "message": "新增網路"
   },
-  "addRecipient": {
-    "message": "新增接收人"
-  },
   "addSuggestedTokens": {
     "message": "加入建議的代幣"
   },
@@ -54,9 +51,6 @@
     "message": "如 John D。"
   },
   "addToken": {
-    "message": "加入代幣"
-  },
-  "addTokens": {
     "message": "加入代幣"
   },
   "advanced": {
@@ -78,6 +72,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "批准"
@@ -148,9 +150,6 @@
   },
   "browserNotSupported": {
     "message": "您的瀏覽器尚未支援..."
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask 是在加州設計製造"
   },
   "buy": {
     "message": "買"
@@ -236,9 +235,6 @@
   "copiedExclamation": {
     "message": "已複製！"
   },
-  "copiedTransactionId": {
-    "message": "已複製的交易 ID"
-  },
   "copyAddress": {
     "message": "複製到剪貼簿"
   },
@@ -275,9 +271,6 @@
   "customGasSubTitle": {
     "message": "提升費用可能會加快處理時間，但不保證"
   },
-  "customRPC": {
-    "message": "自訂 RPC"
-  },
   "customToken": {
     "message": "自訂代幣"
   },
@@ -286,9 +279,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "小數點後位數至少為0, 最多為36."
-  },
-  "defaultNetwork": {
-    "message": "預設以太幣交易網路為主網路"
   },
   "delete": {
     "message": "刪除"
@@ -555,7 +545,7 @@
   "letsGoSetUp": {
     "message": "好，我們開始吧！"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
   "links": {
@@ -594,20 +584,11 @@
   "metamaskVersion": {
     "message": "MetaMask 版本"
   },
-  "mobileSyncText": {
-    "message": "請輸入密碼確認身份！"
-  },
   "mustSelectOne": {
     "message": "必須選擇至少 1 代幣"
   },
   "myAccounts": {
     "message": "我的帳戶"
-  },
-  "myWalletAccounts": {
-    "message": "我的錢包帳號"
-  },
-  "myWalletAccountsDescription": {
-    "message": "所有你在 MetaMask 創建的帳號將自動新增到此區塊。"
   },
   "needEtherInWallet": {
     "message": "要使用 MetaMask 存取去中心化應用服務時，您的錢包中需要有以太幣。"
@@ -646,9 +627,6 @@
   },
   "newContract": {
     "message": "建立新合約"
-  },
-  "newNetwork": {
-    "message": "新增網路"
   },
   "newPassword": {
     "message": "新密碼（至少8個字元）"
@@ -691,12 +669,6 @@
   },
   "on": {
     "message": "開啟"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "區塊鏈瀏覽器 URL（非必要）"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (可選)"
   },
   "origin": {
     "message": "來源"
@@ -757,9 +729,6 @@
   "recents": {
     "message": "最近"
   },
-  "recipientAddress": {
-    "message": "接收位址"
-  },
   "recipientAddressPlaceholder": {
     "message": "搜尋，公開地址 (0x)，或 ENS"
   },
@@ -814,9 +783,6 @@
   "revealSeedWordsDescription": {
     "message": "若想在不同瀏覽器或電腦登入，將需要使用助憶詞還原帳戶資訊。請妥善並安全的保管您的助憶詞。"
   },
-  "revealSeedWordsTitle": {
-    "message": "助憶詞"
-  },
   "revealSeedWordsWarning": {
     "message": "絕對不要在公共場合輸入助憶詞！這可被用來竊取您的帳戶。"
   },
@@ -852,9 +818,6 @@
   },
   "searchTokens": {
     "message": "搜尋代幣"
-  },
-  "secretBackupPhrase": {
-    "message": "助憶詞"
   },
   "secretBackupPhraseDescription": {
     "message": "助憶詞將可協助您用更簡單的方式備份帳戶資訊。"
@@ -897,9 +860,6 @@
   },
   "sendTokens": {
     "message": "發送代幣"
-  },
-  "sentEther": {
-    "message": "發送以太幣"
   },
   "separateEachWord": {
     "message": "單詞之間請以空白間隔"
@@ -1139,20 +1099,8 @@
   "viewContact": {
     "message": "觀看聯絡資訊"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "在 $1 瀏覽"
-  },
-  "viewOnEtherscan": {
-    "message": "在 Etherscan 上瀏覽"
-  },
-  "viewinExplorer": {
-    "message": "在 Explorer 上瀏覽"
-  },
   "visitWebSite": {
     "message": "造訪我們的網站"
-  },
-  "walletSeed": {
-    "message": "助憶詞"
   },
   "welcome": {
     "message": "歡迎來到 MetaMask"

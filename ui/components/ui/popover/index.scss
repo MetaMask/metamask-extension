@@ -1,0 +1,122 @@
+.popover {
+  &-wrap {
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      -webkit-border-radius: 10px;
+      border-radius: 10px;
+      background: #c4c4c4;
+    }
+
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 328px;
+    max-height: 94vh;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    background: white;
+  }
+
+  &-header {
+    display: flex;
+    padding: 24px 16px 16px;
+    flex-direction: column;
+    background: white;
+    position: relative;
+    border-radius: 10px;
+
+    &__title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      @include H4;
+
+      font-weight: bold;
+      padding-bottom: 8px;
+
+      h2 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        button {
+          margin-right: 24px;
+        }
+      }
+
+      &.center {
+        justify-content: center;
+      }
+    }
+
+    &__subtitle {
+      @include H6;
+    }
+
+    &__button {
+      background: none;
+      font-size: inherit;
+      padding: 0;
+    }
+
+    i {
+      cursor: pointer;
+    }
+  }
+
+  &-bg {
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 0.2;
+  }
+
+  &-content {
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
+    border-radius: 10px;
+  }
+
+  &-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+  }
+
+  &-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-top: 1px solid #d2d8dd;
+    padding: 16px 24px 24px;
+
+    > :only-child {
+      margin: 0 auto;
+    }
+  }
+
+  &-arrow {
+    width: 22px;
+    height: 22px;
+    background: white;
+    position: absolute;
+    transform: rotate(45deg);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+  }
+}

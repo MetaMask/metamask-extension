@@ -1,0 +1,127 @@
+.slippage-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+    background: unset;
+    margin-bottom: 8px;
+  }
+
+  &__header-text {
+    @include H6;
+
+    margin-right: 6px;
+    font-weight: 900;
+  }
+
+  &__content {
+    padding-left: 10px;
+  }
+
+  &__dropdown-content {
+    display: flex;
+    align-items: center;
+  }
+
+  &__buttons-prefix {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+  }
+
+  &__prefix-text {
+    @include H6;
+
+    margin-right: 4px;
+    color: black;
+    font-weight: 900;
+  }
+
+  &__error-text {
+    @include H7;
+
+    color: $Red-500;
+    margin-top: 8px;
+  }
+
+  &__button-group {
+    & &-custom-button {
+      cursor: text;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-width: 72px;
+      margin-right: 0;
+    }
+  }
+
+  &__custom-input {
+    display: flex;
+    justify-content: center;
+
+    input {
+      border: none;
+      width: 64px;
+      text-align: center;
+      background: $Blue-500;
+      color: white;
+      font-weight: inherit;
+
+      &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color: white;
+      }
+
+      &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color: white;
+        opacity: 1;
+      }
+
+      &::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color: white;
+        opacity: 1;
+      }
+
+      &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: white;
+      }
+
+      &::-ms-input-placeholder { /* Microsoft Edge */
+        color: white;
+      }
+
+      &::placeholder { /* Most modern browsers support this now. */
+        color: white;
+      }
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      /* display: none; <- Crashes Chrome on hover */
+      -webkit-appearance: none;
+      margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    &--danger {
+      input {
+        background: $Red-500;
+      }
+    }
+  }
+
+  &__percentage-suffix {
+    position: absolute;
+    right: 5px;
+  }
+}

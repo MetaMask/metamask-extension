@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Добавяне на мрежа"
   },
-  "addRecipient": {
-    "message": "Добавете получател"
-  },
   "addSuggestedTokens": {
     "message": "Добавете препоръчани жетони"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Добавяне на жетон"
-  },
-  "addTokens": {
-    "message": "Добавяне на жетони"
   },
   "advanced": {
     "message": "Разширени"
@@ -75,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Одобри"
@@ -142,9 +144,6 @@
   },
   "browserNotSupported": {
     "message": "Браузърът ви не се поддържа ..."
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask е проектиран и създаден в Калифорния."
   },
   "buyWithWyre": {
     "message": "Купете ETH с Wyre"
@@ -227,9 +226,6 @@
   "copiedExclamation": {
     "message": "Копирано!"
   },
-  "copiedTransactionId": {
-    "message": "Копиран идентификационен номер на транзакцията"
-  },
   "copyAddress": {
     "message": "Копирайте адреса в клипборда"
   },
@@ -266,9 +262,6 @@
   "customGasSubTitle": {
     "message": "Увеличаването на таксата може да намали времето за обработка, но това не е гарантирано."
   },
-  "customRPC": {
-    "message": "RPC по избор"
-  },
   "customToken": {
     "message": "Персонализиран маркер"
   },
@@ -277,9 +270,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Десетичните знаци трябва да бъдат най-малко 0 и не повече от 36."
-  },
-  "defaultNetwork": {
-    "message": "Мрежата по подразбиране за Ether транзакции е Main Net."
   },
   "delete": {
     "message": "Изтриване"
@@ -542,7 +532,7 @@
   "letsGoSetUp": {
     "message": "Да, нека да настроим нещата!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
   "links": {
@@ -584,20 +574,11 @@
   "metamaskVersion": {
     "message": "Версия на MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Моля, въведете вашата парола, за да потвърдите, че сте вие!"
-  },
   "mustSelectOne": {
     "message": "Трябва да изберете поне 1 жетон."
   },
   "myAccounts": {
     "message": "Моите акаунти"
-  },
-  "myWalletAccounts": {
-    "message": "Моите акаунти в портфейла"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Всичките ви създадени от MetaMask акаунти ще бъдат автоматично добавени в този раздел."
   },
   "needEtherInWallet": {
     "message": "За да взаимодействате с децентрализираните приложения, използвайки MetaMask, ще ви е необходим етер в портфейла ви."
@@ -636,9 +617,6 @@
   },
   "newContract": {
     "message": "Нов договор"
-  },
-  "newNetwork": {
-    "message": "Нова мрежа"
   },
   "newPassword": {
     "message": "Нова парола (мин. 8 символа)"
@@ -687,12 +665,6 @@
   },
   "on": {
     "message": "Включено"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Блокиране на Explorer URL (по избор)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Символ (по избор)"
   },
   "origin": {
     "message": "Произход"
@@ -756,9 +728,6 @@
   "recents": {
     "message": "Скорошни"
   },
-  "recipientAddress": {
-    "message": "Адрес на получателя"
-  },
   "recipientAddressPlaceholder": {
     "message": "Търсене, публичен адрес (0x) или ENS"
   },
@@ -816,9 +785,6 @@
   "revealSeedWordsDescription": {
     "message": "Ако някога смените браузъра или компютъра си, тази ключова фраза ще Ви трябва за достъп до Вашите акаунти. Запазете я някъде на сигурно и тайно място."
   },
-  "revealSeedWordsTitle": {
-    "message": "Фраза зародиш"
-  },
   "revealSeedWordsWarning": {
     "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти."
   },
@@ -855,9 +821,6 @@
   "searchTokens": {
     "message": "Търсене на маркери"
   },
-  "secretBackupPhrase": {
-    "message": "Тайна резервна фраза"
-  },
   "secretBackupPhraseDescription": {
     "message": "Вашата тайна резервна фраза улеснява архивирането и възстановяването на акаунта ви."
   },
@@ -882,9 +845,6 @@
   "selectAnAccount": {
     "message": "Изберете акаунт"
   },
-  "selectAnAccountHelp": {
-    "message": "Изберете акаунта за преглед в MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Моля, изберете всяка фраза, за да се уверите, че е правилна."
   },
@@ -905,9 +865,6 @@
   },
   "sendTokens": {
     "message": "Изпращане на жетони"
-  },
-  "sentEther": {
-    "message": "изпратен етер"
   },
   "separateEachWord": {
     "message": "Отделете всяка дума с интервал"
@@ -1147,20 +1104,8 @@
   "viewContact": {
     "message": "Преглед на контакта"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Преглед на $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Преглед на Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Преглед в Explorer"
-  },
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"
-  },
-  "walletSeed": {
-    "message": "Начална фраза за портфейл "
   },
   "welcome": {
     "message": "Добре дошли в MetaMask"

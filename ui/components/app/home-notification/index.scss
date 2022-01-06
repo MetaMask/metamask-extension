@@ -1,0 +1,131 @@
+.home-notification {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  background: rgba(36, 41, 46, 0.9);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  min-height: 116px;
+  padding: 16px;
+
+  @media screen and (min-width: $break-large) {
+    min-width: 472px;
+  }
+
+  &__content-container {
+    display: flex;
+  }
+
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__text {
+    @include H7;
+
+    color: $white;
+  }
+
+  &__text-link {
+    @include H7;
+
+    color: $primary-blue;
+    cursor: pointer;
+  }
+
+  .fa-info-circle {
+    color: #6a737d;
+  }
+
+  & &__checkbox-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    @media screen and (max-width: $break-small) {
+      width: 160px;
+    }
+  }
+
+  & &__checkbox {
+    height: 13px;
+    width: 13px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  & &__checkbox-label {
+    @include H7;
+
+    color: $white;
+    margin-left: 10px;
+    margin-top: 1px;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+  }
+
+  & &__ignore-button {
+    border-color: #6a737d;
+    box-sizing: border-box;
+    color: $white;
+    background-color: inherit;
+    height: 34px;
+    width: 155px;
+    padding: 0;
+
+    @media screen and (max-width: $break-small) {
+      width: 135px;
+    }
+
+    &:hover {
+      border-color: #6a737d;
+      background-color: #6a737d;
+    }
+
+    &:active {
+      background-color: #141618;
+    }
+  }
+
+  & &__accept-button {
+    border-color: #6a737d;
+    box-sizing: border-box;
+    color: $white;
+    background-color: inherit;
+    height: 34px;
+    width: 155px;
+    padding: 0;
+    margin-left: 4px;
+
+    @media screen and (max-width: $break-small) {
+      width: 135px;
+    }
+
+    &:hover {
+      border-color: #6a737d;
+      background-color: #6a737d;
+    }
+
+    &:active {
+      background-color: #141618;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    width: 100%;
+    padding-top: 10px;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+  }
+
+  &__tooltip-wrapper {
+    display: flex;
+    margin-left: 10px;
+  }
+}

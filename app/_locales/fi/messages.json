@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "Lisää verkko"
   },
-  "addRecipient": {
-    "message": "Lisää vastaanottaja"
-  },
   "addSuggestedTokens": {
     "message": "Lisää ehdotetut käyttötunnukset"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "Lisää tietue"
-  },
-  "addTokens": {
-    "message": "Lisää poletteja"
   },
   "advanced": {
     "message": "Lisäasetukset"
@@ -75,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Hyväksy"
@@ -142,9 +144,6 @@
   },
   "browserNotSupported": {
     "message": "Selaintasi ei tueta..."
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask on suunniteltu ja koottu Kaliforniassa."
   },
   "buyWithWyre": {
     "message": "Osta ETH:ta Wyrella"
@@ -227,9 +226,6 @@
   "copiedExclamation": {
     "message": "Kopioitu"
   },
-  "copiedTransactionId": {
-    "message": "Kopioitu tapahtuman tunnus"
-  },
   "copyAddress": {
     "message": "Kopioi osoite leikepöydälle"
   },
@@ -266,9 +262,6 @@
   "customGasSubTitle": {
     "message": "Taksan korottaminen saattaa vähentää käsittelyaikaa, mutta siitä ei anneta takeita."
   },
-  "customRPC": {
-    "message": "Mukautettu RPC"
-  },
   "customToken": {
     "message": "Mukautettu tietue"
   },
@@ -277,9 +270,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desimaalien on oltava vähintään 0 ja korkeintaan 36."
-  },
-  "defaultNetwork": {
-    "message": "Oletusverkko Ether-tapahtumille on Main Net."
   },
   "delete": {
     "message": "Poista"
@@ -546,7 +536,7 @@
   "letsGoSetUp": {
     "message": "Kyllä, valmistaudutaan!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Haluaisitko lisätä nämä poletit?"
   },
   "links": {
@@ -588,20 +578,11 @@
   "metamaskVersion": {
     "message": "MetaMask-versio"
   },
-  "mobileSyncText": {
-    "message": "Vahvista henkilöllisyytesi antamalla salasanasi!"
-  },
   "mustSelectOne": {
     "message": "Valittava vähintään 1 poletti."
   },
   "myAccounts": {
     "message": "Omat tilit"
-  },
-  "myWalletAccounts": {
-    "message": "Omat kukkarotilini"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Kaikki MetaMaskilla luodut tilisi lisätään automaattisesti tähän osastoon."
   },
   "needEtherInWallet": {
     "message": "Ollaksesi vuorovaikutuksessa hajautettujen sovellusten kanssa sinulla on oltava lompakossasi Ether."
@@ -640,9 +621,6 @@
   },
   "newContract": {
     "message": "Uusi sopimus"
-  },
-  "newNetwork": {
-    "message": "Uusi verkko"
   },
   "newPassword": {
     "message": "Uusi salasana (väh. 8 merkkiä)"
@@ -688,12 +666,6 @@
   },
   "on": {
     "message": "Käytössä"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Estä Explorerin URL-osoite (valinnainen)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symboli (valinnainen)"
   },
   "origin": {
     "message": "Alkuperä"
@@ -757,9 +729,6 @@
   "recents": {
     "message": "Viimeaikaiset"
   },
-  "recipientAddress": {
-    "message": "Vastaanottajan osoite"
-  },
   "recipientAddressPlaceholder": {
     "message": "Haku, julkinen osoite (0x) tai ENS"
   },
@@ -817,9 +786,6 @@
   "revealSeedWordsDescription": {
     "message": "Mikäli vaihdat jossakin vaiheessa selainta tai tietokonetta, tarvitset tämän salaustekstin tiliesi käyttämiseen. Tallenna se johonkin turvalliseen ja salaiseen paikkaan."
   },
-  "revealSeedWordsTitle": {
-    "message": "Juurilause"
-  },
   "revealSeedWordsWarning": {
     "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen."
   },
@@ -856,9 +822,6 @@
   "searchTokens": {
     "message": "Hae tietueita"
   },
-  "secretBackupPhrase": {
-    "message": "Salainen varmuuskopiolause"
-  },
   "secretBackupPhraseDescription": {
     "message": "Salainen varmistuslauseesi tekee varmuuskopioinnista ja tilisi palauttamisesta helppoa."
   },
@@ -883,9 +846,6 @@
   "selectAnAccount": {
     "message": "Valitse tili"
   },
-  "selectAnAccountHelp": {
-    "message": "Valitse MetaMaskissa näytettävä tili"
-  },
   "selectEachPhrase": {
     "message": "Ole hyvä ja valitse jokainen teksti järjestyksessä varmistaaksesi, että se on oikein."
   },
@@ -906,9 +866,6 @@
   },
   "sendTokens": {
     "message": "Lähetä tietueita"
-  },
-  "sentEther": {
-    "message": "lähetä etheriä"
   },
   "separateEachWord": {
     "message": "Erottele sanat toisistaan yhdellä välilyönnillä"
@@ -1148,20 +1105,8 @@
   "viewContact": {
     "message": "Näytä yhteyshenkilö"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tarkastele kohdassa $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Näytä Etherscanissa"
-  },
-  "viewinExplorer": {
-    "message": "Tarkastele Explorerissa"
-  },
   "visitWebSite": {
     "message": "Vieraile verkkosivustollamme"
-  },
-  "walletSeed": {
-    "message": "Lompakon siemen"
   },
   "welcome": {
     "message": "Tervetuloa MetaMaskiin"
