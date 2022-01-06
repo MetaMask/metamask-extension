@@ -1,7 +1,7 @@
 import extension from 'extensionizer';
 import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
-import { memoize } from 'lodash';
+import { find, memoize } from 'lodash';
 import {
   MAINNET_CHAIN_ID,
   TEST_CHAINS,
@@ -166,7 +166,7 @@ function getChainType(chainId) {
  * @param {Object} allCollectibles - The collection of all collectibles the user has ever owned organized by account and chainId.
  * @param {string} contractAddress - The address of the contract to match against.
  * @param {string} collectibleTokenId - The collectible tokenId to match against.
- * @returns {Object | null} - The matching collectible if found, null if not found.
+ * @returns {Object | undefined} - The matching collectible if found, undefined if not found.
  *
  */
 function getKnownCollectible(
@@ -174,28 +174,18 @@ function getKnownCollectible(
   contractAddress,
   collectibleTokenId,
 ) {
-  for (const account in allCollectibles) {
-    if (Object.prototype.hasOwnProperty.call(allCollectibles, account)) {
-      for (const chainId in allCollectibles[account]) {
-        if (
-          Object.prototype.hasOwnProperty.call(
-            allCollectibles[account],
-            chainId,
-          )
-        ) {
-          const matchingCollectible = allCollectibles[account][chainId].find(
-            ({ address, tokenId }) =>
-              isEqualCaseInsensitive(address, contractAddress) &&
-              tokenId === collectibleTokenId,
-          );
-          if (matchingCollectible) {
-            return matchingCollectible;
-          }
-        }
-      }
-    }
-  }
-  return null;
+  let matchedCollectible;
+  find(allCollectibles, (collectiblesByChainId) => {
+    find(collectiblesByChainId, (collectibles) => {
+      matchedCollectible = collectibles.find(
+        ({ address, tokenId }) =>
+          isEqualCaseInsensitive(address, contractAddress) &&
+          tokenId === collectibleTokenId,
+      );
+    });
+  });
+
+  return matchedCollectible;
 }
 
 export {
