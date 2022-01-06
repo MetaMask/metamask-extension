@@ -12,6 +12,7 @@ import {
   getTopQuote,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getSwapsRefreshStates,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -50,8 +51,6 @@ import UnknownIcon from './unknown-icon';
 import ArrowIcon from './arrow-icon';
 import TimerIcon from './timer-icon';
 
-const TOTAL_WAITING_TIME_IN_SEC = 180;
-
 export default function SmartTransactionStatus() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const t = useContext(I18nContext);
@@ -70,6 +69,7 @@ export default function SmartTransactionStatus() {
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
+  const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   let smartTransactionStatus = 'pending';
   let latestSmartTransaction = {};
@@ -100,15 +100,15 @@ export default function SmartTransactionStatus() {
         !latestSmartTransaction.time ||
         latestSmartTransaction.status !== 'pending'
       ) {
-        return TOTAL_WAITING_TIME_IN_SEC;
+        return swapsRefreshRates.stxStatusDeadline;
       }
       const secondsAfterStxSubmission = Math.round(
         (Date.now() - latestSmartTransaction.time) / 1000,
       );
-      if (secondsAfterStxSubmission > TOTAL_WAITING_TIME_IN_SEC) {
+      if (secondsAfterStxSubmission > swapsRefreshRates.stxStatusDeadline) {
         return 0;
       }
-      return TOTAL_WAITING_TIME_IN_SEC - secondsAfterStxSubmission;
+      return swapsRefreshRates.stxStatusDeadline - secondsAfterStxSubmission;
     },
   );
 
@@ -366,8 +366,9 @@ export default function SmartTransactionStatus() {
               className="smart-transaction-status__loading-bar"
               style={{
                 width: `${
-                  (100 / TOTAL_WAITING_TIME_IN_SEC) *
-                  (TOTAL_WAITING_TIME_IN_SEC - timeLeftForPendingStxInSec)
+                  (100 / swapsRefreshRates.stxStatusDeadline) *
+                  (swapsRefreshRates.stxStatusDeadline -
+                    timeLeftForPendingStxInSec)
                 }%`,
               }}
             />
