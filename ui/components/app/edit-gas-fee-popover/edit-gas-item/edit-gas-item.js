@@ -13,13 +13,14 @@ import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
+import I18nValue from '../../../ui/i18n-value';
 import InfoTooltip from '../../../ui/info-tooltip';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 
 import { useGasItemFeeDetails } from './useGasItemFeeDetails';
 
-const getTitleAndIcon = (priorityLevel, t, editGasMode) => {
+const getTitleAndIcon = (priorityLevel, editGasMode) => {
   let icon = priorityLevel;
   let title = priorityLevel;
   if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
@@ -84,7 +85,7 @@ const EditGasItem = ({ priorityLevel }) => {
     }
   };
 
-  const { title, icon } = getTitleAndIcon(priorityLevel, t, editGasMode);
+  const { title, icon } = getTitleAndIcon(priorityLevel, editGasMode);
 
   return (
     <button
@@ -105,7 +106,7 @@ const EditGasItem = ({ priorityLevel }) => {
             {PRIORITY_LEVEL_ICON_MAP[icon]}
           </span>
         )}
-        {t(title)}
+        <I18nValue messageKey={title} />
       </span>
       <span
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
