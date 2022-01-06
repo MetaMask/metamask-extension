@@ -39,13 +39,9 @@ module.exports = {
     'storybook-build/**',
   ],
 
-  extends: [
-    '@metamask/eslint-config',
-    '@metamask/eslint-config-nodejs',
-    'prettier',
-  ],
+  extends: ['@metamask/eslint-config', '@metamask/eslint-config-nodejs'],
 
-  plugins: ['@babel', 'import', 'prettier'],
+  plugins: ['@babel', 'import'],
 
   globals: {
     document: 'readonly',

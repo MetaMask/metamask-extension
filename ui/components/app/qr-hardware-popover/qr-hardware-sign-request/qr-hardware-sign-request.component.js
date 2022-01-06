@@ -32,7 +32,9 @@ const QRHardwareSignRequest = ({ request, handleCancel, setErrorTitle }) => {
     );
   };
 
-  if (status === 'play') return renderPlayer();
+  if (status === 'play') {
+    return renderPlayer();
+  }
   return renderReader();
 };
 

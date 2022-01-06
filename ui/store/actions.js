@@ -431,8 +431,9 @@ export function connectHardware(deviceName, page, hdPath, t) {
         dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
         throw new Error(t('ledgerDeviceOpenFailureMessage'));
       } else {
-        if (deviceName !== DEVICE_NAMES.QR)
+        if (deviceName !== DEVICE_NAMES.QR) {
           dispatch(displayWarning(error.message));
+        }
         throw error;
       }
     } finally {

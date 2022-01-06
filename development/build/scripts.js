@@ -450,7 +450,9 @@ function createFactoredBuild({
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
         // skip "common" group, they are added to all other groups
-        if (groupSet === commonSet) continue;
+        if (groupSet === commonSet) {
+          continue;
+        }
 
         switch (groupLabel) {
           case 'ui': {

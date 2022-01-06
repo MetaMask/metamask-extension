@@ -28,7 +28,9 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
 
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
-  if (hasSimulationError && !userAcknowledgedGasMissing) return null;
+  if (hasSimulationError && !userAcknowledgedGasMissing) {
+    return null;
+  }
 
   return (
     <TransactionDetailItem

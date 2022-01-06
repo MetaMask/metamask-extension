@@ -26,7 +26,9 @@ const validateGasLimit = (gasLimit, minimumGasLimit) => {
     { value: minimumGasLimit || GAS_LIMITS.SIMPLE, fromNumericBase: 'hex' },
   );
 
-  if (gasLimitTooLow) return GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
+  if (gasLimitTooLow) {
+    return GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
+  }
   return undefined;
 };
 
@@ -43,7 +45,9 @@ const validateMaxFee = (
   maxPriorityFeePerGasToUse,
   supportsEIP1559,
 ) => {
-  if (maxPriorityFeeError) return undefined;
+  if (maxPriorityFeeError) {
+    return undefined;
+  }
   if (
     supportsEIP1559 &&
     bnGreaterThan(maxPriorityFeePerGasToUse, maxFeePerGasToUse)
@@ -76,8 +80,9 @@ const getMaxPriorityFeeWarning = (
   maxPriorityFeePerGasToUse,
   supportsEIP1559,
 ) => {
-  if (!supportsEIP1559 || !isFeeMarketGasEstimate || isGasEstimatesLoading)
+  if (!supportsEIP1559 || !isFeeMarketGasEstimate || isGasEstimatesLoading) {
     return undefined;
+  }
   if (
     bnLessThan(
       maxPriorityFeePerGasToUse,
@@ -220,17 +225,29 @@ export function useGasFeeErrors({
 
   const gasErrors = useMemo(() => {
     const errors = {};
-    if (gasLimitError) errors.gasLimit = gasLimitError;
-    if (maxPriorityFeeError) errors.maxPriorityFee = maxPriorityFeeError;
-    if (maxFeeError) errors.maxFee = maxFeeError;
-    if (gasPriceError) errors.gasPrice = gasPriceError;
+    if (gasLimitError) {
+      errors.gasLimit = gasLimitError;
+    }
+    if (maxPriorityFeeError) {
+      errors.maxPriorityFee = maxPriorityFeeError;
+    }
+    if (maxFeeError) {
+      errors.maxFee = maxFeeError;
+    }
+    if (gasPriceError) {
+      errors.gasPrice = gasPriceError;
+    }
     return errors;
   }, [gasLimitError, maxPriorityFeeError, maxFeeError, gasPriceError]);
 
   const gasWarnings = useMemo(() => {
     const warnings = {};
-    if (maxPriorityFeeWarning) warnings.maxPriorityFee = maxPriorityFeeWarning;
-    if (maxFeeWarning) warnings.maxFee = maxFeeWarning;
+    if (maxPriorityFeeWarning) {
+      warnings.maxPriorityFee = maxPriorityFeeWarning;
+    }
+    if (maxFeeWarning) {
+      warnings.maxFee = maxFeeWarning;
+    }
     return warnings;
   }, [maxPriorityFeeWarning, maxFeeWarning]);
 

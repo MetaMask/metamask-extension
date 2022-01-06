@@ -679,8 +679,11 @@ describe('TransactionStateManager', function () {
       // transaction
       const txs = generateTransactions(limit + 5, {
         chainId: (i) => {
-          if (i === 0 || i === 1) return MAINNET_CHAIN_ID;
-          else if (i === 4 || i === 5) return RINKEBY_CHAIN_ID;
+          if (i === 0 || i === 1) {
+            return MAINNET_CHAIN_ID;
+          } else if (i === 4 || i === 5) {
+            return RINKEBY_CHAIN_ID;
+          }
           return currentChainId;
         },
         to: VALID_ADDRESS,
@@ -726,8 +729,11 @@ describe('TransactionStateManager', function () {
         to: VALID_ADDRESS,
         from: VALID_ADDRESS_TWO,
         nonce: (i) => {
-          if (i === 1) return '0';
-          else if (i === 5) return '4';
+          if (i === 1) {
+            return '0';
+          } else if (i === 5) {
+            return '4';
+          }
           return `${i}`;
         },
         status: (i) =>

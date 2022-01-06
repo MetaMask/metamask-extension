@@ -28,7 +28,9 @@ const EditGasFeePopover = () => {
     openModalCount,
   } = useTransactionModalContext();
 
-  if (currentModal !== 'editGasFee') return null;
+  if (currentModal !== 'editGasFee') {
+    return null;
+  }
 
   let popupTitle = 'editGasFeeModalTitle';
   if (editGasMode === EDIT_GAS_MODES.CANCEL) {

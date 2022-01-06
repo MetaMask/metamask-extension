@@ -116,9 +116,12 @@ export function useGasFeeInputs(
       userPrefersAdvancedGas &&
       transaction?.txParams?.maxPriorityFeePerGas &&
       transaction?.txParams?.maxFeePerGas
-    )
+    ) {
       return null;
-    if (transaction) return transaction?.userFeeLevel || null;
+    }
+    if (transaction) {
+      return transaction?.userFeeLevel || null;
+    }
     return defaultEstimateToUse;
   });
 
