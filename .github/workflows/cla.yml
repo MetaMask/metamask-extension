@@ -7,7 +7,9 @@ on:
 
 jobs:
   CLABot:
-    if: github.event_name == 'pull_request_target' || contains(github.event.comment.html_url, '/pull/')
+    if: |
+      (github.event_name == 'pull_request_target' || contains(github.event.comment.html_url, '/pull/')) &&
+      github.ref != 'refs/heads/l10n_crowdin_action'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
