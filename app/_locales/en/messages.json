@@ -2698,6 +2698,12 @@
   "statusNotConnected": {
     "message": "Not connected"
   },
+  "step1KeevoWallet": {
+    "message": "Make sure your Keevo Wallet is connected"
+  },
+  "step1KeevoWalletMsg": {
+    "message": "Connect your Keevo wallet directly to your computer, unlock the device. Run Keevo LINK application, and do sign in."
+  },
   "step1LatticeWallet": {
     "message": "Make sure your Lattice1 is ready to connect"
   },
@@ -2718,12 +2724,6 @@
   "step1TrezorWalletMsg": {
     "message": "Connect your wallet directly to your computer. For more on using your hardware wallet device, $1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1KeevoWallet": {
-    "message": "Make sure your Keevo Wallet is connected"
-  },
-  "step1KeevoWalletMsg": {
-    "message": "Connect your Keevo wallet directly to your computer, unlock the device. Run Keevo LINK application, and do sign in."
   },
   "step2LedgerWallet": {
     "message": "Plug in Ledger wallet"

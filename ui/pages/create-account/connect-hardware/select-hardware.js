@@ -104,7 +104,7 @@ export default class SelectHardware extends Component {
           selected: this.state.selectedDevice === DEVICE_NAMES.KEEVO,
         })}
         style={{
-          marginLeft: 0
+          marginLeft: 0,
         }}
         onClick={(_) => this.setState({ selectedDevice: DEVICE_NAMES.KEEVO })}
       >
@@ -135,7 +135,7 @@ export default class SelectHardware extends Component {
           className="hw-connect__btn-wrapper"
           style={{
             margin: '10px 0 0 0',
-            alignSelf: 'flex-start'
+            alignSelf: 'flex-start',
           }}
         >
           {this.renderConnectToKeevoButton()}
