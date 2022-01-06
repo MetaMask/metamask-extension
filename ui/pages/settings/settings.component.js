@@ -65,6 +65,7 @@ class SettingsPage extends PureComponent {
     lastFetchedConversionDate: null,
     searchResults: [],
     isSearchList: false,
+    searchText: '',
   };
 
   componentDidMount() {
@@ -101,7 +102,7 @@ class SettingsPage extends PureComponent {
       isSnapViewPage,
     } = this.props;
 
-    const { searchResults, isSearchList } = this.state;
+    const { searchResults, isSearchList, searchText } = this.state;
     const { t } = this.context;
 
     return (
@@ -138,13 +139,15 @@ class SettingsPage extends PureComponent {
                 this.setState({
                   searchResults: results,
                   isSearchList: searchQuery !== '',
+                  searchText: searchQuery,
                 });
               }}
               settingsRoutesList={getSettingsRoutes(t)}
             />
-            {isSearchList && (
+            {isSearchList && searchText.length >= 3 && (
               <SettingsSearchList
                 key=""
+                searchQuery={searchText}
                 results={searchResults}
                 onClickSetting={(setting) => this.handleClickSetting(setting)}
               />

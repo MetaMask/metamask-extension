@@ -9,6 +9,9 @@ import {
   EXPERIMENTAL_ROUTE,
 } from '../constants/routes';
 
+const MENU_TAB = 'menu-tab';
+const MENU_SECTION = 'menu-section';
+
 function showHideSettings(t, settings) {
   if (!process.env.COLLECTIBLES_V1) {
     return settings.filter(
@@ -372,4 +375,29 @@ export function handleHooksSettingsRefs(t, tabName, settingsRefs, itemIndex) {
     const historySettingsUrl = window.location.hash.split('#')[1];
     window.location.hash = historySettingsUrl;
   }
+}
+
+function colorText(text, menuElement) {
+  if (menuElement !== null) {
+    let { innerHTML } = menuElement;
+    const index = menuElement.innerText.toLowerCase().indexOf(text);
+    if (index >= 0) {
+      innerHTML = `${menuElement.innerText.substring(
+        0,
+        index,
+      )}<span style="background:#ffd33d">${menuElement.innerText.substring(
+        index,
+        index + text.length,
+      )}</span>${menuElement.innerText.substring(index + text.length)}`;
+      menuElement.innerHTML = innerHTML;
+    }
+  }
+}
+export function highlightSearchedText(text, menuIndex) {
+  const menuTabElement = document.getElementById(`${MENU_TAB}_${menuIndex}`);
+  const menuSectionElement = document.getElementById(
+    `${MENU_SECTION}_${menuIndex}`,
+  );
+  colorText(text, menuTabElement);
+  colorText(text, menuSectionElement);
 }

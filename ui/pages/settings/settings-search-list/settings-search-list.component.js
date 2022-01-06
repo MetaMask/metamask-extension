@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { highlightSearchedText } from '../../../helpers/utils/settings-search';
 
 export default class SettingsSearchList extends Component {
   static contextTypes = {
@@ -9,8 +10,21 @@ export default class SettingsSearchList extends Component {
 
   static propTypes = {
     results: PropTypes.array,
+    searchQuery: PropTypes.string,
     onClickSetting: PropTypes.func,
   };
+
+  componentDidMount() {
+    this.props.results.forEach((_, i) => {
+      highlightSearchedText(this.props.searchQuery, i);
+    });
+  }
+
+  componentDidUpdate() {
+    this.props.results.forEach((_, i) => {
+      highlightSearchedText(this.props.searchQuery, i);
+    });
+  }
 
   render() {
     const { results = [], onClickSetting } = this.props;
@@ -18,7 +32,7 @@ export default class SettingsSearchList extends Component {
 
     return (
       <div className="settings-page__header__search__list">
-        {Array(6)
+        {Array(5)
           .fill(undefined)
           .map((_, i) => {
             const { image, tab, section } = results[i] || {};
@@ -37,6 +51,7 @@ export default class SettingsSearchList extends Component {
                     />
 
                     <span
+                      id={`menu-tab_${i}`}
                       className={classnames(
                         'settings-page__header__search__list__item__tab',
                         {
@@ -49,6 +64,7 @@ export default class SettingsSearchList extends Component {
                     </span>
                     <div className="settings-page__header__search__list__item__caret" />
                     <span
+                      id={`menu-section_${i}`}
                       className={classnames(
                         'settings-page__header__search__list__item__section',
                         {
