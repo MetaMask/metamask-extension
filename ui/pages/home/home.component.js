@@ -165,7 +165,6 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       pendingConfirmations,
-      isSigningQRHardwareTransaction,
       failedTransactionsToDisplayCount,
     } = this.props;
     if (!isNotification && showAwaitingSwapScreen) {
