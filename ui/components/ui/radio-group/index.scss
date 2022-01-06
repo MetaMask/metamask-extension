@@ -36,28 +36,28 @@
   &__column-start-connector {
     width: calc(50% + 0.5px);
     height: 6px;
-    border-left: 1px solid $ui-2;
-    border-bottom: 1px solid $ui-2;
+    border-left: 1px solid var(--ui-2);
+    border-bottom: 1px solid var(--ui-2);
     align-self: flex-end;
   }
 
   &__column-end-connector {
     width: calc(50% + 0.5px);
     height: 6px;
-    border-right: 1px solid $ui-2;
-    border-bottom: 1px solid $ui-2;
+    border-right: 1px solid var(--ui-2);
+    border-bottom: 1px solid var(--ui-2);
     align-self: flex-start;
   }
 
   &__column-vertical-line {
     width: 1px;
     height: 5px;
-    border-left: 1px solid $ui-2;
+    border-left: 1px solid var(--ui-2);
   }
 
   &__column-horizontal-line {
     height: 1px;
-    border-bottom: 1px solid $ui-2;
+    border-bottom: 1px solid var(--ui-2);
     width: 100%;
   }
 

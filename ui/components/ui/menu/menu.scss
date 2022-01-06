@@ -2,11 +2,11 @@
   &__container {
     @include H6;
 
-    background: $white;
+    background: var(--white);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.214);
     border-radius: 8px;
     width: 225px;
-    color: $Black-100;
+    color: var(--Black-100);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -38,7 +38,7 @@
   &__icon {
     margin-right: 8px;
     grid-row: 1 / span 2;
-    color: $Grey-500;
+    color: var(--Grey-500);
   }
 
   .disconnect-icon {

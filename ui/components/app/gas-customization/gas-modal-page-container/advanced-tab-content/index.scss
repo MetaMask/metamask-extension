@@ -10,7 +10,7 @@
   &__transaction-data-summary {
     display: flex;
     flex-flow: column;
-    color: $mid-gray;
+    color: var(--mid-gray);
     margin-top: 12px;
     padding-left: 18px;
     padding-right: 18px;

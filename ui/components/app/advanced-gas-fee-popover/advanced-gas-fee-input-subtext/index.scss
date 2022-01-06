@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   margin-top: 2px;
-  color: $ui-4;
+  color: var(--ui-4);
   font-size: $font-size-h8;
 
   &__label {

@@ -1,21 +1,21 @@
 .typography.gas-timing {
-  color: $ui-4;
+  color: var(--ui-4);
 
   &--positive {
-    color: $success-3;
+    color: var(--success-3);
   }
 
   &--warning {
-    color: $alert-3;
+    color: var(--alert-3);
   }
 
   &--negative {
-    color: $error-1;
+    color: var(--error-1);
     font-weight: bold;
   }
 
   &--negative-V2 {
-    color: $secondary-1;
+    color: var(--secondary-1);
     font-weight: bold;
   }
 
@@ -24,7 +24,7 @@
     margin-inline-start: 4px;
 
     path {
-      fill: $error-1;
+      fill: var(--error-1);
     }
   }
 }

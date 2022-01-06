@@ -28,7 +28,7 @@
   &__popover-bg {
     height: 100%;
     width: 100%;
-    background: $Grey-100;
+    background: var(--Grey-100);
     opacity: 1;
 
     @media screen and (min-width: $break-large) {
@@ -58,7 +58,7 @@
     @include H8;
 
     font-weight: bold;
-    color: $Black-100;
+    color: var(--Black-100);
     height: 43px;
     margin-bottom: 4px;
   }
@@ -72,17 +72,17 @@
     @include H6;
 
     cursor: pointer;
-    color: $black;
+    color: var(--black);
     height: 49px;
-    border-bottom: 1px solid $Grey-100;
+    border-bottom: 1px solid var(--Grey-100);
     margin-bottom: 8px;
     border-radius: 8px;
-    background: $Grey-000;
+    background: var(--Grey-000);
     padding-right: 12px;
     border: none;
 
     &:hover {
-      border: 1px solid $Blue-500;
+      border: 1px solid var(--Blue-500);
       width: 101%;
       padding-right: 11px;
       padding-left: 19.5px;
@@ -90,7 +90,7 @@
 
     &--no-hover {
       &:hover {
-        border: 1px solid $Grey-100;
+        border: 1px solid var(--Grey-100);
         width: 100%;
         padding-right: 12px;
         padding-left: 20px;
@@ -98,8 +98,8 @@
     }
 
     &--selected {
-      color: $white;
-      background: linear-gradient(90deg, $Blue-500 0%, $Blue-400 101.32%);
+      color: var(--white);
+      background: linear-gradient(90deg, var(--Blue-500) 0%, var(--Blue-400) 101.32%);
       box-shadow: 0 10px 39px rgba(3, 125, 214, 0.15);
       border-radius: 8px;
       border-bottom: none;
@@ -107,7 +107,7 @@
       height: 64px;
 
       &:hover {
-        background: linear-gradient(90deg, $Blue-500 0%, $Blue-400 101.32%);
+        background: linear-gradient(90deg, var(--Blue-500) 0%, var(--Blue-400) 101.32%);
         width: 100%;
         padding-left: 20px;
         padding-right: 12px;
@@ -115,15 +115,15 @@
       }
 
       .select-quote-popover__caret-right {
-        color: $white;
+        color: var(--white);
 
         &:hover {
-          color: $Grey-500;
+          color: var(--Grey-500);
         }
       }
 
       .select-quote-popover__zero-slippage {
-        color: $white;
+        color: var(--white);
       }
     }
   }
@@ -146,7 +146,7 @@
   }
 
   &__caret-right {
-    color: $Grey-500;
+    color: var(--Grey-500);
     width: 32px;
     height: 32px;
     display: flex;
@@ -160,7 +160,7 @@
     &:hover {
       border-radius: 8px;
       background: white;
-      border: 1px solid $Blue-500;
+      border: 1px solid var(--Blue-500);
     }
   }
 
@@ -211,7 +211,7 @@
 
 
   &__receiving-symbol {
-    color: $Grey-500;
+    color: var(--Grey-500);
 
     > div {
       width: 12px;
@@ -247,15 +247,15 @@
     padding-bottom: 2px;
 
     &--blue {
-      background: $Blue-300;
+      background: var(--Blue-300);
     }
 
     &--orange {
-      background: $Orange-400;
+      background: var(--Orange-400);
     }
 
     &--green {
-      background: $Green-500;
+      background: var(--Green-500);
     }
   }
 }

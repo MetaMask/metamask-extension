@@ -4,18 +4,18 @@
 
     width: 100%;
     padding-bottom: 16px;
-    border-bottom: 1px solid $Grey-100;
+    border-bottom: 1px solid var(--Grey-100);
     display: flex;
     flex-direction: row;
     align-items: center;
-    color: $Black-100;
+    color: var(--Black-100);
 
     i {
       display: block;
       padding: 16px;
       min-width: 16px;
       min-height: 16px;
-      color: $Grey-500;
+      color: var(--Grey-500);
       font-size: 1rem;
     }
   }

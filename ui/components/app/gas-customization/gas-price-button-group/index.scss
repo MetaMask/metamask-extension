@@ -15,7 +15,7 @@
 
   &__time-estimate {
     margin-top: 5.5px;
-    color: $silver-chalice;
+    color: var(--silver-chalice);
     height: 15.4px;
   }
 
@@ -34,9 +34,9 @@
     display: flex;
     padding-top: 17px;
     border-radius: 4px;
-    border-color: $spindle;
-    background: $white;
-    color: $scorpion;
+    border-color: var(--spindle);
+    background: var(--white);
+    color: var(--scorpion);
 
     div {
       display: flex;
@@ -52,13 +52,13 @@
   }
 
   .button-group__button--active {
-    border-color: $primary-blue;
-    color: $scorpion;
+    border-color: var(--primary-blue);
+    color: var(--scorpion);
 
     i {
       &:last-child {
         display: flex;
-        color: $primary-blue;
+        color: var(--primary-blue);
         margin-top: 8px;
       }
     }
@@ -115,7 +115,7 @@
   .button-group__button,
   .button-group__button--active {
     background: white;
-    color: $scorpion;
+    color: var(--scorpion);
     padding: 4px;
 
     div {
@@ -133,13 +133,13 @@
   }
 
   .button-group__button--active {
-    color: $white;
-    background: $dodger-blue;
+    color: var(--white);
+    background: var(--dodger-blue);
 
     i {
       &:last-child {
         display: flex;
-        color: $primary-blue;
+        color: var(--primary-blue);
         margin-top: 10px;
       }
     }
@@ -185,7 +185,7 @@
 
     font-weight: 500;
     margin-top: 4px;
-    color: $black;
+    color: var(--black);
   }
 
   .button-group__button,
@@ -244,7 +244,7 @@
 
     i {
       display: flex;
-      color: $primary-blue;
+      color: var(--primary-blue);
       font-weight: 900;
     }
   }

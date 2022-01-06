@@ -2,18 +2,18 @@
   margin: 0 4px;
 
   &--success {
-    fill: $success-1;
+    fill: var(--success-1);
   }
 
   &--info {
-    fill: $primary-1;
+    fill: var(--primary-1);
   }
 
   &--warning {
-    fill: $alert-3;
+    fill: var(--alert-3);
   }
 
   &--danger {
-    fill: $error-1;
+    fill: var(--error-1);
   }
 }

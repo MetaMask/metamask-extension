@@ -18,7 +18,7 @@
 
   &__error,
   &__error h6 {
-    color: $error-1 !important;
+    color: var(--error-1) !important;
     padding-top: 6px;
   }
 
@@ -34,16 +34,16 @@
 
   &__input {
     width: 100%;
-    border: solid 1px $ui-3;
+    border: solid 1px var(--ui-3);
     padding: 10px;
     border-radius: 6px;
 
     &:focus {
-      border: solid 2px $primary-1;
+      border: solid 2px var(--primary-1);
     }
 
     &--error {
-      border-color: $error-1;
+      border-color: var(--error-1);
     }
   }
 }

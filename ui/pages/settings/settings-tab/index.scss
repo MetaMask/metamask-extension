@@ -2,7 +2,7 @@
   &__error {
     padding-bottom: 20px;
     text-align: center;
-    color: $crimson;
+    color: var(--crimson);
   }
 
   &__rpc-save-button {
@@ -14,15 +14,15 @@
 
   &__button--red {
     border-color: lighten($monzo, 10%);
-    color: $monzo;
+    color: var(--monzo);
 
     &:active {
       background: lighten($monzo, 55%);
-      border-color: $monzo;
+      border-color: var(--monzo);
     }
 
     &:hover {
-      border-color: $monzo;
+      border-color: var(--monzo);
     }
   }
 

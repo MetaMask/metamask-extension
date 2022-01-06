@@ -1,7 +1,7 @@
 .new-account-info-link {
   cursor: pointer;
   text-decoration: underline;
-  color: $primary-blue;
+  color: var(--primary-blue);
   margin-inline-start: 4px;
 }
 
@@ -26,7 +26,7 @@
   &__select-label {
     @include Paragraph;
 
-    color: $scorpion;
+    color: var(--scorpion);
   }
 
   &__select {
@@ -45,7 +45,7 @@
   &__instruction {
     @include Paragraph;
 
-    color: $scorpion;
+    color: var(--scorpion);
     align-self: flex-start;
   }
 
@@ -61,11 +61,11 @@
 
     height: 54px;
     width: 315px;
-    border: 1px solid $geyser;
+    border: 1px solid var(--geyser);
     border-radius: 4px;
-    background-color: $white;
+    background-color: var(--white);
     margin-top: 16px;
-    color: $scorpion;
+    color: var(--scorpion);
     padding: 0 20px;
   }
 

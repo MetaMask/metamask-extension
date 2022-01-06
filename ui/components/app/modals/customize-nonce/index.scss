@@ -17,7 +17,7 @@
   &__close {
     @include H4;
 
-    color: $ui-black;
+    color: var(--ui-black);
     background: none;
     flex: 0;
     align-self: flex-start;
