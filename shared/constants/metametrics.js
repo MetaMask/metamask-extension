@@ -110,9 +110,9 @@
  *  the page view
  */
 
-// An empty string is a, currently undocumented, way of telling mixpanel
-// that these events are meant to be anonymous and not identified to any user
-export const METAMETRICS_ANONYMOUS_ID = '';
+// Mixpanel converts the zero address value to a truly anonymous event, which
+// speeds up reporting
+export const METAMETRICS_ANONYMOUS_ID = '0x0000000000000000';
 
 /**
  * This object is used to identify events that are triggered by the background
