@@ -9,6 +9,7 @@ const ConfirmPageContainerNavigation = (props) => {
     nextTxId,
     prevTxId,
     showNavigation,
+    isFailedTransaction,
     firstTx,
     lastTx,
     ofText,
@@ -25,7 +26,7 @@ const ConfirmPageContainerNavigation = (props) => {
       <div
         className="confirm-page-container-navigation__container"
         style={{
-          visibility: prevTxId ? 'initial' : 'hidden',
+          visibility: prevTxId && !isFailedTransaction ? 'initial' : 'hidden',
         }}
       >
         <div
@@ -54,7 +55,7 @@ const ConfirmPageContainerNavigation = (props) => {
       <div
         className="confirm-page-container-navigation__container"
         style={{
-          visibility: nextTxId ? 'initial' : 'hidden',
+          visibility: nextTxId && !isFailedTransaction ? 'initial' : 'hidden',
         }}
       >
         <div
@@ -91,6 +92,7 @@ ConfirmPageContainerNavigation.propTypes = {
   nextTxId: PropTypes.string,
   prevTxId: PropTypes.string,
   showNavigation: PropTypes.bool,
+  isFailedTransaction: PropTypes.bool,
   firstTx: PropTypes.string,
   lastTx: PropTypes.string,
   ofText: PropTypes.string,

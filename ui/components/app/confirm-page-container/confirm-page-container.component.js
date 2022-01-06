@@ -158,11 +158,16 @@ export default class ConfirmPageContainer extends Component {
       <GasFeeContextProvider transaction={currentTransaction}>
         <div className="page-container">
           <ConfirmPageContainerNavigation
-            totalTx={totalTx}
-            positionOfCurrentTx={positionOfCurrentTx}
+            totalTx={isFailedTransaction ? totalTx + 1 : totalTx}
+            positionOfCurrentTx={
+              isFailedTransaction
+                ? positionOfCurrentTx + 1
+                : positionOfCurrentTx
+            }
             nextTxId={nextTxId}
             prevTxId={prevTxId}
-            showNavigation={isFailedTransaction ? false : showNavigation}
+            showNavigation={showNavigation}
+            isFailedTransaction={isFailedTransaction}
             onNextTx={(txId) => onNextTx(txId)}
             firstTx={firstTx}
             lastTx={lastTx}
