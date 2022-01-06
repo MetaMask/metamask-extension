@@ -710,9 +710,6 @@
   "readdToken": {
     "message": "Du kannst diesen Token immer erneut hinzufügen, indem du in den Menüpunkt \"Token hinzufügen\" in den Einstellungen deines Accounts gehst."
   },
-  "readyToConnect": {
-    "message": "Bereit für die Verbindung?"
-  },
   "receive": {
     "message": "Empfangen"
   },
