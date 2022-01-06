@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IN(main)
+import { SUPPORT_LINK } from '../../helpers/constants/common';
+///: END:ONLY_INCLUDE_IN
 import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
 import CollectiblesTab from '../../components/app/collectibles-tab';
@@ -20,8 +23,6 @@ import ActionableMessage from '../../components/ui/actionable-message/actionable
 import Typography from '../../components/ui/typography/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 
-import { isBeta } from '../../helpers/utils/build-types';
-
 import {
   ASSET_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -37,7 +38,12 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
-import BetaHomeFooter from './beta-home-footer.component';
+///: BEGIN:ONLY_INCLUDE_IN(beta)
+import BetaHomeFooter from './beta/beta-home-footer.component';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import FlaskHomeFooter from './flask/flask-home-footer.component';
+///: END:ONLY_INCLUDE_IN
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
@@ -518,12 +524,11 @@ export default class Home extends PureComponent {
               </Tab>
             </Tabs>
             <div className="home__support">
-              {isBeta() ? (
-                <BetaHomeFooter />
-              ) : (
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(main)
                 t('needHelp', [
                   <a
-                    href="https://support.metamask.io"
+                    href={SUPPORT_LINK}
                     target="_blank"
                     rel="noopener noreferrer"
                     key="need-help-link"
@@ -531,7 +536,18 @@ export default class Home extends PureComponent {
                     {t('needHelpLinkText')}
                   </a>,
                 ])
-              )}
+                ///: END:ONLY_INCLUDE_IN
+              }
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(beta)
+                <BetaHomeFooter />
+                ///: END:ONLY_INCLUDE_IN
+              }
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(flask)
+                <FlaskHomeFooter />
+                ///: END:ONLY_INCLUDE_IN
+              }
             </div>
           </div>
 
