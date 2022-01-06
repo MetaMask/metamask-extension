@@ -19,7 +19,9 @@ const AdvancedGasFeePopover = () => {
     currentModal,
   } = useTransactionModalContext();
 
-  if (currentModal !== 'advancedGasFee') return null;
+  if (currentModal !== 'advancedGasFee') {
+    return null;
+  }
 
   return (
     <AdvancedGasFeePopoverContextProvider>

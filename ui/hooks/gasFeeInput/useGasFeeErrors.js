@@ -26,12 +26,16 @@ const validateGasLimit = (gasLimit, minimumGasLimit) => {
     { value: minimumGasLimit || GAS_LIMITS.SIMPLE, fromNumericBase: 'hex' },
   );
 
-  if (gasLimitTooLow) return GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
+  if (gasLimitTooLow) {
+    return GAS_FORM_ERRORS.GAS_LIMIT_OUT_OF_BOUNDS;
+  }
   return undefined;
 };
 
 const validateMaxPriorityFee = (maxPriorityFeePerGas, supportsEIP1559) => {
-  if (!supportsEIP1559) return undefined;
+  if (!supportsEIP1559) {
+    return undefined;
+  }
   if (bnLessThanEqualTo(maxPriorityFeePerGas, 0)) {
     return GAS_FORM_ERRORS.MAX_PRIORITY_FEE_BELOW_MINIMUM;
   }
@@ -44,7 +48,9 @@ const validateMaxFee = (
   maxPriorityFeePerGas,
   supportsEIP1559,
 ) => {
-  if (maxPriorityFeeError || !supportsEIP1559) return undefined;
+  if (maxPriorityFeeError || !supportsEIP1559) {
+    return undefined;
+  }
   if (bnGreaterThan(maxPriorityFeePerGas, maxFeePerGas)) {
     return GAS_FORM_ERRORS.MAX_FEE_IMBALANCE;
   }
@@ -57,7 +63,9 @@ const validateGasPrice = (
   supportsEIP1559,
   transaction,
 ) => {
-  if (supportsEIP1559 && isFeeMarketGasEstimate) return undefined;
+  if (supportsEIP1559 && isFeeMarketGasEstimate) {
+    return undefined;
+  }
   if (
     (!supportsEIP1559 || transaction?.txParams?.gasPrice) &&
     bnLessThanEqualTo(gasPrice, 0)
@@ -74,8 +82,9 @@ const getMaxPriorityFeeWarning = (
   maxPriorityFeePerGas,
   supportsEIP1559,
 ) => {
-  if (!supportsEIP1559 || !isFeeMarketGasEstimate || isGasEstimatesLoading)
+  if (!supportsEIP1559 || !isFeeMarketGasEstimate || isGasEstimatesLoading) {
     return undefined;
+  }
   if (
     bnLessThan(
       maxPriorityFeePerGas,
@@ -219,17 +228,29 @@ export function useGasFeeErrors({
 
   const gasErrors = useMemo(() => {
     const errors = {};
-    if (gasLimitError) errors.gasLimit = gasLimitError;
-    if (maxPriorityFeeError) errors.maxPriorityFee = maxPriorityFeeError;
-    if (maxFeeError) errors.maxFee = maxFeeError;
-    if (gasPriceError) errors.gasPrice = gasPriceError;
+    if (gasLimitError) {
+      errors.gasLimit = gasLimitError;
+    }
+    if (maxPriorityFeeError) {
+      errors.maxPriorityFee = maxPriorityFeeError;
+    }
+    if (maxFeeError) {
+      errors.maxFee = maxFeeError;
+    }
+    if (gasPriceError) {
+      errors.gasPrice = gasPriceError;
+    }
     return errors;
   }, [gasLimitError, maxPriorityFeeError, maxFeeError, gasPriceError]);
 
   const gasWarnings = useMemo(() => {
     const warnings = {};
-    if (maxPriorityFeeWarning) warnings.maxPriorityFee = maxPriorityFeeWarning;
-    if (maxFeeWarning) warnings.maxFee = maxFeeWarning;
+    if (maxPriorityFeeWarning) {
+      warnings.maxPriorityFee = maxPriorityFeeWarning;
+    }
+    if (maxFeeWarning) {
+      warnings.maxFee = maxFeeWarning;
+    }
     return warnings;
   }, [maxPriorityFeeWarning, maxFeeWarning]);
 

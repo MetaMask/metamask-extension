@@ -65,7 +65,9 @@ export function isDefaultMetaMaskChain(chainId) {
 
 // Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
 export function isEqualCaseInsensitive(value1, value2) {
-  if (typeof value1 !== 'string' || typeof value2 !== 'string') return false;
+  if (typeof value1 !== 'string' || typeof value2 !== 'string') {
+    return false;
+  }
   return value1.toLowerCase() === value2.toLowerCase();
 }
 
@@ -431,7 +433,9 @@ const MINUTE_CUTOFF = 90 * 60;
 const SECOND_CUTOFF = 90;
 
 export const toHumanReadableTime = (t, milliseconds) => {
-  if (milliseconds === undefined || milliseconds === null) return '';
+  if (milliseconds === undefined || milliseconds === null) {
+    return '';
+  }
   const seconds = Math.ceil(milliseconds / 1000);
   if (seconds <= SECOND_CUTOFF) {
     return t('gasTimingSecondsShort', [seconds]);

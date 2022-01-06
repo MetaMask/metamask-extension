@@ -26,7 +26,9 @@ const TransactionAlerts = ({
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
   const t = useI18nContext();
 
-  if (!supportsEIP1559V2) return null;
+  if (!supportsEIP1559V2) {
+    return null;
+  }
 
   return (
     <div className="transaction-alerts">

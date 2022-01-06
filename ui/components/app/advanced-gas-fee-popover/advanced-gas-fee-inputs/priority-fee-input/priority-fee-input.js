@@ -65,8 +65,9 @@ const PriorityFeeInput = () => {
     if (
       estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
       advancedGasFeeValues?.priorityFee
-    )
+    ) {
       return advancedGasFeeValues.priorityFee;
+    }
     return maxPriorityFeePerGas;
   });
 

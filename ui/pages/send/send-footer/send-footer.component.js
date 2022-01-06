@@ -40,7 +40,9 @@ export default class SendFooter extends Component {
       sendStage,
     } = this.props;
 
-    if (draftTransactionID) cancelTx({ id: draftTransactionID });
+    if (draftTransactionID) {
+      cancelTx({ id: draftTransactionID });
+    }
     resetSendState();
 
     const nextRoute =

@@ -37,8 +37,9 @@ export const useCustomTimeEstimate = ({
       isGasEstimatesLoading ||
       gasEstimateType !== GAS_ESTIMATE_TYPES.FEE_MARKET ||
       !maxPriorityFeePerGas
-    )
+    ) {
       return;
+    }
     if (isUnknownLow) {
       // getGasFeeTimeEstimate requires parameters in string format
       getGasFeeTimeEstimate(

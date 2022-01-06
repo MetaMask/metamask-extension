@@ -90,11 +90,15 @@ export function getCurrentQRHardwareState(state) {
 
 export function hasUnsignedQRHardwareTransaction(state) {
   const { txParams } = state.confirmTransaction.txData;
-  if (!txParams) return false;
+  if (!txParams) {
+    return false;
+  }
   const { from } = txParams;
   const { keyrings } = state.metamask;
   const qrKeyring = keyrings.find((kr) => kr.type === KEYRING_TYPES.QR);
-  if (!qrKeyring) return false;
+  if (!qrKeyring) {
+    return false;
+  }
   return Boolean(
     qrKeyring.accounts.find(
       (account) => account.toLowerCase() === from.toLowerCase(),
@@ -110,7 +114,9 @@ export function hasUnsignedQRHardwareMessage(state) {
   const { from } = msgParams;
   const { keyrings } = state.metamask;
   const qrKeyring = keyrings.find((kr) => kr.type === KEYRING_TYPES.QR);
-  if (!qrKeyring) return false;
+  if (!qrKeyring) {
+    return false;
+  }
   switch (type) {
     case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
     case MESSAGE_TYPE.ETH_SIGN:

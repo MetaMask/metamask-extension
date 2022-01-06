@@ -16,7 +16,9 @@ module.exports = {
 
 async function getHighlightAnnouncement({ changedFiles, artifactBase }) {
   const highlights = await getHighlights({ changedFiles });
-  if (!highlights.length) return null;
+  if (!highlights.length) {
+    return null;
+  }
   const highlightsBody = highlights
     .map((entry) => `\n- [${entry}](${urlForStoryFile(entry, artifactBase)})`)
     .join('');
