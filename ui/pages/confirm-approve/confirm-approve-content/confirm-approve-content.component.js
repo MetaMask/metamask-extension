@@ -141,7 +141,9 @@ export default class ConfirmApproveContent extends Component {
       isMultiLayerFeeNetwork,
       supportsEIP1559V2,
     } = this.props;
-    if (!isMultiLayerFeeNetwork && supportsEIP1559V2) return <GasDetailsItem />;
+    if (!isMultiLayerFeeNetwork && supportsEIP1559V2) {
+      return <GasDetailsItem />;
+    }
     return (
       <div className="confirm-approve-content__transaction-details-content">
         {isMultiLayerFeeNetwork ? (
