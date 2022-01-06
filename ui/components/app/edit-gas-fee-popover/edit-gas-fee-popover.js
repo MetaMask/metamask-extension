@@ -67,7 +67,9 @@ const EditGasFeePopover = () => {
             </div>
             {(editGasMode === EDIT_GAS_MODES.CANCEL ||
               editGasMode === EDIT_GAS_MODES.SPEED_UP) && (
-              <EditGasItem priorityLevel={PRIORITY_LEVELS.MINIMUM} />
+              <EditGasItem
+                priorityLevel={PRIORITY_LEVELS.TEN_PERCENT_INCREASED}
+              />
             )}
             {editGasMode === EDIT_GAS_MODES.MODIFY_IN_PLACE && (
               <EditGasItem priorityLevel={PRIORITY_LEVELS.LOW} />

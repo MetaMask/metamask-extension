@@ -70,23 +70,23 @@ describe('useMaxPriorityFeePerGasInput', () => {
     expect(mock).toHaveBeenCalledTimes(1);
   });
 
-  it('should invoke action updateTransaction with 10% increased fee when updateTransactionToMinimumGasFee callback is invoked', () => {
+  it('should invoke action updateTransaction with 10% increased fee when updateTransactionToTenPercentIncreasedGasFee callback is invoked', () => {
     const mock = jest
       .spyOn(Actions, 'updateTransaction')
       .mockImplementation(() => ({ type: '' }));
     const { result } = renderUseTransactionFunctions();
-    result.current.updateTransactionToMinimumGasFee();
+    result.current.updateTransactionToTenPercentIncreasedGasFee();
     expect(mock).toHaveBeenCalledTimes(1);
     expect(mock).toHaveBeenCalledWith({
       txParams: {
         estimateSuggested: 'medium',
-        estimateUsed: 'minimum',
+        estimateUsed: 'tenPercentIncreased',
         gas: '5208',
         gasLimit: '5208',
         maxFeePerGas: '0x582c',
         maxPriorityFeePerGas: '0x582c',
       },
-      userFeeLevel: 'minimum',
+      userFeeLevel: 'tenPercentIncreased',
     });
   });
 

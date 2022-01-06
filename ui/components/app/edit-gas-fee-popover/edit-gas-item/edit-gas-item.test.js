@@ -166,18 +166,17 @@ describe('EditGasItem', () => {
 
   it('should renders +10% gas estimate option for priorityLevel minimum', () => {
     renderComponent({
-      componentProps: { priorityLevel: 'minimum' },
+      componentProps: { priorityLevel: 'tenPercentIncreased' },
       transactionProps: {
-        userFeeLevel: 'minimum',
+        userFeeLevel: 'tenPercentIncreased',
         previousGas: ESTIMATE_MOCK,
       },
       contextProps: { editGasMode: EDIT_GAS_MODES.CANCEL },
     });
     expect(
-      screen.queryByRole('button', { name: 'minimum' }),
+      screen.queryByRole('button', { name: 'tenPercentIncreased' }),
     ).toBeInTheDocument();
-    expect(screen.queryByText('+10%')).toBeInTheDocument();
-    expect(screen.queryByText('(minimum)')).toBeInTheDocument();
+    expect(screen.queryByText('10% increase')).toBeInTheDocument();
     expect(screen.queryByTitle('0.00003465 ETH')).toBeInTheDocument();
   });
 });

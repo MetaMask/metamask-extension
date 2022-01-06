@@ -41,9 +41,9 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   ) {
     icon = 'swapSuggested';
     title = 'swapSuggested';
-  } else if (estimateUsed === PRIORITY_LEVELS.MINIMUM) {
+  } else if (estimateUsed === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
     icon = undefined;
-    title = 'minimumEstimate';
+    title = 'tenPercentIncreased';
   }
 
   return (
