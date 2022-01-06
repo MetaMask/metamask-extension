@@ -201,6 +201,7 @@ export default function SlippageButtons({
                   >
                     {t('smartTransaction')}
                   </Typography>
+                  {/* TODO: Smart transactions tooltip for non-error situations */}
                   {currentSmartTransactionsError && (
                     <InfoTooltip
                       position="top"
