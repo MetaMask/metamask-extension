@@ -19,6 +19,11 @@
     background-color: $ui-1;
   }
 
+  button.edit-gas-item--disabled[disabled] {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
   &__name {
     display: inline-flex;
     align-items: center;
@@ -27,6 +32,11 @@
     font-weight: bold;
     white-space: nowrap;
     width: 36%;
+
+    &__sufix {
+      font-weight: 400;
+      margin-left: 4px;
+    }
   }
 
   &__icon {

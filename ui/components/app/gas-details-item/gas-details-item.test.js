@@ -1,7 +1,9 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 
-import { ETH } from '../../../helpers/constants/common';
+import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
+import mockEstimates from '../../../../test/data/mock-estimates.json';
+import mockState from '../../../../test/data/mock-state.json';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
@@ -17,28 +19,36 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
-const render = ({ componentProps, contextProps } = {}) => {
+const render = ({ contextProps } = {}) => {
   const store = configureStore({
     metamask: {
-      nativeCurrency: ETH,
+      ...mockState.metamask,
+      accounts: {
+        [mockState.metamask.selectedAddress]: {
+          address: mockState.metamask.selectedAddress,
+          balance: '0x1F4',
+        },
+      },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
-      provider: {},
-      cachedBalances: {},
-      accounts: {
-        '0xAddress': {
-          address: '0xAddress',
-          balance: '0x176e5b6f173ebe66',
-        },
-      },
-      selectedAddress: '0xAddress',
+      gasFeeEstimates: mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET],
     },
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider transaction={{ txParams: {} }} {...contextProps}>
-      <GasDetailsItem userAcknowledgedGasMissing={false} {...componentProps} />
+    <GasFeeContextProvider
+      transaction={{
+        txParams: {
+          gas: '0x5208',
+          maxFeePerGas: '0x59682f10',
+          maxPriorityFeePerGas: '0x59682f00',
+        },
+        userFeeLevel: 'medium',
+      }}
+      {...contextProps}
+    >
+      <GasDetailsItem userAcknowledgedGasMissing={false} />
     </GasFeeContextProvider>,
     store,
   );
@@ -51,7 +61,7 @@ describe('GasDetailsItem', () => {
       expect(screen.queryByText('Gas')).toBeInTheDocument();
       expect(screen.queryByText('(estimated)')).toBeInTheDocument();
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
-      expect(screen.queryByText('ETH')).toBeInTheDocument();
+      expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });
 
@@ -93,17 +103,11 @@ describe('GasDetailsItem', () => {
     });
   });
 
-  it('should should render gas fee details', async () => {
-    render({
-      componentProps: {
-        hexMinimumTransactionFee: '0x1ca62a4f7800',
-        hexMaximumTransactionFee: '0x290ee75e3d900',
-      },
-    });
+  it('should render gas fee details', async () => {
+    render();
     await waitFor(() => {
-      expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
-      expect(screen.queryByText('ETH')).toBeInTheDocument();
-      expect(screen.queryByTitle('0.0007223')).toBeInTheDocument();
+      expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
   });
 });

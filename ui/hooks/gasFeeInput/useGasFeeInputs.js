@@ -198,6 +198,7 @@ export function useGasFeeInputs(
     estimatedMinimumFiat,
     estimatedMaximumNative,
     estimatedMinimumNative,
+    maximumCostInHexWei,
     minimumCostInHexWei,
   } = useGasEstimates({
     editGasMode,
@@ -244,13 +245,19 @@ export function useGasFeeInputs(
   }, [minimumGasLimit, gasErrors.gasLimit, transaction]);
 
   const {
+    cancelTransaction,
+    speedUpTransaction,
     updateTransaction,
-    updateTransactionUsingGasFeeEstimates,
+    updateTransactionToMinimumGasFee,
+    updateTransactionUsingDAPPSuggestedValues,
+    updateTransactionUsingEstimate,
   } = useTransactionFunctions({
     defaultEstimateToUse,
     editGasMode,
     gasFeeEstimates,
     gasLimit,
+    maxPriorityFeePerGas,
+    minimumGasLimit,
     transaction,
   });
 
@@ -322,6 +329,8 @@ export function useGasFeeInputs(
     estimatedMaximumNative,
     estimatedMinimumNative,
     isGasEstimatesLoading,
+    maximumCostInHexWei,
+    minimumCostInHexWei,
     estimateUsed,
     gasFeeEstimates,
     gasEstimateType,
@@ -338,7 +347,11 @@ export function useGasFeeInputs(
     minimumGasLimitDec: hexToDecimal(minimumGasLimit),
     supportsEIP1559,
     supportsEIP1559V2,
+    cancelTransaction,
+    speedUpTransaction,
     updateTransaction,
-    updateTransactionUsingGasFeeEstimates,
+    updateTransactionToMinimumGasFee,
+    updateTransactionUsingDAPPSuggestedValues,
+    updateTransactionUsingEstimate,
   };
 }

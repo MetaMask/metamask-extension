@@ -240,4 +240,8 @@ describe('Selectors', () => {
     );
     expect(isAdvancedGasFeeDefault).toStrictEqual(true);
   });
+  it('#getAppIsLoading', () => {
+    const appIsLoading = selectors.getAppIsLoading(mockState);
+    expect(appIsLoading).toStrictEqual(false);
+  });
 });

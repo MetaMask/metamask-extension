@@ -143,6 +143,7 @@ export function useGasEstimates({
     estimatedBaseFee: supportsEIP1559
       ? decGWEIToHexWEI(gasFeeEstimates.estimatedBaseFee ?? '0')
       : undefined,
+    maximumCostInHexWei,
     minimumCostInHexWei,
   };
 }

@@ -408,6 +408,10 @@ export function getGasIsLoading(state) {
   return state.appState.gasIsLoading;
 }
 
+export function getAppIsLoading(state) {
+  return state.appState.isLoading;
+}
+
 export function getCurrentCurrency(state) {
   return state.metamask.currentCurrency;
 }
