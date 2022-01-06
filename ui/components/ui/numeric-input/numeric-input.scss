@@ -1,10 +1,10 @@
 .numeric-input {
-  border: 1px solid $ui-3;
+  border: 1px solid var(--ui-3);
   position: relative;
   border-radius: 6px;
 
   &--error {
-    border-color: $error-1;
+    border-color: var(--error-1);
   }
 
   input {

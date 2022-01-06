@@ -118,7 +118,7 @@
       @include H6;
 
       text-align: center;
-      color: $primary-1;
+      color: var(--primary-1);
       background: unset;
     }
   }
@@ -153,7 +153,7 @@
 
     margin-bottom: 23px;
     align-self: flex-start;
-    color: $scorpion;
+    color: var(--scorpion);
     font-weight: bold;
     display: flex;
     flex: 1;
@@ -164,7 +164,7 @@
 
     margin-bottom: 23px;
     align-self: flex-end;
-    color: $scorpion;
+    color: var(--scorpion);
     display: flex;
   }
 

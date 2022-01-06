@@ -2,15 +2,15 @@
   Buttons
  */
 
-$hover-secondary: #b0d7f2;
-$hover-default: #b3b3b3;
-$hover-confirm: #0372c3;
-$hover-red: #feb6bf;
-$hover-red-primary: #c72837;
-$hover-orange: #ffd3b5;
-$warning-light-orange: #f8b588;
-
 .button {
+  --hover-secondary: #b0d7f2;
+  --hover-default: #b3b3b3;
+  --hover-confirm: #0372c3;
+  --hover-red: #feb6bf;
+  --hover-red-primary: #c72837;
+  --hover-orange: #ffd3b5;
+  --warning-light-orange: #f8b588;
+
   @include H6;
 
   font-weight: 500;
@@ -38,146 +38,146 @@ $warning-light-orange: #f8b588;
 }
 
 .btn-secondary {
-  color: $Blue-500;
-  border: 1px solid $hover-secondary;
-  background-color: $white;
+  color: var(--Blue-500);
+  border: 1px solid var(--hover-secondary);
+  background-color: var(--white);
 
   &:hover {
-    border-color: $Blue-500;
+    border-color: var(--Blue-500);
   }
 
   &:active {
-    background: $Blue-000;
-    border-color: $Blue-500;
+    background: var(--Blue-000);
+    border-color: var(--Blue-500);
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: $hover-secondary;
+    color: var(--hover-secondary);
   }
 }
 
 .btn-warning {
-  color: $Orange-500;
-  border: 1px solid $hover-orange;
-  background-color: $white;
+  color: var(--Orange-500);
+  border: 1px solid var(--hover-orange);
+  background-color: var(--white);
 
   &:hover {
-    border-color: $Orange-500;
+    border-color: var(--Orange-500);
   }
 
   &:active {
-    background: $Orange-000;
-    border-color: $Orange-500;
+    background: var(--Orange-000);
+    border-color: var(--Orange-500);
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: $hover-orange;
+    color: var(--hover-orange);
   }
 }
 
 .btn-danger {
-  color: $Red-500;
-  border: 1px solid $hover-red;
-  background-color: $white;
+  color: var(--Red-500);
+  border: 1px solid var(--hover-red);
+  background-color: var(--white);
 
   &:hover {
-    border-color: $Red-500;
+    border-color: var(--Red-500);
   }
 
   &:active {
-    background: $Red-000;
-    border-color: $Red-500;
+    background: var(--Red-000);
+    border-color: var(--Red-500);
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: $hover-red;
+    color: var(--hover-red);
   }
 }
 
 .btn-danger-primary {
-  color: $white;
-  border: 1px solid $Red-500;
-  background-color: $Red-500;
+  color: var(--white);
+  border: 1px solid var(--Red-500);
+  background-color: var(--Red-500);
 
   &:hover {
-    border-color: $hover-red-primary;
-    background-color: $hover-red-primary;
+    border-color: var(--hover-red-primary);
+    background-color: var(--hover-red-primary);
   }
 
   &:active {
-    background: $Red-600;
-    border-color: $Red-600;
+    background: var(--Red-600);
+    border-color: var(--Red-600);
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    border-color: $hover-red;
-    background-color: $hover-red;
+    border-color: var(--hover-red);
+    background-color: var(--hover-red);
   }
 }
 
 .btn-default {
-  color: $Grey-500;
-  border: 1px solid $hover-default;
+  color: var(--Grey-500);
+  border: 1px solid var(--hover-default);
 
   &:hover {
-    border-color: $Grey-500;
+    border-color: var(--Grey-500);
   }
 
   &:active {
     background: #fbfbfc;
-    border-color: $Grey-500;
+    border-color: var(--Grey-500);
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: $hover-default;
+    color: var(--hover-default);
   }
 }
 
 .btn-primary {
-  color: $white;
-  border: 1px solid $Blue-500;
-  background-color: $Blue-500;
+  color: var(--white);
+  border: 1px solid var(--Blue-500);
+  background-color: var(--Blue-500);
 
   &:hover {
-    border-color: $hover-confirm;
-    background-color: $hover-confirm;
+    border-color: var(--hover-confirm);
+    background-color: var(--hover-confirm);
   }
 
   &:active {
-    background: $Blue-600;
-    border-color: $Blue-600;
+    background: var(--Blue-600);
+    border-color: var(--Blue-600);
   }
 
   &--disabled,
   &[disabled] {
-    border-color: $hover-secondary;
-    background-color: $hover-secondary;
+    border-color: var(--hover-secondary);
+    background-color: var(--hover-secondary);
   }
 }
 
 .btn-link {
   @include H4;
 
-  color: $Blue-500;
+  color: var(--Blue-500);
   cursor: pointer;
   background-color: transparent;
 
   &:hover {
-    color: $Blue-400;
+    color: var(--Blue-400);
   }
 
   &:active {
-    color: $Blue-600;
+    color: var(--Blue-600);
   }
 
   &--disabled,
@@ -185,7 +185,7 @@ $warning-light-orange: #f8b588;
     cursor: auto;
     opacity: 1;
     pointer-events: none;
-    color: $hover-secondary;
+    color: var(--hover-secondary);
   }
 }
 
@@ -198,8 +198,8 @@ $warning-light-orange: #f8b588;
  */
 
 .btn-raised {
-  color: $primary-blue;
-  background-color: $white;
+  color: var(--primary-blue);
+  background-color: var(--white);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   padding: 6px;
   height: initial;
@@ -214,7 +214,7 @@ $warning-light-orange: #f8b588;
   height: 54px;
   width: 198px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
-  color: $white;
+  color: var(--white);
   font-weight: 500;
   transition: 200ms ease-in-out;
   background-color: rgba(247, 134, 28, 0.9);
@@ -237,84 +237,84 @@ input[type="submit"][disabled] {
   }
 
   &.btn-secondary {
-    border: 1px solid $Blue-500;
+    border: 1px solid var(--Blue-500);
 
     &--disabled,
     &[disabled] {
-      border-color: $hover-secondary;
-      color: $hover-secondary;
+      border-color: var(--hover-secondary);
+      color: var(--hover-secondary);
     }
 
     &:active {
-      border-color: $Blue-600;
+      border-color: var(--Blue-600);
     }
   }
 
   &.btn-default {
-    border: 1px solid $Grey-500;
+    border: 1px solid var(--Grey-500);
 
     &--disabled,
     &[disabled] {
-      border-color: $Grey-100;
-      color: $hover-default;
+      border-color: var(--Grey-100);
+      color: var(--hover-default);
     }
 
     &:active {
-      border-color: $Grey-600;
+      border-color: var(--Grey-600);
     }
   }
 
   &.btn-danger {
-    border: 1px solid $Red-500;
+    border: 1px solid var(--Red-500);
 
     &--disabled,
     &[disabled] {
-      border-color: $Red-100;
-      color: $Red-300;
+      border-color: var(--Red-100);
+      color: var(--Red-300);
     }
 
     &:active {
-      border-color: $Red-600;
+      border-color: var(--Red-600);
     }
   }
 
   &.btn-warning {
-    border: 1px solid $Orange-500;
+    border: 1px solid var(--Orange-500);
 
     &--disabled,
     &[disabled] {
-      border-color: $warning-light-orange;
-      color: $warning-light-orange;
+      border-color: var(--warning-light-orange);
+      color: var(--warning-light-orange);
     }
 
     &:active {
-      border-color: $Orange-600;
+      border-color: var(--Orange-600);
     }
   }
 
   &.btn-primary {
-    background-color: $Blue-500;
+    background-color: var(--Blue-500);
 
     &--disabled,
     &[disabled] {
-      background-color: $hover-secondary;
+      background-color: var(--hover-secondary);
     }
 
     &:active {
-      background-color: $Blue-600;
+      background-color: var(--Blue-600);
     }
   }
 
   &.btn-danger-primary {
-    background-color: $Red-500;
+    background-color: var(--Red-500);
 
     &--disabled,
     &[disabled] {
-      background-color: $Red-300;
+      background-color: var(--Red-300);
     }
 
     &:active {
-      background-color: $Red-600;
+      background-color: var(--Red-600);
     }
   }
 }

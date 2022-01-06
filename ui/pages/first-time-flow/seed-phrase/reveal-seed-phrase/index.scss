@@ -13,7 +13,7 @@
     justify-content: center;
     border: 1px solid #cdcdcd;
     border-radius: 6px;
-    background-color: $white;
+    background-color: var(--white);
     padding: 18px;
     margin-top: 36px;
     max-width: 350px;
@@ -48,7 +48,7 @@
   &__reveal-button {
     @include H7;
 
-    color: $white;
+    color: var(--white);
     font-weight: 500;
     text-transform: uppercase;
     margin-top: 8px;
@@ -56,7 +56,7 @@
   }
 
   &__export-text {
-    color: $primary-blue;
+    color: var(--primary-blue);
     cursor: pointer;
     font-weight: 500;
   }

@@ -422,6 +422,14 @@
   "cancelSpeedUp": {
     "message": "cancel or speed up a tranaction."
   },
+  "cancelSpeedUpLabel": {
+    "message": "This gas fee will $1 the original.",
+    "description": "$1 is text 'replace' in bold"
+  },
+  "cancelSpeedUpTransactionTooltip": {
+    "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
+    "description": "$1 is string 'cancel' or 'speed up'"
+  },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
@@ -739,6 +747,10 @@
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
   },
+  "disabledGasOptionToolTipMessage": {
+    "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
+    "description": "$1 is gas estimate type which can be market or aggressive"
+  },
   "disconnect": {
     "message": "Disconnect"
   },
@@ -792,6 +804,9 @@
   },
   "editAddressNickname": {
     "message": "Edit address nickname"
+  },
+  "editCancellationGasFeeModalTitle": {
+    "message": "Edit cancellation gas fee"
   },
   "editContact": {
     "message": "Edit Contact"
@@ -920,6 +935,9 @@
   },
   "editPermission": {
     "message": "Edit Permission"
+  },
+  "editSpeedUpEditGasFeeModalTitle": {
+    "message": "Edit speed up gas fee"
   },
   "enableAutoDetect": {
     "message": " Enable Autodetect"
@@ -1156,6 +1174,9 @@
   },
   "functionType": {
     "message": "Function Type"
+  },
+  "gas": {
+    "message": "Gas"
   },
   "gasDisplayAcknowledgeDappButtonText": {
     "message": "Edit suggested gas fee"
@@ -1708,6 +1729,15 @@
   },
   "metametricsTitle": {
     "message": "Join 6M+ users to improve MetaMask"
+  },
+  "minimum": {
+    "message": "minimum"
+  },
+  "minimumCancelSpeedupGasFee": {
+    "message": "+10%"
+  },
+  "minimumEstimate": {
+    "message": "10% Minimum"
   },
   "mismatchedChain": {
     "message": "The network details for this chain ID do not match our records. We recommend that you $1 before proceeding.",
@@ -2288,6 +2318,9 @@
   },
   "removeNFT": {
     "message": "Remove NFT"
+  },
+  "replace": {
+    "message": "replace"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -3168,9 +3201,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
-  },
-  "transactionDetailGasHeadingV2": {
-    "message": "Gas"
   },
   "transactionDetailGasInfoV2": {
     "message": "estimated"

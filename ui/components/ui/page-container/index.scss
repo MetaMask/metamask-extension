@@ -1,6 +1,6 @@
 .page-container {
   width: 408px;
-  background-color: $white;
+  background-color: var(--white);
   box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
   z-index: 25;
   display: flex;
@@ -11,7 +11,7 @@
   &__header {
     display: flex;
     flex-flow: column;
-    border-bottom: 1px solid $geyser;
+    border-bottom: 1px solid var(--geyser);
     padding: 16px;
     flex: 0 0 auto;
     position: relative;
@@ -22,7 +22,7 @@
   }
 
   &__header-close {
-    color: $tundora;
+    color: var(--tundora);
     position: absolute;
     top: 16px;
     right: 16px;
@@ -53,7 +53,7 @@
     display: flex;
     flex-flow: column;
     justify-content: center;
-    border-top: 1px solid $geyser;
+    border-top: 1px solid var(--geyser);
     flex: 0 0 auto;
 
     footer {
@@ -101,7 +101,7 @@
   &__title {
     @include H2;
 
-    color: $black;
+    color: var(--black);
     font-weight: 500;
     margin-right: 1.5rem;
 
@@ -114,7 +114,7 @@
     @include H6;
 
     padding-top: 0.5rem;
-    color: $gray;
+    color: var(--gray);
   }
 
   &__tabs {
@@ -126,7 +126,7 @@
     @include Paragraph;
 
     min-width: 5rem;
-    color: $dusty-gray;
+    color: var(--dusty-gray);
     border-bottom: none;
     margin-right: 16px;
 
@@ -151,7 +151,7 @@
   }
 
   &__warning-container {
-    background: $linen;
+    background: var(--linen);
     padding: 20px;
     display: flex;
     align-items: start;
@@ -192,7 +192,7 @@
   .page-container {
     height: 100%;
     width: 100%;
-    background-color: $white;
+    background-color: var(--white);
     border-radius: 0;
     flex: 1;
     overflow-y: auto;

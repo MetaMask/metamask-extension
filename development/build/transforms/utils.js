@@ -3,6 +3,9 @@ const eslintrc = require('../../../.eslintrc.js');
 
 // We don't want linting to fail for purely stylistic reasons.
 eslintrc.rules['prettier/prettier'] = 'off';
+// Sometimes we use `let` instead of `const` to assign variables depending on
+// the build type.
+eslintrc.rules['prefer-const'] = 'off';
 
 // Remove all test-related overrides. We will never lint test files here.
 eslintrc.overrides = eslintrc.overrides.filter((override) => {

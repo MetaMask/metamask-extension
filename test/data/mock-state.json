@@ -1,5 +1,6 @@
 {
   "appState": {
+    "isLoading": false,
     "gasIsLoading": false,
     "currentView": {
       "name": "accountDetail",

@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
+import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 
@@ -156,11 +157,11 @@ export default function AwaitingSwap({
       <a
         className="awaiting-swap__support-link"
         key="awaiting-swap-support-link"
-        href="https://support.metamask.io"
+        href={SUPPORT_LINK}
         target="_blank"
         rel="noopener noreferrer"
       >
-        support.metamask.io
+        {new URL(SUPPORT_LINK).hostname}
       </a>,
     ]);
     submitText = t('tryAgain');

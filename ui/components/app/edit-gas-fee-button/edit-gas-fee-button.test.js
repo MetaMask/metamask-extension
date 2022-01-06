@@ -73,6 +73,11 @@ describe('EditGasFeeButton', () => {
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
   });
 
+  it('should render edit link with text 10% Minimum if minimum gas estimates are selected', () => {
+    render({ contextProps: { transaction: { userFeeLevel: 'minimum' } } });
+    expect(screen.queryByText('10% Minimum')).toBeInTheDocument();
+  });
+
   it('should render edit link with text Site suggested if site suggested estimated are used', () => {
     render({
       contextProps: {
@@ -103,6 +108,7 @@ describe('EditGasFeeButton', () => {
     render({
       contextProps: {
         defaultEstimateToUse: 'custom',
+        transaction: {},
       },
     });
     expect(screen.queryByText('⚙')).toBeInTheDocument();

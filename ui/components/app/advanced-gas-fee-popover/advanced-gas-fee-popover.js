@@ -14,8 +14,8 @@ import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 const AdvancedGasFeePopover = () => {
   const t = useI18nContext();
   const {
-    closeModal,
     closeAllModals,
+    closeModal,
     currentModal,
   } = useTransactionModalContext();
 

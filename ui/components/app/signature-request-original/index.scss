@@ -2,7 +2,7 @@
   &__container {
     width: 380px;
     border-radius: 8px;
-    background-color: $white;
+    background-color: var(--white);
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
     display: flex;
     flex-flow: column nowrap;
@@ -54,7 +54,7 @@
 
   &__header-background {
     position: absolute;
-    background-color: $athens-grey;
+    background-color: var(--athens-grey);
     z-index: 2;
     width: 100%;
     height: 100%;
@@ -76,7 +76,7 @@
   &__header__tip {
     height: 25px;
     width: 25px;
-    background: $athens-grey;
+    background: var(--athens-grey);
     transform: rotate(45deg);
     position: absolute;
     bottom: -8px;
@@ -91,7 +91,7 @@
   }
 
   &__account {
-    color: $dusty-gray;
+    color: var(--dusty-gray);
     margin-left: 17px;
   }
 
@@ -103,7 +103,7 @@
     @include H7;
 
     height: 22px;
-    background-color: $white;
+    background-color: var(--white);
     width: 124px;
 
     .account-list-item {
@@ -123,7 +123,7 @@
   }
 
   &__balance {
-    color: $dusty-gray;
+    color: var(--dusty-gray);
     margin-right: 17px;
     width: 124px;
   }
@@ -181,19 +181,19 @@
   }
 
   &__notice {
-    color: $dusty-gray;
+    color: var(--dusty-gray);
     padding: 0 10px;
   }
 
   &__warning {
-    color: $crimson;
+    color: var(--crimson);
   }
 
   &__rows {
     height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
-    border-top: 1px solid $geyser;
+    border-top: 1px solid var(--geyser);
     display: flex;
     flex-flow: column;
   }
@@ -208,7 +208,7 @@
     @include H5;
 
     width: 80px;
-    color: $dusty-gray;
+    color: var(--dusty-gray);
     margin-top: 12px;
     margin-left: 18px;
     width: 100%;
@@ -217,7 +217,7 @@
   &__row-value {
     @include H6;
 
-    color: $scorpion;
+    color: var(--scorpion);
     width: 100%;
     overflow-wrap: break-word;
     border-bottom: 1px solid #d2d8dd;
@@ -228,7 +228,7 @@
   &__help-link {
     cursor: pointer;
     text-decoration: underline;
-    color: $primary-blue;
+    color: var(--primary-blue);
     margin-inline-start: 3px;
   }
 
@@ -241,7 +241,7 @@
     justify-content: center;
     position: relative;
     flex: 0 0 auto;
-    border-top: 1px solid $geyser;
+    border-top: 1px solid var(--geyser);
     padding: 1.6rem;
 
     button {
