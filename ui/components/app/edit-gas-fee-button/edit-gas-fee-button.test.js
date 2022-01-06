@@ -73,9 +73,11 @@ describe('EditGasFeeButton', () => {
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
   });
 
-  it('should render edit link with text 10% Minimum if minimum gas estimates are selected', () => {
-    render({ contextProps: { transaction: { userFeeLevel: 'minimum' } } });
-    expect(screen.queryByText('10% Minimum')).toBeInTheDocument();
+  it('should render edit link with text 10% increase if tenPercentIncreased gas estimates are selected', () => {
+    render({
+      contextProps: { transaction: { userFeeLevel: 'tenPercentIncreased' } },
+    });
+    expect(screen.queryByText('10% increase')).toBeInTheDocument();
   });
 
   it('should render edit link with text Site suggested if site suggested estimated are used', () => {
@@ -111,7 +113,7 @@ describe('EditGasFeeButton', () => {
         transaction: {},
       },
     });
-    expect(screen.queryByText('⚙')).toBeInTheDocument();
+    expect(screen.queryByText('⚙️')).toBeInTheDocument();
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
     expect(screen.queryByText('Edit')).toBeInTheDocument();
   });

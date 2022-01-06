@@ -7,6 +7,7 @@
     height: 56px;
     display: flex;
     align-items: center;
+    justify-content: space-around;
 
     &__separator {
       border-left: 1px solid var(--ui-2);

@@ -1,18 +1,9 @@
 import React from 'react';
 import { uniq } from 'lodash';
-import { toBigNumber } from '../../../../../../shared/modules/conversion.utils';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import I18nValue from '../../../../ui/i18n-value';
 import { PriorityFeeTooltip } from '../tooltips';
-
-function roundToDecimalPlacesRemovingExtraZeroes(
-  numberish,
-  numberOfDecimalPlaces,
-) {
-  return toBigNumber.dec(
-    toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces),
-  );
-}
 
 export default function LatestPriorityFeeField() {
   const { gasFeeEstimates } = useGasFeeContext();
@@ -20,11 +11,10 @@ export default function LatestPriorityFeeField() {
   const renderPriorityFeeRange = () => {
     const { latestPriorityFeeRange } = gasFeeEstimates;
     if (latestPriorityFeeRange) {
-      const formattedRange = uniq(
-        latestPriorityFeeRange.map((priorityFee) =>
-          roundToDecimalPlacesRemovingExtraZeroes(priorityFee, 1),
-        ),
-      ).join(' - ');
+      const formattedRange = uniq([
+        roundToDecimalPlacesRemovingExtraZeroes(latestPriorityFeeRange[0], 1),
+        roundToDecimalPlacesRemovingExtraZeroes(latestPriorityFeeRange[1], 0),
+      ]).join(' - ');
       return `${formattedRange} GWEI`;
     }
     return null;

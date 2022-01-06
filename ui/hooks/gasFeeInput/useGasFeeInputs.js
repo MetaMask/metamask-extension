@@ -248,7 +248,7 @@ export function useGasFeeInputs(
     cancelTransaction,
     speedUpTransaction,
     updateTransaction,
-    updateTransactionToMinimumGasFee,
+    updateTransactionToTenPercentIncreasedGasFee,
     updateTransactionUsingDAPPSuggestedValues,
     updateTransactionUsingEstimate,
   } = useTransactionFunctions({
@@ -350,7 +350,7 @@ export function useGasFeeInputs(
     cancelTransaction,
     speedUpTransaction,
     updateTransaction,
-    updateTransactionToMinimumGasFee,
+    updateTransactionToTenPercentIncreasedGasFee,
     updateTransactionUsingDAPPSuggestedValues,
     updateTransactionUsingEstimate,
   };

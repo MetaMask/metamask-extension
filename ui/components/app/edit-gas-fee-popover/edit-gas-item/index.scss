@@ -11,7 +11,7 @@
   height: 32px;
   width: 100%;
 
-  &:hover {
+  &:hover:not([disabled]) {
     background-color: var(--primary-2);
   }
 
@@ -45,7 +45,7 @@
     margin-right: 4px;
 
     &-custom {
-      font-size: 32px;
+      font-size: 22px;
       line-height: 1;
     }
   }

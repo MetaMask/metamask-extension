@@ -50,7 +50,7 @@ const render = (props) => {
   return renderWithProvider(
     <GasFeeContextProvider
       transaction={{
-        userFeeLevel: 'minimum',
+        userFeeLevel: 'tenPercentIncreased',
         txParams: {
           gas: '0x5208',
           maxFeePerGas: '0x59682f10',

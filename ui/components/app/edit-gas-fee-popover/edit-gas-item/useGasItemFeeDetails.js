@@ -65,7 +65,7 @@ export const useGasItemFeeDetails = (priorityLevel) => {
       maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
     }
   } else if (
-    priorityLevel === PRIORITY_LEVELS.MINIMUM &&
+    priorityLevel === PRIORITY_LEVELS.TEN_PERCENT_INCREASED &&
     transaction.previousGas
   ) {
     maxFeePerGas = hexWEIToDecGWEI(

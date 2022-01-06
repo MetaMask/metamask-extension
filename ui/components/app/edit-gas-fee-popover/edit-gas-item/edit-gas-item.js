@@ -6,43 +6,34 @@ import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
 } from '../../../../../shared/constants/gas';
-import {
-  ALIGN_ITEMS,
-  DISPLAY,
-} from '../../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { toHumanReadableTime } from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
-import Box from '../../../ui/box';
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
+import I18nValue from '../../../ui/i18n-value';
 import InfoTooltip from '../../../ui/info-tooltip';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 
 import { useGasItemFeeDetails } from './useGasItemFeeDetails';
 
-const getTitleAndIcon = (priorityLevel, t, editGasMode) => {
+const getTitleAndIcon = (priorityLevel, editGasMode) => {
   let icon = priorityLevel;
-  let title = t(priorityLevel);
+  let title = priorityLevel;
   if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
-    title = t('dappSuggestedShortLabel');
-  } else if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
+    title = 'dappSuggestedShortLabel';
+  } else if (priorityLevel === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
     icon = null;
-    title = (
-      <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
-        {t('minimumCancelSpeedupGasFee')}
-        <span className="edit-gas-item__name__sufix">({t('minimum')})</span>
-      </Box>
-    );
+    title = 'tenPercentIncreased';
   } else if (
     priorityLevel === PRIORITY_LEVELS.HIGH &&
     editGasMode === EDIT_GAS_MODES.SWAPS
   ) {
     icon = 'swapSuggested';
-    title = t('swapSuggested');
+    title = 'swapSuggested';
   }
   return { title, icon };
 };
@@ -52,7 +43,7 @@ const EditGasItem = ({ priorityLevel }) => {
     editGasMode,
     estimateUsed,
     gasLimit,
-    updateTransactionToMinimumGasFee,
+    updateTransactionToTenPercentIncreasedGasFee,
     updateTransactionUsingDAPPSuggestedValues,
     updateTransactionUsingEstimate,
     transaction,
@@ -84,8 +75,8 @@ const EditGasItem = ({ priorityLevel }) => {
     } else {
       closeModal('editGasFee');
 
-      if (priorityLevel === PRIORITY_LEVELS.MINIMUM) {
-        updateTransactionToMinimumGasFee();
+      if (priorityLevel === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
+        updateTransactionToTenPercentIncreasedGasFee();
       } else if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
         updateTransactionUsingDAPPSuggestedValues();
       } else {
@@ -94,7 +85,7 @@ const EditGasItem = ({ priorityLevel }) => {
     }
   };
 
-  const { title, icon } = getTitleAndIcon(priorityLevel, t, editGasMode);
+  const { title, icon } = getTitleAndIcon(priorityLevel, editGasMode);
 
   return (
     <button
@@ -115,7 +106,7 @@ const EditGasItem = ({ priorityLevel }) => {
             {PRIORITY_LEVEL_ICON_MAP[icon]}
           </span>
         )}
-        {title}
+        <I18nValue messageKey={title} />
       </span>
       <span
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}

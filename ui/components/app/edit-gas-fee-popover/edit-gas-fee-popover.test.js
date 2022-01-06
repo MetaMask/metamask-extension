@@ -85,7 +85,7 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText('🦊')).toBeInTheDocument();
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('🌐')).toBeInTheDocument();
-    expect(screen.queryByText('⚙')).toBeInTheDocument();
+    expect(screen.queryByText('⚙️')).toBeInTheDocument();
     expect(screen.queryByText('Low')).toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
@@ -127,7 +127,7 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText('🦍')).not.toBeInTheDocument();
     expect(screen.queryByText('🌐')).not.toBeInTheDocument();
     expect(screen.queryByText('🔄')).toBeInTheDocument();
-    expect(screen.queryByText('⚙')).toBeInTheDocument();
+    expect(screen.queryByText('⚙️')).toBeInTheDocument();
     expect(screen.queryByText('Low')).not.toBeInTheDocument();
     expect(screen.queryByText('Market')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).not.toBeInTheDocument();
@@ -173,17 +173,17 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText('Low')).not.toBeInTheDocument();
   });
 
-  it('should show minimum option for cancel gas mode', () => {
+  it('should show tenPercentIncreased option for cancel gas mode', () => {
     render({
       contextProps: { editGasMode: EDIT_GAS_MODES.CANCEL },
     });
-    expect(screen.queryByText('(minimum)')).toBeInTheDocument();
+    expect(screen.queryByText('10% increase')).toBeInTheDocument();
   });
 
-  it('should show minimum option for speedup gas mode', () => {
+  it('should show tenPercentIncreased option for speedup gas mode', () => {
     render({
       contextProps: { editGasMode: EDIT_GAS_MODES.SPEED_UP },
     });
-    expect(screen.queryByText('(minimum)')).toBeInTheDocument();
+    expect(screen.queryByText('10% increase')).toBeInTheDocument();
   });
 });

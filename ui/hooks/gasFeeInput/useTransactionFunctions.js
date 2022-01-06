@@ -111,12 +111,12 @@ export const useTransactionFunctions = ({
     );
   }, [dispatch, estimatedBaseFee, transaction]);
 
-  const updateTransactionToMinimumGasFee = useCallback(() => {
+  const updateTransactionToTenPercentIncreasedGasFee = useCallback(() => {
     const { gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas } =
       transaction.previousGas || transaction.txParams;
 
     updateTransaction({
-      estimateUsed: PRIORITY_LEVELS.MINIMUM,
+      estimateUsed: PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
       gasLimit,
       maxFeePerGas: addTenPercentAndRound(maxFeePerGas),
       maxPriorityFeePerGas: addTenPercentAndRound(maxPriorityFeePerGas),
@@ -157,7 +157,7 @@ export const useTransactionFunctions = ({
     cancelTransaction,
     speedUpTransaction,
     updateTransaction,
-    updateTransactionToMinimumGasFee,
+    updateTransactionToTenPercentIncreasedGasFee,
     updateTransactionUsingDAPPSuggestedValues,
     updateTransactionUsingEstimate,
   };

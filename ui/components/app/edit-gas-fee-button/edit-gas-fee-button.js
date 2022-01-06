@@ -41,9 +41,9 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   ) {
     icon = 'swapSuggested';
     title = 'swapSuggested';
-  } else if (estimateUsed === PRIORITY_LEVELS.MINIMUM) {
+  } else if (estimateUsed === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
     icon = undefined;
-    title = 'minimumEstimate';
+    title = 'tenPercentIncreased';
   }
 
   return (
@@ -64,7 +64,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
         <InfoTooltip
           contentText={
             <div className="edit-gas-fee-button__tooltip">
-              <Typography variant={TYPOGRAPHY.H7} color={COLORS.GREY}>
+              <Typography variant={TYPOGRAPHY.H7} color={COLORS.NEUTRAL_GREY}>
                 {t('dappSuggestedTooltip', [transaction.origin])}
               </Typography>
               <Typography variant={TYPOGRAPHY.H7}>
