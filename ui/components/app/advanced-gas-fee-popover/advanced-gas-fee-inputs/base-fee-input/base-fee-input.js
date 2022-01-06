@@ -105,24 +105,14 @@ const BaseFeeInput = () => {
   const [editingInGwei, setEditingInGwei] = useState(false);
 
   const [maxBaseFeeInGWEI, setMaxBaseFeeInGWEI] = useState(() => {
-    if (advancedGasFeeValues) {
+    if (
+      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
+      Boolean(advancedGasFeeValues)
+    ) {
       const { maxBaseFeeGWEI, maxBaseFeeMultiplier } = advancedGasFeeValues;
-      if (estimateUsed !== PRIORITY_LEVELS.CUSTOM) {
-        if (maxBaseFeeGWEI) {
-          return maxBaseFeeGWEI;
-        } else if (maxBaseFeeMultiplier) {
-          return multiplyCurrencyValues(
-            estimatedBaseFee,
-            maxBaseFeeMultiplier,
-            numberOfDecimalsPrimary,
-          );
-        }
-      } else if (maxBaseFeeGWEI && maxBaseFeeGWEI === maxFeePerGas) {
+      if (maxBaseFeeGWEI) {
         return maxBaseFeeGWEI;
-      } else if (
-        maxBaseFeeMultiplier &&
-        maxBaseFeeMultiplier === maxFeePerGas
-      ) {
+      } else if (maxBaseFeeMultiplier) {
         return multiplyCurrencyValues(
           estimatedBaseFee,
           maxBaseFeeMultiplier,
@@ -135,24 +125,18 @@ const BaseFeeInput = () => {
   });
 
   const [maxBaseFeeInMultiplier, setMaxBaseFeeInMultiplier] = useState(() => {
-    if (advancedGasFeeValues) {
+    if (
+      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
+      Boolean(advancedGasFeeValues)
+    ) {
       const { maxBaseFeeGWEI, maxBaseFeeMultiplier } = advancedGasFeeValues;
-      if (estimateUsed !== PRIORITY_LEVELS.CUSTOM) {
-        if (maxBaseFeeMultiplier) {
-          return maxBaseFeeMultiplier;
-        } else if (maxBaseFeeGWEI) {
-          return divideCurrencyValues(maxBaseFeeGWEI, estimatedBaseFee);
-        }
-      } else if (
-        maxBaseFeeMultiplier &&
-        maxBaseFeeMultiplier === maxFeePerGas
-      ) {
+      if (maxBaseFeeMultiplier) {
         return maxBaseFeeMultiplier;
-      } else if (maxBaseFeeGWEI && maxBaseFeeGWEI === maxFeePerGas) {
+      } else if (maxBaseFeeGWEI) {
         return divideCurrencyValues(maxBaseFeeGWEI, estimatedBaseFee);
       }
     }
-
+    console.log(maxFeePerGas);
     return divideCurrencyValues(maxFeePerGas, estimatedBaseFee);
   });
 

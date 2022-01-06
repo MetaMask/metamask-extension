@@ -65,7 +65,7 @@ const AdvancedGasFeeDefaults = () => {
         disabled={hasErrors}
       />
       <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
-        {!isDefaultSettingsSelected && Boolean(advancedGasFeeValues) ? (
+        {Boolean(advancedGasFeeValues) && !isDefaultSettingsSelected ? (
           <I18nValue
             messageKey="advancedGasFeeDefaultOptIn"
             options={[

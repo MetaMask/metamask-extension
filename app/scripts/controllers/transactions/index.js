@@ -35,7 +35,10 @@ import {
   CUSTOM_GAS_ESTIMATE,
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
-import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
+import {
+  decGWEIToHexWEI,
+  multiplyCurrencies,
+} from '../../../../shared/modules/conversion.utils';
 import {
   HARDFORKS,
   MAINNET,
@@ -417,6 +420,7 @@ export default class TransactionController extends EventEmitter {
       gasPrice: defaultGasPrice,
       maxFeePerGas: defaultMaxFeePerGas,
       maxPriorityFeePerGas: defaultMaxPriorityFeePerGas,
+      estimatedBaseFee: defaultEstimatedBaseFee,
     } = await this._getDefaultGasFees(txMeta, eip1559Compatibility);
     const {
       gasLimit: defaultGasLimit,
@@ -433,10 +437,21 @@ export default class TransactionController extends EventEmitter {
     if (eip1559Compatibility) {
       if (process.env.EIP_1559_V2 && Boolean(advancedGasFeeDefaultValues)) {
         txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
-        txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(
-          advancedGasFeeDefaultValues.maxBaseFeeGWEI ||
-            advancedGasFeeDefaultValues.maxBaseFeeMultiplier,
-        );
+        const {
+          maxBaseFeeGWEI,
+          maxBaseFeeMultiplier,
+        } = advancedGasFeeDefaultValues;
+        if (maxBaseFeeGWEI) {
+          txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(maxBaseFeeGWEI);
+        } else if (maxBaseFeeMultiplier) {
+          txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(
+            multiplyCurrencies(maxBaseFeeMultiplier, defaultEstimatedBaseFee, {
+              toNumericBase: 'dec',
+              multiplicandBase: 10,
+              multiplierBase: 10,
+            }),
+          );
+        }
         txMeta.txParams.maxPriorityFeePerGas = decGWEIToHexWEI(
           advancedGasFeeDefaultValues.priorityFee,
         );
@@ -539,9 +554,11 @@ export default class TransactionController extends EventEmitter {
    * @returns {Promise<string|undefined>} The default gas price
    */
   async _getDefaultGasFees(txMeta, eip1559Compatibility) {
+    const advancedGasFee = this.getAdvancedGasFee();
     if (
       (!eip1559Compatibility && txMeta.txParams.gasPrice) ||
       (eip1559Compatibility &&
+        !advancedGasFee &&
         txMeta.txParams.maxFeePerGas &&
         txMeta.txParams.maxPriorityFeePerGas)
     ) {
@@ -559,14 +576,16 @@ export default class TransactionController extends EventEmitter {
       ) {
         const {
           medium: { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = {},
+          estimatedBaseFee,
         } = gasFeeEstimates;
-
+        console.log(gasFeeEstimates);
         if (suggestedMaxPriorityFeePerGas && suggestedMaxFeePerGas) {
           return {
             maxFeePerGas: decGWEIToHexWEI(suggestedMaxFeePerGas),
             maxPriorityFeePerGas: decGWEIToHexWEI(
               suggestedMaxPriorityFeePerGas,
             ),
+            estimatedBaseFee,
           };
         }
       } else if (gasEstimateType === GAS_ESTIMATE_TYPES.LEGACY) {
