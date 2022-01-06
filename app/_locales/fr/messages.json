@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Ajouter un jeton"
   },
-  "addTokens": {
-    "message": "Ajouter des jetons"
-  },
   "advanced": {
     "message": "Paramètres avancés"
   },
@@ -72,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Approuver"
@@ -212,9 +217,6 @@
   "copiedExclamation": {
     "message": "Copié!"
   },
-  "copiedTransactionId": {
-    "message": "ID de transaction copié"
-  },
   "copyAddress": {
     "message": "Copier l'addresse dans le presse-papier"
   },
@@ -251,9 +253,6 @@
   "customGasSubTitle": {
     "message": "Augmenter le tarif peut faire baisser le temps de traitement, mais cela n'est pas garanti."
   },
-  "customRPC": {
-    "message": "RPC personnalisé"
-  },
   "customToken": {
     "message": "Jeton personnalisé"
   },
@@ -262,9 +261,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Les décimales doivent être plus grandes que 0 et inférieures à 36."
-  },
-  "defaultNetwork": {
-    "message": "Le réseau par défaut pour les transactions Ether est le \"Réseau principal Ethereum\"."
   },
   "delete": {
     "message": "Supprimer"
@@ -534,7 +530,7 @@
   "letsGoSetUp": {
     "message": "Oui, passons à la configuration !"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
   },
   "links": {
@@ -611,9 +607,6 @@
   "newContract": {
     "message": "Nouveau contrat"
   },
-  "newNetwork": {
-    "message": "Nouveau réseau"
-  },
   "newPassword": {
     "message": "Nouveau mot de passe (min 8 caractères)"
   },
@@ -658,12 +651,6 @@
   },
   "on": {
     "message": "Activé"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL de l'explorateur de blocs (facultatif)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbole (facultatif)"
   },
   "origin": {
     "message": "Origine"
@@ -784,9 +771,6 @@
   "revealSeedWordsDescription": {
     "message": "Si jamais vous changez de navigateur ou d'ordinateur, vos aurez besoin de cette phrase seed pour accéder à vos comptes. Sauvegardez la quelque part de sûr et secret."
   },
-  "revealSeedWordsTitle": {
-    "message": "Phrase Seed"
-  },
   "revealSeedWordsWarning": {
     "message": "Ces mots peuvent être utilisés pour voler tous vos comptes."
   },
@@ -823,9 +807,6 @@
   "searchTokens": {
     "message": "Rechercher des jetons"
   },
-  "secretBackupPhrase": {
-    "message": "Phrase de sauvegarde secrète"
-  },
   "secretBackupPhraseDescription": {
     "message": "Votre phrase de sauvegarde secrète facilite la sauvegarde et la restauration de votre compte."
   },
@@ -850,9 +831,6 @@
   "selectAnAccount": {
     "message": "Selectionner un compte"
   },
-  "selectAnAccountHelp": {
-    "message": "Selectionner le compte à afficher dans MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Veuillez sélectionner chaque phrase afin de vous assurer qu'elle est correcte."
   },
@@ -873,9 +851,6 @@
   },
   "sendTokens": {
     "message": "Envoyer des jetons"
-  },
-  "sentEther": {
-    "message": "Ether envoyé"
   },
   "separateEachWord": {
     "message": "Separez chaque mot avec un espace simple"
@@ -1109,20 +1084,8 @@
   "viewContact": {
     "message": "Voir contact"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Afficher à $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Voir sur Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Afficher dans Explorer"
-  },
   "visitWebSite": {
     "message": "Visitez notre site web"
-  },
-  "walletSeed": {
-    "message": "Seed du portefeuille"
   },
   "welcome": {
     "message": "Bienvenue dans la Beta de MetaMask"

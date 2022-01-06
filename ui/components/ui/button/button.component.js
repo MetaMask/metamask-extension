@@ -12,29 +12,30 @@ const CLASSNAME_ROUNDED = 'btn--rounded';
 const CLASSNAME_FIRST_TIME = 'btn--first-time';
 
 const typeHash = {
-  'default': CLASSNAME_DEFAULT,
-  'primary': CLASSNAME_PRIMARY,
-  'secondary': CLASSNAME_SECONDARY,
-  'warning': 'btn-warning',
-  'danger': 'btn-danger',
+  default: CLASSNAME_DEFAULT,
+  primary: CLASSNAME_PRIMARY,
+  secondary: CLASSNAME_SECONDARY,
+  warning: 'btn-warning',
+  danger: 'btn-danger',
   'danger-primary': 'btn-danger-primary',
-  'link': 'btn-link',
+  link: 'btn-link',
   // TODO: Legacy button type to be deprecated
-  'confirm': CLASSNAME_CONFIRM,
-  'raised': CLASSNAME_RAISED,
+  confirm: CLASSNAME_CONFIRM,
+  raised: CLASSNAME_RAISED,
   'first-time': CLASSNAME_FIRST_TIME,
 };
 
 const Button = ({
   type,
-  submit,
+  submit = false,
   large,
   children,
   icon,
-  rounded,
   className,
+  rounded = true,
   ...buttonProps
 }) => {
+  const doRounding = rounded && type !== 'link';
   // To support using the Button component to render styled links that are semantic html
   // we swap the html tag we use to render this component and delete any buttonProps that
   // we know to be erroneous attributes for a link. We will likely want to extract Link
@@ -58,14 +59,14 @@ const Button = ({
     <Tag
       className={classnames(
         'button',
+        doRounding && CLASSNAME_ROUNDED,
         typeHash[type] || CLASSNAME_DEFAULT,
         large && CLASSNAME_LARGE,
-        rounded && CLASSNAME_ROUNDED,
         className,
       )}
       {...buttonProps}
     >
-      {icon && <span className="button__icon">{icon}</span>}
+      {icon ? <span className="button__icon">{icon}</span> : null}
       {children}
     </Tag>
   );
@@ -75,14 +76,10 @@ Button.propTypes = {
   type: PropTypes.string,
   submit: PropTypes.bool,
   large: PropTypes.bool,
-  rounded: PropTypes.bool,
   className: PropTypes.string,
   children: PropTypes.node,
   icon: PropTypes.node,
-};
-
-Button.defaultProps = {
-  submit: false,
+  rounded: PropTypes.bool,
 };
 
 export default Button;

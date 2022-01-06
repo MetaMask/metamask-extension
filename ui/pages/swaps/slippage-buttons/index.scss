@@ -47,7 +47,7 @@
   &__error-text {
     @include H7;
 
-    color: $Red-500;
+    color: var(--Red-500);
     margin-top: 8px;
   }
 
@@ -71,7 +71,7 @@
       border: none;
       width: 64px;
       text-align: center;
-      background: $Blue-500;
+      background: var(--Blue-500);
       color: white;
       font-weight: inherit;
 
@@ -115,7 +115,7 @@
 
     &--danger {
       input {
-        background: $Red-500;
+        background: var(--Red-500);
       }
     }
   }

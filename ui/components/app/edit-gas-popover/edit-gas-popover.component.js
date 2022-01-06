@@ -1,10 +1,15 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useGasFeeInputs } from '../../../hooks/useGasFeeInputs';
+import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
 import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
 import { txParamsAreDappSuggested } from '../../../../shared/modules/transaction.utils';
-import { EDIT_GAS_MODES, GAS_LIMITS } from '../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  GAS_LIMITS,
+  GAS_RECOMMENDATIONS,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../../../shared/constants/gas';
 
 import {
   decGWEIToHexWEI,
@@ -22,19 +27,20 @@ import {
   createCancelTransaction,
   createSpeedUpTransaction,
   hideModal,
-  hideSidebar,
   updateTransaction,
   updateCustomSwapsEIP1559GasParams,
   updateSwapsUserFeeLevel,
 } from '../../../store/actions';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
+import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 
 export default function EditGasPopover({
   popoverTitle = '',
   confirmButtonText = '',
   editGasDisplayProps = {},
-  defaultEstimateToUse = 'medium',
+  defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
   transaction,
   mode,
   onClose,
@@ -42,10 +48,9 @@ export default function EditGasPopover({
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const showSidebar = useSelector((state) => state.appState.sidebar.isOpen);
-  const networkAndAccountSupport1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
+  const supportsEIP1559 =
+    useSelector(checkNetworkAndAccountSupports1559) &&
+    !isLegacyTransaction(transaction?.txParams);
   const gasLoadingAnimationIsShowing = useSelector(
     getGasLoadingAnimationIsShowing,
   );
@@ -53,7 +58,7 @@ export default function EditGasPopover({
   const showEducationButton =
     (mode === EDIT_GAS_MODES.MODIFY_IN_PLACE ||
       mode === EDIT_GAS_MODES.SWAPS) &&
-    networkAndAccountSupport1559;
+    supportsEIP1559;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
   const [warning] = useState(null);
@@ -64,6 +69,19 @@ export default function EditGasPopover({
   ] = useState(false);
 
   const minimumGasLimitDec = hexToDecimal(minimumGasLimit);
+  const updatedCustomGasSettings = useIncrementedGasFees(transaction);
+
+  let updatedTransaction = transaction;
+  if (mode === EDIT_GAS_MODES.SPEED_UP || mode === EDIT_GAS_MODES.CANCEL) {
+    updatedTransaction = {
+      ...transaction,
+      userFeeLevel: CUSTOM_GAS_ESTIMATE,
+      txParams: {
+        ...transaction.txParams,
+        ...updatedCustomGasSettings,
+      },
+    };
+  }
 
   const {
     maxPriorityFeePerGas,
@@ -91,56 +109,61 @@ export default function EditGasPopover({
     balanceError,
     estimatesUnavailableWarning,
     estimatedBaseFee,
-  } = useGasFeeInputs(defaultEstimateToUse, transaction, minimumGasLimit, mode);
+  } = useGasFeeInputs(
+    defaultEstimateToUse,
+    updatedTransaction,
+    minimumGasLimit,
+    mode,
+  );
 
   const txParamsHaveBeenCustomized =
-    estimateToUse === 'custom' || txParamsAreDappSuggested(transaction);
+    estimateToUse === CUSTOM_GAS_ESTIMATE ||
+    txParamsAreDappSuggested(updatedTransaction);
 
   /**
    * Temporary placeholder, this should be managed by the parent component but
-   * we will be extracting this component from the hard to maintain modal/
-   * sidebar component. For now this is just to be able to appropriately close
+   * we will be extracting this component from the hard to maintain modal
+   * component. For now this is just to be able to appropriately close
    * the modal in testing
    */
   const closePopover = useCallback(() => {
     if (onClose) {
       onClose();
-    } else if (showSidebar) {
-      dispatch(hideSidebar());
     } else {
       dispatch(hideModal());
     }
-  }, [showSidebar, onClose, dispatch]);
+  }, [onClose, dispatch]);
 
   const onSubmit = useCallback(() => {
-    if (!transaction || !mode) {
+    if (!updatedTransaction || !mode) {
       closePopover();
     }
 
-    const newGasSettings = networkAndAccountSupport1559
-      ? {
-          gas: decimalToHex(gasLimit),
-          gasLimit: decimalToHex(gasLimit),
-          maxFeePerGas: decGWEIToHexWEI(maxFeePerGas ?? gasPrice),
-          maxPriorityFeePerGas: decGWEIToHexWEI(
-            maxPriorityFeePerGas ?? maxFeePerGas ?? gasPrice,
-          ),
-        }
-      : {
-          gas: decimalToHex(gasLimit),
-          gasLimit: decimalToHex(gasLimit),
-          gasPrice: decGWEIToHexWEI(gasPrice),
-        };
+    const newGasSettings = {
+      gas: decimalToHex(gasLimit),
+      gasLimit: decimalToHex(gasLimit),
+      estimateSuggested: defaultEstimateToUse,
+      estimateUsed: estimateToUse,
+    };
 
-    const cleanTransactionParams = { ...transaction.txParams };
+    if (supportsEIP1559) {
+      newGasSettings.maxFeePerGas = decGWEIToHexWEI(maxFeePerGas ?? gasPrice);
+      newGasSettings.maxPriorityFeePerGas = decGWEIToHexWEI(
+        maxPriorityFeePerGas ?? maxFeePerGas ?? gasPrice,
+      );
+    } else {
+      newGasSettings.gasPrice = decGWEIToHexWEI(gasPrice);
+    }
 
-    if (networkAndAccountSupport1559) {
+    const cleanTransactionParams = { ...updatedTransaction.txParams };
+
+    if (supportsEIP1559) {
       delete cleanTransactionParams.gasPrice;
     }
 
     const updatedTxMeta = {
-      ...transaction,
-      userFeeLevel: estimateToUse || 'custom',
+      ...updatedTransaction,
+      userFeeLevel: estimateToUse || CUSTOM_GAS_ESTIMATE,
       txParams: {
         ...cleanTransactionParams,
         ...newGasSettings,
@@ -150,14 +173,14 @@ export default function EditGasPopover({
     switch (mode) {
       case EDIT_GAS_MODES.CANCEL:
         dispatch(
-          createCancelTransaction(transaction.id, newGasSettings, {
+          createCancelTransaction(updatedTransaction.id, newGasSettings, {
             estimatedBaseFee,
           }),
         );
         break;
       case EDIT_GAS_MODES.SPEED_UP:
         dispatch(
-          createSpeedUpTransaction(transaction.id, newGasSettings, {
+          createSpeedUpTransaction(updatedTransaction.id, newGasSettings, {
             estimatedBaseFee,
           }),
         );
@@ -167,8 +190,10 @@ export default function EditGasPopover({
         break;
       case EDIT_GAS_MODES.SWAPS:
         // This popover component should only be used for the "FEE_MARKET" type in Swaps.
-        if (networkAndAccountSupport1559) {
-          dispatch(updateSwapsUserFeeLevel(estimateToUse || 'custom'));
+        if (supportsEIP1559) {
+          dispatch(
+            updateSwapsUserFeeLevel(estimateToUse || CUSTOM_GAS_ESTIMATE),
+          );
           dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
         }
         break;
@@ -178,7 +203,7 @@ export default function EditGasPopover({
 
     closePopover();
   }, [
-    transaction,
+    updatedTransaction,
     mode,
     dispatch,
     closePopover,
@@ -186,9 +211,10 @@ export default function EditGasPopover({
     gasPrice,
     maxFeePerGas,
     maxPriorityFeePerGas,
-    networkAndAccountSupport1559,
+    supportsEIP1559,
     estimateToUse,
     estimatedBaseFee,
+    defaultEstimateToUse,
   ]);
 
   let title = t('editGasTitle');
@@ -235,7 +261,7 @@ export default function EditGasPopover({
           <EditGasDisplayEducation />
         ) : (
           <>
-            {process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />}
+            {process.env.IN_TEST ? null : <LoadingHeartBeat />}
             <EditGasDisplay
               showEducationButton={showEducationButton}
               warning={warning}
@@ -263,7 +289,7 @@ export default function EditGasPopover({
               estimatedMaximumFiat={estimatedMaximumFiat}
               onEducationClick={() => setShowEducationContent(true)}
               mode={mode}
-              transaction={transaction}
+              transaction={updatedTransaction}
               gasErrors={gasErrors}
               gasWarnings={gasWarnings}
               onManualChange={onManualChange}

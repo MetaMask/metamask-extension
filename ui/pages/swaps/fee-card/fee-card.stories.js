@@ -1,10 +1,11 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { text, boolean, number, object } from '@storybook/addon-knobs';
+import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 import FeeCard from './fee-card';
 
 const tokenApprovalTextComponent = (
-  <span key="swaps-view-quote-approve-symbol-1" className="view-quote__bold">
+  <span key="fee-card-approve-symbol" className="view-quote__bold">
     ABC
   </span>
 );
@@ -14,7 +15,8 @@ const containerStyle = {
 };
 
 export default {
-  title: 'FeeCard',
+  title: 'Pages/Swaps/FeeCard',
+  id: __filename,
 };
 
 export const WithAllProps = () => {
@@ -30,6 +32,8 @@ export const WithAllProps = () => {
           fee: text('secondaryFee', '100 USD'),
           maxFee: text('secondaryMaxFee', '200 USD'),
         }}
+        chainId={MAINNET_CHAIN_ID}
+        networkAndAccountSupports1559={false}
         onFeeCardMaxRowClick={action('Clicked max fee row link')}
         tokenApprovalTextComponent={tokenApprovalTextComponent}
         tokenApprovalSourceTokenSymbol="ABC"
@@ -67,6 +71,8 @@ export const WithoutThirdRow = () => {
         isBestQuote={boolean('isBestQuote', true)}
         savings={object('savings 1', { total: '8.55' })}
         metaMaskFee="0.875"
+        chainId={MAINNET_CHAIN_ID}
+        networkAndAccountSupports1559={false}
       />
     </div>
   );
@@ -85,6 +91,8 @@ export const WithOnlyRequiredProps = () => {
         metaMaskFee="0.875"
         onQuotesClick={action('Clicked quotes link')}
         numberOfQuotes={2}
+        chainId={MAINNET_CHAIN_ID}
+        networkAndAccountSupports1559={false}
       />
     </div>
   );

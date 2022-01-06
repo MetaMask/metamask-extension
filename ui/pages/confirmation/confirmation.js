@@ -83,7 +83,7 @@ function useAlertState(pendingConfirmation) {
     let isMounted = true;
     if (pendingConfirmation) {
       getTemplateAlerts(pendingConfirmation).then((alerts) => {
-        if (isMounted && alerts) {
+        if (isMounted && alerts.length > 0) {
           dispatch({
             type: 'set',
             confirmationId: pendingConfirmation.id,
@@ -196,7 +196,7 @@ export default function ConfirmationPage() {
             label={stripHttpsScheme(originMetadata.origin)}
             leftIcon={
               <SiteIcon
-                icon={originMetadata.icon}
+                icon={originMetadata.iconUrl}
                 name={originMetadata.hostname}
                 size={32}
               />

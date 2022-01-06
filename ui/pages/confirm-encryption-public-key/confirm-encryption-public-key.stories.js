@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { select } from '@storybook/addon-knobs';
 
-import { store } from '../../../.storybook/preview';
+import { store, getNewState } from '../../../.storybook/preview';
 import { updateMetamaskState } from '../../store/actions';
 import ConfirmEncryptionPublicKey from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/ConfirmEncryptionPublicKey',
+  id: __filename,
 };
 
 const PageSet = ({ children }) => {
@@ -26,20 +27,23 @@ const PageSet = ({ children }) => {
     unapprovedEncryptionPublicKeyMsgs['7786962153682822'].msgParams =
       account.address;
     store.dispatch(
-      updateMetamaskState({
-        unapprovedEncryptionPublicKeyMsgs,
-      }),
+      updateMetamaskState(
+        getNewState(state.metamask, {
+          unapprovedEncryptionPublicKeyMsgs,
+        }),
+      ),
     );
-  }, [account, unapprovedEncryptionPublicKeyMsgs]);
+  }, [account, unapprovedEncryptionPublicKeyMsgs, state.metamask]);
 
   return children;
 };
 
-export const ConfirmEncryption = () => {
-  store.dispatch(updateMetamaskState({ unapprovedTxs: {} }));
+export const DefaultStory = () => {
   return (
     <PageSet>
       <ConfirmEncryptionPublicKey />
     </PageSet>
   );
 };
+
+DefaultStory.storyName = 'Default';

@@ -33,7 +33,7 @@ export default function ListItem({
         }
       }}
     >
-      {icon && <div className="list-item__icon">{icon}</div>}
+      {icon ? <div className="list-item__icon">{icon}</div> : null}
       <div className="list-item__heading">
         {React.isValidElement(title) ? (
           title
@@ -44,25 +44,29 @@ export default function ListItem({
           <div className="list-item__heading-wrap">{titleIcon}</div>
         )}
       </div>
-      {subtitle && <div className="list-item__subheading">{subtitle}</div>}
-      {children && <div className="list-item__actions">{children}</div>}
-      {midContent && <div className="list-item__mid-content">{midContent}</div>}
-      {rightContent && (
+      {subtitle ? (
+        <div className="list-item__subheading">{subtitle}</div>
+      ) : null}
+      {children ? <div className="list-item__actions">{children}</div> : null}
+      {midContent ? (
+        <div className="list-item__mid-content">{midContent}</div>
+      ) : null}
+      {rightContent ? (
         <div className="list-item__right-content">{rightContent}</div>
-      )}
+      ) : null}
     </div>
   );
 }
 
 ListItem.propTypes = {
-  'title': PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  'titleIcon': PropTypes.node,
-  'subtitle': PropTypes.node,
-  'children': PropTypes.node,
-  'icon': PropTypes.node,
-  'rightContent': PropTypes.node,
-  'midContent': PropTypes.node,
-  'className': PropTypes.string,
-  'onClick': PropTypes.func,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  titleIcon: PropTypes.node,
+  subtitle: PropTypes.node,
+  children: PropTypes.node,
+  icon: PropTypes.node,
+  rightContent: PropTypes.node,
+  midContent: PropTypes.node,
+  className: PropTypes.string,
+  onClick: PropTypes.func,
   'data-testid': PropTypes.string,
 };

@@ -13,6 +13,7 @@ import {
   getTokenValueParam,
 } from '../../helpers/utils/token-util';
 import { hexWEIToDecETH } from '../../helpers/utils/conversions.util';
+import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -48,7 +49,9 @@ const mapStateToProps = (state, ownProps) => {
     hexMaximumTransactionFee,
   } = transactionFeeSelector(state, transaction);
   const tokens = getTokens(state);
-  const currentToken = tokens?.find(({ address }) => tokenAddress === address);
+  const currentToken = tokens?.find(({ address }) =>
+    isEqualCaseInsensitive(tokenAddress, address),
+  );
   const { decimals, symbol: tokenSymbol } = currentToken || {};
 
   const ethTransactionTotalMaxAmount = Number(

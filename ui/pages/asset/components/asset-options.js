@@ -50,7 +50,9 @@ const AssetOptions = ({
               onClickBlockExplorer();
             }}
           >
-            {isEthNetwork ? t('viewOnEtherscan') : t('viewinExplorer')}
+            {isEthNetwork
+              ? t('viewOnEtherscan', [t('blockExplorerAssetAction')])
+              : t('viewinExplorer', [t('blockExplorerAssetAction')])}
           </MenuItem>
           {isNativeAsset ? null : (
             <MenuItem

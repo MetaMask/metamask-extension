@@ -1,4 +1,5 @@
-import { useSelector } from 'react-redux';
+import isEqual from 'lodash/isEqual';
+import { shallowEqual, useSelector } from 'react-redux';
 import {
   getEstimatedGasFeeTimeBounds,
   getGasEstimateType,
@@ -31,8 +32,11 @@ import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
  */
 export function useGasFeeEstimates() {
   const gasEstimateType = useSelector(getGasEstimateType);
-  const gasFeeEstimates = useSelector(getGasFeeEstimates);
-  const estimatedGasFeeTimeBounds = useSelector(getEstimatedGasFeeTimeBounds);
+  const gasFeeEstimates = useSelector(getGasFeeEstimates, isEqual);
+  const estimatedGasFeeTimeBounds = useSelector(
+    getEstimatedGasFeeTimeBounds,
+    shallowEqual,
+  );
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
   useSafeGasEstimatePolling();
 

@@ -12,12 +12,14 @@ import {
 import Box from './box';
 
 export default {
-  title: 'Box',
+  title: 'Components/UI/Box',
+  id: __filename,
 };
 
 const sizeKnobOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const marginSizeKnobOptions = [...sizeKnobOptions, 'auto'];
 
-export const box = () => {
+export const DefaultStory = () => {
   const items = [];
   const size = number(
     'size',
@@ -41,16 +43,31 @@ export const box = () => {
       )}
       textAlign={select('textAlign', TEXT_ALIGN, undefined, 'left')}
       alignItems={select('alignItems', ALIGN_ITEMS, undefined, 'display')}
-      margin={select('margin', sizeKnobOptions, undefined, 'margin')}
-      marginTop={select('marginTop', sizeKnobOptions, undefined, 'margin')}
-      marginRight={select('marginRight', sizeKnobOptions, undefined, 'margin')}
-      marginBottom={select(
-        'marginBottom',
-        sizeKnobOptions,
+      margin={select('margin', marginSizeKnobOptions, undefined, 'margin')}
+      marginTop={select(
+        'marginTop',
+        marginSizeKnobOptions,
         undefined,
         'margin',
       )}
-      marginLeft={select('marginLeft', sizeKnobOptions, undefined, 'margin')}
+      marginRight={select(
+        'marginRight',
+        marginSizeKnobOptions,
+        undefined,
+        'margin',
+      )}
+      marginBottom={select(
+        'marginBottom',
+        marginSizeKnobOptions,
+        undefined,
+        'margin',
+      )}
+      marginLeft={select(
+        'marginLeft',
+        marginSizeKnobOptions,
+        undefined,
+        'margin',
+      )}
       padding={select('padding', sizeKnobOptions, undefined, 'padding')}
       paddingTop={select('paddingTop', sizeKnobOptions, undefined, 'padding')}
       paddingRight={select(
@@ -74,8 +91,16 @@ export const box = () => {
       )}
       borderWidth={number('borderWidth', 1, sizeKnobOptions, 'border')}
       borderColor={select('borderColor', COLORS, COLORS.BLACK, 'border')}
+      backgroundColor={select(
+        'backgroundColor',
+        COLORS,
+        COLORS.WHITE,
+        'background',
+      )}
     >
       {items}
     </Box>
   );
 };
+
+DefaultStory.storyName = 'Default';

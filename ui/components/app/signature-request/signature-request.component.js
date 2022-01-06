@@ -1,49 +1,47 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
+import LedgerInstructionField from '../ledger-instruction-field';
+import { sanitizeMessage } from '../../../helpers/utils/util';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from './signature-request.constants';
 
 export default class SignatureRequest extends PureComponent {
   static propTypes = {
+    /**
+     * The display content of transaction data
+     */
     txData: PropTypes.object.isRequired,
+    /**
+     * The display content of sender account
+     */
     fromAccount: PropTypes.shape({
       address: PropTypes.string.isRequired,
       balance: PropTypes.string,
       name: PropTypes.string,
     }).isRequired,
-
-    clearConfirmTransaction: PropTypes.func.isRequired,
+    /**
+     * Check if the wallet is ledget wallet or not
+     */
+    isLedgerWallet: PropTypes.bool,
+    /**
+     * Handler for cancel button
+     */
     cancel: PropTypes.func.isRequired,
+    /**
+     * Handler for sign button
+     */
     sign: PropTypes.func.isRequired,
+    /**
+     * Whether the hardware wallet requires a connection disables the sign button if true.
+     */
+    hardwareWalletRequiresConnection: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
     t: PropTypes.func,
     metricsEvent: PropTypes.func,
-  };
-
-  componentDidMount() {
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      window.addEventListener('beforeunload', this._beforeUnload);
-    }
-  }
-
-  _beforeUnload = (event) => {
-    const { clearConfirmTransaction, cancel } = this.props;
-    const { metricsEvent } = this.context;
-    metricsEvent({
-      eventOpts: {
-        category: 'Transactions',
-        action: 'Sign Request',
-        name: 'Cancel Sig Request Via Notification Close',
-      },
-    });
-    clearConfirmTransaction();
-    cancel(event);
   };
 
   formatWallet(wallet) {
@@ -57,22 +55,46 @@ export default class SignatureRequest extends PureComponent {
     const {
       fromAccount,
       txData: {
-        msgParams: { data, origin },
+        msgParams: { data, origin, version },
+        type,
       },
       cancel,
       sign,
+      isLedgerWallet,
+      hardwareWalletRequiresConnection,
     } = this.props;
     const { address: fromAddress } = fromAccount;
-    const { message, domain = {} } = JSON.parse(data);
+    const { message, domain = {}, primaryType, types } = JSON.parse(data);
+    const { metricsEvent } = this.context;
 
     const onSign = (event) => {
-      window.removeEventListener('beforeunload', this._beforeUnload);
       sign(event);
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Sign Request',
+          name: 'Confirm',
+        },
+        customVariables: {
+          type,
+          version,
+        },
+      });
     };
 
     const onCancel = (event) => {
-      window.removeEventListener('beforeunload', this._beforeUnload);
       cancel(event);
+      metricsEvent({
+        eventOpts: {
+          category: 'Transactions',
+          action: 'Sign Request',
+          name: 'Cancel',
+        },
+        customVariables: {
+          type,
+          version,
+        },
+      });
     };
 
     return (
@@ -97,8 +119,17 @@ export default class SignatureRequest extends PureComponent {
             {this.formatWallet(fromAddress)}
           </div>
         </div>
-        <Message data={message} />
-        <Footer cancelAction={onCancel} signAction={onSign} />
+        {isLedgerWallet ? (
+          <div className="confirm-approve-content__ledger-instruction-wrapper">
+            <LedgerInstructionField showDataInstruction />
+          </div>
+        ) : null}
+        <Message data={sanitizeMessage(message, primaryType, types)} />
+        <Footer
+          cancelAction={onCancel}
+          signAction={onSign}
+          disabled={hardwareWalletRequiresConnection}
+        />
       </div>
     );
   }

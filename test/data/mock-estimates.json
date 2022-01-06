@@ -1,0 +1,33 @@
+{
+  "fee-market": {
+    "gasEstimateType": "fee-market",
+    "gasFeeEstimates": {
+      "low": {
+        "minWaitTimeEstimate": 180000,
+        "maxWaitTimeEstimate": 300000,
+        "suggestedMaxPriorityFeePerGas": "3",
+        "suggestedMaxFeePerGas": "53"
+      },
+      "medium": {
+        "minWaitTimeEstimate": 15000,
+        "maxWaitTimeEstimate": 60000,
+        "suggestedMaxPriorityFeePerGas": "7",
+        "suggestedMaxFeePerGas": "70"
+      },
+      "high": {
+        "minWaitTimeEstimate": 0,
+        "maxWaitTimeEstimate": 15000,
+        "suggestedMaxPriorityFeePerGas": "10",
+        "suggestedMaxFeePerGas": "100"
+      },
+      "estimatedBaseFee": "50",
+      "networkCongestion": 0.5184,
+      "latestPriorityFeeRange": ["1", "20"],
+      "historicalPriorityFeeRange": ["2", "125"],
+      "historicalBaseFeeRange": ["50", "100"],
+      "priorityFeeTrend": "up",
+      "baseFeeTrend": "down"
+    },
+    "estimatedGasFeeTimeBounds": {}
+  }
+}

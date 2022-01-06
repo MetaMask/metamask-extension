@@ -50,9 +50,6 @@
   "addToken": {
     "message": "הוסף/י אסימון"
   },
-  "addTokens": {
-    "message": "הוסף סמלים"
-  },
   "advanced": {
     "message": "מתקדם"
   },
@@ -72,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "אישור"
@@ -221,9 +226,6 @@
   "copiedExclamation": {
     "message": "הועתק!"
   },
-  "copiedTransactionId": {
-    "message": "מזהה עסקה הועתק"
-  },
   "copyAddress": {
     "message": "העתק כתובת ללוח"
   },
@@ -260,9 +262,6 @@
   "customGasSubTitle": {
     "message": "הגדלת התשלום עשויה לצמצם את זמני העיבוד, אבל אין ערובה לכך."
   },
-  "customRPC": {
-    "message": "RPC מותאם אישית"
-  },
   "customToken": {
     "message": "אסימון מותאם אישית"
   },
@@ -271,9 +270,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "מספרים עשרוניים חייבים להיות לפחות 0 ולא מעל 36."
-  },
-  "defaultNetwork": {
-    "message": "רשת ברירת המחדל לעסקאות Ether היא Main Net."
   },
   "delete": {
     "message": "מחיקה"
@@ -540,7 +536,7 @@
   "letsGoSetUp": {
     "message": "כן, בוא נתקין!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
   },
   "links": {
@@ -623,9 +619,6 @@
   "newContract": {
     "message": "חוזה חדש"
   },
-  "newNetwork": {
-    "message": "רשת חדשה"
-  },
   "newPassword": {
     "message": "ססמה חדשה (לפחות 8 תווים)"
   },
@@ -673,12 +666,6 @@
   },
   "on": {
     "message": "פועל"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "חסום כתובת URL של אקספלורר (אופציונלי)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "סמל (אופציונלי)"
   },
   "origin": {
     "message": "מקור"
@@ -799,9 +786,6 @@
   "revealSeedWordsDescription": {
     "message": "אם בעתיד תחליף/י דפדפנים או תעביר/י מחשבים, תצטרך/י seed phrase זה כדי לקבל גישה לחשבונות שלך. יש לשמור אותם במקום בטוח וסודי."
   },
-  "revealSeedWordsTitle": {
-    "message": "צירוף גרעין (Seed Phrase)"
-  },
   "revealSeedWordsWarning": {
     "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך."
   },
@@ -835,9 +819,6 @@
   "searchTokens": {
     "message": "חיפוש טוקנים"
   },
-  "secretBackupPhrase": {
-    "message": "צירוף מילים סודי לגיבוי"
-  },
   "secretBackupPhraseDescription": {
     "message": "עם צירוף מילים סודי לגיבוי קל יותר לגבות ולשחזר את החשבון שלך."
   },
@@ -862,9 +843,6 @@
   "selectAnAccount": {
     "message": "בחר חשבון"
   },
-  "selectAnAccountHelp": {
-    "message": "בחר את החשבון לצפייה ב- MetaMask"
-  },
   "selectEachPhrase": {
     "message": "נא לבחור כל צירוף מילים כדי להבטיח שהוא נכון."
   },
@@ -885,9 +863,6 @@
   },
   "sendTokens": {
     "message": "שלח טוקנים"
-  },
-  "sentEther": {
-    "message": "את'ר שנשלח"
   },
   "separateEachWord": {
     "message": "יש להפריד כל מילה עם רווח יחיד"
@@ -1127,20 +1102,8 @@
   "viewContact": {
     "message": "הצג איש קשר"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "הצג ב- $1"
-  },
-  "viewOnEtherscan": {
-    "message": "הצג ב-Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "הצג באקספלורר"
-  },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"
-  },
-  "walletSeed": {
-    "message": "גרעין (Seed) ארנק"
   },
   "welcome": {
     "message": "ברוכים הבאים ל- MetaMask"

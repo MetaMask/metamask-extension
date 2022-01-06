@@ -22,7 +22,7 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
   left: 0;
   width: 1px;
   height: 1px;
-  background-color: $Grey-000;
+  background-color: var(--Grey-000);
   animation: emptySpinningDiv 1s infinite linear;
 }
 
@@ -50,7 +50,7 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
 
 // main-container media queries
 
-@media screen and (min-width: 576px) {
+@media screen and (min-width: $break-large) {
   .lap-visible {
     display: flex;
   }
@@ -83,7 +83,7 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
   }
 }
 
-@media screen and (max-width: 575px) {
+@media screen and (max-width: $break-small) {
   .lap-visible {
     display: none;
   }
@@ -95,7 +95,7 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
   .main-container {
     width: 100%;
     overflow-y: auto;
-    background-color: $white;
+    background-color: var(--white);
   }
 
   .main-container-wrapper {
@@ -117,11 +117,11 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
   flex-direction: row-reverse;
   justify-content: space-between;
 
-  @media screen and (max-width: 575px) {
+  @media screen and (max-width: $break-small) {
     height: 100%;
   }
 
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     width: 85vw;
   }
 

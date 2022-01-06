@@ -1,8 +1,5 @@
 # MetaMask Browser Extension
 
-Hey! We are hiring JavaScript Engineers! [Apply here](https://boards.greenhouse.io/consensys/jobs/2572388)!
----
-
 You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
 
 For [general questions](https://community.metamask.io/c/learn/26), [feature requests](https://community.metamask.io/c/feature-requests-ideas/13), or [developer questions](https://community.metamask.io/c/developer-questions/11), visit our [Community Forum](https://community.metamask.io/).
@@ -28,23 +25,34 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 
 Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
 
+See the [build system readme](./development/build/README.md) for build system usage information.
+
 ## Contributing
 
 ### Development builds
 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
 
-To start the [React DevTools](https://github.com/facebook/react-devtools) and [Redux DevTools Extension](http://extension.remotedev.io)
-  alongside the app, use `yarn start:dev`.
-  - React DevTools will open in a separate window; no browser extension is required
-  - Redux DevTools will need to be installed as a browser extension. Open the Redux Remote Devtools to access Redux state logs. This can be done by either right clicking within the web browser to bring up the context menu, expanding the Redux DevTools panel and clicking Open Remote DevTools OR clicking the Redux DevTools extension icon and clicking Open Remote DevTools.
-    - You will also need to check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked)
+#### React and Redux DevTools
+
+To start the [React DevTools](https://github.com/facebook/react-devtools), run `yarn devtools:react` with a development build installed in a browser. This will open in a separate window; no browser extension is required.
+
+To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension):
+- Install the package `remotedev-server` globally (e.g. `yarn global add remotedev-server`)
+- Install the Redux Devtools extension.
+- Open the Redux DevTools extension and check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked).
+
+Then run the command `yarn devtools:redux` with a development build installed in a browser. This will enable you to use the Redux DevTools extension to inspect MetaMask.
+
+To create a development build and run both of these tools simultaneously, run `yarn start:dev`.
+
+#### Test Dapp
+
+[This test site](https://metamask.github.io/test-dapp/) can be used to execute different user flows.
 
 ### Running Unit Tests and Linting
 
-Run unit tests and the linter with `yarn test`.
-
-To run just unit tests, run `yarn test:unit`. To run unit tests continuously with a file watcher, run `yarn watch`.
+Run unit tests and the linter with `yarn test`. To run just unit tests, run `yarn test:unit`.
 
 You can run the linter by itself with `yarn lint`, and you can automatically fix some lint problems with `yarn lint:fix`. You can also run these two commands just on your local changes to save time with `yarn lint:changed` and `yarn lint:changed:fix` respectively.
 
@@ -62,29 +70,25 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 
 * `yarn.lock`:
   * Run `yarn setup` again after your changes to ensure `yarn.lock` has been properly updated.
+  * Run `yarn yarn-deduplicate` to remove duplicate dependencies from the lockfile.
 * The `allow-scripts` configuration in `package.json`
   * Run `yarn allow-scripts auto` to update the `allow-scripts` configuration automatically. This config determines whether the package's install/postinstall scripts are allowed to run. Review each new package to determine whether the install script needs to run or not, testing if necessary.
   * Unfortunately, `yarn allow-scripts auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.
-* The LavaMoat auto-generated policy in `lavamoat/node/policy.json`
-  * Run `yarn lavamoat:auto` to re-generate this policy file. Review the changes to determine whether the access granted to each package seems appropriate.
-  * Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms. macOS and Windows users may see extraneous changes relating to optional dependencies.
+* The LavaMoat policy files. The _tl;dr_ is to run `yarn lavamoat:auto` to update these files, but there can be devils in the details. Continue reading for more information.
+  * There are two sets of LavaMoat policy files:
+    * The production LavaMoat policy files (`lavamoat/browserify/*/policy.json`), which are re-generated using `yarn lavamoat:background:auto`.
+      * These should be regenerated whenever the production dependencies for the background change.
+    * The build system LavaMoat policy file (`lavamoat/build-system/policy.json`), which is re-generated using `yarn lavamoat:build:auto`.
+      * This should be regenerated whenever the dependencies used by the build system itself change.
+  * Whenever you regenerate a policy file, review the changes to determine whether the access granted to each package seems appropriate.
+  * Unfortunately, `yarn lavamoat:auto` will behave inconsistently on different platforms.
+  macOS and Windows users may see extraneous changes relating to optional dependencies.
+  * Keep in mind that any kind of dynamic import or dynamic use of globals may elude LavaMoat's static analysis.
+  Refer to the LavaMoat documentation or ask for help if you run into any issues.
 
 ## Architecture
 
 [![Architecture Diagram](./docs/architecture.png)][1]
-
-## Development
-
-```bash
-yarn
-yarn start
-```
-
-## Build for Publishing
-
-```bash
-yarn dist
-```
 
 ## Other Docs
 

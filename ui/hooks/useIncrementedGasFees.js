@@ -1,27 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { addHexPrefix } from 'ethereumjs-util';
 import { useMemo } from 'react';
-import { multiplyCurrencies } from '../../shared/modules/conversion.utils';
 import { isEIP1559Transaction } from '../../shared/modules/transaction.utils';
 import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
+import { addTenPercent } from '../helpers/utils/gas';
 import { useGasFeeEstimates } from './useGasFeeEstimates';
-
-/**
- * Simple helper to save on duplication to multiply the supplied wei hex string
- * by 1.10 to get bare minimum new gas fee.
- *
- * @param {string} hexStringValue - hex value in wei to be incremented
- * @returns {string} - hex value in WEI 10% higher than the param.
- */
-function addTenPercent(hexStringValue) {
-  return addHexPrefix(
-    multiplyCurrencies(hexStringValue, 1.1, {
-      toNumericBase: 'hex',
-      multiplicandBase: 16,
-      multiplierBase: 10,
-    }),
-  );
-}
 
 /**
  * Helper that returns the higher of two options for a new gas fee:
@@ -50,14 +32,12 @@ function getHighestIncrementedFee(originalFee, currentEstimate) {
  * discarded by the network to avoid DoS attacks. This hook returns an object
  * that either has gasPrice or maxFeePerGas/maxPriorityFeePerGas specified. In
  * addition the gasLimit will also be included.
- * @param {} transactionGroup
+ * @param {} transaction
  * @returns {import(
  *   '../../app/scripts/controllers/transactions'
  * ).CustomGasSettings} - Gas settings for cancellations/speed ups
  */
-export function useIncrementedGasFees(transactionGroup) {
-  const { primaryTransaction } = transactionGroup;
-
+export function useIncrementedGasFees(transaction) {
   const { gasFeeEstimates = {} } = useGasFeeEstimates();
 
   // We memoize this value so that it can be relied upon in other hooks.
@@ -68,8 +48,8 @@ export function useIncrementedGasFees(transactionGroup) {
     // do not have txParams. This is why we use optional chaining on the
     // txParams object in this hook.
     const temporaryGasSettings = {
-      gasLimit: primaryTransaction.txParams?.gas,
-      gas: primaryTransaction.txParams?.gas,
+      gasLimit: transaction.txParams?.gas,
+      gas: transaction.txParams?.gas,
     };
 
     const suggestedMaxFeePerGas =
@@ -77,10 +57,10 @@ export function useIncrementedGasFees(transactionGroup) {
     const suggestedMaxPriorityFeePerGas =
       gasFeeEstimates?.medium?.suggestedMaxPriorityFeePerGas ?? '0';
 
-    if (isEIP1559Transaction(primaryTransaction)) {
-      const transactionMaxFeePerGas = primaryTransaction.txParams?.maxFeePerGas;
+    if (isEIP1559Transaction(transaction)) {
+      const transactionMaxFeePerGas = transaction.txParams?.maxFeePerGas;
       const transactionMaxPriorityFeePerGas =
-        primaryTransaction.txParams?.maxPriorityFeePerGas;
+        transaction.txParams?.maxPriorityFeePerGas;
 
       temporaryGasSettings.maxFeePerGas =
         transactionMaxFeePerGas === undefined ||
@@ -99,7 +79,7 @@ export function useIncrementedGasFees(transactionGroup) {
               suggestedMaxPriorityFeePerGas,
             );
     } else {
-      const transactionGasPrice = primaryTransaction.txParams?.gasPrice;
+      const transactionGasPrice = transaction.txParams?.gasPrice;
       temporaryGasSettings.gasPrice =
         transactionGasPrice === undefined || transactionGasPrice.startsWith('-')
           ? '0x0'
@@ -109,7 +89,7 @@ export function useIncrementedGasFees(transactionGroup) {
             );
     }
     return temporaryGasSettings;
-  }, [primaryTransaction, gasFeeEstimates]);
+  }, [transaction, gasFeeEstimates]);
 
   return customGasSettings;
 }

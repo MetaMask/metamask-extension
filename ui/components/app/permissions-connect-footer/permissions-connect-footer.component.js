@@ -17,11 +17,11 @@ export default class PermissionsConnectFooter extends Component {
             onClick={() => {
               global.platform.openTab({
                 url:
-                  'https://medium.com/metamask/privacy-mode-is-now-enabled-by-default-1c1c957f4d57',
+                  'https://metamask.zendesk.com/hc/en-us/articles/4405506066331-User-guide-Dapps',
               });
             }}
           >
-            {t('learnMore')}
+            {t('learnMoreUpperCase')}
           </div>
         </div>
       </div>

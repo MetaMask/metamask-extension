@@ -2,10 +2,11 @@ import React from 'react';
 import EditGasDisplay from '.';
 
 export default {
-  title: 'Edit Gas Display',
+  title: 'Components/App/EditGasDisplay',
+  id: __filename,
 };
 
-export const basic = () => {
+export const DefaultStory = () => {
   return (
     <div style={{ width: '600px' }}>
       <EditGasDisplay />
@@ -13,7 +14,9 @@ export const basic = () => {
   );
 };
 
-export const withEducation = () => {
+DefaultStory.storyName = 'Default';
+
+export const WithEducation = () => {
   return (
     <div style={{ width: '600px' }}>
       <EditGasDisplay showEducationButton />
@@ -21,7 +24,7 @@ export const withEducation = () => {
   );
 };
 
-export const withDappSuggestedGas = () => {
+export const WithDappSuggestedGas = () => {
   return (
     <div style={{ width: '600px' }}>
       <EditGasDisplay

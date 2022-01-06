@@ -8,8 +8,10 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
+  TRANSACTION_ENVELOPE_TYPES,
 } from '../../../shared/constants/transaction';
 import { addCurrencies } from '../../../shared/modules/conversion.utils';
+import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import fetchWithCache from './fetch-with-cache';
 
 const hstInterface = new ethers.utils.Interface(abi);
@@ -143,10 +145,8 @@ export function getLatestSubmittedTxWithNonce(
 }
 
 export async function isSmartContractAddress(address) {
-  const code = await global.eth.getCode(address);
-  // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
-  const codeIsEmpty = !code || code === '0x' || code === '0x0';
-  return !codeIsEmpty;
+  const { isContractCode } = await readAddressAsContract(global.eth, address);
+  return isContractCode;
 }
 
 export function sumHexes(...args) {
@@ -159,6 +159,10 @@ export function sumHexes(...args) {
   });
 
   return addHexPrefix(total);
+}
+
+export function isLegacyTransaction(txParams) {
+  return txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY;
 }
 
 /**
@@ -196,9 +200,10 @@ export function getStatusKey(transaction) {
  * This will throw an error if the transaction category is unrecognized and no default is provided.
  * @param {function} t - The translation function
  * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
+ * @param {string} nativeCurrency - The native currency of the currently selected network
  * @returns {string} The transaction category title
  */
-export function getTransactionTypeTitle(t, type) {
+export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
   switch (type) {
     case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER: {
       return t('transfer');
@@ -209,8 +214,8 @@ export function getTransactionTypeTitle(t, type) {
     case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
       return t('approve');
     }
-    case TRANSACTION_TYPES.SENT_ETHER: {
-      return t('sentEther');
+    case TRANSACTION_TYPES.SIMPLE_SEND: {
+      return t('sendingNativeAsset', [nativeCurrency]);
     }
     case TRANSACTION_TYPES.CONTRACT_INTERACTION: {
       return t('contractInteraction');

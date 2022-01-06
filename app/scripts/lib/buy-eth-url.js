@@ -1,12 +1,13 @@
 import log from 'loglevel';
 
-import { METASWAP_CHAINID_API_HOST_MAP } from '../../../shared/constants/swaps';
+import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
 import {
   GOERLI_CHAIN_ID,
   KOVAN_CHAIN_ID,
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
+  MAINNET_NETWORK_ID,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
@@ -20,13 +21,13 @@ const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
  * @returns String
  */
 const createWyrePurchaseUrl = async (address) => {
-  const fiatOnRampUrlApi = `${METASWAP_CHAINID_API_HOST_MAP[MAINNET_CHAIN_ID]}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${address}`;
+  const fiatOnRampUrlApi = `${SWAPS_API_V2_BASE_URL}/networks/${MAINNET_NETWORK_ID}/fiatOnRampUrl?serviceName=wyre&destinationAddress=${address}`;
   const wyrePurchaseUrlFallback = `https://pay.sendwyre.com/purchase?dest=ethereum:${address}&destCurrency=ETH&accountId=AC-7AG3W4XH4N2&paymentMethod=debit-card`;
   try {
     const response = await fetchWithTimeout(fiatOnRampUrlApi, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
       },
     });

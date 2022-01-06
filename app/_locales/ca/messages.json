@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Afegir Fitxa"
   },
-  "addTokens": {
-    "message": "Afegeix tokens"
-  },
   "advanced": {
     "message": "Configuració avançada"
   },
@@ -72,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Aprovar"
@@ -218,9 +223,6 @@
   "copiedExclamation": {
     "message": "S'ha copiat!"
   },
-  "copiedTransactionId": {
-    "message": "ID de transacció copiada"
-  },
   "copyAddress": {
     "message": "Copiar adreça al porta-retalls"
   },
@@ -257,9 +259,6 @@
   "customGasSubTitle": {
     "message": "Augmentar la tarifa pot disminuir els temps de processament, però això no està garantit."
   },
-  "customRPC": {
-    "message": "RPC a mida"
-  },
   "customToken": {
     "message": "Fitxa a Mida"
   },
@@ -268,9 +267,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Els decimals han de ser al menys 0, i no més de 36."
-  },
-  "defaultNetwork": {
-    "message": "La xarxa per defecte per a les transaccions Ether és Main Net."
   },
   "delete": {
     "message": "Suprimeix"
@@ -527,7 +523,7 @@
   "letsGoSetUp": {
     "message": "Sí, posem-nos en marxa!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
   },
   "links": {
@@ -610,9 +606,6 @@
   "newContract": {
     "message": "Nou Contracte"
   },
-  "newNetwork": {
-    "message": "Nova Xarxa"
-  },
   "newPassword": {
     "message": "Nova contrasenya (mínim 8 caràcters)"
   },
@@ -660,12 +653,6 @@
   },
   "on": {
     "message": "Activat"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Bloqueja l'URL d'Explorer (opcional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Símbol (opcional)"
   },
   "origin": {
     "message": "Origen"
@@ -780,9 +767,6 @@
   "revealSeedWordsDescription": {
     "message": "Si mai canvies el navegador o l'ordinador, necessitaràs aquesta frase de recuperació per accedir als teus comptes. Guarda-la a un lloc segur i secret."
   },
-  "revealSeedWordsTitle": {
-    "message": "Frase de Recuperació"
-  },
   "revealSeedWordsWarning": {
     "message": "Aquestes paraules poden ser utilitzades per a robar tots els teus comptes."
   },
@@ -819,9 +803,6 @@
   "searchTokens": {
     "message": "Tokens per cercar"
   },
-  "secretBackupPhrase": {
-    "message": "Frase de recuperació secreta"
-  },
   "secretBackupPhraseDescription": {
     "message": "La teva frase de recuperació secreta facilita la còpia de seguretat i la recuperació del teu compte."
   },
@@ -846,9 +827,6 @@
   "selectAnAccount": {
     "message": "Selecciona un Compte"
   },
-  "selectAnAccountHelp": {
-    "message": "Selecciona el compte que vols veure a MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Si us plau selecciona cada frase per a assegurar-te que és correcta."
   },
@@ -869,9 +847,6 @@
   },
   "sendTokens": {
     "message": "Enviar Fitxes"
-  },
-  "sentEther": {
-    "message": "envia ether"
   },
   "separateEachWord": {
     "message": "Separa cada paraula amb un sol espai"
@@ -1102,20 +1077,8 @@
   "viewContact": {
     "message": "Veure Contacte"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Mostra a $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Veure a Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Mostra a Explorer"
-  },
   "visitWebSite": {
     "message": "Visita el nostre lloc web"
-  },
-  "walletSeed": {
-    "message": "Cartera de seeds"
   },
   "welcome": {
     "message": "Benvingut a MetaMask"

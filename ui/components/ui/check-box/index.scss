@@ -1,8 +1,8 @@
 .check-box {
   -webkit-appearance: none;
   appearance: none;
-  background: $white;
-  color: $Grey-100;
+  background: var(--white);
+  color: var(--Grey-100);
   width: 18px;
   height: 18px;
   font-size: 21px;
@@ -12,12 +12,12 @@
 
   &__checked,
   &__indeterminate {
-    color: $primary-blue;
-    border-color: $primary-blue;
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
   }
 
   &:disabled {
-    color: $Grey-100;
+    color: var(--Grey-100);
     cursor: not-allowed;
   }
 }

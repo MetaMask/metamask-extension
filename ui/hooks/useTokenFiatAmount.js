@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import {
   getTokenExchangeRates,
   getCurrentCurrency,
@@ -7,6 +7,7 @@ import {
 } from '../selectors';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { getConversionRate } from '../ducks/metamask/metamask';
+import { isEqualCaseInsensitive } from '../helpers/utils/util';
 
 /**
  * Get the token balance converted to fiat and formatted for display
@@ -28,13 +29,21 @@ export function useTokenFiatAmount(
   overrides = {},
   hideCurrencySymbol,
 ) {
-  const contractExchangeRates = useSelector(getTokenExchangeRates);
+  const contractExchangeRates = useSelector(
+    getTokenExchangeRates,
+    shallowEqual,
+  );
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const userPrefersShownFiat = useSelector(getShouldShowFiat);
   const showFiat = overrides.showFiat ?? userPrefersShownFiat;
+  const contractExchangeTokenKey = Object.keys(
+    contractExchangeRates,
+  ).find((key) => isEqualCaseInsensitive(key, tokenAddress));
   const tokenExchangeRate =
-    overrides.exchangeRate ?? contractExchangeRates[tokenAddress];
+    overrides.exchangeRate ??
+    (contractExchangeTokenKey &&
+      contractExchangeRates[contractExchangeTokenKey]);
   const formattedFiat = useMemo(
     () =>
       getTokenFiatAmount(

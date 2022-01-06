@@ -11,7 +11,7 @@ BUILD_DEST="./build-artifacts/build-viz/"
 mkdir -p "${BUILD_DEST}"
 
 # generate lavamoat debug config
-yarn lavamoat:debug
+yarn lavamoat:debug:build
 
 # generate viz
 npx lavamoat-viz --dest "${BUILD_DEST}"

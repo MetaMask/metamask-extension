@@ -91,9 +91,6 @@
   "addToken": {
     "message": "टोकन जोड़ें"
   },
-  "addTokens": {
-    "message": "टोकन जोड़ें"
-  },
   "advanced": {
     "message": "उन्नत"
   },
@@ -133,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "इस बाहरी एक्सटेंशन को इसकी अनुमति दें:"
   },
-  "allowOriginSpendToken": {
-    "message": "$1 को आपका $2 खर्च करने की अनुमति दें?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "इस साइट को इसकी अनुमति दें:"
   },
@@ -147,9 +140,6 @@
   "amount": {
     "message": "राशि"
   },
-  "amountWithColon": {
-    "message": "राशि:"
-  },
   "appDescription": {
     "message": "आपके ब्राउज़र में एक Ethereum वॉलेट",
     "description": "The description of the application"
@@ -157,6 +147,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approvalAndAggregatorTxFeeCost": {
     "message": "अनुमोदन और एग्रीगेटर नेटवर्क शुल्क"
@@ -426,9 +424,6 @@
   "copiedExclamation": {
     "message": "कॉपी किया गया!"
   },
-  "copiedTransactionId": {
-    "message": "कॉपी की गई लेनदेन ID"
-  },
   "copyAddress": {
     "message": "क्लिपबोर्ड पर पता कॉपी करें"
   },
@@ -477,9 +472,6 @@
   "customGasSubTitle": {
     "message": "शुल्क बढ़ाने से प्रसंस्करण समय में कमी हो सकती है, लेकिन इसकी गारंटी नहीं होती है।"
   },
-  "customRPC": {
-    "message": "कस्टम RPC"
-  },
   "customSpendLimit": {
     "message": "कस्टम खर्च सीमा"
   },
@@ -514,9 +506,6 @@
   },
   "decryptRequest": {
     "message": "अनुरोध डिक्रिप्ट करें"
-  },
-  "defaultNetwork": {
-    "message": "Ether के लेनदेन के लिए डिफ़ॉल्ट नेटवर्क Main Net है।"
   },
   "delete": {
     "message": "हटाएँ"
@@ -1007,12 +996,6 @@
   "ledgerAccountRestriction": {
     "message": "नया खाता जोड़ने से पहले आपको अपने अंतिम खाते का उपयोग करना होगा।"
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Ledger Live का उपयोग करें"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "नया Ledger Live ब्रिज आपको अपने लेजर का अधिक आसानी से उपयोग करने की अनुमति देता है।  केवल Chrome में उपलब्ध है।"
-  },
   "ledgerLiveApp": {
     "message": "Ledger Live ऐप"
   },
@@ -1025,7 +1008,7 @@
   "letsGoSetUp": {
     "message": "हाँ, आइए सेट करते हैं!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "क्या आप इन टोकन को जोड़ना चाहते हैं?"
   },
   "links": {
@@ -1202,9 +1185,6 @@
   "newContract": {
     "message": "नया अनुबंध"
   },
-  "newNetwork": {
-    "message": "नया नेटवर्क"
-  },
   "newPassword": {
     "message": "नया पासवर्ड (न्यूनतम 8 वर्ण)"
   },
@@ -1340,17 +1320,8 @@
   "onlyAddTrustedNetworks": {
     "message": "एक दुर्भावनापूर्ण नेटवर्क प्रदाता ब्लॉकचेन की स्थिति के बारे में झूठ बोल सकता है और आपकी नेटवर्क गतिविधि को रिकॉर्ड कर सकता है। केवल उन कस्टम नेटवर्क को जोड़ें, जिन पर आप भरोसा करते हैं।"
   },
-  "onlyAvailableOnMainnet": {
-    "message": "केवल मेननेट पर उपलब्ध है"
-  },
   "onlyConnectTrust": {
     "message": "केवल उन साइटों से कनेक्ट करें, जिन पर आप भरोसा करते हैं।"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "ब्लॉक एक्सप्लोरर URL (वैकल्पिक)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "मुद्रा प्रतीक (वैकल्पिक)"
   },
   "origin": {
     "message": "उत्पत्ति"
@@ -1379,12 +1350,6 @@
   },
   "pending": {
     "message": "लंबित"
-  },
-  "permissionCheckedIconDescription": {
-    "message": "आपने इस अनुमति को अनुमोदित कर दिया है"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "आपने इस अनुमति को अनुमोदित नहीं किया है"
   },
   "permissions": {
     "message": "अनुमतियाँ"
@@ -1533,9 +1498,6 @@
   "revealSeedWordsDescription": {
     "message": "यदि आप कभी ब्राउज़र बदलते हैं या कंप्यूटर को स्थानांतरित करते हैं, तो आपको अपने खातों तक पहुँचने के लिए इस गुप्त रिकवरी फ्रेज़ की आवश्यकता होगी। उन्हें कहीं सुरक्षित और गोपनीय तरीके से सहेजें।"
   },
-  "revealSeedWordsTitle": {
-    "message": "गुप्त रिकवरी फ्रेज़"
-  },
   "revealSeedWordsWarning": {
     "message": "इन शब्दों का उपयोग आपके सभी खातों को चुराने के लिए किया जा सकता है।"
   },
@@ -1577,9 +1539,6 @@
   },
   "searchTokens": {
     "message": "टोकन खोजें"
-  },
-  "secretBackupPhrase": {
-    "message": "गुप्त बैकअप वाक्यांश"
   },
   "secretBackupPhraseDescription": {
     "message": "आपका गुप्त बैकअप वाक्यांश आपके खाते का बैकअप लेना और पुनर्स्थापित करना आसान बनाता है।"
@@ -1656,13 +1615,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "यह खाता पहले ही MetaMask से जुड़ा हुआ है"
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask में देखने के लिए खाते का चयन करें।"
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "अपना खाता नहीं देख पा रहे हैं? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "कृपया प्रत्येक वाक्यांश का चयन करें, ताकि यह सुनिश्चित हो सके कि यह सही है।"
   },
@@ -1690,9 +1642,6 @@
   },
   "sendTokens": {
     "message": "टोकन भेजें"
-  },
-  "sentEther": {
-    "message": "Ether भेजा गया"
   },
   "separateEachWord": {
     "message": "प्रत्येक शब्द को एक रिक्ति से अलग करें"
@@ -1866,16 +1815,9 @@
     "message": "इस स्वैप को पूरा करने के लिए आपको $1 और $2 की आवश्यकता होगी",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "एक बेहतर उद्धरण उपलब्ध है"
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "$1 के मिलान वाले कोई भी टोकन उपलब्ध नहीं हैं",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCheckingQuote": {
-    "message": "$1 की जाँच की जा रही है",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
   },
   "swapConfirmWithHwWallet": {
     "message": "अपने हार्डवेयर वॉलेट से पुष्टि करें"
@@ -1899,13 +1841,6 @@
     "message": "यह आवश्यक है और MetaMask को आपके $1 को स्वैप करने की अनुमति देता है।",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
-  "swapEstimatedNetworkFee": {
-    "message": "अनुमानित नेटवर्क शुल्क"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "“$1” वह शुल्क है, जिसकी हम वास्तविक रूप से उम्मीद करते हैं। सटीक राशि नेटवर्क की स्थितियों पर निर्भर करती है।",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
-  },
   "swapEstimatedNetworkFees": {
     "message": "अनुमानित नेटवर्क शुल्क"
   },
@@ -1928,9 +1863,6 @@
   "swapFetchingTokens": {
     "message": "टोकन प्राप्त किए जा रहे हैं..."
   },
-  "swapFinalizing": {
-    "message": "अंतिम रूप दिया जा रहा है..."
-  },
   "swapFromTo": {
     "message": "$1 से $2 का स्वैप",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -1944,13 +1876,6 @@
   "swapLowSlippageError": {
     "message": "लेनदेन विफल हो सकता है, अधिकतम स्लिपेज बहुत कम हो सकता है।"
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "आप सबसे अधिक “$1” खर्च करते हैं। जब नेटवर्क अस्थिर होता है, तो यह एक बड़ी राशि हो सकती है।",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "अधिकतम नेटवर्क शुल्क"
-  },
   "swapMaxSlippage": {
     "message": "अधिकतम स्लिपेज"
   },
@@ -1960,13 +1885,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "हम हर बार शीर्ष चलनिधि स्रोतों से सबसे अच्छे मूल्य पाते हैं। इस उद्धरण में $1% का शुल्क स्वतः ही शामिल हो जाता है।",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 उद्धरण",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "नेटवर्क शुल्क आपके स्वैप को संसाधित करने के शुल्क और उसे $1 नेटवर्क पर संग्रह करने को कवर करता है। MetaMask इस शुल्क से लाभ नहीं कमाता है।"
   },
   "swapNewQuoteIn": {
     "message": "$1 में नए उद्धरण",
@@ -2002,19 +1920,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे \"स्लिपेज\" कहा जाता है। यदि स्लिपेज आपकी \"स्लिपेज टॉलरेंस\" सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः रद्द हो जाएगा।"
   },
-  "swapQuoteIncludesRate": {
-    "message": "उद्धरण में $1% का MetaMask शुल्क शामिल है",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "$2 में से $1 उद्धरण",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "उद्धरण का स्रोत"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "वर्तमान बाजार की स्थितियों को प्रतिबिंबित करने के लिए उद्धरण अक्सर ताज़ा होते रहते हैं।"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "कृपया नवीनतम दरों को प्राप्त करने के लिए नए उद्धरणों का अनुरोध करें।"
@@ -2076,9 +1987,6 @@
   "swapSwapTo": {
     "message": "इसमें स्वैप करें"
   },
-  "swapThisWillAllowApprove": {
-    "message": "यह $1 को स्वैप करने की अनुमति देगा।"
-  },
   "swapToConfirmWithHwWallet": {
     "message": "अपने हार्डवेयर वॉलेट से पुष्टि करने के लिए"
   },
@@ -2117,9 +2025,6 @@
   "swapUnknown": {
     "message": "अज्ञात"
   },
-  "swapUsingBestQuote": {
-    "message": "सर्वोत्तम उद्धरण का उपयोग करना"
-  },
   "swapVerifyTokenExplanation": {
     "message": "एकाधिक टोकन एक ही नाम और प्रतीक का उपयोग कर सकते हैं। यह सत्यापित करने के लिए $1 की जाँच करें कि यह वही टोकन है, जिसकी आप तलाश कर रहे हैं।",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
@@ -2152,12 +2057,6 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "इस साइट को नेटवर्क स्विच करने की अनुमति दें?"
-  },
-  "switchLedgerPaths": {
-    "message": "Ledger पथ स्विच करें"
-  },
-  "switchLedgerPathsText": {
-    "message": "अन्य खाते देखने के लिए Ledger पथ का चयन करें"
   },
   "switchNetwork": {
     "message": "नेटवर्क स्विच करें"
@@ -2228,9 +2127,6 @@
   "toAddress": {
     "message": "प्रति: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "प्रति:"
   },
   "token": {
     "message": "टोकन"
@@ -2308,10 +2204,6 @@
   "troubleTokenBalances": {
     "message": "हमें आपके टोकन की शेषराशि लोड करने में परेशानी हुई। आप उन्हें देख सकते हैं ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "क्या आप इस साइट पर भरोसा करते हैं? यह अनुमति देकर, आप $1 को अपने $2 की निकासी करने और आपके लिए लेनदेनों को स्वचालित करने की अनुमति दे रहे हैं।",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "पुनः प्रयास करें"
@@ -2402,23 +2294,11 @@
   "viewMore": {
     "message": "और देखें"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1 पर देखें"
-  },
-  "viewOnEtherscan": {
-    "message": "Etherscan पर देखें"
-  },
-  "viewinExplorer": {
-    "message": "एक्सप्लोरर में देखें"
-  },
   "visitWebSite": {
     "message": "हमारी वेबसाइट पर जाएँ"
   },
   "walletConnectionGuide": {
     "message": "हमारी हार्डवेयर वॉलेट कनेक्शन गाइड"
-  },
-  "walletSeed": {
-    "message": "गुप्त रिकवरी फ्रेज़"
   },
   "walletSeedRestore": {
     "message": "वॉलेट का गुप्त रिकवरी फ्रेज़"

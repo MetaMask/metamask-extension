@@ -10,6 +10,7 @@ import {
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import TextField from '../../components/ui/text-field';
 import Button from '../../components/ui/button';
+import { clearClipboard } from '../../helpers/utils/util';
 
 const { isValidMnemonic } = ethers.utils;
 
@@ -44,13 +45,14 @@ class RestoreVaultPage extends Component {
     const { t } = this.context;
     let seedPhraseError = null;
 
-    const wordCount = this.parseSeedPhrase(seedPhrase).split(/\s/u).length;
+    const parseSeedPhrase = this.parseSeedPhrase(seedPhrase);
+    const wordCount = parseSeedPhrase.split(/\s/u).length;
     if (
-      seedPhrase &&
+      parseSeedPhrase &&
       (wordCount % 3 !== 0 || wordCount < 12 || wordCount > 24)
     ) {
       seedPhraseError = t('seedPhraseReq');
-    } else if (!isValidMnemonic(seedPhrase)) {
+    } else if (!isValidMnemonic(parseSeedPhrase)) {
       seedPhraseError = t('invalidSeedPhrase');
     }
 
@@ -84,8 +86,12 @@ class RestoreVaultPage extends Component {
     this.setState({ confirmPassword, confirmPasswordError });
   }
 
-  onClick = () => {
-    const { password, seedPhrase } = this.state;
+  handleImport = (event) => {
+    event.preventDefault();
+    const { password, seedPhrase, disabled } = this.state;
+    if (disabled) {
+      return;
+    }
     const {
       // eslint-disable-next-line no-shadow
       createNewVaultAndRestore,
@@ -162,13 +168,20 @@ class RestoreVaultPage extends Component {
             <div className="import-account__selector-label">
               {this.context.t('secretPhrase')}
             </div>
-            <div className="import-account__input-wrapper">
+            <div className="import-account__selector-typography">
+              {this.context.t('secretPhraseWarning')}
+            </div>
+            <form
+              className="import-account__input-wrapper"
+              onSubmit={this.handleImport}
+            >
               <label className="import-account__input-label">
                 {this.context.t('walletSeedRestore')}
               </label>
               {showSeedPhrase ? (
                 <textarea
                   className="import-account__secret-phrase"
+                  onPaste={clearClipboard}
                   onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
                   value={seedPhrase}
                   autoFocus
@@ -178,6 +191,7 @@ class RestoreVaultPage extends Component {
                 <TextField
                   className="import-account__textarea import-account__seedphrase"
                   type="password"
+                  onPaste={clearClipboard}
                   onChange={(e) => this.handleSeedPhraseChange(e.target.value)}
                   value={seedPhrase}
                   autoFocus
@@ -208,43 +222,43 @@ class RestoreVaultPage extends Component {
                   {t('showSeedPhrase')}
                 </label>
               </div>
-            </div>
-            <TextField
-              id="password"
-              label={t('newPassword')}
-              type="password"
-              className="first-time-flow__input"
-              value={this.state.password}
-              onChange={(event) =>
-                this.handlePasswordChange(event.target.value)
-              }
-              error={passwordError}
-              autoComplete="new-password"
-              margin="normal"
-              largeLabel
-            />
-            <TextField
-              id="confirm-password"
-              label={t('confirmPassword')}
-              type="password"
-              className="first-time-flow__input"
-              value={this.state.confirmPassword}
-              onChange={(event) =>
-                this.handleConfirmPasswordChange(event.target.value)
-              }
-              error={confirmPasswordError}
-              autoComplete="confirm-password"
-              margin="normal"
-              largeLabel
-            />
-            <Button
-              type="first-time"
-              className="first-time-flow__button"
-              onClick={() => !disabled && this.onClick()}
-              disabled={disabled}
-            >
-              {this.context.t('restore')}
-            </Button>
+              <TextField
+                id="password"
+                label={t('newPassword')}
+                type="password"
+                className="first-time-flow__input"
+                value={this.state.password}
+                onChange={(event) =>
+                  this.handlePasswordChange(event.target.value)
+                }
+                error={passwordError}
+                autoComplete="new-password"
+                margin="normal"
+                largeLabel
+              />
+              <TextField
+                id="confirm-password"
+                label={t('confirmPassword')}
+                type="password"
+                className="first-time-flow__input"
+                value={this.state.confirmPassword}
+                onChange={(event) =>
+                  this.handleConfirmPasswordChange(event.target.value)
+                }
+                error={confirmPasswordError}
+                autoComplete="confirm-password"
+                margin="normal"
+                largeLabel
+              />
+              <Button
+                type="primary"
+                submit
+                className="first-time-flow__button"
+                disabled={disabled}
+              >
+                {this.context.t('restore')}
+              </Button>
+            </form>
           </div>
         </div>
       </div>

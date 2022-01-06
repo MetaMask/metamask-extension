@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Legg til token "
   },
-  "addTokens": {
-    "message": "Legg til sjetonger"
-  },
   "advanced": {
     "message": "Avansert"
   },
@@ -72,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Godkjenn"
@@ -218,9 +223,6 @@
   "copiedExclamation": {
     "message": "Kopiert!"
   },
-  "copiedTransactionId": {
-    "message": "Kopiert transaksjonsidentifikasjon"
-  },
   "copyAddress": {
     "message": "Kopier adresse til  utklippstavlen "
   },
@@ -257,9 +259,6 @@
   "customGasSubTitle": {
     "message": "Økt gebyr kan redusere behandlingstiden, men det er ikke garantert."
   },
-  "customRPC": {
-    "message": "Tilpasset RPC"
-  },
   "customToken": {
     "message": "Egendefinert token "
   },
@@ -268,9 +267,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desimaler må være minst 0, og ikke flere enn 36."
-  },
-  "defaultNetwork": {
-    "message": "Standardnettverket for Ether-transaksjoner er Main Net."
   },
   "delete": {
     "message": "Slett"
@@ -527,7 +523,7 @@
   "letsGoSetUp": {
     "message": "Ja, la oss komme i gang!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ønsker du å legge til disse tokenene"
   },
   "links": {
@@ -613,9 +609,6 @@
   "newContract": {
     "message": "Ny kontaktperson"
   },
-  "newNetwork": {
-    "message": "Nytt nettverk "
-  },
   "newPassword": {
     "message": "Nytt passord (minimum 8 tegn)"
   },
@@ -663,12 +656,6 @@
   },
   "on": {
     "message": "På"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokker Explorer URL (valgfritt)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (valgfritt)"
   },
   "origin": {
     "message": "Opprinnelse"
@@ -789,9 +776,6 @@
   "revealSeedWordsDescription": {
     "message": "Hvis du noen gang bytter nettlesere eller flytter datamaskiner, trenger du denne mnemoniske gjenopprettingsfrasen for å få tilgang til kontoene dine. Lagre dem på et trygt og hemmelig sted."
   },
-  "revealSeedWordsTitle": {
-    "message": "Mnemonisk gjenopprettingsfrase"
-  },
   "revealSeedWordsWarning": {
     "message": "Disse ordene kan brukes for å stjele alle kontoene dine. "
   },
@@ -825,9 +809,6 @@
   "searchTokens": {
     "message": "Søk i sjetonger"
   },
-  "secretBackupPhrase": {
-    "message": "Hemmelig sikkerhetskopifrase "
-  },
   "secretBackupPhraseDescription": {
     "message": "Den hemmelige gjenopprettingsfrasen din gjør det enkelt å sikkerhetskopiere og gjenopprette kontoen din."
   },
@@ -852,9 +833,6 @@
   "selectAnAccount": {
     "message": "Velg en konto"
   },
-  "selectAnAccountHelp": {
-    "message": "Velg konto for å vise i MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Velg hver frase for å kontrollere at den er riktig."
   },
@@ -872,9 +850,6 @@
   },
   "sendTokens": {
     "message": "Send tokener"
-  },
-  "sentEther": {
-    "message": "sendt ether"
   },
   "separateEachWord": {
     "message": "Del hvert ord med et enkelt mellomrom "
@@ -1108,20 +1083,8 @@
   "viewContact": {
     "message": "Se kontrakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vis ved $1 "
-  },
-  "viewOnEtherscan": {
-    "message": "Vis på Etherscan "
-  },
-  "viewinExplorer": {
-    "message": "Se i Explorer"
-  },
   "visitWebSite": {
     "message": "Besøk nettsiden vår "
-  },
-  "walletSeed": {
-    "message": "Lommebok med mnemonisk gjenopprettingsfrase"
   },
   "welcome": {
     "message": "Velkommen til MetaMask"

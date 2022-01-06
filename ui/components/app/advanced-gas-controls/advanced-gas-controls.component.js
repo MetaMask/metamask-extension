@@ -6,8 +6,8 @@ import { I18nContext } from '../../../contexts/i18n';
 import FormField from '../../ui/form-field';
 import { GAS_ESTIMATE_TYPES } from '../../../../shared/constants/gas';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { getIsGasEstimatesLoading } from '../../../ducks/metamask/metamask';
+import { getNetworkSupportsSettingGasPrice } from '../../../selectors/selectors';
 
 export default function AdvancedGasControls({
   gasEstimateType,
@@ -24,18 +24,20 @@ export default function AdvancedGasControls({
   maxFeeFiat,
   gasErrors,
   minimumGasLimit,
+  supportsEIP1559,
 }) {
   const t = useContext(I18nContext);
-  const networkAndAccountSupport1559 = useSelector(
-    checkNetworkAndAccountSupports1559,
-  );
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
   const showFeeMarketFields =
-    networkAndAccountSupport1559 &&
+    supportsEIP1559 &&
     (gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET ||
       gasEstimateType === GAS_ESTIMATE_TYPES.ETH_GASPRICE ||
       isGasEstimatesLoading);
+
+  const networkSupportsSettingGasPrice = useSelector(
+    getNetworkSupportsSettingGasPrice,
+  );
 
   return (
     <div className="advanced-gas-controls">
@@ -54,7 +56,6 @@ export default function AdvancedGasControls({
         value={gasLimit}
         allowDecimals={false}
         numeric
-        autoFocus
       />
       {showFeeMarketFields ? (
         <>
@@ -110,6 +111,7 @@ export default function AdvancedGasControls({
                 ? getGasFormErrorText(gasErrors.gasPrice, t)
                 : null
             }
+            disabled={!networkSupportsSettingGasPrice}
           />
         </>
       )}
@@ -132,4 +134,5 @@ AdvancedGasControls.propTypes = {
   maxFeeFiat: PropTypes.string,
   gasErrors: PropTypes.object,
   minimumGasLimit: PropTypes.string,
+  supportsEIP1559: PropTypes.bool,
 };

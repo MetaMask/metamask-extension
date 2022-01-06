@@ -12,19 +12,20 @@ import BuildQuote from '.';
 const middleware = [thunk];
 const createProps = (customProps = {}) => {
   return {
-    inputValue: '5',
-    onInputChange: jest.fn(),
-    ethBalance: '6 ETH',
-    setMaxSlippage: jest.fn(),
-    maxSlippage: 15,
+    ethBalance: '0x8',
     selectedAccountAddress: 'selectedAccountAddress',
     isFeatureFlagLoaded: false,
+    shuffledTokensList: [],
     ...customProps,
   };
 };
 
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
+  removeToken: jest.fn(),
+  setBackgroundSwapRouteState: jest.fn(),
+  clearSwapsQuotes: jest.fn(),
+  stopPollingForQuotes: jest.fn(),
 });
 
 describe('BuildQuote', () => {

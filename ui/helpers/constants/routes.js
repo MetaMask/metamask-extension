@@ -5,11 +5,13 @@ const ASSET_ROUTE = '/asset';
 const SETTINGS_ROUTE = '/settings';
 const GENERAL_ROUTE = '/settings/general';
 const ADVANCED_ROUTE = '/settings/advanced';
+const EXPERIMENTAL_ROUTE = '/settings/experimental';
 const SECURITY_ROUTE = '/settings/security';
 const ABOUT_US_ROUTE = '/settings/about-us';
 const ALERTS_ROUTE = '/settings/alerts';
 const NETWORKS_ROUTE = '/settings/networks';
 const NETWORKS_FORM_ROUTE = '/settings/networks/form';
+const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
 const CONTACT_LIST_ROUTE = '/settings/contact-list';
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
@@ -17,8 +19,8 @@ const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
 const REVEAL_SEED_ROUTE = '/seed';
 const MOBILE_SYNC_ROUTE = '/mobile-sync';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
-const ADD_TOKEN_ROUTE = '/add-token';
-const CONFIRM_ADD_TOKEN_ROUTE = '/confirm-add-token';
+const IMPORT_TOKEN_ROUTE = '/import-token';
+const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
@@ -36,6 +38,7 @@ const AWAITING_SIGNATURES_ROUTE = '/swaps/awaiting-signatures';
 const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
 const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
 const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
+const ADD_COLLECTIBLE_ROUTE = '/add-collectible';
 
 const INITIALIZE_ROUTE = '/initialize';
 const INITIALIZE_WELCOME_ROUTE = '/initialize/welcome';
@@ -50,6 +53,27 @@ const INITIALIZE_SEED_PHRASE_INTRO_ROUTE = '/initialize/seed-phrase-intro';
 const INITIALIZE_END_OF_FLOW_ROUTE = '/initialize/end-of-flow';
 const INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE = '/initialize/seed-phrase/confirm';
 const INITIALIZE_METAMETRICS_OPT_IN_ROUTE = '/initialize/metametrics-opt-in';
+
+const ONBOARDING_ROUTE = '/onboarding';
+const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
+const ONBOARDING_CONFIRM_SRP_ROUTE = '/onboarding/confirm-recovery-phrase';
+const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
+const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
+const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
+const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
+const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
+  '/onboarding/import-with-recovery-phrase';
+const ONBOARDING_IMPORT_MOBILE_ROUTE = '/onboarding/import-mobile';
+const ONBOARDING_SECURE_YOUR_WALLET_ROUTE = '/onboarding/secure-your-wallet';
+const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
+const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
+const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
+const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
+const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+///: END:ONLY_INCLUDE_IN
 
 const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 const CONFIRM_SEND_ETHER_PATH = '/send-ether';
@@ -69,15 +93,17 @@ const PATH_NAME_MAP = {
   [DEFAULT_ROUTE]: 'Home',
   [UNLOCK_ROUTE]: 'Unlock Page',
   [LOCK_ROUTE]: 'Lock Page',
-  [`${ASSET_ROUTE}/:asset`]: `Asset Page`,
+  [`${ASSET_ROUTE}/:asset/:id`]: `Asset Page`,
   [SETTINGS_ROUTE]: 'Settings Page',
   [GENERAL_ROUTE]: 'General Settings Page',
   [ADVANCED_ROUTE]: 'Advanced Settings Page',
+  [EXPERIMENTAL_ROUTE]: 'Experimental Settings Page',
   [SECURITY_ROUTE]: 'Security Settings Page',
   [ABOUT_US_ROUTE]: 'About Us Page',
   [ALERTS_ROUTE]: 'Alerts Settings Page',
   [NETWORKS_ROUTE]: 'Network Settings Page',
   [NETWORKS_FORM_ROUTE]: 'Network Settings Page Form',
+  [ADD_NETWORK_ROUTE]: 'Add Network From Settings Page Form',
   [CONTACT_LIST_ROUTE]: 'Contact List Settings Page',
   [`${CONTACT_EDIT_ROUTE}/:address`]: 'Edit Contact Settings Page',
   [CONTACT_ADD_ROUTE]: 'Add Contact Settings Page',
@@ -85,8 +111,8 @@ const PATH_NAME_MAP = {
   [REVEAL_SEED_ROUTE]: 'Reveal Secret Recovery Phrase Page',
   [MOBILE_SYNC_ROUTE]: 'Sync With Mobile Page',
   [RESTORE_VAULT_ROUTE]: 'Restore Vault Page',
-  [ADD_TOKEN_ROUTE]: 'Add Token Page',
-  [CONFIRM_ADD_TOKEN_ROUTE]: 'Confirm Add Token Page',
+  [IMPORT_TOKEN_ROUTE]: 'Import Token Page',
+  [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
   [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
@@ -143,8 +169,8 @@ export {
   REVEAL_SEED_ROUTE,
   MOBILE_SYNC_ROUTE,
   RESTORE_VAULT_ROUTE,
-  ADD_TOKEN_ROUTE,
-  CONFIRM_ADD_TOKEN_ROUTE,
+  IMPORT_TOKEN_ROUTE,
+  CONFIRM_IMPORT_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   NEW_ACCOUNT_ROUTE,
   IMPORT_ACCOUNT_ROUTE,
@@ -172,6 +198,7 @@ export {
   CONFIRMATION_V_NEXT_ROUTE,
   INITIALIZE_METAMETRICS_OPT_IN_ROUTE,
   ADVANCED_ROUTE,
+  EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,
@@ -181,6 +208,7 @@ export {
   CONTACT_VIEW_ROUTE,
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
+  ADD_NETWORK_ROUTE,
   INITIALIZE_BACKUP_SEED_PHRASE_ROUTE,
   INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
   CONNECT_ROUTE,
@@ -196,4 +224,23 @@ export {
   AWAITING_SIGNATURES_ROUTE,
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
+  ADD_COLLECTIBLE_ROUTE,
+  ONBOARDING_ROUTE,
+  ONBOARDING_HELP_US_IMPROVE_ROUTE,
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_IMPORT_MOBILE_ROUTE,
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_CONFIRM_SRP_ROUTE,
+  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_UNLOCK_ROUTE,
+  ONBOARDING_PIN_EXTENSION_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_METAMETRICS,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  INITIALIZE_EXPERIMENTAL_AREA,
+  ONBOARDING_EXPERIMENTAL_AREA,
+  ///: END:ONLY_INCLUDE_IN
 };

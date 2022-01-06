@@ -57,7 +57,7 @@ class JsonImportSubview extends Component {
         />
         <div className="new-account-create-form__buttons">
           <Button
-            type="default"
+            type="secondary"
             large
             className="new-account-create-form__button"
             onClick={() => history.push(mostRecentOverviewPage)}
@@ -65,7 +65,7 @@ class JsonImportSubview extends Component {
             {this.context.t('cancel')}
           </Button>
           <Button
-            type="secondary"
+            type="primary"
             large
             className="new-account-create-form__button"
             onClick={() => this.createNewKeychain()}

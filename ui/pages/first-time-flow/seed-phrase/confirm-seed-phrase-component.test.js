@@ -14,62 +14,62 @@ function shallowRender(props = {}, context = {}) {
 
 describe('ConfirmSeedPhrase Component', () => {
   it('should render correctly', () => {
-    const root = shallowRender({
+    const component = shallowRender({
       seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
     });
 
-    expect(root.find('.confirm-seed-phrase__seed-word--sorted')).toHaveLength(
-      12,
-    );
+    expect(
+      component.find('.confirm-seed-phrase__seed-word--sorted'),
+    ).toHaveLength(12);
   });
 
   it('should add/remove selected on click', () => {
     const metricsEventSpy = sinon.spy();
-    const pushSpy = sinon.spy();
-    const root = shallowRender(
+    const replaceSpy = sinon.spy();
+    const component = shallowRender(
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { push: pushSpy },
+        history: { replace: replaceSpy },
       },
       {
         metricsEvent: metricsEventSpy,
       },
     );
 
-    const seeds = root.find('.confirm-seed-phrase__seed-word--sorted');
+    const seeds = component.find('.confirm-seed-phrase__seed-word--sorted');
 
     // Click on 3 seeds to add to selected
     seeds.at(0).simulate('click');
     seeds.at(1).simulate('click');
     seeds.at(2).simulate('click');
 
-    expect(root.state().selectedSeedIndices).toStrictEqual([0, 1, 2]);
+    expect(component.state().selectedSeedIndices).toStrictEqual([0, 1, 2]);
 
     // Click on a selected seed to remove
-    root.state();
-    root.update();
-    root.state();
-    root
+    component.state();
+    component.update();
+    component.state();
+    component
       .find('.confirm-seed-phrase__seed-word--sorted')
       .at(1)
       .simulate('click');
-    expect(root.state().selectedSeedIndices).toStrictEqual([0, 2]);
+    expect(component.state().selectedSeedIndices).toStrictEqual([0, 2]);
   });
 
   it('should render correctly on hover', () => {
     const metricsEventSpy = sinon.spy();
-    const pushSpy = sinon.spy();
-    const root = shallowRender(
+    const replaceSpy = sinon.spy();
+    const component = shallowRender(
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { push: pushSpy },
+        history: { replace: replaceSpy },
       },
       {
         metricsEvent: metricsEventSpy,
       },
     );
 
-    const seeds = root.find('.confirm-seed-phrase__seed-word--sorted');
+    const seeds = component.find('.confirm-seed-phrase__seed-word--sorted');
 
     // Click on 3 seeds to add to selected
     seeds.at(0).simulate('click');
@@ -77,12 +77,12 @@ describe('ConfirmSeedPhrase Component', () => {
     seeds.at(2).simulate('click');
 
     // Dragging Seed # 2 to 0 placeth
-    root.instance().setDraggingSeedIndex(2);
-    root.instance().setHoveringIndex(0);
+    component.instance().setDraggingSeedIndex(2);
+    component.instance().setHoveringIndex(0);
 
-    root.update();
+    component.update();
 
-    const pendingSeeds = root.find(
+    const pendingSeeds = component.find(
       '.confirm-seed-phrase__selected-seed-words__pending-seed',
     );
 
@@ -93,18 +93,18 @@ describe('ConfirmSeedPhrase Component', () => {
 
   it('should insert seed in place on drop', () => {
     const metricsEventSpy = sinon.spy();
-    const pushSpy = sinon.spy();
-    const root = shallowRender(
+    const replaceSpy = sinon.spy();
+    const component = shallowRender(
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { push: pushSpy },
+        history: { replace: replaceSpy },
       },
       {
         metricsEvent: metricsEventSpy,
       },
     );
 
-    const seeds = root.find('.confirm-seed-phrase__seed-word--sorted');
+    const seeds = component.find('.confirm-seed-phrase__seed-word--sorted');
 
     // Click on 3 seeds to add to selected
     seeds.at(0).simulate('click');
@@ -112,14 +112,14 @@ describe('ConfirmSeedPhrase Component', () => {
     seeds.at(2).simulate('click');
 
     // Drop Seed # 2 to 0 placeth
-    root.instance().setDraggingSeedIndex(2);
-    root.instance().setHoveringIndex(0);
-    root.instance().onDrop(0);
+    component.instance().setDraggingSeedIndex(2);
+    component.instance().setHoveringIndex(0);
+    component.instance().onDrop(0);
 
-    root.update();
+    component.update();
 
-    expect(root.state().selectedSeedIndices).toStrictEqual([2, 0, 1]);
-    expect(root.state().pendingSeedIndices).toStrictEqual([2, 0, 1]);
+    expect(component.state().selectedSeedIndices).toStrictEqual([2, 0, 1]);
+    expect(component.state().pendingSeedIndices).toStrictEqual([2, 0, 1]);
   });
 
   it('should submit correctly', async () => {
@@ -138,12 +138,12 @@ describe('ConfirmSeedPhrase Component', () => {
       '豬',
     ];
     const metricsEventSpy = sinon.spy();
-    const pushSpy = sinon.spy();
+    const replaceSpy = sinon.spy();
     const initialize3BoxSpy = sinon.spy();
-    const root = shallowRender(
+    const component = shallowRender(
       {
         seedPhrase: '鼠 牛 虎 兔 龍 蛇 馬 羊 猴 雞 狗 豬',
-        history: { push: pushSpy },
+        history: { replace: replaceSpy },
         setSeedPhraseBackedUp: () => Promise.resolve(),
         initializeThreeBox: initialize3BoxSpy,
       },
@@ -152,17 +152,17 @@ describe('ConfirmSeedPhrase Component', () => {
       },
     );
 
-    const sorted = root.state().sortedSeedWords;
-    const seeds = root.find('.confirm-seed-phrase__seed-word--sorted');
+    const sorted = component.state().sortedSeedWords;
+    const seeds = component.find('.confirm-seed-phrase__seed-word--sorted');
 
     originalSeed.forEach((seed) => {
       const seedIndex = sorted.findIndex((s) => s === seed);
       seeds.at(seedIndex).simulate('click');
     });
 
-    root.update();
+    component.update();
 
-    root.find('.first-time-flow__button').simulate('click');
+    component.find('.first-time-flow__button').simulate('click');
 
     await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -174,6 +174,6 @@ describe('ConfirmSeedPhrase Component', () => {
       },
     });
     expect(initialize3BoxSpy.calledOnce).toStrictEqual(true);
-    expect(pushSpy.args[0][0]).toStrictEqual('/initialize/end-of-flow');
+    expect(replaceSpy.args[0][0]).toStrictEqual('/initialize/end-of-flow');
   });
 });

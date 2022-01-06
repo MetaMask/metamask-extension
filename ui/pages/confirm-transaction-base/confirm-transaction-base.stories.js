@@ -3,17 +3,20 @@ import React from 'react';
 import ConfirmTransactionBase from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/ConfirmTransactionBase',
+  id: __filename,
 };
 
 const PageSet = ({ children }) => {
   return children;
 };
 
-export const ConfirmTransactionBaseComponent = () => {
+export const DefaultStory = () => {
   return (
     <PageSet>
       <ConfirmTransactionBase />
     </PageSet>
   );
 };
+
+DefaultStory.storyName = 'Default';

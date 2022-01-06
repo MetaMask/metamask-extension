@@ -120,7 +120,7 @@ const converter = ({
     convertedValue = toSpecifiedDenomination[toDenomination](convertedValue);
   }
 
-  if (numberOfDecimals) {
+  if (numberOfDecimals !== undefined && numberOfDecimals !== null) {
     convertedValue = convertedValue.round(
       numberOfDecimals,
       BigNumber.ROUND_HALF_DOWN,
@@ -170,7 +170,7 @@ const conversionUtil = (
 
 const getBigNumber = (value, base) => {
   if (!isValidBase(base)) {
-    throw new Error('Must specificy valid base');
+    throw new Error('Must specify valid base');
   }
 
   // We don't include 'number' here, because BigNumber will throw if passed
@@ -222,6 +222,21 @@ const multiplyCurrencies = (a, b, options = {}) => {
   const value = getBigNumber(a, multiplicandBase).times(
     getBigNumber(b, multiplierBase),
   );
+
+  return converter({
+    value,
+    ...conversionOptions,
+  });
+};
+
+const divideCurrencies = (a, b, options = {}) => {
+  const { dividendBase, divisorBase, ...conversionOptions } = options;
+
+  if (!isValidBase(dividendBase) || !isValidBase(divisorBase)) {
+    throw new Error('Must specify valid dividendBase and divisorBase');
+  }
+
+  const value = getBigNumber(a, dividendBase).div(getBigNumber(b, divisorBase));
 
   return converter({
     value,
@@ -289,4 +304,7 @@ export {
   toNegative,
   subtractCurrencies,
   decGWEIToHexWEI,
+  toBigNumber,
+  toNormalizedDenomination,
+  divideCurrencies,
 };

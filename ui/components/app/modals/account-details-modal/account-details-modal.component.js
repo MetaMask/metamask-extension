@@ -7,6 +7,7 @@ import QrView from '../../../ui/qr-code';
 import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
 import { getURLHostName } from '../../../../helpers/utils/util';
+import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 
 export default class AccountDetailsModal extends Component {
   static propTypes = {
@@ -16,6 +17,7 @@ export default class AccountDetailsModal extends Component {
     setAccountLabel: PropTypes.func,
     keyrings: PropTypes.array,
     rpcPrefs: PropTypes.object,
+    accounts: PropTypes.array,
   };
 
   static contextTypes = {
@@ -31,6 +33,7 @@ export default class AccountDetailsModal extends Component {
       setAccountLabel,
       keyrings,
       rpcPrefs,
+      accounts,
     } = this.props;
     const { name, address } = selectedIdentity;
 
@@ -38,9 +41,15 @@ export default class AccountDetailsModal extends Component {
       return kr.accounts.includes(address);
     });
 
+    const getAccountsNames = (allAccounts, currentName) => {
+      return Object.values(allAccounts)
+        .map((item) => item.name)
+        .filter((itemName) => itemName !== currentName);
+    };
+
     let exportPrivateKeyFeatureEnabled = true;
     // This feature is disabled for hardware wallets
-    if (keyring?.type?.search('Hardware') !== -1) {
+    if (isHardwareKeyring(keyring?.type)) {
       exportPrivateKeyFeatureEnabled = false;
     }
 
@@ -50,6 +59,7 @@ export default class AccountDetailsModal extends Component {
           className="account-details-modal__name"
           defaultValue={name}
           onSubmit={(label) => setAccountLabel(address, label)}
+          accountsNames={getAccountsNames(accounts, name)}
         />
 
         <QrView
@@ -81,9 +91,9 @@ export default class AccountDetailsModal extends Component {
         >
           {rpcPrefs.blockExplorerUrl
             ? this.context.t('blockExplorerView', [
-                rpcPrefs.blockExplorerUrl.match(/^https?:\/\/(.+)/u)[1],
+                getURLHostName(rpcPrefs.blockExplorerUrl),
               ])
-            : this.context.t('viewOnEtherscan')}
+            : this.context.t('etherscanViewOn')}
         </Button>
 
         {exportPrivateKeyFeatureEnabled ? (

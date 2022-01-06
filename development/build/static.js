@@ -6,6 +6,7 @@ const glob = require('fast-glob');
 const locales = require('../../app/_locales/index.json');
 
 const { createTask, composeSeries } = require('./task');
+const { BuildType } = require('./utils');
 
 const EMPTY_JS_FILE = './development/empty.js';
 
@@ -13,10 +14,31 @@ module.exports = function createStaticAssetTasks({
   livereload,
   browserPlatforms,
   shouldIncludeLockdown = true,
+  buildType,
 }) {
   const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
     shouldIncludeLockdown,
   );
+
+  const additionalBuildTargets = {
+    [BuildType.beta]: [
+      {
+        src: './app/build-types/beta/images/',
+        dest: `images`,
+      },
+    ],
+    [BuildType.flask]: [
+      {
+        src: './app/build-types/flask/images/',
+        dest: `images`,
+      },
+    ],
+  };
+
+  if (Object.keys(additionalBuildTargets).includes(buildType)) {
+    copyTargetsProd.push(...additionalBuildTargets[buildType]);
+    copyTargetsDev.push(...additionalBuildTargets[buildType]);
+  }
 
   const prod = createTask(
     'static:prod',
@@ -108,6 +130,10 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `fonts/fontawesome`,
     },
     {
+      src: `./node_modules/react-responsive-carousel/lib/styles`,
+      dest: 'react-gallery/',
+    },
+    {
       src: `./ui/css/output/`,
       pattern: `*.css`,
       dest: ``,
@@ -133,9 +159,20 @@ function getCopyTargets(shouldIncludeLockdown) {
       dest: `lockdown-run.js`,
     },
     {
+      src: shouldIncludeLockdown
+        ? `./app/scripts/lockdown-more.js`
+        : EMPTY_JS_FILE,
+      dest: `lockdown-more.js`,
+    },
+    {
       // eslint-disable-next-line node/no-extraneous-require
       src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
       dest: `runtime-cjs.js`,
+    },
+    {
+      // eslint-disable-next-line node/no-extraneous-require
+      src: require.resolve('@lavamoat/lavapack/src/runtime.js'),
+      dest: `runtime-lavamoat.js`,
     },
     {
       src: `./app/phishing.html`,

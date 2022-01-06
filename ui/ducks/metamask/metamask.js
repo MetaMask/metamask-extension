@@ -1,4 +1,4 @@
-import { addHexPrefix, isHexString } from 'ethereumjs-util';
+import { addHexPrefix, isHexString, stripHexPrefix } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
@@ -10,7 +10,9 @@ import {
 import { updateTransaction } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
+import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 
 export default function reduceMetamask(state = {}, action) {
   const metamaskState = {
@@ -22,7 +24,6 @@ export default function reduceMetamask(state = {}, action) {
     frequentRpcList: [],
     addressBook: [],
     contractExchangeRates: {},
-    tokens: [],
     pendingTokens: {},
     customNonceValue: '',
     useBlockie: false,
@@ -33,6 +34,7 @@ export default function reduceMetamask(state = {}, action) {
     preferences: {
       autoLockTimeLimit: undefined,
       showFiatInTestnets: false,
+      showTestNetworks: false,
       useNativeCurrencyAsPrimaryCurrency: true,
     },
     firstTimeFlowType: null,
@@ -88,12 +90,6 @@ export default function reduceMetamask(state = {}, action) {
       const identities = { ...metamaskState.identities, ...id };
       return Object.assign(metamaskState, { identities });
     }
-
-    case actionConstants.UPDATE_TOKENS:
-      return {
-        ...metamaskState,
-        tokens: action.newTokens,
-      };
 
     case actionConstants.UPDATE_CUSTOM_NONCE:
       return {
@@ -260,6 +256,34 @@ export const getUnconnectedAccountAlertShown = (state) =>
 
 export const getTokens = (state) => state.metamask.tokens;
 
+export function getCollectiblesDetectionNoticeDismissed(state) {
+  return state.metamask.collectiblesDetectionNoticeDismissed;
+}
+
+export const getCollectibles = (state) => {
+  const {
+    metamask: {
+      allCollectibles,
+      provider: { chainId },
+      selectedAddress,
+    },
+  } = state;
+
+  return allCollectibles?.[selectedAddress]?.[chainId] ?? [];
+};
+
+export const getCollectibleContracts = (state) => {
+  const {
+    metamask: {
+      allCollectibleContracts,
+      provider: { chainId },
+      selectedAddress,
+    },
+  } = state;
+
+  return allCollectibleContracts?.[selectedAddress]?.[chainId] ?? [];
+};
+
 export function getBlockGasLimit(state) {
   return state.metamask.currentBlockGasLimit;
 }
@@ -286,6 +310,16 @@ export function getUnapprovedTxs(state) {
   return state.metamask.unapprovedTxs;
 }
 
+/**
+ * Function returns true if network details are fetched and it is found to not support EIP-1559
+ */
+export function isNotEIP1559Network(state) {
+  return state.metamask.networkDetails?.EIPS[1559] === false;
+}
+
+/**
+ * Function returns true if network details are fetched and it is found to support EIP-1559
+ */
 export function isEIP1559Network(state) {
   return state.metamask.networkDetails?.EIPS[1559] === true;
 }
@@ -321,4 +355,75 @@ export function getIsGasEstimatesLoading(state) {
       gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
 
   return isGasEstimatesLoading;
+}
+
+export function getCompletedOnboarding(state) {
+  return state.metamask.completedOnboarding;
+}
+export function getIsInitialized(state) {
+  return state.metamask.isInitialized;
+}
+
+export function getIsUnlocked(state) {
+  return state.metamask.isUnlocked;
+}
+
+export function getSeedPhraseBackedUp(state) {
+  return state.metamask.seedPhraseBackedUp;
+}
+
+/**
+ * Given the redux state object and an address, finds a keyring that contains that address, if one exists
+ *
+ * @param {Object} state - the redux state object
+ * @param {string} address - the address to search for among the keyring addresses
+ * @returns {Object|undefined} The keyring which contains the passed address, or undefined
+ */
+export function findKeyringForAddress(state, address) {
+  const keyring = state.metamask.keyrings.find((kr) => {
+    return kr.accounts.some((account) => {
+      return (
+        isEqualCaseInsensitive(account, addHexPrefix(address)) ||
+        isEqualCaseInsensitive(account, stripHexPrefix(address))
+      );
+    });
+  });
+
+  return keyring;
+}
+
+/**
+ * Given the redux state object, returns the users preferred ledger transport type
+ *
+ * @param {Object} state - the redux state object
+ * @returns {string} The users preferred ledger transport type. One of'ledgerLive', 'webhid' or 'u2f'
+ */
+export function getLedgerTransportType(state) {
+  return state.metamask.ledgerTransportType;
+}
+
+/**
+ * Given the redux state object and an address, returns a boolean indicating whether the passed address is part of a Ledger keyring
+ *
+ * @param {Object} state - the redux state object
+ * @param {string} address - the address to search for among all keyring addresses
+ * @returns {boolean} true if the passed address is part of a ledger keyring, and false otherwise
+ */
+export function isAddressLedger(state, address) {
+  const keyring = findKeyringForAddress(state, address);
+
+  return keyring?.type === KEYRING_TYPES.LEDGER;
+}
+
+/**
+ * Given the redux state object, returns a boolean indicating whether the user has any Ledger accounts added to MetaMask (i.e. Ledger keyrings
+ * in state)
+ *
+ * @param {Object} state - the redux state object
+ * @returns {boolean} true if the user has a Ledger account and false otherwise
+ */
+export function doesUserHaveALedgerAccount(state) {
+  return state.metamask.keyrings.some((kr) => {
+    return kr.type === KEYRING_TYPES.LEDGER;
+  });
 }

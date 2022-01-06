@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import contractMap from '@metamask/contract-metadata';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-
 import Jazzicon from '../jazzicon';
 import BlockieIdenticon from './blockieIdenticon';
 
@@ -15,14 +12,48 @@ const getStyles = (diameter) => ({
 
 export default class Identicon extends PureComponent {
   static propTypes = {
+    /**
+     * Adds blue border around the Identicon used for selected account.
+     * Increases the width and height of the Identicon by 8px
+     */
     addBorder: PropTypes.bool,
+    /**
+     * Address used for generating random image
+     */
     address: PropTypes.string,
+    /**
+     * Add custom css class
+     */
     className: PropTypes.string,
+    /**
+     * Sets the width and height of the inner img element
+     * If addBorder is true will increase components height and width by 8px
+     */
     diameter: PropTypes.number,
+    /**
+     * Used as the image source of the Identicon
+     */
     image: PropTypes.string,
+    /**
+     * Use the blockie type random image generator
+     */
     useBlockie: PropTypes.bool,
+    /**
+     * The alt text of the image
+     */
     alt: PropTypes.string,
+    /**
+     * Check if show image border
+     */
     imageBorder: PropTypes.bool,
+    /**
+     * Check if use token detection
+     */
+    useTokenDetection: PropTypes.bool,
+    /**
+     * Add list of token in object
+     */
+    tokenList: PropTypes.object,
   };
 
   static defaultProps = {
@@ -33,6 +64,7 @@ export default class Identicon extends PureComponent {
     image: undefined,
     useBlockie: false,
     alt: '',
+    tokenList: {},
   };
 
   renderImage() {
@@ -51,8 +83,14 @@ export default class Identicon extends PureComponent {
   }
 
   renderJazzicon() {
-    const { address, className, diameter, alt } = this.props;
-
+    const {
+      address,
+      className,
+      diameter,
+      alt,
+      useTokenDetection,
+      tokenList,
+    } = this.props;
     return (
       <Jazzicon
         address={address}
@@ -60,6 +98,8 @@ export default class Identicon extends PureComponent {
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
         alt={alt}
+        useTokenDetection={useTokenDetection}
+        tokenList={tokenList}
       />
     );
   }
@@ -78,22 +118,34 @@ export default class Identicon extends PureComponent {
   }
 
   render() {
-    const { address, image, useBlockie, addBorder, diameter } = this.props;
+    const {
+      address,
+      image,
+      useBlockie,
+      addBorder,
+      diameter,
+      useTokenDetection,
+      tokenList,
+    } = this.props;
+    const size = diameter + 8;
 
     if (image) {
       return this.renderImage();
     }
 
     if (address) {
-      const checksummedAddress = toChecksumHexAddress(address);
-
-      if (checksummedAddress && contractMap[checksummedAddress]?.logo) {
+      // token from dynamic api list is fetched when useTokenDetection is true
+      // And since the token.address from allTokens is checksumaddress
+      // tokenAddress have to be changed to lowercase when we are using dynamic list
+      const tokenAddress = useTokenDetection ? address.toLowerCase() : address;
+      if (tokenAddress && tokenList[tokenAddress]?.iconUrl) {
         return this.renderJazzicon();
       }
 
       return (
         <div
           className={classnames({ 'identicon__address-wrapper': addBorder })}
+          style={addBorder ? getStyles(size) : null}
         >
           {useBlockie ? this.renderBlockie() : this.renderJazzicon()}
         </div>

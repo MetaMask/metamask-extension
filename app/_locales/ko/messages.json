@@ -91,9 +91,6 @@
   "addToken": {
     "message": "토큰 추가"
   },
-  "addTokens": {
-    "message": "토큰 추가"
-  },
   "advanced": {
     "message": "고급"
   },
@@ -133,10 +130,6 @@
   "allowExternalExtensionTo": {
     "message": "이 외부 확장을 통해 다음을 하도록 허용:"
   },
-  "allowOriginSpendToken": {
-    "message": "$1에서 $2을(를) 지출하도록 허용하시겠어요?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "이 사이트에서 다음을 하도록 허용:"
   },
@@ -147,9 +140,6 @@
   "amount": {
     "message": "금액"
   },
-  "amountWithColon": {
-    "message": "금액:"
-  },
   "appDescription": {
     "message": "브라우저의 이더리움 지갑",
     "description": "The description of the application"
@@ -157,6 +147,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approvalAndAggregatorTxFeeCost": {
     "message": "승인 및 애그리게이터 네트워크 수수료"
@@ -426,9 +424,6 @@
   "copiedExclamation": {
     "message": "복사 완료!"
   },
-  "copiedTransactionId": {
-    "message": "거래 ID 복사됨"
-  },
   "copyAddress": {
     "message": "주소를 클립보드에 복사"
   },
@@ -477,9 +472,6 @@
   "customGasSubTitle": {
     "message": "수수료를 올리면 처리 시간이 단축되기도 하지만 항상 그렇지는 않습니다."
   },
-  "customRPC": {
-    "message": "맞춤형 RPC"
-  },
   "customSpendLimit": {
     "message": "맞춤형 지출 한도"
   },
@@ -514,9 +506,6 @@
   },
   "decryptRequest": {
     "message": "요청 암호 해독"
-  },
-  "defaultNetwork": {
-    "message": "Ether 거래의 기본 네트워크는 메인 넷입니다."
   },
   "delete": {
     "message": "삭제"
@@ -1007,12 +996,6 @@
   "ledgerAccountRestriction": {
     "message": "새 계정을 추가하려면 먼저 마지막 계정을 사용해야 합니다."
   },
-  "ledgerLiveAdvancedSetting": {
-    "message": "Ledger Live 사용하기"
-  },
-  "ledgerLiveAdvancedSettingDescription": {
-    "message": "새로운 Ledger Live 브리지를 통해 Ledger를 더 쉽게 사용할 수 있습니다.  Chrome에서만 사용 가능합니다."
-  },
   "ledgerLiveApp": {
     "message": "Ledger Live 앱"
   },
@@ -1025,7 +1008,7 @@
   "letsGoSetUp": {
     "message": "설정을 시작하죠!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "이 토큰을 추가하시겠어요?"
   },
   "links": {
@@ -1202,9 +1185,6 @@
   "newContract": {
     "message": "새 계약"
   },
-  "newNetwork": {
-    "message": "새 네트워크"
-  },
   "newPassword": {
     "message": "새 암호(8자 이상)"
   },
@@ -1340,17 +1320,8 @@
   "onlyAddTrustedNetworks": {
     "message": "악성 네트워크 공급업체는 블록체인 상태를 거짓으로 보고하고 네트워크 활동을 기록할 수 있습니다. 신뢰하는 맞춤형 네트워크만 추가하세요."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "메인넷에서만 사용 가능"
-  },
   "onlyConnectTrust": {
     "message": "신뢰하는 사이트만 연결하세요."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "블록 탐색기 URL(선택 사항)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "통화 기호(선택 사항)"
   },
   "origin": {
     "message": "원본"
@@ -1379,12 +1350,6 @@
   },
   "pending": {
     "message": "보류 중"
-  },
-  "permissionCheckedIconDescription": {
-    "message": "이 권한을 승인했습니다."
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "이 권한을 승인하지 않았습니다."
   },
   "permissions": {
     "message": "권한"
@@ -1533,9 +1498,6 @@
   "revealSeedWordsDescription": {
     "message": "브라우저를 변경하거나 컴퓨터를 옮긴 경우, 계정에 액세스하려면 이 비밀 복구 구문이 필요합니다. 기밀이 보장된 안전한 곳에 보관하세요."
   },
-  "revealSeedWordsTitle": {
-    "message": "비밀 복구 구문"
-  },
   "revealSeedWordsWarning": {
     "message": "이 구문은 계정 전체를 도용하는 데 사용될 수 있습니다."
   },
@@ -1577,9 +1539,6 @@
   },
   "searchTokens": {
     "message": "토큰 검색"
-  },
-  "secretBackupPhrase": {
-    "message": "비밀 백업 구문"
   },
   "secretBackupPhraseDescription": {
     "message": "비밀 백업 구문을 이용하면 계정을 쉽게 백업하고 복구할 수 있습니다."
@@ -1656,13 +1615,6 @@
   "selectAnAccountAlreadyConnected": {
     "message": "이 계정은 이미 MetaMask와 연결되어 있습니다."
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask에서 확인할 계정을 선택하십시오."
-  },
-  "selectAnAccountHelpDirections": {
-    "message": "계정을 찾을 수 없습니까? $1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
   "selectEachPhrase": {
     "message": "각 구문을 선택하여 구문이 올바른지 확인하세요."
   },
@@ -1690,9 +1642,6 @@
   },
   "sendTokens": {
     "message": "토큰 보내기"
-  },
-  "sentEther": {
-    "message": "Ether 보냄"
   },
   "separateEachWord": {
     "message": "공백 한 칸으로 각 단어를 구분하세요."
@@ -1866,16 +1815,9 @@
     "message": "이 스왑을 완료하려면 $1개의 추가 $2이(가) 필요합니다.",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "더 나은 견적이 있습니다."
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "$1와(과) 일치하는 토큰이 없습니다.",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCheckingQuote": {
-    "message": "$1 확인 중",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
   },
   "swapConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 확인합니다."
@@ -1899,13 +1841,6 @@
     "message": "필수이며 MetaMask에게 $1을(를) 스왑할 권한을 부여합니다.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
   },
-  "swapEstimatedNetworkFee": {
-    "message": "예상 네트워크 수수료"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "'$1'은(는) 당사가 예상하는 실제 수수료입니다. 정확한 금액은 네트워크 상태에 따라 달라집니다.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
-  },
   "swapEstimatedNetworkFees": {
     "message": "예상 네트워크 수수료"
   },
@@ -1928,9 +1863,6 @@
   "swapFetchingTokens": {
     "message": "토큰 가져오는 중..."
   },
-  "swapFinalizing": {
-    "message": "마무리 중..."
-  },
   "swapFromTo": {
     "message": "$1을(를) $2(으)로 스왑",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
@@ -1944,13 +1876,6 @@
   "swapLowSlippageError": {
     "message": "거래가 실패할 수도 있습니다. 최대 슬리패지가 너무 낮습니다."
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1”이(가) 최대 지출 금액입니다. 네트워크가 불안정한 경우 금액이 증가할 수 있습니다.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "최대 네트워크 수수료"
-  },
   "swapMaxSlippage": {
     "message": "최대 슬리패지"
   },
@@ -1960,13 +1885,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "당사는 매번 최상의 유동성 소스에서 최적의 가격을 찾습니다. 이 견적에는 $1%의 수수료가 자동으로 반영됩니다.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 견적",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "네트워크 수수료에는 스왑을 처리하고 $1 네트워크에 보관하는 비용이 포함됩니다. MetaMask는 이 수수료로 수익을 얻지 않습니다."
   },
   "swapNewQuoteIn": {
     "message": "$1의 새 견적",
@@ -2002,19 +1920,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 \"슬리패지\"라고 합니다. 슬리패지가 \"최대 슬리패지\" 설정을 초과하면 스왑이 자동으로 취소됩니다."
   },
-  "swapQuoteIncludesRate": {
-    "message": "견적에는 $1% MetaMask 요금이 포함됩니다.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "$2의 $1 견적",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "견적 소스"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "견적은 현재 시장 상황을 반영하도록 자주 갱신됩니다."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "새 견적을 요청해 최신 요율을 확인하세요."
@@ -2076,9 +1987,6 @@
   "swapSwapTo": {
     "message": "다음으로 스왑"
   },
-  "swapThisWillAllowApprove": {
-    "message": "$1이(가) 스왑될 수 있도록 허용합니다."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "하드웨어 지갑으로 확인하기 위해"
   },
@@ -2117,9 +2025,6 @@
   "swapUnknown": {
     "message": "알 수 없음"
   },
-  "swapUsingBestQuote": {
-    "message": "최고 견적을 사용 중"
-  },
   "swapVerifyTokenExplanation": {
     "message": "여러 토큰이 같은 이름과 기호를 사용할 수 있습니다. $1을(를) 확인하여 원하는 토큰인지 확인하세요.",
     "description": "This appears in a tooltip next to the verifyThisTokenOn message. It gives the user more information about why they should check the token on a block explorer. $1 will be the name or url of the block explorer, which will be the translation of 'etherscan' or a block explorer url specified for a custom network."
@@ -2152,12 +2057,6 @@
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "이 사이트가 네트워크를 전환하도록 허용하시겠어요?"
-  },
-  "switchLedgerPaths": {
-    "message": "Ledger 경로 전환"
-  },
-  "switchLedgerPathsText": {
-    "message": "다른 계정을 보려면 Ledger 경로를 선택하세요."
   },
   "switchNetwork": {
     "message": "네트워크 전환"
@@ -2228,9 +2127,6 @@
   "toAddress": {
     "message": "수신: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
-  },
-  "toWithColon": {
-    "message": "수신:"
   },
   "token": {
     "message": "토큰"
@@ -2308,10 +2204,6 @@
   "troubleTokenBalances": {
     "message": "토큰 잔액을 로드하는 도중 문제가 발생했습니다. 다음에서 잔액을 확인하세요. ",
     "description": "Followed by a link (here) to view token balances"
-  },
-  "trustSiteApprovePermission": {
-    "message": "이 사이트를 신뢰하시나요? 이 권한을 부여하면 $1에서 귀하의 $2을(를) 인출하고 거래를 자동으로 처리하게 됩니다.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
   },
   "tryAgain": {
     "message": "다시 시도"
@@ -2402,23 +2294,11 @@
   "viewMore": {
     "message": "더 보기"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1에서 보기"
-  },
-  "viewOnEtherscan": {
-    "message": "Etherscan에서 보기"
-  },
-  "viewinExplorer": {
-    "message": "탐색기에서 보기"
-  },
   "visitWebSite": {
     "message": "당사 웹사이트 방문하기"
   },
   "walletConnectionGuide": {
     "message": "당사의 하드웨어 지갑 연결 가이드"
-  },
-  "walletSeed": {
-    "message": "비밀 복구 구문"
   },
   "walletSeedRestore": {
     "message": "지갑 비밀 복구 구문"

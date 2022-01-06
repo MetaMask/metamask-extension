@@ -1,21 +1,15 @@
 import { strict as assert } from 'assert';
 import { ObservableStore } from '@metamask/obs-store';
-import { ethErrors } from 'eth-rpc-errors';
 import { normalize as normalizeAddress } from 'eth-sig-util';
 import { ethers } from 'ethers';
 import log from 'loglevel';
-import abiERC721 from 'human-standard-collectible-abi';
-import contractsMap from '@metamask/contract-metadata';
-import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens';
-import { NETWORK_TYPE_TO_ID_MAP } from '../../../shared/constants/network';
-import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import {
-  isValidHexAddress,
-  toChecksumHexAddress,
-} from '../../../shared/modules/hexstring-utils';
+  IPFS_DEFAULT_GATEWAY_URL,
+  NETWORK_TYPE_TO_ID_MAP,
+} from '../../../shared/constants/network';
+import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
+import { LEDGER_TRANSPORT_TYPES } from '../../../shared/constants/hardware-wallets';
 import { NETWORK_EVENTS } from './network';
-
-const ERC721_INTERFACE_ID = '0x80ac58cd';
 
 export default class PreferencesController {
   /**
@@ -24,9 +18,6 @@ export default class PreferencesController {
    * @param {Object} opts - Overrides the defaults for the initial state of this.store
    * @property {Object} store The stored object containing a users preferences, stored in local storage
    * @property {Array} store.frequentRpcList A list of custom rpcs to provide the user
-   * @property {Array} store.tokens The tokens the user wants display in their token lists
-   * @property {Object} store.accountTokens The tokens stored per account and then per network type
-   * @property {Object} store.assetImages Contains assets objects related to assets added
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
    * @property {Object} store.featureFlags A key-boolean map, where keys refer to features and booleans to whether the
@@ -41,17 +32,17 @@ export default class PreferencesController {
   constructor(opts = {}) {
     const initState = {
       frequentRpcListDetail: [],
-      accountTokens: {},
-      accountHiddenTokens: {},
-      assetImages: {},
-      tokens: [],
-      hiddenTokens: [],
-      suggestedTokens: {},
       useBlockie: false,
       useNonceField: false,
       usePhishDetect: true,
       dismissSeedBackUpReminder: false,
-      useStaticTokenList: false,
+
+      // set to true means the dynamic list from the API is being used
+      // set to false will be using the static list from contract-metadata
+      useTokenDetection: false,
+      useCollectibleDetection: false,
+      openSeaEnabled: false,
+      advancedGasFee: null,
 
       // WARNING: Do not use feature flags for security-sensitive things.
       // Feature flag toggling is available in the global namespace
@@ -61,7 +52,6 @@ export default class PreferencesController {
         showIncomingTransactions: true,
       },
       knownMethodData: {},
-      firstTimeFlowType: null,
       currentLocale: opts.initLangCode,
       identities: {},
       lostIdentities: {},
@@ -69,14 +59,16 @@ export default class PreferencesController {
       preferences: {
         autoLockTimeLimit: undefined,
         showFiatInTestnets: false,
+        showTestNetworks: false,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
       },
-      completedOnboarding: false,
       // ENS decentralized website resolution
-      ipfsGateway: 'dweb.link',
+      ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       infuraBlocked: null,
-      useLedgerLive: false,
+      ledgerTransportType: window.navigator.hid
+        ? LEDGER_TRANSPORT_TYPES.WEBHID
+        : LEDGER_TRANSPORT_TYPES.U2F,
       ...opts.initState,
     };
 
@@ -86,12 +78,6 @@ export default class PreferencesController {
     this.store.setMaxListeners(12);
     this.openPopup = opts.openPopup;
     this.migrateAddressBookState = opts.migrateAddressBookState;
-
-    this.network.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-      const { tokens, hiddenTokens } = this._getTokenRelatedStates();
-      this.ethersProvider = new ethers.providers.Web3Provider(opts.provider);
-      this._updateAccountTokens(tokens, this.getAssetImages(), hiddenTokens);
-    });
 
     this._subscribeToInfuraAvailability();
 
@@ -140,31 +126,52 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `useStaticTokenList` property
+   * Setter for the `useTokenDetection` property
    *
    * @param {boolean} val - Whether or not the user prefers to use the static token list or dynamic token list from the API
    *
    */
-  setUseStaticTokenList(val) {
-    this.store.updateState({ useStaticTokenList: val });
+  setUseTokenDetection(val) {
+    this.store.updateState({ useTokenDetection: val });
   }
 
   /**
-   * Setter for the `firstTimeFlowType` property
+   * Setter for the `useCollectibleDetection` property
    *
-   * @param {string} type - Indicates the type of first time flow - create or import - the user wishes to follow
+   * @param {boolean} val - Whether or not the user prefers to autodetect collectibles.
    *
    */
-  setFirstTimeFlowType(type) {
-    this.store.updateState({ firstTimeFlowType: type });
+  setUseCollectibleDetection(val) {
+    const { openSeaEnabled } = this.store.getState();
+    if (val && !openSeaEnabled) {
+      throw new Error(
+        'useCollectibleDetection cannot be enabled if openSeaEnabled is false',
+      );
+    }
+    this.store.updateState({ useCollectibleDetection: val });
   }
 
-  getSuggestedTokens() {
-    return this.store.getState().suggestedTokens;
+  /**
+   * Setter for the `openSeaEnabled` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to use the OpenSea API for collectibles data.
+   *
+   */
+  setOpenSeaEnabled(val) {
+    this.store.updateState({ openSeaEnabled: val });
+    if (!val) {
+      this.store.updateState({ useCollectibleDetection: false });
+    }
   }
 
-  getAssetImages() {
-    return this.store.getState().assetImages;
+  /**
+   * Setter for the `advancedGasFee` property
+   *
+   * @param {object} val - holds the maxBaseFee and PriorityFee that the user set as default advanced settings.
+   *
+   */
+  setAdvancedGasFee(val) {
+    this.store.updateState({ advancedGasFee: val });
   }
 
   /**
@@ -177,24 +184,6 @@ export default class PreferencesController {
     const { knownMethodData } = this.store.getState();
     knownMethodData[fourBytePrefix] = methodData;
     this.store.updateState({ knownMethodData });
-  }
-
-  /**
-   * wallet_watchAsset request handler.
-   *
-   * @param {Object} req - The watchAsset JSON-RPC request object.
-   */
-  async requestWatchAsset(req) {
-    const { type, options } = req.params;
-
-    switch (type) {
-      case 'ERC20':
-        return await this._handleWatchAssetERC20(options);
-      default:
-        throw ethErrors.rpc.invalidParams(
-          `Asset of type "${type}" not supported.`,
-        );
-    }
   }
 
   /**
@@ -223,25 +212,14 @@ export default class PreferencesController {
    */
   setAddresses(addresses) {
     const oldIdentities = this.store.getState().identities;
-    const oldAccountTokens = this.store.getState().accountTokens;
-    const oldAccountHiddenTokens = this.store.getState().accountHiddenTokens;
 
     const identities = addresses.reduce((ids, address, index) => {
       const oldId = oldIdentities[address] || {};
       ids[address] = { name: `Account ${index + 1}`, address, ...oldId };
       return ids;
     }, {});
-    const accountTokens = addresses.reduce((tokens, address) => {
-      const oldTokens = oldAccountTokens[address] || {};
-      tokens[address] = oldTokens;
-      return tokens;
-    }, {});
-    const accountHiddenTokens = addresses.reduce((hiddenTokens, address) => {
-      const oldHiddenTokens = oldAccountHiddenTokens[address] || {};
-      hiddenTokens[address] = oldHiddenTokens;
-      return hiddenTokens;
-    }, {});
-    this.store.updateState({ identities, accountTokens, accountHiddenTokens });
+
+    this.store.updateState({ identities });
   }
 
   /**
@@ -251,19 +229,13 @@ export default class PreferencesController {
    * @returns {string} the address that was removed
    */
   removeAddress(address) {
-    const {
-      identities,
-      accountTokens,
-      accountHiddenTokens,
-    } = this.store.getState();
+    const { identities } = this.store.getState();
 
     if (!identities[address]) {
       throw new Error(`${address} can't be deleted cause it was not found`);
     }
     delete identities[address];
-    delete accountTokens[address];
-    delete accountHiddenTokens[address];
-    this.store.updateState({ identities, accountTokens, accountHiddenTokens });
+    this.store.updateState({ identities });
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
@@ -281,11 +253,7 @@ export default class PreferencesController {
    *
    */
   addAddresses(addresses) {
-    const {
-      identities,
-      accountTokens,
-      accountHiddenTokens,
-    } = this.store.getState();
+    const { identities } = this.store.getState();
     addresses.forEach((address) => {
       // skip if already exists
       if (identities[address]) {
@@ -294,11 +262,9 @@ export default class PreferencesController {
       // add missing identity
       const identityCount = Object.keys(identities).length;
 
-      accountTokens[address] = {};
-      accountHiddenTokens[address] = {};
       identities[address] = { name: `Account ${identityCount + 1}`, address };
     });
-    this.store.updateState({ identities, accountTokens, accountHiddenTokens });
+    this.store.updateState({ identities });
   }
 
   /**
@@ -345,25 +311,16 @@ export default class PreferencesController {
     return selected;
   }
 
-  removeSuggestedTokens() {
-    return new Promise((resolve) => {
-      this.store.updateState({ suggestedTokens: {} });
-      resolve({});
-    });
-  }
-
   /**
    * Setter for the `selectedAddress` property
    *
    * @param {string} _address - A new hex address for an account
-   * @returns {Promise<void>} Promise resolves with tokens
    *
    */
   setSelectedAddress(_address) {
     const address = normalizeAddress(_address);
-    this._updateTokens(address);
 
-    const { identities, tokens } = this.store.getState();
+    const { identities } = this.store.getState();
     const selectedIdentity = identities[address];
     if (!selectedIdentity) {
       throw new Error(`Identity for '${address} not found`);
@@ -371,7 +328,6 @@ export default class PreferencesController {
 
     selectedIdentity.lastSelected = Date.now();
     this.store.updateState({ identities, selectedAddress: address });
-    return Promise.resolve(tokens);
   }
 
   /**
@@ -382,99 +338,6 @@ export default class PreferencesController {
    */
   getSelectedAddress() {
     return this.store.getState().selectedAddress;
-  }
-
-  /**
-   * Contains data about tokens users add to their account.
-   * @typedef {Object} AddedToken
-   * @property {string} address - The hex address for the token contract. Will be all lower cased and hex-prefixed.
-   * @property {string} symbol - The symbol of the token, usually 3 or 4 capitalized letters
-   *  {@link https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md#symbol}
-   * @property {boolean} decimals - The number of decimals the token uses.
-   *  {@link https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md#decimals}
-   */
-
-  /**
-   * Adds a new token to the token array and removes it from the hiddenToken array, or updates the token if passed an address that already exists.
-   * Modifies the existing tokens array from the store. All objects in the tokens array array AddedToken objects.
-   * @see AddedToken {@link AddedToken}
-   *
-   * @param {string} rawAddress - Hex address of the token contract. May or may not be a checksum address.
-   * @param {string} symbol - The symbol of the token
-   * @param {number} decimals - The number of decimals the token uses.
-   * @returns {Promise<array>} Promises the new array of AddedToken objects.
-   *
-   */
-  async addToken(rawAddress, symbol, decimals, image) {
-    const address = normalizeAddress(rawAddress);
-    const newEntry = { address, symbol, decimals: Number(decimals) };
-    const { tokens, hiddenTokens } = this.store.getState();
-    const assetImages = this.getAssetImages();
-    const updatedHiddenTokens = hiddenTokens.filter(
-      (tokenAddress) => tokenAddress !== rawAddress.toLowerCase(),
-    );
-    const previousEntry = tokens.find((token) => {
-      return token.address === address;
-    });
-    const previousIndex = tokens.indexOf(previousEntry);
-
-    newEntry.isERC721 = await this._detectIsERC721(newEntry.address);
-
-    if (previousEntry) {
-      tokens[previousIndex] = newEntry;
-    } else {
-      tokens.push(newEntry);
-    }
-    assetImages[address] = image;
-    this._updateAccountTokens(tokens, assetImages, updatedHiddenTokens);
-    return Promise.resolve(tokens);
-  }
-
-  /**
-   * Adds isERC721 field to token object
-   * (Called when a user attempts to add tokens that were previously added which do not yet had isERC721 field)
-   *
-   * @param {string} tokenAddress - The contract address of the token requiring the isERC721 field added.
-   * @returns {Promise<object>} The new token object with the added isERC721 field.
-   *
-   */
-  async updateTokenType(tokenAddress) {
-    const { tokens } = this.store.getState();
-    const tokenIndex = tokens.findIndex((token) => {
-      return token.address === tokenAddress;
-    });
-    tokens[tokenIndex].isERC721 = await this._detectIsERC721(tokenAddress);
-    this.store.updateState({ tokens });
-    return Promise.resolve(tokens[tokenIndex]);
-  }
-
-  /**
-   * Removes a specified token from the tokens array and adds it to hiddenTokens array
-   *
-   * @param {string} rawAddress - Hex address of the token contract to remove.
-   * @returns {Promise<array>} The new array of AddedToken objects
-   *
-   */
-  removeToken(rawAddress) {
-    const { tokens, hiddenTokens } = this.store.getState();
-    const assetImages = this.getAssetImages();
-    const updatedTokens = tokens.filter(
-      (token) => token.address !== rawAddress,
-    );
-    const updatedHiddenTokens = [...hiddenTokens, rawAddress.toLowerCase()];
-    delete assetImages[rawAddress];
-    this._updateAccountTokens(updatedTokens, assetImages, updatedHiddenTokens);
-    return Promise.resolve(updatedTokens);
-  }
-
-  /**
-   * A getter for the `tokens` property
-   *
-   * @returns {Array} The current array of AddedToken objects
-   *
-   */
-  getTokens() {
-    return this.store.getState().tokens;
   }
 
   /**
@@ -684,15 +547,6 @@ export default class PreferencesController {
   }
 
   /**
-   * Sets the completedOnboarding state to true, indicating that the user has completed the
-   * onboarding process.
-   */
-  completeOnboarding() {
-    this.store.updateState({ completedOnboarding: true });
-    return Promise.resolve(true);
-  }
-
-  /**
    * A getter for the `ipfsGateway` property
    * @returns {string} The current IPFS gateway domain
    */
@@ -711,21 +565,21 @@ export default class PreferencesController {
   }
 
   /**
-   * A setter for the `useLedgerLive` property
-   * @param {bool} useLedgerLive - Value for ledger live support
-   * @returns {Promise<string>} A promise of the update to useLedgerLive
+   * A setter for the `useWebHid` property
+   * @param {string} ledgerTransportType - Either 'ledgerLive', 'webhid' or 'u2f'
+   * @returns {string} The transport type that was set.
    */
-  async setLedgerLivePreference(useLedgerLive) {
-    this.store.updateState({ useLedgerLive });
-    return useLedgerLive;
+  setLedgerTransportPreference(ledgerTransportType) {
+    this.store.updateState({ ledgerTransportType });
+    return ledgerTransportType;
   }
 
   /**
-   * A getter for the `useLedgerLive` property
-   * @returns {boolean} User preference of using Ledger Live
+   * A getter for the `ledgerTransportType` property
+   * @returns {boolean} User preference of using WebHid to connect Ledger
    */
-  getLedgerLivePreference() {
-    return this.store.getState().useLedgerLive;
+  getLedgerTransportPreference() {
+    return this.store.getState().ledgerTransportType;
   }
 
   /**
@@ -766,189 +620,5 @@ export default class PreferencesController {
     }
 
     this.store.updateState({ infuraBlocked: isBlocked });
-  }
-
-  /**
-   * Updates `accountTokens`, `tokens`, `accountHiddenTokens` and `hiddenTokens` of current account and network according to it.
-   *
-   * @param {array} tokens - Array of tokens to be updated.
-   * @param {array} assetImages - Array of assets objects related to assets added
-   * @param {array} hiddenTokens - Array of tokens hidden by user
-   *
-   */
-  _updateAccountTokens(tokens, assetImages, hiddenTokens) {
-    const {
-      accountTokens,
-      chainId,
-      selectedAddress,
-      accountHiddenTokens,
-    } = this._getTokenRelatedStates();
-    accountTokens[selectedAddress][chainId] = tokens;
-    accountHiddenTokens[selectedAddress][chainId] = hiddenTokens;
-    this.store.updateState({
-      accountTokens,
-      tokens,
-      assetImages,
-      accountHiddenTokens,
-      hiddenTokens,
-    });
-  }
-
-  /**
-   * Detects whether or not a token is ERC-721 compatible.
-   *
-   * @param {string} tokensAddress - the token contract address.
-   *
-   */
-  async _detectIsERC721(tokenAddress) {
-    const checksumAddress = toChecksumHexAddress(tokenAddress);
-    // if this token is already in our contract metadata map we don't need
-    // to check against the contract
-    if (contractsMap[checksumAddress]?.erc721 === true) {
-      return Promise.resolve(true);
-    }
-    const tokenContract = await this._createEthersContract(
-      tokenAddress,
-      abiERC721,
-      this.ethersProvider,
-    );
-
-    return await tokenContract
-      .supportsInterface(ERC721_INTERFACE_ID)
-      .catch((error) => {
-        log.debug(error);
-        return false;
-      });
-  }
-
-  async _createEthersContract(tokenAddress, abi, ethersProvider) {
-    const tokenContract = await new ethers.Contract(
-      tokenAddress,
-      abi,
-      ethersProvider,
-    );
-    return tokenContract;
-  }
-
-  /**
-   * Updates `tokens` and `hiddenTokens` of current account and network.
-   *
-   * @param {string} selectedAddress - Account address to be updated with.
-   *
-   */
-  _updateTokens(selectedAddress) {
-    const { tokens, hiddenTokens } = this._getTokenRelatedStates(
-      selectedAddress,
-    );
-    this.store.updateState({ tokens, hiddenTokens });
-  }
-
-  /**
-   * A getter for `tokens`, `accountTokens`, `hiddenTokens` and `accountHiddenTokens` related states.
-   *
-   * @param {string} [selectedAddress] - A new hex address for an account
-   * @returns {Object.<array, object, string, string>} States to interact with tokens in `accountTokens`
-   *
-   */
-  _getTokenRelatedStates(selectedAddress) {
-    const { accountTokens, accountHiddenTokens } = this.store.getState();
-    if (!selectedAddress) {
-      // eslint-disable-next-line no-param-reassign
-      selectedAddress = this.store.getState().selectedAddress;
-    }
-    const chainId = this.network.getCurrentChainId();
-    if (!(selectedAddress in accountTokens)) {
-      accountTokens[selectedAddress] = {};
-    }
-    if (!(selectedAddress in accountHiddenTokens)) {
-      accountHiddenTokens[selectedAddress] = {};
-    }
-    if (!(chainId in accountTokens[selectedAddress])) {
-      accountTokens[selectedAddress][chainId] = [];
-    }
-    if (!(chainId in accountHiddenTokens[selectedAddress])) {
-      accountHiddenTokens[selectedAddress][chainId] = [];
-    }
-    const tokens = accountTokens[selectedAddress][chainId];
-    const hiddenTokens = accountHiddenTokens[selectedAddress][chainId];
-    return {
-      tokens,
-      accountTokens,
-      hiddenTokens,
-      accountHiddenTokens,
-      chainId,
-      selectedAddress,
-    };
-  }
-
-  /**
-   * Handle the suggestion of an ERC20 asset through `watchAsset`
-   * *
-   * @param {Object} tokenMetadata - Token metadata
-   *
-   */
-  async _handleWatchAssetERC20(tokenMetadata) {
-    this._validateERC20AssetParams(tokenMetadata);
-
-    const address = normalizeAddress(tokenMetadata.address);
-    const { symbol, decimals, image } = tokenMetadata;
-    this._addSuggestedERC20Asset(address, symbol, decimals, image);
-
-    await this.openPopup();
-    const tokenAddresses = this.getTokens().filter(
-      (token) => token.address === address,
-    );
-    return tokenAddresses.length > 0;
-  }
-
-  /**
-   * Validates that the passed options for suggested token have all required properties.
-   *
-   * @param {Object} opts - The options object to validate
-   * @throws {string} Throw a custom error indicating that address, symbol and/or decimals
-   * doesn't fulfill requirements
-   *
-   */
-  _validateERC20AssetParams({ address, symbol, decimals }) {
-    if (!address || !symbol || typeof decimals === 'undefined') {
-      throw ethErrors.rpc.invalidParams(
-        `Must specify address, symbol, and decimals.`,
-      );
-    }
-    if (typeof symbol !== 'string') {
-      throw ethErrors.rpc.invalidParams(`Invalid symbol: not a string.`);
-    }
-    if (!(symbol.length > 0)) {
-      throw ethErrors.rpc.invalidParams(
-        `Invalid symbol "${symbol}": shorter than a character.`,
-      );
-    }
-    if (!(symbol.length < 12)) {
-      throw ethErrors.rpc.invalidParams(
-        `Invalid symbol "${symbol}": longer than 11 characters.`,
-      );
-    }
-    const numDecimals = parseInt(decimals, 10);
-    if (isNaN(numDecimals) || numDecimals > 36 || numDecimals < 0) {
-      throw ethErrors.rpc.invalidParams(
-        `Invalid decimals "${decimals}": must be 0 <= 36.`,
-      );
-    }
-    if (!isValidHexAddress(address, { allowNonPrefixed: false })) {
-      throw ethErrors.rpc.invalidParams(`Invalid address "${address}".`);
-    }
-  }
-
-  _addSuggestedERC20Asset(address, symbol, decimals, image) {
-    const newEntry = {
-      address,
-      symbol,
-      decimals,
-      image,
-      unlisted: !LISTED_CONTRACT_ADDRESSES.includes(address),
-    };
-    const suggested = this.getSuggestedTokens();
-    suggested[address] = newEntry;
-    this.store.updateState({ suggestedTokens: suggested });
   }
 }

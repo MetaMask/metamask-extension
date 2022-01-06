@@ -64,9 +64,6 @@
   "addToken": {
     "message": "Aggiungi Token"
   },
-  "addTokens": {
-    "message": "Aggiungi token"
-  },
   "advanced": {
     "message": "Avanzate"
   },
@@ -106,10 +103,6 @@
   "allowExternalExtensionTo": {
     "message": "Permetti a questa estensione di:"
   },
-  "allowOriginSpendToken": {
-    "message": "Vuoi consentire a $1 di spendere $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "Permetti a questo sito di:"
   },
@@ -120,9 +113,6 @@
   "amount": {
     "message": "Importo"
   },
-  "amountWithColon": {
-    "message": "Importo:"
-  },
   "appDescription": {
     "message": "Ethereum Browser Extension",
     "description": "The description of the application"
@@ -130,6 +120,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approvalAndAggregatorTxFeeCost": {
     "message": "Tassa di approvazione per la rete aggregatore"
@@ -366,9 +364,6 @@
   "copiedExclamation": {
     "message": "Copiato!"
   },
-  "copiedTransactionId": {
-    "message": "ID Transazione Copiato"
-  },
   "copyAddress": {
     "message": "Copia l'indirizzo"
   },
@@ -411,9 +406,6 @@
   "customGasSubTitle": {
     "message": "Incrementare il costo potrebbe diminuire il tempo di elaborazione, ma non è garantito."
   },
-  "customRPC": {
-    "message": "RPC Personalizzata"
-  },
   "customSpendLimit": {
     "message": "Limite Spesa Personalizzato"
   },
@@ -448,9 +440,6 @@
   },
   "decryptRequest": {
     "message": "Decifra richiesta"
-  },
-  "defaultNetwork": {
-    "message": "La rete predefinita per transazioni in Ether è la Rete Ethereum Principale."
   },
   "delete": {
     "message": "Elimina"
@@ -875,7 +864,7 @@
   "letsGoSetUp": {
     "message": "Si, iniziamo!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Vorresti aggiungere questi token?"
   },
   "links": {
@@ -1010,9 +999,6 @@
   "newContract": {
     "message": "Nuovo Contratto"
   },
-  "newNetwork": {
-    "message": "Nuova Rete"
-  },
   "newPassword": {
     "message": "Nuova Password (minimo 8 caratteri)"
   },
@@ -1093,17 +1079,8 @@
   "onlyAddTrustedNetworks": {
     "message": "Una rete malevola può mentire sullo stato della blockchain e registrare le tue azioni. Aggiungi solo reti fidate."
   },
-  "onlyAvailableOnMainnet": {
-    "message": "Disponibile solo nella rete principale"
-  },
   "onlyConnectTrust": {
     "message": "Connettiti solo con siti di cui ti fidi."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL del Block Explorer (opzionale)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolo (opzionale)"
   },
   "origin": {
     "message": "Origine"
@@ -1132,12 +1109,6 @@
   },
   "pending": {
     "message": "in corso"
-  },
-  "permissionCheckedIconDescription": {
-    "message": "Hai approvato questo permesso"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Non hai approvato questo permesso"
   },
   "permissions": {
     "message": "Permessi"
@@ -1259,9 +1230,6 @@
   "revealSeedWordsDescription": {
     "message": "Se cambierai browser o computer, ti servirà questa frase seed per accedere ai tuoi account. Salvala in un posto sicuro e segreto."
   },
-  "revealSeedWordsTitle": {
-    "message": "Frase Seed"
-  },
   "revealSeedWordsWarning": {
     "message": "Non ripristinare la tua frase seed in pubblico!. Queste parole possono essere usate per rubare il tuo account."
   },
@@ -1304,9 +1272,6 @@
   "searchTokens": {
     "message": "Cerca Tokens"
   },
-  "secretBackupPhrase": {
-    "message": "Frase di Backup Segreta"
-  },
   "secretBackupPhraseDescription": {
     "message": "La tua frase di backup segreta rende facile fare il backup e ripristinare il tuo account."
   },
@@ -1340,9 +1305,6 @@
   "selectAnAccount": {
     "message": "Seleziona un Account"
   },
-  "selectAnAccountHelp": {
-    "message": "Selezione l'account da visualizzare in MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Per favore seleziona ogni frase in ordine per assicurarti che sia corretta."
   },
@@ -1370,9 +1332,6 @@
   },
   "sendTokens": {
     "message": "Invia Tokens"
-  },
-  "sentEther": {
-    "message": "ether inviati"
   },
   "separateEachWord": {
     "message": "Separa ogni parola con un solo spazio"
@@ -1518,16 +1477,9 @@
     "message": "Devi avere $1 $2 in più per completare lo scambio",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "È disponibile una quotazione migliore"
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "Non ci sono token disponibile con questo nome $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCheckingQuote": {
-    "message": "Verificando $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
   },
   "swapCustom": {
     "message": "personalizza"
@@ -1541,13 +1493,6 @@
   "swapEnableDescription": {
     "message": "Questo è richiesto e darà a MetaMask il permesso di scambiare $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFee": {
-    "message": "Tassa di rete stimata"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "La “$1” è ciò che ci aspettiamo possa essere la tassa reale. L'importo esatto dipende dalle condizioni della rete.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "Tasse di rete stimate"
@@ -1567,18 +1512,8 @@
   "swapFetchingTokens": {
     "message": "Recuperando i token..."
   },
-  "swapFinalizing": {
-    "message": "Finalizzando..."
-  },
   "swapLowSlippageError": {
     "message": "La transazione può fallire, il massimo slippage è troppo basso."
-  },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1” è il massimo che spenderai. Quando la rete è volatile può essere un importo alto.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "Tassa di rete massima"
   },
   "swapMaxSlippage": {
     "message": "Slippage massimo"
@@ -1589,13 +1524,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 quotazioni",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "La tassa di rete copre il costo di processamento dello scambio e della memorizzazione nella rete $1. MetaMask non trae profitto da questa tassa."
   },
   "swapNewQuoteIn": {
     "message": "Nuove quotazioni in $1",
@@ -1622,19 +1550,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "Si chiama \"slippage\" la differenza tra il prezzo quando il tuo ordine viene inserito e quando viene confermato. Lo scambio sarà annullato automaticamente se lo slippage supera il \"massimo slippage\" impostato."
   },
-  "swapQuoteIncludesRate": {
-    "message": "La quotazione include la tassa del $1% di MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "Quotazione $1 di $2",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Sorgente della quota"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "Le quotazioni sono aggiornate spesso per riflettere le condizioni di mercato correnti."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Richiedi nuove quotazioni per ottenere le ultime tariffe."
@@ -1693,9 +1614,6 @@
   "swapSwapTo": {
     "message": "Scambia a"
   },
-  "swapThisWillAllowApprove": {
-    "message": "Questo permetterà di scambiare $1."
-  },
   "swapTokenAvailable": {
     "message": "I $1 sono stati aggiunti al tuo account.",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
@@ -1720,9 +1638,6 @@
   },
   "swapUnknown": {
     "message": "Sconosciuto"
-  },
-  "swapUsingBestQuote": {
-    "message": "Quotazione migliore"
   },
   "swapVerifyTokenExplanation": {
     "message": "Più token possono usare lo stesso nome e simbolo. Verifica su $1 che questo sia il token che stai cercando.",
@@ -1815,9 +1730,6 @@
     "message": "A: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "To:"
-  },
   "token": {
     "message": "Token"
   },
@@ -1889,10 +1801,6 @@
     "message": "Abbiamo avuto un problema a caricare il bilancio dei tuoi token. Puoi vederlo ",
     "description": "Followed by a link (here) to view token balances"
   },
-  "trustSiteApprovePermission": {
-    "message": "Ti fidi di questo sito? Autorizzandolo, stai consentendo a $1 di ritirare i tuoi $2 e automatizzare transazioni per te.",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
-  },
   "tryAgain": {
     "message": "Prova di nuovo"
   },
@@ -1963,23 +1871,11 @@
   "viewContact": {
     "message": "Visualizza contatto"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vedi su $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Vedi su Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Vista in Explorer"
-  },
   "visitWebSite": {
     "message": "Visita il nostro sito web"
   },
   "walletConnectionGuide": {
     "message": "la nostra guida al collegamento del portafoglio hardware"
-  },
-  "walletSeed": {
-    "message": "Seed del Portafoglio"
   },
   "web3ShimUsageNotification": {
     "message": "Abbiamo notato che il sito corrente ha provato ad usare la API window.web3 rimossa. Se il sito ti sembra non funzionare, clicca $1 per più informazioni.",

@@ -30,9 +30,9 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        await driver.findElement('.settings-page__sub-header-text');
+        await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const networkNameInput = customRpcInputs[0];
@@ -48,8 +48,11 @@ describe('Stores custom RPC history', function () {
         await chainIdInput.clear();
         await chainIdInput.sendKeys(chainId.toString());
 
-        await driver.clickElement('.network-form__footer .btn-secondary');
-        await driver.findElement({ text: networkName, tag: 'div' });
+        await driver.clickElement(
+          '.networks-tab__add-network-form-footer .btn-primary',
+        );
+
+        await driver.findElement({ text: networkName, tag: 'span' });
       },
     );
   });
@@ -71,9 +74,9 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        await driver.findElement('.settings-page__sub-header-text');
+        await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
@@ -82,7 +85,7 @@ describe('Stores custom RPC history', function () {
         await rpcUrlInput.sendKeys(duplicateRpcUrl);
         await driver.findElement({
           text: 'This URL is currently used by the Localhost 8545 network.',
-          tag: 'p',
+          tag: 'h6',
         });
       },
     );
@@ -106,9 +109,9 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        await driver.findElement('.settings-page__sub-header-text');
+        await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
         const rpcUrlInput = customRpcInputs[1];
@@ -122,7 +125,7 @@ describe('Stores custom RPC history', function () {
         await driver.findElement({
           text:
             'This Chain ID is currently used by the Localhost 8545 network.',
-          tag: 'p',
+          tag: 'h6',
         });
       },
     );
@@ -189,10 +192,13 @@ describe('Stores custom RPC history', function () {
 
         await driver.clickElement('.network-display');
 
-        await driver.clickElement({ text: 'Custom RPC', tag: 'span' });
+        await driver.clickElement({ text: 'Add Network', tag: 'button' });
 
-        // cancel new custom rpc
-        await driver.clickElement('.network-form__footer button.btn-default');
+        await driver.findVisibleElement('.settings-page__content');
+        // // cancel new custom rpc
+        await driver.clickElement(
+          '.networks-tab__add-network-form-footer button.btn-secondary',
+        );
 
         const networkListItems = await driver.findClickableElements(
           '.networks-tab__networks-list-name',
@@ -209,7 +215,7 @@ describe('Stores custom RPC history', function () {
         );
 
         await driver.clickElement(
-          '.button.btn-danger.modal-container__footer-button',
+          '.button.btn-danger-primary.modal-container__footer-button',
         );
 
         // wait for confirm delete modal to be removed from DOM.

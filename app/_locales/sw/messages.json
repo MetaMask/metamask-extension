@@ -50,9 +50,6 @@
   "addToken": {
     "message": "Ongeza Kianzio"
   },
-  "addTokens": {
-    "message": "Ongeza Vianzio"
-  },
   "advanced": {
     "message": "Mipangilio ya kina"
   },
@@ -72,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Idhinisha"
@@ -215,9 +220,6 @@
   "copiedExclamation": {
     "message": "Imenakiliwa!"
   },
-  "copiedTransactionId": {
-    "message": "Imenakili Utambulisho wa Muamala"
-  },
   "copyAddress": {
     "message": "Nakili anwani kwenye ubao wa kunakilia"
   },
@@ -254,9 +256,6 @@
   "customGasSubTitle": {
     "message": "Ada iliyoongezeka inaweza kupunguza muda wa uchakataji, lakini haihakikishwi."
   },
-  "customRPC": {
-    "message": "RPC Maalumu"
-  },
   "customToken": {
     "message": "Kianzio Maalumu"
   },
@@ -265,9 +264,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desimali zinapaswa kuwa angalau 0, na si zaidi ya 36."
-  },
-  "defaultNetwork": {
-    "message": "Mtandao chaguomsingi wa miamala ya Ether ni Main Net."
   },
   "delete": {
     "message": "Futa"
@@ -527,7 +523,7 @@
   "letsGoSetUp": {
     "message": "Ndiyo, hebu tuweke mipangilio!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
   },
   "links": {
@@ -604,9 +600,6 @@
   "newContract": {
     "message": "Mkataba Mpya"
   },
-  "newNetwork": {
-    "message": "Mtandao Mpya"
-  },
   "newPassword": {
     "message": "Nenosiri Jipya (kiwango cha chini herufi 8)"
   },
@@ -654,12 +647,6 @@
   },
   "on": {
     "message": "Imewashwa"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL ya Block Explorer URL (hiari)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Ishara (hiari)"
   },
   "origin": {
     "message": "Asili"
@@ -780,9 +767,6 @@
   "revealSeedWordsDescription": {
     "message": "Ikiwa utabadilisha kisakuzi au kuhamisha kompyuta, utahitaji kirai hiki kianzio ili kufikia akaunti zako. Vihifadhi mahali fulani ambapo ni salamana pa siri."
   },
-  "revealSeedWordsTitle": {
-    "message": "Kiari Kianzio"
-  },
   "revealSeedWordsWarning": {
     "message": "Maneno haya yanaweza kutumika kuiba akanti zako zote."
   },
@@ -819,9 +803,6 @@
   "searchTokens": {
     "message": "Tafuta Vianzio"
   },
-  "secretBackupPhrase": {
-    "message": "Kirai cha Siri cha Hifadhi Mbadala"
-  },
   "secretBackupPhraseDescription": {
     "message": "Kirai chako cha siri cha hifadhi mbadala kinafanya iwe rahisi kuhifadhi kwa njia mbadala na kurejesha akaunti yako."
   },
@@ -846,9 +827,6 @@
   "selectAnAccount": {
     "message": "Chagua Akaunti"
   },
-  "selectAnAccountHelp": {
-    "message": "Chagua akaunti kuangalia kwenye MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Tafadhali chagua kila kirai ili kuhakikisha kuwa hii ni sahihi."
   },
@@ -869,9 +847,6 @@
   },
   "sendTokens": {
     "message": "Tuma Vianzio"
-  },
-  "sentEther": {
-    "message": "ether iliyotumwa"
   },
   "separateEachWord": {
     "message": "Tenganisha kila neno kwa nafasi moja"
@@ -1111,20 +1086,8 @@
   "viewContact": {
     "message": "Tazama Mawasiliano"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tazama kwenye $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Tazama kwenye Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Tazama kwenye Explorer"
-  },
   "visitWebSite": {
     "message": "Tembelea Tovuti yetu"
-  },
-  "walletSeed": {
-    "message": "Kianzio cha Waleti"
   },
   "welcome": {
     "message": "Karibu kwenye MetaMask"

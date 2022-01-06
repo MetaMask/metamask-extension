@@ -104,7 +104,7 @@ class PrivateKeyImportView extends Component {
         </div>
         <div className="new-account-import-form__buttons">
           <Button
-            type="default"
+            type="secondary"
             large
             className="new-account-create-form__button"
             onClick={() => {
@@ -116,7 +116,7 @@ class PrivateKeyImportView extends Component {
             {this.context.t('cancel')}
           </Button>
           <Button
-            type="secondary"
+            type="primary"
             large
             className="new-account-create-form__button"
             onClick={() => this.createNewKeychain()}

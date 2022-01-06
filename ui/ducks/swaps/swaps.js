@@ -85,7 +85,12 @@ const initialState = {
   balanceError: false,
   fetchingQuotes: false,
   fromToken: null,
+  fromTokenInputValue: '',
+  fromTokenError: null,
+  isFeatureFlagLoaded: false,
+  maxSlippage: 3,
   quotesFetchStartTime: null,
+  reviewSwapClickedTimestamp: null,
   topAssets: {},
   toToken: null,
   customGas: {
@@ -127,8 +132,23 @@ const slice = createSlice({
     setFromToken: (state, action) => {
       state.fromToken = action.payload;
     },
+    setFromTokenInputValue: (state, action) => {
+      state.fromTokenInputValue = action.payload;
+    },
+    setFromTokenError: (state, action) => {
+      state.fromTokenError = action.payload;
+    },
+    setIsFeatureFlagLoaded: (state, action) => {
+      state.isFeatureFlagLoaded = action.payload;
+    },
+    setMaxSlippage: (state, action) => {
+      state.maxSlippage = action.payload;
+    },
     setQuotesFetchStartTime: (state, action) => {
       state.quotesFetchStartTime = action.payload;
+    },
+    setReviewSwapClickedTimestamp: (state, action) => {
+      state.reviewSwapClickedTimestamp = action.payload;
     },
     setTopAssets: (state, action) => {
       state.topAssets = action.payload;
@@ -174,6 +194,16 @@ export const getBalanceError = (state) => state.swaps.balanceError;
 
 export const getFromToken = (state) => state.swaps.fromToken;
 
+export const getFromTokenError = (state) => state.swaps.fromTokenError;
+
+export const getFromTokenInputValue = (state) =>
+  state.swaps.fromTokenInputValue;
+
+export const getIsFeatureFlagLoaded = (state) =>
+  state.swaps.isFeatureFlagLoaded;
+
+export const getMaxSlippage = (state) => state.swaps.maxSlippage;
+
 export const getTopAssets = (state) => state.swaps.topAssets;
 
 export const getToToken = (state) => state.swaps.toToken;
@@ -182,6 +212,9 @@ export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes;
 
 export const getQuotesFetchStartTime = (state) =>
   state.swaps.quotesFetchStartTime;
+
+export const getReviewSwapClickedTimestamp = (state) =>
+  state.swaps.reviewSwapClickedTimestamp;
 
 export const getSwapsCustomizationModalPrice = (state) =>
   state.swaps.customGas.price;
@@ -230,11 +263,11 @@ const getSwapsState = (state) => state.metamask.swapsState;
 export const getSwapsFeatureIsLive = (state) =>
   state.metamask.swapsState.swapsFeatureIsLive;
 
-export const getUseNewSwapsApi = (state) =>
-  state.metamask.swapsState.useNewSwapsApi;
-
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
+
+export const getSwapsQuotePrefetchingRefreshTime = (state) =>
+  state.metamask.swapsState.swapsQuotePrefetchingRefreshTime;
 
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState;
@@ -322,7 +355,12 @@ const {
   setBalanceError,
   setFetchingQuotes,
   setFromToken,
+  setFromTokenError,
+  setFromTokenInputValue,
+  setIsFeatureFlagLoaded,
+  setMaxSlippage,
   setQuotesFetchStartTime,
+  setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken,
   swapCustomGasModalPriceEdited,
@@ -337,7 +375,12 @@ export {
   setBalanceError,
   setFetchingQuotes,
   setFromToken as setSwapsFromToken,
+  setFromTokenError,
+  setFromTokenInputValue,
+  setIsFeatureFlagLoaded,
+  setMaxSlippage,
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
+  setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken as setSwapToToken,
   swapCustomGasModalPriceEdited,
@@ -391,7 +434,6 @@ export const fetchSwapsLiveness = () => {
   return async (dispatch, getState) => {
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
@@ -403,6 +445,7 @@ export const fetchSwapsLiveness = () => {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
+    dispatch(setIsFeatureFlagLoaded(true));
     return swapsLivenessForNetwork;
   };
 };
@@ -412,13 +455,13 @@ export const fetchQuotesAndSetQuoteState = (
   inputValue,
   maxSlippage,
   metaMetricsEvent,
+  pageRedirectionDisabled,
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
@@ -461,8 +504,12 @@ export const fetchQuotesAndSetQuoteState = (
       decimals: toTokenDecimals,
       iconUrl: toTokenIconUrl,
     } = selectedToToken;
-    await dispatch(setBackgroundSwapRouteState('loading'));
-    history.push(LOADING_QUOTES_ROUTE);
+    // pageRedirectionDisabled is true if quotes prefetching is active (a user is on the Build Quote page).
+    // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
+    if (!pageRedirectionDisabled) {
+      await dispatch(setBackgroundSwapRouteState('loading'));
+      history.push(LOADING_QUOTES_ROUTE);
+    }
     dispatch(setFetchingQuotes(true));
 
     const contractExchangeRates = getTokenExchangeRates(state);
@@ -638,7 +685,6 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     );
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
-      useNewSwapsApi: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
@@ -779,7 +825,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       sensitiveProperties: swapMetaData,
     });
 
-    if (!isContractAddressValid(usedTradeTxParams.to, swapMetaData, chainId)) {
+    if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
       captureMessage('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
@@ -896,13 +942,12 @@ export function fetchMetaSwapsGasPriceEstimates() {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    const useNewSwapsApi = getUseNewSwapsApi(state);
 
     dispatch(swapGasPriceEstimatesFetchStarted());
 
     let priceEstimates;
     try {
-      priceEstimates = await fetchSwapsGasPrices(chainId, useNewSwapsApi);
+      priceEstimates = await fetchSwapsGasPrices(chainId);
     } catch (e) {
       log.warn('Fetching swaps gas prices failed:', e);
 

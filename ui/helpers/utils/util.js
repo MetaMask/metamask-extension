@@ -3,6 +3,7 @@ import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
+import { util } from '@metamask/controllers';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
   GOERLI_CHAIN_ID,
@@ -13,6 +14,12 @@ import {
   ROPSTEN_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  TRUNCATED_ADDRESS_START_CHARS,
+  TRUNCATED_NAME_CHAR_LIMIT,
+  TRUNCATED_ADDRESS_END_CHARS,
+} from '../../../shared/constants/labels';
+import { toBigNumber } from '../../../shared/modules/conversion.utils';
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -54,6 +61,14 @@ export function isDefaultMetaMaskChain(chainId) {
   }
 
   return false;
+}
+
+// Both inputs should be strings. This method is currently used to compare tokenAddress hex strings.
+export function isEqualCaseInsensitive(value1, value2) {
+  if (typeof value1 !== 'string' || typeof value2 !== 'string') {
+    return false;
+  }
+  return value1.toLowerCase() === value2.toLowerCase();
 }
 
 export function valuesFor(obj) {
@@ -214,11 +229,13 @@ export function exportAsFile(filename, data, type = 'text/csv') {
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  if (address.length < 11) {
+  if (address.length < TRUNCATED_NAME_CHAR_LIMIT) {
     return address;
   }
 
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  return `${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
+    -TRUNCATED_ADDRESS_END_CHARS,
+  )}`;
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {
@@ -246,6 +263,21 @@ export function stripHttpSchemes(urlString) {
  */
 export function stripHttpsScheme(urlString) {
   return urlString.replace(/^https:\/\//u, '');
+}
+
+/**
+ * Strips `https` schemes from URL strings, if the URL does not have a port.
+ * This is useful
+ *
+ * @param {string} urlString - The URL string to strip the scheme from.
+ * @returns {string} The URL string, without the scheme, if it was stripped.
+ */
+export function stripHttpsSchemeWithoutPort(urlString) {
+  if (getURL(urlString).port) {
+    return urlString;
+  }
+
+  return stripHttpsScheme(urlString);
 }
 
 /**
@@ -394,4 +426,149 @@ export function getURLHost(url) {
 
 export function getURLHostName(url) {
   return getURL(url)?.hostname || '';
+}
+
+// Once we reach this threshold, we switch to higher unit
+const MINUTE_CUTOFF = 90 * 60;
+const SECOND_CUTOFF = 90;
+
+export const toHumanReadableTime = (t, milliseconds) => {
+  if (milliseconds === undefined || milliseconds === null) {
+    return '';
+  }
+  const seconds = Math.ceil(milliseconds / 1000);
+  if (seconds <= SECOND_CUTOFF) {
+    return t('gasTimingSecondsShort', [seconds]);
+  }
+  if (seconds <= MINUTE_CUTOFF) {
+    return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
+  }
+  return t('gasTimingHoursShort', [Math.ceil(seconds / 3600)]);
+};
+
+export function clearClipboard() {
+  window.navigator.clipboard.writeText('');
+}
+
+const solidityTypes = () => {
+  const types = [
+    'bool',
+    'address',
+    'string',
+    'bytes',
+    'int',
+    'uint',
+    'fixed',
+    'ufixed',
+  ];
+
+  const ints = Array.from(new Array(32)).map(
+    (_, index) => `int${(index + 1) * 8}`,
+  );
+  const uints = Array.from(new Array(32)).map(
+    (_, index) => `uint${(index + 1) * 8}`,
+  );
+  const bytes = Array.from(new Array(32)).map(
+    (_, index) => `bytes${index + 1}`,
+  );
+
+  /**
+   * fixed and ufixed
+   * This value type also can be declared keywords such as ufixedMxN and fixedMxN.
+   * The M represents the amount of bits that the type takes,
+   * with N representing the number of decimal points that are available.
+   *  M has to be divisible by 8, and a number from 8 to 256.
+   * N has to be a value between 0 and 80, also being inclusive.
+   */
+  const fixedM = Array.from(new Array(32)).map(
+    (_, index) => `fixed${(index + 1) * 8}`,
+  );
+  const ufixedM = Array.from(new Array(32)).map(
+    (_, index) => `ufixed${(index + 1) * 8}`,
+  );
+  const fixed = Array.from(new Array(80)).map((_, index) =>
+    fixedM.map((aFixedM) => `${aFixedM}x${index + 1}`),
+  );
+  const ufixed = Array.from(new Array(80)).map((_, index) =>
+    ufixedM.map((auFixedM) => `${auFixedM}x${index + 1}`),
+  );
+
+  return [
+    ...types,
+    ...ints,
+    ...uints,
+    ...bytes,
+    ...fixed.flat(),
+    ...ufixed.flat(),
+  ];
+};
+
+export const sanitizeMessage = (msg, baseType, types) => {
+  if (!types) {
+    throw new Error(`Invalid types definition`);
+  }
+
+  const baseTypeDefinitions = types[baseType];
+  if (!baseTypeDefinitions) {
+    throw new Error(`Invalid primary type definition`);
+  }
+
+  const sanitizedMessage = {};
+  const msgKeys = Object.keys(msg);
+  msgKeys.forEach((msgKey) => {
+    const definedType = Object.values(baseTypeDefinitions).find(
+      (baseTypeDefinition) => baseTypeDefinition.name === msgKey,
+    );
+
+    if (!definedType) {
+      return;
+    }
+
+    // key has a type. check if the definedType is also a type
+    const nestedType = definedType.type.replace(/\[\]$/u, '');
+    const nestedTypeDefinition = types[nestedType];
+
+    if (nestedTypeDefinition) {
+      if (definedType.type.endsWith('[]') > 0) {
+        // nested array
+        sanitizedMessage[msgKey] = msg[msgKey].map((value) =>
+          sanitizeMessage(value, nestedType, types),
+        );
+      } else {
+        // nested object
+        sanitizedMessage[msgKey] = sanitizeMessage(
+          msg[msgKey],
+          definedType.type,
+          types,
+        );
+      }
+    } else {
+      // check if it's a valid solidity type
+      const isSolidityType = solidityTypes().includes(nestedType);
+      if (isSolidityType) {
+        sanitizedMessage[msgKey] = msg[msgKey];
+      }
+    }
+  });
+  return sanitizedMessage;
+};
+
+export function getAssetImageURL(image, ipfsGateway) {
+  if (!image || !ipfsGateway || typeof image !== 'string') {
+    return '';
+  }
+
+  if (image.startsWith('ipfs://')) {
+    return util.getFormattedIpfsUrl(ipfsGateway, image, true);
+  }
+  return image;
+}
+
+export function roundToDecimalPlacesRemovingExtraZeroes(
+  numberish,
+  numberOfDecimalPlaces,
+) {
+  return toBigNumber.dec(
+    toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces),
+  );
 }

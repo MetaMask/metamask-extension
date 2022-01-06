@@ -15,6 +15,8 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
+  EXPERIMENTAL_ROUTE,
+  ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
@@ -23,6 +25,7 @@ import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
+import ExperimentalTab from './experimental-tab';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -37,11 +40,32 @@ class SettingsPage extends PureComponent {
     breadCrumbTextKey: PropTypes.string,
     initialBreadCrumbKey: PropTypes.string,
     mostRecentOverviewPage: PropTypes.string.isRequired,
+    addNewNetwork: PropTypes.bool,
+    conversionDate: PropTypes.number,
   };
 
   static contextTypes = {
     t: PropTypes.func,
   };
+
+  state = {
+    lastFetchedConversionDate: null,
+  };
+
+  componentDidMount() {
+    this.handleConversionDate();
+  }
+
+  componentDidUpdate() {
+    this.handleConversionDate();
+  }
+
+  handleConversionDate() {
+    const { conversionDate } = this.props;
+    if (conversionDate !== null) {
+      this.setState({ lastFetchedConversionDate: conversionDate });
+    }
+  }
 
   render() {
     const {
@@ -49,6 +73,7 @@ class SettingsPage extends PureComponent {
       backRoute,
       currentPath,
       mostRecentOverviewPage,
+      addNewNetwork,
     } = this.props;
 
     return (
@@ -67,7 +92,13 @@ class SettingsPage extends PureComponent {
           {this.renderTitle()}
           <div
             className="settings-page__close-button"
-            onClick={() => history.push(mostRecentOverviewPage)}
+            onClick={() => {
+              if (addNewNetwork) {
+                history.push(NETWORKS_ROUTE);
+              } else {
+                history.push(mostRecentOverviewPage);
+              }
+            }}
           />
         </div>
         <div className="settings-page__content">
@@ -90,7 +121,7 @@ class SettingsPage extends PureComponent {
     let titleText;
 
     if (isPopup && addressName) {
-      titleText = addressName;
+      titleText = t('details');
     } else if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey);
     } else {
@@ -192,6 +223,11 @@ class SettingsPage extends PureComponent {
             key: NETWORKS_ROUTE,
           },
           {
+            content: t('experimental'),
+            description: t('experimentalSettingsDescription'),
+            key: EXPERIMENTAL_ROUTE,
+          },
+          {
             content: t('about'),
             description: t('aboutSettingsDescription'),
             key: ABOUT_US_ROUTE,
@@ -211,12 +247,27 @@ class SettingsPage extends PureComponent {
   renderContent() {
     return (
       <Switch>
-        <Route exact path={GENERAL_ROUTE} component={SettingsTab} />
+        <Route
+          exact
+          path={GENERAL_ROUTE}
+          render={(routeProps) => (
+            <SettingsTab
+              {...routeProps}
+              lastFetchedConversionDate={this.state.lastFetchedConversionDate}
+            />
+          )}
+        />
         <Route exact path={ABOUT_US_ROUTE} component={InfoTab} />
         <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
         <Route exact path={ALERTS_ROUTE} component={AlertsTab} />
+        <Route
+          exact
+          path={ADD_NETWORK_ROUTE}
+          render={() => <NetworksTab addNewNetwork />}
+        />
         <Route path={NETWORKS_ROUTE} component={NetworksTab} />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
+        <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route
@@ -229,7 +280,14 @@ class SettingsPage extends PureComponent {
           path={`${CONTACT_VIEW_ROUTE}/:id`}
           component={ContactListTab}
         />
-        <Route component={SettingsTab} />
+        <Route
+          render={(routeProps) => (
+            <SettingsTab
+              {...routeProps}
+              lastFetchedConversionDate={this.state.lastFetchedConversionDate}
+            />
+          )}
+        />
       </Switch>
     );
   }

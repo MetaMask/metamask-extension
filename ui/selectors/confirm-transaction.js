@@ -17,11 +17,15 @@ import {
 } from '../ducks/metamask/metamask';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../shared/constants/transaction';
 import { decGWEIToHexWEI } from '../helpers/utils/conversions.util';
-import { GAS_ESTIMATE_TYPES } from '../../shared/constants/gas';
+import {
+  GAS_ESTIMATE_TYPES,
+  CUSTOM_GAS_ESTIMATE,
+} from '../../shared/constants/gas';
 import {
   getMaximumGasTotalInHexWei,
   getMinimumGasTotalInHexWei,
 } from '../../shared/modules/gas.utils';
+import { isEqualCaseInsensitive } from '../helpers/utils/util';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
 import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
 import { checkNetworkAndAccountSupports1559 } from '.';
@@ -222,7 +226,12 @@ export const sendTokenTokenAmountAndToAddressSelector = createSelector(
 export const contractExchangeRateSelector = createSelector(
   contractExchangeRatesSelector,
   tokenAddressSelector,
-  (contractExchangeRates, tokenAddress) => contractExchangeRates[tokenAddress],
+  (contractExchangeRates, tokenAddress) =>
+    contractExchangeRates[
+      Object.keys(contractExchangeRates).find((address) =>
+        isEqualCaseInsensitive(address, tokenAddress),
+      )
+    ],
 );
 
 export const transactionFeeSelector = function (state, txData) {
@@ -252,12 +261,13 @@ export const transactionFeeSelector = function (state, txData) {
       } = selectedGasEstimates;
       gasEstimationObject.maxFeePerGas =
         txData.txParams?.maxFeePerGas &&
-        (txData.userFeeLevel === 'custom' || !suggestedMaxFeePerGas)
+        (txData.userFeeLevel === CUSTOM_GAS_ESTIMATE || !suggestedMaxFeePerGas)
           ? txData.txParams?.maxFeePerGas
           : decGWEIToHexWEI(suggestedMaxFeePerGas || gasPrice);
       gasEstimationObject.maxPriorityFeePerGas =
         txData.txParams?.maxPriorityFeePerGas &&
-        (txData.userFeeLevel === 'custom' || !suggestedMaxPriorityFeePerGas)
+        (txData.userFeeLevel === CUSTOM_GAS_ESTIMATE ||
+          !suggestedMaxPriorityFeePerGas)
           ? txData.txParams?.maxPriorityFeePerGas
           : (suggestedMaxPriorityFeePerGas &&
               decGWEIToHexWEI(suggestedMaxPriorityFeePerGas)) ||

@@ -1,11 +1,11 @@
 import { addHexPrefix } from 'ethereumjs-util';
+import { MIN_GAS_LIMIT_HEX } from '../../ui/pages/send/send.constants';
 
-const TWENTY_ONE_THOUSAND = 21000;
 const ONE_HUNDRED_THOUSAND = 100000;
 
 export const GAS_LIMITS = {
   // maximum gasLimit of a simple send
-  SIMPLE: addHexPrefix(TWENTY_ONE_THOUSAND.toString(16)),
+  SIMPLE: addHexPrefix(MIN_GAS_LIMIT_HEX),
   // a base estimate for token transfers.
   BASE_TOKEN_ESTIMATE: addHexPrefix(ONE_HUNDRED_THOUSAND.toString(16)),
 };
@@ -29,6 +29,23 @@ export const GAS_RECOMMENDATIONS = {
   MEDIUM: 'medium',
   HIGH: 'high',
 };
+
+/**
+ * These represent types of gas estimation
+ */
+export const PRIORITY_LEVELS = {
+  TEN_PERCENT_INCREASED: 'tenPercentIncreased',
+  LOW: 'low',
+  MEDIUM: 'medium',
+  HIGH: 'high',
+  CUSTOM: 'custom',
+  DAPP_SUGGESTED: 'dappSuggested',
+};
+
+/**
+ * Represents the user customizing their gas preference
+ */
+export const CUSTOM_GAS_ESTIMATE = 'custom';
 
 /**
  * These represent the different edit modes presented in the UI

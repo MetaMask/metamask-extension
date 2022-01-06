@@ -11,9 +11,6 @@
   "addToken": {
     "message": "Adicionar Token"
   },
-  "addTokens": {
-    "message": "Adicionar Tokens"
-  },
   "amount": {
     "message": "Valor"
   },
@@ -24,6 +21,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Aprovar"
@@ -73,17 +78,11 @@
   "customGas": {
     "message": "Customizar Gas"
   },
-  "customRPC": {
-    "message": "Customizar RPC"
-  },
   "decimal": {
     "message": "Precisão em Decimais"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimais devem ser no mínimo 0 e não passar de 36."
-  },
-  "defaultNetwork": {
-    "message": "A rede pré definida para transações em Ether é a Main Net."
   },
   "depositEther": {
     "message": "Depositar Ether"
@@ -194,7 +193,7 @@
   "kovan": {
     "message": "Rede de Teste Kovan"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Gostaria de adicionar estes tokens?"
   },
   "loading": {

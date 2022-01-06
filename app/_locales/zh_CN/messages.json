@@ -1,4 +1,46 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "非法交易"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "扫描的签名二维码不属于当前交易，请检查交易详情后重试。"
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "暂无更多账户，若想切换到其他账户，请在硬件钱包中选择想要的账户重新同步。"
+  },
+  "QRHardwareScanInstructions": {
+    "message": "为了保护您的隐私，屏幕是模糊的，但不影响对二维码的读取。"
+  },
+  "QRHardwareSignRequestCancel": {
+    "message": "拒绝该交易"
+  },
+  "QRHardwareSignRequestDescription": {
+    "message": "硬件钱包扫描上方二维码完成签名后，点击“获取签名”按钮扫描已签名的二维码"
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "获取签名"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "用硬件钱包扫描二维码"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "获取签名"
+  },
+  "QRHardwareUnknownQRCodeTitle": {
+    "message": "非法二维码"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "请扫描硬件钱包的同步二维码。"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "扫描二维码"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "该类硬件钱包通过二维码实现通讯交互，做到完全脱网。官方支持的钱包有："
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "AirGap Vault & Ngrave (即将上线)"
+  },
   "about": {
     "message": "关于"
   },
@@ -64,9 +106,6 @@
   "addToken": {
     "message": "添加代币"
   },
-  "addTokens": {
-    "message": "添加代币"
-  },
   "advanced": {
     "message": "高级"
   },
@@ -106,10 +145,6 @@
   "allowExternalExtensionTo": {
     "message": "允许这个外部扩展到："
   },
-  "allowOriginSpendToken": {
-    "message": "允许 $1 使用您的 $2?",
-    "description": "$1 is the url of the site and $2 is the symbol of the token they are requesting to spend"
-  },
   "allowThisSiteTo": {
     "message": "允许本网站："
   },
@@ -120,9 +155,6 @@
   "amount": {
     "message": "数额"
   },
-  "amountWithColon": {
-    "message": "数额："
-  },
   "appDescription": {
     "message": "以太坊浏览器插件",
     "description": "The description of the application"
@@ -130,6 +162,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approvalAndAggregatorTxFeeCost": {
     "message": "批准聚合商网络手续费"
@@ -363,9 +403,6 @@
   "copiedExclamation": {
     "message": "已复制"
   },
-  "copiedTransactionId": {
-    "message": "交易 ID 复制成功"
-  },
   "copyAddress": {
     "message": "复制地址到剪贴板"
   },
@@ -408,9 +445,6 @@
   "customGasSubTitle": {
     "message": "提升费用可能会缩短处理时间，但不保证绝对有效。"
   },
-  "customRPC": {
-    "message": "自定义 RPC"
-  },
   "customSpendLimit": {
     "message": "自定义消费限额"
   },
@@ -445,9 +479,6 @@
   },
   "decryptRequest": {
     "message": "解密请求"
-  },
-  "defaultNetwork": {
-    "message": "默认以太坊（Ether）交易网络为主网。"
   },
   "delete": {
     "message": "删除"
@@ -519,7 +550,7 @@
     "message": "编辑权限"
   },
   "encryptionPublicKeyNotice": {
-    "message": "$1 希望得到您的加密公钥。同意后该网站将可以想您发送加密信息。",
+    "message": "$1 希望得到您的加密公钥。同意后该网站将可以向您发送加密信息。",
     "description": "$1 is the web3 site name"
   },
   "encryptionPublicKeyRequest": {
@@ -851,6 +882,12 @@
     "message": "JSON 文件",
     "description": "format for importing an account"
   },
+  "keystone": {
+    "message": "铠石钱包"
+  },
+  "keystoneTutorial": {
+    "message": " （使用教程）"
+  },
   "knownAddressRecipient": {
     "message": "已知接收方地址。"
   },
@@ -872,7 +909,7 @@
   "letsGoSetUp": {
     "message": "第一次，立即开始设置！"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "您想添加这些代币吗？"
   },
   "links": {
@@ -1007,9 +1044,6 @@
   "newContract": {
     "message": "新合约"
   },
-  "newNetwork": {
-    "message": "新增网络"
-  },
   "newPassword": {
     "message": "新密码（至少 8 个字符）"
   },
@@ -1087,17 +1121,8 @@
     "message": "“$1”会关闭此标签，直接回到 $2",
     "description": "Return the user to the site that initiated onboarding"
   },
-  "onlyAvailableOnMainnet": {
-    "message": "仅在主网（mainnet）上提供"
-  },
   "onlyConnectTrust": {
     "message": "只连接您信任的网站。"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "区块浏览器 URL（选填）"
-  },
-  "optionalCurrencySymbol": {
-    "message": "符号（选填）"
   },
   "origin": {
     "message": "来源"
@@ -1126,12 +1151,6 @@
   },
   "pending": {
     "message": "待处理"
-  },
-  "permissionCheckedIconDescription": {
-    "message": "您已同意该权限"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "您还未同意该权限"
   },
   "permissions": {
     "message": "权限"
@@ -1253,9 +1272,6 @@
   "revealSeedWordsDescription": {
     "message": "如果您更换浏览器或计算机，则需要使用此账户助记词访问您的帐户。请将它们保存在安全秘密的地方。"
   },
-  "revealSeedWordsTitle": {
-    "message": "账户助记词"
-  },
   "revealSeedWordsWarning": {
     "message": "该账户助记词可以用来窃取您的所有帐户"
   },
@@ -1298,9 +1314,6 @@
   "searchTokens": {
     "message": "搜索代币"
   },
-  "secretBackupPhrase": {
-    "message": "账户助记词"
-  },
   "secretBackupPhraseDescription": {
     "message": "您的账户助记词可以帮助您轻松备份和恢复个人账户。"
   },
@@ -1334,9 +1347,6 @@
   "selectAnAccount": {
     "message": "选择一个账户"
   },
-  "selectAnAccountHelp": {
-    "message": "选择在 MetaMask 中查看的账户"
-  },
   "selectEachPhrase": {
     "message": "请选择每个单词，以确保其正确性。"
   },
@@ -1364,9 +1374,6 @@
   },
   "sendTokens": {
     "message": "发送代币"
-  },
-  "sentEther": {
-    "message": "发送 Ether"
   },
   "separateEachWord": {
     "message": "用空格分隔每个单词"
@@ -1512,16 +1519,9 @@
     "message": "您还需 $1 $2 来完成这笔兑换",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "有一个可用的更优报价"
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "没有匹配的代币符合 $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
-  },
-  "swapCheckingQuote": {
-    "message": "正在检查 $1",
-    "description": "Shown to the user during quote loading. $1 is the name of an aggregator. The message indicates that metamask is currently checking if that aggregator has a trade/quote for their requested swap."
   },
   "swapCustom": {
     "message": "自定义"
@@ -1535,13 +1535,6 @@
   "swapEnableDescription": {
     "message": "这是必须的，并且允许 MetaMask 兑换您的 $1。",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFee": {
-    "message": "预计网络手续费"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "“$1”是我们预计的实际产生费用。具体数额视网络情况而定。",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "预计网络手续费"
@@ -1561,18 +1554,8 @@
   "swapFetchingTokens": {
     "message": "获取代币中……"
   },
-  "swapFinalizing": {
-    "message": "确定中……"
-  },
   "swapLowSlippageError": {
     "message": "交易可能失败，最大滑点过低。"
-  },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1”是您最多所话费的数量，当网络不稳定时，这可能是一个大的数额。",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "最大网络手续费"
   },
   "swapMaxSlippage": {
     "message": "最大滑点"
@@ -1583,13 +1566,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "我们每次都能从顶级流动性资源中找到最好的价格。每次报价都会自动收取1%的手续费用，以支持 MetaMask 的持续发展，使其更加完善。",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 个报价",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "网络手续费包括处理您的兑换和在以太坊（$1）网络上存储的成本。MetaMask 不从这笔费用中获利。"
   },
   "swapNewQuoteIn": {
     "message": "$1 后更新报价",
@@ -1616,19 +1592,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "如果在您下订单和确认订单之间的价格发生了变化，这就叫做\"滑点\"。如果滑点超过您的\"最大滑点\"设置，您的兑换将自动取消。"
   },
-  "swapQuoteIncludesRate": {
-    "message": "报价包含 $1% MetaMask 手续费",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "报价 $1 / $2",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "报价来源"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "报价会经常刷新，以反映当前的市场状况。"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "请请求新的报价，以获得最新的价格。"
@@ -1684,9 +1653,6 @@
   "swapSwapTo": {
     "message": "兑换到"
   },
-  "swapThisWillAllowApprove": {
-    "message": "这样将允许 $1 用于兑换。"
-  },
   "swapTokenAvailable": {
     "message": "您的 $1 已添加到您的账户。",
     "description": "This message is shown after a swap is successful and communicates the exact amount of tokens the user has received for a swap. The $1 is a decimal number of tokens followed by the token symbol."
@@ -1700,9 +1666,6 @@
   },
   "swapUnknown": {
     "message": "未知的"
-  },
-  "swapUsingBestQuote": {
-    "message": "使用最好的报价"
   },
   "swapVerifyTokenExplanation": {
     "message": "多个代币可以使用相同的名称和符号。检查 $1（以太坊浏览器）以确认这是您正在寻找的代币。",
@@ -1795,9 +1758,6 @@
     "message": "至：$1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toWithColon": {
-    "message": "至："
-  },
   "token": {
     "message": "代币"
   },
@@ -1869,10 +1829,6 @@
     "message": "我们无法加载您的代币余额。您可以查看它们",
     "description": "Followed by a link (here) to view token balances"
   },
-  "trustSiteApprovePermission": {
-    "message": "您信任这个网站吗？授权即表示您允许 $1 提取您的 $2，并为您自动进行交易。",
-    "description": "$1 is the url requesting permission and $2 is the symbol of the currency that the request is for"
-  },
   "tryAgain": {
     "message": "重试"
   },
@@ -1940,23 +1896,11 @@
   "viewContact": {
     "message": "查看联系人"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "在 $1 查看"
-  },
-  "viewOnEtherscan": {
-    "message": "在 Etherscan（以太坊浏览器）上查看"
-  },
-  "viewinExplorer": {
-    "message": "在浏览器中查看"
-  },
   "visitWebSite": {
     "message": "访问我们的网站"
   },
   "walletConnectionGuide": {
     "message": "我们的硬件钱包连接指南"
-  },
-  "walletSeed": {
-    "message": "账户助记词"
   },
   "web3ShimUsageNotification": {
     "message": "我们发现当前的网站尝试使用已经删除的 window.web3 API。如果这个网站网站已经无法正常使用，请点击 $1 获取更多信息。",

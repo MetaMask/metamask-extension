@@ -19,7 +19,7 @@
 
   &--open {
     box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
-    border: 1px solid $Grey-100;
+    border: 1px solid var(--Grey-100);
   }
 
   &__close-area {
@@ -44,14 +44,14 @@
     height: 60px;
 
     &:hover {
-      background: $Grey-000;
+      background: var(--Grey-000);
     }
   }
 
   &__caret {
     position: absolute;
     right: 16px;
-    color: $Grey-200;
+    color: var(--Grey-200);
   }
 
   &__selector-closed {
@@ -83,7 +83,7 @@
   &__closed-primary-label {
     @include H4;
 
-    color: $Black-100;
+    color: var(--Black-100);
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -92,14 +92,14 @@
 
   &__search-list--open {
     box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
-    border: 1px solid $Grey-100;
+    border: 1px solid var(--Grey-100);
   }
 
   &__default-dropdown-icon {
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: $Grey-200;
+    background: var(--Grey-200);
     flex: 0 1 auto;
   }
 
@@ -118,14 +118,14 @@
   }
 
   &__select-default {
-    color: $Grey-200;
+    color: var(--Grey-200);
   }
 
   &__placeholder {
     @include H6;
 
     padding: 16px;
-    color: $Grey-500;
+    color: var(--Grey-500);
     min-height: 300px;
     position: relative;
     z-index: 1002;
@@ -149,10 +149,10 @@
     padding: 16px 12px;
     box-sizing: border-box;
     cursor: pointer;
-    border-top: 1px solid $Grey-100;
+    border-top: 1px solid var(--Grey-100);
     position: relative;
     z-index: 1;
-    background: $white;
+    background: var(--white);
   }
 
   &__loading-item-text-container {

@@ -16,6 +16,7 @@ export default class AppStateController extends EventEmitter {
       onInactiveTimeout,
       showUnlockRequest,
       preferencesStore,
+      qrHardwareStore,
     } = opts;
     super();
 
@@ -30,7 +31,11 @@ export default class AppStateController extends EventEmitter {
       fullScreenGasPollTokens: [],
       recoveryPhraseReminderHasBeenShown: false,
       recoveryPhraseReminderLastShown: new Date().getTime(),
+      collectiblesDetectionNoticeDismissed: false,
+      showTestnetMessageInDropdown: true,
+      trezorModel: null,
       ...initState,
+      qrHardware: {},
     });
     this.timer = null;
 
@@ -45,6 +50,10 @@ export default class AppStateController extends EventEmitter {
       if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
         this._setInactiveTimeout(preferences.autoLockTimeLimit);
       }
+    });
+
+    qrHardwareStore.subscribe((state) => {
+      this.store.updateState({ qrHardware: state });
     });
 
     const { preferences } = preferencesStore.getState();
@@ -226,6 +235,33 @@ export default class AppStateController extends EventEmitter {
       popupGasPollTokens: [],
       notificationGasPollTokens: [],
       fullScreenGasPollTokens: [],
+    });
+  }
+
+  /**
+   * Sets whether the testnet dismissal link should be shown in the network dropdown
+   * @returns {void}
+   */
+  setShowTestnetMessageInDropdown(showTestnetMessageInDropdown) {
+    this.store.updateState({ showTestnetMessageInDropdown });
+  }
+
+  /**
+   * Sets a property indicating the model of the user's Trezor hardware wallet
+   * @returns {void}
+   */
+  setTrezorModel(trezorModel) {
+    this.store.updateState({ trezorModel });
+  }
+
+  /**
+   * A setter for the `collectiblesDetectionNoticeDismissed` property
+   */
+  setCollectiblesDetectionNoticeDismissed(
+    collectiblesDetectionNoticeDismissed,
+  ) {
+    this.store.updateState({
+      collectiblesDetectionNoticeDismissed,
     });
   }
 }

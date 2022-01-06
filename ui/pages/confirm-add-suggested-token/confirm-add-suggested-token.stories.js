@@ -1,13 +1,14 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
 import { text } from '@storybook/addon-knobs';
-import { store } from '../../../.storybook/preview';
-import { suggestedTokens } from '../../../.storybook/initial-states/approval-screens/add-suggested-token';
+import { store, getNewState } from '../../../.storybook/preview';
+import { suggestedAssets } from '../../../.storybook/initial-states/approval-screens/add-suggested-token';
 import { updateMetamaskState } from '../../store/actions';
 import ConfirmAddSuggestedToken from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/ConfirmAddSuggestedToken',
+  id: __filename,
 };
 
 const PageSet = ({ children }) => {
@@ -15,33 +16,47 @@ const PageSet = ({ children }) => {
   const image = text('Icon URL', 'metamark.svg');
 
   const state = store.getState();
-  const suggestedTokensState = state.metamask.suggestedTokens;
+  const suggestedAssetsState = state.metamask.suggestedAssets;
 
   useEffect(() => {
-    suggestedTokensState[
-      '0x6b175474e89094c44da98b954eedeac495271d0f'
-    ].symbol = symbol;
+    suggestedAssetsState[0].symbol = symbol;
     store.dispatch(
-      updateMetamaskState({ suggestedTokens: suggestedTokensState }),
+      updateMetamaskState(
+        getNewState(state.metamask, {
+          suggestedAssets: suggestedAssetsState,
+        }),
+      ),
     );
-  }, [symbol, suggestedTokensState]);
+  }, [symbol, suggestedAssetsState, state.metamask]);
   useEffect(() => {
-    suggestedTokensState[
-      '0x6b175474e89094c44da98b954eedeac495271d0f'
-    ].image = image;
+    suggestedAssetsState[0].image = image;
     store.dispatch(
-      updateMetamaskState({ suggestedTokens: suggestedTokensState }),
+      updateMetamaskState(
+        getNewState(state.metamask, {
+          suggestedAssets: suggestedAssetsState,
+        }),
+      ),
     );
-  }, [image, suggestedTokensState]);
+  }, [image, suggestedAssetsState, state.metamask]);
 
   return children;
 };
 
-export const AddSuggestedToken = () => {
-  store.dispatch(updateMetamaskState({ suggestedTokens, pendingTokens: {} }));
+export const DefaultStory = () => {
+  const state = store.getState();
+  store.dispatch(
+    updateMetamaskState(
+      getNewState(state.metamask, {
+        suggestedAssets,
+      }),
+    ),
+  );
+
   return (
     <PageSet>
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
 };
+
+DefaultStory.storyName = 'Default';

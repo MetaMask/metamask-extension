@@ -10,7 +10,7 @@
     justify-content: space-between;
   }
 
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     width: 426px;
     flex: 1;
 
@@ -23,12 +23,11 @@
     }
   }
 
-
   &__header {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    border-bottom: 1px solid $geyser;
+    border-bottom: 1px solid var(--geyser);
     padding: 9px;
   }
 
@@ -50,7 +49,7 @@
 
     a,
     a:hover {
-      color: $dodger-blue;
+      color: var(--dodger-blue);
     }
 
     &__requested {
@@ -69,7 +68,7 @@
         @include H6;
 
         margin-left: 16px;
-        color: $Black-100;
+        color: var(--Black-100);
       }
     }
   }
@@ -101,7 +100,7 @@
     align-items: center;
     margin-top: 12px;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       border-top: none;
     }
 
@@ -115,7 +114,7 @@
     }
   }
 
-  @media screen and (max-width: 575px) {
+  @media screen and (max-width: $break-small) {
     &__title {
       position: initial;
     }

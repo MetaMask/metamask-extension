@@ -8,9 +8,6 @@
   "addToken": {
     "message": "Voeg token toe"
   },
-  "addTokens": {
-    "message": "Tokens toevoegen"
-  },
   "amount": {
     "message": "Bedrag"
   },
@@ -21,6 +18,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Goedkeuren"
@@ -70,17 +75,11 @@
   "customGas": {
     "message": "Pas Gas aan"
   },
-  "customRPC": {
-    "message": "Aangepaste RPC"
-  },
   "decimal": {
     "message": "Decimalen van precisie"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
-  },
-  "defaultNetwork": {
-    "message": "Het standaardnetwerk voor Ether-transacties is Main Net."
   },
   "depositEther": {
     "message": "Stort Ether"
@@ -188,7 +187,7 @@
   "kovan": {
     "message": "Kovan-testnetwerk"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Wil je deze tokens toevoegen?"
   },
   "loading": {
@@ -201,7 +200,7 @@
     "message": "Uitloggen"
   },
   "mainnet": {
-    "message": "Main Netwerk"
+    "message": "Mainnetwerk"
   },
   "message": {
     "message": "Bericht"

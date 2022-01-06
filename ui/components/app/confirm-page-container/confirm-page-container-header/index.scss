@@ -6,7 +6,7 @@
   &__row {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid $geyser;
+    border-bottom: 1px solid var(--geyser);
     padding: 4px 13px 4px 13px;
     flex: 0 0 auto;
     align-items: center;

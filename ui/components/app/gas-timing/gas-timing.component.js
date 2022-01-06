@@ -24,6 +24,7 @@ import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 
 import { getGasFeeTimeEstimate } from '../../../store/actions';
 import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
+import { useGasFeeContext } from '../../../contexts/gasFee';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
@@ -47,6 +48,7 @@ export default function GasTiming({
 
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
   const t = useContext(I18nContext);
+  const { estimateUsed, supportsEIP1559V2 } = useGasFeeContext();
 
   // If the user has chosen a value lower than the low gas fee estimate,
   // We'll need to use the useEffect hook below to make a call to calculate
@@ -71,8 +73,8 @@ export default function GasTiming({
     ) {
       // getGasFeeTimeEstimate requires parameters in string format
       getGasFeeTimeEstimate(
-        new BigNumber(priority).toString(10),
-        new BigNumber(fee).toString(10),
+        new BigNumber(priority, 10).toString(10),
+        new BigNumber(fee, 10).toString(10),
       ).then((result) => {
         if (maxFeePerGas === fee && maxPriorityFeePerGas === priority) {
           setCustomEstimatedTime(result);
@@ -92,12 +94,17 @@ export default function GasTiming({
     previousIsUnknownLow,
   ]);
 
-  const unknownProcessingTimeText = (
-    <>
-      {t('editGasTooLow')}{' '}
-      <InfoTooltip position="top" contentText={t('editGasTooLowTooltip')} />
-    </>
-  );
+  let unknownProcessingTimeText;
+  if (supportsEIP1559V2) {
+    unknownProcessingTimeText = t('editGasTooLow');
+  } else {
+    unknownProcessingTimeText = (
+      <>
+        {t('editGasTooLow')}{' '}
+        <InfoTooltip position="top" contentText={t('editGasTooLowTooltip')} />
+      </>
+    );
+  }
 
   if (
     gasWarnings?.maxPriorityFee === GAS_FORM_ERRORS.MAX_PRIORITY_FEE_TOO_LOW ||
@@ -146,8 +153,9 @@ export default function GasTiming({
       ]);
     }
   } else {
-    attitude = 'negative';
-
+    if (!supportsEIP1559V2 || estimateUsed === 'low') {
+      attitude = 'negative';
+    }
     // If the user has chosen a value less than our low estimate,
     // calculate a potential wait time
     if (isUnknownLow) {
@@ -164,6 +172,10 @@ export default function GasTiming({
           toHumanReadableTime(Number(customEstimatedTime?.upperTimeBound), t),
         ]);
       }
+    } else if (supportsEIP1559V2) {
+      text = t('gasTimingNegative', [
+        toHumanReadableTime(low.maxWaitTimeEstimate, t),
+      ]);
     } else {
       text = (
         <>
@@ -183,7 +195,8 @@ export default function GasTiming({
     <Typography
       variant={TYPOGRAPHY.H7}
       className={classNames('gas-timing', {
-        [`gas-timing--${attitude}`]: attitude,
+        [`gas-timing--${attitude}`]: attitude && !supportsEIP1559V2,
+        [`gas-timing--${attitude}-V2`]: attitude && supportsEIP1559V2,
       })}
     >
       {text}

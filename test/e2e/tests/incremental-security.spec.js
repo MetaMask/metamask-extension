@@ -42,7 +42,7 @@ describe('Incremental Security', function () {
         await driver.clickElement({ text: 'Create a Wallet', tag: 'button' });
 
         // clicks the "No thanks" option on the metametrics opt-in screen
-        await driver.clickElement('.btn-default');
+        await driver.clickElement('.btn-secondary');
 
         // accepts a secure password
         await driver.fill(
@@ -65,13 +65,6 @@ describe('Incremental Security', function () {
           tag: 'button',
         });
 
-        // closes the what's new popup
-        const popover = await driver.findElement('.popover-container');
-
-        await driver.clickElement('[data-testid="popover-close"]');
-
-        await popover.waitForElementState('hidden');
-
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
@@ -80,8 +73,8 @@ describe('Incremental Security', function () {
         );
 
         // gets the current accounts address
-        const addressInput = await driver.findElement('.readonly-input__input');
-        const publicAddress = await addressInput.getAttribute('value');
+        const address = await driver.findElement('.qr-code__address');
+        const publicAddress = await address.getText();
 
         // wait for account modal to be visible
         const accountModal = await driver.findVisibleElement('span .modal');

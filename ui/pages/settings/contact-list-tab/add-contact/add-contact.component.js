@@ -153,7 +153,6 @@ export default class AddContact extends PureComponent {
             history.push(CONTACT_LIST_ROUTE);
           }}
           submitText={this.context.t('save')}
-          submitButtonType="confirm"
         />
       </div>
     );

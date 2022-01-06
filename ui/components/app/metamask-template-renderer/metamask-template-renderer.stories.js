@@ -4,7 +4,8 @@ import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import MetaMaskTemplateRenderer from '.';
 
 export default {
-  title: 'MetaMask Template Renderer',
+  title: 'Components/App/MetamaskTemplateRenderer',
+  id: __filename,
 };
 
 const SECTIONS = {
@@ -60,7 +61,6 @@ const SECTIONS = {
           children: 'Cancel',
           key: 'cancel-button',
           props: {
-            rounded: true,
             type: 'outlined',
             style: {
               width: '45%',
@@ -72,7 +72,6 @@ const SECTIONS = {
           children: 'OK',
           key: 'ok-button',
           props: {
-            rounded: true,
             type: 'primary',
             style: {
               width: '45%',
@@ -84,11 +83,14 @@ const SECTIONS = {
     },
   ],
 };
-export const metaMaskTemplateRenderer = () => (
+
+export const DefaultStory = () => (
   <MetaMaskTemplateRenderer sections={object('sections', SECTIONS)} />
 );
 
-export const withInvalidElement = () => (
+DefaultStory.storyName = 'Default';
+
+export const WithInvalidElement = () => (
   <MetaMaskTemplateRenderer
     sections={object('sections', [
       {

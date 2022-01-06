@@ -164,6 +164,7 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @emits tx:warning
    * @private
    */
+
   async _checkPendingTx(txMeta) {
     const txHash = txMeta.hash;
     const txId = txMeta.id;
@@ -193,11 +194,21 @@ export default class PendingTransactionTracker extends EventEmitter {
     try {
       const transactionReceipt = await this.query.getTransactionReceipt(txHash);
       if (transactionReceipt?.blockNumber) {
-        const { baseFeePerGas } = await this.query.getBlockByHash(
+        const {
+          baseFeePerGas,
+          timestamp: blockTimestamp,
+        } = await this.query.getBlockByHash(
           transactionReceipt?.blockHash,
           false,
         );
-        this.emit('tx:confirmed', txId, transactionReceipt, baseFeePerGas);
+
+        this.emit(
+          'tx:confirmed',
+          txId,
+          transactionReceipt,
+          baseFeePerGas,
+          blockTimestamp,
+        );
         return;
       }
     } catch (err) {

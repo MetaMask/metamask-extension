@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
-import contractMap from '@metamask/contract-metadata';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
+import { addHexPrefix } from 'ethereumjs-util';
 import { debounce } from 'lodash';
 import {
   conversionGreaterThan,
@@ -39,6 +38,9 @@ import {
   getTargetAccount,
   getIsNonStandardEthChain,
   checkNetworkAndAccountSupports1559,
+  getUseTokenDetection,
+  getTokenList,
+  getAddressBookEntryOrAccountName,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -71,6 +73,7 @@ import {
   isDefaultMetaMaskChain,
   isOriginContractAddress,
   isValidDomainName,
+  isEqualCaseInsensitive,
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
@@ -86,6 +89,7 @@ import {
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import { ETH, GWEI } from '../../helpers/constants/common';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
+import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 // typedefs
 /**
  * @typedef {import('@reduxjs/toolkit').PayloadAction} PayloadAction
@@ -228,13 +232,12 @@ async function estimateGasLimitForSend({
       // address. If this returns 0x, 0x0 or a nullish value then the address
       // is an externally owned account (NOT a contract account). For these
       // types of transactions the gasLimit will always be 21,000 or 0x5208
-      const contractCode = Boolean(to) && (await global.eth.getCode(to));
-      // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
-      const contractCodeIsEmpty =
-        !contractCode || contractCode === '0x' || contractCode === '0x0';
-      if (contractCodeIsEmpty && !isNonStandardEthChain) {
+      const { isContractAddress } = to
+        ? await readAddressAsContract(global.eth, to)
+        : {};
+      if (!isContractAddress && !isNonStandardEthChain) {
         return GAS_LIMITS.SIMPLE;
-      } else if (contractCodeIsEmpty && isNonStandardEthChain) {
+      } else if (!isContractAddress && isNonStandardEthChain) {
         isSimpleSendOnNonStandardNetwork = true;
       }
     }
@@ -416,6 +419,7 @@ export const initializeSendState = createAsyncThunk(
       send: { asset, stage, recipient, amount, draftTransaction },
       metamask,
     } = state;
+
     // First determine the correct from address. For new sends this is always
     // the currently selected account and switching accounts switches the from
     // address. If editing an existing transaction (by clicking 'edit' on the
@@ -517,6 +521,8 @@ export const initializeSendState = createAsyncThunk(
       gasTotal: addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
       gasEstimatePollToken,
       eip1559support,
+      useTokenDetection: getUseTokenDetection(state),
+      tokenAddressList: Object.keys(getTokenList(state)),
     };
   },
 );
@@ -702,6 +708,7 @@ const slice = createSlice({
       state.recipient.nickname = action.payload.nickname;
       state.draftTransaction.id = action.payload.id;
       state.draftTransaction.txParams.from = action.payload.from;
+      state.draftTransaction.userInputHexData = action.payload.data;
       slice.caseReducers.updateDraftTransaction(state);
     },
     /**
@@ -986,7 +993,7 @@ const slice = createSlice({
         recipient.warning = null;
       } else {
         const isSendingToken = asset.type === ASSET_TYPES.TOKEN;
-        const { chainId, tokens } = action.payload;
+        const { chainId, tokens, tokenAddressList } = action.payload;
         if (
           isBurnAddress(recipient.userInput) ||
           (!isValidHexAddress(recipient.userInput, {
@@ -1005,11 +1012,12 @@ const slice = createSlice({
         } else {
           recipient.error = null;
         }
-
         if (
           isSendingToken &&
           isValidHexAddress(recipient.userInput) &&
-          (toChecksumAddress(recipient.userInput) in contractMap ||
+          (tokenAddressList.find((address) =>
+            isEqualCaseInsensitive(address, recipient.userInput),
+          ) ||
             checkExistingAddresses(recipient.userInput, tokens))
         ) {
           recipient.warning = KNOWN_RECIPIENT_ADDRESS_WARNING;
@@ -1210,6 +1218,8 @@ const slice = createSlice({
             payload: {
               chainId: action.payload.chainId,
               tokens: action.payload.tokens,
+              useTokenDetection: action.payload.useTokenDetection,
+              tokenAddressList: action.payload.tokenAddressList,
             },
           });
         }
@@ -1395,7 +1405,14 @@ export function updateRecipientUserInput(userInput) {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
-    debouncedValidateRecipientUserInput(dispatch, { chainId, tokens });
+    const useTokenDetection = getUseTokenDetection(state);
+    const tokenAddressList = Object.keys(getTokenList(state));
+    debouncedValidateRecipientUserInput(dispatch, {
+      chainId,
+      tokens,
+      useTokenDetection,
+      tokenAddressList,
+    });
   };
 }
 
@@ -1430,12 +1447,12 @@ export function useMyAccountsForRecipientSearch() {
 export function updateRecipient({ address, nickname }) {
   return async (dispatch, getState) => {
     const state = getState();
-    const nicknameFromAddressBook =
-      getAddressBookEntry(state, address)?.name ?? '';
+    const nicknameFromAddressBookEntryOrAccountName =
+      getAddressBookEntryOrAccountName(state, address) ?? '';
     await dispatch(
       actions.updateRecipient({
         address,
-        nickname: nickname || nicknameFromAddressBook,
+        nickname: nickname || nicknameFromAddressBookEntryOrAccountName,
       }),
     );
     await dispatch(computeEstimatedGasLimit());
@@ -1586,6 +1603,7 @@ export function editTransaction(
     const { txParams } = transaction;
     if (assetType === ASSET_TYPES.NATIVE) {
       const {
+        data,
         from,
         gas: gasLimit,
         gasPrice,
@@ -1595,6 +1613,7 @@ export function editTransaction(
       const nickname = getAddressBookEntry(state, address)?.name ?? '';
       await dispatch(
         actions.editTransaction({
+          data,
           id: transactionId,
           gasLimit,
           gasPrice,
@@ -1609,7 +1628,13 @@ export function editTransaction(
         `send/editTransaction dispatched with assetType 'TOKEN' but missing assetData or assetDetails parameter`,
       );
     } else {
-      const { from, to: tokenAddress, gas: gasLimit, gasPrice } = txParams;
+      const {
+        data,
+        from,
+        to: tokenAddress,
+        gas: gasLimit,
+        gasPrice,
+      } = txParams;
       const tokenAmountInDec = getTokenValueParam(tokenData);
       const address = getTokenAddressParam(tokenData);
       const nickname = getAddressBookEntry(state, address)?.name ?? '';
@@ -1630,6 +1655,7 @@ export function editTransaction(
 
       await dispatch(
         actions.editTransaction({
+          data,
           id: transactionId,
           gasLimit,
           gasPrice,
@@ -1720,6 +1746,10 @@ export function getSendMaxModeState(state) {
 
 export function getSendHexData(state) {
   return state[name].draftTransaction.userInputHexData;
+}
+
+export function getDraftTransactionID(state) {
+  return state[name].draftTransaction.id;
 }
 
 export function sendAmountIsInError(state) {

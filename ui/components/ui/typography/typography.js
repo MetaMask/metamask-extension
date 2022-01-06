@@ -7,8 +7,9 @@ import {
   FONT_STYLE,
   TEXT_ALIGN,
   TYPOGRAPHY,
+  OVERFLOW_WRAP,
 } from '../../../helpers/constants/design-system';
-import Box from '../box';
+import Box, { MultipleSizes } from '../box';
 
 const { H6, H7, H8, H9 } = TYPOGRAPHY;
 
@@ -21,7 +22,9 @@ export default function Typography({
   fontWeight = 'normal',
   fontStyle = 'normal',
   align,
+  overflowWrap,
   boxProps = {},
+  margin = [1, 0],
 }) {
   const computedClassName = classnames(
     'typography',
@@ -32,6 +35,7 @@ export default function Typography({
     {
       [`typography--align-${align}`]: Boolean(align),
       [`typography--color-${color}`]: Boolean(color),
+      [`typography--overflowwrap-${overflowWrap}`]: Boolean(overflowWrap),
     },
   );
 
@@ -44,7 +48,7 @@ export default function Typography({
   }
 
   return (
-    <Box margin={[1, 0]} {...boxProps}>
+    <Box margin={margin} {...boxProps}>
       {(boxClassName) => (
         <Tag className={classnames(boxClassName, computedClassName)}>
           {children}
@@ -63,8 +67,10 @@ Typography.propTypes = {
   boxProps: PropTypes.shape({
     ...Box.propTypes,
   }),
+  margin: MultipleSizes,
   fontWeight: PropTypes.oneOf(Object.values(FONT_WEIGHT)),
   fontStyle: PropTypes.oneOf(Object.values(FONT_STYLE)),
+  overflowWrap: PropTypes.oneOf(Object.values(OVERFLOW_WRAP)),
   tag: PropTypes.oneOf([
     'p',
     'h1',
@@ -74,9 +80,11 @@ Typography.propTypes = {
     'h5',
     'h6',
     'span',
+    'strong',
+    'em',
+    'li',
     'div',
     'dt',
     'dd',
-    'i',
   ]),
 };

@@ -6,23 +6,28 @@ import InfoTooltipIcon from '../info-tooltip/info-tooltip-icon';
 
 const CLASSNAME_WARNING = 'actionable-message--warning';
 const CLASSNAME_DANGER = 'actionable-message--danger';
+const CLASSNAME_INFO = 'actionable-message--info';
 const CLASSNAME_WITH_RIGHT_BUTTON = 'actionable-message--with-right-button';
 
 const typeHash = {
   warning: CLASSNAME_WARNING,
   danger: CLASSNAME_DANGER,
+  info: CLASSNAME_INFO,
+  default: '',
 };
 
 export default function ActionableMessage({
   message = '',
   primaryAction = null,
+  primaryActionV2 = null,
   secondaryAction = null,
   className = '',
   infoTooltipText = '',
   withRightButton = false,
-  type = false,
+  type = 'default',
   useIcon = false,
   iconFillColor = '',
+  roundedButtons,
 }) {
   const actionableMessageClassName = classnames(
     'actionable-message',
@@ -32,9 +37,12 @@ export default function ActionableMessage({
     { 'actionable-message--with-icon': useIcon },
   );
 
+  const onlyOneAction =
+    (primaryAction && !secondaryAction) || (secondaryAction && !primaryAction);
+
   return (
     <div className={actionableMessageClassName}>
-      {useIcon && <InfoTooltipIcon fillColor={iconFillColor} />}
+      {useIcon ? <InfoTooltipIcon fillColor={iconFillColor} /> : null}
       {infoTooltipText && (
         <InfoTooltip
           position="left"
@@ -43,13 +51,29 @@ export default function ActionableMessage({
         />
       )}
       <div className="actionable-message__message">{message}</div>
+      {primaryActionV2 && (
+        <button
+          className="actionable-message__action-v2"
+          onClick={primaryActionV2.onClick}
+        >
+          {primaryActionV2.label}
+        </button>
+      )}
       {(primaryAction || secondaryAction) && (
-        <div className="actionable-message__actions">
+        <div
+          className={classnames('actionable-message__actions', {
+            'actionable-message__actions--single': onlyOneAction,
+          })}
+        >
           {primaryAction && (
             <button
               className={classnames(
                 'actionable-message__action',
                 'actionable-message__action--primary',
+                `actionable-message__action-${type}`,
+                {
+                  'actionable-message__action--rounded': roundedButtons,
+                },
               )}
               onClick={primaryAction.onClick}
             >
@@ -61,6 +85,10 @@ export default function ActionableMessage({
               className={classnames(
                 'actionable-message__action',
                 'actionable-message__action--secondary',
+                `actionable-message__action-${type}`,
+                {
+                  'actionable-message__action--rounded': roundedButtons,
+                },
               )}
               onClick={secondaryAction.onClick}
             >
@@ -74,19 +102,58 @@ export default function ActionableMessage({
 }
 
 ActionableMessage.propTypes = {
+  /**
+   * Text inside actionable message
+   */
   message: PropTypes.node.isRequired,
+  /**
+   * First button props that have label and onClick props
+   */
   primaryAction: PropTypes.shape({
     label: PropTypes.string,
     onClick: PropTypes.func,
   }),
+  /**
+   * Another style of primary action.
+   * This probably shouldn't have been added. A `children` prop might have been more appropriate.
+   */
+  primaryActionV2: PropTypes.shape({
+    label: PropTypes.string,
+    onClick: PropTypes.func,
+  }),
+  /**
+   * Second button props that have label and onClick props
+   */
   secondaryAction: PropTypes.shape({
     label: PropTypes.string,
     onClick: PropTypes.func,
   }),
+  /**
+   * Additional css className for the component based on the parent css
+   */
   className: PropTypes.string,
+  /**
+   * change color theme for the component that already predefined in css
+   */
   type: PropTypes.string,
+  /**
+   * change text align to left and button to bottom right
+   */
   withRightButton: PropTypes.bool,
+  /**
+   * Add tooltip and custom message
+   */
   infoTooltipText: PropTypes.string,
+  /**
+   * Add tooltip icon in the left component without message
+   */
   useIcon: PropTypes.bool,
+  /**
+   * change tooltip icon color
+   */
   iconFillColor: PropTypes.string,
+  /**
+   * Whether the buttons are rounded
+   */
+  roundedButtons: PropTypes.bool,
 };

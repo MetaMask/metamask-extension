@@ -29,7 +29,7 @@
   }
 
   &__chevron-right {
-    color: $Grey-500;
+    color: var(--Grey-500);
   }
 
   .list-item__right-content {
@@ -57,7 +57,7 @@
     padding-bottom: 0;
   }
 
-  @media (min-width: 576px) {
+  @media (min-width: $break-large) {
     &__warning-tooltip {
       display: none;
     }

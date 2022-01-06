@@ -47,9 +47,6 @@
   "addToken": {
     "message": "Magdagdag ng Token"
   },
-  "addTokens": {
-    "message": "Magdagdag ng Mga Token"
-  },
   "advancedOptions": {
     "message": "Mga Advanced na Opsyon"
   },
@@ -66,6 +63,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Aprubahan"
@@ -200,9 +205,6 @@
   "copiedExclamation": {
     "message": "Nakopya!"
   },
-  "copiedTransactionId": {
-    "message": "Nakopya ang Transaction ID"
-  },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
@@ -247,9 +249,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Ang mga decimal ay hindi dapat bumaba sa 0, at hindi lumampas sa 36."
-  },
-  "defaultNetwork": {
-    "message": "Ang default na network para sa mga transaksyon ng Ether ay Main Net."
   },
   "delete": {
     "message": "I-delete"
@@ -490,7 +489,7 @@
   "letsGoSetUp": {
     "message": "Oo, i-set up natin ito!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
   "links": {
@@ -560,9 +559,6 @@
   "newContract": {
     "message": "Bagong Contract"
   },
-  "newNetwork": {
-    "message": "Bagong Network"
-  },
   "newPassword": {
     "message": "Bagong Password (min 8 char)"
   },
@@ -607,12 +603,6 @@
   },
   "on": {
     "message": "Naka-on"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (opsyonal)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolo (opsyonal)"
   },
   "origin": {
     "message": "Pinanggalingan"
@@ -780,9 +770,6 @@
   "selectAnAccount": {
     "message": "Pumili ng Account"
   },
-  "selectAnAccountHelp": {
-    "message": "Piliin ang account na titingnan sa MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Pakipili ang bawat parirala para tiyaking tama ito."
   },
@@ -803,9 +790,6 @@
   },
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
-  },
-  "sentEther": {
-    "message": "nagpadala ng ether"
   },
   "separateEachWord": {
     "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
@@ -1026,15 +1010,6 @@
   },
   "viewContact": {
     "message": "Tingnan ang Contact"
-  },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tingnan sa $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Tingnan sa Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Tingnan sa Explorer"
   },
   "visitWebSite": {
     "message": "Bisitahin ang aming web site"

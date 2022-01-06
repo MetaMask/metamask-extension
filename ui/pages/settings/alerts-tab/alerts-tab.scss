@@ -9,7 +9,7 @@
   }
 
   &__body > * {
-    border-bottom: 1px solid $Grey-100;
+    border-bottom: 1px solid var(--Grey-100);
     padding: 16px 8px;
     height: 100%;
   }
