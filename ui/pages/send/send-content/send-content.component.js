@@ -94,16 +94,21 @@ export default class SendContent extends Component {
     );
   }
 
-  checkContractAddress = () => {
+  checkContractAddress = async () => {
     const { recipient, tokenAddressList } = this.props;
 
-    getSymbolAndDecimals(recipient.userInput, tokenAddressList).then(
-      (result) => {
-        if (result.symbol !== undefined || result.decimals !== undefined) {
-          this.setState({ isKnownContractAddress: true });
-        }
-      },
+    const symbolAndDecimals = await getSymbolAndDecimals(
+      recipient.userInput,
+      tokenAddressList,
     );
+
+    if (
+      (symbolAndDecimals.symbol !== undefined ||
+        symbolAndDecimals.decimals !== undefined) &&
+      symbolAndDecimals.symbol !== ''
+    ) {
+      this.setState({ isKnownContractAddress: true });
+    }
   };
 
   maybeRenderAddContact() {

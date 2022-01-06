@@ -1073,8 +1073,7 @@ const slice = createSlice({
         recipient.warning = null;
       } else {
         const { chainId, tokens, tokenAddressList } = action.payload;
-        const assetAddress =
-          asset.details && asset.details.address ? asset.details.address : '';
+        const assetAddress = asset?.details?.address ?? '';
 
         if (
           isBurnAddress(recipient.userInput) ||
