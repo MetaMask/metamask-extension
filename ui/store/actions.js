@@ -34,6 +34,7 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
+import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -3060,13 +3061,8 @@ export async function setSmartTransactionsOptInStatus(optInState) {
   await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
 }
 
-const isPersistentError = (e) => {
-  const persistentError = "Fetch failed with status '5";
-  return e.message?.includes(persistentError);
-};
-
 export function fetchSmartTransactionFees(unsignedTransaction) {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     try {
       const smartTransactionFees = await promisifiedBackground.fetchSmartTransactionFees(
         unsignedTransaction,
@@ -3077,17 +3073,12 @@ export function fetchSmartTransactionFees(unsignedTransaction) {
       });
     } catch (e) {
       log.error(e);
-      const state = getState();
-      const { smartTransactionsError } = state.appState;
       if (e.message.startsWith('Fetch error:')) {
-        const errorJson = e.message.slice(12);
-        const errorObj = JSON.parse(errorJson.trim());
-        if (smartTransactionsError !== errorObj.type) {
-          dispatch({
-            type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-            payload: errorObj.type,
-          });
-        }
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj.type,
+        });
       }
       throw e;
     }
@@ -3143,14 +3134,15 @@ export function signAndSendSmartTransaction({
       return response.uuid;
     } catch (e) {
       log.error(e);
-      if (isPersistentError(e)) {
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: e.message,
+          payload: errorObj.type,
         });
       }
+      throw e;
     }
-    return null;
   };
 }
 
@@ -3163,28 +3155,14 @@ export function updateSmartTransaction(uuid, txData) {
       });
     } catch (e) {
       log.error(e);
-      if (isPersistentError(e)) {
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: e.message,
+          payload: errorObj.type,
         });
       }
-    }
-  };
-}
-
-export function fetchSmartTransactionsStatus(uuids) {
-  return async (dispatch) => {
-    try {
-      await promisifiedBackground.fetchSmartTransactionsStatus(uuids);
-    } catch (e) {
-      log.error(e);
-      if (isPersistentError(e)) {
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: e.message,
-        });
-      }
+      throw e;
     }
   };
 }
@@ -3205,12 +3183,14 @@ export function cancelSmartTransaction(uuid) {
       await promisifiedBackground.cancelSmartTransaction(uuid);
     } catch (e) {
       log.error(e);
-      if (isPersistentError(e)) {
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
         dispatch({
           type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: e.message,
+          payload: errorObj.type,
         });
       }
+      throw e;
     }
   };
 }

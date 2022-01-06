@@ -1379,9 +1379,6 @@ export default class MetamaskController extends EventEmitter {
       submitSignedTransactions: smartTransactionsController.submitSignedTransactions.bind(
         smartTransactionsController,
       ),
-      fetchSmartTransactionsStatus: smartTransactionsController.fetchSmartTransactionsStatus.bind(
-        smartTransactionsController,
-      ),
       cancelSmartTransaction: smartTransactionsController.cancelSmartTransaction.bind(
         smartTransactionsController,
       ),

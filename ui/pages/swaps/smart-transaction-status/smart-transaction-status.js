@@ -13,6 +13,7 @@ import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
   getSwapsRefreshStates,
+  cancelSwapsSmartTransaction,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -37,7 +38,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   stopPollingForQuotes,
-  cancelSmartTransaction,
   setBackgroundSwapRouteState,
 } from '../../../store/actions';
 
@@ -250,7 +250,7 @@ export default function SmartTransactionStatus() {
             e?.preventDefault();
             setCancelSwapLinkClicked(true); // We want to hide it after a user clicks on it.
             cancelSmartTransactionEvent();
-            dispatch(cancelSmartTransaction(latestSmartTransactionUuid));
+            dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
           }}
         >
           {t('cancelSwap')}

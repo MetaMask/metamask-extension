@@ -356,15 +356,18 @@ export default function Swap() {
                 )
               }
               className={
-                currentSmartTransactionsError !== 'not_enough_funds' &&
-                'actionable-message--left-aligned actionable-message--warning swaps__error-message'
+                currentSmartTransactionsError === 'not_enough_funds'
+                  ? ''
+                  : 'actionable-message--left-aligned actionable-message--warning swaps__error-message'
               }
               primaryAction={
-                currentSmartTransactionsError !== 'not_enough_funds' && {
-                  label: t('dismiss'),
-                  onClick: () =>
-                    dispatch(dismissCurrentSmartTransactionsErrorMessage()),
-                }
+                currentSmartTransactionsError === 'not_enough_funds'
+                  ? null
+                  : {
+                      label: t('dismiss'),
+                      onClick: () =>
+                        dispatch(dismissCurrentSmartTransactionsErrorMessage()),
+                    }
               }
               withRightButton
             />

@@ -30,6 +30,7 @@ import {
   updateSmartTransaction,
   setSmartTransactionsRefreshInterval,
   fetchSmartTransactionFees,
+  cancelSmartTransaction,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -44,6 +45,8 @@ import {
   fetchSwapsGasPrices,
   isContractAddressValid,
   getSwapsLivenessForNetwork,
+  parseSmartTransactionsError,
+  stxErrorTypes,
 } from '../../pages/swaps/swaps.util';
 import { calcGasTotal } from '../../pages/send/send.utils';
 import {
@@ -192,7 +195,10 @@ const slice = createSlice({
       state.customGas.fallBackPrice = action.payload;
     },
     setCurrentSmartTransactionsError: (state, action) => {
-      state.currentSmartTransactionsError = action.payload;
+      const errorType = stxErrorTypes.includes(action.payload)
+        ? action.payload
+        : stxErrorTypes[0];
+      state.currentSmartTransactionsError = errorType;
     },
     dismissCurrentSmartTransactionsErrorMessage: (state) => {
       state.currentSmartTransactionsErrorMessageDismissed = true;
@@ -864,6 +870,13 @@ export const signAndSendSwapsSmartTransaction = ({
       );
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
+      const {
+        swaps: { isFeatureFlagLoaded },
+      } = getState();
+      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+      }
     }
   };
 };
@@ -1186,9 +1199,24 @@ export function fetchSwapsSmartTransactionFees(unsignedTransaction) {
         swaps: { isFeatureFlagLoaded },
       } = getState();
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
-        const errorJson = e.message.slice(12);
-        const errorObj = JSON.parse(errorJson.trim());
-        dispatch(setCurrentSmartTransactionsError(errorObj.type));
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+      }
+    }
+  };
+}
+
+export function cancelSwapsSmartTransaction(uuid) {
+  return async (dispatch, getState) => {
+    try {
+      await dispatch(cancelSmartTransaction(uuid));
+    } catch (e) {
+      const {
+        swaps: { isFeatureFlagLoaded },
+      } = getState();
+      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
       }
     }
   };
