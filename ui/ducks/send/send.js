@@ -1654,7 +1654,7 @@ export function signTransaction() {
         collectibleContract.transferFrom(
           selectedAddress,
           address,
-          asset?.details?.tokenId,
+          asset.details.tokenId,
           {
             ...txParams,
             to: undefined,

@@ -131,14 +131,14 @@ export default class SendAssetRow extends Component {
       collectibles,
     } = this.props;
 
-    if (type === 'TOKEN') {
+    if (type === ASSET_TYPES.TOKEN) {
       const token = tokens.find(({ address }) =>
         isEqualCaseInsensitive(address, details.address),
       );
       if (token) {
         return this.renderToken(token);
       }
-    } else if (type === 'COLLECTIBLE') {
+    } else if (type === ASSET_TYPES.COLLECTIBLE) {
       const collectible = collectibles.find(
         ({ address, tokenId }) =>
           isEqualCaseInsensitive(address, details.address) &&

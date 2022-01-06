@@ -123,7 +123,7 @@ export default function CollectibleDetails({ collectible }) {
     }
     return (
       <Box
-        justifyContent={JUSTIFY_CONTENT.CENTER}
+        display={DISPLAY.FLEX}
         width={inPopUp ? BLOCK_SIZES.FULL : BLOCK_SIZES.HALF}
       >
         <Button
@@ -172,7 +172,7 @@ export default function CollectibleDetails({ collectible }) {
           </Card>
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}
-            className="collectible-details__top-section-info"
+            className="collectible-details__info"
             justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
           >
             <div>
