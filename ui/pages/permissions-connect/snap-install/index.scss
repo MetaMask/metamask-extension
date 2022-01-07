@@ -24,10 +24,10 @@
     @include H7;
 
     display: flex;
-    color: $ui-4;
+    color: var(--ui-4);
 
     .link {
-      color: $primary-blue;
+      color: var(--primary-blue);
       margin-inline-start: 4px;
       cursor: pointer;
     }
