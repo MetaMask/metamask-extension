@@ -32,10 +32,6 @@ export default {
       options: FONT_WEIGHT,
       defaultValue: FONT_WEIGHT.NORMAL,
     },
-    spacing: {
-      control: { type: 'range', min: 1, max: 8 },
-      defaultValue: 1,
-    },
     variant: {
       control: { type: 'select' },
       options: TYPOGRAPHY,
