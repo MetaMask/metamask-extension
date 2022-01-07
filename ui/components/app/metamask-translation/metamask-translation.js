@@ -20,6 +20,10 @@ import MetaMaskTemplateRenderer, {
  * from being performance hogs. We could further limit this, and also attenuate
  * the safeComponentList for what kind of components we allow these special
  * trees to contain.
+ *
+ * @param options
+ * @param options.translationKey
+ * @param options.variables
  */
 export default function MetaMaskTranslation({ translationKey, variables }) {
   const t = useI18nContext();

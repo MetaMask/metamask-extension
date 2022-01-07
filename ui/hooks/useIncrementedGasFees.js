@@ -12,7 +12,7 @@ import { useGasFeeEstimates } from './useGasFeeEstimates';
  *
  * @param {string} originalFee - hexWei vale of the original fee (maxFee or maxPriority)
  * @param {string} currentEstimate - decGwei value of the current medium gasFee estimate (maxFee or maxPriorityfee)
- * @returns {string} - hexWei value of the higher of the two inputs.
+ * @returns {string} hexWei value of the higher of the two inputs.
  */
 function getHighestIncrementedFee(originalFee, currentEstimate) {
   const buffedOriginalHexWei = addTenPercent(originalFee);
@@ -32,10 +32,11 @@ function getHighestIncrementedFee(originalFee, currentEstimate) {
  * discarded by the network to avoid DoS attacks. This hook returns an object
  * that either has gasPrice or maxFeePerGas/maxPriorityFeePerGas specified. In
  * addition the gasLimit will also be included.
+ *
  * @param {} transaction
  * @returns {import(
  *   '../../app/scripts/controllers/transactions'
- * ).CustomGasSettings} - Gas settings for cancellations/speed ups
+ * ).CustomGasSettings} Gas settings for cancellations/speed ups
  */
 export function useIncrementedGasFees(transaction) {
   const { gasFeeEstimates = {} } = useGasFeeEstimates();

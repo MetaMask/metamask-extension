@@ -70,6 +70,7 @@ async function emptyState() {
  * page the object returned from the getState method will be set into the
  * confirmationState state object. Note, this state is not consumed by the page
  * itself.
+ *
  * @param {Object} pendingApproval - the object representing the confirmation
  */
 export async function getTemplateState(pendingApproval) {
@@ -89,6 +90,7 @@ export async function getTemplateState(pendingApproval) {
  * to be safe for templates to invoke. In the future we could put these behind
  * permission sets so that snaps that wish to manipulate state must ask for
  * explicit permission to do so.
+ *
  * @param {Function} dispatch - Redux dispatch function
  */
 function getAttenuatedDispatch(dispatch) {
@@ -102,6 +104,7 @@ function getAttenuatedDispatch(dispatch) {
 
 /**
  * Returns the templated values to be consumed in the confirmation page
+ *
  * @param {Object} pendingApproval - The pending confirmation object
  * @param {Function} t - Translation function
  * @param {Function} dispatch - Redux dispatch function

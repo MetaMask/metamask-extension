@@ -273,6 +273,7 @@ function filterSortedActivities(activities) {
 
 /**
  * Combines the histories of an array of transactions into a single array.
+ *
  * @param {Array} transactions - Array of txMeta transaction objects.
  * @returns {Array}
  */

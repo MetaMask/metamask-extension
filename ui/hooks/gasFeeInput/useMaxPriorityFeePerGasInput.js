@@ -33,6 +33,17 @@ const getMaxPriorityFeePerGasFromTransaction = (transaction) => {
  * @property {(DecGweiString) => void} setMaxPriorityFeePerGas - state setter
  *  method to update the maxPriorityFeePerGas.
  */
+
+/**
+ * @param options
+ * @param options.supportsEIP1559V2
+ * @param options.estimateToUse
+ * @param options.gasEstimateType
+ * @param options.gasFeeEstimates
+ * @param options.gasLimit
+ * @param options.transaction
+ * @returns {MaxPriorityFeePerGasInputReturnType}
+ */
 export function useMaxPriorityFeePerGasInput({
   estimateToUse,
   gasEstimateType,
