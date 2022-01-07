@@ -42,6 +42,7 @@ const POLL_COUNT_LIMIT = 3;
 // provide a reasonable fallback to avoid further errors
 const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
 const FALLBACK_SMART_TRANSACTION_REFRESH_TIME = SECOND * 10;
+const FALLBACK_SMART_TRANSACTIONS_DEADLINE = 180;
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -150,6 +151,7 @@ export default class SwapsController {
       quotesPrefetching: refreshRates.quotesPrefetching * 1000,
       stxGetTransactions: refreshRates.stxGetTransactions * 1000,
       stxBatchStatus: refreshRates.stxBatchStatus * 1000,
+      stxStatusDeadline: refreshRates.stxStatusDeadline,
     };
   }
 
@@ -176,6 +178,9 @@ export default class SwapsController {
         swapsStxBatchStatusRefreshTime:
           swapsRefreshRates?.stxBatchStatus ||
           FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+        swapsStxStatusDeadline:
+          swapsRefreshRates?.stxStatusDeadline ||
+          FALLBACK_SMART_TRANSACTIONS_DEADLINE,
       },
     });
   }
