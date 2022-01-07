@@ -7,7 +7,7 @@
   &__text {
     @include H7;
 
-    color: $ui-4;
+    color: var(--ui-4);
     display: flex;
     margin-top: 10px;
 
