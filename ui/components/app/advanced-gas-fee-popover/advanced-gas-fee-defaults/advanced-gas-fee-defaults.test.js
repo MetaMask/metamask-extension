@@ -67,7 +67,7 @@ describe('AdvancedGasFeeDefaults', () => {
   });
   it('should renders correct message when the default values are set', () => {
     render({
-      advancedGasFee: { maxBaseFee: 2, priorityFee: 2 },
+      advancedGasFee: { maxBaseFee: 75, priorityFee: 2 },
     });
     expect(
       screen.queryByText(
@@ -85,7 +85,7 @@ describe('AdvancedGasFeeDefaults', () => {
       ),
     ).toBeInTheDocument();
     fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 3 },
+      target: { value: 100 },
     });
     fireEvent.change(document.getElementsByTagName('input')[1], {
       target: { value: 4 },
@@ -93,7 +93,7 @@ describe('AdvancedGasFeeDefaults', () => {
   });
   it('should renders correct message when the default values are set and the maxBaseFee values are updated', () => {
     render({
-      advancedGasFee: { maxBaseFee: 2, priorityFee: 2 },
+      advancedGasFee: { maxBaseFee: 75, priorityFee: 2 },
     });
     expect(document.getElementsByTagName('input')[2]).toBeChecked();
     expect(
@@ -102,9 +102,9 @@ describe('AdvancedGasFeeDefaults', () => {
       ),
     ).toBeInTheDocument();
     fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 4 },
+      target: { value: 100 },
     });
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(4);
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
     expect(screen.queryByText('new values')).toBeInTheDocument();
     expect(
       screen.queryByText('Save these as my default for "Advanced"'),
@@ -112,7 +112,7 @@ describe('AdvancedGasFeeDefaults', () => {
   });
   it('should renders correct message when the default values are set and the priorityFee values are updated', () => {
     render({
-      advancedGasFee: { maxBaseFee: 2, priorityFee: 2 },
+      advancedGasFee: { maxBaseFee: 75, priorityFee: 2 },
     });
     expect(document.getElementsByTagName('input')[2]).toBeChecked();
     expect(
@@ -121,9 +121,9 @@ describe('AdvancedGasFeeDefaults', () => {
       ),
     ).toBeInTheDocument();
     fireEvent.change(document.getElementsByTagName('input')[1], {
-      target: { value: 4 },
+      target: { value: 100 },
     });
-    expect(document.getElementsByTagName('input')[1]).toHaveValue(4);
+    expect(document.getElementsByTagName('input')[1]).toHaveValue(100);
     expect(screen.queryByText('new values')).toBeInTheDocument();
     expect(
       screen.queryByText('Save these as my default for "Advanced"'),
