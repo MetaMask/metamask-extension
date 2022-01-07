@@ -185,7 +185,7 @@ export default function CollectibleDetails({ collectible }) {
                 color={COLORS.BLACK}
                 variant={TYPOGRAPHY.H4}
                 fontWeight={FONT_WEIGHT.BOLD}
-                boxProps={{ margin: 0, marginBottom: 3 }}
+                boxProps={{ margin: 0, marginBottom: 4 }}
               >
                 {name}
               </Typography>
@@ -211,7 +211,7 @@ export default function CollectibleDetails({ collectible }) {
               <Typography
                 color={COLORS.UI4}
                 variant={TYPOGRAPHY.H6}
-                boxProps={{ margin: 0, marginBottom: 3 }}
+                boxProps={{ margin: 0, marginBottom: 4 }}
               >
                 {description}
               </Typography>

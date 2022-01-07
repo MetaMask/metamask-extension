@@ -96,7 +96,8 @@ export default function CollectiblesTab({ onAddNFT }) {
 
   return (
     <div className="collectibles-tab">
-      {collectibles.length > 0 ? (
+      {Object.keys(collections).length > 0 ||
+      previouslyOwnedCollection.collectibles.length > 0 ? (
         <CollectiblesItems
           collections={collections}
           previouslyOwnedCollection={previouslyOwnedCollection}

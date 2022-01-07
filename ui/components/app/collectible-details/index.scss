@@ -72,6 +72,9 @@ $spacer-break-small: 16px;
 
   &__send-button {
     margin-inline-end: 8px;
-    max-width: 250px;
+
+    @media screen and (min-width: $break-large) {
+      max-width: 160px;
+    }
   }
 }
