@@ -117,6 +117,7 @@
   --account-button-background-hover-color: var(--Grey-000);
   --asset-list-primary-text: var(--Black-100);
   --asset-list-background-hover-color: var(--Grey-000);
+  --asset-list-header-items-background: var(--white);
   --asset-breadcrumb-text: var(--Black-100);
   --asset-menu-background: var(--white);
   --send-header-background-color: var(--Grey-000);
@@ -126,6 +127,7 @@
   --swaps-header-border-color: var(--Grey-100);
   --network-list-selected-color: var(--black);
   --input-background: var(--white);
+  --select-color: var(--primary-text);
 }
 
 :root.theme-dark {
@@ -137,6 +139,7 @@
   --primary-text-emphasized: var(--white);
   --account-menu-text: var(--primary-text-emphasized);
   --account-button-background-hover-color: var(--black);
+  --asset-list-header-items-background: var(--Grey-600);
   --asset-list-primary-text: var(--primary-text);
   --asset-list-background-hover-color: var(--neutral-black);
   --asset-breadcrumb-text: var(--Grey-100);
@@ -148,6 +151,7 @@
   --swaps-header-border-color: var(--neutral-black);
   --network-list-selected-color: inherit;
   --input-background: var(--neutral-black);
+  --select-color: var(--neutral-black);
 }
 
 $color-map: (

@@ -127,10 +127,13 @@ input.form-control {
   }
 }
 
-select,
 input,
 input.MuiInputBase-input {
   color: var(--primary-text);
+}
+
+select {
+  color: var(--select-color);
 }
 
 /** Default Typography on base elements **/

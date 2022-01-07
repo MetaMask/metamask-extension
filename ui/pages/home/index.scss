@@ -23,6 +23,7 @@
   &__main-view &__tabs {
     border: none;
     box-shadow: 0 3px 4px rgba(135, 134, 134, 0.16);
+    background: var(--asset-list-header-items-background);
   }
 
   &__main-view &__tab {
