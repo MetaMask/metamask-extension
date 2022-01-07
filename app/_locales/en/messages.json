@@ -2403,14 +2403,14 @@
   "removeNFT": {
     "message": "Remove NFT"
   },
-  "replace": {
-    "message": "replace"
-  },
   "removeSnap": {
     "message": "Remove Snap"
   },
   "removeSnapDescription": {
     "message": "This action will delete the snap, its data and revoke your given permissions."
+  },
+  "replace": {
+    "message": "replace"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
@@ -2745,7 +2745,7 @@
     "message": "To confirm you understand, check all."
   },
   "snapInstallWarningKeyAccess": {
-    "message": "You are granting key access to $1 snap. This is irrevocable and makes $1 able to control your account and assets. Make sure you trust $1 developers.",
+    "message": "You are granting key access to the snap \"$1\". This is irrevocable and grants \"$1\" control of your accounts and assets. Make sure you trust \"$1\" before proceeding.",
     "description": "The parameter is the name of the snap"
   },
   "snapRequestsPermission": {
