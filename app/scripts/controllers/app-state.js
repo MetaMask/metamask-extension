@@ -274,6 +274,8 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * A setter for the `enableEIP1559V2NoticeDismissed` property
+   *
+   * @param enableEIP1559V2NoticeDismissed
    */
   setEnableEIP1559V2NoticeDismissed(enableEIP1559V2NoticeDismissed) {
     this.store.updateState({
