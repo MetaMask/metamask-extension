@@ -19,7 +19,6 @@ function mapStateToProps(state) {
     accounts: getMetaMaskAccounts(state),
     nativeCurrency: getNativeCurrency(state),
     nativeCurrencyImage: getNativeCurrencyImage(state),
-    testState: state,
   };
 }
 
