@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Tanggihan"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "I-scan ang QR Code"
+  },
   "about": {
     "message": "Tungkol sa"
   },
@@ -481,6 +487,9 @@
     "message": "Kilalang address ng contract."
   },
   "learnMore": {
+    "message": "Matuto pa"
+  },
+  "learnMoreUpperCase": {
     "message": "Matuto pa"
   },
   "ledgerAccountRestriction": {

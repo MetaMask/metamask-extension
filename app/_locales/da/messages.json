@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Afvis"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scan QR-kode"
+  },
   "about": {
     "message": "Om"
   },
@@ -255,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Nuværende sprog"
+  },
+  "custom": {
+    "message": "Avanceret"
   },
   "customGas": {
     "message": "Tilpas brændstof"
@@ -521,6 +530,9 @@
     "message": "Kovan Test-Netværk"
   },
   "learnMore": {
+    "message": "Lær mere"
+  },
+  "learnMoreUpperCase": {
     "message": "Lær mere"
   },
   "ledgerAccountRestriction": {
