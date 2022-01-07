@@ -2349,6 +2349,9 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
    * TODO:snaps verify safety of using keyringController.getAccounts
+   *
+   * @param domain
+   * @param requestedAccount
    */
   async getAppKeyForDomain(domain, requestedAccount) {
     let account;
@@ -2835,6 +2838,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * A Snap sender object.
+   *
    * @typedef {Object} SnapSender
    * @property {string} snapId - The ID of the snap.
    */
@@ -2842,6 +2846,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Used to create a multiplexed stream for connecting to an untrusted context
    * like a Dapp or other extension.
+   *
    * @param options - Options bag.
    * @param {ReadableStream} options.connectionStream - The Duplex stream to connect to.
    * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
@@ -3026,6 +3031,9 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * For snaps running in workers.
+   *
+   * @param snapId
+   * @param connectionStream
    */
   setupSnapProvider(snapId, connectionStream) {
     this.setupUntrustedCommunication({
@@ -3044,7 +3052,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {MessageSender | SnapSender} options.sender - The sender object.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
-   **/
+   */
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
