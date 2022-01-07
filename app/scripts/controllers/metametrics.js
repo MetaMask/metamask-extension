@@ -40,19 +40,21 @@ const exceptionsToFilter = {
 
 export default class MetaMetricsController {
   /**
-   * @param {Object} segment - an instance of analytics-node for tracking
+   * @param {object} options
+   * @param {Object} options.segment - an instance of analytics-node for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {Object} preferencesStore - The preferences controller store, used
+   * @param {Object} options.preferencesStore - The preferences controller store, used
    *  to access and subscribe to preferences that will be attached to events
-   * @param {function} onNetworkDidChange - Used to attach a listener to the
+   * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
-   * @param {function} getCurrentChainId - Gets the current chain id from the
+   * @param {Function} options.getCurrentChainId - Gets the current chain id from the
    *  network controller
-   * @param {function} getNetworkIdentifier - Gets the current network
+   * @param {Function} options.getNetworkIdentifier - Gets the current network
    *  identifier from the network controller
-   * @param {string} version - The version of the extension
-   * @param {string} environment - The environment the extension is running in
-   * @param {MetaMetricsControllerState} initState - State to initialized with
+   * @param {string} options.version - The version of the extension
+   * @param {string} options.environment - The environment the extension is running in
+   * @param {MetaMetricsControllerState} options.initState - State to initialized with
+   * @param options.captureException
    */
   constructor({
     segment,
@@ -132,6 +134,7 @@ export default class MetaMetricsController {
 
   /**
    * Build the context object to attach to page and track events.
+   *
    * @private
    * @param {Pick<MetaMetricsContext, 'referrer'>} [referrer] - dapp origin that initialized
    *  the notification window.
@@ -154,11 +157,12 @@ export default class MetaMetricsController {
   /**
    * Build's the event payload, processing all fields into a format that can be
    * fed to Segment's track method
+   *
    * @private
    * @param {
    *  Omit<MetaMetricsEventPayload, 'sensitiveProperties'>
    * } rawPayload - raw payload provided to trackEvent
-   * @returns {SegmentEventPayload} - formatted event payload for segment
+   * @returns {SegmentEventPayload} formatted event payload for segment
    */
   _buildEventPayload(rawPayload) {
     const {
@@ -199,6 +203,7 @@ export default class MetaMetricsController {
    * Perform validation on the payload and update the id type to use before
    * sending to Segment. Also examines the options to route and handle the
    * event appropriately.
+   *
    * @private
    * @param {SegmentEventPayload} payload - properties to attach to event
    * @param {MetaMetricsEventOptions} [options] - options for routing and
@@ -273,6 +278,7 @@ export default class MetaMetricsController {
 
   /**
    * track a page view with Segment
+   *
    * @param {MetaMetricsPagePayload} payload - details of the page viewed
    * @param {MetaMetricsPageOptions} [options] - options for handling the page
    *  view
@@ -311,6 +317,7 @@ export default class MetaMetricsController {
 
   /**
    * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
+   *
    * @param {MetaMetricsEventPayload} payload - details of the event
    * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
    */
@@ -327,6 +334,7 @@ export default class MetaMetricsController {
    * routing the event to the appropriate segment source. Will split events
    * with sensitiveProperties into two events, tracking the sensitiveProperties
    * with the anonymousId only.
+   *
    * @param {MetaMetricsEventPayload} payload - details of the event
    * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
    * @returns {Promise<void>}
@@ -375,6 +383,7 @@ export default class MetaMetricsController {
 
   /**
    * validates a metametrics event
+   *
    * @param {MetaMetricsEventPayload} payload - details of the event
    */
   validatePayload(payload) {

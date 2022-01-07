@@ -56,7 +56,7 @@ const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
 
 /**
- * @param {string} type Type of an API call, e.g. "tokens"
+ * @param {string} type - Type of an API call, e.g. "tokens"
  * @param {string} chainId
  * @returns string
  */
@@ -761,7 +761,6 @@ export function formatSwapsValueForDisplay(destinationAmount) {
  * Checks whether a contract address is valid before swapping tokens.
  *
  * @param {string} contractAddress - E.g. "0x881d40237659c251811cec9c364ef91dc08d300c" for mainnet
- * @param {object} swapMetaData - We check the following 2 fields, e.g. { token_from: "ETH", token_to: "WETH" }
  * @param {string} chainId - The hex encoded chain ID to check
  * @returns {boolean} Whether a contract address is valid or not
  */
@@ -801,6 +800,7 @@ export const getNetworkNameByChainId = (chainId) => {
 
 /**
  * It returns info about if Swaps are enabled and if we should use our new APIs for it.
+ *
  * @param {object} swapsFeatureFlags
  * @param {string} chainId
  * @returns object with 2 items: "swapsFeatureIsLive"

@@ -77,11 +77,15 @@ import { useTransactionFunctions } from './useTransactionFunctions';
  * Uses gasFeeEstimates and state to keep track of user gas fee inputs.
  * Will update the gas fee state when estimates update if the user has not yet
  * modified the fields.
- * @param {EstimateLevel} defaultEstimateToUse - which estimate
+ *
+ * @param {EstimateLevel} [defaultEstimateToUse] - which estimate
  *  level to default the 'estimateToUse' state variable to.
+ * @param {object} [transaction]
+ * @param {string} [minimumGasLimit]
+ * @param {EDIT_GAS_MODES[keyof EDIT_GAS_MODES]} editGasMode
  * @returns {GasFeeInputReturnType & import(
  *  './useGasFeeEstimates'
- * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
+ * ).GasEstimates} gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(
   defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,

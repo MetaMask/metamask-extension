@@ -312,6 +312,8 @@ export function getUnapprovedTxs(state) {
 
 /**
  * Function returns true if network details are fetched and it is found to not support EIP-1559
+ *
+ * @param state
  */
 export function isNotEIP1559Network(state) {
   return state.metamask.networkDetails?.EIPS[1559] === false;
@@ -319,6 +321,8 @@ export function isNotEIP1559Network(state) {
 
 /**
  * Function returns true if network details are fetched and it is found to support EIP-1559
+ *
+ * @param state
  */
 export function isEIP1559Network(state) {
   return state.metamask.networkDetails?.EIPS[1559] === true;
