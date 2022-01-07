@@ -73,12 +73,34 @@ const Button = ({
 };
 
 Button.propTypes = {
+  /**
+   * The type of variation a button can be.
+   * Can be one of 'default','primary','secondary','warning','danger','danger-primary' or 'link'
+   */
   type: PropTypes.string,
+  /**
+   * If true sets the html 'type' attribute to type="submit"
+   */
   submit: PropTypes.bool,
+  /**
+   * Increase the height of the button to 54px
+   */
   large: PropTypes.bool,
+  /**
+   * Additional className to provide on the root element of the button
+   */
   className: PropTypes.string,
+  /**
+   * The children of the button component
+   */
   children: PropTypes.node,
+  /**
+   * Provide an icon component for an icon to appear on the left side of the button
+   */
   icon: PropTypes.node,
+  /**
+   * Buttons are rounded by default.
+   */
   rounded: PropTypes.bool,
 };
 
