@@ -103,7 +103,7 @@ const PriorityFeeInput = () => {
         error={priorityFeeError ? t(priorityFeeError) : ''}
         onChange={updatePriorityFee}
         titleText={t('priorityFeeProperCase')}
-        titleUnit={t('gweiInParanthesis')}
+        titleUnit={t('gweiInParentheses')}
         tooltipText={t('advancedPriorityFeeToolTip')}
         value={priorityFee}
         detailText={`≈ ${priorityFeeInFiat}`}

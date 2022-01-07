@@ -116,7 +116,7 @@ const BaseFeeInput = () => {
         error={baseFeeError ? t(baseFeeError) : ''}
         onChange={updateBaseFee}
         titleText={t('maxBaseFee')}
-        titleUnit={t('gweiInParanthesis')}
+        titleUnit={t('gweiInParentheses')}
         tooltipText={t('advancedBaseGasFeeToolTip')}
         value={baseFee}
         detailText={`≈ ${baseFeeInFiat}`}
