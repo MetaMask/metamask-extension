@@ -32,6 +32,7 @@ import {
   getUseTokenDetection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
+  getEIP1559V2Enabled,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -184,6 +185,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
+  const eip1559V2Enabled = getEIP1559V2Enabled(state);
 
   return {
     balance,
@@ -235,6 +237,7 @@ const mapStateToProps = (state, ownProps) => {
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
     chainId,
+    eip1559V2Enabled,
   };
 };
 

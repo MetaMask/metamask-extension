@@ -2231,6 +2231,19 @@ export function setAdvancedGasFee(val) {
   };
 }
 
+export function setEIP1559V2Enabled(val) {
+  return (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setEIP1559V2Enabled`);
+    background.setEIP1559V2Enabled(val, (err) => {
+      dispatch(hideLoadingIndication());
+      if (err) {
+        dispatch(displayWarning(err.message));
+      }
+    });
+  };
+}
+
 export function setIpfsGateway(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());

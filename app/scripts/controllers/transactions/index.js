@@ -430,6 +430,8 @@ export default class TransactionController extends EventEmitter {
     }
 
     if (eip1559Compatibility) {
+      const { eip1559V2Enabled } = this.preferencesStore.getState();
+
       // If the dapp has suggested a gas price, but no maxFeePerGas or maxPriorityFeePerGas
       //  then we set maxFeePerGas and maxPriorityFeePerGas to the suggested gasPrice.
       if (
@@ -439,7 +441,7 @@ export default class TransactionController extends EventEmitter {
       ) {
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
-        if (process.env.EIP_1559_V2) {
+        if (eip1559V2Enabled) {
           txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
         } else {
           txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
@@ -453,7 +455,7 @@ export default class TransactionController extends EventEmitter {
           txMeta.origin === 'metamask'
         ) {
           txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
-        } else if (process.env.EIP_1559_V2) {
+        } else if (eip1559V2Enabled) {
           txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
         } else {
           txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;

@@ -942,6 +942,12 @@
   "enableAutoDetect": {
     "message": " Enable Autodetect"
   },
+  "enableEIP1559V2": {
+    "message": "Enable EIP-1559 V2"
+  },
+  "enableEIP1559V2Description": {
+    "message": "Use EIP-1559 V2 for making transactions."
+  },
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },

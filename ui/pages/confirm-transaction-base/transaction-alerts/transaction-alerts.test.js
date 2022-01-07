@@ -33,6 +33,7 @@ const render = ({ componentProps, transactionProps, state }) => {
         },
       },
       gasFeeEstimates: mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET],
+      eip1559V2Enabled: true,
       ...state,
     },
   });
@@ -53,14 +54,6 @@ const render = ({ componentProps, transactionProps, state }) => {
 };
 
 describe('TransactionAlerts', () => {
-  beforeEach(() => {
-    process.env.EIP_1559_V2 = true;
-  });
-
-  afterEach(() => {
-    process.env.EIP_1559_V2 = false;
-  });
-
   it('should returning warning message for low gas estimate', () => {
     render({ transactionProps: { userFeeLevel: 'low' } });
     expect(

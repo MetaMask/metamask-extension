@@ -133,12 +133,12 @@ describe('FeeCard', () => {
   });
 
   it('renders the component with EIP-1559 V2 enabled', () => {
-    process.env.EIP_1559_V2 = true;
     useGasFeeEstimates.mockImplementation(() => ({ gasFeeEstimates: {} }));
     useSelector.mockImplementation((selector) => {
       if (selector === getPreferences) {
         return {
           useNativeCurrencyAsPrimaryCurrency: true,
+          getEIP1559V2Enabled: true,
         };
       }
       if (selector === getSelectedAccount) {
@@ -180,6 +180,5 @@ describe('FeeCard', () => {
     expect(
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
-    process.env.EIP_1559_V2 = false;
   });
 });
