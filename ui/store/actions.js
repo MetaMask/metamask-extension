@@ -2236,7 +2236,7 @@ export function setEIP1559V2Enabled(val) {
     dispatch(showLoadingIndication());
     log.debug(`background.setEIP1559V2Enabled`);
     try {
-      await promisifiedBackground.setEIP1559V2Enabled(val)
+      await promisifiedBackground.setEIP1559V2Enabled(val);
     } finally {
       dispatch(hideLoadingIndication());
     }
