@@ -18,19 +18,7 @@ export const buildSnapEndowmentSpecifications = () =>
   );
 
 /**
- * @typedef {Object} SnapPermissionSpecificationHooks
- * @property {Function} addSnap
- * @property {Function} clearSnapState
- * @property {Function} getMnemonic
- * @property {Function} getSnap
- * @property {Function} getSnapRpcHandler
- * @property {Function} getSnapState
- * @property {Function} showConfirmation
- * @property {Function} updateSnapState
- */
-
-/**
- * @param {SnapPermissionSpecificationHooks} hooks - The hooks for the Snap
+ * @param {Record<string, Function>} hooks - The hooks for the Snap
  * restricted method implementations.
  */
 export function buildSnapRestrictedMethodSpecifications(hooks) {
