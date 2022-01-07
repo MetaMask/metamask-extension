@@ -41,11 +41,7 @@ const render = (defaultGasParams) => {
   return renderWithProvider(
     <GasFeeContextProvider
       transaction={{
-        userFeeLevel: 'custom',
-        txParams: {
-          maxFeePerGas: '0x174876E800',
-          maxPriorityFeePerGas: '0x77359400',
-        },
+        userFeeLevel: 'medium',
       }}
     >
       <AdvancedGasFeePopoverContextProvider>
@@ -67,7 +63,7 @@ describe('AdvancedGasFeeDefaults', () => {
   });
   it('should renders correct message when the default values are set', () => {
     render({
-      advancedGasFee: { maxBaseFee: 100, priorityFee: 2 },
+      advancedGasFee: { maxBaseFee: 50, priorityFee: 2 },
     });
     expect(
       screen.queryByText(
@@ -93,7 +89,7 @@ describe('AdvancedGasFeeDefaults', () => {
   });
   it('should renders correct message when the default values are set and the maxBaseFee values are updated', () => {
     render({
-      advancedGasFee: { maxBaseFee: 100, priorityFee: 2 },
+      advancedGasFee: { maxBaseFee: 50, priorityFee: 2 },
     });
     expect(document.getElementsByTagName('input')[2]).toBeChecked();
     expect(
@@ -112,7 +108,7 @@ describe('AdvancedGasFeeDefaults', () => {
   });
   it('should renders correct message when the default values are set and the priorityFee values are updated', () => {
     render({
-      advancedGasFee: { maxBaseFee: 100, priorityFee: 2 },
+      advancedGasFee: { maxBaseFee: 50, priorityFee: 2 },
     });
     expect(document.getElementsByTagName('input')[2]).toBeChecked();
     expect(
