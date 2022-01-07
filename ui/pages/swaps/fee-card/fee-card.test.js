@@ -14,6 +14,7 @@ import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 
 import {
   checkNetworkAndAccountSupports1559,
+  getEIP1559V2Enabled,
   getPreferences,
   getSelectedAccount,
 } from '../../../selectors';
@@ -138,8 +139,10 @@ describe('FeeCard', () => {
       if (selector === getPreferences) {
         return {
           useNativeCurrencyAsPrimaryCurrency: true,
-          getEIP1559V2Enabled: true,
         };
+      }
+      if (selector === getEIP1559V2Enabled) {
+        return true;
       }
       if (selector === getSelectedAccount) {
         return {

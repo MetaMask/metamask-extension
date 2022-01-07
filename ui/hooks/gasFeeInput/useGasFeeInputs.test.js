@@ -324,7 +324,7 @@ describe('useGasFeeInputs', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           checkNetworkAndAccountSupports1559Response: true,
-          getEIP1559V2Enabled: true,
+          eip1559V2Enabled: true,
         }),
       );
     });
