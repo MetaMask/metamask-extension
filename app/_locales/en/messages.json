@@ -2403,14 +2403,14 @@
   "removeNFT": {
     "message": "Remove NFT"
   },
-  "replace": {
-    "message": "replace"
-  },
   "removeSnap": {
     "message": "Remove Snap"
   },
   "removeSnapDescription": {
     "message": "This action will delete the snap, its data and revoke your given permissions."
+  },
+  "replace": {
+    "message": "replace"
   },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
