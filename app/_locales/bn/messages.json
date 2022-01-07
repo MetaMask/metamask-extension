@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "প্রত্যাখ্যান"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR কোড স্ক্যান করুন"
+  },
   "about": {
     "message": "সম্পর্কে"
   },
@@ -255,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "বর্তমান ভাষা"
+  },
+  "custom": {
+    "message": "উন্নত"
   },
   "customGas": {
     "message": "গ্যাস কাস্টোমাইজ করুন"
@@ -528,6 +537,9 @@
     "message": "কোভান টেস্ট নেটওয়ার্ক"
   },
   "learnMore": {
+    "message": "আরও জানুন"
+  },
+  "learnMoreUpperCase": {
     "message": "আরও জানুন"
   },
   "ledgerAccountRestriction": {

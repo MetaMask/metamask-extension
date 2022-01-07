@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odrzuć"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skanuj kod QR"
+  },
   "about": {
     "message": "Informacje"
   },
@@ -255,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Obecny język"
+  },
+  "custom": {
+    "message": "Zaawansowane"
   },
   "customGas": {
     "message": "Ustaw gaz"
@@ -528,6 +537,9 @@
     "message": "Sieć testowa Kovan"
   },
   "learnMore": {
+    "message": "Dowiedz się więcej"
+  },
+  "learnMoreUpperCase": {
     "message": "Dowiedz się więcej"
   },
   "ledgerAccountRestriction": {

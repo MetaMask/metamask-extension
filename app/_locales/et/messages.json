@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Lükka tagasi"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skannige QR-koos"
+  },
   "about": {
     "message": "Teave"
   },
@@ -255,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Praegune keel"
+  },
+  "custom": {
+    "message": "Täpsemad"
   },
   "customGas": {
     "message": "Gaasi kohandamine"
@@ -524,6 +533,9 @@
     "message": "Kovani testvõrk"
   },
   "learnMore": {
+    "message": "Lisateave"
+  },
+  "learnMoreUpperCase": {
     "message": "Lisateave"
   },
   "ledgerAccountRestriction": {
