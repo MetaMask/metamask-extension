@@ -16,6 +16,7 @@ import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 
+import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -202,6 +203,7 @@ export default class ConfirmPageContainer extends Component {
               </>
             )}
           </div>
+          <EnableEIP1559V2Notice />
           {contentComponent || (
             <ConfirmPageContainerContent
               action={action}

@@ -1199,6 +1199,9 @@ export default class MetamaskController extends EventEmitter {
       setCollectiblesDetectionNoticeDismissed: appStateController.setCollectiblesDetectionNoticeDismissed.bind(
         appStateController,
       ),
+      setEnableEIP1559V2NoticeDismissed: appStateController.setEnableEIP1559V2NoticeDismissed.bind(
+        appStateController,
+      ),
       // EnsController
       tryReverseResolveAddress: ensController.reverseResolveAddress.bind(
         ensController,

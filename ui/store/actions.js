@@ -3083,6 +3083,10 @@ export function setCollectiblesDetectionNoticeDismissed() {
   return promisifiedBackground.setCollectiblesDetectionNoticeDismissed(true);
 }
 
+export function setEnableEIP1559V2NoticeDismissed() {
+  return promisifiedBackground.setEnableEIP1559V2NoticeDismissed(true);
+}
+
 // QR Hardware Wallets
 export async function submitQRHardwareCryptoHDKey(cbor) {
   await promisifiedBackground.submitQRHardwareCryptoHDKey(cbor);
