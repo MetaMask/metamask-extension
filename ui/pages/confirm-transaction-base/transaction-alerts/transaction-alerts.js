@@ -22,6 +22,7 @@ const TransactionAlerts = ({
     estimateUsed,
     hasSimulationError,
     supportsEIP1559V2,
+    isNetworkBusy,
   } = useGasFeeContext();
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
   const t = useI18nContext();
@@ -107,6 +108,13 @@ const TransactionAlerts = ({
           type="warning"
         />
       )}
+      {isNetworkBusy ? (
+        <ActionableMessage
+          message={<I18nValue messageKey="networkIsBusy" />}
+          iconFillColor="#f8c000"
+          type="warning"
+        />
+      ) : null}
     </div>
   );
 };

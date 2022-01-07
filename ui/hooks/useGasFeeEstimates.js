@@ -5,6 +5,7 @@ import {
   getGasEstimateType,
   getGasFeeEstimates,
   getIsGasEstimatesLoading,
+  getIsNetworkBusy,
 } from '../ducks/metamask/metamask';
 import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
 
@@ -38,6 +39,7 @@ export function useGasFeeEstimates() {
     shallowEqual,
   );
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
+  const isNetworkBusy = useSelector(getIsNetworkBusy);
   useSafeGasEstimatePolling();
 
   return {
@@ -45,5 +47,6 @@ export function useGasFeeEstimates() {
     gasEstimateType,
     estimatedGasFeeTimeBounds,
     isGasEstimatesLoading,
+    isNetworkBusy,
   };
 }

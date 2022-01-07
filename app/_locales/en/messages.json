@@ -1785,6 +1785,9 @@
   "networkDetails": {
     "message": "Network Details"
   },
+  "networkIsBusy": {
+    "message": "Network is busy. Gas prices are high and estimates are less accurate."
+  },
   "networkName": {
     "message": "Network Name"
   },

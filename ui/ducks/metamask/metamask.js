@@ -1,6 +1,10 @@
 import { addHexPrefix, isHexString, stripHexPrefix } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
+import {
+  GAS_ESTIMATE_TYPES,
+  NETWORK_CONGESTION_THRESHOLDS,
+} from '../../../shared/constants/gas';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
@@ -11,7 +15,7 @@ import { updateTransaction } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+
 import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 
 export default function reduceMetamask(state = {}, action) {
@@ -359,6 +363,13 @@ export function getIsGasEstimatesLoading(state) {
       gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
 
   return isGasEstimatesLoading;
+}
+
+export function getIsNetworkBusy(state) {
+  const gasFeeEstimates = getGasFeeEstimates(state);
+  return (
+    gasFeeEstimates?.networkCongestion >= NETWORK_CONGESTION_THRESHOLDS.BUSY
+  );
 }
 
 export function getCompletedOnboarding(state) {
