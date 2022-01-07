@@ -946,7 +946,8 @@
     "message": "Enable EIP-1559 V2"
   },
   "enableEIP1559V2Description": {
-    "message": "Use EIP-1559 V2 for making transactions."
+    "message": "We've updated how gas estimation and customization works. Turn on if you'd like to use the new gas experience. $1",
+    "description": "$1 here is Learn More link"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."

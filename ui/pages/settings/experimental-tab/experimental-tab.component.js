@@ -148,7 +148,16 @@ export default class ExperimentalTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('enableEIP1559V2')}</span>
           <div className="settings-page__content-description">
-            {t('enableEIP1559V2Description')}
+            {t('enableEIP1559V2Description', [
+              <a
+                key="eip_page_link"
+                href="https://metamask.io/1559.html"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
           </div>
         </div>
         <div className="settings-page__content-item">
