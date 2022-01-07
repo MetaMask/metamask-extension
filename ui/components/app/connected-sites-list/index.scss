@@ -37,7 +37,7 @@
     @include H7;
 
     cursor: pointer;
-    color: $primary-1;
+    color: var(--primary-1);
     padding-inline-start: 24px;
   }
 
