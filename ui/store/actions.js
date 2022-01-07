@@ -2232,15 +2232,14 @@ export function setAdvancedGasFee(val) {
 }
 
 export function setEIP1559V2Enabled(val) {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setEIP1559V2Enabled`);
-    background.setEIP1559V2Enabled(val, (err) => {
+    try {
+      await promisifiedBackground.setEIP1559V2Enabled(val)
+    } finally {
       dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err.message));
-      }
-    });
+    }
   };
 }
 
