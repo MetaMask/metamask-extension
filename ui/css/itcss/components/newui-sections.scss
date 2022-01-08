@@ -97,7 +97,7 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
   .main-container {
     width: 100%;
     overflow-y: auto;
-    background-color: var(--white);
+    background: var(--main-container-background);
   }
 
   .main-container-wrapper {

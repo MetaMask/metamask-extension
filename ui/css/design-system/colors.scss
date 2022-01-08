@@ -128,6 +128,7 @@
   --network-list-selected-color: var(--black);
   --input-background: var(--white);
   --select-color: var(--primary-text);
+  --home-title-color: var(--tundora);
 }
 
 :root.theme-dark {
@@ -152,6 +153,7 @@
   --network-list-selected-color: inherit;
   --input-background: var(--neutral-black);
   --select-color: var(--neutral-black);
+  --home-title-color: var(--white);
 }
 
 $color-map: (
