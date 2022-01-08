@@ -343,7 +343,7 @@ export default function Swap() {
                         cursor: 'pointer',
                       }}
                     >
-                      Try a regular swap.
+                      {t('swapTryRegular')}
                     </span>
                   </div>
                 ) : (

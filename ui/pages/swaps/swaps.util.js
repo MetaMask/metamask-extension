@@ -895,6 +895,5 @@ export const smartTransactionsErrorMessages = (errorType) => {
 
 export const parseSmartTransactionsError = (errorMessage) => {
   const errorJson = errorMessage.slice(12);
-  const errorObj = JSON.parse(errorJson.trim());
-  return errorObj;
+  return JSON.parse(errorJson.trim());
 };
