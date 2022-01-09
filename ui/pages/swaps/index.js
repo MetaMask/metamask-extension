@@ -343,7 +343,7 @@ export default function Swap() {
                         cursor: 'pointer',
                       }}
                     >
-                      {t('swapTryRegular')}
+                      {t('smartTransactionsTryRegular')}
                     </span>
                   </div>
                 ) : (
