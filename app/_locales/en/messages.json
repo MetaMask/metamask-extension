@@ -2531,6 +2531,9 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
+  "sendingDisabled": {
+    "message": "Sending of ERC-1155 NFT assets is not yet supported."
+  },
   "sendingNativeAsset": {
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
@@ -3153,6 +3156,9 @@
   },
   "tokenDetectionAnnouncement": {
     "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
+  },
+  "tokenId": {
+    "message": "Token ID"
   },
   "tokenSymbol": {
     "message": "Token Symbol"

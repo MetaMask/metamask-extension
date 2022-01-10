@@ -42,7 +42,11 @@ export default class SendAmountRow extends Component {
   }
 
   render() {
-    const { inError } = this.props;
+    const { inError, asset } = this.props;
+
+    if (asset.type === ASSET_TYPES.COLLECTIBLE) {
+      return null;
+    }
 
     return (
       <SendRowWrapper
