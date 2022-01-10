@@ -842,9 +842,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "Ang max base fee ay mababa para sa kasalukuyang mga kundisyon ng network"
   },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "Ang multiplier ay mababa may kaugnayan sa Priority fee"
-  },
   "editGasMaxFeeHigh": {
     "message": "Ang max fee ay mas mataas kaysa kinakailangan"
   },
@@ -905,12 +902,6 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "Pinabababa nito ang iyong maximum fee ngunit kung network traffic ay maaaring maantala o mabigo ang iyong transaksyon."
-  },
-  "editInGwei": {
-    "message": "I-edit sa GWEI"
-  },
-  "editInMultiplier": {
-    "message": "I-edit sa multiplier"
   },
   "editNonceField": {
     "message": "I-edit sa Nonce"
@@ -1725,9 +1716,6 @@
   },
   "mobileSyncWarning": {
     "message": "Ang feature na 'I-sync gamit ang extension' ay pansamantalang hindi gumagana. Kung gusto mong gamitin ang iyong extension wallet sa MetaMask mobile, pagkatapos ay sa iyong mobile app: bumalik sa mga opsyon sa pag-setup ng wallet at piliin ang opsyong 'Mag-import gamit ang Secret Recovery Phrase'. Gamitin ang lihim na parirala ng iyong extension wallet upang pagkatapos ay i-import ang iyong wallet sa mobile."
-  },
-  "multiplier": {
-    "message": "multiplier"
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."

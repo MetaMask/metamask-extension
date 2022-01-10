@@ -842,9 +842,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "現在のネットワーク状況に対して最大基本手数料が低いです"
   },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "優先手数料に対して乗数が低いです"
-  },
   "editGasMaxFeeHigh": {
     "message": "最大手数料が必要以上です"
   },
@@ -905,12 +902,6 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "これにより最大手数料は下がりますが、ネットワークトラフィックが増加するとトランザクションが遅延または失敗する可能性があります。"
-  },
-  "editInGwei": {
-    "message": "GWEIで編集"
-  },
-  "editInMultiplier": {
-    "message": "乗数で編集"
   },
   "editNonceField": {
     "message": "ナンスの編集"
@@ -1725,9 +1716,6 @@
   },
   "mobileSyncWarning": {
     "message": "「拡張機能と同期」機能は一時的に無効になっています。拡張ウォレットをMetaMaskモバイルで使用する場合は、モバイルアプリでウォレットの設定オプションに戻り、「シークレットリカバリーフレーズでインポート」オプションを選択します。拡張ウォレットのシークレットフレーズを使用して、ウォレットをモバイルにインポートします。"
-  },
-  "multiplier": {
-    "message": "乗数"
   },
   "mustSelectOne": {
     "message": "トークンを 1 つ以上選択する必要があります。"

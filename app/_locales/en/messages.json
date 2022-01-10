@@ -857,9 +857,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "Max base fee is low for current network conditions"
   },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "Multiplier is low relative to Priority fee"
-  },
   "editGasMaxFeeHigh": {
     "message": "Max fee is higher than necessary"
   },
@@ -920,12 +917,6 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
-  },
-  "editInGwei": {
-    "message": "Edit in GWEI"
-  },
-  "editInMultiplier": {
-    "message": "Edit in multiplier"
   },
   "editNonceField": {
     "message": "Edit Nonce"
@@ -1297,6 +1288,9 @@
   },
   "grantedToWithColon": {
     "message": "Granted to:"
+  },
+  "gwei": {
+    "message": "GWEI"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -1751,9 +1745,6 @@
   },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
-  },
-  "multiplier": {
-    "message": "multiplier"
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
