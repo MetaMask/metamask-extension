@@ -943,7 +943,7 @@
     "message": " Enable Autodetect"
   },
   "enableEIP1559V2": {
-    "message": "Enable EIP-1559 V2"
+    "message": "Enable Enhanced Gas Fee UI"
   },
   "enableEIP1559V2AlertMessage": {
     "message": "We've updated how gas fee estimation and customization works."
