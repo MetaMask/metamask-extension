@@ -919,9 +919,9 @@ export default function ViewQuote() {
                       unsignedTransaction,
                       smartTransactionFees,
                       metaMetricsEvent,
+                      history,
                     }),
                   );
-                  history.push(SMART_TRANSACTION_STATUS_ROUTE);
                 } else {
                   dispatch(signAndSendTransactions(history, metaMetricsEvent));
                 }
