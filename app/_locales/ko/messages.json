@@ -842,9 +842,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "최대 기본 요금이 현재 네트워크 조건에 비해 낮습니다."
   },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "승수가 우선 요금에 비해 낮습니다."
-  },
   "editGasMaxFeeHigh": {
     "message": "최대 요금이 필요 이상으로 높습니다."
   },
@@ -905,12 +902,6 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "이렇게 하면 최대 요금이 낮아지지만 네트워크 트래픽이 증가하여 거래가 지연되거나 실패할 수 있습니다."
-  },
-  "editInGwei": {
-    "message": "GWEI에서 편집"
-  },
-  "editInMultiplier": {
-    "message": "승수에서 편집"
   },
   "editNonceField": {
     "message": "임시값 편집"
@@ -1725,9 +1716,6 @@
   },
   "mobileSyncWarning": {
     "message": "'확장 프로그램과 동기화' 기능이 일시적으로 비활성화됩니다. 메타마스크 모바일에서 확장 지갑을 사용하려면 모바일 앱에서 지갑 설정 옵션으로 돌아가 '비밀 백업 문구 가져오기' 옵션을 선택하세요. 확장 지갑의 비밀 문구를 사용하여 지갑을 모바일로 가져올 수 있습니다."
-  },
-  "multiplier": {
-    "message": "승수"
   },
   "mustSelectOne": {
     "message": "토큰을 1개 이상 선택해야 합니다."

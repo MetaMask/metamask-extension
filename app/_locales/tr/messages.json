@@ -842,9 +842,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "Maks. baz ücreti mevcut ağ koşulları için düşük"
   },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "Öncelik ücretine göre çarpan düşük"
-  },
   "editGasMaxFeeHigh": {
     "message": "Maks. ücret gerekenden daha yüksek"
   },
@@ -905,12 +902,6 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "Bu, maksimum ücretinizi düşürür ancak ağ trafiğiniz artarsa işleminiz gecikebilir ya da gerçekleşmeyebilir."
-  },
-  "editInGwei": {
-    "message": "GWEI'de düzenle"
-  },
-  "editInMultiplier": {
-    "message": "Çarpanda düzenle"
   },
   "editNonceField": {
     "message": "Geçici anahtarı düzenle"
@@ -1725,9 +1716,6 @@
   },
   "mobileSyncWarning": {
     "message": "\"Uzantı ile senkronize et\" özelliği geçici olarak devre dışı bırakılmış. MetaMask mobilde uzantı cüzdanınızı kullanmak istiyorsanız mobil uygulamaya gidin: cüzdan kurulum ayarlarına geri dönün ve \"Gizli Kurtarma İfadesi ile İçe Aktar\" seçeneğini seçin. Ardından cüzdanınızı mobil uygulamada içe aktarmak için uzantı cüzdanınızın gizli ifadesini kullanın."
-  },
-  "multiplier": {
-    "message": "çarpan"
   },
   "mustSelectOne": {
     "message": "En az bir jeton seçilmeli"

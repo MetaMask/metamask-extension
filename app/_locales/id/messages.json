@@ -842,9 +842,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "Biaya dasar maks rendah untuk kondisi jaringan saat ini"
   },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "Pengganda relatif rendah terhadap biaya Prioritas"
-  },
   "editGasMaxFeeHigh": {
     "message": "Biaya maks lebih tinggi dari yang diperlukan"
   },
@@ -905,12 +902,6 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "Ini akan menurunkan biaya maks Anda, tetapi jika lalu lintas jaringan meningkat, transaksi Anda mungkin tertunda atau gagal."
-  },
-  "editInGwei": {
-    "message": "Edit dalam GWEI"
-  },
-  "editInMultiplier": {
-    "message": "Edit dalam pengganda"
   },
   "editNonceField": {
     "message": "Edit Nonce"
@@ -1725,9 +1716,6 @@
   },
   "mobileSyncWarning": {
     "message": "Fitur 'Sinkronkan dengan ekstensi' dinonaktifkan untuk sementara waktu. Jika Anda ingin menggunakan dompet ekstensi Anda di ponsel MetaMask, maka pada aplikasi seluler Anda: kembali ke opsi pengaturan dompet dan pilih opsi 'Impor dengan Frasa Pemulihan Rahasia'. Gunakan frasa rahasia dompet ekstensi Anda untuk mengimpor dompet Anda ke ponsel nantinya."
-  },
-  "multiplier": {
-    "message": "pengganda"
   },
   "mustSelectOne": {
     "message": "Harus memilih sekurangnya 1 token."

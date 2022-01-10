@@ -842,9 +842,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "Les frais de base maximaux sont faibles par rapport aux conditions actuelles du réseau"
   },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "Le multiplicateur est faible par rapport aux frais de priorité"
-  },
   "editGasMaxFeeHigh": {
     "message": "Les frais maximaux sont plus élevés que nécessaire"
   },
@@ -905,12 +902,6 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "Cela réduit vos frais maximaux, mais si le trafic réseau augmente, votre transaction peut être retardée ou ne pas aboutir."
-  },
-  "editInGwei": {
-    "message": "Modifier dans GWEI"
-  },
-  "editInMultiplier": {
-    "message": "Modifier le multiplicateur"
   },
   "editNonceField": {
     "message": "Modifier le nonce"
@@ -1725,9 +1716,6 @@
   },
   "mobileSyncWarning": {
     "message": "La fonction « Synchronisation avec l’extension » est temporairement désactivée. Si vous souhaitez utiliser votre portefeuille d’extension sur MetaMask mobile : sur votre appli mobile, revenez aux options de configuration du portefeuille et sélectionnez l’option « Importation avec Phrase secrète de récupération ». Utilisez la phrase secrète de votre portefeuille d’extension pour importer celui-ci sur votre mobile."
-  },
-  "multiplier": {
-    "message": "multiplicateur"
   },
   "mustSelectOne": {
     "message": "Vous devez selectionner au moins 1 jeton."
