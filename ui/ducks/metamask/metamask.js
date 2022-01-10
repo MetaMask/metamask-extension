@@ -265,7 +265,6 @@ export function getCollectiblesDetectionNoticeDismissed(state) {
 }
 
 export function getEnableEIP1559V2NoticeDismissed(state) {
-  console.log('state.metamask = ', state.metamask);
   return state.metamask.enableEIP1559V2NoticeDismissed;
 }
 
