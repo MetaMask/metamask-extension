@@ -1393,8 +1393,29 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
-export async function checkAndUpdateCollectiblesOwnershipStatus() {
-  await promisifiedBackground.checkAndUpdateCollectiblesOwnershipStatus();
+export async function checkAndUpdateAllCollectiblesOwnershipStatus() {
+  await promisifiedBackground.checkAndUpdateAllCollectiblesOwnershipStatus();
+}
+
+export async function isCollectibleOwner(
+  ownerAddress,
+  collectibleAddress,
+  collectibleId,
+) {
+  return await promisifiedBackground.isCollectibleOwner(
+    ownerAddress,
+    collectibleAddress,
+    collectibleId,
+  );
+}
+
+export async function checkAndUpdateSingleCollectibleOwnershipStatus(
+  collectible,
+) {
+  await promisifiedBackground.checkAndUpdateSingleCollectibleOwnershipStatus(
+    collectible,
+    false,
+  );
 }
 
 export function removeToken(address) {

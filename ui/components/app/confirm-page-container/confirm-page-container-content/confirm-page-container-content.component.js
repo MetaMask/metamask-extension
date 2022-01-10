@@ -25,6 +25,7 @@ export default class ConfirmPageContainerContent extends Component {
     nonce: PropTypes.string,
     subtitleComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    image: PropTypes.string,
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
     origin: PropTypes.string.isRequired,
@@ -87,6 +88,7 @@ export default class ConfirmPageContainerContent extends Component {
       errorMessage,
       hasSimulationError,
       title,
+      image,
       titleComponent,
       subtitleComponent,
       hideSubtitle,
@@ -140,6 +142,7 @@ export default class ConfirmPageContainerContent extends Component {
           })}
           action={action}
           title={title}
+          image={image}
           titleComponent={titleComponent}
           subtitleComponent={subtitleComponent}
           hideSubtitle={hideSubtitle}

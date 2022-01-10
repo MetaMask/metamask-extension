@@ -238,16 +238,23 @@ export function activeTabHasPermissions(state) {
   );
 }
 
+/**
+ * Get the connected accounts history for all origins.
+ *
+ * @param {Record<string, unknown>} state - The MetaMask state.
+ * @returns {Record<string, { accounts: Record<string, number> }>} An object
+ * with account connection histories by origin.
+ */
 export function getLastConnectedInfo(state) {
   const { permissionHistory = {} } = state.metamask;
-  return Object.keys(permissionHistory).reduce((acc, origin) => {
-    const ethAccountsHistory = JSON.parse(
-      JSON.stringify(permissionHistory[origin].eth_accounts),
-    );
-    return {
-      ...acc,
-      [origin]: ethAccountsHistory,
-    };
+  return Object.keys(permissionHistory).reduce((lastConnectedInfo, origin) => {
+    if (permissionHistory[origin].eth_accounts) {
+      lastConnectedInfo[origin] = JSON.parse(
+        JSON.stringify(permissionHistory[origin].eth_accounts),
+      );
+    }
+
+    return lastConnectedInfo;
   }, {});
 }
 

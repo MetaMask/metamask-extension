@@ -31,13 +31,20 @@ export default function CollectiblesItems({
   collections = {},
   previouslyOwnedCollection = {},
 }) {
-  const defaultDropdownState = { [PREVIOUSLY_OWNED_KEY]: false };
-  const [dropdownState, setDropdownState] = useState(defaultDropdownState);
+  const collectionsKeys = Object.keys(collections);
+
+  // if there is only one collection present set it to open when component mounts
+  const [dropdownState, setDropdownState] = useState(() => {
+    return collectionsKeys.length === 1
+      ? {
+          [PREVIOUSLY_OWNED_KEY]: false,
+          [collectionsKeys[0]]: true,
+        }
+      : { [PREVIOUSLY_OWNED_KEY]: false };
+  });
+
   const ipfsGateway = useSelector(getIpfsGateway);
 
-  Object.keys(collections).forEach((key) => {
-    defaultDropdownState[key] = true;
-  });
   const history = useHistory();
 
   const renderCollectionImage = (
@@ -152,7 +159,7 @@ export default function CollectiblesItems({
     <div className="collectibles-items">
       <Box padding={[6, 4]} flexDirection={FLEX_DIRECTION.COLUMN}>
         <>
-          {Object.keys(collections).map((key) => {
+          {collectionsKeys.map((key) => {
             const {
               collectibles,
               collectionName,

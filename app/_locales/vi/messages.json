@@ -842,9 +842,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "Phí cơ bản tối đa thấp so với tình trạng mạng hiện tại"
   },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "Hệ số nhân thấp so với phí ưu tiên"
-  },
   "editGasMaxFeeHigh": {
     "message": "Phí tối đa cao hơn cần thiết"
   },
@@ -905,12 +902,6 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "Việc này sẽ giảm mức phí tối đa, nhưng nếu lưu lượng mạng tăng lên, giao dịch của bạn có thể bị trì hoãn hoặc thất bại."
-  },
-  "editInGwei": {
-    "message": "Chỉnh sửa GWEI"
-  },
-  "editInMultiplier": {
-    "message": "Chỉnh sửa hệ số nhân"
   },
   "editNonceField": {
     "message": "Chỉnh sửa số chỉ dùng một lần"
@@ -1725,9 +1716,6 @@
   },
   "mobileSyncWarning": {
     "message": "Tính năng 'Đồng bộ với tiện ích' tạm thời bị tắt. Nếu bạn muốn sử dụng ví tiện ích trên thiết bị di động MetaMask, thì trên ứng dụng di động: hãy quay lại các tùy chọn thiết lập ví và chọn phương án 'Nhập bằng Cụm Mật Khẩu Khôi Phục Bí Mật'. Sử dụng cụm mật khẩu bí mật của ví tiện ích để nhập ví của bạn vào thiết bị di động."
-  },
-  "multiplier": {
-    "message": "hệ số nhân"
   },
   "mustSelectOne": {
     "message": "Phải chọn ít nhất 1 token."

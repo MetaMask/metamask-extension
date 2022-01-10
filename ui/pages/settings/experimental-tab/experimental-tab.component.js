@@ -137,7 +137,10 @@ export default class ExperimentalTab extends PureComponent {
   }
 
   renderEIP1559V2EnabledToggle() {
-    if (!process.env.EIP_1559_V2) {
+    const EIP_1559_V2_ENABLED =
+      // This is a string in unit tests but is a boolean in the browser
+      process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
+    if (!EIP_1559_V2_ENABLED) {
       return null;
     }
     const { t } = this.context;

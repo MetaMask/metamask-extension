@@ -14,10 +14,12 @@ import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util'
 import { ETH, PRIMARY } from '../../helpers/constants/common';
 
 export default function ConfirmTokenTransactionBase({
+  image,
+  title,
+  subtitle,
   toAddress,
   tokenAddress,
   tokenAmount = '0',
-  tokenSymbol,
   fiatTransactionTotal,
   ethTransactionTotal,
   ethTransactionTotalMaxAmount,
@@ -69,38 +71,45 @@ export default function ConfirmTokenTransactionBase({
     tokenAmount,
   ]);
 
-  const tokensText = `${tokenAmount} ${tokenSymbol}`;
+  const subtitleComponent = () => {
+    if (contractExchangeRate === undefined && subtitle === undefined) {
+      return <span>{t('noConversionRateAvailable')}</span>;
+    }
+    if (subtitle) {
+      return <span>{subtitle}</span>;
+    }
+    return (
+      <UserPreferencedCurrencyDisplay
+        value={hexWeiValue}
+        type={PRIMARY}
+        showEthLogo
+        hideLabel
+      />
+    );
+  };
 
   return (
     <ConfirmTransactionBase
       toAddress={toAddress}
+      image={image}
       onEdit={onEdit}
       identiconAddress={tokenAddress}
-      title={tokensText}
-      subtitleComponent={
-        contractExchangeRate === undefined ? (
-          <span>{t('noConversionRateAvailable')}</span>
-        ) : (
-          <UserPreferencedCurrencyDisplay
-            value={hexWeiValue}
-            type={PRIMARY}
-            showEthLogo
-            hideLabel
-          />
-        )
-      }
-      primaryTotalTextOverride={`${tokensText} + ${ethTransactionTotal} ${nativeCurrency}`}
-      primaryTotalTextOverrideMaxAmount={`${tokensText} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
+      title={title}
+      subtitleComponent={subtitleComponent()}
+      primaryTotalTextOverride={`${title} + ${ethTransactionTotal} ${nativeCurrency}`}
+      primaryTotalTextOverrideMaxAmount={`${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
       secondaryTotalTextOverride={secondaryTotalTextOverride}
     />
   );
 }
 
 ConfirmTokenTransactionBase.propTypes = {
+  image: PropTypes.string,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
   tokenAddress: PropTypes.string,
   toAddress: PropTypes.string,
   tokenAmount: PropTypes.string,
-  tokenSymbol: PropTypes.string,
   fiatTransactionTotal: PropTypes.string,
   ethTransactionTotal: PropTypes.string,
   contractExchangeRate: PropTypes.number,
