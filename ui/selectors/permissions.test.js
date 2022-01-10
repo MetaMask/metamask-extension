@@ -1,6 +1,7 @@
 import { KOVAN_CHAIN_ID } from '../../shared/constants/network';
 import {
   getConnectedSubjectsForSelectedAddress,
+  getLastConnectedInfo,
   getOrderedConnectedAccountsForActiveTab,
   getPermissionsForActiveTab,
 } from './permissions';
@@ -293,6 +294,33 @@ describe('selectors', () => {
           lastActive: 1586359844192,
         },
       ]);
+    });
+  });
+
+  describe('getLastConnectedInfo', () => {
+    it('retrieves the last connected info', () => {
+      const mockState = {
+        metamask: {
+          permissionHistory: {
+            a: {
+              foo: {},
+              eth_accounts: { accounts: { 0x1: 1, 0x2: 2 } },
+            },
+            b: {
+              foo: {},
+              eth_accounts: { accounts: { 0x2: 2 } },
+            },
+            c: {
+              foo: {},
+            },
+          },
+        },
+      };
+
+      expect(getLastConnectedInfo(mockState)).toStrictEqual({
+        a: { accounts: { 0x1: 1, 0x2: 2 } },
+        b: { accounts: { 0x2: 2 } },
+      });
     });
   });
 
