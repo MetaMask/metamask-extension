@@ -1099,21 +1099,6 @@
     "message": "L'importation de fichier ne fonctionne pas? Cliquez ici!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "L’utilisation de Flask peut augmenter considérablement votre risque de perte de fonds :"
-  },
-  "flaskExperimentalText2": {
-    "message": "si vous l’utilisez pour installer des Snaps non dignes de confiance ;"
-  },
-  "flaskExperimentalText3": {
-    "message": "si vous ne vérifiez pas les confirmations avant d’approuver des changements ;"
-  },
-  "flaskExperimentalText4": {
-    "message": "si vous utilisez des contrats intelligents non familiers."
-  },
-  "flaskExperimentalText5": {
-    "message": "L’utilisation de Flask vous offre une plus grande discrétion quant à l’utilisation de la puissance de MetaMask. Cette discrétion vous appartient. Acceptez-vous ces risques ainsi que de prendre la responsabilité supplémentaire de la sécurité de votre portefeuille ?"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Voir les détails",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -3336,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "Utilisé par une variété de clients différents"
-  },
-  "userAccepts": {
-    "message": "J’accepte"
   },
   "userName": {
     "message": "Nom d'utilisateur"

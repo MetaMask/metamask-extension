@@ -1099,21 +1099,6 @@
     "message": "文件导入失败？ 点击这里！",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "使用Flask可极大地增加您的资金损失风险："
-  },
-  "flaskExperimentalText2": {
-    "message": "如果您使用它来安装不可信的快照"
-  },
-  "flaskExperimentalText3": {
-    "message": "如果您在批准更改之前不审核确认"
-  },
-  "flaskExperimentalText4": {
-    "message": "如果您与不熟悉的智能合同发生交互作用"
-  },
-  "flaskExperimentalText5": {
-    "message": "使用Flask让您在使用Metamask的力量时拥有更大的自由裁量权，这个自由裁量权由您决定。 您是否接受这些风险以及您钱包安全的额外责任？"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "查看详细信息",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -3336,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "可用于各种不同的客户端"
-  },
-  "userAccepts": {
-    "message": "我接受"
   },
   "userName": {
     "message": "名称"

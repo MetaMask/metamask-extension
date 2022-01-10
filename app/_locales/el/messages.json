@@ -1099,21 +1099,6 @@
     "message": "Η εισαγωγή αρχείων δεν λειτουργεί; Κάντε κλικ εδώ!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "Χρησιμοποιώντας το Flask μπορείτε να αυξήσετε σημαντικά τον κίνδυνο απώλειας κεφαλαίων:"
-  },
-  "flaskExperimentalText2": {
-    "message": "εάν το χρησιμοποιείτε για να εγκαταστήσετε μη αξιόπιστα Snap"
-  },
-  "flaskExperimentalText3": {
-    "message": "αν δεν επανεξετάσετε τις επιβεβαιώσεις πριν από την έγκριση αλλαγών"
-  },
-  "flaskExperimentalText4": {
-    "message": "αν αλληλεπιδράσετε με έξυπνα συμβόλαια με τα οποία δεν είστε εξοικειωμένοι"
-  },
-  "flaskExperimentalText5": {
-    "message": "Χρησιμοποιώντας το Flask σας δίνεται πολύ μεγαλύτερη διακριτική ευχέρεια στη χρήση της δύναμης του MetaMask, και αυτή η διακριτική ευχέρεια είναι όλη δική σας. Αποδέχεστε αυτούς τους κινδύνους καθώς και επιπλέον ευθύνη για την ασφάλεια του πορτοφολιού σας;"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Προβολή λεπτομερειών",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -3336,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "Χρησιμοποιείται από μια ποικιλία διαφορετικών πελατών"
-  },
-  "userAccepts": {
-    "message": "Αποδέχομαι"
   },
   "userName": {
     "message": "Όνομα χρήστη"

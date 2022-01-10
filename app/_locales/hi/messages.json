@@ -1099,21 +1099,6 @@
     "message": "फ़ाइल आयात काम नहीं कर रहा है? यहाँ क्लिक करें!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "फ्लास्क का उपयोग आपके फंड के नुकसान के जोखिम को काफी ज्यादा बढ़ा सकता है।"
-  },
-  "flaskExperimentalText2": {
-    "message": "यदि आप इसका उपयोग गैर-भरोसेमंद स्नैप इंस्टॉल करने के लिए करते हैं"
-  },
-  "flaskExperimentalText3": {
-    "message": "बदलाव को स्वीकृति देने से पहले यदि आप पुष्टिकरण की समीक्षा नहीं करते हैं"
-  },
-  "flaskExperimentalText4": {
-    "message": "यदि आप अपरिचित स्मार्ट अनुबंधों के साथ बातचीत करते हैं"
-  },
-  "flaskExperimentalText5": {
-    "message": "मेटामास्क की शक्ति का इस्तेमाल करने में फ्लास्क का उपयोग आपको ज़्यादा समझदारी देता है, और वो समझदारी आपकी है। अपने वॉलेट की सुरक्षा के लिए क्या आप इन जोखिमों के साथ साथ अतिरिक्त ज़िम्मेदारियों को भी स्वीकार करते हैं?"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "विवरण देखें",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -3336,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "विभिन्न क्लाइंट द्वारा उपयोग किया जाता है"
-  },
-  "userAccepts": {
-    "message": "मुझे स्वीकार है"
   },
   "userName": {
     "message": "उपयोगकर्ता"

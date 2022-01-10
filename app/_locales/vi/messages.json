@@ -1099,21 +1099,6 @@
     "message": "Tính năng nhập tệp không hoạt động? Nhấp vào đây!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "Sử dụng Flask có thể gia tăng đáng kể nguy cơ mất tiền của bạn:"
-  },
-  "flaskExperimentalText2": {
-    "message": "nếu bạn sử dụng để cài đặt Snaps không đáng tin cậy"
-  },
-  "flaskExperimentalText3": {
-    "message": "nếu bạn không xem lại xác nhận trước khi chấp thuận các thay đổi"
-  },
-  "flaskExperimentalText4": {
-    "message": "nếu bạn tương tác với những hợp đồng thông minh không quen thuộc"
-  },
-  "flaskExperimentalText5": {
-    "message": "Sử dụng Flask cho phép bạn toàn quyền quyết định trong việc sử dụng sức mạnh của MetaMask và quyền đó là của bạn. Bạn có chấp nhận những nguy cơ này cũng như phải chịu thêm trách nhiệm cho sự an toàn của ví không?"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Xem chi tiết",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -3336,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "Được nhiều ví khác nhau sử dụng"
-  },
-  "userAccepts": {
-    "message": "Tôi chấp nhận"
   },
   "userName": {
     "message": "Tên người dùng"
