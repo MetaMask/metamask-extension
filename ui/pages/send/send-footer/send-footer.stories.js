@@ -6,24 +6,20 @@ export default {
   title: 'Pages/Send/SendFooter',
   id: __filename,
   argTypes: {
-    clearSend: { action: 'Cancel Button Pressed' },
-    sign: { action: 'Next Button Pressed' },
+    clearSend: { action: 'clearSend' },
+    sign: { action: 'sign' },
     from: { control: 'object' },
     disabled: { control: 'boolean' },
     mostRecentOverviewPage: { control: 'text' },
     sendErrors: { control: 'object' },
+    history: { action: 'history' },
+    addToAddressBookIfNew: { action: 'addToAddressBookIfNew' },
+    resetSendState: { action: 'resetSendState' },
   },
 };
 
 export const DefaultStory = (args) => {
-  return (
-    <SendFooter
-      {...args}
-      history={{ push: () => undefined }}
-      addToAddressBookIfNew={() => undefined}
-      resetSendState={() => undefined}
-    />
-  );
+  return <SendFooter {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
