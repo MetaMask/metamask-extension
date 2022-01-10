@@ -310,6 +310,9 @@ describe('selectors', () => {
               foo: {},
               eth_accounts: { accounts: { 0x2: 2 } },
             },
+            c: {
+              foo: {},
+            },
           },
         },
       };
