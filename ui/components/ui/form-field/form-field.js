@@ -84,6 +84,7 @@ export default function FormField({
             autoFocus={autoFocus}
             allowDecimals={allowDecimals}
             disabled={disabled}
+            dataTestId={dataTestId}
           />
         ) : (
           <input
