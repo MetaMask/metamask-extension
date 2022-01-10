@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Rechazar"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Escanear código QR"
+  },
   "about": {
     "message": "Acerca de"
   },
@@ -260,9 +266,6 @@
   "buyWithWyreDescription": {
     "message": "Wyre le permite usar una tarjeta de débito para depositar ETH directamente en su cuenta de MetaMask."
   },
-  "bytes": {
-    "message": "Bytes"
-  },
   "canToggleInSettings": {
     "message": "Puede volver a activar esta notificación desde Configuración -> Alertas."
   },
@@ -465,6 +468,9 @@
   },
   "currentLanguage": {
     "message": "Idioma actual"
+  },
+  "custom": {
+    "message": "Avanzado"
   },
   "customGas": {
     "message": "Personalizar gas"
@@ -696,9 +702,6 @@
   "ethereumPublicAddress": {
     "message": "Dirección pública de Ethereum"
   },
-  "etherscan": {
-    "message": "Etherscan"
-  },
   "etherscanView": {
     "message": "Ver cuenta en Etherscan"
   },
@@ -802,9 +805,6 @@
     "message": "Política de privacidad aquí",
     "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
   },
-  "general": {
-    "message": "General"
-  },
   "generalSettingsDescription": {
     "message": "Conversión de moneda, moneda principal, idioma, Blockies Identicon"
   },
@@ -824,15 +824,8 @@
   "happyToSeeYou": {
     "message": "Nos alegra verlo."
   },
-  "hardware": {
-    "message": "Hardware"
-  },
   "hardwareWalletConnected": {
     "message": "Cartera de hardware conectada"
-  },
-  "hardwareWalletLegacyDescription": {
-    "message": "(legacy)",
-    "description": "Text representing the MEW path"
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "Haga clic aquí"
@@ -993,6 +986,9 @@
   "learnMore": {
     "message": "Más información"
   },
+  "learnMoreUpperCase": {
+    "message": "Más información"
+  },
   "ledgerAccountRestriction": {
     "message": "Debe usar su última cuenta antes de poder agregar una nueva."
   },
@@ -1139,14 +1135,8 @@
   "networkName": {
     "message": "Nombre de la red"
   },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
   "networkNameDefinition": {
     "message": "El nombre asociado a esta red."
-  },
-  "networkNameEthereum": {
-    "message": "Ethereum"
   },
   "networkNameTestnet": {
     "message": "Red de prueba"
@@ -1227,9 +1217,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "No se encontró cámara web"
-  },
-  "nonce": {
-    "message": "Nonce"
   },
   "nonceField": {
     "message": "Personalizar nonce de transacción"
@@ -2128,9 +2115,6 @@
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "token": {
-    "message": "Token"
-  },
   "tokenAlreadyAdded": {
     "message": "Ya se agregó el token."
   },
@@ -2145,9 +2129,6 @@
   },
   "tooltipApproveButton": {
     "message": "Comprendo"
-  },
-  "total": {
-    "message": "Total"
   },
   "transaction": {
     "message": "transacción"

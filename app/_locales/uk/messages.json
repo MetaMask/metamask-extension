@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Відхилити"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Сканувати QR-код"
+  },
   "about": {
     "message": "Про Google Chrome"
   },
@@ -255,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Поточна мова"
+  },
+  "custom": {
+    "message": "Розширені"
   },
   "customGas": {
     "message": "Налаштувати пальне"
@@ -528,6 +537,9 @@
     "message": "Тестова мережа Kovan"
   },
   "learnMore": {
+    "message": "Дізнатись більше"
+  },
+  "learnMoreUpperCase": {
     "message": "Дізнатись більше"
   },
   "ledgerAccountRestriction": {
