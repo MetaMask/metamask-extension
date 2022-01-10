@@ -1,10 +1,13 @@
 .enableEIP1559V2-notice {
   &__message {
     position: relative;
-    padding: 0 1rem 1rem 1rem !important;
+    margin-top: 1rem;
 
     &__close-button {
       background-color: transparent;
+      position: absolute;
+      right: 0;
+      top: 0;
 
       &::after {
         position: absolute;
