@@ -17,7 +17,7 @@
   &__token-details-title {
     @include H6;
 
-    color: $ui-black;
+    color: var(--ui-black);
     font-weight: bold;
     margin-top: 17px;
 
@@ -44,7 +44,7 @@
       font-size: 32px;
       line-height: 140.62%;
       margin-right: 20px;
-      color: $ui-black;
+      color: var(--ui-black);
     }
   }
 
@@ -52,7 +52,7 @@
     @include H7;
 
     margin-top: 15px;
-    color: $ui-4;
+    color: var(--ui-4);
   }
 
   &__token-contract-address-title {
@@ -60,7 +60,7 @@
 
     margin-top: 32px;
     font-weight: bold;
-    color: $ui-4;
+    color: var(--ui-4);
   }
 
   &__copy-token-contract-address {
@@ -76,7 +76,7 @@
     &__token-address {
       width: 222px;
       overflow-wrap: break-word;
-      color: $ui-black;
+      color: var(--ui-black);
     }
 
     &__copy-icon {
@@ -89,14 +89,14 @@
 
     margin-top: 16px;
     font-weight: bold;
-    color: $ui-4;
+    color: var(--ui-4);
   }
 
   &__token-decimals {
     @include H7;
 
     margin-top: 5px;
-    color: $ui-black;
+    color: var(--ui-black);
   }
 
   &__token-network-title {
@@ -104,14 +104,14 @@
 
     margin-top: 16px;
     font-weight: bold;
-    color: $ui-4;
+    color: var(--ui-4);
   }
 
   &__token-network {
     @include H7;
 
     margin-top: 5px;
-    color: $ui-black;
+    color: var(--ui-black);
   }
 
   &__hide-token-button {
@@ -122,7 +122,7 @@
     &__hide-token-text {
       @include H6;
 
-      color: $primary-1;
+      color: var(--primary-1);
     }
   }
 
