@@ -71,8 +71,9 @@ const BaseFeeInput = () => {
     if (
       estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
       advancedGasFeeValues?.maxBaseFee
-    )
+    ) {
       return advancedGasFeeValues.maxBaseFee;
+    }
 
     return maxFeePerGas;
   });
@@ -116,7 +117,7 @@ const BaseFeeInput = () => {
         error={baseFeeError ? t(baseFeeError) : ''}
         onChange={updateBaseFee}
         titleText={t('maxBaseFee')}
-        titleUnit={t('gweiInParentheses')}
+        titleUnit={`(${t('gwei')})`}
         tooltipText={t('advancedBaseGasFeeToolTip')}
         value={baseFee}
         detailText={`≈ ${baseFeeInFiat}`}

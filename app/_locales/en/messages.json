@@ -1284,8 +1284,8 @@
   "grantedToWithColon": {
     "message": "Granted to:"
   },
-  "gweiInParentheses": {
-    "message": "(GWEI)"
+  "gwei": {
+    "message": "GWEI"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
