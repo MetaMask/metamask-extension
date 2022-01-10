@@ -5,7 +5,7 @@ import README from './README.mdx';
 import UpdateNicknamePopover from '.';
 
 export default {
-  title: 'Components/UI/UpdateNickname',
+  title: 'Components/UI/UpdateNicknamePopover',
   id: __filename,
   parameters: {
     docs: {
@@ -22,6 +22,7 @@ export default {
       defaultValue: false,
     },
     onAdd: { action: 'onAdd' },
+    onClose: { action: 'onClose' },
   },
 };
 
