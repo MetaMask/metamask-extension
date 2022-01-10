@@ -16,6 +16,7 @@ export default {
     addressBook: { control: 'object' },
     hideAddressBook: { control: 'boolean' },
     selectedAddress: { control: 'select' },
+    history: { action: 'history' },
   },
 };
 
@@ -25,7 +26,7 @@ const { addresses } = metamask;
 export const DefaultStory = (args) => {
   return (
     <div style={{ width: 300 }}>
-      <ContactListTab {...args} history={{ push: () => undefined }} />
+      <ContactListTab {...args} />
     </div>
   );
 };

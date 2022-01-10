@@ -14,29 +14,32 @@ export default {
     threeBoxDisabled: { control: 'boolean' },
     useLedgerLive: { control: 'boolean' },
     dismissSeedBackUpReminder: { control: 'boolean' },
+    setAutoLockTimeLimit: { action: 'setAutoLockTimeLimit' },
+    setShowFiatConversionOnTestnetsPreference: {
+      action: 'setShowFiatConversionOnTestnetsPreference',
+    },
+    setShowTestNetworks: { action: 'setShowTestNetworks' },
+    setThreeBoxSyncingPermission: { action: 'setThreeBoxSyncingPermission' },
+    setIpfsGateway: { action: 'setIpfsGateway' },
+    setLedgerTransportPreference: { action: 'setLedgerTransportPreference' },
+    setDismissSeedBackUpReminder: { action: 'setDismissSeedBackUpReminder' },
+    setUseNonceField: { action: 'setUseNonceField' },
+    setHexDataFeatureFlag: { action: 'setHexDataFeatureFlag' },
+    displayWarning: { action: 'displayWarning' },
+    history: { action: 'history' },
+    showResetAccountConfirmationModal: {
+      action: 'showResetAccountConfirmationModal',
+    },
+    setAdvancedInlineGasFeatureFlag: {
+      action: 'setAdvancedInlineGasFeatureFlag',
+    },
   },
 };
 
 export const DefaultStory = (args) => {
   return (
     <div style={{ flex: 1, height: 500 }}>
-      <AdvancedTab
-        setAutoLockTimeLimit={() => undefined}
-        setShowFiatConversionOnTestnetsPreference={() => undefined}
-        setShowTestNetworks={() => undefined}
-        setThreeBoxSyncingPermission={() => undefined}
-        setIpfsGateway={() => undefined}
-        setLedgerTransportPreference={() => undefined}
-        setDismissSeedBackUpReminder={() => undefined}
-        setUseNonceField={() => undefined}
-        setHexDataFeatureFlag={() => undefined}
-        displayWarning={() => undefined}
-        history={{ push: () => undefined }}
-        showResetAccountConfirmationModal={() => undefined}
-        setAdvancedInlineGasFeatureFlag={() => undefined}
-        ipfsGateway="ipfs-gateway"
-        {...args}
-      />
+      <AdvancedTab ipfsGateway="ipfs-gateway" {...args} />
     </div>
   );
 };
