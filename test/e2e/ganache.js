@@ -1,5 +1,4 @@
-const { promisify } = require('util');
-const ganache = require('ganache-core');
+const ganache = require('ganache');
 
 const defaultOptions = {
   blockTime: 2,
@@ -8,6 +7,7 @@ const defaultOptions = {
     'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
   port: 8545,
   vmErrorsOnRPCResponse: false,
+  hardfork: 'muirGlacier',
 };
 
 class Ganache {
@@ -16,8 +16,7 @@ class Ganache {
     const { port } = options;
     this._server = ganache.server(options);
 
-    const listen = promisify(this._server.listen).bind(this._server);
-    const blockchain = await listen(port);
+    const blockchain = await this._server.listen(port);
 
     return {
       ...blockchain,
@@ -29,8 +28,7 @@ class Ganache {
     if (!this._server) {
       throw new Error('Server not running yet');
     }
-    const close = promisify(this._server.close).bind(this._server);
-    await close();
+    await this._server.close();
   }
 }
 
