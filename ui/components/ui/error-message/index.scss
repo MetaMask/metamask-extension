@@ -2,9 +2,9 @@
   @include H7;
 
   min-height: 32px;
-  border: 1px solid $Red-300;
-  color: $ui-black;
-  background: $error-2;
+  border: 1px solid var(--Red-300);
+  color: var(--ui-black);
+  background: var(--error-2);
   border-radius: 8px;
   display: flex;
   justify-content: flex-start;

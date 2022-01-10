@@ -48,7 +48,7 @@ $attributesToApplyExtraProperties: margin;
 
   @each $variant, $color in design-system.$color-map {
     &--border-color-#{$variant} {
-      border-color: $color;
+      border-color: var($color);
     }
   }
 
@@ -166,7 +166,7 @@ $attributesToApplyExtraProperties: margin;
   // background
   @each $variant, $color in design-system.$color-map {
     &--background-color-#{$variant} {
-      background-color: $color;
+      background-color: var($color);
     }
   }
 }

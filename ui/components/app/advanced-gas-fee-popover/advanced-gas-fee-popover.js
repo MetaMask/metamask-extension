@@ -14,12 +14,14 @@ import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 const AdvancedGasFeePopover = () => {
   const t = useI18nContext();
   const {
-    closeModal,
     closeAllModals,
+    closeModal,
     currentModal,
   } = useTransactionModalContext();
 
-  if (currentModal !== 'advancedGasFee') return null;
+  if (currentModal !== 'advancedGasFee') {
+    return null;
+  }
 
   return (
     <AdvancedGasFeePopoverContextProvider>

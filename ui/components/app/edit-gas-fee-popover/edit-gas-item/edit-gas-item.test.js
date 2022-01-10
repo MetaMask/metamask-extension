@@ -42,7 +42,7 @@ const MOCK_FEE_ESTIMATE = {
   estimatedBaseFee: '50',
 };
 
-const DAPP_SUGGESTED_ESTIMATE = {
+const ESTIMATE_MOCK = {
   maxFeePerGas: '0x59682f10',
   maxPriorityFeePerGas: '0x59682f00',
 };
@@ -65,6 +65,7 @@ const renderComponent = ({
       },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
+      gasEstimateType: 'fee-market',
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
       advancedGasFee: {
         maxBaseFee: '1.5',
@@ -139,7 +140,7 @@ describe('EditGasItem', () => {
   it('should renders site gas estimate option for priorityLevel dappSuggested', () => {
     renderComponent({
       componentProps: { priorityLevel: 'dappSuggested' },
-      transactionProps: { dappSuggestedGasFees: DAPP_SUGGESTED_ESTIMATE },
+      transactionProps: { dappSuggestedGasFees: ESTIMATE_MOCK },
     });
     expect(
       screen.queryByRole('button', { name: 'dappSuggested' }),
@@ -157,9 +158,25 @@ describe('EditGasItem', () => {
     expect(
       screen.queryByRole('button', { name: 'custom' }),
     ).toBeInTheDocument();
-    expect(screen.queryByText('⚙')).toBeInTheDocument();
+    expect(screen.queryByText('⚙️')).toBeInTheDocument();
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
     // below value of custom gas fee estimate is default obtained from state.metamask.advancedGasFee
     expect(screen.queryByTitle('0.001575 ETH')).toBeInTheDocument();
+  });
+
+  it('should renders +10% gas estimate option for priorityLevel minimum', () => {
+    renderComponent({
+      componentProps: { priorityLevel: 'tenPercentIncreased' },
+      transactionProps: {
+        userFeeLevel: 'tenPercentIncreased',
+        previousGas: ESTIMATE_MOCK,
+      },
+      contextProps: { editGasMode: EDIT_GAS_MODES.CANCEL },
+    });
+    expect(
+      screen.queryByRole('button', { name: 'tenPercentIncreased' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('10% increase')).toBeInTheDocument();
+    expect(screen.queryByTitle('0.00003465 ETH')).toBeInTheDocument();
   });
 });

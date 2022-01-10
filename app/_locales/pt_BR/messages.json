@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Rejeitar"
+  },
   "about": {
     "message": "Sobre"
   },
@@ -259,9 +262,6 @@
   },
   "buyWithWyreDescription": {
     "message": "Com o Wyre, você pode usar um cartão de débito para depositar ETH diretamente na sua conta do MetaMask."
-  },
-  "bytes": {
-    "message": "Bytes"
   },
   "canToggleInSettings": {
     "message": "Você pode reabilitar essa notificação em Configurações -> Alertas."
@@ -679,10 +679,6 @@
     "message": "O MetaMask encontrou um erro",
     "description": "Title of generic error page"
   },
-  "errorStack": {
-    "message": "Stack:",
-    "description": "Title for error stack, which is displayed for debugging purposes"
-  },
   "estimatedProcessingTimes": {
     "message": "Tempo estimado de processamento"
   },
@@ -695,9 +691,6 @@
   },
   "ethereumPublicAddress": {
     "message": "Endereço público do Ethereum"
-  },
-  "etherscan": {
-    "message": "Etherscan"
   },
   "etherscanView": {
     "message": "Exibir conta no Etherscan"
@@ -761,7 +754,7 @@
     "message": "Tipo de função"
   },
   "gasLimit": {
-    "message": "Gas Limit"
+    "message": "Limite de Gas"
   },
   "gasLimitInfoTooltipContent": {
     "message": "O Gas Limit é o valor máximo das unidades de gas que você está disposto a gastar."
@@ -774,7 +767,7 @@
     "description": "$1 is the custom gas limit, in decimal."
   },
   "gasPrice": {
-    "message": "Gas Price (GWEI)"
+    "message": "Preço Gas (GWEI)"
   },
   "gasPriceExcessive": {
     "message": "Sua taxa de gas é desnecessariamente alta. Considere reduzir o valor."
@@ -823,9 +816,6 @@
   },
   "happyToSeeYou": {
     "message": "Ficamos felizes em ver você."
-  },
-  "hardware": {
-    "message": "Hardware"
   },
   "hardwareWalletConnected": {
     "message": "Carteira de hardware conectada"
@@ -1011,9 +1001,6 @@
   "likeToImportTokens": {
     "message": "Você gostaria de adicionar esses tokens?"
   },
-  "links": {
-    "message": "Links"
-  },
   "loadMore": {
     "message": "Carregar mais"
   },
@@ -1022,9 +1009,6 @@
   },
   "loadingTokens": {
     "message": "Carregando tokens..."
-  },
-  "localhost": {
-    "message": "Localhost 8545"
   },
   "lock": {
     "message": "Bloquear"
@@ -1139,17 +1123,8 @@
   "networkName": {
     "message": "Nome da rede"
   },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
   "networkNameDefinition": {
     "message": "O nome associado com esta rede."
-  },
-  "networkNameEthereum": {
-    "message": "Ethereum"
-  },
-  "networkNameTestnet": {
-    "message": "Testnet"
   },
   "networkSettingsChainIdDescription": {
     "message": "O ID da chain é usado para assinar transações. É preciso ser igual ao ID da chain retornado pela rede. Você pode informar um número decimal ou um número hexadecimal com prefixo “0x”, mas exibiremos o número em casas decimais."
@@ -1227,9 +1202,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "Câmera não encontrada"
-  },
-  "nonce": {
-    "message": "Nonce"
   },
   "nonceField": {
     "message": "Personalizar nonce da transação"
@@ -1788,9 +1760,6 @@
   "supportCenter": {
     "message": "Visite nossa Central de Suporte"
   },
-  "swap": {
-    "message": "Swap"
-  },
   "swapAdvancedSlippageInfo": {
     "message": "Quando o preço varia entre o momento em que seu pedido é feito e o momento em que é confirmado, isso recebe o nome de “slippage”. Seu swap será automaticamente cancelado se o slippage for superior à configuração “slippage máximo”."
   },
@@ -2128,9 +2097,6 @@
     "message": "Até: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "token": {
-    "message": "Token"
-  },
   "tokenAlreadyAdded": {
     "message": "O token já foi adicionado."
   },
@@ -2145,9 +2111,6 @@
   },
   "tooltipApproveButton": {
     "message": "Eu entendo"
-  },
-  "total": {
-    "message": "Total"
   },
   "transaction": {
     "message": "transação"

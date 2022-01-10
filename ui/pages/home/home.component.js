@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
+///: BEGIN:ONLY_INCLUDE_IN(main)
+import { SUPPORT_LINK } from '../../helpers/constants/common';
+///: END:ONLY_INCLUDE_IN
 import { formatDate } from '../../helpers/utils/util';
 import AssetList from '../../components/app/asset-list';
 import CollectiblesTab from '../../components/app/collectibles-tab';
@@ -20,8 +23,6 @@ import ActionableMessage from '../../components/ui/actionable-message/actionable
 import Typography from '../../components/ui/typography/typography';
 import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
 
-import { isBeta } from '../../helpers/utils/build-types';
-
 import {
   ASSET_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -37,7 +38,12 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   ADD_COLLECTIBLE_ROUTE,
 } from '../../helpers/constants/routes';
-import BetaHomeFooter from './beta-home-footer.component';
+///: BEGIN:ONLY_INCLUDE_IN(beta)
+import BetaHomeFooter from './beta/beta-home-footer.component';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import FlaskHomeFooter from './flask/flask-home-footer.component';
+///: END:ONLY_INCLUDE_IN
 
 const LEARN_MORE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360045129011-Intro-to-MetaMask-v8-extension';
@@ -45,6 +51,18 @@ const LEGACY_WEB3_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360053147012';
 const INFURA_BLOCKAGE_URL =
   'https://metamask.zendesk.com/hc/en-us/articles/360059386712';
+
+function shouldCloseNotificationPopup({
+  isNotification,
+  totalUnapprovedCount,
+  isSigningQRHardwareTransaction,
+}) {
+  return (
+    isNotification &&
+    totalUnapprovedCount === 0 &&
+    !isSigningQRHardwareTransaction
+  );
+}
 
 export default class Home extends PureComponent {
   static contextTypes = {
@@ -68,6 +86,8 @@ export default class Home extends PureComponent {
     setShowRestorePromptToFalse: PropTypes.func,
     threeBoxLastUpdated: PropTypes.number,
     firstPermissionsRequestId: PropTypes.string,
+    // This prop is used in the `shouldCloseNotificationPopup` function
+    // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
@@ -91,14 +111,17 @@ export default class Home extends PureComponent {
     seedPhraseBackedUp: PropTypes.bool.isRequired,
     newNetworkAdded: PropTypes.string,
     setNewNetworkAdded: PropTypes.func.isRequired,
+    // This prop is used in the `shouldCloseNotificationPopup` function
+    // eslint-disable-next-line react/no-unused-prop-types
     isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
     newCollectibleAddedMessage: PropTypes.string,
     setNewCollectibleAddedMessage: PropTypes.func.isRequired,
+    closeNotificationPopup: PropTypes.func.isRequired,
   };
 
   state = {
     canShowBlockageNotification: true,
-    closing: false,
+    notificationClosing: false,
     redirecting: false,
   };
 
@@ -106,24 +129,19 @@ export default class Home extends PureComponent {
     super(props);
 
     const {
+      closeNotificationPopup,
       firstPermissionsRequestId,
       haveSwapsQuotes,
       isNotification,
-      isSigningQRHardwareTransaction,
       showAwaitingSwapScreen,
       suggestedAssets = [],
       swapsFetchParams,
-      totalUnapprovedCount,
       unconfirmedTransactionsCount,
     } = this.props;
 
-    if (
-      isNotification &&
-      totalUnapprovedCount === 0 &&
-      !isSigningQRHardwareTransaction
-    ) {
-      this.state.closing = true;
-      global.platform.closeCurrentWindow();
+    if (shouldCloseNotificationPopup(props)) {
+      this.state.notificationClosing = true;
+      closeNotificationPopup();
     } else if (
       firstPermissionsRequestId ||
       unconfirmedTransactionsCount > 0 ||
@@ -141,21 +159,13 @@ export default class Home extends PureComponent {
       history,
       isNotification,
       suggestedAssets = [],
-      totalUnapprovedCount,
       unconfirmedTransactionsCount,
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
       pendingConfirmations,
-      isSigningQRHardwareTransaction,
     } = this.props;
-    if (
-      isNotification &&
-      totalUnapprovedCount === 0 &&
-      !isSigningQRHardwareTransaction
-    ) {
-      global.platform.closeCurrentWindow();
-    } else if (!isNotification && showAwaitingSwapScreen) {
+    if (!isNotification && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
     } else if (!isNotification && haveSwapsQuotes) {
       history.push(VIEW_QUOTE_ROUTE);
@@ -176,18 +186,33 @@ export default class Home extends PureComponent {
     this.checkStatusAndNavigate();
   }
 
-  componentDidUpdate() {
+  static getDerivedStateFromProps(props) {
+    if (shouldCloseNotificationPopup(props)) {
+      return { notificationClosing: true };
+    }
+    return null;
+  }
+
+  componentDidUpdate(_prevProps, prevState) {
     const {
+      closeNotificationPopup,
       setupThreeBox,
       showRestorePrompt,
       threeBoxLastUpdated,
       threeBoxSynced,
       isNotification,
     } = this.props;
+    const { notificationClosing } = this.state;
 
-    isNotification && this.checkStatusAndNavigate();
-
-    if (threeBoxSynced && showRestorePrompt && threeBoxLastUpdated === null) {
+    if (notificationClosing && !prevState.notificationClosing) {
+      closeNotificationPopup();
+    } else if (isNotification) {
+      this.checkStatusAndNavigate();
+    } else if (
+      threeBoxSynced &&
+      showRestorePrompt &&
+      threeBoxLastUpdated === null
+    ) {
       setupThreeBox();
     }
   }
@@ -428,7 +453,7 @@ export default class Home extends PureComponent {
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
-    } else if (this.state.closing || this.state.redirecting) {
+    } else if (this.state.notificationClosing || this.state.redirecting) {
       return null;
     }
 
@@ -499,12 +524,11 @@ export default class Home extends PureComponent {
               </Tab>
             </Tabs>
             <div className="home__support">
-              {isBeta() ? (
-                <BetaHomeFooter />
-              ) : (
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(main)
                 t('needHelp', [
                   <a
-                    href="https://support.metamask.io"
+                    href={SUPPORT_LINK}
                     target="_blank"
                     rel="noopener noreferrer"
                     key="need-help-link"
@@ -512,7 +536,18 @@ export default class Home extends PureComponent {
                     {t('needHelpLinkText')}
                   </a>,
                 ])
-              )}
+                ///: END:ONLY_INCLUDE_IN
+              }
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(beta)
+                <BetaHomeFooter />
+                ///: END:ONLY_INCLUDE_IN
+              }
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(flask)
+                <FlaskHomeFooter />
+                ///: END:ONLY_INCLUDE_IN
+              }
             </div>
           </div>
 

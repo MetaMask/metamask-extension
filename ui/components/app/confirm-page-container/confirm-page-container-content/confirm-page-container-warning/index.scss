@@ -2,7 +2,7 @@
   background-color: #fffcdb;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid $geyser;
+  border-bottom: 1px solid var(--geyser);
   padding: 12px 24px;
 
   &__icon {

@@ -34,6 +34,7 @@ export const GAS_RECOMMENDATIONS = {
  * These represent types of gas estimation
  */
 export const PRIORITY_LEVELS = {
+  TEN_PERCENT_INCREASED: 'tenPercentIncreased',
   LOW: 'low',
   MEDIUM: 'medium',
   HIGH: 'high',
@@ -54,4 +55,16 @@ export const EDIT_GAS_MODES = {
   CANCEL: 'cancel',
   MODIFY_IN_PLACE: 'modify-in-place',
   SWAPS: 'swaps',
+};
+
+/**
+ * Represents levels for `networkCongestion` (calculated along with gas fee
+ * estimates; represents a number between 0 and 1) that we use to render the
+ * network status slider on the send transaction screen and inform users when
+ * gas fees are high
+ */
+export const NETWORK_CONGESTION_THRESHOLDS = {
+  NOT_BUSY: 0,
+  STABLE: 0.33,
+  BUSY: 0.66,
 };

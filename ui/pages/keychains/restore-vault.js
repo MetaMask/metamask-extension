@@ -89,7 +89,9 @@ class RestoreVaultPage extends Component {
   handleImport = (event) => {
     event.preventDefault();
     const { password, seedPhrase, disabled } = this.state;
-    if (disabled) return;
+    if (disabled) {
+      return;
+    }
     const {
       // eslint-disable-next-line no-shadow
       createNewVaultAndRestore,

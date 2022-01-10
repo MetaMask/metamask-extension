@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "رفض"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "مسح كود الاستجابة السريعة QR"
+  },
   "about": {
     "message": "حول"
   },
@@ -7,6 +13,14 @@
   },
   "acceleratingATransaction": {
     "message": "* تسريع المعاملات باستخدام سعر عملة جاس أعلى يزيد من فرص معالجتها بواسطة الشبكة بشكلٍ أسرع، لكن ذلك غير مضمون دائماً."
+  },
+  "acceptTermsOfUse": {
+    "message": "لقد قرأت دولار واحد وأوافق عليه",
+    "description": "$1 is the `terms` message"
+  },
+  "accessAndSpendNotice": {
+    "message": "$1 يمكن الوصول إلى هذا المبلغ الأقصى وإنفاقه حتى",
+    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "جاري استخدام كاميرتك..."
@@ -255,6 +269,9 @@
   },
   "currentLanguage": {
     "message": "اللغة الحالية"
+  },
+  "custom": {
+    "message": "إعدادات متقدمة"
   },
   "customGas": {
     "message": "تخصيص الغاز"
@@ -524,6 +541,9 @@
     "message": "شبكة اختبار Kovan "
   },
   "learnMore": {
+    "message": "اكتشف المزيد"
+  },
+  "learnMoreUpperCase": {
     "message": "اكتشف المزيد"
   },
   "ledgerAccountRestriction": {

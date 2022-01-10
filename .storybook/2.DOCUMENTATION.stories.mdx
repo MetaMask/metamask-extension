@@ -4,7 +4,7 @@ import { Meta } from '@storybook/addon-docs';
 
 # Documentation Guidelines
 
-> 💡 To improve the quality of our component documentation we are currently in the process of updating our storybook to use Storyboook's [controls](https://storybook.js.org/addons/@storybook/addon-controls/), [a11y](https://storybook.js.org/addons/@storybook/addon-a11y/) and [docs](https://storybook.js.org/addons/@storybook/addon-docs/) plugins. You will find most components currently without documentation and use knobs for their primary interactivity. These will eventually be updated.
+> 💡 To improve the quality of our component documentation we are currently in the process of updating our storybook to use Storyboook's [controls](https://storybook.js.org/addons/@storybook/addon-controls/), [a11y](https://storybook.js.org/addons/@storybook/addon-a11y/) and [docs](https://storybook.js.org/addons/@storybook/addon-docs/) plugins. You will find most components currently without documentation and use [knobs](https://storybook.js.org/addons/@storybook/addon-knobs)(deprecated) for their primary interactivity. These will eventually be updated. Want to contribute? Check out the <a href="https://github.com/MetaMask/metamask-extension/issues?q=is%3Aopen+is%3Aissue+label%3Atype-story" targe="_blank">storybook issues on github</a>
 
 ## General Guidelines
 
@@ -14,10 +14,9 @@ Some general documentation best practices to follow:
 
 - Put yourself in the shoes of another developer trying to use the component you just created for the first time
 - Write a brief description of the component and what it's used for in the `README.mdx` file
-- Display the component's api using the `<ArgsTable of={YourComponent} />` component from storybook docs
-- Use the [controls](https://storybook.js.org/addons/@storybook/addon-controls/) api over knobs
-- Use the updated `argType` [actions](https://storybook.js.org/docs/react/essentials/actions) api over importing the actions plugin directly
-- Check the accessibility of the component using the **Accessibility** tab
+- Display the component's API using the `<ArgsTable of={YourComponent} />` component from storybook docs. Add descriptions of each prop by using jsDoc style comments in the `propTypes`.
+- Use the [controls](https://storybook.js.org/addons/@storybook/addon-controls/) over [knobs](https://storybook.js.org/addons/@storybook/addon-knobs)(deprecated)
+- Use the [action argType annotation](https://storybook.js.org/docs/react/essentials/actions#action-argtype-annotation) over importing the actions plugin directly
 
 See the [Button](https://metamask.github.io/metamask-storybook/index.html?path=/story/ui-components-ui-button-button-stories-js--default-story)(`ui/components/ui/button/button.stories.js`) component for reference
 
@@ -25,7 +24,7 @@ See the [Button](https://metamask.github.io/metamask-storybook/index.html?path=/
 
 [Component Story Format (CSF)](https://storybook.js.org/docs/react/api/csf) is the recommended way to write stories. It's an open standard based on ES6 modules.
 
-A story can be as simple as:
+A story **without MDX** documentation can be as simple as:
 
 ```jsx
 import React from 'react';
@@ -42,7 +41,7 @@ DefaultStory.storyName = 'Default';
 ```
 
 For a more in-depth and higher quality form of story and documentation, you can use controls and MDX docs.
-The example below displays the Button component and it explains how we should write our stories:
+The example below displays the `Button` component and it explains how we should write our stories:
 
 ```jsx
 // Button component example story
@@ -51,7 +50,7 @@ import React from 'react';
 
 import BuyIcon from '../icon/overview-buy-icon.component';
 
-// The mdx file to document component api and usage
+// The mdx file to document component API and usage
 import README from './README.mdx';
 import Button from '.';
 
@@ -71,7 +70,7 @@ export default {
   argTypes: {
     children: { control: 'text' },
     disabled: { control: 'boolean' },
-    // use the updated action api to log actions in the actions tab
+    // use the updated action API to log actions in the actions tab
     onClick: { action: 'clicked' },
     type: {
       control: {
@@ -113,7 +112,8 @@ DefaultStory.storyName = 'Default';
 
 // More stories should be added for different usage examples
 // You can add as many stories as you think appropriate to comprehensively document the component
-export const Types = (args) => (
+// A good convention is to name the story component after the prop you are highlighting
+export const Type = (args) => (
   <>
     <Button {...args} type="default">
       {args.children || 'Default'}
@@ -169,7 +169,8 @@ Buttons communicate actions that users can take.
 
 ## Component API
 
-<!-- Display the component api using the ArgsTable. Use JSDoc style comments in the PropTypes of your component to add descriptions for props  -->
+<!-- Display the component API using the ArgsTable. Use JSDoc style comments in the PropTypes of your component to add descriptions for props. See button.component.js Button.propTypes for an example of jsDoc style comments
+-->
 
 <ArgsTable of={Button} />
 

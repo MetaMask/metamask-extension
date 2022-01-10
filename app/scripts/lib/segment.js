@@ -29,8 +29,8 @@ const SEGMENT_FLUSH_INTERVAL = SECOND * 5;
  * when building the application in test mode to catch event calls and prevent
  * them from being sent to segment. It is also used in unit tests to mock and
  * spy on the methods to ensure proper behavior
+ *
  * @param {number} flushAt - number of events to queue before sending to segment
- * @param {number} flushInterval - ms interval to flush queue and send to segment
  * @returns {SegmentInterface}
  */
 export const createSegmentMock = (flushAt = SEGMENT_FLUSH_AT) => {
@@ -54,6 +54,9 @@ export const createSegmentMock = (flushAt = SEGMENT_FLUSH_AT) => {
     /**
      * Track an event and add it to the queue. If the queue size reaches the
      * flushAt threshold, flush the queue.
+     *
+     * @param payload
+     * @param callback
      */
     track(payload, callback = () => undefined) {
       segmentMock.queue.push([payload, callback]);

@@ -46,7 +46,7 @@
     &__title {
       @include H5;
 
-      color: $black;
+      color: var(--black);
       font-weight: 500;
       display: flex;
       justify-content: center;
@@ -80,7 +80,7 @@
       }
 
       &.tab--active button {
-        color: $primary-blue;
+        color: var(--primary-blue);
       }
     }
   }
@@ -101,11 +101,11 @@
     @include H7;
 
     width: 100%;
-    background: $polar;
+    background: var(--polar);
     padding: 15px 21px;
     display: flex;
     flex-flow: column;
-    color: $scorpion;
+    color: var(--scorpion);
 
     &__send-info,
     &__transaction-info,
@@ -154,7 +154,7 @@
 
   &__info-row--fade {
     background: white;
-    color: $dusty-gray;
-    border-top: 1px solid $mischka;
+    color: var(--dusty-gray);
+    border-top: 1px solid var(--mischka);
   }
 }

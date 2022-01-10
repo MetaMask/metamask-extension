@@ -26,7 +26,7 @@
     }
 
     &--selected {
-      color: $white;
+      color: var(--white);
     }
 
     &--dragging {
@@ -73,7 +73,7 @@
     max-width: $break-small;
     border: 1px solid #cdcdcd;
     border-radius: 6px;
-    background-color: $white;
+    background-color: var(--white);
     margin: 24px 0 36px;
     padding: 12px;
 

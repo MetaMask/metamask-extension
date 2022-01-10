@@ -2,14 +2,15 @@
   margin: 24px 0 12px;
 
   &__info {
-    border-top: 1px solid $ui-2;
-    border-bottom: 1px solid $ui-2;
+    border-top: 1px solid var(--ui-2);
+    border-bottom: 1px solid var(--ui-2);
     height: 56px;
     display: flex;
     align-items: center;
+    justify-content: space-around;
 
     &__separator {
-      border-left: 1px solid $ui-2;
+      border-left: 1px solid var(--ui-2);
       height: 65%;
     }
 
@@ -25,13 +26,13 @@
       }
 
       &-data {
-        color: $ui-4;
+        color: var(--ui-4);
         font-size: 12px;
         text-align: center;
       }
 
       &-label {
-        color: $Black-100;
+        color: var(--Black-100);
         font-size: 10px;
         font-weight: bold;
         margin-top: 4px;

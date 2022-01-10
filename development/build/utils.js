@@ -19,7 +19,6 @@ const BuildType = {
  * has a prerelease component, it is assumed to have the format "<build type>.<build version",
  * where the build version is a positive integer.
  *
- * @param {string} currentVersion - The current version.
  * @param {string[]} platforms - A list of browsers to generate versions for.
  * @returns {Object} An object with the browser as the key and the browser-specific version object
  * as the value.  For example, the version `9.6.0-beta.1` would return the object

@@ -41,6 +41,7 @@ import TransactionDetail from '../../components/app/transaction-detail/transacti
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
+import GasDetailsItem from '../../components/app/gas-details-item';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
 import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
@@ -60,11 +61,11 @@ import {
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
-import GasDetailsItem from './gas-details-item';
 import TransactionAlerts from './transaction-alerts';
 
 // eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2_ENABLED = process.env.EIP_1559_V2;
+const EIP_1559_V2_ENABLED =
+  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -437,15 +438,6 @@ export default class ConfirmTransactionBase extends Component {
       return this.supportsEIP1559V2 ? (
         <GasDetailsItem
           key="gas_details"
-          hexMaximumTransactionFee={hexMaximumTransactionFee}
-          hexMinimumTransactionFee={hexMinimumTransactionFee}
-          maxFeePerGas={maxFeePerGas}
-          maxPriorityFeePerGas={maxPriorityFeePerGas}
-          supportsEIP1559={supportsEIP1559}
-          txData={txData}
-          useNativeCurrencyAsPrimaryCurrency={
-            useNativeCurrencyAsPrimaryCurrency
-          }
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
         />
       ) : (

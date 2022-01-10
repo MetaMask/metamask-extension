@@ -15,7 +15,7 @@
     width: 65%;
     margin-top: 16px;
     padding: 12px 12px 14px 12px;
-    border: 1px solid $ui-1;
+    border: 1px solid var(--ui-1);
     box-sizing: border-box;
     border-radius: 100px;
     align-items: center;
@@ -47,7 +47,7 @@
     display: flex;
     height: 27px;
     padding: 12px 12px 14px 12px;
-    background-color: $ui-1;
+    background-color: var(--ui-1);
     border-radius: 100px;
     align-items: center;
     justify-content: center;
@@ -151,6 +151,7 @@
     margin-top: 20px;
     align-items: center;
     position: relative;
+    justify-content: flex-end;
 
     &__symbol {
       width: auto;
@@ -203,7 +204,7 @@
       div {
         width: 22px;
         height: 2px;
-        background: $primary-blue;
+        background: var(--primary-blue);
         position: absolute;
       }
 
@@ -219,7 +220,7 @@
     &__circle {
       width: 14px;
       height: 14px;
-      border: 2px solid $primary-blue;
+      border: 2px solid var(--primary-blue);
       border-radius: 50%;
       background: white;
       position: absolute;
@@ -319,7 +320,7 @@
     @include H6;
 
     font-weight: 500;
-    color: $primary-blue;
+    color: var(--primary-blue);
   }
 
   &__medium-text,
@@ -343,7 +344,7 @@
   }
 
   &__small-blue-text {
-    color: $primary-blue;
+    color: var(--primary-blue);
   }
 
   &__info-row {

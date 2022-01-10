@@ -44,7 +44,6 @@ import { bnToHex } from './util';
  * @property {BlockTracker} _blockTracker A BlockTracker instance. Needed to ensure that accounts and their info updates
  * when a new block is created.
  * @property {Object} _currentBlockNumber Reference to a property on the _blockTracker: the number (i.e. an id) of the the current block
- *
  */
 export default class AccountTracker {
   /**
@@ -96,9 +95,8 @@ export default class AccountTracker {
    * Once this AccountTracker's accounts are up to date with those referenced by the passed addresses, each
    * of these accounts are given an updated balance via EthQuery.
    *
-   * @param {Array} address - The array of hex addresses for accounts with which this AccountTracker's accounts should be
+   * @param {Array} addresses - The array of hex addresses for accounts with which this AccountTracker's accounts should be
    * in sync
-   *
    */
   syncWithAddresses(addresses) {
     const { accounts } = this.store.getState();
@@ -127,7 +125,6 @@ export default class AccountTracker {
    * given a balance as long this._currentBlockNumber is defined.
    *
    * @param {Array} addresses - An array of hex addresses of new accounts to track
-   *
    */
   addAccounts(addresses) {
     const { accounts } = this.store.getState();
@@ -147,8 +144,7 @@ export default class AccountTracker {
   /**
    * Removes accounts from being tracked
    *
-   * @param {Array} an - array of hex addresses to stop tracking
-   *
+   * @param {Array} addresses - An array of hex addresses to stop tracking.
    */
   removeAccount(addresses) {
     const { accounts } = this.store.getState();
@@ -175,7 +171,6 @@ export default class AccountTracker {
    * @private
    * @param {number} blockNumber - the block number to update to.
    * @fires 'block' The updated state, if all account updates are successful
-   *
    */
   async _updateForBlock(blockNumber) {
     this._currentBlockNumber = blockNumber;
@@ -200,7 +195,6 @@ export default class AccountTracker {
    * for all other networks, calls this._updateAccount for each account in this.store
    *
    * @returns {Promise} after all account balances updated
-   *
    */
   async _updateAccounts() {
     const { accounts } = this.store.getState();
@@ -247,7 +241,6 @@ export default class AccountTracker {
    * @private
    * @param {string} address - A hex address of a the account to be updated
    * @returns {Promise} after the account balance is updated
-   *
    */
   async _updateAccount(address) {
     // query balance
@@ -265,6 +258,7 @@ export default class AccountTracker {
 
   /**
    * Updates current address balances from balanceChecker deployed contract instance
+   *
    * @param {*} addresses
    * @param {*} deployedContractAddress
    */

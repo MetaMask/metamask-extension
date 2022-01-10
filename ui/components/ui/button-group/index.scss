@@ -5,9 +5,9 @@
 
   &__button {
     font-size: $font-size-h5;
-    color: $tundora;
+    color: var(--tundora);
     border-style: solid;
-    border-color: $alto;
+    border-color: var(--alto);
     border-width: 1px 1px 1px;
     border-left: 0;
     flex: 1;
@@ -17,7 +17,7 @@
     text-overflow: ellipsis;
 
     &:first-child {
-      border-left: 1px solid $alto;
+      border-left: 1px solid var(--alto);
       border-radius: 4px 0 0 4px;
     }
 
@@ -26,8 +26,8 @@
     }
 
     &--active {
-      background-color: $dodger-blue;
-      color: $white;
+      background-color: var(--dodger-blue);
+      color: var(--white);
     }
 
     &:disabled {
@@ -40,9 +40,9 @@
   .radio-button {
     @include H7;
 
-    color: $Grey-700;
-    border: 1px solid $Grey-100;
-    background: $white;
+    color: var(--Grey-700);
+    border: 1px solid var(--Grey-100);
+    background: var(--white);
     border-radius: 25px;
     height: 25px;
     margin-right: 8px;
@@ -50,15 +50,15 @@
     padding: 0;
 
     &--active {
-      background: $Blue-500;
+      background: var(--Blue-500);
       color: white;
       border: none;
     }
 
     &--danger {
-      border: 1px solid $Red-500;
-      color: $Red-500;
-      background: $white;
+      border: 1px solid var(--Red-500);
+      color: var(--Red-500);
+      background: var(--white);
     }
 
     &:hover {
@@ -67,8 +67,8 @@
   }
 
   .radio-button--active.radio-button--danger {
-    border: 1px solid $Red-500;
+    border: 1px solid var(--Red-500);
     color: white;
-    background: $Red-500;
+    background: var(--Red-500);
   }
 }

@@ -30,6 +30,7 @@ const hstInterface = new ethers.utils.Interface(abi);
  */
 
 /**
+ * @param data
  * @returns {EthersContractCall | undefined}
  */
 export function getTokenData(data) {
@@ -61,6 +62,7 @@ let registry;
 
 /**
  * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
+ *
  * @param {string} fourBytePrefix - The prefix from the method code associated with the data
  * @returns {Object}
  */
@@ -168,6 +170,7 @@ export function isLegacyTransaction(txParams) {
 /**
  * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
  * txMeta.status because txMeta.status does not reflect on-chain errors.
+ *
  * @param {Object} transaction - The txMeta object of a transaction.
  * @param {Object} transaction.txReceipt - The transaction receipt.
  * @returns {string}
@@ -198,7 +201,8 @@ export function getStatusKey(transaction) {
  * Returns a title for the given transaction category.
  *
  * This will throw an error if the transaction category is unrecognized and no default is provided.
- * @param {function} t - The translation function
+ *
+ * @param {Function} t - The translation function
  * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
  * @param {string} nativeCurrency - The native currency of the currently selected network
  * @returns {string} The transaction category title

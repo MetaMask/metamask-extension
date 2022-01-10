@@ -17,7 +17,7 @@
   &__quote-counter {
     @include H7;
 
-    color: $Grey-500;
+    color: var(--Grey-500);
     margin-top: 3px;
     display: flex;
     justify-content: center;
@@ -29,7 +29,7 @@
     @include H4;
 
     font-weight: bold;
-    color: $Black-100;
+    color: var(--Black-100);
     display: flex;
     justify-content: center;
     width: 100%;
@@ -107,7 +107,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: $ui-black;
+      background: var(--ui-black);
     }
 
     img {
@@ -116,21 +116,21 @@
     }
 
     span {
-      color: $ui-white;
+      color: var(--ui-white);
     }
   }
 
   &__loading-bar-container {
     width: 248px;
     height: 3px;
-    background: $Grey-100;
+    background: var(--Grey-100);
     display: flex;
     margin-top: 16px;
   }
 
   &__loading-bar {
     height: 3px;
-    background: $Blue-500;
+    background: var(--Blue-500);
     -webkit-transition: width 0.5s linear;
     -moz-transition: width 0.5s linear;
     -o-transition: width 0.5s linear;

@@ -10,7 +10,7 @@
   transition: opacity 0.75s 0s;
 
   a {
-    color: $primary-1;
+    color: var(--primary-1);
   }
 
   &--dismissible {
@@ -37,19 +37,19 @@
   }
 
   &--warning {
-    border-left: 2px solid $alert-1;
+    border-left: 2px solid var(--alert-1);
   }
 
   &--danger {
-    border-left: 2px solid $error-1;
+    border-left: 2px solid var(--error-1);
   }
 
   &--info {
-    border-left: 2px solid $primary-1;
+    border-left: 2px solid var(--primary-1);
   }
 
   &--success {
-    border-left: 2px solid $success-1;
+    border-left: 2px solid var(--success-1);
   }
 
   & .info-icon {

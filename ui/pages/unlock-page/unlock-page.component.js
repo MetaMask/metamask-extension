@@ -5,6 +5,7 @@ import getCaretCoordinates from 'textarea-caret';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
+import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 export default class UnlockPage extends Component {
@@ -196,7 +197,7 @@ export default class UnlockPage extends Component {
           <div className="unlock-page__support">
             {t('needHelp', [
               <a
-                href="https://support.metamask.io"
+                href={SUPPORT_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
                 key="need-help-link"

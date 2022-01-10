@@ -1,6 +1,6 @@
 .advanced-gas-fee-popover {
   &__separator {
-    border-top: 1px solid $ui-grey;
+    border-top: 1px solid var(--ui-grey);
     margin: 16px 0;
   }
 
@@ -12,7 +12,7 @@
     border-radius: 0;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    border-bottom: 1px solid $ui-grey;
+    border-bottom: 1px solid var(--ui-grey);
   }
 
   .popover-footer {

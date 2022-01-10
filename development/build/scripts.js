@@ -117,7 +117,7 @@ function getInfuraProjectId({ buildType, environment, testing }) {
  *
  * @param {object} options - The Segment write key options.
  * @param {BuildType} options.buildType - The current build type.
- * @param {keyof ENVIRONMENT} options.enviroment - The current build environment.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
  * @returns {string} The Segment write key.
  */
 function getSegmentWriteKey({ buildType, environment }) {
@@ -450,7 +450,9 @@ function createFactoredBuild({
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
         // skip "common" group, they are added to all other groups
-        if (groupSet === commonSet) continue;
+        if (groupSet === commonSet) {
+          continue;
+        }
 
         switch (groupLabel) {
           case 'ui': {
