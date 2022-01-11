@@ -40,7 +40,7 @@ export default function EnableEIP1559V2Notice() {
   }
 
   return (
-    <Box margin={[0, 4, 4, 4]} className="enableEIP1559V2-notice">
+    <Box margin={4} className="enableEIP1559V2-notice">
       <Dialog type="message" className="enableEIP1559V2-notice__message">
         <button
           onClick={setEnableEIP1559V2NoticeDismissed}
