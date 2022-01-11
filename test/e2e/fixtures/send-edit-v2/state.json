@@ -101,6 +101,7 @@
       },
       "assetImages": {},
       "completedOnboarding": true,
+      "eip1559V2Enabled": true,
       "currentLocale": "en",
       "featureFlags": {
         "showIncomingTransactions": true,
