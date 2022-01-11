@@ -1099,21 +1099,6 @@
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "Menggunakan Flask dapat sangat meningkatkan risiko kehilangan dana:"
-  },
-  "flaskExperimentalText2": {
-    "message": "jika Anda menggunakannya untuk memasang Snaps yang tidak tepercaya"
-  },
-  "flaskExperimentalText3": {
-    "message": "jika Anda tidak meninjau konfirmasi sebelum menyetujui perubahan"
-  },
-  "flaskExperimentalText4": {
-    "message": "jika Anda berinteraksi dengan kontrak pintar yang tak dikenal"
-  },
-  "flaskExperimentalText5": {
-    "message": "Menggunakan Flask memberi Anda keleluasaan yang jauh lebih besar dalam menggunakan kekuatan MetaMask, dan keleluasaan itu adalah milik Anda. Apakah Anda menerima risiko ini serta tanggung jawab ekstra untuk keamanan dompet Anda?"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Lihat detailnya",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -3336,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "Digunakan oleh berbagai klien yang berbeda"
-  },
-  "userAccepts": {
-    "message": "Saya menerima"
   },
   "userName": {
     "message": "Nama pengguna"
