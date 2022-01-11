@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.9.0]
+### Uncategorized
+- EIP-1559 V2: Use default gas preferences of user for all transactions ([#13238](https://github.com/MetaMask/metamask-extension/pull/13238))
+- Handle missing eth_accounts permission history in getLastConnectedInfo ([#13257](https://github.com/MetaMask/metamask-extension/pull/13257))
+- Update the copy for the Flask welcome page (#13223) ([#13223](https://github.com/MetaMask/metamask-extension/pull/13223))
+- Fix a propType warning on the Flask welcome screen (#13224) ([#13224](https://github.com/MetaMask/metamask-extension/pull/13224))
+- Bump copy-props from 2.0.4 to 2.0.5 ([#13245](https://github.com/MetaMask/metamask-extension/pull/13245))
+- Feat/collectibles send flow ([#13048](https://github.com/MetaMask/metamask-extension/pull/13048))
+- EIP-1559 V2: :  Advanced Gas Fee Modal -  Updating the trend arrows ([#13196](https://github.com/MetaMask/metamask-extension/pull/13196))
+- Updating storybook docs  ([#13055](https://github.com/MetaMask/metamask-extension/pull/13055))
+- New Crowdin translations by Github Action ([#13206](https://github.com/MetaMask/metamask-extension/pull/13206))
+- Alert users when the network is busy ([#12268](https://github.com/MetaMask/metamask-extension/pull/12268))
+- Clear Sass deprecations ([#13227](https://github.com/MetaMask/metamask-extension/pull/13227))
+- Add JSDoc ESLint rules ([#12112](https://github.com/MetaMask/metamask-extension/pull/12112))
+- [Hotfix] track anonymous events appropriately ([#13237](https://github.com/MetaMask/metamask-extension/pull/13237))
+- Remove dupe Prettier config from ESLint config ([#13234](https://github.com/MetaMask/metamask-extension/pull/13234))
+- EIP-1559 V2 UI fixes ([#13222](https://github.com/MetaMask/metamask-extension/pull/13222))
+- Dark Mode Part 1: Switch to Using CSS Variables ([#13147](https://github.com/MetaMask/metamask-extension/pull/13147))
+- using 1559 V2 for cancel speed up flows ([#13019](https://github.com/MetaMask/metamask-extension/pull/13019))
+
 ## [10.8.2]
 ### Fixed
 - Add missing `appName` localized messages for Flask and Beta ([#13138](https://github.com/MetaMask/metamask-extension/pull/13138))
@@ -2660,7 +2680,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.8.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.9.0...HEAD
+[10.9.0]: https://github.com/MetaMask/metamask-extension/compare/v10.8.2...v10.9.0
 [10.8.2]: https://github.com/MetaMask/metamask-extension/compare/v10.8.1...v10.8.2
 [10.8.1]: https://github.com/MetaMask/metamask-extension/compare/v10.8.0...v10.8.1
 [10.8.0]: https://github.com/MetaMask/metamask-extension/compare/v10.7.1...v10.8.0
