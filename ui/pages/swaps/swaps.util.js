@@ -1,6 +1,7 @@
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
 import abi from 'human-standard-token-abi';
+import { AssetsContractController } from '@metamask/controllers';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ALLOWED_CONTRACT_ADDRESSES,
@@ -368,6 +369,18 @@ export async function fetchToken(contractAddress, chainId) {
   return token;
 }
 
+export async function fetchTokenDecimal(contractAddress, chainId) {
+  const tokenInfo = await fetchToken(contractAddress, chainId);
+  if (tokenInfo.error) {
+    const decimalsStr = await new AssetsContractController({
+      provider: global.ethereumProvider,
+    }).getTokenDecimals(contractAddress);
+    const decimals = parseInt(decimalsStr, 10);
+    return Number.isFinite(decimals) ? decimals : null;
+  }
+  return tokenInfo.decimals;
+}
+
 export async function fetchTokens(chainId) {
   const tokensUrl = getBaseApi('tokens', chainId);
   const tokens = await fetchWithCache(
@@ -441,7 +454,7 @@ export async function fetchSwapsFeatureFlags() {
 }
 
 export async function fetchTokenPrice(address, currency = 'eth') {
-  const query = `contract_addresses=${address}&vs_currencies=` + currency;
+  const query = `contract_addresses=${address}&vs_currencies=${currency}`;
   const prices = await fetchWithCache(
     `https://api.coingecko.com/api/v3/simple/token_price/ethereum?${query}`,
     { method: 'GET' },
