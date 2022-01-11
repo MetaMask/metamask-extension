@@ -22,9 +22,6 @@
   &__loading-bar {
     height: 3px;
     background: var(--Blue-500);
-    -webkit-transition: width 0.5s linear;
-    -moz-transition: width 0.5s linear;
-    -o-transition: width 0.5s linear;
     transition: width 0.5s linear;
   }
 
