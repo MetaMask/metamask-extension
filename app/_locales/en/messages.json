@@ -419,9 +419,6 @@
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
-  "cancelSwap": {
-    "message": "Cancel swap"
-  },
   "cancelSpeedUp": {
     "message": "cancel or speed up a tranaction."
   },
@@ -432,6 +429,9 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
     "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelSwap": {
+    "message": "Cancel swap"
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
@@ -951,14 +951,14 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
-  "enableSmartTransactions": {
-    "message": "Enable smart transactions"
-  },
   "enableOpenSeaAPI": {
     "message": "Enable OpenSea API"
   },
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
+  },
+  "enableSmartTransactions": {
+    "message": "Enable smart transactions"
   },
   "enableToken": {
     "message": "enable $1",
@@ -1534,11 +1534,11 @@
   "learnMore": {
     "message": "learn more"
   },
-  "learnMoreWithDot": {
-    "message": "Learn more."
-  },
   "learnMoreUpperCase": {
     "message": "Learn more"
+  },
+  "learnMoreWithDot": {
+    "message": "Learn more."
   },
   "learnScamRisk": {
     "message": "scams and security risks."
@@ -2649,6 +2649,12 @@
   "smartTransaction": {
     "message": "Smart transaction"
   },
+  "smartTransactionTooltip": {
+    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
+  },
+  "smartTransactionsAlert": {
+    "message": "Smart Transactions Alert"
+  },
   "smartTransactionsAreHere": {
     "message": "Smart transactions are here!"
   },
@@ -2670,14 +2676,11 @@
   "smartTransactionsSubDescription": {
     "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you."
   },
-  "smartTransactionsYouCanOptOut": {
-    "message": "You can opt-out in advanced settings any time."
-  },
-  "smartTransactionsAlert": {
-    "message": "Smart Transactions Alert"
-  },
   "smartTransactionsUnavailable": {
     "message": "Smart transactions are temporarily unavailable. You can still swap using the normal method or wait until smart transactions are available for cheaper transaction fees and reduced chances of failure."
+  },
+  "smartTransactionsYouCanOptOut": {
+    "message": "You can opt-out in advanced settings any time."
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
