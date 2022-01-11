@@ -34,7 +34,6 @@ class RemoveFencedCodeTransform extends Transform {
   // It concatenates all buffers for the current file into a single buffer.
   _transform(buffer, _encoding, next) {
     this._fileBuffers.push(buffer);
-    console.log(this._fileBuffers);
     next();
   }
 
@@ -196,7 +195,9 @@ const directiveParsingRegex = /^([A-Z]+):([A-Z_]+)(?:\(((?:\w+,)*\w+)\))?$/u;
  * a boolean indicating whether they were modified.
  */
 function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
-  console.log(fileContent);
+  if (/^\/\/# sourceMappingURL=/gmu.test(fileContent)) {
+    return [fileContent, false];
+  }
   const matchedLines = [...fileContent.matchAll(linesWithFenceRegex)];
 
   // If we didn't match any lines, return the unmodified file contents.
@@ -285,12 +286,6 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
     return parsed;
   });
 
-  const formattedDirectives = parsedDirectives.map((directive) => [
-    directive.indices,
-    directive.line,
-  ]);
-  console.log('File is: ', filePath, 'Parsed directives:', formattedDirectives);
-
   if (parsedDirectives.length % 2 !== 0) {
     throw new Error(
       getInvalidFenceStructureMessage(
@@ -340,7 +335,6 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
       }
     } else {
       if (terminus !== DirectiveTerminuses.END) {
-        console.log(line, indices, terminus, command, parameters);
         throw new Error(
           getInvalidFencePairMessage(
             filePath,
