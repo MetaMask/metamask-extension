@@ -842,9 +842,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "Maks. baz ücreti mevcut ağ koşulları için düşük"
   },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "Öncelik ücretine göre çarpan düşük"
-  },
   "editGasMaxFeeHigh": {
     "message": "Maks. ücret gerekenden daha yüksek"
   },
@@ -905,12 +902,6 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "Bu, maksimum ücretinizi düşürür ancak ağ trafiğiniz artarsa işleminiz gecikebilir ya da gerçekleşmeyebilir."
-  },
-  "editInGwei": {
-    "message": "GWEI'de düzenle"
-  },
-  "editInMultiplier": {
-    "message": "Çarpanda düzenle"
   },
   "editNonceField": {
     "message": "Geçici anahtarı düzenle"
@@ -1107,21 +1098,6 @@
   "fileImportFail": {
     "message": "Dosya alma çalışmıyor mu? Buraya tıklayın!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskExperimentalText1": {
-    "message": "Flask kullanmak para kaybı riskinizi yüksek oranda artırabilir:"
-  },
-  "flaskExperimentalText2": {
-    "message": "güvenilir olmayan Sanpl'leri yüklemek için kullanırsanız"
-  },
-  "flaskExperimentalText3": {
-    "message": "değişiklikleri kabul etmeden önce onayları incelemezseniz"
-  },
-  "flaskExperimentalText4": {
-    "message": "alışkın olmadığınız akıllı sözleşmelerle uğraşırsanız"
-  },
-  "flaskExperimentalText5": {
-    "message": "Flask kullanmak MetaMask'ın gücünü kullanmada size çok daha fazla gizlilik sağlar ve bu gizlilik tamamen size özeldir. Bu riskleri ve ayrıca cüzdanınızın güvenliği için ekstra sorumluluğu kabul ediyor musunuz?"
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Ayrıntılara bakın",
@@ -1725,9 +1701,6 @@
   },
   "mobileSyncWarning": {
     "message": "\"Uzantı ile senkronize et\" özelliği geçici olarak devre dışı bırakılmış. MetaMask mobilde uzantı cüzdanınızı kullanmak istiyorsanız mobil uygulamaya gidin: cüzdan kurulum ayarlarına geri dönün ve \"Gizli Kurtarma İfadesi ile İçe Aktar\" seçeneğini seçin. Ardından cüzdanınızı mobil uygulamada içe aktarmak için uzantı cüzdanınızın gizli ifadesini kullanın."
-  },
-  "multiplier": {
-    "message": "çarpan"
   },
   "mustSelectOne": {
     "message": "En az bir jeton seçilmeli"
@@ -3348,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "Farklı istemciler tarafından kullanılmakta"
-  },
-  "userAccepts": {
-    "message": "Kabul ediyorum"
   },
   "userName": {
     "message": "Kullanıcı adı"

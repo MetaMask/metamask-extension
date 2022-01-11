@@ -68,7 +68,7 @@ const renderComponent = ({
       gasEstimateType: 'fee-market',
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
       advancedGasFee: {
-        maxBaseFee: '1.5',
+        maxBaseFee: '100',
         priorityFee: '2',
       },
     },
@@ -161,7 +161,7 @@ describe('EditGasItem', () => {
     expect(screen.queryByText('⚙️')).toBeInTheDocument();
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
     // below value of custom gas fee estimate is default obtained from state.metamask.advancedGasFee
-    expect(screen.queryByTitle('0.001575 ETH')).toBeInTheDocument();
+    expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
   });
 
   it('should renders +10% gas estimate option for priorityLevel minimum', () => {

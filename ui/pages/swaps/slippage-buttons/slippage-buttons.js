@@ -199,11 +199,10 @@ export default function SlippageButtons({
                   >
                     {t('smartTransaction')}
                   </Typography>
-                  {/* TODO: Enable this when we have the right content. */}
-                  {/* <InfoTooltip
+                  <InfoTooltip
                     position="top"
-                    contentText={t('swapAdvancedSlippageInfo')}
-                  /> */}
+                    contentText={t('smartTransactionTooltip')}
+                  />
                 </Box>
                 <ToggleButton
                   value={smartTransactionsOptInStatus}

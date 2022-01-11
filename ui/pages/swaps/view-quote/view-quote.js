@@ -74,7 +74,7 @@ import {
   SWAPS_ERROR_ROUTE,
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getTokenData } from '../../../helpers/utils/transactions.util';
+import { getTransactionData } from '../../../helpers/utils/transactions.util';
 import {
   calcTokenAmount,
   calcTokenValue,
@@ -305,7 +305,7 @@ export default function ViewQuote() {
   const tokenBalanceUnavailable =
     tokensWithBalances && balanceToken === undefined;
 
-  const approveData = getTokenData(approveTxParams?.data);
+  const approveData = getTransactionData(approveTxParams?.data);
   const approveValue = approveData && getTokenValueParam(approveData);
   const approveAmount =
     approveValue &&

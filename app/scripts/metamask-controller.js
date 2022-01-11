@@ -41,7 +41,10 @@ import {
   SubjectMetadataController,
 } from '@metamask/snap-controllers';
 
-import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import {
+  TRANSACTION_STATUSES,
+  TRANSACTION_TYPES,
+} from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -65,6 +68,9 @@ import {
 } from '../../shared/constants/app';
 
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
+import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
+import { getTransactionData } from '../../ui/helpers/utils/transactions.util';
+import { isEqualCaseInsensitive } from '../../ui/helpers/utils/util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -583,10 +589,6 @@ export default class MetamaskController extends EventEmitter {
       getExternalPendingTransactions: this.getExternalPendingTransactions.bind(
         this,
       ),
-      // TODO: We can probably remove "getExternalConfirmedTransactions", since when an STX is done, we push it to regular transactions.
-      getExternalConfirmedTransactions: this.getExternalConfirmedTransactions.bind(
-        this,
-      ),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -607,6 +609,43 @@ export default class MetamaskController extends EventEmitter {
         this.platform.showTransactionNotification(txMeta, rpcPrefs);
 
         const { txReceipt } = txMeta;
+
+        // if this is a transferFrom method generated from within the app it may be a collectible transfer transaction
+        // in which case we will want to check and update ownership status of the transferred collectible.
+        if (
+          txMeta.type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM &&
+          txMeta.txParams !== undefined
+        ) {
+          const {
+            data,
+            to: contractAddress,
+            from: userAddress,
+          } = txMeta.txParams;
+          const { chainId } = txMeta;
+          const transactionData = getTransactionData(data);
+          const tokenAmountOrTokenId = getTokenValueParam(transactionData);
+          const { allCollectibles } = this.collectiblesController.state;
+
+          // check if its a known collectible
+          const knownCollectible = allCollectibles?.[userAddress]?.[
+            chainId
+          ].find(
+            ({ address, tokenId }) =>
+              isEqualCaseInsensitive(address, contractAddress) &&
+              tokenId === tokenAmountOrTokenId,
+          );
+
+          // if it is we check and update ownership status.
+          if (knownCollectible) {
+            this.collectiblesController.checkAndUpdateSingleCollectibleOwnershipStatus(
+              knownCollectible,
+              false,
+              // TODO add this when checkAndUpdateSingleCollectibleOwnershipStatus is updated
+              // { userAddress, chainId },
+            );
+          }
+        }
+
         const metamaskState = await this.getState();
 
         if (txReceipt && txReceipt.status === '0x0') {
@@ -1188,7 +1227,15 @@ export default class MetamaskController extends EventEmitter {
         collectiblesController,
       ),
 
-      checkAndUpdateCollectiblesOwnershipStatus: collectiblesController.checkAndUpdateCollectiblesOwnershipStatus.bind(
+      checkAndUpdateAllCollectiblesOwnershipStatus: collectiblesController.checkAndUpdateAllCollectiblesOwnershipStatus.bind(
+        collectiblesController,
+      ),
+
+      checkAndUpdateSingleCollectibleOwnershipStatus: collectiblesController.checkAndUpdateSingleCollectibleOwnershipStatus.bind(
+        collectiblesController,
+      ),
+
+      isCollectibleOwner: collectiblesController.isCollectibleOwner.bind(
         collectiblesController,
       ),
 
@@ -3133,11 +3180,6 @@ export default class MetamaskController extends EventEmitter {
       addressFrom: address,
       status: 'pending',
     });
-  }
-
-  // TODO: Remove this fn, because it's not needed anymore, since we push confirmed smart transactions into the list of regular transactions.
-  getExternalConfirmedTransactions() {
-    return [];
   }
 
   /**
