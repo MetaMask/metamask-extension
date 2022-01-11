@@ -940,7 +940,7 @@
     "message": "We've updated how gas fee estimation and customization works."
   },
   "enableEIP1559V2ButtonText": {
-    "message": "Turn on EIP-1559 V2 in Settings"
+    "message": "Turn on Enhanced Gas Fee UI in Settings"
   },
   "enableEIP1559V2Description": {
     "message": "We've updated how gas estimation and customization works. Turn on if you'd like to use the new gas experience. $1",
