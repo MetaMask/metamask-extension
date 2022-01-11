@@ -8,12 +8,12 @@ describe('Incremental Security', function () {
       {
         secretKey:
           '0x250F458997A364988956409A164BA4E16F0F99F916ACDD73ADCD3A1DE30CF8D1',
-        balance: 0,
+        balance: '0x0',
       },
       {
         secretKey:
           '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: 25000000000000000000,
+        balance: '0x15af1d78b58c40000',
       },
     ],
   };
