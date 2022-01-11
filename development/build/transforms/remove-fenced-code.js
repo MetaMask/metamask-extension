@@ -200,6 +200,9 @@ const directiveParsingRegex = /^([A-Z]+):([A-Z_]+)(?:\(((?:\w+,)*\w+)\))?$/u;
  * a boolean indicating whether they were modified.
  */
 function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
+  if (/^\/\/# sourceMappingURL=/gmu.test(fileContent)) {
+    return [fileContent, false];
+  }
   const matchedLines = [...fileContent.matchAll(linesWithFenceRegex)];
 
   // If we didn't match any lines, return the unmodified file contents.
