@@ -200,6 +200,12 @@ const directiveParsingRegex = /^([A-Z]+):([A-Z_]+)(?:\(((?:\w+,)*\w+)\))?$/u;
  * a boolean indicating whether they were modified.
  */
 function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
+  // Do not modify the file if we detect an inline sourcemap. For reasons
+  // yet to be determined, the transform receives every file twice while in
+  // watch mode, the second after Babel has transpiled the file. Babel adds
+  // inline source maps to the file, something we will never do in our own
+  // source files, so we use the existence of inline source maps to determine
+  // whether we should ignore the file.
   if (/^\/\/# sourceMappingURL=/gmu.test(fileContent)) {
     return [fileContent, false];
   }
