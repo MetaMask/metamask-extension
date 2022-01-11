@@ -945,9 +945,8 @@ export default class TransactionController extends EventEmitter {
     if (this.inProcessOfSigning.has(uniqueHashOfParams)) {
       return '';
     }
-    let rawTxes;
     this.inProcessOfSigning.add(uniqueHashOfParams);
-    let nonceLock;
+    let rawTxes, nonceLock;
     try {
       // TODO: we should add a check to verify that all transactions have the same from address
       const fromAddress = listOfTxParams[0].from;
