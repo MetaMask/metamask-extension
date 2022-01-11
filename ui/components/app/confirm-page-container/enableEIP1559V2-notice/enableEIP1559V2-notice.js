@@ -41,7 +41,7 @@ export default function EnableEIP1559V2Notice({ isFirstAlert }) {
   }
 
   return (
-    <Box margin={[isFirstAlert ? 4 : 0, 4, 4, 4]}>
+    <Box margin={[0, 4, 4, 4]} marginTop={isFirstAlert ? 4 : 0}>
       <Dialog type="message" className="enableEIP1559V2-notice__message">
         <button
           onClick={setEnableEIP1559V2NoticeDismissed}
