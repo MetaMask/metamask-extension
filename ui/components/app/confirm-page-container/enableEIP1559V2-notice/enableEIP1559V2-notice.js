@@ -41,11 +41,15 @@ export default function EnableEIP1559V2Notice({ isFirstAlert }) {
   }
 
   return (
-    <Box margin={[0, 4, 4, 4]} marginTop={isFirstAlert ? 4 : 0}>
-      <Dialog type="message" className="enableEIP1559V2-notice__message">
+    <Box
+      margin={[0, 4, 4, 4]}
+      marginTop={isFirstAlert ? 4 : 0}
+      className="enableEIP1559V2-notice"
+    >
+      <Dialog type="message" className="enableEIP1559V2-notice__dialog">
         <button
           onClick={setEnableEIP1559V2NoticeDismissed}
-          className="enableEIP1559V2-notice__message__close-button"
+          className="enableEIP1559V2-notice__close-button"
           data-testid="enableEIP1559V2-notice-close"
         />
         <Box display={DISPLAY.FLEX}>
@@ -74,7 +78,7 @@ export default function EnableEIP1559V2Notice({ isFirstAlert }) {
               onClick={() => {
                 history.push(EXPERIMENTAL_ROUTE);
               }}
-              className="enableEIP1559V2-notice__message__link"
+              className="enableEIP1559V2-notice__link"
             >
               {t('enableEIP1559V2ButtonText')}
             </Button>
