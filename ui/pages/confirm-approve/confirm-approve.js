@@ -8,7 +8,7 @@ import {
   updateCustomNonce,
   getNextNonce,
 } from '../../store/actions';
-import { getTokenData } from '../../helpers/utils/transactions.util';
+import { getTransactionData } from '../../helpers/utils/transactions.util';
 import {
   calcTokenAmount,
   getTokenAddressParam,
@@ -105,7 +105,7 @@ export default function ConfirmApprove() {
   const tokenSymbol = currentToken?.symbol;
   const decimals = Number(currentToken?.decimals);
   const tokenImage = currentToken?.image;
-  const tokenData = getTokenData(data);
+  const tokenData = getTransactionData(data);
   const tokenValue = getTokenValueParam(tokenData);
   const toAddress = getTokenAddressParam(tokenData);
   const tokenAmount =

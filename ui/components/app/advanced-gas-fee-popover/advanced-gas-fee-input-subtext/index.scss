@@ -14,8 +14,16 @@
     position: relative;
   }
 
+  &__level {
+    margin-left: 2px;
+  }
+
+  &__up,
+  &__down {
+    padding-top: 2px;
+  }
+
   img {
-    height: 16px;
     margin-right: 8px;
   }
 }

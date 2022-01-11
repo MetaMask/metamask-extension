@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
-import I18nValue from '../../../ui/i18n-value';
 import {
   COLORS,
   DISPLAY,
@@ -23,7 +22,7 @@ const AdvancedGasFeeDefaults = () => {
 
   const {
     hasErrors,
-    baseFeeMultiplier,
+    maxBaseFee,
     maxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
@@ -32,7 +31,7 @@ const AdvancedGasFeeDefaults = () => {
     if (value) {
       dispatch(
         setAdvancedGasFee({
-          maxBaseFee: baseFeeMultiplier,
+          maxBaseFee,
           priorityFee: maxPriorityFeePerGas,
         }),
       );
@@ -42,7 +41,7 @@ const AdvancedGasFeeDefaults = () => {
   };
   const isDefaultSettingsSelected =
     Boolean(advancedGasFeeValues) &&
-    advancedGasFeeValues.maxBaseFee === baseFeeMultiplier &&
+    advancedGasFeeValues.maxBaseFee === maxBaseFee &&
     advancedGasFeeValues.priorityFee === maxPriorityFeePerGas;
 
   const handleUpdateDefaultSettings = () =>
@@ -62,16 +61,11 @@ const AdvancedGasFeeDefaults = () => {
         disabled={hasErrors}
       />
       <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
-        {!isDefaultSettingsSelected && Boolean(advancedGasFeeValues) ? (
-          <I18nValue
-            messageKey="advancedGasFeeDefaultOptIn"
-            options={[
+        {!isDefaultSettingsSelected && Boolean(advancedGasFeeValues)
+          ? t('advancedGasFeeDefaultOptIn', [
               <strong key="default-value-change">{t('newValues')}</strong>,
-            ]}
-          />
-        ) : (
-          <I18nValue messageKey="advancedGasFeeDefaultOptOut" />
-        )}
+            ])
+          : t('advancedGasFeeDefaultOptOut')}
       </Typography>
     </Box>
   );
