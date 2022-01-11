@@ -5,7 +5,6 @@ import { MINUTE } from '../../../shared/constants/time';
 
 export default class AppStateController extends EventEmitter {
   /**
-   * @constructor
    * @param {Object} opts
    */
   constructor(opts = {}) {
@@ -110,6 +109,7 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * Sets the default home tab
+   *
    * @param {string} [defaultHomeActiveTabName] - the tab name
    */
   setDefaultHomeActiveTabName(defaultHomeActiveTabName) {
@@ -128,8 +128,7 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Record that the user has been shown the recovery phrase reminder
-   * @returns {void}
+   * Record that the user has been shown the recovery phrase reminder.
    */
   setRecoveryPhraseReminderHasBeenShown() {
     this.store.updateState({
@@ -139,8 +138,8 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * Record the timestamp of the last time the user has seen the recovery phrase reminder
-   * @param {number} lastShown - timestamp when user was last shown the reminder
-   * @returns {void}
+   *
+   * @param {number} lastShown - timestamp when user was last shown the reminder.
    */
   setRecoveryPhraseReminderLastShown(lastShown) {
     this.store.updateState({
@@ -149,8 +148,7 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Sets the last active time to the current time
-   * @returns {void}
+   * Sets the last active time to the current time.
    */
   setLastActiveTime() {
     this._resetTimer();
@@ -158,9 +156,9 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * Sets the inactive timeout for the app
-   * @param {number} timeoutMinutes - the inactive timeout in minutes
-   * @returns {void}
+   *
    * @private
+   * @param {number} timeoutMinutes - The inactive timeout in minutes.
    */
   _setInactiveTimeout(timeoutMinutes) {
     this.store.updateState({
@@ -176,7 +174,6 @@ export default class AppStateController extends EventEmitter {
    * If the {@code timeoutMinutes} state is falsy (i.e., zero) then a new
    * timer will not be created.
    *
-   * @returns {void}
    * @private
    */
   _resetTimer() {
@@ -198,7 +195,9 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * Sets the current browser and OS environment
-   * @returns {void}
+   *
+   * @param os
+   * @param browser
    */
   setBrowserEnvironment(os, browser) {
     this.store.updateState({ browserEnvironment: { os, browser } });
@@ -206,7 +205,9 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * Adds a pollingToken for a given environmentType
-   * @returns {void}
+   *
+   * @param pollingToken
+   * @param pollingTokenType
    */
   addPollingToken(pollingToken, pollingTokenType) {
     const prevState = this.store.getState()[pollingTokenType];
@@ -217,7 +218,9 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * removes a pollingToken for a given environmentType
-   * @returns {void}
+   *
+   * @param pollingToken
+   * @param pollingTokenType
    */
   removePollingToken(pollingToken, pollingTokenType) {
     const prevState = this.store.getState()[pollingTokenType];
@@ -228,7 +231,6 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * clears all pollingTokens
-   * @returns {void}
    */
   clearPollingTokens() {
     this.store.updateState({
@@ -240,7 +242,8 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * Sets whether the testnet dismissal link should be shown in the network dropdown
-   * @returns {void}
+   *
+   * @param showTestnetMessageInDropdown
    */
   setShowTestnetMessageInDropdown(showTestnetMessageInDropdown) {
     this.store.updateState({ showTestnetMessageInDropdown });
@@ -248,7 +251,8 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * Sets a property indicating the model of the user's Trezor hardware wallet
-   * @returns {void}
+   *
+   * @param trezorModel - The Trezor model.
    */
   setTrezorModel(trezorModel) {
     this.store.updateState({ trezorModel });
@@ -256,6 +260,8 @@ export default class AppStateController extends EventEmitter {
 
   /**
    * A setter for the `collectiblesDetectionNoticeDismissed` property
+   *
+   * @param collectiblesDetectionNoticeDismissed
    */
   setCollectiblesDetectionNoticeDismissed(
     collectiblesDetectionNoticeDismissed,

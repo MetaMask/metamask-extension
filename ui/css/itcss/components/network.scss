@@ -7,7 +7,7 @@
 }
 
 .network-component.pointer {
-  border: 1px solid $Grey-200;
+  border: 1px solid var(--Grey-200);
   border-radius: 82px;
   padding: 6px 3px;
   flex: 0 0 auto;
@@ -76,7 +76,7 @@
 
 .network-name-item {
   flex: 1;
-  color: $dusty-gray;
+  color: var(--dusty-gray);
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -84,7 +84,7 @@
 
 .network-check,
 .network-check__transparent {
-  color: $white;
+  color: var(--white);
   margin-left: 7px;
 }
 
@@ -106,7 +106,7 @@
 }
 
 .menu-icon-circle--active {
-  border: 1px solid $white;
+  border: 1px solid var(--white);
   background: rgba(100, 100, 100, 0.4);
 }
 
@@ -138,13 +138,7 @@
   width: 100%;
   height: 1px;
   margin: 10px 0;
-  background-color: $scorpion;
-}
-
-.network-dropdown-testnets {
-  &--no-visibility {
-    visibility: hidden;
-  }
+  background-color: var(--scorpion);
 }
 
 .network-dropdown-title {
@@ -152,7 +146,7 @@
 
   height: 25px;
   width: 120px;
-  color: $white;
+  color: var(--white);
   text-align: center;
 }
 
@@ -161,15 +155,15 @@
 
   min-height: 36px;
   width: 265px;
-  color: $dusty-gray;
+  color: var(--dusty-gray);
 
   &--link {
-    color: $white;
+    color: var(--white);
     cursor: pointer;
     text-decoration: underline;
 
     &:hover {
-      color: $white;
+      color: var(--white);
     }
   }
 
@@ -179,7 +173,7 @@
     position: absolute;
     top: 63px;
     right: 10px;
-    border: 1px solid $dusty-gray;
+    border: 1px solid var(--dusty-gray);
     border-radius: 10px;
   }
 }

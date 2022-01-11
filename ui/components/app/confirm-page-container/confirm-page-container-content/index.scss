@@ -19,7 +19,7 @@
 
   &__data {
     padding: 16px;
-    color: $oslo-gray;
+    color: var(--oslo-gray);
 
     & > .disclosure {
       margin-top: 0;
@@ -57,7 +57,7 @@
   }
 
   &__gas-fee {
-    border-bottom: 1px solid $geyser;
+    border-bottom: 1px solid var(--geyser);
 
     .advanced-gas-inputs__gas-edit-rows {
       margin-bottom: 16px;
@@ -69,7 +69,7 @@
 
     font-weight: 500;
     text-transform: capitalize;
-    color: $black;
+    color: var(--black);
     padding-left: 5px;
   }
 

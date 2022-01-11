@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Noraidīt"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Ieskenēt QR kodu"
+  },
   "about": {
     "message": "Par"
   },
@@ -255,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Pašreizējā valodā"
+  },
+  "custom": {
+    "message": "Papildu"
   },
   "customGas": {
     "message": "Pielāgot Gas"
@@ -524,6 +533,9 @@
     "message": "Kovan testa tīkls"
   },
   "learnMore": {
+    "message": "Uzzināt vairāk"
+  },
+  "learnMoreUpperCase": {
     "message": "Uzzināt vairāk"
   },
   "ledgerAccountRestriction": {

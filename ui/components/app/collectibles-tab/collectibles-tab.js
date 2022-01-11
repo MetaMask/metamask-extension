@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -24,7 +25,11 @@ import {
 } from '../../../ducks/metamask/metamask';
 import { getIsMainnet, getUseCollectibleDetection } from '../../../selectors';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
-import { detectCollectibles } from '../../../store/actions';
+import {
+  checkAndUpdateAllCollectiblesOwnershipStatus,
+  detectCollectibles,
+} from '../../../store/actions';
+import { usePrevious } from '../../../hooks/usePrevious';
 
 export default function CollectiblesTab({ onAddNFT }) {
   const collectibles = useSelector(getCollectibles);
@@ -37,32 +42,66 @@ export default function CollectiblesTab({ onAddNFT }) {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-
-  const collections = {};
-  collectibles.forEach((collectible) => {
-    if (collections[collectible.address]) {
-      collections[collectible.address].collectibles.push(collectible);
-    } else {
-      const collectionContract = collectibleContracts.find(
-        ({ address }) => address === collectible.address,
-      );
-      collections[collectible.address] = {
-        collectionName: collectionContract?.name || collectible.name,
-        collectionImage:
-          collectionContract?.logo || collectible.collectionImage,
-        collectibles: [collectible],
-      };
-    }
+  const [collections, setCollections] = useState({});
+  const [previouslyOwnedCollection, setPreviouslyOwnedCollection] = useState({
+    collectionName: 'Previously Owned',
+    collectibles: [],
   });
+
+  const prevCollectibles = usePrevious(collectibles);
+  useEffect(() => {
+    const getCollections = () => {
+      const newCollections = {};
+      const newPreviouslyOwnedCollections = {
+        collectionName: 'Previously Owned',
+        collectibles: [],
+      };
+
+      collectibles.forEach((collectible) => {
+        if (collectible?.isCurrentlyOwned === false) {
+          newPreviouslyOwnedCollections.collectibles.push(collectible);
+        } else if (newCollections[collectible.address]) {
+          newCollections[collectible.address].collectibles.push(collectible);
+        } else {
+          const collectionContract = collectibleContracts.find(
+            ({ address }) => address === collectible.address,
+          );
+          newCollections[collectible.address] = {
+            collectionName: collectionContract?.name || collectible.name,
+            collectionImage:
+              collectionContract?.logo || collectible.collectionImage,
+            collectibles: [collectible],
+          };
+        }
+      });
+      setCollections(newCollections);
+      setPreviouslyOwnedCollection(newPreviouslyOwnedCollections);
+    };
+
+    if (!isEqual(prevCollectibles, collectibles)) {
+      getCollections();
+    }
+  }, [collectibles, prevCollectibles, collectibleContracts]);
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);
   };
 
+  const onRefresh = () => {
+    if (isMainnet) {
+      dispatch(detectCollectibles());
+    }
+    checkAndUpdateAllCollectiblesOwnershipStatus();
+  };
+
   return (
     <div className="collectibles-tab">
-      {collectibles.length > 0 ? (
-        <CollectiblesItems collections={collections} />
+      {Object.keys(collections).length > 0 ||
+      previouslyOwnedCollection.collectibles.length > 0 ? (
+        <CollectiblesItems
+          collections={collections}
+          previouslyOwnedCollection={previouslyOwnedCollection}
+        />
       ) : (
         <Box padding={[6, 12, 6, 12]}>
           {isMainnet &&
@@ -115,34 +154,27 @@ export default function CollectiblesTab({ onAddNFT }) {
           alignItems={ALIGN_ITEMS.CENTER}
           justifyContent={JUSTIFY_CONTENT.CENTER}
         >
-          {isMainnet ? (
-            <>
-              <Box
-                className="collectibles-tab__link"
-                justifyContent={JUSTIFY_CONTENT.FLEX_END}
-              >
-                {useCollectibleDetection ? (
-                  <Button
-                    type="link"
-                    onClick={() => dispatch(detectCollectibles())}
-                  >
-                    {t('refreshList')}
-                  </Button>
-                ) : (
-                  <Button type="link" onClick={onEnableAutoDetect}>
-                    {t('enableAutoDetect')}
-                  </Button>
-                )}
-              </Box>
-              <Typography
-                color={COLORS.UI3}
-                variant={TYPOGRAPHY.H4}
-                align={TEXT_ALIGN.CENTER}
-              >
-                {t('or')}
-              </Typography>
-            </>
-          ) : null}
+          <Box
+            className="collectibles-tab__link"
+            justifyContent={JUSTIFY_CONTENT.FLEX_END}
+          >
+            {isMainnet && !useCollectibleDetection ? (
+              <Button type="link" onClick={onEnableAutoDetect}>
+                {t('enableAutoDetect')}
+              </Button>
+            ) : (
+              <Button type="link" onClick={onRefresh}>
+                {t('refreshList')}
+              </Button>
+            )}
+          </Box>
+          <Typography
+            color={COLORS.UI3}
+            variant={TYPOGRAPHY.H4}
+            align={TEXT_ALIGN.CENTER}
+          >
+            {t('or')}
+          </Typography>
           <Box
             justifyContent={JUSTIFY_CONTENT.FLEX_START}
             className="collectibles-tab__link"

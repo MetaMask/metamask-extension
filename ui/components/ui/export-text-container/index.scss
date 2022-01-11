@@ -3,7 +3,7 @@
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  border: 1px solid $alto;
+  border: 1px solid var(--alto);
   border-radius: 4px;
   font-weight: 400;
 
@@ -13,7 +13,7 @@
     justify-content: center;
     padding: 20px;
     border-radius: 4px;
-    background: $alabaster;
+    background: var(--alabaster);
   }
 
   &__text {
@@ -21,14 +21,14 @@
 
     resize: none;
     border: none;
-    background: $alabaster;
+    background: var(--alabaster);
     text-align: center;
   }
 
   &__buttons-container {
     display: flex;
     flex-direction: row;
-    border-top: 1px solid $alto;
+    border-top: 1px solid var(--alto);
     width: 100%;
   }
 
@@ -41,10 +41,10 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    color: $primary-blue;
+    color: var(--primary-blue);
 
     &--copy {
-      border-right: 1px solid $alto;
+      border-right: 1px solid var(--alto);
     }
   }
 

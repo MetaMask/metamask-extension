@@ -5,6 +5,7 @@ import {
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import I18nValue from '../../../ui/i18n-value';
 import Typography from '../../../ui/typography/typography';
@@ -31,7 +32,10 @@ const NetworkStatistics = () => {
           <span className="network-statistics__info__field-data">
             <BaseFeeTooltip>
               {gasFeeEstimates?.estimatedBaseFee &&
-                `${gasFeeEstimates?.estimatedBaseFee} GWEI`}
+                `${roundToDecimalPlacesRemovingExtraZeroes(
+                  gasFeeEstimates?.estimatedBaseFee,
+                  0,
+                )} GWEI`}
             </BaseFeeTooltip>
           </span>
           <span className="network-statistics__info__field-label">

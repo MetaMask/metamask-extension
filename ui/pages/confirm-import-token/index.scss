@@ -29,14 +29,14 @@
       &__amount {
         @include H1;
 
-        color: $scorpion;
+        color: var(--scorpion);
         margin-right: 8px;
       }
 
       &__symbol {
         @include H5;
 
-        color: $scorpion;
+        color: var(--scorpion);
       }
     }
   }

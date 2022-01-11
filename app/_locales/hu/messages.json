@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Elutasítás"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR-kód beolvasása"
+  },
   "about": {
     "message": "Névjegy"
   },
@@ -255,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Aktuális nyelv"
+  },
+  "custom": {
+    "message": "Speciális"
   },
   "customGas": {
     "message": "Gáz testreszabása"
@@ -524,6 +533,9 @@
     "message": "Kovan teszthálózat"
   },
   "learnMore": {
+    "message": "Tudjon meg többet"
+  },
+  "learnMoreUpperCase": {
     "message": "Tudjon meg többet"
   },
   "ledgerAccountRestriction": {

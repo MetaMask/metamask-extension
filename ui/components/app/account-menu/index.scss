@@ -7,7 +7,7 @@
   background: rgba($black, 0.8);
   box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
   min-width: 150px;
-  color: $white;
+  color: var(--white);
 
   @media screen and (max-width: $break-small) {
     right: calc(((100vw - 100%) / 2) + 8px);
@@ -67,7 +67,7 @@
   }
 
   &__divider {
-    background-color: $scorpion;
+    background-color: var(--scorpion);
     width: 100%;
     height: 1px;
   }
@@ -100,11 +100,19 @@
   & &__lock-button {
     @include H7;
 
-    border: 1px solid $ui-white;
+    border: 1px solid var(--ui-white);
     background-color: transparent;
-    color: $white;
-    padding: 3.5px 24px;
+    padding: 3.5px 5px;
+    color: var(--white);
     width: 59px;
+
+    &:hover {
+      background-color: rgba($dusty-gray, 0.05);
+    }
+
+    &:active {
+      background-color: rgba($dusty-gray, 0.1);
+    }
   }
 
   &__item-icon {
@@ -143,8 +151,8 @@
       height: 15px;
       margin-top: 5px;
       margin-right: 10px;
-      background-color: $dusty-gray;
-      color: $black;
+      background-color: var(--dusty-gray);
+      color: var(--black);
       font-weight: normal;
       letter-spacing: 0.5px;
       display: flex;
@@ -178,7 +186,7 @@
       .remove-account-icon::after {
         content: '\00D7';
         font-size: 25px;
-        color: $white;
+        color: var(--white);
         cursor: pointer;
         position: absolute;
         margin-top: -5px;
@@ -216,7 +224,7 @@
   &__name {
     @include H4;
 
-    color: $white;
+    color: var(--white);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -226,7 +234,7 @@
   &__balance {
     @include H6;
 
-    color: $dusty-gray;
+    color: var(--dusty-gray);
   }
 
   &__action {

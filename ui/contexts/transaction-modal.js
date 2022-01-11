@@ -38,7 +38,9 @@ export const TransactionModalContextProvider = ({
 
   const closeModal = (modalName) => {
     const index = openModals.indexOf(modalName);
-    if (openModals < 0) return;
+    if (openModals < 0) {
+      return;
+    }
     const modals = [...openModals];
     modals.splice(index, 1);
     setOpenModals(modals);
@@ -49,7 +51,9 @@ export const TransactionModalContextProvider = ({
   };
 
   const openModal = (modalName) => {
-    if (openModals.includes(modalName)) return;
+    if (openModals.includes(modalName)) {
+      return;
+    }
     captureEventEnabled && captureEvent();
     const modals = [...openModals];
     modals.push(modalName);
@@ -63,6 +67,7 @@ export const TransactionModalContextProvider = ({
         closeAllModals,
         currentModal: openModals[openModals.length - 1],
         openModal,
+        openModalCount: openModals.length,
       }}
     >
       {children}

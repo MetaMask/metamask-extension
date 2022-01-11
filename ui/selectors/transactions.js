@@ -10,8 +10,11 @@ import {
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
-import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
-import { getSelectedAddress } from '.';
+import {
+  getCurrentChainId,
+  deprecatedGetCurrentNetworkId,
+  getSelectedAddress,
+} from './selectors';
 
 export const incomingTxListSelector = (state) => {
   const { showIncomingTransactions } = state.metamask.featureFlags;
@@ -118,7 +121,6 @@ export const transactionsSelector = createSelector(
  * order.
  * @param {string[]} nonces - Array of nonce strings in hex
  * @param {string} nonceToInsert - Nonce string in hex to be inserted into the array of nonces.
- * @returns {string[]}
  */
 const insertOrderedNonce = (nonces, nonceToInsert) => {
   let insertIndex = nonces.length;
@@ -142,7 +144,6 @@ const insertOrderedNonce = (nonces, nonceToInsert) => {
  * in ascending order by time.
  * @param {Object[]} transactions - Array of transaction objects.
  * @param {Object} transaction - Transaction object to be inserted into the array of transactions.
- * @returns {Object[]}
  */
 const insertTransactionByTime = (transactions, transaction) => {
   const { time } = transaction;
@@ -163,6 +164,7 @@ const insertTransactionByTime = (transactions, transaction) => {
 
 /**
  * Contains transactions and properties associated with those transactions of the same nonce.
+ *
  * @typedef {Object} transactionGroup
  * @property {string} nonce - The nonce that the transactions within this transactionGroup share.
  * @property {Object[]} transactions - An array of transaction (txMeta) objects.

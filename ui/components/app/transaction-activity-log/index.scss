@@ -56,11 +56,11 @@
   &__activity-text {
     @include H7;
 
-    color: $dusty-gray;
+    color: var(--dusty-gray);
     cursor: pointer;
 
     &:hover {
-      color: $black;
+      color: var(--black);
     }
   }
 
@@ -77,7 +77,7 @@
     @include H7;
 
     cursor: pointer;
-    color: $primary-blue;
+    color: var(--primary-blue);
   }
 
   b {

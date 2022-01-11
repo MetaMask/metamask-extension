@@ -433,8 +433,9 @@ export function connectHardware(deviceName, page, hdPath, t) {
         dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
         throw new Error(t('ledgerDeviceOpenFailureMessage'));
       } else {
-        if (deviceName !== DEVICE_NAMES.QR)
+        if (deviceName !== DEVICE_NAMES.QR) {
           dispatch(displayWarning(error.message));
+        }
         throw error;
       }
     } finally {
@@ -923,6 +924,7 @@ export function cancelTx(txData, _showLoadingIndication = true) {
 
 /**
  * Cancels all of the given transactions
+ *
  * @param {Array<object>} txDataList - a list of tx data objects
  * @returns {function(*): Promise<void>}
  */
@@ -957,7 +959,7 @@ export function cancelTxs(txDataList) {
       });
     } finally {
       if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        global.platform.closeCurrentWindow();
+        closeNotificationPopup();
       } else {
         dispatch(hideLoadingIndication());
       }
@@ -1393,6 +1395,31 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
+export async function checkAndUpdateAllCollectiblesOwnershipStatus() {
+  await promisifiedBackground.checkAndUpdateAllCollectiblesOwnershipStatus();
+}
+
+export async function isCollectibleOwner(
+  ownerAddress,
+  collectibleAddress,
+  collectibleId,
+) {
+  return await promisifiedBackground.isCollectibleOwner(
+    ownerAddress,
+    collectibleAddress,
+    collectibleId,
+  );
+}
+
+export async function checkAndUpdateSingleCollectibleOwnershipStatus(
+  collectible,
+) {
+  await promisifiedBackground.checkAndUpdateSingleCollectibleOwnershipStatus(
+    collectible,
+    false,
+  );
+}
+
 export function removeToken(address) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
@@ -1728,6 +1755,7 @@ export function addToAddressBook(recipient, nickname = '', memo = '') {
 
 /**
  * @description Calls the addressBookController to remove an existing address.
+ * @param chainId
  * @param {string} addressToRemove - Address of the entry to remove from the address book
  */
 export function removeFromAddressBook(chainId, addressToRemove) {
@@ -1773,7 +1801,7 @@ export function closeCurrentNotificationWindow() {
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
       !hasUnconfirmedTransactions(getState())
     ) {
-      global.platform.closeCurrentWindow();
+      closeNotificationPopup();
     }
   };
 }
@@ -1795,6 +1823,8 @@ export function hideAlert() {
  * This action will receive two types of values via qrCodeData
  * an object with the following structure {type, values}
  * or null (used to clear the previous value)
+ *
+ * @param qrCodeData
  */
 export function qrCodeDetected(qrCodeData) {
   return async (dispatch) => {
@@ -2496,6 +2526,7 @@ export function requestAccountsPermissionWithId(origin) {
 
 /**
  * Approves the permissions request.
+ *
  * @param {Object} request - The permissions request to approve.
  */
 export function approvePermissionsRequest(request) {
@@ -2510,6 +2541,7 @@ export function approvePermissionsRequest(request) {
 
 /**
  * Rejects the permissions request with the given ID.
+ *
  * @param {string} requestId - The id of the request to be rejected
  */
 export function rejectPermissionsRequest(requestId) {
@@ -2529,6 +2561,8 @@ export function rejectPermissionsRequest(requestId) {
 
 /**
  * Clears the given permissions for the given origin.
+ *
+ * @param subjects
  */
 export function removePermissionsFor(subjects) {
   return (dispatch) => {
@@ -2545,6 +2579,7 @@ export function removePermissionsFor(subjects) {
 /**
  * Resolves a pending approval and closes the current notification window if no
  * further approvals are pending after the background state updates.
+ *
  * @param {string} id - The pending approval id
  * @param {any} [value] - The value required to confirm a pending approval
  */
@@ -2563,6 +2598,7 @@ export function resolvePendingApproval(id, value) {
 /**
  * Rejects a pending approval and closes the current notification window if no
  * further approvals are pending after the background state updates.
+ *
  * @param {string} id - The pending approval id
  * @param {Error} [error] - The error to throw when rejecting the approval
  */
@@ -2985,7 +3021,6 @@ export function getGasFeeEstimatesAndStartPolling() {
  *
  * @param {string} pollToken - Poll token received from calling
  *  `getGasFeeEstimatesAndStartPolling`.
- * @returns {void}
  */
 export function disconnectGasFeeEstimatePoller(pollToken) {
   return promisifiedBackground.disconnectGasFeeEstimatePoller(pollToken);
@@ -3012,6 +3047,11 @@ export function getGasFeeTimeEstimate(maxPriorityFeePerGas, maxFeePerGas) {
   );
 }
 
+export async function closeNotificationPopup() {
+  await promisifiedBackground.markNotificationPopupAsAutomaticallyClosed();
+  global.platform.closeCurrentWindow();
+}
+
 // MetaMetrics
 /**
  * @typedef {import('../../shared/constants/metametrics').MetaMetricsEventPayload} MetaMetricsEventPayload
@@ -3032,7 +3072,6 @@ export function trackMetaMetricsEvent(payload, options) {
 /**
  * @param {MetaMetricsPagePayload} payload - details of the page viewed
  * @param {MetaMetricsPageOptions} options - options for handling the page view
- * @returns {void}
  */
 export function trackMetaMetricsPage(payload, options) {
   return promisifiedBackground.trackMetaMetricsPage(payload, options);

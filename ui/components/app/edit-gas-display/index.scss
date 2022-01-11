@@ -28,8 +28,8 @@
   button.edit-gas-display__dapp-acknowledgement-button {
     margin: 40px auto 0 auto;
     display: block;
-    color: $secondary-1;
-    border: 1px solid $secondary-1;
+    color: var(--secondary-1);
+    border: 1px solid var(--secondary-1);
     text-transform: unset;
     width: auto;
     background: transparent;
@@ -43,7 +43,7 @@
     display: block;
     margin: 0 auto;
     background: transparent;
-    color: $primary-1;
+    color: var(--primary-1);
     font-weight: bold;
   }
 
@@ -58,7 +58,7 @@
       display: block;
       margin: 0 auto;
       background: transparent;
-      color: $primary-1;
+      color: var(--primary-1);
     }
   }
 

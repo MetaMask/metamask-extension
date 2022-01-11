@@ -171,12 +171,12 @@ describe('Account Menu', () => {
     global.platform = { openTab: sinon.spy() };
 
     it('renders import account item', () => {
-      support = wrapper.find({ text: 'support' });
+      support = wrapper.find({ text: 'needHelpSubmitTicket' });
       expect(support).toHaveLength(1);
     });
 
     it('opens support link when clicked', () => {
-      support = wrapper.find({ text: 'support' });
+      support = wrapper.find({ text: 'needHelpSubmitTicket' });
       support.simulate('click');
       expect(global.platform.openTab.calledOnce).toStrictEqual(true);
     });

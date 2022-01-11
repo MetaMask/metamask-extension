@@ -17,7 +17,8 @@ const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
 /**
  * Create a Wyre purchase URL.
- * @param {String} address Ethereum destination address
+ *
+ * @param {string} address - Ethereum destination address
  * @returns String
  */
 const createWyrePurchaseUrl = async (address) => {
@@ -45,7 +46,8 @@ const createWyrePurchaseUrl = async (address) => {
 /**
  * Create a Transak Checkout URL.
  * API docs here: https://www.notion.so/Query-Parameters-9ec523df3b874ec58cef4fa3a906f238
- * @param {String} address Ethereum destination address
+ *
+ * @param {string} address - Ethereum destination address
  * @returns String
  */
 const createTransakUrl = (address) => {
@@ -64,9 +66,9 @@ const createTransakUrl = (address) => {
  * @param {Object} opts - Options required to determine the correct url
  * @param {string} opts.chainId - The chainId for which to return a url
  * @param {string} opts.address - The address the bought ETH should be sent to.  Only relevant if chainId === '0x1'.
+ * @param opts.service
  * @returns {string|undefined} The url at which the user can access ETH, while in the given chain. If the passed
  * chainId does not match any of the specified cases, or if no chainId is given, returns undefined.
- *
  */
 export default async function getBuyEthUrl({ chainId, address, service }) {
   // default service by network if not specified

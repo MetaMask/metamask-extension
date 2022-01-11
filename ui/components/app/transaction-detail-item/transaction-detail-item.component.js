@@ -10,6 +10,7 @@ import {
   DISPLAY,
   FLEX_WRAP,
   ALIGN_ITEMS,
+  TEXT_ALIGN,
 } from '../../../helpers/constants/design-system';
 
 export default function TransactionDetailItem({
@@ -52,6 +53,7 @@ export default function TransactionDetailItem({
             fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
             variant={TYPOGRAPHY.H6}
             margin={[1, 0, 1, 1]}
+            boxProps={{ textAlign: TEXT_ALIGN.RIGHT }}
           >
             {detailTotal}
           </Typography>

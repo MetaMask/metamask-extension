@@ -1,11 +1,13 @@
 /** Please import your files in alphabetical order **/
 @import 'account-list-item/index';
 @import 'account-menu/index';
+@import 'app-loading-spinner/index';
 @import 'import-token-link/index';
 @import 'advanced-gas-controls/index';
 @import 'alerts/alerts';
 @import 'app-header/index';
 @import 'asset-list-item/asset-list-item';
+@import 'cancel-speedup-popover/index';
 @import 'confirm-page-container/index';
 @import 'collectibles-items/index';
 @import 'collectibles-tab/index';
@@ -28,6 +30,8 @@
 @import 'gas-customization/gas-modal-page-container/index';
 @import 'gas-customization/gas-price-button-group/index';
 @import 'gas-customization/index';
+@import 'gas-details-item/index';
+@import 'gas-details-item/gas-details-item-title/index';
 @import 'gas-timing/index';
 @import 'home-notification/index';
 @import 'info-box/index';

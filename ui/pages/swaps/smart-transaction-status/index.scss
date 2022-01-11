@@ -13,7 +13,7 @@
 
   &__loading-bar-container {
     height: 3px;
-    background: $Grey-100;
+    background: var(--Grey-100);
     display: flex;
     margin-top: 12px;
     margin-bottom: 28px;
@@ -21,7 +21,7 @@
 
   &__loading-bar {
     height: 3px;
-    background: $Blue-500;
+    background: var(--Blue-500);
     -webkit-transition: width 0.5s linear;
     -moz-transition: width 0.5s linear;
     -o-transition: width 0.5s linear;
@@ -60,11 +60,11 @@
   }
 
   a {
-    color: $Blue-500;
+    color: var(--Blue-500);
   }
 
   &__support-link {
-    color: $Blue-500;
+    color: var(--Blue-500);
     margin-top: 24px;
     cursor: pointer;
   }
@@ -75,8 +75,8 @@
 
   &__swaps-footer {
     .btn-secondary {
-      color: $ui-4;
-      border: 1px solid $ui-4;
+      color: var(--ui-4);
+      border: 1px solid var(--ui-4);
     }
   }
 }

@@ -26,6 +26,15 @@ function getGasPriceEstimate(gasFeeEstimates, gasEstimateType, estimateToUse) {
  * @property {(boolean) => true} setGasPriceHasBeenManuallySet - state setter method to update gasPriceHasBeenManuallySet
  * field gasPriceHasBeenManuallySet is used in gasPrice calculations.
  */
+
+/**
+ * @param options
+ * @param options.estimateToUse
+ * @param options.gasEstimateType
+ * @param options.gasFeeEstimates
+ * @param options.transaction
+ * @returns {GasPriceInputsReturnType}
+ */
 export function useGasPriceInput({
   estimateToUse,
   gasEstimateType,

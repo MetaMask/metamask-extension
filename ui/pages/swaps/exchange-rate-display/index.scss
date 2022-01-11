@@ -4,7 +4,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  color: $Black-100;
+  color: var(--Black-100);
   width: 100%;
   flex-wrap: wrap;
 
@@ -48,6 +48,6 @@
   }
 
   &--white {
-    color: $white;
+    color: var(--white);
   }
 }

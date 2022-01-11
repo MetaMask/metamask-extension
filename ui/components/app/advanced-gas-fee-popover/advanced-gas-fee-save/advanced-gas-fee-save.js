@@ -10,7 +10,7 @@ import { useAdvancedGasFeePopoverContext } from '../context';
 import { decGWEIToHexWEI } from '../../../../../shared/modules/conversion.utils';
 
 const AdvancedGasFeeSaveButton = () => {
-  const { closeModal } = useTransactionModalContext();
+  const { closeAllModals } = useTransactionModalContext();
   const { updateTransaction } = useGasFeeContext();
   const {
     gasLimit,
@@ -26,7 +26,7 @@ const AdvancedGasFeeSaveButton = () => {
       maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
       gasLimit,
     });
-    closeModal('advancedGasFee');
+    closeAllModals();
   };
 
   return (

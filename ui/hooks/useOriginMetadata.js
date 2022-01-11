@@ -12,10 +12,11 @@ import { SUBJECT_TYPES } from '../../shared/constants/app';
 
 /**
  * Gets origin metadata from redux and formats it appropriately.
+ *
  * @param {string} origin - The fully formed url of the site interacting with
- *  MetaMask
- * @returns {OriginMetadata | null} - The origin metadata available for the
- *  current origin
+ * MetaMask
+ * @returns {OriginMetadata | null} The origin metadata available for the
+ * current origin
  */
 export function useOriginMetadata(origin) {
   const subjectMetadata = useSelector(getSubjectMetadata);

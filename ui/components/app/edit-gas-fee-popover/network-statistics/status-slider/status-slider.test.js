@@ -20,31 +20,31 @@ const renderComponent = ({ networkCongestion }) => {
 
 describe('StatusSlider', () => {
   it('should show "Not busy" when networkCongestion is less than 0.33', () => {
-    const { queryByText } = renderComponent({ networkCongestion: 0.32 });
-    expect(queryByText('Not busy')).toBeInTheDocument();
+    const { getByText } = renderComponent({ networkCongestion: 0.32 });
+    expect(getByText('Not busy')).toBeInTheDocument();
   });
 
-  it('should show "Not busy" when networkCongestion is 0.33', () => {
-    const { queryByText } = renderComponent({ networkCongestion: 0.33 });
-    expect(queryByText('Not busy')).toBeInTheDocument();
+  it('should show "Stable" when networkCongestion is 0.33', () => {
+    const { getByText } = renderComponent({ networkCongestion: 0.33 });
+    expect(getByText('Stable')).toBeInTheDocument();
   });
 
   it('should show "Stable" when networkCongestion is between 0.33 and 0.66', () => {
-    const { queryByText } = renderComponent({ networkCongestion: 0.5 });
-    expect(queryByText('Stable')).toBeInTheDocument();
+    const { getByText } = renderComponent({ networkCongestion: 0.5 });
+    expect(getByText('Stable')).toBeInTheDocument();
   });
 
-  it('should show "Stable" when networkCongestion is 0.66', () => {
-    const { queryByText } = renderComponent({ networkCongestion: 0.66 });
-    expect(queryByText('Stable')).toBeInTheDocument();
+  it('should show "Busy" when networkCongestion is 0.66', () => {
+    const { getByText } = renderComponent({ networkCongestion: 0.66 });
+    expect(getByText('Busy')).toBeInTheDocument();
   });
 
   it('should show "Busy" when networkCongestion is greater than 0.66', () => {
-    const { queryByText } = renderComponent({ networkCongestion: 0.67 });
-    expect(queryByText('Busy')).toBeInTheDocument();
+    const { getByText } = renderComponent({ networkCongestion: 0.67 });
+    expect(getByText('Busy')).toBeInTheDocument();
   });
 
-  it('should show "Stable" if networkCongestion has not been set yet', () => {
+  it('should show "Stable" if networkCongestion is not available yet', () => {
     const { getByText } = renderComponent({});
     expect(getByText('Stable')).toBeInTheDocument();
   });

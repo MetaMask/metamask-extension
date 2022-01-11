@@ -4,6 +4,7 @@
  * notification - When the extension opens due to interaction with a Web3 enabled website
  * fullscreen - When the user clicks 'expand view' to open the extension in a new tab
  * background - The background process that powers the extension
+ *
  * @typedef {'popup' | 'notification' | 'fullscreen' | 'background'} EnvironmentType
  */
 export const ENVIRONMENT_TYPE_POPUP = 'popup';

@@ -14,23 +14,41 @@ import Typography from '../../ui/typography/typography';
 import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import { useGasFeeContext } from '../../../contexts/gasFee';
+import AppLoadingSpinner from '../app-loading-spinner';
 import EditGasItem from './edit-gas-item';
 import NetworkStatistics from './network-statistics';
 
 const EditGasFeePopover = () => {
   const { balanceError, editGasMode } = useGasFeeContext();
   const t = useI18nContext();
-  const { closeModal, currentModal } = useTransactionModalContext();
+  const {
+    closeAllModals,
+    closeModal,
+    currentModal,
+    openModalCount,
+  } = useTransactionModalContext();
 
-  if (currentModal !== 'editGasFee') return null;
+  if (currentModal !== 'editGasFee') {
+    return null;
+  }
+
+  let popupTitle = 'editGasFeeModalTitle';
+  if (editGasMode === EDIT_GAS_MODES.CANCEL) {
+    popupTitle = 'editCancellationGasFeeModalTitle';
+  } else if (editGasMode === EDIT_GAS_MODES.SPEED_UP) {
+    popupTitle = 'editSpeedUpEditGasFeeModalTitle';
+  }
 
   return (
     <Popover
-      title={t('editGasFeeModalTitle')}
-      onClose={() => closeModal('editGasFee')}
+      title={t(popupTitle)}
+      // below logic ensures that back button is visible only if there are other modals open before this.
+      onBack={openModalCount === 1 ? undefined : () => closeModal('editGasFee')}
+      onClose={closeAllModals}
       className="edit-gas-fee-popover"
     >
       <>
+        <AppLoadingSpinner />
         <div className="edit-gas-fee-popover__wrapper">
           <div className="edit-gas-fee-popover__content">
             {balanceError && (
@@ -49,13 +67,19 @@ const EditGasFeePopover = () => {
                 <I18nValue messageKey="maxFee" />
               </span>
             </div>
-            {editGasMode !== EDIT_GAS_MODES.SWAPS && (
+            {(editGasMode === EDIT_GAS_MODES.CANCEL ||
+              editGasMode === EDIT_GAS_MODES.SPEED_UP) && (
+              <EditGasItem
+                priorityLevel={PRIORITY_LEVELS.TEN_PERCENT_INCREASED}
+              />
+            )}
+            {editGasMode === EDIT_GAS_MODES.MODIFY_IN_PLACE && (
               <EditGasItem priorityLevel={PRIORITY_LEVELS.LOW} />
             )}
             <EditGasItem priorityLevel={PRIORITY_LEVELS.MEDIUM} />
             <EditGasItem priorityLevel={PRIORITY_LEVELS.HIGH} />
             <div className="edit-gas-fee-popover__content__separator" />
-            {editGasMode !== EDIT_GAS_MODES.SWAPS && (
+            {editGasMode === EDIT_GAS_MODES.MODIFY_IN_PLACE && (
               <EditGasItem priorityLevel={PRIORITY_LEVELS.DAPP_SUGGESTED} />
             )}
             <EditGasItem priorityLevel={PRIORITY_LEVELS.CUSTOM} />

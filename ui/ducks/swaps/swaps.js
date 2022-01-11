@@ -39,6 +39,7 @@ import {
   LOADING_QUOTES_ROUTE,
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
+  SMART_TRANSACTION_STATUS_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   fetchSwapsFeatureFlags,
@@ -794,6 +795,7 @@ export const signAndSendSwapsSmartTransaction = ({
   unsignedTransaction,
   smartTransactionFees,
   metaMetricsEvent,
+  history,
 }) => {
   return async (dispatch, getState) => {
     const state = getState();
@@ -815,6 +817,7 @@ export const signAndSendSwapsSmartTransaction = ({
           smartTransactionFees,
         }),
       );
+      history.push(SMART_TRANSACTION_STATUS_ROUTE);
       // update stx with data
       const destinationValue = calcTokenAmount(
         usedQuote.destinationAmount,

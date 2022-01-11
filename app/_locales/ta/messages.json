@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "நிராகரி"
+  },
   "about": {
     "message": "அறிமுகம்"
   },
@@ -107,6 +110,9 @@
   },
   "createAccount": {
     "message": "உங்கள் கணக்கை துவங்குங்கள்"
+  },
+  "custom": {
+    "message": "மேம்பட்டவை"
   },
   "customGas": {
     "message": "எரிவாயுவைத் தனிப்பயனாக்குங்கள்"
@@ -248,6 +254,9 @@
     "message": "கோவன் டெஸ்ட் நெட்வொர்க்"
   },
   "learnMore": {
+    "message": "மேலும் அறிக"
+  },
+  "learnMoreUpperCase": {
     "message": "மேலும் அறிக"
   },
   "likeToImportTokens": {

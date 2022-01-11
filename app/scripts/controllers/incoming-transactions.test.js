@@ -103,12 +103,13 @@ function getMockBlockTracker() {
 /**
  * Returns a transaction object matching the expected format returned
  * by the Etherscan API
+ *
  * @param {Object} [params] - options bag
  * @param {string} [params.toAddress] - The hex-prefixed address of the recipient
  * @param {number} [params.blockNumber] - The block number for the transaction
  * @param {boolean} [params.useEIP1559] - Use EIP-1559 gas fields
- * @param
- *  @returns {EtherscanTransaction}
+ * @param params.hash
+ * @returns {EtherscanTransaction}
  */
 const getFakeEtherscanTransaction = ({
   toAddress = MOCK_SELECTED_ADDRESS,

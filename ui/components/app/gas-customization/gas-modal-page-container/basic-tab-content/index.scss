@@ -11,14 +11,14 @@
     @include Paragraph;
 
     margin-top: 19px;
-    color: $black;
+    color: var(--black);
   }
 
   &__blurb {
     @include H7;
 
     width: 95%;
-    color: $black;
+    color: var(--black);
     margin-top: 5px;
     margin-bottom: 15px;
   }

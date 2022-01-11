@@ -6,10 +6,10 @@
   width: 357px;
   padding: 30px;
   font-weight: 400;
-  color: $silver-chalice;
+  color: var(--silver-chalice);
 
   &__container {
-    background: $white;
+    background: var(--white);
     display: flex;
     align-self: stretch;
     justify-content: center;
@@ -25,7 +25,7 @@
 
     margin-top: 5px;
     font-weight: 800;
-    color: $tundora;
+    color: var(--tundora);
   }
 
   &__form {
@@ -48,7 +48,7 @@
   &__link {
     cursor: pointer;
     background-color: unset;
-    color: $Blue-500;
+    color: var(--Blue-500);
     font-size: unset;
   }
 
@@ -57,7 +57,7 @@
     font-size: 0.75rem;
 
     a {
-      color: $Blue-500;
+      color: var(--Blue-500);
     }
   }
 }

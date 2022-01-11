@@ -419,11 +419,19 @@
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
-  "cancelSwap": {
-    "message": "Cancel swap"
-  },
   "cancelSpeedUp": {
     "message": "cancel or speed up a tranaction."
+  },
+  "cancelSpeedUpLabel": {
+    "message": "This gas fee will $1 the original.",
+    "description": "$1 is text 'replace' in bold"
+  },
+  "cancelSpeedUpTransactionTooltip": {
+    "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
+    "description": "$1 is string 'cancel' or 'speed up'"
+  },
+  "cancelSwap": {
+    "message": "Cancel swap"
   },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
@@ -745,6 +753,10 @@
   "directDepositEtherExplainer": {
     "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
   },
+  "disabledGasOptionToolTipMessage": {
+    "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
+    "description": "$1 is gas estimate type which can be market or aggressive"
+  },
   "disconnect": {
     "message": "Disconnect"
   },
@@ -799,6 +811,9 @@
   "editAddressNickname": {
     "message": "Edit address nickname"
   },
+  "editCancellationGasFeeModalTitle": {
+    "message": "Edit cancellation gas fee"
+  },
   "editContact": {
     "message": "Edit Contact"
   },
@@ -847,9 +862,6 @@
   },
   "editGasMaxBaseFeeLow": {
     "message": "Max base fee is low for current network conditions"
-  },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "Multiplier is low relative to Priority fee"
   },
   "editGasMaxFeeHigh": {
     "message": "Max fee is higher than necessary"
@@ -912,12 +924,6 @@
   "editGasTooLowWarningTooltip": {
     "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
   },
-  "editInGwei": {
-    "message": "Edit in GWEI"
-  },
-  "editInMultiplier": {
-    "message": "Edit in multiplier"
-  },
   "editNonceField": {
     "message": "Edit Nonce"
   },
@@ -927,20 +933,23 @@
   "editPermission": {
     "message": "Edit Permission"
   },
+  "editSpeedUpEditGasFeeModalTitle": {
+    "message": "Edit speed up gas fee"
+  },
   "enableAutoDetect": {
     "message": " Enable Autodetect"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
-  "enableSmartTransactions": {
-    "message": "Enable smart transactions"
-  },
   "enableOpenSeaAPI": {
     "message": "Enable OpenSea API"
   },
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
+  },
+  "enableSmartTransactions": {
+    "message": "Enable smart transactions"
   },
   "enableToken": {
     "message": "enable $1",
@@ -1117,21 +1126,6 @@
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "Using Flask can greatly increase your risk of fund loss:"
-  },
-  "flaskExperimentalText2": {
-    "message": "if you use it to install non-trustworthy Snaps"
-  },
-  "flaskExperimentalText3": {
-    "message": "if you do not review confirmations before approving changes"
-  },
-  "flaskExperimentalText4": {
-    "message": "if you interact with unfamiliar smart contracts"
-  },
-  "flaskExperimentalText5": {
-    "message": "Using Flask gives you much greater discretion in using the power of MetaMask, and that discretion is yours. Do you accept these risks as well as extra responsibility for your wallet's safety?"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "See details",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -1143,6 +1137,26 @@
   "flaskSnapSettingsCardFrom": {
     "message": "from",
     "description": "Part of the sentence describing when and where snap was added"
+  },
+  "flaskWelcomeUninstall": {
+    "message": "you should uninstall this extension",
+    "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
+  },
+  "flaskWelcomeWarning1": {
+    "message": "Flask is for developers to experiment with new unstable APIs. Unless you are a developer or beta tester, $1.",
+    "description": "This is a warning shown on the Flask Welcome screen, intended to encourage non-developers not to proceed any further. $1 is the bolded message 'flaskWelcomeUninstall'"
+  },
+  "flaskWelcomeWarning2": {
+    "message": "We do not guarantee the safety or stability of this extension. The new APIs offered by Flask are not hardened against phishing attacks, meaning that any site or snap that requires Flask might be a malicious attempt to steal your assets.",
+    "description": "This explains the risks of using MetaMask Flask"
+  },
+  "flaskWelcomeWarning3": {
+    "message": "All Flask APIs are experimental. They may be changed or removed without notice, or they might stay on Flask indefinitely without ever being migrated to stable MetaMask. Use them at your own risk.",
+    "description": "This message warns developers about unstable Flask APIs"
+  },
+  "flaskWelcomeWarningAcceptButton": {
+    "message": "I accept the risks",
+    "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
   },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
@@ -1165,6 +1179,9 @@
   },
   "functionType": {
     "message": "Function Type"
+  },
+  "gas": {
+    "message": "Gas"
   },
   "gasDisplayAcknowledgeDappButtonText": {
     "message": "Edit suggested gas fee"
@@ -1280,6 +1297,9 @@
   },
   "grantedToWithColon": {
     "message": "Granted to:"
+  },
+  "gwei": {
+    "message": "GWEI"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -1513,11 +1533,11 @@
   "learnMore": {
     "message": "learn more"
   },
-  "learnMoreWithDot": {
-    "message": "Learn more."
-  },
   "learnMoreUpperCase": {
     "message": "Learn more"
+  },
+  "learnMoreWithDot": {
+    "message": "Learn more."
   },
   "learnScamRisk": {
     "message": "scams and security risks."
@@ -1615,6 +1635,9 @@
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
+  },
+  "mainnetToken": {
+    "message": "This address matches a known mainnet token address. Recheck the contract address and network for the token you are trying to add."
   },
   "makeAnotherSwap": {
     "message": "Create a new swap"
@@ -1735,9 +1758,6 @@
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
   },
-  "multiplier": {
-    "message": "multiplier"
-  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -1772,6 +1792,9 @@
   },
   "networkDetails": {
     "message": "Network Details"
+  },
+  "networkIsBusy": {
+    "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
   "networkName": {
     "message": "Network Name"
@@ -2301,6 +2324,9 @@
   "removeNFT": {
     "message": "Remove NFT"
   },
+  "replace": {
+    "message": "replace"
+  },
   "requestsAwaitingAcknowledgement": {
     "message": "requests waiting to be acknowledged"
   },
@@ -2516,6 +2542,9 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
+  "sendingDisabled": {
+    "message": "Sending of ERC-1155 NFT assets is not yet supported."
+  },
   "sendingNativeAsset": {
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
@@ -2619,6 +2648,12 @@
   "smartTransaction": {
     "message": "Smart transaction"
   },
+  "smartTransactionTooltip": {
+    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
+  },
+  "smartTransactionsAlert": {
+    "message": "Smart Transactions Alert"
+  },
   "smartTransactionsAreHere": {
     "message": "Smart transactions are here!"
   },
@@ -2640,9 +2675,6 @@
   "smartTransactionsSubDescription": {
     "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you."
   },
-  "smartTransactionsYouCanOptOut": {
-    "message": "You can opt-out in advanced settings any time."
-  },
   "smartTransactionsUnavailable": {
     "message": "Smart transactions temporarily unavailable"
   },
@@ -2651,6 +2683,9 @@
   },
   "smartTransactionsFallbackToNormal": {
     "message": "You can still swap using the normal method or wait for cheaper gas fees and less failures with smart transactions."
+  },
+  "smartTransactionsYouCanOptOut": {
+    "message": "You can opt-out in advanced settings any time."
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
@@ -3179,6 +3214,9 @@
   "syncWithThreeBoxDisabled": {
     "message": "3Box has been disabled due to an error during the initial sync"
   },
+  "tenPercentIncreased": {
+    "message": "10% increase"
+  },
   "terms": {
     "message": "Terms of Use"
   },
@@ -3222,6 +3260,9 @@
   },
   "tokenDetectionAnnouncement": {
     "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
+  },
+  "tokenId": {
+    "message": "Token ID"
   },
   "tokenSymbol": {
     "message": "Token Symbol"
@@ -3267,9 +3308,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
-  },
-  "transactionDetailGasHeadingV2": {
-    "message": "Gas"
   },
   "transactionDetailGasInfoV2": {
     "message": "estimated"
@@ -3450,9 +3488,6 @@
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
-  },
-  "userAccepts": {
-    "message": "I accept"
   },
   "userName": {
     "message": "Username"

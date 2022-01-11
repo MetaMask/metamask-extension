@@ -41,14 +41,19 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   ) {
     icon = 'swapSuggested';
     title = 'swapSuggested';
+  } else if (estimateUsed === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
+    icon = undefined;
+    title = 'tenPercentIncreased';
   }
 
   return (
     <div className="edit-gas-fee-button">
       <button onClick={() => openModal('editGasFee')}>
-        <span className="edit-gas-fee-button__icon">
-          {`${PRIORITY_LEVEL_ICON_MAP[icon]} `}
-        </span>
+        {icon && (
+          <span className="edit-gas-fee-button__icon">
+            {`${PRIORITY_LEVEL_ICON_MAP[icon]} `}
+          </span>
+        )}
         <span className="edit-gas-fee-button__label">{t(title)}</span>
         <i className="fas fa-chevron-right asset-list-item__chevron-right" />
       </button>
@@ -59,7 +64,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
         <InfoTooltip
           contentText={
             <div className="edit-gas-fee-button__tooltip">
-              <Typography variant={TYPOGRAPHY.H7} color={COLORS.GREY}>
+              <Typography variant={TYPOGRAPHY.H7} color={COLORS.NEUTRAL_GREY}>
                 {t('dappSuggestedTooltip', [transaction.origin])}
               </Typography>
               <Typography variant={TYPOGRAPHY.H7}>

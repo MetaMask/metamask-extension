@@ -6,7 +6,7 @@
 
 .settings-page {
   position: relative;
-  background: $white;
+  background: var(--white);
   display: flex;
   flex-flow: column nowrap;
 
@@ -36,7 +36,7 @@
     @include H4;
 
     padding: 16px 4px;
-    border-bottom: 1px solid $alto;
+    border-bottom: 1px solid var(--alto);
     margin-right: 24px;
     height: 72px;
     align-items: center;
@@ -55,7 +55,7 @@
 
   &__subheader--link:hover {
     cursor: pointer;
-    color: $primary-blue;
+    color: var(--primary-blue);
   }
 
   &__subheader--break {
@@ -115,7 +115,7 @@
   &__close-button::after {
     content: '\00D7';
     font-size: 40px;
-    color: $ui-4;
+    color: var(--ui-4);
     cursor: pointer;
   }
 
@@ -203,7 +203,7 @@
   &__content-description {
     @include H6;
 
-    color: $dusty-gray;
+    color: var(--dusty-gray);
     padding-top: 5px;
   }
 
