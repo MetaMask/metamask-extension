@@ -203,9 +203,10 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
   if (/^\/\/# sourceMappingURL=/gmu.test(fileContent)) {
     return [fileContent, false];
   }
-  const matchedLines = [...fileContent.matchAll(linesWithFenceRegex)];
 
   // If we didn't match any lines, return the unmodified file contents.
+  const matchedLines = [...fileContent.matchAll(linesWithFenceRegex)];
+
   if (matchedLines.length === 0) {
     return [fileContent, false];
   }
