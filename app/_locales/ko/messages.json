@@ -1099,21 +1099,6 @@
     "message": "파일 가져오기가 작동하지 않나요? 여기를 클릭하세요.",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "Flask를 사용하면 자금 손실 위험이 크게 증가할 수 있습니다."
-  },
-  "flaskExperimentalText2": {
-    "message": "신뢰할 수 없는 Snap을 설치하는 데 사용하는 경우"
-  },
-  "flaskExperimentalText3": {
-    "message": "변경을 승인하기 전에 확인을 검토하지 않는 경우"
-  },
-  "flaskExperimentalText4": {
-    "message": "익숙하지 않은 스마트 계약과 상호 작용하는 경우"
-  },
-  "flaskExperimentalText5": {
-    "message": "Flask를 사용하면 메타마스크의 기능을 사용하는 데 있어 훨씬 더 큰 재량권을 갖게 되며 그 재량권은 사용자의 몫입니다. 이러한 위험과 지갑의 안전에 대한 추가 책임을 받아들이십니까?"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "세부 정보 보기",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -3336,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "다양한 클라이언트에서 사용합니다."
-  },
-  "userAccepts": {
-    "message": "수락합니다."
   },
   "userName": {
     "message": "사용자 이름"

@@ -1099,21 +1099,6 @@
     "message": "Dosya alma çalışmıyor mu? Buraya tıklayın!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "Flask kullanmak para kaybı riskinizi yüksek oranda artırabilir:"
-  },
-  "flaskExperimentalText2": {
-    "message": "güvenilir olmayan Sanpl'leri yüklemek için kullanırsanız"
-  },
-  "flaskExperimentalText3": {
-    "message": "değişiklikleri kabul etmeden önce onayları incelemezseniz"
-  },
-  "flaskExperimentalText4": {
-    "message": "alışkın olmadığınız akıllı sözleşmelerle uğraşırsanız"
-  },
-  "flaskExperimentalText5": {
-    "message": "Flask kullanmak MetaMask'ın gücünü kullanmada size çok daha fazla gizlilik sağlar ve bu gizlilik tamamen size özeldir. Bu riskleri ve ayrıca cüzdanınızın güvenliği için ekstra sorumluluğu kabul ediyor musunuz?"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Ayrıntılara bakın",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -3336,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "Farklı istemciler tarafından kullanılmakta"
-  },
-  "userAccepts": {
-    "message": "Kabul ediyorum"
   },
   "userName": {
     "message": "Kullanıcı adı"
