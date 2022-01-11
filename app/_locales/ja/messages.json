@@ -1099,21 +1099,6 @@
     "message": "ファイルのインポートが機能していない場合ここをクリック!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "Flaskを使用すると、次の場合に資金が失われるリスクが大幅に増加します。"
-  },
-  "flaskExperimentalText2": {
-    "message": "信頼できないスナップをインストールするために使用する場合"
-  },
-  "flaskExperimentalText3": {
-    "message": "変更を承認する前に確認を行わない場合"
-  },
-  "flaskExperimentalText4": {
-    "message": "不慣れなスマートコントラクトを扱った場合"
-  },
-  "flaskExperimentalText5": {
-    "message": "Flaskを使用することで、MetaMaskをより自由に使用し、より多くの決定権を握ることができます。これらのリスクと、ウォレットの安全性に対する追加の責任を受け入れますか？"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "詳細を表示",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -3336,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "さまざまな異なるクライアントによって使用されています"
-  },
-  "userAccepts": {
-    "message": "同意する"
   },
   "userName": {
     "message": "ユーザー名"

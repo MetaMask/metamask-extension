@@ -1099,21 +1099,6 @@
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "Ang paggamit ng Flask ay maaaring lubos na magpataas ang iyong panganib ng pagkawala ng pondo:"
-  },
-  "flaskExperimentalText2": {
-    "message": "kung ginagamit mo ito para mag-install ng mga hindi mapagkakatiwalaang Snap"
-  },
-  "flaskExperimentalText3": {
-    "message": "kung ayaw mong i-review ang mga kumpirmasyon bago maaprubahan ang mga pagbabago"
-  },
-  "flaskExperimentalText4": {
-    "message": "kapag nakipag-usap ka sa di kilalang mga smart contract"
-  },
-  "flaskExperimentalText5": {
-    "message": "Ang paggamit ng Flask ay nagbibigay sa iyo ng higit na pagpapasya sa paggamit ng kapangyarihan ng MetaMask, at ang pagpapasya na iyon ay sa iyo. Tinatanggap mo ba ang mga panganib na ito pati na rin ang karagdagang responsibilidad para sa kaligtasan ng iyong wallet?"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "Tingnan ang mga detalye",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -3336,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "Ginagamit ng iba't ibang client"
-  },
-  "userAccepts": {
-    "message": "Tinatanggap ko"
   },
   "userName": {
     "message": "Username"
