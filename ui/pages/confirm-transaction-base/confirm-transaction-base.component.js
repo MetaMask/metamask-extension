@@ -121,6 +121,7 @@ export default class ConfirmTransactionBase extends Component {
     onEdit: PropTypes.func,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
+    image: PropTypes.string,
     type: PropTypes.string,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
@@ -613,7 +614,7 @@ export default class ConfirmTransactionBase extends Component {
                     <LoadingHeartBeat />
                     <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
-                    </strong>
+                    </strong>{' '}
                     {renderTotalMaxAmount()}
                   </div>
                 }
@@ -863,7 +864,7 @@ export default class ConfirmTransactionBase extends Component {
         value={hexTransactionAmount}
         type={PRIMARY}
         showEthLogo
-        ethLogoHeight="26"
+        ethLogoHeight="36"
         hideLabel
       />
     );
@@ -1004,6 +1005,7 @@ export default class ConfirmTransactionBase extends Component {
       gasFeeIsCustom,
       nativeCurrency,
       hardwareWalletRequiresConnection,
+      image,
     } = this.props;
     const {
       submitting,
@@ -1060,6 +1062,7 @@ export default class ConfirmTransactionBase extends Component {
           showEdit={Boolean(onEdit)}
           action={functionType}
           title={title}
+          image={image}
           titleComponent={this.renderTitleComponent()}
           subtitleComponent={this.renderSubtitleComponent()}
           hideSubtitle={hideSubtitle}

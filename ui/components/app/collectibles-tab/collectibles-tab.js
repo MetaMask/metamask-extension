@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -25,9 +26,10 @@ import {
 import { getIsMainnet, getUseCollectibleDetection } from '../../../selectors';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import {
-  checkAndUpdateCollectiblesOwnershipStatus,
+  checkAndUpdateAllCollectiblesOwnershipStatus,
   detectCollectibles,
 } from '../../../store/actions';
+import { usePrevious } from '../../../hooks/usePrevious';
 
 export default function CollectiblesTab({ onAddNFT }) {
   const collectibles = useSelector(getCollectibles);
@@ -40,34 +42,46 @@ export default function CollectiblesTab({ onAddNFT }) {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const [collections, setCollections] = useState({});
+  const [previouslyOwnedCollection, setPreviouslyOwnedCollection] = useState({
+    collectionName: 'Previously Owned',
+    collectibles: [],
+  });
 
-  const getCollections = () => {
-    const collections = {};
-    const previouslyOwnedCollection = {
-      collectionName: 'Previously Owned',
-      collectibles: [],
+  const prevCollectibles = usePrevious(collectibles);
+  useEffect(() => {
+    const getCollections = () => {
+      const newCollections = {};
+      const newPreviouslyOwnedCollections = {
+        collectionName: 'Previously Owned',
+        collectibles: [],
+      };
+
+      collectibles.forEach((collectible) => {
+        if (collectible?.isCurrentlyOwned === false) {
+          newPreviouslyOwnedCollections.collectibles.push(collectible);
+        } else if (newCollections[collectible.address]) {
+          newCollections[collectible.address].collectibles.push(collectible);
+        } else {
+          const collectionContract = collectibleContracts.find(
+            ({ address }) => address === collectible.address,
+          );
+          newCollections[collectible.address] = {
+            collectionName: collectionContract?.name || collectible.name,
+            collectionImage:
+              collectionContract?.logo || collectible.collectionImage,
+            collectibles: [collectible],
+          };
+        }
+      });
+      setCollections(newCollections);
+      setPreviouslyOwnedCollection(newPreviouslyOwnedCollections);
     };
-    collectibles.forEach((collectible) => {
-      if (collectible?.isCurrentlyOwned === false) {
-        previouslyOwnedCollection.collectibles.push(collectible);
-      } else if (collections[collectible.address]) {
-        collections[collectible.address].collectibles.push(collectible);
-      } else {
-        const collectionContract = collectibleContracts.find(
-          ({ address }) => address === collectible.address,
-        );
-        collections[collectible.address] = {
-          collectionName: collectionContract?.name || collectible.name,
-          collectionImage:
-            collectionContract?.logo || collectible.collectionImage,
-          collectibles: [collectible],
-        };
-      }
-    });
-    return [collections, previouslyOwnedCollection];
-  };
 
-  const [collections, previouslyOwnedCollection] = getCollections();
+    if (!isEqual(prevCollectibles, collectibles)) {
+      getCollections();
+    }
+  }, [collectibles, prevCollectibles, collectibleContracts]);
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);
@@ -77,12 +91,13 @@ export default function CollectiblesTab({ onAddNFT }) {
     if (isMainnet) {
       dispatch(detectCollectibles());
     }
-    checkAndUpdateCollectiblesOwnershipStatus();
+    checkAndUpdateAllCollectiblesOwnershipStatus();
   };
 
   return (
     <div className="collectibles-tab">
-      {collectibles.length > 0 ? (
+      {Object.keys(collections).length > 0 ||
+      previouslyOwnedCollection.collectibles.length > 0 ? (
         <CollectiblesItems
           collections={collections}
           previouslyOwnedCollection={previouslyOwnedCollection}

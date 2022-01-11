@@ -44,6 +44,7 @@ import {
 } from '../../../../shared/constants/network';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
 import { readAddressAsContract } from '../../../../shared/modules/contract-utils';
+import { isEqualCaseInsensitive } from '../../../../ui/helpers/utils/util';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -431,6 +432,7 @@ export default class TransactionController extends EventEmitter {
       gasLimit: defaultGasLimit,
       simulationFails,
     } = await this._getDefaultGasLimit(txMeta, getCodeResponse);
+    const advancedGasFeeDefaultValues = this.getAdvancedGasFee();
 
     // eslint-disable-next-line no-param-reassign
     txMeta = this.txStateManager.getTransaction(txMeta.id);
@@ -439,13 +441,21 @@ export default class TransactionController extends EventEmitter {
     }
 
     if (eip1559Compatibility) {
-      // If the dapp has suggested a gas price, but no maxFeePerGas or maxPriorityFeePerGas
-      //  then we set maxFeePerGas and maxPriorityFeePerGas to the suggested gasPrice.
-      if (
+      if (process.env.EIP_1559_V2 && Boolean(advancedGasFeeDefaultValues)) {
+        txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
+        txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(
+          advancedGasFeeDefaultValues.maxBaseFee,
+        );
+        txMeta.txParams.maxPriorityFeePerGas = decGWEIToHexWEI(
+          advancedGasFeeDefaultValues.priorityFee,
+        );
+      } else if (
         txMeta.txParams.gasPrice &&
         !txMeta.txParams.maxFeePerGas &&
         !txMeta.txParams.maxPriorityFeePerGas
       ) {
+        // If the dapp has suggested a gas price, but no maxFeePerGas or maxPriorityFeePerGas
+        //  then we set maxFeePerGas and maxPriorityFeePerGas to the suggested gasPrice.
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
         if (process.env.EIP_1559_V2) {
@@ -1141,6 +1151,10 @@ export default class TransactionController extends EventEmitter {
      * @param opts
      */
     this.getTransactions = (opts) => this.txStateManager.getTransactions(opts);
+
+    /** @returns {object} the saved default values for advancedGasFee */
+    this.getAdvancedGasFee = () =>
+      this.preferencesStore.getState().advancedGasFee;
   }
 
   // called once on startup
@@ -1287,7 +1301,7 @@ export default class TransactionController extends EventEmitter {
       TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
       TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
       TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
-    ].find((methodName) => methodName === name && name.toLowerCase());
+    ].find((methodName) => isEqualCaseInsensitive(methodName, name));
 
     let result;
     if (data && tokenMethodName) {

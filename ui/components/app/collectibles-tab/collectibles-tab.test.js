@@ -173,12 +173,12 @@ describe('Collectible Items', () => {
   const detectCollectiblesStub = jest.fn();
   const setCollectiblesDetectionNoticeDismissedStub = jest.fn();
   const getStateStub = jest.fn();
-  const checkAndUpdateCollectiblesOwnershipStatusStub = jest.fn();
+  const checkAndUpdateAllCollectiblesOwnershipStatusStub = jest.fn();
   setBackgroundConnection({
     setCollectiblesDetectionNoticeDismissed: setCollectiblesDetectionNoticeDismissedStub,
     detectCollectibles: detectCollectiblesStub,
     getState: getStateStub,
-    checkAndUpdateCollectiblesOwnershipStatus: checkAndUpdateCollectiblesOwnershipStatusStub,
+    checkAndUpdateAllCollectiblesOwnershipStatus: checkAndUpdateAllCollectiblesOwnershipStatusStub,
   });
   const historyPushMock = jest.fn();
 
@@ -276,11 +276,13 @@ describe('Collectible Items', () => {
       });
       expect(detectCollectiblesStub).not.toHaveBeenCalled();
       expect(
-        checkAndUpdateCollectiblesOwnershipStatusStub,
+        checkAndUpdateAllCollectiblesOwnershipStatusStub,
       ).not.toHaveBeenCalled();
       fireEvent.click(screen.queryByText('Refresh list'));
       expect(detectCollectiblesStub).toHaveBeenCalled();
-      expect(checkAndUpdateCollectiblesOwnershipStatusStub).toHaveBeenCalled();
+      expect(
+        checkAndUpdateAllCollectiblesOwnershipStatusStub,
+      ).toHaveBeenCalled();
     });
 
     it('should render a link "Refresh list" when some collectibles are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateCollectiblesOwnershipStatus', () => {
@@ -291,10 +293,12 @@ describe('Collectible Items', () => {
         useCollectibleDetection: true,
       });
       expect(
-        checkAndUpdateCollectiblesOwnershipStatusStub,
+        checkAndUpdateAllCollectiblesOwnershipStatusStub,
       ).not.toHaveBeenCalled();
       fireEvent.click(screen.queryByText('Refresh list'));
-      expect(checkAndUpdateCollectiblesOwnershipStatusStub).toHaveBeenCalled();
+      expect(
+        checkAndUpdateAllCollectiblesOwnershipStatusStub,
+      ).toHaveBeenCalled();
     });
 
     it('should render a link "Enable Autodetect" when some collectibles are present and collectible auto-detection preference is set to false, which, when clicked sends user to the experimental tab of settings', () => {
