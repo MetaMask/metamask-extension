@@ -168,6 +168,15 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `eip1559V2Enabled` property
+   *
+   * @param {object} val - holds the eip1559V2Enabled that the user set as experimental settings.
+   */
+  setEIP1559V2Enabled(val) {
+    this.store.updateState({ eip1559V2Enabled: val });
+  }
+
+  /**
    * Add new methodData to state, to avoid requesting this information again through Infura
    *
    * @param {string} fourBytePrefix - Four-byte method signature

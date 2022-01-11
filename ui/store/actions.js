@@ -2256,6 +2256,18 @@ export function setAdvancedGasFee(val) {
   };
 }
 
+export function setEIP1559V2Enabled(val) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setEIP1559V2Enabled`);
+    try {
+      await promisifiedBackground.setEIP1559V2Enabled(val);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setIpfsGateway(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -3098,6 +3110,10 @@ export function hideTestNetMessage() {
 
 export function setCollectiblesDetectionNoticeDismissed() {
   return promisifiedBackground.setCollectiblesDetectionNoticeDismissed(true);
+}
+
+export function setEnableEIP1559V2NoticeDismissed() {
+  return promisifiedBackground.setEnableEIP1559V2NoticeDismissed(true);
 }
 
 // QR Hardware Wallets
