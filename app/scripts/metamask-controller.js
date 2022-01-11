@@ -589,10 +589,6 @@ export default class MetamaskController extends EventEmitter {
       getExternalPendingTransactions: this.getExternalPendingTransactions.bind(
         this,
       ),
-      // TODO: We can probably remove "getExternalConfirmedTransactions", since when an STX is done, we push it to regular transactions.
-      getExternalConfirmedTransactions: this.getExternalConfirmedTransactions.bind(
-        this,
-      ),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -3184,11 +3180,6 @@ export default class MetamaskController extends EventEmitter {
       addressFrom: address,
       status: 'pending',
     });
-  }
-
-  // TODO: Remove this fn, because it's not needed anymore, since we push confirmed smart transactions into the list of regular transactions.
-  getExternalConfirmedTransactions() {
-    return [];
   }
 
   /**

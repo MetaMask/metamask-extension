@@ -140,15 +140,18 @@ export default class TransactionController extends EventEmitter {
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
-      getPendingTransactions: this.txStateManager.getPendingTransactions.bind(
-        this.txStateManager,
-      ),
+      getPendingTransactions: (...args) => {
+        const pendingTransactions = this.txStateManager.getPendingTransactions(
+          ...args,
+        );
+        const externalPendingTransactions = opts.getExternalPendingTransactions(
+          ...args,
+        );
+        return [...pendingTransactions, ...externalPendingTransactions];
+      },
       getConfirmedTransactions: this.txStateManager.getConfirmedTransactions.bind(
         this.txStateManager,
       ),
-      getExternalPendingTransactions: opts.getExternalPendingTransactions,
-      // TODO: We can probably remove the next line, since when an STX is done, we push it to regular transactions.
-      getExternalConfirmedTransactions: opts.getExternalConfirmedTransactions,
     });
 
     this.pendingTxTracker = new PendingTransactionTracker({
