@@ -205,7 +205,7 @@ export default class ConfirmPageContainer extends Component {
               </>
             )}
           </div>
-          <EnableEIP1559V2Notice />
+          <EnableEIP1559V2Notice isFirstAlert={!showAddToAddressDialog} />
           {contentComponent || (
             <ConfirmPageContainerContent
               action={action}

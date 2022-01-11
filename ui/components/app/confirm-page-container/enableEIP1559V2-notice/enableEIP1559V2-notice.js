@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -23,7 +24,7 @@ const EIP_1559_V2_ENABLED =
   // This is a string in unit tests but is a boolean in the browser
   process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
-export default function EnableEIP1559V2Notice() {
+export default function EnableEIP1559V2Notice({ isFirstAlert }) {
   const t = useI18nContext();
   const history = useHistory();
   const enableEIP1559V2NoticeDismissed = useSelector(
@@ -40,7 +41,7 @@ export default function EnableEIP1559V2Notice() {
   }
 
   return (
-    <Box margin={4} className="enableEIP1559V2-notice">
+    <Box margin={[isFirstAlert ? 4 : 0, 4, 4, 4]}>
       <Dialog type="message" className="enableEIP1559V2-notice__message">
         <button
           onClick={setEnableEIP1559V2NoticeDismissed}
@@ -83,3 +84,7 @@ export default function EnableEIP1559V2Notice() {
     </Box>
   );
 }
+
+EnableEIP1559V2Notice.propTypes = {
+  isFirstAlert: PropTypes.bool,
+};
