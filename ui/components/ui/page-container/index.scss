@@ -28,6 +28,7 @@
     right: 16px;
     cursor: pointer;
     overflow: hidden;
+    background-color: transparent;
 
     &::after {
       content: '\00D7';

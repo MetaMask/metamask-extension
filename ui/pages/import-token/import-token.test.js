@@ -141,8 +141,8 @@ describe('Import Token', () => {
     });
 
     it('cancels out of import token flow', () => {
-      const { getByTestId } = render();
-      const closeButton = getByTestId('header-close-button');
+      const { getAllByRole } = render();
+      const closeButton = getAllByRole('button')[0];
       fireEvent.click(closeButton);
 
       expect(clearPendingTokens).toHaveBeenCalled();
