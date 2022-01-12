@@ -2887,7 +2887,8 @@
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapCompleteIn": {
-    "message": "Swap complete in <"
+    "message": "Swap complete in <",
+    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
