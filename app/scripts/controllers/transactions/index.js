@@ -66,6 +66,8 @@ export const TRANSACTION_EVENTS = {
   SUBMITTED: 'Transaction Submitted',
 };
 
+const METRICS_STATUS_FAILED = 'failed on-chain';
+
 /**
  * @typedef {Object} CustomGasSettings
  * @property {string} [gas] - The gas limit to use for the transaction
@@ -451,7 +453,8 @@ export default class TransactionController extends EventEmitter {
     }
 
     if (eip1559Compatibility) {
-      if (process.env.EIP_1559_V2 && Boolean(advancedGasFeeDefaultValues)) {
+      const { eip1559V2Enabled } = this.preferencesStore.getState();
+      if (eip1559V2Enabled && Boolean(advancedGasFeeDefaultValues)) {
         txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(
           advancedGasFeeDefaultValues.maxBaseFee,
@@ -468,7 +471,7 @@ export default class TransactionController extends EventEmitter {
         //  then we set maxFeePerGas and maxPriorityFeePerGas to the suggested gasPrice.
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
-        if (process.env.EIP_1559_V2) {
+        if (eip1559V2Enabled) {
           txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
         } else {
           txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
@@ -482,7 +485,7 @@ export default class TransactionController extends EventEmitter {
           txMeta.origin === 'metamask'
         ) {
           txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
-        } else if (process.env.EIP_1559_V2) {
+        } else if (eip1559V2Enabled) {
           txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
         } else {
           txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
@@ -943,9 +946,8 @@ export default class TransactionController extends EventEmitter {
     if (this.inProcessOfSigning.has(uniqueHashOfParams)) {
       return '';
     }
-    let rawTxes;
     this.inProcessOfSigning.add(uniqueHashOfParams);
-    let nonceLock;
+    let rawTxes, nonceLock;
     try {
       // TODO: we should add a check to verify that all transactions have the same from address
       const fromAddress = listOfTxParams[0].from;
@@ -1126,7 +1128,7 @@ export default class TransactionController extends EventEmitter {
       }
 
       if (txReceipt.status === '0x0') {
-        metricsParams.status = 'failed on-chain';
+        metricsParams.status = METRICS_STATUS_FAILED;
         // metricsParams.error = TODO: figure out a way to get the on-chain failure reason
       }
 
@@ -1203,7 +1205,7 @@ export default class TransactionController extends EventEmitter {
       }
 
       if (txReceipt.status === '0x0') {
-        metricsParams.status = 'failed on-chain';
+        metricsParams.status = METRICS_STATUS_FAILED;
         // metricsParams.error = TODO: figure out a way to get the on-chain failure reason
       }
 

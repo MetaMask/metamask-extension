@@ -14,6 +14,7 @@ import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 
 import {
   checkNetworkAndAccountSupports1559,
+  getEIP1559V2Enabled,
   getPreferences,
   getSelectedAccount,
 } from '../../../selectors';
@@ -140,28 +141,28 @@ describe('FeeCard', () => {
       maxPriorityFeePerGasDecGWEI: '3',
       maxFeePerGasDecGWEI: '4',
     });
-    const { getByText, queryByTestId, queryByText } = renderWithProvider(
+    const { getByText, queryByTestId } = renderWithProvider(
       <FeeCard {...props} />,
       store,
     );
-    expect(getByText('Using the best quote')).toBeInTheDocument();
-    expect(getByText('6 quotes')).toBeInTheDocument();
-    expect(getByText('Estimated network fee')).toBeInTheDocument();
+    expect(getByText('Best of 6 quotes.')).toBeInTheDocument();
+    expect(getByText('Estimated gas fee')).toBeInTheDocument();
     expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
     expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
-    expect(getByText(props.secondaryFee.maxFee)).toBeInTheDocument();
+    expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
     expect(queryByTestId('fee-card__edit-link')).not.toBeInTheDocument();
-    expect(queryByText('Maybe in 5 minutes')).not.toBeInTheDocument();
   });
 
   it('renders the component with EIP-1559 V2 enabled', () => {
-    process.env.EIP_1559_V2 = true;
     useGasFeeEstimates.mockImplementation(() => ({ gasFeeEstimates: {} }));
     useSelector.mockImplementation((selector) => {
       if (selector === getPreferences) {
         return {
           useNativeCurrencyAsPrimaryCurrency: true,
         };
+      }
+      if (selector === getEIP1559V2Enabled) {
+        return true;
       }
       if (selector === getSelectedAccount) {
         return {
@@ -202,6 +203,5 @@ describe('FeeCard', () => {
     expect(
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
-    process.env.EIP_1559_V2 = false;
   });
 });

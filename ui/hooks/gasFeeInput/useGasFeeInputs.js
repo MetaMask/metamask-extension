@@ -11,6 +11,7 @@ import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
   getAdvancedInlineGasShown,
+  getEIP1559V2Enabled,
 } from '../../selectors';
 import { hexToDecimal } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
@@ -93,15 +94,13 @@ export function useGasFeeInputs(
   minimumGasLimit = '0x5208',
   editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
 ) {
-  const EIP_1559_V2_ENABLED =
-    // This is a string in unit tests but is a boolean in the browser
-    process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
+  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const supportsEIP1559V2 = supportsEIP1559 && EIP_1559_V2_ENABLED;
+  const supportsEIP1559V2 = supportsEIP1559 && eip1559V2Enabled;
 
   // We need the gas estimates from the GasFeeController in the background.
   // Calling this hooks initiates polling for new gas estimates and returns the

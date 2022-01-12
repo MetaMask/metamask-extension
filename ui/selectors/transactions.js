@@ -6,6 +6,7 @@ import {
 import { hexToDecimal } from '../helpers/utils/conversions.util';
 import txHelper from '../helpers/utils/tx-helper';
 import {
+  TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
@@ -53,7 +54,9 @@ export const smartTransactionsListSelector = (state) =>
     .map((stx) => ({
       ...stx,
       transactionType: 'smart',
-      status: stx.status?.startsWith('cancelled') ? 'cancelled' : stx.status,
+      status: stx.status?.startsWith('cancelled')
+        ? TRANSACTION_GROUP_STATUSES.CANCELLED
+        : stx.status,
     }));
 
 export const selectedAddressTxListSelector = createSelector(
