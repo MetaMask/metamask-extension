@@ -227,7 +227,8 @@ class ImportToken extends Component {
       }
     }
 
-    const addressIsEmpty = customAddress.length === 0 || customAddress === emptyAddr;
+    const addressIsEmpty =
+      customAddress.length === 0 || customAddress === emptyAddr;
 
     switch (true) {
       case !addressIsValid && !addressIsEmpty:
@@ -240,10 +241,12 @@ class ImportToken extends Component {
         });
 
         break;
-      case standard === 'ERC1155' || standard === 'ERC721':
+      case process.env.COLLECTIBLES_V1 &&
+        (standard === 'ERC1155' || standard === 'ERC721'):
         this.setState({
           collectibleAddressError: this.context.t('collectibleAddressError', [
             <a
+              href="#"
               className="import-token__collectible-address-error-link"
               onClick={() => this.props.history.push(ADD_COLLECTIBLE_ROUTE)}
               key="collectibleAddressError"
