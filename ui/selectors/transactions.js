@@ -6,10 +6,10 @@ import {
 import { hexToDecimal } from '../helpers/utils/conversions.util';
 import txHelper from '../helpers/utils/tx-helper';
 import {
+  TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
-import { STX_STATUS } from '../../shared/constants/smartTransactions';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import {
   getCurrentChainId,
@@ -54,8 +54,8 @@ export const smartTransactionsListSelector = (state) =>
     .map((stx) => ({
       ...stx,
       transactionType: 'smart',
-      status: stx.status?.startsWith(STX_STATUS.CANCELLED)
-        ? STX_STATUS.CANCELLED
+      status: stx.status?.startsWith('cancelled')
+        ? TRANSACTION_GROUP_STATUSES.CANCELLED
         : stx.status,
     }));
 

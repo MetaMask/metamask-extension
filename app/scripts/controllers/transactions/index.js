@@ -66,6 +66,8 @@ export const TRANSACTION_EVENTS = {
   SUBMITTED: 'Transaction Submitted',
 };
 
+const METRICS_STATUS_FAILED = 'failed on-chain';
+
 /**
  * @typedef {Object} CustomGasSettings
  * @property {string} [gas] - The gas limit to use for the transaction
@@ -944,9 +946,8 @@ export default class TransactionController extends EventEmitter {
     if (this.inProcessOfSigning.has(uniqueHashOfParams)) {
       return '';
     }
-    let rawTxes;
     this.inProcessOfSigning.add(uniqueHashOfParams);
-    let nonceLock;
+    let rawTxes, nonceLock;
     try {
       // TODO: we should add a check to verify that all transactions have the same from address
       const fromAddress = listOfTxParams[0].from;
@@ -1127,7 +1128,7 @@ export default class TransactionController extends EventEmitter {
       }
 
       if (txReceipt.status === '0x0') {
-        metricsParams.status = 'failed on-chain';
+        metricsParams.status = METRICS_STATUS_FAILED;
         // metricsParams.error = TODO: figure out a way to get the on-chain failure reason
       }
 
@@ -1204,7 +1205,7 @@ export default class TransactionController extends EventEmitter {
       }
 
       if (txReceipt.status === '0x0') {
-        metricsParams.status = 'failed on-chain';
+        metricsParams.status = METRICS_STATUS_FAILED;
         // metricsParams.error = TODO: figure out a way to get the on-chain failure reason
       }
 
