@@ -9,16 +9,24 @@ import {
 
 import sendSBReducer from '../../../../.storybook/reducers/sb-send-reducer';
 import historySBReducer from '../../../../.storybook/reducers/sb-history-reducer';
-
-import { ASSET_TYPES, SEND_STAGES } from '../../../ducks/send';
 import SendHeader from './send-header.component';
 
 export default {
   title: 'Pages/Send/SendHeader',
   id: __filename,
-  argsTypes: {
-    asset: { control: 'select' },
-    stage: { control: 'select' },
+  argTypes: {
+    asset: {
+      control: {
+        type: 'select',
+      },
+      options: ['NATIVE', 'TOKEN'],
+    },
+    stage: {
+      control: {
+        type: 'select',
+      },
+      options: ['ADD_RECIPIENT', 'DRAFT', 'EDIT', 'INACTIVE'],
+    },
   },
 };
 
@@ -48,12 +56,6 @@ export const DefaultStory = (args) => {
 
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
-  asset: [ASSET_TYPES.NATIVE, ASSET_TYPES.TOKEN] || send.asset,
-  stage:
-    [
-      SEND_STAGES.ADD_RECIPIENT,
-      SEND_STAGES.DRAFT,
-      SEND_STAGES.EDIT,
-      SEND_STAGES.INACTIVE,
-    ] || send.stage,
+  asset: 'NATIVE' || send.asset,
+  stage: 'ADD_RECIPIENT' || send.stage,
 };

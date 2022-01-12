@@ -1,4 +1,5 @@
 import React from 'react';
+import { useArgs } from '@storybook/client-api';
 import AdvancedTab from './advanced-tab.component';
 
 export default {
@@ -37,9 +38,71 @@ export default {
 };
 
 export const DefaultStory = (args) => {
+  const [
+    {
+      useNonceField,
+      sendHexData,
+      advancedInlineGas,
+      showFiatInTestnets,
+      threeBoxSyncingAllowed,
+      dismissSeedBackUpReminder,
+    },
+    updateArgs,
+  ] = useArgs();
+
+  const handleUseNonceField = () => {
+    updateArgs({
+      useNonceField: !useNonceField,
+    });
+  };
+
+  const handleSendHexData = () => {
+    updateArgs({
+      sendHexData: !sendHexData,
+    });
+  };
+
+  const handleAdvancedInlineGas = () => {
+    updateArgs({
+      advancedInlineGas: !advancedInlineGas,
+    });
+  };
+
+  const handleShowFiatInTestnets = () => {
+    updateArgs({
+      showFiatInTestnets: !showFiatInTestnets,
+    });
+  };
+
+  const handleThreeBoxSyncingAllowed = () => {
+    updateArgs({
+      threeBoxSyncingAllowed: !threeBoxSyncingAllowed,
+    });
+  };
+
+  const handleDismissSeedBackUpReminder = () => {
+    updateArgs({
+      dismissSeedBackUpReminder: !dismissSeedBackUpReminder,
+    });
+  };
   return (
     <div style={{ flex: 1, height: 500 }}>
-      <AdvancedTab ipfsGateway="ipfs-gateway" {...args} />
+      <AdvancedTab
+        {...args}
+        useNonceField={useNonceField}
+        setUseNonceField={handleUseNonceField}
+        sendHexData={sendHexData}
+        setHexDataFeatureFlag={handleSendHexData}
+        advancedInlineGas={advancedInlineGas}
+        setAdvancedInlineGasFeatureFlag={handleAdvancedInlineGas}
+        showFiatInTestnets={showFiatInTestnets}
+        setShowFiatConversionOnTestnetsPreference={handleShowFiatInTestnets}
+        threeBoxSyncingAllowed={threeBoxSyncingAllowed}
+        setThreeBoxSyncingPermission={handleThreeBoxSyncingAllowed}
+        dismissSeedBackUpReminder={dismissSeedBackUpReminder}
+        setDismissSeedBackUpReminder={handleDismissSeedBackUpReminder}
+        ipfsGateway="ipfs-gateway"
+      />
     </div>
   );
 };
