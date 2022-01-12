@@ -37,13 +37,15 @@ import {
   getPendingSmartTransactions,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-  getSmartTransactionsError,
-  getSmartTransactionsErrorMessageDismissed,
+  getCurrentSmartTransactionsError,
+  dismissCurrentSmartTransactionsErrorMessage,
+  getCurrentSmartTransactionsErrorMessageDismissed,
   navigateBackToBuildQuote,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
   currentNetworkTxListSelector,
+  getSwapsDefaultToken,
 } from '../../selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -70,7 +72,6 @@ import {
   removeToken,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
-  dismissSmartTransactionsErrorMessage,
 } from '../../store/actions';
 
 import { useNewMetricEvent } from '../../hooks/useMetricEvent';
@@ -123,6 +124,7 @@ export default function Swap() {
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const listTokenValues = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
@@ -132,12 +134,14 @@ export default function Swap() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
-  const smartTransactionsError = useSelector(getSmartTransactionsError);
+  const currentSmartTransactionsError = useSelector(
+    getCurrentSmartTransactionsError,
+  );
   const smartTransactionsErrorMessageDismissed = useSelector(
-    getSmartTransactionsErrorMessageDismissed,
+    getCurrentSmartTransactionsErrorMessageDismissed,
   );
   const showSmartTransactionsErrorMessage =
-    smartTransactionsError && !smartTransactionsErrorMessageDismissed;
+    currentSmartTransactionsError && !smartTransactionsErrorMessageDismissed;
 
   if (networkAndAccountSupports1559) {
     // This will pre-load gas fees before going to the View Quote page.
@@ -319,20 +323,52 @@ export default function Swap() {
         <div className="swaps__content">
           {showSmartTransactionsErrorMessage && (
             <ActionableMessage
-              type="danger"
-              message={
-                <div className="build-quote__token-verification-warning-message">
-                  <div className="build-quote__bold">
-                    {t('smartTransactionsAlert')}
-                  </div>
-                  <div>{t('smartTransactionsUnavailable')}</div>
-                </div>
+              type={
+                currentSmartTransactionsError === 'not_enough_funds'
+                  ? 'default'
+                  : 'warning'
               }
-              className="actionable-message--left-aligned actionable-message--error swaps__error-message"
-              primaryAction={{
-                label: t('dismiss'),
-                onClick: () => dispatch(dismissSmartTransactionsErrorMessage()),
-              }}
+              message={
+                currentSmartTransactionsError === 'not_enough_funds' ? (
+                  <div>
+                    {t('swapApproveNeedMoreTokensSmartTransactions', [
+                      defaultSwapsToken.symbol,
+                    ])}{' '}
+                    <span
+                      onClick={() =>
+                        dispatch(dismissCurrentSmartTransactionsErrorMessage())
+                      }
+                      style={{
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {t('smartTransactionsTryRegular')}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="build-quote__token-verification-warning-message">
+                    <div className="build-quote__bold">
+                      {t('smartTransactionsUnavailable')}
+                    </div>
+                    <div>{t('smartTransactionsFallbackToNormal')}</div>
+                  </div>
+                )
+              }
+              className={
+                currentSmartTransactionsError === 'not_enough_funds'
+                  ? ''
+                  : 'actionable-message--left-aligned actionable-message--warning swaps__error-message'
+              }
+              primaryAction={
+                currentSmartTransactionsError === 'not_enough_funds'
+                  ? null
+                  : {
+                      label: t('dismiss'),
+                      onClick: () =>
+                        dispatch(dismissCurrentSmartTransactionsErrorMessage()),
+                    }
+              }
               withRightButton
             />
           )}

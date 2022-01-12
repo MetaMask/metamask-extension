@@ -10,9 +10,9 @@ import {
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_GROUP_STATUSES,
 } from '../../../../shared/constants/transaction';
-import { cancelSmartTransaction } from '../../../store/actions';
 
 import CancelButton from '../cancel-button';
+import { cancelSwapsSmartTransaction } from '../../../ducks/swaps/swaps';
 
 export default function SmartTransactionListItem({
   smartTransaction,
@@ -72,7 +72,7 @@ export default function SmartTransactionListItem({
                 transaction={smartTransaction.uuid}
                 cancelTransaction={(e) => {
                   e?.preventDefault();
-                  dispatch(cancelSmartTransaction(smartTransaction.uuid));
+                  dispatch(cancelSwapsSmartTransaction(smartTransaction.uuid));
                   setCancelSwapLinkClicked(true);
                 }}
               />

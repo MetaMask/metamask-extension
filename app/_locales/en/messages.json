@@ -2692,7 +2692,13 @@
     "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you."
   },
   "smartTransactionsUnavailable": {
-    "message": "Smart transactions are temporarily unavailable. You can still swap using the normal method or wait until smart transactions are available for cheaper transaction fees and reduced chances of failure."
+    "message": "Smart transactions temporarily unavailable"
+  },
+  "smartTransactionsTryRegular": {
+    "message": "Try a regular swap."
+  },
+  "smartTransactionsFallbackToNormal": {
+    "message": "You can still swap using the normal method or wait for cheaper gas fees and less failures with smart transactions."
   },
   "smartTransactionsYouCanOptOut": {
     "message": "You can opt-out in advanced settings any time."
@@ -2877,6 +2883,10 @@
   "swapApproveNeedMoreTokens": {
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
+  },
+  "swapApproveNeedMoreTokensSmartTransactions": {
+    "message": "You need more $1 to complete this swap using smart transactions.",
+    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
   },
   "swapBestOfNQuotes": {
     "message": "Best of $1 quotes.",

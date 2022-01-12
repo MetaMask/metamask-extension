@@ -29,6 +29,8 @@ import {
   signAndSendSmartTransaction,
   updateSmartTransaction,
   setSmartTransactionsRefreshInterval,
+  fetchSmartTransactionFees,
+  cancelSmartTransaction,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -44,6 +46,8 @@ import {
   fetchSwapsGasPrices,
   isContractAddressValid,
   getSwapsLivenessForNetwork,
+  parseSmartTransactionsError,
+  stxErrorTypes,
 } from '../../pages/swaps/swaps.util';
 import { calcGasTotal } from '../../pages/send/send.utils';
 import {
@@ -110,6 +114,8 @@ const initialState = {
     priceEstimates: {},
     fallBackPrice: null,
   },
+  currentSmartTransactionsError: '',
+  currentSmartTransactionsErrorMessageDismissed: false,
 };
 
 const slice = createSlice({
@@ -189,6 +195,15 @@ const slice = createSlice({
     retrievedFallbackSwapsGasPrice: (state, action) => {
       state.customGas.fallBackPrice = action.payload;
     },
+    setCurrentSmartTransactionsError: (state, action) => {
+      const errorType = stxErrorTypes.includes(action.payload)
+        ? action.payload
+        : stxErrorTypes[0];
+      state.currentSmartTransactionsError = errorType;
+    },
+    dismissCurrentSmartTransactionsErrorMessage: (state) => {
+      state.currentSmartTransactionsErrorMessageDismissed = true;
+    },
   },
 });
 
@@ -244,6 +259,12 @@ export const getSwapGasPriceEstimateData = (state) =>
 export const getSwapsFallbackGasPrice = (state) =>
   state.swaps.customGas.fallBackPrice;
 
+export const getCurrentSmartTransactionsError = (state) =>
+  state.swaps.currentSmartTransactionsError;
+
+export const getCurrentSmartTransactionsErrorMessageDismissed = (state) =>
+  state.swaps.currentSmartTransactionsErrorMessageDismissed;
+
 export function shouldShowCustomPriceTooLowWarning(state) {
   const { average } = getSwapGasPriceEstimateData(state);
 
@@ -289,14 +310,18 @@ export const getSmartTransactionsEnabled = (state) => {
     state.metamask.swapsState?.swapsFeatureFlags?.smart_transactions
       ?.extension_active;
   const { smartTransactionsLiveness } = state.appState;
-  const smartTransactionsError = getSmartTransactionsError(state);
   return Boolean(
     isAllowedNetwork &&
       !hardwareWalletUsed &&
       smartTransactionsFeatureFlagEnabled &&
-      smartTransactionsLiveness &&
-      !smartTransactionsError,
+      smartTransactionsLiveness,
   );
+};
+
+export const getCurrentSmartTransactionsEnabled = (state) => {
+  const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
+  const currentSmartTransactionsError = getCurrentSmartTransactionsError(state);
+  return smartTransactionsEnabled && !currentSmartTransactionsError;
 };
 
 export const getSwapsQuoteRefreshTime = (state) =>
@@ -442,10 +467,13 @@ const {
   swapCustomGasModalLimitEdited,
   retrievedFallbackSwapsGasPrice,
   swapCustomGasModalClosed,
+  setCurrentSmartTransactionsError,
+  dismissCurrentSmartTransactionsErrorMessage,
 } = actions;
 
 export {
   clearSwapsState,
+  dismissCurrentSmartTransactionsErrorMessage,
   setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,
@@ -845,6 +873,13 @@ export const signAndSendSwapsSmartTransaction = ({
       );
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
+      const {
+        swaps: { isFeatureFlagLoaded },
+      } = getState();
+      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+      }
     }
   };
 };
@@ -1155,5 +1190,37 @@ export function fetchMetaSwapsGasPriceEstimates() {
       }),
     );
     return priceEstimates;
+  };
+}
+
+export function fetchSwapsSmartTransactionFees(unsignedTransaction) {
+  return async (dispatch, getState) => {
+    try {
+      await dispatch(fetchSmartTransactionFees(unsignedTransaction));
+    } catch (e) {
+      const {
+        swaps: { isFeatureFlagLoaded },
+      } = getState();
+      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+      }
+    }
+  };
+}
+
+export function cancelSwapsSmartTransaction(uuid) {
+  return async (dispatch, getState) => {
+    try {
+      await dispatch(cancelSmartTransaction(uuid));
+    } catch (e) {
+      const {
+        swaps: { isFeatureFlagLoaded },
+      } = getState();
+      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+      }
+    }
   };
 }
