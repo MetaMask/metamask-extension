@@ -613,8 +613,7 @@ describe('build/transforms/remove-fenced-code', () => {
     it('rejects files with sourceMap inclusion', () => {
       // This is so that there isn't an unnecessary second execution of
       // removeFencedCode with a transpiled version of the same file
-      const input = getTestData().validInputs.extraContentWithFences;
-      input.concat(
+      const input = getTestData().validInputs.extraContentWithFences.concat(
         '\n//# sourceMappingURL=as32e32wcwc2234f2ew32cnin4243f4nv9nsdoivnxzoivnd',
       );
       expect(
