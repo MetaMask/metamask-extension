@@ -77,6 +77,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { STX_STATUS } from '../../../shared/constants/smartTransactions';
 import { getGasFeeEstimates } from '../metamask/metamask';
 
 const GAS_PRICES_LOADING_STATES = {
@@ -393,7 +394,9 @@ export const getPendingSmartTransactions = (state) => {
   if (!currentSmartTransactions || currentSmartTransactions.length === 0) {
     return [];
   }
-  return currentSmartTransactions.filter((stx) => stx.status === 'pending');
+  return currentSmartTransactions.filter(
+    (stx) => stx.status === STX_STATUS.PENDING,
+  );
 };
 
 export const getSmartTransactionFees = (state) => {

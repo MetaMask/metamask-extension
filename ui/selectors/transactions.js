@@ -9,6 +9,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
+import { STX_STATUS } from '../../shared/constants/smartTransactions';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import {
   getCurrentChainId,
@@ -53,7 +54,9 @@ export const smartTransactionsListSelector = (state) =>
     .map((stx) => ({
       ...stx,
       transactionType: 'smart',
-      status: stx.status?.startsWith('cancelled') ? 'cancelled' : stx.status,
+      status: stx.status?.startsWith(STX_STATUS.CANCELLED)
+        ? STX_STATUS.CANCELLED
+        : stx.status,
     }));
 
 export const selectedAddressTxListSelector = createSelector(
