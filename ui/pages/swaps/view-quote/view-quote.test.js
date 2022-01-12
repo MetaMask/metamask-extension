@@ -65,7 +65,6 @@ describe('ViewQuote', () => {
     ).toMatchSnapshot();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
-    expect(getByText('Edit')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });
 
@@ -90,7 +89,6 @@ describe('ViewQuote', () => {
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
     expect(getByText('0.00004 ETH')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
-    expect(getByText('Edit')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });
 });
