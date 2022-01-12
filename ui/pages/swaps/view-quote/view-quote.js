@@ -797,6 +797,9 @@ export default function ViewQuote() {
                 swapToSymbol={destinationTokenSymbol}
                 initialAggId={usedQuote.aggregator}
                 onQuoteDetailsIsOpened={quoteDetailsOpened}
+                hideEstimatedGasFee={
+                  smartTransactionsEnabled && smartTransactionsOptInStatus
+                }
               />
             )}
 
