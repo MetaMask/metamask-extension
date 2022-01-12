@@ -227,7 +227,7 @@ class ImportToken extends Component {
       }
     }
 
-    const addressIsEmpty = customAddress.length === 0;
+    const addressIsEmpty = customAddress.length === 0 || customAddress === emptyAddr;
 
     switch (true) {
       case !addressIsValid && !addressIsEmpty:
@@ -277,7 +277,7 @@ class ImportToken extends Component {
 
         break;
       default:
-        if (customAddress !== emptyAddr && !addressIsEmpty) {
+        if (!addressIsEmpty) {
           this.attemptToAutoFillTokenParams(customAddress);
         }
     }
