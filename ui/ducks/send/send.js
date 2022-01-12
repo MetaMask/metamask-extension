@@ -1824,6 +1824,8 @@ export function signTransaction() {
           eip1559support ? eip1559OnlyTxParamsToUpdate : txParams,
         ),
       };
+      const { type } = await getTransactionType(editingTx.txParams);
+      editingTx.type = type;
       await dispatch(
         addHistoryEntry(
           `sendFlow - user clicked next and transaction should be updated in controller`,
