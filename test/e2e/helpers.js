@@ -42,7 +42,7 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer = new Ganache();
       await secondaryGanacheServer.start({
         blockTime: 2,
-        _chainIdRpc: chainId,
+        chain: { chainId },
         port,
         vmErrorsOnRPCResponse: false,
       });
