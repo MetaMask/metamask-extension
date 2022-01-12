@@ -324,13 +324,9 @@ describe('useGasFeeInputs', () => {
       useSelector.mockImplementation(
         generateUseSelectorRouter({
           checkNetworkAndAccountSupports1559Response: true,
+          eip1559V2Enabled: true,
         }),
       );
-      process.env.EIP_1559_V2 = true;
-    });
-
-    afterEach(() => {
-      process.env.EIP_1559_V2 = false;
     });
 
     it('return true for fee_market transaction type', () => {

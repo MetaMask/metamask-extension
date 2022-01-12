@@ -51,6 +51,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
+  getEIP1559V2Enabled,
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
@@ -115,15 +116,12 @@ import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace 
 import Box from '../../../components/ui/box';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
-// eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2_ENABLED =
-  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
-
 export default function ViewQuote() {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const metaMetricsEvent = useContext(MetaMetricsContext);
+  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
   const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false);
   const [submitClicked, setSubmitClicked] = useState(false);
@@ -776,8 +774,7 @@ export default function ViewQuote() {
     },
   };
 
-  const supportsEIP1559V2 =
-    EIP_1559_V2_ENABLED && networkAndAccountSupports1559;
+  const supportsEIP1559V2 = eip1559V2Enabled && networkAndAccountSupports1559;
 
   return (
     <GasFeeContextProvider

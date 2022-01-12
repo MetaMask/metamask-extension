@@ -205,6 +205,10 @@
 
     color: var(--dusty-gray);
     padding-top: 5px;
+
+    a {
+      color: var(--Blue-500);
+    }
   }
 
   &__content-item-col {

@@ -14,7 +14,9 @@ export default class ExperimentalTab extends PureComponent {
     useCollectibleDetection: PropTypes.bool,
     setUseCollectibleDetection: PropTypes.func,
     setOpenSeaEnabled: PropTypes.func,
-    openSeaEnabled: PropTypes.func,
+    openSeaEnabled: PropTypes.bool,
+    eip1559V2Enabled: PropTypes.bool,
+    setEIP1559V2Enabled: PropTypes.func,
   };
 
   renderTokenDetectionToggle() {
@@ -134,12 +136,63 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
+  renderEIP1559V2EnabledToggle() {
+    const EIP_1559_V2_ENABLED =
+      // This is a string in unit tests but is a boolean in the browser
+      process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
+    if (!EIP_1559_V2_ENABLED) {
+      return null;
+    }
+    const { t } = this.context;
+    const { eip1559V2Enabled, setEIP1559V2Enabled } = this.props;
+
+    return (
+      <div className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('enableEIP1559V2')}</span>
+          <div className="settings-page__content-description">
+            {t('enableEIP1559V2Description', [
+              <a
+                key="eip_page_link"
+                href="https://metamask.io/1559.html"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            <ToggleButton
+              value={eip1559V2Enabled}
+              onToggle={(value) => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Settings',
+                    action: 'Enabled/Disable OpenSea',
+                    name: 'Enabled/Disable OpenSea',
+                  },
+                });
+                setEIP1559V2Enabled(!value);
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="settings-page__body">
         {this.renderTokenDetectionToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {this.renderCollectibleDetectionToggle()}
+        {this.renderEIP1559V2EnabledToggle()}
       </div>
     );
   }
