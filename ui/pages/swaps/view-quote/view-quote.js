@@ -74,7 +74,6 @@ import {
   DEFAULT_ROUTE,
   SWAPS_ERROR_ROUTE,
   AWAITING_SWAP_ROUTE,
-  SMART_TRANSACTION_STATUS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getTransactionData } from '../../../helpers/utils/transactions.util';
 import {
