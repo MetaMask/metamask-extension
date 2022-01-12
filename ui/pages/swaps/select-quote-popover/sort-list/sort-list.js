@@ -94,19 +94,21 @@ export default function SortList({
             <ToggleArrows />
           </div>
         </div>
-        {!hideEstimatedGasFee && (
-          <div
-            className="select-quote-popover__column-header select-quote-popover__network-fees select-quote-popover__network-fees-header"
-            onClick={() => onColumnHeaderClick('rawNetworkFees')}
-          >
-            <span>{t('swapEstimatedNetworkFees')}</span>
-            <InfoTooltip
-              position="bottom"
-              contentText={t('swapEstimatedNetworkFeesInfo')}
-            />
-            <ToggleArrows />
-          </div>
-        )}
+        <div
+          className="select-quote-popover__column-header select-quote-popover__network-fees select-quote-popover__network-fees-header"
+          onClick={() => onColumnHeaderClick('rawNetworkFees')}
+        >
+          {!hideEstimatedGasFee && (
+            <>
+              <span>{t('swapEstimatedNetworkFees')}</span>
+              <InfoTooltip
+                position="bottom"
+                contentText={t('swapEstimatedNetworkFeesInfo')}
+              />
+              <ToggleArrows />
+            </>
+          )}
+        </div>
         <div
           className="select-quote-popover__column-header select-quote-popover__quote-source"
           onClick={() => onColumnHeaderClick('quoteSource')}
@@ -154,11 +156,9 @@ export default function SortList({
                 </span>
               )}
             </div>
-            {!hideEstimatedGasFee && (
-              <div className="select-quote-popover__network-fees">
-                {networkFees}
-              </div>
-            )}
+            <div className="select-quote-popover__network-fees">
+              {!hideEstimatedGasFee && networkFees}
+            </div>
             <div className="select-quote-popover__quote-source">
               <div
                 className={classnames(
