@@ -94,6 +94,7 @@ import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/netw
 import { ERC20, ETH, GWEI } from '../../helpers/constants/common';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
+import { getTransactionType } from '../../../shared/modules/transaction.utils';
 // typedefs
 /**
  * @typedef {import('@reduxjs/toolkit').PayloadAction} PayloadAction
@@ -1652,7 +1653,9 @@ export function signTransaction() {
           eip1559support ? eip1559OnlyTxParamsToUpdate : txParams,
         ),
       };
-      dispatch(updateTransaction(editingTx));
+      const { type } = await getTransactionType(editingTx.txParams);
+      editingTx.type = type;
+      await dispatch(updateTransaction(editingTx));
     } else if (asset.type === ASSET_TYPES.TOKEN) {
       // When sending a token transaction we have to the token.transfer method
       // on the token contract to construct the transaction. This results in

@@ -1,4 +1,9 @@
 import { isHexString } from 'ethereumjs-util';
+import { ethers } from 'ethers';
+import abi from 'human-standard-token-abi';
+import log from 'loglevel';
+import { TRANSACTION_TYPES } from '../constants/transaction';
+import { readAddressAsContract } from './contract-utils';
 
 export function transactionMatchesNetwork(transaction, chainId, networkId) {
   if (typeof transaction.chainId !== 'undefined') {
@@ -61,3 +66,53 @@ export function txParamsAreDappSuggested(transaction) {
       transaction?.dappSuggestedGasFees?.maxFeePerGas === maxFeePerGas)
   );
 }
+
+/**
+ * Determines the type of the transaction by analyzing the txParams.
+ * This method will return one of the types defined in shared/constants/transactions
+ * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these
+ * represent specific events that we control from the extension and are added manually
+ * at transaction creation.
+ *
+ * @param {Object} txParams - Parameters for the transaction
+ * @returns {InferTransactionTypeResult}
+ */
+export const getTransactionType = async (txParams) => {
+  const { data, to } = txParams;
+  let name;
+  const hstInterface = new ethers.utils.Interface(abi);
+  try {
+    name = data && hstInterface.parseTransaction({ data }).name;
+  } catch (error) {
+    log.debug('Failed to parse transaction data.', error, data);
+  }
+
+  const tokenMethodName = [
+    TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+  ].find((methodName) => methodName === name && name.toLowerCase());
+
+  let result;
+  if (data && tokenMethodName) {
+    result = tokenMethodName;
+  } else if (data && !to) {
+    result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
+  }
+
+  let contractCode;
+
+  if (!result) {
+    const {
+      contractCode: resultCode,
+      isContractAddress,
+    } = await readAddressAsContract(global.ethQuery, to);
+
+    contractCode = resultCode;
+    result = isContractAddress
+      ? TRANSACTION_TYPES.CONTRACT_INTERACTION
+      : TRANSACTION_TYPES.SIMPLE_SEND;
+  }
+
+  return { type: result, getCodeResponse: contractCode };
+};
