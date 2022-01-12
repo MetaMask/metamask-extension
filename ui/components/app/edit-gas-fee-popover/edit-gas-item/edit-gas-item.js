@@ -97,6 +97,7 @@ const EditGasItem = ({ priorityLevel }) => {
       aria-label={priorityLevel}
       autoFocus={priorityLevel === estimateUsed}
       disabled={estimateGreaterThanGasUse}
+      data-testid={`edit-gas-fee-item-${priorityLevel}`}
     >
       <span className="edit-gas-item__name">
         {icon && (

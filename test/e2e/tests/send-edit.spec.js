@@ -91,7 +91,7 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
+  it.only('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
     const ganacheOptions = {
       hardfork: 'london',
       accounts: [
@@ -144,7 +144,7 @@ describe('Editing Confirm Transaction', function () {
           );
           await maxBaseFee.clear();
           await maxBaseFee.sendKeys('8');
-          await driver.delay(largeDelayMs);
+          await driver.delay(regularDelayMs);
 
           // enter priority fee
           const priorityFee = await driver.findElement(
@@ -152,7 +152,7 @@ describe('Editing Confirm Transaction', function () {
           );
           await priorityFee.clear();
           await priorityFee.sendKeys('8');
-          await driver.delay(largeDelayMs);
+          await driver.delay(regularDelayMs);
 
           // edit gas limit
           const gasLimit = await driver.findElement(
@@ -160,11 +160,11 @@ describe('Editing Confirm Transaction', function () {
           );
           await gasLimit.clear();
           await gasLimit.sendKeys('100000');
-          await driver.delay(largeDelayMs);
+          await driver.delay(regularDelayMs);
 
           // save default values
           await driver.clickElement('input[type="checkbox"]');
-          await driver.delay(largeDelayMs);
+          await driver.delay(regularDelayMs);
 
           // Submit gas fee changes
           await driver.clickElement({ text: 'Save', tag: 'button' });
