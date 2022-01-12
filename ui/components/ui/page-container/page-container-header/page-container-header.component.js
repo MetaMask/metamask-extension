@@ -49,6 +49,7 @@ export default class PageContainerHeader extends Component {
       onClose && (
         <div
           className="page-container__header-close"
+          data-testid="header-close-button"
           onClick={() => onClose()}
         />
       )

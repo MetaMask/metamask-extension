@@ -47,7 +47,7 @@ export default function AddCollectible() {
 
   return (
     <PageContainer
-      title={t('addNFT')}
+      title={t('importNFT')}
       onSubmit={() => {
         handleAddCollectible();
       }}

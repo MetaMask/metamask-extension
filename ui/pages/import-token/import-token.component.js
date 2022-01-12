@@ -8,6 +8,7 @@ import {
 } from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import {
+  ADD_COLLECTIBLE_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   EXPERIMENTAL_ROUTE,
 } from '../../helpers/constants/routes';
@@ -46,6 +47,8 @@ class ImportToken extends Component {
     rpcPrefs: PropTypes.object,
     tokenList: PropTypes.object,
     useTokenDetection: PropTypes.bool,
+    getTokenStandardAndDetails: PropTypes.func,
+    selectedAddress: PropTypes.string,
   };
 
   static defaultProps = {
@@ -62,6 +65,7 @@ class ImportToken extends Component {
     customAddressError: null,
     customSymbolError: null,
     customDecimalsError: null,
+    collectibleAddressError: null,
     forceEditSymbol: false,
     symbolAutoFilled: false,
     decimalAutoFilled: false,
@@ -126,13 +130,15 @@ class ImportToken extends Component {
       customAddressError,
       customSymbolError,
       customDecimalsError,
+      collectibleAddressError,
     } = this.state;
 
     return (
       tokenSelectorError ||
       customAddressError ||
       customSymbolError ||
-      customDecimalsError
+      customDecimalsError ||
+      collectibleAddressError
     );
   }
 
@@ -186,11 +192,12 @@ class ImportToken extends Component {
     this.handleCustomDecimalsChange(decimals);
   }
 
-  handleCustomAddressChange(value) {
+  async handleCustomAddressChange(value) {
     const customAddress = value.trim();
     this.setState({
       customAddress,
       customAddressError: null,
+      collectibleAddressError: null,
       tokenSelectorError: null,
       symbolAutoFilled: false,
       decimalAutoFilled: false,
@@ -208,14 +215,42 @@ class ImportToken extends Component {
 
     const isMainnetNetwork = this.props.chainId === '0x1';
 
+    let standard;
+    if (addressIsValid) {
+      try {
+        ({ standard } = await this.props.getTokenStandardAndDetails(
+          standardAddress,
+          this.props.selectedAddress,
+        ));
+      } catch (error) {
+        // ignore
+      }
+    }
+
+    const addressIsEmpty = customAddress.length === 0;
+
     switch (true) {
-      case !addressIsValid:
+      case !addressIsValid && !addressIsEmpty:
         this.setState({
           customAddressError: this.context.t('invalidAddress'),
           customSymbol: '',
           customDecimals: 0,
           customSymbolError: null,
           customDecimalsError: null,
+        });
+
+        break;
+      case standard === 'ERC1155' || standard === 'ERC721':
+        this.setState({
+          collectibleAddressError: this.context.t('collectibleAddressError', [
+            <a
+              className="import-token__collectible-address-error-link"
+              onClick={() => this.props.history.push(ADD_COLLECTIBLE_ROUTE)}
+              key="collectibleAddressError"
+            >
+              {this.context.t('importNFTPage')}
+            </a>,
+          ]),
         });
 
         break;
@@ -242,7 +277,7 @@ class ImportToken extends Component {
 
         break;
       default:
-        if (customAddress !== emptyAddr) {
+        if (customAddress !== emptyAddr && !addressIsEmpty) {
           this.attemptToAutoFillTokenParams(customAddress);
         }
     }
@@ -290,6 +325,7 @@ class ImportToken extends Component {
       symbolAutoFilled,
       decimalAutoFilled,
       mainnetTokenWarning,
+      collectibleAddressError,
     } = this.state;
 
     const { chainId, rpcPrefs } = this.props;
@@ -330,10 +366,13 @@ class ImportToken extends Component {
           type="text"
           value={customAddress}
           onChange={(e) => this.handleCustomAddressChange(e.target.value)}
-          error={customAddressError || mainnetTokenWarning}
+          error={
+            customAddressError || mainnetTokenWarning || collectibleAddressError
+          }
           fullWidth
           autoFocus
           margin="normal"
+          data-testid="custom-address-input"
         />
         <TextField
           id="custom-symbol"
