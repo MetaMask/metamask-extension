@@ -2688,17 +2688,17 @@
   "smartTransactionsDescription": {
     "message": "Smart transactions use MetaMask smart contracts to simulate transactions before submitting in order to..."
   },
+  "smartTransactionsFallbackToNormal": {
+    "message": "You can still swap using the normal method or wait for cheaper gas fees and less failures with smart transactions."
+  },
   "smartTransactionsSubDescription": {
     "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you."
-  },
-  "smartTransactionsUnavailable": {
-    "message": "Smart transactions temporarily unavailable"
   },
   "smartTransactionsTryRegular": {
     "message": "Try a regular swap."
   },
-  "smartTransactionsFallbackToNormal": {
-    "message": "You can still swap using the normal method or wait for cheaper gas fees and less failures with smart transactions."
+  "smartTransactionsUnavailable": {
+    "message": "Smart transactions temporarily unavailable"
   },
   "smartTransactionsYouCanOptOut": {
     "message": "You can opt-out in advanced settings any time."
