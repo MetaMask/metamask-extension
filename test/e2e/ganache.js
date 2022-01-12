@@ -15,13 +15,7 @@ class Ganache {
     const options = { ...defaultOptions, ...opts };
     const { port } = options;
     this._server = ganache.server(options);
-
-    const blockchain = await this._server.listen(port);
-
-    return {
-      ...blockchain,
-      port,
-    };
+    await this._server.listen(port);
   }
 
   async quit() {
