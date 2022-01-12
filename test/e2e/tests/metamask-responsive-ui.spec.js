@@ -183,7 +183,7 @@ describe('Metamask Responsive UI', function () {
         // balance renders
         await driver.waitForSelector({
           css: '[data-testid="eth-overview__primary-currency"]',
-          text: '100 ETH',
+          text: '1000 ETH',
         });
       },
     );
