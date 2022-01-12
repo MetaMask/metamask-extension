@@ -9,7 +9,7 @@ describe('Metamask Import UI', function () {
         {
           secretKey:
             '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: 25000000000000000000,
+          balance: '0x15af1d78b58c40000',
         },
       ],
     };
@@ -186,7 +186,7 @@ describe('Metamask Import UI', function () {
         {
           secretKey:
             '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: 25000000000000000000,
+          balance: '0x15af1d78b58c40000',
         },
       ],
     };
@@ -292,7 +292,7 @@ describe('Metamask Import UI', function () {
         {
           secretKey:
             '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: 25000000000000000000,
+          balance: '0x15af1d78b58c40000',
         },
       ],
     };
