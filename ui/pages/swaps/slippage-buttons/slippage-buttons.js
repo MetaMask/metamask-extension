@@ -14,6 +14,7 @@ import {
   ALIGN_ITEMS,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
+import { smartTransactionsErrorMessages } from '../swaps.util';
 
 export default function SlippageButtons({
   onSelect,
@@ -22,6 +23,7 @@ export default function SlippageButtons({
   smartTransactionsEnabled,
   smartTransactionsOptInStatus,
   setSmartTransactionsOptInStatus,
+  currentSmartTransactionsError,
 }) {
   const t = useContext(I18nContext);
   const [customValue, setCustomValue] = useState(() => {
@@ -199,10 +201,19 @@ export default function SlippageButtons({
                   >
                     {t('smartTransaction')}
                   </Typography>
-                  <InfoTooltip
-                    position="top"
-                    contentText={t('smartTransactionTooltip')}
-                  />
+                  {currentSmartTransactionsError ? (
+                    <InfoTooltip
+                      position="top"
+                      contentText={smartTransactionsErrorMessages(
+                        currentSmartTransactionsError,
+                      )}
+                    />
+                  ) : (
+                    <InfoTooltip
+                      position="top"
+                      contentText={t('smartTransactionTooltip')}
+                    />
+                  )}
                 </Box>
                 <ToggleButton
                   value={smartTransactionsOptInStatus}
@@ -211,6 +222,7 @@ export default function SlippageButtons({
                   }}
                   offLabel={t('off')}
                   onLabel={t('on')}
+                  disabled={Boolean(currentSmartTransactionsError)}
                 />
               </Box>
             )}
@@ -231,4 +243,5 @@ SlippageButtons.propTypes = {
   smartTransactionsEnabled: PropTypes.bool.isRequired,
   smartTransactionsOptInStatus: PropTypes.object,
   setSmartTransactionsOptInStatus: PropTypes.func,
+  currentSmartTransactionsError: PropTypes.string,
 };
