@@ -610,7 +610,7 @@ describe('build/transforms/remove-fenced-code', () => {
       });
     });
 
-    it('rejects files with sourceMap inclusion', () => {
+    it('ignores files with inline source maps', () => {
       // This is so that there isn't an unnecessary second execution of
       // removeFencedCode with a transpiled version of the same file
       const input = getTestData().validInputs.extraContentWithFences.concat(
