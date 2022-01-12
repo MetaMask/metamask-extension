@@ -255,12 +255,6 @@ describe('Ducks - Swaps', () => {
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
-    it('returns false if feature flag is enabled, not a HW, STX error is present and is Ethereum network', () => {
-      const state = createSwapsMockStore();
-      state.appState.smartTransactionsError = 'Internal Server Error';
-      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
-    });
-
     it('returns false if feature flag is enabled, is a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
       state.metamask.keyrings[0].type = 'Trezor Hardware';
