@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Kataa"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Kagua Msimbo wa QR"
+  },
   "about": {
     "message": "Kuhusu"
   },
@@ -69,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Idhinisha"
@@ -241,6 +255,9 @@
   },
   "currentLanguage": {
     "message": "Lugha ya Sasa"
+  },
+  "custom": {
+    "message": "Mipangilio ya kina"
   },
   "customGas": {
     "message": "Weka Mipangilio ya Gesi Upendavyo"
@@ -507,6 +524,9 @@
     "message": "Mtandao wa Majaribio wa Kovan"
   },
   "learnMore": {
+    "message": "Jifunze zaidi"
+  },
+  "learnMoreUpperCase": {
     "message": "Jifunze zaidi"
   },
   "ledgerAccountRestriction": {

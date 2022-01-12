@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Rebutja"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Escanejar Codi QR"
+  },
   "about": {
     "message": "Informació"
   },
@@ -69,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Aprovar"
@@ -244,6 +258,9 @@
   },
   "currentLanguage": {
     "message": "Llengua Actual"
+  },
+  "custom": {
+    "message": "Configuració avançada"
   },
   "customGas": {
     "message": "Customitza el gas"
@@ -507,6 +524,9 @@
     "message": "Xarxa de Prova Kovan"
   },
   "learnMore": {
+    "message": "Saber més"
+  },
+  "learnMoreUpperCase": {
     "message": "Saber més"
   },
   "ledgerAccountRestriction": {

@@ -28,7 +28,7 @@
     @include H4;
 
     padding: 16px 4px;
-    border-bottom: 1px solid $alto;
+    border-bottom: 1px solid var(--alto);
     height: 72px;
     align-items: center;
     display: flex;
@@ -42,7 +42,7 @@
   &__sub-header-text {
     @include H4;
 
-    color: $ui-4;
+    color: var(--ui-4);
     margin-right: 10px;
   }
 

@@ -72,27 +72,29 @@ export default function setupSentry({ release, getState }) {
 
   if (METAMASK_DEBUG) {
     return undefined;
-  } else if (METAMASK_ENVIRONMENT === 'production') {
-    if (!process.env.SENTRY_DSN) {
-      throw new Error(
-        `Missing SENTRY_DSN environment variable in production environment`,
-      );
-    }
-    console.log(
-      `Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN`,
-    );
-    sentryTarget = process.env.SENTRY_DSN;
-  } else {
-    console.log(
-      `Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`,
-    );
-    sentryTarget = SENTRY_DSN_DEV;
   }
 
   const environment =
     METAMASK_BUILD_TYPE === BuildType.main
       ? METAMASK_ENVIRONMENT
       : `${METAMASK_ENVIRONMENT}-${METAMASK_BUILD_TYPE}`;
+
+  if (METAMASK_ENVIRONMENT === 'production') {
+    if (!process.env.SENTRY_DSN) {
+      throw new Error(
+        `Missing SENTRY_DSN environment variable in production environment`,
+      );
+    }
+    console.log(
+      `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN`,
+    );
+    sentryTarget = process.env.SENTRY_DSN;
+  } else {
+    console.log(
+      `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN_DEV`,
+    );
+    sentryTarget = SENTRY_DSN_DEV;
+  }
 
   Sentry.init({
     dsn: sentryTarget,

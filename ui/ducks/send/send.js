@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import abi from 'human-standard-token-abi';
+import abiERC721 from 'human-standard-collectible-abi';
 import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
 import { debounce } from 'lodash';
@@ -24,7 +25,9 @@ import {
 import {
   addGasBuffer,
   calcGasTotal,
-  generateTokenTransferData,
+  generateERC20TransferData,
+  generateERC721TransferData,
+  getAssetTransferData,
   isBalanceSufficient,
   isTokenBalanceSufficient,
 } from '../../pages/send/send.utils';
@@ -54,6 +57,7 @@ import {
   updateTransaction,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
+  isCollectibleOwner,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -87,7 +91,7 @@ import {
   isValidHexAddress,
 } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
-import { ETH, GWEI } from '../../helpers/constants/common';
+import { ERC20, ETH, GWEI } from '../../helpers/constants/common';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 // typedefs
@@ -155,10 +159,12 @@ export const GAS_INPUT_MODES = {
  * The types of assets that a user can send
  * 1. NATIVE - The native asset for the current network, such as ETH
  * 2. TOKEN - An ERC20 token.
+ * 2. COLLECTIBLE - An ERC721 or ERC1155 token.
  */
 export const ASSET_TYPES = {
   NATIVE: 'NATIVE',
   TOKEN: 'TOKEN',
+  COLLECTIBLE: 'COLLECTIBLE',
 };
 
 /**
@@ -218,13 +224,16 @@ async function estimateGasLimitForSend({
       return GAS_LIMITS.BASE_TOKEN_ESTIMATE;
     }
     paramsForGasEstimate.value = '0x0';
-    // We have to generate the erc20 contract call to transfer tokens in
+
+    // We have to generate the erc20/erc721 contract call to transfer tokens in
     // order to get a proper estimate for gasLimit.
-    paramsForGasEstimate.data = generateTokenTransferData({
+    paramsForGasEstimate.data = getAssetTransferData({
+      sendToken,
+      fromAddress: selectedAddress,
       toAddress: to,
       amount: value,
-      sendToken,
     });
+
     paramsForGasEstimate.to = sendToken.address;
   } else {
     if (!data) {
@@ -382,6 +391,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
  * duck (here) we would use getGasPriceInHexWei to get back to hexWei. Now that
  * we receive a GWEI estimate from the controller, we still need to do this
  * weird conversion to get the proper rounding.
+ *
  * @param {T} gasPriceEstimate
  * @returns
  */
@@ -419,6 +429,7 @@ export const initializeSendState = createAsyncThunk(
       send: { asset, stage, recipient, amount, draftTransaction },
       metamask,
     } = state;
+
     // First determine the correct from address. For new sends this is always
     // the currently selected account and switching accounts switches the from
     // address. If editing an existing transaction (by clicking 'edit' on the
@@ -467,7 +478,7 @@ export const initializeSendState = createAsyncThunk(
 
     // Set a basic gasLimit in the event that other estimation fails
     let gasLimit =
-      asset.type === ASSET_TYPES.TOKEN
+      asset.type === ASSET_TYPES.TOKEN || asset.type === ASSET_TYPES.COLLECTIBLE
         ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
         : GAS_LIMITS.SIMPLE;
     if (
@@ -507,6 +518,17 @@ export const initializeSendState = createAsyncThunk(
         );
       }
       balance = await getERC20Balance(asset.details, fromAddress);
+    }
+
+    if (asset.type === ASSET_TYPES.COLLECTIBLE) {
+      if (asset.details === null) {
+        // If we're sending a collectible but details have not been provided we must
+        // abort and set the send slice into invalid status.
+        throw new Error(
+          'Send slice initialized as collectibles send without token details',
+        );
+      }
+      balance = '0x1';
     }
     return {
       address: fromAddress,
@@ -630,6 +652,9 @@ const slice = createSlice({
     /**
      * update current amount.value in state and run post update validation of
      * the amount field and the send state. Recomputes the draftTransaction
+     *
+     * @param state
+     * @param action
      */
     updateSendAmount: (state, action) => {
       state.amount.value = addHexPrefix(action.payload);
@@ -649,6 +674,8 @@ const slice = createSlice({
      * computes the maximum amount of asset that can be sent and then calls
      * the updateSendAmount action above with the computed value, which will
      * revalidate the field and form and recomputes the draftTransaction
+     *
+     * @param state
      */
     updateAmountToMax: (state) => {
       let amount = '0x0';
@@ -683,6 +710,9 @@ const slice = createSlice({
      * native asset. When sending ERC20 assets, this is unnecessary because the
      * hex data used in the transaction will be that for interacting with the
      * ERC20 contract
+     *
+     * @param state
+     * @param action
      */
     updateUserInputHexData: (state, action) => {
       state.draftTransaction.userInputHexData = action.payload;
@@ -695,6 +725,9 @@ const slice = createSlice({
      * then pulling the details of the previously submitted transaction from
      * the action payload. It also computes a new draftTransaction that will be
      * used when updating the transaction in the provider
+     *
+     * @param state
+     * @param action
      */
     editTransaction: (state, action) => {
       state.stage = SEND_STAGES.EDIT;
@@ -707,6 +740,7 @@ const slice = createSlice({
       state.recipient.nickname = action.payload.nickname;
       state.draftTransaction.id = action.payload.id;
       state.draftTransaction.txParams.from = action.payload.from;
+      state.draftTransaction.userInputHexData = action.payload.data;
       slice.caseReducers.updateDraftTransaction(state);
     },
     /**
@@ -715,6 +749,8 @@ const slice = createSlice({
      * sending the native token. ERC20 assets max amount is unaffected by
      * gasTotal so does not need to be recomputed. Finally, validates the gas
      * field and send state, then updates the draft transaction.
+     *
+     * @param state
      */
     calculateGasTotal: (state) => {
       // use maxFeePerGas as the multiplier if working with a FEE_MARKET transaction
@@ -741,6 +777,9 @@ const slice = createSlice({
     },
     /**
      * sets the provided gasLimit in state and then recomputes the gasTotal.
+     *
+     * @param state
+     * @param action
      */
     updateGasLimit: (state, action) => {
       state.gas.gasLimit = addHexPrefix(action.payload);
@@ -749,6 +788,9 @@ const slice = createSlice({
     /**
      * Sets the appropriate gas fees in state and determines and sets the
      * appropriate transactionType based on gas fee fields received.
+     *
+     * @param state
+     * @param action
      */
     updateGasFees: (state, action) => {
       if (
@@ -782,6 +824,9 @@ const slice = createSlice({
     },
     /**
      * Sets the appropriate gas fees in state after receiving new estimates.
+     *
+     * @param state
+     * @param action
      */
     updateGasFeeEstimates: (state, action) => {
       const { gasFeeEstimates, gasEstimateType } = action.payload;
@@ -830,6 +875,9 @@ const slice = createSlice({
     /**
      * sets the amount mode to the provided value as long as it is one of the
      * supported modes (MAX|INPUT)
+     *
+     * @param state
+     * @param action
      */
     updateAmountMode: (state, action) => {
       if (Object.values(AMOUNT_MODES).includes(action.payload)) {
@@ -839,7 +887,10 @@ const slice = createSlice({
     updateAsset: (state, action) => {
       state.asset.type = action.payload.type;
       state.asset.balance = action.payload.balance;
-      if (state.asset.type === ASSET_TYPES.TOKEN) {
+      if (
+        state.asset.type === ASSET_TYPES.TOKEN ||
+        state.asset.type === ASSET_TYPES.COLLECTIBLE
+      ) {
         state.asset.details = action.payload.details;
       } else {
         // clear the details object when sending native currency
@@ -911,10 +962,23 @@ const slice = createSlice({
             // amount.
             state.draftTransaction.txParams.to = state.asset.details.address;
             state.draftTransaction.txParams.value = '0x0';
-            state.draftTransaction.txParams.data = generateTokenTransferData({
+            state.draftTransaction.txParams.data = generateERC20TransferData({
               toAddress: state.recipient.address,
               amount: state.amount.value,
               sendToken: state.asset.details,
+            });
+            break;
+          case ASSET_TYPES.COLLECTIBLE:
+            // When sending a token the to address is the contract address of
+            // the token being sent. The value is set to '0x0' and the data
+            // is generated from the recipient address, token being sent and
+            // amount.
+            state.draftTransaction.txParams.to = state.asset.details.address;
+            state.draftTransaction.txParams.value = '0x0';
+            state.draftTransaction.txParams.data = generateERC721TransferData({
+              toAddress: state.recipient.address,
+              fromAddress: state.account.address,
+              tokenId: state.asset.details.tokenId,
             });
             break;
           case ASSET_TYPES.NATIVE:
@@ -990,7 +1054,9 @@ const slice = createSlice({
         recipient.error = null;
         recipient.warning = null;
       } else {
-        const isSendingToken = asset.type === ASSET_TYPES.TOKEN;
+        const isSendingToken =
+          asset.type === ASSET_TYPES.TOKEN ||
+          asset.type === ASSET_TYPES.COLLECTIBLE;
         const { chainId, tokens, tokenAddressList } = action.payload;
         if (
           isBurnAddress(recipient.userInput) ||
@@ -1288,7 +1354,6 @@ export { useDefaultGas, useCustomGas, updateGasLimit };
  *
  * @deprecated - don't extend the usage of this temporary method
  * @param {string} gasPrice - new gas price in hex wei
- * @returns {void}
  */
 export function updateGasPrice(gasPrice) {
   return (dispatch) => {
@@ -1318,8 +1383,8 @@ export function resetSendState() {
  * Updates the amount the user intends to send and performs side effects.
  * 1. If the current mode is MAX change to INPUT
  * 2. If sending a token, recompute the gasLimit estimate
+ *
  * @param {string} amount - hex string representing value
- * @returns {void}
  */
 export function updateSendAmount(amount) {
   return async (dispatch, getState) => {
@@ -1333,17 +1398,23 @@ export function updateSendAmount(amount) {
 }
 
 /**
+ * Defines the shape for the details input parameter for updateSendAsset
+ *
+ * @typedef {Object} TokenDetails
+ * @property {string} address - The contract address for the ERC20 token.
+ * @property {string} decimals - The number of token decimals.
+ * @property {string} symbol - The asset symbol to display.
+ */
+
+/**
  * updates the asset to send to one of NATIVE or TOKEN and ensures that the
  * asset balance is set. If sending a TOKEN also updates the asset details
  * object with the appropriate ERC20 details including address, symbol and
  * decimals.
+ *
  * @param {Object} payload - action payload
  * @param {string} payload.type - type of asset to send
- * @param {Object} [payload.details] - ERC20 details if sending TOKEN asset
- * @param {string} [payload.details.address] - contract address for ERC20
- * @param {string} [payload.details.decimals] - Number of token decimals
- * @param {string} [payload.details.symbol] - asset symbol to display
- * @returns {void}
+ * @param {TokenDetails} [payload.details] - ERC20 details if sending TOKEN asset
  */
 export function updateSendAsset({ type, details }) {
   return async (dispatch, getState) => {
@@ -1362,12 +1433,37 @@ export function updateSendAsset({ type, details }) {
         details,
         state.send.account.address ?? getSelectedAddress(state),
       );
+      // TODO remove along with migration of isERC721 tokens and stripping away this designation
       if (details && details.isERC721 === undefined) {
         const updatedAssetDetails = await updateTokenType(details.address);
         details.isERC721 = updatedAssetDetails.isERC721;
       }
-
+      details.standard = ERC20;
       await dispatch(hideLoadingIndication());
+    } else if (type === ASSET_TYPES.COLLECTIBLE) {
+      let isCurrentOwner = true;
+      try {
+        isCurrentOwner = await isCollectibleOwner(
+          getSelectedAddress(state),
+          details.address,
+          details.tokenId,
+        );
+      } catch (error) {
+        if (error.message.includes('Unable to verify ownership.')) {
+          // this would indicate that either our attempts to verify ownership failed because of network issues,
+          // or, somehow a token has been added to collectibles state with an incorrect chainId.
+        } else {
+          // Any other error is unexpected and should be surfaced.
+          dispatch(displayWarning(error.message));
+        }
+      }
+      if (isCurrentOwner) {
+        balance = '0x1';
+      } else {
+        throw new Error(
+          'Send slice initialized as collectible send with a collectible not currently owned by the select account',
+        );
+      }
     } else {
       // if changing to native currency, get it from the account key in send
       // state which is kept in sync when accounts change.
@@ -1394,8 +1490,8 @@ const debouncedValidateRecipientUserInput = debounce((dispatch, payload) => {
  * Once the field is updated, the field will be validated using a debounced
  * version of the validateRecipientUserInput action. This way validation only
  * occurs once the user has stopped typing.
+ *
  * @param {string} userInput - the value that the user is typing into the field
- * @returns {void}
  */
 export function updateRecipientUserInput(userInput) {
   return async (dispatch, getState) => {
@@ -1436,11 +1532,11 @@ export function useMyAccountsForRecipientSearch() {
  * a nickname for the passed address has already been saved. This ensures the
  * (temporary) send state recipient nickname is consistent with the address book
  * nickname which has already been persisted to state.
+ *
  * @param {Object} recipient - Recipient information
  * @param {string} recipient.address - hex address to send the transaction to
  * @param {string} [recipient.nickname] - Alias for the address to display
  *  to the user
- * @returns {void}
  */
 export function updateRecipient({ address, nickname }) {
   return async (dispatch, getState) => {
@@ -1458,8 +1554,7 @@ export function updateRecipient({ address, nickname }) {
 }
 
 /**
- * Clears out the recipient user input, ENS resolution and recipient validation
- * @returns {void}
+ * Clears out the recipient user input, ENS resolution and recipient validation.
  */
 export function resetRecipientInput() {
   return async (dispatch) => {
@@ -1477,8 +1572,8 @@ export function resetRecipientInput() {
  * recomputing estimated gasLimit. When sending a ERC20 asset this is not done
  * because the data sent in the transaction will be determined by the asset,
  * recipient and value, NOT what the user has supplied.
- * @param {string} hexData - hex encoded string representing transaction data
- * @returns {void}
+ *
+ * @param {string} hexData - hex encoded string representing transaction data.
  */
 export function updateSendHexData(hexData) {
   return async (dispatch, getState) => {
@@ -1495,7 +1590,6 @@ export function updateSendHexData(hexData) {
  * As a result, the amount.value will change to either '0x0' when moving from
  * MAX to INPUT, or to the maximum allowable amount based on current asset when
  * moving from INPUT to MAX.
- * @returns {void}
  */
 export function toggleSendMaxMode() {
   return async (dispatch, getState) => {
@@ -1518,7 +1612,6 @@ export function toggleSendMaxMode() {
  * will create the transaction in state (by way of the various global provider
  * constructs) which will eventually (and fairly quickly from user perspective)
  * result in a confirmation window being displayed for the transaction.
- * @returns {void}
  */
 export function signTransaction() {
   return async (dispatch, getState) => {
@@ -1529,6 +1622,7 @@ export function signTransaction() {
       draftTransaction: { id, txParams },
       recipient: { address },
       amount: { value },
+      account: { address: selectedAddress },
       eip1559support,
     } = state[name];
     if (stage === SEND_STAGES.EDIT) {
@@ -1574,6 +1668,34 @@ export function signTransaction() {
         dispatch(hideLoadingIndication());
         dispatch(displayWarning(error.message));
       }
+    } else if (asset.type === ASSET_TYPES.COLLECTIBLE) {
+      // When sending a collectible transaction we have to use the collectible.transferFrom method
+      // on the collectible contract to construct the transaction. This results in
+      // the proper transaction data and properties being set and a new
+      // transaction being added to background state. Once the new transaction
+      // is added to state a subsequent confirmation will be queued.
+      try {
+        const collectibleContract = global.eth
+          .contract(abiERC721)
+          .at(asset.details.address);
+
+        collectibleContract.transferFrom(
+          selectedAddress,
+          address,
+          asset.details.tokenId,
+          {
+            ...txParams,
+            to: undefined,
+            data: undefined,
+          },
+        );
+
+        dispatch(showConfTxPage());
+        dispatch(hideLoadingIndication());
+      } catch (error) {
+        dispatch(hideLoadingIndication());
+        dispatch(displayWarning(error.message));
+      }
     } else {
       // When sending a native asset we use the ethQuery.sendTransaction method
       // which will result in the transaction being added to background state
@@ -1601,6 +1723,7 @@ export function editTransaction(
     const { txParams } = transaction;
     if (assetType === ASSET_TYPES.NATIVE) {
       const {
+        data,
         from,
         gas: gasLimit,
         gasPrice,
@@ -1610,6 +1733,7 @@ export function editTransaction(
       const nickname = getAddressBookEntry(state, address)?.name ?? '';
       await dispatch(
         actions.editTransaction({
+          data,
           id: transactionId,
           gasLimit,
           gasPrice,
@@ -1623,8 +1747,14 @@ export function editTransaction(
       throw new Error(
         `send/editTransaction dispatched with assetType 'TOKEN' but missing assetData or assetDetails parameter`,
       );
-    } else {
-      const { from, to: tokenAddress, gas: gasLimit, gasPrice } = txParams;
+    } else if (assetType === ASSET_TYPES.TOKEN) {
+      const {
+        data,
+        from,
+        to: tokenAddress,
+        gas: gasLimit,
+        gasPrice,
+      } = txParams;
       const tokenAmountInDec = getTokenValueParam(tokenData);
       const address = getTokenAddressParam(tokenData);
       const nickname = getAddressBookEntry(state, address)?.name ?? '';
@@ -1645,11 +1775,42 @@ export function editTransaction(
 
       await dispatch(
         actions.editTransaction({
+          data,
           id: transactionId,
           gasLimit,
           gasPrice,
           from,
           amount: tokenAmountInHex,
+          address,
+          nickname,
+        }),
+      );
+    } else if (assetType === ASSET_TYPES.COLLECTIBLE) {
+      const {
+        data,
+        from,
+        to: tokenAddress,
+        gas: gasLimit,
+        gasPrice,
+      } = txParams;
+      const address = getTokenAddressParam(tokenData);
+      const nickname = getAddressBookEntry(state, address)?.name ?? '';
+
+      await dispatch(
+        updateSendAsset({
+          type: ASSET_TYPES.COLLECTIBLE,
+          details: { ...assetDetails, address: tokenAddress },
+        }),
+      );
+
+      await dispatch(
+        actions.editTransaction({
+          data,
+          id: transactionId,
+          gasLimit,
+          gasPrice,
+          from,
+          amount: '0x1',
           address,
           nickname,
         }),

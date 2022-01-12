@@ -21,6 +21,7 @@
         "eslint": true,
         "eslint-config-prettier": true,
         "eslint-plugin-import": true,
+        "eslint-plugin-jsdoc": true,
         "eslint-plugin-node": true,
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,

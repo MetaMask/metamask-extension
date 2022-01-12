@@ -62,7 +62,7 @@
   }
 
   &--error {
-    border-color: $red;
+    border-color: var(--red);
   }
 
   &__disabled {

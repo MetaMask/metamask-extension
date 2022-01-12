@@ -35,7 +35,7 @@
     }
 
     a {
-      color: $primary-1;
+      color: var(--primary-1);
     }
 
     @media screen and (max-width: $break-small) {

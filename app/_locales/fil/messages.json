@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Tanggihan"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "I-scan ang QR Code"
+  },
   "about": {
     "message": "Tungkol sa"
   },
@@ -63,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Aprubahan"
@@ -473,6 +487,9 @@
     "message": "Kilalang address ng contract."
   },
   "learnMore": {
+    "message": "Matuto pa"
+  },
+  "learnMoreUpperCase": {
     "message": "Matuto pa"
   },
   "ledgerAccountRestriction": {

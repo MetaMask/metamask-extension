@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Rejte"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Enspeksyon QR Kòd"
+  },
   "accessingYourCamera": {
     "message": "Aksè a Kamera"
   },
@@ -39,6 +45,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Apwouve"
@@ -297,6 +311,9 @@
     "message": "Kovan Tès Rezo"
   },
   "learnMore": {
+    "message": "Aprann plis"
+  },
+  "learnMoreUpperCase": {
     "message": "Aprann plis"
   },
   "ledgerAccountRestriction": {

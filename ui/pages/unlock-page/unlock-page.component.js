@@ -5,6 +5,7 @@ import getCaretCoordinates from 'textarea-caret';
 import Button from '../../components/ui/button';
 import TextField from '../../components/ui/text-field';
 import Mascot from '../../components/ui/mascot';
+import { SUPPORT_LINK } from '../../helpers/constants/common';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 export default class UnlockPage extends Component {
@@ -14,11 +15,29 @@ export default class UnlockPage extends Component {
   };
 
   static propTypes = {
+    /**
+     * History router for redirect after action
+     */
     history: PropTypes.object.isRequired,
+    /**
+     * If isUnlocked is true will redirect to most recent route in history
+     */
     isUnlocked: PropTypes.bool,
+    /**
+     * onClick handler for "import using Secret Recovery Phrase" link
+     */
     onRestore: PropTypes.func,
+    /**
+     * onSumbit handler when form is submitted
+     */
     onSubmit: PropTypes.func,
+    /**
+     * Force update metamask data state
+     */
     forceUpdateMetamaskState: PropTypes.func,
+    /**
+     * Event handler to show metametrics modal
+     */
     showOptInModal: PropTypes.func,
   };
 
@@ -126,7 +145,6 @@ export default class UnlockPage extends Component {
         variant="contained"
         size="large"
         onClick={this.handleSubmit}
-        disableRipple
       >
         {this.context.t('unlock')}
       </Button>
@@ -179,7 +197,7 @@ export default class UnlockPage extends Component {
           <div className="unlock-page__support">
             {t('needHelp', [
               <a
-                href="https://support.metamask.io"
+                href={SUPPORT_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
                 key="need-help-link"

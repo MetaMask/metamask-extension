@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Tolak"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Imbas Kod QR"
+  },
   "about": {
     "message": "Mengenai"
   },
@@ -69,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Luluskan"
@@ -247,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Bahasa Semasa"
+  },
+  "custom": {
+    "message": "Lanjutan"
   },
   "customGas": {
     "message": "Suaikan Gas"
@@ -506,6 +523,9 @@
     "message": "Rangkaian Ujian Kovan"
   },
   "learnMore": {
+    "message": "Maklumat lanjut"
+  },
+  "learnMoreUpperCase": {
     "message": "Maklumat lanjut"
   },
   "ledgerAccountRestriction": {

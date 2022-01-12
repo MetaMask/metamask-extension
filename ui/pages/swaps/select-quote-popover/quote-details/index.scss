@@ -7,7 +7,7 @@
   &__detail-header {
     @include H7;
 
-    color: $Grey-400;
+    color: var(--Grey-400);
     margin-bottom: 2px;
     display: flex;
   }
@@ -15,7 +15,7 @@
   &__detail-content {
     @include H6;
 
-    color: $Black-100;
+    color: var(--Black-100);
 
     > div {
       justify-content: flex-start;
@@ -23,17 +23,17 @@
   }
 
   &__conversion-rate {
-    color: $Black-100;
+    color: var(--Black-100);
     justify-content: flex-start;
     align-items: center;
     height: inherit;
 
     .view-quote__conversion-rate-eth-label {
-      color: $Black-100;
+      color: var(--Black-100);
     }
 
     i {
-      color: $Blue-500;
+      color: var(--Blue-500);
     }
 
     * {
@@ -62,7 +62,7 @@
     display: flex;
     flex-flow: column;
     justify-content: center;
-    border-top: 1px solid $Grey-100;
+    border-top: 1px solid var(--Grey-100);
 
     &--high {
       min-height: 60px;
@@ -73,7 +73,7 @@
   .view-quote__conversion-rate-token-label {
     @include H6;
 
-    color: $Black-100;
+    color: var(--Black-100);
     font-weight: bold;
     margin-left: 2px;
   }

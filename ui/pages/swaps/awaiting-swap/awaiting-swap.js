@@ -1,10 +1,12 @@
 import EventEmitter from 'events';
 import React, { useContext, useRef, useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
+import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { MetaMetricsContext } from '../../../contexts/metametrics.new';
 
@@ -67,17 +69,17 @@ export default function AwaitingSwap({
   const dispatch = useDispatch();
   const animationEventEmitter = useRef(new EventEmitter());
 
-  const fetchParams = useSelector(getFetchParams);
+  const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const maxSlippage = useSelector(getMaxSlippage);
-  const usedQuote = useSelector(getUsedQuote);
-  const approveTxParams = useSelector(getApproveTxParams);
+  const usedQuote = useSelector(getUsedQuote, isEqual);
+  const approveTxParams = useSelector(getApproveTxParams, shallowEqual);
   const swapsGasPrice = useSelector(getUsedSwapsGasPrice);
   const currentCurrency = useSelector(getCurrentCurrency);
   const usdConversionRate = useSelector(getUSDConversionRate);
   const chainId = useSelector(getCurrentChainId);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
 
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
     false,
@@ -155,11 +157,11 @@ export default function AwaitingSwap({
       <a
         className="awaiting-swap__support-link"
         key="awaiting-swap-support-link"
-        href="https://support.metamask.io"
+        href={SUPPORT_LINK}
         target="_blank"
         rel="noopener noreferrer"
       >
-        support.metamask.io
+        {new URL(SUPPORT_LINK).hostname}
       </a>,
     ]);
     submitText = t('tryAgain');

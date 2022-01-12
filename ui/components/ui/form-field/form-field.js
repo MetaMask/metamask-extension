@@ -113,19 +113,61 @@ export default function FormField({
 }
 
 FormField.propTypes = {
+  /**
+   * Identifier for testing purpose
+   */
   dataTestId: PropTypes.string,
+  /**
+   * Form Fields Title
+   */
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show unit (eg. ETH)
+   */
   titleUnit: PropTypes.string,
+  /**
+   * Add Tooltip and text content
+   */
   tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show content (text, image, component) in title
+   */
   titleDetail: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show error message
+   */
   error: PropTypes.string,
+  /**
+   * Handler when fields change
+   */
   onChange: PropTypes.func,
+  /**
+   * Field value
+   */
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  /**
+   * Show detail text if field mode is numeric
+   */
   detailText: PropTypes.string,
+  /**
+   * Set autofocus on render
+   */
   autoFocus: PropTypes.bool,
+  /**
+   * Set numeric mode, the default is text
+   */
   numeric: PropTypes.bool,
+  /**
+   * Set password mode
+   */
   password: PropTypes.bool,
+  /**
+   * Allow decimals on the field
+   */
   allowDecimals: PropTypes.bool,
+  /**
+   * Check if the form disabled
+   */
   disabled: PropTypes.bool,
 };
 

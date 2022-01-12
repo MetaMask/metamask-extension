@@ -3,7 +3,11 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  stories: ['../ui/**/*.stories.js', '../ui/**/*.stories.mdx'],
+  stories: [
+    '../ui/**/*.stories.js',
+    '../ui/**/*.stories.mdx',
+    './*.stories.mdx',
+  ],
   addons: [
     '@storybook/addon-essentials',
     '@storybook/addon-actions',
@@ -30,7 +34,6 @@ module.exports = {
             url: false,
           },
         },
-        'resolve-url-loader',
         {
           loader: 'sass-loader',
           options: {

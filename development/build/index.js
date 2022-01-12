@@ -23,6 +23,7 @@ const { BuildType, getBrowserVersionMap } = require('./utils');
 // Packages required dynamically via browserify configuration in dependencies
 // Required for LavaMoat policy generation
 require('loose-envify');
+require('globalthis');
 require('@babel/plugin-proposal-object-rest-spread');
 require('@babel/plugin-transform-runtime');
 require('@babel/plugin-proposal-class-properties');
@@ -40,6 +41,7 @@ require('eslint');
 require('eslint-config-prettier');
 require('eslint-import-resolver-node');
 require('eslint-plugin-import');
+require('eslint-plugin-jsdoc');
 require('eslint-plugin-node');
 require('eslint-plugin-prettier');
 require('eslint-plugin-react');
@@ -222,7 +224,7 @@ function parseArgv() {
 /**
  * Gets the files to be ignored by the current build, if any.
  *
- * @param {string} buildType - The type of the current build.
+ * @param {string} currentBuildType - The type of the current build.
  * @returns {string[] | null} The array of files to be ignored by the current
  * build, or `null` if no files are to be ignored.
  */

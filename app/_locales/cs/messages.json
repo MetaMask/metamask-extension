@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odmítnout"
+  },
   "account": {
     "message": "Účet"
   },
@@ -21,6 +24,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Schválit"
@@ -203,6 +214,9 @@
     "description": "format for importing an account"
   },
   "learnMore": {
+    "message": "Zjistěte více."
+  },
+  "learnMoreUpperCase": {
     "message": "Zjistěte více."
   },
   "likeToImportTokens": {

@@ -24,6 +24,7 @@ const STATUS_PATH = '/status';
 const GAS_PRICE_PATH = '/txParams/gasPrice';
 const GAS_LIMIT_PATH = '/txParams/gas';
 const ESTIMATE_BASE_FEE_PATH = '/estimatedBaseFee';
+const BLOCKTIMESTAMP = '/blockTimestamp';
 
 // op constants
 const REPLACE_OP = 'replace';
@@ -32,6 +33,7 @@ const eventPathsHash = {
   [STATUS_PATH]: true,
   [GAS_PRICE_PATH]: true,
   [GAS_LIMIT_PATH]: true,
+  [BLOCKTIMESTAMP]: true,
 };
 
 const statusHash = {
@@ -144,7 +146,6 @@ export function getActivities(transaction, isFirstTransaction = false) {
                     eventKey = TRANSACTION_CANCEL_SUCCESS_EVENT;
                   }
                 }
-
                 events.push({
                   id,
                   hash,
@@ -155,7 +156,6 @@ export function getActivities(transaction, isFirstTransaction = false) {
                   value: gasFee,
                 });
               }
-
               break;
             }
 
@@ -189,7 +189,18 @@ export function getActivities(transaction, isFirstTransaction = false) {
                   gasPrice: cachedGasPrice,
                 });
               }
+              break;
+            }
 
+            case BLOCKTIMESTAMP: {
+              const filteredAcc = acc.find(
+                (ac) => ac.eventKey === TRANSACTION_CONFIRMED_EVENT,
+              );
+              if (filteredAcc !== undefined) {
+                filteredAcc.timestamp = new Date(
+                  parseInt(entry.value, 16) * 1000,
+                ).getTime();
+              }
               break;
             }
 
@@ -262,6 +273,7 @@ function filterSortedActivities(activities) {
 
 /**
  * Combines the histories of an array of transactions into a single array.
+ *
  * @param {Array} transactions - Array of txMeta transaction objects.
  * @returns {Array}
  */

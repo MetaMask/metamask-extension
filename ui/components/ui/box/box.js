@@ -14,12 +14,32 @@ import {
   FLEX_WRAP,
 } from '../../../helpers/constants/design-system';
 
-const ValidSize = PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+const ValidSize = PropTypes.oneOf([
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  'auto',
+]);
 const ArrayOfValidSizes = PropTypes.arrayOf(ValidSize);
 export const MultipleSizes = PropTypes.oneOfType([
   ValidSize,
   ArrayOfValidSizes,
 ]);
+
+function isValidValue(type, value) {
+  // for now only margin type can have 'auto'
+  return typeof value === 'number' || (type === 'margin' && value === 'auto');
+}
 
 function generateSizeClasses(baseClass, type, main, top, right, bottom, left) {
   const arr = Array.isArray(main) ? main : [];
@@ -35,12 +55,13 @@ function generateSizeClasses(baseClass, type, main, top, right, bottom, left) {
   const isAllFour = arr.length === 4;
   const hasAtLeastTwo = arr.length >= 2;
   const hasAtLeastThree = arr.length >= 3;
+
   return {
-    [`${baseClass}--${type}-${singleDigit}`]: singleDigit !== undefined,
-    [`${baseClass}--${type}-top-${top}`]: typeof top === 'number',
-    [`${baseClass}--${type}-right-${right}`]: typeof right === 'number',
-    [`${baseClass}--${type}-bottom-${bottom}`]: typeof bottom === 'number',
-    [`${baseClass}--${type}-left-${left}`]: typeof left === 'number',
+    [`${baseClass}--${type}-${singleDigit}`]: isValidValue(type, singleDigit),
+    [`${baseClass}--${type}-top-${top}`]: isValidValue(type, top),
+    [`${baseClass}--${type}-right-${right}`]: isValidValue(type, right),
+    [`${baseClass}--${type}-bottom-${bottom}`]: isValidValue(type, bottom),
+    [`${baseClass}--${type}-left-${left}`]: isValidValue(type, left),
     // As long as an array of length >= 2 has been provided, the first number
     // will always be for the top value.
     [`${baseClass}--${type}-top-${arr?.[0]}`]: hasAtLeastTwo,

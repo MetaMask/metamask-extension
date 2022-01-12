@@ -25,13 +25,13 @@
   &__text {
     @include H7;
 
-    color: $white;
+    color: var(--white);
   }
 
   &__text-link {
     @include H7;
 
-    color: $primary-blue;
+    color: var(--primary-blue);
     cursor: pointer;
   }
 
@@ -59,7 +59,7 @@
   & &__checkbox-label {
     @include H7;
 
-    color: $white;
+    color: var(--white);
     margin-left: 10px;
     margin-top: 1px;
     user-select: none;
@@ -71,7 +71,7 @@
   & &__ignore-button {
     border-color: #6a737d;
     box-sizing: border-box;
-    color: $white;
+    color: var(--white);
     background-color: inherit;
     height: 34px;
     width: 155px;
@@ -94,7 +94,7 @@
   & &__accept-button {
     border-color: #6a737d;
     box-sizing: border-box;
-    color: $white;
+    color: var(--white);
     background-color: inherit;
     height: 34px;
     width: 155px;

@@ -13,7 +13,6 @@
     height: 100%;
     padding-left: 20px;
     padding-right: 20px;
-    justify-content: space-between;
 
     &_modal > div:not(.view-quote__warning-wrapper) {
       opacity: 0.6;
@@ -37,7 +36,7 @@
 
     &--danger {
       span {
-        color: $Red-500;
+        color: var(--Red-500);
       }
     }
   }
@@ -65,7 +64,7 @@
     cursor: pointer;
     border-radius: 28px;
     padding: 5px 18px;
-    background: linear-gradient(90deg, $Blue-500 0%, $Blue-400 101.32%);
+    background: linear-gradient(90deg, var(--Blue-500) 0%, var(--Blue-400) 101.32%);
 
 
     @media screen and (min-width: $break-large) {
@@ -114,7 +113,7 @@
       &.low {
         .actionable-message {
           button {
-            background: $Blue-500;
+            background: var(--Blue-500);
             color: #fff;
           }
         }
@@ -122,22 +121,22 @@
 
       &.medium {
         .actionable-message {
-          border-color: $Yellow-500;
-          background: $Yellow-100;
+          border-color: var(--Yellow-500);
+          background: var(--Yellow-100);
 
           button {
-            background: $Yellow-500;
+            background: var(--Yellow-500);
           }
         }
       }
 
       &.high {
         .actionable-message {
-          border-color: $Red-300;
-          background: $Red-000;
+          border-color: var(--Red-300);
+          background: var(--Red-000);
 
           button {
-            background: $Red-500;
+            background: var(--Red-500);
             color: #fff;
           }
         }
@@ -169,7 +168,7 @@
     justify-content: center;
     max-width: 340px;
     margin-top: 8px;
-    margin-bottom: 28px;
+    margin-bottom: 8px;
 
     @media screen and (min-width: $break-large) {
       &--thin {
@@ -185,12 +184,8 @@
   }
 
   &__countdown-timer-container {
-    width: 152px;
-    min-height: 32px;
     display: flex;
     justify-content: center;
-    border-radius: 42px;
-    background: #f2f3f4;
     margin-top: 8px;
   }
 
@@ -213,7 +208,7 @@
   &__metamask-rate-text {
     @include H7;
 
-    color: $Grey-500;
+    color: var(--Grey-500);
   }
 
   &__metamask-rate-info-icon {

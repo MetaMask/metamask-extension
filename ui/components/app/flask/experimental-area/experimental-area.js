@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
+import React, { Fragment, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../contexts/i18n';
 import Button from '../../../ui/button';
 
 function lineBreaksToBr(source) {
-  return source.split('\n').map((value) => {
+  return source.split('\n').map((value, index) => {
     return (
-      <>
+      <Fragment key={index}>
         {value}
         <br />
-      </>
+      </Fragment>
     );
   });
 }
@@ -77,16 +77,18 @@ export default function ExperimentalArea({ redirectTo }) {
       <div className="logo">{METAMASK_LOGO}</div>
       <div className="experimental-text">{EXPERIMENTAL_AREA}</div>
       <div className="text">
-        {t('flaskExperimentalText1')}
-        <ul>
-          <li>{t('flaskExperimentalText2')}</li>
-          <li>{t('flaskExperimentalText3')}</li>
-          <li>{t('flaskExperimentalText4')}</li>
-        </ul>
-        {t('flaskExperimentalText5')}
+        <p>
+          {t('flaskWelcomeWarning1', [
+            <b key="doNotUse">{t('flaskWelcomeUninstall')}</b>,
+          ])}
+        </p>
+        <br />
+        <p>{t('flaskWelcomeWarning2')}</p>
+        <br />
+        <p>{t('flaskWelcomeWarning3')}</p>
       </div>
       <Button type="primary" onClick={onClick}>
-        {t('userAccepts')}
+        {t('flaskWelcomeWarningAcceptButton')}
       </Button>
     </div>
   );

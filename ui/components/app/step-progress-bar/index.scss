@@ -67,40 +67,40 @@ ul.two-steps {
 }
 
 .progressbar li.active {
-  color: $primary-blue;
+  color: var(--primary-blue);
 
   [dir='rtl'] & {
-    color: $primary-blue;
+    color: var(--primary-blue);
   }
 }
 
 .progressbar li.active::before {
-  border-color: $primary-blue;
+  border-color: var(--primary-blue);
   z-index: 1;
 
   [dir='rtl'] & {
-    border-color: $primary-blue;
+    border-color: var(--primary-blue);
     z-index: 1;
   }
 }
 
 .progressbar li.active + li::after {
-  background-color: $primary-blue;
+  background-color: var(--primary-blue);
   z-index: -1;
 
   [dir='rtl'] & {
-    background-color: $primary-blue;
+    background-color: var(--primary-blue);
     z-index: -1;
   }
 }
 
 .progressbar li.complete::before {
-  background-color: $primary-blue;
-  color: $ui-white;
+  background-color: var(--primary-blue);
+  color: var(--ui-white);
 
   [dir='rtl'] & {
-    background-color: $primary-blue;
-    color: $ui-white;
+    background-color: var(--primary-blue);
+    color: var(--ui-white);
   }
 }
 

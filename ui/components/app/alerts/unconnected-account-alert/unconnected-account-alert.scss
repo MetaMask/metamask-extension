@@ -17,7 +17,7 @@
   }
 
   & &__dismiss-button {
-    background: $primary-blue;
+    background: var(--primary-blue);
     color: white;
     height: 40px;
     width: 100px;
@@ -29,7 +29,7 @@
 
     margin-bottom: 16px;
     padding: 16px;
-    border: 1px solid $accent-red;
+    border: 1px solid var(--accent-red);
     background: #f8eae8;
     border-radius: 3px;
   }
@@ -52,7 +52,7 @@
     display: flex;
     margin-top: auto;
     margin-bottom: auto;
-    color: $Grey-500;
+    color: var(--Grey-500);
   }
 
   &__checkbox-label-tooltip {

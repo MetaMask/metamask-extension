@@ -3,7 +3,7 @@
   height: 24px;
   background-position: center;
   border-radius: 50%;
-  background-color: $white;
+  background-color: var(--white);
   box-shadow: 0 2px 4px 0 rgba($black, 0.24);
   flex: 0 0 auto;
   -moz-animation: fadein 1s;

@@ -15,7 +15,7 @@
     padding: 16px 24px;
   }
 
-  &__domain-info {
+  &__subject-info {
     @include H7;
 
     display: flex;
@@ -24,7 +24,7 @@
     min-width: 0;
   }
 
-  &__domain-name {
+  &__subject-name {
     max-width: 215px;
     white-space: nowrap;
     overflow: hidden;

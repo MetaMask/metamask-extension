@@ -20,19 +20,14 @@ import createId from '../../../shared/modules/random-id';
  * @property {string} status Indicates whether the request is 'unapproved', 'approved', 'received' or 'rejected'
  * @property {string} type The json-prc method for which a request has been made. A 'Message' will
  * always have a 'eth_getEncryptionPublicKey' type.
- *
  */
 
 export default class EncryptionPublicKeyManager extends EventEmitter {
   /**
    * Controller in charge of managing - storing, adding, removing, updating - EncryptionPublicKey.
    *
-   * @typedef {Object} EncryptionPublicKeyManager
-   * @property {Object} memStore The observable store where EncryptionPublicKey are saved with persistance.
-   * @property {Object} memStore.unapprovedEncryptionPublicKeyMsgs A collection of all EncryptionPublicKeys in the 'unapproved' state
-   * @property {number} memStore.unapprovedEncryptionPublicKeyMsgCount The count of all EncryptionPublicKeys in this.memStore.unapprobedMsgs
-   * @property {Array} messages Holds all messages that have been created by this EncryptionPublicKeyManager
-   *
+   * @param {object} opts - Controller options
+   * @param {Function} opts.metricEvent - A function for emitting a metric event.
    */
   constructor(opts) {
     super();
@@ -48,7 +43,6 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * A getter for the number of 'unapproved' EncryptionPublicKeys in this.messages
    *
    * @returns {number} The number of 'unapproved' EncryptionPublicKeys in this.messages
-   *
    */
   get unapprovedEncryptionPublicKeyMsgCount() {
     return Object.keys(this.getUnapprovedMsgs()).length;
@@ -59,7 +53,6 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    *
    * @returns {Object} An index of EncryptionPublicKey ids to EncryptionPublicKeys, for all 'unapproved' EncryptionPublicKeys in
    * this.messages
-   *
    */
   getUnapprovedMsgs() {
     return this.messages
@@ -78,7 +71,6 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @param {Object} address - The param for the eth_getEncryptionPublicKey call to be made after the message is approved.
    * @param {Object} [req] - The original request object possibly containing the origin
    * @returns {Promise<Buffer>} The raw public key contents
-   *
    */
   addUnapprovedMessageAsync(address, req) {
     return new Promise((resolve, reject) => {
@@ -120,7 +112,6 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @param {Object} address - The param for the eth_getEncryptionPublicKey call to be made after the message is approved.
    * @param {Object} [req] - The original request object possibly containing the origin
    * @returns {number} The id of the newly created EncryptionPublicKey.
-   *
    */
   addUnapprovedMessage(address, req) {
     log.debug(`EncryptionPublicKeyManager addUnapprovedMessage: address`);
@@ -150,8 +141,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * Adds a passed EncryptionPublicKey to this.messages, and calls this._saveMsgList() to save the unapproved EncryptionPublicKeys from that
    * list to this.memStore.
    *
-   * @param {Message} msg The EncryptionPublicKey to add to this.messages
-   *
+   * @param {Message} msg - The EncryptionPublicKey to add to this.messages
    */
   addMsg(msg) {
     this.messages.push(msg);
@@ -161,10 +151,9 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   /**
    * Returns a specified EncryptionPublicKey.
    *
-   * @param {number} msgId The id of the EncryptionPublicKey to get
+   * @param {number} msgId - The id of the EncryptionPublicKey to get
    * @returns {EncryptionPublicKey|undefined} The EncryptionPublicKey with the id that matches the passed msgId, or undefined
    * if no EncryptionPublicKey has that id.
-   *
    */
   getMsg(msgId) {
     return this.messages.find((msg) => msg.id === msgId);
@@ -174,10 +163,9 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * Approves a EncryptionPublicKey. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise
    * with any the message params modified for proper providing.
    *
-   * @param {Object} msgParams The msgParams to be used when eth_getEncryptionPublicKey is called, plus data added by MetaMask.
-   * @param {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
+   * @param {Object} msgParams - The msgParams to be used when eth_getEncryptionPublicKey is called, plus data added by MetaMask.
+   * @param {Object} msgParams.metamaskId - Added to msgParams for tracking and identification within MetaMask.
    * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
-   *
    */
   approveMessage(msgParams) {
     this.setMsgStatusApproved(msgParams.metamaskId);
@@ -187,8 +175,7 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   /**
    * Sets a EncryptionPublicKey status to 'approved' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the EncryptionPublicKey to approve.
-   *
+   * @param {number} msgId - The id of the EncryptionPublicKey to approve.
    */
   setMsgStatusApproved(msgId) {
     this._setMsgStatus(msgId, 'approved');
@@ -198,9 +185,8 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * Sets a EncryptionPublicKey status to 'received' via a call to this._setMsgStatus and updates that EncryptionPublicKey in
    * this.messages by adding the raw data of request to the EncryptionPublicKey
    *
-   * @param {number} msgId The id of the EncryptionPublicKey.
-   * @param {buffer} rawData The raw data of the message request
-   *
+   * @param {number} msgId - The id of the EncryptionPublicKey.
+   * @param {buffer} rawData - The raw data of the message request
    */
   setMsgStatusReceived(msgId, rawData) {
     const msg = this.getMsg(msgId);
@@ -212,9 +198,8 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   /**
    * Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams
    *
-   * @param {Object} msgParams The msgParams to modify
+   * @param {Object} msgParams - The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
-   *
    */
   prepMsgForEncryptionPublicKey(msgParams) {
     delete msgParams.metamaskId;
@@ -224,8 +209,8 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   /**
    * Sets a EncryptionPublicKey status to 'rejected' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the EncryptionPublicKey to reject.
-   *
+   * @param {number} msgId - The id of the EncryptionPublicKey to reject.
+   * @param reason
    */
   rejectMsg(msgId, reason = undefined) {
     if (reason) {
@@ -243,8 +228,8 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
   /**
    * Sets a TypedMessage status to 'errored' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the TypedMessage to error
-   *
+   * @param {number} msgId - The id of the TypedMessage to error
+   * @param error
    */
   errorMessage(msgId, error) {
     const msg = this.getMsg(msgId);
@@ -265,14 +250,13 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * Updates the status of a EncryptionPublicKey in this.messages via a call to this._updateMsg
    *
    * @private
-   * @param {number} msgId The id of the EncryptionPublicKey to update.
-   * @param {string} status The new status of the EncryptionPublicKey.
+   * @param {number} msgId - The id of the EncryptionPublicKey to update.
+   * @param {string} status - The new status of the EncryptionPublicKey.
    * @throws A 'EncryptionPublicKeyManager - EncryptionPublicKey not found for id: "${msgId}".' if there is no EncryptionPublicKey
    * in this.messages with an id equal to the passed msgId
    * @fires An event with a name equal to `${msgId}:${status}`. The EncryptionPublicKey is also fired.
    * @fires If status is 'rejected' or 'received', an event with a name equal to `${msgId}:finished` is fired along
    * with the EncryptionPublicKey
-   *
    */
   _setMsgStatus(msgId, status) {
     const msg = this.getMsg(msgId);
@@ -296,7 +280,6 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    * @private
    * @param {EncryptionPublicKey} msg - A EncryptionPublicKey that will replace an existing EncryptionPublicKey (with the same
    * id) in this.messages
-   *
    */
   _updateMsg(msg) {
     const index = this.messages.findIndex((message) => message.id === msg.id);
@@ -311,7 +294,6 @@ export default class EncryptionPublicKeyManager extends EventEmitter {
    *
    * @private
    * @fires 'updateBadge'
-   *
    */
   _saveMsgList() {
     const unapprovedEncryptionPublicKeyMsgs = this.getUnapprovedMsgs();

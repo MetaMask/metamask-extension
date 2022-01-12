@@ -1,8 +1,8 @@
 import { connect } from 'react-redux';
 import {
-  accountsWithSendEtherInfoSelector,
   getAddressBook,
   getAddressBookEntry,
+  getMetaMaskAccountsOrdered,
 } from '../../../../selectors';
 
 import {
@@ -34,9 +34,7 @@ function mapStateToProps(state) {
 
   const addressBook = getAddressBook(state);
 
-  const ownedAccounts = accountsWithSendEtherInfoSelector(state).sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
+  const ownedAccounts = getMetaMaskAccountsOrdered(state);
 
   return {
     addressBook,
