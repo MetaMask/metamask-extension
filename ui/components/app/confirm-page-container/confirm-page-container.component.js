@@ -10,7 +10,7 @@ import Dialog from '../../ui/dialog';
 import ErrorMessage from '../../ui/error-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 
-import NicknamePopovers from '../modals/nickname-popovers';
+import NicknamePopovers from '../DEPRECATED-modals/nickname-popovers';
 
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';

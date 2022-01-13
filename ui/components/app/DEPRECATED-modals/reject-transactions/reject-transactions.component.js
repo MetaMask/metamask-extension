@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Modal from '../../modal';
+import Modal from '../../DEPRECATED-modal';
 
 export default class RejectTransactionsModal extends PureComponent {
   static contextTypes = {

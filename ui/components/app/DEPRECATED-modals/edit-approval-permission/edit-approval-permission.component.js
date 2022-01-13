@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import log from 'loglevel';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
-import Modal from '../../modal';
+import Modal from '../../DEPRECATED-modal';
 import Identicon from '../../../ui/identicon';
 import TextField from '../../../ui/text-field';
 import { calcTokenAmount } from '../../../../helpers/utils/token-util';

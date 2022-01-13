@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import Modal from '../../modal';
+import Modal from '../../DEPRECATED-modal';
 import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
 import CancelTransactionGasFee from './cancel-transaction-gas-fee';
 

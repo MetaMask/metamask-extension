@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component';
 import Dialog from '../../../components/ui/dialog';
-import NicknamePopovers from '../../../components/app/modals/nickname-popovers';
+import NicknamePopovers from '../../../components/app/DEPRECATED-modals/nickname-popovers';
 import {
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,

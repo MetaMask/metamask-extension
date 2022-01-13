@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Modal, { ModalContent } from '../../modal';
+import Modal, { ModalContent } from '../../DEPRECATED-modal';
 
 const LoadingNetworkError = (props, context) => {
   const { t } = context;

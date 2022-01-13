@@ -6,7 +6,7 @@ import { shortenAddress } from '../../../../../../helpers/utils/util';
 import Identicon from '../../../../../ui/identicon';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getAddressBook } from '../../../../../../selectors';
-import NicknamePopovers from '../../../../modals/nickname-popovers';
+import NicknamePopovers from '../../../../DEPRECATED-modals/nickname-popovers';
 
 const Address = ({
   checksummedRecipientAddress,

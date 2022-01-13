@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
-import Modal from '../../modal';
+import Modal from '../../DEPRECATED-modal';
 import CancelTransaction from './cancel-transaction.component';
 import CancelTransactionGasFee from './cancel-transaction-gas-fee';
 

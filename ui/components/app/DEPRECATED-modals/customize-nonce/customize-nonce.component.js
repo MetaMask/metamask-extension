@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Modal from '../../modal';
+import Modal from '../../DEPRECATED-modal';
 import TextField from '../../../ui/text-field';
 import Button from '../../../ui/button';
 import Typography from '../../../ui/typography';

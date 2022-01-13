@@ -26,7 +26,7 @@ import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import NetworkDropdown from '../../components/app/dropdowns/network-dropdown';
 import AccountMenu from '../../components/app/account-menu';
-import { Modal } from '../../components/app/modals';
+import { DEPRECATED_Modal } from '../../components/app/DEPRECATED-modals';
 import Alert from '../../components/ui/alert';
 import AppHeader from '../../components/app/app-header';
 import UnlockPage from '../unlock-page';
@@ -328,7 +328,7 @@ export default class Routes extends Component {
         }}
       >
         <QRHardwarePopover />
-        <Modal />
+        <DEPRECATED_Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() && (
           <AppHeader

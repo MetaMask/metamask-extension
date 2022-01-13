@@ -1,3 +1,4 @@
+// This component is deprecated; use the popover component instead.
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
@@ -50,7 +51,6 @@ const modalContainerMobileStyle = {
   width: '309px',
   top: '12.5%',
 };
-
 const accountModalStyle = {
   mobileModalStyle: {
     width: '95%',
@@ -79,6 +79,9 @@ const accountModalStyle = {
   },
 };
 
+/**
+ * @deprecated Use the "popover" component instead!
+ */
 const MODALS = {
   DEPOSIT_ETHER: {
     contents: <DepositEtherModal />,
@@ -427,6 +430,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+/**
+ * @deprecated Use the "popover" component instead!
+ */
 class Modal extends Component {
   static propTypes = {
     active: PropTypes.bool.isRequired,

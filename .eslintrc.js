@@ -49,6 +49,13 @@ module.exports = {
   },
 
   rules: {
+    camelcase: [
+      'error',
+      {
+        properties: 'never',
+        allow: ['^DEPRECATED_', '^UNSAFE_'],
+      },
+    ],
     'default-param-last': 'off',
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
