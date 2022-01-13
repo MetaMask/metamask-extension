@@ -245,7 +245,7 @@ describe('Ducks - Swaps', () => {
 
     it('returns false if feature flag is disabled, not a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
-      state.metamask.swapsState.swapsFeatureFlags.smart_transactions.extension_active = false;
+      state.metamask.swapsState.swapsFeatureFlags.smartTransactions.extensionActive = false;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 

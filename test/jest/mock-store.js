@@ -152,9 +152,9 @@ export const createSwapsMockStore = () => {
       ],
       swapsState: {
         swapsFeatureFlags: {
-          smart_transactions: {
-            mobile_active: true,
-            extension_active: true,
+          smartTransactions: {
+            mobileActive: true,
+            extensionActive: true,
           },
         },
         quotes: {
