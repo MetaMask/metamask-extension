@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -21,6 +21,7 @@ jest.mock('../../../contexts/transaction-modal', () => ({
   useTransactionModalContext: () => ({
     closeModal: () => undefined,
     currentModal: 'editGasFee',
+    openModal: jest.fn(),
   }),
 }));
 
@@ -48,9 +49,10 @@ const MOCK_FEE_ESTIMATE = {
   networkCongestion: 0.7,
 };
 
-const render = ({ txProps, contextProps } = {}) => {
+const render = ({ txProps, contextProps, storeProps } = {}) => {
   const store = configureStore({
     metamask: {
+      ...storeProps,
       nativeCurrency: ETH,
       provider: {},
       cachedBalances: {},
@@ -185,5 +187,17 @@ describe('EditGasFeePopover', () => {
       contextProps: { editGasMode: EDIT_GAS_MODES.SPEED_UP },
     });
     expect(screen.queryByText('10% increase')).toBeInTheDocument();
+  });
+
+  it('should renders when advanced gas fee is set', () => {
+    render({
+      storeProps: { advancedGasFee: { maxBaseFee: 50, priorityFee: 2 } },
+      txProps: { userFeeLevel: 'custom', dappSuggestedGasFees: {} },
+    });
+
+    expect(screen.queryByText('⚙️')).toBeInTheDocument();
+    expect(screen.queryByText('Advanced')).toBeInTheDocument();
+    expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
+    fireEvent.click(screen.queryByText('Advanced'));
   });
 });
