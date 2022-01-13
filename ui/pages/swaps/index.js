@@ -381,7 +381,7 @@ export default function Swap() {
               }
               className={
                 currentSmartTransactionsError === 'not_enough_funds'
-                  ? ''
+                  ? 'swaps__error-message'
                   : 'actionable-message--left-aligned actionable-message--warning swaps__error-message'
               }
               primaryAction={
