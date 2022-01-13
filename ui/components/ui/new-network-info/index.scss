@@ -18,7 +18,7 @@
     &__close-icon {
       width: 12px;
       height: 16px;
-      color: $ui-4;
+      color: var(--ui-4);
     }
   }
 
@@ -27,7 +27,7 @@
 
     height: 26px;
     text-align: center;
-    color: $ui-black;
+    color: var(--ui-black);
     font-weight: 700;
     margin-top: 19px;
   }
@@ -35,7 +35,7 @@
   &__ident-section {
     width: 148px;
     height: 32px;
-    background: $ui-1;
+    background: var(--ui-1);
     border-radius: 16px;
     align-self: center;
     margin-top: 8px;
@@ -48,14 +48,14 @@
 
     @include H7;
     
-    color: $ui-black;
+    color: var(--ui-black);
 
     &__nickname {
       margin-left: 8px;
     }
 
     & .fa-question-circle {
-      color: $ui-4;
+      color: var(--ui-4);
     }
   }
 
@@ -64,7 +64,7 @@
 
     height: 17px;
     text-align: center;
-    color: $ui-black;
+    color: var(--ui-black);
     margin-top: 32px;
     margin-bottom: 24px;
     font-weight: 700;
@@ -76,7 +76,7 @@
 
     &__content-box-1 {
       width: 300px;
-      border-bottom: 1px solid $ui-2;
+      border-bottom: 1px solid var(--ui-2);
       display: flex;
       align-items: center;
       padding-bottom: 8px;
@@ -86,18 +86,18 @@
         @include H6;
   
         margin-right: 16px;
-        color: $ui-black;
+        color: var(--ui-black);
       }
   
       &__text-1 {
         @include H7;
   
         width: 266px;
-        color: $ui-black;
+        color: var(--ui-black);
       }
 
       &__link-1 {
-        color: $primary-1;
+        color: var(--primary-1);
       }
     }
 

@@ -1022,8 +1022,22 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // ensure accountTracker updates balances after network change
+    // setUsedNetwork updates the list of first time used networks
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
       this.accountTracker._updateAccounts();
+
+      if (this.isUnlocked()) {
+        const chainId = this.networkController.getCurrentChainId();
+        const isNetworkUsed  = this.appStateController.isNetworkUsed({ chainId }.chainId);
+
+        if (!isNetworkUsed) {
+          this.appStateController.setFirstTimeUsedNetwork({ chainId }.chainId);
+          //TO DO: Render modal (popup)
+          // if (!hasAnyFundsOnNetwork(chainId)) {
+            
+          // }
+        }
+      }
     });
 
     // clear unapproved transactions and messages when the network will change
@@ -3970,6 +3984,8 @@ export default class MetamaskController extends EventEmitter {
    * account(s) are currently accessible, if any.
    */
   _onUnlock() {
+    const chainId = this.networkController.getCurrentChainId();
+    this.appStateController.setFirstTimeUsedNetwork({ chainId }.chainId);
     this.notifyAllConnections(async (origin) => {
       return {
         method: NOTIFICATION_NAMES.unlockStateChanged,

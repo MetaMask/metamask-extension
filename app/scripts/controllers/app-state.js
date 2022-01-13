@@ -37,6 +37,7 @@ export default class AppStateController extends EventEmitter {
       ...initState,
       qrHardware: {},
       collectiblesDropdownState: {},
+      usedNetworks: {},
     });
     this.timer = null;
 
@@ -293,5 +294,27 @@ export default class AppStateController extends EventEmitter {
     this.store.updateState({
       collectiblesDropdownState,
     });
+  }
+ /**
+   * Sets the array of first time used networks
+   * @returns {void}
+   */
+  setFirstTimeUsedNetwork(chainId) {
+    const currentState = this.store.getState();
+    const usedNetworks = currentState.usedNetworks;
+    usedNetworks[chainId] = true; 
+
+    this.store.updateState({ usedNetworks });
+  }
+
+  /**
+   * Checks if network has been used
+   * @returns {boolean}
+   */
+  isNetworkUsed(chainId) {
+    const currentState = this.store.getState();
+    const usedNetworks = currentState.usedNetworks;
+
+    return usedNetworks[chainId];
   }
 }

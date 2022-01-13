@@ -9,13 +9,10 @@ import { getProvider, getUseTokenDetection } from '../../../selectors';
 import { useSelector } from 'react-redux';
 
 const NewNetworkInfo = ({
-  featuredRPC
+  featuredRPC,
+  onClose,
 }) => {
   const t = useContext(I18nContext);
-
-  const provider = useSelector(getProvider);
-  const tokenDetection = useSelector(getUseTokenDetection);
-  console.log(tokenDetection);
 
   return (
     <Popover className="new-network-info__wrapper" footer={
@@ -28,7 +25,7 @@ const NewNetworkInfo = ({
           src="./images/times.svg"
           alt=""
           className="new-network-info__close__close-icon"
-          onClick={() => {}}
+          onClick={() => onClose}
         />
       </div>
       <div className="new-network-info__title">{t('switchedTo')}</div>
@@ -72,17 +69,13 @@ const NewNetworkInfo = ({
         </div>
 
       </div>
-      {/* <div className="new-network-info__footer">
-        <Button type="primary" onClick={() => {}}>
-          {t('recoveryPhraseReminderConfirm')}
-        </Button>
-      </div> */}
     </Popover>
   );
 };
 
 NewNetworkInfo.propTypes = {
   featuredRPC: PropTypes.object,
+  onClose: PropTypes.func,
 };
 
 export default NewNetworkInfo;
