@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const {
+  connectDappWithExtensionPopup,
   getWindowHandles,
   largeDelayMs,
   withFixtures,
@@ -218,27 +219,11 @@ describe('Editing Confirm Transaction', function () {
           await driver.press('#password', driver.Key.ENTER);
 
           // open dapp and connect
-          await driver.openNewPage('http://127.0.0.1:8080/');
-          await driver.delay(regularDelayMs);
-          await driver.clickElement({ text: 'Connect', tag: 'button' });
-          await driver.delay(regularDelayMs);
-
-          let windowHandles = await getWindowHandles(driver);
-
-          // open extension popup and confirm connect
-          await driver.switchToWindow(windowHandles.popup);
-          await driver.delay(largeDelayMs);
-          await driver.clickElement({ text: 'Next', tag: 'button' });
-          await driver.clickElement({ text: 'Connect', tag: 'button' });
-
-          // send from dapp
-          await driver.waitUntilXWindowHandles(2);
-          await driver.switchToWindow(windowHandles.dapp);
-          await driver.delay(regularDelayMs);
+          await connectDappWithExtensionPopup(driver);
           await driver.clickElement({ text: 'Send', tag: 'button' });
 
           // check transaction in extension popup
-          windowHandles = await getWindowHandles(driver);
+          const windowHandles = await getWindowHandles(driver);
           await driver.switchToWindow(windowHandles.popup);
           await driver.delay(largeDelayMs);
           await driver.waitForSelector({ text: '🌐' });
