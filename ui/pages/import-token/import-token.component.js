@@ -246,7 +246,6 @@ class ImportToken extends Component {
         this.setState({
           collectibleAddressError: this.context.t('collectibleAddressError', [
             <a
-              href="#"
               className="import-token__collectible-address-error-link"
               onClick={() =>
                 this.props.history.push({
