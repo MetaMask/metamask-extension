@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { withFixtures, regularDelayMs } = require('../helpers');
+const {
+  getWindowHandles,
+  largeDelayMs,
+  withFixtures,
+  regularDelayMs,
+} = require('../helpers');
 
 describe('Editing Confirm Transaction', function () {
   it('allow selecting high, medium, low gas estimates on edit gas fee popover', async function () {
@@ -181,6 +186,108 @@ describe('Editing Confirm Transaction', function () {
           );
           assert.equal(txValues.length, 1);
           assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
+        }
+      },
+    );
+  });
+
+  it('should use daap suggested estimates for transaction coming from dapp', async function () {
+    const ganacheOptions = {
+      hardfork: 'london',
+      accounts: [
+        {
+          secretKey:
+            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+          balance: '0x15af1d78b58c40000',
+        },
+      ],
+    };
+    await withFixtures(
+      {
+        fixtures: 'eip-1559-v2-dapp',
+        ganacheOptions,
+        title: this.test.title,
+        dapp: true,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+
+        if (process.env.EIP_1559_V2 === '1') {
+          // login to extension
+          await driver.fill('#password', 'correct horse battery staple');
+          await driver.press('#password', driver.Key.ENTER);
+
+          // open dapp and connect
+          await driver.openNewPage('http://127.0.0.1:8080/');
+          await driver.delay(regularDelayMs);
+          await driver.clickElement({ text: 'Connect', tag: 'button' });
+          await driver.delay(regularDelayMs);
+
+          let windowHandles = await getWindowHandles(driver);
+
+          // open extension popup and confirm connect
+          await driver.switchToWindow(windowHandles.popup);
+          await driver.delay(largeDelayMs);
+          await driver.clickElement({ text: 'Next', tag: 'button' });
+          await driver.clickElement({ text: 'Connect', tag: 'button' });
+
+          // send from dapp
+          await driver.waitUntilXWindowHandles(2);
+          await driver.switchToWindow(windowHandles.dapp);
+          await driver.delay(regularDelayMs);
+          await driver.clickElement({ text: 'Send', tag: 'button' });
+
+          // check transaction in extension popup
+          windowHandles = await getWindowHandles(driver);
+          await driver.switchToWindow(windowHandles.popup);
+          await driver.delay(largeDelayMs);
+          await driver.waitForSelector({ text: '🌐' });
+          await driver.waitForSelector({
+            text: 'Site suggested',
+          });
+
+          await driver.clickElement('[data-testid="edit-gas-fee-button"]');
+          await driver.delay(regularDelayMs);
+          await driver.clickElement(
+            '[data-testid="edit-gas-fee-item-dappSuggested"]',
+          );
+          await driver.delay(regularDelayMs);
+
+          const transactionAmounts = await driver.findElements(
+            '.currency-display-component__text',
+          );
+          const transactionAmount = transactionAmounts[0];
+          assert.equal(await transactionAmount.getText(), '3');
+
+          // has correct updated value on the confirm screen the transaction
+          const editedTransactionAmounts = await driver.findElements(
+            '.transaction-detail-item__row .transaction-detail-item__detail-values .currency-display-component__text:last-of-type',
+          );
+          const editedTransactionAmount = editedTransactionAmounts[0];
+          assert.equal(await editedTransactionAmount.getText(), '0.00042');
+
+          const editedTransactionFee = editedTransactionAmounts[1];
+          assert.equal(await editedTransactionFee.getText(), '3.00042');
+
+          // confirms the transaction
+          await driver.clickElement({ text: 'Confirm', tag: 'button' });
+          await driver.delay(regularDelayMs);
+
+          // transaction should correct values in activity tab
+          await driver.switchToWindow(windowHandles.extension);
+          await driver.clickElement('[data-testid="home__activity-tab"]');
+          await driver.wait(async () => {
+            const confirmedTxes = await driver.findElements(
+              '.transaction-list__completed-transactions .transaction-list-item',
+            );
+            return confirmedTxes.length === 1;
+          }, 10000);
+
+          const txValues = await driver.findElements(
+            '.transaction-list-item__primary-currency',
+          );
+          assert.equal(txValues.length, 1);
+          assert.ok(/-3\s*ETH/u.test(await txValues[0].getText()));
         }
       },
     );

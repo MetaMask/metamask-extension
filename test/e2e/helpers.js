@@ -147,7 +147,23 @@ async function withFixtures(options, testSuite) {
   }
 }
 
+const getWindowHandles = async (driver) => {
+  await driver.waitUntilXWindowHandles(3);
+  const windowHandles = await driver.getAllWindowHandles();
+
+  const extension = windowHandles[0];
+  const dapp = await driver.switchToWindowWithTitle(
+    'E2E Test Dapp',
+    windowHandles,
+  );
+  const popup = windowHandles.find(
+    (handle) => handle !== extension && handle !== dapp,
+  );
+  return { extension, dapp, popup };
+};
+
 module.exports = {
+  getWindowHandles,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
