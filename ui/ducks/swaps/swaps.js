@@ -116,6 +116,7 @@ const initialState = {
   },
   currentSmartTransactionsError: '',
   currentSmartTransactionsErrorMessageDismissed: false,
+  swapsSTXLoading: false,
 };
 
 const slice = createSlice({
@@ -203,6 +204,9 @@ const slice = createSlice({
     },
     dismissCurrentSmartTransactionsErrorMessage: (state) => {
       state.currentSmartTransactionsErrorMessageDismissed = true;
+    },
+    setSwapsSTXSubmitLoading: (state, payload) => {
+      state.swapsSTXLoading = payload || false;
     },
   },
 });
@@ -469,6 +473,7 @@ const {
   swapCustomGasModalClosed,
   setCurrentSmartTransactionsError,
   dismissCurrentSmartTransactionsErrorMessage,
+  setSwapsSTXSubmitLoading,
 } = actions;
 
 export {
@@ -798,6 +803,7 @@ export const signAndSendSwapsSmartTransaction = ({
   history,
 }) => {
   return async (dispatch, getState) => {
+    dispatch(setSwapsSTXSubmitLoading(true));
     const state = getState();
     const fetchParams = getFetchParams(state);
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
@@ -871,6 +877,7 @@ export const signAndSendSwapsSmartTransaction = ({
           type,
         }),
       );
+      dispatch(setSwapsSTXSubmitLoading(false));
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
       const {
@@ -1195,12 +1202,15 @@ export function fetchMetaSwapsGasPriceEstimates() {
 
 export function fetchSwapsSmartTransactionFees(unsignedTransaction) {
   return async (dispatch, getState) => {
+    const {
+      swaps: { isFeatureFlagLoaded, swapsSTXLoading },
+    } = getState();
+    if (swapsSTXLoading) {
+      return;
+    }
     try {
       await dispatch(fetchSmartTransactionFees(unsignedTransaction));
     } catch (e) {
-      const {
-        swaps: { isFeatureFlagLoaded },
-      } = getState();
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);
         dispatch(setCurrentSmartTransactionsError(errorObj?.type));
