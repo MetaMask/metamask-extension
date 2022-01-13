@@ -1,9 +1,48 @@
 {
+  "QRHardwareInvalidTransactionTitle": {
+    "message": "Error"
+  },
+  "QRHardwareMismatchedSignId": {
+    "message": "Datos de transacción incongruentes. Compruebe los detalles."
+  },
+  "QRHardwarePubkeyAccountOutOfRange": {
+    "message": "No hay más cuentas. Para acceder a otra cuenta que no figura en la lista, vuelva a conectar su cartera de hardware y selecciónela."
+  },
+  "QRHardwareScanInstructions": {
+    "message": "Coloque el código QR delante de la cámara. La pantalla está borrosa, pero no afectará la lectura."
+  },
   "QRHardwareSignRequestCancel": {
     "message": "Rechazar"
   },
+  "QRHardwareSignRequestDescription": {
+    "message": "Después de firmar con su cartera, haga clic en \"Obtener firma\" para recibir la firma"
+  },
+  "QRHardwareSignRequestGetSignature": {
+    "message": "Obtener firma"
+  },
+  "QRHardwareSignRequestSubtitle": {
+    "message": "Escanee código QR con su cartera"
+  },
+  "QRHardwareSignRequestTitle": {
+    "message": "Solicitar firma"
+  },
+  "QRHardwareUnknownQRCodeTitle": {
+    "message": "Error"
+  },
+  "QRHardwareUnknownWalletQRCode": {
+    "message": "Código QR no válido. Escanee el QR sincronizado de la cartera de hardware."
+  },
   "QRHardwareWalletImporterTitle": {
     "message": "Escanear código QR"
+  },
+  "QRHardwareWalletSteps1Description": {
+    "message": "Conecte una cartera de hardware airgapped que se comunique por códigos QR. Las carteras de hardware con soporte oficial incluyen:"
+  },
+  "QRHardwareWalletSteps1Title": {
+    "message": "Cartera HW con QR"
+  },
+  "QRHardwareWalletSteps2Description": {
+    "message": "AirGap Vault y Ngrave (próximamente)"
   },
   "about": {
     "message": "Acerca de"
@@ -34,6 +73,10 @@
   "accountName": {
     "message": "Nombre de la cuenta"
   },
+  "accountNameDuplicate": {
+    "message": "Este nombre de cuenta ya existe",
+    "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
+  },
   "accountOptions": {
     "message": "Opciones de la cuenta"
   },
@@ -49,6 +92,15 @@
   "activityLog": {
     "message": "registro de actividad"
   },
+  "add": {
+    "message": "Añadir"
+  },
+  "addANetwork": {
+    "message": "Agregar una red"
+  },
+  "addANickname": {
+    "message": "Añadir un apodo"
+  },
   "addAcquiredTokens": {
     "message": "Agregar los tokens que adquirió con MetaMask"
   },
@@ -57,6 +109,9 @@
   },
   "addContact": {
     "message": "Agregar contacto"
+  },
+  "addCustomToken": {
+    "message": "Añadir token personalizado"
   },
   "addCustomTokenByContractAddress": {
     "message": "¿No encuentra un token? Puede agregar cualquier token si copia su dirección. Puede encontrar la dirección de contrato del token en $1.",
@@ -82,6 +137,12 @@
   "addFriendsAndAddresses": {
     "message": "Agregue amigos y direcciones de confianza"
   },
+  "addMemo": {
+    "message": "Añadir memo"
+  },
+  "addNFT": {
+    "message": "Añadir NFT"
+  },
   "addNetwork": {
     "message": "Agregar red"
   },
@@ -97,11 +158,35 @@
   "addToken": {
     "message": "Agregar token"
   },
+  "address": {
+    "message": "Dirección"
+  },
+  "addressBookIcon": {
+    "message": "Icono de libreta de direcciones"
+  },
   "advanced": {
     "message": "Avanzado"
   },
+  "advancedBaseGasFeeToolTip": {
+    "message": "Cuando su transacción se incluya en el bloque, se reembolsará cualquier diferencia entre su tarifa base máxima y la tarifa base real. El importe total se calcula como tarifa base máxima (en GWEI) * límite de gas."
+  },
+  "advancedGasFeeDefaultOptIn": {
+    "message": "Guarda estos 1$ como mi valor predeterminado para \"Avanzado\""
+  },
+  "advancedGasFeeDefaultOptOut": {
+    "message": "Usar siempre estos valores y la configuración avanzada como valores predeterminados."
+  },
+  "advancedGasFeeModalTitle": {
+    "message": "Tarifa de gas avanzada"
+  },
+  "advancedGasPriceTitle": {
+    "message": "Precio del gas"
+  },
   "advancedOptions": {
     "message": "Opciones avanzadas"
+  },
+  "advancedPriorityFeeToolTip": {
+    "message": "La tarifa de prioridad (también llamada “propina del minero”) va directamente a los mineros para incentivarlos a priorizar su transacción."
   },
   "advancedSettingsDescription": {
     "message": "Acceder a recursos para desarrolladores, descargar registros de estado, restablecer cuenta, configurar redes de prueba y RPC personalizada"
@@ -135,6 +220,10 @@
   },
   "allowExternalExtensionTo": {
     "message": "Permitir que esta extensión externa haga lo siguiente:"
+  },
+  "allowSpendToken": {
+    "message": "¿Dar permiso para acceder a su $1?",
+    "description": "$1 is the symbol of the token that are requesting to spend"
   },
   "allowThisSiteTo": {
     "message": "Permitir que este sitio haga lo siguiente:"
@@ -180,6 +269,9 @@
   },
   "approved": {
     "message": "Aprobado"
+  },
+  "approvedAmountWithColon": {
+    "message": "Monto aprobado:"
   },
   "asset": {
     "message": "Activo"
@@ -235,8 +327,42 @@
   "balanceOutdated": {
     "message": "Es posible que el saldo esté desactualizado"
   },
+  "baseFee": {
+    "message": "Tarifa base"
+  },
   "basic": {
     "message": "Básico"
+  },
+  "betaMetamaskDescription": {
+    "message": "Con la confianza de millones de personas, MetaMask es una cartera segura que pone el mundo de la web3 al alcance de todos."
+  },
+  "betaMetamaskDescriptionExplanation": {
+    "message": "Use esta versión para probar las próximas funcionalidades antes de su lanzamiento. Su uso y comentarios nos ayudan a construir la mejor versión de MetaMask posible. Su uso de MetaMask Beta quedará sujeto a nuestra tarifa estándar de $1 y $2. Como Beta, puede haber un mayor riesgo de errores. Al proceder, usted acepta y reconoce estos riesgos, así como los que se encuentran en nuestros Términos y Condiciones Beta.",
+    "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
+  },
+  "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
+    "message": "Términos Beta adicionales"
+  },
+  "betaMetamaskDescriptionExplanationTermsLinkText": {
+    "message": "Términos"
+  },
+  "betaMetamaskVersion": {
+    "message": "Versión Beta de MetaMask"
+  },
+  "betaWelcome": {
+    "message": "Bienvenido a MetaMask Beta"
+  },
+  "blockExplorerAccountAction": {
+    "message": "Cuenta",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
+  },
+  "blockExplorerAssetAction": {
+    "message": "Activo",
+    "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
+  },
+  "blockExplorerSwapAction": {
+    "message": "Canjear",
+    "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
   },
   "blockExplorerUrl": {
     "message": "Dirección URL del explorador de bloques"
@@ -257,8 +383,20 @@
   "buildContactList": {
     "message": "Cree su lista de contactos"
   },
+  "builtAroundTheWorld": {
+    "message": "MetaMask está diseñado y construido en todo el mundo."
+  },
+  "busy": {
+    "message": "Ocupado"
+  },
   "buy": {
     "message": "Comprar"
+  },
+  "buyWithTransak": {
+    "message": "Comprar ETH con Transak"
+  },
+  "buyWithTransakDescription": {
+    "message": "Transak acepta tarjetas de débito y transferencias bancarias (dependiendo de la ubicación) en más de 59 países. Depósitos de ETH en su cuenta de MetaMask."
   },
   "buyWithWyre": {
     "message": "Comprar ETH con Wyre"
@@ -266,11 +404,17 @@
   "buyWithWyreDescription": {
     "message": "Wyre le permite usar una tarjeta de débito para depositar ETH directamente en su cuenta de MetaMask."
   },
+  "bytes": {
+    "message": "Bytes"
+  },
   "canToggleInSettings": {
     "message": "Puede volver a activar esta notificación desde Configuración -> Alertas."
   },
   "cancel": {
     "message": "Cancelar"
+  },
+  "cancelEdit": {
+    "message": "Cancelar Editar"
   },
   "cancellationGasFee": {
     "message": "Cuota de gas por cancelación"
