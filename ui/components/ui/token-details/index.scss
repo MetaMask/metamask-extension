@@ -9,18 +9,7 @@
     }
   }
 
-  &__wrapper {
-    margin-left: 20px;
-    margin-right: 25px;
-  }
-
   &__token-details-title {
-    @include H6;
-
-    color: var(--ui-black);
-    font-weight: bold;
-    margin-top: 17px;
-
     &::after {
       cursor: pointer;
       float: right;
@@ -33,50 +22,27 @@
   }
 
   &__address {
-    @include H4;
-
     margin-top: 16px;
-    font-weight: bold;
     display: flex;
     align-items: center;
 
     &__token-value {
       font-size: 32px;
       line-height: 140.62%;
-      margin-right: 20px;
-      color: var(--ui-black);
     }
   }
 
-  &__token-current-currency {
-    @include H7;
-
-    margin-top: 15px;
-    color: var(--ui-4);
-  }
-
-  &__token-contract-address-title {
-    @include H9;
-
-    margin-top: 32px;
-    font-weight: bold;
-    color: var(--ui-4);
-  }
-
   &__copy-token-contract-address {
-    @include H7;
-
-    margin-top: 7px;
     display: flex;
 
     button {
       background: none;
+      margin-top: 8px;
     }
 
     &__token-address {
       width: 222px;
       overflow-wrap: break-word;
-      color: var(--ui-black);
     }
 
     &__copy-icon {
@@ -84,46 +50,10 @@
     }
   }
 
-  &__token-decimal-title {
-    @include H9;
-
-    margin-top: 16px;
-    font-weight: bold;
-    color: var(--ui-4);
-  }
-
-  &__token-decimals {
-    @include H7;
-
-    margin-top: 5px;
-    color: var(--ui-black);
-  }
-
-  &__token-network-title {
-    @include H9;
-
-    margin-top: 16px;
-    font-weight: bold;
-    color: var(--ui-4);
-  }
-
-  &__token-network {
-    @include H7;
-
-    margin-top: 5px;
-    color: var(--ui-black);
-  }
-
   &__hide-token-button {
     width: 319px;
     height: 39px;
     margin-top: 70px;
-
-    &__hide-token-text {
-      @include H6;
-
-      color: var(--primary-1);
-    }
   }
 
   .btn--rounded.btn-primary {

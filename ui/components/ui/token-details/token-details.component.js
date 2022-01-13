@@ -5,6 +5,13 @@ import Tooltip from '../tooltip';
 import Button from '../button';
 import CopyIcon from '../icon/copy-icon.component';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import Box from '../box';
+import Typography from '../typography';
+import {
+  COLORS,
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+} from '../../../helpers/constants/design-system';
 
 const TokenDetails = ({
   address,
@@ -25,25 +32,54 @@ const TokenDetails = ({
   const [copied, handleCopy] = useCopyToClipboard();
 
   return (
-    <div className="page-container token-details">
-      <div className="token-details__wrapper">
-        <div className="token-details__token-details-title" onClick={onClose}>
+    <Box className="page-container token-details">
+      <Box marginLeft={5} marginRight={6}>
+        <Typography
+          className="token-details__token-details-title"
+          fontWeight={FONT_WEIGHT.BOLD}
+          margin={[4, 0, 0, 0]}
+          variant={TYPOGRAPHY.H6}
+          color={COLORS.BLACK}
+          onClick={onClose}
+        >
           {t('tokenDetailsTitle')}
-        </div>
-        <div className="token-details__address">
-          <div className="token-details__address__token-value">{value}</div>
+        </Typography>
+        <Box className="token-details__address">
+          <Typography
+            align="center"
+            fontWeight={FONT_WEIGHT.BOLD}
+            margin={[0, 5, 0, 0]}
+            variant={TYPOGRAPHY.H4}
+            color={COLORS.BLACK}
+          >
+            {value}
+          </Typography>
           {icon}
-        </div>
-        <div className="token-details__token-current-currency">
+        </Box>
+        <Typography
+          margin={[4, 0, 0, 0]}
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.UI4}
+        >
           {currentCurrency}
-        </div>
-        <div className="token-details__token-contract-address-title">
+        </Typography>
+        <Typography
+          margin={[6, 0, 0, 0]}
+          variant={TYPOGRAPHY.H9}
+          color={COLORS.UI4}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {t('tokenContractAddress')}
-        </div>
-        <div className="token-details__copy-token-contract-address">
-          <div className="token-details__copy-token-contract-address__token-address">
+        </Typography>
+        <Box className="token-details__copy-token-contract-address">
+          <Typography
+            variant={TYPOGRAPHY.H7}
+            margin={[2, 0, 0, 0]}
+            color={COLORS.BLACK}
+            className="token-details__copy-token-contract-address__token-address"
+          >
             {address}
-          </div>
+          </Typography>
           <Tooltip
             position="bottom"
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
@@ -59,24 +95,48 @@ const TokenDetails = ({
               <CopyIcon size={11} color="#037DD6" />
             </button>
           </Tooltip>
-        </div>
-        <div className="token-details__token-decimal-title">
+        </Box>
+        <Typography
+          variant={TYPOGRAPHY.H9}
+          margin={[4, 0, 0, 0]}
+          color={COLORS.UI4}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
           {t('tokenDecimalTitle')}
-        </div>
-        <div className="token-details__token-decimals">{decimals}</div>
-        <div className="token-details__token-network-title">{t('network')}</div>
-        <div className="token-details__token-network">{network}</div>
+        </Typography>
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          margin={[1, 0, 0, 0]}
+          color={COLORS.BLACK}
+        >
+          {decimals}
+        </Typography>
+        <Typography
+          variant={TYPOGRAPHY.H9}
+          margin={[4, 0, 0, 0]}
+          color={COLORS.UI4}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
+          {t('network')}
+        </Typography>
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          margin={[1, 0, 0, 0]}
+          color={COLORS.BLACK}
+        >
+          {network}
+        </Typography>
         <Button
           type="primary"
           className="token-details__hide-token-button"
           onClick={onHideTokenClick}
         >
-          <span className="token-details__hide-token-button__hide-token-text">
+          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY1}>
             {t('hideToken')}
-          </span>
+          </Typography>
         </Button>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

@@ -7,8 +7,8 @@ export default {
   id: __filename,
   argTypes: {
     address: { control: 'text' },
-    onClose: { action: 'Close token details page' },
-    onHideToken: { action: 'Hide token' },
+    onClose: { action: 'onClose' },
+    onHideToken: { action: 'onHideToken' },
     value: { control: 'text' },
     icon: { control: 'object' },
     currentCurrency: { control: 'text' },
