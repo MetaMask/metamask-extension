@@ -620,7 +620,6 @@
     "@metamask/iframe-execution-environment-service": {
       "globals": {
         "clearTimeout": true,
-        "console.error": true,
         "console.log": true,
         "document.body.appendChild": true,
         "document.createElement": true,
@@ -628,8 +627,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/object-multiplex": true,
         "@metamask/post-message-stream": true,
+        "@metamask/snap-controllers": true,
         "@metamask/snap-workers": true,
         "json-rpc-engine": true,
         "json-rpc-middleware-stream": true,
