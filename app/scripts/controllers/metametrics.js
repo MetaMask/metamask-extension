@@ -123,7 +123,7 @@ export default class MetaMetricsController {
     // a timeout can be specified that will cause an abandoned event to be
     // tracked if the event isn't progressed within that amount of time.
     setInterval(() => {
-      this.store.getState().fragments.forEach((fragment) => {
+      Object.values(this.store.getState().fragments).forEach((fragment) => {
         if (
           fragment.timeout &&
           Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
