@@ -143,9 +143,6 @@
   "amount": {
     "message": "Valor"
   },
-  "amountWithColon": {
-    "message": "Valor:"
-  },
   "appDescription": {
     "message": "Uma carteira do Ethereum no seu navegador",
     "description": "The description of the application"
@@ -2290,13 +2287,16 @@
     "message": "Exibir Mais"
   },
   "viewOnCustomBlockExplorer": {
-    "message": "Exibir em $1"
+    "message": "Exibir em $1",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
   },
   "viewOnEtherscan": {
-    "message": "Exibir no Etherscan"
+    "message": "Exibir no Etherscan",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "viewinExplorer": {
-    "message": "Exibir no Explorer"
+    "message": "Exibir no Explorer",
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "visitWebSite": {
     "message": "Visite nosso website"
