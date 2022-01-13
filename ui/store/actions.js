@@ -3072,6 +3072,18 @@ export function trackMetaMetricsEvent(payload, options) {
   return promisifiedBackground.trackMetaMetricsEvent(payload, options);
 }
 
+export function createEventFragment(options) {
+  return promisifiedBackground.createEventFragment(options);
+}
+
+export function updateEventFragment(id, payload) {
+  return promisifiedBackground.updateEventFragment(id, payload);
+}
+
+export function finalizeEventFragment(id, options) {
+  return promisifiedBackground.finalizeEventFragment(id, options);
+}
+
 /**
  * @param {MetaMetricsPagePayload} payload - details of the page viewed
  * @param {MetaMetricsPageOptions} options - options for handling the page view
