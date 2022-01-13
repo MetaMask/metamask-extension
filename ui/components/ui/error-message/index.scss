@@ -22,14 +22,14 @@
 
   &__link {
     text-decoration: none;
-    color: $Blue-500;
+    color: var(--Blue-500);
 
     &:hover {
-      color: $Blue-400;
+      color: var(--Blue-400);
     }
 
     &:active {
-      color: $Blue-600;
+      color: var(--Blue-600);
     }
   }
 }

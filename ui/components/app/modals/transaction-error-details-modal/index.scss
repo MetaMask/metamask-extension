@@ -1,5 +1,5 @@
 .transaction-error-details {
-  color: $ui-4;
+  color: var(--ui-4);
 
   &__main {
     padding: 10px;
@@ -32,7 +32,7 @@
       }
 
       button {
-        margin-right: 24px;
+        margin-inline-end: 24px;
       }
 
       &.center {
