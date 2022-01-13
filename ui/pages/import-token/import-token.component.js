@@ -248,7 +248,14 @@ class ImportToken extends Component {
             <a
               href="#"
               className="import-token__collectible-address-error-link"
-              onClick={() => this.props.history.push(ADD_COLLECTIBLE_ROUTE)}
+              onClick={() =>
+                this.props.history.push({
+                  pathname: ADD_COLLECTIBLE_ROUTE,
+                  state: {
+                    addressEnteredOnImportTokensPage: this.state.customAddress,
+                  },
+                })
+              }
               key="collectibleAddressError"
             >
               {this.context.t('importNFTPage')}
