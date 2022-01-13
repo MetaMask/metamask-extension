@@ -43,7 +43,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '@metamask/snap-controllers';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { IframeExecutionEnvironmentService } from '@metamask/iframe-execution-environment-service';
+import { IframeExecutionService } from '@metamask/iframe-execution-environment-service';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -550,13 +550,13 @@ export default class MetamaskController extends EventEmitter {
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    this.workerController = new IframeExecutionEnvironmentService({
+    this.workerController = new IframeExecutionService({
       onError: this.onExecutionEnvironmentError.bind(this),
       iframeUrl: new URL(
         'https://metamask.github.io/iframe-execution-environment/0.3.1',
       ),
       messenger: this.controllerMessenger.getRestricted({
-        name: 'ServiceMessenger',
+        name: 'ExecutionService',
       }),
       setupSnapProvider: this.setupSnapProvider.bind(this),
     });
@@ -564,8 +564,8 @@ export default class MetamaskController extends EventEmitter {
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
       allowedEvents: [
-        'ServiceMessenger:unhandledError',
-        'ServiceMessenger:unresponsive',
+        'ExecutionService:unhandledError',
+        'ExecutionService:unresponsive',
       ],
       allowedActions: [
         `${this.permissionController.name}:hasPermission`,
