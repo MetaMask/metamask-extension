@@ -19,6 +19,12 @@ import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
  * Component that allows user to enter currency values as a number, and props receive a converted
  * hex value in WEI. props.value, used as a default or forced value, should be a hex value, which
  * gets converted into a decimal value depending on the currency (ETH or Fiat).
+ *
+ * @param options0
+ * @param options0.hexValue
+ * @param options0.featureSecondary
+ * @param options0.onChange
+ * @param options0.onPreferenceToggle
  */
 export default function CurrencyInput({
   hexValue,
