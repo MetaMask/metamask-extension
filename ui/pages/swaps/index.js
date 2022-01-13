@@ -288,6 +288,30 @@ export default function Swap() {
     return () => window.removeEventListener('beforeunload', fn);
   }, [dispatch, isLoadingQuotesRoute]);
 
+  const errorStxEvent = useNewMetricEvent({
+    event: 'Error Smart Transactions',
+    category: 'swaps',
+    sensitiveProperties: {
+      token_from: fetchParams?.sourceTokenInfo?.symbol,
+      token_from_amount: fetchParams?.value,
+      request_type: fetchParams?.balanceError,
+      token_to: fetchParams?.destinationTokenInfo?.symbol,
+      slippage: fetchParams?.slippage,
+      custom_slippage: fetchParams?.slippage !== 2,
+      current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
+      stx_error: currentSmartTransactionsError,
+    },
+  });
+  useEffect(() => {
+    if (currentSmartTransactionsError) {
+      errorStxEvent();
+    }
+  }, [errorStxEvent, currentSmartTransactionsError]);
+
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }

@@ -307,8 +307,8 @@ export const getSmartTransactionsEnabled = (state) => {
     chainId,
   );
   const smartTransactionsFeatureFlagEnabled =
-    state.metamask.swapsState?.swapsFeatureFlags?.smart_transactions
-      ?.extension_active;
+    state.metamask.swapsState?.swapsFeatureFlags?.smartTransactions
+      ?.extensionActive;
   const { smartTransactionsLiveness } = state.appState;
   return Boolean(
     isAllowedNetwork &&
