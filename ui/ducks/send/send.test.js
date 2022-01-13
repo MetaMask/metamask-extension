@@ -75,6 +75,9 @@ jest.mock('../../store/actions', () => {
     getGasFeeEstimatesAndStartPolling: jest.fn(() => Promise.resolve()),
     updateTokenType: jest.fn(() => Promise.resolve({ isERC721: false })),
     isCollectibleOwner: jest.fn(() => Promise.resolve(true)),
+    getTokenStandardAndDetails: jest.fn(() =>
+      Promise.resolve({ standard: 'ERC20' }),
+    ),
   };
 });
 
@@ -1457,6 +1460,7 @@ describe('Send Slice', () => {
         expect(actionResult[0].payload).toStrictEqual({
           ...newSendAsset,
           balance: '',
+          error: null,
         });
 
         expect(actionResult[1].type).toStrictEqual(
@@ -1499,6 +1503,7 @@ describe('Send Slice', () => {
         expect(actionResult[2].payload).toStrictEqual({
           ...newSendAsset,
           balance: '0x0',
+          error: null,
         });
 
         expect(actionResult[3].type).toStrictEqual(
@@ -2231,6 +2236,7 @@ describe('Send Slice', () => {
         expect(actionResult[0].payload).toStrictEqual({
           balance: '0x1',
           type: ASSET_TYPES.COLLECTIBLE,
+          error: null,
           details: {
             address: '0xTokenAddress',
             description: 'A test NFT dispensed from faucet.paradigm.xyz.',
@@ -2361,11 +2367,11 @@ describe('Send Slice', () => {
       expect(actionResult[2].payload).toStrictEqual({
         balance: '0x0',
         type: ASSET_TYPES.TOKEN,
+        error: null,
         details: {
           address: '0xTokenAddress',
           decimals: 18,
           symbol: 'SYMB',
-          isERC721: false,
           standard: 'ERC20',
         },
       });

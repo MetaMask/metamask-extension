@@ -20,7 +20,7 @@ export default function CollectiblesDetectionNotice() {
   const history = useHistory();
 
   return (
-    <Box marginBottom={8} className="collectibles-detection-notice">
+    <Box marginBottom={5} className="collectibles-detection-notice">
       <Dialog type="message" className="collectibles-detection-notice__message">
         <button
           onClick={() => setCollectiblesDetectionNoticeDismissed()}

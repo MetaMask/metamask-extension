@@ -1306,9 +1306,6 @@
   "history": {
     "message": "历史记录"
   },
-  "id": {
-    "message": "ID"
-  },
   "import": {
     "message": "导入",
     "description": "Button to import an account from a selected file"

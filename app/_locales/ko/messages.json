@@ -1306,9 +1306,6 @@
   "history": {
     "message": "기록"
   },
-  "id": {
-    "message": "ID"
-  },
   "import": {
     "message": "가져오기",
     "description": "Button to import an account from a selected file"
