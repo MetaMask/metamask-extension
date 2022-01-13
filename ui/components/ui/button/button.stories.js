@@ -28,7 +28,7 @@ export default {
         'danger',
         'danger-primary',
         'link',
-        'inline'
+        'inline',
       ],
     },
     large: { control: 'boolean' },
@@ -117,8 +117,8 @@ export const TypeInline = (args) => (
 
 TypeInline.args = {
   type: 'inline',
-  children: 'Click me'
-}
+  children: 'Click me',
+};
 
 export const Icon = (args) => <Button {...args}>{args.children}</Button>;
 
