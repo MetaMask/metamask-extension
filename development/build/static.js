@@ -6,101 +6,40 @@ const glob = require('fast-glob');
 const locales = require('../../app/_locales/index.json');
 
 const { createTask, composeSeries } = require('./task');
+const { BuildType } = require('./utils');
 
-module.exports = createStaticAssetTasks;
+const EMPTY_JS_FILE = './development/empty.js';
 
-const copyTargets = [
-  {
-    src: `./app/_locales/`,
-    dest: `_locales`,
-  },
-  {
-    src: `./app/images/`,
-    dest: `images`,
-  },
-  {
-    src: `./node_modules/@metamask/contract-metadata/images/`,
-    dest: `images/contract`,
-  },
-  {
-    src: `./app/fonts/`,
-    dest: `fonts`,
-  },
-  {
-    src: `./app/vendor/`,
-    dest: `vendor`,
-  },
-  {
-    src: `./node_modules/@fortawesome/fontawesome-free/webfonts/`,
-    dest: `fonts/fontawesome`,
-  },
-  {
-    src: `./ui/app/css/output/`,
-    pattern: `*.css`,
-    dest: ``,
-  },
-  {
-    src: `./app/`,
-    pattern: `*.html`,
-    dest: ``,
-  },
-  {
-    src: `./node_modules/globalthis/dist/browser.js`,
-    dest: `globalthis.js`,
-  },
-  {
-    src: `./node_modules/ses/dist/lockdown.cjs`,
-    dest: `lockdown.js`,
-  },
-  {
-    src: `./app/scripts/`,
-    pattern: `runLockdown.js`,
-    dest: ``,
-  },
-];
+module.exports = function createStaticAssetTasks({
+  livereload,
+  browserPlatforms,
+  shouldIncludeLockdown = true,
+  buildType,
+}) {
+  const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
+    shouldIncludeLockdown,
+  );
 
-const languageTags = new Set();
-for (const locale of locales) {
-  const { code } = locale;
-  const tag = code.split('_')[0];
-  languageTags.add(tag);
-}
+  const additionalBuildTargets = {
+    [BuildType.beta]: [
+      {
+        src: './app/build-types/beta/images/',
+        dest: `images`,
+      },
+    ],
+    [BuildType.flask]: [
+      {
+        src: './app/build-types/flask/images/',
+        dest: `images`,
+      },
+    ],
+  };
 
-for (const tag of languageTags) {
-  copyTargets.push({
-    src: `./node_modules/@formatjs/intl-relativetimeformat/dist/locale-data/${tag}.json`,
-    dest: `intl/${tag}/relative-time-format-data.json`,
-  });
-}
+  if (Object.keys(additionalBuildTargets).includes(buildType)) {
+    copyTargetsProd.push(...additionalBuildTargets[buildType]);
+    copyTargetsDev.push(...additionalBuildTargets[buildType]);
+  }
 
-const copyTargetsDev = [
-  ...copyTargets,
-  {
-    src: './app/scripts/',
-    pattern: '/chromereload.js',
-    dest: ``,
-  },
-  // empty files to suppress missing file errors
-  {
-    src: './development/empty.js',
-    dest: `bg-libs.js`,
-  },
-  {
-    src: './development/empty.js',
-    dest: `ui-libs.js`,
-  },
-];
-
-const copyTargetsProd = [
-  ...copyTargets,
-  // empty files to suppress missing file errors
-  {
-    src: './development/empty.js',
-    dest: `chromereload.js`,
-  },
-];
-
-function createStaticAssetTasks({ livereload, browserPlatforms }) {
   const prod = createTask(
     'static:prod',
     composeSeries(
@@ -162,4 +101,125 @@ function createStaticAssetTasks({ livereload, browserPlatforms }) {
       }),
     );
   }
+};
+
+function getCopyTargets(shouldIncludeLockdown) {
+  const allCopyTargets = [
+    {
+      src: `./app/_locales/`,
+      dest: `_locales`,
+    },
+    {
+      src: `./app/images/`,
+      dest: `images`,
+    },
+    {
+      src: `./node_modules/@metamask/contract-metadata/images/`,
+      dest: `images/contract`,
+    },
+    {
+      src: `./app/fonts/`,
+      dest: `fonts`,
+    },
+    {
+      src: `./app/vendor/`,
+      dest: `vendor`,
+    },
+    {
+      src: `./node_modules/@fortawesome/fontawesome-free/webfonts/`,
+      dest: `fonts/fontawesome`,
+    },
+    {
+      src: `./node_modules/react-responsive-carousel/lib/styles`,
+      dest: 'react-gallery/',
+    },
+    {
+      src: `./ui/css/output/`,
+      pattern: `*.css`,
+      dest: ``,
+    },
+    {
+      src: `./app/loading.html`,
+      dest: `loading.html`,
+    },
+    {
+      src: `./node_modules/globalthis/dist/browser.js`,
+      dest: `globalthis.js`,
+    },
+    {
+      src: shouldIncludeLockdown
+        ? `./node_modules/ses/dist/lockdown.umd.min.js`
+        : EMPTY_JS_FILE,
+      dest: `lockdown-install.js`,
+    },
+    {
+      src: shouldIncludeLockdown
+        ? `./app/scripts/lockdown-run.js`
+        : EMPTY_JS_FILE,
+      dest: `lockdown-run.js`,
+    },
+    {
+      src: shouldIncludeLockdown
+        ? `./app/scripts/lockdown-more.js`
+        : EMPTY_JS_FILE,
+      dest: `lockdown-more.js`,
+    },
+    {
+      // eslint-disable-next-line node/no-extraneous-require
+      src: require.resolve('@lavamoat/lavapack/src/runtime-cjs.js'),
+      dest: `runtime-cjs.js`,
+    },
+    {
+      // eslint-disable-next-line node/no-extraneous-require
+      src: require.resolve('@lavamoat/lavapack/src/runtime.js'),
+      dest: `runtime-lavamoat.js`,
+    },
+    {
+      src: `./app/phishing.html`,
+      dest: `phishing.html`,
+    },
+  ];
+
+  const languageTags = new Set();
+  for (const locale of locales) {
+    const { code } = locale;
+    const tag = code.split('_')[0];
+    languageTags.add(tag);
+  }
+
+  for (const tag of languageTags) {
+    allCopyTargets.push({
+      src: `./node_modules/@formatjs/intl-relativetimeformat/dist/locale-data/${tag}.json`,
+      dest: `intl/${tag}/relative-time-format-data.json`,
+    });
+  }
+
+  const copyTargetsDev = [
+    ...allCopyTargets,
+    {
+      src: './development',
+      pattern: '/chromereload.js',
+      dest: ``,
+    },
+    // empty files to suppress missing file errors
+    {
+      src: EMPTY_JS_FILE,
+      dest: `bg-libs.js`,
+    },
+    {
+      src: EMPTY_JS_FILE,
+      dest: `ui-libs.js`,
+    },
+  ];
+
+  const copyTargetsProd = [
+    ...allCopyTargets,
+    // empty files to suppress missing file errors
+    {
+      src: EMPTY_JS_FILE,
+      dest: `chromereload.js`,
+    },
+  ];
+
+  return [copyTargetsProd, copyTargetsDev];
 }

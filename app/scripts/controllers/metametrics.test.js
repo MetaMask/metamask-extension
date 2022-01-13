@@ -81,10 +81,31 @@ function getMockPreferencesStore({ currentLocale = LOCALE } = {}) {
   };
 }
 
+const SAMPLE_PERSISTED_EVENT = {
+  id: 'testid',
+  persist: true,
+  category: 'Unit Test',
+  successEvent: 'sample persisted event success',
+  failureEvent: 'sample persisted event failure',
+  properties: {
+    test: true,
+  },
+};
+
+const SAMPLE_NON_PERSISTED_EVENT = {
+  id: 'testid2',
+  persist: false,
+  category: 'Unit Test',
+  successEvent: 'sample non-persisted event success',
+  failureEvent: 'sample non-persisted event failure',
+  properties: {
+    test: true,
+  },
+};
+
 function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
-  metaMetricsSendCount = 0,
   preferencesStore = getMockPreferencesStore(),
   networkController = getMockNetworkController(),
 } = {}) {
@@ -106,13 +127,29 @@ function getMetaMetricsController({
     initState: {
       participateInMetaMetrics,
       metaMetricsId,
-      metaMetricsSendCount,
+      fragments: {
+        testid: SAMPLE_PERSISTED_EVENT,
+        testid2: SAMPLE_NON_PERSISTED_EVENT,
+      },
     },
   });
 }
 describe('MetaMetricsController', function () {
   describe('constructor', function () {
     it('should properly initialize', function () {
+      const mock = sinon.mock(segment);
+      mock
+        .expects('track')
+        .once()
+        .withArgs({
+          event: 'sample non-persisted event failure',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            ...DEFAULT_EVENT_PROPERTIES,
+            test: true,
+          },
+        });
       const metaMetricsController = getMetaMetricsController();
       assert.strictEqual(metaMetricsController.version, VERSION);
       assert.strictEqual(metaMetricsController.network, NETWORK);
@@ -129,6 +166,10 @@ describe('MetaMetricsController', function () {
         metaMetricsController.locale,
         LOCALE.replace('_', '-'),
       );
+      assert.deepStrictEqual(metaMetricsController.state.fragments, {
+        testid: SAMPLE_PERSISTED_EVENT,
+      });
+      mock.verify();
     });
 
     it('should update when network changes', function () {
@@ -198,22 +239,14 @@ describe('MetaMetricsController', function () {
     });
   });
 
-  describe('setMetaMetricsSendCount', function () {
-    it('should update the send count in state', function () {
-      const metaMetricsController = getMetaMetricsController();
-      metaMetricsController.setMetaMetricsSendCount(1);
-      assert.equal(metaMetricsController.state.metaMetricsSendCount, 1);
-    });
-  });
-
-  describe('trackEvent', function () {
+  describe('submitEvent', function () {
     it('should not track an event if user is not participating in metametrics', function () {
       const mock = sinon.mock(segment);
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: false,
       });
       mock.expects('track').never();
-      metaMetricsController.trackEvent({
+      metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         properties: {
@@ -240,7 +273,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
           },
         });
-      metaMetricsController.trackEvent(
+      metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
@@ -270,7 +303,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
           },
         });
-      metaMetricsController.trackEvent(
+      metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
@@ -299,7 +332,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
           },
         });
-      metaMetricsController.trackEvent(
+      metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
@@ -327,7 +360,7 @@ describe('MetaMetricsController', function () {
             ...DEFAULT_EVENT_PROPERTIES,
           },
         });
-      metaMetricsController.trackEvent({
+      metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         properties: {
@@ -337,66 +370,11 @@ describe('MetaMetricsController', function () {
       mock.verify();
     });
 
-    it('should use anonymousId when metametrics send count is not trackable in send flow', function () {
-      const mock = sinon.mock(segment);
-      const metaMetricsController = getMetaMetricsController({
-        metaMetricsSendCount: 1,
-      });
-      mock
-        .expects('track')
-        .once()
-        .withArgs({
-          event: 'Send Fake Event',
-          anonymousId: METAMETRICS_ANONYMOUS_ID,
-          context: DEFAULT_TEST_CONTEXT,
-          properties: {
-            test: 1,
-            ...DEFAULT_EVENT_PROPERTIES,
-          },
-        });
-      metaMetricsController.trackEvent({
-        event: 'Send Fake Event',
-        category: 'Unit Test',
-        properties: {
-          test: 1,
-        },
-      });
-      mock.verify();
-    });
-
-    it('should use user metametrics id when metametrics send count is trackable in send flow', function () {
-      const mock = sinon.mock(segment);
-      const metaMetricsController = getMetaMetricsController();
-      mock
-        .expects('track')
-        .once()
-        .withArgs({
-          event: 'Send Fake Event',
-          userId: TEST_META_METRICS_ID,
-          context: DEFAULT_TEST_CONTEXT,
-          properties: {
-            test: 1,
-            ...DEFAULT_EVENT_PROPERTIES,
-          },
-        });
-      metaMetricsController.trackEvent(
-        {
-          event: 'Send Fake Event',
-          category: 'Unit Test',
-          properties: {
-            test: 1,
-          },
-        },
-        { metaMetricsSendCount: 0 },
-      );
-      mock.verify();
-    });
-
     it('should immediately flush queue if flushImmediately set to true', async function () {
       const metaMetricsController = getMetaMetricsController();
       const flushStub = sinon.stub(segment, 'flush');
       const flushCalled = waitUntilCalled(flushStub, segment);
-      metaMetricsController.trackEvent(
+      metaMetricsController.submitEvent(
         {
           event: 'Fake Event',
           category: 'Unit Test',
@@ -409,13 +387,13 @@ describe('MetaMetricsController', function () {
     it('should throw if event or category not provided', function () {
       const metaMetricsController = getMetaMetricsController();
       assert.rejects(
-        () => metaMetricsController.trackEvent({ event: 'test' }),
+        () => metaMetricsController.submitEvent({ event: 'test' }),
         /Must specify event and category\./u,
         'must specify category',
       );
 
       assert.rejects(
-        () => metaMetricsController.trackEvent({ category: 'test' }),
+        () => metaMetricsController.submitEvent({ category: 'test' }),
         /Must specify event and category\./u,
         'must specify event',
       );
@@ -425,7 +403,7 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController();
       assert.rejects(
         () =>
-          metaMetricsController.trackEvent(
+          metaMetricsController.submitEvent(
             {
               event: 'Fake Event',
               category: 'Unit Test',
@@ -440,7 +418,7 @@ describe('MetaMetricsController', function () {
     it('should track sensitiveProperties in a separate, anonymous event', function () {
       const metaMetricsController = getMetaMetricsController();
       const spy = sinon.spy(segment, 'track');
-      metaMetricsController.trackEvent({
+      metaMetricsController.submitEvent({
         event: 'Fake Event',
         category: 'Unit Test',
         sensitiveProperties: { foo: 'bar' },

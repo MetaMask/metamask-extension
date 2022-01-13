@@ -1,0 +1,16 @@
+@import "design-system";
+
+.snaps-authorship-pill {
+  display: inline-block;
+
+  &:hover,
+  &:focus {
+    .chip {
+      background-color: var(--ui-1);
+    }
+  }
+}
+
+.snaps-authorship-icon {
+  color: var(--ui-4);
+}

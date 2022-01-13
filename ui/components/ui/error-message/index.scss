@@ -1,0 +1,22 @@
+.error-message {
+  @include H7;
+
+  min-height: 32px;
+  border: 1px solid var(--Red-300);
+  color: var(--ui-black);
+  background: var(--error-2);
+  border-radius: 8px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 8px 10px;
+
+  &__icon {
+    margin-right: 8px;
+    flex: 0 0 auto;
+  }
+
+  &__text {
+    overflow: auto;
+  }
+}

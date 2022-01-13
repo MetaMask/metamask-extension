@@ -1,0 +1,11 @@
+.snackbar {
+  @include H7;
+
+  padding: 0.75rem 1rem;
+  color: var(--Blue-600);
+  min-width: 360px;
+  width: fit-content;
+  background: var(--Blue-000);
+  border: 1px solid var(--Blue-200);
+  border-radius: 6px;
+}

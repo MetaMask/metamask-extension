@@ -171,8 +171,8 @@ async function verifyEnglishLocale() {
   // In the meantime we'll use glob to specify which paths can be strict searched
   // and gradually phase out the key based search
   const globsToStrictSearch = [
-    'ui/app/components/app/metamask-translation/*.js',
-    'ui/app/pages/confirmation/templates/*.js',
+    'ui/components/app/metamask-translation/*.js',
+    'ui/pages/confirmation/templates/*.js',
   ];
   const testGlob = '**/*.test.js';
   const javascriptFiles = await glob(['ui/**/*.js', 'shared/**/*.js'], {
@@ -216,7 +216,12 @@ async function verifyEnglishLocale() {
   }
 
   // never consider these messages as unused
-  const messageExceptions = ['appName', 'appDescription'];
+  const messageExceptions = [
+    'appName',
+    'appNameBeta',
+    'appNameFlask',
+    'appDescription',
+  ];
 
   const englishMessages = Object.keys(englishLocale);
   const unusedMessages = englishMessages.filter(

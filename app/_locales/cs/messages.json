@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odmítnout"
+  },
   "account": {
     "message": "Účet"
   },
@@ -11,9 +14,6 @@
   "addToken": {
     "message": "Přidat token"
   },
-  "addTokens": {
-    "message": "Přidat tokeny"
-  },
   "amount": {
     "message": "Částka"
   },
@@ -24,6 +24,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Schválit"
@@ -45,9 +53,6 @@
   },
   "blockiesIdenticon": {
     "message": "Použít Blockies Identicon"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask je navržen a vytvořen v Kalifornii."
   },
   "cancel": {
     "message": "Zrušit"
@@ -94,9 +99,6 @@
   "customGas": {
     "message": "Nastavit palivo"
   },
-  "customRPC": {
-    "message": "Vlastní RPC"
-  },
   "customToken": {
     "message": "Vlastní token"
   },
@@ -105,9 +107,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desetinných míst musí být od 0 do 36."
-  },
-  "defaultNetwork": {
-    "message": "Výchozí síť pro Etherové transakce je Main Net."
   },
   "depositEther": {
     "message": "Vložit Ether"
@@ -217,7 +216,10 @@
   "learnMore": {
     "message": "Zjistěte více."
   },
-  "likeToAddTokens": {
+  "learnMoreUpperCase": {
+    "message": "Zjistěte více."
+  },
+  "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
   "links": {
@@ -307,9 +309,6 @@
   },
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
-  },
-  "recipientAddress": {
-    "message": "Adresa příjemce"
   },
   "reject": {
     "message": "Odmítnout"
@@ -440,9 +439,6 @@
   },
   "visitWebSite": {
     "message": "Navštivte naši stránku"
-  },
-  "walletSeed": {
-    "message": "Klíčová fráze peněženky"
   },
   "welcome": {
     "message": "Vítejte v MetaMask"

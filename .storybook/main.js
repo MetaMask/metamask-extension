@@ -1,18 +1,28 @@
-const path = require('path')
+const path = require('path');
 
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  stories: ['../ui/app/**/*.stories.js'],
+  stories: [
+    '../ui/**/*.stories.js',
+    '../ui/**/*.stories.mdx',
+    './*.stories.mdx',
+  ],
   addons: [
-    '@storybook/addon-knobs',
+    '@storybook/addon-essentials',
     '@storybook/addon-actions',
-    '@storybook/addon-backgrounds',
-    '@storybook/addon-toolbars',
+    '@storybook/addon-a11y',
+    '@storybook/addon-knobs',
     './i18n-party-addon/register.js',
   ],
+  // Uses babel.config.js settings and prevents "Missing class properties transform" error
+  babel: async (options) => ({ overrides: options.overrides }),
   webpackFinal: async (config) => {
-    config.module.strictExportPresence = true
+    config.context = process.cwd();
+    config.node = {
+      __filename: true,
+    };
+    config.module.strictExportPresence = true;
     config.module.rules.push({
       test: /\.scss$/,
       loaders: [
@@ -24,19 +34,18 @@ module.exports = {
             url: false,
           },
         },
-        'resolve-url-loader',
         {
           loader: 'sass-loader',
           options: {
             sourceMap: true,
             implementation: require('sass'),
             sassOptions: {
-              includePaths: ['ui/app/css/'],
+              includePaths: ['ui/css/'],
             },
           },
         },
       ],
-    })
+    });
     config.plugins.push(
       new CopyWebpackPlugin({
         patterns: [
@@ -51,7 +60,7 @@ module.exports = {
           },
         ],
       }),
-    )
-    return config
+    );
+    return config;
   },
-}
+};

@@ -50,6 +50,25 @@
         "type": "rpc"
       }
     },
+    "NotificationController": {
+      "notifications": {
+        "1": {
+          "isShown": true
+        },
+        "3": {
+          "isShown": true
+        },
+        "5": {
+          "isShown": true
+        },
+        "6": {
+          "isShown": true
+        },
+        "8": {
+          "isShown": true
+        }
+      }
+    },
     "OnboardingController": {
       "onboardingTabs": {},
       "seedPhraseBackedUp": false
@@ -112,7 +131,6 @@
       "knownMethodData": {},
       "lostIdentities": {},
       "metaMetricsId": null,
-      "metaMetricsSendCount": 0,
       "participateInMetaMetrics": false,
       "preferences": {
         "useNativeCurrencyAsPrimaryCurrency": true

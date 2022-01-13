@@ -1,0 +1,40 @@
+.countdown-timer {
+  @include H7;
+
+  display: flex;
+  justify-content: center;
+
+  @media screen and (min-width: $break-large) {
+    margin: 0;
+  }
+
+  &__timer-container {
+    display: flex;
+    padding-right: 3px;
+
+    > span {
+      display: flex;
+      padding-left: 4px;
+    }
+
+    &--warning {
+      .countdown-timer__time {
+        color: var(--Red-500);
+      }
+    }
+  }
+
+  &__time {
+    @include H7;
+
+    font-weight: bold;
+    width: 24px;
+    margin-left: 4px;
+    margin-right: 2px;
+  }
+
+  div {
+    display: flex;
+    align-items: center;
+  }
+}

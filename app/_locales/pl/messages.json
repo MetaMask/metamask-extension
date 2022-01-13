@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odrzuć"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skanuj kod QR"
+  },
   "about": {
     "message": "Informacje"
   },
@@ -38,9 +44,6 @@
   "addNetwork": {
     "message": "Dodaj sieć"
   },
-  "addRecipient": {
-    "message": "Dodaj odbiorcę"
-  },
   "addSuggestedTokens": {
     "message": "Dodaj sugerowane tokeny."
   },
@@ -52,9 +55,6 @@
   },
   "addToken": {
     "message": "Dodaj token"
-  },
-  "addTokens": {
-    "message": "Dodaj tokeny"
   },
   "advanced": {
     "message": "Zaawansowane"
@@ -75,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Zatwierdź"
@@ -142,9 +150,6 @@
   },
   "browserNotSupported": {
     "message": "Twoja przeglądarka nie jest obsługiwana..."
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask został zaprojektowany i stworzony w Kaliforni."
   },
   "buyWithWyre": {
     "message": "Kup ETH poprzez Wyre"
@@ -227,9 +232,6 @@
   "copiedExclamation": {
     "message": "Skopiowane!"
   },
-  "copiedTransactionId": {
-    "message": "Skopiowano identyfikator transakcji"
-  },
   "copyAddress": {
     "message": "Skopiuj adres do schowka"
   },
@@ -260,14 +262,14 @@
   "currentLanguage": {
     "message": "Obecny język"
   },
+  "custom": {
+    "message": "Zaawansowane"
+  },
   "customGas": {
     "message": "Ustaw gaz"
   },
   "customGasSubTitle": {
     "message": "Zwiększenie opłaty może skrócić czas przetwarzania transakcji, ale nie jest to gwarantowane."
-  },
-  "customRPC": {
-    "message": "Własne RPC"
   },
   "customToken": {
     "message": "Własny token"
@@ -277,9 +279,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Liczb po przecinku musi być co najmniej 0 i nie więcej niż 36."
-  },
-  "defaultNetwork": {
-    "message": "Domyślna sieć dla Eteru to Main Net."
   },
   "delete": {
     "message": "Usuń"
@@ -540,13 +539,16 @@
   "learnMore": {
     "message": "Dowiedz się więcej"
   },
+  "learnMoreUpperCase": {
+    "message": "Dowiedz się więcej"
+  },
   "ledgerAccountRestriction": {
     "message": "Musisz użyć swojego poprzedniego konta zanim dodasz kolejne."
   },
   "letsGoSetUp": {
     "message": "Tak, zacznijmy od początku!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Czy chcesz dodać te tokeny?"
   },
   "links": {
@@ -585,20 +587,11 @@
   "metamaskVersion": {
     "message": "Wersja MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Wpisz hasło, aby potwierdzić, że to Ty!"
-  },
   "mustSelectOne": {
     "message": "Należy wybrać co najmniej 1 token."
   },
   "myAccounts": {
     "message": "Moje konta"
-  },
-  "myWalletAccounts": {
-    "message": "Moja konta portfeli"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Wszystkie Twoje konta utworzone w MetaMask zostaną automatycznie dodane do tej sekcji."
   },
   "needEtherInWallet": {
     "message": "Żeby skorzystać ze zdecentraliowanych aplikacji (dApps) przy pomocy MetaMask, potrzebujesz Eteru w swoim portfelu."
@@ -637,9 +630,6 @@
   },
   "newContract": {
     "message": "Nowy kontrakt"
-  },
-  "newNetwork": {
-    "message": "Nowa sieć"
   },
   "newPassword": {
     "message": "Nowe hasło (min. 8 znaków)"
@@ -685,12 +675,6 @@
   },
   "on": {
     "message": "Włączone"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Adres URL przeglądarki łańcucha bloków (opcjonalnie)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (opcjonalnie)"
   },
   "origin": {
     "message": "Pochodzenie"
@@ -754,9 +738,6 @@
   "recents": {
     "message": "Ostatnie"
   },
-  "recipientAddress": {
-    "message": "Adres odbiorcy"
-  },
   "recipientAddressPlaceholder": {
     "message": "Szukaj, adres publiczny (0x) lub ENS"
   },
@@ -814,9 +795,6 @@
   "revealSeedWordsDescription": {
     "message": "Jeśli kiedyś zmienisz przeglądarkę lub komputer, będziesz potrzebować tej frazy seed, żeby dostać się do swoich kont. Zapisz ją w bezpiecznym miejscu."
   },
-  "revealSeedWordsTitle": {
-    "message": "Fraza seed"
-  },
   "revealSeedWordsWarning": {
     "message": "Te słowa mogą być użyte żeby ukraść Twoje konta."
   },
@@ -853,9 +831,6 @@
   "searchTokens": {
     "message": "Szukaj tokenów"
   },
-  "secretBackupPhrase": {
-    "message": "Tajna fraza zapasowa"
-  },
   "secretBackupPhraseDescription": {
     "message": "Twoja tajna fraza zapasowa ułatwia tworzenie kopii zapasowych i przywracanie konta."
   },
@@ -880,9 +855,6 @@
   "selectAnAccount": {
     "message": "Wybierz konto"
   },
-  "selectAnAccountHelp": {
-    "message": "Wybierz konto do przeglądania w MetaMask"
-  },
   "selectEachPhrase": {
     "message": "Wybierz każdą frazę, aby upewnić się, że jest poprawna."
   },
@@ -903,9 +875,6 @@
   },
   "sendTokens": {
     "message": "Wyślij tokeny"
-  },
-  "sentEther": {
-    "message": "wyślij eter"
   },
   "separateEachWord": {
     "message": "Oddziel słowa pojedynczą spacją"
@@ -1139,20 +1108,8 @@
   "viewContact": {
     "message": "Wyświetl kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Wyświetl w $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Zobacz na Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Wyświetl w przeglądarce"
-  },
   "visitWebSite": {
     "message": "Odwiedź naszą stronę"
-  },
-  "walletSeed": {
-    "message": "Seed portfela"
   },
   "welcome": {
     "message": "Witaj w MetaMask"

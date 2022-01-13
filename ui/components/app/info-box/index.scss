@@ -1,0 +1,24 @@
+.info-box {
+  border-radius: 4px;
+  background-color: var(--alabaster);
+  position: relative;
+  padding: 16px;
+  display: flex;
+  flex-flow: column;
+  color: var(--mid-gray);
+
+  &__close::after {
+    content: '\00D7';
+    font-size: 29px;
+    font-weight: 200;
+    color: var(--dusty-gray);
+    position: absolute;
+    right: 12px;
+    top: 0;
+    cursor: pointer;
+  }
+
+  &__description {
+    @include H7;
+  }
+}

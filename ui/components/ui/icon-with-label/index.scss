@@ -1,0 +1,11 @@
+.icon-with-label {
+  display: flex;
+  align-items: center;
+
+  &__label {
+    @include H8;
+
+    margin-left: 4px;
+    color: var(--Grey-500);
+  }
+}

@@ -1,12 +1,12 @@
 import React, { Component, createContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { getMessage } from '../ui/app/helpers/utils/i18n-helper';
-import { I18nContext } from '../ui/app/contexts/i18n';
+import { getMessage } from '../ui/helpers/utils/i18n-helper';
+import { I18nContext } from '../ui/contexts/i18n';
 
-export { I18nContext }
+export { I18nContext };
 
 export const I18nProvider = (props) => {
-  const { currentLocale, current, en } = props
+  const { currentLocale, current, en } = props;
 
   const t = useMemo(() => {
     return (key, ...args) =>

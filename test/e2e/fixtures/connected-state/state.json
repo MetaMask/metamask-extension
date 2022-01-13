@@ -1,8 +1,7 @@
 {
   "data": {
     "AppStateController": {
-      "connectedStatusPopoverHasBeenShown": false,
-      "swapsWelcomeMessageHasBeenShown": true
+      "connectedStatusPopoverHasBeenShown": false
     },
     "CachedBalancesController": {
       "cachedBalances": {
@@ -40,6 +39,25 @@
         "type": "rpc"
       },
       "network": "1337"
+    },
+    "NotificationController": {
+      "notifications": {
+        "1": {
+          "isShown": true
+        },
+        "3": {
+          "isShown": true
+        },
+        "5": {
+          "isShown": true
+        },
+        "6": {
+          "isShown": true
+        },
+        "8": {
+          "isShown": true
+        }
+      }
     },
     "OnboardingController": {
       "onboardingTabs": {},
@@ -123,7 +141,6 @@
       },
       "completedOnboarding": true,
       "metaMetricsId": null,
-      "metaMetricsSendCount": 0,
       "ipfsGateway": "dweb.link",
       "selectedAddress": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1"
     },

@@ -1,5 +1,8 @@
+import { MESSAGE_TYPE } from './app';
+
 /**
  * Transaction Type is a MetaMask construct used internally
+ *
  * @typedef {Object} TransactionTypes
  * @property {'transfer'} TOKEN_METHOD_TRANSFER - A token transaction where the user
  *  is sending tokens that they own to another address
@@ -9,7 +12,7 @@
  * @property {'approve'} TOKEN_METHOD_APPROVE - A token transaction requesting an
  *  allowance of the token to spend on behalf of the user
  * @property {'incoming'} INCOMING - An incoming (deposit) transaction
- * @property {'sentEther'} SENT_ETHER - A transaction sending ether to a recipient
+ * @property {'simpleSend'} SIMPLE_SEND - A transaction sending a network's native asset to a recipient
  * @property {'contractInteraction'} CONTRACT_INTERACTION - A transaction that is
  *  interacting with a smart contract's methods that we have not treated as a special
  *  case, such as approve, transfer, and transferfrom
@@ -33,6 +36,7 @@
 /**
  * This type will work anywhere you expect a string that can be one of the
  * above transaction types.
+ *
  * @typedef {TransactionTypes[keyof TransactionTypes]} TransactionTypeString
  */
 
@@ -46,16 +50,50 @@ export const TRANSACTION_TYPES = {
   TOKEN_METHOD_TRANSFER_FROM: 'transferfrom',
   TOKEN_METHOD_APPROVE: 'approve',
   INCOMING: 'incoming',
-  SENT_ETHER: 'sentEther',
+  SIMPLE_SEND: 'simpleSend',
   CONTRACT_INTERACTION: 'contractInteraction',
   DEPLOY_CONTRACT: 'contractDeployment',
   SWAP: 'swap',
   SWAP_APPROVAL: 'swapApproval',
+  SIGN: MESSAGE_TYPE.ETH_SIGN,
+  SIGN_TYPED_DATA: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+  PERSONAL_SIGN: MESSAGE_TYPE.PERSONAL_SIGN,
+  ETH_DECRYPT: MESSAGE_TYPE.ETH_DECRYPT,
+  ETH_GET_ENCRYPTION_PUBLIC_KEY: MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY,
+};
+
+/**
+ * In EIP-2718 typed transaction envelopes were specified, with the very first
+ * typed envelope being 'legacy' and describing the shape of the base
+ * transaction params that were hitherto the only transaction type sent on
+ * Ethereum.
+ *
+ * @typedef {Object} TransactionEnvelopeTypes
+ * @property {'0x0'} LEGACY - A legacy transaction, the very first type.
+ * @property {'0x1'} ACCESS_LIST - EIP-2930 defined the access list transaction
+ *  type that allowed for specifying the state that a transaction would act
+ *  upon in advance and theoretically save on gas fees.
+ * @property {'0x2'} FEE_MARKET - The type introduced comes from EIP-1559,
+ *  Fee Market describes the addition of a baseFee to blocks that will be
+ *  burned instead of distributed to miners. Transactions of this type have
+ *  both a maxFeePerGas (maximum total amount in gwei per gas to spend on the
+ *  transaction) which is inclusive of the maxPriorityFeePerGas (maximum amount
+ *  of gwei per gas from the transaction fee to distribute to miner).
+ */
+
+/**
+ * @type {TransactionEnvelopeTypes}
+ */
+export const TRANSACTION_ENVELOPE_TYPES = {
+  LEGACY: '0x0',
+  ACCESS_LIST: '0x1',
+  FEE_MARKET: '0x2',
 };
 
 /**
  * Transaction Status is a mix of Ethereum and MetaMask terminology, used internally
  * for transaction processing.
+ *
  * @typedef {Object} TransactionStatuses
  * @property {'unapproved'} UNAPPROVED - A new transaction that the user has not
  *  approved or rejected
@@ -74,6 +112,7 @@ export const TRANSACTION_TYPES = {
 /**
  * This type will work anywhere you expect a string that can be one of the
  * above transaction statuses.
+ *
  * @typedef {TransactionStatuses[keyof TransactionStatuses]} TransactionStatusString
  */
 
@@ -94,6 +133,7 @@ export const TRANSACTION_STATUSES = {
 /**
  * Transaction Group Status is a MetaMask construct to track the status of groups
  * of transactions.
+ *
  * @typedef {Object} TransactionGroupStatuses
  * @property {'cancelled'} CANCELLED - A cancel type transaction in the group was
  *  confirmed
@@ -113,6 +153,7 @@ export const TRANSACTION_GROUP_STATUSES = {
 /**
  * Transaction Group Category is a MetaMask construct to categorize the intent
  * of a group of transactions for purposes of displaying in the UI
+ *
  * @typedef {Object} TransactionGroupCategories
  * @property {'send'} SEND - Transaction group representing ether being sent from
  *  the user.
@@ -165,8 +206,8 @@ export const TRANSACTION_GROUP_CATEGORIES = {
 
 /**
  * An object representing a transaction, in whatever state it is in.
- * @typedef {Object} TransactionMeta
  *
+ * @typedef {Object} TransactionMeta
  * @property {string} [blockNumber] - The block number this transaction was
  *  included in. Currently only present on incoming transactions!
  * @property {number} id - An internally unique tx identifier.

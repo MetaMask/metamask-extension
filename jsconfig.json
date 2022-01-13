@@ -1,3 +1,7 @@
 {
-  "exclude": ["node:console"]
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs"
+  },
+  "include": ["ui/**/*.js", "app/**/*.js", "shared/**/*.js"]
 }

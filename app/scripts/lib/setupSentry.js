@@ -1,15 +1,16 @@
 import * as Sentry from '@sentry/browser';
 import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 
+import { BuildType } from '../../../shared/constants/app';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
 const METAMASK_DEBUG = process.env.METAMASK_DEBUG;
 const METAMASK_ENVIRONMENT = process.env.METAMASK_ENVIRONMENT;
+const SENTRY_DSN_DEV = process.env.SENTRY_DSN_DEV;
+const METAMASK_BUILD_TYPE = process.env.METAMASK_BUILD_TYPE;
 /* eslint-enable prefer-destructuring */
-const SENTRY_DSN_DEV =
-  'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496';
 
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
@@ -37,7 +38,6 @@ export const SENTRY_STATE = {
     isInitialized: true,
     isUnlocked: true,
     metaMetricsId: true,
-    metaMetricsSendCount: true,
     nativeCurrency: true,
     network: true,
     nextNonce: true,
@@ -72,19 +72,26 @@ export default function setupSentry({ release, getState }) {
 
   if (METAMASK_DEBUG) {
     return undefined;
-  } else if (METAMASK_ENVIRONMENT === 'production') {
+  }
+
+  const environment =
+    METAMASK_BUILD_TYPE === BuildType.main
+      ? METAMASK_ENVIRONMENT
+      : `${METAMASK_ENVIRONMENT}-${METAMASK_BUILD_TYPE}`;
+
+  if (METAMASK_ENVIRONMENT === 'production') {
     if (!process.env.SENTRY_DSN) {
       throw new Error(
         `Missing SENTRY_DSN environment variable in production environment`,
       );
     }
     console.log(
-      `Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN`,
+      `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN`,
     );
     sentryTarget = process.env.SENTRY_DSN;
   } else {
     console.log(
-      `Setting up Sentry Remote Error Reporting for '${METAMASK_ENVIRONMENT}': SENTRY_DSN_DEV`,
+      `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN_DEV`,
     );
     sentryTarget = SENTRY_DSN_DEV;
   }
@@ -92,7 +99,7 @@ export default function setupSentry({ release, getState }) {
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
-    environment: METAMASK_ENVIRONMENT,
+    environment,
     integrations: [new Dedupe(), new ExtraErrorData()],
     release,
     beforeSend: (report) => rewriteReport(report),

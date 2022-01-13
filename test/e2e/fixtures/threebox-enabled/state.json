@@ -47,6 +47,25 @@
       },
       "network": "1337"
     },
+    "NotificationController": {
+      "notifications": {
+        "1": {
+          "isShown": true
+        },
+        "3": {
+          "isShown": true
+        },
+        "5": {
+          "isShown": true
+        },
+        "6": {
+          "isShown": true
+        },
+        "8": {
+          "isShown": true
+        }
+      }
+    },
     "OnboardingController": {
       "onboardingTabs": {},
       "seedPhraseBackedUp": true
@@ -104,8 +123,7 @@
     },
     "MetaMetricsController": {
       "metaMetricsId": null,
-      "participateInMetaMetrics": false,
-      "metaMetricsSendCount": 0
+      "participateInMetaMetrics": false
     },
     "ThreeBoxController": {
       "threeBoxSyncingAllowed": true,

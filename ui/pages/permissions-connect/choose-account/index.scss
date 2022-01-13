@@ -1,0 +1,62 @@
+.permissions-connect-choose-account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+
+  @media screen and (min-width: $break-large) {
+    width: 426px;
+  }
+
+  &__title {
+    @include H4;
+  }
+
+  &__cancel {
+    color: var(--Red-400);
+  }
+
+  &__footer-container {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    @media screen and (min-width: $break-large) {
+      flex-direction: column-reverse;
+      justify-content: space-between;
+      padding-bottom: 20px;
+    }
+  }
+
+  &__bottom-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    margin-top: 8px;
+    border-top: 1px solid #d6d9dc;
+
+    @media screen and (min-width: $break-large) {
+      border-top: none;
+    }
+
+    button {
+      width: 124px;
+    }
+
+    .btn-secondary {
+      background: white;
+      margin-left: 16px;
+    }
+
+    .btn-primary {
+      margin-right: 16px;
+    }
+  }
+}

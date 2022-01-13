@@ -52,7 +52,7 @@ describe('Threebox', function () {
         // adds an address to the contact list
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
 
-        await driver.clickElement('.address-book-add-button__button');
+        await driver.clickElement('.address-book__link');
         await driver.fill('#nickname', 'Test User Name 11');
         await driver.fill(
           'input[placeholder="Search, public address (0x), or ENS"]',
