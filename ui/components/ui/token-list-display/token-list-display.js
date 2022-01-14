@@ -1,5 +1,5 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { getShouldHideZeroBalanceTokens } from '../../../selectors';
@@ -7,6 +7,8 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import Identicon from '../identicon/identicon.component';
 import TokenBalance from '../token-balance';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { isEqual } from 'lodash';
+import { getTokens } from '../../../ducks/metamask/metamask';
 
 export default function TokenListDisplay(props) {
   const t = useI18nContext();
@@ -14,21 +16,37 @@ export default function TokenListDisplay(props) {
     getShouldHideZeroBalanceTokens,
   );
 
-  const { sendableTokens, clickHandler } = props;
+  const { clickHandler } = props;
 
-  const { tokensWithBalances } = useTokenTracker(
-    sendableTokens,
+  const handleSelectToken = (token) => clickHandler(token);
+
+  const tokens = useSelector(getTokens, isEqual);
+  const { loading, tokensWithBalances } = useTokenTracker(
+    tokens,
     true,
     shouldHideZeroBalanceTokens,
   );
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          height: '250px',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '30px',
+        }}
+      >
+        {t('loadingTokens')}
+      </div>
+    );
+  }
 
-  const handleSelectToken = (token) => clickHandler(token);
 
   return (
     <>
       {tokensWithBalances.map((tokenData) => {
         const { address, image, symbol } = tokenData;
-        console.log(tokenData, 'OUTSIDE')
 
         return (
           <div
@@ -55,16 +73,10 @@ export default function TokenListDisplay(props) {
   );
 }
 
-// TokenListDisplay.propTypes = {
-//   className: PropTypes.string,
-//   token: PropTypes.shape({
-//     address: PropTypes.string.isRequired,
-//     decimals: PropTypes.number,
-//     symbol: PropTypes.string,
-//     image: PropTypes.string,
-//   }).isRequired,
-// };
+TokenListDisplay.propTypes = {
+  clickHandler: PropTypes.func
+};
 
-// TokenListDisplay.defaultProps = {
-//   className: undefined,
-// };
+TokenListDisplay.defaultProps = {
+  className: undefined,
+};

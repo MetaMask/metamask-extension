@@ -166,13 +166,8 @@ export default class SendAssetRow extends Component {
           />
           <div className="send-v2__asset-dropdown__list">
             {this.renderNativeCurrency(true)}
-
-            {this.state.sendableTokens.map((token) =>
-              this.renderToken(token, true),
-            )}
-
+            
               <TokenListDisplay 
-                sendableTokens={sendableTokens} 
                 clickHandler={(token) => this.selectToken(ASSET_TYPES.TOKEN, token)}
               />
 
