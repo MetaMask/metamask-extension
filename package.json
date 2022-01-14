@@ -86,7 +86,6 @@
     "3box/**/libp2p-crypto/node-forge": "^0.10.0",
     "3box/**/libp2p-keychain/node-forge": "^0.10.0",
     "analytics-node/axios": "^0.21.2",
-    "analytics-node/axios/follow-redirects": "^1.14.7",
     "ganache-core/lodash": "^4.17.21",
     "netmask": "^2.0.1",
     "pubnub/superagent-proxy": "^3.0.0",

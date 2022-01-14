@@ -1434,11 +1434,15 @@ export function updateSendAsset({ type, details }) {
         state.send.account.address ?? getSelectedAddress(state),
       );
       // TODO remove along with migration of isERC721 tokens and stripping away this designation
-      if (details && details.isERC721 === undefined) {
-        const updatedAssetDetails = await updateTokenType(details.address);
-        details.isERC721 = updatedAssetDetails.isERC721;
+      if (details) {
+        if (details.isERC721 === undefined) {
+          const updatedAssetDetails = await updateTokenType(details.address);
+          details.isERC721 = updatedAssetDetails.isERC721;
+        }
+        if (details.standard === undefined) {
+          details.standard = ERC20;
+        }
       }
-      details.standard = ERC20;
       await dispatch(hideLoadingIndication());
     } else if (type === ASSET_TYPES.COLLECTIBLE) {
       let isCurrentOwner = true;
