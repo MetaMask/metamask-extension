@@ -165,7 +165,7 @@ const getWindowHandles = async (driver) => {
 };
 
 const connectDappWithExtensionPopup = async (driver) => {
-  await driver.openNewPage('http://127.0.0.1:8080/');
+  await driver.openNewPage(`http://127.0.0.1:${dappPort}/`);
   await driver.delay(regularDelayMs);
   await driver.clickElement({ text: 'Connect', tag: 'button' });
   await driver.delay(regularDelayMs);

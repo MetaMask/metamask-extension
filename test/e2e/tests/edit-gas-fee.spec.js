@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const {
+  convertToHexValue,
   connectDappWithExtensionPopup,
   getWindowHandles,
   largeDelayMs,
@@ -7,28 +8,28 @@ const {
   regularDelayMs,
 } = require('../helpers');
 
-describe('Editing Confirm Transaction', function () {
-  it('allow selecting high, medium, low gas estimates on edit gas fee popover', async function () {
-    const ganacheOptions = {
-      hardfork: 'london',
-      accounts: [
+if (process.env.EIP_1559_V2 === '1') {
+  describe('Editing Confirm Transaction', function () {
+    it('allows selecting high, medium, low gas estimates on edit gas fee popover', async function () {
+      const ganacheOptions = {
+        hardfork: 'london',
+        accounts: [
+          {
+            secretKey:
+              '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+            balance: convertToHexValue(25000000000000000000),
+          },
+        ],
+      };
+      await withFixtures(
         {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: '0x15af1d78b58c40000',
+          fixtures: 'eip-1559-v2',
+          ganacheOptions,
+          title: this.test.title,
         },
-      ],
-    };
-    await withFixtures(
-      {
-        fixtures: 'eip-1559-v2',
-        ganacheOptions,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
+        async ({ driver }) => {
+          await driver.navigate();
 
-        if (process.env.EIP_1559_V2 === '1') {
           await driver.fill('#password', 'correct horse battery staple');
           await driver.press('#password', driver.Key.ENTER);
 
@@ -86,32 +87,30 @@ describe('Editing Confirm Transaction', function () {
           );
           assert.equal(txValues.length, 1);
           assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
-        }
-      },
-    );
-  });
-
-  it('allow accessing advance gas fee popover from edit gas fee popover', async function () {
-    const ganacheOptions = {
-      hardfork: 'london',
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: '0x15af1d78b58c40000',
         },
-      ],
-    };
-    await withFixtures(
-      {
-        fixtures: 'eip-1559-v2',
-        ganacheOptions,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
+      );
+    });
 
-        if (process.env.EIP_1559_V2 === '1') {
+    it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
+      const ganacheOptions = {
+        hardfork: 'london',
+        accounts: [
+          {
+            secretKey:
+              '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+            balance: convertToHexValue(25000000000000000000),
+          },
+        ],
+      };
+      await withFixtures(
+        {
+          fixtures: 'eip-1559-v2',
+          ganacheOptions,
+          title: this.test.title,
+        },
+        async ({ driver }) => {
+          await driver.navigate();
+
           await driver.fill('#password', 'correct horse battery staple');
           await driver.press('#password', driver.Key.ENTER);
 
@@ -187,33 +186,31 @@ describe('Editing Confirm Transaction', function () {
           );
           assert.equal(txValues.length, 1);
           assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
-        }
-      },
-    );
-  });
-
-  it('should use daap suggested estimates for transaction coming from dapp', async function () {
-    const ganacheOptions = {
-      hardfork: 'london',
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: '0x15af1d78b58c40000',
         },
-      ],
-    };
-    await withFixtures(
-      {
-        fixtures: 'eip-1559-v2-dapp',
-        ganacheOptions,
-        title: this.test.title,
-        dapp: true,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
+      );
+    });
 
-        if (process.env.EIP_1559_V2 === '1') {
+    it('should use dapp suggested estimates for transaction coming from dapp', async function () {
+      const ganacheOptions = {
+        hardfork: 'london',
+        accounts: [
+          {
+            secretKey:
+              '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+            balance: convertToHexValue(25000000000000000000),
+          },
+        ],
+      };
+      await withFixtures(
+        {
+          fixtures: 'eip-1559-v2-dapp',
+          ganacheOptions,
+          title: this.test.title,
+          dapp: true,
+        },
+        async ({ driver }) => {
+          await driver.navigate();
+
           // login to extension
           await driver.fill('#password', 'correct horse battery staple');
           await driver.press('#password', driver.Key.ENTER);
@@ -273,8 +270,8 @@ describe('Editing Confirm Transaction', function () {
           );
           assert.equal(txValues.length, 1);
           assert.ok(/-3\s*ETH/u.test(await txValues[0].getText()));
-        }
-      },
-    );
+        },
+      );
+    });
   });
-});
+}
