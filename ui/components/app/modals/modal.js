@@ -30,9 +30,6 @@ import AddToAddressBookModal from './add-to-addressbook-modal';
 import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import SnapInstallWarning from './snap-install-warning';
-///: END:ONLY_INCLUDE_IN
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
