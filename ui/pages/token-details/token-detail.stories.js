@@ -1,9 +1,9 @@
 import React from 'react';
-import Identicon from '../identicon/identicon.component';
-import TokenDetails from '.';
+import Identicon from '../../components/ui/identicon/identicon.component';
+import TokenDetailsScreen from '.';
 
 export default {
-  title: 'Components/UI/TokenDetails',
+  title: 'Pages/TokenDetails',
   id: __filename,
   argTypes: {
     address: { control: 'text' },
@@ -18,7 +18,7 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return <TokenDetails {...args} />;
+  return <TokenDetailsScreen {...args} />;
 };
 
 DefaultStory.storyName = 'Default';

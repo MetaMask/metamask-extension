@@ -1,19 +1,22 @@
 import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { I18nContext } from '../../../contexts/i18n';
-import Tooltip from '../tooltip';
-import Button from '../button';
-import CopyIcon from '../icon/copy-icon.component';
-import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import Box from '../box';
-import Typography from '../typography';
+import { I18nContext } from '../../contexts/i18n';
+import Tooltip from '../../components/ui/tooltip';
+import Button from '../../components/ui/button';
+import CopyIcon from '../../components/ui/icon/copy-icon.component';
+import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
+import Box from '../../components/ui/box';
+import Typography from '../../components/ui/typography';
 import {
   COLORS,
   TYPOGRAPHY,
   FONT_WEIGHT,
-} from '../../../helpers/constants/design-system';
+  DISPLAY,
+  TEXT_ALIGN,
+  OVERFLOW_WRAP,
+} from '../../helpers/constants/design-system';
 
-const TokenDetails = ({
+const TokenDetailsScreen = ({
   address,
   onClose = null,
   onHideToken = null,
@@ -35,26 +38,26 @@ const TokenDetails = ({
     <Box className="page-container token-details">
       <Box marginLeft={5} marginRight={6}>
         <Typography
-          className="token-details__token-details-title"
           fontWeight={FONT_WEIGHT.BOLD}
           margin={[4, 0, 0, 0]}
           variant={TYPOGRAPHY.H6}
           color={COLORS.BLACK}
-          onClick={onClose}
         >
           {t('tokenDetailsTitle')}
+          <button onClick={onClose} className="token-details__closeButton" />
         </Typography>
-        <Box className="token-details__address">
+        <Box display={DISPLAY.FLEX} marginTop={4}>
           <Typography
-            align="center"
+            align={TEXT_ALIGN.CENTER}
             fontWeight={FONT_WEIGHT.BOLD}
             margin={[0, 5, 0, 0]}
             variant={TYPOGRAPHY.H4}
             color={COLORS.BLACK}
+            className="token-details__token-value"
           >
             {value}
           </Typography>
-          {icon}
+          <Box marginTop={1}>{icon}</Box>
         </Box>
         <Typography
           margin={[4, 0, 0, 0]}
@@ -71,19 +74,20 @@ const TokenDetails = ({
         >
           {t('tokenContractAddress')}
         </Typography>
-        <Box className="token-details__copy-token-contract-address">
+        <Box display={DISPLAY.FLEX}>
           <Typography
             variant={TYPOGRAPHY.H7}
             margin={[2, 0, 0, 0]}
             color={COLORS.BLACK}
-            className="token-details__copy-token-contract-address__token-address"
+            overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+            className="token-details__token-address"
           >
             {address}
           </Typography>
           <Tooltip
             position="bottom"
             title={copied ? t('copiedExclamation') : t('copyToClipboard')}
-            containerClassName="token-details__copy-token-contract-address__copy-icon"
+            containerClassName="token-details__copy-icon"
           >
             <button
               type="link"
@@ -91,6 +95,7 @@ const TokenDetails = ({
                 handleCopy(address);
               }}
               title=""
+              className="token-details__copyButton"
             >
               <CopyIcon size={11} color="#037DD6" />
             </button>
@@ -140,7 +145,7 @@ const TokenDetails = ({
   );
 };
 
-TokenDetails.propTypes = {
+TokenDetailsScreen.propTypes = {
   address: PropTypes.string,
   onClose: PropTypes.func,
   onHideToken: PropTypes.func,
@@ -151,4 +156,4 @@ TokenDetails.propTypes = {
   network: PropTypes.string,
 };
 
-export default TokenDetails;
+export default TokenDetailsScreen;

@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { getTokens } from '../../../ducks/metamask/metamask';
-import { getSendAssetAddress } from '../../../ducks/send';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { isEqualCaseInsensitive } from '../../../helpers/utils/util';
-import TokenDetailsScreen from './token-details.container';
+import { getTokens } from '../../ducks/metamask/metamask';
+import { getSendAssetAddress } from '../../ducks/send';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { isEqualCaseInsensitive } from '../../helpers/utils/util';
+import ShowTokenDetails from './token-details.container';
 
 const TokenDetails = () => {
   const tokens = useSelector(getTokens);
@@ -27,7 +27,7 @@ const TokenDetails = () => {
 
   let content;
   if (token) {
-    content = <TokenDetailsScreen token={token} />;
+    content = <ShowTokenDetails token={token} />;
   } else {
     content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }

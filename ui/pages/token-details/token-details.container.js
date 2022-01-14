@@ -2,16 +2,16 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Identicon from '../identicon/identicon.component';
-import { I18nContext } from '../../../contexts/i18n';
-import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { showModal } from '../../../store/actions';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
-import { ASSET_ROUTE } from '../../../helpers/constants/routes';
-import TokenDetails from './token-details.component';
+import Identicon from '../../components/ui/identicon/identicon.component';
+import { I18nContext } from '../../contexts/i18n';
+import { useTokenTracker } from '../../hooks/useTokenTracker';
+import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
+import { showModal } from '../../store/actions';
+import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
+import { ASSET_ROUTE } from '../../helpers/constants/routes';
+import TokenDetailsScreen from './token-details-screen';
 
-export default function TokenDetailsScreen({ token }) {
+export default function ShowTokenDetails({ token }) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useContext(I18nContext);
@@ -31,7 +31,7 @@ export default function TokenDetailsScreen({ token }) {
   const { nickname: networkNickname, type: networkType } = currentNetwork;
 
   return (
-    <TokenDetails
+    <TokenDetailsScreen
       value={balanceToRender}
       onClose={() => history.push(`${ASSET_ROUTE}/${token.address}`)}
       currentCurrency={formattedFiatBalance || ''}
@@ -52,7 +52,7 @@ export default function TokenDetailsScreen({ token }) {
   );
 }
 
-TokenDetailsScreen.propTypes = {
+ShowTokenDetails.propTypes = {
   token: PropTypes.shape({
     address: PropTypes.string.isRequired,
     decimals: PropTypes.number,

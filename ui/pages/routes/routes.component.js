@@ -33,7 +33,7 @@ import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
-import TokenDetails from '../../components/ui/token-details/token-details';
+import TokenDetails from '../token-details/token-details';
 
 import {
   IMPORT_TOKEN_ROUTE,

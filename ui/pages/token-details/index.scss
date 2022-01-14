@@ -1,0 +1,50 @@
+.token-details {
+  width: 359px;
+
+  @media screen and (max-width: $break-small) {
+    .page-container {
+      max-height: 82vh;
+      margin-right: auto;
+      margin-left: auto;
+    }
+  }
+
+  &__closeButton {
+    background: none;
+    float: right;
+    margin-top: -8px;
+    margin-right: -4px;
+
+    &::after {
+      font-size: 24px;
+      content: '\00D7';
+    }
+  }
+
+  &__token-value {
+    font-size: 32px;
+  }
+
+  &__copyButton {
+    background: none;
+    margin-top: 8px;
+  }
+
+  &__token-address {
+    width: 222px;
+  }
+
+  &__copy-icon {
+    margin-left: 72px;
+  }
+
+  &__hide-token-button {
+    width: 319px;
+    height: 39px;
+    margin-top: 70px;
+  }
+
+  .btn--rounded.btn-primary {
+    background-color: #fff;
+  }
+}
