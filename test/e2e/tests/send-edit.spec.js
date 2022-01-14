@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const {
+  convertToHexValue,
   withFixtures,
   tinyDelayMs,
   regularDelayMs,
@@ -13,7 +14,7 @@ describe('Editing Confirm Transaction', function () {
         {
           secretKey:
             '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: '0x15af1d78b58c40000',
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
@@ -91,27 +92,27 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
-    const ganacheOptions = {
-      hardfork: 'london',
-      accounts: [
+  if (process.env.EIP_1559_V2 === '1') {
+    it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
+      const ganacheOptions = {
+        hardfork: 'london',
+        accounts: [
+          {
+            secretKey:
+              '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+            balance: convertToHexValue(25000000000000000000),
+          },
+        ],
+      };
+      await withFixtures(
         {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: '0x15af1d78b58c40000',
+          fixtures: 'send-edit-v2',
+          ganacheOptions,
+          title: this.test.title,
         },
-      ],
-    };
-    await withFixtures(
-      {
-        fixtures: 'send-edit-v2',
-        ganacheOptions,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
+        async ({ driver }) => {
+          await driver.navigate();
 
-        if (process.env.EIP_1559_V2 === '1') {
           await driver.fill('#password', 'correct horse battery staple');
           await driver.press('#password', driver.Key.ENTER);
 
@@ -196,8 +197,8 @@ describe('Editing Confirm Transaction', function () {
           );
           assert.equal(txValues.length, 1);
           assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
-        }
-      },
-    );
-  });
+        },
+      );
+    });
+  }
 });
