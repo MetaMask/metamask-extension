@@ -934,7 +934,8 @@ export default function ViewQuote() {
               if (!balanceError) {
                 if (
                   currentSmartTransactionsEnabled &&
-                  smartTransactionsOptInStatus
+                  smartTransactionsOptInStatus &&
+                  smartTransactionFees
                 ) {
                   dispatch(
                     signAndSendSwapsSmartTransaction({
@@ -963,7 +964,8 @@ export default function ViewQuote() {
               (networkAndAccountSupports1559 &&
                 baseAndPriorityFeePerGas === undefined) ||
               (!networkAndAccountSupports1559 &&
-                (gasPrice === null || gasPrice === undefined))
+                (gasPrice === null || gasPrice === undefined)) ||
+              (currentSmartTransactionsEnabled && currentSmartTransactionsError)
             }
             className={isShowingWarning && 'view-quote__thin-swaps-footer'}
             showTopBorder
