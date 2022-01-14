@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Zavrni"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skeniraj QR kodo"
+  },
   "about": {
     "message": "O možnostih"
   },
@@ -69,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Potrdi"
@@ -247,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Trenutni jezik"
+  },
+  "custom": {
+    "message": "Napredno"
   },
   "customGas": {
     "message": "Prilagodi gas"
@@ -514,6 +531,9 @@
     "message": "Testno omrežje Kovan"
   },
   "learnMore": {
+    "message": "Preberite več"
+  },
+  "learnMoreUpperCase": {
     "message": "Preberite več"
   },
   "ledgerAccountRestriction": {

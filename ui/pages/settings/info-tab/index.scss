@@ -41,21 +41,21 @@
     @include H6;
 
     padding-top: 5px;
-    color: $dusty-gray;
+    color: var(--dusty-gray);
   }
 
   &__separator {
     margin: 15px 0;
     width: 80px;
-    border-color: $alto;
+    border-color: var(--alto);
     border: none;
     height: 1px;
-    background-color: $alto;
-    color: $alto;
+    background-color: var(--alto);
+    color: var(--alto);
   }
 
   &__about {
-    color: $dusty-gray;
+    color: var(--dusty-gray);
     margin-bottom: 15px;
   }
 }

@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Hylkää"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Lue QR-koodi"
+  },
   "about": {
     "message": "Tietoja asetuksista"
   },
@@ -69,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Hyväksy"
@@ -247,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Nykyinen kieli"
+  },
+  "custom": {
+    "message": "Lisäasetukset"
   },
   "customGas": {
     "message": "Mukauta bensa"
@@ -520,6 +537,9 @@
     "message": "Kovanin koeverkko"
   },
   "learnMore": {
+    "message": "Lisätietoa"
+  },
+  "learnMoreUpperCase": {
     "message": "Lisätietoa"
   },
   "ledgerAccountRestriction": {

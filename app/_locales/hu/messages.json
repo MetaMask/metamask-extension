@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Elutasítás"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR-kód beolvasása"
+  },
   "about": {
     "message": "Névjegy"
   },
@@ -69,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Jóváhagyás"
@@ -247,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Aktuális nyelv"
+  },
+  "custom": {
+    "message": "Speciális"
   },
   "customGas": {
     "message": "Gáz testreszabása"
@@ -516,6 +533,9 @@
     "message": "Kovan teszthálózat"
   },
   "learnMore": {
+    "message": "Tudjon meg többet"
+  },
+  "learnMoreUpperCase": {
     "message": "Tudjon meg többet"
   },
   "ledgerAccountRestriction": {

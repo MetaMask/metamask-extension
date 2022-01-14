@@ -16,7 +16,7 @@
   &__sender-to-recipient-header {
     display: flex;
     font-size: 14px;
-    color: $Black-100;
+    color: var(--Black-100);
     font-weight: bold;
     padding-bottom: 7px;
 
@@ -34,7 +34,7 @@
 
     & > div:first-child {
       font-size: 14px;
-      color: $Black-100;
+      color: var(--Black-100);
       font-weight: bold;
     }
 

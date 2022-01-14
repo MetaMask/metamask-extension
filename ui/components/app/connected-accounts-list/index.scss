@@ -24,7 +24,7 @@
     @extend %account-status-typography;
 
     display: inline;
-    color: $Grey-500;
+    color: var(--Grey-500);
   }
 
   &__account-status-link {
@@ -34,7 +34,7 @@
 
     &,
     &:hover {
-      color: $primary-blue;
+      color: var(--primary-blue);
       cursor: pointer;
     }
   }
@@ -46,11 +46,11 @@
     align-items: center;
     width: 100%;
     padding: 16px 24px;
-    border-top: 1px solid $geyser;
+    border-top: 1px solid var(--geyser);
 
     &--highlight {
-      background-color: $Yellow-000;
-      border: 1px solid $accent-yellow;
+      background-color: var(--Yellow-000);
+      border: 1px solid var(--accent-yellow);
       box-sizing: border-box;
       padding: 16px;
       margin-bottom: 16px;
@@ -69,7 +69,7 @@
   &__button {
     font-size: $font-size-h4;
     background: inherit;
-    color: $Grey-500;
+    color: var(--Grey-500);
   }
 }
 

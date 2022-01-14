@@ -9,8 +9,8 @@ import {
   checkNetworkAndAccountSupports1559,
   getShouldShowFiat,
 } from '../../selectors';
-import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
+import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
 
 import { useCurrencyDisplay } from '../useCurrencyDisplay';
 import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
@@ -33,12 +33,23 @@ const getMaxPriorityFeePerGasFromTransaction = (transaction) => {
  * @property {(DecGweiString) => void} setMaxPriorityFeePerGas - state setter
  *  method to update the maxPriorityFeePerGas.
  */
+
+/**
+ * @param options
+ * @param options.supportsEIP1559V2
+ * @param options.estimateToUse
+ * @param options.gasEstimateType
+ * @param options.gasFeeEstimates
+ * @param options.gasLimit
+ * @param options.transaction
+ * @returns {MaxPriorityFeePerGasInputReturnType}
+ */
 export function useMaxPriorityFeePerGasInput({
-  EIP_1559_V2,
   estimateToUse,
   gasEstimateType,
   gasFeeEstimates,
   gasLimit,
+  supportsEIP1559V2,
   transaction,
 }) {
   const supportsEIP1559 =
@@ -52,25 +63,22 @@ export function useMaxPriorityFeePerGasInput({
 
   const showFiat = useSelector(getShouldShowFiat);
 
-  const maxPriorityFeePerGasFromTransaction = supportsEIP1559
+  const initialMaxPriorityFeePerGas = supportsEIP1559
     ? getMaxPriorityFeePerGasFromTransaction(transaction)
     : 0;
 
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(() => {
-    if (maxPriorityFeePerGasFromTransaction && feeParamsAreCustom(transaction))
-      return maxPriorityFeePerGasFromTransaction;
+    if (initialMaxPriorityFeePerGas && feeParamsAreCustom(transaction)) {
+      return initialMaxPriorityFeePerGas;
+    }
     return null;
   });
 
   useEffect(() => {
-    if (EIP_1559_V2) {
-      setMaxPriorityFeePerGas(maxPriorityFeePerGasFromTransaction);
+    if (supportsEIP1559V2 && initialMaxPriorityFeePerGas) {
+      setMaxPriorityFeePerGas(initialMaxPriorityFeePerGas);
     }
-  }, [
-    EIP_1559_V2,
-    maxPriorityFeePerGasFromTransaction,
-    setMaxPriorityFeePerGas,
-  ]);
+  }, [initialMaxPriorityFeePerGas, setMaxPriorityFeePerGas, supportsEIP1559V2]);
 
   const maxPriorityFeePerGasToUse =
     maxPriorityFeePerGas ??
@@ -79,7 +87,7 @@ export function useMaxPriorityFeePerGasInput({
       gasFeeEstimates,
       gasEstimateType,
       estimateToUse,
-      maxPriorityFeePerGasFromTransaction,
+      initialMaxPriorityFeePerGas || 0,
     );
 
   // We need to display the estimated fiat currency impact of the

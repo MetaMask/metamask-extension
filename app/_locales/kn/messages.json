@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "ತಿರಸ್ಕರಿಸಿ"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ"
+  },
   "about": {
     "message": "ಕುರಿತು"
   },
@@ -69,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "ಅನುಮೋದಿಸಿ"
@@ -247,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "ಪ್ರಸ್ತುತ ಭಾಷೆ"
+  },
+  "custom": {
+    "message": "ಸುಧಾರಿತ"
   },
   "customGas": {
     "message": "ಗ್ಯಾಸ್ ಕಸ್ಟಮೈಸ್ ಮಾಡಿ"
@@ -520,6 +537,9 @@
     "message": "Kovan ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
   "learnMore": {
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+  },
+  "learnMoreUpperCase": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "ledgerAccountRestriction": {

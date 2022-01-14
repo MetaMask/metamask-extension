@@ -1,6 +1,6 @@
 .actionable-message {
-  background: $Blue-000;
-  border: 1px solid $Blue-200;
+  background: var(--Blue-000);
+  border: 1px solid var(--Blue-200);
   border-radius: 8px;
   padding: 16px;
   margin-top: 18px;
@@ -31,7 +31,7 @@
   @include H7;
 
   &__message {
-    color: $Blue-600;
+    color: var(--Blue-600);
     text-align: center;
   }
 
@@ -41,7 +41,7 @@
     justify-content: flex-end;
     align-items: center;
     margin-top: 10px;
-    color: $Blue-600;
+    color: var(--Blue-600);
 
     &--single {
       width: 100%;
@@ -56,13 +56,13 @@
     }
 
     &-danger {
-      background: $Red-500;
+      background: var(--Red-500);
       color: #fff;
     }
   }
 
   &__action-v2 {
-    color: $primary-1;
+    color: var(--primary-1);
     background: none;
     border: none;
     font-size: 12px;
@@ -78,13 +78,13 @@
   }
 
   &--warning {
-    background: $Yellow-100;
-    border: 1px solid $Yellow-500;
+    background: var(--Yellow-100);
+    border: 1px solid var(--Yellow-500);
     justify-content: center;
 
     .actionable-message__message,
     .actionable-message__action {
-      color: $Black-100;
+      color: var(--Black-100);
     }
 
     .actionable-message__action--secondary {
@@ -93,22 +93,22 @@
   }
 
   &--danger {
-    background: $Red-000;
-    border: 1px solid $Red-300;
+    background: var(--Red-000);
+    border: 1px solid var(--Red-300);
     justify-content: flex-start;
 
     .actionable-message__message {
-      color: $Black-100;
+      color: var(--Black-100);
       text-align: left;
     }
   }
 
   &--info {
-    background: $Green-000;
-    border: 1px solid $Green-200;
+    background: var(--Green-000);
+    border: 1px solid var(--Green-200);
 
     .actionable-message__message {
-      color: $Black-100;
+      color: var(--Black-100);
     }
   }
 
@@ -149,6 +149,6 @@
 
 .actionable-message--warning.actionable-message--with-right-button {
   .actionable-message__action {
-    background: $Yellow-500;
+    background: var(--Yellow-500);
   }
 }

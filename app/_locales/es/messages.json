@@ -148,6 +148,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approvalAndAggregatorTxFeeCost": {
     "message": "Cuota de red de agregador y aprobación"
   },
@@ -251,9 +259,6 @@
   },
   "buyWithWyreDescription": {
     "message": "Wyre le permite usar una tarjeta de débito para depositar ETH directamente en su cuenta de MetaMask."
-  },
-  "bytes": {
-    "message": "Bytes"
   },
   "canToggleInSettings": {
     "message": "Puede volver a activar esta notificación desde Configuración -> Alertas."
@@ -688,9 +693,6 @@
   "ethereumPublicAddress": {
     "message": "Dirección pública de Ethereum"
   },
-  "etherscan": {
-    "message": "Etherscan"
-  },
   "etherscanView": {
     "message": "Ver cuenta en Etherscan"
   },
@@ -794,9 +796,6 @@
     "message": "Política de privacidad aquí",
     "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
   },
-  "general": {
-    "message": "General"
-  },
   "generalSettingsDescription": {
     "message": "Conversión de moneda, moneda principal, idioma, Blockies Identicon"
   },
@@ -816,15 +815,8 @@
   "happyToSeeYou": {
     "message": "Nos alegra verlo."
   },
-  "hardware": {
-    "message": "Hardware"
-  },
   "hardwareWalletConnected": {
     "message": "Cartera de hardware conectada"
-  },
-  "hardwareWalletLegacyDescription": {
-    "message": "(legacy)",
-    "description": "Text representing the MEW path"
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "Haga clic aquí"
@@ -1131,14 +1123,8 @@
   "networkName": {
     "message": "Nombre de la red"
   },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
   "networkNameDefinition": {
     "message": "El nombre asociado a esta red."
-  },
-  "networkNameEthereum": {
-    "message": "Ethereum"
   },
   "networkNameTestnet": {
     "message": "Red de prueba"
@@ -1219,9 +1205,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "No se encontró cámara web"
-  },
-  "nonce": {
-    "message": "Nonce"
   },
   "nonceField": {
     "message": "Personalizar nonce de transacción"
@@ -1807,9 +1790,6 @@
     "message": "Necesita $1 más $2 para completar este canje",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
-  "swapBetterQuoteAvailable": {
-    "message": "Hay una mejor cotización disponible"
-  },
   "swapBuildQuotePlaceHolderText": {
     "message": "No hay tokens disponibles que coincidan con $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
@@ -1835,13 +1815,6 @@
   "swapEnableDescription": {
     "message": "Esta acción es obligatoria y le da permiso a MetaMask para canjear su $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFee": {
-    "message": "Cuota de red estimada"
-  },
-  "swapEstimatedNetworkFeeSummary": {
-    "message": "“$1” es la cuota real que esperamos que sea. El monto exacto depende de las condiciones de la red.",
-    "description": "$1 will be the translation of swapEstimatedNetworkFee, with the font bolded"
   },
   "swapEstimatedNetworkFees": {
     "message": "Cuotas de red estimadas"
@@ -1878,13 +1851,6 @@
   "swapLowSlippageError": {
     "message": "Es posible que la transacción tenga errores, el desfase máximo es demasiado bajo."
   },
-  "swapMaxNetworkFeeInfo": {
-    "message": "“$1” es el máximo que gastará. Cuando la red es volátil, puede ser un monto grande.",
-    "description": "$1 will be the translation of swapMaxNetworkFees, with the font bolded"
-  },
-  "swapMaxNetworkFees": {
-    "message": "Cuota máxima de red"
-  },
   "swapMaxSlippage": {
     "message": "Desfase máximo"
   },
@@ -1894,13 +1860,6 @@
   "swapMetaMaskFeeDescription": {
     "message": "Buscamos el mejor precio en las fuentes de liquidez más importantes, todo el tiempo. Se incorpora de manera automática a esta cotización una cuota del $1 %.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotes": {
-    "message": "$1 cotizaciones",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
-  "swapNetworkFeeSummary": {
-    "message": "La cuota de red cubre el costo de procesamiento del canje y su almacenamiento en la red de $1. MetaMask no se beneficia de esta cuota."
   },
   "swapNewQuoteIn": {
     "message": "Cotizaciones nuevas en $1",
@@ -1936,19 +1895,12 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración \"tolerancia de desfase\"."
   },
-  "swapQuoteIncludesRate": {
-    "message": "La cotización incluye una cuota de MetaMask de $1 %",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
-  },
   "swapQuoteNofN": {
     "message": "Cotización $1 de $2",
     "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Fuente de la cotización"
-  },
-  "swapQuotesAreRefreshed": {
-    "message": "Las cotizaciones se actualizan con frecuencia para reflejar las condiciones actuales del mercado."
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Solicite cotizaciones nuevas para tener los costos más recientes."
@@ -2010,9 +1962,6 @@
   "swapSwapTo": {
     "message": "Canjear a"
   },
-  "swapThisWillAllowApprove": {
-    "message": "Esto permitirá canjear $1."
-  },
   "swapToConfirmWithHwWallet": {
     "message": "confirmar con la cartera de hardware"
   },
@@ -2050,9 +1999,6 @@
   },
   "swapUnknown": {
     "message": "Desconocido"
-  },
-  "swapUsingBestQuote": {
-    "message": "Uso de la mejor cotización"
   },
   "swapVerifyTokenExplanation": {
     "message": "Varios tokens pueden usar el mismo nombre y símbolo. Revise $1 para comprobar que este es el token que busca.",
@@ -2157,9 +2103,6 @@
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "token": {
-    "message": "Token"
-  },
   "tokenAlreadyAdded": {
     "message": "Ya se agregó el token."
   },
@@ -2174,9 +2117,6 @@
   },
   "tooltipApproveButton": {
     "message": "Comprendo"
-  },
-  "total": {
-    "message": "Total"
   },
   "transaction": {
     "message": "transacción"

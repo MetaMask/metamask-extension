@@ -6,7 +6,10 @@ import {
 } from '../helpers/utils/transactions.util';
 import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
-import { getTokenAddressParam } from '../helpers/utils/token-util';
+import {
+  getTokenAddressParam,
+  getTokenValueParam,
+} from '../helpers/utils/token-util';
 import {
   isEqualCaseInsensitive,
   formatDateWithYearContext,
@@ -18,7 +21,7 @@ import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
-import { getTokens } from '../ducks/metamask/metamask';
+import { getCollectibles, getTokens } from '../ducks/metamask/metamask';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_GROUP_CATEGORIES,
@@ -36,15 +39,15 @@ import { useCurrentAsset } from './useCurrentAsset';
 
 /**
  * @typedef {Object} TransactionDisplayData
- * @property {string} title                  - primary description of the transaction
- * @property {string} subtitle               - supporting text describing the transaction
- * @property {bool}   subtitleContainsOrigin - true if the subtitle includes the origin of the tx
- * @property {string} category               - the transaction category
- * @property {string} primaryCurrency        - the currency string to display in the primary position
- * @property {string} [secondaryCurrency]    - the currency string to display in the secondary position
- * @property {string} status                 - the status of the transaction
- * @property {string} senderAddress          - the Ethereum address of the sender
- * @property {string} recipientAddress       - the Ethereum address of the recipient
+ * @property {string} title - primary description of the transaction
+ * @property {string} subtitle - supporting text describing the transaction
+ * @property {bool} subtitleContainsOrigin - true if the subtitle includes the origin of the tx
+ * @property {string} category - the transaction category
+ * @property {string} primaryCurrency - the currency string to display in the primary position
+ * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
+ * @property {string} status - the status of the transaction
+ * @property {string} senderAddress - the Ethereum address of the sender
+ * @property {string} recipientAddress - the Ethereum address of the recipient
  */
 
 /**
@@ -54,8 +57,9 @@ import { useCurrentAsset } from './useCurrentAsset';
  * state access required to take a transactionGroup and derive from it a shape
  * of data that can power all views related to a transaction. Presently the main
  * case is for shared logic between transaction-list-item and transaction-detail-view
+ *
  * @param {Object} transactionGroup - group of transactions
- * @return {TransactionDisplayData}
+ * @returns {TransactionDisplayData}
  */
 export function useTransactionDisplayData(transactionGroup) {
   // To determine which primary currency to display for swaps transactions we need to be aware
@@ -63,6 +67,7 @@ export function useTransactionDisplayData(transactionGroup) {
   const dispatch = useDispatch();
   const currentAsset = useCurrentAsset();
   const knownTokens = useSelector(getTokens);
+  const knownCollectibles = useSelector(getCollectibles);
   const t = useI18nContext();
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
@@ -102,10 +107,24 @@ export function useTransactionDisplayData(transactionGroup) {
     knownTokens.find(({ address }) =>
       isEqualCaseInsensitive(address, recipientAddress),
     );
+
   const tokenData = useTokenData(
     initialTransaction?.txParams?.data,
     isTokenCategory,
   );
+
+  // If this is an ERC20 token transaction this value is equal to the amount sent
+  // If it is an ERC721 token transaction it is the tokenId being sent
+  const tokenAmountOrTokenId = getTokenValueParam(tokenData);
+
+  const collectible =
+    isTokenCategory &&
+    knownCollectibles.find(
+      ({ address, tokenId }) =>
+        isEqualCaseInsensitive(address, recipientAddress) &&
+        tokenId === tokenAmountOrTokenId,
+    );
+
   const tokenDisplayValue = useTokenDisplayValue(
     initialTransaction?.txParams?.data,
     token,
@@ -219,7 +238,9 @@ export function useTransactionDisplayData(transactionGroup) {
     type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER
   ) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;
-    title = t('sendSpecifiedTokens', [token?.symbol || t('token')]);
+    title = t('sendSpecifiedTokens', [
+      token?.symbol || collectible?.name || t('token'),
+    ]);
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TRANSACTION_TYPES.SIMPLE_SEND) {

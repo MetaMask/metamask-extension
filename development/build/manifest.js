@@ -1,6 +1,6 @@
 const { promises: fs } = require('fs');
 const path = require('path');
-const { merge, cloneDeep } = require('lodash');
+const { mergeWith, cloneDeep } = require('lodash');
 
 const baseManifest = require('../../app/manifest/_base.json');
 
@@ -28,11 +28,12 @@ function createManifestTasks({
             `${platform}.json`,
           ),
         );
-        const result = merge(
+        const result = mergeWith(
           cloneDeep(baseManifest),
           platformModifications,
           browserVersionMap[platform],
           await getBuildModifications(buildType, platform),
+          customArrayMerge,
         );
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });
@@ -98,6 +99,14 @@ function createManifestTasks({
         }),
       );
     };
+  }
+
+  // helper for merging obj value
+  function customArrayMerge(objValue, srcValue) {
+    if (Array.isArray(objValue)) {
+      return [...new Set([...objValue, ...srcValue])];
+    }
+    return undefined;
   }
 }
 

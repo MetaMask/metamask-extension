@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Atmesti"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Nuskaityti QR kodą"
+  },
   "about": {
     "message": "Apie"
   },
@@ -67,8 +73,16 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "„MetaMask“",
+    "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Patvirtinti"
@@ -247,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Dabartinė kalba"
+  },
+  "custom": {
+    "message": "Išplėstiniai"
   },
   "customGas": {
     "message": "Pritaikyti dujas"
@@ -520,6 +537,9 @@
     "message": "„Kovan“ bandomasis tinklas"
   },
   "learnMore": {
+    "message": "Sužinokite daugiau"
+  },
+  "learnMoreUpperCase": {
     "message": "Sužinokite daugiau"
   },
   "ledgerAccountRestriction": {

@@ -42,7 +42,7 @@
     @include H5;
 
     font-weight: bold;
-    color: $Black-100;
+    color: var(--Black-100);
     margin-top: 3px;
   }
 
@@ -67,7 +67,7 @@
   &__max-button {
     @include H7;
 
-    color: $Blue-500;
+    color: var(--Blue-500);
     cursor: pointer;
   }
 
@@ -75,7 +75,7 @@
     @include H7;
 
     width: 100%;
-    color: $Grey-500;
+    color: var(--Grey-500);
     margin-top: 4px;
     display: flex;
     flex-flow: column;
@@ -84,17 +84,17 @@
     &--error {
       div:first-of-type {
         font-weight: bold;
-        color: $Black-100;
+        color: var(--Black-100);
       }
 
       .build-quote__form-error:first-of-type {
         font-weight: bold;
-        color: $Red-500;
+        color: var(--Red-500);
       }
 
       div:last-of-type {
         font-weight: normal;
-        color: $Grey-500;
+        color: var(--Grey-500);
       }
     }
   }
@@ -142,7 +142,7 @@
     @include H7;
 
     width: 100%;
-    color: $Grey-500;
+    color: var(--Grey-500);
     margin-top: 4px;
 
     .info-tooltip {
@@ -151,7 +151,7 @@
   }
 
   &__token-etherscan-link {
-    color: $Blue-500;
+    color: var(--Blue-500);
     cursor: pointer;
   }
 

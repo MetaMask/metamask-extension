@@ -9,7 +9,13 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import { PRIMARY } from '../../../helpers/constants/common';
+import {
+  PRIMARY,
+  SUPPORT_LINK,
+  ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
+  SUPPORT_REQUEST_LINK,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../helpers/constants/common';
 import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
 import {
   SETTINGS_ROUTE,
@@ -21,8 +27,6 @@ import {
 import TextField from '../../ui/text-field';
 import SearchIcon from '../../ui/search-icon';
 import Button from '../../ui/button';
-
-import { isBeta } from '../../../helpers/utils/build-types';
 
 export function AccountMenuItem(props) {
   const { icon, children, text, subText, className, onClick } = props;
@@ -70,7 +74,7 @@ export default class AccountMenu extends Component {
     selectedAddress: PropTypes.string,
     showAccountDetail: PropTypes.func,
     toggleAccountMenu: PropTypes.func,
-    addressConnectedDomainMap: PropTypes.object,
+    addressConnectedSubjectMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
   };
 
@@ -147,7 +151,7 @@ export default class AccountMenu extends Component {
       selectedAddress,
       keyrings,
       showAccountDetail,
-      addressConnectedDomainMap,
+      addressConnectedSubjectMap,
       originOfCurrentTab,
     } = this.props;
     const { searchQuery } = this.state;
@@ -177,8 +181,9 @@ export default class AccountMenu extends Component {
           kr.accounts.includes(identity.address)
         );
       });
-      const addressDomains = addressConnectedDomainMap[identity.address] || {};
-      const iconAndNameForOpenDomain = addressDomains[originOfCurrentTab];
+      const addressSubjects =
+        addressConnectedSubjectMap[identity.address] || {};
+      const iconAndNameForOpenSubject = addressSubjects[originOfCurrentTab];
 
       return (
         <div
@@ -210,11 +215,11 @@ export default class AccountMenu extends Component {
             />
           </div>
           {this.renderKeyringType(keyring)}
-          {iconAndNameForOpenDomain ? (
+          {iconAndNameForOpenSubject ? (
             <div className="account-menu__icon-list">
               <SiteIcon
-                icon={iconAndNameForOpenDomain.icon}
-                name={iconAndNameForOpenDomain.name}
+                icon={iconAndNameForOpenSubject.icon}
+                name={iconAndNameForOpenSubject.name}
                 size={32}
               />
             </div>
@@ -319,11 +324,11 @@ export default class AccountMenu extends Component {
     }
 
     let supportText = t('support');
-    let supportLink = 'https://support.metamask.io';
-    if (isBeta()) {
-      supportText = t('needHelpSubmitTicket');
-      supportLink = 'https://metamask.zendesk.com/hc/en-us/requests/new';
-    }
+    let supportLink = SUPPORT_LINK;
+    ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
+    supportText = t('needHelpSubmitTicket');
+    supportLink = SUPPORT_REQUEST_LINK;
+    ///: END:ONLY_INCLUDE_IN
 
     return (
       <div className="account-menu">

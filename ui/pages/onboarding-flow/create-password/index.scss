@@ -9,7 +9,7 @@
   }
 
   &__link-text {
-    color: $primary-1;
+    color: var(--primary-1);
   }
 
   &__form {
@@ -25,7 +25,7 @@
 
     &--checkmark {
       i {
-        color: $success-1;
+        color: var(--success-1);
       }
     }
 

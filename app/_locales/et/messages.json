@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Lükka tagasi"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skannige QR-koos"
+  },
   "about": {
     "message": "Teave"
   },
@@ -69,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Kinnita"
@@ -247,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Praegune keel"
+  },
+  "custom": {
+    "message": "Täpsemad"
   },
   "customGas": {
     "message": "Gaasi kohandamine"
@@ -516,6 +533,9 @@
     "message": "Kovani testvõrk"
   },
   "learnMore": {
+    "message": "Lisateave"
+  },
+  "learnMoreUpperCase": {
     "message": "Lisateave"
   },
   "ledgerAccountRestriction": {

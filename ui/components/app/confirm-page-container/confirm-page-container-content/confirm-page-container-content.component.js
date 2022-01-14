@@ -25,6 +25,7 @@ export default class ConfirmPageContainerContent extends Component {
     nonce: PropTypes.string,
     subtitleComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    image: PropTypes.string,
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
     origin: PropTypes.string.isRequired,
@@ -68,12 +69,14 @@ export default class ConfirmPageContainerContent extends Component {
         <Tab className="confirm-page-container-content__tab" name={t('data')}>
           {dataComponent}
         </Tab>
-        <Tab
-          className="confirm-page-container-content__tab"
-          name={t('dataHex')}
-        >
-          {dataHexComponent}
-        </Tab>
+        {dataHexComponent && (
+          <Tab
+            className="confirm-page-container-content__tab"
+            name={t('dataHex')}
+          >
+            {dataHexComponent}
+          </Tab>
+        )}
       </Tabs>
     );
   }
@@ -85,6 +88,7 @@ export default class ConfirmPageContainerContent extends Component {
       errorMessage,
       hasSimulationError,
       title,
+      image,
       titleComponent,
       subtitleComponent,
       hideSubtitle,
@@ -138,6 +142,7 @@ export default class ConfirmPageContainerContent extends Component {
           })}
           action={action}
           title={title}
+          image={image}
           titleComponent={titleComponent}
           subtitleComponent={subtitleComponent}
           hideSubtitle={hideSubtitle}

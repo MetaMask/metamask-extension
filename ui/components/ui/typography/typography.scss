@@ -17,7 +17,7 @@
 
   @each $variant, $color in design-system.$color-map {
     &--color-#{$variant} {
-      color: $color;
+      color: var($color);
     }
   }
 
@@ -33,15 +33,15 @@
     }
   }
 
-  @each $size in design-system.$font-size {
-    &--size-#{$size} {
-      font-size: $size;
-    }
-  }
-
   @each $alignment in design-system.$text-align {
     &--align-#{$alignment} {
       text-align: $alignment;
+    }
+  }
+
+  @each $overflow in design-system.$overflow-wrap {
+    &--overflowwrap-#{$overflow} {
+      overflow-wrap: $overflow;
     }
   }
 

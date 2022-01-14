@@ -14,7 +14,7 @@
 
     width: 100%;
     font-weight: 500;
-    color: $black;
+    color: var(--black);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -43,7 +43,7 @@
     background-color: unset;
 
     &:hover {
-      background-color: $Grey-000;
+      background-color: var(--Grey-000);
     }
 
     &:active {

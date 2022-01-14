@@ -86,23 +86,22 @@ export default class ExtensionPlatform {
 
     const versionParts = version.split('.');
     if (versionName) {
-      // On Chrome, the build type is stored as `version_name` in the manifest, and the fourth part
-      // of the version is the build version.
-      const buildType = versionName;
       if (versionParts.length < 4) {
         throw new Error(`Version missing build number: '${version}'`);
       }
-      const [major, minor, patch, buildVersion] = versionParts;
-
-      return `${major}.${minor}.${patch}-${buildType}.${buildVersion}`;
-    } else if (versionParts.length === 4) {
+      // On Chrome, a more descriptive representation of the version is stored
+      // in the `version_name` field for display purposes.
+      return versionName;
+    } else if (versionParts.length !== 3) {
+      throw new Error(`Invalid version: ${version}`);
+    } else if (versionParts[2].match(/[^\d]/u)) {
       // On Firefox, the build type and build version are in the fourth part of the version.
-      const [major, minor, patch, prerelease] = versionParts;
-      const matches = prerelease.match(/^(\w+)(\d)+$/u);
+      const [major, minor, patchAndPrerelease] = versionParts;
+      const matches = patchAndPrerelease.match(/^(\d+)([A-Za-z]+)(\d)+$/u);
       if (matches === null) {
         throw new Error(`Version contains invalid prerelease: ${version}`);
       }
-      const [, buildType, buildVersion] = matches;
+      const [, patch, buildType, buildVersion] = matches;
       return `${major}.${minor}.${patch}-${buildType}.${buildVersion}`;
     }
 

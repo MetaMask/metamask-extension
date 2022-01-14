@@ -24,19 +24,14 @@ const hexRe = /^[0-9A-Fa-f]+$/gu;
  * @property {string} status Indicates whether the decryption request is 'unapproved', 'approved', 'decrypted' or 'rejected'
  * @property {string} type The json-prc decryption method for which a decryption request has been made. A 'Message' will
  * always have a 'eth_decrypt' type.
- *
  */
 
 export default class DecryptMessageManager extends EventEmitter {
   /**
    * Controller in charge of managing - storing, adding, removing, updating - DecryptMessage.
    *
-   * @typedef {Object} DecryptMessageManager
-   * @property {Object} memStore The observable store where DecryptMessage are saved.
-   * @property {Object} memStore.unapprovedDecryptMsgs A collection of all DecryptMessages in the 'unapproved' state
-   * @property {number} memStore.unapprovedDecryptMsgCount The count of all DecryptMessages in this.memStore.unapprovedDecryptMsgs
-   * @property {Array} messages Holds all messages that have been created by this DecryptMessageManager
-   *
+   * @param {object} opts - Controller options
+   * @param {Function} opts.metricEvent - A function for emitting a metric event.
    */
   constructor(opts) {
     super();
@@ -52,7 +47,6 @@ export default class DecryptMessageManager extends EventEmitter {
    * A getter for the number of 'unapproved' DecryptMessages in this.messages
    *
    * @returns {number} The number of 'unapproved' DecryptMessages in this.messages
-   *
    */
   get unapprovedDecryptMsgCount() {
     return Object.keys(this.getUnapprovedMsgs()).length;
@@ -63,7 +57,6 @@ export default class DecryptMessageManager extends EventEmitter {
    *
    * @returns {Object} An index of DecryptMessage ids to DecryptMessages, for all 'unapproved' DecryptMessages in
    * this.messages
-   *
    */
   getUnapprovedMsgs() {
     return this.messages
@@ -82,7 +75,6 @@ export default class DecryptMessageManager extends EventEmitter {
    * @param {Object} msgParams - The params for the eth_decrypt call to be made after the message is approved.
    * @param {Object} [req] - The original request object possibly containing the origin
    * @returns {Promise<Buffer>} The raw decrypted message contents
-   *
    */
   addUnapprovedMessageAsync(msgParams, req) {
     return new Promise((resolve, reject) => {
@@ -127,7 +119,6 @@ export default class DecryptMessageManager extends EventEmitter {
    * @param {Object} msgParams - The params for the eth_decryptMsg call to be made after the message is approved.
    * @param {Object} [req] - The original request object possibly containing the origin
    * @returns {number} The id of the newly created DecryptMessage.
-   *
    */
   addUnapprovedMessage(msgParams, req) {
     log.debug(
@@ -161,8 +152,7 @@ export default class DecryptMessageManager extends EventEmitter {
    * Adds a passed DecryptMessage to this.messages, and calls this._saveMsgList() to save the unapproved DecryptMessages from that
    * list to this.memStore.
    *
-   * @param {Message} msg The DecryptMessage to add to this.messages
-   *
+   * @param {Message} msg - The DecryptMessage to add to this.messages
    */
   addMsg(msg) {
     this.messages.push(msg);
@@ -172,10 +162,9 @@ export default class DecryptMessageManager extends EventEmitter {
   /**
    * Returns a specified DecryptMessage.
    *
-   * @param {number} msgId The id of the DecryptMessage to get
+   * @param {number} msgId - The id of the DecryptMessage to get
    * @returns {DecryptMessage|undefined} The DecryptMessage with the id that matches the passed msgId, or undefined
    * if no DecryptMessage has that id.
-   *
    */
   getMsg(msgId) {
     return this.messages.find((msg) => msg.id === msgId);
@@ -185,10 +174,9 @@ export default class DecryptMessageManager extends EventEmitter {
    * Approves a DecryptMessage. Sets the message status via a call to this.setMsgStatusApproved, and returns a promise
    * with the message params modified for proper decryption.
    *
-   * @param {Object} msgParams The msgParams to be used when eth_decryptMsg is called, plus data added by MetaMask.
-   * @param {Object} msgParams.metamaskId Added to msgParams for tracking and identification within MetaMask.
+   * @param {Object} msgParams - The msgParams to be used when eth_decryptMsg is called, plus data added by MetaMask.
+   * @param {Object} msgParams.metamaskId - Added to msgParams for tracking and identification within MetaMask.
    * @returns {Promise<object>} Promises the msgParams object with metamaskId removed.
-   *
    */
   approveMessage(msgParams) {
     this.setMsgStatusApproved(msgParams.metamaskId);
@@ -198,8 +186,7 @@ export default class DecryptMessageManager extends EventEmitter {
   /**
    * Sets a DecryptMessage status to 'approved' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the DecryptMessage to approve.
-   *
+   * @param {number} msgId - The id of the DecryptMessage to approve.
    */
   setMsgStatusApproved(msgId) {
     this._setMsgStatus(msgId, 'approved');
@@ -209,9 +196,8 @@ export default class DecryptMessageManager extends EventEmitter {
    * Sets a DecryptMessage status to 'decrypted' via a call to this._setMsgStatus and updates that DecryptMessage in
    * this.messages by adding the raw decryption data of the decryption request to the DecryptMessage
    *
-   * @param {number} msgId The id of the DecryptMessage to decrypt.
-   * @param {buffer} rawData The raw data of the message request
-   *
+   * @param {number} msgId - The id of the DecryptMessage to decrypt.
+   * @param {buffer} rawData - The raw data of the message request
    */
   setMsgStatusDecrypted(msgId, rawData) {
     const msg = this.getMsg(msgId);
@@ -223,9 +209,8 @@ export default class DecryptMessageManager extends EventEmitter {
   /**
    * Removes the metamaskId property from passed msgParams and returns a promise which resolves the updated msgParams
    *
-   * @param {Object} msgParams The msgParams to modify
+   * @param {Object} msgParams - The msgParams to modify
    * @returns {Promise<object>} Promises the msgParams with the metamaskId property removed
-   *
    */
   prepMsgForDecryption(msgParams) {
     delete msgParams.metamaskId;
@@ -235,8 +220,8 @@ export default class DecryptMessageManager extends EventEmitter {
   /**
    * Sets a DecryptMessage status to 'rejected' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the DecryptMessage to reject.
-   *
+   * @param {number} msgId - The id of the DecryptMessage to reject.
+   * @param reason
    */
   rejectMsg(msgId, reason = undefined) {
     if (reason) {
@@ -254,8 +239,8 @@ export default class DecryptMessageManager extends EventEmitter {
   /**
    * Sets a TypedMessage status to 'errored' via a call to this._setMsgStatus.
    *
-   * @param {number} msgId The id of the TypedMessage to error
-   *
+   * @param {number} msgId - The id of the TypedMessage to error
+   * @param error
    */
   errorMessage(msgId, error) {
     const msg = this.getMsg(msgId);
@@ -276,14 +261,13 @@ export default class DecryptMessageManager extends EventEmitter {
    * Updates the status of a DecryptMessage in this.messages via a call to this._updateMsg
    *
    * @private
-   * @param {number} msgId The id of the DecryptMessage to update.
-   * @param {string} status The new status of the DecryptMessage.
+   * @param {number} msgId - The id of the DecryptMessage to update.
+   * @param {string} status - The new status of the DecryptMessage.
    * @throws A 'DecryptMessageManager - DecryptMessage not found for id: "${msgId}".' if there is no DecryptMessage
    * in this.messages with an id equal to the passed msgId
    * @fires An event with a name equal to `${msgId}:${status}`. The DecryptMessage is also fired.
    * @fires If status is 'rejected' or 'decrypted', an event with a name equal to `${msgId}:finished` is fired along
    * with the DecryptMessage
-   *
    */
   _setMsgStatus(msgId, status) {
     const msg = this.getMsg(msgId);
@@ -311,7 +295,6 @@ export default class DecryptMessageManager extends EventEmitter {
    * @private
    * @param {DecryptMessage} msg - A DecryptMessage that will replace an existing DecryptMessage (with the same
    * id) in this.messages
-   *
    */
   _updateMsg(msg) {
     const index = this.messages.findIndex((message) => message.id === msg.id);
@@ -326,7 +309,6 @@ export default class DecryptMessageManager extends EventEmitter {
    *
    * @private
    * @fires 'updateBadge'
-   *
    */
   _saveMsgList() {
     const unapprovedDecryptMsgs = this.getUnapprovedMsgs();
@@ -341,9 +323,8 @@ export default class DecryptMessageManager extends EventEmitter {
   /**
    * A helper function that converts raw buffer data to a hex, or just returns the data if it is already formatted as a hex.
    *
-   * @param {any} data The buffer data to convert to a hex
+   * @param {any} data - The buffer data to convert to a hex
    * @returns {string} A hex string conversion of the buffer data
-   *
    */
   normalizeMsgData(data) {
     try {

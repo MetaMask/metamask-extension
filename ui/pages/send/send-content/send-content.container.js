@@ -7,7 +7,6 @@ import {
   checkNetworkOrAccountNotSupports1559,
 } from '../../../selectors';
 import {
-  getIsAssetSendable,
   getIsBalanceInsufficient,
   getSendTo,
   getSendAsset,
@@ -19,7 +18,6 @@ function mapStateToProps(state) {
   const ownedAccounts = accountsWithSendEtherInfoSelector(state);
   const to = getSendTo(state);
   return {
-    isAssetSendable: getIsAssetSendable(state),
     isOwnedAccount: Boolean(
       ownedAccounts.find(
         ({ address }) => address.toLowerCase() === to.toLowerCase(),

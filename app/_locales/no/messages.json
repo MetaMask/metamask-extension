@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Avslå"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skann QR-kode"
+  },
   "about": {
     "message": "Info"
   },
@@ -69,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Godkjenn"
@@ -244,6 +258,9 @@
   },
   "currentLanguage": {
     "message": "Nåværende språk "
+  },
+  "custom": {
+    "message": "Avansert"
   },
   "customGas": {
     "message": "Tilpass Gass"
@@ -507,6 +524,9 @@
     "message": "Kovan testnettverk"
   },
   "learnMore": {
+    "message": "Lær mer"
+  },
+  "learnMoreUpperCase": {
     "message": "Lær mer"
   },
   "ledgerAccountRestriction": {

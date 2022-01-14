@@ -13,8 +13,8 @@
 
   &__circle {
     border: 1px solid;
-    border-color: $black;
-    background: $white;
+    border-color: var(--black);
+    background: var(--white);
   }
 
   &__icon {

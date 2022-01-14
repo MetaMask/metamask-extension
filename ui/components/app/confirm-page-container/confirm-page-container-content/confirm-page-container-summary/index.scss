@@ -1,8 +1,11 @@
 .confirm-page-container-summary {
-  padding: 16px 24px 0;
+  padding: 0 24px;
   background-color: #f9fafa;
-  height: 133px;
+  height: 120px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 
   &__origin {
     @include H6;
@@ -19,15 +22,15 @@
     @include H7;
 
     text-transform: uppercase;
-    color: $oslo-gray;
+    color: var(--oslo-gray);
     padding: 3px 8px;
-    border: 1px solid $oslo-gray;
+    border: 1px solid var(--oslo-gray);
     border-radius: 4px;
     display: inline-block;
   }
 
   &__nonce {
-    color: $oslo-gray;
+    color: var(--oslo-gray);
   }
 
   &__title {
@@ -36,13 +39,13 @@
     align-items: center;
   }
 
-  &__identicon {
+  &__icon {
     flex: 0 0 auto;
     margin-right: 8px;
   }
 
   &__title-text {
-    @include H1;
+    @include H2;
 
     white-space: nowrap;
     overflow: hidden;
@@ -50,13 +53,16 @@
   }
 
   &__subtitle {
-    color: $oslo-gray;
+    @include H6;
+
+    color: var(--oslo-gray);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-left: 42px;
   }
 
   &--border {
-    border-bottom: 1px solid $geyser;
+    border-bottom: 1px solid var(--geyser);
   }
 }

@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Noraidīt"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Ieskenēt QR kodu"
+  },
   "about": {
     "message": "Par"
   },
@@ -69,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Apstiprināt"
@@ -247,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "Pašreizējā valodā"
+  },
+  "custom": {
+    "message": "Papildu"
   },
   "customGas": {
     "message": "Pielāgot Gas"
@@ -516,6 +533,9 @@
     "message": "Kovan testa tīkls"
   },
   "learnMore": {
+    "message": "Uzzināt vairāk"
+  },
+  "learnMoreUpperCase": {
     "message": "Uzzināt vairāk"
   },
   "ledgerAccountRestriction": {

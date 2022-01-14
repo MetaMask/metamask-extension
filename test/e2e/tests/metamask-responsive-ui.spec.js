@@ -178,10 +178,7 @@ describe('Metamask Responsive UI', function () {
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');
-        await driver.clickElement({
-          text: enLocaleMessages.restore.message,
-          tag: 'button',
-        });
+        await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
         await driver.waitForSelector({

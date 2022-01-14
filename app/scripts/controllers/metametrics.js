@@ -1,11 +1,13 @@
-import { merge, omit } from 'lodash';
+import { merge, omit, omitBy } from 'lodash';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
+import { generateUUID } from 'pubnub';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
 } from '../../../shared/constants/metametrics';
+import { SECOND } from '../../../shared/constants/time';
 
 const defaultCaptureException = (err) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
@@ -27,32 +29,37 @@ const exceptionsToFilter = {
  * @typedef {import('../../../shared/constants/metametrics').SegmentInterface} SegmentInterface
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPagePayload} MetaMetricsPagePayload
  * @typedef {import('../../../shared/constants/metametrics').MetaMetricsPageOptions} MetaMetricsPageOptions
+ * @typedef {import('../../../shared/constants/metametrics').MetaMetricsEventFragment} MetaMetricsEventFragment
  */
 
 /**
  * @typedef {Object} MetaMetricsControllerState
- * @property {?string} metaMetricsId - The user's metaMetricsId that will be
+ * @property {string} [metaMetricsId] - The user's metaMetricsId that will be
  *  attached to all non-anonymized event payloads
- * @property {?boolean} participateInMetaMetrics - The user's preference for
+ * @property {boolean} [participateInMetaMetrics] - The user's preference for
  *  participating in the MetaMetrics analytics program. This setting controls
  *  whether or not events are tracked
+ * @property {{[string]: MetaMetricsEventFragment}} [fragments] - Object keyed
+ *  by UUID with stored fragments as values.
  */
 
 export default class MetaMetricsController {
   /**
-   * @param {Object} segment - an instance of analytics-node for tracking
+   * @param {object} options
+   * @param {Object} options.segment - an instance of analytics-node for tracking
    *  events that conform to the new MetaMetrics tracking plan.
-   * @param {Object} preferencesStore - The preferences controller store, used
+   * @param {Object} options.preferencesStore - The preferences controller store, used
    *  to access and subscribe to preferences that will be attached to events
-   * @param {function} onNetworkDidChange - Used to attach a listener to the
+   * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
-   * @param {function} getCurrentChainId - Gets the current chain id from the
+   * @param {Function} options.getCurrentChainId - Gets the current chain id from the
    *  network controller
-   * @param {function} getNetworkIdentifier - Gets the current network
+   * @param {Function} options.getNetworkIdentifier - Gets the current network
    *  identifier from the network controller
-   * @param {string} version - The version of the extension
-   * @param {string} environment - The environment the extension is running in
-   * @param {MetaMetricsControllerState} initState - State to initialized with
+   * @param {string} options.version - The version of the extension
+   * @param {string} options.environment - The environment the extension is running in
+   * @param {MetaMetricsControllerState} options.initState - State to initialized with
+   * @param options.captureException
    */
   constructor({
     segment,
@@ -79,10 +86,15 @@ export default class MetaMetricsController {
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
 
+    const abandonedFragments = omitBy(initState?.fragments, 'persist');
+
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
       ...initState,
+      fragments: {
+        ...initState?.fragments,
+      },
     });
 
     preferencesStore.subscribe(({ currentLocale }) => {
@@ -94,6 +106,32 @@ export default class MetaMetricsController {
       this.network = getNetworkIdentifier();
     });
     this.segment = segment;
+
+    // Track abandoned fragments that weren't properly cleaned up.
+    // Abandoned fragments are those that were stored in persistent memory
+    // and are available at controller instance creation, but do not have the
+    // 'persist' flag set. This means anytime the extension is unlocked, any
+    // fragments that are not marked as persistent will be purged and the
+    // failure event will be emitted.
+    Object.values(abandonedFragments).forEach((fragment) => {
+      this.finalizeEventFragment(fragment.id, { abandoned: true });
+    });
+
+    // Close out event fragments that were created but not progressed. An
+    // interval is used to routinely check if a fragment has not been updated
+    // within the fragment's timeout window. When creating a new event fragment
+    // a timeout can be specified that will cause an abandoned event to be
+    // tracked if the event isn't progressed within that amount of time.
+    setInterval(() => {
+      Object.values(this.store.getState().fragments).forEach((fragment) => {
+        if (
+          fragment.timeout &&
+          Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
+        ) {
+          this.finalizeEventFragment(fragment.id, { abandoned: true });
+        }
+      });
+    }, SECOND * 30);
   }
 
   generateMetaMetricsId() {
@@ -105,6 +143,110 @@ export default class MetaMetricsController {
         ),
       ),
     );
+  }
+
+  /**
+   * Create an event fragment in state and returns the event fragment object.
+   *
+   * @param {MetaMetricsFunnel} options - Fragment settings and properties
+   *  to initiate the fragment with.
+   * @returns {MetaMetricsFunnel}
+   */
+  createEventFragment(options) {
+    if (!options.successEvent || !options.category) {
+      throw new Error(
+        `Must specify success event and category. Success event was: ${
+          options.event
+        }. Category was: ${options.category}. Payload keys were: ${Object.keys(
+          options,
+        )}. ${
+          typeof options.properties === 'object'
+            ? `Payload property keys were: ${Object.keys(options.properties)}`
+            : ''
+        }`,
+      );
+    }
+    const { fragments } = this.store.getState();
+
+    const id = generateUUID();
+    const fragment = {
+      id,
+      ...options,
+      lastUpdated: Date.now(),
+    };
+    this.store.updateState({
+      fragments: {
+        ...fragments,
+        [id]: fragment,
+      },
+    });
+    return fragment;
+  }
+
+  /**
+   * Updates an event fragment in state
+   *
+   * @param {string} id - The fragment id to update
+   * @param {MetaMetricsEventFragment} payload - Fragment settings and
+   *  properties to initiate the fragment with.
+   */
+  updateEventFragment(id, payload) {
+    const { fragments } = this.store.getState();
+
+    const fragment = fragments[id];
+
+    if (!fragment) {
+      throw new Error(`Event fragment with id ${id} does not exist.`);
+    }
+
+    this.store.updateState({
+      fragments: {
+        ...fragments,
+        [id]: merge(fragments[id], {
+          ...payload,
+          lastUpdated: Date.now(),
+        }),
+      },
+    });
+  }
+
+  /**
+   * Finalizes a fragment, tracking either a success event or failure Event
+   * and then removes the fragment from state.
+   *
+   * @param {string} id - UUID of the event fragment to be closed
+   * @param {object} options
+   * @param {boolean} [options.abandoned] - if true track the failure
+   *  event instead of the success event
+   * @param {MetaMetricsContext.page} [options.page] - page the final event
+   *  occurred on. This will override whatever is set on the fragment
+   * @param {MetaMetricsContext.referrer} [options.referrer] - Dapp that
+   *  originated the fragment. This is for fallback only, the fragment referrer
+   *  property will take precedence.
+   */
+  finalizeEventFragment(id, { abandoned = false, page, referrer }) {
+    const fragment = this.store.getState().fragments[id];
+    if (!fragment) {
+      throw new Error(`Funnel with id ${id} does not exist.`);
+    }
+
+    const eventName = abandoned ? fragment.failureEvent : fragment.successEvent;
+
+    this.trackEvent({
+      event: eventName,
+      category: fragment.category,
+      properties: fragment.properties,
+      sensitiveProperties: fragment.sensitiveProperties,
+      page: page ?? fragment.page,
+      referrer: fragment.referrer ?? referrer,
+      revenue: fragment.revenue,
+      value: fragment.value,
+      currency: fragment.currency,
+      environmentType: fragment.environmentType,
+    });
+    const { fragments } = this.store.getState();
+    delete fragments[id];
+    this.store.updateState({ fragments });
   }
 
   /**
@@ -132,6 +274,7 @@ export default class MetaMetricsController {
 
   /**
    * Build the context object to attach to page and track events.
+   *
    * @private
    * @param {Pick<MetaMetricsContext, 'referrer'>} [referrer] - dapp origin that initialized
    *  the notification window.
@@ -154,11 +297,12 @@ export default class MetaMetricsController {
   /**
    * Build's the event payload, processing all fields into a format that can be
    * fed to Segment's track method
+   *
    * @private
    * @param {
    *  Omit<MetaMetricsEventPayload, 'sensitiveProperties'>
    * } rawPayload - raw payload provided to trackEvent
-   * @returns {SegmentEventPayload} - formatted event payload for segment
+   * @returns {SegmentEventPayload} formatted event payload for segment
    */
   _buildEventPayload(rawPayload) {
     const {
@@ -199,6 +343,7 @@ export default class MetaMetricsController {
    * Perform validation on the payload and update the id type to use before
    * sending to Segment. Also examines the options to route and handle the
    * event appropriately.
+   *
    * @private
    * @param {SegmentEventPayload} payload - properties to attach to event
    * @param {MetaMetricsEventOptions} [options] - options for routing and
@@ -273,6 +418,7 @@ export default class MetaMetricsController {
 
   /**
    * track a page view with Segment
+   *
    * @param {MetaMetricsPagePayload} payload - details of the page viewed
    * @param {MetaMetricsPageOptions} [options] - options for handling the page
    *  view
@@ -311,6 +457,7 @@ export default class MetaMetricsController {
 
   /**
    * submits a metametrics event, not waiting for it to complete or allowing its error to bubble up
+   *
    * @param {MetaMetricsEventPayload} payload - details of the event
    * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
    */
@@ -327,6 +474,7 @@ export default class MetaMetricsController {
    * routing the event to the appropriate segment source. Will split events
    * with sensitiveProperties into two events, tracking the sensitiveProperties
    * with the anonymousId only.
+   *
    * @param {MetaMetricsEventPayload} payload - details of the event
    * @param {MetaMetricsEventOptions} [options] - options for handling/routing the event
    * @returns {Promise<void>}
@@ -375,6 +523,7 @@ export default class MetaMetricsController {
 
   /**
    * validates a metametrics event
+   *
    * @param {MetaMetricsEventPayload} payload - details of the event
    */
   validatePayload(payload) {

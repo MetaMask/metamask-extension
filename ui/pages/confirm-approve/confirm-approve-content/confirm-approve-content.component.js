@@ -11,6 +11,7 @@ import { ellipsify } from '../../send/send.utils';
 import Typography from '../../../components/ui/typography';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
+import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import Identicon from '../../../components/ui/identicon';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
@@ -25,6 +26,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
+import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 
 export default class ConfirmApproveContent extends Component {
@@ -64,6 +66,7 @@ export default class ConfirmApproveContent extends Component {
     isContract: PropTypes.bool,
     hexTransactionTotal: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
+    supportsEIP1559V2: PropTypes.bool,
   };
 
   state = {
@@ -76,11 +79,13 @@ export default class ConfirmApproveContent extends Component {
     symbol,
     title,
     showEdit,
+    showAdvanceGasFeeOptions = false,
     onEditClick,
     content,
     footer,
     noBorder,
   }) {
+    const { supportsEIP1559V2 } = this.props;
     const { t } = this.context;
     return (
       <div
@@ -91,13 +96,17 @@ export default class ConfirmApproveContent extends Component {
       >
         {showHeader && (
           <div className="confirm-approve-content__card-header">
-            <div className="confirm-approve-content__card-header__symbol">
-              {symbol}
-            </div>
-            <div className="confirm-approve-content__card-header__title">
-              {title}
-            </div>
-            {showEdit && (
+            {!supportsEIP1559V2 && (
+              <>
+                <div className="confirm-approve-content__card-header__symbol">
+                  {symbol}
+                </div>
+                <div className="confirm-approve-content__card-header__title">
+                  {title}
+                </div>
+              </>
+            )}
+            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559V2) && (
               <Box width={BLOCK_SIZES.ONE_SIXTH}>
                 <Button
                   type="link"
@@ -107,6 +116,9 @@ export default class ConfirmApproveContent extends Component {
                   {t('edit')}
                 </Button>
               </Box>
+            )}
+            {showEdit && showAdvanceGasFeeOptions && supportsEIP1559V2 && (
+              <EditGasFeeButton />
             )}
           </div>
         )}
@@ -127,7 +139,11 @@ export default class ConfirmApproveContent extends Component {
       hexTransactionTotal,
       txData,
       isMultiLayerFeeNetwork,
+      supportsEIP1559V2,
     } = this.props;
+    if (!isMultiLayerFeeNetwork && supportsEIP1559V2) {
+      return <GasDetailsItem />;
+    }
     return (
       <div className="confirm-approve-content__transaction-details-content">
         {isMultiLayerFeeNetwork ? (
@@ -445,6 +461,7 @@ export default class ConfirmApproveContent extends Component {
             symbol: <i className="fa fa-tag" />,
             title: t('transactionFee'),
             showEdit: true,
+            showAdvanceGasFeeOptions: true,
             onEditClick: showCustomizeGasModal,
             content: this.renderTransactionDetailsContent(),
             noBorder: useNonceField || !showFullTxDetails,

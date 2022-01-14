@@ -63,10 +63,11 @@ const alertStateReducer = produce((state, action) => {
  * confirmation page in a custom hook. This hook is not likely to be used
  * outside of this file, but it helps to reduce complexity of the primary
  * component.
+ *
  * @param {Object} pendingConfirmation - a pending confirmation waiting for
- *  user approval
- * @returns {[alertState: Object, dismissAlert: Function]} - tuple with
- *  the current alert state and function to dismiss an alert by id
+ * user approval
+ * @returns {[alertState: Object, dismissAlert: Function]} A tuple with
+ * the current alert state and function to dismiss an alert by id
  */
 function useAlertState(pendingConfirmation) {
   const [alertState, dispatch] = useReducer(alertStateReducer, {});
@@ -83,7 +84,7 @@ function useAlertState(pendingConfirmation) {
     let isMounted = true;
     if (pendingConfirmation) {
       getTemplateAlerts(pendingConfirmation).then((alerts) => {
-        if (isMounted && alerts) {
+        if (isMounted && alerts.length > 0) {
           dispatch({
             type: 'set',
             confirmationId: pendingConfirmation.id,
@@ -196,7 +197,7 @@ export default function ConfirmationPage() {
             label={stripHttpsScheme(originMetadata.origin)}
             leftIcon={
               <SiteIcon
-                icon={originMetadata.icon}
+                icon={originMetadata.iconUrl}
                 name={originMetadata.hostname}
                 size={32}
               />

@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "דחה"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "סריקת קוד QR"
+  },
   "about": {
     "message": "מידע כללי"
   },
@@ -69,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "אישור"
@@ -247,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "שפה נוכחית"
+  },
+  "custom": {
+    "message": "מתקדם"
   },
   "customGas": {
     "message": "התאמה אישית של דלק"
@@ -520,6 +537,9 @@
     "message": "רשת בדיקה Kovan "
   },
   "learnMore": {
+    "message": "למדו עוד"
+  },
+  "learnMoreUpperCase": {
     "message": "למדו עוד"
   },
   "ledgerAccountRestriction": {

@@ -39,9 +39,28 @@ export default function AccountListItem({
 }
 
 AccountListItem.propTypes = {
-  account: PropTypes.object,
+  /**
+   * An account object that has name, address, and balance data
+   */
+  account: PropTypes.shape({
+    address: PropTypes.string.isRequired,
+    balance: PropTypes.string,
+    name: PropTypes.string,
+  }),
+  /**
+   * Additional className to add to the root div element of AccountListItem
+   */
   className: PropTypes.string,
+  /**
+   * Display the address of the account object
+   */
   displayAddress: PropTypes.bool,
+  /**
+   * The onClick handler of the AccountListItem
+   */
   handleClick: PropTypes.func,
+  /**
+   * Pass icon component to be displayed. Currently not used
+   */
   icon: PropTypes.node,
 };

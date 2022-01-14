@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { SUPPORT_REQUEST_LINK } from '../../helpers/constants/common';
 
 class ErrorPage extends PureComponent {
   static contextTypes = {
@@ -39,7 +40,7 @@ class ErrorPage extends PureComponent {
         target="_blank"
         key="metamaskSupportLink"
         rel="noopener noreferrer"
-        href="https://metamask.zendesk.com/hc/en-us/requests/new"
+        href={SUPPORT_REQUEST_LINK}
       >
         <span className="error-page__link-text">{this.context.t('here')}</span>
       </a>

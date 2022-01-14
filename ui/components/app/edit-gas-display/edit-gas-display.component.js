@@ -63,7 +63,6 @@ export default function EditGasDisplay({
   estimatedMaximumFiat,
   dappSuggestedGasFeeAcknowledged,
   setDappSuggestedGasFeeAcknowledged,
-  warning,
   gasErrors,
   gasWarnings,
   onManualChange,
@@ -72,6 +71,7 @@ export default function EditGasDisplay({
   estimatesUnavailableWarning,
   hasGasErrors,
   txParamsHaveBeenCustomized,
+  isNetworkBusy,
 }) {
   const t = useContext(I18nContext);
   const scrollRef = useRef(null);
@@ -93,7 +93,7 @@ export default function EditGasDisplay({
 
   useLayoutEffect(() => {
     if (showAdvancedForm && scrollRef.current) {
-      scrollRef.current.scrollIntoView();
+      scrollRef.current.scrollIntoView?.();
     }
   }, [showAdvancedForm]);
 
@@ -133,14 +133,6 @@ export default function EditGasDisplay({
   return (
     <div className="edit-gas-display">
       <div className="edit-gas-display__content">
-        {warning && !isGasEstimatesLoading && (
-          <div className="edit-gas-display__warning">
-            <ActionableMessage
-              className="actionable-message--warning"
-              message={warning}
-            />
-          </div>
-        )}
         {showTopError && (
           <div className="edit-gas-display__warning">
             <ErrorMessage errorKey={errorKey} />
@@ -156,6 +148,16 @@ export default function EditGasDisplay({
             />
           </div>
         )}
+        {isNetworkBusy ? (
+          <div className="edit-gas-display__warning">
+            <ActionableMessage
+              className="actionable-message--warning"
+              message={t('networkIsBusy')}
+              iconFillColor="#f8c000"
+              useIcon
+            />
+          </div>
+        ) : null}
         {mode === EDIT_GAS_MODES.SPEED_UP && (
           <div className="edit-gas-display__top-tooltip">
             <Typography
@@ -336,7 +338,6 @@ EditGasDisplay.propTypes = {
   estimatedMaximumFiat: PropTypes.string,
   dappSuggestedGasFeeAcknowledged: PropTypes.bool,
   setDappSuggestedGasFeeAcknowledged: PropTypes.func,
-  warning: PropTypes.string,
   transaction: PropTypes.object,
   gasErrors: PropTypes.object,
   gasWarnings: PropTypes.object,
@@ -346,4 +347,5 @@ EditGasDisplay.propTypes = {
   estimatesUnavailableWarning: PropTypes.bool,
   hasGasErrors: PropTypes.bool,
   txParamsHaveBeenCustomized: PropTypes.bool,
+  isNetworkBusy: PropTypes.bool,
 };
