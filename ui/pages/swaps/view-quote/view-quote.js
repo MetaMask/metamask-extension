@@ -43,6 +43,7 @@ import {
   getSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
   getCurrentSmartTransactionsErrorMessageDismissed,
+  getSwapsSTXLoading,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -187,6 +188,7 @@ export default function ViewQuote() {
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const swapsSTXLoading = useSelector(getSwapsSTXLoading);
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
@@ -954,7 +956,13 @@ export default function ViewQuote() {
                 history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
               }
             }}
-            submitText={t('swap')}
+            submitText={
+              currentSmartTransactionsEnabled &&
+              smartTransactionsOptInStatus &&
+              swapsSTXLoading
+                ? t('preparingSwap')
+                : t('swap')
+            }
             hideCancel
             disabled={
               submitClicked ||

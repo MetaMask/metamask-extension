@@ -2219,6 +2219,9 @@
     "message": "Preferred Ledger Connection Type",
     "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
   },
+  "preparingSwap": {
+    "message": "Preparing swap..."
+  },
   "prev": {
     "message": "Prev"
   },

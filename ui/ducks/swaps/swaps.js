@@ -231,6 +231,8 @@ export const getFromTokenInputValue = (state) =>
 export const getIsFeatureFlagLoaded = (state) =>
   state.swaps.isFeatureFlagLoaded;
 
+export const getSwapsSTXLoading = (state) => state.swaps.swapsSTXLoading;
+
 export const getMaxSlippage = (state) => state.swaps.maxSlippage;
 
 export const getTopAssets = (state) => state.swaps.topAssets;
