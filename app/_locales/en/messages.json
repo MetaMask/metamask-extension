@@ -857,9 +857,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "Max base fee is low for current network conditions"
   },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "Multiplier is low relative to Priority fee"
-  },
   "editGasMaxFeeHigh": {
     "message": "Max fee is higher than necessary"
   },
@@ -921,12 +918,6 @@
   "editGasTooLowWarningTooltip": {
     "message": "This lowers your maximum fee but if network traffic increases your transaction may be delayed or fail."
   },
-  "editInGwei": {
-    "message": "Edit in GWEI"
-  },
-  "editInMultiplier": {
-    "message": "Edit in multiplier"
-  },
   "editNonceField": {
     "message": "Edit Nonce"
   },
@@ -941,6 +932,22 @@
   },
   "enableAutoDetect": {
     "message": " Enable Autodetect"
+  },
+  "enableEIP1559V2": {
+    "message": "Enable Enhanced Gas Fee UI"
+  },
+  "enableEIP1559V2AlertMessage": {
+    "message": "We've updated how gas fee estimation and customization works."
+  },
+  "enableEIP1559V2ButtonText": {
+    "message": "Turn on Enhanced Gas Fee UI in Settings"
+  },
+  "enableEIP1559V2Description": {
+    "message": "We've updated how gas estimation and customization works. Turn on if you'd like to use the new gas experience. $1",
+    "description": "$1 here is Learn More link"
+  },
+  "enableEIP1559V2Header": {
+    "message": "New gas experience"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
@@ -1126,21 +1133,6 @@
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskExperimentalText1": {
-    "message": "Using Flask can greatly increase your risk of fund loss:"
-  },
-  "flaskExperimentalText2": {
-    "message": "if you use it to install non-trustworthy Snaps"
-  },
-  "flaskExperimentalText3": {
-    "message": "if you do not review confirmations before approving changes"
-  },
-  "flaskExperimentalText4": {
-    "message": "if you interact with unfamiliar smart contracts"
-  },
-  "flaskExperimentalText5": {
-    "message": "Using Flask gives you much greater discretion in using the power of MetaMask, and that discretion is yours. Do you accept these risks as well as extra responsibility for your wallet's safety?"
-  },
   "flaskSnapSettingsCardButtonCta": {
     "message": "See details",
     "description": "Call to action a user can take to see more information about the Snap that is installed"
@@ -1152,6 +1144,26 @@
   "flaskSnapSettingsCardFrom": {
     "message": "from",
     "description": "Part of the sentence describing when and where snap was added"
+  },
+  "flaskWelcomeUninstall": {
+    "message": "you should uninstall this extension",
+    "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
+  },
+  "flaskWelcomeWarning1": {
+    "message": "Flask is for developers to experiment with new unstable APIs. Unless you are a developer or beta tester, $1.",
+    "description": "This is a warning shown on the Flask Welcome screen, intended to encourage non-developers not to proceed any further. $1 is the bolded message 'flaskWelcomeUninstall'"
+  },
+  "flaskWelcomeWarning2": {
+    "message": "We do not guarantee the safety or stability of this extension. The new APIs offered by Flask are not hardened against phishing attacks, meaning that any site or snap that requires Flask might be a malicious attempt to steal your assets.",
+    "description": "This explains the risks of using MetaMask Flask"
+  },
+  "flaskWelcomeWarning3": {
+    "message": "All Flask APIs are experimental. They may be changed or removed without notice, or they might stay on Flask indefinitely without ever being migrated to stable MetaMask. Use them at your own risk.",
+    "description": "This message warns developers about unstable Flask APIs"
+  },
+  "flaskWelcomeWarningAcceptButton": {
+    "message": "I accept the risks",
+    "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
   },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
@@ -1292,6 +1304,9 @@
   },
   "grantedToWithColon": {
     "message": "Granted to:"
+  },
+  "gwei": {
+    "message": "GWEI"
   },
   "happyToSeeYou": {
     "message": "We’re happy to see you."
@@ -1746,9 +1761,6 @@
   },
   "mobileSyncWarning": {
     "message": "The 'Sync with extension' feature is temporarily disabled. If you want to use your extension wallet on MetaMask mobile, then on your mobile app: go back to the wallet setup options and select the 'Import with Secret Recovery Phrase' option. Use your extension wallet's secret phrase to then import your wallet into mobile."
-  },
-  "multiplier": {
-    "message": "multiplier"
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
@@ -2531,6 +2543,9 @@
   "sendTokens": {
     "message": "Send Tokens"
   },
+  "sendingDisabled": {
+    "message": "Sending of ERC-1155 NFT assets is not yet supported."
+  },
   "sendingNativeAsset": {
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
@@ -3154,6 +3169,9 @@
   "tokenDetectionAnnouncement": {
     "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
   },
+  "tokenId": {
+    "message": "Token ID"
+  },
   "tokenSymbol": {
     "message": "Token Symbol"
   },
@@ -3378,9 +3396,6 @@
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
-  },
-  "userAccepts": {
-    "message": "I accept"
   },
   "userName": {
     "message": "Username"

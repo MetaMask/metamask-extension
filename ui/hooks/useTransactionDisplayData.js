@@ -6,7 +6,10 @@ import {
 } from '../helpers/utils/transactions.util';
 import { camelCaseToCapitalize } from '../helpers/utils/common.util';
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
-import { getTokenAddressParam } from '../helpers/utils/token-util';
+import {
+  getTokenAddressParam,
+  getTokenValueParam,
+} from '../helpers/utils/token-util';
 import {
   isEqualCaseInsensitive,
   formatDateWithYearContext,
@@ -18,7 +21,7 @@ import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
-import { getTokens } from '../ducks/metamask/metamask';
+import { getCollectibles, getTokens } from '../ducks/metamask/metamask';
 import {
   TRANSACTION_TYPES,
   TRANSACTION_GROUP_CATEGORIES,
@@ -64,6 +67,7 @@ export function useTransactionDisplayData(transactionGroup) {
   const dispatch = useDispatch();
   const currentAsset = useCurrentAsset();
   const knownTokens = useSelector(getTokens);
+  const knownCollectibles = useSelector(getCollectibles);
   const t = useI18nContext();
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
@@ -103,10 +107,24 @@ export function useTransactionDisplayData(transactionGroup) {
     knownTokens.find(({ address }) =>
       isEqualCaseInsensitive(address, recipientAddress),
     );
+
   const tokenData = useTokenData(
     initialTransaction?.txParams?.data,
     isTokenCategory,
   );
+
+  // If this is an ERC20 token transaction this value is equal to the amount sent
+  // If it is an ERC721 token transaction it is the tokenId being sent
+  const tokenAmountOrTokenId = getTokenValueParam(tokenData);
+
+  const collectible =
+    isTokenCategory &&
+    knownCollectibles.find(
+      ({ address, tokenId }) =>
+        isEqualCaseInsensitive(address, recipientAddress) &&
+        tokenId === tokenAmountOrTokenId,
+    );
+
   const tokenDisplayValue = useTokenDisplayValue(
     initialTransaction?.txParams?.data,
     token,
@@ -220,7 +238,9 @@ export function useTransactionDisplayData(transactionGroup) {
     type === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER
   ) {
     category = TRANSACTION_GROUP_CATEGORIES.SEND;
-    title = t('sendSpecifiedTokens', [token?.symbol || t('token')]);
+    title = t('sendSpecifiedTokens', [
+      token?.symbol || collectible?.name || t('token'),
+    ]);
     recipientAddress = getTokenAddressParam(tokenData);
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
   } else if (type === TRANSACTION_TYPES.SIMPLE_SEND) {

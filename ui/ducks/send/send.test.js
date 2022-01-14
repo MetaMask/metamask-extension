@@ -74,6 +74,7 @@ jest.mock('../../store/actions', () => {
     estimateGas: jest.fn(() => Promise.resolve('0x0')),
     getGasFeeEstimatesAndStartPolling: jest.fn(() => Promise.resolve()),
     updateTokenType: jest.fn(() => Promise.resolve({ isERC721: false })),
+    isCollectibleOwner: jest.fn(() => Promise.resolve(true)),
   };
 });
 
@@ -2004,6 +2005,7 @@ describe('Send Slice', () => {
           draftTransaction: {},
           recipient: {},
           amount: {},
+          account: {},
         },
       };
 
@@ -2139,7 +2141,7 @@ describe('Send Slice', () => {
         );
       });
 
-      it('should set up the appropriate state for editing a token asset transaction', async () => {
+      it('should set up the appropriate state for editing a collectible asset transaction', async () => {
         const editTransactionState = {
           metamask: {
             blockGasLimit: '0x3a98',
@@ -2159,7 +2161,7 @@ describe('Send Slice', () => {
                   data: '',
                   from: '0xAddress',
                   to: '0xTokenAddress',
-                  gas: GAS_LIMITS.SIMPLE,
+                  gas: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
                   gasPrice: '0x3b9aca00', // 1000000000
                   value: '0x0',
                 },
@@ -2203,56 +2205,54 @@ describe('Send Slice', () => {
 
         await store.dispatch(
           editTransaction(
-            ASSET_TYPES.TOKEN,
+            ASSET_TYPES.COLLECTIBLE,
             1,
             {
-              name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+              name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
               args: {
                 _to: '0xRecipientAddress',
                 _value: ethers.BigNumber.from(15000),
               },
             },
-            { address: '0xAddress', symbol: 'SYMB', decimals: 18 },
+            {
+              address: '0xf5de760f2e916647fd766B4AD9E85ff943cE3A2b',
+              description: 'A test NFT dispensed from faucet.paradigm.xyz.',
+              image:
+                'https://ipfs.io/ipfs/bafybeifvwitulq6elvka2hoqhwixfhgb42l4aiukmtrw335osetikviuuu',
+              name: 'MultiFaucet Test NFT',
+              standard: 'ERC721',
+              tokenId: '26847',
+            },
           ),
         );
         const actionResult = store.getActions();
-
-        expect(actionResult).toHaveLength(7);
-        expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
-        expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
-        expect(actionResult[2].type).toStrictEqual('send/updateAsset');
-        expect(actionResult[2].payload).toStrictEqual({
-          balance: '0x0',
-          type: ASSET_TYPES.TOKEN,
+        expect(actionResult).toHaveLength(5);
+        expect(actionResult[0].type).toStrictEqual('send/updateAsset');
+        expect(actionResult[0].payload).toStrictEqual({
+          balance: '0x1',
+          type: ASSET_TYPES.COLLECTIBLE,
           details: {
             address: '0xTokenAddress',
-            decimals: 18,
-            symbol: 'SYMB',
-            isERC721: false,
+            description: 'A test NFT dispensed from faucet.paradigm.xyz.',
+            image:
+              'https://ipfs.io/ipfs/bafybeifvwitulq6elvka2hoqhwixfhgb42l4aiukmtrw335osetikviuuu',
+            name: 'MultiFaucet Test NFT',
+            standard: 'ERC721',
+            tokenId: '26847',
           },
         });
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[1].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[2].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[5].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
-        expect(actionResult[6].type).toStrictEqual('send/editTransaction');
-        expect(actionResult[6].payload).toStrictEqual({
-          address: '0xrecipientaddress', // getting address from tokenData does .toLowerCase
-          amount: '0x3a98',
-          data: '',
-          from: '0xAddress',
-          gasLimit: GAS_LIMITS.SIMPLE,
-          gasPrice: '0x3b9aca00',
-          id: 1,
-          nickname: '',
-        });
+        expect(actionResult[4].type).toStrictEqual('send/editTransaction');
 
-        const action = actionResult[6];
+        const action = actionResult[4];
 
         const result = sendReducer(initialState, action);
 
@@ -2274,6 +2274,143 @@ describe('Send Slice', () => {
           action.payload.gasLimit,
         );
       });
+    });
+
+    it('should set up the appropriate state for editing a token asset transaction', async () => {
+      const editTransactionState = {
+        metamask: {
+          blockGasLimit: '0x3a98',
+          selectedAddress: '',
+          provider: {
+            chainId: RINKEBY_CHAIN_ID,
+          },
+          tokens: [],
+          addressBook: {
+            [RINKEBY_CHAIN_ID]: {},
+          },
+          identities: {},
+          unapprovedTxs: {
+            1: {
+              id: 1,
+              txParams: {
+                data: '',
+                from: '0xAddress',
+                to: '0xTokenAddress',
+                gas: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
+                gasPrice: '0x3b9aca00', // 1000000000
+                value: '0x0',
+              },
+            },
+          },
+        },
+        send: {
+          account: {
+            address: '0xAddress',
+            balance: '0x0',
+          },
+          asset: {
+            type: '',
+          },
+          gas: {
+            gasPrice: '',
+          },
+          amount: {
+            value: '',
+          },
+          draftTransaction: {
+            userInputHexData: '',
+          },
+          recipient: {
+            address: 'Address',
+            nickname: 'NickName',
+          },
+        },
+      };
+
+      global.eth = {
+        contract: sinon.stub().returns({
+          at: sinon.stub().returns({
+            balanceOf: sinon.stub().returns(undefined),
+          }),
+        }),
+        getCode: jest.fn(() => '0xa'),
+      };
+
+      const store = mockStore(editTransactionState);
+
+      await store.dispatch(
+        editTransaction(
+          ASSET_TYPES.TOKEN,
+          1,
+          {
+            name: TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+            args: {
+              _to: '0xRecipientAddress',
+              _value: ethers.BigNumber.from(15000),
+            },
+          },
+          { address: '0xAddress', symbol: 'SYMB', decimals: 18 },
+        ),
+      );
+      const actionResult = store.getActions();
+
+      expect(actionResult).toHaveLength(7);
+      expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
+      expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
+      expect(actionResult[2].type).toStrictEqual('send/updateAsset');
+      expect(actionResult[2].payload).toStrictEqual({
+        balance: '0x0',
+        type: ASSET_TYPES.TOKEN,
+        details: {
+          address: '0xTokenAddress',
+          decimals: 18,
+          symbol: 'SYMB',
+          isERC721: false,
+          standard: 'ERC20',
+        },
+      });
+      expect(actionResult[3].type).toStrictEqual(
+        'send/computeEstimatedGasLimit/pending',
+      );
+      expect(actionResult[4].type).toStrictEqual(
+        'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+      );
+      expect(actionResult[5].type).toStrictEqual(
+        'send/computeEstimatedGasLimit/fulfilled',
+      );
+      expect(actionResult[6].type).toStrictEqual('send/editTransaction');
+      expect(actionResult[6].payload).toStrictEqual({
+        address: '0xrecipientaddress', // getting address from tokenData does .toLowerCase
+        amount: '0x3a98',
+        data: '',
+        from: '0xAddress',
+        gasLimit: GAS_LIMITS.BASE_TOKEN_ESTIMATE,
+        gasPrice: '0x3b9aca00',
+        id: 1,
+        nickname: '',
+      });
+
+      const action = actionResult[6];
+
+      const result = sendReducer(initialState, action);
+
+      expect(result.gas.gasLimit).toStrictEqual(action.payload.gasLimit);
+      expect(result.gas.gasPrice).toStrictEqual(action.payload.gasPrice);
+
+      expect(result.amount.value).toStrictEqual(action.payload.amount);
+
+      expect(result.draftTransaction.txParams.to).toStrictEqual(
+        action.payload.address,
+      );
+      expect(result.draftTransaction.txParams.value).toStrictEqual(
+        action.payload.amount,
+      );
+      expect(result.draftTransaction.txParams.gasPrice).toStrictEqual(
+        action.payload.gasPrice,
+      );
+      expect(result.draftTransaction.txParams.gas).toStrictEqual(
+        action.payload.gasLimit,
+      );
     });
   });
 

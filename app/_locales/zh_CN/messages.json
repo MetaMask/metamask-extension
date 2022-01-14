@@ -842,9 +842,6 @@
   "editGasMaxBaseFeeLow": {
     "message": "当前网络条件的最高基本费用很低"
   },
-  "editGasMaxBaseFeeMultiplierImbalance": {
-    "message": "乘数相对于优先级费用较低"
-  },
   "editGasMaxFeeHigh": {
     "message": "最大费用高于必须"
   },
@@ -905,12 +902,6 @@
   },
   "editGasTooLowWarningTooltip": {
     "message": "这会降低您的最大费用，但如果网络流量增加，您的交易可能会被延迟或失败。"
-  },
-  "editInGwei": {
-    "message": "在 GWEI 编辑"
-  },
-  "editInMultiplier": {
-    "message": "按乘数编辑"
   },
   "editNonceField": {
     "message": "编辑空格"
@@ -1107,21 +1098,6 @@
   "fileImportFail": {
     "message": "文件导入失败？ 点击这里！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "flaskExperimentalText1": {
-    "message": "使用Flask可极大地增加您的资金损失风险："
-  },
-  "flaskExperimentalText2": {
-    "message": "如果您使用它来安装不可信的快照"
-  },
-  "flaskExperimentalText3": {
-    "message": "如果您在批准更改之前不审核确认"
-  },
-  "flaskExperimentalText4": {
-    "message": "如果您与不熟悉的智能合同发生交互作用"
-  },
-  "flaskExperimentalText5": {
-    "message": "使用Flask让您在使用Metamask的力量时拥有更大的自由裁量权，这个自由裁量权由您决定。 您是否接受这些风险以及您钱包安全的额外责任？"
   },
   "flaskSnapSettingsCardButtonCta": {
     "message": "查看详细信息",
@@ -1725,9 +1701,6 @@
   },
   "mobileSyncWarning": {
     "message": "“同步扩展”功能暂时被禁用。 如果您想要在MetaMask手机上使用您的扩展钱包，在您的手机应用上：返回钱包设置选项并选择“使用账户助记词导入”选项。 使用您的扩展钱包的助记词来导入您的钱包。"
-  },
-  "multiplier": {
-    "message": "倍数"
   },
   "mustSelectOne": {
     "message": "至少选择 1 种代币。"
@@ -3348,9 +3321,6 @@
   },
   "usedByClients": {
     "message": "可用于各种不同的客户端"
-  },
-  "userAccepts": {
-    "message": "我接受"
   },
   "userName": {
     "message": "名称"

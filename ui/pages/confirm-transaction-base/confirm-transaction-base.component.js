@@ -63,10 +63,6 @@ import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
 import TransactionAlerts from './transaction-alerts';
 
-// eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2_ENABLED =
-  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
-
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
 
@@ -121,6 +117,7 @@ export default class ConfirmTransactionBase extends Component {
     onEdit: PropTypes.func,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
+    image: PropTypes.string,
     type: PropTypes.string,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
@@ -146,6 +143,7 @@ export default class ConfirmTransactionBase extends Component {
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
+    eip1559V2Enabled: PropTypes.bool,
   };
 
   state = {
@@ -613,7 +611,7 @@ export default class ConfirmTransactionBase extends Component {
                     <LoadingHeartBeat />
                     <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
-                    </strong>
+                    </strong>{' '}
                     {renderTotalMaxAmount()}
                   </div>
                 }
@@ -863,7 +861,7 @@ export default class ConfirmTransactionBase extends Component {
         value={hexTransactionAmount}
         type={PRIMARY}
         showEthLogo
-        ethLogoHeight="26"
+        ethLogoHeight="36"
         hideLabel
       />
     );
@@ -973,7 +971,7 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   supportsEIP1559V2 =
-    EIP_1559_V2_ENABLED &&
+    this.props.eip1559V2Enabled &&
     this.props.supportsEIP1559 &&
     !isLegacyTransaction(this.props.txData);
 
@@ -1004,6 +1002,7 @@ export default class ConfirmTransactionBase extends Component {
       gasFeeIsCustom,
       nativeCurrency,
       hardwareWalletRequiresConnection,
+      image,
     } = this.props;
     const {
       submitting,
@@ -1060,6 +1059,7 @@ export default class ConfirmTransactionBase extends Component {
           showEdit={Boolean(onEdit)}
           action={functionType}
           title={title}
+          image={image}
           titleComponent={this.renderTitleComponent()}
           subtitleComponent={this.renderSubtitleComponent()}
           hideSubtitle={hideSubtitle}

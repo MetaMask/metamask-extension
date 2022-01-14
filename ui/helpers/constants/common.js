@@ -6,6 +6,7 @@ export const PRIMARY = 'PRIMARY';
 export const SECONDARY = 'SECONDARY';
 
 export const ERC20 = 'ERC20';
+export const ERC721 = 'ERC721';
 
 export const GAS_ESTIMATE_TYPES = {
   SLOW: 'SLOW',

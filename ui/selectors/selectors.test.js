@@ -230,7 +230,7 @@ describe('Selectors', () => {
   it('#getAdvancedGasFeeValues', () => {
     const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
     expect(advancedGasFee).toStrictEqual({
-      maxBaseFee: '1.5',
+      maxBaseFee: '75',
       priorityFee: '2',
     });
   });

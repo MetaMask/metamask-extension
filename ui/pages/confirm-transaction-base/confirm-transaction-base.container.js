@@ -14,7 +14,11 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
-import { shortenAddress, valuesFor } from '../../helpers/utils/util';
+import {
+  isEqualCaseInsensitive,
+  shortenAddress,
+  valuesFor,
+} from '../../helpers/utils/util';
 import {
   getAdvancedInlineGasShown,
   getCustomNonceValue,
@@ -32,6 +36,7 @@ import {
   getUseTokenDetection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
+  getEIP1559V2Enabled,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -82,6 +87,8 @@ const mapStateToProps = (state, ownProps) => {
     network,
     unapprovedTxs,
     nextNonce,
+    allCollectibleContracts,
+    selectedAddress,
     provider: { chainId },
   } = metamask;
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
@@ -168,6 +175,13 @@ const mapStateToProps = (state, ownProps) => {
       },
     };
   }
+
+  const isCollectibleTransfer = Boolean(
+    allCollectibleContracts?.[selectedAddress]?.[chainId].find((contract) => {
+      return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
+    }),
+  );
+
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
@@ -184,6 +198,7 @@ const mapStateToProps = (state, ownProps) => {
   );
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
+  const eip1559V2Enabled = getEIP1559V2Enabled(state);
 
   return {
     balance,
@@ -215,7 +230,7 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !getShouldShowFiat(state),
+    hideSubtitle: !getShouldShowFiat(state) && !isCollectibleTransfer,
     hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,
@@ -235,6 +250,7 @@ const mapStateToProps = (state, ownProps) => {
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
     chainId,
+    eip1559V2Enabled,
   };
 };
 
