@@ -1,56 +1,77 @@
 import React, { useCallback, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Modal from '../../modal';
 import CheckBox from '../../../ui/check-box/check-box.component';
-import { hideModal } from '../../../../store/actions';
 import Typography from '../../../ui/typography/typography';
-import {
-  TYPOGRAPHY,
-  FONT_WEIGHT,
-} from '../../../../helpers/constants/design-system';
+import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import Popover from '../../../ui/popover';
+import Button from '../../../ui/button';
 
-export default function SnapInstallWarning() {
+export default function SnapInstallWarning({ onCancel, onSubmit, snapName }) {
   const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const { onSubmit, snapName } = useSelector(
-    (state) => state.appState.modal.modalState.props,
-  );
-
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   const onCheckboxClicked = useCallback(
     () => setIsConfirmed((confirmedState) => !confirmedState),
     [],
   );
-  const onCancel = useCallback(() => dispatch(hideModal()), [dispatch]);
-  return (
-    <Modal
-      onSubmit={onSubmit}
-      onCancel={onCancel}
-      submitText={t('approveAndInstall')}
-      cancelText={t('cancel')}
-      submitDisabled={!isConfirmed}
-    >
-      <div className="snap-install-warning">
-        <Typography variant={TYPOGRAPHY.H4} fontWeight={FONT_WEIGHT.BOLD}>
-          {t('areYouSure')}
-        </Typography>
-        <Typography variant={TYPOGRAPHY.H6} paddingLeft={16} paddingRight={16}>
-          {t('snapInstallWarningCheck')}
-        </Typography>
-        <div className="checkbox-label">
-          <CheckBox
-            checked={isConfirmed}
-            id="warning-accept"
-            onClick={onCheckboxClicked}
-          />
-          <label htmlFor="warning-accept">
-            {t('snapInstallWarningKeyAccess', [snapName])}
-          </label>
-        </div>
+
+  const SnapInstallWarningFooter = () => {
+    return (
+      <div className="snap-install-warning__footer">
+        <Button
+          className="snap-install-warning__footer-button"
+          type="default"
+          onClick={onCancel}
+        >
+          {t('cancel')}
+        </Button>
+        <Button
+          className="snap-install-warning__footer-button"
+          type="primary"
+          disabled={!isConfirmed}
+          onClick={onSubmit}
+        >
+          {t('confirm')}
+        </Button>
       </div>
-    </Modal>
+    );
+  };
+
+  return (
+    <Popover
+      className="snap-install-warning"
+      title={t('areYouSure')}
+      footer={<SnapInstallWarningFooter />}
+    >
+      <Typography variant={TYPOGRAPHY.H6} boxProps={{ paddingBottom: 4 }}>
+        {t('snapInstallWarningCheck')}
+      </Typography>
+      <div className="checkbox-label">
+        <CheckBox
+          checked={isConfirmed}
+          id="warning-accept"
+          onClick={onCheckboxClicked}
+        />
+        <label htmlFor="warning-accept">
+          {t('snapInstallWarningKeyAccess', [snapName])}
+        </label>
+      </div>
+    </Popover>
   );
 }
+
+SnapInstallWarning.propTypes = {
+  /**
+   * onCancel handler
+   */
+  onCancel: PropTypes.func,
+  /**
+   * onSubmit handler
+   */
+  onSubmit: PropTypes.func,
+  /**
+   * Name of snap
+   */
+  snapName: PropTypes.string,
+};

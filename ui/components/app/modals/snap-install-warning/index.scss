@@ -5,9 +5,39 @@
     display: flex;
     align-items: flex-start;
     gap: 0 16px;
+  }
 
-    .check-box {
-      padding: 16px 0;
+  &__footer {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 100%;
+    max-height: 40px;
+  }
+
+  &__footer-button {
+    margin-right: 16px;
+
+    &:last-of-type {
+      margin-right: 0;
     }
+  }
+
+  .popover-header {
+    padding: 24px 24px 0;
+  }
+
+  .popover-content {
+    padding: 0 24px 16px;
+  }
+
+  .popover-footer {
+    justify-content: center;
+    padding: 16px 24px;
+  }
+
+  .popover-footer > :only-child {
+    margin: 0;
   }
 }

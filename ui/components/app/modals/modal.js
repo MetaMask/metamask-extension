@@ -359,21 +359,6 @@ const MODALS = {
     },
   },
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SNAP_INSTALL: {
-    contents: <SnapInstallWarning />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-  ///: END:ONLY_INCLUDE_IN
-
   CANCEL_TRANSACTION: {
     contents: <CancelTransaction />,
     mobileModalStyle: {
