@@ -1,3 +1,4 @@
+import nanoid from 'nanoid';
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -59,11 +60,13 @@ export function getPermissionBackgroundApiMethods(permissionController) {
     },
 
     requestAccountsPermissionWithId: async (origin) => {
-      const [, { id }] = await permissionController.requestPermissions(
+      const id = nanoid();
+      permissionController.requestPermissions(
         { origin },
         {
           eth_accounts: {},
         },
+        { id },
       );
       return id;
     },
