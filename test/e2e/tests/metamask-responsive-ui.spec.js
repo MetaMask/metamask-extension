@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, tinyDelayMs } = require('../helpers');
+const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
 describe('Metamask Responsive UI', function () {
@@ -196,7 +196,7 @@ describe('Metamask Responsive UI', function () {
         {
           secretKey:
             '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: '0x15af1d78b58c40000',
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
