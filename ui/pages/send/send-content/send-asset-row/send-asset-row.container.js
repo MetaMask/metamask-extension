@@ -12,8 +12,6 @@ import { updateSendAsset, getSendAsset } from '../../../../ducks/send';
 import SendAssetRow from './send-asset-row.component';
 
 function mapStateToProps(state) {
-  const {hideZeroBalanceTokens} = getPreferences(state);
-  
   return {
     tokens: state.metamask.tokens,
     selectedAddress: state.metamask.selectedAddress,
@@ -21,8 +19,7 @@ function mapStateToProps(state) {
     sendAsset: getSendAsset(state),
     accounts: getMetaMaskAccounts(state),
     nativeCurrency: getNativeCurrency(state),
-    nativeCurrencyImage: getNativeCurrencyImage(state),
-    hideZeroBalanceTokens
+    nativeCurrencyImage: getNativeCurrencyImage(state)
   };
 }
 

@@ -42,7 +42,6 @@ export default class SendAssetRow extends Component {
         }),
       }),
     ),
-    hideZeroBalanceTokens: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -166,7 +165,7 @@ export default class SendAssetRow extends Component {
           />
           <div className="send-v2__asset-dropdown__list">
             {this.renderNativeCurrency(true)}
-            
+
               <TokenListDisplay 
                 clickHandler={(token) => this.selectToken(ASSET_TYPES.TOKEN, token)}
               />
@@ -236,8 +235,6 @@ export default class SendAssetRow extends Component {
   renderToken(token, insideDropdown = false) {
     const { address, symbol, image } = token;
     const { t } = this.context;
-
-    console.log(token, 'INSIDE')
 
     return (
       <div
