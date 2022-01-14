@@ -150,7 +150,7 @@
     "eth-query": "^2.1.2",
     "eth-rpc-errors": "^4.0.2",
     "eth-sig-util": "^3.0.0",
-    "eth-trezor-keyring": "^0.9.1",
+    "eth-trezor-keyring": "git+https://github.com/aloisklink/eth-trezor-keyring#support-eip-712",
     "ethereum-ens-network-map": "^1.0.2",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^7.0.10",
