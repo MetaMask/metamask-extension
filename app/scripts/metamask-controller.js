@@ -1537,6 +1537,7 @@ export default class MetamaskController extends EventEmitter {
       establishLedgerTransportPreference: this.establishLedgerTransportPreference.bind(
         this,
       ),
+      checkLedgerReady: this.checkLedgerReady.bind(this),
 
       // qr hardware devices
       submitQRHardwareCryptoHDKey: qrHardwareKeyring.submitCryptoHDKey.bind(
@@ -2525,6 +2526,28 @@ export default class MetamaskController extends EventEmitter {
 
     const { identities } = this.preferencesController.store.getState();
     return { ...keyState, identities };
+  }
+
+  async checkLedgerReady(address) {
+    console.log('checkLedgerReady; called for address: ', address);
+
+    const keyring = await this.keyringController.getKeyringForAccount(address);
+
+    console.log('checkLedgerReady; keyring is: ', keyring);
+    if (!keyring) {
+      throw new Error('No keyring could be found for this address');
+    }
+
+    const isReady = Boolean(keyring?.isConnected?.());
+
+    console.log(
+      '[checkLedgerReady] keyring is: ',
+      keyring,
+      '; isReady: ',
+      isReady,
+    );
+
+    return isReady;
   }
 
   //
