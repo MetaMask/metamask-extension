@@ -25,8 +25,8 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-k
 import Typography from '../../ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
-import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import HardwareConnectivityPopover from '../../../pages/confirm-transaction-base/hardware-connectivity/hardware-connectivity-popover';
+import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
