@@ -232,6 +232,7 @@ export default class ConfirmPageContainer extends Component {
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
               supportsEIP1559V2={supportsEIP1559V2}
+              hasTopBorder={showAddToAddressDialog}
             />
           )}
           {shouldDisplayWarning && (
