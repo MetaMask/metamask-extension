@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -84,6 +84,7 @@ const NetworksForm = ({
   );
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
@@ -112,14 +113,8 @@ const NetworksForm = ({
     );
   };
 
-  const prevAddNewNetwork = useRef();
-  const prevNetworkName = useRef();
-  const prevChainId = useRef();
-  const prevRpcUrl = useRef();
-  const prevTicker = useRef();
-  const prevBlockExplorerUrl = useRef();
   useEffect(() => {
-    if (!prevAddNewNetwork.current && addNewNetwork) {
+    if (addNewNetwork) {
       setNetworkName('');
       setRpcUrl('');
       setChainId('');
@@ -127,13 +122,7 @@ const NetworksForm = ({
       setBlockExplorerUrl('');
       setErrors({});
       setIsSubmitting(false);
-    } else if (
-      prevNetworkName.current !== selectedNetworkName ||
-      prevRpcUrl.current !== selectedNetwork.rpcUrl ||
-      prevChainId.current !== selectedNetwork.chainId ||
-      prevTicker.current !== selectedNetwork.ticker ||
-      prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl
-    ) {
+    } else if (!isEditing) {
       resetForm(selectedNetwork);
     }
   }, [
@@ -147,6 +136,7 @@ const NetworksForm = ({
     setBlockExplorerUrl,
     setErrors,
     setIsSubmitting,
+    isEditing,
     resetForm,
   ]);
 
@@ -383,6 +373,7 @@ const NetworksForm = ({
 
   const onSubmit = async () => {
     setIsSubmitting(true);
+    setIsEditing(false);
     try {
       const formChainId = chainId.trim().toLowerCase();
       const prefixedChainId = prefixChainId(formChainId);
@@ -433,6 +424,7 @@ const NetworksForm = ({
       dispatch(setSelectedSettingsRpcUrl(''));
       history.push(NETWORKS_ROUTE);
     } else {
+      setIsEditing(false);
       resetForm();
     }
   };
@@ -481,7 +473,10 @@ const NetworksForm = ({
         <FormField
           autoFocus
           error={errors.networkName?.msg || ''}
-          onChange={setNetworkName}
+          onChange={(value) => {
+            setNetworkName(value);
+            setIsEditing(true);
+          }}
           titleText={t('networkName')}
           value={networkName}
           disabled={viewOnly}
@@ -490,6 +485,7 @@ const NetworksForm = ({
           error={errors.rpcUrl?.msg || ''}
           onChange={(value) => {
             setRpcUrl(value);
+            setIsEditing(true);
             validateUrlRpcUrl(value);
           }}
           titleText={t('rpcUrl')}
@@ -500,6 +496,7 @@ const NetworksForm = ({
           error={errors.chainId?.msg || ''}
           onChange={(value) => {
             setChainId(value);
+            setIsEditing(true);
             validateChainIdOnChange(value);
           }}
           titleText={t('chainId')}
@@ -509,7 +506,10 @@ const NetworksForm = ({
         />
         <FormField
           error={errors.ticker?.msg || ''}
-          onChange={setTicker}
+          onChange={(value) => {
+            setTicker(value);
+            setIsEditing(true);
+          }}
           titleText={t('currencySymbol')}
           titleUnit={t('optionalWithParanthesis')}
           value={ticker}
@@ -519,6 +519,7 @@ const NetworksForm = ({
           error={errors.blockExplorerUrl?.msg || ''}
           onChange={(value) => {
             setBlockExplorerUrl(value);
+            setIsEditing(true);
             validateBlockExplorerURL(value);
           }}
           titleText={t('blockExplorerUrl')}
