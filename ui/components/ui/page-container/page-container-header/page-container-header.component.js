@@ -50,6 +50,7 @@ export default class PageContainerHeader extends Component {
         <button
           className="page-container__header-close"
           onClick={() => onClose()}
+          aria-label="close"
         />
       )
     );
