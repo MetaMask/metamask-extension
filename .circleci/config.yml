@@ -78,6 +78,12 @@ workflows:
       - test-e2e-firefox:
           requires:
             - prep-build-test
+      - test-e2e-chrome-snaps:
+          requires:
+            - prep-build-flask
+      - test-e2e-firefox-snaps:
+          requires:
+            - prep-build-flask
       - test-e2e-chrome-metrics:
           requires:
             - prep-build-test-metrics
