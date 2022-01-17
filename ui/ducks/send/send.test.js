@@ -19,6 +19,8 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
+import MetaMaskController from '../../../app/scripts/metamask-controller';
+import * as actions from '../../store/actions';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -87,7 +89,32 @@ jest.mock('./send', () => {
   };
 });
 
+const defaultState = {
+  metamask: {
+    currentLocale: 'test',
+    selectedAddress: '0xFirstAddress',
+    provider: { chainId: '0x1' },
+    accounts: {
+      '0xFirstAddress': {
+        balance: '0x0',
+      },
+    },
+    cachedBalances: {
+      '0x1': {
+        '0xFirstAddress': '0x0',
+      },
+    },
+  },
+};
+let background;
+const baseMockState = defaultState.metamask;
+
 describe('Send Slice', () => {
+  beforeEach(async () => {
+    background = sinon.createStubInstance(MetaMaskController, {
+      getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
+    });
+  });
   describe('Reducers', () => {
     describe('updateSendAmount', () => {
       it('should', async () => {
@@ -2027,6 +2054,18 @@ describe('Send Slice', () => {
       it('should create actions for updateTransaction rejecting', async () => {
         const editStageSignTxState = {
           metamask: {
+            provider: { chainId: '0x1' },
+            accounts: {
+              '0xFirstAddress': {
+                balance: '0x0',
+              },
+            },
+            cachedBalances: {
+              '0x1': {
+                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1':
+                  '0x15af1d78b58c40000',
+              },
+            },
             unapprovedTxs: {
               1: {
                 id: 1,
@@ -2051,15 +2090,31 @@ describe('Send Slice', () => {
         jest.mock('../../store/actions.js');
 
         const store = mockStore(editStageSignTxState);
+        global.eth = {
+          contract: sinon.stub().returns({
+            at: sinon.stub().returns({
+              balanceOf: sinon.stub().returns(undefined),
+            }),
+          }),
+          getCode: jest.fn(() => '0xa'),
+        };
+        const updateTransactionStub = sinon.stub().callsFake((_, cb) => cb());
+
+        background.getApi.returns({
+          updateTransaction: updateTransactionStub,
+          getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
+        });
+
+        actions._setBackgroundConnection(background.getApi());
 
         await store.dispatch(signTransaction());
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(7);
         expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
         expect(actionResult[1].type).toStrictEqual('UPDATE_TRANSACTION_PARAMS');
-        expect(actionResult[2].type).toStrictEqual('HIDE_LOADING_INDICATION');
+        expect(actionResult[6].type).toStrictEqual('HIDE_LOADING_INDICATION');
       });
     });
 
