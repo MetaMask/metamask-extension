@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 const NewNetworkInfo = ({
   featuredRPC,
   onClose,
+  autoDetectToken,
 }) => {
   const t = useContext(I18nContext);
 
@@ -25,7 +26,7 @@ const NewNetworkInfo = ({
           src="./images/times.svg"
           alt=""
           className="new-network-info__close__close-icon"
-          onClick={() => onClose}
+          onClick={onClose}
         />
       </div>
       <div className="new-network-info__title">{t('switchedTo')}</div>
@@ -59,14 +60,17 @@ const NewNetworkInfo = ({
             {t('attemptSendingAssets')} <a href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995" className="new-network-info__content__content-box-1__link-1">{t('learnMoreUpperCase')}</a>
           </div>
         </div>
-        <div className="new-network-info__content__content-box-2">
-          <div className="new-network-info__content__content-box-1__serial-number-1">
-            &bull;
+        {!autoDetectToken ? 
+          (
+          <div className="new-network-info__content__content-box-2">
+            <div className="new-network-info__content__content-box-1__serial-number-1">
+              &bull;
+            </div>
+            <div className="new-network-info__content__content-box-1__text-1">
+              {t('tokenShowUp')} <a href="" className="new-network-info__content__content-box-1__link-1">{t('clickToManuallyAdd')}</a>
+            </div>
           </div>
-          <div className="new-network-info__content__content-box-1__text-1">
-            {t('tokenShowUp')} <a href="" className="new-network-info__content__content-box-1__link-1">{t('clickToManuallyAdd')}</a>
-          </div>
-        </div>
+          ) : null}
 
       </div>
     </Popover>
@@ -76,6 +80,7 @@ const NewNetworkInfo = ({
 NewNetworkInfo.propTypes = {
   featuredRPC: PropTypes.object,
   onClose: PropTypes.func,
+  autoDetectToken: PropTypes.bool,
 };
 
 export default NewNetworkInfo;

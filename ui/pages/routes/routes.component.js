@@ -77,6 +77,7 @@ import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
 import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
+import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info.component';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -378,6 +379,7 @@ export default class Routes extends Component {
           }
         }}
       >
+        {/* {this.props.showPopup ? <NewNetworkInfo featuredRPC={featuredRPC} onClose={() => {}} /> : null} */}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
