@@ -114,7 +114,7 @@ const NetworksForm = ({
   };
 
   useEffect(() => {
-    if (addNewNetwork) {
+    if (addNewNetwork && networkName === '') {
       setNetworkName('');
       setRpcUrl('');
       setChainId('');
@@ -373,7 +373,6 @@ const NetworksForm = ({
 
   const onSubmit = async () => {
     setIsSubmitting(true);
-    setIsEditing(false);
     try {
       const formChainId = chainId.trim().toLowerCase();
       const prefixedChainId = prefixChainId(formChainId);
@@ -417,6 +416,7 @@ const NetworksForm = ({
       setIsSubmitting(false);
       throw error;
     }
+    setIsEditing(false);
   };
 
   const onCancel = () => {
