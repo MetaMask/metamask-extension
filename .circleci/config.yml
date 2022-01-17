@@ -53,6 +53,9 @@ workflows:
       - prep-build-test:
           requires:
             - prep-deps
+      - prep-build-test-flask:
+          requires:
+            - prep-deps
       - prep-build-test-metrics:
           requires:
             - prep-deps
@@ -80,10 +83,10 @@ workflows:
             - prep-build-test
       - test-e2e-chrome-snaps:
           requires:
-            - prep-build-flask
+            - prep-build-test-flask
       - test-e2e-firefox-snaps:
           requires:
-            - prep-build-flask
+            - prep-build-test-flask
       - test-e2e-chrome-metrics:
           requires:
             - prep-build-test-metrics
@@ -291,6 +294,28 @@ jobs:
             - dist-flask
             - builds-flask
 
+  prep-build-test-flask:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: yarn build:test:flask
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-flask
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-flask
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-flask
+            - builds-test-flask
+
+
   prep-build-test:
     executor: node-browsers-medium-plus
     steps:
@@ -484,10 +509,10 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-flask ./dist
+          command: mv ./dist-test-flask ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-flask ./builds
+          command: mv ./builds-test-flask ./builds
       - run:
           name: test:e2e:firefox:snaps
           command: |
@@ -511,10 +536,10 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-flask ./dist
+          command: mv ./dist-test-flask ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-flask ./builds
+          command: mv ./builds-test-flask ./builds
       - run:
           name: test:e2e:chrome:snaps
           command: |
