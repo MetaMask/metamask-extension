@@ -14,6 +14,7 @@
 
   &__header {
     padding: 12px 24px 5px 24px;
+    position: relative;
 
     @media screen and (max-width: $break-small) {
       background: #f2f3f4;
@@ -52,7 +53,18 @@
 
     &__search {
       padding-bottom: 5px;
-      position: relative;
+      height: 50px;
+
+      @media screen and (min-width: $break-small) {
+        position: absolute;
+        right: 50px;
+        top: 13px;
+        width: 400px;
+      }
+
+      @media screen and (max-width: $break-small) {
+        position: relative;
+      }
 
       &__list {
         background: #fff;
