@@ -118,6 +118,8 @@ export default class TransactionController extends EventEmitter {
     this._trackMetaMetricsEvent = opts.trackMetaMetricsEvent;
     this._getParticipateInMetrics = opts.getParticipateInMetrics;
     this._getEIP1559GasFeeEstimates = opts.getEIP1559GasFeeEstimates;
+    this.createEventFragment = opts.createEventFragment;
+    this.finalizeEventFragment = opts.finalizeEventFragment;
 
     this.memStore = new ObservableStore({});
     this.query = new EthQuery(this.provider);
@@ -1501,27 +1503,79 @@ export default class TransactionController extends EventEmitter {
 
     const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
 
-    this._trackMetaMetricsEvent({
-      event,
-      category: 'Transactions',
-      properties: {
-        chain_id: chainId,
-        referrer,
-        source,
-        network,
-        type,
-      },
-      sensitiveProperties: {
-        status,
-        transaction_envelope_type: isEIP1559Transaction(txMeta)
-          ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
-          : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-        first_seen: time,
-        gas_limit: gasLimit,
-        ...gasParamsInGwei,
-        ...extraParams,
-      },
-    });
+    const properties = {
+      chain_id: chainId,
+      referrer,
+      source,
+      network,
+      type,
+    };
+
+    const sensitiveProperties = {
+      status,
+      transaction_envelope_type: isEIP1559Transaction(txMeta)
+        ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
+        : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+      first_seen: time,
+      gas_limit: gasLimit,
+      ...gasParamsInGwei,
+      ...extraParams,
+    };
+
+    switch (event) {
+      case TRANSACTION_EVENTS.ADDED:
+        // When a transaction is added to the controller, we know that the user
+        // will be presented with a confirmation screen. The user will then
+        // either confirm or reject that transaction. Each has an associated
+        // event we want to track. While we don't necessarily need an event
+        // fragment to model this, having one allows us to record additional
+        // properties onto the event from the UI. For example, when the user
+        // edits the transactions gas params we can record that property and
+        // then get analytics on the number of transactions in which gas edits
+        // occur.
+        this.createEventFragment({
+          category: 'Transactions',
+          initialEvent: TRANSACTION_EVENTS.ADDED,
+          successEvent: TRANSACTION_EVENTS.APPROVED,
+          failureEvent: TRANSACTION_EVENTS.REJECTED,
+          properties,
+          sensitiveProperties,
+          persist: true,
+          uniqueIdentifier: `transaction-added-${txMeta.id}`,
+        });
+        break;
+      case TRANSACTION_EVENTS.APPROVED:
+        this.finalizeEventFragment(`transaction-added-${txMeta.id}`);
+        break;
+      case TRANSACTION_EVENTS.REJECTED:
+        this.finalizeEventFragment(`transaction-added-${txMeta.id}`, {
+          abandoned: true,
+        });
+        break;
+      case TRANSACTION_EVENTS.SUBMITTED:
+        // When a transaction is submitted it will always result in updating
+        // to a finalized state (dropped, failed, confirmed) -- eventually.
+        // However having a fragment started at this stage allows augmenting
+        // analytics data with user interactions such as speeding up and
+        // canceling the transactions. From this controllers perspective a new
+        // transaction with a new id is generated for speed up and cancel
+        // transactions, but from the UI we could augment the previous ID with
+        // supplemental data to show user intent. Such as when they open the
+        // cancel UI but don't submit. We can record that this happened and add
+        // properties to the transaction event.
+        this.createEventFragment({
+          category: 'Transactions',
+          initialEvent: TRANSACTION_EVENTS.SUBMITTED,
+          successEvent: TRANSACTION_EVENTS.FINALIZED,
+          properties,
+          sensitiveProperties,
+          persist: true,
+          uniqueIdentifier: `transaction-submitted-${txMeta.id}`,
+        });
+      case TRANSACTION_EVENTS.FINALIZED:
+        this.finalizeEventFragment(`transaction-submitted-${txMeta.id}`);
+        break;
+    }
   }
 
   _getTransactionCompletionTime(submittedTime) {

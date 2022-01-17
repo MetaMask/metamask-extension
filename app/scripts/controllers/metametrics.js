@@ -148,9 +148,9 @@ export default class MetaMetricsController {
   /**
    * Create an event fragment in state and returns the event fragment object.
    *
-   * @param {MetaMetricsFunnel} options - Fragment settings and properties
+   * @param {MetaMetricsEventFragment} options - Fragment settings and properties
    *  to initiate the fragment with.
-   * @returns {MetaMetricsFunnel}
+   * @returns {MetaMetricsEventFragment}
    */
   createEventFragment(options) {
     if (!options.successEvent || !options.category) {
@@ -168,7 +168,7 @@ export default class MetaMetricsController {
     }
     const { fragments } = this.store.getState();
 
-    const id = generateUUID();
+    const id = options.uniqueIdentifier ?? generateUUID();
     const fragment = {
       id,
       ...options,
@@ -180,6 +180,22 @@ export default class MetaMetricsController {
         [id]: fragment,
       },
     });
+
+    if (options.initialEvent) {
+      this.trackEvent({
+        event: fragment.initialEvent,
+        category: fragment.category,
+        properties: fragment.properties,
+        sensitiveProperties: fragment.sensitiveProperties,
+        page: fragment.page,
+        referrer: fragment.referrer,
+        revenue: fragment.revenue,
+        value: fragment.value,
+        currency: fragment.currency,
+        environmentType: fragment.environmentType,
+      });
+    }
+
     return fragment;
   }
 
