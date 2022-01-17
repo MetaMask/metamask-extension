@@ -63,5 +63,9 @@
   &__collectible-address-error-link {
     color: var(--primary-blue);
     cursor: pointer;
+
+    &:hover {
+      color: var(--Blue-400);
+    }
   }
 }
