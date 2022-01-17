@@ -14,6 +14,7 @@ import {
   updateSwapsUserFeeLevel,
   updateTransaction as updateTransactionFn,
 } from '../../store/actions';
+import { useTransactionMetrics } from '../useTransactionMetrics';
 
 export const useTransactionFunctions = ({
   defaultEstimateToUse,
@@ -25,6 +26,7 @@ export const useTransactionFunctions = ({
   transaction,
 }) => {
   const dispatch = useDispatch();
+  const { captureTransactionMetricsForEIP1559V2 } = useTransactionMetrics();
 
   const getTxMeta = useCallback(() => {
     if (
@@ -96,20 +98,44 @@ export const useTransactionFunctions = ({
   );
 
   const cancelTransaction = useCallback(() => {
+    const { maxFeePerGas, maxPriorityFeePerGas } = transaction.txParams;
+    captureTransactionMetricsForEIP1559V2({
+      action: 'Cancel / Speed-Up Transaction',
+      name: `Gas Canceled`,
+      variables: { maxFeePerGas, maxPriorityFeePerGas },
+    });
+
     dispatch(
       createCancelTransaction(transaction.id, transaction.txParams, {
         estimatedBaseFee,
       }),
     );
-  }, [dispatch, estimatedBaseFee, transaction]);
+  }, [
+    captureTransactionMetricsForEIP1559V2,
+    dispatch,
+    estimatedBaseFee,
+    transaction,
+  ]);
 
   const speedUpTransaction = useCallback(() => {
+    const { maxFeePerGas, maxPriorityFeePerGas } = transaction.txParams;
+    captureTransactionMetricsForEIP1559V2({
+      action: 'Cancel / Speed-Up Transaction',
+      name: `Gas Speed-Up`,
+      variables: { maxFeePerGas, maxPriorityFeePerGas },
+    });
+
     dispatch(
       createSpeedUpTransaction(transaction.id, transaction.txParams, {
         estimatedBaseFee,
       }),
     );
-  }, [dispatch, estimatedBaseFee, transaction]);
+  }, [
+    captureTransactionMetricsForEIP1559V2,
+    dispatch,
+    estimatedBaseFee,
+    transaction,
+  ]);
 
   const updateTransactionToTenPercentIncreasedGasFee = useCallback(() => {
     const { gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas } =

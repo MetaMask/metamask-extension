@@ -7,10 +7,15 @@ export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
   const [gasLimit, setGasLimit] = useState();
   const [maxFeePerGas, setMaxFeePerGas] = useState();
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState();
+  const [initialGasValues, setInitialGasValues] = useState({});
   const [errors, setErrors] = useState({
     maxFeePerGas: false,
     maxPriorityFeePerGas: false,
   });
+
+  const updateInitialGasValue = (value) => {
+    setInitialGasValues({ ...initialGasValues, ...value });
+  };
 
   const setErrorValue = useCallback(
     (field, value) => {
@@ -31,10 +36,12 @@ export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
         maxPriorityFeePerGas,
         setErrorValue,
         maxBaseFee,
+        initialGasValues,
         setGasLimit,
         setMaxPriorityFeePerGas,
         setMaxFeePerGas,
         setMaxBaseFee,
+        updateInitialGasValue,
       }}
     >
       {children}

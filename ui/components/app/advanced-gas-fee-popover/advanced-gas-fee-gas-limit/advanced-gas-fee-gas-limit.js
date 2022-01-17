@@ -23,6 +23,8 @@ const AdvancedGasFeeGasLimit = () => {
   const t = useI18nContext();
   const {
     setGasLimit: setGasLimitInContext,
+    initialGasValues,
+    updateInitialGasValue,
   } = useAdvancedGasFeePopoverContext();
   const {
     gasLimit: gasLimitInTransaction,
@@ -35,6 +37,13 @@ const AdvancedGasFeeGasLimit = () => {
   const updateGasLimit = (value) => {
     setGasLimit(value);
   };
+
+  useEffect(() => {
+    if (!initialGasValues.gasLimit) {
+      updateInitialGasValue({ gasLimit });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setGasLimitInContext(gasLimit);
