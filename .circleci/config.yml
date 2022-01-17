@@ -130,6 +130,8 @@ workflows:
             - test-e2e-firefox
             - test-e2e-chrome-metrics
             - test-e2e-firefox-metrics
+            - test-e2e-chrome-snaps
+            - test-e2e-firefox-snaps
       - benchmark:
           requires:
             - prep-build-test
@@ -459,6 +461,60 @@ jobs:
             if .circleci/scripts/test-run-e2e.sh
             then
               yarn test:e2e:chrome --retries 2
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
+  test-e2e-firefox-snaps:
+    executor: node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install Firefox
+          command: ./.circleci/scripts/firefox-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-flask ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-flask ./builds
+      - run:
+          name: test:e2e:firefox:snaps
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:firefox:snaps --retries 2
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+
+  test-e2e-chrome-snaps:
+    executor: node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-flask ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-flask ./builds
+      - run:
+          name: test:e2e:chrome:snaps
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:snaps --retries 2
             fi
           no_output_timeout: 20m
       - store_artifacts:
