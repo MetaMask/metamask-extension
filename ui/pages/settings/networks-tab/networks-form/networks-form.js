@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useRef, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -113,8 +113,14 @@ const NetworksForm = ({
     );
   };
 
+  const prevAddNewNetwork = useRef();
+  const prevNetworkName = useRef();
+  const prevChainId = useRef();
+  const prevRpcUrl = useRef();
+  const prevTicker = useRef();
+  const prevBlockExplorerUrl = useRef();
   useEffect(() => {
-    if (addNewNetwork && networkName === '') {
+    if (!prevAddNewNetwork.current && addNewNetwork) {
       setNetworkName('');
       setRpcUrl('');
       setChainId('');
@@ -122,7 +128,14 @@ const NetworksForm = ({
       setBlockExplorerUrl('');
       setErrors({});
       setIsSubmitting(false);
-    } else if (!isEditing) {
+    } else if (
+      (prevNetworkName.current !== selectedNetworkName ||
+        prevRpcUrl.current !== selectedNetwork.rpcUrl ||
+        prevChainId.current !== selectedNetwork.chainId ||
+        prevTicker.current !== selectedNetwork.ticker ||
+        prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl) &&
+      !isEditing
+    ) {
       resetForm(selectedNetwork);
     }
   }, [
