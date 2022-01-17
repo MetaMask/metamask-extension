@@ -1815,6 +1815,12 @@
   "missingNFT": {
     "message": "Don't see your NFT?"
   },
+  "missingSetting": {
+    "message": "Can't find a setting?"
+  },
+  "missingSettingRequest": {
+    "message": "Request here"
+  },
   "missingToken": {
     "message": "Don't see your token?"
   },
@@ -2516,6 +2522,9 @@
   "searchResults": {
     "message": "Search Results"
   },
+  "searchSettings": {
+    "message": "Search in settings"
+  },
   "searchTokens": {
     "message": "Search Tokens"
   },
@@ -2667,6 +2676,9 @@
   },
   "settings": {
     "message": "Settings"
+  },
+  "settingsSearchMatchingNotFound": {
+    "message": "No matching results found"
   },
   "show": {
     "message": "Show"

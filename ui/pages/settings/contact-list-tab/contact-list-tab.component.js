@@ -7,6 +7,10 @@ import {
   CONTACT_VIEW_ROUTE,
 } from '../../../helpers/constants/routes';
 import Button from '../../../components/ui/button';
+import {
+  getSettingsSectionNumber,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
 import EditContact from './edit-contact';
 import AddContact from './add-contact';
 import ViewContact from './view-contact';
@@ -26,6 +30,24 @@ export default class ContactListTab extends Component {
     showContactContent: PropTypes.bool,
     hideAddressBook: PropTypes.bool,
   };
+
+  settingsRefs = Array(
+    getSettingsSectionNumber(this.context.t, this.context.t('contacts')),
+  )
+    .fill(undefined)
+    .map(() => {
+      return React.createRef();
+    });
+
+  componentDidUpdate() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('contacts'), this.settingsRefs);
+  }
+
+  componentDidMount() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('contacts'), this.settingsRefs);
+  }
 
   renderAddresses() {
     const { addressBook, history, selectedAddress } = this.props;
@@ -124,7 +146,11 @@ export default class ContactListTab extends Component {
     const { hideAddressBook } = this.props;
 
     if (!hideAddressBook) {
-      return <div className="address-book">{this.renderAddresses()}</div>;
+      return (
+        <div ref={this.settingsRefs[0]} className="address-book">
+          {this.renderAddresses()}
+        </div>
+      );
     }
     return null;
   }

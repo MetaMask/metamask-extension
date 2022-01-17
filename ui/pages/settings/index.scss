@@ -13,22 +13,122 @@
   flex-flow: column nowrap;
 
   &__header {
-    display: flex;
-    flex-flow: row nowrap;
-    padding: 12px 24px;
-    align-items: center;
-    flex: 0 0 auto;
+    padding: 12px 24px 5px 24px;
 
-    &__title {
-      @include H3;
+    @media screen and (max-width: $break-small) {
+      background: #f2f3f4;
+    }
 
-      flex: 1 0 auto;
+    &__title-container {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      flex: 0 0 auto;
 
-      @media screen and (max-width: $break-small) {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        max-width: 250px;
+      &__close-button {
+        margin-left: auto;
+      }
+
+      &__close-button::after {
+        content: '\00D7';
+        font-size: 40px;
+        color: --ui-4;
+        cursor: pointer;
+      }
+
+      &__title {
+        @include H3;
+
+        flex: 1 0 auto;
+
+        @media screen and (max-width: $break-small) {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          max-width: 250px;
+        }
+      }
+    }
+
+    &__search {
+      padding-bottom: 5px;
+      position: relative;
+
+      &__list {
+        background: #fff;
+        box-sizing: border-box;
+        box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
+        border-radius: 6px;
+        position: absolute;
+        width: 100%;
+        z-index: 10;
+
+        > div {
+          &:hover {
+            background: --ui-1;
+          }
+        }
+
+        &__item {
+          transition: 200ms ease-in-out;
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          padding: 16px;
+          border-top: 1px solid var(--ui-2);
+          cursor: pointer;
+
+          &__icon {
+            background: --ui-2;
+            height: 15px;
+            width: 15px;
+            margin-right: 16px;
+          }
+
+          &__request,
+          &__tab,
+          &__section,
+          &__no-matching {
+            @include H6;
+
+            color: --ui-4;
+          }
+
+          &__tab-multiple-lines {
+            @media screen and (max-width: $break-small) {
+              width: 90px;
+            }
+          }
+
+          &__section-multiple-lines {
+            @media screen and (max-width: $break-small) {
+              width: 170px;
+              margin-left: 10px;
+            }
+          }
+
+          &__caret {
+            background-image: url('/images/caret-right.svg');
+            width: 8px;
+            height: 10px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin: 0 5px;
+
+            [dir='rtl'] & {
+              transform: rotate(180deg);
+            }
+          }
+
+          &__link {
+            @include H6;
+
+            display: inline;
+            color: --primary-blue;
+            margin-left: 3px;
+          }
+        }
       }
     }
   }
