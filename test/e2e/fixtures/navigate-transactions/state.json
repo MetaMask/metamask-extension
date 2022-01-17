@@ -485,6 +485,46 @@
       "usePhishDetect": true,
       "useTokenDetection": true
     },
+    "MetaMetricsController": {
+      "fragments": {
+        "transaction-added-7911313280012623": {
+          "category": "Transactions",
+          "initialEvent": "Transaction Added",
+          "successEvent": "Transaction Approved",
+          "failureEvent": "Transaction Rejected",
+          "properties": {},
+          "persist": true,
+          "uniqueIdentifier": "transaction-added-7911313280012623"
+        },
+        "transaction-added-7911313280012624": {
+          "category": "Transactions",
+          "initialEvent": "Transaction Added",
+          "successEvent": "Transaction Approved",
+          "failureEvent": "Transaction Rejected",
+          "properties": {},
+          "persist": true,
+          "uniqueIdentifier": "transaction-added-7911313280012624"
+        },
+        "transaction-added-7911313280012625": {
+          "category": "Transactions",
+          "initialEvent": "Transaction Added",
+          "successEvent": "Transaction Approved",
+          "failureEvent": "Transaction Rejected",
+          "properties": {},
+          "persist": true,
+          "uniqueIdentifier": "transaction-added-7911313280012625"
+        },
+        "transaction-added-7911313280012626": {
+          "category": "Transactions",
+          "initialEvent": "Transaction Added",
+          "successEvent": "Transaction Approved",
+          "failureEvent": "Transaction Rejected",
+          "properties": {},
+          "persist": true,
+          "uniqueIdentifier": "transaction-added-7911313280012626"
+        }
+      }
+    },
     "TransactionController": {
       "transactions": {
         "7911313280012623": {
