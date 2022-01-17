@@ -240,7 +240,7 @@ export default class MetaMetricsController {
    *  originated the fragment. This is for fallback only, the fragment referrer
    *  property will take precedence.
    */
-  finalizeEventFragment(id, { abandoned = false, page, referrer }) {
+  finalizeEventFragment(id, { abandoned = false, page, referrer } = {}) {
     const fragment = this.store.getState().fragments[id];
     if (!fragment) {
       throw new Error(`Funnel with id ${id} does not exist.`);
