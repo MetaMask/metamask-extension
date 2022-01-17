@@ -1572,7 +1572,9 @@ export default class TransactionController extends EventEmitter {
           persist: true,
           uniqueIdentifier: `transaction-submitted-${txMeta.id}`,
         });
+        break;
       case TRANSACTION_EVENTS.FINALIZED:
+      default:
         this.finalizeEventFragment(`transaction-submitted-${txMeta.id}`);
         break;
     }
