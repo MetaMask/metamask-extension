@@ -13,8 +13,6 @@ export default function KeyRingLabel(props) {
 
     // Effect #1 Sets keyring label
     useEffect(() => {
-
-        console.log(keyring, 'KEYY')
         // Keyring value might take a while to get a value
         if(keyring) {   
             const { type } = keyring;
