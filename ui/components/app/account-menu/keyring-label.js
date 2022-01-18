@@ -32,7 +32,6 @@ export default function KeyRingLabel(props) {
                 setLabel('Lattice1')
             }
         }
-
     }, [props.keyring])
 
   return (
