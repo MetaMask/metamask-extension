@@ -13,7 +13,14 @@ describe('Test Snap Confirm', function () {
       ],
     };
     await withFixtures(
-      { fixtures: 'imported-account', ganacheOptions, title: this.test.title },
+      {
+        fixtures: 'imported-account',
+        ganacheOptions,
+        title: this.test.title,
+        driverOptions: {
+          type: 'flask',
+        },
+      },
       async ({ driver }) => {
         await driver.navigate();
 
@@ -22,7 +29,7 @@ describe('Test Snap Confirm', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.driver.get('https://metamask.github.io/test-snaps/');
+        await driver.openNewPage('https://metamask.github.io/test-snaps/');
         await driver.fill('.snapId', 'npm:@metamask/test-snap-confirm');
         await driver.clickElement({
           text: 'Connect To Confirm Snap',

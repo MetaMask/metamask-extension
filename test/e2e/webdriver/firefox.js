@@ -25,7 +25,7 @@ class FirefoxDriver {
    * @param options.port
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
-  static async build({ responsive, port }) {
+  static async build({ responsive, port, type }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
     const builder = new Builder()
@@ -38,9 +38,13 @@ class FirefoxDriver {
     const driver = builder.build();
     const fxDriver = new FirefoxDriver(driver);
 
-    const extensionId = await fxDriver.installExtension(
-      `builds/metamask-firefox-${version}.zip`,
-    );
+    let extensionString = `builds/metamask-firefox-${version}.zip`;
+
+    if (type) {
+      extensionString = `builds/metamask-${type}-firefox-${version}.zip`;
+    }
+
+    const extensionId = await fxDriver.installExtension(extensionString);
     const internalExtensionId = await fxDriver.getInternalId();
 
     if (responsive) {
