@@ -125,7 +125,7 @@ export default function TransactionList({
             </div>
             {pendingTransactions.map((transactionGroup, index) =>
               transactionGroup.initialTransaction.transactionType ===
-              'smart' ? (
+              TRANSACTION_TYPES.SMART ? (
                 <SmartTransactionListItem
                   isEarliestNonce={index === 0}
                   smartTransaction={transactionGroup.initialTransaction}
