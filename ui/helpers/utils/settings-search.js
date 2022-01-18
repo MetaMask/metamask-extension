@@ -339,6 +339,7 @@ export function getSettingsSectionNumber(t, tabName) {
 }
 
 export function handleSettingsRefs(t, tabName, settingsRefs) {
+  console.log(settingsRefs);
   const settingsSearchJsonFiltered = getFilteredSettingsRoutes(t, tabName);
   const settingsRefsIndex = settingsSearchJsonFiltered.findIndex(
     (s) => s.route.substring(1) === window.location.hash.substring(1),
@@ -379,17 +380,19 @@ export function handleHooksSettingsRefs(t, tabName, settingsRefs, itemIndex) {
 
 function colorText(text, menuElement) {
   if (menuElement !== null) {
-    let { elementText } = menuElement;
-    const index = menuElement.innerText.toLowerCase().indexOf(text);
+    let { elementInnerHtml } = menuElement;
+    const { elementInnerText } = menuElement;
+
+    const index = elementInnerText.toLowerCase().indexOf(text);
     if (index >= 0) {
-      elementText = `${menuElement.innerText.substring(
+      elementInnerHtml = `${elementInnerText.substring(
         0,
         index,
-      )}<span style="background:#ffd33d">${menuElement.innerText.substring(
+      )}<span style="background:#ffd33d">${elementInnerText.substring(
         index,
         index + text.length,
-      )}</span>${menuElement.innerText.substring(index + text.length)}`;
-      menuElement.innerHTML = elementText;
+      )}</span>${elementInnerText.substring(index + text.length)}`;
+      menuElement.innerHTML = elementInnerHtml;
     }
   }
 }
