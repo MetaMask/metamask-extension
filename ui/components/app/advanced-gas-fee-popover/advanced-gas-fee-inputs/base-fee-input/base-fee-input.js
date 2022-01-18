@@ -114,6 +114,7 @@ const BaseFeeInput = () => {
   return (
     <Box className="base-fee-input" margin={[0, 2]}>
       <FormField
+        dataTestId="base-fee-input"
         error={baseFeeError ? t(baseFeeError) : ''}
         onChange={updateBaseFee}
         titleText={t('maxBaseFee')}
