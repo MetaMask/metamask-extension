@@ -19,7 +19,7 @@ function mapStateToProps(state) {
     sendAsset: getSendAsset(state),
     accounts: getMetaMaskAccounts(state),
     nativeCurrency: getNativeCurrency(state),
-    nativeCurrencyImage: getNativeCurrencyImage(state)
+    nativeCurrencyImage: getNativeCurrencyImage(state),
   };
 }
 
