@@ -379,17 +379,17 @@ export function handleHooksSettingsRefs(t, tabName, settingsRefs, itemIndex) {
 
 function colorText(text, menuElement) {
   if (menuElement !== null) {
-    let { innerHTML } = menuElement;
+    let { elementText } = menuElement;
     const index = menuElement.innerText.toLowerCase().indexOf(text);
     if (index >= 0) {
-      innerHTML = `${menuElement.innerText.substring(
+      elementText = `${menuElement.innerText.substring(
         0,
         index,
       )}<span style="background:#ffd33d">${menuElement.innerText.substring(
         index,
         index + text.length,
       )}</span>${menuElement.innerText.substring(index + text.length)}`;
-      menuElement.innerHTML = innerHTML;
+      menuElement.innerHTML = elementText;
     }
   }
 }
