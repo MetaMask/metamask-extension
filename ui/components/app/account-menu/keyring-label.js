@@ -19,7 +19,7 @@ export default function KeyRingLabel(props) {
         if(keyring) {   
             const { type } = keyring;
             if(type === KEYRING_TYPES.QR) {
-                setLabel(t('hardware'));
+                setLabel('QR');
             }
             else if(type === 'Simple Key Pair') {
                 setLabel(t('imported'));
@@ -31,7 +31,7 @@ export default function KeyRingLabel(props) {
                 setLabel('Ledger');
             }
             else if(type === KEYRING_TYPES.LATTICE) {
-                setLabel('Lattice')
+                setLabel('Lattice1')
             }
         }
 
