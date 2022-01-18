@@ -1,5 +1,5 @@
 import React from 'react';
-import SettingsSearch from './settings-search.component';
+import SettingsSearch from './settings-search';
 
 export default {
   title: 'SettingsSearch',

@@ -1,3 +1,3 @@
-import SettingsSearch from './settings-search.component';
+import SettingsSearch from './settings-search';
 
 export default SettingsSearch;

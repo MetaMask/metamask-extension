@@ -1,3 +1,3 @@
-import SettingsSearchList from './settings-search-list.component';
+import SettingsSearchList from './settings-search-list';
 
 export default SettingsSearchList;
