@@ -1169,11 +1169,11 @@ export default class TransactionController extends EventEmitter {
     // add external transaction
     await this.txStateManager.addExternalTransaction(txMeta);
 
-    const txId = txMeta.id;
-
     if (!txMeta) {
       return;
     }
+
+    const txId = txMeta.id;
 
     try {
       // It seems that sometimes the numerical values being returned from
