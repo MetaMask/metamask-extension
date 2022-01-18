@@ -720,8 +720,9 @@ export default class ConfirmTransactionBase extends Component {
         {showLedgerSteps ? (
           <HardwareConnectivityMessage
             connected={hardwareIsReady}
-            onClick={() => {
+            onClick={(e) => {
               console.log('Opening the modal!');
+              e?.preventDefault?.();
               this.setState({ showingHardwareConnectionContents: true });
             }}
           />
