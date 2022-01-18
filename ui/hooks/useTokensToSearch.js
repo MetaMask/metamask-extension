@@ -175,8 +175,8 @@ export function useTokensToSearch({
     );
     tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean);
     return [
-      ...tokensToSearchBuckets.owned,
       ...tokensToSearchBuckets.top,
+      ...tokensToSearchBuckets.owned,
       ...tokensToSearchBuckets.others,
     ];
   }, [

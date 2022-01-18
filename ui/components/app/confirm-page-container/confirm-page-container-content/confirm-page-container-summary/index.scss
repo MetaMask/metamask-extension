@@ -1,16 +1,18 @@
 .confirm-page-container-summary {
-  padding: 0 24px;
+  padding: 16px 24px;
   background-color: #f9fafa;
-  height: 120px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
 
+  &__origin,
+  &__action-row {
+    padding-bottom: 8px;
+  }
+
   &__origin {
     @include H6;
-
-    padding-bottom: 10px;
   }
 
   &__action-row {
@@ -34,7 +36,6 @@
   }
 
   &__title {
-    padding: 4px 0;
     display: flex;
     align-items: center;
   }
@@ -45,7 +46,7 @@
   }
 
   &__title-text {
-    @include H2;
+    @include H1;
 
     white-space: nowrap;
     overflow: hidden;
@@ -53,13 +54,12 @@
   }
 
   &__subtitle {
-    @include H6;
+    @include H5;
 
     color: var(--oslo-gray);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-left: 42px;
   }
 
   &--border {

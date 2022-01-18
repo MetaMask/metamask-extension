@@ -43,6 +43,7 @@ export default class ConfirmPageContainerContent extends Component {
     rejectNText: PropTypes.string,
     hideTitle: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
+    hasTopBorder: PropTypes.bool,
   };
 
   renderContent() {
@@ -111,6 +112,7 @@ export default class ConfirmPageContainerContent extends Component {
       setUserAcknowledgedGasMissing,
       hideUserAcknowledgedGasMissing,
       supportsEIP1559V2,
+      hasTopBorder,
     } = this.props;
 
     const primaryAction = hideUserAcknowledgedGasMissing
@@ -121,7 +123,11 @@ export default class ConfirmPageContainerContent extends Component {
         };
 
     return (
-      <div className="confirm-page-container-content">
+      <div
+        className={classnames('confirm-page-container-content', {
+          'confirm-page-container-content--with-top-border': hasTopBorder,
+        })}
+      >
         {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
