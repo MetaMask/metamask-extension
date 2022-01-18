@@ -3165,6 +3165,7 @@ const createSignedTransactions = async (
     };
     if (areCancelTransactions) {
       unsignedTransactionWithFees.to = unsignedTransactionWithFees.from;
+      unsignedTransactionWithFees.data = '0x';
     }
     return unsignedTransactionWithFees;
   });
