@@ -19,6 +19,7 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
+import { getTokenStandardAndDetails } from '../../store/actions';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -1515,6 +1516,40 @@ describe('Send Slice', () => {
         expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
+      });
+
+      it('should show ConvertTokenToNFT modal and throw "invalidAssetType" error when token passed in props is an ERC721 or ERC1155', async () => {
+        getTokenStandardAndDetails.mockImplementation(() => ({
+          standard: 'ERC1155',
+        }));
+        const store = mockStore(defaultSendAssetState);
+
+        const newSendAsset = {
+          type: ASSET_TYPES.TOKEN,
+          details: {
+            address: 'tokenAddress',
+            symbol: 'tokenSymbol',
+            decimals: 'tokenDecimals',
+          },
+        };
+
+        await expect(() =>
+          store.dispatch(updateSendAsset(newSendAsset)),
+        ).rejects.toThrow('invalidAssetType');
+        const actionResult = store.getActions();
+        expect(actionResult).toHaveLength(3);
+        expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
+        expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
+        expect(actionResult[2]).toStrictEqual({
+          payload: {
+            name: 'CONVERT_TOKEN_TO_NFT',
+            tokenAddress: 'tokenAddress',
+          },
+          type: 'UI_MODAL_OPEN',
+        });
+        getTokenStandardAndDetails.mockImplementation(() => ({
+          standard: 'ERC20',
+        }));
       });
     });
 
