@@ -1,19 +1,8 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { generateUseSelectorRouter } from '../../../hooks/gasFeeInput/test-utils';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import TokenOverview from './token-overview';
-
-jest.mock('react-redux', () => {
-  const actual = jest.requireActual('react-redux');
-
-  return {
-    ...actual,
-    useSelector: jest.fn(),
-  };
-});
 
 describe('TokenOverview', () => {
   const mockStore = {
@@ -24,14 +13,28 @@ describe('TokenOverview', () => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
+      identities: {
+        '0x1': {
+          address: '0x1',
+        },
+      },
+      selectedAddress: '0x1',
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x1', '0x2'],
+        },
+        {
+          type: 'Ledger Hardware',
+          accounts: [],
+        },
+      ],
+      contractExchangeRates: {},
     },
   };
 
   const store = configureMockStore([thunk])(mockStore);
 
-  beforeAll(() => {
-    useSelector.mockImplementation(generateUseSelectorRouter());
-  });
   afterEach(() => {
     store.clearActions();
   });

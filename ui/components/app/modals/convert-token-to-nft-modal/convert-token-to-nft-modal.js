@@ -13,7 +13,7 @@ import withModalProps from '../../../../helpers/higher-order-components/with-mod
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ADD_COLLECTIBLE_ROUTE } from '../../../../helpers/constants/routes';
 
-const ConvertTokenToNFT = ({ hideModal, tokenAddress }) => {
+const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
   const history = useHistory();
   const t = useI18nContext();
   return (
@@ -28,10 +28,8 @@ const ConvertTokenToNFT = ({ hideModal, tokenAddress }) => {
       submitText={t('yes')}
       onCancel={() => hideModal()}
       cancelText={t('cancel')}
-      contentClass="convert-token-to-nft-content"
-      containerClass="convert-token-to-nft-container"
     >
-      <div className="convert-token-to-nft">
+      <div className="convert-token-to-nft-modal">
         <Typography
           variant={TYPOGRAPHY.H6}
           fontWeight={FONT_WEIGHT.NORMAL}
@@ -48,9 +46,9 @@ const ConvertTokenToNFT = ({ hideModal, tokenAddress }) => {
   );
 };
 
-ConvertTokenToNFT.propTypes = {
+ConvertTokenToNFTModal.propTypes = {
   hideModal: PropTypes.func.isRequired,
   tokenAddress: PropTypes.string,
 };
 
-export default withModalProps(ConvertTokenToNFT);
+export default withModalProps(ConvertTokenToNFTModal);
