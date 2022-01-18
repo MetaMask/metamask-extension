@@ -6,7 +6,6 @@ import {
 import {
   getMetaMaskAccounts,
   getNativeCurrencyImage,
-  getPreferences
 } from '../../../../selectors';
 import { updateSendAsset, getSendAsset } from '../../../../ducks/send';
 import SendAssetRow from './send-asset-row.component';

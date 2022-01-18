@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { isEqual } from 'lodash';
 
 import { getShouldHideZeroBalanceTokens } from '../../../selectors';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import Identicon from '../identicon';
 import TokenBalance from '../token-balance';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { isEqual } from 'lodash';
 import { getTokens } from '../../../ducks/metamask/metamask';
 
 export default function TokenListDisplay(props) {
@@ -74,8 +74,4 @@ export default function TokenListDisplay(props) {
 
 TokenListDisplay.propTypes = {
   clickHandler: PropTypes.func,
-};
-
-TokenListDisplay.defaultProps = {
-  className: undefined,
 };
