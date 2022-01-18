@@ -41,7 +41,9 @@ export default function AddCollectible() {
 
   const handleAddCollectible = async () => {
     try {
-      await dispatch(addCollectibleVerifyOwnership(address, tokenId));
+      await dispatch(
+        addCollectibleVerifyOwnership(address, tokenId.toString()),
+      );
     } catch (error) {
       const { message } = error;
       dispatch(setNewCollectibleAddedMessage(message));

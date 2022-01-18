@@ -32,11 +32,8 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
       <div className="convert-token-to-nft-modal">
         <Typography
           variant={TYPOGRAPHY.H6}
-          fontWeight={FONT_WEIGHT.NORMAL}
           boxProps={{
             marginTop: 2,
-            display: DISPLAY.INLINE_FLEX,
-            alignItems: ALIGN_ITEMS.CENTER,
           }}
         >
           {t('convertTokenToNFTDescription')}
