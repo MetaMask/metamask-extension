@@ -19,7 +19,7 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
-import { getTokenStandardAndDetails } from '../../store/actions';
+import * as Actions from '../../store/actions';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -68,20 +68,6 @@ import sendReducer, {
 
 const mockStore = createMockStore([thunk]);
 
-jest.mock('../../store/actions', () => {
-  const actual = jest.requireActual('../../store/actions');
-  return {
-    ...actual,
-    estimateGas: jest.fn(() => Promise.resolve('0x0')),
-    getGasFeeEstimatesAndStartPolling: jest.fn(() => Promise.resolve()),
-    updateTokenType: jest.fn(() => Promise.resolve({ isERC721: false })),
-    isCollectibleOwner: jest.fn(() => Promise.resolve(true)),
-    getTokenStandardAndDetails: jest.fn(() =>
-      Promise.resolve({ standard: 'ERC20' }),
-    ),
-  };
-});
-
 jest.mock('./send', () => {
   const actual = jest.requireActual('./send');
   return {
@@ -92,6 +78,25 @@ jest.mock('./send', () => {
 });
 
 describe('Send Slice', () => {
+  let getTokenStandardAndDetailsStub;
+  beforeEach(() => {
+    getTokenStandardAndDetailsStub = jest
+      .spyOn(Actions, 'getTokenStandardAndDetails')
+      .mockImplementation(() => Promise.resolve({ standard: 'ERC20' }));
+    jest
+      .spyOn(Actions, 'estimateGas')
+      .mockImplementation(() => Promise.resolve('0x0'));
+    jest
+      .spyOn(Actions, 'getGasFeeEstimatesAndStartPolling')
+      .mockImplementation(() => Promise.resolve());
+    jest
+      .spyOn(Actions, 'updateTokenType')
+      .mockImplementation(() => Promise.resolve({ isERC721: false }));
+    jest
+      .spyOn(Actions, 'isCollectibleOwner')
+      .mockImplementation(() => Promise.resolve(true));
+  });
+
   describe('Reducers', () => {
     describe('updateSendAmount', () => {
       it('should', async () => {
@@ -1519,9 +1524,9 @@ describe('Send Slice', () => {
       });
 
       it('should show ConvertTokenToNFT modal and throw "invalidAssetType" error when token passed in props is an ERC721 or ERC1155', async () => {
-        getTokenStandardAndDetails.mockImplementation(() => ({
-          standard: 'ERC1155',
-        }));
+        getTokenStandardAndDetailsStub.mockImplementation(() =>
+          Promise.resolve({ standard: 'ERC1155' }),
+        );
         const store = mockStore(defaultSendAssetState);
 
         const newSendAsset = {
@@ -1547,9 +1552,6 @@ describe('Send Slice', () => {
           },
           type: 'UI_MODAL_OPEN',
         });
-        getTokenStandardAndDetails.mockImplementation(() => ({
-          standard: 'ERC20',
-        }));
       });
     });
 
