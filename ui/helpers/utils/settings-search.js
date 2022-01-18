@@ -380,8 +380,8 @@ export function handleHooksSettingsRefs(t, tabName, settingsRefs, itemIndex) {
 
 function colorText(text, menuElement) {
   if (menuElement !== null) {
-    let { elementInnerHtml } = menuElement;
-    const { elementInnerText } = menuElement;
+    let { innerHTML: elementInnerHtml } = menuElement;
+    const { innerText: elementInnerText } = menuElement;
 
     const index = elementInnerText.toLowerCase().indexOf(text);
     if (index >= 0) {
