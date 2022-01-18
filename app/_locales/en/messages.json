@@ -2670,9 +2670,6 @@
   "smartTransactionTooltip": {
     "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
   },
-  "smartTransactionsAlert": {
-    "message": "Smart Transactions Alert"
-  },
   "smartTransactionsAreHere": {
     "message": "Smart transactions are here!"
   },
