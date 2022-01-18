@@ -104,6 +104,7 @@ import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,
   getEstimatedFeeForSmartTransaction,
+  getHighestStxFee,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
@@ -292,12 +293,10 @@ export default function ViewQuote() {
     smartTransactionsOptInStatus &&
     smartTransactionFees
   ) {
-    const highestEstimatedFee =
-      smartTransactionFees.fees[smartTransactionFees.fees.length - 1];
-    const maxFeePerGasDecWEI = highestEstimatedFee?.maxFeePerGas;
+    const highestStxFee = getHighestStxFee(smartTransactionFees.fees);
+    const maxFeePerGasDecWEI = highestStxFee?.maxFeePerGas;
     maxFeePerGas = decimalToHex(maxFeePerGasDecWEI);
-    const maxPriorityFeePerGasDecWEI =
-      highestEstimatedFee?.maxPriorityFeePerGas;
+    const maxPriorityFeePerGasDecWEI = highestStxFee?.maxPriorityFeePerGas;
     maxPriorityFeePerGas = decimalToHex(maxPriorityFeePerGasDecWEI);
     maxGasLimit = `0x${decimalToHex(smartTransactionFees.gasLimit || 0)}`;
   }
