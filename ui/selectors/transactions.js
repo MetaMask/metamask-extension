@@ -53,7 +53,7 @@ export const smartTransactionsListSelector = (state) =>
     ?.filter((stx) => !stx.confirmed)
     .map((stx) => ({
       ...stx,
-      transactionType: 'smart',
+      transactionType: TRANSACTION_TYPES.SMART,
       status: stx.status?.startsWith('cancelled')
         ? TRANSACTION_GROUP_STATUSES.CANCELLED
         : stx.status,
