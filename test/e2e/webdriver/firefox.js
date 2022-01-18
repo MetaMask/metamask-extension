@@ -23,6 +23,7 @@ class FirefoxDriver {
    * @param {Object} options - the options for the build
    * @param options.responsive
    * @param options.port
+   * @param options.type
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
   static async build({ responsive, port, type }) {
