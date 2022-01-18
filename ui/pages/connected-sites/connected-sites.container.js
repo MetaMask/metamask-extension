@@ -53,7 +53,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(removePermittedAccount(subjectKey, address));
     },
     disconnectAllAccounts: (subjectKey, subject) => {
-      const permissionMethodNames = subject.permissions.map(
+      const permissionMethodNames = Object.values(subject.permissions).map(
         ({ parentCapability }) => parentCapability,
       );
       dispatch(
