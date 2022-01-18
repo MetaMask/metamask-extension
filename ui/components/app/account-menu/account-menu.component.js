@@ -214,7 +214,7 @@ export default class AccountMenu extends Component {
               type={PRIMARY}
             />
           </div>
-          <KeyRingLabel  keyring={keyring}/>
+          <KeyRingLabel keyring={keyring} />
           {iconAndNameForOpenSubject ? (
             <div className="account-menu__icon-list">
               <SiteIcon
