@@ -90,7 +90,6 @@ import {
   getValueFromWeiHex,
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
-  decWEIToHexWEI,
   addHexes,
 } from '../../../helpers/utils/conversions.util';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -296,10 +295,10 @@ export default function ViewQuote() {
     const highestEstimatedFee =
       smartTransactionFees.fees[smartTransactionFees.fees.length - 1];
     const maxFeePerGasDecWEI = highestEstimatedFee?.maxFeePerGas;
-    maxFeePerGas = decWEIToHexWEI(maxFeePerGasDecWEI);
+    maxFeePerGas = decimalToHex(maxFeePerGasDecWEI);
     const maxPriorityFeePerGasDecWEI =
       highestEstimatedFee?.maxPriorityFeePerGas;
-    maxPriorityFeePerGas = decWEIToHexWEI(maxPriorityFeePerGasDecWEI);
+    maxPriorityFeePerGas = decimalToHex(maxPriorityFeePerGasDecWEI);
     maxGasLimit = `0x${decimalToHex(smartTransactionFees.gasLimit || 0)}`;
   }
 

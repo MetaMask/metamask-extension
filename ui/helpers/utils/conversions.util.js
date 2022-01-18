@@ -135,15 +135,6 @@ export function decGWEIToHexWEI(decGWEI) {
   });
 }
 
-export function decWEIToHexWEI(decWEI) {
-  return conversionUtil(decWEI, {
-    fromNumericBase: 'dec',
-    toNumericBase: 'hex',
-    fromDenomination: 'WEI',
-    toDenomination: 'WEI',
-  });
-}
-
 export function hexWEIToDecGWEI(decGWEI) {
   return conversionUtil(decGWEI, {
     fromNumericBase: 'hex',
