@@ -2211,6 +2211,9 @@
   "permissionRequest": {
     "message": "Permission request"
   },
+  "permissionRequestCapitalized": {
+    "message": "Permission Request"
+  },
   "permission_accessNetwork": {
     "message": "Access the Internet.",
     "description": "The description of the `endowment:network-access` permission."
