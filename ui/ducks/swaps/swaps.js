@@ -58,10 +58,6 @@ import {
   addHexes,
 } from '../../helpers/utils/conversions.util';
 import { conversionLessThan } from '../../../shared/modules/conversion.utils';
-import {
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
-} from '../../../shared/constants/network';
 import { calcTokenAmount } from '../../helpers/utils/token-util';
 import {
   getSelectedAccount,
@@ -79,6 +75,7 @@ import {
   CONTRACT_DATA_DISABLED_ERROR,
   SWAP_FAILED_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
+  ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
 } from '../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
 import { getGasFeeEstimates } from '../metamask/metamask';
@@ -309,7 +306,7 @@ export const getSmartTransactionsErrorMessageDismissed = (state) =>
 export const getSmartTransactionsEnabled = (state) => {
   const hardwareWalletUsed = isHardwareWallet(state);
   const chainId = getCurrentChainId(state);
-  const isAllowedNetwork = [MAINNET_CHAIN_ID, RINKEBY_CHAIN_ID].includes(
+  const isAllowedNetwork = ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(
     chainId,
   );
   const smartTransactionsFeatureFlagEnabled =
