@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -9,26 +9,23 @@ export default function KeyRingLabel(props) {
 
   const { keyring } = props;
 
-  const [label, setLabel] = useState(null);
+  let label = null;
 
-  // Effect #1 Sets keyring label
-  useEffect(() => {
-    // Keyring value might take a while to get a value
-    if (keyring) {
-      const { type } = keyring;
-      if (type === KEYRING_TYPES.QR) {
-        setLabel('QR');
-      } else if (type === 'Simple Key Pair') {
-        setLabel(t('imported'));
-      } else if (type === KEYRING_TYPES.TREZOR) {
-        setLabel('Trezor');
-      } else if (type === KEYRING_TYPES.LEDGER) {
-        setLabel('Ledger');
-      } else if (type === KEYRING_TYPES.LATTICE) {
-        setLabel('Lattice1');
-      }
+  // Keyring value might take a while to get a value
+  if (keyring) {
+    const { type } = keyring;
+    if (type === KEYRING_TYPES.QR) {
+      label = 'QR';
+    } else if (type === 'Simple Key Pair') {
+      label = t('imported');
+    } else if (type === KEYRING_TYPES.TREZOR) {
+      label = 'Trezor';
+    } else if (type === KEYRING_TYPES.LEDGER) {
+      label = 'Ledger';
+    } else if (type === KEYRING_TYPES.LATTICE) {
+      label = 'Lattice1';
     }
-  }, [props.keyring]);
+  }
 
   return (
     <>{label ? <div className="keyring-label allcaps">{label}</div> : null}</>
