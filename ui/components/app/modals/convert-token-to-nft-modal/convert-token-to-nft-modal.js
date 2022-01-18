@@ -9,7 +9,6 @@ import {
   ALIGN_ITEMS,
   DISPLAY,
 } from '../../../../helpers/constants/design-system';
-import Box from '../../../ui/box';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ADD_COLLECTIBLE_ROUTE } from '../../../../helpers/constants/routes';
@@ -33,15 +32,17 @@ const ConvertTokenToNFT = ({ hideModal, tokenAddress }) => {
       containerClass="convert-token-to-nft-container"
     >
       <div className="convert-token-to-nft">
-        <Box
-          marginTop={2}
-          display={DISPLAY.INLINE_FLEX}
-          alignItems={ALIGN_ITEMS.CENTER}
+        <Typography
+          variant={TYPOGRAPHY.H6}
+          fontWeight={FONT_WEIGHT.NORMAL}
+          boxProps={{
+            marginTop: 2,
+            display: DISPLAY.INLINE_FLEX,
+            alignItems: ALIGN_ITEMS.CENTER,
+          }}
         >
-          <Typography variant={TYPOGRAPHY.H6} fontWeight={FONT_WEIGHT.NORMAL}>
-            {t('convertTokenToNFTDescription')}
-          </Typography>
-        </Box>
+          {t('convertTokenToNFTDescription')}
+        </Typography>
       </div>
     </Modal>
   );
