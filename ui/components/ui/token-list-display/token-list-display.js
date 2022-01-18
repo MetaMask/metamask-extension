@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { getShouldHideZeroBalanceTokens } from '../../../selectors';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import Identicon from '../identicon/identicon.component';
+import Identicon from '../identicon';
 import TokenBalance from '../token-balance';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isEqual } from 'lodash';
@@ -42,7 +42,6 @@ export default function TokenListDisplay(props) {
     );
   }
 
-
   return (
     <>
       {tokensWithBalances.map((tokenData) => {
@@ -74,7 +73,7 @@ export default function TokenListDisplay(props) {
 }
 
 TokenListDisplay.propTypes = {
-  clickHandler: PropTypes.func
+  clickHandler: PropTypes.func,
 };
 
 TokenListDisplay.defaultProps = {

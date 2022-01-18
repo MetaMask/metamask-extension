@@ -153,9 +153,6 @@ export default class SendAssetRow extends Component {
   }
 
   renderAssetDropdown() {
-
-    const {sendableTokens} = this.state;
-
     return (
       this.state.isShowingDropdown && (
         <div>
