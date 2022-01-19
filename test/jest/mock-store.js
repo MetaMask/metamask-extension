@@ -353,6 +353,8 @@ export const createSwapsMockStore = () => {
       },
       smartTransactionsState: {
         userOptIn: true,
+        liveness: true,
+        fees: createGetSmartTransactionFeesApiResponse(),
         smartTransactions: {
           [MAINNET_CHAIN_ID]: [
             {
@@ -384,7 +386,6 @@ export const createSwapsMockStore = () => {
       },
     },
     appState: {
-      smartTransactionFees: createGetSmartTransactionFeesApiResponse(),
       modal: {
         open: true,
         modalState: {
@@ -396,7 +397,6 @@ export const createSwapsMockStore = () => {
         },
       },
       gasLoadingAnimationIsShowing: false,
-      smartTransactionsLiveness: true,
     },
   };
 };

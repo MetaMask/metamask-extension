@@ -251,7 +251,7 @@ describe('Ducks - Swaps', () => {
 
     it('returns false if feature flag is enabled, not a HW, STX liveness is false and is Ethereum network', () => {
       const state = createSwapsMockStore();
-      state.appState.smartTransactionsLiveness = false;
+      state.metamask.smartTransactionsState.liveness = false;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
@@ -319,7 +319,7 @@ describe('Ducks - Swaps', () => {
       const state = createSwapsMockStore();
       const smartTransactionFees = swaps.getSmartTransactionFees(state);
       expect(smartTransactionFees).toMatchObject(
-        state.appState.smartTransactionFees,
+        state.metamask.smartTransactionsState.fees,
       );
     });
   });

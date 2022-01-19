@@ -315,7 +315,8 @@ export const getSmartTransactionsEnabled = (state) => {
   const smartTransactionsFeatureFlagEnabled =
     state.metamask.swapsState?.swapsFeatureFlags?.smartTransactions
       ?.extensionActive;
-  const { smartTransactionsLiveness } = state.appState;
+  const smartTransactionsLiveness =
+    state.metamask.smartTransactionsState?.liveness;
   return Boolean(
     isAllowedNetwork &&
       !hardwareWalletUsed &&
@@ -430,7 +431,7 @@ export const getPendingSmartTransactions = (state) => {
 };
 
 export const getSmartTransactionFees = (state) => {
-  return state.appState.smartTransactionFees;
+  return state.metamask.smartTransactionsState?.fees;
 };
 
 export const getSwapsRefreshStates = (state) => {

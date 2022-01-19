@@ -97,18 +97,7 @@ export default function reduceApp(state = {}, action) {
         qrCodeData: action.value,
       };
 
-    case actionConstants.SET_SMART_TRANSACTION_FEES:
-      return {
-        ...appState,
-        smartTransactionFees: action.payload,
-      };
-
-    case actionConstants.SET_SMART_TRANSACTIONS_LIVENESS:
-      return {
-        ...appState,
-        smartTransactionsLiveness: action.payload,
-      };
-
+    // Smart Transactions errors.
     case actionConstants.SET_SMART_TRANSACTIONS_ERROR:
       return {
         ...appState,

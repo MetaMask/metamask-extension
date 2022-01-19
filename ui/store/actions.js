@@ -3127,13 +3127,9 @@ export async function setSmartTransactionsOptInStatus(optInState) {
 export function fetchSmartTransactionFees(unsignedTransaction) {
   return async (dispatch) => {
     try {
-      const smartTransactionFees = await promisifiedBackground.fetchSmartTransactionFees(
+      await promisifiedBackground.fetchSmartTransactionFees(
         unsignedTransaction,
       );
-      dispatch({
-        type: actionConstants.SET_SMART_TRANSACTION_FEES,
-        payload: smartTransactionFees,
-      });
     } catch (e) {
       log.error(e);
       if (e.message.startsWith('Fetch error:')) {
@@ -3260,19 +3256,11 @@ export function cancelSmartTransaction(uuid) {
 }
 
 export function fetchSmartTransactionsLiveness() {
-  return async (dispatch) => {
+  return async () => {
     try {
-      const smartTransactionsLiveness = await promisifiedBackground.fetchSmartTransactionsLiveness();
-      dispatch({
-        type: actionConstants.SET_SMART_TRANSACTIONS_LIVENESS,
-        payload: smartTransactionsLiveness,
-      });
+      await promisifiedBackground.fetchSmartTransactionsLiveness();
     } catch (e) {
       log.error(e);
-      dispatch({
-        type: actionConstants.SET_SMART_TRANSACTIONS_LIVENESS,
-        payload: false,
-      });
     }
   };
 }
