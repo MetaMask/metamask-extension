@@ -1420,6 +1420,18 @@ export async function checkAndUpdateSingleCollectibleOwnershipStatus(
   );
 }
 
+export async function getTokenStandardAndDetails(
+  address,
+  userAddress,
+  tokenId,
+) {
+  return await promisifiedBackground.getTokenStandardAndDetails(
+    address,
+    userAddress,
+    tokenId,
+  );
+}
+
 export function removeToken(address) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());

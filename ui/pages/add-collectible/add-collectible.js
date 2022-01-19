@@ -17,8 +17,13 @@ export default function AddCollectible() {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
+  const addressEnteredOnImportTokensPage =
+    history?.location?.state?.addressEnteredOnImportTokensPage;
 
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState(
+    addressEnteredOnImportTokensPage ?? '',
+  );
+
   const [tokenId, setTokenId] = useState('');
   const [disabled, setDisabled] = useState(true);
 
@@ -47,7 +52,7 @@ export default function AddCollectible() {
 
   return (
     <PageContainer
-      title={t('addNFT')}
+      title={t('importNFT')}
       onSubmit={() => {
         handleAddCollectible();
       }}

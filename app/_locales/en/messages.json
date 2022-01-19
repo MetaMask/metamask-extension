@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "Add memo"
   },
-  "addNFT": {
-    "message": "Add NFT"
-  },
   "addNetwork": {
     "message": "Add Network"
   },
@@ -460,6 +457,10 @@
   },
   "close": {
     "message": "Close"
+  },
+  "collectibleAddressError": {
+    "message": "This token is an NFT. Add on the $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "confirm": {
     "message": "Confirm"
@@ -1410,6 +1411,12 @@
   },
   "importMyWallet": {
     "message": "Import My Wallet"
+  },
+  "importNFT": {
+    "message": "Import NFT"
+  },
+  "importNFTPage": {
+    "message": "Import NFT page"
   },
   "importNFTs": {
     "message": "Import NFTs"

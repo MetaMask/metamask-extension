@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "メモを追加"
   },
-  "addNFT": {
-    "message": "NFTを追加"
-  },
   "addNetwork": {
     "message": "ネットワークの追加"
   },
