@@ -397,8 +397,8 @@ export function highlightSearchedText(menuIndex) {
     `${MENU_SECTION}_${menuIndex}`,
   );
 
-  const $search = document.getElementById('search-settings');
-  $search.addEventListener('input', (event) => {
+  const searchElem = document.getElementById('search-settings');
+  searchElem.addEventListener('input', (event) => {
     const searchQuery = event.target.value;
     const searchRegex = new RegExp(searchQuery, 'gi');
     colorText(menuTabElement, searchRegex);

@@ -3,7 +3,6 @@ import {
   getSettingsRoutes,
   getSettingsSectionNumber,
   handleSettingsRefs,
-  highlightSearchedText,
 } from './settings-search';
 
 const t = (key) => {
@@ -520,12 +519,6 @@ describe('Settings Search Utils', () => {
           return React.createRef();
         });
       expect(handleSettingsRefs(t, t('general'), settingsRefs)).toBeUndefined();
-    });
-  });
-
-  describe('highlightSearchedText', () => {
-    it('should handle alerts refs', () => {
-      expect(highlightSearchedText(0)).toBeUndefined();
     });
   });
 });
