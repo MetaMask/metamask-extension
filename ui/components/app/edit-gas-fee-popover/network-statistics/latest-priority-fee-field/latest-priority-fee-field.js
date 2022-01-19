@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { uniq } from 'lodash';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
@@ -8,7 +8,7 @@ import { PriorityFeeTooltip } from '../tooltips';
 export default function LatestPriorityFeeField() {
   const { gasFeeEstimates } = useGasFeeContext();
 
-  const renderPriorityFeeRange = () => {
+  const priorityFeeRange = useMemo(() => {
     const { latestPriorityFeeRange } = gasFeeEstimates;
     if (latestPriorityFeeRange) {
       const formattedRange = uniq([
@@ -18,12 +18,14 @@ export default function LatestPriorityFeeField() {
       return `${formattedRange} GWEI`;
     }
     return null;
-  };
+  }, [gasFeeEstimates]);
 
   return (
     <div className="network-statistics__info__field latest-priority-fee-field">
       <span className="network-statistics__info__field-data">
-        <PriorityFeeTooltip>{renderPriorityFeeRange()}</PriorityFeeTooltip>
+        {priorityFeeRange && (
+          <PriorityFeeTooltip>{priorityFeeRange}</PriorityFeeTooltip>
+        )}
       </span>
       <span className="network-statistics__info__field-label">
         <I18nValue messageKey="priorityFee" />
