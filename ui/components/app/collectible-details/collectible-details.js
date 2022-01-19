@@ -130,6 +130,7 @@ export default function CollectibleDetails({ collectible }) {
       <Box
         display={DISPLAY.FLEX}
         width={inPopUp ? BLOCK_SIZES.FULL : BLOCK_SIZES.HALF}
+        margin={inPopUp ? [4, 0] : null}
       >
         <Button
           type="primary"
