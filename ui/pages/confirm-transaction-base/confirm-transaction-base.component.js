@@ -861,7 +861,7 @@ export default class ConfirmTransactionBase extends Component {
         value={hexTransactionAmount}
         type={PRIMARY}
         showEthLogo
-        ethLogoHeight="36"
+        ethLogoHeight="28"
         hideLabel
       />
     );

@@ -1641,7 +1641,7 @@
     "message": "Ethereum Mainnet"
   },
   "mainnetToken": {
-    "message": "This address matches a known mainnet token address. Recheck the contract address and network for the token you are trying to add."
+    "message": "This address matches a known Ethereum Mainnet token address. Recheck the contract address and network for the token you are trying to add."
   },
   "makeAnotherSwap": {
     "message": "Create a new swap"
