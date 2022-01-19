@@ -185,37 +185,39 @@ export default function CollectibleDetails({ collectible }) {
                 color={COLORS.BLACK}
                 variant={TYPOGRAPHY.H4}
                 fontWeight={FONT_WEIGHT.BOLD}
-                boxProps={{ margin: 0, marginBottom: 4 }}
+                boxProps={{ margin: 0, marginBottom: 2 }}
               >
                 {name}
               </Typography>
               <Typography
                 color={COLORS.UI3}
                 variant={TYPOGRAPHY.H5}
-                boxProps={{ margin: 0 }}
+                boxProps={{ margin: 0, marginBottom: 4 }}
                 overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
               >
                 #{tokenId}
               </Typography>
             </div>
-            <div>
-              <Typography
-                color={COLORS.BLACK}
-                variant={TYPOGRAPHY.H6}
-                fontWeight={FONT_WEIGHT.BOLD}
-                className="collectible-details__description"
-                boxProps={{ margin: 0, marginBottom: 2 }}
-              >
-                {t('description')}
-              </Typography>
-              <Typography
-                color={COLORS.UI4}
-                variant={TYPOGRAPHY.H6}
-                boxProps={{ margin: 0, marginBottom: 4 }}
-              >
-                {description}
-              </Typography>
-            </div>
+            {description ? (
+              <div>
+                <Typography
+                  color={COLORS.BLACK}
+                  variant={TYPOGRAPHY.H6}
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  className="collectible-details__description"
+                  boxProps={{ margin: 0, marginBottom: 2 }}
+                >
+                  {t('description')}
+                </Typography>
+                <Typography
+                  color={COLORS.UI4}
+                  variant={TYPOGRAPHY.H6}
+                  boxProps={{ margin: 0, marginBottom: 4 }}
+                >
+                  {description}
+                </Typography>
+              </div>
+            ) : null}
             {inPopUp ? null : renderSendButton()}
           </Box>
         </div>
