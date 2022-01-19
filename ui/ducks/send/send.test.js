@@ -1524,6 +1524,7 @@ describe('Send Slice', () => {
       });
 
       it('should show ConvertTokenToNFT modal and throw "invalidAssetType" error when token passed in props is an ERC721 or ERC1155', async () => {
+        process.env.COLLECTIBLES_V1 = true;
         getTokenStandardAndDetailsStub.mockImplementation(() =>
           Promise.resolve({ standard: 'ERC1155' }),
         );

@@ -636,8 +636,7 @@ export default class MetamaskController extends EventEmitter {
             this.collectiblesController.checkAndUpdateSingleCollectibleOwnershipStatus(
               knownCollectible,
               false,
-              // TODO add this when checkAndUpdateSingleCollectibleOwnershipStatus is updated
-              // { userAddress, chainId },
+              { userAddress, chainId },
             );
           }
         }

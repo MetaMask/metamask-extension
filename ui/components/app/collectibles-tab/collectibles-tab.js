@@ -117,6 +117,7 @@ export default function CollectiblesTab({ onAddNFT }) {
             marginBottom={12}
             justifyContent={JUSTIFY_CONTENT.CENTER}
             flexDirection={FLEX_DIRECTION.COLUMN}
+            className="collectibles-tab__link"
           >
             <Typography
               color={COLORS.UI3}
@@ -131,7 +132,6 @@ export default function CollectiblesTab({ onAddNFT }) {
               target="_blank"
               rel="noopener noreferrer"
               href="https://metamask.zendesk.com/hc/en-us/articles/360058238591-NFT-tokens-in-MetaMask-wallet"
-              style={{ padding: 0, fontSize: '1rem' }}
             >
               {t('learnMoreUpperCase')}
             </Button>
@@ -154,27 +154,31 @@ export default function CollectiblesTab({ onAddNFT }) {
           alignItems={ALIGN_ITEMS.CENTER}
           justifyContent={JUSTIFY_CONTENT.CENTER}
         >
-          <Box
-            className="collectibles-tab__link"
-            justifyContent={JUSTIFY_CONTENT.FLEX_END}
-          >
-            {isMainnet && !useCollectibleDetection ? (
-              <Button type="link" onClick={onEnableAutoDetect}>
-                {t('enableAutoDetect')}
-              </Button>
-            ) : (
-              <Button type="link" onClick={onRefresh}>
-                {t('refreshList')}
-              </Button>
-            )}
-          </Box>
-          <Typography
-            color={COLORS.UI3}
-            variant={TYPOGRAPHY.H4}
-            align={TEXT_ALIGN.CENTER}
-          >
-            {t('or')}
-          </Typography>
+          {!isMainnet && Object.keys(collections).length < 1 ? null : (
+            <>
+              <Box
+                className="collectibles-tab__link"
+                justifyContent={JUSTIFY_CONTENT.FLEX_END}
+              >
+                {isMainnet && !useCollectibleDetection ? (
+                  <Button type="link" onClick={onEnableAutoDetect}>
+                    {t('enableAutoDetect')}
+                  </Button>
+                ) : (
+                  <Button type="link" onClick={onRefresh}>
+                    {t('refreshList')}
+                  </Button>
+                )}
+              </Box>
+              <Typography
+                color={COLORS.UI3}
+                variant={TYPOGRAPHY.H6}
+                align={TEXT_ALIGN.CENTER}
+              >
+                {t('or')}
+              </Typography>
+            </>
+          )}
           <Box
             justifyContent={JUSTIFY_CONTENT.FLEX_START}
             className="collectibles-tab__link"
