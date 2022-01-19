@@ -220,7 +220,7 @@ if (process.env.EIP_1559_V2 === '1') {
           await driver.clickElement({ text: 'Send', tag: 'button' });
 
           // check transaction in extension popup
-          const windowHandles = await getWindowHandles(driver);
+          const windowHandles = await getWindowHandles(driver, 3);
           await driver.switchToWindow(windowHandles.popup);
           await driver.delay(largeDelayMs);
           await driver.waitForSelector({ text: '🌐' });

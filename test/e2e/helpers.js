@@ -149,8 +149,16 @@ async function withFixtures(options, testSuite) {
   }
 }
 
-const getWindowHandles = async (driver) => {
-  await driver.waitUntilXWindowHandles(3);
+/**
+ * @param {*} driver - selinium driver
+ * @param {*} handlesCount - total count of windows that should be loaded
+ * @returns handles - an object with window handles, properties in object represent windows:
+ *            1. extension: metamask extension window
+ *            2. dapp: test-app window
+ *            3. popup: metsmask extension popup window
+ */
+const getWindowHandles = async (driver, handlesCount) => {
+  await driver.waitUntilXWindowHandles(handlesCount);
   const windowHandles = await driver.getAllWindowHandles();
 
   const extension = windowHandles[0];
@@ -170,7 +178,7 @@ const connectDappWithExtensionPopup = async (driver) => {
   await driver.clickElement({ text: 'Connect', tag: 'button' });
   await driver.delay(regularDelayMs);
 
-  const windowHandles = await getWindowHandles(driver);
+  const windowHandles = await getWindowHandles(driver, 3);
 
   // open extension popup and confirm connect
   await driver.switchToWindow(windowHandles.popup);
