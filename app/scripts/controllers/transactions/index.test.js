@@ -13,6 +13,7 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
   TRANSACTION_ENVELOPE_TYPES,
+  TRANSACTION_EVENTS,
 } from '../../../../shared/constants/transaction';
 
 import { SECOND } from '../../../../shared/constants/time';
@@ -22,7 +23,7 @@ import {
 } from '../../../../shared/constants/gas';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
-import TransactionController, { TRANSACTION_EVENTS } from '.';
+import TransactionController from '.';
 
 const noop = () => true;
 const currentNetworkId = '42';
@@ -35,9 +36,10 @@ const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
 
 describe('Transaction Controller', function () {
-  let txController, provider, providerResultStub, fromAccount;
+  let txController, provider, providerResultStub, fromAccount, fragmentExists;
 
   beforeEach(function () {
+    fragmentExists = false;
     providerResultStub = {
       // 1 gwei
       eth_gasPrice: '0x0de0b6b3a7640000',
@@ -71,7 +73,10 @@ describe('Transaction Controller', function () {
       getParticipateInMetrics: () => false,
       trackMetaMetricsEvent: () => undefined,
       createEventFragment: () => undefined,
+      updateEventFragment: () => undefined,
       finalizeEventFragment: () => undefined,
+      getEventFragmentById: () =>
+        fragmentExists === false ? undefined : { id: 0 },
       getEIP1559GasFeeEstimates: () => undefined,
     });
     txController.nonceTracker.getNonceLock = () =>
@@ -1619,6 +1624,7 @@ describe('Transaction Controller', function () {
       });
 
       it('Should finalize the transaction added fragment as abandoned if user rejects transaction', function () {
+        fragmentExists = true;
         txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.REJECTED,
@@ -1635,6 +1641,7 @@ describe('Transaction Controller', function () {
       });
 
       it('Should finalize the transaction added fragment if user approves transaction', function () {
+        fragmentExists = true;
         txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.APPROVED,
@@ -1687,6 +1694,7 @@ describe('Transaction Controller', function () {
       });
 
       it('Should finalize the transaction submitted fragment when transaction finalizes', function () {
+        fragmentExists = true;
         txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.FINALIZED,
@@ -1762,6 +1770,8 @@ describe('Transaction Controller', function () {
       });
 
       it('Should finalize the transaction added fragment as abandoned if user rejects transaction', function () {
+        fragmentExists = true;
+
         txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.REJECTED,
@@ -1778,6 +1788,8 @@ describe('Transaction Controller', function () {
       });
 
       it('Should finalize the transaction added fragment if user approves transaction', function () {
+        fragmentExists = true;
+
         txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.APPROVED,
@@ -1830,6 +1842,8 @@ describe('Transaction Controller', function () {
       });
 
       it('Should finalize the transaction submitted fragment when transaction finalizes', function () {
+        fragmentExists = true;
+
         txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.FINALIZED,
@@ -1845,6 +1859,62 @@ describe('Transaction Controller', function () {
           undefined,
         );
       });
+    });
+
+    it('should create missing fragments when events happen out of order or are missing', function () {
+      const txMeta = {
+        id: 1,
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          gasPrice: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        origin: 'other',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+      };
+
+      const expectedPayload = {
+        successEvent: 'Transaction Approved',
+        failureEvent: 'Transaction Rejected',
+        uniqueIdentifier: 'transaction-added-1',
+        category: 'Transactions',
+        persist: true,
+        properties: {
+          chain_id: '0x2a',
+          network: '42',
+          referrer: 'other',
+          source: 'dapp',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
+        },
+        sensitiveProperties: {
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+          status: 'unapproved',
+        },
+      };
+      txController._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.APPROVED,
+      );
+      assert.equal(createEventFragmentSpy.callCount, 1);
+      assert.deepEqual(
+        createEventFragmentSpy.getCall(0).args[0],
+        expectedPayload,
+      );
+      assert.equal(finalizeEventFragmentSpy.callCount, 1);
+      assert.deepEqual(
+        finalizeEventFragmentSpy.getCall(0).args[0],
+        'transaction-added-1',
+      );
+      assert.deepEqual(finalizeEventFragmentSpy.getCall(0).args[1], undefined);
     });
 
     it('should call _trackMetaMetricsEvent with the correct payload (extra params)', function () {

@@ -580,7 +580,13 @@ export default class MetamaskController extends EventEmitter {
       createEventFragment: this.metaMetricsController.createEventFragment.bind(
         this.metaMetricsController,
       ),
+      updateEventFragment: this.metaMetricsController.updateEventFragment.bind(
+        this.metaMetricsController,
+      ),
       finalizeEventFragment: this.metaMetricsController.finalizeEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      getEventFragmentById: this.metaMetricsController.getEventFragmentById.bind(
         this.metaMetricsController,
       ),
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
@@ -1280,6 +1286,9 @@ export default class MetamaskController extends EventEmitter {
       estimateGas: this.estimateGas.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
       addUnapprovedTransaction: txController.addUnapprovedTransaction.bind(
+        txController,
+      ),
+      createTransactionEventFragment: txController.createTransactionEventFragment.bind(
         txController,
       ),
 

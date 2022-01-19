@@ -200,6 +200,21 @@ export default class MetaMetricsController {
   }
 
   /**
+   * Returns the fragment stored in memory with provided id or undefined if it
+   * does not exist.
+   *
+   * @param {string} id - id of fragment to retrieve
+   * @returns {[MetaMetricsEventFragment]}
+   */
+  getEventFragmentById(id) {
+    const { fragments } = this.store.getState();
+
+    const fragment = fragments[id];
+
+    return fragment;
+  }
+
+  /**
    * Updates an event fragment in state
    *
    * @param {string} id - The fragment id to update
