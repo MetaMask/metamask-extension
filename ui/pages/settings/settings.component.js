@@ -144,10 +144,9 @@ class SettingsPage extends PureComponent {
               }}
               settingsRoutesList={getSettingsRoutes(t)}
             />
-            {isSearchList && searchText.length >= 3 && (
+            {isSearchList && searchText.length >= 2 && (
               <SettingsSearchList
                 key=""
-                searchQuery={searchText}
                 results={searchResults}
                 onClickSetting={(setting) => this.handleClickSetting(setting)}
               />

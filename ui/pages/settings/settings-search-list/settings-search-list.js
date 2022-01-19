@@ -10,19 +10,18 @@ export default class SettingsSearchList extends Component {
 
   static propTypes = {
     results: PropTypes.array,
-    searchQuery: PropTypes.string,
     onClickSetting: PropTypes.func,
   };
 
   componentDidMount() {
     this.props.results.forEach((_, i) => {
-      highlightSearchedText(this.props.searchQuery, i);
+      highlightSearchedText(i);
     });
   }
 
   componentDidUpdate() {
     this.props.results.forEach((_, i) => {
-      highlightSearchedText(this.props.searchQuery, i);
+      highlightSearchedText(i);
     });
   }
 

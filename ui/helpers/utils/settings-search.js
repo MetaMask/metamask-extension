@@ -1,3 +1,4 @@
+/* eslint-disable require-unicode-regexp */
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -339,7 +340,6 @@ export function getSettingsSectionNumber(t, tabName) {
 }
 
 export function handleSettingsRefs(t, tabName, settingsRefs) {
-  console.log(settingsRefs);
   const settingsSearchJsonFiltered = getFilteredSettingsRoutes(t, tabName);
   const settingsRefsIndex = settingsSearchJsonFiltered.findIndex(
     (s) => s.route.substring(1) === window.location.hash.substring(1),
@@ -378,29 +378,30 @@ export function handleHooksSettingsRefs(t, tabName, settingsRefs, itemIndex) {
   }
 }
 
-function colorText(text, menuElement) {
+function colorText(menuElement, regex) {
   if (menuElement !== null) {
-    let { innerHTML: elementInnerHtml } = menuElement;
-    const { innerText: elementInnerText } = menuElement;
-
-    const index = elementInnerText.toLowerCase().indexOf(text);
-    if (index >= 0) {
-      elementInnerHtml = `${elementInnerText.substring(
-        0,
-        index,
-      )}<span style="background:#ffd33d">${elementInnerText.substring(
-        index,
-        index + text.length,
-      )}</span>${elementInnerText.substring(index + text.length)}`;
-      menuElement.innerHTML = elementInnerHtml;
-    }
+    let elemText = menuElement?.innerHTML;
+    elemText = elemText.replace(
+      /(<span style="background:#ffd33d">|<\/span>)/gim,
+      '',
+    );
+    menuElement.innerHTML = elemText.replace(
+      regex,
+      '<span style="background:#ffd33d">$&</span>',
+    );
   }
 }
-export function highlightSearchedText(text, menuIndex) {
+export function highlightSearchedText(menuIndex) {
   const menuTabElement = document.getElementById(`${MENU_TAB}_${menuIndex}`);
   const menuSectionElement = document.getElementById(
     `${MENU_SECTION}_${menuIndex}`,
   );
-  colorText(text, menuTabElement);
-  colorText(text, menuSectionElement);
+
+  const $search = document.getElementById('search-settings');
+  $search.addEventListener('input', (event) => {
+    const searchQuery = event.target.value;
+    const searchRegex = new RegExp(searchQuery, 'gi');
+    colorText(menuTabElement, searchRegex);
+    colorText(menuSectionElement, searchRegex);
+  });
 }

@@ -137,7 +137,7 @@
             @include H6;
 
             display: inline;
-            color: --primary-blue;
+            color: var(--primary-blue);
             margin-left: 3px;
           }
         }

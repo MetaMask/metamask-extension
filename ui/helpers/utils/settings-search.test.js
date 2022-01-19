@@ -525,7 +525,7 @@ describe('Settings Search Utils', () => {
 
   describe('highlightSearchedText', () => {
     it('should handle alerts refs', () => {
-      expect(highlightSearchedText(t('general'), 0)).toBeUndefined();
+      expect(highlightSearchedText(0)).toBeUndefined();
     });
   });
 });
