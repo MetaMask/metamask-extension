@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Connected Sites', function () {
   let windowHandles;
@@ -12,7 +12,7 @@ describe('Connected Sites', function () {
         {
           secretKey:
             '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: 25000000000000000000,
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
@@ -87,7 +87,7 @@ describe('Connected Sites', function () {
         {
           secretKey:
             '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: 25000000000000000000,
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
@@ -167,7 +167,7 @@ describe('Connected Sites', function () {
         {
           secretKey:
             '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: 25000000000000000000,
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
