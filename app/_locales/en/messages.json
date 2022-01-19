@@ -1406,11 +1406,11 @@
   "importNFT": {
     "message": "Import NFT"
   },
-  "importNFTPage": {
-    "message": "Import NFT page"
-  },
   "importNFTAddressToolTip": {
     "message": "On OpenSea, for example, on the NFT's page under Details, there is a blue hyperlinked value labeled 'Contract Address'. If you click on this, it will take you to the contract's address on Etherscan; at the top-left of that page, there should be an icon labeled 'Contract', and to the right, a long string of letters and numbers. This is the address of the contract that created your NFT. Click on the 'copy' icon to the right of the address, and you'll have it on your clipboard."
+  },
+  "importNFTPage": {
+    "message": "Import NFT page"
   },
   "importNFTTokenIdToolTip": {
     "message": "A collectible's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."

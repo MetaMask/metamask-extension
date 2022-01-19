@@ -3,12 +3,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Modal from '../../modal';
 import Typography from '../../../ui/typography';
-import {
-  TYPOGRAPHY,
-  FONT_WEIGHT,
-  ALIGN_ITEMS,
-  DISPLAY,
-} from '../../../../helpers/constants/design-system';
+import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ADD_COLLECTIBLE_ROUTE } from '../../../../helpers/constants/routes';
