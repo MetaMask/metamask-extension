@@ -17,6 +17,8 @@ import {
   getShouldShowFiat,
   getPreferences,
   txDataSelector,
+  getCurrentKeyring,
+  getTokenExchangeRates,
 } from '../../selectors';
 import { ETH } from '../../helpers/constants/common';
 
@@ -139,6 +141,12 @@ export const generateUseSelectorRouter = ({
   }
   if (selector === getEIP1559V2Enabled) {
     return eip1559V2Enabled;
+  }
+  if (selector === getCurrentKeyring) {
+    return { type: '' };
+  }
+  if (selector === getTokenExchangeRates) {
+    return { '0x1': '1' };
   }
   return undefined;
 };

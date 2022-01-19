@@ -596,6 +596,9 @@
   "contractInteraction": {
     "message": "Contract Interaction"
   },
+  "convertTokenToNFTDescription": {
+    "message": "We've detected that this asset is an NFT. Metamask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
+  },
   "copiedExclamation": {
     "message": "Copied!"
   },
@@ -1367,9 +1370,6 @@
   "history": {
     "message": "History"
   },
-  "id": {
-    "message": "ID"
-  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
@@ -1406,8 +1406,14 @@
   "importNFT": {
     "message": "Import NFT"
   },
+  "importNFTAddressToolTip": {
+    "message": "On OpenSea, for example, on the NFT's page under Details, there is a blue hyperlinked value labeled 'Contract Address'. If you click on this, it will take you to the contract's address on Etherscan; at the top-left of that page, there should be an icon labeled 'Contract', and to the right, a long string of letters and numbers. This is the address of the contract that created your NFT. Click on the 'copy' icon to the right of the address, and you'll have it on your clipboard."
+  },
   "importNFTPage": {
     "message": "Import NFT page"
+  },
+  "importNFTTokenIdToolTip": {
+    "message": "A collectible's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
   },
   "importNFTs": {
     "message": "Import NFTs"
@@ -1461,6 +1467,9 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Not ETH network, set to lowercase"
+  },
+  "invalidAssetType": {
+    "message": "This asset is an NFT and needs to be re-added on the Import NFTs page found under the NFTs tab"
   },
   "invalidBlockExplorerURL": {
     "message": "Invalid Block Explorer URL"
@@ -1914,7 +1923,7 @@
     "description": "The next nonce according to MetaMask's internal logic"
   },
   "nftTokenIdPlaceholder": {
-    "message": "Enter the collectible ID"
+    "message": "Enter the Token ID"
   },
   "nfts": {
     "message": "NFTs"
@@ -3530,6 +3539,9 @@
   "xOfYPending": {
     "message": "$1 of $2 pending",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
+  },
+  "yes": {
+    "message": "Yes"
   },
   "yesLetsTry": {
     "message": "Yes, let's try"

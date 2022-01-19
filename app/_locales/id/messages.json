@@ -1306,9 +1306,6 @@
   "history": {
     "message": "Riwayat"
   },
-  "id": {
-    "message": "ID"
-  },
   "import": {
     "message": "Impor",
     "description": "Button to import an account from a selected file"

@@ -19,6 +19,7 @@ import {
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_TYPES,
 } from '../../../shared/constants/transaction';
+import * as Actions from '../../store/actions';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -67,17 +68,6 @@ import sendReducer, {
 
 const mockStore = createMockStore([thunk]);
 
-jest.mock('../../store/actions', () => {
-  const actual = jest.requireActual('../../store/actions');
-  return {
-    ...actual,
-    estimateGas: jest.fn(() => Promise.resolve('0x0')),
-    getGasFeeEstimatesAndStartPolling: jest.fn(() => Promise.resolve()),
-    updateTokenType: jest.fn(() => Promise.resolve({ isERC721: false })),
-    isCollectibleOwner: jest.fn(() => Promise.resolve(true)),
-  };
-});
-
 jest.mock('./send', () => {
   const actual = jest.requireActual('./send');
   return {
@@ -88,6 +78,25 @@ jest.mock('./send', () => {
 });
 
 describe('Send Slice', () => {
+  let getTokenStandardAndDetailsStub;
+  beforeEach(() => {
+    getTokenStandardAndDetailsStub = jest
+      .spyOn(Actions, 'getTokenStandardAndDetails')
+      .mockImplementation(() => Promise.resolve({ standard: 'ERC20' }));
+    jest
+      .spyOn(Actions, 'estimateGas')
+      .mockImplementation(() => Promise.resolve('0x0'));
+    jest
+      .spyOn(Actions, 'getGasFeeEstimatesAndStartPolling')
+      .mockImplementation(() => Promise.resolve());
+    jest
+      .spyOn(Actions, 'updateTokenType')
+      .mockImplementation(() => Promise.resolve({ isERC721: false }));
+    jest
+      .spyOn(Actions, 'isCollectibleOwner')
+      .mockImplementation(() => Promise.resolve(true));
+  });
+
   describe('Reducers', () => {
     describe('updateSendAmount', () => {
       it('should', async () => {
@@ -1457,6 +1466,7 @@ describe('Send Slice', () => {
         expect(actionResult[0].payload).toStrictEqual({
           ...newSendAsset,
           balance: '',
+          error: null,
         });
 
         expect(actionResult[1].type).toStrictEqual(
@@ -1499,6 +1509,7 @@ describe('Send Slice', () => {
         expect(actionResult[2].payload).toStrictEqual({
           ...newSendAsset,
           balance: '0x0',
+          error: null,
         });
 
         expect(actionResult[3].type).toStrictEqual(
@@ -1510,6 +1521,37 @@ describe('Send Slice', () => {
         expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
+      });
+
+      it('should show ConvertTokenToNFT modal and throw "invalidAssetType" error when token passed in props is an ERC721 or ERC1155', async () => {
+        getTokenStandardAndDetailsStub.mockImplementation(() =>
+          Promise.resolve({ standard: 'ERC1155' }),
+        );
+        const store = mockStore(defaultSendAssetState);
+
+        const newSendAsset = {
+          type: ASSET_TYPES.TOKEN,
+          details: {
+            address: 'tokenAddress',
+            symbol: 'tokenSymbol',
+            decimals: 'tokenDecimals',
+          },
+        };
+
+        await expect(() =>
+          store.dispatch(updateSendAsset(newSendAsset)),
+        ).rejects.toThrow('invalidAssetType');
+        const actionResult = store.getActions();
+        expect(actionResult).toHaveLength(3);
+        expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
+        expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
+        expect(actionResult[2]).toStrictEqual({
+          payload: {
+            name: 'CONVERT_TOKEN_TO_NFT',
+            tokenAddress: 'tokenAddress',
+          },
+          type: 'UI_MODAL_OPEN',
+        });
       });
     });
 
@@ -2231,6 +2273,7 @@ describe('Send Slice', () => {
         expect(actionResult[0].payload).toStrictEqual({
           balance: '0x1',
           type: ASSET_TYPES.COLLECTIBLE,
+          error: null,
           details: {
             address: '0xTokenAddress',
             description: 'A test NFT dispensed from faucet.paradigm.xyz.',
@@ -2361,11 +2404,11 @@ describe('Send Slice', () => {
       expect(actionResult[2].payload).toStrictEqual({
         balance: '0x0',
         type: ASSET_TYPES.TOKEN,
+        error: null,
         details: {
           address: '0xTokenAddress',
           decimals: 18,
           symbol: 'SYMB',
-          isERC721: false,
           standard: 'ERC20',
         },
       });
