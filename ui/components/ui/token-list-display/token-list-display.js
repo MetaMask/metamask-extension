@@ -42,9 +42,11 @@ export default function TokenListDisplay(props) {
     );
   }
 
+  const sendableTokens = tokensWithBalances.filter((token) => !token.isERC721);
+
   return (
     <>
-      {tokensWithBalances.map((tokenData) => {
+      {sendableTokens.map((tokenData) => {
         const { address, image, symbol } = tokenData;
 
         return (
