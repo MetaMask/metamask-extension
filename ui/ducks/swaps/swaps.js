@@ -547,13 +547,16 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
     };
+    const chainId = getCurrentChainId(getState());
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
-      await dispatch(fetchSmartTransactionsLiveness());
+      if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
+        await dispatch(fetchSmartTransactionsLiveness());
+      }
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
         swapsFeatureFlags,
-        getCurrentChainId(getState()),
+        chainId,
       );
     } catch (error) {
       log.error(
