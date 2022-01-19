@@ -2027,6 +2027,7 @@
     },
     "ethers": {
       "globals": {
+        "Buffer": true,
         "MessageChannel": true,
         "XMLHttpRequest": true,
         "atob": true,
