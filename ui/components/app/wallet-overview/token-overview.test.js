@@ -70,6 +70,7 @@ describe('TokenOverview', () => {
         name: 'CONVERT_TOKEN_TO_NFT',
         tokenAddress: '0x01',
       });
+      process.env.COLLECTIBLES_V1 = false;
     });
   });
 });

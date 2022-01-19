@@ -1553,6 +1553,7 @@ describe('Send Slice', () => {
           },
           type: 'UI_MODAL_OPEN',
         });
+        process.env.COLLECTIBLES_V1 = false;
       });
     });
 
