@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 
-describe('Connected Sites', function () {
+describe('Disconnect single connected account', function () {
   let windowHandles;
   let extension;
   let popup;
@@ -80,7 +80,13 @@ describe('Connected Sites', function () {
       },
     );
   });
+});
 
+describe('Disconnect 1 of 3 connected accounts', function () {
+  let windowHandles;
+  let extension;
+  let popup;
+  let dapp;
   it('should disconnect 1 of 3 connected accounts from the dapp', async function () {
     const ganacheOptions = {
       accounts: [
@@ -160,7 +166,13 @@ describe('Connected Sites', function () {
       },
     );
   });
+});
 
+describe('Disconnect all accounts', function () {
+  let windowHandles;
+  let extension;
+  let popup;
+  let dapp;
   it('should disconnect 3 of 3 connected accounts from the dapp', async function () {
     const ganacheOptions = {
       accounts: [
