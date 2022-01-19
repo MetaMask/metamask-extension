@@ -684,6 +684,12 @@
       flex-grow: 1;
     }
 
+    @media screen and (max-width: $break-small) {
+      &__asset-data {
+        width: 60%;
+      }
+    }
+
     &__symbol {
       @include Paragraph;
 
@@ -691,7 +697,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      width: 90%;
     }
 
     &__name {
