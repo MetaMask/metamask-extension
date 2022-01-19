@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
   EDIT_GAS_MODES,
@@ -24,7 +24,7 @@ const EditGasToolTip = ({
   transaction,
   t,
 }) => {
-  const toolTipMessage = () => {
+  const toolTipMessage = useMemo(() => {
     switch (priorityLevel) {
       case PRIORITY_LEVELS.LOW:
         return t('lowGasSettingToolTipMessage', [
@@ -76,7 +76,8 @@ const EditGasToolTip = ({
       default:
         return '';
     }
-  };
+  }, [editGasMode, estimateGreaterThanGasUse, priorityLevel, transaction, t]);
+
   return (
     <div className="edit-gas-tooltip__container">
       {priorityLevel !== PRIORITY_LEVELS.CUSTOM &&
@@ -97,9 +98,11 @@ const EditGasToolTip = ({
           </Typography>
         </div>
       ) : null}
-      <div className="edit-gas-tooltip__container__message">
-        <Typography variant={TYPOGRAPHY.H7}>{toolTipMessage()}</Typography>
-      </div>
+      {toolTipMessage && (
+        <div className="edit-gas-tooltip__container__message">
+          <Typography variant={TYPOGRAPHY.H7}>{toolTipMessage}</Typography>
+        </div>
+      )}
       {priorityLevel === PRIORITY_LEVELS.CUSTOM ||
       estimateGreaterThanGasUse ? null : (
         <div className="edit-gas-tooltip__container__values">
@@ -111,13 +114,15 @@ const EditGasToolTip = ({
             >
               {t('maxBaseFee')}
             </Typography>
-            <Typography
-              variant={TYPOGRAPHY.H7}
-              color={COLORS.NEUTRAL_GREY}
-              className="edit-gas-tooltip__container__value"
-            >
-              {maxFeePerGas}
-            </Typography>
+            {maxFeePerGas && (
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.NEUTRAL_GREY}
+                className="edit-gas-tooltip__container__value"
+              >
+                {maxFeePerGas}
+              </Typography>
+            )}
           </div>
           <div>
             <Typography
@@ -127,13 +132,15 @@ const EditGasToolTip = ({
             >
               {t('priorityFeeProperCase')}
             </Typography>
-            <Typography
-              variant={TYPOGRAPHY.H7}
-              color={COLORS.NEUTRAL_GREY}
-              className="edit-gas-tooltip__container__value"
-            >
-              {maxPriorityFeePerGas}
-            </Typography>
+            {maxPriorityFeePerGas && (
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.NEUTRAL_GREY}
+                className="edit-gas-tooltip__container__value"
+              >
+                {maxPriorityFeePerGas}
+              </Typography>
+            )}
           </div>
           <div>
             <Typography
@@ -143,13 +150,15 @@ const EditGasToolTip = ({
             >
               {t('gasLimit')}
             </Typography>
-            <Typography
-              variant={TYPOGRAPHY.H7}
-              color={COLORS.NEUTRAL_GREY}
-              className="edit-gas-tooltip__container__value"
-            >
-              {gasLimit}
-            </Typography>
+            {gasLimit && (
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.NEUTRAL_GREY}
+                className="edit-gas-tooltip__container__value"
+              >
+                {gasLimit}
+              </Typography>
+            )}
           </div>
         </div>
       )}
