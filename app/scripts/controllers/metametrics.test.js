@@ -81,6 +81,28 @@ function getMockPreferencesStore({ currentLocale = LOCALE } = {}) {
   };
 }
 
+const SAMPLE_PERSISTED_EVENT = {
+  id: 'testid',
+  persist: true,
+  category: 'Unit Test',
+  successEvent: 'sample persisted event success',
+  failureEvent: 'sample persisted event failure',
+  properties: {
+    test: true,
+  },
+};
+
+const SAMPLE_NON_PERSISTED_EVENT = {
+  id: 'testid2',
+  persist: false,
+  category: 'Unit Test',
+  successEvent: 'sample non-persisted event success',
+  failureEvent: 'sample non-persisted event failure',
+  properties: {
+    test: true,
+  },
+};
+
 function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
@@ -105,12 +127,29 @@ function getMetaMetricsController({
     initState: {
       participateInMetaMetrics,
       metaMetricsId,
+      fragments: {
+        testid: SAMPLE_PERSISTED_EVENT,
+        testid2: SAMPLE_NON_PERSISTED_EVENT,
+      },
     },
   });
 }
 describe('MetaMetricsController', function () {
   describe('constructor', function () {
     it('should properly initialize', function () {
+      const mock = sinon.mock(segment);
+      mock
+        .expects('track')
+        .once()
+        .withArgs({
+          event: 'sample non-persisted event failure',
+          userId: TEST_META_METRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            ...DEFAULT_EVENT_PROPERTIES,
+            test: true,
+          },
+        });
       const metaMetricsController = getMetaMetricsController();
       assert.strictEqual(metaMetricsController.version, VERSION);
       assert.strictEqual(metaMetricsController.network, NETWORK);
@@ -127,6 +166,10 @@ describe('MetaMetricsController', function () {
         metaMetricsController.locale,
         LOCALE.replace('_', '-'),
       );
+      assert.deepStrictEqual(metaMetricsController.state.fragments, {
+        testid: SAMPLE_PERSISTED_EVENT,
+      });
+      mock.verify();
     });
 
     it('should update when network changes', function () {

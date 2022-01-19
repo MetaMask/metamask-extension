@@ -1393,8 +1393,29 @@ export function removeCollectible(address, tokenID, dontShowLoadingIndicator) {
   };
 }
 
-export async function checkAndUpdateCollectiblesOwnershipStatus() {
-  await promisifiedBackground.checkAndUpdateCollectiblesOwnershipStatus();
+export async function checkAndUpdateAllCollectiblesOwnershipStatus() {
+  await promisifiedBackground.checkAndUpdateAllCollectiblesOwnershipStatus();
+}
+
+export async function isCollectibleOwner(
+  ownerAddress,
+  collectibleAddress,
+  collectibleId,
+) {
+  return await promisifiedBackground.isCollectibleOwner(
+    ownerAddress,
+    collectibleAddress,
+    collectibleId,
+  );
+}
+
+export async function checkAndUpdateSingleCollectibleOwnershipStatus(
+  collectible,
+) {
+  await promisifiedBackground.checkAndUpdateSingleCollectibleOwnershipStatus(
+    collectible,
+    false,
+  );
 }
 
 export function removeToken(address) {
@@ -2235,6 +2256,18 @@ export function setAdvancedGasFee(val) {
   };
 }
 
+export function setEIP1559V2Enabled(val) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setEIP1559V2Enabled`);
+    try {
+      await promisifiedBackground.setEIP1559V2Enabled(val);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setIpfsGateway(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
@@ -3039,6 +3072,18 @@ export function trackMetaMetricsEvent(payload, options) {
   return promisifiedBackground.trackMetaMetricsEvent(payload, options);
 }
 
+export function createEventFragment(options) {
+  return promisifiedBackground.createEventFragment(options);
+}
+
+export function updateEventFragment(id, payload) {
+  return promisifiedBackground.updateEventFragment(id, payload);
+}
+
+export function finalizeEventFragment(id, options) {
+  return promisifiedBackground.finalizeEventFragment(id, options);
+}
+
 /**
  * @param {MetaMetricsPagePayload} payload - details of the page viewed
  * @param {MetaMetricsPageOptions} options - options for handling the page view
@@ -3077,6 +3122,10 @@ export function hideTestNetMessage() {
 
 export function setCollectiblesDetectionNoticeDismissed() {
   return promisifiedBackground.setCollectiblesDetectionNoticeDismissed(true);
+}
+
+export function setEnableEIP1559V2NoticeDismissed() {
+  return promisifiedBackground.setEnableEIP1559V2NoticeDismissed(true);
 }
 
 // QR Hardware Wallets

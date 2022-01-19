@@ -3,11 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
 import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
-import {
-  divideCurrencies,
-  multiplyCurrencies,
-} from '../../../../../../shared/modules/conversion.utils';
-import { PRIMARY, SECONDARY } from '../../../../../helpers/constants/common';
+import { SECONDARY } from '../../../../../helpers/constants/common';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
@@ -15,10 +11,8 @@ import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
-import Button from '../../../../ui/button';
 import Box from '../../../../ui/box';
 import FormField from '../../../../ui/form-field';
-import I18nValue from '../../../../ui/i18n-value';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
@@ -27,34 +21,9 @@ import {
   renderFeeRange,
 } from '../utils';
 
-const divideCurrencyValues = (value, baseFee) => {
-  if (baseFee === 0) {
-    return 0;
-  }
-  return divideCurrencies(value, baseFee, {
-    numberOfDecimals: 2,
-    dividendBase: 10,
-    divisorBase: 10,
-  }).toNumber();
-};
-
-const multiplyCurrencyValues = (baseFee, value, numberOfDecimals) =>
-  multiplyCurrencies(baseFee, value, {
-    numberOfDecimals,
-    multiplicandBase: 10,
-    multiplierBase: 10,
-  }).toNumber();
-
-const validateBaseFee = (
-  editingInGwei,
-  value,
-  gasFeeEstimates,
-  maxPriorityFeePerGas,
-) => {
+const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
   if (bnGreaterThan(maxPriorityFeePerGas, value)) {
-    return editingInGwei
-      ? 'editGasMaxBaseFeeGWEIImbalance'
-      : 'editGasMaxBaseFeeMultiplierImbalance';
+    return 'editGasMaxBaseFeeGWEIImbalance';
   }
   if (
     gasFeeEstimates?.low &&
@@ -82,7 +51,7 @@ const BaseFeeInput = () => {
     maxPriorityFeePerGas,
     setErrorValue,
     setMaxFeePerGas,
-    setBaseFeeMultiplier,
+    setMaxBaseFee,
   } = useAdvancedGasFeePopoverContext();
 
   const {
@@ -90,11 +59,7 @@ const BaseFeeInput = () => {
     historicalBaseFeeRange,
     baseFeeTrend,
   } = gasFeeEstimates;
-  const [feeTrend, setFeeTrend] = useState(baseFeeTrend);
   const [baseFeeError, setBaseFeeError] = useState();
-  const {
-    numberOfDecimals: numberOfDecimalsPrimary,
-  } = useUserPreferencedCurrency(PRIMARY);
   const {
     currency,
     numberOfDecimals: numberOfDecimalsFiat,
@@ -102,118 +67,60 @@ const BaseFeeInput = () => {
 
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
-  const [editingInGwei, setEditingInGwei] = useState(false);
-
-  const [maxBaseFeeGWEI, setMaxBaseFeeGWEI] = useState(() => {
-    if (
-      estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
-      advancedGasFeeValues?.maxBaseFee
-    ) {
-      return multiplyCurrencyValues(
-        estimatedBaseFee,
-        advancedGasFeeValues.maxBaseFee,
-        numberOfDecimalsPrimary,
-      );
-    }
-    return maxFeePerGas;
-  });
-
-  const [maxBaseFeeMultiplier, setMaxBaseFeeMultiplier] = useState(() => {
+  const [baseFee, setBaseFee] = useState(() => {
     if (
       estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
       advancedGasFeeValues?.maxBaseFee
     ) {
       return advancedGasFeeValues.maxBaseFee;
     }
-    return divideCurrencyValues(maxFeePerGas, estimatedBaseFee);
+
+    return maxFeePerGas;
   });
 
   const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
-    decGWEIToHexWEI(maxBaseFeeGWEI),
+    decGWEIToHexWEI(baseFee),
     { currency, numberOfDecimalsFiat },
   );
 
   const updateBaseFee = useCallback(
     (value) => {
-      let baseFeeInGWEI;
-      let baseFeeMultiplierValue;
-      if (editingInGwei) {
-        baseFeeInGWEI = value;
-        baseFeeMultiplierValue = divideCurrencyValues(value, estimatedBaseFee);
-      } else {
-        baseFeeInGWEI = multiplyCurrencyValues(
-          estimatedBaseFee,
-          value,
-          numberOfDecimalsPrimary,
-        );
-        baseFeeMultiplierValue = value;
-      }
-      setMaxBaseFeeGWEI(baseFeeInGWEI);
-      setMaxBaseFeeMultiplier(baseFeeMultiplierValue);
+      setBaseFee(value);
     },
-    [
-      editingInGwei,
-      estimatedBaseFee,
-      numberOfDecimalsPrimary,
-      setMaxBaseFeeGWEI,
-      setMaxBaseFeeMultiplier,
-    ],
+    [setBaseFee],
   );
 
   useEffect(() => {
-    setMaxFeePerGas(maxBaseFeeGWEI);
+    setMaxFeePerGas(baseFee);
     const error = validateBaseFee(
-      editingInGwei,
-      maxBaseFeeGWEI,
+      baseFee,
       gasFeeEstimates,
       maxPriorityFeePerGas,
     );
 
     setBaseFeeError(error);
-    setErrorValue(
-      'maxFeePerGas',
-      error === 'editGasMaxBaseFeeGWEIImbalance' ||
-        error === 'editGasMaxBaseFeeMultiplierImbalance',
-    );
-    if (baseFeeTrend !== 'level' && baseFeeTrend !== feeTrend) {
-      setFeeTrend(baseFeeTrend);
-    }
-    setBaseFeeMultiplier(maxBaseFeeMultiplier);
+    setErrorValue('maxFeePerGas', error === 'editGasMaxBaseFeeGWEIImbalance');
+    setMaxBaseFee(baseFee);
   }, [
-    feeTrend,
-    editingInGwei,
-    baseFeeTrend,
+    baseFee,
     gasFeeEstimates,
-    maxBaseFeeGWEI,
     maxPriorityFeePerGas,
-    maxBaseFeeMultiplier,
     setBaseFeeError,
     setErrorValue,
     setMaxFeePerGas,
-    setFeeTrend,
-    setBaseFeeMultiplier,
+    setMaxBaseFee,
   ]);
 
   return (
     <Box className="base-fee-input" margin={[0, 2]}>
       <FormField
+        dataTestId="base-fee-input"
         error={baseFeeError ? t(baseFeeError) : ''}
         onChange={updateBaseFee}
         titleText={t('maxBaseFee')}
-        titleUnit={editingInGwei ? 'GWEI' : `(${t('multiplier')})`}
+        titleUnit={`(${t('gwei')})`}
         tooltipText={t('advancedBaseGasFeeToolTip')}
-        titleDetail={
-          <Button
-            className="base-fee-input__edit-link"
-            type="link"
-            onClick={() => setEditingInGwei(!editingInGwei)}
-          >
-            <I18nValue
-              messageKey={editingInGwei ? 'editInMultiplier' : 'editInGwei'}
-            />
-          </Button>
-        }
-        value={editingInGwei ? maxBaseFeeGWEI : maxBaseFeeMultiplier}
+        value={baseFee}
         detailText={`≈ ${baseFeeInFiat}`}
         numeric
       />
@@ -223,7 +130,7 @@ const BaseFeeInput = () => {
           2,
         )} GWEI`}
         historical={renderFeeRange(historicalBaseFeeRange)}
-        feeTrend={feeTrend}
+        feeTrend={baseFeeTrend}
       />
     </Box>
   );

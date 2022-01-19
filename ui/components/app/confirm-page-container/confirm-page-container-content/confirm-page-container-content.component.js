@@ -25,6 +25,7 @@ export default class ConfirmPageContainerContent extends Component {
     nonce: PropTypes.string,
     subtitleComponent: PropTypes.node,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    image: PropTypes.string,
     titleComponent: PropTypes.node,
     warning: PropTypes.string,
     origin: PropTypes.string.isRequired,
@@ -42,6 +43,7 @@ export default class ConfirmPageContainerContent extends Component {
     rejectNText: PropTypes.string,
     hideTitle: PropTypes.bool,
     supportsEIP1559V2: PropTypes.bool,
+    hasTopBorder: PropTypes.bool,
   };
 
   renderContent() {
@@ -87,6 +89,7 @@ export default class ConfirmPageContainerContent extends Component {
       errorMessage,
       hasSimulationError,
       title,
+      image,
       titleComponent,
       subtitleComponent,
       hideSubtitle,
@@ -109,6 +112,7 @@ export default class ConfirmPageContainerContent extends Component {
       setUserAcknowledgedGasMissing,
       hideUserAcknowledgedGasMissing,
       supportsEIP1559V2,
+      hasTopBorder,
     } = this.props;
 
     const primaryAction = hideUserAcknowledgedGasMissing
@@ -119,7 +123,11 @@ export default class ConfirmPageContainerContent extends Component {
         };
 
     return (
-      <div className="confirm-page-container-content">
+      <div
+        className={classnames('confirm-page-container-content', {
+          'confirm-page-container-content--with-top-border': hasTopBorder,
+        })}
+      >
         {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
@@ -140,6 +148,7 @@ export default class ConfirmPageContainerContent extends Component {
           })}
           action={action}
           title={title}
+          image={image}
           titleComponent={titleComponent}
           subtitleComponent={subtitleComponent}
           hideSubtitle={hideSubtitle}

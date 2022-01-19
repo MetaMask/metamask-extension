@@ -16,6 +16,7 @@ import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 
+import EnableEIP1559V2Notice from './enableEIP1559V2-notice';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -39,6 +40,7 @@ export default class ConfirmPageContainer extends Component {
     showEdit: PropTypes.bool,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
+    image: PropTypes.string,
     titleComponent: PropTypes.node,
     hideSenderToRecipient: PropTypes.bool,
     showAccountInHeader: PropTypes.bool,
@@ -103,6 +105,7 @@ export default class ConfirmPageContainer extends Component {
       contentComponent,
       action,
       title,
+      image,
       titleComponent,
       subtitleComponent,
       hideSubtitle,
@@ -202,10 +205,12 @@ export default class ConfirmPageContainer extends Component {
               </>
             )}
           </div>
+          <EnableEIP1559V2Notice isFirstAlert={!showAddToAddressDialog} />
           {contentComponent || (
             <ConfirmPageContainerContent
               action={action}
               title={title}
+              image={image}
               titleComponent={titleComponent}
               subtitleComponent={subtitleComponent}
               hideSubtitle={hideSubtitle}
@@ -229,6 +234,7 @@ export default class ConfirmPageContainer extends Component {
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
               supportsEIP1559V2={supportsEIP1559V2}
+              hasTopBorder={showAddToAddressDialog}
             />
           )}
           {shouldDisplayWarning && (

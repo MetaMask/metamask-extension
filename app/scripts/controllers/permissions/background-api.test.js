@@ -160,9 +160,11 @@ describe('permission background API methods', () => {
   describe('requestAccountsPermissionWithId', () => {
     it('request an accounts permission and returns the request id', async () => {
       const permissionController = {
-        requestPermissions: jest.fn().mockImplementationOnce(async () => {
-          return [null, { id: 'arbitraryId' }];
-        }),
+        requestPermissions: jest
+          .fn()
+          .mockImplementationOnce(async (_, __, { id }) => {
+            return [null, { id }];
+          }),
       };
 
       const id = await getPermissionBackgroundApiMethods(
@@ -173,9 +175,13 @@ describe('permission background API methods', () => {
       expect(permissionController.requestPermissions).toHaveBeenCalledWith(
         { origin: 'foo.com' },
         { eth_accounts: {} },
+        { id: expect.any(String) },
       );
 
-      expect(id).toStrictEqual('arbitraryId');
+      expect(id.length > 0).toBe(true);
+      expect(id).toStrictEqual(
+        permissionController.requestPermissions.mock.calls[0][2].id,
+      );
     });
   });
 });

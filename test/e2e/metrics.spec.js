@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const waitUntilCalled = require('../lib/wait-until-called');
-const { withFixtures, tinyDelayMs } = require('./helpers');
+const { convertToHexValue, withFixtures, tinyDelayMs } = require('./helpers');
 
 /**
  * WARNING: These tests must be run using a build created with `yarn build:test:metrics`, so that it has
@@ -15,7 +15,7 @@ describe('Segment metrics', function () {
         {
           secretKey:
             '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
