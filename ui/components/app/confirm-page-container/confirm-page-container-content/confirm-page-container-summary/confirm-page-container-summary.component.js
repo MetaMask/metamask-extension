@@ -84,7 +84,7 @@ ConfirmPageContainerSummary.propTypes = {
   identiconAddress: PropTypes.string,
   nonce: PropTypes.string,
   origin: PropTypes.string.isRequired,
-  hideTitle: PropTypes.boolean,
+  hideTitle: PropTypes.bool,
 };
 
 export default ConfirmPageContainerSummary;

@@ -64,7 +64,8 @@ const EditGasItem = ({ priorityLevel }) => {
 
   if (
     priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
-    !dappSuggestedGasFees
+    !dappSuggestedGasFees?.maxFeePerGas &&
+    !dappSuggestedGasFees?.gasPrice
   ) {
     return null;
   }

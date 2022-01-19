@@ -1,5 +1,6 @@
 const path = require('path');
 const sinon = require('sinon');
+const BigNumber = require('bignumber.js');
 const createStaticServer = require('../../development/create-static-server');
 const {
   createSegmentServer,
@@ -12,8 +13,9 @@ const { ensureXServerIsRunning } = require('./x-server');
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
-
 const dappPort = 8080;
+
+const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 async function withFixtures(options, testSuite) {
   const {
@@ -42,7 +44,7 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer = new Ganache();
       await secondaryGanacheServer.start({
         blockTime: 2,
-        _chainIdRpc: chainId,
+        chain: { chainId },
         port,
         vmErrorsOnRPCResponse: false,
       });
@@ -148,6 +150,7 @@ async function withFixtures(options, testSuite) {
 }
 
 module.exports = {
+  convertToHexValue,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
