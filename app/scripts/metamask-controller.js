@@ -220,22 +220,22 @@ export default class MetamaskController extends EventEmitter {
         onNetworkStateChange: this.networkController.store.subscribe.bind(
           this.networkController.store,
         ),
-        getAssetName: this.assetsContractController.getAssetName.bind(
+        getERC721AssetName: this.assetsContractController.getERC721AssetName.bind(
           this.assetsContractController,
         ),
-        getAssetSymbol: this.assetsContractController.getAssetSymbol.bind(
+        getERC721AssetSymbol: this.assetsContractController.getERC721AssetSymbol.bind(
           this.assetsContractController,
         ),
-        getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
+        getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
           this.assetsContractController,
         ),
-        getOwnerOf: this.assetsContractController.getOwnerOf.bind(
+        getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
           this.assetsContractController,
         ),
-        balanceOfERC1155Collectible: this.assetsContractController.balanceOfERC1155Collectible.bind(
+        getERC1155BalanceOf: this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
-        uriERC1155Collectible: this.assetsContractController.uriERC1155Collectible.bind(
+        getERC1155TokenURI: this.assetsContractController.getERC1155TokenURI.bind(
           this.assetsContractController,
         ),
       },
@@ -1040,6 +1040,7 @@ export default class MetamaskController extends EventEmitter {
       appStateController,
       collectiblesController,
       collectibleDetectionController,
+      assetsContractController,
       currencyRateController,
       detectTokensController,
       ensController,
@@ -1190,6 +1191,11 @@ export default class MetamaskController extends EventEmitter {
       ),
       setEIP1559V2Enabled: preferencesController.setEIP1559V2Enabled.bind(
         preferencesController,
+      ),
+
+      // AssetsContractController
+      getTokenStandardAndDetails: assetsContractController.getTokenStandardAndDetails.bind(
+        assetsContractController,
       ),
 
       // CollectiblesController
