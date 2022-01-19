@@ -51,7 +51,7 @@ export function createTestProviderTools(opts = {}) {
       Ganache.provider({
         mnemonic: getTestSeed(),
         network_id: opts.networkId,
-        chain: { chainId: opts.chainId},
+        chain: { chainId: opts.chainId },
         hardfork: 'muirGlacier',
       }),
     ),

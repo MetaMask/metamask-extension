@@ -47,7 +47,7 @@ describe('Transaction Controller', function () {
     provider = createTestProviderTools({
       scaffold: providerResultStub,
       networkId: currentNetworkId,
-      chainId: currentNetworkId
+      chainId: currentNetworkId,
     }).provider;
 
     fromAccount = getTestAccounts()[0];
