@@ -22,7 +22,6 @@ import SunCheck from './sun-check-icon.component';
 import Swap from './swap-icon-for-list.component';
 import SwapIcon from './overview-send-icon.component';
 import SwapIconComponent from './swap-icon.component';
-import VerifiedIcon from './verified-icon';
 
 export default {
   title: 'Components/UI/Icon',
@@ -105,7 +104,6 @@ export const DefaultStory = (args) => (
         <IconItem Component={<PaperAirplane {...args} />} />
         <IconItem Component={<CopyIcon {...args} />} />
         <IconItem Component={<Preloader {...args} />} />
-        <IconItem Component={<VerifiedIcon {...args} />} />
       </div>
     </Box>
   </div>

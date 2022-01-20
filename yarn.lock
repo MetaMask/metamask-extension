@@ -2717,17 +2717,17 @@
   resolved "https://registry.yarnpkg.com/@metamask/forwarder/-/forwarder-1.1.0.tgz#13829d8244bbf19ea658c0b20d21a77b67de0bdd"
   integrity sha512-Hggj4y0QIjDzKGTXzarhEPIQyFSB2bi2y6YLJNwaT4JmP30UB5Cj6gqoY0M4pj3QT57fzp0BUuGp7F/AUe28tw==
 
-"@metamask/iframe-execution-environment-service@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@metamask/iframe-execution-environment-service/-/iframe-execution-environment-service-0.7.0.tgz#83b2a2dcf53e4cc019db9cda3ea8e2139ed09b38"
-  integrity sha512-HR71LqpsnGKPSvbVNGk1Ioz+xisydsUgugUkBnkVN2p/H/UZa0rRPl2WgQKLm7nk43op++YLFZ0/Z5nYIaYEwA==
+"@metamask/iframe-execution-environment-service@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@metamask/iframe-execution-environment-service/-/iframe-execution-environment-service-0.8.0.tgz#28a241fa17ad2fdf39d2848781da1b4065d32df1"
+  integrity sha512-lWXLuU+GpDE6/zFNPb+litajCwK/hyDLtp60CUt35bEp1pPcYbgJUTM6skC4FlOtPuWgOoZ1SNN9W8Yq6c+Sbg==
   dependencies:
     "@metamask/controllers" "^17.0.0"
     "@metamask/object-multiplex" "^1.2.0"
     "@metamask/post-message-stream" "^4.0.0"
-    "@metamask/snap-controllers" "^0.7.0"
-    "@metamask/snap-types" "^0.7.0"
-    "@metamask/snap-workers" "^0.7.0"
+    "@metamask/snap-controllers" "^0.8.0"
+    "@metamask/snap-types" "^0.8.0"
+    "@metamask/snap-workers" "^0.8.0"
     eth-rpc-errors "^4.0.3"
     json-rpc-engine "^6.1.0"
     json-rpc-middleware-stream "^3.0.0"
@@ -2816,13 +2816,13 @@
     pump "^3.0.0"
     webextension-polyfill-ts "^0.25.0"
 
-"@metamask/rpc-methods@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.7.0.tgz#ee9302d586a3ca9852ae60a59d8f5c4a36082940"
-  integrity sha512-tlnFf9K3Hdtacx/oJTlgJf5WCpX/RxdOEVqTwEMZtbt2eKzcmSuMZbUjtncC6yeI6sOd5pr8cIpB0gWpMxGhYg==
+"@metamask/rpc-methods@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@metamask/rpc-methods/-/rpc-methods-0.8.0.tgz#210e850ec942bea46943d1e3da58c14f2a4aaaef"
+  integrity sha512-+UgA6UP/sQfmsRumR67MGr25ozQaUupedrjehqIiZUPG8O5BJq/0vYeyQiUfigIBcHvfIxDUkcAWMPNxI8rmag==
   dependencies:
     "@metamask/key-tree" "^3.0.1"
-    "@metamask/snap-controllers" "^0.7.0"
+    "@metamask/snap-controllers" "^0.8.0"
     eth-rpc-errors "^4.0.2"
 
 "@metamask/safe-event-emitter@^2.0.0":
@@ -2835,17 +2835,17 @@
   resolved "https://registry.yarnpkg.com/@metamask/slip44/-/slip44-2.0.0.tgz#1b646a1418af341d5ea979c28015a817ff23af33"
   integrity sha512-eRomm783ti/1b/TlNnlTCUkYRuTaMYkeTAG0z2rt/WyT8UzxY+8+v/kbl9vk5qhDHeclzBrd9gbqLnLU1kh+Ow==
 
-"@metamask/snap-controllers@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.7.0.tgz#9662bf66b49eea10c229719b8b620887e8f342d6"
-  integrity sha512-/mxw8aZa9sCKigMEtjYAA0v+MV6cKhfaRMgjyO84XlyKRred0O3QyKbRgskqScOGhGxt6MkLu/SCPbAlNWeHwQ==
+"@metamask/snap-controllers@^0.8.0", "@metamask/snap-controllers@^0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.8.1.tgz#52a9dfc045c781d85bfc3fd9ed20986e035631cb"
+  integrity sha512-AgGTyiVPa8RkWnEXVeG2n8qjPd6ZixOuwb8xUnkTu++TaChQA7daMUpqW//mRHHk5tkcgH5ePiQkD9NmflDmXQ==
   dependencies:
     "@metamask/controllers" "^17.0.0"
     "@metamask/object-multiplex" "^1.1.0"
     "@metamask/obs-store" "^7.0.0"
     "@metamask/post-message-stream" "4.0.0"
     "@metamask/safe-event-emitter" "^2.0.0"
-    "@metamask/snap-workers" "^0.7.0"
+    "@metamask/snap-workers" "^0.8.0"
     "@types/deep-freeze-strict" "^1.1.0"
     ajv "^8.8.2"
     concat-stream "^2.0.0"
@@ -2862,17 +2862,17 @@
     semver "^7.3.5"
     tar-stream "^2.2.0"
 
-"@metamask/snap-types@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.7.0.tgz#4956b4e35245d2858d976022d083f5ea572fbe9d"
-  integrity sha512-IJGwoxuy6XVzT7qCUROb+XHDG3EQU6KNpwmcQLKDBxYo9aVGClyQWBMwM0WL+r4KiDfRlrzXJBhrb4m1IEx8tQ==
+"@metamask/snap-types@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-types/-/snap-types-0.8.0.tgz#7db1648e2a6191bc73df02c129da297d32e20b6e"
+  integrity sha512-462GVlmVfkkwBIbbTCEmja+kkcTMMa28HdKcHyaFsv0SYwtGjs6mxhjIgrlbu2UmLoN8OqhkIZqc5KpCf/XMRA==
   dependencies:
     "@metamask/controllers" "^17.0.0"
 
-"@metamask/snap-workers@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-workers/-/snap-workers-0.7.0.tgz#a194902440f17c9817a88645704ff9c8d687634f"
-  integrity sha512-jjP3UxwMdosfcPiRCaWbx5FbWEN4Leuvp+qr4pp61smHSj+Rcr2Vh3RK15opc+MIZul4VsKw30LZ6bN5rxhx0A==
+"@metamask/snap-workers@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-workers/-/snap-workers-0.8.0.tgz#2a1fb51246b1de38edbc1e5efd72d494de452253"
+  integrity sha512-+mwSk7wiPv6hQsMH3AftZgk4CcGio2kshq8gXPV4Y1q8xWekK7CHmuQ2XoJ+vmR9TuC16LCR1dDNowY17qO2Dw==
 
 "@metamask/test-dapp@^4.0.1":
   version "4.0.1"
@@ -9914,15 +9914,15 @@ elliptic@6.5.3, elliptic@6.5.4, elliptic@=3.0.3, elliptic@^6.0.0, elliptic@^6.4.
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
 
-emittery@0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/emittery/-/emittery-0.10.0.tgz#bb373c660a9d421bb44706ec4967ed50c02a8026"
-  integrity sha512-AGvFfs+d0JKCJQ4o01ASQLGPmSCxgfU9RFXvzPvZdjKK8oscynksuJhWrSTSw7j7Ep/sZct5b5ZhYCi8S/t0HQ==
-
 emitter-component@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/emitter-component/-/emitter-component-1.1.1.tgz#065e2dbed6959bf470679edabeaf7981d1003ab6"
   integrity sha1-Bl4tvtaVm/RwZ57avq95gdEAOrY=
+
+emittery@0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/emittery/-/emittery-0.10.0.tgz#bb373c660a9d421bb44706ec4967ed50c02a8026"
+  integrity sha512-AGvFfs+d0JKCJQ4o01ASQLGPmSCxgfU9RFXvzPvZdjKK8oscynksuJhWrSTSw7j7Ep/sZct5b5ZhYCi8S/t0HQ==
 
 emittery@^0.7.1:
   version "0.7.2"
@@ -26785,17 +26785,7 @@ util.promisify@1.0.0:
     define-properties "^1.1.2"
     object.getownpropertydescriptors "^2.0.3"
 
-util.promisify@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/util.promisify/-/util.promisify-1.0.1.tgz#6baf7774b80eeb0f7520d8b81d07982a59abbaee"
-  integrity sha512-g9JpC/3He3bm38zsLupWryXHoEcS22YHthuPQSJdMy6KNrzIRzWqcsHzD/WUnqe45whVou4VIsPew37DoXWNrA==
-  dependencies:
-    define-properties "^1.1.3"
-    es-abstract "^1.17.2"
-    has-symbols "^1.0.1"
-    object.getownpropertydescriptors "^2.1.0"
-
-util@0.10.3, util@~0.10.1:
+util@0.10.3:
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/util/-/util-0.10.3.tgz#7afb1afe50805246489e3db7fe0ed379336ac0f9"
   integrity sha1-evsa/lCAUkZInj23/g7TeTNqwPk=

@@ -568,8 +568,11 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:unresponsive',
       ],
       allowedActions: [
-        `${this.permissionController.name}:hasPermission`,
         `${this.permissionController.name}:getEndowments`,
+        `${this.permissionController.name}:getPermissions`,
+        `${this.permissionController.name}:hasPermission`,
+        `${this.permissionController.name}:requestPermissions`,
+        `${this.permissionController.name}:revokeAllPermissions`,
       ],
     });
 
@@ -587,28 +590,6 @@ export default class MetamaskController extends EventEmitter {
       getRpcMessageHandler: this.workerController.getRpcMessageHandler.bind(
         this.workerController,
       ),
-      // TODO:flask Fix in skunkworks (SnapController)
-      getPermissions: (origin) =>
-        Object.values(this.permissionController.getPermissions(origin) ?? {}),
-      hasPermission: this.permissionController.hasPermission.bind(
-        this.permissionController,
-      ),
-      removeAllPermissionsFor: (snapIds) => {
-        snapIds.forEach((snapId) =>
-          this.permissionController.revokeAllPermissions(snapId),
-        );
-      },
-      // TODO:flask Fix in skunkworks (SnapController)
-      requestPermissions: async (snapId, requestedPermissions) => {
-        const [
-          approvedPermissions,
-        ] = await this.permissionController.requestPermissions(
-          { origin: snapId },
-          requestedPermissions,
-        );
-
-        return Object.values(approvedPermissions);
-      },
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,
@@ -943,41 +924,50 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
    * Constructor helper for getting Snap permission specifications.
-   * Exists primarily to get around the circular dependencies between the Snap
-   * and Permission controllers during initialization.
    */
   getSnapPermissionSpecifications() {
-    // TODO:flask Probably find a better solution?
-    // We create these wrapper functions to reference the SnapController in
-    // restricted method hooks before it's actually initialized.
-    const _addSnap = (...args) => this.snapController.add(...args);
-    const _getSnap = (...args) => this.snapController.get(...args);
-    const _getSnapRpcHandler = (...args) =>
-      this.snapController.getRpcMessageHandler(...args);
-    // TODO:flask Fix in skunkworks (probably?)
-    const _getSnapState = async (...args) => {
-      const result = await this.snapController.getSnapState(...args);
-      return result ?? null;
-    };
-    const _updateSnapState = (...args) =>
-      this.snapController.updateSnapState(...args);
-
     return {
       ...buildSnapEndowmentSpecifications(),
       ...buildSnapRestrictedMethodSpecifications({
-        addSnap: _addSnap,
-        clearSnapState: (fromSubject) => _updateSnapState(fromSubject, {}),
+        addSnap: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:add',
+        ),
+        clearSnapState: (fromSubject) =>
+          this.controllerMessenger(
+            'SnapController:updateSnap',
+            fromSubject,
+            {},
+          ),
         getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
-        getSnap: _getSnap,
-        getSnapRpcHandler: _getSnapRpcHandler,
-        getSnapState: _getSnapState,
+        getSnap: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:get',
+        ),
+        getSnapRpcHandler: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getRpcMessageHandler',
+        ),
+        getSnapState: async (...args) => {
+          // TODO:flask Just return the action result directly in the next
+          // @metamask/snap-controllers update.
+          return (
+            (await this.controllerMessenger.call(
+              'SnapController:getSnapState',
+              ...args,
+            )) ?? null
+          );
+        },
         showConfirmation: (origin, confirmationData) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
             type: MESSAGE_TYPE.SNAP_CONFIRM,
             requestData: confirmationData,
           }),
-        updateSnapState: _updateSnapState,
+        updateSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:updateSnapState',
+        ),
       }),
     };
   }
@@ -2373,12 +2363,18 @@ export default class MetamaskController extends EventEmitter {
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
-   * TODO:snaps verify safety of using keyringController.getAccounts
+   * Gets an "app key" corresponding to an Ethereum address. An app key is more
+   * or less an addrdess hashed together with some string, in this case a
+   * subject identifier / origin.
    *
-   * @param domain
-   * @param requestedAccount
+   * @todo Figure out a way to derive app keys that doesn't depend on the user's
+   * Ethereum addresses.
+   * @param {string} subject - The identifier of the subject whose app key to
+   * retrieve.
+   * @param {string} [requestedAccount] - The account whose app key to retrieve.
+   * The first account in the keyring will be used by default.
    */
-  async getAppKeyForDomain(domain, requestedAccount) {
+  async getAppKeyForSubject(subject, requestedAccount) {
     let account;
 
     if (requestedAccount) {
@@ -2387,7 +2383,7 @@ export default class MetamaskController extends EventEmitter {
       account = (await this.keyringController.getAccounts())[0];
     }
 
-    return this.keyringController.exportAppKeyForAddress(account, domain);
+    return this.keyringController.exportAppKeyForAddress(account, subject);
   }
   ///: END:ONLY_INCLUDE_IN
 
@@ -3215,12 +3211,11 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     engine.push(
       createSnapMethodMiddleware(subjectType === SUBJECT_TYPES.SNAP, {
-        getAppKey: this.getAppKeyForDomain.bind(this, origin),
+        getAppKey: this.getAppKeyForSubject.bind(this, origin),
         getSnaps: this.snapController.getPermittedSnaps.bind(
           this.snapController,
           origin,
         ),
-        // TODO:flask Fix in skunkworks (rpc-methods)
         requestPermissions: async (requestedPermissions) => {
           const [
             approvedPermissions,
