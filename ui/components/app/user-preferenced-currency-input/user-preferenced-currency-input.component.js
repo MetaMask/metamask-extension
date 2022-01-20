@@ -5,15 +5,23 @@ import CurrencyInput from '../../ui/currency-input';
 export default class UserPreferencedCurrencyInput extends PureComponent {
   static propTypes = {
     useNativeCurrencyAsPrimaryCurrency: PropTypes.bool,
+    sendInputCurrencySwitched: PropTypes.bool,
   };
 
   render() {
-    const { useNativeCurrencyAsPrimaryCurrency, ...restProps } = this.props;
+    const {
+      useNativeCurrencyAsPrimaryCurrency,
+      sendInputCurrencySwitched,
+      ...restProps
+    } = this.props;
 
     return (
       <CurrencyInput
         {...restProps}
-        useFiat={!useNativeCurrencyAsPrimaryCurrency}
+        featureSecondary={Boolean(
+          (useNativeCurrencyAsPrimaryCurrency && sendInputCurrencySwitched) ||
+            (!useNativeCurrencyAsPrimaryCurrency && !sendInputCurrencySwitched),
+        )}
       />
     );
   }
