@@ -2767,13 +2767,26 @@ export function loadingTokenParamsFinished() {
   };
 }
 
-export function getTokenParams(tokenAddress) {
+export function getTokenParams(address) {
   return (dispatch, getState) => {
     const tokenList = getTokenList(getState());
     const existingTokens = getState().metamask.tokens;
-    const existingToken = existingTokens.find(({ address }) =>
-      isEqualCaseInsensitive(tokenAddress, address),
+    const { selectedAddress } = getState().metamask;
+    const { chainId } = getState().metamask.provider;
+    const existingCollectibles = getState().metamask?.allCollectibles?.[
+      selectedAddress
+    ]?.[chainId];
+    const existingToken = existingTokens.find(({ address: tokenAddress }) =>
+      isEqualCaseInsensitive(address, tokenAddress),
     );
+    const existingCollectible = existingCollectibles?.find(
+      ({ address: collectibleAddress }) =>
+        isEqualCaseInsensitive(address, collectibleAddress),
+    );
+
+    if (existingCollectible) {
+      return null;
+    }
 
     if (existingToken) {
       return Promise.resolve({
@@ -2785,9 +2798,9 @@ export function getTokenParams(tokenAddress) {
     dispatch(loadingTokenParamsStarted());
     log.debug(`loadingTokenParams`);
 
-    return getSymbolAndDecimals(tokenAddress, tokenList).then(
+    return getSymbolAndDecimals(address, tokenList).then(
       ({ symbol, decimals }) => {
-        dispatch(addToken(tokenAddress, symbol, Number(decimals)));
+        dispatch(addToken(address, symbol, Number(decimals)));
         dispatch(loadingTokenParamsFinished());
       },
     );
