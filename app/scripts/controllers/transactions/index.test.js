@@ -46,8 +46,11 @@ describe('Transaction Controller', function () {
       // by default, all accounts are external accounts (not contracts)
       eth_getCode: '0x',
     };
-    provider = createTestProviderTools({ scaffold: providerResultStub })
-      .provider;
+    provider = createTestProviderTools({
+      scaffold: providerResultStub,
+      networkId: currentNetworkId,
+      chainId: currentNetworkId,
+    }).provider;
 
     fromAccount = getTestAccounts()[0];
     const blockTrackerStub = new EventEmitter();
