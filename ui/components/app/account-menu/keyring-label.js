@@ -12,19 +12,30 @@ export default function KeyRingLabel(props) {
   let label = null;
 
   // Keyring value might take a while to get a value
-  if (keyring) {
-    const { type } = keyring;
-    if (type === KEYRING_TYPES.QR) {
+  if (!keyring) {
+    return null;
+  }
+
+  const { type } = keyring;
+
+  switch (type) {
+    case KEYRING_TYPES.QR:
       label = 'QR';
-    } else if (type === 'Simple Key Pair') {
+      break;
+    case 'Simple Key Pair':
       label = t('imported');
-    } else if (type === KEYRING_TYPES.TREZOR) {
+      break;
+    case KEYRING_TYPES.TREZOR:
       label = 'Trezor';
-    } else if (type === KEYRING_TYPES.LEDGER) {
+      break;
+    case KEYRING_TYPES.LEDGER:
       label = 'Ledger';
-    } else if (type === KEYRING_TYPES.LATTICE) {
+      break;
+    case KEYRING_TYPES.LATTICE:
       label = 'Lattice1';
-    }
+      break;
+    default:
+      return null;
   }
 
   return (
