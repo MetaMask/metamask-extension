@@ -244,13 +244,13 @@ export default function CollectibleDetails({ collectible }) {
                 margin: 0,
                 marginBottom: 4,
               }}
-              overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+              className="collectible-details__image-link"
             >
               <a
                 target="_blank"
-                href={collectibleImageURL}
                 rel="noopener noreferrer"
-                className="collectible-details__image-link"
+                href={collectibleImageURL}
+                title={collectibleImageURL}
               >
                 {image}
               </a>
@@ -271,17 +271,18 @@ export default function CollectibleDetails({ collectible }) {
               {t('contractAddress')}
             </Typography>
             <Typography
-              color={COLORS.UI3}
+              color={COLORS.PRIMARY1}
               variant={TYPOGRAPHY.H6}
               overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
               boxProps={{
                 margin: 0,
                 marginBottom: 4,
               }}
+              className="collectible-details__contract-link"
             >
               <a
                 target="_blank"
-                className="collectible-details__contract-link"
+                rel="noopener noreferrer"
                 href={getTokenTrackerLink(
                   address,
                   currentNetwork,
@@ -289,11 +290,9 @@ export default function CollectibleDetails({ collectible }) {
                   null,
                   rpcPrefs,
                 )}
-                rel="noopener noreferrer"
+                title={address}
               >
-                {getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                  ? shortenAddress(address)
-                  : address}
+                {inPopUp ? shortenAddress(address) : address}
               </a>
             </Typography>
           </Box>
