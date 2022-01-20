@@ -31,9 +31,6 @@ import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
 import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import SnapInstallWarning from './snap-install-warning';
-///: END:ONLY_INCLUDE_IN
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -372,21 +369,6 @@ const MODALS = {
       borderRadius: '8px',
     },
   },
-
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  SNAP_INSTALL: {
-    contents: <SnapInstallWarning />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-  ///: END:ONLY_INCLUDE_IN
 
   CANCEL_TRANSACTION: {
     contents: <CancelTransaction />,
