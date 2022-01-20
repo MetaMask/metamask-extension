@@ -277,3 +277,15 @@ export function getFinalStates() {
     TRANSACTION_STATUSES.DROPPED, // the tx nonce was already used
   ];
 }
+
+/**
+ * Normalizes tx receipt gas used to be a hexadecimal string.
+ * It seems that sometimes the numerical values being returned from
+ * this.query.getTransactionReceipt are BN instances and not strings.
+ *
+ * @param {string or BN instance} gasUsed
+ * @returns normalized gas used as hexadecimal string
+ */
+export function normalizeTxReceiptGasUsed(gasUsed) {
+  return typeof gasUsed === 'string' ? gasUsed : gasUsed.toString(16);
+}
