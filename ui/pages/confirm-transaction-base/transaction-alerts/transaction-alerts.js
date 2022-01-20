@@ -93,6 +93,7 @@ const TransactionAlerts = ({
       {balanceError && <ErrorMessage errorKey={INSUFFICIENT_FUNDS_ERROR_KEY} />}
       {estimateUsed === PRIORITY_LEVELS.LOW && (
         <ActionableMessage
+          dataTestId="low-gas-fee-alert"
           message={
             <Typography
               align="left"

@@ -1306,9 +1306,6 @@
   "history": {
     "message": "History"
   },
-  "id": {
-    "message": "ID"
-  },
   "import": {
     "message": "Mag-import",
     "description": "Button to import an account from a selected file"

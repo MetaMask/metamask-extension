@@ -1306,9 +1306,6 @@
   "history": {
     "message": "履歴"
   },
-  "id": {
-    "message": "ID"
-  },
   "import": {
     "message": "インポート",
     "description": "Button to import an account from a selected file"

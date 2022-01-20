@@ -37,7 +37,7 @@ export default function FeeCard({
   smartTransactionsOptInStatus,
   smartTransactionsEnabled,
   isBestQuote,
-  supportsEIP1559V2,
+  supportsEIP1559V2 = false,
 }) {
   const t = useContext(I18nContext);
 
@@ -217,5 +217,5 @@ FeeCard.propTypes = {
   smartTransactionsOptInStatus: PropTypes.bool,
   smartTransactionsEnabled: PropTypes.bool,
   isBestQuote: PropTypes.bool.isRequired,
-  supportsEIP1559V2: PropTypes.bool.isRequired,
+  supportsEIP1559V2: PropTypes.bool,
 };

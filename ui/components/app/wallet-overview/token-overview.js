@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -29,6 +29,8 @@ import SwapIcon from '../../ui/icon/swap-icon.component';
 import SendIcon from '../../ui/icon/overview-send-icon.component';
 
 import IconButton from '../../ui/icon-button';
+import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
+import { showModal } from '../../../store/actions';
 import WalletOverview from './wallet-overview';
 
 const TokenOverview = ({ className, token }) => {
@@ -59,6 +61,17 @@ const TokenOverview = ({ className, token }) => {
     category: 'swaps',
   });
 
+  useEffect(() => {
+    if (token.isERC721) {
+      dispatch(
+        showModal({
+          name: 'CONVERT_TOKEN_TO_NFT',
+          tokenAddress: token.address,
+        }),
+      );
+    }
+  }, [token.isERC721, token.address, dispatch]);
+
   return (
     <WalletOverview
       balance={
@@ -81,16 +94,21 @@ const TokenOverview = ({ className, token }) => {
         <>
           <IconButton
             className="token-overview__button"
-            onClick={() => {
+            onClick={async () => {
               sendTokenEvent();
-              dispatch(
-                updateSendAsset({
-                  type: ASSET_TYPES.TOKEN,
-                  details: token,
-                }),
-              ).then(() => {
+              try {
+                await dispatch(
+                  updateSendAsset({
+                    type: ASSET_TYPES.TOKEN,
+                    details: token,
+                  }),
+                );
                 history.push(SEND_ROUTE);
-              });
+              } catch (err) {
+                if (!err.message.includes(INVALID_ASSET_TYPE)) {
+                  throw err;
+                }
+              }
             }}
             Icon={SendIcon}
             label={t('send')}

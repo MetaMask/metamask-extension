@@ -216,7 +216,7 @@ class ImportToken extends Component {
     const isMainnetNetwork = this.props.chainId === '0x1';
 
     let standard;
-    if (addressIsValid) {
+    if (addressIsValid && process.env.COLLECTIBLES_V1) {
       try {
         ({ standard } = await this.props.getTokenStandardAndDetails(
           standardAddress,

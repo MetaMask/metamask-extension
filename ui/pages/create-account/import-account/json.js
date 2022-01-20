@@ -28,7 +28,7 @@ class JsonImportSubview extends Component {
       <div className="new-account-import-form__json">
         <p>{this.context.t('usedByClients')}</p>
         <a
-          className="warning"
+          className="new-account-import-form__help-link"
           href={HELP_LINK}
           target="_blank"
           rel="noopener noreferrer"

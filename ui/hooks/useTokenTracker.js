@@ -67,6 +67,7 @@ export function useTokenTracker(
         tokens: tokenList,
         includeFailedTokens,
         pollingInterval: SECOND * 8,
+        balanceDecimals: 5,
       });
 
       tokenTracker.current.on('update', updateBalances);
