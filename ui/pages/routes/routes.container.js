@@ -2,8 +2,12 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
+  getMetaMaskCachedBalances,
   getNetworkIdentifier,
   getPreferences,
+  getProvider,
+  getUseTokenDetection,
+  hasAnyFundsOnNetwork,
   isNetworkLoading,
   getTheme,
 } from '../../selectors';
@@ -12,6 +16,7 @@ import {
   setCurrentCurrency,
   setLastActiveTime,
   setMouseUserState,
+  setShowPopup,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
@@ -22,6 +27,16 @@ function mapStateToProps(state) {
   const { appState } = state;
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = 0 } = getPreferences(state);
+
+  const autoDetectToken = getUseTokenDetection(state);
+
+  const fundsOnNetwork = getMetaMaskCachedBalances(state) ?? {};
+  const hasNoFundsOnNetwork = Object.values(fundsOnNetwork).includes('0x0') ?? false;
+
+  fetch('https://token-api.metaswap.codefi.network/tokens/xxx}').then((res) => console.log(res));
+
+  // const a = getProvider(state);
+  // console.log(a);
 
   return {
     alertOpen,
@@ -52,6 +67,7 @@ function mapDispatchToProps(dispatch) {
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
+    setShowPopup: () => setShowPopup(),
   };
 }
 

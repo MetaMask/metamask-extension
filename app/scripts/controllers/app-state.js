@@ -319,12 +319,11 @@ export default class AppStateController extends EventEmitter {
     return usedNetworks[chainId];
   }
 
-    /**
-   * Checks if the network has been used
-   * @returns {void}
-   */
-
-  showPopupFunction() {
-    this.store.updateState({ showPopup: true })
+  /**
+ * Set true or false in order to show or not to show a popup when a network changes for the first time
+ * @returns {void}
+ */
+  setShowPopup(showPopup) {
+    this.store.updateState({ showPopup })
   }
 }

@@ -359,6 +359,10 @@ export default class Routes extends Component {
       isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
+      showPopup,
+      setShowPopup,
+      hasNoFundsOnNetwork,
+      autoDetectToken,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -379,7 +383,7 @@ export default class Routes extends Component {
           }
         }}
       >
-        {/* {this.props.showPopup ? <NewNetworkInfo featuredRPC={featuredRPC} onClose={() => {}} /> : null} */}
+        {(showPopup && hasNoFundsOnNetwork) ? <NewNetworkInfo featuredRPC={featuredRPC} onClose={setShowPopup} autoDetectToken={autoDetectToken} /> : null}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />

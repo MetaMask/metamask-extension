@@ -8,7 +8,13 @@
     & .popover-footer {
       border-top: none;
     }
+
+    & .popover-header {
+      padding-bottom: 1px;
+    }
   }
+
+  
 
   &__close {
     padding-top: 16px;
@@ -29,7 +35,7 @@
     text-align: center;
     color: var(--ui-black);
     font-weight: 700;
-    margin-top: 19px;
+    // margin-top: 19px;
   }
 
   &__ident-section {

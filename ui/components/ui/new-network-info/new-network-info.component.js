@@ -5,8 +5,6 @@ import Popover from '../popover';
 import Button from '../button';
 import Identicon from '../identicon/identicon.component';
 import I18nValue from '../i18n-value';
-import { getProvider, getUseTokenDetection } from '../../../selectors';
-import { useSelector } from 'react-redux';
 
 const NewNetworkInfo = ({
   featuredRPC,
@@ -16,19 +14,19 @@ const NewNetworkInfo = ({
   const t = useContext(I18nContext);
 
   return (
-    <Popover className="new-network-info__wrapper" footer={
-      <Button type="primary" onClick={() => {}}>
+    <Popover onClose={onClose} className="new-network-info__wrapper" footer={
+      <Button type="primary" onClick={onClose}>
       {t('recoveryPhraseReminderConfirm')}
     </Button>
     }>
-      <div className="new-network-info__close">
+      {/* <div className="new-network-info__close">
         <img
           src="./images/times.svg"
           alt=""
           className="new-network-info__close__close-icon"
           onClick={onClose}
         />
-      </div>
+      </div> */}
       <div className="new-network-info__title">{t('switchedTo')}</div>
       <div className="new-network-info__ident-section">
         {featuredRPC.rpcPrefs.imageUrl ? 
@@ -57,7 +55,7 @@ const NewNetworkInfo = ({
             &bull;
           </div>
           <div className="new-network-info__content__content-box-1__text-1">
-            {t('attemptSendingAssets')} <a href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995" className="new-network-info__content__content-box-1__link-1">{t('learnMoreUpperCase')}</a>
+            {t('attemptSendingAssets')} <a href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995" target="_blank" className="new-network-info__content__content-box-1__link-1">{t('learnMoreUpperCase')}</a>
           </div>
         </div>
         {!autoDetectToken ? 
@@ -67,11 +65,10 @@ const NewNetworkInfo = ({
               &bull;
             </div>
             <div className="new-network-info__content__content-box-1__text-1">
-              {t('tokenShowUp')} <a href="" className="new-network-info__content__content-box-1__link-1">{t('clickToManuallyAdd')}</a>
+              {t('tokenShowUp')} <a href='' className="new-network-info__content__content-box-1__link-1">{t('clickToManuallyAdd')}</a>
             </div>
           </div>
           ) : null}
-
       </div>
     </Popover>
   );
