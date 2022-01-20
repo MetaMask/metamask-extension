@@ -88,6 +88,9 @@
  *  is closed in an affirmative action.
  * @property {string} [failureEvent] - The event name to fire when the fragment
  *  is closed with a rejection.
+ * @property {string} [initialEvent] - An event name to fire immediately upon
+ *  fragment creation. This is useful for building funnels in mixpanel and for
+ *  reduction of code duplication.
  * @property {string} category - the event category to use for both the success
  *  and failure events
  * @property {boolean} [persist] - Should this fragment be persisted in
@@ -113,6 +116,10 @@
  *  occurred on
  * @property {MetaMetricsReferrerObject} [referrer] - the origin of the dapp
  *  that initiated the event fragment.
+ * @property {string} [uniqueIdentifier] - optional argument to override the
+ *  automatic generation of UUID for the event fragment. This is useful when
+ *  tracking events for subsystems that already generate UUIDs so to avoid
+ *  unnecessary lookups and reduce accidental duplication.
  */
 
 /**
