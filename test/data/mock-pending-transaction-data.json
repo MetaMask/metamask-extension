@@ -4,7 +4,7 @@
   "initialTransaction": {
     "id": 6854191329910881,
     "time": 1631558469046,
-    "status": "approved",
+    "status": "submitted",
     "metamaskNetworkId": "42",
     "chainId": "0x2a",
     "loadingDefaults": false,
@@ -80,7 +80,7 @@
   "primaryTransaction": {
     "id": 6854191329910881,
     "time": 1631558469046,
-    "status": "approved",
+    "status": "submitted",
     "metamaskNetworkId": "42",
     "chainId": "0x2a",
     "loadingDefaults": false,
