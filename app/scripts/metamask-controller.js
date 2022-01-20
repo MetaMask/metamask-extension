@@ -3211,7 +3211,6 @@ export default class MetamaskController extends EventEmitter {
           this.snapController,
           origin,
         ),
-        // TODO:flask Fix in skunkworks (rpc-methods)
         requestPermissions: async (requestedPermissions) => {
           const [
             approvedPermissions,
