@@ -29,7 +29,7 @@ describe('Test Snap Confirm', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // navigate to test snaps page and connect
-        await driver.openNewPage('https://metamask.github.io/test-snaps/');
+        await driver.driver.get('https://metamask.github.io/test-snaps/');
         await driver.fill('.snapId', 'npm:@metamask/test-snap-confirm');
         await driver.clickElement({
           text: 'Connect To Confirm Snap',
@@ -72,6 +72,7 @@ describe('Test Snap Confirm', function () {
         });
 
         // hit 'approve' on the custom confirm
+        await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
