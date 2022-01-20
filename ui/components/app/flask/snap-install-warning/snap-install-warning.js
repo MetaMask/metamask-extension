@@ -44,18 +44,20 @@ export default function SnapInstallWarning({ onCancel, onSubmit, snapName }) {
       title={t('areYouSure')}
       footer={<SnapInstallWarningFooter />}
     >
-      <Typography variant={TYPOGRAPHY.H6} boxProps={{ paddingBottom: 4 }}>
-        {t('snapInstallWarningCheck')}
-      </Typography>
-      <div className="checkbox-label">
-        <CheckBox
-          checked={isConfirmed}
-          id="warning-accept"
-          onClick={onCheckboxClicked}
-        />
-        <label htmlFor="warning-accept">
-          {t('snapInstallWarningKeyAccess', [snapName])}
-        </label>
+      <div className="snap-install-warning__content">
+        <Typography variant={TYPOGRAPHY.H6} boxProps={{ paddingBottom: 4 }}>
+          {t('snapInstallWarningCheck')}
+        </Typography>
+        <div className="checkbox-label">
+          <CheckBox
+            checked={isConfirmed}
+            id="warning-accept"
+            onClick={onCheckboxClicked}
+          />
+          <label htmlFor="warning-accept">
+            {t('snapInstallWarningKeyAccess', [snapName])}
+          </label>
+        </div>
       </div>
     </Popover>
   );
