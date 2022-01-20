@@ -27,13 +27,14 @@ export function useOriginMetadata(origin) {
     return null;
   }
 
-  let minimumOriginMetadata;
+  let minimumOriginMetadata = null;
   try {
     const url = new URL(origin);
     minimumOriginMetadata = {
       host: url.host,
       hostname: url.hostname,
       origin,
+      subjectType: SUBJECT_TYPES.UNKNOWN,
     };
   } catch (_) {
     // do nothing
@@ -46,11 +47,7 @@ export function useOriginMetadata(origin) {
     };
   } else if (targetSubjectMetadata) {
     return targetSubjectMetadata;
-  } else if (minimumOriginMetadata) {
-    return {
-      ...minimumOriginMetadata,
-      subjectType: SUBJECT_TYPES.UNKNOWN,
-    };
   }
-  return null;
+
+  return minimumOriginMetadata;
 }
