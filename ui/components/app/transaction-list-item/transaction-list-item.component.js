@@ -2,11 +2,13 @@ import React, { useMemo, useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import ListItem from '../../ui/list-item';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+
+import { cancelTx } from '../../../store/actions';
 
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
@@ -55,6 +57,7 @@ function TransactionListItemInner({
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { supportsEIP1559V2 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
+  const dispatch = useDispatch();
 
   const {
     initialTransaction: { id },
@@ -62,6 +65,7 @@ function TransactionListItemInner({
   } = transactionGroup;
 
   const trackEvent = useContext(MetaMetricsContext);
+  const isApprovedButNotSubmitted = status === TRANSACTION_STATUSES.APPROVED;
 
   const retryTransaction = useCallback(
     async (event) => {
@@ -95,14 +99,24 @@ function TransactionListItemInner({
           legacy_event: true,
         },
       });
-      if (supportsEIP1559V2) {
+      if (isApprovedButNotSubmitted) {
+        dispatch(cancelTx(transactionGroup.primaryTransaction));
+      } else if (supportsEIP1559V2) {
         setEditGasMode(EDIT_GAS_MODES.CANCEL);
         openModal('cancelSpeedUpTransaction');
       } else {
         setShowCancelEditGasPopover(true);
       }
     },
-    [trackEvent, openModal, setEditGasMode, supportsEIP1559V2],
+    [
+      trackEvent,
+      openModal,
+      setEditGasMode,
+      supportsEIP1559V2,
+      dispatch,
+      transactionGroup,
+      isApprovedButNotSubmitted,
+    ],
   );
 
   const shouldShowSpeedUp = useShouldShowSpeedUp(
