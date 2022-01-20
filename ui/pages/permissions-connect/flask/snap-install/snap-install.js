@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import { PageContainerFooter } from '../../../components/ui/page-container';
-import PermissionsConnectPermissionList from '../../../components/app/permissions-connect-permission-list';
-import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
-import PermissionConnectHeader from '../../../components/app/permissions-connect-header';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { hideModal, showSnapInstallWarning } from '../../../store/actions';
+import React, { useCallback, useMemo, useState } from 'react';
+import { PageContainerFooter } from '../../../../components/ui/page-container';
+import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list';
+import PermissionsConnectFooter from '../../../../components/app/permissions-connect-footer';
+import PermissionConnectHeader from '../../../../components/app/permissions-connect-header';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import SnapInstallWarning from '../../../../components/app/flask/snap-install-warning';
 
 export default function SnapInstall({
   request,
@@ -15,26 +14,18 @@ export default function SnapInstall({
   targetSubjectMetadata,
 }) {
   const t = useI18nContext();
-  const dispatch = useDispatch();
+
+  const [isShowingWarning, setIsShowingWarning] = useState(false);
 
   const onCancel = useCallback(() => rejectSnapInstall(request.metadata.id), [
     request,
     rejectSnapInstall,
   ]);
+
   const onSubmit = useCallback(() => approveSnapInstall(request), [
     request,
     approveSnapInstall,
   ]);
-  const showWarning = useCallback(
-    () =>
-      dispatch(
-        showSnapInstallWarning(targetSubjectMetadata.name, () => {
-          dispatch(hideModal());
-          approveSnapInstall(request);
-        }),
-      ),
-    [request, targetSubjectMetadata.name, approveSnapInstall, dispatch],
-  );
 
   const npmId = useMemo(() => {
     if (!targetSubjectMetadata.origin.startsWith('npm:')) {
@@ -42,6 +33,7 @@ export default function SnapInstall({
     }
     return targetSubjectMetadata.origin.substring(4);
   }, [targetSubjectMetadata]);
+
   const shouldShowWarning = useMemo(
     () =>
       Boolean(
@@ -99,10 +91,19 @@ export default function SnapInstall({
           cancelButtonType="default"
           onCancel={onCancel}
           cancelText={t('cancel')}
-          onSubmit={shouldShowWarning ? showWarning : onSubmit}
+          onSubmit={
+            shouldShowWarning ? () => setIsShowingWarning(true) : onSubmit
+          }
           submitText={t('approveAndInstall')}
         />
       </div>
+      {isShowingWarning && (
+        <SnapInstallWarning
+          onCancel={() => setIsShowingWarning(false)}
+          onSubmit={onSubmit}
+          snapName={targetSubjectMetadata.name}
+        />
+      )}
     </div>
   );
 }

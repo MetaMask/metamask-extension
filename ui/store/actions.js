@@ -656,20 +656,6 @@ export function updateCustomNonce(value) {
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-export function showSnapInstallWarning(snapName, onSubmit) {
-  return (dispatch) => {
-    dispatch(
-      showModal({
-        name: 'SNAP_INSTALL',
-        onSubmit,
-        snapName,
-      }),
-    );
-  };
-}
-///: END:ONLY_INCLUDE_IN
-
 const updateMetamaskStateFromBackground = () => {
   log.debug(`background.getState`);
 

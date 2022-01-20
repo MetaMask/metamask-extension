@@ -9,7 +9,7 @@ import PermissionPageContainer from '../../components/app/permission-page-contai
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
-import SnapInstall from './snap-install/snap-install';
+import SnapInstall from './flask/snap-install';
 ///: END:ONLY_INCLUDE_IN
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
