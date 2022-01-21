@@ -52,6 +52,8 @@ import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
 import { ERC721 } from '../../../helpers/constants/common';
 import { usePrevious } from '../../../hooks/usePrevious';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import Copy from '../../ui/icon/copy-icon.component';
 
 export default function CollectibleDetails({ collectible }) {
   const {
@@ -70,6 +72,7 @@ export default function CollectibleDetails({ collectible }) {
   const ipfsGateway = useSelector(getIpfsGateway);
   const collectibleContracts = useSelector(getCollectibleContracts);
   const currentNetwork = useSelector(getCurrentChainId);
+  const [copied, handleCopy] = useCopyToClipboard();
 
   const collectibleContractName = collectibleContracts.find(
     ({ address: contractAddress }) =>
@@ -270,31 +273,43 @@ export default function CollectibleDetails({ collectible }) {
             >
               {t('contractAddress')}
             </Typography>
-            <Typography
-              color={COLORS.PRIMARY1}
-              variant={TYPOGRAPHY.H6}
-              overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-              boxProps={{
-                margin: 0,
-                marginBottom: 4,
-              }}
-              className="collectible-details__contract-link"
-            >
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={getTokenTrackerLink(
-                  address,
-                  currentNetwork,
-                  null,
-                  null,
-                  rpcPrefs,
-                )}
-                title={address}
+            <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
+              <Typography
+                color={COLORS.PRIMARY1}
+                variant={TYPOGRAPHY.H6}
+                overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+                boxProps={{
+                  margin: 0,
+                  marginBottom: 4,
+                }}
+                className="collectible-details__contract-link"
               >
-                {inPopUp ? shortenAddress(address) : address}
-              </a>
-            </Typography>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={getTokenTrackerLink(
+                    address,
+                    currentNetwork,
+                    null,
+                    null,
+                    rpcPrefs,
+                  )}
+                  title={address}
+                >
+                  {inPopUp ? shortenAddress(address) : address}
+                </a>
+              </Typography>
+              <Button
+                onClick={() => {
+                  handleCopy(address);
+                }}
+                icon={copied ? null : <Copy size={20} color="#3098DC" />}
+                className="recovery-phrase__footer--copy--button"
+                type="link"
+              >
+                {copied ? t('copiedExclamation') : null}
+              </Button>
+            </Box>
           </Box>
           {inPopUp ? renderSendButton() : null}
         </Box>

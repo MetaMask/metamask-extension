@@ -1829,6 +1829,13 @@ export function hideAlert() {
   };
 }
 
+export function updateCollectibleDropDownState(value) {
+  return {
+    type: actionConstants.UPDATE_COLLECTIBLES_DROPDOWN_STATE,
+    value,
+  };
+}
+
 /**
  * This action will receive two types of values via qrCodeData
  * an object with the following structure {type, values}
