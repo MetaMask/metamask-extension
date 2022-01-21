@@ -244,6 +244,8 @@ export default class MetamaskController extends EventEmitter {
       initState.CollectiblesController,
     );
 
+    this.collectiblesController.setApiKey(process.env.OPENSEA_KEY);
+
     process.env.COLLECTIBLES_V1 &&
       (this.collectibleDetectionController = new CollectibleDetectionController(
         {
@@ -652,8 +654,7 @@ export default class MetamaskController extends EventEmitter {
             this.collectiblesController.checkAndUpdateSingleCollectibleOwnershipStatus(
               knownCollectible,
               false,
-              // TODO add this when checkAndUpdateSingleCollectibleOwnershipStatus is updated
-              // { userAddress, chainId },
+              { userAddress, chainId },
             );
           }
         }
