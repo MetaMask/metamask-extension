@@ -19,7 +19,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-
   const {
     hasErrors,
     maxBaseFee,
@@ -27,25 +26,23 @@ const AdvancedGasFeeDefaults = () => {
   } = useAdvancedGasFeePopoverContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
-  const updateDefaultSettings = (value) => {
-    if (value) {
+  const isDefaultSettingsSelected =
+    Boolean(advancedGasFeeValues) &&
+    advancedGasFeeValues.maxBaseFee === maxBaseFee &&
+    advancedGasFeeValues.priorityFee === maxPriorityFeePerGas;
+
+  const handleUpdateDefaultSettings = () => {
+    if (isDefaultSettingsSelected) {
+      dispatch(setAdvancedGasFee(null));
+    } else {
       dispatch(
         setAdvancedGasFee({
           maxBaseFee,
           priorityFee: maxPriorityFeePerGas,
         }),
       );
-    } else {
-      dispatch(setAdvancedGasFee(null));
     }
   };
-  const isDefaultSettingsSelected =
-    Boolean(advancedGasFeeValues) &&
-    advancedGasFeeValues.maxBaseFee === maxBaseFee &&
-    advancedGasFeeValues.priorityFee === maxPriorityFeePerGas;
-
-  const handleUpdateDefaultSettings = () =>
-    updateDefaultSettings(!isDefaultSettingsSelected);
 
   return (
     <Box
@@ -54,19 +51,22 @@ const AdvancedGasFeeDefaults = () => {
       marginRight={4}
       className="advanced-gas-fee-defaults"
     >
-      <CheckBox
-        checked={isDefaultSettingsSelected}
-        className="advanced-gas-fee-defaults__checkbox"
-        onClick={handleUpdateDefaultSettings}
-        disabled={hasErrors}
-      />
-      <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
-        {!isDefaultSettingsSelected && Boolean(advancedGasFeeValues)
-          ? t('advancedGasFeeDefaultOptIn', [
-              <strong key="default-value-change">{t('newValues')}</strong>,
-            ])
-          : t('advancedGasFeeDefaultOptOut')}
-      </Typography>
+      <label>
+        <CheckBox
+          checked={isDefaultSettingsSelected}
+          className="advanced-gas-fee-defaults__checkbox"
+          onClick={handleUpdateDefaultSettings}
+          disabled={hasErrors}
+          id="default-gas-checkbox"
+        />
+        <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
+          {!isDefaultSettingsSelected && Boolean(advancedGasFeeValues)
+            ? t('advancedGasFeeDefaultOptIn', [
+                <strong key="default-value-change">{t('newValues')}</strong>,
+              ])
+            : t('advancedGasFeeDefaultOptOut')}
+        </Typography>
+      </label>
     </Box>
   );
 };
