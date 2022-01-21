@@ -89,15 +89,6 @@ const EditGasToolTip = ({
       !estimateGreaterThanGasUse ? (
         <img alt="" src={`./images/curve-${priorityLevel}.svg`} />
       ) : null}
-      {priorityLevel === PRIORITY_LEVELS.HIGH &&
-      editGasMode !== EDIT_GAS_MODES.SWAPS &&
-      !estimateGreaterThanGasUse ? (
-        <div className="edit-gas-tooltip__container__dialog">
-          <Typography variant={TYPOGRAPHY.H7} color={COLORS.WHITE}>
-            {t('highGasSettingToolTipDialog')}
-          </Typography>
-        </div>
-      ) : null}
       {toolTipMessage && (
         <div className="edit-gas-tooltip__container__message">
           <Typography variant={TYPOGRAPHY.H7}>{toolTipMessage}</Typography>

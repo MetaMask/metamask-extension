@@ -1,13 +1,16 @@
-import classNames from 'classnames';
-import React from 'react';
 import { useSelector } from 'react-redux';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import React from 'react';
+
+import { COLORS } from '../../../helpers/constants/design-system';
 import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
 const BASE_CLASS = 'loading-heartbeat';
 const LOADING_CLASS = `${BASE_CLASS}--active`;
 
-export default function LoadingHeartBeat() {
+export default function LoadingHeartBeat({ backgroundColor = COLORS.WHITE }) {
   useShouldAnimateGasEstimations();
   const active = useSelector(getGasLoadingAnimationIsShowing);
 
@@ -24,6 +27,11 @@ export default function LoadingHeartBeat() {
         e.preventDefault();
         e.stopPropagation();
       }}
+      style={{ backgroundColor }}
     ></div>
   );
 }
+
+LoadingHeartBeat.propTypes = {
+  backgroundColor: PropTypes.string,
+};

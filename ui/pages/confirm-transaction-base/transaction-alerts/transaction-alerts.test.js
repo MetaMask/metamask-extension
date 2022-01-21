@@ -174,9 +174,7 @@ describe('TransactionAlerts', () => {
           },
         });
         expect(
-          getByText(
-            'Future transactions will queue after this one. This price was last seen was some time ago.',
-          ),
+          getByText('Future transactions will queue after this one.'),
         ).toBeInTheDocument();
       });
     });
@@ -190,9 +188,7 @@ describe('TransactionAlerts', () => {
           },
         });
         expect(
-          queryByText(
-            'Future transactions will queue after this one. This price was last seen was some time ago.',
-          ),
+          queryByText('Future transactions will queue after this one.'),
         ).not.toBeInTheDocument();
       });
     });

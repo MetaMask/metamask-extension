@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { COLORS } from '../../../../helpers/constants/design-system';
 import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
@@ -121,7 +122,11 @@ const EditGasItem = ({ priorityLevel }) => {
       >
         {hexMaximumTransactionFee ? (
           <div className="edit-gas-item__maxfee">
-            <LoadingHeartBeat />
+            <LoadingHeartBeat
+              backgroundColor={
+                priorityLevel === estimateUsed ? COLORS.UI1 : COLORS.WHITE
+              }
+            />
             <UserPreferencedCurrencyDisplay
               key="editGasSubTextFeeAmount"
               type={PRIMARY}
