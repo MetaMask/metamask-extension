@@ -369,9 +369,15 @@ export const computeEstimatedGasLimit = createAsyncThunk(
   async (_, thunkApi) => {
     const state = thunkApi.getState();
     const { send, metamask } = state;
+    const unapprovedTxs = getUnapprovedTxs(state);
+    const transaction = unapprovedTxs[send.draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
-    if (send.stage !== SEND_STAGES.EDIT) {
+    if (
+      send.stage !== SEND_STAGES.EDIT ||
+      !transaction.dappSuggestedGasFees?.gas ||
+      !transaction.userEditedGasLimit
+    ) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: send.gas.gasPrice,
         blockGasLimit: metamask.currentBlockGasLimit,
@@ -1662,15 +1668,18 @@ export function signTransaction() {
       // merge in the modified txParams. Once the transaction has been modified
       // we can send that to the background to update the transaction in state.
       const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTx = unapprovedTxs[id];
       // We only update the tx params that can be changed via the edit flow UX
       const eip1559OnlyTxParamsToUpdate = {
         data: txParams.data,
         from: txParams.from,
         to: txParams.to,
         value: txParams.value,
-        gas: txParams.gas,
+        gas: unapprovedTx.userEditedGasLimit
+          ? unapprovedTx.txParams.gas
+          : txParams.gas,
       };
-      const unapprovedTx = unapprovedTxs[id];
+      unapprovedTx.originalGasEstimate = eip1559OnlyTxParamsToUpdate.gas;
       const editingTx = {
         ...unapprovedTx,
         txParams: Object.assign(
