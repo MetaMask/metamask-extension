@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "メモを追加"
   },
-  "addNFT": {
-    "message": "NFTを追加"
-  },
   "addNetwork": {
     "message": "ネットワークの追加"
   },
@@ -1308,9 +1305,6 @@
   },
   "history": {
     "message": "履歴"
-  },
-  "id": {
-    "message": "ID"
   },
   "import": {
     "message": "インポート",

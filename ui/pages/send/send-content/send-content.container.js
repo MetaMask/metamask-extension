@@ -10,6 +10,7 @@ import {
   getIsBalanceInsufficient,
   getSendTo,
   getSendAsset,
+  getAssetError,
 } from '../../../ducks/send';
 
 import SendContent from './send-content.component';
@@ -32,6 +33,7 @@ function mapStateToProps(state) {
     ),
     getIsBalanceInsufficient: getIsBalanceInsufficient(state),
     asset: getSendAsset(state),
+    assetError: getAssetError(state),
   };
 }
 

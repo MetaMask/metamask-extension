@@ -48,7 +48,10 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
 
   return (
     <div className="edit-gas-fee-button">
-      <button onClick={() => openModal('editGasFee')}>
+      <button
+        onClick={() => openModal('editGasFee')}
+        data-testid="edit-gas-fee-button"
+      >
         {icon && (
           <span className="edit-gas-fee-button__icon">
             {`${PRIORITY_LEVEL_ICON_MAP[icon]} `}

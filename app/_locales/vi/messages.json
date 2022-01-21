@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "Thêm bản ghi nhớ"
   },
-  "addNFT": {
-    "message": "Thêm NFT"
-  },
   "addNetwork": {
     "message": "Thêm mạng"
   },
@@ -1308,9 +1305,6 @@
   },
   "history": {
     "message": "Lịch sử"
-  },
-  "id": {
-    "message": "ID"
   },
   "import": {
     "message": "Nhập",

@@ -30,6 +30,7 @@ import AddToAddressBookModal from './add-to-addressbook-modal';
 import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
+import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -226,6 +227,19 @@ const MODALS = {
 
   CONFIRM_REMOVE_ACCOUNT: {
     contents: <ConfirmRemoveAccount />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  CONVERT_TOKEN_TO_NFT: {
+    contents: <ConvertTokenToNftModal />,
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },

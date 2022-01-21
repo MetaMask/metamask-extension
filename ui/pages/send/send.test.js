@@ -80,6 +80,9 @@ const baseStore = {
     },
     identities: { '0x0': { address: '0x0' } },
   },
+  appState: {
+    sendInputCurrencySwitched: false,
+  },
 };
 
 describe('Send Page', () => {

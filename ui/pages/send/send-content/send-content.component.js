@@ -37,6 +37,7 @@ export default class SendContent extends Component {
     getIsBalanceInsufficient: PropTypes.bool,
     asset: PropTypes.object,
     to: PropTypes.string,
+    assetError: PropTypes.string,
   };
 
   render() {
@@ -49,6 +50,7 @@ export default class SendContent extends Component {
       networkOrAccountNotSupports1559,
       getIsBalanceInsufficient,
       asset,
+      assetError,
     } = this.props;
 
     let gasError;
@@ -67,6 +69,7 @@ export default class SendContent extends Component {
     return (
       <PageContainerContent>
         <div className="send-v2__form">
+          {assetError ? this.renderError(assetError) : null}
           {gasError ? this.renderError(gasError) : null}
           {isEthGasPrice
             ? this.renderWarning(ETH_GAS_PRICE_FETCH_WARNING_KEY)

@@ -56,6 +56,10 @@
     margin-top: 34px;
   }
 
+  &__help-link {
+    color: var(--primary-blue);
+  }
+
   &__input-password {
     @include Paragraph;
 

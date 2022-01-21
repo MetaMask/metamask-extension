@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "Добавить примечание"
   },
-  "addNFT": {
-    "message": "Добавить NFT"
-  },
   "addNetwork": {
     "message": "Добавить сеть"
   },
@@ -1308,9 +1305,6 @@
   },
   "history": {
     "message": "История"
-  },
-  "id": {
-    "message": "Ид."
   },
   "import": {
     "message": "Импорт",

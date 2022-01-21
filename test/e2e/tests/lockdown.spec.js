@@ -4,7 +4,7 @@ const {
   getGlobalProperties,
   testIntrinsic,
 } = require('../../helpers/protect-intrinsics-helpers');
-const { withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 const { PAGES } = require('../webdriver/driver');
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
@@ -56,7 +56,7 @@ describe('lockdown', function () {
       {
         secretKey:
           '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: 25000000000000000000,
+        balance: convertToHexValue(25000000000000000000),
       },
     ],
   };
