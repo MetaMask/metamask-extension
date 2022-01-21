@@ -205,8 +205,8 @@ const slice = createSlice({
     dismissCurrentSmartTransactionsErrorMessage: (state) => {
       state.currentSmartTransactionsErrorMessageDismissed = true;
     },
-    setSwapsSTXSubmitLoading: (state, payload) => {
-      state.swapsSTXLoading = payload || false;
+    setSwapsSTXSubmitLoading: (state, action) => {
+      state.swapsSTXLoading = action.payload || false;
     },
   },
 });
@@ -832,6 +832,7 @@ export const signAndSendSwapsSmartTransaction = ({
         }),
       );
       history.push(SMART_TRANSACTION_STATUS_ROUTE);
+      dispatch(setSwapsSTXSubmitLoading(false));
       // update stx with data
       const destinationValue = calcTokenAmount(
         usedQuote.destinationAmount,
@@ -885,7 +886,6 @@ export const signAndSendSwapsSmartTransaction = ({
           type,
         }),
       );
-      dispatch(setSwapsSTXSubmitLoading(false));
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
       const {
