@@ -10,7 +10,7 @@ import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateG
 const BASE_CLASS = 'loading-heartbeat';
 const LOADING_CLASS = `${BASE_CLASS}--active`;
 
-export default function LoadingHeartBeat({ backgroundColor = COLORS.WHITE }) {
+export default function LoadingHeartBeat({ backgroundColor = '#fff' }) {
   useShouldAnimateGasEstimations();
   const active = useSelector(getGasLoadingAnimationIsShowing);
 
