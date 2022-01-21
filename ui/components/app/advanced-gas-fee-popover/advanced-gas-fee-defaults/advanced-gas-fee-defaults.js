@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Box from '../../../ui/box';
@@ -26,14 +26,24 @@ const AdvancedGasFeeDefaults = () => {
   } = useAdvancedGasFeePopoverContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
-  const isDefaultSettingsSelected =
+  const [isDefaultSettingsSelected, setDefaultSettingsSelected] = useState(
     Boolean(advancedGasFeeValues) &&
-    advancedGasFeeValues.maxBaseFee === maxBaseFee &&
-    advancedGasFeeValues.priorityFee === maxPriorityFeePerGas;
+      advancedGasFeeValues.maxBaseFee === maxBaseFee &&
+      advancedGasFeeValues.priorityFee === maxPriorityFeePerGas,
+  );
+
+  useEffect(() => {
+    setDefaultSettingsSelected(
+      Boolean(advancedGasFeeValues) &&
+        advancedGasFeeValues.maxBaseFee === maxBaseFee &&
+        advancedGasFeeValues.priorityFee === maxPriorityFeePerGas,
+    );
+  }, [advancedGasFeeValues, maxBaseFee, maxPriorityFeePerGas]);
 
   const handleUpdateDefaultSettings = () => {
     if (isDefaultSettingsSelected) {
       dispatch(setAdvancedGasFee(null));
+      setDefaultSettingsSelected(false);
     } else {
       dispatch(
         setAdvancedGasFee({
@@ -41,6 +51,7 @@ const AdvancedGasFeeDefaults = () => {
           priorityFee: maxPriorityFeePerGas,
         }),
       );
+      setDefaultSettingsSelected(true);
     }
   };
 
@@ -57,7 +68,6 @@ const AdvancedGasFeeDefaults = () => {
           className="advanced-gas-fee-defaults__checkbox"
           onClick={handleUpdateDefaultSettings}
           disabled={hasErrors}
-          id="default-gas-checkbox"
         />
         <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
           {!isDefaultSettingsSelected && Boolean(advancedGasFeeValues)
