@@ -273,7 +273,11 @@ export default function CollectibleDetails({ collectible }) {
             >
               {t('contractAddress')}
             </Typography>
-            <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
+            <Box
+              display={DISPLAY.FLEX}
+              flexDirection={FLEX_DIRECTION.ROW}
+              width={BLOCK_SIZES.FULL}
+            >
               <Typography
                 color={COLORS.PRIMARY1}
                 variant={TYPOGRAPHY.H6}
@@ -304,7 +308,7 @@ export default function CollectibleDetails({ collectible }) {
                   handleCopy(address);
                 }}
                 icon={copied ? null : <Copy size={20} color="#3098DC" />}
-                className="recovery-phrase__footer--copy--button"
+                className="collectible-details__contract-copy-button"
                 type="link"
               >
                 {copied ? t('copiedExclamation') : null}

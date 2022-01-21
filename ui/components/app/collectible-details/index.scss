@@ -23,10 +23,9 @@ $spacer-break-small: 16px;
 
   &__info {
     @media screen and (min-width: $break-large) {
-      max-width:
-        calc(
-          100% - #{$card-width-break-large} - #{$spacer-break-large}
-        );
+      max-width: calc(
+        100% - #{$card-width-break-large} - #{$spacer-break-large}
+      );
       flex: 0 0 calc(100% - #{$card-width-break-large} - #{$spacer-break-large});
     }
   }
@@ -51,6 +50,32 @@ $spacer-break-small: 16px;
 
   &__address {
     overflow-wrap: break-word;
+  }
+
+  &__contract-copy-button {
+    @include H6;
+
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--ui-4) !important;
+    width: 100px !important;
+    padding: 0 !important;
+    align-items: flex-start !important;
+    font-size: 0.875rem !important;
+    display: flex;
+
+    svg {
+      width: 15px;
+      color: var(--ui-4);
+    }
+
+    &:active {
+      color: var(--ui-black);
+      background-color: transparent;
+      border: none;
+      transform: scale(0.97);
+    }
   }
 
   &__contract-link,

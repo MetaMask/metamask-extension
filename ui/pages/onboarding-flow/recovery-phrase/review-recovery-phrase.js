@@ -89,7 +89,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               onClick={() => {
                 handleCopy(secretRecoveryPhrase);
               }}
-              icon={copied ? null : <Copy size={20} color="#3098DC" />}
+              icon={copied ? null : <Copy size={20} color="#6a737d" />}
               className="recovery-phrase__footer--copy--button"
               type="link"
             >
