@@ -67,21 +67,15 @@ export default function ConfirmAddSuggestedToken(props) {
     return dupes.length > 0;
   }
 
-  function checkSuggestedAssets() {
-    if (suggestedAssets.length > 0) {
-      return;
-    }
-
-    history.push(mostRecentOverviewPage);
-  }
-
   function getTokenName(name, symbol) {
     return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
   }
 
   useEffect(() => {
-    checkSuggestedAssets();
-  });
+    if (!suggestedAssets.length) {
+      history.push(mostRecentOverviewPage);
+    }
+  }, [history, suggestedAssets, mostRecentOverviewPage]);
 
   return (
     <div className="page-container">
