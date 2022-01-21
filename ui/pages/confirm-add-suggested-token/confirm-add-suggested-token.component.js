@@ -9,12 +9,12 @@ import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
 export default function ConfirmAddSuggestedToken(props) {
   const {
-    suggestedAssets,
-    tokens,
-    rejectWatchAsset,
+    acceptWatchAsset,
     history,
     mostRecentOverviewPage,
-    acceptWatchAsset,
+    rejectWatchAsset,
+    suggestedAssets,
+    tokens,
   } = props;
 
   const metricsEvent = useContext(MetaMetricsContext);
@@ -163,10 +163,10 @@ export default function ConfirmAddSuggestedToken(props) {
 }
 
 ConfirmAddSuggestedToken.propTypes = {
-  history: PropTypes.object,
   acceptWatchAsset: PropTypes.func,
-  rejectWatchAsset: PropTypes.func,
+  history: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
+  rejectWatchAsset: PropTypes.func,
   suggestedAssets: PropTypes.array,
   tokens: PropTypes.array,
 };
