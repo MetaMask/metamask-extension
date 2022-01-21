@@ -568,8 +568,11 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:unresponsive',
       ],
       allowedActions: [
-        `${this.permissionController.name}:hasPermission`,
         `${this.permissionController.name}:getEndowments`,
+        `${this.permissionController.name}:getPermissions`,
+        `${this.permissionController.name}:hasPermission`,
+        `${this.permissionController.name}:requestPermissions`,
+        `${this.permissionController.name}:revokeAllPermissions`,
       ],
     });
 
@@ -587,28 +590,6 @@ export default class MetamaskController extends EventEmitter {
       getRpcMessageHandler: this.workerController.getRpcMessageHandler.bind(
         this.workerController,
       ),
-      // TODO:flask Fix in skunkworks (SnapController)
-      getPermissions: (origin) =>
-        Object.values(this.permissionController.getPermissions(origin) ?? {}),
-      hasPermission: this.permissionController.hasPermission.bind(
-        this.permissionController,
-      ),
-      removeAllPermissionsFor: (snapIds) => {
-        snapIds.forEach((snapId) =>
-          this.permissionController.revokeAllPermissions(snapId),
-        );
-      },
-      // TODO:flask Fix in skunkworks (SnapController)
-      requestPermissions: async (snapId, requestedPermissions) => {
-        const [
-          approvedPermissions,
-        ] = await this.permissionController.requestPermissions(
-          { origin: snapId },
-          requestedPermissions,
-        );
-
-        return Object.values(approvedPermissions);
-      },
       closeAllConnections: this.removeAllConnections.bind(this),
       state: initState.SnapController,
       messenger: snapControllerMessenger,
