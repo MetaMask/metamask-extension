@@ -2,13 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
+import { KEYRING_NAMES, KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
 
-export default function KeyRingLabel(props) {
+export default function KeyRingLabel({keyring}) {
   const t = useI18nContext();
-
-  const { keyring } = props;
-
+  
   let label = null;
 
   // Keyring value might take a while to get a value
@@ -20,19 +18,19 @@ export default function KeyRingLabel(props) {
 
   switch (type) {
     case KEYRING_TYPES.QR:
-      label = 'QR';
+      label = KEYRING_NAMES.QR;
       break;
     case 'Simple Key Pair':
       label = t('imported');
       break;
     case KEYRING_TYPES.TREZOR:
-      label = 'Trezor';
+      label = KEYRING_NAMES.TREZOR;
       break;
     case KEYRING_TYPES.LEDGER:
-      label = 'Ledger';
+      label = KEYRING_NAMES.LEDGER;
       break;
     case KEYRING_TYPES.LATTICE:
-      label = 'Lattice1';
+      label = KEYRING_NAMES.LATTICE;
       break;
     default:
       return null;
