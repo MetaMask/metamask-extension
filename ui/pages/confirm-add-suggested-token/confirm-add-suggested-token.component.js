@@ -67,11 +67,7 @@ export default function ConfirmAddSuggestedToken(props) {
     return dupes.length > 0;
   }
 
-  function getTokenName(name, symbol) {
-    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
-  }
-
-  function _checksuggestedAssets() {
+  function checkSuggestedAssets() {
     if (suggestedAssets.length > 0) {
       return;
     }
@@ -79,8 +75,12 @@ export default function ConfirmAddSuggestedToken(props) {
     history.push(mostRecentOverviewPage);
   }
 
+  function getTokenName(name, symbol) {
+    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
+  }
+
   useEffect(() => {
-    _checksuggestedAssets();
+    checkSuggestedAssets();
   });
 
   return (
