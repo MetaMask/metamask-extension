@@ -22,7 +22,7 @@ export const KEYRING_NAMES = {
   TREZOR: 'Trezor',
   QR: 'QR',
   LATTICE: 'Lattice1',
-}
+};
 
 /**
  * Used for setting the users preference for ledger transport type
