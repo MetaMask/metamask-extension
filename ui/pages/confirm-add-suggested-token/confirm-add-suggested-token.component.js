@@ -4,6 +4,7 @@ import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
 export default function ConfirmAddSuggestedToken(props) {
@@ -16,10 +17,25 @@ export default function ConfirmAddSuggestedToken(props) {
     acceptWatchAsset,
   } = props;
 
+  const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
 
   const hasTokenDuplicates = checkTokenDuplicates(suggestedAssets, tokens);
   const reusesName = checkNameReuse(suggestedAssets, tokens);
+
+  const tokenAddedEvent = (asset) => {
+    metricsEvent({
+      event: 'Token Added',
+      category: 'Wallet',
+      sensitiveProperties: {
+        token_symbol: asset.symbol,
+        token_contract_address: asset.address,
+        token_decimal_precision: asset.decimals,
+        unlisted: asset.unlisted,
+        source: 'dapp',
+      },
+    });
+  };
 
   /**
    * Returns true if any suggestedAssets both:
@@ -136,22 +152,9 @@ export default function ConfirmAddSuggestedToken(props) {
             disabled={suggestedAssets.length === 0}
             onClick={async () => {
               await Promise.all(
-                suggestedAssets.map(async ({ /* asset ,*/ id }) => {
+                suggestedAssets.map(async ({ asset, id }) => {
                   await acceptWatchAsset(id);
-
-                  /** @todo restore with up-to-date metric tracking before merging PR */
-
-                  // this.context.trackEvent({
-                  //   event: 'Token Added',
-                  //   category: 'Wallet',
-                  //   sensitiveProperties: {
-                  //     token_symbol: asset.symbol,
-                  //     token_contract_address: asset.address,
-                  //     token_decimal_precision: asset.decimals,
-                  //     unlisted: asset.unlisted,
-                  //     source: 'dapp',
-                  //   },
-                  // });
+                  tokenAddedEvent(asset);
                 }),
               );
               history.push(mostRecentOverviewPage);
