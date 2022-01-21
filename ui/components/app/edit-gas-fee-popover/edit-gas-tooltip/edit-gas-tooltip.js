@@ -9,6 +9,7 @@ import {
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
 import Typography from '../../../ui/typography';
 
 const EditGasToolTip = ({
@@ -111,7 +112,7 @@ const EditGasToolTip = ({
                 color={COLORS.NEUTRAL_GREY}
                 className="edit-gas-tooltip__container__value"
               >
-                {maxFeePerGas}
+                {roundToDecimalPlacesRemovingExtraZeroes(maxFeePerGas, 4)}
               </Typography>
             )}
           </div>
@@ -129,7 +130,10 @@ const EditGasToolTip = ({
                 color={COLORS.NEUTRAL_GREY}
                 className="edit-gas-tooltip__container__value"
               >
-                {maxPriorityFeePerGas}
+                {roundToDecimalPlacesRemovingExtraZeroes(
+                  maxPriorityFeePerGas,
+                  4,
+                )}
               </Typography>
             )}
           </div>
@@ -147,7 +151,7 @@ const EditGasToolTip = ({
                 color={COLORS.NEUTRAL_GREY}
                 className="edit-gas-tooltip__container__value"
               >
-                {gasLimit}
+                {roundToDecimalPlacesRemovingExtraZeroes(gasLimit, 4)}
               </Typography>
             )}
           </div>

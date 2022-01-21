@@ -1,17 +1,6 @@
 import { uniq } from 'lodash';
-import { toBigNumber } from '../../../../../shared/modules/conversion.utils';
 
-export function roundToDecimalPlacesRemovingExtraZeroes(
-  numberish,
-  numberOfDecimalPlaces,
-) {
-  if (numberish) {
-    return toBigNumber.dec(
-      toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces),
-    );
-  }
-  return null;
-}
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
 
 export const renderFeeRange = (feeRange) => {
   if (feeRange) {

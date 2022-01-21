@@ -1293,9 +1293,6 @@
   "high": {
     "message": "공격적"
   },
-  "highGasSettingToolTipDialog": {
-    "message": "변동성이 큰 시장에서도 높은 확률"
-  },
   "highGasSettingToolTipMessage": {
     "message": "인기 있는 NFT의 하락 등으로 인한 네트워크 트래픽 급증을 커버하려면 $1을 사용하세요.",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
