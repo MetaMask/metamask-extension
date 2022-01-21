@@ -16,7 +16,6 @@ export default function KeyRingLabel({ keyring }) {
   if (!keyring) {
     return null;
   }
-
   const { type } = keyring;
 
   switch (type) {
