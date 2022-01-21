@@ -62,7 +62,7 @@ const AdvancedGasFeeDefaults = () => {
       marginRight={4}
       className="advanced-gas-fee-defaults"
     >
-      <label>
+      <label className="advanced-gas-fee-defaults__label">
         <CheckBox
           checked={isDefaultSettingsSelected}
           className="advanced-gas-fee-defaults__checkbox"
