@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "Προσθήκη σημειώματος"
   },
-  "addNFT": {
-    "message": "Προσθήκη NFT"
-  },
   "addNetwork": {
     "message": "Προσθήκη Δικτύου"
   },
@@ -1308,9 +1305,6 @@
   },
   "history": {
     "message": "Ιστορικό"
-  },
-  "id": {
-    "message": "Αναγνωριστικό"
   },
   "import": {
     "message": "Εισαγωγή",

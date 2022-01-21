@@ -149,10 +149,55 @@ async function withFixtures(options, testSuite) {
   }
 }
 
+/**
+ * @param {*} driver - selinium driver
+ * @param {*} handlesCount - total count of windows that should be loaded
+ * @returns handles - an object with window handles, properties in object represent windows:
+ *            1. extension: metamask extension window
+ *            2. dapp: test-app window
+ *            3. popup: metsmask extension popup window
+ */
+const getWindowHandles = async (driver, handlesCount) => {
+  await driver.waitUntilXWindowHandles(handlesCount);
+  const windowHandles = await driver.getAllWindowHandles();
+
+  const extension = windowHandles[0];
+  const dapp = await driver.switchToWindowWithTitle(
+    'E2E Test Dapp',
+    windowHandles,
+  );
+  const popup = windowHandles.find(
+    (handle) => handle !== extension && handle !== dapp,
+  );
+  return { extension, dapp, popup };
+};
+
+const connectDappWithExtensionPopup = async (driver) => {
+  await driver.openNewPage(`http://127.0.0.1:${dappPort}/`);
+  await driver.delay(regularDelayMs);
+  await driver.clickElement({ text: 'Connect', tag: 'button' });
+  await driver.delay(regularDelayMs);
+
+  const windowHandles = await getWindowHandles(driver, 3);
+
+  // open extension popup and confirm connect
+  await driver.switchToWindow(windowHandles.popup);
+  await driver.delay(largeDelayMs);
+  await driver.clickElement({ text: 'Next', tag: 'button' });
+  await driver.clickElement({ text: 'Connect', tag: 'button' });
+
+  // send from dapp
+  await driver.waitUntilXWindowHandles(2);
+  await driver.switchToWindow(windowHandles.dapp);
+  await driver.delay(regularDelayMs);
+};
+
 module.exports = {
+  getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
   withFixtures,
+  connectDappWithExtensionPopup,
 };

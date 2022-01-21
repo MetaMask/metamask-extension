@@ -1,6 +1,10 @@
 import { connect } from 'react-redux';
 
-import { setPendingTokens, clearPendingTokens } from '../../store/actions';
+import {
+  setPendingTokens,
+  clearPendingTokens,
+  getTokenStandardAndDetails,
+} from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   getRpcPrefsForCurrentProvider,
@@ -17,6 +21,7 @@ const mapStateToProps = (state) => {
       provider: { chainId },
       useTokenDetection,
       tokenList,
+      selectedAddress,
     },
   } = state;
   const showSearchTabCustomNetwork =
@@ -33,13 +38,15 @@ const mapStateToProps = (state) => {
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
     tokenList,
     useTokenDetection,
+    selectedAddress,
   };
 };
-
 const mapDispatchToProps = (dispatch) => {
   return {
     setPendingTokens: (tokens) => dispatch(setPendingTokens(tokens)),
     clearPendingTokens: () => dispatch(clearPendingTokens()),
+    getTokenStandardAndDetails: (address, selectedAddress) =>
+      getTokenStandardAndDetails(address, selectedAddress, null),
   };
 };
 

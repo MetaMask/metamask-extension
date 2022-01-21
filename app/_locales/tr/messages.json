@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "Not ekleyin"
   },
-  "addNFT": {
-    "message": "NFT ekleyin"
-  },
   "addNetwork": {
     "message": "Ağ ekleyin"
   },
@@ -1308,9 +1305,6 @@
   },
   "history": {
     "message": "Geçmiş"
-  },
-  "id": {
-    "message": "Kimlik"
   },
   "import": {
     "message": "Al",

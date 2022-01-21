@@ -1,6 +1,6 @@
 import { JsonRpcEngine, createScaffoldMiddleware } from 'json-rpc-engine';
 import { providerAsMiddleware } from 'eth-json-rpc-middleware';
-import GanacheCore from 'ganache-core';
+import Ganache from 'ganache';
 
 export function getTestSeed() {
   return 'people carpet cluster attract ankle motor ozone mass dove original primary mask';
@@ -48,11 +48,11 @@ export function createTestProviderTools(opts = {}) {
   // handle block tracker methods
   engine.push(
     providerAsMiddleware(
-      GanacheCore.provider({
+      Ganache.provider({
         mnemonic: getTestSeed(),
         network_id: opts.networkId,
-        _chainId: opts.chainId,
-        _chainIdRpc: opts.chainId,
+        chain: { chainId: opts.chainId },
+        hardfork: 'muirGlacier',
       }),
     ),
   );

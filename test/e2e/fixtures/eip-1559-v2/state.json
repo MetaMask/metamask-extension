@@ -101,6 +101,7 @@
       },
       "assetImages": {},
       "completedOnboarding": true,
+      "eip1559V2Enabled": true,
       "currentLocale": "en",
       "featureFlags": {
         "showIncomingTransactions": true,
@@ -129,19 +130,6 @@
       "useNonceField": false,
       "usePhishDetect": true
     },
-    "MetaMetricsController": {
-      "fragments": {
-        "transaction-added-4046084157914634": {
-          "category": "Transactions",
-          "initialEvent": "Transaction Added",
-          "successEvent": "Transaction Approved",
-          "failureEvent": "Transaction Rejected",
-          "properties": {},
-          "persist": true,
-          "uniqueIdentifier": "transaction-added-4046084157914634"
-        }
-      }
-    },
     "TransactionController": {
       "transactions": {
         "4046084157914634": {
@@ -157,9 +145,11 @@
             "txParams": {
               "from": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
               "gas": "0x61a8",
-              "gasPrice": "0x2540be400",
+              "maxFeePerGas": "0x59682f0c",
+              "maxPriorityFeePerGas": "0x59682f00",
+              "type": "0x2",
               "to": "0x2f318C334780961FB129D2a6c30D0763d9a5C970",
-              "value": "0xde0b6b3a7640000"
+              "value": "0x1e87F85809dc0000"
             },
             "type": "sentEther"
           },
@@ -175,9 +165,11 @@
               "txParams": {
                 "from": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
                 "gas": "0x61a8",
-                "gasPrice": "0x2540be400",
+                "maxFeePerGas": "0x59682f0c",
+                "maxPriorityFeePerGas": "0x59682f00",
+                "type": "0x2",
                 "to": "0x2f318C334780961FB129D2a6c30D0763d9a5C970",
-                "value": "0xde0b6b3a7640000"
+                "value": "0x1e87F85809dc0000"
               },
               "type": "simpleSend"
             },
@@ -200,9 +192,11 @@
           "txParams": {
             "from": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
             "gas": "0x61a8",
-            "gasPrice": "0x2540be400",
+            "maxFeePerGas": "0x59682f0c",
+            "maxPriorityFeePerGas": "0x59682f00",
+            "type": "0x2",
             "to": "0x2f318C334780961FB129D2a6c30D0763d9a5C970",
-            "value": "0xde0b6b3a7640000"
+            "value": "0x1e87F85809dc0000"
           },
           "type": "simpleSend"
         }
