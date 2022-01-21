@@ -61,10 +61,7 @@ const BaseFeeInput = () => {
     baseFeeTrend,
   } = gasFeeEstimates;
   const [baseFeeError, setBaseFeeError] = useState();
-  const {
-    currency,
-    numberOfDecimals: numberOfDecimalsFiat,
-  } = useUserPreferencedCurrency(SECONDARY);
+  const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
 
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
@@ -81,7 +78,7 @@ const BaseFeeInput = () => {
 
   const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
     decGWEIToHexWEI(baseFee),
-    { currency, numberOfDecimalsFiat },
+    { currency, numberOfDecimals },
   );
 
   const updateBaseFee = useCallback(

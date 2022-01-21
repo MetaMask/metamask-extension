@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { COLORS } from '../../../helpers/constants/design-system';
 import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
