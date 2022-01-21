@@ -1,5 +1,5 @@
 import extension from 'extensionizer';
-import { stripHexPrefix, bufferToHex, keccak } from 'ethereumjs-util';
+import { stripHexPrefix } from 'ethereumjs-util';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
 import {
@@ -155,10 +155,6 @@ function getChainType(chainId) {
   return 'custom';
 }
 
-function hashObject(_object) {
-  return bufferToHex(keccak(Buffer.from(JSON.stringify(_object))));
-}
-
 export {
   getPlatform,
   getEnvironmentType,
@@ -168,5 +164,4 @@ export {
   addHexPrefix,
   bnToHex,
   getChainType,
-  hashObject,
 };

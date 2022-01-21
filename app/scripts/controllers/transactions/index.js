@@ -17,7 +17,6 @@ import {
   BnMultiplyByFraction,
   addHexPrefix,
   getChainType,
-  hashObject,
 } from '../../lib/util';
 import { TRANSACTION_NO_CONTRACT_ERROR_KEY } from '../../../../ui/helpers/constants/error-keys';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../../ui/pages/swaps/swaps.util';
@@ -941,13 +940,22 @@ export default class TransactionController extends EventEmitter {
     }
   }
 
-  async approveTransactionsWithSameNonce(listOfTxParams) {
-    // This is hacky, need to review with other engineers and decide on best alternative.
-    const uniqueHashOfParams = hashObject(listOfTxParams);
-    if (this.inProcessOfSigning.has(uniqueHashOfParams)) {
+  async approveTransactionsWithSameNonce(listOfTxParams = []) {
+    if (listOfTxParams.length === 0) {
       return '';
     }
-    this.inProcessOfSigning.add(uniqueHashOfParams);
+
+    const initialTx = listOfTxParams[0];
+    const common = await this.getCommonConfiguration(initialTx.from);
+    const initialTxAsEthTx = TransactionFactory.fromTxData(initialTx, {
+      common,
+    });
+    const initialTxAsSerializedHex = bufferToHex(initialTxAsEthTx.serialize());
+
+    if (this.inProcessOfSigning.has(initialTxAsSerializedHex)) {
+      return '';
+    }
+    this.inProcessOfSigning.add(initialTxAsSerializedHex);
     let rawTxes, nonceLock;
     try {
       // TODO: we should add a check to verify that all transactions have the same from address
@@ -971,7 +979,7 @@ export default class TransactionController extends EventEmitter {
       // continue with error chain
       throw err;
     } finally {
-      this.inProcessOfSigning.delete(uniqueHashOfParams);
+      this.inProcessOfSigning.delete(initialTxAsSerializedHex);
     }
     return rawTxes;
   }
