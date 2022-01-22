@@ -22,6 +22,7 @@ import {
   getAssetImageURL,
   isEqualCaseInsensitive,
   shortenAddress,
+  shortenURL,
 } from '../../../helpers/utils/util';
 import {
   getCurrentChainId,
@@ -255,7 +256,9 @@ export default function CollectibleDetails({ collectible }) {
                 href={collectibleImageURL}
                 title={collectibleImageURL}
               >
-                {image}
+                {`${collectibleImageURL.substr(0, 45)}${
+                  collectibleImageURL.length > 45 ? '...' : ''
+                }`}
               </a>
             </Typography>
           </Box>
@@ -307,7 +310,7 @@ export default function CollectibleDetails({ collectible }) {
                 onClick={() => {
                   handleCopy(address);
                 }}
-                icon={copied ? null : <Copy size={20} color="#3098DC" />}
+                icon={copied ? null : <Copy size={20} color="#6a737d" />}
                 className="collectible-details__contract-copy-button"
                 type="link"
               >
