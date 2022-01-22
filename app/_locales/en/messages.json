@@ -663,7 +663,7 @@
     "message": "Customize Gas"
   },
   "customGasSettingToolTipMessage": {
-    "message": "Use $1 to customise the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
+    "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
   },
   "customGasSubTitle": {
@@ -1360,11 +1360,8 @@
   "high": {
     "message": "Aggressive"
   },
-  "highGasSettingToolTipDialog": {
-    "message": "High probability, even in volatile markets"
-  },
   "highGasSettingToolTipMessage": {
-    "message": "Use $1 to cover surges in network traffic due to things like popular NFT drops.",
+    "message": "High probability, even in volatile markets. Use $1 to cover surges in network traffic due to things like popular NFT drops.",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
   },
   "highLowercase": {
@@ -1654,7 +1651,7 @@
     "message": "low"
   },
   "lowPriorityMessage": {
-    "message": "Future transactions will queue after this one. This price was last seen was some time ago."
+    "message": "Future transactions will queue after this one."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"

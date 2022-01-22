@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux';
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
 import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
 import { SECONDARY } from '../../../../../helpers/constants/common';
-import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
+import {
+  bnGreaterThan,
+  bnLessThan,
+  roundToDecimalPlacesRemovingExtraZeroes,
+} from '../../../../../helpers/utils/util';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
@@ -16,10 +20,7 @@ import FormField from '../../../../ui/form-field';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
-import {
-  roundToDecimalPlacesRemovingExtraZeroes,
-  renderFeeRange,
-} from '../utils';
+import { renderFeeRange } from '../utils';
 
 const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
   if (bnGreaterThan(maxPriorityFeePerGas, value)) {
@@ -60,10 +61,7 @@ const BaseFeeInput = () => {
     baseFeeTrend,
   } = gasFeeEstimates;
   const [baseFeeError, setBaseFeeError] = useState();
-  const {
-    currency,
-    numberOfDecimals: numberOfDecimalsFiat,
-  } = useUserPreferencedCurrency(SECONDARY);
+  const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
 
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
@@ -80,7 +78,7 @@ const BaseFeeInput = () => {
 
   const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
     decGWEIToHexWEI(baseFee),
-    { currency, numberOfDecimalsFiat },
+    { currency, numberOfDecimals },
   );
 
   const updateBaseFee = useCallback(

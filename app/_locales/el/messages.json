@@ -1293,9 +1293,6 @@
   "high": {
     "message": "Επιθετική"
   },
-  "highGasSettingToolTipDialog": {
-    "message": "Υψηλή πιθανότητα, ακόμη και σε ευμετάβλητες αγορές"
-  },
   "highGasSettingToolTipMessage": {
     "message": "Χρησιμοποιήστε $1 για να καλύψετε απότομες αυξήσεις της κίνησης του δικτύου λόγω των δημοφιλών ξεκινημάτων NFT.",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"

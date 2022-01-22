@@ -111,9 +111,19 @@ const TransactionAlerts = ({
       )}
       {isNetworkBusy ? (
         <ActionableMessage
-          message={<I18nValue messageKey="networkIsBusy" />}
+          message={
+            <Typography
+              align="left"
+              margin={[0, 0]}
+              tag={TYPOGRAPHY.Paragraph}
+              variant={TYPOGRAPHY.H7}
+            >
+              <I18nValue messageKey="networkIsBusy" />
+            </Typography>
+          }
           iconFillColor="#f8c000"
           type="warning"
+          useIcon
         />
       ) : null}
     </div>
