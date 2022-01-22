@@ -82,7 +82,9 @@ const NetworksForm = ({
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     selectedNetwork?.blockExplorerUrl || '',
   );
-  const [errors, setErrors] = useState({});
+  const [rpcUrlError, setRpcUrlError] = useState({});
+  const [chainIdError, setChainIdError] = useState({});
+  const [blockExplorerUrlError, setBlockExplorerUrlError] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resetForm = useCallback(() => {
@@ -91,7 +93,9 @@ const NetworksForm = ({
     setChainId(getDisplayChainId(selectedNetwork.chainId));
     setTicker(selectedNetwork?.ticker);
     setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
-    setErrors({});
+    setRpcUrlError({});
+    setChainIdError({});
+    setBlockExplorerUrlError({});
     setIsSubmitting(false);
   }, [selectedNetwork, selectedNetworkName]);
 
@@ -125,7 +129,9 @@ const NetworksForm = ({
       setChainId('');
       setTicker('');
       setBlockExplorerUrl('');
-      setErrors({});
+      setRpcUrlError({});
+      setChainIdError({});
+      setBlockExplorerUrlError({});
       setIsSubmitting(false);
     } else if (
       prevNetworkName.current !== selectedNetworkName ||
@@ -145,7 +151,9 @@ const NetworksForm = ({
     setChainId,
     setTicker,
     setBlockExplorerUrl,
-    setErrors,
+    setRpcUrlError,
+    setChainIdError,
+    setBlockExplorerUrlError,
     setIsSubmitting,
     resetForm,
   ]);
@@ -157,7 +165,9 @@ const NetworksForm = ({
       setChainId('');
       setTicker('');
       setBlockExplorerUrl('');
-      setErrors({});
+      setRpcUrlError({});
+      setChainIdError({});
+      setBlockExplorerUrlError({});
       dispatch(setSelectedSettingsRpcUrl(''));
     };
   }, [
@@ -166,37 +176,20 @@ const NetworksForm = ({
     setChainId,
     setTicker,
     setBlockExplorerUrl,
-    setErrors,
+    setRpcUrlError,
+    setChainIdError,
+    setBlockExplorerUrlError,
     dispatch,
   ]);
 
-  const setErrorTo = (errorKey, errorVal) => {
-    setErrors({ ...errors, [errorKey]: errorVal });
-  };
-
-  const setErrorEmpty = (errorKey) => {
-    setErrors({
-      ...errors,
-      [errorKey]: {
-        msg: '',
-        key: '',
-      },
-    });
-  };
-
-  const hasError = (errorKey, errorKeyVal) => {
-    return errors[errorKey]?.key === errorKeyVal;
-  };
-
   const hasErrors = () => {
-    return Object.keys(errors).some((key) => {
-      const error = errors[key];
-      // Do not factor in duplicate chain id error for submission disabling
-      if (key === 'chainId' && error.key === 'chainIdExistsErrorMsg') {
-        return false;
-      }
-      return error.key && error.msg;
-    });
+    // Do not factor in duplicate chain id error for submission disabling
+    return (
+      (Boolean(chainIdError?.key) &&
+        chainIdError.key === 'chainIdExistsErrorMsg') ||
+      Boolean(blockExplorerUrlError?.key) ||
+      Boolean(rpcUrlError?.key)
+    );
   };
 
   const validateChainIdOnChange = (chainArg = '') => {
@@ -210,7 +203,7 @@ const NetworksForm = ({
       try {
         hexChainId = `0x${decimalToHex(hexChainId)}`;
       } catch (err) {
-        setErrorTo('chainId', {
+        setChainIdError({
           key: 'invalidHexNumber',
           msg: t('invalidHexNumber'),
         });
@@ -223,7 +216,7 @@ const NetworksForm = ({
     );
 
     if (formChainId === '') {
-      setErrorEmpty('chainId');
+      setChainIdError({});
       return;
     } else if (matchingChainId) {
       errorKey = 'chainIdExistsErrorMsg';
@@ -249,7 +242,7 @@ const NetworksForm = ({
       errorMessage = t('invalidChainIdTooBig');
     }
 
-    setErrorTo('chainId', {
+    setChainIdError({
       key: errorKey,
       msg: errorMessage,
     });
@@ -310,14 +303,14 @@ const NetworksForm = ({
     }
 
     if (errorKey) {
-      setErrorTo('chainId', {
+      setChainIdError({
         key: errorKey,
         msg: errorMessage,
       });
       return false;
     }
 
-    setErrorEmpty('chainId');
+    setChainIdError({});
     return true;
   };
 
@@ -334,18 +327,18 @@ const NetworksForm = ({
         errorMessage = t('invalidBlockExplorerURL');
       }
 
-      setErrorTo('blockExplorerUrl', {
+      setBlockExplorerUrlError({
         key: errorKey,
         msg: errorMessage,
       });
     } else {
-      setErrorEmpty('blockExplorerUrl');
+      setBlockExplorerUrlError({});
     }
   };
 
   const validateUrlRpcUrl = (url) => {
     const isValidUrl = validUrl.isWebUri(url);
-    const chainIdFetchFailed = hasError('chainId', 'failedToFetchChainId');
+    const chainIdFetchFailed = chainIdError.key === 'failedToFetchChainId';
     const [matchingRPCUrl] = networksToRender.filter((e) => e.rpcUrl === url);
 
     if (!isValidUrl && url !== '') {
@@ -358,19 +351,19 @@ const NetworksForm = ({
         errorKey = 'invalidRPC';
         errorMessage = t('invalidRPC');
       }
-      setErrorTo('rpcUrl', {
+      setRpcUrlError({
         key: errorKey,
         msg: errorMessage,
       });
     } else if (matchingRPCUrl) {
-      setErrorTo('rpcUrl', {
+      setRpcUrlError({
         key: 'urlExistsErrorMsg',
         msg: t('urlExistsErrorMsg', [
           matchingRPCUrl.label ?? matchingRPCUrl.labelKey,
         ]),
       });
     } else {
-      setErrorEmpty('rpcUrl');
+      setRpcUrlError({});
     }
 
     // Re-validate the chain id if it could not be found with previous rpc url
@@ -480,14 +473,13 @@ const NetworksForm = ({
       >
         <FormField
           autoFocus
-          error={errors.networkName?.msg || ''}
           onChange={setNetworkName}
           titleText={t('networkName')}
           value={networkName}
           disabled={viewOnly}
         />
         <FormField
-          error={errors.rpcUrl?.msg || ''}
+          error={rpcUrlError?.msg || ''}
           onChange={(value) => {
             setRpcUrl(value);
             validateUrlRpcUrl(value);
@@ -497,7 +489,7 @@ const NetworksForm = ({
           disabled={viewOnly}
         />
         <FormField
-          error={errors.chainId?.msg || ''}
+          error={chainIdError?.msg || ''}
           onChange={(value) => {
             setChainId(value);
             validateChainIdOnChange(value);
@@ -508,7 +500,6 @@ const NetworksForm = ({
           tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
         />
         <FormField
-          error={errors.ticker?.msg || ''}
           onChange={setTicker}
           titleText={t('currencySymbol')}
           titleUnit={t('optionalWithParanthesis')}
@@ -516,7 +507,7 @@ const NetworksForm = ({
           disabled={viewOnly}
         />
         <FormField
-          error={errors.blockExplorerUrl?.msg || ''}
+          error={blockExplorerUrlError?.msg || ''}
           onChange={(value) => {
             setBlockExplorerUrl(value);
             validateBlockExplorerURL(value);
