@@ -8,15 +8,52 @@ import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
 export default function ConfirmAddSuggestedToken(props) {
   const {
-    history,
-    acceptWatchAsset,
-    rejectWatchAsset,
-    mostRecentOverviewPage,
     suggestedAssets,
     tokens,
+    rejectWatchAsset,
+    history,
+    mostRecentOverviewPage,
+    acceptWatchAsset,
   } = props;
 
   const t = useContext(I18nContext);
+
+  const hasTokenDuplicates = checkTokenDuplicates(suggestedAssets, tokens);
+  const reusesName = checkNameReuse(suggestedAssets, tokens);
+
+  /**
+   * Returns true if any suggestedAssets both:
+   * - Share a symbol with an existing `tokens` member.
+   * - Does not share an address with that same `tokens` member.
+   * This should be flagged as possibly deceptive or confusing.
+   */
+  function checkNameReuse() {
+    const duplicates = suggestedAssets.filter(({ asset }) => {
+      const dupes = tokens.filter(
+        (old) =>
+          old.symbol === asset.symbol &&
+          !isEqualCaseInsensitive(old.address, asset.address),
+      );
+      return dupes.length > 0;
+    });
+    return duplicates.length > 0;
+  }
+
+  function checkTokenDuplicates() {
+    const pending = suggestedAssets.map(({ asset }) =>
+      asset.address.toUpperCase(),
+    );
+    const existing = tokens.map((token) => token.address.toUpperCase());
+    const dupes = pending.filter((proposed) => {
+      return existing.includes(proposed);
+    });
+
+    return dupes.length > 0;
+  }
+
+  function getTokenName(name, symbol) {
+    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
+  }
 
   function _checksuggestedAssets() {
     if (suggestedAssets.length > 0) {
@@ -29,13 +66,6 @@ export default function ConfirmAddSuggestedToken(props) {
   useEffect(() => {
     _checksuggestedAssets();
   });
-
-  function getTokenName(name, symbol) {
-    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
-  }
-
-  const hasTokenDuplicates = checkTokenDuplicates(suggestedAssets, tokens);
-  const reusesName = checkNameReuse(suggestedAssets, tokens);
 
   return (
     <div className="page-container">
@@ -133,40 +163,6 @@ export default function ConfirmAddSuggestedToken(props) {
       </div>
     </div>
   );
-
-  function checkTokenDuplicates() {
-    const pending = suggestedAssets.map(({ asset }) =>
-      asset.address.toUpperCase(),
-    );
-    const existing = tokens.map((token) => token.address.toUpperCase());
-    const dupes = pending.filter((proposed) => {
-      return existing.includes(proposed);
-    });
-
-    return dupes.length > 0;
-  }
-
-  /**
-   * @FIXME only keeping these functions below the return method to keep commit cleaner.
-   * Fixing in next commit.
-   */
-  /**
-   * Returns true if any suggestedAssets both:
-   * - Share a symbol with an existing `tokens` member.
-   * - Does not share an address with that same `tokens` member.
-   * This should be flagged as possibly deceptive or confusing.
-   */
-  function checkNameReuse() {
-    const duplicates = suggestedAssets.filter(({ asset }) => {
-      const dupes = tokens.filter(
-        (old) =>
-          old.symbol === asset.symbol &&
-          !isEqualCaseInsensitive(old.address, asset.address),
-      );
-      return dupes.length > 0;
-    });
-    return duplicates.length > 0;
-  }
 }
 
 ConfirmAddSuggestedToken.propTypes = {
