@@ -1,5 +1,5 @@
 .network-statistics {
-  margin: 24px 0 12px;
+  margin: 24px 12px 12px;
 
   &__info {
     border-top: 1px solid var(--ui-2);
@@ -21,10 +21,6 @@
       justify-content: center;
       width: 30%;
 
-      &--priority-fee {
-        width: 40%;
-      }
-
       &-data {
         color: var(--ui-4);
         font-size: 12px;
@@ -37,6 +33,10 @@
         font-weight: bold;
         margin-top: 4px;
       }
+    }
+
+    .latest-priority-fee-field {
+      width: 40%;
     }
   }
 

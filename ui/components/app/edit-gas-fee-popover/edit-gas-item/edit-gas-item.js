@@ -121,7 +121,11 @@ const EditGasItem = ({ priorityLevel }) => {
       >
         {hexMaximumTransactionFee ? (
           <div className="edit-gas-item__maxfee">
-            <LoadingHeartBeat />
+            <LoadingHeartBeat
+              backgroundColor={
+                priorityLevel === estimateUsed ? '#f2f3f4' : '#fff'
+              }
+            />
             <UserPreferencedCurrencyDisplay
               key="editGasSubTextFeeAmount"
               type={PRIMARY}
