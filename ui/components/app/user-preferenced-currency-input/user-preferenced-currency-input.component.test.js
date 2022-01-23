@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import CurrencyInput from '../../ui/currency-input';
+import CurrencyInput from '../currency-input';
 import UserPreferencedCurrencyInput from './user-preferenced-currency-input.component';
 
 describe('UserPreferencedCurrencyInput Component', () => {
