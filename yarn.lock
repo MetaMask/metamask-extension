@@ -2844,10 +2844,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/slip44/-/slip44-2.0.0.tgz#1b646a1418af341d5ea979c28015a817ff23af33"
   integrity sha512-eRomm783ti/1b/TlNnlTCUkYRuTaMYkeTAG0z2rt/WyT8UzxY+8+v/kbl9vk5qhDHeclzBrd9gbqLnLU1kh+Ow==
 
-"@metamask/snap-controllers@^0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.8.0.tgz#ba388f12bdd9f7e5572ca69aa4982d865f9c5a54"
-  integrity sha512-uvmPVKsOz8+/6I9AGxjoVQ0Q7mc3daWDS2znBCaEzzjsfT2j6cRFUjLK29yr6XFLv+0NGjK3S0JHBxk6q3B3nA==
+"@metamask/snap-controllers@^0.8.0", "@metamask/snap-controllers@^0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@metamask/snap-controllers/-/snap-controllers-0.8.1.tgz#52a9dfc045c781d85bfc3fd9ed20986e035631cb"
+  integrity sha512-AgGTyiVPa8RkWnEXVeG2n8qjPd6ZixOuwb8xUnkTu++TaChQA7daMUpqW//mRHHk5tkcgH5ePiQkD9NmflDmXQ==
   dependencies:
     "@metamask/controllers" "^17.0.0"
     "@metamask/object-multiplex" "^1.1.0"

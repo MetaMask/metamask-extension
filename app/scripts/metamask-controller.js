@@ -924,41 +924,50 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
    * Constructor helper for getting Snap permission specifications.
-   * Exists primarily to get around the circular dependencies between the Snap
-   * and Permission controllers during initialization.
    */
   getSnapPermissionSpecifications() {
-    // TODO:flask Probably find a better solution?
-    // We create these wrapper functions to reference the SnapController in
-    // restricted method hooks before it's actually initialized.
-    const _addSnap = (...args) => this.snapController.add(...args);
-    const _getSnap = (...args) => this.snapController.get(...args);
-    const _getSnapRpcHandler = (...args) =>
-      this.snapController.getRpcMessageHandler(...args);
-    // TODO:flask Fix in skunkworks (probably?)
-    const _getSnapState = async (...args) => {
-      const result = await this.snapController.getSnapState(...args);
-      return result ?? null;
-    };
-    const _updateSnapState = (...args) =>
-      this.snapController.updateSnapState(...args);
-
     return {
       ...buildSnapEndowmentSpecifications(),
       ...buildSnapRestrictedMethodSpecifications({
-        addSnap: _addSnap,
-        clearSnapState: (fromSubject) => _updateSnapState(fromSubject, {}),
+        addSnap: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:add',
+        ),
+        clearSnapState: (fromSubject) =>
+          this.controllerMessenger(
+            'SnapController:updateSnap',
+            fromSubject,
+            {},
+          ),
         getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
-        getSnap: _getSnap,
-        getSnapRpcHandler: _getSnapRpcHandler,
-        getSnapState: _getSnapState,
+        getSnap: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:get',
+        ),
+        getSnapRpcHandler: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getRpcMessageHandler',
+        ),
+        getSnapState: async (...args) => {
+          // TODO:flask Just return the action result directly in the next
+          // @metamask/snap-controllers update.
+          return (
+            (await this.controllerMessenger.call(
+              'SnapController:getSnapState',
+              ...args,
+            )) ?? null
+          );
+        },
         showConfirmation: (origin, confirmationData) =>
           this.approvalController.addAndShowApprovalRequest({
             origin,
             type: MESSAGE_TYPE.SNAP_CONFIRM,
             requestData: confirmationData,
           }),
-        updateSnapState: _updateSnapState,
+        updateSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:updateSnapState',
+        ),
       }),
     };
   }

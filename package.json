@@ -119,7 +119,7 @@
     "@metamask/providers": "^8.1.1",
     "@metamask/rpc-methods": "^0.8.0",
     "@metamask/slip44": "^2.0.0",
-    "@metamask/snap-controllers": "^0.8.0",
+    "@metamask/snap-controllers": "^0.8.1",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "^1.6.2",
