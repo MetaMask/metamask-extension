@@ -2360,12 +2360,18 @@ export default class MetamaskController extends EventEmitter {
 
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   /**
-   * TODO:snaps verify safety of using keyringController.getAccounts
+   * Gets an "app key" corresponding to an Ethereum address. An app key is more
+   * or less an addrdess hashed together with some string, in this case a
+   * subject identifier / origin.
    *
-   * @param domain
-   * @param requestedAccount
+   * @todo Figure out a way to derive app keys that doesn't depend on the user's
+   * Ethereum addresses.
+   * @param {string} subject - The identifier of the subject whose app key to
+   * retrieve.
+   * @param {string} [requestedAccount] - The account whose app key to retrieve.
+   * The first account in the keyring will be used by default.
    */
-  async getAppKeyForDomain(domain, requestedAccount) {
+  async getAppKeyForSubject(subject, requestedAccount) {
     let account;
 
     if (requestedAccount) {
@@ -2374,7 +2380,7 @@ export default class MetamaskController extends EventEmitter {
       account = (await this.keyringController.getAccounts())[0];
     }
 
-    return this.keyringController.exportAppKeyForAddress(account, domain);
+    return this.keyringController.exportAppKeyForAddress(account, subject);
   }
   ///: END:ONLY_INCLUDE_IN
 
@@ -3196,7 +3202,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     engine.push(
       createSnapMethodMiddleware(subjectType === SUBJECT_TYPES.SNAP, {
-        getAppKey: this.getAppKeyForDomain.bind(this, origin),
+        getAppKey: this.getAppKeyForSubject.bind(this, origin),
         getSnaps: this.snapController.getPermittedSnaps.bind(
           this.snapController,
           origin,
