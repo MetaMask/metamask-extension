@@ -1559,10 +1559,6 @@ export default class TransactionController extends EventEmitter {
       ...extraParams,
     };
 
-    console.log('properties, sensitiveProperties = ', {
-      properties,
-      sensitiveProperties,
-    });
     return { properties, sensitiveProperties };
   }
 
