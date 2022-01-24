@@ -7,6 +7,9 @@ import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
+function getTokenName(name, symbol) {
+  return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
+}
 export default function ConfirmAddSuggestedToken(props) {
   const {
     acceptWatchAsset,
@@ -19,9 +22,6 @@ export default function ConfirmAddSuggestedToken(props) {
 
   const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
-
-  const hasTokenDuplicates = checkTokenDuplicates(suggestedAssets, tokens);
-  const reusesName = checkNameReuse(suggestedAssets, tokens);
 
   const tokenAddedEvent = (asset) => {
     metricsEvent({
@@ -43,7 +43,7 @@ export default function ConfirmAddSuggestedToken(props) {
    * - Does not share an address with that same `tokens` member.
    * This should be flagged as possibly deceptive or confusing.
    */
-  function checkNameReuse() {
+  const checkNameReuse = () => {
     const duplicates = suggestedAssets.filter(({ asset }) => {
       const dupes = tokens.filter(
         (old) =>
@@ -53,9 +53,9 @@ export default function ConfirmAddSuggestedToken(props) {
       return dupes.length > 0;
     });
     return duplicates.length > 0;
-  }
+  };
 
-  function checkTokenDuplicates() {
+  const checkTokenDuplicates = () => {
     const pending = suggestedAssets.map(({ asset }) =>
       asset.address.toUpperCase(),
     );
@@ -65,11 +65,10 @@ export default function ConfirmAddSuggestedToken(props) {
     });
 
     return dupes.length > 0;
-  }
+  };
 
-  function getTokenName(name, symbol) {
-    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
-  }
+  const hasTokenDuplicates = checkTokenDuplicates();
+  const reusesName = checkNameReuse();
 
   useEffect(() => {
     if (!suggestedAssets.length) {
