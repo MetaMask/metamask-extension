@@ -543,6 +543,12 @@ export default class TransactionController extends EventEmitter {
       txMeta.txParams.gas = defaultGasLimit;
       txMeta.originalGasEstimate = defaultGasLimit;
     }
+    txMeta.defaultGasEstimates = {
+      gas: txMeta.txParams.gas,
+      gasPrice: txMeta.txParams.gasPrice,
+      maxFeePerGas: txMeta.txParams.maxFeePerGas,
+      maxPriorityFeePerGas: txMeta.txParams.maxPriorityFeePerGas,
+    };
     return txMeta;
   }
 
@@ -1489,6 +1495,7 @@ export default class TransactionController extends EventEmitter {
         estimateSuggested,
         estimateUsed,
       },
+      defaultGasEstimates,
       metamaskNetworkId: network,
     } = txMeta;
     const source = referrer === 'metamask' ? 'user' : 'dapp';
@@ -1500,6 +1507,12 @@ export default class TransactionController extends EventEmitter {
       gasParams.max_priority_fee_per_gas = maxPriorityFeePerGas;
     } else {
       gasParams.gas_price = gasPrice;
+    }
+
+    if (defaultGasEstimates) {
+      gasParams.defaultGasEstimates = this._getGasValuesInGWEI(
+        defaultGasEstimates,
+      );
     }
 
     if (estimateSuggested) {
