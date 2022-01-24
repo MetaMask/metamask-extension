@@ -1137,12 +1137,12 @@ export default class TransactionController extends EventEmitter {
    *  fragment for
    * @param {valueOf<TRANSACTION_EVENTS>} event - event type to create
    */
-  createTransactionEventFragment(transactionId, event) {
+  async createTransactionEventFragment(transactionId, event) {
     const txMeta = this.txStateManager.getTransaction(transactionId);
     const {
       properties,
       sensitiveProperties,
-    } = this._buildEventFragmentProperties(txMeta);
+    } = await this._buildEventFragmentProperties(txMeta);
     this._createTransactionEventFragment(
       txMeta,
       event,
@@ -1513,16 +1513,14 @@ export default class TransactionController extends EventEmitter {
     if (defaultGasEstimates) {
       const estimateType = defaultGasEstimates.defaultEstimate;
       const { gasFeeEstimates } = await this._getEIP1559GasFeeEstimates();
-      gasParams.default_gas_estimates = this._getGasValuesInGWEI({
-        gas: txMeta.defaultGasEstimates.gas,
-        gas_price: txMeta.defaultGasEstimates.gasPrice,
-        max_fee_per_gas:
-          gasFeeEstimates[estimateType]?.suggestedMaxFeePerGas ||
-          txMeta.defaultGasEstimates.maxFeePerGas,
-        max_priority_fee_per_gas:
-          gasFeeEstimates[estimateType]?.suggestedMaxPriorityFeePerGas ||
-          txMeta.defaultGasEstimates.maxPriorityFeePerGas,
-      });
+      gasParams.gas = txMeta.defaultGasEstimates.gas;
+      gasParams.gas_price = txMeta.defaultGasEstimates.gasPrice;
+      gasParams.max_fee_per_gas =
+        gasFeeEstimates[estimateType]?.suggestedMaxFeePerGas ||
+        txMeta.defaultGasEstimates.maxFeePerGas;
+      gasParams.max_priority_fee_per_gas =
+        gasFeeEstimates[estimateType]?.suggestedMaxPriorityFeePerGas ||
+        txMeta.defaultGasEstimates.maxPriorityFeePerGas;
     }
 
     if (estimateSuggested) {
@@ -1535,7 +1533,7 @@ export default class TransactionController extends EventEmitter {
 
     const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
 
-    let eip1559Version = 'null';
+    let eip1559Version = '0';
     if (txMeta.txParams.maxFeePerGas) {
       const { eip1559V2Enabled } = this.preferencesStore.getState();
       eip1559Version = eip1559V2Enabled ? '2' : '1';
@@ -1561,6 +1559,10 @@ export default class TransactionController extends EventEmitter {
       ...extraParams,
     };
 
+    console.log('properties, sensitiveProperties = ', {
+      properties,
+      sensitiveProperties,
+    });
     return { properties, sensitiveProperties };
   }
 
