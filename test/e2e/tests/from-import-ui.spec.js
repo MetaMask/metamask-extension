@@ -77,7 +77,7 @@ describe('Metamask Import UI', function () {
 
           // Import Secret Recovery Phrase
           await driver.fill(
-            'input[placeholder="Paste Secret Recovery Phrase from clipboard"]',
+            'input[placeholder="Enter your Secret Recovery Phrase"]',
             testSeedPhrase,
           );
 
