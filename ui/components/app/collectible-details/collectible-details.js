@@ -278,7 +278,7 @@ export default function CollectibleDetails({ collectible }) {
             <Box
               display={DISPLAY.FLEX}
               flexDirection={FLEX_DIRECTION.ROW}
-              width={BLOCK_SIZES.FULL}
+              className="collectible-details__contract-wrapper"
             >
               <Typography
                 color={COLORS.PRIMARY1}
@@ -305,16 +305,18 @@ export default function CollectibleDetails({ collectible }) {
                   {inPopUp ? shortenAddress(address) : address}
                 </a>
               </Typography>
-              <Button
+              <div
+                className="collectible-details__contract-copy-button"
                 onClick={() => {
                   handleCopy(address);
                 }}
-                icon={copied ? null : <Copy size={20} color="#6a737d" />}
-                className="collectible-details__contract-copy-button"
-                type="link"
               >
-                {copied ? t('copiedExclamation') : null}
-              </Button>
+                {copied ? (
+                  t('copiedExclamation')
+                ) : (
+                  <Copy size={15} color="#6a737d" />
+                )}
+              </div>
             </Box>
           </Box>
           {inPopUp ? renderSendButton() : null}
