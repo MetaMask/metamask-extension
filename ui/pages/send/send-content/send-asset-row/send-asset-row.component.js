@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SendRowWrapper from '../send-row-wrapper';
 import Identicon from '../../../../components/ui/identicon';
 import TokenBalance from '../../../../components/ui/token-balance';
-import TokenListDisplay from '../../../../components/ui/token-list-display';
+import TokenListDisplay from '../../../../components/app/token-list-display';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import { ERC20, PRIMARY } from '../../../../helpers/constants/common';
 import { ASSET_TYPES } from '../../../../ducks/send';
@@ -162,7 +162,6 @@ export default class SendAssetRow extends Component {
           />
           <div className="send-v2__asset-dropdown__list">
             {this.renderNativeCurrency(true)}
-
             <TokenListDisplay
               clickHandler={(token) =>
                 this.selectToken(ASSET_TYPES.TOKEN, token)
