@@ -281,11 +281,6 @@ export function stripHttpsSchemeWithoutPort(urlString) {
   return stripHttpsScheme(urlString);
 }
 
-export function shortenURL(urlString) {
-  const { protocol, host, pathname } = new URL(urlString);
-  return `${protocol}${host}${pathname.substr(0, 6)}`;
-}
-
 /**
  * Checks whether a URL-like value (object or string) is an extension URL.
  *

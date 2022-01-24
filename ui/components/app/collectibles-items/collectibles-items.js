@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
@@ -35,7 +35,6 @@ export default function CollectiblesItems({
   collections = {},
   previouslyOwnedCollection = {},
 }) {
-  const dispatch = useDispatch();
   const collectionsKeys = Object.keys(collections);
   const collectiblesDropdownState = useSelector(getCollectiblesDropdownState);
   const previousCollectionKeys = usePrevious(collectionsKeys);
@@ -49,14 +48,9 @@ export default function CollectiblesItems({
       collectionsKeys.forEach((key) => {
         initState[key] = true;
       });
-      dispatch(updateCollectibleDropDownState(initState));
+      updateCollectibleDropDownState(initState);
     }
-  }, [
-    collectionsKeys,
-    previousCollectionKeys,
-    collectiblesDropdownState,
-    dispatch,
-  ]);
+  }, [collectionsKeys, previousCollectionKeys, collectiblesDropdownState]);
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const history = useHistory();
@@ -100,12 +94,10 @@ export default function CollectiblesItems({
       <div className="collectibles-items__collection" key={`collection-${key}`}>
         <div
           onClick={() => {
-            dispatch(
-              updateCollectibleDropDownState({
-                ...collectiblesDropdownState,
-                [key]: !isExpanded,
-              }),
-            );
+            updateCollectibleDropDownState({
+              ...collectiblesDropdownState,
+              [key]: !isExpanded,
+            });
           }}
         >
           <Box

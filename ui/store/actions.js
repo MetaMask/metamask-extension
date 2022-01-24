@@ -1830,9 +1830,7 @@ export function hideAlert() {
 }
 
 export function updateCollectibleDropDownState(value) {
-  return async () => {
-    await promisifiedBackground.updateCollectibleDropDownState(value);
-  };
+  promisifiedBackground.updateCollectibleDropDownState(value);
 }
 
 /**
