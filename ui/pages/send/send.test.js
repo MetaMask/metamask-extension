@@ -79,6 +79,25 @@ const baseStore = {
       '0x0': { balance: '0x0', address: '0x0' },
     },
     identities: { '0x0': { address: '0x0' } },
+    tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
+    tokenList: {
+      '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {
+        name: 'BitBase',
+        symbol: 'BTBS',
+        decimals: 18,
+        address: '0x32E6C34Cd57087aBBD59B5A4AECC4cB495924356',
+        iconUrl: 'BTBS.svg',
+        occurrences: null,
+      },
+      '0x3fa400483487a489ec9b1db29c4129063eec4654': {
+        name: 'Cryptokek.com',
+        symbol: 'KEK',
+        decimals: 18,
+        address: '0x3fa400483487A489EC9b1dB29C4129063EEC4654',
+        iconUrl: 'cryptokek.svg',
+        occurrences: null,
+      },
+    },
   },
   appState: {
     sendInputCurrencySwitched: false,

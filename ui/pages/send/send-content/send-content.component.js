@@ -10,7 +10,7 @@ import {
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
 import { ASSET_TYPES } from '../../../ducks/send';
-import { getSymbolAndDecimals } from '../../../helpers/utils/token-util';
+import { getTokenMetadata } from '../../../helpers/utils/token-util';
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
@@ -44,6 +44,16 @@ export default class SendContent extends Component {
     tokenAddressList: PropTypes.object,
   };
 
+  componentDidMount() {
+    this.checkContractAddress();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.recipient !== this.props.recipient) {
+      this.checkContractAddress();
+    }
+  }
+
   render() {
     const {
       warning,
@@ -70,10 +80,6 @@ export default class SendContent extends Component {
       asset.type !== ASSET_TYPES.TOKEN &&
       asset.type !== ASSET_TYPES.COLLECTIBLE;
 
-    if (!this.state.isKnownContractAddress) {
-      this.checkContractAddress();
-    }
-
     return (
       <PageContainerContent>
         <div className="send-v2__form">
@@ -94,19 +100,15 @@ export default class SendContent extends Component {
     );
   }
 
-  checkContractAddress = async () => {
+  checkContractAddress = () => {
     const { recipient, tokenAddressList } = this.props;
 
-    const symbolAndDecimals = await getSymbolAndDecimals(
+    const tokenMetadata = getTokenMetadata(
       recipient.userInput,
       tokenAddressList,
     );
 
-    if (
-      (symbolAndDecimals.symbol !== undefined ||
-        symbolAndDecimals.decimals !== undefined) &&
-      symbolAndDecimals.symbol !== ''
-    ) {
+    if (tokenMetadata?.symbol !== undefined && tokenMetadata?.symbol !== '') {
       this.setState({ isKnownContractAddress: true });
     }
   };

@@ -40,7 +40,7 @@ async function getDecimalsFromContract(tokenAddress) {
   }
 }
 
-function getTokenMetadata(tokenAddress, tokenList) {
+export function getTokenMetadata(tokenAddress, tokenList) {
   const casedTokenList = Object.keys(tokenList).reduce((acc, base) => {
     return {
       ...acc,
