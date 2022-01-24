@@ -390,11 +390,7 @@ export default function ViewQuote() {
     nativeCurrencySymbol,
   });
 
-  let {
-    feeInFiat: maxFeeInFiat,
-    feeInEth: maxFeeInEth,
-    nonGasFee,
-  } = getRenderableNetworkFeesForQuote({
+  const renderableMaxFees = getRenderableNetworkFeesForQuote({
     tradeGas: maxGasLimit,
     approveGas,
     gasPrice: maxFeePerGas || gasPrice,
@@ -406,6 +402,8 @@ export default function ViewQuote() {
     chainId,
     nativeCurrencySymbol,
   });
+  let { feeInFiat: maxFeeInFiat, feeInEth: maxFeeInEth } = renderableMaxFees;
+  const { nonGasFee } = renderableMaxFees;
 
   if (
     currentSmartTransactionsEnabled &&
