@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Button from '../../ui/button';
 import SiteIcon from '../../ui/site-icon';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 
@@ -39,12 +40,13 @@ export default class ConnectedSitesList extends Component {
                 {this.getSubjectDisplayName(subject)}
               </span>
             </div>
-            <div
-              className="connected-sites-list__disconnect"
+            <Button
+              className="connected-sites-list__content-row-link-button"
               onClick={() => onDisconnect(subject.origin)}
+              type="link"
             >
               {t('disconnect')}
-            </div>
+            </Button>
           </div>
         ))}
       </main>
