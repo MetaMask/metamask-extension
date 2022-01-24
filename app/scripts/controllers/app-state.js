@@ -36,6 +36,7 @@ export default class AppStateController extends EventEmitter {
       trezorModel: null,
       ...initState,
       qrHardware: {},
+      collectiblesDropdownState: {},
     });
     this.timer = null;
 
@@ -282,4 +283,16 @@ export default class AppStateController extends EventEmitter {
       enableEIP1559V2NoticeDismissed,
     });
   }
+
+    /**
+   * A setter for the `collectiblesDropdownState` property
+   *
+   * @param collectiblesDropdownState
+   */
+     updateCollectibleDropDownState(collectiblesDropdownState) {
+      this.store.updateState({
+        collectiblesDropdownState,
+      });
+    }
+
 }

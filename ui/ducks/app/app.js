@@ -57,18 +57,11 @@ export default function reduceApp(state = {}, action) {
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
     sendInputCurrencySwitched: false,
-    collectiblesDropdownState: {},
     ...state,
   };
 
   switch (action.type) {
     // dropdown methods
-    case actionConstants.UPDATE_COLLECTIBLES_DROPDOWN_STATE:
-      return {
-        ...appState,
-        collectiblesDropdownState: action.value,
-      };
-
     case actionConstants.NETWORK_DROPDOWN_OPEN:
       return {
         ...appState,
@@ -428,8 +421,4 @@ export function getLedgerTransportStatus(state) {
 
 export function toggleCurrencySwitch(value) {
   return { type: actionConstants.SET_CURRENCY_INPUT_SWITCH, value };
-}
-
-export function getCollectiblesDropdownState(state) {
-  return state.appState.collectiblesDropdownState;
 }

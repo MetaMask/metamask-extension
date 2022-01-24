@@ -19,10 +19,10 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getIpfsGateway } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
-import { getCollectiblesDropdownState } from '../../../ducks/app/app';
 import { updateCollectibleDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import Card from '../../ui/card';
+import { getCollectiblesDropdownState } from '../../../ducks/metamask/metamask';
 
 const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -35,6 +35,7 @@ export default function CollectiblesItems({
   collections = {},
   previouslyOwnedCollection = {},
 }) {
+
   const dispatch = useDispatch();
   const collectionsKeys = Object.keys(collections);
   const collectiblesDropdownState = useSelector(getCollectiblesDropdownState);

@@ -264,6 +264,10 @@ export function getCollectiblesDetectionNoticeDismissed(state) {
   return state.metamask.collectiblesDetectionNoticeDismissed;
 }
 
+export function getCollectiblesDropdownState(state) {
+  return state.metamask.collectiblesDropdownState;
+}
+
 export function getEnableEIP1559V2NoticeDismissed(state) {
   return state.metamask.enableEIP1559V2NoticeDismissed;
 }

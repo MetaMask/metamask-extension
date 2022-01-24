@@ -1830,9 +1830,8 @@ export function hideAlert() {
 }
 
 export function updateCollectibleDropDownState(value) {
-  return {
-    type: actionConstants.UPDATE_COLLECTIBLES_DROPDOWN_STATE,
-    value,
+  return async () => {
+    await promisifiedBackground.updateCollectibleDropDownState(value);
   };
 }
 
