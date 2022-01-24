@@ -49,12 +49,10 @@ const BaseFeeInput = () => {
 
   const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
   const {
-    initialGasValues,
     maxPriorityFeePerGas,
     setErrorValue,
     setMaxFeePerGas,
     setMaxBaseFee,
-    updateInitialGasValue,
   } = useAdvancedGasFeePopoverContext();
 
   const {
@@ -89,13 +87,6 @@ const BaseFeeInput = () => {
     },
     [setBaseFee],
   );
-
-  useEffect(() => {
-    if (!initialGasValues.maxFeePerGas) {
-      updateInitialGasValue({ maxFeePerGas: baseFee });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     setMaxFeePerGas(baseFee);

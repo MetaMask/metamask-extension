@@ -1046,10 +1046,7 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     return (
-      <TransactionModalContextProvider
-        actionKey={actionKey}
-        methodData={methodData}
-      >
+      <TransactionModalContextProvider>
         <ConfirmPageContainer
           fromName={fromName}
           fromAddress={fromAddress}

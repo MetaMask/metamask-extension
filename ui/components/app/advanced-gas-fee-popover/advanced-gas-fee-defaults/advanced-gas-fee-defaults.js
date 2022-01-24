@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
@@ -12,7 +13,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
-import { useTransactionMetrics } from '../../../../hooks/useTransactionMetrics';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -26,7 +26,7 @@ const AdvancedGasFeeDefaults = () => {
     maxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-  const { captureTransactionMetricsForEIP1559V2 } = useTransactionMetrics();
+  const metricsEvent = useContext(MetaMetricsContext);
 
   const [isDefaultSettingsSelected, setDefaultSettingsSelected] = useState(
     Boolean(advancedGasFeeValues) &&
@@ -43,23 +43,28 @@ const AdvancedGasFeeDefaults = () => {
   }, [advancedGasFeeValues, maxBaseFee, maxPriorityFeePerGas]);
 
   const handleUpdateDefaultSettings = () => {
+    let defaults;
     if (isDefaultSettingsSelected) {
-      dispatch(setAdvancedGasFee(null));
+      defaults = null;
       setDefaultSettingsSelected(false);
     } else {
-      const defaults = {
+      defaults = {
         maxBaseFee,
         priorityFee: maxPriorityFeePerGas,
       };
-      captureTransactionMetricsForEIP1559V2({
-        action: 'Advanced gas fee modal',
-        name: 'Saved Advanced Defaults',
-        variables: {
-          defaults,
-        },
-      });
       dispatch(setAdvancedGasFee(defaults));
     }
+    metricsEvent({
+      eventOpts: {
+        category: 'Settings',
+        action: 'Saved Advanced Defaults',
+        name: 'Advanced gas fee modal',
+      },
+      customVariables: {
+        defaults,
+      },
+    });
+    dispatch(setAdvancedGasFee(defaults));
   };
 
   return (

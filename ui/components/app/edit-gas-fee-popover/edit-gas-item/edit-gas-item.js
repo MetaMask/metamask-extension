@@ -11,7 +11,7 @@ import { PRIMARY } from '../../../../helpers/constants/common';
 import { toHumanReadableTime } from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTransactionMetrics } from '../../../../hooks/useTransactionMetrics';
+import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import I18nValue from '../../../ui/i18n-value';
 import InfoTooltip from '../../../ui/info-tooltip';
@@ -49,7 +49,7 @@ const EditGasItem = ({ priorityLevel }) => {
     updateTransactionUsingEstimate,
     transaction,
   } = useGasFeeContext();
-  const { captureTransactionMetricsForEIP1559V2 } = useTransactionMetrics();
+  const { captureTransactionEvent } = useTransactionEventFragment();
   const t = useI18nContext();
   const { closeModal, openModal } = useTransactionModalContext();
   const { dappSuggestedGasFees } = transaction;
@@ -74,16 +74,16 @@ const EditGasItem = ({ priorityLevel }) => {
 
   const onOptionSelect = () => {
     if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
-      captureTransactionMetricsForEIP1559V2({
-        action: 'Edit gas fee modal',
-        name: 'Clicked Advanced Options',
+      captureTransactionEvent({
+        action: 'Clicked to Open Advanced Gas Modal',
+        screen: 'Edit gas fee modal',
       });
 
       openModal('advancedGasFee');
     } else {
-      captureTransactionMetricsForEIP1559V2({
-        action: 'Edit gas fee modal',
-        name: 'Gas Fee Changed',
+      captureTransactionEvent({
+        action: 'Transaction Gas Fee Estimate Changed',
+        screen: 'Edit gas fee modal',
         variables: {
           estimateSelected: priorityLevel,
           maxFeePerGas,

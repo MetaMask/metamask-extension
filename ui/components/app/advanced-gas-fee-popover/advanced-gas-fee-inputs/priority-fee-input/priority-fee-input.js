@@ -45,10 +45,8 @@ const PriorityFeeInput = () => {
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const {
-    initialGasValues,
     setErrorValue,
     setMaxPriorityFeePerGas,
-    updateInitialGasValue,
   } = useAdvancedGasFeePopoverContext();
   const {
     estimateUsed,
@@ -98,13 +96,6 @@ const PriorityFeeInput = () => {
     setMaxPriorityFeePerGas,
     setPriorityFeeError,
   ]);
-
-  useEffect(() => {
-    if (!initialGasValues.maxPriorityFeePerGas) {
-      updateInitialGasValue({ maxPriorityFeePerGas: priorityFee });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Box margin={[0, 2]}>

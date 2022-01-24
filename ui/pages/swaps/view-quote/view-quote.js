@@ -695,7 +695,7 @@ export default function ViewQuote() {
       minimumGasLimit={usedGasLimit}
       transaction={transaction}
     >
-      <TransactionModalContextProvider captureEventEnabled={false}>
+      <TransactionModalContextProvider>
         <div className="view-quote">
           <div
             className={classnames('view-quote__content', {

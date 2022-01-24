@@ -9,7 +9,7 @@ import { COLORS, TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useTransactionMetrics } from '../../../hooks/useTransactionMetrics';
+import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 import Typography from '../../ui/typography/typography';
@@ -26,7 +26,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
     supportsEIP1559V2,
     transaction,
   } = useGasFeeContext();
-  const { captureTransactionMetricsForEIP1559V2 } = useTransactionMetrics();
+  const { captureTransactionEvent } = useTransactionEventFragment();
   const { openModal } = useTransactionModalContext();
   const editEnabled =
     !hasSimulationError || userAcknowledgedGasMissing === true;
@@ -49,17 +49,17 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   }
 
   const openEditGasFeeModal = () => {
-    captureTransactionMetricsForEIP1559V2({
-      action: 'Confirm Screen',
-      name: 'Clicked on Edit Gas',
+    captureTransactionEvent({
+      action: 'Clicked to Open Edit Gas Modal',
+      screen: 'Transaction Confirm Screen',
     });
     openModal('editGasFee');
   };
 
   const openAdvanceGasFeeModal = () => {
-    captureTransactionMetricsForEIP1559V2({
-      action: 'Confirm Screen',
-      name: 'Clicked Advanced Options',
+    captureTransactionEvent({
+      action: 'Clicked to Open Advanced Gas Modal',
+      screen: 'Transaction Confirm Screen',
     });
     openModal('advancedGasFee');
   };

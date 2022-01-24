@@ -249,6 +249,10 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  *  ones, are added to the controller state in an unapproved status. When this
  *  happens we fire the Transaction Added event to show that the transaction
  *  has been added to the user's MetaMask.
+ * @property {'Transaction UI Action'} UI_ACTION - When an unapproved transaction
+ *  is in the controller state, MetaMask will render a confirmation screen for
+ *  that transaction. User may do actions on transaction in UI like changing gas
+ *  fee estimate, etc.
  * @property {'Transaction Approved'} APPROVED - When an unapproved transaction
  *  is in the controller state, MetaMask will render a confirmation screen for
  *  that transaction. If the user approves the transaction we fire this event
@@ -285,4 +289,5 @@ export const TRANSACTION_EVENTS = {
   FINALIZED: 'Transaction Finalized',
   REJECTED: 'Transaction Rejected',
   SUBMITTED: 'Transaction Submitted',
+  UI_ACTION: 'Transaction UI Action',
 };
