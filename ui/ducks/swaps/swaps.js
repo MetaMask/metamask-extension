@@ -30,6 +30,7 @@ import {
   updateSmartTransaction,
   setSmartTransactionsRefreshInterval,
   fetchSmartTransactionFees,
+  estimateSmartTransactionsGas,
   cancelSmartTransaction,
 } from '../../store/actions';
 import {
@@ -432,6 +433,10 @@ export const getPendingSmartTransactions = (state) => {
 
 export const getSmartTransactionFees = (state) => {
   return state.metamask.smartTransactionsState?.fees;
+};
+
+export const getSmartTransactionEstimatedGas = (state) => {
+  return state.metamask.smartTransactionsState?.estimatedGas;
 };
 
 export const getSwapsRefreshStates = (state) => {
@@ -1218,6 +1223,25 @@ export function fetchSwapsSmartTransactionFees(unsignedTransaction) {
     }
     try {
       await dispatch(fetchSmartTransactionFees(unsignedTransaction));
+    } catch (e) {
+      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+      }
+    }
+  };
+}
+
+export function estimateSwapsSmartTransactionsGas(unsignedTransaction) {
+  return async (dispatch, getState) => {
+    const {
+      swaps: { isFeatureFlagLoaded, swapsSTXLoading },
+    } = getState();
+    if (swapsSTXLoading) {
+      return;
+    }
+    try {
+      await dispatch(estimateSmartTransactionsGas(unsignedTransaction));
     } catch (e) {
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);

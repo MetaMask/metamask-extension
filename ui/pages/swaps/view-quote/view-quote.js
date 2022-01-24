@@ -39,11 +39,12 @@ import {
   getSmartTransactionFees,
   signAndSendSwapsSmartTransaction,
   getSwapsRefreshStates,
-  fetchSwapsSmartTransactionFees,
   getSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
   getCurrentSmartTransactionsErrorMessageDismissed,
   getSwapsSTXLoading,
+  estimateSwapsSmartTransactionsGas,
+  getSmartTransactionEstimatedGas,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -203,6 +204,9 @@ export default function ViewQuote() {
         currentSmartTransactionsErrorMessageDismissed)
     );
   const smartTransactionFees = useSelector(getSmartTransactionFees);
+  const smartTransactionEstimatedGas = useSelector(
+    getSmartTransactionEstimatedGas,
+  );
   const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   const unsignedTransaction = usedQuote.trade;
 
@@ -217,9 +221,9 @@ export default function ViewQuote() {
         chainId,
       };
       intervalId = setInterval(() => {
-        dispatch(fetchSwapsSmartTransactionFees(unsignedTx));
+        dispatch(estimateSwapsSmartTransactionsGas(unsignedTx));
       }, swapsRefreshRates.stxGetTransactionsRefreshTime);
-      dispatch(fetchSwapsSmartTransactionFees(unsignedTx));
+      dispatch(estimateSwapsSmartTransactionsGas(unsignedTx));
     } else if (intervalId) {
       clearInterval(intervalId);
     }
