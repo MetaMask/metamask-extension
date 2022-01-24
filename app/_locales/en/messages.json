@@ -2202,7 +2202,7 @@
     "message": "Passwords Don't Match"
   },
   "pastePrivateKey": {
-    "message": "Paste your private key string here:",
+    "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
   },
   "pending": {
@@ -2517,7 +2517,7 @@
     "message": "Separate each word with a single space"
   },
   "seedPhrasePlaceholderPaste": {
-    "message": "Paste Secret Recovery Phrase from clipboard"
+    "message": "Enter your Secret Recovery Phrase"
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
