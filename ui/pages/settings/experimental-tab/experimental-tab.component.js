@@ -103,7 +103,12 @@ export default class ExperimentalTab extends PureComponent {
       return null;
     }
     const { t } = this.context;
-    const { openSeaEnabled, setOpenSeaEnabled } = this.props;
+    const {
+      openSeaEnabled,
+      setOpenSeaEnabled,
+      useCollectibleDetection,
+      setUseCollectibleDetection,
+    } = this.props;
 
     return (
       <div className="settings-page__content-row">
@@ -126,6 +131,9 @@ export default class ExperimentalTab extends PureComponent {
                   },
                 });
                 setOpenSeaEnabled(!value);
+                if (!useCollectibleDetection) {
+                  setUseCollectibleDetection(true);
+                }
               }}
               offLabel={t('off')}
               onLabel={t('on')}
