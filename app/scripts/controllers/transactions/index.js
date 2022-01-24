@@ -1513,12 +1513,12 @@ export default class TransactionController extends EventEmitter {
     if (defaultGasEstimates) {
       const estimateType = defaultGasEstimates.defaultEstimate;
       const { gasFeeEstimates } = await this._getEIP1559GasFeeEstimates();
-      gasParams.gas = txMeta.defaultGasEstimates.gas;
-      gasParams.gas_price = txMeta.defaultGasEstimates.gasPrice;
-      gasParams.max_fee_per_gas =
+      gasParams.default_gas = txMeta.defaultGasEstimates.gas;
+      gasParams.default_gas_price = txMeta.defaultGasEstimates.gasPrice;
+      gasParams.default_max_fee_per_gas =
         gasFeeEstimates[estimateType]?.suggestedMaxFeePerGas ||
         txMeta.defaultGasEstimates.maxFeePerGas;
-      gasParams.max_priority_fee_per_gas =
+      gasParams.default_max_priority_fee_per_gas =
         gasFeeEstimates[estimateType]?.suggestedMaxPriorityFeePerGas ||
         txMeta.defaultGasEstimates.maxPriorityFeePerGas;
     }
