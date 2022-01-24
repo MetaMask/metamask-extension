@@ -97,46 +97,47 @@ export default function CollectiblesItems({
 
     const isExpanded = collectiblesDropdownState[key];
     return (
-      <div
-        className="collectibles-items__collection"
-        key={`collection-${key}`}
-        onClick={() => {
-          dispatch(
-            updateCollectibleDropDownState({
-              ...collectiblesDropdownState,
-              [key]: !isExpanded,
-            }),
-          );
-        }}
-      >
-        <Box
-          marginBottom={2}
-          display={DISPLAY.FLEX}
-          alignItems={ALIGN_ITEMS.CENTER}
-          justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-          className="collectibles-items__collection-accordion-title"
+      <div className="collectibles-items__collection" key={`collection-${key}`}>
+        <div
+          onClick={() => {
+            dispatch(
+              updateCollectibleDropDownState({
+                ...collectiblesDropdownState,
+                [key]: !isExpanded,
+              }),
+            );
+          }}
         >
           <Box
+            marginBottom={2}
+            display={DISPLAY.FLEX}
             alignItems={ALIGN_ITEMS.CENTER}
-            className="collectibles-items__collection-header"
+            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            className="collectibles-items__collection-accordion-title"
           >
-            {renderCollectionImage(
-              isPreviouslyOwnedCollection,
-              collectionImage,
-              collectionName,
-            )}
-            <Typography
-              color={COLORS.BLACK}
-              variant={TYPOGRAPHY.H5}
-              margin={[0, 0, 0, 2]}
+            <Box
+              alignItems={ALIGN_ITEMS.CENTER}
+              className="collectibles-items__collection-header"
             >
-              {`${collectionName} (${collectibles.length})`}
-            </Typography>
+              {renderCollectionImage(
+                isPreviouslyOwnedCollection,
+                collectionImage,
+                collectionName,
+              )}
+              <Typography
+                color={COLORS.BLACK}
+                variant={TYPOGRAPHY.H5}
+                margin={[0, 0, 0, 2]}
+              >
+                {`${collectionName} (${collectibles.length})`}
+              </Typography>
+            </Box>
+            <Box alignItems={ALIGN_ITEMS.FLEX_END}>
+              <i className={`fa fa-chevron-${isExpanded ? 'down' : 'right'}`} />
+            </Box>
           </Box>
-          <Box alignItems={ALIGN_ITEMS.FLEX_END}>
-            <i className={`fa fa-chevron-${isExpanded ? 'down' : 'right'}`} />
-          </Box>
-        </Box>
+        </div>
+
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {collectibles.map((collectible, i) => {
