@@ -10,7 +10,7 @@ import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 function getTokenName(name, symbol) {
   return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
 }
-export default function ConfirmAddSuggestedToken(props) {
+const ConfirmAddSuggestedToken = (props) => {
   const {
     acceptWatchAsset,
     history,
@@ -159,7 +159,7 @@ export default function ConfirmAddSuggestedToken(props) {
       </div>
     </div>
   );
-}
+};
 
 ConfirmAddSuggestedToken.propTypes = {
   acceptWatchAsset: PropTypes.func,
@@ -169,3 +169,5 @@ ConfirmAddSuggestedToken.propTypes = {
   suggestedAssets: PropTypes.array,
   tokens: PropTypes.array,
 };
+
+export default ConfirmAddSuggestedToken;
