@@ -1525,12 +1525,15 @@ export default class TransactionController extends EventEmitter {
 
     const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
 
+    const { eip1559V2Enabled: eip1559V2 } = this.preferencesStore.getState();
+
     const properties = {
       chain_id: chainId,
       referrer,
       source,
       network,
       type,
+      eip1559V2,
     };
 
     const sensitiveProperties = {
