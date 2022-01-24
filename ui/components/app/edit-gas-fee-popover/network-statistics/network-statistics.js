@@ -29,18 +29,18 @@ const NetworkStatistics = () => {
       </Typography>
       <div className="network-statistics__info">
         <div className="network-statistics__info__field">
-          <span className="network-statistics__info__field-data">
-            <BaseFeeTooltip>
+          <BaseFeeTooltip>
+            <span className="network-statistics__info__field-data">
               {gasFeeEstimates?.estimatedBaseFee &&
                 `${roundToDecimalPlacesRemovingExtraZeroes(
                   gasFeeEstimates?.estimatedBaseFee,
                   0,
                 )} GWEI`}
-            </BaseFeeTooltip>
-          </span>
-          <span className="network-statistics__info__field-label">
-            <I18nValue messageKey="baseFee" />
-          </span>
+            </span>
+            <span className="network-statistics__info__field-label">
+              <I18nValue messageKey="baseFee" />
+            </span>
+          </BaseFeeTooltip>
         </div>
         <div className="network-statistics__info__separator" />
         <LatestPriorityFeeField />

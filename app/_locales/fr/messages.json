@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "Ajouter un mémo"
   },
-  "addNFT": {
-    "message": "Ajouter un NFT"
-  },
   "addNetwork": {
     "message": "Ajouter un réseau"
   },
@@ -1296,9 +1293,6 @@
   "high": {
     "message": "Agressif"
   },
-  "highGasSettingToolTipDialog": {
-    "message": "Probabilité élevée, même sur des marchés volatils"
-  },
   "highGasSettingToolTipMessage": {
     "message": "Utilisez $1 pour couvrir les envolées du trafic réseau dues à des événements tels que les chutes de NFT populaires.",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
@@ -1308,9 +1302,6 @@
   },
   "history": {
     "message": "Historique"
-  },
-  "id": {
-    "message": "ID"
   },
   "import": {
     "message": "Importer",

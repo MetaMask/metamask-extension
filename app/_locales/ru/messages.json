@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "Добавить примечание"
   },
-  "addNFT": {
-    "message": "Добавить NFT"
-  },
   "addNetwork": {
     "message": "Добавить сеть"
   },
@@ -1296,9 +1293,6 @@
   "high": {
     "message": "Агрессивный"
   },
-  "highGasSettingToolTipDialog": {
-    "message": "Высокая вероятность даже на волатильных рынках"
-  },
   "highGasSettingToolTipMessage": {
     "message": "Используйте $1, чтобы компенсировать скачки сетевого трафика из-за таких событий, как дропы популярных NFT.",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
@@ -1308,9 +1302,6 @@
   },
   "history": {
     "message": "История"
-  },
-  "id": {
-    "message": "Ид."
   },
   "import": {
     "message": "Импорт",

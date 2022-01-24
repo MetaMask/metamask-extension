@@ -19,10 +19,13 @@ describe('UserPreferencedCurrencyInput container', () => {
             useNativeCurrencyAsPrimaryCurrency: true,
           },
         },
+        appState: {
+          sendInputCurrencySwitched: false,
+        },
       };
-
       expect(mapStateToProps(mockState)).toStrictEqual({
         useNativeCurrencyAsPrimaryCurrency: true,
+        sendInputCurrencySwitched: false,
       });
     });
   });

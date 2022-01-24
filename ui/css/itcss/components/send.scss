@@ -203,12 +203,12 @@
   box-shadow: 2px 2px 2px var(--alto);
 }
 
-.customize-gas-tooltip-container input[type="number"]::-webkit-inner-spin-button {
+.customize-gas-tooltip-container input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;
   display: none;
 }
 
-.customize-gas-tooltip-container input[type="number"]:hover::-webkit-inner-spin-button {
+.customize-gas-tooltip-container input[type='number']:hover::-webkit-inner-spin-button {
   -webkit-appearance: none;
   display: none;
 }
@@ -684,10 +684,19 @@
       flex-grow: 1;
     }
 
+    @media screen and (max-width: $break-small) {
+      &__asset-data {
+        width: 60%;
+      }
+    }
+
     &__symbol {
       @include Paragraph;
 
       margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     &__name {
@@ -1061,12 +1070,12 @@
       justify-content: center;
     }
 
-    input[type="number"]::-webkit-inner-spin-button {
+    input[type='number']::-webkit-inner-spin-button {
       -webkit-appearance: none;
       display: none;
     }
 
-    input[type="number"]:hover::-webkit-inner-spin-button {
+    input[type='number']:hover::-webkit-inner-spin-button {
       -webkit-appearance: none;
       display: none;
     }

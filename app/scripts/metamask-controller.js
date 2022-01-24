@@ -220,28 +220,30 @@ export default class MetamaskController extends EventEmitter {
         onNetworkStateChange: this.networkController.store.subscribe.bind(
           this.networkController.store,
         ),
-        getAssetName: this.assetsContractController.getAssetName.bind(
+        getERC721AssetName: this.assetsContractController.getERC721AssetName.bind(
           this.assetsContractController,
         ),
-        getAssetSymbol: this.assetsContractController.getAssetSymbol.bind(
+        getERC721AssetSymbol: this.assetsContractController.getERC721AssetSymbol.bind(
           this.assetsContractController,
         ),
-        getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
+        getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
           this.assetsContractController,
         ),
-        getOwnerOf: this.assetsContractController.getOwnerOf.bind(
+        getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
           this.assetsContractController,
         ),
-        balanceOfERC1155Collectible: this.assetsContractController.balanceOfERC1155Collectible.bind(
+        getERC1155BalanceOf: this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
-        uriERC1155Collectible: this.assetsContractController.uriERC1155Collectible.bind(
+        getERC1155TokenURI: this.assetsContractController.getERC1155TokenURI.bind(
           this.assetsContractController,
         ),
       },
       {},
       initState.CollectiblesController,
     );
+
+    this.collectiblesController.setApiKey(process.env.OPENSEA_KEY);
 
     process.env.COLLECTIBLES_V1 &&
       (this.collectibleDetectionController = new CollectibleDetectionController(
@@ -577,6 +579,18 @@ export default class MetamaskController extends EventEmitter {
       ),
       provider: this.provider,
       blockTracker: this.blockTracker,
+      createEventFragment: this.metaMetricsController.createEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      updateEventFragment: this.metaMetricsController.updateEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      finalizeEventFragment: this.metaMetricsController.finalizeEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      getEventFragmentById: this.metaMetricsController.getEventFragmentById.bind(
+        this.metaMetricsController,
+      ),
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
@@ -636,8 +650,7 @@ export default class MetamaskController extends EventEmitter {
             this.collectiblesController.checkAndUpdateSingleCollectibleOwnershipStatus(
               knownCollectible,
               false,
-              // TODO add this when checkAndUpdateSingleCollectibleOwnershipStatus is updated
-              // { userAddress, chainId },
+              { userAddress, chainId },
             );
           }
         }
@@ -1040,6 +1053,7 @@ export default class MetamaskController extends EventEmitter {
       appStateController,
       collectiblesController,
       collectibleDetectionController,
+      assetsContractController,
       currencyRateController,
       detectTokensController,
       ensController,
@@ -1192,6 +1206,11 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
 
+      // AssetsContractController
+      getTokenStandardAndDetails: assetsContractController.getTokenStandardAndDetails.bind(
+        assetsContractController,
+      ),
+
       // CollectiblesController
       addCollectible: collectiblesController.addCollectible.bind(
         collectiblesController,
@@ -1274,6 +1293,9 @@ export default class MetamaskController extends EventEmitter {
       estimateGas: this.estimateGas.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
       addUnapprovedTransaction: txController.addUnapprovedTransaction.bind(
+        txController,
+      ),
+      createTransactionEventFragment: txController.createTransactionEventFragment.bind(
         txController,
       ),
 

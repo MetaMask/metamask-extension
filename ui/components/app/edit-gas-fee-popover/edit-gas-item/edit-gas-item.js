@@ -98,6 +98,7 @@ const EditGasItem = ({ priorityLevel }) => {
       aria-label={priorityLevel}
       autoFocus={priorityLevel === estimateUsed}
       disabled={estimateGreaterThanGasUse}
+      data-testid={`edit-gas-fee-item-${priorityLevel}`}
     >
       <span className="edit-gas-item__name">
         {icon && (
@@ -120,7 +121,11 @@ const EditGasItem = ({ priorityLevel }) => {
       >
         {hexMaximumTransactionFee ? (
           <div className="edit-gas-item__maxfee">
-            <LoadingHeartBeat />
+            <LoadingHeartBeat
+              backgroundColor={
+                priorityLevel === estimateUsed ? '#f2f3f4' : '#fff'
+              }
+            />
             <UserPreferencedCurrencyDisplay
               key="editGasSubTextFeeAmount"
               type={PRIMARY}

@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "Magdagdag ng memo"
   },
-  "addNFT": {
-    "message": "Magdagdag ng NFT"
-  },
   "addNetwork": {
     "message": "Magdagdag ng Network"
   },
@@ -1296,9 +1293,6 @@
   "high": {
     "message": "Agresibo"
   },
-  "highGasSettingToolTipDialog": {
-    "message": "Mataas na probabilidad, kahit sa mga pabagu-bagong market"
-  },
   "highGasSettingToolTipMessage": {
     "message": "Gamitin ang $1 upang pagtakpan ang mga surge sa network traffic dahil sa mga bagay tulad ng popular na pagbagsak ng NFT.",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
@@ -1308,9 +1302,6 @@
   },
   "history": {
     "message": "History"
-  },
-  "id": {
-    "message": "ID"
   },
   "import": {
     "message": "Mag-import",

@@ -63,8 +63,8 @@ describe('EditGasToolTip', () => {
       ...LOW_GAS_OPTION,
     });
 
-    expect(queryByText('2.010203381')).toBeInTheDocument();
-    expect(queryByText('1.20004164')).toBeInTheDocument();
+    expect(queryByText('2.0102')).toBeInTheDocument();
+    expect(queryByText('1.2')).toBeInTheDocument();
     expect(queryByText('21000')).toBeInTheDocument();
   });
 
@@ -73,7 +73,7 @@ describe('EditGasToolTip', () => {
       priorityLevel: 'medium',
       ...MEDIUM_GAS_OPTION,
     });
-    expect(queryByText('2.383812808')).toBeInTheDocument();
+    expect(queryByText('2.3838')).toBeInTheDocument();
     expect(queryByText('1.5')).toBeInTheDocument();
     expect(queryByText('21000')).toBeInTheDocument();
   });
@@ -83,7 +83,7 @@ describe('EditGasToolTip', () => {
       priorityLevel: 'high',
       ...HIGH_GAS_OPTION,
     });
-    expect(queryByText('2.920638342')).toBeInTheDocument();
+    expect(queryByText('2.9206')).toBeInTheDocument();
     expect(queryByText('2')).toBeInTheDocument();
     expect(queryByText('21000')).toBeInTheDocument();
   });

@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "मेमो जोड़ें"
   },
-  "addNFT": {
-    "message": "NFT जोड़ें"
-  },
   "addNetwork": {
     "message": "नेटवर्क जोड़ें"
   },
@@ -1296,9 +1293,6 @@
   "high": {
     "message": "आक्रामक"
   },
-  "highGasSettingToolTipDialog": {
-    "message": "उच्च संभावना, अस्थिर बाजारों में भी"
-  },
   "highGasSettingToolTipMessage": {
     "message": "लोकप्रिय NFT ड्रॉप जैसी चीज़ों की वजह से नेटवर्क ट्रैफिक में वृद्धि को कवर करने के लिए $1 का उपयोग करें।",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
@@ -1308,9 +1302,6 @@
   },
   "history": {
     "message": "इतिहास"
-  },
-  "id": {
-    "message": "ID"
   },
   "import": {
     "message": "आयात करें",
