@@ -1757,11 +1757,6 @@ export default class TransactionController extends EventEmitter {
         this.updateEventFragment(id, { properties, sensitiveProperties });
         this.finalizeEventFragment(`transaction-submitted-${txMeta.id}`);
         break;
-      case TRANSACTION_EVENTS.UI_ACTION:
-        id = `transaction-ui_action-${txMeta.id}`;
-        this.updateEventFragment(id, { properties, sensitiveProperties });
-        this.finalizeEventFragment(`transaction-ui_action-${txMeta.id}`);
-        break;
       default:
         break;
     }
