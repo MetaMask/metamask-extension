@@ -492,21 +492,21 @@ export async function fetchSwapsGasPrices(chainId) {
   };
 }
 
-export const getEstimatedFeeForSmartTransaction = ({
+export const getFeeForSmartTransaction = ({
   chainId,
   currentCurrency,
   conversionRate,
   nativeCurrencySymbol,
-  estimatedFeeInWeiDec,
+  feeInWeiDec,
 }) => {
-  const estimatedFeeInWeiHex = decimalToHex(estimatedFeeInWeiDec);
+  const feeInWeiHex = decimalToHex(feeInWeiDec);
   const ethFee = getValueFromWeiHex({
-    value: estimatedFeeInWeiHex,
+    value: feeInWeiHex,
     toDenomination: 'ETH',
     numberOfDecimals: 5,
   });
   const rawNetworkFees = getValueFromWeiHex({
-    value: estimatedFeeInWeiHex,
+    value: feeInWeiHex,
     toCurrency: currentCurrency,
     conversionRate,
     numberOfDecimals: 2,
@@ -630,7 +630,7 @@ export function quotesToRenderableData(
     }));
 
     if (smartTransactionFees) {
-      ({ feeInFiat, feeInEth } = getEstimatedFeeForSmartTransaction({
+      ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
         chainId,
         currentCurrency,
         conversionRate,

@@ -555,7 +555,7 @@ describe('Swaps Util', () => {
     });
   });
 
-  describe('getEstimatedFeeForSmartTransaction', () => {
+  describe('getFeeForSmartTransaction', () => {
     it('returns estimated for for STX', () => {
       // TODO: Implement tests for this function.
       expect(true).toBe(true);

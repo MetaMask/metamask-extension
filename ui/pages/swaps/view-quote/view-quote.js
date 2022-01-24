@@ -103,7 +103,7 @@ import ActionableMessage from '../../../components/ui/actionable-message/actiona
 import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,
-  getEstimatedFeeForSmartTransaction,
+  getFeeForSmartTransaction,
   getHighestStxFee,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
@@ -390,21 +390,7 @@ export default function ViewQuote() {
     nativeCurrencySymbol,
   });
 
-  if (
-    currentSmartTransactionsEnabled &&
-    smartTransactionsOptInStatus &&
-    smartTransactionFees
-  ) {
-    ({ feeInFiat, feeInEth } = getEstimatedFeeForSmartTransaction({
-      chainId,
-      currentCurrency,
-      conversionRate,
-      nativeCurrencySymbol,
-      estimatedFeeInWeiDec: smartTransactionFees.feeEstimate,
-    }));
-  }
-
-  const {
+  let {
     feeInFiat: maxFeeInFiat,
     feeInEth: maxFeeInEth,
     nonGasFee,
@@ -420,6 +406,30 @@ export default function ViewQuote() {
     chainId,
     nativeCurrencySymbol,
   });
+
+  if (
+    currentSmartTransactionsEnabled &&
+    smartTransactionsOptInStatus &&
+    smartTransactionFees
+  ) {
+    ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
+      chainId,
+      currentCurrency,
+      conversionRate,
+      nativeCurrencySymbol,
+      feeInWeiDec: smartTransactionFees.feeEstimate,
+    }));
+    ({
+      feeInFiat: maxFeeInFiat,
+      feeInEth: maxFeeInEth,
+    } = getFeeForSmartTransaction({
+      chainId,
+      currentCurrency,
+      conversionRate,
+      nativeCurrencySymbol,
+      feeInWeiDec: smartTransactionFees.feeEstimate * 2,
+    }));
+  }
 
   const tokenCost = new BigNumber(usedQuote.sourceAmount);
   const ethCost = new BigNumber(usedQuote.trade.value || 0, 10).plus(
