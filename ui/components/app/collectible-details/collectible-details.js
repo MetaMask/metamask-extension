@@ -22,7 +22,6 @@ import {
   getAssetImageURL,
   isEqualCaseInsensitive,
   shortenAddress,
-  shortenURL,
 } from '../../../helpers/utils/util';
 import {
   getCurrentChainId,

@@ -23,9 +23,10 @@ $spacer-break-small: 16px;
 
   &__info {
     @media screen and (min-width: $break-large) {
-      max-width: calc(
-        100% - #{$card-width-break-large} - #{$spacer-break-large}
-      );
+      max-width:
+        calc(
+          100% - #{$card-width-break-large} - #{$spacer-break-large}
+        );
       flex: 0 0 calc(100% - #{$card-width-break-large} - #{$spacer-break-large});
     }
   }

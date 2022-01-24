@@ -284,15 +284,14 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
-    /**
+  /**
    * A setter for the `collectiblesDropdownState` property
    *
    * @param collectiblesDropdownState
    */
-     updateCollectibleDropDownState(collectiblesDropdownState) {
-      this.store.updateState({
-        collectiblesDropdownState,
-      });
-    }
-
+  updateCollectibleDropDownState(collectiblesDropdownState) {
+    this.store.updateState({
+      collectiblesDropdownState,
+    });
+  }
 }

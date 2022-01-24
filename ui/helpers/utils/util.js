@@ -281,9 +281,9 @@ export function stripHttpsSchemeWithoutPort(urlString) {
   return stripHttpsScheme(urlString);
 }
 
-export function shortenURL(urlString){
-  const {protocol, host, pathname } = new URL(urlString)
-  return `${protocol}${host}${pathname.substr(0, 6)}`
+export function shortenURL(urlString) {
+  const { protocol, host, pathname } = new URL(urlString);
+  return `${protocol}${host}${pathname.substr(0, 6)}`;
 }
 
 /**

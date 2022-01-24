@@ -35,7 +35,6 @@ export default function CollectiblesItems({
   collections = {},
   previouslyOwnedCollection = {},
 }) {
-
   const dispatch = useDispatch();
   const collectionsKeys = Object.keys(collections);
   const collectiblesDropdownState = useSelector(getCollectiblesDropdownState);
