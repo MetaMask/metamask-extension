@@ -656,6 +656,15 @@
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
   },
+  "curveHighGasEstimate": {
+    "message": "Aggressive gas estimate graph"
+  },
+  "curveLowGasEstimate": {
+    "message": "Low gas estimate graph"
+  },
+  "curveMediumGasEstimate": {
+    "message": "Market gas estimate graph"
+  },
   "custom": {
     "message": "Advanced"
   },
