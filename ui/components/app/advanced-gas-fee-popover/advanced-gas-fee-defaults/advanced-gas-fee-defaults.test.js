@@ -5,6 +5,7 @@ import { GAS_ESTIMATE_TYPES } from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
+import * as Actions from '../../../../store/actions';
 
 import { AdvancedGasFeePopoverContextProvider } from '../context';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
@@ -20,6 +21,7 @@ jest.mock('../../../../store/actions', () => ({
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
+  setAdvancedGasFee: jest.fn(),
 }));
 
 const render = (defaultGasParams) => {
@@ -124,5 +126,22 @@ describe('AdvancedGasFeeDefaults', () => {
     expect(
       screen.queryByText('Save these as my default for "Advanced"'),
     ).toBeInTheDocument();
+  });
+
+  it('should call action setAdvancedGasFee when checkbox or label text is clicked', () => {
+    render({
+      advancedGasFee: { maxBaseFee: 50, priorityFee: 2 },
+    });
+    const mock = jest
+      .spyOn(Actions, 'setAdvancedGasFee')
+      .mockReturnValue({ type: 'test' });
+    const checkboxLabel = screen.queryByText(
+      'Always use these values and advanced setting as default.',
+    );
+    fireEvent.click(checkboxLabel);
+    expect(mock).toHaveBeenCalledTimes(1);
+    const checkbox = document.querySelector('input[type=checkbox]');
+    fireEvent.click(checkbox);
+    expect(mock).toHaveBeenCalledTimes(2);
   });
 });

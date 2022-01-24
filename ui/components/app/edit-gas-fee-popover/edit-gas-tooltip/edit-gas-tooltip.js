@@ -9,6 +9,7 @@ import {
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
 import Typography from '../../../ui/typography';
 
 const EditGasToolTip = ({
@@ -89,15 +90,6 @@ const EditGasToolTip = ({
       !estimateGreaterThanGasUse ? (
         <img alt="" src={`./images/curve-${priorityLevel}.svg`} />
       ) : null}
-      {priorityLevel === PRIORITY_LEVELS.HIGH &&
-      editGasMode !== EDIT_GAS_MODES.SWAPS &&
-      !estimateGreaterThanGasUse ? (
-        <div className="edit-gas-tooltip__container__dialog">
-          <Typography variant={TYPOGRAPHY.H7} color={COLORS.WHITE}>
-            {t('highGasSettingToolTipDialog')}
-          </Typography>
-        </div>
-      ) : null}
       {toolTipMessage && (
         <div className="edit-gas-tooltip__container__message">
           <Typography variant={TYPOGRAPHY.H7}>{toolTipMessage}</Typography>
@@ -120,7 +112,7 @@ const EditGasToolTip = ({
                 color={COLORS.NEUTRAL_GREY}
                 className="edit-gas-tooltip__container__value"
               >
-                {maxFeePerGas}
+                {roundToDecimalPlacesRemovingExtraZeroes(maxFeePerGas, 4)}
               </Typography>
             )}
           </div>
@@ -138,7 +130,10 @@ const EditGasToolTip = ({
                 color={COLORS.NEUTRAL_GREY}
                 className="edit-gas-tooltip__container__value"
               >
-                {maxPriorityFeePerGas}
+                {roundToDecimalPlacesRemovingExtraZeroes(
+                  maxPriorityFeePerGas,
+                  4,
+                )}
               </Typography>
             )}
           </div>
@@ -156,7 +151,7 @@ const EditGasToolTip = ({
                 color={COLORS.NEUTRAL_GREY}
                 className="edit-gas-tooltip__container__value"
               >
-                {gasLimit}
+                {roundToDecimalPlacesRemovingExtraZeroes(gasLimit, 4)}
               </Typography>
             )}
           </div>

@@ -552,6 +552,7 @@ export default class TransactionController extends EventEmitter {
 
     if (defaultGasLimit && !txMeta.txParams.gas) {
       txMeta.txParams.gas = defaultGasLimit;
+      txMeta.originalGasEstimate = defaultGasLimit;
     }
     return txMeta;
   }

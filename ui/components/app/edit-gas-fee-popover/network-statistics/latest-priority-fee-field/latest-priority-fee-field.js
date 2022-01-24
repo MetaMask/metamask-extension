@@ -22,14 +22,14 @@ export default function LatestPriorityFeeField() {
 
   return (
     <div className="network-statistics__info__field latest-priority-fee-field">
-      <span className="network-statistics__info__field-data">
-        {priorityFeeRange && (
-          <PriorityFeeTooltip>{priorityFeeRange}</PriorityFeeTooltip>
-        )}
-      </span>
-      <span className="network-statistics__info__field-label">
-        <I18nValue messageKey="priorityFee" />
-      </span>
+      <PriorityFeeTooltip>
+        <span className="network-statistics__info__field-data">
+          {priorityFeeRange}
+        </span>
+        <span className="network-statistics__info__field-label">
+          <I18nValue messageKey="priorityFee" />
+        </span>
+      </PriorityFeeTooltip>
     </div>
   );
 }
