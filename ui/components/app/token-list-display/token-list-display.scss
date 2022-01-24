@@ -23,7 +23,7 @@
     }
 
     &__symbol {
-        font-size: 1rem;
+        @include Paragraph;
         line-height: 140%;
         margin-bottom: 2px;
         overflow: hidden;
@@ -32,7 +32,7 @@
     }
 
     &__balance {
-        font-size: 0.75rem;
+        @include H7;
         display: flex;
         flex-flow: row nowrap;
     }
