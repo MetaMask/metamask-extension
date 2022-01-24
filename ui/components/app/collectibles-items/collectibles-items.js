@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
+import Card from '../../ui/card';
 import {
   COLORS,
   TYPOGRAPHY,
@@ -21,7 +22,6 @@ import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
 import { updateCollectibleDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
-import Card from '../../ui/card';
 import { getCollectiblesDropdownState } from '../../../ducks/metamask/metamask';
 
 const width =

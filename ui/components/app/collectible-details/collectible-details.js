@@ -30,6 +30,7 @@ import {
   getSelectedIdentity,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
+import Copy from '../../ui/icon/copy-icon.component';
 import { getCollectibleContracts } from '../../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -53,7 +54,6 @@ import InfoTooltip from '../../ui/info-tooltip';
 import { ERC721 } from '../../../helpers/constants/common';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
-import Copy from '../../ui/icon/copy-icon.component';
 
 export default function CollectibleDetails({ collectible }) {
   const {
@@ -73,6 +73,7 @@ export default function CollectibleDetails({ collectible }) {
   const collectibleContracts = useSelector(getCollectibleContracts);
   const currentNetwork = useSelector(getCurrentChainId);
   const [copied, handleCopy] = useCopyToClipboard();
+  const MAX_URL_LENGTH = 45;
 
   const collectibleContractName = collectibleContracts.find(
     ({ address: contractAddress }) =>
@@ -255,8 +256,8 @@ export default function CollectibleDetails({ collectible }) {
                 href={collectibleImageURL}
                 title={collectibleImageURL}
               >
-                {`${collectibleImageURL.substr(0, 45)}${
-                  collectibleImageURL.length > 45 ? '...' : ''
+                {`${collectibleImageURL.substr(0, MAX_URL_LENGTH)}${
+                  collectibleImageURL.length > MAX_URL_LENGTH ? '...' : ''
                 }`}
               </a>
             </Typography>
