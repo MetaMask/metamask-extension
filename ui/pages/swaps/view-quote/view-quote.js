@@ -36,7 +36,6 @@ import {
   getSwapsQuoteRefreshTime,
   getReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
-  getSmartTransactionFees,
   signAndSendSwapsSmartTransaction,
   getSwapsRefreshStates,
   getSmartTransactionsEnabled,
@@ -203,7 +202,6 @@ export default function ViewQuote() {
       (currentSmartTransactionsError !== 'not_enough_funds' ||
         currentSmartTransactionsErrorMessageDismissed)
     );
-  const smartTransactionFees = useSelector(getSmartTransactionFees);
   const smartTransactionEstimatedGas = useSelector(
     getSmartTransactionEstimatedGas,
   );
@@ -295,14 +293,15 @@ export default function ViewQuote() {
   if (
     currentSmartTransactionsEnabled &&
     smartTransactionsOptInStatus &&
-    smartTransactionFees
+    smartTransactionEstimatedGas
   ) {
-    const highestStxFee = getHighestStxFee(smartTransactionFees.fees);
-    const maxFeePerGasDecWEI = highestStxFee?.maxFeePerGas;
-    maxFeePerGas = decimalToHex(maxFeePerGasDecWEI);
-    const maxPriorityFeePerGasDecWEI = highestStxFee?.maxPriorityFeePerGas;
-    maxPriorityFeePerGas = decimalToHex(maxPriorityFeePerGasDecWEI);
-    maxGasLimit = `0x${decimalToHex(smartTransactionFees.gasLimit || 0)}`;
+    // TODO Daniel: figure out new logic for establishing gas prices
+    // const highestStxFee = getHighestStxFee(smartTransactionFees.fees);
+    // const maxFeePerGasDecWEI = highestStxFee?.maxFeePerGas;
+    // maxFeePerGas = decimalToHex(maxFeePerGasDecWEI);
+    // const maxPriorityFeePerGasDecWEI = highestStxFee?.maxPriorityFeePerGas;
+    // maxPriorityFeePerGas = decimalToHex(maxPriorityFeePerGasDecWEI);
+    // maxGasLimit = `0x${decimalToHex(smartTransactionFees.gasLimit || 0)}`;
   }
 
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
@@ -344,7 +343,7 @@ export default function ViewQuote() {
       chainId,
       smartTransactionsEnabled &&
         smartTransactionsOptInStatus &&
-        smartTransactionFees,
+        smartTransactionEstimatedGas,
       nativeCurrencySymbol,
     );
   }, [
@@ -357,7 +356,7 @@ export default function ViewQuote() {
     approveGas,
     memoizedTokenConversionRates,
     chainId,
-    smartTransactionFees,
+    smartTransactionEstimatedGas,
     nativeCurrencySymbol,
     smartTransactionsEnabled,
     smartTransactionsOptInStatus,
@@ -412,14 +411,14 @@ export default function ViewQuote() {
   if (
     currentSmartTransactionsEnabled &&
     smartTransactionsOptInStatus &&
-    smartTransactionFees
+    smartTransactionEstimatedGas
   ) {
     ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
       conversionRate,
       nativeCurrencySymbol,
-      feeInWeiDec: smartTransactionFees.feeEstimate,
+      feeInWeiDec: smartTransactionEstimatedGas.feeEstimate,
     }));
     ({
       feeInFiat: maxFeeInFiat,
@@ -429,7 +428,7 @@ export default function ViewQuote() {
       currentCurrency,
       conversionRate,
       nativeCurrencySymbol,
-      feeInWeiDec: smartTransactionFees.feeEstimate * 2,
+      feeInWeiDec: smartTransactionEstimatedGas.feeEstimate * 2,
     }));
   }
 
@@ -891,14 +890,14 @@ export default function ViewQuote() {
             />
             {currentSmartTransactionsEnabled &&
               smartTransactionsOptInStatus &&
-              !smartTransactionFees && (
+              !smartTransactionEstimatedGas && (
                 <Box marginTop={0} marginBottom={10}>
                   <PulseLoader />
                 </Box>
               )}
             {(!currentSmartTransactionsEnabled ||
               !smartTransactionsOptInStatus ||
-              smartTransactionFees) && (
+              smartTransactionEstimatedGas) && (
               <div
                 className={classnames('view-quote__fee-card-container', {
                   'view-quote__fee-card-container--three-rows':
@@ -947,12 +946,11 @@ export default function ViewQuote() {
                 if (
                   currentSmartTransactionsEnabled &&
                   smartTransactionsOptInStatus &&
-                  smartTransactionFees
+                  smartTransactionEstimatedGas
                 ) {
                   dispatch(
                     signAndSendSwapsSmartTransaction({
                       unsignedTransaction,
-                      smartTransactionFees,
                       metaMetricsEvent,
                       history,
                     }),

@@ -811,7 +811,6 @@ export const fetchQuotesAndSetQuoteState = (
 
 export const signAndSendSwapsSmartTransaction = ({
   unsignedTransaction,
-  smartTransactionFees,
   metaMetricsEvent,
   history,
 }) => {
@@ -829,6 +828,7 @@ export const signAndSendSwapsSmartTransaction = ({
           swapsRefreshStates?.stxBatchStatusRefreshTime,
         ),
       );
+      // TODO Daniel: get smart transaction fees before sending them to sign and send smart transactions
       // sign and send stx
       const uuid = await dispatch(
         signAndSendSmartTransaction({
