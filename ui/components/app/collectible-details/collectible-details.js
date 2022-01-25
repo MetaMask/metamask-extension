@@ -306,7 +306,7 @@ export default function CollectibleDetails({ collectible }) {
                   {inPopUp ? shortenAddress(address) : address}
                 </a>
               </Typography>
-              <div
+              <button
                 className="collectible-details__contract-copy-button"
                 onClick={() => {
                   handleCopy(address);
@@ -317,7 +317,7 @@ export default function CollectibleDetails({ collectible }) {
                 ) : (
                   <Copy size={15} color="#6a737d" />
                 )}
-              </div>
+              </button>
             </Box>
           </Box>
           {inPopUp ? renderSendButton() : null}

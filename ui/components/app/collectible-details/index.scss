@@ -67,6 +67,7 @@ $spacer-break-small: 16px;
     background-color: transparent;
     cursor: pointer;
     color: var(--ui-4);
+    border: 0;
 
     &:active {
       transform: scale(0.97);

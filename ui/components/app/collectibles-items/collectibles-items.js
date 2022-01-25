@@ -92,13 +92,14 @@ export default function CollectiblesItems({
     const isExpanded = collectiblesDropdownState[key];
     return (
       <div className="collectibles-items__collection" key={`collection-${key}`}>
-        <div
+        <button
           onClick={() => {
             updateCollectibleDropDownState({
               ...collectiblesDropdownState,
               [key]: !isExpanded,
             });
           }}
+          className="collectibles-items__collection-wrapper"
         >
           <Box
             marginBottom={2}
@@ -128,7 +129,7 @@ export default function CollectiblesItems({
               <i className={`fa fa-chevron-${isExpanded ? 'down' : 'right'}`} />
             </Box>
           </Box>
-        </div>
+        </button>
 
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
