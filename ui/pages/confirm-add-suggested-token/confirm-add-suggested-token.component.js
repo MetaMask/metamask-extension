@@ -1,5 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
@@ -10,6 +11,45 @@ import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 function getTokenName(name, symbol) {
   return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
 }
+
+/**
+ * @param {Array} suggestedAssets
+ * @param {Array} tokens
+ * @returns {boolean}
+ */
+function hasDuplicateAddress(suggestedAssets, tokens) {
+  const duplicate = suggestedAssets.find(({ asset }) => {
+    const dupe = tokens.find(({ address }) => {
+      return isEqualCaseInsensitive(address, asset.address);
+    });
+    return Boolean(dupe);
+  });
+  return Boolean(duplicate);
+}
+
+/**
+ * Returns true if any suggestedAssets both:
+ * - Share a symbol with an existing `tokens` member.
+ * - Does not share an address with that same `tokens` member.
+ * This should be flagged as possibly deceptive or confusing.
+ *
+ * @param {Array} suggestedAssets
+ * @param {Array} tokens
+ * @returns {boolean}
+ */
+function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
+  const duplicate = suggestedAssets.find(({ asset }) => {
+    const dupe = tokens.find((token) => {
+      return (
+        token.symbol === asset.symbol &&
+        !isEqualCaseInsensitive(token.address, asset.address)
+      );
+    });
+    return Boolean(dupe);
+  });
+  return Boolean(duplicate);
+}
+
 const ConfirmAddSuggestedToken = (props) => {
   const {
     acceptWatchAsset,
@@ -37,37 +77,33 @@ const ConfirmAddSuggestedToken = (props) => {
     });
   };
 
-  /**
-   * Returns true if any suggestedAssets both:
-   * - Share a symbol with an existing `tokens` member.
-   * - Does not share an address with that same `tokens` member.
-   * This should be flagged as possibly deceptive or confusing.
-   */
-  const hasDuplicateSymbolAndDifferentAddress = () => {
-    const duplicate = suggestedAssets.find(({ asset }) => {
-      const dupe = tokens.find((token) => {
-        return (
-          token.symbol === asset.symbol &&
-          !isEqualCaseInsensitive(token.address, asset.address)
-        );
-      });
-      return Boolean(dupe);
-    });
-    return Boolean(duplicate);
-  };
+  const knownTokenActionableMessage = useMemo(() => {
+    return (
+      hasDuplicateAddress(suggestedAssets, tokens) && (
+        <ActionableMessage
+          message={t('knownTokenWarning')}
+          type="warning"
+          withRightButton
+          useIcon
+          iconFillColor="#f8c000"
+        />
+      )
+    );
+  }, [suggestedAssets, tokens, t]);
 
-  const hasDuplicateAddress = () => {
-    const duplicate = suggestedAssets.find(({ asset }) => {
-      const dupe = tokens.find(({ address }) => {
-        return isEqualCaseInsensitive(address, asset.address);
-      });
-      return Boolean(dupe);
-    });
-    return Boolean(duplicate);
-  };
-
-  const hasTokenDuplicates = hasDuplicateAddress();
-  const reusesName = hasDuplicateSymbolAndDifferentAddress();
+  const reusedTokenNameActionableMessage = useMemo(() => {
+    return (
+      hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) && (
+        <ActionableMessage
+          message={t('reusedTokenNameWarning')}
+          type="warning"
+          withRightButton
+          useIcon
+          iconFillColor="#f8c000"
+        />
+      )
+    );
+  }, [suggestedAssets, tokens, t]);
 
   useEffect(() => {
     if (!suggestedAssets.length) {
@@ -82,12 +118,8 @@ const ConfirmAddSuggestedToken = (props) => {
         <div className="page-container__subtitle">
           {t('likeToImportTokens')}
         </div>
-        {hasTokenDuplicates ? (
-          <div className="warning">{t('knownTokenWarning')}</div>
-        ) : null}
-        {reusesName ? (
-          <div className="warning">{t('reusedTokenNameWarning')}</div>
-        ) : null}
+        {knownTokenActionableMessage}
+        {reusedTokenNameActionableMessage}
       </div>
       <div className="page-container__content">
         <div className="confirm-import-token">
