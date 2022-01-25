@@ -4,6 +4,12 @@ import {
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
+  BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  ETH_SYMBOL,
+  BNB_SYMBOL,
+  MATIC_SYMBOL,
+  BUYABLE_CHAIN_IDS_TO_NETWORK_NAME_MAP,
 } from '../../../shared/constants/network';
 import { TRANSAK_API_KEY } from '../constants/on-ramp';
 import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
@@ -25,6 +31,16 @@ const RINKEBY = {
 const KOVAN = {
   chainId: KOVAN_CHAIN_ID,
 };
+const BSC = {
+  chainId: BSC_CHAIN_ID,
+  amount: 5,
+  address: ETH_ADDRESS,
+};
+const POLYGON = {
+  chainId: POLYGON_CHAIN_ID,
+  amount: 5,
+  address: ETH_ADDRESS,
+};
 
 describe('buy-url', () => {
   it('returns Wyre url with an ETH address for Ethereum mainnet', async () => {
@@ -33,11 +49,11 @@ describe('buy-url', () => {
         `/networks/1/fiatOnRampUrl?serviceName=wyre&destinationAddress=${ETH_ADDRESS}`,
       )
       .reply(200, {
-        url: `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=ETH&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
+        url: `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=${ETH_SYMBOL}&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
       });
     const wyreUrl = await getBuyUrl(MAINNET);
     expect(wyreUrl).toStrictEqual(
-      `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=ETH&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
+      `https://pay.sendwyre.com/purchase?accountId=${WYRE_ACCOUNT_ID}&utm_campaign=${WYRE_ACCOUNT_ID}&destCurrency=${ETH_SYMBOL}&utm_medium=widget&paymentMethod=debit-card&reservation=MLZVUF8FMXZUMARJC23B&dest=ethereum%3A${ETH_ADDRESS}&utm_source=checkout`,
     );
     nock.cleanAll();
   });
@@ -46,7 +62,7 @@ describe('buy-url', () => {
     const wyreUrl = await getBuyUrl(MAINNET);
 
     expect(wyreUrl).toStrictEqual(
-      `https://pay.sendwyre.com/purchase?dest=ethereum:${ETH_ADDRESS}&destCurrency=ETH&accountId=${WYRE_ACCOUNT_ID}&paymentMethod=debit-card`,
+      `https://pay.sendwyre.com/purchase?dest=ethereum:${ETH_ADDRESS}&destCurrency=${ETH_SYMBOL}&accountId=${WYRE_ACCOUNT_ID}&paymentMethod=debit-card`,
     );
   });
 
@@ -54,7 +70,29 @@ describe('buy-url', () => {
     const transakUrl = await getBuyUrl({ ...MAINNET, service: 'transak' });
 
     expect(transakUrl).toStrictEqual(
-      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&defaultCryptoCurrency=ETH&walletAddress=${ETH_ADDRESS}`,
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyCode=${ETH_SYMBOL}&networks=${
+        BUYABLE_CHAIN_IDS_TO_NETWORK_NAME_MAP[MAINNET.chainId]
+      }&walletAddress=${ETH_ADDRESS}`,
+    );
+  });
+
+  it('returns Transak url with an BNB address for Binance Smart Chain', async () => {
+    const transakUrl = await getBuyUrl({ ...BSC, service: 'transak' });
+
+    expect(transakUrl).toStrictEqual(
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyCode=${BNB_SYMBOL}&networks=${
+        BUYABLE_CHAIN_IDS_TO_NETWORK_NAME_MAP[BSC.chainId]
+      }&walletAddress=${ETH_ADDRESS}`,
+    );
+  });
+
+  it('returns Transak url with an MATIC address for Polygon', async () => {
+    const transakUrl = await getBuyUrl({ ...POLYGON, service: 'transak' });
+
+    expect(transakUrl).toStrictEqual(
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyCode=${MATIC_SYMBOL}&networks=${
+        BUYABLE_CHAIN_IDS_TO_NETWORK_NAME_MAP[POLYGON.chainId]
+      }&walletAddress=${ETH_ADDRESS}`,
     );
   });
 
