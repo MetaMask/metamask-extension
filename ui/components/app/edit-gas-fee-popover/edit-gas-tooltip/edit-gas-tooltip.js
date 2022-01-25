@@ -97,7 +97,7 @@ const EditGasToolTip = ({
         editGasMode === EDIT_GAS_MODES.SWAPS
       ) &&
       !estimateGreaterThanGasUse ? (
-        <img alt={imgAltText} src={`./images/curve-${priorityLevel}.png`} />
+        <img alt={imgAltText} src={`./images/curve-${priorityLevel}.svg`} />
       ) : null}
       {toolTipMessage && (
         <div className="edit-gas-tooltip__container__message">
