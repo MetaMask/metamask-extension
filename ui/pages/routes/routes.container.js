@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
   getMetaMaskCachedBalances,
+  getNativeCurrencyImage,
   getNetworkIdentifier,
   getPreferences,
   getProvider,
@@ -33,10 +34,7 @@ function mapStateToProps(state) {
   const fundsOnNetwork = getMetaMaskCachedBalances(state) ?? {};
   const hasNoFundsOnNetwork = Object.values(fundsOnNetwork).includes('0x0') ?? false;
 
-  fetch('https://token-api.metaswap.codefi.network/tokens/xxx}').then((res) => console.log(res));
-
-  // const a = getProvider(state);
-  // console.log(a);
+  const primaryTokenImage = getNativeCurrencyImage(state);
 
   return {
     alertOpen,

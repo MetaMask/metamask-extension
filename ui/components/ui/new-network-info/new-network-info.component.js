@@ -5,11 +5,17 @@ import Popover from '../popover';
 import Button from '../button';
 import Identicon from '../identicon/identicon.component';
 import I18nValue from '../i18n-value';
+import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 
 const NewNetworkInfo = ({
-  featuredRPC,
   onClose,
   autoDetectToken,
+  tokenImage,
+  providerTicker,
+  providerNickname,
+  providerType,
+  onManuallyAddClick,
+  tokenDetectionSupported,
 }) => {
   const t = useContext(I18nContext);
 
@@ -20,6 +26,7 @@ const NewNetworkInfo = ({
     </Button>
     }>
       {/* <div className="new-network-info__close">
+
         <img
           src="./images/times.svg"
           alt=""
@@ -29,24 +36,26 @@ const NewNetworkInfo = ({
       </div> */}
       <div className="new-network-info__title">{t('switchedTo')}</div>
       <div className="new-network-info__ident-section">
-        {featuredRPC.rpcPrefs.imageUrl ? 
+        {tokenImage ? 
           (
-          <Identicon image={featuredRPC.rpcPrefs.imageUrl} diameter={14} />
+          <Identicon image={tokenImage} diameter={14} />
           ) : (
             <i className="fa fa-question-circle"/>
             )} 
-        <label className="new-network-info__ident-section__nickname">{featuredRPC.nickname}</label>
+        <label className="new-network-info__ident-section__nickname">{providerType === NETWORK_TYPE_RPC 
+          ? providerNickname ?? t('privateNetwork')
+          : t(providerType)}</label>
       </div>
       <div className="new-network-info__subtitle">{t('thingsToKeep')}</div>
       <div className="new-network-info__content">
-        {featuredRPC.ticker ? 
+        {providerTicker ? 
         (
         <div className="new-network-info__content__content-box-1">
           <div className="new-network-info__content__content-box-1__serial-number-1">
             &bull;
           </div>
           <div className="new-network-info__content__content-box-1__text-1">
-            <I18nValue messageKey="nativeToken" options={[<label style={{ fontWeight: '700'}}>{featuredRPC.ticker}</label>]} />
+            <I18nValue messageKey="nativeToken" options={[<label style={{ fontWeight: '700'}}>{providerTicker}</label>]} />
           </div>
         </div>
         ) : null }
@@ -58,14 +67,14 @@ const NewNetworkInfo = ({
             {t('attemptSendingAssets')} <a href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995" target="_blank" className="new-network-info__content__content-box-1__link-1">{t('learnMoreUpperCase')}</a>
           </div>
         </div>
-        {!autoDetectToken ? 
+        {(!autoDetectToken || !tokenDetectionSupported) ? 
           (
           <div className="new-network-info__content__content-box-2">
             <div className="new-network-info__content__content-box-1__serial-number-1">
               &bull;
             </div>
             <div className="new-network-info__content__content-box-1__text-1">
-              {t('tokenShowUp')} <a href='' className="new-network-info__content__content-box-1__link-1">{t('clickToManuallyAdd')}</a>
+              {t('tokenShowUp')} <Button type="link" onClick={onManuallyAddClick} className="new-network-info__content__content-box-1__link-1">{t('clickToManuallyAdd')}</Button>
             </div>
           </div>
           ) : null}
@@ -75,9 +84,14 @@ const NewNetworkInfo = ({
 };
 
 NewNetworkInfo.propTypes = {
-  featuredRPC: PropTypes.object,
   onClose: PropTypes.func,
   autoDetectToken: PropTypes.bool,
+  tokenImage: PropTypes.string,
+  providerTicker: PropTypes.string,
+  providerNickname: PropTypes.string,
+  providerType: PropTypes.string,
+  onManuallyAddClick: PropTypes.func,
+  tokenDetectionSupported: PropTypes.bool,
 };
 
 export default NewNetworkInfo;

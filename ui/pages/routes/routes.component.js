@@ -78,6 +78,8 @@ import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
 import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info.component';
+import fetchWithCache from '../../helpers/utils/fetch-with-cache';
+import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../shared/constants/tokens';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -347,6 +349,21 @@ export default class Routes extends Component {
     }
   };
 
+  isTokenDetectionSupportedForCurrentNetwork = async () => {
+    const fetchedTokenData = await fetchWithCache(`${TOKEN_API_METASWAP_CODEFI_URL}${this.props.providerChainId}`);
+
+    if (fetchedTokenData.error) {
+      return false;
+    }
+
+    return true;
+  };
+
+  addTokenManually = () => {
+    this.props.setShowPopup();
+    this.props.history.push(IMPORT_TOKEN_ROUTE);
+  };
+
   render() {
     const {
       isLoading,
@@ -363,6 +380,10 @@ export default class Routes extends Component {
       setShowPopup,
       hasNoFundsOnNetwork,
       autoDetectToken,
+      primaryTokenImage,
+      providerTicker,
+      providerNickname,
+      providerType,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -383,7 +404,7 @@ export default class Routes extends Component {
           }
         }}
       >
-        {(showPopup && hasNoFundsOnNetwork) ? <NewNetworkInfo featuredRPC={featuredRPC} onClose={setShowPopup} autoDetectToken={autoDetectToken} /> : null}
+        {(showPopup && hasNoFundsOnNetwork) ? <NewNetworkInfo onClose={setShowPopup} autoDetectToken={autoDetectToken} tokenDetectionSupported={tokenDetection} tokenImage={primaryTokenImage} providerTicker={providerTicker} providerNickname={providerNickname} providerType={providerType} onManuallyAddClick={this.addTokenManually} /> : null}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
