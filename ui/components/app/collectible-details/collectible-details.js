@@ -58,6 +58,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 export default function CollectibleDetails({ collectible }) {
   const {
     image,
+    imageOriginal,
     name,
     description,
     address,
@@ -73,7 +74,7 @@ export default function CollectibleDetails({ collectible }) {
   const collectibleContracts = useSelector(getCollectibleContracts);
   const currentNetwork = useSelector(getCurrentChainId);
   const [copied, handleCopy] = useCopyToClipboard();
-  const MAX_URL_LENGTH = 45;
+  const MAX_URL_LENGTH = 60;
 
   const collectibleContractName = collectibleContracts.find(
     ({ address: contractAddress }) =>
@@ -256,8 +257,8 @@ export default function CollectibleDetails({ collectible }) {
                 href={collectibleImageURL}
                 title={collectibleImageURL}
               >
-                {`${collectibleImageURL.substr(0, MAX_URL_LENGTH)}${
-                  collectibleImageURL.length > MAX_URL_LENGTH ? '...' : ''
+                {`${imageOriginal.substr(0, MAX_URL_LENGTH)}${
+                  imageOriginal.length > MAX_URL_LENGTH ? '...' : ''
                 }`}
               </a>
             </Typography>
