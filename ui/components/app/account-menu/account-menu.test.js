@@ -96,7 +96,7 @@ describe('Account Menu', () => {
 
     it('render imported account label', () => {
       const importedAccount = wrapper.find('.keyring-label.allcaps');
-      expect(importedAccount.text()).toStrictEqual('imported');
+      expect(importedAccount.text()).toStrictEqual('[imported]');
     });
   });
 
