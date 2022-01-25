@@ -301,6 +301,10 @@ export default class ConfirmTransactionBase extends Component {
     this.setState({ userAcknowledgedGasMissing: true });
   }
 
+  loader = (
+    <LoadingHeartBeat estimateUsed={this.props.txData?.userFeeLevel} />
+  );
+
   renderDetails() {
     const {
       primaryTotalTextOverride,
@@ -365,7 +369,7 @@ export default class ConfirmTransactionBase extends Component {
       ) {
         return (
           <div className="confirm-page-container-content__total-value">
-            <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
+            {loader}
             <UserPreferencedCurrencyDisplay
               type={PRIMARY}
               key="total-detail-value"
@@ -387,7 +391,7 @@ export default class ConfirmTransactionBase extends Component {
       ) {
         return (
           <div className="confirm-page-container-content__total-value">
-            <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
+            {loader}
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
               key="total-detail-text"
@@ -608,7 +612,7 @@ export default class ConfirmTransactionBase extends Component {
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
                   <div className="confirm-page-container-content__total-amount">
-                    <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
+                    {loader}
                     <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
                     </strong>{' '}
