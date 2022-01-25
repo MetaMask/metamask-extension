@@ -43,7 +43,7 @@ const ConfirmAddSuggestedToken = (props) => {
    * - Does not share an address with that same `tokens` member.
    * This should be flagged as possibly deceptive or confusing.
    */
-  const checkNameReuse = () => {
+  const hasDuplicateSymbolAndDifferentAddress = () => {
     const duplicate = suggestedAssets.find(({ asset }) => {
       const dupe = tokens.find((token) => {
         return (
@@ -56,7 +56,7 @@ const ConfirmAddSuggestedToken = (props) => {
     return Boolean(duplicate);
   };
 
-  const checkTokenDuplicates = () => {
+  const hasDuplicateAddress = () => {
     const duplicate = suggestedAssets.find(({ asset }) => {
       const dupe = tokens.find(({ address }) => {
         return isEqualCaseInsensitive(address, asset.address);
@@ -66,8 +66,8 @@ const ConfirmAddSuggestedToken = (props) => {
     return Boolean(duplicate);
   };
 
-  const hasTokenDuplicates = checkTokenDuplicates();
-  const reusesName = checkNameReuse();
+  const hasTokenDuplicates = hasDuplicateAddress();
+  const reusesName = hasDuplicateSymbolAndDifferentAddress();
 
   useEffect(() => {
     if (!suggestedAssets.length) {
