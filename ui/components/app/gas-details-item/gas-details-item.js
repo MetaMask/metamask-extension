@@ -32,6 +32,8 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
     return null;
   }
 
+  const loader = <LoadingHeartBeat estimateUsed={estimateUsed} />;
+
   return (
     <TransactionDetailItem
       key="gas-item"
@@ -39,7 +41,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
       detailTitleColor={COLORS.BLACK}
       detailText={
         <div className="gas-details-item__currency-container">
-          <LoadingHeartBeat />
+          {loader}
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
             value={hexMinimumTransactionFee}
@@ -49,7 +51,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
       }
       detailTotal={
         <div className="gas-details-item__currency-container">
-          <LoadingHeartBeat />
+          {loader}
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
             value={hexMinimumTransactionFee}
@@ -66,7 +68,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
               'gas-details-item__gas-fee-warning': estimateUsed === 'high',
             })}
           >
-            <LoadingHeartBeat />
+            {loader}
             <Box marginRight={1}>
               <strong>
                 {estimateUsed === 'high' && '⚠ '}
@@ -77,7 +79,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
               key="editGasSubTextFeeValue"
               className="gas-details-item__currency-container"
             >
-              <LoadingHeartBeat />
+              <LoadingHeartBeat estimateUsed={estimateUsed} />
               <UserPreferencedCurrencyDisplay
                 key="editGasSubTextFeeAmount"
                 type={PRIMARY}

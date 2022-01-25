@@ -365,7 +365,7 @@ export default class ConfirmTransactionBase extends Component {
       ) {
         return (
           <div className="confirm-page-container-content__total-value">
-            <LoadingHeartBeat />
+            <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
             <UserPreferencedCurrencyDisplay
               type={PRIMARY}
               key="total-detail-value"
@@ -387,7 +387,7 @@ export default class ConfirmTransactionBase extends Component {
       ) {
         return (
           <div className="confirm-page-container-content__total-value">
-            <LoadingHeartBeat />
+            <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
               key="total-detail-text"
@@ -608,7 +608,7 @@ export default class ConfirmTransactionBase extends Component {
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
                   <div className="confirm-page-container-content__total-amount">
-                    <LoadingHeartBeat />
+                    <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
                     <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
                     </strong>{' '}

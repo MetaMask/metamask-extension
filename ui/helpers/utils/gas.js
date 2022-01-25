@@ -4,6 +4,7 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
 import { bnGreaterThan } from './util';
 import { hexWEIToDecGWEI } from './conversions.util';
+import { GAS_RECOMMENDATIONS } from '../../../shared/constants/gas';
 
 export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
   transaction,
@@ -52,4 +53,12 @@ export function addTenPercent(hexStringValue, conversionOptions = {}) {
  */
 export function addTenPercentAndRound(hexStringValue) {
   return addTenPercent(hexStringValue, { numberOfDecimals: 0 });
+}
+
+export function isVolatileGasEstimate(estimate) {
+  return [
+    GAS_RECOMMENDATIONS.HIGH,
+    GAS_RECOMMENDATIONS.MEDIUM,
+    GAS_RECOMMENDATIONS.LOW,
+  ].includes(estimate);
 }
