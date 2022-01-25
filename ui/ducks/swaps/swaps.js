@@ -822,14 +822,128 @@ export const signAndSendSwapsSmartTransaction = ({
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
     const swapsRefreshStates = getSwapsRefreshStates(state);
-    try {
-      dispatch(
-        setSmartTransactionsRefreshInterval(
-          swapsRefreshStates?.stxBatchStatusRefreshTime,
+    const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
+      state,
+    );
+    const chainId = getCurrentChainId(state);
+    const customMaxFeePerGas = getCustomMaxFeePerGas(state);
+    const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
+
+    dispatch(
+      setSmartTransactionsRefreshInterval(
+        swapsRefreshStates?.stxBatchStatusRefreshTime,
+      ),
+    );
+
+    let maxFeePerGas;
+    let maxPriorityFeePerGas;
+    let decEstimatedBaseFee;
+
+    if (networkAndAccountSupports1559) {
+      const {
+        high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
+        estimatedBaseFee = '0',
+      } = getGasFeeEstimates(state);
+      decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
+      maxFeePerGas =
+        customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
+      maxPriorityFeePerGas =
+        customMaxPriorityFeePerGas ||
+        decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+    }
+
+    const usedTradeTxParams = usedQuote.trade;
+
+    // update stx with data
+    const destinationValue = calcTokenAmount(
+      usedQuote.destinationAmount,
+      destinationTokenInfo.decimals || 18,
+    ).toPrecision(8);
+    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
+    const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
+    const swapMetaData = {
+      token_from: sourceTokenInfo.symbol,
+      token_from_amount: String(swapTokenValue),
+      token_to: destinationTokenInfo.symbol,
+      token_to_amount: destinationValue,
+      slippage,
+      custom_slippage: slippage !== 2,
+      best_quote_source: getTopQuote(state)?.aggregator,
+      available_quotes: getQuotes(state)?.length,
+      other_quote_selected:
+        usedQuote.aggregator !== getTopQuote(state)?.aggregator,
+      other_quote_selected_source:
+        usedQuote.aggregator === getTopQuote(state)?.aggregator
+          ? ''
+          : usedQuote.aggregator,
+      average_savings: usedQuote.savings?.total,
+      performance_savings: usedQuote.savings?.performance,
+      fee_savings: usedQuote.savings?.fee,
+      median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+      stx_enabled: smartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
+    };
+    metaMetricsEvent({
+      event: 'STX Swap Started',
+      category: 'swaps',
+      sensitiveProperties: swapMetaData,
+    });
+
+    if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
+      captureMessage('Invalid contract address', {
+        extra: {
+          token_from: swapMetaData.token_from,
+          token_to: swapMetaData.token_to,
+          contract_address: usedTradeTxParams.to,
+        },
+      });
+      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+      history.push(SWAPS_ERROR_ROUTE);
+      return;
+    }
+
+    let finalApproveTxMeta;
+    const approveTxParams = getApproveTxParams(state);
+
+    if (approveTxParams) {
+      if (networkAndAccountSupports1559) {
+        approveTxParams.maxFeePerGas = maxFeePerGas;
+        approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
+        delete approveTxParams.gasPrice;
+      }
+      const approveTxMeta = await dispatch(
+        addUnapprovedTransaction(
+          { ...approveTxParams, amount: '0x0' },
+          'metamask',
         ),
       );
-      // TODO Daniel: get smart transaction fees before sending them to sign and send smart transactions
-      // sign and send stx
+      await dispatch(setApproveTxId(approveTxMeta.id));
+      finalApproveTxMeta = await dispatch(
+        updateTransaction(
+          {
+            ...approveTxMeta,
+            estimatedBaseFee: decEstimatedBaseFee,
+            type: TRANSACTION_TYPES.SWAP_APPROVAL,
+            sourceTokenSymbol: sourceTokenInfo.symbol,
+          },
+          true,
+        ),
+      );
+      // TODO: Submit an approval tx via STX instead of the regular way, otherwise the trade tx via STX will not work.
+      try {
+        await dispatch(updateAndApproveTx(finalApproveTxMeta, true));
+      } catch (e) {
+        await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+        history.push(SWAPS_ERROR_ROUTE);
+        return;
+      }
+    }
+
+    try {
+      const smartTransactionFees = await dispatch(
+        fetchSwapsSmartTransactionFees(unsignedTransaction),
+      );
+
       const uuid = await dispatch(
         signAndSendSmartTransaction({
           unsignedTransaction,
@@ -838,42 +952,7 @@ export const signAndSendSwapsSmartTransaction = ({
       );
       history.push(SMART_TRANSACTION_STATUS_ROUTE);
       dispatch(setSwapsSTXSubmitLoading(false));
-      // update stx with data
-      const destinationValue = calcTokenAmount(
-        usedQuote.destinationAmount,
-        destinationTokenInfo.decimals || 18,
-      ).toPrecision(8);
-      const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(
-        state,
-      );
-      const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
-      const swapMetaData = {
-        token_from: sourceTokenInfo.symbol,
-        token_from_amount: String(swapTokenValue),
-        token_to: destinationTokenInfo.symbol,
-        token_to_amount: destinationValue,
-        slippage,
-        custom_slippage: slippage !== 2,
-        best_quote_source: getTopQuote(state)?.aggregator,
-        available_quotes: getQuotes(state)?.length,
-        other_quote_selected:
-          usedQuote.aggregator !== getTopQuote(state)?.aggregator,
-        other_quote_selected_source:
-          usedQuote.aggregator === getTopQuote(state)?.aggregator
-            ? ''
-            : usedQuote.aggregator,
-        average_savings: usedQuote.savings?.total,
-        performance_savings: usedQuote.savings?.performance,
-        fee_savings: usedQuote.savings?.fee,
-        median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
-        stx_enabled: smartTransactionsEnabled,
-        stx_user_opt_in: smartTransactionsOptInStatus,
-      };
-      metaMetricsEvent({
-        event: 'STX Swap Started',
-        category: 'swaps',
-        sensitiveProperties: swapMetaData,
-      });
+
       const destinationTokenAddress = destinationTokenInfo.address;
       const destinationTokenDecimals = destinationTokenInfo.decimals;
       const destinationTokenSymbol = destinationTokenInfo.symbol;
@@ -1216,13 +1295,10 @@ export function fetchMetaSwapsGasPriceEstimates() {
 export function fetchSwapsSmartTransactionFees(unsignedTransaction) {
   return async (dispatch, getState) => {
     const {
-      swaps: { isFeatureFlagLoaded, swapsSTXLoading },
+      swaps: { isFeatureFlagLoaded },
     } = getState();
-    if (swapsSTXLoading) {
-      return;
-    }
     try {
-      await dispatch(fetchSmartTransactionFees(unsignedTransaction));
+      return await dispatch(fetchSmartTransactionFees(unsignedTransaction));
     } catch (e) {
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);
@@ -1232,7 +1308,10 @@ export function fetchSwapsSmartTransactionFees(unsignedTransaction) {
   };
 }
 
-export function estimateSwapsSmartTransactionsGas(unsignedTransaction) {
+export function estimateSwapsSmartTransactionsGas(
+  unsignedTransaction,
+  approveTxParams,
+) {
   return async (dispatch, getState) => {
     const {
       swaps: { isFeatureFlagLoaded, swapsSTXLoading },
@@ -1241,7 +1320,9 @@ export function estimateSwapsSmartTransactionsGas(unsignedTransaction) {
       return;
     }
     try {
-      await dispatch(estimateSmartTransactionsGas(unsignedTransaction));
+      await dispatch(
+        estimateSmartTransactionsGas(unsignedTransaction, approveTxParams),
+      );
     } catch (e) {
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);

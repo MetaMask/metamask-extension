@@ -581,7 +581,7 @@ export function quotesToRenderableData(
   approveGas,
   tokenConversionRates,
   chainId,
-  smartTransactionFees,
+  smartTransactionEstimatedGas,
   nativeCurrencySymbol,
 ) {
   return Object.values(quotes).map((quote) => {
@@ -629,13 +629,13 @@ export function quotesToRenderableData(
       chainId,
     }));
 
-    if (smartTransactionFees) {
+    if (smartTransactionEstimatedGas) {
       ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
         chainId,
         currentCurrency,
         conversionRate,
         nativeCurrencySymbol,
-        estimatedFeeInWeiDec: smartTransactionFees.feeEstimate,
+        estimatedFeeInWeiDec: smartTransactionEstimatedGas.feeEstimate,
       }));
     }
 

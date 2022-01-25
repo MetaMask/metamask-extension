@@ -3152,7 +3152,7 @@ export async function setSmartTransactionsOptInStatus(optInState) {
 export function fetchSmartTransactionFees(unsignedTransaction) {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.fetchSmartTransactionFees(
+      return await promisifiedBackground.fetchSmartTransactionFees(
         unsignedTransaction,
       );
     } catch (e) {
@@ -3169,11 +3169,16 @@ export function fetchSmartTransactionFees(unsignedTransaction) {
   };
 }
 
-export function estimateSmartTransactionsGas(unsignedTransaction) {
+export function estimateSmartTransactionsGas(
+  unsignedTransaction,
+  approveTxParams,
+) {
+  approveTxParams.value = '0x0';
   return async (dispatch) => {
     try {
       await promisifiedBackground.estimateSmartTransactionsGas(
         unsignedTransaction,
+        approveTxParams,
       );
     } catch (e) {
       log.error(e);

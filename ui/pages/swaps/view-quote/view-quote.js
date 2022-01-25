@@ -104,7 +104,6 @@ import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,
   getFeeForSmartTransaction,
-  getHighestStxFee,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
@@ -219,13 +218,16 @@ export default function ViewQuote() {
         chainId,
       };
       intervalId = setInterval(() => {
-        dispatch(estimateSwapsSmartTransactionsGas(unsignedTx));
+        dispatch(
+          estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams),
+        );
       }, swapsRefreshRates.stxGetTransactionsRefreshTime);
-      dispatch(estimateSwapsSmartTransactionsGas(unsignedTx));
+      dispatch(estimateSwapsSmartTransactionsGas(unsignedTx, approveTxParams));
     } else if (intervalId) {
       clearInterval(intervalId);
     }
     return () => clearInterval(intervalId);
+    // eslint-disable-next-line
   }, [
     dispatch,
     currentSmartTransactionsEnabled,
@@ -295,13 +297,9 @@ export default function ViewQuote() {
     smartTransactionsOptInStatus &&
     smartTransactionEstimatedGas
   ) {
-    // TODO Daniel: figure out new logic for establishing gas prices
-    // const highestStxFee = getHighestStxFee(smartTransactionFees.fees);
-    // const maxFeePerGasDecWEI = highestStxFee?.maxFeePerGas;
-    // maxFeePerGas = decimalToHex(maxFeePerGasDecWEI);
-    // const maxPriorityFeePerGasDecWEI = highestStxFee?.maxPriorityFeePerGas;
-    // maxPriorityFeePerGas = decimalToHex(maxPriorityFeePerGasDecWEI);
-    // maxGasLimit = `0x${decimalToHex(smartTransactionFees.gasLimit || 0)}`;
+    maxGasLimit = `0x${decimalToHex(
+      smartTransactionEstimatedGas.gasLimit || 0,
+    )}`;
   }
 
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
