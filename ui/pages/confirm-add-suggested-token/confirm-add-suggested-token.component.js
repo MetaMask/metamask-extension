@@ -35,7 +35,7 @@ function hasDuplicateAddress(suggestedAssets, tokens) {
  *
  * @param {Array} suggestedAssets - a list of assets suggested to add to the user's wallet via RPC method `wallet_watchAsset` 
  * @param {Array} tokens - the list of tokens currently tracked in state
- * @returns {boolean}
+ * @returns {boolean} - whether the list of suggestedAssets contains an entry with 1. a symbol that matches and 2. an address that does not match an entry in the token list.
  */
 function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
   const duplicate = suggestedAssets.find(({ asset }) => {
