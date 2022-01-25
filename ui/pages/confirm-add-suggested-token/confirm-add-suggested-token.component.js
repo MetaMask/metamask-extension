@@ -15,7 +15,7 @@ function getTokenName(name, symbol) {
 /**
  * @param {Array} suggestedAssets - an array of assets suggested to add to the user's wallet via RPC method `wallet_watchAsset` 
  * @param {Array} tokens - the list of tokens currently tracked in state
- * @returns {boolean}
+ * @returns {boolean} - whether the list of suggestedAssets contains an entry with an address that matches one already found in the token list.
  */
 function hasDuplicateAddress(suggestedAssets, tokens) {
   const duplicate = suggestedAssets.find(({ asset }) => {
