@@ -2460,9 +2460,6 @@
     "message": "$1 gönderiliyor",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "Her kelimeyi tek bir boşluk ile ayırın"
-  },
   "setAdvancedPrivacySettings": {
     "message": "Gelişmiş gizlilik ayarlarını ayarlayın"
   },
@@ -3374,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Cüzdan oluşturma başarılı"
-  },
-  "walletSeedRestore": {
-    "message": "Cüzdan Gizli Kurtarma İfadesi"
   },
   "web3ShimUsageNotification": {
     "message": "Mevcut web sitesinin kaldırılmış olan window.web3 API'sini kullanmaya çalıştığını fark ettik. Site bozuk olarak görülüyorsa daha fazla bilgi için lütfen şuna tıklayın: $1.",

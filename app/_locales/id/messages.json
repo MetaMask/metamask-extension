@@ -2460,9 +2460,6 @@
     "message": "Mengirim $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "Pisahkan setiap kata dengan satu spasi"
-  },
   "setAdvancedPrivacySettings": {
     "message": "Atur pengaturan privasi lanjutan"
   },
@@ -3374,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Dompet berhasil dibuat"
-  },
-  "walletSeedRestore": {
-    "message": "Frasa Pemulihan Rahasia Dompet"
   },
   "web3ShimUsageNotification": {
     "message": "Kami melihat situs web saat ini mencoba menggunakan API window.web3 yang dihapus. Jika situs tersebut tampak bermasalah, silakan klik $1 untuk informasi selengkapnya.",

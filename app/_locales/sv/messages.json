@@ -860,9 +860,6 @@
   "sendTokens": {
     "message": "Skicka tokens"
   },
-  "separateEachWord": {
-    "message": "Lägg in ett mellanslag mellan varje ord"
-  },
   "settings": {
     "message": "Inställningar"
   },

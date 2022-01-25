@@ -200,9 +200,14 @@ describe('MetaMask', function () {
       await restoreSeedLink.click();
       await driver.delay(regularDelayMs);
 
-      await driver.clickElement('.import-account__checkbox-container');
+      await driver.clickElement(
+        '[data-testid="create-new-vault__terms-checkbox"]',
+      );
 
-      await driver.fill('.import-account__secret-phrase', testSeedPhrase);
+      await driver.fill(
+        '[data-testid="create-new-vault__srp"]',
+        testSeedPhrase,
+      );
       await driver.delay(regularDelayMs);
 
       await driver.fill('#password', 'correct horse battery staple');

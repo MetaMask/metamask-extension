@@ -2460,9 +2460,6 @@
     "message": "Gửi $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "Phân tách mỗi từ bằng một dấu cách"
-  },
   "setAdvancedPrivacySettings": {
     "message": "Thiết lập cài đặt quyền riêng tư nâng cao"
   },
@@ -3374,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Tạo ví thành công"
-  },
-  "walletSeedRestore": {
-    "message": "Cụm mật khẩu khôi phục bí mật của ví"
   },
   "web3ShimUsageNotification": {
     "message": "Chúng tôi nhận thấy rằng trang web hiện tại đã cố dùng API window.web3 đã bị xóa. Nếu trang web có vẻ như đã bị lỗi, vui lòng nhấp vào $1 để biết thêm thông tin.",

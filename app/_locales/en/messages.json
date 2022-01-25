@@ -2579,9 +2579,6 @@
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "Separate each word with a single space"
-  },
   "setAdvancedPrivacySettings": {
     "message": "Set advanced privacy settings"
   },
@@ -3499,9 +3496,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Wallet creation successful"
-  },
-  "walletSeedRestore": {
-    "message": "Wallet Secret Recovery Phrase"
   },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",

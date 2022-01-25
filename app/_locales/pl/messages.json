@@ -870,9 +870,6 @@
   "sendTokens": {
     "message": "Wyślij tokeny"
   },
-  "separateEachWord": {
-    "message": "Oddziel słowa pojedynczą spacją"
-  },
   "settings": {
     "message": "Ustawienia"
   },

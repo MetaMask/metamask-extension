@@ -872,9 +872,6 @@
   "sendTokens": {
     "message": "Изпращане на жетони"
   },
-  "separateEachWord": {
-    "message": "Отделете всяка дума с интервал"
-  },
   "settings": {
     "message": "Настройки"
   },

@@ -2460,9 +2460,6 @@
     "message": "$1 보내기",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "공백 한 칸으로 각 단어를 구분하세요."
-  },
   "setAdvancedPrivacySettings": {
     "message": "개인정보 설정 고급 지정"
   },
@@ -3374,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "지갑 생성 성공"
-  },
-  "walletSeedRestore": {
-    "message": "지갑 비밀 복구 구문"
   },
   "web3ShimUsageNotification": {
     "message": "현재의 웹사이트가 제거된 window.web3 API를 이용하려고 합니다. 이 사이트가 제대로 작동하지 않는 경우, $1을(를) 클릭해 자세히 알아보세요.",

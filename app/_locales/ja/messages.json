@@ -2460,9 +2460,6 @@
     "message": "$1を送信中",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "単語ごとにスペースを 1 つ置いて分離します"
-  },
   "setAdvancedPrivacySettings": {
     "message": "高度なプライバシー設定を設定"
   },
@@ -3374,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "ウォレットが作成されました"
-  },
-  "walletSeedRestore": {
-    "message": "ウォレット シークレット リカバリー フレーズ"
   },
   "web3ShimUsageNotification": {
     "message": "現在のウェブサイトが、削除済の window.web3 API の使用を検知しました。サイトが壊れているようであれば、$1 をクリックして詳細を確認してください。",

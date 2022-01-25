@@ -422,3 +422,7 @@ export function getLedgerTransportStatus(state) {
 export function toggleCurrencySwitch(value) {
   return { type: actionConstants.SET_CURRENCY_INPUT_SWITCH, value };
 }
+
+export function isLoading(state) {
+  return state.appState.isLoading;
+}
