@@ -30,6 +30,7 @@ import {
   updateSmartTransaction,
   setSmartTransactionsRefreshInterval,
   fetchSmartTransactionFees,
+  estimateSmartTransactionsGas,
   cancelSmartTransaction,
 } from '../../store/actions';
 import {
@@ -434,6 +435,10 @@ export const getSmartTransactionFees = (state) => {
   return state.metamask.smartTransactionsState?.fees;
 };
 
+export const getSmartTransactionEstimatedGas = (state) => {
+  return state.metamask.smartTransactionsState?.estimatedGas;
+};
+
 export const getSwapsRefreshStates = (state) => {
   const {
     swapsQuoteRefreshTime,
@@ -806,7 +811,6 @@ export const fetchQuotesAndSetQuoteState = (
 
 export const signAndSendSwapsSmartTransaction = ({
   unsignedTransaction,
-  smartTransactionFees,
   metaMetricsEvent,
   history,
 }) => {
@@ -824,6 +828,7 @@ export const signAndSendSwapsSmartTransaction = ({
           swapsRefreshStates?.stxBatchStatusRefreshTime,
         ),
       );
+      // TODO Daniel: get smart transaction fees before sending them to sign and send smart transactions
       // sign and send stx
       const uuid = await dispatch(
         signAndSendSmartTransaction({
@@ -1218,6 +1223,25 @@ export function fetchSwapsSmartTransactionFees(unsignedTransaction) {
     }
     try {
       await dispatch(fetchSmartTransactionFees(unsignedTransaction));
+    } catch (e) {
+      if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch(setCurrentSmartTransactionsError(errorObj?.type));
+      }
+    }
+  };
+}
+
+export function estimateSwapsSmartTransactionsGas(unsignedTransaction) {
+  return async (dispatch, getState) => {
+    const {
+      swaps: { isFeatureFlagLoaded, swapsSTXLoading },
+    } = getState();
+    if (swapsSTXLoading) {
+      return;
+    }
+    try {
+      await dispatch(estimateSmartTransactionsGas(unsignedTransaction));
     } catch (e) {
       if (e.message.startsWith('Fetch error:') && isFeatureFlagLoaded) {
         const errorObj = parseSmartTransactionsError(e.message);

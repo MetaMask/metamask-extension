@@ -3169,6 +3169,26 @@ export function fetchSmartTransactionFees(unsignedTransaction) {
   };
 }
 
+export function estimateSmartTransactionsGas(unsignedTransaction) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.estimateSmartTransactionsGas(
+        unsignedTransaction,
+      );
+    } catch (e) {
+      log.error(e);
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj.type,
+        });
+      }
+      throw e;
+    }
+  };
+}
+
 const createSignedTransactions = async (
   unsignedTransaction,
   fees,
