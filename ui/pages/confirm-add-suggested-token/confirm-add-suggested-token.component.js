@@ -13,8 +13,8 @@ function getTokenName(name, symbol) {
 }
 
 /**
- * @param {Array} suggestedAssets
- * @param {Array} tokens
+ * @param {Array} suggestedAssets - an array of assets suggested to add to the user's wallet via RPC method `wallet_watchAsset` 
+ * @param {Array} tokens - the list of tokens currently tracked in state
  * @returns {boolean}
  */
 function hasDuplicateAddress(suggestedAssets, tokens) {
