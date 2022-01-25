@@ -33,8 +33,8 @@ function hasDuplicateAddress(suggestedAssets, tokens) {
  * - Does not share an address with that same `tokens` member.
  * This should be flagged as possibly deceptive or confusing.
  *
- * @param {Array} suggestedAssets
- * @param {Array} tokens
+ * @param {Array} suggestedAssets - a list of assets suggested to add to the user's wallet via RPC method `wallet_watchAsset` 
+ * @param {Array} tokens - the list of tokens currently tracked in state
  * @returns {boolean}
  */
 function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
