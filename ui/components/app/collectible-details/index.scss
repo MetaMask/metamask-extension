@@ -74,12 +74,18 @@ $spacer-break-small: 16px;
     }
   }
 
-  &__contract-link,
-  &__image-link {
+  &__contract-link {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: 90%;
+  }
+
+  &__image-link {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 40%;
   }
 
   &__link-title {

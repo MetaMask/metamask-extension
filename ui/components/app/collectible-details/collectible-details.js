@@ -74,7 +74,6 @@ export default function CollectibleDetails({ collectible }) {
   const collectibleContracts = useSelector(getCollectibleContracts);
   const currentNetwork = useSelector(getCurrentChainId);
   const [copied, handleCopy] = useCopyToClipboard();
-  const MAX_URL_LENGTH = 60;
 
   const collectibleContractName = collectibleContracts.find(
     ({ address: contractAddress }) =>
@@ -83,7 +82,10 @@ export default function CollectibleDetails({ collectible }) {
   const selectedAccountName = useSelector(
     (state) => getSelectedIdentity(state).name,
   );
-  const collectibleImageURL = getAssetImageURL(image, ipfsGateway);
+  const collectibleImageURL = getAssetImageURL(
+    imageOriginal ?? image,
+    ipfsGateway,
+  );
 
   const onRemove = () => {
     dispatch(removeAndIgnoreCollectible(address, tokenId));
@@ -176,10 +178,7 @@ export default function CollectibleDetails({ collectible }) {
             justifyContent={JUSTIFY_CONTENT.CENTER}
             className="collectible-details__card"
           >
-            <img
-              className="collectible-details__image"
-              src={collectibleImageURL}
-            />
+            <img className="collectible-details__image" src={image} />
           </Card>
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}
@@ -257,9 +256,7 @@ export default function CollectibleDetails({ collectible }) {
                 href={collectibleImageURL}
                 title={collectibleImageURL}
               >
-                {`${imageOriginal.substr(0, MAX_URL_LENGTH)}${
-                  imageOriginal.length > MAX_URL_LENGTH ? '...' : ''
-                }`}
+                {collectibleImageURL}
               </a>
             </Typography>
           </Box>
@@ -339,6 +336,7 @@ CollectibleDetails.propTypes = {
     standard: PropTypes.string,
     imageThumbnail: PropTypes.string,
     imagePreview: PropTypes.string,
+    imageOriginal: PropTypes.string,
     creator: PropTypes.shape({
       address: PropTypes.string,
       config: PropTypes.string,
