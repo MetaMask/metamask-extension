@@ -3,7 +3,7 @@
   height: 250px;
   align-items: center;
   justify-content: center;
-  padding: 30px;
+  padding: 32px;
 }
 
 .token-list-item {
@@ -38,6 +38,6 @@
   }
   
   &__balance__label {
-    margin-right: 0.25rem;
+    margin-right: 4px;
   }
 }
