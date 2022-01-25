@@ -79,7 +79,7 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
               key="editGasSubTextFeeValue"
               className="gas-details-item__currency-container"
             >
-              <LoadingHeartBeat estimateUsed={estimateUsed} />
+              {loader}
               <UserPreferencedCurrencyDisplay
                 key="editGasSubTextFeeAmount"
                 type={PRIMARY}
