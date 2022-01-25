@@ -1744,7 +1744,7 @@ export default class TransactionController extends EventEmitter {
       // If the user rejects a transaction, finalize the transaction added
       // event fragment. with the abandoned flag set.
       case TRANSACTION_EVENTS.REJECTED:
-        id = `transaction-rejected-${txMeta.id}`;
+        id = `transaction-added-${txMeta.id}`;
         this.updateEventFragment(id, { properties, sensitiveProperties });
         this.finalizeEventFragment(id, {
           abandoned: true,
