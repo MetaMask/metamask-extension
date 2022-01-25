@@ -44,27 +44,26 @@ const ConfirmAddSuggestedToken = (props) => {
    * This should be flagged as possibly deceptive or confusing.
    */
   const checkNameReuse = () => {
-    const duplicates = suggestedAssets.filter(({ asset }) => {
-      const dupes = tokens.filter(
-        (old) =>
-          old.symbol === asset.symbol &&
-          !isEqualCaseInsensitive(old.address, asset.address),
-      );
-      return dupes.length > 0;
+    const duplicate = suggestedAssets.find(({ asset }) => {
+      const dupe = tokens.find((token) => {
+        return (
+          token.symbol === asset.symbol &&
+          !isEqualCaseInsensitive(token.address, asset.address)
+        );
+      });
+      return Boolean(dupe);
     });
-    return duplicates.length > 0;
+    return Boolean(duplicate);
   };
 
   const checkTokenDuplicates = () => {
-    const pending = suggestedAssets.map(({ asset }) =>
-      asset.address.toUpperCase(),
-    );
-    const existing = tokens.map((token) => token.address.toUpperCase());
-    const dupes = pending.filter((proposed) => {
-      return existing.includes(proposed);
+    const duplicate = suggestedAssets.find(({ asset }) => {
+      const dupe = tokens.find(({ address }) => {
+        return isEqualCaseInsensitive(address, asset.address);
+      });
+      return Boolean(dupe);
     });
-
-    return dupes.length > 0;
+    return Boolean(duplicate);
   };
 
   const hasTokenDuplicates = checkTokenDuplicates();
