@@ -1216,7 +1216,7 @@
     "message": "燃料使用"
   },
   "gdprMessage": {
-    "message": "这些数据是汇总的，因此，根据《GDPR 通用数据保护条例》(EU)2016/679，这些数据是匿名的。有关我们隐私惯例的更多信息，请参见我们的 $1。",
+    "message": "这些数据是汇总的，因此，根据《GDPR 通用数据保护条例》(EU) 2016/679，这些数据是匿名的。有关我们隐私惯例的更多信息，请参见我们的 $1。",
     "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
   },
   "gdprMessagePrivacyPolicy": {
