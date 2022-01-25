@@ -111,8 +111,8 @@ export default function EditGasDisplay({
 
   let warningMessage;
   if (
-    gasLimit &&
-    properGasLimit &&
+    gasLimit !== undefined &&
+    properGasLimit !== undefined &&
     new BigNumber(gasLimit).lessThan(new BigNumber(properGasLimit))
   ) {
     warningMessage = t('gasLimitRecommended', [properGasLimit]);
