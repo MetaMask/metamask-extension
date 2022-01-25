@@ -13,9 +13,11 @@ function getTokenName(name, symbol) {
 }
 
 /**
- * @param {Array} suggestedAssets - an array of assets suggested to add to the user's wallet via RPC method `wallet_watchAsset` 
+ * @param {Array} suggestedAssets - an array of assets suggested to add to the user's wallet
+ * via the RPC method `wallet_watchAsset`
  * @param {Array} tokens - the list of tokens currently tracked in state
- * @returns {boolean} - whether the list of suggestedAssets contains an entry with an address that matches one already found in the token list.
+ * @returns {boolean} Returns true when the list of suggestedAssets contains an entry with
+ *          an address that matches an existing token.
  */
 function hasDuplicateAddress(suggestedAssets, tokens) {
   const duplicate = suggestedAssets.find(({ asset }) => {
@@ -28,14 +30,12 @@ function hasDuplicateAddress(suggestedAssets, tokens) {
 }
 
 /**
- * Returns true if any suggestedAssets both:
- * - Share a symbol with an existing `tokens` member.
- * - Does not share an address with that same `tokens` member.
- * This should be flagged as possibly deceptive or confusing.
- *
- * @param {Array} suggestedAssets - a list of assets suggested to add to the user's wallet via RPC method `wallet_watchAsset` 
+ * @param {Array} suggestedAssets - a list of assets suggested to add to the user's wallet
+ * via RPC method `wallet_watchAsset`
  * @param {Array} tokens - the list of tokens currently tracked in state
- * @returns {boolean} - whether the list of suggestedAssets contains an entry with 1. a symbol that matches and 2. an address that does not match an entry in the token list.
+ * @returns {boolean} Returns true when the list of suggestedAssets contains an entry with both
+ *          1. a symbol that matches an existing token
+ *          2. an address that does not match an existing token
  */
 function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
   const duplicate = suggestedAssets.find(({ asset }) => {
