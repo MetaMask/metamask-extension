@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
+import {
+  NETWORK_TO_NAME_MAP,
+  BUYABLE_CHAIN_IDS_TO_CURRENCY_MAP,
+} from '../../../../../shared/constants/network';
 import Button from '../../../ui/button';
 
 export default class DepositEtherModal extends Component {
@@ -96,16 +99,18 @@ export default class DepositEtherModal extends Component {
       isMainnet,
       isBuyableChain,
     } = this.props;
+    const { t } = this.context;
     const networkName = NETWORK_TO_NAME_MAP[chainId];
+    const symbol = BUYABLE_CHAIN_IDS_TO_CURRENCY_MAP[chainId];
 
     return (
       <div className="page-container page-container--full-width page-container--full-height">
         <div className="page-container__header">
           <div className="page-container__title">
-            {this.context.t('depositEther')}
+            {t('depositCrypto', [symbol])}
           </div>
           <div className="page-container__subtitle">
-            {this.context.t('needEtherInWallet')}
+            {t('needCryptoInWallet', [symbol])}
           </div>
           <div
             className="page-container__header-close"
@@ -127,9 +132,9 @@ export default class DepositEtherModal extends Component {
                   }}
                 />
               ),
-              title: this.context.t('buyWithWyre'),
-              text: this.context.t('buyWithWyreDescription'),
-              buttonLabel: this.context.t('continueToWyre'),
+              title: t('buyWithWyre'),
+              text: t('buyWithWyreDescription'),
+              buttonLabel: t('continueToWyre'),
               onButtonClick: () => {
                 this.context.metricsEvent({
                   eventOpts: {
@@ -152,9 +157,9 @@ export default class DepositEtherModal extends Component {
                   }}
                 />
               ),
-              title: this.context.t('buyWithTransak'),
-              text: this.context.t('buyWithTransakDescription'),
-              buttonLabel: this.context.t('continueToTransak'),
+              title: t('buyCryptoWithTransak', [symbol]),
+              text: t('buyCryptoWithTransakDescription', [symbol]),
+              buttonLabel: t('continueToTransak'),
               onButtonClick: () => {
                 this.context.metricsEvent({
                   eventOpts: {
@@ -179,17 +184,17 @@ export default class DepositEtherModal extends Component {
                   }}
                 />
               ),
-              title: this.context.t('directDepositEther'),
-              text: this.context.t('directDepositEtherExplainer'),
-              buttonLabel: this.context.t('viewAccount'),
+              title: t('directDepositEther'),
+              text: t('directDepositEtherExplainer'),
+              buttonLabel: t('viewAccount'),
               onButtonClick: () => this.goToAccountDetailsModal(),
             })}
             {networkName &&
               this.renderRow({
                 logo: <i className="fa fa-tint fa-2x" />,
-                title: this.context.t('testFaucet'),
-                text: this.context.t('getEtherFromFaucet', [networkName]),
-                buttonLabel: this.context.t('getEther'),
+                title: t('testFaucet'),
+                text: t('getEtherFromFaucet', [networkName]),
+                buttonLabel: t('getEther'),
                 onButtonClick: () => toFaucet(chainId),
                 hide: !isTestnet,
               })}
