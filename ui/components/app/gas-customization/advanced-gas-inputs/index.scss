@@ -23,12 +23,12 @@
       }
 
       .fa-info-circle {
-        color: $silver;
+        color: var(--silver);
         cursor: pointer;
       }
 
       .fa-info-circle:hover {
-        color: $mid-gray;
+        color: var(--mid-gray);
       }
     }
 
@@ -53,9 +53,9 @@
       @include Paragraph;
 
       direction: ltr;
-      border: 1px solid $dusty-gray;
+      border: 1px solid var(--dusty-gray);
       border-radius: 4px;
-      color: $mid-gray;
+      color: var(--mid-gray);
       height: 24px;
       width: 100%;
       padding-left: 8px;
@@ -64,11 +64,11 @@
     }
 
     &__input--error {
-      border: 1px solid $red;
+      border: 1px solid var(--red);
     }
 
     &__input--warning {
-      border: 1px solid $orange;
+      border: 1px solid var(--orange);
     }
 
     &__input-arrows {
@@ -99,7 +99,7 @@
 
       &__i-wrap:hover {
         background: #4eade7;
-        color: $white;
+        color: var(--white);
       }
 
       i:hover {
@@ -116,11 +116,11 @@
     }
 
     &__input-arrows--error {
-      border: 1px solid $red;
+      border: 1px solid var(--red);
     }
 
     &__input-arrows--warning {
-      border: 1px solid $orange;
+      border: 1px solid var(--orange);
     }
 
     input[type="number"] {
@@ -145,7 +145,7 @@
       position: absolute;
       top: 8px;
       right: 10px;
-      color: $dusty-gray;
+      color: var(--dusty-gray);
     }
 
     &__custom-text {

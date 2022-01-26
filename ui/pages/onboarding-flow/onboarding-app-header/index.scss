@@ -1,6 +1,6 @@
 .onboarding-app-header {
   align-items: center;
-  background: $white;
+  background: var(--white);
   position: relative;
   z-index: $header-z-index;
   display: flex;

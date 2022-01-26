@@ -16,7 +16,7 @@
   }
 
   &__content-link {
-    color: $primary-blue;
+    color: var(--primary-blue);
     cursor: pointer;
   }
 
@@ -49,7 +49,7 @@
     margin-bottom: 16px;
     padding: 16px;
     font-size: 14px;
-    border: 1px solid $accent-red;
+    border: 1px solid var(--accent-red);
     background: #f8eae8;
     border-radius: 3px;
   }

@@ -1101,12 +1101,6 @@
   "pending": {
     "message": "Nakabinbin"
   },
-  "permissionCheckedIconDescription": {
-    "message": "Inaprubahan mo ang pahintulot na ito"
-  },
-  "permissionUncheckedIconDescription": {
-    "message": "Hindi mo inaprubahan ang pahintulot na ito"
-  },
   "permissions": {
     "message": "Mga Pahintulot"
   },

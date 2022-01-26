@@ -61,8 +61,6 @@ export default function EditGasPopover({
     supportsEIP1559;
   const [showEducationContent, setShowEducationContent] = useState(false);
 
-  const [warning] = useState(null);
-
   const [
     dappSuggestedGasFeeAcknowledged,
     setDappSuggestedGasFeeAcknowledged,
@@ -109,6 +107,7 @@ export default function EditGasPopover({
     balanceError,
     estimatesUnavailableWarning,
     estimatedBaseFee,
+    isNetworkBusy,
   } = useGasFeeInputs(
     defaultEstimateToUse,
     updatedTransaction,
@@ -261,10 +260,9 @@ export default function EditGasPopover({
           <EditGasDisplayEducation />
         ) : (
           <>
-            {process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />}
+            {process.env.IN_TEST ? null : <LoadingHeartBeat />}
             <EditGasDisplay
               showEducationButton={showEducationButton}
-              warning={warning}
               dappSuggestedGasFeeAcknowledged={dappSuggestedGasFeeAcknowledged}
               setDappSuggestedGasFeeAcknowledged={
                 setDappSuggestedGasFeeAcknowledged
@@ -298,6 +296,7 @@ export default function EditGasPopover({
               estimatesUnavailableWarning={estimatesUnavailableWarning}
               hasGasErrors={hasGasErrors}
               txParamsHaveBeenCustomized={txParamsHaveBeenCustomized}
+              isNetworkBusy={isNetworkBusy}
               {...editGasDisplayProps}
             />
           </>

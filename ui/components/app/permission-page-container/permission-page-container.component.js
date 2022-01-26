@@ -13,12 +13,12 @@ export default class PermissionPageContainer extends Component {
     allIdentitiesSelected: PropTypes.bool,
     request: PropTypes.object,
     requestMetadata: PropTypes.object,
-    targetDomainMetadata: PropTypes.shape({
-      extensionId: PropTypes.string,
-      icon: PropTypes.string,
-      host: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
+    targetSubjectMetadata: PropTypes.shape({
+      name: PropTypes.string,
       origin: PropTypes.string.isRequired,
+      subjectType: PropTypes.string.isRequired,
+      extensionId: PropTypes.string,
+      iconUrl: PropTypes.string,
     }),
   };
 
@@ -62,15 +62,6 @@ export default class PermissionPageContainer extends Component {
     return Object.keys(props.request.permissions || {});
   }
 
-  onPermissionToggle = (methodName) => {
-    this.setState({
-      selectedPermissions: {
-        ...this.state.selectedPermissions,
-        [methodName]: !this.state.selectedPermissions[methodName],
-      },
-    });
-  };
-
   componentDidMount() {
     this.context.metricsEvent({
       eventOpts: {
@@ -97,6 +88,9 @@ export default class PermissionPageContainer extends Component {
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
+      approvedAccounts: selectedIdentities.map(
+        (selectedIdentity) => selectedIdentity.address,
+      ),
     };
 
     Object.keys(this.state.selectedPermissions).forEach((key) => {
@@ -106,10 +100,7 @@ export default class PermissionPageContainer extends Component {
     });
 
     if (Object.keys(request.permissions).length > 0) {
-      approvePermissionsRequest(
-        request,
-        selectedIdentities.map((selectedIdentity) => selectedIdentity.address),
-      );
+      approvePermissionsRequest(request);
     } else {
       rejectPermissionsRequest(request.metadata.id);
     }
@@ -118,7 +109,7 @@ export default class PermissionPageContainer extends Component {
   render() {
     const {
       requestMetadata,
-      targetDomainMetadata,
+      targetSubjectMetadata,
       selectedIdentities,
       allIdentitiesSelected,
     } = this.props;
@@ -127,9 +118,8 @@ export default class PermissionPageContainer extends Component {
       <div className="page-container permission-approval-container">
         <PermissionPageContainerContent
           requestMetadata={requestMetadata}
-          domainMetadata={targetDomainMetadata}
+          subjectMetadata={targetSubjectMetadata}
           selectedPermissions={this.state.selectedPermissions}
-          onPermissionToggle={this.onPermissionToggle}
           selectedIdentities={selectedIdentities}
           allIdentitiesSelected={allIdentitiesSelected}
         />

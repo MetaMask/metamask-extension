@@ -41,6 +41,7 @@ import TransactionDetail from '../../components/app/transaction-detail/transacti
 import TransactionDetailItem from '../../components/app/transaction-detail-item/transaction-detail-item.component';
 import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
+import GasDetailsItem from '../../components/app/gas-details-item';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field';
 import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
@@ -60,7 +61,6 @@ import {
 import Typography from '../../components/ui/typography/typography';
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
-import GasDetailsItem from './gas-details-item';
 import TransactionAlerts from './transaction-alerts';
 
 // eslint-disable-next-line prefer-destructuring
@@ -68,7 +68,7 @@ const EIP_1559_V2_ENABLED =
   process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
 const renderHeartBeatIfNotInTest = () =>
-  process.env.IN_TEST === 'true' ? null : <LoadingHeartBeat />;
+  process.env.IN_TEST ? null : <LoadingHeartBeat />;
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -121,6 +121,7 @@ export default class ConfirmTransactionBase extends Component {
     onEdit: PropTypes.func,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
+    image: PropTypes.string,
     type: PropTypes.string,
     getNextNonce: PropTypes.func,
     nextNonce: PropTypes.number,
@@ -366,12 +367,15 @@ export default class ConfirmTransactionBase extends Component {
         secondaryTotalTextOverride === undefined
       ) {
         return (
-          <UserPreferencedCurrencyDisplay
-            type={PRIMARY}
-            key="total-detail-value"
-            value={hexTransactionTotal}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-          />
+          <div className="confirm-page-container-content__total-value">
+            <LoadingHeartBeat />
+            <UserPreferencedCurrencyDisplay
+              type={PRIMARY}
+              key="total-detail-value"
+              value={hexTransactionTotal}
+              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            />
+          </div>
         );
       }
       return useNativeCurrencyAsPrimaryCurrency
@@ -385,12 +389,15 @@ export default class ConfirmTransactionBase extends Component {
         secondaryTotalTextOverride === undefined
       ) {
         return (
-          <UserPreferencedCurrencyDisplay
-            type={SECONDARY}
-            key="total-detail-text"
-            value={hexTransactionTotal}
-            hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-          />
+          <div className="confirm-page-container-content__total-value">
+            <LoadingHeartBeat />
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              key="total-detail-text"
+              value={hexTransactionTotal}
+              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            />
+          </div>
         );
       }
       return useNativeCurrencyAsPrimaryCurrency
@@ -429,21 +436,9 @@ export default class ConfirmTransactionBase extends Component {
     ) : null;
 
     const renderGasDetailsItem = () => {
-      return EIP_1559_V2_ENABLED &&
-        supportsEIP1559 &&
-        !isLegacyTransaction(txData) ? (
+      return this.supportsEIP1559V2 ? (
         <GasDetailsItem
           key="gas_details"
-          hexMaximumTransactionFee={hexMaximumTransactionFee}
-          hexMinimumTransactionFee={hexMinimumTransactionFee}
-          isMainnet={isMainnet}
-          maxFeePerGas={maxFeePerGas}
-          maxPriorityFeePerGas={maxPriorityFeePerGas}
-          supportsEIP1559={supportsEIP1559}
-          txData={txData}
-          useNativeCurrencyAsPrimaryCurrency={
-            useNativeCurrencyAsPrimaryCurrency
-          }
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
         />
       ) : (
@@ -615,12 +610,13 @@ export default class ConfirmTransactionBase extends Component {
                 detailTotal={renderTotalDetailTotal()}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
-                  <>
+                  <div className="confirm-page-container-content__total-amount">
+                    <LoadingHeartBeat />
                     <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
-                    </strong>
+                    </strong>{' '}
                     {renderTotalMaxAmount()}
-                  </>
+                  </div>
                 }
               />
             ),
@@ -868,7 +864,7 @@ export default class ConfirmTransactionBase extends Component {
         value={hexTransactionAmount}
         type={PRIMARY}
         showEthLogo
-        ethLogoHeight="26"
+        ethLogoHeight="28"
         hideLabel
       />
     );
@@ -977,6 +973,11 @@ export default class ConfirmTransactionBase extends Component {
     this._removeBeforeUnload();
   }
 
+  supportsEIP1559V2 =
+    EIP_1559_V2_ENABLED &&
+    this.props.supportsEIP1559 &&
+    !isLegacyTransaction(this.props.txData);
+
   render() {
     const { t } = this.context;
     const {
@@ -1004,7 +1005,7 @@ export default class ConfirmTransactionBase extends Component {
       gasFeeIsCustom,
       nativeCurrency,
       hardwareWalletRequiresConnection,
-      supportsEIP1559,
+      image,
     } = this.props;
     const {
       submitting,
@@ -1044,6 +1045,7 @@ export default class ConfirmTransactionBase extends Component {
         functionType = t('contractInteraction');
       }
     }
+
     return (
       <TransactionModalContextProvider
         actionKey={actionKey}
@@ -1060,6 +1062,7 @@ export default class ConfirmTransactionBase extends Component {
           showEdit={Boolean(onEdit)}
           action={functionType}
           title={title}
+          image={image}
           titleComponent={this.renderTitleComponent()}
           subtitleComponent={this.renderSubtitleComponent()}
           hideSubtitle={hideSubtitle}
@@ -1103,11 +1106,7 @@ export default class ConfirmTransactionBase extends Component {
           editingGas={editingGas}
           handleCloseEditGas={() => this.handleCloseEditGas()}
           currentTransaction={txData}
-          supportsEIP1559V2={
-            EIP_1559_V2_ENABLED &&
-            supportsEIP1559 &&
-            !isLegacyTransaction(txData)
-          }
+          supportsEIP1559V2={this.supportsEIP1559V2}
         />
       </TransactionModalContextProvider>
     );

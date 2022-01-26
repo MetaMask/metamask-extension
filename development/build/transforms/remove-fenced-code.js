@@ -3,7 +3,7 @@ const { PassThrough, Transform } = require('stream');
 const { BuildType } = require('../utils');
 const { lintTransformedFile } = require('./utils');
 
-const hasOwnProperty = (obj, key) => Reflect.hasOwnProperty.call(obj, key);
+const hasKey = (obj, key) => Reflect.hasOwnProperty.call(obj, key);
 
 module.exports = {
   createRemoveFencedCodeTransform,
@@ -90,7 +90,7 @@ function createRemoveFencedCodeTransform(
   buildType,
   shouldLintTransformedFiles = true,
 ) {
-  if (!hasOwnProperty(BuildType, buildType)) {
+  if (!hasKey(BuildType, buildType)) {
     throw new Error(
       `Code fencing transform received unrecognized build type "${buildType}".`,
     );
@@ -102,8 +102,13 @@ function createRemoveFencedCodeTransform(
   // To apply our code fencing transform, we concatenate all buffers and convert
   // them to a single string, then apply the actual transform function on that
   // string.
+
   /**
-   * @returns {Transform}
+   * Returns a transform stream that removes fenced code from JavaScript files. For non-JavaScript
+   * files, a pass-through stream is returned.
+   *
+   * @param filePath - The file path to transform.
+   * @returns {Transform} The transform stream.
    */
   return function removeFencedCodeTransform(filePath) {
     if (!['.js', '.cjs', '.mjs'].includes(path.extname(filePath))) {
@@ -140,7 +145,7 @@ const CommandValidators = {
     }
 
     params.forEach((param) => {
-      if (!hasOwnProperty(BuildType, param)) {
+      if (!hasKey(BuildType, param)) {
         throw new Error(
           getInvalidParamsMessage(
             filePath,
@@ -250,7 +255,7 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
     // The first element of a RegEx match array is the input
     const [, terminus, command, parameters] = directiveMatches;
 
-    if (!hasOwnProperty(DirectiveTerminuses, terminus)) {
+    if (!hasKey(DirectiveTerminuses, terminus)) {
       throw new Error(
         getInvalidFenceLineMessage(
           filePath,
@@ -259,7 +264,8 @@ function removeFencedCode(filePath, typeOfCurrentBuild, fileContent) {
         ),
       );
     }
-    if (!hasOwnProperty(DirectiveCommands, command)) {
+
+    if (!hasKey(DirectiveCommands, command)) {
       throw new Error(
         getInvalidFenceLineMessage(
           filePath,

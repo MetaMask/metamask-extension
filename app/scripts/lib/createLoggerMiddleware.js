@@ -2,6 +2,7 @@ import log from 'loglevel';
 
 /**
  * Returns a middleware that logs RPC activity
+ *
  * @param {{ origin: string }} opts - The middleware options
  * @returns {Function}
  */

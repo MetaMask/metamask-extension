@@ -8,7 +8,7 @@
   }
 
   &__info {
-    color: $ui-black;
+    color: var(--ui-black);
     display: flex;
     flex-flow: column;
     flex-wrap: wrap;

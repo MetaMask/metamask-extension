@@ -1,33 +1,53 @@
 import React from 'react';
+import README from './README.mdx';
 import Slider from '.';
 
 export default {
-  title: 'Slider',
+  title: 'Components/UI/Slider',
   id: __filename,
+  component: Slider,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    editText: { control: 'text' },
+    infoText: { control: 'text' },
+    titleDetail: { control: 'text' },
+    titleText: { control: 'text' },
+    tooltipText: { control: 'text' },
+    valueText: { control: 'text' },
+    max: { control: 'number' },
+    min: { control: 'number' },
+    onChange: { action: 'onChange' },
+    onEdit: { action: 'onEdit' },
+    step: { control: 'number' },
+    value: { control: 'number' },
+  },
 };
 
-export const slider = () => <Slider />;
+export const DefaultStory = (args) => <Slider {...args} />;
+DefaultStory.storyName = 'Default';
 
-export const sliderWithSteps = () => <Slider step={10} />;
+export const WithSteps = (args) => <Slider {...args} />;
+WithSteps.args = {
+  step: 10,
+};
 
-export const sliderWithHeader = () => (
-  <Slider
-    titleText="Slider Title Text"
-    tooltipText="Slider Tooltip Text"
-    valueText="$ 00.00"
-    titleDetail="100 GWEI"
-  />
-);
+export const WithHeader = (args) => <Slider {...args} />;
+WithHeader.args = {
+  titleText: 'Slider Title Text',
+  tooltipText: 'Slider Tooltip Text',
+  valueText: '$ 00.00',
+  titleDetail: '100 GWEI',
+};
 
-export const sliderWithFooter = () => (
-  <Slider
-    titleText="Slider Title Text"
-    tooltipText="Slider Tooltip Text"
-    valueText="$ 00.00"
-    titleDetail="100 GWEI"
-    infoText="Footer Info Text"
-    onEdit={() => {
-      console.log('on edit click');
-    }}
-  />
-);
+export const WithFooter = (args) => <Slider {...args} />;
+WithFooter.args = {
+  titleText: 'Slider Title Text',
+  tooltipText: 'Slider Tooltip Text',
+  valueText: '$ 00.00',
+  titleDetail: '100 GWEI',
+  infoText: 'Footer Info Text',
+};

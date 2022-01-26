@@ -102,24 +102,58 @@ export default function ActionableMessage({
 }
 
 ActionableMessage.propTypes = {
+  /**
+   * Text inside actionable message
+   */
   message: PropTypes.node.isRequired,
+  /**
+   * First button props that have label and onClick props
+   */
   primaryAction: PropTypes.shape({
     label: PropTypes.string,
     onClick: PropTypes.func,
   }),
+  /**
+   * Another style of primary action.
+   * This probably shouldn't have been added. A `children` prop might have been more appropriate.
+   */
   primaryActionV2: PropTypes.shape({
     label: PropTypes.string,
     onClick: PropTypes.func,
   }),
+  /**
+   * Second button props that have label and onClick props
+   */
   secondaryAction: PropTypes.shape({
     label: PropTypes.string,
     onClick: PropTypes.func,
   }),
+  /**
+   * Additional css className for the component based on the parent css
+   */
   className: PropTypes.string,
+  /**
+   * change color theme for the component that already predefined in css
+   */
   type: PropTypes.string,
+  /**
+   * change text align to left and button to bottom right
+   */
   withRightButton: PropTypes.bool,
+  /**
+   * Add tooltip and custom message
+   */
   infoTooltipText: PropTypes.string,
+  /**
+   * Add tooltip icon in the left component without message
+   */
   useIcon: PropTypes.bool,
+  /**
+   * change tooltip icon color
+   */
   iconFillColor: PropTypes.string,
+  /**
+   * Whether the buttons are rounded
+   */
   roundedButtons: PropTypes.bool,
 };

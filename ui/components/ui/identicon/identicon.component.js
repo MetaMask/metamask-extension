@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Jazzicon from '../jazzicon';
+import { getAssetImageURL } from '../../../helpers/utils/util';
 import BlockieIdenticon from './blockieIdenticon';
 
 const getStyles = (diameter) => ({
@@ -12,16 +13,52 @@ const getStyles = (diameter) => ({
 
 export default class Identicon extends PureComponent {
   static propTypes = {
+    /**
+     * Adds blue border around the Identicon used for selected account.
+     * Increases the width and height of the Identicon by 8px
+     */
     addBorder: PropTypes.bool,
+    /**
+     * Address used for generating random image
+     */
     address: PropTypes.string,
+    /**
+     * Add custom css class
+     */
     className: PropTypes.string,
+    /**
+     * Sets the width and height of the inner img element
+     * If addBorder is true will increase components height and width by 8px
+     */
     diameter: PropTypes.number,
+    /**
+     * Used as the image source of the Identicon
+     */
     image: PropTypes.string,
+    /**
+     * Use the blockie type random image generator
+     */
     useBlockie: PropTypes.bool,
+    /**
+     * The alt text of the image
+     */
     alt: PropTypes.string,
+    /**
+     * Check if show image border
+     */
     imageBorder: PropTypes.bool,
+    /**
+     * Check if use token detection
+     */
     useTokenDetection: PropTypes.bool,
+    /**
+     * Add list of token in object
+     */
     tokenList: PropTypes.object,
+    /**
+     * User preferred IPFS gateway
+     */
+    ipfsGateway: PropTypes.string,
   };
 
   static defaultProps = {
@@ -36,7 +73,12 @@ export default class Identicon extends PureComponent {
   };
 
   renderImage() {
-    const { className, diameter, image, alt, imageBorder } = this.props;
+    const { className, diameter, alt, imageBorder, ipfsGateway } = this.props;
+    let { image } = this.props;
+
+    if (image.toLowerCase().startsWith('ipfs://')) {
+      image = getAssetImageURL(image, ipfsGateway);
+    }
 
     return (
       <img
@@ -95,6 +137,8 @@ export default class Identicon extends PureComponent {
       useTokenDetection,
       tokenList,
     } = this.props;
+    const size = diameter + 8;
+
     if (image) {
       return this.renderImage();
     }
@@ -111,6 +155,7 @@ export default class Identicon extends PureComponent {
       return (
         <div
           className={classnames({ 'identicon__address-wrapper': addBorder })}
+          style={addBorder ? getStyles(size) : null}
         >
           {useBlockie ? this.renderBlockie() : this.renderJazzicon()}
         </div>

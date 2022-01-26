@@ -6,7 +6,7 @@
     align-items: center;
 
     & i {
-      color: $ui-3;
+      color: var(--ui-3);
       margin-left: 6px;
       font-size: $font-size-h8;
     }

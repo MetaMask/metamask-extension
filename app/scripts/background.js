@@ -11,6 +11,7 @@ import { storeAsStream, storeTransformStream } from '@metamask/obs-store';
 import PortStream from 'extension-port-stream';
 import { captureException } from '@sentry/browser';
 
+import { ethErrors } from 'eth-rpc-errors';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -56,7 +57,7 @@ const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 
 // state persistence
-const inTest = process.env.IN_TEST === 'true';
+const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
 
@@ -73,6 +74,7 @@ initialize().catch(log.error);
 
 /**
  * The data emitted from the MetaMaskController.store EventEmitter, also used to initialize the MetaMaskController. Available in UI on React state as state.metamask.
+ *
  * @typedef MetaMaskState
  * @property {boolean} isInitialized - Whether the first vault has been created.
  * @property {boolean} isUnlocked - Whether the vault is currently decrypted and accounts are available for selection.
@@ -118,11 +120,12 @@ initialize().catch(log.error);
 /**
  * @typedef VersionedData
  * @property {MetaMaskState} data - The data emitted from MetaMask controller, or used to initialize it.
- * @property {Number} version - The latest migration version that has been run.
+ * @property {number} version - The latest migration version that has been run.
  */
 
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
+ *
  * @returns {Promise} Setup complete.
  */
 async function initialize() {
@@ -139,6 +142,7 @@ async function initialize() {
 /**
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
+ *
  * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
  */
 async function loadStateFromPersistence() {
@@ -217,6 +221,7 @@ function setupController(initState, initLangCode) {
     initLangCode,
     // platform specific api
     platform,
+    notificationManager,
     extension,
     getRequestAccountTabIds: () => {
       return requestAccountTabIds;
@@ -249,6 +254,7 @@ function setupController(initState, initLangCode) {
 
   /**
    * Assigns the given state to the versioned object (with metadata), and returns that.
+   *
    * @param {Object} state - The state object as emitted by the MetaMaskController.
    * @returns {VersionedData} The state object wrapped in an object that includes a metadata key.
    */
@@ -325,6 +331,7 @@ function setupController(initState, initLangCode) {
 
   /**
    * A runtime.Port object, as provided by the browser:
+   *
    * @see https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/runtime/Port
    * @typedef Port
    * @type Object
@@ -333,6 +340,7 @@ function setupController(initState, initLangCode) {
   /**
    * Connects a Port to the MetaMask controller via a multiplexed duplex stream.
    * This method identifies trusted (MetaMask) interfaces, and connects them differently from untrusted (web pages).
+   *
    * @param {Port} remotePort - The port provided by a new context.
    */
   function connectRemote(remotePort) {
@@ -454,6 +462,15 @@ function setupController(initState, initLangCode) {
    */
   function updateBadge() {
     let label = '';
+    const count = getUnapprovedTransactionCount();
+    if (count) {
+      label = String(count);
+    }
+    extension.browserAction.setBadgeText({ text: label });
+    extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+  }
+
+  function getUnapprovedTransactionCount() {
     const unapprovedTxCount = controller.txController.getUnapprovedTxCount();
     const { unapprovedMsgCount } = controller.messageManager;
     const { unapprovedPersonalMsgCount } = controller.personalMessageManager;
@@ -465,7 +482,7 @@ function setupController(initState, initLangCode) {
     const pendingApprovalCount = controller.approvalController.getTotalApprovalCount();
     const waitingForUnlockCount =
       controller.appStateController.waitingForUnlock.length;
-    const count =
+    return (
       unapprovedTxCount +
       unapprovedMsgCount +
       unapprovedPersonalMsgCount +
@@ -473,17 +490,19 @@ function setupController(initState, initLangCode) {
       unapprovedEncryptionPublicKeyMsgCount +
       unapprovedTypedMessagesCount +
       pendingApprovalCount +
-      waitingForUnlockCount;
-    if (count) {
-      label = String(count);
-    }
-    extension.browserAction.setBadgeText({ text: label });
-    extension.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+      waitingForUnlockCount
+    );
   }
 
   notificationManager.on(
     NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
-    rejectUnapprovedNotifications,
+    ({ automaticallyClosed }) => {
+      if (!automaticallyClosed) {
+        rejectUnapprovedNotifications();
+      } else if (getUnapprovedTransactionCount() > 0) {
+        triggerUi();
+      }
+    },
   );
 
   function rejectUnapprovedNotifications() {
@@ -533,12 +552,9 @@ function setupController(initState, initLangCode) {
         ),
       );
 
-    // We're specifcally avoid using approvalController directly for better
-    // Error support during rejection
-    Object.keys(
-      controller.permissionsController.approvals.state.pendingApprovals,
-    ).forEach((approvalId) =>
-      controller.permissionsController.rejectPermissionsRequest(approvalId),
+    // Finally, reject all approvals managed by the ApprovalController
+    controller.approvalController.clear(
+      ethErrors.provider.userRejectedRequest(),
     );
 
     updateBadge();

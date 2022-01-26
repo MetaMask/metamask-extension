@@ -25,7 +25,7 @@
   }
 
   &__highlighted {
-    background-color: $primary-2;
+    background-color: var(--primary-2);
     padding: 12px;
     border-radius: 10px;
   }

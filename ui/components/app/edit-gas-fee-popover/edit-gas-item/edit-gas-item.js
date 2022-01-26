@@ -1,151 +1,151 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-import { getMaximumGasTotalInHexWei } from '../../../../../shared/modules/gas.utils';
-import { PRIORITY_LEVELS } from '../../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
+} from '../../../../../shared/constants/gas';
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
 import { PRIMARY } from '../../../../helpers/constants/common';
-import {
-  decGWEIToHexWEI,
-  decimalToHex,
-  hexWEIToDecGWEI,
-} from '../../../../helpers/utils/conversions.util';
-import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { toHumanReadableTime } from '../../../../helpers/utils/util';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
+import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
 import I18nValue from '../../../ui/i18n-value';
 import InfoTooltip from '../../../ui/info-tooltip';
+import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 
-import { useCustomTimeEstimate } from './useCustomTimeEstimate';
+import { useGasItemFeeDetails } from './useGasItemFeeDetails';
+
+const getTitleAndIcon = (priorityLevel, editGasMode) => {
+  let icon = priorityLevel;
+  let title = priorityLevel;
+  if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
+    title = 'dappSuggestedShortLabel';
+  } else if (priorityLevel === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
+    icon = null;
+    title = 'tenPercentIncreased';
+  } else if (
+    priorityLevel === PRIORITY_LEVELS.HIGH &&
+    editGasMode === EDIT_GAS_MODES.SWAPS
+  ) {
+    icon = 'swapSuggested';
+    title = 'swapSuggested';
+  }
+  return { title, icon };
+};
 
 const EditGasItem = ({ priorityLevel }) => {
   const {
+    editGasMode,
     estimateUsed,
-    gasFeeEstimates,
     gasLimit,
-    maxFeePerGas: maxFeePerGasValue,
-    maxPriorityFeePerGas: maxPriorityFeePerGasValue,
-    updateTransactionUsingGasFeeEstimates,
-    transaction: { dappSuggestedGasFees },
+    updateTransactionToTenPercentIncreasedGasFee,
+    updateTransactionUsingDAPPSuggestedValues,
+    updateTransactionUsingEstimate,
+    transaction,
   } = useGasFeeContext();
   const t = useI18nContext();
-  const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const { closeModal, openModal } = useTransactionModalContext();
+  const { dappSuggestedGasFees } = transaction;
 
-  let maxFeePerGas;
-  let maxPriorityFeePerGas;
-  let minWaitTime;
-
-  if (gasFeeEstimates?.[priorityLevel]) {
-    maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;
-  } else if (
-    priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
-    dappSuggestedGasFees
-  ) {
-    maxFeePerGas = hexWEIToDecGWEI(dappSuggestedGasFees.maxFeePerGas);
-    maxPriorityFeePerGas = hexWEIToDecGWEI(
-      dappSuggestedGasFees.maxPriorityFeePerGas,
-    );
-  } else if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
-    if (estimateUsed === PRIORITY_LEVELS.CUSTOM) {
-      maxFeePerGas = maxFeePerGasValue;
-      maxPriorityFeePerGas = maxPriorityFeePerGasValue;
-    } else if (advancedGasFeeValues) {
-      maxFeePerGas =
-        gasFeeEstimates.estimatedBaseFee *
-        parseFloat(advancedGasFeeValues.maxBaseFee);
-      maxPriorityFeePerGas = advancedGasFeeValues.priorityFee;
-    }
-  }
-
-  const { waitTimeEstimate } = useCustomTimeEstimate({
-    gasFeeEstimates,
+  const {
+    // for cancel or speedup estimateGreaterThaGasUse is true if previous gas used
+    // was more than estimate for the priorityLevel
+    estimateGreaterThanGasUse,
+    hexMaximumTransactionFee,
     maxFeePerGas,
     maxPriorityFeePerGas,
-  });
+    minWaitTime,
+  } = useGasItemFeeDetails(priorityLevel);
 
-  if (gasFeeEstimates[priorityLevel]) {
-    minWaitTime =
-      priorityLevel === PRIORITY_LEVELS.HIGH
-        ? gasFeeEstimates?.high.minWaitTimeEstimate
-        : gasFeeEstimates?.low.maxWaitTimeEstimate;
-  } else {
-    minWaitTime = waitTimeEstimate;
+  if (
+    priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
+    !dappSuggestedGasFees
+  ) {
+    return null;
   }
-
-  const hexMaximumTransactionFee = maxFeePerGas
-    ? getMaximumGasTotalInHexWei({
-        gasLimit: decimalToHex(gasLimit),
-        maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
-      })
-    : null;
 
   const onOptionSelect = () => {
     if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
       openModal('advancedGasFee');
     } else {
-      updateTransactionUsingGasFeeEstimates(priorityLevel);
       closeModal('editGasFee');
+
+      if (priorityLevel === PRIORITY_LEVELS.TEN_PERCENT_INCREASED) {
+        updateTransactionToTenPercentIncreasedGasFee();
+      } else if (priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED) {
+        updateTransactionUsingDAPPSuggestedValues();
+      } else {
+        updateTransactionUsingEstimate(priorityLevel);
+      }
     }
   };
+
+  const { title, icon } = getTitleAndIcon(priorityLevel, editGasMode);
 
   return (
     <button
       className={classNames('edit-gas-item', {
-        'edit-gas-item-selected': priorityLevel === estimateUsed,
-        'edit-gas-item-disabled':
-          priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
-          !dappSuggestedGasFees,
+        'edit-gas-item--selected': priorityLevel === estimateUsed,
+        'edit-gas-item--disabled': estimateGreaterThanGasUse,
       })}
-      disabled={
-        priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED &&
-        !dappSuggestedGasFees
-      }
       onClick={onOptionSelect}
       aria-label={priorityLevel}
       autoFocus={priorityLevel === estimateUsed}
+      disabled={estimateGreaterThanGasUse}
     >
       <span className="edit-gas-item__name">
-        <span
-          className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
-        >
-          {PRIORITY_LEVEL_ICON_MAP[priorityLevel]}
-        </span>
-        <I18nValue
-          messageKey={
-            priorityLevel === PRIORITY_LEVELS.DAPP_SUGGESTED
-              ? 'dappSuggestedShortLabel'
-              : priorityLevel
-          }
-        />
+        {icon && (
+          <span
+            className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
+          >
+            {PRIORITY_LEVEL_ICON_MAP[icon]}
+          </span>
+        )}
+        <I18nValue messageKey={title} />
       </span>
       <span
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
       >
-        {minWaitTime
-          ? minWaitTime && toHumanReadableTime(t, minWaitTime)
-          : '--'}
+        {editGasMode !== EDIT_GAS_MODES.SWAPS &&
+          (minWaitTime ? toHumanReadableTime(t, minWaitTime) : '--')}
       </span>
       <span
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}
       >
         {hexMaximumTransactionFee ? (
-          <UserPreferencedCurrencyDisplay
-            key="editGasSubTextFeeAmount"
-            type={PRIMARY}
-            value={hexMaximumTransactionFee}
-          />
+          <div className="edit-gas-item__maxfee">
+            <LoadingHeartBeat />
+            <UserPreferencedCurrencyDisplay
+              key="editGasSubTextFeeAmount"
+              type={PRIMARY}
+              value={hexMaximumTransactionFee}
+            />
+          </div>
         ) : (
           '--'
         )}
       </span>
-      <span className="edit-gas-item__tooltip">
-        <InfoTooltip position="top" />
+      <span className="edit-gas-item__tooltip" data-testid="gas-tooltip">
+        <InfoTooltip
+          contentText={
+            <EditGasToolTip
+              t={t}
+              priorityLevel={priorityLevel}
+              maxFeePerGas={maxFeePerGas}
+              maxPriorityFeePerGas={maxPriorityFeePerGas}
+              editGasMode={editGasMode}
+              gasLimit={gasLimit}
+              transaction={transaction}
+              estimateGreaterThanGasUse={estimateGreaterThanGasUse}
+            />
+          }
+          position="top"
+        />
       </span>
     </button>
   );

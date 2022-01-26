@@ -4,11 +4,11 @@ import { LEDGER_TRANSPORT_TYPES } from '../../../../shared/constants/hardware-wa
 import SelectHardware from './select-hardware';
 
 export default {
-  title: 'Connect Hardware Wallet',
+  title: 'Pages/CreateAccount/ConnectHardware/SelectHardware',
   id: __filename,
 };
 
-export const SelectHardwareComponent = () => {
+export const DefaultStory = () => {
   return (
     <SelectHardware
       browserSupported
@@ -19,6 +19,9 @@ export const SelectHardwareComponent = () => {
     />
   );
 };
+
+DefaultStory.storyName = 'Default';
+
 export const BrowserNotSupported = () => {
   return (
     <SelectHardware

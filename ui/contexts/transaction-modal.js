@@ -12,6 +12,7 @@ export const TransactionModalContextProvider = ({
   actionKey,
   children,
   methodData,
+  captureEventEnabled = true,
 }) => {
   const [openModals, setOpenModals] = useState([]);
   const metricsEvent = useMetaMetricsContext();
@@ -28,7 +29,7 @@ export const TransactionModalContextProvider = ({
         recipientKnown: null,
         functionType:
           actionKey ||
-          getMethodName(methodData.name) ||
+          getMethodName(methodData?.name) ||
           TRANSACTION_TYPES.CONTRACT_INTERACTION,
         origin,
       },
@@ -37,7 +38,9 @@ export const TransactionModalContextProvider = ({
 
   const closeModal = (modalName) => {
     const index = openModals.indexOf(modalName);
-    if (openModals < 0) return;
+    if (openModals < 0) {
+      return;
+    }
     const modals = [...openModals];
     modals.splice(index, 1);
     setOpenModals(modals);
@@ -48,8 +51,10 @@ export const TransactionModalContextProvider = ({
   };
 
   const openModal = (modalName) => {
-    if (openModals.includes(modalName)) return;
-    captureEvent();
+    if (openModals.includes(modalName)) {
+      return;
+    }
+    captureEventEnabled && captureEvent();
     const modals = [...openModals];
     modals.push(modalName);
     setOpenModals(modals);
@@ -62,6 +67,7 @@ export const TransactionModalContextProvider = ({
         closeAllModals,
         currentModal: openModals[openModals.length - 1],
         openModal,
+        openModalCount: openModals.length,
       }}
     >
       {children}
@@ -77,4 +83,5 @@ TransactionModalContextProvider.propTypes = {
   actionKey: PropTypes.string,
   children: PropTypes.node.isRequired,
   methodData: PropTypes.object,
+  captureEventEnabled: PropTypes.bool,
 };

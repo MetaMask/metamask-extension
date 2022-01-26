@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import contractMap from '@metamask/contract-metadata';
 import {
   checkExistingAddresses,
   getURLHostName,
@@ -64,6 +65,7 @@ class ImportToken extends Component {
     forceEditSymbol: false,
     symbolAutoFilled: false,
     decimalAutoFilled: false,
+    mainnetTokenWarning: null,
   };
 
   componentDidMount() {
@@ -192,6 +194,7 @@ class ImportToken extends Component {
       tokenSelectorError: null,
       symbolAutoFilled: false,
       decimalAutoFilled: false,
+      mainnetTokenWarning: null,
     });
 
     const addressIsValid = isValidHexAddress(customAddress, {
@@ -199,10 +202,26 @@ class ImportToken extends Component {
     });
     const standardAddress = addHexPrefix(customAddress).toLowerCase();
 
+    const isMainnetToken = Object.keys(contractMap).some(
+      (key) => key.toLowerCase() === customAddress.toLowerCase(),
+    );
+
+    const isMainnetNetwork = this.props.chainId === '0x1';
+
     switch (true) {
       case !addressIsValid:
         this.setState({
           customAddressError: this.context.t('invalidAddress'),
+          customSymbol: '',
+          customDecimals: 0,
+          customSymbolError: null,
+          customDecimalsError: null,
+        });
+
+        break;
+      case isMainnetToken && !isMainnetNetwork:
+        this.setState({
+          mainnetTokenWarning: this.context.t('mainnetToken'),
           customSymbol: '',
           customDecimals: 0,
           customSymbolError: null,
@@ -270,6 +289,7 @@ class ImportToken extends Component {
       forceEditSymbol,
       symbolAutoFilled,
       decimalAutoFilled,
+      mainnetTokenWarning,
     } = this.state;
 
     const { chainId, rpcPrefs } = this.props;
@@ -310,7 +330,7 @@ class ImportToken extends Component {
           type="text"
           value={customAddress}
           onChange={(e) => this.handleCustomAddressChange(e.target.value)}
-          error={customAddressError}
+          error={customAddressError || mainnetTokenWarning}
           fullWidth
           autoFocus
           margin="normal"

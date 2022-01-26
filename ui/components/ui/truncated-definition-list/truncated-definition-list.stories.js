@@ -4,7 +4,7 @@ import { object, text } from '@storybook/addon-knobs';
 import TruncatedDefinitionList from './truncated-definition-list';
 
 export default {
-  title: 'Truncated Definition List',
+  title: 'Components/UI/TruncatedDefinitionList',
   id: __filename,
 };
 
@@ -21,16 +21,16 @@ const basic = {
 const advanced = {
   'Network Name': 'Ethereum Mainnet',
   'Chain ID': '1',
-  'Ticker': 'ETH',
+  Ticker: 'ETH',
 };
 
 const tooltips = {
   'Network Name': 'The name that is associated with this network',
   'Chain ID': 'The numeric value representing the ID of this network',
-  'Ticker': 'The currency symbol of the primary currency for this network',
+  Ticker: 'The currency symbol of the primary currency for this network',
 };
 
-export const truncatedDefinitionList = () => (
+export const DefaultStory = () => (
   <TruncatedDefinitionList
     dictionary={object('dictionary', basic)}
     title={text('title', 'Basic definitions')}
@@ -38,7 +38,9 @@ export const truncatedDefinitionList = () => (
   />
 );
 
-export const withTooltips = () => (
+DefaultStory.storyName = 'Default';
+
+export const WithTooltips = () => (
   <TruncatedDefinitionList
     dictionary={object('dictionary', advanced)}
     title={text('title', 'Network Details')}

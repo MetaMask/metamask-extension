@@ -23,8 +23,20 @@ import { useMaxPriorityFeePerGasInput } from './useMaxPriorityFeePerGasInput';
 import { useGasEstimates } from './useGasEstimates';
 import { useTransactionFunctions } from './useTransactionFunctions';
 
-// eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2 = process.env.EIP_1559_V2;
+/**
+ * In EIP_1559_V2 implementation as used by useGasfeeInputContext() the use of this hook is evolved.
+ * It is no longer used to keep transient state of advance gas fee inputs.
+ * Transient state of inputs is maintained locally in /ui/components/app/advance-gas-fee-popover component.
+ *
+ * This hook is used now as source of shared data about transaction, it shares details of gas fee in transaction,
+ * estimate used, is EIP-1559 supported and other details. It also  have methods to update transaction.
+ *
+ * Transaction is used as single source of truth and as transaction is updated the fields shared by hook are
+ * also updated using useEffect hook.
+ *
+ * It will be useful to plan a task to create a new hook of this shared information from this hook.
+ * Methods like setEstimateToUse, onManualChange are deprecated in context of EIP_1559_V2 implementation.
+ */
 
 /**
  * @typedef {Object} GasFeeInputReturnType
@@ -65,11 +77,15 @@ const EIP_1559_V2 = process.env.EIP_1559_V2;
  * Uses gasFeeEstimates and state to keep track of user gas fee inputs.
  * Will update the gas fee state when estimates update if the user has not yet
  * modified the fields.
- * @param {EstimateLevel} defaultEstimateToUse - which estimate
+ *
+ * @param {EstimateLevel} [defaultEstimateToUse] - which estimate
  *  level to default the 'estimateToUse' state variable to.
+ * @param {object} [transaction]
+ * @param {string} [minimumGasLimit]
+ * @param {EDIT_GAS_MODES[keyof EDIT_GAS_MODES]} editGasMode
  * @returns {GasFeeInputReturnType & import(
  *  './useGasFeeEstimates'
- * ).GasEstimates} - gas fee input state and the GasFeeEstimates object
+ * ).GasEstimates} gas fee input state and the GasFeeEstimates object
  */
 export function useGasFeeInputs(
   defaultEstimateToUse = GAS_RECOMMENDATIONS.MEDIUM,
@@ -77,13 +93,15 @@ export function useGasFeeInputs(
   minimumGasLimit = '0x5208',
   editGasMode = EDIT_GAS_MODES.MODIFY_IN_PLACE,
 ) {
-  // eslint-disable-next-line prefer-destructuring
   const EIP_1559_V2_ENABLED =
+    // This is a string in unit tests but is a boolean in the browser
     process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
+
+  const supportsEIP1559V2 = supportsEIP1559 && EIP_1559_V2_ENABLED;
 
   // We need the gas estimates from the GasFeeController in the background.
   // Calling this hooks initiates polling for new gas estimates and returns the
@@ -93,6 +111,7 @@ export function useGasFeeInputs(
     gasFeeEstimates,
     isGasEstimatesLoading,
     estimatedGasFeeTimeBounds,
+    isNetworkBusy,
   } = useGasFeeEstimates();
 
   const userPrefersAdvancedGas = useSelector(getAdvancedInlineGasShown);
@@ -102,9 +121,12 @@ export function useGasFeeInputs(
       userPrefersAdvancedGas &&
       transaction?.txParams?.maxPriorityFeePerGas &&
       transaction?.txParams?.maxFeePerGas
-    )
+    ) {
       return null;
-    if (transaction) return transaction?.userFeeLevel || null;
+    }
+    if (transaction) {
+      return transaction?.userFeeLevel || null;
+    }
     return defaultEstimateToUse;
   });
 
@@ -115,26 +137,30 @@ export function useGasFeeInputs(
     return PRIORITY_LEVELS.CUSTOM;
   });
 
+  const [gasLimit, setGasLimit] = useState(() =>
+    Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
+  );
+
   /**
    * In EIP-1559 V2 designs change to gas estimate is always updated to transaction
    * Thus callback setEstimateToUse can be deprecate in favour of this useEffect
    * so that transaction is source of truth whenever possible.
    */
   useEffect(() => {
-    if (EIP_1559_V2 && transaction?.userFeeLevel) {
-      setEstimateUsed(transaction?.userFeeLevel);
-      setInternalEstimateToUse(transaction?.userFeeLevel);
+    if (supportsEIP1559V2) {
+      if (transaction?.userFeeLevel) {
+        setEstimateUsed(transaction?.userFeeLevel);
+        setInternalEstimateToUse(transaction?.userFeeLevel);
+      }
+      setGasLimit(Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')));
     }
   }, [
     setEstimateUsed,
+    setGasLimit,
     setInternalEstimateToUse,
+    supportsEIP1559V2,
     transaction,
-    userPrefersAdvancedGas,
   ]);
-
-  const [gasLimit, setGasLimit] = useState(() =>
-    Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')),
-  );
 
   const {
     gasPrice,
@@ -152,12 +178,12 @@ export function useGasFeeInputs(
     maxFeePerGasFiat,
     setMaxFeePerGas,
   } = useMaxFeePerGasInput({
-    EIP_1559_V2,
     estimateToUse,
     gasEstimateType,
     gasFeeEstimates,
     gasLimit,
     gasPrice,
+    supportsEIP1559V2,
     transaction,
   });
 
@@ -166,11 +192,11 @@ export function useGasFeeInputs(
     maxPriorityFeePerGasFiat,
     setMaxPriorityFeePerGas,
   } = useMaxPriorityFeePerGasInput({
-    EIP_1559_V2,
     estimateToUse,
     gasEstimateType,
     gasFeeEstimates,
     gasLimit,
+    supportsEIP1559V2,
     transaction,
   });
 
@@ -180,6 +206,7 @@ export function useGasFeeInputs(
     estimatedMinimumFiat,
     estimatedMaximumNative,
     estimatedMinimumNative,
+    maximumCostInHexWei,
     minimumCostInHexWei,
   } = useGasEstimates({
     editGasMode,
@@ -226,12 +253,19 @@ export function useGasFeeInputs(
   }, [minimumGasLimit, gasErrors.gasLimit, transaction]);
 
   const {
+    cancelTransaction,
+    speedUpTransaction,
     updateTransaction,
-    updateTransactionUsingGasFeeEstimates,
+    updateTransactionToTenPercentIncreasedGasFee,
+    updateTransactionUsingDAPPSuggestedValues,
+    updateTransactionUsingEstimate,
   } = useTransactionFunctions({
     defaultEstimateToUse,
+    editGasMode,
     gasFeeEstimates,
     gasLimit,
+    maxPriorityFeePerGas,
+    minimumGasLimit,
     transaction,
   });
 
@@ -295,6 +329,7 @@ export function useGasFeeInputs(
     setGasPrice,
     gasLimit,
     setGasLimit,
+    editGasMode,
     estimateToUse,
     setEstimateToUse,
     estimatedMinimumFiat,
@@ -302,10 +337,13 @@ export function useGasFeeInputs(
     estimatedMaximumNative,
     estimatedMinimumNative,
     isGasEstimatesLoading,
+    maximumCostInHexWei,
+    minimumCostInHexWei,
     estimateUsed,
     gasFeeEstimates,
     gasEstimateType,
     estimatedGasFeeTimeBounds,
+    isNetworkBusy,
     onManualChange,
     estimatedBaseFee,
     // error and warnings
@@ -315,24 +353,14 @@ export function useGasFeeInputs(
     gasWarnings,
     hasGasErrors,
     hasSimulationError,
+    minimumGasLimitDec: hexToDecimal(minimumGasLimit),
     supportsEIP1559,
-    supportsEIP1559V2: supportsEIP1559 && EIP_1559_V2_ENABLED,
+    supportsEIP1559V2,
+    cancelTransaction,
+    speedUpTransaction,
     updateTransaction,
-    updateTransactionUsingGasFeeEstimates,
+    updateTransactionToTenPercentIncreasedGasFee,
+    updateTransactionUsingDAPPSuggestedValues,
+    updateTransactionUsingEstimate,
   };
 }
-
-/**
- * In EIP_1559_V2 implementation as used by useGasfeeInputContext() the use of this hook is evolved.
- * It is no longer used to keep transient state of advance gas fee inputs.
- * Transient state of inputs is maintained locally in /ui/components/app/advance-gas-fee-popover component.
- *
- * This hook is used now as source of shared data about transaction, it shares details of gas fee in transaction,
- * estimate used, is EIP-1559 supported and other details. It also  have methods to update transaction.
- *
- * Transaction is used as single source of truth and as transaction is updated the fields shared by hook are
- * also updated using useEffect hook.
- *
- * It will be useful to plan a task to create a new hook of this shared information from this hook.
- * Methods like setEstimateToUse, onManualChange are deprecated in context of EIP_1559_V2 implementation.
- */

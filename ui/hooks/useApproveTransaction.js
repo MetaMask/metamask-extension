@@ -6,8 +6,8 @@ import { useCallback, useState } from 'react';
  *
  * Provides a reusable hook that, given a transactionGroup, will manage
  * the process of editing gas for approvals
- * @param {Object} transactionGroup
- * @return {[boolean, Function]}
+ *
+ * @returns {[boolean, Function]}
  */
 export function useApproveTransaction() {
   const [showCustomizeGasPopover, setShowCustomizeGasPopover] = useState(false);

@@ -189,7 +189,7 @@
   &__error {
     @include H6;
 
-    color: $crimson;
+    color: var(--crimson);
     padding-top: 5px;
   }
 }

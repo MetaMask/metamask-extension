@@ -117,7 +117,7 @@ function getInfuraProjectId({ buildType, environment, testing }) {
  *
  * @param {object} options - The Segment write key options.
  * @param {BuildType} options.buildType - The current build type.
- * @param {keyof ENVIRONMENT} options.enviroment - The current build environment.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
  * @returns {string} The Segment write key.
  */
 function getSegmentWriteKey({ buildType, environment }) {
@@ -366,6 +366,7 @@ function createFactoredBuild({
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      testing,
     });
 
     // set bundle entries
@@ -449,7 +450,9 @@ function createFactoredBuild({
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
         // skip "common" group, they are added to all other groups
-        if (groupSet === commonSet) continue;
+        if (groupSet === commonSet) {
+          continue;
+        }
 
         switch (groupLabel) {
           case 'ui': {
@@ -543,6 +546,7 @@ function createNormalBundle({
       minify,
       reloadOnChange,
       shouldLintFenceFiles,
+      testing,
     });
 
     // set bundle entries
@@ -599,6 +603,7 @@ function setupBundlerDefaults(
     minify,
     reloadOnChange,
     shouldLintFenceFiles,
+    testing,
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
@@ -620,8 +625,9 @@ function setupBundlerDefaults(
   });
 
   // Ensure react-devtools are not included in non-dev builds
-  if (!devMode) {
+  if (!devMode || testing) {
     bundlerOpts.manualIgnore.push('react-devtools');
+    bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
 
   // Inject environment variables via node-style `process.env`
@@ -779,7 +785,7 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
-    IN_TEST: testing ? 'true' : false,
+    IN_TEST: testing,
     PUBNUB_SUB_KEY: process.env.PUBNUB_SUB_KEY || '',
     PUBNUB_PUB_KEY: process.env.PUBNUB_PUB_KEY || '',
     CONF: devMode ? metamaskrc : {},

@@ -1,21 +1,38 @@
+import { createBrowserHistory } from 'history';
 import React from 'react';
-import { action } from '@storybook/addon-actions';
+import README from './README.mdx';
 import UnlockPage from './unlock-page.component';
 
 export default {
-  title: 'UnlockPage',
+  title: 'Pages/UnlockPage',
   id: __filename,
+  component: UnlockPage,
+  parameters: {
+    docs: {
+      page: README,
+    },
+  },
+  argTypes: {
+    history: { control: 'object' },
+    isUnlocked: { control: 'boolean' },
+    onRestore: { action: 'onRestore' },
+    onSubmit: { action: 'onSubmit' },
+    forceUpdateMetamaskState: { action: 'forceUpdateMetamaskState' },
+    showOptInModal: { action: 'showOptInModal' },
+  },
 };
 
-export const UnlockPageComponent = () => {
-  return (
-    <UnlockPage
-      onSubmit={action('Login')}
-      forceUpdateMetamaskState={() => ({
-        participateInMetaMetrics: true,
-      })}
-      showOptInModal={() => null}
-      history={{}}
-    />
-  );
+export const DefaultStory = (args) => {
+  const history = createBrowserHistory();
+  return <UnlockPage {...args} history={history} />;
 };
+
+DefaultStory.storyName = 'Default';
+
+DefaultStory.args = {
+  forceUpdateMetamaskState: () => ({
+    participateInMetaMetrics: true,
+  }),
+};
+
+DefaultStory.storyName = 'Default';

@@ -41,6 +41,7 @@ export default class ReadOnlyNetworkStore {
 
   /**
    * Returns state
+   *
    * @returns {Promise<object>}
    */
   async get() {
@@ -52,6 +53,7 @@ export default class ReadOnlyNetworkStore {
 
   /**
    * Set state
+   *
    * @param {Object} state - The state to set
    * @returns {Promise<void>}
    */
