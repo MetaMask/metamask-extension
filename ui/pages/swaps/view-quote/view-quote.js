@@ -797,6 +797,21 @@ export default function ViewQuote() {
     }
   }, [dispatch, viewQuotePageLoadedEvent, reviewSwapClickedTimestamp]);
 
+  useEffect(() => {
+    // if smart transaction error is turned off, reset submit clicked boolean
+    if (
+      !currentSmartTransactionsEnabled &&
+      currentSmartTransactionsError &&
+      submitClicked
+    ) {
+      setSubmitClicked(false);
+    }
+  }, [
+    currentSmartTransactionsEnabled,
+    currentSmartTransactionsError,
+    submitClicked,
+  ]);
+
   const transaction = {
     userFeeLevel: swapsUserFeeLevel || GAS_RECOMMENDATIONS.HIGH,
     txParams: {
