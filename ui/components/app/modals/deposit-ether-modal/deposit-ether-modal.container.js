@@ -10,7 +10,7 @@ import {
   getIsMainnet,
   getCurrentChainId,
   getSelectedAddress,
-  getIsBuyableChain,
+  getIsBuyableTransakChain,
 } from '../../../../selectors/selectors';
 import DepositEtherModal from './deposit-ether-modal.component';
 
@@ -20,7 +20,7 @@ function mapStateToProps(state) {
     isTestnet: getIsTestnet(state),
     isMainnet: getIsMainnet(state),
     address: getSelectedAddress(state),
-    isBuyableChain: getIsBuyableChain(state),
+    isBuyableTransakChain: getIsBuyableTransakChain(state),
   };
 }
 

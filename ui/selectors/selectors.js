@@ -632,6 +632,11 @@ export function getIsBuyableChain(state) {
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
 
+export function getIsBuyableTransakChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
+}
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];

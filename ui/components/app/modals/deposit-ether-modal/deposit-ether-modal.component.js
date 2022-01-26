@@ -16,7 +16,7 @@ export default class DepositEtherModal extends Component {
     chainId: PropTypes.string.isRequired,
     isTestnet: PropTypes.bool.isRequired,
     isMainnet: PropTypes.bool.isRequired,
-    isBuyableChain: PropTypes.bool.isRequired,
+    isBuyableTransakChain: PropTypes.bool.isRequired,
     toWyre: PropTypes.func.isRequired,
     toTransak: PropTypes.func.isRequired,
     address: PropTypes.string.isRequired,
@@ -97,7 +97,7 @@ export default class DepositEtherModal extends Component {
       toFaucet,
       isTestnet,
       isMainnet,
-      isBuyableChain,
+      isBuyableTransakChain,
     } = this.props;
     const { t } = this.context;
     const networkName = NETWORK_TO_NAME_MAP[chainId];
@@ -170,7 +170,7 @@ export default class DepositEtherModal extends Component {
                 });
                 toTransak(address, chainId);
               },
-              hide: !isBuyableChain,
+              hide: !isBuyableTransakChain,
             })}
             {this.renderRow({
               logo: (
