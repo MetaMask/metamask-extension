@@ -1305,6 +1305,7 @@ export function fetchSwapsSmartTransactionFees(unsignedTransaction) {
         dispatch(setCurrentSmartTransactionsError(errorObj?.type));
       }
     }
+    return null;
   };
 }
 

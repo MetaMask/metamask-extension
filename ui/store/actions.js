@@ -3173,7 +3173,9 @@ export function estimateSmartTransactionsGas(
   unsignedTransaction,
   approveTxParams,
 ) {
-  approveTxParams.value = '0x0';
+  if (approveTxParams) {
+    approveTxParams.value = '0x0';
+  }
   return async (dispatch) => {
     try {
       await promisifiedBackground.estimateSmartTransactionsGas(
