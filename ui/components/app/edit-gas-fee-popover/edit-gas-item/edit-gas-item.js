@@ -125,6 +125,7 @@ const EditGasItem = ({ priorityLevel }) => {
               backgroundColor={
                 priorityLevel === estimateUsed ? '#f2f3f4' : '#fff'
               }
+              estimateUsed={priorityLevel}
             />
             <UserPreferencedCurrencyDisplay
               key="editGasSubTextFeeAmount"
