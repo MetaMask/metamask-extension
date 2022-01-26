@@ -3641,7 +3641,6 @@
         "document": true,
         "jQuery": true,
         "localStorage": true,
-        "location": true,
         "navigator": true,
         "postMessage": true,
         "removeEventListener": true,
