@@ -1511,7 +1511,7 @@ export default class TransactionController extends EventEmitter {
     }
 
     if (defaultGasEstimates) {
-      const estimateType = defaultGasEstimates.estimateType;
+      const { estimateType } = defaultGasEstimates;
       if (estimateType) {
         gasParams.default_estimate = estimateType;
         let defaultMaxFeePerGas = txMeta.defaultGasEstimates.maxFeePerGas;
