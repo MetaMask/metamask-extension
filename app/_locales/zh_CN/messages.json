@@ -362,9 +362,6 @@
     "message": "通过 $1 查看账户",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "使用 Blockies Identicon 图标头像"
-  },
   "browserNotSupported": {
     "message": "您的浏览器不支持该功能……"
   },

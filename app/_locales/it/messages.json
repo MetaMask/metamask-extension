@@ -197,9 +197,6 @@
     "message": "Visualizza account su $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Usa le icone Blockie"
-  },
   "browserNotSupported": {
     "message": "Il tuo Browser non è supportato..."
   },

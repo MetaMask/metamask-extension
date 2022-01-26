@@ -233,9 +233,6 @@
     "message": "Ver cuenta en $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Usar Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "El explorador no es compatible…"
   },
