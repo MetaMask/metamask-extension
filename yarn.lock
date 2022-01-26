@@ -2638,9 +2638,9 @@
     web3-provider-engine "^16.0.3"
 
 "@metamask/controllers@^25.0.0":
-  version "25.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-25.0.0.tgz#764ba46a169f197253e35ca5273720c91eae7662"
-  integrity sha512-BfTRaK87Iha+EXlEsu330Jp9Wtx0gks2vA+q3Lu/AKGbcz2J0cokECNwN7uEe4GQLPLsfCIAkUIAlP3pRiCvjg==
+  version "25.1.0"
+  resolved "https://registry.yarnpkg.com/@metamask/controllers/-/controllers-25.1.0.tgz#2efee24a9a2b03ab2a2b0422c8f250931c269560"
+  integrity sha512-syndn2lIhtlACzaqjDrw23dJzw8pZ6en4Cr35C7B9RRS87EhahUqkPP73moAzLtvbyqtBlAUO1HHrqV3lw4E5g==
   dependencies:
     "@ethereumjs/common" "^2.3.1"
     "@ethereumjs/tx" "^3.2.1"
@@ -2666,7 +2666,7 @@
     isomorphic-fetch "^3.0.0"
     jsonschema "^1.2.4"
     multiformats "^9.5.2"
-    nanoid "^3.1.12"
+    nanoid "^3.1.31"
     punycode "^2.1.1"
     single-call-balance-checker-abi "^1.0.0"
     uuid "^8.3.2"
@@ -19088,10 +19088,10 @@ nanoid@^2.0.0, nanoid@^2.1.6:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-2.1.11.tgz#ec24b8a758d591561531b4176a01e3ab4f0f0280"
   integrity sha512-s/snB+WGm6uwi0WjsZdaVcuf3KJXlfGl2LcxgwkEwJF0D/BWzVWAZW/XY4bFaiR7s0Jk3FPvlnepg1H1b1UwlA==
 
-nanoid@^3.1.12, nanoid@^3.1.23, nanoid@^3.1.28:
-  version "3.1.30"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.30.tgz#63f93cc548d2a113dc5dfbc63bfa09e2b9b64362"
-  integrity sha512-zJpuPDwOv8D2zq2WRoMe1HsfZthVewpel9CAvTfc/2mBD1uUT/agc5f7GHGWXlYkFvi1mVxe4IjvP2HNrop7nQ==
+nanoid@^3.1.12, nanoid@^3.1.23, nanoid@^3.1.28, nanoid@^3.1.31:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.2.0.tgz#62667522da6673971cca916a6d3eff3f415ff80c"
+  integrity sha512-fmsZYa9lpn69Ad5eDn7FMcnnSR+8R34W9qJEijxYhTbfOWzr22n1QxCMzXLK+ODyW2973V3Fux959iQoUxzUIA==
 
 nanomatch@^1.2.9:
   version "1.2.9"
