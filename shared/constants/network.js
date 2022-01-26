@@ -24,6 +24,8 @@ export const OPTIMISM_CHAIN_ID = '0xa';
 export const OPTIMISM_TESTNET_CHAIN_ID = '0x45';
 export const POLYGON_CHAIN_ID = '0x89';
 export const AVALANCHE_CHAIN_ID = '0xa86a';
+export const FANTOM_CHAIN_ID = '0xfa';
+export const CELO_CHAIN_ID = '0xa4ec';
 
 /**
  * The largest possible chain ID we can handle.
@@ -55,6 +57,8 @@ export const TEST_ETH_SYMBOL = 'TESTETH';
 export const BNB_SYMBOL = 'BNB';
 export const MATIC_SYMBOL = 'MATIC';
 export const AVALANCHE_SYMBOL = 'AVAX';
+export const FANTOM_SYMBOL = 'FTM';
+export const CELO_SYMBOL = 'CELO';
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
@@ -215,5 +219,15 @@ export const BUYABLE_CHAINS_MAP = {
     nativeCurrency: AVALANCHE_SYMBOL,
     network: 'avaxcchain',
     transakCurrencies: [AVALANCHE_SYMBOL],
+  },
+  [FANTOM_CHAIN_ID]: {
+    nativeCurrency: FANTOM_SYMBOL,
+    network: 'fantom',
+    transakCurrencies: [FANTOM_SYMBOL],
+  },
+  [CELO_CHAIN_ID]: {
+    nativeCurrency: CELO_SYMBOL,
+    network: 'celo',
+    transakCurrencies: [CELO_SYMBOL],
   },
 };
