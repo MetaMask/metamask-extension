@@ -295,10 +295,10 @@ export default function ViewQuote() {
   if (
     currentSmartTransactionsEnabled &&
     smartTransactionsOptInStatus &&
-    smartTransactionEstimatedGas
+    smartTransactionEstimatedGas?.txData
   ) {
     maxGasLimit = `0x${decimalToHex(
-      smartTransactionEstimatedGas.gasLimit || 0,
+      smartTransactionEstimatedGas?.txData.gasLimit || 0,
     )}`;
   }
 
@@ -341,7 +341,7 @@ export default function ViewQuote() {
       chainId,
       smartTransactionsEnabled &&
         smartTransactionsOptInStatus &&
-        smartTransactionEstimatedGas,
+        smartTransactionEstimatedGas?.txData,
       nativeCurrencySymbol,
     );
   }, [
@@ -354,7 +354,7 @@ export default function ViewQuote() {
     approveGas,
     memoizedTokenConversionRates,
     chainId,
-    smartTransactionEstimatedGas,
+    smartTransactionEstimatedGas?.txData,
     nativeCurrencySymbol,
     smartTransactionsEnabled,
     smartTransactionsOptInStatus,
@@ -409,14 +409,14 @@ export default function ViewQuote() {
   if (
     currentSmartTransactionsEnabled &&
     smartTransactionsOptInStatus &&
-    smartTransactionEstimatedGas
+    smartTransactionEstimatedGas?.txData
   ) {
     ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
       conversionRate,
       nativeCurrencySymbol,
-      feeInWeiDec: smartTransactionEstimatedGas.feeEstimate,
+      feeInWeiDec: smartTransactionEstimatedGas.txData.feeEstimate,
     }));
     ({
       feeInFiat: maxFeeInFiat,
@@ -426,7 +426,7 @@ export default function ViewQuote() {
       currentCurrency,
       conversionRate,
       nativeCurrencySymbol,
-      feeInWeiDec: smartTransactionEstimatedGas.feeEstimate * 2,
+      feeInWeiDec: smartTransactionEstimatedGas.txData.feeEstimate * 2,
     }));
   }
 
@@ -888,14 +888,14 @@ export default function ViewQuote() {
             />
             {currentSmartTransactionsEnabled &&
               smartTransactionsOptInStatus &&
-              !smartTransactionEstimatedGas && (
+              !smartTransactionEstimatedGas?.txData && (
                 <Box marginTop={0} marginBottom={10}>
                   <PulseLoader />
                 </Box>
               )}
             {(!currentSmartTransactionsEnabled ||
               !smartTransactionsOptInStatus ||
-              smartTransactionEstimatedGas) && (
+              smartTransactionEstimatedGas?.txData) && (
               <div
                 className={classnames('view-quote__fee-card-container', {
                   'view-quote__fee-card-container--three-rows':
@@ -944,7 +944,7 @@ export default function ViewQuote() {
                 if (
                   currentSmartTransactionsEnabled &&
                   smartTransactionsOptInStatus &&
-                  smartTransactionEstimatedGas
+                  smartTransactionEstimatedGas?.txData
                 ) {
                   dispatch(
                     signAndSendSwapsSmartTransaction({
