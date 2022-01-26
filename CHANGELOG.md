@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
 - [#13269](https://github.com/MetaMask/metamask-extension/issues/13269): Allow custom ethereum networks for wallet_addEthereumChain 
 
 ## [10.8.2]
