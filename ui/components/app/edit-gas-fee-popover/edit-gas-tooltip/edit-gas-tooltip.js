@@ -79,6 +79,15 @@ const EditGasToolTip = ({
     }
   }, [editGasMode, estimateGreaterThanGasUse, priorityLevel, transaction, t]);
 
+  let imgAltText;
+  if (priorityLevel === PRIORITY_LEVELS.LOW) {
+    imgAltText = t('curveLowGasEstimate');
+  } else if (priorityLevel === PRIORITY_LEVELS.MEDIUM) {
+    imgAltText = t('curveMediumGasEstimate');
+  } else if (priorityLevel === PRIORITY_LEVELS.HIGH) {
+    imgAltText = t('curveHighGasEstimate');
+  }
+
   return (
     <div className="edit-gas-tooltip__container">
       {priorityLevel !== PRIORITY_LEVELS.CUSTOM &&
@@ -88,7 +97,7 @@ const EditGasToolTip = ({
         editGasMode === EDIT_GAS_MODES.SWAPS
       ) &&
       !estimateGreaterThanGasUse ? (
-        <img alt="" src={`./images/curve-${priorityLevel}.svg`} />
+        <img alt={imgAltText} src={`./images/curve-${priorityLevel}.svg`} />
       ) : null}
       {toolTipMessage && (
         <div className="edit-gas-tooltip__container__message">
