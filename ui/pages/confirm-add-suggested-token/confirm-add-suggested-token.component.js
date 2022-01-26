@@ -6,6 +6,7 @@ import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import ZENDESK_URL from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
 function getTokenName(name, symbol) {
@@ -88,7 +89,7 @@ const ConfirmAddSuggestedToken = (props) => {
               className="confirm-add-suggested-token__link"
               rel="noopener noreferrer"
               target="_blank"
-              href="https://metamask.zendesk.com/hc/en-us/articles/4403988839451"
+              href={ZENDESK_URL.TOKEN_SAFETY_PRACTICES}
             >
               {t('learnScamRisk')}
             </Button>,
