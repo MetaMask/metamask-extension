@@ -12,111 +12,39 @@
     & .popover-header {
       padding-bottom: 1px;
     }
-  }
 
-  
-
-  // &__close {
-  //   padding-top: 16px;
-  //   padding-right: 18px;
-  //   text-align: right;
-
-  //   &__close-icon {
-  //     width: 12px;
-  //     height: 16px;
-  //     color: var(--ui-4);
-  //   }
-  // }
-
-  &__title {
-    @include H4;
-
-    height: 26px;
-    text-align: center;
-    color: var(--ui-black);
-    font-weight: 700;
-    // margin-top: 19px;
-  }
-
-  &__ident-section {
-    width: 148px;
-    height: 32px;
-    background: var(--ui-1);
-    border-radius: 16px;
-    align-self: center;
-    margin-top: 8px;
-    display: flex;
-    align-items: center;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 12px;
-    padding-right: 12px;
-
-    @include H7;
-    
-    color: var(--ui-black);
-
-    &__nickname {
-      margin-left: 8px;
-    }
-
-    & .fa-question-circle {
+    & .fa-question-circle, & .popover-header__button {
       color: var(--ui-4);
     }
   }
 
-  &__subtitle {
-    @include H7;
+  &__title {
+    height: 26px;
+  }
 
+  &__token-box {
+    align-self: center;
+  }
+
+  &__subtitle {
     height: 17px;
     text-align: center;
-    color: var(--ui-black);
-    margin-top: 32px;
+    margin-top: 24px;
     margin-bottom: 24px;
-    font-weight: 700;
   }
 
-  &__content {
-    margin-right: 17px;
-    margin-left: 19px;
+  &__content-box-1 {
+    border-bottom: 1px solid var(--ui-2);
 
-    &__content-box-1 {
-      width: 300px;
-      border-bottom: 1px solid var(--ui-2);
-      display: flex;
-      align-items: center;
-      padding-bottom: 8px;
-      margin-bottom: 8px;
-  
-      &__serial-number-1 {
-        @include H6;
-  
-        margin-right: 16px;
-        color: var(--ui-black);
-      }
-  
-      &__text-1 {
-        @include H7;
-  
-        width: 266px;
-        color: var(--ui-black);
-      }
-
-      &__link-1 {
-        color: var(--primary-1);
-      }
-    }
-
-    &__content-box-2 {
-      width: 300px;
-      display: flex;
-      align-items: center;
+    &__text-1 {
+      width: 266px;
     }
   }
 
-  // &__footer {
-  //   padding: 16px;
-  //   margin-top: 17px;
-  //   margin-bottom: 16px;
-  // }
+  &__button {
+    color: var(--primary-1);
+    font-size: 12px;
+    display: initial;
+    padding: 0;
+  }
 }
