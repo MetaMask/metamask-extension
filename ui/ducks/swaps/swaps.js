@@ -902,44 +902,59 @@ export const signAndSendSwapsSmartTransaction = ({
       return;
     }
 
-    let finalApproveTxMeta;
     const approveTxParams = getApproveTxParams(state);
 
-    if (approveTxParams) {
-      if (networkAndAccountSupports1559) {
-        approveTxParams.maxFeePerGas = maxFeePerGas;
-        approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
-        delete approveTxParams.gasPrice;
-      }
-      const approveTxMeta = await dispatch(
-        addUnapprovedTransaction(
-          { ...approveTxParams, amount: '0x0' },
-          'metamask',
-        ),
-      );
-      await dispatch(setApproveTxId(approveTxMeta.id));
-      finalApproveTxMeta = await dispatch(
-        updateTransaction(
-          {
-            ...approveTxMeta,
-            estimatedBaseFee: decEstimatedBaseFee,
-            type: TRANSACTION_TYPES.SWAP_APPROVAL,
-            sourceTokenSymbol: sourceTokenInfo.symbol,
-          },
-          true,
-        ),
-      );
-      // TODO: Submit an approval tx via STX instead of the regular way, otherwise the trade tx via STX will not work.
-      try {
-        await dispatch(updateAndApproveTx(finalApproveTxMeta, true));
-      } catch (e) {
-        await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-        history.push(SWAPS_ERROR_ROUTE);
-        return;
-      }
-    }
+    // TODO: Figure out which commented code below is still neeeded.
+    // let finalApproveTxMeta;
+
+    // if (approveTxParams) {
+    //   if (networkAndAccountSupports1559) {
+    //     approveTxParams.maxFeePerGas = maxFeePerGas;
+    //     approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
+    //     delete approveTxParams.gasPrice;
+    //   }
+    //   const approveTxMeta = await dispatch(
+    //     addUnapprovedTransaction(
+    //       { ...approveTxParams, amount: '0x0' },
+    //       'metamask',
+    //     ),
+    //   );
+    //   await dispatch(setApproveTxId(approveTxMeta.id));
+    //   finalApproveTxMeta = await dispatch(
+    //     updateTransaction(
+    //       {
+    //         ...approveTxMeta,
+    //         estimatedBaseFee: decEstimatedBaseFee,
+    //         type: TRANSACTION_TYPES.SWAP_APPROVAL,
+    //         sourceTokenSymbol: sourceTokenInfo.symbol,
+    //       },
+    //       true,
+    //     ),
+    //   );
+    //   // TODO: Submit an approval tx via STX instead of the regular way, otherwise the trade tx via STX will not work.
+    //   try {
+    //     await dispatch(updateAndApproveTx(finalApproveTxMeta, true));
+    //   } catch (e) {
+    //     await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+    //     history.push(SWAPS_ERROR_ROUTE);
+    //     return;
+    //   }
+    // }
 
     try {
+      if (approveTxParams) {
+        approveTxParams.value = '0x0';
+        const smartTransactionApprovalFees = await dispatch(
+          fetchSwapsSmartTransactionFees(approveTxParams),
+        );
+        await dispatch(
+          signAndSendSmartTransaction({
+            unsignedTransaction: approveTxParams,
+            smartTransactionFees: smartTransactionApprovalFees,
+          }),
+        );
+      }
+
       const smartTransactionFees = await dispatch(
         fetchSwapsSmartTransactionFees(unsignedTransaction),
       );
