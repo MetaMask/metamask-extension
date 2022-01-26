@@ -411,12 +411,16 @@ export default function ViewQuote() {
     smartTransactionsOptInStatus &&
     smartTransactionEstimatedGas?.txData
   ) {
+    const stxEstimatedFeeInWeiDec =
+      smartTransactionEstimatedGas.txData.feeEstimate +
+      (smartTransactionEstimatedGas.approvalTxData?.feeEstimate || 0);
+    const stxMaxFeeInWeiDec = stxEstimatedFeeInWeiDec * 2;
     ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
       conversionRate,
       nativeCurrencySymbol,
-      feeInWeiDec: smartTransactionEstimatedGas.txData.feeEstimate,
+      feeInWeiDec: stxEstimatedFeeInWeiDec,
     }));
     ({
       feeInFiat: maxFeeInFiat,
@@ -426,7 +430,7 @@ export default function ViewQuote() {
       currentCurrency,
       conversionRate,
       nativeCurrencySymbol,
-      feeInWeiDec: smartTransactionEstimatedGas.txData.feeEstimate * 2,
+      feeInWeiDec: stxMaxFeeInWeiDec,
     }));
   }
 
