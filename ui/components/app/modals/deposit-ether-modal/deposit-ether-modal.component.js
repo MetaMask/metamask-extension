@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import {
   NETWORK_TO_NAME_MAP,
-  BUYABLE_CHAIN_IDS_TO_CURRENCY_MAP,
+  BUYABLE_CHAINS_MAP,
 } from '../../../../../shared/constants/network';
 import Button from '../../../ui/button';
 
@@ -101,7 +101,7 @@ export default class DepositEtherModal extends Component {
     } = this.props;
     const { t } = this.context;
     const networkName = NETWORK_TO_NAME_MAP[chainId];
-    const symbol = BUYABLE_CHAIN_IDS_TO_CURRENCY_MAP[chainId];
+    const symbol = BUYABLE_CHAINS_MAP[chainId].nativeCurrency;
 
     return (
       <div className="page-container page-container--full-width page-container--full-height">

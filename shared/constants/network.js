@@ -23,6 +23,7 @@ export const BSC_CHAIN_ID = '0x38';
 export const OPTIMISM_CHAIN_ID = '0xa';
 export const OPTIMISM_TESTNET_CHAIN_ID = '0x45';
 export const POLYGON_CHAIN_ID = '0x89';
+export const AVALANCHE_CHAIN_ID = '0xa86a';
 
 /**
  * The largest possible chain ID we can handle.
@@ -53,6 +54,7 @@ export const WETH_SYMBOL = 'WETH';
 export const TEST_ETH_SYMBOL = 'TESTETH';
 export const BNB_SYMBOL = 'BNB';
 export const MATIC_SYMBOL = 'MATIC';
+export const AVALANCHE_SYMBOL = 'AVAX';
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
@@ -174,23 +176,44 @@ export const UNSUPPORTED_RPC_METHODS = new Set([
 
 export const IPFS_DEFAULT_GATEWAY_URL = 'dweb.link';
 
-export const BUYABLE_CHAIN_IDS_TO_CURRENCY_MAP = {
-  [MAINNET_CHAIN_ID]: ETH_SYMBOL,
-  [ROPSTEN_CHAIN_ID]: ETH_SYMBOL,
-  [RINKEBY_CHAIN_ID]: ETH_SYMBOL,
-  [GOERLI_CHAIN_ID]: ETH_SYMBOL,
-  [KOVAN_CHAIN_ID]: ETH_SYMBOL,
-  [BSC_CHAIN_ID]: BNB_SYMBOL,
-  [POLYGON_CHAIN_ID]: MATIC_SYMBOL,
-};
-
+// The first item in transakCurrencies must be the
+// default crypto currency for the network
 const BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME = 'ethereum';
-export const BUYABLE_CHAIN_IDS_TO_NETWORK_NAME_MAP = {
-  [MAINNET_CHAIN_ID]: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  [ROPSTEN_CHAIN_ID]: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  [RINKEBY_CHAIN_ID]: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  [GOERLI_CHAIN_ID]: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  [KOVAN_CHAIN_ID]: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  [BSC_CHAIN_ID]: 'bsc',
-  [POLYGON_CHAIN_ID]: 'polygon',
+export const BUYABLE_CHAINS_MAP = {
+  [MAINNET_CHAIN_ID]: {
+    nativeCurrency: ETH_SYMBOL,
+    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
+    transakCurrencies: [ETH_SYMBOL, 'USDT', 'USDC', 'DAI'],
+  },
+  [ROPSTEN_CHAIN_ID]: {
+    nativeCurrency: ETH_SYMBOL,
+    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
+  },
+  [RINKEBY_CHAIN_ID]: {
+    nativeCurrency: ETH_SYMBOL,
+    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
+  },
+  [GOERLI_CHAIN_ID]: {
+    nativeCurrency: ETH_SYMBOL,
+    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
+  },
+  [KOVAN_CHAIN_ID]: {
+    nativeCurrency: ETH_SYMBOL,
+    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
+  },
+  [BSC_CHAIN_ID]: {
+    nativeCurrency: BNB_SYMBOL,
+    network: 'bsc',
+    transakCurrencies: [BNB_SYMBOL, 'BUSD'],
+  },
+  [POLYGON_CHAIN_ID]: {
+    nativeCurrency: MATIC_SYMBOL,
+    network: 'polygon',
+    transakCurrencies: [MATIC_SYMBOL, 'USDT', 'USDC', 'DAI'],
+  },
+  [AVALANCHE_CHAIN_ID]: {
+    nativeCurrency: AVALANCHE_SYMBOL,
+    network: 'avaxcchain',
+    transakCurrencies: [AVALANCHE_SYMBOL],
+  },
 };

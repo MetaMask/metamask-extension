@@ -8,8 +8,7 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
   MAINNET_NETWORK_ID,
-  BUYABLE_CHAIN_IDS_TO_NETWORK_NAME_MAP,
-  BUYABLE_CHAIN_IDS_TO_CURRENCY_MAP,
+  BUYABLE_CHAINS_MAP,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
@@ -54,14 +53,14 @@ const createWyrePurchaseUrl = async (address) => {
  * @returns String
  */
 const createTransakUrl = (walletAddress, chainId) => {
-  const cryptoCurrencyCode = BUYABLE_CHAIN_IDS_TO_CURRENCY_MAP[chainId];
-  const networks = BUYABLE_CHAIN_IDS_TO_NETWORK_NAME_MAP[chainId];
+  const { transakCurrencies, network } = BUYABLE_CHAINS_MAP[chainId];
 
   const queryParams = new URLSearchParams({
     apiKey: TRANSAK_API_KEY,
     hostURL: 'https://metamask.io',
-    cryptoCurrencyCode,
-    networks,
+    cryptoCurrencyList: transakCurrencies.join(','),
+    defaultCryptoCurrency: transakCurrencies[0],
+    networks: network,
     walletAddress,
   });
 

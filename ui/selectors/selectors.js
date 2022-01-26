@@ -7,7 +7,7 @@ import {
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
   OPTIMISM_CHAIN_ID,
   OPTIMISM_TESTNET_CHAIN_ID,
-  BUYABLE_CHAIN_IDS_TO_CURRENCY_MAP,
+  BUYABLE_CHAINS_MAP,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -629,7 +629,7 @@ export function getIsSwapsChain(state) {
 
 export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
-  return Object.keys(BUYABLE_CHAIN_IDS_TO_CURRENCY_MAP).includes(chainId);
+  return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
 
 export function getNativeCurrencyImage(state) {

@@ -9,7 +9,7 @@ import {
   ETH_SYMBOL,
   BNB_SYMBOL,
   MATIC_SYMBOL,
-  BUYABLE_CHAIN_IDS_TO_NETWORK_NAME_MAP,
+  BUYABLE_CHAINS_MAP,
 } from '../../../shared/constants/network';
 import { TRANSAK_API_KEY } from '../constants/on-ramp';
 import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
@@ -70,9 +70,9 @@ describe('buy-url', () => {
     const transakUrl = await getBuyUrl({ ...MAINNET, service: 'transak' });
 
     expect(transakUrl).toStrictEqual(
-      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyCode=${ETH_SYMBOL}&networks=${
-        BUYABLE_CHAIN_IDS_TO_NETWORK_NAME_MAP[MAINNET.chainId]
-      }&walletAddress=${ETH_ADDRESS}`,
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyCode=${ETH_SYMBOL}&networks=${BUYABLE_CHAINS_MAP[
+        MAINNET.chainId
+      ].transakCurrencies.join(',')}&walletAddress=${ETH_ADDRESS}`,
     );
   });
 
@@ -80,9 +80,9 @@ describe('buy-url', () => {
     const transakUrl = await getBuyUrl({ ...BSC, service: 'transak' });
 
     expect(transakUrl).toStrictEqual(
-      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyCode=${BNB_SYMBOL}&networks=${
-        BUYABLE_CHAIN_IDS_TO_NETWORK_NAME_MAP[BSC.chainId]
-      }&walletAddress=${ETH_ADDRESS}`,
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyCode=${BNB_SYMBOL}&networks=${BUYABLE_CHAINS_MAP[
+        BSC.chainId
+      ].transakCurrencies.join(',')}&walletAddress=${ETH_ADDRESS}`,
     );
   });
 
@@ -90,9 +90,9 @@ describe('buy-url', () => {
     const transakUrl = await getBuyUrl({ ...POLYGON, service: 'transak' });
 
     expect(transakUrl).toStrictEqual(
-      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyCode=${MATIC_SYMBOL}&networks=${
-        BUYABLE_CHAIN_IDS_TO_NETWORK_NAME_MAP[POLYGON.chainId]
-      }&walletAddress=${ETH_ADDRESS}`,
+      `https://global.transak.com/?apiKey=${TRANSAK_API_KEY}&hostURL=https%3A%2F%2Fmetamask.io&cryptoCurrencyCode=${MATIC_SYMBOL}&networks=${BUYABLE_CHAINS_MAP[
+        POLYGON.chainId
+      ].transakCurrencies.join(',')}&walletAddress=${ETH_ADDRESS}`,
     );
   });
 
