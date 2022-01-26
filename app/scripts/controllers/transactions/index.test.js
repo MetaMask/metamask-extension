@@ -9,6 +9,7 @@ import {
   createTestProviderTools,
   getTestAccounts,
 } from '../../../../test/stub/provider';
+import mockEstimates from '../../../../test/data/mock-estimates.json';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -1561,6 +1562,10 @@ describe('Transaction Controller', function () {
         txController,
         'finalizeEventFragment',
       );
+
+      sinon
+        .stub(txController, '_getEIP1559GasFeeEstimates')
+        .resolves(mockEstimates['fee-market']);
     });
 
     afterEach(function () {
@@ -1587,6 +1592,10 @@ describe('Transaction Controller', function () {
           chainId: currentChainId,
           time: 1624408066355,
           metamaskNetworkId: currentNetworkId,
+          defaultGasEstimates: {
+            gas: '0x7b0d',
+            gasPrice: '0x77359400',
+          },
         };
       });
 
@@ -1607,6 +1616,8 @@ describe('Transaction Controller', function () {
             type: TRANSACTION_TYPES.SIMPLE_SEND,
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -1678,6 +1689,8 @@ describe('Transaction Controller', function () {
             type: TRANSACTION_TYPES.SIMPLE_SEND,
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -1735,6 +1748,10 @@ describe('Transaction Controller', function () {
           chainId: currentChainId,
           time: 1624408066355,
           metamaskNetworkId: currentNetworkId,
+          defaultGasEstimates: {
+            gas: '0x7b0d',
+            gasPrice: '0x77359400',
+          },
         };
       });
 
@@ -1755,6 +1772,8 @@ describe('Transaction Controller', function () {
             type: TRANSACTION_TYPES.SIMPLE_SEND,
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -1828,6 +1847,8 @@ describe('Transaction Controller', function () {
             type: TRANSACTION_TYPES.SIMPLE_SEND,
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -2003,6 +2024,11 @@ describe('Transaction Controller', function () {
         chainId: currentChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
+        defaultGasEstimates: {
+          estimateType: 'medium',
+          maxFeePerGas: '0x77359400',
+          maxPriorityFeePerGas: '0x77359400',
+        },
       };
       const expectedPayload = {
         initialEvent: 'Transaction Added',
@@ -2030,6 +2056,9 @@ describe('Transaction Controller', function () {
           status: 'unapproved',
           estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
           estimate_used: GAS_RECOMMENDATIONS.HIGH,
+          default_estimate: 'medium',
+          default_max_fee_per_gas: '70',
+          default_max_priority_fee_per_gas: '7',
         },
       };
 

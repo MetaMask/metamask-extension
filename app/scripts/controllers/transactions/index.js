@@ -544,7 +544,7 @@ export default class TransactionController extends EventEmitter {
       txMeta.originalGasEstimate = defaultGasLimit;
     }
     txMeta.defaultGasEstimates = {
-      defaultEstimate: txMeta.userFeeLevel,
+      estimateType: txMeta.userFeeLevel,
       gas: txMeta.txParams.gas,
       gasPrice: txMeta.txParams.gasPrice,
       maxFeePerGas: txMeta.txParams.maxFeePerGas,
@@ -1511,34 +1511,40 @@ export default class TransactionController extends EventEmitter {
     }
 
     if (defaultGasEstimates) {
-      const estimateType = defaultGasEstimates.defaultEstimate;
-      let defaultMaxFeePerGas = txMeta.defaultGasEstimates.maxFeePerGas;
-      let defaultMaxPriorityFeePerGas =
-        txMeta.defaultGasEstimates.maxPriorityFeePerGas;
+      const estimateType = defaultGasEstimates.estimateType;
+      if (estimateType) {
+        gasParams.default_estimate = estimateType;
+        let defaultMaxFeePerGas = txMeta.defaultGasEstimates.maxFeePerGas;
+        let defaultMaxPriorityFeePerGas =
+          txMeta.defaultGasEstimates.maxPriorityFeePerGas;
 
-      if (
-        [
-          GAS_RECOMMENDATIONS.LOW,
-          GAS_RECOMMENDATIONS.MEDIUM,
-          GAS_RECOMMENDATIONS.MEDIUM.HIGH,
-        ].includes(estimateType)
-      ) {
-        const { gasFeeEstimates } = await this._getEIP1559GasFeeEstimates();
-        if (gasFeeEstimates[estimateType]?.suggestedMaxFeePerGas) {
-          defaultMaxFeePerGas =
-            gasFeeEstimates[estimateType]?.suggestedMaxFeePerGas;
-        }
-        if (gasFeeEstimates[estimateType]?.suggestedMaxPriorityFeePerGas) {
-          defaultMaxPriorityFeePerGas =
-            gasFeeEstimates[estimateType]?.suggestedMaxPriorityFeePerGas;
+        if (
+          [
+            GAS_RECOMMENDATIONS.LOW,
+            GAS_RECOMMENDATIONS.MEDIUM,
+            GAS_RECOMMENDATIONS.MEDIUM.HIGH,
+          ].includes(estimateType)
+        ) {
+          const { gasFeeEstimates } = await this._getEIP1559GasFeeEstimates();
+          if (gasFeeEstimates?.[estimateType]?.suggestedMaxFeePerGas) {
+            defaultMaxFeePerGas =
+              gasFeeEstimates[estimateType]?.suggestedMaxFeePerGas;
+            gasParams.default_max_fee_per_gas = defaultMaxFeePerGas;
+          }
+          if (gasFeeEstimates?.[estimateType]?.suggestedMaxPriorityFeePerGas) {
+            defaultMaxPriorityFeePerGas =
+              gasFeeEstimates[estimateType]?.suggestedMaxPriorityFeePerGas;
+            gasParams.default_max_priority_fee_per_gas = defaultMaxPriorityFeePerGas;
+          }
         }
       }
 
-      gasParams.default_estimate = estimateType;
-      gasParams.default_gas = txMeta.defaultGasEstimates.gas;
-      gasParams.default_gas_price = txMeta.defaultGasEstimates.gasPrice;
-      gasParams.default_max_fee_per_gas = defaultMaxFeePerGas;
-      gasParams.default_max_priority_fee_per_gas = defaultMaxPriorityFeePerGas;
+      if (txMeta.defaultGasEstimates.gas) {
+        gasParams.default_gas = txMeta.defaultGasEstimates.gas;
+      }
+      if (txMeta.defaultGasEstimates.gasPrice) {
+        gasParams.default_gas_price = txMeta.defaultGasEstimates.gasPrice;
+      }
     }
 
     if (estimateSuggested) {
