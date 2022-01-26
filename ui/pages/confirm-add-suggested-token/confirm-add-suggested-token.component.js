@@ -81,7 +81,18 @@ const ConfirmAddSuggestedToken = (props) => {
     return (
       hasDuplicateAddress(suggestedAssets, tokens) && (
         <ActionableMessage
-          message={t('knownTokenWarning')}
+          message={t('knownTokenWarning', [
+            <Button
+              type="link"
+              key="confirm-add-suggested-token-duplicate-warning"
+              className="confirm-add-suggested-token__link"
+              rel="noopener noreferrer"
+              target="_blank"
+              href="https://metamask.zendesk.com/hc/en-us/articles/4403988839451"
+            >
+              {t('learnScamRisk')}
+            </Button>,
+          ])}
           type="warning"
           withRightButton
           useIcon
