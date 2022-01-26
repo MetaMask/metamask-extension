@@ -1,7 +1,4 @@
 {
-  "QRHardwareSignRequestCancel": {
-    "message": "ปฏิเสธ"
-  },
   "about": {
     "message": "เกี่ยวกับ"
   },
@@ -269,9 +266,6 @@
     "message": "เครือข่ายทดสอบ Kovan"
   },
   "learnMore": {
-    "message": "เรียนรู้เพิ่มเติม"
-  },
-  "learnMoreUpperCase": {
     "message": "เรียนรู้เพิ่มเติม"
   },
   "likeToImportTokens": {

@@ -1,10 +1,4 @@
 {
-  "QRHardwareSignRequestCancel": {
-    "message": "Tolak"
-  },
-  "QRHardwareWalletImporterTitle": {
-    "message": "Imbas Kod QR"
-  },
   "about": {
     "message": "Mengenai"
   },
@@ -261,9 +255,6 @@
   },
   "currentLanguage": {
     "message": "Bahasa Semasa"
-  },
-  "custom": {
-    "message": "Lanjutan"
   },
   "customGas": {
     "message": "Suaikan Gas"
@@ -523,9 +514,6 @@
     "message": "Rangkaian Ujian Kovan"
   },
   "learnMore": {
-    "message": "Maklumat lanjut"
-  },
-  "learnMoreUpperCase": {
     "message": "Maklumat lanjut"
   },
   "ledgerAccountRestriction": {

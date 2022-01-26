@@ -1,10 +1,4 @@
 {
-  "QRHardwareSignRequestCancel": {
-    "message": "Rebutja"
-  },
-  "QRHardwareWalletImporterTitle": {
-    "message": "Escanejar Codi QR"
-  },
   "about": {
     "message": "Informació"
   },
@@ -258,9 +252,6 @@
   },
   "currentLanguage": {
     "message": "Llengua Actual"
-  },
-  "custom": {
-    "message": "Configuració avançada"
   },
   "customGas": {
     "message": "Customitza el gas"
@@ -524,9 +515,6 @@
     "message": "Xarxa de Prova Kovan"
   },
   "learnMore": {
-    "message": "Saber més"
-  },
-  "learnMoreUpperCase": {
     "message": "Saber més"
   },
   "ledgerAccountRestriction": {

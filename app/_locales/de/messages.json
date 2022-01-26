@@ -1,10 +1,4 @@
 {
-  "QRHardwareSignRequestCancel": {
-    "message": "Ablehnen"
-  },
-  "QRHardwareWalletImporterTitle": {
-    "message": "QR-Code scannen"
-  },
   "about": {
     "message": "Über"
   },
@@ -253,9 +247,6 @@
   "currentLanguage": {
     "message": "Aktuelle Sprache"
   },
-  "custom": {
-    "message": "Erweitert"
-  },
   "customGas": {
     "message": "Gas anpassen"
   },
@@ -436,6 +427,9 @@
   "happyToSeeYou": {
     "message": "Wir freuen uns, Sie zu sehen."
   },
+  "hardware": {
+    "message": "Hardware"
+  },
   "hardwareWalletConnected": {
     "message": "Hardware-Wallet verknüpft"
   },
@@ -524,9 +518,6 @@
   "learnMore": {
     "message": "Mehr erfahren"
   },
-  "learnMoreUpperCase": {
-    "message": "Mehr erfahren"
-  },
   "ledgerAccountRestriction": {
     "message": "Sie müssen Ihr letztes Konto verwenden, ehe Sie ein neues hinzufügen können."
   },
@@ -547,6 +538,9 @@
   },
   "lock": {
     "message": "Ausloggen"
+  },
+  "mainnet": {
+    "message": "Ethereum Mainnet"
   },
   "memo": {
     "message": " Memo"
@@ -596,6 +590,10 @@
   },
   "newAccountDetectedDialogMessage": {
     "message": "Neue Adresse erkannt! Klicken Sie hier, um sie zu Ihrem Adressbuch hinzuzufügen."
+  },
+  "newAccountNumberName": {
+    "message": "Account $1",
+    "description": "Default name of next account to be created on create account screen"
   },
   "newContact": {
     "message": "Neuer Kontakt"

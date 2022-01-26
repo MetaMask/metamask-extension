@@ -1,10 +1,4 @@
 {
-  "QRHardwareSignRequestCancel": {
-    "message": "Odmítnout"
-  },
-  "QRHardwareWalletImporterTitle": {
-    "message": "Skenovať QR kód"
-  },
   "about": {
     "message": "Informácie"
   },
@@ -255,9 +249,6 @@
   },
   "currentLanguage": {
     "message": "Aktuálny jazyk"
-  },
-  "custom": {
-    "message": "Rozšírené"
   },
   "customGas": {
     "message": "Nastavit palivo"
@@ -521,9 +512,6 @@
     "message": "Známe kontaktné adresy."
   },
   "learnMore": {
-    "message": "Zjistěte více."
-  },
-  "learnMoreUpperCase": {
     "message": "Zjistěte více."
   },
   "ledgerAccountRestriction": {

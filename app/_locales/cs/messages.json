@@ -1,7 +1,4 @@
 {
-  "QRHardwareSignRequestCancel": {
-    "message": "Odmítnout"
-  },
   "account": {
     "message": "Účet"
   },
@@ -214,9 +211,6 @@
     "description": "format for importing an account"
   },
   "learnMore": {
-    "message": "Zjistěte více."
-  },
-  "learnMoreUpperCase": {
     "message": "Zjistěte více."
   },
   "likeToImportTokens": {

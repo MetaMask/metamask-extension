@@ -1,7 +1,4 @@
 {
-  "QRHardwareSignRequestCancel": {
-    "message": "നിരസിക്കുക"
-  },
   "about": {
     "message": "വിവരം"
   },
@@ -46,9 +43,6 @@
   },
   "create": {
     "message": "സൃഷ്‌ടിക്കുക"
-  },
-  "custom": {
-    "message": "നൂതനം"
   },
   "delete": {
     "message": "ഇല്ലാതാക്കുക"

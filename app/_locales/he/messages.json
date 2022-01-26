@@ -1,10 +1,4 @@
 {
-  "QRHardwareSignRequestCancel": {
-    "message": "דחה"
-  },
-  "QRHardwareWalletImporterTitle": {
-    "message": "סריקת קוד QR"
-  },
   "about": {
     "message": "מידע כללי"
   },
@@ -261,9 +255,6 @@
   },
   "currentLanguage": {
     "message": "שפה נוכחית"
-  },
-  "custom": {
-    "message": "מתקדם"
   },
   "customGas": {
     "message": "התאמה אישית של דלק"
@@ -537,9 +528,6 @@
     "message": "רשת בדיקה Kovan "
   },
   "learnMore": {
-    "message": "למדו עוד"
-  },
-  "learnMoreUpperCase": {
     "message": "למדו עוד"
   },
   "ledgerAccountRestriction": {

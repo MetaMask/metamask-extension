@@ -1,10 +1,4 @@
 {
-  "QRHardwareSignRequestCancel": {
-    "message": "Rejte"
-  },
-  "QRHardwareWalletImporterTitle": {
-    "message": "Enspeksyon QR Kòd"
-  },
   "accessingYourCamera": {
     "message": "Aksè a Kamera"
   },
@@ -311,9 +305,6 @@
     "message": "Kovan Tès Rezo"
   },
   "learnMore": {
-    "message": "Aprann plis"
-  },
-  "learnMoreUpperCase": {
     "message": "Aprann plis"
   },
   "ledgerAccountRestriction": {
