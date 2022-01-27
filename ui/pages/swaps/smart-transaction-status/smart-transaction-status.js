@@ -217,7 +217,7 @@ export default function SmartTransactionStatus() {
     description = t('stxCancelledDescription');
     subDescription = t('stxCancelledSubDescription');
     icon = <CanceledIcon />;
-  } else if (smartTransactionStatus.minedTx === 'unknown') {
+  } else if (smartTransactionStatus === 'unknown') {
     headerText = t('stxUnknown');
     description = t('stxUnknownDescription');
     icon = <UnknownIcon />;
