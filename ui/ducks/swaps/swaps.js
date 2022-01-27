@@ -822,35 +822,13 @@ export const signAndSendSwapsSmartTransaction = ({
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
     const swapsRefreshStates = getSwapsRefreshStates(state);
-    const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
-      state,
-    );
     const chainId = getCurrentChainId(state);
-    const customMaxFeePerGas = getCustomMaxFeePerGas(state);
-    const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
 
     dispatch(
       setSmartTransactionsRefreshInterval(
         swapsRefreshStates?.stxBatchStatusRefreshTime,
       ),
     );
-
-    let maxFeePerGas;
-    let maxPriorityFeePerGas;
-    let decEstimatedBaseFee;
-
-    if (networkAndAccountSupports1559) {
-      const {
-        high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
-        estimatedBaseFee = '0',
-      } = getGasFeeEstimates(state);
-      decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
-      maxFeePerGas =
-        customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
-      maxPriorityFeePerGas =
-        customMaxPriorityFeePerGas ||
-        decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
-    }
 
     const usedTradeTxParams = usedQuote.trade;
 
@@ -903,53 +881,22 @@ export const signAndSendSwapsSmartTransaction = ({
     }
 
     const approveTxParams = getApproveTxParams(state);
-
-    // TODO: Figure out which commented code below is still neeeded.
-    // let finalApproveTxMeta;
-
-    // if (approveTxParams) {
-    //   if (networkAndAccountSupports1559) {
-    //     approveTxParams.maxFeePerGas = maxFeePerGas;
-    //     approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
-    //     delete approveTxParams.gasPrice;
-    //   }
-    //   const approveTxMeta = await dispatch(
-    //     addUnapprovedTransaction(
-    //       { ...approveTxParams, amount: '0x0' },
-    //       'metamask',
-    //     ),
-    //   );
-    //   await dispatch(setApproveTxId(approveTxMeta.id));
-    //   finalApproveTxMeta = await dispatch(
-    //     updateTransaction(
-    //       {
-    //         ...approveTxMeta,
-    //         estimatedBaseFee: decEstimatedBaseFee,
-    //         type: TRANSACTION_TYPES.SWAP_APPROVAL,
-    //         sourceTokenSymbol: sourceTokenInfo.symbol,
-    //       },
-    //       true,
-    //     ),
-    //   );
-    //   // TODO: Submit an approval tx via STX instead of the regular way, otherwise the trade tx via STX will not work.
-    //   try {
-    //     await dispatch(updateAndApproveTx(finalApproveTxMeta, true));
-    //   } catch (e) {
-    //     await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-    //     history.push(SWAPS_ERROR_ROUTE);
-    //     return;
-    //   }
-    // }
-
+    let approvalTxUuid;
     try {
       if (approveTxParams) {
-        approveTxParams.value = '0x0';
+        const updatedApproveTxParams = {
+          ...approveTxParams,
+          value: '0x0',
+        };
         const smartTransactionApprovalFees = await dispatch(
-          fetchSwapsSmartTransactionFees(approveTxParams),
+          fetchSwapsSmartTransactionFees(updatedApproveTxParams),
         );
-        await dispatch(
+        updatedApproveTxParams.gas = `0x${decimalToHex(
+          smartTransactionApprovalFees?.gasLimit || 0,
+        )}`;
+        approvalTxUuid = await dispatch(
           signAndSendSmartTransaction({
-            unsignedTransaction: approveTxParams,
+            unsignedTransaction: updatedApproveTxParams,
             smartTransactionFees: smartTransactionApprovalFees,
           }),
         );
@@ -958,7 +905,6 @@ export const signAndSendSwapsSmartTransaction = ({
       const smartTransactionFees = await dispatch(
         fetchSwapsSmartTransactionFees(unsignedTransaction),
       );
-
       const uuid = await dispatch(
         signAndSendSmartTransaction({
           unsignedTransaction,
@@ -972,7 +918,6 @@ export const signAndSendSwapsSmartTransaction = ({
       const destinationTokenDecimals = destinationTokenInfo.decimals;
       const destinationTokenSymbol = destinationTokenInfo.symbol;
       const sourceTokenSymbol = sourceTokenInfo.symbol;
-      const type = TRANSACTION_TYPES.SWAP;
       await dispatch(
         updateSmartTransaction(uuid, {
           origin: 'metamask',
@@ -982,9 +927,18 @@ export const signAndSendSwapsSmartTransaction = ({
           sourceTokenSymbol,
           swapMetaData,
           swapTokenValue,
-          type,
+          type: TRANSACTION_TYPES.SWAP,
         }),
       );
+      if (approvalTxUuid) {
+        await dispatch(
+          updateSmartTransaction(approvalTxUuid, {
+            origin: 'metamask',
+            type: TRANSACTION_TYPES.SWAP_APPROVAL,
+            sourceTokenSymbol,
+          }),
+        );
+      }
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
       const {
