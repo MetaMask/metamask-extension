@@ -61,11 +61,7 @@ const render = (defaultGasParams, contextParams) => {
 describe('AdvancedGasFeeDefaults', () => {
   it('should renders correct message when the default is not set', () => {
     render({ advancedGasFee: null });
-    expect(
-      screen.queryByText(
-        'Always use these values and advanced setting as default.',
-      ),
-    ).toBeInTheDocument();
+    expect(screen.queryByText('new values')).toBeInTheDocument();
   });
   it('should renders correct message when the default values are set', () => {
     render({
@@ -76,22 +72,6 @@ describe('AdvancedGasFeeDefaults', () => {
         'Always use these values and advanced setting as default.',
       ),
     ).toBeInTheDocument();
-  });
-  it('should renders correct message when checkbox is selected and default values are saved', () => {
-    render({
-      advancedGasFee: null,
-    });
-    expect(
-      screen.queryByText(
-        'Always use these values and advanced setting as default.',
-      ),
-    ).toBeInTheDocument();
-    fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 100 },
-    });
-    fireEvent.change(document.getElementsByTagName('input')[1], {
-      target: { value: 4 },
-    });
   });
   it('should renders correct message when the default values are set and the maxBaseFee values are updated', () => {
     render({
