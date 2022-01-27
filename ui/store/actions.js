@@ -1829,6 +1829,13 @@ export function hideAlert() {
   };
 }
 
+export function updateCollectibleDropDownState(value) {
+  return async (dispatch) => {
+    await promisifiedBackground.updateCollectibleDropDownState(value);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 /**
  * This action will receive two types of values via qrCodeData
  * an object with the following structure {type, values}
