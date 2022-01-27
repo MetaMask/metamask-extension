@@ -189,7 +189,7 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText('10% increase')).toBeInTheDocument();
   });
 
-  it('should renders when advanced gas fee is set', () => {
+  it('should renders when default gas settings are saved', () => {
     render({
       storeProps: { advancedGasFee: { maxBaseFee: 50, priorityFee: 2 } },
       txProps: { userFeeLevel: 'custom', dappSuggestedGasFees: {} },
@@ -199,5 +199,15 @@ describe('EditGasFeePopover', () => {
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
     expect(screen.queryByTitle('0.0021 ETH')).toBeInTheDocument();
     fireEvent.click(screen.queryByText('Advanced'));
+  });
+
+  it('should renders when default gas settings are not saved', () => {
+    render({
+      txProps: { userFeeLevel: 'high', txParams: { value: '0x64' } },
+    });
+
+    expect(screen.queryByText('⚙️')).toBeInTheDocument();
+    expect(screen.queryByText('Advanced')).toBeInTheDocument();
+    expect(screen.queryByTitle('0.0021 ETH')).not.toBeInTheDocument();
   });
 });
