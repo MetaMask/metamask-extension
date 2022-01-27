@@ -434,7 +434,6 @@ export default class TransactionController extends EventEmitter {
       gasLimit: defaultGasLimit,
       simulationFails,
     } = await this._getDefaultGasLimit(txMeta, getCodeResponse);
-    const advancedGasFeeDefaultValues = this.getAdvancedGasFee();
 
     // eslint-disable-next-line no-param-reassign
     txMeta = this.txStateManager.getTransaction(txMeta.id);
@@ -444,6 +443,7 @@ export default class TransactionController extends EventEmitter {
 
     if (eip1559Compatibility) {
       const { eip1559V2Enabled } = this.preferencesStore.getState();
+      const advancedGasFeeDefaultValues = this.getAdvancedGasFee();
       if (eip1559V2Enabled && Boolean(advancedGasFeeDefaultValues)) {
         txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(

@@ -1,7 +1,10 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  GAS_ESTIMATE_TYPES,
+} from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -24,7 +27,7 @@ jest.mock('../../../../store/actions', () => ({
   setAdvancedGasFee: jest.fn(),
 }));
 
-const render = (defaultGasParams) => {
+const render = (defaultGasParams, contextParams) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -45,6 +48,7 @@ const render = (defaultGasParams) => {
       transaction={{
         userFeeLevel: 'medium',
       }}
+      {...contextParams}
     >
       <AdvancedGasFeePopoverContextProvider>
         <AdvancedGasFeeInputs />
@@ -143,5 +147,14 @@ describe('AdvancedGasFeeDefaults', () => {
     const checkbox = document.querySelector('input[type=checkbox]');
     fireEvent.click(checkbox);
     expect(mock).toHaveBeenCalledTimes(2);
+  });
+
+  it('should not  render anything for swaps', () => {
+    render({}, { editGasMode: EDIT_GAS_MODES.SWAPS });
+    expect(
+      screen.queryByText(
+        'Always use these values and advanced setting as default.',
+      ),
+    ).not.toBeInTheDocument();
   });
 });

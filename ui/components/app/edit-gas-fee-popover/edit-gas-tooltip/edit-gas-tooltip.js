@@ -90,7 +90,8 @@ const EditGasToolTip = ({
 
   return (
     <div className="edit-gas-tooltip__container">
-      {priorityLevel !== PRIORITY_LEVELS.CUSTOM &&
+      {priorityLevel !== PRIORITY_LEVELS.TEN_PERCENT_INCREASED &&
+      priorityLevel !== PRIORITY_LEVELS.CUSTOM &&
       priorityLevel !== PRIORITY_LEVELS.DAPP_SUGGESTED &&
       !(
         priorityLevel === PRIORITY_LEVELS.HIGH &&
