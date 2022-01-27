@@ -49,11 +49,17 @@ export const useTransactionFunctions = ({
   }, [editGasMode, transaction?.previousGas, transaction?.txParams]);
 
   const updateTransaction = useCallback(
-    ({ estimateUsed, gasLimit, maxFeePerGas, maxPriorityFeePerGas }) => {
+    ({
+      estimateUsed,
+      gasLimit,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      estimateSuggested,
+    }) => {
       const newGasSettings = {
         gas: decimalToHex(gasLimit || gasLimitValue),
         gasLimit: decimalToHex(gasLimit || gasLimitValue),
-        estimateSuggested: defaultEstimateToUse,
+        estimateSuggested: estimateSuggested || defaultEstimateToUse,
         estimateUsed,
       };
       if (maxFeePerGas) {
@@ -116,12 +122,15 @@ export const useTransactionFunctions = ({
       transaction.previousGas || transaction.txParams;
 
     updateTransaction({
+      estimateSuggested: transaction.previousGas
+        ? defaultEstimateToUse
+        : PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
       estimateUsed: PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
       gasLimit,
       maxFeePerGas: addTenPercentAndRound(maxFeePerGas),
       maxPriorityFeePerGas: addTenPercentAndRound(maxPriorityFeePerGas),
     });
-  }, [transaction, updateTransaction]);
+  }, [defaultEstimateToUse, transaction, updateTransaction]);
 
   const updateTransactionUsingEstimate = useCallback(
     (gasFeeEstimateToUse) => {

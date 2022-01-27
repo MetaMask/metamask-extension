@@ -1,11 +1,10 @@
 import { useCallback } from 'react';
 
 import { useGasFeeContext } from '../contexts/gasFee';
-import { useEventFragment } from './useEventFragment';
+import { updateEventFragment } from '../store/actions';
 
 export const useTransactionEventFragment = () => {
   const { transaction } = useGasFeeContext();
-  const { updateEventFragment } = useEventFragment();
 
   const updateTransactionEventFragment = useCallback(
     (params) => {
@@ -14,7 +13,7 @@ export const useTransactionEventFragment = () => {
       }
       updateEventFragment(`transaction-added-${transaction.id}`, params);
     },
-    [transaction, updateEventFragment],
+    [transaction],
   );
 
   return {

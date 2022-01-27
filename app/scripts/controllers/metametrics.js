@@ -223,7 +223,6 @@ export default class MetaMetricsController {
    */
   updateEventFragment(id, payload) {
     const { fragments } = this.store.getState();
-    console.log('fragments = ', fragments);
 
     const fragment = fragments[id];
 

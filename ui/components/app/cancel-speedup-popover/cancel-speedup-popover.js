@@ -15,7 +15,6 @@ import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import EditGasFeeButton from '../edit-gas-fee-button';
 import GasDetailsItem from '../gas-details-item';
@@ -41,7 +40,6 @@ const CancelSpeedupPopover = () => {
   const t = useI18nContext();
   const { closeModal, currentModal } = useTransactionModalContext();
   const appIsLoading = useSelector(getAppIsLoading);
-  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   useEffect(() => {
     if (
@@ -86,11 +84,6 @@ const CancelSpeedupPopover = () => {
     } else {
       speedUpTransaction();
     }
-    updateTransactionEventFragment({
-      [`gas_${
-        editGasMode === EDIT_GAS_MODES.CANCEL ? 'Cancel' : 'Speed-Up'
-      }_submitted`]: true,
-    });
     closeModal('cancelSpeedUpTransaction');
   };
 
