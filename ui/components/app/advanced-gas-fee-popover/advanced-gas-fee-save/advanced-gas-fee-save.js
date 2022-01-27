@@ -12,7 +12,7 @@ import { useAdvancedGasFeePopoverContext } from '../context';
 
 const AdvancedGasFeeSaveButton = () => {
   const { closeAllModals } = useTransactionModalContext();
-  const { captureTransactionEvent } = useTransactionEventFragment();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { updateTransaction } = useGasFeeContext();
   const {
     gasLimit,
@@ -22,21 +22,14 @@ const AdvancedGasFeeSaveButton = () => {
   } = useAdvancedGasFeePopoverContext();
 
   const onSave = () => {
-    const gasValues = {
+    updateTransaction({
+      estimateUsed: PRIORITY_LEVELS.CUSTOM,
       maxFeePerGas: decGWEIToHexWEI(maxFeePerGas),
       maxPriorityFeePerGas: decGWEIToHexWEI(maxPriorityFeePerGas),
       gasLimit,
-    };
-    updateTransaction({
-      estimateUsed: PRIORITY_LEVELS.CUSTOM,
-      ...gasValues,
     });
-    captureTransactionEvent({
-      action: 'Transaction Updated with new Custom Estimates',
-      screen: 'Advanced gas fee modal',
-      variables: {
-        gasValues,
-      },
+    updateTransactionEventFragment({
+      advanced_gas_modal_submitted: true,
     });
     closeAllModals();
   };

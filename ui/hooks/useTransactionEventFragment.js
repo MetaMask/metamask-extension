@@ -1,31 +1,23 @@
 import { useCallback } from 'react';
-import { TRANSACTION_EVENTS } from '../../shared/constants/transaction';
 
 import { useGasFeeContext } from '../contexts/gasFee';
-import { trackTransactionMetricsEvent } from '../store/actions';
+import { useEventFragment } from './useEventFragment';
 
 export const useTransactionEventFragment = () => {
   const { transaction } = useGasFeeContext();
+  const { updateEventFragment } = useEventFragment();
 
-  const captureTransactionEvent = useCallback(
-    ({ action, screen, variables }) => {
+  const updateTransactionEventFragment = useCallback(
+    (params) => {
       if (!transaction) {
         return;
       }
-      trackTransactionMetricsEvent(
-        transaction.txMeta,
-        TRANSACTION_EVENTS.UI_ACTION,
-        {
-          action,
-          screen,
-          ...variables,
-        },
-      );
+      updateEventFragment(`transaction-added-${transaction.id}`, params);
     },
-    [transaction],
+    [transaction, updateEventFragment],
   );
 
   return {
-    captureTransactionEvent,
+    updateTransactionEventFragment,
   };
 };

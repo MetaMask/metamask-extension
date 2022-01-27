@@ -49,7 +49,7 @@ const EditGasItem = ({ priorityLevel }) => {
     updateTransactionUsingEstimate,
     transaction,
   } = useGasFeeContext();
-  const { captureTransactionEvent } = useTransactionEventFragment();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
   const t = useI18nContext();
   const { closeModal, openModal } = useTransactionModalContext();
   const { dappSuggestedGasFees } = transaction;
@@ -74,21 +74,13 @@ const EditGasItem = ({ priorityLevel }) => {
 
   const onOptionSelect = () => {
     if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
-      captureTransactionEvent({
-        action: 'Clicked to Open Advanced Gas Modal',
-        screen: 'Edit gas fee modal',
+      updateTransactionEventFragment({
+        advanced_gas_modal_open: true,
       });
-
       openModal('advancedGasFee');
     } else {
-      captureTransactionEvent({
-        action: 'Transaction Gas Fee Estimate Changed',
-        screen: 'Edit gas fee modal',
-        variables: {
-          estimateSelected: priorityLevel,
-          maxFeePerGas,
-          maxPriorityFeePerGas,
-        },
+      updateTransactionEventFragment({
+        edit_gas_modal_option_selected: true,
       });
 
       closeModal('editGasFee');

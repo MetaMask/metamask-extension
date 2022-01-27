@@ -26,7 +26,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
     supportsEIP1559V2,
     transaction,
   } = useGasFeeContext();
-  const { captureTransactionEvent } = useTransactionEventFragment();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { openModal } = useTransactionModalContext();
   const editEnabled =
     !hasSimulationError || userAcknowledgedGasMissing === true;
@@ -49,17 +49,15 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   }
 
   const openEditGasFeeModal = () => {
-    captureTransactionEvent({
-      action: 'Clicked to Open Edit Gas Modal',
-      screen: 'Transaction Confirm Screen',
+    updateTransactionEventFragment({
+      edit_gas_modal_open: true,
     });
     openModal('editGasFee');
   };
 
   const openAdvanceGasFeeModal = () => {
-    captureTransactionEvent({
-      action: 'Clicked to Open Advanced Gas Modal',
-      screen: 'Transaction Confirm Screen',
+    updateTransactionEventFragment({
+      advanced_gas_modal_open: true,
     });
     openModal('advancedGasFee');
   };

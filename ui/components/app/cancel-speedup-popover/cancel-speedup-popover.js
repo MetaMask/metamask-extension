@@ -32,8 +32,6 @@ const CancelSpeedupPopover = () => {
     cancelTransaction,
     editGasMode,
     gasFeeEstimates,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
     speedUpTransaction,
     transaction,
     updateTransaction,
@@ -43,7 +41,7 @@ const CancelSpeedupPopover = () => {
   const t = useI18nContext();
   const { closeModal, currentModal } = useTransactionModalContext();
   const appIsLoading = useSelector(getAppIsLoading);
-  const { captureTransactionEvent } = useTransactionEventFragment();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   useEffect(() => {
     if (
@@ -88,12 +86,10 @@ const CancelSpeedupPopover = () => {
     } else {
       speedUpTransaction();
     }
-    captureTransactionEvent({
-      action: `Gas ${
+    updateTransactionEventFragment({
+      [`gas_${
         editGasMode === EDIT_GAS_MODES.CANCEL ? 'Cancel' : 'Speed-Up'
-      } Submitted`,
-      screen: 'Cancel / Speed-Up Transaction Modal',
-      variables: { maxFeePerGas, maxPriorityFeePerGas },
+      }_submitted`]: true,
     });
     closeModal('cancelSpeedUpTransaction');
   };

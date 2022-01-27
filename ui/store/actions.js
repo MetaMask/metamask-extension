@@ -3116,10 +3116,6 @@ export function finalizeEventFragment(id, options) {
   return promisifiedBackground.finalizeEventFragment(id, options);
 }
 
-export function trackTransactionMetricsEvent(id, options) {
-  return promisifiedBackground.trackTransactionMetricsEvent(id, options);
-}
-
 /**
  * @param {MetaMetricsPagePayload} payload - details of the page viewed
  * @param {MetaMetricsPageOptions} options - options for handling the page view
