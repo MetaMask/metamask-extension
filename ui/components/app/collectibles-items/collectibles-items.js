@@ -42,7 +42,7 @@ export default function CollectiblesItems({
 
   useEffect(() => {
     if (
-      !Object.keys(collectiblesDropdownState).length &&
+      Object.keys(collectiblesDropdownState).length === 0 &&
       previousCollectionKeys !== collectionsKeys
     ) {
       const initState = {};
