@@ -4,10 +4,18 @@ import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../popover';
 import Button from '../button';
 import Identicon from '../identicon/identicon.component';
-import I18nValue from '../i18n-value';
 import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import Box from '../box';
-import { ALIGN_ITEMS, BLOCK_SIZES, COLORS, DISPLAY, FONT_WEIGHT, SIZES, TEXT_ALIGN, TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import {
+  ALIGN_ITEMS,
+  BLOCK_SIZES,
+  COLORS,
+  DISPLAY,
+  FONT_WEIGHT,
+  SIZES,
+  TEXT_ALIGN,
+  TYPOGRAPHY,
+} from '../../../helpers/constants/design-system';
 import Typography from '../typography';
 
 const NewNetworkInfo = ({
@@ -23,60 +31,149 @@ const NewNetworkInfo = ({
   const t = useContext(I18nContext);
 
   return (
-    <Popover onClose={onClose} className="new-network-info__wrapper" footer={
-      <Button type="primary" onClick={onClose}>
-        {t('recoveryPhraseReminderConfirm')}
-      </Button>
-    }>
+    <Popover
+      onClose={onClose}
+      className="new-network-info__wrapper"
+      footer={
+        <Button type="primary" onClick={onClose}>
+          {t('recoveryPhraseReminderConfirm')}
+        </Button>
+      }
+    >
       <h4 className="new-network-info__title">
-        <Typography variant={TYPOGRAPHY.H4} color={COLORS.BLACK} fontWeight={FONT_WEIGHT[700]} align={TEXT_ALIGN.CENTER}>
+        <Typography
+          variant={TYPOGRAPHY.H4}
+          color={COLORS.BLACK}
+          fontWeight={FONT_WEIGHT[700]}
+          align={TEXT_ALIGN.CENTER}
+        >
           {t('switchedTo')}
         </Typography>
       </h4>
-      <Box backgroundColor={COLORS.UI1} borderRadius={SIZES.XL} marginTop={2} display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER} height={BLOCK_SIZES.ONE_TWELFTH} width={BLOCK_SIZES.FIVE_TWELFTHS} padding={[0, 3, 0, 3]} className="new-network-info__token-box">
-        {tokenImage ? 
-          (
+      <Box
+        backgroundColor={COLORS.UI1}
+        borderRadius={SIZES.XL}
+        marginTop={2}
+        display={DISPLAY.FLEX}
+        alignItems={ALIGN_ITEMS.CENTER}
+        height={BLOCK_SIZES.ONE_TWELFTH}
+        width={BLOCK_SIZES.FIVE_TWELFTHS}
+        padding={[0, 3, 0, 3]}
+        className="new-network-info__token-box"
+      >
+        {tokenImage ? (
           <Identicon image={tokenImage} diameter={14} />
-          ) : (
-            <i className="fa fa-question-circle"/>
-            )} 
-        <Typography variant={TYPOGRAPHY.H7} color={COLORS.BLACK} margin={[0, 0, 0, 2]}>
-          {providerType === NETWORK_TYPE_RPC 
-            ? providerNickname ?? t('privateNetwork'): t(providerType)}
+        ) : (
+          <i className="fa fa-question-circle" />
+        )}
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.BLACK}
+          margin={[0, 0, 0, 2]}
+        >
+          {providerType === NETWORK_TYPE_RPC
+            ? providerNickname ?? t('privateNetwork')
+            : t(providerType)}
         </Typography>
       </Box>
-      <h7 className="new-network-info__subtitle"><Typography variant={TYPOGRAPHY.H7} color={COLORS.BLACK} fontWeight={FONT_WEIGHT[700]}>{t('thingsToKeep')}</Typography></h7>
+      <h7 className="new-network-info__subtitle">
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.BLACK}
+          fontWeight={FONT_WEIGHT[700]}
+        >
+          {t('thingsToKeep')}
+        </Typography>
+      </h7>
       <Box marginRight={4} marginLeft={5}>
-        {providerTicker ? 
-        (
-        <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER} paddingBottom={2} marginBottom={2} width={BLOCK_SIZES.ELEVEN_TWELFTHS} className="new-network-info__content-box-1">
+        {providerTicker ? (
+          <Box
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            paddingBottom={2}
+            marginBottom={2}
+            width={BLOCK_SIZES.ELEVEN_TWELFTHS}
+            className="new-network-info__content-box-1"
+          >
+            <Box marginRight={4} color={COLORS.BLACK}>
+              &bull;
+            </Box>
+            <h7 className="new-network-info__content-box-1__text-1">
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.BLACK}
+                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+              >
+                {t('nativeToken', [
+                  <>
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                      fontWeight={FONT_WEIGHT[700]}
+                    >
+                      {providerTicker}
+                    </Typography>
+                    ,
+                  </>,
+                ])}
+              </Typography>
+            </h7>
+          </Box>
+        ) : null}
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={ALIGN_ITEMS.CENTER}
+          className="new-network-info__content-box-1"
+        >
           <Box marginRight={4} color={COLORS.BLACK}>
             &bull;
           </Box>
           <h7 className="new-network-info__content-box-1__text-1">
-            <Typography variant={TYPOGRAPHY.H7} color={COLORS.BLACK} boxProps={{ display: DISPLAY.INLINE_BLOCK}}>{t('nativeToken', [<Typography variant={TYPOGRAPHY.H7} boxProps={{ display: DISPLAY.INLINE_BLOCK}} fontWeight={FONT_WEIGHT[700]}>{providerTicker}</Typography>])}</Typography>
+            <Typography
+              variant={TYPOGRAPHY.H7}
+              color={COLORS.BLACK}
+              boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+            >
+              {t('attemptSendingAssets')}{' '}
+              <a
+                href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  color={COLORS.PRIMARY1}
+                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                >
+                  {t('learnMoreUpperCase')}
+                </Typography>
+              </a>
+            </Typography>
           </h7>
         </Box>
-        ) : null }
-        <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER} className="new-network-info__content-box-1">
-          <Box marginRight={4} color={COLORS.BLACK}>
-            &bull;
-          </Box>
-          <h7 className="new-network-info__content-box-1__text-1">
-            <Typography variant={TYPOGRAPHY.H7} color={COLORS.BLACK} boxProps={{ display: DISPLAY.INLINE_BLOCK}}>{t('attemptSendingAssets')}{' '}<a href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995" target="_blank"><Typography variant={TYPOGRAPHY.H7} color={COLORS.PRIMARY1} boxProps={{ display: DISPLAY.INLINE_BLOCK}}>{t('learnMoreUpperCase')}</Typography></a></Typography>
-          </h7>
-        </Box>
-        {(!autoDetectToken || !tokenDetectionSupported) ? 
-          (
-          <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER} width={BLOCK_SIZES.ELEVEN_TWELFTHS}>
+        {!autoDetectToken || !tokenDetectionSupported ? (
+          <Box
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            width={BLOCK_SIZES.ELEVEN_TWELFTHS}
+          >
             <Box marginRight={4} color={COLORS.BLACK}>
               &bull;
             </Box>
             <Box width={BLOCK_SIZES.FOUR_FIFTHS}>
-              <Typography variant={TYPOGRAPHY.H7} color={COLORS.BLACK}>{t('tokenShowUp')}{' '}<Button type="link" onClick={onManuallyAddClick} className="new-network-info__button">{t('clickToManuallyAdd')}</Button></Typography>
+              <Typography variant={TYPOGRAPHY.H7} color={COLORS.BLACK}>
+                {t('tokenShowUp')}{' '}
+                <Button
+                  type="link"
+                  onClick={onManuallyAddClick}
+                  className="new-network-info__button"
+                >
+                  {t('clickToManuallyAdd')}
+                </Button>
+              </Typography>
             </Box>
           </Box>
-          ) : null}
+        ) : null}
       </Box>
     </Popover>
   );

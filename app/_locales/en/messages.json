@@ -369,6 +369,9 @@
   "assets": {
     "message": "Assets"
   },
+  "attemptSendingAssets": {
+    "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
+  },
   "attemptToCancel": {
     "message": "Attempt to cancel?"
   },
@@ -377,9 +380,6 @@
   },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
-  },
-  "attemptSendingAssets": {
-    "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
   "attributions": {
     "message": "Attributions"
@@ -583,11 +583,11 @@
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
   },
-  "clickToRevealSeed": {
-    "message": "Click here to reveal secret words"
-  },
   "clickToManuallyAdd": {
     "message": "Click here to manually add the tokens."
+  },
+  "clickToRevealSeed": {
+    "message": "Click here to reveal secret words"
   },
   "close": {
     "message": "Close"
@@ -3748,9 +3748,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"
   },
-  "switchedTo": {
-    "message": "You have switched to"
-  },
   "switchNetwork": {
     "message": "Switch network"
   },
@@ -3763,6 +3760,9 @@
   },
   "switchToThisAccount": {
     "message": "Switch to this account"
+  },
+  "switchedTo": {
+    "message": "You have switched to"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
@@ -3901,6 +3901,9 @@
   },
   "tokenShowUp": {
     "message": "Your tokens may not automatically show up in your wallet."
+  },
+  "tokenSymbol": {
+    "message": "Token Symbol"
   },
   "tooltipApproveButton": {
     "message": "I understand"

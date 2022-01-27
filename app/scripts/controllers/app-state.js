@@ -298,32 +298,38 @@ export default class AppStateController extends EventEmitter {
   }
  /**
    * Sets the array of the first time used networks
+   *
+   * @param chainId
    * @returns {void}
    */
   setFirstTimeUsedNetwork(chainId) {
     const currentState = this.store.getState();
-    const usedNetworks = currentState.usedNetworks;
-    usedNetworks[chainId] = true; 
+    const { usedNetworks } = currentState;
+    usedNetworks[chainId] = true;
 
     this.store.updateState({ usedNetworks });
   }
 
   /**
    * Checks if the network has been used
+   *
+   * @param chainId
    * @returns {boolean}
    */
   isNetworkUsed(chainId) {
     const currentState = this.store.getState();
-    const usedNetworks = currentState.usedNetworks;
+    const { usedNetworks } = currentState;
 
     return usedNetworks[chainId];
   }
 
   /**
- * Set true or false in order to show or not to show a popup when a network changes for the first time
- * @returns {void}
- */
+   * Set true or false in order to show or not to show a popup when a network changes for the first time
+   *
+   * @param showPopup
+   * @returns {void}
+   */
   setShowPopup(showPopup) {
-    this.store.updateState({ showPopup })
+    this.store.updateState({ showPopup });
   }
 }

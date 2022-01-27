@@ -7,8 +7,7 @@ export default {
 };
 
 export const DefaultStory = () => {
-
-  const featuredRPC =   {
+  const featuredRPC = {
     chainId: '0x89',
     nickname: 'Polygon Mumbai',
     rpcUrl:
@@ -18,8 +17,7 @@ export const DefaultStory = () => {
       blockExplorerUrl: 'https://mumbai.polygonscan.com/',
       imageUrl: './images/matic-token.png',
     },
-  }
-
+  };
 
   return <NewNetworkInfo featuredRPC={featuredRPC} />;
 };

@@ -350,7 +350,9 @@ export default class Routes extends Component {
   };
 
   isTokenDetectionSupportedForCurrentNetwork = async () => {
-    const fetchedTokenData = await fetchWithCache(`${TOKEN_API_METASWAP_CODEFI_URL}${this.props.providerChainId}`);
+    const fetchedTokenData = await fetchWithCache(
+      `${TOKEN_API_METASWAP_CODEFI_URL}${this.props.providerChainId}`,
+    );
 
     if (fetchedTokenData.error) {
       return false;
@@ -378,7 +380,6 @@ export default class Routes extends Component {
       browserEnvironmentBrowser: browser,
       showPopup,
       setShowPopup,
-      hasNoFundsOnNetwork,
       autoDetectToken,
       primaryTokenImage,
       providerTicker,
@@ -404,7 +405,18 @@ export default class Routes extends Component {
           }
         }}
       >
-        {(showPopup && hasNoFundsOnNetwork) ? <NewNetworkInfo onClose={setShowPopup} autoDetectToken={autoDetectToken} tokenDetectionSupported={tokenDetection} tokenImage={primaryTokenImage} providerTicker={providerTicker} providerNickname={providerNickname} providerType={providerType} onManuallyAddClick={this.addTokenManually} /> : null}
+        {showPopup ? (
+          <NewNetworkInfo
+            onClose={setShowPopup}
+            autoDetectToken={autoDetectToken}
+            tokenDetectionSupported={tokenDetection}
+            tokenImage={primaryTokenImage}
+            providerTicker={providerTicker}
+            providerNickname={providerNickname}
+            providerType={providerType}
+            onManuallyAddClick={this.addTokenManually}
+          />
+        ) : null}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />

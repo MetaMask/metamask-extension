@@ -2,13 +2,10 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
-  getMetaMaskCachedBalances,
   getNativeCurrencyImage,
   getNetworkIdentifier,
   getPreferences,
-  getProvider,
   getUseTokenDetection,
-  hasAnyFundsOnNetwork,
   isNetworkLoading,
   getTheme,
 } from '../../selectors';
@@ -30,11 +27,8 @@ function mapStateToProps(state) {
   const { autoLockTimeLimit = 0 } = getPreferences(state);
 
   const autoDetectToken = getUseTokenDetection(state);
-
-  const fundsOnNetwork = getMetaMaskCachedBalances(state) ?? {};
-  const hasNoFundsOnNetwork = Object.values(fundsOnNetwork).includes('0x0') ?? false;
-
   const primaryTokenImage = getNativeCurrencyImage(state);
+  const showPopup = shouldShowPopup(state);
 
   return {
     alertOpen,
