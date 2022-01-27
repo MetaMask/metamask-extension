@@ -960,7 +960,7 @@ export default class TransactionController extends EventEmitter {
     let rawTxes, nonceLock;
     try {
       // TODO: we should add a check to verify that all transactions have the same from address
-      const fromAddress = listOfTxParams[0].from;
+      const fromAddress = initialTx.from;
       nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
       const nonce = nonceLock.nextNonce;
 
@@ -970,16 +970,15 @@ export default class TransactionController extends EventEmitter {
           return this.signExternalTransaction(txParams);
         }),
       );
-      nonceLock.releaseLock();
     } catch (err) {
       log.error(err);
       // must set transaction to submitted/failed before releasing lock
-      if (nonceLock) {
-        nonceLock.releaseLock();
-      }
       // continue with error chain
       throw err;
     } finally {
+      if (nonceLock) {
+        nonceLock.releaseLock();
+      }
       this.inProcessOfSigning.delete(initialTxAsSerializedHex);
     }
     return rawTxes;
