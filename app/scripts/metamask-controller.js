@@ -1422,7 +1422,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       setTheme: preferencesController.setTheme.bind(preferencesController),
 
-
       // AssetsContractController
       getTokenStandardAndDetails: assetsContractController.getTokenStandardAndDetails.bind(
         assetsContractController,

@@ -34,11 +34,7 @@ const metamaskrc = require('rc')('metamask', {
   INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
   ONBOARDING_V2: process.env.ONBOARDING_V2,
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
-<<<<<<< HEAD
-=======
-  EIP_1559_V2: process.env.EIP_1559_V2,
   DARK_MODE_V1: process.env.DARK_MODE_V1,
->>>>>>> 80f707288 (adding new dropdown to experimental setting for dark mode and related controller changes and feature flag)
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_BETA_WRITE_KEY: process.env.SEGMENT_BETA_WRITE_KEY,
