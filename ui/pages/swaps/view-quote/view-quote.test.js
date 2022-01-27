@@ -87,7 +87,7 @@ describe('ViewQuote', () => {
       getByTestId('main-quote-summary__exchange-rate-container'),
     ).toMatchSnapshot();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
-    expect(getByText('0.00004 ETH')).toBeInTheDocument();
+    expect(getByText('0.00544 ETH')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
     expect(getByText('Swap')).toBeInTheDocument();
   });

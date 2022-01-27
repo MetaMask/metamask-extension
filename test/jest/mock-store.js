@@ -383,6 +383,11 @@ export const createSwapsMockStore = () => {
             },
           ],
         },
+        estimatedGas: {
+          txData: {
+            feeEstimate: 5435000587128155,
+          },
+        },
       },
     },
     appState: {
