@@ -54,7 +54,7 @@ const CancelSpeedupPopover = () => {
     const gasUsedLessThanMedium =
       gasFeeEstimates &&
       gasEstimateGreaterThanGasUsedPlusTenPercent(
-        transaction,
+        transaction.txParams,
         gasFeeEstimates,
         PRIORITY_LEVELS.MEDIUM,
       );

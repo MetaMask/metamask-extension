@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "Tambahkan memo"
   },
-  "addNFT": {
-    "message": "Tambahkan NFT"
-  },
   "addNetwork": {
     "message": "Tambahkan Jaringan"
   },
@@ -1296,9 +1293,6 @@
   "high": {
     "message": "Agresif"
   },
-  "highGasSettingToolTipDialog": {
-    "message": "Probabilitas tinggi, bahkan di pasar yang tidak stabil"
-  },
   "highGasSettingToolTipMessage": {
     "message": "Gunakan $1 untuk menutupi lonjakan lalu lintas jaringan karena hal-hal seperti penurunan NFT populer.",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
@@ -1308,9 +1302,6 @@
   },
   "history": {
     "message": "Riwayat"
-  },
-  "id": {
-    "message": "ID"
   },
   "import": {
     "message": "Impor",

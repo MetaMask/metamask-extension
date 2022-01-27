@@ -1418,6 +1418,18 @@ export async function checkAndUpdateSingleCollectibleOwnershipStatus(
   );
 }
 
+export async function getTokenStandardAndDetails(
+  address,
+  userAddress,
+  tokenId,
+) {
+  return await promisifiedBackground.getTokenStandardAndDetails(
+    address,
+    userAddress,
+    tokenId,
+  );
+}
+
 export function removeToken(address) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
@@ -1814,6 +1826,13 @@ export function showAlert(msg) {
 export function hideAlert() {
   return {
     type: actionConstants.ALERT_CLOSE,
+  };
+}
+
+export function updateCollectibleDropDownState(value) {
+  return async (dispatch) => {
+    await promisifiedBackground.updateCollectibleDropDownState(value);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
@@ -2253,6 +2272,18 @@ export function setAdvancedGasFee(val) {
         dispatch(displayWarning(err.message));
       }
     });
+  };
+}
+
+export function setEIP1559V2Enabled(val) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setEIP1559V2Enabled`);
+    try {
+      await promisifiedBackground.setEIP1559V2Enabled(val);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -2743,13 +2774,26 @@ export function loadingTokenParamsFinished() {
   };
 }
 
-export function getTokenParams(tokenAddress) {
+export function getTokenParams(address) {
   return (dispatch, getState) => {
     const tokenList = getTokenList(getState());
     const existingTokens = getState().metamask.tokens;
-    const existingToken = existingTokens.find(({ address }) =>
-      isEqualCaseInsensitive(tokenAddress, address),
+    const { selectedAddress } = getState().metamask;
+    const { chainId } = getState().metamask.provider;
+    const existingCollectibles = getState().metamask?.allCollectibles?.[
+      selectedAddress
+    ]?.[chainId];
+    const existingToken = existingTokens.find(({ address: tokenAddress }) =>
+      isEqualCaseInsensitive(address, tokenAddress),
     );
+    const existingCollectible = existingCollectibles?.find(
+      ({ address: collectibleAddress }) =>
+        isEqualCaseInsensitive(address, collectibleAddress),
+    );
+
+    if (existingCollectible) {
+      return null;
+    }
 
     if (existingToken) {
       return Promise.resolve({
@@ -2761,9 +2805,9 @@ export function getTokenParams(tokenAddress) {
     dispatch(loadingTokenParamsStarted());
     log.debug(`loadingTokenParams`);
 
-    return getSymbolAndDecimals(tokenAddress, tokenList).then(
+    return getSymbolAndDecimals(address, tokenList).then(
       ({ symbol, decimals }) => {
-        dispatch(addToken(tokenAddress, symbol, Number(decimals)));
+        dispatch(addToken(address, symbol, Number(decimals)));
         dispatch(loadingTokenParamsFinished());
       },
     );
@@ -3060,6 +3104,18 @@ export function trackMetaMetricsEvent(payload, options) {
   return promisifiedBackground.trackMetaMetricsEvent(payload, options);
 }
 
+export function createEventFragment(options) {
+  return promisifiedBackground.createEventFragment(options);
+}
+
+export function updateEventFragment(id, payload) {
+  return promisifiedBackground.updateEventFragment(id, payload);
+}
+
+export function finalizeEventFragment(id, options) {
+  return promisifiedBackground.finalizeEventFragment(id, options);
+}
+
 /**
  * @param {MetaMetricsPagePayload} payload - details of the page viewed
  * @param {MetaMetricsPageOptions} options - options for handling the page view
@@ -3098,6 +3154,10 @@ export function hideTestNetMessage() {
 
 export function setCollectiblesDetectionNoticeDismissed() {
   return promisifiedBackground.setCollectiblesDetectionNoticeDismissed(true);
+}
+
+export function setEnableEIP1559V2NoticeDismissed() {
+  return promisifiedBackground.setEnableEIP1559V2NoticeDismissed(true);
 }
 
 // QR Hardware Wallets

@@ -30,7 +30,7 @@ describe('AwaitingSwap', () => {
     expect(getByText('ETH')).toBeInTheDocument();
     expect(getByText('View in activity')).toBeInTheDocument();
     expect(
-      document.querySelector('.awaiting-swap__main-descrption'),
+      document.querySelector('.awaiting-swap__main-description'),
     ).toMatchSnapshot();
     expect(getByText('View in activity')).toBeInTheDocument();
   });

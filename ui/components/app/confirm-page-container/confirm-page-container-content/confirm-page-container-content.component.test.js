@@ -11,6 +11,7 @@ describe('Confirm Page Container Content', () => {
       provider: {
         type: 'test',
       },
+      eip1559V2Enabled: false,
     },
   };
 
@@ -41,8 +42,6 @@ describe('Confirm Page Container Content', () => {
   });
 
   it('render ConfirmPageContainer component with simulation error', async () => {
-    process.env.EIP_1559_V2 = false;
-
     const { queryByText, getByText } = renderWithProvider(
       <ConfirmPageContainerContent {...props} />,
       store,

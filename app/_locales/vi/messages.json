@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "Thêm bản ghi nhớ"
   },
-  "addNFT": {
-    "message": "Thêm NFT"
-  },
   "addNetwork": {
     "message": "Thêm mạng"
   },
@@ -1296,9 +1293,6 @@
   "high": {
     "message": "Linh hoạt"
   },
-  "highGasSettingToolTipDialog": {
-    "message": "Có khả năng cao, ngay cả trong thị trường biến động"
-  },
   "highGasSettingToolTipMessage": {
     "message": "Sử dụng $1 để bù đắp khi lưu lượng mạng lưới tăng vọt trong những trường hợp như phát hành NFT nổi tiếng.",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
@@ -1308,9 +1302,6 @@
   },
   "history": {
     "message": "Lịch sử"
-  },
-  "id": {
-    "message": "ID"
   },
   "import": {
     "message": "Nhập",

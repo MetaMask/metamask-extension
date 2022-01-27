@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "메모 추가"
   },
-  "addNFT": {
-    "message": "NFT 추가"
-  },
   "addNetwork": {
     "message": "네트워크 추가"
   },
@@ -1296,9 +1293,6 @@
   "high": {
     "message": "공격적"
   },
-  "highGasSettingToolTipDialog": {
-    "message": "변동성이 큰 시장에서도 높은 확률"
-  },
   "highGasSettingToolTipMessage": {
     "message": "인기 있는 NFT의 하락 등으로 인한 네트워크 트래픽 급증을 커버하려면 $1을 사용하세요.",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
@@ -1308,9 +1302,6 @@
   },
   "history": {
     "message": "기록"
-  },
-  "id": {
-    "message": "ID"
   },
   "import": {
     "message": "가져오기",

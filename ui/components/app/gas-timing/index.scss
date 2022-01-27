@@ -5,6 +5,11 @@
     color: var(--success-3);
   }
 
+  &--positive-V2 {
+    color: var(--success-3);
+    font-weight: bold;
+  }
+
   &--warning {
     color: var(--alert-3);
   }

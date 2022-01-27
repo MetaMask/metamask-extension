@@ -30,6 +30,7 @@ export default {
     password: { control: 'boolean' },
     allowDecimals: { control: 'boolean' },
     disabled: { control: 'boolean' },
+    placeholder: { control: 'text' },
   },
 };
 

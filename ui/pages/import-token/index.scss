@@ -6,12 +6,12 @@
   &__custom-token-form {
     padding: 8px 16px 16px;
 
-    input[type="number"]::-webkit-inner-spin-button {
+    input[type='number']::-webkit-inner-spin-button {
       -webkit-appearance: none;
       display: none;
     }
 
-    input[type="number"]:hover::-webkit-inner-spin-button {
+    input[type='number']:hover::-webkit-inner-spin-button {
       -webkit-appearance: none;
       display: none;
     }
@@ -58,5 +58,14 @@
   &__token-detection-announcement {
     margin-bottom: 16px;
     margin-top: 0;
+  }
+
+  &__collectible-address-error-link {
+    color: var(--primary-blue);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--Blue-400);
+    }
   }
 }

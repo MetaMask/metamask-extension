@@ -273,7 +273,7 @@ export default function AwaitingSwap({
         )}
         <div className="awaiting-swap__status-image">{statusImage}</div>
         <div className="awaiting-swap__header">{headerText}</div>
-        <div className="awaiting-swap__main-descrption">{descriptionText}</div>
+        <div className="awaiting-swap__main-description">{descriptionText}</div>
         {content}
       </div>
       {!errorKey && swapComplete ? <MakeAnotherSwap /> : null}
