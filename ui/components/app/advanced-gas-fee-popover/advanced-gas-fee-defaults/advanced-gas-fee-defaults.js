@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
@@ -26,7 +26,7 @@ const AdvancedGasFeeDefaults = () => {
     maxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-  const metricsEvent = useContext(MetaMetricsContext);
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const [isDefaultSettingsSelected, setDefaultSettingsSelected] = useState(
     Boolean(advancedGasFeeValues) &&
@@ -43,28 +43,27 @@ const AdvancedGasFeeDefaults = () => {
   }, [advancedGasFeeValues, maxBaseFee, maxPriorityFeePerGas]);
 
   const handleUpdateDefaultSettings = () => {
-    let defaults;
     if (isDefaultSettingsSelected) {
-      defaults = null;
+      dispatch(setAdvancedGasFee(null));
       setDefaultSettingsSelected(false);
+      updateTransactionEventFragment({
+        advanced_gas_defaults_updated: true,
+        advanced_gas_defaults_updated_maxbasefee: null,
+        advanced_gas_defaults_updated_priorityfee: null,
+      });
     } else {
-      defaults = {
-        maxBaseFee,
-        priorityFee: maxPriorityFeePerGas,
-      };
-      dispatch(setAdvancedGasFee(defaults));
+      dispatch(
+        setAdvancedGasFee({
+          maxBaseFee,
+          priorityFee: maxPriorityFeePerGas,
+        }),
+      );
+      updateTransactionEventFragment({
+        advanced_gas_defaults_updated: true,
+        advanced_gas_defaults_updated_maxbasefee: maxBaseFee,
+        advanced_gas_defaults_updated_priorityfee: maxPriorityFeePerGas,
+      });
     }
-    metricsEvent({
-      eventOpts: {
-        category: 'Settings',
-        action: 'Saved Advanced Defaults',
-        name: 'Advanced gas fee modal',
-      },
-      customVariables: {
-        defaults,
-      },
-    });
-    dispatch(setAdvancedGasFee(defaults));
   };
 
   return (
