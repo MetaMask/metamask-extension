@@ -28,7 +28,6 @@ function mapStateToProps(state) {
 
   const autoDetectToken = getUseTokenDetection(state);
   const primaryTokenImage = getNativeCurrencyImage(state);
-  const showPopup = shouldShowPopup(state);
 
   return {
     alertOpen,

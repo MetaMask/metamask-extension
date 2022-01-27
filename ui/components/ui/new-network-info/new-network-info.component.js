@@ -58,7 +58,7 @@ const NewNetworkInfo = ({
         alignItems={ALIGN_ITEMS.CENTER}
         height={BLOCK_SIZES.ONE_TWELFTH}
         width={BLOCK_SIZES.FIVE_TWELFTHS}
-        padding={[0, 3, 0, 3]}
+        padding={[0, 2, 0, 2]}
         className="new-network-info__token-box"
       >
         {tokenImage ? (
@@ -113,7 +113,6 @@ const NewNetworkInfo = ({
                     >
                       {providerTicker}
                     </Typography>
-                    ,
                   </>,
                 ])}
               </Typography>
