@@ -2,61 +2,83 @@
 import React, { useEffect } from 'react';
 import { text } from '@storybook/addon-knobs';
 import { store, getNewState } from '../../../.storybook/preview';
-import { suggestedAssets } from '../../../.storybook/initial-states/approval-screens/add-suggested-token';
+import { suggestedAssets as mockSuggestedAssets } from '../../../.storybook/initial-states/approval-screens/add-suggested-token';
 import { updateMetamaskState } from '../../store/actions';
 import ConfirmAddSuggestedToken from '.';
 
 export default {
   title: 'Pages/ConfirmAddSuggestedToken',
   id: __filename,
+  argTypes: {
+    // Data
+    tokens: {
+      control: 'array',
+      table: { category: 'Data' },
+    },
+    suggestedAssets: {
+      control: 'array',
+      table: { category: 'Data' },
+    },
+
+    // Text
+    mostRecentOverviewPage: {
+      control: { type: 'text', disable: true },
+      table: { category: 'Text' },
+    },
+
+    // Events
+    acceptWatchAsset: {
+      action: 'acceptWatchAsset',
+      table: { category: 'Events' },
+    },
+    history: {
+      action: 'history',
+      table: { category: 'Events' },
+    },
+    rejectWatchAsset: {
+      action: 'rejectWatchAsset',
+      table: { category: 'Events' },
+    },
+  },
 };
 
-const PageSet = ({ children }) => {
+const PageSet = ({ children, suggestedAssets }) => {
   const symbol = text('symbol', 'META');
   const image = text('Icon URL', 'metamark.svg');
 
   const state = store.getState();
-  const suggestedAssetsState = state.metamask.suggestedAssets;
 
   useEffect(() => {
-    suggestedAssetsState[0].symbol = symbol;
+    if (!suggestedAssets.length) {
+      return;
+    }
+
+    suggestedAssets[0].asset.image = image;
+    suggestedAssets[0].asset.symbol = symbol;
+
     store.dispatch(
       updateMetamaskState(
         getNewState(state.metamask, {
-          suggestedAssets: suggestedAssetsState,
+          suggestedAssets,
         }),
       ),
     );
-  }, [symbol, suggestedAssetsState, state.metamask]);
-  useEffect(() => {
-    suggestedAssetsState[0].image = image;
-    store.dispatch(
-      updateMetamaskState(
-        getNewState(state.metamask, {
-          suggestedAssets: suggestedAssetsState,
-        }),
-      ),
-    );
-  }, [image, suggestedAssetsState, state.metamask]);
+  }, [image, symbol, suggestedAssets, state.metamask]);
 
   return children;
 };
 
-export const DefaultStory = () => {
-  const state = store.getState();
-  store.dispatch(
-    updateMetamaskState(
-      getNewState(state.metamask, {
-        suggestedAssets,
-      }),
-    ),
-  );
-
+export const DefaultStory = ({ suggestedAssets }) => {
   return (
-    <PageSet>
+    <PageSet suggestedAssets={suggestedAssets}>
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
 };
 
 DefaultStory.storyName = 'Default';
+DefaultStory.args = {
+  mostRecentOverviewPage: '',
+  suggestedAssets: [...mockSuggestedAssets],
+  tokens: [],
+};
