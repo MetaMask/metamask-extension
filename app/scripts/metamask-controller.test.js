@@ -1060,7 +1060,7 @@ describe('MetaMaskController', function () {
 
       metamaskController.setupUntrustedCommunication({
         connectionStream: streamTest,
-        sender: messageSender
+        sender: messageSender,
       });
 
       const message = {
