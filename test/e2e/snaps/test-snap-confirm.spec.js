@@ -52,6 +52,7 @@ describe('Test Snap Confirm', function () {
         );
 
         // approve install of snap
+        await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
