@@ -17,6 +17,12 @@ async function main() {
             type: 'string',
             choices: ['chrome', 'firefox'],
           })
+          .option('leave-running', {
+            default: false,
+            description:
+              'Leaves the browser running after a test fails, along with anything else that the test used (ganache, the test dapp, etc.)',
+            type: 'boolean',
+          })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
@@ -26,7 +32,7 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, retries } = argv;
+  const { browser, retries, leaveRunning } = argv;
 
   const testDir = path.join(__dirname, 'tests');
   const metamaskUiTest = path.join(__dirname, 'metamask-ui.spec.js');
@@ -46,6 +52,12 @@ async function main() {
   if (retries) {
     args.push('--retries', retries);
   }
+
+
+  if (leaveRunning) {
+    process.env.E2E_LEAVE_RUNNING = 'true';
+  }
+
 
   for (const testPath of allE2eTestPaths) {
     await runInShell('node', [...args, testPath]);
