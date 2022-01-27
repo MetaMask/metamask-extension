@@ -1713,7 +1713,7 @@ export default class TransactionController extends EventEmitter {
    * @param {TransactionMetaMetricsEventString} event - the name of the transaction event
    * @param {Object} extraParams - optional props and values to include in sensitiveProperties
    */
-  async __trackTransactionMetricsEvent(txMeta, event, extraParams = {}) {
+  async _trackTransactionMetricsEvent(txMeta, event, extraParams = {}) {
     if (!txMeta) {
       return;
     }
