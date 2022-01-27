@@ -137,12 +137,6 @@ export default class PreferencesController {
    * @param {boolean} val - Whether or not the user prefers to autodetect collectibles.
    */
   setUseCollectibleDetection(val) {
-    const { openSeaEnabled } = this.store.getState();
-    if (val && !openSeaEnabled) {
-      throw new Error(
-        'useCollectibleDetection cannot be enabled if openSeaEnabled is false',
-      );
-    }
     this.store.updateState({ useCollectibleDetection: val });
   }
 
