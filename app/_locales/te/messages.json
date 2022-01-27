@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "తిరస్కరించు"
+  },
   "about": {
     "message": "గురించి"
   },
@@ -43,6 +46,9 @@
   },
   "create": {
     "message": "సృష్టించు"
+  },
+  "custom": {
+    "message": "ఆధునిక"
   },
   "delete": {
     "message": "తొలగించు"

@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "عدم پذیرش"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "سکن کود QR"
+  },
   "about": {
     "message": "درباره"
   },
@@ -255,6 +261,9 @@
   },
   "currentLanguage": {
     "message": "زبان فعلی"
+  },
+  "custom": {
+    "message": "پیشرفته"
   },
   "customGas": {
     "message": "گاز دلخواه"
@@ -528,6 +537,9 @@
     "message": "شبکه آزمایشی Kovan"
   },
   "learnMore": {
+    "message": "بیشتر بدانید"
+  },
+  "learnMoreUpperCase": {
     "message": "بیشتر بدانید"
   },
   "ledgerAccountRestriction": {
