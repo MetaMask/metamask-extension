@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Sigurno želite izbrisati ovu mrežu?"
   },
-  "depositEther": {
-    "message": "Položi Ether"
-  },
   "details": {
     "message": "Detalji"
   },
@@ -588,9 +585,6 @@
   },
   "myAccounts": {
     "message": "Moji računi"
-  },
-  "needEtherInWallet": {
-    "message": "Trebate Ether u svojem novčaniku kako biste ostvarili interakciju s decentraliziranim aplikacijama uporabom usluge MetaMask. "
   },
   "needImportFile": {
     "message": "Morate odabrati datoteku za uvoz.",

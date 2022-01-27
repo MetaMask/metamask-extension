@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "你確定要刪除網路嗎？"
   },
-  "depositEther": {
-    "message": "存入以太幣"
-  },
   "details": {
     "message": "詳情"
   },
@@ -589,9 +586,6 @@
   },
   "myAccounts": {
     "message": "我的帳戶"
-  },
-  "needEtherInWallet": {
-    "message": "要使用 MetaMask 存取去中心化應用服務時，您的錢包中需要有以太幣。"
   },
   "needImportFile": {
     "message": "您必須選擇一個檔案來匯入",

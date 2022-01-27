@@ -159,9 +159,6 @@
   "decimalsMustZerotoTen": {
     "message": "Desimal yo dwe omwen 0, epi pa dwe plis pase 36."
   },
-  "depositEther": {
-    "message": "Depo Ether"
-  },
   "details": {
     "message": "Detay yo"
   },
@@ -354,9 +351,6 @@
   },
   "myAccounts": {
     "message": "Kont mwen"
-  },
-  "needEtherInWallet": {
-    "message": "Pou kominike avèk aplikasyon desantralize ou dwe itilize MetaMask, ou pral bezwen Ether nan Wallet ou."
   },
   "needImportFile": {
     "message": "Ou dwe chwazi yon dosye pou enpòte.",

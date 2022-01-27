@@ -397,12 +397,6 @@
     "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. $1 deposits into your MetaMask account.",
     "description": "$1 represents the cypto symbol to be purchased"
   },
-  "buyWithTransak": {
-    "message": "Buy ETH with Transak"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. ETH deposits into your MetaMask account."
-  },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
   },
@@ -756,9 +750,6 @@
   "depositCrypto": {
     "message": "Deposit $1",
     "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "depositEther": {
-    "message": "Deposit Ether"
   },
   "description": {
     "message": "Description"
@@ -1811,9 +1802,6 @@
   "needCryptoInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need $1 in your wallet.",
     "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
   },
   "needHelp": {
     "message": "Need help? Contact $1",

@@ -283,9 +283,6 @@
   "deleteNetworkDescription": {
     "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
   },
-  "depositEther": {
-    "message": "Ether አስቀምጥ"
-  },
   "details": {
     "message": "ዝርዝሮች"
   },
@@ -580,9 +577,6 @@
   },
   "myAccounts": {
     "message": "የእኔ መለያዎች"
-  },
-  "needEtherInWallet": {
-    "message": "MetaMask በመጠቀም ያልተማከሉ መተግበሪያዎች ጋር ግንኙነት ለማድረግ፣ በቋትዎ ውስጥ Ether ያስፈልግዎታል።"
   },
   "needImportFile": {
     "message": "የሚያስመጡትን ፋይል መምረጥ አለብዎት።",

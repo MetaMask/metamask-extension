@@ -300,9 +300,6 @@
   "deleteNetworkDescription": {
     "message": "هل أنت متأكد أنك تريد حذف هذه الشبكة؟"
   },
-  "depositEther": {
-    "message": "إيداع عملة إيثير"
-  },
   "details": {
     "message": "التفاصيل"
   },
@@ -596,9 +593,6 @@
   },
   "myAccounts": {
     "message": "حساباتي"
-  },
-  "needEtherInWallet": {
-    "message": "للتفاعل مع التطبيقات اللامركزية باستخدام MetaMask، ستحتاج إلى الإيثير في محفظتك."
   },
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",
