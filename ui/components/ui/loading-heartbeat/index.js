@@ -3,17 +3,24 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { isVolatileGasEstimate } from '../../../helpers/utils/gas';
 import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
 const BASE_CLASS = 'loading-heartbeat';
 const LOADING_CLASS = `${BASE_CLASS}--active`;
 
-export default function LoadingHeartBeat({ backgroundColor = '#fff' }) {
+export default function LoadingHeartBeat({
+  estimateUsed,
+  backgroundColor = '#fff',
+}) {
   useShouldAnimateGasEstimations();
   const active = useSelector(getGasLoadingAnimationIsShowing);
 
-  if (process.env.IN_TEST) {
+  if (
+    process.env.IN_TEST ||
+    (estimateUsed && !isVolatileGasEstimate(estimateUsed))
+  ) {
     return null;
   }
 
@@ -33,4 +40,5 @@ export default function LoadingHeartBeat({ backgroundColor = '#fff' }) {
 
 LoadingHeartBeat.propTypes = {
   backgroundColor: PropTypes.string,
+  estimateUsed: PropTypes.string,
 };
