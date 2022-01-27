@@ -117,20 +117,23 @@ export const useTransactionFunctions = ({
     );
   }, [dispatch, estimatedBaseFee, transaction]);
 
-  const updateTransactionToTenPercentIncreasedGasFee = useCallback(() => {
-    const { gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas } =
-      transaction.previousGas || transaction.txParams;
+  const updateTransactionToTenPercentIncreasedGasFee = useCallback(
+    (initTransaction = false) => {
+      const { gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas } =
+        transaction.previousGas || transaction.txParams;
 
-    updateTransaction({
-      estimateSuggested: transaction.previousGas
-        ? defaultEstimateToUse
-        : PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
-      estimateUsed: PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
-      gasLimit,
-      maxFeePerGas: addTenPercentAndRound(maxFeePerGas),
-      maxPriorityFeePerGas: addTenPercentAndRound(maxPriorityFeePerGas),
-    });
-  }, [defaultEstimateToUse, transaction, updateTransaction]);
+      updateTransaction({
+        estimateSuggested: initTransaction
+          ? defaultEstimateToUse
+          : PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
+        estimateUsed: PRIORITY_LEVELS.TEN_PERCENT_INCREASED,
+        gasLimit,
+        maxFeePerGas: addTenPercentAndRound(maxFeePerGas),
+        maxPriorityFeePerGas: addTenPercentAndRound(maxPriorityFeePerGas),
+      });
+    },
+    [defaultEstimateToUse, transaction, updateTransaction],
+  );
 
   const updateTransactionUsingEstimate = useCallback(
     (gasFeeEstimateToUse) => {
