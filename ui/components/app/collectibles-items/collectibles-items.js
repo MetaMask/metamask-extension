@@ -51,7 +51,7 @@ export default function CollectiblesItems({
       collectiblesDropdownState[selectedAddress] = {};
     }
     if (
-      (collectiblesDropdownState?.[selectedAddress]?.[chainId] === undefined ||
+      (collectiblesDropdownState[selectedAddress]?.[chainId] === undefined ||
         Object.keys(collectiblesDropdownState?.[selectedAddress]?.[chainId])
           .length === 0) &&
       previousCollectionKeys !== collectionsKeys
