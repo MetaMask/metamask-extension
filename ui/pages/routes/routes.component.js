@@ -33,7 +33,7 @@ import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
-import TokenDetails from '../token-details/token-details';
+import TokenDetailsPage from '../token-details';
 
 import {
   IMPORT_TOKEN_ROUTE,
@@ -154,7 +154,11 @@ export default class Routes extends Component {
           component={SendTransactionScreen}
           exact
         />
-        <Authenticated path={TOKEN_DETAILS} component={TokenDetails} exact />
+        <Authenticated
+          path={TOKEN_DETAILS}
+          component={TokenDetailsPage}
+          exact
+        />
         <Authenticated path={SWAPS_ROUTE} component={Swaps} />
         <Authenticated
           path={IMPORT_TOKEN_ROUTE}

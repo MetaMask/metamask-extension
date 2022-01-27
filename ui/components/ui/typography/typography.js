@@ -21,6 +21,7 @@ export default function Typography({
   children,
   fontWeight = 'normal',
   fontStyle = 'normal',
+  'data-testid': dataTestId,
   align,
   overflowWrap,
   boxProps = {},
@@ -50,7 +51,10 @@ export default function Typography({
   return (
     <Box margin={margin} {...boxProps}>
       {(boxClassName) => (
-        <Tag className={classnames(boxClassName, computedClassName)}>
+        <Tag
+          data-testid={dataTestId}
+          className={classnames(boxClassName, computedClassName)}
+        >
           {children}
         </Tag>
       )}
@@ -63,6 +67,7 @@ Typography.propTypes = {
   children: PropTypes.node.isRequired,
   color: PropTypes.oneOf(Object.values(COLORS)),
   className: PropTypes.string,
+  'data-testid': PropTypes.string,
   align: PropTypes.oneOf(Object.values(TEXT_ALIGN)),
   boxProps: PropTypes.shape({
     ...Box.propTypes,

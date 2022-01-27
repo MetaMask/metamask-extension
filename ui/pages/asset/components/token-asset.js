@@ -57,7 +57,9 @@ export default function TokenAsset({ token }) {
         optionsButton={
           <AssetOptions
             onRemove={() =>
-              dispatch(showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token }))
+              dispatch(
+                showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),
+              )
             }
             isEthNetwork={!rpcPrefs.blockExplorerUrl}
             onClickBlockExplorer={() => {
@@ -71,7 +73,7 @@ export default function TokenAsset({ token }) {
               dispatch(
                 updateSendAsset({
                   type: ASSET_TYPES.TOKEN,
-                  details: token,
+                  details: { ...token },
                 }),
               ).then(() => {
                 history.push(TOKEN_DETAILS);

@@ -3190,9 +3190,6 @@
   "tokenDetails": {
     "message": "Token details"
   },
-  "tokenDetailsTitle": {
-    "message": "Token Details"
-  },
   "tokenDetectionAnnouncement": {
     "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
   },

@@ -9,6 +9,10 @@
     }
   }
 
+  &__title {
+    text-transform: capitalize;
+  }
+
   &__closeButton {
     background: none;
     float: right;

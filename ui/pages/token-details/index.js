@@ -1,1 +1,1 @@
-export { default } from './token-details-screen';
+export { default } from './token-details-page';

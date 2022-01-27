@@ -1,9 +1,12 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import configureStore from 'redux-mock-store';
 import Identicon from '../../components/ui/identicon/identicon.component';
-import TokenDetailsScreen from './token-details-screen';
+import TokenDetailsPage from './token-details-page';
 
-describe('TokenDetailsScreen', () => {
+// TO DO: update all tests to run correctly
+describe('TokenDetailsPage', () => {
   const args = {
     address: '0x6b175474e89094c44da98b954eedeac495271d0f',
     value: '200',
@@ -17,10 +20,16 @@ describe('TokenDetailsScreen', () => {
     decimals: 18,
     network: 'Ethereum Mainnet',
   };
+  const mockStore = configureStore();
 
   it('should render token address', () => {
     args.address = '0x6b175474e89094c44da98b954eedeac495271d0f';
-    const { getByText } = render(<TokenDetailsScreen {...args} />);
+    const store = mockStore(args);
+    const { getByText } = render(
+      <Provider store={store}>
+        <TokenDetailsPage />
+      </Provider>,
+    );
     expect(
       getByText('0x6b175474e89094c44da98b954eedeac495271d0f'),
     ).toBeDefined();
@@ -28,7 +37,7 @@ describe('TokenDetailsScreen', () => {
 
   it('should render token value', () => {
     args.value = 'value';
-    const { getByText } = render(<TokenDetailsScreen {...args} />);
+    const { getByText } = render(<TokenDetailsPage {...args} />);
     expect(getByText('value')).toBeDefined();
   });
 
@@ -46,7 +55,7 @@ describe('TokenDetailsScreen', () => {
   it('should call onClose prop when click is simulated', () => {
     const onClose = jest.fn();
     args.onClose = onClose;
-    const { container } = render(<TokenDetailsScreen {...args} />);
+    const { container } = render(<TokenDetailsPage {...args} />);
     const onCloseBtn = container.querySelector('.token-details__closeButton');
     fireEvent.click(onCloseBtn);
     expect(onCloseBtn).toBeDefined();
@@ -56,7 +65,7 @@ describe('TokenDetailsScreen', () => {
   it('should call onHideToken prop when hide token button is clicked', () => {
     const onHideToken = jest.fn();
     args.onHideToken = onHideToken;
-    const { container } = render(<TokenDetailsScreen {...args} />);
+    const { container } = render(<TokenDetailsPage {...args} />);
     const hideTokenBtn = container.querySelector(
       '.token-details__hide-token-button',
     );
@@ -66,19 +75,19 @@ describe('TokenDetailsScreen', () => {
 
   it('should render current currency of the token', () => {
     args.currentCurrency = '$200.09 USD';
-    const { getByText } = render(<TokenDetailsScreen {...args} />);
+    const { getByText } = render(<TokenDetailsPage {...args} />);
     expect(getByText('$200.09 USD')).toBeDefined();
   });
 
   it('should render token decimals', () => {
     args.decimals = 18;
-    const { getByText } = render(<TokenDetailsScreen {...args} />);
+    const { getByText } = render(<TokenDetailsPage {...args} />);
     expect(getByText('18')).toBeDefined();
   });
 
   it('should render current network when the user click on token details', () => {
     args.network = 'Ethereum Mainnet';
-    const { getByText } = render(<TokenDetailsScreen {...args} />);
+    const { getByText } = render(<TokenDetailsPage {...args} />);
     expect(getByText('Ethereum Mainnet')).toBeDefined();
   });
 });
