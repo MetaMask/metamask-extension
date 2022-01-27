@@ -264,7 +264,7 @@ export default class TransactionController extends EventEmitter {
   addTransaction(txMeta) {
     this.txStateManager.addTransaction(txMeta);
     this.emit(`${txMeta.id}:unapproved`, txMeta);
-    this.trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.ADDED);
+    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.ADDED);
   }
 
   /**
@@ -916,7 +916,7 @@ export default class TransactionController extends EventEmitter {
       // sign transaction
       const rawTx = await this.signTransaction(txId);
       await this.publishTransaction(txId, rawTx);
-      this.trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.APPROVED);
+      this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.APPROVED);
       // must set transaction to submitted/failed before releasing lock
       nonceLock.releaseLock();
     } catch (err) {
@@ -1012,7 +1012,7 @@ export default class TransactionController extends EventEmitter {
 
     this.txStateManager.setTxStatusSubmitted(txId);
 
-    this.trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.SUBMITTED);
+    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.SUBMITTED);
   }
 
   /**
@@ -1071,7 +1071,7 @@ export default class TransactionController extends EventEmitter {
         // metricsParams.error = TODO: figure out a way to get the on-chain failure reason
       }
 
-      this.trackTransactionMetricsEvent(
+      this._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.FINALIZED,
         metricsParams,
@@ -1113,7 +1113,7 @@ export default class TransactionController extends EventEmitter {
   async cancelTransaction(txId) {
     const txMeta = this.txStateManager.getTransaction(txId);
     this.txStateManager.setTxStatusRejected(txId);
-    this.trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.REJECTED);
+    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.REJECTED);
   }
 
   /**
@@ -1713,7 +1713,7 @@ export default class TransactionController extends EventEmitter {
    * @param {TransactionMetaMetricsEventString} event - the name of the transaction event
    * @param {Object} extraParams - optional props and values to include in sensitiveProperties
    */
-  async _trackTransactionMetricsEvent(txMeta, event, extraParams = {}) {
+  async __trackTransactionMetricsEvent(txMeta, event, extraParams = {}) {
     if (!txMeta) {
       return;
     }
@@ -1781,7 +1781,7 @@ export default class TransactionController extends EventEmitter {
   _failTransaction(txId, error) {
     this.txStateManager.setTxStatusFailed(txId, error);
     const txMeta = this.txStateManager.getTransaction(txId);
-    this.trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.FINALIZED, {
+    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.FINALIZED, {
       error: error.message,
     });
   }
@@ -1789,6 +1789,6 @@ export default class TransactionController extends EventEmitter {
   _dropTransaction(txId) {
     this.txStateManager.setTxStatusDropped(txId);
     const txMeta = this.txStateManager.getTransaction(txId);
-    this.trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.FINALIZED);
+    this._trackTransactionMetricsEvent(txMeta, TRANSACTION_EVENTS.FINALIZED);
   }
 }
