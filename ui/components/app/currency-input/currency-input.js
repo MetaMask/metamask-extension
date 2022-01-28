@@ -25,12 +25,14 @@ import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
  * @param options0.featureSecondary
  * @param options0.onChange
  * @param options0.onPreferenceToggle
+ * @param options0.primaryNumberOfDecimals
  */
 export default function CurrencyInput({
   hexValue,
   featureSecondary,
   onChange,
   onPreferenceToggle,
+  primaryNumberOfDecimals,
 }) {
   const t = useContext(I18nContext);
 
@@ -64,7 +66,7 @@ export default function CurrencyInput({
       : getValueFromWeiHex({
           value: hexValue,
           toCurrency: ETH,
-          numberOfDecimals: 8,
+          numberOfDecimals: primaryNumberOfDecimals,
         });
 
     return Number(decimalValueString) || 0;
@@ -173,4 +175,5 @@ CurrencyInput.propTypes = {
   featureSecondary: PropTypes.bool,
   onChange: PropTypes.func,
   onPreferenceToggle: PropTypes.func,
+  primaryNumberOfDecimals: PropTypes.number,
 };
