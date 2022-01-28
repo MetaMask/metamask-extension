@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "آیا مطمئن هستید که این شبکه حذف شود؟"
   },
-  "depositEther": {
-    "message": "پرداخت ایتر"
-  },
   "details": {
     "message": "جزئیات"
   },
@@ -595,9 +592,6 @@
   },
   "myAccounts": {
     "message": "حساب های من"
-  },
-  "needEtherInWallet": {
-    "message": "برای تعامل با اپلیکیشن های غیر متمرکز شده با استفاده از MetaMask، شما نیاز به ایتر در کیف تان خواهید داشت."
   },
   "needImportFile": {
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",

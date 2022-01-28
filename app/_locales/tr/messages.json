@@ -389,12 +389,6 @@
   "buy": {
     "message": "Satın Al"
   },
-  "buyWithTransak": {
-    "message": "Transak ile ETH satın alın"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak 59'dan fazla ülkede banka kartı ve banka transferlerini (konuma bağlı olarak) destekler. MetaMask hesabınıza ETH para yatırma işlemleri."
-  },
   "buyWithWyre": {
     "message": "Wyre ile ETH satın alın"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Bu ağı silmek istediğinizden emin misiniz?"
-  },
-  "depositEther": {
-    "message": "Ether yatır"
   },
   "description": {
     "message": "Açıklama"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "Adı"
-  },
-  "needEtherInWallet": {
-    "message": "MetaMask kullanarak merkezi olamayan uygulamalarla etkileşmek için cüzdanınızda Ether bulunmalıdır."
   },
   "needHelp": {
     "message": "Yardıma mı ihtiyacınız var? $1 ile iletişim kurun",

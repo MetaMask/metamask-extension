@@ -389,12 +389,6 @@
   "buy": {
     "message": "Beli"
   },
-  "buyWithTransak": {
-    "message": "Beli ETH dengan Transak"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak mendukung kartu debit dan transfer bank (tergantung lokasi) di 59+ negara. Deposito ETH ke akun MetaMask Anda."
-  },
   "buyWithWyre": {
     "message": "Beli ETH dengan Wyre"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Anda yakin ingin menghapus jaringan ini?"
-  },
-  "depositEther": {
-    "message": "Depositokan Ether"
   },
   "description": {
     "message": "Deskripsi"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "Nama"
-  },
-  "needEtherInWallet": {
-    "message": "Untuk berinteraksi dengan aplikasi yang terdesentralisasi menggunakan MetaMask, Anda memerlukan Ether di dompet Anda."
   },
   "needHelp": {
     "message": "Butuh bantuan? Hubungi $1",

@@ -389,12 +389,6 @@
   "buy": {
     "message": "Acheter"
   },
-  "buyWithTransak": {
-    "message": "Achetez des ETH avec Transak"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak prend en charge les cartes de débit et les virements bancaires (en fonction de l’emplacement) dans plus de 59 pays. Les ETH sont ensuite déposés sur votre compte MetaMask."
-  },
   "buyWithWyre": {
     "message": "Acheter ETH avec Wyre"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Êtes-vous sûr de vouloir supprimer ce réseau ?"
-  },
-  "depositEther": {
-    "message": "Déposer de l'Ether"
   },
   "description": {
     "message": "Description"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "Nom"
-  },
-  "needEtherInWallet": {
-    "message": "Pour interagir avec des applications décentralisées à l'aide de MetaMask, vous avez besoin d'Ether dans votre portefeuille."
   },
   "needHelp": {
     "message": "Vous avez besoin d’aide ? Contactez $1",

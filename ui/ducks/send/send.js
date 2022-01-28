@@ -581,7 +581,7 @@ export const initialState = {
   gas: {
     // indicate whether the gas estimate is loading
     isGasEstimateLoading: true,
-    // String token indentifying a listener for polling on the gasFeeController
+    // String token identifying a listener for polling on the gasFeeController
     gasEstimatePollToken: null,
     // has the user set custom gas in the custom gas modal
     isCustomGasSet: false,
@@ -1491,6 +1491,19 @@ export function updateSendAsset({ type, details }) {
           dispatch(displayWarning(err.message));
         }
       }
+
+      if (details.standard === undefined) {
+        const { standard } = await getTokenStandardAndDetails(
+          details.address,
+          userAddress,
+        );
+        details.standard = standard;
+      }
+
+      if (details.standard === ERC1155) {
+        throw new Error('Sends of ERC1155 tokens are not currently supported');
+      }
+
       if (isCurrentOwner) {
         error = null;
         balance = '0x1';

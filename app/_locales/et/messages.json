@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Olete kindel, et soovite selle võrgu kustutada?"
   },
-  "depositEther": {
-    "message": "Eetri sissemakse"
-  },
   "details": {
     "message": "Üksikasjad"
   },
@@ -585,9 +582,6 @@
   },
   "myAccounts": {
     "message": "Minu kontod"
-  },
-  "needEtherInWallet": {
-    "message": "Selleks, et suhelda MetaMaski abil detsentraliseeritud rakendustega, peab teil rahakotis eetrit olema."
   },
   "needImportFile": {
     "message": "Peate importimiseks faili valima.",

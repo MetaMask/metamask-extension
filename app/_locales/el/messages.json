@@ -389,12 +389,6 @@
   "buy": {
     "message": "Αγορά"
   },
-  "buyWithTransak": {
-    "message": "Αγοράστε ETH με Transak"
-  },
-  "buyWithTransakDescription": {
-    "message": "Η Transak υποστηρίζει χρεωστική κάρτα και τραπεζικές μεταφορές (ανάλογα με τη τοποθεσία σας) σε 59+ χώρες. Το ETH κατατίθεται στο λογαριασμό σας MetaMask."
-  },
   "buyWithWyre": {
     "message": "Αγοράστε ETH με το Wyre"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
-  },
-  "depositEther": {
-    "message": "Κατάθεση Ether"
   },
   "description": {
     "message": "Περιγραφή"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "Όνομα"
-  },
-  "needEtherInWallet": {
-    "message": "Για να αλληλεπιδράσετε με αποκεντρωμένες εφαρμογές χρησιμοποιώντας το MetaMask, θα χρειαστείτε Ether στο πορτοφόλι σας."
   },
   "needHelp": {
     "message": "Χρειάζεστε βοήθεια? Επικοινωνήστε με $1",

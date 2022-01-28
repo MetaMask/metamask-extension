@@ -389,12 +389,6 @@
   "buy": {
     "message": "खरीदें"
   },
-  "buyWithTransak": {
-    "message": "Transak के साथ ETH खरीदें"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak 59+ देशों में डेबिट कार्ड और बैंक हस्तांतरण (स्थान के आधार पर) का समर्थन करता है। ETH आपके MetaMask अकाउंट में जमा करता है।"
-  },
   "buyWithWyre": {
     "message": "ETH को Wyre साथ खरीदें"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "क्या आप वाकई इस नेटवर्क को हटाना चाहते हैं?"
-  },
-  "depositEther": {
-    "message": "Ether जमा करें"
   },
   "description": {
     "message": "विवरण"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "नाम"
-  },
-  "needEtherInWallet": {
-    "message": "MetaMask का उपयोग करके विकेंद्रीकृत एप्लिकेशन के साथ सहभागिता करने के लिए, आपको अपने वॉलेट में Ether की आवश्यकता होगी।"
   },
   "needHelp": {
     "message": "मदद चाहिए? $1 से संपर्क करें",

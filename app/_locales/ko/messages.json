@@ -389,12 +389,6 @@
   "buy": {
     "message": "구매"
   },
-  "buyWithTransak": {
-    "message": "Transak으로 ETH 구매"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak은 59개 이상의 국가에서 직불 카드 및 은행 송금(지역에 따라 다름)을 지원합니다. ETH는 메타마스크 계정에 예치됩니다."
-  },
   "buyWithWyre": {
     "message": "Wyre로 ETH 구매"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "이 네트워크를 삭제하시겠어요?"
-  },
-  "depositEther": {
-    "message": "Ether 예치"
   },
   "description": {
     "message": "설명"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "이름"
-  },
-  "needEtherInWallet": {
-    "message": "MetaMask를 이용하는 분산형 애플리케이션과 상호작용하려면 지갑에 Ether가 있어야 합니다."
   },
   "needHelp": {
     "message": "도움이 필요하신가요? $1에 문의하세요.",

@@ -389,12 +389,6 @@
   "buy": {
     "message": "Bilhin"
   },
-  "buyWithTransak": {
-    "message": "Bumili ng ETH gamit ang Transak"
-  },
-  "buyWithTransakDescription": {
-    "message": "Magagamit sa Transak ang debit card at mga bank transfer (depende sa lokasyon) sa 59+ na bansa. Mga depositong ETH sa iyong MetaMask account."
-  },
   "buyWithWyre": {
     "message": "Bumili ng ETH gamit ang Wyre"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
-  },
-  "depositEther": {
-    "message": "Mag-deposit ng Ether"
   },
   "description": {
     "message": "Deskripsyon"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "Pangalan"
-  },
-  "needEtherInWallet": {
-    "message": "Para makaugnayan ang mga decentralized ma application gamit ang MetaMask, kakailanganin mo ang Ether sa iyong wallet."
   },
   "needHelp": {
     "message": "Kailangan ng tulong? Kontakin ang $1",

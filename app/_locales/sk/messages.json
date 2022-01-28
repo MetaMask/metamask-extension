@@ -286,9 +286,6 @@
   "deleteNetworkDescription": {
     "message": "Naozaj chcete túto sieť odstrániť?"
   },
-  "depositEther": {
-    "message": "Vložit Ether"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -567,9 +564,6 @@
   },
   "myAccounts": {
     "message": "Moje účty"
-  },
-  "needEtherInWallet": {
-    "message": "Potřebujete Ether v peněžence, abyste mohli pomocí MetaMasku interagovat s decentralizovanými aplikacemi."
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
