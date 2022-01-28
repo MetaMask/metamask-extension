@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Biztosan törli ezt a hálózatot?"
   },
-  "depositEther": {
-    "message": "Ether befizetése"
-  },
   "details": {
     "message": "Részletek"
   },
@@ -588,9 +585,6 @@
   },
   "myAccounts": {
     "message": "Fiókjaim"
-  },
-  "needEtherInWallet": {
-    "message": "Ha a MetaMaskon keresztül szeretne interakcióba lépni decentralizált alkalmazással, ahhoz a tárcájában Ethernek kell lennie."
   },
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",

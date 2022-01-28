@@ -576,9 +576,6 @@
   "myAccounts": {
     "message": "Akaun Saya"
   },
-  "needEtherInWallet": {
-    "message": "Untuk berinteraksi dengan aplikasi ternyahpusat menggunakan MetaMask, anda memerlukan Ether di dalam dompet anda."
-  },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
     "description": "User is important an account and needs to add a file to continue"

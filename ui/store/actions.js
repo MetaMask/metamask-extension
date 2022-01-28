@@ -2,7 +2,7 @@ import pify from 'pify';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
-import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
+import getBuyUrl from '../../app/scripts/lib/buy-url';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -2002,7 +2002,7 @@ export function showSendTokenPage() {
 
 export function buyEth(opts) {
   return async (dispatch) => {
-    const url = await getBuyEthUrl(opts);
+    const url = await getBuyUrl(opts);
     global.platform.openTab({ url });
     dispatch({
       type: actionConstants.BUY_ETH,

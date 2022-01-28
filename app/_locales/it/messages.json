@@ -450,9 +450,6 @@
   "deleteNetworkDescription": {
     "message": "Sei sicuro di voler eliminare questa rete?"
   },
-  "depositEther": {
-    "message": "Deposita Ether"
-  },
   "details": {
     "message": "Dettagli"
   },
@@ -947,9 +944,6 @@
   },
   "myAccounts": {
     "message": "Miei Account"
-  },
-  "needEtherInWallet": {
-    "message": "Per interagire con applicazioni decentralizzate con MetaMask, devi possedere Ether nel tuo portafoglio."
   },
   "needImportFile": {
     "message": "Devi selezionare un file da importare.",
