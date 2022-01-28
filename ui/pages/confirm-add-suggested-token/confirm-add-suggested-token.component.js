@@ -42,7 +42,7 @@ function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
   const duplicate = suggestedAssets.find(({ asset }) => {
     const dupe = tokens.find((token) => {
       return (
-        token.symbol === asset.symbol &&
+        isEqualCaseInsensitive(token.symbol, asset.symbol) &&
         !isEqualCaseInsensitive(token.address, asset.address)
       );
     });
