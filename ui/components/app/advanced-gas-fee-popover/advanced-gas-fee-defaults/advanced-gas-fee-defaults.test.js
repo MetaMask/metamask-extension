@@ -129,7 +129,7 @@ describe('AdvancedGasFeeDefaults', () => {
     expect(mock).toHaveBeenCalledTimes(2);
   });
 
-  it('should not  render anything for swaps', () => {
+  it('should not render option to set default gas options in a swaps transaction', () => {
     render({}, { editGasMode: EDIT_GAS_MODES.SWAPS });
     expect(
       screen.queryByText(
