@@ -64,10 +64,11 @@ export default class ExperimentalTab extends PureComponent {
       useCollectibleDetection,
       setUseCollectibleDetection,
       openSeaEnabled,
+      setOpenSeaEnabled,
     } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row--dependent">
         <div className="settings-page__content-item">
           <span>{t('useCollectibleDetection')}</span>
           <div className="settings-page__content-description">
@@ -77,7 +78,6 @@ export default class ExperimentalTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              disabled={!openSeaEnabled}
               value={useCollectibleDetection}
               onToggle={(value) => {
                 this.context.metricsEvent({
@@ -87,6 +87,9 @@ export default class ExperimentalTab extends PureComponent {
                     name: 'Collectible Detection',
                   },
                 });
+                if (!value && !openSeaEnabled) {
+                  setOpenSeaEnabled(!value);
+                }
                 setUseCollectibleDetection(!value);
               }}
               offLabel={t('off')}
@@ -103,10 +106,15 @@ export default class ExperimentalTab extends PureComponent {
       return null;
     }
     const { t } = this.context;
-    const { openSeaEnabled, setOpenSeaEnabled } = this.props;
+    const {
+      openSeaEnabled,
+      setOpenSeaEnabled,
+      useCollectibleDetection,
+      setUseCollectibleDetection,
+    } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row--parent">
         <div className="settings-page__content-item">
           <span>{t('enableOpenSeaAPI')}</span>
           <div className="settings-page__content-description">
@@ -126,6 +134,9 @@ export default class ExperimentalTab extends PureComponent {
                   },
                 });
                 setOpenSeaEnabled(!value);
+                if (value && !useCollectibleDetection) {
+                  setUseCollectibleDetection(true);
+                }
               }}
               offLabel={t('off')}
               onLabel={t('on')}

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
+import Card from '../../ui/card';
 import {
   COLORS,
   TYPOGRAPHY,
@@ -19,6 +20,9 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getIpfsGateway } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
+import { updateCollectibleDropDownState } from '../../../store/actions';
+import { usePrevious } from '../../../hooks/usePrevious';
+import { getCollectiblesDropdownState } from '../../../ducks/metamask/metamask';
 
 const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -31,20 +35,30 @@ export default function CollectiblesItems({
   collections = {},
   previouslyOwnedCollection = {},
 }) {
+  const dispatch = useDispatch();
   const collectionsKeys = Object.keys(collections);
+  const collectiblesDropdownState = useSelector(getCollectiblesDropdownState);
+  const previousCollectionKeys = usePrevious(collectionsKeys);
 
-  // if there is only one collection present set it to open when component mounts
-  const [dropdownState, setDropdownState] = useState(() => {
-    return collectionsKeys.length === 1
-      ? {
-          [PREVIOUSLY_OWNED_KEY]: false,
-          [collectionsKeys[0]]: true,
-        }
-      : { [PREVIOUSLY_OWNED_KEY]: false };
-  });
+  useEffect(() => {
+    if (
+      !Object.keys(collectiblesDropdownState).length &&
+      previousCollectionKeys !== collectionsKeys
+    ) {
+      const initState = {};
+      collectionsKeys.forEach((key) => {
+        initState[key] = true;
+      });
+      dispatch(updateCollectibleDropDownState(initState));
+    }
+  }, [
+    collectionsKeys,
+    previousCollectionKeys,
+    collectiblesDropdownState,
+    dispatch,
+  ]);
 
   const ipfsGateway = useSelector(getIpfsGateway);
-
   const history = useHistory();
 
   const renderCollectionImage = (
@@ -81,46 +95,50 @@ export default function CollectiblesItems({
       return null;
     }
 
-    const isExpanded = dropdownState[key];
+    const isExpanded = collectiblesDropdownState[key];
     return (
-      <div
-        className="collectibles-items__collection"
-        key={`collection-${key}`}
-        onClick={() => {
-          setDropdownState((_dropdownState) => ({
-            ..._dropdownState,
-            [key]: !isExpanded,
-          }));
-        }}
-      >
-        <Box
-          marginBottom={2}
-          display={DISPLAY.FLEX}
-          alignItems={ALIGN_ITEMS.CENTER}
-          justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
-          className="collectibles-items__collection-accordion-title"
+      <div className="collectibles-items__collection" key={`collection-${key}`}>
+        <button
+          onClick={() => {
+            dispatch(
+              updateCollectibleDropDownState({
+                ...collectiblesDropdownState,
+                [key]: !isExpanded,
+              }),
+            );
+          }}
+          className="collectibles-items__collection-wrapper"
         >
           <Box
+            marginBottom={2}
+            display={DISPLAY.FLEX}
             alignItems={ALIGN_ITEMS.CENTER}
-            className="collectibles-items__collection-header"
+            justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+            className="collectibles-items__collection-accordion-title"
           >
-            {renderCollectionImage(
-              isPreviouslyOwnedCollection,
-              collectionImage,
-              collectionName,
-            )}
-            <Typography
-              color={COLORS.BLACK}
-              variant={TYPOGRAPHY.H5}
-              margin={[0, 0, 0, 2]}
+            <Box
+              alignItems={ALIGN_ITEMS.CENTER}
+              className="collectibles-items__collection-header"
             >
-              {`${collectionName} (${collectibles.length})`}
-            </Typography>
+              {renderCollectionImage(
+                isPreviouslyOwnedCollection,
+                collectionImage,
+                collectionName,
+              )}
+              <Typography
+                color={COLORS.BLACK}
+                variant={TYPOGRAPHY.H5}
+                margin={[0, 0, 0, 2]}
+              >
+                {`${collectionName} (${collectibles.length})`}
+              </Typography>
+            </Box>
+            <Box alignItems={ALIGN_ITEMS.FLEX_END}>
+              <i className={`fa fa-chevron-${isExpanded ? 'down' : 'right'}`} />
+            </Box>
           </Box>
-          <Box alignItems={ALIGN_ITEMS.FLEX_END}>
-            <i className={`fa fa-chevron-${isExpanded ? 'down' : 'right'}`} />
-          </Box>
-        </Box>
+        </button>
+
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {collectibles.map((collectible, i) => {
@@ -132,20 +150,22 @@ export default function CollectiblesItems({
                   key={`collectible-${i}`}
                   className="collectibles-items__collection-item-wrapper"
                 >
-                  <div
-                    className="collectibles-items__collection-item"
-                    style={{
-                      backgroundColor,
-                    }}
-                  >
-                    <img
-                      onClick={() =>
-                        history.push(`${ASSET_ROUTE}/${address}/${tokenId}`)
-                      }
-                      className="collectibles-items__collection-item-image"
-                      src={collectibleImage}
-                    />
-                  </div>
+                  <Card padding={0} justifyContent={JUSTIFY_CONTENT.CENTER}>
+                    <div
+                      className="collectibles-items__collection-item"
+                      style={{
+                        backgroundColor,
+                      }}
+                    >
+                      <img
+                        onClick={() =>
+                          history.push(`${ASSET_ROUTE}/${address}/${tokenId}`)
+                        }
+                        className="collectibles-items__collection-item-image"
+                        src={collectibleImage}
+                      />
+                    </div>
+                  </Card>
                 </Box>
               );
             })}
