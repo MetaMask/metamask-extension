@@ -132,9 +132,7 @@ describe('AdvancedGasFeeDefaults', () => {
   it('should not render option to set default gas options in a swaps transaction', () => {
     render({}, { editGasMode: EDIT_GAS_MODES.SWAPS });
     expect(
-      screen.queryByText(
-        'Always use these values and advanced setting as default.',
-      ),
+      document.querySelector('input[type=checkbox]'),
     ).not.toBeInTheDocument();
   });
 });
