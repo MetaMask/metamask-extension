@@ -23,7 +23,12 @@ import {
   getCollectibleContracts,
   getCollectiblesDetectionNoticeDismissed,
 } from '../../../ducks/metamask/metamask';
-import { getIsMainnet, getUseCollectibleDetection } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getIsMainnet,
+  getSelectedAddress,
+  getUseCollectibleDetection,
+} from '../../../selectors';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import {
   checkAndUpdateAllCollectiblesOwnershipStatus,
@@ -36,8 +41,13 @@ export default function CollectiblesTab({ onAddNFT }) {
   const collectibleContracts = useSelector(getCollectibleContracts);
   const useCollectibleDetection = useSelector(getUseCollectibleDetection);
   const isMainnet = useSelector(getIsMainnet);
+  const selectedAddress = useSelector(getSelectedAddress);
+  const chainId = useSelector(getCurrentChainId);
   const collectibleDetectionNoticeDismissed = useSelector(
     getCollectiblesDetectionNoticeDismissed,
+  );
+  const [collectiblesLoading, setCollectiblesLoading] = useState(
+    () => collectibles?.length >= 0,
   );
   const history = useHistory();
   const t = useI18nContext();
@@ -49,8 +59,14 @@ export default function CollectiblesTab({ onAddNFT }) {
   });
 
   const prevCollectibles = usePrevious(collectibles);
+  const prevChainId = usePrevious(chainId);
+  const prevSelectedAddress = usePrevious(selectedAddress);
   useEffect(() => {
     const getCollections = () => {
+      setCollectiblesLoading(true);
+      if (selectedAddress === undefined || chainId === undefined) {
+        return;
+      }
       const newCollections = {};
       const newPreviouslyOwnedCollections = {
         collectionName: 'Previously Owned',
@@ -76,12 +92,26 @@ export default function CollectiblesTab({ onAddNFT }) {
       });
       setCollections(newCollections);
       setPreviouslyOwnedCollection(newPreviouslyOwnedCollections);
+      setCollectiblesLoading(false);
     };
 
-    if (!isEqual(prevCollectibles, collectibles)) {
+    if (
+      !isEqual(prevCollectibles, collectibles) ||
+      !isEqual(prevSelectedAddress, selectedAddress) ||
+      !isEqual(prevChainId, chainId)
+    ) {
       getCollections();
     }
-  }, [collectibles, prevCollectibles, collectibleContracts]);
+  }, [
+    collectibles,
+    prevCollectibles,
+    collectibleContracts,
+    setCollectiblesLoading,
+    chainId,
+    prevChainId,
+    selectedAddress,
+    prevSelectedAddress,
+  ]);
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);
@@ -93,6 +123,10 @@ export default function CollectiblesTab({ onAddNFT }) {
     }
     checkAndUpdateAllCollectiblesOwnershipStatus();
   };
+
+  if (collectiblesLoading) {
+    return <div className="collectibles-tab__loading">{t('loadingNFTs')}</div>;
+  }
 
   return (
     <div className="collectibles-tab">
