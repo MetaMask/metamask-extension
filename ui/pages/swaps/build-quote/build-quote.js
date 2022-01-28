@@ -544,6 +544,7 @@ export default function BuildQuote({
     fromTokenInputValue,
     fromTokenAddress,
     toTokenAddress,
+    smartTransactionsOptInStatus,
   ]);
 
   return (
