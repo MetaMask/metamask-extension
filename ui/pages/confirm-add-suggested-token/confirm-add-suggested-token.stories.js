@@ -87,7 +87,6 @@ export const DefaultStory = ({ suggestedAssets, tokens }) => {
 };
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
-  mostRecentOverviewPage: '',
   suggestedAssets: [...mockSuggestedAssets],
   tokens: [],
 };
@@ -100,7 +99,6 @@ export const WithDuplicateAddress = ({ suggestedAssets, tokens }) => {
   );
 };
 WithDuplicateAddress.args = {
-  mostRecentOverviewPage: '',
   suggestedAssets: [...mockSuggestedAssets],
   tokens: [
     {
@@ -120,7 +118,6 @@ export const WithDuplicateSymbolAndDifferentAddress = ({
   );
 };
 WithDuplicateSymbolAndDifferentAddress.args = {
-  mostRecentOverviewPage: '',
   suggestedAssets: [...mockSuggestedAssets],
   tokens: [
     {
