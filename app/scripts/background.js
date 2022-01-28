@@ -414,7 +414,10 @@ function setupController(initState, initLangCode) {
   // communication with page or other extension
   function connectExternal(remotePort) {
     const portStream = new PortStream(remotePort);
-    controller.setupUntrustedCommunication(portStream, remotePort.sender);
+    controller.setupUntrustedCommunication({
+      connectionStream: portStream,
+      sender: remotePort.sender,
+    });
   }
 
   //

@@ -2650,28 +2650,47 @@ export default class MetamaskController extends EventEmitter {
    * Used to create a multiplexed stream for connecting to an untrusted context
    * like a Dapp or other extension.
    *
-   * @param {*} connectionStream - The Duplex stream to connect to.
-   * @param {MessageSender} sender - The sender of the messages on this stream
+   * @param options - Options bag.
+   * @param {ReadableStream} options.connectionStream - The Duplex stream to connect to.
+   * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
+   * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
-  setupUntrustedCommunication(connectionStream, sender) {
+  setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
     const { usePhishDetect } = this.preferencesController.store.getState();
-    const { hostname } = new URL(sender.url);
-    // Check if new connection is blocked if phishing detection is on
-    if (usePhishDetect && this.phishingController.test(hostname)) {
-      log.debug('MetaMask - sending phishing warning for', hostname);
-      this.sendPhishingWarning(connectionStream, hostname);
-      return;
+    let _subjectType;
+    if (subjectType) {
+      _subjectType = subjectType;
+    } else if (sender.id && sender.id !== this.extension.runtime.id) {
+      _subjectType = SUBJECT_TYPES.EXTENSION;
+    } else {
+      _subjectType = SUBJECT_TYPES.WEBSITE;
+    }
+
+    if (sender.url) {
+      const { hostname } = new URL(sender.url);
+      // Check if new connection is blocked if phishing detection is on
+      if (usePhishDetect && this.phishingController.test(hostname)) {
+        log.debug('MetaMask - sending phishing warning for', hostname);
+        this.sendPhishingWarning(connectionStream, hostname);
+        return;
+      }
     }
 
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
 
     // messages between inpage and background
-    this.setupProviderConnection(mux.createStream('metamask-provider'), sender);
+    this.setupProviderConnection(
+      mux.createStream('metamask-provider'),
+      sender,
+      _subjectType,
+    );
 
     // TODO:LegacyProvider: Delete
-    // legacy streams
-    this.setupPublicConfig(mux.createStream('publicConfig'));
+    if (sender.url) {
+      // legacy streams
+      this.setupPublicConfig(mux.createStream('publicConfig'));
+    }
   }
 
   /**
@@ -2688,7 +2707,11 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream);
     // connect features
     this.setupControllerConnection(mux.createStream('controller'));
-    this.setupProviderConnection(mux.createStream('provider'), sender, true);
+    this.setupProviderConnection(
+      mux.createStream('provider'),
+      sender,
+      SUBJECT_TYPES.INTERNAL,
+    );
   }
 
   /**
@@ -2747,17 +2770,19 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {*} outStream - The stream to provide over.
    * @param {MessageSender} sender - The sender of the messages on this stream
-   * @param {boolean} isInternal - True if this is a connection with an internal process
+   * @param {string} subjectType - The type of the sender, i.e. subject.
    */
-  setupProviderConnection(outStream, sender, isInternal) {
-    const origin = isInternal ? 'metamask' : new URL(sender.url).origin;
-    let subjectType = isInternal
-      ? SUBJECT_TYPES.INTERNAL
-      : SUBJECT_TYPES.WEBSITE;
+  setupProviderConnection(outStream, sender, subjectType) {
+    let origin;
+    if (subjectType === SUBJECT_TYPES.INTERNAL) {
+      origin = 'metamask';
+    } else {
+      origin = new URL(sender.url).origin;
+    }
 
-    if (sender.id !== this.extension.runtime.id) {
-      subjectType = SUBJECT_TYPES.EXTENSION;
-      this.subjectMetadataController.addSubjectMetadata(origin, {
+    if (sender.id && sender.id !== this.extension.runtime.id) {
+      this.subjectMetadataController.addSubjectMetadata({
+        origin,
         extensionId: sender.id,
         subjectType: SUBJECT_TYPES.EXTENSION,
       });
@@ -2770,8 +2795,8 @@ export default class MetamaskController extends EventEmitter {
 
     const engine = this.setupProviderEngine({
       origin,
-      location: sender.url,
       tabId,
+      sender,
       subjectType,
     });
 
@@ -2799,14 +2824,14 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {Object} options - Provider engine options
    * @param {string} options.origin - The origin of the sender
-   * @param {string} options.location - The full URL of the sender
+   * @param {MessageSender | SnapSender} options.sender - The sender object.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
-  setupProviderEngine({ origin, location, subjectType, tabId }) {
+  setupProviderEngine({ origin, subjectType, sender, tabId }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
-    const { provider, blockTracker } = this;
+    const { blockTracker, provider } = this;
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
@@ -2828,13 +2853,16 @@ export default class MetamaskController extends EventEmitter {
     }
     // logging
     engine.push(createLoggerMiddleware({ origin }));
-    engine.push(
-      createOnboardingMiddleware({
-        location,
-        registerOnboarding: this.onboardingController.registerOnboarding,
-      }),
-    );
     engine.push(this.permissionLogController.createMiddleware());
+    // onboarding
+    if (subjectType === SUBJECT_TYPES.WEBSITE) {
+      engine.push(
+        createOnboardingMiddleware({
+          location: sender.url,
+          registerOnboarding: this.onboardingController.registerOnboarding,
+        }),
+      );
+    }
     engine.push(
       createMethodMiddleware({
         origin,
