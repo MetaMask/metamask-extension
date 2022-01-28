@@ -218,6 +218,10 @@ class NetworkDropdown extends Component {
 
     if (providerName === 'mainnet') {
       name = this.context.t('mainnet');
+    } else if (providerName === 'quai_mainnet') {
+      name = this.context.t('quai_mainnet');
+    } else if (providerName === 'quai_testnet') {
+      name = this.context.t('quai_testnet');
     } else if (providerName === 'ropsten') {
       name = this.context.t('ropsten');
     } else if (providerName === 'kovan') {
@@ -313,23 +317,7 @@ class NetworkDropdown extends Component {
           <div className="network-dropdown-divider" />
           {showTestnetMessageInDropdown ? (
             <div className="network-dropdown-content">
-              {t('defaultNetwork', [
-                <span key="testNetworksEnabled">
-                  {shouldShowTestNetworks ? t('disable') : t('enable')}
-                </span>,
-                <a
-                  href="#"
-                  key="advancedSettingsLink"
-                  className="network-dropdown-content--link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    hideNetworkDropdown();
-                    history.push(`${ADVANCED_ROUTE}#show-testnets`);
-                  }}
-                >
-                  {t('here')}
-                </a>,
-              ])}
+              {t('defaultNetwork')}
               <button
                 title={t('dismiss')}
                 onClick={hideTestNetMessage}
@@ -340,11 +328,12 @@ class NetworkDropdown extends Component {
         </div>
 
         <div className="network-dropdown-list">
-          {this.renderNetworkEntry('mainnet')}
+          {this.renderNetworkEntry('quai_mainnet')}
+          {this.renderNetworkEntry('quai_testnet')}
 
           {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
 
-          <div
+          {/* <div
             className={classnames('network-dropdown-testnets', {
               'network-dropdown-testnets--no-visibility': !shouldShowTestNetworks,
             })}
@@ -354,7 +343,7 @@ class NetworkDropdown extends Component {
             {this.renderNetworkEntry('rinkeby')}
             {this.renderNetworkEntry('goerli')}
             {this.renderNetworkEntry('localhost')}
-          </div>
+          </div> */}
         </div>
 
         {this.renderAddCustomButton()}

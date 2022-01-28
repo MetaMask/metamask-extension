@@ -1,4 +1,6 @@
 export const ROPSTEN = 'ropsten';
+export const QUAI_MAINET = 'quai';
+export const QUAI_TESTNET = 'quai testnet';
 export const RINKEBY = 'rinkeby';
 export const KOVAN = 'kovan';
 export const MAINNET = 'mainnet';
@@ -12,6 +14,22 @@ export const RINKEBY_NETWORK_ID = '4';
 export const GOERLI_NETWORK_ID = '5';
 export const KOVAN_NETWORK_ID = '42';
 export const LOCALHOST_NETWORK_ID = '1337';
+
+export const QUAI_MAINET_CHAIN_ID = {
+  Prime: '0x00',
+  Cyprus: '0x0a',
+  Paxos: '0x0b',
+  Hydra: '0x0c',
+  Cyprus1: '0x1a',
+  Cyprus2: '0x2a',
+  Cyprus3: '0x3a',
+  Paxos1: '0x1b',
+  Paxos2: '0x2b',
+  Paxos3: '0x3b',
+  Hydra1: '0x1c',
+  Hydra2: '0x2c',
+  Hydra3: '0x3c',
+};
 
 export const MAINNET_CHAIN_ID = '0x1';
 export const ROPSTEN_CHAIN_ID = '0x3';
@@ -30,6 +48,8 @@ export const POLYGON_CHAIN_ID = '0x89';
  */
 export const MAX_SAFE_CHAIN_ID = 4503599627370476;
 
+export const QUAI_MAINNET_DISPLAY_NAME = 'Qaui';
+export const QUAI_TESTNET_DISPLAY_NAME = 'Quai Testnet';
 export const ROPSTEN_DISPLAY_NAME = 'Ropsten';
 export const RINKEBY_DISPLAY_NAME = 'Rinkeby';
 export const KOVAN_DISPLAY_NAME = 'Kovan';

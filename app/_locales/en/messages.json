@@ -610,7 +610,7 @@
     "message": "Decrypt request"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Mainnet. You can also $1 test networks $2.",
+    "message": "The default network for Ether transactions is Quai Mainnet.",
     "description": "$1 is the 'enable' or 'disable' key, depending on whether the display of test networks is enabled or not. $2 is a clickable link with text defined by the 'here' key. The link will open to the advanced settings where users can enable the display of test networks in the network dropdown."
   },
   "delete": {
@@ -1382,6 +1382,12 @@
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
+  },
+  "quai_mainnet": {
+    "message": "Qaui Mainnet"
+  },
+  "quai_testnet": {
+    "message": "Quai Testnet"
   },
   "makeAnotherSwap": {
     "message": "Create a new swap"
