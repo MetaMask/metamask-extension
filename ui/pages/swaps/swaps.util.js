@@ -916,12 +916,3 @@ export const parseSmartTransactionsError = (errorMessage) => {
   const errorJson = errorMessage.slice(12);
   return JSON.parse(errorJson.trim());
 };
-
-export const getHighestStxFee = (fees = []) => {
-  if (fees.length === 0) {
-    return {};
-  }
-  return fees.reduce((prev, current) =>
-    prev.maxFeePerGas > current.maxFeePerGas ? prev : current,
-  );
-};

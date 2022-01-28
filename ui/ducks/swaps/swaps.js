@@ -80,7 +80,7 @@ import {
 } from '../../../shared/constants/swaps';
 import {
   TRANSACTION_TYPES,
-  TRANSACTION_GROUP_STATUSES,
+  SMART_TRANSACTION_STATUSES,
 } from '../../../shared/constants/transaction';
 import { getGasFeeEstimates } from '../metamask/metamask';
 
@@ -427,7 +427,7 @@ export const getPendingSmartTransactions = (state) => {
     return [];
   }
   return currentSmartTransactions.filter(
-    (stx) => stx.status === TRANSACTION_GROUP_STATUSES.PENDING,
+    (stx) => stx.status === SMART_TRANSACTION_STATUSES.PENDING,
   );
 };
 

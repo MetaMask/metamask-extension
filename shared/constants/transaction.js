@@ -153,6 +153,22 @@ export const TRANSACTION_GROUP_STATUSES = {
 };
 
 /**
+ * Statuses that are specific to Smart Transactions.
+ *
+ * @typedef {Object} SmartTransactionStatuses
+ * @property {'cancelled'} CANCELLED - It can be cancelled for various reasons.
+ * @property {'pending'} PENDING - Smart transaction is being processed.
+ */
+
+/**
+ * @type {SmartTransactionStatuses}
+ */
+export const SMART_TRANSACTION_STATUSES = {
+  CANCELLED: 'cancelled',
+  PENDING: 'pending',
+};
+
+/**
  * Transaction Group Category is a MetaMask construct to categorize the intent
  * of a group of transactions for purposes of displaying in the UI
  *

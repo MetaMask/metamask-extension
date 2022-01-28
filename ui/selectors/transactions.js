@@ -6,9 +6,9 @@ import {
 import { hexToDecimal } from '../helpers/utils/conversions.util';
 import txHelper from '../helpers/utils/tx-helper';
 import {
-  TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  SMART_TRANSACTION_STATUSES,
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import {
@@ -55,7 +55,7 @@ export const smartTransactionsListSelector = (state) =>
       ...stx,
       transactionType: TRANSACTION_TYPES.SMART,
       status: stx.status?.startsWith('cancelled')
-        ? TRANSACTION_GROUP_STATUSES.CANCELLED
+        ? SMART_TRANSACTION_STATUSES.CANCELLED
         : stx.status,
     }));
 

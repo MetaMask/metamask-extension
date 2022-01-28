@@ -9,6 +9,7 @@ import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import {
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_GROUP_STATUSES,
+  SMART_TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction';
 
 import CancelButton from '../cancel-button';
@@ -35,9 +36,9 @@ export default function SmartTransactionListItem({
   const subtitle = 'metamask';
   const date = formatDateWithYearContext(time);
   let displayedStatusKey;
-  if (status === 'pending') {
+  if (status === SMART_TRANSACTION_STATUSES.PENDING) {
     displayedStatusKey = TRANSACTION_GROUP_STATUSES.PENDING;
-  } else if (status?.startsWith('cancelled')) {
+  } else if (status?.startsWith(SMART_TRANSACTION_STATUSES.CANCELLED)) {
     displayedStatusKey = TRANSACTION_GROUP_STATUSES.CANCELLED;
   }
   const showCancelSwapLink =
