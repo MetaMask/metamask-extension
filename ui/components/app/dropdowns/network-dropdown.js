@@ -330,6 +330,7 @@ class NetworkDropdown extends Component {
         <div className="network-dropdown-list">
           {this.renderNetworkEntry('quai_mainnet')}
           {this.renderNetworkEntry('quai_testnet')}
+          {this.renderNetworkEntry('mainnet')}
 
           {this.renderCustomRpcList(rpcListDetail, this.props.provider)}
 
