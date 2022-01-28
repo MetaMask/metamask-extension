@@ -502,9 +502,7 @@ export default function ViewQuote() {
   }, [originalApproveAmount, approveAmount]);
 
   const showInsufficientWarning =
-    (balanceError || tokenBalanceNeeded || ethBalanceNeeded) &&
-    !warningHidden &&
-    !currentSmartTransactionsEnabled;
+    (balanceError || tokenBalanceNeeded || ethBalanceNeeded) && !warningHidden;
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
