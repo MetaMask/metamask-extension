@@ -37,7 +37,7 @@ export default class SendAmountRow extends Component {
       <UserPreferencedCurrencyInput
         error={inError}
         onChange={this.handleChange}
-        value={amount}
+        hexValue={amount}
         primaryNumberOfDecimals={15}
       />
     );
