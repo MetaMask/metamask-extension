@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { isVolatileGasEstimate } from '../../../helpers/utils/gas';
+import { isMetamaskSuggestedGasEstimate } from '../../../helpers/utils/gas';
 import { getGasLoadingAnimationIsShowing } from '../../../ducks/app/app';
 import { useShouldAnimateGasEstimations } from '../../../hooks/useShouldAnimateGasEstimations';
 
@@ -19,7 +19,7 @@ export default function LoadingHeartBeat({
 
   if (
     process.env.IN_TEST ||
-    (estimateUsed && !isVolatileGasEstimate(estimateUsed))
+    (estimateUsed && !isMetamaskSuggestedGasEstimate(estimateUsed))
   ) {
     return null;
   }
