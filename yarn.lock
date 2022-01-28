@@ -2355,17 +2355,13 @@
     rlp "^2.2.6"
     uuid "^8.3.2"
 
-"@lavamoat/allow-scripts@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-1.0.6.tgz#fbdf7c35a5c2c2cff05ba002b7bc8f3355bda22c"
-  integrity sha512-bBUN2xuQEXWmWTJrfkwaM8Ige7TNfTTRodyW353VYnzX7kW866Tm/Ag0hdbukFvJfNjRHabVmLKxYYL8l/uyZQ==
+"@lavamoat/allow-scripts@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-2.0.0.tgz#d2b84491961c8b2b80281112e19654beae9eb584"
+  integrity sha512-WC8cvStg5/MZ0JwccYsLNhtFSiK4tGEfv4kdlMoWfji4sB053HB1xCLDMlhFSMM6m0ecKA18CmzhI6J6iyCc0w==
   dependencies:
-    "@lavamoat/preinstall-always-fail" "^1.0.0"
     "@npmcli/run-script" "^1.8.1"
-    "@yarnpkg/lockfile" "^1.1.0"
-    npm-logical-tree "^1.2.1"
     resolve "^1.20.0"
-    semver "^7.3.4"
     yargs "^16.2.0"
 
 "@lavamoat/lavapack@^2.0.3", "@lavamoat/lavapack@^2.0.4":
@@ -2380,11 +2376,6 @@
     lavamoat-core "^11.0.1"
     through2 "^4.0.2"
     umd "^3.0.3"
-
-"@lavamoat/preinstall-always-fail@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@lavamoat/preinstall-always-fail/-/preinstall-always-fail-1.0.0.tgz#e78a6e3d9e212a4fef869ec37d4f5fb498dea373"
-  integrity sha512-vD2DcC0ffJj1w2y1Lu0OU39wHmlPEd2tCDW04Bm6Kf4LyRnCHCezTsS8yzeSJ+4so7XP+TITuR5FGJRWxPb+GA==
 
 "@ledgerhq/cryptoassets@^5.27.2":
   version "5.53.0"
@@ -19589,11 +19580,6 @@ npm-conf@^1.1.3:
   dependencies:
     config-chain "^1.1.11"
     pify "^3.0.0"
-
-npm-logical-tree@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/npm-logical-tree/-/npm-logical-tree-1.2.1.tgz#44610141ca24664cad35d1e607176193fd8f5b88"
-  integrity sha512-AJI/qxDB2PWI4LG1CYN579AY1vCiNyWfkiquCsJWqntRu/WwimVrC8yXeILBFHDwxfOejxewlmnvW9XXjMlYIg==
 
 npm-normalize-package-bin@^1.0.1:
   version "1.0.1"
