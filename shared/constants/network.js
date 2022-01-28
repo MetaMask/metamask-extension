@@ -5,6 +5,7 @@ export const MAINNET = 'mainnet';
 export const GOERLI = 'goerli';
 export const LOCALHOST = 'localhost';
 export const NETWORK_TYPE_RPC = 'rpc';
+export const UNKNOWN_NETWORK = 'unknown';
 
 export const MAINNET_NETWORK_ID = '1';
 export const ROPSTEN_NETWORK_ID = '3';
@@ -68,6 +69,7 @@ export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
 export const AVAX_TOKEN_IMAGE_URL = './images/avax-token.png';
+export const UNKNOWN_TOKEN_IMAGE_URL = './images/icons/question-mark.svg';
 
 export const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI];
 
@@ -135,6 +137,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [AVALANCHE_CHAIN_ID]: AVAX_TOKEN_IMAGE_URL,
   [BSC_CHAIN_ID]: BNB_TOKEN_IMAGE_URL,
   [POLYGON_CHAIN_ID]: MATIC_TOKEN_IMAGE_URL,
+  [ROPSTEN_CHAIN_ID]: TEST_ETH_TOKEN_IMAGE_URL,
 };
 
 export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(
