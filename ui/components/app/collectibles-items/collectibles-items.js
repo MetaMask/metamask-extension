@@ -47,14 +47,18 @@ export default function CollectiblesItems({
   const chainId = useSelector(getCurrentChainId);
 
   useEffect(() => {
-    if (collectiblesDropdownState?.[selectedAddress] === undefined) {
+    if (
+      selectedAddress !== undefined &&
+      collectiblesDropdownState?.[selectedAddress] === undefined
+    ) {
       collectiblesDropdownState[selectedAddress] = {};
     }
     if (
+      chainId !== undefined &&
+      previousCollectionKeys !== collectionsKeys &&
       (collectiblesDropdownState[selectedAddress]?.[chainId] === undefined ||
         Object.keys(collectiblesDropdownState?.[selectedAddress]?.[chainId])
-          .length === 0) &&
-      previousCollectionKeys !== collectionsKeys
+          .length === 0)
     ) {
       const initState = {};
       collectionsKeys.forEach((key) => {
