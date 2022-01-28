@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -18,100 +17,30 @@ import {
   ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getCollectibles,
-  getCollectibleContracts,
-  getCollectiblesDetectionNoticeDismissed,
-} from '../../../ducks/metamask/metamask';
-import {
-  getCurrentChainId,
-  getIsMainnet,
-  getSelectedAddress,
-  getUseCollectibleDetection,
-} from '../../../selectors';
+import { getCollectiblesDetectionNoticeDismissed } from '../../../ducks/metamask/metamask';
+import { getIsMainnet, getUseCollectibleDetection } from '../../../selectors';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import {
   checkAndUpdateAllCollectiblesOwnershipStatus,
   detectCollectibles,
 } from '../../../store/actions';
-import { usePrevious } from '../../../hooks/usePrevious';
+import { useCollectiblesCollections } from '../../../hooks/useCollectiblesCollections';
 
 export default function CollectiblesTab({ onAddNFT }) {
-  const collectibles = useSelector(getCollectibles);
-  const collectibleContracts = useSelector(getCollectibleContracts);
   const useCollectibleDetection = useSelector(getUseCollectibleDetection);
   const isMainnet = useSelector(getIsMainnet);
-  const selectedAddress = useSelector(getSelectedAddress);
-  const chainId = useSelector(getCurrentChainId);
   const collectibleDetectionNoticeDismissed = useSelector(
     getCollectiblesDetectionNoticeDismissed,
-  );
-  const [collectiblesLoading, setCollectiblesLoading] = useState(
-    () => collectibles?.length >= 0,
   );
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const [collections, setCollections] = useState({});
-  const [previouslyOwnedCollection, setPreviouslyOwnedCollection] = useState({
-    collectionName: 'Previously Owned',
-    collectibles: [],
-  });
 
-  const prevCollectibles = usePrevious(collectibles);
-  const prevChainId = usePrevious(chainId);
-  const prevSelectedAddress = usePrevious(selectedAddress);
-  useEffect(() => {
-    const getCollections = () => {
-      setCollectiblesLoading(true);
-      if (selectedAddress === undefined || chainId === undefined) {
-        return;
-      }
-      const newCollections = {};
-      const newPreviouslyOwnedCollections = {
-        collectionName: 'Previously Owned',
-        collectibles: [],
-      };
-
-      collectibles.forEach((collectible) => {
-        if (collectible?.isCurrentlyOwned === false) {
-          newPreviouslyOwnedCollections.collectibles.push(collectible);
-        } else if (newCollections[collectible.address]) {
-          newCollections[collectible.address].collectibles.push(collectible);
-        } else {
-          const collectionContract = collectibleContracts.find(
-            ({ address }) => address === collectible.address,
-          );
-          newCollections[collectible.address] = {
-            collectionName: collectionContract?.name || collectible.name,
-            collectionImage:
-              collectionContract?.logo || collectible.collectionImage,
-            collectibles: [collectible],
-          };
-        }
-      });
-      setCollections(newCollections);
-      setPreviouslyOwnedCollection(newPreviouslyOwnedCollections);
-      setCollectiblesLoading(false);
-    };
-
-    if (
-      !isEqual(prevCollectibles, collectibles) ||
-      !isEqual(prevSelectedAddress, selectedAddress) ||
-      !isEqual(prevChainId, chainId)
-    ) {
-      getCollections();
-    }
-  }, [
-    collectibles,
-    prevCollectibles,
-    collectibleContracts,
-    setCollectiblesLoading,
-    chainId,
-    prevChainId,
-    selectedAddress,
-    prevSelectedAddress,
-  ]);
+  const {
+    collectiblesLoading,
+    collections,
+    previouslyOwnedCollection,
+  } = useCollectiblesCollections();
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);
