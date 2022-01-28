@@ -2824,7 +2824,8 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {Object} options - Provider engine options
    * @param {string} options.origin - The origin of the sender
-   * @param {MessageSender | SnapSender} options.sender - The sender object.   * @param {string} options.subjectType - The type of the sender subject.
+   * @param {MessageSender | SnapSender} options.sender - The sender object.
+   * @param {string} options.subjectType - The type of the sender subject.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
