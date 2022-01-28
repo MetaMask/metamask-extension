@@ -50,14 +50,14 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
 
   const openEditGasFeeModal = () => {
     updateTransactionEventFragment({
-      edit_gas_modal_open: true,
+      gas_edit_attempted: 'basic',
     });
     openModal('editGasFee');
   };
 
   const openAdvanceGasFeeModal = () => {
     updateTransactionEventFragment({
-      advanced_gas_modal_open: true,
+      gas_edit_attempted: 'advance',
     });
     openModal('advancedGasFee');
   };

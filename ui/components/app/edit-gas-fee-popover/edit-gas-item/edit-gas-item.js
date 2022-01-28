@@ -75,12 +75,16 @@ const EditGasItem = ({ priorityLevel }) => {
   const onOptionSelect = () => {
     if (priorityLevel === PRIORITY_LEVELS.CUSTOM) {
       updateTransactionEventFragment({
-        advanced_gas_modal_open: true,
+        properties: {
+          gas_edit_attempted: 'advanced',
+        },
       });
       openModal('advancedGasFee');
     } else {
       updateTransactionEventFragment({
-        edit_gas_modal_option_selected: priorityLevel,
+        properties: {
+          gas_edit_type: 'basic',
+        },
       });
 
       closeModal('editGasFee');

@@ -1570,6 +1570,8 @@ export default class TransactionController extends EventEmitter {
       network,
       type,
       eip_1559_version: eip1559Version,
+      gas_edit_type: 'none',
+      gas_edit_attempted: 'none',
     };
 
     const sensitiveProperties = {

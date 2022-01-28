@@ -47,9 +47,10 @@ const AdvancedGasFeeDefaults = () => {
       dispatch(setAdvancedGasFee(null));
       setDefaultSettingsSelected(false);
       updateTransactionEventFragment({
-        advanced_gas_defaults_updated: true,
-        advanced_gas_defaults_updated_maxbasefee: null,
-        advanced_gas_defaults_updated_priorityfee: null,
+        properties: {
+          advanced_gas_defaults_updated_maxbasefee: null,
+          advanced_gas_defaults_updated_priorityfee: null,
+        },
       });
     } else {
       dispatch(
@@ -59,9 +60,10 @@ const AdvancedGasFeeDefaults = () => {
         }),
       );
       updateTransactionEventFragment({
-        advanced_gas_defaults_updated: true,
-        advanced_gas_defaults_updated_maxbasefee: maxBaseFee,
-        advanced_gas_defaults_updated_priorityfee: maxPriorityFeePerGas,
+        properties: {
+          advanced_gas_defaults_updated_maxbasefee: maxBaseFee,
+          advanced_gas_defaults_updated_priorityfee: maxPriorityFeePerGas,
+        },
       });
     }
   };

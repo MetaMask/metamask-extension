@@ -29,7 +29,9 @@ const AdvancedGasFeeSaveButton = () => {
       gasLimit,
     });
     updateTransactionEventFragment({
-      advanced_gas_modal_submitted: true,
+      properties: {
+        gas_edit_type: 'advance',
+      },
     });
     closeAllModals();
   };
