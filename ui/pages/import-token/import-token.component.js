@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import contractMap from '@metamask/contract-metadata';
-import ZENDESK_URL from '../../helpers/constants/zendesk-url';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   checkExistingAddresses,
   getURLHostName,
@@ -360,7 +360,7 @@ class ImportToken extends Component {
               className="import-token__link"
               rel="noopener noreferrer"
               target="_blank"
-              href={ZENDESK_URL.TOKEN_SAFETY_PRACTICES}
+              href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
             >
               {this.context.t('learnScamRisk')}
             </Button>,
