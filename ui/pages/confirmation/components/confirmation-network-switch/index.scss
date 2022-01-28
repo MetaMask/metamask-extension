@@ -1,0 +1,29 @@
+.confirmation-network-switch {
+  &__icon {
+    width: 64px;
+
+    > img {
+      position: relative;
+    }
+
+    .icon-border {
+      background: var(--White-100);
+    }
+  }
+
+  &__center-icon {
+    position: relative;
+    height: 64px;
+  }
+
+  &__check {
+    width: 40px;
+    height: 40px;
+    background: white url("/images/arrow-right-blue.svg") no-repeat;
+    position: absolute;
+  }
+
+  [dir='rtl'] &__check {
+    transform: rotate(180deg);
+  }
+}
