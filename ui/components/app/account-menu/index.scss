@@ -10,9 +10,7 @@
   color: var(--white);
 
   @media screen and (max-width: $break-small) {
-    position: initial;
-    margin-top: -10px;
-    margin-left: calc(((100vw - 100%) / 2) + 8px);
+    right: calc(((100vw - 100%) / 2) + 8px);
   }
 
   @media screen and (min-width: $break-large) {
