@@ -3048,7 +3048,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * For snaps running in workers.
    *
-   * @param snapName
+   * @param snapId
    * @param error
    */
   onExecutionEnvironmentError(snapId, error) {
