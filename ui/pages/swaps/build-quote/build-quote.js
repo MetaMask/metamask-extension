@@ -552,7 +552,7 @@ export default function BuildQuote({
       <div className="build-quote__content">
         {showSmartTransactionsOptInPopover && (
           <Popover
-            title={t('smartTransactionsAreHere')}
+            title={t('stxAreHere')}
             footer={
               <>
                 <Button type="primary" onClick={onEnableSmartTransactionsClick}>
@@ -593,7 +593,7 @@ export default function BuildQuote({
                 />
               </Box>
               <Typography variant={TYPOGRAPHY.H6} marginTop={0}>
-                {t('smartTransactionsDescription')}
+                {t('stxDescription')}
               </Typography>
               <Typography
                 tag="ul"
@@ -601,24 +601,24 @@ export default function BuildQuote({
                 fontWeight={FONT_WEIGHT.BOLD}
                 marginTop={3}
               >
-                <li>{t('smartTransactionsBenefit1')}</li>
-                <li>{t('smartTransactionsBenefit2')}</li>
-                <li>{t('smartTransactionsBenefit3')}</li>
-                <li>{t('smartTransactionsBenefit4')}</li>
+                <li>{t('stxBenefit1')}</li>
+                <li>{t('stxBenefit2')}</li>
+                <li>{t('stxBenefit3')}</li>
+                <li>{t('stxBenefit4')}</li>
               </Typography>
               <Typography
                 variant={TYPOGRAPHY.H8}
                 color={COLORS.UI4}
                 boxProps={{ marginTop: 3 }}
               >
-                {t('smartTransactionsSubDescription')}&nbsp;
+                {t('stxSubDescription')}&nbsp;
                 <Typography
                   tag="span"
                   fontWeight={FONT_WEIGHT.BOLD}
                   variant={TYPOGRAPHY.H8}
                   color={COLORS.UI4}
                 >
-                  {t('smartTransactionsYouCanOptOut')}&nbsp;
+                  {t('stxYouCanOptOut')}&nbsp;
                   {/* TODO: Enable this once we have the right URL. */}
                   {/* <a
                     className="smart-transactions-popover__learn-more-link"

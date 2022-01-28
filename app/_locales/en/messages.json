@@ -2692,42 +2692,6 @@
   "smartTransaction": {
     "message": "Smart transaction"
   },
-  "smartTransactionTooltip": {
-    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
-  },
-  "smartTransactionsAreHere": {
-    "message": "Smart transactions are here!"
-  },
-  "smartTransactionsBenefit1": {
-    "message": "Decrease transaction costs"
-  },
-  "smartTransactionsBenefit2": {
-    "message": "Reduce failures & minimize costs"
-  },
-  "smartTransactionsBenefit3": {
-    "message": "Protect from front-running"
-  },
-  "smartTransactionsBenefit4": {
-    "message": "Eliminate stuck transactions"
-  },
-  "smartTransactionsDescription": {
-    "message": "Smart transactions use MetaMask smart contracts to simulate transactions before submitting in order to..."
-  },
-  "smartTransactionsFallbackToNormal": {
-    "message": "You can still swap using the normal method or wait for cheaper gas fees and less failures with smart transactions."
-  },
-  "smartTransactionsSubDescription": {
-    "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you."
-  },
-  "smartTransactionsTryRegular": {
-    "message": "Try a regular swap."
-  },
-  "smartTransactionsUnavailable": {
-    "message": "Smart transactions temporarily unavailable"
-  },
-  "smartTransactionsYouCanOptOut": {
-    "message": "You can opt-out in advanced settings any time."
-  },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
@@ -2826,6 +2790,21 @@
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
   },
+  "stxAreHere": {
+    "message": "Smart transactions are here!"
+  },
+  "stxBenefit1": {
+    "message": "Decrease transaction costs"
+  },
+  "stxBenefit2": {
+    "message": "Reduce failures & minimize costs"
+  },
+  "stxBenefit3": {
+    "message": "Protect from front-running"
+  },
+  "stxBenefit4": {
+    "message": "Eliminate stuck transactions"
+  },
   "stxCancelled": {
     "message": "Swap would have failed"
   },
@@ -2835,12 +2814,18 @@
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
   },
+  "stxDescription": {
+    "message": "Smart transactions use MetaMask smart contracts to simulate transactions before submitting in order to..."
+  },
   "stxFailure": {
     "message": "Swap failed"
   },
   "stxFailureDescription": {
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxFallbackToNormal": {
+    "message": "You can still swap using the normal method or wait for cheaper gas fees and less failures with smart transactions."
   },
   "stxPendingFinalizing": {
     "message": "Finalizing..."
@@ -2851,12 +2836,24 @@
   "stxPendingPrivatelySubmitting": {
     "message": "Privately submitting the Swap..."
   },
+  "stxSubDescription": {
+    "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you."
+  },
   "stxSuccess": {
     "message": "Swap complete!"
   },
   "stxSuccessDescription": {
     "message": "Your $1 is now available.",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxTooltip": {
+    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
+  },
+  "stxTryRegular": {
+    "message": "Try a regular swap."
+  },
+  "stxUnavailable": {
+    "message": "Smart transactions temporarily unavailable"
   },
   "stxUnknown": {
     "message": "Status unknown"
@@ -2869,6 +2866,9 @@
   },
   "stxUserCancelledDescription": {
     "message": "Your transaction has been canceled and you did not pay any unnecessary gas fees."
+  },
+  "stxYouCanOptOut": {
+    "message": "You can opt-out in advanced settings any time."
   },
   "submit": {
     "message": "Submit"

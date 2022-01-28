@@ -209,10 +209,7 @@ export default function SlippageButtons({
                       )}
                     />
                   ) : (
-                    <InfoTooltip
-                      position="top"
-                      contentText={t('smartTransactionTooltip')}
-                    />
+                    <InfoTooltip position="top" contentText={t('stxTooltip')} />
                   )}
                 </Box>
                 <ToggleButton

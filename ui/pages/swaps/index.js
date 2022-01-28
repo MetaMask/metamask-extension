@@ -367,15 +367,15 @@ export default function Swap() {
                         cursor: 'pointer',
                       }}
                     >
-                      {t('smartTransactionsTryRegular')}
+                      {t('stxTryRegular')}
                     </span>
                   </div>
                 ) : (
                   <div className="build-quote__token-verification-warning-message">
                     <div className="build-quote__bold">
-                      {t('smartTransactionsUnavailable')}
+                      {t('stxUnavailable')}
                     </div>
-                    <div>{t('smartTransactionsFallbackToNormal')}</div>
+                    <div>{t('stxFallbackToNormal')}</div>
                   </div>
                 )
               }
