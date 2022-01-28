@@ -42,14 +42,14 @@ export default {
   },
 };
 
-const PageSet = ({ children, suggestedAssets }) => {
+const { metamask: state } = store.getState();
+
+const PageSet = ({ children, suggestedAssets, tokens }) => {
   const symbol = text('symbol', 'META');
   const image = text('Icon URL', 'metamark.svg');
 
-  const state = store.getState();
-
   useEffect(() => {
-    if (!suggestedAssets.length) {
+    if (!suggestedAssets?.length) {
       return;
     }
 
@@ -58,27 +58,74 @@ const PageSet = ({ children, suggestedAssets }) => {
 
     store.dispatch(
       updateMetamaskState(
-        getNewState(state.metamask, {
+        getNewState(state, {
           suggestedAssets,
         }),
       ),
     );
-  }, [image, symbol, suggestedAssets, state.metamask]);
+  }, [image, suggestedAssets, symbol]);
+
+  useEffect(() => {
+    store.dispatch(
+      updateMetamaskState(
+        getNewState(state, {
+          tokens,
+        }),
+      ),
+    );
+  }, [tokens]);
 
   return children;
 };
 
-export const DefaultStory = ({ suggestedAssets }) => {
+export const DefaultStory = ({ suggestedAssets, tokens }) => {
   return (
-    <PageSet suggestedAssets={suggestedAssets}>
+    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
       <ConfirmAddSuggestedToken />
     </PageSet>
   );
 };
-
 DefaultStory.storyName = 'Default';
 DefaultStory.args = {
   mostRecentOverviewPage: '',
   suggestedAssets: [...mockSuggestedAssets],
   tokens: [],
+};
+
+export const WithDuplicateAddress = ({ suggestedAssets, tokens }) => {
+  return (
+    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
+      <ConfirmAddSuggestedToken />
+    </PageSet>
+  );
+};
+WithDuplicateAddress.args = {
+  mostRecentOverviewPage: '',
+  suggestedAssets: [...mockSuggestedAssets],
+  tokens: [
+    {
+      ...mockSuggestedAssets[0].asset,
+    },
+  ],
+};
+
+export const WithDuplicateSymbolAndDifferentAddress = ({
+  suggestedAssets,
+  tokens,
+}) => {
+  return (
+    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
+      <ConfirmAddSuggestedToken />
+    </PageSet>
+  );
+};
+WithDuplicateSymbolAndDifferentAddress.args = {
+  mostRecentOverviewPage: '',
+  suggestedAssets: [...mockSuggestedAssets],
+  tokens: [
+    {
+      ...mockSuggestedAssets[0].asset,
+      address: '0xNonSuggestedAddress',
+    },
+  ],
 };
