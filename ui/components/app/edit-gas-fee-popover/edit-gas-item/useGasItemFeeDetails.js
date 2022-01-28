@@ -106,7 +106,7 @@ export const useGasItemFeeDetails = (priorityLevel) => {
         priorityLevel === PRIORITY_LEVELS.HIGH)
     ) {
       const estimateGreater = !gasEstimateGreaterThanGasUsedPlusTenPercent(
-        transaction,
+        transaction.previousGas || transaction.txParams,
         gasFeeEstimates,
         priorityLevel,
       );

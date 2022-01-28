@@ -6,6 +6,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.9.0]
+### Added
+- Alert users when the network is busy ([#12268](https://github.com/MetaMask/metamask-extension/pull/12268))
+
+### Changed
+- Clear the clipboard after seed phrase is pasted into restore vault form ([#12987](https://github.com/MetaMask/metamask-extension/pull/12987))
+- Remove bottom space when hiding testnet ([#12821](https://github.com/MetaMask/metamask-extension/pull/12821))
+- Prevent automatic rejection of confirmations ([#13194](https://github.com/MetaMask/metamask-extension/pull/13194))
+- Capitalize "learn more" link in permissions connect screen ([#13092](https://github.com/MetaMask/metamask-extension/pull/13092))
+- Allow keyboard accessiblity on restore vault form ([#12989](https://github.com/MetaMask/metamask-extension/pull/12989))
+- Permission System 2.0 ([#12243](https://github.com/MetaMask/metamask-extension/pull/12243))
+  - Changed site origin and added permission list view ([#12832](https://github.com/MetaMask/metamask-extension/pull/12832))
+  - Changed accounts selection permissions screen ([#13039](https://github.com/MetaMask/metamask-extension/pull/13039))
+- Optimize Swaps flow ([#12939](https://github.com/MetaMask/metamask-extension/pull/12939))
+- Remove legacy node parent detection ([#12814](https://github.com/MetaMask/metamask-extension/pull/12814))
+
+### Fixed
+- Fixed Mainnet Tokens autopopulating in custom token fields on other networks ([#12800](https://github.com/MetaMask/metamask-extension/pull/12800))
+- Adjust the padding of lock button for certain locales ([#13017](https://github.com/MetaMask/metamask-extension/pull/13017))
+- Lock button active state fix when holding mouse click ([#13100](https://github.com/MetaMask/metamask-extension/pull/13100))
+- Fix order of account list on the "Send To" screen ([#12999](https://github.com/MetaMask/metamask-extension/pull/12999))
+- Display hex data from previous send tx screen to edit tx screen ([#12709](https://github.com/MetaMask/metamask-extension/pull/12709))
+- Sanitize eth_signTypedData message when corresponding field in 'types' is missing ([#12905](https://github.com/MetaMask/metamask-extension/pull/12905))
+- Identicon size fix ([#13014](https://github.com/MetaMask/metamask-extension/pull/13014))
+- Fixed latest conversion date on currency conversion in general settings  ([#12422](https://github.com/MetaMask/metamask-extension/pull/12422))
+- Prevent account name duplicates ([#12867](https://github.com/MetaMask/metamask-extension/pull/12867))
+
 ## [10.8.2]
 ### Fixed
 - Add missing `appName` localized messages for Flask and Beta ([#13138](https://github.com/MetaMask/metamask-extension/pull/13138))
@@ -2660,7 +2687,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.8.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.9.0...HEAD
+[10.9.0]: https://github.com/MetaMask/metamask-extension/compare/v10.8.2...v10.9.0
 [10.8.2]: https://github.com/MetaMask/metamask-extension/compare/v10.8.1...v10.8.2
 [10.8.1]: https://github.com/MetaMask/metamask-extension/compare/v10.8.0...v10.8.1
 [10.8.0]: https://github.com/MetaMask/metamask-extension/compare/v10.7.1...v10.8.0

@@ -2,7 +2,7 @@
 
 exports[`AwaitingSwap renders the component with initial props 1`] = `
 <div
-  class="awaiting-swap__main-descrption"
+  class="awaiting-swap__main-description"
 >
   <span>
      

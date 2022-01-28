@@ -6,6 +6,12 @@
       cursor: pointer;
     }
 
+    &-wrapper {
+      background-color: transparent;
+      border: 0;
+      width: 100%;
+    }
+
     &-image {
       width: 32px;
       height: 32px;

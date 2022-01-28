@@ -1491,6 +1491,19 @@ export function updateSendAsset({ type, details }) {
           dispatch(displayWarning(err.message));
         }
       }
+
+      if (details.standard === undefined) {
+        const { standard } = await getTokenStandardAndDetails(
+          details.address,
+          userAddress,
+        );
+        details.standard = standard;
+      }
+
+      if (details.standard === ERC1155) {
+        throw new Error('Sends of ERC1155 tokens are not currently supported');
+      }
+
       if (isCurrentOwner) {
         error = null;
         balance = '0x1';
