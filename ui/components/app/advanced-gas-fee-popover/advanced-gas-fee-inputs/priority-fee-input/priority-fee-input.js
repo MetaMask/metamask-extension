@@ -98,7 +98,7 @@ const PriorityFeeInput = () => {
   ]);
 
   return (
-    <Box margin={[4, 2, 0, 2]} className="advanced-gas-fee-priority-fee-input">
+    <Box margin={[4, 2, 0, 2]} className="priority-fee-input">
       <FormField
         dataTestId="priority-fee-input"
         error={priorityFeeError ? t(priorityFeeError) : ''}
