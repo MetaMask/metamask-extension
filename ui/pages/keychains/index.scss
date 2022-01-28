@@ -25,12 +25,6 @@
   margin: 60px 0 30px 0;
   position: relative;
   max-width: initial;
-
-  &__input-label {
-    padding-bottom: 10px;
-    font-weight: 400;
-    display: inline-block;
-  }
 }
 
 @media only screen and (max-width: $break-small) {
@@ -60,18 +54,6 @@
   .first-time-flow__input {
     width: 100%;
   }
-
-  .import-account__secret-phrase {
-    width: initial !important;
-    height: initial !important;
-    min-height: 190px;
-  }
-}
-
-@media only screen and (max-width: $break-small) {
-  .import-account__input {
-    width: 100%;
-  }
 }
 
 .import-account {
@@ -91,22 +73,6 @@
     top: -25px;
   }
 
-  &__secret-phrase {
-    @include Paragraph;
-
-    height: 190px;
-    width: 495px;
-    border: 1px solid #cdcdcd;
-    border-radius: 6px;
-    background-color: #fff;
-    padding: 17px;
-  }
-
-  &__secret-phrase::placeholder {
-    color: #9b9b9b;
-    font-weight: 200;
-  }
-
   &__selector-label {
     @include Paragraph;
 
@@ -119,59 +85,7 @@
     align-items: center;
     color: #000;
     margin-top: 18px;
-  }
-
-  &__input-wrapper {
-    display: flex;
-    flex-flow: column nowrap;
-    margin-top: 18px;
-  }
-
-  &__input {
-    width: 350px;
-  }
-
-  &__checkbox-container {
-    display: flex;
-    align-items: center;
-    margin-top: 24px;
-  }
-
-  &__checkbox {
-    background: #fff;
-    border: 1px solid #cdcdcd;
-    outline: none;
-    box-sizing: border-box;
-    height: 34px;
-    width: 34px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    &:hover {
-      border: 1.5px solid #2f9ae0;
-    }
-
-    .fa-check {
-      color: #2f9ae0;
-    }
-  }
-
-  &__checkbox-label {
-    @include H4;
-
-    color: #939090;
-    margin-left: 18px;
-  }
-
-  &__file-input {
-    display: none;
-  }
-
-  &__file-picker-wrapper {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
+    margin-bottom: 16px;
   }
 }
 

@@ -856,9 +856,6 @@
   "sendTokens": {
     "message": "Hantar Token"
   },
-  "separateEachWord": {
-    "message": "Pisahkan setiap perkataan dengan ruang tunggal"
-  },
   "settings": {
     "message": "Tetapan"
   },

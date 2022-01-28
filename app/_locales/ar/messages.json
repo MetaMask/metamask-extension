@@ -877,9 +877,6 @@
   "sendTokens": {
     "message": "إرسال عملات رمزية"
   },
-  "separateEachWord": {
-    "message": "افصل كل كلمة بمسافة واحدة"
-  },
   "settings": {
     "message": "الإعدادات"
   },
