@@ -268,9 +268,6 @@
   "deleteNetworkDescription": {
     "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
   },
-  "depositEther": {
-    "message": "Magdeposito ng Ether"
-  },
   "details": {
     "message": "Mga Detalye"
   },
@@ -533,9 +530,6 @@
   },
   "myAccounts": {
     "message": "Mga Account Ko"
-  },
-  "needEtherInWallet": {
-    "message": "Para gumamit ng mga decentralized na application gamit ang MetaMask, mangangailangan ka ng Ether sa iyong wallet."
   },
   "needImportFile": {
     "message": "Dapat kang pumili ng file na ii-import.",

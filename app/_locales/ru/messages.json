@@ -389,12 +389,6 @@
   "buy": {
     "message": "Купить"
   },
-  "buyWithTransak": {
-    "message": "Купить ETH с помощью Transak"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak поддерживает дебетовые карты и банковские переводы (в зависимости от местоположения) в 59 странах. ETH будут зачислены на ваш счет MetaMask."
-  },
   "buyWithWyre": {
     "message": "Купить ETH с Wyre"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Вы уверены, что хотите удалить эту сеть?"
-  },
-  "depositEther": {
-    "message": "Внести Ether"
   },
   "description": {
     "message": "Описание"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "Название"
-  },
-  "needEtherInWallet": {
-    "message": "Для взаимодействия с децентрализованными приложениями с помощью MetaMask вам понадобится Ether в вашем кошельке."
   },
   "needHelp": {
     "message": "Нужна помощь? Обратитесь в $1",

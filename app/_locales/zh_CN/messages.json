@@ -389,12 +389,6 @@
   "buy": {
     "message": "购买"
   },
-  "buyWithTransak": {
-    "message": "使用Transak购买ETH"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak 支持在59多个国家／地区的借记卡和银行转账（取决于地点）。ETH可存款到您的MetaMask账户。"
-  },
   "buyWithWyre": {
     "message": "使用 Wyre 购买 ETH"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "是否确认要删除该网络？"
-  },
-  "depositEther": {
-    "message": "存入 Ether"
   },
   "description": {
     "message": "描述"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "名称"
-  },
-  "needEtherInWallet": {
-    "message": "使用 MetaMask 与分布式应用交互，需要您的钱包里需要有 Ether。"
   },
   "needHelp": {
     "message": "需要帮助？请联系 $1",

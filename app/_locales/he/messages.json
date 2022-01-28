@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
   },
-  "depositEther": {
-    "message": "הפקדת את'ר"
-  },
   "details": {
     "message": "פרטים"
   },
@@ -592,9 +589,6 @@
   },
   "myAccounts": {
     "message": "החשבונות שלי"
-  },
-  "needEtherInWallet": {
-    "message": "כדי לתקשר עם אפליקציות מבוזרות באמצעות MetaMask, צריך להיות לך את'ר בארנק."
   },
   "needImportFile": {
     "message": "יש לבחור קובץ לייצוא.",

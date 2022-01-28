@@ -516,9 +516,6 @@
   "deleteNetworkDescription": {
     "message": "¿Está seguro de que quiere eliminar esta red?"
   },
-  "depositEther": {
-    "message": "Depositar ether"
-  },
   "details": {
     "message": "Detalles"
   },
@@ -1099,9 +1096,6 @@
   },
   "name": {
     "message": "Nombre"
-  },
-  "needEtherInWallet": {
-    "message": "Para interactuar con aplicaciones descentralizadas mediante MetaMask, necesitará ethers en su cartera."
   },
   "needHelp": {
     "message": "¿Necesita ayuda? Comuníquese con $1",

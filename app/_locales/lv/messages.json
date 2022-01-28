@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Vai tiešām vēlaties dzēst šo tīklu?"
   },
-  "depositEther": {
-    "message": "Noguldīt Ether"
-  },
   "details": {
     "message": "Informācija"
   },
@@ -591,9 +588,6 @@
   },
   "myAccounts": {
     "message": "Mani konti"
-  },
-  "needEtherInWallet": {
-    "message": "Lai izmantotu decentralizētas lietotnes ar MetaMask, jūsu makā jābūt Ether."
   },
   "needImportFile": {
     "message": "Jums jāatlasa fails, ko importēt",
