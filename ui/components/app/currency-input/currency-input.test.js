@@ -157,7 +157,7 @@ describe('CurrencyInput Component', () => {
       expect(wrapper.find('.unit-input__suffix')).toHaveLength(1);
       expect(wrapper.find('.unit-input__suffix').text()).toStrictEqual('ETH');
       expect(wrapper.find('.unit-input__input').props().value).toStrictEqual(
-        0.00432788,
+        0.004327880204275946,
       );
       expect(
         wrapper.find('.currency-input__conversion-component').text(),
@@ -202,7 +202,7 @@ describe('CurrencyInput Component', () => {
       expect(handleBlurSpy.callCount).toStrictEqual(0);
 
       const input = wrapper.find('input');
-      expect(input.props().value).toStrictEqual(0.00432788);
+      expect(input.props().value).toStrictEqual(0.004327880204275946);
 
       input.simulate('change', { target: { value: 1 } });
       expect(handleChangeSpy.callCount).toStrictEqual(2);

@@ -31,14 +31,14 @@ export default class SendAmountRow extends Component {
         onChange={this.handleChange}
         token={asset.details}
         value={amount}
-        primaryNumberOfDecimals={asset.decimals || 18}
+        primaryNumberOfDecimals={asset.decimals < 15 ? asset.decimals : 15}
       />
     ) : (
       <UserPreferencedCurrencyInput
         error={inError}
         onChange={this.handleChange}
         value={amount}
-        primaryNumberOfDecimals={18}
+        primaryNumberOfDecimals={15}
       />
     );
   }
