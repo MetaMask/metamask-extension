@@ -63,31 +63,28 @@ const AdvancedGasFeeDefaults = () => {
   }
 
   return (
-    <>
-      <div className="advanced-gas-fee-defaults__separator" />
-      <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
-        marginRight={4}
-        className="advanced-gas-fee-defaults"
-      >
-        <label className="advanced-gas-fee-defaults__label">
-          <CheckBox
-            checked={isDefaultSettingsSelected}
-            className="advanced-gas-fee-defaults__checkbox"
-            onClick={handleUpdateDefaultSettings}
-            disabled={hasErrors}
-          />
-          <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
-            {isDefaultSettingsSelected
-              ? t('advancedGasFeeDefaultOptOut')
-              : t('advancedGasFeeDefaultOptIn', [
-                  <strong key="default-value-change">{t('newValues')}</strong>,
-                ])}
-          </Typography>
-        </label>
-      </Box>
-    </>
+    <Box
+      display={DISPLAY.FLEX}
+      flexDirection={FLEX_DIRECTION.ROW}
+      margin={[4, 2, 0, 2]}
+      className="advanced-gas-fee-defaults"
+    >
+      <label className="advanced-gas-fee-defaults__label">
+        <CheckBox
+          checked={isDefaultSettingsSelected}
+          className="advanced-gas-fee-defaults__checkbox"
+          onClick={handleUpdateDefaultSettings}
+          disabled={hasErrors}
+        />
+        <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
+          {isDefaultSettingsSelected
+            ? t('advancedGasFeeDefaultOptOut')
+            : t('advancedGasFeeDefaultOptIn', [
+                <strong key="default-value-change">{t('newValues')}</strong>,
+              ])}
+        </Typography>
+      </label>
+    </Box>
   );
 };
 
