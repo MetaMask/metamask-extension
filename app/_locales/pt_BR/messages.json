@@ -254,6 +254,9 @@
   "buildContactList": {
     "message": "Crie sua lista de contatos"
   },
+  "builtAroundTheWorld": {
+    "message": "MetaMask é projetado e construído em todo o mundo.."
+  },
   "buy": {
     "message": "Comprar"
   },
