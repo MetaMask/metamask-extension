@@ -7,6 +7,7 @@ import Typography from '../../ui/typography';
 import Box from '../../ui/box';
 import MetaMaskTranslation from '../metamask-translation';
 import NetworkDisplay from '../network-display';
+import TextArea from '../../ui/textarea/textarea';
 
 export const safeComponentList = {
   MetaMaskTranslation,
@@ -23,4 +24,5 @@ export const safeComponentList = {
   Popover,
   Box,
   NetworkDisplay,
+  TextArea,
 };
