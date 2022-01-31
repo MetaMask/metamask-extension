@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { EDIT_GAS_MODES } from '../../../../../shared/constants/gas';
+import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
 import {
