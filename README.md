@@ -16,6 +16,7 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 
 - Install [Node.js](https://nodejs.org) version 14
     - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
+    - If you are using [Nix package manager](https://github.com/NixOS/nix) running `nix-shell` will put you in to new shell with the right yarn and node version.
 - Install [Yarn](https://yarnpkg.com/en/docs/install)
 - Install dependencies: `yarn setup` (not the usual install command)
 - Copy the `.metamaskrc.dist` file to `.metamaskrc`
