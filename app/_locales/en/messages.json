@@ -1640,6 +1640,9 @@
   "loading": {
     "message": "Loading..."
   },
+  "loadingNFTs": {
+    "message": "Loading NFTs..."
+  },
   "loadingTokens": {
     "message": "Loading Tokens..."
   },
