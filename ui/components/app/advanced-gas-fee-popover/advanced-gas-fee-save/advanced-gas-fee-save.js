@@ -30,7 +30,7 @@ const AdvancedGasFeeSaveButton = () => {
     });
     updateTransactionEventFragment({
       properties: {
-        gas_edit_type: 'advance',
+        gas_edit_type: 'advanced',
       },
     });
     closeAllModals();
