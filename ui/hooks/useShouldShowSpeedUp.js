@@ -10,7 +10,11 @@ import { SECOND } from '../../shared/constants/time';
  * @param {boolean} isEarliestNonce - Whether this group is currently the earliest nonce
  * @param {boolean} speedUpAnyTransactionActive - Whether user allowed to speed up transaction with any nonce
  */
-export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce, speedUpAnyTransactionActive) {
+export function useShouldShowSpeedUp(
+  transactionGroup,
+  isEarliestNonce,
+  speedUpAnyTransactionActive,
+) {
   const { transactions, hasRetried } = transactionGroup;
   const [earliestTransaction = {}] = transactions;
   const { submittedTime } = earliestTransaction;
@@ -45,7 +49,13 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce, speedUpA
         clearTimeout(timeoutId);
       }
     };
-  }, [submittedTime, speedUpEnabled, hasRetried, isEarliestNonce, speedUpAnyTransactionActive]);
+  }, [
+    submittedTime,
+    speedUpEnabled,
+    hasRetried,
+    isEarliestNonce,
+    speedUpAnyTransactionActive,
+  ]);
 
   return speedUpEnabled;
 }

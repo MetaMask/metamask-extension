@@ -270,8 +270,8 @@ export default class AdvancedTab extends PureComponent {
   }
 
   renderAllowSpeedUpAnyTransaction() {
-    const { t } = this.context
-    const { speedUpAnyTransaction, setSpeedUpAnyTransaction } = this.props
+    const { t } = this.context;
+    const { speedUpAnyTransaction, setSpeedUpAnyTransaction } = this.props;
 
     return (
       <div
@@ -295,7 +295,7 @@ export default class AdvancedTab extends PureComponent {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderShowConversionInTestnets() {
