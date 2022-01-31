@@ -8,6 +8,7 @@ audit.json
 app/bower_components
 test/bower_components
 package
+.eslintcache
 
 # IDEs
 .idea
@@ -26,8 +27,9 @@ temp
 .DS_Store
 app/.DS_Store
 
-.out/
+storybook-build/
 coverage/
+jest-coverage/
 dist
 builds/
 builds.zip
@@ -37,11 +39,10 @@ test-builds
 build-artifacts
 
 #ignore css output and sourcemaps
-ui/app/css/output/
+ui/css/output/
 
 notes.txt
 
-.coveralls.yml
 .nyc_output
 
 .metamaskrc

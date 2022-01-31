@@ -1,0 +1,13 @@
+diff --git a/node_modules/eslint/lib/linter/linter.js b/node_modules/eslint/lib/linter/linter.js
+index adb5c21..4a4be92 100644
+--- a/node_modules/eslint/lib/linter/linter.js
++++ b/node_modules/eslint/lib/linter/linter.js
+@@ -560,7 +560,7 @@ function resolveParserOptions(parserName, providedOptions, enabledEnvironments)
+  */
+ function resolveGlobals(providedGlobals, enabledEnvironments) {
+     return Object.assign(
+-        {},
++        Object.create(null),
+         ...enabledEnvironments.filter(env => env.globals).map(env => env.globals),
+         providedGlobals
+     );

@@ -1,32 +1,50 @@
-import ObservableStore from 'obs-store'
-import log from 'loglevel'
-import BN from 'bn.js'
-import createId from '../lib/random-id'
-import { bnToHex } from '../lib/util'
-import fetchWithTimeout from '../lib/fetch-with-timeout'
+import { ObservableStore } from '@metamask/obs-store';
+import log from 'loglevel';
+import BN from 'bn.js';
+import createId from '../../../shared/modules/random-id';
+import { bnToHex } from '../lib/util';
+import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 import {
-  TRANSACTION_CATEGORIES,
+  TRANSACTION_TYPES,
   TRANSACTION_STATUSES,
-} from '../../../shared/constants/transaction'
+} from '../../../shared/constants/transaction';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   CHAIN_ID_TO_TYPE_MAP,
-  GOERLI,
   GOERLI_CHAIN_ID,
-  KOVAN,
   KOVAN_CHAIN_ID,
-  MAINNET,
   MAINNET_CHAIN_ID,
-  RINKEBY,
   RINKEBY_CHAIN_ID,
-  ROPSTEN,
   ROPSTEN_CHAIN_ID,
-} from './network/enums'
+} from '../../../shared/constants/network';
+import { SECOND } from '../../../shared/constants/time';
 
-const fetch = fetchWithTimeout({
-  timeout: 30000,
-})
+const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
+
+/**
+ * @typedef {import('../../../shared/constants/transaction').TransactionMeta} TransactionMeta
+ */
+
+/**
+ * A transaction object in the format returned by the Etherscan API.
+ *
+ * Note that this is not an exhaustive type definiton; only the properties we use are defined
+ *
+ * @typedef {Object} EtherscanTransaction
+ * @property {string} blockNumber - The number of the block this transaction was found in, in decimal
+ * @property {string} from - The hex-prefixed address of the sender
+ * @property {string} gas - The gas limit, in decimal GWEI
+ * @property {string} [gasPrice] - The gas price, in decimal WEI
+ * @property {string} [maxFeePerGas] - The maximum fee per gas, inclusive of tip, in decimal WEI
+ * @property {string} [maxPriorityFeePerGas] - The maximum tip per gas in decimal WEI
+ * @property {string} hash - The hex-prefixed transaction hash
+ * @property {string} isError - Whether the transaction was confirmed or failed (0 for confirmed, 1 for failed)
+ * @property {string} nonce - The transaction nonce, in decimal
+ * @property {string} timeStamp - The timestamp for the transaction, in seconds
+ * @property {string} to - The hex-prefixed address of the recipient
+ * @property {string} value - The amount of ETH sent in this transaction, in decimal WEI
+ */
 
 /**
  * This controller is responsible for retrieving incoming transactions. Etherscan is polled once every block to check
@@ -41,280 +59,274 @@ const etherscanSupportedNetworks = [
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
-]
+];
 
 export default class IncomingTransactionsController {
   constructor(opts = {}) {
-    const { blockTracker, networkController, preferencesController } = opts
-    this.blockTracker = blockTracker
-    this.networkController = networkController
-    this.preferencesController = preferencesController
+    const {
+      blockTracker,
+      onNetworkDidChange,
+      getCurrentChainId,
+      preferencesController,
+    } = opts;
+    this.blockTracker = blockTracker;
+    this.getCurrentChainId = getCurrentChainId;
+    this.preferencesController = preferencesController;
 
     this._onLatestBlock = async (newBlockNumberHex) => {
-      const selectedAddress = this.preferencesController.getSelectedAddress()
-      const newBlockNumberDec = parseInt(newBlockNumberHex, 16)
-      await this._update({
-        address: selectedAddress,
-        newBlockNumberDec,
-      })
-    }
+      const selectedAddress = this.preferencesController.getSelectedAddress();
+      const newBlockNumberDec = parseInt(newBlockNumberHex, 16);
+      await this._update(selectedAddress, newBlockNumberDec);
+    };
 
     const initState = {
       incomingTransactions: {},
-      incomingTxLastFetchedBlocksByNetwork: {
-        [GOERLI]: null,
-        [KOVAN]: null,
-        [MAINNET]: null,
-        [RINKEBY]: null,
-        [ROPSTEN]: null,
+      incomingTxLastFetchedBlockByChainId: {
+        [GOERLI_CHAIN_ID]: null,
+        [KOVAN_CHAIN_ID]: null,
+        [MAINNET_CHAIN_ID]: null,
+        [RINKEBY_CHAIN_ID]: null,
+        [ROPSTEN_CHAIN_ID]: null,
       },
       ...opts.initState,
-    }
-    this.store = new ObservableStore(initState)
+    };
+    this.store = new ObservableStore(initState);
 
     this.preferencesController.store.subscribe(
-      pairwise((prevState, currState) => {
+      previousValueComparator((prevState, currState) => {
         const {
           featureFlags: {
             showIncomingTransactions: prevShowIncomingTransactions,
           } = {},
-        } = prevState
+        } = prevState;
         const {
           featureFlags: {
             showIncomingTransactions: currShowIncomingTransactions,
           } = {},
-        } = currState
+        } = currState;
 
         if (currShowIncomingTransactions === prevShowIncomingTransactions) {
-          return
+          return;
         }
 
         if (prevShowIncomingTransactions && !currShowIncomingTransactions) {
-          this.stop()
-          return
+          this.stop();
+          return;
         }
 
-        this.start()
-      }),
-    )
+        this.start();
+      }, this.preferencesController.store.getState()),
+    );
 
     this.preferencesController.store.subscribe(
-      pairwise(async (prevState, currState) => {
-        const { selectedAddress: prevSelectedAddress } = prevState
-        const { selectedAddress: currSelectedAddress } = currState
+      previousValueComparator(async (prevState, currState) => {
+        const { selectedAddress: prevSelectedAddress } = prevState;
+        const { selectedAddress: currSelectedAddress } = currState;
 
         if (currSelectedAddress === prevSelectedAddress) {
-          return
+          return;
         }
+        await this._update(currSelectedAddress);
+      }, this.preferencesController.store.getState()),
+    );
 
-        await this._update({
-          address: currSelectedAddress,
-        })
-      }),
-    )
-
-    this.networkController.on('networkDidChange', async () => {
-      const address = this.preferencesController.getSelectedAddress()
-      await this._update({
-        address,
-      })
-    })
+    onNetworkDidChange(async () => {
+      const address = this.preferencesController.getSelectedAddress();
+      await this._update(address);
+    });
   }
 
   start() {
-    const { featureFlags = {} } = this.preferencesController.store.getState()
-    const { showIncomingTransactions } = featureFlags
+    const { featureFlags = {} } = this.preferencesController.store.getState();
+    const { showIncomingTransactions } = featureFlags;
 
     if (!showIncomingTransactions) {
-      return
+      return;
     }
 
-    this.blockTracker.removeListener('latest', this._onLatestBlock)
-    this.blockTracker.addListener('latest', this._onLatestBlock)
+    this.blockTracker.removeListener('latest', this._onLatestBlock);
+    this.blockTracker.addListener('latest', this._onLatestBlock);
   }
 
   stop() {
-    this.blockTracker.removeListener('latest', this._onLatestBlock)
+    this.blockTracker.removeListener('latest', this._onLatestBlock);
   }
 
-  async _update({ address, newBlockNumberDec } = {}) {
-    const chainId = this.networkController.getCurrentChainId()
-    if (!etherscanSupportedNetworks.includes(chainId)) {
-      return
+  /**
+   * Determines the correct block number to begin looking for new transactions
+   * from, fetches the transactions and then saves them and the next block
+   * number to begin fetching from in state. Block numbers and transactions are
+   * stored per chainId.
+   *
+   * @private
+   * @param {string} address - address to lookup transactions for
+   * @param {number} [newBlockNumberDec] - block number to begin fetching from
+   */
+  async _update(address, newBlockNumberDec) {
+    const chainId = this.getCurrentChainId();
+    if (!etherscanSupportedNetworks.includes(chainId) || !address) {
+      return;
     }
     try {
-      const dataForUpdate = await this._getDataForUpdate({
+      const currentState = this.store.getState();
+      const currentBlock = parseInt(this.blockTracker.getCurrentBlock(), 16);
+
+      const mostRecentlyFetchedBlock =
+        currentState.incomingTxLastFetchedBlockByChainId[chainId];
+      const blockToFetchFrom =
+        mostRecentlyFetchedBlock ?? newBlockNumberDec ?? currentBlock;
+
+      const newIncomingTxs = await this._getNewIncomingTransactions(
         address,
+        blockToFetchFrom,
         chainId,
-        newBlockNumberDec,
-      })
-      this._updateStateWithNewTxData(dataForUpdate)
+      );
+
+      let newMostRecentlyFetchedBlock = blockToFetchFrom;
+
+      newIncomingTxs.forEach((tx) => {
+        if (
+          tx.blockNumber &&
+          parseInt(newMostRecentlyFetchedBlock, 10) <
+            parseInt(tx.blockNumber, 10)
+        ) {
+          newMostRecentlyFetchedBlock = parseInt(tx.blockNumber, 10);
+        }
+      });
+
+      this.store.updateState({
+        incomingTxLastFetchedBlockByChainId: {
+          ...currentState.incomingTxLastFetchedBlockByChainId,
+          [chainId]: newMostRecentlyFetchedBlock + 1,
+        },
+        incomingTransactions: newIncomingTxs.reduce(
+          (transactions, tx) => {
+            transactions[tx.hash] = tx;
+            return transactions;
+          },
+          {
+            ...currentState.incomingTransactions,
+          },
+        ),
+      });
     } catch (err) {
-      log.error(err)
+      log.error(err);
     }
   }
 
-  async _getDataForUpdate({ address, chainId, newBlockNumberDec } = {}) {
-    const {
-      incomingTransactions: currentIncomingTxs,
-      incomingTxLastFetchedBlocksByNetwork: currentBlocksByNetwork,
-    } = this.store.getState()
-
-    const lastFetchBlockByCurrentNetwork =
-      currentBlocksByNetwork[CHAIN_ID_TO_TYPE_MAP[chainId]]
-    let blockToFetchFrom = lastFetchBlockByCurrentNetwork || newBlockNumberDec
-    if (blockToFetchFrom === undefined) {
-      blockToFetchFrom = parseInt(this.blockTracker.getCurrentBlock(), 16)
-    }
-
-    const { latestIncomingTxBlockNumber, txs: newTxs } = await this._fetchAll(
-      address,
-      blockToFetchFrom,
-      chainId,
-    )
-
-    return {
-      latestIncomingTxBlockNumber,
-      newTxs,
-      currentIncomingTxs,
-      currentBlocksByNetwork,
-      fetchedBlockNumber: blockToFetchFrom,
-      chainId,
-    }
-  }
-
-  _updateStateWithNewTxData({
-    latestIncomingTxBlockNumber,
-    newTxs,
-    currentIncomingTxs,
-    currentBlocksByNetwork,
-    fetchedBlockNumber,
-    chainId,
-  }) {
-    const newLatestBlockHashByNetwork = latestIncomingTxBlockNumber
-      ? parseInt(latestIncomingTxBlockNumber, 10) + 1
-      : fetchedBlockNumber + 1
-    const newIncomingTransactions = {
-      ...currentIncomingTxs,
-    }
-    newTxs.forEach((tx) => {
-      newIncomingTransactions[tx.hash] = tx
-    })
-
-    this.store.updateState({
-      incomingTxLastFetchedBlocksByNetwork: {
-        ...currentBlocksByNetwork,
-        [CHAIN_ID_TO_TYPE_MAP[chainId]]: newLatestBlockHashByNetwork,
-      },
-      incomingTransactions: newIncomingTransactions,
-    })
-  }
-
-  async _fetchAll(address, fromBlock, chainId) {
-    const fetchedTxResponse = await this._fetchTxs(address, fromBlock, chainId)
-    return this._processTxFetchResponse(fetchedTxResponse)
-  }
-
-  async _fetchTxs(address, fromBlock, chainId) {
+  /**
+   * fetches transactions for the given address and chain, via etherscan, then
+   * processes the data into the necessary shape for usage in this controller.
+   *
+   * @private
+   * @param {string} [address] - Address to fetch transactions for
+   * @param {number} [fromBlock] - Block to look for transactions at
+   * @param {string} [chainId] - The chainId for the current network
+   * @returns {TransactionMeta[]}
+   */
+  async _getNewIncomingTransactions(address, fromBlock, chainId) {
     const etherscanSubdomain =
       chainId === MAINNET_CHAIN_ID
         ? 'api'
-        : `api-${CHAIN_ID_TO_TYPE_MAP[chainId]}`
+        : `api-${CHAIN_ID_TO_TYPE_MAP[chainId]}`;
 
-    const apiUrl = `https://${etherscanSubdomain}.etherscan.io`
-    let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`
+    const apiUrl = `https://${etherscanSubdomain}.etherscan.io`;
+    let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`;
 
     if (fromBlock) {
-      url += `&startBlock=${parseInt(fromBlock, 10)}`
+      url += `&startBlock=${parseInt(fromBlock, 10)}`;
     }
-    const response = await fetch(url)
-    const parsedResponse = await response.json()
-
-    return {
-      ...parsedResponse,
-      address,
-      chainId,
-    }
-  }
-
-  _processTxFetchResponse({ status, result = [], address, chainId }) {
+    const response = await fetchWithTimeout(url);
+    const { status, result } = await response.json();
+    let newIncomingTxs = [];
     if (status === '1' && Array.isArray(result) && result.length > 0) {
-      const remoteTxList = {}
-      const remoteTxs = []
+      const remoteTxList = {};
+      const remoteTxs = [];
       result.forEach((tx) => {
         if (!remoteTxList[tx.hash]) {
-          remoteTxs.push(this._normalizeTxFromEtherscan(tx, chainId))
-          remoteTxList[tx.hash] = 1
+          remoteTxs.push(this._normalizeTxFromEtherscan(tx, chainId));
+          remoteTxList[tx.hash] = 1;
         }
-      })
+      });
 
-      const incomingTxs = remoteTxs.filter(
-        (tx) =>
-          tx.txParams.to &&
-          tx.txParams.to.toLowerCase() === address.toLowerCase(),
-      )
-      incomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1))
-
-      let latestIncomingTxBlockNumber = null
-      incomingTxs.forEach((tx) => {
-        if (
-          tx.blockNumber &&
-          (!latestIncomingTxBlockNumber ||
-            parseInt(latestIncomingTxBlockNumber, 10) <
-              parseInt(tx.blockNumber, 10))
-        ) {
-          latestIncomingTxBlockNumber = tx.blockNumber
-        }
-      })
-      return {
-        latestIncomingTxBlockNumber,
-        txs: incomingTxs,
-      }
+      newIncomingTxs = remoteTxs.filter(
+        (tx) => tx.txParams?.to?.toLowerCase() === address.toLowerCase(),
+      );
+      newIncomingTxs.sort((a, b) => (a.time < b.time ? -1 : 1));
     }
-    return {
-      latestIncomingTxBlockNumber: null,
-      txs: [],
-    }
+    return newIncomingTxs;
   }
 
-  _normalizeTxFromEtherscan(txMeta, chainId) {
-    const time = parseInt(txMeta.timeStamp, 10) * 1000
+  /**
+   * Transmutes a EtherscanTransaction into a TransactionMeta
+   *
+   * @param {EtherscanTransaction} etherscanTransaction - the transaction to normalize
+   * @param {string} chainId - The chainId of the current network
+   * @returns {TransactionMeta}
+   */
+  _normalizeTxFromEtherscan(etherscanTransaction, chainId) {
+    const time = parseInt(etherscanTransaction.timeStamp, 10) * 1000;
     const status =
-      txMeta.isError === '0'
+      etherscanTransaction.isError === '0'
         ? TRANSACTION_STATUSES.CONFIRMED
-        : TRANSACTION_STATUSES.FAILED
+        : TRANSACTION_STATUSES.FAILED;
+    const txParams = {
+      from: etherscanTransaction.from,
+      gas: bnToHex(new BN(etherscanTransaction.gas)),
+      nonce: bnToHex(new BN(etherscanTransaction.nonce)),
+      to: etherscanTransaction.to,
+      value: bnToHex(new BN(etherscanTransaction.value)),
+    };
+
+    if (etherscanTransaction.gasPrice) {
+      txParams.gasPrice = bnToHex(new BN(etherscanTransaction.gasPrice));
+    } else if (etherscanTransaction.maxFeePerGas) {
+      txParams.maxFeePerGas = bnToHex(
+        new BN(etherscanTransaction.maxFeePerGas),
+      );
+      txParams.maxPriorityFeePerGas = bnToHex(
+        new BN(etherscanTransaction.maxPriorityFeePerGas),
+      );
+    }
+
     return {
-      blockNumber: txMeta.blockNumber,
+      blockNumber: etherscanTransaction.blockNumber,
       id: createId(),
+      chainId,
       metamaskNetworkId: CHAIN_ID_TO_NETWORK_ID_MAP[chainId],
       status,
       time,
-      txParams: {
-        from: txMeta.from,
-        gas: bnToHex(new BN(txMeta.gas)),
-        gasPrice: bnToHex(new BN(txMeta.gasPrice)),
-        nonce: bnToHex(new BN(txMeta.nonce)),
-        to: txMeta.to,
-        value: bnToHex(new BN(txMeta.value)),
-      },
-      hash: txMeta.hash,
-      transactionCategory: TRANSACTION_CATEGORIES.INCOMING,
-    }
+      txParams,
+      hash: etherscanTransaction.hash,
+      type: TRANSACTION_TYPES.INCOMING,
+    };
   }
 }
 
-function pairwise(fn) {
-  let first = true
-  let cache
+/**
+ * Returns a function with arity 1 that caches the argument that the function
+ * is called with and invokes the comparator with both the cached, previous,
+ * value and the current value. If specified, the initialValue will be passed
+ * in as the previous value on the first invocation of the returned method.
+ *
+ * @template A - The type of the compared value.
+ * @param {(prevValue: A, nextValue: A) => void} comparator - A method to compare
+ * the previous and next values.
+ * @param {A} [initialValue] - The initial value to supply to prevValue
+ * on first call of the method.
+ */
+function previousValueComparator(comparator, initialValue) {
+  let first = true;
+  let cache;
   return (value) => {
     try {
       if (first) {
-        first = false
-        return fn(value, value)
+        first = false;
+        return comparator(initialValue ?? value, value);
       }
-      return fn(cache, value)
+      return comparator(cache, value);
     } finally {
-      cache = value
+      cache = value;
     }
-  }
+  };
 }

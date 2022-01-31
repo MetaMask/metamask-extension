@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DropdownInputPair renders the component with initial props 1`] = `
+<div
+  class="MuiFormControl-root MuiTextField-root dropdown-input-pair__input MuiFormControl-marginDense MuiFormControl-fullWidth"
+>
+  <div
+    class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense MuiInput-marginDense"
+  >
+    <input
+      aria-invalid="false"
+      class="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+      dir="auto"
+      placeholder="0"
+      type="text"
+      value=""
+    />
+  </div>
+</div>
+`;

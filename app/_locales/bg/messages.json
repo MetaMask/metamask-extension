@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Отхвърляне"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Сканиране на QR код"
+  },
   "about": {
     "message": "Информация"
   },
@@ -38,9 +44,6 @@
   "addNetwork": {
     "message": "Добавяне на мрежа"
   },
-  "addRecipient": {
-    "message": "Добавете получател"
-  },
   "addSuggestedTokens": {
     "message": "Добавете препоръчани жетони"
   },
@@ -52,9 +55,6 @@
   },
   "addToken": {
     "message": "Добавяне на жетон"
-  },
-  "addTokens": {
-    "message": "Добавяне на жетони"
   },
   "advanced": {
     "message": "Разширени"
@@ -75,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Одобри"
@@ -143,9 +151,6 @@
   "browserNotSupported": {
     "message": "Браузърът ви не се поддържа ..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask е проектиран и създаден в Калифорния."
-  },
   "buyWithWyre": {
     "message": "Купете ETH с Wyre"
   },
@@ -166,9 +171,6 @@
   },
   "chainId": {
     "message": "Идентификатор на веригата"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Диаграмата е достъпна само в мрежи на Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "За да се свържете с хардуерния си портфейл, трябва да използвате MetaMask в Google Chrome."
@@ -230,9 +232,6 @@
   "copiedExclamation": {
     "message": "Копирано!"
   },
-  "copiedTransactionId": {
-    "message": "Копиран идентификационен номер на транзакцията"
-  },
   "copyAddress": {
     "message": "Копирайте адреса в клипборда"
   },
@@ -263,14 +262,14 @@
   "currentLanguage": {
     "message": "Настоящ език"
   },
+  "custom": {
+    "message": "Разширени"
+  },
   "customGas": {
     "message": "Персонализирайте газ"
   },
   "customGasSubTitle": {
     "message": "Увеличаването на таксата може да намали времето за обработка, но това не е гарантирано."
-  },
-  "customRPC": {
-    "message": "RPC по избор"
   },
   "customToken": {
     "message": "Персонализиран маркер"
@@ -280,9 +279,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Десетичните знаци трябва да бъдат най-малко 0 и не повече от 36."
-  },
-  "defaultNetwork": {
-    "message": "Мрежата по подразбиране за Ether транзакции е Main Net."
   },
   "delete": {
     "message": "Изтриване"
@@ -296,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Наистина ли искате да изтриете тази мрежа?"
   },
-  "depositEther": {
-    "message": "Депозирайте етер"
-  },
   "details": {
     "message": "Подробности"
   },
@@ -310,9 +303,6 @@
   },
   "done": {
     "message": "Готово"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Нямате хардуерен портфейл?"
   },
   "downloadGoogleChrome": {
     "message": "Изтеглете Google Chrome"
@@ -352,9 +342,6 @@
   },
   "endOfFlowMessage6": {
     "message": "Ако отново трябва да архивирате основната си фраза, можете да я намерите в Настройки -> Защита."
-  },
-  "endOfFlowMessage7": {
-    "message": "Ако имате въпроси или забележите нещо съмнително, изпратете имейл на support@metamask.io."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask не може да възстанови ключовата Ви фраза. Научете повече."
@@ -397,9 +384,6 @@
   },
   "fast": {
     "message": "Бързо"
-  },
-  "faster": {
-    "message": "По-бързо"
   },
   "fileImportFail": {
     "message": "Импортирането на файл не работи? Натиснете тук!",
@@ -448,9 +432,6 @@
     "message": "Вземете Ether от фосет за $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Получете помощ."
-  },
   "getStarted": {
     "message": "Първи стъпки"
   },
@@ -471,9 +452,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Изберете хардуерен портфейл, който искате да използвате с MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Имате проблеми със свързването?"
   },
   "here": {
     "message": "тук",
@@ -504,21 +482,12 @@
   "importAccountSeedPhrase": {
     "message": "Импортирайте акаунт с фраза зародиш"
   },
-  "importUsingSeed": {
-    "message": "Импортиране с помощта на фразата зародиш на профила"
-  },
   "importWallet": {
     "message": "Импортиране на портфейла"
-  },
-  "importYourExisting": {
-    "message": "Импортирайте съществуващия си портфейл с помощта на фраза зародиш с 12 думи"
   },
   "imported": {
     "message": "Импортирани",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Информация и помощ"
   },
   "initialTransactionConfirmed": {
     "message": "Първоначалната транзакция беше потвърдена от мрежата. Кликнете върху OK, за да се върнете обратно."
@@ -563,20 +532,20 @@
   "learnMore": {
     "message": "Научете повече"
   },
+  "learnMoreUpperCase": {
+    "message": "Научете повече"
+  },
   "ledgerAccountRestriction": {
     "message": "Трябва да използвате последния си акаунт, преди да можете да добавите нов."
   },
   "letsGoSetUp": {
     "message": "Да, нека да настроим нещата!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
   "links": {
     "message": "Връзки"
-  },
-  "liveGasPricePredictions": {
-    "message": "Прогнози на живо за цената на газа"
   },
   "loadMore": {
     "message": "Зареди повече"
@@ -614,23 +583,11 @@
   "metamaskVersion": {
     "message": "Версия на MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Моля, въведете вашата парола, за да потвърдите, че сте вие!"
-  },
   "mustSelectOne": {
     "message": "Трябва да изберете поне 1 жетон."
   },
   "myAccounts": {
     "message": "Моите акаунти"
-  },
-  "myWalletAccounts": {
-    "message": "Моите акаунти в портфейла"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Всичките ви създадени от MetaMask акаунти ще бъдат автоматично добавени в този раздел."
-  },
-  "needEtherInWallet": {
-    "message": "За да взаимодействате с децентрализираните приложения, използвайки MetaMask, ще ви е необходим етер в портфейла ви."
   },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",
@@ -666,9 +623,6 @@
   },
   "newContract": {
     "message": "Нов договор"
-  },
-  "newNetwork": {
-    "message": "Нова мрежа"
   },
   "newPassword": {
     "message": "Нова парола (мин. 8 символа)"
@@ -717,15 +671,6 @@
   },
   "on": {
     "message": "Включено"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Блокиране на Explorer URL (по избор)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Символ (по избор)"
-  },
-  "orderOneHere": {
-    "message": "Поръчайте Trezor или Ledger и запазете средствата си "
   },
   "origin": {
     "message": "Произход"
@@ -780,29 +725,14 @@
   "privateNetwork": {
     "message": "Частна мрежа"
   },
-  "protectYourKeys": {
-    "message": "Защитете ключовете си!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Внимавайте с вашата фраза - има съобщения за уебсайтове, които се опитват да имитират MetaMask. MetaMask никога няма да поиска вашата фраза-зародиш!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Пазете фразата си. Ако забележите нещо съмнително или не сте сигурни за даден уебсайт, изпратете имейл на support@metamask.io"
-  },
   "queue": {
     "message": "Опашка"
   },
   "readdToken": {
     "message": "Можете да добавите този жетон в бъдеще, като отидете на „Добавяне на жетон“ в менюто с опции на акаунти."
   },
-  "readyToConnect": {
-    "message": "Готови ли сте да се свържете? "
-  },
   "recents": {
     "message": "Скорошни"
-  },
-  "recipientAddress": {
-    "message": "Адрес на получателя"
   },
   "recipientAddressPlaceholder": {
     "message": "Търсене, публичен адрес (0x) или ENS"
@@ -855,17 +785,11 @@
   "restoreAccountWithSeed": {
     "message": "Възстановете акаунта си с фраза зародиш"
   },
-  "restoreFromSeed": {
-    "message": "Да се възстанови ли акаунта?"
-  },
   "revealSeedWords": {
     "message": "Разкрий думите зародиш"
   },
   "revealSeedWordsDescription": {
     "message": "Ако някога смените браузъра или компютъра си, тази ключова фраза ще Ви трябва за достъп до Вашите акаунти. Запазете я някъде на сигурно и тайно място."
-  },
-  "revealSeedWordsTitle": {
-    "message": "Фраза зародиш"
   },
   "revealSeedWordsWarning": {
     "message": "Тези думи могат да бъдат използвани за кражба на всички ваши акаунти."
@@ -903,17 +827,11 @@
   "searchTokens": {
     "message": "Търсене на маркери"
   },
-  "secretBackupPhrase": {
-    "message": "Тайна резервна фраза"
-  },
   "secretBackupPhraseDescription": {
     "message": "Вашата тайна резервна фраза улеснява архивирането и възстановяването на акаунта ви."
   },
   "secretBackupPhraseWarning": {
     "message": "ВНИМАНИЕ: Никога не разкривайте резервната си фраза. Всеки с тази фраза може да вземе вашия етер завинаги."
-  },
-  "secretPhrase": {
-    "message": "Въведете своята тайна фраза от дванадесет думи тук, за да възстановите портфейла си."
   },
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
@@ -933,20 +851,11 @@
   "selectAnAccount": {
     "message": "Изберете акаунт"
   },
-  "selectAnAccountHelp": {
-    "message": "Изберете акаунта за преглед в MetaMask"
-  },
-  "selectCurrency": {
-    "message": "Изберете валута"
-  },
   "selectEachPhrase": {
     "message": "Моля, изберете всяка фраза, за да се уверите, че е правилна."
   },
   "selectHdPath": {
     "message": "Изберете HD Path"
-  },
-  "selectLocale": {
-    "message": "Изберете местоположение"
   },
   "selectPathHelp": {
     "message": "Ако не виждате съществуващите си акаунти в Ledger по-долу, опитайте да превключите пътеки към „Legacy (MEW / MyCrypto)“"
@@ -960,14 +869,8 @@
   "sendAmount": {
     "message": "Изпратете сумата"
   },
-  "sendETH": {
-    "message": "Изпрати ETH"
-  },
   "sendTokens": {
     "message": "Изпращане на жетони"
-  },
-  "sentEther": {
-    "message": "изпратен етер"
   },
   "separateEachWord": {
     "message": "Отделете всяка дума с интервал"
@@ -1014,9 +917,6 @@
   "slow": {
     "message": "Бавно"
   },
-  "slower": {
-    "message": "По-бавно"
-  },
   "somethingWentWrong": {
     "message": "Упс! Нещо се обърка."
   },
@@ -1037,24 +937,6 @@
   },
   "stateLogsDescription": {
     "message": "Държавните дневници съдържат адресите на публичните ви акаунти и изпратените транзакции."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Свържете хардуерния портфейл"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Свържете хардуерния си портфейл директно към компютъра."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Изберете акаунт"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Изберете акаунта, който искате да видите. В даден момент можете да изберете само един."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Започнете да използвате dApps и други!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Използвайте хардуерния си акаунт, както бихте правили с всеки акаунт в Ethereum. Влезте в dApps, изпратете Eth, купете и съхранявайте жетони ERC20 и незаменими жетони като CryptoKitties."
   },
   "storePhrase": {
     "message": "Съхранявайте тази фраза в мениджър на пароли като 1Password."
@@ -1161,9 +1043,6 @@
   "transactionSubmitted": {
     "message": "Транзакция, изпратена с такса за газ от $1 при $2."
   },
-  "transactionTime": {
-    "message": "Време на транзакция"
-  },
   "transactionUpdated": {
     "message": "Транзакцията е актуализирана на $2."
   },
@@ -1231,20 +1110,8 @@
   "viewContact": {
     "message": "Преглед на контакта"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Преглед на $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Преглед на Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Преглед в Explorer"
-  },
   "visitWebSite": {
     "message": "Посетете нашият уеб сайт"
-  },
-  "walletSeed": {
-    "message": "Начална фраза за портфейл "
   },
   "welcome": {
     "message": "Добре дошли в MetaMask"
@@ -1266,9 +1133,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Вашата лична фраза зародиш"
-  },
-  "yourSigRequested": {
-    "message": "Изисква се вашият подпис"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Нулева цена на газ при ускоряване"

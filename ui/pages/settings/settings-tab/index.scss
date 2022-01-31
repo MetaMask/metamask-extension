@@ -1,0 +1,46 @@
+.settings-tab {
+  &__error {
+    padding-bottom: 20px;
+    text-align: center;
+    color: var(--crimson);
+  }
+
+  &__rpc-save-button {
+    align-self: flex-end;
+    padding: 5px;
+    cursor: pointer;
+    width: 25%;
+  }
+
+  &__button--red {
+    border-color: lighten($monzo, 10%);
+    color: var(--monzo);
+
+    &:active {
+      background: lighten($monzo, 55%);
+      border-color: var(--monzo);
+    }
+
+    &:hover {
+      border-color: var(--monzo);
+    }
+  }
+
+  &__radio-buttons {
+    display: flex;
+    align-items: center;
+  }
+
+  &__radio-button {
+    display: flex;
+    align-items: center;
+
+    &:not(:last-child) {
+      margin-right: 16px;
+    }
+  }
+
+  &__radio-label {
+    padding-left: 4px;
+  }
+}

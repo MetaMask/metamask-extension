@@ -1,0 +1,23 @@
+.check-box {
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--white);
+  color: var(--Grey-100);
+  width: 18px;
+  height: 18px;
+  font-size: 21px;
+  line-height: 0.9;
+  border-radius: 2px;
+  display: flex;
+
+  &__checked,
+  &__indeterminate {
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
+  }
+
+  &:disabled {
+    color: var(--Grey-100);
+    cursor: not-allowed;
+  }
+}

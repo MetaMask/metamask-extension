@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Elutasítás"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR-kód beolvasása"
+  },
   "about": {
     "message": "Névjegy"
   },
@@ -38,9 +44,6 @@
   "addNetwork": {
     "message": "Hálózat hozzáadása"
   },
-  "addRecipient": {
-    "message": "Címzett hozzáadása"
-  },
   "addSuggestedTokens": {
     "message": "Javasolt tokenek hozzáadása"
   },
@@ -52,9 +55,6 @@
   },
   "addToken": {
     "message": "Token hozzáadása"
-  },
-  "addTokens": {
-    "message": "Érmék hozzáadása"
   },
   "advanced": {
     "message": "Speciális"
@@ -75,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Jóváhagyás"
@@ -143,9 +151,6 @@
   "browserNotSupported": {
     "message": "Az ön böngészője nem támogatott..."
   },
-  "builtInCalifornia": {
-    "message": "A MetaMaskot Kaliforniában tervezték és hozták létre."
-  },
   "buyWithWyre": {
     "message": "Vásároljon ETH-t a Wyre-rel"
   },
@@ -166,9 +171,6 @@
   },
   "chainId": {
     "message": "Lánc azonosítója"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "A diagram csak Ethereum hálózatokon érhető el"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "A MetaMask-ot Google Chrome-mal kell használnia a Hardveres pénztárcához való csatlakozáshoz."
@@ -230,9 +232,6 @@
   "copiedExclamation": {
     "message": "Kimásolva!"
   },
-  "copiedTransactionId": {
-    "message": "Másolt tranzakció-azonosító"
-  },
   "copyAddress": {
     "message": "Másolja a címet a vágólapra"
   },
@@ -263,14 +262,14 @@
   "currentLanguage": {
     "message": "Aktuális nyelv"
   },
+  "custom": {
+    "message": "Speciális"
+  },
   "customGas": {
     "message": "Gáz testreszabása"
   },
   "customGasSubTitle": {
     "message": "A díj növelése csökkentheti a feldolgozási időt, de ez nem garantált."
-  },
-  "customRPC": {
-    "message": "Egyedi RPC"
   },
   "customToken": {
     "message": "Egyéni token"
@@ -280,9 +279,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "A tizedesjegyek száma 0 és 36 között legyen . "
-  },
-  "defaultNetwork": {
-    "message": "Az Ether tranzakciók alapértelmezett hálózata a Main Net."
   },
   "delete": {
     "message": "Törlés"
@@ -296,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Biztosan törli ezt a hálózatot?"
   },
-  "depositEther": {
-    "message": "Ether befizetése"
-  },
   "details": {
     "message": "Részletek"
   },
@@ -310,9 +303,6 @@
   },
   "done": {
     "message": "Kész"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Nincs hardveres tárcája? "
   },
   "downloadGoogleChrome": {
     "message": "Google Chrome letöltése"
@@ -352,9 +342,6 @@
   },
   "endOfFlowMessage6": {
     "message": "Ha ismét biztonsági másolatot kell készítenie a seed mondatról, megtalálja azt a Beállítások -> Biztonság menüben."
-  },
-  "endOfFlowMessage7": {
-    "message": "Ha bármilyen kérdése van, vagy valami gyanús dolgot tapasztal, írjon a support@metamask.io címre."
   },
   "endOfFlowMessage8": {
     "message": "A MetaMask nem tudta helyreállítani a seed mondatot. Tudjon meg többet."
@@ -397,9 +384,6 @@
   },
   "fast": {
     "message": "Gyors"
-  },
-  "faster": {
-    "message": "Gyorsabban"
   },
   "fileImportFail": {
     "message": "Nem működik a fájl importálása? Kattintson ide!",
@@ -448,9 +432,6 @@
     "message": "Szerezzen Ethert pénzcsapból a(z) $1-ért",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Segítség kérése"
-  },
   "getStarted": {
     "message": "Első lépések"
   },
@@ -471,9 +452,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Válassza ki a MetaMask-kal használni kívánt hardveres pénztárcát"
-  },
-  "havingTroubleConnecting": {
-    "message": "Gond van a csatlakozással?"
   },
   "here": {
     "message": "itt",
@@ -504,21 +482,12 @@
   "importAccountSeedPhrase": {
     "message": "Fiók importálása seed mondat segítségével"
   },
-  "importUsingSeed": {
-    "message": "Importálás a fiók seed mondatának használatával"
-  },
   "importWallet": {
     "message": "Pénztárca importálása"
-  },
-  "importYourExisting": {
-    "message": "Importálja meglévő pénztárcáját a 12 szóból álló seed mondat segítségével"
   },
   "imported": {
     "message": "Importált",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Információk és súgó"
   },
   "initialTransactionConfirmed": {
     "message": "Eredeti tranzakciódat jóváhagyta a hálózat. A visszatéréshez kattints az OK-ra."
@@ -563,20 +532,20 @@
   "learnMore": {
     "message": "Tudjon meg többet"
   },
+  "learnMoreUpperCase": {
+    "message": "Tudjon meg többet"
+  },
   "ledgerAccountRestriction": {
     "message": "Használnia kell a korábbi fiókját, mielőtt újat adhat hozzá. "
   },
   "letsGoSetUp": {
     "message": "Igen, hozzuk létre!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
   },
   "links": {
     "message": "Linkek"
-  },
-  "liveGasPricePredictions": {
-    "message": "Élő előrejelzések gázárak alakulására"
   },
   "loadMore": {
     "message": "Továbbiak betöltése"
@@ -611,23 +580,11 @@
   "metamaskVersion": {
     "message": "MetaMask verzió"
   },
-  "mobileSyncText": {
-    "message": "Kérünk írd be jelszavad, hogy igazold kiléted!"
-  },
   "mustSelectOne": {
     "message": "Legalább 1 tokent ki kell választania."
   },
   "myAccounts": {
     "message": "Fiókjaim"
-  },
-  "myWalletAccounts": {
-    "message": "Saját tárca fiókjai"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Az összes MetaMask által létrehozott fiókot automatikusan hozzáadja a munkamenethez."
-  },
-  "needEtherInWallet": {
-    "message": "Ha a MetaMaskon keresztül szeretne interakcióba lépni decentralizált alkalmazással, ahhoz a tárcájában Ethernek kell lennie."
   },
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",
@@ -663,9 +620,6 @@
   },
   "newContract": {
     "message": "Új szerződés"
-  },
-  "newNetwork": {
-    "message": "Új hálózat"
   },
   "newPassword": {
     "message": "Új jelszó (minimum 8 karakter)"
@@ -714,15 +668,6 @@
   },
   "on": {
     "message": "Be"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Explorer URL letiltása (nem kötelező)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Szimbólum (opcionális)"
-  },
-  "orderOneHere": {
-    "message": "Rendeljen trezort vagy főkönyvet, és tárolja pénzeszközeit hideg tárcában"
   },
   "origin": {
     "message": "Eredet"
@@ -777,29 +722,14 @@
   "privateNetwork": {
     "message": "Magánhálózat"
   },
-  "protectYourKeys": {
-    "message": "Védje kulcsait!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Vigyázzod a gyarapítási fázissal - olyan oldalakat jelentettek, amelyek a MetaMask-ot utánozzák. A MetaMask soha nem kéri el a gyarapítási fázisát."
-  },
-  "protectYourKeysMessage2": {
-    "message": "Őrizze biztonságos helyen a mondatot. Ha bármilyen gyanús dolgot tapasztal, vagy bizonytalan egy weboldalt illetően, írjon a support@metamask.io címre."
-  },
   "queue": {
     "message": "Nyomtatólista"
   },
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
   },
-  "readyToConnect": {
-    "message": "Készen áll a csatlakozásra?"
-  },
   "recents": {
     "message": "Legutóbbiak"
-  },
-  "recipientAddress": {
-    "message": "Címzett címe"
   },
   "recipientAddressPlaceholder": {
     "message": "Keresés, nyilvános cím (0x) vagy ENS"
@@ -852,17 +782,11 @@
   "restoreAccountWithSeed": {
     "message": "Fiók helyreállítása a seed mondat segítségével"
   },
-  "restoreFromSeed": {
-    "message": "Visszaállítja a fiókot? "
-  },
   "revealSeedWords": {
     "message": "Seed szavak megjelenítése"
   },
   "revealSeedWordsDescription": {
     "message": "Ha valamikor böngészőt váltasz, vagy számítógépet cserélsz, a fiókjaid használatához szükséged lesz erre a kulcsszóláncra. Őrizd őket egy biztonságos és titkos helyen."
-  },
-  "revealSeedWordsTitle": {
-    "message": "Kulcsszólánc"
   },
   "revealSeedWordsWarning": {
     "message": "Ezekkel a szavakkal ellophatóak a fiókjai."
@@ -900,17 +824,11 @@
   "searchTokens": {
     "message": "Keresés a tokenek között"
   },
-  "secretBackupPhrase": {
-    "message": "Titkos biztonsági kifejezés "
-  },
   "secretBackupPhraseDescription": {
     "message": "Titkos biztonsági szókapcsolatoddal könnyedén készíthetsz biztonsági mentést és helyreállíthatod fiókodat."
   },
   "secretBackupPhraseWarning": {
     "message": "FIGYELEM: Senkise se adja meg a biztonsági szakaszát. Ennek tulajdonosa örökre elviheti Ether-jeit."
-  },
-  "secretPhrase": {
-    "message": "Tárolód helyreállításához írd be titkos tizenkét szavas szókapcsolatodat ide."
   },
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
@@ -930,20 +848,11 @@
   "selectAnAccount": {
     "message": "Válasszon fiókot"
   },
-  "selectAnAccountHelp": {
-    "message": "Válássza ki a MetaMask-ban megtekinteni kívánt fiókot"
-  },
-  "selectCurrency": {
-    "message": "Válasszon valutát"
-  },
   "selectEachPhrase": {
     "message": "Kérjük, válassza ki az egyes mondatokat, hogy meggyőződjön azok helyességéről. "
   },
   "selectHdPath": {
     "message": "Válassz HD elérési útvonalat"
-  },
-  "selectLocale": {
-    "message": "Válaszd ki a területi beállítást"
   },
   "selectPathHelp": {
     "message": "Ha nem láthatók alább Ledger számláid, próbáld kicserélni az elérési útvonalat: „Legacy (MEW / MyCypto)”"
@@ -957,14 +866,8 @@
   "sendAmount": {
     "message": "Összeg küldése"
   },
-  "sendETH": {
-    "message": "ETH küldése"
-  },
   "sendTokens": {
     "message": "Token küldése"
-  },
-  "sentEther": {
-    "message": "elküldött ether"
   },
   "separateEachWord": {
     "message": "Minden egyes szavat szóközzel válasszon el"
@@ -1011,9 +914,6 @@
   "slow": {
     "message": "Lassú"
   },
-  "slower": {
-    "message": "Lassabban"
-  },
   "somethingWentWrong": {
     "message": "Hoppá! Valami hiba történt..."
   },
@@ -1034,24 +934,6 @@
   },
   "stateLogsDescription": {
     "message": "Az állapotnaplóban megtalálhatók nyilvános fiókcímeid és elküldött tranzakcióid."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Csatlakoztassa a hardveres pénztárcát"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Csatlakoztassa hardveres tárcáját közvetlenül a számítógéphez."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Válassz egy fiókot"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Válassza ki a megtekinteni kívánt fiókot. Egyszerre csak egyet választhat."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Kezdje el használni a dApps-t és másokat!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Használja hardveres fiókját úgy, mint bármilyen Ethereum fiókot. Jelentkezzen be a dAppsba, küldjön Ethet, vásároljon és tároljon ERC20 tokeneket és nem helyettesíthető tokeneket, például CryptoKitties-t."
   },
   "storePhrase": {
     "message": "Tárolja a mondatot jelszókezelőben, például az 1Passwordben."
@@ -1155,9 +1037,6 @@
   "transactionSubmitted": {
     "message": "Tranzakció jóváhagyva $1 üzemanyag költséggel $2-kor."
   },
-  "transactionTime": {
-    "message": "Tranzakció ideje"
-  },
   "transactionUpdated": {
     "message": "Tranzakció frissítve $2-nál"
   },
@@ -1225,20 +1104,8 @@
   "viewContact": {
     "message": "Névjegy megtekintése"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Megtekintés $1-kor"
-  },
-  "viewOnEtherscan": {
-    "message": "Nézze meg Etherscanen"
-  },
-  "viewinExplorer": {
-    "message": "Megtekintés Explorerben"
-  },
   "visitWebSite": {
     "message": "Látogass el weboldalunkra"
-  },
-  "walletSeed": {
-    "message": "Pénztárca kulcsszólánca"
   },
   "welcome": {
     "message": "Üdvözöljük a MetaMaskban"
@@ -1260,9 +1127,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Az ön privát seed mondata"
-  },
-  "yourSigRequested": {
-    "message": "Szükség van az aláírására"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Nulla gázár a gyorsuláshoz"

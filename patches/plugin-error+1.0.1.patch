@@ -1,0 +1,12 @@
+diff --git a/node_modules/plugin-error/index.js b/node_modules/plugin-error/index.js
+index a4d360d..d2be4a2 100644
+--- a/node_modules/plugin-error/index.js
++++ b/node_modules/plugin-error/index.js
+@@ -54,7 +54,6 @@ function PluginError(plugin, message, options) {
+       return this._messageWithDetails() + '\nStack:';
+     }.bind(this);
+ 
+-    Error.captureStackTrace(safety, arguments.callee || this.constructor);
+     this.__safety = safety;
+   }
+   if (!this.plugin) {

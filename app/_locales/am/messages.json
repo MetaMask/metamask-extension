@@ -38,9 +38,6 @@
   "addNetwork": {
     "message": "አውታረ መረብ አክል"
   },
-  "addRecipient": {
-    "message": "ተቀባይ አክል"
-  },
   "addSuggestedTokens": {
     "message": "የተጠቆሙ ተለዋጭ ስሞችን አክል"
   },
@@ -52,9 +49,6 @@
   },
   "addToken": {
     "message": "ተለዋጭ ስም አክል"
-  },
-  "addTokens": {
-    "message": "ተለዋጭ ስሞችን አክል"
   },
   "advanced": {
     "message": "የላቀ"
@@ -75,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "ፍቀድ"
@@ -143,9 +145,6 @@
   "browserNotSupported": {
     "message": "ማሰሺያዎት አልተደገፈም..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask ካሊፎርኒያ ውስጥ ተዘጋጅቶ የተገነባ ነው።"
-  },
   "buyWithWyre": {
     "message": "ETH በ Wyre ይግዙ"
   },
@@ -166,9 +165,6 @@
   },
   "chainId": {
     "message": "የሰንሰለት መታወቂያ"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "ቻርት የሚገኘው በ Ethereum አውታረ መረቦች ላይ ብቻ ነው።"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "ከሃርድዌርዎ ቋት ጋር ለመገናኘት MetaMask በ Google Chrome ላይ መጠቀም አለብዎት።"
@@ -230,9 +226,6 @@
   "copiedExclamation": {
     "message": "ተቀድቷል"
   },
-  "copiedTransactionId": {
-    "message": "የተቀዳ የግብይት መለያ ቁጥር"
-  },
   "copyAddress": {
     "message": "አድራሻን ወደ ቅንጥብ ሰሌዳ ቅዳ"
   },
@@ -269,9 +262,6 @@
   "customGasSubTitle": {
     "message": "ክፍያ መጨመር የመከወኛ ጊዜን ሊቀንስ ቢችልም ይህ ግን ዋስትና የለውም።"
   },
-  "customRPC": {
-    "message": "ብጁ RPC"
-  },
   "customToken": {
     "message": "ብጁ ተለዋጭ ስም"
   },
@@ -280,9 +270,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "አስርዮሽ ቢያንስ 0 ቢበዛ ደግሞ 36 መሆን አለባቸው።"
-  },
-  "defaultNetwork": {
-    "message": "የ Ether ግብይቶች ንቡር አውታረ መረብ Main Net ነው።"
   },
   "delete": {
     "message": "ሰርዝ"
@@ -296,9 +283,6 @@
   "deleteNetworkDescription": {
     "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
   },
-  "depositEther": {
-    "message": "Ether አስቀምጥ"
-  },
   "details": {
     "message": "ዝርዝሮች"
   },
@@ -310,9 +294,6 @@
   },
   "done": {
     "message": "ተጠናቅቋል"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "የሃርድዌር ቋት የለዎትም?"
   },
   "downloadGoogleChrome": {
     "message": "Google Chrome አውርድ"
@@ -352,9 +333,6 @@
   },
   "endOfFlowMessage6": {
     "message": "የዘር ሐረግዎን በድጋሚ መጠባበቂያ ለመያዝ ከፈለጉ፣ በቅንብሮች -> ግላዊነት ውስጥ ሊያገኙት ይችላሉ።"
-  },
-  "endOfFlowMessage7": {
-    "message": "ጥያቄዎች ካሉዎት ወይም የሆነ አጠራጣሪ ነገር ካዩ፣ እባክዎ ለ support@metamask.io ኢሜይል ይላኩ።"
   },
   "endOfFlowMessage8": {
     "message": "MetaMask የዘር ሐረግዎን መልሶ ማግኘት አልቻለም። ተጨማሪ መረጃ ያግኙ።"
@@ -397,9 +375,6 @@
   },
   "fast": {
     "message": "ፈጣን"
-  },
-  "faster": {
-    "message": "በፍጥነት"
   },
   "fiat": {
     "message": "ፊያት",
@@ -452,9 +427,6 @@
     "message": "Ether ከቧንቧ በ$1ያግኙ",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "እገዛ ያግኙ።"
-  },
   "getStarted": {
     "message": "አስጀማሪ መመሪያ"
   },
@@ -475,9 +447,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "ከ MetaMask ጋር ሊጠቀሙበት የሚፈልጉትን የሃርድዌር ቋት ይምረጡ"
-  },
-  "havingTroubleConnecting": {
-    "message": "ግንኙነት መፍጠር ላይ ተቸግረዋል?"
   },
   "here": {
     "message": "እዚህ",
@@ -508,21 +477,12 @@
   "importAccountSeedPhrase": {
     "message": "መለያን በዘር ሐረግ አስመጣ"
   },
-  "importUsingSeed": {
-    "message": "የመለያ የዘር ሐረግ በመጠቀም ያስመጡ"
-  },
   "importWallet": {
     "message": "ቋት አስመጣ"
-  },
-  "importYourExisting": {
-    "message": "ባለ 12 ቃል የዘር ሐረግን በመጠቀም ነባር ቋትዎን ያስመጡ"
   },
   "imported": {
     "message": "ከውጭ የመጣ",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "መረጃ እና እገዛ "
   },
   "initialTransactionConfirmed": {
     "message": "የመጀመሪያ ግብይትዎ በአውታረ መረቡ ተረጋግጧል። ወደ ኋላ ለመመለስ እሺ የሚለውን ጠቅ ያድርጉ።"
@@ -573,14 +533,11 @@
   "letsGoSetUp": {
     "message": "አዎ፣ እናደራጅ!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "እነዚህን ተለዋጭ ስሞች ለማከል ይፈልጋሉ?"
   },
   "links": {
     "message": "ማስፈንጠሪያዎች"
-  },
-  "liveGasPricePredictions": {
-    "message": "ቀጥታ የነዳጅ ዋጋ ትንበያዎች"
   },
   "loadMore": {
     "message": "ተጨማሪ ጫን"
@@ -615,23 +572,11 @@
   "metamaskVersion": {
     "message": "የ MetaMask ስሪት"
   },
-  "mobileSyncText": {
-    "message": "እርስዎ መሆንዎትን ለማረጋገጥ እባከዎ የይለፍ ቃልዎን ያስገቡ!"
-  },
   "mustSelectOne": {
     "message": "ቢያንስ 1 ተለዋጭ ስም መምረጥ አለብዎ።"
   },
   "myAccounts": {
     "message": "የእኔ መለያዎች"
-  },
-  "myWalletAccounts": {
-    "message": "የቋት መለያዎቼ"
-  },
-  "myWalletAccountsDescription": {
-    "message": "በ MetaMask የተፈጠሩ መለያዎችዎ በሙሉ በራስ ሰር መንገድ ወደዚህ ክፍል ይታከላሉ።"
-  },
-  "needEtherInWallet": {
-    "message": "MetaMask በመጠቀም ያልተማከሉ መተግበሪያዎች ጋር ግንኙነት ለማድረግ፣ በቋትዎ ውስጥ Ether ያስፈልግዎታል።"
   },
   "needImportFile": {
     "message": "የሚያስመጡትን ፋይል መምረጥ አለብዎት።",
@@ -667,9 +612,6 @@
   },
   "newContract": {
     "message": "አዲስ ኮንትራት"
-  },
-  "newNetwork": {
-    "message": "አዲስ አውታረ መረብ"
   },
   "newPassword": {
     "message": "አዲስ የይለፍ ቃል (ቢያንስ 8 ቁምፊዎች)"
@@ -718,15 +660,6 @@
   },
   "on": {
     "message": "በርቷል"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "ኤክስፕሎረር URL አግድ (አማራጭ)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "ምልክት (አማራጭ)"
-  },
-  "orderOneHere": {
-    "message": "ትሬዞር ወይም ሌጀር በማዘዝ ገንዘብዎን በቀዝቃዛ ማስቀመጫ ውስጥ ያቆዩ"
   },
   "origin": {
     "message": "መነሻ"
@@ -781,29 +714,14 @@
   "privateNetwork": {
     "message": "የግል አውታረ መረብ"
   },
-  "protectYourKeys": {
-    "message": "ቁልፎችዎን ይጠብቁ!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "ስለ ዘር ሐረግዎ ይጠንቀቁ - ራሳቸውን ከ MetaMask ጋር ለማመሳሰል የሚሞከሩ ድረ ገጾች እናሉ ሰምተናል። MetaMask በጭራሽ የዘር ሐረግዎን አይጠይቅዎትም!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "የሐረግዎን ደህንነት ይጠብቁ። ይም የሆነ አጠራጣሪ ነገር ካዩ ወይም ስለ አንድ ድረ ገጽ እርግጠኛ ካልሆኑ፣ እባክዎ ለ support@metamask.io ኢሜይል ይላኩ"
-  },
   "queue": {
     "message": "ወረፋ"
   },
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
   },
-  "readyToConnect": {
-    "message": "ለመገናኘት ዝግጁ ነዎት?"
-  },
   "recents": {
     "message": "የቅርብ ጊዜያት"
-  },
-  "recipientAddress": {
-    "message": "የተቀባይ አድራሻ"
   },
   "recipientAddressPlaceholder": {
     "message": "ፍለጋ፣ ለሕዝብ ክፍት የሆነ አድራሻ (0x), ወይም ENS"
@@ -856,17 +774,11 @@
   "restoreAccountWithSeed": {
     "message": "መለያዎን በዘር ሐረግ ወደነበረበት ይመልሱ"
   },
-  "restoreFromSeed": {
-    "message": "መለያው ወደነበረበት ይመለስ?"
-  },
   "revealSeedWords": {
     "message": "የዘር ቃላትን ይግለጹ"
   },
   "revealSeedWordsDescription": {
     "message": "ማሰሺያዎችን ከቀየሩ ወይም ኮምፒዩተሮቸን ከአንድ ቦታ ወደ ሌላ ቦታ ካንቀሳቀሱ፣ ወደ መለያዎችዎ ለመድረስ ይህ የዘር ሐረግ ያስፈልግዎታል። ደህንነቱና ሚስጥራዊነቱ በተጠበቀ ቦታ ያስቀምጧቸው።"
-  },
-  "revealSeedWordsTitle": {
-    "message": "የዘር ሐረግ"
   },
   "revealSeedWordsWarning": {
     "message": "እነዚህ ቃላት ሁሉንም መለያዎችዎን ለመስረቅ ሊውሉ ይችላሉ።"
@@ -904,17 +816,11 @@
   "searchTokens": {
     "message": "ተለዋጭ ስሞችን ፈልግ"
   },
-  "secretBackupPhrase": {
-    "message": "ሚስጥራዊ የመጠባበቂያ ምዕራፍ"
-  },
   "secretBackupPhraseDescription": {
     "message": "ሚስጥራዊ የመጠባበቂያ ሐረግዎ መለያዎን መጠባበቂያ ለመያዝና ወደነበረበት ለመመለስ ቀላል ያደርገዋል።"
   },
   "secretBackupPhraseWarning": {
     "message": "ማስጠንቀቂያ፡ የመጠባበቂያ ምዕራፍዎን በጭራሽ አይግለጹ። ይህን ሐረገ የያዘ ማንኛውም ሰው የእርስዎን Ether እስከወዲያኛው ሊወስደው ይችላል።"
-  },
-  "secretPhrase": {
-    "message": "ካዝናዎን ወደነበረበት ለመመለስ ሚስጥራዊ ባለ አስራ ሁለት ቃል ሐረግዎን ያስገቡ።"
   },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
@@ -934,20 +840,11 @@
   "selectAnAccount": {
     "message": "መለያ ይምረጡ"
   },
-  "selectAnAccountHelp": {
-    "message": "መለያውን በ MetaMask ለማየት ይምረጡ"
-  },
-  "selectCurrency": {
-    "message": "የገንዘብ ዓይነት ይምረጡ"
-  },
   "selectEachPhrase": {
     "message": "እባክዎ እያንዳንዱን ሐረግ በመምረጥ ትክክለኛነቱን ያረጋግጡ።"
   },
   "selectHdPath": {
     "message": "የ HD ዱካ ይምረጡ"
-  },
-  "selectLocale": {
-    "message": "አካባቢ ይምረጡ"
   },
   "selectPathHelp": {
     "message": "ነባር የሌጄር መለያዎችን ከታች ካላዩ፣ ዱካዎችን ወደ \"Legacy (MEW / MyCrypto)\" ለመቀየር ይሞክሩ"
@@ -961,14 +858,8 @@
   "sendAmount": {
     "message": "መጠኑን ላክ"
   },
-  "sendETH": {
-    "message": "ETH ላክ"
-  },
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
-  },
-  "sentEther": {
-    "message": "የተላከ ether"
   },
   "separateEachWord": {
     "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
@@ -1015,9 +906,6 @@
   "slow": {
     "message": "ቀስ"
   },
-  "slower": {
-    "message": "ዘገምተኛ"
-  },
   "somethingWentWrong": {
     "message": "ኤጭ! የሆነ ችግር ተፈጥሯል።"
   },
@@ -1038,24 +926,6 @@
   },
   "stateLogsDescription": {
     "message": "ስቴት መዛግብት ይፋዊ የመለያ አድራሻዎትንና የተላኩ ግብይቶችን ይይዛሉ።"
-  },
-  "step1HardwareWallet": {
-    "message": "1. ከሃርድዌር ቋት ጋር ይገናኙ"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "የሃርድዌር ቋትዎን በቀጥታ ከኮምፒዩተርዎ ጋር ያገናኙ።"
-  },
-  "step2HardwareWallet": {
-    "message": "2. መለያ ምረጥ"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "ለማየት የሚፈልጉትን መለያ ይምረጡ። በአንድ ጊዜ መምረጥ የሚችሉት አንድ ብቻ ነው።"
-  },
-  "step3HardwareWallet": {
-    "message": "3. dApps እና ሌሎችን መጠቀም ይጀምሩ!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "የሐርድዌር መለያዎን ከየትኛውም የ Ethereum መለያ ጋር በሚጠቀሙት መንገድ ይጠቀሙ። ወደ dApps በመለያ ይግቡ፣ Eth ይላኩ፣ የ ERC20 ተለዋጭ ስሞችና እንደ CryptoKitties ያሉ የማይለወጡ ተለዋጭ ስሞችን ይግዙና ያከማቹ።"
   },
   "storePhrase": {
     "message": "ይህን ሐረግ እንደ 1Password ባለ የይለፍ ቃል አስተዳዳሪ ውስጥ ያስቀምጡ።"
@@ -1162,9 +1032,6 @@
   "transactionSubmitted": {
     "message": "ግብይቱ የቀረበው በነዳጅ ዋጋ $1በ$2ነው።"
   },
-  "transactionTime": {
-    "message": "የግብይት ጊዜ"
-  },
   "transactionUpdated": {
     "message": "ግብይት የዘመነው በ $2ነው።"
   },
@@ -1232,20 +1099,8 @@
   "viewContact": {
     "message": "ዕውቂያን ይመልከቱ"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "በ $1ይመልከቱ"
-  },
-  "viewOnEtherscan": {
-    "message": "በ Etherscan ላይ ይመልከቱ"
-  },
-  "viewinExplorer": {
-    "message": "በኤክስፕሎረር ተመልከት"
-  },
   "visitWebSite": {
     "message": "ድረ ገጻችንን ይጎብኙ"
-  },
-  "walletSeed": {
-    "message": "የቋት ዘር"
   },
   "welcome": {
     "message": "ወደ MetaMask እንኳን ደህና መጡ"
@@ -1267,9 +1122,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "የግል ዘር ሐረግዎ"
-  },
-  "yourSigRequested": {
-    "message": "ፊርማዎ እየተጠየቀ ነው"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "በስፒድ አፕ ላይ ዜሮ የነዳጅ ዋጋ"

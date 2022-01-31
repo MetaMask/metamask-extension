@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Hylkää"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Lue QR-koodi"
+  },
   "about": {
     "message": "Tietoja asetuksista"
   },
@@ -38,9 +44,6 @@
   "addNetwork": {
     "message": "Lisää verkko"
   },
-  "addRecipient": {
-    "message": "Lisää vastaanottaja"
-  },
   "addSuggestedTokens": {
     "message": "Lisää ehdotetut käyttötunnukset"
   },
@@ -52,9 +55,6 @@
   },
   "addToken": {
     "message": "Lisää tietue"
-  },
-  "addTokens": {
-    "message": "Lisää poletteja"
   },
   "advanced": {
     "message": "Lisäasetukset"
@@ -75,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Hyväksy"
@@ -143,9 +151,6 @@
   "browserNotSupported": {
     "message": "Selaintasi ei tueta..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask on suunniteltu ja koottu Kaliforniassa."
-  },
   "buyWithWyre": {
     "message": "Osta ETH:ta Wyrella"
   },
@@ -166,9 +171,6 @@
   },
   "chainId": {
     "message": "Ketjun tunnus"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Kaavio saatavilla vain Ethereum-verkoissa."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Sinun tarvitsee käyttää MetaMaskia Google Chromessa voidaksesi yhdistää laitteistokukkaroosi."
@@ -230,9 +232,6 @@
   "copiedExclamation": {
     "message": "Kopioitu"
   },
-  "copiedTransactionId": {
-    "message": "Kopioitu tapahtuman tunnus"
-  },
   "copyAddress": {
     "message": "Kopioi osoite leikepöydälle"
   },
@@ -263,14 +262,14 @@
   "currentLanguage": {
     "message": "Nykyinen kieli"
   },
+  "custom": {
+    "message": "Lisäasetukset"
+  },
   "customGas": {
     "message": "Mukauta bensa"
   },
   "customGasSubTitle": {
     "message": "Taksan korottaminen saattaa vähentää käsittelyaikaa, mutta siitä ei anneta takeita."
-  },
-  "customRPC": {
-    "message": "Mukautettu RPC"
   },
   "customToken": {
     "message": "Mukautettu tietue"
@@ -280,9 +279,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desimaalien on oltava vähintään 0 ja korkeintaan 36."
-  },
-  "defaultNetwork": {
-    "message": "Oletusverkko Ether-tapahtumille on Main Net."
   },
   "delete": {
     "message": "Poista"
@@ -296,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Haluatko varmasti poistaa tämän verkon?"
   },
-  "depositEther": {
-    "message": "Talleta Etheriä"
-  },
   "details": {
     "message": "Tiedot"
   },
@@ -310,9 +303,6 @@
   },
   "done": {
     "message": "Valmis"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Eikö sinulla ole laitteistokukkaroa?"
   },
   "downloadGoogleChrome": {
     "message": "Lataa Google Chrome"
@@ -352,9 +342,6 @@
   },
   "endOfFlowMessage6": {
     "message": "Jos tarvitse uuden varmuuskopion juurilauseestasi, niin se löytyy osiosta Asetukset -> Turvallisuus."
-  },
-  "endOfFlowMessage7": {
-    "message": "Jos sinulla on joskus jotakin kysyttävää tai jos näet jotakin epäilyttävää, lähetä sähköpostia osoitteeseen support@metamask.io."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask ei pysty palauttamaan salaustekstiäsi. Lue lisää."
@@ -397,9 +384,6 @@
   },
   "fast": {
     "message": "Nopea"
-  },
-  "faster": {
-    "message": "Nopeammin"
   },
   "fiat": {
     "message": "Kiinteä",
@@ -452,9 +436,6 @@
     "message": "Hanki etheriä faucetista kohteelle $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Pyydä apua."
-  },
   "getStarted": {
     "message": "Aloitusopas"
   },
@@ -475,9 +456,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Valitse laitteistokukkaro, jota haluaisit käyttää MetaMaskilla"
-  },
-  "havingTroubleConnecting": {
-    "message": "Onko sinulla yhdistämisvaikeuksia?"
   },
   "here": {
     "message": "tässä",
@@ -508,21 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "Tuo tili siemenlauseella"
   },
-  "importUsingSeed": {
-    "message": "Tuo käyttäen tilin siemenlausetta"
-  },
   "importWallet": {
     "message": "Tuo kukkaro"
-  },
-  "importYourExisting": {
-    "message": "Tuo nykyinen lompakkosi käyttäen 12 sanan \n siemenlausetta"
   },
   "imported": {
     "message": "Tuotu",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Tietoja ja ohje"
   },
   "initialTransactionConfirmed": {
     "message": "Verkko hyväksyi alkuperäisen tapahtumasi. Siirry takaisin napsauttamalla OK-painiketta."
@@ -567,20 +536,20 @@
   "learnMore": {
     "message": "Lisätietoa"
   },
+  "learnMoreUpperCase": {
+    "message": "Lisätietoa"
+  },
   "ledgerAccountRestriction": {
     "message": "Sinun tarvitsee käyttää edellistä tiliäsi ennen kuin voit lisätä uuden."
   },
   "letsGoSetUp": {
     "message": "Kyllä, valmistaudutaan!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Haluaisitko lisätä nämä poletit?"
   },
   "links": {
     "message": "Linkit"
-  },
-  "liveGasPricePredictions": {
-    "message": "Polttoaineen hintojen live-ennusteet"
   },
   "loadMore": {
     "message": "Lataa lisää"
@@ -618,23 +587,11 @@
   "metamaskVersion": {
     "message": "MetaMask-versio"
   },
-  "mobileSyncText": {
-    "message": "Vahvista henkilöllisyytesi antamalla salasanasi!"
-  },
   "mustSelectOne": {
     "message": "Valittava vähintään 1 poletti."
   },
   "myAccounts": {
     "message": "Omat tilit"
-  },
-  "myWalletAccounts": {
-    "message": "Omat kukkarotilini"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Kaikki MetaMaskilla luodut tilisi lisätään automaattisesti tähän osastoon."
-  },
-  "needEtherInWallet": {
-    "message": "Ollaksesi vuorovaikutuksessa hajautettujen sovellusten kanssa sinulla on oltava lompakossasi Ether."
   },
   "needImportFile": {
     "message": "Sinun tarvitsee valita tuotava tiedosto.",
@@ -670,9 +627,6 @@
   },
   "newContract": {
     "message": "Uusi sopimus"
-  },
-  "newNetwork": {
-    "message": "Uusi verkko"
   },
   "newPassword": {
     "message": "Uusi salasana (väh. 8 merkkiä)"
@@ -718,15 +672,6 @@
   },
   "on": {
     "message": "Käytössä"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Estä Explorerin URL-osoite (valinnainen)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symboli (valinnainen)"
-  },
-  "orderOneHere": {
-    "message": "Tilaa Trezor tai Ledger ja pidä varasi vakaassa tallennustilassa"
   },
   "origin": {
     "message": "Alkuperä"
@@ -781,29 +726,14 @@
   "privateNetwork": {
     "message": "Yksityinen verkko"
   },
-  "protectYourKeys": {
-    "message": "Suojele avaimiasi!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Ole varovainen salausavaimesi kanssa – joidenkin verkkosivustojen kerrotaan yrittäneen matkia MetaMaskia. MetaMask ei koskaan kysy salausavaintasi!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Pidä lauseesi tallessa. Jos näet jotain epäilyttävää tai et ole varma jostain sivustosta, lähetä sähköpostia osoitteeseen support@metamask.io"
-  },
   "queue": {
     "message": "Jono"
   },
   "readdToken": {
     "message": "Voit lisätä tämän tietueen myöhemmin takaisin siirtymällä tilisi vaihtoehtovalikon kohtaan ”Lisää tietue”."
   },
-  "readyToConnect": {
-    "message": "Valmiina yhdistämään?"
-  },
   "recents": {
     "message": "Viimeaikaiset"
-  },
-  "recipientAddress": {
-    "message": "Vastaanottajan osoite"
   },
   "recipientAddressPlaceholder": {
     "message": "Haku, julkinen osoite (0x) tai ENS"
@@ -856,17 +786,11 @@
   "restoreAccountWithSeed": {
     "message": "Palauta tilisi käyttäen salaustekstiä (seed phrase)"
   },
-  "restoreFromSeed": {
-    "message": "Palautetaanko tili?"
-  },
   "revealSeedWords": {
     "message": "Paljasta salaussanat"
   },
   "revealSeedWordsDescription": {
     "message": "Mikäli vaihdat jossakin vaiheessa selainta tai tietokonetta, tarvitset tämän salaustekstin tiliesi käyttämiseen. Tallenna se johonkin turvalliseen ja salaiseen paikkaan."
-  },
-  "revealSeedWordsTitle": {
-    "message": "Juurilause"
   },
   "revealSeedWordsWarning": {
     "message": "Näitä sanoja voidaan käyttää kaikkien tiliesi ryöstämiseen."
@@ -904,17 +828,11 @@
   "searchTokens": {
     "message": "Hae tietueita"
   },
-  "secretBackupPhrase": {
-    "message": "Salainen varmuuskopiolause"
-  },
   "secretBackupPhraseDescription": {
     "message": "Salainen varmistuslauseesi tekee varmuuskopioinnista ja tilisi palauttamisesta helppoa."
   },
   "secretBackupPhraseWarning": {
     "message": "VAROITUS: älä koskaan kerro varmuuskopiolausettasi kenellekään. Kuka tahansa tämän lauseen omaava voi napata Etherisi pysyvästi."
-  },
-  "secretPhrase": {
-    "message": "Palauta holvisi syöttämällä tähän salainen kahdentoista sanan tekstisi."
   },
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"
@@ -934,20 +852,11 @@
   "selectAnAccount": {
     "message": "Valitse tili"
   },
-  "selectAnAccountHelp": {
-    "message": "Valitse MetaMaskissa näytettävä tili"
-  },
-  "selectCurrency": {
-    "message": "Valitse valuutta"
-  },
   "selectEachPhrase": {
     "message": "Ole hyvä ja valitse jokainen teksti järjestyksessä varmistaaksesi, että se on oikein."
   },
   "selectHdPath": {
     "message": "Valitse HD-polku"
-  },
-  "selectLocale": {
-    "message": "Valitse kielialue"
   },
   "selectPathHelp": {
     "message": "Jos et näe nykyisiä Ledger-tilejäsi tämän alla, koeta vaihtaa poluksi ”Vanha (MEW / MyCrypto)”"
@@ -961,14 +870,8 @@
   "sendAmount": {
     "message": "Lähetä summa"
   },
-  "sendETH": {
-    "message": "Lähetä ETH:iä"
-  },
   "sendTokens": {
     "message": "Lähetä tietueita"
-  },
-  "sentEther": {
-    "message": "lähetä etheriä"
   },
   "separateEachWord": {
     "message": "Erottele sanat toisistaan yhdellä välilyönnillä"
@@ -1015,9 +918,6 @@
   "slow": {
     "message": "Hidas"
   },
-  "slower": {
-    "message": "Hitaammin"
-  },
   "somethingWentWrong": {
     "message": "Hupsis! Jotakin meni pieleen."
   },
@@ -1038,24 +938,6 @@
   },
   "stateLogsDescription": {
     "message": "Tilalokeista löydät julkiset tiliosoitteesi sekä lähetetyt maksusiirtosi."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Yhdistä laitteistokukkaro"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Yhdistä hardware-lompakkosi suoraan tietokoneeseesi."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Valitse tili"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Valitse tarkasteltava tili. Voit valita vain yhden kerrallaan."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Ota käyttöön dApps ja paljon muuta!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Käytä laitteistosi tiliä minkä tahansa Ethereum-tilin tavoin. Kirjaudu dAppsiin, lähettää ethereumeja, ostaa ja tallentaa ERC20-tunnuksia sekä CryptoKittiesin kaltaisia ei-korvattavia tunnuksia."
   },
   "storePhrase": {
     "message": "Tallenna tämä teksti johonkin salasanojen hallintaohjelmaan (esim. 1Password)."
@@ -1162,9 +1044,6 @@
   "transactionSubmitted": {
     "message": "Tapahtuma toimitettu $1 bensataksalla kohdassa $2."
   },
-  "transactionTime": {
-    "message": "Tapahtuman aika"
-  },
   "transactionUpdated": {
     "message": "Tapahtuma päivitetty – $2."
   },
@@ -1232,20 +1111,8 @@
   "viewContact": {
     "message": "Näytä yhteyshenkilö"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tarkastele kohdassa $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Näytä Etherscanissa"
-  },
-  "viewinExplorer": {
-    "message": "Tarkastele Explorerissa"
-  },
   "visitWebSite": {
     "message": "Vieraile verkkosivustollamme"
-  },
-  "walletSeed": {
-    "message": "Lompakon siemen"
   },
   "welcome": {
     "message": "Tervetuloa MetaMaskiin"
@@ -1267,9 +1134,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Sinun yksityinen siemenlauseesi"
-  },
-  "yourSigRequested": {
-    "message": "Allekirjoitustasi pyydetään"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Polttoaine ei maksa kiihdytyksen yhteydessä"

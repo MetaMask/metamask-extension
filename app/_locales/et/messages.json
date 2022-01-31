@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Lükka tagasi"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skannige QR-koos"
+  },
   "about": {
     "message": "Teave"
   },
@@ -38,9 +44,6 @@
   "addNetwork": {
     "message": "Lisage võrk"
   },
-  "addRecipient": {
-    "message": "Lisa saaja"
-  },
   "addSuggestedTokens": {
     "message": "Lisa soovitatud lube"
   },
@@ -52,9 +55,6 @@
   },
   "addToken": {
     "message": "Lisage luba"
-  },
-  "addTokens": {
-    "message": "Lisa lube"
   },
   "advanced": {
     "message": "Täpsemad"
@@ -75,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Kinnita"
@@ -143,9 +151,6 @@
   "browserNotSupported": {
     "message": "Teie lehitsejat ei toetata..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask on projekteeritud ja loodud Californias."
-  },
   "buyWithWyre": {
     "message": "Ostke ETH-d Wyre'iga"
   },
@@ -166,9 +171,6 @@
   },
   "chainId": {
     "message": "Ahela ID"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Tabel on saadaval vaid Ethereumi võrkudes."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Riistvararahakoti ühendamiseks peate kasutama MetaMaski Google Chrome'is."
@@ -230,9 +232,6 @@
   "copiedExclamation": {
     "message": "Kopeeritud!"
   },
-  "copiedTransactionId": {
-    "message": "Kopeeritud tehingu ID"
-  },
   "copyAddress": {
     "message": "Kopeeri aadress lõikelauale"
   },
@@ -263,14 +262,14 @@
   "currentLanguage": {
     "message": "Praegune keel"
   },
+  "custom": {
+    "message": "Täpsemad"
+  },
   "customGas": {
     "message": "Gaasi kohandamine"
   },
   "customGasSubTitle": {
     "message": "Tasu suurendamine võib töötlemisaegu vähendada, kuid see ei ole tagatud."
-  },
-  "customRPC": {
-    "message": "Kohandatud RPC"
   },
   "customToken": {
     "message": "Kohandatud luba"
@@ -280,9 +279,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Kümnendkohad peavad olema vähemalt 0 ja mitte üle 36."
-  },
-  "defaultNetwork": {
-    "message": "Etheri tehingute vaikevõrk on peavõrk."
   },
   "delete": {
     "message": "Kustuta"
@@ -296,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Olete kindel, et soovite selle võrgu kustutada?"
   },
-  "depositEther": {
-    "message": "Eetri sissemakse"
-  },
   "details": {
     "message": "Üksikasjad"
   },
@@ -310,9 +303,6 @@
   },
   "done": {
     "message": "Valmis"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Teil ei ole riistvara rahakotti?"
   },
   "downloadGoogleChrome": {
     "message": "Laadige alla Google Chrome"
@@ -352,9 +342,6 @@
   },
   "endOfFlowMessage6": {
     "message": "Kui peate oma seemnefraasi uuesti varundama, leiate selle valikust Settings (Seaded) -> Security (Turvalisus)."
-  },
-  "endOfFlowMessage7": {
-    "message": "Kui teil on küsimusi või näete midagi kahtlast, kirjutage meile support@metamask.io."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask ei saa teie seemnefraasi taastada. Lisateave."
@@ -397,9 +384,6 @@
   },
   "fast": {
     "message": "Kiire"
-  },
-  "faster": {
-    "message": "Kiiremini"
   },
   "fileImportFail": {
     "message": "Faili importimine ei toimi? Klõpsake siia!",
@@ -448,9 +432,6 @@
     "message": "Hankige kraanist eetrit $1eest",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Küsige abi."
-  },
   "getStarted": {
     "message": "Alustamine"
   },
@@ -471,9 +452,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Valige riistvara rahakott, mida soovite MetaMaskis kasutada"
-  },
-  "havingTroubleConnecting": {
-    "message": "Kas ühendamisel esineb probleeme?"
   },
   "here": {
     "message": "siin",
@@ -504,21 +482,12 @@
   "importAccountSeedPhrase": {
     "message": "Impordi seemnefraasiga konto"
   },
-  "importUsingSeed": {
-    "message": "Impordi konto seemnefraasi abil"
-  },
   "importWallet": {
     "message": "Importige rahakott"
-  },
-  "importYourExisting": {
-    "message": "Importige 12-sõnalise seemnefraasi abil olemasolev rahakott"
   },
   "imported": {
     "message": "Imporditud",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Teave ja abi"
   },
   "initialTransactionConfirmed": {
     "message": "Võrk kinnitas teie algse tehingu. Tagasi minemiseks klõpsake OK-nuppu."
@@ -563,20 +532,20 @@
   "learnMore": {
     "message": "Lisateave"
   },
+  "learnMoreUpperCase": {
+    "message": "Lisateave"
+  },
   "ledgerAccountRestriction": {
     "message": "Enne uue konto loomist peate kasutama eelmist kontot."
   },
   "letsGoSetUp": {
     "message": "Jah, hakkame pihta!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
   },
   "links": {
     "message": "Lingid"
-  },
-  "liveGasPricePredictions": {
-    "message": "Gaasihinna prognoosid reaalajas"
   },
   "loadMore": {
     "message": "Laadi rohkem"
@@ -608,23 +577,11 @@
   "metamaskVersion": {
     "message": "MetaMaski versioon"
   },
-  "mobileSyncText": {
-    "message": "Sisestage parool, et saaksime teid tuvastada!"
-  },
   "mustSelectOne": {
     "message": "Peate valima vähemalt 1 loa."
   },
   "myAccounts": {
     "message": "Minu kontod"
-  },
-  "myWalletAccounts": {
-    "message": "Minu rahakotikontod"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Sellesse jaotisesse lisatakse automaatselt kõik teie MetaMaski kontod."
-  },
-  "needEtherInWallet": {
-    "message": "Selleks, et suhelda MetaMaski abil detsentraliseeritud rakendustega, peab teil rahakotis eetrit olema."
   },
   "needImportFile": {
     "message": "Peate importimiseks faili valima.",
@@ -660,9 +617,6 @@
   },
   "newContract": {
     "message": "Uus kontakt"
-  },
-  "newNetwork": {
-    "message": "Uus võrk"
   },
   "newPassword": {
     "message": "Uus parool (vähemalt 8 tähemärki)"
@@ -711,15 +665,6 @@
   },
   "on": {
     "message": "Sees"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Blokeeri Exploreri URL (valikuline)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Sümbol (valikuline)"
-  },
-  "orderOneHere": {
-    "message": "Tellige Trezor või Ledger ja hoidke oma varasid külmruumis"
   },
   "origin": {
     "message": "Päritolu"
@@ -774,29 +719,14 @@
   "privateNetwork": {
     "message": "Privaatvõrk"
   },
-  "protectYourKeys": {
-    "message": "Kaitske oma võtmeid!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Kaitske oma seemnefraasi. Meid on teavitatud veebilehtedest, mis püüavad MetaMaski jäljendada. MetaMask ei küsi teilt kunagi teie seemnefraasi!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Kaitske oma seemnefraasi. Kui näete midagi kahtlast või pole veebilehe ehtsuses kindel, saatke e-kiri aadressile support@metamask.io"
-  },
   "queue": {
     "message": "Järjekord"
   },
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
   },
-  "readyToConnect": {
-    "message": "Kas olete ühenduseks valmis?"
-  },
   "recents": {
     "message": "Hiljutised"
-  },
-  "recipientAddress": {
-    "message": "Saaja aadress"
   },
   "recipientAddressPlaceholder": {
     "message": "Otsing, avalik aadress (0x) või ENS"
@@ -849,17 +779,11 @@
   "restoreAccountWithSeed": {
     "message": "Taastage konto seemnefraasi abil"
   },
-  "restoreFromSeed": {
-    "message": "Taastada konto?"
-  },
   "revealSeedWords": {
     "message": "Kuva seemnesõnu"
   },
   "revealSeedWordsDescription": {
     "message": "Kui vahetate veebilehitsejat või arvutit, vajate oma kontodele ligipääsemiseks seemnefraasi. Hoidke seda turvalises ja salajases kohas."
-  },
-  "revealSeedWordsTitle": {
-    "message": "Seemnefraas"
   },
   "revealSeedWordsWarning": {
     "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks."
@@ -897,17 +821,11 @@
   "searchTokens": {
     "message": "Lubade otsimine"
   },
-  "secretBackupPhrase": {
-    "message": "Salajane varundusfraas"
-  },
   "secretBackupPhraseDescription": {
     "message": "Teie salajane varundusfraas hõlbustab konto varundamist ja taastamist."
   },
   "secretBackupPhraseWarning": {
     "message": "HOIATUS! Ärge avaldage kunagi oma varundusfraasi. Selle fraasiga on võimalik teie eeter igaveseks ära võtta."
-  },
-  "secretPhrase": {
-    "message": "Sisestage hoidla taastamiseks oma salajane 12-sõnaline fraas."
   },
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"
@@ -927,20 +845,11 @@
   "selectAnAccount": {
     "message": "Valige konto"
   },
-  "selectAnAccountHelp": {
-    "message": "Valige konto, mida MetaMaskis vaadata"
-  },
-  "selectCurrency": {
-    "message": "Valitud valuuta"
-  },
   "selectEachPhrase": {
     "message": "Valige iga fraas, veendumaks, et see on õige."
   },
   "selectHdPath": {
     "message": "Valige HD-teekond"
-  },
-  "selectLocale": {
-    "message": "Valige Lokaat"
   },
   "selectPathHelp": {
     "message": "Kui te ei näe allpool oma olemasolevaid pearaamatu kontosid, vahetage tee kohta \"Legacy (MEW/MyCrypto)\""
@@ -954,14 +863,8 @@
   "sendAmount": {
     "message": "Saatke kogus"
   },
-  "sendETH": {
-    "message": "Saada ETH"
-  },
   "sendTokens": {
     "message": "Saada lube"
-  },
-  "sentEther": {
-    "message": "saadetud eeter"
   },
   "separateEachWord": {
     "message": "Eraldage iga sõna ühe tühikuga"
@@ -1008,9 +911,6 @@
   "slow": {
     "message": "Aeglane"
   },
-  "slower": {
-    "message": "Aeglasem"
-  },
   "somethingWentWrong": {
     "message": "Oih! Midagi läks valesti."
   },
@@ -1031,24 +931,6 @@
   },
   "stateLogsDescription": {
     "message": "Olekulogid sisaldavad teie avalikke konto aadresse ja saadetud tehinguid."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Ühendage riistvara rahakott"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Ühendage oma riistvara rahakott otse oma arvutiga."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Valige konto"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Valige konto, mida soovite vaadata. Korraga saab valida ühe."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Hakake kasutama dAppse ja muud!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Kasutage oma riistvarakontot nagu mis tahes teist Ethereumi kontot. Logige dAppsi, saatke Eth-d, ostke ja hoiustage ERC20 lube ning asendamatuid lube nagu CryptoKitties."
   },
   "storePhrase": {
     "message": "Salvestage see fraas paroolihaldurisse, nagu 1Password."
@@ -1155,9 +1037,6 @@
   "transactionSubmitted": {
     "message": "Tehing edastatud gaasihinnaga $1 asukohas $2."
   },
-  "transactionTime": {
-    "message": "Tehingu aeg"
-  },
   "transactionUpdated": {
     "message": "Tehing on uuendatud $2."
   },
@@ -1225,20 +1104,8 @@
   "viewContact": {
     "message": "Kuva kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vaata $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Kuva Etherscanil"
-  },
-  "viewinExplorer": {
-    "message": "Kuva Exploreris"
-  },
   "visitWebSite": {
     "message": "Külastage meie veebilehte"
-  },
-  "walletSeed": {
-    "message": "Rahakoti seeme"
   },
   "welcome": {
     "message": "Tere tulemast MetaMaski"
@@ -1260,9 +1127,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Teie privaatne seemnefraas"
-  },
-  "yourSigRequested": {
-    "message": "Taotletakse teie allkirja"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Null gaasihind kiirendamisel"

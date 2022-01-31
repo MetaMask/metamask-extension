@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ActionableMessage renders the component with initial props 1`] = `
+<div>
+  <div
+    class="actionable-message"
+  >
+    
+    <div
+      class="actionable-message__message"
+    >
+      I am an actionable message!
+    </div>
+  </div>
+</div>
+`;

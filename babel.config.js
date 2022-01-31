@@ -1,12 +1,12 @@
 module.exports = function (api) {
-  api.cache(false)
+  api.cache(false);
   return {
     presets: [
       [
         '@babel/preset-env',
         {
           targets: {
-            browsers: ['chrome >= 58', 'firefox >= 56.2'],
+            browsers: ['chrome >= 66', 'firefox >= 68'],
           },
         },
       ],
@@ -19,5 +19,5 @@ module.exports = function (api) {
       '@babel/plugin-proposal-optional-chaining',
       '@babel/plugin-proposal-nullish-coalescing-operator',
     ],
-  }
-}
+  };
+};

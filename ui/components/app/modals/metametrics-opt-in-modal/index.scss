@@ -1,0 +1,30 @@
+.metametrics-opt-in-modal {
+  .metametrics-opt-in__main {
+    justify-content: center;
+    margin-left: 3%;
+    margin-right: 0%;
+    max-height: 75vh;
+
+    @media screen and (max-width: $break-small) {
+      max-height: 100vh;
+    }
+  }
+
+
+  .metametrics-opt-in__title {
+    @include H1;
+  }
+
+  .metametrics-opt-in__content {
+    padding-right: 6px;
+  }
+
+  .metametrics-opt-in__footer {
+    @media screen and (max-width: $break-small) {
+      margin-top: 10px;
+      justify-content: center;
+      margin-left: 2%;
+      max-height: 520px;
+    }
+  }
+}

@@ -11,9 +11,6 @@
   "addToken": {
     "message": "Adicionar Token"
   },
-  "addTokens": {
-    "message": "Adicionar Tokens"
-  },
   "amount": {
     "message": "Valor"
   },
@@ -24,6 +21,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Aprovar"
@@ -42,9 +47,6 @@
   },
   "blockiesIdenticon": {
     "message": "Usar Blockies Identicon"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask é desenhada e construída na California."
   },
   "cancel": {
     "message": "Cancelar"
@@ -76,20 +78,11 @@
   "customGas": {
     "message": "Customizar Gas"
   },
-  "customRPC": {
-    "message": "Customizar RPC"
-  },
   "decimal": {
     "message": "Precisão em Decimais"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimais devem ser no mínimo 0 e não passar de 36."
-  },
-  "defaultNetwork": {
-    "message": "A rede pré definida para transações em Ether é a Main Net."
-  },
-  "depositEther": {
-    "message": "Depositar Ether"
   },
   "details": {
     "message": "Detalhes"
@@ -172,9 +165,6 @@
     "message": "Importado",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Informação & Ajuda"
-  },
   "insufficientFunds": {
     "message": "Fundos insuficientes."
   },
@@ -200,7 +190,7 @@
   "kovan": {
     "message": "Rede de Teste Kovan"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Gostaria de adicionar estes tokens?"
   },
   "loading": {
@@ -226,9 +216,6 @@
   },
   "myAccounts": {
     "message": "As minhas contas"
-  },
-  "needEtherInWallet": {
-    "message": "Para interagir com applicações descentralizadas usando MetaMask tem de ter Ether na sua carteira."
   },
   "needImportFile": {
     "message": "Deve selecionar um ficheiro para importar.",
@@ -285,9 +272,6 @@
   "readdToken": {
     "message": "Pode adicionar este token de novo clicando na opção “Adicionar token” no menu de opções da sua conta."
   },
-  "recipientAddress": {
-    "message": "Endereço do Destinatário"
-  },
   "reject": {
     "message": "Rejeitar"
   },
@@ -299,9 +283,6 @@
   },
   "resetAccount": {
     "message": "Reinicializar Conta"
-  },
-  "restoreFromSeed": {
-    "message": "Restaurar a partir da frase seed"
   },
   "revealSeedWords": {
     "message": "Revelar Palavras Seed"
@@ -321,23 +302,14 @@
   "search": {
     "message": "Procurar"
   },
-  "secretPhrase": {
-    "message": "Introduza a sua frase secreta de 12 palavras para recuperar o seu ."
-  },
   "seedPhraseReq": {
     "message": "seed phrases are 12 words long"
-  },
-  "selectCurrency": {
-    "message": "Selecionar Moeda"
   },
   "selectType": {
     "message": "Selecionar Tipo"
   },
   "send": {
     "message": "Enviar"
-  },
-  "sendETH": {
-    "message": "Enviar ETH"
   },
   "sendTokens": {
     "message": "Enviar Tokens"
@@ -420,8 +392,5 @@
   },
   "youSign": {
     "message": "Está a assinar"
-  },
-  "yourSigRequested": {
-    "message": "A sua assinatura está a ser pedida"
   }
 }

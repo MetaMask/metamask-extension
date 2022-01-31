@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Afwijzen"
+  },
   "accountDetails": {
     "message": "Accountgegevens"
   },
@@ -7,9 +10,6 @@
   },
   "addToken": {
     "message": "Voeg token toe"
-  },
-  "addTokens": {
-    "message": "Tokens toevoegen"
   },
   "amount": {
     "message": "Bedrag"
@@ -21,6 +21,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Goedkeuren"
@@ -40,9 +48,6 @@
   "blockiesIdenticon": {
     "message": "Gebruik Blockies Identicon"
   },
-  "builtInCalifornia": {
-    "message": "MetaMask is ontworpen en gebouwd in Californië."
-  },
   "cancel": {
     "message": "Annuleer"
   },
@@ -56,7 +61,7 @@
     "message": "Contractimplementatie"
   },
   "copiedExclamation": {
-    "message": "Gekopieerde!"
+    "message": "Gekopieerd!"
   },
   "copyPrivateKey": {
     "message": "Dit is uw privésleutel (klik om te kopiëren)"
@@ -73,20 +78,11 @@
   "customGas": {
     "message": "Pas Gas aan"
   },
-  "customRPC": {
-    "message": "Aangepaste RPC"
-  },
   "decimal": {
     "message": "Decimalen van precisie"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
-  },
-  "defaultNetwork": {
-    "message": "Het standaardnetwerk voor Ether-transacties is Main Net."
-  },
-  "depositEther": {
-    "message": "Stort Ether"
   },
   "directDepositEther": {
     "message": "Directe Ether storten"
@@ -163,11 +159,8 @@
     "message": " Geïmporteerde accounts worden niet gekoppeld aan de seedphrase van uw oorspronkelijk gemaakte MetaMask-account. Meer informatie over geïmporteerde accounts"
   },
   "imported": {
-    "message": "geïmporteerde",
+    "message": "geïmporteerd",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Info en hulp"
   },
   "insufficientFunds": {
     "message": "Onvoldoende fondsen."
@@ -194,7 +187,7 @@
   "kovan": {
     "message": "Kovan-testnetwerk"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Wil je deze tokens toevoegen?"
   },
   "loading": {
@@ -207,7 +200,7 @@
     "message": "Uitloggen"
   },
   "mainnet": {
-    "message": "Main Netwerk"
+    "message": "Mainnetwerk"
   },
   "message": {
     "message": "Bericht"
@@ -220,9 +213,6 @@
   },
   "myAccounts": {
     "message": "Mijn accounts"
-  },
-  "needEtherInWallet": {
-    "message": "Om te communiceren met gedecentraliseerde applicaties met MetaMask, heb je Ether nodig in je portemonnee."
   },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
@@ -275,9 +265,6 @@
   "readdToken": {
     "message": "U kunt dit token in de toekomst weer toevoegen door naar \"Token toevoegen\" te gaan in het menu met accountopties."
   },
-  "recipientAddress": {
-    "message": "Geadresseerde adres"
-  },
   "reject": {
     "message": "Afwijzen"
   },
@@ -289,9 +276,6 @@
   },
   "resetAccount": {
     "message": "Account opnieuw instellen"
-  },
-  "restoreFromSeed": {
-    "message": "Herstel vanuit back-up woorden"
   },
   "revealSeedWords": {
     "message": "Onthul back-up woorden"
@@ -311,23 +295,14 @@
   "search": {
     "message": "Zoeken"
   },
-  "secretPhrase": {
-    "message": "Voer hier je geheime twaalfwoordfrase in om je kluis te herstellen."
-  },
   "seedPhraseReq": {
     "message": "Back-up woorden zijn 12 woorden lang"
-  },
-  "selectCurrency": {
-    "message": "selecteer valuta"
   },
   "selectType": {
     "message": "Selecteer type"
   },
   "send": {
     "message": "Sturen"
-  },
-  "sendETH": {
-    "message": "Verzend ETH"
   },
   "sendTokens": {
     "message": "Stuur tokens"
@@ -410,8 +385,5 @@
   },
   "youSign": {
     "message": "U ondertekent"
-  },
-  "yourSigRequested": {
-    "message": "Uw handtekening wordt aangevraagd"
   }
 }

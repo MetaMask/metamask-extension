@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Відхилити"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Сканувати QR-код"
+  },
   "about": {
     "message": "Про Google Chrome"
   },
@@ -38,9 +44,6 @@
   "addNetwork": {
     "message": "Додати мережу"
   },
-  "addRecipient": {
-    "message": "Додати отримувача"
-  },
   "addSuggestedTokens": {
     "message": "Додати рекомендовані токени"
   },
@@ -52,9 +55,6 @@
   },
   "addToken": {
     "message": "Додати токен"
-  },
-  "addTokens": {
-    "message": "Додати токени"
   },
   "advanced": {
     "message": "Розширені"
@@ -75,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Затвердити"
@@ -143,9 +151,6 @@
   "browserNotSupported": {
     "message": "Ваш браузер не підтримується..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask розроблено й створено в Каліфорнії."
-  },
   "buyWithWyre": {
     "message": "Купити ETH через Wyre"
   },
@@ -166,9 +171,6 @@
   },
   "chainId": {
     "message": "ID мережі"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Таблиця доступна тільки в мережах Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Щоб підключитися до апаратного гаманця, розширення MetaMask потрібно використовувати в Google Chrome."
@@ -230,9 +232,6 @@
   "copiedExclamation": {
     "message": "Скопійовано!"
   },
-  "copiedTransactionId": {
-    "message": "ID Скопійованої транзакції"
-  },
   "copyAddress": {
     "message": "Копіювати адресу в буфер обміну"
   },
@@ -263,14 +262,14 @@
   "currentLanguage": {
     "message": "Поточна мова"
   },
+  "custom": {
+    "message": "Розширені"
+  },
   "customGas": {
     "message": "Налаштувати пальне"
   },
   "customGasSubTitle": {
     "message": "Збільшення комісії може призвести до зменшення часу обробки, але це не гарантується."
-  },
-  "customRPC": {
-    "message": "Налаштувати RPC"
   },
   "customToken": {
     "message": "Користувацький токен"
@@ -280,9 +279,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Кількість розрядів після коми: від 0 до 36."
-  },
-  "defaultNetwork": {
-    "message": "Мережа для транзакцій з Ether за замовчуванням - Main Net."
   },
   "delete": {
     "message": "Видалити"
@@ -296,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Ви впевнені, що хочете видалити цю мережу?"
   },
-  "depositEther": {
-    "message": "Депонувати Ether"
-  },
   "details": {
     "message": "Деталі"
   },
@@ -310,9 +303,6 @@
   },
   "done": {
     "message": "Готово"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Не маєте апаратного гаманця?"
   },
   "downloadGoogleChrome": {
     "message": "Завантажити Гугл Хром"
@@ -352,9 +342,6 @@
   },
   "endOfFlowMessage6": {
     "message": "Якщо вам потрібно знову зробити резервну копію вашої початкової фрази, ви можете знайти її у Налаштування -> Безпека."
-  },
-  "endOfFlowMessage7": {
-    "message": "Якщо у вас коли-небудь виникатимуть питання або ви побачите щось фішингове, пишіть на support@metamask.io."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask не вдалося відновити вашу мнемонічну фразу. Докладніше."
@@ -397,9 +384,6 @@
   },
   "fast": {
     "message": "Швидка"
-  },
-  "faster": {
-    "message": "Швидше"
   },
   "fiat": {
     "message": "Вказівка",
@@ -452,9 +436,6 @@
     "message": "Отримайте Ether з крану за $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Отримати допомогу."
-  },
   "getStarted": {
     "message": "Почати"
   },
@@ -475,9 +456,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Оберіть апаратний гаманець, який ви хочете використовувати з MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Проблеми при підключенні?"
   },
   "here": {
     "message": "тут",
@@ -508,21 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "Імпортувати обліковий запис з початковою фразою"
   },
-  "importUsingSeed": {
-    "message": "Імпортувати, використовуючи початкову фразу облікового запису"
-  },
   "importWallet": {
     "message": "Імпортувати гаманець"
-  },
-  "importYourExisting": {
-    "message": "Імпортуйте ваш гаманець, що існує, використовуючи початкову фразу з 12 слів"
   },
   "imported": {
     "message": "Імпортовано",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Інформація та допомога"
   },
   "initialTransactionConfirmed": {
     "message": "Ваша початкова транзакція підтверджена мережею. Натисніть ОК для повернення."
@@ -567,20 +536,20 @@
   "learnMore": {
     "message": "Дізнатись більше"
   },
+  "learnMoreUpperCase": {
+    "message": "Дізнатись більше"
+  },
   "ledgerAccountRestriction": {
     "message": "Потрібно скористатися своїм останнім обліковим записом, перш ніж додавати новий."
   },
   "letsGoSetUp": {
     "message": "Так, давайте налаштуємо!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Ви б хотіли додати ці токени?"
   },
   "links": {
     "message": "Посилання"
-  },
-  "liveGasPricePredictions": {
-    "message": "Прогнози ціни на пальне наживо"
   },
   "loadMore": {
     "message": "Завантажити більше"
@@ -618,23 +587,11 @@
   "metamaskVersion": {
     "message": "Версія MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Введіть пароль, щоб підтвердити свою особу!"
-  },
   "mustSelectOne": {
     "message": "Слід вибрати хоча б 1 токен."
   },
   "myAccounts": {
     "message": "Мої облікові записи"
-  },
-  "myWalletAccounts": {
-    "message": "Облікові записи мого гаманця"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Усі ваші створені облікові записи MetaMask буде автоматично додано в цей розділ."
-  },
-  "needEtherInWallet": {
-    "message": "Щоб взаємодіяти з децентралізованими застосунками використовуючи MetaMask, вам буде потрібен Ether у вашому гаманці."
   },
   "needImportFile": {
     "message": "Потрібно вибрати файл для імпорту.",
@@ -670,9 +627,6 @@
   },
   "newContract": {
     "message": "Новий контракт"
-  },
-  "newNetwork": {
-    "message": "Нова мережа"
   },
   "newPassword": {
     "message": "Новий пароль (мінімум 8 символів)"
@@ -721,15 +675,6 @@
   },
   "on": {
     "message": "Увімкнути"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Блокувати Explorer URL (не обов'язково)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Символ (не обов'язково)"
-  },
-  "orderOneHere": {
-    "message": "Замовте Trezor або Ledger та зберігайте ваші кошти у холодному сховищі"
   },
   "origin": {
     "message": "Походження"
@@ -784,29 +729,14 @@
   "privateNetwork": {
     "message": "Приватна мережа"
   },
-  "protectYourKeys": {
-    "message": "Захистіть свої ключі!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Будьте обережними з вашою початковою фразою - надходила інформація про сайти, які намагались імітувати MetaMask. MetaMask ніколи не запитує вашої початкової фрази!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Тримайте свою фразу у безпеці. Якщо ви бачите щось фішингове або ви не впевнені щодо сайту, напишіть нам на support@metamask.io"
-  },
   "queue": {
     "message": "Черга"
   },
   "readdToken": {
     "message": "Ви можете знову додати цей токен у меню облікового запису у розділі “Додати токен”. "
   },
-  "readyToConnect": {
-    "message": "Готові підключитися?"
-  },
   "recents": {
     "message": "Останні"
-  },
-  "recipientAddress": {
-    "message": "Адреса отримувача"
   },
   "recipientAddressPlaceholder": {
     "message": "Пошук, публічна адреса (0x), або ENS"
@@ -859,17 +789,11 @@
   "restoreAccountWithSeed": {
     "message": "Відновіть ваш обліковий запис за допомогою seed-фрази"
   },
-  "restoreFromSeed": {
-    "message": "Відновити обліковий запис?"
-  },
   "revealSeedWords": {
     "message": "Показати мнемонічні слова"
   },
   "revealSeedWordsDescription": {
     "message": "При зміні браузера або комп'ютера, вам знадобиться seed-фраза для отримання доступу до ваших облікових записів. Збережіть її у надійному місці."
-  },
-  "revealSeedWordsTitle": {
-    "message": "Мнемонічна фраза"
   },
   "revealSeedWordsWarning": {
     "message": "Ці слова можуть бути використані, щоб вкрасти всі ваші облікові записи."
@@ -907,17 +831,11 @@
   "searchTokens": {
     "message": "Шукати токени"
   },
-  "secretBackupPhrase": {
-    "message": "Секретна резервна фраза"
-  },
   "secretBackupPhraseDescription": {
     "message": "Ваша секретна резервна фраза дозволяє легко створити резервну копію та відновити обліковий запис."
   },
   "secretBackupPhraseWarning": {
     "message": "ЗАСТЕРЕЖЕННЯ: Ніколи не розголошуйте вашу резервну фразу. Будь-хто з цією фразою зможе забрати ваш Ether назавжди."
-  },
-  "secretPhrase": {
-    "message": "Введіть секретну фразу з дванадцяти слів, щоб відновити своє сховище."
   },
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"
@@ -937,20 +855,11 @@
   "selectAnAccount": {
     "message": "Виберіть обліковий запис"
   },
-  "selectAnAccountHelp": {
-    "message": "Оберіть обліковий запис для перегляду в MetaMask"
-  },
-  "selectCurrency": {
-    "message": "Виберіть валюту"
-  },
   "selectEachPhrase": {
     "message": "Виберіть кожну фразу, щоб переконатися, що вона правильна."
   },
   "selectHdPath": {
     "message": "Виберіть шлях до HD-гаманця"
-  },
-  "selectLocale": {
-    "message": "Оберіть локаль"
   },
   "selectPathHelp": {
     "message": "Якщо ви не бачите ваш обліковий запис Ledger, який існує, спробуйте переключити шляхи на \"Legacy (MEW / MyCrypto)\""
@@ -964,14 +873,8 @@
   "sendAmount": {
     "message": "Надіслати суму"
   },
-  "sendETH": {
-    "message": "Надіслати ETH"
-  },
   "sendTokens": {
     "message": "Надіслати токени"
-  },
-  "sentEther": {
-    "message": "надісланий ефір"
   },
   "separateEachWord": {
     "message": "Відділіть кожне слово одним пробілом"
@@ -1018,9 +921,6 @@
   "slow": {
     "message": "Повільна"
   },
-  "slower": {
-    "message": "Повільніше"
-  },
   "somethingWentWrong": {
     "message": "Ой! Щось пішло не так."
   },
@@ -1041,24 +941,6 @@
   },
   "stateLogsDescription": {
     "message": "Логи стану містять ваші публічні адреси облікового запису та надіслані транзакції."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Приєднайте апаратний гаманець"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Під'єднайте ваш апаратний гаманець безпосередньо до вашого комп'ютера."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Оберіть обліковий запис"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Оберіть обліковий запис, який бажаєте переглянути. Ви можете вибрати лише один."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Почніть користуватись dApps та більше!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Використовуйте ваш апаратний обліковий запис, як би ви використовували будь-який обліковий запис Ethereum. Увійдіть в dApps, надсилайте Eth, купуйте та зберігайте токени ERC20 та токени, які не є взаємозамінними, такі як CryptoKitties."
   },
   "storePhrase": {
     "message": "Зберігайте цю фразу у менеджері паролів, як 1Password."
@@ -1165,9 +1047,6 @@
   "transactionSubmitted": {
     "message": "Транзакція надіслана з оплатою за газ $1 о $2."
   },
-  "transactionTime": {
-    "message": "Час транзакції"
-  },
   "transactionUpdated": {
     "message": "Час оновлення транзакції: $2."
   },
@@ -1235,20 +1114,8 @@
   "viewContact": {
     "message": "Переглянути контакт"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Дивитись на $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Дивитись на Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Дивитись в Explorer"
-  },
   "visitWebSite": {
     "message": "Відвідайте наш веб-сайт"
-  },
-  "walletSeed": {
-    "message": "Seed гаманця"
   },
   "welcome": {
     "message": "Ласкаво просимо до MetaMask"
@@ -1270,9 +1137,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ваша секретна seed-фраза"
-  },
-  "yourSigRequested": {
-    "message": "Надійшов запит вашого підпису"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Ціна пального на прискорення - нуль"

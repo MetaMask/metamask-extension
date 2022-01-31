@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "דחה"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "סריקת קוד QR"
+  },
   "about": {
     "message": "מידע כללי"
   },
@@ -38,9 +44,6 @@
   "addNetwork": {
     "message": "הוסף/י רשת"
   },
-  "addRecipient": {
-    "message": "הוסף נמען"
-  },
   "addSuggestedTokens": {
     "message": "הוסף/י אסימונים מוצעים"
   },
@@ -52,9 +55,6 @@
   },
   "addToken": {
     "message": "הוסף/י אסימון"
-  },
-  "addTokens": {
-    "message": "הוסף סמלים"
   },
   "advanced": {
     "message": "מתקדם"
@@ -75,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "אישור"
@@ -143,9 +151,6 @@
   "browserNotSupported": {
     "message": "הדפדפן שלך אינו נתמך..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask תוכנן ונבנה בקליפורניה."
-  },
   "buyWithWyre": {
     "message": "רכישת את'ר עם Wyre"
   },
@@ -166,9 +171,6 @@
   },
   "chainId": {
     "message": "מזהה שרשרת"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "טבלה זמינה רק ברשתות אתריום."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "עליך להשתמש ב-MetaMask בגוגל כרום כדי להתחבר לארנק החומרה שלך."
@@ -230,9 +232,6 @@
   "copiedExclamation": {
     "message": "הועתק!"
   },
-  "copiedTransactionId": {
-    "message": "מזהה עסקה הועתק"
-  },
   "copyAddress": {
     "message": "העתק כתובת ללוח"
   },
@@ -263,14 +262,14 @@
   "currentLanguage": {
     "message": "שפה נוכחית"
   },
+  "custom": {
+    "message": "מתקדם"
+  },
   "customGas": {
     "message": "התאמה אישית של דלק"
   },
   "customGasSubTitle": {
     "message": "הגדלת התשלום עשויה לצמצם את זמני העיבוד, אבל אין ערובה לכך."
-  },
-  "customRPC": {
-    "message": "RPC מותאם אישית"
   },
   "customToken": {
     "message": "אסימון מותאם אישית"
@@ -280,9 +279,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "מספרים עשרוניים חייבים להיות לפחות 0 ולא מעל 36."
-  },
-  "defaultNetwork": {
-    "message": "רשת ברירת המחדל לעסקאות Ether היא Main Net."
   },
   "delete": {
     "message": "מחיקה"
@@ -296,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
   },
-  "depositEther": {
-    "message": "הפקדת את'ר"
-  },
   "details": {
     "message": "פרטים"
   },
@@ -310,9 +303,6 @@
   },
   "done": {
     "message": "סיום"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "אין לך ארנק חומרה?"
   },
   "downloadGoogleChrome": {
     "message": "הורד/י את גוגל כרום"
@@ -352,9 +342,6 @@
   },
   "endOfFlowMessage6": {
     "message": "אם עליך לגבות את צירוף הגרעין שלך שוב, תוכל/י למצוא זאת בהגדרות -> אבטחה."
-  },
-  "endOfFlowMessage7": {
-    "message": "אם יש לך שאלות או שנתקלת במשהו חשוד, שלח/י מייל ל- support@metamask.io."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask לא הצליח לשחזר את ה-seedphrase שלך. למד/י עוד."
@@ -397,9 +384,6 @@
   },
   "fast": {
     "message": "מהיר"
-  },
-  "faster": {
-    "message": "מהר יותר"
   },
   "fiat": {
     "message": "פיאט",
@@ -452,9 +436,6 @@
     "message": "השג/י את'ר מברז (faucet) עבור ה-$1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "בקש/י עזרה."
-  },
   "getStarted": {
     "message": "תחילת העבודה"
   },
@@ -475,9 +456,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "בחר/י ארנק חומרה שבו תרצה להשתמש עם MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "חווה קשיים בהתחברות?"
   },
   "here": {
     "message": "כאן",
@@ -508,21 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "יבא חשבון באמצעות Seed Phrase"
   },
-  "importUsingSeed": {
-    "message": "ייבא באמצעות צירוף הגרעין של החשבון"
-  },
   "importWallet": {
     "message": "ייבא ארנק"
-  },
-  "importYourExisting": {
-    "message": "יבא/י את הארנק הקיים שלך באמצעות seed phrase בן 12 מילים"
   },
   "imported": {
     "message": "מיובאות",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "מידע ועזרה"
   },
   "initialTransactionConfirmed": {
     "message": "העסקה הראשונית שלך אושרה על ידי הרשת. לחצ/י על אישור כדי לחזור."
@@ -567,20 +536,20 @@
   "learnMore": {
     "message": "למדו עוד"
   },
+  "learnMoreUpperCase": {
+    "message": "למדו עוד"
+  },
   "ledgerAccountRestriction": {
     "message": "עליך להשתמש בחשבון האחרון שלך לפני שתוכל/י להוסיף חשבון חדש."
   },
   "letsGoSetUp": {
     "message": "כן, בוא נתקין!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
   },
   "links": {
     "message": "קישורים"
-  },
-  "liveGasPricePredictions": {
-    "message": "תחזיות מחירי גז בשידור חי"
   },
   "loadMore": {
     "message": "טען עוד"
@@ -615,23 +584,11 @@
   "metamaskVersion": {
     "message": "גרסת MetaMask"
   },
-  "mobileSyncText": {
-    "message": "נא להזין את הססמה שלך כדי לאשר שזה/זו אכן את/ה!"
-  },
   "mustSelectOne": {
     "message": "חובה לבחור לפחות אסימון אחד."
   },
   "myAccounts": {
     "message": "החשבונות שלי"
-  },
-  "myWalletAccounts": {
-    "message": "חשבונות הארנק שלי"
-  },
-  "myWalletAccountsDescription": {
-    "message": "כל חשבונותיך שנוצרו ב-MetaMask יתווספו אוטומטית לחלק זה."
-  },
-  "needEtherInWallet": {
-    "message": "כדי לתקשר עם אפליקציות מבוזרות באמצעות MetaMask, צריך להיות לך את'ר בארנק."
   },
   "needImportFile": {
     "message": "יש לבחור קובץ לייצוא.",
@@ -667,9 +624,6 @@
   },
   "newContract": {
     "message": "חוזה חדש"
-  },
-  "newNetwork": {
-    "message": "רשת חדשה"
   },
   "newPassword": {
     "message": "ססמה חדשה (לפחות 8 תווים)"
@@ -718,15 +672,6 @@
   },
   "on": {
     "message": "פועל"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "חסום כתובת URL של אקספלורר (אופציונלי)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "סמל (אופציונלי)"
-  },
-  "orderOneHere": {
-    "message": "הזמנ/י Trezor או Ledger ושמר/י את הכספים שלך באחסון קר"
   },
   "origin": {
     "message": "מקור"
@@ -781,29 +726,14 @@
   "privateNetwork": {
     "message": "רשת פרטית"
   },
-  "protectYourKeys": {
-    "message": "הגנ/י על המפתחות שלך!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "יש לנקוט זהירות בנוגע לצירוף הגרעין שלך - היו דיווחים על אתרים שמנסים להתחזות ל-MetaMask .MetaMask לעולם לא תבקש את צירוף הגרעין שלך!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "יש לשמור את ה-seedphrase שלך במקום בטוח. אם את/ה רואה משהו חשוד, או שאינך בטוח/ה בנוע לאתר, שלח/י אימייל לכתובת support@metamask.io"
-  },
   "queue": {
     "message": "תור"
   },
   "readdToken": {
     "message": "באפשרותך להוסיף טוקן זה בחזרה בעתיד על ידי מעבר אל \"הוסף טוקן\" בתפריט אפשרויות החשבונות שלך."
   },
-  "readyToConnect": {
-    "message": "מוכנ/ה להתחבר?"
-  },
   "recents": {
     "message": "אחרונים"
-  },
-  "recipientAddress": {
-    "message": "כתובת הנמען"
   },
   "recipientAddressPlaceholder": {
     "message": "חיפוש, כתובת ציבורית (0x), או ENS"
@@ -856,17 +786,11 @@
   "restoreAccountWithSeed": {
     "message": "שחזר את חשבונך באמצעות צירוף הגרעין"
   },
-  "restoreFromSeed": {
-    "message": "לשחזר את החשבון?"
-  },
   "revealSeedWords": {
     "message": "גלה מילות Seed"
   },
   "revealSeedWordsDescription": {
     "message": "אם בעתיד תחליף/י דפדפנים או תעביר/י מחשבים, תצטרך/י seed phrase זה כדי לקבל גישה לחשבונות שלך. יש לשמור אותם במקום בטוח וסודי."
-  },
-  "revealSeedWordsTitle": {
-    "message": "צירוף גרעין (Seed Phrase)"
   },
   "revealSeedWordsWarning": {
     "message": "במילים אלה עלול להיעשות שימוש כדי לגנוב את כל חשבונותיך."
@@ -901,17 +825,11 @@
   "searchTokens": {
     "message": "חיפוש טוקנים"
   },
-  "secretBackupPhrase": {
-    "message": "צירוף מילים סודי לגיבוי"
-  },
   "secretBackupPhraseDescription": {
     "message": "עם צירוף מילים סודי לגיבוי קל יותר לגבות ולשחזר את החשבון שלך."
   },
   "secretBackupPhraseWarning": {
     "message": "אזהרה: לעולם אין לחשוף את צירוף הגיבוי שלך. כל מי שברשותו צירוף זה יכול לקחת את האת'ר שלך לצמיתות."
-  },
-  "secretPhrase": {
-    "message": "הזנ/י את הצירוף הסודי שלך של שתים-עשרה המילים כאן כדי לשחזר את הכספת שלך."
   },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
@@ -931,20 +849,11 @@
   "selectAnAccount": {
     "message": "בחר חשבון"
   },
-  "selectAnAccountHelp": {
-    "message": "בחר את החשבון לצפייה ב- MetaMask"
-  },
-  "selectCurrency": {
-    "message": "בחר מטבע"
-  },
   "selectEachPhrase": {
     "message": "נא לבחור כל צירוף מילים כדי להבטיח שהוא נכון."
   },
   "selectHdPath": {
     "message": "בחר/י נתיב HD"
-  },
-  "selectLocale": {
-    "message": "בחר/י מיקום"
   },
   "selectPathHelp": {
     "message": "אם אינך רואה את חשבונות ה-Ledger הקיימים שלך בהמשך, נסה/י להחליף נתיב ל-Legacy (MEW / MyCrypto)"
@@ -958,14 +867,8 @@
   "sendAmount": {
     "message": "שלח סכום"
   },
-  "sendETH": {
-    "message": "שלח/י ETH"
-  },
   "sendTokens": {
     "message": "שלח טוקנים"
-  },
-  "sentEther": {
-    "message": "את'ר שנשלח"
   },
   "separateEachWord": {
     "message": "יש להפריד כל מילה עם רווח יחיד"
@@ -1012,9 +915,6 @@
   "slow": {
     "message": "אטי"
   },
-  "slower": {
-    "message": "לאט יותר"
-  },
   "somethingWentWrong": {
     "message": "אופס! משהו השתבש."
   },
@@ -1035,24 +935,6 @@
   },
   "stateLogsDescription": {
     "message": "יומני המצב מכילים את כתובות החשבון הציבוריות שלך ועסקאות שנשלחו."
-  },
-  "step1HardwareWallet": {
-    "message": "1. חבר/י ארנק חומרה"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "חבר/י את ארנק החומרה שלך ישירות למחשב שלך."
-  },
-  "step2HardwareWallet": {
-    "message": "2. בחר/י חשבון"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "בחר/י את החשבון שברצונך להציג. באפשרותך לבחור רק אחד בכל פעם."
-  },
-  "step3HardwareWallet": {
-    "message": "3. התחל/י להשתמש ב- dApps ועוד!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "השתמש/י בחשבון החומרה שלך כי שהיית משתמש/ת בכל חשבון אתריום"
   },
   "storePhrase": {
     "message": "אחסנ/י צירוף זה במנהל ססמאות כמו 1Password."
@@ -1159,9 +1041,6 @@
   "transactionSubmitted": {
     "message": "עסקה הוגשה עם עמלת דלק של $1 ב-$2."
   },
-  "transactionTime": {
-    "message": "זמן העסקה"
-  },
   "transactionUpdated": {
     "message": "העסקה עודכנה ב- $2."
   },
@@ -1229,20 +1108,8 @@
   "viewContact": {
     "message": "הצג איש קשר"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "הצג ב- $1"
-  },
-  "viewOnEtherscan": {
-    "message": "הצג ב-Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "הצג באקספלורר"
-  },
   "visitWebSite": {
     "message": "בקר/י באתר שלנו"
-  },
-  "walletSeed": {
-    "message": "גרעין (Seed) ארנק"
   },
   "welcome": {
     "message": "ברוכים הבאים ל- MetaMask"
@@ -1264,9 +1131,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "ה-seed phrase הפרטי שלך"
-  },
-  "yourSigRequested": {
-    "message": "נדרשת חתימתך"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "מחיר גז אפס על האצה"

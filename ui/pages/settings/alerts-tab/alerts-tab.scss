@@ -1,0 +1,33 @@
+.alerts-tab {
+  &__body {
+    @include H6;
+
+    display: grid;
+    grid-template-columns: 8fr 30px max-content;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+  }
+
+  &__body > * {
+    border-bottom: 1px solid var(--Grey-100);
+    padding: 16px 8px;
+    height: 100%;
+  }
+
+  &__body > :first-child {
+    padding-left: 32px;
+  }
+
+  &__body > :nth-child(3n+4) {
+    padding-left: 32px;
+  }
+
+  &__body > :nth-child(3n) {
+    padding-right: 32px;
+  }
+
+  &__description {
+    display: flex;
+    align-items: center;
+  }
+}

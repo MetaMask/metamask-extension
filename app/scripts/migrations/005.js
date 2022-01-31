@@ -4,29 +4,29 @@ This migration moves state from the flat state trie into KeyringController subst
 
 */
 
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash';
 
-const version = 5
+const version = 5;
 
 export default {
   version,
 
   migrate(originalVersionedData) {
-    const versionedData = cloneDeep(originalVersionedData)
-    versionedData.meta.version = version
+    const versionedData = cloneDeep(originalVersionedData);
+    versionedData.meta.version = version;
     try {
-      const state = versionedData.data
-      const newState = selectSubstateForKeyringController(state)
-      versionedData.data = newState
+      const state = versionedData.data;
+      const newState = selectSubstateForKeyringController(state);
+      versionedData.data = newState;
     } catch (err) {
-      console.warn(`MetaMask Migration #5${err.stack}`)
+      console.warn(`MetaMask Migration #5${err.stack}`);
     }
-    return Promise.resolve(versionedData)
+    return Promise.resolve(versionedData);
   },
-}
+};
 
 function selectSubstateForKeyringController(state) {
-  const { config } = state
+  const { config } = state;
   const newState = {
     ...state,
     KeyringController: {
@@ -34,10 +34,10 @@ function selectSubstateForKeyringController(state) {
       selectedAccount: config.selectedAccount,
       walletNicknames: state.walletNicknames,
     },
-  }
-  delete newState.vault
-  delete newState.walletNicknames
-  delete newState.config.selectedAccount
+  };
+  delete newState.vault;
+  delete newState.walletNicknames;
+  delete newState.config.selectedAccount;
 
-  return newState
+  return newState;
 }

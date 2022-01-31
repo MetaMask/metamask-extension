@@ -1,7 +1,8 @@
-import log from 'loglevel'
+import log from 'loglevel';
 
 /**
  * Returns a middleware that logs RPC activity
+ *
  * @param {{ origin: string }} opts - The middleware options
  * @returns {Function}
  */
@@ -13,13 +14,13 @@ export default function createLoggerMiddleware(opts) {
   ) {
     next((/** @type {Function} */ cb) => {
       if (res.error) {
-        log.error('Error in RPC response:\n', res)
+        log.error('Error in RPC response:\n', res);
       }
       if (req.isMetamaskInternal) {
-        return
+        return;
       }
-      log.info(`RPC (${opts.origin}):`, req, '->', res)
-      cb()
-    })
-  }
+      log.info(`RPC (${opts.origin}):`, req, '->', res);
+      cb();
+    });
+  };
 }

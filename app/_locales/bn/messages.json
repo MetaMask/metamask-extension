@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "প্রত্যাখ্যান"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR কোড স্ক্যান করুন"
+  },
   "about": {
     "message": "সম্পর্কে"
   },
@@ -38,9 +44,6 @@
   "addNetwork": {
     "message": "নেটওয়ার্ক যোগ করুন"
   },
-  "addRecipient": {
-    "message": "প্রাপক যোগ করুন"
-  },
   "addSuggestedTokens": {
     "message": "প্রস্তাবিত টোকেনগুলি যোগ করুন"
   },
@@ -52,9 +55,6 @@
   },
   "addToken": {
     "message": "টোকেন যোগ করুন"
-  },
-  "addTokens": {
-    "message": "টোকেনগুলি যোগ করুন"
   },
   "advanced": {
     "message": "উন্নত"
@@ -75,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "অনুমোদন করুন"
@@ -143,9 +151,6 @@
   "browserNotSupported": {
     "message": "আপনার ব্রাউজার সমর্থিত নয়..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask ক্যালিফোর্নিয়াতে ডিজাইন করা এবং নির্মিত।"
-  },
   "buyWithWyre": {
     "message": "Wyre দিয়ে ETH ক্রয় করুন"
   },
@@ -166,9 +171,6 @@
   },
   "chainId": {
     "message": "চেন আইডি"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "শুধুমাত্র Ethereum নেটওয়ার্কগুলিতে চার্ট উপলভ্য। "
   },
   "chromeRequiredForHardwareWallets": {
     "message": "আপনার হার্ডওয়্যার ওয়ালেটের সাথে সংযোগ করতে আপনাকে Google Chrome এ MetaMask ব্যবহার করতে হবে।  "
@@ -230,9 +232,6 @@
   "copiedExclamation": {
     "message": "কপি করা হয়েছে!"
   },
-  "copiedTransactionId": {
-    "message": "কপি করা লেনদেনের আইডি"
-  },
   "copyAddress": {
     "message": "ক্লিপবোর্ডে ঠিকানা কপি করুন"
   },
@@ -263,14 +262,14 @@
   "currentLanguage": {
     "message": "বর্তমান ভাষা"
   },
+  "custom": {
+    "message": "উন্নত"
+  },
   "customGas": {
     "message": "গ্যাস কাস্টোমাইজ করুন"
   },
   "customGasSubTitle": {
     "message": "ফী বৃদ্ধি করা প্রক্রিয়াকরণের সময় কমাতে পারে, কিন্তু সেটির নিশ্চয়তা দেওয়া হয় না।"
-  },
-  "customRPC": {
-    "message": "কাস্টম RPC"
   },
   "customToken": {
     "message": "কাস্টম টোকেন"
@@ -280,9 +279,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "দশমিকগুলি অবশ্যই অন্তত 0 হতে হবে, এবং 36 এর উপর হবে না।"
-  },
-  "defaultNetwork": {
-    "message": "ইথার লেনদেনগুলির জন্য ডিফল্ট নেটওয়ার্কটি হল মেন নেট।"
   },
   "delete": {
     "message": "মুছুন"
@@ -296,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "আপনি কি এই নেটওয়ার্কটি মোছার বিষয়ে নিশ্চিত?"
   },
-  "depositEther": {
-    "message": "ইথার জমা করুন"
-  },
   "details": {
     "message": "বিশদ বিবরণ"
   },
@@ -310,9 +303,6 @@
   },
   "done": {
     "message": "সম্পন্ন "
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "একটি হার্ডওয়্যার ওয়ালেট নেই?"
   },
   "downloadGoogleChrome": {
     "message": "Google Chrome ডাউনলোড করুন"
@@ -352,9 +342,6 @@
   },
   "endOfFlowMessage6": {
     "message": "আপনাকে আপনার সীড আবার ব্যাকআপ করতে হলে, আপনি সেটি সেটিংস -> নিরাপত্তায় পাবেন।"
-  },
-  "endOfFlowMessage7": {
-    "message": "আপনার কখনও কোনো প্রশ্ন থাকলে বা সন্দেহজনক কিছু দেখলে, support@metamask.io ঠিকানায় ইমেল করুন।"
   },
   "endOfFlowMessage8": {
     "message": "MetaMask আপনার সীডফ্রেজ পুনরুদ্ধার করতে পারবে না। আরও জানুন।"
@@ -397,9 +384,6 @@
   },
   "fast": {
     "message": "দ্রুত"
-  },
-  "faster": {
-    "message": "দ্রুততর"
   },
   "fiat": {
     "message": "ফিয়াট",
@@ -452,9 +436,6 @@
     "message": "$1 এর জন্য একটি ফসেট থেকে ইথার পান",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "সহায়তা পান।"
-  },
   "getStarted": {
     "message": "শুরু করুন"
   },
@@ -475,9 +456,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "আপনি MetaMask এর সাথে ব্যবহার করতে চান এমন একটি হার্ডওয়্যার ওয়ালেট নির্বাচন করুন"
-  },
-  "havingTroubleConnecting": {
-    "message": "সংযোগ করতে সমস্যা হচ্ছে?"
   },
   "here": {
     "message": "এখানে",
@@ -508,21 +486,12 @@
   "importAccountSeedPhrase": {
     "message": "সীড ফ্রেজ দিয়ে একটি অ্যাকাউন্ট আমদানি করুন"
   },
-  "importUsingSeed": {
-    "message": "অ্যাকাউন্ট সীড ফ্রেজ ব্যবহার করে আমদানি করুন"
-  },
   "importWallet": {
     "message": "ওয়ালেট আমদানি করুন"
-  },
-  "importYourExisting": {
-    "message": "একটি 12 শব্দের সীড ফ্রেজ ব্যবহার করে আপনার বিদ্যমান ওয়ালেট আমদানি করুন"
   },
   "imported": {
     "message": "আমদানিকৃত",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "তথ্য ও সহায়তা"
   },
   "initialTransactionConfirmed": {
     "message": "আপনার প্রারম্ভিক লেনদেনটি নেটওয়ার্ক নিশ্চিত করেছিল। ফিরে যেতে ঠিক আছে তে ক্লিক করুন।"
@@ -567,20 +536,20 @@
   "learnMore": {
     "message": "আরও জানুন"
   },
+  "learnMoreUpperCase": {
+    "message": "আরও জানুন"
+  },
   "ledgerAccountRestriction": {
     "message": "একটি নতুন অ্যা কাউন্ট যোগ করার আগে আপনাকে আপনার শেষ অ্যাকাউন্ট ব্যবহার করে ফেলতে হবে।"
   },
   "letsGoSetUp": {
     "message": "হ্যাঁ, তাহলে সেট আপ করে নেওয়া যাক!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "আপনি কি এই টোকেনগুলি যোগ করতে চান?"
   },
   "links": {
     "message": "লিঙ্কসমূহ"
-  },
-  "liveGasPricePredictions": {
-    "message": "সরাসরি গ্যাসের মূল্যের অনুমান"
   },
   "loadMore": {
     "message": "আরও লোড করুন"
@@ -618,23 +587,11 @@
   "metamaskVersion": {
     "message": "MetaMask সংস্করণ"
   },
-  "mobileSyncText": {
-    "message": "এটি যে আপনি তা নিশ্চিত করতে অনুগ্রহ করে আপনার পাসওয়ার্ড লিখুন!"
-  },
   "mustSelectOne": {
     "message": "অবশ্যই অন্তত 1টি টোকেন নির্বাচন করতে হবে।"
   },
   "myAccounts": {
     "message": "আমার অ্যাকাউন্টগুলি"
-  },
-  "myWalletAccounts": {
-    "message": "আমার ওয়ালেট অ্যাকাউন্টগুলি"
-  },
-  "myWalletAccountsDescription": {
-    "message": "MetaMask এর তৈরি করা আপনার সমস্ত অ্যাকাউন্টগুলি স্বয়ংক্রিয়ভাবে এই বিভাগে যোগ হয়ে যাবে।"
-  },
-  "needEtherInWallet": {
-    "message": "MetaMask ব্যবহার করে ছড়িয়ে ছিটিয়ে থাকা অ্যাপ্লিকেশনগুলির সাথে যোগাযোগ করতে, আপনার ওয়ালেটে ইথার লাগবে।"
   },
   "needImportFile": {
     "message": "আমদানি করার জন্য আপনাকে অবশ্যই একটি ফাইল নির্বাচন করতে হবে।",
@@ -670,9 +627,6 @@
   },
   "newContract": {
     "message": "নতুন কন্ট্র্যাক্ট"
-  },
-  "newNetwork": {
-    "message": "নতুন নেটওয়ার্ক"
   },
   "newPassword": {
     "message": "নতুন পাসওয়ার্ড (অন্তত 8 অক্ষরের)"
@@ -721,15 +675,6 @@
   },
   "on": {
     "message": "চালু"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "এক্সপ্লোরার URL ব্লক করুন (ঐচ্ছিক)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "প্রতীক (ঐচ্ছিক)"
-  },
-  "orderOneHere": {
-    "message": "একটি Trezor বা লেজার অর্ডার করুন এবং আপনার তহবিলগুলি হীম ঘরে রাখুন"
   },
   "origin": {
     "message": "উৎস"
@@ -784,29 +729,14 @@
   "privateNetwork": {
     "message": "ব্যক্তিগত নেটওয়ার্ক"
   },
-  "protectYourKeys": {
-    "message": "আপনার কীগুলি সুরক্ষিত করুন!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "আপনার সীড ফ্রেজ বিষয়ে সাবধান থাকুন — এমন ওয়েবসাইটগুলির রিপোর্ট পাওয়া গেছে যেগুলি MetaMask কে অনুকরণ করার চেষ্টা করে। MetaMask কখনও আপনার সীড ফ্রেজ জিজ্ঞাসা করবে না।"
-  },
-  "protectYourKeysMessage2": {
-    "message": "আপনার ফ্রেজটিকে নিরাপদে রাখুন।সন্দেহজনক কিছু দেখলে, বা একটি ওয়েবসাইট সম্পর্কে নিশ্চিত না হলে, support@metamask.io এ ইমেল করুন"
-  },
   "queue": {
     "message": "অপেক্ষমাণ"
   },
   "readdToken": {
     "message": "আপনি আপনার অ্যাকাউন্টস বিকল্পের মেনুতে \"টোকেনগুলি যোগ করুন\" এ গিয়ে ভবিষ্যতে আবার এই টোকেনটি যোগ করতে পারবেন। "
   },
-  "readyToConnect": {
-    "message": "সংযোগ করার জন্য প্রস্তুত?"
-  },
   "recents": {
     "message": "সাম্প্রতিকগুলি"
-  },
-  "recipientAddress": {
-    "message": "প্রাপকের ঠিকানা"
   },
   "recipientAddressPlaceholder": {
     "message": "অনুসন্ধান, সার্বজনীন ঠিকানা (0x), বা ENS"
@@ -859,17 +789,11 @@
   "restoreAccountWithSeed": {
     "message": "সীড ফ্রেজ দিয়ে আপনার অ্যাকাউন্ট রিস্টোর করুন"
   },
-  "restoreFromSeed": {
-    "message": "অ্যাকাউন্ট রিস্টোর করবেন?"
-  },
   "revealSeedWords": {
     "message": "সীড শব্দগুলি প্রকাশ করুন"
   },
   "revealSeedWordsDescription": {
     "message": "আপনি কখনও ব্রাউজার পরিবর্তন করলে বা এক কম্পিউটার থেকে অন্য কম্পিউটারে গেলে, আপনাকে আপনার অ্যাকাউন্ট অ্যাক্সেস করার জন্য এই সীড ফ্রেজটি লাগবে। সেগুলি নিরাপদ ও গোপনীয় কোনো স্থানে সংরক্ষণ করুন।  "
-  },
-  "revealSeedWordsTitle": {
-    "message": "সীড ফ্রেজ"
   },
   "revealSeedWordsWarning": {
     "message": "আপনার সমস্ত অ্যাকাউন্ট চুরি করতে এই শব্দগুলি ব্যবহার করা যাবে।"
@@ -907,17 +831,11 @@
   "searchTokens": {
     "message": "টোকেনগুলি অনুসন্ধান করুন"
   },
-  "secretBackupPhrase": {
-    "message": "গোপন ব্যাকআপ ফ্রেজ"
-  },
   "secretBackupPhraseDescription": {
     "message": "আপনার গোপন বাক্যাংশ আপনার অ্যাকাউন্ট ব্যাকআপ এবং রিস্টোর করা সহজতর করে তোলে।"
   },
   "secretBackupPhraseWarning": {
     "message": "সতর্কতা: কখনও আপনার ব্যাকআপ ফ্রেজ প্রকাশ করবেন না। এই ফ্রেজ পেয়ে গেলে যে কেউ আপনার ইথার চিরকালের জন্য নিয়ে নিতে পারবেন।"
-  },
-  "secretPhrase": {
-    "message": "আপনার ভল্ট রিস্টোর করতে এখানে আপনার গোপন বারো শব্দের ফ্রেজ লিখুন।"
   },
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"
@@ -937,20 +855,11 @@
   "selectAnAccount": {
     "message": "একটি অ্যাকাউন্ট নির্বাচন করুন"
   },
-  "selectAnAccountHelp": {
-    "message": "MetaMask এ দেখতে অ্যাকাউন্টটি নির্বাচন করুন"
-  },
-  "selectCurrency": {
-    "message": "কারেন্সি নির্বাচন করুন"
-  },
   "selectEachPhrase": {
     "message": "ফ্রেজগুলি সঠিক তা নিশ্চিত করতে অনুগ্রহ করে প্রতিটি ফ্রেজ নির্বাচন করুন।"
   },
   "selectHdPath": {
     "message": "HD পাথ নির্বাচন করুন"
-  },
-  "selectLocale": {
-    "message": "স্থানীয় নির্বাচন করুন"
   },
   "selectPathHelp": {
     "message": "আপনি নিচে আপনার বিদ্যমান লেজার ব্যালেন্স না দেখলে, \"Legacy (MEW / MyCrypto)\" পাথগুলিতে সুইচ করার চেষ্টা করুন "
@@ -964,14 +873,8 @@
   "sendAmount": {
     "message": "পাঠানো অর্থরাশি"
   },
-  "sendETH": {
-    "message": "ETH পাঠান"
-  },
   "sendTokens": {
     "message": "টোকেনগুলি পাঠান"
-  },
-  "sentEther": {
-    "message": "পাঠানো ইথার "
   },
   "separateEachWord": {
     "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"
@@ -1018,9 +921,6 @@
   "slow": {
     "message": "মন্থর"
   },
-  "slower": {
-    "message": "ধীর গতির"
-  },
   "somethingWentWrong": {
     "message": "ওহো! কিছু সমস্যা হয়েছে।"
   },
@@ -1041,24 +941,6 @@
   },
   "stateLogsDescription": {
     "message": "স্টেট লগগুলিতে আপনার পাবলিক অ্যাকাউন্টের ঠিকানা এবং প্রেরণ করার লেনদেনগুলি আছে।"
-  },
-  "step1HardwareWallet": {
-    "message": "1. হার্ডওয়্যার ওয়ালেট সংযুক্ত করুন"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "আপনার হার্ডওয়্যার ওয়ালেট সরাসরি আপনার কম্পিউটারের সাথে সংযুক্ত করুন।"
-  },
-  "step2HardwareWallet": {
-    "message": "2. একটি অ্যাকাউন্ট নির্বাচন করুন"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "আপনি যে অ্যাকাউন্টটি দেখতে চান সেটি নির্বাচন করুন। আপনি একই সময়ে শুধুমাত্র একটিই বেছে নিতে পারবেন। "
-  },
-  "step3HardwareWallet": {
-    "message": "3. dApps এবং আরও ব্যবহার করে শুরু করুন!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "আপনি কোনো Ethereum অ্যাকাউন্ট যেমন ব্যবহার করেন সেইভাবে আপনার হার্ডওয়্যার অ্যাকাউন্ট ব্যবহার করুন। dApps এ লগইন করুন, Eth পাঠান, ERC20 টোকেন এবং CryptoKitties এর মতো পরস্পর বিনিময়যোগ্য নয় এমন টোকেনগুলি ক্রয় ও সংরক্ষণ করুন।  "
   },
   "storePhrase": {
     "message": "এই বাক্যাংশটি 1Password এর মতো একটি পাসওয়ার্ড পরিচালকে সংরক্ষণ করুন। "
@@ -1165,9 +1047,6 @@
   "transactionSubmitted": {
     "message": "$2 এ $1 এর গ্যাস ফী সহ লেনদেন জমা করা হয়েছে।"
   },
-  "transactionTime": {
-    "message": "লেনদেনের সময়"
-  },
   "transactionUpdated": {
     "message": "লেনদেন $2 এ আপডেট করা হয়েছে।"
   },
@@ -1235,20 +1114,8 @@
   "viewContact": {
     "message": "পরিচিতি দেখুন"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "$1 এ দেখুন"
-  },
-  "viewOnEtherscan": {
-    "message": "Etherscan দেখুন"
-  },
-  "viewinExplorer": {
-    "message": "এক্সপ্লোরারে দেখুন"
-  },
   "visitWebSite": {
     "message": "আমাদের ওয়েবসাইট দেখুন"
-  },
-  "walletSeed": {
-    "message": "ওয়ালেট সীড"
   },
   "welcome": {
     "message": "MetaMask এ স্বাগতম"
@@ -1270,9 +1137,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "আপনার ব্যক্তিগত সীড ফ্রেজ"
-  },
-  "yourSigRequested": {
-    "message": "আপনার স্বাক্ষরের অনুরোধ জানানো হয়েছে"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "স্পীড আপ এ শূণ্য গ্যাসের মূল্য"

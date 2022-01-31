@@ -1,0 +1,112 @@
+@import 'awaiting-swap/index';
+@import 'awaiting-signatures/index';
+@import 'build-quote/index';
+@import 'countdown-timer/index';
+@import 'dropdown-input-pair/index';
+@import 'dropdown-search-list/index';
+@import 'exchange-rate-display/index';
+@import 'fee-card/index';
+@import 'loading-swaps-quotes/index';
+@import 'main-quote-summary/index';
+@import 'searchable-item-list/index';
+@import 'select-quote-popover/index';
+@import 'slippage-buttons/index';
+@import 'swaps-footer/index';
+@import 'view-quote/index';
+@import 'import-token/index';
+
+.swaps {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  @media screen and (min-width: $break-large) {
+    z-index: 12;
+  }
+
+  &__container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    @media screen and (min-width: $break-large) {
+      width: 460px;
+      background: white;
+      border: 1px solid var(--Grey-100);
+      box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+      border-radius: 8px;
+      height: 620px;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    @media screen and (max-width: $break-small) {
+      &--overflow {
+        overflow: scroll;
+      }
+    }
+
+    @media screen and (min-width: $break-large) {
+      width: 348px;
+    }
+  }
+
+  &__title {
+    @include H5;
+
+    font-weight: bold;
+    color: var(--Black-100);
+    margin-top: -5px;
+    flex: 1;
+    text-align: center;
+  }
+
+  &__header {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: 16px;
+    background: var(--Grey-000);
+    width: 100%;
+    position: relative;
+    flex-direction: row;
+
+    @media screen and (min-width: $break-large) {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      height: 66px;
+    }
+  }
+
+  &__header-cancel {
+    @include H7;
+
+    color: var(--Blue-500);
+    cursor: pointer;
+    padding-right: 24px;
+    flex: 1;
+    text-align: right;
+  }
+
+  &__header-edit {
+    @include H7;
+
+    color: var(--Blue-500);
+    cursor: pointer;
+    padding-left: 24px;
+    flex: 1;
+  }
+}

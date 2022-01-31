@@ -1,117 +1,153 @@
-import extension from 'extensionizer'
-import { createExplorerLink as explorerLink } from '@metamask/etherscan-link'
-import { getEnvironmentType, checkForError } from '../lib/util'
-import { ENVIRONMENT_TYPE_BACKGROUND } from '../lib/enums'
-import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction'
+import extension from 'extensionizer';
+import { getBlockExplorerLink } from '@metamask/etherscan-link';
+import { getEnvironmentType, checkForError } from '../lib/util';
+import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
+import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
 
 export default class ExtensionPlatform {
   //
   // Public
   //
   reload() {
-    extension.runtime.reload()
+    extension.runtime.reload();
   }
 
   openTab(options) {
     return new Promise((resolve, reject) => {
       extension.tabs.create(options, (newTab) => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve(newTab)
-      })
-    })
+        return resolve(newTab);
+      });
+    });
   }
 
   openWindow(options) {
     return new Promise((resolve, reject) => {
       extension.windows.create(options, (newWindow) => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve(newWindow)
-      })
-    })
+        return resolve(newWindow);
+      });
+    });
   }
 
   focusWindow(windowId) {
     return new Promise((resolve, reject) => {
       extension.windows.update(windowId, { focused: true }, () => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve()
-      })
-    })
+        return resolve();
+      });
+    });
   }
 
   updateWindowPosition(windowId, left, top) {
     return new Promise((resolve, reject) => {
       extension.windows.update(windowId, { left, top }, () => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve()
-      })
-    })
+        return resolve();
+      });
+    });
   }
 
   getLastFocusedWindow() {
     return new Promise((resolve, reject) => {
       extension.windows.getLastFocused((windowObject) => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve(windowObject)
-      })
-    })
+        return resolve(windowObject);
+      });
+    });
   }
 
   closeCurrentWindow() {
     return extension.windows.getCurrent((windowDetails) => {
-      return extension.windows.remove(windowDetails.id)
-    })
+      return extension.windows.remove(windowDetails.id);
+    });
   }
 
   getVersion() {
-    return extension.runtime.getManifest().version
+    const {
+      version,
+      version_name: versionName,
+    } = extension.runtime.getManifest();
+
+    const versionParts = version.split('.');
+    if (versionName) {
+      if (versionParts.length < 4) {
+        throw new Error(`Version missing build number: '${version}'`);
+      }
+      // On Chrome, a more descriptive representation of the version is stored
+      // in the `version_name` field for display purposes.
+      return versionName;
+    } else if (versionParts.length !== 3) {
+      throw new Error(`Invalid version: ${version}`);
+    } else if (versionParts[2].match(/[^\d]/u)) {
+      // On Firefox, the build type and build version are in the fourth part of the version.
+      const [major, minor, patchAndPrerelease] = versionParts;
+      const matches = patchAndPrerelease.match(/^(\d+)([A-Za-z]+)(\d)+$/u);
+      if (matches === null) {
+        throw new Error(`Version contains invalid prerelease: ${version}`);
+      }
+      const [, patch, buildType, buildVersion] = matches;
+      return `${major}.${minor}.${patch}-${buildType}.${buildVersion}`;
+    }
+
+    // If there is no `version_name` and there are only 3 version parts, then this is not a
+    // prerelease and the version requires no modification.
+    return version;
   }
 
-  openExtensionInBrowser(route = null, queryString = null) {
-    let extensionURL = extension.runtime.getURL('home.html')
-
-    if (queryString) {
-      extensionURL += `?${queryString}`
-    }
+  openExtensionInBrowser(
+    route = null,
+    queryString = null,
+    keepWindowOpen = false,
+  ) {
+    let extensionURL = extension.runtime.getURL('home.html');
 
     if (route) {
-      extensionURL += `#${route}`
+      extensionURL += `#${route}`;
     }
-    this.openTab({ url: extensionURL })
-    if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
-      window.close()
+
+    if (queryString) {
+      extensionURL += `?${queryString}`;
+    }
+
+    this.openTab({ url: extensionURL });
+    if (
+      getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND &&
+      !keepWindowOpen
+    ) {
+      window.close();
     }
   }
 
   getPlatformInfo(cb) {
     try {
       extension.runtime.getPlatformInfo((platform) => {
-        cb(null, platform)
-      })
+        cb(null, platform);
+      });
     } catch (e) {
-      cb(e)
+      cb(e);
       // eslint-disable-next-line no-useless-return
-      return
+      return;
     }
   }
 
-  showTransactionNotification(txMeta) {
-    const { status, txReceipt: { status: receiptStatus } = {} } = txMeta
+  showTransactionNotification(txMeta, rpcPrefs) {
+    const { status, txReceipt: { status: receiptStatus } = {} } = txMeta;
 
     if (status === TRANSACTION_STATUSES.CONFIRMED) {
       // There was an on-chain failure
@@ -120,93 +156,99 @@ export default class ExtensionPlatform {
             txMeta,
             'Transaction encountered an error.',
           )
-        : this._showConfirmedTransaction(txMeta)
+        : this._showConfirmedTransaction(txMeta, rpcPrefs);
     } else if (status === TRANSACTION_STATUSES.FAILED) {
-      this._showFailedTransaction(txMeta)
+      this._showFailedTransaction(txMeta);
     }
+  }
+
+  addOnRemovedListener(listener) {
+    extension.windows.onRemoved.addListener(listener);
   }
 
   getAllWindows() {
     return new Promise((resolve, reject) => {
       extension.windows.getAll((windows) => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve(windows)
-      })
-    })
+        return resolve(windows);
+      });
+    });
   }
 
   getActiveTabs() {
     return new Promise((resolve, reject) => {
       extension.tabs.query({ active: true }, (tabs) => {
-        const error = checkForError()
+        const error = checkForError();
         if (error) {
-          return reject(error)
+          return reject(error);
         }
-        return resolve(tabs)
-      })
-    })
+        return resolve(tabs);
+      });
+    });
   }
 
   currentTab() {
     return new Promise((resolve, reject) => {
       extension.tabs.getCurrent((tab) => {
-        const err = checkForError()
+        const err = checkForError();
         if (err) {
-          reject(err)
+          reject(err);
         } else {
-          resolve(tab)
+          resolve(tab);
         }
-      })
-    })
+      });
+    });
   }
 
   switchToTab(tabId) {
     return new Promise((resolve, reject) => {
       extension.tabs.update(tabId, { highlighted: true }, (tab) => {
-        const err = checkForError()
+        const err = checkForError();
         if (err) {
-          reject(err)
+          reject(err);
         } else {
-          resolve(tab)
+          resolve(tab);
         }
-      })
-    })
+      });
+    });
   }
 
   closeTab(tabId) {
     return new Promise((resolve, reject) => {
       extension.tabs.remove(tabId, () => {
-        const err = checkForError()
+        const err = checkForError();
         if (err) {
-          reject(err)
+          reject(err);
         } else {
-          resolve()
+          resolve();
         }
-      })
-    })
+      });
+    });
   }
 
-  _showConfirmedTransaction(txMeta) {
-    this._subscribeToNotificationClicked()
+  _showConfirmedTransaction(txMeta, rpcPrefs) {
+    this._subscribeToNotificationClicked();
 
-    const url = explorerLink(txMeta.hash, txMeta.metamaskNetworkId)
-    const nonce = parseInt(txMeta.txParams.nonce, 16)
+    const url = getBlockExplorerLink(txMeta, rpcPrefs);
+    const nonce = parseInt(txMeta.txParams.nonce, 16);
 
-    const title = 'Confirmed transaction'
-    const message = `Transaction ${nonce} confirmed! View on Etherscan`
-    this._showNotification(title, message, url)
+    const title = 'Confirmed transaction';
+    const message = `Transaction ${nonce} confirmed! ${
+      url.length ? 'View on Etherscan' : ''
+    }`;
+    this._showNotification(title, message, url);
   }
 
   _showFailedTransaction(txMeta, errorMessage) {
-    const nonce = parseInt(txMeta.txParams.nonce, 16)
-    const title = 'Failed transaction'
+    const nonce = parseInt(txMeta.txParams.nonce, 16);
+    const title = 'Failed transaction';
     const message = `Transaction ${nonce} failed! ${
       errorMessage || txMeta.err.message
-    }`
-    this._showNotification(title, message)
+    }`;
+    this._showNotification(title, message);
   }
 
   _showNotification(title, message, url) {
@@ -215,18 +257,18 @@ export default class ExtensionPlatform {
       title,
       iconUrl: extension.extension.getURL('../../images/icon-64.png'),
       message,
-    })
+    });
   }
 
   _subscribeToNotificationClicked() {
     if (!extension.notifications.onClicked.hasListener(this._viewOnEtherscan)) {
-      extension.notifications.onClicked.addListener(this._viewOnEtherscan)
+      extension.notifications.onClicked.addListener(this._viewOnEtherscan);
     }
   }
 
-  _viewOnEtherscan(txId) {
-    if (txId.startsWith('https://')) {
-      extension.tabs.create({ url: txId })
+  _viewOnEtherscan(url) {
+    if (url.startsWith('https://')) {
+      extension.tabs.create({ url });
     }
   }
 }

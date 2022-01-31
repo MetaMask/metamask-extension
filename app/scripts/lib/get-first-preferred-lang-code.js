@@ -1,48 +1,59 @@
-import extension from 'extensionizer'
-import promisify from 'pify'
-import allLocales from '../../_locales/index.json'
+import extension from 'extensionizer';
+import promisify from 'pify';
+import allLocales from '../../_locales/index.json';
 
 const getPreferredLocales = extension.i18n
   ? promisify(extension.i18n.getAcceptLanguages, { errorFirst: false })
-  : async () => []
+  : async () => [];
 
 // mapping some browsers return hyphen instead underscore in locale codes (e.g. zh_TW -> zh-tw)
-const existingLocaleCodes = {}
+const existingLocaleCodes = {};
 allLocales.forEach((locale) => {
   if (locale && locale.code) {
     existingLocaleCodes[locale.code.toLowerCase().replace('_', '-')] =
-      locale.code
+      locale.code;
   }
-})
+});
 
 /**
  * Returns a preferred language code, based on settings within the user's browser. If we have no translations for the
  * users preferred locales, 'en' is returned.
  *
  * @returns {Promise<string>} Promises a locale code, either one from the user's preferred list that we have a translation for, or 'en'
- *
  */
 export default async function getFirstPreferredLangCode() {
-  let userPreferredLocaleCodes
+  let userPreferredLocaleCodes;
 
   try {
-    userPreferredLocaleCodes = await getPreferredLocales()
+    userPreferredLocaleCodes = await getPreferredLocales();
   } catch (e) {
     // Brave currently throws when calling getAcceptLanguages, so this handles that.
-    userPreferredLocaleCodes = []
+    userPreferredLocaleCodes = [];
   }
 
   // safeguard for Brave Browser until they implement chrome.i18n.getAcceptLanguages
   // https://github.com/MetaMask/metamask-extension/issues/4270
   if (!userPreferredLocaleCodes) {
-    userPreferredLocaleCodes = []
+    userPreferredLocaleCodes = [];
   }
 
-  const firstPreferredLangCode = userPreferredLocaleCodes
+  let firstPreferredLangCode = userPreferredLocaleCodes
     .map((code) => code.toLowerCase().replace('_', '-'))
-    .find((code) =>
-      Object.prototype.hasOwnProperty.call(existingLocaleCodes, code),
-    )
+    .find(
+      (code) =>
+        existingLocaleCodes[code] !== undefined ||
+        existingLocaleCodes[code.split('-')[0]] !== undefined,
+    );
 
-  return existingLocaleCodes[firstPreferredLangCode] || 'en'
+  // if we have matched against a code with a '-' present, meaning its a regional
+  // code for which we have a non-regioned locale, we need to set firstPreferredLangCode
+  // to the correct non-regional code.
+  if (
+    firstPreferredLangCode !== undefined &&
+    existingLocaleCodes[firstPreferredLangCode] === undefined
+  ) {
+    firstPreferredLangCode = firstPreferredLangCode.split('-')[0];
+  }
+
+  return existingLocaleCodes[firstPreferredLangCode] || 'en';
 }

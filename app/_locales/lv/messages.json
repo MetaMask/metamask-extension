@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Noraidīt"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Ieskenēt QR kodu"
+  },
   "about": {
     "message": "Par"
   },
@@ -38,9 +44,6 @@
   "addNetwork": {
     "message": "Pievienot tīklu"
   },
-  "addRecipient": {
-    "message": "Pievienot saņēmēju"
-  },
   "addSuggestedTokens": {
     "message": "Pievienot ieteiktos marķierus"
   },
@@ -52,9 +55,6 @@
   },
   "addToken": {
     "message": "Pievienot žetonu"
-  },
-  "addTokens": {
-    "message": "Pievienot marķierus"
   },
   "advanced": {
     "message": "Papildu"
@@ -75,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Apstiprināt"
@@ -143,9 +151,6 @@
   "browserNotSupported": {
     "message": "Jūsu pārlūkprogramma netiek atbalstīta..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask ir izstrādāta un izveidota Kalifornijā."
-  },
   "buyWithWyre": {
     "message": "Pirkt ETH ar Wyre"
   },
@@ -166,9 +171,6 @@
   },
   "chainId": {
     "message": "Ķēdes ID"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Grafiks pieejams vienīgi Ethereum tīklos."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "MetaMask ir jāpalaiž pārlūkprogrammā Google Chrome, lai varētu pievienot aparatūras maku."
@@ -230,9 +232,6 @@
   "copiedExclamation": {
     "message": "Nokopēts!"
   },
-  "copiedTransactionId": {
-    "message": "Nokopētais darījuma ID"
-  },
   "copyAddress": {
     "message": "Iekopēt adresi starpliktuvē"
   },
@@ -263,14 +262,14 @@
   "currentLanguage": {
     "message": "Pašreizējā valodā"
   },
+  "custom": {
+    "message": "Papildu"
+  },
   "customGas": {
     "message": "Pielāgot Gas"
   },
   "customGasSubTitle": {
     "message": "Nodevas palielināšana var saīsināt apstrādes laiku, bet ne garantēti."
-  },
-  "customRPC": {
-    "message": "Pielāgots RPC izsaukums"
   },
   "customToken": {
     "message": "Pielāgots marķieris"
@@ -280,9 +279,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Daļskaitļiem jābūt diapazonā no 0 līdz 36."
-  },
-  "defaultNetwork": {
-    "message": "Galvenais Ether darījumu tīkls ir Main Net."
   },
   "delete": {
     "message": "Dzēst"
@@ -296,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Vai tiešām vēlaties dzēst šo tīklu?"
   },
-  "depositEther": {
-    "message": "Noguldīt Ether"
-  },
   "details": {
     "message": "Informācija"
   },
@@ -310,9 +303,6 @@
   },
   "done": {
     "message": "Pabeigts"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Nav aparatūras maka?"
   },
   "downloadGoogleChrome": {
     "message": "Lejupielādēt ar Google Chrome"
@@ -352,9 +342,6 @@
   },
   "endOfFlowMessage6": {
     "message": "Ja nepieciešams atkārtoti dublēt atkopšanas frāzi, varat to atrast, dodoties uz Iestatījumi -> Drošība."
-  },
-  "endOfFlowMessage7": {
-    "message": "Ja jums rodas kādi jautājumi vai pamanāt ko aizdomīgu, rakstiet uz support@metamask.io."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask nevar atjaunot jūsu atkopšanas frāzi. Uzzināt vairāk."
@@ -397,9 +384,6 @@
   },
   "fast": {
     "message": "Ātrs"
-  },
-  "faster": {
-    "message": "Ātrāk"
   },
   "fileImportFail": {
     "message": "Vai faila importēšanas iespēja nedarbojas? Klikšķiniet šeit!",
@@ -448,9 +432,6 @@
     "message": "Vai vēlaties $1 iegūt Ether no krāna?",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Saņemt palīdzību."
-  },
   "getStarted": {
     "message": "Sākt darbu"
   },
@@ -471,9 +452,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Atlasiet aparatūras maku lietošanai ar MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Neizdodas pieslēgties?"
   },
   "here": {
     "message": "šeit",
@@ -504,21 +482,12 @@
   "importAccountSeedPhrase": {
     "message": "Importēt kontu ar atkopšanas frāzi"
   },
-  "importUsingSeed": {
-    "message": "Importēt, izmantojot konta atkopšanas frāzi"
-  },
   "importWallet": {
     "message": "Importēt maku"
-  },
-  "importYourExisting": {
-    "message": "Importējiet esošo maku, izmantojot 12 vārdu atkopšanas frāzi"
   },
   "imported": {
     "message": "Importēts",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informācija un palīdzība"
   },
   "initialTransactionConfirmed": {
     "message": "Jūsu sākotnējais darījums apstiprināts tīklā. Spiediet OK, lai atgrieztos."
@@ -563,20 +532,20 @@
   "learnMore": {
     "message": "Uzzināt vairāk"
   },
+  "learnMoreUpperCase": {
+    "message": "Uzzināt vairāk"
+  },
   "ledgerAccountRestriction": {
     "message": "Jums jāizmanto pēdējais konts pirms varat pievienot jaunu."
   },
   "letsGoSetUp": {
     "message": "Jā, sāksim iestatīšanu!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
   },
   "links": {
     "message": "Saites"
-  },
-  "liveGasPricePredictions": {
-    "message": "Reāllaika Gas cenu prognozes"
   },
   "loadMore": {
     "message": "Ielādēt vairāk"
@@ -614,23 +583,11 @@
   "metamaskVersion": {
     "message": "MetaMask versija"
   },
-  "mobileSyncText": {
-    "message": "Lūdzu, ievadiet paroli, lai apstiprinātu, ka tas esat jūs."
-  },
   "mustSelectOne": {
     "message": "Jāatlasa vismaz 1 marķieris."
   },
   "myAccounts": {
     "message": "Mani konti"
-  },
-  "myWalletAccounts": {
-    "message": "Mana maka konti"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Visi jūsu izveidotie MetaMask konti tiks automātiski pievienoti šajā sadaļā."
-  },
-  "needEtherInWallet": {
-    "message": "Lai izmantotu decentralizētas lietotnes ar MetaMask, jūsu makā jābūt Ether."
   },
   "needImportFile": {
     "message": "Jums jāatlasa fails, ko importēt",
@@ -666,9 +623,6 @@
   },
   "newContract": {
     "message": "Jauns līgums"
-  },
-  "newNetwork": {
-    "message": "Jauns tīkls"
   },
   "newPassword": {
     "message": "Jauna parole (vism. 8 rakstzīmes)"
@@ -717,15 +671,6 @@
   },
   "on": {
     "message": "Iesl."
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Bloķēt Explorer URL (pēc izvēles)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbols (neobligāti)"
-  },
-  "orderOneHere": {
-    "message": "Pasūtiet Trezor vai Ledger un glabājiet savus līdzekļus aukstajā krātuvē"
   },
   "origin": {
     "message": "Avots"
@@ -780,29 +725,14 @@
   "privateNetwork": {
     "message": "Privātais tīkls"
   },
-  "protectYourKeys": {
-    "message": "Sargājiet savas atslēgas!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Rīkojieties uzmanīgi ar sēklas frāzi — saņemti ziņojumi par tīmekļa vietnēm, kas mēģina imitēt MetaMask. MetaMask nekad nelūgs norādīt sēklas frāzi."
-  },
-  "protectYourKeysMessage2": {
-    "message": "Glabājiet frāzi drošībā. Ja kaut kas šķiet aizdomīgs vai neesat pārliecināti par tīmekļa vietni, rakstiet e-pastu uz support@metamask.io"
-  },
   "queue": {
     "message": "Rinda"
   },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
   },
-  "readyToConnect": {
-    "message": "Vai esat gatavi izveidot savienojumu?"
-  },
   "recents": {
     "message": "Nesenie"
-  },
-  "recipientAddress": {
-    "message": "Saņēmēja adrese"
   },
   "recipientAddressPlaceholder": {
     "message": "Meklēšana, publiskā adrese (0x) vai ENS"
@@ -855,17 +785,11 @@
   "restoreAccountWithSeed": {
     "message": "Atjaunojiet savu kontu ar atkopšanas frāzi"
   },
-  "restoreFromSeed": {
-    "message": "Atjaunot kontu?"
-  },
   "revealSeedWords": {
     "message": "Parādīt atkopšanas vārdus"
   },
   "revealSeedWordsDescription": {
     "message": "Ja mainīsiet pārlūku vai datoru, jūsu kontu piekļuvei būs nepieciešama šī atkopšanas frāze. Saglabājiet to drošā un slepenā vietā!"
-  },
-  "revealSeedWordsTitle": {
-    "message": "Atkopšanas frāze"
   },
   "revealSeedWordsWarning": {
     "message": "Šos vārdus var izmantot visu jūsu kontu nolaupīšanai."
@@ -903,17 +827,11 @@
   "searchTokens": {
     "message": "Meklēt marķierus"
   },
-  "secretBackupPhrase": {
-    "message": "Slepenā rezerves frāze"
-  },
   "secretBackupPhraseDescription": {
     "message": "Ar slepeno atgūšanas frāzi ir vieglāk dublēt un atjaunot kontu."
   },
   "secretBackupPhraseWarning": {
     "message": "BRĪDINĀJUMS! Nekādā gadījumā neizpaudiet savu rezerves frāzi. Ikviens, kam pieejama šī frāze, var uz visiem laikiem pārņemt jūsu Ether."
-  },
-  "secretPhrase": {
-    "message": "Ievadiet šeit slepeno divpadsmit vārdu frāzi, lai atjaunotu savu seifu."
   },
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
@@ -933,20 +851,11 @@
   "selectAnAccount": {
     "message": "Atlasiet kontu"
   },
-  "selectAnAccountHelp": {
-    "message": "Atlasiet kontu, ko skatīt MetaMask"
-  },
-  "selectCurrency": {
-    "message": "Atlasiet valūtu"
-  },
   "selectEachPhrase": {
     "message": "Lūdzu, atlasiet katru frāzi, lai pārliecinātos par tās pareizību."
   },
   "selectHdPath": {
     "message": "Atlasīt HD ceļu"
-  },
-  "selectLocale": {
-    "message": "Izvēlieties lokalizāciju"
   },
   "selectPathHelp": {
     "message": "Ja zemāk neredzat savus esošos žurnāla kontus, mēģiniet pārslēgt ceļus uz \"Legacy (MEW / MyCrypto)\""
@@ -960,14 +869,8 @@
   "sendAmount": {
     "message": "Nosūtītā summa"
   },
-  "sendETH": {
-    "message": "Sūtīt ETH"
-  },
   "sendTokens": {
     "message": "Nosūtīt marķierus"
-  },
-  "sentEther": {
-    "message": "nosūtītie ether"
   },
   "separateEachWord": {
     "message": "Atdaliet katru vārdu ar vienu atstarpi"
@@ -1014,9 +917,6 @@
   "slow": {
     "message": "Lēns"
   },
-  "slower": {
-    "message": "Lēnāk"
-  },
   "somethingWentWrong": {
     "message": "Ak vai! Radās problēma."
   },
@@ -1037,24 +937,6 @@
   },
   "stateLogsDescription": {
     "message": "Statusa žurnāli ietver publisko kontu adreses un nosūtītos darījumus."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Pieslēgt aparatūras maku"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Savienojiet aparatūras maku tieši ar datoru."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Atlasiet kontu"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Atlasiet kontu, kuru vēlaties skatīt. Vienlaicīgi varat izvēlēties tikai vienu kontu."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Sāciet izmantot dApps un citas funkcijas!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Lietojiet aparatūras kontu līdzīgi citiem Ethereum kontiem. Pierakstieties dApps, sūtiet Eth, pērciet un glabājiet ERC20 žetonus un neatvietojamos žetonus, piemēram, CryptoKitties."
   },
   "storePhrase": {
     "message": "Saglabājiet šo frāzi paroļu pārvaldniekā, piemēram, 1Password."
@@ -1161,9 +1043,6 @@
   "transactionSubmitted": {
     "message": "Darījums iesniegts ar maksu par Gas $1 pie $2."
   },
-  "transactionTime": {
-    "message": "Darījuma ilgums"
-  },
   "transactionUpdated": {
     "message": "Darījums atjaunināts $2."
   },
@@ -1231,20 +1110,8 @@
   "viewContact": {
     "message": "Skatīt līgumu"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Skatīt $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Skatīt Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Skatīt Explorer"
-  },
   "visitWebSite": {
     "message": "Apmeklējiet mūsu tīmekļa vietni"
-  },
-  "walletSeed": {
-    "message": "Maka atkopšanas frāze"
   },
   "welcome": {
     "message": "Laipni lūgti MetaMask"
@@ -1266,9 +1133,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Jūsu privātā atkopšanas frāze"
-  },
-  "yourSigRequested": {
-    "message": "Nepieciešams jūsu paraksts"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Gas nulles cena pie paātrinājuma"

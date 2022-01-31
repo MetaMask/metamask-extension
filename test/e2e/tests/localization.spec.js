@@ -1,6 +1,5 @@
-const { strict: assert } = require('assert')
-const { By, Key } = require('selenium-webdriver')
-const { withFixtures } = require('../helpers')
+const { strict: assert } = require('assert');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Localization', function () {
   it('can correctly display Philippine peso symbol and code', async function () {
@@ -9,24 +8,26 @@ describe('Localization', function () {
         {
           secretKey:
             '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
-    }
+    };
     await withFixtures(
       { fixtures: 'localization', ganacheOptions, title: this.test.title },
       async ({ driver }) => {
-        const passwordField = await driver.findElement(By.css('#password'))
-        await passwordField.sendKeys('correct horse battery staple')
-        await passwordField.sendKeys(Key.ENTER)
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
         const secondaryBalance = await driver.findElement(
-          By.css('[data-testid="eth-overview__secondary-currency"]'),
-        )
-        const secondaryBalanceText = await secondaryBalance.getText()
-        const [fiatAmount, fiatUnit] = secondaryBalanceText.trim().split(/\s+/u)
-        assert.ok(fiatAmount.startsWith('₱'))
-        assert.equal(fiatUnit, 'PHP')
+          '[data-testid="eth-overview__secondary-currency"]',
+        );
+        const secondaryBalanceText = await secondaryBalance.getText();
+        const [fiatAmount, fiatUnit] = secondaryBalanceText
+          .trim()
+          .split(/\s+/u);
+        assert.ok(fiatAmount.startsWith('₱'));
+        assert.equal(fiatUnit, 'PHP');
       },
-    )
-  })
-})
+    );
+  });
+});

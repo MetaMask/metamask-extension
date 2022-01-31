@@ -1,0 +1,40 @@
+{
+  "data": {
+    "config": {},
+    "PreferencesController": {
+      "frequentRpcListDetail": [
+        {
+          "rpcUrl": "http://localhost:8545",
+          "chainId": "0x539",
+          "ticker": "ETH",
+          "nickname": "Localhost 8545",
+          "rpcPrefs": {}
+        }
+      ]
+    },
+    "firstTimeInfo": {
+      "version": "9.3.0",
+      "date": 1617927806790
+    },
+    "NetworkController": {
+      "provider": {
+        "ticker": "ETH",
+        "type": "rpc",
+        "rpcUrl": "http://localhost:8545",
+        "chainId": "0x539",
+        "nickname": "Localhost 8545"
+      },
+      "network": "1337"
+    },
+    "CurrencyController": {
+      "conversionDate": 1617927806.941,
+      "conversionRate": 2084.64,
+      "currentCurrency": "usd",
+      "nativeCurrency": "ETH",
+      "usdConversionRate": 2084.64
+    }
+  },
+  "meta": {
+    "version": 57
+  }
+}

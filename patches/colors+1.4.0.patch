@@ -1,0 +1,14 @@
+diff --git a/node_modules/colors/lib/extendStringPrototype.js b/node_modules/colors/lib/extendStringPrototype.js
+index 46fd386..c7d0fc5 100644
+--- a/node_modules/colors/lib/extendStringPrototype.js
++++ b/node_modules/colors/lib/extendStringPrototype.js
+@@ -5,7 +5,8 @@ module['exports'] = function() {
+   // Extends prototype of native string object to allow for "foo".red syntax
+   //
+   var addProperty = function(color, func) {
+-    String.prototype.__defineGetter__(color, func);
++    // remove prototype mutation so this plays well with LavaMoat
++    // String.prototype.__defineGetter__(color, func);
+   };
+ 
+   addProperty('strip', function() {

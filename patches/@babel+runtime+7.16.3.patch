@@ -1,0 +1,112 @@
+diff --git a/node_modules/@babel/runtime/helpers/construct.js b/node_modules/@babel/runtime/helpers/construct.js
+index 108b39a..e3c769b 100644
+--- a/node_modules/@babel/runtime/helpers/construct.js
++++ b/node_modules/@babel/runtime/helpers/construct.js
+@@ -1,26 +1,21 @@
+-var setPrototypeOf = require("./setPrototypeOf.js");
++// All of MetaMask's supported browsers include `Reflect.construct` support, so
++// we don't need this polyfill.
+ 
+-var isNativeReflectConstruct = require("./isNativeReflectConstruct.js");
+-
+-function _construct(Parent, args, Class) {
+-  if (isNativeReflectConstruct()) {
+-    module.exports = _construct = Reflect.construct;
+-    module.exports["default"] = module.exports, module.exports.__esModule = true;
+-  } else {
+-    module.exports = _construct = function _construct(Parent, args, Class) {
+-      var a = [null];
+-      a.push.apply(a, args);
+-      var Constructor = Function.bind.apply(Parent, a);
+-      var instance = new Constructor();
+-      if (Class) setPrototypeOf(instance, Class.prototype);
+-      return instance;
+-    };
+-
+-    module.exports["default"] = module.exports, module.exports.__esModule = true;
++// This Proxy preseves the two properties that were added by `@babel/runtime`.
++// I am not entire sure what these properties are for (maybe ES5/ES6
++// interoperability?) but they have been preserved just in case.
++const reflectProxy =  new Proxy(
++  Reflect.construct,
++  {
++    get: function (target, property) {
++      if (property === 'default') {
++        return target;
++      } else if (property === '__esModule') {
++        return true;
++      }
++      return Reflect.get(...arguments);
++    }
+   }
++);
+ 
+-  return _construct.apply(null, arguments);
+-}
+-
+-module.exports = _construct;
+-module.exports["default"] = module.exports, module.exports.__esModule = true;
+\ No newline at end of file
++module.exports = reflectProxy;
+diff --git a/node_modules/@babel/runtime/helpers/extends.js b/node_modules/@babel/runtime/helpers/extends.js
+index eaf9547..d0474f5 100644
+--- a/node_modules/@babel/runtime/helpers/extends.js
++++ b/node_modules/@babel/runtime/helpers/extends.js
+@@ -1,20 +1,5 @@
+ function _extends() {
+-  module.exports = _extends = Object.assign || function (target) {
+-    for (var i = 1; i < arguments.length; i++) {
+-      var source = arguments[i];
+-
+-      for (var key in source) {
+-        if (Object.prototype.hasOwnProperty.call(source, key)) {
+-          target[key] = source[key];
+-        }
+-      }
+-    }
+-
+-    return target;
+-  };
+-
+-  module.exports["default"] = module.exports, module.exports.__esModule = true;
+-  return _extends.apply(this, arguments);
++  return Object.assign(...arguments)
+ }
+ 
+ module.exports = _extends;
+diff --git a/node_modules/@babel/runtime/helpers/getPrototypeOf.js b/node_modules/@babel/runtime/helpers/getPrototypeOf.js
+index a6916eb..e01b2d6 100644
+--- a/node_modules/@babel/runtime/helpers/getPrototypeOf.js
++++ b/node_modules/@babel/runtime/helpers/getPrototypeOf.js
+@@ -1,9 +1,5 @@
+ function _getPrototypeOf(o) {
+-  module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
+-    return o.__proto__ || Object.getPrototypeOf(o);
+-  };
+-  module.exports["default"] = module.exports, module.exports.__esModule = true;
+-  return _getPrototypeOf(o);
++  return Object.getPrototypeOf(o);
+ }
+ 
+ module.exports = _getPrototypeOf;
+diff --git a/node_modules/@babel/runtime/helpers/setPrototypeOf.js b/node_modules/@babel/runtime/helpers/setPrototypeOf.js
+index 415797b..63312f2 100644
+--- a/node_modules/@babel/runtime/helpers/setPrototypeOf.js
++++ b/node_modules/@babel/runtime/helpers/setPrototypeOf.js
+@@ -1,12 +1,7 @@
+ function _setPrototypeOf(o, p) {
+-  module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+-    o.__proto__ = p;
+-    return o;
+-  };
+-
+-  module.exports["default"] = module.exports, module.exports.__esModule = true;
+-  return _setPrototypeOf(o, p);
+-}
++  o.__proto__ = p;
++  return o;
++};
+ 
+ module.exports = _setPrototypeOf;
+ module.exports["default"] = module.exports, module.exports.__esModule = true;
+\ No newline at end of file

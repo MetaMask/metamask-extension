@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Tanggihan"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "I-scan ang QR Code"
+  },
   "about": {
     "message": "Tungkol sa"
   },
@@ -35,9 +41,6 @@
   "addNetwork": {
     "message": "Magdagdag ng Network"
   },
-  "addRecipient": {
-    "message": "Magdagdag ng Recipient"
-  },
   "addSuggestedTokens": {
     "message": "Magdagdag ng Mga Iminungkahing Token"
   },
@@ -49,9 +52,6 @@
   },
   "addToken": {
     "message": "Magdagdag ng Token"
-  },
-  "addTokens": {
-    "message": "Magdagdag ng Mga Token"
   },
   "advancedOptions": {
     "message": "Mga Advanced na Opsyon"
@@ -69,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Aprubahan"
@@ -128,9 +136,6 @@
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
-  "builtInCalifornia": {
-    "message": "Ang MetaMask ay dinisenyo at binuo sa California."
-  },
   "buyWithWyre": {
     "message": "Bumili ng ETH gamit ang Wyre"
   },
@@ -145,9 +150,6 @@
   },
   "cancelled": {
     "message": "Nakansela"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Available lang ang chart sa mga Ethereum network."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Kailangan mong gamitin ang MetaMask sa Google Chrome upang makakonekta sa iyong Hardware Wallet."
@@ -209,9 +211,6 @@
   "copiedExclamation": {
     "message": "Nakopya!"
   },
-  "copiedTransactionId": {
-    "message": "Nakopya ang Transaction ID"
-  },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
@@ -257,9 +256,6 @@
   "decimalsMustZerotoTen": {
     "message": "Ang mga decimal ay hindi dapat bumaba sa 0, at hindi lumampas sa 36."
   },
-  "defaultNetwork": {
-    "message": "Ang default na network para sa mga transaksyon ng Ether ay Main Net."
-  },
   "delete": {
     "message": "I-delete"
   },
@@ -272,9 +268,6 @@
   "deleteNetworkDescription": {
     "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
   },
-  "depositEther": {
-    "message": "Magdeposito ng Ether"
-  },
   "details": {
     "message": "Mga Detalye"
   },
@@ -286,9 +279,6 @@
   },
   "done": {
     "message": "Tapos na"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Wala ka bang hardware wallet?"
   },
   "downloadGoogleChrome": {
     "message": "I-download ang Google Chrome"
@@ -329,9 +319,6 @@
   "endOfFlowMessage6": {
     "message": "Kung kailangan mong i-back up ulit ang iyong seed phrase, makikita mo ito sa Mga Setting -> Seguridad."
   },
-  "endOfFlowMessage7": {
-    "message": "Kung may mga tanong ka o nakakita ka ng kahina-hinalang bagay, i-email ang support@metamask.io."
-  },
   "endOfFlowMessage8": {
     "message": "Hindi ma-recover ng MetaMask ang iyong seedphrase. Alamin pa."
   },
@@ -370,9 +357,6 @@
   },
   "fast": {
     "message": "Mabilis"
-  },
-  "faster": {
-    "message": "Mas Mabilis"
   },
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
@@ -421,9 +405,6 @@
     "message": "Kumuha ng Ether mula sa isang faucet para sa $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Humingi ng Tulong."
-  },
   "getStarted": {
     "message": "Magsimula"
   },
@@ -438,9 +419,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Pumili ng hardware wallet na gusto mong gamitin sa MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "May problema ka ba sa pagkonekta?"
   },
   "here": {
     "message": "dito",
@@ -465,21 +443,12 @@
   "importAccountSeedPhrase": {
     "message": "Mag-import ng Account gamit ang Seed Phrase"
   },
-  "importUsingSeed": {
-    "message": "Mag-import gamit ang seed phrase ng account"
-  },
   "importWallet": {
     "message": "Mag-import ng Wallet"
-  },
-  "importYourExisting": {
-    "message": "I-import ang kasalukuyan mong wallet gamit ang isang seed phrase na may 12 salita"
   },
   "imported": {
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Impormasyon at Tulong"
   },
   "initialTransactionConfirmed": {
     "message": "Nakumpirma ng network ang iyong unang transaksyon. I-click ang OK para bumalik."
@@ -517,20 +486,20 @@
   "learnMore": {
     "message": "Matuto pa"
   },
+  "learnMoreUpperCase": {
+    "message": "Matuto pa"
+  },
   "ledgerAccountRestriction": {
     "message": "Kailangan mong gamitin ang iyong dating account bago ka makapagdagdag ng bago."
   },
   "letsGoSetUp": {
     "message": "Oo, i-set up natin ito!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
   "links": {
     "message": "Mga Link"
-  },
-  "liveGasPricePredictions": {
-    "message": "Mga Live na Prediksyon sa Presyo ng Gas"
   },
   "loadMore": {
     "message": "Mag-load Pa"
@@ -556,23 +525,11 @@
   "metamaskVersion": {
     "message": "Bersyon ng MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Pakilagay ang iyong password para kumpirmahing ikaw ito!"
-  },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token."
   },
   "myAccounts": {
     "message": "Mga Account Ko"
-  },
-  "myWalletAccounts": {
-    "message": "Mga Wallet Account Ko"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Ang lahat ng iyong account na ginawa sa MetaMask ay awtomatikong idadagdag sa seksyong ito."
-  },
-  "needEtherInWallet": {
-    "message": "Para gumamit ng mga decentralized na application gamit ang MetaMask, mangangailangan ka ng Ether sa iyong wallet."
   },
   "needImportFile": {
     "message": "Dapat kang pumili ng file na ii-import.",
@@ -604,9 +561,6 @@
   },
   "newContract": {
     "message": "Bagong Contract"
-  },
-  "newNetwork": {
-    "message": "Bagong Network"
   },
   "newPassword": {
     "message": "Bagong Password (min 8 char)"
@@ -652,15 +606,6 @@
   },
   "on": {
     "message": "Naka-on"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (opsyonal)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbolo (opsyonal)"
-  },
-  "orderOneHere": {
-    "message": "Mag-order ng Trezor o Ledger para itago sa cold storage ang iyong pondo"
   },
   "origin": {
     "message": "Pinanggalingan"
@@ -708,29 +653,14 @@
   "privateNetwork": {
     "message": "Pribadong Network"
   },
-  "protectYourKeys": {
-    "message": "Protektahan Ang Iyong Mga Key!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Mag-ingat sa iyong seed phrase — may mga ulat na may mga website na nagpapanggap bilang MetaMask. Hindi kailanman hihilingin ng MetaMask ang iyong seed phrase!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Panatilihing ligtas ang iyong parirala. Kung may makikita kang kahina-hinala, o hindi ka sigurado tungkol sa isang website, mag-email sa support@metamask.io"
-  },
   "queue": {
     "message": "I-queue"
   },
   "readdToken": {
     "message": "Puwede mong idagdag ulit ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon ng iyong mga accounts."
   },
-  "readyToConnect": {
-    "message": "Handa ka nang Kumonekta?"
-  },
   "recents": {
     "message": "Kamakailan"
-  },
-  "recipientAddress": {
-    "message": "Address ng Recipient"
   },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"
@@ -783,9 +713,6 @@
   "restoreAccountWithSeed": {
     "message": "I-restore ang iyong Account gamit ang Seed Phrase"
   },
-  "restoreFromSeed": {
-    "message": "I-restore ang account?"
-  },
   "revealSeedWords": {
     "message": "Ipakita ang Seed Words"
   },
@@ -828,9 +755,6 @@
   "secretBackupPhraseWarning": {
     "message": "BABALA: Huwag ibunyag ang iyong backup phrase. Mananakaw ng kahit sinong may ganitong parirala ang iyong Ether at hindi na ito maibabalik."
   },
-  "secretPhrase": {
-    "message": "Ilagay ang iyong lihim na pariralang may labindalawang salita para ma-restore ang iyong vault."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -849,20 +773,11 @@
   "selectAnAccount": {
     "message": "Pumili ng Account"
   },
-  "selectAnAccountHelp": {
-    "message": "Piliin ang account na titingnan sa MetaMask"
-  },
-  "selectCurrency": {
-    "message": "Pumili ng Currency"
-  },
   "selectEachPhrase": {
     "message": "Pakipili ang bawat parirala para tiyaking tama ito."
   },
   "selectHdPath": {
     "message": "Piliin ang HD Path"
-  },
-  "selectLocale": {
-    "message": "Pumili ng Locale"
   },
   "selectPathHelp": {
     "message": "Kung hindi mo makita ang kasalukuyan mong mga Ledger account sa ibaba, subukang ilipat ang mga path sa \"Legacy (MEW / MyCrypto)\""
@@ -876,14 +791,8 @@
   "sendAmount": {
     "message": "Magpadala ng Halaga"
   },
-  "sendETH": {
-    "message": "Magpadala ng ETH"
-  },
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
-  },
-  "sentEther": {
-    "message": "nagpadala ng ether"
   },
   "separateEachWord": {
     "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
@@ -924,9 +833,6 @@
   "slow": {
     "message": "Mabagal"
   },
-  "slower": {
-    "message": "Mas Mabagal"
-  },
   "somethingWentWrong": {
     "message": "Oops! Nagkaroon ng problema."
   },
@@ -947,24 +853,6 @@
   },
   "stateLogsDescription": {
     "message": "Ang mga state log ay naglalaman ng iyong mga pampublikong account address at mga ipinadalang transaksyon."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Magkonekta ng Hardware Wallet"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Ikonekta ang iyong hardware wallet nang direkta sa computer."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Pumili ng Account"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Piliin ang halagang gusto mong tingnan. Maaari ka lang pumili nang paisa-isa."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Magsimula gamit ang dApps at higit pa!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Gamitin ang iyong hardware account tulad ng anumang Ethereum account. Mag-log in sa dApps, magpadala ng Eth, bumili at mag-store ng mga ERC20 token at mga Non-Fungible token tulad ng CryptoKitties."
   },
   "storePhrase": {
     "message": "I-store ang pariralang ito sa isang password manager tulad ng 1Password."
@@ -1062,9 +950,6 @@
   "transactionSubmitted": {
     "message": "Nasumite ang transaksyon nang may gas fee na $1 sa $2."
   },
-  "transactionTime": {
-    "message": "Oras ng Transaksyon"
-  },
   "transactionUpdated": {
     "message": "Na-update ang transaksyon sa $2."
   },
@@ -1129,15 +1014,6 @@
   "viewContact": {
     "message": "Tingnan ang Contact"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Tingnan sa $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Tingnan sa Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Tingnan sa Explorer"
-  },
   "visitWebSite": {
     "message": "Bisitahin ang aming web site"
   },
@@ -1161,9 +1037,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Ang iyong pribadong seed phrase"
-  },
-  "yourSigRequested": {
-    "message": "Hinihiling ang iyong signature"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero ang presyo ng gas sa speed up"

@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Respingeți"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scanați codul QR"
+  },
   "about": {
     "message": "Despre"
   },
@@ -38,9 +44,6 @@
   "addNetwork": {
     "message": "Adăugați rețea"
   },
-  "addRecipient": {
-    "message": "Adăugați destinatarul"
-  },
   "addSuggestedTokens": {
     "message": "Adăugați indicativele sugerate"
   },
@@ -52,9 +55,6 @@
   },
   "addToken": {
     "message": "Adăugare simbol"
-  },
-  "addTokens": {
-    "message": "Adăugați token-uri"
   },
   "advanced": {
     "message": "Avansate"
@@ -75,6 +75,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Aprobați"
@@ -143,9 +151,6 @@
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
   },
-  "builtInCalifornia": {
-    "message": "MetaMask este concepută și creată în California."
-  },
   "buyWithWyre": {
     "message": "Cumpărați ETH cu Wyre"
   },
@@ -166,9 +171,6 @@
   },
   "chainId": {
     "message": "ID lanț"
-  },
-  "chartOnlyAvailableEth": {
-    "message": "Grafic disponibil numai pe rețelele Ethereum."
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Trebuie să folosiți MetaMask în Google Chrome pentru a vă conecta la portofelul hardware."
@@ -230,9 +232,6 @@
   "copiedExclamation": {
     "message": "Copiat!"
   },
-  "copiedTransactionId": {
-    "message": "ID-ul tranzacției a fost copiat"
-  },
   "copyAddress": {
     "message": "Copiere adresă în clipboard"
   },
@@ -263,14 +262,14 @@
   "currentLanguage": {
     "message": "Limba actuală"
   },
+  "custom": {
+    "message": "Avansate"
+  },
   "customGas": {
     "message": "Particularizați Gas"
   },
   "customGasSubTitle": {
     "message": "Creșterea taxei poate reduce timpii de procesare, dar acest lucru nu este garantat."
-  },
-  "customRPC": {
-    "message": "RPC particularizat"
   },
   "customToken": {
     "message": "Token personalizat"
@@ -280,9 +279,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Zecimalele trebuie să fie cel puțin 0, dar nu peste 36."
-  },
-  "defaultNetwork": {
-    "message": "Rețeaua implicită pentru tranzacțiile cu Ether este Main Net."
   },
   "delete": {
     "message": "Șterge"
@@ -296,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Sigur vreți să ștergeți această rețea?"
   },
-  "depositEther": {
-    "message": "Depuneți Ether"
-  },
   "details": {
     "message": "Detalii"
   },
@@ -310,9 +303,6 @@
   },
   "done": {
     "message": "Efectuat"
-  },
-  "dontHaveAHardwareWallet": {
-    "message": "Nu aveți portofel hardware?"
   },
   "downloadGoogleChrome": {
     "message": "Descărcare Google Chrome"
@@ -352,9 +342,6 @@
   },
   "endOfFlowMessage6": {
     "message": "Dacă trebuie să vă salvați din nou fraza seed, puteți să o găsiți în Setări -> Securitate."
-  },
-  "endOfFlowMessage7": {
-    "message": "Dacă aveți întrebări sau vedeți ceva suspect, trimiteți un e-mail la support@metamask.io."
   },
   "endOfFlowMessage8": {
     "message": "MetaMask nu vă poate recupera expresia sursă. Aflați mai multe."
@@ -397,9 +384,6 @@
   },
   "fast": {
     "message": "Rapid"
-  },
-  "faster": {
-    "message": "Mai repede"
   },
   "fileImportFail": {
     "message": "Importarea fișierului nu funcționează? Dați clic aici!",
@@ -445,9 +429,6 @@
     "message": "Obțineți Ether de la un robinet pentru $1",
     "description": "Displays network name for Ether faucet"
   },
-  "getHelp": {
-    "message": "Obțineți ajutor."
-  },
   "getStarted": {
     "message": "Începe"
   },
@@ -465,9 +446,6 @@
   },
   "hardwareWalletsMsg": {
     "message": "Selectați un portofel hardware pe care doriți să îl folosiți cu MetaMask"
-  },
-  "havingTroubleConnecting": {
-    "message": "Aveți probleme cu conectarea?"
   },
   "here": {
     "message": "aici",
@@ -498,21 +476,12 @@
   "importAccountSeedPhrase": {
     "message": "Importați un cont cu fraza seed"
   },
-  "importUsingSeed": {
-    "message": "Importare folosind fraza inițială a contului"
-  },
   "importWallet": {
     "message": "Importați portofel"
-  },
-  "importYourExisting": {
-    "message": "Importați portofelul existent folosind o frază seed de 12 cuvinte"
   },
   "imported": {
     "message": "Importate",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "infoHelp": {
-    "message": "Informații și ajutor"
   },
   "initialTransactionConfirmed": {
     "message": "Tranzacția inițială a fost confirmată de rețea. Clic pe OK pentru a reveni."
@@ -557,20 +526,20 @@
   "learnMore": {
     "message": "Aflați mai multe"
   },
+  "learnMoreUpperCase": {
+    "message": "Aflați mai multe"
+  },
   "ledgerAccountRestriction": {
     "message": "Trebuie să folosiți ultimul cont înainte să adăugați altul."
   },
   "letsGoSetUp": {
     "message": "Da, hai să configurăm!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Adăugați aceste indicative?"
   },
   "links": {
     "message": "Link-uri"
-  },
-  "liveGasPricePredictions": {
-    "message": "Predicții live de preț în gas"
   },
   "loadMore": {
     "message": "Încărcați mai multe"
@@ -605,23 +574,11 @@
   "metamaskVersion": {
     "message": "Versiune MetaMask"
   },
-  "mobileSyncText": {
-    "message": "Vă rugăm introduceți parola pentru a vă confirma identitatea!"
-  },
   "mustSelectOne": {
     "message": "Trebuie să selectați cel puțin 1 simbol."
   },
   "myAccounts": {
     "message": "Conturile mele"
-  },
-  "myWalletAccounts": {
-    "message": "Conturi My Wallet"
-  },
-  "myWalletAccountsDescription": {
-    "message": "Toate conturile dvs. create pe MetaMask vor fi adăugate automat la această secțiune."
-  },
-  "needEtherInWallet": {
-    "message": "Pentru a interacționa cu aplicațiile descentralizate prin intermediul MetaMask, trebuie să aveți Ether în portofel."
   },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
@@ -657,9 +614,6 @@
   },
   "newContract": {
     "message": "Contract nou"
-  },
-  "newNetwork": {
-    "message": "Rețea nouă"
   },
   "newPassword": {
     "message": "Parola Nouă (minimum 8 caractere)"
@@ -708,15 +662,6 @@
   },
   "on": {
     "message": "Activat"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "URL explorator bloc (opțional)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Simbol (opțional)"
-  },
-  "orderOneHere": {
-    "message": "Comandați Trezor sau Ledger și țineți-vă fondurile la rece"
   },
   "origin": {
     "message": "Origine"
@@ -771,29 +716,14 @@
   "privateNetwork": {
     "message": "Rețea privată"
   },
-  "protectYourKeys": {
-    "message": "Protejați-vă cheile!"
-  },
-  "protectYourKeysMessage1": {
-    "message": "Aveți grijă cu expresia dvs. sursă – au existat raportări despre site-uri web care încearcă să imite MetaMask. MetaMask nu vă va cere niciodată expresia sursă!"
-  },
-  "protectYourKeysMessage2": {
-    "message": "Aveți grijă de fraza dvs. Dacă vedeți ceva care este în neregulă sau aveți dubii cu privire la un site, trimiteți un mesaj la support@metamask.io"
-  },
   "queue": {
     "message": "Coadă"
   },
   "readdToken": {
     "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."
   },
-  "readyToConnect": {
-    "message": "Gata de conectare?"
-  },
   "recents": {
     "message": "Recente"
-  },
-  "recipientAddress": {
-    "message": "Adresă destinatar"
   },
   "recipientAddressPlaceholder": {
     "message": "Căutare, adresa publică (0x) sau ENS"
@@ -846,17 +776,11 @@
   "restoreAccountWithSeed": {
     "message": "Restaurați-vă contul folosind fraza inițială"
   },
-  "restoreFromSeed": {
-    "message": "Restabiliți contul?"
-  },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"
   },
   "revealSeedWordsDescription": {
     "message": "Dacă schimbați vreodată browserele sau vă mutați la alt computer, veți avea nevoie de această expresie sursă pentru a vă accesa conturile. Salvați-o într-un loc sigur și secret."
-  },
-  "revealSeedWordsTitle": {
-    "message": "Expresie sursă"
   },
   "revealSeedWordsWarning": {
     "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile."
@@ -894,17 +818,11 @@
   "searchTokens": {
     "message": "Căutați token-uri"
   },
-  "secretBackupPhrase": {
-    "message": "Expresia secretă de rezervă"
-  },
   "secretBackupPhraseDescription": {
     "message": "Expresia dvs. secretă de rezervă înlesnește crearea unei copii de rezervă a contului dvs. și restabilirea acestuia."
   },
   "secretBackupPhraseWarning": {
     "message": "ATENȚIE: Nu dezvăluiți niciodată expresia dvs. de rezervă. Oricine are această expresie vă poate lua Ether-ul pentru totdeauna."
-  },
-  "secretPhrase": {
-    "message": "Introduceți aici expresia dvs. secretă din 12 cuvinte pentru a restabili seiful."
   },
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
@@ -924,20 +842,11 @@
   "selectAnAccount": {
     "message": "Selectați un cont"
   },
-  "selectAnAccountHelp": {
-    "message": "Selectați contul de vizualizat în MetaMask"
-  },
-  "selectCurrency": {
-    "message": "Selectați moneda"
-  },
   "selectEachPhrase": {
     "message": "Vă rugăm să selectați fiecare expresie pentru a vă asigura că este corectă."
   },
   "selectHdPath": {
     "message": "Selectare cale HD"
-  },
-  "selectLocale": {
-    "message": "Alegeți setările regionale"
   },
   "selectPathHelp": {
     "message": "Dacă nu vedeți mai jos conturile dvs. Ledger existente, încercați să comutați calea la „Legacy (MEW / MyCrypto)”"
@@ -951,14 +860,8 @@
   "sendAmount": {
     "message": "Suma trimisă"
   },
-  "sendETH": {
-    "message": "Trimitere ETH"
-  },
   "sendTokens": {
     "message": "Trimiteți indicative"
-  },
-  "sentEther": {
-    "message": "trimiteți ether"
   },
   "separateEachWord": {
     "message": "Despărțiți fiecare cuvânt cu un spațiu"
@@ -1005,9 +908,6 @@
   "slow": {
     "message": "Lent"
   },
-  "slower": {
-    "message": "Mai încet"
-  },
   "somethingWentWrong": {
     "message": "Hopa! A apărut o eroare."
   },
@@ -1028,24 +928,6 @@
   },
   "stateLogsDescription": {
     "message": "Jurnalele de stare conțin adresele contului dvs. public și tranzacțiile trimise."
-  },
-  "step1HardwareWallet": {
-    "message": "1. Conectați portofel hardware"
-  },
-  "step1HardwareWalletMsg": {
-    "message": "Conectați portofelul hardware direct la computer."
-  },
-  "step2HardwareWallet": {
-    "message": "2. Selectați un cont"
-  },
-  "step2HardwareWalletMsg": {
-    "message": "Selectați contul pe care vreți să îl vizualizați. Puteți alege doar câte unul odată."
-  },
-  "step3HardwareWallet": {
-    "message": "3. Începeți să folosiți dApps și altele!"
-  },
-  "step3HardwareWalletMsg": {
-    "message": "Folosiți-vă contul hardware la fel ca pe orice cont Ethereum. Conectați-vă la dApps, trimiteți Eth, cumpărați și stocați tokenuri ERC20 și tokenuri non-fungibile precum CryptoKitties."
   },
   "storePhrase": {
     "message": "Păstrați această expresie într-un program de gestionare a parolelor cum ar fi 1Password."
@@ -1149,9 +1031,6 @@
   "transactionSubmitted": {
     "message": "Tranzacția a fost trimisă, cu o taxă gas de $1 la $2."
   },
-  "transactionTime": {
-    "message": "Ora tranzacției"
-  },
   "transactionUpdated": {
     "message": "Tranzacție actualizată la $2."
   },
@@ -1216,20 +1095,8 @@
   "viewContact": {
     "message": "Vizualizare contact"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Vizualizați la $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Vizualizați pe Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Vizualizare în Explorator"
-  },
   "visitWebSite": {
     "message": "Accesați site-ul nostru"
-  },
-  "walletSeed": {
-    "message": "Sursă portofel"
   },
   "welcome": {
     "message": "Bun venit la MetaMask"
@@ -1251,9 +1118,6 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Expresia dvs. seed privată"
-  },
-  "yourSigRequested": {
-    "message": "Semnătura dvs. este solicitată"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Preț gas zero la accelerare"

@@ -1,0 +1,45 @@
+.error-page {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  font-style: normal;
+  font-weight: normal;
+  padding: 35px 10px 10px 10px;
+  height: 100%;
+
+  &__header {
+    @include H1;
+
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    text-align: center;
+  }
+
+  &__subheader {
+    @include H4;
+
+    padding: 10px 0;
+    width: 100%;
+    max-width: 720px;
+    text-align: center;
+  }
+
+  &__details {
+    @include H4;
+
+    overflow-y: auto;
+    width: 100%;
+    max-width: 720px;
+    padding-top: 10px;
+  }
+
+  &__stack {
+    overflow-x: auto;
+    background-color: #eee;
+  }
+
+  &__link-text {
+    color: #037dd6;
+  }
+}

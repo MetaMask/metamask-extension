@@ -1,0 +1,30 @@
+/*
+  MetaMask design system imports
+  The variables declared here should take precedence.
+  They are included first because they will be used to replace bad variable names in itcss
+  prior to it being fully removed from the system.
+*/
+@import './reset.scss';
+@import './design-system/index';
+@import './base-styles.scss';
+@import '../components/app/app-components';
+@import '../components/ui/ui-components';
+@import '../pages/pages';
+
+/*
+  ITCSS
+
+  http://www.creativebloq.com/web-design/manage-large-css-projects-itcss-101517528
+  https://www.xfive.co/blog/itcss-scalable-maintainable-css-architecture/
+
+  DEPRECATED: This CSS architecture is deprecated. The following imports will be removed
+  overtime.
+ */
+@import './itcss/settings/index';
+@import './itcss/tools/index';
+@import './itcss/components/index';
+
+/*
+  Third Party Library Styles
+*/
+@import '../../node_modules/react-tippy/dist/tippy';

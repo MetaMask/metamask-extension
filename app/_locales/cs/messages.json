@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odmítnout"
+  },
   "account": {
     "message": "Účet"
   },
@@ -11,9 +14,6 @@
   "addToken": {
     "message": "Přidat token"
   },
-  "addTokens": {
-    "message": "Přidat tokeny"
-  },
   "amount": {
     "message": "Částka"
   },
@@ -24,6 +24,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Schválit"
@@ -45,9 +53,6 @@
   },
   "blockiesIdenticon": {
     "message": "Použít Blockies Identicon"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask je navržen a vytvořen v Kalifornii."
   },
   "cancel": {
     "message": "Zrušit"
@@ -94,9 +99,6 @@
   "customGas": {
     "message": "Nastavit palivo"
   },
-  "customRPC": {
-    "message": "Vlastní RPC"
-  },
   "customToken": {
     "message": "Vlastní token"
   },
@@ -105,12 +107,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Desetinných míst musí být od 0 do 36."
-  },
-  "defaultNetwork": {
-    "message": "Výchozí síť pro Etherové transakce je Main Net."
-  },
-  "depositEther": {
-    "message": "Vložit Ether"
   },
   "details": {
     "message": "Podrobnosti"
@@ -192,9 +188,6 @@
     "message": "Importováno",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "infoHelp": {
-    "message": "Informace a nápověda"
-  },
   "insufficientFunds": {
     "message": "Nedostatek finančních prostředků."
   },
@@ -220,7 +213,10 @@
   "learnMore": {
     "message": "Zjistěte více."
   },
-  "likeToAddTokens": {
+  "learnMoreUpperCase": {
+    "message": "Zjistěte více."
+  },
+  "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
   "links": {
@@ -246,9 +242,6 @@
   },
   "myAccounts": {
     "message": "Moje účty"
-  },
-  "needEtherInWallet": {
-    "message": "Potřebujete Ether v peněžence, abyste mohli pomocí MetaMasku interagovat s decentralizovanými aplikacemi."
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
@@ -311,9 +304,6 @@
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
   },
-  "recipientAddress": {
-    "message": "Adresa příjemce"
-  },
   "reject": {
     "message": "Odmítnout"
   },
@@ -325,9 +315,6 @@
   },
   "resetAccount": {
     "message": "Resetovat účet"
-  },
-  "restoreFromSeed": {
-    "message": "Obnovit z seed fráze"
   },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
@@ -344,23 +331,14 @@
   "searchTokens": {
     "message": "Hledat tokeny"
   },
-  "secretPhrase": {
-    "message": "Zadejte svých 12 slov tajné fráze k obnovení trezoru."
-  },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
-  },
-  "selectCurrency": {
-    "message": "Vybrat měnu"
   },
   "selectType": {
     "message": "Vybrat typ"
   },
   "send": {
     "message": "Odeslat"
-  },
-  "sendETH": {
-    "message": "Odeslat ETH"
   },
   "sendTokens": {
     "message": "Odeslat tokeny"
@@ -456,16 +434,10 @@
   "visitWebSite": {
     "message": "Navštivte naši stránku"
   },
-  "walletSeed": {
-    "message": "Klíčová fráze peněženky"
-  },
   "welcome": {
     "message": "Vítejte v MetaMask"
   },
   "youSign": {
     "message": "Podepisujete"
-  },
-  "yourSigRequested": {
-    "message": "Je vyžadován váš podpis"
   }
 }

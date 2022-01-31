@@ -1,0 +1,21 @@
+.dropdown {
+  @include H6;
+
+  appearance: none;
+
+  // TODO: remove these after getting autoprefixer working in Storybook
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #d2d8dd;
+  border-radius: 6px;
+  background-image: url('/images/icons/caret-down.svg');
+  background-repeat: no-repeat, repeat;
+  background-position: right 18px top 50%;
+  background-color: white;
+  padding: 8px 32px 8px 16px;
+
+  [dir='rtl'] & {
+    background-position: left 18px top 50%;
+    padding: 8px 16px 8px 32px;
+  }
+}

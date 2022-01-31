@@ -1,84 +1,94 @@
 #!/usr/bin/env node
-const childProcess = require('child_process')
-const pify = require('pify')
-
-const exec = pify(childProcess.exec, { multiArgs: true })
-const VERSION = require('../dist/chrome/manifest.json').version // eslint-disable-line import/no-unresolved
+const VERSION = require('../dist/chrome/manifest.json').version; // eslint-disable-line import/no-unresolved
+const { runCommand, runInShell } = require('./lib/run-command');
 
 start().catch((error) => {
-  console.error(error)
-  process.exit(1)
-})
+  console.error(error);
+  process.exit(1);
+});
 
 async function start() {
-  const authWorked = await checkIfAuthWorks()
+  if (!process.env.SENTRY_ORG) {
+    throw new Error('Missing required "SENTRY_ORG" environment variable');
+  } else if (!process.env.SENTRY_PROJECT) {
+    throw new Error('Missing required "SENTRY_PROJECT" environment variable');
+  }
+
+  const authWorked = await checkIfAuthWorks();
   if (!authWorked) {
-    throw new Error(`Sentry auth failed`)
+    throw new Error(`Sentry auth failed`);
   }
   // check if version exists or not
-  const versionAlreadyExists = await checkIfVersionExists()
+  const versionAlreadyExists = await checkIfVersionExists();
   // abort if versions exists
   if (versionAlreadyExists) {
     console.log(
       `Version "${VERSION}" already exists on Sentry, skipping version creation`,
-    )
+    );
   } else {
     // create sentry release
-    console.log(`creating Sentry release for "${VERSION}"...`)
-    await exec(
-      `sentry-cli releases --org 'metamask' --project 'metamask' new ${VERSION}`,
-    )
+    console.log(`creating Sentry release for "${VERSION}"...`);
+    await runCommand('sentry-cli', ['releases', 'new', VERSION]);
     console.log(
       `removing any existing files from Sentry release "${VERSION}"...`,
-    )
-    await exec(
-      `sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} delete --all`,
-    )
+    );
+    await runCommand('sentry-cli', [
+      'releases',
+      'files',
+      VERSION,
+      'delete',
+      '--all',
+    ]);
   }
 
   // check if version has artifacts or not
   const versionHasArtifacts =
-    versionAlreadyExists && (await checkIfVersionHasArtifacts())
+    versionAlreadyExists && (await checkIfVersionHasArtifacts());
   if (versionHasArtifacts) {
     console.log(
       `Version "${VERSION}" already has artifacts on Sentry, skipping sourcemap upload`,
-    )
-    return
+    );
+    return;
   }
 
   // upload sentry source and sourcemaps
-  await exec(`./development/sentry-upload-artifacts.sh --release ${VERSION}`)
+  await runInShell('./development/sentry-upload-artifacts.sh', [
+    '--release',
+    VERSION,
+  ]);
 }
 
 async function checkIfAuthWorks() {
-  const itWorked = await doesNotFail(async () => {
-    await exec(`sentry-cli releases --org 'metamask' --project 'metamask' list`)
-  })
-  return itWorked
+  return await doesNotFail(() =>
+    runCommand('sentry-cli', ['releases', 'list']),
+  );
 }
 
 async function checkIfVersionExists() {
-  const versionAlreadyExists = await doesNotFail(async () => {
-    await exec(
-      `sentry-cli releases --org 'metamask' --project 'metamask' info ${VERSION}`,
-    )
-  })
-  return versionAlreadyExists
+  return await doesNotFail(() =>
+    runCommand('sentry-cli', ['releases', 'info', VERSION]),
+  );
 }
 
 async function checkIfVersionHasArtifacts() {
-  const artifacts = await exec(
-    `sentry-cli releases --org 'metamask' --project 'metamask' files ${VERSION} list`,
-  )
+  const [artifact] = await runCommand('sentry-cli', [
+    'releases',
+    'files',
+    VERSION,
+    'list',
+  ]);
   // When there's no artifacts, we get a response from the shell like this ['', '']
-  return artifacts[0] && artifacts[0].length > 0
+  return artifact?.length > 0;
 }
 
 async function doesNotFail(asyncFn) {
   try {
-    await asyncFn()
-    return true
-  } catch (err) {
-    return false
+    await asyncFn();
+    return true;
+  } catch (error) {
+    if (error.message === `Exited with code '1'`) {
+      return false;
+    }
+    throw error;
   }
 }
