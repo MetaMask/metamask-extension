@@ -296,7 +296,8 @@ export default class AppStateController extends EventEmitter {
       collectiblesDropdownState,
     });
   }
- /**
+
+  /**
    * Sets the array of the first time used networks
    *
    * @param chainId

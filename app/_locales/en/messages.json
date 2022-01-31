@@ -2041,12 +2041,12 @@
   "name": {
     "message": "Name"
   },
+  "nativeToken": {
+    "message": "The native token on this network is $1. It is the token used for gas fees."
+  },
   "needCryptoInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need $1 in your wallet.",
     "description": "$1 represents the cypto symbol to be purchased"
-  },
-  "nativeToken": {
-    "message": "The native token on this network is $1. It is the token used for gas fees."
   },
   "needEtherInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
