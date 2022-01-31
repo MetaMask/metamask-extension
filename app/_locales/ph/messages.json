@@ -519,9 +519,6 @@
   "deleteNetworkDescription": {
     "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
   },
-  "depositEther": {
-    "message": "Mag-deposit ng Ether"
-  },
   "details": {
     "message": "Mga Detalye"
   },
@@ -1115,9 +1112,6 @@
   },
   "name": {
     "message": "Pangalan"
-  },
-  "needEtherInWallet": {
-    "message": "Para makaugnayan ang mga decentralized na application gamit ang MetaMask, kakailanganin mo ang Ether sa iyong wallet."
   },
   "needHelp": {
     "message": "Kailangan ng tulong? Makipag-ugnayan sa $1",

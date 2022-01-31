@@ -67,7 +67,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
       <button onClick={openEditGasFeeModal} data-testid="edit-gas-fee-button">
         {icon && (
           <span className="edit-gas-fee-button__icon">
-            {`${PRIORITY_LEVEL_ICON_MAP[icon]} `}
+            {PRIORITY_LEVEL_ICON_MAP[icon]}
           </span>
         )}
         <span className="edit-gas-fee-button__label">{t(title)}</span>

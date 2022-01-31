@@ -142,7 +142,7 @@ const CancelSpeedupPopover = () => {
           marginTop={4}
         >
           <Box className="cancel-speedup-popover__edit-gas-button">
-            <EditGasFeeButton />
+            {!appIsLoading && <EditGasFeeButton />}
           </Box>
           <Box className="cancel-speedup-popover__gas-details">
             <GasDetailsItem />

@@ -389,11 +389,13 @@
   "buy": {
     "message": "Buy"
   },
-  "buyWithTransak": {
-    "message": "Buy ETH with Transak"
+  "buyCryptoWithTransak": {
+    "message": "Buy $1 with Transak",
+    "description": "$1 represents the cypto symbol to be purchased"
   },
-  "buyWithTransakDescription": {
-    "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. ETH deposits into your MetaMask account."
+  "buyCryptoWithTransakDescription": {
+    "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. $1 deposits into your MetaMask account.",
+    "description": "$1 represents the cypto symbol to be purchased"
   },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
@@ -745,8 +747,9 @@
   "deleteNetworkDescription": {
     "message": "Are you sure you want to delete this network?"
   },
-  "depositEther": {
-    "message": "Deposit Ether"
+  "depositCrypto": {
+    "message": "Deposit $1",
+    "description": "$1 represents the cypto symbol to be purchased"
   },
   "description": {
     "message": "Description"
@@ -1796,8 +1799,9 @@
   "name": {
     "message": "Name"
   },
-  "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+  "needCryptoInWallet": {
+    "message": "To interact with decentralized applications using MetaMask, you’ll need $1 in your wallet.",
+    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Need help? Contact $1",

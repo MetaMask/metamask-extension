@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Наистина ли искате да изтриете тази мрежа?"
   },
-  "depositEther": {
-    "message": "Депозирайте етер"
-  },
   "details": {
     "message": "Подробности"
   },
@@ -591,9 +588,6 @@
   },
   "myAccounts": {
     "message": "Моите акаунти"
-  },
-  "needEtherInWallet": {
-    "message": "За да взаимодействате с децентрализираните приложения, използвайки MetaMask, ще ви е необходим етер в портфейла ви."
   },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",

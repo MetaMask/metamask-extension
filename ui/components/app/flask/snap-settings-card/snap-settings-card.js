@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -55,36 +55,6 @@ const SnapSettingsCard = ({
   chipProps,
 }) => {
   const t = useI18nContext();
-  const [chipStatus, setChipStatus] = useState(STATUSES.INSTALLING);
-
-  // TODO: use state directly in place of memoization
-  const handleStatus = useCallback(() => {
-    switch (status) {
-      case STATUSES.INSTALLING: {
-        setChipStatus(STATUSES.INSTALLING);
-        break;
-      }
-      case STATUSES.RUNNING: {
-        setChipStatus(STATUSES.RUNNING);
-        break;
-      }
-      case STATUSES.STOPPED: {
-        setChipStatus(STATUSES.STOPPED);
-        break;
-      }
-      case STATUSES.CRASHED: {
-        setChipStatus(STATUSES.CRASHED);
-        break;
-      }
-      default: {
-        setChipStatus(STATUSES.INSTALLING);
-      }
-    }
-  }, [status]);
-
-  useEffect(() => {
-    handleStatus(status);
-  }, [handleStatus, status]);
 
   return (
     <Card
@@ -158,12 +128,12 @@ const SnapSettingsCard = ({
               leftIcon={
                 <Box paddingLeft={1}>
                   <ColorIndicator
-                    color={STATUS_COLORS[chipStatus]}
+                    color={STATUS_COLORS[status]}
                     type={ColorIndicator.TYPES.FILLED}
                   />
                 </Box>
               }
-              label={chipStatus}
+              label={status}
               labelProps={{
                 color: COLORS.UI4,
                 margin: [0, 1],
