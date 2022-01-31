@@ -170,9 +170,11 @@ export default function SmartTransactionStatus() {
   }, [dispatch, isSmartTransactionPending, timeLeftForPendingStxInSec]);
 
   useEffect(() => {
-    // We don't need to poll for quotes on the status page.
-    dispatch(stopPollingForQuotes());
     dispatch(setBackgroundSwapRouteState('smartTransactionStatus'));
+    setTimeout(() => {
+      // We don't need to poll for quotes on the status page.
+      dispatch(stopPollingForQuotes());
+    }, 1000); // Stop polling for quotes after 1s.
   }, [dispatch]);
 
   const onClickTokenTo = async (e) => {
