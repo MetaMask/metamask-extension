@@ -29,9 +29,7 @@ const AdvancedGasFeePopover = () => {
       >
         <Box margin={4}>
           <AdvancedGasFeeInputs />
-          <div className="advanced-gas-fee-popover__separator" />
           <AdvancedGasFeeDefaults />
-          <div className="advanced-gas-fee-popover__separator" />
           <AdvancedGasFeeGasLimit />
         </Box>
       </Popover>

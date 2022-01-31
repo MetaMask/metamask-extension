@@ -55,7 +55,7 @@ export function addTenPercentAndRound(hexStringValue) {
   return addTenPercent(hexStringValue, { numberOfDecimals: 0 });
 }
 
-export function isVolatileGasEstimate(estimate) {
+export function isMetamaskSuggestedGasEstimate(estimate) {
   return [
     GAS_RECOMMENDATIONS.HIGH,
     GAS_RECOMMENDATIONS.MEDIUM,
