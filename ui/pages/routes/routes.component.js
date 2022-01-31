@@ -77,7 +77,7 @@ import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
 import { THEME_TYPE } from '../settings/experimental-tab/experimental-tab.constant';
-import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info.component';
+import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import fetchWithCache from '../../helpers/utils/fetch-with-cache';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../shared/constants/tokens';
 

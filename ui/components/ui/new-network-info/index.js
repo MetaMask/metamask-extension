@@ -1,1 +1,1 @@
-export { default } from './new-network-info.component';
+export { default } from './new-network-info';

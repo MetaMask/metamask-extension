@@ -40,16 +40,15 @@ const NewNetworkInfo = ({
         </Button>
       }
     >
-      <h4 className="new-network-info__title">
-        <Typography
-          variant={TYPOGRAPHY.H4}
-          color={COLORS.BLACK}
-          fontWeight={FONT_WEIGHT[700]}
-          align={TEXT_ALIGN.CENTER}
-        >
-          {t('switchedTo')}
-        </Typography>
-      </h4>
+      <Typography
+        variant={TYPOGRAPHY.H4}
+        color={COLORS.BLACK}
+        fontWeight={FONT_WEIGHT[700]}
+        align={TEXT_ALIGN.CENTER}
+        className="new-network-info__title"
+      >
+        {t('switchedTo')}
+      </Typography>
       <Box
         backgroundColor={COLORS.UI1}
         borderRadius={SIZES.XL}
@@ -76,15 +75,14 @@ const NewNetworkInfo = ({
             : t(providerType)}
         </Typography>
       </Box>
-      <h7 className="new-network-info__subtitle">
-        <Typography
-          variant={TYPOGRAPHY.H7}
-          color={COLORS.BLACK}
-          fontWeight={FONT_WEIGHT[700]}
-        >
-          {t('thingsToKeep')}
-        </Typography>
-      </h7>
+      <Typography
+        variant={TYPOGRAPHY.H7}
+        color={COLORS.BLACK}
+        fontWeight={FONT_WEIGHT[700]}
+        className="new-network-info__subtitle"
+      >
+        {t('thingsToKeep')}
+      </Typography>
       <Box marginRight={4} marginLeft={5}>
         {providerTicker ? (
           <Box
@@ -98,25 +96,24 @@ const NewNetworkInfo = ({
             <Box marginRight={4} color={COLORS.BLACK}>
               &bull;
             </Box>
-            <h7 className="new-network-info__content-box-1__text-1">
-              <Typography
-                variant={TYPOGRAPHY.H7}
-                color={COLORS.BLACK}
-                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-              >
-                {t('nativeToken', [
-                  <>
-                    <Typography
-                      variant={TYPOGRAPHY.H7}
-                      boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-                      fontWeight={FONT_WEIGHT[700]}
-                    >
-                      {providerTicker}
-                    </Typography>
-                  </>,
-                ])}
-              </Typography>
-            </h7>
+            <Typography
+              variant={TYPOGRAPHY.H7}
+              color={COLORS.BLACK}
+              boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+              className="new-network-info__content-box-1__text-1"
+            >
+              {t('nativeToken', [
+                <>
+                  <Typography
+                    variant={TYPOGRAPHY.H7}
+                    boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                    fontWeight={FONT_WEIGHT[700]}
+                  >
+                    {providerTicker}
+                  </Typography>
+                </>,
+              ])}
+            </Typography>
           </Box>
         ) : null}
         <Box
@@ -127,28 +124,27 @@ const NewNetworkInfo = ({
           <Box marginRight={4} color={COLORS.BLACK}>
             &bull;
           </Box>
-          <h7 className="new-network-info__content-box-1__text-1">
-            <Typography
-              variant={TYPOGRAPHY.H7}
-              color={COLORS.BLACK}
-              boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+          <Typography
+            variant={TYPOGRAPHY.H7}
+            color={COLORS.BLACK}
+            boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+            className="new-network-info__content-box-1__text-1"
+          >
+            {t('attemptSendingAssets')}{' '}
+            <a
+              href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
+              target="_blank"
+              rel="noreferrer"
             >
-              {t('attemptSendingAssets')}{' '}
-              <a
-                href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
-                target="_blank"
-                rel="noreferrer"
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.PRIMARY1}
+                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
               >
-                <Typography
-                  variant={TYPOGRAPHY.H7}
-                  color={COLORS.PRIMARY1}
-                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-                >
-                  {t('learnMoreUpperCase')}
-                </Typography>
-              </a>
-            </Typography>
-          </h7>
+                {t('learnMoreUpperCase')}
+              </Typography>
+            </a>
+          </Typography>
         </Box>
         {!autoDetectToken || !tokenDetectionSupported ? (
           <Box
