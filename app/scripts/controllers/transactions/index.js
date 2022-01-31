@@ -543,6 +543,13 @@ export default class TransactionController extends EventEmitter {
       txMeta.txParams.gas = defaultGasLimit;
       txMeta.originalGasEstimate = defaultGasLimit;
     }
+    txMeta.defaultGasEstimates = {
+      estimateType: txMeta.userFeeLevel,
+      gas: txMeta.txParams.gas,
+      gasPrice: txMeta.txParams.gasPrice,
+      maxFeePerGas: txMeta.txParams.maxFeePerGas,
+      maxPriorityFeePerGas: txMeta.txParams.maxPriorityFeePerGas,
+    };
     return txMeta;
   }
 
@@ -1130,12 +1137,12 @@ export default class TransactionController extends EventEmitter {
    *  fragment for
    * @param {valueOf<TRANSACTION_EVENTS>} event - event type to create
    */
-  createTransactionEventFragment(transactionId, event) {
+  async createTransactionEventFragment(transactionId, event) {
     const txMeta = this.txStateManager.getTransaction(transactionId);
     const {
       properties,
       sensitiveProperties,
-    } = this._buildEventFragmentProperties(txMeta);
+    } = await this._buildEventFragmentProperties(txMeta);
     this._createTransactionEventFragment(
       txMeta,
       event,
@@ -1474,7 +1481,7 @@ export default class TransactionController extends EventEmitter {
     }
   }
 
-  _buildEventFragmentProperties(txMeta, extraParams) {
+  async _buildEventFragmentProperties(txMeta, extraParams) {
     const {
       type,
       time,
@@ -1489,6 +1496,7 @@ export default class TransactionController extends EventEmitter {
         estimateSuggested,
         estimateUsed,
       },
+      defaultGasEstimates,
       metamaskNetworkId: network,
     } = txMeta;
     const source = referrer === 'metamask' ? 'user' : 'dapp';
@@ -1502,6 +1510,43 @@ export default class TransactionController extends EventEmitter {
       gasParams.gas_price = gasPrice;
     }
 
+    if (defaultGasEstimates) {
+      const { estimateType } = defaultGasEstimates;
+      if (estimateType) {
+        gasParams.default_estimate = estimateType;
+        let defaultMaxFeePerGas = txMeta.defaultGasEstimates.maxFeePerGas;
+        let defaultMaxPriorityFeePerGas =
+          txMeta.defaultGasEstimates.maxPriorityFeePerGas;
+
+        if (
+          [
+            GAS_RECOMMENDATIONS.LOW,
+            GAS_RECOMMENDATIONS.MEDIUM,
+            GAS_RECOMMENDATIONS.MEDIUM.HIGH,
+          ].includes(estimateType)
+        ) {
+          const { gasFeeEstimates } = await this._getEIP1559GasFeeEstimates();
+          if (gasFeeEstimates?.[estimateType]?.suggestedMaxFeePerGas) {
+            defaultMaxFeePerGas =
+              gasFeeEstimates[estimateType]?.suggestedMaxFeePerGas;
+            gasParams.default_max_fee_per_gas = defaultMaxFeePerGas;
+          }
+          if (gasFeeEstimates?.[estimateType]?.suggestedMaxPriorityFeePerGas) {
+            defaultMaxPriorityFeePerGas =
+              gasFeeEstimates[estimateType]?.suggestedMaxPriorityFeePerGas;
+            gasParams.default_max_priority_fee_per_gas = defaultMaxPriorityFeePerGas;
+          }
+        }
+      }
+
+      if (txMeta.defaultGasEstimates.gas) {
+        gasParams.default_gas = txMeta.defaultGasEstimates.gas;
+      }
+      if (txMeta.defaultGasEstimates.gasPrice) {
+        gasParams.default_gas_price = txMeta.defaultGasEstimates.gasPrice;
+      }
+    }
+
     if (estimateSuggested) {
       gasParams.estimate_suggested = estimateSuggested;
     }
@@ -1512,12 +1557,19 @@ export default class TransactionController extends EventEmitter {
 
     const gasParamsInGwei = this._getGasValuesInGWEI(gasParams);
 
+    let eip1559Version = '0';
+    if (txMeta.txParams.maxFeePerGas) {
+      const { eip1559V2Enabled } = this.preferencesStore.getState();
+      eip1559Version = eip1559V2Enabled ? '2' : '1';
+    }
+
     const properties = {
       chain_id: chainId,
       referrer,
       source,
       network,
       type,
+      eip_1559_version: eip1559Version,
     };
 
     const sensitiveProperties = {
@@ -1661,14 +1713,14 @@ export default class TransactionController extends EventEmitter {
    * @param {TransactionMetaMetricsEventString} event - the name of the transaction event
    * @param {Object} extraParams - optional props and values to include in sensitiveProperties
    */
-  _trackTransactionMetricsEvent(txMeta, event, extraParams = {}) {
+  async _trackTransactionMetricsEvent(txMeta, event, extraParams = {}) {
     if (!txMeta) {
       return;
     }
     const {
       properties,
       sensitiveProperties,
-    } = this._buildEventFragmentProperties(txMeta, extraParams);
+    } = await this._buildEventFragmentProperties(txMeta, extraParams);
 
     // Create event fragments for event types that spawn fragments, and ensure
     // existence of fragments for event types that act upon them.
