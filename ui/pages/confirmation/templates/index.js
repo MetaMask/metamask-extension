@@ -22,6 +22,7 @@ const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',
   'onApprove',
   'onCancel',
+  'networkDisplay',
 ];
 
 /**

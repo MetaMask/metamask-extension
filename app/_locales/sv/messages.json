@@ -286,9 +286,6 @@
   "deleteNetworkDescription": {
     "message": "Är du säker på att du vill ta bort detta nätverk?"
   },
-  "depositEther": {
-    "message": "Sätt in Ether"
-  },
   "details": {
     "message": "Info"
   },
@@ -579,9 +576,6 @@
   },
   "myAccounts": {
     "message": "Mina konton"
-  },
-  "needEtherInWallet": {
-    "message": "För att interagera med decentraliserade applikationer med MetaMask behöver du Ether i din plånbok."
   },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",

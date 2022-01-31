@@ -54,7 +54,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
       >
         {icon && (
           <span className="edit-gas-fee-button__icon">
-            {`${PRIORITY_LEVEL_ICON_MAP[icon]} `}
+            {PRIORITY_LEVEL_ICON_MAP[icon]}
           </span>
         )}
         <span className="edit-gas-fee-button__label">{t(title)}</span>

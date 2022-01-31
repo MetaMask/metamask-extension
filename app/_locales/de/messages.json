@@ -283,9 +283,6 @@
   "deleteNetworkDescription": {
     "message": "Sind Sie sicher, dass Sie dieses Netzwerk löschen möchten?"
   },
-  "depositEther": {
-    "message": "Ether einzahlen"
-  },
   "directDepositEther": {
     "message": "Sofort Ether einzahlen"
   },
@@ -568,9 +565,6 @@
   },
   "myAccounts": {
     "message": "Meine Accounts"
-  },
-  "needEtherInWallet": {
-    "message": "Um dezentralisierte Applikationen mit MetaMask verwenden zu können, benötigst du Ether in deiner Wallet."
   },
   "needImportFile": {
     "message": "Für den Import musst du eine Datei auswählen.",

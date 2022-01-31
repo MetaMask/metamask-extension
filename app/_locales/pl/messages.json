@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Czy na pewno chcesz usunąć tę sieć?"
   },
-  "depositEther": {
-    "message": "Zdeponuj Eter"
-  },
   "details": {
     "message": "Szczegóły"
   },
@@ -592,9 +589,6 @@
   },
   "myAccounts": {
     "message": "Moje konta"
-  },
-  "needEtherInWallet": {
-    "message": "Żeby skorzystać ze zdecentraliowanych aplikacji (dApps) przy pomocy MetaMask, potrzebujesz Eteru w swoim portfelu."
   },
   "needImportFile": {
     "message": "Musisz wybrać plik do zaimportowania.",

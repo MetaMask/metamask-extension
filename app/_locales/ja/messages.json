@@ -389,12 +389,6 @@
   "buy": {
     "message": "購入"
   },
-  "buyWithTransak": {
-    "message": "TransakでETHを購入"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transakは59か国以上でデビットカードと銀行振込 (場所によって異なります) をサポートしています。ETHはMetaMaskアカウントに入金されます。"
-  },
   "buyWithWyre": {
     "message": "Wyre で ETH を購入"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "このネットワークを削除しますか?"
-  },
-  "depositEther": {
-    "message": "Ether 入金"
   },
   "description": {
     "message": "説明"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "名前"
-  },
-  "needEtherInWallet": {
-    "message": "MetaMask を使用して分散型アプリケーションとやりとりするには、ウォレットに Ether が必要です。"
   },
   "needHelp": {
     "message": "お手伝いしましょうか？$1 に連絡",

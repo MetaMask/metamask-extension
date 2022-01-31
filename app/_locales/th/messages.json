@@ -132,9 +132,6 @@
   "deleteNetwork": {
     "message": "ลบเครือข่าย?"
   },
-  "depositEther": {
-    "message": "การฝากอีเธอร์"
-  },
   "details": {
     "message": "รายละเอียด"
   },
@@ -300,9 +297,6 @@
   },
   "myAccounts": {
     "message": "บัญชีของฉัน"
-  },
-  "needEtherInWallet": {
-    "message": "คุณจะต้องมีอีเธอร์ในกระเป๋าเงินของคุณในการใช้งานกับแอพพลิเคชันแบบกระจายด้วย MetaMask"
   },
   "needImportFile": {
     "message": "คุณต้องเลือกไฟล์ที่จะนำเข้า",

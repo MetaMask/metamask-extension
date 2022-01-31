@@ -389,12 +389,6 @@
   "buy": {
     "message": "Mua"
   },
-  "buyWithTransak": {
-    "message": "Mua ETH bằng Transak"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak hỗ trợ thẻ ghi nợ và chuyển khoản ngân hàng (tùy vào địa điểm) tại hơn 59 quốc gia. Nạp ETH vào tài khoản MetaMask của bạn."
-  },
   "buyWithWyre": {
     "message": "Mua ETH qua Wyre"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Bạn có chắc chắn muốn xóa mạng này không?"
-  },
-  "depositEther": {
-    "message": "Nộp Ether"
   },
   "description": {
     "message": "Mô tả"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "Tên"
-  },
-  "needEtherInWallet": {
-    "message": "Để tương tác với các ứng dụng phi tập trung bằng MetaMask, bạn sẽ cần phải có Ether trong ví của mình."
   },
   "needHelp": {
     "message": "Bạn cần trợ giúp? Liên hệ $1",

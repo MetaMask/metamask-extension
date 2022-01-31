@@ -581,7 +581,7 @@ export const initialState = {
   gas: {
     // indicate whether the gas estimate is loading
     isGasEstimateLoading: true,
-    // String token indentifying a listener for polling on the gasFeeController
+    // String token identifying a listener for polling on the gasFeeController
     gasEstimatePollToken: null,
     // has the user set custom gas in the custom gas modal
     isCustomGasSet: false,
