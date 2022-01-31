@@ -48,15 +48,10 @@ export default function CollectiblesItems({
 
   useEffect(() => {
     if (
-      selectedAddress !== undefined &&
-      collectiblesDropdownState?.[selectedAddress] === undefined
-    ) {
-      collectiblesDropdownState[selectedAddress] = {};
-    }
-    if (
       chainId !== undefined &&
+      selectedAddress !== undefined &&
       previousCollectionKeys !== collectionsKeys &&
-      (collectiblesDropdownState[selectedAddress]?.[chainId] === undefined ||
+      (collectiblesDropdownState?.[selectedAddress]?.[chainId] === undefined ||
         Object.keys(collectiblesDropdownState?.[selectedAddress]?.[chainId])
           .length === 0)
     ) {
@@ -68,7 +63,7 @@ export default function CollectiblesItems({
       const newCollectibleDropdownState = {
         ...collectiblesDropdownState,
         [selectedAddress]: {
-          ...collectiblesDropdownState[selectedAddress],
+          ...collectiblesDropdownState?.[selectedAddress],
           [chainId]: initState,
         },
       };
