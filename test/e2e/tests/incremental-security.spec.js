@@ -64,7 +64,7 @@ describe('Incremental Security', function () {
           text: enLocaleMessages.remindMeLater.message,
           tag: 'button',
         });
-
+        await driver.clickElement('[data-testid="popover-close"]');
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );

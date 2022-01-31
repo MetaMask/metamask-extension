@@ -128,6 +128,7 @@ describe('MetaMask', function () {
     let seedPhrase;
 
     it('renders the Secret Recovery Phrase intro screen', async function () {
+      await driver.clickElement('[data-testid="popover-close"]');
       await driver.clickElement('.seed-phrase-intro__left button');
       await driver.delay(regularDelayMs);
     });
@@ -135,6 +136,7 @@ describe('MetaMask', function () {
     it('reveals the Secret Recovery Phrase', async function () {
       const byRevealButton =
         '.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button';
+      await driver.clickElement('[data-testid="popover-close"]');
       await driver.findElement(byRevealButton);
       await driver.clickElement(byRevealButton);
       await driver.delay(regularDelayMs);
