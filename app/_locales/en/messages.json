@@ -2048,9 +2048,6 @@
     "message": "To interact with decentralized applications using MetaMask, you’ll need $1 in your wallet.",
     "description": "$1 represents the cypto symbol to be purchased"
   },
-  "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
-  },
   "needHelp": {
     "message": "Need help? Contact $1",
     "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
@@ -2465,9 +2462,6 @@
   },
   "onboardingPinExtensionStep2": {
     "message": "2"
-  },
-  "onboardingPinExtensionStep3": {
-    "message": "3"
   },
   "onboardingPinExtensionTitle": {
     "message": "Your MetaMask install is complete!"
