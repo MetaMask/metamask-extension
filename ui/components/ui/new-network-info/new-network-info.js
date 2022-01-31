@@ -119,7 +119,11 @@ const NewNetworkInfo = ({
         <Box
           display={DISPLAY.FLEX}
           alignItems={ALIGN_ITEMS.CENTER}
-          className={(!autoDetectToken || !tokenDetectionSupported) ? "new-network-info__content-box-1" : null}
+          className={
+            !autoDetectToken || !tokenDetectionSupported
+              ? 'new-network-info__content-box-1'
+              : null
+          }
         >
           <Box marginRight={4} color={COLORS.BLACK}>
             &bull;

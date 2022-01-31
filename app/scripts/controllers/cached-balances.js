@@ -89,7 +89,7 @@ export default class CachedBalancesController {
 
   getCachedBalancesForCurrentNetwork(chainId) {
     const { cachedBalances } = this.store.getState();
-    
+
     return cachedBalances[chainId];
   }
 }
