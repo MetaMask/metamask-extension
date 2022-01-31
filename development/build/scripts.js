@@ -348,9 +348,13 @@ function createFactoredBuild({
 }) {
   return async function () {
     // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration();
-    buildConfiguration.label = 'primary';
-    const { bundlerOpts, events } = buildConfiguration;
+    const buildConfiguration = createBuildConfiguration({ label: 'primary' });
+    const {
+      addDirectOptions,
+      addEntry,
+      addPlugin,
+      events,
+    } = buildConfiguration;
 
     // devMode options
     const reloadOnChange = Boolean(devMode);
@@ -370,7 +374,7 @@ function createFactoredBuild({
     });
 
     // set bundle entries
-    bundlerOpts.entries = [...entryFiles];
+    addEntry(...entryFiles);
 
     // setup lavamoat
     // lavamoat will add lavapack but it will be removed by bify-module-groups
@@ -387,13 +391,13 @@ function createFactoredBuild({
       ),
       writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
     };
-    Object.assign(bundlerOpts, lavamoatBrowserify.args);
-    bundlerOpts.plugin.push([lavamoatBrowserify, lavamoatOpts]);
+    addDirectOptions(lavamoatBrowserify.args);
+    addPlugin(lavamoatBrowserify, lavamoatOpts);
 
     // setup bundle factoring with bify-module-groups plugin
     // note: this will remove lavapack, but its ok bc we manually readd it later
-    Object.assign(bundlerOpts, bifyModuleGroups.plugin.args);
-    bundlerOpts.plugin = [...bundlerOpts.plugin, [bifyModuleGroups.plugin]];
+    addDirectOptions(bifyModuleGroups.plugin.args);
+    addPlugin(bifyModuleGroups.plugin);
 
     // instrument pipeline
     let sizeGroupMap;
@@ -528,9 +532,8 @@ function createNormalBundle({
 }) {
   return async function () {
     // create bundler setup and apply defaults
-    const buildConfiguration = createBuildConfiguration();
-    buildConfiguration.label = label;
-    const { bundlerOpts, events } = buildConfiguration;
+    const buildConfiguration = createBuildConfiguration({ label });
+    const { addEntry, addRequire, events } = buildConfiguration;
 
     // devMode options
     const reloadOnChange = Boolean(devMode);
@@ -550,13 +553,13 @@ function createNormalBundle({
     });
 
     // set bundle entries
-    bundlerOpts.entries = [...extraEntries];
+    addEntry(...extraEntries);
     if (entryFilepath) {
-      bundlerOpts.entries.push(entryFilepath);
+      addEntry(entryFilepath);
     }
 
     if (modulesToExpose) {
-      bundlerOpts.require = bundlerOpts.require.concat(modulesToExpose);
+      addRequire(...modulesToExpose);
     }
 
     // instrument pipeline
@@ -577,19 +580,86 @@ function createNormalBundle({
   };
 }
 
-function createBuildConfiguration() {
-  const label = '(unnamed bundle)';
+function createBuildConfiguration({ label = '(unnamed bundle)' } = {}) {
+  const directOptions = {};
+  const entries = [];
+  const requires = [];
+  const externals = [];
+  const ignores = [];
+  const excludes = [];
+  const transformsAndPlugins = [];
   const events = new EventEmitter();
-  const bundlerOpts = {
-    entries: [],
-    transform: [],
-    plugin: [],
-    require: [],
-    // non-standard bify options
-    manualExternal: [],
-    manualIgnore: [],
+
+  const addDirectOptions = (options) => {
+    for (const [key, value] of Object.entries(options)) {
+      directOptions[key] = value;
+    }
   };
-  return { bundlerOpts, events, label };
+
+  const addEntry = (...givenEntries) => {
+    entries.push(...givenEntries);
+  };
+
+  const addRequire = (...givenRequires) => {
+    requires.push(...givenRequires);
+  };
+
+  const addExternal = (...givenExternals) => {
+    externals.push(...givenExternals);
+  };
+
+  const addIgnore = (...givenIgnores) => {
+    ignores.push(...givenIgnores);
+  };
+
+  const addExclude = (...givenExcludes) => {
+    excludes.push(...givenExcludes);
+  };
+
+  const addTransform = (transform, transformOptions = {}) => {
+    transformsAndPlugins.push({
+      type: 'transform',
+      value: transform,
+      options: transformOptions,
+    });
+  };
+
+  const addPlugin = (plugin, pluginOptions = {}) => {
+    transformsAndPlugins.push({
+      type: 'plugin',
+      value: plugin,
+      options: pluginOptions,
+    });
+  };
+
+  const buildBundler = () => {
+    const bundler = browserify(directOptions);
+    entries.forEach((entry) => bundler.add(entry));
+    externals.forEach((external) => bundler.external(external));
+    ignores.forEach((ignore) => bundler.ignore(ignore));
+    excludes.forEach((exclude) => bundler.exclude(exclude));
+    transformsAndPlugins.forEach((transformOrPlugin) => {
+      bundler[transformOrPlugin.type](
+        transformOrPlugin.value,
+        transformOrPlugin.options,
+      );
+    });
+    return bundler;
+  };
+
+  return {
+    label,
+    addDirectOptions,
+    addEntry,
+    addRequire,
+    addExternal,
+    addIgnore,
+    addExclude,
+    addTransform,
+    addPlugin,
+    buildBundler,
+    events,
+  };
 }
 
 function setupBundlerDefaults(
@@ -606,18 +676,23 @@ function setupBundlerDefaults(
     testing,
   },
 ) {
-  const { bundlerOpts } = buildConfiguration;
+  const {
+    addDirectOptions,
+    addIgnore,
+    addExclude,
+    addTransform,
+  } = buildConfiguration;
 
-  Object.assign(bundlerOpts, {
-    // Source transforms
-    transform: [
-      // Remove code that should be excluded from builds of the current type
-      createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
-      // Transpile top-level code
-      babelify,
-      // Inline `fs.readFileSync` files
-      brfs,
-    ],
+  // Remove code that should be excluded from builds of the current type
+  addTransform(
+    createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
+  );
+  // Transpile top-level code
+  addTransform(babelify);
+  // Inline `fs.readFileSync` files
+  addTransform(brfs);
+
+  addDirectOptions({
     // Use entryFilepath for moduleIds, easier to determine origin file
     fullPaths: devMode,
     // For sourcemaps
@@ -626,18 +701,17 @@ function setupBundlerDefaults(
 
   // Ensure react-devtools are not included in non-dev builds
   if (!devMode || testing) {
-    bundlerOpts.manualIgnore.push('react-devtools');
-    bundlerOpts.manualIgnore.push('remote-redux-devtools');
+    addIgnore('react-devtools', 'remote-redux-devtools');
   }
 
   // Inject environment variables via node-style `process.env`
   if (envVars) {
-    bundlerOpts.transform.push([envify(envVars), { global: true }]);
+    addTransform(envify(envVars), { global: true });
   }
 
   // Ensure that any files that should be ignored are excluded from the build
   if (ignoredFiles) {
-    bundlerOpts.manualExclude = ignoredFiles;
+    addExclude(...ignoredFiles);
   }
 
   // Setup reload on change
@@ -655,10 +729,10 @@ function setupBundlerDefaults(
   }
 }
 
-function setupReloadOnChange({ bundlerOpts, events }) {
+function setupReloadOnChange({ addPlugin, addDirectOptions, events }) {
   // Add plugin to options
-  Object.assign(bundlerOpts, {
-    plugin: [...bundlerOpts.plugin, watchify],
+  addPlugin(watchify);
+  addDirectOptions({
     // Required by watchify
     cache: {},
     packageCache: {},
@@ -673,13 +747,12 @@ function setupReloadOnChange({ bundlerOpts, events }) {
   });
 }
 
-function setupMinification(buildConfiguration) {
+function setupMinification({ events }) {
   const minifyOpts = {
     mangle: {
       reserved: ['MetamaskInpageProvider'],
     },
   };
-  const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('minify').push(
       // this is the "gulp-terser-js" wrapper around the latest version of terser
@@ -705,8 +778,7 @@ function setupMinification(buildConfiguration) {
   });
 }
 
-function setupSourcemaps(buildConfiguration, { devMode }) {
-  const { events } = buildConfiguration;
+function setupSourcemaps({ events }, { devMode }) {
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('sourcemaps:init').push(sourcemaps.init({ loadMaps: true }));
     pipeline
@@ -721,57 +793,47 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
   });
 }
 
-async function bundleIt(buildConfiguration) {
-  const { label, bundlerOpts, events } = buildConfiguration;
-  const bundler = browserify(bundlerOpts);
-
-  // manually apply non-standard options
-  bundler.external(bundlerOpts.manualExternal);
-  bundler.ignore(bundlerOpts.manualIgnore);
-  if (Array.isArray(bundlerOpts.manualExclude)) {
-    bundler.exclude(bundlerOpts.manualExclude);
-  }
-
+async function bundleIt({ label, buildBundler, events }) {
+  const bundler = buildBundler();
   // output build logs to terminal
   bundler.on('log', log);
-
   // forward update event (used by watchify)
-  bundler.on('update', () => performBundle());
+  bundler.on('update', () => performBundle({ bundler, events }));
 
   console.log(`Bundle start: "${label}"`);
-  await performBundle();
+  await performBundle({ bundler, events });
   console.log(`Bundle end: "${label}"`);
+}
 
-  async function performBundle() {
-    // this pipeline is created for every bundle
-    // the labels are all the steps you can hook into
-    const pipeline = labeledStreamSplicer([
-      'groups',
-      [],
-      'vinyl',
-      [],
-      'sourcemaps:init',
-      [],
-      'minify',
-      [],
-      'sourcemaps:write',
-      [],
-      'dest',
-      [],
-    ]);
-    const bundleStream = bundler.bundle();
-    // trigger build pipeline instrumentations
-    events.emit('configurePipeline', { pipeline, bundleStream });
-    // start bundle, send into pipeline
-    bundleStream.pipe(pipeline);
-    // nothing will consume pipeline, so let it flow
-    pipeline.resume();
+async function performBundle({ bundler, events }) {
+  // this pipeline is created for every bundle
+  // the labels are all the steps you can hook into
+  const pipeline = labeledStreamSplicer([
+    'groups',
+    [],
+    'vinyl',
+    [],
+    'sourcemaps:init',
+    [],
+    'minify',
+    [],
+    'sourcemaps:write',
+    [],
+    'dest',
+    [],
+  ]);
+  const bundleStream = bundler.bundle();
+  // trigger build pipeline instrumentations
+  events.emit('configurePipeline', { pipeline, bundleStream });
+  // start bundle, send into pipeline
+  bundleStream.pipe(pipeline);
+  // nothing will consume pipeline, so let it flow
+  pipeline.resume();
 
-    await endOfStream(pipeline);
+  await endOfStream(pipeline);
 
-    // call the completion event to handle any post-processing
-    events.emit('bundleDone');
-  }
+  // call the completion event to handle any post-processing
+  events.emit('bundleDone');
 }
 
 function getEnvironmentVariables({ buildType, devMode, testing }) {
