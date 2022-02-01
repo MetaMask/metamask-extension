@@ -279,7 +279,7 @@ export default function SmartTransactionStatus() {
           alignItems={ALIGN_ITEMS.CENTER}
         >
           <Typography color={COLORS.UI4} variant={TYPOGRAPHY.H6}>
-            {`${fetchParams?.value} `}
+            {`${fetchParams?.value && Number(fetchParams.value).toFixed(6)} `}
           </Typography>
           <Typography
             color={COLORS.UI4}
@@ -309,7 +309,7 @@ export default function SmartTransactionStatus() {
             variant={TYPOGRAPHY.H6}
             boxProps={{ marginLeft: 2 }}
           >
-            {`~${destinationValue} `}
+            {`~${destinationValue && Number(destinationValue).toFixed(6)} `}
           </Typography>
           <Typography
             color={COLORS.UI4}
