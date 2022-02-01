@@ -74,7 +74,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
         <i className="fas fa-chevron-right asset-list-item__chevron-right" />
       </button>
       {estimateUsed === 'custom' && (
-        <button onClick={openAdvanceGasFeeModal}>{t('edit')}</button>
+        <button onClick={openAdvancedGasFeeModal}>{t('edit')}</button>
       )}
       {estimateUsed === 'dappSuggested' && (
         <InfoTooltip
