@@ -80,7 +80,10 @@ export default class Identicon extends PureComponent {
       image = image[0];
     }
 
-    if (image.toLowerCase().startsWith('ipfs://')) {
+    if (
+      typeof image === 'string' &&
+      image.toLowerCase().startsWith('ipfs://')
+    ) {
       image = getAssetImageURL(image, ipfsGateway);
     }
 
