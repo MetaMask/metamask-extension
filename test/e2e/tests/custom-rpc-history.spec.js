@@ -14,6 +14,7 @@ describe('Stores custom RPC history', function () {
   it(`creates first custom RPC entry`, async function () {
     const port = 8546;
     const chainId = 1338;
+    const symbol = 'TEST';
     await withFixtures(
       {
         fixtures: 'imported-account',
@@ -38,6 +39,7 @@ describe('Stores custom RPC history', function () {
         const networkNameInput = customRpcInputs[0];
         const rpcUrlInput = customRpcInputs[1];
         const chainIdInput = customRpcInputs[2];
+        const symbolInput = customRpcInputs[3];
 
         await networkNameInput.clear();
         await networkNameInput.sendKeys(networkName);
@@ -47,6 +49,9 @@ describe('Stores custom RPC history', function () {
 
         await chainIdInput.clear();
         await chainIdInput.sendKeys(chainId.toString());
+
+        await symbolInput.clear();
+        await symbolInput.sendKeys(symbol);
 
         await driver.clickElement(
           '.networks-tab__add-network-form-footer .btn-primary',

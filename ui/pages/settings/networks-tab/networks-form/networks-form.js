@@ -334,6 +334,11 @@ const NetworksForm = ({
     return true;
   };
 
+  const debouncedValidateTickerSymbolOnChange = debounce(
+    validateTickerSymbolOnChange,
+    500,
+  );
+
   /**
    * Validates the chain ID by checking it against the `eth_chainId` return
    * value from the given RPC URL.
@@ -586,7 +591,7 @@ const NetworksForm = ({
             setChainId(value);
             validateChainIdOnChange(value);
             if (ticker && value) {
-              debounce(validateTickerSymbolOnChange(value, ticker), 500);
+              debouncedValidateTickerSymbolOnChange(value, ticker);
             }
           }}
           titleText={t('chainId')}
@@ -599,7 +604,7 @@ const NetworksForm = ({
           onChange={(value) => {
             setTicker(value);
             if (chainId && value) {
-              debounce(validateTickerSymbolOnChange(chainId, value), 500);
+              debouncedValidateTickerSymbolOnChange(chainId, value);
             } else {
               setWarningEmpty('ticker');
             }

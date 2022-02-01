@@ -48,7 +48,7 @@ describe('NetworkForm Component', () => {
     expect(queryByText('Chain ID')).toBeInTheDocument();
     expect(queryByText('Currency Symbol')).toBeInTheDocument();
     expect(queryByText('Block Explorer URL')).toBeInTheDocument();
-    expect(queryAllByText('(Optional)')).toHaveLength(2);
+    expect(queryAllByText('(Optional)')).toHaveLength(1);
     expect(queryByText('Cancel')).toBeInTheDocument();
     expect(queryByText('Save')).toBeInTheDocument();
   });
