@@ -93,6 +93,7 @@ export default function FormField({
           <input
             className={classNames('form-field__input', {
               'form-field__input--error': error,
+              'form-field__input--warning': warning,
             })}
             onChange={(e) => onChange(e.target.value)}
             value={value}
@@ -114,7 +115,7 @@ export default function FormField({
         )}
         {warning && (
           <Typography
-            color={COLORS.ALERT3}
+            color={COLORS.UI4}
             variant={TYPOGRAPHY.H7}
             className="form-field__warning"
           >
