@@ -10,3 +10,4 @@ app/vendor/**
 .vscode/**
 test/e2e/send-eth-with-private-key-test/**
 *.scss
+development/chromereload.js

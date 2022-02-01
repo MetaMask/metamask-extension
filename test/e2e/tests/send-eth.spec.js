@@ -91,6 +91,8 @@ describe('Send ETH from inside MetaMask using default gas', function () {
   });
 });
 
+// TODO wrap all of this in a describe
+/* eslint-disable mocha/max-top-level-suites */
 describe('Send ETH from inside MetaMask using advanced gas modal', function () {
   const ganacheOptions = {
     accounts: [
