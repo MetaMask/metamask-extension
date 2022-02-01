@@ -131,7 +131,8 @@ export default class TokenInput extends PureComponent {
     } else {
       // Display ETH
       currency = ETH;
-      numberOfDecimals = primaryNumberOfDecimals;
+      numberOfDecimals =
+        primaryNumberOfDecimals <= 16 ? primaryNumberOfDecimals : 16;
     }
 
     const decimalEthValue = decimalValue * tokenExchangeRate || 0;

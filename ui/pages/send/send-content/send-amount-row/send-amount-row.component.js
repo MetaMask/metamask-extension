@@ -31,7 +31,7 @@ export default class SendAmountRow extends Component {
         onChange={this.handleChange}
         token={asset.details}
         value={amount}
-        primaryNumberOfDecimals={asset.decimals <= 16 ? asset.decimals : 16}
+        primaryNumberOfDecimals={asset.decimals}
       />
     ) : (
       <UserPreferencedCurrencyInput

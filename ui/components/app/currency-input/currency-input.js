@@ -66,7 +66,8 @@ export default function CurrencyInput({
       : getValueFromWeiHex({
           value: hexValue,
           toCurrency: ETH,
-          numberOfDecimals: primaryNumberOfDecimals,
+          numberOfDecimals:
+            primaryNumberOfDecimals <= 16 ? primaryNumberOfDecimals : 16,
         });
 
     return Number(decimalValueString) || 0;
@@ -129,7 +130,8 @@ export default function CurrencyInput({
     if (shouldUseFiat()) {
       // Display ETH
       currency = preferredCurrency || ETH;
-      numberOfDecimals = primaryNumberOfDecimals;
+      numberOfDecimals =
+        primaryNumberOfDecimals <= 16 ? primaryNumberOfDecimals : 16;
     } else {
       // Display Fiat
       currency = secondaryCurrency;
@@ -145,7 +147,6 @@ export default function CurrencyInput({
       />
     );
   };
-  console.log(decimalValue, primaryNumberOfDecimals);
   return (
     <UnitInput
       {...{
