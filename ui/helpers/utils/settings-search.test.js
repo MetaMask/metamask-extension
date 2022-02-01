@@ -17,7 +17,7 @@ const t = (key) => {
       return 'Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency.';
     case 'currentLanguage':
       return 'Current Language';
-    case 'blockiesIdenticon':
+    case 'accountIdenticon':
       return 'Current Language"';
     case 'hideZeroBalanceTokens':
       return 'Hide Tokens Without Balance';
@@ -155,7 +155,7 @@ describe('Settings Search Utils', () => {
       const settingsListExcepted = [
         {
           description: '',
-          image: 'settings.svg',
+          image: 'general-icon.svg',
           route: '/settings/general#currency-conversion',
           section: 'Currency Conversion',
           tab: 'General',
@@ -163,28 +163,28 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency.',
-          image: 'settings.svg',
+          image: 'general-icon.svg',
           route: '/settings/general#primary-currency',
           section: 'Primary Currenc',
           tab: 'General',
         },
         {
           description: '',
-          image: 'settings.svg',
+          image: 'general-icon.svg',
           route: '/settings/general#current-language',
           section: 'Current Language',
           tab: 'General',
         },
         {
           description: '',
-          image: 'settings.svg',
-          route: '/settings/general#blockies-identicon',
+          image: 'general-icon.svg',
+          route: '/settings/general#account-identicon',
           section: 'Current Language"',
           tab: 'General',
         },
         {
           description: '',
-          image: 'settings.svg',
+          image: 'general-icon.svg',
           route: '/settings/general#zero-balancetokens',
           section: 'Hide Tokens Without Balance',
           tab: 'General',
@@ -192,14 +192,14 @@ describe('Settings Search Utils', () => {
         {
           description:
             'State logs contain your public account addresses and sent transactions.',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#state-logs',
           section: 'State Logs',
           tab: 'Advanced',
         },
         {
           description: '',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#sync-withmobile',
           section: 'Sync with mobile',
           tab: 'Advanced',
@@ -207,7 +207,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase.',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#reset-account',
           section: 'Reset Account',
           tab: 'Advanced',
@@ -215,7 +215,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Select this to show gas price and limit controls directly on the send and confirm screens.',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#advanced-gascontrols',
           section: 'Advanced gas controls',
           tab: 'Advanced',
@@ -223,21 +223,21 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Select this to show the hex data field on the send screen',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#show-hexdata',
           section: 'Show Hex Data',
           tab: 'Advanced',
         },
         {
           description: 'Select this to show fiat conversion on test network',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#conversion-testnetworks',
           section: 'Show Conversion on test networks',
           tab: 'Advanced',
         },
         {
           description: 'Select this to show test networks in network list',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#show-testnets',
           section: 'Show test networks',
           tab: 'Advanced',
@@ -245,7 +245,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously.',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#customize-nonce',
           section: 'Customize transaction nonce',
           tab: 'Advanced',
@@ -253,7 +253,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Set the idle time in minutes before MetaMask will become locked.',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#autolock-timer',
           section: 'Auto-Lock Timer (minutes)',
           tab: 'Advanced',
@@ -261,7 +261,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Turn on to have your settings backed up with 3Box. This feature is currently experimental; use at your own risk.',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#sync-with3box',
           section: 'Sync data with 3Box (experimental)',
           tab: 'Advanced',
@@ -269,14 +269,14 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Enter the URL of the IPFS CID gateway to use for ENS content resolution.',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#ipfs-gateway',
           section: 'IPFS Gateway',
           tab: 'Advanced',
         },
         {
           description: 'Preferred Ledger Connection Type',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#ledger-connection',
           section: 'Preferred Ledger Connection Type',
           tab: 'Advanced',
@@ -284,21 +284,21 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Turn this on to dismiss the Secret Recovery Phrase backup reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds',
-          image: 'settings.svg',
+          image: 'advanced-icon.svg',
           route: '/settings/advanced#dimiss-secretrecovery',
           section: 'Dismiss Secret Recovery Phrase backup reminder',
           tab: 'Advanced',
         },
         {
           description: '',
-          image: 'settings.svg',
+          image: 'contacts-icon.svg',
           route: '/settings/contact-list',
           section: '',
           tab: '',
         },
         {
           description: 'Reveal Secret Recovery Phrase',
-          image: 'settings.svg',
+          image: 'security-icon.svg',
           route: '/settings/security#reveal-secretrecovery',
           section: 'Reveal Secret Recovery Phrase',
           tab: 'Security & Privacy',
@@ -306,7 +306,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Select this to use Etherscan to show incoming transactions in the transactions list',
-          image: 'settings.svg',
+          image: 'security-icon.svg',
           route: '/settings/security#incoming-transaction',
           section: 'Show Incoming Transactions',
           tab: 'Security & Privacy',
@@ -314,7 +314,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Display a warning for phishing domains targeting Ethereum users',
-          image: 'settings.svg',
+          image: 'security-icon.svg',
           route: '/settings/security#phishing-detection',
           section: 'Use Phishing Detection',
           tab: 'Security & Privacy',
@@ -322,7 +322,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Participate in MetaMetrics to help us make MetaMask better',
-          image: 'settings.svg',
+          image: 'security-icon.svg',
           route: '/settings/security#metrametrics',
           section: 'Participate in MetaMetrics',
           tab: 'Security & Privacy',
@@ -330,7 +330,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Browsing a website with an unconnected account selected',
-          image: 'settings.svg',
+          image: 'alerts-icon.svg',
           route: '/settings/alerts#unconnected-account',
           section: 'Browsing a website with an unconnected account selected',
           tab: 'Alerts',
@@ -338,49 +338,49 @@ describe('Settings Search Utils', () => {
         {
           description:
             'When a website tries to use the removed window.web3 API',
-          image: 'settings.svg',
+          image: 'alerts-icon.svg',
           route: '/settings/alerts#web3-shimusage',
           section: 'When a website tries to use the removed window.web3 API',
           tab: 'Alerts',
         },
         {
           description: 'Ethereum Mainnet',
-          image: 'settings.svg',
+          image: 'network-icon.svg',
           route: '/settings/networks#networks-mainnet',
           section: 'Ethereum Mainnet',
           tab: 'Networks',
         },
         {
           description: 'Ropsten Test Network',
-          image: 'settings.svg',
+          image: 'network-icon.svg',
           route: '/settings/networks#networks-ropsten',
           section: 'Ropsten Test Network',
           tab: 'Networks',
         },
         {
           description: 'Rinkeby Test Network',
-          image: 'settings.svg',
+          image: 'network-icon.svg',
           route: '/settings/networks#networks-rinkeby',
           section: 'Rinkeby Test Network',
           tab: 'Networks',
         },
         {
           description: 'Goerli Test Network',
-          image: 'settings.svg',
+          image: 'network-icon.svg',
           route: '/settings/networks#networks-goerli',
           section: 'Goerli Test Network',
           tab: 'Networks',
         },
         {
           description: 'Kovan Test Network',
-          image: 'settings.svg',
+          image: 'network-icon.svg',
           route: '/settings/networks#networtks-kovan',
           section: 'Kovan Test Network',
           tab: 'Networks',
         },
         {
           description: 'Localhost 8545',
-          image: 'settings.svg',
+          image: 'network-icon.svg',
           route: '/settings/networks#network-localhost',
           section: 'Localhost 8545',
           tab: 'Networks',
@@ -388,63 +388,63 @@ describe('Settings Search Utils', () => {
         {
           description:
             'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.',
-          image: 'settings.svg',
+          image: 'experimental-icon.svg',
           route: '/settings/experimental#token-description',
           section: 'Use Token Detection',
           tab: 'Experimental',
         },
         {
           description: 'MetaMask is designed and built around the world.',
-          image: 'settings.svg',
+          image: 'info-icon.svg',
           route: '/settings/about-us#version',
           section: 'MetaMask Version',
           tab: 'About',
         },
         {
           description: '',
-          image: 'settings.svg',
+          image: 'info-icon.svg',
           route: '/settings/about-us#links',
           section: 'Links',
           tab: 'About',
         },
         {
           description: 'Privacy Policy',
-          image: 'settings.svg',
+          image: 'info-icon.svg',
           route: '/settings/about-us#privacy-policy',
           section: 'Privacy Policy',
           tab: 'About',
         },
         {
           description: 'Terms of Use',
-          image: 'settings.svg',
+          image: 'info-icon.svg',
           route: '/settings/about-us#terms',
           section: 'Terms of Use',
           tab: 'About',
         },
         {
           description: 'Attributions',
-          image: 'settings.svg',
+          image: 'info-icon.svg',
           route: '/settings/about-us#attributions',
           section: 'Attributions',
           tab: 'About',
         },
         {
           description: 'Visit our Support Center',
-          image: 'settings.svg',
+          image: 'info-icon.svg',
           route: '/settings/about-us#supportcenter',
           section: 'Visit our Support Center',
           tab: 'About',
         },
         {
           description: 'Visit our web site',
-          image: 'settings.svg',
+          image: 'info-icon.svg',
           route: '/settings/about-us#visitwebsite',
           section: 'Visit our web site',
           tab: 'About',
         },
         {
           description: 'Contact us',
-          image: 'settings.svg',
+          image: 'info-icon.svg',
           route: '/settings/about-us#contactus',
           section: 'Contact us',
           tab: 'About',
@@ -457,14 +457,14 @@ describe('Settings Search Utils', () => {
       const settingsListExcepted = [
         {
           description: '',
-          image: 'settings.svg',
+          image: 'general-icon.svg',
           route: '/settings/general#currency-conversion',
           section: 'Currency Conversion',
           tab: 'General',
         },
         {
           description: 'Contact us',
-          image: 'settings.svg',
+          image: 'info-icon.svg',
           route: '/settings/about-us#contactus',
           section: 'Contact us',
           tab: 'About',

@@ -13,11 +13,11 @@
   flex-flow: column nowrap;
 
   &__header {
-    padding: 12px 24px 5px 24px;
+    padding: 8px 24px 8px 24px;
     position: relative;
 
     @media screen and (max-width: $break-small) {
-      background: #f2f3f4;
+      background: var(--ui-1);
     }
 
     &__title-container {
@@ -33,7 +33,7 @@
       &__close-button::after {
         content: '\00D7';
         font-size: 40px;
-        color: --ui-4;
+        color: var(--ui-4);
         cursor: pointer;
       }
 
@@ -52,22 +52,23 @@
     }
 
     &__search {
-      padding-bottom: 5px;
-      height: 50px;
-
-      @media screen and (min-width: $break-small) {
-        position: absolute;
-        right: 57px;
-        top: 13px;
-        width: 400px;
-      }
-
       @media screen and (max-width: $break-small) {
         position: relative;
       }
 
+      @media screen and (min-width: $break-large) {
+        position: absolute;
+        right: 57px;
+        top: 10px;
+        width: 300px;
+      }
+
+      @media screen and (min-width: $break-midpoint) {
+        width: 400px;
+      }
+
       &__list {
-        background: #fff;
+        background: var(--ui-white);
         box-sizing: border-box;
         box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
         border-radius: 6px;
@@ -77,18 +78,19 @@
 
         > div {
           &:hover {
-            background: --ui-1;
+            background: var(--ui-1);
           }
         }
 
         &__item {
           transition: 200ms ease-in-out;
-          display: flex;
-          flex-flow: row nowrap;
+          display: grid;
           align-items: center;
           padding: 16px;
           border-top: 1px solid var(--ui-2);
           cursor: pointer;
+          grid-template-columns: 16px minmax(20px, max-content) 8px auto;
+          gap: 8px;
 
           &__icon {
             background: --ui-2;
@@ -103,7 +105,7 @@
           &__no-matching {
             @include H6;
 
-            color: --ui-4;
+            color: var(--ui-4);
           }
 
           &__tab-multiple-lines {
@@ -126,7 +128,7 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            margin: 0 5px;
+            margin: 0 4px;
 
             [dir='rtl'] & {
               transform: rotate(180deg);
@@ -220,17 +222,6 @@
         transform: rotate(180deg);
       }
     }
-  }
-
-  &__close-button {
-    margin-left: auto;
-  }
-
-  &__close-button::after {
-    content: '\00D7';
-    font-size: 40px;
-    color: var(--ui-4);
-    cursor: pointer;
   }
 
   &__content {
