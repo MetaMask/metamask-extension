@@ -10,7 +10,7 @@
   color: var(--white);
 
   @media screen and (max-width: $break-small) {
-    right: 1rem;
+    right: 16px;
   }
 
   @media screen and (min-width: $break-large) {
