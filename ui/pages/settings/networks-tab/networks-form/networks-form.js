@@ -574,18 +574,14 @@ const NetworksForm = ({
         />
         <FormField
           error={errors.rpcUrl?.msg || ''}
-          onChange={(value) => {
-            setRpcUrl(value);
-          }}
+          onChange={setRpcUrl}
           titleText={t('rpcUrl')}
           value={rpcUrl}
           disabled={viewOnly}
         />
         <FormField
           error={errors.chainId?.msg || ''}
-          onChange={(value) => {
-            setChainId(value);
-          }}
+          onChange={setChainId}
           titleText={t('chainId')}
           value={chainId}
           disabled={viewOnly}
@@ -593,18 +589,14 @@ const NetworksForm = ({
         />
         <FormField
           warning={warnings.ticker?.msg || ''}
-          onChange={(value) => {
-            setTicker(value);
-          }}
+          onChange={setTicker}
           titleText={t('currencySymbol')}
           value={ticker}
           disabled={viewOnly}
         />
         <FormField
           error={errors.blockExplorerUrl?.msg || ''}
-          onChange={(value) => {
-            setBlockExplorerUrl(value);
-          }}
+          onChange={setBlockExplorerUrl}
           titleText={t('blockExplorerUrl')}
           titleUnit={t('optionalWithParanthesis')}
           value={blockExplorerUrl}
