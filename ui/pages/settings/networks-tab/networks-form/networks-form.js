@@ -184,31 +184,15 @@ const NetworksForm = ({
       return error.key && error.msg;
     });
   };
-
-  // validation effect
-  const previousRpcUrl = usePrevious(rpcUrl);
-  const previousChainId = usePrevious(chainId);
-  const previousTicker = usePrevious(ticker);
-  const previousBlockExplorerUrl = usePrevious(blockExplorerUrl);
-  useEffect(() => {
-    if (viewOnly || label === 'Localhost 8545') {
-      return;
-    }
-
-    if (
-      previousRpcUrl === rpcUrl &&
-      previousChainId === chainId &&
-      previousTicker === ticker &&
-      previousBlockExplorerUrl === blockExplorerUrl
-    ) {
-      return;
-    }
-
-    const setErrorTo = (errorKey, errorVal) => {
+  const setErrorTo = useCallback(
+    (errorKey, errorVal) => {
       setErrors({ ...errors, [errorKey]: errorVal });
-    };
+    },
+    [errors, setErrors],
+  );
 
-    const setErrorEmpty = (errorKey) => {
+  const setErrorEmpty = useCallback(
+    (errorKey) => {
       setErrors({
         ...errors,
         [errorKey]: {
@@ -216,13 +200,19 @@ const NetworksForm = ({
           key: '',
         },
       });
-    };
+    },
+    [setErrors, errors],
+  );
 
-    const setWarningTo = (warningKey, warningVal) => {
+  const setWarningTo = useCallback(
+    (warningKey, warningVal) => {
       setWarnings({ ...warnings, [warningKey]: warningVal });
-    };
+    },
+    [setWarnings, warnings],
+  );
 
-    const setWarningEmpty = (warningKey) => {
+  const setWarningEmpty = useCallback(
+    (warningKey) => {
       setWarnings({
         ...warnings,
         [warningKey]: {
@@ -230,9 +220,37 @@ const NetworksForm = ({
           key: '',
         },
       });
-    };
+    },
+    [setWarnings, warnings],
+  );
 
-    const validateChainId = async (chainArg = '') => {
+  const validateBlockExplorerURL = useCallback(
+    (url) => {
+      if (!validUrl.isWebUri(url) && url !== '') {
+        let errorKey;
+        let errorMessage;
+
+        if (isValidWhenAppended(url)) {
+          errorKey = 'urlErrorMsg';
+          errorMessage = t('urlErrorMsg');
+        } else {
+          errorKey = 'invalidBlockExplorerURL';
+          errorMessage = t('invalidBlockExplorerURL');
+        }
+
+        setErrorTo('blockExplorerUrl', {
+          key: errorKey,
+          msg: errorMessage,
+        });
+      } else {
+        setErrorEmpty('blockExplorerUrl');
+      }
+    },
+    [setErrorEmpty, setErrorTo, t],
+  );
+
+  const validateChainId = useCallback(
+    async (chainArg = '') => {
       const formChainId = chainArg.trim();
       let errorKey = '';
       let errorMessage = '';
@@ -329,17 +347,20 @@ const NetworksForm = ({
       }
 
       setErrorEmpty('chainId');
-    };
+    },
+    [setErrorEmpty, setErrorTo, rpcUrl, networksToRender, t],
+  );
 
-    /**
-     * Validates the ticker symbol by checking it against the nativeCurrency.symbol return
-     * value from chainid.network trusted chain data
-     * Assumes that all strings are non-empty and correctly formatted.
-     *
-     * @param {string} formChainId - The Chain ID currently entered in the form.
-     * @param {string} formTickerSymbol - The ticker/currency symbol currently entered in the form.
-     */
-    const validateTickerSymbol = async (formChainId, formTickerSymbol) => {
+  /**
+   * Validates the ticker symbol by checking it against the nativeCurrency.symbol return
+   * value from chainid.network trusted chain data
+   * Assumes that all strings are non-empty and correctly formatted.
+   *
+   * @param {string} formChainId - The Chain ID currently entered in the form.
+   * @param {string} formTickerSymbol - The ticker/currency symbol currently entered in the form.
+   */
+  const validateTickerSymbol = useCallback(
+    async (formChainId, formTickerSymbol) => {
       let warningKey;
       let warningMessage;
       let safeChainsList;
@@ -391,30 +412,12 @@ const NetworksForm = ({
       }
 
       setWarningEmpty('ticker');
-    };
-    const validateBlockExplorerURL = (url) => {
-      if (!validUrl.isWebUri(url) && url !== '') {
-        let errorKey;
-        let errorMessage;
+    },
+    [setWarningEmpty, setWarningTo, t],
+  );
 
-        if (isValidWhenAppended(url)) {
-          errorKey = 'urlErrorMsg';
-          errorMessage = t('urlErrorMsg');
-        } else {
-          errorKey = 'invalidBlockExplorerURL';
-          errorMessage = t('invalidBlockExplorerURL');
-        }
-
-        setErrorTo('blockExplorerUrl', {
-          key: errorKey,
-          msg: errorMessage,
-        });
-      } else {
-        setErrorEmpty('blockExplorerUrl');
-      }
-    };
-
-    const validateUrlRpcUrl = (url) => {
+  const validateUrlRpcUrl = useCallback(
+    (url) => {
       const isValidUrl = validUrl.isWebUri(url);
       const [{ rpcUrl: matchingRPCUrl = null } = {}] = networksToRender.filter(
         (e) => e.rpcUrl === url,
@@ -445,7 +448,28 @@ const NetworksForm = ({
       } else {
         setErrorEmpty('rpcUrl');
       }
-    };
+    },
+    [setErrorEmpty, setErrorTo, selectedNetwork, networksToRender, t],
+  );
+
+  // validation effect
+  const previousRpcUrl = usePrevious(rpcUrl);
+  const previousChainId = usePrevious(chainId);
+  const previousTicker = usePrevious(ticker);
+  const previousBlockExplorerUrl = usePrevious(blockExplorerUrl);
+  useEffect(() => {
+    if (viewOnly || label === 'Localhost 8545') {
+      return;
+    }
+
+    if (
+      previousRpcUrl === rpcUrl &&
+      previousChainId === chainId &&
+      previousTicker === ticker &&
+      previousBlockExplorerUrl === blockExplorerUrl
+    ) {
+      return;
+    }
 
     validateUrlRpcUrl(rpcUrl);
     validateChainId(chainId);
@@ -458,15 +482,14 @@ const NetworksForm = ({
     blockExplorerUrl,
     viewOnly,
     label,
-    t,
-    selectedNetwork,
-    networksToRender,
-    warnings,
-    errors,
     previousRpcUrl,
     previousChainId,
     previousTicker,
     previousBlockExplorerUrl,
+    validateBlockExplorerURL,
+    validateChainId,
+    validateTickerSymbol,
+    validateUrlRpcUrl,
   ]);
 
   const onSubmit = async () => {
