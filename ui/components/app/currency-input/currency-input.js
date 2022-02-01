@@ -32,7 +32,7 @@ export default function CurrencyInput({
   featureSecondary,
   onChange,
   onPreferenceToggle,
-  primaryNumberOfDecimals,
+  primaryNumberOfDecimals = 8,
 }) {
   const t = useContext(I18nContext);
 
@@ -145,7 +145,7 @@ export default function CurrencyInput({
       />
     );
   };
-
+  console.log(decimalValue, primaryNumberOfDecimals);
   return (
     <UnitInput
       {...{

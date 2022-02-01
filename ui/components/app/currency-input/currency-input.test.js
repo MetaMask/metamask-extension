@@ -145,7 +145,11 @@ describe('CurrencyInput Component', () => {
 
       const wrapper = mount(
         <Provider store={store}>
-          <CurrencyInput hexValue="f602f2234d0ea" featureSecondary />
+          <CurrencyInput
+            hexValue="f602f2234d0ea"
+            featureSecondary
+            primaryNumberOfDecimals={16}
+          />
         </Provider>,
         {
           context: { t: (str) => `${str}_t` },
@@ -157,7 +161,7 @@ describe('CurrencyInput Component', () => {
       expect(wrapper.find('.unit-input__suffix')).toHaveLength(1);
       expect(wrapper.find('.unit-input__suffix').text()).toStrictEqual('ETH');
       expect(wrapper.find('.unit-input__input').props().value).toStrictEqual(
-        0.004327880204275946,
+        0.0043278802042759,
       );
       expect(
         wrapper.find('.currency-input__conversion-component').text(),
@@ -193,7 +197,11 @@ describe('CurrencyInput Component', () => {
       const store = configureMockStore()(mockStore);
       const wrapper = mount(
         <Provider store={store}>
-          <CurrencyInput onChange={handleChangeSpy} hexValue="f602f2234d0ea" />
+          <CurrencyInput
+            onChange={handleChangeSpy}
+            hexValue="f602f2234d0ea"
+            primaryNumberOfDecimals={16}
+          />
         </Provider>,
       );
 
@@ -202,7 +210,7 @@ describe('CurrencyInput Component', () => {
       expect(handleBlurSpy.callCount).toStrictEqual(0);
 
       const input = wrapper.find('input');
-      expect(input.props().value).toStrictEqual(0.004327880204275946);
+      expect(input.props().value).toStrictEqual(0.0043278802042759);
 
       input.simulate('change', { target: { value: 1 } });
       expect(handleChangeSpy.callCount).toStrictEqual(2);
