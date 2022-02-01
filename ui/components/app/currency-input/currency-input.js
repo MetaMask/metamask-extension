@@ -129,7 +129,7 @@ export default function CurrencyInput({
     if (shouldUseFiat()) {
       // Display ETH
       currency = preferredCurrency || ETH;
-      numberOfDecimals = 8;
+      numberOfDecimals = primaryNumberOfDecimals;
     } else {
       // Display Fiat
       currency = secondaryCurrency;
