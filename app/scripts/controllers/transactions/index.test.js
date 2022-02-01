@@ -9,6 +9,7 @@ import {
   createTestProviderTools,
   getTestAccounts,
 } from '../../../../test/stub/provider';
+import mockEstimates from '../../../../test/data/mock-estimates.json';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -1561,6 +1562,10 @@ describe('Transaction Controller', function () {
         txController,
         'finalizeEventFragment',
       );
+
+      sinon
+        .stub(txController, '_getEIP1559GasFeeEstimates')
+        .resolves(mockEstimates['fee-market']);
     });
 
     afterEach(function () {
@@ -1587,10 +1592,14 @@ describe('Transaction Controller', function () {
           chainId: currentChainId,
           time: 1624408066355,
           metamaskNetworkId: currentNetworkId,
+          defaultGasEstimates: {
+            gas: '0x7b0d',
+            gasPrice: '0x77359400',
+          },
         };
       });
 
-      it('should create an event fragment when transaction added', function () {
+      it('should create an event fragment when transaction added', async function () {
         const expectedPayload = {
           initialEvent: 'Transaction Added',
           successEvent: 'Transaction Approved',
@@ -1600,12 +1609,15 @@ describe('Transaction Controller', function () {
           persist: true,
           properties: {
             chain_id: '0x2a',
+            eip_1559_version: '0',
             network: '42',
             referrer: 'metamask',
             source: 'user',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -1614,7 +1626,7 @@ describe('Transaction Controller', function () {
           },
         };
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.ADDED,
         );
@@ -1626,9 +1638,9 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', function () {
+      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', async function () {
         fragmentExists = true;
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.REJECTED,
         );
@@ -1643,9 +1655,9 @@ describe('Transaction Controller', function () {
         });
       });
 
-      it('Should finalize the transaction added fragment if user approves transaction', function () {
+      it('Should finalize the transaction added fragment if user approves transaction', async function () {
         fragmentExists = true;
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.APPROVED,
         );
@@ -1661,7 +1673,7 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('should create an event fragment when transaction is submitted', function () {
+      it('should create an event fragment when transaction is submitted', async function () {
         const expectedPayload = {
           initialEvent: 'Transaction Submitted',
           successEvent: 'Transaction Finalized',
@@ -1670,12 +1682,15 @@ describe('Transaction Controller', function () {
           persist: true,
           properties: {
             chain_id: '0x2a',
+            eip_1559_version: '0',
             network: '42',
             referrer: 'metamask',
             source: 'user',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -1684,7 +1699,7 @@ describe('Transaction Controller', function () {
           },
         };
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.SUBMITTED,
         );
@@ -1696,9 +1711,9 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('Should finalize the transaction submitted fragment when transaction finalizes', function () {
+      it('Should finalize the transaction submitted fragment when transaction finalizes', async function () {
         fragmentExists = true;
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.FINALIZED,
         );
@@ -1733,10 +1748,14 @@ describe('Transaction Controller', function () {
           chainId: currentChainId,
           time: 1624408066355,
           metamaskNetworkId: currentNetworkId,
+          defaultGasEstimates: {
+            gas: '0x7b0d',
+            gasPrice: '0x77359400',
+          },
         };
       });
 
-      it('should create an event fragment when transaction added', function () {
+      it('should create an event fragment when transaction added', async function () {
         const expectedPayload = {
           initialEvent: 'Transaction Added',
           successEvent: 'Transaction Approved',
@@ -1746,12 +1765,15 @@ describe('Transaction Controller', function () {
           persist: true,
           properties: {
             chain_id: '0x2a',
+            eip_1559_version: '0',
             network: '42',
             referrer: 'other',
             source: 'dapp',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -1760,7 +1782,7 @@ describe('Transaction Controller', function () {
           },
         };
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.ADDED,
         );
@@ -1772,10 +1794,10 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', function () {
+      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', async function () {
         fragmentExists = true;
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.REJECTED,
         );
@@ -1790,10 +1812,10 @@ describe('Transaction Controller', function () {
         });
       });
 
-      it('Should finalize the transaction added fragment if user approves transaction', function () {
+      it('Should finalize the transaction added fragment if user approves transaction', async function () {
         fragmentExists = true;
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.APPROVED,
         );
@@ -1809,7 +1831,7 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('should create an event fragment when transaction is submitted', function () {
+      it('should create an event fragment when transaction is submitted', async function () {
         const expectedPayload = {
           initialEvent: 'Transaction Submitted',
           successEvent: 'Transaction Finalized',
@@ -1818,12 +1840,15 @@ describe('Transaction Controller', function () {
           persist: true,
           properties: {
             chain_id: '0x2a',
+            eip_1559_version: '0',
             network: '42',
             referrer: 'other',
             source: 'dapp',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
           },
           sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
             gas_price: '2',
             gas_limit: '0x7b0d',
             first_seen: 1624408066355,
@@ -1832,7 +1857,7 @@ describe('Transaction Controller', function () {
           },
         };
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.SUBMITTED,
         );
@@ -1844,10 +1869,10 @@ describe('Transaction Controller', function () {
         );
       });
 
-      it('Should finalize the transaction submitted fragment when transaction finalizes', function () {
+      it('Should finalize the transaction submitted fragment when transaction finalizes', async function () {
         fragmentExists = true;
 
-        txController._trackTransactionMetricsEvent(
+        await txController._trackTransactionMetricsEvent(
           txMeta,
           TRANSACTION_EVENTS.FINALIZED,
         );
@@ -1864,7 +1889,7 @@ describe('Transaction Controller', function () {
       });
     });
 
-    it('should create missing fragments when events happen out of order or are missing', function () {
+    it('should create missing fragments when events happen out of order or are missing', async function () {
       const txMeta = {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -1890,6 +1915,7 @@ describe('Transaction Controller', function () {
         persist: true,
         properties: {
           chain_id: '0x2a',
+          eip_1559_version: '0',
           network: '42',
           referrer: 'other',
           source: 'dapp',
@@ -1903,7 +1929,7 @@ describe('Transaction Controller', function () {
           status: 'unapproved',
         },
       };
-      txController._trackTransactionMetricsEvent(
+      await txController._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.APPROVED,
       );
@@ -1920,7 +1946,7 @@ describe('Transaction Controller', function () {
       assert.deepEqual(finalizeEventFragmentSpy.getCall(0).args[1], undefined);
     });
 
-    it('should call _trackMetaMetricsEvent with the correct payload (extra params)', function () {
+    it('should call _trackMetaMetricsEvent with the correct payload (extra params)', async function () {
       const txMeta = {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -1950,6 +1976,7 @@ describe('Transaction Controller', function () {
           source: 'dapp',
           type: TRANSACTION_TYPES.SIMPLE_SEND,
           chain_id: '0x2a',
+          eip_1559_version: '0',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -1962,7 +1989,7 @@ describe('Transaction Controller', function () {
         },
       };
 
-      txController._trackTransactionMetricsEvent(
+      await txController._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.ADDED,
         {
@@ -1978,7 +2005,7 @@ describe('Transaction Controller', function () {
       );
     });
 
-    it('should call _trackMetaMetricsEvent with the correct payload (EIP-1559)', function () {
+    it('should call _trackMetaMetricsEvent with the correct payload (EIP-1559)', async function () {
       const txMeta = {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
@@ -1997,6 +2024,11 @@ describe('Transaction Controller', function () {
         chainId: currentChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
+        defaultGasEstimates: {
+          estimateType: 'medium',
+          maxFeePerGas: '0x77359400',
+          maxPriorityFeePerGas: '0x77359400',
+        },
       };
       const expectedPayload = {
         initialEvent: 'Transaction Added',
@@ -2007,6 +2039,7 @@ describe('Transaction Controller', function () {
         category: 'Transactions',
         properties: {
           chain_id: '0x2a',
+          eip_1559_version: '1',
           network: '42',
           referrer: 'other',
           source: 'dapp',
@@ -2023,10 +2056,13 @@ describe('Transaction Controller', function () {
           status: 'unapproved',
           estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
           estimate_used: GAS_RECOMMENDATIONS.HIGH,
+          default_estimate: 'medium',
+          default_max_fee_per_gas: '70',
+          default_max_priority_fee_per_gas: '7',
         },
       };
 
-      txController._trackTransactionMetricsEvent(
+      await txController._trackTransactionMetricsEvent(
         txMeta,
         TRANSACTION_EVENTS.ADDED,
         {
