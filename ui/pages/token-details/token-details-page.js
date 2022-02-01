@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { getTokens } from '../../ducks/metamask/metamask';
 import { getSendAssetAddress } from '../../ducks/send';
+import { getUseTokenDetection, getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import Identicon from '../../components/ui/identicon/identicon.component';
@@ -11,7 +12,7 @@ import { useTokenTracker } from '../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
 import { showModal } from '../../store/actions';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
-import { ASSET_ROUTE } from '../../helpers/constants/routes';
+import { ASSET_ROUTE, DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import Tooltip from '../../components/ui/tooltip';
 import Button from '../../components/ui/button';
 import CopyIcon from '../../components/ui/icon/copy-icon.component';
@@ -32,12 +33,20 @@ export default function TokenDetailsPage() {
   const t = useContext(I18nContext);
 
   const tokens = useSelector(getTokens);
+  const tokenList = useSelector(getTokenList);
+  const useTokenDetection = useSelector(getUseTokenDetection);
 
   const assetAddress = useSelector((state) => ({
     asset: getSendAssetAddress(state),
   }));
 
   const { asset: tokenAddress } = assetAddress;
+
+  const tokenMetadata = tokenList[tokenAddress];
+  const fileName = tokenMetadata?.iconUrl;
+  const imagePath = useTokenDetection
+    ? fileName
+    : `images/contract/${fileName}`;
 
   const token = tokens.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
@@ -46,9 +55,9 @@ export default function TokenDetailsPage() {
   const { tokensWithBalances } = useTokenTracker([token]);
   const tokenBalance = tokensWithBalances[0]?.string;
   const tokenCurrencyBalance = useTokenFiatAmount(
-    token.address,
+    token?.address,
     tokenBalance,
-    token.symbol,
+    token?.symbol,
   );
 
   const currentNetwork = useSelector((state) => ({
@@ -95,7 +104,7 @@ export default function TokenDetailsPage() {
               <Identicon
                 diameter={32}
                 address={token.address}
-                image={token.image}
+                image={tokenMetadata ? imagePath : token.image}
               />
             </Box>
           </Box>
@@ -209,6 +218,8 @@ export default function TokenDetailsPage() {
 
     if (token) {
       content = renderTokenDetailsComponent();
+    } else {
+      content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
     }
 
     return content;
