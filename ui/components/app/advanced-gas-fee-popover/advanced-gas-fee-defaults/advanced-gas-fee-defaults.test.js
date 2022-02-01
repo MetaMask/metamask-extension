@@ -25,6 +25,7 @@ jest.mock('../../../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
   setAdvancedGasFee: jest.fn(),
+  updateEventFragment: jest.fn(),
 }));
 
 const render = (defaultGasParams, contextParams) => {
