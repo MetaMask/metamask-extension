@@ -92,7 +92,8 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
     const ganacheOptions = {
       hardfork: 'london',
       accounts: [
