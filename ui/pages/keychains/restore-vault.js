@@ -45,10 +45,6 @@ class RestoreVaultPage extends Component {
     initializeThreeBox();
     history.push(DEFAULT_ROUTE);
   };
-  // forgotPassWordTitle = (title) => {
-  //   const titleArray = title.split(' ');
-  //   return titleArray.join(' ');
-  // };
 
   render() {
     const { t } = this.context;
