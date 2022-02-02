@@ -190,7 +190,7 @@ export default class UnlockPage extends Component {
                 className="unlock-page__link unlock-page__link--import"
                 onClick={() => onRestore()}
               >
-                {t('importAccountLinkText')}
+                {t('forgotPassword')}
               </button>,
             ])}
           </div>

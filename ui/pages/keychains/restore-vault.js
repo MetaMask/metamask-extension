@@ -45,6 +45,10 @@ class RestoreVaultPage extends Component {
     initializeThreeBox();
     history.push(DEFAULT_ROUTE);
   };
+  // forgotPassWordTitle = (title) => {
+  //   const titleArray = title.split(' ');
+  //   return titleArray.join(' ');
+  // };
 
   render() {
     const { t } = this.context;
@@ -66,13 +70,55 @@ class RestoreVaultPage extends Component {
               {`< ${t('back')}`}
             </a>
             <div className="import-account__title">
-              {this.context.t('restoreAccountWithSeed')}
+              {t('forgotPassword')
+                .split(' ')
+                .map((word, index) =>
+                  index === 0
+                    ? word
+                    : word.charAt(0).toLowerCase() + word.slice(1),
+                )
+                .join(' ')}
             </div>
             <div className="import-account__selector-label">
-              {this.context.t('secretPhrase')}
+              {t('forgotPasswordSubHeader')}
             </div>
             <div className="import-account__selector-typography">
-              {this.context.t('secretPhraseWarning')}
+              {t('secretPhraseWarning')}
+            </div>
+            <div className="import-account__selector-typography">
+              {t('secretPhrase', [
+                <Button
+                  type="inline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://metamask.zendesk.com/hc/en-us/articles/360015489271-How-to-add-missing-accounts-after-restoring-with-Secret-Recovery-Phrase"
+                  key="import-account-secretphase"
+                >
+                  {t('reAddAccounts')}
+                </Button>,
+              ])}
+            </div>
+            <div className="import-account__selector-typography">
+              {t('reImportAccountsAndTokens', [
+                <Button
+                  type="inline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://metamask.zendesk.com/hc/en-us/articles/360015489331-How-to-import-an-Account"
+                  key="import-account-reimport-accounts"
+                >
+                  {t('reImportAccounts')}
+                </Button>,
+                <Button
+                  type="inline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://metamask.zendesk.com/hc/en-us/articles/360015489031-How-to-add-unlisted-tokens-custom-tokens-in-MetaMask"
+                  key="import-account-readd-tokens"
+                >
+                  {t('reAddTokens')}
+                </Button>,
+              ])}
             </div>
             <CreateNewVault
               disabled={isLoading}

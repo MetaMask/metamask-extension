@@ -1206,6 +1206,12 @@
   "forgetDevice": {
     "message": "Forget this device"
   },
+  "forgotPassword": {
+    "message": "Forgot Password?"
+  },
+  "forgotPasswordSubHeader": {
+    "message": "MetaMask cannot recover your password."
+  },
   "from": {
     "message": "From"
   },
@@ -2356,6 +2362,18 @@
   "queued": {
     "message": "Queued"
   },
+  "reAddAccounts": {
+    "message": "re-add any other accounts"
+  },
+  "reAddTokens": {
+    "message": "re-add any tokens"
+  },
+  "reImportAccounts": {
+    "message": "re-import any such accounts"
+  },
+  "reImportAccountsAndTokens": {
+    "message": "Additionally, any imported external account, or custom tokens that were added, will not appear. You will need to $1 using their Private Key(s), and $2 that are missing."
+  },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Import token” in your accounts options menu."
   },
@@ -2526,10 +2544,10 @@
     "message": "WARNING: Never disclose your Secret Recovery Phrase. Anyone with this phrase can take your Ether forever."
   },
   "secretPhrase": {
-    "message": "Only the first account on this wallet will auto load. After completing this process, to add additional accounts, click the drop down menu, then select Create Account."
+    "message": "If you restore a wallet using the Secret Recovery Phrase, only the wallet’s initial account will appear at first. You will need to $1 created using the SRP. "
   },
   "secretPhraseWarning": {
-    "message": "If you restore using another Secret Recovery Phrase, your current wallet, accounts and assets will be removed from this app permanently. This action cannot be undone."
+    "message": "To recover access to your wallet you will have to restore it using the Secret Recovery Phrase. This action will overwrite existing wallet data and cannot be undone. Make sure you’re using the correct Secret Recovery Phrase."
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
