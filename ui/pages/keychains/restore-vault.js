@@ -23,7 +23,7 @@ class RestoreVaultPage extends Component {
     initializeThreeBox: PropTypes.func,
   };
 
-  handleImport = (password, seedPhrase) => {
+  handleImport = async (password, seedPhrase) => {
     const {
       // eslint-disable-next-line no-shadow
       createNewVaultAndRestore,
@@ -34,17 +34,16 @@ class RestoreVaultPage extends Component {
     } = this.props;
 
     leaveImportSeedScreenState();
-    createNewVaultAndRestore(password, seedPhrase).then(() => {
-      this.context.metricsEvent({
-        eventOpts: {
-          category: 'Retention',
-          action: 'userEntersSeedPhrase',
-          name: 'onboardingRestoredVault',
-        },
-      });
-      initializeThreeBox();
-      history.push(DEFAULT_ROUTE);
+    await createNewVaultAndRestore(password, seedPhrase);
+    this.context.metricsEvent({
+      eventOpts: {
+        category: 'Retention',
+        action: 'userEntersSeedPhrase',
+        name: 'onboardingRestoredVault',
+      },
     });
+    initializeThreeBox();
+    history.push(DEFAULT_ROUTE);
   };
 
   render() {

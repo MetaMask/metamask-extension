@@ -56,10 +56,9 @@ export default class ImportWithSeedPhrase extends PureComponent {
       },
     });
 
-    setSeedPhraseBackedUp(true).then(async () => {
-      initializeThreeBox();
-      history.replace(INITIALIZE_END_OF_FLOW_ROUTE);
-    });
+    await setSeedPhraseBackedUp(true);
+    initializeThreeBox();
+    history.replace(INITIALIZE_END_OF_FLOW_ROUTE);
   };
 
   render() {
