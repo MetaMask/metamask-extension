@@ -186,7 +186,7 @@ const NetworksForm = ({
     // Do not factor in duplicate chain id error for submission disabling
     return (
       (Boolean(chainIdError?.key) &&
-        chainIdError.key === 'chainIdExistsErrorMsg') ||
+        chainIdError.key !== 'chainIdExistsErrorMsg') ||
       Boolean(blockExplorerUrlError?.key) ||
       Boolean(rpcUrlError?.key)
     );
