@@ -793,7 +793,8 @@ function setupSourcemaps({ events }, { devMode }) {
   });
 }
 
-async function bundleIt({ label, buildBundler, events }) {
+async function bundleIt(buildConfiguration) {
+  const { label, buildBundler, events } = buildConfiguration;
   const bundler = buildBundler();
   // output build logs to terminal
   bundler.on('log', log);
