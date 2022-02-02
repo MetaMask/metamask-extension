@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.9.1]
+### Fixed
+- Fixed application error when adding certain tokens ([#13484](https://github.com/MetaMask/metamask-extension/pull/13484))
+
 ## [10.9.0]
 ### Added
 - Alert users when the network is busy ([#12268](https://github.com/MetaMask/metamask-extension/pull/12268))
@@ -2687,7 +2691,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.9.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.9.1...HEAD
+[10.9.1]: https://github.com/MetaMask/metamask-extension/compare/v10.9.0...v10.9.1
 [10.9.0]: https://github.com/MetaMask/metamask-extension/compare/v10.8.2...v10.9.0
 [10.8.2]: https://github.com/MetaMask/metamask-extension/compare/v10.8.1...v10.8.2
 [10.8.1]: https://github.com/MetaMask/metamask-extension/compare/v10.8.0...v10.8.1
