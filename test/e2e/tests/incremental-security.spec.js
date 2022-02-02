@@ -57,7 +57,6 @@ describe('Incremental Security', function () {
         await driver.clickElement('.first-time-flow__form button');
 
         // renders the Secret Recovery Phrase intro screen'
-        await driver.clickElement('[data-testid="popover-close"]');
         await driver.clickElement('.seed-phrase-intro__left button');
 
         // skips the Secret Recovery Phrase challenge

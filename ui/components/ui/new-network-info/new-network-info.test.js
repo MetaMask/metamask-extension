@@ -1,68 +1,49 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
+import { mountWithRouter, renderWithProvider } from '../../../../test/lib/render-helpers';
 import NewNetworkInfo from './new-network-info';
+import nock from 'nock';
+
+
+const fetchWithCache = require('../../../helpers/utils/fetch-with-cache').default;
 
 describe('NewNetworkInfo', () => {
-  const props = {
-    primaryTokenImage: './images/eth_logo.svg',
-    providerTicker: 'ETH',
-    providerNickname: '',
-    providerType: 'mainnet',
-    tokenDetectionSupported: false,
-  };
-
-  it('should render title', () => {
-    const { container } = render(<NewNetworkInfo {...props} />);
-    const title = container.querySelector('.new-network-info__title');
-    expect(title).toBeDefined();
+  afterEach(() => {
+    nock.cleanAll();
   });
+  it('should render new network info popup', () => {
+    const state = {
+      metamask: {
+        provider: {
+          ticker: 'ETH',
+          nickname: '',
+          chainId: '0x1',
+          type: 'mainnet',
+        },
+        useTokenDetection: false,
+        nativeCurrency: 'ETH',
+      },
+    };
 
-  it('should render a question mark icon image', () => {
-    props.primaryTokenImage = undefined;
-    const { container } = render(<NewNetworkInfo {...props} />);
-    const questionMark = container.querySelector('.fa fa-question-circle');
-    expect(questionMark).toBeDefined();
-  });
+    // const f = async () => {
+    nock('https://token-api.metaswap.codefi.network/tokens/0x1').get();
+        // .reply(200, '{"average": 1}');
+  
+      // const response = await fetchWithCache(
+      //   'https://fetchwithcache.metamask.io/price',
+      // );
+      // expect(response).toStrictEqual({
+      //   average: 1,
+      // });
 
-  it('should render first box when provider ticker is available', () => {
-    const { container } = render(<NewNetworkInfo {...props} />);
-    const firstBox = container.querySelector(
-      '.new-network-info__content-box-1',
+    const store = configureMockStore()(state);
+
+    const wrapper = renderWithProvider(
+      <NewNetworkInfo />,
+      store,
     );
-    expect(firstBox).toBeDefined();
-  });
 
-  it('should not render first box when provider ticker is not available', () => {
-    props.providerTicker = undefined;
-    const { container } = render(<NewNetworkInfo {...props} />);
-    const firstBox = container.querySelector(
-      '.new-network-info__content-box-1',
-    );
-    expect(firstBox).toBeNull();
-  });
-
-  it('should render text in first box when provider ticker is available', () => {
-    const { container } = render(<NewNetworkInfo {...props} />);
-    const firstBoxText = container.querySelector(
-      '.new-network-info__content-box-1__text-1',
-    );
-    expect(firstBoxText).toBeDefined();
-  });
-
-  it('should render text in second box', () => {
-    const { container } = render(<NewNetworkInfo {...props} />);
-    const secondBoxText = container.querySelector(
-      '.new-network-info__content-box-1__text-1',
-    );
-    expect(secondBoxText).toBeDefined();
-  });
-
-  it('should not render text in second box', () => {
-    props.tokenDetectionSupported = true;
-    const { container } = render(<NewNetworkInfo {...props} />);
-    const secondBoxText = container.querySelector(
-      '.new-network-info__content-box-1__text-1',
-    );
-    expect(secondBoxText).toBeNull();
+    expect(wrapper).toHaveLength(1);
   });
 });
