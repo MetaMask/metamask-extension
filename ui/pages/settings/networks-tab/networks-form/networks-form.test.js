@@ -1,9 +1,14 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import nock from 'nock';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
 import NetworksForm from '.';
+
+nock('https://chainid.network:443', { encodedQueryParams: true })
+  .get('/chains.json')
+  .reply(200, []);
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({ metamask: {} });
@@ -53,7 +58,7 @@ describe('NetworkForm Component', () => {
     expect(queryByText('Save')).toBeInTheDocument();
   });
 
-  it('should render network form correctly', () => {
+  it('should render network form correctly', async () => {
     const { queryByText, getByDisplayValue } = renderComponent(
       propNetworkDisplay,
     );
@@ -81,31 +86,37 @@ describe('NetworkForm Component', () => {
     expect(
       getByDisplayValue(propNetworkDisplay.selectedNetwork.blockExplorerUrl),
     ).toBeInTheDocument();
-    fireEvent.change(
-      getByDisplayValue(propNetworkDisplay.selectedNetwork.label),
-      {
-        target: { value: 'LocalHost 8545' },
-      },
-    );
-    expect(getByDisplayValue('LocalHost 8545')).toBeInTheDocument();
-    fireEvent.change(
-      getByDisplayValue(propNetworkDisplay.selectedNetwork.chainId),
-      {
-        target: { value: '1' },
-      },
-    );
-    expect(
-      queryByText('This Chain ID is currently used by the mainnet network.'),
-    ).toBeInTheDocument();
 
-    fireEvent.change(
+    await fireEvent.change(
       getByDisplayValue(propNetworkDisplay.selectedNetwork.rpcUrl),
       {
         target: { value: 'test' },
       },
     );
     expect(
-      queryByText('URLs require the appropriate HTTP/HTTPS prefix.'),
+      await waitFor(() =>
+        screen.findByText('URLs require the appropriate HTTP/HTTPS prefix.'),
+      ),
+    ).toBeInTheDocument();
+
+    await fireEvent.change(
+      getByDisplayValue(propNetworkDisplay.selectedNetwork.label),
+      {
+        target: { value: 'LocalHost 8545' },
+      },
+    );
+    expect(getByDisplayValue('LocalHost 8545')).toBeInTheDocument();
+
+    await fireEvent.change(
+      getByDisplayValue(propNetworkDisplay.selectedNetwork.chainId),
+      {
+        target: { value: '1' },
+      },
+    );
+    expect(
+      await screen.findByText(
+        'Could not fetch chain ID. Is your RPC URL correct?',
+      ),
     ).toBeInTheDocument();
   });
 });

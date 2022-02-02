@@ -178,51 +178,12 @@ const NetworksForm = ({
     return Object.keys(errors).some((key) => {
       const error = errors[key];
       // Do not factor in duplicate chain id error for submission disabling
-      if (key === 'chainId' && error.key === 'chainIdExistsErrorMsg') {
+      if (key === 'chainId' && error?.key === 'chainIdExistsErrorMsg') {
         return false;
       }
-      return error.key && error.msg;
+      return error?.key && error?.msg;
     });
   };
-  const setErrorTo = useCallback(
-    (errorKey, errorVal) => {
-      setErrors({ ...errors, [errorKey]: errorVal });
-    },
-    [errors, setErrors],
-  );
-
-  const setErrorEmpty = useCallback(
-    (errorKey) => {
-      setErrors({
-        ...errors,
-        [errorKey]: {
-          msg: '',
-          key: '',
-        },
-      });
-    },
-    [setErrors, errors],
-  );
-
-  const setWarningTo = useCallback(
-    (warningKey, warningVal) => {
-      setWarnings({ ...warnings, [warningKey]: warningVal });
-    },
-    [setWarnings, warnings],
-  );
-
-  const setWarningEmpty = useCallback(
-    (warningKey) => {
-      setWarnings({
-        ...warnings,
-        [warningKey]: {
-          msg: '',
-          key: '',
-        },
-      });
-    },
-    [setWarnings, warnings],
-  );
 
   const validateBlockExplorerURL = useCallback(
     (url) => {
@@ -238,15 +199,14 @@ const NetworksForm = ({
           errorMessage = t('invalidBlockExplorerURL');
         }
 
-        setErrorTo('blockExplorerUrl', {
+        return {
           key: errorKey,
           msg: errorMessage,
-        });
-      } else {
-        setErrorEmpty('blockExplorerUrl');
+        };
       }
+      return null;
     },
-    [setErrorEmpty, setErrorTo, t],
+    [t],
   );
 
   const validateChainId = useCallback(
@@ -261,11 +221,10 @@ const NetworksForm = ({
         try {
           hexChainId = `0x${decimalToHex(hexChainId)}`;
         } catch (err) {
-          setErrorTo('chainId', {
+          return {
             key: 'invalidHexNumber',
             msg: t('invalidHexNumber'),
-          });
-          return;
+          };
         }
       }
 
@@ -274,8 +233,7 @@ const NetworksForm = ({
       );
 
       if (formChainId === '') {
-        setErrorEmpty('chainId');
-        return;
+        return null;
       } else if (matchingChainId) {
         errorKey = 'chainIdExistsErrorMsg';
         errorMessage = t('chainIdExistsErrorMsg', [
@@ -302,14 +260,15 @@ const NetworksForm = ({
 
       let endpointChainId;
       let providerError;
-      if (rpcUrl && formChainId) {
-        try {
-          endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
-        } catch (err) {
-          log.warn('Failed to fetch the chainId from the endpoint.', err);
-          providerError = err;
-        }
 
+      try {
+        endpointChainId = await jsonRpcRequest(rpcUrl, 'eth_chainId');
+      } catch (err) {
+        log.warn('Failed to fetch the chainId from the endpoint.', err);
+        providerError = err;
+      }
+
+      if (rpcUrl && formChainId) {
         if (providerError || typeof endpointChainId !== 'string') {
           errorKey = 'failedToFetchChainId';
           errorMessage = t('failedToFetchChainId');
@@ -337,18 +296,16 @@ const NetworksForm = ({
           ]);
         }
       }
-
       if (errorKey) {
-        setErrorTo('chainId', {
+        return {
           key: errorKey,
           msg: errorMessage,
-        });
-        return;
+        };
       }
 
-      setErrorEmpty('chainId');
+      return null;
     },
-    [setErrorEmpty, setErrorTo, rpcUrl, networksToRender, t],
+    [rpcUrl, networksToRender, t],
   );
 
   /**
@@ -367,8 +324,7 @@ const NetworksForm = ({
       let providerError;
 
       if (!formChainId || !formTickerSymbol) {
-        setWarningEmpty('ticker');
-        return;
+        return null;
       }
 
       try {
@@ -404,16 +360,15 @@ const NetworksForm = ({
       }
 
       if (warningKey) {
-        setWarningTo('ticker', {
+        return {
           key: warningKey,
           msg: warningMessage,
-        });
-        return;
+        };
       }
 
-      setWarningEmpty('ticker');
+      return null;
     },
-    [setWarningEmpty, setWarningTo, t],
+    [t],
   );
 
   const validateUrlRpcUrl = useCallback(
@@ -434,22 +389,22 @@ const NetworksForm = ({
           errorKey = 'invalidRPC';
           errorMessage = t('invalidRPC');
         }
-        setErrorTo('rpcUrl', {
+
+        return {
           key: errorKey,
           msg: errorMessage,
-        });
+        };
       } else if (matchingRPCUrl && matchingRPCUrl !== selectedNetworkRpcUrl) {
-        setErrorTo('rpcUrl', {
+        return {
           key: 'urlExistsErrorMsg',
           msg: t('urlExistsErrorMsg', [
             matchingRPCUrl.label ?? matchingRPCUrl.labelKey,
           ]),
-        });
-      } else {
-        setErrorEmpty('rpcUrl');
+        };
       }
+      return null;
     },
-    [setErrorEmpty, setErrorTo, selectedNetwork, networksToRender, t],
+    [selectedNetwork, networksToRender, t],
   );
 
   // validation effect
@@ -458,7 +413,7 @@ const NetworksForm = ({
   const previousTicker = usePrevious(ticker);
   const previousBlockExplorerUrl = usePrevious(blockExplorerUrl);
   useEffect(() => {
-    if (viewOnly || label === 'Localhost 8545') {
+    if (viewOnly) {
       return;
     }
 
@@ -470,12 +425,27 @@ const NetworksForm = ({
     ) {
       return;
     }
+    async function validate() {
+      const chainIdError = await validateChainId(chainId);
+      const tickerWarning = await validateTickerSymbol(chainId, ticker);
+      const blockExplorerError = validateBlockExplorerURL(blockExplorerUrl);
+      const rpcUrlError = validateUrlRpcUrl(rpcUrl);
+      setErrors({
+        ...errors,
+        chainId: chainIdError,
+        blockExplorerUrl: blockExplorerError,
+        rpcUrl: rpcUrlError,
+      });
+      setWarnings({
+        ...warnings,
+        ticker: tickerWarning,
+      });
+    }
 
-    validateUrlRpcUrl(rpcUrl);
-    validateChainId(chainId);
-    validateTickerSymbol(chainId, ticker);
-    validateBlockExplorerURL(blockExplorerUrl);
+    validate();
   }, [
+    errors,
+    warnings,
     rpcUrl,
     chainId,
     ticker,
