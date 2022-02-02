@@ -1,10 +1,27 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useGasFeeContext } from '../contexts/gasFee';
-import { updateEventFragment } from '../store/actions';
+import {
+  createTransactionEventFragment,
+  updateEventFragment,
+} from '../store/actions';
+import { selectMatchingFragment } from '../selectors';
+import { TRANSACTION_EVENTS } from '../../shared/constants/transaction';
 
 export const useTransactionEventFragment = () => {
   const { transaction } = useGasFeeContext();
+  const fragment = useSelector((state) =>
+    selectMatchingFragment(state, {
+      existingId: `transaction-added-${transaction?.id}`,
+    }),
+  );
+
+  useEffect(() => {
+    if (!fragment && transaction) {
+      createTransactionEventFragment(transaction.id, TRANSACTION_EVENTS.ADDED);
+    }
+  }, [fragment, transaction]);
 
   const updateTransactionEventFragment = useCallback(
     (params) => {
