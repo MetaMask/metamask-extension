@@ -166,10 +166,7 @@ describe('Metamask Responsive UI', function () {
         const restoreSeedLink = await driver.findClickableElement(
           '.unlock-page__link--import',
         );
-        assert.equal(
-          await restoreSeedLink.getText(),
-          'Forgot Password?',
-        );
+        assert.equal(await restoreSeedLink.getText(), 'Forgot Password?');
         await restoreSeedLink.click();
 
         await driver.fill(
