@@ -292,7 +292,7 @@ export default class TransactionStateManager extends EventEmitter {
     const { transactions } = this.store.getState();
     return transactions[txId];
   }
-
+  // ====================================================================================================================================================
   /**
    * updates the gas fees of the transaction with id if the transaction state is unapproved
    *
@@ -307,6 +307,7 @@ export default class TransactionStateManager extends EventEmitter {
    * }
    */
   updateTransactionGasFees(txId, txGasFees) {
+    txGasFees = normalizeAndValidateTxParams(txGasFees, false);
     const {
       gasLimit,
       gasPrice,
@@ -328,6 +329,7 @@ export default class TransactionStateManager extends EventEmitter {
    * }
    */
   updateTransactionEstimateBaseFee(txId, txEstimateBaseFees) {
+    txEstimateBaseFees = normalizeAndValidateTxParams(txEstimateBaseFees, false);
     const { estimateBaseFee, decEstimateBaseFee } = txEstimateBaseFees;
   }
 
@@ -344,6 +346,9 @@ export default class TransactionStateManager extends EventEmitter {
    * }
    */
   updateSwapApprovalTransaction(txId, swapApprovalTransaction) {
+    if(approveTxMeta.txParams) {
+      approveTxMeta.txParams = normalizeAndValidateTxParams(approveTxMeta.txParams, false);
+    }
     const { approveTxMeta, type, sourceTokenSymbol } = swapApprovalTransaction;
   }
 
@@ -355,6 +360,9 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {object} swapTransaction - holds the metadata
    */
   updateSwapTransaction(txId, swapTransaction) {
+    if(tradeTxMeta.txParams) {
+      tradeTxMeta.txParams = normalizeAndValidateTxParams(tradeTxMeta.txParams, false);
+    }
     const {
       tradeTxMeta,
       sourceTokenSymbol,
@@ -376,6 +384,8 @@ export default class TransactionStateManager extends EventEmitter {
   updateTransactionUserSettings(txId, userSettings) {
     const { userEditedGasLimit, userFeeLevel } = userSettings;
   }
+
+  // ====================================================================================================================================================
 
   /**
    * updates the txMeta in the list and adds a history entry
