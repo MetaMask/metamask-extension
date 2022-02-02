@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.9.1]
-### Uncategorized
-- Handling array type values for image in Identicon component ([#13484](https://github.com/MetaMask/metamask-extension/pull/13484))
+### Fixed
+- Fixed application error when adding certain tokens ([#13484](https://github.com/MetaMask/metamask-extension/pull/13484))
 
 ## [10.9.0]
 ### Added
