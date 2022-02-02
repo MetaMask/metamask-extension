@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
@@ -41,7 +41,7 @@ const propNetworkDisplay = {
 };
 
 describe('NetworkForm Component', () => {
-  it('should render Add new network form correctly', () => {
+  it('should render Add new network form correctly', async () => {
     const { queryByText, queryAllByText } = renderComponent(propNewNetwork);
     expect(
       queryByText(
@@ -56,6 +56,27 @@ describe('NetworkForm Component', () => {
     expect(queryAllByText('(Optional)')).toHaveLength(1);
     expect(queryByText('Cancel')).toBeInTheDocument();
     expect(queryByText('Save')).toBeInTheDocument();
+
+    await fireEvent.change(screen.getByRole('textbox', { name: 'Chain ID' }), {
+      target: { value: '1' },
+    });
+    expect(
+      await screen.findByText(
+        'This Chain ID is currently used by the mainnet network.',
+      ),
+    ).toBeInTheDocument();
+
+    await fireEvent.change(
+      screen.getByRole('textbox', { name: 'New RPC URL' }),
+      {
+        target: { value: 'test' },
+      },
+    );
+    expect(
+      await screen.findByText(
+        'URLs require the appropriate HTTP/HTTPS prefix.',
+      ),
+    ).toBeInTheDocument();
   });
 
   it('should render network form correctly', async () => {
@@ -88,26 +109,6 @@ describe('NetworkForm Component', () => {
     ).toBeInTheDocument();
 
     await fireEvent.change(
-      getByDisplayValue(propNetworkDisplay.selectedNetwork.rpcUrl),
-      {
-        target: { value: 'test' },
-      },
-    );
-    expect(
-      await waitFor(() =>
-        screen.findByText('URLs require the appropriate HTTP/HTTPS prefix.'),
-      ),
-    ).toBeInTheDocument();
-
-    await fireEvent.change(
-      getByDisplayValue(propNetworkDisplay.selectedNetwork.label),
-      {
-        target: { value: 'LocalHost 8545' },
-      },
-    );
-    expect(getByDisplayValue('LocalHost 8545')).toBeInTheDocument();
-
-    await fireEvent.change(
       getByDisplayValue(propNetworkDisplay.selectedNetwork.chainId),
       {
         target: { value: '1' },
@@ -118,5 +119,25 @@ describe('NetworkForm Component', () => {
         'Could not fetch chain ID. Is your RPC URL correct?',
       ),
     ).toBeInTheDocument();
+
+    await fireEvent.change(
+      getByDisplayValue(propNetworkDisplay.selectedNetwork.rpcUrl),
+      {
+        target: { value: 'test' },
+      },
+    );
+    expect(
+      await screen.findByText(
+        'URLs require the appropriate HTTP/HTTPS prefix.',
+      ),
+    ).toBeInTheDocument();
+
+    await fireEvent.change(
+      getByDisplayValue(propNetworkDisplay.selectedNetwork.label),
+      {
+        target: { value: 'LocalHost 8545' },
+      },
+    );
+    expect(getByDisplayValue('LocalHost 8545')).toBeInTheDocument();
   });
 });

@@ -122,14 +122,19 @@ describe('Stores custom RPC history', function () {
         const rpcUrlInput = customRpcInputs[1];
         const chainIdInput = customRpcInputs[2];
 
-        await rpcUrlInput.clear();
-        await rpcUrlInput.sendKeys(newRpcUrl);
-
         await chainIdInput.clear();
         await chainIdInput.sendKeys(duplicateChainId);
         await driver.findElement({
           text:
             'This Chain ID is currently used by the Localhost 8545 network.',
+          tag: 'h6',
+        });
+
+        await rpcUrlInput.clear();
+        await rpcUrlInput.sendKeys(newRpcUrl);
+
+        await driver.findElement({
+          text: 'Could not fetch chain ID. Is your RPC URL correct?',
           tag: 'h6',
         });
       },

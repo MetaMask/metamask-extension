@@ -374,9 +374,13 @@ const NetworksForm = ({
   const validateUrlRpcUrl = useCallback(
     (url) => {
       const isValidUrl = validUrl.isWebUri(url);
-      const [{ rpcUrl: matchingRPCUrl = null } = {}] = networksToRender.filter(
-        (e) => e.rpcUrl === url,
-      );
+      const [
+        {
+          rpcUrl: matchingRPCUrl = null,
+          label: matchingRPCLabel,
+          labelKey: matchingRPCLabelKey,
+        } = {},
+      ] = networksToRender.filter((e) => e.rpcUrl === url);
       const { rpcUrl: selectedNetworkRpcUrl } = selectedNetwork;
 
       if (!isValidUrl && url !== '') {
@@ -398,7 +402,7 @@ const NetworksForm = ({
         return {
           key: 'urlExistsErrorMsg',
           msg: t('urlExistsErrorMsg', [
-            matchingRPCUrl.label ?? matchingRPCUrl.labelKey,
+            matchingRPCLabel ?? matchingRPCLabelKey,
           ]),
         };
       }
