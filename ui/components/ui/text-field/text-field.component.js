@@ -246,7 +246,7 @@ TextField.propTypes = {
   /**
    * Show error message
    */
-  error: PropTypes.string,
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   /**
    * Add custom CSS class
    */

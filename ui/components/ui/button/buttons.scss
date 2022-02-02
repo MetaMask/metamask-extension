@@ -318,3 +318,29 @@ input[type="submit"][disabled] {
     }
   }
 }
+
+.btn--inline {
+  display: inline;
+  padding: 0 4px;
+  font-size: inherit;
+  width: auto;
+  color: var(--Blue-500);
+  cursor: pointer;
+  background-color: transparent;
+
+  &:hover {
+    color: var(--Blue-400);
+  }
+
+  &:active {
+    color: var(--Blue-600);
+  }
+
+  &--disabled,
+  &[disabled] {
+    cursor: auto;
+    opacity: 1;
+    pointer-events: none;
+    color: var(--hover-secondary);
+  }
+}

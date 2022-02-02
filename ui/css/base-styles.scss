@@ -43,15 +43,6 @@ html {
   margin-bottom: 9px;
 }
 
-/*
-  This warning class is used in the following files still:
-  /ui/pages/create-account/import-account/json.js
-  /ui/pages/confirm-add-suggested-token/confirm-add-suggested-token.component.js
-*/
-.warning {
-  color: #ffae00;
-}
-
 /* stylelint-disable */
 #app-content {
   overflow-x: hidden;
@@ -72,7 +63,7 @@ a {
 }
 
 a:hover {
-  color: #df6b0e;
+  color: var(--Blue-400);
 }
 
 input.large-input,

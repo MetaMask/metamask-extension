@@ -2,6 +2,7 @@ import React, { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import BigNumber from 'bignumber.js';
 import {
   GAS_RECOMMENDATIONS,
   EDIT_GAS_MODES,
@@ -57,6 +58,7 @@ export default function EditGasDisplay({
   setGasPrice,
   gasLimit,
   setGasLimit,
+  properGasLimit,
   estimateToUse,
   setEstimateToUse,
   estimatedMinimumFiat,
@@ -107,6 +109,15 @@ export default function EditGasDisplay({
       dappSuggestedAndTxParamGasFeesAreTheSame,
   );
 
+  let warningMessage;
+  if (
+    gasLimit !== undefined &&
+    properGasLimit !== undefined &&
+    new BigNumber(gasLimit).lessThan(new BigNumber(properGasLimit))
+  ) {
+    warningMessage = t('gasLimitRecommended', [properGasLimit]);
+  }
+
   const showTopError =
     (balanceError || estimatesUnavailableWarning) &&
     (!isGasEstimatesLoading || txParamsHaveBeenCustomized);
@@ -136,6 +147,16 @@ export default function EditGasDisplay({
         {showTopError && (
           <div className="edit-gas-display__warning">
             <ErrorMessage errorKey={errorKey} />
+          </div>
+        )}
+        {warningMessage && (
+          <div className="edit-gas-display__warning">
+            <ActionableMessage
+              className="actionable-message--warning"
+              message={warningMessage}
+              iconFillColor="#f8c000"
+              useIcon
+            />
           </div>
         )}
         {requireDappAcknowledgement && !isGasEstimatesLoading && (
@@ -332,6 +353,7 @@ EditGasDisplay.propTypes = {
   setGasPrice: PropTypes.func,
   gasLimit: PropTypes.number,
   setGasLimit: PropTypes.func,
+  properGasLimit: PropTypes.number,
   estimateToUse: PropTypes.string,
   setEstimateToUse: PropTypes.func,
   estimatedMinimumFiat: PropTypes.string,

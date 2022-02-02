@@ -150,6 +150,23 @@ describe('EditGasItem', () => {
     expect(screen.queryByTitle('0.0000315 ETH')).toBeInTheDocument();
   });
 
+  it('should not renders site gas estimate option for priorityLevel dappSuggested if site does not provided gas estimates', () => {
+    renderComponent({
+      componentProps: { priorityLevel: 'dappSuggested' },
+      transactionProps: {},
+    });
+    expect(
+      screen.queryByRole('button', { name: 'dappSuggested' }),
+    ).not.toBeInTheDocument();
+    renderComponent({
+      componentProps: { priorityLevel: 'dappSuggested' },
+      transactionProps: { dappSuggestedGasFees: { gas: '0x59682f10' } },
+    });
+    expect(
+      screen.queryByRole('button', { name: 'dappSuggested' }),
+    ).not.toBeInTheDocument();
+  });
+
   it('should renders advance gas estimate option for priorityLevel custom', () => {
     renderComponent({
       componentProps: { priorityLevel: 'custom' },

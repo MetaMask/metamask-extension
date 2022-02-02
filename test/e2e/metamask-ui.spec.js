@@ -217,7 +217,7 @@ describe('MetaMask', function () {
     it('balance renders', async function () {
       await driver.waitForSelector({
         css: '[data-testid="wallet-balance"] .list-item__heading',
-        text: '100 ETH',
+        text: '1000',
       });
       await driver.delay(regularDelayMs);
     });

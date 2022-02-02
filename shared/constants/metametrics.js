@@ -83,6 +83,46 @@
  */
 
 /**
+ * @typedef {Object} MetaMetricsEventFragment
+ * @property {string} successEvent - The event name to fire when the fragment
+ *  is closed in an affirmative action.
+ * @property {string} [failureEvent] - The event name to fire when the fragment
+ *  is closed with a rejection.
+ * @property {string} [initialEvent] - An event name to fire immediately upon
+ *  fragment creation. This is useful for building funnels in mixpanel and for
+ *  reduction of code duplication.
+ * @property {string} category - the event category to use for both the success
+ *  and failure events
+ * @property {boolean} [persist] - Should this fragment be persisted in
+ *  state and progressed after the extension is locked and unlocked.
+ * @property {number} [timeout] - Time in seconds the event should be persisted
+ *  for. After the timeout the fragment will be closed as abandoned. if not
+ *  supplied the fragment is stored indefinitely.
+ * @property {number} [lastUpdated] - Date.now() when the fragment was last
+ *  updated. Used to determine if the timeout has expired and the fragment
+ *  should be closed.
+ * @property {object} [properties] - Object of custom values to track, keys in
+ *  this object must be in snake_case.
+ * @property {object} [sensitiveProperties] - Object of sensitive values to
+ *  track. Keys in this object must be in snake_case. These properties will be
+ *  sent in an additional event that excludes the user's metaMetricsId
+ * @property {number} [revenue] - amount of currency that event creates in
+ *  revenue for MetaMask if fragment is successful.
+ * @property {string} [currency] - ISO 4127 format currency for events with
+ *  revenue, defaults to US dollars
+ * @property {number} [value] - Abstract business "value" attributable to
+ *  customers who successfully complete this fragment
+ * @property {MetaMetricsPageObject} [page] - the page/route that the event
+ *  occurred on
+ * @property {MetaMetricsReferrerObject} [referrer] - the origin of the dapp
+ *  that initiated the event fragment.
+ * @property {string} [uniqueIdentifier] - optional argument to override the
+ *  automatic generation of UUID for the event fragment. This is useful when
+ *  tracking events for subsystems that already generate UUIDs so to avoid
+ *  unnecessary lookups and reduce accidental duplication.
+ */
+
+/**
  * Represents the shape of data sent to the segment.track method.
  *
  * @typedef {Object} SegmentEventPayload

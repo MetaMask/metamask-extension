@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Avvisa"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skanna QR-koden"
+  },
   "about": {
     "message": "Om"
   },
@@ -250,6 +256,9 @@
   "currentLanguage": {
     "message": "Aktuellt språk"
   },
+  "custom": {
+    "message": "Avancerat"
+  },
   "customGas": {
     "message": "Anpassa gas"
   },
@@ -276,9 +285,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Är du säker på att du vill ta bort detta nätverk?"
-  },
-  "depositEther": {
-    "message": "Sätt in Ether"
   },
   "details": {
     "message": "Info"
@@ -520,6 +526,9 @@
   "learnMore": {
     "message": "Läs mer"
   },
+  "learnMoreUpperCase": {
+    "message": "Läs mer"
+  },
   "ledgerAccountRestriction": {
     "message": "Du måste använda ditt senaste konto innan du kan lägga till ett nytt."
   },
@@ -567,9 +576,6 @@
   },
   "myAccounts": {
     "message": "Mina konton"
-  },
-  "needEtherInWallet": {
-    "message": "För att interagera med decentraliserade applikationer med MetaMask behöver du Ether i din plånbok."
   },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",

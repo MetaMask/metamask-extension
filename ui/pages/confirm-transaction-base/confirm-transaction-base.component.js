@@ -63,10 +63,6 @@ import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
 
 import TransactionAlerts from './transaction-alerts';
 
-// eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2_ENABLED =
-  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
-
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
 
@@ -147,6 +143,7 @@ export default class ConfirmTransactionBase extends Component {
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isMultiLayerFeeNetwork: PropTypes.bool,
+    eip1559V2Enabled: PropTypes.bool,
   };
 
   state = {
@@ -368,7 +365,7 @@ export default class ConfirmTransactionBase extends Component {
       ) {
         return (
           <div className="confirm-page-container-content__total-value">
-            <LoadingHeartBeat />
+            <LoadingHeartBeat estimateUsed={this.props.txData?.userFeeLevel} />
             <UserPreferencedCurrencyDisplay
               type={PRIMARY}
               key="total-detail-value"
@@ -390,7 +387,7 @@ export default class ConfirmTransactionBase extends Component {
       ) {
         return (
           <div className="confirm-page-container-content__total-value">
-            <LoadingHeartBeat />
+            <LoadingHeartBeat estimateUsed={this.props.txData?.userFeeLevel} />
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
               key="total-detail-text"
@@ -611,7 +608,9 @@ export default class ConfirmTransactionBase extends Component {
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
                   <div className="confirm-page-container-content__total-amount">
-                    <LoadingHeartBeat />
+                    <LoadingHeartBeat
+                      estimateUsed={this.props.txData?.userFeeLevel}
+                    />
                     <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
                     </strong>{' '}
@@ -974,14 +973,13 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   supportsEIP1559V2 =
-    EIP_1559_V2_ENABLED &&
+    this.props.eip1559V2Enabled &&
     this.props.supportsEIP1559 &&
     !isLegacyTransaction(this.props.txData);
 
   render() {
     const { t } = this.context;
     const {
-      actionKey,
       fromName,
       fromAddress,
       toName,
@@ -1047,10 +1045,7 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     return (
-      <TransactionModalContextProvider
-        actionKey={actionKey}
-        methodData={methodData}
-      >
+      <TransactionModalContextProvider>
         <ConfirmPageContainer
           fromName={fromName}
           fromAddress={fromAddress}

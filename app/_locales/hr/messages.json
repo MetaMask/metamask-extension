@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odbaci"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skeniraj kôd QR"
+  },
   "about": {
     "message": "O opcijama"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "Trenutačni jezik"
   },
+  "custom": {
+    "message": "Napredno"
+  },
   "customGas": {
     "message": "Prilagodi gorivo"
   },
@@ -282,9 +291,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sigurno želite izbrisati ovu mrežu?"
-  },
-  "depositEther": {
-    "message": "Položi Ether"
   },
   "details": {
     "message": "Detalji"
@@ -526,6 +532,9 @@
   "learnMore": {
     "message": "Saznajte više"
   },
+  "learnMoreUpperCase": {
+    "message": "Saznajte više"
+  },
   "ledgerAccountRestriction": {
     "message": "Treba se koristiti zadnjim računom kako biste dodali novi račun."
   },
@@ -576,9 +585,6 @@
   },
   "myAccounts": {
     "message": "Moji računi"
-  },
-  "needEtherInWallet": {
-    "message": "Trebate Ether u svojem novčaniku kako biste ostvarili interakciju s decentraliziranim aplikacijama uporabom usluge MetaMask. "
   },
   "needImportFile": {
     "message": "Morate odabrati datoteku za uvoz.",

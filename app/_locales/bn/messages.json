@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "প্রত্যাখ্যান"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR কোড স্ক্যান করুন"
+  },
   "about": {
     "message": "সম্পর্কে"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "বর্তমান ভাষা"
   },
+  "custom": {
+    "message": "উন্নত"
+  },
   "customGas": {
     "message": "গ্যাস কাস্টোমাইজ করুন"
   },
@@ -282,9 +291,6 @@
   },
   "deleteNetworkDescription": {
     "message": "আপনি কি এই নেটওয়ার্কটি মোছার বিষয়ে নিশ্চিত?"
-  },
-  "depositEther": {
-    "message": "ইথার জমা করুন"
   },
   "details": {
     "message": "বিশদ বিবরণ"
@@ -530,6 +536,9 @@
   "learnMore": {
     "message": "আরও জানুন"
   },
+  "learnMoreUpperCase": {
+    "message": "আরও জানুন"
+  },
   "ledgerAccountRestriction": {
     "message": "একটি নতুন অ্যা কাউন্ট যোগ করার আগে আপনাকে আপনার শেষ অ্যাকাউন্ট ব্যবহার করে ফেলতে হবে।"
   },
@@ -583,9 +592,6 @@
   },
   "myAccounts": {
     "message": "আমার অ্যাকাউন্টগুলি"
-  },
-  "needEtherInWallet": {
-    "message": "MetaMask ব্যবহার করে ছড়িয়ে ছিটিয়ে থাকা অ্যাপ্লিকেশনগুলির সাথে যোগাযোগ করতে, আপনার ওয়ালেটে ইথার লাগবে।"
   },
   "needImportFile": {
     "message": "আমদানি করার জন্য আপনাকে অবশ্যই একটি ফাইল নির্বাচন করতে হবে।",

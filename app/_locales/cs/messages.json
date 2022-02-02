@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odmítnout"
+  },
   "account": {
     "message": "Účet"
   },
@@ -105,9 +108,6 @@
   "decimalsMustZerotoTen": {
     "message": "Desetinných míst musí být od 0 do 36."
   },
-  "depositEther": {
-    "message": "Vložit Ether"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -213,6 +213,9 @@
   "learnMore": {
     "message": "Zjistěte více."
   },
+  "learnMoreUpperCase": {
+    "message": "Zjistěte více."
+  },
   "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
@@ -239,9 +242,6 @@
   },
   "myAccounts": {
     "message": "Moje účty"
-  },
-  "needEtherInWallet": {
-    "message": "Potřebujete Ether v peněžence, abyste mohli pomocí MetaMasku interagovat s decentralizovanými aplikacemi."
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",

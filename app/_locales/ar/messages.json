@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "رفض"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "مسح كود الاستجابة السريعة QR"
+  },
   "about": {
     "message": "حول"
   },
@@ -7,6 +13,14 @@
   },
   "acceleratingATransaction": {
     "message": "* تسريع المعاملات باستخدام سعر عملة جاس أعلى يزيد من فرص معالجتها بواسطة الشبكة بشكلٍ أسرع، لكن ذلك غير مضمون دائماً."
+  },
+  "acceptTermsOfUse": {
+    "message": "لقد قرأت دولار واحد وأوافق عليه",
+    "description": "$1 is the `terms` message"
+  },
+  "accessAndSpendNotice": {
+    "message": "$1 يمكن الوصول إلى هذا المبلغ الأقصى وإنفاقه حتى",
+    "description": "$1 is the url of the site requesting ability to spend"
   },
   "accessingYourCamera": {
     "message": "جاري استخدام كاميرتك..."
@@ -256,6 +270,9 @@
   "currentLanguage": {
     "message": "اللغة الحالية"
   },
+  "custom": {
+    "message": "إعدادات متقدمة"
+  },
   "customGas": {
     "message": "تخصيص الغاز"
   },
@@ -282,9 +299,6 @@
   },
   "deleteNetworkDescription": {
     "message": "هل أنت متأكد أنك تريد حذف هذه الشبكة؟"
-  },
-  "depositEther": {
-    "message": "إيداع عملة إيثير"
   },
   "details": {
     "message": "التفاصيل"
@@ -526,6 +540,9 @@
   "learnMore": {
     "message": "اكتشف المزيد"
   },
+  "learnMoreUpperCase": {
+    "message": "اكتشف المزيد"
+  },
   "ledgerAccountRestriction": {
     "message": "أنت بحاجة إلى استخدام حسابك الأخير قبل أن تتمكن من إضافة حساب جديد."
   },
@@ -576,9 +593,6 @@
   },
   "myAccounts": {
     "message": "حساباتي"
-  },
-  "needEtherInWallet": {
-    "message": "للتفاعل مع التطبيقات اللامركزية باستخدام MetaMask، ستحتاج إلى الإيثير في محفظتك."
   },
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",

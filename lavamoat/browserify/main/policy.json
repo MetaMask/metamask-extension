@@ -955,7 +955,10 @@
     },
     "abstract-leveldown": {
       "packages": {
+        "buffer": true,
+        "immediate": true,
         "is-buffer": true,
+        "level-supports": true,
         "process": true,
         "xtend": true
       }
@@ -3042,6 +3045,11 @@
         "xtend": true
       }
     },
+    "level-supports": {
+      "packages": {
+        "xtend": true
+      }
+    },
     "levelup": {
       "packages": {
         "assert": true,
@@ -3641,6 +3649,7 @@
         "document": true,
         "jQuery": true,
         "localStorage": true,
+        "location": true,
         "navigator": true,
         "postMessage": true,
         "removeEventListener": true,

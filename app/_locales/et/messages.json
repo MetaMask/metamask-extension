@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Lükka tagasi"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skannige QR-koos"
+  },
   "about": {
     "message": "Teave"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "Praegune keel"
   },
+  "custom": {
+    "message": "Täpsemad"
+  },
   "customGas": {
     "message": "Gaasi kohandamine"
   },
@@ -282,9 +291,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Olete kindel, et soovite selle võrgu kustutada?"
-  },
-  "depositEther": {
-    "message": "Eetri sissemakse"
   },
   "details": {
     "message": "Üksikasjad"
@@ -526,6 +532,9 @@
   "learnMore": {
     "message": "Lisateave"
   },
+  "learnMoreUpperCase": {
+    "message": "Lisateave"
+  },
   "ledgerAccountRestriction": {
     "message": "Enne uue konto loomist peate kasutama eelmist kontot."
   },
@@ -573,9 +582,6 @@
   },
   "myAccounts": {
     "message": "Minu kontod"
-  },
-  "needEtherInWallet": {
-    "message": "Selleks, et suhelda MetaMaski abil detsentraliseeritud rakendustega, peab teil rahakotis eetrit olema."
   },
   "needImportFile": {
     "message": "Peate importimiseks faili valima.",

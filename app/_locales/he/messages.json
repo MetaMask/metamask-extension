@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "דחה"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "סריקת קוד QR"
+  },
   "about": {
     "message": "מידע כללי"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "שפה נוכחית"
   },
+  "custom": {
+    "message": "מתקדם"
+  },
   "customGas": {
     "message": "התאמה אישית של דלק"
   },
@@ -282,9 +291,6 @@
   },
   "deleteNetworkDescription": {
     "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
-  },
-  "depositEther": {
-    "message": "הפקדת את'ר"
   },
   "details": {
     "message": "פרטים"
@@ -530,6 +536,9 @@
   "learnMore": {
     "message": "למדו עוד"
   },
+  "learnMoreUpperCase": {
+    "message": "למדו עוד"
+  },
   "ledgerAccountRestriction": {
     "message": "עליך להשתמש בחשבון האחרון שלך לפני שתוכל/י להוסיף חשבון חדש."
   },
@@ -580,9 +589,6 @@
   },
   "myAccounts": {
     "message": "החשבונות שלי"
-  },
-  "needEtherInWallet": {
-    "message": "כדי לתקשר עם אפליקציות מבוזרות באמצעות MetaMask, צריך להיות לך את'ר בארנק."
   },
   "needImportFile": {
     "message": "יש לבחור קובץ לייצוא.",

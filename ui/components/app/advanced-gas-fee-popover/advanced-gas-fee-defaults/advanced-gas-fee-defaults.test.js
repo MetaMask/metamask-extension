@@ -1,10 +1,14 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  GAS_ESTIMATE_TYPES,
+} from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
+import * as Actions from '../../../../store/actions';
 
 import { AdvancedGasFeePopoverContextProvider } from '../context';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
@@ -20,9 +24,11 @@ jest.mock('../../../../store/actions', () => ({
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
+  setAdvancedGasFee: jest.fn(),
+  updateEventFragment: jest.fn(),
 }));
 
-const render = (defaultGasParams) => {
+const render = (defaultGasParams, contextParams) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -43,6 +49,7 @@ const render = (defaultGasParams) => {
       transaction={{
         userFeeLevel: 'medium',
       }}
+      {...contextParams}
     >
       <AdvancedGasFeePopoverContextProvider>
         <AdvancedGasFeeInputs />
@@ -55,11 +62,7 @@ const render = (defaultGasParams) => {
 describe('AdvancedGasFeeDefaults', () => {
   it('should renders correct message when the default is not set', () => {
     render({ advancedGasFee: null });
-    expect(
-      screen.queryByText(
-        'Always use these values and advanced setting as default.',
-      ),
-    ).toBeInTheDocument();
+    expect(screen.queryByText('new values')).toBeInTheDocument();
   });
   it('should renders correct message when the default values are set', () => {
     render({
@@ -70,22 +73,6 @@ describe('AdvancedGasFeeDefaults', () => {
         'Always use these values and advanced setting as default.',
       ),
     ).toBeInTheDocument();
-  });
-  it('should renders correct message when checkbox is selected and default values are saved', () => {
-    render({
-      advancedGasFee: null,
-    });
-    expect(
-      screen.queryByText(
-        'Always use these values and advanced setting as default.',
-      ),
-    ).toBeInTheDocument();
-    fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 100 },
-    });
-    fireEvent.change(document.getElementsByTagName('input')[1], {
-      target: { value: 4 },
-    });
   });
   it('should renders correct message when the default values are set and the maxBaseFee values are updated', () => {
     render({
@@ -124,5 +111,29 @@ describe('AdvancedGasFeeDefaults', () => {
     expect(
       screen.queryByText('Save these as my default for "Advanced"'),
     ).toBeInTheDocument();
+  });
+
+  it('should call action setAdvancedGasFee when checkbox or label text is clicked', () => {
+    render({
+      advancedGasFee: { maxBaseFee: 50, priorityFee: 2 },
+    });
+    const mock = jest
+      .spyOn(Actions, 'setAdvancedGasFee')
+      .mockReturnValue({ type: 'test' });
+    const checkboxLabel = screen.queryByText(
+      'Always use these values and advanced setting as default.',
+    );
+    fireEvent.click(checkboxLabel);
+    expect(mock).toHaveBeenCalledTimes(1);
+    const checkbox = document.querySelector('input[type=checkbox]');
+    fireEvent.click(checkbox);
+    expect(mock).toHaveBeenCalledTimes(2);
+  });
+
+  it('should not render option to set default gas options in a swaps transaction', () => {
+    render({}, { editGasMode: EDIT_GAS_MODES.SWAPS });
+    expect(
+      document.querySelector('input[type=checkbox]'),
+    ).not.toBeInTheDocument();
   });
 });

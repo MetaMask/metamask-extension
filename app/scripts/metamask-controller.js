@@ -220,28 +220,30 @@ export default class MetamaskController extends EventEmitter {
         onNetworkStateChange: this.networkController.store.subscribe.bind(
           this.networkController.store,
         ),
-        getAssetName: this.assetsContractController.getAssetName.bind(
+        getERC721AssetName: this.assetsContractController.getERC721AssetName.bind(
           this.assetsContractController,
         ),
-        getAssetSymbol: this.assetsContractController.getAssetSymbol.bind(
+        getERC721AssetSymbol: this.assetsContractController.getERC721AssetSymbol.bind(
           this.assetsContractController,
         ),
-        getCollectibleTokenURI: this.assetsContractController.getCollectibleTokenURI.bind(
+        getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
           this.assetsContractController,
         ),
-        getOwnerOf: this.assetsContractController.getOwnerOf.bind(
+        getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
           this.assetsContractController,
         ),
-        balanceOfERC1155Collectible: this.assetsContractController.balanceOfERC1155Collectible.bind(
+        getERC1155BalanceOf: this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
-        uriERC1155Collectible: this.assetsContractController.uriERC1155Collectible.bind(
+        getERC1155TokenURI: this.assetsContractController.getERC1155TokenURI.bind(
           this.assetsContractController,
         ),
       },
       {},
       initState.CollectiblesController,
     );
+
+    this.collectiblesController.setApiKey(process.env.OPENSEA_KEY);
 
     process.env.COLLECTIBLES_V1 &&
       (this.collectibleDetectionController = new CollectibleDetectionController(
@@ -577,6 +579,18 @@ export default class MetamaskController extends EventEmitter {
       ),
       provider: this.provider,
       blockTracker: this.blockTracker,
+      createEventFragment: this.metaMetricsController.createEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      updateEventFragment: this.metaMetricsController.updateEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      finalizeEventFragment: this.metaMetricsController.finalizeEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      getEventFragmentById: this.metaMetricsController.getEventFragmentById.bind(
+        this.metaMetricsController,
+      ),
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
@@ -636,8 +650,7 @@ export default class MetamaskController extends EventEmitter {
             this.collectiblesController.checkAndUpdateSingleCollectibleOwnershipStatus(
               knownCollectible,
               false,
-              // TODO add this when checkAndUpdateSingleCollectibleOwnershipStatus is updated
-              // { userAddress, chainId },
+              { userAddress, chainId },
             );
           }
         }
@@ -1040,6 +1053,7 @@ export default class MetamaskController extends EventEmitter {
       appStateController,
       collectiblesController,
       collectibleDetectionController,
+      assetsContractController,
       currencyRateController,
       detectTokensController,
       ensController,
@@ -1188,6 +1202,14 @@ export default class MetamaskController extends EventEmitter {
       setAdvancedGasFee: preferencesController.setAdvancedGasFee.bind(
         preferencesController,
       ),
+      setEIP1559V2Enabled: preferencesController.setEIP1559V2Enabled.bind(
+        preferencesController,
+      ),
+
+      // AssetsContractController
+      getTokenStandardAndDetails: assetsContractController.getTokenStandardAndDetails.bind(
+        assetsContractController,
+      ),
 
       // CollectiblesController
       addCollectible: collectiblesController.addCollectible.bind(
@@ -1246,6 +1268,12 @@ export default class MetamaskController extends EventEmitter {
       setCollectiblesDetectionNoticeDismissed: appStateController.setCollectiblesDetectionNoticeDismissed.bind(
         appStateController,
       ),
+      setEnableEIP1559V2NoticeDismissed: appStateController.setEnableEIP1559V2NoticeDismissed.bind(
+        appStateController,
+      ),
+      updateCollectibleDropDownState: appStateController.updateCollectibleDropDownState.bind(
+        appStateController,
+      ),
       // EnsController
       tryReverseResolveAddress: ensController.reverseResolveAddress.bind(
         ensController,
@@ -1268,6 +1296,9 @@ export default class MetamaskController extends EventEmitter {
       estimateGas: this.estimateGas.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
       addUnapprovedTransaction: txController.addUnapprovedTransaction.bind(
+        txController,
+      ),
+      createTransactionEventFragment: txController.createTransactionEventFragment.bind(
         txController,
       ),
 
@@ -1400,6 +1431,15 @@ export default class MetamaskController extends EventEmitter {
         metaMetricsController,
       ),
       trackMetaMetricsPage: metaMetricsController.trackPage.bind(
+        metaMetricsController,
+      ),
+      createEventFragment: metaMetricsController.createEventFragment.bind(
+        metaMetricsController,
+      ),
+      updateEventFragment: metaMetricsController.updateEventFragment.bind(
+        metaMetricsController,
+      ),
+      finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
         metaMetricsController,
       ),
 
@@ -2610,28 +2650,47 @@ export default class MetamaskController extends EventEmitter {
    * Used to create a multiplexed stream for connecting to an untrusted context
    * like a Dapp or other extension.
    *
-   * @param {*} connectionStream - The Duplex stream to connect to.
-   * @param {MessageSender} sender - The sender of the messages on this stream
+   * @param options - Options bag.
+   * @param {ReadableStream} options.connectionStream - The Duplex stream to connect to.
+   * @param {MessageSender | SnapSender} options.sender - The sender of the messages on this stream.
+   * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
-  setupUntrustedCommunication(connectionStream, sender) {
+  setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
     const { usePhishDetect } = this.preferencesController.store.getState();
-    const { hostname } = new URL(sender.url);
-    // Check if new connection is blocked if phishing detection is on
-    if (usePhishDetect && this.phishingController.test(hostname)) {
-      log.debug('MetaMask - sending phishing warning for', hostname);
-      this.sendPhishingWarning(connectionStream, hostname);
-      return;
+    let _subjectType;
+    if (subjectType) {
+      _subjectType = subjectType;
+    } else if (sender.id && sender.id !== this.extension.runtime.id) {
+      _subjectType = SUBJECT_TYPES.EXTENSION;
+    } else {
+      _subjectType = SUBJECT_TYPES.WEBSITE;
+    }
+
+    if (sender.url) {
+      const { hostname } = new URL(sender.url);
+      // Check if new connection is blocked if phishing detection is on
+      if (usePhishDetect && this.phishingController.test(hostname)) {
+        log.debug('MetaMask - sending phishing warning for', hostname);
+        this.sendPhishingWarning(connectionStream, hostname);
+        return;
+      }
     }
 
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
 
     // messages between inpage and background
-    this.setupProviderConnection(mux.createStream('metamask-provider'), sender);
+    this.setupProviderConnection(
+      mux.createStream('metamask-provider'),
+      sender,
+      _subjectType,
+    );
 
     // TODO:LegacyProvider: Delete
-    // legacy streams
-    this.setupPublicConfig(mux.createStream('publicConfig'));
+    if (sender.url) {
+      // legacy streams
+      this.setupPublicConfig(mux.createStream('publicConfig'));
+    }
   }
 
   /**
@@ -2648,7 +2707,11 @@ export default class MetamaskController extends EventEmitter {
     const mux = setupMultiplex(connectionStream);
     // connect features
     this.setupControllerConnection(mux.createStream('controller'));
-    this.setupProviderConnection(mux.createStream('provider'), sender, true);
+    this.setupProviderConnection(
+      mux.createStream('provider'),
+      sender,
+      SUBJECT_TYPES.INTERNAL,
+    );
   }
 
   /**
@@ -2707,17 +2770,19 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {*} outStream - The stream to provide over.
    * @param {MessageSender} sender - The sender of the messages on this stream
-   * @param {boolean} isInternal - True if this is a connection with an internal process
+   * @param {string} subjectType - The type of the sender, i.e. subject.
    */
-  setupProviderConnection(outStream, sender, isInternal) {
-    const origin = isInternal ? 'metamask' : new URL(sender.url).origin;
-    let subjectType = isInternal
-      ? SUBJECT_TYPES.INTERNAL
-      : SUBJECT_TYPES.WEBSITE;
+  setupProviderConnection(outStream, sender, subjectType) {
+    let origin;
+    if (subjectType === SUBJECT_TYPES.INTERNAL) {
+      origin = 'metamask';
+    } else {
+      origin = new URL(sender.url).origin;
+    }
 
-    if (sender.id !== this.extension.runtime.id) {
-      subjectType = SUBJECT_TYPES.EXTENSION;
-      this.subjectMetadataController.addSubjectMetadata(origin, {
+    if (sender.id && sender.id !== this.extension.runtime.id) {
+      this.subjectMetadataController.addSubjectMetadata({
+        origin,
         extensionId: sender.id,
         subjectType: SUBJECT_TYPES.EXTENSION,
       });
@@ -2730,8 +2795,8 @@ export default class MetamaskController extends EventEmitter {
 
     const engine = this.setupProviderEngine({
       origin,
-      location: sender.url,
       tabId,
+      sender,
       subjectType,
     });
 
@@ -2759,14 +2824,14 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {Object} options - Provider engine options
    * @param {string} options.origin - The origin of the sender
-   * @param {string} options.location - The full URL of the sender
+   * @param {MessageSender | SnapSender} options.sender - The sender object.
    * @param {string} options.subjectType - The type of the sender subject.
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
-  setupProviderEngine({ origin, location, subjectType, tabId }) {
+  setupProviderEngine({ origin, subjectType, sender, tabId }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
-    const { provider, blockTracker } = this;
+    const { blockTracker, provider } = this;
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
@@ -2788,13 +2853,16 @@ export default class MetamaskController extends EventEmitter {
     }
     // logging
     engine.push(createLoggerMiddleware({ origin }));
-    engine.push(
-      createOnboardingMiddleware({
-        location,
-        registerOnboarding: this.onboardingController.registerOnboarding,
-      }),
-    );
     engine.push(this.permissionLogController.createMiddleware());
+    // onboarding
+    if (subjectType === SUBJECT_TYPES.WEBSITE) {
+      engine.push(
+        createOnboardingMiddleware({
+          location: sender.url,
+          registerOnboarding: this.onboardingController.registerOnboarding,
+        }),
+      );
+    }
     engine.push(
       createMethodMiddleware({
         origin,

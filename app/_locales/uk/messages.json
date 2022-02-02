@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Відхилити"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Сканувати QR-код"
+  },
   "about": {
     "message": "Про Google Chrome"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "Поточна мова"
   },
+  "custom": {
+    "message": "Розширені"
+  },
   "customGas": {
     "message": "Налаштувати пальне"
   },
@@ -282,9 +291,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Ви впевнені, що хочете видалити цю мережу?"
-  },
-  "depositEther": {
-    "message": "Депонувати Ether"
   },
   "details": {
     "message": "Деталі"
@@ -530,6 +536,9 @@
   "learnMore": {
     "message": "Дізнатись більше"
   },
+  "learnMoreUpperCase": {
+    "message": "Дізнатись більше"
+  },
   "ledgerAccountRestriction": {
     "message": "Потрібно скористатися своїм останнім обліковим записом, перш ніж додавати новий."
   },
@@ -583,9 +592,6 @@
   },
   "myAccounts": {
     "message": "Мої облікові записи"
-  },
-  "needEtherInWallet": {
-    "message": "Щоб взаємодіяти з децентралізованими застосунками використовуючи MetaMask, вам буде потрібен Ether у вашому гаманці."
   },
   "needImportFile": {
     "message": "Потрібно вибрати файл для імпорту.",

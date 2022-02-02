@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Respingeți"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scanați codul QR"
+  },
   "about": {
     "message": "Despre"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "Limba actuală"
   },
+  "custom": {
+    "message": "Avansate"
+  },
   "customGas": {
     "message": "Particularizați Gas"
   },
@@ -282,9 +291,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sigur vreți să ștergeți această rețea?"
-  },
-  "depositEther": {
-    "message": "Depuneți Ether"
   },
   "details": {
     "message": "Detalii"
@@ -520,6 +526,9 @@
   "learnMore": {
     "message": "Aflați mai multe"
   },
+  "learnMoreUpperCase": {
+    "message": "Aflați mai multe"
+  },
   "ledgerAccountRestriction": {
     "message": "Trebuie să folosiți ultimul cont înainte să adăugați altul."
   },
@@ -570,9 +579,6 @@
   },
   "myAccounts": {
     "message": "Conturile mele"
-  },
-  "needEtherInWallet": {
-    "message": "Pentru a interacționa cu aplicațiile descentralizate prin intermediul MetaMask, trebuie să aveți Ether în portofel."
   },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",

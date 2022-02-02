@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "ತಿರಸ್ಕರಿಸಿ"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ"
+  },
   "about": {
     "message": "ಕುರಿತು"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "ಪ್ರಸ್ತುತ ಭಾಷೆ"
   },
+  "custom": {
+    "message": "ಸುಧಾರಿತ"
+  },
   "customGas": {
     "message": "ಗ್ಯಾಸ್ ಕಸ್ಟಮೈಸ್ ಮಾಡಿ"
   },
@@ -282,9 +291,6 @@
   },
   "deleteNetworkDescription": {
     "message": "ನೀವು ಈ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಖಚಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುತ್ತೀರಾ?"
-  },
-  "depositEther": {
-    "message": "ಎಥರ್ ಠೇವಣಿ ಮಾಡಿ"
   },
   "details": {
     "message": "ವಿವರಗಳು"
@@ -530,6 +536,9 @@
   "learnMore": {
     "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
+  "learnMoreUpperCase": {
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+  },
   "ledgerAccountRestriction": {
     "message": "ನೀವು ಹೊಸದನ್ನು ಸೇರಿಸುವುದರ ಮೊದಲು ನಿಮ್ಮ ಹಿಂದಿನ ಖಾತೆಯನ್ನು ನೀವು ಬಳಸಬೇಕು."
   },
@@ -583,9 +592,6 @@
   },
   "myAccounts": {
     "message": "ನನ್ನ ಖಾತೆಗಳು"
-  },
-  "needEtherInWallet": {
-    "message": "MetaMask ಬಳಸಿಕೊಂಡು ವಿಕೇಂದ್ರೀಕೃತ ಖಾತೆಗಳೊಂದಿಗೆ ಸಂವಹನ ನಡೆಸಲು, ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಲ್ಲಿ ನಿಮಗೆ ಎಥರ್ ಅಗತ್ಯವಿದೆ."
   },
   "needImportFile": {
     "message": "ಆಮದು ಮಾಡಲು ನೀವು ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು.",

@@ -7,6 +7,7 @@ import {
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
   OPTIMISM_CHAIN_ID,
   OPTIMISM_TESTNET_CHAIN_ID,
+  BUYABLE_CHAINS_MAP,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -626,6 +627,16 @@ export function getIsSwapsChain(state) {
   return ALLOWED_SWAPS_CHAIN_IDS[chainId];
 }
 
+export function getIsBuyableChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
+}
+
+export function getIsBuyableTransakChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
+}
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
@@ -814,6 +825,10 @@ export function getIsMultiLayerFeeNetwork(state) {
  */
 export function getAdvancedGasFeeValues(state) {
   return state.metamask.advancedGasFee;
+}
+
+export function getEIP1559V2Enabled(state) {
+  return state.metamask.eip1559V2Enabled;
 }
 
 /**

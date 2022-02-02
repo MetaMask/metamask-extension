@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odmítnout"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skenovať QR kód"
+  },
   "about": {
     "message": "Informácie"
   },
@@ -250,6 +256,9 @@
   "currentLanguage": {
     "message": "Aktuálny jazyk"
   },
+  "custom": {
+    "message": "Rozšírené"
+  },
   "customGas": {
     "message": "Nastavit palivo"
   },
@@ -276,9 +285,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Naozaj chcete túto sieť odstrániť?"
-  },
-  "depositEther": {
-    "message": "Vložit Ether"
   },
   "details": {
     "message": "Podrobnosti"
@@ -514,6 +520,9 @@
   "learnMore": {
     "message": "Zjistěte více."
   },
+  "learnMoreUpperCase": {
+    "message": "Zjistěte více."
+  },
   "ledgerAccountRestriction": {
     "message": "Skôr ako budete môcť pridať nový účet, musíte použiť svoj posledný účet."
   },
@@ -555,9 +564,6 @@
   },
   "myAccounts": {
     "message": "Moje účty"
-  },
-  "needEtherInWallet": {
-    "message": "Potřebujete Ether v peněžence, abyste mohli pomocí MetaMasku interagovat s decentralizovanými aplikacemi."
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",

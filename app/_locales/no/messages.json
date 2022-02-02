@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Avslå"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skann QR-kode"
+  },
   "about": {
     "message": "Info"
   },
@@ -253,6 +259,9 @@
   "currentLanguage": {
     "message": "Nåværende språk "
   },
+  "custom": {
+    "message": "Avansert"
+  },
   "customGas": {
     "message": "Tilpass Gass"
   },
@@ -279,9 +288,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Er du sikker på at du vil slette dette nettverket?"
-  },
-  "depositEther": {
-    "message": "Sett inn Ether "
   },
   "details": {
     "message": "Detaljer"
@@ -517,6 +523,9 @@
   "learnMore": {
     "message": "Lær mer"
   },
+  "learnMoreUpperCase": {
+    "message": "Lær mer"
+  },
   "ledgerAccountRestriction": {
     "message": "Du må bruke den siste kontoen din før du kan legge til en ny."
   },
@@ -570,9 +579,6 @@
   },
   "myAccounts": {
     "message": "Mine kontoer "
-  },
-  "needEtherInWallet": {
-    "message": "Du må ha Ether i lommeboken din for å samhandle med desentraliserte applikasjoner gjennom MateMask."
   },
   "needImportFile": {
     "message": "Du må velge en fil å importere.",

@@ -45,6 +45,7 @@ const AdvancedGasFeeGasLimit = () => {
   if (isEditing) {
     return (
       <FormField
+        dataTestId="gas-limit-input"
         error={
           gasLimitError
             ? t(gasLimitError, [minimumGasLimitDec - 1, MAX_GAS_LIMIT_DEC])
@@ -63,13 +64,14 @@ const AdvancedGasFeeGasLimit = () => {
       tag={TYPOGRAPHY.Paragraph}
       variant={TYPOGRAPHY.H7}
       className="advanced-gas-fee-gas-limit"
-      margin={[0, 2]}
+      margin={[4, 2, 0, 2]}
     >
       <strong>
         <I18nValue messageKey="gasLimitV2" />
       </strong>
       <span>{gasLimit}</span>
       <Button
+        data-testid="advanced-gas-fee-edit"
         className="advanced-gas-fee-gas-limit__edit-link"
         onClick={() => setEditing(true)}
         type="link"

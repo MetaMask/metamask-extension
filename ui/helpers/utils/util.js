@@ -573,7 +573,10 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
   numberish,
   numberOfDecimalPlaces,
 ) {
-  return toBigNumber.dec(
-    toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces),
-  );
+  if (numberish === undefined || numberish === null) {
+    return '';
+  }
+  return toBigNumber
+    .dec(toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces))
+    .toNumber();
 }

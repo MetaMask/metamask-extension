@@ -168,6 +168,15 @@
     display: flex;
     flex-direction: column;
     padding: 10px 0 20px;
+
+    &--parent {
+      padding: 10px 0 10px;
+    }
+
+    &--dependent {
+      margin-left: 48px;
+      padding: 0 0 20px;
+    }
   }
 
   &__content-item {
@@ -205,6 +214,10 @@
 
     color: var(--dusty-gray);
     padding-top: 5px;
+
+    a {
+      color: var(--Blue-500);
+    }
   }
 
   &__content-item-col {
