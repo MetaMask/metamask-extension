@@ -36,7 +36,7 @@ export default function CreateNewVault({
       let newSeedPhraseError = '';
 
       if (rawSeedPhrase) {
-        const parsedSeedPhrase = parseSeedPhrase(rawSeedPhrase);
+        const parsedSeedPhrase = parseSecretRecoveryPhrase(rawSeedPhrase);
         const wordCount = parsedSeedPhrase.split(/\s/u).length;
         if (wordCount % 3 !== 0 || wordCount > 24 || wordCount < 12) {
           newSeedPhraseError = t('seedPhraseReq');
