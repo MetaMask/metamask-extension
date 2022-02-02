@@ -3,7 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useSelector } from 'react-redux';
 
-import * as actions from '../../../store/actions';
 import {
   renderWithProvider,
   createSwapsMockStore,
