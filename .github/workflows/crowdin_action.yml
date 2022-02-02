@@ -26,6 +26,8 @@ jobs:
         upload_translations: true
         download_translations: true
       env:
+        GH_USERNAME: "metamaskbot"
+        GH_EMAIL: "metamaskbot@users.noreply.github.com"
         GITHUB_TOKEN: ${{ secrets.METAMASKBOT_CROWDIN_TOKEN }}
         CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
         CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
