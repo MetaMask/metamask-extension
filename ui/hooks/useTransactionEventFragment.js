@@ -13,6 +13,7 @@ export const useTransactionEventFragment = () => {
   const { transaction } = useGasFeeContext();
   const fragment = useSelector((state) =>
     selectMatchingFragment(state, {
+      fragmentOptions: {},
       existingId: `transaction-added-${transaction?.id}`,
     }),
   );
