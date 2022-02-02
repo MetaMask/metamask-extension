@@ -9,11 +9,9 @@ import { clearClipboard } from '../../../helpers/utils/util';
 import CheckBox from '../../ui/check-box';
 import Typography from '../../ui/typography';
 import { COLORS } from '../../../helpers/constants/design-system';
+import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const { isValidMnemonic } = ethers.utils;
-
-export const parseSeedPhrase = (seedPhrase) =>
-  (seedPhrase || '').trim().toLowerCase().match(/\w+/gu)?.join(' ') || '';
 
 export default function CreateNewVault({
   disabled = false,
@@ -106,7 +104,7 @@ export default function CreateNewVault({
         return;
       }
 
-      await onSubmit(password, parseSeedPhrase(seedPhrase));
+      await onSubmit(password, parseSecretRecoveryPhrase(seedPhrase));
     },
     [isValid, onSubmit, password, seedPhrase],
   );
