@@ -168,7 +168,7 @@ describe('Metamask Responsive UI', function () {
         );
         assert.equal(
           await restoreSeedLink.getText(),
-          'import using Secret Recovery Phrase',
+          'Forgot Password?',
         );
         await restoreSeedLink.click();
 

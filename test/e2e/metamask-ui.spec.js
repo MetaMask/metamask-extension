@@ -195,7 +195,7 @@ describe('MetaMask', function () {
       );
       assert.equal(
         await restoreSeedLink.getText(),
-        'import using Secret Recovery Phrase',
+        'Forgot Password?',
       );
       await restoreSeedLink.click();
       await driver.delay(regularDelayMs);
