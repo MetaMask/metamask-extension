@@ -24,7 +24,7 @@ export default class UnlockPage extends Component {
      */
     isUnlocked: PropTypes.bool,
     /**
-     * onClick handler for "import using Secret Recovery Phrase" link
+     * onClick handler for "Forgot Password?" link
      */
     onRestore: PropTypes.func,
     /**
