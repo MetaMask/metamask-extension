@@ -378,14 +378,40 @@ export default class TransactionController extends EventEmitter {
    * updates the params that are editible in the send edit flow
    *
    * @param {string} txId - transaction id
-   * @param {object} editableParams - holds the editable parameters
+   * @param {object} previousGasParams - holds the parameter to update
+   * @param {string} previousGasParams.maxFeePerGas
+   * @param {string} previousGasParams.maxPriorityFeePerGas
+   * @param {string} previousGasParams.gasLimit
+   */
+  updatePreviousGasParams(
+    txId,
+    { maxFeePerGas, maxPriorityFeePerGas, gasLimit },
+  ) {
+    const previousGasParams = {
+      previousGas: {
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        gasLimit,
+      },
+    };
+
+    // only update what is defined
+    previousGasParams.previousGas = pickBy(previousGasParams.previousGas);
+    const note = `Update Previous Gas for ${txId}`;
+    this._updateTransaction(txId, previousGasParams, note);
+  }
+
+  /**
+   *
+   * @param {string} txId - transaction id
+   * @param {object} editableParams - holds the eip1559 fees parameters
    * @param {object} editableParams.data
    * @param {string} editableParams.from
    * @param {string} editableParams.to
    * @param {string} editableParams.value
    * @returns {TransactionMeta} the txMeta of the updated transaction
    */
-  updateEditableParams(txId, { data, from, to, value }) {
+  updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
       throw new Error(
         'Cannot call updateEditableParams on a transaction that is not in an unapproved state',
@@ -398,6 +424,8 @@ export default class TransactionController extends EventEmitter {
         from,
         to,
         value,
+        gas,
+        gasPrice,
       },
     };
 
@@ -413,6 +441,17 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {string} txId - transaction id
    * @param {object} txGasFees - holds the gas fees parameters
+   * <<<<<<< HEAD
+   * =======
+   * {
+   * gasLimit,
+   * gasPrice,
+   * maxPriorityFeePerGas,
+   * maxFeePerGas,
+   * estimateUsed,
+   * estimateSuggested
+   * }
+   * >>>>>>> 83652f84f (fix:)
    * @param {string} txGasFees.gasLimit
    * @param {string} txGasFees.gasPrice
    * @param {string} txGasFees.maxPriorityFeePerGas
@@ -556,6 +595,7 @@ export default class TransactionController extends EventEmitter {
         'Cannot call updateSwapTransaction on a transaction that is not in an unapproved state',
       );
     }
+
     let swapTransaction = {
       sourceTokenSymbol,
       destinationTokenSymbol,

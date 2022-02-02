@@ -11,8 +11,10 @@ import {
   createCancelTransaction,
   createSpeedUpTransaction,
   updateCustomSwapsEIP1559GasParams,
+  updatePreviousGasParams,
   updateSwapsUserFeeLevel,
-  updateTransaction as updateTransactionFn,
+  updateTransactionGasFees,
+  updateTransactionUserSettings,
 } from '../../store/actions';
 
 export const useTransactionFunctions = ({
@@ -87,7 +89,18 @@ export const useTransactionFunctions = ({
         );
         dispatch(updateCustomSwapsEIP1559GasParams(newGasSettings));
       } else {
-        dispatch(updateTransactionFn(updatedTxMeta));
+        const userSettings = {};
+        userSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;
+        userSettings.userFeeLevel = updatedTxMeta.userFeeLevel;
+
+        if (txMeta && txMeta.previousGas) {
+          dispatch(
+            updatePreviousGasParams(updatedTxMeta.id, txMeta.previousGas),
+          );
+        }
+
+        dispatch(updateTransactionGasFees(updatedTxMeta.id, newGasSettings));
+        dispatch(updateTransactionUserSettings(updatedTxMeta.id, userSettings));
       }
     },
     [
