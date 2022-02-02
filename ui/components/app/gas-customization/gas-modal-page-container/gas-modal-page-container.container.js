@@ -56,7 +56,7 @@ import {
 import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 import { TRANSACTION_STATUSES } from '../../../../../shared/constants/transaction';
 import { GAS_LIMITS } from '../../../../../shared/constants/gas';
-import { updateTransactionGasFees } from '../../../../ducks/metamask/metamask';
+import { updateGasFees } from '../../../../ducks/metamask/metamask';
 import GasModalPageContainer from './gas-modal-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -207,7 +207,7 @@ const mapDispatchToProps = (dispatch) => {
     hideModal: () => dispatch(hideModal()),
     useCustomGas: () => dispatch(useCustomGas()),
     updateTransactionGasFees: (gasFees) => {
-      dispatch(updateTransactionGasFees({ ...gasFees, expectHexWei: true }));
+      dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
     },
     updateCustomGasPrice,
     updateCustomGasLimit: (newLimit) =>

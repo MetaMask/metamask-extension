@@ -71,49 +71,68 @@ describe('useMaxPriorityFeePerGasInput', () => {
   });
 
   it('should invoke action updateTransaction with 10% increased fee when updateTransactionToTenPercentIncreasedGasFee callback is invoked', () => {
-    const mock = jest
-      .spyOn(Actions, 'updateTransaction')
+    const mockUpdateGasFees = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
       .mockImplementation(() => ({ type: '' }));
+
+    const mockUpdateUserSettings = jest
+      .spyOn(Actions, 'updateTransactionUserSettings')
+      .mockImplementation(() => ({ type: '' }));
+
     const { result } = renderUseTransactionFunctions();
     result.current.updateTransactionToTenPercentIncreasedGasFee();
-    expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith({
-      txParams: {
-        estimateSuggested: 'tenPercentIncreased',
-        estimateUsed: 'tenPercentIncreased',
-        gas: '5208',
-        gasLimit: '5208',
-        maxFeePerGas: '0x582c',
-        maxPriorityFeePerGas: '0x582c',
-      },
+    expect(mockUpdateGasFees).toHaveBeenCalledTimes(1);
+    expect(mockUpdateGasFees).toHaveBeenCalledWith(undefined, {
+      estimateSuggested: 'tenPercentIncreased',
+      estimateUsed: 'tenPercentIncreased',
+      gas: '5208',
+      gasLimit: '5208',
+      maxFeePerGas: '0x582c',
+      maxPriorityFeePerGas: '0x582c',
+    });
+
+    expect(mockUpdateUserSettings).toHaveBeenCalledTimes(1);
+    expect(mockUpdateUserSettings).toHaveBeenCalledWith(undefined, {
       userFeeLevel: 'tenPercentIncreased',
     });
   });
 
   it('should invoke action updateTransaction with estimate gas values fee when updateTransactionUsingEstimate callback is invoked', () => {
-    const mock = jest
-      .spyOn(Actions, 'updateTransaction')
+    const mockUpdateGasFees = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
       .mockImplementation(() => ({ type: '' }));
+
+    const mockUpdateUserSettings = jest
+      .spyOn(Actions, 'updateTransactionUserSettings')
+      .mockImplementation(() => ({ type: '' }));
+
     const { result } = renderUseTransactionFunctions();
     result.current.updateTransactionUsingEstimate(GAS_RECOMMENDATIONS.LOW);
-    expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith({
-      txParams: {
-        estimateSuggested: 'medium',
-        estimateUsed: 'low',
-        gas: '5208',
-        gasLimit: '5208',
-        maxFeePerGas: 'c570bd200',
-        maxPriorityFeePerGas: 'b2d05e00',
-      },
+    expect(mockUpdateGasFees).toHaveBeenCalledTimes(1);
+    expect(mockUpdateGasFees).toHaveBeenCalledWith(undefined, {
+      estimateSuggested: 'medium',
+      estimateUsed: 'low',
+      gas: '5208',
+      gasLimit: '5208',
+      maxFeePerGas: 'c570bd200',
+      maxPriorityFeePerGas: 'b2d05e00',
+    });
+
+    expect(mockUpdateUserSettings).toHaveBeenCalledTimes(1);
+    expect(mockUpdateUserSettings).toHaveBeenCalledWith(undefined, {
       userFeeLevel: 'low',
     });
   });
 
   it('should invoke action updateTransaction with dappSuggestedValues values fee when updateTransactionUsingDAPPSuggestedValues callback is invoked', () => {
-    const mock = jest
-      .spyOn(Actions, 'updateTransaction')
+    const mockUpdateGasFees = jest
+      .spyOn(Actions, 'updateTransactionGasFees')
       .mockImplementation(() => ({ type: '' }));
+
+    const mockUpdateUserSettings = jest
+      .spyOn(Actions, 'updateTransactionUserSettings')
+      .mockImplementation(() => ({ type: '' }));
+
     const { result } = renderUseTransactionFunctions({
       transaction: {
         userFeeLevel: CUSTOM_GAS_ESTIMATE,
@@ -124,20 +143,21 @@ describe('useMaxPriorityFeePerGasInput', () => {
       },
     });
     result.current.updateTransactionUsingDAPPSuggestedValues();
-    expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith({
-      dappSuggestedGasFees: {
-        maxFeePerGas: '0x5028',
-        maxPriorityFeePerGas: '0x5028',
-      },
-      txParams: {
-        estimateSuggested: 'medium',
-        estimateUsed: 'dappSuggested',
-        gas: '5208',
-        gasLimit: '5208',
-        maxFeePerGas: '0x5028',
-        maxPriorityFeePerGas: '0x5028',
-      },
+    expect(mockUpdateGasFees).toHaveBeenCalledTimes(1);
+    expect(mockUpdateGasFees).toHaveBeenCalledWith(undefined, {
+      estimateSuggested: 'medium',
+      estimateUsed: 'dappSuggested',
+      gas: '5208',
+      gasLimit: '5208',
+      maxFeePerGas: '0x5028',
+      maxPriorityFeePerGas: '0x5028',
+    });
+
+    expect(mockUpdateUserSettings).toHaveBeenCalledWith(undefined, {
+      userFeeLevel: 'dappSuggested',
+    });
+
+    expect(mockUpdateUserSettings).toHaveBeenCalledWith(undefined, {
       userFeeLevel: 'dappSuggested',
     });
   });

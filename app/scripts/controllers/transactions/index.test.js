@@ -2170,6 +2170,19 @@ describe('Transaction Controller', function () {
       assert.equal(result.userFeeLevel, 'high');
     });
 
+    it('updates transaction previous gas params', function () {
+      txController.updatePreviousGasParams('1', {
+        maxFeePerGas: '0x0011',
+        maxPriorityFeePerGas: '0x0022',
+        gasLimit: '0x0033',
+      });
+
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.previousGas.maxFeePerGas, '0x0011');
+      assert.equal(result.previousGas.maxPriorityFeePerGas, '0x0022');
+      assert.equal(result.previousGas.gasLimit, '0x0033');
+    });
+
     it('does not update if status is not unapproved', function () {
       txStateManager.addTransaction({
         id: '4',
@@ -2218,7 +2231,6 @@ describe('Transaction Controller', function () {
       });
 
       result = txStateManager.getTransaction('1');
-      console.log(result);
       assert.equal(result.estimateUsed, '0x13');
       assert.equal(result.txParams.gasPrice, '0x14');
       assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO); // not updated even though it's passed in to update

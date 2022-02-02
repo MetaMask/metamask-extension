@@ -687,9 +687,6 @@ export function updateEditableParams(txId, editableParams) {
     dispatch(
       updateTransactionParams(editableParams.id, editableParams.txParams),
     );
-    const newState = await updateMetamaskStateFromBackground();
-    dispatch(updateMetamaskState(newState));
-    dispatch(showConfTxPage({ id: editableParams.id }));
     return editableParams;
   };
 }
@@ -706,10 +703,49 @@ export function updateTransactionGasFees(txId, txGasFees) {
     }
 
     dispatch(updateTransactionParams(txGasFees.id, txGasFees.txParams));
+    return txGasFees;
+  };
+}
+
+export function updatePreviousGasParams(txId, previousGasParams) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updatePreviousGasParams(
+        txId,
+        previousGasParams,
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
     const newState = await updateMetamaskStateFromBackground();
     dispatch(updateMetamaskState(newState));
-    dispatch(showConfTxPage({ id: txGasFees.id }));
-    return txGasFees;
+    dispatch(showConfTxPage({ id: txId }));
+    return previousGasParams;
+  };
+}
+
+export function updateTransactionUserSettings(txId, txUserSettings) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateTransactionUserSettings(
+        txId,
+        txUserSettings,
+      );
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    dispatch(
+      updateTransactionParams(txUserSettings.id, txUserSettings.txParams),
+    );
+    return txUserSettings;
   };
 }
 
