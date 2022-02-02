@@ -1414,9 +1414,6 @@
   "importAccountError": {
     "message": "Error importing account."
   },
-  "importAccountLinkText": {
-    "message": "import using Secret Recovery Phrase"
-  },
   "importAccountMsg": {
     "message": "Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts"
   },
@@ -2475,9 +2472,6 @@
   },
   "restore": {
     "message": "Restore"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Restore your Account with Secret Recovery Phrase"
   },
   "restoreWalletPreferences": {
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",

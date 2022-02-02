@@ -2278,9 +2278,6 @@
   "restore": {
     "message": "Restaurar"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaurar la cuenta con la frase secreta de recuperación"
-  },
   "restoreWalletPreferences": {
     "message": "Se encontró una copia de seguridad de los datos de $1. ¿Desea restaurar las preferencias de cartera?",
     "description": "$1 is the date at which the data was backed up"

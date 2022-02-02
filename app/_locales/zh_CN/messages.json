@@ -1273,9 +1273,6 @@
   "importAccountError": {
     "message": "导入帐户时出错。"
   },
-  "importAccountLinkText": {
-    "message": "使用账户助记词导入"
-  },
   "importAccountMsg": {
     "message": "导入的账户将不会与最初创建的 MetaMask 账户助记词相关联。了解更多有关导入账户的信息 。"
   },
@@ -2228,9 +2225,6 @@
   },
   "restore": {
     "message": "恢复"
-  },
-  "restoreAccountWithSeed": {
-    "message": "使用账户助记词恢复您的账户"
   },
   "restoreWalletPreferences": {
     "message": "已找到于 $1 的数据备份。您想恢复您的钱包设置吗？",

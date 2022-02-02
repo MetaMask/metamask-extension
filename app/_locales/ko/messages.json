@@ -1273,9 +1273,6 @@
   "importAccountError": {
     "message": "계정 가져오기 오류"
   },
-  "importAccountLinkText": {
-    "message": "비밀 복구 구문을 사용해 가져오기"
-  },
   "importAccountMsg": {
     "message": "가져온 계정은 본래 생성한 MetaMask 계정 비밀 복구 구문과 연결하지 못합니다. 가져온 계정에 대해 자세히 알아보기"
   },
@@ -2228,9 +2225,6 @@
   },
   "restore": {
     "message": "복구"
-  },
-  "restoreAccountWithSeed": {
-    "message": "비밀 복구 구문으로 계정 복구"
   },
   "restoreWalletPreferences": {
     "message": "$1의 데이터 백업이 발견되었습니다. 지갑 환경설정을 복원할까요?",

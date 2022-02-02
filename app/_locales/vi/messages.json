@@ -1273,9 +1273,6 @@
   "importAccountError": {
     "message": "Lỗi khi nhập tài khoản."
   },
-  "importAccountLinkText": {
-    "message": "nhập bằng Cụm mật khẩu khôi phục bí mật"
-  },
   "importAccountMsg": {
     "message": "Tài khoản đã nhập sẽ không được liên kết với Cụm mật khẩu khôi phục bí mật cho tài khoản MetaMask đã tạo ban đầu của bạn. Tìm hiểu thêm về các tài khoản đã nhập"
   },
@@ -2228,9 +2225,6 @@
   },
   "restore": {
     "message": "Khôi phục"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Khôi phục tài khoản của bạn bằng cụm mật khẩu khôi phục bí mật"
   },
   "restoreWalletPreferences": {
     "message": "Đã tìm thấy bản sao lưu dữ liệu của bạn từ $1. Bạn có muốn khôi phục các tùy chọn ưu tiên trong ví của mình không?",

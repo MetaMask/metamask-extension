@@ -755,9 +755,6 @@
   "restore": {
     "message": "Taasta"
   },
-  "restoreAccountWithSeed": {
-    "message": "Taastage konto seemnefraasi abil"
-  },
   "revealSeedWords": {
     "message": "Kuva seemnesõnu"
   },

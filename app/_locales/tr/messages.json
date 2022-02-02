@@ -2229,9 +2229,6 @@
   "restore": {
     "message": "Geri Yükle"
   },
-  "restoreAccountWithSeed": {
-    "message": "Gizli Kurtarma İfadesi ile Hesabınızı geri yükleyin"
-  },
   "restoreWalletPreferences": {
     "message": "Verilerinizin $1 tarihinden bir yedeği bulundu. Cüzdan tercihlerinizi geri yüklemek ister misiniz?",
     "description": "$1 is the date at which the data was backed up"
