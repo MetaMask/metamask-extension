@@ -130,19 +130,6 @@
       "useNonceField": false,
       "usePhishDetect": true
     },
-    "MetaMetricsController": {
-      "fragments": {
-        "transaction-added-4046084157914634": {
-          "category": "Transactions",
-          "initialEvent": "Transaction Added",
-          "successEvent": "Transaction Approved",
-          "failureEvent": "Transaction Rejected",
-          "properties": {},
-          "persist": true,
-          "uniqueIdentifier": "transaction-added-4046084157914634"
-        }
-      }
-    },
     "TransactionController": {
       "transactions": {
         "4046084157914634": {

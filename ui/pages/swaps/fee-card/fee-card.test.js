@@ -31,6 +31,10 @@ import FeeCard from '.';
 
 const middleware = [thunk];
 
+jest.mock('../../../store/actions', () => ({
+  createTransactionEventFragment: jest.fn(),
+}));
+
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
 }));
