@@ -75,7 +75,8 @@ describe('Stores custom RPC history', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // duplicate network
-        const duplicateRpcUrl = 'http://localhost:8545';
+        const duplicateRpcUrl =
+          'https://mainnet.infura.io/v3/00000000000000000000000000000000';
 
         await driver.clickElement('.network-display');
 
@@ -89,7 +90,7 @@ describe('Stores custom RPC history', function () {
         await rpcUrlInput.clear();
         await rpcUrlInput.sendKeys(duplicateRpcUrl);
         await driver.findElement({
-          text: 'This URL is currently used by the Localhost 8545 network.',
+          text: 'This URL is currently used by the mainnet network.',
           tag: 'h6',
         });
       },

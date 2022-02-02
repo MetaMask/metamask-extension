@@ -72,12 +72,12 @@ describe('NetworksTabContent Component', () => {
       getByDisplayValue(props.selectedNetwork.blockExplorerUrl),
     ).toBeInTheDocument();
 
-    await fireEvent.change(getByDisplayValue(props.selectedNetwork.label), {
+    fireEvent.change(getByDisplayValue(props.selectedNetwork.label), {
       target: { value: 'LocalHost 8545' },
     });
     expect(await getByDisplayValue('LocalHost 8545')).toBeInTheDocument();
 
-    await fireEvent.change(getByDisplayValue(props.selectedNetwork.rpcUrl), {
+    fireEvent.change(getByDisplayValue(props.selectedNetwork.rpcUrl), {
       target: { value: 'test' },
     });
     expect(
@@ -86,7 +86,7 @@ describe('NetworksTabContent Component', () => {
       ),
     ).toBeInTheDocument();
 
-    await fireEvent.change(getByDisplayValue(props.selectedNetwork.chainId), {
+    fireEvent.change(getByDisplayValue(props.selectedNetwork.chainId), {
       target: { value: '1' },
     });
 

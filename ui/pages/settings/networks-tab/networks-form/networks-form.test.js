@@ -108,19 +108,7 @@ describe('NetworkForm Component', () => {
       getByDisplayValue(propNetworkDisplay.selectedNetwork.blockExplorerUrl),
     ).toBeInTheDocument();
 
-    await fireEvent.change(
-      getByDisplayValue(propNetworkDisplay.selectedNetwork.chainId),
-      {
-        target: { value: '1' },
-      },
-    );
-    expect(
-      await screen.findByText(
-        'Could not fetch chain ID. Is your RPC URL correct?',
-      ),
-    ).toBeInTheDocument();
-
-    await fireEvent.change(
+    fireEvent.change(
       getByDisplayValue(propNetworkDisplay.selectedNetwork.rpcUrl),
       {
         target: { value: 'test' },
@@ -132,7 +120,20 @@ describe('NetworkForm Component', () => {
       ),
     ).toBeInTheDocument();
 
-    await fireEvent.change(
+    fireEvent.change(
+      getByDisplayValue(propNetworkDisplay.selectedNetwork.chainId),
+      {
+        target: { value: '1' },
+      },
+    );
+
+    expect(
+      await screen.findByText(
+        'Could not fetch chain ID. Is your RPC URL correct?',
+      ),
+    ).toBeInTheDocument();
+
+    fireEvent.change(
       getByDisplayValue(propNetworkDisplay.selectedNetwork.label),
       {
         target: { value: 'LocalHost 8545' },
