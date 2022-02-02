@@ -20,7 +20,10 @@ export const useTransactionEventFragment = () => {
 
   useEffect(() => {
     if (!fragment && transaction) {
-      createTransactionEventFragment(transaction.id, TRANSACTION_EVENTS.ADDED);
+      createTransactionEventFragment(
+        transaction.id,
+        TRANSACTION_EVENTS.APPROVED,
+      );
     }
   }, [fragment, transaction]);
 
