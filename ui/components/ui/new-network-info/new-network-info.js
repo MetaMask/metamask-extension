@@ -1,5 +1,6 @@
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../popover';
 import Button from '../button';
@@ -17,25 +18,66 @@ import {
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import Typography from '../typography';
+import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
+import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
+import {
+  getNativeCurrencyImage,
+  getUseTokenDetection,
+} from '../../../selectors';
+import { setShowPopup } from '../../../store/actions';
+import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 
-const NewNetworkInfo = ({
-  onClose,
-  autoDetectToken,
-  tokenImage,
-  providerTicker,
-  providerNickname,
-  providerType,
-  onManuallyAddClick,
-  tokenDetectionSupported,
-}) => {
+const NewNetworkInfo = () => {
   const t = useContext(I18nContext);
+  const history = useHistory();
+  const [tokenDetectionSupported, setTokenDetectionSupported] = useState(false);
+  const autoDetectToken = useSelector(getUseTokenDetection);
+  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+
+  const currentProvider = useSelector((state) => ({
+    providerTicker: state.metamask.provider?.ticker,
+    providerNickname: state.metamask.provider?.nickname,
+    providerChainId: state.metamask.provider?.chainId,
+    providerType: state.metamask.provider?.type,
+  }));
+
+  const addTokenManually = () => {
+    setShowPopup();
+    history.push(IMPORT_TOKEN_ROUTE);
+  };
+
+  const onCloseClick = () => {
+    setShowPopup();
+  };
+
+  const updateTokenDetectionSupportStatus = async () => {
+    const fetchedTokenData = await fetchWithCache(
+      `${TOKEN_API_METASWAP_CODEFI_URL}${currentProvider.providerChainId}`,
+    );
+
+    if (fetchedTokenData.error) {
+      return false;
+    }
+
+    return true;
+  };
+
+  const checkTokenDetection = async () => {
+    const fetchedData = await updateTokenDetectionSupportStatus();
+
+    setTokenDetectionSupported(fetchedData);
+  };
+
+  useEffect(() => {
+    checkTokenDetection();
+  });
 
   return (
     <Popover
-      onClose={onClose}
+      onClose={onCloseClick}
       className="new-network-info__wrapper"
       footer={
-        <Button type="primary" onClick={onClose}>
+        <Button type="primary" onClick={onCloseClick}>
           {t('recoveryPhraseReminderConfirm')}
         </Button>
       }
@@ -60,8 +102,8 @@ const NewNetworkInfo = ({
         padding={[0, 2, 0, 2]}
         className="new-network-info__token-box"
       >
-        {tokenImage ? (
-          <Identicon image={tokenImage} diameter={14} />
+        {primaryTokenImage ? (
+          <Identicon image={primaryTokenImage} diameter={14} />
         ) : (
           <i className="fa fa-question-circle" />
         )}
@@ -70,9 +112,9 @@ const NewNetworkInfo = ({
           color={COLORS.BLACK}
           margin={[0, 0, 0, 2]}
         >
-          {providerType === NETWORK_TYPE_RPC
-            ? providerNickname ?? t('privateNetwork')
-            : t(providerType)}
+          {currentProvider.providerType === NETWORK_TYPE_RPC
+            ? currentProvider.providerNickname ?? t('privateNetwork')
+            : t(currentProvider.providerType)}
         </Typography>
       </Box>
       <Typography
@@ -84,7 +126,7 @@ const NewNetworkInfo = ({
         {t('thingsToKeep')}
       </Typography>
       <Box marginRight={4} marginLeft={5}>
-        {providerTicker ? (
+        {currentProvider.providerTicker ? (
           <Box
             display={DISPLAY.FLEX}
             alignItems={ALIGN_ITEMS.CENTER}
@@ -101,17 +143,17 @@ const NewNetworkInfo = ({
               color={COLORS.BLACK}
               boxProps={{ display: DISPLAY.INLINE_BLOCK }}
               className="new-network-info__content-box-1__text-1"
+              key="nativeTokenInfo"
             >
               {t('nativeToken', [
-                <>
-                  <Typography
-                    variant={TYPOGRAPHY.H7}
-                    boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-                    fontWeight={FONT_WEIGHT[700]}
-                  >
-                    {providerTicker}
-                  </Typography>
-                </>,
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                  fontWeight={FONT_WEIGHT[700]}
+                  key="providerTicker"
+                >
+                  {currentProvider.providerTicker}
+                </Typography>,
               ])}
             </Typography>
           </Box>
@@ -164,7 +206,7 @@ const NewNetworkInfo = ({
                 {t('tokenShowUp')}{' '}
                 <Button
                   type="link"
-                  onClick={onManuallyAddClick}
+                  onClick={addTokenManually}
                   className="new-network-info__button"
                 >
                   {t('clickToManuallyAdd')}
@@ -176,17 +218,6 @@ const NewNetworkInfo = ({
       </Box>
     </Popover>
   );
-};
-
-NewNetworkInfo.propTypes = {
-  onClose: PropTypes.func,
-  autoDetectToken: PropTypes.bool,
-  tokenImage: PropTypes.string,
-  providerTicker: PropTypes.string,
-  providerNickname: PropTypes.string,
-  providerType: PropTypes.string,
-  onManuallyAddClick: PropTypes.func,
-  tokenDetectionSupported: PropTypes.bool,
 };
 
 export default NewNetworkInfo;
