@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useSelector } from 'react-redux';
 
+import * as actions from '../../../store/actions';
 import {
   renderWithProvider,
   createSwapsMockStore,
@@ -30,10 +31,6 @@ import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import FeeCard from '.';
 
 const middleware = [thunk];
-
-jest.mock('../../../store/actions', () => ({
-  createTransactionEventFragment: jest.fn(),
-}));
 
 jest.mock('../../../hooks/useGasFeeEstimates', () => ({
   useGasFeeEstimates: jest.fn(),
@@ -67,6 +64,7 @@ const generateUseSelectorRouter = () => (selector) => {
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn(),
+  createTransactionEventFragment: jest.fn(),
 });
 
 const createProps = (customProps = {}) => {
