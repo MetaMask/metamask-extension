@@ -277,6 +277,90 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   /**
+   * updates the gas fees of the transaction with id if the transaction state is unapproved
+   *
+   * @param {string} txId - transaction id
+   * @param {object} txGasFees - holds the gas fees parameters
+   * {
+   *  gasLimit,
+   *  gasPrice,
+   *  maxPriorityFeePerGas,
+   *  maxFeePerGas,
+   *  estimateUsed
+   * }
+   */
+  updateTransactionGasFees(txId, txGasFees) {
+    const {
+      gasLimit,
+      gasPrice,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      estimateSuggested,
+      estimateUsed,
+    } = txGasFees;
+  }
+
+  /**
+   * updates the estimate base fees of the transaction with id if the transaction state is unapproved
+   *
+   * @param {string} txId - transaction id
+   * @param {object} txEstimateBaseFees - holds the estimate base fees parameters
+   * {
+   *  estimateBaseFee
+   *  decEstimateBaseFee
+   * }
+   */
+  updateTransactionEstimateBaseFee(txId, txEstimateBaseFees) {
+    const { estimateBaseFee, decEstimateBaseFee } = txEstimateBaseFees;
+  }
+
+  /**
+   * updates a swap approval transaction with provided metadata and source token symbol
+   *  if the transaction state is unapproved.
+   *
+   * @param {string} txId
+   * @param {object} swapApprovalTransaction - holds the metadata and token symbol
+   * {
+   *  approveTxMeta
+   *  type
+   *  sourceTokenSymbol
+   * }
+   */
+  updateSwapApprovalTransaction(txId, swapApprovalTransaction) {
+    const { approveTxMeta, type, sourceTokenSymbol } = swapApprovalTransaction;
+  }
+
+  /**
+   * updates a swap transaction with provided metadata and source token symbol
+   *  if the transaction state is unapproved.
+   *
+   * @param {string} txId
+   * @param {object} swapTransaction - holds the metadata
+   */
+  updateSwapTransaction(txId, swapTransaction) {
+    const {
+      tradeTxMeta,
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+    } = swapTransaction;
+  }
+
+  /**
+   * updates a transaction's user settings only if the transaction state is unapproved
+   *
+   * @param {string} txId
+   * @param {object} userSettings
+   */
+  updateTransactionUserSettings(txId, userSettings) {
+    const { userEditedGasLimit, userFeeLevel } = userSettings;
+  }
+
+  /**
    * updates the txMeta in the list and adds a history entry
    *
    * @param {Object} txMeta - the txMeta to update
