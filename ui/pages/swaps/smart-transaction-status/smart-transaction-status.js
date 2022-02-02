@@ -40,6 +40,7 @@ import {
   stopPollingForQuotes,
   setBackgroundSwapRouteState,
 } from '../../../store/actions';
+import { SMART_TRANSACTION_STATUSES } from '../../../../shared/constants/transaction';
 
 import SwapsFooter from '../swaps-footer';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
@@ -71,7 +72,7 @@ export default function SmartTransactionStatus() {
   );
   const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
-  let smartTransactionStatus = 'pending';
+  let smartTransactionStatus = SMART_TRANSACTION_STATUSES.PENDING;
   let latestSmartTransaction = {};
   let latestSmartTransactionUuid;
 
@@ -79,26 +80,15 @@ export default function SmartTransactionStatus() {
     latestSmartTransaction =
       currentSmartTransactions[currentSmartTransactions.length - 1];
     latestSmartTransactionUuid = latestSmartTransaction?.uuid;
-    smartTransactionStatus = latestSmartTransaction?.status || '';
+    smartTransactionStatus =
+      latestSmartTransaction?.status || SMART_TRANSACTION_STATUSES.PENDING;
   }
 
-  if (
-    latestSmartTransactionUuid &&
-    usedQuote?.trade?.data !== latestSmartTransaction?.txParams?.data
-  ) {
-    // If a newly submitted smart transaction is not the same as "latestSmartTransaction", we clean up data below,
-    // which means a "pending" status page will be displayed.
-    // The reason is that we redirect to the STX status page immediatelly after submit without waiting for a backend response
-    // and without this code a user would briefly (~1 - 2s) see a status page for the previous smart transaction.
-    latestSmartTransaction = {};
-    latestSmartTransactionUuid = null;
-    smartTransactionStatus = 'pending';
-  }
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
     () => {
       if (
         !latestSmartTransaction.time ||
-        latestSmartTransaction.status !== 'pending'
+        latestSmartTransaction.status !== SMART_TRANSACTION_STATUSES.PENDING
       ) {
         return swapsRefreshRates.stxStatusDeadline;
       }
@@ -147,9 +137,11 @@ export default function SmartTransactionStatus() {
     sensitiveProperties,
   });
 
-  const isSmartTransactionPending = smartTransactionStatus === 'pending';
+  const isSmartTransactionPending =
+    smartTransactionStatus === SMART_TRANSACTION_STATUSES.PENDING;
   const showCloseButtonOnly =
-    isSmartTransactionPending || smartTransactionStatus === 'success';
+    isSmartTransactionPending ||
+    smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS;
 
   useEffect(() => {
     stxStatusPageLoadedEvent();
@@ -194,7 +186,7 @@ export default function SmartTransactionStatus() {
       headerText = t('stxPendingPrivatelySubmitting');
     }
   }
-  if (smartTransactionStatus === 'success') {
+  if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
     headerText = t('stxSuccess');
     description = t('stxSuccessDescription', [
       <a
@@ -279,7 +271,7 @@ export default function SmartTransactionStatus() {
           alignItems={ALIGN_ITEMS.CENTER}
         >
           <Typography color={COLORS.UI4} variant={TYPOGRAPHY.H6}>
-            {`${fetchParams?.value && Number(fetchParams.value).toFixed(6)} `}
+            {`${fetchParams?.value && Number(fetchParams.value).toFixed(5)} `}
           </Typography>
           <Typography
             color={COLORS.UI4}
@@ -309,7 +301,7 @@ export default function SmartTransactionStatus() {
             variant={TYPOGRAPHY.H6}
             boxProps={{ marginLeft: 2 }}
           >
-            {`~${destinationValue && Number(destinationValue).toFixed(6)} `}
+            {`~${destinationValue && Number(destinationValue).toFixed(5)} `}
           </Typography>
           <Typography
             color={COLORS.UI4}

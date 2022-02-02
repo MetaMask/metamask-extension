@@ -166,6 +166,7 @@ export const TRANSACTION_GROUP_STATUSES = {
 export const SMART_TRANSACTION_STATUSES = {
   CANCELLED: 'cancelled',
   PENDING: 'pending',
+  SUCCESS: 'success',
 };
 
 /**
