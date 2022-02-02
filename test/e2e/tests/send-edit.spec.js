@@ -23,6 +23,7 @@ describe('Editing Confirm Transaction', function () {
         fixtures: 'send-edit',
         ganacheOptions,
         title: this.test.title,
+        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -92,8 +93,7 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
+  it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
     const ganacheOptions = {
       hardfork: 'london',
       accounts: [
@@ -109,6 +109,7 @@ describe('Editing Confirm Transaction', function () {
         fixtures: 'send-edit-v2',
         ganacheOptions,
         title: this.test.title,
+        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
