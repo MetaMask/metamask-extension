@@ -342,6 +342,7 @@ export default function SmartTransactionStatus() {
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
               boxProps={{ marginLeft: 1 }}
+              className="smart-transaction-status__remaining-time"
             >
               {showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec)}
             </Typography>

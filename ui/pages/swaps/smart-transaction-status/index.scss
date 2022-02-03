@@ -77,5 +77,8 @@
       border: 1px solid var(--ui-4);
     }
   }
-}
 
+  &__remaining-time {
+    font-variant-numeric: tabular-nums;
+  }
+}
