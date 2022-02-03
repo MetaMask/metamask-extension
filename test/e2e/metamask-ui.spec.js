@@ -200,9 +200,10 @@ describe('MetaMask', function () {
       await restoreSeedLink.click();
       await driver.delay(regularDelayMs);
 
-      await driver.clickElement('.import-account__checkbox-container');
-
-      await driver.fill('.import-account__secret-phrase', testSeedPhrase);
+      await driver.fill(
+        'input[placeholder="Enter your Secret Recovery Phrase"]',
+        testSeedPhrase,
+      );
       await driver.delay(regularDelayMs);
 
       await driver.fill('#password', 'correct horse battery staple');

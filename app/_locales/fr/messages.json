@@ -2460,9 +2460,6 @@
     "message": "Envoi de $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "Separez chaque mot avec un espace simple"
-  },
   "setAdvancedPrivacySettings": {
     "message": "Définir des paramètres de confidentialité avancés"
   },
@@ -3374,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Portefeuille créé avec succès"
-  },
-  "walletSeedRestore": {
-    "message": "Phrase secrète de récupération du portefeuille"
   },
   "web3ShimUsageNotification": {
     "message": "Nous avons remarqué que ce site Web a essayé d’utiliser l’API window.web3 supprimée. Si le site semble être défectueux, veuillez cliquer sur $1 pour plus d’informations.",

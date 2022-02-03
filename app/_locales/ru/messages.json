@@ -2460,9 +2460,6 @@
     "message": "Отправка $1...",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "Отделяйте каждое слово одним пробелом"
-  },
   "setAdvancedPrivacySettings": {
     "message": "Задать дополнительные настройки конфиденциальности"
   },
@@ -3374,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Кошелек создан"
-  },
-  "walletSeedRestore": {
-    "message": "Секретная фраза восстановления кошелька"
   },
   "web3ShimUsageNotification": {
     "message": "Мы заметили, что текущий веб-сайт пытался использовать удаленный API window.web3. Если сайт не работает, нажмите $1 для получения дополнительной информации.",

@@ -839,9 +839,6 @@
   "sendTokens": {
     "message": "Odeslat tokeny"
   },
-  "separateEachWord": {
-    "message": "Každé slovo oddeľte jednou medzerou"
-  },
   "settings": {
     "message": "Nastavení"
   },

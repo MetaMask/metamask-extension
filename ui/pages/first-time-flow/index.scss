@@ -29,7 +29,7 @@
     }
   }
 
-  &__form {
+  &__import {
     display: flex;
     flex-direction: column;
   }
@@ -45,49 +45,8 @@
     color: black;
   }
 
-  &__subheader {
-    margin-bottom: 16px;
-  }
-
   &__input {
     max-width: 350px;
-  }
-
-  &__textarea-wrapper {
-    margin-bottom: 8px;
-    display: inline-flex;
-    padding: 0;
-    position: relative;
-    min-width: 0;
-    flex-direction: column;
-    max-width: 350px;
-  }
-
-  &__textarea-label {
-    @include H4;
-
-    margin-bottom: 9px;
-    color: #1b344d;
-  }
-
-  &__textarea {
-    @include Paragraph;
-
-    /*rtl:ignore*/
-    direction: ltr;
-    border: 1px solid #cdcdcd;
-    border-radius: 6px;
-    background-color: #fff;
-    padding: 16px;
-    margin-top: 8px;
-  }
-
-  &__seedphrase {
-    margin-top: 9px !important;
-  }
-
-  &__breadcrumbs {
-    margin: 36px 0;
   }
 
   &__text-block {

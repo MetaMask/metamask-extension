@@ -864,9 +864,6 @@
   "sendTokens": {
     "message": "Pošlji žetone"
   },
-  "separateEachWord": {
-    "message": "Vsako besedo ločite z enim presledkom"
-  },
   "settings": {
     "message": "Nastavitve"
   },
