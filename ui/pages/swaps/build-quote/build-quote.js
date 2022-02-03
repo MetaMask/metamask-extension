@@ -572,6 +572,7 @@ export default function BuildQuote({
               </>
             }
             footerClassName="smart-transactions-popover__footer"
+            className="smart-transactions-popover"
           >
             <Box
               paddingRight={6}
@@ -579,7 +580,7 @@ export default function BuildQuote({
               paddingTop={0}
               paddingBottom={0}
               display={DISPLAY.FLEX}
-              className="smart-transactions-popover"
+              className="smart-transactions-popover__content"
             >
               <Box
                 marginTop={0}

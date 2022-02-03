@@ -174,16 +174,25 @@
   }
 }
 
+@keyframes slide-in {
+  100% { transform: translateY(0%); }
+}
+
 .smart-transactions-popover {
-  flex-direction: column;
+  transform: translateY(-100%);
+  animation: slide-in 0.5s forwards;
 
-  ul {
-    list-style: inside;
-  }
-
-  a {
-    color: var(--Blue-500);
-    cursor: pointer;
+  &__content {
+    flex-direction: column;
+  
+    ul {
+      list-style: inside;
+    }
+  
+    a {
+      color: var(--Blue-500);
+      cursor: pointer;
+    }
   }
 
   &__footer {
