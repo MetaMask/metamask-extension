@@ -189,8 +189,13 @@ describe('Sign Typed Data Signature Request', function () {
           '.request-signature__header__text',
         );
         const origin = await driver.findElement('.request-signature__origin');
+        const message = await driver.findElements(
+          '.request-signature__row-value',
+        );
         assert.equal(await title.getText(), 'Signature Request');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
+        assert.equal(await message[0].getText(), 'Hi, Alice!');
+        assert.equal(await message[1].getText(), '1337');
 
         // Approve signing typed data
         await driver.clickElement({ text: 'Sign', tag: 'button' });
