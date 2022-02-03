@@ -62,7 +62,7 @@ const CancelSpeedupPopover = () => {
       updateTransactionUsingEstimate(PRIORITY_LEVELS.MEDIUM);
       return;
     }
-    updateTransactionToTenPercentIncreasedGasFee();
+    updateTransactionToTenPercentIncreasedGasFee(true);
   }, [
     appIsLoading,
     currentModal,

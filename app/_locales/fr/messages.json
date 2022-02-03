@@ -1444,7 +1444,7 @@
     "message": "Adresse contractuelle connue."
   },
   "knownTokenWarning": {
-    "message": "Cette action modifiera les jetons déjà présents dans votre portefeuille, et risque de favoriser les tentatives d’hameçonnage. N’approuvez que si vous êtes certain·e de vouloir modifier ce que ces jetons représentent."
+    "message": "Cette action modifiera les jetons déjà présents dans votre portefeuille, et risque de favoriser les tentatives d’hameçonnage. N’approuvez que si vous êtes certain·e de vouloir modifier ce que ces jetons représentent. En savoir plus sur $1"
   },
   "kovan": {
     "message": "Réseau de test Kovan"

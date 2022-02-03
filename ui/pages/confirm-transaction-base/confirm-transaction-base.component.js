@@ -980,7 +980,6 @@ export default class ConfirmTransactionBase extends Component {
   render() {
     const { t } = this.context;
     const {
-      actionKey,
       fromName,
       fromAddress,
       toName,
@@ -1046,10 +1045,7 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     return (
-      <TransactionModalContextProvider
-        actionKey={actionKey}
-        methodData={methodData}
-      >
+      <TransactionModalContextProvider>
         <ConfirmPageContainer
           fromName={fromName}
           fromAddress={fromAddress}

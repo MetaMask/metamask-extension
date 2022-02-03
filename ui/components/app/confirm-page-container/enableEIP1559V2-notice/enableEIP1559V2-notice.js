@@ -20,10 +20,6 @@ import { setEnableEIP1559V2NoticeDismissed } from '../../../../store/actions';
 import { getEnableEIP1559V2NoticeDismissed } from '../../../../ducks/metamask/metamask';
 import { getEIP1559V2Enabled } from '../../../../selectors';
 
-const EIP_1559_V2_ENABLED =
-  // This is a string in unit tests but is a boolean in the browser
-  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
-
 export default function EnableEIP1559V2Notice({ isFirstAlert }) {
   const t = useI18nContext();
   const history = useHistory();
@@ -32,11 +28,7 @@ export default function EnableEIP1559V2Notice({ isFirstAlert }) {
   );
   const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
-  if (
-    !EIP_1559_V2_ENABLED ||
-    eip1559V2Enabled ||
-    enableEIP1559V2NoticeDismissed
-  ) {
+  if (eip1559V2Enabled || enableEIP1559V2NoticeDismissed) {
     return null;
   }
 
