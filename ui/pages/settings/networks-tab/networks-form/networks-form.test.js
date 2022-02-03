@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
+import { tick } from '../../../../../test/lib/tick';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
 import NetworksForm from '.';
@@ -107,5 +108,51 @@ describe('NetworkForm Component', () => {
     expect(
       queryByText('URLs require the appropriate HTTP/HTTPS prefix.'),
     ).toBeInTheDocument();
+  });
+
+  it('should button Save in the correct state', async () => {
+    const { queryByText, getByLabelText } = renderComponent(propNewNetwork);
+    const saveButton = queryByText('Save');
+    const networkNameText = getByLabelText('Network Name');
+    const rpcUrlText = getByLabelText('New RPC URL');
+    const chainIdText = getByLabelText('Chain ID');
+
+    expect(queryByText('Save')).toBeDisabled();
+    fireEvent.change(networkNameText, {
+      target: { value: 'TEST' },
+    });
+    expect(saveButton).toBeDisabled();
+    fireEvent.change(rpcUrlText, {
+      target: {
+        value: 'https://mainnet.infura.io/v3/undefined',
+      },
+    });
+    expect(saveButton).toBeDisabled();
+    expect(
+      queryByText('This URL is currently used by the mainnet network.'),
+    ).toBeInTheDocument();
+    fireEvent.change(chainIdText, {
+      target: { value: '1' },
+    });
+    expect(saveButton).toBeDisabled();
+    fireEvent.change(rpcUrlText, {
+      target: {
+        value: 'https://mainnet.infura.io/v3/fake',
+      },
+    });
+    expect(saveButton).toBeEnabled();
+
+    fireEvent.click(saveButton);
+    await tick();
+
+    expect(
+      queryByText('Could not fetch chain ID. Is your RPC URL correct?'),
+    ).toBeInTheDocument();
+    fireEvent.change(rpcUrlText, {
+      target: {
+        value: 'https://mainnet.infura.io/v3/undefined',
+      },
+    });
+    expect(saveButton).toBeDisabled();
   });
 });
