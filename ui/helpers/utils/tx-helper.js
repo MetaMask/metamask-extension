@@ -2,23 +2,16 @@ import log from 'loglevel';
 import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
 import { valuesFor } from './util';
 
-type Message = {
-  metamaskNetworkId: string;
-  time: number;
-};
-
-type MessagesByKey = Record<string, Message> | null | undefined;
-
 export default function txHelper(
-  unapprovedTxs: MessagesByKey,
-  unapprovedMsgs: MessagesByKey,
-  personalMsgs: MessagesByKey,
-  decryptMsgs: MessagesByKey,
-  encryptionPublicKeyMsgs: MessagesByKey,
-  typedMessages: MessagesByKey,
-  network: string,
-  chainId: string,
-): Message[] {
+  unapprovedTxs,
+  unapprovedMsgs,
+  personalMsgs,
+  decryptMsgs,
+  encryptionPublicKeyMsgs,
+  typedMessages,
+  network,
+  chainId,
+) {
   log.debug('tx-helper called with params:');
   log.debug({
     unapprovedTxs,
@@ -32,35 +25,33 @@ export default function txHelper(
   });
 
   const txValues = network
-    ? (valuesFor(unapprovedTxs) as Message[]).filter((txMeta) =>
+    ? valuesFor(unapprovedTxs).filter((txMeta) =>
         transactionMatchesNetwork(txMeta, chainId, network),
       )
-    : (valuesFor(unapprovedTxs) as Message[]);
+    : valuesFor(unapprovedTxs);
   log.debug(`tx helper found ${txValues.length} unapproved txs`);
 
-  const msgValues = valuesFor(unapprovedMsgs) as Message[];
+  const msgValues = valuesFor(unapprovedMsgs);
   log.debug(`tx helper found ${msgValues.length} unsigned messages`);
   let allValues = txValues.concat(msgValues);
 
-  const personalValues = valuesFor(personalMsgs) as Message[];
+  const personalValues = valuesFor(personalMsgs);
   log.debug(
     `tx helper found ${personalValues.length} unsigned personal messages`,
   );
   allValues = allValues.concat(personalValues);
 
-  const decryptValues = valuesFor(decryptMsgs) as Message[];
+  const decryptValues = valuesFor(decryptMsgs);
   log.debug(`tx helper found ${decryptValues.length} decrypt requests`);
   allValues = allValues.concat(decryptValues);
 
-  const encryptionPublicKeyValues = valuesFor(
-    encryptionPublicKeyMsgs,
-  ) as Message[];
+  const encryptionPublicKeyValues = valuesFor(encryptionPublicKeyMsgs);
   log.debug(
     `tx helper found ${encryptionPublicKeyValues.length} encryptionPublicKey requests`,
   );
   allValues = allValues.concat(encryptionPublicKeyValues);
 
-  const typedValues = valuesFor(typedMessages) as Message[];
+  const typedValues = valuesFor(typedMessages);
   log.debug(`tx helper found ${typedValues.length} unsigned typed messages`);
   allValues = allValues.concat(typedValues);
 
