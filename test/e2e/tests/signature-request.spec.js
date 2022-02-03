@@ -48,6 +48,9 @@ describe('Sign Typed Data V4 Signature Request', function () {
         );
         const origin = content[0];
         const address = content[1];
+        const message = await driver.findElement(
+          '.signature-request-message--node-value',
+        );
         assert.equal(await title.getText(), 'Signature Request');
         assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
@@ -57,6 +60,7 @@ describe('Sign Typed Data V4 Signature Request', function () {
             publicAddress.length - 8,
           )}`,
         );
+        assert.equal(await message.getText(), 'Hello, Bob!');
 
         // Approve signing typed data
         await driver.clickElement({ text: 'Sign', tag: 'button' });
@@ -122,6 +126,9 @@ describe('Sign Typed Data V3 Signature Request', function () {
         );
         const origin = content[0];
         const address = content[1];
+        const message = await driver.findElement(
+          '.signature-request-message--node-value',
+        );
         assert.equal(await title.getText(), 'Signature Request');
         assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
@@ -131,6 +138,7 @@ describe('Sign Typed Data V3 Signature Request', function () {
             publicAddress.length - 8,
           )}`,
         );
+        assert.equal(await message.getText(), 'Hello, Bob!');
 
         // Approve signing typed data
         await driver.clickElement({ text: 'Sign', tag: 'button' });
