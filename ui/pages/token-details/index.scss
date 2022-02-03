@@ -29,17 +29,13 @@
     font-size: 32px;
   }
 
-  &__copyButton {
-    background: none;
-    margin-top: 8px;
-  }
-
   &__token-address {
     width: 222px;
   }
 
   &__copy-icon {
-    margin-left: 72px;
+    float: right;
+    margin-left: 62px;
   }
 
   &__hide-token-button {
