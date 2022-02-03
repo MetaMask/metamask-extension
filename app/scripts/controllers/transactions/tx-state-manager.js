@@ -292,7 +292,7 @@ export default class TransactionStateManager extends EventEmitter {
     const { transactions } = this.store.getState();
     return transactions[txId];
   }
-  
+
   /**
    * updates the txMeta in the list and adds a history entry
    *
