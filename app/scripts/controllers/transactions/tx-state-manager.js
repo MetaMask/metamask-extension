@@ -12,7 +12,6 @@ import {
   snapshotFromTxMeta,
 } from './lib/tx-state-history-helpers';
 import { getFinalStates, normalizeAndValidateTxParams } from './lib/util';
-import { decorate } from '@storybook/addon-actions';
 
 /**
  * TransactionStatuses reimported from the shared transaction constants file
@@ -276,7 +275,7 @@ export default class TransactionStateManager extends EventEmitter {
     const { transactions } = this.store.getState();
     return transactions[txId];
   }
-  
+
   /**
    * updates the txMeta in the list and adds a history entry
    *
