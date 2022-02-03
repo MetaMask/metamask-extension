@@ -336,6 +336,119 @@ export default class TransactionController extends EventEmitter {
     });
   }
 
+  // ====================================================================================================================================================
+
+  /**
+   * @param {number} txId
+   * @returns {TransactionMeta} the txMeta who matches the given id if none found
+   * for the network returns undefined
+   */
+   getTransaction(txId) {
+    const { transactions } = this.store.getState();
+    return transactions[txId];
+  }
+
+  validateTransaction(txId) {
+    const shouldProcess = this.getTransaction(txId).status === TRANSACTION_STATUSES.UNAPPROVED;
+
+    return {shouldProcess};
+  }
+
+  /**
+   * updates the gas fees of the transaction with id if the transaction state is unapproved
+   *
+   * @param {string} txId - transaction id
+   * @param {object} txGasFees - holds the gas fees parameters
+   * {
+   *  gasLimit,
+   *  gasPrice,
+   *  maxPriorityFeePerGas,
+   *  maxFeePerGas,
+   *  estimateUsed
+   * }
+   */
+  updateTransactionGasFees(txId, txGasFees) {
+    const shouldProcess = this.validateTransaction(txId);
+    const {
+      gasLimit,
+      gasPrice,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      estimateSuggested,
+      estimateUsed,
+    } = txGasFees;
+
+    // const transaction = this.getTransaction(txId);
+
+  }
+
+  /**
+   * updates the estimate base fees of the transaction with id if the transaction state is unapproved
+   *
+   * @param {string} txId - transaction id
+   * @param {object} txEstimateBaseFees - holds the estimate base fees parameters
+   * {
+   *  estimateBaseFee
+   *  decEstimateBaseFee
+   * }
+   */
+  updateTransactionEstimateBaseFee(txId, txEstimateBaseFees) {
+    const shouldProcess = this.validateTransaction(txId);
+    const { estimateBaseFee, decEstimateBaseFee } = txEstimateBaseFees;
+  }
+
+  /**
+   * updates a swap approval transaction with provided metadata and source token symbol
+   *  if the transaction state is unapproved.
+   *
+   * @param {string} txId
+   * @param {object} swapApprovalTransaction - holds the metadata and token symbol
+   * {
+   *  approveTxMeta
+   *  type
+   *  sourceTokenSymbol
+   * }
+   */
+  updateSwapApprovalTransaction(txId, swapApprovalTransaction) {
+    const { type, sourceTokenSymbol } = swapApprovalTransaction;
+    const shouldProcess = this.validateTransaction(txId);
+  }
+
+  /**
+   * updates a swap transaction with provided metadata and source token symbol
+   *  if the transaction state is unapproved.
+   *
+   * @param {string} txId
+   * @param {object} swapTransaction - holds the metadata
+   */
+  updateSwapTransaction(txId, swapTransaction) {
+    const {
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+    } = swapTransaction;
+
+    const shouldProcess = this.validateTransaction(txId);  
+  }
+
+  /**
+   * updates a transaction's user settings only if the transaction state is unapproved
+   *
+   * @param {string} txId
+   * @param {object} userSettings
+   */
+  updateTransactionUserSettings(txId, userSettings) {
+    const shouldProcess = this.validateTransaction(txId);
+    const { userEditedGasLimit, userFeeLevel } = userSettings;
+  }
+
+  // ====================================================================================================================================================
+
+
   /**
    * Validates and generates a txMeta with defaults and puts it in txStateManager
    * store.
