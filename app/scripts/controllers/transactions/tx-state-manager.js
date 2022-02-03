@@ -277,6 +277,17 @@ export default class TransactionStateManager extends EventEmitter {
     return transactions[txId];
   }
   // ====================================================================================================================================================
+  validateTransaction(txId, txMeta, shouldNormalize) {
+    let normalized = undefined;
+    if(shouldNormalize && txMeta) {
+      normalized = normalizeAndValidateTxParams(txMeta, false);
+    }
+
+    const shouldProcess = this.getTransaction(txId).status === TRANSACTION_STATUSES.UNAPPROVED;
+
+    return {shouldProcess, normalized};
+  }
+
   /**
    * updates the gas fees of the transaction with id if the transaction state is unapproved
    *
@@ -291,7 +302,7 @@ export default class TransactionStateManager extends EventEmitter {
    * }
    */
   updateTransactionGasFees(txId, txGasFees) {
-    txGasFees = normalizeAndValidateTxParams(txGasFees, false);
+    const {shouldProcess, normalized} = this.validateTransaction(txId, txGasFees, true);
     const {
       gasLimit,
       gasPrice,
@@ -300,6 +311,9 @@ export default class TransactionStateManager extends EventEmitter {
       estimateSuggested,
       estimateUsed,
     } = txGasFees;
+
+    // const transaction = this.getTransaction(txId);
+
   }
 
   /**
@@ -313,7 +327,7 @@ export default class TransactionStateManager extends EventEmitter {
    * }
    */
   updateTransactionEstimateBaseFee(txId, txEstimateBaseFees) {
-    txEstimateBaseFees = normalizeAndValidateTxParams(txEstimateBaseFees, false);
+    const {shouldProcess, normalized} = this.validateTransaction(txId, txEstimateBaseFees, true);
     const { estimateBaseFee, decEstimateBaseFee } = txEstimateBaseFees;
   }
 
@@ -330,10 +344,9 @@ export default class TransactionStateManager extends EventEmitter {
    * }
    */
   updateSwapApprovalTransaction(txId, swapApprovalTransaction) {
-    if(approveTxMeta.txParams) {
-      approveTxMeta.txParams = normalizeAndValidateTxParams(approveTxMeta.txParams, false);
-    }
     const { approveTxMeta, type, sourceTokenSymbol } = swapApprovalTransaction;
+    const { shouldProcess, normalized } = this.validateTransaction(txId, approveTxMeta.txParams, true);
+    approveTxMeta.txParams = normalized;
   }
 
   /**
@@ -344,9 +357,6 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {object} swapTransaction - holds the metadata
    */
   updateSwapTransaction(txId, swapTransaction) {
-    if(tradeTxMeta.txParams) {
-      tradeTxMeta.txParams = normalizeAndValidateTxParams(tradeTxMeta.txParams, false);
-    }
     const {
       tradeTxMeta,
       sourceTokenSymbol,
@@ -357,6 +367,9 @@ export default class TransactionStateManager extends EventEmitter {
       swapMetaData,
       swapTokenValue,
     } = swapTransaction;
+
+    const { shouldProcess, normalized } = this.validateTransaction(txId, tradeTxMeta.txParams, true);
+    tradeTxMeta.txParams = normalized;
   }
 
   /**
@@ -366,6 +379,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {object} userSettings
    */
   updateTransactionUserSettings(txId, userSettings) {
+    const { shouldProcess } = this.validateTransaction(txId, userSettings, false);
     const { userEditedGasLimit, userFeeLevel } = userSettings;
   }
 
