@@ -28,7 +28,7 @@ describe('Signature Request', function () {
         await driver.openNewPage('http://127.0.0.1:8080/');
 
         // creates a sign typed data signature request
-        await driver.clickElement('#signTypedDataV4', 10000);
+        await driver.clickElement('#signTypedDataV4');
 
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
@@ -59,13 +59,13 @@ describe('Signature Request', function () {
         );
 
         // Approve signing typed data
-        await driver.clickElement({ text: 'Sign', tag: 'button' }, 10000);
+        await driver.clickElement({ text: 'Sign', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
 
         // switch to the Dapp and verify the signed addressed
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-        await driver.clickElement('#signTypedDataV4Verify', 10000);
+        await driver.clickElement('#signTypedDataV4Verify');
         const recoveredAddress = await driver.findElement(
           '#signTypedDataV4VerifyResult',
         );
