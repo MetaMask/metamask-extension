@@ -2538,7 +2538,7 @@
     "message": "WARNING: Never disclose your Secret Recovery Phrase. Anyone with this phrase can take your Ether forever."
   },
   "secretPhrase": {
-    "message": "If you restore a wallet using the Secret Recovery Phrase, only the wallet’s initial account will appear at first. You will need to $1 created using the SRP. "
+    "message": "If you restore a wallet using the Secret Recovery Phrase, only the wallet’s initial account might appear at first. You'll be able to $1 created previously."
   },
   "secretPhraseWarning": {
     "message": "To recover access to your wallet you will have to restore it using the Secret Recovery Phrase. This action will overwrite existing wallet data and cannot be undone. Make sure you’re using the correct Secret Recovery Phrase."

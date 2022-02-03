@@ -8,6 +8,8 @@ import {
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
+import Button from '../../components/ui/button';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -87,7 +89,7 @@ class RestoreVaultPage extends Component {
                   type="inline"
                   target="_blank"
                   rel="noopener noreferrer"
-                  href="https://metamask.zendesk.com/hc/en-us/articles/360015489271-How-to-add-missing-accounts-after-restoring-with-Secret-Recovery-Phrase"
+                  href={ZENDESK_URLS.ADD_MISSING_ACCOUNTS}
                   key="import-account-secretphase"
                 >
                   {t('reAddAccounts')}
@@ -100,7 +102,7 @@ class RestoreVaultPage extends Component {
                   type="inline"
                   target="_blank"
                   rel="noopener noreferrer"
-                  href="https://metamask.zendesk.com/hc/en-us/articles/360015489331-How-to-import-an-Account"
+                  href={ZENDESK_URLS.IMPORT_ACCOUNTS}
                   key="import-account-reimport-accounts"
                 >
                   {t('reImportAccounts')}
@@ -109,7 +111,7 @@ class RestoreVaultPage extends Component {
                   type="inline"
                   target="_blank"
                   rel="noopener noreferrer"
-                  href="https://metamask.zendesk.com/hc/en-us/articles/360015489031-How-to-add-unlisted-tokens-custom-tokens-in-MetaMask"
+                  href={ZENDESK_URLS.ADD_CUSTOM_TOKENS}
                   key="import-account-readd-tokens"
                 >
                   {t('reAddTokens')}

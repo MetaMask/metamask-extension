@@ -38,11 +38,6 @@
     width: 100%;
     text-align: center;
     font-size: 0.75rem;
-
-    button {
-      font-weight: bold;
-      border-radius: 100px;
-    }
   }
 
   &__link {
@@ -50,6 +45,8 @@
     background-color: unset;
     color: var(--Blue-500);
     font-size: unset;
+    font-weight: bold;
+    border-radius: 100px;
   }
 
   &__support {
