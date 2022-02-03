@@ -371,7 +371,7 @@ const NetworksForm = ({
     [t],
   );
 
-  const validateUrlRpcUrl = useCallback(
+  const validateRPCUrl = useCallback(
     (url) => {
       const isValidUrl = validUrl.isWebUri(url);
       const [
@@ -433,7 +433,7 @@ const NetworksForm = ({
       const chainIdError = await validateChainId(chainId);
       const tickerWarning = await validateTickerSymbol(chainId, ticker);
       const blockExplorerError = validateBlockExplorerURL(blockExplorerUrl);
-      const rpcUrlError = validateUrlRpcUrl(rpcUrl);
+      const rpcUrlError = validateRPCUrl(rpcUrl);
       setErrors({
         ...errors,
         chainId: chainIdError,
@@ -463,7 +463,7 @@ const NetworksForm = ({
     validateBlockExplorerURL,
     validateChainId,
     validateTickerSymbol,
-    validateUrlRpcUrl,
+    validateRPCUrl,
   ]);
 
   const onSubmit = async () => {
