@@ -1279,10 +1279,6 @@
   "importAccountSeedPhrase": {
     "message": "Εισαγωγή λογαριασμού με Μυστική Φράση Ανάκτησης"
   },
-  "importAccountText": {
-    "message": "ή $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
-  },
   "importExistingWalletDescription": {
     "message": "Εισάγετε τη Μυστική Φράση Ανάκτησης (δλδ Seed Phrase) που σας δόθηκε όταν δημιουργήσατε το πορτοφόλι σας. $1",
     "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"

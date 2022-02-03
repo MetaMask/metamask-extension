@@ -848,10 +848,6 @@
   "importAccountSeedPhrase": {
     "message": "Mag-import ng account gamit ang Secret Recovery Phrase"
   },
-  "importAccountText": {
-    "message": "o $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
-  },
   "importTokenQuestion": {
     "message": "Mag-import ng token?"
   },

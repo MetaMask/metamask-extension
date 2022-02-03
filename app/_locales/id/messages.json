@@ -1279,10 +1279,6 @@
   "importAccountSeedPhrase": {
     "message": "Impor dompet dengan Frasa Pemulihan Rahasia"
   },
-  "importAccountText": {
-    "message": "atau $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
-  },
   "importExistingWalletDescription": {
     "message": "Masukkan Frasa Pemulihan Rahasia Anda (alias Frasa Benih) yang diberikan saat Anda membuat dompet. $1",
     "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"

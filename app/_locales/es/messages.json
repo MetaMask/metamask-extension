@@ -832,10 +832,6 @@
   "importAccountSeedPhrase": {
     "message": "Importar una cuenta con la frase secreta de recuperación"
   },
-  "importAccountText": {
-    "message": "o $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
-  },
   "importTokenQuestion": {
     "message": "¿Desea importar el token?"
   },

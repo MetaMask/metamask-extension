@@ -1279,10 +1279,6 @@
   "importAccountSeedPhrase": {
     "message": "使用账户助记词导入账户"
   },
-  "importAccountText": {
-    "message": "或 $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
-  },
   "importExistingWalletDescription": {
     "message": "输入您创建$1钱包时提供的保密恢复短语（或Seed Phrase）。",
     "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
