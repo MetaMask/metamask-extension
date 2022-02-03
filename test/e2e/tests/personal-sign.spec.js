@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, largeDelayMs } = require('../helpers');
 
 describe('Personal sign', function () {
   it('can initiate and confirm a personal sign', async function () {
@@ -12,6 +12,7 @@ describe('Personal sign', function () {
         },
       ],
     };
+    const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
         dapp: true,
@@ -28,7 +29,7 @@ describe('Personal sign', function () {
         await driver.clickElement('#personalSign');
 
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
+        let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -42,7 +43,18 @@ describe('Personal sign', function () {
 
         await driver.clickElement('[data-testid="request-signature__sign"]');
 
+        // Switch to the Dapp
         await driver.waitUntilXWindowHandles(2);
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+        // Verify
+        await driver.clickElement('#personalSignVerify');
+        await driver.delay(largeDelayMs);
+        const verifySigUtil = await driver.findElement('#personalSignVerifySigUtilResult');
+        const verifyECRecover = await driver.findElement('#personalSignVerifyECRecoverResult');
+        assert.equal(await verifySigUtil.getText(), publicAddress);
+        assert.equal(await verifyECRecover.getText(), publicAddress);
       },
     );
   });
