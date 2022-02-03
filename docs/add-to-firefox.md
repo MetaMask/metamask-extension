@@ -9,4 +9,3 @@
 
 If you have problems debugging, try connecting to the IRC channel `#webextensions` on `irc.mozilla.org`.
 For longer questions, use the StackOverflow tag `firefox-addons`.
-
