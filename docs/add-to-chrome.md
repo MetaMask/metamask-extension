@@ -11,6 +11,6 @@
 * Navigate to your `metamask-extension/dist/chrome` folder.
 * Click `Select`.
 * Change to your locale via `chrome://settings/languages`
-* Restart the browser and test the plugin in your locale
+* Restart the browser and test the extension in your locale
 
 Your dev build is now added to Chrome, and you can click 'inspect views: background plugin' to view its dev console.
