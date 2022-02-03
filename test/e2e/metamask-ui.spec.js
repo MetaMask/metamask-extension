@@ -191,7 +191,7 @@ describe('MetaMask', function () {
 
     it('imports Secret Recovery Phrase', async function () {
       const restoreSeedLink = await driver.findClickableElement(
-        '.unlock-page__link--import',
+        '.unlock-page__link',
       );
       assert.equal(await restoreSeedLink.getText(), 'Forgot Password?');
       await restoreSeedLink.click();
