@@ -869,9 +869,6 @@
   "sendTokens": {
     "message": "Token küldése"
   },
-  "separateEachWord": {
-    "message": "Minden egyes szavat szóközzel válasszon el"
-  },
   "settings": {
     "message": "Beállítások"
   },

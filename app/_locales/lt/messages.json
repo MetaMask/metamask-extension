@@ -876,9 +876,6 @@
   "sendTokens": {
     "message": "Siųsti žetonus"
   },
-  "separateEachWord": {
-    "message": "Kiekvieną žodį atskirkite viengubu tarpu"
-  },
   "settings": {
     "message": "Nustatymai"
   },

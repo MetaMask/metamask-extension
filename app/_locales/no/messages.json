@@ -857,9 +857,6 @@
   "sendTokens": {
     "message": "Send tokener"
   },
-  "separateEachWord": {
-    "message": "Del hvert ord med et enkelt mellomrom "
-  },
   "settings": {
     "message": "Innstillinger"
   },

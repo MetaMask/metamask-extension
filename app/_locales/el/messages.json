@@ -2460,9 +2460,6 @@
     "message": "Αποστολή $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "Διαχωρίστε κάθε λέξη με ένα μόνο κενό"
-  },
   "setAdvancedPrivacySettings": {
     "message": "Ορίστε ρυθμίσεις απορρήτου για προχωρημένους"
   },
@@ -3374,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Επιτυχής δημιουργία πορτοφολιού"
-  },
-  "walletSeedRestore": {
-    "message": "Μυστικής Φράσης Ανάκτησης Πορτοφολιού"
   },
   "web3ShimUsageNotification": {
     "message": "Παρατηρήσαμε ότι η τρέχουσα ιστοσελίδα προσπάθησε να χρησιμοποιήσει το αφαιρεθέν window.web3 API. Αν η ιστοσελίδα φαίνεται να έχει παραβιαστεί, κάντε κλικ στο $1 για περισσότερες πληροφορίες.",
