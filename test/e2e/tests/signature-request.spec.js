@@ -126,7 +126,7 @@ describe('Sign Typed Data V3 Signature Request', function () {
         );
         const origin = content[0];
         const address = content[1];
-        const message = await driver.findElement(
+        const message = await driver.findElements(
           '.signature-request-message--node-value',
         );
         assert.equal(await title.getText(), 'Signature Request');
@@ -138,7 +138,7 @@ describe('Sign Typed Data V3 Signature Request', function () {
             publicAddress.length - 8,
           )}`,
         );
-        assert.equal(await message.getText(), 'Hello, Bob!');
+        assert.equal(await message[4].getText(), 'Hello, Bob!');
 
         // Approve signing typed data
         await driver.clickElement({ text: 'Sign', tag: 'button' });
