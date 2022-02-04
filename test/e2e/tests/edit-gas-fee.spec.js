@@ -216,7 +216,7 @@ describe('Editing Confirm Transaction', function () {
 
         // open dapp and connect
         await connectDappWithExtensionPopup(driver);
-        await driver.clickElement({ text: 'Send', tag: 'button' });
+        await driver.clickElement({ text: 'Send EIP 1559 Transaction', tag: 'button' });
 
         // check transaction in extension popup
         const windowHandles = await getWindowHandles(driver, 3);
@@ -238,17 +238,17 @@ describe('Editing Confirm Transaction', function () {
           '.currency-display-component__text',
         );
         const transactionAmount = transactionAmounts[0];
-        assert.equal(await transactionAmount.getText(), '3');
+        assert.equal(await transactionAmount.getText(), '0');
 
         // has correct updated value on the confirm screen the transaction
         const editedTransactionAmounts = await driver.findElements(
           '.transaction-detail-item__row .transaction-detail-item__detail-values .currency-display-component__text:last-of-type',
         );
         const editedTransactionAmount = editedTransactionAmounts[0];
-        assert.equal(await editedTransactionAmount.getText(), '0.00042');
+        assert.equal(await editedTransactionAmount.getText(), '0.00021');
 
         const editedTransactionFee = editedTransactionAmounts[1];
-        assert.equal(await editedTransactionFee.getText(), '3.00042');
+        assert.equal(await editedTransactionFee.getText(), '0.00021');
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -268,7 +268,7 @@ describe('Editing Confirm Transaction', function () {
           '.transaction-list-item__primary-currency',
         );
         assert.equal(txValues.length, 1);
-        assert.ok(/-3\s*ETH/u.test(await txValues[0].getText()));
+        assert.ok(/-0\s*ETH/u.test(await txValues[0].getText()));
       },
     );
   });
