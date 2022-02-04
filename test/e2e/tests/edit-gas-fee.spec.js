@@ -216,7 +216,10 @@ describe('Editing Confirm Transaction', function () {
 
         // open dapp and connect
         await connectDappWithExtensionPopup(driver);
-        await driver.clickElement({ text: 'Send EIP 1559 Transaction', tag: 'button' });
+        await driver.clickElement({
+          text: 'Send EIP 1559 Transaction',
+          tag: 'button',
+        });
 
         // check transaction in extension popup
         const windowHandles = await getWindowHandles(driver, 3);
