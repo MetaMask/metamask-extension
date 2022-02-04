@@ -516,9 +516,6 @@
   "deleteNetworkDescription": {
     "message": "¿Está seguro de que quiere eliminar esta red?"
   },
-  "depositEther": {
-    "message": "Depositar ether"
-  },
   "details": {
     "message": "Detalles"
   },
@@ -1100,9 +1097,6 @@
   "name": {
     "message": "Nombre"
   },
-  "needEtherInWallet": {
-    "message": "Para interactuar con aplicaciones descentralizadas mediante MetaMask, necesitará ethers en su cartera."
-  },
   "needHelp": {
     "message": "¿Necesita ayuda? Comuníquese con $1",
     "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
@@ -1617,9 +1611,6 @@
   },
   "sendTokens": {
     "message": "Enviar tokens"
-  },
-  "separateEachWord": {
-    "message": "Separar cada palabra con un solo espacio"
   },
   "settings": {
     "message": "Configuración"
@@ -2268,9 +2259,6 @@
   },
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión de la cartera de hardware"
-  },
-  "walletSeedRestore": {
-    "message": "Frase secreta de recuperación de la cartera"
   },
   "web3ShimUsageNotification": {
     "message": "Parece que el sitio web actual intentó utilizar la API de window.web3 que se eliminó. Si el sitio no funciona, haga clic en $1 para obtener más información.",

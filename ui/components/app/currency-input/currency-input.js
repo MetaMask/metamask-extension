@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import UnitInput from '../unit-input';
-import CurrencyDisplay from '../currency-display';
+import UnitInput from '../../ui/unit-input';
+import CurrencyDisplay from '../../ui/currency-display';
 import {
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,

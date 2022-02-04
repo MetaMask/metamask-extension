@@ -2,7 +2,7 @@ import pify from 'pify';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
-import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
+import getBuyUrl from '../../app/scripts/lib/buy-url';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -1829,6 +1829,13 @@ export function hideAlert() {
   };
 }
 
+export function updateCollectibleDropDownState(value) {
+  return async (dispatch) => {
+    await promisifiedBackground.updateCollectibleDropDownState(value);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 /**
  * This action will receive two types of values via qrCodeData
  * an object with the following structure {type, values}
@@ -1995,7 +2002,7 @@ export function showSendTokenPage() {
 
 export function buyEth(opts) {
   return async (dispatch) => {
-    const url = await getBuyEthUrl(opts);
+    const url = await getBuyUrl(opts);
     global.platform.openTab({ url });
     dispatch({
       type: actionConstants.BUY_ETH,
@@ -3099,6 +3106,13 @@ export function trackMetaMetricsEvent(payload, options) {
 
 export function createEventFragment(options) {
   return promisifiedBackground.createEventFragment(options);
+}
+
+export function createTransactionEventFragment(transactionId, event) {
+  return promisifiedBackground.createTransactionEventFragment(
+    transactionId,
+    event,
+  );
 }
 
 export function updateEventFragment(id, payload) {

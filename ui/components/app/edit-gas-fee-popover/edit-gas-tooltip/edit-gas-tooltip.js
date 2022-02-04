@@ -9,6 +9,7 @@ import {
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
+import { isMetamaskSuggestedGasEstimate } from '../../../../helpers/utils/gas';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
 import Typography from '../../../ui/typography';
 
@@ -88,15 +89,20 @@ const EditGasToolTip = ({
     imgAltText = t('curveHighGasEstimate');
   }
 
+  // Gas estimate curve is visible for low/medium/high gas estimates
+  // the curve is not visible for high estimates for swaps
+  // also it is not visible in case of cancel/speedup if the medium/high option is disabled
+  const showGasEstimateCurve =
+    isMetamaskSuggestedGasEstimate(priorityLevel) &&
+    !(
+      priorityLevel === PRIORITY_LEVELS.HIGH &&
+      editGasMode === EDIT_GAS_MODES.SWAPS
+    ) &&
+    !estimateGreaterThanGasUse;
+
   return (
     <div className="edit-gas-tooltip__container">
-      {priorityLevel !== PRIORITY_LEVELS.CUSTOM &&
-      priorityLevel !== PRIORITY_LEVELS.DAPP_SUGGESTED &&
-      !(
-        priorityLevel === PRIORITY_LEVELS.HIGH &&
-        editGasMode === EDIT_GAS_MODES.SWAPS
-      ) &&
-      !estimateGreaterThanGasUse ? (
+      {showGasEstimateCurve ? (
         <img alt={imgAltText} src={`./images/curve-${priorityLevel}.svg`} />
       ) : null}
       {toolTipMessage && (

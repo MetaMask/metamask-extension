@@ -365,7 +365,7 @@ export default class ConfirmTransactionBase extends Component {
       ) {
         return (
           <div className="confirm-page-container-content__total-value">
-            <LoadingHeartBeat />
+            <LoadingHeartBeat estimateUsed={this.props.txData?.userFeeLevel} />
             <UserPreferencedCurrencyDisplay
               type={PRIMARY}
               key="total-detail-value"
@@ -387,7 +387,7 @@ export default class ConfirmTransactionBase extends Component {
       ) {
         return (
           <div className="confirm-page-container-content__total-value">
-            <LoadingHeartBeat />
+            <LoadingHeartBeat estimateUsed={this.props.txData?.userFeeLevel} />
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
               key="total-detail-text"
@@ -608,7 +608,9 @@ export default class ConfirmTransactionBase extends Component {
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
                   <div className="confirm-page-container-content__total-amount">
-                    <LoadingHeartBeat />
+                    <LoadingHeartBeat
+                      estimateUsed={this.props.txData?.userFeeLevel}
+                    />
                     <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
                     </strong>{' '}
@@ -978,7 +980,6 @@ export default class ConfirmTransactionBase extends Component {
   render() {
     const { t } = this.context;
     const {
-      actionKey,
       fromName,
       fromAddress,
       toName,
@@ -1044,10 +1045,7 @@ export default class ConfirmTransactionBase extends Component {
     }
 
     return (
-      <TransactionModalContextProvider
-        actionKey={actionKey}
-        methodData={methodData}
-      >
+      <TransactionModalContextProvider>
         <ConfirmPageContainer
           fromName={fromName}
           fromAddress={fromAddress}

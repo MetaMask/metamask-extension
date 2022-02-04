@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "আপনি কি এই নেটওয়ার্কটি মোছার বিষয়ে নিশ্চিত?"
   },
-  "depositEther": {
-    "message": "ইথার জমা করুন"
-  },
   "details": {
     "message": "বিশদ বিবরণ"
   },
@@ -596,9 +593,6 @@
   "myAccounts": {
     "message": "আমার অ্যাকাউন্টগুলি"
   },
-  "needEtherInWallet": {
-    "message": "MetaMask ব্যবহার করে ছড়িয়ে ছিটিয়ে থাকা অ্যাপ্লিকেশনগুলির সাথে যোগাযোগ করতে, আপনার ওয়ালেটে ইথার লাগবে।"
-  },
   "needImportFile": {
     "message": "আমদানি করার জন্য আপনাকে অবশ্যই একটি ফাইল নির্বাচন করতে হবে।",
     "description": "User is important an account and needs to add a file to continue"
@@ -881,9 +875,6 @@
   },
   "sendTokens": {
     "message": "টোকেনগুলি পাঠান"
-  },
-  "separateEachWord": {
-    "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"
   },
   "settings": {
     "message": "সেটিংস"

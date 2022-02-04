@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Ali ste prepričani, da želite izbrisati to omrežje?"
   },
-  "depositEther": {
-    "message": "Vplačilo ethra"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -584,9 +581,6 @@
   "myAccounts": {
     "message": "Moji računi"
   },
-  "needEtherInWallet": {
-    "message": "Za interakcijo z decentraliziranimi aplikacijami boste v svoji denarnici potrebovali Eter."
-  },
   "needImportFile": {
     "message": "Za uvoz morate izbrati datoteko.",
     "description": "User is important an account and needs to add a file to continue"
@@ -869,9 +863,6 @@
   },
   "sendTokens": {
     "message": "Pošlji žetone"
-  },
-  "separateEachWord": {
-    "message": "Vsako besedo ločite z enim presledkom"
   },
   "settings": {
     "message": "Nastavitve"

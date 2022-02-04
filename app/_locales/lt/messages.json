@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Ar tikrai norite panaikinti šį tinklą?"
   },
-  "depositEther": {
-    "message": "Įnešti eterių"
-  },
   "details": {
     "message": "Išsami informacija"
   },
@@ -596,9 +593,6 @@
   "myAccounts": {
     "message": "Mano paskyros"
   },
-  "needEtherInWallet": {
-    "message": "Norėdami dirbti su decentralizuotomis programomis „MetaMask“, savo piniginėje turite turėti eterių."
-  },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
@@ -881,9 +875,6 @@
   },
   "sendTokens": {
     "message": "Siųsti žetonus"
-  },
-  "separateEachWord": {
-    "message": "Kiekvieną žodį atskirkite viengubu tarpu"
   },
   "settings": {
     "message": "Nustatymai"

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
+import { EDIT_GAS_MODES } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
 import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
@@ -12,6 +14,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
+import { useGasFeeContext } from '../../../../contexts/gasFee';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -25,7 +28,8 @@ const AdvancedGasFeeDefaults = () => {
     maxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
+  const { editGasMode } = useGasFeeContext();
   const [isDefaultSettingsSelected, setDefaultSettingsSelected] = useState(
     Boolean(advancedGasFeeValues) &&
       advancedGasFeeValues.maxBaseFee === maxBaseFee &&
@@ -44,6 +48,12 @@ const AdvancedGasFeeDefaults = () => {
     if (isDefaultSettingsSelected) {
       dispatch(setAdvancedGasFee(null));
       setDefaultSettingsSelected(false);
+      updateTransactionEventFragment({
+        properties: {
+          advanced_gas_defaults_updated_maxbasefee: null,
+          advanced_gas_defaults_updated_priorityfee: null,
+        },
+      });
     } else {
       dispatch(
         setAdvancedGasFee({
@@ -51,15 +61,24 @@ const AdvancedGasFeeDefaults = () => {
           priorityFee: maxPriorityFeePerGas,
         }),
       );
-      setDefaultSettingsSelected(true);
+      updateTransactionEventFragment({
+        properties: {
+          advanced_gas_defaults_updated_maxbasefee: maxBaseFee,
+          advanced_gas_defaults_updated_priorityfee: maxPriorityFeePerGas,
+        },
+      });
     }
   };
+
+  if (editGasMode === EDIT_GAS_MODES.SWAPS) {
+    return null;
+  }
 
   return (
     <Box
       display={DISPLAY.FLEX}
       flexDirection={FLEX_DIRECTION.ROW}
-      marginRight={4}
+      margin={[4, 2, 0, 2]}
       className="advanced-gas-fee-defaults"
     >
       <label className="advanced-gas-fee-defaults__label">
@@ -70,11 +89,11 @@ const AdvancedGasFeeDefaults = () => {
           disabled={hasErrors}
         />
         <Typography variant={TYPOGRAPHY.H7} color={COLORS.UI4} margin={0}>
-          {!isDefaultSettingsSelected && Boolean(advancedGasFeeValues)
-            ? t('advancedGasFeeDefaultOptIn', [
+          {isDefaultSettingsSelected
+            ? t('advancedGasFeeDefaultOptOut')
+            : t('advancedGasFeeDefaultOptIn', [
                 <strong key="default-value-change">{t('newValues')}</strong>,
-              ])
-            : t('advancedGasFeeDefaultOptOut')}
+              ])}
         </Typography>
       </label>
     </Box>

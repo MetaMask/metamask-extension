@@ -64,10 +64,11 @@ export default class ExperimentalTab extends PureComponent {
       useCollectibleDetection,
       setUseCollectibleDetection,
       openSeaEnabled,
+      setOpenSeaEnabled,
     } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row--dependent">
         <div className="settings-page__content-item">
           <span>{t('useCollectibleDetection')}</span>
           <div className="settings-page__content-description">
@@ -77,7 +78,6 @@ export default class ExperimentalTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <ToggleButton
-              disabled={!openSeaEnabled}
               value={useCollectibleDetection}
               onToggle={(value) => {
                 this.context.metricsEvent({
@@ -87,6 +87,9 @@ export default class ExperimentalTab extends PureComponent {
                     name: 'Collectible Detection',
                   },
                 });
+                if (!value && !openSeaEnabled) {
+                  setOpenSeaEnabled(!value);
+                }
                 setUseCollectibleDetection(!value);
               }}
               offLabel={t('off')}
@@ -103,10 +106,15 @@ export default class ExperimentalTab extends PureComponent {
       return null;
     }
     const { t } = this.context;
-    const { openSeaEnabled, setOpenSeaEnabled } = this.props;
+    const {
+      openSeaEnabled,
+      setOpenSeaEnabled,
+      useCollectibleDetection,
+      setUseCollectibleDetection,
+    } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div className="settings-page__content-row--parent">
         <div className="settings-page__content-item">
           <span>{t('enableOpenSeaAPI')}</span>
           <div className="settings-page__content-description">
@@ -126,6 +134,9 @@ export default class ExperimentalTab extends PureComponent {
                   },
                 });
                 setOpenSeaEnabled(!value);
+                if (value && !useCollectibleDetection) {
+                  setUseCollectibleDetection(true);
+                }
               }}
               offLabel={t('off')}
               onLabel={t('on')}
@@ -137,12 +148,6 @@ export default class ExperimentalTab extends PureComponent {
   }
 
   renderEIP1559V2EnabledToggle() {
-    const EIP_1559_V2_ENABLED =
-      // This is a string in unit tests but is a boolean in the browser
-      process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
-    if (!EIP_1559_V2_ENABLED) {
-      return null;
-    }
     const { t } = this.context;
     const { eip1559V2Enabled, setEIP1559V2Enabled } = this.props;
 

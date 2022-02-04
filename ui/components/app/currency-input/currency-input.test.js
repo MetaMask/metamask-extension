@@ -4,8 +4,8 @@ import { mount } from 'enzyme';
 import sinon from 'sinon';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import UnitInput from '../unit-input';
-import CurrencyDisplay from '../currency-display';
+import UnitInput from '../../ui/unit-input';
+import CurrencyDisplay from '../../ui/currency-display';
 import CurrencyInput from './currency-input';
 
 describe('CurrencyInput Component', () => {

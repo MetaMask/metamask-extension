@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Sigur vreți să ștergeți această rețea?"
   },
-  "depositEther": {
-    "message": "Depuneți Ether"
-  },
   "details": {
     "message": "Detalii"
   },
@@ -583,9 +580,6 @@
   "myAccounts": {
     "message": "Conturile mele"
   },
-  "needEtherInWallet": {
-    "message": "Pentru a interacționa cu aplicațiile descentralizate prin intermediul MetaMask, trebuie să aveți Ether în portofel."
-  },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
     "description": "User is important an account and needs to add a file to continue"
@@ -868,9 +862,6 @@
   },
   "sendTokens": {
     "message": "Trimiteți indicative"
-  },
-  "separateEachWord": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
   "settings": {
     "message": "Setări"

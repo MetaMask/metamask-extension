@@ -389,12 +389,6 @@
   "buy": {
     "message": "Acheter"
   },
-  "buyWithTransak": {
-    "message": "Achetez des ETH avec Transak"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak prend en charge les cartes de débit et les virements bancaires (en fonction de l’emplacement) dans plus de 59 pays. Les ETH sont ensuite déposés sur votre compte MetaMask."
-  },
   "buyWithWyre": {
     "message": "Acheter ETH avec Wyre"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Êtes-vous sûr de vouloir supprimer ce réseau ?"
-  },
-  "depositEther": {
-    "message": "Déposer de l'Ether"
   },
   "description": {
     "message": "Description"
@@ -1453,7 +1444,7 @@
     "message": "Adresse contractuelle connue."
   },
   "knownTokenWarning": {
-    "message": "Cette action modifiera les jetons déjà présents dans votre portefeuille, et risque de favoriser les tentatives d’hameçonnage. N’approuvez que si vous êtes certain·e de vouloir modifier ce que ces jetons représentent."
+    "message": "Cette action modifiera les jetons déjà présents dans votre portefeuille, et risque de favoriser les tentatives d’hameçonnage. N’approuvez que si vous êtes certain·e de vouloir modifier ce que ces jetons représentent. En savoir plus sur $1"
   },
   "kovan": {
     "message": "Réseau de test Kovan"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "Nom"
-  },
-  "needEtherInWallet": {
-    "message": "Pour interagir avec des applications décentralisées à l'aide de MetaMask, vous avez besoin d'Ether dans votre portefeuille."
   },
   "needHelp": {
     "message": "Vous avez besoin d’aide ? Contactez $1",
@@ -2471,9 +2459,6 @@
   "sendingNativeAsset": {
     "message": "Envoi de $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "separateEachWord": {
-    "message": "Separez chaque mot avec un espace simple"
   },
   "setAdvancedPrivacySettings": {
     "message": "Définir des paramètres de confidentialité avancés"
@@ -3386,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Portefeuille créé avec succès"
-  },
-  "walletSeedRestore": {
-    "message": "Phrase secrète de récupération du portefeuille"
   },
   "web3ShimUsageNotification": {
     "message": "Nous avons remarqué que ce site Web a essayé d’utiliser l’API window.web3 supprimée. Si le site semble être défectueux, veuillez cliquer sur $1 pour plus d’informations.",

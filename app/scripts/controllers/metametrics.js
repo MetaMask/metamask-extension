@@ -11,7 +11,7 @@ import { SECOND } from '../../../shared/constants/time';
 
 const defaultCaptureException = (err) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
-  // but does not interupt the call stack
+  // but does not interrupt the call stack
   setTimeout(() => {
     throw err;
   });

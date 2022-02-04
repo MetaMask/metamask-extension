@@ -389,12 +389,6 @@
   "buy": {
     "message": "購入"
   },
-  "buyWithTransak": {
-    "message": "TransakでETHを購入"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transakは59か国以上でデビットカードと銀行振込 (場所によって異なります) をサポートしています。ETHはMetaMaskアカウントに入金されます。"
-  },
   "buyWithWyre": {
     "message": "Wyre で ETH を購入"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "このネットワークを削除しますか?"
-  },
-  "depositEther": {
-    "message": "Ether 入金"
   },
   "description": {
     "message": "説明"
@@ -1453,7 +1444,7 @@
     "message": "既知のコントラクト アドレスです。"
   },
   "knownTokenWarning": {
-    "message": "このアクションは、ウォレットに既に一覧表示されているトークンを編集します。これは、フィッシングに使用される可能性があります。これらのトークンの表す内容を変更する意図が確実な場合にのみ承認します。"
+    "message": "このアクションは、ウォレットに既に一覧表示されているトークンを編集します。これは、フィッシングに使用される可能性があります。これらのトークンの表す内容を変更する意図が確実な場合にのみ承認します。$1に関する詳細をご覧ください"
   },
   "kovan": {
     "message": "Kovan テスト ネットワーク"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "名前"
-  },
-  "needEtherInWallet": {
-    "message": "MetaMask を使用して分散型アプリケーションとやりとりするには、ウォレットに Ether が必要です。"
   },
   "needHelp": {
     "message": "お手伝いしましょうか？$1 に連絡",
@@ -2471,9 +2459,6 @@
   "sendingNativeAsset": {
     "message": "$1を送信中",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "separateEachWord": {
-    "message": "単語ごとにスペースを 1 つ置いて分離します"
   },
   "setAdvancedPrivacySettings": {
     "message": "高度なプライバシー設定を設定"
@@ -3386,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "ウォレットが作成されました"
-  },
-  "walletSeedRestore": {
-    "message": "ウォレット シークレット リカバリー フレーズ"
   },
   "web3ShimUsageNotification": {
     "message": "現在のウェブサイトが、削除済の window.web3 API の使用を検知しました。サイトが壊れているようであれば、$1 をクリックして詳細を確認してください。",

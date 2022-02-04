@@ -389,12 +389,6 @@
   "buy": {
     "message": "Купить"
   },
-  "buyWithTransak": {
-    "message": "Купить ETH с помощью Transak"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak поддерживает дебетовые карты и банковские переводы (в зависимости от местоположения) в 59 странах. ETH будут зачислены на ваш счет MetaMask."
-  },
   "buyWithWyre": {
     "message": "Купить ETH с Wyre"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Вы уверены, что хотите удалить эту сеть?"
-  },
-  "depositEther": {
-    "message": "Внести Ether"
   },
   "description": {
     "message": "Описание"
@@ -1453,7 +1444,7 @@
     "message": "Известный адрес контракта."
   },
   "knownTokenWarning": {
-    "message": "Это действие изменит токены, уже указанные в вашем кошельке, которые можно использовать для фишинга. Утверждайте, только если вы уверены, что хотите изменить то, что представляют эти токены."
+    "message": "Это действие изменит токены, уже указанные в вашем кошельке, которые можно использовать для фишинга. Утверждайте, только если вы уверены, что хотите изменить то, что представляют эти токены. Узнайте подробнее о $1"
   },
   "kovan": {
     "message": "Тестовая сеть Kovan"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "Название"
-  },
-  "needEtherInWallet": {
-    "message": "Для взаимодействия с децентрализованными приложениями с помощью MetaMask вам понадобится Ether в вашем кошельке."
   },
   "needHelp": {
     "message": "Нужна помощь? Обратитесь в $1",
@@ -2471,9 +2459,6 @@
   "sendingNativeAsset": {
     "message": "Отправка $1...",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "separateEachWord": {
-    "message": "Отделяйте каждое слово одним пробелом"
   },
   "setAdvancedPrivacySettings": {
     "message": "Задать дополнительные настройки конфиденциальности"
@@ -3386,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Кошелек создан"
-  },
-  "walletSeedRestore": {
-    "message": "Секретная фраза восстановления кошелька"
   },
   "web3ShimUsageNotification": {
     "message": "Мы заметили, что текущий веб-сайт пытался использовать удаленный API window.web3. Если сайт не работает, нажмите $1 для получения дополнительной информации.",

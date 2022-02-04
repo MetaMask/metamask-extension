@@ -292,9 +292,6 @@
   "deleteNetworkDescription": {
     "message": "Biztosan törli ezt a hálózatot?"
   },
-  "depositEther": {
-    "message": "Ether befizetése"
-  },
   "details": {
     "message": "Részletek"
   },
@@ -589,9 +586,6 @@
   "myAccounts": {
     "message": "Fiókjaim"
   },
-  "needEtherInWallet": {
-    "message": "Ha a MetaMaskon keresztül szeretne interakcióba lépni decentralizált alkalmazással, ahhoz a tárcájában Ethernek kell lennie."
-  },
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",
     "description": "User is important an account and needs to add a file to continue"
@@ -874,9 +868,6 @@
   },
   "sendTokens": {
     "message": "Token küldése"
-  },
-  "separateEachWord": {
-    "message": "Minden egyes szavat szóközzel válasszon el"
   },
   "settings": {
     "message": "Beállítások"

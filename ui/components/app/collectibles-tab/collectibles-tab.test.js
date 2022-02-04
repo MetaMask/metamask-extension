@@ -136,6 +136,11 @@ const COLLECTIBLES_CONTRACTS = [
   },
 ];
 
+const collectiblesDropdownState = {
+  0x495f947276749ce646f68ac8c248420045cb7b5e: true,
+  0xdc7382eb0bc9c352a4cba23c909bda01e0206414: true,
+};
+
 const ACCOUNT_1 = '0x123';
 const ACCOUNT_2 = '0x456';
 
@@ -164,6 +169,7 @@ const render = ({
       selectedAddress,
       collectiblesDetectionNoticeDismissed,
       useCollectibleDetection,
+      collectiblesDropdownState,
     },
   });
   return renderWithProvider(<CollectiblesTab onAddNFT={onAddNFT} />, store);
@@ -174,11 +180,13 @@ describe('Collectible Items', () => {
   const setCollectiblesDetectionNoticeDismissedStub = jest.fn();
   const getStateStub = jest.fn();
   const checkAndUpdateAllCollectiblesOwnershipStatusStub = jest.fn();
+  const updateCollectibleDropDownStateStub = jest.fn();
   setBackgroundConnection({
     setCollectiblesDetectionNoticeDismissed: setCollectiblesDetectionNoticeDismissedStub,
     detectCollectibles: detectCollectiblesStub,
     getState: getStateStub,
     checkAndUpdateAllCollectiblesOwnershipStatus: checkAndUpdateAllCollectiblesOwnershipStatusStub,
+    updateCollectibleDropDownState: updateCollectibleDropDownStateStub,
   });
   const historyPushMock = jest.fn();
 

@@ -389,12 +389,6 @@
   "buy": {
     "message": "Beli"
   },
-  "buyWithTransak": {
-    "message": "Beli ETH dengan Transak"
-  },
-  "buyWithTransakDescription": {
-    "message": "Transak mendukung kartu debit dan transfer bank (tergantung lokasi) di 59+ negara. Deposito ETH ke akun MetaMask Anda."
-  },
   "buyWithWyre": {
     "message": "Beli ETH dengan Wyre"
   },
@@ -720,9 +714,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Anda yakin ingin menghapus jaringan ini?"
-  },
-  "depositEther": {
-    "message": "Depositokan Ether"
   },
   "description": {
     "message": "Deskripsi"
@@ -1453,7 +1444,7 @@
     "message": "Alamat kontrak yang diketahui."
   },
   "knownTokenWarning": {
-    "message": "Tindakan ini akan mengedit token yang telah terdaftar dalam dompet Anda, yang dapat digunakan untuk menipu Anda. Setujui hanya jika Anda yakin bahwa Anda ingin mengubah apa yang diwakili token ini."
+    "message": "Tindakan ini akan mengedit token yang telah terdaftar dalam dompet Anda, yang dapat digunakan untuk menipu Anda. Setujui hanya jika Anda yakin bahwa Anda ingin mengubah apa yang diwakili token ini. Pelajari selengkapnya seputar $1"
   },
   "kovan": {
     "message": "Jaringan Uji Kovan"
@@ -1701,9 +1692,6 @@
   },
   "name": {
     "message": "Nama"
-  },
-  "needEtherInWallet": {
-    "message": "Untuk berinteraksi dengan aplikasi yang terdesentralisasi menggunakan MetaMask, Anda memerlukan Ether di dompet Anda."
   },
   "needHelp": {
     "message": "Butuh bantuan? Hubungi $1",
@@ -2471,9 +2459,6 @@
   "sendingNativeAsset": {
     "message": "Mengirim $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "separateEachWord": {
-    "message": "Pisahkan setiap kata dengan satu spasi"
   },
   "setAdvancedPrivacySettings": {
     "message": "Atur pengaturan privasi lanjutan"
@@ -3386,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Dompet berhasil dibuat"
-  },
-  "walletSeedRestore": {
-    "message": "Frasa Pemulihan Rahasia Dompet"
   },
   "web3ShimUsageNotification": {
     "message": "Kami melihat situs web saat ini mencoba menggunakan API window.web3 yang dihapus. Jika situs tersebut tampak bermasalah, silakan klik $1 untuk informasi selengkapnya.",
