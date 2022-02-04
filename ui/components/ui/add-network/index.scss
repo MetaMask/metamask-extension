@@ -5,7 +5,7 @@
   }
 
   &__header {
-    border-bottom: 1px solid $ui-grey;
+    border-bottom: 1px solid var(--ui-grey);
 
     &__back-icon {
       padding-left: 24px;
@@ -22,13 +22,13 @@
   &__add-icon {
     height: 16px;
     width: 12px;
-    color: $ui-4;
+    color: var(--ui-4);
     margin-left: auto;
     margin-right: 0;
   }
 
   &__footer {
-    border-top: 1px solid $ui-2;
+    border-top: 1px solid var(--ui-2);
 
     & .btn-link {
       display: initial;
@@ -36,12 +36,12 @@
     }
 
     &__link {
-      color: $primary-1;
+      color: var(--primary-1);
     }
 
     & .actionable-message--warning .actionable-message__message,
     .actionable-message--warning .actionable-message__action {
-      color: $ui-4;
+      color: var(--ui-4);
     }
   }
 }
