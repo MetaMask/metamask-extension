@@ -10,7 +10,11 @@ import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
-import { QUAI_CONTEXTS } from '../../../../shared/constants/quai';
+import {
+  QUAI_MAIN_CONTEXTS,
+  QUAI_TEST_CONTEXTS,
+  QUAI_MAINNET_DISPLAY_NAME,
+} from '../../../../shared/constants/quai';
 import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
 import {
   SETTINGS_ROUTE,
@@ -24,6 +28,31 @@ import SearchIcon from '../../ui/search-icon';
 import Button from '../../ui/button';
 
 import { isBeta } from '../../../helpers/utils/build-types';
+import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
+
+const getSelectedNetwork = (address, network) => {
+  const QUAI_CONTEXTS =
+    network === QUAI_MAINNET_DISPLAY_NAME
+      ? QUAI_MAIN_CONTEXTS
+      : QUAI_TEST_CONTEXTS;
+  let context = QUAI_CONTEXTS.filter((obj) => {
+    let num = parseInt(Number('0x' + address.substring(2, 4)), 10);
+    let start = parseInt(Number('0x' + obj.byte[0]), 10);
+    let end = parseInt(Number('0x' + obj.byte[1]), 10);
+    return num >= start && num <= end;
+  });
+  if (context && context[0]) return context[0];
+  else return QUAI_CONTEXTS[0];
+};
+
+const getContext = (address) => {
+  let context = getSelectedNetwork(address);
+  return (
+    <div className="account-menu__lock-button" style={{ width: 'max-content' }}>
+      {context?.name}
+    </div>
+  );
+};
 
 export function AccountMenuItem(props) {
   const { icon, children, text, subText, className, onClick } = props;
@@ -71,6 +100,7 @@ export default class AccountMenu extends Component {
     selectedAddress: PropTypes.string,
     showAccountDetail: PropTypes.func,
     toggleAccountMenu: PropTypes.func,
+    updateRpcTarget: PropTypes.func,
     addressConnectedDomainMap: PropTypes.object,
     originOfCurrentTab: PropTypes.string,
   };
@@ -94,11 +124,24 @@ export default class AccountMenu extends Component {
     ],
   });
 
+  // componentDidMount() {
+
+  // }
+
   componentDidUpdate(prevProps, prevState) {
     const { isAccountMenuOpen: prevIsAccountMenuOpen } = prevProps;
     const { searchQuery: prevSearchQuery } = prevState;
-    const { isAccountMenuOpen } = this.props;
     const { searchQuery } = this.state;
+    const { updateRpcTarget, selectedAddress, isAccountMenuOpen } = this.props;
+    // if (selectedAddress) {
+    //   const selectedNetwork = getSelectedNetwork(selectedAddress);
+    //   updateRpcTarget(
+    //     selectedNetwork['rpc'],
+    //     selectedNetwork['id'],
+    //     'QUAI',
+    //     'Quai Mainnet',
+    //   );
+    // }
 
     if (!prevIsAccountMenuOpen && isAccountMenuOpen) {
       this.setShouldShowScrollButton();
@@ -144,12 +187,14 @@ export default class AccountMenu extends Component {
 
   renderAccounts() {
     const {
+      provider: { ticker: providerTicker, nickname: providerNickname },
       accounts,
       selectedAddress,
       keyrings,
       showAccountDetail,
       addressConnectedDomainMap,
       originOfCurrentTab,
+      updateRpcTarget,
     } = this.props;
     const { searchQuery } = this.state;
 
@@ -192,6 +237,18 @@ export default class AccountMenu extends Component {
                 name: 'Switched Account',
               },
             });
+            if (providerTicker === 'QUAI') {
+              const selectedNetwork = getSelectedNetwork(
+                identity.address,
+                providerNickname,
+              );
+              updateRpcTarget(
+                selectedNetwork['rpc'],
+                selectedNetwork['id'],
+                'QUAI',
+                providerNickname,
+              );
+            }
             showAccountDetail(identity.address);
           }}
           key={identity.address}
@@ -204,7 +261,7 @@ export default class AccountMenu extends Component {
           <Identicon address={identity.address} diameter={24} />
           <div className="account-menu__account-info">
             <div className="account-menu__name">{identity.name || ''}</div>
-            {this.getContext(identity.address)}
+            {getContext(identity.address)}
             <UserPreferencedCurrencyDisplay
               className="account-menu__balance"
               value={identity.balance}
@@ -224,29 +281,6 @@ export default class AccountMenu extends Component {
         </div>
       );
     });
-  }
-
-  getContext(address) {
-    let context = QUAI_CONTEXTS.filter((obj) => {
-      let num = parseInt(Number('0x' + address.substring(2, 4)), 10);
-      let start = parseInt(Number('0x' + obj.byte[0]), 10);
-      let end = parseInt(Number('0x' + obj.byte[1]), 10);
-      return num >= start && num <= end;
-    });
-    console.log(context);
-    if (!context || !context[0]) {
-      context = 'Unavailable';
-    } else {
-      context = context[0].name;
-    }
-    return (
-      <div
-        className="account-menu__lock-button"
-        style={{ width: 'max-content' }}
-      >
-        {context}
-      </div>
-    );
   }
 
   renderKeyringType(keyring) {

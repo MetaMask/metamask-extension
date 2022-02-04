@@ -6,6 +6,7 @@ import {
   showAccountDetail,
   lockMetamask,
   hideWarning,
+  updateRpcTarget,
 } from '../../../store/actions';
 import {
   getAddressConnectedDomainMap,
@@ -23,7 +24,7 @@ const SHOW_SEARCH_ACCOUNTS_MIN_COUNT = 5;
 
 function mapStateToProps(state) {
   const {
-    metamask: { isAccountMenuOpen },
+    metamask: { isAccountMenuOpen, provider },
   } = state;
   const accounts = getMetaMaskAccountsOrdered(state);
   const origin = getOriginOfCurrentTab(state);
@@ -31,6 +32,7 @@ function mapStateToProps(state) {
 
   return {
     isAccountMenuOpen,
+    provider,
     addressConnectedDomainMap: getAddressConnectedDomainMap(state),
     originOfCurrentTab: origin,
     selectedAddress,
@@ -46,6 +48,9 @@ function mapDispatchToProps(dispatch) {
     showAccountDetail: (address) => {
       dispatch(showAccountDetail(address));
       dispatch(toggleAccountMenu());
+    },
+    updateRpcTarget: (target, chainId, ticker, nickname) => {
+      dispatch(updateRpcTarget(target, chainId, ticker, nickname));
     },
     lockMetamask: () => {
       dispatch(lockMetamask());

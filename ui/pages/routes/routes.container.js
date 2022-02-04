@@ -19,6 +19,7 @@ import Routes from './routes.component';
 
 function mapStateToProps(state) {
   const { appState } = state;
+  console.log({ state });
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = 0 } = getPreferences(state);
   return {

@@ -20,15 +20,15 @@ import {
   ROPSTEN_RPC_URL,
 } from '../../../../shared/constants/network';
 
-import { QUAI_CONTEXTS } from '../../../../shared/constants/quai';
+import { QUAI_MAIN_CONTEXTS } from '../../../../shared/constants/quai';
 
 const defaultNetworksData = [
   {
     labelKey: QUAI_MAINNET,
     iconColor: '#29B6AF',
     providerType: 'rpc',
-    rpcUrl: QUAI_CONTEXTS[0]['rpc'],
-    chainId: QUAI_CONTEXTS[0]['id'],
+    rpcUrl: QUAI_MAIN_CONTEXTS[0]['rpc'],
+    chainId: QUAI_MAIN_CONTEXTS[0]['id'],
     ticker: 'QUAI',
     blockExplorerUrl: '',
   },

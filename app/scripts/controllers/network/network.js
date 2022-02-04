@@ -10,13 +10,15 @@ import {
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
 import {
+  MAINNET,
+  MAINNET_CHAIN_ID,
   INFURA_PROVIDER_TYPES,
   NETWORK_TYPE_RPC,
   NETWORK_TYPE_TO_ID_MAP,
   INFURA_BLOCKED_KEY,
 } from '../../../../shared/constants/network';
 import {
-  QUAI_CONTEXTS,
+  QUAI_MAIN_CONTEXTS,
   QUAI_MAINNET_DISPLAY_NAME,
 } from '../../../../shared/constants/quai';
 import { SECOND } from '../../../../shared/constants/time';

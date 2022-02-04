@@ -23,7 +23,11 @@ import {
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
 import { Dropdown, DropdownMenuItem } from './dropdown';
-import { QUAI_CONTEXTS } from '../../../../shared/constants/quai';
+import {
+  QUAI_MAINNET,
+  QUAI_MAIN_CONTEXTS,
+  QUAI_TEST_CONTEXTS,
+} from '../../../../shared/constants/quai';
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -107,7 +111,9 @@ class NetworkDropdown extends Component {
     history: PropTypes.object,
   };
 
-  getContext(address) {
+  getContext(address, network) {
+    const QUAI_CONTEXTS =
+      network === QUAI_MAINNET ? QUAI_MAIN_CONTEXTS : QUAI_TEST_CONTEXTS;
     let context = QUAI_CONTEXTS.filter((obj) => {
       let num = parseInt(Number('0x' + address.substring(2, 4)), 10);
       let start = parseInt(Number('0x' + obj.byte[0]), 10);
