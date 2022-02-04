@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import ConfirmAddSuggestedToken from './confirm-add-suggested-token.component';
+import ConfirmAddSuggestedToken from './confirm-add-suggested-token';
 
 const mapStateToProps = (state) => {
   const {
