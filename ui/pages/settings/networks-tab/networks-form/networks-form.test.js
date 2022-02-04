@@ -110,18 +110,48 @@ describe('NetworkForm Component', () => {
     ).toBeInTheDocument();
   });
 
-  it('should button Save in the correct state', async () => {
+  it('should render "Save" button in the correct state when adding new network', async () => {
     const { queryByText, getByLabelText } = renderComponent(propNewNetwork);
     const saveButton = queryByText('Save');
     const networkNameText = getByLabelText('Network Name');
     const rpcUrlText = getByLabelText('New RPC URL');
     const chainIdText = getByLabelText('Chain ID');
 
+    // At beginning RPC URL and Chain ID are empty
     expect(queryByText('Save')).toBeDisabled();
+
+    // Add Binance Smart Chain Mainnet
+    fireEvent.change(networkNameText, {
+      target: { value: 'Binance Smart Chain Mainnet' },
+    });
+    fireEvent.change(rpcUrlText, {
+      target: {
+        value: 'https://bsc-dataseed1.ninicoin.io',
+      },
+    });
+    fireEvent.change(chainIdText, {
+      target: { value: '56' },
+    });
+
+    expect(saveButton).toBeEnabled();
+  });
+
+  it('should render "Save" button in the correct state when adding existed network', async () => {
+    const { queryByText, getByLabelText } = renderComponent(propNewNetwork);
+    const saveButton = queryByText('Save');
+    const networkNameText = getByLabelText('Network Name');
+    const rpcUrlText = getByLabelText('New RPC URL');
+    const chainIdText = getByLabelText('Chain ID');
+
+    // At beginning RPC URL and Chain ID are empty
+    expect(queryByText('Save')).toBeDisabled();
+
     fireEvent.change(networkNameText, {
       target: { value: 'TEST' },
     });
     expect(saveButton).toBeDisabled();
+
+    // input RPC URL, the same as mainnet network
     fireEvent.change(rpcUrlText, {
       target: {
         value: 'https://mainnet.infura.io/v3/undefined',
@@ -131,23 +161,32 @@ describe('NetworkForm Component', () => {
     expect(
       queryByText('This URL is currently used by the mainnet network.'),
     ).toBeInTheDocument();
+
+    // input Chain ID, the same as mainnet network
     fireEvent.change(chainIdText, {
       target: { value: '1' },
     });
     expect(saveButton).toBeDisabled();
+
+    // input different RPC URL
     fireEvent.change(rpcUrlText, {
       target: {
         value: 'https://mainnet.infura.io/v3/fake',
       },
     });
+
+    // different RPC URL and same Chain ID are allowed to be commited
     expect(saveButton).toBeEnabled();
 
     fireEvent.click(saveButton);
     await tick();
 
+    // the RPC URL is invalid, so could not fetch Chain ID
     expect(
       queryByText('Could not fetch chain ID. Is your RPC URL correct?'),
     ).toBeInTheDocument();
+
+    // input the same RPC URL
     fireEvent.change(rpcUrlText, {
       target: {
         value: 'https://mainnet.infura.io/v3/undefined',
