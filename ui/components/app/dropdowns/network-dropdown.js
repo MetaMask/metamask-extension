@@ -7,7 +7,10 @@ import classnames from 'classnames';
 import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
+import {
+  NETWORK_TYPE_RPC,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../shared/constants/network';
 import { isPrefixedFormattedHexString } from '../../../../shared/modules/network.utils';
 
 import ColorIndicator from '../../ui/color-indicator';
@@ -20,6 +23,7 @@ import {
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
 import { Dropdown, DropdownMenuItem } from './dropdown';
+import { QUAI_CONTEXTS } from '../../../../shared/constants/quai';
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -40,6 +44,7 @@ const DROP_DOWN_MENU_ITEM_STYLE = {
 function mapStateToProps(state) {
   return {
     provider: state.metamask.provider,
+    selectedAddress: state.metamask.selectedAddress,
     shouldShowTestNetworks: getShowTestNetworks(state),
     frequentRpcListDetail: state.metamask.frequentRpcListDetail || [],
     networkDropdownOpen: state.appState.networkDropdownOpen,
@@ -54,6 +59,9 @@ function mapDispatchToProps(dispatch) {
     },
     setRpcTarget: (target, chainId, ticker, nickname) => {
       dispatch(actions.setRpcTarget(target, chainId, ticker, nickname));
+    },
+    updateRpcTarget: (target, chainId, ticker, nickname) => {
+      dispatch(actions.updateRpcTarget(target, chainId, ticker, nickname));
     },
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     displayInvalidCustomNetworkAlert: (networkName) => {
@@ -85,6 +93,7 @@ class NetworkDropdown extends Component {
       type: PropTypes.string,
       ticker: PropTypes.string,
     }).isRequired,
+    selectedAddress: PropTypes.string,
     setProviderType: PropTypes.func.isRequired,
     setRpcTarget: PropTypes.func.isRequired,
     hideNetworkDropdown: PropTypes.func.isRequired,
@@ -98,13 +107,23 @@ class NetworkDropdown extends Component {
     history: PropTypes.object,
   };
 
+  getContext(address) {
+    let context = QUAI_CONTEXTS.filter((obj) => {
+      let num = parseInt(Number('0x' + address.substring(2, 4)), 10);
+      let start = parseInt(Number('0x' + obj.byte[0]), 10);
+      let end = parseInt(Number('0x' + obj.byte[1]), 10);
+      return num >= start && num <= end;
+    });
+    if (context && context[0]) return context[0];
+    else return QUAI_CONTEXTS[0];
+  }
+
   handleClick(newProviderType) {
     const {
       provider: { type: providerType },
       setProviderType,
     } = this.props;
     const { metricsEvent } = this.context;
-
     metricsEvent({
       eventOpts: {
         category: 'Navigation',
@@ -117,6 +136,33 @@ class NetworkDropdown extends Component {
       },
     });
     setProviderType(newProviderType);
+  }
+
+  handleQuaiNetwork(newProviderType) {
+    const {
+      provider: { type: providerType },
+      selectedAddress,
+      updateRpcTarget,
+    } = this.props;
+    const { metricsEvent } = this.context;
+    metricsEvent({
+      eventOpts: {
+        category: 'Navigation',
+        action: 'Home',
+        name: 'Switched Networks',
+      },
+      customVariables: {
+        fromNetwork: providerType,
+        toNetwork: newProviderType,
+      },
+    });
+    const selectedNetwork = this.getContext(selectedAddress);
+    updateRpcTarget(
+      selectedNetwork['rpc'],
+      selectedNetwork['id'],
+      'QUAI',
+      NETWORK_TO_NAME_MAP[newProviderType],
+    );
   }
 
   renderAddCustomButton() {
@@ -273,6 +319,47 @@ class NetworkDropdown extends Component {
     );
   }
 
+  renderQuaiNetworkEntry(network) {
+    const {
+      provider: { nickname: providerNickname },
+    } = this.props;
+    return (
+      <DropdownMenuItem
+        key={network}
+        closeMenu={this.props.hideNetworkDropdown}
+        onClick={() => this.handleQuaiNetwork(network)}
+        style={DROP_DOWN_MENU_ITEM_STYLE}
+      >
+        {providerNickname === NETWORK_TO_NAME_MAP[network] ? (
+          <i className="fa fa-check" />
+        ) : (
+          <div className="network-check__transparent">✓</div>
+        )}
+        <ColorIndicator
+          color={network}
+          size={SIZES.LG}
+          type={ColorIndicator.TYPES.FILLED}
+          borderColor={
+            providerNickname === NETWORK_TO_NAME_MAP[network]
+              ? COLORS.WHITE
+              : network
+          }
+        />
+        <span
+          className="network-name-item"
+          style={{
+            color:
+              providerNickname === NETWORK_TO_NAME_MAP[network]
+                ? '#ffffff'
+                : '#9b9b9b',
+          }}
+        >
+          {this.context.t(network)}
+        </span>
+      </DropdownMenuItem>
+    );
+  }
+
   render() {
     const {
       history,
@@ -284,6 +371,7 @@ class NetworkDropdown extends Component {
     const rpcListDetail = this.props.frequentRpcListDetail;
     const isOpen = this.props.networkDropdownOpen;
     const { t } = this.context;
+    console.log({ props: this.props.provider });
 
     return (
       <Dropdown
@@ -328,8 +416,10 @@ class NetworkDropdown extends Component {
         </div>
 
         <div className="network-dropdown-list">
-          {this.renderNetworkEntry('quai_mainnet')}
-          {this.renderNetworkEntry('quai_testnet')}
+          {/* {this.renderNetworkEntry('quai_mainnet')}
+          {this.renderNetworkEntry('quai_testnet')} */}
+          {this.renderQuaiNetworkEntry('quai_mainnet')}
+          {this.renderQuaiNetworkEntry('quai_testnet')}
           {this.renderNetworkEntry('mainnet')}
 
           {this.renderCustomRpcList(rpcListDetail, this.props.provider)}

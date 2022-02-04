@@ -105,6 +105,8 @@ $ui-3: #bbc0c5;
 $ui-4: #6a737d;
 $ui-5: #c4c4c4;
 
+$quai_mainnet: #ff4a8d;
+$quai_testnet: #9064ff;
 $mainnet: #29b6af;
 $ropsten: #ff4a8d;
 $kovan: #9064ff;
@@ -136,6 +138,8 @@ $color-map: (
   'success-1': $success-1,
   'success-2': $success-2,
   'success-3': $success-3,
+  'quai_mainnet': $quai_mainnet,
+  'quai_testnet': $quai_testnet,
   'mainnet': $mainnet,
   'ropsten': $ropsten,
   'kovan': $kovan,

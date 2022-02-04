@@ -40,6 +40,7 @@ let promisifiedBackground = null;
 export function _setBackgroundConnection(backgroundConnection) {
   background = backgroundConnection;
   promisifiedBackground = pify(background);
+  console.log({ promisifiedBackground });
 }
 
 export function goHome() {
@@ -1565,7 +1566,39 @@ export function setRpcTarget(newRpc, chainId, ticker = 'ETH', nickname) {
     );
 
     try {
+      console.log({
+        newRpc,
+        chainId,
+        ticker,
+        nickname,
+      });
       await promisifiedBackground.setCustomRpc(
+        newRpc,
+        chainId,
+        ticker,
+        nickname || newRpc,
+      );
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
+}
+
+export function updateRpcTarget(newRpc, chainId, ticker = 'ETH', nickname) {
+  return async (dispatch) => {
+    log.debug(
+      `background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`,
+    );
+
+    try {
+      console.log({
+        newRpc,
+        chainId,
+        ticker,
+        nickname,
+      });
+      await promisifiedBackground.updateRpcTarget(
         newRpc,
         chainId,
         ticker,

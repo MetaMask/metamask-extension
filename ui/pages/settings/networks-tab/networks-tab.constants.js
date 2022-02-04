@@ -8,6 +8,7 @@ import {
   LOCALHOST,
   LOCALHOST_CHAIN_ID,
   LOCALHOST_RPC_URL,
+  QUAI_MAINNET,
   MAINNET,
   MAINNET_CHAIN_ID,
   MAINNET_RPC_URL,
@@ -19,7 +20,18 @@ import {
   ROPSTEN_RPC_URL,
 } from '../../../../shared/constants/network';
 
+import { QUAI_CONTEXTS } from '../../../../shared/constants/quai';
+
 const defaultNetworksData = [
+  {
+    labelKey: QUAI_MAINNET,
+    iconColor: '#29B6AF',
+    providerType: 'rpc',
+    rpcUrl: QUAI_CONTEXTS[0]['rpc'],
+    chainId: QUAI_CONTEXTS[0]['id'],
+    ticker: 'QUAI',
+    blockExplorerUrl: '',
+  },
   {
     labelKey: MAINNET,
     iconColor: '#29B6AF',
@@ -29,6 +41,7 @@ const defaultNetworksData = [
     ticker: 'ETH',
     blockExplorerUrl: 'https://etherscan.io',
   },
+
   {
     labelKey: ROPSTEN,
     iconColor: '#FF4A8D',

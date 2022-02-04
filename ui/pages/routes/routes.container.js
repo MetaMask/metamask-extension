@@ -21,7 +21,6 @@ function mapStateToProps(state) {
   const { appState } = state;
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = 0 } = getPreferences(state);
-
   return {
     alertOpen,
     alertMessage,

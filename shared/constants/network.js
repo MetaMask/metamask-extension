@@ -1,6 +1,6 @@
 export const ROPSTEN = 'ropsten';
-export const QUAI_MAINET = 'quai';
-export const QUAI_TESTNET = 'quai testnet';
+export const QUAI_MAINNET = 'quai_mainnet';
+export const QUAI_TESTNET = 'quai_testnet';
 export const RINKEBY = 'rinkeby';
 export const KOVAN = 'kovan';
 export const MAINNET = 'mainnet';
@@ -8,6 +8,37 @@ export const GOERLI = 'goerli';
 export const LOCALHOST = 'localhost';
 export const NETWORK_TYPE_RPC = 'rpc';
 
+export const QUAI_MAINNET_NETWORK_ID = {
+  Prime: '9000',
+  Cyprus: '9100',
+  Paxos: '9200',
+  Hydra: '9300',
+  Cyprus1: '9101',
+  Cyprus2: '9102',
+  Cyprus3: '9103',
+  Paxos1: '9201',
+  Paxos2: '9202',
+  Paxos3: '9203',
+  Hydra1: '9301',
+  Hydra2: '9302',
+  Hydra3: '9303',
+};
+export const QUAI_TESTNET_NETWORK_ID = {
+  Prime: '9000',
+  Cyprus: '9100',
+  Paxos: '9200',
+  Hydra: '9300',
+  Cyprus1: '9101',
+  Cyprus2: '9102',
+  Cyprus3: '9103',
+  Paxos1: '9201',
+  Paxos2: '9202',
+  Paxos3: '9203',
+  Hydra1: '9301',
+  Hydra2: '9302',
+  Hydra3: '9303',
+};
+// export const QUAI_MAINNET_NETWORK_ID = '9000';
 export const MAINNET_NETWORK_ID = '1';
 export const ROPSTEN_NETWORK_ID = '3';
 export const RINKEBY_NETWORK_ID = '4';
@@ -15,22 +46,38 @@ export const GOERLI_NETWORK_ID = '5';
 export const KOVAN_NETWORK_ID = '42';
 export const LOCALHOST_NETWORK_ID = '1337';
 
-export const QUAI_MAINET_CHAIN_ID = {
-  Prime: '0x00',
-  Cyprus: '0x0a',
-  Paxos: '0x0b',
-  Hydra: '0x0c',
-  Cyprus1: '0x1a',
-  Cyprus2: '0x2a',
-  Cyprus3: '0x3a',
-  Paxos1: '0x1b',
-  Paxos2: '0x2b',
-  Paxos3: '0x3b',
-  Hydra1: '0x1c',
-  Hydra2: '0x2c',
-  Hydra3: '0x3c',
+export const QUAI_MAINNET_CHAIN_ID = {
+  Prime: '0x2328',
+  Cyprus: '0x238c',
+  Paxos: '0x23f0',
+  Hydra: '0x2454',
+  Cyprus1: '0x16379',
+  Cyprus2: '0x1637A',
+  Cyprus3: '0x1637B',
+  Paxos1: '0x16761',
+  Paxos2: '0x16762',
+  Paxos3: '0x16763',
+  Hydra1: '0x16B49',
+  Hydra2: '0x16B4A',
+  Hydra3: '0x16B4B',
+};
+export const QUAI_TESTNET_CHAIN_ID = {
+  Prime: '0x2328',
+  Cyprus: '0x238c',
+  Paxos: '0x23f0',
+  Hydra: '0x2454',
+  Cyprus1: '0x16379',
+  Cyprus2: '0x1637A',
+  Cyprus3: '0x1637B',
+  Paxos1: '0x16761',
+  Paxos2: '0x16762',
+  Paxos3: '0x16763',
+  Hydra1: '0x16B49',
+  Hydra2: '0x16B4A',
+  Hydra3: '0x16B4B',
 };
 
+// export const QUAI_MAINNET_CHAIN_ID = '0x2328';
 export const MAINNET_CHAIN_ID = '0x1';
 export const ROPSTEN_CHAIN_ID = '0x3';
 export const RINKEBY_CHAIN_ID = '0x4';
@@ -48,7 +95,7 @@ export const POLYGON_CHAIN_ID = '0x89';
  */
 export const MAX_SAFE_CHAIN_ID = 4503599627370476;
 
-export const QUAI_MAINNET_DISPLAY_NAME = 'Qaui';
+export const QUAI_MAINNET_DISPLAY_NAME = 'Quai Mainnet';
 export const QUAI_TESTNET_DISPLAY_NAME = 'Quai Testnet';
 export const ROPSTEN_DISPLAY_NAME = 'Ropsten';
 export const RINKEBY_DISPLAY_NAME = 'Rinkeby';
@@ -61,6 +108,36 @@ const infuraProjectId = process.env.INFURA_PROJECT_ID;
 const getRpcUrl = (network) =>
   `https://${network}.infura.io/v3/${infuraProjectId}`;
 
+export const QUAI_MAINNET_RPC_URL = {
+  Prime: 'http://testnet-ip/prime-http',
+  Cyprus: 'http://testnet-ip/region-1-http',
+  Paxos: 'http://testnet-ip/region-2-http',
+  Hydra: 'http://testnet-ip/region-3-http',
+  Cyprus1: 'http://testnet-ip/zone-1-1-http',
+  Cyprus2: 'http://testnet-ip/zone-1-2-http',
+  Cyprus3: 'http://testnet-ip/zone-1-3-http',
+  Paxos1: 'http://testnet-ip/zone-2-1-http',
+  Paxos2: 'http://testnet-ip/zone-2-2-http',
+  Paxos3: 'http://testnet-ip/zone-2-3-http',
+  Hydra1: 'http://testnet-ip/zone-3-1-http',
+  Hydra2: 'http://testnet-ip/zone-3-2-http',
+  Hydra3: 'http://testnet-ip/zone-3-3-http',
+};
+export const QUAI_TESTNET_RPC_URL = {
+  Prime: 'http://testnet-ip/prime-http',
+  Cyprus: 'http://testnet-ip/region-1-http',
+  Paxos: 'http://testnet-ip/region-2-http',
+  Hydra: 'http://testnet-ip/region-3-http',
+  Cyprus1: 'http://testnet-ip/zone-1-1-http',
+  Cyprus2: 'http://testnet-ip/zone-1-2-http',
+  Cyprus3: 'http://testnet-ip/zone-1-3-http',
+  Paxos1: 'http://testnet-ip/zone-2-1-http',
+  Paxos2: 'http://testnet-ip/zone-2-2-http',
+  Paxos3: 'http://testnet-ip/zone-2-3-http',
+  Hydra1: 'http://testnet-ip/zone-3-1-http',
+  Hydra2: 'http://testnet-ip/zone-3-2-http',
+  Hydra3: 'http://testnet-ip/zone-3-3-http',
+};
 export const ROPSTEN_RPC_URL = getRpcUrl('ropsten');
 export const RINKEBY_RPC_URL = getRpcUrl('rinkeby');
 export const KOVAN_RPC_URL = getRpcUrl('kovan');
@@ -68,20 +145,31 @@ export const MAINNET_RPC_URL = getRpcUrl('mainnet');
 export const GOERLI_RPC_URL = getRpcUrl('goerli');
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 
+export const QUAI_SYMBOL = 'QUAI';
 export const ETH_SYMBOL = 'ETH';
 export const WETH_SYMBOL = 'WETH';
 export const TEST_ETH_SYMBOL = 'TESTETH';
 export const BNB_SYMBOL = 'BNB';
 export const MATIC_SYMBOL = 'MATIC';
 
+export const QUAI_TOKEN_IMAGE_URL = './images/quai_logo.svg';
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
 
-export const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI];
+export const INFURA_PROVIDER_TYPES = [
+  ROPSTEN,
+  RINKEBY,
+  KOVAN,
+  MAINNET,
+  GOERLI,
+  QUAI_MAINNET,
+  QUAI_TESTNET,
+];
 
 export const TEST_CHAINS = [
+  QUAI_TESTNET,
   ROPSTEN_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   GOERLI_CHAIN_ID,
@@ -98,6 +186,14 @@ export const NETWORK_TYPE_TO_ID_MAP = {
   [KOVAN]: { networkId: KOVAN_NETWORK_ID, chainId: KOVAN_CHAIN_ID },
   [GOERLI]: { networkId: GOERLI_NETWORK_ID, chainId: GOERLI_CHAIN_ID },
   [MAINNET]: { networkId: MAINNET_NETWORK_ID, chainId: MAINNET_CHAIN_ID },
+  [QUAI_MAINNET]: {
+    networkId: QUAI_MAINNET_NETWORK_ID,
+    chainId: QUAI_MAINNET_CHAIN_ID,
+  },
+  [QUAI_TESTNET]: {
+    networkId: QUAI_TESTNET_NETWORK_ID,
+    chainId: QUAI_TESTNET_CHAIN_ID,
+  },
   [LOCALHOST]: { networkId: LOCALHOST_NETWORK_ID, chainId: LOCALHOST_CHAIN_ID },
 };
 
@@ -106,6 +202,8 @@ export const NETWORK_TO_NAME_MAP = {
   [RINKEBY]: RINKEBY_DISPLAY_NAME,
   [KOVAN]: KOVAN_DISPLAY_NAME,
   [MAINNET]: MAINNET_DISPLAY_NAME,
+  [QUAI_MAINNET]: QUAI_MAINNET_DISPLAY_NAME,
+  [QUAI_TESTNET]: QUAI_TESTNET_DISPLAY_NAME,
   [GOERLI]: GOERLI_DISPLAY_NAME,
   [LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
@@ -114,6 +212,8 @@ export const NETWORK_TO_NAME_MAP = {
   [KOVAN_NETWORK_ID]: KOVAN_DISPLAY_NAME,
   [GOERLI_NETWORK_ID]: GOERLI_DISPLAY_NAME,
   [MAINNET_NETWORK_ID]: MAINNET_DISPLAY_NAME,
+  [QUAI_MAINNET_NETWORK_ID]: QUAI_MAINNET_DISPLAY_NAME,
+  [QUAI_TESTNET_NETWORK_ID]: QUAI_TESTNET_DISPLAY_NAME,
   [LOCALHOST_NETWORK_ID]: LOCALHOST_DISPLAY_NAME,
 
   [ROPSTEN_CHAIN_ID]: ROPSTEN_DISPLAY_NAME,
@@ -121,6 +221,8 @@ export const NETWORK_TO_NAME_MAP = {
   [KOVAN_CHAIN_ID]: KOVAN_DISPLAY_NAME,
   [GOERLI_CHAIN_ID]: GOERLI_DISPLAY_NAME,
   [MAINNET_CHAIN_ID]: MAINNET_DISPLAY_NAME,
+  [QUAI_MAINNET_CHAIN_ID]: QUAI_MAINNET_DISPLAY_NAME,
+  [QUAI_TESTNET_CHAIN_ID]: QUAI_TESTNET_DISPLAY_NAME,
   [LOCALHOST_CHAIN_ID]: LOCALHOST_DISPLAY_NAME,
 };
 
@@ -137,6 +239,8 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [KOVAN_CHAIN_ID]: KOVAN_RPC_URL,
   [GOERLI_CHAIN_ID]: GOERLI_RPC_URL,
   [MAINNET_CHAIN_ID]: MAINNET_RPC_URL,
+  [QUAI_MAINNET_CHAIN_ID]: QUAI_MAINNET_RPC_URL,
+  [QUAI_TESTNET_CHAIN_ID]: QUAI_TESTNET_RPC_URL,
   [LOCALHOST_CHAIN_ID]: LOCALHOST_RPC_URL,
 };
 
@@ -148,6 +252,7 @@ export const CHAIN_ID_TO_NETWORK_ID_MAP = Object.values(
 }, {});
 
 export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
+  [QUAI_SYMBOL]: QUAI_TOKEN_IMAGE_URL,
   [ETH_SYMBOL]: ETH_TOKEN_IMAGE_URL,
   [TEST_ETH_SYMBOL]: TEST_ETH_TOKEN_IMAGE_URL,
   [BNB_SYMBOL]: BNB_TOKEN_IMAGE_URL,

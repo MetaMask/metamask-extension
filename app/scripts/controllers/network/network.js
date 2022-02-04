@@ -10,15 +10,15 @@ import {
 } from 'swappable-obj-proxy';
 import EthQuery from 'eth-query';
 import {
-  RINKEBY,
-  MAINNET,
   INFURA_PROVIDER_TYPES,
   NETWORK_TYPE_RPC,
   NETWORK_TYPE_TO_ID_MAP,
-  MAINNET_CHAIN_ID,
-  RINKEBY_CHAIN_ID,
   INFURA_BLOCKED_KEY,
 } from '../../../../shared/constants/network';
+import {
+  QUAI_CONTEXTS,
+  QUAI_MAINNET_DISPLAY_NAME,
+} from '../../../../shared/constants/quai';
 import { SECOND } from '../../../../shared/constants/time';
 import {
   isPrefixedFormattedHexString,
@@ -41,11 +41,22 @@ if (process.env.IN_TEST === 'true') {
     nickname: 'Localhost 8545',
   };
 } else if (process.env.METAMASK_DEBUG || env === 'test') {
-  defaultProviderConfigOpts = { type: RINKEBY, chainId: RINKEBY_CHAIN_ID };
+  // defaultProviderConfigOpts = {
+  //   type: NETWORK_TYPE_RPC,
+  //   rpcUrl: QUAI_CONTEXTS[0]['rpc'],
+  //   chainId: QUAI_CONTEXTS[0]['id'],
+  //   nickname: QUAI_MAINNET_DISPLAY_NAME,
+  // };
+  defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
 } else {
+  // defaultProviderConfigOpts = {
+  //   type: NETWORK_TYPE_RPC,
+  //   rpcUrl: QUAI_CONTEXTS[0]['rpc'],
+  //   chainId: QUAI_CONTEXTS[0]['id'],
+  //   nickname: QUAI_MAINNET_DISPLAY_NAME,
+  // };
   defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
 }
-
 const defaultProviderConfig = {
   ticker: 'ETH',
   ...defaultProviderConfigOpts,

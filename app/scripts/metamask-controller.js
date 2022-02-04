@@ -898,6 +898,7 @@ export default class MetamaskController extends EventEmitter {
         networkController,
       ),
       setCustomRpc: nodeify(this.setCustomRpc, this),
+      updateRpcTarget: nodeify(this.updateRpcTarget, this),
       updateAndSetCustomRpc: nodeify(this.updateAndSetCustomRpc, this),
       delCustomRpc: nodeify(this.delCustomRpc, this),
 
@@ -2559,14 +2560,6 @@ export default class MetamaskController extends EventEmitter {
         requestUserApproval: this.approvalController.addAndShowApprovalRequest.bind(
           this.approvalController,
         ),
-        updateRpcTarget: ({ rpcUrl, chainId, ticker, nickname }) => {
-          this.networkController.setRpcTarget(
-            rpcUrl,
-            chainId,
-            ticker,
-            nickname,
-          );
-        },
         setProviderType: this.networkController.setProviderType.bind(
           this.networkController,
         ),
@@ -2964,6 +2957,24 @@ export default class MetamaskController extends EventEmitter {
         rpcPrefs,
       );
     }
+    return rpcUrl;
+  }
+
+  async updateRpcTarget(
+    rpcUrl,
+    chainId,
+    ticker = 'ETH',
+    nickname = '',
+    rpcPrefs = {},
+  ) {
+    this.networkController.setRpcTarget(
+      rpcUrl,
+      chainId,
+      ticker,
+      nickname,
+      rpcPrefs,
+    );
+
     return rpcUrl;
   }
 

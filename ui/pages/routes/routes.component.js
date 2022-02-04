@@ -377,6 +377,10 @@ export default class Routes extends Component {
     const { provider, providerId } = this.props;
 
     switch (provider.type) {
+      case 'quai_mainnet':
+        return this.context.t('connectingToQuaiMainnet');
+      case 'quai_testnet':
+        return this.context.t('connectingToTestnet');
       case 'mainnet':
         return this.context.t('connectingToMainnet');
       case 'ropsten':
@@ -394,6 +398,10 @@ export default class Routes extends Component {
 
   getNetworkName() {
     switch (this.props.provider.type) {
+      case 'quai_mainnet':
+        return this.context.t('quai_mainnet');
+      case 'quai_testnet':
+        return this.context.t('quai_testnet');
       case 'mainnet':
         return this.context.t('mainnet');
       case 'ropsten':
