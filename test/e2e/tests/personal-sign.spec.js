@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, largeDelayMs } = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Personal sign', function () {
   it('can initiate and confirm a personal sign', async function () {
@@ -50,12 +50,15 @@ describe('Personal sign', function () {
 
         // Verify
         await driver.clickElement('#personalSignVerify');
-        await driver.delay(largeDelayMs);
         const verifySigUtil = await driver.findElement(
           '#personalSignVerifySigUtilResult',
         );
-        const verifyECRecover = await driver.findElement(
-          '#personalSignVerifyECRecoverResult',
+        const verifyECRecover = await driver.waitForSelector(
+          {
+            css: '#personalSignVerifyECRecoverResult',
+            text: publicAddress,
+          },
+          { timeout: 10000 },
         );
         assert.equal(await verifySigUtil.getText(), publicAddress);
         assert.equal(await verifyECRecover.getText(), publicAddress);
