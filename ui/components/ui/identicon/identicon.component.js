@@ -72,9 +72,14 @@ export default class Identicon extends PureComponent {
     tokenList: {},
   };
 
+  state = {
+    isError: false,
+  };
+
   renderImage() {
     const { className, diameter, alt, imageBorder, ipfsGateway } = this.props;
     let { image } = this.props;
+    const { isError } = this.state;
 
     if (Array.isArray(image) && image.length) {
       image = image[0];
@@ -91,9 +96,11 @@ export default class Identicon extends PureComponent {
       <img
         className={classnames('identicon', className, {
           'identicon__image-border': imageBorder,
+          'identicon__image--error': isError,
         })}
         src={image}
         style={getStyles(diameter)}
+        onError={() => this.setState({ isError: true })}
         alt={alt}
       />
     );
