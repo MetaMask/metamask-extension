@@ -7,36 +7,6 @@ import { defaultNetworksData } from '../networks-tab.constants';
 import { MAINNET_RPC_URL } from '../../../../../shared/constants/network';
 import NetworksForm from '.';
 
-nock('https://chainid.network:443', { encodedQueryParams: true })
-  .get('/chains.json')
-  .reply(200, [
-    {
-      name: 'Polygon Mainnet',
-      chain: 'Polygon',
-      rpc: [
-        'https://polygon-rpc.com/',
-        'https://rpc-mainnet.matic.network',
-        'https://matic-mainnet.chainstacklabs.com',
-        'https://rpc-mainnet.maticvigil.com',
-        'https://rpc-mainnet.matic.quiknode.pro',
-        'https://matic-mainnet-full-rpc.bwarelabs.com',
-      ],
-      nativeCurrency: {
-        name: 'MATIC',
-        symbol: 'MATIC',
-        decimals: 18,
-      },
-      shortName: 'MATIC',
-      chainId: 137,
-    },
-  ]);
-
-nock('https://bsc-dataseed.binance.org:443', {
-  encodedQueryParams: true,
-})
-  .post('/')
-  .reply(200, { jsonrpc: '2.0', id: '1643927040523', result: '0x38' });
-
 const renderComponent = (props) => {
   const store = configureMockStore([])({ metamask: {} });
   return renderWithProvider(<NetworksForm {...props} />, store);
@@ -68,6 +38,50 @@ const propNetworkDisplay = {
 };
 
 describe('NetworkForm Component', () => {
+  beforeAll(() => {
+    nock.disableNetConnect();
+  });
+
+  afterAll(() => {
+    nock.enableNetConnect();
+  });
+
+  beforeEach(() => {
+    nock('https://chainid.network:443', { encodedQueryParams: true })
+      .get('/chains.json')
+      .reply(200, [
+        {
+          name: 'Polygon Mainnet',
+          chain: 'Polygon',
+          rpc: [
+            'https://polygon-rpc.com/',
+            'https://rpc-mainnet.matic.network',
+            'https://matic-mainnet.chainstacklabs.com',
+            'https://rpc-mainnet.maticvigil.com',
+            'https://rpc-mainnet.matic.quiknode.pro',
+            'https://matic-mainnet-full-rpc.bwarelabs.com',
+          ],
+          nativeCurrency: {
+            name: 'MATIC',
+            symbol: 'MATIC',
+            decimals: 18,
+          },
+          shortName: 'MATIC',
+          chainId: 137,
+        },
+      ]);
+
+    nock('https://bsc-dataseed.binance.org:443', {
+      encodedQueryParams: true,
+    })
+      .post('/')
+      .reply(200, { jsonrpc: '2.0', id: '1643927040523', result: '0x38' });
+  });
+
+  afterEach(() => {
+    nock.cleanAll();
+  });
+
   it('should render add new network form correctly', async () => {
     const { queryByText, queryAllByText } = renderComponent(propNewNetwork);
     expect(
