@@ -1,8 +1,8 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, largeDelayMs } = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
-describe('Personal sign', function () {
-  it('can initiate and confirm a personal sign', async function () {
+describe('Eth sign', function () {
+  it('can initiate and confirm a eth sign', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -12,7 +12,10 @@ describe('Personal sign', function () {
         },
       ],
     };
-    const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+    const expectedPersonalMessage =
+      '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0';
+    const expectedEthSignResult =
+      '"0x816ab6c5d5356548cc4e004ef35a37fdfab916742a2bbeda756cd064c3d3789a6557d41d49549be1de249e1937a8d048996dfcc70d0552111605dc7cc471e8531b"';
     await withFixtures(
       {
         dapp: true,
@@ -26,7 +29,7 @@ describe('Personal sign', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
-        await driver.clickElement('#personalSign');
+        await driver.clickElement('#ethSign');
 
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
@@ -35,11 +38,18 @@ describe('Personal sign', function () {
           windowHandles,
         );
 
+        const title = await driver.findElement(
+          '.request-signature__header__text',
+        );
+        const origin = await driver.findElement('.request-signature__origin');
+        assert.equal(await title.getText(), 'Signature Request');
+        assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
+
         const personalMessageRow = await driver.findElement(
           '.request-signature__row-value',
         );
         const personalMessage = await personalMessageRow.getText();
-        assert.equal(personalMessage, 'Example `personal_sign` message');
+        assert.equal(personalMessage, expectedPersonalMessage);
 
         await driver.clickElement('[data-testid="request-signature__sign"]');
 
@@ -49,16 +59,8 @@ describe('Personal sign', function () {
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
 
         // Verify
-        await driver.clickElement('#personalSignVerify');
-        await driver.delay(largeDelayMs);
-        const verifySigUtil = await driver.findElement(
-          '#personalSignVerifySigUtilResult',
-        );
-        const verifyECRecover = await driver.findElement(
-          '#personalSignVerifyECRecoverResult',
-        );
-        assert.equal(await verifySigUtil.getText(), publicAddress);
-        assert.equal(await verifyECRecover.getText(), publicAddress);
+        const result = await driver.findElement('#ethSignResult');
+        assert.equal(await result.getText(), expectedEthSignResult);
       },
     );
   });
