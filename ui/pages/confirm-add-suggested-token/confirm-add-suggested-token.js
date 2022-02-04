@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
@@ -6,6 +7,7 @@ import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
@@ -52,17 +54,18 @@ function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
 }
 
 const ConfirmAddSuggestedToken = (props) => {
-  const {
-    acceptWatchAsset,
-    history,
-    mostRecentOverviewPage,
-    rejectWatchAsset,
-    suggestedAssets,
-    tokens,
-  } = props;
+  const { acceptWatchAsset, history, rejectWatchAsset } = props;
 
   const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
+
+  const mostRecentOverviewPage = useSelector((state) =>
+    getMostRecentOverviewPage(state),
+  );
+  const suggestedAssets = useSelector(
+    (state) => state.metamask.suggestedAssets,
+  );
+  const tokens = useSelector((state) => state.metamask.tokens);
 
   const tokenAddedEvent = (asset) => {
     metricsEvent({
@@ -207,10 +210,7 @@ const ConfirmAddSuggestedToken = (props) => {
 ConfirmAddSuggestedToken.propTypes = {
   acceptWatchAsset: PropTypes.func,
   history: PropTypes.object,
-  mostRecentOverviewPage: PropTypes.string.isRequired,
   rejectWatchAsset: PropTypes.func,
-  suggestedAssets: PropTypes.array,
-  tokens: PropTypes.array,
 };
 
 export default ConfirmAddSuggestedToken;

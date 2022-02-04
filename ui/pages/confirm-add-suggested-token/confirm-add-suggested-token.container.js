@@ -2,20 +2,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ConfirmAddSuggestedToken from './confirm-add-suggested-token';
-
-const mapStateToProps = (state) => {
-  const {
-    metamask: { suggestedAssets, tokens },
-  } = state;
-
-  return {
-    mostRecentOverviewPage: getMostRecentOverviewPage(state),
-    suggestedAssets,
-    tokens,
-  };
-};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -28,5 +15,5 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(null, mapDispatchToProps),
 )(ConfirmAddSuggestedToken);

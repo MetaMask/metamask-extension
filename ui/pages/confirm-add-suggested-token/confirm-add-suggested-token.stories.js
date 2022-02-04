@@ -20,12 +20,6 @@ export default {
       table: { category: 'Data' },
     },
 
-    // Text
-    mostRecentOverviewPage: {
-      control: { type: 'text', disable: true },
-      table: { category: 'Text' },
-    },
-
     // Events
     acceptWatchAsset: {
       action: 'acceptWatchAsset',
