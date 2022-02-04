@@ -307,7 +307,7 @@ jobs:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test-flask
       - run:
-          name: Move test zips to 'builds-test' to avoid conflict with production build
+          name: Move test zips to 'builds-test-flask' to avoid conflict with production build
           command: mv ./builds ./builds-test-flask
       - persist_to_workspace:
           root: .
