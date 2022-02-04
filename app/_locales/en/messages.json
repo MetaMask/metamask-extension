@@ -444,6 +444,10 @@
   "chainIdExistsErrorMsg": {
     "message": "This Chain ID is currently used by the $1 network."
   },
+  "chainListReturnedDifferentTickerSymbol": {
+    "message": "The network with chain ID $1 may use a different currency symbol ($2) than the one you have entered. Please verify before continuing.",
+    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -1017,7 +1021,7 @@
     "message": "Learn more."
   },
   "endpointReturnedDifferentChainId": {
-    "message": "The endpoint returned a different chain ID: $1",
+    "message": "The RPC URL you have entered returned a different chain ID ($1). Please update the Chain ID to match the RPC URL of the network you are trying to add.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
   "ensIllegalCharacter": {
@@ -1125,6 +1129,9 @@
   },
   "failedToFetchChainId": {
     "message": "Could not fetch chain ID. Is your RPC URL correct?"
+  },
+  "failedToFetchTickerSymbolData": {
+    "message": "Ticker symbol verification data is currently unavailable, make sure that the symbol you have entered is correct. It will impact the conversion rates that you see for this network"
   },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
