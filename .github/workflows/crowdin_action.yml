@@ -25,7 +25,6 @@ jobs:
       with:
         upload_translations: true
         download_translations: true
-        token: ${{ secrets.METAMASKBOT_CROWDIN_TOKEN }}
         github_user_name: metamaskbot
         github_user_email: metamaskbot@users.noreply.github.com
       env:
