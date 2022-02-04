@@ -304,7 +304,7 @@ jobs:
           name: Build extension for testing
           command: yarn build:test:flask
       - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
+          name: Move test build to 'dist-test-flask' to avoid conflict with production build
           command: mv ./dist ./dist-test-flask
       - run:
           name: Move test zips to 'builds-test-flask' to avoid conflict with production build
