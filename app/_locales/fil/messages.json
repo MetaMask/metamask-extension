@@ -794,9 +794,6 @@
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
   },
-  "separateEachWord": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
-  },
   "settings": {
     "message": "Mga Setting"
   },

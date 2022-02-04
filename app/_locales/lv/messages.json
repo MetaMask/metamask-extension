@@ -872,9 +872,6 @@
   "sendTokens": {
     "message": "Nosūtīt marķierus"
   },
-  "separateEachWord": {
-    "message": "Atdaliet katru vārdu ar vienu atstarpi"
-  },
   "settings": {
     "message": "Iestatījumi"
   },

@@ -855,9 +855,6 @@
   "sendTokens": {
     "message": "發送代幣"
   },
-  "separateEachWord": {
-    "message": "單詞之間請以空白間隔"
-  },
   "settings": {
     "message": "設定"
   },

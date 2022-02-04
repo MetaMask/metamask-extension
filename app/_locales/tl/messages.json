@@ -2460,9 +2460,6 @@
     "message": "Nagpapadala ng $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang espasyo"
-  },
   "setAdvancedPrivacySettings": {
     "message": "Magtakda ng advanced privacy settings"
   },
@@ -3374,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Matagumpay ang paggawa ng wallet"
-  },
-  "walletSeedRestore": {
-    "message": "Recovery Phrase ng Wallet Secret"
   },
   "web3ShimUsageNotification": {
     "message": "Napansin namin na sinubukan ng kasalukuyang website na gamitin ang inalis na window.web3 API. Kung mukhang sira ang site, paki-click ang $1 para sa karagdagang impormasyon.",
