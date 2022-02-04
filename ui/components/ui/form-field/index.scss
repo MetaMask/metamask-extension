@@ -45,5 +45,9 @@
     &--error {
       border-color: var(--error-1);
     }
+
+    &--warning {
+      border-color: var(--alert-3);
+    }
   }
 }
