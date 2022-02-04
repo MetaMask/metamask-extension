@@ -870,9 +870,6 @@
   "sendTokens": {
     "message": "שלח טוקנים"
   },
-  "separateEachWord": {
-    "message": "יש להפריד כל מילה עם רווח יחיד"
-  },
   "settings": {
     "message": "הגדרות"
   },

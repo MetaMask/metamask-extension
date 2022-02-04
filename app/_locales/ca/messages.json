@@ -854,9 +854,6 @@
   "sendTokens": {
     "message": "Enviar Fitxes"
   },
-  "separateEachWord": {
-    "message": "Separa cada paraula amb un sol espai"
-  },
   "settings": {
     "message": "Configuració"
   },

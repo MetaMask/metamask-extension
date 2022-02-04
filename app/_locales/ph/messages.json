@@ -1637,9 +1637,6 @@
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
   },
-  "separateEachWord": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
-  },
   "settings": {
     "message": "Mga Setting"
   },
@@ -2293,9 +2290,6 @@
   },
   "walletConnectionGuide": {
     "message": "ang aming gabay sa pagkonekta ng hardware wallet"
-  },
-  "walletSeedRestore": {
-    "message": "Recovery Phrase ng Wallet Secret"
   },
   "web3ShimUsageNotification": {
     "message": "Napansin naming sinubukang gamitin ng kasalukuyang website ang tinanggal na window.web3 API. Kung mukhang sira ang site, paki-click ang $1 para sa higit pang impormasyon.",

@@ -869,9 +869,6 @@
   "sendTokens": {
     "message": "Pošalji tokene"
   },
-  "separateEachWord": {
-    "message": "Odvojite pojedinačne riječi jednim razmakom"
-  },
   "settings": {
     "message": "Postavke"
   },

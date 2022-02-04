@@ -18,7 +18,7 @@ import { useMetaMetricsContext } from './useMetricEvent';
  * @param {Object} fragmentOptions
  * @returns
  */
-export function useEventFragment(existingId, fragmentOptions) {
+export function useEventFragment(existingId, fragmentOptions = {}) {
   // To prevent overcalling the createEventFragment background method a ref
   // is used to store a boolean value of whether we have already called the
   // method.

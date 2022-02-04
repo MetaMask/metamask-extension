@@ -1298,9 +1298,6 @@
   "sendTokens": {
     "message": "Invia Tokens"
   },
-  "separateEachWord": {
-    "message": "Separa ogni parola con un solo spazio"
-  },
   "settings": {
     "message": "Impostazioni"
   },

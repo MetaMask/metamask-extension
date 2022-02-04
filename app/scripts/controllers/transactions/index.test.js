@@ -1610,6 +1610,8 @@ describe('Transaction Controller', function () {
           properties: {
             chain_id: '0x2a',
             eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
             network: '42',
             referrer: 'metamask',
             source: 'user',
@@ -1683,6 +1685,8 @@ describe('Transaction Controller', function () {
           properties: {
             chain_id: '0x2a',
             eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
             network: '42',
             referrer: 'metamask',
             source: 'user',
@@ -1766,6 +1770,8 @@ describe('Transaction Controller', function () {
           properties: {
             chain_id: '0x2a',
             eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
             network: '42',
             referrer: 'other',
             source: 'dapp',
@@ -1841,6 +1847,8 @@ describe('Transaction Controller', function () {
           properties: {
             chain_id: '0x2a',
             eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
             network: '42',
             referrer: 'other',
             source: 'dapp',
@@ -1916,6 +1924,8 @@ describe('Transaction Controller', function () {
         properties: {
           chain_id: '0x2a',
           eip_1559_version: '0',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
           network: '42',
           referrer: 'other',
           source: 'dapp',
@@ -1977,6 +1987,8 @@ describe('Transaction Controller', function () {
           type: TRANSACTION_TYPES.SIMPLE_SEND,
           chain_id: '0x2a',
           eip_1559_version: '0',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2040,6 +2052,8 @@ describe('Transaction Controller', function () {
         properties: {
           chain_id: '0x2a',
           eip_1559_version: '1',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
           network: '42',
           referrer: 'other',
           source: 'dapp',

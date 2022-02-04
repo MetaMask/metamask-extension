@@ -861,9 +861,6 @@
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
   },
-  "separateEachWord": {
-    "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
-  },
   "settings": {
     "message": "ቅንብሮች"
   },

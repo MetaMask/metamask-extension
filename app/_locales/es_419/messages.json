@@ -1624,9 +1624,6 @@
   "sendTokens": {
     "message": "Enviar tokens"
   },
-  "separateEachWord": {
-    "message": "Separar cada palabra con un solo espacio"
-  },
   "settings": {
     "message": "Configuración"
   },
@@ -2274,9 +2271,6 @@
   },
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión de la cartera de hardware"
-  },
-  "walletSeedRestore": {
-    "message": "Frase secreta de recuperación de la cartera"
   },
   "web3ShimUsageNotification": {
     "message": "Parece que el sitio web actual intentó utilizar la API de window.web3 que se eliminó. Si el sitio no funciona, haga clic en $1 para obtener más información.",
