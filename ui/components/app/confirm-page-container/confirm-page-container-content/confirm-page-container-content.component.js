@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
+import Button from '../../../ui/button';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
 import ErrorMessage from '../../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
-import I18nValue from '../../../ui/i18n-value';
 import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
@@ -180,7 +180,7 @@ export default class ConfirmPageContainerContent extends Component {
               <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
             </div>
           )}
-        {!supportsEIP1559V2 &&
+        {supportsEIP1559V2 &&
           !hasSimulationError &&
           (errorKey || errorMessage) &&
           errorKey === INSUFFICIENT_FUNDS_ERROR_KEY &&
@@ -195,27 +195,25 @@ export default class ConfirmPageContainerContent extends Component {
                       align="left"
                       margin={[0, 0]}
                     >
-                      <I18nValue
-                        messageKey="insufficientCurrency"
-                        options={[
-                          nativeCurrency,
-                          networkName,
-                          <button
-                            key="link"
-                            type="secondary"
-                            className="confirm-approve-content__warning__link"
-                            onClick={() => showBuyModal()}
-                            style={{
-                              color: '#037dd6',
-                              padding: 0,
-                              fontSize: '12px',
-                            }}
-                          >
-                            <I18nValue messageKey="buyEth" />
-                          </button>,
-                        ]}
-                      />
-                      <I18nValue messageKey="orDeposit" />
+                      {this.context.t('insufficientCurrency', [
+                        nativeCurrency,
+                        networkName,
+                      ])}
+                      <Button
+                        key="link"
+                        type="secondary"
+                        className="confirm-approve-content__warning__link"
+                        onClick={() => showBuyModal()}
+                        style={{
+                          color: '#037dd6',
+                          padding: 0,
+                          fontSize: '12px',
+                        }}
+                      >
+                        {this.context.t('buyEth')}
+                      </Button>
+
+                      {this.context.t('orDeposit')}
                     </Typography>
                   }
                   useIcon
@@ -231,14 +229,11 @@ export default class ConfirmPageContainerContent extends Component {
                       align="left"
                       margin={[0, 0]}
                     >
-                      <I18nValue
-                        messageKey="insufficientCurrency"
-                        options={[nativeCurrency, networkName]}
-                      />
-                      <I18nValue
-                        messageKey="buyOther"
-                        options={[nativeCurrency]}
-                      />
+                      {this.context.t('insufficientCurrency', [
+                        nativeCurrency,
+                        networkName,
+                      ])}
+                      {this.context.t('buyOther', [nativeCurrency])}
                     </Typography>
                   }
                   useIcon
