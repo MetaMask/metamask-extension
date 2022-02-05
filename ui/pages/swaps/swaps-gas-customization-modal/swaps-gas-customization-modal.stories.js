@@ -24,7 +24,87 @@ export default {
   argTypes: {
     sendAmountArg: { name: 'Send Amount (this should be static)', control: { type: 'number', min: 0, step: 0.01 } },
     walletBalance: { name: 'Wallet Balance (this should be static)', control: { type: 'number', min: 0, step: 0.01 } },
-    averageGasPrice: { name: 'Average Gas Price', control: { type: 'number', min: 0, step: 0.01 } }
+    averageGasPrice: { name: 'Average Gas Price', control: { type: 'number', min: 0, step: 0.01 } },
+    insufficientBalance: {
+      table: {
+        disable: true,
+      },
+    },
+    gasPriceButtonGroupProps: {
+      table: {
+        disable: true,
+      },
+    },
+    infoRowProps: {
+      table: {
+        disable: true,
+      },
+    },
+    onSubmit: {
+      table: {
+        disable: true,
+      },
+    },
+    cancelAndClose: {
+      table: {
+        disable: true,
+      },
+    },
+    showCustomPriceTooLowWarning: {
+      table: {
+        disable: true,
+      },
+    },
+    disableSave: {
+      table: {
+        disable: true,
+      },
+    },
+    customGasLimitMessage: {
+      table: {
+        disable: true,
+      },
+    },
+    usdConversionRate: {
+      table: {
+        disable: true,
+      },
+    },
+    customGasPrice: {
+      table: {
+        disable: true,
+      },
+    },
+    customGasLimit: {
+      table: {
+        disable: true,
+      },
+    },
+    setSwapsCustomizationModalLimit: {
+      table: {
+        disable: true,
+      },
+    },
+    setSwapsCustomizationModalPrice: {
+      table: {
+        disable: true,
+      },
+    },
+    customTotalSupplement: {
+      table: {
+        disable: true,
+      },
+    },
+    gasEstimateLoadingHasFailed: {
+      table: {
+        disable: true,
+      },
+    },
+    minimumGasLimit: {
+      table: {
+        disable: true,
+      },
+    },
   },
   args: {
     sendAmountArg: 0.01,
