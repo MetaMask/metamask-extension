@@ -128,9 +128,8 @@ const sumHexWEIsToRenderableEth = (hexWEIs, currencySymbol = 'ETH') => {
   );
 };
 
-export const DefaultStory = () => {
-
-  const [{ sendAmountArg, walletBalance, averageGasPrice }] = useArgs();
+export const DefaultStory = (args) => {
+  const {sendAmountArg, walletBalance, averageGasPrice} = args;
 
   const hexWei = getWeiHexFromDecimalValue({
     value: sendAmountArg,
