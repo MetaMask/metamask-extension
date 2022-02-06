@@ -21,9 +21,18 @@ export default {
   id: __filename,
   component: GasModalPageContainer,
   argTypes: {
-    sendAmountArg: { name: 'Send Amount (this should be static)', control: { type: 'number', min: 0, step: 0.01 } },
-    walletBalance: { name: 'Wallet Balance (this should be static)', control: { type: 'number', min: 0, step: 0.01 } },
-    averageGasPrice: { name: 'Average Gas Price', control: { type: 'number', min: 0, step: 0.01 } },
+    sendAmountArg: {
+      name: 'Send Amount (this should be static)',
+      control: { type: 'number', min: 0, step: 0.01 },
+    },
+    walletBalance: {
+      name: 'Wallet Balance (this should be static)',
+      control: { type: 'number', min: 0, step: 0.01 },
+    },
+    averageGasPrice: {
+      name: 'Average Gas Price',
+      control: { type: 'number', min: 0, step: 0.01 },
+    },
     insufficientBalance: {
       table: {
         disable: true,
@@ -108,7 +117,7 @@ export default {
   args: {
     sendAmountArg: 0.01,
     walletBalance: 10,
-    averageGasPrice: 2
+    averageGasPrice: 2,
   },
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
@@ -128,7 +137,7 @@ const sumHexWEIsToRenderableEth = (hexWEIs, currencySymbol = 'ETH') => {
 };
 
 export const DefaultStory = (args) => {
-  const {sendAmountArg, walletBalance, averageGasPrice} = args;
+  const { sendAmountArg, walletBalance, averageGasPrice } = args;
 
   const hexWei = getWeiHexFromDecimalValue({
     value: sendAmountArg,
