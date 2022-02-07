@@ -348,19 +348,16 @@ export default class TransactionController extends EventEmitter {
     return transactions[txId];
   }
 
-  _validateTransaction(txId) {
+  _checkIfTxStatusIsUnapproved(txId) {
     return (
       this._getTransaction(txId).status === TRANSACTION_STATUSES.UNAPPROVED
     );
   }
 
-  _updateTransaction(txParams, note) {
-    const normalizedTxParams = txUtils.normalizeTxParams(txParams);
-    const withAdditionalMeta = this.txStateManager.generateTxMeta({
-      txParams: { ...txParams, ...normalizedTxParams },
-      origin: 'metamask',
-    });
-    this.txStateManager.updateTransaction(withAdditionalMeta, note);
+  _updateTransaction(txId, txParams, note) {
+    const txMeta = this._getTransaction(txId);
+    const updatedMeta = { ...txMeta, ...txParams };
+    this.txStateManager.updateTransaction(updatedMeta, note);
   }
 
   /**
@@ -375,11 +372,29 @@ export default class TransactionController extends EventEmitter {
    * maxFeePerGas,
    * estimateUsed
    * }
+   * @param txGasFees.gasLimit
+   * @param txGasFees.gasPrice
+   * @param txGasFees.maxPriorityFeePerGas
+   * @param txGasFees.maxFeePerGas
+   * @param txGasFees.estimateUsed
    */
-  updateTransactionGasFees(txId, txGasFees) {
+  updateTransactionGasFees(
+    txId,
+    { gasLimit, gasPrice, maxPriorityFeePerGas, maxFeePerGas, estimateUsed },
+  ) {
     if (!this._validateTransaction(txId)) {
       return;
     }
+
+    const txGasFees = {
+      txParams: {
+        gasLimit,
+        gasPrice,
+        maxPriorityFeePerGas,
+        maxFeePerGas,
+      },
+      estimateUsed,
+    };
 
     const note = `Update Transaction Gas Fees for ${txId}`;
     this._updateTransaction(txId, txGasFees, note);
@@ -391,16 +406,26 @@ export default class TransactionController extends EventEmitter {
    * @param {string} txId - transaction id
    * @param {object} txEstimateBaseFees - holds the estimate base fees parameters
    * {
-   * estimateBaseFee,
-   * decEstimateBaseFee
+   * estimatedBaseFee,
+   * decEstimatedBaseFee
    * }
+   * @param txEstimateBaseFees.estimatedBaseFee
+   * @param txEstimateBaseFees.decEstimatedBaseFee
    */
-  updateTransactionEstimateBaseFee(txId, txEstimateBaseFees) {
+  updateTransactionEstimateBaseFee(
+    txId,
+    { estimatedBaseFee, decEstimatedBaseFee },
+  ) {
     if (!this._validateTransaction(txId)) {
       return;
     }
 
-    const note = `Update Transaction Estimate Base Fees for ${txId}`;
+    const txEstimateBaseFees = {
+      estimatedBaseFee,
+      decEstimatedBaseFee,
+    };
+
+    const note = `Update Transaction Estimated Base Fees for ${txId}`;
     this._updateTransaction(txId, txEstimateBaseFees, note);
   }
 
@@ -414,12 +439,15 @@ export default class TransactionController extends EventEmitter {
    * type,
    * sourceTokenSymbol
    * }
+   * @param swapApprovalTransaction.type
+   * @param swapApprovalTransaction.sourceTokenSymbol
    */
-  updateSwapApprovalTransaction(txId, swapApprovalTransaction) {
+  updateSwapApprovalTransaction(txId, { type, sourceTokenSymbol }) {
     if (!this._validateTransaction(txId)) {
       return;
     }
 
+    const swapApprovalTransaction = { type, sourceTokenSymbol };
     const note = `Update Swap Approval Transaction for ${txId}`;
     this._updateTransaction(txId, swapApprovalTransaction, note);
   }
@@ -439,12 +467,39 @@ export default class TransactionController extends EventEmitter {
    * swapMetaData,
    * swapTokenValue,
    *}
+   * @param swapTransaction.sourceTokenSymbol
+   * @param swapTransaction.destinationTokenSymbol
+   * @param swapTransaction.type
+   * @param swapTransaction.destinationTokenDecimals
+   * @param swapTransaction.destinationTokenAddress
+   * @param swapTransaction.swapMetaData
+   * @param swapTransaction.swapTokenValue
    */
-  updateSwapTransaction(txId, swapTransaction) {
+  updateSwapTransaction(
+    txId,
+    {
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+    },
+  ) {
     if (!this._validateTransaction(txId)) {
       return;
     }
 
+    const swapTransaction = {
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+    };
     const note = `Update Swap Transaction for ${txId}`;
     this._updateTransaction(txId, swapTransaction, note);
   }
@@ -455,12 +510,15 @@ export default class TransactionController extends EventEmitter {
    * @param {string} txId
    * @param {object} userSettings - holds the metadata
    * { userEditedGasLimit, userFeeLevel }
+   * @param userSettings.userEditedGasLimit
+   * @param userSettings.userFeeLevel
    */
-  updateTransactionUserSettings(txId, userSettings) {
+  updateTransactionUserSettings(txId, { userEditedGasLimit, userFeeLevel }) {
     if (!this._validateTransaction(txId)) {
       return;
     }
 
+    const userSettings = { userEditedGasLimit, userFeeLevel };
     const note = `Update User Settings for ${txId}`;
     this._updateTransaction(txId, userSettings, note);
   }
