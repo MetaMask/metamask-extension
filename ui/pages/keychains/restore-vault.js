@@ -67,16 +67,7 @@ class RestoreVaultPage extends Component {
             >
               {`< ${t('back')}`}
             </a>
-            <div className="import-account__title">
-              {t('forgotPassword')
-                .split(' ')
-                .map((word, index) =>
-                  index === 0
-                    ? word
-                    : word.charAt(0).toLowerCase() + word.slice(1),
-                )
-                .join(' ')}
-            </div>
+            <div className="import-account__title">{t('forgotPassword')}</div>
             <div className="import-account__selector-label">
               {t('forgotPasswordSubHeader')}
             </div>

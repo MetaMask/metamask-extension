@@ -23,7 +23,10 @@ describe('Unlock Page Component', () => {
       configureMockStore()({ metamask: { currentLocale: 'en' } }),
     );
 
-    fireEvent.click(getByText('Forgot Password?'));
+    // The UI shows `ForgotPassword?`
+    // but since we are using `text-transform: capitalize`
+    // the html code is having `Forgot password?` as the text.
+    fireEvent.click(getByText('Forgot password?'));
     expect(props.onRestore.calledOnce).toStrictEqual(true);
   });
 });
