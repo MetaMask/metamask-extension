@@ -268,7 +268,7 @@ describe('MetaMask', function () {
       popup = windowHandles[2];
       await driver.switchToWindow(popup);
       await driver.delay(regularDelayMs);
-      await driver.clickElement({ text: 'Edit', tag: 'button' }, 10000);
+      await driver.clickElement({ text: 'Edit', tag: 'button' });
 
       const inputs = await driver.findElements('input[type="number"]');
       const gasLimitInput = inputs[0];
@@ -276,8 +276,8 @@ describe('MetaMask', function () {
       await gasLimitInput.fill('4700000');
       await gasPriceInput.fill('20');
       await driver.delay(1000);
-      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
-      await driver.clickElement({ text: 'Confirm', tag: 'button' }, 10000);
+      await driver.clickElement({ text: 'Save', tag: 'button' });
+      await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
       await driver.delay(regularDelayMs);
 
@@ -390,7 +390,7 @@ describe('MetaMask', function () {
       await gasLimitInput.fill('100000');
       await gasPriceInput.fill('100');
       await driver.delay(1000);
-      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
+      await driver.clickElement({ text: 'Save', tag: 'button' });
     });
 
     it('submits the transaction', async function () {
@@ -465,7 +465,7 @@ describe('MetaMask', function () {
       await gasLimitInput.fill('60000');
       await gasPriceInput.fill('10');
       await driver.delay(1000);
-      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
+      await driver.clickElement({ text: 'Save', tag: 'button' });
       await driver.findElement({ tag: 'span', text: '0.0006' });
     });
 
@@ -591,7 +591,7 @@ describe('MetaMask', function () {
 
       await driver.delay(1000);
 
-      await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
+      await driver.clickElement({ text: 'Save', tag: 'button' });
 
       const gasFeeInEth = await driver.findElement(
         '.confirm-approve-content__transaction-details-content__secondary-fee',
