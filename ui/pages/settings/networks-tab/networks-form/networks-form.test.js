@@ -164,10 +164,6 @@ describe('NetworkForm Component', () => {
     ).toBeInTheDocument();
 
     await fireEvent.change(rpcUrlField, {
-      target: { value: '  ' },
-    });
-
-    await fireEvent.change(rpcUrlField, {
       target: { value: MAINNET_RPC_URL },
     });
 
