@@ -36,27 +36,25 @@ const erc1155Interface = new ethers.utils.Interface(abiERC1155);
  * @returns {EthersContractCall | undefined}
  */
 export function getTransactionData(data) {
-  let result;
-
   try {
-    result = erc20Interface.parseTransaction({ data });
+    return erc20Interface.parseTransaction({ data });
   } catch {
-    // ignore
+    // ignore and next try to parse with erc721 ABI
   }
 
   try {
-    result = erc721Interface.parseTransaction({ data });
+    return erc721Interface.parseTransaction({ data });
   } catch {
-    // ignore
+    // ignore and next try to parse with erc1155 ABI
   }
 
   try {
-    result = erc1155Interface.parseTransaction({ data });
+    return erc1155Interface.parseTransaction({ data });
   } catch {
-    // ignore
+    // ignore and return undefined
   }
 
-  return result;
+  return undefined;
 }
 
 async function getMethodFrom4Byte(fourBytePrefix) {
