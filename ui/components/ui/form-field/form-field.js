@@ -31,6 +31,7 @@ export default function FormField({
   allowDecimals,
   disabled,
   placeholder,
+  warning,
 }) {
   return (
     <div
@@ -92,6 +93,7 @@ export default function FormField({
           <input
             className={classNames('form-field__input', {
               'form-field__input--error': error,
+              'form-field__input--warning': warning,
             })}
             onChange={(e) => onChange(e.target.value)}
             value={value}
@@ -109,6 +111,15 @@ export default function FormField({
             className="form-field__error"
           >
             {error}
+          </Typography>
+        )}
+        {warning && (
+          <Typography
+            color={COLORS.UI4}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__warning"
+          >
+            {warning}
           </Typography>
         )}
       </label>
@@ -141,6 +152,10 @@ FormField.propTypes = {
    * Show error message
    */
   error: PropTypes.string,
+  /**
+   * Show warning message
+   */
+  warning: PropTypes.string,
   /**
    * Handler when fields change
    */

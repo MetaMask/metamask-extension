@@ -866,9 +866,6 @@
   "sendTokens": {
     "message": "Saada lube"
   },
-  "separateEachWord": {
-    "message": "Eraldage iga sõna ühe tühikuga"
-  },
   "settings": {
     "message": "Seaded"
   },

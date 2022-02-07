@@ -863,9 +863,6 @@
   "sendTokens": {
     "message": "Trimiteți indicative"
   },
-  "separateEachWord": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
-  },
   "settings": {
     "message": "Setări"
   },

@@ -876,9 +876,6 @@
   "sendTokens": {
     "message": "Надіслати токени"
   },
-  "separateEachWord": {
-    "message": "Відділіть кожне слово одним пробілом"
-  },
   "settings": {
     "message": "Налаштування"
   },

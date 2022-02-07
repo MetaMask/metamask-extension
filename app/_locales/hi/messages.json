@@ -2460,9 +2460,6 @@
     "message": "$1 भेजा जा रहा है",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "प्रत्येक शब्द को एक रिक्ति से अलग करें"
-  },
   "setAdvancedPrivacySettings": {
     "message": "एडवांस गोपनीयता सेटिंग्स निर्धारित करें"
   },
@@ -3374,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "वॉलेट का निर्माण सफल हुआ"
-  },
-  "walletSeedRestore": {
-    "message": "वॉलेट का गुप्त रिकवरी फ्रेज़"
   },
   "web3ShimUsageNotification": {
     "message": "हमने देखा है कि वर्तमान वेबसाइट ने हटाए गए window.web3 API का उपयोग करने की कोशिश की। यदि साइट में गड़बड़ी लगती है, तो कृपया अधिक जानकारी के लिए $1 पर क्लिक करें।",

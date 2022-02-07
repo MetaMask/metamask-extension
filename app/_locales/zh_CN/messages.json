@@ -2460,9 +2460,6 @@
     "message": "正在发送$1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
-  "separateEachWord": {
-    "message": "用空格分隔每个单词"
-  },
   "setAdvancedPrivacySettings": {
     "message": "设置高级隐私设置"
   },
@@ -3374,9 +3371,6 @@
   },
   "walletCreationSuccessTitle": {
     "message": "钱包创建成功"
-  },
-  "walletSeedRestore": {
-    "message": "钱包账户助记词"
   },
   "web3ShimUsageNotification": {
     "message": "我们发现当前的网站尝试使用已经删除的 window.web3 API。如果这个网站网站已经无法正常使用，请点击 $1 获取更多信息。",

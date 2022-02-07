@@ -873,9 +873,6 @@
   "sendTokens": {
     "message": "Lähetä tietueita"
   },
-  "separateEachWord": {
-    "message": "Erottele sanat toisistaan yhdellä välilyönnillä"
-  },
   "settings": {
     "message": "Asetukset"
   },

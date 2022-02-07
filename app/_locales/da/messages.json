@@ -854,9 +854,6 @@
   "sendTokens": {
     "message": "Send tokens"
   },
-  "separateEachWord": {
-    "message": "Separer hvert ord med et enkelt mellemrum"
-  },
   "settings": {
     "message": "Indstillinger "
   },
