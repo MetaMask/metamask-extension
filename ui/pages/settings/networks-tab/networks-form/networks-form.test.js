@@ -166,7 +166,6 @@ describe('NetworkForm Component', () => {
     await fireEvent.change(rpcUrlField, {
       target: { value: '  ' },
     });
-    expect(await screen.findByText('Invalid RPC URL')).toBeInTheDocument();
 
     await fireEvent.change(rpcUrlField, {
       target: { value: MAINNET_RPC_URL },
