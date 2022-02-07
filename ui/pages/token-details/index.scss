@@ -17,7 +17,7 @@
     background: none;
     float: right;
     margin-top: -8px;
-    margin-right: -4px;
+    margin-inline-end: -4px;
 
     &::after {
       font-size: 24px;
@@ -35,7 +35,7 @@
 
   &__copy-icon {
     float: right;
-    margin-left: 62px;
+    margin-inline-start: 62px;
   }
 
   &__hide-token-button {
