@@ -5,8 +5,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import TextField from '../../ui/text-field';
 import Button from '../../ui/button';
-import { clearClipboard } from '../../../helpers/utils/util';
 import CheckBox from '../../ui/check-box';
+import Password from '../../ui/password';
 import Typography from '../../ui/typography';
 import { COLORS } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
@@ -146,27 +146,18 @@ export default function CreateNewVault({
         >
           <Typography>{t('secretRecoveryPhrase')}</Typography>
         </label>
-        {showSeedPhrase ? (
-          <textarea
-            id="create-new-vault__srp"
-            className="create-new-vault__srp-shown"
-            onChange={(e) => onSeedPhraseChange(e.target.value)}
-            onPaste={clearClipboard}
-            value={seedPhrase}
-            placeholder={t('seedPhrasePlaceholder')}
-            autoComplete="off"
-          />
-        ) : (
-          <TextField
-            id="create-new-vault__srp"
-            type="password"
-            onChange={(e) => onSeedPhraseChange(e.target.value)}
-            value={seedPhrase}
-            placeholder={t('seedPhrasePlaceholderPaste')}
-            autoComplete="off"
-            onPaste={clearClipboard}
-          />
-        )}
+        <Password
+          id="create-new-vault__srp"
+          clearClipboardOnPaste
+          onChange={(value) => onSeedPhraseChange(value)}
+          placeholder={
+            showSeedPhrase
+              ? t('seedPhrasePlaceholder')
+              : t('seedPhrasePlaceholderPaste')
+          }
+          showPassword={showSeedPhrase}
+          value={seedPhrase}
+        />
         {seedPhraseError ? (
           <Typography
             color={COLORS.ERROR1}

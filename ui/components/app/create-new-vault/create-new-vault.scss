@@ -5,12 +5,6 @@
     width: 360px;
   }
 
-  &__srp-shown {
-    @include Paragraph;
-
-    padding: 8px 16px;
-  }
-
   &__srp-section {
     display: flex;
     flex-direction: column;
