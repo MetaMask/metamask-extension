@@ -1273,9 +1273,6 @@
   "importAccountError": {
     "message": "Erreur d’importation de compte."
   },
-  "importAccountLinkText": {
-    "message": "importer en utilisant la phrase secrète de récupération"
-  },
   "importAccountMsg": {
     "message": "Les comptes importés ne seront pas associés à la phrase secrète de récupération que vous avez créée au départ dans MetaMask. En savoir plus sur les comptes importés"
   },

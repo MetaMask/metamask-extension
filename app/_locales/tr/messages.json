@@ -1273,18 +1273,11 @@
   "importAccountError": {
     "message": "Hesap içe aktarılırken hata oluştu."
   },
-  "importAccountLinkText": {
-    "message": "Gizli Kurtarma İfadesi kullanarak içe aktar"
-  },
   "importAccountMsg": {
     "message": "İçe aktarılan hesaplar ilk olarak oluşturduğunuz MetaMask hesabı Gizli Kurtarma ifadenizle ilişkilendirilmez. İçe aktarılan hesaplar hakkında daha fazla bilgi edinin"
   },
   "importAccountSeedPhrase": {
     "message": "Gizli Kurtarma İfadesi ile bir cüzdanı içe aktarın"
-  },
-  "importAccountText": {
-    "message": "veya $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Cüzdanınızı oluşturduğunuzda size verilen Gizli Kurtarma İfadenizi (başka bir deyişle Tohum İfadesi) girin. $1",

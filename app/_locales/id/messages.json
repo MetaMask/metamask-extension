@@ -2222,9 +2222,6 @@
   "restore": {
     "message": "Pulihkan"
   },
-  "restoreAccountWithSeed": {
-    "message": "Pulihkan Akun dengan Frasa Pemulihan Rahasia"
-  },
   "restoreWalletPreferences": {
     "message": "Cadangan data Anda dari $1 telah ditemukan. Pulihkan preferensi dompet Anda?",
     "description": "$1 is the date at which the data was backed up"

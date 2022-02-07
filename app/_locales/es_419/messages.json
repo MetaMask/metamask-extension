@@ -1322,18 +1322,11 @@
   "importAccountError": {
     "message": "Error al importar la cuenta."
   },
-  "importAccountLinkText": {
-    "message": "importar con la frase secreta de recuperación"
-  },
   "importAccountMsg": {
     "message": "Las cuentas importadas no se asociarán con la frase secreta de recuperación de la cuenta original de MetaMask. Aprenda más sobre las cuentas importadas"
   },
   "importAccountSeedPhrase": {
     "message": "Importar una cartera con la frase secreta de recuperación"
-  },
-  "importAccountText": {
-    "message": "o $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Ingrese su frase secreta de recuperación (también conocida como Frase Semilla) que recibió al crear su cartera. $1",

@@ -1273,18 +1273,11 @@
   "importAccountError": {
     "message": "アカウントのインポート中にエラーが発生しました。"
   },
-  "importAccountLinkText": {
-    "message": "シークレットリカバリーフレーズを使用してインポート"
-  },
   "importAccountMsg": {
     "message": " インポートされたアカウントは、最初に作成したMetaMaskアカウントのシークレットリカバリーフレーズと関連付けられません。インポートされたアカウントの詳細を表示"
   },
   "importAccountSeedPhrase": {
     "message": "シークレットリカバリーフレーズを使用してウォレットをインポート"
-  },
-  "importAccountText": {
-    "message": "または$1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "ウォレットの作成時に提供されたシークレットリカバリーフレーズ (シードフレーズ) を入力してください。$1",
@@ -2228,9 +2221,6 @@
   },
   "restore": {
     "message": "復元"
-  },
-  "restoreAccountWithSeed": {
-    "message": "シークレットリカバリーフレーズでアカウントを復元"
   },
   "restoreWalletPreferences": {
     "message": "$1のデータのバックアップが見つかりました。ウォレットの基本設定を復元しますか?",
