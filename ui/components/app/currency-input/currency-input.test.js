@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
+import { MAX_DECIMAL } from '../../../../shared/constants/decimal';
 import CurrencyInput from './currency-input';
 
 describe('CurrencyInput Component', () => {
@@ -148,7 +149,7 @@ describe('CurrencyInput Component', () => {
           <CurrencyInput
             hexValue="f602f2234d0ea"
             featureSecondary
-            primaryNumberOfDecimals={16}
+            primaryNumberOfDecimals={MAX_DECIMAL}
           />
         </Provider>,
         {
@@ -161,7 +162,7 @@ describe('CurrencyInput Component', () => {
       expect(wrapper.find('.unit-input__suffix')).toHaveLength(1);
       expect(wrapper.find('.unit-input__suffix').text()).toStrictEqual('ETH');
       expect(wrapper.find('.unit-input__input').props().value).toStrictEqual(
-        0.0043278802042759,
+        0.004327880204276,
       );
       expect(
         wrapper.find('.currency-input__conversion-component').text(),
@@ -200,7 +201,7 @@ describe('CurrencyInput Component', () => {
           <CurrencyInput
             onChange={handleChangeSpy}
             hexValue="f602f2234d0ea"
-            primaryNumberOfDecimals={16}
+            primaryNumberOfDecimals={MAX_DECIMAL}
           />
         </Provider>,
       );
@@ -210,7 +211,7 @@ describe('CurrencyInput Component', () => {
       expect(handleBlurSpy.callCount).toStrictEqual(0);
 
       const input = wrapper.find('input');
-      expect(input.props().value).toStrictEqual(0.0043278802042759);
+      expect(input.props().value).toStrictEqual(0.004327880204276);
 
       input.simulate('change', { target: { value: 1 } });
       expect(handleChangeSpy.callCount).toStrictEqual(2);

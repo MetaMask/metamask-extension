@@ -14,6 +14,7 @@ import {
   getNativeCurrency,
 } from '../../../ducks/metamask/metamask';
 import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
+import { MAX_DECIMAL } from '../../../../shared/constants/decimal';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -67,7 +68,9 @@ export default function CurrencyInput({
           value: hexValue,
           toCurrency: ETH,
           numberOfDecimals:
-            primaryNumberOfDecimals <= 16 ? primaryNumberOfDecimals : 16,
+            primaryNumberOfDecimals <= MAX_DECIMAL
+              ? primaryNumberOfDecimals
+              : MAX_DECIMAL,
         });
 
     return Number(decimalValueString) || 0;
@@ -131,7 +134,9 @@ export default function CurrencyInput({
       // Display ETH
       currency = preferredCurrency || ETH;
       numberOfDecimals =
-        primaryNumberOfDecimals <= 16 ? primaryNumberOfDecimals : 16;
+        primaryNumberOfDecimals <= MAX_DECIMAL
+          ? primaryNumberOfDecimals
+          : MAX_DECIMAL;
     } else {
       // Display Fiat
       currency = secondaryCurrency;

@@ -11,6 +11,7 @@ import {
 
 import { ETH } from '../../../helpers/constants/common';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
+import { MAX_DECIMAL } from '../../../../shared/constants/decimal';
 
 /**
  * Component that allows user to enter token values as a number, and props receive a converted
@@ -132,7 +133,9 @@ export default class TokenInput extends PureComponent {
       // Display ETH
       currency = ETH;
       numberOfDecimals =
-        primaryNumberOfDecimals <= 16 ? primaryNumberOfDecimals : 16;
+        primaryNumberOfDecimals <= MAX_DECIMAL
+          ? primaryNumberOfDecimals
+          : MAX_DECIMAL;
     }
 
     const decimalEthValue = decimalValue * tokenExchangeRate || 0;
