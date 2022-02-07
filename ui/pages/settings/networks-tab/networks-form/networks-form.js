@@ -93,7 +93,7 @@ const NetworksForm = ({
     setRpcUrl(selectedNetwork.rpcUrl);
     setChainId(getDisplayChainId(selectedNetwork.chainId));
     setTicker(selectedNetwork?.ticker);
-    setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl || '');
+    setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
     setErrors({});
     setWarnings({});
     setIsSubmitting(false);
