@@ -1476,8 +1476,8 @@
     "message": "Insufficient balance."
   },
   "insufficientCurrency": {
-    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network. $3",
-    "description": "$1 is currency, $2 is network and $3 is link"
+    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network.",
+    "description": "$1 is currency, $2 is network"
   },
   "insufficientFunds": {
     "message": "Insufficient funds."

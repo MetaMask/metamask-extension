@@ -93,7 +93,7 @@ const TransactionAlerts = ({
           type="warning"
         />
       )}
-      {balanceError && chainId === '0x1' ? (
+      {balanceError && chainId === '0x1' && (
         <ActionableMessage
           className="actionable-message--warning"
           message={
@@ -120,7 +120,8 @@ const TransactionAlerts = ({
           iconFillColor="#d73a49"
           type="danger"
         />
-      ) : (
+      )}
+      {balanceError && chainId !== '0x1' && (
         <ActionableMessage
           className="actionable-message--warning"
           message={
