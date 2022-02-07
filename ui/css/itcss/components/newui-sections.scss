@@ -97,10 +97,6 @@ $sub-mid-size-breakpoint-range: "screen and (min-width: #{$break-large}) and (ma
     overflow-y: auto;
     background-color: var(--white);
   }
-
-  .main-container-wrapper {
-    flex: 1;
-  }
 }
 
 .fiat-amount {
