@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
@@ -10,6 +10,7 @@ import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
+import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
 
 function getTokenName(name, symbol) {
   return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
@@ -53,11 +54,10 @@ function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
   return Boolean(duplicate);
 }
 
-const ConfirmAddSuggestedToken = (props) => {
-  const { acceptWatchAsset, history, rejectWatchAsset } = props;
-
+const ConfirmAddSuggestedToken = ({ history }) => {
   const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
 
   const mostRecentOverviewPage = useSelector((state) =>
     getMostRecentOverviewPage(state),
@@ -177,7 +177,9 @@ const ConfirmAddSuggestedToken = (props) => {
             className="page-container__footer-button"
             onClick={async () => {
               await Promise.all(
-                suggestedAssets.map(async ({ id }) => rejectWatchAsset(id)),
+                suggestedAssets.map(async ({ id }) =>
+                  dispatch(rejectWatchAsset(id)),
+                ),
               );
               history.push(mostRecentOverviewPage);
             }}
@@ -192,7 +194,7 @@ const ConfirmAddSuggestedToken = (props) => {
             onClick={async () => {
               await Promise.all(
                 suggestedAssets.map(async ({ asset, id }) => {
-                  await acceptWatchAsset(id);
+                  await dispatch(acceptWatchAsset(id));
                   tokenAddedEvent(asset);
                 }),
               );
@@ -208,9 +210,7 @@ const ConfirmAddSuggestedToken = (props) => {
 };
 
 ConfirmAddSuggestedToken.propTypes = {
-  acceptWatchAsset: PropTypes.func,
   history: PropTypes.object,
-  rejectWatchAsset: PropTypes.func,
 };
 
 export default ConfirmAddSuggestedToken;
