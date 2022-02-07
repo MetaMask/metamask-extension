@@ -51,10 +51,12 @@ function calculateGasEstimateWithRefund(
     estimatedRefund,
     10,
   );
+  const isMaxGasMinusRefundNegative = maxGasMinusRefund.lt(0);
 
-  const gasEstimateWithRefund = maxGasMinusRefund.lt(estimatedGas, 16)
-    ? maxGasMinusRefund.toString(16)
-    : estimatedGas;
+  const gasEstimateWithRefund =
+    !isMaxGasMinusRefundNegative && maxGasMinusRefund.lt(estimatedGas, 16)
+      ? maxGasMinusRefund.toString(16)
+      : estimatedGas;
 
   return gasEstimateWithRefund;
 }
