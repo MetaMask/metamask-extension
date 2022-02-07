@@ -2869,6 +2869,11 @@
   resolved "https://registry.yarnpkg.com/@metamask/metamask-eth-abis/-/metamask-eth-abis-2.1.0.tgz#316c2e72373506f1a0120b76e432760a27eb6806"
   integrity sha512-T8LBEB0PQo0N1tZQKZ2K8BGmv+IDLcXkzt8Pn7x0YnwZD6YpCIvKqYM3iy2fJ6wFXeCvRKqpn4K6EqwnkSJAbQ==
 
+"@metamask/metamask-eth-abis@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/metamask-eth-abis/-/metamask-eth-abis-3.0.0.tgz#eccc0746b3ab1ab63000444403819c16e88b5272"
+  integrity sha512-YtIl4e1VzqwwHGafuLIVPqbcWWWqQ0Ezo8/Ci5m5OGllqE2oTTx9iVHdUmXNkgCVD37SBfwn/fm/S1IGkM8BQA==
+
 "@metamask/object-multiplex@^1.1.0", "@metamask/object-multiplex@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@metamask/object-multiplex/-/object-multiplex-1.2.0.tgz#38fc15c142f61939391e1b9a8eed679696c7e4f4"

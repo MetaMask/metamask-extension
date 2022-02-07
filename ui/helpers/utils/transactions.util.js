@@ -1,5 +1,5 @@
 import { MethodRegistry } from 'eth-method-registry';
-import abi from 'human-standard-token-abi';
+import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import { ethers } from 'ethers';
 import log from 'loglevel';
 
@@ -14,7 +14,9 @@ import { addCurrencies } from '../../../shared/modules/conversion.utils';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import fetchWithCache from './fetch-with-cache';
 
-const hstInterface = new ethers.utils.Interface(abi);
+const erc20Interface = new ethers.utils.Interface(abiERC20);
+const erc721Interface = new ethers.utils.Interface(abiERC721);
+const erc1155Interface = new ethers.utils.Interface(abiERC1155);
 
 /**
  * @typedef EthersContractCall
@@ -34,12 +36,27 @@ const hstInterface = new ethers.utils.Interface(abi);
  * @returns {EthersContractCall | undefined}
  */
 export function getTransactionData(data) {
+  let result;
+
   try {
-    return hstInterface.parseTransaction({ data });
-  } catch (error) {
-    log.debug('Failed to parse transaction data.', error, data);
-    return undefined;
+    result = erc20Interface.parseTransaction({ data });
+  } catch {
+    // ignore
   }
+
+  try {
+    result = erc721Interface.parseTransaction({ data });
+  } catch {
+    // ignore
+  }
+
+  try {
+    result = erc1155Interface.parseTransaction({ data });
+  } catch {
+    // ignore
+  }
+
+  return result;
 }
 
 async function getMethodFrom4Byte(fourBytePrefix) {
