@@ -85,21 +85,7 @@ export default function SmartTransactionStatus() {
   }
 
   const [timeLeftForPendingStxInSec, setTimeLeftForPendingStxInSec] = useState(
-    () => {
-      if (
-        !latestSmartTransaction.time ||
-        latestSmartTransaction.status !== SMART_TRANSACTION_STATUSES.PENDING
-      ) {
-        return swapsRefreshRates.stxStatusDeadline;
-      }
-      const secondsAfterStxSubmission = Math.round(
-        (Date.now() - latestSmartTransaction.time) / 1000,
-      );
-      if (secondsAfterStxSubmission > swapsRefreshRates.stxStatusDeadline) {
-        return 0;
-      }
-      return swapsRefreshRates.stxStatusDeadline - secondsAfterStxSubmission;
-    },
+    swapsRefreshRates.stxStatusDeadline,
   );
 
   const sensitiveProperties = {
@@ -149,17 +135,32 @@ export default function SmartTransactionStatus() {
 
   useEffect(() => {
     let intervalId;
-    if (isSmartTransactionPending) {
-      intervalId = setInterval(() => {
-        if (timeLeftForPendingStxInSec <= 0) {
+    if (isSmartTransactionPending && latestSmartTransactionUuid) {
+      const calculateRemainingTime = () => {
+        const secondsAfterStxSubmission = Math.round(
+          (Date.now() - latestSmartTransaction.time) / 1000,
+        );
+        if (secondsAfterStxSubmission > swapsRefreshRates.stxStatusDeadline) {
+          setTimeLeftForPendingStxInSec(0);
           clearInterval(intervalId);
           return;
         }
-        setTimeLeftForPendingStxInSec(timeLeftForPendingStxInSec - 1);
-      }, 1000);
+        setTimeLeftForPendingStxInSec(
+          swapsRefreshRates.stxStatusDeadline - secondsAfterStxSubmission,
+        );
+      };
+      intervalId = setInterval(calculateRemainingTime, 1000);
+      calculateRemainingTime();
     }
+
     return () => clearInterval(intervalId);
-  }, [dispatch, isSmartTransactionPending, timeLeftForPendingStxInSec]);
+  }, [
+    dispatch,
+    isSmartTransactionPending,
+    latestSmartTransactionUuid,
+    latestSmartTransaction.time,
+    swapsRefreshRates.stxStatusDeadline,
+  ]);
 
   useEffect(() => {
     dispatch(setBackgroundSwapRouteState('smartTransactionStatus'));

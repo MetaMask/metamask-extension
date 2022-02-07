@@ -911,8 +911,6 @@ export const signAndSendSwapsSmartTransaction = ({
           smartTransactionFees,
         }),
       );
-      history.push(SMART_TRANSACTION_STATUS_ROUTE);
-      dispatch(setSwapsSTXSubmitLoading(false));
 
       const destinationTokenAddress = destinationTokenInfo.address;
       const destinationTokenDecimals = destinationTokenInfo.decimals;
@@ -939,6 +937,8 @@ export const signAndSendSwapsSmartTransaction = ({
           }),
         );
       }
+      history.push(SMART_TRANSACTION_STATUS_ROUTE);
+      dispatch(setSwapsSTXSubmitLoading(false));
     } catch (e) {
       console.log('signAndSendSwapsSmartTransaction error', e);
       const {
