@@ -33,7 +33,7 @@
     "message": "Code QR invalide. Scannez le code QR de synchronisation du portefeuille matériel."
   },
   "QRHardwareWalletImporterTitle": {
-    "message": "Scannez le QR Code"
+    "message": "Scannez le code QR"
   },
   "QRHardwareWalletSteps1Description": {
     "message": "Connectez un portefeuille matériel sécurisé par air gap qui communique via des codes QR. Les portefeuilles de ce type officiellement pris en charge sont les suivants :"
@@ -48,10 +48,10 @@
     "message": "À propos"
   },
   "aboutSettingsDescription": {
-    "message": "Version, centre d'assistance et coordonnées"
+    "message": "Version, centre d’assistance et coordonnées"
   },
   "acceleratingATransaction": {
-    "message": "* Accélérer une transaction en utilisant un prix de l'essence plus élevé augmente ses chances d'être traitée plus rapidement par le réseau, mais ce n'est pas toujours garanti."
+    "message": "* Accélérer une transaction en utilisant un prix de l’essence plus élevé augmente ses chances d’être traitée plus rapidement par le réseau, mais ce n’est pas toujours garanti."
   },
   "acceptTermsOfUse": {
     "message": "J’ai lu et j’accepte les $1",
@@ -81,7 +81,7 @@
     "message": "Options du compte"
   },
   "accountSelectionRequired": {
-    "message": "Vous devez selectionner un compte !"
+    "message": "Vous devez sélectionner un compte !"
   },
   "active": {
     "message": "Actif"
@@ -90,7 +90,7 @@
     "message": "Activité"
   },
   "activityLog": {
-    "message": "Log d'activité"
+    "message": "Log d’activité"
   },
   "add": {
     "message": "Ajouter"
@@ -102,7 +102,7 @@
     "message": "Ajouter un pseudo"
   },
   "addAcquiredTokens": {
-    "message": "Ajouter les jetons que vous avez acquis par l'intermédiaire de MetaMask"
+    "message": "Ajouter les jetons que vous avez acquis par l’intermédiaire de MetaMask"
   },
   "addAlias": {
     "message": "Ajouter un alias"
@@ -118,7 +118,7 @@
     "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addEthereumChainConfirmationDescription": {
-    "message": "Vous ne trouvez pas un jeton ? Vous pouvez ajouter manuellement n’importe quel jeton en copiant-collant son adresse. Les adresses des contrats de jetons sont disponibles sur $1."
+    "message": "Cela permettra d’utiliser ce réseau dans MetaMask."
   },
   "addEthereumChainConfirmationRisks": {
     "message": "MetaMask ne vérifie pas les réseaux personnalisés."
@@ -147,7 +147,7 @@
     "message": "Ajouter les jetons suggérés"
   },
   "addToAddressBook": {
-    "message": "Ajouter au carnet d'adresses"
+    "message": "Ajouter au carnet d’adresses"
   },
   "addToAddressBookModalPlaceholder": {
     "message": "p. ex. John D."
@@ -186,7 +186,7 @@
     "message": "Les frais de priorité (aussi appelés « pourboire du mineur ») vont directement aux mineurs et les incitent à accorder la priorité à votre transaction."
   },
   "advancedSettingsDescription": {
-    "message": "Accédez aux fonctionnalités pour les développeurs, téléchargez State Logs, réinitialisez votre compte, configurez testnets et personnalisez RPC"
+    "message": "Accédez aux fonctionnalités pour les développeurs, téléchargez les journaux d’état, réinitialisez votre compte, configurez testnets et personnalisez RPC"
   },
   "affirmAgree": {
     "message": "Je suis d’accord"
@@ -280,10 +280,10 @@
     "message": "Actifs"
   },
   "attemptToCancel": {
-    "message": "Tenter d'annuler ?"
+    "message": "Tenter d’annuler ?"
   },
   "attemptToCancelDescription": {
-    "message": "Faire une demande d'annulation ne garantit pas que votre transaction originale sera bien annulée. Dans le cas où l'annulation réussit, vous payerez les frais de transaction indiqués ci-dessus."
+    "message": "Faire une demande d’annulation ne garantit pas que votre transaction originale sera bien annulée. Dans le cas où l’annulation réussit, vous payerez les frais de transaction indiqués ci-dessus."
   },
   "attemptingConnect": {
     "message": "Tentative de connexion au réseau"
@@ -298,7 +298,7 @@
     "message": "Minuterie de déconnexion automatique (minutes)"
   },
   "autoLockTimeLimitDescription": {
-    "message": "Réglez le temps d'inactivité en minutes avant que MetaMask ne se déconnecte automatiquement."
+    "message": "Réglez la durée d’inactivité en minutes avant que MetaMask ne se déconnecte automatiquement."
   },
   "average": {
     "message": "Moyen"
@@ -313,16 +313,16 @@
     "message": "Ce code secret est requis pour récupérer votre portefeuille si jamais vous perdez votre appareil, oubliez votre mot de passe, devez réinstaller MetaMask ou souhaitez accéder à votre portefeuille depuis un autre appareil."
   },
   "backupApprovalNotice": {
-    "message": "Sauvegardez votre code de récupération secret pour garder votre portefeuille et vos fonds en sécurité."
+    "message": "Sauvegardez votre phrase de récupération secret pour garder votre portefeuille et vos fonds en sécurité."
   },
   "backupNow": {
     "message": "Sauvegarder maintenant"
   },
   "balance": {
-    "message": "Balance:"
+    "message": "Solde"
   },
   "balanceOutdated": {
-    "message": "Le solde peut ne pas être à jour"
+    "message": "Le solde n’est peut-être pas à jour"
   },
   "baseFee": {
     "message": "Frais de base"
@@ -334,7 +334,7 @@
     "message": "MetaMask est un portefeuille sécurisé utilisé par des millions de personnes qui rend l’univers du web3 accessible à toutes et à tous."
   },
   "betaMetamaskDescriptionExplanation": {
-    "message": "Utilisez cette version pour tester les futures fonctionnalités avant leur lancement. Votre utilisation et vos commentaires nous aident à développer la meilleure version possible de MetaMask. Votre utilisation de MetaMask Beta est conditionnée par notre norme $1, ainsi que par notre $2. En tant que version bêta, les risques de bogues peuvent être plus élevés. En continuant, vous acceptez et reconnaissez ces risques, ainsi que ceux mentionnés dans nos Conditions d’utilisation et nos Conditions bêta.",
+    "message": "Utilisez cette version pour tester les futures fonctionnalités avant leur lancement. Votre utilisation et vos commentaires nous aident à développer la meilleure version possible de MetaMask. Votre utilisation de MetaMask Beta est conditionnée par notre norme $1, ainsi que par notre $2. Il s’agit de la version bêta, présentant un risque de bogues plus élevé. En continuant, vous acceptez et reconnaissez ce risque, ainsi que ceux mentionnés dans nos Conditions d’utilisation et nos Conditions bêta.",
     "description": "$1 represents localization item betaMetamaskDescriptionExplanationTermsLinkText.  $2 represents localization item betaMetamaskDescriptionExplanationBetaTermsLinkText"
   },
   "betaMetamaskDescriptionExplanationBetaTermsLinkText": {
@@ -375,7 +375,7 @@
     "message": "Utiliser les Identicon Blockies"
   },
   "browserNotSupported": {
-    "message": "Votre navigateur internet n'est pas supporté..."
+    "message": "Votre navigateur internet n’est pas supporté..."
   },
   "buildContactList": {
     "message": "Créez votre liste de contacts"
@@ -390,10 +390,10 @@
     "message": "Acheter"
   },
   "buyWithWyre": {
-    "message": "Acheter ETH avec Wyre"
+    "message": "Acheter des ETH avec Wyre"
   },
   "buyWithWyreDescription": {
-    "message": "Wyre vous permet d'utiliser une carte de crédit pour déposer ETH directement sur votre compte MetaMask."
+    "message": "Wyre vous permet d’utiliser une carte de crédit pour déposer des ETH directement sur votre compte MetaMask."
   },
   "bytes": {
     "message": "Octets"
@@ -414,7 +414,7 @@
     "message": "annuler ou accélérer une transaction."
   },
   "cancellationGasFee": {
-    "message": "Frais en gas de l'annulation"
+    "message": "Frais d’annulation de carburant"
   },
   "cancelled": {
     "message": "Annulé"
@@ -429,7 +429,7 @@
     "message": "Cet ID de chaîne est actuellement utilisé par le réseau $1."
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Pour connecter votre portefeuille hardware, vous devez utiliser MetaMask pour Google Chrome."
+    "message": "Pour connecter votre portefeuille matériel, vous devez utiliser MetaMask pour Google Chrome."
   },
   "clickToConnectLedgerViaWebHID": {
     "message": "Cliquez ici pour connecter votre Ledger via WebHID",
@@ -448,7 +448,7 @@
     "message": "Confirmer le mot de passe"
   },
   "confirmRecoveryPhrase": {
-    "message": "Confirmer la Phrase secrète de récupération"
+    "message": "Confirmer la phrase secrète de récupération"
   },
   "confirmSecretBackupPhrase": {
     "message": "Confirmez votre phrase mnémotechnique "
@@ -475,7 +475,7 @@
     "message": "Connecter un compte ou en créer un nouveau"
   },
   "connectHardwareWallet": {
-    "message": "Connecter un portefeuille hardware"
+    "message": "Connecter un portefeuille matériel"
   },
   "connectManually": {
     "message": "Se connecter manuellement au site actuel"
@@ -582,7 +582,7 @@
     "message": "Copié!"
   },
   "copyAddress": {
-    "message": "Copier l'addresse dans le presse-papier"
+    "message": "Copier l’addresse dans le presse-papier"
   },
   "copyPrivateKey": {
     "message": "Ceci est votre clé privée (cliquez pour copier)"
@@ -594,7 +594,7 @@
     "message": "Copier dans le presse-papier"
   },
   "copyTransactionId": {
-    "message": "Copier l'ID de transaction"
+    "message": "Copier l’ID de transaction"
   },
   "create": {
     "message": "Créer"
@@ -646,7 +646,7 @@
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
   },
   "customGasSubTitle": {
-    "message": "Augmenter le tarif peut faire baisser le temps de traitement, mais cela n'est pas garanti."
+    "message": "Augmenter le tarif peut faire baisser le temps de traitement, mais cela n’est pas garanti."
   },
   "customSpendLimit": {
     "message": "Limite de dépenses personnalisée"
@@ -672,7 +672,7 @@
     "message": "Données"
   },
   "dataBackupFoundInfo": {
-    "message": "Certaines données de votre compte ont été sauvegardées lors d’une installation précédente de MetaMask. Il peut s’agir de vos paramètres, contacts et jetons. Voulez-vous restaurer ces données maintenant ?"
+    "message": "Certaines données de votre compte ont été sauvegardées lors d’une précédente installation de MetaMask. Il peut s’agir de vos paramètres, contacts et jetons. Souhaitez-vous restaurer ces données maintenant ?"
   },
   "dataHex": {
     "message": "Hex"
@@ -690,7 +690,7 @@
     "message": "Copier le message crypté"
   },
   "decryptInlineError": {
-    "message": "Ce message ne peut pas être décrypté suite à une erreur : $1",
+    "message": "Ce message ne peut pas être décrypté à la suite d’une erreur : $1",
     "description": "$1 is error message"
   },
   "decryptMessageNotice": {
@@ -713,7 +713,7 @@
     "message": "Supprimer le réseau ?"
   },
   "deleteNetworkDescription": {
-    "message": "Êtes-vous sûr de vouloir supprimer ce réseau ?"
+    "message": "Souhaitez-vous vraiment supprimer ce réseau ?"
   },
   "description": {
     "message": "Description"
@@ -722,10 +722,10 @@
     "message": "Détails"
   },
   "directDepositEther": {
-    "message": "Dépôt direct d'Ether"
+    "message": "Dépôt direct d’Ether"
   },
   "directDepositEtherExplainer": {
-    "message": "Si vous avez déjà de l'Ether, le moyen le plus rapide d'obtenir des Ether dans votre nouveau portefeuille est par dépôt direct."
+    "message": "Si vous avez déjà de l’Ether, le moyen le plus rapide d’en obtenir dans votre nouveau portefeuille est le dépôt direct."
   },
   "disconnect": {
     "message": "Déconnecter"
@@ -734,7 +734,7 @@
     "message": "Déconnecter tous les comptes"
   },
   "disconnectAllAccountsConfirmationDescription": {
-    "message": "Voulez-vous vraiment vous déconnecter ? Vous risquez de perdre certaines fonctionnalités du site."
+    "message": "Souhaitez-vous vraiment vous déconnecter ? Vous risquez de perdre certaines fonctionnalités du site."
   },
   "disconnectPrompt": {
     "message": "Déconnecter $1"
@@ -746,10 +746,10 @@
     "message": "Annuler"
   },
   "dismissReminderDescriptionField": {
-    "message": "Activez cette option pour annuler le message de rappel de sauvegarde de la Phrase secrète de récupération. Nous vous recommandons fortement de sauvegarder votre Phrase secrète de récupération pour éviter toute perte de fonds"
+    "message": "Activez cette option pour annuler le message de rappel de sauvegarde de la phrase secrète de récupération. Nous vous recommandons fortement de sauvegarder votre phrase secrète de récupération pour éviter toute perte de fonds"
   },
   "dismissReminderField": {
-    "message": "Annuler le rappel de sauvegarde de la Phrase secrète de récupération"
+    "message": "Annuler le rappel de sauvegarde de la phrase secrète de récupération"
   },
   "domain": {
     "message": "Domaine"
@@ -816,7 +816,7 @@
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
   "editGasLimitTooltip": {
-    "message": "La limite de carburant correspond au maximum d’unités de carburant que vous consentez à utiliser. Les unités de carburant servent de multiplicateur aux « Frais de priorité maximaux » et aux « Frais maximaux »."
+    "message": "La limite de carburant correspond au maximum d’unités de carburant que vous consentez à utiliser. Celles-ci servent de multiplicateur aux « Frais de priorité maximaux » et aux « Frais maximaux »."
   },
   "editGasLow": {
     "message": "Bas"
@@ -870,7 +870,7 @@
     "message": "Les frais de carburant doivent être supérieurs à 0"
   },
   "editGasPriceTooltip": {
-    "message": "Ce réseau exige un champ « prix du carburant » lors de la soumission d’une transaction. Le prix du carburant correspond au montant que vous paierez par unité de carburant."
+    "message": "Ce réseau exige un champ « Prix du carburant » lors de la soumission d’une transaction. Le prix du carburant correspond au montant que vous paierez par unité de carburant."
   },
   "editGasSubTextAmountLabel": {
     "message": "Montant maximal :",
@@ -924,22 +924,22 @@
     "message": "Demander la clé publique de cryptage"
   },
   "endOfFlowMessage1": {
-    "message": "Vous avez réussi l'essai : gardez votre phrase de départ en sécurité, c'est de votre responsabilité !"
+    "message": "Vous avez réussi l’essai : gardez votre phrase de départ en sécurité, c’est de votre responsabilité !"
   },
   "endOfFlowMessage10": {
     "message": "Tout est terminé"
   },
   "endOfFlowMessage2": {
-    "message": "Conseils pour le ranger en toute sécurité"
+    "message": "Conseils pour la ranger en toute sécurité"
   },
   "endOfFlowMessage3": {
-    "message": "Sauvegardez une sauvegarde à plusieurs endroits."
+    "message": "Enregistrez une sauvegarde à plusieurs endroits."
   },
   "endOfFlowMessage4": {
     "message": "Ne partagez jamais cette phrase avec qui que ce soit."
   },
   "endOfFlowMessage5": {
-    "message": "Attention à l'hameçonnage ! MetaMask ne vous demandera jamais spontanément votre phrase de départ."
+    "message": "Attention à l’hameçonnage ! MetaMask ne vous demandera jamais spontanément votre phrase de départ."
   },
   "endOfFlowMessage6": {
     "message": "Si vous avez besoin de sauvegarder à nouveau votre phrase de départ, vous pouvez la trouver dans Paramètres -> Sécurité."
@@ -949,7 +949,7 @@
     "description": "$1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "endOfFlowMessage8": {
-    "message": "MetaMask ne peut pas récupérer votre phrase de départ. Renseignez-vous davantage."
+    "message": "MetaMask ne peut pas récupérer votre phrase de départ."
   },
   "endOfFlowMessage9": {
     "message": "En savoir plus."
@@ -968,7 +968,7 @@
     "message": "Le réseau ne prend pas en charge l’ENS"
   },
   "ensRegistrationError": {
-    "message": "Erreur dans l'enregistrement du nom ENS"
+    "message": "Erreur dans l’enregistrement du nom ENS"
   },
   "ensUnknownError": {
     "message": "La recherche d’ENS a échoué."
@@ -1006,7 +1006,7 @@
     "description": "Message displayed on generic error page in the fullscreen or notification UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPagePopupMessage": {
-    "message": "Essayez à nouveau en fermant puis en rouvrant le pop-up, ou contactez le service d’assistance $1.",
+    "message": "Réessayez en fermant puis en rouvrant le pop-up, ou contactez le service d’assistance $1.",
     "description": "Message displayed on generic error page in the popup UI, $1 is a clickable link with text defined by the 'here' key. The link will open to a form where users can file support tickets."
   },
   "errorPageTitle": {
@@ -1028,7 +1028,7 @@
     "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
-    "message": "Adresse publique d'Ethereum"
+    "message": "Adresse publique d’Ethereum"
   },
   "etherscan": {
     "message": "Etherscan"
@@ -1084,7 +1084,7 @@
     "description": "Exchange type"
   },
   "fileImportFail": {
-    "message": "L'importation de fichier ne fonctionne pas? Cliquez ici!",
+    "message": "L’importation de fichier ne fonctionne pas ? Cliquez ici !",
     "description": "Helps user import their account from a JSON file"
   },
   "flaskSnapSettingsCardButtonCta": {
@@ -1103,7 +1103,7 @@
     "message": "Suivez-nous sur Twitter"
   },
   "forbiddenIpfsGateway": {
-    "message": "IPFS Gateway Interdite: veuillez spécifier une gateway CID"
+    "message": "Passerelle IPFS interdite : veuillez spécifier une passerelle CID"
   },
   "forgetDevice": {
     "message": "Oublier cet appareil"
@@ -1135,13 +1135,13 @@
     "message": "Nos estimations basses, moyennes et hautes ne sont pas disponibles."
   },
   "gasLimit": {
-    "message": "Quantité max. de gaz"
+    "message": "Limite carburant"
   },
   "gasLimitInfoTooltipContent": {
-    "message": "La limite d'essence est la quantité maximale d'unités d'essence que vous êtes prêt à dépenser."
+    "message": "La limite de carburant est la quantité maximale d’unités d’essence que vous consentez à dépenser."
   },
   "gasLimitTooLow": {
-    "message": "La quantité max. de gaz doit être d'au moins 21000"
+    "message": "La limite de carburant doit être d’au moins 21000"
   },
   "gasLimitTooLowWithDynamicFee": {
     "message": "La limite de carburant doit être d’au moins $1",
@@ -1154,7 +1154,7 @@
     "message": "Option de carburant"
   },
   "gasPrice": {
-    "message": "Prix du gaz (GWEI)"
+    "message": "Prix du carburant (GWEI)"
   },
   "gasPriceExcessive": {
     "message": "Vos frais de carburant sont inutilement élevés. Songez à les réduire."
@@ -1163,13 +1163,13 @@
     "message": "Les frais de carburant sont excessifs"
   },
   "gasPriceExtremelyLow": {
-    "message": "Prix de l'essence extrêmement bas"
+    "message": "Prix de carburant extrêmement bas"
   },
   "gasPriceFetchFailed": {
     "message": "L’estimation du prix du carburant a échoué en raison d’une erreur de réseau."
   },
   "gasPriceInfoTooltipContent": {
-    "message": "Le prix du gaz spécifie la quantité d'Ethers que vous acceptez de payer pour chaque unité de gaz."
+    "message": "Le prix du carburant indique la quantité d’Ether que vous acceptez de payer pour chaque unité de carburant."
   },
   "gasTimingHoursShort": {
     "message": "$1 h",
@@ -1204,10 +1204,10 @@
     "description": "$1 represents an amount of time"
   },
   "gasUsed": {
-    "message": "Essence utilisée"
+    "message": "Carburant utilisé"
   },
   "gdprMessage": {
-    "message": "Ces données sont agrégées et sont donc anonymes aux fins du règlement général sur la protection des données (UE) 2016/679. Pour plus d’informations concernant nos pratiques en matière de confidentialité, veuillez consulter nos $1.",
+    "message": "Ces données sont agrégées et sont donc anonymes aux fins du règlement général sur la protection des données (UE) 2016/679. Pour plus d’informations concernant nos pratiques en matière de confidentialité, veuillez consulter notre $1.",
     "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
   },
   "gdprMessagePrivacyPolicy": {
@@ -1224,7 +1224,7 @@
     "message": "Obtenir des Ether"
   },
   "getEtherFromFaucet": {
-    "message": "Obtenir de l'Ether d'une faucet pour $1",
+    "message": "Obtenir de l’Ether d’une faucet pour $1",
     "description": "Displays network name for Ether faucet"
   },
   "getStarted": {
@@ -1246,7 +1246,7 @@
     "message": "Matériel"
   },
   "hardwareWalletConnected": {
-    "message": "Portefeuille hardware connecté"
+    "message": "Portefeuille matériel connecté"
   },
   "hardwareWalletLegacyDescription": {
     "message": "(hérité)",
@@ -1256,23 +1256,23 @@
     "message": "cliquez ici"
   },
   "hardwareWallets": {
-    "message": "Connecter un portefeuille hardware"
+    "message": "Connecter un portefeuille matériel"
   },
   "hardwareWalletsMsg": {
-    "message": "Selectionnez le portefeuille hardware que vous voulez utiliser avec MetaMask"
+    "message": "Selectionnez le portefeuille matériel que vous voulez utiliser avec MetaMask"
   },
   "here": {
     "message": "ici",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
   },
   "hexData": {
-    "message": "Data Hex"
+    "message": "Données Hex"
   },
   "hide": {
-    "message": "Cacher"
+    "message": "Masquer"
   },
   "hideTokenPrompt": {
-    "message": "Masquer le jeton?"
+    "message": "Masquer le jeton ?"
   },
   "hideTokenSymbol": {
     "message": "Masquer $1",
@@ -1305,10 +1305,10 @@
     "message": "Erreur d’importation de compte."
   },
   "importAccountLinkText": {
-    "message": "importer en utilisant la Phrase secrète de récupération"
+    "message": "importer en utilisant la phrase secrète de récupération"
   },
   "importAccountMsg": {
-    "message": " Les comptes importés ne seront pas associés avec votre phrase Seed que vous avez créé au départ dans MetaMask. Obtenir plus d'information sur les comptes importés"
+    "message": "Les comptes importés ne seront pas associés à la phrase secrète de récupération que vous avez créée au départ dans MetaMask. En savoir plus sur les comptes importés"
   },
   "importAccountSeedPhrase": {
     "message": "Importez un compte avec une phrase mnémotechnique"
@@ -1318,11 +1318,11 @@
     "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
-    "message": "Saisissez la Phrase secrète de récupération (aussi appelée « phrase mnémonique » ou « seed ») qui vous a été attribuée lors de la création de votre portefeuille. $1",
+    "message": "Saisissez la phrase secrète de récupération (aussi appelée « phrase mnémonique » ou « seed ») qui vous a été attribuée lors de la création de votre portefeuille. $1",
     "description": "$1 is the words 'Learn More' from key 'learnMore', separated here so that it can be added as a link"
   },
   "importExistingWalletTitle": {
-    "message": "Importer un portefeuille existant avec la Phrase secrète de récupération"
+    "message": "Importer un portefeuille existant avec la phrase secrète de récupération"
   },
   "importMyWallet": {
     "message": "Importer mon portefeuille"
@@ -1346,7 +1346,7 @@
     "message": "Importer le portefeuille"
   },
   "importYourExisting": {
-    "message": "Importez votre portefeuille existant à l’aide d’une Phrase secrète de récupération"
+    "message": "Importez votre portefeuille existant à l’aide d’une phrase secrète de récupération"
   },
   "imported": {
     "message": "Importé",
@@ -1357,7 +1357,7 @@
     "description": "$1 is a clickable link with with text defined by the 'here' key"
   },
   "initialTransactionConfirmed": {
-    "message": "Votre transaction initiale a été confirmée par le réseau. Cliquez sur OK pour retourner à l'écran précédent."
+    "message": "Votre transaction initiale a été confirmée par le réseau. Cliquez sur OK pour retourner à l’écran précédent."
   },
   "insufficientBalance": {
     "message": "Solde insuffisant."
@@ -1375,13 +1375,13 @@
     "message": "Adresse invalide"
   },
   "invalidAddressRecipient": {
-    "message": "L'adresse du destinataire n'est pas valide"
+    "message": "L’adresse du destinataire n’est pas valide"
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Pas de réseau ETH, régler en minuscules"
   },
   "invalidBlockExplorerURL": {
-    "message": "URL de l'explorateur de blocs invalide"
+    "message": "URL de l’explorateur de blocs invalide"
   },
   "invalidChainIdTooBig": {
     "message": "ID de chaîne invalide. L’ID de la chaîne est trop grand."
@@ -1407,25 +1407,25 @@
     "message": "Numéro hexadécimal invalide. Supprimez tous les zéros non significatifs."
   },
   "invalidIpfsGateway": {
-    "message": "IPFS Gateway Invalide: la valeur doit être une URL valide"
+    "message": "Passerelle IPFS invalide : la valeur doit être une URL valide"
   },
   "invalidNumber": {
     "message": "Numéro invalide. Saisissez un nombre décimal ou hexadécimal avec le préfixe « 0x »."
   },
   "invalidNumberLeadingZeros": {
-    "message": "Numéro invalide. Supprimez tous les zéros non significatifs."
+    "message": "Numéro invalide. Supprimez tous les zéros en tête."
   },
   "invalidRPC": {
     "message": "URL RPC invalide"
   },
   "invalidSeedPhrase": {
-    "message": "Phrase Seed invalide"
+    "message": "Phrase secrète de récupération invalide"
   },
   "ipfsGateway": {
     "message": "Passerelle IPFS"
   },
   "ipfsGatewayDescription": {
-    "message": "Entrez l'URL de la gateway CID IPFS à utiliser pour résoudre les contenus ENS."
+    "message": "Entrez l’URL de la passerelle CID IPFS à utiliser pour résoudre les contenus ENS."
   },
   "jsDeliver": {
     "message": "jsDeliver"
@@ -1456,7 +1456,7 @@
     "message": "Frais de couche 1 (L1)"
   },
   "learmMoreAboutGas": {
-    "message": "Voulez-vous $1 à propos du carburant ?"
+    "message": "Souhaitez-vous $1 sur le carburant ?"
   },
   "learnCancelSpeeedup": {
     "message": "Découvrir comment $1",
@@ -1472,7 +1472,7 @@
     "message": "hameçonnages et risques de sécurité."
   },
   "ledgerAccountRestriction": {
-    "message": "Vous devez d'abord utiliser le dernier compte que vous avez créé avant de pouvoir en créer un autre."
+    "message": "Vous devez d’abord utiliser le dernier compte que vous avez créé avant de pouvoir en ajouter un nouveau."
   },
   "ledgerConnectionInstructionCloseOtherApps": {
     "message": "Fermez tout autre logiciel connecté à votre appareil, puis cliquez ici pour actualiser."
@@ -1487,17 +1487,17 @@
     "message": "Activez l’option « Utiliser Ledger Live » sous Paramètres > Avancés"
   },
   "ledgerConnectionInstructionStepThree": {
-    "message": "Branchez votre dispositif Ledger et sélectionnez l’appli Ethereum"
+    "message": "Branchez votre dispositif Ledger et sélectionnez l’application Ethereum"
   },
   "ledgerConnectionInstructionStepTwo": {
-    "message": "Ouvrez et déverrouillez l’appli Ledger Live"
+    "message": "Ouvrez et déverrouillez l’application Ledger Live"
   },
   "ledgerConnectionPreferenceDescription": {
     "message": "Personnalisez la façon dont vous souhaitez connecter votre Ledger à MetaMask. $1 est recommandé, mais d’autres options sont disponibles. En savoir plus ici : $2",
     "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
   },
   "ledgerDeviceOpenFailureMessage": {
-    "message": "Le dispositif Ledger n’a pas pu s’ouvrir. Votre Ledger est peut-être connecté à d’autres logiciels. Veuillez fermer Ledger Live ou toute autre appli connectée à votre périphérique Ledger, puis essayez de vous connecter à nouveau."
+    "message": "Le dispositif Ledger n’a pas pu s’ouvrir. Il est peut-être connecté à d’autres logiciels. Veuillez fermer Ledger Live ou toute autre application déjà connectée à celui-ci, puis essayez de vous reconnecter."
   },
   "ledgerLive": {
     "message": "Ledger Live",
@@ -1507,13 +1507,13 @@
     "message": "Appli Ledger Live"
   },
   "ledgerLocked": {
-    "message": "Impossible de se connecter au dispositif Ledger. Veuillez vous assurer que votre périphérique est déverrouillé et que l’appli Ethereum est ouverte."
+    "message": "Impossible de se connecter au dispositif Ledger. Veuillez vous assurer que votre périphérique est déverrouillé et que l’application Ethereum est ouverte."
   },
   "ledgerTimeout": {
-    "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l’appli Ledger Live est bien ouverte et que votre appareil est déverrouillé."
+    "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l’application Ledger Live est bien ouverte et que votre appareil est déverrouillé."
   },
   "ledgerTransportChangeWarning": {
-    "message": "Si l’appli Ledger Live est ouverte, déconnectez toute connexion à celle-ci en cours et fermez l’appli."
+    "message": "Si l’application Ledger Live est ouverte, désactivez toute connexion en cours à celle-ci et fermez-la."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Le dispositif Ledger n’est pas connecté. Si vous souhaitez le connecter, veuillez cliquer à nouveau sur « Continuer » et approuver la connexion au HID",
@@ -1573,7 +1573,7 @@
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
   "max": {
-    "message": "Max"
+    "message": "Max."
   },
   "maxBaseFee": {
     "message": "Frais de base maximaux"
@@ -1625,7 +1625,7 @@
     "message": "Toujours pouvoir se désinscrire via les Paramètres"
   },
   "metametricsCommitmentsBoldNever": {
-    "message": "jamais",
+    "message": "Jamais",
     "description": "This string is localized separately from some of the commitments so that we can bold it"
   },
   "metametricsCommitmentsIntro": {
@@ -1659,7 +1659,7 @@
     "message": "Aidez-nous à améliorer MetaMask"
   },
   "metametricsOptInDescription": {
-    "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment nos utilisateurs interagissent avec l’extension. Ces données seront utilisées pour améliorer en permanence la convivialité et l’expérience utilisateur de notre produit et de l’écosystème Ethereum."
+    "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment nos utilisateurs interagissent avec l’extension. Elles seront utilisées pour améliorer en permanence la convivialité et l’expérience utilisateur de notre produit et de l’écosystème Ethereum."
   },
   "metametricsOptInDescription2": {
     "message": "Nous aimerions recueillir des données d’utilisation de base pour améliorer la convivialité de notre produit. Ces indicateurs seront…"
@@ -1682,10 +1682,10 @@
     "message": "Vous ne voyez pas votre jeton ?"
   },
   "mobileSyncWarning": {
-    "message": "La fonction « Synchronisation avec l’extension » est temporairement désactivée. Si vous souhaitez utiliser votre portefeuille d’extension sur MetaMask mobile : sur votre appli mobile, revenez aux options de configuration du portefeuille et sélectionnez l’option « Importation avec Phrase secrète de récupération ». Utilisez la phrase secrète de votre portefeuille d’extension pour importer celui-ci sur votre mobile."
+    "message": "La fonction « Synchronisation avec l’extension » est temporairement désactivée. Si vous souhaitez utiliser votre portefeuille d’extension sur MetaMask mobile : sur votre application mobile, revenez aux options de configuration du portefeuille et sélectionnez l’option « Importation avec la phrase secrète de récupération ». Utilisez la phrase secrète de votre portefeuille d’extension pour importer celui-ci sur votre mobile."
   },
   "mustSelectOne": {
-    "message": "Vous devez selectionner au moins 1 jeton."
+    "message": "Vous devez sélectionner au moins 1 jeton."
   },
   "myAccounts": {
     "message": "Mes comptes"
@@ -1711,7 +1711,7 @@
     "description": "User is important an account and needs to add a file to continue"
   },
   "negativeETH": {
-    "message": "Vous ne pouvez envoyer des montants négatifs d'ETH."
+    "message": "Vous ne pouvez envoyer des montants négatifs d’ETH."
   },
   "networkDetails": {
     "message": "Détails du réseau"
@@ -1773,7 +1773,7 @@
     "message": "Nouveau compte"
   },
   "newAccountDetectedDialogMessage": {
-    "message": "Nouvelle adresse détectée ! Cliquez ici pour ajouter à votre carnet d'adresses."
+    "message": "Nouvelle adresse détectée ! Cliquez ici pour ajouter à votre carnet d’adresses."
   },
   "newAccountNumberName": {
     "message": "Compte $1",
@@ -1835,13 +1835,13 @@
     "message": "Aucun compte trouvé pour la demande de recherche effectuée"
   },
   "noAddressForName": {
-    "message": "Aucune adresse n'a été définie pour ce nom."
+    "message": "Aucune adresse n’a été définie pour ce nom."
   },
   "noAlreadyHaveSeed": {
-    "message": "Non, j'ai déjà une phrase mnémotechnique"
+    "message": "Non, j’ai déjà une phrase mnémotechnique"
   },
   "noConversionDateAvailable": {
-    "message": "Aucun taux de conversion de devise disponible"
+    "message": "Aucune date de conversion de devises disponible"
   },
   "noConversionRateAvailable": {
     "message": "Aucun taux de conversion disponible"
@@ -1856,7 +1856,7 @@
     "message": "Aucune transaction"
   },
   "noWebcamFound": {
-    "message": "La caméra de votre ordinateur n'a pas été trouvée. Veuillez réessayer."
+    "message": "La caméra de votre ordinateur n’a pas été trouvée. Veuillez réessayer."
   },
   "noWebcamFoundTitle": {
     "message": "Webcam introuvable"
@@ -1880,10 +1880,10 @@
     "message": "S’agit-il du bon compte ? Il est différent de celui actuellement sélectionné dans votre portefeuille"
   },
   "notEnoughGas": {
-    "message": "Pas assez d'essence"
+    "message": "Pas assez de carburant"
   },
   "notifications1Description": {
-    "message": "Les utilisateurs de MetaMask Mobile peuvent désormais échanger des jetons dans leur portefeuille mobile. Scannez le code QR pour obtenir l’appli mobile et commencez à échanger.",
+    "message": "Les utilisateurs de MetaMask Mobile peuvent désormais échanger des jetons dans leur portefeuille mobile. Scannez le code QR pour obtenir l’application mobile et commencez à échanger.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
   },
   "notifications1Title": {
@@ -1895,7 +1895,7 @@
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
   },
   "notifications3Description": {
-    "message": "Restez à jour sur les meilleures pratiques de sécurité de MetaMask et bénéficiez des derniers conseils de sécurité du service d’assistance officiel de MetaMask.",
+    "message": "Informez-vous régulièrement sur les pratiques de sécurité conseillées par MetaMask et bénéficiez des derniers conseils de son service d’assistance officiel en la matière.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
   },
   "notifications3Title": {
@@ -1915,15 +1915,15 @@
     "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
   },
   "notifications5Description": {
-    "message": "Votre « phrase mnémonique » devient votre « Phrase secrète de récupération ».",
+    "message": "Votre « phrase mnémonique » devient votre « phrase secrète de récupération ».",
     "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
   },
   "notifications6DescriptionOne": {
-    "message": "Depuis la version 91 de Chrome, l’API qui permettait la prise en charge de notre Ledger (U2F) ne gère plus les portefeuilles matériels. MetaMask a donc mis en place un nouveau système de prise en charge de Ledger Live qui vous permet de continuer à vous connecter à votre appareil Ledger via l’appli Ledger Live.",
+    "message": "Depuis la version 91 de Chrome, l’API qui permettait la prise en charge de notre Ledger (U2F) ne gère plus les portefeuilles matériels. MetaMask a donc mis en place un nouveau système de prise en charge de Ledger Live qui vous permet de continuer à vous connecter à votre appareil Ledger via l’application Ledger Live.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionThree": {
-    "message": "Lorsque vous interagissez avec votre compte Ledger dans MetaMask, un nouvel onglet s’ouvre et vous êtes invité·e à ouvrir l’appli Ledger Live. Une fois l’appli lancée, vous serez prié·e d’autoriser une connexion WebSocket à votre compte MetaMask. Et le tour est joué !",
+    "message": "Lorsque vous interagissez avec votre compte Ledger dans MetaMask, un nouvel onglet s’ouvre et vous invite à ouvrir l’application Ledger Live. Une fois celle-ci lancée, vous devrez autoriser une connexion WebSocket à votre compte MetaMask. Et le tour est joué !",
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionTwo": {
@@ -2051,7 +2051,7 @@
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "optional": {
-    "message": "Optionnel"
+    "message": "Facultatif"
   },
   "optionalWithParanthesis": {
     "message": "(Facultatif)"
@@ -2110,7 +2110,7 @@
     "message": "Autorisations"
   },
   "personalAddressDetected": {
-    "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l'adresse du contrat du jeton."
+    "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
   },
   "plusXMore": {
     "message": "+ $1 de plus",
@@ -2127,7 +2127,7 @@
     "message": "Devise principale"
   },
   "primaryCurrencySettingDescription": {
-    "message": "Sélectionnez « natif » pour donner la priorité à l'affichage des valeurs dans la devise native de la chaîne (par ex. ETH). Sélectionnez « fiduciaire » pour donner la priorité à l'affichage des valeurs dans la devise de votre choix."
+    "message": "Sélectionnez « natif » pour donner la priorité à l’affichage des valeurs dans la devise native de la chaîne (par ex. ETH). Sélectionnez « fiduciaire » pour donner la priorité à l’affichage des valeurs dans la devise de votre choix."
   },
   "priorityFee": {
     "message": "Frais de priorité"
@@ -2136,14 +2136,14 @@
     "message": "Frais de priorité"
   },
   "privacyMsg": {
-    "message": "Politique de Confidentialité"
+    "message": "Politique de confidentialité"
   },
   "privateKey": {
     "message": "Clé privée",
     "description": "select this type of file to use to import an account"
   },
   "privateKeyWarning": {
-    "message": "Avertissement: Ne divulguez jamais cette clé, quiconque avec vos clés privées peut voler tous les actifs de votre compte."
+    "message": "Avertissement : ne divulguez jamais cette clé, quiconque possède vos clés privées peut voler tous les actifs de votre compte."
   },
   "privateNetwork": {
     "message": "Réseau privé"
@@ -2161,13 +2161,13 @@
     "message": "Adresse publique"
   },
   "queue": {
-    "message": "File d'attente"
+    "message": "File d’attente"
   },
   "queued": {
     "message": "En attente"
   },
   "readdToken": {
-    "message": "Vous pourrez ajouter à nouveau ce jeton en allant sur “Ajouter un jeton” dans le menu des options de votre compte."
+    "message": "Vous pourrez ajouter à nouveau ce jeton en allant sur « Ajouter un jeton » dans le menu des options de votre compte."
   },
   "receive": {
     "message": "Recevoir"
@@ -2188,19 +2188,19 @@
     "message": "C’est compris !"
   },
   "recoveryPhraseReminderHasBackedUp": {
-    "message": "Conservez toujours votre Phrase secrète de récupération dans un endroit sûr et secret"
+    "message": "Conservez toujours votre phrase secrète de récupération dans un endroit sûr et secret"
   },
   "recoveryPhraseReminderHasNotBackedUp": {
-    "message": "Vous avez besoin de sauvegarder à nouveau votre Phrase secrète de récupération ?"
+    "message": "Vous avez besoin de sauvegarder à nouveau votre phrase secrète de récupération ?"
   },
   "recoveryPhraseReminderItemOne": {
-    "message": "Ne partagez jamais votre Phrase secrète de récupération avec qui que ce soit"
+    "message": "Ne partagez jamais votre phrase secrète de récupération avec qui que ce soit"
   },
   "recoveryPhraseReminderItemTwo": {
-    "message": "L’équipe MetaMask ne vous demandera jamais votre Phrase secrète de récupération"
+    "message": "L’équipe MetaMask ne vous demandera jamais votre phrase secrète de récupération"
   },
   "recoveryPhraseReminderSubText": {
-    "message": "Votre Phrase secrète de récupération contrôle tous vos comptes."
+    "message": "Votre phrase secrète de récupération contrôle tous vos comptes."
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protégez vos fonds"
@@ -2215,7 +2215,7 @@
     "message": "Tout rejeter"
   },
   "rejectTxsDescription": {
-    "message": "Vous êtes sur le point de rejetter en groupe les transactions $1."
+    "message": "Vous êtes sur le point de rejeter en groupe les transactions $1."
   },
   "rejectTxsN": {
     "message": "Rejeter les transactions $1"
@@ -2224,7 +2224,7 @@
     "message": "Rejeté"
   },
   "remember": {
-    "message": "Rappel :"
+    "message": "Rappel :"
   },
   "remindMeLater": {
     "message": "Rappelez-moi plus tard"
@@ -2236,13 +2236,13 @@
     "message": "Suprimer le compte"
   },
   "removeAccountDescription": {
-    "message": "Ce compte va être supprimé de votre portefeuille. Veuillez vérifier que vous avez la phrase Seed originale de ce compte ou la clé privée pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu des comptes."
+    "message": "Ce compte va être supprimé de votre portefeuille. Veuillez vérifier que vous avez la phrase secrète de récupération originale de ce compte ou la clé privée pour ce compte importé avant de continuer. Vous pouvez importer ou créer à nouveau des comptes à partir du menu des comptes. "
   },
   "removeNFT": {
     "message": "Supprimer le NFT"
   },
   "requestsAwaitingAcknowledgement": {
-    "message": "demandes en attente d'un accusé de réception"
+    "message": "demandes en attente d’un accusé de réception"
   },
   "required": {
     "message": "Obligatoire"
@@ -2254,7 +2254,7 @@
     "message": "Reinitialiser le compte"
   },
   "resetAccountDescription": {
-    "message": "Reinitialiser votre compte va effacer votre historique de transactions."
+    "message": "La réinitialisation de votre compte effacera l’historique de vos transactions. Les soldes de vos comptes ne seront pas modifiés. Vous ne serez pas obligé de saisir à nouveau votre phrase secrète de récupération."
   },
   "restore": {
     "message": "Restaurer"
@@ -2273,16 +2273,16 @@
     "message": "L’un de ces jetons réutilise le symbole d’un autre jeton que vous surveillez, ce qui peut être déroutant ou trompeur."
   },
   "revealSeedWords": {
-    "message": "Révéler les mots Seed"
+    "message": "Révéler la phrase secrète de récupération"
   },
   "revealSeedWordsDescription": {
-    "message": "Si jamais vous changez de navigateur ou d'ordinateur, vos aurez besoin de cette phrase seed pour accéder à vos comptes. Sauvegardez la quelque part de sûr et secret."
+    "message": "Si jamais vous changez de navigateur ou d’ordinateur, vous aurez besoin de cette phrase secrète de récupération pour accéder à vos comptes. Sauvegardez-la dans un emplacement sûr et secret."
   },
   "revealSeedWordsWarning": {
     "message": "Ces mots peuvent être utilisés pour voler tous vos comptes."
   },
   "revealSeedWordsWarningTitle": {
-    "message": "Ne communiquez PAS cette phrase à quelqu'un !"
+    "message": "Ne communiquez PAS cette phrase à quelqu’un !"
   },
   "rinkeby": {
     "message": "Réseau de test Rinkeby"
@@ -2300,10 +2300,10 @@
     "message": "Enregistrer comme fichier CSV"
   },
   "scanInstructions": {
-    "message": "Placez le QR code devant votre appareil photo"
+    "message": "Placez le code QR devant votre appareil photo"
   },
   "scanQrCode": {
-    "message": "Scannez le QR Code"
+    "message": "Scannez le code QR"
   },
   "scrollDown": {
     "message": "Faites défiler vers le bas"
@@ -2324,16 +2324,16 @@
     "message": "Votre phrase de sauvegarde secrète facilite la sauvegarde et la restauration de votre compte."
   },
   "secretBackupPhraseWarning": {
-    "message": "AVERTISSEMENT : ne révélez jamais votre phrase de sauvegarde. N'importe qui avec cette phrase peut voler votre Ether pour toujours."
+    "message": "AVERTISSEMENT : ne révélez jamais votre phrase secrète de récupération. N’importe peut l’utiliser et définitivement voler votre compte Ether."
   },
   "secretPhrase": {
     "message": "Seul le premier compte de ce portefeuille sera chargé automatiquement. Après avoir terminé ce processus, pour ajouter des comptes supplémentaires, cliquez sur le menu déroulant, puis sélectionnez Créer un compte."
   },
   "secretPhraseWarning": {
-    "message": "Si vous effectuez une restauration à l’aide d’une autre Phrase secrète de récupération, votre portefeuille, vos comptes et vos actifs actuels seront définitivement supprimés de cette appli. Cette action est irréversible."
+    "message": "Si vous effectuez une restauration à l’aide d’une autre phrase secrète de récupération, votre portefeuille, vos comptes et vos actifs actuels seront définitivement supprimés de cette application. Cette action est irréversible."
   },
   "secretRecoveryPhrase": {
-    "message": "Confirmer la Phrase secrète de récupération"
+    "message": "Phrase secrète de récupération"
   },
   "secureWallet": {
     "message": "Portefeuille sécurisé"
@@ -2345,10 +2345,10 @@
     "message": "Paramètres de confidentialité et phrase de départ du portefeuille"
   },
   "seedPhraseConfirm": {
-    "message": "Confirmer la Phrase secrète de récupération"
+    "message": "Confirmer la phrase secrète de récupération"
   },
   "seedPhraseEnterMissingWords": {
-    "message": "Confirmer la Phrase secrète de récupération"
+    "message": "Confirmer la phrase secrète de récupération"
   },
   "seedPhraseIntroNotRecommendedButtonCopy": {
     "message": "Me le rappeler plus tard (non recommandé)"
@@ -2357,7 +2357,7 @@
     "message": "Sécuriser mon portefeuille (recommandé)"
   },
   "seedPhraseIntroSidebarBulletFour": {
-    "message": "Noter et conserver dans plusieurs endroits secrets."
+    "message": "Notez-la et conservez-la dans plusieurs endroits secrets."
   },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Sauvegarder dans un gestionnaire de mots de passe"
@@ -2369,73 +2369,73 @@
     "message": "Stocker dans un coffre-fort de banque."
   },
   "seedPhraseIntroSidebarCopyOne": {
-    "message": "Votre Phrase secrète de récupération est une formule de 12 mots qui constitue la « clé maîtresse » de votre portefeuille et de vos fonds"
+    "message": "Votre phrase secrète de récupération est une formule de 12 mots qui constitue la « clé maîtresse » de votre portefeuille et de vos fonds"
   },
   "seedPhraseIntroSidebarCopyThree": {
     "message": "Si quelqu’un vous demande votre phrase de récupération, il est probable qu’il essaie de vous arnaquer pour dérober les fonds de votre portefeuille"
   },
   "seedPhraseIntroSidebarCopyTwo": {
-    "message": "Ne partagez jamais, au grand jamais, votre Phrase secrète de récupération, pas même avec MetaMask !"
+    "message": "Ne partagez jamais, au grand jamais, votre phrase secrète de récupération, pas même avec MetaMask !"
   },
   "seedPhraseIntroSidebarTitleOne": {
-    "message": "Qu’est-ce qu’une Phrase secrète de récupération ?"
+    "message": "Qu’est-ce qu’une phrase secrète de récupération ?"
   },
   "seedPhraseIntroSidebarTitleThree": {
-    "message": "Dois-je partager ma Phrase secrète de récupération ?"
+    "message": "Dois-je partager ma phrase secrète de récupération ?"
   },
   "seedPhraseIntroSidebarTitleTwo": {
-    "message": "Comment puis-je sauvegarder ma Phrase secrète de récupération ?"
+    "message": "Comment puis-je sauvegarder ma phrase secrète de récupération ?"
   },
   "seedPhraseIntroTitle": {
-    "message": "Sécurisez votre portefeuille"
+    "message": "Sécuriser votre portefeuille"
   },
   "seedPhraseIntroTitleCopy": {
-    "message": "Avant de commencer, regardez cette courte vidéo pour vous renseigner sur votre Phrase secrète de récupération et sur la manière de sécuriser votre portefeuille."
+    "message": "Avant de commencer, regardez cette courte vidéo pour vous informer sur votre phrase secrète de récupération et sur la manière de sécuriser votre portefeuille."
   },
   "seedPhrasePlaceholder": {
-    "message": "Separez chaque mot avec un espace simple"
+    "message": "Séparez chaque mot par un espace simple"
   },
   "seedPhrasePlaceholderPaste": {
     "message": "Collez la Phrase secrète de récupération depuis le presse-papiers"
   },
   "seedPhraseReq": {
-    "message": "Les phrases Seed sont composées de 12 mots"
+    "message": "Les phrases secrètes de récupération sont composées de 12, 15, 18, 21 ou 24 mots"
   },
   "seedPhraseWriteDownDetails": {
-    "message": "Notez cette Phrase secrète de récupération de 12 mots et stockez-la dans un endroit de confiance où vous seul avez accès."
+    "message": "Notez cette phrase secrète de récupération de 12 mots et stockez-la dans un endroit de confiance où vous seul avez accès."
   },
   "seedPhraseWriteDownHeader": {
-    "message": "Notez votre Phrase secrète de récupération"
+    "message": "Notez votre phrase secrète de récupération"
   },
   "selectAHigherGasFee": {
-    "message": "Choisissez des frais d'essence plus élevés pour accélérer le traitement de votre transaction*."
+    "message": "Choisissez des frais de carburant plus élevés pour accélérer le traitement de votre transaction*."
   },
   "selectAccounts": {
-    "message": "Sélectionnez le ou les comptes à utiliser sur ce site"
+    "message": "Sélectionnez le(s) compte(s) à utiliser sur ce site"
   },
   "selectAll": {
     "message": "Tout sélectionner"
   },
   "selectAnAccount": {
-    "message": "Selectionner un compte"
+    "message": "Sélectionner un compte"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Ce compte a déjà été connecté à MetaMask"
   },
   "selectEachPhrase": {
-    "message": "Veuillez sélectionner chaque phrase afin de vous assurer qu'elle est correcte."
+    "message": "Veuillez sélectionner chaque phrase afin de vous assurer qu’elle est correcte."
   },
   "selectHdPath": {
-    "message": "Selectioner le \"Path HD\""
+    "message": "Sélectionner le chemin HD"
   },
   "selectNFTPrivacyPreference": {
     "message": "Activez la détection de NFT dans les Paramètres"
   },
   "selectPathHelp": {
-    "message": "Si vos comptes Ledger n'apparaissent pas ci-dessous, essayez de selectionner le path \"Legacy (MEW / MyCrypto)\""
+    "message": "Si vos comptes n’apparaissent pas ci-dessous, essayez de sélectionner le chemin HD."
   },
   "selectType": {
-    "message": "Selectionner le type"
+    "message": "Sélectionner le type"
   },
   "selectingAllWillAllow": {
     "message": "En sélectionnant tout, vous autorisez ce site à voir tous vos comptes actuels. Assurez-vous de bien avoir confiance en ce site."
@@ -2473,10 +2473,10 @@
     "message": "Afficher"
   },
   "showAdvancedGasInline": {
-    "message": "Contrôles d'essence avancés"
+    "message": "Contrôles de carburant avancés"
   },
   "showAdvancedGasInlineDescription": {
-    "message": "Sélectionnez cette option pour afficher le prix de l'essence et les contrôles des limites directement sur les écrans d'envoi et de confirmation."
+    "message": "Sélectionnez cette option pour afficher le prix du carburant et les contrôles des limites directement sur les écrans d’envoi et de confirmation."
   },
   "showFiatConversionInTestnets": {
     "message": "Afficher la conversion sur Testnets"
@@ -2488,7 +2488,7 @@
     "message": "Afficher les données Hex"
   },
   "showHexDataDescription": {
-    "message": "Selectionner ici pour afficher le champs de données hex dans l'écran d'envoi"
+    "message": "Selectionner ici pour afficher le champs de données hex dans l’écran d’envoi"
   },
   "showHide": {
     "message": "Afficher/masquer"
@@ -2509,7 +2509,7 @@
     "message": "Afficher les recommandations"
   },
   "showSeedPhrase": {
-    "message": "Afficher la Phrase secrète de récupération"
+    "message": "Afficher la phrase secrète de récupération"
   },
   "showTestnetNetworks": {
     "message": "Afficher les réseaux de test"
@@ -2524,7 +2524,7 @@
     "message": "Signer"
   },
   "signNotice": {
-    "message": "La signature de ce message peut avoir des effets secondaires \ndangereux. Signer uniquement les messages de \nsites auxquels vous faites entièrement confiance avec votre compte.\n Cette méthode dangereuse sera supprimée dans une future version."
+    "message": "La signature de ce message peut avoir des effets secondaires dangereux, interférant en votre nom via le contrôle de votre compte et de ses actifs par le site demandeur. Signez uniquement les messages de sites auxquels vous faites entièrement confiance."
   },
   "signatureRequest": {
     "message": "Demande de Signature"
@@ -2548,7 +2548,7 @@
     "message": "Renoncer à la sécurité des comptes ?"
   },
   "skipAccountSecurityDetails": {
-    "message": "Je suis conscient·e que tant que je n’aurai pas sauvegardé ma Phrase secrète de récupération, je risque de perdre mes comptes et tous leurs actifs."
+    "message": "Je suis conscient(e) que tant que je n’aurai pas sauvegardé ma phrase secrète de récupération, je risque de perdre mes comptes et tous leurs actifs."
   },
   "slow": {
     "message": "Lente"
@@ -2560,7 +2560,7 @@
     "message": "Source"
   },
   "speedUp": {
-    "message": "accélérer"
+    "message": "Accélérer"
   },
   "speedUpCancellation": {
     "message": "Accélérer cette annulation"
@@ -2603,16 +2603,16 @@
     "message": "stable"
   },
   "stateLogError": {
-    "message": "Erreur lors du chargement des logs d'Etat."
+    "message": "Erreur lors du chargement des journaux d’état."
   },
   "stateLogFileName": {
-    "message": "Registres d’état MetaMask"
+    "message": "Journaux d’état MetaMask"
   },
   "stateLogs": {
-    "message": "Logs d'Etat"
+    "message": "Journaux d’état"
   },
   "stateLogsDescription": {
-    "message": "Les logs d'Etat contiennent les adresses publiques de vos comptes et vos transactions envoyées."
+    "message": "Les journaux d’état contiennent les adresses publiques de vos comptes et vos transactions envoyées."
   },
   "statusConnected": {
     "message": "Connecté"
@@ -2628,7 +2628,7 @@
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
-    "message": "Télécharger l’appli Ledger"
+    "message": "Télécharger l’application Ledger"
   },
   "step1LedgerWalletMsg": {
     "message": "Téléchargez, configurez et saisissez votre mot de passe pour déverrouiller $1.",
@@ -2645,7 +2645,7 @@
     "message": "Brancher le portefeuille Ledger"
   },
   "step2LedgerWalletMsg": {
-    "message": "Connectez votre portefeuille directement à votre ordinateur. Déverrouillez votre Ledger et ouvrez l’appli Ethereum. Pour en savoir plus sur l’utilisation de votre portefeuille matériel, $1.",
+    "message": "Connectez votre portefeuille directement à votre ordinateur. Déverrouillez votre Ledger et ouvrez l’application Ethereum. Pour en savoir plus sur l’utilisation de votre portefeuille matériel, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "storePhrase": {
@@ -2661,7 +2661,7 @@
     "message": "Assistance"
   },
   "supportCenter": {
-    "message": "Visitez notre centre d'aide"
+    "message": "Visitez notre centre d’aide"
   },
   "swap": {
     "message": "Swap"
@@ -2702,7 +2702,7 @@
     "message": "Confirmez avec votre portefeuille matériel"
   },
   "swapContractDataDisabledErrorDescription": {
-    "message": "Dans l’appli Ethereum de votre Ledger, allez dans « Paramètres » et autorisez les données de contrat. Ensuite, retentez votre swap."
+    "message": "Dans l’application Ethereum de votre Ledger, allez dans « Paramètres » et autorisez les données de contrat. Ensuite, retentez votre swap."
   },
   "swapContractDataDisabledErrorTitle": {
     "message": "Les données de contrat ne sont pas activées sur votre Ledger"
@@ -2744,7 +2744,7 @@
     "message": "Récupération des cotations"
   },
   "swapFetchingQuotesErrorDescription": {
-    "message": "Euh… un problème est survenu. Essayez à nouveau et si les erreurs persistent, contactez le service clientèle."
+    "message": "Hum… un problème est survenu. Réessayez et si les erreurs persistent, contactez le service client."
   },
   "swapFetchingQuotesErrorTitle": {
     "message": "Erreur lors de la récupération des cotations"
@@ -2810,7 +2810,7 @@
     "description": "$1 is a number (ex: 1.23) that represents the price difference."
   },
   "swapPriceImpactTooltip": {
-    "message": "L’incidence sur les prix correspond à la différence entre le prix actuel du marché et le montant reçu lors de l’exécution de la transaction. Cette répercussion dépend du volume de votre transaction par rapport au volume de la piscine de liquidités."
+    "message": "L’incidence sur les prix correspond à la différence entre le prix actuel du marché et le montant reçu lors de l’exécution de la transaction. Cette répercussion dépend du volume de votre transaction par rapport au volume de la réserve de liquidités."
   },
   "swapPriceUnavailableDescription": {
     "message": "L’incidence sur les prix n’a pas pu être déterminée faute de données suffisantes sur les prix du marché. Veuillez confirmer que vous êtes satisfait·e du nombre de jetons que vous êtes sur le point de recevoir avant de procéder au swap."
@@ -3003,16 +3003,16 @@
     "message": "Synchroniser avec le mobile"
   },
   "syncWithMobileBeCareful": {
-    "message": "Assurez-vous que personne d'autre ne regarde votre écran lorsque vous scannez ce code."
+    "message": "Assurez-vous que personne d’autre ne regarde votre écran lorsque vous scannez ce code."
   },
   "syncWithMobileComplete": {
-    "message": "Vos données ont été synchronisées avec succès. Profitez de l'application mobile MetaMask !"
+    "message": "Vos données ont été synchronisées avec succès. Profitez de l’application mobile MetaMask !"
   },
   "syncWithMobileDesc": {
-    "message": "Vous pouvez synchroniser vos comptes et vos informations avec votre appareil mobile. Ouvrez l'application mobile MetaMask, allez dans « Paramètres » et appuyez sur « Synchroniser depuis l'extension de navigateur »"
+    "message": "Vous pouvez synchroniser vos comptes et vos informations avec votre appareil mobile. Ouvrez l’application mobile MetaMask, allez dans « Paramètres » et appuyez sur « Synchroniser depuis l’extension de navigateur »"
   },
   "syncWithMobileDescNewUsers": {
-    "message": "Si vous ouvrez l'application MetaMask Mobile pour la première fois, suivez simplement les étapes dans votre téléphone."
+    "message": "Si vous ouvrez l’application MetaMask Mobile pour la première fois, suivez simplement les étapes dans votre téléphone."
   },
   "syncWithMobileScanThisCode": {
     "message": "Scannez ce code avec votre application mobile MetaMask"
@@ -3024,13 +3024,13 @@
     "message": "Synchronisation des données avec 3Box (expérimental)"
   },
   "syncWithThreeBoxDescription": {
-    "message": "Activez cette fonction pour que vos paramètres soient sauvegardés avec 3Box. Cette fonction est pour le moment expérimentale ; utilisez-la avec prudence."
+    "message": "Activez cette fonction pour que vos paramètres soient sauvegardés avec 3Box. Cette fonction est actuellement expérimentale ; utilisez-la avec prudence."
   },
   "syncWithThreeBoxDisabled": {
     "message": "3Box a été désactivé en raison d’une erreur lors de la synchronisation initiale"
   },
   "terms": {
-    "message": "Conditions d'Utilisation"
+    "message": "Conditions d’utilisation"
   },
   "termsOfService": {
     "message": "Conditions de service"
@@ -3062,7 +3062,7 @@
     "message": "Jeton"
   },
   "tokenAlreadyAdded": {
-    "message": "Ce Jeton a déjà été ajouté."
+    "message": "Ce jeton a déjà été ajouté."
   },
   "tokenContractAddress": {
     "message": "Adresse du contrat de jeton"
@@ -3074,7 +3074,7 @@
     "message": "Nouveau ! Une détection améliorée des jetons est disponible sur le Mainnet d’Ethereum en tant que fonctionnalité expérimentale. $1"
   },
   "tokenSymbol": {
-    "message": "Symbole du Jeton"
+    "message": "Symbole du jeton"
   },
   "tooltipApproveButton": {
     "message": "Je comprends"
@@ -3086,7 +3086,7 @@
     "message": "transaction"
   },
   "transactionCancelAttempted": {
-    "message": "Tentative d'annulation de la transaction avec un prix du gaz de $1 à $2"
+    "message": "Tentative d’annulation de la transaction avec un prix de carburant de $1 à $2"
   },
   "transactionCancelSuccess": {
     "message": "Transaction annulée avec succès à $2"
@@ -3095,7 +3095,7 @@
     "message": "Transaction confirmée sur $2."
   },
   "transactionCreated": {
-    "message": "Transaction crée avec une valeur de $1 sur $2."
+    "message": "Transaction créée avec une valeur de $1 sur $2."
   },
   "transactionData": {
     "message": "Données de transaction"
@@ -3143,10 +3143,10 @@
     "message": "Transaction abandonnée sur $2."
   },
   "transactionError": {
-    "message": "Erreur de Transaction. Une Exception a été rencontrée dans l'exécution du code du contrat."
+    "message": "Erreur de transaction. Une exception a été rencontrée dans l’exécution du code du contrat."
   },
   "transactionErrorNoContract": {
-    "message": "Essayer d'appeler une fonction sur une adresse qui n'apparaît pas dans le contrat."
+    "message": "Tentative d’appel de fonction sur une adresse qui n’apparaît pas dans le contrat."
   },
   "transactionErrored": {
     "message": "La transaction a rencontré une erreur."
@@ -3167,7 +3167,7 @@
     "message": "Prix de carburant L2"
   },
   "transactionHistoryMaxFeePerGas": {
-    "message": "Frais maximaux pour carburant"
+    "message": "Frais maximaux par carburant"
   },
   "transactionHistoryPriorityFee": {
     "message": "Frais de priorité (GWEI)"
@@ -3202,10 +3202,10 @@
     "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
-    "message": "En accordant cette autorisation, vous permettez aux $1 suivant·s d’accéder à vos fonds"
+    "message": "En accordant cette autorisation, vous permettez au(x) $1 suivant(s) d’accéder à vos fonds"
   },
   "tryAgain": {
-    "message": "Essayez à nouveau"
+    "message": "Réessayez"
   },
   "tryAnywayOption": {
     "message": "Je veux quand même essayer"
@@ -3236,19 +3236,19 @@
     "message": "Inconnu"
   },
   "unknownCameraError": {
-    "message": "Une erreur s'est produite lors de l'accès à votre appareil photo. Veuillez reessayer..."
+    "message": "Une erreur s’est produite lors de l’accès à votre appareil photo. Veuillez réessayer..."
   },
   "unknownCameraErrorTitle": {
-    "message": "Ooops ! Il y a eu un problème...."
+    "message": "Oups ! Il y a eu un problème...."
   },
   "unknownNetwork": {
     "message": "Réseau privé inconnu"
   },
   "unknownQrCode": {
-    "message": "Erreur: Nous n'avons pas pu identifier le QR code"
+    "message": "Erreur : nous n’avons pas pu identifier le code QR"
   },
   "unlimited": {
-    "message": "Illimitée"
+    "message": "Illimité"
   },
   "unlock": {
     "message": "Déverrouiller"
@@ -3281,7 +3281,7 @@
     "message": "Détection automatique des NFT"
   },
   "useCollectibleDetectionDescription": {
-    "message": "L’affichage des médias et des données des NFT peut exposer votre adresse IP à des serveurs centralisés. Des API tierces (comme OpenSea) sont utilisées pour détecter les NFT dans votre portefeuille. Cela expose donc l’adresse de votre compte à ces services. Désactivez cette option si vous ne souhaitez pas que l’appli récupère des données auprès de ces services."
+    "message": "L’affichage des médias et des données des NFT peut exposer votre adresse IP à des serveurs centralisés. Des API tierces (comme OpenSea) sont utilisées pour détecter les NFT dans votre portefeuille. Cela expose donc l’adresse de votre compte à ces services. Désactivez cette option si vous ne souhaitez pas que l’application récupère des données auprès de ces services."
   },
   "usePhishingDetection": {
     "message": "Utiliser la fonction antihameçonnage"
@@ -3296,10 +3296,10 @@
     "message": "Nous utilisons des API tierces pour détecter et afficher les nouveaux jetons envoyés à votre portefeuille. Désactivez cette option si vous ne souhaitez pas que MetaMask récupère les données de ces services."
   },
   "usedByClients": {
-    "message": "Utilisé par une variété de clients différents"
+    "message": "Utilisé par plusieurs clients différents"
   },
   "userName": {
-    "message": "Nom d'utilisateur"
+    "message": "Nom d’utilisateur"
   },
   "verifyThisTokenDecimalOn": {
     "message": "Décimale de jeton disponible sur $1",
@@ -3310,7 +3310,7 @@
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisUnconfirmedTokenOn": {
-    "message": "Vérifiez ce jeton sur $1 et vérifiez si c’est bien celui que vous souhaitez échanger.",
+    "message": "Vérifiez ce jeton sur $1 et qu’il s’agit bien de celui que vous souhaitez échanger.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "viewAccount": {
@@ -3320,7 +3320,7 @@
     "message": "Afficher tous les détails"
   },
   "viewContact": {
-    "message": "Voir contact"
+    "message": "Voir le contact"
   },
   "viewFullTransactionDetails": {
     "message": "Afficher tous les détails de la transaction"
@@ -3353,20 +3353,20 @@
     "message": "notre guide de connexion des portefeuilles matériels"
   },
   "walletCreationSuccessDetail": {
-    "message": "Votre portefeuille est bien protégé. Conservez votre Phrase secrète de récupération en sécurité et en toute discrétion. C’est votre responsabilité !"
+    "message": "Votre portefeuille est bien protégé. Conservez votre phrase secrète de récupération en sécurité et en toute discrétion. C’est votre responsabilité !"
   },
   "walletCreationSuccessReminder1": {
-    "message": "MetaMask ne peut pas récupérer votre Phrase secrète de récupération."
+    "message": "MetaMask ne peut pas restaurer votre phrase secrète de récupération."
   },
   "walletCreationSuccessReminder2": {
-    "message": "MetaMask ne vous demandera jamais votre Phrase secrète de récupération."
+    "message": "MetaMask ne vous demandera jamais votre phrase secrète de récupération."
   },
   "walletCreationSuccessReminder3": {
-    "message": "1$ avec n’importe qui, sinon vous risquez de voir vos fonds subtilisés",
+    "message": "$1 avec n’importe qui, sinon vous risquez de voir vos fonds subtilisés",
     "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
   },
   "walletCreationSuccessReminder3BoldSection": {
-    "message": "Ne partagez jamais votre Phrase secrète de récupération",
+    "message": "Ne partagez jamais votre phrase secrète de récupération",
     "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
   },
   "walletCreationSuccessTitle": {
@@ -3381,7 +3381,7 @@
     "description": "Refers to a interface for connecting external devices to the browser. Used for connecting ledger to the browser. Read more here https://developer.mozilla.org/en-US/docs/Web/API/WebHID_API"
   },
   "welcome": {
-    "message": "Bienvenue dans la Beta de MetaMask"
+    "message": "Bienvenue dans MetaMask"
   },
   "welcomeBack": {
     "message": "Bienvenue à nouveau !"
@@ -3390,10 +3390,10 @@
     "message": "Stockez, envoyez et dépensez des cryptomonnaies et des actifs."
   },
   "welcomeExploreTitle": {
-    "message": "Explorez des applis décentralisées"
+    "message": "Explorer des applications décentralisées"
   },
   "welcomeLoginDescription": {
-    "message": "Utilisez votre MetaMask pour vous connecter à des applis décentralisées. Nul besoin de vous inscrire !"
+    "message": "Utilisez votre MetaMask pour vous connecter à des applications décentralisées. Nul besoin de vous inscrire !"
   },
   "welcomeLoginTitle": {
     "message": "Dites bonjour à votre portefeuille"
@@ -3412,7 +3412,7 @@
     "message": "Qu’est-ce que c’est ?"
   },
   "writePhrase": {
-    "message": "Écrivez cette phrase sur une feuille de papier et rangez-la dans un endroit sûr. Si vous voulez encore plus de sécurité, notez-la sur plusieurs feuilles de papier et rangez-les dans deux ou trois endroits différents."
+    "message": "Écrivez cette phrase sur une feuille de papier et rangez-la dans un endroit sûr. Si vous recherchez plus de sécurité, notez-la sur plusieurs feuilles de papier et rangez-les dans deux ou trois endroits différents."
   },
   "xOfY": {
     "message": "$1 sur $2",
@@ -3426,15 +3426,15 @@
     "message": "Oui, essayons"
   },
   "youNeedToAllowCameraAccess": {
-    "message": "Vous devez autoriser l'accès à votre appareil pour utiliser cette fonctionnalité."
+    "message": "Vous devez autoriser l’accès à votre appareil pour utiliser cette fonctionnalité."
   },
   "youSign": {
     "message": "Vous signez"
   },
   "yourPrivateSeedPhrase": {
-    "message": "Votre phrase Seed privée"
+    "message": "Votre phrase secrète de récupération privée"
   },
   "zeroGasPriceOnSpeedUpError": {
-    "message": "Prix de l'essence zéro sur l'accélération"
+    "message": "Prix de carburant zéro sur l’accélération"
   }
 }
