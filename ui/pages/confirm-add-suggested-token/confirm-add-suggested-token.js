@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
@@ -54,10 +54,11 @@ function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
   return Boolean(duplicate);
 }
 
-const ConfirmAddSuggestedToken = ({ history }) => {
+const ConfirmAddSuggestedToken = () => {
   const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const mostRecentOverviewPage = useSelector((state) =>
     getMostRecentOverviewPage(state),
@@ -207,10 +208,6 @@ const ConfirmAddSuggestedToken = ({ history }) => {
       </div>
     </div>
   );
-};
-
-ConfirmAddSuggestedToken.propTypes = {
-  history: PropTypes.object,
 };
 
 export default ConfirmAddSuggestedToken;
