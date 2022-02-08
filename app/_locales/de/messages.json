@@ -2286,12 +2286,6 @@
   "secretBackupPhraseWarning": {
     "message": "WARNUNG: Legen Sie niemals Ihre Sicherungsphrase offen. Mit dieser Phrase kann sich jeder Ihr Ether für immer aneignen."
   },
-  "secretPhrase": {
-    "message": "Nur das erste Konto auf dieser Wallet wird automatisch geladen. Wenn Sie nach Abschluss dieses Vorgangs weitere Konten hinzufügen möchten, klicken Sie auf das Dropdown-Menü und wählen Sie dann Konto erstellen."
-  },
-  "secretPhraseWarning": {
-    "message": "Wenn Sie eine andere geheime Wiederherstellungsphrase verwenden, werden Ihre aktuelle Wallet, Ihre Konten und Vermögenswerte dauerhaft aus dieser App entfernt. Diese Aktion kann nicht rückgängig gemacht werden."
-  },
   "secretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase"
   },

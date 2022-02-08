@@ -2533,10 +2533,10 @@
   "secretBackupPhraseWarning": {
     "message": "WARNING: Never disclose your Secret Recovery Phrase. Anyone with this phrase can take your Ether forever."
   },
-  "secretPhrase": {
+  "restoreWalletUsingSRP": {
     "message": "If you restore a wallet using the Secret Recovery Phrase, only the wallet’s initial account might appear at first. You'll be able to $1 created previously."
   },
-  "secretPhraseWarning": {
+  "restoreWalletWarning": {
     "message": "To recover access to your wallet you will have to restore it using the Secret Recovery Phrase. This action will overwrite existing wallet data and cannot be undone. Make sure you’re using the correct Secret Recovery Phrase."
   },
   "secretRecoveryPhrase": {

@@ -2335,12 +2335,6 @@
   "secretBackupPhraseWarning": {
     "message": "ADVERTENCIA: No revele su frase de respaldo. Cualquier persona que tenga esta frase puede robarle los ethers."
   },
-  "secretPhrase": {
-    "message": "Solo la primera cuenta de esta cartera se cargará automáticamente. Después de llevar a cabo este proceso, para agregar cuentas adicionales haga clic en el menú desplegable y luego seleccione Crear cuenta."
-  },
-  "secretPhraseWarning": {
-    "message": "Si restablece utilizando otra frase secreta de recuperación, su cartera actual, sus cuentas y sus activos se eliminarán de esta aplicación de forma permanente. Esta acción es irreversible."
-  },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
   },

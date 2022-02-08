@@ -72,10 +72,10 @@ class RestoreVaultPage extends Component {
               {t('forgotPasswordSubHeader')}
             </div>
             <div className="import-account__selector-typography">
-              {t('secretPhraseWarning')}
+              {t('restoreWalletWarning')}
             </div>
             <div className="import-account__selector-typography">
-              {t('secretPhrase', [
+              {t('restoreWalletUsingSRP', [
                 <Button
                   type="link"
                   target="_blank"
