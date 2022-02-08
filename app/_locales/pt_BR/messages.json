@@ -1047,9 +1047,6 @@
   "experimental": {
     "message": "Experimental"
   },
-  "experimentalSettingsDescription": {
-    "message": "Detecção de token e mais"
-  },
   "exportPrivateKey": {
     "message": "Exportar chave privada"
   },

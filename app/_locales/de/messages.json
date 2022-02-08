@@ -206,9 +206,6 @@
   "alerts": {
     "message": "Warnungen"
   },
-  "alertsSettingsDescription": {
-    "message": "Aktivieren oder deaktivieren Sie jede Warnung"
-  },
   "allowExternalExtensionTo": {
     "message": "Erlauben dieser externen Erweiterung auf:"
   },
@@ -552,9 +549,6 @@
   },
   "contacts": {
     "message": "Kontaktaufnahme"
-  },
-  "contactsSettingsDescription": {
-    "message": "Kontakte hinzufügen, bearbeiten, entfernen und verwalten"
   },
   "continue": {
     "message": "Weiter"
@@ -1048,9 +1042,6 @@
   },
   "experimental": {
     "message": "Experimentell"
-  },
-  "experimentalSettingsDescription": {
-    "message": "Token-Erkennung und mehr"
   },
   "exportPrivateKey": {
     "message": "Private Key exportieren"
