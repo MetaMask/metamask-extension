@@ -359,11 +359,6 @@ export default class TransactionController extends EventEmitter {
   _updateTransaction(txId, proposedUpdate, note) {
     const txMeta = this.txStateManager.getTransaction(txId);
     const updated = merge(txMeta, proposedUpdate);
-
-    // console.log("Meta: ", txMeta);
-    // console.log("proposedUpdate: ", proposedUpdate);
-    // console.log("updatedMeta: ", updated);
-
     this.txStateManager.updateTransaction(updated, note);
   }
 
