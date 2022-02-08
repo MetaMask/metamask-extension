@@ -47,9 +47,6 @@
   "about": {
     "message": "정보"
   },
-  "aboutSettingsDescription": {
-    "message": "버전, 지원 센터, 연락처"
-  },
   "acceleratingATransaction": {
     "message": "* 높은 가스 가격을 이용해 거래를 가속화하면 네트워크를 통한 처리 속도가 개선되지만 항상 그렇지는 않습니다."
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "우선 요금(일명 \"채굴자 팁\")이란 나와 먼저 거래한 것에 대한 인센티브로 채굴자에게 직접 전달되는 금액입니다."
   },
-  "advancedSettingsDescription": {
-    "message": "개발자 기능 액세스, 상태 로그 다운로드, 계정 재설정, 테스트넷 및 맞춤형 RPC 설정"
-  },
   "affirmAgree": {
     "message": "동의함"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "경고"
-  },
-  "alertsSettingsDescription": {
-    "message": "각 경고 활성화 또는 비활성화"
   },
   "allowExternalExtensionTo": {
     "message": "이 외부 확장을 통해 다음을 허용:"
@@ -550,9 +541,6 @@
   },
   "contacts": {
     "message": "연락처"
-  },
-  "contactsSettingsDescription": {
-    "message": "연락처 추가, 편집, 제거 및 관리"
   },
   "continue": {
     "message": "계속"
@@ -1045,9 +1033,6 @@
   "experimental": {
     "message": "실험적"
   },
-  "experimentalSettingsDescription": {
-    "message": "토큰 감지 및 기타"
-  },
   "exportPrivateKey": {
     "message": "비공개 키 내보내기"
   },
@@ -1216,9 +1201,6 @@
   },
   "general": {
     "message": "일반"
-  },
-  "generalSettingsDescription": {
-    "message": "통화 전환, 기본 통화, 언어, blockies 식별"
   },
   "getEther": {
     "message": "Ether 얻기"
@@ -1739,9 +1721,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "체인 ID는 거래 서명에 사용됩니다. 이는 네트워크에서 반환하는 체인 ID와 일치해야 합니다. 십진수나 '0x'로 시작하는 16진수를 입력할 수 있지만, 표시되는 형식은 십진수입니다."
-  },
-  "networkSettingsDescription": {
-    "message": "맞춤형 RPC 네트워크 추가 및 편집"
   },
   "networkStatus": {
     "message": "네트워크 상태"
@@ -2340,9 +2319,6 @@
   },
   "securityAndPrivacy": {
     "message": "보안 및 개인정보 보호"
-  },
-  "securitySettingsDescription": {
-    "message": "개인정보 설정 및 지갑 비밀 복구 구문"
   },
   "seedPhraseConfirm": {
     "message": "비밀 복구 구문 확인"

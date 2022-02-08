@@ -8,9 +8,6 @@
   "about": {
     "message": "O opcijama"
   },
-  "aboutSettingsDescription": {
-    "message": "Inačica, centar za podršku i informacije za kontakt"
-  },
   "acceleratingATransaction": {
     "message": "* Ubrzavanjem se transakcije pomoću veće cijene goriva povećava šansa za bržu obradu mrežom, ali se uvijek ne jamči."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Napredne mogućnosti"
-  },
-  "advancedSettingsDescription": {
-    "message": "Pristup značajkama razvojnog inženjera, preuzimanje zapisnika stanja, poništavanje računa, postavljanje testnih mreža i prilagođeni RPC"
   },
   "amount": {
     "message": "Iznos"
@@ -422,9 +416,6 @@
   "general": {
     "message": "Opće"
   },
-  "generalSettingsDescription": {
-    "message": "Konverzija valuta, glavna valuta, jezik, blockies identicon"
-  },
   "getEther": {
     "message": "Dohvati Ether"
   },
@@ -595,9 +586,6 @@
   },
   "networkName": {
     "message": "Naziv mreže"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodaj i uredi prilagođene mreže RPC"
   },
   "networks": {
     "message": "Mreže"
@@ -832,9 +820,6 @@
   },
   "securityAndPrivacy": {
     "message": "Sigurnost i privatnost"
-  },
-  "securitySettingsDescription": {
-    "message": "Postavke privatnosti i početna rečenica novčanika"
   },
   "seedPhrasePlaceholder": {
     "message": "Odvojite pojedinačne riječi jednim razmakom"
