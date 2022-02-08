@@ -87,6 +87,12 @@
     margin-top: 18px;
     margin-bottom: 16px;
   }
+
+  &__link {
+    display: inline;
+    padding: 0;
+    font-size: inherit;
+  }
 }
 
 .reveal-seed {

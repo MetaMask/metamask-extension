@@ -77,11 +77,12 @@ class RestoreVaultPage extends Component {
             <div className="import-account__selector-typography">
               {t('secretPhrase', [
                 <Button
-                  type="inline"
+                  type="link"
                   target="_blank"
                   rel="noopener noreferrer"
                   href={ZENDESK_URLS.ADD_MISSING_ACCOUNTS}
                   key="import-account-secretphase"
+                  className="import-account__link"
                 >
                   {t('reAddAccounts')}
                 </Button>,
@@ -90,20 +91,22 @@ class RestoreVaultPage extends Component {
             <div className="import-account__selector-typography">
               {t('reImportAccountsAndTokens', [
                 <Button
-                  type="inline"
+                  type="link"
                   target="_blank"
                   rel="noopener noreferrer"
                   href={ZENDESK_URLS.IMPORT_ACCOUNTS}
                   key="import-account-reimport-accounts"
+                  className="import-account__link"
                 >
                   {t('reImportAccounts')}
                 </Button>,
                 <Button
-                  type="inline"
+                  type="link"
                   target="_blank"
                   rel="noopener noreferrer"
                   href={ZENDESK_URLS.ADD_CUSTOM_TOKENS}
                   key="import-account-readd-tokens"
+                  className="import-account__link"
                 >
                   {t('reAddTokens')}
                 </Button>,

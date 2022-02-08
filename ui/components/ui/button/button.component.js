@@ -43,7 +43,7 @@ const Button = ({
   // we know to be erroneous attributes for a link. We will likely want to extract Link
   // to its own component in the future.
   let Tag = 'button';
-  if (type === 'link' || type === 'inline') {
+  if (type === 'link') {
     Tag = 'a';
   } else if (submit) {
     buttonProps.type = 'submit';
