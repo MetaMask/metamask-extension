@@ -4,7 +4,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
-import { MAINNET_RPC_URL } from '../../../../../shared/constants/network';
+import { MAINNET, getRpcUrl } from '../../../../../shared/constants/network';
 import NetworksForm from '.';
 
 const renderComponent = (props) => {
@@ -169,7 +169,9 @@ describe('NetworkForm Component', () => {
     expect(await screen.findByText('Invalid RPC URL')).toBeInTheDocument();
 
     await fireEvent.change(rpcUrlField, {
-      target: { value: MAINNET_RPC_URL },
+      target: {
+        value: getRpcUrl({ network: MAINNET, excludeProjectId: true }),
+      },
     });
 
     expect(
