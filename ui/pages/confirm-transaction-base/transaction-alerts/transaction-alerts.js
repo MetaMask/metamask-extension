@@ -11,6 +11,7 @@ import I18nValue from '../../../components/ui/i18n-value';
 import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
+import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
@@ -19,6 +20,7 @@ const TransactionAlerts = ({
   nativeCurrency,
   networkName,
   showBuyModal,
+  type,
 }) => {
   const {
     balanceError,
@@ -93,48 +95,52 @@ const TransactionAlerts = ({
           type="warning"
         />
       )}
-      {balanceError && chainId === '0x1' && (
-        <ActionableMessage
-          className="actionable-message--warning"
-          message={
-            <Typography variant={TYPOGRAPHY.H7} align="left" margin={[0, 0]}>
-              {t('insufficientCurrency', [nativeCurrency, networkName])}
-              <Button
-                key="link"
-                type="secondary"
-                className="confirm-approve-content__warning__link"
-                onClick={() => showBuyModal()}
-                style={{
-                  color: '#037dd6',
-                  padding: 0,
-                  fontSize: '12px',
-                }}
-              >
-                {t('buyEth')}
-              </Button>
+      {balanceError &&
+        chainId === '0x1' &&
+        type === TRANSACTION_TYPES.DEPLOY_CONTRACT && (
+          <ActionableMessage
+            className="actionable-message--warning"
+            message={
+              <Typography variant={TYPOGRAPHY.H7} align="left" margin={[0, 0]}>
+                {t('insufficientCurrency', [nativeCurrency, networkName])}
+                <Button
+                  key="link"
+                  type="secondary"
+                  className="confirm-approve-content__warning__link"
+                  onClick={() => showBuyModal()}
+                  style={{
+                    color: '#037dd6',
+                    padding: 0,
+                    fontSize: '12px',
+                  }}
+                >
+                  {t('buyEth')}
+                </Button>
 
-              {t('orDeposit')}
-            </Typography>
-          }
-          useIcon
-          iconFillColor="#d73a49"
-          type="danger"
-        />
-      )}
-      {balanceError && chainId !== '0x1' && (
-        <ActionableMessage
-          className="actionable-message--warning"
-          message={
-            <Typography variant={TYPOGRAPHY.H7} align="left" margin={[0, 0]}>
-              {t('insufficientCurrency', [nativeCurrency, networkName])}
-              {t('buyOther', [nativeCurrency])}
-            </Typography>
-          }
-          useIcon
-          iconFillColor="#d73a49"
-          type="danger"
-        />
-      )}
+                {t('orDeposit')}
+              </Typography>
+            }
+            useIcon
+            iconFillColor="#d73a49"
+            type="danger"
+          />
+        )}
+      {balanceError &&
+        chainId !== '0x1' &&
+        type === TRANSACTION_TYPES.DEPLOY_CONTRACT && (
+          <ActionableMessage
+            className="actionable-message--warning"
+            message={
+              <Typography variant={TYPOGRAPHY.H7} align="left" margin={[0, 0]}>
+                {t('insufficientCurrency', [nativeCurrency, networkName])}
+                {t('buyOther', [nativeCurrency])}
+              </Typography>
+            }
+            useIcon
+            iconFillColor="#d73a49"
+            type="danger"
+          />
+        )}
       {estimateUsed === PRIORITY_LEVELS.LOW && (
         <ActionableMessage
           dataTestId="low-gas-fee-alert"
@@ -181,6 +187,7 @@ TransactionAlerts.propTypes = {
   nativeCurrency: PropTypes.string,
   networkName: PropTypes.string,
   showBuyModal: PropTypes.func,
+  type: PropTypes.string,
 };
 
 export default TransactionAlerts;

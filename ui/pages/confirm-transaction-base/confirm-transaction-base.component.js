@@ -590,6 +590,7 @@ export default class ConfirmTransactionBase extends Component {
           nativeCurrency={nativeCurrency}
           networkName={networkName}
           showBuyModal={showBuyModal}
+          type={txData.type}
         />
         <TransactionDetail
           disabled={isDisabled()}
