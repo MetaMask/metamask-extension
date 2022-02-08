@@ -10,6 +10,7 @@ import { ethers } from 'ethers';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
+import { merge } from 'lodash';
 import cleanErrorStack from '../../lib/cleanErrorStack';
 import {
   hexToBn,
@@ -50,7 +51,6 @@ import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
-import { merge } from 'lodash';
 
 const hstInterface = new ethers.utils.Interface(abi);
 
@@ -351,7 +351,8 @@ export default class TransactionController extends EventEmitter {
 
   _checkIfTxStatusIsUnapproved(txId) {
     return (
-      this.txStateManager.getTransaction(txId).status === TRANSACTION_STATUSES.UNAPPROVED
+      this.txStateManager.getTransaction(txId).status ===
+      TRANSACTION_STATUSES.UNAPPROVED
     );
   }
 
@@ -360,7 +361,7 @@ export default class TransactionController extends EventEmitter {
     const updated = merge(txMeta, proposedUpdate);
 
     // console.log("Meta: ", txMeta);
-    // console.log("proposedUpdate: ", proposedUpdate);        
+    // console.log("proposedUpdate: ", proposedUpdate);
     // console.log("updatedMeta: ", updated);
 
     this.txStateManager.updateTransaction(updated, note);
@@ -393,30 +394,29 @@ export default class TransactionController extends EventEmitter {
     }
 
     const txGasFees = {
-      txParams: {
-      },
+      txParams: {},
     };
 
     // only update what is defined
-    if(gasLimit) {
+    if (gasLimit) {
       txGasFees.txParams.gasLimit = gasLimit;
     }
 
-    if(gasPrice) {
+    if (gasPrice) {
       txGasFees.txParams.gasPrice = gasPrice;
     }
 
-    if(maxPriorityFeePerGas) {
+    if (maxPriorityFeePerGas) {
       txGasFees.txParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
     }
 
-    if(maxFeePerGas) {
+    if (maxFeePerGas) {
       txGasFees.txParams.maxFeePerGas = maxFeePerGas;
     }
 
-    if(estimateUsed) {
+    if (estimateUsed) {
       txGasFees.estimateUsed = estimateUsed;
-    }    
+    }
 
     const note = `Update Transaction Gas Fees for ${txId}`;
     this._updateTransaction(txId, txGasFees, note);
@@ -444,14 +444,14 @@ export default class TransactionController extends EventEmitter {
 
     const txEstimateBaseFees = {};
 
-    //only update what is defined
-    if(estimatedBaseFee) {
+    // only update what is defined
+    if (estimatedBaseFee) {
       txEstimateBaseFees.estimatedBaseFee = estimatedBaseFee;
     }
 
-    if(decEstimatedBaseFee) {
+    if (decEstimatedBaseFee) {
       txEstimateBaseFees.decEstimatedBaseFee = decEstimatedBaseFee;
-    }    
+    }
 
     const note = `Update Transaction Estimated Base Fees for ${txId}`;
     this._updateTransaction(txId, txEstimateBaseFees, note);
@@ -475,7 +475,17 @@ export default class TransactionController extends EventEmitter {
       return;
     }
 
-    const swapApprovalTransaction = { type, sourceTokenSymbol };
+    // only update what is defined
+    const swapApprovalTransaction = {};
+
+    if (type) {
+      swapApprovalTransaction.type = type;
+    }
+
+    if (sourceTokenSymbol) {
+      swapApprovalTransaction.sourceTokenSymbol = sourceTokenSymbol;
+    }
+
     const note = `Update Swap Approval Transaction for ${txId}`;
     this._updateTransaction(txId, swapApprovalTransaction, note);
   }
