@@ -2399,6 +2399,17 @@ describe('Transaction Controller', function () {
       assert.equal(result.destinationTokenDecimals, 8);            
       assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO);                
       assert.equal(result.swapTokenValue, '0x0077');
+    }); 
+
+    it('updates transaction user settings', function () {
+      txController.updateTransactionUserSettings('1', {
+        userEditedGasLimit: '0x0088', 
+        userFeeLevel: 'high'
+      });
+
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.userEditedGasLimit, '0x0088');      
+      assert.equal(result.userFeeLevel, 'high');            
     });    
   });
 });
