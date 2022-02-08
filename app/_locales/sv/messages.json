@@ -8,9 +8,6 @@
   "about": {
     "message": "Om"
   },
-  "aboutSettingsDescription": {
-    "message": "Version, supportcenter och kontaktinformation"
-  },
   "acceleratingATransaction": {
     "message": "* Att snabba upp en överföring genom att använda ett högre gaspris ökar chanserna för att överföringen ska hanteras snabbare av nätverket, men det är inte en garanti."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Avancerade alternativ"
-  },
-  "advancedSettingsDescription": {
-    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC"
   },
   "amount": {
     "message": "Belopp"
@@ -416,9 +410,6 @@
   "general": {
     "message": "Allmänt"
   },
-  "generalSettingsDescription": {
-    "message": "Valutaomvandling, primär valuta, språk"
-  },
   "getEther": {
     "message": "Skaffa Ether"
   },
@@ -586,9 +577,6 @@
   },
   "networkName": {
     "message": "Nätverksnamn"
-  },
-  "networkSettingsDescription": {
-    "message": "Lägg till och redigera RPC-nätverk"
   },
   "networks": {
     "message": "Nätverk"
@@ -823,9 +811,6 @@
   },
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"
-  },
-  "securitySettingsDescription": {
-    "message": "Sekretessinställningar och plånbokens seedfras"
   },
   "seedPhrasePlaceholder": {
     "message": "Separera varje ord med ett enda mellanslag."

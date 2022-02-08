@@ -8,9 +8,6 @@
   "about": {
     "message": "Névjegy"
   },
-  "aboutSettingsDescription": {
-    "message": "Verzió, ügyfélszolgálat és elérhetőségek"
-  },
   "acceleratingATransaction": {
     "message": "* Ha szeretné felgyorsítani a tranzakciót azzal, hogy magasabb gázárat használ, az növeli a gyorsabb feldolgozás esélyét, de ez nem mindig garantált."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Haladó beállítások"
-  },
-  "advancedSettingsDescription": {
-    "message": "Hozzáférés fejlesztői funkciókhoz, állapotnaplók letöltése, fiók újraállítása, testnetek és egyéni RPC-k beállítása"
   },
   "amount": {
     "message": "Összeg"
@@ -422,9 +416,6 @@
   "general": {
     "message": "Általános"
   },
-  "generalSettingsDescription": {
-    "message": "Pénznem átváltása, elsődleges pénznem, nyelv, blockies identikonok"
-  },
   "getEther": {
     "message": "Ether beszerzése"
   },
@@ -595,9 +586,6 @@
   },
   "networkName": {
     "message": "Hálózat neve"
-  },
-  "networkSettingsDescription": {
-    "message": "Egyedi RPC-hálózatok hozzáadása és szerkesztése"
   },
   "networks": {
     "message": "Hálózatok"
@@ -832,9 +820,6 @@
   },
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
-  },
-  "securitySettingsDescription": {
-    "message": "Biztonsági beállítások és pénztárca kulcsszólánca"
   },
   "seedPhrasePlaceholder": {
     "message": "A szavakat egy-egy szóközzel válassza el"

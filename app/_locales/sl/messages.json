@@ -8,9 +8,6 @@
   "about": {
     "message": "O možnostih"
   },
-  "aboutSettingsDescription": {
-    "message": "Različica, center za podporo in podatki za stik"
-  },
   "acceleratingATransaction": {
     "message": "* Pospešitev transakcije z višjo gas ceno poveča njene možnosti za hitrejšo obdelavo v omrežju, vendar ni vedno zagotovljena."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Napredne možnosti"
-  },
-  "advancedSettingsDescription": {
-    "message": "Dostopite do funkcij razvijalca, prenesite dnevnike držav, ponastavite račun, nastavite testne mreže in RPC po meri"
   },
   "amount": {
     "message": "Znesek"
@@ -423,9 +417,6 @@
   "general": {
     "message": "Splošno"
   },
-  "generalSettingsDescription": {
-    "message": "Pretvorba valut, primarna valuta, jezik, identifikacija Blockies"
-  },
   "getEther": {
     "message": "Pridobi Ether"
   },
@@ -590,9 +581,6 @@
   },
   "networkName": {
     "message": "Ime omrežja"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodajte in uredite omrežja RPC po meri"
   },
   "networks": {
     "message": "Omrežja"
@@ -827,9 +815,6 @@
   },
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"
-  },
-  "securitySettingsDescription": {
-    "message": "Nastavitve zasebnosti in geslo za denarnico seed phrase "
   },
   "seedPhrasePlaceholder": {
     "message": "Vsako besedo ločite z enim presledkom"

@@ -8,9 +8,6 @@
   "about": {
     "message": "Основни подаци"
   },
-  "aboutSettingsDescription": {
-    "message": "Verzija, centar za podršku i podaci za kontakt"
-  },
   "acceleratingATransaction": {
     "message": "* Time što se ubrzava transakcija koristeći veću gas cenu, povećavaju se šanse da se procesuira brže od strane mreže, ali to nije uvek zagarantovano."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Dodatne opcije"
-  },
-  "advancedSettingsDescription": {
-    "message": "Pristupite funkcijama za programere, preuzmite državne evidencije, resetujte nalog, postavite testne mreže i prilagođeni RPC"
   },
   "amount": {
     "message": "Iznos"
@@ -423,9 +417,6 @@
   "general": {
     "message": "Opšte"
   },
-  "generalSettingsDescription": {
-    "message": "Konverzija valuta, primarna valuta, jezik, blockies identicon"
-  },
   "getEther": {
     "message": "Nabavite Ether"
   },
@@ -593,9 +584,6 @@
   },
   "networkName": {
     "message": "Ime mreže"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodajte i uredite prilagođene RPC mreže"
   },
   "networks": {
     "message": "Mreže"
@@ -830,9 +818,6 @@
   },
   "securityAndPrivacy": {
     "message": "Bezbednost i privatnost"
-  },
-  "securitySettingsDescription": {
-    "message": "Podešavanja privatnosti i novčanik fraze početnih vrednosti"
   },
   "seedPhrasePlaceholder": {
     "message": "Odvojite svaku reč jednim razmakom"

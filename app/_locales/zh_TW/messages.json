@@ -2,9 +2,6 @@
   "about": {
     "message": "關於"
   },
-  "aboutSettingsDescription": {
-    "message": "版本，支援中心，以及聯絡資訊。"
-  },
   "acceleratingATransaction": {
     "message": "* 提高交易費 Gas 價格將可加速處理時間，但不保證會有顯著效果"
   },
@@ -58,9 +55,6 @@
   },
   "advancedOptions": {
     "message": "進階選項"
-  },
-  "advancedSettingsDescription": {
-    "message": "存取開發者功能，下載狀態日誌，重設帳號，設定測試網及自訂 PRC。"
   },
   "amount": {
     "message": "數量"
@@ -426,9 +420,6 @@
   "general": {
     "message": "一般"
   },
-  "generalSettingsDescription": {
-    "message": "貨幣轉換，主要貨幣，語言，區塊鏈哈希頭像"
-  },
   "getEther": {
     "message": "取得以太幣"
   },
@@ -596,9 +587,6 @@
   },
   "networkName": {
     "message": "網路名稱"
-  },
-  "networkSettingsDescription": {
-    "message": "新增並編輯自訂 RPC 網路"
   },
   "networks": {
     "message": "網路"
@@ -821,9 +809,6 @@
   },
   "securityAndPrivacy": {
     "message": "安全＆隱私"
-  },
-  "securitySettingsDescription": {
-    "message": "隱私設定及錢包助記詞"
   },
   "seedPhrasePlaceholder": {
     "message": "單詞之間請用空白分隔"
