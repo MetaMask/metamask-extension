@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.9.2]
+### Fixed
+- Prevent errors on the swaps "View Quote" screen that can occur if the swaps API returns incorrect refund and max gas fees on some test networks ([#13511](https://github.com/MetaMask/metamask-extension/pull/13511))
+- Prevent errors on startup in Chrome Versions earlier than 69, caused by use of unsupported browser `Array.prototype.flat` method ([#13520](https://github.com/MetaMask/metamask-extension/pull/13520))
+
 
 ## [10.9.1]
 ### Fixed
