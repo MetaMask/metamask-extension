@@ -8,9 +8,6 @@
   "about": {
     "message": "Информация"
   },
-  "aboutSettingsDescription": {
-    "message": "Версия, център за поддръжка и информация за контакт"
-  },
   "acceleratingATransaction": {
     "message": "* Ускоряването на транзакция чрез използване на по-висока цена на газа увеличава шансовете й да се обработва по-бързо от мрежата, но това не винаги е гарантирано."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Разширени опции"
-  },
-  "advancedSettingsDescription": {
-    "message": "Достъп до функции за разработчици, изтегляйте дневници, нулиране на акаунта, тестови мрежи за настройка и персонализиран RPC"
   },
   "amount": {
     "message": "Сума"
@@ -422,9 +416,6 @@
   "general": {
     "message": "Общ"
   },
-  "generalSettingsDescription": {
-    "message": "Конвертиране на валута, първична валута, език, блокчейн идентичност"
-  },
   "getEther": {
     "message": "Вземете етер"
   },
@@ -598,9 +589,6 @@
   },
   "networkName": {
     "message": "Име на мрежата"
-  },
-  "networkSettingsDescription": {
-    "message": "Добавете и редактирайте персонализирани RPC мрежи"
   },
   "networks": {
     "message": "Mрежи"
@@ -835,9 +823,6 @@
   },
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
-  },
-  "securitySettingsDescription": {
-    "message": "Настройки за поверителност и фраза зародиш за портфейла"
   },
   "seedPhrasePlaceholder": {
     "message": "Отделете всяка дума с един интервал"

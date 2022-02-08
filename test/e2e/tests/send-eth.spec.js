@@ -187,7 +187,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         // goes to the settings screen
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Advanced', tag: 'div' });
+        await driver.clickElement({ text: 'Advanced', tag: 'h4' });
         await driver.clickElement(
           '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > div > div',
         );
