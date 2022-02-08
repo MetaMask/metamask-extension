@@ -382,7 +382,7 @@ export default class TransactionController extends EventEmitter {
     txId,
     { gasLimit, gasPrice, maxPriorityFeePerGas, maxFeePerGas, estimateUsed },
   ) {
-    if (!this._validateTransaction(txId)) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
       return;
     }
 
@@ -416,7 +416,7 @@ export default class TransactionController extends EventEmitter {
     txId,
     { estimatedBaseFee, decEstimatedBaseFee },
   ) {
-    if (!this._validateTransaction(txId)) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
       return;
     }
 
@@ -443,7 +443,7 @@ export default class TransactionController extends EventEmitter {
    * @param swapApprovalTransaction.sourceTokenSymbol
    */
   updateSwapApprovalTransaction(txId, { type, sourceTokenSymbol }) {
-    if (!this._validateTransaction(txId)) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
       return;
     }
 
@@ -487,7 +487,7 @@ export default class TransactionController extends EventEmitter {
       swapTokenValue,
     },
   ) {
-    if (!this._validateTransaction(txId)) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
       return;
     }
 
@@ -514,7 +514,7 @@ export default class TransactionController extends EventEmitter {
    * @param userSettings.userFeeLevel
    */
   updateTransactionUserSettings(txId, { userEditedGasLimit, userFeeLevel }) {
-    if (!this._validateTransaction(txId)) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
       return;
     }
 
