@@ -193,42 +193,42 @@ class SettingsPage extends PureComponent {
       <TabBar
         tabs={[
           {
-            icon: <img src="images/general-icon.svg" />,
+            icon: <img src="images/general-icon.svg" alt="" />,
             content: t('general'),
             key: GENERAL_ROUTE,
           },
           {
-            icon: <img src="images/advanced-icon.svg" />,
+            icon: <img src="images/advanced-icon.svg" alt="" />,
             content: t('advanced'),
             key: ADVANCED_ROUTE,
           },
           {
-            icon: <img src="images/contacts-icon.svg" />,
+            icon: <img src="images/contacts-icon.svg" alt="" />,
             content: t('contacts'),
             key: CONTACT_LIST_ROUTE,
           },
           {
-            icon: <img src="images/security-icon.svg" />,
+            icon: <img src="images/security-icon.svg" alt="" />,
             content: t('securityAndPrivacy'),
             key: SECURITY_ROUTE,
           },
           {
-            icon: <img src="images/alerts-icon.svg" />,
+            icon: <img src="images/alerts-icon.svg" alt="" />,
             content: t('alerts'),
             key: ALERTS_ROUTE,
           },
           {
-            icon: <img src="images/network-icon.svg" />,
+            icon: <img src="images/network-icon.svg" alt="" />,
             content: t('networks'),
             key: NETWORKS_ROUTE,
           },
           {
-            icon: <img src="images/experimental-icon.svg" />,
+            icon: <img src="images/experimental-icon.svg" alt="" />,
             content: t('experimental'),
             key: EXPERIMENTAL_ROUTE,
           },
           {
-            icon: <img src="images/info-icon.svg" />,
+            icon: <img src="images/info-icon.svg" alt="" />,
             content: t('about'),
             key: ABOUT_US_ROUTE,
           },
