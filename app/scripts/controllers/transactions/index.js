@@ -531,7 +531,10 @@ export default class TransactionController extends EventEmitter {
       return;
     }
 
-    const userSettings = { userEditedGasLimit, userFeeLevel };
+    let userSettings = { userEditedGasLimit, userFeeLevel };
+    // only update what is defined
+    userSettings = pickBy(userSettings);
+
     const note = `Update User Settings for ${txId}`;
     this._updateTransaction(txId, userSettings, note);
   }
