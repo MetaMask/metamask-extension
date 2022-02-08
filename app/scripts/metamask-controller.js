@@ -769,7 +769,9 @@ export default class MetamaskController extends EventEmitter {
       getNetwork: this.networkController.getNetworkState.bind(
         this.networkController,
       ),
-      nonceTracker: this.txController.nonceTracker,
+      getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
+        this.txController.nonceTracker,
+      ),
       provider: this.provider,
       txController: this.txController,
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
