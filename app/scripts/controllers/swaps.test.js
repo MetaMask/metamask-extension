@@ -372,7 +372,9 @@ describe('SwapsController', function () {
         assert.strictEqual(gasEstimate, bufferedGasLimit);
         assert.strictEqual(
           gasEstimateWithRefund,
-          new BigNumber(maxGas, 10).minus(estimatedRefund, 10).toString(16),
+          `0x${new BigNumber(maxGas, 10)
+            .minus(estimatedRefund, 10)
+            .toString(16)}`,
         );
       });
 
@@ -690,7 +692,7 @@ describe('SwapsController', function () {
           isBestQuote: true,
           // TODO: find a way to calculate these values dynamically
           gasEstimate: 2000000,
-          gasEstimateWithRefund: 'b8cae',
+          gasEstimateWithRefund: '0xb8cae',
           savings: {
             fee: '0',
             metaMaskFee: '0.5050505050505050505',
