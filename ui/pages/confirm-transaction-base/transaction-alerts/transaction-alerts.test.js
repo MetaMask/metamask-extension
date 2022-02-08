@@ -152,7 +152,7 @@ describe('TransactionAlerts', () => {
         expect(
           getByText(
             // eslint-disable-next-line require-unicode-regexp
-            /You do not have enough in your account to pay for transaction fees on network. Buy or deposit from another account./,
+            /You do not have enough in your account to pay for transaction fees on network.(.*)Buy or deposit from another account./,
           ),
         ).toBeInTheDocument();
       });
