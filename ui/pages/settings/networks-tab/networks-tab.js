@@ -16,7 +16,10 @@ import {
   getNetworksTabSelectedRpcUrl,
   getProvider,
 } from '../../../selectors';
-import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
+import {
+  NETWORK_TYPE_RPC,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
 import NetworksForm from './networks-form';
@@ -25,6 +28,7 @@ import NetworksFormSubheader from './networks-tab-subheader';
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
+  userIsCurrentlyOnATestNet: TEST_CHAINS.includes(network.chainId),
 }));
 
 const NetworksTab = ({ addNewNetwork }) => {
@@ -34,7 +38,7 @@ const NetworksTab = ({ addNewNetwork }) => {
 
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
-  const shouldRenderNetworkForm =
+  let shouldRenderNetworkForm =
     isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE));
 
   const frequentRpcListDetail = useSelector(getFrequentRpcListDetail);
@@ -50,6 +54,7 @@ const NetworksTab = ({ addNewNetwork }) => {
       chainId: rpc.chainId,
       ticker: rpc.ticker,
       blockExplorerUrl: rpc.rpcPrefs?.blockExplorerUrl || '',
+      userIsCurrentlyOnATestNet: TEST_CHAINS.includes(rpc.chainId),
     };
   });
 
@@ -64,7 +69,8 @@ const NetworksTab = ({ addNewNetwork }) => {
   const networkIsSelected = Boolean(selectedNetwork.rpcUrl);
 
   let networkDefaultedToProvider = false;
-  if (!networkIsSelected) {
+  if (networkIsSelected === false) {
+    shouldRenderNetworkForm = false;
     selectedNetwork =
       networksToRender.find((network) => {
         return (
@@ -74,6 +80,8 @@ const NetworksTab = ({ addNewNetwork }) => {
         );
       }) || {};
     networkDefaultedToProvider = true;
+  } else {
+    shouldRenderNetworkForm = true;
   }
 
   useEffect(() => {

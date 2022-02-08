@@ -2,8 +2,27 @@
   &__content {
     display: flex;
     height: 100%;
-    max-width: 739px;
+    max-width: 779px;
     justify-content: space-between;
+
+    &__actionable-message {
+      width: 400px;
+      height: 100px;
+
+      @media screen and (max-width: $break-small) {
+        width: 327px;
+      }
+    }
+
+    &__custom-image {
+      background: #f2f4f6;
+      border: none;
+
+      @media screen and (max-width: $break-small) {
+        margin-inline-end: 4px;
+        margin-inline-start: 20px;
+      }
+    }
 
     @media screen and (max-width: $break-small) {
       margin-top: 0;
@@ -52,6 +71,7 @@
     flex-direction: column;
     justify-content: space-between;
     max-height: 465px;
+    max-width: 400px;
     margin-top: 24px;
 
     .page-container__footer {
@@ -103,8 +123,14 @@
 
   &__networks-list {
     flex: 0.5 0 auto;
-    max-width: 343px;
+    max-width: 311px;
     margin-top: 24px;
+
+    &__label {
+      @media screen and (max-width: $break-small) {
+        margin-inline-start: 20px;
+      }
+    }
 
     @media screen and (max-width: $break-small) {
       flex: 1;
@@ -121,7 +147,6 @@
     justify-content: center;
     padding-top: 23px;
     padding-bottom: 23px;
-    border-top: 1px solid var(--color-border-default);
 
     .button {
       width: 178px;
@@ -149,7 +174,7 @@
 
   &__networks-list-item {
     display: flex;
-    padding: 13px 0 13px 17px;
+    padding: 13px 24px 13px 0;
     position: relative;
     align-items: center;
 
@@ -159,13 +184,12 @@
       }
 
       @media screen and (max-width: $break-small) {
-        margin: 0 4px 0 10px;
+        margin: 0 4px 0 20px;
       }
     }
 
     @media screen and (max-width: $break-small) {
-      padding: 20px 23px 21px 17px;
-      border-bottom: 1px solid var(--color-border-default);
+      padding: 20px 23px 21px 0;
       max-width: 351px;
     }
   }
@@ -191,13 +215,27 @@
     }
 
     svg {
-      margin-left: 10px;
+      margin-left: 15px;
       padding-top: 3px;
     }
   }
 
   &__networks-list-arrow {
-    display: none;
+    margin-inline-start: 100%;
+    display: block;
+    background-image: url('/images/caret-right.svg');
+    color: var(--Grey-500);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    position: absolute;
+    width: 16px;
+    height: 16px;
+
+    [dir='rtl'] & {
+      transform: rotate(180deg);
+    }
 
     @media screen and (max-width: $break-small) {
       display: block;
@@ -209,6 +247,7 @@
       [dir='rtl'] & {
         transform: rotate(180deg);
       }
+      margin-inline-start: 90%;
     }
   }
 
@@ -218,7 +257,6 @@
   }
 
   &__networks-list-name--disabled {
-    font-weight: 300;
     color: var(--color-text-muted);
   }
 

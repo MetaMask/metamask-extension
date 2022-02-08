@@ -3536,6 +3536,9 @@
   "themeDescription": {
     "message": "Choose your preferred MetaMask theme."
   },
+  "testNetworks": {
+    "message": "Test networks"
+  },
   "thisWillCreate": {
     "message": "This will create a new wallet and Secret Recovery Phrase"
   },
