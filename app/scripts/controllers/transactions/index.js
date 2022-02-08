@@ -54,7 +54,6 @@ import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
-import { merge } from 'lodash';
 
 const hstInterface = new ethers.utils.Interface(abi);
 
