@@ -2380,12 +2380,12 @@ describe('Transaction Controller', function () {
         destinationTokenSymbol: 'ETH',
       });
 
-      const result = txStateManager.getTransaction('1');    
-      assert.equal(result.sourceTokenSymbol, 'BTCX');            
-      assert.equal(result.destinationTokenSymbol, 'ETH');  
-      assert.equal(result.destinationTokenDecimals, 16);            
-      assert.equal(result.destinationTokenAddress, VALID_ADDRESS);  
-      assert.equal(result.swapTokenValue, '0x007');                                
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.sourceTokenSymbol, 'BTCX');
+      assert.equal(result.destinationTokenSymbol, 'ETH');
+      assert.equal(result.destinationTokenDecimals, 16);
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS);
+      assert.equal(result.swapTokenValue, '0x007');
 
       txController.updateSwapTransaction('1', {
         type: 'swapped',
@@ -2393,23 +2393,23 @@ describe('Transaction Controller', function () {
         destinationTokenAddress: VALID_ADDRESS_TWO,
         swapTokenValue: '0x0077',
       });
-      assert.equal(result.sourceTokenSymbol, 'BTCX');            
-      assert.equal(result.destinationTokenSymbol, 'ETH');       
-      assert.equal(result.type, 'swapped');            
-      assert.equal(result.destinationTokenDecimals, 8);            
-      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO);                
+      assert.equal(result.sourceTokenSymbol, 'BTCX');
+      assert.equal(result.destinationTokenSymbol, 'ETH');
+      assert.equal(result.type, 'swapped');
+      assert.equal(result.destinationTokenDecimals, 8);
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO);
       assert.equal(result.swapTokenValue, '0x0077');
-    }); 
+    });
 
     it('updates transaction user settings', function () {
       txController.updateTransactionUserSettings('1', {
-        userEditedGasLimit: '0x0088', 
-        userFeeLevel: 'high'
+        userEditedGasLimit: '0x0088',
+        userFeeLevel: 'high',
       });
 
       const result = txStateManager.getTransaction('1');
-      assert.equal(result.userEditedGasLimit, '0x0088');      
-      assert.equal(result.userFeeLevel, 'high');            
-    });    
+      assert.equal(result.userEditedGasLimit, '0x0088');
+      assert.equal(result.userFeeLevel, 'high');
+    });
   });
 });
