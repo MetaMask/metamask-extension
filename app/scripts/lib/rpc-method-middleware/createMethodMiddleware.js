@@ -1,6 +1,7 @@
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import { handlers as permittedSnapMethods } from '@metamask/rpc-methods/dist/permitted';
 ///: END:ONLY_INCLUDE_IN
+import { flatten } from 'lodash';
 import { permissionRpcMethods } from '@metamask/snap-controllers';
 import { selectHooks } from '@metamask/rpc-methods';
 import { ethErrors } from 'eth-rpc-errors';
@@ -18,7 +19,7 @@ const handlerMap = allHandlers.reduce((map, handler) => {
 
 const expectedHookNames = Array.from(
   new Set(
-    allHandlers.map(({ hookNames }) => Object.keys(hookNames)).flat(),
+    flatten(allHandlers.map(({ hookNames }) => Object.keys(hookNames))),
   ).values(),
 );
 
