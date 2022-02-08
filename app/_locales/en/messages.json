@@ -1280,6 +1280,9 @@
   "gasEstimatesUnavailableWarning": {
     "message": "Our low, medium and high estimates are not available."
   },
+  "gasFee": {
+    "message": "Gas Fee"
+  },
   "gasLimit": {
     "message": "Gas Limit"
   },

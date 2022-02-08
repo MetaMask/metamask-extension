@@ -32,11 +32,13 @@ export default function MultilayerFeeMessage({
       .toFixed(12)} ${nativeCurrency}`;
   }
 
+  const feeTotal = sumHexes(layer2fee || '0x0', fetchedLayer1Total || '0x0');
+
   const totalInWeiHex = sumHexes(
-    layer2fee || '0x0',
-    fetchedLayer1Total || '0x0',
+    feeTotal || '0x0',
     transaction.txParams.value || '0x0',
   );
+
   const totalBN = toBigNumber.hex(totalInWeiHex);
   const totalInEth = `${toNormalizedDenomination
     .WEI(totalBN)
@@ -55,10 +57,10 @@ export default function MultilayerFeeMessage({
     getEstimatedL1Fee();
   }, [transaction]);
 
-  const layer1TotalInFiat = (
+  const feeTotalInFiat = (
     <UserPreferencedCurrencyDisplay
       type={SECONDARY}
-      value={layer1TotalBN?.toString(16) ?? '0x0'}
+      value={feeTotal}
       showFiat
       hideLabel
     />
@@ -77,9 +79,9 @@ export default function MultilayerFeeMessage({
     <>
       <TransactionDetailItem
         key="total-item"
-        detailTitle={t('layer1Fees')}
+        detailTitle={t('gasFee')}
         detailTotal={layer1Total}
-        detailText={layer1TotalInFiat}
+        detailText={feeTotalInFiat}
         noBold={plainStyle}
         flexWidthValues={plainStyle}
       />
