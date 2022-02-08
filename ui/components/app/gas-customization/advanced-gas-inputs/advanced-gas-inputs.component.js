@@ -206,6 +206,10 @@ export default class AdvancedGasInputs extends Component {
     } = this.props;
     const { gasPrice, gasLimit } = this.state;
 
+    if (!networkSupportsSettingGasFees) {
+      return null;
+    }
+
     const {
       errorText: gasPriceErrorText,
       errorType: gasPriceErrorType,
