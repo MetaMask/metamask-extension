@@ -76,7 +76,7 @@ export default function MultilayerFeeMessage({
   );
 
   return (
-    <>
+    <div className="multi-layer-fee-message">
       <TransactionDetailItem
         key="total-item"
         detailTitle={t('gasFee')}
@@ -94,7 +94,7 @@ export default function MultilayerFeeMessage({
         noBold={plainStyle}
         flexWidthValues={plainStyle}
       />
-    </>
+    </div>
   );
 }
 
