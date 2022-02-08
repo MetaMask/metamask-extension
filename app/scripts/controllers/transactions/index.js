@@ -359,10 +359,10 @@ export default class TransactionController extends EventEmitter {
     const txMeta = this.txStateManager.getTransaction(txId);
     const updated = merge(txMeta, proposedUpdate);
 
-    console.log("Meta: ", txMeta);
-    console.log("proposedUpdate: ", proposedUpdate);        
-    console.log("updatedMeta: ", updated);
-    
+    // console.log("Meta: ", txMeta);
+    // console.log("proposedUpdate: ", proposedUpdate);        
+    // console.log("updatedMeta: ", updated);
+
     this.txStateManager.updateTransaction(updated, note);
   }
 
@@ -397,6 +397,7 @@ export default class TransactionController extends EventEmitter {
       },
     };
 
+    // only update what is defined
     if(gasLimit) {
       txGasFees.txParams.gasLimit = gasLimit;
     }
@@ -433,7 +434,7 @@ export default class TransactionController extends EventEmitter {
    * @param txEstimateBaseFees.estimatedBaseFee
    * @param txEstimateBaseFees.decEstimatedBaseFee
    */
-  updateTransactionEstimateBaseFee(
+  updateTransactionEstimatedBaseFee(
     txId,
     { estimatedBaseFee, decEstimatedBaseFee },
   ) {
@@ -441,10 +442,16 @@ export default class TransactionController extends EventEmitter {
       return;
     }
 
-    const txEstimateBaseFees = {
-      estimatedBaseFee,
-      decEstimatedBaseFee,
-    };
+    const txEstimateBaseFees = {};
+
+    //only update what is defined
+    if(estimatedBaseFee) {
+      txEstimateBaseFees.estimatedBaseFee = estimatedBaseFee;
+    }
+
+    if(decEstimatedBaseFee) {
+      txEstimateBaseFees.decEstimatedBaseFee = decEstimatedBaseFee;
+    }    
 
     const note = `Update Transaction Estimated Base Fees for ${txId}`;
     this._updateTransaction(txId, txEstimateBaseFees, note);
