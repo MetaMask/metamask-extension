@@ -133,7 +133,7 @@ const NewNetworkInfo = () => {
             paddingBottom={2}
             marginBottom={2}
             width={BLOCK_SIZES.ELEVEN_TWELFTHS}
-            className="new-network-info__content-box-1"
+            className="new-network-info__bullet-paragraph"
           >
             <Box marginRight={4} color={COLORS.BLACK}>
               &bull;
@@ -142,7 +142,7 @@ const NewNetworkInfo = () => {
               variant={TYPOGRAPHY.H7}
               color={COLORS.BLACK}
               boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-              className="new-network-info__content-box-1__text-1"
+              className="new-network-info__bullet-paragraph__text"
               key="nativeTokenInfo"
             >
               {t('nativeToken', [
@@ -163,7 +163,7 @@ const NewNetworkInfo = () => {
           alignItems={ALIGN_ITEMS.CENTER}
           className={
             !autoDetectToken || !tokenDetectionSupported
-              ? 'new-network-info__content-box-1'
+              ? 'new-network-info__bullet-paragraph'
               : null
           }
         >
@@ -174,7 +174,7 @@ const NewNetworkInfo = () => {
             variant={TYPOGRAPHY.H7}
             color={COLORS.BLACK}
             boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-            className="new-network-info__content-box-1__text-1"
+            className="new-network-info__bullet-paragraph__text"
           >
             {t('attemptSendingAssets')}{' '}
             <a

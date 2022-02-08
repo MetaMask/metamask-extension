@@ -34,17 +34,17 @@
     margin-bottom: 24px;
   }
 
-  &__content-box-1 {
+  &__bullet-paragraph {
     border-bottom: 1px solid var(--ui-2);
 
-    &__text-1 {
+    &__text {
       width: 266px;
     }
   }
 
   &__button {
     color: var(--primary-1);
-    font-size: 12px;
+    font-size: 0.75rem;
     display: initial;
     padding: 0;
   }
