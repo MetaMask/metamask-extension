@@ -25,6 +25,7 @@ import {
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import TransactionController from '.';
+import TxStateManager from './tx-state-manager';
 
 const noop = () => true;
 const currentNetworkId = '42';
