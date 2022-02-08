@@ -50,6 +50,7 @@ import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
+import { merge } from 'lodash';
 
 const hstInterface = new ethers.utils.Interface(abi);
 
@@ -350,14 +351,19 @@ export default class TransactionController extends EventEmitter {
 
   _checkIfTxStatusIsUnapproved(txId) {
     return (
-      this._getTransaction(txId).status === TRANSACTION_STATUSES.UNAPPROVED
+      this.txStateManager.getTransaction(txId).status === TRANSACTION_STATUSES.UNAPPROVED
     );
   }
 
-  _updateTransaction(txId, txParams, note) {
-    const txMeta = this._getTransaction(txId);
-    const updatedMeta = { ...txMeta, ...txParams };
-    this.txStateManager.updateTransaction(updatedMeta, note);
+  _updateTransaction(txId, proposedUpdate, note) {
+    const txMeta = this.txStateManager.getTransaction(txId);
+    const updated = merge(txMeta, proposedUpdate);
+
+    console.log("Meta: ", txMeta);
+    console.log("proposedUpdate: ", proposedUpdate);        
+    console.log("updatedMeta: ", updated);
+    
+    this.txStateManager.updateTransaction(updated, note);
   }
 
   /**
@@ -388,13 +394,28 @@ export default class TransactionController extends EventEmitter {
 
     const txGasFees = {
       txParams: {
-        gasLimit,
-        gasPrice,
-        maxPriorityFeePerGas,
-        maxFeePerGas,
       },
-      estimateUsed,
     };
+
+    if(gasLimit) {
+      txGasFees.txParams.gasLimit = gasLimit;
+    }
+
+    if(gasPrice) {
+      txGasFees.txParams.gasPrice = gasPrice;
+    }
+
+    if(maxPriorityFeePerGas) {
+      txGasFees.txParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
+    }
+
+    if(maxFeePerGas) {
+      txGasFees.txParams.maxFeePerGas = maxFeePerGas;
+    }
+
+    if(estimateUsed) {
+      txGasFees.estimateUsed = estimateUsed;
+    }    
 
     const note = `Update Transaction Gas Fees for ${txId}`;
     this._updateTransaction(txId, txGasFees, note);
