@@ -111,7 +111,7 @@ export function useGasEstimates({
   const maximumCostInHexWei = getMaximumGasTotalInHexWei(gasSettings);
 
   if (editGasMode === EDIT_GAS_MODES.SWAPS) {
-    gasSettings = { ...gasSettings, gasLimit: decimalToHex(minimumGasLimit) };
+    gasSettings = { ...gasSettings, gasLimit: minimumGasLimit };
   }
 
   // The minimum amount this transaction will cost

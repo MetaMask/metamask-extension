@@ -1,3 +1,4 @@
+import { flatten } from 'lodash';
 import { permissionRpcMethods } from '@metamask/snap-controllers';
 import { selectHooks } from '@metamask/rpc-methods';
 import { ethErrors } from 'eth-rpc-errors';
@@ -15,7 +16,7 @@ const handlerMap = allHandlers.reduce((map, handler) => {
 
 const expectedHookNames = Array.from(
   new Set(
-    allHandlers.map(({ hookNames }) => Object.keys(hookNames)).flat(),
+    flatten(allHandlers.map(({ hookNames }) => Object.keys(hookNames))),
   ).values(),
 );
 
