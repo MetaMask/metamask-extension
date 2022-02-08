@@ -2183,6 +2183,11 @@ describe('Transaction Controller', function () {
         decEstimatedBaseFee: '6',
         type: 'swap',
         sourceTokenSymbol: 'ETH',
+        destinationTokenSymbol: 'UNI',
+        destinationTokenDecimals: 16,
+        destinationTokenAddress: VALID_ADDRESS,
+        swapMetaData: {},
+        swapTokenValue: '0x007',        
       });
     });
 
@@ -2250,13 +2255,40 @@ describe('Transaction Controller', function () {
 
     it('updates swap approval transaction', function () {
       txController.updateSwapApprovalTransaction('1', {
-        type: 'swap-2',
+        type: 'swapApproval',
         sourceTokenSymbol: 'XBN',
       });
 
       const result = txStateManager.getTransaction('1');
-      assert.equal(result.type, 'swap-2');      
+      assert.equal(result.type, 'swapApproval');      
       assert.equal(result.sourceTokenSymbol, 'XBN');            
     });
+
+    it('updates swap transaction', function () {
+      txController.updateSwapTransaction('1', {
+        sourceTokenSymbol: 'BTCX',
+        destinationTokenSymbol: 'ETH',
+      });
+
+      const result = txStateManager.getTransaction('1');    
+      assert.equal(result.sourceTokenSymbol, 'BTCX');            
+      assert.equal(result.destinationTokenSymbol, 'ETH');  
+      assert.equal(result.destinationTokenDecimals, 16);            
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS);  
+      assert.equal(result.swapTokenValue, '0x007');                                
+
+      txController.updateSwapTransaction('1', {
+        type: 'swapped',
+        destinationTokenDecimals: 8,
+        destinationTokenAddress: VALID_ADDRESS_TWO,
+        swapTokenValue: '0x0077',
+      });
+      assert.equal(result.sourceTokenSymbol, 'BTCX');            
+      assert.equal(result.destinationTokenSymbol, 'ETH');       
+      assert.equal(result.type, 'swapped');            
+      assert.equal(result.destinationTokenDecimals, 8);            
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO);                
+      assert.equal(result.swapTokenValue, '0x0077');
+    });    
   });
 });

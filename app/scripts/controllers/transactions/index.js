@@ -10,7 +10,7 @@ import { ethers } from 'ethers';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
-import { merge } from 'lodash';
+import { merge, pickBy } from 'lodash';
 import cleanErrorStack from '../../lib/cleanErrorStack';
 import {
   hexToBn,
@@ -343,7 +343,7 @@ export default class TransactionController extends EventEmitter {
    * @param {number} txId
    * @returns {TransactionMeta} the txMeta who matches the given id if none found
    * for the network returns undefined
-   */
+   */  
   _getTransaction(txId) {
     const { transactions } = this.store.getState();
     return transactions[txId];
@@ -393,31 +393,16 @@ export default class TransactionController extends EventEmitter {
       return;
     }
 
-    const txGasFees = {
-      txParams: {},
-    };
+    let txGasFees = {
+      txParams: {
+        gasLimit, gasPrice, maxPriorityFeePerGas, maxFeePerGas
+      },
+      estimateUsed
+    };    
 
     // only update what is defined
-    if (gasLimit) {
-      txGasFees.txParams.gasLimit = gasLimit;
-    }
-
-    if (gasPrice) {
-      txGasFees.txParams.gasPrice = gasPrice;
-    }
-
-    if (maxPriorityFeePerGas) {
-      txGasFees.txParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
-    }
-
-    if (maxFeePerGas) {
-      txGasFees.txParams.maxFeePerGas = maxFeePerGas;
-    }
-
-    if (estimateUsed) {
-      txGasFees.estimateUsed = estimateUsed;
-    }
-
+    txGasFees.txParams = pickBy(txGasFees.txParams);
+    txGasFees = pickBy(txGasFees);
     const note = `Update Transaction Gas Fees for ${txId}`;
     this._updateTransaction(txId, txGasFees, note);
   }
@@ -442,16 +427,9 @@ export default class TransactionController extends EventEmitter {
       return;
     }
 
-    const txEstimateBaseFees = {};
-
+    let txEstimateBaseFees = {estimatedBaseFee, decEstimatedBaseFee};
     // only update what is defined
-    if (estimatedBaseFee) {
-      txEstimateBaseFees.estimatedBaseFee = estimatedBaseFee;
-    }
-
-    if (decEstimatedBaseFee) {
-      txEstimateBaseFees.decEstimatedBaseFee = decEstimatedBaseFee;
-    }
+    txEstimateBaseFees = pickBy(txEstimateBaseFees);
 
     const note = `Update Transaction Estimated Base Fees for ${txId}`;
     this._updateTransaction(txId, txEstimateBaseFees, note);
@@ -474,17 +452,10 @@ export default class TransactionController extends EventEmitter {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
       return;
     }
-
+    
+    let swapApprovalTransaction = {type, sourceTokenSymbol};
     // only update what is defined
-    const swapApprovalTransaction = {};
-
-    if (type) {
-      swapApprovalTransaction.type = type;
-    }
-
-    if (sourceTokenSymbol) {
-      swapApprovalTransaction.sourceTokenSymbol = sourceTokenSymbol;
-    }
+    swapApprovalTransaction = pickBy(swapApprovalTransaction);
 
     const note = `Update Swap Approval Transaction for ${txId}`;
     this._updateTransaction(txId, swapApprovalTransaction, note);
@@ -528,8 +499,8 @@ export default class TransactionController extends EventEmitter {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
       return;
     }
-
-    const swapTransaction = {
+    
+    let swapTransaction = {
       sourceTokenSymbol,
       destinationTokenSymbol,
       type,
@@ -538,6 +509,10 @@ export default class TransactionController extends EventEmitter {
       swapMetaData,
       swapTokenValue,
     };
+
+    // only update what is defined
+    swapTransaction = pickBy(swapTransaction);
+
     const note = `Update Swap Transaction for ${txId}`;
     this._updateTransaction(txId, swapTransaction, note);
   }
