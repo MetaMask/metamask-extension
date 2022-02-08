@@ -491,16 +491,15 @@ export default class ConfirmTransactionBase extends Component {
             )
           }
           detailText={
-            !isMultiLayerFeeNetwork && (
-              <div className="confirm-page-container-content__currency-container">
-                {renderHeartBeatIfNotInTest()}
-                <UserPreferencedCurrencyDisplay
-                  type={SECONDARY}
-                  value={hexMinimumTransactionFee}
-                  hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-                />
-              </div>
-            )
+            <div className="confirm-page-container-content__currency-container test">
+              {renderHeartBeatIfNotInTest()}
+              <UserPreferencedCurrencyDisplay
+                type={SECONDARY}
+                value={hexMinimumTransactionFee}
+                hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                showFiat={isMultiLayerFeeNetwork}
+              />
+            </div>
           }
           detailTotal={
             <div className="confirm-page-container-content__currency-container">
@@ -508,8 +507,8 @@ export default class ConfirmTransactionBase extends Component {
               <UserPreferencedCurrencyDisplay
                 type={PRIMARY}
                 value={hexMinimumTransactionFee}
-                hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-                numberOfDecimals={isMultiLayerFeeNetwork ? 18 : 6}
+                hideLabel={false && !useNativeCurrencyAsPrimaryCurrency}
+                numberOfDecimals={isMultiLayerFeeNetwork ? 12 : 6}
               />
             </div>
           }

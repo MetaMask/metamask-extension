@@ -2,7 +2,9 @@ import React, { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
+import { SECONDARY } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
 import { sumHexes } from '../../../helpers/utils/transactions.util';
 import {
@@ -21,12 +23,13 @@ export default function MultilayerFeeMessage({
   const [fetchedLayer1Total, setLayer1Total] = useState(null);
 
   let layer1Total = 'unknown';
+  let layer1TotalBN;
 
   if (fetchedLayer1Total !== null) {
-    const layer1TotalBN = toBigNumber.hex(fetchedLayer1Total);
+    layer1TotalBN = toBigNumber.hex(fetchedLayer1Total);
     layer1Total = `${toNormalizedDenomination
       .WEI(layer1TotalBN)
-      .toString(10)} ${nativeCurrency}`;
+      .toFixed(12)} ${nativeCurrency}`;
   }
 
   const totalInWeiHex = sumHexes(
@@ -37,7 +40,7 @@ export default function MultilayerFeeMessage({
   const totalBN = toBigNumber.hex(totalInWeiHex);
   const totalInEth = `${toNormalizedDenomination
     .WEI(totalBN)
-    .toString(10)} ${nativeCurrency}`;
+    .toFixed(12)} ${nativeCurrency}`;
 
   useEffect(() => {
     const getEstimatedL1Fee = async () => {
@@ -52,12 +55,31 @@ export default function MultilayerFeeMessage({
     getEstimatedL1Fee();
   }, [transaction]);
 
+  const layer1TotalInFiat = (
+    <UserPreferencedCurrencyDisplay
+      type={SECONDARY}
+      value={layer1TotalBN?.toString(16) ?? '0x0'}
+      showFiat
+      hideLabel
+    />
+  );
+
+  const totalInFiat = (
+    <UserPreferencedCurrencyDisplay
+      type={SECONDARY}
+      value={totalInWeiHex}
+      showFiat
+      hideLabel
+    />
+  );
+
   return (
     <>
       <TransactionDetailItem
         key="total-item"
         detailTitle={t('layer1Fees')}
         detailTotal={layer1Total}
+        detailText={layer1TotalInFiat}
         noBold={plainStyle}
         flexWidthValues={plainStyle}
       />
@@ -65,6 +87,7 @@ export default function MultilayerFeeMessage({
         key="total-item"
         detailTitle={t('total')}
         detailTotal={totalInEth}
+        detailText={totalInFiat}
         subTitle={t('transactionDetailMultiLayerTotalSubtitle')}
         noBold={plainStyle}
         flexWidthValues={plainStyle}
