@@ -193,43 +193,43 @@ class SettingsPage extends PureComponent {
       <TabBar
         tabs={[
           {
+            icon: <img src="images/general-icon.svg" alt="" />,
             content: t('general'),
-            description: t('generalSettingsDescription'),
             key: GENERAL_ROUTE,
           },
           {
+            icon: <img src="images/advanced-icon.svg" alt="" />,
             content: t('advanced'),
-            description: t('advancedSettingsDescription'),
             key: ADVANCED_ROUTE,
           },
           {
+            icon: <img src="images/contacts-icon.svg" alt="" />,
             content: t('contacts'),
-            description: t('contactsSettingsDescription'),
             key: CONTACT_LIST_ROUTE,
           },
           {
+            icon: <img src="images/security-icon.svg" alt="" />,
             content: t('securityAndPrivacy'),
-            description: t('securitySettingsDescription'),
             key: SECURITY_ROUTE,
           },
           {
+            icon: <img src="images/alerts-icon.svg" alt="" />,
             content: t('alerts'),
-            description: t('alertsSettingsDescription'),
             key: ALERTS_ROUTE,
           },
           {
+            icon: <img src="images/network-icon.svg" alt="" />,
             content: t('networks'),
-            description: t('networkSettingsDescription'),
             key: NETWORKS_ROUTE,
           },
           {
+            icon: <img src="images/experimental-icon.svg" alt="" />,
             content: t('experimental'),
-            description: t('experimentalSettingsDescription'),
             key: EXPERIMENTAL_ROUTE,
           },
           {
+            icon: <img src="images/info-icon.svg" alt="" />,
             content: t('about'),
-            description: t('aboutSettingsDescription'),
             key: ABOUT_US_ROUTE,
           },
         ]}

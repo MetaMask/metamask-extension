@@ -37,20 +37,20 @@ describe('Threebox', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
 
         // turns on threebox syncing
-        await driver.clickElement({ text: 'Advanced', tag: 'div' });
+        await driver.clickElement({ text: 'Advanced', tag: 'h4' });
         await driver.clickElement(
           '[data-testid="advanced-setting-3box"] .toggle-button div',
         );
 
         // updates settings and address book
         // navigates to General settings
-        await driver.clickElement({ text: 'General', tag: 'div' });
+        await driver.clickElement({ text: 'General', tag: 'h4' });
 
         // turns on use of blockies
         await driver.clickElement('.toggle-button > div');
 
         // adds an address to the contact list
-        await driver.clickElement({ text: 'Contacts', tag: 'div' });
+        await driver.clickElement({ text: 'Contacts', tag: 'h4' });
 
         await driver.clickElement('.address-book__link');
         await driver.fill('#nickname', 'Test User Name 11');
@@ -89,7 +89,7 @@ describe('Threebox', function () {
         assert.equal(toggleLabelText, 'ON');
 
         // finds the restored address in the contact list
-        await driver.clickElement({ text: 'Contacts', tag: 'div' });
+        await driver.clickElement({ text: 'Contacts', tag: 'h4' });
         await driver.findElement({ text: 'Test User Name 11', tag: 'div' });
       },
     );

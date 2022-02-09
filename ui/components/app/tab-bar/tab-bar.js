@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import Typography from '../../ui/typography/typography';
+import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 const TabBar = (props) => {
   const { tabs = [], onSelect, isActive } = props;
 
   return (
     <div className="tab-bar">
-      {tabs.map(({ key, content, description }) => (
+      {tabs.map(({ key, content, icon }) => (
         <button
           key={key}
           className={classnames('tab-bar__tab pointer', {
@@ -16,10 +18,8 @@ const TabBar = (props) => {
           onClick={() => onSelect(key)}
         >
           <div className="tab-bar__tab__content">
-            <div className="tab-bar__tab__content__title">{content}</div>
-            <div className="tab-bar__tab__content__description">
-              {description}
-            </div>
+            <div className="tab-bar__tab__content__icon">{icon}</div>
+            <Typography variant={TYPOGRAPHY.H4}>{content}</Typography>
           </div>
           <div className="tab-bar__tab__caret" />
         </button>

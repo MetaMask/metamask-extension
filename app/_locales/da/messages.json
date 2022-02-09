@@ -8,9 +8,6 @@
   "about": {
     "message": "Om"
   },
-  "aboutSettingsDescription": {
-    "message": "Version, supportcenter og kontaktinformation"
-  },
   "acceleratingATransaction": {
     "message": "* At gøre din transaktion hurtigere ved at bruge en højere Gas-priser, øger dennes chancer for at blive behandlet af netværket hurtigere, men det er ikke altid garanteret."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Avancerede Valgmuligheder"
-  },
-  "advancedSettingsDescription": {
-    "message": "Få adgang til udviklerfunktioner, hent tilstandslogs, nulstil konto, opsæt testnetværk og brugerdefineret RPC"
   },
   "amount": {
     "message": "Beløb"
@@ -422,9 +416,6 @@
   "general": {
     "message": "Generelt"
   },
-  "generalSettingsDescription": {
-    "message": "Valutakonvertering, primær valuta, sprog, blockies-identicon"
-  },
   "getEther": {
     "message": "Hent Ether"
   },
@@ -586,9 +577,6 @@
   },
   "networkName": {
     "message": "Netværksnavn"
-  },
-  "networkSettingsDescription": {
-    "message": "Tilføj og redigér brugerdefinerede RPC-netværk"
   },
   "networks": {
     "message": "Netværk"
@@ -820,9 +808,6 @@
   },
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"
-  },
-  "securitySettingsDescription": {
-    "message": "Indstillinger for beskyttelse af personlige oplysninger og backupsætning til tegnebog"
   },
   "seedPhrasePlaceholder": {
     "message": "Adskil hvert ord med et enkelt mellemrum"
