@@ -135,12 +135,6 @@
   "details": {
     "message": "รายละเอียด"
   },
-  "directDepositEther": {
-    "message": "ฝากอีเธอร์โดยตรง"
-  },
-  "directDepositEtherExplainer": {
-    "message": "ถ้าคุณมีอีเธอร์อยู่แล้ววิธีการที่เร็วที่สุดในการเอาเงินเข้ากระเป๋าใหม่ก็คือการโอนตรงๆ"
-  },
   "done": {
     "message": "เสร็จสิ้น"
   },

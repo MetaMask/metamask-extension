@@ -283,12 +283,6 @@
   "details": {
     "message": "Info"
   },
-  "directDepositEther": {
-    "message": "Sätt in Ether direkt"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Om du redan har Ether är det snabbaste sättet att få Ether i din nya plånbok att göra en direktinsättning."
-  },
   "done": {
     "message": "Klart"
   },

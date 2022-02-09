@@ -283,12 +283,6 @@
   "details": {
     "message": "Maelezo"
   },
-  "directDepositEther": {
-    "message": "Weka Ether Moja kwa Moja"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ikiwa tayari una sarafu kadhaa za Ether, njia rahisi ya kupata Ether kwenye waleti yako mpya kupitia kuweka moja kwa moja."
-  },
   "done": {
     "message": "Imekamilika"
   },

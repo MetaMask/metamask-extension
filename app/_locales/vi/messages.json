@@ -709,12 +709,6 @@
   "details": {
     "message": "Chi tiết"
   },
-  "directDepositEther": {
-    "message": "Nạp trực tiếp Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Nếu bạn đã có một lượng Ether, cách nhanh nhất để chuyển Ether vào ví mới của bạn là nạp trực tiếp."
-  },
   "disconnect": {
     "message": "Ngắt kết nối"
   },
