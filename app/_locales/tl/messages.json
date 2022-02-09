@@ -47,9 +47,6 @@
   "about": {
     "message": "Tungkol Dito"
   },
-  "aboutSettingsDescription": {
-    "message": "Bersyon, support center, at impormasyon sa pakikipag-ugnayan"
-  },
   "acceleratingATransaction": {
     "message": "* Kapag in-accelerate ang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gasolina, mas magiging malaki ang tsansang mas mabilis na maproseso ng network, pero hindi ito palaging ginagarantiya."
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Ang priority fee (kilala rin bilang “tip ng miner”) ay direktang napupunta sa mga miner at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon."
   },
-  "advancedSettingsDescription": {
-    "message": "I-access ang mga pang-developer na feature, i-download ang Mga Log ng Estado, I-reset ang Account, i-set up ang mga testnet at custom na RPC"
-  },
   "affirmAgree": {
     "message": "Sang-ayon Ako"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "Mga Alerto"
-  },
-  "alertsSettingsDescription": {
-    "message": "I-enable o i-disable ang bawat alerto"
   },
   "allowExternalExtensionTo": {
     "message": "Payagan ang external extension na ito na:"
@@ -550,9 +541,6 @@
   },
   "contacts": {
     "message": "Mga Contact"
-  },
-  "contactsSettingsDescription": {
-    "message": "Magdagdag, mag-edit, magtanggal, at mamahala ng iyong mga contact"
   },
   "continue": {
     "message": "Magpatuloy"
@@ -1045,9 +1033,6 @@
   "experimental": {
     "message": "Experimental"
   },
-  "experimentalSettingsDescription": {
-    "message": "Pag-detect ng token at iba pa"
-  },
   "exportPrivateKey": {
     "message": "I-export ang Pribadong Key"
   },
@@ -1216,9 +1201,6 @@
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "generalSettingsDescription": {
-    "message": "Conversion ng currency, pangunahing currency, wika, blockies identicon"
   },
   "getEther": {
     "message": "Kunin ang Ether"
@@ -1739,9 +1721,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "Ginagaamit ang chain ID sa paglagda ng mga transaksyon. Dapat itong tumugma sa chain ID na ibinalik ng network. Puwede kang maglagay ng decimal o '0x'-prefixed hexadecimal number, pero ipapakita namin ang numero sa decimal."
-  },
-  "networkSettingsDescription": {
-    "message": "Magdagdag at mag-edit ng mga custom na RPC network"
   },
   "networkStatus": {
     "message": "Network status"
@@ -2340,9 +2319,6 @@
   },
   "securityAndPrivacy": {
     "message": "Seguridad at Pagkapribado"
-  },
-  "securitySettingsDescription": {
-    "message": "Mga setting ng privacy at Secret Recovery Phrase ng wallet"
   },
   "seedPhraseConfirm": {
     "message": "Kumpirmahin ang Secret Recovery Phrase"

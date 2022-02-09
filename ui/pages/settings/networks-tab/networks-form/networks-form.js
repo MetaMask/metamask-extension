@@ -483,7 +483,7 @@ const NetworksForm = ({
             networkName,
             {
               ...rpcPrefs,
-              blockExplorerUrl: blockExplorerUrl || rpcPrefs.blockExplorerUrl,
+              blockExplorerUrl: blockExplorerUrl || rpcPrefs?.blockExplorerUrl,
             },
           ),
         );

@@ -47,9 +47,6 @@
   "about": {
     "message": "Sobre"
   },
-  "aboutSettingsDescription": {
-    "message": "Versão, central de suporte e informações de contato"
-  },
   "acceleratingATransaction": {
     "message": "* Acelerar uma transação usando um preço de gás mais alto aumenta as chances de agilizar o processamento pela rede, mas isso nem sempre é garantido."
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
-  "advancedSettingsDescription": {
-    "message": "Acesse recursos do desenvolvedor, baixe registros de estado, redefina a conta, configure redes de teste e RPC personalizada"
-  },
   "affirmAgree": {
     "message": "Concordo"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "Alertas"
-  },
-  "alertsSettingsDescription": {
-    "message": "Habilitar ou desabilitar cada alerta"
   },
   "allowExternalExtensionTo": {
     "message": "Permitir que essa extensão externa:"
@@ -558,9 +549,6 @@
   },
   "contacts": {
     "message": "Contatos"
-  },
-  "contactsSettingsDescription": {
-    "message": "Adicionar, editar, remover e gerenciar seus contatos"
   },
   "continue": {
     "message": "Continuar"
@@ -1059,9 +1047,6 @@
   "experimental": {
     "message": "Experimental"
   },
-  "experimentalSettingsDescription": {
-    "message": "Detecção de token e mais"
-  },
   "exportPrivateKey": {
     "message": "Exportar chave privada"
   },
@@ -1250,9 +1235,6 @@
   },
   "general": {
     "message": "Geral"
-  },
-  "generalSettingsDescription": {
-    "message": "Conversão de moeda, moeda principal, idioma, identicon de blockies"
   },
   "getEther": {
     "message": "Obter Ether"
@@ -1772,9 +1754,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "O ID da cadeia é usado para assinar transações. É preciso ser igual ao ID da cadeia retornado pela rede. Você pode informar um número decimal ou um número hexadecimal com prefixo “0x”, mas exibiremos o número em casas decimais."
-  },
-  "networkSettingsDescription": {
-    "message": "Adicionar e editar redes RPC personalizadas"
   },
   "networkStatus": {
     "message": "Status da rede"
@@ -2373,9 +2352,6 @@
   },
   "securityAndPrivacy": {
     "message": "Segurança e privacidade"
-  },
-  "securitySettingsDescription": {
-    "message": "Configurações de privacidade e Frase de Recuperação Secreta da carteira"
   },
   "seedPhraseConfirm": {
     "message": "Confirmar Frase de Recuperação Secreta"

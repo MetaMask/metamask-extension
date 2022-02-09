@@ -8,9 +8,6 @@
   "about": {
     "message": "Tietoja asetuksista"
   },
-  "aboutSettingsDescription": {
-    "message": "Versio, tukikeskus ja yhteystiedot"
-  },
   "acceleratingATransaction": {
     "message": "* Tapahtuman nopeuttaminen käyttämällä korkeampaa gas-hintaa parantaa mahdollisuutta, että verkko käsittelee sen nopeammin, mutta tämä ei ole aina taattua."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Tarkemmat vaihtoehdot"
-  },
-  "advancedSettingsDescription": {
-    "message": "Käytä kehittäjän ominaisuuksia, lataa tilalokeja, palauta tilit, asenna testiverkostoja ja muokattavia RPC:itä"
   },
   "amount": {
     "message": "Summa"
@@ -426,9 +420,6 @@
   "general": {
     "message": "Yleistä"
   },
-  "generalSettingsDescription": {
-    "message": "Valuuttamuunnin, päävaluutta, kieli, blockies identicon"
-  },
   "getEther": {
     "message": "Hanki Etheriä"
   },
@@ -602,9 +593,6 @@
   },
   "networkName": {
     "message": "Verkon nimi"
-  },
-  "networkSettingsDescription": {
-    "message": "Lisää ja muokkaa omia RPC-verkostojasi"
   },
   "networks": {
     "message": "Verkot"
@@ -836,9 +824,6 @@
   },
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"
-  },
-  "securitySettingsDescription": {
-    "message": "Yksityisyysasetukset ja kukkaron salausteksti"
   },
   "seedPhrasePlaceholder": {
     "message": "Erota kukin sana yhdellä välilyönnillä"

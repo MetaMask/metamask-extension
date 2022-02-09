@@ -47,9 +47,6 @@
   "about": {
     "message": "Über"
   },
-  "aboutSettingsDescription": {
-    "message": "Version, Supportcenter und Kontaktinformationen"
-  },
   "acceleratingATransaction": {
     "message": "* Die Beschleunigung einer Transaktion durch die Verwendung eines höheren Gaspreises erhöht die Chancen einer schnelleren Verarbeitung durch das Netz, wofür es allerdings keine Garantie gibt."
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Prioritätsgebühr (alias „Miner Tip“) geht direkt an Miner und veranlasst sie, Ihre Transaktion zu priorisieren."
   },
-  "advancedSettingsDescription": {
-    "message": "Zugriff auf Entwicklerfunktionen, Download von Statusprotokollen, Zurücksetzen des Kontos, Einrichten von Testnetzen und benutzerdefinierten RPCs"
-  },
   "affirmAgree": {
     "message": "Ich stimme zu"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "Warnungen"
-  },
-  "alertsSettingsDescription": {
-    "message": "Aktivieren oder deaktivieren Sie jede Warnung"
   },
   "allowExternalExtensionTo": {
     "message": "Erlauben dieser externen Erweiterung auf:"
@@ -558,9 +549,6 @@
   },
   "contacts": {
     "message": "Kontaktaufnahme"
-  },
-  "contactsSettingsDescription": {
-    "message": "Kontakte hinzufügen, bearbeiten, entfernen und verwalten"
   },
   "continue": {
     "message": "Weiter"
@@ -1055,9 +1043,6 @@
   "experimental": {
     "message": "Experimentell"
   },
-  "experimentalSettingsDescription": {
-    "message": "Token-Erkennung und mehr"
-  },
   "exportPrivateKey": {
     "message": "Private Key exportieren"
   },
@@ -1226,9 +1211,6 @@
   },
   "general": {
     "message": "Allgemein"
-  },
-  "generalSettingsDescription": {
-    "message": "Währungsumrechnung, Primärwährung, Sprache, Blockies-Identicon"
   },
   "getEther": {
     "message": "Ether holen"
@@ -1739,9 +1721,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "Die Ketten-ID wird zur Unterzeichnung von Transaktionen verwendet. Sie muss mit der vom Netzwerk zurückgegebenen Ketten-ID übereinstimmen. Sie können eine Dezimalzahl oder '0x'-prefix Hexadezimalzahl eingeben, aber wir werden die Zahl dezimal anzeigen."
-  },
-  "networkSettingsDescription": {
-    "message": "Individuelle RPC-Netzwerke hinzufügen und bearbeiten"
   },
   "networkStatus": {
     "message": "Netzwerkstatus"
@@ -2340,9 +2319,6 @@
   },
   "securityAndPrivacy": {
     "message": "Sicherheit & Datenschutz"
-  },
-  "securitySettingsDescription": {
-    "message": "Datenschutzeinstellungen und mnemonische Phrase des Wallets"
   },
   "seedPhraseConfirm": {
     "message": "Bestätigen Sie die geheime Wiederherstellungsphrase"

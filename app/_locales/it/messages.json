@@ -8,9 +8,6 @@
   "about": {
     "message": "Informazioni"
   },
-  "aboutSettingsDescription": {
-    "message": "Versione, centro di supporto e contatti"
-  },
   "acceleratingATransaction": {
     "message": "* Accelerare una transazione usando un prezzo del gas maggiore aumenta la probabilità che la rete la elabori più velocemente, ma non è garantito."
   },
@@ -73,9 +70,6 @@
   "advancedOptions": {
     "message": "Opzioni Avanzate"
   },
-  "advancedSettingsDescription": {
-    "message": "Accedi alle funzionalità sviluppatore, download dei log di Stato, Reset Account, imposta reti di test e RPC personalizzata"
-  },
   "affirmAgree": {
     "message": "Acconsento"
   },
@@ -99,9 +93,6 @@
   },
   "alerts": {
     "message": "Avvisi"
-  },
-  "alertsSettingsDescription": {
-    "message": "Attiva o disattiva ogni avviso"
   },
   "allowExternalExtensionTo": {
     "message": "Permetti a questa estensione di:"
@@ -339,9 +330,6 @@
   },
   "contacts": {
     "message": "Contatti"
-  },
-  "contactsSettingsDescription": {
-    "message": "Aggiungi, modifica, rimuovi e gestisci i tuoi contatti"
   },
   "continue": {
     "message": "Continua"
@@ -687,9 +675,6 @@
   "general": {
     "message": "Generale"
   },
-  "generalSettingsDescription": {
-    "message": "Conversione moneta, moneta primaria, lingua, icone blockie"
-  },
   "getEther": {
     "message": "Ottieni Ether"
   },
@@ -957,9 +942,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "Il chain ID è usato per firmare le transazioni. Deve essere uguale al chain ID restituito dalla rete. Puoi inserire un numero intero o un numero esadecimale con prefisso '0x', ma mostreremo sempre un numero intero."
-  },
-  "networkSettingsDescription": {
-    "message": "Aggiungi e modifica reti RPC personalizzate"
   },
   "networks": {
     "message": "Reti"
@@ -1245,9 +1227,6 @@
   },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
-  },
-  "securitySettingsDescription": {
-    "message": "Impostazioni sulla Privacy e sulla frase seed del portafoglio"
   },
   "seedPhrasePlaceholder": {
     "message": "Separa ogni parola con un singolo spazio"
