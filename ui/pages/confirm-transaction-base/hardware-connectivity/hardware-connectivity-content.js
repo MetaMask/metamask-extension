@@ -30,12 +30,12 @@ export default function HardwareConnectivityContent({
           >
             {t('hardwareWalletConnectivityHelperHeading', [deviceName])}
           </Typography>
-          <img src="./images/ledger.svg" />
+          <img src="./images/ledger.svg" alt={deviceName} />
           <div className="hardware-connectivity-content-list-container">
             <ol>
-              <li>Plug in your Ledger</li>
-              <li>Enter your passcode</li>
-              <li>Open the Ethereum app</li>
+              <li>{t('hardwareConnectivityLedgerInstructions1')}</li>
+              <li>{t('hardwareConnectivityLedgerInstructions2')}</li>
+              <li>{t('hardwareConnectivityLedgerInstructions3')}</li>
             </ol>
           </div>
           <Button type="primary" onClick={onConnectClick}>
