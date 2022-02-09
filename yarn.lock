@@ -2873,10 +2873,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/snap-workers/-/snap-workers-0.5.0.tgz#9f1b8243f64819e40d66e659d580b6da59cb8015"
   integrity sha512-sR30/nmkndPeLox282BdTNnU3g6Mo5Gt8rdr6PUSyfosbwrYtrbZcXFqR+ozK/gNhJ3de7hpjLXKNkVSF8OjOQ==
 
-"@metamask/test-dapp@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-4.0.1.tgz#fbc66069687f0502ebb4c6ac0fa7c9862ea6563c"
-  integrity sha512-FN2Rz7ctY7Blx3iK6AmZmZEU+TkvEcpYvvebUmqZyOrmjh/DsYKVxfRicVAbyK9mDkeJ18Gx8r7swwFFR4rSgA==
+"@metamask/test-dapp@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/test-dapp/-/test-dapp-5.0.0.tgz#ecea832b57ff97782bfdd57a4af3408c7c64c02d"
+  integrity sha512-eR9JQ0jPOeP/hdQj9hUkqbvinfjVLYTtdHV+mDCN1tsNxiTdninZbltg9bx6Gqp91v9/9YPhlhXCmMQPq/AMxQ==
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
