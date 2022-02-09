@@ -11,7 +11,11 @@ import {
   replayHistory,
   snapshotFromTxMeta,
 } from './lib/tx-state-history-helpers';
-import { getFinalStates, normalizeAndValidateTxParams } from './lib/util';
+import {
+  getFinalStates,
+  normalizeAndValidateTxParams,
+  validateConfirmedExternalTransaction,
+} from './lib/util';
 
 /**
  * TransactionStatuses reimported from the shared transaction constants file
@@ -267,6 +271,7 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   addExternalTransaction(txMeta) {
+    validateConfirmedExternalTransaction(txMeta);
     this._addTransactionsToState([txMeta]);
     return txMeta;
   }

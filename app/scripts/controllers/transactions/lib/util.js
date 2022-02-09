@@ -264,6 +264,14 @@ export function validateRecipient(txParams) {
   return txParams;
 }
 
+export const validateConfirmedExternalTransaction = (txMeta) => {
+  if (txMeta?.status !== TRANSACTION_STATUSES.CONFIRMED) {
+    throw ethErrors.rpc.invalidParams(
+      'Confirmed external transaction status should be "confirmed"',
+    );
+  }
+};
+
 /**
  * Returns a list of final states
  *
