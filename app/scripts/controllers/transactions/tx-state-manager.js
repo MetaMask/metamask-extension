@@ -271,7 +271,14 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   addExternalTransaction(txMeta) {
-    validateConfirmedExternalTransaction(txMeta);
+    const fromAddress = txMeta?.txParams?.from;
+    const confirmedTransactions = this.getConfirmedTransactions(fromAddress);
+    const pendingTransactions = this.getPendingTransactions(fromAddress);
+    validateConfirmedExternalTransaction({
+      txMeta,
+      pendingTransactions,
+      confirmedTransactions,
+    });
     this._addTransactionsToState([txMeta]);
     return txMeta;
   }
