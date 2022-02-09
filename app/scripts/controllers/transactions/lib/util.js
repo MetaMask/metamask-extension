@@ -276,7 +276,7 @@ export const validateConfirmedExternalTransaction = ({
   }
   if (txMeta.status !== TRANSACTION_STATUSES.CONFIRMED) {
     throw ethErrors.rpc.invalidParams(
-      'Confirmed external transaction status should be "confirmed"',
+      'External transaction status should be "confirmed"',
     );
   }
   const externalTxNonce = txMeta.txParams.nonce;
