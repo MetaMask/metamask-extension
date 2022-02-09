@@ -133,7 +133,7 @@
 
       @media screen and (min-width: $break-large) {
         flex: 0 0 40%;
-        max-width: 210px;
+        min-width: 264px;
         padding-top: 8px;
       }
 

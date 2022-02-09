@@ -8,9 +8,6 @@
   "about": {
     "message": "Teave"
   },
-  "aboutSettingsDescription": {
-    "message": "Versioon, tugikeskus ja kontaktteave"
-  },
   "acceleratingATransaction": {
     "message": "* Tehingu kiirendamine kõrgemate gaasihindadega suurendab võimalust kiiremaks võrgus töötlemiseks, kuid see ei ole alati tagatud."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Täpsemad suvandid"
-  },
-  "advancedSettingsDescription": {
-    "message": "Juurdepääs arendaja funktsioonidele, olekulogide allalaadimine, konto lähtestamine, testvõrkude ja kohandatud RPC-de seadistamine"
   },
   "amount": {
     "message": "Summa"
@@ -422,9 +416,6 @@
   "general": {
     "message": "Üldine teave"
   },
-  "generalSettingsDescription": {
-    "message": "Valuutavahetus, põhivaluuta, keel, plokkidest identicon"
-  },
   "getEther": {
     "message": "Hankige eetrit"
   },
@@ -592,9 +583,6 @@
   },
   "networkName": {
     "message": "Võrgu nimi"
-  },
-  "networkSettingsDescription": {
-    "message": "Kohandatud RPC-võrkude lisamine ja muutmine"
   },
   "networks": {
     "message": "Võrgud"
@@ -829,9 +817,6 @@
   },
   "securityAndPrivacy": {
     "message": "Turvalisus ja privaatsus"
-  },
-  "securitySettingsDescription": {
-    "message": "Privaatsusseaded ja rahakoti seemnefraas"
   },
   "seedPhrasePlaceholder": {
     "message": "Eraldage iga sõna ühe tühikuga"

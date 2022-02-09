@@ -8,9 +8,6 @@
   "about": {
     "message": "מידע כללי"
   },
-  "aboutSettingsDescription": {
-    "message": "גרסה, מרכז תמיכה ופרטי יצירת קשר."
-  },
   "acceleratingATransaction": {
     "message": "* האצת עסקה על ידי שימוש במחיר דלק גבוה יותר מגדילה את סיכוייה לעבור עיבוד מהיר יותר ע\"י הרשת, אך זה לא תמיד מובטח."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "אפשרויות מתקדמות"
-  },
-  "advancedSettingsDescription": {
-    "message": "קבלת גישה לפיצ'רים למפתחים, הורדת יומני מצב, איפוס חשבון, הגדרת testnets ו-RPC מותאם אישית."
   },
   "amount": {
     "message": "כמות"
@@ -426,9 +420,6 @@
   "general": {
     "message": "כללי"
   },
-  "generalSettingsDescription": {
-    "message": "המרת מטבע, מטבע עיקרי, שפה, blockies identicon"
-  },
   "getEther": {
     "message": "השג/י את'ר"
   },
@@ -599,9 +590,6 @@
   },
   "networkName": {
     "message": "שם רשת"
-  },
-  "networkSettingsDescription": {
-    "message": "הוסף וערוך רשתות RPC מותאמות אישית"
   },
   "networks": {
     "message": "רשתות"
@@ -833,9 +821,6 @@
   },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
-  },
-  "securitySettingsDescription": {
-    "message": "הגדרות פרטיות וצירוף הגרעין של הארנק"
   },
   "seedPhrasePlaceholder": {
     "message": "הפרד/י בין המילים ברווח אחד"

@@ -47,9 +47,6 @@
   "about": {
     "message": "इसके बारे में"
   },
-  "aboutSettingsDescription": {
-    "message": "संस्करण, सहायता केंद्र और संपर्क जानकारी"
-  },
   "acceleratingATransaction": {
     "message": "* गैस की उच्च कीमत का उपयोग करके लेनदेन में तेज़ी लाने से नेटवर्क द्वारा तेज़ी से संसाधित होने की संभावना बढ़ जाती है, लेकिन हमेशा इसकी गारंटी नहीं होती है।"
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "प्राथमिकता शुल्क (उर्फ \"माइनर टिप\") सीधे खनिकों के पास जाता है और उन्हें आपके लेन-देन को प्राथमिकता देने के लिए प्रोत्साहित करता है।"
   },
-  "advancedSettingsDescription": {
-    "message": "डेवलपर सुविधाओं तक पहुंचें, स्टेट लॉग डाउनलोड करें, खाता रीसेट करें, टेस्ट नेटवर्क और कस्टम RPC सेट करें"
-  },
   "affirmAgree": {
     "message": "मैं सहमत हूं"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "चेतावनियां"
-  },
-  "alertsSettingsDescription": {
-    "message": "प्रत्येक चेतावनियों को सक्षम या अक्षम करें"
   },
   "allowExternalExtensionTo": {
     "message": "इस बाहरी एक्सटेंशन को इसकी अनुमति दें:"
@@ -550,9 +541,6 @@
   },
   "contacts": {
     "message": "संपर्क"
-  },
-  "contactsSettingsDescription": {
-    "message": "अपने संपर्कों को जोड़ें, संपादित करें, हटाएं और प्रबंधित करें"
   },
   "continue": {
     "message": "जारी रखें"
@@ -1045,9 +1033,6 @@
   "experimental": {
     "message": "प्रयोगात्मक"
   },
-  "experimentalSettingsDescription": {
-    "message": "टोकन का डिटेक्शन करना और अधिक"
-  },
   "exportPrivateKey": {
     "message": "निजी कुंजी निर्यात करें"
   },
@@ -1216,9 +1201,6 @@
   },
   "general": {
     "message": "सामान्य"
-  },
-  "generalSettingsDescription": {
-    "message": "मुद्रा रूपांतरण, प्राथमिक मुद्रा, भाषा, ब्लॉकीज़ आइडेंटिकॉन"
   },
   "getEther": {
     "message": "Ether प्राप्त करें"
@@ -1739,9 +1721,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "चेन ID का उपयोग लेनदेन पर हस्ताक्षर करने के लिए किया जाता है। इसे नेटवर्क द्वारा दी गई चेन ID से मेल खाना चाहिए। आप दशमलव या '0x'-उपसर्ग वाली हेक्साडेसिमल संख्या दर्ज कर सकते हैं, लेकिन हम संख्या को दशमलव में प्रदर्शित करेंगे।"
-  },
-  "networkSettingsDescription": {
-    "message": "कस्टम RPC नेटवर्क जोड़ें और संपादित करें"
   },
   "networkStatus": {
     "message": "नेटवर्क की स्थिति"
@@ -2340,9 +2319,6 @@
   },
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"
-  },
-  "securitySettingsDescription": {
-    "message": "गोपनीयता सेटिंग्स और वॉलेट का गुप्त रिकवरी फ्रेज"
   },
   "seedPhraseConfirm": {
     "message": "सीक्रेट रिकवरी फ्रेज की पुष्टि करें"

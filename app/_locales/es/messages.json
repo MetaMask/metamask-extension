@@ -2,9 +2,6 @@
   "about": {
     "message": "Acerca de"
   },
-  "aboutSettingsDescription": {
-    "message": "Versión, centro de soporte técnico e información de contacto"
-  },
   "acceleratingATransaction": {
     "message": "* Usar un precio de gas más alto para acelerar una transacción aumenta las posibilidades de un procesamiento más rápido en la red, pero esto no siempre se garantiza."
   },
@@ -97,9 +94,6 @@
   "advancedOptions": {
     "message": "Opciones avanzadas"
   },
-  "advancedSettingsDescription": {
-    "message": "Acceder a recursos para desarrolladores, descargar registros de estado, restablecer cuenta, configurar redes de prueba y RPC personalizada"
-  },
   "affirmAgree": {
     "message": "Acepto"
   },
@@ -123,9 +117,6 @@
   },
   "alerts": {
     "message": "Alertas"
-  },
-  "alertsSettingsDescription": {
-    "message": "Habilitar o deshabilitar cada alerta"
   },
   "allowExternalExtensionTo": {
     "message": "Permitir que esta extensión externa haga lo siguiente:"
@@ -396,9 +387,6 @@
   },
   "contacts": {
     "message": "Contactos"
-  },
-  "contactsSettingsDescription": {
-    "message": "Agregar, editar, quitar y administrar sus contactos"
   },
   "continue": {
     "message": "Continuar"
@@ -793,9 +781,6 @@
     "message": "Política de privacidad aquí",
     "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
   },
-  "generalSettingsDescription": {
-    "message": "Conversión de moneda, moneda principal, idioma, Blockies Identicon"
-  },
   "getEther": {
     "message": "Obtener ether"
   },
@@ -1125,9 +1110,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "El id. de la cadena se usa para firmar transacciones. Debe coincidir con el id. de la cadena que devuelve la red. Puede escribir un número decimal o un número hexadecimal con el prefijo “0x”, pero el número se mostrará en decimal."
-  },
-  "networkSettingsDescription": {
-    "message": "Agregar y editar redes RPC personalizadas"
   },
   "networkURL": {
     "message": "Dirección URL de la red"
@@ -1520,9 +1502,6 @@
   },
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
-  },
-  "securitySettingsDescription": {
-    "message": "Configuración de privacidad y frase secreta de recuperación de la cartera"
   },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "Escríbala y guárdela en varios lugares secretos."
