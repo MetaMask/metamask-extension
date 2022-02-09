@@ -8,9 +8,6 @@
   "about": {
     "message": "Informácie"
   },
-  "aboutSettingsDescription": {
-    "message": "Verzia, centrum podpory a kontaktné informácie"
-  },
   "acceleratingATransaction": {
     "message": "*Urýchlenie transakcie pomocou vyššej ceny za GAS zvyšuje šance na rýchlejšie spracovanie v sieti, nie je to však vždy zaručené."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Rozšírené nastavenia"
-  },
-  "advancedSettingsDescription": {
-    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC"
   },
   "amount": {
     "message": "Částka"
@@ -420,9 +414,6 @@
   "general": {
     "message": "Všeobecne"
   },
-  "generalSettingsDescription": {
-    "message": "Prevod mien, primárna mena, jazyk, identifikácia blokov"
-  },
   "getEther": {
     "message": "Získejte Ether"
   },
@@ -574,9 +565,6 @@
   },
   "networkName": {
     "message": "Názov siete"
-  },
-  "networkSettingsDescription": {
-    "message": "Pridať a upraviť vlastné siete RPC"
   },
   "networks": {
     "message": "Sítě"
@@ -802,9 +790,6 @@
   },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
-  },
-  "securitySettingsDescription": {
-    "message": "Nastavenia súkromia a seed fráza peňaženky"
   },
   "seedPhrasePlaceholder": {
     "message": "Každé slovo oddeľte jednou medzerou"

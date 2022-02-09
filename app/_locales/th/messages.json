@@ -305,9 +305,6 @@
   "negativeETH": {
     "message": "ไม่สามารถส่งอีเธอร์เป็นจำนวนติดลบได้"
   },
-  "networkSettingsDescription": {
-    "message": "เพิ่มและแก้ไขเครือข่าย RPC แบบกำหนดเอง"
-  },
   "networks": {
     "message": "เครือข่าย"
   },
