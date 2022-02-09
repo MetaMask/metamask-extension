@@ -8,9 +8,6 @@
   "about": {
     "message": "Par"
   },
-  "aboutSettingsDescription": {
-    "message": "Versija, atbalsta centrs un kontaktinformācija"
-  },
   "acceleratingATransaction": {
     "message": "* Darījuma paātrināšana, izmantojot augstāku Gas cenu, palielina iespēju, ka tīkls to apstrādās ātrāk, taču tas nav garantēts."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Papildu opcijas"
-  },
-  "advancedSettingsDescription": {
-    "message": "Piekļūstiet izstrādātāju funkcijām, lejupielādējiet stāvokļu žurnālus, atiestatiet kontu, iestatiet testa tīklus un pielāgotos RPC izsaukumus"
   },
   "amount": {
     "message": "Apjoms"
@@ -422,9 +416,6 @@
   "general": {
     "message": "Vispārīgi"
   },
-  "generalSettingsDescription": {
-    "message": "Valūtas konvertēšana, galvenā valūta, valoda, bloku identifikators"
-  },
   "getEther": {
     "message": "Saņemt Ether"
   },
@@ -598,9 +589,6 @@
   },
   "networkName": {
     "message": "Tīkla nosaukums"
-  },
-  "networkSettingsDescription": {
-    "message": "Pievienot un rediģēt pielāgotos RPC tīklus"
   },
   "networks": {
     "message": "Tīkli"
@@ -835,9 +823,6 @@
   },
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
-  },
-  "securitySettingsDescription": {
-    "message": "Konfidencialitātes iestatījumi un maka atkopšanas frāze"
   },
   "seedPhrasePlaceholder": {
     "message": "Atdaliet katru vārdu ar vienu atstarpi"

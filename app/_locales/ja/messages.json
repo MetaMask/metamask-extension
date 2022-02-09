@@ -47,9 +47,6 @@
   "about": {
     "message": "バージョン情報"
   },
-  "aboutSettingsDescription": {
-    "message": "バージョン、サポート センター、および連絡先情報"
-  },
   "acceleratingATransaction": {
     "message": "*より高いガス代を使用してトランザクションを加速すると、ネットワーク処理の高速化の可能性が増しますが、これは常に保証されるわけではありません。"
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "優先手数料 (別名「マイナーチップ」) はマイナーに直接支払われ、トランザクションを優先するインセンティブとなります。"
   },
-  "advancedSettingsDescription": {
-    "message": "デベロッパー機能にアクセスして、ステータスログをダウンロードし、アカウントをリセットして、テストネットワークとカスタムRPCをセットアップしてください"
-  },
   "affirmAgree": {
     "message": "同意する"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "アラート"
-  },
-  "alertsSettingsDescription": {
-    "message": "各アラートを有効化または無効化"
   },
   "allowExternalExtensionTo": {
     "message": "この外部拡張機能に次の操作を許可します"
@@ -550,9 +541,6 @@
   },
   "contacts": {
     "message": "連絡先"
-  },
-  "contactsSettingsDescription": {
-    "message": "連絡先の追加、編集、削除、管理"
   },
   "continue": {
     "message": "続行"
@@ -1045,9 +1033,6 @@
   "experimental": {
     "message": "実験的"
   },
-  "experimentalSettingsDescription": {
-    "message": "トークンの検出・その他"
-  },
   "exportPrivateKey": {
     "message": "秘密鍵のエクスポート"
   },
@@ -1216,9 +1201,6 @@
   },
   "general": {
     "message": "一般"
-  },
-  "generalSettingsDescription": {
-    "message": "通貨換算、プライマリ通貨、言語、Blockiesアイデンティコン"
   },
   "getEther": {
     "message": "Etherを取得"
@@ -1739,9 +1721,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "チェーンIDはトランザクションの署名に使用されます。チェーンIDはネットワークが返すチェーンIDと一致する必要があります。10進数または「0x」が先行する16進数を入力できますが、10進数で表示されます。"
-  },
-  "networkSettingsDescription": {
-    "message": "カスタムRPCネットワークの追加と編集"
   },
   "networkStatus": {
     "message": "ネットワークステータス"
@@ -2340,9 +2319,6 @@
   },
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
-  },
-  "securitySettingsDescription": {
-    "message": "プライバシーの設定とシークレットリカバリーフレーズ"
   },
   "seedPhraseConfirm": {
     "message": "シークレットリカバリーフレーズの確認"

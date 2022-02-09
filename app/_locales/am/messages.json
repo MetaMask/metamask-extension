@@ -2,9 +2,6 @@
   "about": {
     "message": "ስለ"
   },
-  "aboutSettingsDescription": {
-    "message": "ስሪት፣ የድጋፍ መስጫ ማዕከልና የግንኙነት መረጃ "
-  },
   "acceleratingATransaction": {
     "message": "* ከፍተኛ የነዳጅ ዋጋን በመጠቀም ግብይትን ማፋጠን በአውታረ መረቡ በፍጥነት እንዲከወን የማድረግ ዕድልን ይጨምራል፤ ነገር ግን ሁልጊዜም የተረጋገጠ አይደለም።"
   },
@@ -55,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "የላቁ አማራጮች"
-  },
-  "advancedSettingsDescription": {
-    "message": "አዘጋጅ ባህርያትን መድረስ፣ የስቴት መዛግብትን ማውረድ፣ መለያን ዳግም መሙላት፣ testnets እና ብጁ RPC አዋቅር።"
   },
   "amount": {
     "message": "ሰርዝ "
@@ -417,9 +411,6 @@
   "general": {
     "message": "አጠቃላይ"
   },
-  "generalSettingsDescription": {
-    "message": "የገንዘብ ልወጣ፣ ተቀዳሚ የገንዘብ ዓይነት፣ ቋንቋ፣ blockies identicon"
-  },
   "getEther": {
     "message": "Ether ያግኙ"
   },
@@ -587,9 +578,6 @@
   },
   "networkName": {
     "message": "የአውታረ መረብ ስም"
-  },
-  "networkSettingsDescription": {
-    "message": "ብጁ የ RPC አውታረ መረቦችን አክልና አርትዕ"
   },
   "networks": {
     "message": "አውታረ መረቦች"
@@ -824,9 +812,6 @@
   },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
-  },
-  "securitySettingsDescription": {
-    "message": "የግላዊነት ቅንብሮች እና የቋት ዘር ሐረግ"
   },
   "seedPhrasePlaceholder": {
     "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
