@@ -799,10 +799,6 @@
   "editGasLimitOutOfBounds": {
     "message": "Giới hạn gas tối thiểu phải là $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Giới hạn gas phải lớn hơn $1 và nhỏ hơn $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
   "editGasLimitTooltip": {
     "message": "Giới hạn gas là đơn vị gas tối đa mà bạn sẵn sàng sử dụng. Đơn vị gas là hệ số nhân của \"Phí ưu tiên tối đa\" và \"Phí tối đa\"."
   },

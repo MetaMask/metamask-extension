@@ -47,6 +47,7 @@ const render = () => {
     <GasFeeContextProvider
       transaction={{
         userFeeLevel: 'high',
+        txParams: { gas: '0x5208' },
       }}
     >
       <AdvancedGasFeePopover />
@@ -73,6 +74,15 @@ describe('AdvancedGasFeePopover', () => {
     render();
     fireEvent.change(document.getElementsByTagName('input')[1], {
       target: { value: 100000 },
+    });
+    expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
+  });
+
+  it('should disable save button if gas limit 0 is entered', () => {
+    render();
+    fireEvent.click(screen.queryByText('Edit'));
+    fireEvent.change(document.getElementsByTagName('input')[3], {
+      target: { value: 0 },
     });
     expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
   });

@@ -799,10 +799,6 @@
   "editGasLimitOutOfBounds": {
     "message": "ガスの限度額は$1以上にする必要があります"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "ガスの限度額は$1より大きく、$2未満でなければなりません",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
   "editGasLimitTooltip": {
     "message": "ガスの限度額は、使用しても構わない最大のガス代です。 ガス代は、「最大優先手数料」と「最大手数料」の乗数です。"
   },

@@ -843,12 +843,16 @@
   "editGasHigh": {
     "message": "High"
   },
+  "editGasLimitGreaterThanMaximum": {
+    "message": "Gas limit must be less than $1",
+    "description": "$1 is the maximum limit for gas"
+  },
+  "editGasLimitLessThanMinimum": {
+    "message": "Gas limit must be greater than $1",
+    "description": "$1 is the minimum limit for gas"
+  },
   "editGasLimitOutOfBounds": {
     "message": "Gas limit must be at least $1"
-  },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "Gas limit must be greater than $1 and less than $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
   "editGasLimitTooltip": {
     "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."
@@ -1648,7 +1652,7 @@
     "message": "Low"
   },
   "lowGasSettingToolTipMessage": {
-    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredicible.",
+    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredictable.",
     "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
   },
   "lowLowercase": {

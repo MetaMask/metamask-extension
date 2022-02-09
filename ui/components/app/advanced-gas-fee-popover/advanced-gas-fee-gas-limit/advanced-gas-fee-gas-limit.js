@@ -13,16 +13,19 @@ import Typography from '../../../ui/typography';
 import { useAdvancedGasFeePopoverContext } from '../context';
 
 const validateGasLimit = (gasLimit, minimumGasLimitDec) => {
-  return bnLessThan(gasLimit, minimumGasLimitDec) ||
-    bnGreaterThan(gasLimit, MAX_GAS_LIMIT_DEC)
-    ? 'editGasLimitOutOfBoundsV2'
-    : null;
+  if (bnLessThan(gasLimit, minimumGasLimitDec)) {
+    return 'editGasLimitLessThanMinimum';
+  } else if (bnGreaterThan(gasLimit, MAX_GAS_LIMIT_DEC)) {
+    return 'editGasLimitGreaterThanMaximum';
+  }
+  return null;
 };
 
 const AdvancedGasFeeGasLimit = () => {
   const t = useI18nContext();
   const {
     setGasLimit: setGasLimitInContext,
+    setErrorValue,
   } = useAdvancedGasFeePopoverContext();
   const {
     gasLimit: gasLimitInTransaction,
@@ -40,17 +43,20 @@ const AdvancedGasFeeGasLimit = () => {
     setGasLimitInContext(gasLimit);
     const error = validateGasLimit(gasLimit, minimumGasLimitDec);
     setGasLimitError(error);
-  }, [gasLimit, minimumGasLimitDec, setGasLimitInContext]);
+    setErrorValue('gasLimit', error === 'editGasLimitLessThanMinimum');
+  }, [gasLimit, minimumGasLimitDec, setGasLimitInContext, setErrorValue]);
+
+  const errorMessage =
+    gasLimitError &&
+    (gasLimitError === 'editGasLimitLessThanMinimum'
+      ? t(gasLimitError, [minimumGasLimitDec - 1])
+      : t(gasLimitError, [MAX_GAS_LIMIT_DEC]));
 
   if (isEditing) {
     return (
       <FormField
         dataTestId="gas-limit-input"
-        error={
-          gasLimitError
-            ? t(gasLimitError, [minimumGasLimitDec - 1, MAX_GAS_LIMIT_DEC])
-            : ''
-        }
+        error={errorMessage}
         onChange={updateGasLimit}
         titleText={t('gasLimitV2')}
         value={gasLimit}

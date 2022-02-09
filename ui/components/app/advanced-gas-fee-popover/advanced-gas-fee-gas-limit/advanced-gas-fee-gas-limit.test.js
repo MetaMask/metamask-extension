@@ -73,25 +73,19 @@ describe('AdvancedGasFeeGasLimit', () => {
       target: { value: 20000 },
     });
     expect(
-      screen.queryByText(
-        'Gas limit must be greater than 20999 and less than 7920027',
-      ),
+      screen.queryByText('Gas limit must be greater than 20999'),
     ).toBeInTheDocument();
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 8000000 },
     });
     expect(
-      screen.queryByText(
-        'Gas limit must be greater than 20999 and less than 7920027',
-      ),
+      screen.queryByText('Gas limit must be less than 7920027'),
     ).toBeInTheDocument();
     fireEvent.change(document.getElementsByTagName('input')[0], {
       target: { value: 7000000 },
     });
     expect(
-      screen.queryByText(
-        'Gas limit must be greater than 20999 and less than 7920027',
-      ),
+      screen.queryByText('Gas limit must be less than 7920027'),
     ).not.toBeInTheDocument();
   });
 
@@ -102,9 +96,7 @@ describe('AdvancedGasFeeGasLimit', () => {
       target: { value: 25000 },
     });
     expect(
-      screen.queryByText(
-        'Gas limit must be greater than 29999 and less than 7920027',
-      ),
+      screen.queryByText('Gas limit must be greater than 29999'),
     ).toBeInTheDocument();
   });
 });

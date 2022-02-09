@@ -799,10 +799,6 @@
   "editGasLimitOutOfBounds": {
     "message": "La limite de carburant doit être d’au moins $1"
   },
-  "editGasLimitOutOfBoundsV2": {
-    "message": "La limite de carburant doit être supérieure à $1 et inférieure à $2",
-    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
-  },
   "editGasLimitTooltip": {
     "message": "La limite de carburant correspond au maximum d’unités de carburant que vous consentez à utiliser. Celles-ci servent de multiplicateur aux « Frais de priorité maximaux » et aux « Frais maximaux »."
   },
