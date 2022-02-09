@@ -174,6 +174,7 @@ const NetworksForm = ({
     dispatch,
   ]);
 
+  // Trim out whitespaces from RPC url
   const onChangeRpcUrl = (e) => setRpcUrl(e.replace(/\s+/gu, ''));
 
   const hasErrors = () => {
