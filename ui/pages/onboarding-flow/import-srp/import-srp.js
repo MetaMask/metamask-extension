@@ -21,7 +21,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
-  const [revealSRP, setRevealSRP] = useState(true);
+  const [revealSRP, setRevealSRP] = useState(false);
   const [error, setError] = useState('');
   const history = useHistory();
   const t = useI18nContext();
@@ -56,11 +56,11 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             <a
               key="learnMore"
               type="link"
-              href="https://metamask.zendesk.com/hc/en-us/articles/360036464651"
+              href="https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t('learnMore')}
+              {t('learnMoreUpperCase')}
             </a>,
           ])}
         </Typography>
