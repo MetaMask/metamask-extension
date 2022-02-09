@@ -174,8 +174,7 @@ const NetworksForm = ({
     dispatch,
   ]);
 
-  const onChangeRpcUrl = (e) => 
-    setRpcUrl(e.replace(/\s+/gu, ''));
+  const onChangeRpcUrl = (e) => setRpcUrl(e.replace(/\s+/gu, ''));
 
   const hasErrors = () => {
     return Object.keys(errors).some((key) => {
