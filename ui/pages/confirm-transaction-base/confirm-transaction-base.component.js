@@ -167,7 +167,11 @@ export default class ConfirmTransactionBase extends Component {
 
   async pollLedgerReady() {
     const { fromAddress } = this.props;
-    const { pollingIntervalId } = this.state;
+    const {
+      pollingIntervalId,
+      showingHardwareConnectionContents,
+      showingHardwareConnectionAdvancedPopover,
+    } = this.state;
 
     // Don't set off multiple calls to checkLedgerReady
     if (pollingIntervalId !== null) {
@@ -181,7 +185,16 @@ export default class ConfirmTransactionBase extends Component {
       // Don't let this check blow up the process
     }
 
-    this.setState({ hardwareIsReady, pollingIntervalId: null });
+    this.setState({
+      hardwareIsReady,
+      pollingIntervalId: null,
+      showingHardwareConnectionAdvancedPopover: hardwareIsReady
+        ? false
+        : showingHardwareConnectionAdvancedPopover,
+      showingHardwareConnectionContents: hardwareIsReady
+        ? false
+        : showingHardwareConnectionContents,
+    });
     return undefined;
   }
 
