@@ -2473,6 +2473,12 @@
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
     "description": "$1 is the date at which the data was backed up"
   },
+  "restoreWalletUsingSRP": {
+    "message": "If you restore a wallet using the Secret Recovery Phrase, only the wallet’s initial account might appear at first. You'll be able to $1 created previously."
+  },
+  "restoreWalletWarning": {
+    "message": "To recover access to your wallet you will have to restore it using the Secret Recovery Phrase. This action will overwrite existing wallet data and cannot be undone. Make sure you’re using the correct Secret Recovery Phrase."
+  },
   "retryTransaction": {
     "message": "Retry Transaction"
   },
@@ -2532,12 +2538,6 @@
   },
   "secretBackupPhraseWarning": {
     "message": "WARNING: Never disclose your Secret Recovery Phrase. Anyone with this phrase can take your Ether forever."
-  },
-  "restoreWalletUsingSRP": {
-    "message": "If you restore a wallet using the Secret Recovery Phrase, only the wallet’s initial account might appear at first. You'll be able to $1 created previously."
-  },
-  "restoreWalletWarning": {
-    "message": "To recover access to your wallet you will have to restore it using the Secret Recovery Phrase. This action will overwrite existing wallet data and cannot be undone. Make sure you’re using the correct Secret Recovery Phrase."
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
