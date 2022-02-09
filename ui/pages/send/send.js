@@ -22,6 +22,7 @@ import AddRecipient from './send-content/add-recipient';
 import SendContent from './send-content';
 import SendFooter from './send-footer';
 import EnsInput from './send-content/add-recipient/ens-input';
+import HoldToReveal from '../../components/app/hold-to-reveal/hold-to-reveal';
 
 const sendSliceIsCustomPriceExcessive = (state) =>
   isCustomPriceExcessive(state, true);
@@ -95,6 +96,7 @@ export default function SendTransactionScreen() {
 
   return (
     <div className="page-container">
+      <HoldToReveal />
       <SendHeader history={history} />
       <EnsInput
         userInput={userInput}
