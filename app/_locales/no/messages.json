@@ -286,12 +286,6 @@
   "details": {
     "message": "Detaljer"
   },
-  "directDepositEther": {
-    "message": "Sett Ether direkte inn"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Hvis du allerede har noe Ether, er den raskeste måten å få Ether i den nye lommeboken din på ved hjelp av direkte innskudd."
-  },
   "done": {
     "message": "Ferdig"
   },

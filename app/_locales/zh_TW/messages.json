@@ -289,12 +289,6 @@
   "details": {
     "message": "詳情"
   },
-  "directDepositEther": {
-    "message": "直接存入以太幣"
-  },
-  "directDepositEtherExplainer": {
-    "message": "如果您已經擁有以太幣，直接存入功能是讓新錢包最快取得以太幣的方式。"
-  },
   "done": {
     "message": "完成"
   },

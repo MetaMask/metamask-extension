@@ -289,12 +289,6 @@
   "details": {
     "message": "Részletek"
   },
-  "directDepositEther": {
-    "message": "Fizess be ethert közvetlenül"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Amennyiben már rendelkezik némi Ether-rel, a közvetlen letéttel gyorsan elhelyezheti azt új pénztárcájában."
-  },
   "done": {
     "message": "Kész"
   },
