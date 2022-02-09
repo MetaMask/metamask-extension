@@ -1325,6 +1325,9 @@
   "goerli": {
     "message": "Goerli Test Network"
   },
+  "gotIt": {
+    "message": "Got it!"
+  },
   "grantedToWithColon": {
     "message": "Granted to:"
   },
