@@ -174,6 +174,9 @@ const NetworksForm = ({
     dispatch,
   ]);
 
+  const onChangeRpcUrl = (e) => 
+    setRpcUrl(e.replace(/\s+/gu, ''));
+
   const hasErrors = () => {
     return Object.keys(errors).some((key) => {
       const error = errors[key];
@@ -571,7 +574,7 @@ const NetworksForm = ({
         />
         <FormField
           error={errors.rpcUrl?.msg || ''}
-          onChange={(e) => setRpcUrl(e.replace(/\s+/gu, ''))}
+          onChange={onChangeRpcUrl}
           titleText={t('rpcUrl')}
           value={rpcUrl}
           disabled={viewOnly}
