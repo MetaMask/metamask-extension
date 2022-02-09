@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, largeDelayMs } = require('../helpers');
+const { convertToHexValue, withFixtures, largeDelayMs } = require('../helpers');
 const ThreeboxMockServer = require('../mock-3box/threebox-mock-server');
 
 describe('Threebox', function () {
@@ -8,7 +8,7 @@ describe('Threebox', function () {
       {
         secretKey:
           '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: 25000000000000000000,
+        balance: convertToHexValue(25000000000000000000),
       },
     ],
   };
@@ -37,20 +37,20 @@ describe('Threebox', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
 
         // turns on threebox syncing
-        await driver.clickElement({ text: 'Advanced', tag: 'div' });
+        await driver.clickElement({ text: 'Advanced', tag: 'h4' });
         await driver.clickElement(
           '[data-testid="advanced-setting-3box"] .toggle-button div',
         );
 
         // updates settings and address book
         // navigates to General settings
-        await driver.clickElement({ text: 'General', tag: 'div' });
+        await driver.clickElement({ text: 'General', tag: 'h4' });
 
         // turns on use of blockies
         await driver.clickElement('.toggle-button > div');
 
         // adds an address to the contact list
-        await driver.clickElement({ text: 'Contacts', tag: 'div' });
+        await driver.clickElement({ text: 'Contacts', tag: 'h4' });
 
         await driver.clickElement('.address-book__link');
         await driver.fill('#nickname', 'Test User Name 11');
@@ -89,7 +89,7 @@ describe('Threebox', function () {
         assert.equal(toggleLabelText, 'ON');
 
         // finds the restored address in the contact list
-        await driver.clickElement({ text: 'Contacts', tag: 'div' });
+        await driver.clickElement({ text: 'Contacts', tag: 'h4' });
         await driver.findElement({ text: 'Test User Name 11', tag: 'div' });
       },
     );

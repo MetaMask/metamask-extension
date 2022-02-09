@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { withFixtures, regularDelayMs } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  regularDelayMs,
+} = require('../helpers');
 
 describe('Send ETH from inside MetaMask using default gas', function () {
   const ganacheOptions = {
@@ -7,7 +11,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
       {
         secretKey:
           '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: 25000000000000000000,
+        balance: convertToHexValue(25000000000000000000),
       },
     ],
   };
@@ -93,7 +97,7 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
       {
         secretKey:
           '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: 25000000000000000000,
+        balance: convertToHexValue(25000000000000000000),
       },
     ],
   };
@@ -162,7 +166,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
       {
         secretKey:
           '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: 25000000000000000000,
+        balance: convertToHexValue(25000000000000000000),
       },
     ],
   };
@@ -183,7 +187,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         // goes to the settings screen
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Advanced', tag: 'div' });
+        await driver.clickElement({ text: 'Advanced', tag: 'h4' });
         await driver.clickElement(
           '[data-testid="advanced-setting-show-testnet-conversion"] .settings-page__content-item-col > div > div',
         );
@@ -220,7 +224,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.switchToWindow(dapp);
 
         // initiates a send from the dapp
-        await driver.clickElement({ text: 'Send', tag: 'button' }, 10000);
+        await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.delay(2000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
@@ -239,8 +243,8 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         const gasPriceInput = inputs[1];
         await gasPriceInput.fill('100');
         await driver.delay(1000);
-        await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
-        await driver.clickElement({ text: 'Confirm', tag: 'button' }, 10000);
+        await driver.clickElement({ text: 'Save', tag: 'button' });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
@@ -252,7 +256,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         );
         await driver.waitForSelector({
           css: '.transaction-list-item__primary-currency',
-          text: '-3 ETH',
+          text: '-0 ETH',
         });
 
         // the transaction has the expected gas price

@@ -28,6 +28,7 @@ export default function ActionableMessage({
   useIcon = false,
   iconFillColor = '',
   roundedButtons,
+  dataTestId,
 }) {
   const actionableMessageClassName = classnames(
     'actionable-message',
@@ -41,7 +42,7 @@ export default function ActionableMessage({
     (primaryAction && !secondaryAction) || (secondaryAction && !primaryAction);
 
   return (
-    <div className={actionableMessageClassName}>
+    <div className={actionableMessageClassName} data-testid={dataTestId}>
       {useIcon ? <InfoTooltipIcon fillColor={iconFillColor} /> : null}
       {infoTooltipText && (
         <InfoTooltip
@@ -156,4 +157,5 @@ ActionableMessage.propTypes = {
    * Whether the buttons are rounded
    */
   roundedButtons: PropTypes.bool,
+  dataTestId: PropTypes.string,
 };

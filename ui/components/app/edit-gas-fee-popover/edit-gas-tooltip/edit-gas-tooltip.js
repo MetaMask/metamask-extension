@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import {
   EDIT_GAS_MODES,
@@ -9,6 +9,8 @@ import {
   FONT_WEIGHT,
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
+import { isMetamaskSuggestedGasEstimate } from '../../../../helpers/utils/gas';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
 import Typography from '../../../ui/typography';
 
 const EditGasToolTip = ({
@@ -24,7 +26,7 @@ const EditGasToolTip = ({
   transaction,
   t,
 }) => {
-  const toolTipMessage = () => {
+  const toolTipMessage = useMemo(() => {
     switch (priorityLevel) {
       case PRIORITY_LEVELS.LOW:
         return t('lowGasSettingToolTipMessage', [
@@ -76,30 +78,38 @@ const EditGasToolTip = ({
       default:
         return '';
     }
-  };
+  }, [editGasMode, estimateGreaterThanGasUse, priorityLevel, transaction, t]);
+
+  let imgAltText;
+  if (priorityLevel === PRIORITY_LEVELS.LOW) {
+    imgAltText = t('curveLowGasEstimate');
+  } else if (priorityLevel === PRIORITY_LEVELS.MEDIUM) {
+    imgAltText = t('curveMediumGasEstimate');
+  } else if (priorityLevel === PRIORITY_LEVELS.HIGH) {
+    imgAltText = t('curveHighGasEstimate');
+  }
+
+  // Gas estimate curve is visible for low/medium/high gas estimates
+  // the curve is not visible for high estimates for swaps
+  // also it is not visible in case of cancel/speedup if the medium/high option is disabled
+  const showGasEstimateCurve =
+    isMetamaskSuggestedGasEstimate(priorityLevel) &&
+    !(
+      priorityLevel === PRIORITY_LEVELS.HIGH &&
+      editGasMode === EDIT_GAS_MODES.SWAPS
+    ) &&
+    !estimateGreaterThanGasUse;
+
   return (
     <div className="edit-gas-tooltip__container">
-      {priorityLevel !== PRIORITY_LEVELS.CUSTOM &&
-      priorityLevel !== PRIORITY_LEVELS.DAPP_SUGGESTED &&
-      !(
-        priorityLevel === PRIORITY_LEVELS.HIGH &&
-        editGasMode === EDIT_GAS_MODES.SWAPS
-      ) &&
-      !estimateGreaterThanGasUse ? (
-        <img alt="" src={`./images/curve-${priorityLevel}.svg`} />
+      {showGasEstimateCurve ? (
+        <img alt={imgAltText} src={`./images/curve-${priorityLevel}.svg`} />
       ) : null}
-      {priorityLevel === PRIORITY_LEVELS.HIGH &&
-      editGasMode !== EDIT_GAS_MODES.SWAPS &&
-      !estimateGreaterThanGasUse ? (
-        <div className="edit-gas-tooltip__container__dialog">
-          <Typography variant={TYPOGRAPHY.H7} color={COLORS.WHITE}>
-            {t('highGasSettingToolTipDialog')}
-          </Typography>
+      {toolTipMessage && (
+        <div className="edit-gas-tooltip__container__message">
+          <Typography variant={TYPOGRAPHY.H7}>{toolTipMessage}</Typography>
         </div>
-      ) : null}
-      <div className="edit-gas-tooltip__container__message">
-        <Typography variant={TYPOGRAPHY.H7}>{toolTipMessage()}</Typography>
-      </div>
+      )}
       {priorityLevel === PRIORITY_LEVELS.CUSTOM ||
       estimateGreaterThanGasUse ? null : (
         <div className="edit-gas-tooltip__container__values">
@@ -111,13 +121,15 @@ const EditGasToolTip = ({
             >
               {t('maxBaseFee')}
             </Typography>
-            <Typography
-              variant={TYPOGRAPHY.H7}
-              color={COLORS.NEUTRAL_GREY}
-              className="edit-gas-tooltip__container__value"
-            >
-              {maxFeePerGas}
-            </Typography>
+            {maxFeePerGas && (
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.NEUTRAL_GREY}
+                className="edit-gas-tooltip__container__value"
+              >
+                {roundToDecimalPlacesRemovingExtraZeroes(maxFeePerGas, 4)}
+              </Typography>
+            )}
           </div>
           <div>
             <Typography
@@ -127,13 +139,18 @@ const EditGasToolTip = ({
             >
               {t('priorityFeeProperCase')}
             </Typography>
-            <Typography
-              variant={TYPOGRAPHY.H7}
-              color={COLORS.NEUTRAL_GREY}
-              className="edit-gas-tooltip__container__value"
-            >
-              {maxPriorityFeePerGas}
-            </Typography>
+            {maxPriorityFeePerGas && (
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.NEUTRAL_GREY}
+                className="edit-gas-tooltip__container__value"
+              >
+                {roundToDecimalPlacesRemovingExtraZeroes(
+                  maxPriorityFeePerGas,
+                  4,
+                )}
+              </Typography>
+            )}
           </div>
           <div>
             <Typography
@@ -143,13 +160,15 @@ const EditGasToolTip = ({
             >
               {t('gasLimit')}
             </Typography>
-            <Typography
-              variant={TYPOGRAPHY.H7}
-              color={COLORS.NEUTRAL_GREY}
-              className="edit-gas-tooltip__container__value"
-            >
-              {gasLimit}
-            </Typography>
+            {gasLimit && (
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.NEUTRAL_GREY}
+                className="edit-gas-tooltip__container__value"
+              >
+                {roundToDecimalPlacesRemovingExtraZeroes(gasLimit, 4)}
+              </Typography>
+            )}
           </div>
         </div>
       )}

@@ -2,9 +2,6 @@
   "about": {
     "message": "Tungkol Dito"
   },
-  "aboutSettingsDescription": {
-    "message": "Bersyon, support center, at impormasyon sa pakikipag-ugnayan"
-  },
   "acceleratingATransaction": {
     "message": "* Kapag in-accelerate ang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas, mas magiging malaki ang tsansang mas mabilis na maiproseso ng network, pero hindi ito palaging ginagarantiya."
   },
@@ -97,9 +94,6 @@
   "advancedOptions": {
     "message": "Mga Advanced na Opsyon"
   },
-  "advancedSettingsDescription": {
-    "message": "I-access ang mga pang-developer na feature, i-download ang Mga Log ng Status, I-reset ang Account, i-set up ang mga testnet at custom na RPC"
-  },
   "affirmAgree": {
     "message": "Sang-ayon ako"
   },
@@ -123,9 +117,6 @@
   },
   "alerts": {
     "message": "Mga Alerto"
-  },
-  "alertsSettingsDescription": {
-    "message": "I-enable o i-disable ang bawat alerto"
   },
   "allowExternalExtensionTo": {
     "message": "Payagan ang external extension na ito na:"
@@ -400,9 +391,6 @@
   "contacts": {
     "message": "Mga Contact"
   },
-  "contactsSettingsDescription": {
-    "message": "Magdagdag, mag-edit, mag-alis, at mamahala ng iyong mga contact"
-  },
   "continue": {
     "message": "Magpatuloy"
   },
@@ -518,9 +506,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
-  },
-  "depositEther": {
-    "message": "Mag-deposit ng Ether"
   },
   "details": {
     "message": "Mga Detalye"
@@ -804,9 +789,6 @@
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "generalSettingsDescription": {
-    "message": "Conversion ng currency, pangunahing currency, wika, blockies identicon"
   },
   "getEther": {
     "message": "Kunin ang Ether"
@@ -1116,9 +1098,6 @@
   "name": {
     "message": "Pangalan"
   },
-  "needEtherInWallet": {
-    "message": "Para makaugnayan ang mga decentralized na application gamit ang MetaMask, kakailanganin mo ang Ether sa iyong wallet."
-  },
   "needHelp": {
     "message": "Kailangan ng tulong? Makipag-ugnayan sa $1",
     "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
@@ -1153,9 +1132,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "Ginagamit ang chain ID sa paglagda ng mga transaksyon. Dapat itong tumugma sa chain ID na ibinalik ng network. Puwede kang maglagay ng decimal o '0x'-prefixed hexadecimal number, pero ipapakita namin ang numero sa decimal."
-  },
-  "networkSettingsDescription": {
-    "message": "Magdagdag at mag-edit ng mga custom na RPC network"
   },
   "networkURL": {
     "message": "URL ng Network"
@@ -1552,9 +1528,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "securitySettingsDescription": {
-    "message": "Mga setting ng privacy at Secret Recovery Phrase ng wallet"
-  },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "Isulat ito at itabi sa maraming tagong lugar."
   },
@@ -1642,9 +1615,6 @@
   },
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
-  },
-  "separateEachWord": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
   },
   "settings": {
     "message": "Mga Setting"
@@ -2299,9 +2269,6 @@
   },
   "walletConnectionGuide": {
     "message": "ang aming gabay sa pagkonekta ng hardware wallet"
-  },
-  "walletSeedRestore": {
-    "message": "Recovery Phrase ng Wallet Secret"
   },
   "web3ShimUsageNotification": {
     "message": "Napansin naming sinubukang gamitin ng kasalukuyang website ang tinanggal na window.web3 API. Kung mukhang sira ang site, paki-click ang $1 para sa higit pang impormasyon.",

@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Kataa"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Kagua Msimbo wa QR"
+  },
   "about": {
     "message": "Kuhusu"
-  },
-  "aboutSettingsDescription": {
-    "message": "Toleo, kituo cha msaada, na taarifa za mawasiliano"
   },
   "acceleratingATransaction": {
     "message": "*Kuwezesha muamala kwa kutumia bei ya juu ya gesi huongeza uwezekano wake wa kushughulikiwa na mtandao haraka, lakini hauhakikishiwi siku zote."
@@ -55,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Machaguo ya Juu"
-  },
-  "advancedSettingsDescription": {
-    "message": "Vipengele vya idhini ya msanidi, Kumbukumbu za Hali ya kupakua, Kufuta Akaunti, mitando ya majaribio ya kuweka mipangilio na RPC maalumu"
   },
   "amount": {
     "message": "Kiasi"
@@ -250,6 +250,9 @@
   "currentLanguage": {
     "message": "Lugha ya Sasa"
   },
+  "custom": {
+    "message": "Mipangilio ya kina"
+  },
   "customGas": {
     "message": "Weka Mipangilio ya Gesi Upendavyo"
   },
@@ -276,9 +279,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Una uhakika unataka kufuta mtandao huu?"
-  },
-  "depositEther": {
-    "message": "Weka Ether"
   },
   "details": {
     "message": "Maelezo"
@@ -410,9 +410,6 @@
   "general": {
     "message": "Jumla"
   },
-  "generalSettingsDescription": {
-    "message": "Ubadilishaji wa fedha, sarafu ya msingi, lugha, blockies identicon"
-  },
   "getEther": {
     "message": "Pata Ether"
   },
@@ -517,6 +514,9 @@
   "learnMore": {
     "message": "Jifunze zaidi"
   },
+  "learnMoreUpperCase": {
+    "message": "Jifunze zaidi"
+  },
   "ledgerAccountRestriction": {
     "message": "Unapaswa kutumia akaunti yako ya mwisho kabla hujaongeza mpya."
   },
@@ -562,9 +562,6 @@
   "myAccounts": {
     "message": "Akaunti zangu"
   },
-  "needEtherInWallet": {
-    "message": "Ili kuingiliana na programu zilizosambazwa kwa kutumia MetaMask, utahitaji kuwa na Ether kwenye waleti yako."
-  },
   "needImportFile": {
     "message": "Unapaswa kuchagua faili la kuhamisha.",
     "description": "User is important an account and needs to add a file to continue"
@@ -574,9 +571,6 @@
   },
   "networkName": {
     "message": "Jina la mtandao"
-  },
-  "networkSettingsDescription": {
-    "message": "Ongeza na hariri mitandao maalumu ya RPC"
   },
   "networks": {
     "message": "Mitandao"
@@ -812,9 +806,6 @@
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"
   },
-  "securitySettingsDescription": {
-    "message": "Mipangilio ya Faragha na kirai kianzio cha waleti"
-  },
   "seedPhrasePlaceholder": {
     "message": "Tenganisha kila neno kwa nafasi moja"
   },
@@ -847,9 +838,6 @@
   },
   "sendTokens": {
     "message": "Tuma Vianzio"
-  },
-  "separateEachWord": {
-    "message": "Tenganisha kila neno kwa nafasi moja"
   },
   "settings": {
     "message": "Mipangilio"

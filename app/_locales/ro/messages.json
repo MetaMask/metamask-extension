@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Respingeți"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scanați codul QR"
+  },
   "about": {
     "message": "Despre"
-  },
-  "aboutSettingsDescription": {
-    "message": "Versiune, centru de asistență și date de contact"
   },
   "acceleratingATransaction": {
     "message": "* Accelerarea unei tranzacții folosind un preț în gas mai mare îi crește șansele de a fi procesată mai rapid de rețea, însă acest lucru nu este garantat întotdeauna."
@@ -55,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Opțiuni avansate"
-  },
-  "advancedSettingsDescription": {
-    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat"
   },
   "amount": {
     "message": "Sumă"
@@ -256,6 +256,9 @@
   "currentLanguage": {
     "message": "Limba actuală"
   },
+  "custom": {
+    "message": "Avansate"
+  },
   "customGas": {
     "message": "Particularizați Gas"
   },
@@ -282,9 +285,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sigur vreți să ștergeți această rețea?"
-  },
-  "depositEther": {
-    "message": "Depuneți Ether"
   },
   "details": {
     "message": "Detalii"
@@ -413,9 +413,6 @@
   "gasUsed": {
     "message": "Suma gaz folosită"
   },
-  "generalSettingsDescription": {
-    "message": "Schimb valutar, moneda principală, limba, blockies identicon"
-  },
   "getEther": {
     "message": "Obțineți Ether"
   },
@@ -520,6 +517,9 @@
   "learnMore": {
     "message": "Aflați mai multe"
   },
+  "learnMoreUpperCase": {
+    "message": "Aflați mai multe"
+  },
   "ledgerAccountRestriction": {
     "message": "Trebuie să folosiți ultimul cont înainte să adăugați altul."
   },
@@ -571,9 +571,6 @@
   "myAccounts": {
     "message": "Conturile mele"
   },
-  "needEtherInWallet": {
-    "message": "Pentru a interacționa cu aplicațiile descentralizate prin intermediul MetaMask, trebuie să aveți Ether în portofel."
-  },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
     "description": "User is important an account and needs to add a file to continue"
@@ -583,9 +580,6 @@
   },
   "networkName": {
     "message": "Numele rețelei"
-  },
-  "networkSettingsDescription": {
-    "message": "Adăugați și editați rețelele RPC particularizate"
   },
   "networks": {
     "message": "Rețele"
@@ -821,9 +815,6 @@
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
-  "securitySettingsDescription": {
-    "message": "Setările de confidențialitate și fraza seed a portofelului"
-  },
   "seedPhrasePlaceholder": {
     "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
@@ -856,9 +847,6 @@
   },
   "sendTokens": {
     "message": "Trimiteți indicative"
-  },
-  "separateEachWord": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
   "settings": {
     "message": "Setări"

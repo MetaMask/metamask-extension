@@ -13,6 +13,7 @@ import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 
 const AssetListItem = ({
   className,
@@ -65,21 +66,26 @@ const AssetListItem = ({
       <Button
         type="link"
         className="asset-list-item__send-token-button"
-        onClick={(e) => {
+        onClick={async (e) => {
           e.stopPropagation();
           sendTokenEvent();
-          dispatch(
-            updateSendAsset({
-              type: ASSET_TYPES.TOKEN,
-              details: {
-                address: tokenAddress,
-                decimals: tokenDecimals,
-                symbol: tokenSymbol,
-              },
-            }),
-          ).then(() => {
+          try {
+            await dispatch(
+              updateSendAsset({
+                type: ASSET_TYPES.TOKEN,
+                details: {
+                  address: tokenAddress,
+                  decimals: tokenDecimals,
+                  symbol: tokenSymbol,
+                },
+              }),
+            );
             history.push(SEND_ROUTE);
-          });
+          } catch (err) {
+            if (!err.message.includes(INVALID_ASSET_TYPE)) {
+              throw err;
+            }
+          }
         }}
       >
         {t('sendSpecifiedTokens', [tokenSymbol])}

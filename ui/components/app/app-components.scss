@@ -9,6 +9,7 @@
 @import 'asset-list-item/asset-list-item';
 @import 'cancel-speedup-popover/index';
 @import 'confirm-page-container/index';
+@import 'confirm-page-container/enableEIP1559V2-notice';
 @import 'collectibles-items/index';
 @import 'collectibles-tab/index';
 @import 'collectible-details/index';
@@ -18,6 +19,7 @@
 @import 'connected-accounts-permissions/index';
 @import 'connected-sites-list/index';
 @import 'connected-status-indicator/index';
+@import 'create-new-vault/create-new-vault.scss';
 @import 'edit-gas-display/index';
 @import 'edit-gas-display-education/index';
 @import 'edit-gas-fee-button/index';
@@ -52,6 +54,7 @@
 @import 'flask/snap-settings-card/index';
 @import 'tab-bar/index';
 @import 'token-cell/token-cell';
+@import 'token-list-display/token-list-display';
 @import 'transaction-activity-log/index';
 @import 'transaction-breakdown/index';
 @import 'transaction-detail/index';
@@ -71,5 +74,7 @@
 @import 'advanced-gas-fee-popover/advanced-gas-fee-gas-limit/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/base-fee-input/index';
+@import 'advanced-gas-fee-popover/advanced-gas-fee-inputs/priority-fee-input/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-defaults/index';
+@import 'currency-input/index';

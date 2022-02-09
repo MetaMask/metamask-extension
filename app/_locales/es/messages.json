@@ -2,9 +2,6 @@
   "about": {
     "message": "Acerca de"
   },
-  "aboutSettingsDescription": {
-    "message": "Versión, centro de soporte técnico e información de contacto"
-  },
   "acceleratingATransaction": {
     "message": "* Usar un precio de gas más alto para acelerar una transacción aumenta las posibilidades de un procesamiento más rápido en la red, pero esto no siempre se garantiza."
   },
@@ -97,9 +94,6 @@
   "advancedOptions": {
     "message": "Opciones avanzadas"
   },
-  "advancedSettingsDescription": {
-    "message": "Acceder a recursos para desarrolladores, descargar registros de estado, restablecer cuenta, configurar redes de prueba y RPC personalizada"
-  },
   "affirmAgree": {
     "message": "Acepto"
   },
@@ -123,9 +117,6 @@
   },
   "alerts": {
     "message": "Alertas"
-  },
-  "alertsSettingsDescription": {
-    "message": "Habilitar o deshabilitar cada alerta"
   },
   "allowExternalExtensionTo": {
     "message": "Permitir que esta extensión externa haga lo siguiente:"
@@ -259,9 +250,6 @@
   },
   "buyWithWyreDescription": {
     "message": "Wyre le permite usar una tarjeta de débito para depositar ETH directamente en su cuenta de MetaMask."
-  },
-  "bytes": {
-    "message": "Bytes"
   },
   "canToggleInSettings": {
     "message": "Puede volver a activar esta notificación desde Configuración -> Alertas."
@@ -400,9 +388,6 @@
   "contacts": {
     "message": "Contactos"
   },
-  "contactsSettingsDescription": {
-    "message": "Agregar, editar, quitar y administrar sus contactos"
-  },
   "continue": {
     "message": "Continuar"
   },
@@ -518,9 +503,6 @@
   },
   "deleteNetworkDescription": {
     "message": "¿Está seguro de que quiere eliminar esta red?"
-  },
-  "depositEther": {
-    "message": "Depositar ether"
   },
   "details": {
     "message": "Detalles"
@@ -696,9 +678,6 @@
   "ethereumPublicAddress": {
     "message": "Dirección pública de Ethereum"
   },
-  "etherscan": {
-    "message": "Etherscan"
-  },
   "etherscanView": {
     "message": "Ver cuenta en Etherscan"
   },
@@ -802,12 +781,6 @@
     "message": "Política de privacidad aquí",
     "description": "this translation is intended to be exclusively used as the replacement for the $1 in the gdprMessage translation"
   },
-  "general": {
-    "message": "General"
-  },
-  "generalSettingsDescription": {
-    "message": "Conversión de moneda, moneda principal, idioma, Blockies Identicon"
-  },
   "getEther": {
     "message": "Obtener ether"
   },
@@ -824,15 +797,8 @@
   "happyToSeeYou": {
     "message": "Nos alegra verlo."
   },
-  "hardware": {
-    "message": "Hardware"
-  },
   "hardwareWalletConnected": {
     "message": "Cartera de hardware conectada"
-  },
-  "hardwareWalletLegacyDescription": {
-    "message": "(legacy)",
-    "description": "Text representing the MEW path"
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "Haga clic aquí"
@@ -1116,9 +1082,6 @@
   "name": {
     "message": "Nombre"
   },
-  "needEtherInWallet": {
-    "message": "Para interactuar con aplicaciones descentralizadas mediante MetaMask, necesitará ethers en su cartera."
-  },
   "needHelp": {
     "message": "¿Necesita ayuda? Comuníquese con $1",
     "description": "$1 represents `needHelpLinkText`, the text which goes in the help link"
@@ -1139,23 +1102,14 @@
   "networkName": {
     "message": "Nombre de la red"
   },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
   "networkNameDefinition": {
     "message": "El nombre asociado a esta red."
-  },
-  "networkNameEthereum": {
-    "message": "Ethereum"
   },
   "networkNameTestnet": {
     "message": "Red de prueba"
   },
   "networkSettingsChainIdDescription": {
     "message": "El id. de la cadena se usa para firmar transacciones. Debe coincidir con el id. de la cadena que devuelve la red. Puede escribir un número decimal o un número hexadecimal con el prefijo “0x”, pero el número se mostrará en decimal."
-  },
-  "networkSettingsDescription": {
-    "message": "Agregar y editar redes RPC personalizadas"
   },
   "networkURL": {
     "message": "Dirección URL de la red"
@@ -1227,9 +1181,6 @@
   },
   "noWebcamFoundTitle": {
     "message": "No se encontró cámara web"
-  },
-  "nonce": {
-    "message": "Nonce"
   },
   "nonceField": {
     "message": "Personalizar nonce de transacción"
@@ -1552,9 +1503,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
   },
-  "securitySettingsDescription": {
-    "message": "Configuración de privacidad y frase secreta de recuperación de la cartera"
-  },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "Escríbala y guárdela en varios lugares secretos."
   },
@@ -1642,9 +1590,6 @@
   },
   "sendTokens": {
     "message": "Enviar tokens"
-  },
-  "separateEachWord": {
-    "message": "Separar cada palabra con un solo espacio"
   },
   "settings": {
     "message": "Configuración"
@@ -2128,9 +2073,6 @@
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "token": {
-    "message": "Token"
-  },
   "tokenAlreadyAdded": {
     "message": "Ya se agregó el token."
   },
@@ -2145,9 +2087,6 @@
   },
   "tooltipApproveButton": {
     "message": "Comprendo"
-  },
-  "total": {
-    "message": "Total"
   },
   "transaction": {
     "message": "transacción"
@@ -2299,9 +2238,6 @@
   },
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión de la cartera de hardware"
-  },
-  "walletSeedRestore": {
-    "message": "Frase secreta de recuperación de la cartera"
   },
   "web3ShimUsageNotification": {
     "message": "Parece que el sitio web actual intentó utilizar la API de window.web3 que se eliminó. Si el sitio no funciona, haga clic en $1 para obtener más información.",

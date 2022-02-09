@@ -10,10 +10,8 @@ describe('Gas utils', () => {
     const compareGas = (estimateValues) => {
       return gasEstimateGreaterThanGasUsedPlusTenPercent(
         {
-          txParams: {
-            maxFeePerGas: '0x59682f10',
-            maxPriorityFeePerGas: '0x59682f00',
-          },
+          maxFeePerGas: '0x59682f10',
+          maxPriorityFeePerGas: '0x59682f00',
         },
         {
           medium: estimateValues,

@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Afwijzen"
+  },
   "accountDetails": {
     "message": "Accountgegevens"
   },
@@ -80,9 +83,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
-  },
-  "depositEther": {
-    "message": "Stort Ether"
   },
   "directDepositEther": {
     "message": "Directe Ether storten"
@@ -213,9 +213,6 @@
   },
   "myAccounts": {
     "message": "Mijn accounts"
-  },
-  "needEtherInWallet": {
-    "message": "Om te communiceren met gedecentraliseerde applicaties met MetaMask, heb je Ether nodig in je portemonnee."
   },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",

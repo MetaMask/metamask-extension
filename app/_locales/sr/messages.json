@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Одбиј"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skenirajte QR kod"
+  },
   "about": {
     "message": "Основни подаци"
-  },
-  "aboutSettingsDescription": {
-    "message": "Verzija, centar za podršku i podaci za kontakt"
   },
   "acceleratingATransaction": {
     "message": "* Time što se ubrzava transakcija koristeći veću gas cenu, povećavaju se šanse da se procesuira brže od strane mreže, ali to nije uvek zagarantovano."
@@ -55,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Dodatne opcije"
-  },
-  "advancedSettingsDescription": {
-    "message": "Pristupite funkcijama za programere, preuzmite državne evidencije, resetujte nalog, postavite testne mreže i prilagođeni RPC"
   },
   "amount": {
     "message": "Iznos"
@@ -253,6 +253,9 @@
   "currentLanguage": {
     "message": "Trenutni jezik"
   },
+  "custom": {
+    "message": "Напредне опције"
+  },
   "customGas": {
     "message": "Prilagodi gas"
   },
@@ -279,9 +282,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Da li ste sigurni da želite da izbrišete ovu mrežu?"
-  },
-  "depositEther": {
-    "message": "Dajte depozit Ether-u"
   },
   "details": {
     "message": "Детаљи"
@@ -417,9 +417,6 @@
   "general": {
     "message": "Opšte"
   },
-  "generalSettingsDescription": {
-    "message": "Konverzija valuta, primarna valuta, jezik, blockies identicon"
-  },
   "getEther": {
     "message": "Nabavite Ether"
   },
@@ -527,6 +524,9 @@
   "learnMore": {
     "message": "Nauči više"
   },
+  "learnMoreUpperCase": {
+    "message": "Nauči više"
+  },
   "ledgerAccountRestriction": {
     "message": "Treba da koristite svoj poslednji nalog pre nego što budete mogli da dodate novi."
   },
@@ -575,9 +575,6 @@
   "myAccounts": {
     "message": "Moji nalozi"
   },
-  "needEtherInWallet": {
-    "message": "Da biste stupili u interakciju sa decentralizovanim aplikacijama koristeći MetaMask, biće vam potreban Ether u vašem novčaniku."
-  },
   "needImportFile": {
     "message": "Morate izabrati fajl koji ćete uvesti.",
     "description": "User is important an account and needs to add a file to continue"
@@ -587,9 +584,6 @@
   },
   "networkName": {
     "message": "Ime mreže"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodajte i uredite prilagođene RPC mreže"
   },
   "networks": {
     "message": "Mreže"
@@ -825,9 +819,6 @@
   "securityAndPrivacy": {
     "message": "Bezbednost i privatnost"
   },
-  "securitySettingsDescription": {
-    "message": "Podešavanja privatnosti i novčanik fraze početnih vrednosti"
-  },
   "seedPhrasePlaceholder": {
     "message": "Odvojite svaku reč jednim razmakom"
   },
@@ -860,9 +851,6 @@
   },
   "sendTokens": {
     "message": "Pošalji tokene"
-  },
-  "separateEachWord": {
-    "message": "Razdvojite svaku reč jednim mestom razmaka"
   },
   "settings": {
     "message": "Podešavanja"

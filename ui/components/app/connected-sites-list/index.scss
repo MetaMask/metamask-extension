@@ -13,6 +13,14 @@
     align-items: center;
     border-top: 1px solid #d2d8dd;
     padding: 16px 24px;
+
+    & &-link-button {
+      @include H7;
+
+      padding: 0;
+      width: auto;
+      padding-inline-start: 24px;
+    }
   }
 
   &__subject-info {
@@ -31,9 +39,5 @@
     direction: rtl;
     text-overflow: ellipsis;
     margin-left: 6px;
-  }
-
-  &__trash {
-    cursor: pointer;
   }
 }

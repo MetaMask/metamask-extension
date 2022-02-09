@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "நிராகரி"
+  },
   "about": {
     "message": "அறிமுகம்"
   },
@@ -108,6 +111,9 @@
   "createAccount": {
     "message": "உங்கள் கணக்கை துவங்குங்கள்"
   },
+  "custom": {
+    "message": "மேம்பட்டவை"
+  },
   "customGas": {
     "message": "எரிவாயுவைத் தனிப்பயனாக்குங்கள்"
   },
@@ -122,9 +128,6 @@
   },
   "delete": {
     "message": "நீக்கு"
-  },
-  "depositEther": {
-    "message": "வைப்புத்தொகை எதிர் "
   },
   "details": {
     "message": "விவரங்கள்"
@@ -250,6 +253,9 @@
   "learnMore": {
     "message": "மேலும் அறிக"
   },
+  "learnMoreUpperCase": {
+    "message": "மேலும் அறிக"
+  },
   "likeToImportTokens": {
     "message": "இந்த டோக்கன்களைச் சேர்க்க விரும்புகிறீர்களா?"
   },
@@ -285,9 +291,6 @@
   },
   "myAccounts": {
     "message": "எனது கணக்குகள்"
-  },
-  "needEtherInWallet": {
-    "message": "மேடமஸ்க் ஐ பயன்படுத்தி பரவலாக்கப்பட்ட பயன்பாடுகளுடன் தொடர்பு கொள்ள, உங்கள் பணப்பரிமாற்றத்தில் ஈதர் தேவை."
   },
   "needImportFile": {
     "message": "இறக்குமதி செய்ய ஒரு கோப்பை நீங்கள் தேர்ந்தெடுக்க வேண்டும்.",

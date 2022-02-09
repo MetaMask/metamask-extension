@@ -35,6 +35,7 @@ import {
   getRpcPrefsForCurrentProvider,
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
+  getEIP1559V2Enabled,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
@@ -49,10 +50,6 @@ import ConfirmApproveContent from './confirm-approve-content';
 const isAddressLedgerByFromAddress = (address) => (state) => {
   return isAddressLedger(state, address);
 };
-
-// eslint-disable-next-line prefer-destructuring
-const EIP_1559_V2_ENABLED =
-  process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
 
 export default function ConfirmApprove() {
   const dispatch = useDispatch();
@@ -89,8 +86,8 @@ export default function ConfirmApprove() {
     hexTransactionTotal,
   } = useSelector((state) => transactionFeeSelector(state, transaction));
 
-  const supportsEIP1559V2 =
-    EIP_1559_V2_ENABLED && networkAndAccountSupports1559;
+  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
+  const supportsEIP1559V2 = eip1559V2Enabled && networkAndAccountSupports1559;
 
   const currentToken = (tokens &&
     tokens.find(({ address }) =>
@@ -183,7 +180,7 @@ export default function ConfirmApprove() {
         showAccountInHeader
         title={tokensText}
         contentComponent={
-          <TransactionModalContextProvider captureEventEnabled={false}>
+          <TransactionModalContextProvider>
             <ConfirmApproveContent
               decimals={decimals}
               siteImage={siteImage}

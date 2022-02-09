@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Elutasítás"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR-kód beolvasása"
+  },
   "about": {
     "message": "Névjegy"
-  },
-  "aboutSettingsDescription": {
-    "message": "Verzió, ügyfélszolgálat és elérhetőségek"
   },
   "acceleratingATransaction": {
     "message": "* Ha szeretné felgyorsítani a tranzakciót azzal, hogy magasabb gázárat használ, az növeli a gyorsabb feldolgozás esélyét, de ez nem mindig garantált."
@@ -55,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Haladó beállítások"
-  },
-  "advancedSettingsDescription": {
-    "message": "Hozzáférés fejlesztői funkciókhoz, állapotnaplók letöltése, fiók újraállítása, testnetek és egyéni RPC-k beállítása"
   },
   "amount": {
     "message": "Összeg"
@@ -256,6 +256,9 @@
   "currentLanguage": {
     "message": "Aktuális nyelv"
   },
+  "custom": {
+    "message": "Speciális"
+  },
   "customGas": {
     "message": "Gáz testreszabása"
   },
@@ -282,9 +285,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Biztosan törli ezt a hálózatot?"
-  },
-  "depositEther": {
-    "message": "Ether befizetése"
   },
   "details": {
     "message": "Részletek"
@@ -416,9 +416,6 @@
   "general": {
     "message": "Általános"
   },
-  "generalSettingsDescription": {
-    "message": "Pénznem átváltása, elsődleges pénznem, nyelv, blockies identikonok"
-  },
   "getEther": {
     "message": "Ether beszerzése"
   },
@@ -526,6 +523,9 @@
   "learnMore": {
     "message": "Tudjon meg többet"
   },
+  "learnMoreUpperCase": {
+    "message": "Tudjon meg többet"
+  },
   "ledgerAccountRestriction": {
     "message": "Használnia kell a korábbi fiókját, mielőtt újat adhat hozzá. "
   },
@@ -577,9 +577,6 @@
   "myAccounts": {
     "message": "Fiókjaim"
   },
-  "needEtherInWallet": {
-    "message": "Ha a MetaMaskon keresztül szeretne interakcióba lépni decentralizált alkalmazással, ahhoz a tárcájában Ethernek kell lennie."
-  },
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",
     "description": "User is important an account and needs to add a file to continue"
@@ -589,9 +586,6 @@
   },
   "networkName": {
     "message": "Hálózat neve"
-  },
-  "networkSettingsDescription": {
-    "message": "Egyedi RPC-hálózatok hozzáadása és szerkesztése"
   },
   "networks": {
     "message": "Hálózatok"
@@ -827,9 +821,6 @@
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
   },
-  "securitySettingsDescription": {
-    "message": "Biztonsági beállítások és pénztárca kulcsszólánca"
-  },
   "seedPhrasePlaceholder": {
     "message": "A szavakat egy-egy szóközzel válassza el"
   },
@@ -862,9 +853,6 @@
   },
   "sendTokens": {
     "message": "Token küldése"
-  },
-  "separateEachWord": {
-    "message": "Minden egyes szavat szóközzel válasszon el"
   },
   "settings": {
     "message": "Beállítások"

@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "ปฏิเสธ"
+  },
   "about": {
     "message": "เกี่ยวกับ"
   },
@@ -128,9 +131,6 @@
   },
   "deleteNetwork": {
     "message": "ลบเครือข่าย?"
-  },
-  "depositEther": {
-    "message": "การฝากอีเธอร์"
   },
   "details": {
     "message": "รายละเอียด"
@@ -268,6 +268,9 @@
   "learnMore": {
     "message": "เรียนรู้เพิ่มเติม"
   },
+  "learnMoreUpperCase": {
+    "message": "เรียนรู้เพิ่มเติม"
+  },
   "likeToImportTokens": {
     "message": "คุณต้องการเพิ่มโทเค็นเหล่านี้หรือไม่?"
   },
@@ -295,18 +298,12 @@
   "myAccounts": {
     "message": "บัญชีของฉัน"
   },
-  "needEtherInWallet": {
-    "message": "คุณจะต้องมีอีเธอร์ในกระเป๋าเงินของคุณในการใช้งานกับแอพพลิเคชันแบบกระจายด้วย MetaMask"
-  },
   "needImportFile": {
     "message": "คุณต้องเลือกไฟล์ที่จะนำเข้า",
     "description": "User is important an account and needs to add a file to continue"
   },
   "negativeETH": {
     "message": "ไม่สามารถส่งอีเธอร์เป็นจำนวนติดลบได้"
-  },
-  "networkSettingsDescription": {
-    "message": "เพิ่มและแก้ไขเครือข่าย RPC แบบกำหนดเอง"
   },
   "networks": {
     "message": "เครือข่าย"

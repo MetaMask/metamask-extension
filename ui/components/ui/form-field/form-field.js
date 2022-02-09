@@ -30,6 +30,8 @@ export default function FormField({
   password,
   allowDecimals,
   disabled,
+  placeholder,
+  warning,
 }) {
   return (
     <div
@@ -84,11 +86,14 @@ export default function FormField({
             autoFocus={autoFocus}
             allowDecimals={allowDecimals}
             disabled={disabled}
+            dataTestId={dataTestId}
+            placeholder={placeholder}
           />
         ) : (
           <input
             className={classNames('form-field__input', {
               'form-field__input--error': error,
+              'form-field__input--warning': warning,
             })}
             onChange={(e) => onChange(e.target.value)}
             value={value}
@@ -96,6 +101,7 @@ export default function FormField({
             autoFocus={autoFocus}
             disabled={disabled}
             data-testid={dataTestId}
+            placeholder={placeholder}
           />
         )}
         {error && (
@@ -105,6 +111,15 @@ export default function FormField({
             className="form-field__error"
           >
             {error}
+          </Typography>
+        )}
+        {warning && (
+          <Typography
+            color={COLORS.UI4}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__warning"
+          >
+            {warning}
           </Typography>
         )}
       </label>
@@ -138,6 +153,10 @@ FormField.propTypes = {
    */
   error: PropTypes.string,
   /**
+   * Show warning message
+   */
+  warning: PropTypes.string,
+  /**
    * Handler when fields change
    */
   onChange: PropTypes.func,
@@ -169,6 +188,10 @@ FormField.propTypes = {
    * Check if the form disabled
    */
   disabled: PropTypes.bool,
+  /**
+   * Set the placeholder text for the input field
+   */
+  placeholder: PropTypes.string,
 };
 
 FormField.defaultProps = {

@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odbaci"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skeniraj kôd QR"
+  },
   "about": {
     "message": "O opcijama"
-  },
-  "aboutSettingsDescription": {
-    "message": "Inačica, centar za podršku i informacije za kontakt"
   },
   "acceleratingATransaction": {
     "message": "* Ubrzavanjem se transakcije pomoću veće cijene goriva povećava šansa za bržu obradu mrežom, ali se uvijek ne jamči."
@@ -55,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Napredne mogućnosti"
-  },
-  "advancedSettingsDescription": {
-    "message": "Pristup značajkama razvojnog inženjera, preuzimanje zapisnika stanja, poništavanje računa, postavljanje testnih mreža i prilagođeni RPC"
   },
   "amount": {
     "message": "Iznos"
@@ -256,6 +256,9 @@
   "currentLanguage": {
     "message": "Trenutačni jezik"
   },
+  "custom": {
+    "message": "Napredno"
+  },
   "customGas": {
     "message": "Prilagodi gorivo"
   },
@@ -282,9 +285,6 @@
   },
   "deleteNetworkDescription": {
     "message": "Sigurno želite izbrisati ovu mrežu?"
-  },
-  "depositEther": {
-    "message": "Položi Ether"
   },
   "details": {
     "message": "Detalji"
@@ -416,9 +416,6 @@
   "general": {
     "message": "Opće"
   },
-  "generalSettingsDescription": {
-    "message": "Konverzija valuta, glavna valuta, jezik, blockies identicon"
-  },
   "getEther": {
     "message": "Dohvati Ether"
   },
@@ -526,6 +523,9 @@
   "learnMore": {
     "message": "Saznajte više"
   },
+  "learnMoreUpperCase": {
+    "message": "Saznajte više"
+  },
   "ledgerAccountRestriction": {
     "message": "Treba se koristiti zadnjim računom kako biste dodali novi račun."
   },
@@ -577,9 +577,6 @@
   "myAccounts": {
     "message": "Moji računi"
   },
-  "needEtherInWallet": {
-    "message": "Trebate Ether u svojem novčaniku kako biste ostvarili interakciju s decentraliziranim aplikacijama uporabom usluge MetaMask. "
-  },
   "needImportFile": {
     "message": "Morate odabrati datoteku za uvoz.",
     "description": "User is important an account and needs to add a file to continue"
@@ -589,9 +586,6 @@
   },
   "networkName": {
     "message": "Naziv mreže"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodaj i uredi prilagođene mreže RPC"
   },
   "networks": {
     "message": "Mreže"
@@ -827,9 +821,6 @@
   "securityAndPrivacy": {
     "message": "Sigurnost i privatnost"
   },
-  "securitySettingsDescription": {
-    "message": "Postavke privatnosti i početna rečenica novčanika"
-  },
   "seedPhrasePlaceholder": {
     "message": "Odvojite pojedinačne riječi jednim razmakom"
   },
@@ -862,9 +853,6 @@
   },
   "sendTokens": {
     "message": "Pošalji tokene"
-  },
-  "separateEachWord": {
-    "message": "Odvojite pojedinačne riječi jednim razmakom"
   },
   "settings": {
     "message": "Postavke"

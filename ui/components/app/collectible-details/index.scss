@@ -53,16 +53,38 @@ $spacer-break-small: 16px;
     overflow-wrap: break-word;
   }
 
-  &__contract-link,
-  &__image-link {
-    color: var(--primary-1);
+  &__contract-wrapper {
+    max-width: calc(100% - #{$link-title-width});
+  }
+
+  &__contract-copy-button {
+    @include H6;
+
+    width: 80px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background-color: transparent;
+    cursor: pointer;
+    color: var(--ui-4);
+    border: 0;
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+
+  &__contract-link {
     overflow: hidden;
     text-overflow: ellipsis;
-    word-break: break-all;
+    white-space: nowrap;
+  }
 
-    &:hover {
-      color: var(--primary-3);
-    }
+  &__image-link {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 332px;
   }
 
   &__link-title {
