@@ -96,51 +96,51 @@ const TransactionAlerts = ({
         />
       )}
       {balanceError &&
-        chainId === '0x1' &&
-        type === TRANSACTION_TYPES.DEPLOY_CONTRACT && (
-          <ActionableMessage
-            className="actionable-message--warning"
-            message={
-              <Typography variant={TYPOGRAPHY.H7} align="left" margin={[0, 0]}>
-                {t('insufficientCurrency', [nativeCurrency, networkName])}
-                <Button
-                  key="link"
-                  type="secondary"
-                  className="confirm-approve-content__warning__link"
-                  onClick={() => showBuyModal()}
-                  style={{
-                    color: '#037dd6',
-                    padding: 0,
-                    fontSize: '12px',
-                  }}
-                >
-                  {t('buyEth')}
-                </Button>
+      chainId === '0x1' &&
+      type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
+        <ActionableMessage
+          className="actionable-message--warning"
+          message={
+            <Typography variant={TYPOGRAPHY.H7} align="left" margin={[0, 0]}>
+              {t('insufficientCurrency', [nativeCurrency, networkName])}
+              <Button
+                key="link"
+                type="secondary"
+                className="confirm-approve-content__warning__link"
+                onClick={() => showBuyModal()}
+                style={{
+                  color: '#037dd6',
+                  padding: 0,
+                  fontSize: '12px',
+                }}
+              >
+                {t('buyEth')}
+              </Button>
 
-                {t('orDeposit')}
-              </Typography>
-            }
-            useIcon
-            iconFillColor="#d73a49"
-            type="danger"
-          />
-        )}
+              {t('orDeposit')}
+            </Typography>
+          }
+          useIcon
+          iconFillColor="#d73a49"
+          type="danger"
+        />
+      ) : null}
       {balanceError &&
-        chainId !== '0x1' &&
-        type === TRANSACTION_TYPES.DEPLOY_CONTRACT && (
-          <ActionableMessage
-            className="actionable-message--warning"
-            message={
-              <Typography variant={TYPOGRAPHY.H7} align="left" margin={[0, 0]}>
-                {t('insufficientCurrency', [nativeCurrency, networkName])}
-                {t('buyOther', [nativeCurrency])}
-              </Typography>
-            }
-            useIcon
-            iconFillColor="#d73a49"
-            type="danger"
-          />
-        )}
+      chainId !== '0x1' &&
+      type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
+        <ActionableMessage
+          className="actionable-message--warning"
+          message={
+            <Typography variant={TYPOGRAPHY.H7} align="left" margin={[0, 0]}>
+              {t('insufficientCurrency', [nativeCurrency, networkName])}
+              {t('buyOther', [nativeCurrency])}
+            </Typography>
+          }
+          useIcon
+          iconFillColor="#d73a49"
+          type="danger"
+        />
+      ) : null}
       {estimateUsed === PRIORITY_LEVELS.LOW && (
         <ActionableMessage
           dataTestId="low-gas-fee-alert"

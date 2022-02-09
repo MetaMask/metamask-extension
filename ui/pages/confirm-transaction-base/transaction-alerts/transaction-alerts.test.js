@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import { submittedPendingTransactionsSelector } from '../../../selectors/transactions';
+import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
 import TransactionAlerts from './transaction-alerts';
@@ -148,11 +149,17 @@ describe('TransactionAlerts', () => {
             supportsEIP1559V2: true,
             balanceError: true,
           },
+          componentProps: {
+            nativeCurrency: 'ETH',
+            networkName: 'Ropsten',
+            showBuyModal: jest.fn(),
+            chainId: '0x1',
+            type: TRANSACTION_TYPES.DEPLOY_CONTRACT,
+          },
         });
         expect(
           getByText(
-            // eslint-disable-next-line require-unicode-regexp
-            /You do not have enough in your account to pay for transaction fees on network.(.*)Buy or deposit from another account./,
+            /You do not have enough ETH in your account to pay for transaction fees on Ropsten network./u,
           ),
         ).toBeInTheDocument();
       });
