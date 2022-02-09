@@ -169,32 +169,16 @@ export default class ConfirmTransactionBase extends Component {
     const { fromAddress } = this.props;
     const { pollingIntervalId } = this.state;
 
-    console.log(
-      '[confirm-transaction-base] pollLedgerReadycalled; id: ',
-      pollingIntervalId,
-    );
-
     // Don't set off multiple calls to checkLedgerReady
     if (pollingIntervalId !== null) {
-      console.log(
-        '[confirm-transaction-base] avoiding multiple calls for ; id: ',
-        pollingIntervalId,
-      );
       return undefined;
     }
 
     let hardwareIsReady = true;
     try {
-      console.log(
-        `[confirm-transaction-base] about to call checkLedgerReady for ${fromAddress}`,
-      );
       hardwareIsReady = await checkLedgerReady(fromAddress);
-      console.log(`[confirm-transaction-base] RETURNED! ${hardwareIsReady}`);
     } catch (e) {
-      console.error(
-        '[confirm-transaction-base] ERROR checking ledger ready!',
-        e,
-      );
+      // Don't let this check blow up the process
     }
 
     this.setState({ hardwareIsReady, pollingIntervalId: null });
@@ -202,8 +186,6 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    console.log('UNSAFE_componentWillMount!');
-
     const { showLedgerSteps } = this.props;
 
     if (!showLedgerSteps) {
@@ -721,7 +703,6 @@ export default class ConfirmTransactionBase extends Component {
           <HardwareConnectivityMessage
             connected={hardwareIsReady}
             onClick={(e) => {
-              console.log('Opening the modal!');
               e?.preventDefault?.();
               this.setState({ showingHardwareConnectionContents: true });
             }}

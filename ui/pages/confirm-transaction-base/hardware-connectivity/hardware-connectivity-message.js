@@ -20,9 +20,12 @@ export default function HardwareConnectivityMessage({
           ) : (
             <>
               {t('hardwareWalletConnectivityNotConnected', ['Ledger'])}{' '}
-              <a href="javascript:;" onClick={onClick}>
+              <button
+                className="hardware-connectivity-message__button"
+                onClick={onClick}
+              >
                 {t('hardwareWalletConnectivityNotConnectedConversion')}
-              </a>
+              </button>
             </>
           )
         }
