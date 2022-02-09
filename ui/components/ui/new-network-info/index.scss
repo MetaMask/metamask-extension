@@ -29,9 +29,6 @@
 
   &__subtitle {
     height: 17px;
-    text-align: center;
-    margin-top: 24px;
-    margin-bottom: 24px;
   }
 
   &__bullet-paragraph {
@@ -42,10 +39,16 @@
     }
   }
 
+  &__token-show-up {
+    display: inline;
+  }
+
   &__button {
-    color: var(--primary-1);
-    font-size: 0.75rem;
     display: initial;
     padding: 0;
+  }
+
+  &__manually-add-tokens {
+    display: inline;
   }
 }

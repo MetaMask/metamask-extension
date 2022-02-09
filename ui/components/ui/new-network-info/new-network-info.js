@@ -121,18 +121,19 @@ const NewNetworkInfo = () => {
         variant={TYPOGRAPHY.H7}
         color={COLORS.BLACK}
         fontWeight={FONT_WEIGHT[700]}
+        align={TEXT_ALIGN.CENTER}
         className="new-network-info__subtitle"
+        margin={[6, 0, 0, 0]}
       >
         {t('thingsToKeep')}
       </Typography>
-      <Box marginRight={4} marginLeft={5}>
+      <Box marginRight={4} marginLeft={5} marginTop={6}>
         {currentProvider.providerTicker ? (
           <Box
             display={DISPLAY.FLEX}
             alignItems={ALIGN_ITEMS.CENTER}
             paddingBottom={2}
             marginBottom={2}
-            width={BLOCK_SIZES.ELEVEN_TWELFTHS}
             className="new-network-info__bullet-paragraph"
           >
             <Box marginRight={4} color={COLORS.BLACK}>
@@ -193,23 +194,29 @@ const NewNetworkInfo = () => {
           </Typography>
         </Box>
         {!autoDetectToken || !tokenDetectionSupported ? (
-          <Box
-            display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            width={BLOCK_SIZES.ELEVEN_TWELFTHS}
-          >
+          <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
             <Box marginRight={4} color={COLORS.BLACK}>
               &bull;
             </Box>
-            <Box width={BLOCK_SIZES.FOUR_FIFTHS}>
-              <Typography variant={TYPOGRAPHY.H7} color={COLORS.BLACK}>
+            <Box>
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.BLACK}
+                className="new-network-info__token-show-up"
+              >
                 {t('tokenShowUp')}{' '}
                 <Button
                   type="link"
                   onClick={addTokenManually}
                   className="new-network-info__button"
                 >
-                  {t('clickToManuallyAdd')}
+                  <Typography
+                    variant={TYPOGRAPHY.H7}
+                    color={COLORS.PRIMARY1}
+                    className="new-network-info__manually-add-tokens"
+                  >
+                    {t('clickToManuallyAdd')}
+                  </Typography>
                 </Button>
               </Typography>
             </Box>
