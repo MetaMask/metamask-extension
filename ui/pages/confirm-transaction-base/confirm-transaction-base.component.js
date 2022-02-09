@@ -68,6 +68,8 @@ import HardwareConnectivityMessage from './hardware-connectivity/hardware-connec
 import TransactionAlerts from './transaction-alerts';
 import HardwareConnectivityContent from './hardware-connectivity/hardware-connectivity-content';
 
+const HARDWARE_CHECK_INTERVAL = 2000;
+
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
 
@@ -210,7 +212,7 @@ export default class ConfirmTransactionBase extends Component {
     this.pollLedgerReady();
     const intervalId = setInterval(() => {
       this.pollLedgerReady();
-    }, 2000);
+    }, HARDWARE_CHECK_INTERVAL);
     this.setState({ pollingIntervalId: intervalId });
   }
 

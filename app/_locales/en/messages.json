@@ -1416,6 +1416,15 @@
   "hardware": {
     "message": "Hardware"
   },
+  "hardwareConnectivityLedgerInstructions1": {
+    "message": "Plug in your Ledger"
+  },
+  "hardwareConnectivityLedgerInstructions2": {
+    "message": "Enter your passcode"
+  },
+  "hardwareConnectivityLedgerInstructions3": {
+    "message": "Open the Ethereum app"
+  },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
