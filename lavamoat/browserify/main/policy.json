@@ -1813,6 +1813,16 @@
         "safe-event-emitter": true
       }
     },
+    "eth-eip712-util-browser": {
+      "globals": {
+        "intToBuffer": true
+      },
+      "packages": {
+        "bn.js": true,
+        "buffer": true,
+        "js-sha3": true
+      }
+    },
     "eth-ens-namehash": {
       "globals": {
         "name": "write"
@@ -2067,11 +2077,6 @@
         "@ethersproject/wordlists": true
       }
     },
-    "ethers-eip712": {
-      "packages": {
-        "ethers": true
-      }
-    },
     "ethjs": {
       "globals": {
         "clearInterval": true,
@@ -2288,8 +2293,7 @@
         "buffer": true,
         "crc-32": true,
         "elliptic": true,
-        "ethers": true,
-        "ethers-eip712": true,
+        "eth-eip712-util-browser": true,
         "js-sha3": true,
         "rlp-browser": true,
         "secp256k1": true,
@@ -3669,7 +3673,6 @@
         "document": true,
         "jQuery": true,
         "localStorage": true,
-        "location": true,
         "navigator": true,
         "postMessage": true,
         "removeEventListener": true,
