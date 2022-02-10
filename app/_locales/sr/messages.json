@@ -286,12 +286,6 @@
   "details": {
     "message": "Детаљи"
   },
-  "directDepositEther": {
-    "message": "Direktno deponujte Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ako već imate neki Ether, najbrži način da preuzmete Ether u svoj novi novčanik jeste direktnim deponovanjem."
-  },
   "done": {
     "message": "Gotovo"
   },

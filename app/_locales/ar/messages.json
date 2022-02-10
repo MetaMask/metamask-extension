@@ -297,12 +297,6 @@
   "details": {
     "message": "التفاصيل"
   },
-  "directDepositEther": {
-    "message": "إيداع مباشرة لعملة الأثير"
-  },
-  "directDepositEtherExplainer": {
-    "message": "إذا كان لديك بالفعل بعض الأثير، فإن أسرع طريقة للحصول على الأثير في محفظتك الجديدة عن طريق الإيداع المباشر."
-  },
   "done": {
     "message": "تم"
   },
