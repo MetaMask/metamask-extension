@@ -36,12 +36,20 @@
     }
 
     &__content {
-      padding: 16px;
+      padding: 12px 18px;
       display: flex;
       flex-flow: row wrap;
       align-items: center;
       position: relative;
       z-index: 201;
+
+      &__title {
+        @include H4;
+
+        @media screen and (min-width: $break-large) {
+          @include H6;
+        }
+      }
 
       &__description {
         display: none;
