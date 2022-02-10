@@ -721,12 +721,6 @@
   "details": {
     "message": "Ayrıntılar"
   },
-  "directDepositEther": {
-    "message": "Direk Ether Yatırma"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Eğer çoktan Etheriniz varsa, yeni hesabınıza Ether aktarmanın en kolay yolu direk yatırmadır."
-  },
   "disconnect": {
     "message": "Bağlantıyı kes"
   },

@@ -721,12 +721,6 @@
   "details": {
     "message": "Detail"
   },
-  "directDepositEther": {
-    "message": "Deposit Ether Secara Langsung"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jika Anda sudah memiliki beberapa Ether, cara tercepat untuk mendapatkan Ether di dompet baru Anda adalah dengan deposit langsung."
-  },
   "disconnect": {
     "message": "Putuskan koneksi"
   },

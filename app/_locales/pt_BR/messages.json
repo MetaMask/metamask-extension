@@ -525,11 +525,9 @@
   "details": {
     "message": "Detalhes"
   },
-  "directDepositEther": {
-    "message": "Depositar ether diretamente"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Se você já tiver alguns ethers, a forma mais rápida de colocar ethers na sua nova carteira é por depósito direto."
+  "disabledGasOptionToolTipMessage": {
+    "message": "“$1” está desativado porque não satisfaz o aumento mínimo de 10% em relação à taxa de gás original.",
+    "description": "$1 is gas estimate type which can be market or aggressive"
   },
   "disconnect": {
     "message": "Desconectar"

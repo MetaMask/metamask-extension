@@ -162,12 +162,6 @@
   "details": {
     "message": "Detay yo"
   },
-  "directDepositEther": {
-    "message": "Dirèkteman Depo Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si ou deja gen kèk Ether, fason ki pi rapid yo ka resevwa Ether nan nouvo Wallet ou pa depo dirèk."
-  },
   "done": {
     "message": "Fini"
   },

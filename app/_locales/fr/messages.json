@@ -721,12 +721,6 @@
   "details": {
     "message": "Détails"
   },
-  "directDepositEther": {
-    "message": "Dépôt direct d'Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si vous avez déjà de l'Ether, le moyen le plus rapide d'obtenir des Ether dans votre nouveau portefeuille est par dépôt direct."
-  },
   "disconnect": {
     "message": "Déconnecter"
   },

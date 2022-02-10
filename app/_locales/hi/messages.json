@@ -721,12 +721,6 @@
   "details": {
     "message": "विवरण"
   },
-  "directDepositEther": {
-    "message": "सीधे Ether जमा करें"
-  },
-  "directDepositEtherExplainer": {
-    "message": "यदि आपके पास पहले से ही कुछ Ether है, तो सीधे जमा करना आपके नए वॉलेट में Ether पाने का सबसे तेज़ तरीका है।"
-  },
   "disconnect": {
     "message": "डिस्कनेक्ट करें"
   },
