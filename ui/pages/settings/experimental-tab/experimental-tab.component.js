@@ -133,10 +133,11 @@ export default class ExperimentalTab extends PureComponent {
                     name: 'Enabled/Disable OpenSea',
                   },
                 });
-                setOpenSeaEnabled(!value);
-                if (value && !useCollectibleDetection) {
-                  setUseCollectibleDetection(true);
+                // value is positive when being toggled off
+                if (value && useCollectibleDetection) {
+                  setUseCollectibleDetection(false);
                 }
+                setOpenSeaEnabled(!value);
               }}
               offLabel={t('off')}
               onLabel={t('on')}
