@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useGasFeeContext } from '../contexts/gasFee';
@@ -18,23 +18,20 @@ export const useTransactionEventFragment = () => {
     }),
   );
 
-  useEffect(() => {
-    if (!fragment && transaction) {
-      createTransactionEventFragment(
-        transaction.id,
-        TRANSACTION_EVENTS.APPROVED,
-      );
-    }
-  }, [fragment, transaction]);
-
   const updateTransactionEventFragment = useCallback(
-    (params) => {
-      if (!transaction) {
+    async (params) => {
+      if (!transaction || !transaction.id) {
         return;
+      }
+      if (!fragment) {
+        await createTransactionEventFragment(
+          transaction.id,
+          TRANSACTION_EVENTS.APPROVED,
+        );
       }
       updateEventFragment(`transaction-added-${transaction.id}`, params);
     },
-    [transaction],
+    [fragment, transaction],
   );
 
   return {
