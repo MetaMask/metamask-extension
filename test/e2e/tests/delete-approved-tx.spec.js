@@ -11,7 +11,7 @@ describe('Delete approved but not submitted transaction', function () {
       },
     ],
   };
-  it('should navigate the unapproved transactions', async function () {
+  it('should delete the approved but not submitted transaction', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -23,6 +23,11 @@ describe('Delete approved but not submitted transaction', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+
+        await driver.clickElement({
+          text: 'Activity',
+          tag: 'button',
+        });
 
         await driver.findElements('.transaction-list__pending-transactions');
         await driver.waitForSelector(
