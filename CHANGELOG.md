@@ -92,6 +92,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adding user setting option for EIP-1559 V2 ([#13242](https://github.com/MetaMask/metamask-extension/pull/13242))
 - Update Bug Report issue template ([#13267](https://github.com/MetaMask/metamask-extension/pull/13267))
 - Remove unused localized messages ([#13272](https://github.com/MetaMask/metamask-extension/pull/13272))
+## [10.9.2]
+### Fixed
+- Prevent errors on the swaps "View Quote" screen that can occur if the swaps API returns incorrect refund and max gas fees on some test networks ([#13511](https://github.com/MetaMask/metamask-extension/pull/13511))
+- Prevent errors on startup in Chrome Versions earlier than 69, caused by use of unsupported browser `Array.prototype.flat` method ([#13520](https://github.com/MetaMask/metamask-extension/pull/13520))
+
 
 ## [10.9.1]
 ### Fixed
@@ -2780,6 +2785,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...HEAD
 [10.10.0]: https://github.com/MetaMask/metamask-extension/compare/v10.9.1...v10.10.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.9.2...HEAD
+[10.9.2]: https://github.com/MetaMask/metamask-extension/compare/v10.9.1...v10.9.2
 [10.9.1]: https://github.com/MetaMask/metamask-extension/compare/v10.9.0...v10.9.1
 [10.9.0]: https://github.com/MetaMask/metamask-extension/compare/v10.8.2...v10.9.0
 [10.8.2]: https://github.com/MetaMask/metamask-extension/compare/v10.8.1...v10.8.2
