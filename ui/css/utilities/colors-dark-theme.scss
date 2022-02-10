@@ -1,0 +1,57 @@
+@import './colors-brand.scss';
+
+/**
+ * Dark Theme Colors
+ * Colors for dark theme
+ */
+
+:root.dark {
+  /** General UI */
+  //background
+  --color-background-default: var(--brand-colors-grey-grey800);
+  --color-background-alternative: var(--brand-colors-grey-grey900);
+  //text
+  --color-text-default: var(--brand-colors-white-white000);
+  --color-text-alternative: var(--brand-colors-grey-grey030);
+  --color-text-muted: var(--brand-colors-grey-grey100);
+  //border
+  --color-border-default: --brand-colors-grey-grey300;
+  --color-border-muted: var(--brand-colors-grey-grey700);
+  //overlay
+  --color-overlay-default: hsla(210, 8%, 15%, 0.9);
+  --color-overlay-inverse: var(--brand-colors-white-white010);
+
+  /** User Actions */
+  //primary
+  --color-primary-default: var(--brand-colors-blue-blue500);
+  --color-primary-alternative: var(--brand-colors-blue-blue600);
+  --color-primary-muted: var(--brand-colors-blue-blue100);
+  --color-primary-inverse: var(--brand-colors-white-white010);
+  --color-primary-disabled: hsla(205, 97%, 43%, 0.5);
+
+  // State
+  //error
+  --color-error-default: var(--brand-colors-red-red500);
+  --color-error-alternative: var(--brand-colors-red-red600);
+  --color-error-muted: hsla(355, 68%, 90%, 1);
+  --color-error-inverse: var(--brand-colors-white-white010);
+  --color-error-disabled: hsla(354, 66%, 54%, 0.5);
+  //warning
+  --color-warning-default: var(--brand-colors-yellow-yellow500);
+  --color-warning-alternative: var(--brand-colors-yellow-yellow600);
+  --color-warning-muted: var(--brand-colors-yellow-yellow100);
+  --color-warning-inverse: var(--brand-colors-grey-grey900);
+  --color-warning-disabled: hsla(46, 100%, 62%, 0.5);
+  //success
+  --color-success-default: var(--brand-colors-green-green500);
+  --color-success-alternative: hsla(134, 62%, 31%, 1);
+  --color-success-muted: var(--brand-colors-green-green100);
+  --color-success-inverse: var(--brand-colors-white-white010);
+  --color-success-disabled: hsla(134, 61%, 41%, 1, 0.5);
+  //info
+  --color-info-default: var(--brand-colors-blue-blue500);
+  --color-info-alternative: var(--brand-colors-blue-blue600);
+  --color-info-muted: var(--brand-colors-blue-blue100);
+  --color-info-inverse: var(--brand-colors-white-white010);
+  --color-info-disabled: hsla(205, 97%, 43%, 0.5);
+}

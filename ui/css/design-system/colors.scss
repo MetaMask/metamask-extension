@@ -1,4 +1,65 @@
 $color-map: (
+    /** General UI */
+  //background
+  'color-background-default': --color-background-default,
+  'color-background-alternative': --color-background-alternative,
+  //text
+  'color-text-default': --color-text-default,
+  'color-text-alternative': --color-text-alternative,
+  'color-text-muted': --color-text-muted,
+  //border
+  'color-border-default': --color-border-default,
+  'color-border-muted': --color-border-muted,
+  //overlay
+  'color-overlay-default': --color-overlay-default,
+  'color-overlay-inverse': --color-overlay-inverse,
+
+  /** User Actions */
+  //primary
+  'color-primary-default': --color-primary-default,
+  'color-primary-alternative': --color-primary-alternative,
+  'color-primary-muted': --color-primary-muted,
+  'color-primary-inverse': --color-primary-inverse,
+  'color-primary-disabled': --color-primary-disabled,
+
+  // State
+  //error
+  'color-error-default': --color-error-default,
+  'color-error-alternative': --color-error-alternative,
+  'color-error-muted': --color-error-muted,
+  'color-error-inverse': --color-error-inverse,
+  'color-error-disabled': --color-error-disabled,
+  //warning
+  'color-warning-default': --color-warning-default,
+  'color-warning-alternative': --color-warning-alternative,
+  'color-warning-muted': --color-warning-muted,
+  'color-warning-inverse': --color-warning-inverse,
+  'color-warning-disabled': --color-warning-disabled,
+  //success
+  'color-success-default': --color-success-default,
+  'color-success-alternative': --color-success-alternative,
+  'color-success-muted': --color-success-muted,
+  'color-success-inverse': --color-success-inverse,
+  'color-success-disabled': --color-success-disabled,
+  //info
+  'color-info-default': --color-info-default,
+  'color-info-alternative': --color-info-alternative,
+  'color-info-muted': --color-info-muted,
+  'color-info-inverse': --color-info-inverse,
+  'color-info-disabled': --color-info-disabled,
+
+  //networks
+  'mainnet': --mainnet,
+  'ropsten': --ropsten,
+  'kovan': --kovan,
+  'rinkeby': --rinkeby,
+  'goerli': --goerli,
+  'localhost': --localhost,
+  'transparent': transparent,
+  'flask-purple': --flask-purple,
+  /**
+  * !!!DEPRECATED COLORS!!!
+  */
   'ui-1': --ui-1,
   'ui-2': --ui-2,
   'ui-3': --ui-3,
@@ -23,12 +84,4 @@ $color-map: (
   'success-1': --success-1,
   'success-2': --success-2,
   'success-3': --success-3,
-  'mainnet': --mainnet,
-  'ropsten': --ropsten,
-  'kovan': --kovan,
-  'rinkeby': --rinkeby,
-  'goerli': --goerli,
-  'localhost': --localhost,
-  'transparent': transparent,
-  'flask-purple': --flask-purple
 );

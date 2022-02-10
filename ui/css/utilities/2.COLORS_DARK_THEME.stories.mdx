@@ -1,0 +1,248 @@
+import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs';
+
+<Meta title="Design Tokens / Color / Dark Theme Colors" />
+
+# Dark Theme Colors
+
+Dark theme colors for MetaMask UI. They have the same name as Light Theme Colors but different values. The root `className` is then changed to `dark-theme` which updates the values of the css variables. If you are using the Light Theme Colors for their intended purpose your UI will be dark theme compatible. These are mostly here for reference.
+
+### General UI
+
+#### Background
+
+Background can be used for neutral, generally larger components that act as the background for the rest of the color styles.
+
+<ColorPalette>
+  <ColorItem
+    title="var(--color-background-default)"
+    subtitle="text.alternative should be used for all general text used on background.default or background.alternative that takes less priority in the information hierarchy than text.default"
+    colors={['hsla(210, 8%, 15%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-background-alternative)"
+    subtitle="text.default should be used for all general text used on background.default or background.alternative that takes main priority in the information hierarchy."
+    colors={['hsla(210, 9%, 9%, 1)']}
+  />
+</ColorPalette>
+<br />
+
+#### Text
+
+<ColorPalette>
+  <ColorItem
+    title="var(--color-text-default)"
+    subtitle="background.default should be used as the default background color for any neutral type components."
+    colors={['hsla(0, 0%, 100%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-text-alternative)"
+    subtitle="background.alternative should be used as an alternative background for any neutral type components that require some slight contrast to background.default"
+    colors={['hsla(210, 25%, 98%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-text-muted)"
+    subtitle="text.muted should be used for all low priority text used on background.default or background.alternative. These could also include placeholder or inactive text. It will also not meet AAA or AA accessibility standards."
+    colors={['hsla(210, 8%, 85%, 1)']}
+  />
+</ColorPalette>
+<br />
+
+#### Border
+
+<ColorPalette>
+  <ColorItem
+    title="var(--color-border-default)"
+    subtitle="border.default should be used for all neutral component border colors such as cards or inputs in default state."
+    colors={['hsla(212, 8%, 65%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-border-muted)"
+    subtitle="border.muted should be used for any borders with low contrast or subtle definition like dividers."
+    colors={['hsla(213, 9%, 25%, 1)']}
+  />
+</ColorPalette>
+<br />
+
+#### Overlay
+
+Overlay should be used for any overlays that use opacity
+
+<ColorPalette>
+  <ColorItem
+    title="var(--color-overlay-default)"
+    subtitle="overlay.default should be used for all general overlay backgrounds"
+    colors={['hsla(210, 8%, 15%, .9)']}
+  />
+  <ColorItem
+    title="var(--color-overlay-inverse)"
+    subtitle="overlay.inverse should be used only as the foreground element on top of overlay.default used for text or icons"
+    colors={['hsla(0, 0%, 99%, 1)']}
+  />
+</ColorPalette>
+<br />
+
+### User Actions
+
+#### Primary
+
+<ColorPalette>
+  <ColorItem
+    title="var(--color-primary-default)"
+    subtitle="primary.default should be used for all primary action components such as buttons or links."
+    colors={['hsla(205, 97%, 43%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-primary-alternative)"
+    subtitle="primary.alternative should be used as an alternative to primary.default for things such as hover states."
+    colors={['hsla(205, 98%, 33%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-primary-muted)"
+    subtitle="primary.muted is a very low contrasting primary variant for things such as alert backgrounds. primary.muted and primary.inverse should not be used together in a foreground and background combination"
+    colors={['hsla(206, 98%, 83%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-primary-inverse)"
+    subtitle="primary.inverse should be used only as the foreground element on top of primary.default and primary.alternative. It is intended to be the most contrasting color to primary.default. It should meet all AA and AAA accessibility standards such as the text or icon of a primary button."
+    colors={['hsla(0, 0%, 99%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-primary-disabled)"
+    subtitle="primary.disabled should be used for all disabled primary action components such as buttons or links."
+    colors={['hsla(205, 97%, 43%, .5)']}
+  />
+</ColorPalette>
+<br />
+
+### States
+
+#### Error
+
+<ColorPalette>
+  <ColorItem
+    title="var(--color-error-default)"
+    subtitle="error.default should be used for all error or critical action components such as buttons, icons or messages on background.default or background.alternative."
+    colors={['hsla(354, 66%, 54%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-error-alternative)"
+    subtitle="error.alternative should be used as an alternative to error.default for things such as hover states"
+    colors={['hsla(354, 67%, 44%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-error-muted)"
+    subtitle="error.muted is a very low contrasting error variant for things such as alert backgrounds. error.muted and error.inverse should not be used together in a foreground and background combination"
+    colors={['hsla(355, 68%, 90%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-error-inverse)"
+    subtitle="error.inverse should be used only as the foreground element on top of error.default and error.alternative. It is intended to be the most contrasting color to error.default. It should meet all AA and AAA accessibility standards such as the text of a critical action button."
+    colors={['hsla(0, 0%, 99%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-error-disabled)"
+    subtitle="error.disabled should be used for all disabled critical action components such as buttons"
+    colors={['hsla(354, 66%, 54%, .5)']}
+  />
+</ColorPalette>
+<br />
+
+#### Warning
+
+<ColorPalette>
+  <ColorItem
+    title="var(--color-warning-default)"
+    subtitle="warning.default should be used for all warning or critical action components such as buttons, icons or messages on background.default or background.alternative."
+    colors={['hsla(46, 100%, 62%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-warning-alternative)"
+    subtitle="warning.alternative should be used as an alternative to warning.default for things such as hover states"
+    colors={['hsla(46, 100%, 52%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-warning-muted)"
+    subtitle="warning.muted is a very low contrasting warning variant for things such as alert backgrounds. warning.muted and warning.inverse should not be used together in a foreground and background combination"
+    colors={['hsla(56, 94%, 93%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-warning-inverse)"
+    subtitle="warning.inverse should be used only as the foreground element on top of warning.default and warning.alternative. It is intended to be the most contrasting color to warning.default. It should meet all AA and AAA accessibility standards"
+    colors={['hsla(210, 9%, 9%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-warning-disabled)"
+    subtitle="warning.disabled should be used for all disabled component colors such as buttons"
+    colors={['hsla(46, 100%, 62%, .5)']}
+  />
+</ColorPalette>
+<br />
+
+#### Success
+
+<ColorPalette>
+  <ColorItem
+    title="var(--color-success-default)"
+    subtitle="success.default should be used for all success states such as icons messages."
+    colors={['hsla(134, 61%, 41%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-success-alternative)"
+    subtitle="success.alternative should be used as an alternative to success.default for things such as hover states"
+    colors={['hsla(134, 62%, 31%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-success-muted)"
+    subtitle="success.muted is a very low contrasting success variant for things such as alert backgrounds. success.muted and success.inverse should not be used together in a foreground and background combination"
+    colors={['hsla(133, 100%, 92%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-success-inverse)"
+    subtitle="success.inverse should be used only as the foreground element on top of success.default and success.alternative. It is intended to be the most contrasting color to success.default. It should meet all AA and AAA accessibility standards"
+    colors={['hsla(0, 0%, 99%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-success-disabled)"
+    subtitle="success.disabled should be used for all disabled success component colors such as buttons"
+    colors={['hsla(134, 61%, 41%, 1, .5)']}
+  />
+</ColorPalette>
+<br />
+
+#### Info
+
+<ColorPalette>
+  <ColorItem
+    title="var(--color-info-default)"
+    subtitle="info.default should be used for all info action components such as buttons or links."
+    colors={['hsla(205, 97%, 43%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-info-alternative)"
+    subtitle="info.alternative should be used as an alternative to info.default for things such as hover states"
+    colors={['hsla(205, 98%, 33%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-info-muted)"
+    subtitle="info.muted is a very low contrasting info variant for things such as alert backgrounds. info.muted and info.inverse should not be used together in a foreground and background combination"
+    colors={['hsla(206, 98%, 83%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-info-inverse)"
+    subtitle="info.inverse should be used only as the foreground element on top of info.default and info.alternative. It is intended to be the most contrasting color to info.default. It should meet all AA and AAA accessibility standards such as the text or icon of a info button."
+    colors={['hsla(0, 0%, 99%, 1)']}
+  />
+  <ColorItem
+    title="var(--color-info-disabled)"
+    subtitle="info.disabled should be used for all disabled info action components such as buttons or links."
+    colors={['hsla(205, 97%, 43%, .5)']}
+  />
+</ColorPalette>
+
+<br />
+
+## References
+
+- [Figma Brand Colors Library](https://www.figma.com/file/cBAUPFMnbv6tHR1J8KvBI2/Brand-Colors?node-id=0%3A1)(internal use only)
+- [Figma Light Theme Colors Library](https://www.figma.com/file/kdFzEC7xzSNw7cXteqgzDW/Light-Theme-Colors?node-id=0%3A1)(internal use only)
+- [Figma Dark Theme Colors Library](https://www.figma.com/file/rLKsoqpjyoKauYnFDcBIbO/Dark-Theme-Colors?node-id=0%3A1)(internal use only)

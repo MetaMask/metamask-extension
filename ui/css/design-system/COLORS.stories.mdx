@@ -1,0 +1,92 @@
+import { Meta } from '@storybook/addon-docs';
+import ActionaleMessage from '../../components/ui/actionable-message';
+import designTokenDiagramImage from '../../../.storybook/images/design.token.graphic.svg';
+
+<Meta title="Design Tokens / Color / Getting Started" />
+
+# Color
+
+Color is used to express style and communicate meaning.
+
+<ActionaleMessage
+  type="warning"
+  message="We are currently in the process of consolidating all of our colors, making them accessible and enabling theming. The guide below will help you to use colors in your styles and components for MetaMask UI"
+/>
+
+<br />
+
+## Token Tiers
+
+We follow a 3 tiered system for color design tokens and css variables.
+
+<div style={{ textAlign: 'center', backgroundColor: '#F2F4F6', padding: 32 }}>
+  <img width="80%" src={designTokenDiagramImage} />
+</div>
+
+<br />
+<br />
+
+### **Brand colors** (tier 1)
+
+These colors **SHOULD NOT** be used in your styles directly they are used as a reference for the [Light Theme Colors](/story/design-tokens-color-light-theme-colors--page). Brand colors should just keep track of every color used in our app.
+
+### **Light & Dark Theme Colors** (tier 2)
+
+These colors are color agnostic, semantically neutral and theme compatible design tokens that you can use in your code and styles. Please refer to the description of each token for it's intended purpose. [See Light Theme Colors](/story/design-tokens-color-light-theme-colors--page)
+
+### **Component colors** (tier 3)
+
+Another level of abstraction is component colors that you can use at a component specific level
+
+## Takeaways
+
+- Do not use static HEX values in your code. Use the [Light Theme Colors](/story/design-tokens-color-light-theme-colors--page). If one does not exist for your use case [create an issue](https://github.com/MetaMask/metamask-extension/issues/new) and tag it with a `design-system` label.
+- Make sure the design token you are using is for it's intended purpose. Please refer to the description of each token.
+
+### ❌ Don't do this
+
+Don't use static hex values or brand color tokens in your code.
+
+```css
+/**
+* Don't do this 
+* Static hex values create inconsistency and will break UI when using dark mode 
+**/
+.card {
+  background-color: #ffffff;
+  color: #24272a;
+}
+
+/**
+* Don't do this
+* Not theme compatible and will break UI when using dark theme 
+**/
+.card {
+  background-color: var(--brand-colors-white-white000);
+  color: var(--brand-colors-grey-grey800);
+}
+```
+
+### ✅ Do this
+
+Do use component tiered and [Light Theme Colors](/story/design-tokens-color-light-theme-colors--page) in your styles and code
+
+```css
+.card {
+  --color-card-background: var(--color-background-default);
+  --color-card-text: var(--color-text-default);
+
+  background-color: var(--color-card-background);
+  color: var(--color-card-text);
+}
+```
+
+### Next 👉 [Light Theme Colors](/story/design-tokens-color-light-theme-colors--page)
+
+<br />
+
+## References
+
+- [Figma Brand Colors Library](https://www.figma.com/file/cBAUPFMnbv6tHR1J8KvBI2/Brand-Colors?node-id=0%3A1)(internal use only)
+- [Figma Light Theme Colors Library](https://www.figma.com/file/kdFzEC7xzSNw7cXteqgzDW/Light-Theme-Colors?node-id=0%3A1)(internal use only)
+- [Figma Dark Theme Colors Library](https://www.figma.com/file/rLKsoqpjyoKauYnFDcBIbO/Dark-Theme-Colors?node-id=0%3A1)(internal use only)

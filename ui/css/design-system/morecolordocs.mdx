@@ -1,0 +1,47 @@
+## 3 Tiered system
+
+We follow a 3 tiered system for color design tokens and css variables.
+
+- **Brand colors** (tier 1) these colors **SHOULD NOT** be used in your styles directly they are used as a reference to our current brand colors.
+
+```
+/**
+ * !!!DO NOT USE BRAND COLORS DIRECTLY IN YOUR CODE!!!
+ * Instead you should be using the theme variables in
+ * ./colors-light-theme.scss that way your styles will
+ * be fully theme compatible if used as they're intended
+ */
+
+:root {
+  --brand-colors-white-white000: hsla(0, 0%, 100%, 1);
+  --brand-colors-white-white010: hsla(0, 0%, 99%, 1);
+  --brand-colors-grey-grey030: hsla(210, 25%, 98%, 1);
+```
+
+- **Theme colors** (tier 2) these colors are color agnostic, semantically neutral and theme compatible css variables that you can use in your code and styles liberally.
+
+```
+/**
+ * Light Theme Colors
+ * Use these css variables liberally in your code.
+ * This will insure theme compatibility
+ */
+
+:root {
+  /** General UI */
+  //background
+  --color-background-default: var(--brand-colors-white-white000);
+  --color-background-alternative: var(--brand-colors-grey-grey040);
+  //text
+  --color-text-default: var(--brand-colors-grey-grey800);
+  --color-text-alternative: var(--brand-colors-grey-grey600);
+  --color-text-muted: var(--brand-colors-grey-grey200);
+  //border
+  --color-border-default: var(--brand-colors-grey-grey200);
+  --color-border-muted: var(--brand-colors-grey-grey100);
+  //overlay
+  --color-overlay-default: hsla(210, 8%, 15%, 0.9);
+  --color-overlay-inverse: var(--brand-colors-white-white010);
+```
+
+- **Component colors** (tier 3) TBC

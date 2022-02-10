@@ -1,0 +1,69 @@
+/**
+ * !!!DO NOT USE BRAND COLORS DIRECTLY IN YOUR CODE!!!
+ * Instead you should be using the theme variables in 
+ * ./colors-light-theme.scss that way your styles will
+ * be fully theme compatible if used as they're intended
+ */
+
+:root {
+  --brand-colors-white-white000: hsla(0, 0%, 100%, 1);
+  --brand-colors-white-white010: hsla(0, 0%, 99%, 1);
+  --brand-colors-grey-grey030: hsla(210, 25%, 98%, 1);
+  --brand-colors-grey-grey040: hsla(210, 18%, 96%, 1);
+  --brand-colors-grey-grey100: hsla(210, 8%, 85%, 1);
+  --brand-colors-grey-grey200: hsla(210, 8%, 75%, 1);
+  --brand-colors-grey-grey300: hsla(212, 8%, 65%, 1);
+  --brand-colors-grey-grey400: hsla(213, 8%, 55%, 1);
+  --brand-colors-grey-grey500: hsla(212, 8%, 45%, 1);
+  --brand-colors-grey-grey600: hsla(210, 8%, 35%, 1);
+  --brand-colors-grey-grey700: hsla(213, 9%, 25%, 1);
+  --brand-colors-grey-grey800: hsla(210, 8%, 15%, 1);
+  --brand-colors-grey-grey900: hsla(210, 9%, 9%, 1);
+  --brand-colors-blue-blue000: hsla(206, 100%, 96%, 1);
+  --brand-colors-blue-blue100: hsla(206, 98%, 83%, 1);
+  --brand-colors-blue-blue200: hsla(205, 97%, 73%, 1);
+  --brand-colors-blue-blue300: hsla(205, 97%, 63%, 1);
+  --brand-colors-blue-blue400: hsla(205, 98%, 53%, 1);
+  --brand-colors-blue-blue500: hsla(205, 97%, 43%, 1);
+  --brand-colors-blue-blue600: hsla(205, 98%, 33%, 1);
+  --brand-colors-blue-blue700: hsla(206, 97%, 23%, 1);
+  --brand-colors-blue-blue800: hsla(205, 97%, 13%, 1);
+  --brand-colors-blue-blue900: hsla(203, 100%, 3%, 1);
+  --brand-colors-orange-orange000: hsla(24, 88%, 97%, 1);
+  --brand-colors-orange-orange100: hsla(25, 92%, 90%, 1);
+  --brand-colors-orange-orange200: hsla(25, 92%, 80%, 1);
+  --brand-colors-orange-orange300: hsla(25, 93%, 70%, 1);
+  --brand-colors-orange-orange400: hsla(24, 93%, 60%, 1);
+  --brand-colors-orange-orange500: hsla(24, 93%, 50%, 1);
+  --brand-colors-orange-orange600: hsla(25, 93%, 40%, 1);
+  --brand-colors-orange-orange700: hsla(25, 94%, 30%, 1);
+  --brand-colors-orange-orange800: hsla(25, 92%, 20%, 1);
+  --brand-colors-orange-orange900: hsla(25, 92%, 10%, 1);
+  --brand-colors-green-green000: hsla(133, 60%, 97%, 1);
+  --brand-colors-green-green100: hsla(133, 100%, 92%, 1);
+  --brand-colors-green-green200: hsla(134, 62%, 81%, 1);
+  --brand-colors-green-green300: hsla(134, 61%, 71%, 1);
+  --brand-colors-green-green400: hsla(134, 61%, 61%, 1);
+  --brand-colors-green-green500: hsla(134, 61%, 41%, 1);
+  --brand-colors-green-green600: hsla(134, 62%, 31%, 1);
+  --brand-colors-green-green700: hsla(134, 62%, 21%, 1);
+  --brand-colors-green-green800: hsla(134, 63%, 11%, 1);
+  --brand-colors-green-green900: hsla(135, 60%, 4%, 1);
+  --brand-colors-red-red000: hsla(354, 63%, 97%, 1);
+  --brand-colors-red-red100: hsla(355, 68%, 90%, 1);
+  --brand-colors-red-red200: hsla(355, 67%, 84%, 1);
+  --brand-colors-red-red300: hsla(355, 66%, 74%, 1);
+  --brand-colors-red-red400: hsla(354, 67%, 64%, 1);
+  --brand-colors-red-red500: hsla(354, 66%, 54%, 1);
+  --brand-colors-red-red600: hsla(354, 67%, 44%, 1);
+  --brand-colors-red-red700: hsla(354, 66%, 34%, 1);
+  --brand-colors-red-red800: hsla(354, 67%, 24%, 1);
+  --brand-colors-red-red900: hsla(355, 66%, 14%, 1);
+  --brand-colors-yellow-yellow000: hsla(43, 100%, 99%, 1);
+  --brand-colors-yellow-yellow100: hsla(56, 94%, 93%, 1);
+  --brand-colors-yellow-yellow200: hsla(47, 100%, 89%, 1);
+  --brand-colors-yellow-yellow300: hsla(46, 100%, 82%, 1);
+  --brand-colors-yellow-yellow400: hsla(47, 100%, 72%, 1);
+  --brand-colors-yellow-yellow500: hsla(46, 100%, 62%, 1);
+  --brand-colors-yellow-yellow600: hsla(46, 100%, 52%, 1);
+}
