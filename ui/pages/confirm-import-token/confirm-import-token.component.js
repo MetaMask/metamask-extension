@@ -10,11 +10,15 @@ import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 
+const getTokenName = (name, symbol) => {
+  return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
+};
+
 const ConfirmImportToken = (props) => {
   const {
-    history,
-    clearPendingTokens,
     addTokens,
+    clearPendingTokens,
+    history,
     mostRecentOverviewPage,
     pendingTokens = {},
   } = props;
@@ -41,10 +45,6 @@ const ConfirmImportToken = (props) => {
       history.push(mostRecentOverviewPage);
     }
   }, [history, pendingTokens, mostRecentOverviewPage]);
-
-  const getTokenName = (name, symbol) => {
-    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
-  };
 
   return (
     <div className="page-container">
@@ -129,9 +129,9 @@ const ConfirmImportToken = (props) => {
 };
 
 ConfirmImportToken.propTypes = {
-  history: PropTypes.object,
-  clearPendingTokens: PropTypes.func,
   addTokens: PropTypes.func,
+  clearPendingTokens: PropTypes.func,
+  history: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
   pendingTokens: PropTypes.object,
 };
