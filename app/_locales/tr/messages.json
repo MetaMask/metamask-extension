@@ -709,12 +709,6 @@
   "details": {
     "message": "Ayrıntılar"
   },
-  "directDepositEther": {
-    "message": "Direct Deposit ile Ether Yatır"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Zaten bir miktar Etheriniz varsa, yeni cüzdanınıza Ether aktarmanın en kolay yolu direct deposit işlemidir."
-  },
   "disconnect": {
     "message": "Bağlantıyı kes"
   },

@@ -289,12 +289,6 @@
   "details": {
     "message": "Szczegóły"
   },
-  "directDepositEther": {
-    "message": "Zdeponuj Eter bezpośrednio"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jeśli już masz Eter, najszybciej umieścisz go w swoim nowym portfelu przy pomocy bezpośredniego depozytu."
-  },
   "done": {
     "message": "Gotowe"
   },

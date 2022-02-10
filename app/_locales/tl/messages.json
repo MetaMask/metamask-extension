@@ -709,12 +709,6 @@
   "details": {
     "message": "Mga Detalye"
   },
-  "directDepositEther": {
-    "message": "Direktang Mag-deposit ng Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Kung mayroon ka nang ilang Ether, ang pinakamabilis na paraan para makakuha ng Ether sa bago mong wallet ay sa pamamagitan ng direktang pag-deposit."
-  },
   "disconnect": {
     "message": "Idiskonekta"
   },
