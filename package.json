@@ -111,7 +111,7 @@
     "@metamask/contract-metadata": "^1.31.0",
     "@metamask/controllers": "^25.0.0",
     "@metamask/design-tokens": "^1.2.0",
-    "@metamask/eth-ledger-bridge-keyring": "^0.10.0",
+    "@metamask/eth-ledger-bridge-keyring": "MetaMask/eth-ledger-bridge-keyring#ledger-connect-status",
     "@metamask/eth-token-tracker": "^4.0.0",
     "@metamask/etherscan-link": "^2.1.0",
     "@metamask/iframe-execution-environment-service": "^0.9.0",
