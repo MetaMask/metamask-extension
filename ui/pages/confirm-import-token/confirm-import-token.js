@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   ASSET_ROUTE,
@@ -9,22 +10,22 @@ import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
 
 const getTokenName = (name, symbol) => {
   return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
 };
 
 const ConfirmImportToken = (props) => {
-  const {
-    addTokens,
-    clearPendingTokens,
-    history,
-    mostRecentOverviewPage,
-    pendingTokens = {},
-  } = props;
+  const { addTokens, clearPendingTokens, history } = props;
 
   const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
+
+  const mostRecentOverviewPage = useSelector((state) =>
+    getMostRecentOverviewPage(state),
+  );
+  const pendingTokens = useSelector((state) => state.metamask.pendingTokens);
 
   const tokenAddedEvent = (pendingToken) => {
     metricsEvent({
@@ -132,8 +133,6 @@ ConfirmImportToken.propTypes = {
   addTokens: PropTypes.func,
   clearPendingTokens: PropTypes.func,
   history: PropTypes.object,
-  mostRecentOverviewPage: PropTypes.string.isRequired,
-  pendingTokens: PropTypes.object,
 };
 
 export default ConfirmImportToken;
