@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import SiteOrigin from '../../ui/site-origin';
 import Box from '../../ui/box';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import SnapsAuthorshipPill from '../flask/snaps-authorship-pill';
 import {
   FLEX_DIRECTION,
   JUSTIFY_CONTENT,
 } from '../../../helpers/constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import SnapsAuthorshipPill from '../flask/snaps-authorship-pill';
 ///: END:ONLY_INCLUDE_IN
 
 export default class PermissionsConnectHeader extends Component {
