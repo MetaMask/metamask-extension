@@ -46,12 +46,13 @@ const AdvancedGasFeeGasLimit = () => {
     setErrorValue('gasLimit', error === 'editGasLimitLessThanMinimum');
   }, [gasLimit, minimumGasLimitDec, setGasLimitInContext, setErrorValue]);
 
-let errorMessage = ''
-if(gasLimitError){
-  errorMessage = gasLimitError === 'editGasLimitLessThanMinimum'
-      ? t(gasLimitError, [minimumGasLimitDec - 1]
-      : t(gasLimitError, [MAX_GAS_LIMIT_DEC]);
- }
+  let errorMessage = '';
+  if (gasLimitError) {
+    errorMessage =
+      gasLimitError === 'editGasLimitLessThanMinimum'
+        ? t(gasLimitError, [minimumGasLimitDec - 1])
+        : t(gasLimitError, [MAX_GAS_LIMIT_DEC]);
+  }
 
   if (isEditing) {
     return (
