@@ -8,9 +8,6 @@
   "about": {
     "message": "Informació"
   },
-  "aboutSettingsDescription": {
-    "message": "Versió, centre de suport, i informació de contacte"
-  },
   "acceleratingATransaction": {
     "message": "* Accelerar una transacció utilitzant un preu de gas més alt augmenta les possibilitats de ser processat més ràpidament per la xarxa, però no sempre es pot garantir."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Opcions Avançades"
-  },
-  "advancedSettingsDescription": {
-    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC"
   },
   "amount": {
     "message": "Quantitat"
@@ -416,9 +410,6 @@
   "gasUsed": {
     "message": "Gas utilitzat"
   },
-  "generalSettingsDescription": {
-    "message": "Conversió de divises, divisa principal, idioma, icones d'identificació única"
-  },
   "getEther": {
     "message": "Aconsegueix Ether"
   },
@@ -586,9 +577,6 @@
   },
   "networkName": {
     "message": "Nom de la xarxa"
-  },
-  "networkSettingsDescription": {
-    "message": "Afegeix i edita xarxes RPC a mida"
   },
   "networks": {
     "message": "Xarxes"
@@ -817,9 +805,6 @@
   },
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"
-  },
-  "securitySettingsDescription": {
-    "message": "Configuració de privacitat i frase de recuperació del moneder"
   },
   "seedPhrasePlaceholder": {
     "message": "Separa cada paraula amb un únic espai"
