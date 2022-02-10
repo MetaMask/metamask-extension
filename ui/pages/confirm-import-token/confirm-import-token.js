@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   ASSET_ROUTE,
@@ -11,16 +11,18 @@ import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { addTokens, clearPendingTokens } from '../../store/actions';
 
 const getTokenName = (name, symbol) => {
   return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
 };
 
 const ConfirmImportToken = (props) => {
-  const { addTokens, clearPendingTokens, history } = props;
+  const { history } = props;
 
   const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
 
   const mostRecentOverviewPage = useSelector((state) =>
     getMostRecentOverviewPage(state),
@@ -105,20 +107,21 @@ const ConfirmImportToken = (props) => {
             type="primary"
             large
             className="page-container__footer-button"
-            onClick={() => {
-              addTokens(pendingTokens).then(() => {
-                const pendingTokenValues = Object.values(pendingTokens);
-                pendingTokenValues.forEach((pendingToken) => {
-                  tokenAddedEvent(pendingToken);
-                });
-                clearPendingTokens();
-                const firstTokenAddress = pendingTokenValues?.[0].address?.toLowerCase();
-                if (firstTokenAddress) {
-                  history.push(`${ASSET_ROUTE}/${firstTokenAddress}`);
-                } else {
-                  history.push(mostRecentOverviewPage);
-                }
+            onClick={async () => {
+              await dispatch(addTokens(pendingTokens));
+
+              const pendingTokenValues = Object.values(pendingTokens);
+              pendingTokenValues.forEach((pendingToken) => {
+                tokenAddedEvent(pendingToken);
               });
+              dispatch(clearPendingTokens());
+
+              const firstTokenAddress = pendingTokenValues?.[0].address?.toLowerCase();
+              if (firstTokenAddress) {
+                history.push(`${ASSET_ROUTE}/${firstTokenAddress}`);
+              } else {
+                history.push(mostRecentOverviewPage);
+              }
             }}
           >
             {t('importTokensCamelCase')}
@@ -130,8 +133,6 @@ const ConfirmImportToken = (props) => {
 };
 
 ConfirmImportToken.propTypes = {
-  addTokens: PropTypes.func,
-  clearPendingTokens: PropTypes.func,
   history: PropTypes.object,
 };
 
