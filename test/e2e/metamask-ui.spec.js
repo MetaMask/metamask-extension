@@ -193,7 +193,7 @@ describe('MetaMask', function () {
       const restoreSeedLink = await driver.findClickableElement(
         '.unlock-page__link',
       );
-      assert.equal(await restoreSeedLink.getText(), 'Forgot Password?');
+      assert.equal(await restoreSeedLink.getText(), 'Forgot password?');
       await restoreSeedLink.click();
       await driver.delay(regularDelayMs);
 
