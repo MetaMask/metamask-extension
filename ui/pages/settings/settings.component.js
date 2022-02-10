@@ -223,8 +223,13 @@ class SettingsPage extends PureComponent {
           },
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
           {
+            icon: (
+              <img
+                src="images/experimental-icon.svg"
+                alt={t('snapsSettingsDescription')}
+              />
+            ),
             content: t('snaps'),
-            description: t('snapsSettingsDescription'),
             key: SNAPS_LIST_ROUTE,
           },
           ///: END:ONLY_INCLUDE_IN
