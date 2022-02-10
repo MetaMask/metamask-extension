@@ -7,91 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.10.0]
-### Uncategorized
-- Removing EIP_1559_V2 feature flag ([#13481](https://github.com/MetaMask/metamask-extension/pull/13481))
-- Sync `master` with `develop` ([#13492](https://github.com/MetaMask/metamask-extension/pull/13492))
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Adding Brazilian Portuguese translation ([#13470](https://github.com/MetaMask/metamask-extension/pull/13470))
-- Feat/hide 0 balances ([#13306](https://github.com/MetaMask/metamask-extension/pull/13306))
-- Adding metrics events for EIP-1559 V2 flow ([#13329](https://github.com/MetaMask/metamask-extension/pull/13329))
-- Use ActionableMessage for ConfirmAddSuggestionToken warnings ([#13402](https://github.com/MetaMask/metamask-extension/pull/13402))
-- #10168 - Fix to Can't open settings if browser zoom level > 100% part 2 ([#13460](https://github.com/MetaMask/metamask-extension/pull/13460))
-- Bump cached-path-relative from 1.0.2 to 1.1.0 ([#13424](https://github.com/MetaMask/metamask-extension/pull/13424))
-- changed icon to button for connected-sites-list ([#13476](https://github.com/MetaMask/metamask-extension/pull/13476))
-- Avoid repeating CSS color vars ([#13464](https://github.com/MetaMask/metamask-extension/pull/13464))
-- Yet more NFT UX cleanups ([#13435](https://github.com/MetaMask/metamask-extension/pull/13435))
-- Add TextArea to safe components list ([#13468](https://github.com/MetaMask/metamask-extension/pull/13468))
-- Capturing default gas estimates in txMeta and passing it to metrics ([#13385](https://github.com/MetaMask/metamask-extension/pull/13385))
-- Fixed multiple-notifications css ([#13469](https://github.com/MetaMask/metamask-extension/pull/13469))
-- Bump node-fetch from 2.6.1 to 2.6.7 ([#13397](https://github.com/MetaMask/metamask-extension/pull/13397))
-- add resolution for simple-get ([#13471](https://github.com/MetaMask/metamask-extension/pull/13471))
-- EIP-1559 V2 UI/UX improvements ([#13419](https://github.com/MetaMask/metamask-extension/pull/13419))
-- Revert "#10168 - Fix to Can't open settings if browser zoom level > 100% (#13281)" ([#13281](https://github.com/MetaMask/metamask-extension/pull/13281))
-- Added `subjectType` to `setupProviderConnection` and `setupUntrustedCommunication` ([#13437](https://github.com/MetaMask/metamask-extension/pull/13437))
-- Removed memo status from snap-settings-card ([#13458](https://github.com/MetaMask/metamask-extension/pull/13458))
-- lavamoat - @lavamoat/allow-scripts v2 ([#13428](https://github.com/MetaMask/metamask-extension/pull/13428))
-- Up year in License ([#13330](https://github.com/MetaMask/metamask-extension/pull/13330))
-- added extension changes from snaps branch ([#13433](https://github.com/MetaMask/metamask-extension/pull/13433))
-- batch fix misspelling ([#13449](https://github.com/MetaMask/metamask-extension/pull/13449))
+### Added
+- Enable toggle to turn on the new gas fee customization UI ([#13481](https://github.com/MetaMask/metamask-extension/pull/13481))
+    - Select between new 'Low', 'Market', and 'Aggressive' gas options
+    - Improved advanced gas fee editing
+    - Adds the ability to save custom gas values as defaults
+    - More informative tooltips about suggested gas options
+    - More information about the status of the network
 - Enable buying MATIC on Polygon, BNB on BSC, AVAX on Avalanche, FTM on Fantom, CELO on Celo, and respective stablecoins  on Transak ([#13398](https://github.com/MetaMask/metamask-extension/pull/13398))
-- Sync `master` with `develop` ([#13439](https://github.com/MetaMask/metamask-extension/pull/13439))
-- Fix policies
-- Merge remote-tracking branch 'origin/develop' into master-sync
-- Revert "Revert "New Crowdin translations by Github Action ([#13206](https://github.com/MetaMask/metamask-extension/pull/13206))
-- Fix className misspelling in `awaiting-swap.js `
-- More nft ux fixes ([#13388](https://github.com/MetaMask/metamask-extension/pull/13388))
-- EIP-1559 v2 - small fixes ([#13392](https://github.com/MetaMask/metamask-extension/pull/13392))
-- Move component into another folder ([#13380](https://github.com/MetaMask/metamask-extension/pull/13380))
-- Using new graph images for edit gas fee popover ([#13382](https://github.com/MetaMask/metamask-extension/pull/13382))
-- Bump @metamask/controllers from 25.0.0 to 25.1.0 ([#13399](https://github.com/MetaMask/metamask-extension/pull/13399))
-- Fix failing test:unit pipeline ([#13387](https://github.com/MetaMask/metamask-extension/pull/13387))
-- Update vulnerability ignore list ([#13390](https://github.com/MetaMask/metamask-extension/pull/13390))
-- Convert ConfirmAddSuggestedToken to a functional component + cleanup ([#13377](https://github.com/MetaMask/metamask-extension/pull/13377))
-- Feat: Label hardware wallets ([#13339](https://github.com/MetaMask/metamask-extension/pull/13339))
-- fix node-forge vulnerability ([#13389](https://github.com/MetaMask/metamask-extension/pull/13389))
-- Update phishing.html ([#13323](https://github.com/MetaMask/metamask-extension/pull/13323))
-- SRP copy-paste language ([#12012](https://github.com/MetaMask/metamask-extension/pull/12012))
-- Maintain leading whitespace in sig req window ([#13340](https://github.com/MetaMask/metamask-extension/pull/13340))
-- UI fixes in EIP-1559 V2 screens ([#13367](https://github.com/MetaMask/metamask-extension/pull/13367))
-- Fix for checkbox on advance gas fee modal ([#13366](https://github.com/MetaMask/metamask-extension/pull/13366))
-- Proper calculation of the gas limit ([#12784](https://github.com/MetaMask/metamask-extension/pull/12784))
 - Add German subtitles for SRP Video ([#13368](https://github.com/MetaMask/metamask-extension/pull/13368))
-- Fix typo in from-import-ui.spec.js ([#13369](https://github.com/MetaMask/metamask-extension/pull/13369))
-- NFT UX cleanup grab-bag ([#13352](https://github.com/MetaMask/metamask-extension/pull/13352))
-- Upgrade ganache - continued ([#13354](https://github.com/MetaMask/metamask-extension/pull/13354))
-- implement event fragments for tx controller ([#13331](https://github.com/MetaMask/metamask-extension/pull/13331))
-- Refactor currency input component and ensure currency toggle persists between settings ([#12813](https://github.com/MetaMask/metamask-extension/pull/12813))
-- Incorrect Rounding Down of Balance #10167 ([#13337](https://github.com/MetaMask/metamask-extension/pull/13337))
-- Update global link hover color from orange to blue (--Blue-400) ([#13344](https://github.com/MetaMask/metamask-extension/pull/13344))
-- Add modal with directions to re-add token as NFT ([#13291](https://github.com/MetaMask/metamask-extension/pull/13291))
-- Adding e2e test for edit gas fee modal ([#13303](https://github.com/MetaMask/metamask-extension/pull/13303))
-- Fixing warnings in unit test cases ([#13349](https://github.com/MetaMask/metamask-extension/pull/13349))
-- Create "inline" type for Button component ([#13304](https://github.com/MetaMask/metamask-extension/pull/13304))
-- Add error that redirects users to Import NFT page when they attempt to add an NFT on the Import Token page ([#13271](https://github.com/MetaMask/metamask-extension/pull/13271))
-- Adding support for EIP-1559 in E2E tests ([#13282](https://github.com/MetaMask/metamask-extension/pull/13282))
-- Fix issue with dapp suggested option being visible in edit gas fee popover even if dapp has no gas suggestion ([#13316](https://github.com/MetaMask/metamask-extension/pull/13316))
-- UpdateNickname story : convert knobs and actions to controls/args ([#13189](https://github.com/MetaMask/metamask-extension/pull/13189))
-- Fix token ordering: prioritize top before owned ([#13270](https://github.com/MetaMask/metamask-extension/pull/13270))
-- Box story: convert knobs to controls ([#13274](https://github.com/MetaMask/metamask-extension/pull/13274))
-- SendHeader, ContactListTab and AdvancedTab story: converted knobs and actions to controls / args ([#13230](https://github.com/MetaMask/metamask-extension/pull/13230))
-- Fix UI issues at top of confirm page container ([#13314](https://github.com/MetaMask/metamask-extension/pull/13314))
-- Fix manually connecting sites ([#13320](https://github.com/MetaMask/metamask-extension/pull/13320))
-- V10.9.0: Mainnet should have a capital `M` in the import token warning message  ([#13310](https://github.com/MetaMask/metamask-extension/pull/13310))
-- V10.9.0: Disconnect all accounts flow ([#13309](https://github.com/MetaMask/metamask-extension/pull/13309))
-- use PAT for `GITHUB_TOKEN` ([#13307](https://github.com/MetaMask/metamask-extension/pull/13307))
-- fix send duck standard setting bug in updateSendAsset ([#13289](https://github.com/MetaMask/metamask-extension/pull/13289))
-- Typography stories : convert knobs and actions to controls / args ([#13220](https://github.com/MetaMask/metamask-extension/pull/13220))
-- use object.values to get array for iteration ([#13300](https://github.com/MetaMask/metamask-extension/pull/13300))
-- Improve first time flow css - select action ([#12799](https://github.com/MetaMask/metamask-extension/pull/12799))
-- Remove unnecessary Yarn resolution ([#13305](https://github.com/MetaMask/metamask-extension/pull/13305))
-- convert knobs and actions to controls / args ([#13203](https://github.com/MetaMask/metamask-extension/pull/13203))
-- Add resolution for follow-redirects ([#13301](https://github.com/MetaMask/metamask-extension/pull/13301))
-- Implement event fragments ([#12251](https://github.com/MetaMask/metamask-extension/pull/12251))
-- Flask devx fix ([#13280](https://github.com/MetaMask/metamask-extension/pull/13280))
-- #10168 - Fix to Can't open settings if browser zoom level > 100% ([#13281](https://github.com/MetaMask/metamask-extension/pull/13281))
-- Adding user setting option for EIP-1559 V2 ([#13242](https://github.com/MetaMask/metamask-extension/pull/13242))
-- Update Bug Report issue template ([#13267](https://github.com/MetaMask/metamask-extension/pull/13267))
-- Remove unused localized messages ([#13272](https://github.com/MetaMask/metamask-extension/pull/13272))
+- Adding Brazilian Portuguese translation for some copy in Settings ([#13470](https://github.com/MetaMask/metamask-extension/pull/13470))
+
+### Changed
+- Hide 0 balance tokens in send screen dropdown if the "Hide Tokens Without Balance" toggle is on ([#13306](https://github.com/MetaMask/metamask-extension/pull/13306))
+- Change the 'Connected Sites' removal icon to a button ([#13476](https://github.com/MetaMask/metamask-extension/pull/13476))
+- Add specific hardware wallet names next to HW accounts in the account dropdown ([#13339](https://github.com/MetaMask/metamask-extension/pull/13339))
+- Update title of phishing.html ([#13323](https://github.com/MetaMask/metamask-extension/pull/13323))
+- Update language while importing an SRP to limit encouragement of copy-pasting seed phrases ([#12012](https://github.com/MetaMask/metamask-extension/pull/12012))
+- Maintain leading whitespace in for data to be signed in the signature request popup ([#13340](https://github.com/MetaMask/metamask-extension/pull/13340))
+- Update global link hover color from orange to blue ([#13344](https://github.com/MetaMask/metamask-extension/pull/13344))
+- Adjust ordering of tokens in the Swaps token dropdown ([#13270](https://github.com/MetaMask/metamask-extension/pull/13270))
+
+### Fixed
+- Ensure a correct update of the gas limit upon editing of a transaction recipient ([#12784](https://github.com/MetaMask/metamask-extension/pull/12784))
+- Ensure that the toggled display of currency in the send flow persists when editing a transaction ([#12813](https://github.com/MetaMask/metamask-extension/pull/12813))
+- Ensure settings can be opened if browser zoom level > 100% ([#13460](https://github.com/MetaMask/metamask-extension/pull/13460))
+- Ensure displayed balances of tokens are not incorrectly rounded down ([#13337](https://github.com/MetaMask/metamask-extension/pull/13337))
+- Improve visual spacing on the wallet selection flow of onboarding ([#12799](https://github.com/MetaMask/metamask-extension/pull/12799))
+
 ## [10.9.2]
 ### Fixed
 - Prevent errors on the swaps "View Quote" screen that can occur if the swaps API returns incorrect refund and max gas fees on some test networks ([#13511](https://github.com/MetaMask/metamask-extension/pull/13511))
@@ -2784,8 +2727,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...HEAD
-[10.10.0]: https://github.com/MetaMask/metamask-extension/compare/v10.9.1...v10.10.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.9.2...HEAD
+[10.10.0]: https://github.com/MetaMask/metamask-extension/compare/v10.9.2...v10.10.0
 [10.9.2]: https://github.com/MetaMask/metamask-extension/compare/v10.9.1...v10.9.2
 [10.9.1]: https://github.com/MetaMask/metamask-extension/compare/v10.9.0...v10.9.1
 [10.9.0]: https://github.com/MetaMask/metamask-extension/compare/v10.8.2...v10.9.0
