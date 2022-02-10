@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom';
 import {
   ASSET_ROUTE,
   IMPORT_TOKEN_ROUTE,
@@ -17,12 +17,11 @@ const getTokenName = (name, symbol) => {
   return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
 };
 
-const ConfirmImportToken = (props) => {
-  const { history } = props;
-
+const ConfirmImportToken = () => {
   const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const mostRecentOverviewPage = useSelector((state) =>
     getMostRecentOverviewPage(state),
@@ -130,10 +129,6 @@ const ConfirmImportToken = (props) => {
       </div>
     </div>
   );
-};
-
-ConfirmImportToken.propTypes = {
-  history: PropTypes.object,
 };
 
 export default ConfirmImportToken;
