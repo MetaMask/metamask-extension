@@ -2365,7 +2365,8 @@
     "message": "re-import any such accounts"
   },
   "reImportAccountsAndTokens": {
-    "message": "Additionally, any imported external account, or custom tokens that were added, will not appear. You will need to $1 using their Private Key(s), and $2 that are missing."
+    "message": "Additionally, any imported external account, or custom tokens that were added, will not appear. You will need to $1 using their Private Key(s), and $2 that are missing.",
+    "description": "$1 is the text `re-import any such accounts` and $2 is the text `re-add any tokens`"
   },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Import token” in your accounts options menu."
@@ -2474,7 +2475,8 @@
     "description": "$1 is the date at which the data was backed up"
   },
   "restoreWalletUsingSRP": {
-    "message": "If you restore a wallet using the Secret Recovery Phrase, only the wallet’s initial account might appear at first. You'll be able to $1 created previously."
+    "message": "If you restore a wallet using the Secret Recovery Phrase, only the wallet’s initial account might appear at first. You'll be able to $1 created previously.",
+    "description": "$1 is the text `re-add any other accounts`"
   },
   "restoreWalletWarning": {
     "message": "To recover access to your wallet you will have to restore it using the Secret Recovery Phrase. This action will overwrite existing wallet data and cannot be undone. Make sure you’re using the correct Secret Recovery Phrase."
