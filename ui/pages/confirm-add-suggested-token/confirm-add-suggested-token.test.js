@@ -14,7 +14,7 @@ const MOCK_SUGGESTED_ASSETS = [
       address: '0x8b175474e89094c44da98b954eedeac495271d0a',
       symbol: 'NEW',
       decimals: 18,
-      image: 'metamask.svg',
+      image: 'metamark.svg',
       unlisted: false,
     },
   },
