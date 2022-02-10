@@ -81,11 +81,9 @@ export default function TokenDetailsPage() {
           variant={TYPOGRAPHY.H6}
           color={COLORS.BLACK}
           className="token-details__title"
-          data-testid="token-details-page__title"
         >
           {t('tokenDetails')}
           <button
-            data-testid="token-details-page__close-button"
             onClick={() => history.push(`${ASSET_ROUTE}/${token.address}`)}
             className="token-details__closeButton"
           />
@@ -98,7 +96,6 @@ export default function TokenDetailsPage() {
             variant={TYPOGRAPHY.H4}
             color={COLORS.BLACK}
             className="token-details__token-value"
-            data-testid="token-details-page__token-value"
           >
             {tokenBalance}
           </Typography>
@@ -114,7 +111,6 @@ export default function TokenDetailsPage() {
           margin={[4, 0, 0, 0]}
           variant={TYPOGRAPHY.H7}
           color={COLORS.UI4}
-          data-testid="token-details-page__token-currency-balance"
         >
           {tokenCurrencyBalance || ''}
         </Typography>
@@ -123,7 +119,6 @@ export default function TokenDetailsPage() {
           variant={TYPOGRAPHY.H9}
           color={COLORS.UI4}
           fontWeight={FONT_WEIGHT.BOLD}
-          data-testid="token-details-page__token-contract-address-title"
         >
           {t('tokenContractAddress')}
         </Typography>
@@ -134,7 +129,6 @@ export default function TokenDetailsPage() {
             color={COLORS.BLACK}
             overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
             className="token-details__token-address"
-            data-testid="token-details-page__token-contract-address"
           >
             {token.address}
           </Typography>
@@ -149,7 +143,6 @@ export default function TokenDetailsPage() {
               onClick={() => {
                 handleCopy(token.address);
               }}
-              data-testid="token-details-page__copy-button"
             >
               <CopyIcon size={11} color="#037DD6" />
             </Button>
@@ -160,7 +153,6 @@ export default function TokenDetailsPage() {
           margin={[4, 0, 0, 0]}
           color={COLORS.UI4}
           fontWeight={FONT_WEIGHT.BOLD}
-          data-testid="token-details-page__token-decimal-title"
         >
           {t('tokenDecimalTitle')}
         </Typography>
@@ -168,7 +160,6 @@ export default function TokenDetailsPage() {
           variant={TYPOGRAPHY.H7}
           margin={[1, 0, 0, 0]}
           color={COLORS.BLACK}
-          data-testid="token-details-page__token-decimals"
         >
           {token.decimals}
         </Typography>
@@ -177,7 +168,6 @@ export default function TokenDetailsPage() {
           margin={[4, 0, 0, 0]}
           color={COLORS.UI4}
           fontWeight={FONT_WEIGHT.BOLD}
-          data-testid="token-details-page__current-network-title"
         >
           {t('network')}
         </Typography>
@@ -185,7 +175,6 @@ export default function TokenDetailsPage() {
           variant={TYPOGRAPHY.H7}
           margin={[1, 0, 0, 0]}
           color={COLORS.BLACK}
-          data-testid="token-details-page__current-network"
         >
           {networkType === NETWORK_TYPE_RPC
             ? networkNickname ?? t('privateNetwork')
@@ -199,13 +188,8 @@ export default function TokenDetailsPage() {
               showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),
             );
           }}
-          data-testid="token-details-page__hide-token-button"
         >
-          <Typography
-            variant={TYPOGRAPHY.H6}
-            color={COLORS.PRIMARY1}
-            data-testid="token-details-page__hide-token"
-          >
+          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY1}>
             {t('hideToken')}
           </Typography>
         </Button>
