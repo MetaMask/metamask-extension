@@ -566,7 +566,6 @@
         "ethjs-util": true,
         "events": true,
         "human-standard-collectible-abi": true,
-        "human-standard-multi-collectible-abi": true,
         "human-standard-token-abi": true,
         "immer": true,
         "isomorphic-fetch": true,
@@ -1813,16 +1812,6 @@
         "safe-event-emitter": true
       }
     },
-    "eth-eip712-util-browser": {
-      "globals": {
-        "intToBuffer": true
-      },
-      "packages": {
-        "bn.js": true,
-        "buffer": true,
-        "js-sha3": true
-      }
-    },
     "eth-ens-namehash": {
       "globals": {
         "name": "write"
@@ -2077,6 +2066,11 @@
         "@ethersproject/wordlists": true
       }
     },
+    "ethers-eip712": {
+      "packages": {
+        "ethers": true
+      }
+    },
     "ethjs": {
       "globals": {
         "clearInterval": true,
@@ -2293,7 +2287,8 @@
         "buffer": true,
         "crc-32": true,
         "elliptic": true,
-        "eth-eip712-util-browser": true,
+        "ethers": true,
+        "ethers-eip712": true,
         "js-sha3": true,
         "rlp-browser": true,
         "secp256k1": true,
