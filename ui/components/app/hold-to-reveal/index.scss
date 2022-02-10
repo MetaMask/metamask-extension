@@ -1,27 +1,31 @@
-// .icon {
-//     border-radius: 50%;
-//     border: 3px solid rgba(0, 0, 0, 0.3);
-//     box-sizing: border-box;
-//     width: 28px;
-//     height: 28px;
-//     left: 9px;
-//     top: 6px;
-//     animation: round 3s linear;
-//     border-top-color: var(--success-3);
-// }
+.btn--rounded.btn-primary {
+  width: 190px;
+  height: 40px;
+  padding: 6px 13px 6px 9px;
 
-// @keyframes round {
-//     to {
-//         transform: rotate(1turn);
-//     }
-// }
-
-.box1 {
-    position: relative;
-    display: inline-flex;
+  &:active {
+    background-color: var(--Blue-500) !important;
+  }
 }
 
-.box2 {
+.button__icon {
+  margin-right: 11px !important;
+}
+
+.main-box {
+  position: relative;
+  display: inline-flex;
+
+  &__circular-progress-secondary {
+    z-index: 1;
+    color: var(--ui-white);  
+  }
+
+  &__circular-progress-primary {
+    color: rgba(0, 0, 0, 0.3);
+  }
+
+  &__image-box {
     top: 0;
     left: 0;
     bottom: 0;
@@ -30,197 +34,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
+  }
 
-
-.lock-unlock-icon {
+  &__icon {
     width: 7.88px;
     height: 9px;
     left: calc(50% - 7.88px/2 - 72.06px);
     top: calc(50% - 9px/2 - 0.5px);
+  }
 }
-
-// .button-hold {
-//     --color: #fff;
-//     --background: #037DD6;
-//     --icon: var(--color);
-//     --progress-border: #0260A4;
-//     --progress-active: #fff;
-//     --progress-success: #fff;
-//     --tick-stroke: var(--progress-active);
-//     //--shadow: #{rgba(#00093D, .2)};
-//     font-size: 16px;
-//     font-weight: 500;
-//     line-height: 19px;
-//     min-width: 112px;
-//     padding: 12px 20px 12px 12px;
-//     border: 0;
-//     border-radius: 24px;
-//     outline: none;
-//     user-select: none;
-//     cursor: pointer;
-//     -webkit-backface-visibility: hidden;
-//     -webkit-appearance: none;
-//     transition: transform .3s, box-shadow .3s;
-//     box-shadow: 0 var(--shadow-y, 4px) var(--shadow-blur, 12px) var(--shadow);
-//     transform: scale(var(--scale, 1)) translateZ(0);
-//     color: var(--color);
-//     background: var(--background);
-//     & > div {
-//         margin-right: 4px;
-//         border-radius: 50%;
-//         display: inline-block;
-//         vertical-align: top;
-//         position: relative;
-//         background: var(--progress-border);
-//         &:before {
-//             content: '';
-//             width: 16px;
-//             height: 16px;
-//             left: 2px;
-//             top: 2px;
-//             z-index: 1;
-//             position: absolute;
-//             background: var(--background);
-//             border-radius: inherit;
-//             transform: scale(var(--background-scale, 1));
-//             transition: transform .32s ease;
-//         }
-//         svg {
-//             display: block;
-//             &.icon,
-//             &.tick {
-//                 position: absolute;
-//             }
-//             &.icon {
-//                 width: 8px;
-//                 height: 8px;
-//                 left: 6px;
-//                 top: 6px;
-//                 fill: var(--icon);
-//                 z-index: 1;
-//                 transition: opacity .2s, transform .2s;
-//                 opacity: var(--icon-opacity, 1);
-//                 transform: translateY(var(--icon-y, 0)) scale(var(--icon-scale, 1));
-//             }
-//             &.progress,
-//             &.tick {
-//                 fill: none;
-//             }
-//             &.progress {
-//                 width: 20px;
-//                 height: 20px;
-//                 transform: rotate(-90deg) scale(var(--progress-scale, 1));
-//                 transition: transform .5s ease;
-//                 circle {
-//                     stroke-dashoffset: 1;
-//                     stroke-dasharray: var(--progress-array, 0) 52;
-//                     stroke-width: 16;
-//                     stroke: var(--progress-active);
-//                     transition: stroke-dasharray var(--duration) linear;
-//                 }
-//             }
-//             &.tick {
-//                 width: 20px;
-//                 height: 20px;
-//                 left: 0;
-//                 top: 0;
-//                 stroke-width: 3;
-//                 stroke-linecap: round;
-//                 stroke-linejoin: round;
-//                 stroke: var(--tick-stroke);
-//                 transition: stroke .3s ease .7s;
-//                 polyline {
-//                     stroke-dasharray: 18 18 18;
-//                     stroke-dashoffset: var(--tick-offset, 18);
-//                     transition: stroke-dashoffset .4s ease .7s;
-//                 }
-//             }
-//         }
-//     }
-//     &:focus,
-//     &:hover {
-//         &:not(.process) {
-//             --shadow-y: 8px;
-//             --shadow-blur: 16px;
-//         }
-//     }
-//     &:active {
-//         &:not(.success) {
-//             --scale: .96;
-//             --shadow-y: 4px;
-//             --shadow-blur: 8px;
-//         }
-//     }
-//     &.process,
-//     &.success {
-//         --progress-array: 52;
-//         --icon-y: -4px;
-//         --icon-scale: .6;
-//         --icon-opacity: 0;
-//     }
-//     &.success {
-//         --progress-border: none;
-//         --progress-scale: .11;
-//         --tick-stroke: var(--progress-success);
-//         --background-scale: 0;
-//         --tick-offset: 36;
-//         & > div {
-//             svg {
-//                 &.progress {
-//                     animation: tick .3s linear forwards .4s;
-//                 }
-//             }
-//         }
-//     }
-// }
-
-// @keyframes tick {
-//     100% {
-//         transform: rotate(-90deg) translate(0, -5px) scale(var(--progress-scale));
-//     }
-// }
-
-// html {
-//     box-sizing: border-box;
-//     -webkit-font-smoothing: antialiased;
-// }
-
-// * {
-//     box-sizing: inherit;
-//     &:before,
-//     &:after {
-//         box-sizing: inherit;
-//     }
-// }
-
-// // Center & dribbble
-// body {
-//     min-height: 100vh;
-//     display: flex;
-//     font-family: 'Roboto', Arial;
-//     justify-content: center;
-//     align-items: center;
-//     background: #ECEFFC;
-//     .dribbble {
-//         position: fixed;
-//         display: block;
-//         right: 20px;
-//         bottom: 20px;
-//         img {
-//             display: block;
-//             height: 28px;
-//         }
-//     }
-//     .twitter {
-//         position: fixed;
-//         display: block;
-//         right: 64px;
-//         bottom: 14px;
-//         svg {
-//             width: 32px;
-//             height: 32px;
-//             fill: #1da1f2;
-//         }
-//     }
-// }

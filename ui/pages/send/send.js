@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
@@ -94,9 +94,17 @@ export default function SendTransactionScreen() {
     content = <AddRecipient />;
   }
 
+  const [a, setA] = useState(false);
+
+  // nesto = (value) => {
+  //   setA(value);
+  // }
+
+  console.log(a);
+
   return (
     <div className="page-container">
-      <HoldToReveal />
+      <HoldToReveal buttonText='holdToReveal' timeToHold={5} revealFinished={setA} />
       <SendHeader history={history} />
       <EnsInput
         userInput={userInput}
