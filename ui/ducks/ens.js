@@ -1,14 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 import ENS from 'ethjs-ens';
+import mego from './mego';
 import log from 'loglevel';
 import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
-
 import { getCurrentChainId } from '../selectors';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
+  CHAIN_ID_TO_RPC_URL_MAP,
   MAINNET_NETWORK_ID,
+  POLYGON_NETWORK_ID,
+  POLYGON_CHAIN_ID
 } from '../../shared/constants/network';
 import {
   CONFUSING_ENS_ERROR,
@@ -168,7 +171,11 @@ export function lookupEnsName(ensName) {
       let address;
       let error;
       try {
-        address = await ens.lookup(trimmedEnsName);
+        if (state[name].network === POLYGON_NETWORK_ID) {
+          address = await mego.lookup(trimmedEnsName, CHAIN_ID_TO_RPC_URL_MAP[POLYGON_CHAIN_ID]);
+        } else {
+          address = await ens.lookup(trimmedEnsName);
+        }
       } catch (err) {
         error = err;
       }
