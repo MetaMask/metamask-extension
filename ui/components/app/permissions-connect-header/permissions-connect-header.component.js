@@ -1,6 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import SiteOrigin from '../../ui/site-origin';
+import Box from '../../ui/box';
+import {
+  FLEX_DIRECTION,
+  JUSTIFY_CONTENT,
+} from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import SnapsAuthorshipPill from '../flask/snaps-authorship-pill';
 ///: END:ONLY_INCLUDE_IN
@@ -11,6 +16,7 @@ export default class PermissionsConnectHeader extends Component {
     iconName: PropTypes.string.isRequired,
     siteOrigin: PropTypes.string.isRequired,
     headerTitle: PropTypes.node,
+    boxProps: PropTypes.shape({ ...Box.propTypes }),
     headerText: PropTypes.string,
     ///: BEGIN:ONLY_INCLUDE_IN(flask)
     npmPackageName: PropTypes.string,
@@ -21,6 +27,7 @@ export default class PermissionsConnectHeader extends Component {
     iconUrl: null,
     headerTitle: '',
     headerText: '',
+    boxProps: {},
   };
 
   renderHeaderIcon() {
@@ -35,6 +42,7 @@ export default class PermissionsConnectHeader extends Component {
 
   render() {
     const {
+      boxProps,
       headerTitle,
       headerText,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -45,7 +53,12 @@ export default class PermissionsConnectHeader extends Component {
     const npmPackageUrl = `https://www.npmjs.com/package/${npmPackageName}`;
     ///: END:ONLY_INCLUDE_IN
     return (
-      <div className="permissions-connect-header">
+      <Box
+        className="permissions-connect-header"
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        justifyContent={JUSTIFY_CONTENT.CENTER}
+        {...boxProps}
+      >
         {this.renderHeaderIcon()}
         <div className="permissions-connect-header__title">{headerTitle}</div>
         {
@@ -59,7 +72,7 @@ export default class PermissionsConnectHeader extends Component {
           ///: END:ONLY_INCLUDE_IN
         }
         <div className="permissions-connect-header__subtitle">{headerText}</div>
-      </div>
+      </Box>
     );
   }
 }

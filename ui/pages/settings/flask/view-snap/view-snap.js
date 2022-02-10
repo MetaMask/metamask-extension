@@ -7,6 +7,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   TYPOGRAPHY,
   COLORS,
+  TEXT_ALIGN,
+  FRACTIONS,
 } from '../../../../helpers/constants/design-system';
 import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill';
 import Box from '../../../../components/ui/box';
@@ -73,7 +75,7 @@ function ViewSnap() {
           <Typography
             className="view-snap__title"
             variant={TYPOGRAPHY.H3}
-            boxProps={{ textAlign: 'center' }}
+            boxProps={{ textAlign: TEXT_ALIGN.CENTER }}
           >
             {snap.manifest.proposedName}
           </Typography>
@@ -98,7 +100,10 @@ function ViewSnap() {
             </Box>
           </Box>
         </div>
-        <Box className="view-snap__content-container" width="7/12">
+        <Box
+          className="view-snap__content-container"
+          width={FRACTIONS.SEVEN_TWELFTHS}
+        >
           <div className="view-snap__section">
             <Typography
               variant={TYPOGRAPHY.H6}
@@ -113,7 +118,7 @@ function ViewSnap() {
             <Typography variant={TYPOGRAPHY.H6} color={COLORS.UI4}>
               {t('snapAccess', [snap.manifest.proposedName])}
             </Typography>
-            <Box width="10/12">
+            <Box width={FRACTIONS.TEN_TWELFTHS}>
               <PermissionsConnectPermissionList
                 permissions={snap.manifest.initialPermissions}
               />
@@ -145,7 +150,7 @@ function ViewSnap() {
               {t('removeSnapDescription')}
             </Typography>
             <Button
-              className="view-snap__remove__button"
+              className="view-snap__remove-button"
               type="danger"
               css={{
                 maxWidth: '175px',
