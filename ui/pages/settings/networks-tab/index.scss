@@ -177,6 +177,7 @@
     padding: 13px 24px 13px 0;
     position: relative;
     align-items: center;
+    width: 311px;
 
     .color-indicator {
       &:hover {
@@ -215,13 +216,13 @@
     }
 
     svg {
-      margin-left: 15px;
+      margin-inline-start: 15px;
       padding-top: 3px;
     }
   }
 
   &__networks-list-arrow {
-    margin-inline-start: 100%;
+    margin-inline-start: 95%;
     display: block;
     background-image: url('/images/caret-right.svg');
     color: var(--Grey-500);
