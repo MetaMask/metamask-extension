@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Typography from '../../ui/typography/typography';
-import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 
 const TabBar = (props) => {
   const { tabs = [], onSelect, isActive } = props;
@@ -19,7 +17,7 @@ const TabBar = (props) => {
         >
           <div className="tab-bar__tab__content">
             <div className="tab-bar__tab__content__icon">{icon}</div>
-            <Typography variant={TYPOGRAPHY.H4}>{content}</Typography>
+            <div className="tab-bar__tab__content__title">{content}</div>
           </div>
           <div className="tab-bar__tab__caret" />
         </button>
