@@ -1,6 +1,6 @@
 # The MetaMask Build System
 
-> _tl;dr_ `yarn dist` for prod, `yarn start` for local development
+> _tl;dr_ `yarn dist` for prod, `yarn start` for local development. Add `--build-type flask` to build flask (with more experimental features).
 
 This directory contains the MetaMask build system, which is used to build the MetaMask Extension such that it can be used in a supported browser.
 From the repository root, the build system entry file is located at [`./development/build/index.js`](https://github.com/MetaMask/metamask-extension/blob/develop/development/build/index.js).
