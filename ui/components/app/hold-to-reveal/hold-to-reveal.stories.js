@@ -7,7 +7,7 @@ export default {
 };
 
 export const DefaultStory = () => {
-    return <HoldToReveal />
+    return <HoldToReveal buttonText='holdToReveal' timeToHold={5} revealFinished={() => {}} />
 };
 
 DefaultStory.storyName = 'Default';
