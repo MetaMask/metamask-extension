@@ -236,8 +236,8 @@ export async function getAssetDetails(
       tokenId,
     );
   } catch (error) {
-    // TODO how to handle expected unable to determine token standard case
-    console.log('error', error);
+    log.warn(error);
+    return {};
   }
   if (tokenDetails?.standard === ERC721 || tokenDetails?.standard === ERC1155) {
     const existingCollectible = existingCollectibles.find(({ address }) =>
