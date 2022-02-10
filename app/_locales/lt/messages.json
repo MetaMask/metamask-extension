@@ -289,12 +289,6 @@
   "details": {
     "message": "Išsami informacija"
   },
-  "directDepositEther": {
-    "message": "Tiesiogiai įnešti eteriai"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jeigu jau turite šiek tiek eterių, sparčiausias būdas gauti eterių į naują piniginę yra tiesioginis įnašas."
-  },
   "done": {
     "message": "Atlikta"
   },

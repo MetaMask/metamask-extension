@@ -749,11 +749,11 @@
   "details": {
     "message": "Details"
   },
-  "directDepositEther": {
-    "message": "Directly Deposit Ether"
+  "directDepositCrypto": {
+    "message": "Directly Deposit $1"
   },
-  "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+  "directDepositCryptoExplainer": {
+    "message": "If you already have some $1, the quickest way to get $1 in your new wallet by direct deposit."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",

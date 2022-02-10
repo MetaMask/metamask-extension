@@ -289,12 +289,6 @@
   "details": {
     "message": "Detalji"
   },
-  "directDepositEther": {
-    "message": "Izravan polog Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ako imate nešto Ethera, najbrži je način prebacivanja Ethera u vaš novi novčanik izravan polog."
-  },
   "done": {
     "message": "Gotovo"
   },

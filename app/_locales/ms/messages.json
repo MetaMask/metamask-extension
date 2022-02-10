@@ -289,12 +289,6 @@
   "details": {
     "message": "Butiran"
   },
-  "directDepositEther": {
-    "message": "Deposit Ether Secara Terus"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jika anda sudah mempunyai Ether, cara paling cepat untuk mendapatkan Ether di dompet baru anda ialah dengan deposit langsung."
-  },
   "done": {
     "message": "Selesai"
   },
