@@ -444,7 +444,12 @@ export default class TransactionController extends EventEmitter {
     if (eip1559Compatibility) {
       const { eip1559V2Enabled } = this.preferencesStore.getState();
       const advancedGasFeeDefaultValues = this.getAdvancedGasFee();
-      if (eip1559V2Enabled && Boolean(advancedGasFeeDefaultValues)) {
+      if (
+        eip1559V2Enabled &&
+        Boolean(advancedGasFeeDefaultValues) &&
+        !txMeta.txParams.maxFeePerGas &&
+        !txMeta.txParams.maxPriorityFeePerGas
+      ) {
         txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(
           advancedGasFeeDefaultValues.maxBaseFee,
