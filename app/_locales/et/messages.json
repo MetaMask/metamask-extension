@@ -289,12 +289,6 @@
   "details": {
     "message": "Üksikasjad"
   },
-  "directDepositEther": {
-    "message": "Eetri otsene sissemakse"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Kui teil on juba veidi eetrit, on kiirem viis eetri rahakotti saamiseks otsene sissemakse."
-  },
   "done": {
     "message": "Valmis"
   },

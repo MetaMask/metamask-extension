@@ -289,12 +289,6 @@
   "details": {
     "message": "פרטים"
   },
-  "directDepositEther": {
-    "message": "הפקד את'ר ישירות"
-  },
-  "directDepositEtherExplainer": {
-    "message": "אם כבר יש ברשותך את'ר (Ether) , הדרך המהירה ביותר להכניס את'ר לארנק החדש שלך היא באמצעות הפקדה ישירה."
-  },
   "done": {
     "message": "סיום"
   },

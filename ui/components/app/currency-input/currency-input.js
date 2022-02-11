@@ -14,6 +14,7 @@ import {
   getNativeCurrency,
 } from '../../../ducks/metamask/metamask';
 import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
+import { MAX_DECIMAL } from '../../../../shared/constants/decimal';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -25,12 +26,14 @@ import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
  * @param options0.featureSecondary
  * @param options0.onChange
  * @param options0.onPreferenceToggle
+ * @param options0.primaryNumberOfDecimals
  */
 export default function CurrencyInput({
   hexValue,
   featureSecondary,
   onChange,
   onPreferenceToggle,
+  primaryNumberOfDecimals = 8,
 }) {
   const t = useContext(I18nContext);
 
@@ -64,7 +67,10 @@ export default function CurrencyInput({
       : getValueFromWeiHex({
           value: hexValue,
           toCurrency: ETH,
-          numberOfDecimals: 8,
+          numberOfDecimals:
+            primaryNumberOfDecimals <= MAX_DECIMAL
+              ? primaryNumberOfDecimals
+              : MAX_DECIMAL,
         });
 
     return Number(decimalValueString) || 0;
@@ -127,7 +133,10 @@ export default function CurrencyInput({
     if (shouldUseFiat()) {
       // Display ETH
       currency = preferredCurrency || ETH;
-      numberOfDecimals = 8;
+      numberOfDecimals =
+        primaryNumberOfDecimals <= MAX_DECIMAL
+          ? primaryNumberOfDecimals
+          : MAX_DECIMAL;
     } else {
       // Display Fiat
       currency = secondaryCurrency;
@@ -143,7 +152,6 @@ export default function CurrencyInput({
       />
     );
   };
-
   return (
     <UnitInput
       {...{
@@ -173,4 +181,5 @@ CurrencyInput.propTypes = {
   featureSecondary: PropTypes.bool,
   onChange: PropTypes.func,
   onPreferenceToggle: PropTypes.func,
+  primaryNumberOfDecimals: PropTypes.number,
 };

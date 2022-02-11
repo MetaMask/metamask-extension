@@ -713,12 +713,6 @@
   "details": {
     "message": "Detalles"
   },
-  "directDepositEther": {
-    "message": "Depositar ether directamente"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si ya tiene algunos ethers, la forma más rápida de tenerlos en la cartera nueva es mediante depósito directo."
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "\"1$\" está desactivado porque no cumple el mínimo de un aumento del 10% respecto a la tarifa de gas original.",
     "description": "$1 is gas estimate type which can be market or aggressive"

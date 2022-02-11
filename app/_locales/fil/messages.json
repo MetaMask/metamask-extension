@@ -265,12 +265,6 @@
   "details": {
     "message": "Mga Detalye"
   },
-  "directDepositEther": {
-    "message": "Direktang Magdeposito ng Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Kung mayroon ka nang Ether, ang pinakamabilis na paraan para magkaroon ng Ether sa iyong bagong wallet ay sa pamamagitan ng direkang deposito."
-  },
   "done": {
     "message": "Tapos na"
   },

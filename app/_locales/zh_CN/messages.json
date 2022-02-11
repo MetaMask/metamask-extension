@@ -709,12 +709,6 @@
   "details": {
     "message": "详情"
   },
-  "directDepositEther": {
-    "message": "直接存入 Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "如果您已经有了一些 Ether，最快捷的方法就是直接向新钱包存入 Ether。"
-  },
   "disconnect": {
     "message": "断开"
   },

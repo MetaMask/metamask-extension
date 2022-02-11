@@ -709,12 +709,6 @@
   "details": {
     "message": "Λεπτομέρειες"
   },
-  "directDepositEther": {
-    "message": "Απευθείας Κατάθεση Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Αν έχετε ήδη κάποια Ether, ο πιο γρήγορος τρόπος για να πάρετε τα Ether στο νέο σας πορτοφόλι με άμεση κατάθεση."
-  },
   "disconnect": {
     "message": "Αποσύνδεση"
   },

@@ -441,12 +441,6 @@
   "details": {
     "message": "Dettagli"
   },
-  "directDepositEther": {
-    "message": "Deposita Direttamente Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Se possiedi già degli Ether, questa è la via più veloce per aggiungere Ether al tuo portafoglio con un deposito diretto."
-  },
   "disconnect": {
     "message": "Disconnetti"
   },
