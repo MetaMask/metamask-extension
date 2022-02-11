@@ -507,12 +507,6 @@
   "details": {
     "message": "Detalles"
   },
-  "directDepositEther": {
-    "message": "Depositar ether directamente"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si ya tiene algunos ethers, la forma más rápida de tenerlos en la cartera nueva es mediante depósito directo."
-  },
   "disconnect": {
     "message": "Desconectar"
   },
