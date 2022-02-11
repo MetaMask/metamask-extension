@@ -241,3 +241,10 @@ PreloaderStory.args = {
   size: 40,
 };
 PreloaderStory.storyName = 'Preloader';
+
+export const SearchIconStory = (args) => <SearchIcon {...args} />;
+SearchIconStory.args = {
+  size: 40,
+  color: '#2F80ED',
+};
+SearchIconStory.storyName = 'SearchIconStory';
