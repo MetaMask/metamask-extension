@@ -19,6 +19,9 @@ import {
   RINKEBY_CHAIN_ID,
   ROPSTEN_CHAIN_ID,
   KOVAN_CHAIN_ID,
+  BSC_CHAIN_ID,
+  POLYGON_CHAIN_ID,
+  KCC_CHAIN_ID,
 } from '../../../shared/constants/network';
 
 import {
@@ -26,6 +29,9 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_RINKEBY,
   SINGLE_CALL_BALANCES_ADDRESS_ROPSTEN,
   SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
+  SINGLE_CALL_BALANCES_ADDRESS_BSC,
+  SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
+  SINGLE_CALL_BALANCES_ADDRESS_KCC,
 } from '../constants/contracts';
 import { bnToHex } from './util';
 
@@ -227,6 +233,27 @@ export default class AccountTracker {
         await this._updateAccountsViaBalanceChecker(
           addresses,
           SINGLE_CALL_BALANCES_ADDRESS_KOVAN,
+        );
+        break;
+
+      case BSC_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_BSC,
+        );
+        break;
+
+      case POLYGON_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
+        );
+        break;
+
+      case KCC_CHAIN_ID:
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          SINGLE_CALL_BALANCES_ADDRESS_KCC,
         );
         break;
 
