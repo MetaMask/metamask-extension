@@ -523,6 +523,7 @@ export default function ViewQuote() {
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
     stx_enabled: currentSmartTransactionsEnabled,
+    current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,
   };
 

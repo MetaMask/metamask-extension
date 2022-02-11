@@ -53,6 +53,7 @@ import {
   setReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
   getFromTokenInputValue,
   getFromTokenError,
   getMaxSlippage,
@@ -163,6 +164,9 @@ export default function BuildQuote({
     getSmartTransactionsOptInStatus,
   );
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   const smartTransactionsOptInPopoverDisplayed =
     smartTransactionsOptInStatus !== undefined;
   const currentSmartTransactionsError = useSelector(
@@ -448,6 +452,7 @@ export default function BuildQuote({
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
       stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
     },
   });

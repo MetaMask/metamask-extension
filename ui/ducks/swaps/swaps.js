@@ -693,6 +693,9 @@ export const fetchQuotesAndSetQuoteState = (
     );
     const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
+    const currentSmartTransactionsEnabled = getCurrentSmartTransactionsEnabled(
+      state,
+    );
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
@@ -706,6 +709,7 @@ export const fetchQuotesAndSetQuoteState = (
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
         stx_enabled: smartTransactionsEnabled,
+        current_stx_enabled: currentSmartTransactionsEnabled,
         stx_user_opt_in: smartTransactionsOptInStatus,
         anonymizedData: true,
       },
@@ -759,6 +763,7 @@ export const fetchQuotesAndSetQuoteState = (
             is_hardware_wallet: hardwareWalletUsed,
             hardware_wallet_type: hardwareWalletType,
             stx_enabled: smartTransactionsEnabled,
+            current_stx_enabled: currentSmartTransactionsEnabled,
             stx_user_opt_in: smartTransactionsOptInStatus,
           },
         });
@@ -786,6 +791,7 @@ export const fetchQuotesAndSetQuoteState = (
             is_hardware_wallet: hardwareWalletUsed,
             hardware_wallet_type: hardwareWalletType,
             stx_enabled: smartTransactionsEnabled,
+            current_stx_enabled: currentSmartTransactionsEnabled,
             stx_user_opt_in: smartTransactionsOptInStatus,
             anonymizedData: true,
           },
@@ -839,6 +845,9 @@ export const signAndSendSwapsSmartTransaction = ({
     ).toPrecision(8);
     const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
     const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
+    const currentSmartTransactionsEnabled = getCurrentSmartTransactionsEnabled(
+      state,
+    );
     const swapMetaData = {
       token_from: sourceTokenInfo.symbol,
       token_from_amount: String(swapTokenValue),
@@ -859,6 +868,7 @@ export const signAndSendSwapsSmartTransaction = ({
       fee_savings: usedQuote.savings?.fee,
       median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
       stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
       stx_user_opt_in: smartTransactionsOptInStatus,
     };
     metaMetricsEvent({
