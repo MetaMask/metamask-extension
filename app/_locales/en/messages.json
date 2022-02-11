@@ -47,9 +47,6 @@
   "about": {
     "message": "About"
   },
-  "aboutSettingsDescription": {
-    "message": "Version, support center, and contact info"
-  },
   "acceleratingATransaction": {
     "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
-  "advancedSettingsDescription": {
-    "message": "Access developer features, download State Logs, Reset Account, setup test networks and custom RPC"
-  },
   "affirmAgree": {
     "message": "I Agree"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "Alerts"
-  },
-  "alertsSettingsDescription": {
-    "message": "Enable or disable each alert"
   },
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
@@ -444,6 +435,10 @@
   "chainIdExistsErrorMsg": {
     "message": "This Chain ID is currently used by the $1 network."
   },
+  "chainListReturnedDifferentTickerSymbol": {
+    "message": "The network with chain ID $1 may use a different currency symbol ($2) than the one you have entered. Please verify before continuing.",
+    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -570,9 +565,6 @@
   },
   "contacts": {
     "message": "Contacts"
-  },
-  "contactsSettingsDescription": {
-    "message": "Add, edit, remove, and manage your contacts"
   },
   "continue": {
     "message": "Continue"
@@ -757,11 +749,11 @@
   "details": {
     "message": "Details"
   },
-  "directDepositEther": {
-    "message": "Directly Deposit Ether"
+  "directDepositCrypto": {
+    "message": "Directly Deposit $1"
   },
-  "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+  "directDepositCryptoExplainer": {
+    "message": "If you already have some $1, the quickest way to get $1 in your new wallet by direct deposit."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -1017,7 +1009,7 @@
     "message": "Learn more."
   },
   "endpointReturnedDifferentChainId": {
-    "message": "The endpoint returned a different chain ID: $1",
+    "message": "The RPC URL you have entered returned a different chain ID ($1). Please update the Chain ID to match the RPC URL of the network you are trying to add.",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
   "ensIllegalCharacter": {
@@ -1086,7 +1078,7 @@
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
   "eth_accounts": {
-    "message": "See address, account balance, activity and initiate transactions",
+    "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
@@ -1107,9 +1099,6 @@
   "experimental": {
     "message": "Experimental"
   },
-  "experimentalSettingsDescription": {
-    "message": "Token detection & more"
-  },
   "exportPrivateKey": {
     "message": "Export Private Key"
   },
@@ -1125,6 +1114,9 @@
   },
   "failedToFetchChainId": {
     "message": "Could not fetch chain ID. Is your RPC URL correct?"
+  },
+  "failedToFetchTickerSymbolData": {
+    "message": "Ticker symbol verification data is currently unavailable, make sure that the symbol you have entered is correct. It will impact the conversion rates that you see for this network"
   },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
@@ -1301,9 +1293,6 @@
   },
   "general": {
     "message": "General"
-  },
-  "generalSettingsDescription": {
-    "message": "Currency conversion, primary currency, language, blockies identicon"
   },
   "getEther": {
     "message": "Get Ether"
@@ -1659,7 +1648,7 @@
     "message": "Low"
   },
   "lowGasSettingToolTipMessage": {
-    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredicible.",
+    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredictable.",
     "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
   },
   "lowLowercase": {
@@ -1855,9 +1844,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
-  },
-  "networkSettingsDescription": {
-    "message": "Add and edit custom RPC networks"
   },
   "networkStatus": {
     "message": "Network status"
@@ -2459,9 +2445,6 @@
   },
   "securityAndPrivacy": {
     "message": "Security & Privacy"
-  },
-  "securitySettingsDescription": {
-    "message": "Privacy settings and wallet Secret Recovery Phrase"
   },
   "seedPhraseConfirm": {
     "message": "Confirm Secret Recovery Phrase"

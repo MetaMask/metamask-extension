@@ -78,11 +78,15 @@ export const getCaveatSpecifications = ({ getIdentities }) => {
  * in the current MetaMask instance.
  * @param options.getIdentities - A function that returns the
  * `PreferencesController` identity objects for all Ethereum accounts in the
+ * @param options.captureKeyringTypesWithMissingIdentities - A function that
+ * captures extra error information about the "Missing identity for address"
+ * error.
  * current MetaMask instance.
  */
 export const getPermissionSpecifications = ({
   getAllAccounts,
   getIdentities,
+  captureKeyringTypesWithMissingIdentities,
 }) => {
   return {
     [PermissionKeys.eth_accounts]: {
@@ -119,8 +123,10 @@ export const getPermissionSpecifications = ({
 
         return accounts.sort((firstAddress, secondAddress) => {
           if (!identities[firstAddress]) {
+            captureKeyringTypesWithMissingIdentities(identities, accounts);
             throw new Error(`Missing identity for address: "${firstAddress}".`);
           } else if (!identities[secondAddress]) {
+            captureKeyringTypesWithMissingIdentities(identities, accounts);
             throw new Error(
               `Missing identity for address: "${secondAddress}".`,
             );

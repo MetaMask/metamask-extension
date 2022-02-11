@@ -47,9 +47,6 @@
   "about": {
     "message": "关于"
   },
-  "aboutSettingsDescription": {
-    "message": "版本、支持中心和联系方式。"
-  },
   "acceleratingATransaction": {
     "message": "* 设定更高燃料价格，可以加快交易完成进度，提高网络快速处理机率，但无法保证每次均能够实现提速。"
   },
@@ -185,9 +182,6 @@
   "advancedPriorityFeeToolTip": {
     "message": "优先收费(又称“矿工费”)直接向矿工支付，并鼓励他们确定您的交易的优先次序。"
   },
-  "advancedSettingsDescription": {
-    "message": "访问开发者功能，下载状态日志，重置账户，设置测试网和自定义 RPC。"
-  },
   "affirmAgree": {
     "message": "我同意"
   },
@@ -211,9 +205,6 @@
   },
   "alerts": {
     "message": "提醒"
-  },
-  "alertsSettingsDescription": {
-    "message": "启用或禁用每个提醒"
   },
   "allowExternalExtensionTo": {
     "message": "允许这个外部扩展到："
@@ -551,9 +542,6 @@
   "contacts": {
     "message": "联系人"
   },
-  "contactsSettingsDescription": {
-    "message": "添加、编辑、删除和管理您的联系人。"
-  },
   "continue": {
     "message": "继续"
   },
@@ -720,12 +708,6 @@
   },
   "details": {
     "message": "详情"
-  },
-  "directDepositEther": {
-    "message": "直接存入 Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "如果您已经有了一些 Ether，最快捷的方法就是直接向新钱包存入 Ether。"
   },
   "disconnect": {
     "message": "断开"
@@ -1045,9 +1027,6 @@
   "experimental": {
     "message": "实验性"
   },
-  "experimentalSettingsDescription": {
-    "message": "代币检测及更多"
-  },
   "exportPrivateKey": {
     "message": "导出私钥"
   },
@@ -1207,7 +1186,7 @@
     "message": "燃料使用"
   },
   "gdprMessage": {
-    "message": "这些数据是汇总的，因此，根据《GDPR 通用数据保护条例》(EU)2016/679，这些数据是匿名的。有关我们隐私惯例的更多信息，请参见我们的 $1。",
+    "message": "这些数据是汇总的，因此，根据《GDPR 通用数据保护条例》(EU) 2016/679，这些数据是匿名的。有关我们隐私惯例的更多信息，请参见我们的 $1。",
     "description": "$1 refers to the gdprMessagePrivacyPolicy message, the translation of which is meant to be used exclusively in the context of gdprMessage"
   },
   "gdprMessagePrivacyPolicy": {
@@ -1216,9 +1195,6 @@
   },
   "general": {
     "message": "通用"
-  },
-  "generalSettingsDescription": {
-    "message": "货币转换、主要价格单位、语言和 Blockies Identicon 图标头像"
   },
   "getEther": {
     "message": "获取 Ether"
@@ -1739,9 +1715,6 @@
   },
   "networkSettingsChainIdDescription": {
     "message": "链 ID 用于签署交易。它必须与网络返回的链 ID 相匹配。您可以输入十进制或'0x'前缀的十六进制数字，但我们将以十进制显示。"
-  },
-  "networkSettingsDescription": {
-    "message": "添加和编辑自定义 RPC 网络"
   },
   "networkStatus": {
     "message": "网络状态"
@@ -2340,9 +2313,6 @@
   },
   "securityAndPrivacy": {
     "message": "安全与隐私"
-  },
-  "securitySettingsDescription": {
-    "message": "隐私设置和账户助记词"
   },
   "seedPhraseConfirm": {
     "message": "请确认账户助记词"
