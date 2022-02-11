@@ -100,7 +100,7 @@ describe('AdvancedGasFeeGasLimit', () => {
     render({ minimumGasLimit: '0x7530' });
     fireEvent.click(screen.queryByText('Edit'));
     fireEvent.change(document.getElementsByTagName('input')[0], {
-      target: { value: 25000 },
+      target: { value: 20000 },
     });
     expect(
       screen.queryByText(
