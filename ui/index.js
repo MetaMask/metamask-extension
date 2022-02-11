@@ -184,7 +184,6 @@ function maskObject(object, mask) {
 
 function setupDebuggingHelpers(store) {
   window.getCleanAppState = async function () {
-    console.log(store.getState());
     const state = clone(store.getState());
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
