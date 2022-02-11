@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import {
@@ -22,7 +22,6 @@ import AddRecipient from './send-content/add-recipient';
 import SendContent from './send-content';
 import SendFooter from './send-footer';
 import EnsInput from './send-content/add-recipient/ens-input';
-import HoldToReveal from '../../components/app/hold-to-reveal/hold-to-reveal';
 
 const sendSliceIsCustomPriceExcessive = (state) =>
   isCustomPriceExcessive(state, true);
@@ -94,17 +93,8 @@ export default function SendTransactionScreen() {
     content = <AddRecipient />;
   }
 
-  const [a, setA] = useState(false);
-
-  // nesto = (value) => {
-  //   setA(value);
-  // }
-
-  console.log(a);
-
   return (
     <div className="page-container">
-      <HoldToReveal buttonText='holdToReveal' timeToHold={5} revealFinished={setA} />
       <SendHeader history={history} />
       <EnsInput
         userInput={userInput}

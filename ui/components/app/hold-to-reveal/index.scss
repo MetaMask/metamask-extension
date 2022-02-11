@@ -9,7 +9,7 @@
 }
 
 .button__icon {
-  margin-right: 11px !important;
+  margin-inline-end: 11px !important;
 }
 
 .main-box {
@@ -18,7 +18,7 @@
 
   &__circular-progress-secondary {
     z-index: 1;
-    color: var(--ui-white);  
+    color: var(--ui-white);
   }
 
   &__circular-progress-primary {
