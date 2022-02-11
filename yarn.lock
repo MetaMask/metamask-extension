@@ -2821,9 +2821,10 @@
   resolved "https://registry.yarnpkg.com/@metamask/safe-event-emitter/-/safe-event-emitter-2.0.0.tgz#af577b477c683fad17c619a78208cede06f9605c"
   integrity sha512-/kSXhY692qiV1MXu6EeOZvg5nECLclxNXcKCxJ3cXQgYuRymRHpdx/t7JXfsK+JLjwA1e1c1/SBrlQYpusC29Q==
 
-"@metamask/smart-transactions-controller@https://github.com/MetaMask/smart-transactions-controller.git#a314ced":
-  version "1.8.0"
-  resolved "https://github.com/MetaMask/smart-transactions-controller.git#a314ced0386fbf5f2678bc090532c850d1f237b8"
+"@metamask/smart-transactions-controller@^1.9.1":
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/@metamask/smart-transactions-controller/-/smart-transactions-controller-1.9.1.tgz#f9fa168b33cc23c2238c23eed29475f16afafdd0"
+  integrity sha512-Vq6HU+l6WSXTCTWazsFwSDNm5DtX6SWuqf3qkMWvollnSduExu2q1XrCIrtsDg7W69NO0XNYL3R13w+ZaNhjzA==
   dependencies:
     "@metamask/controllers" "^25.1.0"
     "@types/lodash" "^4.14.176"
