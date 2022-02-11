@@ -1515,6 +1515,9 @@
   "seedPhraseIntroSidebarBulletOne": {
     "message": "I-save sa password manager"
   },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "Ilagay sa safe-deposit box."
+  },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "Ilagay sa bank vault."
   },

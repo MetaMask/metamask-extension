@@ -2316,6 +2316,9 @@
   "seedPhraseIntroSidebarBulletOne": {
     "message": "In einem Passwort-Manager speichern"
   },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "In einem Safe speichern."
+  },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "In einem Bank-Tresor speichern."
   },

@@ -2316,6 +2316,9 @@
   "seedPhraseIntroSidebarBulletOne": {
     "message": "保存到密码管理器"
   },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "存放在保险箱内。"
+  },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "储存在银行保险库。"
   },

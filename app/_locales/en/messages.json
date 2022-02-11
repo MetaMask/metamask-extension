@@ -2581,8 +2581,11 @@
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Save in a password manager"
   },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "Store in a safe deposit box"
+  },
   "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Store in a bank vault/ safe deposit box"
+    "message": "Store in a bank vault"
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "Your Secret Recovery Phrase is a 12-word phrase that is the “master key” to your wallet and your funds"

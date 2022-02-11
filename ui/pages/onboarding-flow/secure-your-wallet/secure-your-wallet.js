@@ -143,7 +143,7 @@ export default function SecureYourWallet() {
           </Typography>
           <ul className="secure-your-wallet__list">
             <li>{t('seedPhraseIntroSidebarBulletOne')}</li>
-            <li>{t('seedPhraseIntroSidebarBulletTwo')}</li>
+            <li>{t('seedPhraseIntroSidebarBulletThree')}</li>
             <li>{t('seedPhraseIntroSidebarBulletFour')}</li>
           </ul>
         </Box>

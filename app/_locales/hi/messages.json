@@ -2316,6 +2316,9 @@
   "seedPhraseIntroSidebarBulletOne": {
     "message": "पासवर्ड मैनेजर में सहेजें"
   },
+  "seedPhraseIntroSidebarBulletThree": {
+    "message": "सेफ डिपॉजिट बॉक्स में स्टोर करें।"
+  },
   "seedPhraseIntroSidebarBulletTwo": {
     "message": "बैंक की तिजोरी में रखें।"
   },
