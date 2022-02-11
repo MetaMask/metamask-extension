@@ -34,7 +34,7 @@ export default class Identicon extends PureComponent {
     /**
      * Used as the image source of the Identicon
      */
-    image: PropTypes.string,
+    image: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
     /**
      * Use the blockie type random image generator
      */
@@ -76,7 +76,14 @@ export default class Identicon extends PureComponent {
     const { className, diameter, alt, imageBorder, ipfsGateway } = this.props;
     let { image } = this.props;
 
-    if (image.toLowerCase().startsWith('ipfs://')) {
+    if (Array.isArray(image) && image.length) {
+      image = image[0];
+    }
+
+    if (
+      typeof image === 'string' &&
+      image.toLowerCase().startsWith('ipfs://')
+    ) {
       image = getAssetImageURL(image, ipfsGateway);
     }
 

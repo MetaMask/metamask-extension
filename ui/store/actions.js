@@ -3108,6 +3108,13 @@ export function createEventFragment(options) {
   return promisifiedBackground.createEventFragment(options);
 }
 
+export function createTransactionEventFragment(transactionId, event) {
+  return promisifiedBackground.createTransactionEventFragment(
+    transactionId,
+    event,
+  );
+}
+
 export function updateEventFragment(id, payload) {
   return promisifiedBackground.updateEventFragment(id, payload);
 }

@@ -247,6 +247,7 @@ describe('PermissionController specifications', () => {
           const { methodImplementation } = getPermissionSpecifications({
             getIdentities,
             getAllAccounts,
+            captureKeyringTypesWithMissingIdentities: jest.fn(),
           })[RestrictedMethods.eth_accounts];
 
           await expect(() => methodImplementation()).rejects.toThrow(
@@ -272,6 +273,7 @@ describe('PermissionController specifications', () => {
           const { methodImplementation } = getPermissionSpecifications({
             getIdentities,
             getAllAccounts,
+            captureKeyringTypesWithMissingIdentities: jest.fn(),
           })[RestrictedMethods.eth_accounts];
 
           await expect(() => methodImplementation()).rejects.toThrow(

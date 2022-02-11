@@ -79,7 +79,7 @@ describe('useMaxPriorityFeePerGasInput', () => {
     expect(mock).toHaveBeenCalledTimes(1);
     expect(mock).toHaveBeenCalledWith({
       txParams: {
-        estimateSuggested: 'medium',
+        estimateSuggested: 'tenPercentIncreased',
         estimateUsed: 'tenPercentIncreased',
         gas: '5208',
         gasLimit: '5208',

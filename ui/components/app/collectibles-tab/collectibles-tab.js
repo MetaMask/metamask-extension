@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -18,22 +17,16 @@ import {
   ALIGN_ITEMS,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getCollectibles,
-  getCollectibleContracts,
-  getCollectiblesDetectionNoticeDismissed,
-} from '../../../ducks/metamask/metamask';
+import { getCollectiblesDetectionNoticeDismissed } from '../../../ducks/metamask/metamask';
 import { getIsMainnet, getUseCollectibleDetection } from '../../../selectors';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import {
   checkAndUpdateAllCollectiblesOwnershipStatus,
   detectCollectibles,
 } from '../../../store/actions';
-import { usePrevious } from '../../../hooks/usePrevious';
+import { useCollectiblesCollections } from '../../../hooks/useCollectiblesCollections';
 
 export default function CollectiblesTab({ onAddNFT }) {
-  const collectibles = useSelector(getCollectibles);
-  const collectibleContracts = useSelector(getCollectibleContracts);
   const useCollectibleDetection = useSelector(getUseCollectibleDetection);
   const isMainnet = useSelector(getIsMainnet);
   const collectibleDetectionNoticeDismissed = useSelector(
@@ -42,46 +35,12 @@ export default function CollectiblesTab({ onAddNFT }) {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const [collections, setCollections] = useState({});
-  const [previouslyOwnedCollection, setPreviouslyOwnedCollection] = useState({
-    collectionName: 'Previously Owned',
-    collectibles: [],
-  });
 
-  const prevCollectibles = usePrevious(collectibles);
-  useEffect(() => {
-    const getCollections = () => {
-      const newCollections = {};
-      const newPreviouslyOwnedCollections = {
-        collectionName: 'Previously Owned',
-        collectibles: [],
-      };
-
-      collectibles.forEach((collectible) => {
-        if (collectible?.isCurrentlyOwned === false) {
-          newPreviouslyOwnedCollections.collectibles.push(collectible);
-        } else if (newCollections[collectible.address]) {
-          newCollections[collectible.address].collectibles.push(collectible);
-        } else {
-          const collectionContract = collectibleContracts.find(
-            ({ address }) => address === collectible.address,
-          );
-          newCollections[collectible.address] = {
-            collectionName: collectionContract?.name || collectible.name,
-            collectionImage:
-              collectionContract?.logo || collectible.collectionImage,
-            collectibles: [collectible],
-          };
-        }
-      });
-      setCollections(newCollections);
-      setPreviouslyOwnedCollection(newPreviouslyOwnedCollections);
-    };
-
-    if (!isEqual(prevCollectibles, collectibles)) {
-      getCollections();
-    }
-  }, [collectibles, prevCollectibles, collectibleContracts]);
+  const {
+    collectiblesLoading,
+    collections,
+    previouslyOwnedCollection,
+  } = useCollectiblesCollections();
 
   const onEnableAutoDetect = () => {
     history.push(EXPERIMENTAL_ROUTE);
@@ -93,6 +52,10 @@ export default function CollectiblesTab({ onAddNFT }) {
     }
     checkAndUpdateAllCollectiblesOwnershipStatus();
   };
+
+  if (collectiblesLoading) {
+    return <div className="collectibles-tab__loading">{t('loadingNFTs')}</div>;
+  }
 
   return (
     <div className="collectibles-tab">
