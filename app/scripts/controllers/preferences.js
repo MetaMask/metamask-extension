@@ -143,13 +143,12 @@ export default class PreferencesController {
   /**
    * Setter for the `openSeaEnabled` property
    *
-   * @param {boolean} val - Whether or not the user prefers to use the OpenSea API for collectibles data.
+   * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for collectibles data.
    */
-  setOpenSeaEnabled(val) {
-    this.store.updateState({ openSeaEnabled: val });
-    if (!val) {
-      this.store.updateState({ useCollectibleDetection: false });
-    }
+  setOpenSeaEnabled(openSeaEnabled) {
+    this.store.updateState({
+      openSeaEnabled,
+    });
   }
 
   /**
