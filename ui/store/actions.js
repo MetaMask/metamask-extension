@@ -751,6 +751,10 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
   };
 }
 
+export async function getTransactions(filters = {}) {
+  return await promisifiedBackground.getTransactions(filters);
+}
+
 export function completedTx(id) {
   return (dispatch, getState) => {
     const state = getState();
