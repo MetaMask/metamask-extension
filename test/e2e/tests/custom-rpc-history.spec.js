@@ -75,8 +75,7 @@ describe('Stores custom RPC history', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // duplicate network
-        const duplicateRpcUrl =
-          'https://mainnet.infura.io/v3/00000000000000000000000000000000';
+        const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
 
         await driver.clickElement('.network-display');
 
