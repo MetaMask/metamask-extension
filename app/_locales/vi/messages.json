@@ -2286,6 +2286,9 @@
   "secretBackupPhraseWarning": {
     "message": "CẢNH BÁO: Tuyệt đối không để lộ Cụm mật khẩu khôi phục bí mật của bạn. Bất kỳ ai có cụm mật khẩu này cũng có thể lấy Ether của bạn vĩnh viễn."
   },
+  "secretPhrase": {
+    "message": "Chỉ tự động tải tài khoản đầu tên trên ví. Sau khi hoàn tất quá trình này, để thêm tài khoản bổ sung, hãy nhấn vào trình đơn thả xuống và chọn Tạo tài khoản."
+  },
   "secretRecoveryPhrase": {
     "message": "Cụm Mật Khẩu Khôi Phục Bí Mật"
   },

@@ -1478,6 +1478,9 @@
   "secretBackupPhraseWarning": {
     "message": "ADVERTENCIA: No revele su frase de respaldo. Cualquier persona que tenga esta frase puede robarle los ethers."
   },
+  "secretPhrase": {
+    "message": "Ingrese su frase secreta aquí para restaurar su bóveda."
+  },
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
   },

@@ -2286,6 +2286,9 @@
   "secretBackupPhraseWarning": {
     "message": "AVERTISSEMENT : ne révélez jamais votre phrase secrète de récupération. N’importe peut l’utiliser et définitivement voler votre compte Ether."
   },
+  "secretPhrase": {
+    "message": "Seul le premier compte de ce portefeuille sera chargé automatiquement. Après avoir terminé ce processus, pour ajouter des comptes supplémentaires, cliquez sur le menu déroulant, puis sélectionnez Créer un compte."
+  },
   "secretRecoveryPhrase": {
     "message": "Phrase secrète de récupération"
   },

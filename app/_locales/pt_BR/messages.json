@@ -2319,6 +2319,9 @@
   "secretBackupPhraseWarning": {
     "message": "ADVERTÊNCIA: jamais divulgue a sua Frase de Recuperação Secreta. Qualquer pessoa com essa frase pode tomar seus Ethers para sempre."
   },
+  "secretPhrase": {
+    "message": "Somente a primeira conta nessa carteira será carregada automaticamente. Após concluir esse processo, para adicionar mais contas, clique no menu suspenso e selecione Criar Conta."
+  },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
   },

@@ -2286,6 +2286,9 @@
   "secretBackupPhraseWarning": {
     "message": "UYARI: Gizli Kurtarma İfadenizi asla ifşa etmeyin. Bu ifadeye sahip olan herhangi bir kişi Ether'inizi sonsuza kadar ele geçirebilir."
   },
+  "secretPhrase": {
+    "message": "Sadece bu cüzdandaki ilk hesap otomatik olarak yüklenecektir. Bu işlem tamamlandıktan sonra ilave hesaplar eklemek için açılır menüye tıklayın ardından Hesap Oluştur seçeneğini seçin."
+  },
   "secretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesi"
   },

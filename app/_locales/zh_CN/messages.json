@@ -2286,6 +2286,9 @@
   "secretBackupPhraseWarning": {
     "message": "警告：切勿向他人透露您的账户助记词。任何人一旦持有该账户助记词，即可控制您的 Ether。"
   },
+  "secretPhrase": {
+    "message": "只有这个钱包上的第一个帐户将自动加载。 完成此流程后，点击下拉菜单，然后选择创建账户。"
+  },
   "secretRecoveryPhrase": {
     "message": "账户助记词"
   },

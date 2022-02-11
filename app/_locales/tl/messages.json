@@ -2286,6 +2286,9 @@
   "secretBackupPhraseWarning": {
     "message": "BABALA: Huwag kailanman ipaalam ang iyong phrase sa pag-back up. Ang sinumang may phrase na ito ay maaaring angkinin ang iyong Ether."
   },
+  "secretPhrase": {
+    "message": "Ang unang account lang sa wallet na ito ang awtomatikong maglo-load. Pagkatapos makumpleto ang prosesong ito, upang magdagdag ng mga karagdagang account, i-click ang drop down na menu, pagkatapos ay piliin ang Gumawa ng Account."
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },

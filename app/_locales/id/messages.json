@@ -2286,6 +2286,9 @@
   "secretBackupPhraseWarning": {
     "message": "PERINGATAN: Jangan pernah mengungkapkan Frasa Pemulihan Rahasia Anda. Siapa pun yang memiliki frasa ini dapat mengambil Ether Anda selamanya."
   },
+  "secretPhrase": {
+    "message": "Hanya akun pertama di dompet ini yang akan dimuat secara otomatis. Setelah proses ini selesai, untuk menambahkan akun tambahan, klik menu drop down, lalu pilih Buat Akun."
+  },
   "secretRecoveryPhrase": {
     "message": "Frasa Pemulihan Rahasia"
   },

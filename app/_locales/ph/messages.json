@@ -1503,6 +1503,9 @@
   "secretBackupPhraseWarning": {
     "message": "BABALA: Huwag kailanman ipaalam ang iyong phrase sa pag-back up. Ang sinumang may phrase na ito ay puwedeng umangkin sa iyong Ether."
   },
+  "secretPhrase": {
+    "message": "Ilagay ang iyong secret phrase dito para ma-restore ang iyong vault."
+  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
