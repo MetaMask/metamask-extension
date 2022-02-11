@@ -90,10 +90,9 @@ describe('AdvancedGasFeePopover', () => {
       target: { value: 30000 },
     });
     expect(screen.queryByRole('button', { name: 'Save' })).not.toBeDisabled();
-    expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
     fireEvent.change(document.getElementsByTagName('input')[3], {
       target: { value: MAX_GAS_LIMIT_DEC + 1 },
     });
-    expect(screen.queryByRole('button', { name: 'Save' })).not.toBeDisabled();
+    expect(screen.queryByRole('button', { name: 'Save' })).toBeDisabled();
   });
 });
