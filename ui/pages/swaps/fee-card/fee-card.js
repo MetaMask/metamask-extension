@@ -73,11 +73,15 @@ export default function FeeCard({
     <div className="fee-card">
       <div className="fee-card__main">
         <TransactionDetail
+          disableEditGasFeeButton={
+            smartTransactionsEnabled && smartTransactionsOptInStatus
+          }
           rows={[
             <TransactionDetailItem
               key="gas-item"
               detailTitle={
-                supportsEIP1559V2 ? (
+                supportsEIP1559V2 &&
+                (!smartTransactionsEnabled || !smartTransactionsOptInStatus) ? (
                   <GasDetailsItemTitle />
                 ) : (
                   <>
