@@ -12,6 +12,7 @@ import {
   getTopQuote,
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
   getSwapsRefreshStates,
   cancelSwapsSmartTransaction,
 } from '../../../ducks/swaps/swaps';
@@ -72,6 +73,9 @@ export default function SmartTransactionStatus() {
   );
   const swapsRefreshRates = useSelector(getSwapsRefreshStates);
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
   let smartTransactionStatus = SMART_TRANSACTION_STATUSES.PENDING;
   let latestSmartTransaction = {};
   let latestSmartTransactionUuid;
@@ -100,6 +104,7 @@ export default function SmartTransactionStatus() {
     hardware_wallet_type: hardwareWalletType,
     stx_uuid: latestSmartTransactionUuid,
     stx_enabled: smartTransactionsEnabled,
+    current_stx_enabled: currentSmartTransactionsEnabled,
     stx_user_opt_in: smartTransactionsOptInStatus,
   };
 
@@ -131,7 +136,8 @@ export default function SmartTransactionStatus() {
 
   useEffect(() => {
     stxStatusPageLoadedEvent();
-  }, [stxStatusPageLoadedEvent]);
+    // eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     let intervalId;
