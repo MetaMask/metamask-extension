@@ -183,10 +183,14 @@ function maskObject(object, mask) {
 }
 
 function setupDebuggingHelpers(store) {
-  window.getCleanAppState = function () {
+  window.getCleanAppState = async function () {
+    console.log(store.getState());
     const state = clone(store.getState());
     state.version = global.platform.getVersion();
     state.browser = window.navigator.userAgent;
+    state.completeTxList = await actions.getTransactions({
+      filterToCurrentNetwork: false,
+    });
     return state;
   };
   window.getSentryState = function () {
@@ -200,8 +204,8 @@ function setupDebuggingHelpers(store) {
   };
 }
 
-window.logStateString = function (cb) {
-  const state = window.getCleanAppState();
+window.logStateString = async function (cb) {
+  const state = await window.getCleanAppState();
   global.platform.getPlatformInfo((err, platform) => {
     if (err) {
       cb(err);
