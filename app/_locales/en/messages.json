@@ -843,16 +843,12 @@
   "editGasHigh": {
     "message": "High"
   },
-  "editGasLimitGreaterThanMaximum": {
-    "message": "Gas limit must be less than $1",
-    "description": "$1 is the maximum limit for gas"
-  },
-  "editGasLimitLessThanMinimum": {
-    "message": "Gas limit must be greater than $1",
-    "description": "$1 is the minimum limit for gas"
-  },
   "editGasLimitOutOfBounds": {
     "message": "Gas limit must be at least $1"
+  },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "Gas limit must be greater than $1 and less than $2",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
   "editGasLimitTooltip": {
     "message": "Gas limit is the maximum units of gas you are willing to use. Units of gas are a multiplier to “Max priority fee” and “Max fee”."

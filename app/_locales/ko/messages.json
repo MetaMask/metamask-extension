@@ -793,6 +793,10 @@
   "editGasLimitOutOfBounds": {
     "message": "가스 최소 한도는 $1입니다."
   },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "가스 한도는 $1보다 크고 $2 미만이어야 합니다.",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
   "editGasLimitTooltip": {
     "message": "가스 한도는 사용하려는 가스의 최대 단위입니다. 가스 단위는 \"최대 우선 요금\" 및 \"최대 요금\"의 승수입니다."
   },

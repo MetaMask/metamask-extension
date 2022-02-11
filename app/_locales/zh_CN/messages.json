@@ -793,6 +793,10 @@
   "editGasLimitOutOfBounds": {
     "message": "燃料限制至少要 $1"
   },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "燃料限制必须大于$1且小于 $2",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
   "editGasLimitTooltip": {
     "message": "燃料限制是您愿意使用的最大燃料单位。 燃料单位是达到“最高优先收费”和“最高收费”的乘数。"
   },

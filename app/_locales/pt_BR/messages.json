@@ -804,6 +804,10 @@
   "editGasLimitOutOfBounds": {
     "message": "O limite de gás deve ser de pelo menos $1"
   },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "O limite de gás deve ser superior a $1 e inferior a $2",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
   "editGasLimitTooltip": {
     "message": "O limite de gás são as unidades máximas de gás que você está disposto a utilizar. Unidades de gás são um multiplicador para “Taxa de prioridade máxima” e “Taxa máxima”."
   },

@@ -793,6 +793,10 @@
   "editGasLimitOutOfBounds": {
     "message": "Лимит газа должен быть не менее $1"
   },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "Лимит газа должен быть больше $1 и меньше $2",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
   "editGasLimitTooltip": {
     "message": "Лимит газа — это максимальное количество единиц газа, которое вы готовы использовать. Единицы газа являются множителем «Максимальной платы за приоритет» и «Максимальной комиссии»."
   },

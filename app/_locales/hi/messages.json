@@ -793,6 +793,10 @@
   "editGasLimitOutOfBounds": {
     "message": "गैस सीमा कम से कम $1 होनी चाहिए"
   },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "गैस की सीमा $1 से अधिक और $2 से कम होनी चाहिए",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
   "editGasLimitTooltip": {
     "message": "गैस सीमा, गैस की वो अधिकतम यूनिट है जिसका आप उपयोग करना चाहते हैं। गैस यूनिट “अधिकतम प्राथमिकता शुल्क” और “अधिकतम शुल्क” का गुणक होती हैं।"
   },

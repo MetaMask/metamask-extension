@@ -793,6 +793,10 @@
   "editGasLimitOutOfBounds": {
     "message": "Gaz limiti en az $1 olmalıdır"
   },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "Gaz limiti en az $1, en fazla $2 olmalıdır",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
   "editGasLimitTooltip": {
     "message": "Gaz limiti, kullanmak istediğiniz maksimum gaz birimidir. Gaz birimleri \"Maks. öncelik ücreti\" ve \"Maks. ücretin\" bir çarpanıdır."
   },

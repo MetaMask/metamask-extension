@@ -804,6 +804,10 @@
   "editGasLimitOutOfBounds": {
     "message": "Gaslimit muss mindestens 1$ betragen"
   },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "Gaslimit muss größer als $1 und kleiner als $2 sein",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
   "editGasLimitTooltip": {
     "message": "Gaslimit ist die maximale Gaseinheit die Sie zu verwenden bereit sind. Gaseinheiten sind ein Multiplikator der „Max. Prioritätsgebühr“ und der „Max. Gebühr“."
   },

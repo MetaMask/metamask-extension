@@ -793,6 +793,10 @@
   "editGasLimitOutOfBounds": {
     "message": "Batas gas minimum adalah $1"
   },
+  "editGasLimitOutOfBoundsV2": {
+    "message": "Batas gas harus lebih besar dari $1 dan kurang dari $2",
+    "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
+  },
   "editGasLimitTooltip": {
     "message": "Batas gas merupakan unit maksimum gas yang ingin Anda gunakan. Unit gas adalah pengganda untuk “Biaya prioritas maks” dan “Biaya maks”."
   },
