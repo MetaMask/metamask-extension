@@ -404,7 +404,8 @@
     "message": "Buy ETH"
   },
   "buyOther": {
-    "message": "Buy $1 or deposit from another account."
+    "message": "Buy $1 or deposit from another account.",
+    "description": "$1 is a token symbol"
   },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
