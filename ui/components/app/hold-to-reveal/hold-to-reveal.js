@@ -68,13 +68,14 @@ export default function HoldToReveal({
                   ? 'images/unlock-icon.svg'
                   : 'images/lock-icon.svg'
               }
+              alt=""
               className="main-box__icon"
             />
           </Box>
         </Box>
       }
     >
-      {t(`${buttonText}`)}
+      {t(buttonText)}
     </Button>
   );
 }
