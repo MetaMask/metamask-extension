@@ -22,7 +22,6 @@ import {
 } from '../../../selectors/selectors';
 import {
   DEFAULT_ROUTE,
-  ASSET_ROUTE,
   BUILD_QUOTE_ROUTE,
 } from '../../../helpers/constants/routes';
 import Typography from '../../../components/ui/typography';
@@ -176,12 +175,6 @@ export default function SmartTransactionStatus() {
     }, 1000); // Stop polling for quotes after 1s.
   }, [dispatch]);
 
-  const onClickTokenTo = async (e) => {
-    e?.preventDefault();
-    await dispatch(prepareToLeaveSwaps());
-    history.push(`${ASSET_ROUTE}/${destinationTokenInfo?.address}`);
-  };
-
   let headerText = t('stxPendingOptimizingGas');
   let description;
   let subDescription;
@@ -195,16 +188,7 @@ export default function SmartTransactionStatus() {
   }
   if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
     headerText = t('stxSuccess');
-    description = t('stxSuccessDescription', [
-      <a
-        className="smart-transaction-status__token-to-link"
-        key="smart-transaction-status__token-to-link"
-        href="#"
-        onClick={onClickTokenTo}
-      >
-        {destinationTokenInfo?.symbol}
-      </a>,
-    ]);
+    description = t('stxSuccessDescription', [destinationTokenInfo?.symbol]);
     icon = <SuccessIcon />;
   } else if (smartTransactionStatus === 'cancelled_user_cancelled') {
     headerText = t('stxUserCancelled');
