@@ -132,12 +132,6 @@
   "details": {
     "message": "விவரங்கள்"
   },
-  "directDepositEther": {
-    "message": "நேரடியாக வைப்புத்தொகை"
-  },
-  "directDepositEtherExplainer": {
-    "message": "நீங்கள் ஏற்கனவே ஏதெர் இருந்தால், நேரடி வைப்பு மூலம் உங்கள் புதிய பணப்பையில் ஈத்தர் பெற விரைவான வழி."
-  },
   "done": {
     "message": "முடிந்தது"
   },

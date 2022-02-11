@@ -85,6 +85,7 @@
     "3box/ipfs/prometheus-gc-stats/gc-stats/node-pre-gyp/tar": "^6.1.2",
     "3box/**/libp2p-crypto/node-forge": "^1.0.0",
     "3box/**/libp2p-keychain/node-forge": "^1.0.0",
+    "3box/ipfs/libp2p-webrtc-star/socket.io/engine.io": "^4.0.0",
     "analytics-node/axios": "^0.21.2",
     "ganache-core/lodash": "^4.17.21",
     "netmask": "^2.0.1",

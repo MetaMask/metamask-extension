@@ -289,12 +289,6 @@
   "details": {
     "message": "Informācija"
   },
-  "directDepositEther": {
-    "message": "Tiešā Ether iemaksa"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ja jums jau ir Ether, tad visātrāk Ether savā makā varat saņemt ar tiešo iemaksu."
-  },
   "done": {
     "message": "Pabeigts"
   },
