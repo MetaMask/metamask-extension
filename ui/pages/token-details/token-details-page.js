@@ -83,7 +83,8 @@ export default function TokenDetailsPage() {
           className="token-details__title"
         >
           {t('tokenDetails')}
-          <button
+          <Button
+            type="link"
             onClick={() => history.push(`${ASSET_ROUTE}/${token.address}`)}
             className="token-details__closeButton"
           />
