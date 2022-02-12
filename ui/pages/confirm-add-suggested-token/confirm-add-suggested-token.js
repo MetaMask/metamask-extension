@@ -8,8 +8,10 @@ import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
+import { getSuggestedAssets } from '../../selectors';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
 
 function getTokenName(name, symbol) {
@@ -60,13 +62,9 @@ const ConfirmAddSuggestedToken = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const mostRecentOverviewPage = useSelector((state) =>
-    getMostRecentOverviewPage(state),
-  );
-  const suggestedAssets = useSelector(
-    (state) => state.metamask.suggestedAssets,
-  );
-  const tokens = useSelector((state) => state.metamask.tokens);
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const suggestedAssets = useSelector(getSuggestedAssets);
+  const tokens = useSelector(getTokens);
 
   const tokenAddedEvent = (asset) => {
     metricsEvent({
