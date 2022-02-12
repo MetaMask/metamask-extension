@@ -443,21 +443,7 @@ export default class TransactionController extends EventEmitter {
 
     if (eip1559Compatibility) {
       const { eip1559V2Enabled } = this.preferencesStore.getState();
-      const advancedGasFeeDefaultValues = this.getAdvancedGasFee();
       if (
-        eip1559V2Enabled &&
-        Boolean(advancedGasFeeDefaultValues) &&
-        !txMeta.txParams.maxFeePerGas &&
-        !txMeta.txParams.maxPriorityFeePerGas
-      ) {
-        txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
-        txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(
-          advancedGasFeeDefaultValues.maxBaseFee,
-        );
-        txMeta.txParams.maxPriorityFeePerGas = decGWEIToHexWEI(
-          advancedGasFeeDefaultValues.priorityFee,
-        );
-      } else if (
         txMeta.txParams.gasPrice &&
         !txMeta.txParams.maxFeePerGas &&
         !txMeta.txParams.maxPriorityFeePerGas
@@ -473,14 +459,13 @@ export default class TransactionController extends EventEmitter {
         }
       } else {
         if (
-          (defaultMaxFeePerGas &&
-            defaultMaxPriorityFeePerGas &&
-            !txMeta.txParams.maxFeePerGas &&
-            !txMeta.txParams.maxPriorityFeePerGas) ||
-          txMeta.origin === 'metamask'
+          defaultMaxFeePerGas &&
+          defaultMaxPriorityFeePerGas &&
+          !txMeta.txParams.maxFeePerGas &&
+          !txMeta.txParams.maxPriorityFeePerGas
         ) {
           txMeta.userFeeLevel = GAS_RECOMMENDATIONS.MEDIUM;
-        } else if (eip1559V2Enabled) {
+        } else if (eip1559V2Enabled && txMeta.origin !== 'metamask') {
           txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
         } else {
           txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;

@@ -44,6 +44,8 @@ import {
   getUseTokenDetection,
   getTokenList,
   getAddressBookEntryOrAccountName,
+  getAdvancedGasFeeValues,
+  getEIP1559V2Enabled,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -439,6 +441,9 @@ export const initializeSendState = createAsyncThunk(
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
     const eip1559support = checkNetworkAndAccountSupports1559(state);
+    const eip1559V2Enabled = getEIP1559V2Enabled(state);
+    const advancedGasFeeDefaultValues = getAdvancedGasFeeValues(state);
+
     const {
       send: { asset, stage, recipient, amount, draftTransaction },
       metamask,
@@ -462,8 +467,10 @@ export const initializeSendState = createAsyncThunk(
     // will return the gasFeeEstimates and gasEstimateType so that the reducer
     // can set the appropriate gas fees in state.
     let gasPrice = '0x1';
+    let maxFeePerGas = '0x0';
+    let maxPriorityFeePerGas = '0x0';
     let gasEstimatePollToken = null;
-
+    let isAdvancedGasDefault;
     // Instruct the background process that polling for gas prices should begin
     gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
 
@@ -484,6 +491,15 @@ export const initializeSendState = createAsyncThunk(
       gasPrice = getGasPriceInHexWei(
         gasFeeEstimates.medium.suggestedMaxFeePerGas,
       );
+      if (eip1559V2Enabled && Boolean(advancedGasFeeDefaultValues)) {
+        maxFeePerGas = getGasPriceInHexWei(
+          advancedGasFeeDefaultValues?.maxBaseFee,
+        );
+        maxPriorityFeePerGas = getGasPriceInHexWei(
+          advancedGasFeeDefaultValues?.priorityFee,
+        );
+        isAdvancedGasDefault = true;
+      }
     } else {
       gasPrice = gasFeeEstimates.gasPrice
         ? getRoundedGasPrice(gasFeeEstimates.gasPrice)
@@ -545,6 +561,9 @@ export const initializeSendState = createAsyncThunk(
       balance = '0x1';
     }
     return {
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      isAdvancedGasDefault,
       address: fromAddress,
       nativeBalance: account.balance,
       assetBalance: balance,
@@ -848,6 +867,9 @@ const slice = createSlice({
     updateGasFeeEstimates: (state, action) => {
       const { gasFeeEstimates, gasEstimateType } = action.payload;
       let gasPriceEstimate = '0x0';
+      if (state.gas.isCustomGasSet) {
+        return;
+      }
       switch (gasEstimateType) {
         case GAS_ESTIMATE_TYPES.FEE_MARKET:
           slice.caseReducers.updateGasFees(state, {
@@ -1281,12 +1303,22 @@ const slice = createSlice({
         state.account.balance = action.payload.nativeBalance;
         state.asset.balance = action.payload.assetBalance;
         state.gas.gasLimit = action.payload.gasLimit;
+        if (action.payload?.isAdvancedGasDefault) {
+          state.gas.isCustomGasSet = true;
+        }
         slice.caseReducers.updateGasFeeEstimates(state, {
           payload: {
             gasFeeEstimates: action.payload.gasFeeEstimates,
             gasEstimateType: action.payload.gasEstimateType,
           },
         });
+        if (
+          action.payload?.maxFeePerGas &&
+          action.payload?.maxPriorityFeePerGas
+        ) {
+          state.gas.maxFeePerGas = action.payload.maxFeePerGas;
+          state.gas.maxPriorityFeePerGas = action.payload.maxPriorityFeePerGas;
+        }
         state.gas.gasTotal = action.payload.gasTotal;
         state.gas.gasEstimatePollToken = action.payload.gasEstimatePollToken;
         if (action.payload.gasEstimatePollToken) {
