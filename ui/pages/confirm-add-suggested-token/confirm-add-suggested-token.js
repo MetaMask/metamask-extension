@@ -88,7 +88,7 @@ const ConfirmAddSuggestedToken = () => {
             <Button
               type="link"
               key="confirm-add-suggested-token-duplicate-warning"
-              className="confirm-import-token__link"
+              className="confirm-add-suggested-token__link"
               rel="noopener noreferrer"
               target="_blank"
               href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
