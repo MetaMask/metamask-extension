@@ -1,4 +1,5 @@
 import React from 'react';
+import testData from '../../../../.storybook/test-data';
 import TokenSearch from './token-search.component';
 
 export default {
@@ -7,7 +8,7 @@ export default {
 };
 
 export const DefaultStory = () => {
-  return <TokenSearch />;
+  return <TokenSearch tokenList={testData.metamask.tokenList} />;
 };
 
 DefaultStory.storyName = 'Default';
