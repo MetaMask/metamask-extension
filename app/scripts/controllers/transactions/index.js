@@ -341,6 +341,15 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async addUnapprovedTransaction(txParams, origin, transactionType) {
+    if (
+      transactionType !== undefined &&
+      transactionType !== TRANSACTION_TYPES.SWAP &&
+      transactionType !== TRANSACTION_TYPES.SWAP_APPROVAL
+    ) {
+      throw new Error(
+        `TransactionController - invalid transactionType value: ${transactionType}`,
+      );
+    }
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams);
     const eip1559Compatibility = await this.getEIP1559Compatibility();
@@ -435,18 +444,21 @@ export default class TransactionController extends EventEmitter {
       gasLimit: defaultGasLimit,
       simulationFails,
     } = await this._getDefaultGasLimit(txMeta, getCodeResponse);
+
     // eslint-disable-next-line no-param-reassign
     txMeta = this.txStateManager.getTransaction(txMeta.id);
     if (simulationFails) {
       txMeta.simulationFails = simulationFails;
     }
+
     if (eip1559Compatibility) {
       const { eip1559V2Enabled } = this.preferencesStore.getState();
       const advancedGasFeeDefaultValues = this.getAdvancedGasFee();
       if (
         eip1559V2Enabled &&
         Boolean(advancedGasFeeDefaultValues) &&
-        txMeta.type !== TRANSACTION_TYPES.SWAP
+        txMeta.type !== TRANSACTION_TYPES.SWAP &&
+        txMeta.type !== TRANSACTION_TYPES.SWAP_APPROVAL
       ) {
         txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(

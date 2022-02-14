@@ -857,7 +857,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         addUnapprovedTransaction(
           { ...approveTxParams, amount: '0x0' },
           'metamask',
-          TRANSACTION_TYPES.SWAP,
+          TRANSACTION_TYPES.SWAP_APPROVAL,
         ),
       );
       await dispatch(setApproveTxId(approveTxMeta.id));
