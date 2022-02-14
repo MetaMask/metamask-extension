@@ -76,19 +76,27 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
     tokenId;
 
   if (currentAsset) {
+    const {
+      standard,
+      symbol,
+      image,
+      name,
+      balance,
+      decimals: currentAssetDecimals,
+    } = currentAsset;
     const tokenData = parseTransactionData(transactionData);
-    assetStandard = currentAsset?.standard;
+    assetStandard = standard;
     assetAddress = tokenAddress;
-    tokenSymbol = currentAsset?.symbol;
-    tokenImage = currentAsset?.image;
+    tokenSymbol = symbol;
+    tokenImage = image;
     toAddress = getTokenAddressParam(tokenData);
     if (assetStandard === ERC721 || assetStandard === ERC1155) {
-      assetName = currentAsset?.name;
+      assetName = name;
       tokenId = getTokenValueParam(tokenData);
     }
     if (assetStandard === ERC20) {
-      userBalance = currentAsset?.balance;
-      decimals = Number(currentAsset?.decimals.toString(10));
+      userBalance = balance;
+      decimals = Number(currentAssetDecimals?.toString(10));
       tokenAmount =
         tokenData &&
         calcTokenAmount(getTokenValueParam(tokenData), decimals).toString(10);
