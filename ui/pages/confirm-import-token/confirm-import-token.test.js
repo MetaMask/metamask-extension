@@ -7,7 +7,7 @@ import {
 } from '../../helpers/constants/routes';
 import { addTokens, clearPendingTokens } from '../../store/actions';
 import configureStore from '../../store/store';
-import { renderWithProvider } from '../../../test/jest/rendering';
+import { renderWithProvider } from '../../../test/jest';
 import ConfirmImportToken from '.';
 
 const MOCK_PENDING_TOKENS = {
