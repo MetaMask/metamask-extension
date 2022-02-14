@@ -341,15 +341,19 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async addUnapprovedTransaction(txParams, origin, transactionType) {
+    const allowedTransactionTypes = [
+      TRANSACTION_TYPES.SWAP,
+      TRANSACTION_TYPES.SWAP_APPROVAL,
+    ];
     if (
       transactionType !== undefined &&
-      transactionType !== TRANSACTION_TYPES.SWAP &&
-      transactionType !== TRANSACTION_TYPES.SWAP_APPROVAL
+      !allowedTransactionTypes.includes(transactionType)
     ) {
       throw new Error(
         `TransactionController - invalid transactionType value: ${transactionType}`,
       );
     }
+
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams);
     const eip1559Compatibility = await this.getEIP1559Compatibility();
