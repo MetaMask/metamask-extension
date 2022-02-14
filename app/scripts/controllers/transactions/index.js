@@ -462,7 +462,7 @@ export default class TransactionController extends EventEmitter {
       if (
         eip1559V2Enabled &&
         Boolean(advancedGasFeeDefaultValues) &&
-        !SWAP_TRANSACTION_TYPES.includes(transactionType)
+        !SWAP_TRANSACTION_TYPES.includes(txMeta.type)
       ) {
         txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(
