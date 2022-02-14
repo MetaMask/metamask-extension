@@ -485,18 +485,12 @@ export function unlockHardwareWalletAccounts(
 }
 
 export async function checkLedgerReady(fromAddress) {
-  console.log('[actions] checkLedgerReady for address: ', fromAddress);
-  console.log(
-    '[actions] About to call to server : ',
-    promisifiedBackground.checkLedgerReady,
-  );
   let isReady = false;
   try {
     isReady = await promisifiedBackground.checkLedgerReady(fromAddress);
   } catch (e) {
     console.log('[actions]] ERROR! ', e);
   }
-  console.log('[actions] checkLedgerReady response: ', isReady);
   return isReady;
 }
 
