@@ -698,18 +698,23 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
   };
 }
 
-export function addUnapprovedTransaction(txParams, origin) {
+export function addUnapprovedTransaction(txParams, origin, type) {
   log.debug('background.addUnapprovedTransaction');
 
   return () => {
     return new Promise((resolve, reject) => {
-      background.addUnapprovedTransaction(txParams, origin, (err, txMeta) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(txMeta);
-      });
+      background.addUnapprovedTransaction(
+        txParams,
+        origin,
+        type,
+        (err, txMeta) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(txMeta);
+        },
+      );
     });
   };
 }
