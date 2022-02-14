@@ -316,6 +316,9 @@ export default function Swap() {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
+  const isStxNotEnoughFundsError =
+    currentSmartTransactionsError === 'not_enough_funds';
+
   return (
     <div className="swaps">
       <div className="swaps__container">
@@ -347,13 +350,9 @@ export default function Swap() {
         <div className="swaps__content">
           {showSmartTransactionsErrorMessage && (
             <ActionableMessage
-              type={
-                currentSmartTransactionsError === 'not_enough_funds'
-                  ? 'default'
-                  : 'warning'
-              }
+              type={isStxNotEnoughFundsError ? 'default' : 'warning'}
               message={
-                currentSmartTransactionsError === 'not_enough_funds' ? (
+                isStxNotEnoughFundsError ? (
                   <div>
                     {t('swapApproveNeedMoreTokensSmartTransactions', [
                       defaultSwapsToken.symbol,
@@ -380,12 +379,12 @@ export default function Swap() {
                 )
               }
               className={
-                currentSmartTransactionsError === 'not_enough_funds'
+                isStxNotEnoughFundsError
                   ? 'swaps__error-message'
                   : 'actionable-message--left-aligned actionable-message--warning swaps__error-message'
               }
               primaryAction={
-                currentSmartTransactionsError === 'not_enough_funds'
+                isStxNotEnoughFundsError
                   ? null
                   : {
                       label: t('dismiss'),
