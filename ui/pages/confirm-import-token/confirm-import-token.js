@@ -11,6 +11,7 @@ import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { getPendingTokens } from '../../ducks/metamask/metamask';
 import { addTokens, clearPendingTokens } from '../../store/actions';
 
 const getTokenName = (name, symbol) => {
@@ -23,8 +24,8 @@ const ConfirmImportToken = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage)
-  const pendingTokens = useSelector((state) => state.metamask.pendingTokens);
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const pendingTokens = useSelector(getPendingTokens);
 
   const trackTokenAddedEvent = (pendingToken) => {
     metricsEvent({
