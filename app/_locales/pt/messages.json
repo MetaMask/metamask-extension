@@ -87,12 +87,6 @@
   "details": {
     "message": "Detalhes"
   },
-  "directDepositEther": {
-    "message": "Depositar Diretamente Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Se já tem Ether, a forma mais rápida de ficar com Ether na sua carteira é através de depósito direto."
-  },
   "done": {
     "message": "Finalizado"
   },

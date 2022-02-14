@@ -6,6 +6,16 @@ import PermissionsConnectFooter from '../../../../components/app/permissions-con
 import PermissionConnectHeader from '../../../../components/app/permissions-connect-header';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/flask/snap-install-warning';
+import Box from '../../../../components/ui/box/box';
+import {
+  ALIGN_ITEMS,
+  BLOCK_SIZES,
+  BORDER_STYLE,
+  FLEX_DIRECTION,
+  JUSTIFY_CONTENT,
+  TYPOGRAPHY,
+} from '../../../../helpers/constants/design-system';
+import Typography from '../../../../components/ui/typography';
 
 export default function SnapInstall({
   request,
@@ -46,8 +56,18 @@ export default function SnapInstall({
   );
 
   return (
-    <div className="page-container snap-install">
-      <div className="headers">
+    <Box
+      className="page-container snap-install"
+      justifyContent={JUSTIFY_CONTENT.SPACE_BETWEEN}
+      height={BLOCK_SIZES.FULL}
+      borderStyle={BORDER_STYLE.NONE}
+      flexDirection={FLEX_DIRECTION.COLUMN}
+    >
+      <Box
+        className="headers"
+        alignItems={ALIGN_ITEMS.CENTER}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+      >
         <PermissionConnectHeader
           icon={targetSubjectMetadata.iconUrl}
           iconName={targetSubjectMetadata.name}
@@ -55,15 +75,25 @@ export default function SnapInstall({
           headerText={null} // TODO(ritave): Add header text when snaps support description
           siteOrigin={targetSubjectMetadata.origin}
           npmPackageName={npmId}
+          boxProps={{ alignItems: ALIGN_ITEMS.CENTER }}
         />
-        <div className="snap-requests-permission">
-          {t('snapRequestsPermission')}
-        </div>
+        <Typography></Typography>
+        <Box
+          className="snap-requests-permission"
+          padding={4}
+          tag={TYPOGRAPHY.H7}
+        >
+          <span>{t('snapRequestsPermission')}</span>
+        </Box>
         <PermissionsConnectPermissionList
           permissions={request.permissions || {}}
         />
-      </div>
-      <div className="footers">
+      </Box>
+      <Box
+        className="footers"
+        alignItems={ALIGN_ITEMS.CENTER}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+      >
         {targetSubjectMetadata.sourceCode ? (
           <>
             <div className="source-code">
@@ -79,12 +109,14 @@ export default function SnapInstall({
                 {t('openSourceCode')}
               </div>
             </div>
-            <PermissionsConnectFooter />
+            <Box paddingBottom={4}>
+              <PermissionsConnectFooter />
+            </Box>
           </>
         ) : (
-          <div className="snap-install__footer--no-source-code">
+          <Box className="snap-install__footer--no-source-code" paddingTop={4}>
             <PermissionsConnectFooter />
-          </div>
+          </Box>
         )}
 
         <PageContainerFooter
@@ -96,7 +128,7 @@ export default function SnapInstall({
           }
           submitText={t('approveAndInstall')}
         />
-      </div>
+      </Box>
       {isShowingWarning && (
         <SnapInstallWarning
           onCancel={() => setIsShowingWarning(false)}
@@ -104,7 +136,7 @@ export default function SnapInstall({
           snapName={targetSubjectMetadata.name}
         />
       )}
-    </div>
+    </Box>
   );
 }
 

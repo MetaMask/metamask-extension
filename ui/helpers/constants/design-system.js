@@ -113,7 +113,7 @@ export const DISPLAY = {
   LIST_ITEM: 'list-item',
 };
 
-const FRACTIONS = {
+export const FRACTIONS = {
   HALF: '1/2',
   ONE_THIRD: '1/3',
   TWO_THIRDS: '2/3',
