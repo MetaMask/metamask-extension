@@ -11,7 +11,7 @@ export default function SnapRemoveWarning({ onCancel, onSubmit, snapName }) {
 
   const SnapRemoveWarningFooter = () => {
     return (
-      <div className="snap-remove-warning__footer">
+      <>
         <Button
           className="snap-remove-warning__footer-button"
           type="default"
@@ -26,7 +26,7 @@ export default function SnapRemoveWarning({ onCancel, onSubmit, snapName }) {
         >
           {t('removeSnap')}
         </Button>
-      </div>
+      </>
     );
   };
 
