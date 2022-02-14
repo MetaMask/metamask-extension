@@ -1,13 +1,12 @@
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { fireEvent, screen } from '@testing-library/react';
 import {
   ASSET_ROUTE,
   IMPORT_TOKEN_ROUTE,
 } from '../../helpers/constants/routes';
 import { addTokens, clearPendingTokens } from '../../store/actions';
+import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest/rendering';
 import mockState from '../../../test/data/mock-state.json';
 import ConfirmImportToken from '.';
@@ -28,7 +27,7 @@ jest.mock('../../store/actions', () => ({
 }));
 
 const renderComponent = () => {
-  const baseStore = {
+  const store = configureStore({
     metamask: {
       ...mockState.metamask,
       pendingTokens: { ...MOCK_PENDING_TOKENS },
@@ -36,8 +35,8 @@ const renderComponent = () => {
     history: {
       mostRecentOverviewPage: '/',
     },
-  };
-  const store = configureMockStore([thunk])(baseStore);
+  });
+
   return renderWithProvider(<ConfirmImportToken />, store);
 };
 
