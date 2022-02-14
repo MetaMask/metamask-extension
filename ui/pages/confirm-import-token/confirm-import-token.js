@@ -15,7 +15,7 @@ import { getPendingTokens } from '../../ducks/metamask/metamask';
 import { addTokens, clearPendingTokens } from '../../store/actions';
 
 const getTokenName = (name, symbol) => {
-  return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
+  return name === undefined ? symbol : `${name} (${symbol})`;
 };
 
 const ConfirmImportToken = () => {
