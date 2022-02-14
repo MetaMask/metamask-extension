@@ -1033,6 +1033,14 @@ export default class MetamaskController extends EventEmitter {
             type: MESSAGE_TYPE.SNAP_CONFIRM,
             requestData: confirmationData,
           }),
+        showNotification: (origin, args) => {
+          const snap = this.snapController.get(origin);
+          this.platform._showNotification(
+            snap.manifest.proposedName,
+            args.message,
+          );
+          return true;
+        },
         updateSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:updateSnapState',
