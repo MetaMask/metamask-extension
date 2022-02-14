@@ -1670,6 +1670,9 @@
     "message": "Make sure no one is watching your screen",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "malformedData": {
+    "message": "Malformed data"
+  },
   "max": {
     "message": "Max"
   },
@@ -2718,6 +2721,9 @@
   },
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
+  },
+  "status": {
+    "message": "Status"
   },
   "statusConnected": {
     "message": "Connected"

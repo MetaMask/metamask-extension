@@ -177,7 +177,7 @@ export default class TransactionListItemDetails extends PureComponent {
           </div>
           <div className="transaction-list-item-details__header">
             <div className="transaction-list-item-details__tx-status">
-              <div>Status</div>
+              <div>{t('status')}</div>
               <div>
                 <TransactionStatus />
               </div>
