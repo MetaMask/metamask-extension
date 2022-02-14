@@ -55,6 +55,11 @@ const hstInterface = new ethers.utils.Interface(abi);
 
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 
+const SWAP_TRANSACTION_TYPES = [
+  TRANSACTION_TYPES.SWAP,
+  TRANSACTION_TYPES.SWAP_APPROVAL,
+];
+
 /**
  * @typedef {import('../../../../shared/constants/transaction').TransactionMeta} TransactionMeta
  * @typedef {import('../../../../shared/constants/transaction').TransactionMetaMetricsEventString} TransactionMetaMetricsEventString
@@ -341,13 +346,9 @@ export default class TransactionController extends EventEmitter {
    * @returns {txMeta}
    */
   async addUnapprovedTransaction(txParams, origin, transactionType) {
-    const allowedTransactionTypes = [
-      TRANSACTION_TYPES.SWAP,
-      TRANSACTION_TYPES.SWAP_APPROVAL,
-    ];
     if (
       transactionType !== undefined &&
-      !allowedTransactionTypes.includes(transactionType)
+      !SWAP_TRANSACTION_TYPES.includes(transactionType)
     ) {
       throw new Error(
         `TransactionController - invalid transactionType value: ${transactionType}`,
@@ -461,8 +462,7 @@ export default class TransactionController extends EventEmitter {
       if (
         eip1559V2Enabled &&
         Boolean(advancedGasFeeDefaultValues) &&
-        txMeta.type !== TRANSACTION_TYPES.SWAP &&
-        txMeta.type !== TRANSACTION_TYPES.SWAP_APPROVAL
+        !SWAP_TRANSACTION_TYPES.includes(transactionType)
       ) {
         txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(
