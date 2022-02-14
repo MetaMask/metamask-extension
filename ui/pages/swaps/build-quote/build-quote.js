@@ -625,19 +625,6 @@ export default function BuildQuote({
                   color={COLORS.UI4}
                 >
                   {t('stxYouCanOptOut')}&nbsp;
-                  {/* TODO: Enable this once we have the right URL. */}
-                  {/* <a
-                    className="smart-transactions-popover__learn-more-link"
-                    onClick={() => {
-                      global.platform.openTab({
-                        url: 'https://metamask.io/1559', // TODO: Replace it with the right URL.
-                      });
-                    }}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('learnMoreWithDot')}
-                  </a> */}
                 </Typography>
               </Typography>
             </Box>
