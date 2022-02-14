@@ -2,7 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
-import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
+} from '../../../../../../shared/constants/gas';
 import { SECONDARY } from '../../../../../helpers/constants/common';
 import {
   bnGreaterThan,
@@ -47,7 +50,12 @@ const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
 const BaseFeeInput = () => {
   const t = useI18nContext();
 
-  const { gasFeeEstimates, estimateUsed, maxFeePerGas } = useGasFeeContext();
+  const {
+    gasFeeEstimates,
+    estimateUsed,
+    maxFeePerGas,
+    editGasMode,
+  } = useGasFeeContext();
   const {
     maxPriorityFeePerGas,
     setErrorValue,
@@ -68,7 +76,8 @@ const BaseFeeInput = () => {
   const [baseFee, setBaseFee] = useState(() => {
     if (
       estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
-      advancedGasFeeValues?.maxBaseFee
+      advancedGasFeeValues?.maxBaseFee &&
+      editGasMode !== EDIT_GAS_MODES.SWAPS
     ) {
       return advancedGasFeeValues.maxBaseFee;
     }

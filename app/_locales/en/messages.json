@@ -1660,7 +1660,7 @@
     "message": "Low"
   },
   "lowGasSettingToolTipMessage": {
-    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredicible.",
+    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredictable.",
     "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
   },
   "lowLowercase": {
@@ -1681,6 +1681,9 @@
   "makeSureNoOneWatching": {
     "message": "Make sure no one is watching your screen",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
+  },
+  "malformedData": {
+    "message": "Malformed data"
   },
   "manageSnaps": {
     "message": "Manage your installed Snaps"
@@ -2245,7 +2248,7 @@
     "description": "The description for the `snap_confirm` permission"
   },
   "permission_ethereumAccounts": {
-    "message": "See address, account balance, activity and initiate transactions",
+    "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
   "permission_manageBip44Keys": {
@@ -2809,6 +2812,9 @@
   },
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
+  },
+  "status": {
+    "message": "Status"
   },
   "statusConnected": {
     "message": "Connected"

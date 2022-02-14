@@ -1489,6 +1489,7 @@ export default class MetamaskController extends EventEmitter {
       createTransactionEventFragment: txController.createTransactionEventFragment.bind(
         txController,
       ),
+      getTransactions: txController.getTransactions.bind(txController),
 
       // messageManager
       signMessage: this.signMessage.bind(this),
