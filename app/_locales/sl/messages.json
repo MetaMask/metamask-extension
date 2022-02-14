@@ -289,12 +289,6 @@
   "details": {
     "message": "Podrobnosti"
   },
-  "directDepositEther": {
-    "message": "Neposredno vplačilo ehera"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Če že imate Ether, ga lahko najhitreje dobite v MetaMask z neposrednim vplačilom."
-  },
   "done": {
     "message": "Končano"
   },

@@ -709,12 +709,6 @@
   "details": {
     "message": "詳細"
   },
-  "directDepositEther": {
-    "message": "Etherを直接入金"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Etherをすでに所有している場合、Etherを新しいウォレットに入れる最短の方法は直接入金です。"
-  },
   "disconnect": {
     "message": "接続解除"
   },

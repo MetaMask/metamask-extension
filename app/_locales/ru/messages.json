@@ -709,12 +709,6 @@
   "details": {
     "message": "Подробности"
   },
-  "directDepositEther": {
-    "message": "Внести Ether напрямую"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Если у вас уже есть Ether, то самый быстрый способ получить Ether в свой новый кошелек — это прямой депозит."
-  },
   "disconnect": {
     "message": "Отключить"
   },

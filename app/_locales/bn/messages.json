@@ -289,12 +289,6 @@
   "details": {
     "message": "বিশদ বিবরণ"
   },
-  "directDepositEther": {
-    "message": "সরাসরি ইথার জমা করুন"
-  },
-  "directDepositEtherExplainer": {
-    "message": "আপনার ইতিমধ্যে কিছু ইথার থেকে থাকলে আপনার নতুন ওয়ালেটে ইথার পাওয়ার দ্রুততম উপায় হল সরাসরি জমা করা।"
-  },
   "done": {
     "message": "সম্পন্ন "
   },

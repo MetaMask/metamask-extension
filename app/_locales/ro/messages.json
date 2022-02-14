@@ -289,12 +289,6 @@
   "details": {
     "message": "Detalii"
   },
-  "directDepositEther": {
-    "message": "Depuneți direct Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Dacă deja aveți Ether, cel mai rapid mod de a avea Ether în portofelul nou prin depunere directă."
-  },
   "done": {
     "message": "Efectuat"
   },
