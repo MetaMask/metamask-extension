@@ -563,15 +563,15 @@ export default function BuildQuote({
                 <Button type="primary" onClick={onEnableSmartTransactionsClick}>
                   {t('enableSmartTransactions')}
                 </Button>
-                <Box marginTop={4}>
+                <Box marginTop={1}>
                   <Typography variant={TYPOGRAPHY.H6}>
-                    <a
-                      href="#"
+                    <Button
+                      type="link"
                       onClick={onCloseSmartTransactionsOptInPopover}
                       className="smart-transactions-popover__no-thanks-link"
                     >
                       {t('noThanksVariant2')}
-                    </a>
+                    </Button>
                   </Typography>
                 </Box>
               </>
