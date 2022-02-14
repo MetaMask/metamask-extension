@@ -29,7 +29,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
 
   const keyring = useSelector(getCurrentKeyring);
   const chainId = useSelector(getCurrentChainId);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const { rpcPrefs } = useSelector((state) => state.metamask.provider);
   const selectedIdentity = useSelector(getSelectedIdentity);
   const { address } = selectedIdentity;
   const addressLink = getAccountLink(address, chainId, rpcPrefs);
@@ -94,7 +94,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         }
         iconClassName="fas fa-external-link-alt"
       >
-        {rpcPrefs.blockExplorerUrl
+        {rpcPrefs?.blockExplorerUrl
           ? t('viewinExplorer', [t('blockExplorerAccountAction')])
           : t('viewOnEtherscan', [t('blockExplorerAccountAction')])}
       </MenuItem>

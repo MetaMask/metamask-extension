@@ -247,6 +247,9 @@ export default class AccountMenu extends Component {
                 selectedNetwork['id'],
                 'QUAI',
                 providerNickname,
+                {
+                  blockExplorerUrl: selectedNetwork['blockExplorerUrl'],
+                },
               );
             }
             showAccountDetail(identity.address);

@@ -1585,7 +1585,13 @@ export function setRpcTarget(newRpc, chainId, ticker = 'ETH', nickname) {
   };
 }
 
-export function updateRpcTarget(newRpc, chainId, ticker = 'ETH', nickname) {
+export function updateRpcTarget(
+  newRpc,
+  chainId,
+  ticker = 'ETH',
+  nickname,
+  rpcPrefs,
+) {
   return async (dispatch) => {
     log.debug(
       `background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`,
@@ -1597,12 +1603,14 @@ export function updateRpcTarget(newRpc, chainId, ticker = 'ETH', nickname) {
         chainId,
         ticker,
         nickname,
+        rpcPrefs,
       });
       await promisifiedBackground.updateRpcTarget(
         newRpc,
         chainId,
         ticker,
         nickname || newRpc,
+        rpcPrefs,
       );
     } catch (error) {
       log.error(error);

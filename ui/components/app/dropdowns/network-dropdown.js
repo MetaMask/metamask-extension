@@ -64,8 +64,10 @@ function mapDispatchToProps(dispatch) {
     setRpcTarget: (target, chainId, ticker, nickname) => {
       dispatch(actions.setRpcTarget(target, chainId, ticker, nickname));
     },
-    updateRpcTarget: (target, chainId, ticker, nickname) => {
-      dispatch(actions.updateRpcTarget(target, chainId, ticker, nickname));
+    updateRpcTarget: (target, chainId, ticker, nickname, rpcPrefs) => {
+      dispatch(
+        actions.updateRpcTarget(target, chainId, ticker, nickname, rpcPrefs),
+      );
     },
     hideNetworkDropdown: () => dispatch(actions.hideNetworkDropdown()),
     displayInvalidCustomNetworkAlert: (networkName) => {
@@ -168,6 +170,9 @@ class NetworkDropdown extends Component {
       selectedNetwork['id'],
       'QUAI',
       NETWORK_TO_NAME_MAP[newProviderType],
+      {
+        blockExplorerUrl: selectedNetwork['blockExplorerUrl'],
+      },
     );
   }
 

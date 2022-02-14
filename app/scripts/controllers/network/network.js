@@ -314,6 +314,7 @@ export default class NetworkController extends EventEmitter {
       chainId,
       ticker: 'ETH',
       nickname: '',
+      rpcPrefs: {},
     });
   }
 

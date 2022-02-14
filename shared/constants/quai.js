@@ -11,6 +11,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['00', '09'],
     id: '0x2328',
     rpc: 'http://45.76.19.78:8546',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Cyprus',
@@ -18,6 +19,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['0a', '13'],
     id: '0x238c',
     rpc: 'http://45.76.19.78:8578',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Cyprus One',
@@ -25,6 +27,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['14', '1d'],
     id: '0x16379',
     rpc: 'http://45.76.19.78:8610',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Cyprus Two',
@@ -32,6 +35,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['1e', '27'],
     id: '0x1637A',
     rpc: 'http://45.76.19.78:8642',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Cyprus Three',
@@ -39,6 +43,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['28', '31'],
     id: '0x1637B',
     rpc: 'http://45.76.19.78:8674',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Paxos',
@@ -46,6 +51,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['32', '3b'],
     id: '0x23f0',
     rpc: 'http://45.76.19.78:8580',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Paxos One',
@@ -53,6 +59,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['3c', '45'],
     id: '0x16761',
     rpc: 'http://45.76.19.78:8612',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Paxos Two',
@@ -60,6 +67,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['46', '4f'],
     id: '0x16762',
     rpc: 'http://45.76.19.78:8644',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Paxos Three',
@@ -67,6 +75,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['50', '59'],
     id: '0x16763',
     rpc: 'http://45.76.19.78:8676',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Hydra',
@@ -74,6 +83,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['5a', '63'],
     id: '0x2454',
     rpc: 'http://45.76.19.78:8582',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Hydra One',
@@ -81,6 +91,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['64', '6d'],
     id: '0x16B49',
     rpc: 'http://45.76.19.78:8614',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Hydra Two',
@@ -88,6 +99,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['6e', '77'],
     id: '0x16B4A',
     rpc: 'http://45.76.19.78:8646',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Hydra Three',
@@ -95,6 +107,7 @@ export const QUAI_MAIN_CONTEXTS = [
     byte: ['78', '81'],
     id: '0x16B4B',
     rpc: 'http://45.76.19.78:8678',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
 ];
 
@@ -105,6 +118,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['00', '09'],
     id: '0x2328',
     rpc: 'http://45.76.19.78:8546',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Cyprus',
@@ -112,6 +126,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['0a', '13'],
     id: '0x238c',
     rpc: 'http://45.76.19.78:8578',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Cyprus One',
@@ -119,6 +134,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['14', '1d'],
     id: '0x16379',
     rpc: 'http://45.76.19.78:8610',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Cyprus Two',
@@ -126,6 +142,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['1e', '27'],
     id: '0x1637A',
     rpc: 'http://45.76.19.78:8642',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Cyprus Three',
@@ -133,6 +150,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['28', '31'],
     id: '0x1637B',
     rpc: 'http://45.76.19.78:8674',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Paxos',
@@ -140,6 +158,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['32', '3b'],
     id: '0x23f0',
     rpc: 'http://45.76.19.78:8580',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Paxos One',
@@ -147,6 +166,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['3c', '45'],
     id: '0x16761',
     rpc: 'http://45.76.19.78:8612',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Paxos Two',
@@ -154,6 +174,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['46', '4f'],
     id: '0x16762',
     rpc: 'http://45.76.19.78:8644',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Paxos Three',
@@ -161,6 +182,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['50', '59'],
     id: '0x16763',
     rpc: 'http://45.76.19.78:8676',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Hydra',
@@ -168,6 +190,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['5a', '63'],
     id: '0x2454',
     rpc: 'http://45.76.19.78:8582',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Hydra One',
@@ -175,6 +198,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['64', '6d'],
     id: '0x16B49',
     rpc: 'http://45.76.19.78:8614',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Hydra Two',
@@ -182,6 +206,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['6e', '77'],
     id: '0x16B4A',
     rpc: 'http://45.76.19.78:8646',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
   {
     name: 'Hydra Three',
@@ -189,6 +214,7 @@ export const QUAI_TEST_CONTEXTS = [
     byte: ['78', '81'],
     id: '0x16B4B',
     rpc: 'http://45.76.19.78:8678',
+    blockExplorerUrl: 'https://quaiscan.io',
   },
 ];
 
