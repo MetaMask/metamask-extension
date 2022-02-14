@@ -645,6 +645,7 @@ export default class ConfirmTransactionBase extends Component {
               await connectHardwareWallet('ledger');
               this.setState({
                 showingHardwareConnectionAdvancedPopover: false,
+                showingHardwareConnectionContents: false,
               });
             }}
             onAdvancedClick={() => {
