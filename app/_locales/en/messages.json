@@ -1087,7 +1087,7 @@
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
   "eth_accounts": {
-    "message": "See address, account balance, activity and initiate transactions",
+    "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
@@ -1660,7 +1660,7 @@
     "message": "Low"
   },
   "lowGasSettingToolTipMessage": {
-    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredicible.",
+    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredictable.",
     "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
   },
   "lowLowercase": {
