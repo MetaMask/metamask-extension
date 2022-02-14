@@ -28,7 +28,7 @@ const ConfirmImportToken = () => {
   );
   const pendingTokens = useSelector((state) => state.metamask.pendingTokens);
 
-  const tokenAddedEvent = (pendingToken) => {
+  const trackTokenAddedEvent = (pendingToken) => {
     metricsEvent({
       event: 'Token Added',
       category: 'Wallet',
@@ -111,7 +111,7 @@ const ConfirmImportToken = () => {
 
               const pendingTokenValues = Object.values(pendingTokens);
               pendingTokenValues.forEach((pendingToken) => {
-                tokenAddedEvent(pendingToken);
+                trackTokenAddedEvent(pendingToken);
               });
               dispatch(clearPendingTokens());
 
