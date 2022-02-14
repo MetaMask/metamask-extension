@@ -206,7 +206,7 @@ export default class ConfirmApproveContent extends Component {
             {t('grantedToWithColon')}
           </div>
           <div className="confirm-approve-content__medium-text">
-            {`${displayedAddress}`}
+            {displayedAddress}
           </div>
           <div className="confirm-approve-content__medium-text">
             <Button
@@ -367,7 +367,7 @@ export default class ConfirmApproveContent extends Component {
           <div className="confirm-approve-content__data">
             {this.renderApproveContentCard({
               symbol: <i className="fa fa-file" />,
-              title: 'Data',
+              title: t('data'),
               content: this.renderDataContent(),
               noBorder: true,
             })}

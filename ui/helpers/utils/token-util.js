@@ -5,7 +5,7 @@ import {
   multiplyCurrencies,
 } from '../../../shared/modules/conversion.utils';
 import { getTokenStandardAndDetails } from '../../store/actions';
-import { ERC1155, ERC20, ERC721 } from '../constants/common';
+import { ERC1155, ERC721 } from '../constants/common';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 import { parseTransactionData } from './transactions.util';
@@ -239,31 +239,24 @@ export async function getAssetDetails(
     log.warn(error);
     return {};
   }
-  if (tokenDetails?.standard === ERC721 || tokenDetails?.standard === ERC1155) {
-    const existingCollectible = existingCollectibles.find(({ address }) =>
-      util.isEqualCaseInsensitive(tokenAddress, address),
-    );
-    if (existingCollectible) {
-      return {
-        address: existingCollectible?.address,
-        description: existingCollectible?.description,
-        favorite: existingCollectible?.favorite,
-        image: existingCollectible?.image,
-        isCurrentlyOwned: existingCollectible?.isCurrentlyOwned,
-        name: existingCollectible?.name,
-        tokenId: existingCollectible?.tokenId,
-        standard: tokenDetails?.standard,
-      };
+
+  if (tokenDetails?.standard) {
+    const { standard } = tokenDetails;
+    if (standard === ERC721 || standard === ERC1155) {
+      const existingCollectible = existingCollectibles.find(({ address }) =>
+        util.isEqualCaseInsensitive(tokenAddress, address),
+      );
+
+      if (existingCollectible) {
+        return {
+          ...existingCollectible,
+          standard,
+        };
+      }
     }
+    // else if not a collectible already in state or standard === ERC20 just return tokenDetails as it contains all required data
     return tokenDetails;
-  } else if (tokenDetails?.standard === ERC20) {
-    return {
-      symbol: tokenDetails?.symbol,
-      decimals: tokenDetails?.decimals,
-      balance: tokenDetails?.balance,
-      standard: tokenDetails?.standard,
-    };
   }
 
-  return null;
+  return {};
 }

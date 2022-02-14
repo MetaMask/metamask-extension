@@ -15,13 +15,20 @@ import { usePrevious } from './usePrevious';
 
 export function useAssetDetails(tokenAddress, userAddress, transactionData) {
   const dispatch = useDispatch();
+
+  // state selectors
   const tokens = useSelector(getTokens);
   const collectibles = useSelector(getCollectibles);
   const tokenList = useSelector(getTokenList);
+
+  // in-hook state
   const [currentAsset, setCurrentAsset] = useState(null);
+
+  // previous state checkers
   const prevTokenAddress = usePrevious(tokenAddress);
   const prevUserAddress = usePrevious(userAddress);
   const prevTransactionData = usePrevious(transactionData);
+
   useEffect(() => {
     async function getAndSetAssetDetails() {
       dispatch(showLoadingIndication());
