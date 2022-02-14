@@ -5,10 +5,18 @@ import TokenSearch from './token-search.component';
 export default {
   title: 'Pages/ImportToken/TokenSearch',
   id: __filename,
+  argTypes: {
+    error: {
+      control: 'text',
+    },
+    onSearch: {
+      action: 'onSearch',
+    },
+  },
 };
 
-export const DefaultStory = () => {
-  return <TokenSearch tokenList={testData.metamask.tokenList} />;
+export const DefaultStory = (args) => {
+  return <TokenSearch {...args} tokenList={testData.metamask.tokenList} />;
 };
 
 DefaultStory.storyName = 'Default';
