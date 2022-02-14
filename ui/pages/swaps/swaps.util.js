@@ -26,6 +26,7 @@ import {
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
   RINKEBY_CHAIN_ID,
+  ETH_SYMBOL,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -502,7 +503,7 @@ export const getFeeForSmartTransaction = ({
   const feeInWeiHex = decimalToHex(feeInWeiDec);
   const ethFee = getValueFromWeiHex({
     value: feeInWeiHex,
-    toDenomination: 'ETH',
+    toDenomination: ETH_SYMBOL,
     numberOfDecimals: 5,
   });
   const rawNetworkFees = getValueFromWeiHex({
