@@ -45,7 +45,10 @@ function getValues(pendingApproval, t, actions) {
               children: {
                 element: 'TextArea',
                 props: {
-                  height: '400px',
+                  // TODO(ritave): Terrible hard-coded height hack. Fixing this to adjust automatically to current window height would
+                  //               mean allowing template compoments to change global css, and since the intended use of the template
+                  //               renderer was to allow users to build their own UIs, this would be a big no-no.
+                  height: '238px',
                   value: textAreaContent,
                   readOnly: true,
                   resize: RESIZE.VERTICAL,
