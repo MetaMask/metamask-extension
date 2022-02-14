@@ -8,16 +8,22 @@ import {
 import { addTokens, clearPendingTokens } from '../../store/actions';
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest/rendering';
-import mockState from '../../../test/data/mock-state.json';
 import ConfirmImportToken from '.';
 
-const MOCK_PENDING_TOKENS = mockState.metamask.tokens.reduce(
-  (result, token) => {
-    result[token.address] = { ...token, decimals: 18 };
-    return result;
+const MOCK_PENDING_TOKENS = {
+  '0x6b175474e89094c44da98b954eedeac495271d0f': {
+    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    symbol: 'META',
+    decimals: 18,
+    image: 'metamark.svg',
   },
-  {},
-);
+  '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {
+    address: '0xB8c77482e45F1F44dE1745F52C74426C631bDD52',
+    symbol: '0X',
+    decimals: 18,
+    image: '0x.svg',
+  },
+};
 
 jest.mock('../../store/actions', () => ({
   addTokens: jest.fn().mockReturnValue({ type: 'test' }),
@@ -26,11 +32,11 @@ jest.mock('../../store/actions', () => ({
     .mockReturnValue({ type: 'CLEAR_PENDING_TOKENS' }),
 }));
 
-const renderComponent = () => {
+const renderComponent = (mockPendingTokens = MOCK_PENDING_TOKENS) => {
   const store = configureStore({
     metamask: {
-      ...mockState.metamask,
-      pendingTokens: { ...MOCK_PENDING_TOKENS },
+      pendingTokens: { ...mockPendingTokens },
+      provider: { chainId: '0x1' },
     },
     history: {
       mostRecentOverviewPage: '/',
@@ -48,8 +54,6 @@ describe('ConfirmImportToken Component', () => {
       .spyOn(reactRouterDom, 'useHistory')
       .mockImplementation()
       .mockReturnValue({ push: mockHistoryPush });
-
-    renderComponent();
   });
 
   afterEach(() => {
@@ -57,6 +61,8 @@ describe('ConfirmImportToken Component', () => {
   });
 
   it('should render', () => {
+    renderComponent();
+
     const [title, importTokensBtn] = screen.queryAllByText('Import Tokens');
 
     expect(title).toBeInTheDocument(title);
@@ -70,13 +76,16 @@ describe('ConfirmImportToken Component', () => {
   });
 
   it('should render the list of tokens', () => {
+    renderComponent();
+
     Object.values(MOCK_PENDING_TOKENS).forEach((token) => {
-      console.log(token);
       expect(screen.getByText(token.symbol)).toBeInTheDocument();
     });
   });
 
   it('should go to "IMPORT_TOKEN_ROUTE" route when clicking the "Back" button', async () => {
+    renderComponent();
+
     const backBtn = screen.getByRole('button', { name: 'Back' });
 
     await fireEvent.click(backBtn);
@@ -84,11 +93,28 @@ describe('ConfirmImportToken Component', () => {
     expect(mockHistoryPush).toHaveBeenCalledWith(IMPORT_TOKEN_ROUTE);
   });
 
-  it('should dispatch clearPendingTokens when clicking the "Import Tokens" button', async () => {
+  it('should dispatch clearPendingTokens and redirect to the first token page when clicking the "Import Tokens" button', async () => {
+    const mockFirstPendingTokenAddress =
+      '0xe83cccfabd4ed148903bf36d4283ee7c8b3494d1';
+    const mockPendingTokens = {
+      [mockFirstPendingTokenAddress]: {
+        address: mockFirstPendingTokenAddress,
+        symbol: 'CVL',
+        decimals: 18,
+        image: 'CVL_token.svg',
+      },
+      '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': {
+        address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e',
+        symbol: 'GLA',
+        decimals: 18,
+        image: 'gladius.svg',
+      },
+    };
+    renderComponent(mockPendingTokens);
+
     const importTokensBtn = screen.getByRole('button', {
       name: 'Import Tokens',
     });
-    const mockFirstTokenAddress = Object.values(MOCK_PENDING_TOKENS)[0].address;
 
     await fireEvent.click(importTokensBtn);
 
@@ -96,7 +122,7 @@ describe('ConfirmImportToken Component', () => {
     expect(clearPendingTokens).toHaveBeenCalled();
     expect(mockHistoryPush).toHaveBeenCalledTimes(1);
     expect(mockHistoryPush).toHaveBeenCalledWith(
-      `${ASSET_ROUTE}/${mockFirstTokenAddress}`,
+      `${ASSET_ROUTE}/${mockFirstPendingTokenAddress}`,
     );
   });
 });
