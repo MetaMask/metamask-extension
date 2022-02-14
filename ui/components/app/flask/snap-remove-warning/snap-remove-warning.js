@@ -38,7 +38,7 @@ export default function SnapRemoveWarning({ onCancel, onSubmit, snapName }) {
       onClose={onCancel}
     >
       <div className="snap-remove-warning__content">
-        <Typography variant={TYPOGRAPHY.H6} boxProps={{ paddingBottom: 4 }}>
+        <Typography variant={TYPOGRAPHY.H6}>
           {t('removeSnapConfirmation', [snapName])}
         </Typography>
       </div>

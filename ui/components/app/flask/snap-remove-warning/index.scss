@@ -1,55 +1,25 @@
 .snap-remove-warning {
-  flex-direction: row;
   color: black;
 
-  &__content {
-    padding: 24px 16px 24px;
-    align-items: center;
+  .popover-header {
+    padding: 24px 16px 0px 24px;
   }
 
-  &__footer {
-    display: flex;
-    
-    flex-flow: row;
-    justify-content: center;
-    flex: 0 0 auto;
-    width: 100%;
-    max-height: 40px;
+  &__content {
+    padding: 0px 16px 16px 24px;
+    align-items: center;
+
+    .typography--h6 {
+      font-size: 18px;
+    }
   }
 
   &__footer-button {
-    margin-right: 16px;
-    display: none;
+    height: 40px;
+    margin-right: 24px;
 
     &:last-of-type {
       margin-right: 0;
     }
   }
-
-
-  // &__close {
-  //   content: '\00D7';
-  //   // display: flex;
-  //   // flex-direction: column;
-  //   // justify-content: flex-start;
-  //   // align-items: center;
-  //   // position: relative;
-  //   // padding: 5px 0 31px 0;
-  //   // border: 1px solid var(--silver);
-  //   // border-radius: 4px;
-
-  //   // @include H1;
-
-  //   // background-color: transparent;
-  //   // color: var(--ui-black);
-  //   // position: absolute;
-  //   // cursor: pointer;
-  //   // top: -10px;
-  //   // right: 12px;
-
-  //   // &::after {
-  //   //   content: '\00D7';
-  //   // }
-  // }
-
 }
