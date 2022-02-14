@@ -1,7 +1,10 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 
-import { GAS_ESTIMATE_TYPES } from '../../../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  GAS_ESTIMATE_TYPES,
+} from '../../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import mockEstimates from '../../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -20,7 +23,7 @@ jest.mock('../../../../../store/actions', () => ({
   removePollingTokenFromAppState: jest.fn(),
 }));
 
-const render = (txProps) => {
+const render = (txProps, contextProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
@@ -43,6 +46,7 @@ const render = (txProps) => {
         userFeeLevel: 'custom',
         ...txProps,
       }}
+      {...contextProps}
     >
       <AdvancedGasFeePopoverContextProvider>
         <BaseFeeInput />
@@ -56,17 +60,33 @@ describe('BaseFeeInput', () => {
   it('should renders advancedGasFee.baseFee value if current estimate used is not custom', () => {
     render({
       userFeeLevel: 'high',
+      txParams: {
+        maxFeePerGas: '0x2E90EDD000',
+      },
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
+  });
+
+  it('should not advancedGasFee.baseFee value for swaps', () => {
+    render(
+      {
+        userFeeLevel: 'high',
+        txParams: {
+          maxFeePerGas: '0x2E90EDD000',
+        },
+      },
+      { editGasMode: EDIT_GAS_MODES.SWAPS },
+    );
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(200);
   });
 
   it('should renders baseFee values from transaction if current estimate used is custom', () => {
     render({
       txParams: {
-        maxFeePerGas: '0x174876E800',
+        maxFeePerGas: '0x2E90EDD000',
       },
     });
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(200);
   });
   it('should show current value of estimatedBaseFee in subtext', () => {
     render({
