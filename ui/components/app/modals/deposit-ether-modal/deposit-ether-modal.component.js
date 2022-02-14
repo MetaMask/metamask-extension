@@ -184,8 +184,8 @@ export default class DepositEtherModal extends Component {
                   }}
                 />
               ),
-              title: t('directDepositEther'),
-              text: t('directDepositEtherExplainer'),
+              title: t('directDepositCrypto', [symbol]),
+              text: t('directDepositCryptoExplainer', [symbol]),
               buttonLabel: t('viewAccount'),
               onButtonClick: () => this.goToAccountDetailsModal(),
             })}

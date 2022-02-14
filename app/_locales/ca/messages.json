@@ -286,12 +286,6 @@
   "details": {
     "message": "Detalls"
   },
-  "directDepositEther": {
-    "message": "Diposita Ether directament"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si ja tens una mica d'Ether, la manera més ràpida de posar Ether al teu nou moneder és per dipòsit directe."
-  },
   "done": {
     "message": "Fet"
   },

@@ -289,12 +289,6 @@
   "details": {
     "message": "Деталі"
   },
-  "directDepositEther": {
-    "message": "Внести безпосередньо Ефір"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Якщо ви вже маєте ефір, пряме переведення – найшвидший спосіб передати ефір у свій гаманець."
-  },
   "done": {
     "message": "Готово"
   },

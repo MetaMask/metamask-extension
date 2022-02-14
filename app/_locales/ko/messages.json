@@ -709,12 +709,6 @@
   "details": {
     "message": "세부 정보"
   },
-  "directDepositEther": {
-    "message": "Ether 직접 예치"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ether가 어느 정도 있다면 Ether를 새 지갑에 넣는 가장 빠른 방법은 직접 예치입니다."
-  },
   "disconnect": {
     "message": "연결 해제"
   },

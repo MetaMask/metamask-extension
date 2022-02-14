@@ -289,12 +289,6 @@
   "details": {
     "message": "Tiedot"
   },
-  "directDepositEther": {
-    "message": "Talleta etheriä suoraan"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jos sinulla on jo etheriä, nopein tapa hankkia etheriä uuteen lompakkoosi on suoratalletus."
-  },
   "done": {
     "message": "Valmis"
   },

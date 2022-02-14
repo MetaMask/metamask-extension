@@ -87,12 +87,6 @@
   "details": {
     "message": "संदेश विवरण"
   },
-  "directDepositEther": {
-    "message": "सीधे ईथर जमा करें"
-  },
-  "directDepositEtherExplainer": {
-    "message": "यदि आपके पास पहले से कुछ ईथर है, तो सीधे जमा द्वारा अपने नए बटुए में ईथर प्राप्त करने का तेज़ तरीका है।"
-  },
   "done": {
     "message": "संपन्न"
   },
