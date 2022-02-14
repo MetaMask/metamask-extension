@@ -23,9 +23,7 @@ const ConfirmImportToken = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const mostRecentOverviewPage = useSelector((state) =>
-    getMostRecentOverviewPage(state),
-  );
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage)
   const pendingTokens = useSelector((state) => state.metamask.pendingTokens);
 
   const trackTokenAddedEvent = (pendingToken) => {
