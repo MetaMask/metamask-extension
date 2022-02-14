@@ -24,7 +24,7 @@ const AccountList = ({
 
   useLayoutEffect(() => {
     if (selectedAccountScrollRef.current) {
-      selectedAccountScrollRef.current.scrollIntoView?.();
+      selectedAccountScrollRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, []);
 
