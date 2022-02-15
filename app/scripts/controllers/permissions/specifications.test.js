@@ -119,7 +119,7 @@ describe('PermissionController specifications', () => {
   describe('permission specifications', () => {
     it('getPermissionSpecifications returns the expected specifications object', () => {
       const permissionSpecifications = getPermissionSpecifications({});
-      expect(Object.keys(permissionSpecifications)).toHaveLength(1);
+      expect(Object.keys(permissionSpecifications)).toHaveLength(2);
       expect(
         permissionSpecifications[RestrictedMethods.eth_accounts].targetKey,
       ).toStrictEqual(RestrictedMethods.eth_accounts);
@@ -328,6 +328,18 @@ describe('PermissionController specifications', () => {
               ).toThrow(/Invalid caveats./u);
             },
           );
+        });
+      });
+    });
+
+    describe('endowment:wasm', () => {
+      describe('endowmentGetter', () => {
+        it('gets the expected endowment', () => {
+          const { endowmentGetter } = getPermissionSpecifications({})[
+            'endowment:wasm'
+          ];
+
+          expect(endowmentGetter()).toStrictEqual(['WebAssembly']);
         });
       });
     });

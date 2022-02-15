@@ -165,6 +165,16 @@ export const getPermissionSpecifications = ({
         }
       },
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    'endowment:wasm': {
+      permissionType: PermissionType.Endowment,
+      targetKey: 'endowment:wasm',
+      allowedCaveats: null,
+      endowmentGetter: () => {
+        return ['WebAssembly'];
+      },
+    },
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 

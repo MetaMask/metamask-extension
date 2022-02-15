@@ -20,5 +20,6 @@ export const PermissionNamespaces = Object.freeze({
 
 export const EndowmentPermissions = Object.freeze({
   'endowment:network-access': 'endowment:network-access',
+  'endowment:wasm': 'endowment:wasm',
 });
 ///: END:ONLY_INCLUDE_IN
