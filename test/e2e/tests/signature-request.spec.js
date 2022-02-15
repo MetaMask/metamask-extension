@@ -59,10 +59,9 @@ describe('Signature Request', function () {
         );
 
         // Approve signing typed data
-        await driver.executeScript(`
-          const lastNodeInMessage = document.querySelectorAll('.signature-request-message--node')[7];
-          lastNodeInMessage.scrollIntoView();
-        `);
+        await driver.clickElement(
+          '[data-testid="signature-request-scroll-button"]',
+        );
         await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Sign', tag: 'button' }, 10000);
         await driver.waitUntilXWindowHandles(2);
