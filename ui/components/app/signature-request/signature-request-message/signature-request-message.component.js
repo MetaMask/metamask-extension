@@ -62,11 +62,36 @@ export default class SignatureRequestMessage extends PureComponent {
     );
   }
 
+  renderScrollButton() {
+    return (
+      <div
+        onClick={() => {
+          this.setState({ messageIsScrolled: true });
+          this.props.onMessageScrolled();
+          this.props.messageRootRef.scrollTo(
+            0,
+            this.props.messageRootRef.scrollHeight,
+          );
+        }}
+        className="signature-request-message__scroll-button"
+        data-testid="signature-request-scroll-button"
+      >
+        <img
+          src="./images/icons/down-arrow.svg"
+          width="28"
+          height="28"
+          alt={this.context.t('scrollDown')}
+        />
+      </div>
+    );
+  }
+
   render() {
     const { data } = this.props;
 
     return (
       <div onScroll={this.onScroll} className="signature-request-message">
+        {this.renderScrollButton()}
         <div className="signature-request-message__title">
           {this.context.t('signatureRequest1')}
         </div>
