@@ -14069,13 +14069,13 @@ http-cache-semantics@^4.0.0:
   resolved "https://registry.yarnpkg.com/http-cache-semantics/-/http-cache-semantics-4.1.0.tgz#49e91c5cbf36c9b94bcfcd71c23d5249ec74e390"
   integrity sha512-carPklcUh7ROWRK7Cv27RPtdhYhUsela/ue5/jKzjegVvXDqM2ILE9Q2BGn9JZJh1g87cp56su/FgQSzcWS8cQ==
 
-http-encoding@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/http-encoding/-/http-encoding-1.4.0.tgz#d4645dbb5963d8bb58643c47d27d2f565ebdfadc"
-  integrity sha512-/9OTWAsy31YMNpt7JRAZGsfUFFkkqdPR7TNXVSnrJ0UjrBHhx1CUa3veMjS6vSpCq3sU4wpIgVoK/snv80RTPQ==
+http-encoding@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/http-encoding/-/http-encoding-1.5.0.tgz#bdc98d1900c0901ea87506930b52fc9839797eb7"
+  integrity sha512-C/Lzx/4zdElYL3Her+bc/wX8oJuQkp3G+HTGXlSS2GINfj7LWqlwZsn2iZr4CExPqno7oPNgFfALhgscf9qnzA==
   dependencies:
     brotli-wasm "^1.1.0"
-    zstd-codec "^0.1.2"
+    zstd-codec "^0.1.4"
 
 http-errors@1.7.2:
   version "1.7.2"
@@ -18194,7 +18194,7 @@ lower-case@^1.1.0, lower-case@^1.1.1, lower-case@^1.1.2:
   resolved "https://registry.yarnpkg.com/lower-case/-/lower-case-1.1.4.tgz#9a2cabd1b9e8e0ae993a4bf7d5875c39c42e8eac"
   integrity sha1-miyr0bno4K6ZOkv31YdcOcQujqw=
 
-lower-case@^2.0.1, lower-case@^2.0.2:
+lower-case@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/lower-case/-/lower-case-2.0.2.tgz#6fa237c63dbdc4a82ca0fd882e4722dc5e634e28"
   integrity sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==
@@ -18976,10 +18976,10 @@ mocha@^7.2.0:
     yargs-parser "13.1.2"
     yargs-unparser "1.6.0"
 
-mockttp@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/mockttp/-/mockttp-2.5.0.tgz#b88f293455f2c45b64715629cf03bb571bffad67"
-  integrity sha512-eHgkcAloaGHFC/ZzkHZREA6j2gL3JRcFCXw4B1vO62l13BCv+GbJmRMtLKePjRwCYB4Ouh5W7pTft9w2gik3+A==
+mockttp@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/mockttp/-/mockttp-2.6.0.tgz#c51f35ac41e0389b747a6ddc3110e0844e64df07"
+  integrity sha512-yr3q7osj893MIoYAfOsJF7v0BdDbMbtLTGdF6gv3V3enqWEQB2iJWo/+O5YxlqH7uIGLjT14nAyE+uId4MOlzA==
   dependencies:
     "@graphql-tools/schema" "^7.1.5"
     "@httptoolkit/httpolyglot" "^2.0.1"
@@ -19000,15 +19000,15 @@ mockttp@^2.5.0:
     fetch-ponyfill "^7.1.0"
     graphql "^14.0.2 || ^15.5"
     graphql-subscriptions "^1.1.0"
-    http-encoding "^1.4.0"
+    http-encoding "^1.5.0"
     http2-wrapper "2.0.5"
     lodash "^4.16.4"
     native-duplexpair "^1.0.0"
-    node-forge "^0.10.0"
+    node-forge "^1.2.1"
     performance-now "^2.1.0"
     portfinder "^1.0.23"
     typed-error "^3.0.2"
-    uuid "^3.1.0"
+    uuid "^8.3.2"
     ws "^7.3.1"
 
 module-definition@^3.3.1:
@@ -19595,12 +19595,7 @@ node-fetch@^2.3.0, node-fetch@^2.6.0, node-fetch@^2.6.1, node-fetch@~2.6.1:
   dependencies:
     whatwg-url "^5.0.0"
 
-node-forge@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.10.0.tgz#32dea2afb3e9926f02ee5ce8794902691a676bf3"
-  integrity sha512-PPmu8eEeG9saEUvI97fm4OYxXVB6bFvyNTyiUOBichBpFG8A1Ljw3bY62+5oOjDEMHRnd0Y7HQ+x7uzxOzC6JA==
-
-node-forge@^0.7.1, node-forge@^0.7.5, node-forge@^1.0.0, node-forge@~0.7.6:
+node-forge@^0.7.1, node-forge@^0.7.5, node-forge@^1.0.0, node-forge@^1.2.1, node-forge@~0.7.6:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-1.2.1.tgz#82794919071ef2eb5c509293325cec8afd0fd53c"
   integrity sha512-Fcvtbb+zBcZXbTTVwqGA5W+MKBj56UjVRevvchv5XrcyXbmNdesfZL37nlcWOfpgHhgmxApw3tQbTr4CqNmX4w==
@@ -20920,7 +20915,7 @@ pascal-case@^2.0.0:
     camel-case "^3.0.0"
     upper-case-first "^1.1.0"
 
-pascal-case@^3.1.1, pascal-case@^3.1.2:
+pascal-case@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/pascal-case/-/pascal-case-3.1.2.tgz#b48e0ef2b98e205e7c1dae747d0b1508237660eb"
   integrity sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==
@@ -27181,7 +27176,7 @@ uuid@3.2.1:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
   integrity sha512-jZnMwlb9Iku/O3smGWvZhauCf6cvvpKi4BKRiliS3cxnI+Gz9j5MEpTz2UFuXiKPJocb7gnsLHwiS05ige5BEA==
 
-uuid@^3.1.0, uuid@^3.2.1, uuid@^3.2.2, uuid@^3.3.2, uuid@^3.3.3:
+uuid@^3.2.1, uuid@^3.2.2, uuid@^3.3.2, uuid@^3.3.3:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
@@ -28265,10 +28260,10 @@ zcash-bitcore-lib@~0.13.20-rc3:
     inherits "=2.0.1"
     lodash "=3.10.1"
 
-zstd-codec@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/zstd-codec/-/zstd-codec-0.1.2.tgz#6a13b7e666d9066d5236cbab760862a44f2660a0"
-  integrity sha512-t1gdk33h1wT7YcBPebyGWGJTWodKsJVfDeVN0q2x/htPGLEX3BAuBvOFsU4W3BplbmTXwvH8c/TUZ/DPTXOFfg==
+zstd-codec@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/zstd-codec/-/zstd-codec-0.1.4.tgz#6abb311b63cfacbd06e72797ee6c6e1c7c65248c"
+  integrity sha512-KYnWoFWgGtWyQEKNnUcb3u8ZtKO8dn5d8u+oGpxPlopqsPyv60U8suDyfk7Z7UtAO6Sk5i1aVcAs9RbaB1n36A==
 
 zwitch@^1.0.0:
   version "1.0.5"
