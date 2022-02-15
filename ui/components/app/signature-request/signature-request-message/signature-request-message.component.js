@@ -8,24 +8,24 @@ export default class SignatureRequestMessage extends PureComponent {
     data: PropTypes.object.isRequired,
     onMessageScrolled: PropTypes.func,
     setMessageRootRef: PropTypes.func,
+    messageRootRef: PropTypes.object,
+    messageIsScrollable: PropTypes.bool,
   };
 
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  messageAreaRef;
-
   state = {
     messageIsScrolled: false,
   };
 
   setMessageIsScrolled = () => {
-    if (!this.messageAreaRef || this.state.messageIsScrolled) {
+    if (!this.props.messageRootRef || this.state.messageIsScrolled) {
       return;
     }
 
-    const { scrollTop, offsetHeight, scrollHeight } = this.messageAreaRef;
+    const { scrollTop, offsetHeight, scrollHeight } = this.props.messageRootRef;
     const isAtBottom = scrollTop + offsetHeight >= scrollHeight;
 
     if (isAtBottom) {
@@ -63,17 +63,36 @@ export default class SignatureRequestMessage extends PureComponent {
     );
   }
 
-  render() {
-    const { data } = this.props;
-
+  renderScrollButton() {
     return (
       <div
-        onScroll={this.onScroll}
-        ref={(ref) => {
-          this.messageAreaRef = ref;
+        onClick={() => {
+          this.setState({ messageIsScrolled: true });
+          this.props.onMessageScrolled();
+          this.props.messageRootRef.scrollTo(
+            0,
+            this.props.messageRootRef.scrollHeight,
+          );
         }}
-        className="signature-request-message"
+        className="signature-request-message__scroll-button"
+        data-testid="signature-request-scroll-button"
       >
+        <img
+          src="./images/icons/down-arrow.svg"
+          width="28"
+          height="28"
+          alt={this.context.t('scrollDown')}
+        />
+      </div>
+    );
+  }
+
+  render() {
+    const { data, messageIsScrollable } = this.props;
+
+    return (
+      <div onScroll={this.onScroll} className="signature-request-message">
+        {messageIsScrollable ? this.renderScrollButton() : null}
         <div className="signature-request-message__title">
           {this.context.t('signatureRequest1')}
         </div>
