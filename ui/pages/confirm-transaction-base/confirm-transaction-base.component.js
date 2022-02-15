@@ -166,7 +166,7 @@ export default class ConfirmTransactionBase extends Component {
     showingHardwareConnectionContents: false,
     showingHardwareConnectionAdvancedPopover: false,
     pollingIntervalId: null,
-    hardwareIsReady: true, // Optimistic
+    hardwareIsReady: false,
   };
 
   async pollLedgerReady() {
