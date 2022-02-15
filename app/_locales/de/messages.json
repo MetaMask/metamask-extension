@@ -1015,10 +1015,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Der Gaspreis, der sich aus der Gaseinschätzung ergibt, ist derzeit nicht verfügbar."
   },
-  "eth_accounts": {
-    "message": "Siehe Adresse, Kontostand, Aktivität und Einleitung von Transaktionen",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Öffentliche Ethereum-Adresse"
   },
@@ -2075,6 +2071,10 @@
   },
   "permissionRequest": {
     "message": "Berechtigungsanfrage"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Siehe Adresse, Kontostand, Aktivität und Einleitung von Transaktionen",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Berechtigungen"

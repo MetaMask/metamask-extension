@@ -1005,10 +1005,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Указана резервная цена газа, поскольку основной сервис определения цены газа сейчас недоступен."
   },
-  "eth_accounts": {
-    "message": "См. адрес, баланс счета, активность и инициируйте транзакции",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Открытый адрес Ethereum"
   },
@@ -2078,6 +2074,10 @@
   },
   "permissionRequest": {
     "message": "Запрос разрешения"
+  },
+  "permission_ethereumAccounts": {
+    "message": "См. адрес, баланс счета, активность и инициируйте транзакции",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Разрешения"

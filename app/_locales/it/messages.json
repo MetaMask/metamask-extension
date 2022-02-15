@@ -565,10 +565,6 @@
   "estimatedProcessingTimes": {
     "message": "Tempi di Elaborazione Stimati"
   },
-  "eth_accounts": {
-    "message": "Accesso agli indirizzi dei tuoi account autorizzati (richiesto)",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Indirizzo pubblico Ethereum "
   },
@@ -1053,6 +1049,10 @@
   },
   "pending": {
     "message": "in corso"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Accesso agli indirizzi dei tuoi account autorizzati (richiesto)",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Permessi"

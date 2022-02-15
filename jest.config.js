@@ -1,6 +1,6 @@
 module.exports = {
   collectCoverageFrom: [
-    '<rootDir>/app/scripts/controllers/permissions/*.js',
+    '<rootDir>/app/scripts/controllers/permissions/**/*.js',
     '<rootDir>/shared/**/*.js',
     '<rootDir>/ui/**/*.js',
   ],
@@ -14,7 +14,7 @@ module.exports = {
       lines: 43,
       statements: 43,
     },
-    './app/scripts/controllers/permissions/*.js': {
+    './app/scripts/controllers/permissions/**/*.js': {
       branches: 100,
       functions: 100,
       lines: 100,
@@ -33,7 +33,7 @@ module.exports = {
     '<rootDir>/app/scripts/migrations/*.test.js',
     '<rootDir>/app/scripts/platforms/*.test.js',
     '<rootDir>app/scripts/controllers/network/**/*.test.js',
-    '<rootDir>/app/scripts/controllers/permissions/*.test.js',
+    '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
   ],
   testTimeout: 2500,
   transform: {

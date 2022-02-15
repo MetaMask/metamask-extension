@@ -1019,10 +1019,6 @@
   "ethGasPriceFetchWarning": {
     "message": "O preço de backup do gás é fornecido porque a estimativa de gás principal está indisponível no momento."
   },
-  "eth_accounts": {
-    "message": "Ver endereço, saldo da conta, atividade e iniciar transações",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Endereço público do Ethereum"
   },
@@ -2108,6 +2104,10 @@
   },
   "permissionRequest": {
     "message": "Solicitação de permissão"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Ver endereço, saldo da conta, atividade e iniciar transações",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Permissões"

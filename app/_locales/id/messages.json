@@ -1005,10 +1005,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Biaya gas cadangan diberikan karena layanan estimasi gas utama saat ini tidak tersedia."
   },
-  "eth_accounts": {
-    "message": "Lihat alamat, saldo akun, aktivitas, dan mulai transaksi",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Alamat Publik Ethereum"
   },
@@ -2078,6 +2074,10 @@
   },
   "permissionRequest": {
     "message": "Permohonan izin"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Lihat alamat, saldo akun, aktivitas, dan mulai transaksi",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Izin"

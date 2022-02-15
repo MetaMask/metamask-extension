@@ -700,18 +700,23 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
   };
 }
 
-export function addUnapprovedTransaction(txParams, origin) {
+export function addUnapprovedTransaction(txParams, origin, type) {
   log.debug('background.addUnapprovedTransaction');
 
   return () => {
     return new Promise((resolve, reject) => {
-      background.addUnapprovedTransaction(txParams, origin, (err, txMeta) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(txMeta);
-      });
+      background.addUnapprovedTransaction(
+        txParams,
+        origin,
+        type,
+        (err, txMeta) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(txMeta);
+        },
+      );
     });
   };
 }
@@ -751,6 +756,10 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
         return Promise.reject(err);
       });
   };
+}
+
+export async function getTransactions(filters = {}) {
+  return await promisifiedBackground.getTransactions(filters);
 }
 
 export function completedTx(id) {
@@ -799,6 +808,33 @@ export function txError(err) {
     message: err.message,
   };
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function disableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.disableSnap(snapId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function enableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.enableSnap(snapId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function removeSnap(snap) {
+  return async (dispatch) => {
+    await promisifiedBackground.removeSnap(snap);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export async function removeSnapError(msgData) {
+  return promisifiedBackground.removeSnapError(msgData);
+}
+///: END:ONLY_INCLUDE_IN
 
 export function cancelMsg(msgData) {
   return async (dispatch) => {
