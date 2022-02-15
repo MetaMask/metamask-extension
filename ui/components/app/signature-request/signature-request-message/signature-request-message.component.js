@@ -14,26 +14,36 @@ export default class SignatureRequestMessage extends PureComponent {
   renderNode(data) {
     return (
       <div className="signature-request-message--node">
-        {Object.entries(data).map(([label, value], i) => (
-          <div
-            className={classnames('signature-request-message--node', {
-              'signature-request-message--node-leaf':
-                typeof value !== 'object' || value === null,
-            })}
-            key={i}
-          >
-            <span className="signature-request-message--node-label">
-              {label}:{' '}
-            </span>
-            {typeof value === 'object' && value !== null ? (
-              this.renderNode(value)
-            ) : (
-              <span className="signature-request-message--node-value">
-                {`${value}`}
-              </span>
-            )}
-          </div>
-        ))}
+        <table>
+          {Object.entries(data).map(([label, value], i) => (
+            <tr key={i}>
+              <td
+                className={classnames('signature-request-message--node', {
+                  'signature-request-message--node-leaf':
+                    typeof value !== 'object' || value === null,
+                })}
+              >
+                <span className="signature-request-message--node-label">
+                  {label}:{' '}
+                </span>
+              </td>
+              <td
+                className={classnames('signature-request-message--node', {
+                  'signature-request-message--node-leaf':
+                    typeof value !== 'object' || value === null,
+                })}
+              >
+                {typeof value === 'object' && value !== null ? (
+                  this.renderNode(value)
+                ) : (
+                  <span className="signature-request-message--node-value">
+                    {`${value}`}
+                  </span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </table>        
       </div>
     );
   }

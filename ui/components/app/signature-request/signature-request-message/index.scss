@@ -37,23 +37,31 @@
 
   &--node,
   &--node-leaf {
-    padding-left: 0.3rem;
-
     &-label {
       color: #5b5d67;
-      margin-left: 0.5rem;
     }
 
     &-value {
       color: black;
-      margin-left: 0.5rem;
       white-space: pre-line;
       overflow: hidden;
       word-wrap: break-word;
     }
   }
 
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  td {
+    width: 50%;
+    word-wrap: break-word;
+  }
+
   &--node-leaf {
-    display: flex;
+    padding-top: 12px;
+    padding-right: 12px;
+    font-size: 80%;
   }
 }
