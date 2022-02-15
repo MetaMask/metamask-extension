@@ -11,7 +11,11 @@ class MockGasServer {
       // Firefox is _super_ strict about needing CORS headers
       ctx.set('Access-Control-Allow-Origin', '*');
       if (ctx.path === '/testGas') {
-        ctx.body = '{ "low": 1, "medium": 5, "high": 10 }';
+        ctx.body = {
+          SafeGasPrice: '10',
+          ProposeGasPrice: '50',
+          FastGasPrice: '100',
+        };
       }
     });
   }
