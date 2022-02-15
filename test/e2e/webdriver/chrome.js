@@ -4,6 +4,7 @@ const proxy = require('selenium-webdriver/proxy');
 
 /**
  * Proxy host to use for HTTPS requests
+ *
  * @type {string}
  */
 const HTTPS_PROXY_HOST = '127.0.0.1:8000';
@@ -12,16 +13,14 @@ const HTTPS_PROXY_HOST = '127.0.0.1:8000';
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 class ChromeDriver {
-  static async build({ responsive, port, mock }) {
+  static async build({ responsive, port }) {
     const args = [`load-extension=dist/chrome`];
     if (responsive) {
       args.push('--auto-open-devtools-for-tabs');
     }
     const options = new chrome.Options().addArguments(args);
-    if (mock) {
-      options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
-      options.setAcceptInsecureCerts(true);
-    }
+    options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
+    options.setAcceptInsecureCerts(true);
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);

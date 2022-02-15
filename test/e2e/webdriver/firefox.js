@@ -16,6 +16,7 @@ const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
 
 /**
  * Proxy host to use for HTTPS requests
+ *
  * @type {string}
  */
 const HTTPS_PROXY_HOST = '127.0.0.1:8000';
@@ -32,13 +33,11 @@ class FirefoxDriver {
    * @param options.port
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
-  static async build({ responsive, port, mock }) {
+  static async build({ responsive, port }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
-    if (mock) {
-      options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
-      options.setAcceptInsecureCerts(true);
-    }
+    options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
+    options.setAcceptInsecureCerts(true);
     const builder = new Builder()
       .forBrowser('firefox')
       .setFirefoxOptions(options);
