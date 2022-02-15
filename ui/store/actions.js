@@ -671,6 +671,33 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
+export function updateTransactionGasFees(txId, txGasFees, dontShowLoadingIndicator) {
+  return async (dispatch) => {
+    !dontShowLoadingIndicator && dispatch(showLoadingIndication());
+
+    try {
+      await promisifiedBackground.updateTransactionGasFees(txId, txGasFees);
+    } catch (error) {
+      dispatch(updateTransactionParams(txData.id, txData.txParams));
+      dispatch(hideLoadingIndication());
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    try {
+      dispatch(updateTransactionParams(txData.id, txData.txParams));
+      const newState = await updateMetamaskStateFromBackground();
+      dispatch(updateMetamaskState(newState));
+      dispatch(showConfTxPage({ id: txData.id }));
+      return txData;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };  
+}
+
 export function updateTransaction(txData, dontShowLoadingIndicator) {
   return async (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());

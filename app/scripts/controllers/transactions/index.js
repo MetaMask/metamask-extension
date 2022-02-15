@@ -373,17 +373,19 @@ export default class TransactionController extends EventEmitter {
    * gasPrice,
    * maxPriorityFeePerGas,
    * maxFeePerGas,
-   * estimateUsed
+   * estimateUsed,
+   * estimateSuggested
    * }
    * @param txGasFees.gasLimit
    * @param txGasFees.gasPrice
    * @param txGasFees.maxPriorityFeePerGas
    * @param txGasFees.maxFeePerGas
    * @param txGasFees.estimateUsed
+   * @param txGasFees.estimateSuggested
    */
   updateTransactionGasFees(
     txId,
-    { gasLimit, gasPrice, maxPriorityFeePerGas, maxFeePerGas, estimateUsed },
+    { gasLimit, gasPrice, maxPriorityFeePerGas, maxFeePerGas, estimateUsed, estimateSuggested },
   ) {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
       return;
@@ -394,9 +396,10 @@ export default class TransactionController extends EventEmitter {
         gasLimit,
         gasPrice,
         maxPriorityFeePerGas,
-        maxFeePerGas,
+        maxFeePerGas,      
       },
       estimateUsed,
+      estimateSuggested,
     };
 
     // only update what is defined
