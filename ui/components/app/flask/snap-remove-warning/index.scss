@@ -16,10 +16,10 @@
 
   &__footer-button {
     height: 40px;
-    margin-right: 24px;
+    margin-inline-end: 24px;
 
     &:last-of-type {
-      margin-right: 0;
+      margin-inline-end: 0px;
     }
   }
 }
