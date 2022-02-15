@@ -9,6 +9,7 @@
     font-weight: 500;
     color: #636778;
     margin-left: 12px;
+    margin-bottom: 8px;
   }
 
   h2 {
@@ -61,7 +62,7 @@
 
   &--node-leaf {
     padding-top: 12px;
-    padding-right: 12px;
+    padding-inline-start: 12px;
     font-size: 80%;
   }
 }
