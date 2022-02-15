@@ -87,12 +87,10 @@ async function withFixtures(options, testSuite) {
       });
       await segmentServer.start(9090);
     }
-    if (driverOptions?.mock) {
-      const https = await mockttp.generateCACertificate();
-      mockServer = mockttp.getLocal({ https });
-      await mockServer.start(8000);
-      setupMocking(mockServer);
-    }
+    const https = await mockttp.generateCACertificate();
+    mockServer = mockttp.getLocal({ https });
+    await mockServer.start(8000);
+    setupMocking(mockServer);
     if (
       process.env.SELENIUM_BROWSER === 'chrome' &&
       process.env.CI === 'true'
