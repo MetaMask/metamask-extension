@@ -1,6 +1,7 @@
 .signature-request-message {
   flex: 1 60%;
   display: flex;
+  max-height: 250px;
   flex-direction: column;
 
   &__title {
