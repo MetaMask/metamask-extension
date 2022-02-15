@@ -85,6 +85,7 @@ function getValues(pendingApproval, t, actions) {
         pendingApproval.id,
         ethErrors.provider.userRejectedRequest(),
       ),
+    networkDisplay: true,
   };
 }
 

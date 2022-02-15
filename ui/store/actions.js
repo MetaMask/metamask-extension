@@ -807,6 +807,33 @@ export function txError(err) {
   };
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function disableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.disableSnap(snapId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function enableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.enableSnap(snapId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function removeSnap(snap) {
+  return async (dispatch) => {
+    await promisifiedBackground.removeSnap(snap);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export async function removeSnapError(msgData) {
+  return promisifiedBackground.removeSnapError(msgData);
+}
+///: END:ONLY_INCLUDE_IN
+
 export function cancelMsg(msgData) {
   return async (dispatch) => {
     dispatch(showLoadingIndication());
