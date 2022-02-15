@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.9.3]
-### Uncategorized
-- Fixing sign type data message formatting, requiring content scroll before sign ([#13642](https://github.com/MetaMask/metamask-extension/pull/13642))
+### Fixed
+- Allow for scrolling when sign type data message is too long ([#13642](https://github.com/MetaMask/metamask-extension/pull/13642))
+  - Require a scroll through of message before allowing user signature
 
 ## [10.9.2]
 ### Fixed
