@@ -4,14 +4,14 @@ const Driver = require('./driver');
 const ChromeDriver = require('./chrome');
 const FirefoxDriver = require('./firefox');
 
-async function buildWebDriver({ responsive, port, mock } = {}) {
+async function buildWebDriver({ responsive, port } = {}) {
   const browser = process.env.SELENIUM_BROWSER;
 
   const {
     driver: seleniumDriver,
     extensionId,
     extensionUrl,
-  } = await buildBrowserWebDriver(browser, { responsive, port, mock });
+  } = await buildBrowserWebDriver(browser, { responsive, port });
   await setupFetchMocking(seleniumDriver);
   const driver = new Driver(seleniumDriver, browser, extensionUrl);
 
