@@ -7,6 +7,7 @@ const {
 } = require('../../development/lib/create-segment-server');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
+const MockGasServer = require('./mock-gas-server');
 const { buildWebDriver } = require('./webdriver');
 const { ensureXServerIsRunning } = require('./x-server');
 
@@ -29,6 +30,7 @@ async function withFixtures(options, testSuite) {
     dappPath = undefined,
   } = options;
   const fixtureServer = new FixtureServer();
+  const mockGasServer = new MockGasServer();
   const ganacheServer = new Ganache();
   let secondaryGanacheServer;
   let dappServer;
@@ -51,6 +53,7 @@ async function withFixtures(options, testSuite) {
     }
     await fixtureServer.start();
     await fixtureServer.loadState(path.join(__dirname, 'fixtures', fixtures));
+    await mockGasServer.start();
     if (dapp) {
       let dappDirectory;
       if (dappPath) {
@@ -125,6 +128,7 @@ async function withFixtures(options, testSuite) {
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
+      await mockGasServer.stop();
       await ganacheServer.quit();
       if (ganacheOptions?.concurrent) {
         await secondaryGanacheServer.quit();
