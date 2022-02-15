@@ -9,6 +9,7 @@ export default class SignatureRequestMessage extends PureComponent {
     onMessageScrolled: PropTypes.func,
     setMessageRootRef: PropTypes.func,
     messageRootRef: PropTypes.object,
+    messageIsScrollable: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -87,11 +88,11 @@ export default class SignatureRequestMessage extends PureComponent {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, messageIsScrollable } = this.props;
 
     return (
       <div onScroll={this.onScroll} className="signature-request-message">
-        {this.renderScrollButton()}
+        {messageIsScrollable ? this.renderScrollButton() : null}
         <div className="signature-request-message__title">
           {this.context.t('signatureRequest1')}
         </div>
