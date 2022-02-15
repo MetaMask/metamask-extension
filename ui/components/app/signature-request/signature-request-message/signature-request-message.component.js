@@ -8,24 +8,23 @@ export default class SignatureRequestMessage extends PureComponent {
     data: PropTypes.object.isRequired,
     onMessageScrolled: PropTypes.func,
     setMessageRootRef: PropTypes.func,
+    messageRootRef: PropTypes.object,
   };
 
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  messageAreaRef;
-
   state = {
     messageIsScrolled: false,
   };
 
   setMessageIsScrolled = () => {
-    if (!this.messageAreaRef || this.state.messageIsScrolled) {
+    if (!this.props.messageRootRef || this.state.messageIsScrolled) {
       return;
     }
 
-    const { scrollTop, offsetHeight, scrollHeight } = this.messageAreaRef;
+    const { scrollTop, offsetHeight, scrollHeight } = this.props.messageRootRef;
     const isAtBottom = scrollTop + offsetHeight >= scrollHeight;
 
     if (isAtBottom) {
@@ -67,13 +66,7 @@ export default class SignatureRequestMessage extends PureComponent {
     const { data } = this.props;
 
     return (
-      <div
-        onScroll={this.onScroll}
-        ref={(ref) => {
-          this.messageAreaRef = ref;
-        }}
-        className="signature-request-message"
-      >
+      <div onScroll={this.onScroll} className="signature-request-message">
         <div className="signature-request-message__title">
           {this.context.t('signatureRequest1')}
         </div>

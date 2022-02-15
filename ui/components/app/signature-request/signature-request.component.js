@@ -139,6 +139,7 @@ export default class SignatureRequest extends PureComponent {
           data={sanitizeMessage(message, primaryType, types)}
           onMessageScrolled={() => this.setState({ hasScrolledMessage: true })}
           setMessageRootRef={this.setMessageRootRef.bind(this)}
+          messageRootRef={this.messageRootRef}
         />
         <Footer
           cancelAction={onCancel}
