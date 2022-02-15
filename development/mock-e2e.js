@@ -1,4 +1,8 @@
 function setupMocking(server) {
+  server.forAnyRequest().thenPassThrough({
+    beforeRequest: () => {},
+  });
+
   server
     .forOptions('https://gas-api.metaswap.codefi.network/networks/1/gasPrices')
     .thenCallback(() => {
