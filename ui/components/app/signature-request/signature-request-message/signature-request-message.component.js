@@ -7,6 +7,7 @@ export default class SignatureRequestMessage extends PureComponent {
   static propTypes = {
     data: PropTypes.object.isRequired,
     onMessageScrolled: PropTypes.func,
+    setMessageRootRef: PropTypes.func,
   };
 
   static contextTypes = {
@@ -76,7 +77,10 @@ export default class SignatureRequestMessage extends PureComponent {
         <div className="signature-request-message__title">
           {this.context.t('signatureRequest1')}
         </div>
-        <div className="signature-request-message--root">
+        <div
+          className="signature-request-message--root"
+          ref={this.props.setMessageRootRef}
+        >
           {this.renderNode(data)}
         </div>
       </div>

@@ -48,6 +48,10 @@ export default class SignatureRequest extends PureComponent {
     hasScrolledMessage: false,
   };
 
+  setMessageRootRef(ref) {
+    this.messageRootRef = ref;
+  }
+
   formatWallet(wallet) {
     return `${wallet.slice(0, 8)}...${wallet.slice(
       wallet.length - 8,
@@ -101,6 +105,9 @@ export default class SignatureRequest extends PureComponent {
       });
     };
 
+    const messageIsScrollable =
+      this.messageRootRef?.scrollHeight > this.messageRootRef?.clientHeight;
+
     return (
       <div className="signature-request page-container">
         <Header fromAccount={fromAccount} />
@@ -131,12 +138,14 @@ export default class SignatureRequest extends PureComponent {
         <Message
           data={sanitizeMessage(message, primaryType, types)}
           onMessageScrolled={() => this.setState({ hasScrolledMessage: true })}
+          setMessageRootRef={this.setMessageRootRef.bind(this)}
         />
         <Footer
           cancelAction={onCancel}
           signAction={onSign}
           disabled={
-            hardwareWalletRequiresConnection || !this.state.hasScrolledMessage
+            hardwareWalletRequiresConnection ||
+            (messageIsScrollable && !this.state.hasScrolledMessage)
           }
         />
       </div>
