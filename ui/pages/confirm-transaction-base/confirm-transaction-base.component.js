@@ -1035,7 +1035,14 @@ export default class ConfirmTransactionBase extends Component {
       return userAcknowledgedGasMissing ? false : !valid;
     };
 
-    let functionType = getMethodName(name);
+    let functionType;
+    if (
+      txData.type === TRANSACTION_TYPES.DEPLOY_CONTRACT ||
+      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION
+    ) {
+      functionType = getMethodName(name);
+    }
+
     if (!functionType) {
       if (type) {
         functionType = getTransactionTypeTitle(t, type, nativeCurrency);
