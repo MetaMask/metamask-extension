@@ -614,6 +614,7 @@ function setupBundlerDefaults(
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
+  const extensions = ['.js', '.ts', '.tsx'];
 
   Object.assign(bundlerOpts, {
     // Source transforms
@@ -621,10 +622,16 @@ function setupBundlerDefaults(
       // Remove code that should be excluded from builds of the current type
       createRemoveFencedCodeTransform(buildType, shouldLintFenceFiles),
       // Transpile top-level code
-      babelify,
+      [
+        babelify,
+        // Run TypeScript files through Babel
+        { extensions },
+      ],
       // Inline `fs.readFileSync` files
       brfs,
     ],
+    // Look for TypeScript files when walking the dependency tree
+    extensions,
     // Use entryFilepath for moduleIds, easier to determine origin file
     fullPaths: devMode,
     // For sourcemaps

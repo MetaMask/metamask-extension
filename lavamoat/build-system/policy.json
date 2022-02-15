@@ -97,6 +97,7 @@
       "packages": {
         "@babel/core": true,
         "@babel/helper-annotate-as-pure": true,
+        "@babel/helper-environment-visitor": true,
         "@babel/helper-function-name": true,
         "@babel/helper-member-expression-to-functions": true,
         "@babel/helper-optimise-call-expression": true,
@@ -127,6 +128,11 @@
         "@babel/helper-plugin-utils": true,
         "lodash.debounce": true,
         "resolve": true
+      }
+    },
+    "@babel/helper-environment-visitor": {
+      "packages": {
+        "@babel/types": true
       }
     },
     "@babel/helper-explode-assignable-expression": {
@@ -195,6 +201,7 @@
     },
     "@babel/helper-replace-supers": {
       "packages": {
+        "@babel/helper-environment-visitor": true,
         "@babel/helper-member-expression-to-functions": true,
         "@babel/helper-optimise-call-expression": true,
         "@babel/traverse": true,
@@ -420,6 +427,11 @@
       }
     },
     "@babel/plugin-syntax-top-level-await": {
+      "packages": {
+        "@babel/helper-plugin-utils": true
+      }
+    },
+    "@babel/plugin-syntax-typescript": {
       "packages": {
         "@babel/helper-plugin-utils": true
       }
@@ -672,6 +684,20 @@
         "@babel/helper-plugin-utils": true
       }
     },
+    "@babel/plugin-transform-typescript": {
+      "builtin": {
+        "assert": true
+      },
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@babel/helper-create-class-features-plugin": true,
+        "@babel/helper-plugin-utils": true,
+        "@babel/plugin-syntax-typescript": true
+      }
+    },
     "@babel/plugin-transform-unicode-escapes": {
       "packages": {
         "@babel/core": true,
@@ -777,6 +803,13 @@
         "@babel/plugin-transform-react-pure-annotations": true
       }
     },
+    "@babel/preset-typescript": {
+      "packages": {
+        "@babel/helper-plugin-utils": true,
+        "@babel/helper-validator-option": true,
+        "@babel/plugin-transform-typescript": true
+      }
+    },
     "@babel/template": {
       "packages": {
         "@babel/code-frame": true,
@@ -792,6 +825,7 @@
       "packages": {
         "@babel/code-frame": true,
         "@babel/generator": true,
+        "@babel/helper-environment-visitor": true,
         "@babel/helper-function-name": true,
         "@babel/helper-hoist-variables": true,
         "@babel/helper-split-export-declaration": true,
