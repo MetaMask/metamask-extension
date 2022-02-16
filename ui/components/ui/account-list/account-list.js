@@ -23,9 +23,7 @@ const AccountList = ({
   const selectedAccountScrollRef = useRef(null);
 
   useLayoutEffect(() => {
-    if (selectedAccountScrollRef.current) {
-      selectedAccountScrollRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
+    selectedAccountScrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   const Header = () => {
