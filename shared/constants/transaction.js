@@ -267,12 +267,6 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  *  submitted will finalized (eventually) by either being dropped, failing
  *  or being confirmed. When this happens we track this event, along with the
  *  status.
- * @property {'Gas Fees Updated'} GAS_FEES_UPDATED - Update to the gas fees properties of a transaction
- * @property {'EIP1559 Params Updated'} EIP1559_PARAMS_UPDATED - Update to the gas fees properties of a transaction
- * @property {'Estimated Base Fees Updated'} ESTIMATED_BASE_FEES_UPDATED - Update to the estimated base fees properties of a transaction
- * @property {'Swap Approval Transaction Updated'} SWAP_APPROVAL_UPDATED - Update a swap approval transaction properties
- * @property {'Swap Transaction Updated'} SWAP_TRANSACTION_UPDATED - Update a swap transaction properties
- * @property {'Transaction User Settings Updated'} USER_SETTINGS_UPDATED - Update to the user setting properties of a transaction
  */
 
 /**
@@ -291,10 +285,4 @@ export const TRANSACTION_EVENTS = {
   FINALIZED: 'Transaction Finalized',
   REJECTED: 'Transaction Rejected',
   SUBMITTED: 'Transaction Submitted',
-  GAS_FEES_UPDATED: 'Transaction Gas Fees Updated',
-  ESTIMATED_BASE_FEES_UPDATED: 'Transaction Estimated Base Fees Updated',
-  SWAP_APPROVAL_UPDATED: 'Swap Approval Transaction Updated',
-  SWAP_TRANSACTION_UPDATED: 'Swap Transaction Updated',
-  USER_SETTINGS_UPDATED: 'Transaction User Settings Updated',
-  EIP1559_PARAMS_UPDATED: 'EIP1559 Params Updated',
 };
