@@ -189,5 +189,6 @@ export const ETHEREUM = 'ethereum';
 export const POLYGON = 'polygon';
 export const BSC = 'bsc';
 export const RINKEBY = 'rinkeby';
+export const AVALANCHE = 'avalanche';
 
 export const SWAPS_CLIENT_ID = 'extension';
