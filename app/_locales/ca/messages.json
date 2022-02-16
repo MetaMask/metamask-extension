@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Rebutja"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Escanejar Codi QR"
+  },
   "about": {
     "message": "Informació"
   },
@@ -253,6 +259,9 @@
   "currentLanguage": {
     "message": "Llengua Actual"
   },
+  "custom": {
+    "message": "Configuració avançada"
+  },
   "customGas": {
     "message": "Customitza el gas"
   },
@@ -280,17 +289,8 @@
   "deleteNetworkDescription": {
     "message": "Estàs segur que vols eliminar aquesta xarxa?"
   },
-  "depositEther": {
-    "message": "Diposita Ether"
-  },
   "details": {
     "message": "Detalls"
-  },
-  "directDepositEther": {
-    "message": "Diposita Ether directament"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si ja tens una mica d'Ether, la manera més ràpida de posar Ether al teu nou moneder és per dipòsit directe."
   },
   "done": {
     "message": "Fet"
@@ -517,6 +517,9 @@
   "learnMore": {
     "message": "Saber més"
   },
+  "learnMoreUpperCase": {
+    "message": "Saber més"
+  },
   "ledgerAccountRestriction": {
     "message": "Has de fer servir el teu últim compte abans de poder afegir-ne un altre."
   },
@@ -567,9 +570,6 @@
   },
   "myAccounts": {
     "message": "Els meus Comptes"
-  },
-  "needEtherInWallet": {
-    "message": "Per a interactuar amb aplicacions descentralitzades fent servir MetaMask, necessitaràs Ether al teu moneder."
   },
   "needImportFile": {
     "message": "Has de seleccionar un arxiu per a importar.",

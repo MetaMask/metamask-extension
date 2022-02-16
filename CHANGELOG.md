@@ -6,6 +6,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.10.0]
+### Added
+- Enable toggle to turn on the new gas fee customization UI ([#13481](https://github.com/MetaMask/metamask-extension/pull/13481))
+    - Select between new 'Low', 'Market', and 'Aggressive' gas options
+    - Improved advanced gas fee editing
+    - Adds the ability to save custom gas values as defaults
+    - More informative tooltips about suggested gas options
+    - More information about the status of the network
+- Enable buying MATIC on Polygon, BNB on BSC, AVAX on Avalanche, FTM on Fantom, CELO on Celo, and respective stablecoins  on Transak ([#13398](https://github.com/MetaMask/metamask-extension/pull/13398))
+- Add German subtitles for SRP Video ([#13368](https://github.com/MetaMask/metamask-extension/pull/13368))
+- Adding Brazilian Portuguese translation for some copy in Settings ([#13470](https://github.com/MetaMask/metamask-extension/pull/13470))
+
+### Changed
+- Hide 0 balance tokens in send screen dropdown if the "Hide Tokens Without Balance" toggle is on ([#13306](https://github.com/MetaMask/metamask-extension/pull/13306))
+- Change the 'Connected Sites' removal icon to a button ([#13476](https://github.com/MetaMask/metamask-extension/pull/13476))
+- Add specific hardware wallet names next to HW accounts in the account dropdown ([#13339](https://github.com/MetaMask/metamask-extension/pull/13339))
+- Update title of phishing.html ([#13323](https://github.com/MetaMask/metamask-extension/pull/13323))
+- Update language while importing an SRP to limit encouragement of copy-pasting seed phrases ([#12012](https://github.com/MetaMask/metamask-extension/pull/12012))
+- Maintain leading whitespace in for data to be signed in the signature request popup ([#13340](https://github.com/MetaMask/metamask-extension/pull/13340))
+- Update global link hover color from orange to blue ([#13344](https://github.com/MetaMask/metamask-extension/pull/13344))
+- Adjust ordering of tokens in the Swaps token dropdown ([#13270](https://github.com/MetaMask/metamask-extension/pull/13270))
+
+### Fixed
+- Ensure a correct update of the gas limit upon editing of a transaction recipient ([#12784](https://github.com/MetaMask/metamask-extension/pull/12784))
+- Ensure that the toggled display of currency in the send flow persists when editing a transaction ([#12813](https://github.com/MetaMask/metamask-extension/pull/12813))
+- Ensure settings can be opened if browser zoom level > 100% ([#13460](https://github.com/MetaMask/metamask-extension/pull/13460))
+- Ensure displayed balances of tokens are not incorrectly rounded down ([#13337](https://github.com/MetaMask/metamask-extension/pull/13337))
+- Improve visual spacing on the wallet selection flow of onboarding ([#12799](https://github.com/MetaMask/metamask-extension/pull/12799))
+
 ## [10.9.3]
 ### Fixed
 - Allow for scrolling when sign type data message is too long ([#13642](https://github.com/MetaMask/metamask-extension/pull/13642))
@@ -429,7 +458,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#11093](https://github.com/MetaMask/metamask-extension/pull/11093): Update all uses of "Seed Phrase" to "Secret Recovery Phrase"
 
 ### Fixed
-- [#11025](https://github.com/MetaMask/metamask-extension/pull/11025): Fixed redirection to the build quotes page from the swaps page when failure has occured
+- [#11025](https://github.com/MetaMask/metamask-extension/pull/11025): Fixed redirection to the build quotes page from the swaps page when failure has occurred
 - [#11015](https://github.com/MetaMask/metamask-extension/pull/11015): Prevent an undefined gas price from breaking the transaction list
 - [#11013](https://github.com/MetaMask/metamask-extension/pull/11013): Prevent signature request component from canceling hardware wallet signing
 - [#10982](https://github.com/MetaMask/metamask-extension/pull/10982): Re-validating chain id when rpc url changes [custom network form]
@@ -483,7 +512,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [9.5.1]
 ### Fixed
 - Fixed icon on approval screen ([#11048](https://github.com/MetaMask/metamask-extension/pull/11048))
-- Fixed broken app state for some users with Chinese, Portugese or Spanish browser language settings. ([#11036](https://github.com/MetaMask/metamask-extension/pull/11036))
+- Fixed broken app state for some users with Chinese, Portuguese or Spanish browser language settings. ([#11036](https://github.com/MetaMask/metamask-extension/pull/11036))
 
 ## [9.5.0] - 2021-04-28
 ### Added
@@ -572,7 +601,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Japanese translations. ([#10265](https://github.com/MetaMask/metamask-extension/pull/10265))
 - Update Chinese(Simplified) translations. ([#9388](https://github.com/MetaMask/metamask-extension/pull/9388))
 - Update Vietnamese translations. ([#10270](https://github.com/MetaMask/metamask-extension/pull/10270))
-- Update Spanish and Spanish(Latin American and Carribean) translations. ([#10258](https://github.com/MetaMask/metamask-extension/pull/10258))
+- Update Spanish and Spanish(Latin American and Caribbean) translations. ([#10258](https://github.com/MetaMask/metamask-extension/pull/10258))
 - Update Russian translations. ([#10268](https://github.com/MetaMask/metamask-extension/pull/10268))
 - Update Tagalog localized messages. ([#10269](https://github.com/MetaMask/metamask-extension/pull/10269))
 - Fix 'imported' translation use case for Dutch. ([#10448](https://github.com/MetaMask/metamask-extension/pull/10448))
@@ -2702,7 +2731,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.9.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...HEAD
+[10.10.0]: https://github.com/MetaMask/metamask-extension/compare/v10.9.3...v10.10.0
 [10.9.3]: https://github.com/MetaMask/metamask-extension/compare/v10.9.2...v10.9.3
 [10.9.2]: https://github.com/MetaMask/metamask-extension/compare/v10.9.1...v10.9.2
 [10.9.1]: https://github.com/MetaMask/metamask-extension/compare/v10.9.0...v10.9.1

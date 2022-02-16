@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Hylkää"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Lue QR-koodi"
+  },
   "about": {
     "message": "Tietoja asetuksista"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "Nykyinen kieli"
   },
+  "custom": {
+    "message": "Lisäasetukset"
+  },
   "customGas": {
     "message": "Mukauta bensa"
   },
@@ -283,17 +292,8 @@
   "deleteNetworkDescription": {
     "message": "Haluatko varmasti poistaa tämän verkon?"
   },
-  "depositEther": {
-    "message": "Talleta Etheriä"
-  },
   "details": {
     "message": "Tiedot"
-  },
-  "directDepositEther": {
-    "message": "Talleta etheriä suoraan"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jos sinulla on jo etheriä, nopein tapa hankkia etheriä uuteen lompakkoosi on suoratalletus."
   },
   "done": {
     "message": "Valmis"
@@ -530,6 +530,9 @@
   "learnMore": {
     "message": "Lisätietoa"
   },
+  "learnMoreUpperCase": {
+    "message": "Lisätietoa"
+  },
   "ledgerAccountRestriction": {
     "message": "Sinun tarvitsee käyttää edellistä tiliäsi ennen kuin voit lisätä uuden."
   },
@@ -583,9 +586,6 @@
   },
   "myAccounts": {
     "message": "Omat tilit"
-  },
-  "needEtherInWallet": {
-    "message": "Ollaksesi vuorovaikutuksessa hajautettujen sovellusten kanssa sinulla on oltava lompakossasi Ether."
   },
   "needImportFile": {
     "message": "Sinun tarvitsee valita tuotava tiedosto.",

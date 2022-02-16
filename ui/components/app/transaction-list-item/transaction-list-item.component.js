@@ -26,7 +26,10 @@ import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import {
+  checkNetworkAndAccountSupports1559,
+  getEIP1559V2Enabled,
+} from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import Button from '../../ui/button';
@@ -280,21 +283,20 @@ const TransactionListItem = (props) => {
   const { transactionGroup } = props;
   const [editGasMode, setEditGasMode] = useState();
   const transaction = transactionGroup.primaryTransaction;
-  const EIP_1559_V2_ENABLED =
-    process.env.EIP_1559_V2 === true || process.env.EIP_1559_V2 === 'true';
+  const eip1559V2Enabled = useSelector(getEIP1559V2Enabled);
 
   const supportsEIP1559 =
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
-  const supportsEIP1559V2 = EIP_1559_V2_ENABLED && supportsEIP1559;
+  const supportsEIP1559V2 = eip1559V2Enabled && supportsEIP1559;
 
   return (
     <GasFeeContextProvider
       transaction={transactionGroup.primaryTransaction}
       editGasMode={editGasMode}
     >
-      <TransactionModalContextProvider captureEventEnabled={false}>
+      <TransactionModalContextProvider>
         <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
         {supportsEIP1559V2 && (
           <>

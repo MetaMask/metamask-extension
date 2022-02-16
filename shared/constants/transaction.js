@@ -226,6 +226,10 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  *  TransactionMeta object.
  * @property {string} origin - A string representing the interface that
  *  suggested the transaction.
+ * @property {string} originalGasEstimate - A string representing the original
+ * gas estimation on the transaction metadata.
+ * @property {boolean} userEditedGasLimit - A boolean representing when the
+ * user manually edited the gas limit.
  * @property {Object} nonceDetails - A metadata object containing information
  *  used to derive the suggested nonce, useful for debugging nonce issues.
  * @property {string} rawTx - A hex string of the final signed transaction,
@@ -236,3 +240,49 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  *  the network, in Unix epoch time (ms).
  * @property {TxError} [err] - The error encountered during the transaction
  */
+
+/**
+ * Defines the possible types
+ *
+ * @typedef {Object} TransactionMetaMetricsEvents
+ * @property {'Transaction Added'} ADDED - All transactions, except incoming
+ *  ones, are added to the controller state in an unapproved status. When this
+ *  happens we fire the Transaction Added event to show that the transaction
+ *  has been added to the user's MetaMask.
+ * @property {'Transaction Approved'} APPROVED - When an unapproved transaction
+ *  is in the controller state, MetaMask will render a confirmation screen for
+ *  that transaction. If the user approves the transaction we fire this event
+ *  to indicate that the user has approved the transaction for submission to
+ *  the network.
+ * @property {'Transaction Rejected'} REJECTED - When an unapproved transaction
+ *  is in the controller state, MetaMask will render a confirmation screen for
+ *  that transaction. If the user rejects the transaction we fire this event
+ *  to indicate that the user has rejected the transaction. It will be removed
+ *  from state as a result.
+ * @property {'Transaction Submitted'} SUBMITTED - After a transaction is
+ *  approved by the user, it is then submitted to the network for inclusion in
+ *  a block. When this happens we fire the Transaction Submitted event to
+ *  indicate that MetaMask is submitting a transaction at the user's request.
+ * @property {'Transaction Finalized'} FINALIZED - All transactions that are
+ *  submitted will finalized (eventually) by either being dropped, failing
+ *  or being confirmed. When this happens we track this event, along with the
+ *  status.
+ */
+
+/**
+ * This type will work anywhere you expect a string that can be one of the
+ * above transaction event types.
+ *
+ * @typedef {TransactionMetaMetricsEvents[keyof TransactionMetaMetricsEvents]} TransactionMetaMetricsEventString
+ */
+
+/**
+ * @type {TransactionMetaMetricsEvents}
+ */
+export const TRANSACTION_EVENTS = {
+  ADDED: 'Transaction Added',
+  APPROVED: 'Transaction Approved',
+  FINALIZED: 'Transaction Finalized',
+  REJECTED: 'Transaction Rejected',
+  SUBMITTED: 'Transaction Submitted',
+};

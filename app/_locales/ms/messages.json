@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Tolak"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Imbas Kod QR"
+  },
   "about": {
     "message": "Mengenai"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "Bahasa Semasa"
   },
+  "custom": {
+    "message": "Lanjutan"
+  },
   "customGas": {
     "message": "Suaikan Gas"
   },
@@ -285,12 +294,6 @@
   },
   "details": {
     "message": "Butiran"
-  },
-  "directDepositEther": {
-    "message": "Deposit Ether Secara Terus"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jika anda sudah mempunyai Ether, cara paling cepat untuk mendapatkan Ether di dompet baru anda ialah dengan deposit langsung."
   },
   "done": {
     "message": "Selesai"
@@ -516,6 +519,9 @@
   "learnMore": {
     "message": "Maklumat lanjut"
   },
+  "learnMoreUpperCase": {
+    "message": "Maklumat lanjut"
+  },
   "ledgerAccountRestriction": {
     "message": "Anda perlu menggunakan akaun terakhir anda sebelum anda boleh menambah yang baru."
   },
@@ -563,9 +569,6 @@
   },
   "myAccounts": {
     "message": "Akaun Saya"
-  },
-  "needEtherInWallet": {
-    "message": "Untuk berinteraksi dengan aplikasi ternyahpusat menggunakan MetaMask, anda memerlukan Ether di dalam dompet anda."
   },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",

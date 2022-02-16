@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Atmesti"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Nuskaityti QR kodą"
+  },
   "about": {
     "message": "Apie"
   },
@@ -67,7 +73,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "„MetaMask“",
+    "message": "MetaMask",
     "description": "The name of the application"
   },
   "appNameBeta": {
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "Dabartinė kalba"
   },
+  "custom": {
+    "message": "Išplėstiniai"
+  },
   "customGas": {
     "message": "Pritaikyti dujas"
   },
@@ -283,17 +292,8 @@
   "deleteNetworkDescription": {
     "message": "Ar tikrai norite panaikinti šį tinklą?"
   },
-  "depositEther": {
-    "message": "Įnešti eterių"
-  },
   "details": {
     "message": "Išsami informacija"
-  },
-  "directDepositEther": {
-    "message": "Tiesiogiai įnešti eteriai"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jeigu jau turite šiek tiek eterių, sparčiausias būdas gauti eterių į naują piniginę yra tiesioginis įnašas."
   },
   "done": {
     "message": "Atlikta"
@@ -530,6 +530,9 @@
   "learnMore": {
     "message": "Sužinokite daugiau"
   },
+  "learnMoreUpperCase": {
+    "message": "Sužinokite daugiau"
+  },
   "ledgerAccountRestriction": {
     "message": "Prieš įtraukdami naują, turite pasinaudoti paskutine paskyra."
   },
@@ -583,9 +586,6 @@
   },
   "myAccounts": {
     "message": "Mano paskyros"
-  },
-  "needEtherInWallet": {
-    "message": "Norėdami dirbti su decentralizuotomis programomis „MetaMask“, savo piniginėje turite turėti eterių."
   },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",

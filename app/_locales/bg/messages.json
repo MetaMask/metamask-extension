@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Отхвърляне"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Сканиране на QR код"
+  },
   "about": {
     "message": "Информация"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "Настоящ език"
   },
+  "custom": {
+    "message": "Разширени"
+  },
   "customGas": {
     "message": "Персонализирайте газ"
   },
@@ -283,17 +292,8 @@
   "deleteNetworkDescription": {
     "message": "Наистина ли искате да изтриете тази мрежа?"
   },
-  "depositEther": {
-    "message": "Депозирайте етер"
-  },
   "details": {
     "message": "Подробности"
-  },
-  "directDepositEther": {
-    "message": "Директно депозиране на етер"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ако вече имате някакъв етер, най-бързият начин да получите етер в новия си портфейл е чрез директен депозит."
   },
   "done": {
     "message": "Готово"
@@ -526,6 +526,9 @@
   "learnMore": {
     "message": "Научете повече"
   },
+  "learnMoreUpperCase": {
+    "message": "Научете повече"
+  },
   "ledgerAccountRestriction": {
     "message": "Трябва да използвате последния си акаунт, преди да можете да добавите нов."
   },
@@ -579,9 +582,6 @@
   },
   "myAccounts": {
     "message": "Моите акаунти"
-  },
-  "needEtherInWallet": {
-    "message": "За да взаимодействате с децентрализираните приложения, използвайки MetaMask, ще ви е необходим етер в портфейла ви."
   },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",

@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Ablehnen"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR-Code scannen"
+  },
   "about": {
     "message": "Über"
   },
@@ -247,6 +253,9 @@
   "currentLanguage": {
     "message": "Aktuelle Sprache"
   },
+  "custom": {
+    "message": "Erweitert"
+  },
   "customGas": {
     "message": "Gas anpassen"
   },
@@ -274,14 +283,42 @@
   "deleteNetworkDescription": {
     "message": "Sind Sie sicher, dass Sie dieses Netzwerk löschen möchten?"
   },
-  "depositEther": {
-    "message": "Ether einzahlen"
+  "description": {
+    "message": "Beschreibung"
   },
-  "directDepositEther": {
-    "message": "Sofort Ether einzahlen"
+  "details": {
+    "message": "Details"
   },
-  "directDepositEtherExplainer": {
-    "message": "Wenn du bereits Ether besitzt, ist die sofortige Einzahlung die schnellste Methode Ether in deine neue Wallet zu bekommen."
+  "disabledGasOptionToolTipMessage": {
+    "message": "“$1” ist deaktiviert, weil es nicht das Minimum einer zehnprozentigen Erhöhung gegenüber der ursprünglichen Gasgebühr erfüllt.",
+    "description": "$1 is gas estimate type which can be market or aggressive"
+  },
+  "disconnect": {
+    "message": "Verbindung trennen"
+  },
+  "disconnectAllAccounts": {
+    "message": "Alle Konten trennen"
+  },
+  "disconnectAllAccountsConfirmationDescription": {
+    "message": "Sind Sie sicher, dass Sie die Verbindung trennen möchten? Sie könnten die Site-Funktionalität verlieren."
+  },
+  "disconnectPrompt": {
+    "message": "$1 trennen"
+  },
+  "disconnectThisAccount": {
+    "message": "Dieses Konto trennen"
+  },
+  "dismiss": {
+    "message": "Verwerfen"
+  },
+  "dismissReminderDescriptionField": {
+    "message": "Aktivieren Sie diese Option, um die Erinnerungsmeldung zur Sicherung des Geheime Wiederherstellungsphrase zu deaktivieren. Wir empfehlen Ihnen dringend, eine Sicherungskopie Ihrer Geheime Wiederherstellungsphrase zu erstellen, um den Verlust von Geldern zu vermeiden"
+  },
+  "dismissReminderField": {
+    "message": "Erinnerung Geheime Wiederherstellungsphrase abweisen"
+  },
+  "domain": {
+    "message": "Domäne"
   },
   "done": {
     "message": "Fertig"
@@ -427,9 +464,6 @@
   "happyToSeeYou": {
     "message": "Wir freuen uns, Sie zu sehen."
   },
-  "hardware": {
-    "message": "Hardware"
-  },
   "hardwareWalletConnected": {
     "message": "Hardware-Wallet verknüpft"
   },
@@ -518,6 +552,9 @@
   "learnMore": {
     "message": "Mehr erfahren"
   },
+  "learnMoreUpperCase": {
+    "message": "Mehr erfahren"
+  },
   "ledgerAccountRestriction": {
     "message": "Sie müssen Ihr letztes Konto verwenden, ehe Sie ein neues hinzufügen können."
   },
@@ -539,9 +576,6 @@
   "lock": {
     "message": "Ausloggen"
   },
-  "mainnet": {
-    "message": "Ethereum Mainnet"
-  },
   "memo": {
     "message": " Memo"
   },
@@ -562,9 +596,6 @@
   },
   "myAccounts": {
     "message": "Meine Accounts"
-  },
-  "needEtherInWallet": {
-    "message": "Um dezentralisierte Applikationen mit MetaMask verwenden zu können, benötigst du Ether in deiner Wallet."
   },
   "needImportFile": {
     "message": "Für den Import musst du eine Datei auswählen.",
@@ -590,10 +621,6 @@
   },
   "newAccountDetectedDialogMessage": {
     "message": "Neue Adresse erkannt! Klicken Sie hier, um sie zu Ihrem Adressbuch hinzuzufügen."
-  },
-  "newAccountNumberName": {
-    "message": "Account $1",
-    "description": "Default name of next account to be created on create account screen"
   },
   "newContact": {
     "message": "Neuer Kontakt"

@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import SendRowWrapper from '../send-row-wrapper';
 import Identicon from '../../../../components/ui/identicon';
 import TokenBalance from '../../../../components/ui/token-balance';
+import TokenListDisplay from '../../../../components/app/token-list-display';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
-import { ERC20, PRIMARY } from '../../../../helpers/constants/common';
+import { ERC20, ERC721, PRIMARY } from '../../../../helpers/constants/common';
 import { ASSET_TYPES } from '../../../../ducks/send';
 import { isEqualCaseInsensitive } from '../../../../helpers/utils/util';
 
@@ -57,7 +58,8 @@ export default class SendAssetRow extends Component {
   async componentDidMount() {
     const sendableTokens = this.props.tokens.filter((token) => !token.isERC721);
     const sendableCollectibles = this.props.collectibles.filter(
-      (collectible) => collectible.isCurrentlyOwned,
+      (collectible) =>
+        collectible.isCurrentlyOwned && collectible.standard === ERC721,
     );
     this.setState({ sendableTokens, sendableCollectibles });
   }
@@ -161,9 +163,12 @@ export default class SendAssetRow extends Component {
           />
           <div className="send-v2__asset-dropdown__list">
             {this.renderNativeCurrency(true)}
-            {this.state.sendableTokens.map((token) =>
-              this.renderToken(token, true),
-            )}
+            <TokenListDisplay
+              clickHandler={(token) =>
+                this.selectToken(ASSET_TYPES.TOKEN, token)
+              }
+            />
+
             {this.state.sendableCollectibles.map((collectible) =>
               this.renderCollectible(collectible, true),
             )}

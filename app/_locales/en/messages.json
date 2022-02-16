@@ -140,9 +140,6 @@
   "addMemo": {
     "message": "Add memo"
   },
-  "addNFT": {
-    "message": "Add NFT"
-  },
   "addNetwork": {
     "message": "Add Network"
   },
@@ -392,11 +389,13 @@
   "buy": {
     "message": "Buy"
   },
-  "buyWithTransak": {
-    "message": "Buy ETH with Transak"
+  "buyCryptoWithTransak": {
+    "message": "Buy $1 with Transak",
+    "description": "$1 represents the cypto symbol to be purchased"
   },
-  "buyWithTransakDescription": {
-    "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. ETH deposits into your MetaMask account."
+  "buyCryptoWithTransakDescription": {
+    "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. $1 deposits into your MetaMask account.",
+    "description": "$1 represents the cypto symbol to be purchased"
   },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
@@ -457,6 +456,10 @@
   },
   "close": {
     "message": "Close"
+  },
+  "collectibleAddressError": {
+    "message": "This token is an NFT. Add on the $1",
+    "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
   },
   "confirm": {
     "message": "Confirm"
@@ -595,6 +598,9 @@
   "contractInteraction": {
     "message": "Contract Interaction"
   },
+  "convertTokenToNFTDescription": {
+    "message": "We've detected that this asset is an NFT. Metamask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
+  },
   "copiedExclamation": {
     "message": "Copied!"
   },
@@ -652,6 +658,15 @@
   "currentlyUnavailable": {
     "message": "Unavailable on this network"
   },
+  "curveHighGasEstimate": {
+    "message": "Aggressive gas estimate graph"
+  },
+  "curveLowGasEstimate": {
+    "message": "Low gas estimate graph"
+  },
+  "curveMediumGasEstimate": {
+    "message": "Market gas estimate graph"
+  },
   "custom": {
     "message": "Advanced"
   },
@@ -659,7 +674,7 @@
     "message": "Customize Gas"
   },
   "customGasSettingToolTipMessage": {
-    "message": "Use $1 to customise the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
+    "message": "Use $1 to customize the gas price. This can be confusing if you aren’t familiar. Interact at your own risk.",
     "description": "$1 is key 'advanced' (text: 'Advanced') separated here so that it can be passed in with bold fontweight"
   },
   "customGasSubTitle": {
@@ -732,8 +747,9 @@
   "deleteNetworkDescription": {
     "message": "Are you sure you want to delete this network?"
   },
-  "depositEther": {
-    "message": "Deposit Ether"
+  "depositCrypto": {
+    "message": "Deposit $1",
+    "description": "$1 represents the cypto symbol to be purchased"
   },
   "description": {
     "message": "Description"
@@ -741,11 +757,11 @@
   "details": {
     "message": "Details"
   },
-  "directDepositEther": {
-    "message": "Directly Deposit Ether"
+  "directDepositCrypto": {
+    "message": "Directly Deposit $1"
   },
-  "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+  "directDepositCryptoExplainer": {
+    "message": "If you already have some $1, the quickest way to get $1 in your new wallet by direct deposit."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -933,6 +949,22 @@
   "enableAutoDetect": {
     "message": " Enable Autodetect"
   },
+  "enableEIP1559V2": {
+    "message": "Enable Enhanced Gas Fee UI"
+  },
+  "enableEIP1559V2AlertMessage": {
+    "message": "We've updated how gas fee estimation and customization works."
+  },
+  "enableEIP1559V2ButtonText": {
+    "message": "Turn on Enhanced Gas Fee UI in Settings"
+  },
+  "enableEIP1559V2Description": {
+    "message": "We've updated how gas estimation and customization works. Turn on if you'd like to use the new gas experience. $1",
+    "description": "$1 here is Learn More link"
+  },
+  "enableEIP1559V2Header": {
+    "message": "New gas experience"
+  },
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
@@ -1054,7 +1086,7 @@
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
   "eth_accounts": {
-    "message": "See address, account balance, activity and initiate transactions",
+    "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
@@ -1189,6 +1221,9 @@
   },
   "gasLimitInfoTooltipContent": {
     "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
+  },
+  "gasLimitRecommended": {
+    "message": "Recommended gas limit is $1. If the gas limit is less than that, it may fail."
   },
   "gasLimitTooLow": {
     "message": "Gas limit must be at least 21000"
@@ -1337,11 +1372,8 @@
   "high": {
     "message": "Aggressive"
   },
-  "highGasSettingToolTipDialog": {
-    "message": "High probability, even in volatile markets"
-  },
   "highGasSettingToolTipMessage": {
-    "message": "Use $1 to cover surges in network traffic due to things like popular NFT drops.",
+    "message": "High probability, even in volatile markets. Use $1 to cover surges in network traffic due to things like popular NFT drops.",
     "description": "$1 is key 'high' (text: 'Aggressive') separated here so that it can be passed in with bold fontweight"
   },
   "highLowercase": {
@@ -1349,9 +1381,6 @@
   },
   "history": {
     "message": "History"
-  },
-  "id": {
-    "message": "ID"
   },
   "import": {
     "message": "Import",
@@ -1385,6 +1414,18 @@
   },
   "importMyWallet": {
     "message": "Import My Wallet"
+  },
+  "importNFT": {
+    "message": "Import NFT"
+  },
+  "importNFTAddressToolTip": {
+    "message": "On OpenSea, for example, on the NFT's page under Details, there is a blue hyperlinked value labeled 'Contract Address'. If you click on this, it will take you to the contract's address on Etherscan; at the top-left of that page, there should be an icon labeled 'Contract', and to the right, a long string of letters and numbers. This is the address of the contract that created your NFT. Click on the 'copy' icon to the right of the address, and you'll have it on your clipboard."
+  },
+  "importNFTPage": {
+    "message": "Import NFT page"
+  },
+  "importNFTTokenIdToolTip": {
+    "message": "A collectible's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
   },
   "importNFTs": {
     "message": "Import NFTs"
@@ -1438,6 +1479,9 @@
   },
   "invalidAddressRecipientNotEthNetwork": {
     "message": "Not ETH network, set to lowercase"
+  },
+  "invalidAssetType": {
+    "message": "This asset is an NFT and needs to be re-added on the Import NFTs page found under the NFTs tab"
   },
   "invalidBlockExplorerURL": {
     "message": "Invalid Block Explorer URL"
@@ -1503,7 +1547,7 @@
     "message": "Known contract address."
   },
   "knownTokenWarning": {
-    "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent."
+    "message": "This action will edit tokens that are already listed in your wallet, which can be used to phish you. Only approve if you are certain that you mean to change what these tokens represent. Learn more about $1"
   },
   "kovan": {
     "message": "Kovan Test Network"
@@ -1596,6 +1640,9 @@
   "loading": {
     "message": "Loading..."
   },
+  "loadingNFTs": {
+    "message": "Loading NFTs..."
+  },
   "loadingTokens": {
     "message": "Loading Tokens..."
   },
@@ -1612,14 +1659,14 @@
     "message": "Low"
   },
   "lowGasSettingToolTipMessage": {
-    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredicible.",
+    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredictable.",
     "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
   },
   "lowLowercase": {
     "message": "low"
   },
   "lowPriorityMessage": {
-    "message": "Future transactions will queue after this one. This price was last seen was some time ago."
+    "message": "Future transactions will queue after this one."
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -1755,8 +1802,9 @@
   "name": {
     "message": "Name"
   },
-  "needEtherInWallet": {
-    "message": "To interact with decentralized applications using MetaMask, you’ll need Ether in your wallet."
+  "needCryptoInWallet": {
+    "message": "To interact with decentralized applications using MetaMask, you’ll need $1 in your wallet.",
+    "description": "$1 represents the cypto symbol to be purchased"
   },
   "needHelp": {
     "message": "Need help? Contact $1",
@@ -1891,7 +1939,7 @@
     "description": "The next nonce according to MetaMask's internal logic"
   },
   "nftTokenIdPlaceholder": {
-    "message": "Enter the collectible ID"
+    "message": "Enter the Token ID"
   },
   "nfts": {
     "message": "NFTs"
@@ -2155,7 +2203,7 @@
     "message": "Passwords Don't Match"
   },
   "pastePrivateKey": {
-    "message": "Paste your private key string here:",
+    "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
   },
   "pending": {
@@ -2467,7 +2515,7 @@
     "message": "Separate each word with a single space"
   },
   "seedPhrasePlaceholderPaste": {
-    "message": "Paste Secret Recovery Phrase from clipboard"
+    "message": "Enter your Secret Recovery Phrase"
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
@@ -3507,6 +3555,9 @@
   "xOfYPending": {
     "message": "$1 of $2 pending",
     "description": "$1 and $2 are intended to be two numbers, where $2 is a total number of pending confirmations, and $1 is a count towards that total"
+  },
+  "yes": {
+    "message": "Yes"
   },
   "yesLetsTry": {
     "message": "Yes, let's try"

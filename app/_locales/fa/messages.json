@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "عدم پذیرش"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "سکن کود QR"
+  },
   "about": {
     "message": "درباره"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "زبان فعلی"
   },
+  "custom": {
+    "message": "پیشرفته"
+  },
   "customGas": {
     "message": "گاز دلخواه"
   },
@@ -283,17 +292,8 @@
   "deleteNetworkDescription": {
     "message": "آیا مطمئن هستید که این شبکه حذف شود؟"
   },
-  "depositEther": {
-    "message": "پرداخت ایتر"
-  },
   "details": {
     "message": "جزئیات"
-  },
-  "directDepositEther": {
-    "message": "پرداخت مستقیم ایتر"
-  },
-  "directDepositEtherExplainer": {
-    "message": "در صورتیکه شما کدام ایتر داشته باشید، سریعترین روش برای گرفتن ایتر در کیف جدید تان توسط پرداخت مستقیم."
   },
   "done": {
     "message": "تمام"
@@ -530,6 +530,9 @@
   "learnMore": {
     "message": "بیشتر بدانید"
   },
+  "learnMoreUpperCase": {
+    "message": "بیشتر بدانید"
+  },
   "ledgerAccountRestriction": {
     "message": "لازم است تا حساب قبلی تان را قبل از اینکه جدید اضافه کنید، مورد استفاده قرار دهید."
   },
@@ -583,9 +586,6 @@
   },
   "myAccounts": {
     "message": "حساب های من"
-  },
-  "needEtherInWallet": {
-    "message": "برای تعامل با اپلیکیشن های غیر متمرکز شده با استفاده از MetaMask، شما نیاز به ایتر در کیف تان خواهید داشت."
   },
   "needImportFile": {
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",

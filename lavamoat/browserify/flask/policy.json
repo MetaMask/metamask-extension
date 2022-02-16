@@ -955,7 +955,10 @@
     },
     "abstract-leveldown": {
       "packages": {
+        "buffer": true,
+        "immediate": true,
         "is-buffer": true,
+        "level-supports": true,
         "process": true,
         "xtend": true
       }
@@ -3039,6 +3042,11 @@
         "stream-browserify": true,
         "typedarray-to-buffer": true,
         "util": true,
+        "xtend": true
+      }
+    },
+    "level-supports": {
+      "packages": {
         "xtend": true
       }
     },

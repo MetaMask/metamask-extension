@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Elutasítás"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR-kód beolvasása"
+  },
   "about": {
     "message": "Névjegy"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "Aktuális nyelv"
   },
+  "custom": {
+    "message": "Speciális"
+  },
   "customGas": {
     "message": "Gáz testreszabása"
   },
@@ -283,17 +292,8 @@
   "deleteNetworkDescription": {
     "message": "Biztosan törli ezt a hálózatot?"
   },
-  "depositEther": {
-    "message": "Ether befizetése"
-  },
   "details": {
     "message": "Részletek"
-  },
-  "directDepositEther": {
-    "message": "Fizess be ethert közvetlenül"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Amennyiben már rendelkezik némi Ether-rel, a közvetlen letéttel gyorsan elhelyezheti azt új pénztárcájában."
   },
   "done": {
     "message": "Kész"
@@ -526,6 +526,9 @@
   "learnMore": {
     "message": "Tudjon meg többet"
   },
+  "learnMoreUpperCase": {
+    "message": "Tudjon meg többet"
+  },
   "ledgerAccountRestriction": {
     "message": "Használnia kell a korábbi fiókját, mielőtt újat adhat hozzá. "
   },
@@ -576,9 +579,6 @@
   },
   "myAccounts": {
     "message": "Fiókjaim"
-  },
-  "needEtherInWallet": {
-    "message": "Ha a MetaMaskon keresztül szeretne interakcióba lépni decentralizált alkalmazással, ahhoz a tárcájában Ethernek kell lennie."
   },
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",

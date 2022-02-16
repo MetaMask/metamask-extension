@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Kataa"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Kagua Msimbo wa QR"
+  },
   "about": {
     "message": "Kuhusu"
   },
@@ -250,6 +256,9 @@
   "currentLanguage": {
     "message": "Lugha ya Sasa"
   },
+  "custom": {
+    "message": "Mipangilio ya kina"
+  },
   "customGas": {
     "message": "Weka Mipangilio ya Gesi Upendavyo"
   },
@@ -277,17 +286,8 @@
   "deleteNetworkDescription": {
     "message": "Una uhakika unataka kufuta mtandao huu?"
   },
-  "depositEther": {
-    "message": "Weka Ether"
-  },
   "details": {
     "message": "Maelezo"
-  },
-  "directDepositEther": {
-    "message": "Weka Ether Moja kwa Moja"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ikiwa tayari una sarafu kadhaa za Ether, njia rahisi ya kupata Ether kwenye waleti yako mpya kupitia kuweka moja kwa moja."
   },
   "done": {
     "message": "Imekamilika"
@@ -517,6 +517,9 @@
   "learnMore": {
     "message": "Jifunze zaidi"
   },
+  "learnMoreUpperCase": {
+    "message": "Jifunze zaidi"
+  },
   "ledgerAccountRestriction": {
     "message": "Unapaswa kutumia akaunti yako ya mwisho kabla hujaongeza mpya."
   },
@@ -561,9 +564,6 @@
   },
   "myAccounts": {
     "message": "Akaunti zangu"
-  },
-  "needEtherInWallet": {
-    "message": "Ili kuingiliana na programu zilizosambazwa kwa kutumia MetaMask, utahitaji kuwa na Ether kwenye waleti yako."
   },
   "needImportFile": {
     "message": "Unapaswa kuchagua faili la kuhamisha.",

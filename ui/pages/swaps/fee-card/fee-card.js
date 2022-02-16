@@ -35,7 +35,7 @@ export default function FeeCard({
   onQuotesClick,
   chainId,
   isBestQuote,
-  supportsEIP1559V2,
+  supportsEIP1559V2 = false,
 }) {
   const t = useContext(I18nContext);
 
@@ -211,5 +211,5 @@ FeeCard.propTypes = {
   numberOfQuotes: PropTypes.number.isRequired,
   chainId: PropTypes.string.isRequired,
   isBestQuote: PropTypes.bool.isRequired,
-  supportsEIP1559V2: PropTypes.bool.isRequired,
+  supportsEIP1559V2: PropTypes.bool,
 };

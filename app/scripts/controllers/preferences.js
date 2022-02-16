@@ -134,16 +134,10 @@ export default class PreferencesController {
   /**
    * Setter for the `useCollectibleDetection` property
    *
-   * @param {boolean} val - Whether or not the user prefers to autodetect collectibles.
+   * @param {boolean} useCollectibleDetection - Whether or not the user prefers to autodetect collectibles.
    */
-  setUseCollectibleDetection(val) {
-    const { openSeaEnabled } = this.store.getState();
-    if (val && !openSeaEnabled) {
-      throw new Error(
-        'useCollectibleDetection cannot be enabled if openSeaEnabled is false',
-      );
-    }
-    this.store.updateState({ useCollectibleDetection: val });
+  setUseCollectibleDetection(useCollectibleDetection) {
+    this.store.updateState({ useCollectibleDetection });
   }
 
   /**
@@ -165,6 +159,15 @@ export default class PreferencesController {
    */
   setAdvancedGasFee(val) {
     this.store.updateState({ advancedGasFee: val });
+  }
+
+  /**
+   * Setter for the `eip1559V2Enabled` property
+   *
+   * @param {object} val - holds the eip1559V2Enabled that the user set as experimental settings.
+   */
+  setEIP1559V2Enabled(val) {
+    this.store.updateState({ eip1559V2Enabled: val });
   }
 
   /**

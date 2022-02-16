@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Noraidīt"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Ieskenēt QR kodu"
+  },
   "about": {
     "message": "Par"
   },
@@ -256,6 +262,9 @@
   "currentLanguage": {
     "message": "Pašreizējā valodā"
   },
+  "custom": {
+    "message": "Papildu"
+  },
   "customGas": {
     "message": "Pielāgot Gas"
   },
@@ -283,17 +292,8 @@
   "deleteNetworkDescription": {
     "message": "Vai tiešām vēlaties dzēst šo tīklu?"
   },
-  "depositEther": {
-    "message": "Noguldīt Ether"
-  },
   "details": {
     "message": "Informācija"
-  },
-  "directDepositEther": {
-    "message": "Tiešā Ether iemaksa"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ja jums jau ir Ether, tad visātrāk Ether savā makā varat saņemt ar tiešo iemaksu."
   },
   "done": {
     "message": "Pabeigts"
@@ -526,6 +526,9 @@
   "learnMore": {
     "message": "Uzzināt vairāk"
   },
+  "learnMoreUpperCase": {
+    "message": "Uzzināt vairāk"
+  },
   "ledgerAccountRestriction": {
     "message": "Jums jāizmanto pēdējais konts pirms varat pievienot jaunu."
   },
@@ -579,9 +582,6 @@
   },
   "myAccounts": {
     "message": "Mani konti"
-  },
-  "needEtherInWallet": {
-    "message": "Lai izmantotu decentralizētas lietotnes ar MetaMask, jūsu makā jābūt Ether."
   },
   "needImportFile": {
     "message": "Jums jāatlasa fails, ko importēt",

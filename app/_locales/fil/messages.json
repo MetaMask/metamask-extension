@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Tanggihan"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "I-scan ang QR Code"
+  },
   "about": {
     "message": "Tungkol sa"
   },
@@ -262,17 +268,8 @@
   "deleteNetworkDescription": {
     "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
   },
-  "depositEther": {
-    "message": "Magdeposito ng Ether"
-  },
   "details": {
     "message": "Mga Detalye"
-  },
-  "directDepositEther": {
-    "message": "Direktang Magdeposito ng Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Kung mayroon ka nang Ether, ang pinakamabilis na paraan para magkaroon ng Ether sa iyong bagong wallet ay sa pamamagitan ng direkang deposito."
   },
   "done": {
     "message": "Tapos na"
@@ -483,6 +480,9 @@
   "learnMore": {
     "message": "Matuto pa"
   },
+  "learnMoreUpperCase": {
+    "message": "Matuto pa"
+  },
   "ledgerAccountRestriction": {
     "message": "Kailangan mong gamitin ang iyong dating account bago ka makapagdagdag ng bago."
   },
@@ -524,9 +524,6 @@
   },
   "myAccounts": {
     "message": "Mga Account Ko"
-  },
-  "needEtherInWallet": {
-    "message": "Para gumamit ng mga decentralized na application gamit ang MetaMask, mangangailangan ka ng Ether sa iyong wallet."
   },
   "needImportFile": {
     "message": "Dapat kang pumili ng file na ii-import.",
