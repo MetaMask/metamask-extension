@@ -668,10 +668,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Ibinibigay ang backup na presyo ng gas dahil hindi available ang pangunahing serbisyo sa pagtatantya ng gas sa ngayon."
   },
-  "eth_accounts": {
-    "message": "Tingnan ang mga address ng iyong mga pinapayagang account (kinakailangan)",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Pampublikong Address ng Ethereum"
   },
@@ -1320,6 +1316,10 @@
   },
   "pending": {
     "message": "Nakabinbin"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Tingnan ang mga address ng iyong mga pinapayagang account (kinakailangan)",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Mga Pahintulot"

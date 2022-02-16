@@ -1005,10 +1005,6 @@
   "ethGasPriceFetchWarning": {
     "message": "由于目前主要的燃料估算服务不可用，因此提供了备用燃料价格。"
   },
-  "eth_accounts": {
-    "message": "查看您允许的账户的地址（必填）",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "以太坊 Ethereum 公开地址"
   },
@@ -2078,6 +2074,10 @@
   },
   "permissionRequest": {
     "message": "权限请求"
+  },
+  "permission_ethereumAccounts": {
+    "message": "查看您允许的账户的地址（必填）",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "权限"

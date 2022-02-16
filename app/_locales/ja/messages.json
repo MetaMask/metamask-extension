@@ -1005,10 +1005,6 @@
   "ethGasPriceFetchWarning": {
     "message": "現在メインのガスの見積もりサービスが利用できないため、バックアップのガス代が提供されています。"
   },
-  "eth_accounts": {
-    "message": "アドレス、アカウント残高、アクティビティを表示してトランザクションを開始",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "パブリックイーサリアムアドレス"
   },
@@ -2078,6 +2074,10 @@
   },
   "permissionRequest": {
     "message": "許可のリクエスト"
+  },
+  "permission_ethereumAccounts": {
+    "message": "アドレス、アカウント残高、アクティビティを表示してトランザクションを開始",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "許可"

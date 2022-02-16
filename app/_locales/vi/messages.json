@@ -1005,10 +1005,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Giá gas dự phòng được cung cấp vì dịch vụ ước tính giá gas chính hiện không hoạt động."
   },
-  "eth_accounts": {
-    "message": "Xem địa chỉ, số dư tài khoản, hoạt động và bắt đầu giao dịch",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Địa chỉ công khai trên Ethereum"
   },
@@ -2078,6 +2074,10 @@
   },
   "permissionRequest": {
     "message": "Yêu cầu quyền"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Xem địa chỉ, số dư tài khoản, hoạt động và bắt đầu giao dịch",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Quyền"

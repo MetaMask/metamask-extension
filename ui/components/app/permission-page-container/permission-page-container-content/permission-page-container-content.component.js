@@ -71,11 +71,14 @@ export default class PermissionPageContainerContent extends PureComponent {
       subjectMetadata,
       selectedIdentities,
       allIdentitiesSelected,
+      selectedPermissions,
     } = this.props;
     const { t } = this.context;
 
     if (subjectMetadata.extensionId) {
       return t('externalExtension', [subjectMetadata.extensionId]);
+    } else if (!selectedPermissions.eth_accounts) {
+      return t('permissionRequestCapitalized');
     } else if (allIdentitiesSelected) {
       return t('connectToAll', [
         this.renderAccountTooltip(t('connectToAllAccounts')),

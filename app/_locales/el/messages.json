@@ -1005,10 +1005,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Το εφεδρικό τέλος συναλλαγής που παρέχεται ως η κύρια υπηρεσία εκτίμησης τελών συναλλαγής, δεν είναι διαθέσιμο αυτή τη στιγμή."
   },
-  "eth_accounts": {
-    "message": "Βλέπε διεύθυνση, υπόλοιπο λογαριασμού, δραστηριότητα και έναρξη συναλλαγών",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Δημόσια Διεύθυνση Ethereum"
   },
@@ -2078,6 +2074,10 @@
   },
   "permissionRequest": {
     "message": "Αίτημα άδειας"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Βλέπε διεύθυνση, υπόλοιπο λογαριασμού, δραστηριότητα και έναρξη συναλλαγών",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Άδειες"
