@@ -289,12 +289,6 @@
   "details": {
     "message": "Detaljer"
   },
-  "directDepositEther": {
-    "message": "Indskyd Ether direkte"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Hvis du allerede har Ether, er den hurtigste måde at få Ether i din nye tegnebog ved direkte indbetaling."
-  },
   "done": {
     "message": "Færdig"
   },

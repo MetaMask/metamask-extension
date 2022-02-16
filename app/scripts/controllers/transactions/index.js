@@ -55,6 +55,11 @@ const hstInterface = new ethers.utils.Interface(abi);
 
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 
+const SWAP_TRANSACTION_TYPES = [
+  TRANSACTION_TYPES.SWAP,
+  TRANSACTION_TYPES.SWAP_APPROVAL,
+];
+
 /**
  * @typedef {import('../../../../shared/constants/transaction').TransactionMeta} TransactionMeta
  * @typedef {import('../../../../shared/constants/transaction').TransactionMetaMetricsEventString} TransactionMetaMetricsEventString
@@ -337,9 +342,19 @@ export default class TransactionController extends EventEmitter {
    *
    * @param txParams
    * @param origin
+   * @param transactionType
    * @returns {txMeta}
    */
-  async addUnapprovedTransaction(txParams, origin) {
+  async addUnapprovedTransaction(txParams, origin, transactionType) {
+    if (
+      transactionType !== undefined &&
+      !SWAP_TRANSACTION_TYPES.includes(transactionType)
+    ) {
+      throw new Error(
+        `TransactionController - invalid transactionType value: ${transactionType}`,
+      );
+    }
+
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams);
     const eip1559Compatibility = await this.getEIP1559Compatibility();
@@ -381,7 +396,7 @@ export default class TransactionController extends EventEmitter {
     const { type, getCodeResponse } = await this._determineTransactionType(
       txParams,
     );
-    txMeta.type = type;
+    txMeta.type = transactionType || type;
 
     // ensure value
     txMeta.txParams.value = txMeta.txParams.value
@@ -444,7 +459,11 @@ export default class TransactionController extends EventEmitter {
     if (eip1559Compatibility) {
       const { eip1559V2Enabled } = this.preferencesStore.getState();
       const advancedGasFeeDefaultValues = this.getAdvancedGasFee();
-      if (eip1559V2Enabled && Boolean(advancedGasFeeDefaultValues)) {
+      if (
+        eip1559V2Enabled &&
+        Boolean(advancedGasFeeDefaultValues) &&
+        !SWAP_TRANSACTION_TYPES.includes(txMeta.type)
+      ) {
         txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;
         txMeta.txParams.maxFeePerGas = decGWEIToHexWEI(
           advancedGasFeeDefaultValues.maxBaseFee,
@@ -461,7 +480,7 @@ export default class TransactionController extends EventEmitter {
         //  then we set maxFeePerGas and maxPriorityFeePerGas to the suggested gasPrice.
         txMeta.txParams.maxFeePerGas = txMeta.txParams.gasPrice;
         txMeta.txParams.maxPriorityFeePerGas = txMeta.txParams.gasPrice;
-        if (eip1559V2Enabled) {
+        if (eip1559V2Enabled && txMeta.origin !== 'metamask') {
           txMeta.userFeeLevel = PRIORITY_LEVELS.DAPP_SUGGESTED;
         } else {
           txMeta.userFeeLevel = CUSTOM_GAS_ESTIMATE;

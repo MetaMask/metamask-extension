@@ -248,6 +248,9 @@
   "approve": {
     "message": "Approve spend limit"
   },
+  "approveAndInstall": {
+    "message": "Approve & Install"
+  },
   "approveButtonText": {
     "message": "Approve"
   },
@@ -260,6 +263,12 @@
   },
   "approvedAmountWithColon": {
     "message": "Approved amount:"
+  },
+  "areYouDeveloper": {
+    "message": "Are you a developer?"
+  },
+  "areYouSure": {
+    "message": "Are you sure?"
   },
   "asset": {
     "message": "Asset"
@@ -539,6 +548,10 @@
     "message": "$1 is not connected to any sites.",
     "description": "$1 is the account name"
   },
+  "connectedSnapSites": {
+    "message": "$1 snap is connected to these sites. They have access to the permissions listed above.",
+    "description": "$1 represents the name of the snap"
+  },
   "connecting": {
     "message": "Connecting..."
   },
@@ -749,11 +762,11 @@
   "details": {
     "message": "Details"
   },
-  "directDepositEther": {
-    "message": "Directly Deposit Ether"
+  "directDepositCrypto": {
+    "message": "Directly Deposit $1"
   },
-  "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+  "directDepositCryptoExplainer": {
+    "message": "If you already have some $1, the quickest way to get $1 in your new wallet by direct deposit."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -1077,10 +1090,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
-  "eth_accounts": {
-    "message": "See address, account balance, activity and initiate transactions",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Ethereum Public Address"
   },
@@ -1092,6 +1101,9 @@
   },
   "etherscanViewOn": {
     "message": "View on Etherscan"
+  },
+  "expandExperience": {
+    "message": "Expand your web3 experience"
   },
   "expandView": {
     "message": "Expand view"
@@ -1648,7 +1660,7 @@
     "message": "Low"
   },
   "lowGasSettingToolTipMessage": {
-    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredicible.",
+    "message": "Use $1 to wait for a cheaper price. Time estimates are much less accurate as prices are somewhat unpredictable.",
     "description": "$1 is key 'low' separated here so that it can be passed in with bold fontweight"
   },
   "lowLowercase": {
@@ -1669,6 +1681,12 @@
   "makeSureNoOneWatching": {
     "message": "Make sure no one is watching your screen",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
+  },
+  "malformedData": {
+    "message": "Malformed data"
+  },
+  "manageSnaps": {
+    "message": "Manage your installed Snaps"
   },
   "max": {
     "message": "Max"
@@ -1951,6 +1969,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noSnaps": {
+    "message": "No Snaps installed"
+  },
   "noThanks": {
     "message": "No Thanks"
   },
@@ -2152,6 +2173,9 @@
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
+  "openSourceCode": {
+    "message": "Check the source code"
+  },
   "optional": {
     "message": "Optional"
   },
@@ -2207,6 +2231,37 @@
   },
   "permissionRequest": {
     "message": "Permission request"
+  },
+  "permissionRequestCapitalized": {
+    "message": "Permission Request"
+  },
+  "permission_accessNetwork": {
+    "message": "Access the Internet.",
+    "description": "The description of the `endowment:network-access` permission."
+  },
+  "permission_accessSnap": {
+    "message": "Connect to the $1 Snap.",
+    "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
+  },
+  "permission_customConfirmation": {
+    "message": "Display a confirmation in MetaMask.",
+    "description": "The description for the `snap_confirm` permission"
+  },
+  "permission_ethereumAccounts": {
+    "message": "See address, account balance, activity and suggest transactions to approve",
+    "description": "The description for the `eth_accounts` permission"
+  },
+  "permission_manageBip44Keys": {
+    "message": "Control your \"$1\" accounts and assets.",
+    "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
+  },
+  "permission_manageState": {
+    "message": "Store and manage its data on your device.",
+    "description": "The description for the `snap_manageState` permission"
+  },
+  "permission_unknown": {
+    "message": "Unknown permission: $1",
+    "description": "$1 is the name of a requested permission that is not recognized."
   },
   "permissions": {
     "message": "Permissions"
@@ -2342,6 +2397,12 @@
   },
   "removeNFT": {
     "message": "Remove NFT"
+  },
+  "removeSnap": {
+    "message": "Remove Snap"
+  },
+  "removeSnapDescription": {
+    "message": "This action will delete the snap, its data and revoke your given permissions."
   },
   "replace": {
     "message": "replace"
@@ -2658,6 +2719,39 @@
   "slow": {
     "message": "Slow"
   },
+  "snapAccess": {
+    "message": "$1 snap has access to:",
+    "description": "$1 represents the name of the snap"
+  },
+  "snapError": {
+    "message": "Snap Error: '$1'. Error Code: '$2'",
+    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
+  },
+  "snapInstall": {
+    "message": "Install Snap"
+  },
+  "snapInstallWarningCheck": {
+    "message": "To confirm you understand, check all."
+  },
+  "snapInstallWarningKeyAccess": {
+    "message": "You are granting key access to the snap \"$1\". This is irrevocable and grants \"$1\" control of your accounts and assets. Make sure you trust \"$1\" before proceeding.",
+    "description": "The parameter is the name of the snap"
+  },
+  "snapRequestsPermission": {
+    "message": "This snap is requesting the following permissions:"
+  },
+  "snaps": {
+    "message": "Snaps"
+  },
+  "snapsSettingsDescription": {
+    "message": "Manage your Snaps"
+  },
+  "snapsStatus": {
+    "message": "Snap status is dependent on activity."
+  },
+  "snapsToggle": {
+    "message": "A snap will only run if it is enabled"
+  },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
   },
@@ -2718,6 +2812,9 @@
   },
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
+  },
+  "status": {
+    "message": "Status"
   },
   "statusConnected": {
     "message": "Connected"
