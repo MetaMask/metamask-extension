@@ -15,7 +15,7 @@ import { getSuggestedAssets } from '../../selectors';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
 
 function getTokenName(name, symbol) {
-  return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
+  return name === undefined ? symbol : `${name} (${symbol})`;
 }
 
 /**
