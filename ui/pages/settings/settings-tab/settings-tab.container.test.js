@@ -121,7 +121,6 @@ describe('Settings Tab', () => {
 
   it('clicks jazzicon', () => {
     const toggleBlockies = wrapper.find('#jazzicon');
-    console.log('stttaa', wrapper);
 
     toggleBlockies.simulate('click');
     expect(props.setUseBlockie.calledOnce).toStrictEqual(true);
