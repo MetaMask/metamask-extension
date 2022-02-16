@@ -319,6 +319,7 @@
     "loose-envify": "^1.4.0",
     "minimist": "^1.2.5",
     "mocha": "^7.2.0",
+    "mockttp": "^2.6.0",
     "nock": "^9.0.14",
     "node-fetch": "^2.6.1",
     "nyc": "^15.0.0",
