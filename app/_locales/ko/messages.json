@@ -362,9 +362,6 @@
     "message": "$1의 계정 보기",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies 아이덴티콘 사용"
-  },
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
   },
@@ -709,12 +706,6 @@
   "details": {
     "message": "세부 정보"
   },
-  "directDepositEther": {
-    "message": "Ether 직접 예치"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ether가 어느 정도 있다면 Ether를 새 지갑에 넣는 가장 빠른 방법은 직접 예치입니다."
-  },
   "disconnect": {
     "message": "연결 해제"
   },
@@ -1010,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "현재 주요 가스 견적 서비스를 사용할 수 없으므로 백업 가스 가격을 제공합니다."
-  },
-  "eth_accounts": {
-    "message": "허용되는 계정의 주소 보기(필수)",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "이더리움 공개 주소"
@@ -2084,6 +2071,10 @@
   },
   "permissionRequest": {
     "message": "승인 요청"
+  },
+  "permission_ethereumAccounts": {
+    "message": "허용되는 계정의 주소 보기(필수)",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "권한"

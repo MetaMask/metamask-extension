@@ -133,9 +133,6 @@
     "message": "መለያን በ$1እይ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies Identicon ተጠቀም"
-  },
   "browserNotSupported": {
     "message": "ማሰሺያዎት አልተደገፈም..."
   },
@@ -279,12 +276,6 @@
   },
   "details": {
     "message": "ዝርዝሮች"
-  },
-  "directDepositEther": {
-    "message": "Ether በቀጥታ ያስቀምጡ"
-  },
-  "directDepositEtherExplainer": {
-    "message": "ቀደም ሲል የተወሰነ Ether ካለዎት፣ በአዲሱ ቋትዎ Ether ለማግኘት ፈጣኑ መንገድ ቀጥተኛ ተቀማጭ ነው።"
   },
   "done": {
     "message": "ተጠናቅቋል"

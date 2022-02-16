@@ -362,9 +362,6 @@
     "message": "Посмотреть счет в $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Использовать идентикон Blockies"
-  },
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
   },
@@ -709,12 +706,6 @@
   "details": {
     "message": "Подробности"
   },
-  "directDepositEther": {
-    "message": "Внести Ether напрямую"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Если у вас уже есть Ether, то самый быстрый способ получить Ether в свой новый кошелек — это прямой депозит."
-  },
   "disconnect": {
     "message": "Отключить"
   },
@@ -1010,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Указана резервная цена газа, поскольку основной сервис определения цены газа сейчас недоступен."
-  },
-  "eth_accounts": {
-    "message": "См. адрес, баланс счета, активность и инициируйте транзакции",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Открытый адрес Ethereum"
@@ -2084,6 +2071,10 @@
   },
   "permissionRequest": {
     "message": "Запрос разрешения"
+  },
+  "permission_ethereumAccounts": {
+    "message": "См. адрес, баланс счета, активность и инициируйте транзакции",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Разрешения"

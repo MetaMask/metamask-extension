@@ -362,9 +362,6 @@
     "message": "Konto bei $1 anzeigen",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies Identicon verwenden"
-  },
   "browserNotSupported": {
     "message": "Ihr Browser wird nicht unterstützt …"
   },
@@ -713,12 +710,6 @@
   "details": {
     "message": "Details"
   },
-  "directDepositEther": {
-    "message": "Sofort Ether einzahlen"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Wenn du bereits Ether besitzt, ist die sofortige Einzahlung die schnellste Methode Ether in deine neue Wallet zu bekommen."
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” ist deaktiviert, weil es nicht das Minimum einer zehnprozentigen Erhöhung gegenüber der ursprünglichen Gasgebühr erfüllt.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1020,10 +1011,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Der Gaspreis, der sich aus der Gaseinschätzung ergibt, ist derzeit nicht verfügbar."
-  },
-  "eth_accounts": {
-    "message": "Siehe Adresse, Kontostand, Aktivität und Einleitung von Transaktionen",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Öffentliche Ethereum-Adresse"
@@ -2081,6 +2068,10 @@
   },
   "permissionRequest": {
     "message": "Berechtigungsanfrage"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Siehe Adresse, Kontostand, Aktivität und Einleitung von Transaktionen",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Berechtigungen"

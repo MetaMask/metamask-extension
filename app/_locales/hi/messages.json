@@ -362,9 +362,6 @@
     "message": "$1 पर खाता देखें",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "ब्लॉकीज़ आइडेंटिकॉन का उपयोग करें"
-  },
   "browserNotSupported": {
     "message": "आपका ब्राउज़र समर्थित नहीं है..."
   },
@@ -709,12 +706,6 @@
   "details": {
     "message": "विस्तृत जानकारी"
   },
-  "directDepositEther": {
-    "message": "Ether सीधे जमा करें"
-  },
-  "directDepositEtherExplainer": {
-    "message": "यदि आपके पास पहले से ही कुछ Ether है, तो सीधे जमा करना आपके नए वॉलेट में Ether पाने का सबसे तेज तरीका है।"
-  },
   "disconnect": {
     "message": "डिस्कनेक्ट करें"
   },
@@ -1010,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "बैकअप गैस की कीमत प्रदान की जाती है क्योंकि मुख्य गैस अनुमान सर्विस अभी उपलब्ध नहीं है।"
-  },
-  "eth_accounts": {
-    "message": "पता, खाते की शेषराशि, गतिविधि देखें और लेन-देन शुरू करें",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum सार्वजनिक पता"
@@ -2084,6 +2071,10 @@
   },
   "permissionRequest": {
     "message": "अनुमति अनुरोध"
+  },
+  "permission_ethereumAccounts": {
+    "message": "पता, खाते की शेषराशि, गतिविधि देखें और लेन-देन शुरू करें",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "अनुमतियाँ"

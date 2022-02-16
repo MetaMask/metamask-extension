@@ -124,9 +124,6 @@
     "message": "Tingnan ang account sa $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gumamit ng Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
@@ -264,12 +261,6 @@
   },
   "details": {
     "message": "Mga Detalye"
-  },
-  "directDepositEther": {
-    "message": "Direktang Magdeposito ng Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Kung mayroon ka nang Ether, ang pinakamabilis na paraan para magkaroon ng Ether sa iyong bagong wallet ay sa pamamagitan ng direkang deposito."
   },
   "done": {
     "message": "Tapos na"

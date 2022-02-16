@@ -362,9 +362,6 @@
     "message": "Afficher le compte à $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Utiliser les Identicon Blockies"
-  },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas supporté..."
   },
@@ -709,12 +706,6 @@
   "details": {
     "message": "Détails"
   },
-  "directDepositEther": {
-    "message": "Dépôt direct d’Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si vous avez déjà de l’Ether, le moyen le plus rapide d’en obtenir dans votre nouveau portefeuille est le dépôt direct."
-  },
   "disconnect": {
     "message": "Déconnecter"
   },
@@ -1010,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Le prix de carburant de sauvegarde est fourni, car le service principal d’estimation du carburant est momentanément indisponible."
-  },
-  "eth_accounts": {
-    "message": "Consultez l’adresse, le solde du compte et l’activité, et lancez des transactions",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Adresse publique d’Ethereum"
@@ -2084,6 +2071,10 @@
   },
   "permissionRequest": {
     "message": "Demande d’autorisation"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Consultez l’adresse, le solde du compte et l’activité, et lancez des transactions",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Autorisations"

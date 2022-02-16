@@ -139,9 +139,6 @@
     "message": "Se konto på $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Brug Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Din browser er ikke understøttet..."
   },
@@ -288,12 +285,6 @@
   },
   "details": {
     "message": "Detaljer"
-  },
-  "directDepositEther": {
-    "message": "Indskyd Ether direkte"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Hvis du allerede har Ether, er den hurtigste måde at få Ether i din nye tegnebog ved direkte indbetaling."
   },
   "done": {
     "message": "Færdig"

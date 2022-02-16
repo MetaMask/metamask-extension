@@ -139,9 +139,6 @@
     "message": " $1 ನಲ್ಲಿ ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "ಬ್ಲಾಕೀಸ್ ಐಡೆಂಟಿಕಾನ್ ಬಳಸಿ"
-  },
   "browserNotSupported": {
     "message": "ನಿಮ್ಮ ಬ್ರೌಸರ್ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ..."
   },
@@ -288,12 +285,6 @@
   },
   "details": {
     "message": "ವಿವರಗಳು"
-  },
-  "directDepositEther": {
-    "message": "ಎಥರ್ ನೇರವಾಗಿ ಠೇವಣಿ ಮಾಡಿ"
-  },
-  "directDepositEtherExplainer": {
-    "message": "ನೀವು ಈಗಾಗಲೇ ಕೆಲವು ಎಥರ್ ಹೊಂದಿದ್ದರೆ, ನೇರ ಠೇವಣಿ ಮೂಲಕ ನಿಮ್ಮ ಹೊಸ ವ್ಯಾಲೆಟ್‌ನಲ್ಲಿ ಎಥರ್ ಅನ್ನು ಪಡೆಯುವ ತ್ವರಿತ ಮಾರ್ಗ."
   },
   "done": {
     "message": "ಮುಗಿದಿದೆ"

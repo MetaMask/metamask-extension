@@ -139,9 +139,6 @@
     "message": "Pogledajte nalog za $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Koristite „Blockies Identicon”"
-  },
   "browserNotSupported": {
     "message": "Vaš pregledač nije podržan..."
   },
@@ -285,12 +282,6 @@
   },
   "details": {
     "message": "Детаљи"
-  },
-  "directDepositEther": {
-    "message": "Direktno deponujte Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ako već imate neki Ether, najbrži način da preuzmete Ether u svoj novi novčanik jeste direktnim deponovanjem."
   },
   "done": {
     "message": "Gotovo"

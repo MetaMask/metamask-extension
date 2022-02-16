@@ -362,9 +362,6 @@
     "message": "Hesabı şurada görüntüleyin: $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies Identicon kullan"
-  },
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
   },
@@ -709,12 +706,6 @@
   "details": {
     "message": "Ayrıntılar"
   },
-  "directDepositEther": {
-    "message": "Direct Deposit ile Ether Yatır"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Zaten bir miktar Etheriniz varsa, yeni cüzdanınıza Ether aktarmanın en kolay yolu direct deposit işlemidir."
-  },
   "disconnect": {
     "message": "Bağlantıyı kes"
   },
@@ -1010,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Ana gaz tahmini hizmeti olarak sunulan yedek gaz fiyatı şu anda kullanılamıyor."
-  },
-  "eth_accounts": {
-    "message": "Adrese, hesap bakiyesine, aktiviteye bakın ve işlemleri başlatın",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum Genel Adresi"
@@ -2084,6 +2071,10 @@
   },
   "permissionRequest": {
     "message": "İzin talebi"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Adrese, hesap bakiyesine, aktiviteye bakın ve işlemleri başlatın",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "İzinler"

@@ -362,9 +362,6 @@
     "message": "Lihat akun di $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gunakan Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Peramban Anda tidak didukung..."
   },
@@ -709,12 +706,6 @@
   "details": {
     "message": "Detail"
   },
-  "directDepositEther": {
-    "message": "Depositokan Ether Secara Langsung"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jika Anda sudah memiliki beberapa Ether, cara tercepat untuk mendapatkan Ether di dompet baru Anda adalah dengan deposito langsung."
-  },
   "disconnect": {
     "message": "Putuskan koneksi"
   },
@@ -1010,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Biaya gas cadangan diberikan karena layanan estimasi gas utama saat ini tidak tersedia."
-  },
-  "eth_accounts": {
-    "message": "Lihat alamat, saldo akun, aktivitas, dan mulai transaksi",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Alamat Publik Ethereum"
@@ -2084,6 +2071,10 @@
   },
   "permissionRequest": {
     "message": "Permohonan izin"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Lihat alamat, saldo akun, aktivitas, dan mulai transaksi",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Izin"

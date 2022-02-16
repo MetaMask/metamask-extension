@@ -362,9 +362,6 @@
     "message": "Exibir conta em $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Usar identicon de Blockies"
-  },
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
   },
@@ -713,12 +710,6 @@
   "details": {
     "message": "Detalhes"
   },
-  "directDepositEther": {
-    "message": "Depositar Ether diretamente"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Se você já tiver alguns Ethers, a forma mais rápida de colocar Ethers na sua nova carteira é por depósito direto."
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” está desativado porque não satisfaz o aumento mínimo de 10% em relação à taxa de gás original.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1024,10 +1015,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "O preço de backup do gás é fornecido porque a estimativa de gás principal está indisponível no momento."
-  },
-  "eth_accounts": {
-    "message": "Ver endereço, saldo da conta, atividade e iniciar transações",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Endereço público do Ethereum"
@@ -2114,6 +2101,10 @@
   },
   "permissionRequest": {
     "message": "Solicitação de permissão"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Ver endereço, saldo da conta, atividade e iniciar transações",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Permissões"

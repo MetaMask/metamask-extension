@@ -362,9 +362,6 @@
     "message": "Προβολή λογαριασμού με $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Χρήση Αναπαράστασης Μπλοκ"
-  },
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
   },
@@ -709,12 +706,6 @@
   "details": {
     "message": "Λεπτομέρειες"
   },
-  "directDepositEther": {
-    "message": "Απευθείας Κατάθεση Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Αν έχετε ήδη κάποια Ether, ο πιο γρήγορος τρόπος για να πάρετε τα Ether στο νέο σας πορτοφόλι με άμεση κατάθεση."
-  },
   "disconnect": {
     "message": "Αποσύνδεση"
   },
@@ -1010,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Το εφεδρικό τέλος συναλλαγής που παρέχεται ως η κύρια υπηρεσία εκτίμησης τελών συναλλαγής, δεν είναι διαθέσιμο αυτή τη στιγμή."
-  },
-  "eth_accounts": {
-    "message": "Βλέπε διεύθυνση, υπόλοιπο λογαριασμού, δραστηριότητα και έναρξη συναλλαγών",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Δημόσια Διεύθυνση Ethereum"
@@ -2084,6 +2071,10 @@
   },
   "permissionRequest": {
     "message": "Αίτημα άδειας"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Βλέπε διεύθυνση, υπόλοιπο λογαριασμού, δραστηριότητα και έναρξη συναλλαγών",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Άδειες"

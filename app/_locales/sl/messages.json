@@ -139,9 +139,6 @@
     "message": "Ogled računa na  $1 ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Uporabi identifikacijo Blockies"
-  },
   "browserNotSupported": {
     "message": "Vaš brskalnik ni podptrt ..."
   },
@@ -288,12 +285,6 @@
   },
   "details": {
     "message": "Podrobnosti"
-  },
-  "directDepositEther": {
-    "message": "Neposredno vplačilo ehera"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Če že imate Ether, ga lahko najhitreje dobite v MetaMask z neposrednim vplačilom."
   },
   "done": {
     "message": "Končano"

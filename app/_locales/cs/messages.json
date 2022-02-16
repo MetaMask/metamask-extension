@@ -51,9 +51,6 @@
   "balance": {
     "message": "Zůstatek:"
   },
-  "blockiesIdenticon": {
-    "message": "Použít Blockies Identicon"
-  },
   "cancel": {
     "message": "Zrušit"
   },
@@ -110,12 +107,6 @@
   },
   "details": {
     "message": "Podrobnosti"
-  },
-  "directDepositEther": {
-    "message": "Vložit Ether přímo"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Pokud už vlastníte nějaký Ether, nejrychleji ho dostanete do peněženky přímým vkladem."
   },
   "done": {
     "message": "Hotovo"

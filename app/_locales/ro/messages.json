@@ -139,9 +139,6 @@
     "message": "Vizualizare cont la $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Folosește Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
   },
@@ -288,12 +285,6 @@
   },
   "details": {
     "message": "Detalii"
-  },
-  "directDepositEther": {
-    "message": "Depuneți direct Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Dacă deja aveți Ether, cel mai rapid mod de a avea Ether în portofelul nou prin depunere directă."
   },
   "done": {
     "message": "Efectuat"

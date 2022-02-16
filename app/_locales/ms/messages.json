@@ -139,9 +139,6 @@
     "message": "Lihat akaun pada $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gunakan Identicon Blockies"
-  },
   "browserNotSupported": {
     "message": "Pelayar anda tidak disokong..."
   },
@@ -288,12 +285,6 @@
   },
   "details": {
     "message": "Butiran"
-  },
-  "directDepositEther": {
-    "message": "Deposit Ether Secara Terus"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jika anda sudah mempunyai Ether, cara paling cepat untuk mendapatkan Ether di dompet baru anda ialah dengan deposit langsung."
   },
   "done": {
     "message": "Selesai"

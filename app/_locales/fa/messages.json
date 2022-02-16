@@ -139,9 +139,6 @@
     "message": "مشاهده حساب در 1$1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "استفاده شناسا بلوک ها"
-  },
   "browserNotSupported": {
     "message": "مرورگر شما پشتیبانی نمیشود"
   },
@@ -288,12 +285,6 @@
   },
   "details": {
     "message": "جزئیات"
-  },
-  "directDepositEther": {
-    "message": "پرداخت مستقیم ایتر"
-  },
-  "directDepositEtherExplainer": {
-    "message": "در صورتیکه شما کدام ایتر داشته باشید، سریعترین روش برای گرفتن ایتر در کیف جدید تان توسط پرداخت مستقیم."
   },
   "done": {
     "message": "تمام"

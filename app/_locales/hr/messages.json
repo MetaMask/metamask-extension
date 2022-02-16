@@ -139,9 +139,6 @@
     "message": "Prikaži račun u $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Upotrijebi identifikaciju blokovima"
-  },
   "browserNotSupported": {
     "message": "Vaš se preglednik ne podržava..."
   },
@@ -288,12 +285,6 @@
   },
   "details": {
     "message": "Detalji"
-  },
-  "directDepositEther": {
-    "message": "Izravan polog Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ako imate nešto Ethera, najbrži je način prebacivanja Ethera u vaš novi novčanik izravan polog."
   },
   "done": {
     "message": "Gotovo"

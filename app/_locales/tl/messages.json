@@ -362,9 +362,6 @@
     "message": "Tingnan ang account sa $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gumamit ng Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
   },
@@ -709,12 +706,6 @@
   "details": {
     "message": "Mga Detalye"
   },
-  "directDepositEther": {
-    "message": "Direktang Mag-deposit ng Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Kung mayroon ka nang ilang Ether, ang pinakamabilis na paraan para makakuha ng Ether sa bago mong wallet ay sa pamamagitan ng direktang pag-deposit."
-  },
   "disconnect": {
     "message": "Idiskonekta"
   },
@@ -1010,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Ang backup gas price ay inilalaan dahil ang pangunahing pagtantiya ng presyo ng gas ay hindi available sa ngayon."
-  },
-  "eth_accounts": {
-    "message": "Tingnan ang mga address, balanse ng account, aktibidad at simulan ang iyong mga transaksyon",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Pampublikong Address ng Ethereum"
@@ -2084,6 +2071,10 @@
   },
   "permissionRequest": {
     "message": "Kahilingan sa pahintulot"
+  },
+  "permission_ethereumAccounts": {
+    "message": "Tingnan ang mga address, balanse ng account, aktibidad at simulan ang iyong mga transaksyon",
+    "description": "The description for the `eth_accounts` permission"
   },
   "permissions": {
     "message": "Mga Pahintulot"

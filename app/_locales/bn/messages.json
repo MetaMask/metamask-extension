@@ -139,9 +139,6 @@
     "message": "$1 এ অ্যাকাউন্ট দেখুন",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "ব্লকিজ আইডেন্টিকন ব্যবহার করুন"
-  },
   "browserNotSupported": {
     "message": "আপনার ব্রাউজার সমর্থিত নয়..."
   },
@@ -288,12 +285,6 @@
   },
   "details": {
     "message": "বিশদ বিবরণ"
-  },
-  "directDepositEther": {
-    "message": "সরাসরি ইথার জমা করুন"
-  },
-  "directDepositEtherExplainer": {
-    "message": "আপনার ইতিমধ্যে কিছু ইথার থেকে থাকলে আপনার নতুন ওয়ালেটে ইথার পাওয়ার দ্রুততম উপায় হল সরাসরি জমা করা।"
   },
   "done": {
     "message": "সম্পন্ন "

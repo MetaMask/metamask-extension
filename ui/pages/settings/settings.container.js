@@ -25,6 +25,8 @@ import {
   SETTINGS_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
+  SNAPS_LIST_ROUTE,
+  SNAPS_VIEW_ROUTE,
 } from '../../helpers/constants/routes';
 import Settings from './settings.component';
 
@@ -36,6 +38,8 @@ const ROUTES_TO_I18N_KEYS = {
   [CONTACT_ADD_ROUTE]: 'newContact',
   [CONTACT_EDIT_ROUTE]: 'editContact',
   [CONTACT_LIST_ROUTE]: 'contacts',
+  [SNAPS_LIST_ROUTE]: 'snaps',
+  [SNAPS_VIEW_ROUTE]: 'snaps',
   [CONTACT_VIEW_ROUTE]: 'viewContact',
   [NETWORKS_ROUTE]: 'networks',
   [NETWORKS_FORM_ROUTE]: 'networks',
@@ -52,8 +56,8 @@ const mapStateToProps = (state, ownProps) => {
   } = state;
 
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
-
   const isAddressEntryPage = pathNameTail.includes('0x');
+  const isSnapViewPage = Boolean(pathname.match(SNAPS_VIEW_ROUTE));
   const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE));
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE));
   const isNetworksFormPage =
@@ -71,6 +75,8 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = CONTACT_LIST_ROUTE;
   } else if (isNetworksFormPage) {
     backRoute = NETWORKS_ROUTE;
+  } else if (isSnapViewPage) {
+    backRoute = SNAPS_LIST_ROUTE;
   }
 
   let initialBreadCrumbRoute;
@@ -96,6 +102,7 @@ const mapStateToProps = (state, ownProps) => {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     addNewNetwork,
     conversionDate,
+    isSnapViewPage,
   };
 };
 
