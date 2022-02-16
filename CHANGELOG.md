@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.9.3]
+### Fixed
+- Allow for scrolling when sign type data message is too long ([#13642](https://github.com/MetaMask/metamask-extension/pull/13642))
+  - Require a scroll through of message before allowing user signature
+
 ## [10.9.2]
 ### Fixed
 - Prevent errors on the swaps "View Quote" screen that can occur if the swaps API returns incorrect refund and max gas fees on some test networks ([#13511](https://github.com/MetaMask/metamask-extension/pull/13511))
@@ -2697,7 +2702,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.9.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.9.3...HEAD
+[10.9.3]: https://github.com/MetaMask/metamask-extension/compare/v10.9.2...v10.9.3
 [10.9.2]: https://github.com/MetaMask/metamask-extension/compare/v10.9.1...v10.9.2
 [10.9.1]: https://github.com/MetaMask/metamask-extension/compare/v10.9.0...v10.9.1
 [10.9.0]: https://github.com/MetaMask/metamask-extension/compare/v10.8.2...v10.9.0
