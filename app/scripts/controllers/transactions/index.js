@@ -2221,13 +2221,6 @@ export default class TransactionController extends EventEmitter {
         this.updateEventFragment(id, { properties, sensitiveProperties });
         this.finalizeEventFragment(`transaction-submitted-${txMeta.id}`);
         break;
-      case TRANSACTION_EVENTS.EIP1559_PARAMS_UPDATED:
-        id = `transaction-eip1559-params-updated-${txMeta.id}`;
-        this.updateEventFragment(id, { properties, sensitiveProperties });
-        this.finalizeEventFragment(
-          `transaction-eip1559-params-updated-${txMeta.id}`,
-        );
-        break;
       default:
         break;
     }
