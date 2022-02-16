@@ -362,9 +362,6 @@
     "message": "Afficher le compte à $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Utiliser les Identicon Blockies"
-  },
   "browserNotSupported": {
     "message": "Votre navigateur internet n’est pas supporté..."
   },

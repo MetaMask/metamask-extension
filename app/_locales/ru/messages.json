@@ -362,9 +362,6 @@
     "message": "Посмотреть счет в $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Использовать идентикон Blockies"
-  },
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
   },

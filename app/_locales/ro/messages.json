@@ -139,9 +139,6 @@
     "message": "Vizualizare cont la $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Folosește Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
   },

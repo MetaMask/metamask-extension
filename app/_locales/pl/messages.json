@@ -139,9 +139,6 @@
     "message": "Wyświetl konto w $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Użyj Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Twoja przeglądarka nie jest obsługiwana..."
   },
