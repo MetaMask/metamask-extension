@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Typography from '../../../ui/typography/typography';
-import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import {
+  ALIGN_ITEMS,
+  TYPOGRAPHY,
+} from '../../../../helpers/constants/design-system';
+import Box from '../../../../components/ui/box/box';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
 
@@ -37,11 +41,11 @@ export default function SnapRemoveWarning({ onCancel, onSubmit, snapName }) {
       footer={<SnapRemoveWarningFooter />}
       onClose={onCancel}
     >
-      <div className="snap-remove-warning__content">
-        <Typography variant={TYPOGRAPHY.H6}>
+      <Box paddingRight={4} paddingBottom={4} paddingLeft={6}>
+        <Typography variant={TYPOGRAPHY.H4}>
           {t('removeSnapConfirmation', [snapName])}
         </Typography>
-      </div>
+      </Box>
     </Popover>
   );
 }
