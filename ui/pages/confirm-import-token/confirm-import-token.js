@@ -47,7 +47,7 @@ const ConfirmImportToken = () => {
     const firstTokenAddress = addedTokenValues?.[0].address?.toLowerCase();
 
     addedTokenValues.forEach((pendingToken) => {
-      setAddedToken(pendingToken);
+      setAddedToken({ ...pendingToken });
     });
     dispatch(clearPendingTokens());
 
