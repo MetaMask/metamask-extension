@@ -38,115 +38,115 @@
 }
 
 .btn-secondary {
-  color: var(--Blue-500);
-  border: 1px solid var(--hover-secondary);
-  background-color: var(--white);
+  color: var(--color-primary-default);
+  border: 1px solid var(--color-primary-muted);
+  background-color: var(--color-background-default);
 
   &:hover {
-    border-color: var(--Blue-500);
+    border-color: var(--color-primary-default);
   }
 
   &:active {
-    background: var(--Blue-000);
-    border-color: var(--Blue-500);
+    background: var(--Blue-000);  // @TODO: change when color available
+    border-color: var(--color-primary-default);
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: var(--hover-secondary);
+    color: var(--color-primary-muted);
   }
 }
 
 .btn-warning {
-  color: var(--Orange-500);
-  border: 1px solid var(--hover-orange);
-  background-color: var(--white);
+  color: var(--Orange-500); // @TODO: change when color available
+  border: 1px solid var(--hover-orange); // @TODO: change when color available
+  background-color: var(--color-text-default);
 
   &:hover {
-    border-color: var(--Orange-500);
+    border-color: var(--Orange-500); // @TODO: change when color available
   }
 
   &:active {
-    background: var(--Orange-000);
-    border-color: var(--Orange-500);
+    background: var(--Orange-000); // @TODO: change when color available
+    border-color: var(--Orange-500); // @TODO: change when color available
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: var(--hover-orange);
+    color: var(--hover-orange); // @TODO: change when color available
   }
 }
 
 .btn-danger {
-  color: var(--Red-500);
-  border: 1px solid var(--hover-red);
-  background-color: var(--white);
+  color: var(--color-error-default);
+  border: 1px solid var(--color-error-muted);
+  background-color: var(--color-background-default);
 
   &:hover {
-    border-color: var(--Red-500);
+    border-color: var(--color-error-default);
   }
 
   &:active {
-    background: var(--Red-000);
-    border-color: var(--Red-500);
+    background: var(--color-error-muted);
+    border-color: var(--color-error-default);
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: var(--hover-red);
+    color: var(--color-error-muted);
   }
 }
 
 .btn-danger-primary {
-  color: var(--white);
-  border: 1px solid var(--Red-500);
-  background-color: var(--Red-500);
+  color: var(--color-background-default);
+  border: 1px solid var(--color-error-default);
+  background-color: var(--color-error-default);
 
   &:hover {
-    border-color: var(--hover-red-primary);
-    background-color: var(--hover-red-primary);
+    border-color: var(--color-error-alternative);
+    background-color: var(--color-error-alternative);
   }
 
   &:active {
-    background: var(--Red-600);
-    border-color: var(--Red-600);
+    background: var(--color-error-alternative0);
+    border-color: var(--color-error-alternative);
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    border-color: var(--hover-red);
-    background-color: var(--hover-red);
+    border-color: var(--color-error-disabled);
+    background-color: var(--color-error-disabled);
   }
 }
 
 .btn-default {
-  color: var(--Grey-500);
-  border: 1px solid var(--hover-default);
+  color: var(--Grey-500); // @TODO: change when color available
+  border: 1px solid var(--hover-default); // @TODO: change when color available
 
   &:hover {
-    border-color: var(--Grey-500);
+    border-color: var(--Grey-500); // @TODO: change when color available
   }
 
   &:active {
     background: #fbfbfc;
-    border-color: var(--Grey-500);
+    border-color: var(--Grey-500); // @TODO: change when color available
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: var(--hover-default);
+    color: var(--hover-default); // @TODO: change when color available
   }
 }
 
 .btn-primary {
-  color: var(--white);
-  border: 1px solid var(--Blue-500);
-  background-color: var(--Blue-500);
+  color: var(--color-background-default);
+  border: 1px solid var(--color-primary-default);
+  background-color: var(--color-primary-default);
 
   &:hover {
     border-color: var(--hover-confirm);
@@ -154,30 +154,30 @@
   }
 
   &:active {
-    background: var(--Blue-600);
-    border-color: var(--Blue-600);
+    background: var(--color-primary-alternative);
+    border-color: var(--color-primary-alternative);
   }
 
   &--disabled,
   &[disabled] {
-    border-color: var(--hover-secondary);
-    background-color: var(--hover-secondary);
+    border-color: var(--color-primary-muted);
+    background-color: var(--color-primary-muted);
   }
 }
 
 .btn-link {
   @include H4;
 
-  color: var(--Blue-500);
+  color: var(--color-primary-default);
   cursor: pointer;
   background-color: transparent;
 
   &:hover {
-    color: var(--Blue-400);
+    color: var(--Blue-400); // @TODO: change when color available
   }
 
   &:active {
-    color: var(--Blue-600);
+    color: var(--Blue-600); // @TODO: change when color available
   }
 
   &--disabled,
@@ -185,7 +185,7 @@
     cursor: auto;
     opacity: 1;
     pointer-events: none;
-    color: var(--hover-secondary);
+    color: var(--color-primary-muted);
   }
 }
 
@@ -198,8 +198,8 @@
  */
 
 .btn-raised {
-  color: var(--primary-blue);
-  background-color: var(--white);
+  color: var(--color-primary-default);
+  background-color: var(--color-background-default);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   padding: 6px;
   height: initial;
@@ -214,7 +214,7 @@
   height: 54px;
   width: 198px;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
-  color: var(--white);
+  color: var(--color-background-default);
   font-weight: 500;
   transition: 200ms ease-in-out;
   background-color: rgba(247, 134, 28, 0.9);
@@ -237,7 +237,7 @@ input[type="submit"][disabled] {
   }
 
   &.btn-secondary {
-    border: 1px solid var(--Blue-500);
+    border: 1px solid var(--color-primary-default);
 
     &--disabled,
     &[disabled] {
@@ -333,7 +333,7 @@ input[type="submit"][disabled] {
   }
 
   &:active {
-    color: var(--Blue-600);
+    color: var(--color-primary-alternative);
   }
 
   &--disabled,
