@@ -188,6 +188,12 @@
   "aggregatorFeeCost": {
     "message": "Aggregator network fee"
   },
+  "airgapVault": {
+    "message": "AirGap Vault"
+  },
+  "airgapVaultTutorial": {
+    "message": " (Tutorials)"
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
@@ -1542,12 +1548,6 @@
     "message": "Keystone"
   },
   "keystoneTutorial": {
-    "message": " (Tutorials)"
-  },
-  "airgapVault": {
-    "message": "AirGap Vault"
-  },
-  "airgapVaultTutorial": {
     "message": " (Tutorials)"
   },
   "knownAddressRecipient": {
