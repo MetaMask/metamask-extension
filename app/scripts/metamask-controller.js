@@ -1521,6 +1521,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       getTransactions: txController.getTransactions.bind(txController),
 
+      updateEIP1559Params: txController.updateEIP1559Params.bind(txController),
       // messageManager
       signMessage: this.signMessage.bind(this),
       cancelMessage: this.cancelMessage.bind(this),

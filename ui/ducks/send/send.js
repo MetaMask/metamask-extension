@@ -53,7 +53,7 @@ import {
   hideLoadingIndication,
   showConfTxPage,
   showLoadingIndication,
-  updateTransaction,
+  updateEIP1559Params,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
   isCollectibleOwner,
@@ -1700,7 +1700,7 @@ export function signTransaction() {
           eip1559support ? eip1559OnlyTxParamsToUpdate : txParams,
         ),
       };
-      dispatch(updateTransaction(editingTx));
+      dispatch(updateEIP1559Params(editingTx));
     } else if (asset.type === ASSET_TYPES.TOKEN) {
       // When sending a token transaction we have to the token.transfer method
       // on the token contract to construct the transaction. This results in

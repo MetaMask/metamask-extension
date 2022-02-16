@@ -673,6 +673,19 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
+export function updateEIP1559Params(txId, txParams) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateEIP1559Params(txId, txParams);
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+  };
+}
+
 export function updateTransaction(txData, dontShowLoadingIndicator) {
   return async (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
