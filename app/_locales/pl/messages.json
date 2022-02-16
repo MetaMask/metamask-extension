@@ -8,9 +8,6 @@
   "about": {
     "message": "Informacje"
   },
-  "aboutSettingsDescription": {
-    "message": "Wersja, centrum wsparcia i dane kontaktowe"
-  },
   "acceleratingATransaction": {
     "message": "* Przyspieszenie transakcji poprzez zastosowanie wyższej ceny gazu zwiększa szanse na jej szybsze przetworzenie przez sieć, jednak skuteczność tej operacji nie jest gwarantowana."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Opcje zaawansowane"
-  },
-  "advancedSettingsDescription": {
-    "message": "Dostęp do funkcji programisty, pobieranie dzienników stanu, resetowanie konta, konfigurowanie sieci testowych i niestandardowe RPC"
   },
   "amount": {
     "message": "Ilość"
@@ -144,9 +138,6 @@
   "blockExplorerView": {
     "message": "Wyświetl konto w $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Użyj Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Twoja przeglądarka nie jest obsługiwana..."
@@ -420,9 +411,6 @@
   "general": {
     "message": "Ogólne"
   },
-  "generalSettingsDescription": {
-    "message": "Przeliczanie walut, waluta podstawowa, język, ikona (identicon) Blockies"
-  },
   "getEther": {
     "message": "Zdobądź Eter"
   },
@@ -593,9 +581,6 @@
   },
   "networkName": {
     "message": "Nazwa sieci"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodawaj i edytuj niestandardowe sieci RPC"
   },
   "networks": {
     "message": "Sieci"
@@ -828,9 +813,6 @@
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"
   },
-  "securitySettingsDescription": {
-    "message": "Ustawienia prywatności i fraza seed portfela"
-  },
   "seedPhrasePlaceholder": {
     "message": "Oddziel słowa pojedynczą spacją"
   },
@@ -863,9 +845,6 @@
   },
   "sendTokens": {
     "message": "Wyślij tokeny"
-  },
-  "separateEachWord": {
-    "message": "Oddziel słowa pojedynczą spacją"
   },
   "settings": {
     "message": "Ustawienia"

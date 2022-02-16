@@ -87,7 +87,9 @@ describe('Metamask Import UI', function () {
             'correct horse battery staple',
           );
 
-          await driver.clickElement('.first-time-flow__terms');
+          await driver.clickElement(
+            '[data-testid="create-new-vault__terms-checkbox"]',
+          );
 
           await driver.clickElement({ text: 'Import', tag: 'button' });
 

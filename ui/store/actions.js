@@ -398,7 +398,7 @@ export function connectHardware(deviceName, page, hdPath, t) {
 
     let accounts;
     try {
-      if (deviceName === 'ledger') {
+      if (deviceName === DEVICE_NAMES.LEDGER) {
         await promisifiedBackground.establishLedgerTransportPreference();
       }
       if (
@@ -424,7 +424,7 @@ export function connectHardware(deviceName, page, hdPath, t) {
     } catch (error) {
       log.error(error);
       if (
-        deviceName === 'ledger' &&
+        deviceName === DEVICE_NAMES.LEDGER &&
         ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
         error.message.match('Failed to open the device')
       ) {
@@ -756,6 +756,10 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
   };
 }
 
+export async function getTransactions(filters = {}) {
+  return await promisifiedBackground.getTransactions(filters);
+}
+
 export function completedTx(id) {
   return (dispatch, getState) => {
     const state = getState();
@@ -802,6 +806,33 @@ export function txError(err) {
     message: err.message,
   };
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function disableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.disableSnap(snapId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function enableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.enableSnap(snapId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function removeSnap(snap) {
+  return async (dispatch) => {
+    await promisifiedBackground.removeSnap(snap);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export async function removeSnapError(msgData) {
+  return promisifiedBackground.removeSnapError(msgData);
+}
+///: END:ONLY_INCLUDE_IN
 
 export function cancelMsg(msgData) {
   return async (dispatch) => {
