@@ -362,9 +362,6 @@
     "message": "Προβολή λογαριασμού με $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Χρήση Αναπαράστασης Μπλοκ"
-  },
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
   },

@@ -362,9 +362,6 @@
     "message": "Xem tài khoản tại $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Dùng biểu tượng nhận dạng kiểu Blockies"
-  },
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
   },

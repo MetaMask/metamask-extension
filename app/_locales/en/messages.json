@@ -67,6 +67,9 @@
   "accountDetails": {
     "message": "Account details"
   },
+  "accountIdenticon": {
+    "message": "Account Identicon"
+  },
   "accountName": {
     "message": "Account Name"
   },
@@ -371,8 +374,8 @@
     "message": "View account at $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Use Blockies Identicon"
+  "blockies": {
+    "message": "Blockies"
   },
   "browserNotSupported": {
     "message": "Your Browser is not supported..."
@@ -1533,6 +1536,12 @@
   },
   "ipfsGatewayDescription": {
     "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
+  },
+  "jazzAndBlockies": {
+    "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
+  },
+  "jazzicons": {
+    "message": "Jazzicons"
   },
   "jsDeliver": {
     "message": "jsDeliver"

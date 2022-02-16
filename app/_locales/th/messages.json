@@ -54,9 +54,6 @@
   "balance": {
     "message": "ยอดคงเหลือ:"
   },
-  "blockiesIdenticon": {
-    "message": "ใช้งาน Blockies Identicon"
-  },
   "cancel": {
     "message": "ยกเลิก"
   },
