@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -9,9 +9,9 @@ import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
-import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getPendingTokens } from '../../ducks/metamask/metamask';
+import { useNewMetricEvent } from '../../hooks/useMetricEvent';
 import { addTokens, clearPendingTokens } from '../../store/actions';
 
 const getTokenName = (name, symbol) => {
@@ -19,27 +19,49 @@ const getTokenName = (name, symbol) => {
 };
 
 const ConfirmImportToken = () => {
-  const metricsEvent = useContext(MetaMetricsContext);
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const pendingTokens = useSelector(getPendingTokens);
+  const [addedPendingToken, setAddedPendingToken] = useState({});
 
-  const trackTokenAddedEvent = (pendingToken) => {
-    metricsEvent({
-      event: 'Token Added',
-      category: 'Wallet',
-      sensitiveProperties: {
-        token_symbol: pendingToken.symbol,
-        token_contract_address: pendingToken.address,
-        token_decimal_precision: pendingToken.decimals,
-        unlisted: pendingToken.unlisted,
-        source: pendingToken.isCustom ? 'custom' : 'list',
-      },
+  const trackTokenAddedEvent = useNewMetricEvent({
+    event: 'Token Added',
+    category: 'Wallet',
+    sensitiveProperties: {
+      token_symbol: addedPendingToken.symbol,
+      token_contract_address: addedPendingToken.address,
+      token_decimal_precision: addedPendingToken.decimals,
+      unlisted: addedPendingToken.unlisted,
+      source: addedPendingToken.isCustom ? 'custom' : 'list',
+    },
+  });
+
+  const handleAddTokens = useCallback(async () => {
+    await dispatch(addTokens(pendingTokens));
+
+    const pendingTokenValues = Object.values(pendingTokens);
+    const firstTokenAddress = pendingTokenValues?.[0].address?.toLowerCase();
+
+    pendingTokenValues.forEach((pendingToken) => {
+      setAddedPendingToken(pendingToken);
     });
-  };
+    dispatch(clearPendingTokens());
+
+    if (firstTokenAddress) {
+      history.push(`${ASSET_ROUTE}/${firstTokenAddress}`);
+    } else {
+      history.push(mostRecentOverviewPage);
+    }
+  }, [dispatch, history, mostRecentOverviewPage, pendingTokens]);
+
+  useEffect(() => {
+    if (Object.keys(addedPendingToken).length) {
+      trackTokenAddedEvent();
+    }
+  }, [addedPendingToken, trackTokenAddedEvent]);
 
   useEffect(() => {
     if (Object.keys(pendingTokens).length === 0) {
@@ -106,22 +128,7 @@ const ConfirmImportToken = () => {
             type="primary"
             large
             className="page-container__footer-button"
-            onClick={async () => {
-              await dispatch(addTokens(pendingTokens));
-
-              const pendingTokenValues = Object.values(pendingTokens);
-              pendingTokenValues.forEach((pendingToken) => {
-                trackTokenAddedEvent(pendingToken);
-              });
-              dispatch(clearPendingTokens());
-
-              const firstTokenAddress = pendingTokenValues?.[0].address?.toLowerCase();
-              if (firstTokenAddress) {
-                history.push(`${ASSET_ROUTE}/${firstTokenAddress}`);
-              } else {
-                history.push(mostRecentOverviewPage);
-              }
-            }}
+            onClick={handleAddTokens}
           >
             {t('importTokensCamelCase')}
           </Button>
