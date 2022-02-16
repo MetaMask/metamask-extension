@@ -287,6 +287,7 @@ export const TRANSACTION_GROUP_CATEGORIES = {
  *  or being confirmed. When this happens we track this event, along with the
  *  status.
  * @property {'Gas Fees Updated'} GAS_FEES_UPDATED - Update to the gas fees properties of a transaction
+ * @property {'EIP1559 Params Updated'} EIP1559_PARAMS_UPDATED - Update to the gas fees properties of a transaction
  * @property {'Estimated Base Fees Updated'} ESTIMATED_BASE_FEES_UPDATED - Update to the estimated base fees properties of a transaction
  * @property {'Swap Approval Transaction Updated'} SWAP_APPROVAL_UPDATED - Update a swap approval transaction properties
  * @property {'Swap Transaction Updated'} SWAP_TRANSACTION_UPDATED - Update a swap transaction properties
@@ -314,4 +315,5 @@ export const TRANSACTION_EVENTS = {
   SWAP_APPROVAL_UPDATED: 'Swap Approval Transaction Updated',
   SWAP_TRANSACTION_UPDATED: 'Swap Transaction Updated',
   USER_SETTINGS_UPDATED: 'Transaction User Settings Updated',
+  EIP1559_PARAMS_UPDATED: 'EIP1559 Params Updated',
 };

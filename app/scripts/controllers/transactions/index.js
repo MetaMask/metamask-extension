@@ -376,6 +376,37 @@ export default class TransactionController extends EventEmitter {
     this._trackTransactionMetricsEvent(txMeta, eventType);
   }
 
+  updateEIP1559Params(txId, {
+    data,
+    from,
+    to,
+    value,
+    gas,    
+  }) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+      return;
+    }
+
+    let txEIP1559 = {
+      txParams: {
+        data,
+        from,
+        to,
+        value,
+        gas
+      },
+    };
+    
+    // only update what is defined
+    txEIP1559.txParams = pickBy(txEIP1559.txParams);
+    const note = `Update EIP1559 Params for ${txId}`;
+    this._updateTransaction(
+      txId,
+      txEIP1559,
+      note,
+      TRANSACTION_EVENTS.EIP1559_PARAMS_UPDATED,
+    );    
+  }
   /**
    *
    * @param {string} txId - transaction id
