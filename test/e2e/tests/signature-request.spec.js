@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  regularDelayMs,
+} = require('../helpers');
 
 describe('Signature Request', function () {
   it('can initiate and confirm a Signature Request', async function () {
@@ -59,6 +63,10 @@ describe('Signature Request', function () {
         );
 
         // Approve signing typed data
+        await driver.clickElement(
+          '[data-testid="signature-request-scroll-button"]',
+        );
+        await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Sign', tag: 'button' }, 10000);
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
