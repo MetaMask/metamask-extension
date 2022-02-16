@@ -1405,9 +1405,6 @@
   "lastConnected": {
     "message": "Τελευταία Σύνδεση"
   },
-  "layer1Fees": {
-    "message": "Τέλη επιπέδου 1"
-  },
   "learmMoreAboutGas": {
     "message": "Θέλετε να $1 για το τέλος συναλλαγής;"
   },

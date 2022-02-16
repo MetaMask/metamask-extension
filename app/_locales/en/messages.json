@@ -1631,9 +1631,6 @@
   "lastConnected": {
     "message": "Last Connected"
   },
-  "layer1Fees": {
-    "message": "Layer 1 fees"
-  },
   "learmMoreAboutGas": {
     "message": "Want to $1 about gas?"
   },
