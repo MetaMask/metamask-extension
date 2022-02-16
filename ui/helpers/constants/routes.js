@@ -28,6 +28,7 @@ const NEW_ACCOUNT_ROUTE = '/new-account';
 const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 const SEND_ROUTE = '/send';
+const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -123,6 +124,7 @@ const PATH_NAME_MAP = {
   [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   [SEND_ROUTE]: 'Send Page',
+  [TOKEN_DETAILS]: 'Token Details Page',
   [`${CONNECT_ROUTE}/:id`]: 'Connect To Site Confirmation Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`]: 'Grant Connected Site Permissions Confirmation Page',
   [CONNECTED_ROUTE]: 'Sites Connected To This Account Page',
@@ -181,6 +183,7 @@ export {
   IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
+  TOKEN_DETAILS,
   INITIALIZE_ROUTE,
   INITIALIZE_WELCOME_ROUTE,
   INITIALIZE_UNLOCK_ROUTE,

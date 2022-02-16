@@ -1360,6 +1360,9 @@
   "hide": {
     "message": "Hide"
   },
+  "hideToken": {
+    "message": "Hide token"
+  },
   "hideTokenPrompt": {
     "message": "Hide Token?"
   },
@@ -1832,6 +1835,9 @@
   },
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
+  },
+  "network": {
+    "message": "Network:"
   },
   "networkDetails": {
     "message": "Network Details"
@@ -3274,6 +3280,12 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required."
+  },
+  "tokenDecimalTitle": {
+    "message": "Token Decimal:"
+  },
+  "tokenDetails": {
+    "message": "Token details"
   },
   "tokenDetectionAnnouncement": {
     "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"
