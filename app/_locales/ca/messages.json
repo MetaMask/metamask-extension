@@ -139,9 +139,6 @@
     "message": "Veure compte a $1 ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Fer servir els Identicon Blockies"
-  },
   "browserNotSupported": {
     "message": "El teu navegador no és suportat..."
   },

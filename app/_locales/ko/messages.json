@@ -362,9 +362,6 @@
     "message": "$1의 계정 보기",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies 아이덴티콘 사용"
-  },
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
   },
