@@ -25,28 +25,29 @@ const ConfirmImportToken = () => {
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const pendingTokens = useSelector(getPendingTokens);
-  const [addedPendingToken, setAddedPendingToken] = useState({});
+
+  const [addedToken, setAddedToken] = useState({});
 
   const trackTokenAddedEvent = useNewMetricEvent({
     event: 'Token Added',
     category: 'Wallet',
     sensitiveProperties: {
-      token_symbol: addedPendingToken.symbol,
-      token_contract_address: addedPendingToken.address,
-      token_decimal_precision: addedPendingToken.decimals,
-      unlisted: addedPendingToken.unlisted,
-      source: addedPendingToken.isCustom ? 'custom' : 'list',
+      token_symbol: addedToken.symbol,
+      token_contract_address: addedToken.address,
+      token_decimal_precision: addedToken.decimals,
+      unlisted: addedToken.unlisted,
+      source: addedToken.isCustom ? 'custom' : 'list',
     },
   });
 
   const handleAddTokens = useCallback(async () => {
     await dispatch(addTokens(pendingTokens));
 
-    const pendingTokenValues = Object.values(pendingTokens);
-    const firstTokenAddress = pendingTokenValues?.[0].address?.toLowerCase();
+    const addedTokenValues = Object.values(pendingTokens);
+    const firstTokenAddress = addedTokenValues?.[0].address?.toLowerCase();
 
-    pendingTokenValues.forEach((pendingToken) => {
-      setAddedPendingToken(pendingToken);
+    addedTokenValues.forEach((pendingToken) => {
+      setAddedToken(pendingToken);
     });
     dispatch(clearPendingTokens());
 
@@ -58,10 +59,10 @@ const ConfirmImportToken = () => {
   }, [dispatch, history, mostRecentOverviewPage, pendingTokens]);
 
   useEffect(() => {
-    if (Object.keys(addedPendingToken).length) {
+    if (Object.keys(addedToken).length) {
       trackTokenAddedEvent();
     }
-  }, [addedPendingToken, trackTokenAddedEvent]);
+  }, [addedToken, trackTokenAddedEvent]);
 
   useEffect(() => {
     if (Object.keys(pendingTokens).length === 0) {
