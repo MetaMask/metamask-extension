@@ -43,24 +43,24 @@ if (process.env.IN_TEST === 'true') {
     nickname: 'Localhost 8545',
   };
 } else if (process.env.METAMASK_DEBUG || env === 'test') {
-  // defaultProviderConfigOpts = {
-  //   type: NETWORK_TYPE_RPC,
-  //   rpcUrl: QUAI_CONTEXTS[0]['rpc'],
-  //   chainId: QUAI_CONTEXTS[0]['id'],
-  //   nickname: QUAI_MAINNET_DISPLAY_NAME,
-  // };
-  defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
+  defaultProviderConfigOpts = {
+    type: NETWORK_TYPE_RPC,
+    rpcUrl: QUAI_MAIN_CONTEXTS[0]['rpc'],
+    chainId: QUAI_MAIN_CONTEXTS[0]['id'],
+    nickname: QUAI_MAINNET_DISPLAY_NAME,
+  };
+  // defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
 } else {
-  // defaultProviderConfigOpts = {
-  //   type: NETWORK_TYPE_RPC,
-  //   rpcUrl: QUAI_CONTEXTS[0]['rpc'],
-  //   chainId: QUAI_CONTEXTS[0]['id'],
-  //   nickname: QUAI_MAINNET_DISPLAY_NAME,
-  // };
-  defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
+  defaultProviderConfigOpts = {
+    type: NETWORK_TYPE_RPC,
+    rpcUrl: QUAI_MAIN_CONTEXTS[0]['rpc'],
+    chainId: QUAI_MAIN_CONTEXTS[0]['id'],
+    nickname: QUAI_MAINNET_DISPLAY_NAME,
+  };
+  // defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
 }
 const defaultProviderConfig = {
-  ticker: 'ETH',
+  ticker: 'QUAI',
   ...defaultProviderConfigOpts,
 };
 
