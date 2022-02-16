@@ -398,7 +398,7 @@ export function connectHardware(deviceName, page, hdPath, t) {
 
     let accounts;
     try {
-      if (deviceName === 'ledger') {
+      if (deviceName === DEVICE_NAMES.LEDGER) {
         await promisifiedBackground.establishLedgerTransportPreference();
       }
       if (
@@ -424,7 +424,7 @@ export function connectHardware(deviceName, page, hdPath, t) {
     } catch (error) {
       log.error(error);
       if (
-        deviceName === 'ledger' &&
+        deviceName === DEVICE_NAMES.LEDGER &&
         ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
         error.message.match('Failed to open the device')
       ) {

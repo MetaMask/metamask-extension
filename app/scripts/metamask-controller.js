@@ -2047,7 +2047,7 @@ export default class MetamaskController extends EventEmitter {
     if (deviceName === DEVICE_NAMES.LATTICE) {
       keyring.appName = 'MetaMask';
     }
-    if (deviceName === 'trezor') {
+    if (deviceName === DEVICE_NAMES.TREZOR) {
       const model = keyring.getModel();
       this.appStateController.setTrezorModel(model);
     }
@@ -2058,7 +2058,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async attemptLedgerTransportCreation() {
-    const keyring = await this.getKeyringForDevice('ledger');
+    const keyring = await this.getKeyringForDevice(DEVICE_NAMES.LEDGER);
     return await keyring.attemptMakeApp();
   }
 
@@ -3720,7 +3720,7 @@ export default class MetamaskController extends EventEmitter {
       transportType,
     );
 
-    const keyring = await this.getKeyringForDevice('ledger');
+    const keyring = await this.getKeyringForDevice(DEVICE_NAMES.LEDGER);
     if (keyring?.updateTransportMethod) {
       return keyring.updateTransportMethod(newValue).catch((e) => {
         // If there was an error updating the transport, we should
