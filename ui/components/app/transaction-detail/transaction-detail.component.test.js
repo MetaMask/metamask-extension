@@ -18,6 +18,7 @@ jest.mock('../../../store/actions', () => ({
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
+  createTransactionEventFragment: jest.fn(),
 }));
 
 const render = ({ componentProps, contextProps } = {}) => {
@@ -31,6 +32,7 @@ const render = ({ componentProps, contextProps } = {}) => {
         },
       },
       gasFeeEstimates: mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET],
+      eip1559V2Enabled: true,
     },
   });
 
@@ -50,14 +52,6 @@ const render = ({ componentProps, contextProps } = {}) => {
 };
 
 describe('TransactionDetail', () => {
-  beforeEach(() => {
-    process.env.EIP_1559_V2 = true;
-  });
-
-  afterEach(() => {
-    process.env.EIP_1559_V2 = false;
-  });
-
   it('should render edit link with text low if low gas estimates are selected', () => {
     render({ contextProps: { transaction: { userFeeLevel: 'low' } } });
     expect(screen.queryByText('🐢')).toBeInTheDocument();

@@ -53,11 +53,12 @@ import {
   hideLoadingIndication,
   showConfTxPage,
   showLoadingIndication,
-  updateTokenType,
   updateTransaction,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
   isCollectibleOwner,
+  getTokenStandardAndDetails,
+  showModal,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -91,9 +92,16 @@ import {
   isValidHexAddress,
 } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
-import { ERC20, ETH, GWEI } from '../../helpers/constants/common';
+import {
+  ERC20,
+  ERC721,
+  ERC1155,
+  ETH,
+  GWEI,
+} from '../../helpers/constants/common';
 import { TRANSACTION_ENVELOPE_TYPES } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
+import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
 // typedefs
 /**
  * @typedef {import('@reduxjs/toolkit').PayloadAction} PayloadAction
@@ -361,9 +369,15 @@ export const computeEstimatedGasLimit = createAsyncThunk(
   async (_, thunkApi) => {
     const state = thunkApi.getState();
     const { send, metamask } = state;
+    const unapprovedTxs = getUnapprovedTxs(state);
+    const transaction = unapprovedTxs[send.draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
-    if (send.stage !== SEND_STAGES.EDIT) {
+    if (
+      send.stage !== SEND_STAGES.EDIT ||
+      !transaction.dappSuggestedGasFees?.gas ||
+      !transaction.userEditedGasLimit
+    ) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: send.gas.gasPrice,
         blockGasLimit: metamask.currentBlockGasLimit,
@@ -567,7 +581,7 @@ export const initialState = {
   gas: {
     // indicate whether the gas estimate is loading
     isGasEstimateLoading: true,
-    // String token indentifying a listener for polling on the gasFeeController
+    // String token identifying a listener for polling on the gasFeeController
     gasEstimatePollToken: null,
     // has the user set custom gas in the custom gas modal
     isCustomGasSet: false,
@@ -607,6 +621,8 @@ export const initialState = {
     // In the case of tokens, the address, decimals and symbol of the token
     // will be included in details
     details: null,
+    // error to display when there is an issue with the asset
+    error: null,
   },
   draftTransaction: {
     // The metamask internal id of the transaction. Only populated in the EDIT
@@ -736,6 +752,7 @@ const slice = createSlice({
       state.amount.value = action.payload.amount;
       state.gas.error = null;
       state.amount.error = null;
+      state.asset.error = null;
       state.recipient.address = action.payload.address;
       state.recipient.nickname = action.payload.nickname;
       state.draftTransaction.id = action.payload.id;
@@ -887,6 +904,7 @@ const slice = createSlice({
     updateAsset: (state, action) => {
       state.asset.type = action.payload.type;
       state.asset.balance = action.payload.balance;
+      state.asset.error = action.payload.error;
       if (
         state.asset.type === ASSET_TYPES.TOKEN ||
         state.asset.type === ASSET_TYPES.COLLECTIBLE
@@ -1146,7 +1164,7 @@ const slice = createSlice({
     },
     validateSendState: (state) => {
       switch (true) {
-        // 1 + 2. State is invalid when either gas or amount fields have errors
+        // 1 + 2. State is invalid when either gas or amount or asset fields have errors
         // 3. State is invalid if asset type is a token and the token details
         //  are unknown.
         // 4. State is invalid if no recipient has been added
@@ -1156,6 +1174,7 @@ const slice = createSlice({
         // 8. State is invalid if the selected asset is a ERC721
         case Boolean(state.amount.error):
         case Boolean(state.gas.error):
+        case Boolean(state.asset.error):
         case state.asset.type === ASSET_TYPES.TOKEN &&
           state.asset.details === null:
         case state.stage === SEND_STAGES.ADD_RECIPIENT:
@@ -1164,10 +1183,6 @@ const slice = createSlice({
         case new BigNumber(state.gas.gasLimit, 16).lessThan(
           new BigNumber(state.gas.minimumGasLimit),
         ):
-          state.status = SEND_STATUSES.INVALID;
-          break;
-        case state.asset.type === ASSET_TYPES.TOKEN &&
-          state.asset.details.isERC721 === true:
           state.status = SEND_STATUSES.INVALID;
           break;
         default:
@@ -1419,27 +1434,46 @@ export function updateSendAmount(amount) {
 export function updateSendAsset({ type, details }) {
   return async (dispatch, getState) => {
     const state = getState();
-    let { balance } = state.send.asset;
+    let { balance, error } = state.send.asset;
+    const userAddress = state.send.account.address ?? getSelectedAddress(state);
     if (type === ASSET_TYPES.TOKEN) {
-      // if changing to a token, get the balance from the network. The asset
-      // overview page and asset list on the wallet overview page contain
-      // send buttons that call this method before initialization occurs.
-      // When this happens we don't yet have an account.address so default to
-      // the currently active account. In addition its possible for the balance
-      // check to take a decent amount of time, so we display a loading
-      // indication so that that immediate feedback is displayed to the user.
-      await dispatch(showLoadingIndication());
-      balance = await getERC20Balance(
-        details,
-        state.send.account.address ?? getSelectedAddress(state),
-      );
-      // TODO remove along with migration of isERC721 tokens and stripping away this designation
-      if (details && details.isERC721 === undefined) {
-        const updatedAssetDetails = await updateTokenType(details.address);
-        details.isERC721 = updatedAssetDetails.isERC721;
+      if (details) {
+        if (details.standard === undefined) {
+          await dispatch(showLoadingIndication());
+          const { standard } = await getTokenStandardAndDetails(
+            details.address,
+            userAddress,
+          );
+          if (
+            process.env.COLLECTIBLES_V1 &&
+            (standard === ERC721 || standard === ERC1155)
+          ) {
+            await dispatch(hideLoadingIndication());
+            dispatch(
+              showModal({
+                name: 'CONVERT_TOKEN_TO_NFT',
+                tokenAddress: details.address,
+              }),
+            );
+            error = INVALID_ASSET_TYPE;
+            throw new Error(error);
+          }
+          details.standard = standard;
+        }
+
+        // if changing to a token, get the balance from the network. The asset
+        // overview page and asset list on the wallet overview page contain
+        // send buttons that call this method before initialization occurs.
+        // When this happens we don't yet have an account.address so default to
+        // the currently active account. In addition its possible for the balance
+        // check to take a decent amount of time, so we display a loading
+        // indication so that that immediate feedback is displayed to the user.
+        if (details.standard === ERC20) {
+          error = null;
+          balance = await getERC20Balance(details, userAddress);
+        }
+        await dispatch(hideLoadingIndication());
       }
-      details.standard = ERC20;
-      await dispatch(hideLoadingIndication());
     } else if (type === ASSET_TYPES.COLLECTIBLE) {
       let isCurrentOwner = true;
       try {
@@ -1448,16 +1482,30 @@ export function updateSendAsset({ type, details }) {
           details.address,
           details.tokenId,
         );
-      } catch (error) {
-        if (error.message.includes('Unable to verify ownership.')) {
+      } catch (err) {
+        if (err.message.includes('Unable to verify ownership.')) {
           // this would indicate that either our attempts to verify ownership failed because of network issues,
           // or, somehow a token has been added to collectibles state with an incorrect chainId.
         } else {
           // Any other error is unexpected and should be surfaced.
-          dispatch(displayWarning(error.message));
+          dispatch(displayWarning(err.message));
         }
       }
+
+      if (details.standard === undefined) {
+        const { standard } = await getTokenStandardAndDetails(
+          details.address,
+          userAddress,
+        );
+        details.standard = standard;
+      }
+
+      if (details.standard === ERC1155) {
+        throw new Error('Sends of ERC1155 tokens are not currently supported');
+      }
+
       if (isCurrentOwner) {
+        error = null;
         balance = '0x1';
       } else {
         throw new Error(
@@ -1465,12 +1513,13 @@ export function updateSendAsset({ type, details }) {
         );
       }
     } else {
+      error = null;
       // if changing to native currency, get it from the account key in send
       // state which is kept in sync when accounts change.
       balance = state.send.account.balance;
     }
     // update the asset in state which will re-run amount and gas validation
-    await dispatch(actions.updateAsset({ type, details, balance }));
+    await dispatch(actions.updateAsset({ type, details, balance, error }));
     await dispatch(computeEstimatedGasLimit());
   };
 }
@@ -1632,15 +1681,18 @@ export function signTransaction() {
       // merge in the modified txParams. Once the transaction has been modified
       // we can send that to the background to update the transaction in state.
       const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTx = unapprovedTxs[id];
       // We only update the tx params that can be changed via the edit flow UX
       const eip1559OnlyTxParamsToUpdate = {
         data: txParams.data,
         from: txParams.from,
         to: txParams.to,
         value: txParams.value,
-        gas: txParams.gas,
+        gas: unapprovedTx.userEditedGasLimit
+          ? unapprovedTx.txParams.gas
+          : txParams.gas,
       };
-      const unapprovedTx = unapprovedTxs[id];
+      unapprovedTx.originalGasEstimate = eip1559OnlyTxParamsToUpdate.gas;
       const editingTx = {
         ...unapprovedTx,
         txParams: Object.assign(
@@ -1866,7 +1918,6 @@ export function getGasInputMode(state) {
 }
 
 // Asset Selectors
-
 export function getSendAsset(state) {
   return state[name].asset;
 }
@@ -1880,6 +1931,10 @@ export function getIsAssetSendable(state) {
     return true;
   }
   return state[name].asset.details.isERC721 === false;
+}
+
+export function getAssetError(state) {
+  return state[name].asset.error;
 }
 
 // Amount Selectors

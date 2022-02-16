@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "প্রত্যাখ্যান"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "QR কোড স্ক্যান করুন"
+  },
   "about": {
     "message": "সম্পর্কে"
-  },
-  "aboutSettingsDescription": {
-    "message": "সংস্করণ, সহায়তা কেন্দ্র, এবং যোগাযোগের তথ্য।"
   },
   "acceleratingATransaction": {
     "message": "* একটি উচ্চতর গ্যাসের মূল্য ব্যবহার করে একটি লেনদেনের গতি বৃদ্ধি নেটওয়ার্কের দ্বারা সেটির প্রক্রিয়াকরণ দ্রুততর হওয়ার সম্ভাবনা বৃদ্ধি করে, কিন্তু সবসময় সেটির নিশ্চয়তা দেওয়া যায় না।"
@@ -55,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "উন্নত বিকল্পসমূহ"
-  },
-  "advancedSettingsDescription": {
-    "message": "ডেভেলপারের বৈশিষ্ট্যগুলি অ্যাক্সেস করুন, স্টেট লগগুলি ডাউনলোড করুন, অ্যাকাউন্ট রিসেট করুন, টেস্টনেটস এবং কাস্টম RPC সেটআপ করুন।"
   },
   "amount": {
     "message": "পরিমান"
@@ -256,6 +256,9 @@
   "currentLanguage": {
     "message": "বর্তমান ভাষা"
   },
+  "custom": {
+    "message": "উন্নত"
+  },
   "customGas": {
     "message": "গ্যাস কাস্টোমাইজ করুন"
   },
@@ -283,17 +286,8 @@
   "deleteNetworkDescription": {
     "message": "আপনি কি এই নেটওয়ার্কটি মোছার বিষয়ে নিশ্চিত?"
   },
-  "depositEther": {
-    "message": "ইথার জমা করুন"
-  },
   "details": {
     "message": "বিশদ বিবরণ"
-  },
-  "directDepositEther": {
-    "message": "সরাসরি ইথার জমা করুন"
-  },
-  "directDepositEtherExplainer": {
-    "message": "আপনার ইতিমধ্যে কিছু ইথার থেকে থাকলে আপনার নতুন ওয়ালেটে ইথার পাওয়ার দ্রুততম উপায় হল সরাসরি জমা করা।"
   },
   "done": {
     "message": "সম্পন্ন "
@@ -420,9 +414,6 @@
   "general": {
     "message": "সাধারণ"
   },
-  "generalSettingsDescription": {
-    "message": "মুদ্রা বিনিময়, প্রাথমিক মুদ্রা, ভাষা, ব্লকিস আইডেন্টিকন"
-  },
   "getEther": {
     "message": "ইথার পান"
   },
@@ -530,6 +521,9 @@
   "learnMore": {
     "message": "আরও জানুন"
   },
+  "learnMoreUpperCase": {
+    "message": "আরও জানুন"
+  },
   "ledgerAccountRestriction": {
     "message": "একটি নতুন অ্যা কাউন্ট যোগ করার আগে আপনাকে আপনার শেষ অ্যাকাউন্ট ব্যবহার করে ফেলতে হবে।"
   },
@@ -584,9 +578,6 @@
   "myAccounts": {
     "message": "আমার অ্যাকাউন্টগুলি"
   },
-  "needEtherInWallet": {
-    "message": "MetaMask ব্যবহার করে ছড়িয়ে ছিটিয়ে থাকা অ্যাপ্লিকেশনগুলির সাথে যোগাযোগ করতে, আপনার ওয়ালেটে ইথার লাগবে।"
-  },
   "needImportFile": {
     "message": "আমদানি করার জন্য আপনাকে অবশ্যই একটি ফাইল নির্বাচন করতে হবে।",
     "description": "User is important an account and needs to add a file to continue"
@@ -596,9 +587,6 @@
   },
   "networkName": {
     "message": "নেটওয়ার্কের নাম"
-  },
-  "networkSettingsDescription": {
-    "message": "কাস্টম RPC নেটওয়ার্কগুলি যোগ ও সম্পাদনা করুন"
   },
   "networks": {
     "message": "নেটওয়ার্কসমূহ"
@@ -834,9 +822,6 @@
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"
   },
-  "securitySettingsDescription": {
-    "message": "গোপনীয়তা সেটিংস এবং ওয়ালেট সীড ফ্রেজ"
-  },
   "seedPhrasePlaceholder": {
     "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"
   },
@@ -869,9 +854,6 @@
   },
   "sendTokens": {
     "message": "টোকেনগুলি পাঠান"
-  },
-  "separateEachWord": {
-    "message": "প্রতিটি শব্দকে একটি স্পেস দিয়ে আলাদা করুন"
   },
   "settings": {
     "message": "সেটিংস"

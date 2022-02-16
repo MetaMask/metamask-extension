@@ -21,7 +21,7 @@ const Asset = () => {
 
   const collectible = collectibles.find(
     ({ address, tokenId }) =>
-      isEqualCaseInsensitive(address, asset) && id === tokenId,
+      isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 
   useEffect(() => {

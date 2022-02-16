@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Afvis"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scan QR-kode"
+  },
   "about": {
     "message": "Om"
-  },
-  "aboutSettingsDescription": {
-    "message": "Version, supportcenter og kontaktinformation"
   },
   "acceleratingATransaction": {
     "message": "* At gøre din transaktion hurtigere ved at bruge en højere Gas-priser, øger dennes chancer for at blive behandlet af netværket hurtigere, men det er ikke altid garanteret."
@@ -55,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Avancerede Valgmuligheder"
-  },
-  "advancedSettingsDescription": {
-    "message": "Få adgang til udviklerfunktioner, hent tilstandslogs, nulstil konto, opsæt testnetværk og brugerdefineret RPC"
   },
   "amount": {
     "message": "Beløb"
@@ -256,6 +256,9 @@
   "currentLanguage": {
     "message": "Nuværende sprog"
   },
+  "custom": {
+    "message": "Avanceret"
+  },
   "customGas": {
     "message": "Tilpas brændstof"
   },
@@ -283,17 +286,8 @@
   "deleteNetworkDescription": {
     "message": "Er du sikker på, at du vil slette dette netværk?"
   },
-  "depositEther": {
-    "message": "Indbetal Ether"
-  },
   "details": {
     "message": "Detaljer"
-  },
-  "directDepositEther": {
-    "message": "Indskyd Ether direkte"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Hvis du allerede har Ether, er den hurtigste måde at få Ether i din nye tegnebog ved direkte indbetaling."
   },
   "done": {
     "message": "Færdig"
@@ -416,9 +410,6 @@
   "general": {
     "message": "Generelt"
   },
-  "generalSettingsDescription": {
-    "message": "Valutakonvertering, primær valuta, sprog, blockies-identicon"
-  },
   "getEther": {
     "message": "Hent Ether"
   },
@@ -523,6 +514,9 @@
   "learnMore": {
     "message": "Lær mere"
   },
+  "learnMoreUpperCase": {
+    "message": "Lær mere"
+  },
   "ledgerAccountRestriction": {
     "message": "Du skal benytte din tidligere konto, før du kan tilføje en ny."
   },
@@ -568,9 +562,6 @@
   "myAccounts": {
     "message": "Mine Konti"
   },
-  "needEtherInWallet": {
-    "message": "Du skal have Ether i din tegnebog for at interagere med decentraliserede applikationer, der bruger MetaMask."
-  },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
     "description": "User is important an account and needs to add a file to continue"
@@ -580,9 +571,6 @@
   },
   "networkName": {
     "message": "Netværksnavn"
-  },
-  "networkSettingsDescription": {
-    "message": "Tilføj og redigér brugerdefinerede RPC-netværk"
   },
   "networks": {
     "message": "Netværk"
@@ -815,9 +803,6 @@
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"
   },
-  "securitySettingsDescription": {
-    "message": "Indstillinger for beskyttelse af personlige oplysninger og backupsætning til tegnebog"
-  },
   "seedPhrasePlaceholder": {
     "message": "Adskil hvert ord med et enkelt mellemrum"
   },
@@ -847,9 +832,6 @@
   },
   "sendTokens": {
     "message": "Send tokens"
-  },
-  "separateEachWord": {
-    "message": "Separer hvert ord med et enkelt mellemrum"
   },
   "settings": {
     "message": "Indstillinger "

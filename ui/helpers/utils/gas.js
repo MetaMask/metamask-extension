@@ -1,16 +1,17 @@
 import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
 
+import { GAS_RECOMMENDATIONS } from '../../../shared/constants/gas';
 import { multiplyCurrencies } from '../../../shared/modules/conversion.utils';
 import { bnGreaterThan } from './util';
 import { hexWEIToDecGWEI } from './conversions.util';
 
 export const gasEstimateGreaterThanGasUsedPlusTenPercent = (
-  transaction,
+  gasUsed,
   gasFeeEstimates,
   estimate,
 ) => {
-  let { maxFeePerGas: maxFeePerGasInTransaction } = transaction.txParams;
+  let { maxFeePerGas: maxFeePerGasInTransaction } = gasUsed;
   maxFeePerGasInTransaction = new BigNumber(
     hexWEIToDecGWEI(addTenPercentAndRound(maxFeePerGasInTransaction)),
   );
@@ -52,4 +53,12 @@ export function addTenPercent(hexStringValue, conversionOptions = {}) {
  */
 export function addTenPercentAndRound(hexStringValue) {
   return addTenPercent(hexStringValue, { numberOfDecimals: 0 });
+}
+
+export function isMetamaskSuggestedGasEstimate(estimate) {
+  return [
+    GAS_RECOMMENDATIONS.HIGH,
+    GAS_RECOMMENDATIONS.MEDIUM,
+    GAS_RECOMMENDATIONS.LOW,
+  ].includes(estimate);
 }

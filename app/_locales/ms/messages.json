@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Tolak"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Imbas Kod QR"
+  },
   "about": {
     "message": "Mengenai"
-  },
-  "aboutSettingsDescription": {
-    "message": "Versi, pusat sokongan, dan maklumat perhubungan"
   },
   "acceleratingATransaction": {
     "message": "* Mempercepatkan transaksi menggunakan harga gas lebih tinggi akan meningkatkan peluang diproses oleh rangkaian lebih cepat, tetapi ini pun tidak sentiasa dijamin."
@@ -55,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Pilihan Lanjutan"
-  },
-  "advancedSettingsDescription": {
-    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai"
   },
   "amount": {
     "message": "Jumlah"
@@ -256,6 +256,9 @@
   "currentLanguage": {
     "message": "Bahasa Semasa"
   },
+  "custom": {
+    "message": "Lanjutan"
+  },
   "customGas": {
     "message": "Suaikan Gas"
   },
@@ -285,12 +288,6 @@
   },
   "details": {
     "message": "Butiran"
-  },
-  "directDepositEther": {
-    "message": "Deposit Ether Secara Terus"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jika anda sudah mempunyai Ether, cara paling cepat untuk mendapatkan Ether di dompet baru anda ialah dengan deposit langsung."
   },
   "done": {
     "message": "Selesai"
@@ -410,9 +407,6 @@
   "general": {
     "message": "Am"
   },
-  "generalSettingsDescription": {
-    "message": "Penukaran mata wang, mata wang utama, bahasa, blockies identicon"
-  },
   "getEther": {
     "message": "Dapatkan Ether"
   },
@@ -516,6 +510,9 @@
   "learnMore": {
     "message": "Maklumat lanjut"
   },
+  "learnMoreUpperCase": {
+    "message": "Maklumat lanjut"
+  },
   "ledgerAccountRestriction": {
     "message": "Anda perlu menggunakan akaun terakhir anda sebelum anda boleh menambah yang baru."
   },
@@ -564,9 +561,6 @@
   "myAccounts": {
     "message": "Akaun Saya"
   },
-  "needEtherInWallet": {
-    "message": "Untuk berinteraksi dengan aplikasi ternyahpusat menggunakan MetaMask, anda memerlukan Ether di dalam dompet anda."
-  },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
     "description": "User is important an account and needs to add a file to continue"
@@ -576,9 +570,6 @@
   },
   "networkName": {
     "message": "Nama Rangkaian"
-  },
-  "networkSettingsDescription": {
-    "message": "Tambah dan sunting rangkaian RPC tersuai"
   },
   "networks": {
     "message": "Rangkaian"
@@ -811,9 +802,6 @@
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
-  "securitySettingsDescription": {
-    "message": "Tetapan privasi dan ungkapan benih dompet"
-  },
   "seedPhrasePlaceholder": {
     "message": "Pisahkan setiap perkataan dengan satu ruang"
   },
@@ -846,9 +834,6 @@
   },
   "sendTokens": {
     "message": "Hantar Token"
-  },
-  "separateEachWord": {
-    "message": "Pisahkan setiap perkataan dengan ruang tunggal"
   },
   "settings": {
     "message": "Tetapan"

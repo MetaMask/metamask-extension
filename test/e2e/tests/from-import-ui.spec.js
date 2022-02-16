@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { withFixtures, regularDelayMs, largeDelayMs } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  regularDelayMs,
+  largeDelayMs,
+} = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
 describe('Metamask Import UI', function () {
@@ -9,7 +14,7 @@ describe('Metamask Import UI', function () {
         {
           secretKey:
             '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: 25000000000000000000,
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
@@ -72,7 +77,7 @@ describe('Metamask Import UI', function () {
 
           // Import Secret Recovery Phrase
           await driver.fill(
-            'input[placeholder="Paste Secret Recovery Phrase from clipboard"]',
+            'input[placeholder="Enter your Secret Recovery Phrase"]',
             testSeedPhrase,
           );
 
@@ -82,7 +87,9 @@ describe('Metamask Import UI', function () {
             'correct horse battery staple',
           );
 
-          await driver.clickElement('.first-time-flow__terms');
+          await driver.clickElement(
+            '[data-testid="create-new-vault__terms-checkbox"]',
+          );
 
           await driver.clickElement({ text: 'Import', tag: 'button' });
 
@@ -186,7 +193,7 @@ describe('Metamask Import UI', function () {
         {
           secretKey:
             '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: 25000000000000000000,
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
@@ -279,10 +286,10 @@ describe('Metamask Import UI', function () {
         await driver.delay(regularDelayMs);
         await driver.clickElement('.account-menu__icon');
 
-        const accountListItemsAgfterRemoval = await driver.findElements(
+        const accountListItemsAfterRemoval = await driver.findElements(
           '.account-menu__account',
         );
-        assert.equal(accountListItemsAgfterRemoval.length, 4);
+        assert.equal(accountListItemsAfterRemoval.length, 4);
       },
     );
   });
@@ -292,7 +299,7 @@ describe('Metamask Import UI', function () {
         {
           secretKey:
             '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-          balance: 25000000000000000000,
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };

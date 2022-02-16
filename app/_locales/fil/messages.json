@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Tanggihan"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "I-scan ang QR Code"
+  },
   "about": {
     "message": "Tungkol sa"
-  },
-  "aboutSettingsDescription": {
-    "message": "Bersyon, support center, at impormasyon sa pakikipag-ugnayan"
   },
   "acceleratingATransaction": {
     "message": "* Ang pagpapabilis sa isang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas ay makakadagdag sa tsansa nitong maproseso ng network nang mas mabilis, pero hindi ito palaging garantisado."
@@ -49,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Mga Advanced na Opsyon"
-  },
-  "advancedSettingsDescription": {
-    "message": "I-access ang mga feature para sa mga developer, mag-download ng mga State Log, I-reset ang Account, mag-set up ng mga testnet at custom RPC"
   },
   "amount": {
     "message": "Halaga"
@@ -262,17 +262,8 @@
   "deleteNetworkDescription": {
     "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
   },
-  "depositEther": {
-    "message": "Magdeposito ng Ether"
-  },
   "details": {
     "message": "Mga Detalye"
-  },
-  "directDepositEther": {
-    "message": "Direktang Magdeposito ng Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Kung mayroon ka nang Ether, ang pinakamabilis na paraan para magkaroon ng Ether sa iyong bagong wallet ay sa pamamagitan ng direkang deposito."
   },
   "done": {
     "message": "Tapos na"
@@ -392,9 +383,6 @@
   "general": {
     "message": "Pangkalahatan"
   },
-  "generalSettingsDescription": {
-    "message": "Pagpapapalit ng currency, pangunahing currency, wika, blockies identicon"
-  },
   "getEther": {
     "message": "Kumuha ng Ether"
   },
@@ -483,6 +471,9 @@
   "learnMore": {
     "message": "Matuto pa"
   },
+  "learnMoreUpperCase": {
+    "message": "Matuto pa"
+  },
   "ledgerAccountRestriction": {
     "message": "Kailangan mong gamitin ang iyong dating account bago ka makapagdagdag ng bago."
   },
@@ -525,9 +516,6 @@
   "myAccounts": {
     "message": "Mga Account Ko"
   },
-  "needEtherInWallet": {
-    "message": "Para gumamit ng mga decentralized na application gamit ang MetaMask, mangangailangan ka ng Ether sa iyong wallet."
-  },
   "needImportFile": {
     "message": "Dapat kang pumili ng file na ii-import.",
     "description": "User is important an account and needs to add a file to continue"
@@ -537,9 +525,6 @@
   },
   "networkName": {
     "message": "Pangalan ng Network"
-  },
-  "networkSettingsDescription": {
-    "message": "Magdagdag at mag-edit ng mga custom na RPC network"
   },
   "networks": {
     "message": "Mga Network"
@@ -755,9 +740,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "securitySettingsDescription": {
-    "message": "Mga setting ng privacy at seed phrase ng wallet"
-  },
   "seedPhrasePlaceholder": {
     "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
   },
@@ -790,9 +772,6 @@
   },
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
-  },
-  "separateEachWord": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
   },
   "settings": {
     "message": "Mga Setting"

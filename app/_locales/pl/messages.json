@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odrzuć"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skanuj kod QR"
+  },
   "about": {
     "message": "Informacje"
-  },
-  "aboutSettingsDescription": {
-    "message": "Wersja, centrum wsparcia i dane kontaktowe"
   },
   "acceleratingATransaction": {
     "message": "* Przyspieszenie transakcji poprzez zastosowanie wyższej ceny gazu zwiększa szanse na jej szybsze przetworzenie przez sieć, jednak skuteczność tej operacji nie jest gwarantowana."
@@ -55,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Opcje zaawansowane"
-  },
-  "advancedSettingsDescription": {
-    "message": "Dostęp do funkcji programisty, pobieranie dzienników stanu, resetowanie konta, konfigurowanie sieci testowych i niestandardowe RPC"
   },
   "amount": {
     "message": "Ilość"
@@ -256,6 +256,9 @@
   "currentLanguage": {
     "message": "Obecny język"
   },
+  "custom": {
+    "message": "Zaawansowane"
+  },
   "customGas": {
     "message": "Ustaw gaz"
   },
@@ -283,17 +286,8 @@
   "deleteNetworkDescription": {
     "message": "Czy na pewno chcesz usunąć tę sieć?"
   },
-  "depositEther": {
-    "message": "Zdeponuj Eter"
-  },
   "details": {
     "message": "Szczegóły"
-  },
-  "directDepositEther": {
-    "message": "Zdeponuj Eter bezpośrednio"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jeśli już masz Eter, najszybciej umieścisz go w swoim nowym portfelu przy pomocy bezpośredniego depozytu."
   },
   "done": {
     "message": "Gotowe"
@@ -420,9 +414,6 @@
   "general": {
     "message": "Ogólne"
   },
-  "generalSettingsDescription": {
-    "message": "Przeliczanie walut, waluta podstawowa, język, ikona (identicon) Blockies"
-  },
   "getEther": {
     "message": "Zdobądź Eter"
   },
@@ -530,6 +521,9 @@
   "learnMore": {
     "message": "Dowiedz się więcej"
   },
+  "learnMoreUpperCase": {
+    "message": "Dowiedz się więcej"
+  },
   "ledgerAccountRestriction": {
     "message": "Musisz użyć swojego poprzedniego konta zanim dodasz kolejne."
   },
@@ -581,9 +575,6 @@
   "myAccounts": {
     "message": "Moje konta"
   },
-  "needEtherInWallet": {
-    "message": "Żeby skorzystać ze zdecentraliowanych aplikacji (dApps) przy pomocy MetaMask, potrzebujesz Eteru w swoim portfelu."
-  },
   "needImportFile": {
     "message": "Musisz wybrać plik do zaimportowania.",
     "description": "User is important an account and needs to add a file to continue"
@@ -593,9 +584,6 @@
   },
   "networkName": {
     "message": "Nazwa sieci"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodawaj i edytuj niestandardowe sieci RPC"
   },
   "networks": {
     "message": "Sieci"
@@ -828,9 +816,6 @@
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"
   },
-  "securitySettingsDescription": {
-    "message": "Ustawienia prywatności i fraza seed portfela"
-  },
   "seedPhrasePlaceholder": {
     "message": "Oddziel słowa pojedynczą spacją"
   },
@@ -863,9 +848,6 @@
   },
   "sendTokens": {
     "message": "Wyślij tokeny"
-  },
-  "separateEachWord": {
-    "message": "Oddziel słowa pojedynczą spacją"
   },
   "settings": {
     "message": "Ustawienia"

@@ -1,5 +1,5 @@
 .account-menu {
-  position: fixed;
+  position: absolute;
   z-index: 100;
   top: 58px;
   width: 320px;
@@ -10,7 +10,7 @@
   color: var(--white);
 
   @media screen and (max-width: $break-small) {
-    right: calc(((100vw - 100%) / 2) + 8px);
+    right: 16px;
   }
 
   @media screen and (min-width: $break-large) {
@@ -35,6 +35,7 @@
 
     @media screen and (max-width: $break-small) {
       padding: 14px;
+      height: 54px;
     }
 
     &--clickable {

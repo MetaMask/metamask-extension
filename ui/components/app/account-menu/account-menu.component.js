@@ -16,7 +16,6 @@ import {
   SUPPORT_REQUEST_LINK,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/common';
-import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
 import {
   SETTINGS_ROUTE,
   NEW_ACCOUNT_ROUTE,
@@ -27,6 +26,7 @@ import {
 import TextField from '../../ui/text-field';
 import SearchIcon from '../../ui/search-icon';
 import Button from '../../ui/button';
+import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
   const { icon, children, text, subText, className, onClick } = props;
@@ -214,7 +214,7 @@ export default class AccountMenu extends Component {
               type={PRIMARY}
             />
           </div>
-          {this.renderKeyringType(keyring)}
+          <KeyRingLabel keyring={keyring} />
           {iconAndNameForOpenSubject ? (
             <div className="account-menu__icon-list">
               <SiteIcon
@@ -227,34 +227,6 @@ export default class AccountMenu extends Component {
         </div>
       );
     });
-  }
-
-  renderKeyringType(keyring) {
-    const { t } = this.context;
-
-    // Sometimes keyrings aren't loaded yet
-    if (!keyring) {
-      return null;
-    }
-
-    const { type } = keyring;
-    let label;
-
-    switch (type) {
-      case KEYRING_TYPES.TREZOR:
-      case KEYRING_TYPES.LEDGER:
-      case KEYRING_TYPES.LATTICE:
-      case KEYRING_TYPES.QR:
-        label = t('hardware');
-        break;
-      case 'Simple Key Pair':
-        label = t('imported');
-        break;
-      default:
-        return null;
-    }
-
-    return <div className="keyring-label allcaps">{label}</div>;
   }
 
   resetSearchQuery() {

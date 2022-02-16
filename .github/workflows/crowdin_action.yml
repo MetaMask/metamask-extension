@@ -25,7 +25,10 @@ jobs:
       with:
         upload_translations: true
         download_translations: true
+        github_user_name: metamaskbot
+        github_user_email: metamaskbot@users.noreply.github.com
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_ACTOR: metamaskbot
+        GITHUB_TOKEN: ${{ secrets.METAMASKBOT_CROWDIN_TOKEN }}
         CROWDIN_PROJECT_ID: ${{ secrets.CROWDIN_PROJECT_ID }}
         CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}

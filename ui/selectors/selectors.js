@@ -1,4 +1,7 @@
 import { createSelector } from 'reselect';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { memoize } from 'lodash';
+///: END:ONLY_INCLUDE_IN
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   MAINNET_CHAIN_ID,
@@ -7,6 +10,7 @@ import {
   NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
   OPTIMISM_CHAIN_ID,
   OPTIMISM_TESTNET_CHAIN_ID,
+  BUYABLE_CHAINS_MAP,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -16,11 +20,18 @@ import {
 } from '../../shared/constants/hardware-wallets';
 
 import {
+  MESSAGE_TYPE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SUBJECT_TYPES,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../shared/constants/app';
+
+import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
+
+import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
-
-import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
 import {
   shortenAddress,
@@ -49,7 +60,6 @@ import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
 } from '../ducks/app/app';
-import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -525,6 +535,31 @@ export function getSubjectMetadata(state) {
   return state.metamask.subjectMetadata;
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+/**
+ * @param {string} svgString - The raw SVG string to make embeddable.
+ * @returns {string} The embeddable SVG string.
+ */
+const getEmbeddableSvg = memoize(
+  (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
+);
+///: END:ONLY_INCLUDE_IN
+
+export function getTargetSubjectMetadata(state, origin) {
+  const metadata = getSubjectMetadata(state)[origin];
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  if (metadata?.subjectType === SUBJECT_TYPES.SNAP) {
+    const { svgIcon, ...remainingMetadata } = metadata;
+    return {
+      ...remainingMetadata,
+      iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
+    };
+  }
+  ///: END:ONLY_INCLUDE_IN
+  return metadata;
+}
+
 export function getRpcPrefsForCurrentProvider(state) {
   const { frequentRpcListDetail, provider } = state.metamask;
   const selectRpcInfo = frequentRpcListDetail.find(
@@ -626,6 +661,16 @@ export function getIsSwapsChain(state) {
   return ALLOWED_SWAPS_CHAIN_IDS[chainId];
 }
 
+export function getIsBuyableChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
+}
+
+export function getIsBuyableTransakChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Boolean(BUYABLE_CHAINS_MAP?.[chainId]?.transakCurrencies);
+}
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state).toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
@@ -638,6 +683,12 @@ export function getNextSuggestedNonce(state) {
 export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function getSnaps(state) {
+  return state.metamask.snaps;
+}
+///: END:ONLY_INCLUDE_IN
 
 /**
  * Get an object of notification IDs and if they are allowed or not.
@@ -814,6 +865,10 @@ export function getIsMultiLayerFeeNetwork(state) {
  */
 export function getAdvancedGasFeeValues(state) {
   return state.metamask.advancedGasFee;
+}
+
+export function getEIP1559V2Enabled(state) {
+  return state.metamask.eip1559V2Enabled;
 }
 
 /**

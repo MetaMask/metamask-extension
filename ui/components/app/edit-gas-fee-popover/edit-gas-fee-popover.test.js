@@ -15,6 +15,7 @@ jest.mock('../../../store/actions', () => ({
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
+  createTransactionEventFragment: jest.fn(),
 }));
 
 jest.mock('../../../contexts/transaction-modal', () => ({
@@ -79,7 +80,7 @@ const render = ({ txProps, contextProps } = {}) => {
 
 describe('EditGasFeePopover', () => {
   it('should renders low / medium / high options', () => {
-    render({ txProps: { dappSuggestedGasFees: {} } });
+    render({ txProps: { dappSuggestedGasFees: { maxFeePerGas: '0x5208' } } });
 
     expect(screen.queryByText('🐢')).toBeInTheDocument();
     expect(screen.queryByText('🦊')).toBeInTheDocument();

@@ -2,11 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Box from '../../../ui/box';
 import Tooltip from '../../../ui/tooltip';
+
+import {
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../../helpers/constants/design-system';
 
 const NetworkStatusTooltip = ({ children, html, title }) => (
   <Tooltip position="top" html={html} title={title} theme="tippy-tooltip-info">
-    {children}
+    <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
+      {children}
+    </Box>
   </Tooltip>
 );
 

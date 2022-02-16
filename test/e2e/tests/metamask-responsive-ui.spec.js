@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, tinyDelayMs } = require('../helpers');
+const { convertToHexValue, withFixtures, tinyDelayMs } = require('../helpers');
 const enLocaleMessages = require('../../../app/_locales/en/messages.json');
 
 describe('Metamask Responsive UI', function () {
@@ -172,9 +172,10 @@ describe('Metamask Responsive UI', function () {
         );
         await restoreSeedLink.click();
 
-        await driver.clickElement('.import-account__checkbox-container');
-
-        await driver.fill('.import-account__secret-phrase', testSeedPhrase);
+        await driver.fill(
+          'input[placeholder="Enter your Secret Recovery Phrase"]',
+          testSeedPhrase,
+        );
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');
@@ -183,7 +184,7 @@ describe('Metamask Responsive UI', function () {
         // balance renders
         await driver.waitForSelector({
           css: '[data-testid="eth-overview__primary-currency"]',
-          text: '100 ETH',
+          text: '1000 ETH',
         });
       },
     );
@@ -196,7 +197,7 @@ describe('Metamask Responsive UI', function () {
         {
           secretKey:
             '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };

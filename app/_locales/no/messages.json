@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Avslå"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skann QR-kode"
+  },
   "about": {
     "message": "Info"
-  },
-  "aboutSettingsDescription": {
-    "message": "Versjon, brukerstøtte og kontaktinformasjon"
   },
   "acceleratingATransaction": {
     "message": "* Akselerering av en transaksjon ved å bruke en høyere datakraftspris øker sjansene for å bli behandlet av nettverket raskere, men det er ikke alltid garantert."
@@ -55,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Avanserte valg"
-  },
-  "advancedSettingsDescription": {
-    "message": "Få tilgang til utviklerfunksjoner, last ned tilstandslogger, tilbakestill konto, installer testnett og tilpasset RPC"
   },
   "amount": {
     "message": "Sum"
@@ -253,6 +253,9 @@
   "currentLanguage": {
     "message": "Nåværende språk "
   },
+  "custom": {
+    "message": "Avansert"
+  },
   "customGas": {
     "message": "Tilpass Gass"
   },
@@ -280,17 +283,8 @@
   "deleteNetworkDescription": {
     "message": "Er du sikker på at du vil slette dette nettverket?"
   },
-  "depositEther": {
-    "message": "Sett inn Ether "
-  },
   "details": {
     "message": "Detaljer"
-  },
-  "directDepositEther": {
-    "message": "Sett Ether direkte inn"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Hvis du allerede har noe Ether, er den raskeste måten å få Ether i den nye lommeboken din på ved hjelp av direkte innskudd."
   },
   "done": {
     "message": "Ferdig"
@@ -413,9 +407,6 @@
   "general": {
     "message": "Generell"
   },
-  "generalSettingsDescription": {
-    "message": "Valutakonvertering, primærvaluta, språk, identifikasjonsblokkering"
-  },
   "getEther": {
     "message": "Skaff Ether "
   },
@@ -517,6 +508,9 @@
   "learnMore": {
     "message": "Lær mer"
   },
+  "learnMoreUpperCase": {
+    "message": "Lær mer"
+  },
   "ledgerAccountRestriction": {
     "message": "Du må bruke den siste kontoen din før du kan legge til en ny."
   },
@@ -571,9 +565,6 @@
   "myAccounts": {
     "message": "Mine kontoer "
   },
-  "needEtherInWallet": {
-    "message": "Du må ha Ether i lommeboken din for å samhandle med desentraliserte applikasjoner gjennom MateMask."
-  },
   "needImportFile": {
     "message": "Du må velge en fil å importere.",
     "description": "User is important an account and needs to add a file to continue"
@@ -583,9 +574,6 @@
   },
   "networkName": {
     "message": "Nettverksnavn "
-  },
-  "networkSettingsDescription": {
-    "message": "Legg til og rediger tilpassede RPC-nettverk"
   },
   "networks": {
     "message": "Nettverk"
@@ -818,9 +806,6 @@
   "securityAndPrivacy": {
     "message": "Sikkerhet og personvern"
   },
-  "securitySettingsDescription": {
-    "message": "Personverninnstillinger og lommebokens mnemoniske gjenopprettingsfrase"
-  },
   "seedPhrasePlaceholder": {
     "message": "Skill hvert ord med ett enkelt mellomrom"
   },
@@ -850,9 +835,6 @@
   },
   "sendTokens": {
     "message": "Send tokener"
-  },
-  "separateEachWord": {
-    "message": "Del hvert ord med et enkelt mellomrom "
   },
   "settings": {
     "message": "Innstillinger"
