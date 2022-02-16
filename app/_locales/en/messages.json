@@ -42,7 +42,7 @@
     "message": "QR-based HW Wallet"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "AirGap Vault & Ngrave (Coming Soon)"
+    "message": "Ngrave (Coming Soon)"
   },
   "about": {
     "message": "About"
@@ -1542,6 +1542,12 @@
     "message": "Keystone"
   },
   "keystoneTutorial": {
+    "message": " (Tutorials)"
+  },
+  "airgapVault": {
+    "message": "AirGap Vault"
+  },
+  "airgapVaultTutorial": {
     "message": " (Tutorials)"
   },
   "knownAddressRecipient": {
