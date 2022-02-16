@@ -1,10 +1,8 @@
 import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { fireEvent, screen } from '@testing-library/react';
 import { acceptWatchAsset, rejectWatchAsset } from '../../store/actions';
+import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest/rendering';
-import mockState from '../../../test/data/mock-state.json';
 import ConfirmAddSuggestedToken from '.';
 
 const MOCK_SUGGESTED_ASSETS = [
@@ -30,22 +28,28 @@ const MOCK_SUGGESTED_ASSETS = [
   },
 ];
 
+const MOCK_TOKEN = {
+  address: '0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d',
+  symbol: 'TEST',
+  decimals: '0',
+};
+
 jest.mock('../../store/actions', () => ({
   acceptWatchAsset: jest.fn().mockReturnValue({ type: 'test' }),
   rejectWatchAsset: jest.fn().mockReturnValue({ type: 'test' }),
 }));
 
-const renderComponent = (suggestedAssets = [...MOCK_SUGGESTED_ASSETS]) => {
-  const baseStore = {
+const renderComponent = (tokens = []) => {
+  const store = configureStore({
     metamask: {
-      ...mockState.metamask,
-      suggestedAssets,
+      suggestedAssets: [...MOCK_SUGGESTED_ASSETS],
+      tokens,
+      provider: { chainId: '0x1' },
     },
     history: {
       mostRecentOverviewPage: '/',
     },
-  };
-  const store = configureMockStore([thunk])(baseStore);
+  });
   return renderWithProvider(<ConfirmAddSuggestedToken />, store);
 };
 
@@ -97,15 +101,13 @@ describe('ConfirmAddSuggestedToken Component', () => {
 
   describe('when the suggested token address matches an existing token address', () => {
     it('should show "already listed" warning', () => {
-      const mockAssets = [
+      const mockTokens = [
         {
-          asset: {
-            ...MOCK_SUGGESTED_ASSETS[0].asset,
-            address: mockState.metamask.tokens[0].address,
-          },
+          ...MOCK_TOKEN,
+          address: MOCK_SUGGESTED_ASSETS[0].asset.address,
         },
       ];
-      renderComponent(mockAssets);
+      renderComponent(mockTokens);
 
       expect(
         screen.getByText(
@@ -122,15 +124,13 @@ describe('ConfirmAddSuggestedToken Component', () => {
 
   describe('when the suggested token symbol matches an existing token symbol and has a different address', () => {
     it('should show "reuses a symbol" warning', () => {
-      const mockAssets = [
+      const mockTokens = [
         {
-          asset: {
-            ...MOCK_SUGGESTED_ASSETS[0].asset,
-            symbol: mockState.metamask.tokens[0].symbol,
-          },
+          ...MOCK_TOKEN,
+          symbol: MOCK_SUGGESTED_ASSETS[0].asset.symbol,
         },
       ];
-      renderComponent(mockAssets);
+      renderComponent(mockTokens);
 
       expect(
         screen.getByText(
