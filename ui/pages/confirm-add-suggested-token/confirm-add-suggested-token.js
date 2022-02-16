@@ -182,9 +182,7 @@ const ConfirmAddSuggestedToken = () => {
             className="page-container__footer-button"
             onClick={async () => {
               await Promise.all(
-                suggestedAssets.map(async ({ id }) => {
-                  dispatch(rejectWatchAsset(id));
-                }),
+                suggestedAssets.map(({ id }) => dispatch(rejectWatchAsset(id))),
               );
               history.push(mostRecentOverviewPage);
             }}
