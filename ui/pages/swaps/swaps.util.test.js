@@ -7,6 +7,7 @@ import {
   LOCALHOST_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   KOVAN_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
 } from '../../../shared/constants/network';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
@@ -18,6 +19,7 @@ import {
   POLYGON,
   BSC,
   RINKEBY,
+  AVALANCHE,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
@@ -316,6 +318,10 @@ describe('Swaps Util', () => {
 
     it('returns "rinkeby" for Rinkeby chain ID', () => {
       expect(getNetworkNameByChainId(RINKEBY_CHAIN_ID)).toBe(RINKEBY);
+    });
+
+    it('returns "avalanche" for Avalanche chain ID', () => {
+      expect(getNetworkNameByChainId(AVALANCHE_CHAIN_ID)).toBe(AVALANCHE);
     });
 
     it('returns an empty string for an unsupported network', () => {
