@@ -82,7 +82,7 @@ export default class PendingTransactionTracker extends EventEmitter {
       return;
     }
     for (const txMeta of pending) {
-      if(txMeta.retryCount > 800) {
+      if (txMeta.retryCount > 800) {
         this.emit('tx:dropped', txMeta.id);
         return;
       }
