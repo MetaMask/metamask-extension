@@ -45,7 +45,8 @@ const ConfirmImportToken = () => {
     if (Object.keys(pendingTokens).length === 0) {
       history.push(mostRecentOverviewPage);
     }
-  }, [history, pendingTokens, mostRecentOverviewPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="page-container">
