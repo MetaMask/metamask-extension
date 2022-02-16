@@ -128,7 +128,8 @@ const ConfirmAddSuggestedToken = () => {
     if (!suggestedAssets.length) {
       history.push(mostRecentOverviewPage);
     }
-  }, [history, suggestedAssets, mostRecentOverviewPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="page-container">
