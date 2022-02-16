@@ -15,7 +15,6 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
 } from '../../shared/constants/app';
-import { QUAI_CONTEXTS } from '../../shared/constants/quai';
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
