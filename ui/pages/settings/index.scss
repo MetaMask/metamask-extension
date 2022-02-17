@@ -205,6 +205,39 @@
     & .dialog {
       margin-top: 10px;
     }
+
+    &__identicon {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+
+      &__item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        &__icon {
+          &--active {
+            height: 40px;
+            width: 40px;
+            border-radius: 40px;
+            border: 2px solid #037dd6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+    }
+
+    &__description {
+      @include H6;
+
+      margin-top: 8px;
+      margin-bottom: 12px;
+      color: var(--dusty-gray);
+    }
   }
 
   &__content-label {

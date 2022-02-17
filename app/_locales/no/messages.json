@@ -139,9 +139,6 @@
     "message": "Se konto på $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Bruk Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Nettleseren din støttes ikke ..."
   },

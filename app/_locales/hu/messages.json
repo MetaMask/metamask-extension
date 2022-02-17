@@ -139,9 +139,6 @@
     "message": "Tekintse meg a fiókot a(z) $1-en",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies identikon használata"
-  },
   "browserNotSupported": {
     "message": "Az ön böngészője nem támogatott..."
   },

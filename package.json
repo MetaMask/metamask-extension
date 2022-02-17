@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.9.2",
+  "version": "10.10.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -310,6 +310,7 @@
     "history": "^5.0.0",
     "improved-yarn-audit": "^3.0.0",
     "jest": "^26.6.3",
+    "jest-canvas-mock": "^2.3.1",
     "jsdom": "^11.2.0",
     "koa": "^2.7.0",
     "lavamoat": "^5.3.5",
@@ -319,6 +320,7 @@
     "loose-envify": "^1.4.0",
     "minimist": "^1.2.5",
     "mocha": "^7.2.0",
+    "mockttp": "^2.6.0",
     "nock": "^9.0.14",
     "node-fetch": "^2.6.1",
     "nyc": "^15.0.0",

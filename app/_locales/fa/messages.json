@@ -139,9 +139,6 @@
     "message": "مشاهده حساب در 1$1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "استفاده شناسا بلوک ها"
-  },
   "browserNotSupported": {
     "message": "مرورگر شما پشتیبانی نمیشود"
   },

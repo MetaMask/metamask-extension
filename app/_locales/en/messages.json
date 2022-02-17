@@ -67,6 +67,9 @@
   "accountDetails": {
     "message": "Account details"
   },
+  "accountIdenticon": {
+    "message": "Account Identicon"
+  },
   "accountName": {
     "message": "Account Name"
   },
@@ -371,8 +374,8 @@
     "message": "View account at $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Use Blockies Identicon"
+  "blockies": {
+    "message": "Blockies"
   },
   "browserNotSupported": {
     "message": "Your Browser is not supported..."
@@ -1360,6 +1363,9 @@
   "hide": {
     "message": "Hide"
   },
+  "hideToken": {
+    "message": "Hide token"
+  },
   "hideTokenPrompt": {
     "message": "Hide Token?"
   },
@@ -1530,6 +1536,12 @@
   },
   "ipfsGatewayDescription": {
     "message": "Enter the URL of the IPFS CID gateway to use for ENS content resolution."
+  },
+  "jazzAndBlockies": {
+    "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
+  },
+  "jazzicons": {
+    "message": "Jazzicons"
   },
   "jsDeliver": {
     "message": "jsDeliver"
@@ -1832,6 +1844,9 @@
   },
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
+  },
+  "network": {
+    "message": "Network:"
   },
   "networkDetails": {
     "message": "Network Details"
@@ -2942,6 +2957,10 @@
   "swapFailedErrorTitle": {
     "message": "Swap failed"
   },
+  "swapFetchingQuoteNofN": {
+    "message": "Fetching quote $1 of $2",
+    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
+  },
   "swapFetchingQuotes": {
     "message": "Fetching quotes"
   },
@@ -3028,10 +3047,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called \"slippage\". Your Swap will automatically cancel if slippage exceeds your \"slippage tolerance\" setting."
-  },
-  "swapQuoteNofN": {
-    "message": "Quote $1 of $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Quote source"
@@ -3274,6 +3289,12 @@
   },
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required."
+  },
+  "tokenDecimalTitle": {
+    "message": "Token Decimal:"
+  },
+  "tokenDetails": {
+    "message": "Token details"
   },
   "tokenDetectionAnnouncement": {
     "message": "New! Improved token detection is available on Ethereum Mainnet as an experimental feature. $1"

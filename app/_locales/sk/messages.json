@@ -133,9 +133,6 @@
     "message": "Zobraziť účet na $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Použít Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Váš prehliadač nie je podporovaný..."
   },

@@ -1,10 +1,12 @@
 const path = require('path');
 const sinon = require('sinon');
 const BigNumber = require('bignumber.js');
+const mockttp = require('mockttp');
 const createStaticServer = require('../../development/create-static-server');
 const {
   createSegmentServer,
 } = require('../../development/lib/create-segment-server');
+const { setupMocking } = require('../../development/mock-e2e');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const { buildWebDriver } = require('./webdriver');
@@ -34,6 +36,7 @@ async function withFixtures(options, testSuite) {
   let dappServer;
   let segmentServer;
   let segmentStub;
+  let mockServer;
 
   let webDriver;
   let failed = false;
@@ -84,6 +87,10 @@ async function withFixtures(options, testSuite) {
       });
       await segmentServer.start(9090);
     }
+    const https = await mockttp.generateCACertificate();
+    mockServer = mockttp.getLocal({ https });
+    await mockServer.start(8000);
+    setupMocking(mockServer);
     if (
       process.env.SELENIUM_BROWSER === 'chrome' &&
       process.env.CI === 'true'
@@ -96,6 +103,7 @@ async function withFixtures(options, testSuite) {
     await testSuite({
       driver,
       segmentStub,
+      mockServer,
     });
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
@@ -144,6 +152,9 @@ async function withFixtures(options, testSuite) {
       }
       if (segmentServer) {
         await segmentServer.stop();
+      }
+      if (mockServer) {
+        await mockServer.stop();
       }
     }
   }
