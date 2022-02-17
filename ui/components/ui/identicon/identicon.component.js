@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Jazzicon from '../jazzicon';
 import { getAssetImageURL } from '../../../helpers/utils/util';
+import UrlIcon from '../url-icon';
 import BlockieIdenticon from './blockieIdenticon';
 
 const getStyles = (diameter) => ({
@@ -90,6 +91,20 @@ export default class Identicon extends PureComponent {
       image.toLowerCase().startsWith('ipfs://')
     ) {
       image = getAssetImageURL(image, ipfsGateway);
+    }
+
+    if (isError) {
+      return (
+        <UrlIcon
+          className={classnames('identicon', className, {
+            'identicon__image-border': imageBorder,
+            'identicon__image--error': isError,
+          })}
+          icon={undefined}
+          name="David"
+          fallbackClassName="boo"
+        />
+      );
     }
 
     return (
