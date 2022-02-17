@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import { strict as assert } from 'assert';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine';
+import { providerFromEngine } from 'eth-json-rpc-middleware';
 import log from 'loglevel';
 import EthQuery from 'eth-query';
 import {
@@ -47,8 +47,10 @@ export default class Network extends EventEmitter {
     ticker,
     nickname,
     rpcPrefs,
+    providerParams,
   }) {
 
+    super();
     this.type = type;
     this.rpcUrl = rpcUrl;
     this.chainId = chainId;
@@ -57,6 +59,8 @@ export default class Network extends EventEmitter {
     this.nickname = nickname;
     this.rpcPrefs = rpcPrefs;
     this.state = 'loading';
+    this.infuraProjectId = infuraProjectId;
+    this._baseProviderParams = providerParams;
 
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);

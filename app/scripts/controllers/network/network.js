@@ -106,6 +106,8 @@ export default class NetworkController extends EventEmitter {
 
     this.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, this.lookupNetwork);
 
+    this.setInfuraProjectId(opts.infuraProjectId);
+
     /*
      * type NetworkOps = { "type": string, "rpcUrl": string, "chainId": string };
      * type networkKey = `JSON.parse([type, rpcUrl, chainId])`
@@ -133,16 +135,16 @@ export default class NetworkController extends EventEmitter {
   initializeProvider(providerParams) {
     this._baseProviderParams = providerParams;
     const { type, rpcUrl, chainId } = this.getProviderConfig();
-    const networkOps = { type, rpcUrl, chainId };
+    const networkOpts = { type, rpcUrl, chainId };
 
     const networkKey = this._networkKeyForOpts(networkOpts);
     let network = this.networks.get(networkKey);
     if (!network) {
-      const network = new Network({...networkOps, infuraProjectId: this.infuraProjectId});
+      const network = new Network({...networkOpts, infuraProjectId: this._infuraProjectId, providerParams });
       this.networks.set(networkKey, network);
     }
 
-    this._configureProvider(networkOps, network);
+    this._configureProvider(networkOpts, network);
     this.lookupNetwork();
   }
 
@@ -415,10 +417,10 @@ export default class NetworkController extends EventEmitter {
     const { type, rpcUrl, chainId } = networkOpts;
 
     if (!network) {
-      network = new Network(networkOpts);
+      network = new Network({...networkOpts, infuraProjectId: this._infuraProjectId, providerParams: this._baseProviderParams });
     }
 
-    return this._configureNetwork(network);
+    return this._configureLegacyProxiesFromNetwork(network);
   }
 
   _configureLegacyProxiesFromNetwork (network) {
