@@ -99,6 +99,10 @@
     align-items: center;
   }
 
+  & &__area-title {
+    width: auto;
+  }
+
   & &__lock-button {
     @include H7;
 
@@ -106,7 +110,7 @@
     background-color: transparent;
     padding: 3.5px 5px;
     color: var(--white);
-    width: 59px;
+    width: auto;
 
     &:hover {
       background-color: rgba($dusty-gray, 0.05);
