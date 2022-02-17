@@ -58,6 +58,7 @@
 
     &__text {
       @include Paragraph;
+      letter-spacing: -0.015rem;
     }
 
     &__subtext {
