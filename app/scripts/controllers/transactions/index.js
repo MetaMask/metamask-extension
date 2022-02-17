@@ -356,7 +356,7 @@ export default class TransactionController extends EventEmitter {
     );
   }
 
-  _updateTransaction(txId, proposedUpdate, note, eventType) {
+  _updateTransaction(txId, proposedUpdate, note) {
     const txMeta = this.txStateManager.getTransaction(txId);
     const updated = merge(txMeta, proposedUpdate);
     this.txStateManager.updateTransaction(updated, note);
@@ -390,12 +390,7 @@ export default class TransactionController extends EventEmitter {
     // only update what is defined
     txEIP1559.txParams = pickBy(txEIP1559.txParams);
     const note = `Update EIP1559 Params for ${txId}`;
-    this._updateTransaction(
-      txId,
-      txEIP1559,
-      note,
-      TRANSACTION_EVENTS.EIP1559_PARAMS_UPDATED,
-    );
+    this._updateTransaction(txId, txEIP1559, note);
   }
 
   /**
@@ -448,12 +443,7 @@ export default class TransactionController extends EventEmitter {
     txGasFees.txParams = pickBy(txGasFees.txParams);
     txGasFees = pickBy(txGasFees);
     const note = `Update Transaction Gas Fees for ${txId}`;
-    this._updateTransaction(
-      txId,
-      txGasFees,
-      note,
-      TRANSACTION_EVENTS.GAS_FEES_UPDATED,
-    );
+    this._updateTransaction(txId, txGasFees, note);
   }
 
   /**
@@ -481,12 +471,7 @@ export default class TransactionController extends EventEmitter {
     txEstimateBaseFees = pickBy(txEstimateBaseFees);
 
     const note = `Update Transaction Estimated Base Fees for ${txId}`;
-    this._updateTransaction(
-      txId,
-      txEstimateBaseFees,
-      note,
-      TRANSACTION_EVENTS.ESTIMATED_BASE_FEES_UPDATED,
-    );
+    this._updateTransaction(txId, txEstimateBaseFees, note);
   }
 
   /**
@@ -512,12 +497,7 @@ export default class TransactionController extends EventEmitter {
     swapApprovalTransaction = pickBy(swapApprovalTransaction);
 
     const note = `Update Swap Approval Transaction for ${txId}`;
-    this._updateTransaction(
-      txId,
-      swapApprovalTransaction,
-      note,
-      TRANSACTION_EVENTS.SWAP_APPROVAL_UPDATED,
-    );
+    this._updateTransaction(txId, swapApprovalTransaction, note);
   }
 
   /**
@@ -581,12 +561,7 @@ export default class TransactionController extends EventEmitter {
     swapTransaction = pickBy(swapTransaction);
 
     const note = `Update Swap Transaction for ${txId}`;
-    this._updateTransaction(
-      txId,
-      swapTransaction,
-      note,
-      TRANSACTION_EVENTS.SWAP_TRANSACTION_UPDATED,
-    );
+    this._updateTransaction(txId, swapTransaction, note);
   }
 
   /**
@@ -608,12 +583,7 @@ export default class TransactionController extends EventEmitter {
     userSettings = pickBy(userSettings);
 
     const note = `Update User Settings for ${txId}`;
-    this._updateTransaction(
-      txId,
-      userSettings,
-      note,
-      TRANSACTION_EVENTS.USER_SETTINGS_UPDATED,
-    );
+    this._updateTransaction(txId, userSettings, note);
   }
 
   // ====================================================================================================================================================
