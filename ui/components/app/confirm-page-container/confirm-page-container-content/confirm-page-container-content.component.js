@@ -135,6 +135,14 @@ export default class ConfirmPageContainerContent extends Component {
           label: this.context.t('tryAnywayOption'),
           onClick: setUserAcknowledgedGasMissing,
         };
+    const { t } = this.context;
+
+    const showInsuffienctFundsError =
+      supportsEIP1559V2 &&
+      !hasSimulationError &&
+      (errorKey || errorMessage) &&
+      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY &&
+      currentTransaction.type === TRANSACTION_TYPES.SIMPLE_SEND;
 
     return (
       <div
@@ -151,7 +159,7 @@ export default class ConfirmPageContainerContent extends Component {
             <ActionableMessage
               type="danger"
               primaryAction={primaryAction}
-              message={this.context.t('simulationErrorMessage')}
+              message={t('simulationErrorMessage')}
             />
           </div>
         )}
@@ -180,69 +188,46 @@ export default class ConfirmPageContainerContent extends Component {
               <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
             </div>
           )}
-        {supportsEIP1559V2 &&
-          !hasSimulationError &&
-          (errorKey || errorMessage) &&
-          errorKey === INSUFFICIENT_FUNDS_ERROR_KEY &&
-          currentTransaction.type === TRANSACTION_TYPES.SIMPLE_SEND && (
-            <div className="confirm-page-container-content__error-container">
-              {currentTransaction.chainId === '0x1' ? (
-                <ActionableMessage
-                  className="actionable-message--warning"
-                  message={
-                    <Typography
-                      variant={TYPOGRAPHY.H7}
-                      align="left"
-                      margin={[0, 0]}
+        {showInsuffienctFundsError && (
+          <div className="confirm-page-container-content__error-container">
+            {currentTransaction.chainId === '0x1' ? (
+              <ActionableMessage
+                className="actionable-message--warning"
+                message={
+                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                    {t('insufficientCurrency', [nativeCurrency, networkName])}
+                    <Button
+                      key="link"
+                      type="secondary"
+                      className="confirm-page-container-content__link"
+                      onClick={showBuyModal}
                     >
-                      {this.context.t('insufficientCurrency', [
-                        nativeCurrency,
-                        networkName,
-                      ])}
-                      <Button
-                        key="link"
-                        type="secondary"
-                        className="confirm-approve-content__warning__link"
-                        onClick={() => showBuyModal()}
-                        style={{
-                          color: '#037dd6',
-                          padding: 0,
-                          fontSize: '12px',
-                        }}
-                      >
-                        {this.context.t('buyEth')}
-                      </Button>
+                      {t('buyEth')}
+                    </Button>
 
-                      {this.context.t('orDeposit')}
-                    </Typography>
-                  }
-                  useIcon
-                  iconFillColor="#d73a49"
-                  type="danger"
-                />
-              ) : (
-                <ActionableMessage
-                  className="actionable-message--warning"
-                  message={
-                    <Typography
-                      variant={TYPOGRAPHY.H7}
-                      align="left"
-                      margin={[0, 0]}
-                    >
-                      {this.context.t('insufficientCurrency', [
-                        nativeCurrency,
-                        networkName,
-                      ])}
-                      {this.context.t('buyOther', [nativeCurrency])}
-                    </Typography>
-                  }
-                  useIcon
-                  iconFillColor="#d73a49"
-                  type="danger"
-                />
-              )}
-            </div>
-          )}
+                    {t('orDeposit')}
+                  </Typography>
+                }
+                useIcon
+                iconFillColor="#d73a49"
+                type="danger"
+              />
+            ) : (
+              <ActionableMessage
+                className="actionable-message--warning"
+                message={
+                  <Typography variant={TYPOGRAPHY.H7} align="left">
+                    {t('insufficientCurrency', [nativeCurrency, networkName])}
+                    {t('buyOther', [nativeCurrency])}
+                  </Typography>
+                }
+                useIcon
+                iconFillColor="#d73a49"
+                type="danger"
+              />
+            )}
+          </div>
+        )}
 
         <PageContainerFooter
           onCancel={onCancel}

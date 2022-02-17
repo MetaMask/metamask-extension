@@ -164,6 +164,8 @@ export default class ConfirmPageContainer extends Component {
 
     const networkName = NETWORK_TO_NAME_MAP[currentTransaction.chainId];
 
+    const { t } = this.context;
+
     return (
       <GasFeeContextProvider transaction={currentTransaction}>
         <div className="page-container">
@@ -204,7 +206,7 @@ export default class ConfirmPageContainer extends Component {
                   className="send__dialog"
                   onClick={() => this.setState({ showNicknamePopovers: true })}
                 >
-                  {this.context.t('newAccountDetectedDialogMessage')}
+                  {t('newAccountDetectedDialogMessage')}
                 </Dialog>
                 {this.state.showNicknamePopovers ? (
                   <NicknamePopovers
@@ -236,12 +238,12 @@ export default class ConfirmPageContainer extends Component {
               warning={warning}
               onCancelAll={onCancelAll}
               onCancel={onCancel}
-              cancelText={this.context.t('reject')}
+              cancelText={t('reject')}
               onSubmit={onSubmit}
-              submitText={this.context.t('confirm')}
+              submitText={t('confirm')}
               disabled={disabled}
               unapprovedTxCount={unapprovedTxCount}
-              rejectNText={this.context.t('rejectTxsN', [unapprovedTxCount])}
+              rejectNText={t('rejectTxsN', [unapprovedTxCount])}
               origin={origin}
               ethGasPriceWarning={ethGasPriceWarning}
               hideTitle={hideTitle}
@@ -258,30 +260,17 @@ export default class ConfirmPageContainer extends Component {
               {currentTransaction.chainId === '0x1' ? (
                 <ActionableMessage
                   message={
-                    <Typography
-                      variant={TYPOGRAPHY.H7}
-                      align="left"
-                      margin={[0, 0]}
-                    >
-                      {this.context.t('insufficientCurrency', [
-                        nativeCurrency,
-                        networkName,
-                      ])}
+                    <Typography variant={TYPOGRAPHY.H7} align="left">
+                      {t('insufficientCurrency', [nativeCurrency, networkName])}
                       <Button
-                        key="link"
-                        type="secondary"
-                        className="confirm-approve-content__warning__link"
-                        onClick={() => showBuyModal()}
-                        style={{
-                          color: '#037dd6',
-                          padding: 0,
-                          fontSize: '12px',
-                        }}
+                        type="link"
+                        className="page-container__link"
+                        onClick={showBuyModal}
                       >
-                        {this.context.t('buyEth')}
+                        {t('buyEth')}
                       </Button>
 
-                      {this.context.t('orDeposit')}
+                      {t('orDeposit')}
                     </Typography>
                   }
                   useIcon
@@ -296,11 +285,8 @@ export default class ConfirmPageContainer extends Component {
                       align="left"
                       margin={[0, 0]}
                     >
-                      {this.context.t('insufficientCurrency', [
-                        nativeCurrency,
-                        networkName,
-                      ])}
-                      {this.context.t('buyOther', [nativeCurrency])}
+                      {t('insufficientCurrency', [nativeCurrency, networkName])}
+                      {t('buyOther', [nativeCurrency])}
                     </Typography>
                   }
                   useIcon
@@ -318,14 +304,14 @@ export default class ConfirmPageContainer extends Component {
           {contentComponent && (
             <PageContainerFooter
               onCancel={onCancel}
-              cancelText={this.context.t('reject')}
+              cancelText={t('reject')}
               onSubmit={onSubmit}
-              submitText={this.context.t('confirm')}
+              submitText={t('confirm')}
               disabled={disabled}
             >
               {unapprovedTxCount > 1 && (
                 <a onClick={onCancelAll}>
-                  {this.context.t('rejectTxsN', [unapprovedTxCount])}
+                  {t('rejectTxsN', [unapprovedTxCount])}
                 </a>
               )}
             </PageContainerFooter>
