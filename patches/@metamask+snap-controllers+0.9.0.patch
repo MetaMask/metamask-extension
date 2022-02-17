@@ -1,0 +1,30 @@
+diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
+index 801ece1..6d4ff6a 100644
+--- a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
++++ b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
+@@ -465,7 +465,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
+      */
+     async installSnaps(origin, requestedSnaps) {
+         const result = {};
+-        await Promise.all(Object.entries(requestedSnaps).map(async ([snapId, { version = 'latest' }]) => {
++      await Promise.all(Object.entries(requestedSnaps).map(async ([snapId, { version = 'latest' }]) => {
+             const permissionName = exports.SNAP_PREFIX + snapId;
+             if (!isValidSnapVersion(version)) {
+                 result[snapId] = {
+@@ -495,10 +495,15 @@ class SnapController extends controllers_1.BaseControllerV2 {
+      * @param version - The version of the snap to install.
+      * @returns The resulting snap object, or an error if something went wrong.
+      */
+-    async processRequestedSnap(snapId, version) {
++  async processRequestedSnap(snapId, version) {
+         const existingSnap = this.getTruncated(snapId);
+         if (existingSnap) {
++          if (!snapId.startsWith(utils_2.SnapIdPrefixes.local)) {
+             return existingSnap;
++          }
++          if (this.isRunning(snapId)) {
++            this.stopSnap(snapId);
++          }
+         }
+         try {
+             const { sourceCode } = await this.add({
