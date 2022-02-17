@@ -2794,10 +2794,6 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "Khi giá giữa thời điểm đặt lệnh và thời điểm xác nhận lệnh thay đổi, hiện tượng này được gọi là \"trượt giá\". Giao dịch hoán đổi của bạn sẽ tự động hủy nếu mức trượt giá vượt quá \"mức trượt giá cho phép\" đã đặt."
   },
-  "swapQuoteNofN": {
-    "message": "Báo giá $1/$2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
-  },
   "swapQuoteSource": {
     "message": "Nguồn báo giá"
   },

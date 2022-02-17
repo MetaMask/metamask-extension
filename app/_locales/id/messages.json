@@ -2794,10 +2794,6 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "Jika harga berubah antara waktu penempatan dan konfirmasi order Anda, ini disebut \"slippage\". Swap Anda akan otomatis dibatalkan jika slippage melebihi pengaturan \"toleransi slippage\"."
   },
-  "swapQuoteNofN": {
-    "message": "Kuotasi $1 dari $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
-  },
   "swapQuoteSource": {
     "message": "Sumber kuotasi"
   },
