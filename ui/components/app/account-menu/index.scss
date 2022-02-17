@@ -15,6 +15,7 @@
 
   @media screen and (min-width: $break-large) {
     right: calc((100vw - 85vw) / 2);
+    width: 340px;
   }
 
   @media screen and (min-width: 769px) {
