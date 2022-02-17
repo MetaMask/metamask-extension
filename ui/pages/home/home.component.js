@@ -49,7 +49,6 @@ import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
-import p from 'proxyquire';
 ///: END:ONLY_INCLUDE_IN
 
 const LEARN_MORE_URL =
