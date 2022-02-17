@@ -86,10 +86,4 @@ export default class CachedBalancesController {
     const update = this.updateCachedBalances.bind(this);
     this.accountTracker.store.subscribe(update);
   }
-
-  getCachedBalancesForCurrentNetwork(chainId) {
-    const { cachedBalances } = this.store.getState();
-
-    return cachedBalances[chainId];
-  }
 }

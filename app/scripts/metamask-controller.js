@@ -1023,9 +1023,7 @@ export default class MetamaskController extends EventEmitter {
 
     // ensure accountTracker updates balances after network change
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
-      this.accountTracker._updateAccounts().then(() => {
-        this.showPopup();
-      });
+      this.accountTracker._updateAccounts();
     });
 
     // clear unapproved transactions and messages when the network will change
@@ -1740,6 +1738,9 @@ export default class MetamaskController extends EventEmitter {
         appStateController.updateCollectibleDropDownState.bind(
           appStateController,
         ),
+      setFirstTimeUsedNetwork: appStateController.setFirstTimeUsedNetwork.bind(
+        appStateController,
+      ),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -3981,8 +3982,6 @@ export default class MetamaskController extends EventEmitter {
         },
       };
     });
-
-    this.showPopup();
 
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'unlock'

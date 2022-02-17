@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../popover';
 import Button from '../button';
@@ -24,10 +25,9 @@ import {
   getNativeCurrencyImage,
   getUseTokenDetection,
 } from '../../../selectors';
-import { setShowPopup } from '../../../store/actions';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 
-const NewNetworkInfo = () => {
+const NewNetworkInfo = ({ closePopup = null }) => {
   const t = useContext(I18nContext);
   const history = useHistory();
   const [tokenDetectionSupported, setTokenDetectionSupported] = useState(false);
@@ -41,14 +41,14 @@ const NewNetworkInfo = () => {
     providerType: state.metamask.provider?.type,
   }));
 
-  const addTokenManually = () => {
-    setShowPopup();
-    history.push(IMPORT_TOKEN_ROUTE);
-  };
+  const onCloseClick = useCallback(() => {
+    closePopup();
+  }, [closePopup]);
 
-  const onCloseClick = () => {
-    setShowPopup();
-  };
+  const addTokenManually = useCallback(() => {
+    history.push(IMPORT_TOKEN_ROUTE);
+    closePopup();
+  }, [closePopup, history]);
 
   const updateTokenDetectionSupportStatus = async () => {
     const fetchedTokenData = await fetchWithCache(
@@ -225,6 +225,10 @@ const NewNetworkInfo = () => {
       </Box>
     </Popover>
   );
+};
+
+NewNetworkInfo.propTypes = {
+  closePopup: PropTypes.func,
 };
 
 export default NewNetworkInfo;

@@ -347,6 +347,10 @@ export default class Routes extends Component {
     }
   };
 
+  handleClose = () => {
+    this.props.setFirstTimeUsedNetwork(this.props.providerChaindId);
+  };
+
   render() {
     const {
       isLoading,
@@ -359,7 +363,8 @@ export default class Routes extends Component {
       isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
-      showPopup,
+      isNetworkUsed,
+      hasAnAccountWithNoFundsOnNetwork,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -380,7 +385,9 @@ export default class Routes extends Component {
           }
         }}
       >
-        {showPopup ? <NewNetworkInfo /> : null}
+        {isUnlocked && !isNetworkUsed && hasAnAccountWithNoFundsOnNetwork && (
+          <NewNetworkInfo closePopup={this.handleClose} />
+        )}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />

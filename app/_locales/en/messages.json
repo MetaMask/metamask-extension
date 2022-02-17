@@ -2042,7 +2042,8 @@
     "message": "Name"
   },
   "nativeToken": {
-    "message": "The native token on this network is $1. It is the token used for gas fees."
+    "message": "The native token on this network is $1. It is the token used for gas fees.",
+    "description": "$1 represents the name of the native token on the current network"
   },
   "needCryptoInWallet": {
     "message": "To interact with decentralized applications using MetaMask, you’ll need $1 in your wallet.",

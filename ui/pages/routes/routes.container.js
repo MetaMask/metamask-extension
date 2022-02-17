@@ -2,6 +2,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
+  getHasAnyAccountWithNoFundsOnNetwork,
+  getIsNetworkUsed,
   getNetworkIdentifier,
   getPreferences,
   isNetworkLoading,
@@ -10,6 +12,7 @@ import {
 import {
   lockMetamask,
   setCurrentCurrency,
+  setFirstTimeUsedNetwork,
   setLastActiveTime,
   setMouseUserState,
 } from '../../store/actions';
@@ -52,6 +55,7 @@ function mapDispatchToProps(dispatch) {
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
+    setFirstTimeUsedNetwork: (chainId) => setFirstTimeUsedNetwork(chainId),
   };
 }
 

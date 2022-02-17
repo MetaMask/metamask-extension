@@ -45,7 +45,6 @@ export default class AppStateController extends EventEmitter {
         '0x5': true,
         '0x539': true,
       },
-      showPopup: false,
     });
     this.timer = null;
 
@@ -305,7 +304,7 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Sets the array of the first time used networks
+   * Updates the array of the first time used networks
    *
    * @param chainId
    * @returns {void}
@@ -316,28 +315,5 @@ export default class AppStateController extends EventEmitter {
     usedNetworks[chainId] = true;
 
     this.store.updateState({ usedNetworks });
-  }
-
-  /**
-   * Checks if the network has been used
-   *
-   * @param chainId
-   * @returns {boolean}
-   */
-  isNetworkUsed(chainId) {
-    const currentState = this.store.getState();
-    const { usedNetworks } = currentState;
-
-    return usedNetworks[chainId];
-  }
-
-  /**
-   * Set true or false in order to show or not to show a popup when a network changes for the first time
-   *
-   * @param showPopup
-   * @returns {void}
-   */
-  setShowPopup(showPopup) {
-    this.store.updateState({ showPopup });
   }
 }
