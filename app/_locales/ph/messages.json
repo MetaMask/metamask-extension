@@ -1881,10 +1881,6 @@
   "swapQuoteDetailsSlippageInfo": {
     "message": "Kung magbabago ang presyo sa pagitan ng oras ng pag-order mo at sa oras na nakumpirma ito, tinatawag itong \"slippage\". Awtomatikong makakansela ang iyong Pag-swap kung lalampas ang slippage sa iyong setting na \"tolerance ng slippage.\""
   },
-  "swapQuoteNofN": {
-    "message": "Quote $1 ng $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
-  },
   "swapQuoteSource": {
     "message": "Pinagkunan ng quote"
   },
