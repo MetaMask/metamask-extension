@@ -673,16 +673,26 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
-export function updateEIP1559Params(txId, txParams) {
+export function updateEIP1559Params(txId, txEIP1559Data) {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.updateEIP1559Params(txId, txParams);
+      await promisifiedBackground.updateEIP1559Params(txId, txEIP1559Data);
     } catch (error) {
       dispatch(txError(error));
       dispatch(goHome());
       log.error(error.message);
       throw error;
     }
+
+    try {
+      dispatch(updateTransactionParams(txEIP1559Data.id, txEIP1559Data.txParams));
+      const newState = await updateMetamaskStateFromBackground();
+      dispatch(updateMetamaskState(newState));
+      dispatch(showConfTxPage({ id: txEIP1559Data.id }));
+      return txEIP1559Data;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }    
   };
 }
 
