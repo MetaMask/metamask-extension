@@ -103,7 +103,7 @@ const SWAPS_TESTNET_CHAIN_ID = '0x539';
 
 export const SWAPS_API_V2_BASE_URL = 'https://api2.metaswap.codefi.network';
 export const SWAPS_DEV_API_V2_BASE_URL =
-  'https://api2.metaswap-dev.codefi.network';
+  'https://swap.metaswap-dev.codefi.network';
 export const GAS_API_BASE_URL = 'https://gas-api.metaswap.codefi.network';
 export const GAS_DEV_API_BASE_URL =
   'https://gas-api.metaswap-dev.codefi.network';
