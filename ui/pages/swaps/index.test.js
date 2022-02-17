@@ -21,14 +21,16 @@ setBackgroundConnection({
   setSwapsLiveness: jest.fn(() => true),
   setSwapsTokens: jest.fn(),
   setSwapsTxGasPrice: jest.fn(),
+  disconnectGasFeeEstimatePoller: jest.fn(),
+  getGasFeeEstimatesAndStartPolling: jest.fn(),
 });
 
 describe('Swap', () => {
-  let tokensNock;
+  let featureFlagsNock;
 
   beforeEach(() => {
     nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/topAssets')
+      .get('/networks/1/topAssets')
       .reply(200, MOCKS.TOP_ASSETS_GET_RESPONSE);
 
     nock(CONSTANTS.METASWAP_BASE_URL)
@@ -36,16 +38,20 @@ describe('Swap', () => {
       .reply(200, MOCKS.REFRESH_TIME_GET_RESPONSE);
 
     nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/aggregatorMetadata')
+      .get('/networks/1/aggregatorMetadata')
       .reply(200, MOCKS.AGGREGATOR_METADATA_GET_RESPONSE);
 
-    nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/gasPrices')
+    nock(CONSTANTS.GAS_API_URL)
+      .get('/networks/1/gasPrices')
       .reply(200, MOCKS.GAS_PRICES_GET_RESPONSE);
 
-    tokensNock = nock(CONSTANTS.METASWAP_BASE_URL)
-      .get('/tokens')
+    nock(CONSTANTS.METASWAP_BASE_URL)
+      .get('/networks/1/tokens')
       .reply(200, MOCKS.TOKENS_GET_RESPONSE);
+
+    featureFlagsNock = nock(CONSTANTS.METASWAP_BASE_URL)
+      .get('/featureFlags')
+      .reply(200, MOCKS.createFeatureFlagsResponse());
   });
 
   afterAll(() => {
@@ -55,7 +61,7 @@ describe('Swap', () => {
   it('renders the component with initial props', async () => {
     const store = configureMockStore(middleware)(createSwapsMockStore());
     const { container, getByText } = renderWithProvider(<Swap />, store);
-    await waitFor(() => expect(tokensNock.isDone()).toBe(true));
+    await waitFor(() => expect(featureFlagsNock.isDone()).toBe(true));
     expect(getByText('Swap')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
     expect(container).toMatchSnapshot();

@@ -63,6 +63,9 @@
         },
         "6": {
           "isShown": true
+        },
+        "8": {
+          "isShown": true
         }
       }
     },
@@ -128,7 +131,6 @@
       "knownMethodData": {},
       "lostIdentities": {},
       "metaMetricsId": null,
-      "metaMetricsSendCount": 0,
       "participateInMetaMetrics": false,
       "preferences": {
         "useNativeCurrencyAsPrimaryCurrency": true

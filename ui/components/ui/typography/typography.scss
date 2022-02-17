@@ -4,7 +4,8 @@
 .typography {
   @include design-system.Paragraph;
 
-  & b {
+  & b,
+  & strong {
     font-weight: 700;
   }
 
@@ -16,7 +17,7 @@
 
   @each $variant, $color in design-system.$color-map {
     &--color-#{$variant} {
-      color: $color;
+      color: var($color);
     }
   }
 
@@ -26,9 +27,21 @@
     }
   }
 
+  @each $style in design-system.$font-style {
+    &--style-#{$style} {
+      font-style: $style;
+    }
+  }
+
   @each $alignment in design-system.$text-align {
     &--align-#{$alignment} {
       text-align: $alignment;
+    }
+  }
+
+  @each $overflow in design-system.$overflow-wrap {
+    &--overflowwrap-#{$overflow} {
+      overflow-wrap: $overflow;
     }
   }
 

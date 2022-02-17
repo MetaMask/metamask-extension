@@ -1,8 +1,12 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes';
 import PageContainerFooter from '../../../components/ui/page-container/page-container-footer';
+import { renderWithProvider } from '../../../../test/jest';
 import SendFooter from './send-footer.component';
 
 describe('SendFooter Component', () => {
@@ -10,7 +14,8 @@ describe('SendFooter Component', () => {
 
   const propsMethodSpies = {
     addToAddressBookIfNew: sinon.spy(),
-    clearSend: sinon.spy(),
+    cancelTx: sinon.spy(),
+    resetSendState: sinon.spy(),
     sign: sinon.spy(),
     update: sinon.spy(),
     mostRecentOverviewPage: '/',
@@ -20,45 +25,42 @@ describe('SendFooter Component', () => {
   };
   const MOCK_EVENT = { preventDefault: () => undefined };
 
+  const renderShallow = (props) => {
+    return shallow(
+      <SendFooter
+        addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
+        resetSendState={propsMethodSpies.resetSendState}
+        cancelTx={propsMethodSpies.cancelTx}
+        disabled
+        draftTransactionID="ID"
+        history={historySpies}
+        sign={propsMethodSpies.sign}
+        to="mockTo"
+        toAccounts={['mockAccount']}
+        sendErrors={{}}
+        sendStage="DRAFT"
+        gasEstimateType="BASIC"
+        mostRecentOverviewPage="mostRecentOverviewPage"
+        {...props}
+      />,
+      { context: { t: (str) => str, metricsEvent: () => ({}) } },
+    );
+  };
+
   beforeAll(() => {
     sinon.spy(SendFooter.prototype, 'onCancel');
     sinon.spy(SendFooter.prototype, 'onSubmit');
   });
 
   beforeEach(() => {
-    wrapper = shallow(
-      <SendFooter
-        addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
-        amount="mockAmount"
-        clearSend={propsMethodSpies.clearSend}
-        disabled
-        editingTransactionId="mockEditingTransactionId"
-        errors={{}}
-        from={{ address: 'mockAddress', balance: 'mockBalance' }}
-        gasLimit="mockGasLimit"
-        gasPrice="mockGasPrice"
-        gasTotal="mockGasTotal"
-        history={historySpies}
-        inError={false}
-        sendToken={{ mockProp: 'mockSendTokenProp' }}
-        sign={propsMethodSpies.sign}
-        to="mockTo"
-        toAccounts={['mockAccount']}
-        tokenBalance="mockTokenBalance"
-        unapprovedTxs={{}}
-        update={propsMethodSpies.update}
-        sendErrors={{}}
-        mostRecentOverviewPage="mostRecentOverviewPage"
-        noGasPrice={false}
-      />,
-      { context: { t: (str) => str, metricsEvent: () => ({}) } },
-    );
+    wrapper = renderShallow();
   });
 
   afterEach(() => {
-    propsMethodSpies.clearSend.resetHistory();
+    propsMethodSpies.resetSendState.resetHistory();
+    propsMethodSpies.cancelTx.resetHistory();
     propsMethodSpies.addToAddressBookIfNew.resetHistory();
-    propsMethodSpies.clearSend.resetHistory();
+    propsMethodSpies.resetSendState.resetHistory();
     propsMethodSpies.sign.resetHistory();
     propsMethodSpies.update.resetHistory();
     historySpies.push.resetHistory();
@@ -71,10 +73,19 @@ describe('SendFooter Component', () => {
   });
 
   describe('onCancel', () => {
-    it('should call clearSend', () => {
-      expect(propsMethodSpies.clearSend.callCount).toStrictEqual(0);
+    it('should call resetSendState', () => {
+      expect(propsMethodSpies.resetSendState.callCount).toStrictEqual(0);
       wrapper.instance().onCancel();
-      expect(propsMethodSpies.clearSend.callCount).toStrictEqual(1);
+      expect(propsMethodSpies.resetSendState.callCount).toStrictEqual(1);
+    });
+
+    it('should call cancelTx', () => {
+      expect(propsMethodSpies.cancelTx.callCount).toStrictEqual(0);
+      wrapper.instance().onCancel();
+      expect(propsMethodSpies.cancelTx.callCount).toStrictEqual(1);
+      expect(propsMethodSpies.cancelTx.getCall(0).args[0]?.id).toStrictEqual(
+        'ID',
+      );
     });
 
     it('should call history.push', () => {
@@ -85,58 +96,13 @@ describe('SendFooter Component', () => {
         'mostRecentOverviewPage',
       );
     });
-  });
 
-  describe('formShouldBeDisabled()', () => {
-    const config = {
-      'should return true if inError is truthy': {
-        inError: true,
-        expectedResult: true,
-        gasIsLoading: false,
-      },
-      'should return true if gasTotal is falsy': {
-        inError: false,
-        gasTotal: '',
-        expectedResult: true,
-        gasIsLoading: false,
-      },
-      'should return true if to is truthy': {
-        to: '0xsomevalidAddress',
-        inError: false,
-        gasTotal: '',
-        expectedResult: true,
-        gasIsLoading: false,
-      },
-      'should return true if sendToken is truthy and tokenBalance is falsy': {
-        sendToken: { mockProp: 'mockSendTokenProp' },
-        tokenBalance: '',
-        expectedResult: true,
-        gasIsLoading: false,
-      },
-      'should return true if gasIsLoading is truthy but all other params are falsy': {
-        inError: false,
-        gasTotal: '',
-        sendToken: null,
-        tokenBalance: '',
-        expectedResult: true,
-        gasIsLoading: true,
-      },
-      'should return false if inError is false and all other params are truthy': {
-        inError: false,
-        gasTotal: '0x123',
-        sendToken: { mockProp: 'mockSendTokenProp' },
-        tokenBalance: '123',
-        expectedResult: false,
-        gasIsLoading: false,
-      },
-    };
-    Object.entries(config).forEach(([description, obj]) => {
-      it(`${description}`, () => {
-        wrapper.setProps(obj);
-        expect(wrapper.instance().formShouldBeDisabled()).toStrictEqual(
-          obj.expectedResult,
-        );
-      });
+    it('should call history.push with DEFAULT_ROUTE in  edit stage', () => {
+      wrapper = renderShallow({ sendStage: 'EDIT' });
+      expect(historySpies.push.callCount).toStrictEqual(0);
+      wrapper.instance().onCancel();
+      expect(historySpies.push.callCount).toStrictEqual(1);
+      expect(historySpies.push.getCall(0).args[0]).toStrictEqual(DEFAULT_ROUTE);
     });
   });
 
@@ -151,43 +117,9 @@ describe('SendFooter Component', () => {
       ).toStrictEqual(['mockTo', ['mockAccount']]);
     });
 
-    it('should call props.update if editingTransactionId is truthy', async () => {
-      await wrapper.instance().onSubmit(MOCK_EVENT);
-      expect(propsMethodSpies.update.calledOnce).toStrictEqual(true);
-      expect(propsMethodSpies.update.getCall(0).args[0]).toStrictEqual({
-        data: undefined,
-        amount: 'mockAmount',
-        editingTransactionId: 'mockEditingTransactionId',
-        from: 'mockAddress',
-        gas: 'mockGasLimit',
-        gasPrice: 'mockGasPrice',
-        sendToken: { mockProp: 'mockSendTokenProp' },
-        to: 'mockTo',
-        unapprovedTxs: {},
-      });
-    });
-
-    it('should not call props.sign if editingTransactionId is truthy', () => {
-      expect(propsMethodSpies.sign.callCount).toStrictEqual(0);
-    });
-
-    it('should call props.sign if editingTransactionId is falsy', async () => {
-      wrapper.setProps({ editingTransactionId: null });
+    it('should call props.sign whe submitting', async () => {
       await wrapper.instance().onSubmit(MOCK_EVENT);
       expect(propsMethodSpies.sign.calledOnce).toStrictEqual(true);
-      expect(propsMethodSpies.sign.getCall(0).args[0]).toStrictEqual({
-        data: undefined,
-        amount: 'mockAmount',
-        from: 'mockAddress',
-        gas: 'mockGasLimit',
-        gasPrice: 'mockGasPrice',
-        sendToken: { mockProp: 'mockSendTokenProp' },
-        to: 'mockTo',
-      });
-    });
-
-    it('should not call props.update if editingTransactionId is falsy', () => {
-      expect(propsMethodSpies.update.callCount).toStrictEqual(0);
     });
 
     it('should call history.push', async () => {
@@ -201,13 +133,14 @@ describe('SendFooter Component', () => {
 
   describe('render', () => {
     beforeEach(() => {
-      sinon.stub(SendFooter.prototype, 'formShouldBeDisabled').returns(true);
       wrapper = shallow(
         <SendFooter
           addToAddressBookIfNew={propsMethodSpies.addToAddressBookIfNew}
           amount="mockAmount"
-          clearSend={propsMethodSpies.clearSend}
+          resetSendState={propsMethodSpies.resetSendState}
+          cancelTx={propsMethodSpies.cancelTx}
           disabled
+          draftTransactionID="ID"
           editingTransactionId="mockEditingTransactionId"
           errors={{}}
           from={{ address: 'mockAddress', balance: 'mockBalance' }}
@@ -215,7 +148,6 @@ describe('SendFooter Component', () => {
           gasPrice="mockGasPrice"
           gasTotal="mockGasTotal"
           history={historySpies}
-          inError={false}
           sendToken={{ mockProp: 'mockSendTokenProp' }}
           sign={propsMethodSpies.sign}
           to="mockTo"
@@ -227,10 +159,6 @@ describe('SendFooter Component', () => {
         />,
         { context: { t: (str) => str, metricsEvent: () => ({}) } },
       );
-    });
-
-    afterEach(() => {
-      SendFooter.prototype.formShouldBeDisabled.restore();
     });
 
     it('should render a PageContainerFooter component', () => {
@@ -250,6 +178,30 @@ describe('SendFooter Component', () => {
       expect(SendFooter.prototype.onCancel.callCount).toStrictEqual(0);
       onCancel();
       expect(SendFooter.prototype.onCancel.callCount).toStrictEqual(1);
+    });
+  });
+
+  describe('Cancel Button', () => {
+    const renderFooter = (props) =>
+      renderWithProvider(
+        <SendFooter
+          disabled
+          mostRecentOverviewPage="mostRecentOverviewPage"
+          draftTransactionID="ID"
+          sendErrors={{}}
+          sendStage="DRAFT"
+          {...props}
+        />,
+      );
+
+    it('has a cancel button in footer', () => {
+      const { getByText } = renderFooter();
+      expect(getByText('Cancel')).toBeTruthy();
+    });
+
+    it('has label changed to Reject in editing stage', () => {
+      const { getByText } = renderFooter({ sendStage: 'EDIT' });
+      expect(getByText('Reject')).toBeTruthy();
     });
   });
 });

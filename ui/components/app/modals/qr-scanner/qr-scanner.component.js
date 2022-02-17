@@ -4,8 +4,10 @@ import log from 'loglevel';
 import { BrowserQRCodeReader } from '@zxing/library';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
+import { SECOND } from '../../../../../shared/constants/time';
 import Spinner from '../../../ui/spinner';
 import WebcamUtils from '../../../../helpers/utils/webcam-utils';
+import { getURL } from '../../../../helpers/utils/util';
 import PageContainerFooter from '../../../ui/page-container/page-container-footer/page-container-footer.component';
 
 const READY_STATE = {
@@ -67,8 +69,8 @@ export default class QrScanner extends Component {
         !environmentReady &&
         getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN
       ) {
-        const currentUrl = new URL(window.location.href);
-        const currentHash = currentUrl.hash;
+        const currentUrl = getURL(window.location.href);
+        const currentHash = currentUrl?.hash;
         const currentRoute = currentHash ? currentHash.substring(1) : null;
         global.platform.openExtensionInBrowser(currentRoute);
       }
@@ -86,14 +88,14 @@ export default class QrScanner extends Component {
       const { permissions } = await WebcamUtils.checkStatus();
       if (permissions) {
         // Let the video stream load first...
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, SECOND * 2));
         if (!this.mounted) {
           return;
         }
         this.setState({ ready: READY_STATE.READY });
       } else if (this.mounted) {
         // Keep checking for permissions
-        this.permissionChecker = setTimeout(this.checkPermissions, 1000);
+        this.permissionChecker = setTimeout(this.checkPermissions, SECOND);
       }
     } catch (error) {
       if (this.mounted) {
@@ -219,7 +221,6 @@ export default class QrScanner extends Component {
           onSubmit={this.tryAgain}
           cancelText={t('cancel')}
           submitText={t('tryAgain')}
-          submitButtonType="confirm"
         />
       </>
     );

@@ -4,12 +4,11 @@ import { withRouter } from 'react-router-dom';
 import {
   toggleAccountMenu,
   showAccountDetail,
-  hideSidebar,
   lockMetamask,
   hideWarning,
 } from '../../../store/actions';
 import {
-  getAddressConnectedDomainMap,
+  getAddressConnectedSubjectMap,
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
   getOriginOfCurrentTab,
@@ -32,7 +31,7 @@ function mapStateToProps(state) {
 
   return {
     isAccountMenuOpen,
-    addressConnectedDomainMap: getAddressConnectedDomainMap(state),
+    addressConnectedSubjectMap: getAddressConnectedSubjectMap(state),
     originOfCurrentTab: origin,
     selectedAddress,
     keyrings: getMetaMaskKeyrings(state),
@@ -46,13 +45,11 @@ function mapDispatchToProps(dispatch) {
     toggleAccountMenu: () => dispatch(toggleAccountMenu()),
     showAccountDetail: (address) => {
       dispatch(showAccountDetail(address));
-      dispatch(hideSidebar());
       dispatch(toggleAccountMenu());
     },
     lockMetamask: () => {
       dispatch(lockMetamask());
       dispatch(hideWarning());
-      dispatch(hideSidebar());
       dispatch(toggleAccountMenu());
     },
   };

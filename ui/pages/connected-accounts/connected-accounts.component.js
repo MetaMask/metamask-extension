@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import Popover from '../../components/ui/popover';
 import ConnectedAccountsList from '../../components/app/connected-accounts-list';
 import ConnectedAccountsPermissions from '../../components/app/connected-accounts-permissions';
+import { getURLHost } from '../../helpers/utils/util';
 
 export default class ConnectedAccounts extends PureComponent {
   static contextTypes = {
@@ -54,7 +55,7 @@ export default class ConnectedAccounts extends PureComponent {
         title={
           isActiveTabExtension
             ? t('currentExtension')
-            : new URL(activeTabOrigin).host
+            : getURLHost(activeTabOrigin)
         }
         subtitle={
           connectedAccounts.length

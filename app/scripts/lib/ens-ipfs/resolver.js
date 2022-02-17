@@ -1,7 +1,7 @@
 import namehash from 'eth-ens-namehash';
 import Eth from 'ethjs-query';
 import EthContract from 'ethjs-contract';
-import contentHash from 'content-hash';
+import contentHash from '@ensdomains/content-hash';
 import registryAbi from './contracts/registry';
 import resolverAbi from './contracts/resolver';
 
@@ -70,6 +70,7 @@ function hexValueIsEmpty(value) {
 
 /**
  * Returns the registry address for the given chain ID
+ *
  * @param {number} chainId - the chain ID
  * @returns {string|null} the registry address if known, null otherwise
  */

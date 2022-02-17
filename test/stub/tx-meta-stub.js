@@ -1,3 +1,4 @@
+import { GAS_LIMITS } from '../../shared/constants/gas';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
@@ -13,10 +14,10 @@ export const txMetaStub = {
       metamaskNetworkId: '4',
       status: TRANSACTION_STATUSES.UNAPPROVED,
       time: 1572395156620,
-      type: TRANSACTION_TYPES.SENT_ETHER,
+      type: TRANSACTION_TYPES.SIMPLE_SEND,
       txParams: {
         from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
-        gas: '0x5208',
+        gas: GAS_LIMITS.SIMPLE,
         gasPrice: '0x1e8480',
         to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
         value: '0x0',
@@ -194,10 +195,10 @@ export const txMetaStub = {
   status: TRANSACTION_STATUSES.SUBMITTED,
   submittedTime: 1572395158570,
   time: 1572395156620,
-  type: TRANSACTION_TYPES.SENT_ETHER,
+  type: TRANSACTION_TYPES.SIMPLE_SEND,
   txParams: {
     from: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
-    gas: '0x5208',
+    gas: GAS_LIMITS.SIMPLE,
     gasPrice: '0x1e8480',
     nonce: '0x4',
     to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',

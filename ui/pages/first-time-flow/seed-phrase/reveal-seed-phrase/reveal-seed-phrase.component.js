@@ -1,12 +1,14 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import Box from '../../../../components/ui/box';
 import LockIcon from '../../../../components/ui/lock-icon';
 import Button from '../../../../components/ui/button';
 import Snackbar from '../../../../components/ui/snackbar';
 import {
   INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE,
   DEFAULT_ROUTE,
+  INITIALIZE_SEED_PHRASE_INTRO_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { exportAsFile } from '../../../../helpers/utils/util';
 import { returnToOnboardingInitiator } from '../../onboarding-initiator-util';
@@ -52,7 +54,7 @@ export default class RevealSeedPhrase extends PureComponent {
       return;
     }
 
-    history.push(INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE);
+    history.replace(INITIALIZE_CONFIRM_SEED_PHRASE_ROUTE);
   };
 
   handleSkip = async () => {
@@ -76,7 +78,7 @@ export default class RevealSeedPhrase extends PureComponent {
     if (onboardingInitiator) {
       await returnToOnboardingInitiator(onboardingInitiator);
     }
-    history.push(DEFAULT_ROUTE);
+    history.replace(DEFAULT_ROUTE);
   };
 
   renderSecretWordsContainer() {
@@ -123,14 +125,25 @@ export default class RevealSeedPhrase extends PureComponent {
   render() {
     const { t } = this.context;
     const { isShowingSeedPhrase } = this.state;
-    const { onboardingInitiator } = this.props;
+    const { history, onboardingInitiator } = this.props;
 
     return (
       <div className="reveal-seed-phrase">
         <div className="seed-phrase__sections">
           <div className="seed-phrase__main">
+            <Box marginBottom={4}>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  history.push(INITIALIZE_SEED_PHRASE_INTRO_ROUTE);
+                }}
+              >
+                {`< ${t('back')}`}
+              </a>
+            </Box>
             <div className="first-time-flow__header">
-              {t('secretBackupPhrase')}
+              {t('secretRecoveryPhrase')}
             </div>
             <div className="first-time-flow__text-block">
               {t('secretBackupPhraseDescription')}

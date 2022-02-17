@@ -5,7 +5,6 @@ import Dialog from '../../../components/ui/dialog';
 import SendContent from './send-content.component';
 
 import SendAmountRow from './send-amount-row/send-amount-row.container';
-import SendGasRow from './send-gas-row/send-gas-row.container';
 import SendHexDataRow from './send-hex-data-row/send-hex-data-row.container';
 import SendAssetRow from './send-asset-row/send-asset-row.container';
 
@@ -15,6 +14,8 @@ describe('SendContent Component', () => {
   const defaultProps = {
     showHexData: true,
     gasIsExcessive: false,
+    networkAndAccountSupports1559: true,
+    asset: { type: 'NATIVE' },
   };
 
   beforeEach(() => {
@@ -51,11 +52,8 @@ describe('SendContent Component', () => {
       expect(
         PageContainerContentChild.childAt(2).is(SendAmountRow),
       ).toStrictEqual(true);
-      expect(PageContainerContentChild.childAt(3).is(SendGasRow)).toStrictEqual(
-        true,
-      );
       expect(
-        PageContainerContentChild.childAt(4).is(SendHexDataRow),
+        PageContainerContentChild.childAt(3).is(SendHexDataRow),
       ).toStrictEqual(true);
     });
 
@@ -73,9 +71,23 @@ describe('SendContent Component', () => {
       expect(
         PageContainerContentChild.childAt(2).is(SendAmountRow),
       ).toStrictEqual(true);
-      expect(PageContainerContentChild.childAt(3).is(SendGasRow)).toStrictEqual(
+      expect(wrapper.find(SendHexDataRow)).toHaveLength(0);
+    });
+
+    it('should not render the SendHexDataRow if the asset type is TOKEN (ERC-20)', () => {
+      wrapper.setProps({ asset: { type: 'TOKEN' } });
+      const PageContainerContentChild = wrapper
+        .find(PageContainerContent)
+        .children();
+      expect(PageContainerContentChild.childAt(0).is(Dialog)).toStrictEqual(
         true,
       );
+      expect(
+        PageContainerContentChild.childAt(1).is(SendAssetRow),
+      ).toStrictEqual(true);
+      expect(
+        PageContainerContentChild.childAt(2).is(SendAmountRow),
+      ).toStrictEqual(true);
       expect(wrapper.find(SendHexDataRow)).toHaveLength(0);
     });
 
@@ -93,9 +105,6 @@ describe('SendContent Component', () => {
       expect(
         PageContainerContentChild.childAt(1).is(SendAmountRow),
       ).toStrictEqual(true);
-      expect(PageContainerContentChild.childAt(2).is(SendGasRow)).toStrictEqual(
-        true,
-      );
       expect(wrapper.find(Dialog)).toHaveLength(0);
     });
 
@@ -113,10 +122,22 @@ describe('SendContent Component', () => {
       expect(
         PageContainerContentChild.childAt(1).is(SendAmountRow),
       ).toStrictEqual(true);
-      expect(PageContainerContentChild.childAt(2).is(SendGasRow)).toStrictEqual(
-        true,
-      );
       expect(wrapper.find(Dialog)).toHaveLength(0);
+    });
+
+    it('should render insufficient gas dialog', () => {
+      wrapper.setProps({
+        showHexData: false,
+        getIsBalanceInsufficient: true,
+      });
+      const PageContainerContentChild = wrapper
+        .find(PageContainerContent)
+        .children();
+      const errorDialogProps = PageContainerContentChild.childAt(0).props();
+      expect(errorDialogProps.className).toStrictEqual('send__error-dialog');
+      expect(errorDialogProps.children).toStrictEqual(
+        'insufficientFundsForGas_t',
+      );
     });
   });
 

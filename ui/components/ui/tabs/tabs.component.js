@@ -42,9 +42,9 @@ export default class Tabs extends Component {
   }
 
   renderTabs() {
-    const numberOfTabs = React.Children.count(this.props.children);
+    const numberOfTabs = React.Children.count(this._getValidChildren());
 
-    return React.Children.map(this.props.children, (child, index) => {
+    return React.Children.map(this._getValidChildren(), (child, index) => {
       const tabName = child?.props.name;
       return (
         child &&
@@ -58,7 +58,7 @@ export default class Tabs extends Component {
   }
 
   renderActiveTabContent() {
-    const { children } = this.props;
+    const children = this._getValidChildren();
     const { activeTabIndex } = this.state;
 
     if (
@@ -87,13 +87,18 @@ export default class Tabs extends Component {
 
   /**
    * Returns the index of the child with the given name
+   *
    * @param {string} name - the name to search for
    * @returns {number} the index of the child with the given name
    * @private
    */
   _findChildByName(name) {
-    return React.Children.toArray(this.props.children).findIndex(
-      (c) => c?.props.name === name,
-    );
+    return this._getValidChildren().findIndex((c) => c?.props.name === name);
+  }
+
+  // This ignores any 'null' child elements that are a result of a conditional
+  // based on a feature flag setting.
+  _getValidChildren() {
+    return React.Children.toArray(this.props.children).filter(Boolean);
   }
 }

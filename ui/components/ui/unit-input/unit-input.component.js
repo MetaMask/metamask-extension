@@ -1,7 +1,13 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { removeLeadingZeroes } from '../../../pages/send/send.utils';
+import { MAX_DECIMAL } from '../../../../shared/constants/decimal';
+
+const DECIMAL_REGEX = /\.(\d*)/u;
+
+function removeLeadingZeroes(str) {
+  return str.replace(/^0*(?=\d)/u, '');
+}
 
 /**
  * Component that attaches a suffix or unit of measurement trailing user input, ex. 'ETH'. Also
@@ -14,6 +20,7 @@ export default class UnitInput extends PureComponent {
     actionComponent: PropTypes.node,
     error: PropTypes.bool,
     onChange: PropTypes.func,
+    onBlur: PropTypes.func,
     placeholder: PropTypes.string,
     suffix: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -42,8 +49,27 @@ export default class UnitInput extends PureComponent {
     this.unitInput.focus();
   };
 
+  handleInputFocus = ({ target: { value } }) => {
+    if (value === '0') {
+      this.setState({ value: '' });
+    }
+  };
+
+  handleInputBlur = ({ target: { value } }) => {
+    if (value === '') {
+      this.setState({ value: '0' });
+    }
+
+    this.props.onBlur && this.props.onBlur(value);
+  };
+
   handleChange = (event) => {
     const { value: userInput } = event.target;
+    const match = DECIMAL_REGEX.exec(userInput);
+    if (match?.[1]?.length > MAX_DECIMAL) {
+      return;
+    }
+
     let value = userInput;
 
     if (userInput.length && userInput.length > 1) {
@@ -85,12 +111,15 @@ export default class UnitInput extends PureComponent {
               value={value}
               placeholder={placeholder}
               onChange={this.handleChange}
+              onBlur={this.handleInputBlur}
+              onFocus={this.handleInputFocus}
               style={{ width: this.getInputWidth(value) }}
               ref={(ref) => {
                 this.unitInput = ref;
               }}
+              autoFocus
             />
-            {suffix && <div className="unit-input__suffix">{suffix}</div>}
+            {suffix ? <div className="unit-input__suffix">{suffix}</div> : null}
           </div>
           {children}
         </div>

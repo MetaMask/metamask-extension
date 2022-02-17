@@ -1,0 +1,35 @@
+.typography.gas-timing {
+  color: var(--ui-4);
+
+  &--positive {
+    color: var(--success-3);
+  }
+
+  &--positive-V2 {
+    color: var(--success-3);
+    font-weight: bold;
+  }
+
+  &--warning {
+    color: var(--alert-3);
+  }
+
+  &--negative {
+    color: var(--error-1);
+    font-weight: bold;
+  }
+
+  &--negative-V2 {
+    color: var(--secondary-1);
+    font-weight: bold;
+  }
+
+  .info-tooltip {
+    display: inline-block;
+    margin-inline-start: 4px;
+
+    path {
+      fill: var(--error-1);
+    }
+  }
+}

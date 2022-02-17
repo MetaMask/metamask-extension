@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { ComposedStore, ObservableStore } from '@metamask/obs-store';
 import { JsonRpcEngine } from 'json-rpc-engine';
-import providerFromEngine from 'eth-json-rpc-middleware/providerFromEngine';
+import { providerFromEngine } from 'eth-json-rpc-middleware';
 import log from 'loglevel';
 import {
   createSwappableProxy,
@@ -19,6 +19,7 @@ import {
   RINKEBY_CHAIN_ID,
   INFURA_BLOCKED_KEY,
 } from '../../../../shared/constants/network';
+import { SECOND } from '../../../../shared/constants/time';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -30,10 +31,10 @@ import createJsonRpcClient from './createJsonRpcClient';
 import Network from './network2';
 
 const env = process.env.METAMASK_ENV;
-const fetchWithTimeout = getFetchWithTimeout(30000);
+const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
 let defaultProviderConfigOpts;
-if (process.env.IN_TEST === 'true') {
+if (process.env.IN_TEST) {
   defaultProviderConfigOpts = {
     type: NETWORK_TYPE_RPC,
     rpcUrl: 'http://localhost:8545',
@@ -49,6 +50,10 @@ if (process.env.IN_TEST === 'true') {
 const defaultProviderConfig = {
   ticker: 'ETH',
   ...defaultProviderConfigOpts,
+};
+
+const defaultNetworkDetailsState = {
+  EIPS: { 1559: undefined },
 };
 
 export const NETWORK_EVENTS = {
@@ -74,10 +79,21 @@ export default class NetworkController extends EventEmitter {
       this.providerStore.getState(),
     );
     this.networkStore = new ObservableStore('loading');
+    // We need to keep track of a few details about the current network
+    // Ideally we'd merge this.networkStore with this new store, but doing so
+    // will require a decent sized refactor of how we're accessing network
+    // state. Currently this is only used for detecting EIP 1559 support but
+    // can be extended to track other network details.
+    this.networkDetails = new ObservableStore(
+      opts.networkDetails || {
+        ...defaultNetworkDetailsState,
+      },
+    );
     this.store = new ComposedStore({
       provider: this.providerStore,
       previousProviderStore: this.previousProviderStore,
       network: this.networkStore,
+      networkDetails: this.networkDetails,
     });
 
     // provider and block tracker
@@ -104,8 +120,7 @@ export default class NetworkController extends EventEmitter {
    * Sets the Infura project ID
    *
    * @param {string} projectId - The Infura project ID
-   * @throws {Error} if the project ID is not a valid string
-   * @return {void}
+   * @throws {Error} If the project ID is not a valid string.
    */
   setInfuraProjectId(projectId) {
     if (!projectId || typeof projectId !== 'string') {
@@ -138,6 +153,45 @@ export default class NetworkController extends EventEmitter {
     return { provider, blockTracker };
   }
 
+  /**
+   * Method to return the latest block for the current network
+   *
+   * @returns {Object} Block header
+   */
+  getLatestBlock() {
+    return new Promise((resolve, reject) => {
+      const { provider } = this.getProviderAndBlockTracker();
+      const ethQuery = new EthQuery(provider);
+      ethQuery.sendAsync(
+        { method: 'eth_getBlockByNumber', params: ['latest', false] },
+        (err, block) => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(block);
+        },
+      );
+    });
+  }
+
+  /**
+   * Method to check if the block header contains fields that indicate EIP 1559
+   * support (baseFeePerGas).
+   *
+   * @returns {Promise<boolean>} true if current network supports EIP 1559
+   */
+  async getEIP1559Compatibility() {
+    const { EIPS } = this.networkDetails.getState();
+    if (EIPS[1559] !== undefined) {
+      return EIPS[1559];
+    }
+    const latestBlock = await this.getLatestBlock();
+    const supportsEIP1559 =
+      latestBlock && latestBlock.baseFeePerGas !== undefined;
+    this.setNetworkEIPSupport(1559, supportsEIP1559);
+    return supportsEIP1559;
+  }
+
   verifyNetwork() {
     // Check network when restoring connectivity:
     if (this.isNetworkLoading()) {
@@ -151,6 +205,27 @@ export default class NetworkController extends EventEmitter {
 
   setNetworkState(network) {
     this.networkStore.putState(network);
+  }
+
+  /**
+   * Set EIP support indication in the networkDetails store
+   *
+   * @param {number} EIPNumber - The number of the EIP to mark support for
+   * @param {boolean} isSupported - True if the EIP is supported
+   */
+  setNetworkEIPSupport(EIPNumber, isSupported) {
+    this.networkDetails.updateState({
+      EIPS: {
+        [EIPNumber]: isSupported,
+      },
+    });
+  }
+
+  /**
+   * Reset EIP support to default (no support)
+   */
+  clearNetworkDetails() {
+    this.networkDetails.putState({ ...defaultNetworkDetailsState });
   }
 
   isNetworkLoading() {
@@ -172,6 +247,8 @@ export default class NetworkController extends EventEmitter {
         'NetworkController - lookupNetwork aborted due to missing chainId',
       );
       this.setNetworkState('loading');
+      // keep network details in sync with network state
+      this.clearNetworkDetails();
       return;
     }
 
@@ -192,10 +269,14 @@ export default class NetworkController extends EventEmitter {
       if (initialNetwork === currentNetwork) {
         if (err) {
           this.setNetworkState('loading');
+          // keep network details in sync with network state
+          this.clearNetworkDetails();
           return;
         }
 
         this.setNetworkState(networkVersion);
+        // look up EIP-1559 support
+        this.getEIP1559Compatibility();
       }
     });
   }
@@ -224,7 +305,7 @@ export default class NetworkController extends EventEmitter {
     });
   }
 
-  async setProviderType(type, rpcUrl = '', ticker = 'ETH', nickname = '') {
+  async setProviderType(type) {
     assert.notStrictEqual(
       type,
       NETWORK_TYPE_RPC,
@@ -235,7 +316,13 @@ export default class NetworkController extends EventEmitter {
       `Unknown Infura provider type "${type}".`,
     );
     const { chainId } = NETWORK_TYPE_TO_ID_MAP[type];
-    this.setProviderConfig({ type, rpcUrl, chainId, ticker, nickname });
+    this.setProviderConfig({
+      type,
+      rpcUrl: '',
+      chainId,
+      ticker: 'ETH',
+      nickname: '',
+    });
   }
 
   resetConnection() {
@@ -244,6 +331,8 @@ export default class NetworkController extends EventEmitter {
 
   /**
    * Sets the provider config and switches the network.
+   *
+   * @param config
    */
   setProviderConfig(config) {
     this.previousProviderStore.updateState(this.getProviderConfig());
@@ -310,9 +399,15 @@ export default class NetworkController extends EventEmitter {
   }
 
   _switchNetwork(opts) {
+    // Indicate to subscribers that network is about to change
     this.emit(NETWORK_EVENTS.NETWORK_WILL_CHANGE);
+    // Set loading state
     this.setNetworkState('loading');
+    // Reset network details
+    this.clearNetworkDetails();
+    // Configure the provider appropriately
     this._configureProvider(opts);
+    // Notify subscribers that network has changed
     this.emit(NETWORK_EVENTS.NETWORK_DID_CHANGE, opts.type);
   }
 
@@ -398,7 +493,7 @@ export default class NetworkController extends EventEmitter {
   }
 
   _setProviderAndBlockTracker({ provider, blockTracker }) {
-    // update or intialize proxies
+    // update or initialize proxies
     if (this._providerProxy) {
       this._providerProxy.setTarget(provider);
     } else {

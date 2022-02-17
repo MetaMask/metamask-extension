@@ -5,16 +5,14 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { updateMetamaskState } from '../../store/actions';
 import { currentNetworkTxListSelector } from '../../selectors/transactions';
-import { store } from '../../../.storybook/preview';
+import { store, getNewState } from '../../../.storybook/preview';
 
-import {
-  currentNetworkTxListSample,
-  domainMetadata,
-} from '../../../.storybook/initial-states/approval-screens/token-approval';
+import { subjectMetadata } from '../../../.storybook/initial-states/approval-screens/token-approval';
 import ConfirmApprove from '.';
 
 export default {
-  title: 'Confirmation Screens',
+  title: 'Pages/ConfirmApprove',
+  id: __filename,
 };
 
 // transaction ID, maps to entry in state.metamask.currentNetworkTxList
@@ -22,46 +20,58 @@ const txId = 7900715443136469;
 
 const PageSet = ({ children }) => {
   const origin = text('Origin', 'https://metamask.github.io');
-  const domainIconUrl = text(
+  const subjectIconUrl = text(
     'Icon URL',
     'https://metamask.github.io/test-dapp/metamask-fox.svg',
   );
-
+  const state = store.getState();
   const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
   const transaction = currentNetworkTxList.find(({ id }) => id === txId);
 
   useEffect(() => {
     transaction.origin = origin;
     store.dispatch(
-      updateMetamaskState({ currentNetworkTxList: [transaction] }),
+      updateMetamaskState(
+        getNewState(state.metamask, {
+          currentNetworkTxList: [transaction],
+        }),
+      ),
     );
-  }, [origin, transaction]);
+  }, [origin, transaction, state.metamask]);
 
   useEffect(() => {
     store.dispatch(
-      updateMetamaskState({
-        domainMetadata: {
-          [origin]: {
-            icon: domainIconUrl,
+      updateMetamaskState(
+        getNewState(state.metamask, {
+          subjectMetadata: {
+            [origin]: {
+              iconUrl: subjectIconUrl,
+            },
           },
-        },
-      }),
+        }),
+      ),
     );
-  }, [domainIconUrl, origin]);
+  }, [subjectIconUrl, origin, state.metamask]);
 
   const params = useParams();
   params.id = txId;
   return children;
 };
 
-export const ApproveTokens = () => {
+export const DefaultStory = () => {
+  const state = store.getState();
   store.dispatch(
-    updateMetamaskState({ currentNetworkTxList: [currentNetworkTxListSample] }),
+    updateMetamaskState(
+      getNewState(state.metamask, {
+        subjectMetadata,
+      }),
+    ),
   );
-  store.dispatch(updateMetamaskState({ domainMetadata }));
   return (
     <PageSet>
       <ConfirmApprove />
     </PageSet>
   );
 };
+
+DefaultStory.storyName = 'Default';

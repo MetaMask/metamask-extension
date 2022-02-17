@@ -15,9 +15,14 @@ import {
   getShowWhatsNewPopup,
   getSortedNotificationsToShow,
   getShowRecoveryPhraseReminder,
+  getNewNetworkAdded,
+  hasUnsignedQRHardwareTransaction,
+  hasUnsignedQRHardwareMessage,
+  getNewCollectibleAddedMessage,
 } from '../../selectors';
 
 import {
+  closeNotificationPopup,
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
@@ -28,10 +33,15 @@ import {
   setAlertEnabledness,
   setRecoveryPhraseReminderHasBeenShown,
   setRecoveryPhraseReminderLastShown,
+  setNewNetworkAdded,
+  setNewCollectibleAddedMessage,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  removeSnapError,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
-import { getSwapsFeatureLiveness } from '../../ducks/swaps/swaps';
+import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -46,7 +56,7 @@ import Home from './home.component';
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
   const {
-    suggestedTokens,
+    suggestedAssets,
     seedPhraseBackedUp,
     tokens,
     threeBoxSynced,
@@ -60,7 +70,7 @@ const mapStateToProps = (state) => {
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
-  const swapsEnabled = getSwapsFeatureLiveness(state);
+  const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
 
   const envType = getEnvironmentType();
@@ -69,9 +79,7 @@ const mapStateToProps = (state) => {
 
   const firstPermissionsRequest = getFirstPermissionRequest(state);
   const firstPermissionsRequestId =
-    firstPermissionsRequest && firstPermissionsRequest.metadata
-      ? firstPermissionsRequest.metadata.id
-      : null;
+    firstPermissionsRequest?.metadata.id || null;
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -81,9 +89,13 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       WEB3_SHIM_USAGE_ALERT_STATES.RECORDED;
 
+  const isSigningQRHardwareTransaction =
+    hasUnsignedQRHardwareTransaction(state) ||
+    hasUnsignedQRHardwareMessage(state);
+
   return {
     forgottenPassword,
-    suggestedTokens,
+    suggestedAssets,
     swapsEnabled,
     unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
     shouldShowSeedPhraseReminder:
@@ -109,13 +121,21 @@ const mapStateToProps = (state) => {
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
     notificationsToShow: getSortedNotificationsToShow(state).length > 0,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    errorsToShow: metamask.snapErrors,
+    shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
+    ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
+    newNetworkAdded: getNewNetworkAdded(state),
+    isSigningQRHardwareTransaction,
+    newCollectibleAddedMessage: getNewCollectibleAddedMessage(state),
   };
 };
 
 const mapDispatchToProps = (dispatch) => ({
+  closeNotificationPopup: () => closeNotificationPopup(),
   turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
   setupThreeBox: () => {
     dispatch(getThreeBoxLastUpdated()).then((lastUpdated) => {
@@ -127,6 +147,9 @@ const mapDispatchToProps = (dispatch) => ({
       }
     });
   },
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  removeSnapError: async (id) => await removeSnapError(id),
+  ///: END:ONLY_INCLUDE_IN
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
   setConnectedStatusPopoverHasBeenShown: () =>
@@ -141,6 +164,12 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setRecoveryPhraseReminderHasBeenShown()),
   setRecoveryPhraseReminderLastShown: (lastShown) =>
     dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
+  setNewNetworkAdded: (newNetwork) => {
+    dispatch(setNewNetworkAdded(newNetwork));
+  },
+  setNewCollectibleAddedMessage: (message) => {
+    dispatch(setNewCollectibleAddedMessage(message));
+  },
 });
 
 export default compose(

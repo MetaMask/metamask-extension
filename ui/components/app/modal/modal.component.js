@@ -21,13 +21,11 @@ export default class Modal extends PureComponent {
     onCancel: PropTypes.func,
     cancelType: PropTypes.string,
     cancelText: PropTypes.string,
-    rounded: PropTypes.bool,
   };
 
   static defaultProps = {
-    submitType: 'secondary',
-    cancelType: 'default',
-    rounded: false,
+    submitType: 'primary',
+    cancelType: 'secondary',
   };
 
   render() {
@@ -45,7 +43,6 @@ export default class Modal extends PureComponent {
       contentClass,
       containerClass,
       hideFooter,
-      rounded,
     } = this.props;
 
     return (
@@ -64,7 +61,6 @@ export default class Modal extends PureComponent {
             {onCancel && (
               <Button
                 type={cancelType}
-                rounded={rounded}
                 onClick={onCancel}
                 className="modal-container__footer-button"
               >
@@ -73,7 +69,6 @@ export default class Modal extends PureComponent {
             )}
             <Button
               type={submitType}
-              rounded={rounded || false}
               onClick={onSubmit}
               disabled={submitDisabled}
               className="modal-container__footer-button"

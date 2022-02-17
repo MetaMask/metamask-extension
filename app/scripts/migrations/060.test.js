@@ -1,8 +1,7 @@
-import { strict as assert } from 'assert';
 import migration60 from './060';
 
-describe('migration #60', function () {
-  it('should update the version metadata', async function () {
+describe('migration #60', () => {
+  it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
         version: 59,
@@ -11,12 +10,12 @@ describe('migration #60', function () {
     };
 
     const newStorage = await migration60.migrate(oldStorage);
-    assert.deepEqual(newStorage.meta, {
+    expect(newStorage.meta).toStrictEqual({
       version: 60,
     });
   });
 
-  it('prunes the support notification', async function () {
+  it('prunes the support notification', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -56,14 +55,14 @@ describe('migration #60', function () {
     const newStorage = await migration60.migrate(oldStorage);
     const { notifications } = newStorage.data.NotificationController;
     const notificationKeys = Object.keys(notifications);
-    // Assert support notification is removed
-    assert.equal(notificationKeys.length, 3);
+    // Expect support notification is removed
+    expect(notificationKeys).toHaveLength(3);
     notificationKeys.forEach((key) => {
-      assert.notEqual(notifications[key].date, '2020-08-31');
+      expect(notifications[key].date).not.toStrictEqual('2020-08-31');
     });
   });
 
-  it('does not modify state when the support notification does not exist', async function () {
+  it('does not modify state when the support notification does not exist', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -97,10 +96,10 @@ describe('migration #60', function () {
     };
 
     const newStorage = await migration60.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('does not modify state when NotificationsController is undefined', async function () {
+  it('does not modify state when NotificationsController is undefined', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -110,10 +109,10 @@ describe('migration #60', function () {
     };
 
     const newStorage = await migration60.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('does not modify state when notifications are undefined', async function () {
+  it('does not modify state when notifications are undefined', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -124,10 +123,10 @@ describe('migration #60', function () {
     };
 
     const newStorage = await migration60.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 
-  it('does not modify state when notifications are not an object', async function () {
+  it('does not modify state when notifications are not an object', async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -138,6 +137,6 @@ describe('migration #60', function () {
     };
 
     const newStorage = await migration60.migrate(oldStorage);
-    assert.deepEqual(oldStorage.data, newStorage.data);
+    expect(oldStorage.data).toStrictEqual(newStorage.data);
   });
 });

@@ -6,7 +6,7 @@ import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
-import ActionableMessage from '../actionable-message';
+import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
   TYPOGRAPHY,
   FONT_WEIGHT,
@@ -27,15 +27,13 @@ export default function ImportToken({
         type="secondary"
         className="page-container__footer-button"
         onClick={onImportTokenCloseClick}
-        rounded
       >
         {t('cancel')}
       </Button>
       <Button
-        type="confirm"
+        type="primary"
         className="page-container__footer-button"
         onClick={onImportTokenClick}
-        rounded
       >
         {t('import')}
       </Button>

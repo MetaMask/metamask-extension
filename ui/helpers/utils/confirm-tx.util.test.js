@@ -1,3 +1,4 @@
+import { GAS_LIMITS } from '../../../shared/constants/gas';
 import * as utils from './confirm-tx.util';
 
 describe('Confirm Transaction utils', () => {
@@ -34,7 +35,10 @@ describe('Confirm Transaction utils', () => {
   describe('getHexGasTotal', () => {
     it('should multiply the hex gasLimit and hex gasPrice values together', () => {
       expect(
-        utils.getHexGasTotal({ gasLimit: '0x5208', gasPrice: '0x3b9aca00' }),
+        utils.getHexGasTotal({
+          gasLimit: GAS_LIMITS.SIMPLE,
+          gasPrice: '0x3b9aca00',
+        }),
       ).toStrictEqual('0x1319718a5000');
     });
 

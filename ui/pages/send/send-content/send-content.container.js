@@ -1,13 +1,18 @@
 import { connect } from 'react-redux';
 import {
-  getSendTo,
   accountsWithSendEtherInfoSelector,
   getAddressBookEntry,
   getIsEthGasPriceFetched,
   getNoGasPriceFetched,
+  checkNetworkOrAccountNotSupports1559,
 } from '../../../selectors';
+import {
+  getIsBalanceInsufficient,
+  getSendTo,
+  getSendAsset,
+  getAssetError,
+} from '../../../ducks/send';
 
-import * as actions from '../../../store/actions';
 import SendContent from './send-content.component';
 
 function mapStateToProps(state) {
@@ -20,36 +25,16 @@ function mapStateToProps(state) {
       ),
     ),
     contact: getAddressBookEntry(state, to),
-    to,
     isEthGasPrice: getIsEthGasPriceFetched(state),
     noGasPrice: getNoGasPriceFetched(state),
+    to,
+    networkOrAccountNotSupports1559: checkNetworkOrAccountNotSupports1559(
+      state,
+    ),
+    getIsBalanceInsufficient: getIsBalanceInsufficient(state),
+    asset: getSendAsset(state),
+    assetError: getAssetError(state),
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    showAddToAddressBookModal: (recipient) =>
-      dispatch(
-        actions.showModal({
-          name: 'ADD_TO_ADDRESSBOOK',
-          recipient,
-        }),
-      ),
-  };
-}
-
-function mergeProps(stateProps, dispatchProps, ownProps) {
-  const { to, ...restStateProps } = stateProps;
-  return {
-    ...ownProps,
-    ...restStateProps,
-    showAddToAddressBookModal: () =>
-      dispatchProps.showAddToAddressBookModal(to),
-  };
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
-)(SendContent);
+export default connect(mapStateToProps)(SendContent);

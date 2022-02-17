@@ -161,7 +161,7 @@ export default class NewAccount extends PureComponent {
             }}
             href="#"
           >
-            {`< Back`}
+            {`< ${t('back')}`}
           </a>
         </div>
         <div className="first-time-flow__header">{t('createPassword')}</div>

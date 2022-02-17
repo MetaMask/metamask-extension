@@ -33,8 +33,9 @@
       "js": [
         "disable-console.js",
         "globalthis.js",
-        "lockdown.js",
-        "runLockdown.js",
+        "lockdown-install.js",
+        "lockdown-run.js",
+        "lockdown-more.js",
         "contentscript.js"
       ],
       "run_at": "document_start",
@@ -65,6 +66,7 @@
     "clipboardWrite",
     "http://localhost:8545/",
     "https://*.infura.io/",
+    "https://wallet.gridplus.io/*",
     "activeTab",
     "webRequest",
     "*://*.eth/",

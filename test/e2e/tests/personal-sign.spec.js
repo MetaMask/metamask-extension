@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Personal sign', function () {
   it('can initiate and confirm a personal sign', async function () {
@@ -8,10 +8,11 @@ describe('Personal sign', function () {
         {
           secretKey:
             '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
+    const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
         dapp: true,
@@ -28,8 +29,7 @@ describe('Personal sign', function () {
         await driver.clickElement('#personalSign');
 
         await driver.waitUntilXWindowHandles(3);
-
-        const windowHandles = await driver.getAllWindowHandles();
+        let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -43,7 +43,25 @@ describe('Personal sign', function () {
 
         await driver.clickElement('[data-testid="request-signature__sign"]');
 
+        // Switch to the Dapp
         await driver.waitUntilXWindowHandles(2);
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+        // Verify
+        await driver.clickElement('#personalSignVerify');
+        const verifySigUtil = await driver.findElement(
+          '#personalSignVerifySigUtilResult',
+        );
+        const verifyECRecover = await driver.waitForSelector(
+          {
+            css: '#personalSignVerifyECRecoverResult',
+            text: publicAddress,
+          },
+          { timeout: 10000 },
+        );
+        assert.equal(await verifySigUtil.getText(), publicAddress);
+        assert.equal(await verifyECRecover.getText(), publicAddress);
       },
     );
   });

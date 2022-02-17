@@ -138,7 +138,9 @@ function transformState(state = {}) {
 /**
  * Merges the two given keys for the given address book in place.
  *
- * @returns {void}
+ * @param addressBook
+ * @param networkKey
+ * @param chainIdKey
  */
 function mergeAddressBookKeys(addressBook, networkKey, chainIdKey) {
   const networkKeyEntries = addressBook[networkKey] || {};
@@ -179,7 +181,8 @@ function mergeAddressBookKeys(addressBook, networkKey, chainIdKey) {
  * Updates the chainId key values to the given chainId in place for all values
  * of the given networkEntries object.
  *
- * @returns {void}
+ * @param networkEntries
+ * @param chainId
  */
 function updateChainIds(networkEntries, chainId) {
   Object.values(networkEntries).forEach((entry) => {
@@ -193,6 +196,8 @@ function updateChainIds(networkEntries, chainId) {
  * Merges the two given, non-empty arrays of token objects and returns a new
  * array.
  *
+ * @param localhostTokens
+ * @param rpcTokens
  * @returns {Array<Object>}
  */
 function mergeTokenArrays(localhostTokens, rpcTokens) {

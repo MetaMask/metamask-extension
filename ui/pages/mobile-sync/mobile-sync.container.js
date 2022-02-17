@@ -4,6 +4,7 @@ import {
   requestRevealSeedWords,
   fetchInfoToSync,
   exportAccounts,
+  hideWarning,
 } from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getMetaMaskKeyrings } from '../../selectors';
@@ -17,6 +18,7 @@ const mapDispatchToProps = (dispatch) => {
     displayWarning: (message) => dispatch(displayWarning(message || null)),
     exportAccounts: (password, addresses) =>
       dispatch(exportAccounts(password, addresses)),
+    hideWarning: () => dispatch(hideWarning()),
   };
 };
 

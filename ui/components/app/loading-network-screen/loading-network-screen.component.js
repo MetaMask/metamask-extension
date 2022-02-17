@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../ui/button';
 import LoadingScreen from '../../ui/loading-screen';
+import { SECOND } from '../../../../shared/constants/time';
 
 export default class LoadingNetworkScreen extends PureComponent {
   state = {
@@ -27,7 +28,7 @@ export default class LoadingNetworkScreen extends PureComponent {
   componentDidMount = () => {
     this.cancelCallTimeout = setTimeout(
       this.cancelCall,
-      this.props.cancelTime || 15000,
+      this.props.cancelTime || SECOND * 15,
     );
   };
 
@@ -70,7 +71,7 @@ export default class LoadingNetworkScreen extends PureComponent {
         <span>{this.context.t('somethingWentWrong')}</span>
         <div className="loading-overlay__error-buttons">
           <Button
-            type="default"
+            type="secondary"
             onClick={() => {
               window.clearTimeout(this.cancelCallTimeout);
               showNetworkDropdown();
@@ -87,7 +88,7 @@ export default class LoadingNetworkScreen extends PureComponent {
               window.clearTimeout(this.cancelCallTimeout);
               this.cancelCallTimeout = setTimeout(
                 this.cancelCall,
-                this.props.cancelTime || 15000,
+                this.props.cancelTime || SECOND * 15,
               );
             }}
           >
@@ -114,7 +115,7 @@ export default class LoadingNetworkScreen extends PureComponent {
       this.setState({ showErrorScreen: false });
       this.cancelCallTimeout = setTimeout(
         this.cancelCall,
-        this.props.cancelTime || 15000,
+        this.props.cancelTime || SECOND * 15,
       );
     }
   };

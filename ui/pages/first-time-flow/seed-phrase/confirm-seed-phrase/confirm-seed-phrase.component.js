@@ -87,7 +87,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
 
       setSeedPhraseBackedUp(true).then(async () => {
         initializeThreeBox();
-        history.push(INITIALIZE_END_OF_FLOW_ROUTE);
+        history.replace(INITIALIZE_END_OF_FLOW_ROUTE);
       });
     } catch (error) {
       console.error(error.message);
@@ -140,7 +140,7 @@ export default class ConfirmSeedPhrase extends PureComponent {
             }}
             href="#"
           >
-            {`< Back`}
+            {`< ${t('back')}`}
           </a>
         </div>
         <div className="first-time-flow__header">

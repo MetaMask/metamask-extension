@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { mountWithRouter } from '../../../../test/lib/render-helpers';
+import Button from '../../ui/button';
 import AccountMenu from '.';
 
 describe('Account Menu', () => {
@@ -23,7 +24,7 @@ describe('Account Menu', () => {
 
   const props = {
     isAccountMenuOpen: true,
-    addressConnectedDomainMap: {},
+    addressConnectedSubjectMap: {},
     accounts: [
       {
         address: '0x00',
@@ -95,7 +96,7 @@ describe('Account Menu', () => {
 
     it('render imported account label', () => {
       const importedAccount = wrapper.find('.keyring-label.allcaps');
-      expect(importedAccount.text()).toStrictEqual('imported');
+      expect(importedAccount.text()).toStrictEqual('[imported]');
     });
   });
 
@@ -103,7 +104,7 @@ describe('Account Menu', () => {
     let logout;
 
     it('logout', () => {
-      logout = wrapper.find('.account-menu__lock-button');
+      logout = wrapper.find(Button);
       expect(logout).toHaveLength(1);
     });
 
@@ -170,12 +171,12 @@ describe('Account Menu', () => {
     global.platform = { openTab: sinon.spy() };
 
     it('renders import account item', () => {
-      support = wrapper.find({ text: 'support' });
+      support = wrapper.find({ text: 'needHelpSubmitTicket' });
       expect(support).toHaveLength(1);
     });
 
     it('opens support link when clicked', () => {
-      support = wrapper.find({ text: 'support' });
+      support = wrapper.find({ text: 'needHelpSubmitTicket' });
       support.simulate('click');
       expect(global.platform.openTab.calledOnce).toStrictEqual(true);
     });

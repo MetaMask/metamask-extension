@@ -3,6 +3,11 @@ import React from 'react';
 import { renderWithProvider } from '../../../../../test/jest';
 import SortList from './sort-list';
 
+jest.mock(
+  '../../../../components/ui/info-tooltip/info-tooltip-icon',
+  () => () => '<InfoTooltipIcon />',
+);
+
 const createProps = (customProps = {}) => {
   return {
     selectedAggId: 'Agg2',

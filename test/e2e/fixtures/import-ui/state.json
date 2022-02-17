@@ -104,6 +104,9 @@
         },
         "6": {
           "isShown": true
+        },
+        "8": {
+          "isShown": true
         }
       }
     },
@@ -125,8 +128,7 @@
     },
     "MetaMetricsController": {
       "participateInMetaMetrics": false,
-      "metaMetricsId": null,
-      "metaMetricsSendCount": 1
+      "metaMetricsId": null
     },
     "PermissionsController": {
       "permissionsRequests": [],
@@ -151,7 +153,7 @@
             "gasPrice": "0x363fe1da00"
           },
           "origin": "metamask",
-          "type": "sentEther",
+          "type": "simpleSend",
           "history": [],
           "nonceDetails": {
             "params": {

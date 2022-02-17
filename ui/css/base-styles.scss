@@ -43,15 +43,6 @@ html {
   margin-bottom: 9px;
 }
 
-/*
-  This warning class is used in the following files still:
-  /ui/pages/create-account/import-account/json.js
-  /ui/pages/confirm-add-suggested-token/confirm-add-suggested-token.component.js
-*/
-.warning {
-  color: #ffae00;
-}
-
 /* stylelint-disable */
 #app-content {
   overflow-x: hidden;
@@ -61,7 +52,7 @@ html {
   background: #f7f7f7;
 
   @media screen and (max-width: $break-small) {
-    background-color: $white;
+    background-color: var(--white);
   }
 }
 /* stylelint-enable */
@@ -72,7 +63,7 @@ a {
 }
 
 a:hover {
-  color: #df6b0e;
+  color: var(--Blue-400);
 }
 
 input.large-input,
@@ -98,32 +89,32 @@ input.form-control {
   padding-left: 10px;
   font-size: 14px;
   height: 40px;
-  border: 1px solid $alto;
+  border: 1px solid var(--alto);
   border-radius: 3px;
   width: 100%;
 
   &::-webkit-input-placeholder {
     font-weight: 100;
-    color: $dusty-gray;
+    color: var(--dusty-gray);
   }
 
   &::-moz-placeholder {
     font-weight: 100;
-    color: $dusty-gray;
+    color: var(--dusty-gray);
   }
 
   &:-ms-input-placeholder {
     font-weight: 100;
-    color: $dusty-gray;
+    color: var(--dusty-gray);
   }
 
   &:-moz-placeholder {
     font-weight: 100;
-    color: $dusty-gray;
+    color: var(--dusty-gray);
   }
 
   &--error {
-    border: 1px solid $monzo;
+    border: 1px solid var(--monzo);
   }
 }
 

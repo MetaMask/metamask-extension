@@ -7,6 +7,7 @@ import { sumHexWEIsToUnformattedFiat } from '../../../helpers/utils/conversions.
 import AdvancedGasInputs from '../../../components/app/gas-customization/advanced-gas-inputs';
 import BasicTabContent from '../../../components/app/gas-customization/gas-modal-page-container/basic-tab-content';
 import { GAS_ESTIMATE_TYPES } from '../../../helpers/constants/common';
+import { CUSTOM_GAS_ESTIMATE } from '../../../../shared/constants/gas';
 
 export default class GasModalPageContainer extends Component {
   static contextTypes = {
@@ -99,11 +100,11 @@ export default class GasModalPageContainer extends Component {
           <div className="advanced-tab__gas-inputs">
             <AdvancedGasInputs
               updateCustomGasPrice={(updatedPrice) => {
-                this.setState({ gasSpeedType: 'custom' });
+                this.setState({ gasSpeedType: CUSTOM_GAS_ESTIMATE });
                 setSwapsCustomizationModalPrice(updatedPrice);
               }}
               updateCustomGasLimit={(updatedLimit) => {
-                this.setState({ gasSpeedType: 'custom' });
+                this.setState({ gasSpeedType: CUSTOM_GAS_ESTIMATE });
                 setSwapsCustomizationModalLimit(updatedLimit);
               }}
               customGasPrice={customGasPrice}
@@ -129,7 +130,10 @@ export default class GasModalPageContainer extends Component {
     return (
       <div className="gas-modal-content__info-row-wrapper">
         <div className="gas-modal-content__info-row">
-          <div className="gas-modal-content__info-row__send-info">
+          <div
+            className="gas-modal-content__info-row__send-info"
+            data-testid="gas-modal-content__info-row__send-info"
+          >
             <span className="gas-modal-content__info-row__send-info__label">
               {this.context.t('sendAmount')}
             </span>
@@ -137,7 +141,10 @@ export default class GasModalPageContainer extends Component {
               {sendAmount}
             </span>
           </div>
-          <div className="gas-modal-content__info-row__transaction-info">
+          <div
+            className="gas-modal-content__info-row__transaction-info"
+            data-testid="gas-modal-content__info-row__transaction-info"
+          >
             <span className="gas-modal-content__info-row__transaction-info__label">
               {this.context.t('transactionFee')}
             </span>
@@ -155,7 +162,10 @@ export default class GasModalPageContainer extends Component {
               </span>
             </div>
           )}
-          <div className="gas-modal-content__info-row__total-info">
+          <div
+            className="gas-modal-content__info-row__total-info"
+            data-testid="gas-modal-content__info-row__total-info"
+          >
             <span className="gas-modal-content__info-row__total-info__label">
               {this.context.t('newTotal')}
             </span>

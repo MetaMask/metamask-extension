@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
+import {
+  NETWORK_TO_NAME_MAP,
+  BUYABLE_CHAINS_MAP,
+} from '../../../../../shared/constants/network';
 import Button from '../../../ui/button';
 
 export default class DepositEtherModal extends Component {
@@ -13,7 +16,9 @@ export default class DepositEtherModal extends Component {
     chainId: PropTypes.string.isRequired,
     isTestnet: PropTypes.bool.isRequired,
     isMainnet: PropTypes.bool.isRequired,
+    isBuyableTransakChain: PropTypes.bool.isRequired,
     toWyre: PropTypes.func.isRequired,
+    toTransak: PropTypes.func.isRequired,
     address: PropTypes.string.isRequired,
     toFaucet: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
@@ -87,21 +92,25 @@ export default class DepositEtherModal extends Component {
     const {
       chainId,
       toWyre,
+      toTransak,
       address,
       toFaucet,
       isTestnet,
       isMainnet,
+      isBuyableTransakChain,
     } = this.props;
+    const { t } = this.context;
     const networkName = NETWORK_TO_NAME_MAP[chainId];
+    const symbol = BUYABLE_CHAINS_MAP[chainId].nativeCurrency;
 
     return (
       <div className="page-container page-container--full-width page-container--full-height">
         <div className="page-container__header">
           <div className="page-container__title">
-            {this.context.t('depositEther')}
+            {t('depositCrypto', [symbol])}
           </div>
           <div className="page-container__subtitle">
-            {this.context.t('needEtherInWallet')}
+            {t('needCryptoInWallet', [symbol])}
           </div>
           <div
             className="page-container__header-close"
@@ -123,9 +132,9 @@ export default class DepositEtherModal extends Component {
                   }}
                 />
               ),
-              title: this.context.t('buyWithWyre'),
-              text: this.context.t('buyWithWyreDescription'),
-              buttonLabel: this.context.t('continueToWyre'),
+              title: t('buyWithWyre'),
+              text: t('buyWithWyreDescription'),
+              buttonLabel: t('continueToWyre'),
               onButtonClick: () => {
                 this.context.metricsEvent({
                   eventOpts: {
@@ -140,6 +149,31 @@ export default class DepositEtherModal extends Component {
             })}
             {this.renderRow({
               logo: (
+                <div
+                  className="deposit-ether-modal__logo"
+                  style={{
+                    backgroundImage: "url('./images/transak.svg')",
+                    height: '60px',
+                  }}
+                />
+              ),
+              title: t('buyCryptoWithTransak', [symbol]),
+              text: t('buyCryptoWithTransakDescription', [symbol]),
+              buttonLabel: t('continueToTransak'),
+              onButtonClick: () => {
+                this.context.metricsEvent({
+                  eventOpts: {
+                    category: 'Accounts',
+                    action: 'Deposit Ether',
+                    name: 'Click buy Ether via Transak',
+                  },
+                });
+                toTransak(address, chainId);
+              },
+              hide: !isBuyableTransakChain,
+            })}
+            {this.renderRow({
+              logo: (
                 <img
                   alt=""
                   className="deposit-ether-modal__logo"
@@ -150,17 +184,17 @@ export default class DepositEtherModal extends Component {
                   }}
                 />
               ),
-              title: this.context.t('directDepositEther'),
-              text: this.context.t('directDepositEtherExplainer'),
-              buttonLabel: this.context.t('viewAccount'),
+              title: t('directDepositCrypto', [symbol]),
+              text: t('directDepositCryptoExplainer', [symbol]),
+              buttonLabel: t('viewAccount'),
               onButtonClick: () => this.goToAccountDetailsModal(),
             })}
             {networkName &&
               this.renderRow({
                 logo: <i className="fa fa-tint fa-2x" />,
-                title: this.context.t('testFaucet'),
-                text: this.context.t('getEtherFromFaucet', [networkName]),
-                buttonLabel: this.context.t('getEther'),
+                title: t('testFaucet'),
+                text: t('getEtherFromFaucet', [networkName]),
+                buttonLabel: t('getEther'),
                 onButtonClick: () => toFaucet(chainId),
                 hide: !isTestnet,
               })}

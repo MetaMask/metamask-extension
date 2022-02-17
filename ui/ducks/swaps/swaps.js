@@ -34,9 +34,10 @@ import {
   SWAPS_MAINTENANCE_ROUTE,
 } from '../../helpers/constants/routes';
 import {
-  fetchSwapsFeatureLiveness,
+  fetchSwapsFeatureFlags,
   fetchSwapsGasPrices,
   isContractAddressValid,
+  getSwapsLivenessForNetwork,
 } from '../../pages/swaps/swaps.util';
 import { calcGasTotal } from '../../pages/send/send.utils';
 import {
@@ -44,8 +45,9 @@ import {
   getValueFromWeiHex,
   decGWEIToHexWEI,
   hexWEIToDecGWEI,
+  addHexes,
 } from '../../helpers/utils/conversions.util';
-import { conversionLessThan } from '../../helpers/utils/conversion-util';
+import { conversionLessThan } from '../../../shared/modules/conversion.utils';
 import { calcTokenAmount } from '../../helpers/utils/token-util';
 import {
   getSelectedAccount,
@@ -55,6 +57,7 @@ import {
   getCurrentChainId,
   isHardwareWallet,
   getHardwareWalletType,
+  checkNetworkAndAccountSupports1559,
 } from '../../selectors';
 import {
   ERROR_FETCHING_QUOTES,
@@ -64,6 +67,7 @@ import {
   SWAPS_FETCH_ORDER_CONFLICT,
 } from '../../../shared/constants/swaps';
 import { TRANSACTION_TYPES } from '../../../shared/constants/transaction';
+import { getGasFeeEstimates } from '../metamask/metamask';
 
 const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -81,7 +85,12 @@ const initialState = {
   balanceError: false,
   fetchingQuotes: false,
   fromToken: null,
+  fromTokenInputValue: '',
+  fromTokenError: null,
+  isFeatureFlagLoaded: false,
+  maxSlippage: 3,
   quotesFetchStartTime: null,
+  reviewSwapClickedTimestamp: null,
   topAssets: {},
   toToken: null,
   customGas: {
@@ -123,8 +132,23 @@ const slice = createSlice({
     setFromToken: (state, action) => {
       state.fromToken = action.payload;
     },
+    setFromTokenInputValue: (state, action) => {
+      state.fromTokenInputValue = action.payload;
+    },
+    setFromTokenError: (state, action) => {
+      state.fromTokenError = action.payload;
+    },
+    setIsFeatureFlagLoaded: (state, action) => {
+      state.isFeatureFlagLoaded = action.payload;
+    },
+    setMaxSlippage: (state, action) => {
+      state.maxSlippage = action.payload;
+    },
     setQuotesFetchStartTime: (state, action) => {
       state.quotesFetchStartTime = action.payload;
+    },
+    setReviewSwapClickedTimestamp: (state, action) => {
+      state.reviewSwapClickedTimestamp = action.payload;
     },
     setTopAssets: (state, action) => {
       state.topAssets = action.payload;
@@ -170,6 +194,16 @@ export const getBalanceError = (state) => state.swaps.balanceError;
 
 export const getFromToken = (state) => state.swaps.fromToken;
 
+export const getFromTokenError = (state) => state.swaps.fromTokenError;
+
+export const getFromTokenInputValue = (state) =>
+  state.swaps.fromTokenInputValue;
+
+export const getIsFeatureFlagLoaded = (state) =>
+  state.swaps.isFeatureFlagLoaded;
+
+export const getMaxSlippage = (state) => state.swaps.maxSlippage;
+
 export const getTopAssets = (state) => state.swaps.topAssets;
 
 export const getToToken = (state) => state.swaps.toToken;
@@ -178,6 +212,9 @@ export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes;
 
 export const getQuotesFetchStartTime = (state) =>
   state.swaps.quotesFetchStartTime;
+
+export const getReviewSwapClickedTimestamp = (state) =>
+  state.swaps.reviewSwapClickedTimestamp;
 
 export const getSwapsCustomizationModalPrice = (state) =>
   state.swaps.customGas.price;
@@ -223,11 +260,14 @@ export function shouldShowCustomPriceTooLowWarning(state) {
 
 const getSwapsState = (state) => state.metamask.swapsState;
 
-export const getSwapsFeatureLiveness = (state) =>
+export const getSwapsFeatureIsLive = (state) =>
   state.metamask.swapsState.swapsFeatureIsLive;
 
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
+
+export const getSwapsQuotePrefetchingRefreshTime = (state) =>
+  state.metamask.swapsState.swapsQuotePrefetchingRefreshTime;
 
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState;
@@ -237,6 +277,15 @@ export const getCustomSwapsGas = (state) =>
 
 export const getCustomSwapsGasPrice = (state) =>
   state.metamask.swapsState.customGasPrice;
+
+export const getCustomMaxFeePerGas = (state) =>
+  state.metamask.swapsState.customMaxFeePerGas;
+
+export const getCustomMaxPriorityFeePerGas = (state) =>
+  state.metamask.swapsState.customMaxPriorityFeePerGas;
+
+export const getSwapsUserFeeLevel = (state) =>
+  state.metamask.swapsState.swapsUserFeeLevel;
 
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
 
@@ -306,7 +355,12 @@ const {
   setBalanceError,
   setFetchingQuotes,
   setFromToken,
+  setFromTokenError,
+  setFromTokenInputValue,
+  setIsFeatureFlagLoaded,
+  setMaxSlippage,
   setQuotesFetchStartTime,
+  setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken,
   swapCustomGasModalPriceEdited,
@@ -321,7 +375,12 @@ export {
   setBalanceError,
   setFetchingQuotes,
   setFromToken as setSwapsFromToken,
+  setFromTokenError,
+  setFromTokenInputValue,
+  setIsFeatureFlagLoaded,
+  setMaxSlippage,
   setQuotesFetchStartTime as setSwapQuotesFetchStartTime,
+  setReviewSwapClickedTimestamp,
   setTopAssets,
   setToToken as setSwapToToken,
   swapCustomGasModalPriceEdited,
@@ -373,16 +432,21 @@ export const fetchAndSetSwapsGasPriceInfo = () => {
 
 export const fetchSwapsLiveness = () => {
   return async (dispatch, getState) => {
-    let swapsFeatureIsLive = false;
+    let swapsLivenessForNetwork = {
+      swapsFeatureIsLive: false,
+    };
     try {
-      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(
+      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      swapsLivenessForNetwork = getSwapsLivenessForNetwork(
+        swapsFeatureFlags,
         getCurrentChainId(getState()),
       );
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
-    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
-    return swapsFeatureIsLive;
+    await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
+    dispatch(setIsFeatureFlagLoaded(true));
+    return swapsLivenessForNetwork;
   };
 };
 
@@ -391,19 +455,26 @@ export const fetchQuotesAndSetQuoteState = (
   inputValue,
   maxSlippage,
   metaMetricsEvent,
+  pageRedirectionDisabled,
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    let swapsFeatureIsLive = false;
+    let swapsLivenessForNetwork = {
+      swapsFeatureIsLive: false,
+    };
     try {
-      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(chainId);
+      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      swapsLivenessForNetwork = getSwapsLivenessForNetwork(
+        swapsFeatureFlags,
+        chainId,
+      );
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
-    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
+    await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
-    if (!swapsFeatureIsLive) {
+    if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
       await history.push(SWAPS_MAINTENANCE_ROUTE);
       return;
     }
@@ -433,8 +504,12 @@ export const fetchQuotesAndSetQuoteState = (
       decimals: toTokenDecimals,
       iconUrl: toTokenIconUrl,
     } = selectedToToken;
-    await dispatch(setBackgroundSwapRouteState('loading'));
-    history.push(LOADING_QUOTES_ROUTE);
+    // pageRedirectionDisabled is true if quotes prefetching is active (a user is on the Build Quote page).
+    // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
+    if (!pageRedirectionDisabled) {
+      await dispatch(setBackgroundSwapRouteState('loading'));
+      history.push(LOADING_QUOTES_ROUTE);
+    }
     dispatch(setFetchingQuotes(true));
 
     const contractExchangeRates = getTokenExchangeRates(state);
@@ -487,6 +562,9 @@ export const fetchQuotesAndSetQuoteState = (
 
     const hardwareWalletUsed = isHardwareWallet(state);
     const hardwareWalletType = getHardwareWalletType(state);
+    const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
+      state,
+    );
     metaMetricsEvent({
       event: 'Quotes Requested',
       category: 'swaps',
@@ -528,7 +606,9 @@ export const fetchQuotesAndSetQuoteState = (
         ),
       );
 
-      const gasPriceFetchPromise = dispatch(fetchAndSetSwapsGasPriceInfo());
+      const gasPriceFetchPromise = networkAndAccountSupports1559
+        ? null // For EIP 1559 we can get gas prices via "useGasFeeEstimates".
+        : dispatch(fetchAndSetSwapsGasPriceInfo());
 
       const [[fetchedQuotes, selectedAggId]] = await Promise.all([
         fetchAndSetQuotesPromise,
@@ -600,20 +680,31 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
-    let swapsFeatureIsLive = false;
+    const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
+      state,
+    );
+    let swapsLivenessForNetwork = {
+      swapsFeatureIsLive: false,
+    };
     try {
-      swapsFeatureIsLive = await fetchSwapsFeatureLiveness(chainId);
+      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      swapsLivenessForNetwork = getSwapsLivenessForNetwork(
+        swapsFeatureFlags,
+        chainId,
+      );
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
-    await dispatch(setSwapsLiveness(swapsFeatureIsLive));
+    await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
-    if (!swapsFeatureIsLive) {
+    if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
       await history.push(SWAPS_MAINTENANCE_ROUTE);
       return;
     }
 
     const customSwapsGas = getCustomSwapsGas(state);
+    const customMaxFeePerGas = getCustomMaxFeePerGas(state);
+    const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
     const fetchParams = getFetchParams(state);
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
@@ -625,6 +716,28 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     }
 
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
+
+    let maxFeePerGas;
+    let maxPriorityFeePerGas;
+    let baseAndPriorityFeePerGas;
+    let decEstimatedBaseFee;
+
+    if (networkAndAccountSupports1559) {
+      const {
+        high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
+        estimatedBaseFee = '0',
+      } = getGasFeeEstimates(state);
+      decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
+      maxFeePerGas =
+        customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
+      maxPriorityFeePerGas =
+        customMaxPriorityFeePerGas ||
+        decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+      baseAndPriorityFeePerGas = addHexes(
+        decEstimatedBaseFee,
+        maxPriorityFeePerGas,
+      );
+    }
 
     const usedQuote = getUsedQuote(state);
     const usedTradeTxParams = usedQuote.trade;
@@ -645,7 +758,13 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
 
     const usedGasPrice = getUsedSwapsGasPrice(state);
     usedTradeTxParams.gas = maxGasLimit;
-    usedTradeTxParams.gasPrice = usedGasPrice;
+    if (networkAndAccountSupports1559) {
+      usedTradeTxParams.maxFeePerGas = maxFeePerGas;
+      usedTradeTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
+      delete usedTradeTxParams.gasPrice;
+    } else {
+      usedTradeTxParams.gasPrice = usedGasPrice;
+    }
 
     const usdConversionRate = getUSDConversionRate(state);
     const destinationValue = calcTokenAmount(
@@ -659,7 +778,10 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       .plus(usedQuote.approvalNeeded?.gas || '0x0', 16)
       .toString(16);
     const gasEstimateTotalInUSD = getValueFromWeiHex({
-      value: calcGasTotal(totalGasLimitEstimate, usedGasPrice),
+      value: calcGasTotal(
+        totalGasLimitEstimate,
+        networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : usedGasPrice,
+      ),
       toCurrency: 'usd',
       conversionRate: usdConversionRate,
       numberOfDecimals: 6,
@@ -691,6 +813,11 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: getHardwareWalletType(state),
     };
+    if (networkAndAccountSupports1559) {
+      swapMetaData.max_fee_per_gas = maxFeePerGas;
+      swapMetaData.max_priority_fee_per_gas = maxPriorityFeePerGas;
+      swapMetaData.base_and_priority_fee_per_gas = baseAndPriorityFeePerGas;
+    }
 
     metaMetricsEvent({
       event: 'Swap Started',
@@ -698,7 +825,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       sensitiveProperties: swapMetaData,
     });
 
-    if (!isContractAddressValid(usedTradeTxParams.to, swapMetaData, chainId)) {
+    if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
       captureMessage('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
@@ -721,10 +848,16 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     }
 
     if (approveTxParams) {
+      if (networkAndAccountSupports1559) {
+        approveTxParams.maxFeePerGas = maxFeePerGas;
+        approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
+        delete approveTxParams.gasPrice;
+      }
       const approveTxMeta = await dispatch(
         addUnapprovedTransaction(
           { ...approveTxParams, amount: '0x0' },
           'metamask',
+          TRANSACTION_TYPES.SWAP_APPROVAL,
         ),
       );
       await dispatch(setApproveTxId(approveTxMeta.id));
@@ -732,6 +865,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
         updateTransaction(
           {
             ...approveTxMeta,
+            estimatedBaseFee: decEstimatedBaseFee,
             type: TRANSACTION_TYPES.SWAP_APPROVAL,
             sourceTokenSymbol: sourceTokenInfo.symbol,
           },
@@ -748,7 +882,11 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
     }
 
     const tradeTxMeta = await dispatch(
-      addUnapprovedTransaction(usedTradeTxParams, 'metamask'),
+      addUnapprovedTransaction(
+        usedTradeTxParams,
+        'metamask',
+        TRANSACTION_TYPES.SWAP,
+      ),
     );
     dispatch(setTradeTxId(tradeTxMeta.id));
 
@@ -771,6 +909,7 @@ export const signAndSendTransactions = (history, metaMetricsEvent) => {
       updateTransaction(
         {
           ...tradeTxMeta,
+          estimatedBaseFee: decEstimatedBaseFee,
           sourceTokenSymbol: sourceTokenInfo.symbol,
           destinationTokenSymbol: destinationTokenInfo.symbol,
           type: TRANSACTION_TYPES.SWAP,

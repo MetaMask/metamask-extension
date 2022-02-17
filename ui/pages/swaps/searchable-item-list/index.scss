@@ -1,12 +1,12 @@
 .searchable-item-list {
-  background: $white;
+  background: var(--white);
   width: 100%;
   position: relative;
 
   &__search {
     > div {
       border: none;
-      border-bottom: 1px solid $Grey-100;
+      border-bottom: 1px solid var(--Grey-100);
       border-radius: 0;
       height: 55px;
       font-size: 12px;
@@ -14,26 +14,26 @@
       input {
         @include H6;
 
-        color: $Grey-500;
+        color: var(--Grey-500);
         line-height: 100%;
 
         &::-webkit-input-placeholder {
-          color: $Grey-500;
+          color: var(--Grey-500);
           opacity: 1;
         }
 
         &:-moz-placeholder {
-          color: $Grey-500;
+          color: var(--Grey-500);
           opacity: 1;
         }
 
         &::-moz-placeholder {
-          color: $Grey-500;
+          color: var(--Grey-500);
           opacity: 1;
         }
 
         &::placeholder {
-          color: $Grey-500;
+          color: var(--Grey-500);
           opacity: 1;
         }
       }
@@ -54,7 +54,7 @@
     padding: 8px 12px;
     box-sizing: border-box;
     cursor: pointer;
-    border-top: 1px solid $Grey-100;
+    border-top: 1px solid var(--Grey-100);
     position: relative;
     min-height: 50px;
 
@@ -68,11 +68,11 @@
 
     &:hover,
     &:focus {
-      background: $Grey-000;
+      background: var(--Grey-000);
     }
 
     &--selected {
-      border: 1px solid $malibu-blue !important;
+      border: 1px solid var(--malibu-blue) !important;
     }
 
     &--disabled {
@@ -94,7 +94,7 @@
 
         &__message {
           text-align: left;
-          color: $Black-100;
+          color: var(--Black-100);
         }
 
         a {
@@ -170,7 +170,7 @@
     @include H7;
 
     line-height: 100%;
-    color: $Grey-500;
+    color: var(--Grey-500);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -185,7 +185,7 @@
     @include H7;
 
     line-height: 100%;
-    color: $Grey-500;
+    color: var(--Grey-500);
     opacity: 0.5;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -202,7 +202,7 @@
   }
 
   &__item--highlighted {
-    background: $Grey-000;
+    background: var(--Grey-000);
   }
 
   &__identicon {

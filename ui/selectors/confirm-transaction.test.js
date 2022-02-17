@@ -58,8 +58,8 @@ describe('Confirm Transaction Selector', () => {
           }),
         },
         tokenProps: {
-          tokenDecimals: '2',
-          tokenSymbol: 'META',
+          decimals: '2',
+          symbol: 'META',
         },
       },
     };

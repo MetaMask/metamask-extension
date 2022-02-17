@@ -1,10 +1,11 @@
+import { MINUTE, SECOND } from '../../../shared/constants/time';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import { getStorageItem, setStorageItem } from './storage-helpers';
 
 const fetchWithCache = async (
   url,
   fetchOptions = {},
-  { cacheRefreshTime = 360000, timeout = 30000 } = {},
+  { cacheRefreshTime = MINUTE * 6, timeout = SECOND * 30 } = {},
 ) => {
   if (
     fetchOptions.body ||

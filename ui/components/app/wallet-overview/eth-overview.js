@@ -22,11 +22,10 @@ import {
   isBalanceCached,
   getSelectedAccount,
   getShouldShowFiat,
-  getIsMainnet,
-  getIsTestnet,
   getCurrentKeyring,
   getSwapsDefaultToken,
   getIsSwapsChain,
+  getIsBuyableChain,
   getNativeCurrencyImage,
 } from '../../../selectors/selectors';
 import SwapIcon from '../../ui/icon/swap-icon.component';
@@ -34,6 +33,7 @@ import BuyIcon from '../../ui/icon/overview-buy-icon.component';
 import SendIcon from '../../ui/icon/overview-send-icon.component';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
+import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -55,14 +55,13 @@ const EthOverview = ({ className }) => {
   });
   const history = useHistory();
   const keyring = useSelector(getCurrentKeyring);
-  const usingHardwareWallet = keyring.type.search('Hardware') !== -1;
+  const usingHardwareWallet = isHardwareKeyring(keyring.type);
   const balanceIsCached = useSelector(isBalanceCached);
   const showFiat = useSelector(getShouldShowFiat);
   const selectedAccount = useSelector(getSelectedAccount);
   const { balance } = selectedAccount;
-  const isMainnetChain = useSelector(getIsMainnet);
-  const isTestnetChain = useSelector(getIsTestnet);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const isBuyableChain = useSelector(getIsBuyableChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
 
   const enteredSwapsEvent = useNewMetricEvent({
@@ -117,7 +116,7 @@ const EthOverview = ({ className }) => {
           <IconButton
             className="eth-overview__button"
             Icon={BuyIcon}
-            disabled={!(isMainnetChain || isTestnetChain)}
+            disabled={!isBuyableChain}
             label={t('buy')}
             onClick={() => {
               depositEvent();
@@ -152,7 +151,7 @@ const EthOverview = ({ className }) => {
             label={t('swap')}
             tooltipRender={(contents) => (
               <Tooltip
-                title={t('onlyAvailableOnMainnet')}
+                title={t('currentlyUnavailable')}
                 position="bottom"
                 disabled={isSwapsChain}
               >

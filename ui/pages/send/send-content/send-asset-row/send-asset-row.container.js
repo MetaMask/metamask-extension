@@ -1,29 +1,31 @@
 import { connect } from 'react-redux';
 import {
-  getMetaMaskAccounts,
+  getCollectibles,
   getNativeCurrency,
+} from '../../../../ducks/metamask/metamask';
+import {
+  getMetaMaskAccounts,
   getNativeCurrencyImage,
-  getSendTokenAddress,
-  getAssetImages,
 } from '../../../../selectors';
-import { updateSendToken } from '../../../../store/actions';
+import { updateSendAsset, getSendAsset } from '../../../../ducks/send';
 import SendAssetRow from './send-asset-row.component';
 
 function mapStateToProps(state) {
   return {
     tokens: state.metamask.tokens,
     selectedAddress: state.metamask.selectedAddress,
-    sendTokenAddress: getSendTokenAddress(state),
+    collectibles: getCollectibles(state),
+    sendAsset: getSendAsset(state),
     accounts: getMetaMaskAccounts(state),
     nativeCurrency: getNativeCurrency(state),
     nativeCurrencyImage: getNativeCurrencyImage(state),
-    assetImages: getAssetImages(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    setSendToken: (token) => dispatch(updateSendToken(token)),
+    updateSendAsset: ({ type, details }) =>
+      dispatch(updateSendAsset({ type, details })),
   };
 }
 

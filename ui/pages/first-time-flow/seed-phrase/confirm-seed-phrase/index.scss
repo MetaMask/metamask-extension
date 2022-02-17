@@ -4,7 +4,7 @@
   }
 
   &__sorted-seed-words {
-    max-width: 575px;
+    max-width: $break-small;
   }
 
   &__seed-word {
@@ -26,7 +26,7 @@
     }
 
     &--selected {
-      color: $white;
+      color: var(--white);
     }
 
     &--dragging {
@@ -57,7 +57,7 @@
       color: transparent;
     }
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       @include H6;
 
       padding: 6px 18px;
@@ -70,10 +70,10 @@
     display: flex;
     flex-flow: row wrap;
     min-height: 161px;
-    max-width: 575px;
+    max-width: $break-small;
     border: 1px solid #cdcdcd;
     border-radius: 6px;
-    background-color: $white;
+    background-color: var(--white);
     margin: 24px 0 36px;
     padding: 12px;
 

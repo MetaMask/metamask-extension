@@ -14,7 +14,7 @@
     }
 
     div {
-      border: 1px solid $Grey-100;
+      border: 1px solid var(--Grey-100);
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       border-left-color: transparent;
@@ -47,7 +47,7 @@
     height: 100%;
     display: flex;
     align-items: center;
-    color: $Grey-500;
+    color: var(--Grey-500);
 
     &--two-lines {
       right: inherit;

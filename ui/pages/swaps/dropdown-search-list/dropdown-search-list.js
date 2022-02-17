@@ -13,7 +13,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import SearchableItemList from '../searchable-item-list';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import UrlIcon from '../../../components/ui/url-icon';
-import ActionableMessage from '../actionable-message';
+import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import ImportToken from '../import-token';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import {
@@ -23,6 +23,7 @@ import {
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors/selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import { getURLHostName } from '../../../helpers/utils/util';
 
 export default function DropdownSearchList({
   searchListClassName,
@@ -138,7 +139,7 @@ export default function DropdownSearchList({
     null;
 
   const blockExplorerLabel = rpcPrefs.blockExplorerUrl
-    ? new URL(blockExplorerLink).hostname
+    ? getURLHostName(blockExplorerLink)
     : t('etherscan');
 
   const blockExplorerLinkClickedEvent = useNewMetricEvent({
@@ -147,9 +148,7 @@ export default function DropdownSearchList({
     properties: {
       link_type: 'Token Tracker',
       action: 'Verify Contract Address',
-      block_explorer_domain: blockExplorerLink
-        ? new URL(blockExplorerLink)?.hostname
-        : '',
+      block_explorer_domain: getURLHostName(blockExplorerLink),
     },
   });
 

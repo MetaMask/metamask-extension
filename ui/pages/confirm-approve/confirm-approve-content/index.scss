@@ -3,21 +3,85 @@
   flex-flow: column;
   align-items: center;
   width: 100%;
-  height: 100%;
   font-style: normal;
 
-  &__identicon-wrapper {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    margin-top: 22px;
-    padding-left: 24px;
-    padding-right: 24px;
+  &__warning {
+    padding: 0 24px 16px 24px;
   }
 
-  &__identicon {
-    width: 48px;
-    height: 48px;
+  &__icon-display-content {
+    display: flex;
+    height: 51px;
+    width: 65%;
+    margin-top: 16px;
+    padding: 12px 12px 14px 12px;
+    border: 1px solid var(--ui-1);
+    box-sizing: border-box;
+    border-radius: 100px;
+    align-items: center;
+    position: relative;
+  }
+
+  &__metafoxlogo,
+  &__siteinfo {
+    position: absolute;
+  }
+
+  &__metafoxlogo {
+    .app-header {
+      &__metafox-logo--horizontal {
+        display: none;
+      }
+
+      &__metafox-logo--icon {
+        display: block;
+      }
+    }
+  }
+
+  &__siteinfo {
+    left: 39px;
+  }
+
+  &__address-display-content {
+    display: flex;
+    height: 27px;
+    padding: 12px 12px 14px 12px;
+    background-color: var(--ui-1);
+    border-radius: 100px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__siteimage-identicon {
+    width: 33px;
+    height: 33px;
+    border: solid #fff;
+  }
+
+  &__address-identicon {
+    margin: 4px 8px 0 4px;
+  }
+
+  &__copy-address,
+  &__etherscan-link {
+    padding: 0 0 0 8px;
+  }
+
+  &__etherscan-link {
+    img {
+      width: 9px;
+      height: 9px;
+    }
+  }
+
+  .app-header__logo-container {
+    margin-right: 0;
+  }
+
+  .app-header__metafox-logo--icon {
+    height: 33px;
+    width: 33px;
   }
 
   &__full-tx-content {
@@ -87,6 +151,7 @@
     margin-top: 20px;
     align-items: center;
     position: relative;
+    justify-content: flex-end;
 
     &__symbol {
       width: auto;
@@ -139,7 +204,7 @@
       div {
         width: 22px;
         height: 2px;
-        background: $primary-blue;
+        background: var(--primary-blue);
         position: absolute;
       }
 
@@ -155,11 +220,16 @@
     &__circle {
       width: 14px;
       height: 14px;
-      border: 2px solid $primary-blue;
+      border: 2px solid var(--primary-blue);
       border-radius: 50%;
       background: white;
       position: absolute;
     }
+  }
+
+  &__ledger-instruction-wrapper {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   &__transaction-details-content {
@@ -185,12 +255,28 @@
       color: #000;
     }
 
-    &__secondary-fee {
+    &__secondary-fee,
+    &__labelled-fee {
       @include H6;
 
       font-weight: normal;
       color: #8c8e94;
     }
+
+    &__labelled-fee {
+      display: flex;
+      justify-content: space-between;
+
+      h6.typography--h6 {
+        font-weight: normal;
+      }
+    }
+  }
+
+  &__transaction-details-extra-content {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
   }
 
   &__view-full-tx-button-wrapper {
@@ -234,7 +320,7 @@
     @include H6;
 
     font-weight: 500;
-    color: $primary-blue;
+    color: var(--primary-blue);
   }
 
   &__medium-text,
@@ -258,7 +344,7 @@
   }
 
   &__small-blue-text {
-    color: $primary-blue;
+    color: var(--primary-blue);
   }
 
   &__info-row {

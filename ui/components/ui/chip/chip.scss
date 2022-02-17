@@ -4,12 +4,11 @@
   $self: &;
 
   border-radius: 100px;
-  border: 1px solid design-system.$ui-1;
+  border: 1px solid var(--ui-1);
   padding: 8px 16px;
   margin: 0 4px;
   display: flex;
   align-items: center;
-  width: max-content;
 
   &__left-icon,
   &__right-icon {
@@ -18,8 +17,11 @@
   }
 
   @each $variant, $color in design-system.$color-map {
-    &--#{$variant} {
-      border-color: $color;
+    &--border-color-#{$variant} {
+      border-color: var($color);
+    }
+    &--background-color-#{$variant} {
+      background-color: var($color);
     }
   }
 
@@ -37,12 +39,31 @@
     }
   }
 
+  &--with-input &__input {
+    direction: ltr;
+    border: none;
+    background: transparent;
+    text-align: center;
+    width: 100%;
+    font-size: design-system.$font-size-h5;
 
+    &:focus {
+      text-align: left;
+    }
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
 
   &--with-right-icon {
     padding-right: 4px;
     #{$self}__label {
       margin-right: 8px;
     }
+  }
+
+  &--max-content {
+    width: max-content;
   }
 }

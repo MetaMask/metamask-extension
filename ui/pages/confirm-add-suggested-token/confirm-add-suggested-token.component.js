@@ -1,194 +1,216 @@
-import React, { Component } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
+import { I18nContext } from '../../contexts/i18n';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
-export default class ConfirmAddSuggestedToken extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-    trackEvent: PropTypes.func,
+function getTokenName(name, symbol) {
+  return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
+}
+
+/**
+ * @param {Array} suggestedAssets - an array of assets suggested to add to the user's wallet
+ * via the RPC method `wallet_watchAsset`
+ * @param {Array} tokens - the list of tokens currently tracked in state
+ * @returns {boolean} Returns true when the list of suggestedAssets contains an entry with
+ *          an address that matches an existing token.
+ */
+function hasDuplicateAddress(suggestedAssets, tokens) {
+  const duplicate = suggestedAssets.find(({ asset }) => {
+    const dupe = tokens.find(({ address }) => {
+      return isEqualCaseInsensitive(address, asset.address);
+    });
+    return Boolean(dupe);
+  });
+  return Boolean(duplicate);
+}
+
+/**
+ * @param {Array} suggestedAssets - a list of assets suggested to add to the user's wallet
+ * via RPC method `wallet_watchAsset`
+ * @param {Array} tokens - the list of tokens currently tracked in state
+ * @returns {boolean} Returns true when the list of suggestedAssets contains an entry with both
+ *          1. a symbol that matches an existing token
+ *          2. an address that does not match an existing token
+ */
+function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
+  const duplicate = suggestedAssets.find(({ asset }) => {
+    const dupe = tokens.find((token) => {
+      return (
+        isEqualCaseInsensitive(token.symbol, asset.symbol) &&
+        !isEqualCaseInsensitive(token.address, asset.address)
+      );
+    });
+    return Boolean(dupe);
+  });
+  return Boolean(duplicate);
+}
+
+const ConfirmAddSuggestedToken = (props) => {
+  const {
+    acceptWatchAsset,
+    history,
+    mostRecentOverviewPage,
+    rejectWatchAsset,
+    suggestedAssets,
+    tokens,
+  } = props;
+
+  const metricsEvent = useContext(MetaMetricsContext);
+  const t = useContext(I18nContext);
+
+  const tokenAddedEvent = (asset) => {
+    metricsEvent({
+      event: 'Token Added',
+      category: 'Wallet',
+      sensitiveProperties: {
+        token_symbol: asset.symbol,
+        token_contract_address: asset.address,
+        token_decimal_precision: asset.decimals,
+        unlisted: asset.unlisted,
+        source: 'dapp',
+      },
+    });
   };
 
-  static propTypes = {
-    history: PropTypes.object,
-    addToken: PropTypes.func,
-    mostRecentOverviewPage: PropTypes.string.isRequired,
-    pendingTokens: PropTypes.object,
-    removeSuggestedTokens: PropTypes.func,
-    tokens: PropTypes.array,
-  };
+  const knownTokenActionableMessage = useMemo(() => {
+    return (
+      hasDuplicateAddress(suggestedAssets, tokens) && (
+        <ActionableMessage
+          message={t('knownTokenWarning', [
+            <Button
+              type="link"
+              key="confirm-add-suggested-token-duplicate-warning"
+              className="confirm-add-suggested-token__link"
+              rel="noopener noreferrer"
+              target="_blank"
+              href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+            >
+              {t('learnScamRisk')}
+            </Button>,
+          ])}
+          type="warning"
+          withRightButton
+          useIcon
+          iconFillColor="#f8c000"
+        />
+      )
+    );
+  }, [suggestedAssets, tokens, t]);
 
-  componentDidMount() {
-    this._checkPendingTokens();
-  }
+  const reusedTokenNameActionableMessage = useMemo(() => {
+    return (
+      hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) && (
+        <ActionableMessage
+          message={t('reusedTokenNameWarning')}
+          type="warning"
+          withRightButton
+          useIcon
+          iconFillColor="#f8c000"
+        />
+      )
+    );
+  }, [suggestedAssets, tokens, t]);
 
-  componentDidUpdate() {
-    this._checkPendingTokens();
-  }
-
-  _checkPendingTokens() {
-    const { mostRecentOverviewPage, pendingTokens = {}, history } = this.props;
-
-    if (Object.keys(pendingTokens).length > 0) {
-      return;
-    }
-
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-      global.platform.closeCurrentWindow();
-    } else {
+  useEffect(() => {
+    if (!suggestedAssets.length) {
       history.push(mostRecentOverviewPage);
     }
-  }
+  }, [history, suggestedAssets, mostRecentOverviewPage]);
 
-  getTokenName(name, symbol) {
-    return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
-  }
-
-  render() {
-    const {
-      addToken,
-      pendingTokens,
-      tokens,
-      removeSuggestedTokens,
-      history,
-      mostRecentOverviewPage,
-    } = this.props;
-    const pendingTokenKey = Object.keys(pendingTokens)[0];
-    const pendingToken = pendingTokens[pendingTokenKey];
-    const hasTokenDuplicates = this.checkTokenDuplicates(pendingTokens, tokens);
-    const reusesName = this.checkNameReuse(pendingTokens, tokens);
-
-    return (
-      <div className="page-container">
-        <div className="page-container__header">
-          <div className="page-container__title">
-            {this.context.t('addSuggestedTokens')}
-          </div>
-          <div className="page-container__subtitle">
-            {this.context.t('likeToAddTokens')}
-          </div>
-          {hasTokenDuplicates ? (
-            <div className="warning">{this.context.t('knownTokenWarning')}</div>
-          ) : null}
-          {reusesName ? (
-            <div className="warning">
-              {this.context.t('reusedTokenNameWarning')}
-            </div>
-          ) : null}
+  return (
+    <div className="page-container">
+      <div className="page-container__header">
+        <div className="page-container__title">{t('addSuggestedTokens')}</div>
+        <div className="page-container__subtitle">
+          {t('likeToImportTokens')}
         </div>
-        <div className="page-container__content">
-          <div className="confirm-add-token">
-            <div className="confirm-add-token__header">
-              <div className="confirm-add-token__token">
-                {this.context.t('token')}
-              </div>
-              <div className="confirm-add-token__balance">
-                {this.context.t('balance')}
-              </div>
-            </div>
-            <div className="confirm-add-token__token-list">
-              {Object.entries(pendingTokens).map(([address, token]) => {
-                const { name, symbol, image } = token;
-
-                return (
-                  <div
-                    className="confirm-add-token__token-list-item"
-                    key={address}
-                  >
-                    <div className="confirm-add-token__token confirm-add-token__data">
-                      <Identicon
-                        className="confirm-add-token__token-icon"
-                        diameter={48}
-                        address={address}
-                        image={image}
-                      />
-                      <div className="confirm-add-token__name">
-                        {this.getTokenName(name, symbol)}
-                      </div>
-                    </div>
-                    <div className="confirm-add-token__balance">
-                      <TokenBalance token={token} />
+        {knownTokenActionableMessage}
+        {reusedTokenNameActionableMessage}
+      </div>
+      <div className="page-container__content">
+        <div className="confirm-import-token">
+          <div className="confirm-import-token__header">
+            <div className="confirm-import-token__token">{t('token')}</div>
+            <div className="confirm-import-token__balance">{t('balance')}</div>
+          </div>
+          <div className="confirm-import-token__token-list">
+            {suggestedAssets.map(({ asset }) => {
+              return (
+                <div
+                  className="confirm-import-token__token-list-item"
+                  key={asset.address}
+                >
+                  <div className="confirm-import-token__token confirm-import-token__data">
+                    <Identicon
+                      className="confirm-import-token__token-icon"
+                      diameter={48}
+                      address={asset.address}
+                      image={asset.image}
+                    />
+                    <div className="confirm-import-token__name">
+                      {getTokenName(asset.name, asset.symbol)}
                     </div>
                   </div>
-                );
-              })}
-            </div>
+                  <div className="confirm-import-token__balance">
+                    <TokenBalance token={asset} />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
-        <div className="page-container__footer">
-          <footer>
-            <Button
-              type="default"
-              large
-              className="page-container__footer-button"
-              onClick={() => {
-                removeSuggestedTokens().then(() =>
-                  history.push(mostRecentOverviewPage),
-                );
-              }}
-            >
-              {this.context.t('cancel')}
-            </Button>
-            <Button
-              type="secondary"
-              large
-              className="page-container__footer-button"
-              disabled={pendingTokens.length === 0}
-              onClick={() => {
-                addToken(pendingToken)
-                  .then(() => removeSuggestedTokens())
-                  .then(() => {
-                    this.context.trackEvent({
-                      event: 'Token Added',
-                      category: 'Wallet',
-                      sensitiveProperties: {
-                        token_symbol: pendingToken.symbol,
-                        token_contract_address: pendingToken.address,
-                        token_decimal_precision: pendingToken.decimals,
-                        unlisted: pendingToken.unlisted,
-                        source: 'dapp',
-                      },
-                    });
-                  })
-                  .then(() => history.push(mostRecentOverviewPage));
-              }}
-            >
-              {this.context.t('addToken')}
-            </Button>
-          </footer>
-        </div>
       </div>
-    );
-  }
+      <div className="page-container__footer">
+        <footer>
+          <Button
+            type="secondary"
+            large
+            className="page-container__footer-button"
+            onClick={async () => {
+              await Promise.all(
+                suggestedAssets.map(async ({ id }) => rejectWatchAsset(id)),
+              );
+              history.push(mostRecentOverviewPage);
+            }}
+          >
+            {t('cancel')}
+          </Button>
+          <Button
+            type="primary"
+            large
+            className="page-container__footer-button"
+            disabled={suggestedAssets.length === 0}
+            onClick={async () => {
+              await Promise.all(
+                suggestedAssets.map(async ({ asset, id }) => {
+                  await acceptWatchAsset(id);
+                  tokenAddedEvent(asset);
+                }),
+              );
+              history.push(mostRecentOverviewPage);
+            }}
+          >
+            {t('addToken')}
+          </Button>
+        </footer>
+      </div>
+    </div>
+  );
+};
 
-  checkTokenDuplicates(pendingTokens, tokens) {
-    const pending = Object.keys(pendingTokens);
-    const existing = tokens.map((token) => token.address);
-    const dupes = pending.filter((proposed) => {
-      return existing.includes(proposed);
-    });
+ConfirmAddSuggestedToken.propTypes = {
+  acceptWatchAsset: PropTypes.func,
+  history: PropTypes.object,
+  mostRecentOverviewPage: PropTypes.string.isRequired,
+  rejectWatchAsset: PropTypes.func,
+  suggestedAssets: PropTypes.array,
+  tokens: PropTypes.array,
+};
 
-    return dupes.length > 0;
-  }
-
-  /**
-   * Returns true if any pendingTokens both:
-   * - Share a symbol with an existing `tokens` member.
-   * - Does not share an address with that same `tokens` member.
-   * This should be flagged as possibly deceptive or confusing.
-   */
-  checkNameReuse(pendingTokens, tokens) {
-    const duplicates = Object.keys(pendingTokens)
-      .map((addr) => pendingTokens[addr])
-      .filter((token) => {
-        const dupes = tokens
-          .filter((old) => old.symbol === token.symbol)
-          .filter((old) => old.address !== token.address);
-        return dupes.length > 0;
-      });
-    return duplicates.length > 0;
-  }
-}
+export default ConfirmAddSuggestedToken;

@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Hide token', function () {
   const ganacheOptions = {
@@ -7,7 +7,7 @@ describe('Hide token', function () {
       {
         secretKey:
           '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: 25000000000000000000,
+        balance: convertToHexValue(25000000000000000000),
       },
     ],
   };
@@ -38,7 +38,6 @@ describe('Hide token', function () {
         await driver.clickElement('[data-testid="asset-options__button"]');
 
         await driver.clickElement('[data-testid="asset-options__hide"]');
-
         // wait for confirm hide modal to be visible
         const confirmHideModal = await driver.findVisibleElement('span .modal');
 
@@ -62,7 +61,7 @@ describe('Add existing token using search', function () {
       {
         secretKey:
           '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: 25000000000000000000,
+        balance: convertToHexValue(25000000000000000000),
       },
     ],
   };
@@ -78,11 +77,11 @@ describe('Add existing token using search', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement({ text: 'Add Token', tag: 'button' });
+        await driver.clickElement({ text: 'import tokens', tag: 'a' });
         await driver.fill('#search-tokens', 'BAT');
         await driver.clickElement({ text: 'BAT', tag: 'span' });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Add Tokens', tag: 'button' });
+        await driver.clickElement({ text: 'Import Tokens', tag: 'button' });
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',

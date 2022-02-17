@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { MILLISECOND } from '../../../../shared/constants/time';
 
 class Alert extends Component {
   state = {
@@ -33,7 +34,7 @@ class Alert extends Component {
 
     setTimeout((_) => {
       this.setState({ visible: false });
-    }, 500);
+    }, MILLISECOND * 500);
   }
 
   render() {

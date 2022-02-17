@@ -1,11 +1,14 @@
+@use "sass:list";
 @use "sass:map";
 @use "design-system";
 @use "utilities";
 
-$attributes: padding, margin;
+$attributes: padding, margin, gap;
+$extraProperties: auto;
+$attributesToApplyExtraProperties: margin;
 
 .box {
-  // Padding and Margin
+  // Padding, Margin, and Gap
   @each $attribute in $attributes {
     @each $size in design-system.$sizes-numeric {
       &--#{$attribute}-#{$size} {
@@ -20,6 +23,20 @@ $attributes: padding, margin;
         }
       }
     }
+
+    @if list.index($attributesToApplyExtraProperties, $attribute) {
+      @each $property in $extraProperties {
+        &--#{$attribute}-#{$property} {
+          #{$attribute}: $property;
+        }
+
+        @each $direction in design-system.$directions {
+          &--#{$attribute}-#{$direction}-#{$property} {
+            #{$attribute}-#{$direction}: $property;
+          }
+        }
+      }
+    }
   }
 
   // Borders
@@ -31,7 +48,7 @@ $attributes: padding, margin;
 
   @each $variant, $color in design-system.$color-map {
     &--border-color-#{$variant} {
-      border-color: $color;
+      border-color: var($color);
     }
   }
 
@@ -84,6 +101,18 @@ $attributes: padding, margin;
     }
   }
 
+  @each $direction in design-system.$flex-direction {
+    &--flex-direction-#{$direction} {
+      flex-direction: $direction;
+    }
+  }
+
+  @each $wrap in design-system.$flex-wrap {
+    &--flex-wrap-#{$wrap} {
+      flex-wrap: $wrap;
+    }
+  }
+
   // Width and Height
   &--width-full {
     width: 100%;
@@ -131,6 +160,13 @@ $attributes: padding, margin;
   @each $alignment in design-system.$text-align {
     &--text-align-#{$alignment} {
       text-align: $alignment;
+    }
+  }
+
+  // background
+  @each $variant, $color in design-system.$color-map {
+    &--background-color-#{$variant} {
+      background-color: var($color);
     }
   }
 }

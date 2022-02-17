@@ -6,6 +6,8 @@ import { Duration } from 'luxon';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import { getSwapsQuoteRefreshTime } from '../../../ducks/swaps/swaps';
+import { SECOND } from '../../../../shared/constants/time';
+import TimerIcon from './timer-icon';
 
 // Return the mm:ss start time of the countdown timer.
 // If time has elapsed between `timeStarted` the time current time,
@@ -17,14 +19,14 @@ function getNewTimer(currentTime, timeStarted, timeBaseStart) {
 }
 
 function decreaseTimerByOne(timer) {
-  return Math.max(timer - 1000, 0);
+  return Math.max(timer - SECOND, 0);
 }
 
 function timeBelowWarningTime(timer, warningTime) {
   const [warningTimeMinutes, warningTimeSeconds] = warningTime.split(':');
   return (
     timer <=
-    (Number(warningTimeMinutes) * 60 + Number(warningTimeSeconds)) * 1000
+    (Number(warningTimeMinutes) * 60 + Number(warningTimeSeconds)) * SECOND
   );
 }
 
@@ -52,7 +54,7 @@ export default function CountdownTimer({
     if (intervalRef.current === undefined) {
       intervalRef.current = setInterval(() => {
         setTimer(decreaseTimerByOne);
-      }, 1000);
+      }, SECOND);
     }
 
     return function cleanup() {
@@ -75,7 +77,7 @@ export default function CountdownTimer({
       clearInterval(intervalRef.current);
       intervalRef.current = setInterval(() => {
         setTimer(decreaseTimerByOne);
-      }, 1000);
+      }, SECOND);
     }
   }, [timeStarted, timer, timerStart]);
 
@@ -100,6 +102,7 @@ export default function CountdownTimer({
             warningTime && timeBelowWarningTime(timer, warningTime),
         })}
       >
+        <TimerIcon />
         {time}
       </div>
       {!timeOnly && infoTooltipLabelKey ? (

@@ -9,22 +9,22 @@
     @include H7;
 
     text-align: left;
-    color: $Grey-500;
+    color: var(--Grey-500);
   }
 }
 
 .tippy-popper[x-placement^=top] .white-theme [x-arrow] {
-  border-top-color: $white;
+  border-top-color: var(--white);
 }
 
 .tippy-popper[x-placement^=right] .white-theme [x-arrow] {
-  border-right-color: $white;
+  border-right-color: var(--white);
 }
 
 .tippy-popper[x-placement^=left] .white-theme [x-arrow] {
-  border-left-color: $white;
+  border-left-color: var(--white);
 }
 
 .tippy-popper[x-placement^=bottom] .white-theme [x-arrow] {
-  border-bottom-color: $white;
+  border-bottom-color: var(--white);
 }

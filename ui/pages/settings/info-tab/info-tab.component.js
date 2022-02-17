@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../../components/ui/button';
+import {
+  SUPPORT_LINK,
+  SUPPORT_REQUEST_LINK,
+} from '../../../helpers/constants/common';
+import { isBeta } from '../../../helpers/utils/build-types';
 
 export default class InfoTab extends PureComponent {
   state = {
@@ -54,7 +59,7 @@ export default class InfoTab extends PureComponent {
         <div className="info-tab__link-item">
           <Button
             type="link"
-            href="https://support.metamask.io"
+            href={SUPPORT_LINK}
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
@@ -76,7 +81,7 @@ export default class InfoTab extends PureComponent {
         <div className="info-tab__link-item">
           <Button
             type="link"
-            href="https://metamask.zendesk.com/hc/en-us/requests/new"
+            href={SUPPORT_REQUEST_LINK}
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"
@@ -97,20 +102,20 @@ export default class InfoTab extends PureComponent {
           <div className="settings-page__content-item settings-page__content-item--without-height">
             <div className="info-tab__item">
               <div className="info-tab__version-header">
-                {t('metamaskVersion')}
+                {isBeta() ? t('betaMetamaskVersion') : t('metamaskVersion')}
               </div>
               <div className="info-tab__version-number">
                 {this.state.version}
               </div>
             </div>
             <div className="info-tab__item">
-              <div className="info-tab__about">{t('builtInCalifornia')}</div>
+              <div className="info-tab__about">{t('builtAroundTheWorld')}</div>
             </div>
           </div>
           {this.renderInfoLinks()}
         </div>
         <div className="info-tab__logo-wrapper">
-          <img src="images/info-logo.png" className="info-tab__logo" alt="" />
+          <img src="./images/info-logo.png" className="info-tab__logo" alt="" />
         </div>
       </div>
     );

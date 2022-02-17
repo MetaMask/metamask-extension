@@ -16,11 +16,12 @@ import {
 
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import { getNativeCurrency } from '../../ducks/metamask/metamask';
 import ConfirmEncryptionPublicKey from './confirm-encryption-public-key.component';
 
 function mapStateToProps(state) {
   const {
-    metamask: { domainMetadata = {} },
+    metamask: { subjectMetadata = {} },
   } = state;
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
@@ -33,12 +34,13 @@ function mapStateToProps(state) {
 
   return {
     txData,
-    domainMetadata,
+    subjectMetadata,
     fromAccount,
     requester: null,
     requesterAddress: null,
     conversionRate: conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    nativeCurrency: getNativeCurrency(state),
   };
 }
 

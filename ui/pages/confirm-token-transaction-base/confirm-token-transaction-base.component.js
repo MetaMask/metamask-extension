@@ -14,15 +14,20 @@ import { getWeiHexFromDecimalValue } from '../../helpers/utils/conversions.util'
 import { ETH, PRIMARY } from '../../helpers/constants/common';
 
 export default function ConfirmTokenTransactionBase({
+  image,
+  title,
+  subtitle,
   toAddress,
   tokenAddress,
   tokenAmount = '0',
-  tokenSymbol,
   fiatTransactionTotal,
   ethTransactionTotal,
+  ethTransactionTotalMaxAmount,
   contractExchangeRate,
   conversionRate,
   currentCurrency,
+  nativeCurrency,
+  onEdit,
 }) {
   const t = useContext(I18nContext);
 
@@ -32,7 +37,9 @@ export default function ConfirmTokenTransactionBase({
     }
 
     const decimalEthValue = new BigNumber(tokenAmount)
-      .times(new BigNumber(contractExchangeRate))
+      .times(
+        new BigNumber(contractExchangeRate ? String(contractExchangeRate) : 0),
+      )
       .toFixed();
 
     return getWeiHexFromDecimalValue({
@@ -64,45 +71,51 @@ export default function ConfirmTokenTransactionBase({
     tokenAmount,
   ]);
 
-  const tokensText = `${tokenAmount} ${tokenSymbol}`;
+  const subtitleComponent = () => {
+    if (contractExchangeRate === undefined && subtitle === undefined) {
+      return <span>{t('noConversionRateAvailable')}</span>;
+    }
+    if (subtitle) {
+      return <span>{subtitle}</span>;
+    }
+    return (
+      <UserPreferencedCurrencyDisplay
+        value={hexWeiValue}
+        type={PRIMARY}
+        showEthLogo
+        hideLabel
+      />
+    );
+  };
 
   return (
     <ConfirmTransactionBase
       toAddress={toAddress}
+      image={image}
+      onEdit={onEdit}
       identiconAddress={tokenAddress}
-      title={tokensText}
-      subtitleComponent={
-        contractExchangeRate === undefined ? (
-          <span>{t('noConversionRateAvailable')}</span>
-        ) : (
-          <UserPreferencedCurrencyDisplay
-            value={hexWeiValue}
-            type={PRIMARY}
-            showEthLogo
-            hideLabel
-          />
-        )
-      }
-      primaryTotalTextOverride={
-        <div>
-          <span>{`${tokensText} + `}</span>
-          <img src="./images/eth.svg" height="18" alt="" />
-          <span>{ethTransactionTotal}</span>
-        </div>
-      }
+      title={title}
+      subtitleComponent={subtitleComponent()}
+      primaryTotalTextOverride={`${title} + ${ethTransactionTotal} ${nativeCurrency}`}
+      primaryTotalTextOverrideMaxAmount={`${title} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
       secondaryTotalTextOverride={secondaryTotalTextOverride}
     />
   );
 }
 
 ConfirmTokenTransactionBase.propTypes = {
+  image: PropTypes.string,
+  title: PropTypes.string,
+  subtitle: PropTypes.string,
   tokenAddress: PropTypes.string,
   toAddress: PropTypes.string,
   tokenAmount: PropTypes.string,
-  tokenSymbol: PropTypes.string,
   fiatTransactionTotal: PropTypes.string,
   ethTransactionTotal: PropTypes.string,
   contractExchangeRate: PropTypes.number,
   conversionRate: PropTypes.number,
   currentCurrency: PropTypes.string,
+  onEdit: PropTypes.func,
+  nativeCurrency: PropTypes.string,
+  ethTransactionTotalMaxAmount: PropTypes.string,
 };

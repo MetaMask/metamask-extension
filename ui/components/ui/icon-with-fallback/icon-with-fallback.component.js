@@ -1,46 +1,61 @@
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-export default class IconWithFallback extends PureComponent {
-  static propTypes = {
-    icon: PropTypes.string,
-    name: PropTypes.string,
-    size: PropTypes.number,
-    className: PropTypes.string,
-    fallbackClassName: PropTypes.string,
+const IconWithFallback = ({
+  name = '',
+  icon = null,
+  size,
+  className,
+  fallbackClassName,
+  ...props
+}) => {
+  const [iconError, setIconError] = useState(false);
+  const style = size ? { height: `${size}px`, width: `${size}px` } : {};
+
+  const handleOnError = () => {
+    setIconError(true);
   };
 
-  static defaultProps = {
-    name: '',
-    icon: null,
-  };
+  return !iconError && icon ? (
+    <img
+      onError={handleOnError}
+      src={icon}
+      style={style}
+      className={className}
+      alt={name.length ? name : 'icon'}
+      {...props}
+    />
+  ) : (
+    <span
+      className={classnames('icon-with-fallback__fallback', fallbackClassName)}
+    >
+      {name.length ? name.charAt(0).toUpperCase() : ''}
+    </span>
+  );
+};
 
-  state = {
-    iconError: false,
-  };
+IconWithFallback.propTypes = {
+  /**
+   * The img src of the icon
+   */
+  icon: PropTypes.string,
+  /**
+   * The name of the icon also used for the alt attribute of the image
+   */
+  name: PropTypes.string,
+  /**
+   * The size of the icon. Recommended sizes adhere to 8px grid: 16, 24, 32, 40
+   */
+  size: PropTypes.number,
+  /**
+   * className to apply to the image tag
+   */
+  className: PropTypes.string,
+  /**
+   * Additional className to apply to the fallback span tag
+   */
+  fallbackClassName: PropTypes.string,
+};
 
-  render() {
-    const { icon, name, size, className, fallbackClassName } = this.props;
-    const style = size ? { height: `${size}px`, width: `${size}px` } : {};
-
-    return !this.state.iconError && icon ? (
-      <img
-        onError={() => this.setState({ iconError: true })}
-        src={icon}
-        style={style}
-        className={className}
-        alt=""
-      />
-    ) : (
-      <i
-        className={classnames(
-          'icon-with-fallback__fallback',
-          fallbackClassName,
-        )}
-      >
-        {name.length ? name.charAt(0).toUpperCase() : ''}
-      </i>
-    );
-  }
-}
+export default IconWithFallback;

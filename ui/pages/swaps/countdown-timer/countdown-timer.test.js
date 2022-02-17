@@ -14,7 +14,6 @@ const createProps = (customProps = {}) => {
     timerBase: 5,
     warningTime: '0:30',
     labelKey: 'swapNewQuoteIn',
-    infoTooltipLabelKey: 'swapQuotesAreRefreshed',
     ...customProps,
   };
 };

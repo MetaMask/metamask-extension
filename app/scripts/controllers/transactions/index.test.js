@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import EventEmitter from 'events';
 import { toBuffer } from 'ethereumjs-util';
-import EthTx from 'ethereumjs-tx';
+import { TransactionFactory } from '@ethereumjs/tx';
 import { ObservableStore } from '@metamask/obs-store';
 import sinon from 'sinon';
 
@@ -9,32 +9,50 @@ import {
   createTestProviderTools,
   getTestAccounts,
 } from '../../../../test/stub/provider';
+import mockEstimates from '../../../../test/data/mock-estimates.json';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  TRANSACTION_ENVELOPE_TYPES,
+  TRANSACTION_EVENTS,
 } from '../../../../shared/constants/transaction';
+
+import { SECOND } from '../../../../shared/constants/time';
+import {
+  GAS_ESTIMATE_TYPES,
+  GAS_RECOMMENDATIONS,
+} from '../../../../shared/constants/gas';
+import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
 import TransactionController from '.';
 
 const noop = () => true;
 const currentNetworkId = '42';
 const currentChainId = '0x2a';
+const providerConfig = {
+  type: 'kovan',
+};
 
 const VALID_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
 
 describe('Transaction Controller', function () {
-  let txController, provider, providerResultStub, fromAccount;
+  let txController, provider, providerResultStub, fromAccount, fragmentExists;
 
   beforeEach(function () {
+    fragmentExists = false;
     providerResultStub = {
       // 1 gwei
       eth_gasPrice: '0x0de0b6b3a7640000',
       // by default, all accounts are external accounts (not contracts)
       eth_getCode: '0x',
     };
-    provider = createTestProviderTools({ scaffold: providerResultStub })
-      .provider;
+    provider = createTestProviderTools({
+      scaffold: providerResultStub,
+      networkId: currentNetworkId,
+      chainId: currentNetworkId,
+    }).provider;
+
     fromAccount = getTestAccounts()[0];
     const blockTrackerStub = new EventEmitter();
     blockTrackerStub.getCurrentBlock = noop;
@@ -45,16 +63,25 @@ describe('Transaction Controller', function () {
         return '0xee6b2800';
       },
       networkStore: new ObservableStore(currentNetworkId),
+      getCurrentNetworkEIP1559Compatibility: () => Promise.resolve(false),
+      getCurrentAccountEIP1559Compatibility: () => false,
       txHistoryLimit: 10,
       blockTracker: blockTrackerStub,
       signTransaction: (ethTx) =>
         new Promise((resolve) => {
-          ethTx.sign(fromAccount.key);
-          resolve();
+          resolve(ethTx.sign(fromAccount.key));
         }),
+      getProviderConfig: () => providerConfig,
       getPermittedAccounts: () => undefined,
       getCurrentChainId: () => currentChainId,
       getParticipateInMetrics: () => false,
+      trackMetaMetricsEvent: () => undefined,
+      createEventFragment: () => undefined,
+      updateEventFragment: () => undefined,
+      finalizeEventFragment: () => undefined,
+      getEventFragmentById: () =>
+        fragmentExists === false ? undefined : { id: 0 },
+      getEIP1559GasFeeEstimates: () => undefined,
     });
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
@@ -410,9 +437,305 @@ describe('Transaction Controller', function () {
         'should have added the gas field',
       );
     });
+
+    it('should add EIP1559 tx defaults', async function () {
+      const TEST_MAX_FEE_PER_GAS = '0x12a05f200';
+      const TEST_MAX_PRIORITY_FEE_PER_GAS = '0x77359400';
+
+      const stub1 = sinon
+        .stub(txController, 'getEIP1559Compatibility')
+        .returns(true);
+
+      const stub2 = sinon
+        .stub(txController, '_getDefaultGasFees')
+        .callsFake(() => ({
+          maxFeePerGas: TEST_MAX_FEE_PER_GAS,
+          maxPriorityFeePerGas: TEST_MAX_PRIORITY_FEE_PER_GAS,
+        }));
+
+      txController.txStateManager._addTransactionsToState([
+        {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+          },
+          history: [{}],
+        },
+      ]);
+      const txMeta = {
+        id: 1,
+        txParams: {
+          from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+        },
+        history: [{}],
+      };
+      providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' };
+      providerResultStub.eth_estimateGas = '5209';
+
+      const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta);
+
+      assert.equal(
+        txMetaWithDefaults.txParams.maxFeePerGas,
+        TEST_MAX_FEE_PER_GAS,
+        'should have added the correct max fee per gas',
+      );
+      assert.equal(
+        txMetaWithDefaults.txParams.maxPriorityFeePerGas,
+        TEST_MAX_PRIORITY_FEE_PER_GAS,
+        'should have added the correct max priority fee per gas',
+      );
+      stub1.restore();
+      stub2.restore();
+    });
+
+    it('should add gasPrice as maxFeePerGas and maxPriorityFeePerGas if there are no sources of other fee data available', async function () {
+      const TEST_GASPRICE = '0x12a05f200';
+
+      const stub1 = sinon
+        .stub(txController, 'getEIP1559Compatibility')
+        .returns(true);
+
+      const stub2 = sinon
+        .stub(txController, '_getDefaultGasFees')
+        .callsFake(() => ({ gasPrice: TEST_GASPRICE }));
+
+      txController.txStateManager._addTransactionsToState([
+        {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+          },
+          history: [{}],
+        },
+      ]);
+      const txMeta = {
+        id: 1,
+        txParams: {
+          from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+        },
+        history: [{}],
+      };
+      providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' };
+      providerResultStub.eth_estimateGas = '5209';
+
+      const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta);
+
+      assert.equal(
+        txMetaWithDefaults.txParams.maxFeePerGas,
+        TEST_GASPRICE,
+        'should have added the correct max fee per gas',
+      );
+      assert.equal(
+        txMetaWithDefaults.txParams.maxPriorityFeePerGas,
+        TEST_GASPRICE,
+        'should have added the correct max priority fee per gas',
+      );
+      stub1.restore();
+      stub2.restore();
+    });
+
+    it('should not add maxFeePerGas and maxPriorityFeePerGas to type-0 transactions', async function () {
+      const TEST_GASPRICE = '0x12a05f200';
+
+      const stub1 = sinon
+        .stub(txController, 'getEIP1559Compatibility')
+        .returns(true);
+
+      const stub2 = sinon
+        .stub(txController, '_getDefaultGasFees')
+        .callsFake(() => ({ gasPrice: TEST_GASPRICE }));
+
+      txController.txStateManager._addTransactionsToState([
+        {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+            type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+          },
+          history: [{}],
+        },
+      ]);
+      const txMeta = {
+        id: 1,
+        txParams: {
+          from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          type: TRANSACTION_ENVELOPE_TYPES.LEGACY,
+        },
+        history: [{}],
+      };
+      providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' };
+      providerResultStub.eth_estimateGas = '5209';
+
+      const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta);
+
+      assert.equal(
+        txMetaWithDefaults.txParams.maxFeePerGas,
+        undefined,
+        'should not have maxFeePerGas',
+      );
+      assert.equal(
+        txMetaWithDefaults.txParams.maxPriorityFeePerGas,
+        undefined,
+        'should not have max priority fee per gas',
+      );
+      stub1.restore();
+      stub2.restore();
+    });
+
+    it('should not add gasPrice if the fee data is available from the dapp', async function () {
+      const TEST_GASPRICE = '0x12a05f200';
+      const TEST_MAX_FEE_PER_GAS = '0x12a05f200';
+      const TEST_MAX_PRIORITY_FEE_PER_GAS = '0x77359400';
+
+      const stub1 = sinon
+        .stub(txController, 'getEIP1559Compatibility')
+        .returns(true);
+
+      const stub2 = sinon
+        .stub(txController, '_getDefaultGasFees')
+        .callsFake(() => ({ gasPrice: TEST_GASPRICE }));
+
+      txController.txStateManager._addTransactionsToState([
+        {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+            maxFeePerGas: TEST_MAX_FEE_PER_GAS,
+            maxPriorityFeePerGas: TEST_MAX_PRIORITY_FEE_PER_GAS,
+          },
+          history: [{}],
+        },
+      ]);
+      const txMeta = {
+        id: 1,
+        txParams: {
+          from: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+          to: '0xc684832530fcbddae4b4230a47e991ddcec2831d',
+        },
+        history: [{}],
+      };
+      providerResultStub.eth_getBlockByNumber = { gasLimit: '47b784' };
+      providerResultStub.eth_estimateGas = '5209';
+
+      const txMetaWithDefaults = await txController.addTxGasDefaults(txMeta);
+
+      assert.equal(
+        txMetaWithDefaults.txParams.maxFeePerGas,
+        TEST_MAX_FEE_PER_GAS,
+        'should have added the correct max fee per gas',
+      );
+      assert.equal(
+        txMetaWithDefaults.txParams.maxPriorityFeePerGas,
+        TEST_MAX_PRIORITY_FEE_PER_GAS,
+        'should have added the correct max priority fee per gas',
+      );
+      stub1.restore();
+      stub2.restore();
+    });
+  });
+
+  describe('_getDefaultGasFees', function () {
+    let getGasFeeStub;
+
+    beforeEach(function () {
+      getGasFeeStub = sinon.stub(txController, '_getEIP1559GasFeeEstimates');
+    });
+
+    afterEach(function () {
+      getGasFeeStub.restore();
+    });
+
+    it('should return the correct fee data when the gas estimate type is FEE_MARKET', async function () {
+      const EXPECTED_MAX_FEE_PER_GAS = '12a05f200';
+      const EXPECTED_MAX_PRIORITY_FEE_PER_GAS = '77359400';
+
+      getGasFeeStub.callsFake(() => ({
+        gasFeeEstimates: {
+          medium: {
+            suggestedMaxPriorityFeePerGas: '2',
+            suggestedMaxFeePerGas: '5',
+          },
+        },
+        gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+      }));
+
+      const defaultGasFees = await txController._getDefaultGasFees(
+        { txParams: {} },
+        true,
+      );
+
+      assert.deepEqual(defaultGasFees, {
+        maxPriorityFeePerGas: EXPECTED_MAX_PRIORITY_FEE_PER_GAS,
+        maxFeePerGas: EXPECTED_MAX_FEE_PER_GAS,
+      });
+    });
+
+    it('should return the correct fee data when the gas estimate type is LEGACY', async function () {
+      const EXPECTED_GAS_PRICE = '77359400';
+
+      getGasFeeStub.callsFake(() => ({
+        gasFeeEstimates: { medium: '2' },
+        gasEstimateType: GAS_ESTIMATE_TYPES.LEGACY,
+      }));
+
+      const defaultGasFees = await txController._getDefaultGasFees(
+        { txParams: {} },
+        false,
+      );
+
+      assert.deepEqual(defaultGasFees, {
+        gasPrice: EXPECTED_GAS_PRICE,
+      });
+    });
+
+    it('should return the correct fee data when the gas estimate type is ETH_GASPRICE', async function () {
+      const EXPECTED_GAS_PRICE = '77359400';
+
+      getGasFeeStub.callsFake(() => ({
+        gasFeeEstimates: { gasPrice: '2' },
+        gasEstimateType: GAS_ESTIMATE_TYPES.ETH_GASPRICE,
+      }));
+
+      const defaultGasFees = await txController._getDefaultGasFees(
+        { txParams: {} },
+        false,
+      );
+
+      assert.deepEqual(defaultGasFees, {
+        gasPrice: EXPECTED_GAS_PRICE,
+      });
+    });
   });
 
   describe('#addTransaction', function () {
+    let trackTransactionMetricsEventSpy;
+
+    beforeEach(function () {
+      trackTransactionMetricsEventSpy = sinon.spy(
+        txController,
+        '_trackTransactionMetricsEvent',
+      );
+    });
+
+    afterEach(function () {
+      trackTransactionMetricsEventSpy.restore();
+    });
+
     it('should emit updates', function (done) {
       const txMeta = {
         id: '1',
@@ -450,6 +773,38 @@ describe('Transaction Controller', function () {
         .catch(done);
       txController.addTransaction(txMeta);
     });
+
+    it('should call _trackTransactionMetricsEvent with the correct params', function () {
+      const txMeta = {
+        id: 1,
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          gasPrice: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+        origin: 'metamask',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+      };
+
+      txController.addTransaction(txMeta);
+
+      assert.equal(trackTransactionMetricsEventSpy.callCount, 1);
+      assert.deepEqual(
+        trackTransactionMetricsEventSpy.getCall(0).args[0],
+        txMeta,
+      );
+      assert.equal(
+        trackTransactionMetricsEventSpy.getCall(0).args[1],
+        TRANSACTION_EVENTS.ADDED,
+      );
+    });
   });
 
   describe('#approveTransaction', function () {
@@ -468,7 +823,7 @@ describe('Transaction Controller', function () {
         },
       };
       // eslint-disable-next-line @babel/no-invalid-this
-      this.timeout(15000);
+      this.timeout(SECOND * 15);
       const wrongValue = '0x05';
 
       txController.addTransaction(txMeta);
@@ -518,8 +873,8 @@ describe('Transaction Controller', function () {
         noop,
       );
       const rawTx = await txController.signTransaction('1');
-      const ethTx = new EthTx(toBuffer(rawTx));
-      assert.equal(ethTx.getChainId(), 42);
+      const ethTx = TransactionFactory.fromSerializedData(toBuffer(rawTx));
+      assert.equal(ethTx.common.chainIdBN().toNumber(), 42);
     });
   });
 
@@ -661,6 +1016,8 @@ describe('Transaction Controller', function () {
         to: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4',
         gas: '0x5209',
         gasPrice: '0xa',
+        estimateSuggested: GAS_RECOMMENDATIONS.MEDIUM,
+        estimateUsed: GAS_RECOMMENDATIONS.HIGH,
       };
       txController.txStateManager._addTransactionsToState([
         {
@@ -687,11 +1044,11 @@ describe('Transaction Controller', function () {
       const addTransactionArgs = addTransactionSpy.getCall(0).args[0];
       assert.deepEqual(addTransactionArgs.txParams, expectedTxParams);
 
-      const { lastGasPrice, type } = addTransactionArgs;
+      const { previousGasParams, type } = addTransactionArgs;
       assert.deepEqual(
-        { lastGasPrice, type },
+        { gasPrice: previousGasParams.gasPrice, type },
         {
-          lastGasPrice: '0xa',
+          gasPrice: '0xa',
           type: TRANSACTION_TYPES.RETRY,
         },
       );
@@ -710,19 +1067,77 @@ describe('Transaction Controller', function () {
 
       assert.deepEqual(result.txParams, expectedTxParams);
 
-      const { lastGasPrice, type } = result;
+      const { previousGasParams, type } = result;
       assert.deepEqual(
-        { lastGasPrice, type },
+        { gasPrice: previousGasParams.gasPrice, type },
         {
-          lastGasPrice: '0xa',
+          gasPrice: '0xa',
           type: TRANSACTION_TYPES.RETRY,
         },
       );
     });
   });
 
+  describe('#signTransaction', function () {
+    let fromTxDataSpy;
+
+    beforeEach(function () {
+      fromTxDataSpy = sinon.spy(TransactionFactory, 'fromTxData');
+    });
+
+    afterEach(function () {
+      fromTxDataSpy.restore();
+    });
+
+    it('sets txParams.type to 0x0 (non-EIP-1559)', async function () {
+      txController.txStateManager._addTransactionsToState([
+        {
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          id: 1,
+          metamaskNetworkId: currentNetworkId,
+          history: [{}],
+          txParams: {
+            from: VALID_ADDRESS_TWO,
+            to: VALID_ADDRESS,
+            gasPrice: '0x77359400',
+            gas: '0x7b0d',
+            nonce: '0x4b',
+          },
+        },
+      ]);
+      await txController.signTransaction('1');
+      assert.equal(fromTxDataSpy.getCall(0).args[0].type, '0x0');
+    });
+
+    it('sets txParams.type to 0x2 (EIP-1559)', async function () {
+      const eip1559CompatibilityStub = sinon
+        .stub(txController, 'getEIP1559Compatibility')
+        .returns(true);
+      txController.txStateManager._addTransactionsToState([
+        {
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          id: 2,
+          metamaskNetworkId: currentNetworkId,
+          history: [{}],
+          txParams: {
+            from: VALID_ADDRESS_TWO,
+            to: VALID_ADDRESS,
+            maxFeePerGas: '0x77359400',
+            maxPriorityFeePerGas: '0x77359400',
+            gas: '0x7b0d',
+            nonce: '0x4b',
+          },
+        },
+      ]);
+      await txController.signTransaction('2');
+      assert.equal(fromTxDataSpy.getCall(0).args[0].type, '0x2');
+      eip1559CompatibilityStub.restore();
+    });
+  });
+
   describe('#publishTransaction', function () {
-    let hash, txMeta;
+    let hash, txMeta, trackTransactionMetricsEventSpy;
+
     beforeEach(function () {
       hash =
         '0x2a5523c6fa98b47b7d9b6c8320179785150b42a16bcff36b398c5062b65657e8';
@@ -730,12 +1145,21 @@ describe('Transaction Controller', function () {
         id: 1,
         status: TRANSACTION_STATUSES.UNAPPROVED,
         txParams: {
+          gas: '0x7b0d',
           to: VALID_ADDRESS,
           from: VALID_ADDRESS_TWO,
         },
         metamaskNetworkId: currentNetworkId,
       };
       providerResultStub.eth_sendRawTransaction = hash;
+      trackTransactionMetricsEventSpy = sinon.spy(
+        txController,
+        '_trackTransactionMetricsEvent',
+      );
+    });
+
+    afterEach(function () {
+      trackTransactionMetricsEventSpy.restore();
     });
 
     it('should publish a tx, updates the rawTx when provided a one', async function () {
@@ -762,6 +1186,22 @@ describe('Transaction Controller', function () {
         '0x2cc5a25744486f7383edebbf32003e5a66e18135799593d6b5cdd2bb43674f09',
       );
       assert.equal(publishedTx.status, TRANSACTION_STATUSES.SUBMITTED);
+    });
+
+    it('should call _trackTransactionMetricsEvent with the correct params', async function () {
+      const rawTx =
+        '0x477b2e6553c917af0db0388ae3da62965ff1a184558f61b749d1266b2e6d024c';
+      txController.txStateManager.addTransaction(txMeta);
+      await txController.publishTransaction(txMeta.id, rawTx);
+      assert.equal(trackTransactionMetricsEventSpy.callCount, 1);
+      assert.deepEqual(
+        trackTransactionMetricsEventSpy.getCall(0).args[0],
+        txMeta,
+      );
+      assert.equal(
+        trackTransactionMetricsEventSpy.getCall(0).args[1],
+        TRANSACTION_EVENTS.SUBMITTED,
+      );
     });
   });
 
@@ -870,7 +1310,7 @@ describe('Transaction Controller', function () {
         data: '',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         getCodeResponse: null,
       });
     });
@@ -916,7 +1356,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         getCodeResponse: '0x',
       });
     });
@@ -927,7 +1367,7 @@ describe('Transaction Controller', function () {
         data: '0xabd',
       });
       assert.deepEqual(result, {
-        type: TRANSACTION_TYPES.SENT_ETHER,
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
         getCodeResponse: null,
       });
     });
@@ -1102,6 +1542,621 @@ describe('Transaction Controller', function () {
         states.includes(TRANSACTION_STATUSES.SUBMITTED),
         'includes submitted',
       );
+    });
+  });
+
+  describe('#_trackTransactionMetricsEvent', function () {
+    let trackMetaMetricsEventSpy;
+    let createEventFragmentSpy;
+    let finalizeEventFragmentSpy;
+
+    beforeEach(function () {
+      trackMetaMetricsEventSpy = sinon.spy(
+        txController,
+        '_trackMetaMetricsEvent',
+      );
+
+      createEventFragmentSpy = sinon.spy(txController, 'createEventFragment');
+
+      finalizeEventFragmentSpy = sinon.spy(
+        txController,
+        'finalizeEventFragment',
+      );
+
+      sinon
+        .stub(txController, '_getEIP1559GasFeeEstimates')
+        .resolves(mockEstimates['fee-market']);
+    });
+
+    afterEach(function () {
+      trackMetaMetricsEventSpy.restore();
+      createEventFragmentSpy.restore();
+      finalizeEventFragmentSpy.restore();
+    });
+
+    describe('On transaction created by the user', function () {
+      let txMeta;
+      before(function () {
+        txMeta = {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          txParams: {
+            from: fromAccount.address,
+            to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+            gasPrice: '0x77359400',
+            gas: '0x7b0d',
+            nonce: '0x4b',
+          },
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
+          origin: 'metamask',
+          chainId: currentChainId,
+          time: 1624408066355,
+          metamaskNetworkId: currentNetworkId,
+          defaultGasEstimates: {
+            gas: '0x7b0d',
+            gasPrice: '0x77359400',
+          },
+        };
+      });
+
+      it('should create an event fragment when transaction added', async function () {
+        const expectedPayload = {
+          initialEvent: 'Transaction Added',
+          successEvent: 'Transaction Approved',
+          failureEvent: 'Transaction Rejected',
+          uniqueIdentifier: 'transaction-added-1',
+          category: 'Transactions',
+          persist: true,
+          properties: {
+            chain_id: '0x2a',
+            eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
+            network: '42',
+            referrer: 'metamask',
+            source: 'user',
+            type: TRANSACTION_TYPES.SIMPLE_SEND,
+          },
+          sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
+            gas_price: '2',
+            gas_limit: '0x7b0d',
+            first_seen: 1624408066355,
+            transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+            status: 'unapproved',
+          },
+        };
+
+        await txController._trackTransactionMetricsEvent(
+          txMeta,
+          TRANSACTION_EVENTS.ADDED,
+        );
+        assert.equal(createEventFragmentSpy.callCount, 1);
+        assert.equal(finalizeEventFragmentSpy.callCount, 0);
+        assert.deepEqual(
+          createEventFragmentSpy.getCall(0).args[0],
+          expectedPayload,
+        );
+      });
+
+      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', async function () {
+        fragmentExists = true;
+        await txController._trackTransactionMetricsEvent(
+          txMeta,
+          TRANSACTION_EVENTS.REJECTED,
+        );
+        assert.equal(createEventFragmentSpy.callCount, 0);
+        assert.equal(finalizeEventFragmentSpy.callCount, 1);
+        assert.deepEqual(
+          finalizeEventFragmentSpy.getCall(0).args[0],
+          'transaction-added-1',
+        );
+        assert.deepEqual(finalizeEventFragmentSpy.getCall(0).args[1], {
+          abandoned: true,
+        });
+      });
+
+      it('Should finalize the transaction added fragment if user approves transaction', async function () {
+        fragmentExists = true;
+        await txController._trackTransactionMetricsEvent(
+          txMeta,
+          TRANSACTION_EVENTS.APPROVED,
+        );
+        assert.equal(createEventFragmentSpy.callCount, 0);
+        assert.equal(finalizeEventFragmentSpy.callCount, 1);
+        assert.deepEqual(
+          finalizeEventFragmentSpy.getCall(0).args[0],
+          'transaction-added-1',
+        );
+        assert.deepEqual(
+          finalizeEventFragmentSpy.getCall(0).args[1],
+          undefined,
+        );
+      });
+
+      it('should create an event fragment when transaction is submitted', async function () {
+        const expectedPayload = {
+          initialEvent: 'Transaction Submitted',
+          successEvent: 'Transaction Finalized',
+          uniqueIdentifier: 'transaction-submitted-1',
+          category: 'Transactions',
+          persist: true,
+          properties: {
+            chain_id: '0x2a',
+            eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
+            network: '42',
+            referrer: 'metamask',
+            source: 'user',
+            type: TRANSACTION_TYPES.SIMPLE_SEND,
+          },
+          sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
+            gas_price: '2',
+            gas_limit: '0x7b0d',
+            first_seen: 1624408066355,
+            transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+            status: 'unapproved',
+          },
+        };
+
+        await txController._trackTransactionMetricsEvent(
+          txMeta,
+          TRANSACTION_EVENTS.SUBMITTED,
+        );
+        assert.equal(createEventFragmentSpy.callCount, 1);
+        assert.equal(finalizeEventFragmentSpy.callCount, 0);
+        assert.deepEqual(
+          createEventFragmentSpy.getCall(0).args[0],
+          expectedPayload,
+        );
+      });
+
+      it('Should finalize the transaction submitted fragment when transaction finalizes', async function () {
+        fragmentExists = true;
+        await txController._trackTransactionMetricsEvent(
+          txMeta,
+          TRANSACTION_EVENTS.FINALIZED,
+        );
+        assert.equal(createEventFragmentSpy.callCount, 0);
+        assert.equal(finalizeEventFragmentSpy.callCount, 1);
+        assert.deepEqual(
+          finalizeEventFragmentSpy.getCall(0).args[0],
+          'transaction-submitted-1',
+        );
+        assert.deepEqual(
+          finalizeEventFragmentSpy.getCall(0).args[1],
+          undefined,
+        );
+      });
+    });
+
+    describe('On transaction suggested by dapp', function () {
+      let txMeta;
+      before(function () {
+        txMeta = {
+          id: 1,
+          status: TRANSACTION_STATUSES.UNAPPROVED,
+          txParams: {
+            from: fromAccount.address,
+            to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+            gasPrice: '0x77359400',
+            gas: '0x7b0d',
+            nonce: '0x4b',
+          },
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
+          origin: 'other',
+          chainId: currentChainId,
+          time: 1624408066355,
+          metamaskNetworkId: currentNetworkId,
+          defaultGasEstimates: {
+            gas: '0x7b0d',
+            gasPrice: '0x77359400',
+          },
+        };
+      });
+
+      it('should create an event fragment when transaction added', async function () {
+        const expectedPayload = {
+          initialEvent: 'Transaction Added',
+          successEvent: 'Transaction Approved',
+          failureEvent: 'Transaction Rejected',
+          uniqueIdentifier: 'transaction-added-1',
+          category: 'Transactions',
+          persist: true,
+          properties: {
+            chain_id: '0x2a',
+            eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
+            network: '42',
+            referrer: 'other',
+            source: 'dapp',
+            type: TRANSACTION_TYPES.SIMPLE_SEND,
+          },
+          sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
+            gas_price: '2',
+            gas_limit: '0x7b0d',
+            first_seen: 1624408066355,
+            transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+            status: 'unapproved',
+          },
+        };
+
+        await txController._trackTransactionMetricsEvent(
+          txMeta,
+          TRANSACTION_EVENTS.ADDED,
+        );
+        assert.equal(createEventFragmentSpy.callCount, 1);
+        assert.equal(finalizeEventFragmentSpy.callCount, 0);
+        assert.deepEqual(
+          createEventFragmentSpy.getCall(0).args[0],
+          expectedPayload,
+        );
+      });
+
+      it('Should finalize the transaction added fragment as abandoned if user rejects transaction', async function () {
+        fragmentExists = true;
+
+        await txController._trackTransactionMetricsEvent(
+          txMeta,
+          TRANSACTION_EVENTS.REJECTED,
+        );
+        assert.equal(createEventFragmentSpy.callCount, 0);
+        assert.equal(finalizeEventFragmentSpy.callCount, 1);
+        assert.deepEqual(
+          finalizeEventFragmentSpy.getCall(0).args[0],
+          'transaction-added-1',
+        );
+        assert.deepEqual(finalizeEventFragmentSpy.getCall(0).args[1], {
+          abandoned: true,
+        });
+      });
+
+      it('Should finalize the transaction added fragment if user approves transaction', async function () {
+        fragmentExists = true;
+
+        await txController._trackTransactionMetricsEvent(
+          txMeta,
+          TRANSACTION_EVENTS.APPROVED,
+        );
+        assert.equal(createEventFragmentSpy.callCount, 0);
+        assert.equal(finalizeEventFragmentSpy.callCount, 1);
+        assert.deepEqual(
+          finalizeEventFragmentSpy.getCall(0).args[0],
+          'transaction-added-1',
+        );
+        assert.deepEqual(
+          finalizeEventFragmentSpy.getCall(0).args[1],
+          undefined,
+        );
+      });
+
+      it('should create an event fragment when transaction is submitted', async function () {
+        const expectedPayload = {
+          initialEvent: 'Transaction Submitted',
+          successEvent: 'Transaction Finalized',
+          uniqueIdentifier: 'transaction-submitted-1',
+          category: 'Transactions',
+          persist: true,
+          properties: {
+            chain_id: '0x2a',
+            eip_1559_version: '0',
+            gas_edit_attempted: 'none',
+            gas_edit_type: 'none',
+            network: '42',
+            referrer: 'other',
+            source: 'dapp',
+            type: TRANSACTION_TYPES.SIMPLE_SEND,
+          },
+          sensitiveProperties: {
+            default_gas: '0.000031501',
+            default_gas_price: '2',
+            gas_price: '2',
+            gas_limit: '0x7b0d',
+            first_seen: 1624408066355,
+            transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+            status: 'unapproved',
+          },
+        };
+
+        await txController._trackTransactionMetricsEvent(
+          txMeta,
+          TRANSACTION_EVENTS.SUBMITTED,
+        );
+        assert.equal(createEventFragmentSpy.callCount, 1);
+        assert.equal(finalizeEventFragmentSpy.callCount, 0);
+        assert.deepEqual(
+          createEventFragmentSpy.getCall(0).args[0],
+          expectedPayload,
+        );
+      });
+
+      it('Should finalize the transaction submitted fragment when transaction finalizes', async function () {
+        fragmentExists = true;
+
+        await txController._trackTransactionMetricsEvent(
+          txMeta,
+          TRANSACTION_EVENTS.FINALIZED,
+        );
+        assert.equal(createEventFragmentSpy.callCount, 0);
+        assert.equal(finalizeEventFragmentSpy.callCount, 1);
+        assert.deepEqual(
+          finalizeEventFragmentSpy.getCall(0).args[0],
+          'transaction-submitted-1',
+        );
+        assert.deepEqual(
+          finalizeEventFragmentSpy.getCall(0).args[1],
+          undefined,
+        );
+      });
+    });
+
+    it('should create missing fragments when events happen out of order or are missing', async function () {
+      const txMeta = {
+        id: 1,
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          gasPrice: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        origin: 'other',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+      };
+
+      const expectedPayload = {
+        successEvent: 'Transaction Approved',
+        failureEvent: 'Transaction Rejected',
+        uniqueIdentifier: 'transaction-added-1',
+        category: 'Transactions',
+        persist: true,
+        properties: {
+          chain_id: '0x2a',
+          eip_1559_version: '0',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
+          network: '42',
+          referrer: 'other',
+          source: 'dapp',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
+        },
+        sensitiveProperties: {
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+          status: 'unapproved',
+        },
+      };
+      await txController._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.APPROVED,
+      );
+      assert.equal(createEventFragmentSpy.callCount, 1);
+      assert.deepEqual(
+        createEventFragmentSpy.getCall(0).args[0],
+        expectedPayload,
+      );
+      assert.equal(finalizeEventFragmentSpy.callCount, 1);
+      assert.deepEqual(
+        finalizeEventFragmentSpy.getCall(0).args[0],
+        'transaction-added-1',
+      );
+      assert.deepEqual(finalizeEventFragmentSpy.getCall(0).args[1], undefined);
+    });
+
+    it('should call _trackMetaMetricsEvent with the correct payload (extra params)', async function () {
+      const txMeta = {
+        id: 1,
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          gasPrice: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+        },
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        origin: 'other',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+      };
+      const expectedPayload = {
+        initialEvent: 'Transaction Added',
+        successEvent: 'Transaction Approved',
+        failureEvent: 'Transaction Rejected',
+        uniqueIdentifier: 'transaction-added-1',
+        persist: true,
+        category: 'Transactions',
+        properties: {
+          network: '42',
+          referrer: 'other',
+          source: 'dapp',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
+          chain_id: '0x2a',
+          eip_1559_version: '0',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
+        },
+        sensitiveProperties: {
+          baz: 3.0,
+          foo: 'bar',
+          gas_price: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
+          status: 'unapproved',
+        },
+      };
+
+      await txController._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.ADDED,
+        {
+          baz: 3.0,
+          foo: 'bar',
+        },
+      );
+      assert.equal(createEventFragmentSpy.callCount, 1);
+      assert.equal(finalizeEventFragmentSpy.callCount, 0);
+      assert.deepEqual(
+        createEventFragmentSpy.getCall(0).args[0],
+        expectedPayload,
+      );
+    });
+
+    it('should call _trackMetaMetricsEvent with the correct payload (EIP-1559)', async function () {
+      const txMeta = {
+        id: 1,
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        txParams: {
+          from: fromAccount.address,
+          to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          maxFeePerGas: '0x77359400',
+          maxPriorityFeePerGas: '0x77359400',
+          gas: '0x7b0d',
+          nonce: '0x4b',
+          estimateSuggested: GAS_RECOMMENDATIONS.MEDIUM,
+          estimateUsed: GAS_RECOMMENDATIONS.HIGH,
+        },
+        type: TRANSACTION_TYPES.SIMPLE_SEND,
+        origin: 'other',
+        chainId: currentChainId,
+        time: 1624408066355,
+        metamaskNetworkId: currentNetworkId,
+        defaultGasEstimates: {
+          estimateType: 'medium',
+          maxFeePerGas: '0x77359400',
+          maxPriorityFeePerGas: '0x77359400',
+        },
+      };
+      const expectedPayload = {
+        initialEvent: 'Transaction Added',
+        successEvent: 'Transaction Approved',
+        failureEvent: 'Transaction Rejected',
+        uniqueIdentifier: 'transaction-added-1',
+        persist: true,
+        category: 'Transactions',
+        properties: {
+          chain_id: '0x2a',
+          eip_1559_version: '1',
+          gas_edit_attempted: 'none',
+          gas_edit_type: 'none',
+          network: '42',
+          referrer: 'other',
+          source: 'dapp',
+          type: TRANSACTION_TYPES.SIMPLE_SEND,
+        },
+        sensitiveProperties: {
+          baz: 3.0,
+          foo: 'bar',
+          max_fee_per_gas: '2',
+          max_priority_fee_per_gas: '2',
+          gas_limit: '0x7b0d',
+          first_seen: 1624408066355,
+          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET,
+          status: 'unapproved',
+          estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
+          estimate_used: GAS_RECOMMENDATIONS.HIGH,
+          default_estimate: 'medium',
+          default_max_fee_per_gas: '70',
+          default_max_priority_fee_per_gas: '7',
+        },
+      };
+
+      await txController._trackTransactionMetricsEvent(
+        txMeta,
+        TRANSACTION_EVENTS.ADDED,
+        {
+          baz: 3.0,
+          foo: 'bar',
+        },
+      );
+      assert.equal(createEventFragmentSpy.callCount, 1);
+      assert.equal(finalizeEventFragmentSpy.callCount, 0);
+      assert.deepEqual(
+        createEventFragmentSpy.getCall(0).args[0],
+        expectedPayload,
+      );
+    });
+  });
+
+  describe('#_getTransactionCompletionTime', function () {
+    let nowStub;
+
+    beforeEach(function () {
+      nowStub = sinon.stub(Date, 'now').returns(1625782016341);
+    });
+
+    afterEach(function () {
+      nowStub.restore();
+    });
+
+    it('calculates completion time (one)', function () {
+      const submittedTime = 1625781997397;
+      const result = txController._getTransactionCompletionTime(submittedTime);
+      assert.equal(result, '19');
+    });
+
+    it('calculates completion time (two)', function () {
+      const submittedTime = 1625781995397;
+      const result = txController._getTransactionCompletionTime(submittedTime);
+      assert.equal(result, '21');
+    });
+  });
+
+  describe('#_getGasValuesInGWEI', function () {
+    it('converts gas values in hex GWEi to dec GWEI (EIP-1559)', function () {
+      const params = {
+        max_fee_per_gas: '0x77359400',
+        max_priority_fee_per_gas: '0x77359400',
+      };
+      const expectedParams = {
+        max_fee_per_gas: '2',
+        max_priority_fee_per_gas: '2',
+      };
+      const result = txController._getGasValuesInGWEI(params);
+      assert.deepEqual(result, expectedParams);
+    });
+
+    it('converts gas values in hex GWEi to dec GWEI (non EIP-1559)', function () {
+      const params = {
+        gas_price: '0x37e11d600',
+      };
+      const expectedParams = {
+        gas_price: '15',
+      };
+      const result = txController._getGasValuesInGWEI(params);
+      assert.deepEqual(result, expectedParams);
+    });
+
+    it('converts gas values in hex GWEi to dec GWEI, retains estimate fields', function () {
+      const params = {
+        max_fee_per_gas: '0x77359400',
+        max_priority_fee_per_gas: '0x77359400',
+        estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
+        estimate_used: GAS_RECOMMENDATIONS.HIGH,
+      };
+      const expectedParams = {
+        max_fee_per_gas: '2',
+        max_priority_fee_per_gas: '2',
+        estimate_suggested: GAS_RECOMMENDATIONS.MEDIUM,
+        estimate_used: GAS_RECOMMENDATIONS.HIGH,
+      };
+      const result = txController._getGasValuesInGWEI(params);
+      assert.deepEqual(result, expectedParams);
     });
   });
 });

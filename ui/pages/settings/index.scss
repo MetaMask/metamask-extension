@@ -3,10 +3,12 @@
 @import 'networks-tab/index';
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
+@import 'flask/snaps-list-tab/index';
+@import 'flask/view-snap/index';
 
 .settings-page {
   position: relative;
-  background: $white;
+  background: var(--white);
   display: flex;
   flex-flow: column nowrap;
 
@@ -21,6 +23,13 @@
       @include H3;
 
       flex: 1 0 auto;
+
+      @media screen and (max-width: $break-small) {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 250px;
+      }
     }
   }
 
@@ -29,14 +38,14 @@
     @include H4;
 
     padding: 16px 4px;
-    border-bottom: 1px solid $alto;
+    border-bottom: 1px solid var(--alto);
     margin-right: 24px;
     height: 72px;
     align-items: center;
     display: flex;
     flex-flow: row nowrap;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       display: none;
     }
   }
@@ -48,12 +57,11 @@
 
   &__subheader--link:hover {
     cursor: pointer;
-    color: $primary-blue;
+    color: var(--primary-blue);
   }
 
   &__subheader--break {
-    margin-right: 4px;
-    padding-right: 4px;
+    margin-inline-start: 4px;
   }
 
   &__sub-header {
@@ -64,7 +72,7 @@
     align-items: center;
     padding: 16px 0;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       height: 69px;
       position: relative;
       text-align: center;
@@ -74,7 +82,7 @@
   &__sub-header-text {
     @include H4;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       @include H5;
 
       width: 100%;
@@ -84,7 +92,7 @@
   &__back-button {
     display: none;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       display: block;
       background-image: url('/images/caret-left-black.svg');
       width: 18px;
@@ -102,10 +110,14 @@
     }
   }
 
+  &__close-button {
+    margin-left: auto;
+  }
+
   &__close-button::after {
     content: '\00D7';
     font-size: 40px;
-    color: $dusty-gray;
+    color: var(--ui-4);
     cursor: pointer;
   }
 
@@ -121,15 +133,15 @@
       flex-direction: column;
       flex: 1 1 auto;
 
-      @media screen and (min-width: 576px) {
+      @media screen and (min-width: $break-large) {
         flex: 0 0 40%;
-        max-width: 210px;
-        padding-top: 8px;
+        max-width: 197px;
+        padding-top: 13px;
       }
 
       .tab-bar__tab {
-        @media screen and (min-width: 576px) {
-          padding: 16px 24px 0;
+        @media screen and (min-width: $break-large) {
+          max-height: 50px;
         }
       }
     }
@@ -140,7 +152,7 @@
       display: flex;
       flex-flow: column;
 
-      @media screen and (max-width: 575px) {
+      @media screen and (max-width: $break-small) {
         display: none;
       }
     }
@@ -149,7 +161,7 @@
   &__body {
     padding: 12px 24px;
 
-    @media screen and (min-width: 576px) {
+    @media screen and (min-width: $break-large) {
       padding: 12px;
     }
   }
@@ -158,6 +170,15 @@
     display: flex;
     flex-direction: column;
     padding: 10px 0 20px;
+
+    &--parent {
+      padding: 10px 0 10px;
+    }
+
+    &--dependent {
+      margin-left: 48px;
+      padding: 0 0 20px;
+    }
   }
 
   &__content-item {
@@ -167,7 +188,7 @@
     flex-direction: column;
     margin-bottom: 20px;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       height: initial;
       padding: 5px 0;
     }
@@ -180,6 +201,43 @@
       cursor: not-allowed;
       opacity: 0.5;
     }
+
+    & .dialog {
+      margin-top: 10px;
+    }
+
+    &__identicon {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+
+      &__item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        &__icon {
+          &--active {
+            height: 40px;
+            width: 40px;
+            border-radius: 40px;
+            border: 2px solid #037dd6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+      }
+    }
+
+    &__description {
+      @include H6;
+
+      margin-top: 8px;
+      margin-bottom: 12px;
+      color: var(--dusty-gray);
+    }
   }
 
   &__content-label {
@@ -189,8 +247,12 @@
   &__content-description {
     @include H6;
 
-    color: $dusty-gray;
+    color: var(--dusty-gray);
     padding-top: 5px;
+
+    a {
+      color: var(--Blue-500);
+    }
   }
 
   &__content-item-col {
@@ -198,7 +260,7 @@
     display: flex;
     flex-direction: column;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       max-width: 100%;
       width: 100%;
     }
@@ -223,17 +285,24 @@
     margin-left: 1.875rem;
   }
 
+  &__inline-link {
+    @include H6;
+
+    display: initial;
+    padding: 0;
+  }
+
   &--selected {
     .settings-page {
       &__content {
         &__tabs {
-          @media screen and (max-width: 575px) {
+          @media screen and (max-width: $break-small) {
             display: none;
           }
         }
 
         &__modules {
-          @media screen and (max-width: 575px) {
+          @media screen and (max-width: $break-small) {
             display: block;
           }
         }

@@ -8,26 +8,28 @@ import RecipientGroup from '../../../../components/app/contact-list/recipient-gr
 import { ellipsify } from '../../send.utils';
 import Button from '../../../../components/ui/button';
 import Confusable from '../../../../components/ui/confusable';
-import {
-  isBurnAddress,
-  isValidHexAddress,
-} from '../../../../../shared/modules/hexstring-utils';
 
 export default class AddRecipient extends Component {
   static propTypes = {
-    query: PropTypes.string,
+    userInput: PropTypes.string,
     ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
-    updateGas: PropTypes.func,
-    updateSendTo: PropTypes.func,
+    updateRecipient: PropTypes.func,
     ensResolution: PropTypes.string,
-    toError: PropTypes.string,
-    toWarning: PropTypes.string,
-    ensResolutionError: PropTypes.string,
+    ensError: PropTypes.string,
+    ensWarning: PropTypes.string,
     addressBookEntryName: PropTypes.string,
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,
-    setInternalSearch: PropTypes.func,
+    useMyAccountsForRecipientSearch: PropTypes.func,
+    useContactListForRecipientSearch: PropTypes.func,
+    isUsingMyAccountsForRecipientSearch: PropTypes.bool,
+    recipient: PropTypes.shape({
+      address: PropTypes.string,
+      nickname: PropTypes.nickname,
+      error: PropTypes.string,
+      warning: PropTypes.string,
+    }),
   };
 
   constructor(props) {
@@ -61,60 +63,58 @@ export default class AddRecipient extends Component {
     metricsEvent: PropTypes.func,
   };
 
-  state = {
-    isShowingTransfer: false,
-  };
-
-  selectRecipient = (to, nickname = '') => {
-    const { updateSendTo, updateGas } = this.props;
-
-    updateSendTo(to, nickname);
-    updateGas({ to });
+  selectRecipient = (address, nickname = '') => {
+    this.props.updateRecipient({ address, nickname });
   };
 
   searchForContacts = () => {
-    const { query, contacts } = this.props;
+    const { userInput, contacts } = this.props;
 
     let _contacts = contacts;
 
-    if (query) {
+    if (userInput) {
       this.contactFuse.setCollection(contacts);
-      _contacts = this.contactFuse.search(query);
+      _contacts = this.contactFuse.search(userInput);
     }
 
     return _contacts;
   };
 
   searchForRecents = () => {
-    const { query, nonContacts } = this.props;
+    const { userInput, nonContacts } = this.props;
 
     let _nonContacts = nonContacts;
 
-    if (query) {
+    if (userInput) {
       this.recentFuse.setCollection(nonContacts);
-      _nonContacts = this.recentFuse.search(query);
+      _nonContacts = this.recentFuse.search(userInput);
     }
 
     return _nonContacts;
   };
 
   render() {
-    const { ensResolution, query, addressBookEntryName } = this.props;
-    const { isShowingTransfer } = this.state;
+    const {
+      ensResolution,
+      recipient,
+      userInput,
+      addressBookEntryName,
+      isUsingMyAccountsForRecipientSearch,
+    } = this.props;
 
     let content;
 
-    if (
-      !isBurnAddress(query) &&
-      isValidHexAddress(query, { mixedCaseUseChecksum: true })
-    ) {
-      content = this.renderExplicitAddress(query);
+    if (recipient.address) {
+      content = this.renderExplicitAddress(
+        recipient.address,
+        recipient.nickname,
+      );
     } else if (ensResolution) {
       content = this.renderExplicitAddress(
         ensResolution,
-        addressBookEntryName || query,
+        addressBookEntryName || userInput,
       );
-    } else if (isShowingTransfer) {
+    } else if (isUsingMyAccountsForRecipientSearch) {
       content = this.renderTransfer();
     }
 
@@ -150,15 +150,18 @@ export default class AddRecipient extends Component {
 
   renderTransfer() {
     let { ownedAccounts } = this.props;
-    const { query, setInternalSearch } = this.props;
+    const {
+      userInput,
+      useContactListForRecipientSearch,
+      isUsingMyAccountsForRecipientSearch,
+    } = this.props;
     const { t } = this.context;
-    const { isShowingTransfer } = this.state;
 
-    if (isShowingTransfer && query) {
+    if (isUsingMyAccountsForRecipientSearch && userInput) {
       ownedAccounts = ownedAccounts.filter(
         (item) =>
-          item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 ||
-          item.address.toLowerCase().indexOf(query.toLowerCase()) > -1,
+          item.name.toLowerCase().indexOf(userInput.toLowerCase()) > -1 ||
+          item.address.toLowerCase().indexOf(userInput.toLowerCase()) > -1,
       );
     }
 
@@ -167,10 +170,7 @@ export default class AddRecipient extends Component {
         <Button
           type="link"
           className="send__select-recipient-wrapper__list__link"
-          onClick={() => {
-            setInternalSearch(false);
-            this.setState({ isShowingTransfer: false });
-          }}
+          onClick={useContactListForRecipientSearch}
         >
           <div className="send__select-recipient-wrapper__list__back-caret" />
           {t('backToAll')}
@@ -187,10 +187,10 @@ export default class AddRecipient extends Component {
   renderMain() {
     const { t } = this.context;
     const {
-      query,
+      userInput,
       ownedAccounts = [],
       addressBook,
-      setInternalSearch,
+      useMyAccountsForRecipientSearch,
     } = this.props;
 
     return (
@@ -201,14 +201,11 @@ export default class AddRecipient extends Component {
           searchForRecents={this.searchForRecents.bind(this)}
           selectRecipient={this.selectRecipient.bind(this)}
         >
-          {ownedAccounts && ownedAccounts.length > 1 && !query && (
+          {ownedAccounts && ownedAccounts.length > 1 && !userInput && (
             <Button
               type="link"
               className="send__select-recipient-wrapper__list__link"
-              onClick={() => {
-                setInternalSearch(true);
-                this.setState({ isShowingTransfer: true });
-              }}
+              onClick={useMyAccountsForRecipientSearch}
             >
               {t('transferBetweenAccounts')}
             </Button>
@@ -219,30 +216,19 @@ export default class AddRecipient extends Component {
   }
 
   renderDialogs() {
-    const {
-      toError,
-      toWarning,
-      ensResolutionError,
-      ensResolution,
-    } = this.props;
+    const { ensError, recipient, ensWarning } = this.props;
     const { t } = this.context;
 
-    if (ensResolutionError) {
+    if (ensError || (recipient.error && recipient.error !== 'required')) {
       return (
         <Dialog type="error" className="send__error-dialog">
-          {ensResolutionError}
+          {t(ensError ?? recipient.error)}
         </Dialog>
       );
-    } else if (toError && toError !== 'required' && !ensResolution) {
-      return (
-        <Dialog type="error" className="send__error-dialog">
-          {t(toError)}
-        </Dialog>
-      );
-    } else if (toWarning) {
+    } else if (ensWarning || recipient.warning) {
       return (
         <Dialog type="warning" className="send__error-dialog">
-          {t(toWarning)}
+          {t(ensWarning ?? recipient.warning)}
         </Dialog>
       );
     }

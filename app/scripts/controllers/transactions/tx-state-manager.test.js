@@ -10,6 +10,7 @@ import {
   RINKEBY_CHAIN_ID,
   KOVAN_NETWORK_ID,
 } from '../../../../shared/constants/network';
+import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import TxStateManager from './tx-state-manager';
 import { snapshotFromTxMeta } from './lib/tx-state-history-helpers';
 
@@ -23,7 +24,7 @@ function generateTransactions(
     to,
     from,
     status,
-    type = TRANSACTION_TYPES.SENT_ETHER,
+    type = TRANSACTION_TYPES.SIMPLE_SEND,
     nonce = (i) => `${i}`,
   },
 ) {
@@ -652,7 +653,7 @@ describe('TransactionStateManager', function () {
             ? TRANSACTION_STATUSES.DROPPED
             : TRANSACTION_STATUSES.CONFIRMED,
         type: (i) =>
-          i === 1 ? TRANSACTION_TYPES.CANCEL : TRANSACTION_STATUSES.SENT_ETHER,
+          i === 1 ? TRANSACTION_TYPES.CANCEL : TRANSACTION_TYPES.SIMPLE_SEND,
       });
       txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions();
@@ -678,8 +679,11 @@ describe('TransactionStateManager', function () {
       // transaction
       const txs = generateTransactions(limit + 5, {
         chainId: (i) => {
-          if (i === 0 || i === 1) return MAINNET_CHAIN_ID;
-          else if (i === 4 || i === 5) return RINKEBY_CHAIN_ID;
+          if (i === 0 || i === 1) {
+            return MAINNET_CHAIN_ID;
+          } else if (i === 4 || i === 5) {
+            return RINKEBY_CHAIN_ID;
+          }
           return currentChainId;
         },
         to: VALID_ADDRESS,
@@ -692,7 +696,7 @@ describe('TransactionStateManager', function () {
         type: (i) =>
           i === 1 || i === 5
             ? TRANSACTION_TYPES.CANCEL
-            : TRANSACTION_STATUSES.SENT_ETHER,
+            : TRANSACTION_TYPES.SIMPLE_SEND,
       });
       txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions({
@@ -725,8 +729,11 @@ describe('TransactionStateManager', function () {
         to: VALID_ADDRESS,
         from: VALID_ADDRESS_TWO,
         nonce: (i) => {
-          if (i === 1) return '0';
-          else if (i === 5) return '4';
+          if (i === 1) {
+            return '0';
+          } else if (i === 5) {
+            return '4';
+          }
           return `${i}`;
         },
         status: (i) =>
@@ -736,7 +743,7 @@ describe('TransactionStateManager', function () {
         type: (i) =>
           i === 1 || i === 5
             ? TRANSACTION_TYPES.CANCEL
-            : TRANSACTION_STATUSES.SENT_ETHER,
+            : TRANSACTION_TYPES.SIMPLE_SEND,
       });
       txs.forEach((tx) => txStateManager.addTransaction(tx));
       const result = txStateManager.getTransactions({
@@ -844,9 +851,9 @@ describe('TransactionStateManager', function () {
       );
       // modify value and updateTransaction
       updatedTx.txParams.gasPrice = desiredGasPrice;
-      const before = new Date().getTime();
+      const timeBefore = new Date().getTime();
       txStateManager.updateTransaction(updatedTx);
-      const after = new Date().getTime();
+      const timeAfter = new Date().getTime();
       // check updated value
       const result = txStateManager.getTransaction('1');
       assert.equal(
@@ -887,8 +894,8 @@ describe('TransactionStateManager', function () {
         'two history items (initial + diff) value',
       );
       assert.ok(
-        result.history[1][0].timestamp >= before &&
-          result.history[1][0].timestamp <= after,
+        result.history[1][0].timestamp >= timeBefore &&
+          result.history[1][0].timestamp <= timeAfter,
       );
     });
 
@@ -1071,6 +1078,136 @@ describe('TransactionStateManager', function () {
         2,
         'txList should have a id of 2',
       );
+    });
+  });
+
+  describe('#generateTxMeta', function () {
+    it('generates a txMeta object when supplied no parameters', function () {
+      // There are currently not safety checks for missing 'opts' but we should
+      // at least enforce txParams. This is done in the transaction controller
+      // before *calling* this method, but we should perhaps ensure that
+      // txParams is provided and validated in this method.
+      // TODO: this test should fail.
+      const generatedTransaction = txStateManager.generateTxMeta();
+      assert.ok(generatedTransaction);
+    });
+
+    it('generates a txMeta object with txParams specified', function () {
+      const txParams = {
+        gas: GAS_LIMITS.SIMPLE,
+        from: '0x0000',
+        to: '0x000',
+        value: '0x0',
+        gasPrice: '0x0',
+      };
+      const generatedTransaction = txStateManager.generateTxMeta({
+        txParams,
+      });
+      assert.ok(generatedTransaction);
+      assert.strictEqual(generatedTransaction.txParams, txParams);
+    });
+
+    it('generates a txMeta object with txParams specified using EIP-1559 fields', function () {
+      const txParams = {
+        gas: GAS_LIMITS.SIMPLE,
+        from: '0x0000',
+        to: '0x000',
+        value: '0x0',
+        maxFeePerGas: '0x0',
+        maxPriorityFeePerGas: '0x0',
+      };
+      const generatedTransaction = txStateManager.generateTxMeta({
+        txParams,
+      });
+      assert.ok(generatedTransaction);
+      assert.strictEqual(generatedTransaction.txParams, txParams);
+    });
+
+    it('records dappSuggestedGasFees when origin is provided and is not "metamask"', function () {
+      const eip1559GasFeeFields = {
+        maxFeePerGas: '0x0',
+        maxPriorityFeePerGas: '0x0',
+        gas: GAS_LIMITS.SIMPLE,
+      };
+
+      const legacyGasFeeFields = {
+        gasPrice: '0x0',
+        gas: GAS_LIMITS.SIMPLE,
+      };
+
+      const eip1559TxParams = {
+        from: '0x0000',
+        to: '0x000',
+        value: '0x0',
+        ...eip1559GasFeeFields,
+      };
+
+      const legacyTxParams = {
+        from: '0x0000',
+        to: '0x000',
+        value: '0x0',
+        ...legacyGasFeeFields,
+      };
+      const eip1559GeneratedTransaction = txStateManager.generateTxMeta({
+        txParams: eip1559TxParams,
+        origin: 'adappt.com',
+      });
+      const legacyGeneratedTransaction = txStateManager.generateTxMeta({
+        txParams: legacyTxParams,
+        origin: 'adappt.com',
+      });
+      assert.ok(
+        eip1559GeneratedTransaction,
+        'generated EIP1559 transaction should be truthy',
+      );
+      assert.deepStrictEqual(
+        eip1559GeneratedTransaction.dappSuggestedGasFees,
+        eip1559GasFeeFields,
+        'generated EIP1559 transaction should have appropriate dappSuggestedGasFees',
+      );
+
+      assert.ok(
+        legacyGeneratedTransaction,
+        'generated legacy transaction should be truthy',
+      );
+      assert.deepStrictEqual(
+        legacyGeneratedTransaction.dappSuggestedGasFees,
+        legacyGasFeeFields,
+        'generated legacy transaction should have appropriate dappSuggestedGasFees',
+      );
+    });
+
+    it('does not record dappSuggestedGasFees when transaction origin is "metamask"', function () {
+      const txParams = {
+        gas: GAS_LIMITS.SIMPLE,
+        from: '0x0000',
+        to: '0x000',
+        value: '0x0',
+        maxFeePerGas: '0x0',
+        maxPriorityFeePerGas: '0x0',
+      };
+      const generatedTransaction = txStateManager.generateTxMeta({
+        txParams,
+        origin: 'metamask',
+      });
+      assert.ok(generatedTransaction);
+      assert.strictEqual(generatedTransaction.dappSuggestedGasFees, null);
+    });
+
+    it('does not record dappSuggestedGasFees when transaction origin is not provided', function () {
+      const txParams = {
+        gas: GAS_LIMITS.SIMPLE,
+        from: '0x0000',
+        to: '0x000',
+        value: '0x0',
+        maxFeePerGas: '0x0',
+        maxPriorityFeePerGas: '0x0',
+      };
+      const generatedTransaction = txStateManager.generateTxMeta({
+        txParams,
+      });
+      assert.ok(generatedTransaction);
+      assert.strictEqual(generatedTransaction.dappSuggestedGasFees, null);
     });
   });
 

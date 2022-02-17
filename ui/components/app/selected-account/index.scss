@@ -14,7 +14,7 @@
 
     width: 100%;
     font-weight: 500;
-    color: $black;
+    color: var(--black);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -26,6 +26,8 @@
     @include H7;
 
     color: #989a9b;
+    display: flex;
+    align-items: center;
   }
 
   &__clickable {
@@ -41,11 +43,17 @@
     background-color: unset;
 
     &:hover {
-      background-color: $Grey-000;
+      background-color: var(--Grey-000);
     }
 
     &:active {
       background-color: #d9d7da;
     }
+  }
+
+  &__copy {
+    height: 13px;
+    display: inline-block;
+    margin-inline-start: 3px;
   }
 }

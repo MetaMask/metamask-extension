@@ -1,14 +1,7 @@
 {
-  "exclude": [
-    "*.log",
-    "builds",
-    "coverage",
-    "dist",
-    "docs",
-    "lavamoat",
-    "node:console",
-    "node_modules",
-    "patches",
-    "test-artifacts"
-  ]
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs"
+  },
+  "include": ["ui/**/*.js", "app/**/*.js", "shared/**/*.js"]
 }

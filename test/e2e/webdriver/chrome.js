@@ -1,5 +1,13 @@
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
+const proxy = require('selenium-webdriver/proxy');
+
+/**
+ * Proxy host to use for HTTPS requests
+ *
+ * @type {string}
+ */
+const HTTPS_PROXY_HOST = '127.0.0.1:8000';
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
@@ -11,13 +19,23 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs');
     }
     const options = new chrome.Options().addArguments(args);
+    options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
+    options.setAcceptInsecureCerts(true);
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);
-    if (port) {
-      const service = new chrome.ServiceBuilder().setPort(port);
-      builder.setChromeService(service);
+    const service = new chrome.ServiceBuilder();
+
+    // Enables Chrome logging. Default: enabled
+    // Especially useful for discovering why Chrome has crashed, but can also
+    // be useful for revealing console errors (from the page or background).
+    if (process.env.ENABLE_CHROME_LOGGING !== 'false') {
+      service.setStdio('inherit').enableChromeLogging();
     }
+    if (port) {
+      service.setPort(port);
+    }
+    builder.setChromeService(service);
     const driver = builder.build();
     const chromeDriver = new ChromeDriver(driver);
     const extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
@@ -29,7 +47,6 @@ class ChromeDriver {
   }
 
   /**
-   * @constructor
    * @param {!ThenableWebDriver} driver - a {@code WebDriver} instance
    */
   constructor(driver) {
@@ -38,6 +55,7 @@ class ChromeDriver {
 
   /**
    * Returns the extension ID for the given extension name
+   *
    * @param {string} extensionName - the extension name
    * @returns {Promise<string|undefined>} the extension ID
    */

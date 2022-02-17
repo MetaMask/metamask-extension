@@ -20,6 +20,7 @@ const Popover = ({
   centerTitle,
 }) => {
   const t = useI18nContext();
+  const showHeader = title || onBack || subtitle || onClose;
   return (
     <div className="popover-container">
       {CustomBackground ? (
@@ -32,36 +33,38 @@ const Popover = ({
         ref={popoverRef}
       >
         {showArrow ? <div className="popover-arrow" /> : null}
-        <header className="popover-header">
-          <div
-            className={classnames(
-              'popover-header__title',
-              centerTitle ? 'center' : '',
-            )}
-          >
-            <h2 title={title}>
-              {onBack ? (
+        {showHeader && (
+          <header className="popover-header">
+            <div
+              className={classnames(
+                'popover-header__title',
+                centerTitle ? 'center' : '',
+              )}
+            >
+              <h2 title="popover">
+                {onBack ? (
+                  <button
+                    className="fas fa-chevron-left popover-header__button"
+                    title={t('back')}
+                    onClick={onBack}
+                  />
+                ) : null}
+                {title}
+              </h2>
+              {onClose ? (
                 <button
-                  className="fas fa-chevron-left popover-header__button"
-                  title={t('back')}
-                  onClick={onBack}
+                  className="fas fa-times popover-header__button"
+                  title={t('close')}
+                  data-testid="popover-close"
+                  onClick={onClose}
                 />
               ) : null}
-              {title}
-            </h2>
-            {onClose ? (
-              <button
-                className="fas fa-times popover-header__button"
-                title={t('close')}
-                data-testid="popover-close"
-                onClick={onClose}
-              />
+            </div>
+            {subtitle ? (
+              <p className="popover-header__subtitle">{subtitle}</p>
             ) : null}
-          </div>
-          {subtitle ? (
-            <p className="popover-header__subtitle">{subtitle}</p>
-          ) : null}
-        </header>
+          </header>
+        )}
         {children ? (
           <div className={classnames('popover-content', contentClassName)}>
             {children}
@@ -78,20 +81,56 @@ const Popover = ({
 };
 
 Popover.propTypes = {
-  title: PropTypes.string.isRequired,
+  /**
+   * Show title of the popover
+   */
+  title: PropTypes.node,
+  /**
+   * Show subtitle label on popover
+   */
   subtitle: PropTypes.string,
+  /**
+   * Show children content could be react child or text
+   */
   children: PropTypes.node,
+  /**
+   * Show footer content could be react child or text
+   */
   footer: PropTypes.node,
+  /**
+   * Add custom CSS class for footer
+   */
   footerClassName: PropTypes.string,
+  /**
+   * onBack handler
+   */
   onBack: PropTypes.func,
+  /**
+   * onClose handler
+   */
   onClose: PropTypes.func,
   CustomBackground: PropTypes.func,
+  /**
+   * Add custom CSS class for content
+   */
   contentClassName: PropTypes.string,
+  /**
+   * Add custom CSS class
+   */
   className: PropTypes.string,
+  /**
+   * Check if component would show arror
+   */
   showArrow: PropTypes.bool,
+  /**
+   * The ref of the popover-wrap element
+   */
   popoverRef: PropTypes.shape({
     current: PropTypes.instanceOf(window.Element),
   }),
+  /**
+   * Check if use centered title
+   */
   centerTitle: PropTypes.bool,
 };
 

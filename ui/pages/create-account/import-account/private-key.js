@@ -38,6 +38,7 @@ class PrivateKeyImportView extends Component {
       setSelectedAddress,
       firstAddress,
     } = this.props;
+    const { t } = this.context;
 
     importNewAccount('Private Key', [privateKey])
       .then(({ selectedAddress }) => {
@@ -52,7 +53,7 @@ class PrivateKeyImportView extends Component {
           history.push(mostRecentOverviewPage);
           displayWarning(null);
         } else {
-          displayWarning('Error importing account.');
+          displayWarning(t('importAccountError'));
           this.context.metricsEvent({
             eventOpts: {
               category: 'Accounts',
@@ -103,7 +104,7 @@ class PrivateKeyImportView extends Component {
         </div>
         <div className="new-account-import-form__buttons">
           <Button
-            type="default"
+            type="secondary"
             large
             className="new-account-create-form__button"
             onClick={() => {
@@ -115,7 +116,7 @@ class PrivateKeyImportView extends Component {
             {this.context.t('cancel')}
           </Button>
           <Button
-            type="secondary"
+            type="primary"
             large
             className="new-account-create-form__button"
             onClick={() => this.createNewKeychain()}

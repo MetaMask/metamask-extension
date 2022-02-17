@@ -10,32 +10,39 @@ import {
 import { getPreferences } from '../../../selectors';
 import SettingsTab from './settings-tab.component';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   const {
     appState: { warning },
     metamask,
   } = state;
   const {
     currentCurrency,
-    conversionDate,
     nativeCurrency,
     useBlockie,
     currentLocale,
+    selectedAddress,
+    useTokenDetection,
+    tokenList,
   } = metamask;
   const {
     useNativeCurrencyAsPrimaryCurrency,
     hideZeroBalanceTokens,
   } = getPreferences(state);
 
+  const { lastFetchedConversionDate } = ownProps;
+
   return {
     warning,
     currentLocale,
     currentCurrency,
-    conversionDate,
     nativeCurrency,
     useBlockie,
     useNativeCurrencyAsPrimaryCurrency,
     hideZeroBalanceTokens,
+    lastFetchedConversionDate,
+    selectedAddress,
+    useTokenDetection,
+    tokenList,
   };
 };
 

@@ -13,6 +13,7 @@ import {
 } from '../../../selectors/selectors';
 import { showModal } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { getURLHostName } from '../../../helpers/utils/util';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
@@ -35,7 +36,7 @@ export default function NativeAsset({ nativeCurrency }) {
     properties: {
       link_type: 'Account Tracker',
       action: 'Asset Options',
-      block_explorer_domain: accountLink ? new URL(accountLink)?.hostname : '',
+      block_explorer_domain: getURLHostName(accountLink),
     },
   });
 

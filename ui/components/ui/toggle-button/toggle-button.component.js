@@ -34,7 +34,7 @@ const colors = {
     base: '#037DD6',
   },
   inactiveThumb: {
-    base: '#037DD6',
+    base: '#6A737D',
   },
   active: {
     base: '#ffffff',
@@ -47,15 +47,26 @@ const colors = {
 };
 
 const ToggleButton = (props) => {
-  const { value, onToggle, offLabel, onLabel, disabled } = props;
+  const { value, onToggle, offLabel, onLabel, disabled, className } = props;
 
   const modifier = value ? 'on' : 'off';
 
   return (
     <div
-      className={classnames('toggle-button', `toggle-button--${modifier}`, {
-        'toggle-button--disabled': disabled,
-      })}
+      tabIndex="0"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          onToggle(value);
+        }
+      }}
+      className={classnames(
+        'toggle-button',
+        `toggle-button--${modifier}`,
+        {
+          'toggle-button--disabled': disabled,
+        },
+        className,
+      )}
     >
       <ReactToggleButton
         value={value}
@@ -76,11 +87,30 @@ const ToggleButton = (props) => {
 };
 
 ToggleButton.propTypes = {
+  /**
+   * ToggleButton value
+   */
   value: PropTypes.bool,
+  /**
+   * The onChange handler of the ToggleButton
+   */
   onToggle: PropTypes.func,
+  /**
+   * Label text when toggle is off
+   */
   offLabel: PropTypes.string,
+  /**
+   * Label text when toggle is on
+   */
   onLabel: PropTypes.string,
+  /**
+   * Disables ToggleButton if true. Set to false as default
+   */
   disabled: PropTypes.bool,
+  /**
+   * Additional className to add to the ToggleButton
+   */
+  className: PropTypes.string,
 };
 
 export default ToggleButton;

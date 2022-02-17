@@ -10,8 +10,11 @@ import {
   TRANSACTION_TYPES,
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
-import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
-import { getSelectedAddress } from '.';
+import {
+  getCurrentChainId,
+  deprecatedGetCurrentNetworkId,
+  getSelectedAddress,
+} from './selectors';
 
 export const incomingTxListSelector = (state) => {
   const { showIncomingTransactions } = state.metamask.featureFlags;
@@ -106,7 +109,6 @@ export const transactionsSelector = createSelector(
  * order.
  * @param {string[]} nonces - Array of nonce strings in hex
  * @param {string} nonceToInsert - Nonce string in hex to be inserted into the array of nonces.
- * @returns {string[]}
  */
 const insertOrderedNonce = (nonces, nonceToInsert) => {
   let insertIndex = nonces.length;
@@ -130,7 +132,6 @@ const insertOrderedNonce = (nonces, nonceToInsert) => {
  * in ascending order by time.
  * @param {Object[]} transactions - Array of transaction objects.
  * @param {Object} transaction - Transaction object to be inserted into the array of transactions.
- * @returns {Object[]}
  */
 const insertTransactionByTime = (transactions, transaction) => {
   const { time } = transaction;
@@ -151,6 +152,7 @@ const insertTransactionByTime = (transactions, transaction) => {
 
 /**
  * Contains transactions and properties associated with those transactions of the same nonce.
+ *
  * @typedef {Object} transactionGroup
  * @property {string} nonce - The nonce that the transactions within this transactionGroup share.
  * @property {Object[]} transactions - An array of transaction (txMeta) objects.
@@ -281,11 +283,17 @@ export const nonceSortedTransactionsSelector = createSelector(
           nonceProps.initialTransaction = transaction;
         }
 
-        if (type === TRANSACTION_TYPES.RETRY) {
+        if (
+          type === TRANSACTION_TYPES.RETRY &&
+          status in PRIORITY_STATUS_HASH
+        ) {
           nonceProps.hasRetried = true;
         }
 
-        if (type === TRANSACTION_TYPES.CANCEL) {
+        if (
+          type === TRANSACTION_TYPES.CANCEL &&
+          status in PRIORITY_STATUS_HASH
+        ) {
           nonceProps.hasCancelled = true;
         }
       } else {
@@ -294,8 +302,12 @@ export const nonceSortedTransactionsSelector = createSelector(
           transactions: [transaction],
           initialTransaction: transaction,
           primaryTransaction: transaction,
-          hasRetried: transaction.type === TRANSACTION_TYPES.RETRY,
-          hasCancelled: transaction.type === TRANSACTION_TYPES.CANCEL,
+          hasRetried:
+            transaction.type === TRANSACTION_TYPES.RETRY &&
+            transaction.status in PRIORITY_STATUS_HASH,
+          hasCancelled:
+            transaction.type === TRANSACTION_TYPES.CANCEL &&
+            transaction.status in PRIORITY_STATUS_HASH,
         };
 
         insertOrderedNonce(orderedNonces, nonce);

@@ -8,10 +8,11 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
+  TRANSACTION_ENVELOPE_TYPES,
 } from '../../../shared/constants/transaction';
+import { addCurrencies } from '../../../shared/modules/conversion.utils';
+import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import fetchWithCache from './fetch-with-cache';
-
-import { addCurrencies } from './conversion-util';
 
 const hstInterface = new ethers.utils.Interface(abi);
 
@@ -29,9 +30,10 @@ const hstInterface = new ethers.utils.Interface(abi);
  */
 
 /**
+ * @param data
  * @returns {EthersContractCall | undefined}
  */
-export function getTokenData(data) {
+export function getTransactionData(data) {
   try {
     return hstInterface.parseTransaction({ data });
   } catch (error) {
@@ -60,6 +62,7 @@ let registry;
 
 /**
  * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
+ *
  * @param {string} fourBytePrefix - The prefix from the method code associated with the data
  * @returns {Object}
  */
@@ -144,10 +147,8 @@ export function getLatestSubmittedTxWithNonce(
 }
 
 export async function isSmartContractAddress(address) {
-  const code = await global.eth.getCode(address);
-  // Geth will return '0x', and ganache-core v2.2.1 will return '0x0'
-  const codeIsEmpty = !code || code === '0x' || code === '0x0';
-  return !codeIsEmpty;
+  const { isContractCode } = await readAddressAsContract(global.eth, address);
+  return isContractCode;
 }
 
 export function sumHexes(...args) {
@@ -162,9 +163,14 @@ export function sumHexes(...args) {
   return addHexPrefix(total);
 }
 
+export function isLegacyTransaction(txParams) {
+  return txParams?.type === TRANSACTION_ENVELOPE_TYPES.LEGACY;
+}
+
 /**
  * Returns a status key for a transaction. Requires parsing the txMeta.txReceipt on top of
  * txMeta.status because txMeta.status does not reflect on-chain errors.
+ *
  * @param {Object} transaction - The txMeta object of a transaction.
  * @param {Object} transaction.txReceipt - The transaction receipt.
  * @returns {string}
@@ -195,11 +201,13 @@ export function getStatusKey(transaction) {
  * Returns a title for the given transaction category.
  *
  * This will throw an error if the transaction category is unrecognized and no default is provided.
- * @param {function} t - The translation function
+ *
+ * @param {Function} t - The translation function
  * @param {TRANSACTION_TYPES[keyof TRANSACTION_TYPES]} type - The transaction type constant
+ * @param {string} nativeCurrency - The native currency of the currently selected network
  * @returns {string} The transaction category title
  */
-export function getTransactionTypeTitle(t, type) {
+export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
   switch (type) {
     case TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER: {
       return t('transfer');
@@ -210,8 +218,8 @@ export function getTransactionTypeTitle(t, type) {
     case TRANSACTION_TYPES.TOKEN_METHOD_APPROVE: {
       return t('approve');
     }
-    case TRANSACTION_TYPES.SENT_ETHER: {
-      return t('sentEther');
+    case TRANSACTION_TYPES.SIMPLE_SEND: {
+      return t('sendingNativeAsset', [nativeCurrency]);
     }
     case TRANSACTION_TYPES.CONTRACT_INTERACTION: {
       return t('contractInteraction');

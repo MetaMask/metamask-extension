@@ -28,7 +28,7 @@ class JsonImportSubview extends Component {
       <div className="new-account-import-form__json">
         <p>{this.context.t('usedByClients')}</p>
         <a
-          className="warning"
+          className="new-account-import-form__help-link"
           href={HELP_LINK}
           target="_blank"
           rel="noopener noreferrer"
@@ -57,7 +57,7 @@ class JsonImportSubview extends Component {
         />
         <div className="new-account-create-form__buttons">
           <Button
-            type="default"
+            type="secondary"
             large
             className="new-account-create-form__button"
             onClick={() => history.push(mostRecentOverviewPage)}
@@ -65,7 +65,7 @@ class JsonImportSubview extends Component {
             {this.context.t('cancel')}
           </Button>
           <Button
-            type="secondary"
+            type="primary"
             large
             className="new-account-create-form__button"
             onClick={() => this.createNewKeychain()}
@@ -102,9 +102,10 @@ class JsonImportSubview extends Component {
       setSelectedAddress,
     } = this.props;
     const { fileContents } = this.state;
+    const { t } = this.context;
 
     if (!fileContents) {
-      const message = this.context.t('needImportFile');
+      const message = t('needImportFile');
       displayWarning(message);
       return;
     }
@@ -124,7 +125,7 @@ class JsonImportSubview extends Component {
           });
           displayWarning(null);
         } else {
-          displayWarning('Error importing account.');
+          displayWarning(t('importAccountError'));
           this.context.metricsEvent({
             eventOpts: {
               category: 'Accounts',

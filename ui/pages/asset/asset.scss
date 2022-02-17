@@ -19,7 +19,7 @@
 .asset-breadcrumb {
   @include H6;
 
-  color: $Black-100;
+  color: var(--Black-100);
   background-color: inherit;
 
   &__chevron {
@@ -35,7 +35,7 @@
 .asset-options {
   &__button {
     font-size: $font-size-paragraph;
-    color: $Black-100;
+    color: var(--Black-100);
     background-color: inherit;
     padding: 2px 0 2px 8px;
   }

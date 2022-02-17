@@ -15,6 +15,7 @@ import { getFinalStates, normalizeAndValidateTxParams } from './lib/util';
 
 /**
  * TransactionStatuses reimported from the shared transaction constants file
+ *
  * @typedef {import(
  *  '../../../../shared/constants/transaction'
  * ).TransactionStatusString} TransactionStatusString
@@ -40,13 +41,13 @@ import { getFinalStates, normalizeAndValidateTxParams } from './lib/util';
  * TransactionStateManager is responsible for the state of a transaction and
  * storing the transaction. It also has some convenience methods for finding
  * subsets of transactions.
+ *
  * @param {Object} opts
  * @param {TransactionState} [opts.initState={ transactions: {} }] - initial
  *  transactions list keyed by id
  * @param {number} [opts.txHistoryLimit] - limit for how many finished
  *  transactions can hang around in state
  * @param {Function} opts.getNetwork - return network number
- * @class
  */
 export default class TransactionStateManager extends EventEmitter {
   constructor({ initState, txHistoryLimit, getNetwork, getCurrentChainId }) {
@@ -72,19 +73,55 @@ export default class TransactionStateManager extends EventEmitter {
    *  overwriting default keys of the TransactionMeta
    * @returns {TransactionMeta} the default txMeta object
    */
-  generateTxMeta(opts) {
+  generateTxMeta(opts = {}) {
     const netId = this.getNetwork();
     const chainId = this.getCurrentChainId();
     if (netId === 'loading') {
       throw new Error('MetaMask is having trouble connecting to the network');
     }
+
+    let dappSuggestedGasFees = null;
+
+    // If we are dealing with a transaction suggested by a dapp and not
+    // an internally created metamask transaction, we need to keep record of
+    // the originally submitted gasParams.
+    if (
+      opts.txParams &&
+      typeof opts.origin === 'string' &&
+      opts.origin !== 'metamask'
+    ) {
+      if (typeof opts.txParams.gasPrice !== 'undefined') {
+        dappSuggestedGasFees = {
+          gasPrice: opts.txParams.gasPrice,
+        };
+      } else if (
+        typeof opts.txParams.maxFeePerGas !== 'undefined' ||
+        typeof opts.txParams.maxPriorityFeePerGas !== 'undefined'
+      ) {
+        dappSuggestedGasFees = {
+          maxPriorityFeePerGas: opts.txParams.maxPriorityFeePerGas,
+          maxFeePerGas: opts.txParams.maxFeePerGas,
+        };
+      }
+
+      if (typeof opts.txParams.gas !== 'undefined') {
+        dappSuggestedGasFees = {
+          ...dappSuggestedGasFees,
+          gas: opts.txParams.gas,
+        };
+      }
+    }
+
     return {
       id: createId(),
       time: new Date().getTime(),
       status: TRANSACTION_STATUSES.UNAPPROVED,
       metamaskNetworkId: netId,
+      originalGasEstimate: opts.txParams?.gas,
+      userEditedGasLimit: false,
       chainId,
       loadingDefaults: true,
+      dappSuggestedGasFees,
       ...opts,
     };
   }
@@ -162,6 +199,7 @@ export default class TransactionStateManager extends EventEmitter {
    * is in its final state.
    * it will also add the key `history` to the txMeta with the snap shot of
    * the original object
+   *
    * @param {TransactionMeta} txMeta - The TransactionMeta object to add.
    * @returns {TransactionMeta} The same TransactionMeta, but with validated
    *  txParams and transaction history.
@@ -240,6 +278,7 @@ export default class TransactionStateManager extends EventEmitter {
 
   /**
    * updates the txMeta in the list and adds a history entry
+   *
    * @param {Object} txMeta - the txMeta to update
    * @param {string} [note] - a note about the update for history
    */
@@ -273,6 +312,7 @@ export default class TransactionStateManager extends EventEmitter {
    * SearchCriteria can search in any key in TxParams or the base
    * TransactionMeta. This type represents any key on either of those two
    * types.
+   *
    * @typedef {TxParams[keyof TxParams] | TransactionMeta[keyof TransactionMeta]} SearchableKeys
    */
 
@@ -280,6 +320,7 @@ export default class TransactionStateManager extends EventEmitter {
    * Predicates can either be strict values, which is shorthand for using
    * strict equality, or a method that receives he value of the specified key
    * and returns a boolean.
+   *
    * @typedef {(v: unknown) => boolean | unknown} FilterPredicate
    */
 
@@ -302,7 +343,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {TransactionMeta[]} [opts.initialList] - If provided the filtering
    *  will occur on the provided list. By default this will be the full list
    *  from state sorted by time ASC.
-   * @param {boolean} [opts.filterToCurrentNetwork=true] - Filter transaction
+   * @param {boolean} [opts.filterToCurrentNetwork] - Filter transaction
    *  list to only those that occurred on the current chain or network.
    *  Defaults to true.
    * @param {number} [opts.limit] - limit the number of transactions returned
@@ -413,7 +454,7 @@ export default class TransactionStateManager extends EventEmitter {
    * @param {number} txId - the target TransactionMeta's Id
    */
   setTxStatusRejected(txId) {
-    this._setTransactionStatus(txId, 'rejected');
+    this._setTransactionStatus(txId, TRANSACTION_STATUSES.REJECTED);
     this._deleteTransaction(txId);
   }
 
@@ -487,7 +528,7 @@ export default class TransactionStateManager extends EventEmitter {
 
     const txMeta = this.getTransaction(txId);
     txMeta.err = {
-      message: error.toString(),
+      message: error.message?.toString() || error.toString(),
       rpc: error.value,
       stack: error.stack,
     };
@@ -542,27 +583,28 @@ export default class TransactionStateManager extends EventEmitter {
    * Updates a transaction's status in state, and then emits events that are
    * subscribed to elsewhere. See below for best guesses on where and how these
    * events are received.
+   *
    * @param {number} txId - the TransactionMeta Id
    * @param {TransactionStatusString} status - the status to set on the
    *  TransactionMeta
-   * @emits txMeta.id:txMeta.status - every time a transaction's status changes
+   * @fires txMeta.id:txMeta.status - every time a transaction's status changes
    *  we emit the change passing along the id. This does not appear to be used
    *  outside of this file, which only listens to this to unsubscribe listeners
    *  of :rejected and :signed statuses when the inverse status changes. Likely
    *  safe to drop.
-   * @emits tx:status-update - every time a transaction's status changes we
+   * @fires tx:status-update - every time a transaction's status changes we
    *  emit this event and pass txId and status. This event is subscribed to in
    *  the TransactionController and re-broadcast by the TransactionController.
    *  It is used internally within the TransactionController to try and update
    *  pending transactions on each new block (from blockTracker). It's also
    *  subscribed to in metamask-controller to display a browser notification on
    *  confirmed or failed transactions.
-   * @emits txMeta.id:finished - When a transaction moves to a finished state
+   * @fires txMeta.id:finished - When a transaction moves to a finished state
    *  this event is emitted, which is used in the TransactionController to pass
    *  along details of the transaction to the dapp that suggested them. This
    *  pattern is replicated across all of the message managers and can likely
    *  be supplemented or replaced by the ApprovalController.
-   * @emits updateBadge - When the number of transactions changes in state,
+   * @fires updateBadge - When the number of transactions changes in state,
    *  the badge in the browser extension bar should be updated to reflect the
    *  number of pending transactions. This particular emit doesn't appear to
    *  bubble up anywhere that is actually used. TransactionController emits

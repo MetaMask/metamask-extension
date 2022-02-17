@@ -4,7 +4,9 @@ import copyToClipboard from 'copy-to-clipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 import Tooltip from '../../ui/tooltip';
+import CopyIcon from '../../ui/icon/copy-icon.component';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { SECOND } from '../../../../shared/constants/time';
 
 class SelectedAccount extends Component {
   state = {
@@ -50,7 +52,7 @@ class SelectedAccount extends Component {
               this.setState({ copied: true });
               this.copyTimeout = setTimeout(
                 () => this.setState({ copied: false }),
-                3000,
+                SECOND * 3,
               );
               copyToClipboard(checksummedAddress);
             }}
@@ -60,6 +62,9 @@ class SelectedAccount extends Component {
             </div>
             <div className="selected-account__address">
               {shortenAddress(checksummedAddress)}
+              <div className="selected-account__copy">
+                <CopyIcon size={11} color="#989a9b" />
+              </div>
             </div>
           </button>
         </Tooltip>

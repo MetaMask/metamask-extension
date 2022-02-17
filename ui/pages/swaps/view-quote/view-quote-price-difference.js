@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
 
-import ActionableMessage from '../actionable-message';
+import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import Tooltip from '../../../components/ui/tooltip';
 import Box from '../../../components/ui/box';
 import {
   JUSTIFY_CONTENT,
   DISPLAY,
 } from '../../../helpers/constants/design-system';
+import { GAS_RECOMMENDATIONS } from '../../../../shared/constants/gas';
 
 export default function ViewQuotePriceDifference(props) {
   const {
@@ -35,7 +36,7 @@ export default function ViewQuotePriceDifference(props) {
     // A calculation error signals we cannot determine dollar value
     priceDifferenceTitle = t('swapPriceUnavailableTitle');
     priceDifferenceMessage = t('swapPriceUnavailableDescription');
-    priceDifferenceClass = 'high';
+    priceDifferenceClass = GAS_RECOMMENDATIONS.HIGH;
     priceDifferenceAcknowledgementText = t('tooltipApproveButton');
   } else {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [

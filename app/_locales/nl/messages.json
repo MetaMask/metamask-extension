@@ -1,4 +1,7 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Afwijzen"
+  },
   "accountDetails": {
     "message": "Accountgegevens"
   },
@@ -7,9 +10,6 @@
   },
   "addToken": {
     "message": "Voeg token toe"
-  },
-  "addTokens": {
-    "message": "Tokens toevoegen"
   },
   "amount": {
     "message": "Bedrag"
@@ -21,6 +21,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Goedkeuren"
@@ -36,12 +44,6 @@
   },
   "balance": {
     "message": "Balans:"
-  },
-  "blockiesIdenticon": {
-    "message": "Gebruik Blockies Identicon"
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask is ontworpen en gebouwd in Californië."
   },
   "cancel": {
     "message": "Annuleer"
@@ -73,26 +75,11 @@
   "customGas": {
     "message": "Pas Gas aan"
   },
-  "customRPC": {
-    "message": "Aangepaste RPC"
-  },
   "decimal": {
     "message": "Decimalen van precisie"
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalen moeten minimaal 0 en niet meer dan 36 zijn."
-  },
-  "defaultNetwork": {
-    "message": "Het standaardnetwerk voor Ether-transacties is Main Net."
-  },
-  "depositEther": {
-    "message": "Stort Ether"
-  },
-  "directDepositEther": {
-    "message": "Directe Ether storten"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Als je al wat Ether hebt, de snelste manier om Ether in je nieuwe portemonnee te krijgen door een directe storting."
   },
   "done": {
     "message": "Gedaan"
@@ -191,7 +178,7 @@
   "kovan": {
     "message": "Kovan-testnetwerk"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Wil je deze tokens toevoegen?"
   },
   "loading": {
@@ -204,7 +191,7 @@
     "message": "Uitloggen"
   },
   "mainnet": {
-    "message": "Main Netwerk"
+    "message": "Mainnetwerk"
   },
   "message": {
     "message": "Bericht"
@@ -217,9 +204,6 @@
   },
   "myAccounts": {
     "message": "Mijn accounts"
-  },
-  "needEtherInWallet": {
-    "message": "Om te communiceren met gedecentraliseerde applicaties met MetaMask, heb je Ether nodig in je portemonnee."
   },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
@@ -271,9 +255,6 @@
   },
   "readdToken": {
     "message": "U kunt dit token in de toekomst weer toevoegen door naar \"Token toevoegen\" te gaan in het menu met accountopties."
-  },
-  "recipientAddress": {
-    "message": "Geadresseerde adres"
   },
   "reject": {
     "message": "Afwijzen"

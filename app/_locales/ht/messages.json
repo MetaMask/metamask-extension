@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Rejte"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Enspeksyon QR Kòd"
+  },
   "accessingYourCamera": {
     "message": "Aksè a Kamera"
   },
@@ -29,9 +35,6 @@
   "addToken": {
     "message": "Ajoute Token"
   },
-  "addTokens": {
-    "message": "Ajoute Token"
-  },
   "amount": {
     "message": "Kantite lajan"
   },
@@ -42,6 +45,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Apwouve"
@@ -67,14 +78,8 @@
   "balance": {
     "message": "Balans"
   },
-  "blockiesIdenticon": {
-    "message": "Itilize Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Navigatè ou a pa sipòte..."
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask fèt e bati nan California."
   },
   "cancel": {
     "message": "Anile"
@@ -142,9 +147,6 @@
   "customGas": {
     "message": "Koutim Gaz"
   },
-  "customRPC": {
-    "message": "Koutim RPC"
-  },
   "customToken": {
     "message": "Koutim Token"
   },
@@ -154,20 +156,8 @@
   "decimalsMustZerotoTen": {
     "message": "Desimal yo dwe omwen 0, epi pa dwe plis pase 36."
   },
-  "defaultNetwork": {
-    "message": "Dfo rezo a pou tranzaksyon Ether se Mainnet."
-  },
-  "depositEther": {
-    "message": "Depo Ether"
-  },
   "details": {
     "message": "Detay yo"
-  },
-  "directDepositEther": {
-    "message": "Dirèkteman Depo Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si ou deja gen kèk Ether, fason ki pi rapid yo ka resevwa Ether nan nouvo Wallet ou pa depo dirèk."
   },
   "done": {
     "message": "Fini"
@@ -311,10 +301,13 @@
   "learnMore": {
     "message": "Aprann plis"
   },
+  "learnMoreUpperCase": {
+    "message": "Aprann plis"
+  },
   "ledgerAccountRestriction": {
     "message": "Ou bezwen sèvi ak dènye kont ou anvan ou ka ajoute yon nouvo."
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Èske ou ta renmen ajoute sa nan tokens?"
   },
   "links": {
@@ -349,9 +342,6 @@
   },
   "myAccounts": {
     "message": "Kont mwen"
-  },
-  "needEtherInWallet": {
-    "message": "Pou kominike avèk aplikasyon desantralize ou dwe itilize MetaMask, ou pral bezwen Ether nan Wallet ou."
   },
   "needImportFile": {
     "message": "Ou dwe chwazi yon dosye pou enpòte.",
@@ -450,9 +440,6 @@
   "readdToken": {
     "message": "Ou ka ajoute token sa aprè sa ankò ou prale nan  \"Ajoute token\" nan opsyon meni kont ou an."
   },
-  "recipientAddress": {
-    "message": "Adrès pou resevwa"
-  },
   "reject": {
     "message": "Rejte"
   },
@@ -501,9 +488,6 @@
   "revealSeedWordsDescription": {
     "message": "Si ou pa janm chanje navigatè ou deplase òdinatè, ou pral bezwen fraz seed la pou ka gen aksè a kont ou. Sere yo on kote an sekirite e an sekrè."
   },
-  "revealSeedWordsTitle": {
-    "message": "Seed Fraz"
-  },
   "revealSeedWordsWarning": {
     "message": "Yo ka itilize mo sa pou vòlè kont ou."
   },
@@ -543,9 +527,6 @@
   "selectAnAccount": {
     "message": "Chwazi yon kont"
   },
-  "selectAnAccountHelp": {
-    "message": "Chwazi kont pou wè nan MetaMask"
-  },
   "selectHdPath": {
     "message": "Chwazi chemen HD"
   },
@@ -560,12 +541,6 @@
   },
   "sendTokens": {
     "message": "Voye Tokens"
-  },
-  "sentEther": {
-    "message": "Voye ether"
-  },
-  "separateEachWord": {
-    "message": "Separe chak mo ak yon sèl espas"
   },
   "settings": {
     "message": "Paramèt"
@@ -700,14 +675,8 @@
   "viewAccount": {
     "message": "Wè Kont"
   },
-  "viewOnEtherscan": {
-    "message": "Wè sou Etherscan"
-  },
   "visitWebSite": {
     "message": "Vizite sit entènèt nou an"
-  },
-  "walletSeed": {
-    "message": "Bous Seed"
   },
   "welcome": {
     "message": "Byenveni nan MetaMask"

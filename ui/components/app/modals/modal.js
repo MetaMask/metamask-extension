@@ -30,6 +30,7 @@ import AddToAddressBookModal from './add-to-addressbook-modal';
 import EditApprovalPermission from './edit-approval-permission';
 import NewAccountModal from './new-account-modal';
 import CustomizeNonceModal from './customize-nonce';
+import ConvertTokenToNftModal from './convert-token-to-nft-modal/convert-token-to-nft-modal';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -64,7 +65,7 @@ const accountModalStyle = {
     margin: '0 auto',
   },
   laptopModalStyle: {
-    width: '360px',
+    width: '335px',
     // top: 'calc(33% + 45px)',
     boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
     borderRadius: '4px',
@@ -184,8 +185,13 @@ const MODALS = {
       top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
     },
     laptopModalStyle: {
-      width: '449px',
+      width:
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '357px' : '449px',
       top: 'calc(33% + 45px)',
+      paddingLeft:
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
+      paddingRight:
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
     },
   },
 
@@ -232,6 +238,19 @@ const MODALS = {
     },
   },
 
+  CONVERT_TOKEN_TO_NFT: {
+    contents: <ConvertTokenToNftModal />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   CONFIRM_DELETE_NETWORK: {
     contents: <ConfirmDeleteNetwork />,
     mobileModalStyle: {
@@ -245,7 +264,7 @@ const MODALS = {
     },
   },
 
-  CUSTOMIZE_GAS: {
+  LEGACY_CUSTOMIZE_GAS: {
     contents: <ConfirmCustomizeGasModal />,
     mobileModalStyle: {
       width: '100vw',

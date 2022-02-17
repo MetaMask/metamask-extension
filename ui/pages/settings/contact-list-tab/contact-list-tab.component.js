@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import ContactList from '../../../components/app/contact-list';
 import {
   CONTACT_ADD_ROUTE,
@@ -49,8 +50,8 @@ export default class ContactListTab extends Component {
     return (
       <div className="address-book__container">
         <div>
-          <img src="./images/address-book.svg" alt="Address book icon" />
-          <h4 className="address-book__title">{t('builContactList')}</h4>
+          <img src="./images/address-book.svg" alt={t('addressBookIcon')} />
+          <h4 className="address-book__title">{t('buildContactList')}</h4>
           <p className="address-book__sub-title">
             {t('addFriendsAndAddresses')}
           </p>
@@ -68,14 +69,17 @@ export default class ContactListTab extends Component {
   }
 
   renderAddButton() {
-    const { history } = this.props;
+    const { history, viewingContact, editingContact } = this.props;
 
     return (
       <div className="address-book-add-button">
         <Button
-          className="address-book-add-button__button"
+          className={classnames({
+            'address-book-add-button__button': true,
+            'address-book-add-button__button--hidden':
+              viewingContact || editingContact,
+          })}
           type="secondary"
-          rounded
           onClick={() => {
             history.push(CONTACT_ADD_ROUTE);
           }}
@@ -132,7 +136,9 @@ export default class ContactListTab extends Component {
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}
         {this.renderContactContent()}
-        {!addingContact && addressBook.length > 0 && this.renderAddButton()}
+        {!addingContact && addressBook.length > 0
+          ? this.renderAddButton()
+          : null}
       </div>
     );
   }

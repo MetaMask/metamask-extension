@@ -1,3 +1,4 @@
+/* eslint-disable no-negated-condition */
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -13,9 +14,32 @@ const ConfirmPageContainerSummary = (props) => {
     className,
     identiconAddress,
     nonce,
-    assetImage,
     origin,
+    hideTitle,
+    image,
   } = props;
+
+  const renderImage = () => {
+    if (image) {
+      return (
+        <img
+          className="confirm-page-container-summary__icon"
+          width={36}
+          src={image}
+        />
+      );
+    } else if (identiconAddress) {
+      return (
+        <Identicon
+          className="confirm-page-container-summary__icon"
+          diameter={36}
+          address={identiconAddress}
+          image={image}
+        />
+      );
+    }
+    return null;
+  };
 
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
@@ -30,24 +54,21 @@ const ConfirmPageContainerSummary = (props) => {
           </div>
         )}
       </div>
-      <div className="confirm-page-container-summary__title">
-        {identiconAddress && (
-          <Identicon
-            className="confirm-page-container-summary__identicon"
-            diameter={36}
-            address={identiconAddress}
-            image={assetImage}
-          />
+      <>
+        <div className="confirm-page-container-summary__title">
+          {renderImage()}
+          {!hideTitle ? (
+            <div className="confirm-page-container-summary__title-text">
+              {titleComponent || title}
+            </div>
+          ) : null}
+        </div>
+        {hideSubtitle ? null : (
+          <div className="confirm-page-container-summary__subtitle">
+            {subtitleComponent}
+          </div>
         )}
-        <div className="confirm-page-container-summary__title-text">
-          {titleComponent || title}
-        </div>
-      </div>
-      {hideSubtitle || (
-        <div className="confirm-page-container-summary__subtitle">
-          {subtitleComponent}
-        </div>
-      )}
+      </>
     </div>
   );
 };
@@ -55,14 +76,15 @@ const ConfirmPageContainerSummary = (props) => {
 ConfirmPageContainerSummary.propTypes = {
   action: PropTypes.string,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  image: PropTypes.string,
   titleComponent: PropTypes.node,
   subtitleComponent: PropTypes.node,
   hideSubtitle: PropTypes.bool,
   className: PropTypes.string,
   identiconAddress: PropTypes.string,
   nonce: PropTypes.string,
-  assetImage: PropTypes.string,
   origin: PropTypes.string.isRequired,
+  hideTitle: PropTypes.bool,
 };
 
 export default ConfirmPageContainerSummary;

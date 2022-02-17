@@ -8,7 +8,7 @@ jest.mock('react-redux', () => ({
   },
 }));
 
-jest.mock('../../../../../selectors', () => ({
+jest.mock('../../../../../ducks/send', () => ({
   getSendErrors: (s) => `mockErrors:${s}`,
 }));
 

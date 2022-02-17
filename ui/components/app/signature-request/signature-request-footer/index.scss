@@ -6,14 +6,19 @@
     text-transform: uppercase;
     flex: 1;
     margin: 1rem 0.5rem;
-    border-radius: 3px;
   }
 
   button:first-child {
-    margin-left: 1rem;
+    flex: 1 1 100%;
+    padding: 0;
   }
 
   button:last-child {
+    flex: 1 1 100%;
     margin-right: 1rem;
+  }
+
+  &__tooltip {
+    display: flex;
   }
 }

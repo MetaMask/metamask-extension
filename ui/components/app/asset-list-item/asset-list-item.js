@@ -10,9 +10,10 @@ import InfoIcon from '../../ui/icon/info-icon.component';
 import Button from '../../ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMetricEvent } from '../../../hooks/useMetricEvent';
-import { updateSendToken } from '../../../store/actions';
+import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 
 const AssetListItem = ({
   className,
@@ -27,6 +28,7 @@ const AssetListItem = ({
   primary,
   secondary,
   identiconBorder,
+  isERC721,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -64,17 +66,26 @@ const AssetListItem = ({
       <Button
         type="link"
         className="asset-list-item__send-token-button"
-        onClick={(e) => {
+        onClick={async (e) => {
           e.stopPropagation();
           sendTokenEvent();
-          dispatch(
-            updateSendToken({
-              address: tokenAddress,
-              decimals: tokenDecimals,
-              symbol: tokenSymbol,
-            }),
-          );
-          history.push(SEND_ROUTE);
+          try {
+            await dispatch(
+              updateSendAsset({
+                type: ASSET_TYPES.TOKEN,
+                details: {
+                  address: tokenAddress,
+                  decimals: tokenDecimals,
+                  symbol: tokenSymbol,
+                },
+              }),
+            );
+            history.push(SEND_ROUTE);
+          } catch (err) {
+            if (!err.message.includes(INVALID_ASSET_TYPE)) {
+              throw err;
+            }
+          }
         }}
       >
         {t('sendSpecifiedTokens', [tokenSymbol])}
@@ -107,7 +118,7 @@ const AssetListItem = ({
         </button>
       }
       titleIcon={titleIcon}
-      subtitle={<h3 title={secondary}>{secondary}</h3>}
+      subtitle={secondary ? <h3 title={secondary}>{secondary}</h3> : null}
       onClick={onClick}
       icon={
         <Identicon
@@ -121,37 +132,40 @@ const AssetListItem = ({
       }
       midContent={midContent}
       rightContent={
-        <>
-          <i className="fas fa-chevron-right asset-list-item__chevron-right" />
-          {sendTokenButton}
-        </>
+        !isERC721 && (
+          <>
+            <i className="fas fa-chevron-right asset-list-item__chevron-right" />
+            {sendTokenButton}
+          </>
+        )
       }
     />
   );
 };
 
 AssetListItem.propTypes = {
-  'className': PropTypes.string,
+  className: PropTypes.string,
   'data-testid': PropTypes.string,
-  'iconClassName': PropTypes.string,
-  'onClick': PropTypes.func.isRequired,
-  'tokenAddress': PropTypes.string,
-  'tokenSymbol': PropTypes.string,
-  'tokenDecimals': PropTypes.number,
-  'tokenImage': PropTypes.string,
-  'warning': PropTypes.node,
-  'primary': PropTypes.string,
-  'secondary': PropTypes.string,
-  'identiconBorder': PropTypes.bool,
+  iconClassName: PropTypes.string,
+  onClick: PropTypes.func.isRequired,
+  tokenAddress: PropTypes.string,
+  tokenSymbol: PropTypes.string,
+  tokenDecimals: PropTypes.number,
+  tokenImage: PropTypes.string,
+  warning: PropTypes.node,
+  primary: PropTypes.string,
+  secondary: PropTypes.string,
+  identiconBorder: PropTypes.bool,
+  isERC721: PropTypes.bool,
 };
 
 AssetListItem.defaultProps = {
-  'className': undefined,
+  className: undefined,
   'data-testid': undefined,
-  'iconClassName': undefined,
-  'tokenAddress': undefined,
-  'tokenImage': undefined,
-  'warning': undefined,
+  iconClassName: undefined,
+  tokenAddress: undefined,
+  tokenImage: undefined,
+  warning: undefined,
 };
 
 export default AssetListItem;

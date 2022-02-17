@@ -1,4 +1,5 @@
 import Analytics from 'analytics-node';
+import { SECOND } from '../../../shared/constants/time';
 
 const isDevOrTestEnvironment = Boolean(
   process.env.METAMASK_DEBUG || process.env.IN_TEST,
@@ -21,21 +22,18 @@ const SEGMENT_FLUSH_AT =
 // deal with short lived sessions that happen faster than the interval
 // e.g confirmations. This is set to 5,000ms (5 seconds) arbitrarily with the
 // intent of having a value less than 10 seconds.
-const SEGMENT_FLUSH_INTERVAL = 5000;
+const SEGMENT_FLUSH_INTERVAL = SECOND * 5;
 
 /**
  * Creates a mock segment module for usage in test environments. This is used
  * when building the application in test mode to catch event calls and prevent
  * them from being sent to segment. It is also used in unit tests to mock and
  * spy on the methods to ensure proper behavior
+ *
  * @param {number} flushAt - number of events to queue before sending to segment
- * @param {number} flushInterval - ms interval to flush queue and send to segment
  * @returns {SegmentInterface}
  */
-export const createSegmentMock = (
-  flushAt = SEGMENT_FLUSH_AT,
-  flushInterval = SEGMENT_FLUSH_INTERVAL,
-) => {
+export const createSegmentMock = (flushAt = SEGMENT_FLUSH_AT) => {
   const segmentMock = {
     // Internal queue to keep track of events and properly mimic segment's
     // queueing behavior.
@@ -56,6 +54,9 @@ export const createSegmentMock = (
     /**
      * Track an event and add it to the queue. If the queue size reaches the
      * flushAt threshold, flush the queue.
+     *
+     * @param payload
+     * @param callback
      */
     track(payload, callback = () => undefined) {
       segmentMock.queue.push([payload, callback]);
@@ -76,8 +77,7 @@ export const createSegmentMock = (
       // noop
     },
   };
-  // Mimic the flushInterval behavior with an interval
-  setInterval(segmentMock.flush, flushInterval);
+
   return segmentMock;
 };
 

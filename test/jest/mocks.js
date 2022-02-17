@@ -59,3 +59,47 @@ export const TOKENS_GET_RESPONSE = [
     address: '0x0D8775F648430679A709E98d2b0Cb6250d2887EF',
   },
 ];
+
+export const createFeatureFlagsResponse = () => {
+  return {
+    bsc: {
+      mobile_active: false,
+      extension_active: true,
+      fallback_to_v1: true,
+    },
+    ethereum: {
+      mobile_active: false,
+      extension_active: true,
+      fallback_to_v1: true,
+    },
+    polygon: {
+      mobile_active: false,
+      extension_active: true,
+      fallback_to_v1: false,
+    },
+  };
+};
+
+export const createGasFeeEstimatesForFeeMarket = () => {
+  return {
+    low: {
+      minWaitTimeEstimate: 180000,
+      maxWaitTimeEstimate: 300000,
+      suggestedMaxPriorityFeePerGas: '3',
+      suggestedMaxFeePerGas: '53',
+    },
+    medium: {
+      minWaitTimeEstimate: 15000,
+      maxWaitTimeEstimate: 60000,
+      suggestedMaxPriorityFeePerGas: '7',
+      suggestedMaxFeePerGas: '70',
+    },
+    high: {
+      minWaitTimeEstimate: 0,
+      maxWaitTimeEstimate: 15000,
+      suggestedMaxPriorityFeePerGas: '10',
+      suggestedMaxFeePerGas: '100',
+    },
+    estimatedBaseFee: '50',
+  };
+};

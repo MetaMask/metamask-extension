@@ -14,7 +14,7 @@ describe('ErrorMessage Component', () => {
     expect(wrapper.find('.error-message')).toHaveLength(1);
     expect(wrapper.find('.error-message__icon')).toHaveLength(1);
     expect(wrapper.find('.error-message__text').text()).toStrictEqual(
-      'ALERT: This is an error.',
+      'This is an error.',
     );
   });
 
@@ -27,7 +27,7 @@ describe('ErrorMessage Component', () => {
     expect(wrapper.find('.error-message')).toHaveLength(1);
     expect(wrapper.find('.error-message__icon')).toHaveLength(1);
     expect(wrapper.find('.error-message__text').text()).toStrictEqual(
-      'ALERT: translate testKey',
+      'translate testKey',
     );
   });
 });

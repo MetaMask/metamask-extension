@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
 import Tooltip from '../../../ui/tooltip';
-import { MIN_GAS_LIMIT_DEC } from '../../../../pages/send/send.constants';
 
 export default class AdvancedGasInputs extends Component {
   static contextTypes = {
@@ -21,11 +20,12 @@ export default class AdvancedGasInputs extends Component {
     customGasLimitMessage: PropTypes.string,
     minimumGasLimit: PropTypes.number,
     customPriceIsExcessive: PropTypes.bool,
+    networkSupportsSettingGasPrice: PropTypes.bool,
   };
 
   static defaultProps = {
-    minimumGasLimit: Number(MIN_GAS_LIMIT_DEC),
     customPriceIsExcessive: false,
+    networkSupportsSettingGasPrice: true,
   };
 
   constructor(props) {
@@ -130,8 +130,10 @@ export default class AdvancedGasInputs extends Component {
     errorComponent,
     errorType,
     label,
+    testId,
     customMessageComponent,
     tooltipTitle,
+    disabled,
   }) {
     return (
       <div className="advanced-gas-inputs__gas-edit-row">
@@ -153,6 +155,8 @@ export default class AdvancedGasInputs extends Component {
             min="0"
             value={value}
             onChange={onChange}
+            disabled={disabled}
+            data-testid={testId}
           />
           <div
             className={classnames(
@@ -162,18 +166,22 @@ export default class AdvancedGasInputs extends Component {
                   errorType === 'error',
                 'advanced-gas-inputs__gas-edit-row__input--warning':
                   errorType === 'warning',
+                'advanced-gas-inputs__gas-edit-row__input-arrows--hidden': disabled,
               },
             )}
           >
             <div
               className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
-              onClick={() => onChange({ target: { value: value + 1 } })}
+              onClick={() =>
+                !disabled && onChange({ target: { value: value + 1 } })
+              }
             >
               <i className="fa fa-sm fa-angle-up" />
             </div>
             <div
               className="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
               onClick={() =>
+                !disabled &&
                 onChange({ target: { value: Math.max(value - 1, 0) } })
               }
             >
@@ -194,6 +202,7 @@ export default class AdvancedGasInputs extends Component {
       customGasLimitMessage,
       minimumGasLimit,
       customPriceIsExcessive,
+      networkSupportsSettingGasPrice,
     } = this.props;
     const { gasPrice, gasLimit } = this.state;
 
@@ -237,14 +246,17 @@ export default class AdvancedGasInputs extends Component {
       <div className="advanced-gas-inputs__gas-edit-rows">
         {this.renderGasInput({
           label: this.context.t('gasPrice'),
+          testId: 'gas-price',
           tooltipTitle: this.context.t('gasPriceInfoTooltipContent'),
           value: this.state.gasPrice,
           onChange: this.onChangeGasPrice,
           errorComponent: gasPriceErrorComponent,
           errorType: gasPriceErrorType,
+          disabled: !networkSupportsSettingGasPrice,
         })}
         {this.renderGasInput({
           label: this.context.t('gasLimit'),
+          testId: 'gas-limit',
           tooltipTitle: this.context.t('gasLimitInfoTooltipContent'),
           value: this.state.gasLimit,
           onChange: this.onChangeGasLimit,

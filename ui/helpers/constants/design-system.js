@@ -10,6 +10,8 @@ export const COLORS = {
   UI3: 'ui-3',
   UI4: 'ui-4',
   BLACK: 'black',
+  GREY: 'grey',
+  NEUTRAL_GREY: 'neutral-grey',
   WHITE: 'white',
   PRIMARY1: 'primary-1',
   PRIMARY2: 'primary-2',
@@ -32,6 +34,7 @@ export const COLORS = {
   RINKEBY: 'rinkeby',
   GOERLI: 'goerli',
   TRANSPARENT: 'transparent',
+  LOCALHOST: 'localhost',
 };
 
 export const TYPOGRAPHY = {
@@ -44,7 +47,7 @@ export const TYPOGRAPHY = {
   H7: 'h7',
   H8: 'h8',
   H9: 'h9',
-  Paragraph: 'paragraph',
+  Paragraph: 'p',
 };
 
 const NONE = 'none';
@@ -87,6 +90,19 @@ export const JUSTIFY_CONTENT = {
   SPACE_EVENLY: 'space-evenly',
 };
 
+export const FLEX_DIRECTION = {
+  ROW: 'row',
+  ROW_REVERSE: 'row-reverse',
+  COLUMN: 'column',
+  COLUMN_REVERSE: 'column-reverse',
+};
+
+export const FLEX_WRAP = {
+  WRAP: 'wrap',
+  WRAP_REVERSE: 'wrap-reverse',
+  NO_WRAP: 'nowrap',
+};
+
 export const DISPLAY = {
   BLOCK: 'block',
   FLEX: 'flex',
@@ -97,7 +113,7 @@ export const DISPLAY = {
   LIST_ITEM: 'list-item',
 };
 
-const FRACTIONS = {
+export const FRACTIONS = {
   HALF: '1/2',
   ONE_THIRD: '1/3',
   TWO_THIRDS: '2/3',
@@ -139,6 +155,7 @@ export const TEXT_ALIGN = {
   CENTER: 'center',
   RIGHT: 'right',
   JUSTIFY: 'justify',
+  END: 'end',
 };
 
 export const FONT_WEIGHT = {
@@ -155,9 +172,29 @@ export const FONT_WEIGHT = {
   900: 900,
 };
 
+export const OVERFLOW_WRAP = {
+  BREAK_WORD: 'break-word',
+  NORMAL: 'normal',
+};
+
+export const FONT_STYLE = {
+  ITALIC: 'italic',
+  NORMAL: 'normal',
+  OBLIQUE: 'oblique',
+};
+
 export const SEVERITIES = {
   DANGER: 'danger',
   WARNING: 'warning',
   INFO: 'info',
   SUCCESS: 'success',
+};
+
+export const RESIZE = {
+  NONE: 'none',
+  BOTH: 'both',
+  HORIZONTAL: 'horizontal',
+  VERTICAL: 'vertical',
+  INITIAL: 'initial',
+  INHERIT: 'inherit',
 };

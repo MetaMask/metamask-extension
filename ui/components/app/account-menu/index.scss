@@ -1,5 +1,5 @@
 .account-menu {
-  position: fixed;
+  position: absolute;
   z-index: 100;
   top: 58px;
   width: 320px;
@@ -7,13 +7,13 @@
   background: rgba($black, 0.8);
   box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
   min-width: 150px;
-  color: $white;
+  color: var(--white);
 
-  @media screen and (max-width: 575px) {
-    right: calc(((100vw - 100%) / 2) + 8px);
+  @media screen and (max-width: $break-small) {
+    right: 16px;
   }
 
-  @media screen and (min-width: 576px) {
+  @media screen and (min-width: $break-large) {
     right: calc((100vw - 85vw) / 2);
   }
 
@@ -33,8 +33,9 @@
     position: relative;
     z-index: 201;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       padding: 14px;
+      height: 54px;
     }
 
     &--clickable {
@@ -67,7 +68,7 @@
   }
 
   &__divider {
-    background-color: $scorpion;
+    background-color: var(--scorpion);
     width: 100%;
     height: 1px;
   }
@@ -97,14 +98,22 @@
     align-items: center;
   }
 
-  &__lock-button {
+  & &__lock-button {
     @include H7;
 
-    border: 1px solid $dusty-gray;
+    border: 1px solid var(--ui-white);
     background-color: transparent;
-    color: $white;
-    border-radius: 4px;
-    padding: 3.5px 24px;
+    padding: 3.5px 5px;
+    color: var(--white);
+    width: 59px;
+
+    &:hover {
+      background-color: rgba($dusty-gray, 0.05);
+    }
+
+    &:active {
+      background-color: rgba($dusty-gray, 0.1);
+    }
   }
 
   &__item-icon {
@@ -127,13 +136,9 @@
     overflow-y: auto;
     position: relative;
     max-height: 256px;
-    scrollbar-width: none;
+    scrollbar-width: auto;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       max-height: 228px;
     }
 
@@ -147,8 +152,8 @@
       height: 15px;
       margin-top: 5px;
       margin-right: 10px;
-      background-color: $dusty-gray;
-      color: $black;
+      background-color: var(--dusty-gray);
+      color: var(--black);
       font-weight: normal;
       letter-spacing: 0.5px;
       display: flex;
@@ -168,7 +173,7 @@
     padding: 16px 14px;
     flex: 0 0 auto;
 
-    @media screen and (max-width: 575px) {
+    @media screen and (max-width: $break-small) {
       padding: 12px 14px;
     }
 
@@ -182,7 +187,7 @@
       .remove-account-icon::after {
         content: '\00D7';
         font-size: 25px;
-        color: $white;
+        color: var(--white);
         cursor: pointer;
         position: absolute;
         margin-top: -5px;
@@ -220,7 +225,7 @@
   &__name {
     @include H4;
 
-    color: $white;
+    color: var(--white);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -230,7 +235,7 @@
   &__balance {
     @include H6;
 
-    color: $dusty-gray;
+    color: var(--dusty-gray);
   }
 
   &__action {

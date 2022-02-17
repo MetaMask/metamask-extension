@@ -1,28 +1,34 @@
 .info-tooltip {
-  img {
+  svg {
     height: 12px;
     width: 12px;
+  }
+
+  &__tooltip-container {
+    svg {
+      position: static;
+    }
   }
 }
 
 .tippy-popper[x-placement^=top] .tippy-tooltip-info-theme [x-arrow],
 .tippy-popper[x-placement^=top] .tippy-tooltip-wideInfo-theme [x-arrow] {
-  border-top-color: $white;
+  border-top-color: var(--white);
 }
 
 .tippy-popper[x-placement^=right] .tippy-tooltip-info-theme [x-arrow],
 .tippy-popper[x-placement^=right] .tippy-tooltip-wideInfo-theme [x-arrow] {
-  border-right-color: $white;
+  border-right-color: var(--white);
 }
 
 .tippy-popper[x-placement^=left] .tippy-tooltip-info-theme [x-arrow],
 .tippy-popper[x-placement^=left] .tippy-tooltip-wideInfo-theme [x-arrow] {
-  border-left-color: $white;
+  border-left-color: var(--white);
 }
 
 .tippy-popper[x-placement^=bottom] .tippy-tooltip-info-theme [x-arrow],
 .tippy-popper[x-placement^=bottom] .tippy-tooltip-wideInfo-theme [x-arrow] {
-  border-bottom-color: $white;
+  border-bottom-color: var(--white);
 }
 
 .tippy-tooltip {
@@ -40,7 +46,19 @@
       @include H7;
 
       text-align: left;
-      color: $Grey-500;
+      color: var(--Grey-500);
+
+      a {
+        color: var(--primary-1);
+      }
+
+      p {
+        margin-bottom: 12px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
     }
   }
 

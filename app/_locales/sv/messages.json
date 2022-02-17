@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Avvisa"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skanna QR-koden"
+  },
   "about": {
     "message": "Om"
-  },
-  "aboutSettingsDescription": {
-    "message": "Version, supportcenter och kontaktinformation"
   },
   "acceleratingATransaction": {
     "message": "* Att snabba upp en överföring genom att använda ett högre gaspris ökar chanserna för att överföringen ska hanteras snabbare av nätverket, men det är inte en garanti."
@@ -38,9 +41,6 @@
   "addNetwork": {
     "message": "Lägg till nätverk"
   },
-  "addRecipient": {
-    "message": "Lägg till mottagare"
-  },
   "addSuggestedTokens": {
     "message": "Lägg till föreslagna tokens"
   },
@@ -53,17 +53,11 @@
   "addToken": {
     "message": "Lägg till token"
   },
-  "addTokens": {
-    "message": "Lägg till tokens"
-  },
   "advanced": {
     "message": "Avancerat"
   },
   "advancedOptions": {
     "message": "Avancerade alternativ"
-  },
-  "advancedSettingsDescription": {
-    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC"
   },
   "amount": {
     "message": "Belopp"
@@ -75,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Godkänn"
@@ -137,14 +139,8 @@
     "message": "Visa konto på $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Använd Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Din webbläsare stöds inte..."
-  },
-  "builtInCalifornia": {
-    "message": "MetaMask är skapat och utformat i Kalifornien."
   },
   "buyWithWyre": {
     "message": "Köp ETH med Wyre"
@@ -221,9 +217,6 @@
   "copiedExclamation": {
     "message": "Kopierades!"
   },
-  "copiedTransactionId": {
-    "message": "Kopierade transaktions-ID"
-  },
   "copyAddress": {
     "message": "Kopiera adress till urklipp"
   },
@@ -254,14 +247,14 @@
   "currentLanguage": {
     "message": "Aktuellt språk"
   },
+  "custom": {
+    "message": "Avancerat"
+  },
   "customGas": {
     "message": "Anpassa gas"
   },
   "customGasSubTitle": {
     "message": "Att öka avgiften kan minska behandlingstiden, men det är inte garanterat att göra det."
-  },
-  "customRPC": {
-    "message": "Anpassad RPC"
   },
   "customToken": {
     "message": "Anpassad token"
@@ -271,9 +264,6 @@
   },
   "decimalsMustZerotoTen": {
     "message": "Decimalerna måste vara minst 0 och inte över 36."
-  },
-  "defaultNetwork": {
-    "message": "Standardnätverket för Ether-transaktioner är Main Net."
   },
   "delete": {
     "message": "Radera"
@@ -287,17 +277,8 @@
   "deleteNetworkDescription": {
     "message": "Är du säker på att du vill ta bort detta nätverk?"
   },
-  "depositEther": {
-    "message": "Sätt in Ether"
-  },
   "details": {
     "message": "Info"
-  },
-  "directDepositEther": {
-    "message": "Sätt in Ether direkt"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Om du redan har Ether är det snabbaste sättet att få Ether i din nya plånbok att göra en direktinsättning."
   },
   "done": {
     "message": "Klart"
@@ -420,9 +401,6 @@
   "general": {
     "message": "Allmänt"
   },
-  "generalSettingsDescription": {
-    "message": "Valutaomvandling, primär valuta, språk"
-  },
   "getEther": {
     "message": "Skaffa Ether"
   },
@@ -530,13 +508,16 @@
   "learnMore": {
     "message": "Läs mer"
   },
+  "learnMoreUpperCase": {
+    "message": "Läs mer"
+  },
   "ledgerAccountRestriction": {
     "message": "Du måste använda ditt senaste konto innan du kan lägga till ett nytt."
   },
   "letsGoSetUp": {
     "message": "Ja, kör igång!"
   },
-  "likeToAddTokens": {
+  "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
   },
   "links": {
@@ -572,17 +553,11 @@
   "metamaskVersion": {
     "message": "MetaMask-version"
   },
-  "mobileSyncText": {
-    "message": "Var vänlig ange ditt lösenord för att bekräfta att det är du!"
-  },
   "mustSelectOne": {
     "message": "Minst 1 token måste väljas."
   },
   "myAccounts": {
     "message": "Mina konton"
-  },
-  "needEtherInWallet": {
-    "message": "För att interagera med decentraliserade applikationer med MetaMask behöver du Ether i din plånbok."
   },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",
@@ -593,9 +568,6 @@
   },
   "networkName": {
     "message": "Nätverksnamn"
-  },
-  "networkSettingsDescription": {
-    "message": "Lägg till och redigera RPC-nätverk"
   },
   "networks": {
     "message": "Nätverk"
@@ -618,9 +590,6 @@
   },
   "newContract": {
     "message": "Nytt kontrakt"
-  },
-  "newNetwork": {
-    "message": "Nytt nätverk"
   },
   "newPassword": {
     "message": "Nytt lösenord (minst 8 tecken)"
@@ -669,12 +638,6 @@
   },
   "on": {
     "message": "På"
-  },
-  "optionalBlockExplorerUrl": {
-    "message": "Block Explorer URL (valfritt)"
-  },
-  "optionalCurrencySymbol": {
-    "message": "Symbol (frivillig)"
   },
   "origin": {
     "message": "Ursprung"
@@ -738,9 +701,6 @@
   "recents": {
     "message": "Senaste"
   },
-  "recipientAddress": {
-    "message": "Mottagaradress"
-  },
   "recipientAddressPlaceholder": {
     "message": "Sök, allmän adress (0x) eller ENS"
   },
@@ -798,9 +758,6 @@
   "revealSeedWordsDescription": {
     "message": "Om du någonsin byter webbläsare eller dator kommer du behöva denna"
   },
-  "revealSeedWordsTitle": {
-    "message": "Seed phrase"
-  },
   "revealSeedWordsWarning": {
     "message": "De här orden kan användas för att stjäla alla dina konton."
   },
@@ -837,9 +794,6 @@
   "searchTokens": {
     "message": "Sök tokens"
   },
-  "secretBackupPhrase": {
-    "message": "Hemlig återställningsfras"
-  },
   "secretBackupPhraseDescription": {
     "message": "Din hemliga backup-fras gör det enkelt att säkerhetskopiera och återställa ditt konto."
   },
@@ -848,9 +802,6 @@
   },
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"
-  },
-  "securitySettingsDescription": {
-    "message": "Sekretessinställningar och plånbokens seedfras"
   },
   "seedPhrasePlaceholder": {
     "message": "Separera varje ord med ett enda mellanslag."
@@ -863,9 +814,6 @@
   },
   "selectAnAccount": {
     "message": "Välj ett konto"
-  },
-  "selectAnAccountHelp": {
-    "message": "Välj konto att visa i MetaMask"
   },
   "selectEachPhrase": {
     "message": "Välj varje fras för att säkerställa att den är korrekt."
@@ -887,12 +835,6 @@
   },
   "sendTokens": {
     "message": "Skicka tokens"
-  },
-  "sentEther": {
-    "message": "skickat ether"
-  },
-  "separateEachWord": {
-    "message": "Lägg in ett mellanslag mellan varje ord"
   },
   "settings": {
     "message": "Inställningar"
@@ -1120,20 +1062,8 @@
   "viewContact": {
     "message": "Visa kontakt"
   },
-  "viewOnCustomBlockExplorer": {
-    "message": "Visa vid $1"
-  },
-  "viewOnEtherscan": {
-    "message": "Visa på Etherscan"
-  },
-  "viewinExplorer": {
-    "message": "Visa i Utforskaren"
-  },
   "visitWebSite": {
     "message": "Besök vår hemsida"
-  },
-  "walletSeed": {
-    "message": "Plånboksseed"
   },
   "welcome": {
     "message": "Välkommen till MetaMask"

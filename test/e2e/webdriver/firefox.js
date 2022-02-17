@@ -3,14 +3,23 @@ const os = require('os');
 const path = require('path');
 const { Builder, By, until } = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
+const proxy = require('selenium-webdriver/proxy');
 const { version } = require('../../../package.json');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
  * will be created as random directories inside this.
+ *
  * @type {string}
  */
 const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
+
+/**
+ * Proxy host to use for HTTPS requests
+ *
+ * @type {string}
+ */
+const HTTPS_PROXY_HOST = '127.0.0.1:8000';
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Firefox-specific functionality
@@ -18,12 +27,17 @@ const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
 class FirefoxDriver {
   /**
    * Builds a {@link FirefoxDriver} instance
+   *
    * @param {Object} options - the options for the build
+   * @param options.responsive
+   * @param options.port
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
   static async build({ responsive, port }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
+    options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
+    options.setAcceptInsecureCerts(true);
     const builder = new Builder()
       .forBrowser('firefox')
       .setFirefoxOptions(options);
@@ -51,7 +65,6 @@ class FirefoxDriver {
   }
 
   /**
-   * @constructor
    * @param {!ThenableWebDriver} driver - a {@code WebDriver} instance
    */
   constructor(driver) {
@@ -60,6 +73,7 @@ class FirefoxDriver {
 
   /**
    * Installs the extension at the given path
+   *
    * @param {string} addonPath - the path to the unpacked extension or XPI
    * @returns {Promise<string>} the extension ID
    */
@@ -69,15 +83,14 @@ class FirefoxDriver {
 
   /**
    * Returns the Internal UUID for the given extension
+   *
    * @returns {Promise<string>} the Internal UUID for the given extension
    */
   async getInternalId() {
     await this._driver.get('about:debugging#addons');
     return await this._driver
       .wait(
-        until.elementLocated(
-          By.xpath("//dl/div[contains(., 'Internal UUID')]/dd"),
-        ),
+        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
         1000,
       )
       .getText();

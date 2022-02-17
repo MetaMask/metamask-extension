@@ -1,0 +1,14 @@
+.app-loading-spinner {
+  background-color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+
+  &__inner {
+    width: 50px;
+  }
+}

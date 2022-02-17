@@ -2,9 +2,9 @@ import { connect } from 'react-redux';
 import { findLastIndex } from 'lodash';
 import {
   conversionRateSelector,
-  getNativeCurrency,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import TransactionActivityLog from './transaction-activity-log.component';
 import { combineTransactionHistories } from './transaction-activity-log.util';
 import {

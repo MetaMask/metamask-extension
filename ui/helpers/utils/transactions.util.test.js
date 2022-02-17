@@ -2,13 +2,14 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_GROUP_STATUSES,
   TRANSACTION_STATUSES,
+  TRANSACTION_ENVELOPE_TYPES,
 } from '../../../shared/constants/transaction';
 import * as utils from './transactions.util';
 
 describe('Transactions utils', () => {
-  describe('getTokenData', () => {
+  describe('getTransactionData', () => {
     it('should return token data', () => {
-      const tokenData = utils.getTokenData(
+      const tokenData = utils.getTransactionData(
         '0xa9059cbb00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000004e20',
       );
       expect(tokenData).toStrictEqual(expect.anything());
@@ -21,7 +22,7 @@ describe('Transactions utils', () => {
     });
 
     it('should not throw errors when called without arguments', () => {
-      expect(() => utils.getTokenData()).not.toThrow();
+      expect(() => utils.getTransactionData()).not.toThrow();
     });
   });
 
@@ -57,6 +58,21 @@ describe('Transactions utils', () => {
       tests.forEach(({ transaction, expected }) => {
         expect(utils.getStatusKey(transaction)).toStrictEqual(expected);
       });
+    });
+  });
+
+  describe('isLegacyTransaction', () => {
+    it('should return true if transaction is type-0', () => {
+      expect(
+        utils.isLegacyTransaction({ type: TRANSACTION_ENVELOPE_TYPES.LEGACY }),
+      ).toStrictEqual(true);
+    });
+    it('should return false if transaction is not type-0', () => {
+      expect(
+        utils.isLegacyTransaction({
+          type: TRANSACTION_ENVELOPE_TYPES.FEE_MARKET,
+        }),
+      ).toStrictEqual(false);
     });
   });
 });
