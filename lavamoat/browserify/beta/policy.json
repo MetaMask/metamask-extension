@@ -563,10 +563,7 @@
         "ethereumjs-wallet": true,
         "ethers": true,
         "ethjs-unit": true,
-        "ethjs-util": true,
         "events": true,
-        "human-standard-collectible-abi": true,
-        "human-standard-token-abi": true,
         "immer": true,
         "isomorphic-fetch": true,
         "jsonschema": true,
@@ -1858,6 +1855,16 @@
         "safe-event-emitter": true
       }
     },
+    "eth-eip712-util-browser": {
+      "globals": {
+        "intToBuffer": true
+      },
+      "packages": {
+        "bn.js": true,
+        "buffer": true,
+        "js-sha3": true
+      }
+    },
     "eth-ens-namehash": {
       "globals": {
         "name": "write"
@@ -1944,7 +1951,6 @@
         "addEventListener": true,
         "browser": true,
         "clearInterval": true,
-        "console.warn": true,
         "open": true,
         "setInterval": true
       },
@@ -2110,11 +2116,6 @@
         "@ethersproject/wallet": true,
         "@ethersproject/web": true,
         "@ethersproject/wordlists": true
-      }
-    },
-    "ethers-eip712": {
-      "packages": {
-        "ethers": true
       }
     },
     "ethjs": {
@@ -2338,8 +2339,7 @@
         "buffer": true,
         "crc-32": true,
         "elliptic": true,
-        "ethers": true,
-        "ethers-eip712": true,
+        "eth-eip712-util-browser": true,
         "js-sha3": true,
         "rlp-browser": true,
         "secp256k1": true,
