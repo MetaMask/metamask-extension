@@ -7,9 +7,7 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return (
-    <ExchangeRateDisplay {...args} />
-  );
+  return <ExchangeRateDisplay {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
@@ -17,25 +15,25 @@ DefaultStory.storyName = 'Default';
 DefaultStory.argTypes = {
   primaryTokenValue: {
     control: {
-      type: 'text'
+      type: 'text',
     },
     defaultValue: '2000000000000000000',
   },
   primaryTokenDecimals: {
     control: {
-      type: 'number'
+      type: 'number',
     },
     defaultValue: 18,
   },
   primaryTokenSymbol: {
     control: {
-      type: 'text'
+      type: 'text',
     },
     defaultValue: 'ETH',
   },
   secondaryTokenValue: {
     control: {
-      type: 'text'
+      type: 'text',
     },
     defaultValue: '200000000000000000',
   },
@@ -45,10 +43,10 @@ DefaultStory.argTypes = {
   },
   secondaryTokenSymbol: {
     control: {
-      type: 'text'
+      type: 'text',
     },
-    defaultValue: 'ABC'
-  }
+    defaultValue: 'ABC',
+  },
 };
 
 export const WhiteOnBlue = (args) => {
@@ -72,38 +70,38 @@ export const WhiteOnBlue = (args) => {
 WhiteOnBlue.argTypes = {
   primaryTokenValue: {
     control: {
-      type: 'text'
+      type: 'text',
     },
     defaultValue: '2000000000000000000',
   },
   primaryTokenDecimals: {
     control: {
-      type: 'number'
+      type: 'number',
     },
     defaultValue: 18,
   },
   primaryTokenSymbol: {
     control: {
-      type: 'text'
+      type: 'text',
     },
     defaultValue: 'ETH',
   },
   secondaryTokenValue: {
     control: {
-      type: 'text'
+      type: 'text',
     },
     defaultValue: '200000000000000000',
   },
   secondaryTokenDecimals: {
     control: {
-      type: 'number'
+      type: 'number',
     },
     defaultValue: 18,
   },
   secondaryTokenSymbol: {
     control: {
-      type: 'text'
+      type: 'text',
     },
-    defaultValue: 'ABC'
-  }
+    defaultValue: 'ABC',
+  },
 };
