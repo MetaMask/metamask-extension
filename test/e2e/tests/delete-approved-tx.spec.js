@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
 
-describe('Delete approved but not submitted transaction', function () {
+describe('Failed approved but not submitted transaction on boot', function () {
   const ganacheOptions = {
     accounts: [
       {
@@ -11,7 +11,7 @@ describe('Delete approved but not submitted transaction', function () {
       },
     ],
   };
-  it('should delete the approved but not submitted transaction', async function () {
+  it('should set the approved but not submitted transaction to failed', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -29,30 +29,15 @@ describe('Delete approved but not submitted transaction', function () {
           tag: 'button',
         });
 
-        await driver.findElements('.transaction-list__pending-transactions');
-        await driver.waitForSelector(
-          {
-            css: '.transaction-list-item__primary-currency',
-            text: '-0 ETH',
-          },
-          { timeout: 10000 },
+        const completedTransactions = await driver.findElements(
+          '.transaction-list__completed-transactions',
+        );
+        assert.equal(completedTransactions.length, 1);
+        const transactionStatus = await driver.findElements(
+          '.transaction-status',
         );
 
-        const cancelButton = await driver.findElement(
-          '.transaction-list-item__pending-actions button.btn-secondary',
-        );
-        await driver.clickElement(cancelButton);
-
-        await cancelButton.waitForElementState('hidden');
-
-        const pendingTxes = await driver.findElements(
-          '.transaction-list__pending-transactions .transaction-list-item',
-        );
-        assert.equal(
-          pendingTxes.length,
-          1,
-          'deleted transaction from pending tx list',
-        );
+        assert.equal(await transactionStatus.length, 1);
       },
     );
   });
