@@ -306,7 +306,7 @@ export default class AccountMenu extends Component {
       <div className="account-menu">
         <div className="account-menu__close-area" onClick={toggleAccountMenu} />
         <AccountMenuItem className="account-menu__header">
-          <div className="account-menu__area-title">{t('myAccounts')}</div>
+          {t('myAccounts')}
           <Button
             className="account-menu__lock-button"
             onClick={() => {
