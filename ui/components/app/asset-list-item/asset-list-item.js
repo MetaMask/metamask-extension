@@ -131,6 +131,7 @@ const AssetListItem = ({
           image={tokenImage}
           alt={`${primary} ${tokenSymbol}`}
           imageBorder={identiconBorder}
+          tokenSymbol={tokenSymbol}
         />
       }
       midContent={midContent}
