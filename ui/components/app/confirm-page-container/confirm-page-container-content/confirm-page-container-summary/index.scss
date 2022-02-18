@@ -28,7 +28,28 @@
     padding: 3px 8px;
     border: 1px solid var(--oslo-gray);
     border-radius: 4px;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+
+    .info-tooltip {
+      margin-left: 4px;
+    }
+
+    &__contract-address {
+      margin-right: 4px;
+      color: var(--primary-1);
+    }
+
+    &__contract-address-name {
+      margin-right: 4px;
+    }
+
+    &__contract-address-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      margin-right: 4px;
+    }
   }
 
   &__nonce {

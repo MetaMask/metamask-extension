@@ -235,6 +235,8 @@ export default class ConfirmPageContainer extends Component {
               hideTitle={hideTitle}
               supportsEIP1559V2={supportsEIP1559V2}
               hasTopBorder={showAddToAddressDialog}
+              toAddress={toAddress}
+              transactionType={currentTransaction.type}
             />
           )}
           {shouldDisplayWarning && (
