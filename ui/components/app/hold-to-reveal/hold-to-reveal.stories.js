@@ -10,7 +10,7 @@ export const DefaultStory = () => {
   return (
     <HoldToReveal
       buttonText="holdToReveal"
-      timeToHold={5}
+      secondsToHold={5}
       revealFinished={function foo() {
         // do nothing.
       }}

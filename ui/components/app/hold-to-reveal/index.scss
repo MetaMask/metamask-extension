@@ -14,7 +14,6 @@
 
 .main-box {
   position: relative;
-  display: inline-flex;
 
   &__circular-progress-secondary {
     z-index: 1;
@@ -31,9 +30,6 @@
     bottom: 0;
     right: 0;
     position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   &__icon {

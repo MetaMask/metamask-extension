@@ -4,10 +4,15 @@ import { CircularProgress } from '@material-ui/core';
 import Button from '../../ui/button';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box/box';
+import {
+  ALIGN_ITEMS,
+  DISPLAY,
+  JUSTIFY_CONTENT,
+} from '../../../helpers/constants/design-system';
 
 export default function HoldToReveal({
   buttonText,
-  timeToHold,
+  secondsToHold = 1,
   revealFinished,
 }) {
   const t = useContext(I18nContext);
@@ -21,7 +26,7 @@ export default function HoldToReveal({
         setProgress((prevProgress) =>
           prevProgress >= 100 ? 0 : prevProgress + 10,
         );
-      }, 100 * timeToHold);
+      }, 100 * secondsToHold);
 
       return () => {
         clearInterval(timer);
@@ -29,7 +34,7 @@ export default function HoldToReveal({
     }
 
     return undefined;
-  }, [holdButton, progress, timeToHold]);
+  }, [holdButton, progress, secondsToHold]);
 
   useEffect(() => {
     if (progress === 100) {
@@ -46,7 +51,7 @@ export default function HoldToReveal({
       }}
       type="primary"
       icon={
-        <Box className="main-box">
+        <Box display={DISPLAY.INLINE_FLEX} className="main-box">
           <CircularProgress
             className="main-box__circular-progress-secondary"
             variant="determinate"
@@ -61,7 +66,12 @@ export default function HoldToReveal({
             color="inherit"
             size={28}
           />
-          <Box className="main-box__image-box">
+          <Box
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            justifyContent={JUSTIFY_CONTENT.CENTER}
+            className="main-box__image-box"
+          >
             <img
               src={
                 progress === 100
@@ -81,7 +91,7 @@ export default function HoldToReveal({
 }
 
 HoldToReveal.propTypes = {
-  buttonText: PropTypes.string,
-  timeToHold: PropTypes.number,
+  buttonText: PropTypes.string.isRequired,
+  secondsToHold: PropTypes.number,
   revealFinished: PropTypes.func,
 };
