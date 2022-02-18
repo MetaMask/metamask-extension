@@ -86,7 +86,7 @@ const AddNetwork = ({
           >
             <img
               className="add-network__token-image"
-              src={item.rpcPrefs.imageUrl}
+              src={item?.rpcPrefs?.imageUrl}
               alt=""
             />
             <Typography variant={TYPOGRAPHY.H7} color={COLORS.BLACK}>
@@ -117,7 +117,7 @@ const AddNetwork = ({
             <>
               {t('onlyInteractWith')}
               <a
-                href="https://metamask.io/"
+                href="https://metamask.zendesk.com/hc/en-us/articles/4417500466971"
                 target="_blank"
                 className="add-network__footer__link"
                 rel="noreferrer"
