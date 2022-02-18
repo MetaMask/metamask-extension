@@ -93,6 +93,10 @@ describe('Add existing token using search', function () {
 });
 
 describe('Token Details', function () {
+  let windowHandles;
+  let extension;
+  let popup;
+  let dapp;
   const ganacheOptions = {
     accounts: [
       {
@@ -120,7 +124,7 @@ describe('Token Details', function () {
         await driver.clickElement('.app-header__logo-container');
 
         // connects the dapp
-        await driver.openNewPage('https://metamask.github.io/test-dapp/');
+        await driver.openNewPage('http://127.0.0.1:8080/');
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
@@ -138,7 +142,7 @@ describe('Token Details', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(dapp);
 
-        //create token from test dapp
+        // create token from test dapp
         await driver.clickElement({ text: 'Create Token', tag: 'button' });
         await driver.delay(2000);
         windowHandles = await driver.getAllWindowHandles();
@@ -146,24 +150,24 @@ describe('Token Details', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        
+
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.delay(3000);
-       
-       // await driver.waitUntilXWindowHandles(2);
+
         await driver.switchToWindow(dapp);
         const tokenAddress = await driver.waitForSelector('#tokenAddress');
 
         await driver.delay(2000);
         const tokenAddressText = await tokenAddress.getText();
 
-       //add token to wallet
-       const addTokenToWallet = await driver.findClickableElement(
-        { text: 'Add Token to Wallet', tag: 'button' }
-      );
+        // add token to wallet
+        const addTokenToWallet = await driver.findClickableElement({
+          text: 'Add Token to Wallet',
+          tag: 'button',
+        });
 
-      await driver.scrollToElement(addTokenToWallet);
-      await addTokenToWallet.click();
+        await driver.scrollToElement(addTokenToWallet);
+        await addTokenToWallet.click();
 
         await driver.delay(2000);
         windowHandles = await driver.getAllWindowHandles();
@@ -174,49 +178,102 @@ describe('Token Details', function () {
         await driver.clickElement({ text: 'Add Token', tag: 'button' });
         await driver.delay(3000);
 
-        //await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
-
 
         await driver.clickElement({ text: 'Assets', tag: 'button' });
 
         await driver.clickElement({ text: 'TST', tag: 'span' });
-        
+
         await driver.clickElement('[data-testid="asset-options__button"]');
-       
-        await driver.clickElement('[data-testid="asset-options__token-details"]');
+
+        await driver.clickElement(
+          '[data-testid="asset-options__token-details"]',
+        );
 
         const asset = await driver.findElement('h4');
-        assert.equal(await asset.isDisplayed(), true, "Asset not shown");
+        assert.equal(await asset.isDisplayed(), true, 'Asset not shown');
 
         const icon = await driver.findElement('img');
-        assert.equal(await icon.isDisplayed(), true, "Icon not shown");
+        assert.equal(await icon.isDisplayed(), true, 'Icon not shown');
 
-        const labelTokenContractAddress = await driver.findElement({ text: 'Token Contract Address', tag: 'h6'});
-        assert.equal(await labelTokenContractAddress.isDisplayed(), true, "Label Token Contract Address is not shown");
+        const labelTokenContractAddress = await driver.findElement({
+          text: 'Token Contract Address',
+          tag: 'h6',
+        });
+        assert.equal(
+          await labelTokenContractAddress.isDisplayed(),
+          true,
+          'Label Token Contract Address is not shown',
+        );
 
-        const tokenContractAddress = await driver.findElement({ text: await tokenAddressText, tag: 'h6'});
-        assert.equal(await tokenContractAddress.isDisplayed(), true, "Token contract address is not correct");
+        const tokenContractAddress = await driver.findElement({
+          text: await tokenAddressText,
+          tag: 'h6',
+        });
+        assert.equal(
+          await tokenContractAddress.isDisplayed(),
+          true,
+          'Token contract address is not correct',
+        );
 
-        const copyButton = await driver.findClickableElement('.token-details__copyIcon');
-        assert.equal(await copyButton.isDisplayed(), true, "Copy button is not clickable");
+        const copyButton = await driver.findClickableElement(
+          '.token-details__copyIcon',
+        );
+        assert.equal(
+          await copyButton.isDisplayed(),
+          true,
+          'Copy button is not clickable',
+        );
 
-        const labelTokenDecimal = await driver.findElement({ text: 'Token Decimal:', tag: 'h6'});
-        assert.equal(await labelTokenDecimal.isDisplayed(), true, "Label Token Decimal is not shown");
+        const labelTokenDecimal = await driver.findElement({
+          text: 'Token Decimal:',
+          tag: 'h6',
+        });
+        assert.equal(
+          await labelTokenDecimal.isDisplayed(),
+          true,
+          'Label Token Decimal is not shown',
+        );
 
-        const tokenDecimal = await driver.findElement({text: '4', tag: 'h6'});
-        assert.equal(await tokenDecimal.isDisplayed(), true, "Token Decimal is not correct");
+        const tokenDecimal = await driver.findElement({ text: '4', tag: 'h6' });
+        assert.equal(
+          await tokenDecimal.isDisplayed(),
+          true,
+          'Token Decimal is not correct',
+        );
 
-        const labelNetwork = await driver.findElement({text: 'Network:', tag: 'h6'});
-        assert.equal(await labelNetwork.isDisplayed(), true, "Label Token decimal is not shown");
+        const labelNetwork = await driver.findElement({
+          text: 'Network:',
+          tag: 'h6',
+        });
+        assert.equal(
+          await labelNetwork.isDisplayed(),
+          true,
+          'Label Token decimal is not shown',
+        );
 
-        const network = await driver.findElement({text: 'Localhost 8545', tag: 'h6'});
-        assert.equal(await network.isDisplayed(), true, "Network is not correct");
-        
-        const hideTokenButton = await driver.findClickableElement('.token-details__hide-token-button');
-        assert.equal(await hideTokenButton.isDisplayed(), true, "Hide token button is not displayed");
+        const network = await driver.findElement({
+          text: 'Localhost 8545',
+          tag: 'h6',
+        });
+        assert.equal(
+          await network.isDisplayed(),
+          true,
+          'Network is not correct',
+        );
 
-        const closeButton = await driver.findClickableElement('.token-details__closeButton');
+        const hideTokenButton = await driver.findClickableElement(
+          '.token-details__hide-token-button',
+        );
+        assert.equal(
+          await hideTokenButton.isDisplayed(),
+          true,
+          'Hide token button is not displayed',
+        );
+
+        const closeButton = await driver.findClickableElement(
+          '.token-details__closeButton',
+        );
         closeButton.click();
       },
     );
