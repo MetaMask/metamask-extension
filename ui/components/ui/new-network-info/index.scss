@@ -26,6 +26,7 @@
   &__token-box {
     align-self: center;
     margin-top: 8px;
+    max-width: 245px;
 
     & .typography--h6 {
       font-size: 0.75rem;
@@ -56,4 +57,10 @@
   &__manually-add-tokens {
     display: inline;
   }
+}
+
+.chip--with-left-icon {
+  padding-left: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }

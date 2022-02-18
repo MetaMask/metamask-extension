@@ -93,6 +93,7 @@ const NewNetworkInfo = ({ closePopup = null }) => {
       <Chip
         className="new-network-info__token-box"
         backgroundColor={COLORS.UI1}
+        maxContent={false}
         label={
           currentProvider.providerType === NETWORK_TYPE_RPC
             ? currentProvider.providerNickname ?? t('privateNetwork')
