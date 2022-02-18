@@ -47,7 +47,7 @@
   }
 
   &:active {
-    background: var(--Blue-000);  // @TODO: change when color available
+    background: var(--color-primary-muted);
     border-color: var(--color-primary-default);
   }
 
@@ -59,23 +59,23 @@
 }
 
 .btn-warning {
-  color: var(--Orange-500); // @TODO: change when color available
-  border: 1px solid var(--hover-orange); // @TODO: change when color available
+  color: var(--color-secondary-default);
+  border: 1px solid var(--color-seondary-muted);
   background-color: var(--color-text-default);
 
   &:hover {
-    border-color: var(--Orange-500); // @TODO: change when color available
+    border-color: var(--color-secondary-default);
   }
 
   &:active {
     background: var(--Orange-000); // @TODO: change when color available
-    border-color: var(--Orange-500); // @TODO: change when color available
+    border-color: var(--color-secondary-default);
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: var(--hover-orange); // @TODO: change when color available
+    color: var(--color-secondary-muted);
   }
 }
 
@@ -124,22 +124,22 @@
 }
 
 .btn-default {
-  color: var(--Grey-500); // @TODO: change when color available
-  border: 1px solid var(--hover-default); // @TODO: change when color available
+  color: var(--color-icon-default);
+  border: 1px solid var(--color-border-default);
 
   &:hover {
-    border-color: var(--Grey-500); // @TODO: change when color available
+    border-color: var(--color-icon-default);
   }
 
   &:active {
     background: #fbfbfc;
-    border-color: var(--Grey-500); // @TODO: change when color available
+    border-color: var(--color-icon-default);
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: var(--hover-default); // @TODO: change when color available
+    color: var(--color-border-default);
   }
 }
 
@@ -149,8 +149,8 @@
   background-color: var(--color-primary-default);
 
   &:hover {
-    border-color: var(--hover-confirm);
-    background-color: var(--hover-confirm);
+    border-color: var(--color-primary-alternative);
+    background-color: var(--color-primary-alternative);
   }
 
   &:active {
@@ -173,11 +173,11 @@
   background-color: transparent;
 
   &:hover {
-    color: var(--Blue-400); // @TODO: change when color available
+    color: var(--color-primary-muted);
   }
 
   &:active {
-    color: var(--Blue-600); // @TODO: change when color available
+    color: var(--color-primary-alternative);
   }
 
   &--disabled,
@@ -241,80 +241,80 @@ input[type="submit"][disabled] {
 
     &--disabled,
     &[disabled] {
-      border-color: var(--hover-secondary);
-      color: var(--hover-secondary);
+      border-color: var(--hover-secondary); // @TODO: change when color available
+      color: var(--hover-secondary); // @TODO: change when color available
     }
 
     &:active {
-      border-color: var(--Blue-600);
+      border-color: var(--color-primary-alternative);
     }
   }
 
   &.btn-default {
-    border: 1px solid var(--Grey-500);
+    border: 1px solid var(--color-icon-default);
 
     &--disabled,
     &[disabled] {
-      border-color: var(--Grey-100);
-      color: var(--hover-default);
+      border-color: var(--color-border-muted);
+      color: var(--hover-default); // @TODO: change when color available
     }
 
     &:active {
-      border-color: var(--Grey-600);
+      border-color: var(--color-text-alternative); // Not too sure of this one, seems weird to use text color when we have border colors
     }
   }
 
   &.btn-danger {
-    border: 1px solid var(--Red-500);
+    border: 1px solid var(--color-error-default);
 
     &--disabled,
     &[disabled] {
-      border-color: var(--Red-100);
-      color: var(--Red-300);
+      border-color: var(--Red-100); // @TODO: change when color available
+      color: var(--color-error-muted);
     }
 
     &:active {
-      border-color: var(--Red-600);
+      border-color: var(--color-error-alternative);
     }
   }
 
   &.btn-warning {
-    border: 1px solid var(--Orange-500);
+    border: 1px solid var(--color-secondary-default);
 
     &--disabled,
     &[disabled] {
-      border-color: var(--warning-light-orange);
-      color: var(--warning-light-orange);
+      border-color: var(--color-secondary-muted);
+      color: var(--color-secondary-muted);
     }
 
     &:active {
-      border-color: var(--Orange-600);
+      border-color: var(--color-secondary-alternative);
     }
   }
 
   &.btn-primary {
-    background-color: var(--Blue-500);
+    background-color: var(--color-primary-default);
 
     &--disabled,
     &[disabled] {
-      background-color: var(--hover-secondary);
+      background-color: var(--hover-secondary); // @TODO: change when color available
     }
 
     &:active {
-      background-color: var(--Blue-600);
+      background-color: var(--color-primary-alternative);
     }
   }
 
   &.btn-danger-primary {
-    background-color: var(--Red-500);
+    background-color: var(--color-error-default);
 
     &--disabled,
     &[disabled] {
-      background-color: var(--Red-300);
+      background-color: var(--color-error-muted);
     }
 
     &:active {
-      background-color: var(--Red-600);
+      background-color: var(--color-error-alternative);
     }
   }
 }
@@ -324,12 +324,12 @@ input[type="submit"][disabled] {
   padding: 0 4px;
   font-size: inherit;
   width: auto;
-  color: var(--Blue-500);
+  color: var(--color-primary-default);
   cursor: pointer;
   background-color: transparent;
 
   &:hover {
-    color: var(--Blue-400);
+    color: var(--color-primary-muted);
   }
 
   &:active {
@@ -341,6 +341,6 @@ input[type="submit"][disabled] {
     cursor: auto;
     opacity: 1;
     pointer-events: none;
-    color: var(--hover-secondary);
+    color: var(--hover-secondary); // @TODO: change when color available
   }
 }
