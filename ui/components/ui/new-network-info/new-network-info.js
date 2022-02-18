@@ -86,7 +86,6 @@ const NewNetworkInfo = ({ closePopup = null }) => {
         color={COLORS.BLACK}
         fontWeight={FONT_WEIGHT[700]}
         align={TEXT_ALIGN.CENTER}
-        className="new-network-info__title"
       >
         {t('switchedTo')}
       </Typography>
@@ -115,8 +114,7 @@ const NewNetworkInfo = ({ closePopup = null }) => {
         color={COLORS.BLACK}
         fontWeight={FONT_WEIGHT[700]}
         align={TEXT_ALIGN.CENTER}
-        className="new-network-info__subtitle"
-        margin={[6, 0, 0, 0]}
+        margin={[8, 0, 0, 0]}
       >
         {t('thingsToKeep')}
       </Typography>
@@ -136,7 +134,6 @@ const NewNetworkInfo = ({ closePopup = null }) => {
               variant={TYPOGRAPHY.H7}
               color={COLORS.BLACK}
               boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-              className="new-network-info__bullet-paragraph__text"
               key="nativeTokenInfo"
             >
               {t('nativeToken', [
