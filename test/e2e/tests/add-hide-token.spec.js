@@ -109,6 +109,7 @@ describe('Token Details', function () {
   it('check token details', async function () {
     await withFixtures(
       {
+        dapp: true,
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
