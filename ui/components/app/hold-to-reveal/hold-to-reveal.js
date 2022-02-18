@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { CircularProgress } from '@material-ui/core';
 import Button from '../../ui/button';
-import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box/box';
 import {
   ALIGN_ITEMS,
@@ -15,8 +14,6 @@ export default function HoldToReveal({
   secondsToHold = 1,
   revealFinished,
 }) {
-  const t = useContext(I18nContext);
-
   const [progress, setProgress] = useState(0);
   const [holdButton, setHoldButton] = useState(false);
 
@@ -78,14 +75,14 @@ export default function HoldToReveal({
                   ? 'images/unlock-icon.svg'
                   : 'images/lock-icon.svg'
               }
-              alt=""
+              alt="Padlock"
               className="main-box__icon"
             />
           </Box>
         </Box>
       }
     >
-      {t(buttonText)}
+      {buttonText}
     </Button>
   );
 }
