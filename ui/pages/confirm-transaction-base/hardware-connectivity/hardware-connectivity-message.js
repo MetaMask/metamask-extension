@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
-import { DEVICE_NAMES } from '../../../../shared/constants/hardware-wallets';
+import { DEVICE_NAMES, KEYRING_NAMES } from '../../../../shared/constants/hardware-wallets';
 
 export default function HardwareConnectivityMessage({
   connected = false,
@@ -17,7 +17,7 @@ export default function HardwareConnectivityMessage({
         type={connected ? '' : 'warning'}
         message={
           connected ? (
-            t('hardwareWalletConnectivityConnected', DEVICE_NAMES.LEDGER)
+            t('hardwareWalletConnectivityConnected', [KEYRING_NAMES.LEDGER])
           ) : (
             <>
               {t('hardwareWalletConnectivityNotConnected', [
