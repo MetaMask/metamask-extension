@@ -37,11 +37,6 @@
 
     &__contract-address {
       margin-right: 4px;
-      color: var(--primary-1);
-    }
-
-    &__contract-address-name {
-      margin-right: 4px;
     }
 
     &__contract-address-btn {
@@ -49,6 +44,7 @@
       border: none;
       padding: 0;
       margin-right: 4px;
+      color: var(--primary-1);
     }
   }
 

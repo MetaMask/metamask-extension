@@ -68,20 +68,13 @@ const ConfirmPageContainerSummary = (props) => {
         <div className="confirm-page-container-summary__action">
           {isContractTypeTransaction && toName && (
             <span className="confirm-page-container-summary__action__contract-address">
-              {isTrusted ? (
-                <span className="confirm-page-container-summary__action__contract-address-name">
-                  {toName}
-                </span>
-              ) : (
-                <button
-                  className="confirm-page-container-summary__action__contract-address-btn"
-                  onClick={() => setShowNicknamePopovers(true)}
-                  role="button"
-                >
-                  {toName}
-                </button>
-              )}
-              :
+              <button
+                className="confirm-page-container-summary__action__contract-address-btn"
+                onClick={() => setShowNicknamePopovers(true)}
+                role="button"
+              >
+                {toName}
+              </button>
             </span>
           )}
           <span>{action}</span>
