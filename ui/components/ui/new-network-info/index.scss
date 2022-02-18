@@ -1,7 +1,7 @@
 .new-network-info {
   &__wrapper {
     width: 330px;
-    height: 497px;
+    height: 514;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.214);
     border-radius: 8px;
 
@@ -25,6 +25,11 @@
 
   &__token-box {
     align-self: center;
+    margin-top: 8px;
+
+    & .typography--h6 {
+      font-size: 0.75rem;
+    }
   }
 
   &__subtitle {

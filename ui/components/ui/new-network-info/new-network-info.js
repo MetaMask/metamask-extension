@@ -10,11 +10,9 @@ import { NETWORK_TYPE_RPC } from '../../../../shared/constants/network';
 import Box from '../box';
 import {
   ALIGN_ITEMS,
-  BLOCK_SIZES,
   COLORS,
   DISPLAY,
   FONT_WEIGHT,
-  SIZES,
   TEXT_ALIGN,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
@@ -26,6 +24,7 @@ import {
   getUseTokenDetection,
 } from '../../../selectors';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
+import Chip from '../chip/chip';
 
 const NewNetworkInfo = ({ closePopup = null }) => {
   const t = useContext(I18nContext);
@@ -91,32 +90,25 @@ const NewNetworkInfo = ({ closePopup = null }) => {
       >
         {t('switchedTo')}
       </Typography>
-      <Box
-        backgroundColor={COLORS.UI1}
-        borderRadius={SIZES.XL}
-        marginTop={2}
-        display={DISPLAY.FLEX}
-        alignItems={ALIGN_ITEMS.CENTER}
-        height={BLOCK_SIZES.ONE_TWELFTH}
-        width={BLOCK_SIZES.FIVE_TWELFTHS}
-        padding={[0, 2, 0, 2]}
+      <Chip
         className="new-network-info__token-box"
-      >
-        {primaryTokenImage ? (
-          <Identicon image={primaryTokenImage} diameter={14} />
-        ) : (
-          <i className="fa fa-question-circle" />
-        )}
-        <Typography
-          variant={TYPOGRAPHY.H7}
-          color={COLORS.BLACK}
-          margin={[0, 0, 0, 2]}
-        >
-          {currentProvider.providerType === NETWORK_TYPE_RPC
+        backgroundColor={COLORS.UI1}
+        label={
+          currentProvider.providerType === NETWORK_TYPE_RPC
             ? currentProvider.providerNickname ?? t('privateNetwork')
-            : t(currentProvider.providerType)}
-        </Typography>
-      </Box>
+            : t(currentProvider.providerType)
+        }
+        labelProps={{
+          color: COLORS.BLACK,
+        }}
+        leftIcon={
+          primaryTokenImage ? (
+            <Identicon image={primaryTokenImage} diameter={14} />
+          ) : (
+            <i className="fa fa-question-circle" />
+          )
+        }
+      />
       <Typography
         variant={TYPOGRAPHY.H7}
         color={COLORS.BLACK}
@@ -132,8 +124,8 @@ const NewNetworkInfo = ({ closePopup = null }) => {
           <Box
             display={DISPLAY.FLEX}
             alignItems={ALIGN_ITEMS.CENTER}
-            paddingBottom={2}
             marginBottom={2}
+            paddingBottom={2}
             className="new-network-info__bullet-paragraph"
           >
             <Box marginRight={4} color={COLORS.BLACK}>
@@ -162,6 +154,8 @@ const NewNetworkInfo = ({ closePopup = null }) => {
         <Box
           display={DISPLAY.FLEX}
           alignItems={ALIGN_ITEMS.CENTER}
+          marginBottom={2}
+          paddingBottom={2}
           className={
             !autoDetectToken || !tokenDetectionSupported
               ? 'new-network-info__bullet-paragraph'
@@ -194,7 +188,12 @@ const NewNetworkInfo = ({ closePopup = null }) => {
           </Typography>
         </Box>
         {!autoDetectToken || !tokenDetectionSupported ? (
-          <Box display={DISPLAY.FLEX} alignItems={ALIGN_ITEMS.CENTER}>
+          <Box
+            display={DISPLAY.FLEX}
+            alignItems={ALIGN_ITEMS.CENTER}
+            marginBottom={2}
+            paddingBottom={2}
+          >
             <Box marginRight={4} color={COLORS.BLACK}>
               &bull;
             </Box>
