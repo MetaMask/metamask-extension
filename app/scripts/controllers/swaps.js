@@ -41,6 +41,8 @@ const POLL_COUNT_LIMIT = 3;
 // If for any reason the MetaSwap API fails to provide a refresh time,
 // provide a reasonable fallback to avoid further errors
 const FALLBACK_QUOTE_REFRESH_TIME = MINUTE;
+const FALLBACK_SMART_TRANSACTION_REFRESH_TIME = SECOND * 10;
+const FALLBACK_SMART_TRANSACTIONS_DEADLINE = 180;
 
 function calculateGasEstimateWithRefund(
   maxGas = MAX_GAS_LIMIT,
@@ -84,6 +86,9 @@ const initialState = {
     saveFetchedQuotes: false,
     swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
     swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
+    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+    swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+    swapsFeatureFlags: {},
   },
 };
 
@@ -134,7 +139,9 @@ export default class SwapsController {
     if (
       !refreshRates ||
       typeof refreshRates.quotes !== 'number' ||
-      typeof refreshRates.quotesPrefetching !== 'number'
+      typeof refreshRates.quotesPrefetching !== 'number' ||
+      typeof refreshRates.stxGetTransactions !== 'number' ||
+      typeof refreshRates.stxBatchStatus !== 'number'
     ) {
       throw new Error(
         `MetaMask - invalid response for refreshRates: ${response}`,
@@ -144,6 +151,9 @@ export default class SwapsController {
     return {
       quotes: refreshRates.quotes * 1000,
       quotesPrefetching: refreshRates.quotesPrefetching * 1000,
+      stxGetTransactions: refreshRates.stxGetTransactions * 1000,
+      stxBatchStatus: refreshRates.stxBatchStatus * 1000,
+      stxStatusDeadline: refreshRates.stxStatusDeadline,
     };
   }
 
@@ -164,6 +174,15 @@ export default class SwapsController {
           swapsRefreshRates?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
         swapsQuotePrefetchingRefreshTime:
           swapsRefreshRates?.quotesPrefetching || FALLBACK_QUOTE_REFRESH_TIME,
+        swapsStxGetTransactionsRefreshTime:
+          swapsRefreshRates?.stxGetTransactions ||
+          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+        swapsStxBatchStatusRefreshTime:
+          swapsRefreshRates?.stxBatchStatus ||
+          FALLBACK_SMART_TRANSACTION_REFRESH_TIME,
+        swapsStxStatusDeadline:
+          swapsRefreshRates?.stxStatusDeadline ||
+          FALLBACK_SMART_TRANSACTIONS_DEADLINE,
       },
     });
   }
@@ -572,6 +591,13 @@ export default class SwapsController {
     });
   }
 
+  setSwapsFeatureFlags(swapsFeatureFlags) {
+    const { swapsState } = this.store.getState();
+    this.store.updateState({
+      swapsState: { ...swapsState, swapsFeatureFlags },
+    });
+  }
+
   resetPostFetchState() {
     const { swapsState } = this.store.getState();
     this.store.updateState({
@@ -583,6 +609,7 @@ export default class SwapsController {
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
           swapsState.swapsQuotePrefetchingRefreshTime,
+        swapsFeatureFlags: swapsState.swapsFeatureFlags,
       },
     });
     clearTimeout(this.pollingTimeout);

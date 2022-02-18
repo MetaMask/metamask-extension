@@ -329,4 +329,12 @@ describe('App State', () => {
 
     expect(state.isMouseUser).toStrictEqual(true);
   });
+
+  it('smart transactions - SET_SMART_TRANSACTIONS_ERROR', () => {
+    const state = reduceApp(metamaskState, {
+      type: actions.SET_SMART_TRANSACTIONS_ERROR,
+      payload: 'Server Side Error',
+    });
+    expect(state.smartTransactionsError).toStrictEqual('Server Side Error');
+  });
 });

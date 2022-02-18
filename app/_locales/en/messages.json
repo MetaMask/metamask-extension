@@ -432,6 +432,9 @@
     "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
+  "cancelSwap": {
+    "message": "Cancel swap"
+  },
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
@@ -693,6 +696,9 @@
   },
   "customToken": {
     "message": "Custom Token"
+  },
+  "customerSupport": {
+    "message": "customer support"
   },
   "dappSuggested": {
     "message": "Site suggested"
@@ -981,6 +987,9 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
+  },
+  "enableSmartTransactions": {
+    "message": "Enable smart transactions"
   },
   "enableToken": {
     "message": "enable $1",
@@ -1993,6 +2002,9 @@
   "noThanks": {
     "message": "No Thanks"
   },
+  "noThanksVariant2": {
+    "message": "No, thanks."
+  },
   "noTransactions": {
     "message": "You have no transactions"
   },
@@ -2294,6 +2306,9 @@
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger Connection Type",
     "description": "A header for a dropdown in the advanced section of settings. Appears above the ledgerConnectionPreferenceDescription message"
+  },
+  "preparingSwap": {
+    "message": "Preparing swap..."
   },
   "prev": {
     "message": "Prev"
@@ -2737,6 +2752,9 @@
   "slow": {
     "message": "Slow"
   },
+  "smartTransaction": {
+    "message": "Smart transaction"
+  },
   "snapAccess": {
     "message": "$1 snap has access to:",
     "description": "$1 represents the name of the snap"
@@ -2871,6 +2889,86 @@
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
   },
+  "stxAreHere": {
+    "message": "Smart transactions are here!"
+  },
+  "stxBenefit1": {
+    "message": "Decrease transaction costs"
+  },
+  "stxBenefit2": {
+    "message": "Reduce failures & minimize costs"
+  },
+  "stxBenefit3": {
+    "message": "Protect from front-running"
+  },
+  "stxBenefit4": {
+    "message": "Eliminate stuck transactions"
+  },
+  "stxCancelled": {
+    "message": "Swap would have failed"
+  },
+  "stxCancelledDescription": {
+    "message": "Your transaction would have failed and was canceled to protect you from paying unnecessary gas fees."
+  },
+  "stxCancelledSubDescription": {
+    "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
+  },
+  "stxDescription": {
+    "message": "Smart transactions use MetaMask smart contracts to simulate transactions before submitting in order to..."
+  },
+  "stxFailure": {
+    "message": "Swap failed"
+  },
+  "stxFailureDescription": {
+    "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
+    "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxFallbackToNormal": {
+    "message": "You can still swap using the normal method or wait for cheaper gas fees and less failures with smart transactions."
+  },
+  "stxPendingFinalizing": {
+    "message": "Finalizing..."
+  },
+  "stxPendingOptimizingGas": {
+    "message": "Optimizing gas..."
+  },
+  "stxPendingPrivatelySubmitting": {
+    "message": "Privately submitting the Swap..."
+  },
+  "stxSubDescription": {
+    "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you."
+  },
+  "stxSuccess": {
+    "message": "Swap complete!"
+  },
+  "stxSuccessDescription": {
+    "message": "Your $1 is now available.",
+    "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "stxTooltip": {
+    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
+  },
+  "stxTryRegular": {
+    "message": "Try a regular swap."
+  },
+  "stxUnavailable": {
+    "message": "Smart transactions temporarily unavailable"
+  },
+  "stxUnknown": {
+    "message": "Status unknown"
+  },
+  "stxUnknownDescription": {
+    "message": "A transaction has been successful but we’re unsure what it is. This may be due to submitting another transaction while this swap was processing."
+  },
+  "stxUserCancelled": {
+    "message": "Swap canceled"
+  },
+  "stxUserCancelledDescription": {
+    "message": "Your transaction has been canceled and you did not pay any unnecessary gas fees."
+  },
+  "stxYouCanOptOut": {
+    "message": "You can opt-out in advanced settings any time."
+  },
   "submit": {
     "message": "Submit"
   },
@@ -2910,6 +3008,10 @@
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
+  "swapApproveNeedMoreTokensSmartTransactions": {
+    "message": "You need more $1 to complete this swap using smart transactions.",
+    "description": "Tells the user that they need more of a certain token ($1) before they can complete the swap via smart transactions."
+  },
   "swapBestOfNQuotes": {
     "message": "Best of $1 quotes.",
     "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
@@ -2917,6 +3019,10 @@
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
+  },
+  "swapCompleteIn": {
+    "message": "Swap complete in <",
+    "description": "'<' means 'less than', e.g. Swap complete in < 2:59"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
