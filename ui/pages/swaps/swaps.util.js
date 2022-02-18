@@ -9,6 +9,7 @@ import {
   POLYGON,
   BSC,
   RINKEBY,
+  AVALANCHE,
   SWAPS_API_V2_BASE_URL,
   SWAPS_DEV_API_V2_BASE_URL,
   GAS_API_BASE_URL,
@@ -26,6 +27,7 @@ import {
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
   RINKEBY_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -793,6 +795,8 @@ export const getNetworkNameByChainId = (chainId) => {
       return POLYGON;
     case RINKEBY_CHAIN_ID:
       return RINKEBY;
+    case AVALANCHE_CHAIN_ID:
+      return AVALANCHE;
     default:
       return '';
   }
