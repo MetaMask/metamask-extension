@@ -1,0 +1,28 @@
+const tokenAddress = '0xed04915c23f00a313a544955524eb7dbd823143d';
+const tokenSymbol = 'ACH';
+const tokenDecimals = 8;
+const tokenImage = 'https://alchemywalletdownload.oss-cn-hongkong.aliyuncs.com/alchemytech/0cd3775d3ed00d3cb37ddbf600b5203.png';
+
+try {
+  // wasAdded is a boolean. Like any RPC method, an error may be thrown.
+  const wasAdded = await ethereum.request({
+    method: 'wallet_watchAsset',
+    params: {
+      type: 'ERC20', // Initially only supports ERC20, but eventually more!
+      options: {
+        address: 0xed04915c23f00a313a544955524eb7dbd823143d, // The address that the token is at.
+        symbol: ACH, // A ticker symbol or shorthand, up to 5 chars.
+        decimals: 8, // The number of decimals in the token
+        image: https://alchemywalletdownload.oss-cn-hongkong.aliyuncs.com/alchemytech/0cd3775d3ed00d3cb37ddbf600b5203.png, // A string url of the token logo
+      },
+    },
+  });
+
+  if (wasAdded) {
+    console.log('Thanks for your interest!');
+  } else {
+    console.log('Your loss!');
+  }
+} catch (error) {
+  console.log(error);
+}
