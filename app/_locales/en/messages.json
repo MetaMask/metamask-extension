@@ -1389,9 +1389,6 @@
   "history": {
     "message": "History"
   },
-  "holdToReveal": {
-    "message": "Hold to reveal SRP"
-  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"

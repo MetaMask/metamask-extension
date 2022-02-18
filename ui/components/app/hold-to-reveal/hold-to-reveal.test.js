@@ -8,23 +8,23 @@ describe('HoldToReveal', () => {
   it('should render a button with label', () => {
     const { getByText } = render(
       <HoldToReveal
-        buttonText="holdToReveal"
+        buttonText="Hold to reveal SRP"
         timeToHold={5}
         revealFinished={revealFinished}
       />,
     );
-    expect(getByText('[holdToReveal]')).toBeInTheDocument();
+    expect(getByText('Hold to reveal SRP')).toBeInTheDocument();
   });
 
   it('should render a button when mouse is down and up', () => {
     const { getByText } = render(
       <HoldToReveal
-        buttonText="holdToReveal"
+        buttonText="Hold to reveal SRP"
         timeToHold={5}
         revealFinished={revealFinished}
       />,
     );
-    const button = getByText('[holdToReveal]');
+    const button = getByText('Hold to reveal SRP');
 
     fireEvent.mouseDown(button);
 
