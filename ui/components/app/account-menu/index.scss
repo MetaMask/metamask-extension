@@ -98,11 +98,6 @@
     justify-content: space-between;
     align-items: center;
   }
-
-  & &__area-title {
-    width: auto;
-  }
-
   & &__lock-button {
     @include H7;
 
