@@ -15,13 +15,8 @@ import { _setBackgroundConnection } from '../ui/store/actions';
 import MetaMaskStorybookTheme from './metamask-storybook-theme';
 
 addParameters({
-  backgrounds: {
-    default: 'light',
-    values: [
-      { name: 'light', value: '#FFFFFF' },
-      { name: 'dark', value: '#333333' },
-    ],
-  },
+  layout: 'fullscreen',
+  backgrounds: { disable: true },
   docs: {
     theme: MetaMaskStorybookTheme,
   },
@@ -39,6 +34,16 @@ addParameters({
 });
 
 export const globalTypes = {
+  theme: {
+    name: 'Theme',
+    description: 'Global theme for components',
+    defaultValue: 'light',
+    toolbar: {
+      icon: 'photo',
+      // array of plain string values or MenuItem shape (see below)
+      items: ['light', 'dark'],
+    },
+  },
   locale: {
     name: 'Locale',
     description: 'internationalization locale',
@@ -72,8 +77,10 @@ const proxiedBackground = new Proxy(
 _setBackgroundConnection(proxiedBackground);
 
 const metamaskDecorator = (story, context) => {
+  const theme = context.globals.theme;
   const currentLocale = context.globals.locale;
   const current = allLocales[currentLocale];
+  console.log('theme', theme);
   return (
     <Provider store={store}>
       <Router history={history}>
@@ -83,7 +90,17 @@ const metamaskDecorator = (story, context) => {
             current={current}
             en={allLocales.en}
           >
-            <LegacyI18nProvider>{story()}</LegacyI18nProvider>
+            <LegacyI18nProvider>
+              <div
+                style={{
+                  padding: 16,
+                  backgroundColor: 'var(--color-background-default)',
+                }}
+                data-theme={theme === 'dark' ? 'dark' : ''}
+              >
+                {story()}
+              </div>
+            </LegacyI18nProvider>
           </I18nProvider>
         </MetaMetricsProviderStorybook>
       </Router>
