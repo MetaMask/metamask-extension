@@ -66,6 +66,8 @@ export default class SignatureRequest extends PureComponent {
     const { address: fromAddress } = fromAccount;
     const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const { metricsEvent } = this.context;
+    // Special casing for OpenSea using Wyvern Contract.
+    const isOriginOpenSea = origin === 'https://opensea.io';
 
     const onSign = (event) => {
       sign(event);
@@ -105,14 +107,24 @@ export default class SignatureRequest extends PureComponent {
             {this.context.t('sigRequest')}
           </div>
           <div className="signature-request-content__identicon-container">
-            <div className="signature-request-content__identicon-initial">
-              {domain.name && domain.name[0]}
-            </div>
+            {!isOriginOpenSea && (
+              <div className="signature-request-content__identicon-initial">
+                {domain.name && domain.name[0]}
+              </div>
+            )}
             <div className="signature-request-content__identicon-border" />
-            <Identicon address={fromAddress} diameter={70} />
+            <Identicon
+              // eslint-disable-next-line no-negated-condition
+              address={!isOriginOpenSea ? fromAddress : null}
+              diameter={70}
+              image={isOriginOpenSea && './images/opensea-logo.svg'}
+            />
           </div>
-          <div className="signature-request-content__info--bolded">
-            {domain.name}
+          <div
+            className="signature-request-content__info--bolded"
+            title={domain.name}
+          >
+            {isOriginOpenSea ? 'OpenSea Marketplace Contract' : domain.name}
           </div>
           <div className="signature-request-content__info">{origin}</div>
           <div className="signature-request-content__info">
