@@ -1209,9 +1209,6 @@
   "forgotPassword": {
     "message": "Forgot password?"
   },
-  "forgotPasswordSubHeader": {
-    "message": "MetaMask cannot recover your password."
-  },
   "from": {
     "message": "From"
   },
@@ -2358,15 +2355,8 @@
   "reAddAccounts": {
     "message": "re-add any other accounts"
   },
-  "reAddTokens": {
-    "message": "re-add any tokens"
-  },
-  "reImportAccounts": {
-    "message": "re-import any such accounts"
-  },
-  "reImportAccountsAndTokens": {
-    "message": "Additionally, any imported external account, or custom tokens that were added, will not appear. You will need to $1 using their Private Key(s), and $2 that are missing.",
-    "description": "$1 is the text `re-import any such accounts` and $2 is the text `re-add any tokens`"
+  "reAdded": {
+    "message": "re-added"
   },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Import token” in your accounts options menu."
@@ -2467,19 +2457,24 @@
   "resetAccountDescription": {
     "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase."
   },
+  "resetWallet": {
+    "message": "Reset Wallet"
+  },
+  "resetWalletSubHeader": {
+    "message": "MetaMask does not keep a copy of your password. If you’re having trouble unlocking your account, you will need to reset your wallet. You can do this by providing the Secret Recovery Phrase you used when you set up your wallet."
+  },
+  "resetWalletUsingSRP": {
+    "message": "This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to $1 created previously. Custom accounts that you’ve imported will need to be $2, and any custom tokens you’ve added to an account will need to be $3 as well."
+  },
+  "resetWalletWarning": {
+    "message": "Make sure you’re using the correct Secret Recovery Phrase before proceeding. You will not be able to undo this."
+  },
   "restore": {
     "message": "Restore"
   },
   "restoreWalletPreferences": {
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
     "description": "$1 is the date at which the data was backed up"
-  },
-  "restoreWalletUsingSRP": {
-    "message": "If you restore a wallet using the Secret Recovery Phrase, only the wallet’s initial account might appear at first. You'll be able to $1 created previously.",
-    "description": "$1 is the text `re-add any other accounts`"
-  },
-  "restoreWalletWarning": {
-    "message": "To recover access to your wallet you will have to restore it using the Secret Recovery Phrase. This action will overwrite existing wallet data and cannot be undone. Make sure you’re using the correct Secret Recovery Phrase."
   },
   "retryTransaction": {
     "message": "Retry Transaction"

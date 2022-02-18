@@ -12,7 +12,7 @@ describe('Restore vault Component', () => {
       },
     };
 
-    const { getByText, getByRole } = renderWithProvider(
+    const { getByText, getByRole, getAllByRole } = renderWithProvider(
       <RestoreVaultPage {...props} />,
       configureMockStore()({
         metamask: { currentLocale: 'en' },
@@ -20,33 +20,25 @@ describe('Restore vault Component', () => {
       }),
     );
 
-    expect(getByText('Forgot password?')).toBeInTheDocument();
-    expect(
-      getByText('MetaMask cannot recover your password.'),
-    ).toBeInTheDocument();
+    expect(getByText('Reset Wallet')).toBeInTheDocument();
     expect(
       getByText(
-        'To recover access to your wallet you will have to restore it using the Secret Recovery Phrase. This action will overwrite existing wallet data and cannot be undone. Make sure you’re using the correct Secret Recovery Phrase.',
+        'MetaMask does not keep a copy of your password. If you’re having trouble unlocking your account, you will need to reset your wallet. You can do this by providing the Secret Recovery Phrase you used when you set up your wallet.',
       ),
     ).toBeInTheDocument();
     expect(
       getByText(
-        "If you restore a wallet using the Secret Recovery Phrase, only the wallet’s initial account might appear at first. You'll be able to created previously.",
+        'This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to created previously. Custom accounts that you’ve imported will need to be , and any custom tokens you’ve added to an account will need to be as well.',
       ),
     ).toBeInTheDocument();
     expect(
       getByRole('link', { name: 're-add any other accounts' }),
     ).toBeInTheDocument();
+    expect(getAllByRole('link', { name: 're-added' })).toHaveLength(2);
     expect(
       getByText(
-        'Additionally, any imported external account, or custom tokens that were added, will not appear. You will need to using their Private Key(s), and that are missing.',
+        'Make sure you’re using the correct Secret Recovery Phrase before proceeding. You will not be able to undo this.',
       ),
-    ).toBeInTheDocument();
-    expect(
-      getByRole('link', { name: 're-import any such accounts' }),
-    ).toBeInTheDocument();
-    expect(
-      getByRole('link', { name: 're-add any tokens' }),
     ).toBeInTheDocument();
   });
 });

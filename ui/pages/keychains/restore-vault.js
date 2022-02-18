@@ -9,7 +9,10 @@ import {
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
 import Button from '../../components/ui/button';
+import Box from '../../components/ui/box';
+import Typography from '../../components/ui/typography';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import { TYPOGRAPHY, COLORS } from '../../helpers/constants/design-system';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -53,9 +56,9 @@ class RestoreVaultPage extends Component {
     const { isLoading } = this.props;
 
     return (
-      <div className="first-view-main-wrapper">
-        <div className="first-view-main">
-          <div className="import-account">
+      <Box className="first-view-main-wrapper">
+        <Box className="first-view-main">
+          <Box className="import-account">
             <a
               className="import-account__back-button"
               onClick={(e) => {
@@ -67,15 +70,14 @@ class RestoreVaultPage extends Component {
             >
               {`< ${t('back')}`}
             </a>
-            <div className="import-account__title">{t('forgotPassword')}</div>
-            <div className="import-account__selector-label">
-              {t('forgotPasswordSubHeader')}
-            </div>
-            <div className="import-account__selector-typography">
-              {t('restoreWalletWarning')}
-            </div>
-            <div className="import-account__selector-typography">
-              {t('restoreWalletUsingSRP', [
+            <Typography variant={TYPOGRAPHY.H1} color={COLORS.BLACK}>
+              {t('resetWallet')}
+            </Typography>
+            <Typography color={COLORS.BLACK}>
+              {t('resetWalletSubHeader')}
+            </Typography>
+            <Typography color={COLORS.BLACK} margin={[4, 0]}>
+              {t('resetWalletUsingSRP', [
                 <Button
                   type="link"
                   target="_blank"
@@ -86,10 +88,6 @@ class RestoreVaultPage extends Component {
                 >
                   {t('reAddAccounts')}
                 </Button>,
-              ])}
-            </div>
-            <div className="import-account__selector-typography">
-              {t('reImportAccountsAndTokens', [
                 <Button
                   type="link"
                   target="_blank"
@@ -98,7 +96,7 @@ class RestoreVaultPage extends Component {
                   key="import-account-reimport-accounts"
                   className="import-account__link"
                 >
-                  {t('reImportAccounts')}
+                  {t('reAdded')}
                 </Button>,
                 <Button
                   type="link"
@@ -108,18 +106,21 @@ class RestoreVaultPage extends Component {
                   key="import-account-readd-tokens"
                   className="import-account__link"
                 >
-                  {t('reAddTokens')}
+                  {t('reAdded')}
                 </Button>,
               ])}
-            </div>
+            </Typography>
+            <Typography color={COLORS.BLACK} margin={[0, 0, 4]}>
+              {t('resetWalletWarning')}
+            </Typography>
             <CreateNewVault
               disabled={isLoading}
               onSubmit={this.handleImport}
               submitText={t('restore')}
             />
-          </div>
-        </div>
-      </div>
+          </Box>
+        </Box>
+      </Box>
     );
   }
 }
