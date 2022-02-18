@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 import { EDIT_GAS_MODES } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
-import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
+import {
+  NETWORK_TO_NAME_MAP,
+  MAINNET_CHAIN_ID,
+} from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
 import Dialog from '../../ui/dialog';
@@ -257,7 +260,7 @@ export default class ConfirmPageContainer extends Component {
           )}
           {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
             <div className="confirm-approve-content__warning">
-              {currentTransaction.chainId === '0x1' ? (
+              {currentTransaction.chainId === MAINNET_CHAIN_ID ? (
                 <ActionableMessage
                   message={
                     <Typography variant={TYPOGRAPHY.H7} align="left">

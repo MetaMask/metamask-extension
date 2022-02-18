@@ -12,6 +12,7 @@ import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography';
 import { TYPOGRAPHY } from '../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../shared/constants/transaction';
+import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,
@@ -96,7 +97,7 @@ const TransactionAlerts = ({
         />
       )}
       {balanceError &&
-      chainId === '0x1' &&
+      chainId === MAINNET_CHAIN_ID &&
       type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
         <ActionableMessage
           className="actionable-message--warning"
@@ -119,7 +120,7 @@ const TransactionAlerts = ({
         />
       ) : null}
       {balanceError &&
-      chainId !== '0x1' &&
+      chainId !== MAINNET_CHAIN_ID &&
       type === TRANSACTION_TYPES.DEPLOY_CONTRACT ? (
         <ActionableMessage
           className="actionable-message--warning"

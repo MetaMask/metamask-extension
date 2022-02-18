@@ -10,6 +10,7 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
+import { MAINNET_CHAIN_ID } from '../../../../../shared/constants/network';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
@@ -190,7 +191,7 @@ export default class ConfirmPageContainerContent extends Component {
           )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
-            {currentTransaction.chainId === '0x1' ? (
+            {currentTransaction.chainId === MAINNET_CHAIN_ID ? (
               <ActionableMessage
                 className="actionable-message--warning"
                 message={
