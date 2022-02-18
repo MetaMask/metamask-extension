@@ -362,9 +362,6 @@
     "message": "Konto bei $1 anzeigen",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies Identicon verwenden"
-  },
   "browserNotSupported": {
     "message": "Ihr Browser wird nicht unterstützt …"
   },
@@ -2790,10 +2787,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Wenn sich der Kurs zwischen der Aufgabe und der Bestätigung Ihres Auftrags ändert, nennt man das \"Slippage\". Ihr Swap wird automatisch storniert, wenn die Slippage Ihre Einstellung für die \"Slippagetoleranz\" überschreitet."
-  },
-  "swapQuoteNofN": {
-    "message": "Kurs $1 von $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Kursquelle"

@@ -139,9 +139,6 @@
     "message": "在 $1 觀看帳號 ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "使用像素風格代表圖案"
-  },
   "browserNotSupported": {
     "message": "您的瀏覽器尚未支援..."
   },

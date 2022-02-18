@@ -258,6 +258,8 @@ export const getWeb3ShimUsageAlertEnabledness = (state) =>
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
 
+export const getPendingTokens = (state) => state.metamask.pendingTokens;
+
 export const getTokens = (state) => state.metamask.tokens;
 
 export function getCollectiblesDetectionNoticeDismissed(state) {

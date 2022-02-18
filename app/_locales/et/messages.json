@@ -139,9 +139,6 @@
     "message": "Vaata kontot $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Kasuta Blockies Identiconi"
-  },
   "browserNotSupported": {
     "message": "Teie lehitsejat ei toetata..."
   },

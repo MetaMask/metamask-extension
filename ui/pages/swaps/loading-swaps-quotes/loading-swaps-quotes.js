@@ -108,7 +108,7 @@ export default function LoadingSwapsQuotes({
         <>
           <div className="loading-swaps-quotes__quote-counter">
             <span>
-              {t('swapQuoteNofN', [
+              {t('swapFetchingQuoteNofN', [
                 Math.min(quoteCount + 1, numberOfQuotes),
                 numberOfQuotes,
               ])}
