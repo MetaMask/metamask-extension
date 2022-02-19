@@ -9,6 +9,7 @@ import {
   LOCALHOST_CHAIN_ID,
   POLYGON_CHAIN_ID,
   RINKEBY_CHAIN_ID,
+  AVALANCHE_CHAIN_ID,
 } from '../../../../shared/constants/network';
 import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
@@ -34,6 +35,8 @@ export default function FeeCard({
   numberOfQuotes,
   onQuotesClick,
   chainId,
+  smartTransactionsOptInStatus,
+  smartTransactionsEnabled,
   isBestQuote,
   supportsEIP1559V2 = false,
 }) {
@@ -51,6 +54,8 @@ export default function FeeCard({
         return t('networkNameTestnet');
       case RINKEBY_CHAIN_ID:
         return t('networkNameRinkeby');
+      case AVALANCHE_CHAIN_ID:
+        return t('networkNameAvalanche');
       default:
         throw new Error('This network is not supported for token swaps');
     }
@@ -71,11 +76,15 @@ export default function FeeCard({
     <div className="fee-card">
       <div className="fee-card__main">
         <TransactionDetail
+          disableEditGasFeeButton={
+            smartTransactionsEnabled && smartTransactionsOptInStatus
+          }
           rows={[
             <TransactionDetailItem
               key="gas-item"
               detailTitle={
-                supportsEIP1559V2 ? (
+                supportsEIP1559V2 &&
+                (!smartTransactionsEnabled || !smartTransactionsOptInStatus) ? (
                   <GasDetailsItemTitle />
                 ) : (
                   <>
@@ -130,14 +139,16 @@ export default function FeeCard({
                       {t('maxFee')}
                     </Typography>
                     {`: ${secondaryFee.maxFee}`}
-                    {!supportsEIP1559V2 && (
-                      <span
-                        className="fee-card__edit-link"
-                        onClick={() => onFeeCardMaxRowClick()}
-                      >
-                        {t('edit')}
-                      </span>
-                    )}
+                    {!supportsEIP1559V2 &&
+                      (!smartTransactionsEnabled ||
+                        !smartTransactionsOptInStatus) && (
+                        <span
+                          className="fee-card__edit-link"
+                          onClick={() => onFeeCardMaxRowClick()}
+                        >
+                          {t('edit')}
+                        </span>
+                      )}
                   </>
                 )
               }
@@ -210,6 +221,8 @@ FeeCard.propTypes = {
   onQuotesClick: PropTypes.func.isRequired,
   numberOfQuotes: PropTypes.number.isRequired,
   chainId: PropTypes.string.isRequired,
+  smartTransactionsOptInStatus: PropTypes.bool,
+  smartTransactionsEnabled: PropTypes.bool,
   isBestQuote: PropTypes.bool.isRequired,
   supportsEIP1559V2: PropTypes.bool,
 };

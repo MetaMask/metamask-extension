@@ -9,6 +9,8 @@ import {
   navigateBackToBuildQuote,
   getFetchParams,
   getQuotesFetchStartTime,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import {
   isHardwareWallet,
@@ -35,6 +37,10 @@ export default function LoadingSwapsQuotes({
   const quotesFetchStartTime = useSelector(getQuotesFetchStartTime);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const quotesRequestCancelledEventConfig = {
     event: 'Quotes Request Cancelled',
     category: 'swaps',
@@ -48,6 +54,8 @@ export default function LoadingSwapsQuotes({
       response_time: Date.now() - quotesFetchStartTime,
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
     },
   };
 

@@ -35,6 +35,7 @@ import {
   AssetsContractController,
   CollectibleDetectionController,
 } from '@metamask/controllers';
+import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import {
   PermissionController,
   SubjectMetadataController,
@@ -696,6 +697,9 @@ export default class MetamaskController extends EventEmitter {
       getEIP1559GasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
         this.gasFeeController,
       ),
+      getExternalPendingTransactions: this.getExternalPendingTransactions.bind(
+        this,
+      ),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -831,6 +835,24 @@ export default class MetamaskController extends EventEmitter {
         this.gasFeeController,
       ),
     });
+    this.smartTransactionsController = new SmartTransactionsController({
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
+      getNetwork: this.networkController.getNetworkState.bind(
+        this.networkController,
+      ),
+      getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
+        this.txController.nonceTracker,
+      ),
+      confirmExternalTransaction: this.txController.confirmExternalTransaction.bind(
+        this.txController,
+      ),
+      provider: this.provider,
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
 
     // ensure accountTracker updates balances after network change
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
@@ -871,6 +893,7 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
+      SmartTransactionsController: this.smartTransactionsController,
       CollectiblesController: this.collectiblesController,
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       SnapController: this.snapController,
@@ -910,6 +933,7 @@ export default class MetamaskController extends EventEmitter {
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
+        SmartTransactionsController: this.smartTransactionsController,
         CollectiblesController: this.collectiblesController,
         ///: BEGIN:ONLY_INCLUDE_IN(flask)
         SnapController: this.snapController,
@@ -1257,6 +1281,7 @@ export default class MetamaskController extends EventEmitter {
       swapsController,
       threeBoxController,
       tokensController,
+      smartTransactionsController,
       txController,
     } = this;
 
@@ -1479,6 +1504,9 @@ export default class MetamaskController extends EventEmitter {
       updateAndApproveTransaction: txController.updateAndApproveTransaction.bind(
         txController,
       ),
+      approveTransactionsWithSameNonce: txController.approveTransactionsWithSameNonce.bind(
+        txController,
+      ),
       createCancelTransaction: this.createCancelTransaction.bind(this),
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
@@ -1618,11 +1646,40 @@ export default class MetamaskController extends EventEmitter {
         swapsController,
       ),
       setSwapsLiveness: swapsController.setSwapsLiveness.bind(swapsController),
+      setSwapsFeatureFlags: swapsController.setSwapsFeatureFlags.bind(
+        swapsController,
+      ),
       setSwapsUserFeeLevel: swapsController.setSwapsUserFeeLevel.bind(
         swapsController,
       ),
       setSwapsQuotesPollingLimitEnabled: swapsController.setSwapsQuotesPollingLimitEnabled.bind(
         swapsController,
+      ),
+
+      // Smart Transactions
+      setSmartTransactionsOptInStatus: smartTransactionsController.setOptInState.bind(
+        smartTransactionsController,
+      ),
+      fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
+        smartTransactionsController,
+      ),
+      estimateSmartTransactionsGas: smartTransactionsController.estimateGas.bind(
+        smartTransactionsController,
+      ),
+      submitSignedTransactions: smartTransactionsController.submitSignedTransactions.bind(
+        smartTransactionsController,
+      ),
+      cancelSmartTransaction: smartTransactionsController.cancelSmartTransaction.bind(
+        smartTransactionsController,
+      ),
+      fetchSmartTransactionsLiveness: smartTransactionsController.fetchLiveness.bind(
+        smartTransactionsController,
+      ),
+      updateSmartTransaction: smartTransactionsController.updateSmartTransaction.bind(
+        smartTransactionsController,
+      ),
+      setStatusRefreshInterval: smartTransactionsController.setStatusRefreshInterval.bind(
+        smartTransactionsController,
       ),
 
       // MetaMetrics
@@ -3518,6 +3575,13 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
   // MISCELLANEOUS
   //=============================================================================
+
+  getExternalPendingTransactions(address) {
+    return this.smartTransactionsController.getTransactions({
+      addressFrom: address,
+      status: 'pending',
+    });
+  }
 
   /**
    * Returns the nonce that will be associated with a transaction once approved

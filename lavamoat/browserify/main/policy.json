@@ -563,10 +563,7 @@
         "ethereumjs-wallet": true,
         "ethers": true,
         "ethjs-unit": true,
-        "ethjs-util": true,
         "events": true,
-        "human-standard-collectible-abi": true,
-        "human-standard-token-abi": true,
         "immer": true,
         "isomorphic-fetch": true,
         "jsonschema": true,
@@ -696,6 +693,25 @@
       },
       "packages": {
         "events": true
+      }
+    },
+    "@metamask/smart-transactions-controller": {
+      "globals": {
+        "URLSearchParams": true,
+        "clearInterval": true,
+        "console.error": true,
+        "console.log": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controllers": true,
+        "bignumber.js": true,
+        "ethers": true,
+        "fast-json-patch": true,
+        "isomorphic-fetch": true,
+        "lodash": true
       }
     },
     "@metamask/snap-controllers": {
@@ -1935,7 +1951,6 @@
         "addEventListener": true,
         "browser": true,
         "clearInterval": true,
-        "console.warn": true,
         "open": true,
         "setInterval": true
       },
