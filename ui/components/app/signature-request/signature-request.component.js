@@ -66,7 +66,7 @@ export default class SignatureRequest extends PureComponent {
     const { address: fromAddress } = fromAccount;
     const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const { metricsEvent } = this.context;
-    // Special casing for OpenSea using Wyvern Contract.
+    // Adding special casing for OpenSea w/ Wyvern Contract.
     const isOriginOpenSea = origin === 'https://opensea.io';
 
     const onSign = (event) => {
@@ -120,11 +120,8 @@ export default class SignatureRequest extends PureComponent {
               image={isOriginOpenSea && './images/opensea-logo.svg'}
             />
           </div>
-          <div
-            className="signature-request-content__info--bolded"
-            title={domain.name}
-          >
-            {isOriginOpenSea ? 'OpenSea Marketplace Contract' : domain.name}
+          <div className="signature-request-content__info--bolded">
+            {isOriginOpenSea ? 'OpenSea (Marketplace Contract)' : domain.name}
           </div>
           <div className="signature-request-content__info">{origin}</div>
           <div className="signature-request-content__info">
