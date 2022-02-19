@@ -1,41 +1,159 @@
+$lock-circle-radius: 14px;
+$lock-circle-diameter: $lock-circle-radius * 2;
+// Circumference ~ (2*PI*R). We reduced the number a little to create a snappier interaction
+$lock-circle-circumference: 82;
+$lock-circle-stroke-width: 2px;
+
 .btn--rounded.btn-primary {
   width: 190px;
   height: 40px;
   padding: 6px 13px 6px 9px;
+  transform: scale(1);
+  transition: 0.5s transform;
 
   &:active {
     background-color: var(--Blue-500) !important;
+    transform: scale(1.05);
+
+    .circle-foreground {
+      stroke-dashoffset: 0;
+    }
+
+    .lock-icon-container {
+      opacity: 0;
+    }
   }
 }
 
-.button__icon {
-  margin-inline-end: 11px !important;
+%absolute-fill {
+  position: absolute;
+  top:0;
+  left: 0;
+  bottom:0;
+  right: 0;
 }
 
-.main-box {
+%icon {
+  height: $lock-circle-diameter;
+  width: $lock-circle-diameter;
+}
+
+.absolute-fill {
+  @extend %absolute-fill;
+}
+
+%circle-shared {
+  fill: transparent;
+  stroke-width: $lock-circle-stroke-width;
+}
+
+@keyframes collapse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0);
+  }
+}
+
+.circle-static-outer {
+  fill: white;
+}
+
+.circle-static-inner {
+  fill: var(--Blue-500);
+}
+
+.circle-static-outer-container {
+  animation: collapse 0.25s forwards;
+}
+
+.circle-static-inner-container {
+  animation: collapse 0.125s forwards;
+}
+
+.circle-background {
+  @extend %circle-shared;
+  stroke: var(--Blue-600);
+}
+
+.circle-svg {
+  @extend %icon;
+  transform: rotate(-90deg)
+}
+
+.circle-foreground {
+  @extend %circle-shared;
+  stroke: white;
+  stroke-dasharray: $lock-circle-circumference;
+  stroke-dashoffset: $lock-circle-circumference;
+  transition: 1s stroke-dashoffset;
+}
+
+.lock-icon-container {
+  @extend %absolute-fill;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s opacity;
+  opacity: 1;
+}
+
+.lock-icon {
+  width: 7.88px;
+  height: 9px;
+}
+
+@keyframes expand {
+  from {
+    transform: scale(0)
+  }
+  to {
+    transform: scale(1)
+  }
+}
+
+.check-icon-container {
+  @extend %absolute-fill;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0);
+  animation: 0.175s expand 0.2s forwards;
+}
+
+.check-icon {
+  width: 14px;
+  height: 11px;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+.svg {
+  transform: rotate(-90deg);
+}
+
+.icon-container {
   position: relative;
+  @extend %icon;
+  margin-right: 2px;
+}
 
-  &__circular-progress-secondary {
-    z-index: 1;
-    color: var(--ui-white);
-  }
+.check-icon-hide {
+  animation: 0.3s collapse 1s forwards;
+}
 
-  &__circular-progress-primary {
-    color: rgba(0, 0, 0, 0.3);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
+  to {
+    opacity: 1;
+  }
+}
 
-  &__image-box {
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    position: absolute;
-  }
-
-  &__icon {
-    width: 7.88px;
-    height: 9px;
-    left: calc(50% - 7.88px/2 - 72.06px);
-    top: calc(50% - 9px/2 - 0.5px);
-  }
+.main-icon-show {
+  animation: 0.4s fadeIn 1.2s forwards;
 }

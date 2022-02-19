@@ -6,8 +6,9 @@ export default {
   id: __filename,
   argTypes: {
     buttonText: { control: 'text' },
-    secondsToHold: { control: 'number' },
-    revealFinished: { action: 'revealFinished' },
+    onLongPressed: { action: 'Revealing SRP' },
+    // secondsToHold: { control: 'number' },
+    // revealFinished: { action: 'revealFinished' },
   },
 };
 
@@ -19,5 +20,5 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   buttonText: 'Hold to reveal SRP',
-  secondsToHold: 5,
+  onLongPressed: () => console.log('Reveal!'),
 };
