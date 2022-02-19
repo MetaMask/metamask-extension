@@ -1,5 +1,18 @@
+diff --git a/node_modules/@metamask/snap-controllers/dist/permissions/endowments/network-access.js b/node_modules/@metamask/snap-controllers/dist/permissions/endowments/network-access.js
+index 8ada843..1a44768 100644
+--- a/node_modules/@metamask/snap-controllers/dist/permissions/endowments/network-access.js
++++ b/node_modules/@metamask/snap-controllers/dist/permissions/endowments/network-access.js
+@@ -14,7 +14,7 @@ const specificationBuilder = (_builderOptions) => {
+         targetKey: permissionName,
+         allowedCaveats: null,
+         endowmentGetter: (_getterOptions) => {
+-            return ['fetch'];
++            return ['fetch', 'XMLHttpRequest'];
+         },
+     };
+ };
 diff --git a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
-index 801ece1..6d4ff6a 100644
+index 801ece1..13a52b7 100644
 --- a/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
 +++ b/node_modules/@metamask/snap-controllers/dist/snaps/SnapController.js
 @@ -465,7 +465,7 @@ class SnapController extends controllers_1.BaseControllerV2 {
@@ -28,3 +41,18 @@ index 801ece1..6d4ff6a 100644
          }
          try {
              const { sourceCode } = await this.add({
+@@ -593,7 +598,13 @@ class SnapController extends controllers_1.BaseControllerV2 {
+                 }
+             }
+         }
+-        return allEndowments.length > 0 ? allEndowments : undefined;
++      return [
++        'atob',
++        'btoa',
++        'TextEncoder',
++        'TextEncoderStream',
++        ...allEndowments,
++      ]
+     }
+     /**
+      * Internal method. See the "add" method.
