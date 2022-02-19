@@ -13434,9 +13434,9 @@ graphql-subscriptions@^1.1.0:
   integrity sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==
 
 gridplus-sdk@^0.9.7:
-  version "0.9.7"
-  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-0.9.7.tgz#fefa45c4373d02e351ea18059b49429b903d6cf5"
-  integrity sha512-n6dG93XYGplDctUaBMyDsBQzi9kWMB+/2XBzNr2uaHVBpXv8SFPSbYD+uPRUwbjIb8xcRsN0RzHL9QqMO+2vOQ==
+  version "0.9.9"
+  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-0.9.9.tgz#aa268137bf40549bdffe33788650db20c9b53aea"
+  integrity sha512-VJvRFy6BMazuUGF9r6fEko8D4/2Y+LW5XyEnGSatBmon0NYLVDwwf7ALp/6aUb6mN27eULAP6rBuI8WkESJj+Q==
   dependencies:
     aes-js "^3.1.1"
     bech32 "^2.0.0"
