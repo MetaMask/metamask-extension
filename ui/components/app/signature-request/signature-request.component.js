@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Identicon from '../../ui/identicon';
+import SiteIcon from '../../ui/site-icon';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { getURLHostName, sanitizeMessage } from '../../../helpers/utils/util';
 import Header from './signature-request-header';
@@ -37,6 +38,7 @@ export default class SignatureRequest extends PureComponent {
      * Whether the hardware wallet requires a connection disables the sign button if true.
      */
     hardwareWalletRequiresConnection: PropTypes.bool.isRequired,
+    subjectMetadata: PropTypes.object,
   };
 
   static contextTypes = {
@@ -62,18 +64,23 @@ export default class SignatureRequest extends PureComponent {
   render() {
     const {
       fromAccount,
-      txData: {
-        msgParams: { data, origin, version },
-        type,
-      },
+      txData,
       cancel,
       sign,
       isLedgerWallet,
       hardwareWalletRequiresConnection,
+      subjectMetadata,
     } = this.props;
+    const {
+      msgParams: { data, origin, version },
+      type,
+    } = txData;
     const { address: fromAddress } = fromAccount;
     const { message, primaryType, types } = JSON.parse(data);
     const { metricsEvent } = this.context;
+    const targetSubjectMetadata = txData.msgParams.origin
+      ? subjectMetadata?.[txData.msgParams.origin]
+      : null;
 
     const onSign = (event) => {
       sign(event);
@@ -117,12 +124,25 @@ export default class SignatureRequest extends PureComponent {
             {this.context.t('sigRequest')}
           </div>
           <div className="signature-request-content__identicon-container">
-            <div className="signature-request-content__identicon-initial">
-              {/* {domain.name && domain.name[0]} */}
-              {originHostNameCharacter}
-            </div>
-            <div className="signature-request-content__identicon-border" />
-            <Identicon address={fromAddress} diameter={70} />
+            {targetSubjectMetadata?.iconUrl ? (
+              <SiteIcon
+                icon={targetSubjectMetadata.iconUrl}
+                name={
+                  getURLHostName(targetSubjectMetadata.origin) ||
+                  targetSubjectMetadata.origin
+                }
+                size={24}
+              />
+            ) : (
+              <>
+                <div className="signature-request-content__identicon-initial">
+                  {/* {domain.name && domain.name[0]} */}
+                  {originHostNameCharacter}
+                </div>
+                <div className="signature-request-content__identicon-border" />
+                <Identicon address={fromAddress} diameter={70} />
+              </>
+            )}
           </div>
           <div className="signature-request-content__info--bolded">
             {origin}

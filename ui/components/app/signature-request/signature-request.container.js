@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
+  getSubjectMetadata,
 } from '../../../selectors';
 import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import { getAccountByAddress } from '../../../helpers/utils/util';
@@ -24,6 +25,7 @@ function mapStateToProps(state, ownProps) {
     hardwareWalletRequiresConnection,
     // not forwarded to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
+    subjectMetadata: getSubjectMetadata(state),
   };
 }
 
