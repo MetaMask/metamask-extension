@@ -134,7 +134,7 @@ describe('Confirm Page Container Content', () => {
     expect(props.onCancel).toHaveBeenCalledTimes(1);
   });
 
-  it('render contract address name from addressBook in title', async () => {
+  it('render contract address name from addressBook in title for contract', async () => {
     props.hasSimulationError = false;
     props.disabled = false;
     props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
@@ -145,5 +145,18 @@ describe('Confirm Page Container Content', () => {
     );
 
     expect(queryByText('Address Book Account 1')).toBeInTheDocument();
+  });
+
+  it('render simple title without address name for simple send', async () => {
+    props.hasSimulationError = false;
+    props.disabled = false;
+    props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
+    props.transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent {...props} />,
+      store,
+    );
+
+    expect(queryByText('Address Book Account 1')).not.toBeInTheDocument();
   });
 });
