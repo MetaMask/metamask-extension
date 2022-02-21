@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Identicon from '../../ui/identicon';
 import LedgerInstructionField from '../ledger-instruction-field';
-import { sanitizeMessage } from '../../../helpers/utils/util';
+import { getURLHostName, sanitizeMessage } from '../../../helpers/utils/util';
 import Header from './signature-request-header';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
@@ -72,7 +72,7 @@ export default class SignatureRequest extends PureComponent {
       hardwareWalletRequiresConnection,
     } = this.props;
     const { address: fromAddress } = fromAccount;
-    const { message, domain = {}, primaryType, types } = JSON.parse(data);
+    const { message, primaryType, types } = JSON.parse(data);
     const { metricsEvent } = this.context;
 
     const onSign = (event) => {
@@ -107,6 +107,7 @@ export default class SignatureRequest extends PureComponent {
 
     const messageIsScrollable =
       this.messageRootRef?.scrollHeight > this.messageRootRef?.clientHeight;
+    const originHostNameCharacter = getURLHostName(origin)?.[0];
 
     return (
       <div className="signature-request page-container">
@@ -117,15 +118,16 @@ export default class SignatureRequest extends PureComponent {
           </div>
           <div className="signature-request-content__identicon-container">
             <div className="signature-request-content__identicon-initial">
-              {domain.name && domain.name[0]}
+              {/* {domain.name && domain.name[0]} */}
+              {originHostNameCharacter}
             </div>
             <div className="signature-request-content__identicon-border" />
             <Identicon address={fromAddress} diameter={70} />
           </div>
           <div className="signature-request-content__info--bolded">
-            {domain.name}
+            {origin}
           </div>
-          <div className="signature-request-content__info">{origin}</div>
+          {/* <div className="signature-request-content__info">{origin}</div> */}
           <div className="signature-request-content__info">
             {this.formatWallet(fromAddress)}
           </div>
