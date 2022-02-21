@@ -173,3 +173,41 @@
     width: 100%;
   }
 }
+
+@keyframes slide-in {
+  100% { transform: translateY(0%); }
+}
+
+.smart-transactions-popover {
+  transform: translateY(-100%);
+  animation: slide-in 0.5s forwards;
+
+  &__content {
+    flex-direction: column;
+
+    ul {
+      list-style: inside;
+    }
+
+    a {
+      color: var(--Blue-500);
+      cursor: pointer;
+    }
+  }
+
+  &__footer {
+    flex-direction: column;
+    flex: 1;
+    align-items: center;
+    border-top: 0;
+
+    button {
+      border-radius: 50px;
+    }
+
+    a {
+      font-size: inherit;
+      padding-bottom: 0;
+    }
+  }
+}
