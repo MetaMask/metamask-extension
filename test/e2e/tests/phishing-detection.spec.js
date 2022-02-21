@@ -38,7 +38,7 @@ describe('Phishing Detection', function () {
         title: this.test.title,
         testSpecificMock: mockPhishingDetection,
       },
-      async ({ driver, _ }) => {
+      async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
