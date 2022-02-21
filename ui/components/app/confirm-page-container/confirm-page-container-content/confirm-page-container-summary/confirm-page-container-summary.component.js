@@ -75,9 +75,12 @@ const ConfirmPageContainerSummary = (props) => {
               >
                 {toName}
               </button>
+              :
             </span>
           )}
-          <span>{action}</span>
+          <span className="confirm-page-container-summary__action__name">
+            {action}
+          </span>
           {isContractTypeTransaction && isTrusted === false && (
             <InfoTooltip
               position="top"

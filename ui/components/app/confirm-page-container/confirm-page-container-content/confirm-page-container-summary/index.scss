@@ -23,7 +23,6 @@
   &__action {
     @include H7;
 
-    text-transform: uppercase;
     color: var(--oslo-gray);
     padding: 3px 8px;
     border: 1px solid var(--oslo-gray);
@@ -31,8 +30,16 @@
     display: inline-flex;
     align-items: center;
 
+    &__name {
+      text-transform: uppercase;
+    }
+
     .info-tooltip {
       margin-left: 4px;
+
+      &__tooltip-container {
+        margin-bottom: -3px;
+      }
     }
 
     &__contract-address {
