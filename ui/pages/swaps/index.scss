@@ -1,5 +1,6 @@
 @import 'awaiting-swap/index';
 @import 'awaiting-signatures/index';
+@import 'smart-transaction-status/index';
 @import 'build-quote/index';
 @import 'countdown-timer/index';
 @import 'dropdown-input-pair/index';
@@ -22,6 +23,16 @@
 
   @media screen and (min-width: $break-large) {
     z-index: 12;
+  }
+
+  &__error-message {
+    margin-left: 24px;
+    margin-right: 24px;
+
+    @media screen and (min-width: $break-large) {
+      margin-left: 20px;
+      margin-right: 20px;
+    }
   }
 
   &__container {

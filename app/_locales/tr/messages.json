@@ -362,9 +362,6 @@
     "message": "Hesabı şurada görüntüleyin: $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies Identicon kullan"
-  },
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
   },
@@ -1004,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Ana gaz tahmini hizmeti olarak sunulan yedek gaz fiyatı şu anda kullanılamıyor."
-  },
-  "eth_accounts": {
-    "message": "Adrese, hesap bakiyesine, aktiviteye bakın ve işlemleri başlatın",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum Genel Adresi"
@@ -2079,6 +2072,10 @@
   "permissionRequest": {
     "message": "İzin talebi"
   },
+  "permission_ethereumAccounts": {
+    "message": "Adrese, hesap bakiyesine, aktiviteye bakın ve işlemleri başlatın",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "İzinler"
   },
@@ -2796,10 +2793,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Emrinizin verildiği ve onaylandığı zamanlar arasında fiyat farkı oluşursa buna \"fark\" denir. Fark, \"fark toleransı\" ayarınızı aşarsa Takas işleminiz otomatik olarak iptal edilir."
-  },
-  "swapQuoteNofN": {
-    "message": "Teklif $1 / $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Teklif kaynağı"

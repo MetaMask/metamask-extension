@@ -362,9 +362,6 @@
     "message": "$1のアカウントを表示",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockiesアイデンティコンの使用"
-  },
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
   },
@@ -1004,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "現在メインのガスの見積もりサービスが利用できないため、バックアップのガス代が提供されています。"
-  },
-  "eth_accounts": {
-    "message": "アドレス、アカウント残高、アクティビティを表示してトランザクションを開始",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "パブリックイーサリアムアドレス"
@@ -2079,6 +2072,10 @@
   "permissionRequest": {
     "message": "許可のリクエスト"
   },
+  "permission_ethereumAccounts": {
+    "message": "アドレス、アカウント残高、アクティビティを表示してトランザクションを開始",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "許可"
   },
@@ -2796,10 +2793,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "注文した時点と注文が承認された時点で価格が変わることを「スリッページ」と呼びます。スリッページが「最大スリッページ」設定を超える場合、スワップは自動的にキャンセルされます。"
-  },
-  "swapQuoteNofN": {
-    "message": "$2件中$1件目の見積もり",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "見積もりのソース"

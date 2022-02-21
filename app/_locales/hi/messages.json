@@ -362,9 +362,6 @@
     "message": "$1 पर खाता देखें",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "ब्लॉकीज़ आइडेंटिकॉन का उपयोग करें"
-  },
   "browserNotSupported": {
     "message": "आपका ब्राउज़र समर्थित नहीं है..."
   },
@@ -1004,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "बैकअप गैस की कीमत प्रदान की जाती है क्योंकि मुख्य गैस अनुमान सर्विस अभी उपलब्ध नहीं है।"
-  },
-  "eth_accounts": {
-    "message": "पता, खाते की शेषराशि, गतिविधि देखें और लेन-देन शुरू करें",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Ethereum सार्वजनिक पता"
@@ -2079,6 +2072,10 @@
   "permissionRequest": {
     "message": "अनुमति अनुरोध"
   },
+  "permission_ethereumAccounts": {
+    "message": "पता, खाते की शेषराशि, गतिविधि देखें और लेन-देन शुरू करें",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "अनुमतियाँ"
   },
@@ -2796,10 +2793,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "यदि आपके ऑर्डर किए जाने और पुष्टि किए जाने के समय के बीच मूल्य में परिवर्तन होता है, तो इसे \"स्लिपेज\" कहा जाता है। यदि स्लिपेज आपकी \"स्लिपेज टॉलरेंस\" सेटिंग से अधिक हो जाता है, तो आपका स्वैप स्वतः रद्द हो जाएगा।"
-  },
-  "swapQuoteNofN": {
-    "message": "$2 में से $1 उद्धरण",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "उद्धरण का स्रोत"

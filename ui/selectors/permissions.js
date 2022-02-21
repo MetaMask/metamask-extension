@@ -4,6 +4,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedAddress,
   getSubjectMetadata,
+  getTargetSubjectMetadata,
 } from '.';
 
 // selectors
@@ -93,6 +94,27 @@ export function getConnectedSubjectsForSelectedAddress(state) {
     });
   });
 
+  return connectedSubjects;
+}
+
+export function getSubjectsWithPermission(state, permissionName) {
+  const subjects = getPermissionSubjects(state);
+
+  const connectedSubjects = [];
+
+  Object.entries(subjects).forEach(([origin, { permissions }]) => {
+    if (permissions[permissionName]) {
+      const { extensionId, name, iconUrl } =
+        getTargetSubjectMetadata(state, origin) || {};
+
+      connectedSubjects.push({
+        extensionId,
+        origin,
+        name,
+        iconUrl,
+      });
+    }
+  });
   return connectedSubjects;
 }
 

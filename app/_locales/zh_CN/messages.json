@@ -362,9 +362,6 @@
     "message": "通过 $1 查看账户",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "使用 Blockies Identicon 图标头像"
-  },
   "browserNotSupported": {
     "message": "您的浏览器不支持该功能……"
   },
@@ -1004,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "由于目前主要的燃料估算服务不可用，因此提供了备用燃料价格。"
-  },
-  "eth_accounts": {
-    "message": "查看您允许的账户的地址（必填）",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "以太坊 Ethereum 公开地址"
@@ -2079,6 +2072,10 @@
   "permissionRequest": {
     "message": "权限请求"
   },
+  "permission_ethereumAccounts": {
+    "message": "查看您允许的账户的地址（必填）",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "权限"
   },
@@ -2796,10 +2793,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "如果在您下订单和确认订单之间的价格发生了变化，这就叫做\"滑点\"。如果滑点超过您的\"最大滑点\"设置，您的兑换将自动取消。"
-  },
-  "swapQuoteNofN": {
-    "message": "报价 $1 / $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "报价来源"

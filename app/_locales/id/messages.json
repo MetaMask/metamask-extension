@@ -362,9 +362,6 @@
     "message": "Lihat akun di $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gunakan Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Peramban Anda tidak didukung..."
   },
@@ -1004,10 +1001,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Biaya gas cadangan diberikan karena layanan estimasi gas utama saat ini tidak tersedia."
-  },
-  "eth_accounts": {
-    "message": "Lihat alamat, saldo akun, aktivitas, dan mulai transaksi",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Alamat Publik Ethereum"
@@ -2079,6 +2072,10 @@
   "permissionRequest": {
     "message": "Permohonan izin"
   },
+  "permission_ethereumAccounts": {
+    "message": "Lihat alamat, saldo akun, aktivitas, dan mulai transaksi",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Izin"
   },
@@ -2796,10 +2793,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Jika harga berubah antara waktu penempatan dan konfirmasi order Anda, ini disebut \"slippage\". Swap Anda akan otomatis dibatalkan jika slippage melebihi pengaturan \"toleransi slippage\"."
-  },
-  "swapQuoteNofN": {
-    "message": "Kuotasi $1 dari $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Sumber kuotasi"

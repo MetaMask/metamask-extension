@@ -32,17 +32,25 @@ import {
   getSwapsFeatureIsLive,
   prepareToLeaveSwaps,
   fetchAndSetSwapsGasPriceInfo,
-  fetchSwapsLiveness,
+  fetchSwapsLivenessAndFeatureFlags,
   getReviewSwapClickedTimestamp,
+  getPendingSmartTransactions,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsError,
+  dismissCurrentSmartTransactionsErrorMessage,
+  getCurrentSmartTransactionsErrorMessageDismissed,
   navigateBackToBuildQuote,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
   currentNetworkTxListSelector,
+  getSwapsDefaultToken,
 } from '../../selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,
+  SMART_TRANSACTION_STATUS_ROUTE,
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,
@@ -70,6 +78,7 @@ import { useNewMetricEvent } from '../../hooks/useMetricEvent';
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { TRANSACTION_STATUSES } from '../../../shared/constants/transaction';
+import ActionableMessage from '../../components/ui/actionable-message';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -77,6 +86,7 @@ import {
   fetchAggregatorMetadata,
 } from './swaps.util';
 import AwaitingSignatures from './awaiting-signatures';
+import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
 import BuildQuote from './build-quote';
@@ -92,6 +102,8 @@ export default function Swap() {
   const isAwaitingSignaturesRoute = pathname === AWAITING_SIGNATURES_ROUTE;
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE;
   const isLoadingQuotesRoute = pathname === LOADING_QUOTES_ROUTE;
+  const isSmartTransactionStatusRoute =
+    pathname === SMART_TRANSACTION_STATUS_ROUTE;
   const isViewQuoteRoute = pathname === VIEW_QUOTE_ROUTE;
 
   const fetchParams = useSelector(getFetchParams, isEqual);
@@ -112,10 +124,24 @@ export default function Swap() {
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const listTokenValues = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
+  const pendingSmartTransactions = useSelector(getPendingSmartTransactions);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsError = useSelector(
+    getCurrentSmartTransactionsError,
+  );
+  const smartTransactionsErrorMessageDismissed = useSelector(
+    getCurrentSmartTransactionsErrorMessageDismissed,
+  );
+  const showSmartTransactionsErrorMessage =
+    currentSmartTransactionsError && !smartTransactionsErrorMessageDismissed;
 
   if (networkAndAccountSupports1559) {
     // This will pre-load gas fees before going to the View Quote page.
@@ -217,6 +243,8 @@ export default function Swap() {
       current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
     },
   });
   const exitEventRef = useRef();
@@ -227,10 +255,10 @@ export default function Swap() {
   });
 
   useEffect(() => {
-    const fetchSwapsLivenessWrapper = async () => {
-      await dispatch(fetchSwapsLiveness());
+    const fetchSwapsLivenessAndFeatureFlagsWrapper = async () => {
+      await dispatch(fetchSwapsLivenessAndFeatureFlags());
     };
-    fetchSwapsLivenessWrapper();
+    fetchSwapsLivenessAndFeatureFlagsWrapper();
     return () => {
       exitEventRef.current();
     };
@@ -260,9 +288,36 @@ export default function Swap() {
     return () => window.removeEventListener('beforeunload', fn);
   }, [dispatch, isLoadingQuotesRoute]);
 
+  const errorStxEvent = useNewMetricEvent({
+    event: 'Error Smart Transactions',
+    category: 'swaps',
+    sensitiveProperties: {
+      token_from: fetchParams?.sourceTokenInfo?.symbol,
+      token_from_amount: fetchParams?.value,
+      request_type: fetchParams?.balanceError,
+      token_to: fetchParams?.destinationTokenInfo?.symbol,
+      slippage: fetchParams?.slippage,
+      custom_slippage: fetchParams?.slippage !== 2,
+      current_screen: pathname.match(/\/swaps\/(.+)/u)[1],
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
+      stx_error: currentSmartTransactionsError,
+    },
+  });
+  useEffect(() => {
+    if (currentSmartTransactionsError) {
+      errorStxEvent();
+    }
+  }, [errorStxEvent, currentSmartTransactionsError]);
+
   if (!isSwapsChain) {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
+
+  const isStxNotEnoughFundsError =
+    currentSmartTransactionsError === 'not_enough_funds';
 
   return (
     <div className="swaps">
@@ -286,10 +341,60 @@ export default function Swap() {
               history.push(DEFAULT_ROUTE);
             }}
           >
-            {!isAwaitingSwapRoute && !isAwaitingSignaturesRoute && t('cancel')}
+            {!isAwaitingSwapRoute &&
+              !isAwaitingSignaturesRoute &&
+              !isSmartTransactionStatusRoute &&
+              t('cancel')}
           </div>
         </div>
         <div className="swaps__content">
+          {showSmartTransactionsErrorMessage && (
+            <ActionableMessage
+              type={isStxNotEnoughFundsError ? 'default' : 'warning'}
+              message={
+                isStxNotEnoughFundsError ? (
+                  <div>
+                    {t('swapApproveNeedMoreTokensSmartTransactions', [
+                      defaultSwapsToken.symbol,
+                    ])}{' '}
+                    <span
+                      onClick={() =>
+                        dispatch(dismissCurrentSmartTransactionsErrorMessage())
+                      }
+                      style={{
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {t('stxTryRegular')}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="build-quote__token-verification-warning-message">
+                    <div className="build-quote__bold">
+                      {t('stxUnavailable')}
+                    </div>
+                    <div>{t('stxFallbackToNormal')}</div>
+                  </div>
+                )
+              }
+              className={
+                isStxNotEnoughFundsError
+                  ? 'swaps__error-message'
+                  : 'actionable-message--left-aligned actionable-message--warning swaps__error-message'
+              }
+              primaryAction={
+                isStxNotEnoughFundsError
+                  ? null
+                  : {
+                      label: t('dismiss'),
+                      onClick: () =>
+                        dispatch(dismissCurrentSmartTransactionsErrorMessage()),
+                    }
+              }
+              withRightButton
+            />
+          )}
           <Switch>
             <FeatureToggledRoute
               redirectRoute={SWAPS_MAINTENANCE_ROUTE}
@@ -320,6 +425,16 @@ export default function Swap() {
               path={VIEW_QUOTE_ROUTE}
               exact
               render={() => {
+                if (
+                  pendingSmartTransactions.length > 0 &&
+                  routeState === 'smartTransactionStatus'
+                ) {
+                  return (
+                    <Redirect
+                      to={{ pathname: SMART_TRANSACTION_STATUS_ROUTE }}
+                    />
+                  );
+                }
                 if (Object.values(quotes).length) {
                   return (
                     <ViewQuote numberOfQuotes={Object.values(quotes).length} />
@@ -393,6 +508,13 @@ export default function Swap() {
               exact
               render={() => {
                 return <AwaitingSignatures />;
+              }}
+            />
+            <Route
+              path={SMART_TRANSACTION_STATUS_ROUTE}
+              exact
+              render={() => {
+                return <SmartTransactionStatus />;
               }}
             />
             <Route

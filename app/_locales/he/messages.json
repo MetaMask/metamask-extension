@@ -139,9 +139,6 @@
     "message": "הצג חשבון ב- $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "השתמש ב- Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "הדפדפן שלך אינו נתמך..."
   },

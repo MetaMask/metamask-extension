@@ -362,9 +362,6 @@
     "message": "Ver cuenta en $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Usar Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "El explorador no es compatible..."
   },
@@ -1034,10 +1031,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Se muestra el precio del gas de respaldo, ya que el servicio para calcular el precio del gas principal no se encuentra disponible en este momento."
-  },
-  "eth_accounts": {
-    "message": "Ver dirección, saldo de cuenta, actividad e iniciar transacciones",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Dirección pública de Ethereum"
@@ -2125,6 +2118,10 @@
   "permissionRequest": {
     "message": "Solicitud de permiso"
   },
+  "permission_ethereumAccounts": {
+    "message": "Ver dirección, saldo de cuenta, actividad e iniciar transacciones",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Permisos"
   },
@@ -2848,10 +2845,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración de la \"tolerancia de desfase\"."
-  },
-  "swapQuoteNofN": {
-    "message": "Cotización $1 de $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Fuente de la cotización"

@@ -136,9 +136,6 @@
     "message": "Tazama akaunti kwenye $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Tumia Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Kivinjari chaku hakiwezeshwi..."
   },

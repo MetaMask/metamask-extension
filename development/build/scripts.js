@@ -507,7 +507,7 @@ function createFactoredBuild({
       }
     });
 
-    await bundleIt(buildConfiguration);
+    await bundleIt(buildConfiguration, { reloadOnChange });
   };
 }
 
@@ -572,7 +572,7 @@ function createNormalBundle({
       });
     });
 
-    await bundleIt(buildConfiguration);
+    await bundleIt(buildConfiguration, { reloadOnChange });
   };
 }
 
@@ -720,7 +720,7 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
   });
 }
 
-async function bundleIt(buildConfiguration) {
+async function bundleIt(buildConfiguration, { reloadOnChange }) {
   const { label, bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
 
@@ -759,6 +759,13 @@ async function bundleIt(buildConfiguration) {
       [],
     ]);
     const bundleStream = bundler.bundle();
+    if (!reloadOnChange) {
+      bundleStream.on('error', (error) => {
+        console.error('Bundling failed! See details below.');
+        console.error(error.stack || error);
+        process.exit(1);
+      });
+    }
     // trigger build pipeline instrumentations
     events.emit('configurePipeline', { pipeline, bundleStream });
     // start bundle, send into pipeline

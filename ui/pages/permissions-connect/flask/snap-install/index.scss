@@ -1,0 +1,28 @@
+.snap-install {
+  box-shadow: none;
+
+  .permissions-connect-permission-list {
+    padding: 0 24px;
+
+    .permission {
+      padding: 8px 0;
+    }
+  }
+
+  .source-code {
+    @include H7;
+
+    display: flex;
+    color: var(--ui-4);
+
+    .link {
+      color: var(--primary-blue);
+      margin-inline-start: 4px;
+      cursor: pointer;
+    }
+  }
+
+  .page-container__footer {
+    width: 100%;
+  }
+}

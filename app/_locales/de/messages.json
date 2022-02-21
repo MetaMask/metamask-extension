@@ -362,9 +362,6 @@
     "message": "Konto bei $1 anzeigen",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Blockies Identicon verwenden"
-  },
   "browserNotSupported": {
     "message": "Ihr Browser wird nicht unterstützt …"
   },
@@ -1014,10 +1011,6 @@
   },
   "ethGasPriceFetchWarning": {
     "message": "Der Gaspreis, der sich aus der Gaseinschätzung ergibt, ist derzeit nicht verfügbar."
-  },
-  "eth_accounts": {
-    "message": "Siehe Adresse, Kontostand, Aktivität und Einleitung von Transaktionen",
-    "description": "The description for the `eth_accounts` permission"
   },
   "ethereumPublicAddress": {
     "message": "Öffentliche Ethereum-Adresse"
@@ -2076,6 +2069,10 @@
   "permissionRequest": {
     "message": "Berechtigungsanfrage"
   },
+  "permission_ethereumAccounts": {
+    "message": "Siehe Adresse, Kontostand, Aktivität und Einleitung von Transaktionen",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Berechtigungen"
   },
@@ -2790,10 +2787,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Wenn sich der Kurs zwischen der Aufgabe und der Bestätigung Ihres Auftrags ändert, nennt man das \"Slippage\". Ihr Swap wird automatisch storniert, wenn die Slippage Ihre Einstellung für die \"Slippagetoleranz\" überschreitet."
-  },
-  "swapQuoteNofN": {
-    "message": "Kurs $1 von $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Kursquelle"

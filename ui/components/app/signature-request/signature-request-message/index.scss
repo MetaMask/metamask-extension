@@ -1,7 +1,9 @@
 .signature-request-message {
   flex: 1 60%;
   display: flex;
+  max-height: 250px;
   flex-direction: column;
+  position: relative;
 
   &__title {
     @include H6;
@@ -64,5 +66,17 @@
     padding-top: 12px;
     padding-inline-start: 12px;
     font-size: 80%;
+  }
+
+  &__scroll-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--Grey-500);
+    position: absolute;
+    right: 24px;
+    bottom: 12px;
+    border-radius: 50%;
+    cursor: pointer;
   }
 }
