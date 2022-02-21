@@ -1686,6 +1686,10 @@
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
+  "logo": {
+    "message": "$1 logo",
+    "description": "$1 is the name of the ticker"
+  },
   "low": {
     "message": "Low"
   },

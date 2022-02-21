@@ -22,24 +22,12 @@ const AddNetwork = ({
 }) => {
   const t = useContext(I18nContext);
 
-  const onBack = () => {
-    onBackClick();
-  };
-
-  const onAddNetwork = () => {
-    onAddNetworkClick();
-  };
-
-  const onAddNetworkManually = () => {
-    onAddNetworkManuallyClick();
-  };
-
   const nets = featuredRPCS
     .sort((a, b) => (a.ticker > b.ticker ? 1 : -1))
     .slice(0, 5);
 
   return (
-    <Box className="add-network__wrapper">
+    <Box>
       <Box
         height={BLOCK_SIZES.TWO_TWELFTHS}
         padding={[4, 0, 4, 0]}
@@ -50,8 +38,8 @@ const AddNetwork = ({
       >
         <img
           src="./images/caret-left-black.svg"
-          alt=""
-          onClick={onBack}
+          alt={t('back')}
+          onClick={() => onBackClick}
           className="add-network__header__back-icon"
         />
         <Typography variant={TYPOGRAPHY.H3} color={COLORS.BLACK}>
@@ -87,7 +75,7 @@ const AddNetwork = ({
             <img
               className="add-network__token-image"
               src={item?.rpcPrefs?.imageUrl}
-              alt=""
+              alt={t('logo', [item.ticker])}
             />
             <Typography variant={TYPOGRAPHY.H7} color={COLORS.BLACK}>
               {item.ticker}
@@ -95,8 +83,8 @@ const AddNetwork = ({
             <img
               className="add-network__add-icon"
               src="./images/times.svg"
-              alt=""
-              onClick={onAddNetwork}
+              alt={`${t('add')} ${item.ticker}`}
+              onClick={() => onAddNetworkClick}
             />
           </Box>
         ))}
@@ -106,7 +94,7 @@ const AddNetwork = ({
         padding={[4, 4, 4, 4]}
         className="add-network__footer"
       >
-        <Button type="link" onClick={onAddNetworkManually}>
+        <Button type="link" onClick={() => onAddNetworkManuallyClick}>
           <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY1}>
             {t('addANetworkManually')}
           </Typography>
