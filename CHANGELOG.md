@@ -6,6 +6,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.11.0]
+### Uncategorized
+- Run yarn lavamoat:auto ([#13697](https://github.com/MetaMask/metamask-extension/pull/13697))
+- Using correct metricsEvent arg ([#13684](https://github.com/MetaMask/metamask-extension/pull/13684))
+- Added Controls and Action ArgType, took out @storybook/addon-knobs  ([#13660](https://github.com/MetaMask/metamask-extension/pull/13660))
+- Add support for Smart Transactions ([#12676](https://github.com/MetaMask/metamask-extension/pull/12676))
+- Add argTypes for color-indicator ([#13659](https://github.com/MetaMask/metamask-extension/pull/13659))
+- Enable Avalanche for Swaps ([#13653](https://github.com/MetaMask/metamask-extension/pull/13653))
+- Prevent Browserify error from being swallowed ([#13647](https://github.com/MetaMask/metamask-extension/pull/13647))
+- Mįgrate truncated definition list stories from addon knobs to use controls. ([#13628](https://github.com/MetaMask/metamask-extension/pull/13628))
+- Fixed Add Recipient Stories and migrated to use control args. ([#13633](https://github.com/MetaMask/metamask-extension/pull/13633))
+- Minimal fix to the TokenSearch story to ensure it compiles and works. ([#13623](https://github.com/MetaMask/metamask-extension/pull/13623))
+- Updated the Callout story to convert knobs and actions to controls / args. ([#13624](https://github.com/MetaMask/metamask-extension/pull/13624))
+- Change "Quote X of Y" to "Fetching quote X of Y" ([#13663](https://github.com/MetaMask/metamask-extension/pull/13663))
+- Sync `master` with `develop` ([#13656](https://github.com/MetaMask/metamask-extension/pull/13656))
+- convert SendGasRow stories with argtypes ([#13554](https://github.com/MetaMask/metamask-extension/pull/13554))
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Use hardware wallet constants when possible ([#13634](https://github.com/MetaMask/metamask-extension/pull/13634))
+- ConfirmImportToken: Convert to Functional Component; Add storybook controls ([#13594](https://github.com/MetaMask/metamask-extension/pull/13594))
+- Ensure pre-selected account on connect screen is visible in list ([#13621](https://github.com/MetaMask/metamask-extension/pull/13621))
+- Sync `master` with `develop` ([#13648](https://github.com/MetaMask/metamask-extension/pull/13648))
+- Make default icons the same on mobile and extension #13264 ([#13408](https://github.com/MetaMask/metamask-extension/pull/13408))
+- Created "Token details" page ([#13216](https://github.com/MetaMask/metamask-extension/pull/13216))
+- Update outdated Trezor Emulator link ([#13611](https://github.com/MetaMask/metamask-extension/pull/13611))
+- E2e mocking ([#13640](https://github.com/MetaMask/metamask-extension/pull/13640))
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Ensure sign message button is only enabled on scroll ([#13645](https://github.com/MetaMask/metamask-extension/pull/13645))
+- Bump vm2 from 3.9.5 to 3.9.7 ([#13625](https://github.com/MetaMask/metamask-extension/pull/13625))
+- Bump follow-redirects from 1.14.7 to 1.14.8 ([#13612](https://github.com/MetaMask/metamask-extension/pull/13612))
+- Add Snaps via Flask ([#13462](https://github.com/MetaMask/metamask-extension/pull/13462))
+- Fix: advance defaults should never be used for swaps ([#13617](https://github.com/MetaMask/metamask-extension/pull/13617))
+- Include transactions from all networks in state logs ([#13599](https://github.com/MetaMask/metamask-extension/pull/13599))
+- Update to latest ChromeDriver ([#13616](https://github.com/MetaMask/metamask-extension/pull/13616))
+- Untranslated string fix ([#13615](https://github.com/MetaMask/metamask-extension/pull/13615))
+- Correct connection language ([#13605](https://github.com/MetaMask/metamask-extension/pull/13605))
+- Fixes in EIP-1559 V2 implementation ([#13574](https://github.com/MetaMask/metamask-extension/pull/13574))
+- Allow sending up to 15 decimals on the send screen ([#12707](https://github.com/MetaMask/metamask-extension/pull/12707))
+- Suppress diffs for translation files by default ([#13537](https://github.com/MetaMask/metamask-extension/pull/13537))
+- fix opensea/autodetect setting dependency relation ([#13575](https://github.com/MetaMask/metamask-extension/pull/13575))
+- remove infura project_id from networks form field ([#13539](https://github.com/MetaMask/metamask-extension/pull/13539))
+- Updating the direct deposit messages to native currency ([#13576](https://github.com/MetaMask/metamask-extension/pull/13576))
+- Add resolution for engine.io, a nested dependency of 3box ([#13589](https://github.com/MetaMask/metamask-extension/pull/13589))
+- Adding check for transaction.id in useTransactionEventFragment hook ([#13587](https://github.com/MetaMask/metamask-extension/pull/13587))
+- [GridPlus] Updates corresponding to Lattice firmware v0.13.2 ([#13455](https://github.com/MetaMask/metamask-extension/pull/13455))
+- Sync `master` with `develop` ([#13573](https://github.com/MetaMask/metamask-extension/pull/13573))
+- Merge branch 'develop' into master-sync
+- [BUILD FIX #12920] Updated style for full screen mode in settings page ([#13569](https://github.com/MetaMask/metamask-extension/pull/13569))
+- Merge remote-tracking branch 'origin/develop' into master-sync
+- Fix network edition error ([#13527](https://github.com/MetaMask/metamask-extension/pull/13527))
+- update test-dapp to 5.0.0 ([#13503](https://github.com/MetaMask/metamask-extension/pull/13503))
+- Resolve a BigNumber issue ([#13555](https://github.com/MetaMask/metamask-extension/pull/13555))
+- Setting search feature - Setting component UI updates #12761 ([#12920](https://github.com/MetaMask/metamask-extension/pull/12920))
+- captureKeyringTypesWithMissingIdentities() when 'Missing identity for address' in permissions/specifications ([#13521](https://github.com/MetaMask/metamask-extension/pull/13521))
+- New Crowdin translations by Github Action ([#13514](https://github.com/MetaMask/metamask-extension/pull/13514))
+- Update crowdin workflow config ([#13494](https://github.com/MetaMask/metamask-extension/pull/13494))
+- Add currency symbol validation in the add network form ([#12431](https://github.com/MetaMask/metamask-extension/pull/12431))
+- fix test ([#13513](https://github.com/MetaMask/metamask-extension/pull/13513))
+- E2e signing ([#13507](https://github.com/MetaMask/metamask-extension/pull/13507))
+- update chromedriver to v97 ([#13502](https://github.com/MetaMask/metamask-extension/pull/13502))
+- Extract "create vault" form to separate component ([#13461](https://github.com/MetaMask/metamask-extension/pull/13461))
+
 ## [10.10.0]
 ### Added
 - Enable toggle to turn on the new gas fee customization UI ([#13481](https://github.com/MetaMask/metamask-extension/pull/13481))
@@ -2731,7 +2792,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.0...HEAD
+[10.11.0]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...v10.11.0
 [10.10.0]: https://github.com/MetaMask/metamask-extension/compare/v10.9.3...v10.10.0
 [10.9.3]: https://github.com/MetaMask/metamask-extension/compare/v10.9.2...v10.9.3
 [10.9.2]: https://github.com/MetaMask/metamask-extension/compare/v10.9.1...v10.9.2
