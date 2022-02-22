@@ -142,30 +142,34 @@ const ConfirmAddSuggestedToken = () => {
         {reusedTokenNameActionableMessage}
       </div>
       <div className="page-container__content">
-        <div className="confirm-import-token">
-          <div className="confirm-import-token__header">
-            <div className="confirm-import-token__token">{t('token')}</div>
-            <div className="confirm-import-token__balance">{t('balance')}</div>
+        <div className="confirm-add-suggested-token">
+          <div className="confirm-add-suggested-token__header">
+            <div className="confirm-add-suggested-token__token">
+              {t('token')}
+            </div>
+            <div className="confirm-add-suggested-token__balance">
+              {t('balance')}
+            </div>
           </div>
-          <div className="confirm-import-token__token-list">
+          <div className="confirm-add-suggested-token__token-list">
             {suggestedAssets.map(({ asset }) => {
               return (
                 <div
-                  className="confirm-import-token__token-list-item"
+                  className="confirm-add-suggested-token__token-list-item"
                   key={asset.address}
                 >
-                  <div className="confirm-import-token__token confirm-import-token__data">
+                  <div className="confirm-add-suggested-token__token confirm-add-suggested-token__data">
                     <Identicon
-                      className="confirm-import-token__token-icon"
+                      className="confirm-add-suggested-token__token-icon"
                       diameter={48}
                       address={asset.address}
                       image={asset.image}
                     />
-                    <div className="confirm-import-token__name">
+                    <div className="confirm-add-suggested-token__name">
                       {getTokenName(asset.name, asset.symbol)}
                     </div>
                   </div>
-                  <div className="confirm-import-token__balance">
+                  <div className="confirm-add-suggested-token__balance">
                     <TokenBalance token={asset} />
                   </div>
                 </div>
