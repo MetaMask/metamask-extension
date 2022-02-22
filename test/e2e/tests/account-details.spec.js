@@ -23,7 +23,6 @@ describe('Show account details', function () {
         const loginPage = new LoginPage(driver);
         await driver.navigate();
         await loginPage.unlock('correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
