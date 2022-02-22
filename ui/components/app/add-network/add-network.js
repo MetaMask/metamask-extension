@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
-import ActionableMessage from '../actionable-message';
-import Box from '../box';
-import Typography from '../typography';
+import ActionableMessage from '../../ui/actionable-message';
+import Box from '../../ui/box';
+import Typography from '../../ui/typography';
 import {
   ALIGN_ITEMS,
   BLOCK_SIZES,
@@ -12,7 +12,7 @@ import {
   FLEX_DIRECTION,
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
-import Button from '../button';
+import Button from '../../ui/button';
 
 const AddNetwork = ({
   onBackClick,

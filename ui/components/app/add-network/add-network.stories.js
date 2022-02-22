@@ -2,7 +2,7 @@ import React from 'react';
 import AddNetwork from '.';
 
 export default {
-  title: 'Components/UI/AddNetwork',
+  title: 'Components/APP/AddNetwork',
   id: __filename,
 };
 
