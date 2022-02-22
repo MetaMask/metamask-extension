@@ -384,8 +384,9 @@ export default class TransactionController extends EventEmitter {
    * @param editableParams.to
    * @param editableParams.value
    * @param editableParams.gas
+   * @param editableParams.gasPrice
    */
-  updateEditableParams(txId, { data, from, to, value, gas }) {
+  updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
       return;
     }
@@ -397,6 +398,7 @@ export default class TransactionController extends EventEmitter {
         to,
         value,
         gas,
+        gasPrice,
       },
     };
 
