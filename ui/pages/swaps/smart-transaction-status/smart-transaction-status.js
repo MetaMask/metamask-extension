@@ -188,7 +188,9 @@ export default function SmartTransactionStatus() {
   }
   if (smartTransactionStatus === SMART_TRANSACTION_STATUSES.SUCCESS) {
     headerText = t('stxSuccess');
-    description = t('stxSuccessDescription', [destinationTokenInfo?.symbol]);
+    if (destinationTokenInfo?.symbol) {
+      description = t('stxSuccessDescription', [destinationTokenInfo.symbol]);
+    }
     icon = <SuccessIcon />;
   } else if (smartTransactionStatus === 'cancelled_user_cancelled') {
     headerText = t('stxUserCancelled');
