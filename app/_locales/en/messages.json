@@ -1206,6 +1206,9 @@
   "forgetDevice": {
     "message": "Forget this device"
   },
+  "forgotPassword": {
+    "message": "Forgot password?"
+  },
   "from": {
     "message": "From"
   },
@@ -1408,18 +1411,11 @@
   "importAccountError": {
     "message": "Error importing account."
   },
-  "importAccountLinkText": {
-    "message": "import using Secret Recovery Phrase"
-  },
   "importAccountMsg": {
     "message": "Imported accounts will not be associated with your originally created MetaMask account Secret Recovery Phrase. Learn more about imported accounts"
   },
   "importAccountSeedPhrase": {
     "message": "Import a wallet with Secret Recovery Phrase"
-  },
-  "importAccountText": {
-    "message": "or $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Enter your Secret Recovery Phrase (aka Seed Phrase) that you were given when you created your wallet. $1",
@@ -2356,6 +2352,12 @@
   "queued": {
     "message": "Queued"
   },
+  "reAddAccounts": {
+    "message": "re-add any other accounts"
+  },
+  "reAdded": {
+    "message": "re-added"
+  },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Import token” in your accounts options menu."
   },
@@ -2455,11 +2457,20 @@
   "resetAccountDescription": {
     "message": "Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase."
   },
+  "resetWallet": {
+    "message": "Reset Wallet"
+  },
+  "resetWalletSubHeader": {
+    "message": "MetaMask does not keep a copy of your password. If you’re having trouble unlocking your account, you will need to reset your wallet. You can do this by providing the Secret Recovery Phrase you used when you set up your wallet."
+  },
+  "resetWalletUsingSRP": {
+    "message": "This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to $1 created previously. Custom accounts that you’ve imported will need to be $2, and any custom tokens you’ve added to an account will need to be $3 as well."
+  },
+  "resetWalletWarning": {
+    "message": "Make sure you’re using the correct Secret Recovery Phrase before proceeding. You will not be able to undo this."
+  },
   "restore": {
     "message": "Restore"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Restore your Account with Secret Recovery Phrase"
   },
   "restoreWalletPreferences": {
     "message": "A backup of your data from $1 has been found. Would you like to restore your wallet preferences?",
@@ -2527,9 +2538,6 @@
   },
   "secretPhrase": {
     "message": "Only the first account on this wallet will auto load. After completing this process, to add additional accounts, click the drop down menu, then select Create Account."
-  },
-  "secretPhraseWarning": {
-    "message": "If you restore using another Secret Recovery Phrase, your current wallet, accounts and assets will be removed from this app permanently. This action cannot be undone."
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
