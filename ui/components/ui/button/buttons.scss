@@ -60,7 +60,7 @@
 
 .btn-warning {
   color: var(--color-secondary-default);
-  border: 1px solid var(--color-seondary-muted);
+  border: 1px solid var(--color-secondary-muted);
   background-color: var(--color-background-default);
 
   &:hover {
@@ -75,7 +75,7 @@
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: var(--color-secondary-muted);
+    color: var(--color-secondary-disabled);
   }
 }
 
@@ -96,13 +96,14 @@
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: var(--color-error-muted);
+    color: var(--color-error-disabled);
   }
 }
 
 .btn-danger-primary {
   color: var(--color-background-default);
-  border: 1px solid var(--color-error-default);
+  border: 1px solid;
+  border-color: var(--color-error-default);;
   background-color: var(--color-error-default);
 
   &:hover {
@@ -160,8 +161,8 @@
 
   &--disabled,
   &[disabled] {
-    border-color: var(--color-primary-muted);
-    background-color: var(--color-primary-muted);
+    border-color: var(--color-primary-disabled);
+    background-color: var(--color-primary-disabled);
   }
 }
 
@@ -185,7 +186,7 @@
     cursor: auto;
     opacity: 1;
     pointer-events: none;
-    color: var(--color-primary-muted);
+    color: var(--color-primary-disabled);
   }
 }
 
@@ -270,7 +271,7 @@ input[type="submit"][disabled] {
     &--disabled,
     &[disabled] {
       border-color: var(--color-error-disabled);
-      color: var(--color-error-muted);
+      color: var(--color-error-disabled);
     }
 
     &:active {
@@ -284,7 +285,7 @@ input[type="submit"][disabled] {
     &--disabled,
     &[disabled] {
       border-color: var(--color-secondary-muted);
-      color: var(--color-secondary-muted);
+      color: var(--color-secondary-disabled);
     }
 
     &:active {
@@ -310,7 +311,7 @@ input[type="submit"][disabled] {
 
     &--disabled,
     &[disabled] {
-      background-color: var(--color-error-muted);
+      background-color: var(--color-error-disabled);
     }
 
     &:active {
@@ -329,11 +330,11 @@ input[type="submit"][disabled] {
   background-color: transparent;
 
   &:hover {
-    color: var(--color-primary-alternative);
+    color: var(--color-primary-muted);
   }
 
   &:active {
-    color: var(--color-primary-muted);
+    color: var(--color-primary-alternative);
   }
 
   &--disabled,
