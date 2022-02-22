@@ -261,7 +261,7 @@ input[type="submit"][disabled] {
     }
 
     &:active {
-      border-color: var(--color-text-alternative); // Not too sure of this one, seems weird to use text color when we have border colors
+      border-color: var(--color-text-alternative);
     }
   }
 
