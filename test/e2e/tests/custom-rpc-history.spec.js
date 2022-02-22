@@ -36,10 +36,10 @@ describe('Stores custom RPC history', function () {
         await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
-        const networkNameInput = customRpcInputs[0];
-        const rpcUrlInput = customRpcInputs[1];
-        const chainIdInput = customRpcInputs[2];
-        const symbolInput = customRpcInputs[3];
+        const networkNameInput = customRpcInputs[1];
+        const rpcUrlInput = customRpcInputs[2];
+        const chainIdInput = customRpcInputs[3];
+        const symbolInput = customRpcInputs[4];
 
         await networkNameInput.clear();
         await networkNameInput.sendKeys(networkName);
@@ -84,7 +84,7 @@ describe('Stores custom RPC history', function () {
         await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
-        const rpcUrlInput = customRpcInputs[1];
+        const rpcUrlInput = customRpcInputs[2];
 
         await rpcUrlInput.clear();
         await rpcUrlInput.sendKeys(duplicateRpcUrl);
@@ -120,8 +120,8 @@ describe('Stores custom RPC history', function () {
         await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
-        const rpcUrlInput = customRpcInputs[1];
-        const chainIdInput = customRpcInputs[2];
+        const rpcUrlInput = customRpcInputs[2];
+        const chainIdInput = customRpcInputs[3];
 
         await chainIdInput.clear();
         await chainIdInput.sendKeys(duplicateChainId);
