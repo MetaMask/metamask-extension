@@ -56,7 +56,6 @@ describe('Sign Typed Data V4 Signature Request', function () {
           '.signature-request-message--node-value',
         );
         assert.equal(await title.getText(), 'Signature Request');
-        assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
         assert.equal(
           await address.getText(),
@@ -137,7 +136,6 @@ describe('Sign Typed Data V3 Signature Request', function () {
           '.signature-request-message--node-value',
         );
         assert.equal(await title.getText(), 'Signature Request');
-        assert.equal(await name.getText(), 'Ether Mail');
         assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
         assert.equal(
           await address.getText(),
