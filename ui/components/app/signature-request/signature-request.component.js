@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { getURLHostName, sanitizeMessage } from '../../../helpers/utils/util';
@@ -122,23 +121,23 @@ export default class SignatureRequest extends PureComponent {
             {this.context.t('sigRequest')}
           </div>
           <div className="signature-request-content__identicon-container">
-            {targetSubjectMetadata?.iconUrl ? (
-              <SiteIcon
-                icon={targetSubjectMetadata.iconUrl}
-                name={
-                  getURLHostName(targetSubjectMetadata.origin) ||
-                  targetSubjectMetadata.origin
-                }
-                size={24}
-              />
-            ) : (
-              <div className="signature-request-content__identicon-initial">
-                {/* {domain.name && domain.name[0]} */}
-                {originHostNameCharacter}
-              </div>
-            )}
-            <div className="signature-request-content__identicon-border" />
-            <Identicon address={fromAddress} diameter={70} />
+            <div className="signature-request-content__identicon-border">
+              {targetSubjectMetadata?.iconUrl ? (
+                <SiteIcon
+                  icon={targetSubjectMetadata.iconUrl}
+                  name={
+                    getURLHostName(targetSubjectMetadata.origin) ||
+                    targetSubjectMetadata.origin
+                  }
+                  size={32}
+                />
+              ) : (
+                <div className="signature-request-content__identicon-initial">
+                  {/* {domain.name && domain.name[0]} */}
+                  {originHostNameCharacter}
+                </div>
+              )}
+            </div>
           </div>
           <div className="signature-request-content__info--bolded">
             {origin}

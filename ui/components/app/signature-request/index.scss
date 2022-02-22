@@ -56,18 +56,17 @@
     height: 75px;
     width: 75px;
     border-radius: 50%;
-    border: 1px solid white;
-    position: absolute;
-    box-shadow: 0 2px 2px 0.5px rgba(0, 0, 0, 0.19);
+    border: 1px solid #D6D9DC;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   &__identicon-initial {
-    position: absolute;
+    color: var(--Blue-500);
     font-style: normal;
     font-weight: 500;
     font-size: 40px;
-    color: white;
-    z-index: 1;
     text-transform: uppercase;
     text-shadow: 0 4px 6px rgba(0, 0, 0, 0.422);
   }
