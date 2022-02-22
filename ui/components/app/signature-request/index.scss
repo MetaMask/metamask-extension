@@ -46,11 +46,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    .icon-border {
+      position: absolute;
+    }
   }
 
   &__identicon-border {
-    height: 75px;
-    width: 75px;
+    height: 24px;
+    width: 24px;
     border-radius: 50%;
     border: 1px solid white;
     position: absolute;
@@ -61,9 +65,10 @@
     position: absolute;
     font-style: normal;
     font-weight: 500;
-    font-size: 60px;
+    font-size: 40px;
     color: white;
     z-index: 1;
+    text-transform: uppercase;
     text-shadow: 0 4px 6px rgba(0, 0, 0, 0.422);
   }
 

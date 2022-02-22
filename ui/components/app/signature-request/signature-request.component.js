@@ -76,11 +76,9 @@ export default class SignatureRequest extends PureComponent {
       type,
     } = txData;
     const { address: fromAddress } = fromAccount;
-    const { message, primaryType, types } = JSON.parse(data);
+    const { message, domain, primaryType, types } = JSON.parse(data);
     const { metricsEvent } = this.context;
-    const targetSubjectMetadata = txData.msgParams.origin
-      ? subjectMetadata?.[txData.msgParams.origin]
-      : null;
+    const targetSubjectMetadata = origin ? subjectMetadata?.[origin] : null;
 
     const onSign = (event) => {
       sign(event);
@@ -134,15 +132,13 @@ export default class SignatureRequest extends PureComponent {
                 size={24}
               />
             ) : (
-              <>
-                <div className="signature-request-content__identicon-initial">
-                  {/* {domain.name && domain.name[0]} */}
-                  {originHostNameCharacter}
-                </div>
-                <div className="signature-request-content__identicon-border" />
-                <Identicon address={fromAddress} diameter={70} />
-              </>
+              <div className="signature-request-content__identicon-initial">
+                {/* {domain.name && domain.name[0]} */}
+                {originHostNameCharacter}
+              </div>
             )}
+            <div className="signature-request-content__identicon-border" />
+            <Identicon address={fromAddress} diameter={70} />
           </div>
           <div className="signature-request-content__info--bolded">
             {origin}
@@ -158,7 +154,7 @@ export default class SignatureRequest extends PureComponent {
           </div>
         ) : null}
         <Message
-          data={sanitizeMessage(message, primaryType, types)}
+          data={{ ...sanitizeMessage(message, primaryType, types), domain }}
           onMessageScrolled={() => this.setState({ hasScrolledMessage: true })}
           setMessageRootRef={this.setMessageRootRef.bind(this)}
           messageRootRef={this.messageRootRef}
