@@ -1,5 +1,6 @@
 const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const LoginPage = require('../page-objects/login.page');
 
 describe('Show account details', function () {
   const ganacheOptions = {
@@ -19,8 +20,9 @@ describe('Show account details', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
+        const loginPage = new LoginPage(driver);
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
+        await loginPage.unlock('correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
         await driver.clickElement(
