@@ -50,14 +50,12 @@ describe('Sign Typed Data V4 Signature Request', function () {
         const content = await driver.findElements(
           '.signature-request-content__info',
         );
-        const origin = content[0];
-        const address = content[1];
+        const address = content[0];
         const message = await driver.findElement(
           '.signature-request-message--node-value',
         );
         assert.equal(await title.getText(), 'Signature Request');
         assert.equal(await name.getText(), 'http://127.0.0.1:8080');
-        assert.equal(await origin.getText(), '0x5cfe73...4086a7e1');
         assert.equal(
           await address.getText(),
           `${publicAddress.slice(0, 8)}...${publicAddress.slice(
@@ -131,14 +129,12 @@ describe('Sign Typed Data V3 Signature Request', function () {
         const content = await driver.findElements(
           '.signature-request-content__info',
         );
-        const origin = content[0];
-        const address = content[1];
+        const address = content[0];
         const messages = await driver.findElements(
           '.signature-request-message--node-value',
         );
         assert.equal(await title.getText(), 'Signature Request');
         assert.equal(await name.getText(), 'http://127.0.0.1:8080');
-        assert.equal(await origin.getText(), '0x5cfe73...4086a7e1');
         assert.equal(
           await address.getText(),
           `${publicAddress.slice(0, 8)}...${publicAddress.slice(
