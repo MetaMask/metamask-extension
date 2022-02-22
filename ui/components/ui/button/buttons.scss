@@ -61,14 +61,14 @@
 .btn-warning {
   color: var(--color-secondary-default);
   border: 1px solid var(--color-seondary-muted);
-  background-color: var(--color-text-default);
+  background-color: var(--color-background-default);
 
   &:hover {
     border-color: var(--color-secondary-default);
   }
 
   &:active {
-    background: var(--Orange-000); // @TODO: change when color available
+    background: var(--color-secondary-muted);
     border-color: var(--color-secondary-default);
   }
 
@@ -124,15 +124,15 @@
 }
 
 .btn-default {
-  color: var(--color-icon-default);
+  color: var(--color-text-alternative);
   border: 1px solid var(--color-border-default);
-
+  background: var(--color-background-alternative);
   &:hover {
     border-color: var(--color-icon-default);
   }
 
   &:active {
-    background: #fbfbfc;
+    background: var(--color-background-default);
     border-color: var(--color-icon-default);
   }
 
@@ -241,8 +241,8 @@ input[type="submit"][disabled] {
 
     &--disabled,
     &[disabled] {
-      border-color: var(--hover-secondary); // @TODO: change when color available
-      color: var(--hover-secondary); // @TODO: change when color available
+      border-color: var(--color-primary-disabled);
+      color: var(--color-primary-disabled);
     }
 
     &:active {
@@ -256,7 +256,7 @@ input[type="submit"][disabled] {
     &--disabled,
     &[disabled] {
       border-color: var(--color-border-muted);
-      color: var(--hover-default); // @TODO: change when color available
+      color: var(--color-text-muted);
     }
 
     &:active {
@@ -269,7 +269,7 @@ input[type="submit"][disabled] {
 
     &--disabled,
     &[disabled] {
-      border-color: var(--Red-100); // @TODO: change when color available
+      border-color: var(--color-error-disabled);
       color: var(--color-error-muted);
     }
 
@@ -297,7 +297,7 @@ input[type="submit"][disabled] {
 
     &--disabled,
     &[disabled] {
-      background-color: var(--hover-secondary); // @TODO: change when color available
+      background-color: var(--color-primary-disabled);
     }
 
     &:active {
@@ -329,11 +329,11 @@ input[type="submit"][disabled] {
   background-color: transparent;
 
   &:hover {
-    color: var(--color-primary-muted);
+    color: var(--color-primary-alternative);
   }
 
   &:active {
-    color: var(--color-primary-alternative);
+    color: var(--color-primary-muted);
   }
 
   &--disabled,
@@ -341,6 +341,6 @@ input[type="submit"][disabled] {
     cursor: auto;
     opacity: 1;
     pointer-events: none;
-    color: var(--hover-secondary); // @TODO: change when color available
+    color: var(--color-primary-disabled);
   }
 }
