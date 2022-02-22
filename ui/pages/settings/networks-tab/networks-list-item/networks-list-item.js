@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +14,14 @@ import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { getProvider } from '../../../../selectors';
 
-const NetworksListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
+import { handleHooksSettingsRefs } from '../../../../helpers/utils/settings-search';
+
+const NetworksListItem = ({
+  network,
+  networkIsSelected,
+  selectedRpcUrl,
+  networkIndex,
+}) => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -37,9 +44,15 @@ const NetworksListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
     (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType);
   const displayNetworkListItemAsSelected =
     listItemNetworkIsSelected || listItemNetworkIsCurrentProvider;
+  const settingsRefs = useRef();
+
+  useEffect(() => {
+    handleHooksSettingsRefs(t, t('networks'), settingsRefs, networkIndex);
+  }, [networkIndex, settingsRefs, t]);
 
   return (
     <div
+      ref={settingsRefs}
       key={`settings-network-list-item:${rpcUrl}`}
       className="networks-tab__networks-list-item"
       onClick={() => {
@@ -76,6 +89,7 @@ NetworksListItem.propTypes = {
   network: PropTypes.object.isRequired,
   networkIsSelected: PropTypes.bool,
   selectedRpcUrl: PropTypes.string,
+  networkIndex: PropTypes.number,
 };
 
 export default NetworksListItem;

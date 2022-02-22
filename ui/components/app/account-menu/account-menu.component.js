@@ -125,7 +125,7 @@ export default class AccountMenu extends Component {
           marginLeft: '8px',
         }}
       >
-        <SearchIcon />
+        <SearchIcon color="currentColor" />
       </InputAdornment>
     );
 

@@ -761,9 +761,6 @@
   "restore": {
     "message": "Възстановяване"
   },
-  "restoreAccountWithSeed": {
-    "message": "Възстановете акаунта си с фраза зародиш"
-  },
   "revealSeedWords": {
     "message": "Разкрий думите зародиш"
   },
