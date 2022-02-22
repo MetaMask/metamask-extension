@@ -1,9 +1,58 @@
+// Variables
 $lock-circle-radius: 14px;
 $lock-circle-diameter: $lock-circle-radius * 2;
 // Circumference ~ (2*PI*R). We reduced the number a little to create a snappier interaction
 $lock-circle-circumference: 82;
 $lock-circle-stroke-width: 2px;
 
+// Keyframes
+@keyframes collapse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0);
+  }
+}
+
+@keyframes expand {
+  from {
+    transform: scale(0)
+  }
+  to {
+    transform: scale(1)
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Shared styles
+%absolute-fill {
+  position: absolute;
+  top:0;
+  left: 0;
+  bottom:0;
+  right: 0;
+}
+
+%icon {
+  height: $lock-circle-diameter;
+  width: $lock-circle-diameter;
+}
+
+%circle-shared {
+  fill: transparent;
+  stroke-width: $lock-circle-stroke-width;
+}
+
+// Class styles
 .btn--rounded.btn-primary {
   width: 190px;
   height: 40px;
@@ -25,61 +74,32 @@ $lock-circle-stroke-width: 2px;
   }
 }
 
-%absolute-fill {
-  position: absolute;
-  top:0;
-  left: 0;
-  bottom:0;
-  right: 0;
-}
-
-%icon {
-  height: $lock-circle-diameter;
-  width: $lock-circle-diameter;
-}
-
 .absolute-fill {
   @extend %absolute-fill;
 }
 
-%circle-shared {
-  fill: transparent;
-  stroke-width: $lock-circle-stroke-width;
+.icon-container {
+  @extend %icon;
+  position: relative;
+  margin-right: 2px;
 }
 
-@keyframes collapse {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(0);
-  }
+.main-icon-show {
+  animation: 0.4s fadeIn 1.2s forwards;
 }
 
-.circle-static-outer {
-  fill: white;
-}
-
-.circle-static-inner {
-  fill: var(--Blue-500);
-}
-
-.circle-static-outer-container {
-  animation: collapse 0.25s forwards;
-}
-
-.circle-static-inner-container {
-  animation: collapse 0.125s forwards;
-}
-
-.circle-background {
-  @extend %circle-shared;
-  stroke: var(--Blue-600);
+.invisible {
+  opacity: 0;
 }
 
 .circle-svg {
   @extend %icon;
   transform: rotate(-90deg)
+}
+
+.circle-background {
+  @extend %circle-shared;
+  stroke: var(--Blue-600);
 }
 
 .circle-foreground {
@@ -104,13 +124,24 @@ $lock-circle-stroke-width: 2px;
   height: 9px;
 }
 
-@keyframes expand {
-  from {
-    transform: scale(0)
-  }
-  to {
-    transform: scale(1)
-  }
+.check-icon-hide {
+  animation: 0.3s collapse 1s forwards;
+}
+
+.circle-static-outer-container {
+  animation: 0.25s collapse forwards;
+}
+
+.circle-static-outer {
+  fill: white;
+}
+
+.circle-static-inner-container {
+  animation: 0.125s collapse forwards;
+}
+
+.circle-static-inner {
+  fill: var(--Blue-500);
 }
 
 .check-icon-container {
@@ -125,35 +156,4 @@ $lock-circle-stroke-width: 2px;
 .check-icon {
   width: 14px;
   height: 11px;
-}
-
-.invisible {
-  opacity: 0;
-}
-
-.svg {
-  transform: rotate(-90deg);
-}
-
-.icon-container {
-  position: relative;
-  @extend %icon;
-  margin-right: 2px;
-}
-
-.check-icon-hide {
-  animation: 0.3s collapse 1s forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.main-icon-show {
-  animation: 0.4s fadeIn 1.2s forwards;
 }

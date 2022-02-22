@@ -3,14 +3,13 @@ import { render, fireEvent } from '@testing-library/react';
 import HoldToReveal from './hold-to-reveal';
 
 describe('HoldToReveal', () => {
-  const revealFinished = jest.fn();
+  const onLongPressed = jest.fn();
 
   it('should render a button with label', () => {
     const { getByText } = render(
       <HoldToReveal
         buttonText="Hold to reveal SRP"
-        timeToHold={5}
-        revealFinished={revealFinished}
+        onLongPressed={onLongPressed}
       />,
     );
     expect(getByText('Hold to reveal SRP')).toBeInTheDocument();
@@ -20,8 +19,7 @@ describe('HoldToReveal', () => {
     const { getByText } = render(
       <HoldToReveal
         buttonText="Hold to reveal SRP"
-        timeToHold={5}
-        revealFinished={revealFinished}
+        onLongPressed={onLongPressed}
       />,
     );
     const button = getByText('Hold to reveal SRP');

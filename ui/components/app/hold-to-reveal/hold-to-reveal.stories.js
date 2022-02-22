@@ -7,8 +7,6 @@ export default {
   argTypes: {
     buttonText: { control: 'text' },
     onLongPressed: { action: 'Revealing SRP' },
-    // secondsToHold: { control: 'number' },
-    // revealFinished: { action: 'revealFinished' },
   },
 };
 
