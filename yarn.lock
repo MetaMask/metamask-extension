@@ -2737,6 +2737,17 @@
     ethereumjs-util "^7.0.9"
     hdkey "0.8.0"
 
+"@metamask/eth-sig-util@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@metamask/eth-sig-util/-/eth-sig-util-4.0.0.tgz#11553ba06de0d1352332c1bde28c8edd00e0dcf6"
+  integrity sha512-LczOjjxY4A7XYloxzyxJIHONELmUxVZncpOLoClpEcTiebiVdM46KRPYXGuULro9oNNR2xdVx3yoKiQjdfWmoA==
+  dependencies:
+    ethereumjs-abi "^0.6.8"
+    ethereumjs-util "^6.2.1"
+    ethjs-util "^0.1.6"
+    tweetnacl "^1.0.3"
+    tweetnacl-util "^0.15.1"
+
 "@metamask/eth-token-tracker@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/eth-token-tracker/-/eth-token-tracker-4.0.0.tgz#f3129855873a857ef675d4c28f532be684241b61"
@@ -4080,30 +4091,40 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
 
-"@trezor/blockchain-link@^1.0.17":
-  version "1.0.17"
-  resolved "https://registry.yarnpkg.com/@trezor/blockchain-link/-/blockchain-link-1.0.17.tgz#3155b44ee9beb71326986d404385ede673519b3c"
-  integrity sha512-o1ZmZVdhXM8K4OY61A6l/pvmasC6OTGDeDliVlVnNdy3eVDVlnEivQVnMD7CvQr0Crxl1Flox0mp90Ljp/DIkA==
+"@trezor/blockchain-link@1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@trezor/blockchain-link/-/blockchain-link-1.1.0.tgz#065d18d7c948c4de45437fc2178d9e26a7c2304b"
+  integrity sha512-tH3hLG54VZ52Y6Fxdw51kqORbuzUSt1VReISj/oZROMexmDDCRgFR14/wxasjHp94XRYrx8777Boa1qrpAos4w==
   dependencies:
     bignumber.js "^9.0.1"
     es6-promise "^4.2.8"
     events "^3.2.0"
-    ripple-lib "1.8.2"
+    ripple-lib "1.10.0"
     tiny-worker "^2.3.0"
     ws "^7.4.0"
 
-"@trezor/connect-common@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@trezor/connect-common/-/connect-common-0.0.3.tgz#d136453d259d24f9200daf72d0184594d56e92e2"
-  integrity sha512-oc4K/Ve2e1o3R1M0QAexLYN7aOepeSlcO5NVP/cfxBA+36cApZrRSy6kbs3OB2uc15tua5qkmYEDpJ3QSnZarg==
+"@trezor/connect-common@0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@trezor/connect-common/-/connect-common-0.0.4.tgz#0df221685272544770399aca1c624b037870e310"
+  integrity sha512-uE8t4JCwHVn224yj3cV4jLu8i5JAGDxzkBu8Als1UFs/Zt8Sfl5xwIqeTSvhXx5x+VXe+uxt2CXX3AcrKTxN3g==
 
-"@trezor/rollout@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@trezor/rollout/-/rollout-1.2.0.tgz#827316debc5cf2e8af2210900eb49540ea2753d1"
-  integrity sha512-R8/M8PsGQUndHlyETZ5+mPOveaJSTlEgmAovY7Ifm3quvk8nV5ByWL1LUJ8IYUgir209EWDWSKWfa5RWoon8IA==
+"@trezor/rollout@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@trezor/rollout/-/rollout-1.2.1.tgz#47c81186768bbb0514d27b386d92a719c290ab5e"
+  integrity sha512-BDYtPE+rl4QKilGzb3lGxv17+lA5rou04zr1DdWaDqazyvfPW0fj46us4A4WLWptGVL+gfXtn0ZGqgsxHLBm7A==
   dependencies:
-    cross-fetch "^3.0.6"
+    cross-fetch "^3.1.4"
     runtypes "^5.0.1"
+
+"@trezor/transport@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@trezor/transport/-/transport-1.0.1.tgz#bf0d11a44d1220fe1486e7679370920f9f60afa4"
+  integrity sha512-JWjA3QlVhcn6zPJFDt80Ayqj5+zrY9m9jzWVd9sceFKYTUuCrsuhze1ho0CBlXLm8GF2/CzFijGbo6O93aL23Q==
+  dependencies:
+    bytebuffer "^5.0.1"
+    json-stable-stringify "^1.0.1"
+    long "^4.0.0"
+    protobufjs "^6.11.2"
 
 "@trezor/utxo-lib@1.0.0-beta.10":
   version "1.0.0-beta.10"
@@ -6384,10 +6405,10 @@ base-x@3.0.4:
   dependencies:
     safe-buffer "^5.0.1"
 
-base-x@3.0.8, base-x@^3.0.2, base-x@^3.0.8:
-  version "3.0.8"
-  resolved "https://registry.yarnpkg.com/base-x/-/base-x-3.0.8.tgz#1e1106c2537f0162e8b52474a557ebb09000018d"
-  integrity sha512-Rl/1AWP4J/zRrk54hhlxH4drNxPJXYUaKffODVI53/dAsV4t9fBxyxYKAVPU1XBHxYwOWP9h9H0hM2MVw4YfJA==
+base-x@3.0.9, base-x@^3.0.2, base-x@^3.0.8:
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/base-x/-/base-x-3.0.9.tgz#6349aaabb58526332de9f60995e548a53fe21320"
+  integrity sha512-H7JU6iBHTal1gp56aKoaa//YUxEaAOUiydvrV/pILqIHXTtqxSkATOnDA2u+jZ/61sD+L/412+7kzXRtWukhpQ==
   dependencies:
     safe-buffer "^5.0.1"
 
@@ -6514,6 +6535,11 @@ big-integer@1.6.36:
   version "1.6.36"
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.36.tgz#78631076265d4ae3555c04f85e7d9d2f3a071a36"
   integrity sha512-t70bfa7HYEA1D9idDbmuv7YbsbVkQ+Hp+8KFSul4aE5e/i1bjCNIRYJZlA8Q8p0r9T8cF/RVvwUgRA//FydEyg==
+
+big-integer@^1.6.48:
+  version "1.6.51"
+  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
+  integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
 big.js@^5.1.2, big.js@^5.2.2:
   version "5.2.2"
@@ -7271,6 +7297,14 @@ buffer-xor@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/buffer-xor/-/buffer-xor-1.0.3.tgz#26e61ed1422fb70dd42e6e36729ed51d855fe8d9"
   integrity sha1-JuYe0UIvtw3ULm42cp7VHYVf6Nk=
+
+buffer@5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.6.0.tgz#a31749dc7d81d84db08abf937b6b8c4033f62786"
+  integrity sha512-/gDYp/UtU0eA1ys8bOs9J6a+E/KWIY+DZ+Q2WESNUA0jFRsJOc0SNUO6xJ5SGA1xueg3NL65W6s+NY5l9cunuw==
+  dependencies:
+    base64-js "^1.0.2"
+    ieee754 "^1.1.4"
 
 buffer@^4.3.0:
   version "4.9.1"
@@ -8751,10 +8785,10 @@ cross-fetch@^2.1.0:
     node-fetch "2.1.2"
     whatwg-fetch "2.0.4"
 
-cross-fetch@^3.0.6:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.0.6.tgz#3a4040bc8941e653e0e9cf17f29ebcd177d3365c"
-  integrity sha512-KBPUbqgFjzWlVcURG+Svp9TlhA5uliYtiNx/0r8nv0pdypeQCRJ9IaSIc3q/x3q8t3F75cHuwxVql1HFGHCNJQ==
+cross-fetch@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.4.tgz#9723f3a3a247bf8b89039f3a380a9244e8fa2f39"
+  integrity sha512-1eAtFWdIubi6T4XPy6ei9iUFoKpUkIF971QLN8lIvvvwueI65+Nw5haMNKUwfJxabqlIIDODJKGrQ66gxC0PbQ==
   dependencies:
     node-fetch "2.6.1"
 
@@ -11151,15 +11185,16 @@ eth-simple-keyring@^4.2.0:
     ethereumjs-wallet "^1.0.1"
     events "^1.1.1"
 
-eth-trezor-keyring@^0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/eth-trezor-keyring/-/eth-trezor-keyring-0.9.1.tgz#10d78308c71966eadf94acc8acf7f7136311f31f"
-  integrity sha512-27k4pjHFG6z5F1dhpTfORONgtAPrF0BR+Qr+ygjYrjchmERJKkrgyqnJqkSGtHF6+XrgI8pKYiDTjo6CBPHVKw==
+eth-trezor-keyring@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/eth-trezor-keyring/-/eth-trezor-keyring-0.10.0.tgz#a7dcf3343730897359e9ec7517cfd90f130cfbb9"
+  integrity sha512-QGwSMM+Bv0MLtsJLrVfo7oqWzzvW1L6TS34EhrP56R0Io88rAJoEyE71Qpim1akKlF/VmJ6v04yXWgUPrTX2vg==
   dependencies:
     "@ethereumjs/tx" "^3.2.1"
+    "@metamask/eth-sig-util" "^4.0.0"
     ethereumjs-util "^7.0.9"
     hdkey "0.8.0"
-    trezor-connect "8.2.3-extended"
+    trezor-connect "8.2.6-extended"
 
 ethereum-bloom-filters@^1.0.6:
   version "1.0.7"
@@ -11284,7 +11319,7 @@ ethereumjs-util@^5.0.0, ethereumjs-util@^5.1.1, ethereumjs-util@^5.1.2, ethereum
     safe-buffer "^5.1.1"
     secp256k1 "^3.0.1"
 
-ethereumjs-util@^6.0.0:
+ethereumjs-util@^6.0.0, ethereumjs-util@^6.2.1:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-6.2.1.tgz#fcb4e4dd5ceacb9d2305426ab1a5cd93e3163b69"
   integrity sha512-W2Ktez4L01Vexijrm5EB6w7dg4n/TgpoYU4avuT5T3Vmnw/eCRtiBrJfQYS/DCSvDIOLn2k57GcHdeBcgVxAqw==
@@ -11571,7 +11606,7 @@ ethjs-util@0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethjs-util@0.1.6, ethjs-util@^0.1.3:
+ethjs-util@0.1.6, ethjs-util@^0.1.3, ethjs-util@^0.1.6:
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/ethjs-util/-/ethjs-util-0.1.6.tgz#f308b62f185f9fe6237132fb2a9818866a5cd536"
   integrity sha512-CUnVOQq7gSpDHZVVrQW8ExxUETWrnrvXYvYz55wOU8Uj4VCgw56XC2B/fVqQN+f7gmrnRHSLVnFAwsCuNwji8w==
@@ -23911,37 +23946,36 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-ripple-address-codec@^4.0.0, ripple-address-codec@^4.1.0, ripple-address-codec@^4.1.1:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/ripple-address-codec/-/ripple-address-codec-4.1.2.tgz#c573309dbd0fdd4ef8c803bf36959b8a716c2aa1"
-  integrity sha512-bIhmaxOg6rwVYkPQha9cuHdIdwmD8XTnaklBmyRjFvNZwYJ6Cf0cdCt+SpJd+RRJhRU65+U1Eup6YkoCBrqebg==
+ripple-address-codec@^4.1.1, ripple-address-codec@^4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/ripple-address-codec/-/ripple-address-codec-4.2.3.tgz#516675715cd43b71d2fd76c59bd92d0f623c152d"
+  integrity sha512-9Nd0hQmKoJEhSTzYR9kYjKmSWlH6HaVosNVAM7mIIVlzcNlQCPfKXj7CfvXcRiHl3C6XUZj7RFLqzVaPjq2ufA==
   dependencies:
-    base-x "3.0.8"
+    base-x "3.0.9"
     create-hash "^1.1.2"
 
-ripple-binary-codec@^0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/ripple-binary-codec/-/ripple-binary-codec-0.2.7.tgz#c5390e97e4072747a3ff386ee99558b496c6e5ab"
-  integrity sha512-VD+sHgZK76q3kmO765klFHPDCEveS5SUeg/bUNVpNrj7w2alyDNkbF17XNbAjFv+kSYhfsUudQanoaSs2Y6uzw==
+ripple-binary-codec@^1.1.3:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/ripple-binary-codec/-/ripple-binary-codec-1.3.0.tgz#0c6cf503fb0e12948d538abd198a740bd9d2143a"
+  integrity sha512-hz4nhiekqHbUwIdBOg1PQKsbi+/GwOccHmTTfkIJTTp/p5mlifS+U3Zfz4dVzKhftrXCPympYvLb5QgoIP1AKw==
   dependencies:
-    babel-runtime "^6.26.0"
-    bn.js "^5.1.1"
+    assert "^2.0.0"
+    big-integer "^1.6.48"
+    buffer "5.6.0"
     create-hash "^1.2.0"
     decimal.js "^10.2.0"
-    inherits "^2.0.4"
-    lodash "^4.17.15"
-    ripple-address-codec "^4.1.0"
+    ripple-address-codec "^4.2.3"
 
-ripple-keypairs@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/ripple-keypairs/-/ripple-keypairs-1.0.2.tgz#91c724210734e704e35053925a80bf1cd8104c92"
-  integrity sha512-3l2cUhUO4VEK42NfHtn7WA1NEO+vGU7p7/36QhCIvYFf8+lNdNrY0PrriJ3Mef/TG8hQvO8coCVEO5fpOKSAag==
+ripple-keypairs@^1.0.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/ripple-keypairs/-/ripple-keypairs-1.1.3.tgz#3af825ffe85c1777b0aa78d832e9fc5750d4529d"
+  integrity sha512-y74Y3c0g652BgpDhWsf0x98GnUyY2D9eO2ay2exienUfbIe00TeIiFhYXQhCGVnliGsxeV9WTpU+YuEWuIxuhw==
   dependencies:
     bn.js "^5.1.1"
     brorand "^1.0.5"
-    elliptic "^6.5.2"
+    elliptic "^6.5.4"
     hash.js "^1.0.3"
-    ripple-address-codec "^4.0.0"
+    ripple-address-codec "^4.2.3"
 
 ripple-lib-transactionparser@0.8.2:
   version "0.8.2"
@@ -23951,10 +23985,10 @@ ripple-lib-transactionparser@0.8.2:
     bignumber.js "^9.0.0"
     lodash "^4.17.15"
 
-ripple-lib@1.8.2:
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/ripple-lib/-/ripple-lib-1.8.2.tgz#d36dafcb64a913a5dab8a2f66a3b0727baaa9347"
-  integrity sha512-7fLQtiXb8LfyedkXQtDSNQPy7omNu7rGUO8M8bK2qiE+DuX4FPl8B8tVJbxBwOusAuYzdoVQfZtfdXt4WmBpmw==
+ripple-lib@1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/ripple-lib/-/ripple-lib-1.10.0.tgz#e41aaf17d5c6e6f8bcc8116736ac108ff3d6b810"
+  integrity sha512-Cg2u73UybfM1PnzcuLt5flvLKZn35ovdIp+1eLrReVB4swuRuUF/SskJG9hf5wMosbvh+E+jZu8A6IbYJoyFIA==
   dependencies:
     "@types/lodash" "^4.14.136"
     "@types/ws" "^7.2.0"
@@ -23962,10 +23996,9 @@ ripple-lib@1.8.2:
     https-proxy-agent "^5.0.0"
     jsonschema "1.2.2"
     lodash "^4.17.4"
-    lodash.isequal "^4.5.0"
     ripple-address-codec "^4.1.1"
-    ripple-binary-codec "^0.2.7"
-    ripple-keypairs "^1.0.0"
+    ripple-binary-codec "^1.1.3"
+    ripple-keypairs "^1.0.3"
     ripple-lib-transactionparser "0.8.2"
     ws "^7.2.0"
 
@@ -26397,36 +26430,24 @@ tree-kill@^1.2.2:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
-trezor-connect@8.2.3-extended:
-  version "8.2.3-extended"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.3-extended.tgz#597e985bacd9ebc0ab61b031fffc21c96515546e"
-  integrity sha512-nGgkvE25rKW7SQaz5hOo5hgsx8US0L1piTWu5WFzC5PIz6R+yCyN+SeSeKlYRJ7t9VdzTC77cYu3fklxJHJzCA==
+trezor-connect@8.2.6-extended:
+  version "8.2.6-extended"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-8.2.6-extended.tgz#1f6af2b7d9a8677adcac7b5961ab48f59648f3cc"
+  integrity sha512-j6I975BhHM2JBDDeW7uAjkVJjkUVxv/YhXdVIRN0O70ZyfWeXlY1ZcsYmgUAp08bo8nabFA4UpFADslDHtL3lQ==
   dependencies:
     "@babel/runtime" "^7.15.4"
-    "@trezor/blockchain-link" "^1.0.17"
-    "@trezor/connect-common" "^0.0.3"
-    "@trezor/rollout" "^1.2.0"
+    "@trezor/blockchain-link" "1.1.0"
+    "@trezor/connect-common" "0.0.4"
+    "@trezor/rollout" "^1.2.1"
+    "@trezor/transport" "1.0.1"
     "@trezor/utxo-lib" "1.0.0-beta.10"
     bignumber.js "^9.0.1"
     bowser "^2.11.0"
     cbor-web "^7.0.6"
+    cross-fetch "^3.1.4"
     events "^3.3.0"
-    keccak "^3.0.2"
-    node-fetch "^2.6.1"
     parse-uri "^1.0.3"
     tiny-worker "^2.3.0"
-    trezor-link "2.0.0-beta.6"
-    whatwg-fetch "^3.6.2"
-
-trezor-link@2.0.0-beta.6:
-  version "2.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/trezor-link/-/trezor-link-2.0.0-beta.6.tgz#e727890a539ee1b6ff109a0227c38328d42d95c7"
-  integrity sha512-DwmbKV434Vx7RmuPxcZzABTLFK5n5mZ+5+UjQ8tA0lLx41NstRJ+/OKO0b8qMJOv1ZnoQ87dfu5LtI7o9EXKuw==
-  dependencies:
-    bytebuffer "^5.0.1"
-    json-stable-stringify "^1.0.1"
-    long "^4.0.0"
-    protobufjs "^6.11.2"
 
 trim-newlines@^3.0.0:
   version "3.0.1"
@@ -26554,7 +26575,7 @@ tunnel@^0.0.6:
   resolved "https://registry.yarnpkg.com/tunnel/-/tunnel-0.0.6.tgz#72f1314b34a5b192db012324df2cc587ca47f92c"
   integrity sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==
 
-tweetnacl-util@^0.15.0:
+tweetnacl-util@^0.15.0, tweetnacl-util@^0.15.1:
   version "0.15.1"
   resolved "https://registry.yarnpkg.com/tweetnacl-util/-/tweetnacl-util-0.15.1.tgz#b80fcdb5c97bcc508be18c44a4be50f022eea00b"
   integrity sha512-RKJBIj8lySrShN4w6i/BonWp2Z/uxwC3h4y7xsRrpP59ZboCd0GpEVsOnMDYLMmKBpYhb5TgHzZXy7wTfYFBRw==
@@ -27737,7 +27758,7 @@ whatwg-fetch@2.0.4:
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.4.tgz#dde6a5df315f9d39991aa17621853d720b85566f"
   integrity sha512-dcQ1GWpOD/eEQ97k66aiEVpNnapVj90/+R+SXTPYGHpYBBypfKJEQjLrvMZ7YXbKm21gXd4NcuxUTjiv1YtLng==
 
-whatwg-fetch@^3.4.1, whatwg-fetch@^3.6.2:
+whatwg-fetch@^3.4.1:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
   integrity sha512-bJlen0FcuU/0EMLrdbJ7zOnW6ITZLrZMIarMUVmdKtsGvZna8vxKYaexICWPfZ8qwf9fzNq+UEIZrnSaApt6RA==
