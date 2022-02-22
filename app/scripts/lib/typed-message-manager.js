@@ -33,9 +33,9 @@ export default class TypedMessageManager extends EventEmitter {
    *
    * @param options
    * @param options.getCurrentChainId
-   * @param options.metricEvents
+   * @param options.metricsEvent
    */
-  constructor({ getCurrentChainId, metricEvents }) {
+  constructor({ getCurrentChainId, metricsEvent }) {
     super();
     this._getCurrentChainId = getCurrentChainId;
     this.memStore = new ObservableStore({
@@ -43,7 +43,7 @@ export default class TypedMessageManager extends EventEmitter {
       unapprovedTypedMessagesCount: 0,
     });
     this.messages = [];
-    this.metricEvents = metricEvents;
+    this.metricsEvent = metricsEvent;
   }
 
   /**
