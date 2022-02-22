@@ -142,7 +142,7 @@ describe('Signature Request Component', () => {
 
       // SiteIcon is not present if subjectMetadata is not passed in props
       const siteIcon = wrapper.find(SiteIcon);
-      expect(siteIcon).toBeUndefined();
+      expect(siteIcon).toHaveLength(0);
     });
   });
 });
