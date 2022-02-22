@@ -1,5 +1,6 @@
 import React from 'react';
 import { shallowWithContext } from '../../../../test/lib/render-helpers';
+import SiteIcon from '../../ui/site-icon';
 import SignatureRequest from './signature-request.component';
 import Message from './signature-request-message';
 
@@ -74,6 +75,7 @@ describe('Signature Request Component', () => {
             msgParams,
           }}
           fromAccount={{ address: fromAddress }}
+          subjectMetadata={{ test: { iconUrl: 'www.test.com' } }}
         />,
       );
 
@@ -91,6 +93,10 @@ describe('Signature Request Component', () => {
       const dataTo = data.to;
       expect(dataTo[0].name).toStrictEqual('Bob');
       expect(dataTo[0].wallets).toHaveLength(3);
+      // SiteIcon is present if subjectMetadata is passed in props
+      const siteIcon = wrapper.find(SiteIcon);
+      const { icon } = siteIcon.props();
+      expect(icon).toStrictEqual('www.test.com');
     });
 
     it('should render a div message parsed without typeless data', () => {
@@ -133,6 +139,10 @@ describe('Signature Request Component', () => {
 
       expect(data.do_not_display).toBeUndefined();
       expect(data.do_not_display2).toBeUndefined();
+
+      // SiteIcon is not present if subjectMetadata is not passed in props
+      const siteIcon = wrapper.find(SiteIcon);
+      expect(siteIcon).toBeUndefined();
     });
   });
 });
