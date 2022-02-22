@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory } from 'react-router-dom';
 import { getTokens } from '../../ducks/metamask/metamask';
-import { getSendAssetAddress } from '../../ducks/send';
 import { getUseTokenDetection, getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
@@ -31,18 +30,13 @@ export default function TokenDetailsPage() {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useContext(I18nContext);
-
   const tokens = useSelector(getTokens);
   const tokenList = useSelector(getTokenList);
   const useTokenDetection = useSelector(getUseTokenDetection);
 
-  const assetAddress = useSelector((state) => ({
-    asset: getSendAssetAddress(state),
-  }));
+  const tokenAddress = history?.location?.state?.tokenAddress;
 
-  const { asset: tokenAddress } = assetAddress;
-
-  const tokenMetadata = tokenList[tokenAddress];
+  const tokenMetadata = tokenList?.[tokenAddress];
   const fileName = tokenMetadata?.iconUrl;
   const imagePath = useTokenDetection
     ? fileName
