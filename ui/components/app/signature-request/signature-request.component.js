@@ -76,7 +76,7 @@ export default class SignatureRequest extends PureComponent {
       type,
     } = txData;
     const { address: fromAddress } = fromAccount;
-    const { message, domain, primaryType, types } = JSON.parse(data);
+    const { message, domain = {}, primaryType, types } = JSON.parse(data);
     const { metricsEvent } = this.context;
     const targetSubjectMetadata = origin ? subjectMetadata?.[origin] : null;
 
