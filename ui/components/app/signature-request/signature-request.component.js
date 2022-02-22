@@ -75,7 +75,7 @@ export default class SignatureRequest extends PureComponent {
       type,
     } = txData;
     const { address: fromAddress } = fromAccount;
-    const { message, domain = {}, primaryType, types } = JSON.parse(data);
+    const { message, primaryType, types } = JSON.parse(data);
     const { metricsEvent } = this.context;
     const targetSubjectMetadata = origin ? subjectMetadata?.[origin] : null;
 
@@ -153,7 +153,7 @@ export default class SignatureRequest extends PureComponent {
           </div>
         ) : null}
         <Message
-          data={{ ...sanitizeMessage(message, primaryType, types), domain }}
+          data={sanitizeMessage(message, primaryType, types)}
           onMessageScrolled={() => this.setState({ hasScrolledMessage: true })}
           setMessageRootRef={this.setMessageRootRef.bind(this)}
           messageRootRef={this.messageRootRef}

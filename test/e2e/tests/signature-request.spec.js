@@ -143,11 +143,6 @@ describe('Sign Typed Data V3 Signature Request', function () {
         );
         assert.equal(await messages[4].getText(), 'Hello, Bob!');
 
-        const messageElement = await driver.findElements(
-          '.signature-request-message--node-value',
-        );
-        await driver.scrollToElement(messageElement[messageElement.length - 1]);
-
         // Approve signing typed data
         await driver.clickElement({ text: 'Sign', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
