@@ -42,7 +42,7 @@
     "message": "QR-based HW Wallet"
   },
   "QRHardwareWalletSteps2Description": {
-    "message": "AirGap Vault & Ngrave (Coming Soon)"
+    "message": "Ngrave (Coming Soon)"
   },
   "about": {
     "message": "About"
@@ -190,6 +190,12 @@
   },
   "aggregatorFeeCost": {
     "message": "Aggregator network fee"
+  },
+  "airgapVault": {
+    "message": "AirGap Vault"
+  },
+  "airgapVaultTutorial": {
+    "message": " (Tutorials)"
   },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
