@@ -1,9 +1,9 @@
 // Variables
-$lock-circle-radius: 14px;
-$lock-circle-diameter: $lock-circle-radius * 2;
+$circle-radius: 14px;
+$circle-diameter: $circle-radius * 2;
 // Circumference ~ (2*PI*R). We reduced the number a little to create a snappier interaction
-$lock-circle-circumference: 82;
-$lock-circle-stroke-width: 2px;
+$circle-circumference: 82;
+$circle-stroke-width: 2px;
 
 // Keyframes
 @keyframes collapse {
@@ -43,13 +43,13 @@ $lock-circle-stroke-width: 2px;
 }
 
 %icon {
-  height: $lock-circle-diameter;
-  width: $lock-circle-diameter;
+  height: $circle-diameter;
+  width: $circle-diameter;
 }
 
 %circle-shared {
   fill: transparent;
-  stroke-width: $lock-circle-stroke-width;
+  stroke-width: $circle-stroke-width;
 }
 
 // Class styles
@@ -104,9 +104,9 @@ $lock-circle-stroke-width: 2px;
 
 .circle-foreground {
   @extend %circle-shared;
-  stroke: white;
-  stroke-dasharray: $lock-circle-circumference;
-  stroke-dashoffset: $lock-circle-circumference;
+  stroke: var(--ui-white);
+  stroke-dasharray: $circle-circumference;
+  stroke-dashoffset: $circle-circumference;
   transition: 1s stroke-dashoffset;
 }
 
@@ -133,7 +133,7 @@ $lock-circle-stroke-width: 2px;
 }
 
 .circle-static-outer {
-  fill: white;
+  fill: var(--ui-white);;
 }
 
 .circle-static-inner-container {
@@ -141,7 +141,7 @@ $lock-circle-stroke-width: 2px;
 }
 
 .circle-static-inner {
-  fill: var(--Blue-500);
+  fill: var(--primary-1);
 }
 
 .check-icon-container {
