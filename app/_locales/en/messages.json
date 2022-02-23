@@ -2590,22 +2590,22 @@
     "message": "Secure my wallet (recommended)"
   },
   "seedPhraseIntroSidebarBulletFour": {
-    "message": "Write down and store in multiple secret places."
+    "message": "Write down and store in multiple secret places"
   },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Save in a password manager"
   },
   "seedPhraseIntroSidebarBulletThree": {
-    "message": "Store in a safe-deposit box."
+    "message": "Store in a safe deposit box"
   },
   "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Store in a bank vault."
+    "message": "Store in a bank vault"
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "Your Secret Recovery Phrase is a 12-word phrase that is the “master key” to your wallet and your funds"
   },
   "seedPhraseIntroSidebarCopyThree": {
-    "message": "If someone asks for your recovery phrase they are likely trying to scam you and steal your wallet funds"
+    "message": "If someone asks for your recovery phrase they are likely trying to scam you and steal your wallet funds."
   },
   "seedPhraseIntroSidebarCopyTwo": {
     "message": "Never, ever share your Secret Recovery Phrase, not even with MetaMask!"
