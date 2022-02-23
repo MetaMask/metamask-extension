@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.11.0]
 ### Added
 - Swaps: Add support for Smart Transactions on Mainnet and Rinkeby ([#12676](https://github.com/MetaMask/metamask-extension/pull/12676))
-- Swaps: Enable Avalanche ([#13653](https://github.com/MetaMask/metamask-extension/pull/13653))
 - Add "Token details" page ([#13216](https://github.com/MetaMask/metamask-extension/pull/13216))
 - Add icons to sections in settings ([#12920](https://github.com/MetaMask/metamask-extension/pull/12920))
 - Add EIP-712 support for Trezor ([#13693](https://github.com/MetaMask/metamask-extension/pull/13693))
