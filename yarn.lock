@@ -2707,6 +2707,11 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
+"@metamask/design-tokens@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.2.0.tgz#4d23456ac7de950461534088ad44692e0f7c766c"
+  integrity sha512-/9Ps2IjYyK8SW5XSpkk0jcKw/qnEGTyyVzNwaBuU/m4mdWrukDfFCX0AS2nm6h1TIFz+bJuhOhCu5aZTuXFJ0w==
+
 "@metamask/eslint-config-jest@^9.0.0":
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/eslint-config-jest/-/eslint-config-jest-9.0.0.tgz#516fdf1f03f6f006b26ca790bf748e2189d19d17"
