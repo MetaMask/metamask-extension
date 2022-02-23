@@ -39,7 +39,7 @@ const AddNetwork = ({
         <img
           src="./images/caret-left-black.svg"
           alt={t('back')}
-          onClick={() => onBackClick}
+          onClick={onBackClick}
           className="add-network__header__back-icon"
         />
         <Typography variant={TYPOGRAPHY.H3} color={COLORS.BLACK}>
@@ -84,7 +84,7 @@ const AddNetwork = ({
               className="add-network__add-icon"
               src="./images/times.svg"
               alt={`${t('add')} ${item.ticker}`}
-              onClick={() => onAddNetworkClick}
+              onClick={onAddNetworkClick}
             />
           </Box>
         ))}
@@ -94,7 +94,7 @@ const AddNetwork = ({
         padding={[4, 4, 4, 4]}
         className="add-network__footer"
       >
-        <Button type="link" onClick={() => onAddNetworkManuallyClick}>
+        <Button type="link" onClick={onAddNetworkManuallyClick}>
           <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY1}>
             {t('addANetworkManually')}
           </Typography>
@@ -110,7 +110,6 @@ const AddNetwork = ({
                 className="add-network__footer__link"
                 rel="noreferrer"
               >
-                {' '}
                 {t('endOfFlowMessage9')}
               </a>
             </>
