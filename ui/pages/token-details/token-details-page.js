@@ -35,8 +35,9 @@ export default function TokenDetailsPage() {
   const useTokenDetection = useSelector(getUseTokenDetection);
 
   const tokenAddress = history?.location?.state?.tokenAddress;
-
-  const tokenMetadata = tokenList?.[tokenAddress];
+  const tokenMetadata = Object.values(tokenList).find((token) =>
+    isEqualCaseInsensitive(token.address, tokenAddress),
+  );
   const fileName = tokenMetadata?.iconUrl;
   const imagePath = useTokenDetection
     ? fileName
