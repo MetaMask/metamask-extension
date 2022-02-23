@@ -1,4 +1,4 @@
-function setupMocking(server) {
+function setupMocking(server, testSpecificMock) {
   server.forAnyRequest().thenPassThrough();
 
   server
@@ -27,6 +27,8 @@ function setupMocking(server) {
         },
       };
     });
+
+  testSpecificMock(server);
 }
 
 module.exports = { setupMocking };

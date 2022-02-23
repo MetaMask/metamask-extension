@@ -765,9 +765,6 @@
   "restore": {
     "message": "Відновити"
   },
-  "restoreAccountWithSeed": {
-    "message": "Відновіть ваш обліковий запис за допомогою seed-фрази"
-  },
   "revealSeedWords": {
     "message": "Показати мнемонічні слова"
   },

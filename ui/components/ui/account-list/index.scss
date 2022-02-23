@@ -35,11 +35,12 @@
   &__wrapper {
     width: 92%;
     display: flex;
+    overflow: hidden;
   }
 
   &__list {
     flex: 2 1 0;
-    width: 92%;
+    width: 100%;
     max-height: max-content;
     border: 1px solid #d0d5da;
     box-sizing: border-box;

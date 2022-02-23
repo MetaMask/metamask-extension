@@ -734,9 +734,6 @@
   "restore": {
     "message": "Obnoviť"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnoviť účet pomocou seed frázy"
-  },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
