@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.10.1]
-### Uncategorized
-- [GridPlus] Updates SDK to v0.9.10 (hotfix) ([#13691](https://github.com/MetaMask/metamask-extension/pull/13691))
-- Enable Avalanche for Swaps ([#13653](https://github.com/MetaMask/metamask-extension/pull/13653))
+### Added
+- Swaps: Enable Avalanche ([#13653](https://github.com/MetaMask/metamask-extension/pull/13653))
+
+### Fixed
+- Ensure Lattice hardware wallet can correctly sign all EIP-712 messages ([#13691](https://github.com/MetaMask/metamask-extension/pull/13691))
 
 ## [10.10.0]
 ### Added
