@@ -2258,7 +2258,7 @@ describe('Transaction Controller', function () {
       // test update estimate used
       txController.updateTransactionGasFees('3', { estimateUsed: '0x0055' });
       result = txStateManager.getTransaction('3');
-      assert.equal(result.txParams.estimateUsed, '0x0055');
+      assert.equal(result.estimateUsed, '0x0055');
     });
 
     it('updates estimated base fee', function () {
