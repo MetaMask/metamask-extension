@@ -59,10 +59,7 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
-import {
-  toPrecisionWithoutTrailingZeros,
-  isEqualCaseInsensitive,
-} from '../../../helpers/utils/util';
+import { toPrecisionWithoutTrailingZeros } from '../../../helpers/utils/util';
 
 import {
   safeRefetchQuotes,
@@ -115,6 +112,7 @@ import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
 import Box from '../../../components/ui/box';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;

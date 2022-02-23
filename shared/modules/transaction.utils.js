@@ -1,4 +1,24 @@
 import { isHexString } from 'ethereumjs-util';
+import { ethers } from 'ethers';
+import abi from 'human-standard-token-abi';
+import log from 'loglevel';
+import { TRANSACTION_TYPES } from '../constants/transaction';
+import { readAddressAsContract } from './contract-utils';
+import { isEqualCaseInsensitive } from './string-utils';
+
+/**
+ * @typedef { 'transfer' | 'approve' | 'transferfrom' | 'contractInteraction'| 'simpleSend' } InferrableTransactionTypes
+ */
+
+/**
+ * @typedef {Object} InferTransactionTypeResult
+ * @property {InferrableTransactionTypes} type - The type of transaction
+ * @property {string} getCodeResponse - The contract code, in hex format if
+ *  it exists. '0x0' or '0x' are also indicators of non-existent contract
+ *  code
+ */
+
+const hstInterface = new ethers.utils.Interface(abi);
 
 export function transactionMatchesNetwork(transaction, chainId, networkId) {
   if (typeof transaction.chainId !== 'undefined') {
@@ -60,4 +80,54 @@ export function txParamsAreDappSuggested(transaction) {
         maxPriorityFeePerGas &&
       transaction?.dappSuggestedGasFees?.maxFeePerGas === maxFeePerGas)
   );
+}
+
+/**
+ * Determines the type of the transaction by analyzing the txParams.
+ * This method will return one of the types defined in shared/constants/transactions
+ * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these
+ * represent specific events that we control from the extension and are added manually
+ * at transaction creation.
+ *
+ * @param {Object} txParams - Parameters for the transaction
+ * @param {EthQuery} query - EthQuery instance
+ * @returns {InferTransactionTypeResult}
+ */
+export async function determineTransactionType(txParams, query) {
+  const { data, to } = txParams;
+  let name;
+  try {
+    name = data && hstInterface.parseTransaction({ data }).name;
+  } catch (error) {
+    log.debug('Failed to parse transaction data.', error, data);
+  }
+
+  const tokenMethodName = [
+    TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+  ].find((methodName) => isEqualCaseInsensitive(methodName, name));
+
+  let result;
+  if (data && tokenMethodName) {
+    result = tokenMethodName;
+  } else if (data && !to) {
+    result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
+  }
+
+  let contractCode;
+
+  if (!result) {
+    const {
+      contractCode: resultCode,
+      isContractAddress,
+    } = await readAddressAsContract(query, to);
+
+    contractCode = resultCode;
+    result = isContractAddress
+      ? TRANSACTION_TYPES.CONTRACT_INTERACTION
+      : TRANSACTION_TYPES.SIMPLE_SEND;
+  }
+
+  return { type: result, getCodeResponse: contractCode };
 }

@@ -77,10 +77,7 @@ import {
   hexToDecimal,
 } from '../../../helpers/utils/conversions.util';
 import { calcTokenAmount } from '../../../helpers/utils/token-util';
-import {
-  getURLHostName,
-  isEqualCaseInsensitive,
-} from '../../../helpers/utils/util';
+import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
@@ -110,6 +107,7 @@ import {
   shouldEnableDirectWrapping,
 } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
