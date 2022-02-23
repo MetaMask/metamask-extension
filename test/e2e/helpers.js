@@ -29,6 +29,9 @@ async function withFixtures(options, testSuite) {
     title,
     failOnConsoleError = true,
     dappPath = undefined,
+    testSpecificMock = function () {
+      // do nothing.
+    },
   } = options;
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
@@ -89,8 +92,8 @@ async function withFixtures(options, testSuite) {
     }
     const https = await mockttp.generateCACertificate();
     mockServer = mockttp.getLocal({ https });
+    setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
-    setupMocking(mockServer);
     if (
       process.env.SELENIUM_BROWSER === 'chrome' &&
       process.env.CI === 'true'
