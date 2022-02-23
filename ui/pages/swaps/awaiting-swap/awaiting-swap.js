@@ -17,6 +17,7 @@ import {
   getUSDConversionRate,
   isHardwareWallet,
   getHardwareWalletType,
+  getSwapsDefaultToken,
 } from '../../../selectors';
 
 import {
@@ -32,6 +33,7 @@ import {
   getSmartTransactionsEnabled,
   getFromTokenInputValue,
   getMaxSlippage,
+  setSwapsFromToken,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
 import Box from '../../../components/ui/box';
@@ -82,6 +84,7 @@ export default function AwaitingSwap({
   const usdConversionRate = useSelector(getUSDConversionRate);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
 
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
     false,
@@ -251,9 +254,10 @@ export default function AwaitingSwap({
       <Box marginBottom={3}>
         <a
           href="#"
-          onClick={() => {
+          onClick={async () => {
             makeAnotherSwapEvent();
-            dispatch(navigateBackToBuildQuote(history));
+            await dispatch(navigateBackToBuildQuote(history));
+            dispatch(setSwapsFromToken(defaultSwapsToken));
           }}
         >
           {t('makeAnotherSwap')}
