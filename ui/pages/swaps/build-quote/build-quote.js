@@ -454,6 +454,7 @@ export default function BuildQuote({
     !isFeatureFlagLoaded ||
     !Number(fromTokenInputValue) ||
     !selectedToToken?.address ||
+    !fromTokenAddress ||
     Number(maxSlippage) < 0 ||
     Number(maxSlippage) > MAX_ALLOWED_SLIPPAGE ||
     (toTokenIsNotDefault && occurrences < 2 && !verificationClicked);
