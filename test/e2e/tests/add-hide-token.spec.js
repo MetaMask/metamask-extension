@@ -146,7 +146,7 @@ describe('Token Details', function () {
         // create token from test dapp
         await driver.clickElement({ text: 'Create Token', tag: 'button' });
         windowHandles = await driver.getAllWindowHandles();
-        await driver.waitUntilXWindowHandles(2);
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -172,30 +172,25 @@ describe('Token Details', function () {
 
         await driver.scrollToElement(addTokenToWallet);
         await addTokenToWallet.click();
-
-        await driver.delay(2000);
         windowHandles = await driver.getAllWindowHandles();
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
+        await driver.waitForSelector({ text: 'Add Token', tag: 'button' });
         await driver.clickElement({ text: 'Add Token', tag: 'button' });
 
         // open token details page
         await driver.switchToWindow(extension);
-
         await driver.clickElement({ text: 'Assets', tag: 'button' });
-
         await driver.clickElement({ text: 'TST', tag: 'span' });
-
         await driver.clickElement('[data-testid="asset-options__button"]');
-
         await driver.clickElement(
           '[data-testid="asset-options__token-details"]',
         );
 
         // check token details page elements
-
         await driver.waitForSelector({
           text: '10',
           tag: 'h4',
