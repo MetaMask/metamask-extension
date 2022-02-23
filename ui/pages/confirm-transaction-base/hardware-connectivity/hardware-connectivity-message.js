@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
-import { DEVICE_NAMES, KEYRING_NAMES } from '../../../../shared/constants/hardware-wallets';
+import { KEYRING_NAMES } from '../../../../shared/constants/hardware-wallets';
 
 export default function HardwareConnectivityMessage({
   connected = false,
@@ -14,14 +14,14 @@ export default function HardwareConnectivityMessage({
   return (
     <div className="hardware-connectivity-message">
       <ActionableMessage
-        type={connected ? '' : 'warning'}
+        type={connected ? 'success' : 'warning'}
         message={
           connected ? (
             t('hardwareWalletConnectivityConnected', [KEYRING_NAMES.LEDGER])
           ) : (
             <>
               {t('hardwareWalletConnectivityNotConnected', [
-                DEVICE_NAMES.LEDGER,
+                KEYRING_NAMES.LEDGER,
               ])}{' '}
               <button
                 className="hardware-connectivity-message__button"

@@ -19,8 +19,22 @@
   }
 }
 
-.hardware-connectivity-message__button {
-  font-size: inherit;
-  background: unset;
-  padding: 0;
+.hardware-connectivity {
+  &-message {
+    margin-bottom: 24px;
+
+    .actionable-message {
+      padding: 8px;
+
+      &__message {
+        text-align: start;
+      }
+    }
+
+    &__button {
+      font-size: inherit;
+      background: unset;
+      padding: 0;
+    }
+  }
 }
