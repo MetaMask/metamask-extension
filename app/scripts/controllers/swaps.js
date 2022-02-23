@@ -289,14 +289,16 @@ export default class SwapsController {
         fetchParams.fromAddress,
         chainId,
       );
+      const [firstQuote] = Object.values(newQuotes);
 
       // For a user to be able to swap a token, they need to have approved the MetaSwap contract to withdraw that token.
       // _getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is greater
       // than 0, it means that approval has already occurred and is not needed. Otherwise, for tokens to be swapped, a new
       // call of the ERC-20 approve method is required.
       approvalRequired =
+        firstQuote.approvalNeeded &&
         allowance.eq(0) &&
-        Object.values(newQuotes)[0].aggregator !== 'wrappedNative';
+        firstQuote.aggregator !== 'wrappedNative';
       if (!approvalRequired) {
         newQuotes = mapValues(newQuotes, (quote) => ({
           ...quote,
@@ -304,7 +306,7 @@ export default class SwapsController {
         }));
       } else if (!isPolledRequest) {
         const { gasLimit: approvalGas } = await this.timedoutGasReturn(
-          Object.values(newQuotes)[0].approvalNeeded,
+          firstQuote.approvalNeeded,
         );
 
         newQuotes = mapValues(newQuotes, (quote) => ({
