@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
@@ -6,11 +6,11 @@ import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
+import { MetaMetricsContext as NewMetaMetricsContext } from '../../contexts/metametrics.new';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
-import { useNewMetricEvent } from '../../hooks/useMetricEvent';
 import { getSuggestedAssets } from '../../selectors';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
 
@@ -65,19 +65,7 @@ const ConfirmAddSuggestedToken = () => {
   const suggestedAssets = useSelector(getSuggestedAssets);
   const tokens = useSelector(getTokens);
 
-  const [addedToken, setAddedToken] = useState({});
-
-  const trackTokenAddedEvent = useNewMetricEvent({
-    event: 'Token Added',
-    category: 'Wallet',
-    sensitiveProperties: {
-      token_symbol: addedToken.symbol,
-      token_contract_address: addedToken.address,
-      token_decimal_precision: addedToken.decimals,
-      unlisted: addedToken.unlisted,
-      source: 'dapp',
-    },
-  });
+  const metricsEvent = useContext(NewMetaMetricsContext);
 
   const knownTokenActionableMessage = useMemo(() => {
     return (
@@ -118,11 +106,33 @@ const ConfirmAddSuggestedToken = () => {
     );
   }, [suggestedAssets, tokens, t]);
 
-  useEffect(() => {
-    if (Object.keys(addedToken).length) {
-      trackTokenAddedEvent();
-    }
-  }, [addedToken, trackTokenAddedEvent]);
+  const handleAddTokensClick = useCallback(async () => {
+    await Promise.all(
+      suggestedAssets.map(async ({ asset, id }) => {
+        await dispatch(acceptWatchAsset(id));
+
+        metricsEvent({
+          event: 'Token Added',
+          category: 'Wallet',
+          sensitiveProperties: {
+            token_symbol: asset.symbol,
+            token_contract_address: asset.address,
+            token_decimal_precision: asset.decimals,
+            unlisted: asset.unlisted,
+            source: 'dapp',
+          },
+        });
+      }),
+    );
+
+    history.push(mostRecentOverviewPage);
+  }, [
+    dispatch,
+    history,
+    metricsEvent,
+    mostRecentOverviewPage,
+    suggestedAssets,
+  ]);
 
   useEffect(() => {
     if (!suggestedAssets.length) {
@@ -198,15 +208,7 @@ const ConfirmAddSuggestedToken = () => {
             large
             className="page-container__footer-button"
             disabled={suggestedAssets.length === 0}
-            onClick={async () => {
-              await Promise.all(
-                suggestedAssets.map(async ({ asset, id }) => {
-                  await dispatch(acceptWatchAsset(id));
-                  setAddedToken(asset);
-                }),
-              );
-              history.push(mostRecentOverviewPage);
-            }}
+            onClick={handleAddTokensClick}
           >
             {t('addToken')}
           </Button>
