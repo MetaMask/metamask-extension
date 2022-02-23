@@ -2936,6 +2936,14 @@
   "spendLimitTooLarge": {
     "message": "Spend limit too large"
   },
+  "srpPasteFailed": {
+    "message": "Paste failed",
+    "description": "Title of the error popup displayed when the user pastes an invalid SRP into a SRP input field"
+  },
+  "srpPasteFailedTooManyWords": {
+    "message": "The pasted failed because the pasted content contained over 24 words. A secret recovery phrase can a maximum of 24 words.",
+    "description": "Description of SRP paste erorr when the pasted content has too many words"
+  },
   "stable": {
     "message": "Stable"
   },
