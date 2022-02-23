@@ -93,6 +93,15 @@
     }
   }
 
+  &--success {
+    border-color: #c3f4cb;
+    background-color: #eaf8ed;
+
+    .actionable-message__message {
+      color: var(--Black-100);
+    }
+  }
+
   &--danger {
     background: var(--Red-000);
     border: 1px solid var(--Red-300);
