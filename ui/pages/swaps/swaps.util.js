@@ -27,14 +27,12 @@ import {
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
   RINKEBY_CHAIN_ID,
-<<<<<<< HEAD
   ETH_SYMBOL,
   AVALANCHE_CHAIN_ID,
-=======
   ETH_TOKEN_IMAGE_URL,
   BNB_TOKEN_IMAGE_URL,
   MATIC_TOKEN_IMAGE_URL,
->>>>>>> 4ea40e2d1 (Redesign screen/page "List of networks")
+  AVAX_TOKEN_IMAGE_URL,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -895,6 +893,8 @@ export const getNetworkImageByChainId = (chainId) => {
       return BNB_TOKEN_IMAGE_URL;
     case POLYGON_CHAIN_ID:
       return MATIC_TOKEN_IMAGE_URL;
+    case AVALANCHE_CHAIN_ID:
+      return AVAX_TOKEN_IMAGE_URL;
     default:
       return '';
   }

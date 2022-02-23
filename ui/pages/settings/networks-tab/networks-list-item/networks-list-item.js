@@ -54,7 +54,7 @@ const NetworksListItem = ({
   useEffect(() => {
     handleHooksSettingsRefs(t, t('networks'), settingsRefs, networkIndex);
   }, [networkIndex, settingsRefs, t]);
-  
+
   return (
     <div
       ref={settingsRefs}
