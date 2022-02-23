@@ -29,6 +29,14 @@
       &__message {
         text-align: start;
       }
+
+      .fa-check-circle {
+        color: var(--success-1);
+      }
+
+      .fa-exclamation-circle {
+        color: var(--alert-3);
+      }
     }
 
     &__button {
