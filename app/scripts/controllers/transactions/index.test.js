@@ -2242,7 +2242,7 @@ describe('Transaction Controller', function () {
       // test update estimate used
       txController.updateTransactionGasFees('3', { estimateUsed: '0x0055' });
       result = txStateManager.getTransaction('3');
-      assert.equal(result.txParams.estimateUsed, '0x0055');
+      assert.equal(result.estimateUsed, '0x0055');
     });
 
     it('updates estimated base fee', function () {
@@ -2302,6 +2302,60 @@ describe('Transaction Controller', function () {
       const result = txStateManager.getTransaction('1');
       assert.equal(result.userEditedGasLimit, '0x0088');
       assert.equal(result.userFeeLevel, 'high');
+    });
+
+    it('does not update if status is not unapproved', function () {
+      txStateManager.addTransaction({
+        id: '4',
+        status: TRANSACTION_STATUSES.APPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          maxPriorityFeePerGas: '0x007',
+          maxFeePerGas: '0x008',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x009',
+      });
+
+      txController.updateTransactionGasFees('4', { maxFeePerGas: '0x0088' });
+      let result = txStateManager.getTransaction('4');
+      assert.equal(result.txParams.maxFeePerGas, '0x008');
+
+      // test update estimate used
+      txController.updateTransactionGasFees('4', { estimateUsed: '0x0099' });
+      result = txStateManager.getTransaction('4');
+      assert.equal(result.estimateUsed, '0x009');
+    });
+
+    it('does not update unknown parameters in update method', function () {
+      txController.updateSwapTransaction('1', {
+        type: 'swapped',
+        destinationTokenDecimals: 8,
+        destinationTokenAddress: VALID_ADDRESS_TWO,
+        swapTokenValue: '0x011',
+        gasPrice: '0x12',
+      });
+
+      let result = txStateManager.getTransaction('1');
+
+      assert.equal(result.type, 'swapped');
+      assert.equal(result.destinationTokenDecimals, 8);
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO);
+      assert.equal(result.swapTokenValue, '0x011');
+      assert.equal(result.txParams.gasPrice, '0x002'); // not updated even though it's passed in to update
+
+      txController.updateTransactionGasFees('1', {
+        estimateUsed: '0x13',
+        gasPrice: '0x14',
+        destinationTokenAddress: VALID_ADDRESS,
+      });
+
+      result = txStateManager.getTransaction('1');
+      console.log(result);
+      assert.equal(result.estimateUsed, '0x13');
+      assert.equal(result.txParams.gasPrice, '0x14');
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO); // not updated even though it's passed in to update
     });
   });
 });
