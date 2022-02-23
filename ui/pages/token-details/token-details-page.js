@@ -6,7 +6,7 @@ import { getSendAssetAddress } from '../../ducks/send';
 import { getUseTokenDetection, getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
-import Identicon from '../../components/ui/identicon/identicon.component';
+import Identicon from '../../components/ui/identicon';
 import { I18nContext } from '../../contexts/i18n';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
