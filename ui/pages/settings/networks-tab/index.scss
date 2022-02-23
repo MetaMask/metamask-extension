@@ -1,3 +1,17 @@
+@use "design-system";
+
+input#search-networks {
+  font-size: 14px;
+
+  @media screen and (max-width: $break-small) {
+    font-size: 12px;
+  }
+}
+
+p#search-networks-helper-text {
+  color: var(--ui-4);
+}
+
 .networks-tab {
   &__content {
     display: flex;
@@ -5,22 +19,30 @@
     max-width: 779px;
     justify-content: space-between;
 
-    &__actionable-message {
-      width: 400px;
-      height: 100px;
+    &__custom-image {
+      background: var(--ui-2);
+      border: none;
+    }
 
-      @media screen and (max-width: $break-small) {
-        width: 327px;
+    &__check-icon {
+      margin-inline-end: 10px;
+
+      &__transparent {
+        color: var(--white);
+        width: 16px;
+        margin-inline-end: 10px;
       }
     }
 
-    &__custom-image {
-      background: #f2f4f6;
-      border: none;
+    &__icon-with-fallback {
+      padding: 0 1px 2px 2px;
+      color: var(--white);
 
-      @media screen and (max-width: $break-small) {
-        margin-inline-end: 4px;
-        margin-inline-start: 20px;
+      @each $variant, $color in design-system.$color-map {
+        &--color-#{$variant} {
+          background: var($color);
+          color: var(--white);
+        }
       }
     }
 
@@ -73,6 +95,7 @@
     max-height: 465px;
     max-width: 400px;
     margin-top: 24px;
+    padding-inline-start: 24px;
 
     .page-container__footer {
       border-top: none;
@@ -94,6 +117,7 @@
       align-items: center;
       width: 90%;
       margin-top: 10px;
+      padding: 0;
     }
   }
 
@@ -123,12 +147,19 @@
 
   &__networks-list {
     flex: 0.5 0 auto;
-    max-width: 311px;
-    margin-top: 24px;
+    max-width: 350px;
+    border-right: 1px solid #d8d8d8;
+
+    .MuiTextField-root {
+      @media screen and (max-width: $break-small) {
+        padding: 0 24px 0 24px;
+      }
+    }
 
     &__label {
       @media screen and (max-width: $break-small) {
-        margin-inline-start: 20px;
+        margin-inline-start: 50px;
+        padding-bottom: 12px;
       }
     }
 
@@ -147,6 +178,7 @@
     justify-content: center;
     padding-top: 23px;
     padding-bottom: 23px;
+    border-top: 1px solid #d8d8d8;
 
     .button {
       width: 178px;
@@ -174,7 +206,7 @@
 
   &__networks-list-item {
     display: flex;
-    padding: 13px 24px 13px 0;
+    padding: 12px 24px 12px 0;
     position: relative;
     align-items: center;
     width: 311px;
@@ -190,7 +222,7 @@
     }
 
     @media screen and (max-width: $break-small) {
-      padding: 20px 23px 21px 0;
+      padding: 12px 0 12px 24px;
       max-width: 351px;
     }
   }
@@ -219,46 +251,28 @@
       margin-inline-start: 15px;
       padding-top: 3px;
     }
-  }
-
-  &__networks-list-arrow {
-    margin-inline-start: 95%;
-    display: block;
-    background-image: url('/images/caret-right.svg');
-    color: var(--Grey-500);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    cursor: pointer;
-    position: absolute;
-    width: 16px;
-    height: 16px;
-
-    [dir='rtl'] & {
-      transform: rotate(180deg);
-    }
 
     @media screen and (max-width: $break-small) {
-      display: block;
-      right: 10px;
-      cursor: pointer;
-      position: absolute;
-      margin: 0 5px;
-
-      [dir='rtl'] & {
-        transform: rotate(180deg);
-      }
-      margin-inline-start: 90%;
+      color: var(--black);
     }
   }
 
   &__networks-list-name--selected {
     font-weight: bold;
     color: var(--color-text-default);
+
+    @media screen and (max-width: $break-small) {
+      font-weight: normal;
+      color: var(--black);
+    }
   }
 
   &__networks-list-name--disabled {
     color: var(--color-text-muted);
+
+    @media screen and (max-width: $break-small) {
+      color: var(--black);
+    }
   }
 
   &__network-form-footer {

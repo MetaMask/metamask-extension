@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import CustomContentSearch from '../custom-content-search';
 import Typography from '../../../../components/ui/typography';
 import {
   COLORS,
   TYPOGRAPHY,
-  FONT_WEIGHT,
 } from '../../../../helpers/constants/design-system';
 import NetworksListItem from '../networks-list-item';
 
@@ -17,18 +17,11 @@ const NetworksList = ({
   selectedRpcUrl,
 }) => {
   const t = useI18nContext();
+  const [networks, setNetworks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const networksToRenderProperly =
+    networks.length === 0 && searchQuery === '' ? networksToRender : networks;
 
-  const testNetworksToRender = networksToRender
-    .map((network) => network)
-    .filter((network) => {
-      return network.userIsCurrentlyOnATestNet ? network : null;
-    });
-
-  const customNetworksToRender = networksToRender
-    .map((network) => network)
-    .filter((network) => {
-      return network.userIsCurrentlyOnATestNet === false ? network : null;
-    });
   return (
     <div
       className={classnames('networks-tab__networks-list', {
@@ -36,33 +29,53 @@ const NetworksList = ({
           networkIsSelected && !networkDefaultedToProvider,
       })}
     >
-      {customNetworksToRender.map((network, index) => (
-        <NetworksListItem
-          key={`settings-network-list:${network.rpcUrl}`}
-          network={network}
-          networkIsSelected={networkIsSelected}
-          selectedRpcUrl={selectedRpcUrl}
-          networkIndex={index}
-        />
-      ))}
-      <Typography
-        variant={TYPOGRAPHY.H7}
-        margin={[6, 0, 0, 0]}
-        color={COLORS.UI3}
-        fontWeight={FONT_WEIGHT.BOLD}
-        className="networks-tab__networks-list__label"
-      >
-        {t('testNetworks')}
-      </Typography>
-      {testNetworksToRender.map((network, index) => (
-        <NetworksListItem
-          key={`settings-network-list:${network.rpcUrl}`}
-          network={network}
-          networkIsSelected={networkIsSelected}
-          selectedRpcUrl={selectedRpcUrl}
-          networkIndex={index}
-        />
-      ))}
+      <CustomContentSearch
+        onSearch={({
+          searchQuery: newSearchQuery = '',
+          results: newResults = [],
+        }) => {
+          setNetworks(newResults);
+          setSearchQuery(newSearchQuery);
+        }}
+        error={
+          networksToRenderProperly.length === 0 ? t('networkSearchError') : null
+        }
+        networksList={networksToRender}
+      />
+      {networksToRenderProperly.map(
+        (network, index) =>
+          network.userIsCurrentlyOnATestNet === false && (
+            <NetworksListItem
+              key={`settings-network-list:${network.rpcUrl}`}
+              network={network}
+              networkIsSelected={networkIsSelected}
+              selectedRpcUrl={selectedRpcUrl}
+              networkIndex={index}
+            />
+          ),
+      )}
+      {searchQuery === '' && (
+        <Typography
+          variant={TYPOGRAPHY.H6}
+          margin={[6, 0, 0, 7]}
+          color={COLORS.UI3}
+          className="networks-tab__networks-list__label"
+        >
+          {t('testNetworks')}
+        </Typography>
+      )}
+      {networksToRenderProperly.map(
+        (network, index) =>
+          network.userIsCurrentlyOnATestNet && (
+            <NetworksListItem
+              key={`settings-network-list:${network.rpcUrl}`}
+              network={network}
+              networkIsSelected={networkIsSelected}
+              selectedRpcUrl={selectedRpcUrl}
+              networkIndex={index}
+            />
+          ),
+      )}
     </div>
   );
 };

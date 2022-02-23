@@ -5,10 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { NETWORK_TYPE_RPC } from '../../../../../shared/constants/network';
-import { SIZES } from '../../../../helpers/constants/design-system';
-import ColorIndicator from '../../../../components/ui/color-indicator';
 import LockIcon from '../../../../components/ui/lock-icon';
-import IconCaretRight from '../../../../components/ui/icon/icon-caret-right';
 import { NETWORKS_FORM_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedSettingsRpcUrl } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
@@ -16,6 +13,7 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app
 import { getProvider } from '../../../../selectors';
 import Identicon from '../../../../components/ui/identicon';
 import { getNetworkImageByChainId } from '../../../swaps/swaps.util';
+import UrlIcon from '../../../../components/ui/url-icon/url-icon';
 
 import { handleHooksSettingsRefs } from '../../../../helpers/utils/settings-search';
 
@@ -48,12 +46,15 @@ const NetworksListItem = ({
     (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType);
   const displayNetworkListItemAsSelected =
     listItemNetworkIsSelected || listItemNetworkIsCurrentProvider;
+  const isCurrentRpcTarget =
+    listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType;
+
   const settingsRefs = useRef();
 
   useEffect(() => {
     handleHooksSettingsRefs(t, t('networks'), settingsRefs, networkIndex);
   }, [networkIndex, settingsRefs, t]);
-
+  
   return (
     <div
       ref={settingsRefs}
@@ -66,6 +67,11 @@ const NetworksListItem = ({
         }
       }}
     >
+      {isCurrentRpcTarget ? (
+        <i className="fa fa-check networks-tab__content__check-icon" />
+      ) : (
+        <div className="networks-tab__content__check-icon__transparent">✓</div>
+      )}
       {networkImageIcon ? (
         <Identicon
           className="networks-tab__content__custom-image"
@@ -74,11 +80,23 @@ const NetworksListItem = ({
           imageBorder
         />
       ) : (
-        <ColorIndicator
-          color={labelKey}
-          type={ColorIndicator.TYPES.FILLED}
-          size={SIZES.XL}
-          iconClassName="fas fa-subway"
+        network.userIsCurrentlyOnATestNet === false && (
+          <UrlIcon
+            className="networks-tab__content__icon-with-fallback"
+            fallbackClassName="networks-tab__content__icon-with-fallback"
+            name={label}
+          />
+        )
+      )}
+      {network.userIsCurrentlyOnATestNet && (
+        <UrlIcon
+          name={label || labelKey}
+          fallbackClassName={classnames(
+            'networks-tab__content__icon-with-fallback',
+            {
+              [`networks-tab__content__icon-with-fallback--color-${labelKey}`]: true,
+            },
+          )}
         />
       )}
       <div
@@ -94,7 +112,6 @@ const NetworksListItem = ({
           <LockIcon width="14px" height="17px" fill="var(--color-icon-muted)" />
         )}
       </div>
-      <IconCaretRight className="networks-tab__networks-list-arrow" />
     </div>
   );
 };

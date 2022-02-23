@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import NetworksForm from '../networks-form';
 import NetworksList from '../networks-list';
-import ActionableMessage from '../../../../components/ui/actionable-message';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getProvider } from '../../../../selectors';
 
 const NetworksTabContent = ({
@@ -14,7 +12,6 @@ const NetworksTabContent = ({
   selectedNetwork,
   shouldRenderNetworkForm,
 }) => {
-  const t = useI18nContext();
   const provider = useSelector(getProvider);
 
   return (
@@ -31,14 +28,7 @@ const NetworksTabContent = ({
           networksToRender={networksToRender}
           selectedNetwork={selectedNetwork}
         />
-      ) : (
-        <ActionableMessage
-          type="warning"
-          className="networks-tab__content__actionable-message"
-          message={t('onlyAddTrustedNetworks')}
-          withRightButton
-        />
-      )}
+      ) : null}
     </>
   );
 };

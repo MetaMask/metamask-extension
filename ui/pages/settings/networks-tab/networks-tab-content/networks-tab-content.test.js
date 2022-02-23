@@ -48,7 +48,9 @@ const props = {
 
 describe('NetworksTabContent Component', () => {
   it('should render networks tab content correctly', async () => {
-    const { queryByText, getByDisplayValue } = renderComponent(props);
+    const { queryByText, getByDisplayValue, getAllByText } = renderComponent(
+      props,
+    );
 
     expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
     expect(queryByText('Ropsten Test Network')).toBeInTheDocument();
@@ -70,9 +72,7 @@ describe('NetworksTabContent Component', () => {
       getByDisplayValue(props.selectedNetwork.chainId),
     ).toBeInTheDocument();
     expect(getByDisplayValue(props.selectedNetwork.ticker)).toBeInTheDocument();
-    expect(
-      getByDisplayValue(props.selectedNetwork.blockExplorerUrl),
-    ).toBeInTheDocument();
+    expect(getAllByText(props.selectedNetwork.blockExplorerUrl)).toBeDefined();
 
     fireEvent.change(getByDisplayValue(props.selectedNetwork.label), {
       target: { value: 'LocalHost 8545' },

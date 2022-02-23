@@ -38,7 +38,7 @@ const NetworksTab = ({ addNewNetwork }) => {
 
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
-  let shouldRenderNetworkForm =
+  const shouldRenderNetworkForm =
     isFullScreen || Boolean(pathname.match(NETWORKS_FORM_ROUTE));
 
   const frequentRpcListDetail = useSelector(getFrequentRpcListDetail);
@@ -70,7 +70,6 @@ const NetworksTab = ({ addNewNetwork }) => {
 
   let networkDefaultedToProvider = false;
   if (networkIsSelected === false) {
-    shouldRenderNetworkForm = false;
     selectedNetwork =
       networksToRender.find((network) => {
         return (
@@ -80,8 +79,6 @@ const NetworksTab = ({ addNewNetwork }) => {
         );
       }) || {};
     networkDefaultedToProvider = true;
-  } else {
-    shouldRenderNetworkForm = true;
   }
 
   useEffect(() => {
