@@ -123,7 +123,7 @@ describe('Add account', function () {
 
         // restore same seed phrase
         const restoreSeedLink = await driver.findClickableElement(
-          '.unlock-page__link--import',
+          '.unlock-page__link',
         );
 
         await restoreSeedLink.click();
