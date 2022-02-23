@@ -155,6 +155,7 @@ describe('Settings Search Utils', () => {
       const settingsListExcepted = [
         {
           description: '',
+          id: 1,
           image: 'general-icon.svg',
           route: '/settings/general#currency-conversion',
           section: 'Currency Conversion',
@@ -163,6 +164,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Select native to prioritize displaying values in the native currency of the chain (e.g. ETH). Select Fiat to prioritize displaying values in your selected fiat currency.',
+          id: 2,
           image: 'general-icon.svg',
           route: '/settings/general#primary-currency',
           section: 'Primary Currenc',
@@ -170,6 +172,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: '',
+          id: 3,
           image: 'general-icon.svg',
           route: '/settings/general#current-language',
           section: 'Current Language',
@@ -177,6 +180,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: '',
+          id: 4,
           image: 'general-icon.svg',
           route: '/settings/general#account-identicon',
           section: 'Current Language"',
@@ -184,6 +188,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: '',
+          id: 5,
           image: 'general-icon.svg',
           route: '/settings/general#zero-balancetokens',
           section: 'Hide Tokens Without Balance',
@@ -192,6 +197,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'State logs contain your public account addresses and sent transactions.',
+          id: 6,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#state-logs',
           section: 'State Logs',
@@ -199,6 +205,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: '',
+          id: 7,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#sync-withmobile',
           section: 'Sync with mobile',
@@ -207,6 +214,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Resetting your account will clear your transaction history. This will not change the balances in your accounts or require you to re-enter your Secret Recovery Phrase.',
+          id: 8,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#reset-account',
           section: 'Reset Account',
@@ -215,6 +223,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Select this to show gas price and limit controls directly on the send and confirm screens.',
+          id: 9,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#advanced-gascontrols',
           section: 'Advanced gas controls',
@@ -223,6 +232,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Select this to show the hex data field on the send screen',
+          id: 10,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#show-hexdata',
           section: 'Show Hex Data',
@@ -230,6 +240,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Select this to show fiat conversion on test network',
+          id: 11,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#conversion-testnetworks',
           section: 'Show Conversion on test networks',
@@ -237,6 +248,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Select this to show test networks in network list',
+          id: 12,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#show-testnets',
           section: 'Show test networks',
@@ -245,6 +257,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously.',
+          id: 13,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#customize-nonce',
           section: 'Customize transaction nonce',
@@ -253,6 +266,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Set the idle time in minutes before MetaMask will become locked.',
+          id: 14,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#autolock-timer',
           section: 'Auto-Lock Timer (minutes)',
@@ -261,6 +275,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Turn on to have your settings backed up with 3Box. This feature is currently experimental; use at your own risk.',
+          id: 15,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#sync-with3box',
           section: 'Sync data with 3Box (experimental)',
@@ -269,6 +284,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Enter the URL of the IPFS CID gateway to use for ENS content resolution.',
+          id: 16,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#ipfs-gateway',
           section: 'IPFS Gateway',
@@ -276,6 +292,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Preferred Ledger Connection Type',
+          id: 17,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#ledger-connection',
           section: 'Preferred Ledger Connection Type',
@@ -284,6 +301,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Turn this on to dismiss the Secret Recovery Phrase backup reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds',
+          id: 18,
           image: 'advanced-icon.svg',
           route: '/settings/advanced#dimiss-secretrecovery',
           section: 'Dismiss Secret Recovery Phrase backup reminder',
@@ -291,6 +309,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: '',
+          id: 19,
           image: 'contacts-icon.svg',
           route: '/settings/contact-list',
           section: '',
@@ -298,6 +317,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Reveal Secret Recovery Phrase',
+          id: 20,
           image: 'security-icon.svg',
           route: '/settings/security#reveal-secretrecovery',
           section: 'Reveal Secret Recovery Phrase',
@@ -306,6 +326,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Select this to use Etherscan to show incoming transactions in the transactions list',
+          id: 21,
           image: 'security-icon.svg',
           route: '/settings/security#incoming-transaction',
           section: 'Show Incoming Transactions',
@@ -314,6 +335,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Display a warning for phishing domains targeting Ethereum users',
+          id: 22,
           image: 'security-icon.svg',
           route: '/settings/security#phishing-detection',
           section: 'Use Phishing Detection',
@@ -322,6 +344,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Participate in MetaMetrics to help us make MetaMask better',
+          id: 23,
           image: 'security-icon.svg',
           route: '/settings/security#metrametrics',
           section: 'Participate in MetaMetrics',
@@ -330,6 +353,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'Browsing a website with an unconnected account selected',
+          id: 24,
           image: 'alerts-icon.svg',
           route: '/settings/alerts#unconnected-account',
           section: 'Browsing a website with an unconnected account selected',
@@ -338,6 +362,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'When a website tries to use the removed window.web3 API',
+          id: 25,
           image: 'alerts-icon.svg',
           route: '/settings/alerts#web3-shimusage',
           section: 'When a website tries to use the removed window.web3 API',
@@ -345,6 +370,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Ethereum Mainnet',
+          id: 26,
           image: 'network-icon.svg',
           route: '/settings/networks#networks-mainnet',
           section: 'Ethereum Mainnet',
@@ -352,6 +378,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Ropsten Test Network',
+          id: 27,
           image: 'network-icon.svg',
           route: '/settings/networks#networks-ropsten',
           section: 'Ropsten Test Network',
@@ -359,6 +386,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Rinkeby Test Network',
+          id: 28,
           image: 'network-icon.svg',
           route: '/settings/networks#networks-rinkeby',
           section: 'Rinkeby Test Network',
@@ -366,6 +394,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Goerli Test Network',
+          id: 29,
           image: 'network-icon.svg',
           route: '/settings/networks#networks-goerli',
           section: 'Goerli Test Network',
@@ -373,6 +402,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Kovan Test Network',
+          id: 30,
           image: 'network-icon.svg',
           route: '/settings/networks#networtks-kovan',
           section: 'Kovan Test Network',
@@ -380,6 +410,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Localhost 8545',
+          id: 31,
           image: 'network-icon.svg',
           route: '/settings/networks#network-localhost',
           section: 'Localhost 8545',
@@ -388,6 +419,7 @@ describe('Settings Search Utils', () => {
         {
           description:
             'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want MetaMask to pull data from those services.',
+          id: 32,
           image: 'experimental-icon.svg',
           route: '/settings/experimental#token-description',
           section: 'Use Token Detection',
@@ -395,6 +427,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'MetaMask is designed and built around the world.',
+          id: 35,
           image: 'info-icon.svg',
           route: '/settings/about-us#version',
           section: 'MetaMask Version',
@@ -402,6 +435,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: '',
+          id: 36,
           image: 'info-icon.svg',
           route: '/settings/about-us#links',
           section: 'Links',
@@ -409,6 +443,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Privacy Policy',
+          id: 37,
           image: 'info-icon.svg',
           route: '/settings/about-us#privacy-policy',
           section: 'Privacy Policy',
@@ -416,6 +451,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Terms of Use',
+          id: 38,
           image: 'info-icon.svg',
           route: '/settings/about-us#terms',
           section: 'Terms of Use',
@@ -423,6 +459,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Attributions',
+          id: 39,
           image: 'info-icon.svg',
           route: '/settings/about-us#attributions',
           section: 'Attributions',
@@ -430,6 +467,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Visit our Support Center',
+          id: 40,
           image: 'info-icon.svg',
           route: '/settings/about-us#supportcenter',
           section: 'Visit our Support Center',
@@ -437,6 +475,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Visit our web site',
+          id: 41,
           image: 'info-icon.svg',
           route: '/settings/about-us#visitwebsite',
           section: 'Visit our web site',
@@ -444,6 +483,7 @@ describe('Settings Search Utils', () => {
         },
         {
           description: 'Contact us',
+          id: 42,
           image: 'info-icon.svg',
           route: '/settings/about-us#contactus',
           section: 'Contact us',
