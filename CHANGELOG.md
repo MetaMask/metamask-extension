@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.10.1]
+### Uncategorized
+- [GridPlus] Updates SDK to v0.9.10 (hotfix) ([#13691](https://github.com/MetaMask/metamask-extension/pull/13691))
+- Enable Avalanche for Swaps ([#13653](https://github.com/MetaMask/metamask-extension/pull/13653))
+
 ## [10.10.0]
 ### Added
 - Enable toggle to turn on the new gas fee customization UI ([#13481](https://github.com/MetaMask/metamask-extension/pull/13481))
@@ -2731,7 +2736,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.10.1...HEAD
+[10.10.1]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...v10.10.1
 [10.10.0]: https://github.com/MetaMask/metamask-extension/compare/v10.9.3...v10.10.0
 [10.9.3]: https://github.com/MetaMask/metamask-extension/compare/v10.9.2...v10.9.3
 [10.9.2]: https://github.com/MetaMask/metamask-extension/compare/v10.9.1...v10.9.2
