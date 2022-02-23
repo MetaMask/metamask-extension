@@ -106,7 +106,7 @@ describe('Token Details', function () {
       },
     ],
   };
-  it('check token details', async function () {
+  it('renders token details page', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -144,23 +144,27 @@ describe('Token Details', function () {
         await driver.switchToWindow(dapp);
 
         // create token from test dapp
-        await driver.clickElement({ text: 'Create Token', tag: 'button' });
-        await driver.delay(2000);
+       await driver.clickElement({ text: 'Create Token', tag: 'button' });
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
         );
 
+        await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.delay(3000);
-
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(dapp);
-        const tokenAddress = await driver.waitForSelector('#tokenAddress');
 
-        await driver.delay(2000);
-        const tokenAddressText = await tokenAddress.getText();
-
+        let tokenAddressText;
+  
+        const tokenAddress = await driver.waitForSelector({
+          css: '#tokenAddress',
+          text: '0x',
+        });
+       
+        tokenAddressText = await tokenAddress.getText();
+        
         // add token to wallet
         const addTokenToWallet = await driver.findClickableElement({
           text: 'Add Token to Wallet',
@@ -179,6 +183,7 @@ describe('Token Details', function () {
         await driver.clickElement({ text: 'Add Token', tag: 'button' });
         await driver.delay(3000);
 
+        // open token details page 
         await driver.switchToWindow(extension);
 
         await driver.clickElement({ text: 'Assets', tag: 'button' });
@@ -191,6 +196,7 @@ describe('Token Details', function () {
           '[data-testid="asset-options__token-details"]',
         );
 
+        // check token details page elements
         const asset = await driver.findElement('h4');
         assert.equal(await asset.isDisplayed(), true, 'Asset not shown');
 
@@ -214,7 +220,7 @@ describe('Token Details', function () {
         assert.equal(
           await tokenContractAddress.isDisplayed(),
           true,
-          'Token contract address is not correct',
+          'Token contract address is not displayed',
         );
 
         const copyButton = await driver.findClickableElement(
@@ -240,7 +246,7 @@ describe('Token Details', function () {
         assert.equal(
           await tokenDecimal.isDisplayed(),
           true,
-          'Token Decimal is not correct',
+          'Token Decimal is not displayed',
         );
 
         const labelNetwork = await driver.findElement({
@@ -260,7 +266,7 @@ describe('Token Details', function () {
         assert.equal(
           await network.isDisplayed(),
           true,
-          'Network is not correct',
+          'Network is not displayed',
         );
 
         const hideTokenButton = await driver.findClickableElement(
@@ -271,12 +277,8 @@ describe('Token Details', function () {
           true,
           'Hide token button is not displayed',
         );
-
-        const closeButton = await driver.findClickableElement(
-          '.token-details__closeButton',
-        );
-        closeButton.click();
       },
     );
   });
 });
+
