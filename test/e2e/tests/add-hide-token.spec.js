@@ -144,8 +144,9 @@ describe('Token Details', function () {
         await driver.switchToWindow(dapp);
 
         // create token from test dapp
-       await driver.clickElement({ text: 'Create Token', tag: 'button' });
+        await driver.clickElement({ text: 'Create Token', tag: 'button' });
         windowHandles = await driver.getAllWindowHandles();
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -156,15 +157,13 @@ describe('Token Details', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(dapp);
 
-        let tokenAddressText;
-  
         const tokenAddress = await driver.waitForSelector({
           css: '#tokenAddress',
           text: '0x',
         });
-       
-        tokenAddressText = await tokenAddress.getText();
-        
+
+        const tokenAddressText = await tokenAddress.getText();
+
         // add token to wallet
         const addTokenToWallet = await driver.findClickableElement({
           text: 'Add Token to Wallet',
@@ -181,9 +180,8 @@ describe('Token Details', function () {
           windowHandles,
         );
         await driver.clickElement({ text: 'Add Token', tag: 'button' });
-        await driver.delay(3000);
 
-        // open token details page 
+        // open token details page
         await driver.switchToWindow(extension);
 
         await driver.clickElement({ text: 'Assets', tag: 'button' });
@@ -197,6 +195,11 @@ describe('Token Details', function () {
         );
 
         // check token details page elements
+
+        await driver.waitForSelector({
+          text: '10',
+          tag: 'h4',
+        });
         const asset = await driver.findElement('h4');
         assert.equal(await asset.isDisplayed(), true, 'Asset not shown');
 
@@ -281,4 +284,3 @@ describe('Token Details', function () {
     );
   });
 });
-
