@@ -404,7 +404,7 @@ export default class TransactionController extends EventEmitter {
 
     // only update what is defined
     editableParams.txParams = pickBy(editableParams.txParams);
-    const note = `Update Editable Params Params for ${txId}`;
+    const note = `Update Editable Params for ${txId}`;
     this._updateTransaction(txId, editableParams, note);
   }
 
