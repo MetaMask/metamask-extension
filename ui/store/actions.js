@@ -673,10 +673,10 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
-export function updateEditableParams(txId, txEIP1559Data) {
+export function updateEditableParams(txId, editableParams) {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.updateEditableParams(txId, txEIP1559Data);
+      await promisifiedBackground.updateEditableParams(txId, editableParams);
     } catch (error) {
       dispatch(txError(error));
       dispatch(goHome());
@@ -686,12 +686,12 @@ export function updateEditableParams(txId, txEIP1559Data) {
 
     try {
       dispatch(
-        updateTransactionParams(txEIP1559Data.id, txEIP1559Data.txParams),
+        updateTransactionParams(editableParams.id, editableParams.txParams),
       );
       const newState = await updateMetamaskStateFromBackground();
       dispatch(updateMetamaskState(newState));
-      dispatch(showConfTxPage({ id: txEIP1559Data.id }));
-      return txEIP1559Data;
+      dispatch(showConfTxPage({ id: editableParams.id }));
+      return editableParams;
     } finally {
       dispatch(hideLoadingIndication());
     }
