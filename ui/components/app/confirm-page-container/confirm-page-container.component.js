@@ -264,13 +264,10 @@ export default class ConfirmPageContainer extends Component {
               hideTitle={hideTitle}
               supportsEIP1559V2={supportsEIP1559V2}
               hasTopBorder={showAddToAddressDialog}
-<<<<<<< HEAD
               currentTransaction={currentTransaction}
               nativeCurrency={nativeCurrency}
               networkName={networkName}
               showBuyModal={showBuyModal}
-=======
->>>>>>> eb8083eab (Fix rebase artifact)
               showingHardwareConnectionContents={
                 showingHardwareConnectionContents
               }
