@@ -289,7 +289,7 @@ export default class SwapsController {
         fetchParams.fromAddress,
         chainId,
       );
-      const firstQuote = Object.values(newQuotes)[0];
+      const [firstQuote] = Object.values(newQuotes);
 
       // For a user to be able to swap a token, they need to have approved the MetaSwap contract to withdraw that token.
       // _getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is greater
