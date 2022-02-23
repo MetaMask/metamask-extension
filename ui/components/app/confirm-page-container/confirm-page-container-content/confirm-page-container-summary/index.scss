@@ -35,7 +35,7 @@
     }
 
     .info-tooltip {
-      margin-left: 4px;
+      margin-inline-start: 4px;
 
       &__tooltip-container {
         margin-bottom: -3px;
@@ -43,14 +43,14 @@
     }
 
     &__contract-address {
-      margin-right: 4px;
+      margin-inline-end: 4px;
     }
 
     &__contract-address-btn {
       background: none;
       border: none;
       padding: 0;
-      margin-right: 4px;
+      margin-inline-end: 4px;
       color: var(--primary-1);
     }
   }

@@ -23,10 +23,10 @@ const useAddressDetails = (toAddress) => {
     (entry) => entry.address === checksummedAddress,
   );
   if (addressBookEntryObject?.name) {
-    return { toName: addressBookEntryObject?.name, isTrusted: true };
+    return { toName: addressBookEntryObject.name, isTrusted: true };
   }
   if (identities[toAddress]?.name) {
-    return { toName: identities[toAddress]?.name, isTrusted: true };
+    return { toName: identities[toAddress].name, isTrusted: true };
   }
   const casedTokenList = useTokenDetection
     ? tokenList
@@ -37,7 +37,7 @@ const useAddressDetails = (toAddress) => {
         };
       }, {});
   if (casedTokenList[toAddress]?.name) {
-    return { toName: casedTokenList[toAddress]?.name, isTrusted: true };
+    return { toName: casedTokenList[toAddress].name, isTrusted: true };
   }
   return {
     toName: shortenAddress(checksummedAddress),
