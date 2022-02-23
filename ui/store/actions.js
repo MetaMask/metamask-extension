@@ -673,10 +673,10 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
-export function updateEIP1559Params(txId, txEIP1559Data) {
+export function updateEditableParams(txId, txEIP1559Data) {
   return async (dispatch) => {
     try {
-      await promisifiedBackground.updateEIP1559Params(txId, txEIP1559Data);
+      await promisifiedBackground.updateEditableParams(txId, txEIP1559Data);
     } catch (error) {
       dispatch(txError(error));
       dispatch(goHome());
