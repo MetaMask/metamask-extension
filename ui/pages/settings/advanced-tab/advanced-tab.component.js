@@ -457,63 +457,8 @@ export default class AdvancedTab extends PureComponent {
 
   renderLedgerLiveControl() {
     return (
-<<<<<<< HEAD
-      <div ref={this.settingsRefs[11]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('preferredLedgerConnectionType')}</span>
-          <div className="settings-page__content-description">
-            {t('ledgerConnectionPreferenceDescription', [
-              recommendedLedgerOption,
-              <Button
-                key="ledger-connection-settings-learn-more"
-                type="link"
-                href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="settings-page__inline-link"
-              >
-                {t('learnMore')}
-              </Button>,
-            ])}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Dropdown
-              id="select-ledger-transport-type"
-              options={transportTypeOptions}
-              selectedOption={ledgerTransportType}
-              onChange={async (transportType) => {
-                if (
-                  ledgerTransportType === LEDGER_TRANSPORT_TYPES.LIVE &&
-                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID
-                ) {
-                  this.setState({ showLedgerTransportWarning: true });
-                }
-                setLedgerTransportPreference(transportType);
-                if (
-                  transportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
-                  userHasALedgerAccount
-                ) {
-                  await window.navigator.hid.requestDevice({
-                    filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
-                  });
-                }
-              }}
-            />
-            {this.state.showLedgerTransportWarning ? (
-              <Dialog type="message">
-                <div className="settings-page__content-item-dialog">
-                  {t('ledgerTransportChangeWarning')}
-                </div>
-              </Dialog>
-            ) : null}
-          </div>
-        </div>
-=======
       <div>
         <LedgerTransportDropdown />
->>>>>>> 79b87564c (Progress)
       </div>
     );
   }
