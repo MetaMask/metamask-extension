@@ -53,21 +53,21 @@
 .btn-warning {
   color: var(--color-warning-inverse);
   border: 1px solid var(--color-warning-default);
-  background-color: var(--color-warning-default);
+  background-color: var(--color-background-default);
 
   &:hover {
-    border-color: var(--color-warning-alternative);
+    border: 1px solid var(--color-warning-default);
   }
 
   &:active {
-    background: var(--color-warning-alternative);
+    background: var(--color-warning-muted);
     border: 1px solid var(--color-warning-alternative);
   }
 
   &--disabled,
   &[disabled] {
     opacity: 1;
-    color: var(--color-warning-disabled);
+    color: var(--color-text-muted);
   }
 }
 
@@ -265,7 +265,7 @@ input[type="submit"][disabled] {
     &--disabled,
     &[disabled] {
       border-color: var(--color-warning-alternative);
-      color: var(--color-warning-disabled);
+      color: var(--color-text-muted);
     }
 
     &:active {
