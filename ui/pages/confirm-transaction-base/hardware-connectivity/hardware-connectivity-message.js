@@ -17,9 +17,13 @@ export default function HardwareConnectivityMessage({
         type={connected ? 'success' : 'warning'}
         message={
           connected ? (
-            t('hardwareWalletConnectivityConnected', [KEYRING_NAMES.LEDGER])
+            <>
+              <i className="fa fa-check-circle" />{' '}
+              {t('hardwareWalletConnectivityConnected', [KEYRING_NAMES.LEDGER])}
+            </>
           ) : (
             <>
+              <i className="fa fa-exclamation-circle" />{' '}
               {t('hardwareWalletConnectivityNotConnected', [
                 KEYRING_NAMES.LEDGER,
               ])}{' '}
