@@ -143,11 +143,11 @@ Popover.propTypes = {
    */
   headerProps: PropTypes.shape({ ...Box.propTypes }),
   /**
-   * Box props for the header
+   * Box props for the content
    */
   contentProps: PropTypes.shape({ ...Box.propTypes }),
   /**
-   * Box props for the header
+   * Box props for the footer
    */
   footerProps: PropTypes.shape({ ...Box.propTypes }),
 };
