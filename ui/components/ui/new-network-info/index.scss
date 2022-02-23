@@ -3,16 +3,16 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.214);
     border-radius: 8px;
 
-    & .popover-footer {
+    .popover-footer {
       border-top: none;
     }
 
-    & .popover-header {
+    .popover-header {
       padding-bottom: 1px;
     }
 
-    & .fa-question-circle,
-    & .popover-header__button {
+    .fa-question-circle,
+    .popover-header__button {
       color: var(--ui-4);
     }
   }
@@ -22,7 +22,7 @@
     margin-top: 8px;
     max-width: 245px;
 
-    & .typography--h6 {
+    .typography--h6 {
       font-size: 0.75rem;
     }
   }
