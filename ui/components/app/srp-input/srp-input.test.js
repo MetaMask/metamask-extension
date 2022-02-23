@@ -8,7 +8,10 @@ import SrpInput from '.';
 const tooFewWords = new Array(11).fill('test').join(' ');
 const tooManyWords = new Array(25).fill('test').join(' ');
 const invalidWordCount = new Array(13).fill('test').join(' ');
-const invalidCorrectLength = new Array(12).fill('test').join(' ');
+const invalidChecksum = new Array(12).fill('test').join(' ');
+const invalidWordCorrectChecksum = `aardvark ${new Array(10)
+  .fill('test')
+  .join(' ')} wolf`;
 const correct = `${new Array(11).fill('test').join(' ')} ball`;
 
 const invalidInputs = [
@@ -18,7 +21,8 @@ const invalidInputs = [
   tooFewWords,
   tooManyWords,
   invalidWordCount,
-  invalidCorrectLength,
+  invalidChecksum,
+  invalidWordCorrectChecksum,
 ];
 
 const poorlyFormattedInputs = [
@@ -193,14 +197,27 @@ describe('srp-input', () => {
         expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
       });
 
-      it('should show invalid SRP error if SRP is correct length but invalid', () => {
+      it('should show invalid SRP error if SRP is correct length but has an invalid checksum', () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(invalidCorrectLength);
+        userEvent.keyboard(invalidChecksum);
+
+        expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
+        expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
+      });
+
+      it('should show invalid SRP error if SRP is correct length and has correct checksum but has an invalid word', () => {
+        const onChange = jest.fn();
+
+        const { getByLabelText, queryByText } = renderWithLocalization(
+          <SrpInput onChange={onChange} />,
+        );
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        userEvent.keyboard(invalidWordCorrectChecksum);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
@@ -281,7 +298,7 @@ describe('srp-input', () => {
         expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
       });
 
-      it('should show invalid SRP error if SRP is correct length but invalid', () => {
+      it('should show invalid SRP error if SRP is correct length but has an invalid checksum', () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
@@ -289,7 +306,22 @@ describe('srp-input', () => {
         );
         userEvent.paste(
           getByLabelText(enLocale.secretRecoveryPhrase.message),
-          invalidCorrectLength,
+          invalidChecksum,
+        );
+
+        expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
+        expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
+      });
+
+      it('should show invalid SRP error if SRP is correct length and has correct checksum but has an invalid word', () => {
+        const onChange = jest.fn();
+
+        const { getByLabelText, queryByText } = renderWithLocalization(
+          <SrpInput onChange={onChange} />,
+        );
+        userEvent.paste(
+          getByLabelText(enLocale.secretRecoveryPhrase.message),
+          invalidWordCorrectChecksum,
         );
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
