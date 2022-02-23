@@ -9,6 +9,7 @@ import {
   TYPOGRAPHY,
   JUSTIFY_CONTENT,
   FONT_WEIGHT,
+  DISPLAY,
 } from '../../../helpers/constants/design-system';
 import {
   ThreeStepProgressBar,
@@ -121,23 +122,23 @@ export default function SecureYourWallet() {
       <Box>
         <Box marginBottom={4}>
           <Typography
-            tag="span"
+            tag="p"
             variant={TYPOGRAPHY.H4}
             fontWeight={FONT_WEIGHT.BOLD}
-            boxProps={{ display: 'block' }}
+            boxProps={{ display: DISPLAY.BLOCK }}
           >
             {t('seedPhraseIntroSidebarTitleOne')}
           </Typography>
-          <Typography tag="span" variant={TYPOGRAPHY.H4}>
+          <Typography tag="p" variant={TYPOGRAPHY.H4}>
             {t('seedPhraseIntroSidebarCopyOne')}
           </Typography>
         </Box>
         <Box marginBottom={4}>
           <Typography
-            tag="span"
+            tag="p"
             variant={TYPOGRAPHY.H4}
             fontWeight={FONT_WEIGHT.BOLD}
-            boxProps={{ display: 'block' }}
+            boxProps={{ display: DISPLAY.BLOCK }}
           >
             {t('seedPhraseIntroSidebarTitleTwo')}
           </Typography>
@@ -149,19 +150,19 @@ export default function SecureYourWallet() {
         </Box>
         <Box marginBottom={6}>
           <Typography
-            tag="span"
+            tag="p"
             variant={TYPOGRAPHY.H4}
             fontWeight={FONT_WEIGHT.BOLD}
-            boxProps={{ display: 'block' }}
+            boxProps={{ display: DISPLAY.BLOCK }}
           >
             {t('seedPhraseIntroSidebarTitleThree')}
           </Typography>
-          <Typography tag="span" variant={TYPOGRAPHY.H4}>
+          <Typography tag="p" variant={TYPOGRAPHY.H4}>
             {t('seedPhraseIntroSidebarCopyTwo')}
           </Typography>
         </Box>
         <Box className="secure-your-wallet__highlighted" marginBottom={2}>
-          <Typography tag="span" variant={TYPOGRAPHY.H4}>
+          <Typography tag="p" variant={TYPOGRAPHY.H4}>
             {t('seedPhraseIntroSidebarCopyThree')}
           </Typography>
         </Box>
