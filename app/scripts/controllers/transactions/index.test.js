@@ -82,6 +82,8 @@ describe('Transaction Controller', function () {
       getEventFragmentById: () =>
         fragmentExists === false ? undefined : { id: 0 },
       getEIP1559GasFeeEstimates: () => undefined,
+      getAccountType: () => 'MetaMask',
+      getDeviceModel: () => 'N/A',
     });
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
@@ -1616,6 +1618,8 @@ describe('Transaction Controller', function () {
             referrer: 'metamask',
             source: 'user',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            device_model: 'N/A',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1691,6 +1695,8 @@ describe('Transaction Controller', function () {
             referrer: 'metamask',
             source: 'user',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            device_model: 'N/A',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1776,6 +1782,8 @@ describe('Transaction Controller', function () {
             referrer: 'other',
             source: 'dapp',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            device_model: 'N/A',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1853,6 +1861,8 @@ describe('Transaction Controller', function () {
             referrer: 'other',
             source: 'dapp',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            device_model: 'N/A',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1930,6 +1940,8 @@ describe('Transaction Controller', function () {
           referrer: 'other',
           source: 'dapp',
           type: TRANSACTION_TYPES.SIMPLE_SEND,
+          account_type: 'MetaMask',
+          device_model: 'N/A',
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -1989,6 +2001,8 @@ describe('Transaction Controller', function () {
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
+          account_type: 'MetaMask',
+          device_model: 'N/A',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2058,6 +2072,8 @@ describe('Transaction Controller', function () {
           referrer: 'other',
           source: 'dapp',
           type: TRANSACTION_TYPES.SIMPLE_SEND,
+          account_type: 'MetaMask',
+          device_model: 'N/A',
         },
         sensitiveProperties: {
           baz: 3.0,
