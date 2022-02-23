@@ -3,22 +3,16 @@
     margin-bottom: 8px;
   }
 
-  &__srp-shown {
-    @include Paragraph;
+  &__srp {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 
-    padding: 8px 16px;
+  &__srp-word {
+    display: flex;
   }
 
   &__srp-error {
     margin-top: 4px;
-  }
-
-  &__show-srp {
-    margin-top: 16px;
-    margin-bottom: 16px;
-  }
-
-  &__show-srp-label {
-    margin-left: 8px;
   }
 }
