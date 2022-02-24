@@ -64,6 +64,7 @@ export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
+export const AVAX_TOKEN_IMAGE_URL = './images/avax-token.png';
 
 export const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI];
 
@@ -138,6 +139,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [TEST_ETH_SYMBOL]: TEST_ETH_TOKEN_IMAGE_URL,
   [BNB_SYMBOL]: BNB_TOKEN_IMAGE_URL,
   [MATIC_SYMBOL]: MATIC_TOKEN_IMAGE_URL,
+  [AVALANCHE_SYMBOL]: AVAX_TOKEN_IMAGE_URL,
 };
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';

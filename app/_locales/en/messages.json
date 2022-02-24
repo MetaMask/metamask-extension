@@ -1835,6 +1835,9 @@
   "networkName": {
     "message": "Network Name"
   },
+  "networkNameAvalanche": {
+    "message": "Avalanche"
+  },
   "networkNameBSC": {
     "message": "BSC"
   },
