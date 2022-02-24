@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
+import LedgerTransportDropdown from './ledger-transport-dropdown';
 import AdvancedTab from './advanced-tab.component';
 
 describe('AdvancedTab Component', () => {
@@ -35,7 +36,8 @@ describe('AdvancedTab Component', () => {
   });
 
   it('should render correctly when threeBoxFeatureFlag', () => {
-    expect(component.find('.settings-page__content-row')).toHaveLength(13);
+    expect(component.find('.settings-page__content-row')).toHaveLength(12);
+    expect(component.find(LedgerTransportDropdown)).toHaveLength(1);
   });
 
   it('should update autoLockTimeLimit', () => {
