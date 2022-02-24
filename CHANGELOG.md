@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Ensure Lattice hardware wallet can correctly sign all EIP-712 messages ([#13691](https://github.com/MetaMask/metamask-extension/pull/13691))
+- Fix occasional errors when fetching swaps quotes ([#13732](https://github.com/MetaMask/metamask-extension/pull/13732))
 
 ## [10.10.0]
 ### Added
