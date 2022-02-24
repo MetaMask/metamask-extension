@@ -91,6 +91,10 @@ export const Type = (args) => (
       {args.children || 'Danger primary'}
     </Button>
     <br />
+    <Button {...args} type="raised">
+      {args.children || 'Raised'}
+    </Button>
+    <br />
     <Button {...args} type="link">
       {args.children || 'Link'}
     </Button>
