@@ -17,10 +17,10 @@ import addons from '@storybook/addons';
 
 addParameters({
   backgrounds: {
-    default: 'light',
+    default: 'default',
     values: [
-      { name: 'light', value: '#FFFFFF' },
-      { name: 'dark', value: 'var(--color-background-default)' },
+      { name: 'default', value: 'var(--color-background-default)' },
+      { name: 'alternative', value: 'var(--color-background-alternative)' },
     ],
   },
   docs: {
@@ -84,17 +84,16 @@ const metamaskDecorator = (story, context) => {
   }, [channel, setDark]);
 
   useEffect(() => {
-    isDark
-      ? document.documentElement.classList.add('theme-dark')
-      : document.documentElement.classList.remove('theme-dark');
+    const currentTheme = document.documentElement.getAttribute('data-theme');
 
-    // @TODO: change when data-theme is implemented in design-tokens
-    //const currentTheme = document.documentElement.getAttribute('data-theme');
-    // if (currentTheme === 'light' && isDark) {
-    //   document.documentElement.setAttribute('data-theme', 'dark');
-    // } else if (currentTheme === 'dark' && !isDark) {
-    //   document.documentElement.setAttribute('data-theme', 'light');
-    // }
+    if (!currentTheme)
+      document.documentElement.setAttribute('data-theme', 'light');
+
+    if (currentTheme === 'light' && isDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else if (currentTheme === 'dark' && !isDark) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
   }, [isDark]);
 
   return (
