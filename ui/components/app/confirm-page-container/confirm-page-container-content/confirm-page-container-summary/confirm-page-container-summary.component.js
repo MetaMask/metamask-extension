@@ -32,8 +32,15 @@ const ConfirmPageContainerSummary = (props) => {
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
   const t = useI18nContext();
   const { toName, isTrusted } = useAddressDetails(toAddress);
-  const isContractTypeTransaction =
-    transactionType === TRANSACTION_TYPES.CONTRACT_INTERACTION;
+
+  const contractInitiatedTransactionType = [
+    TRANSACTION_TYPES.CONTRACT_INTERACTION,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+  ];
+  const isContractTypeTransaction = contractInitiatedTransactionType.includes(
+    transactionType,
+  );
   const checksummedAddress = toChecksumHexAddress(toAddress);
 
   const renderImage = () => {
