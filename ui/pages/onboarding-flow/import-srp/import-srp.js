@@ -18,6 +18,7 @@ import {
 import { ONBOARDING_CREATE_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { clearClipboard } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
@@ -56,7 +57,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             <a
               key="learnMore"
               type="link"
-              href="https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure"
+              href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
               target="_blank"
               rel="noopener noreferrer"
             >
