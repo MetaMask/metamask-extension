@@ -25,6 +25,45 @@ const Popover = ({
 }) => {
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
+  const hasStyles = (props) => {
+    return Boolean(Object.keys(props).length);
+  };
+
+  const Header = () => {
+    return (
+      <>
+        <div
+          className={classnames(
+            'popover-header__title',
+            centerTitle ? 'center' : '',
+          )}
+        >
+          <h2 title="popover">
+            {onBack ? (
+              <button
+                className="fas fa-chevron-left popover-header__button"
+                title={t('back')}
+                onClick={onBack}
+              />
+            ) : null}
+            {title}
+          </h2>
+          {onClose ? (
+            <button
+              className="fas fa-times popover-header__button"
+              title={t('close')}
+              data-testid="popover-close"
+              onClick={onClose}
+            />
+          ) : null}
+        </div>
+        {subtitle ? (
+          <p className="popover-header__subtitle">{subtitle}</p>
+        ) : null}
+      </>
+    );
+  };
+
   return (
     <div className="popover-container">
       {CustomBackground ? (
@@ -39,46 +78,31 @@ const Popover = ({
         {showArrow ? <div className="popover-arrow" /> : null}
         {showHeader && (
           <header className="popover-header">
-            <Box {...headerProps}>
-              <div
-                className={classnames(
-                  'popover-header__title',
-                  centerTitle ? 'center' : '',
-                )}
-              >
-                <h2 title="popover">
-                  {onBack ? (
-                    <button
-                      className="fas fa-chevron-left popover-header__button"
-                      title={t('back')}
-                      onClick={onBack}
-                    />
-                  ) : null}
-                  {title}
-                </h2>
-                {onClose ? (
-                  <button
-                    className="fas fa-times popover-header__button"
-                    title={t('close')}
-                    data-testid="popover-close"
-                    onClick={onClose}
-                  />
-                ) : null}
-              </div>
-              {subtitle ? (
-                <p className="popover-header__subtitle">{subtitle}</p>
-              ) : null}
-            </Box>
+            {hasStyles(headerProps) ? (
+              <Box {...headerProps}>
+                <Header />
+              </Box>
+            ) : (
+              <Header />
+            )}
           </header>
         )}
         {children ? (
           <div className={classnames('popover-content', contentClassName)}>
-            <Box {...contentProps}>{children}</Box>
+            {hasStyles(contentProps) ? (
+              <Box {...contentProps}>{children}</Box>
+            ) : (
+              { children }
+            )}
           </div>
         ) : null}
         {footer ? (
           <footer className={classnames('popover-footer', footerClassName)}>
-            <Box {...footerProps}>{footer}</Box>
+            {hasStyles(footerProps) ? (
+              <Box {...footerProps}>{footer}</Box>
+            ) : (
+              { footer }
+            )}
           </footer>
         ) : null}
       </section>
