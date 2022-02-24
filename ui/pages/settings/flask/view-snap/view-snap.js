@@ -86,15 +86,12 @@ function ViewSnap() {
                 url={authorshipPillUrl}
               />
             </Box>
-            <Box
-              paddingLeft={4}
-              className="snap-settings-card__toggle-container view-snap__toggle-container"
-            >
+            <Box paddingLeft={4} className="view-snap__toggle-container">
               <Tooltip interactive position="bottom" html={t('snapsToggle')}>
                 <ToggleButton
                   value={snap.enabled}
                   onToggle={onToggle}
-                  className="snap-settings-card__toggle-container__toggle-button"
+                  className="view-snap__toggle-button"
                 />
               </Tooltip>
             </Box>
@@ -155,8 +152,8 @@ function ViewSnap() {
               css={{
                 maxWidth: '175px',
               }}
-              onClick={async () => {
-                await dispatch(removeSnap(snap));
+              onClick={() => {
+                dispatch(removeSnap(snap));
               }}
             >
               {t('removeSnap')}
