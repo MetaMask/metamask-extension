@@ -177,6 +177,7 @@ export default class ConfirmPageContainer extends Component {
 
     const { t } = this.context;
     /* ToDo:  We need this method from elevated component */
+    // eslint-disable-next-line no-unused-vars
     const onHardwareConnectivityClose = () => {
       console.log('Closing hardware connectivity');
     };
