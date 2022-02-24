@@ -88,6 +88,7 @@ const getMaterialThemeInputProps = ({
   dir,
   classes: { materialLabel, materialFocused, materialError, materialUnderline },
   startAdornment,
+  endAdornment,
   min,
   max,
   autoComplete,
@@ -101,6 +102,7 @@ const getMaterialThemeInputProps = ({
   },
   InputProps: {
     startAdornment,
+    endAdornment,
     classes: {
       underline: materialUnderline,
     },
@@ -122,12 +124,14 @@ const getMaterialWhitePaddedThemeInputProps = ({
     materialWhitePaddedUnderline,
   },
   startAdornment,
+  endAdornment,
   min,
   max,
   autoComplete,
 }) => ({
   InputProps: {
     startAdornment,
+    endAdornment,
     classes: {
       root: materialWhitePaddedRoot,
       focused: materialWhitePaddedFocused,
@@ -157,6 +161,7 @@ const getBorderedThemeInputProps = ({
   },
   largeLabel,
   startAdornment,
+  endAdornment,
   min,
   max,
   autoComplete,
@@ -172,6 +177,7 @@ const getBorderedThemeInputProps = ({
   },
   InputProps: {
     startAdornment,
+    endAdornment,
     disableUnderline: true,
     classes: {
       root: inputRoot,
@@ -198,6 +204,7 @@ const TextField = ({
   classes,
   theme,
   startAdornment,
+  endAdornment,
   largeLabel,
   dir,
   min,
@@ -209,6 +216,7 @@ const TextField = ({
   const inputProps = themeToInputProps[theme]({
     classes,
     startAdornment,
+    endAdornment,
     largeLabel,
     dir,
     min,
@@ -257,6 +265,7 @@ TextField.propTypes = {
    */
   theme: PropTypes.oneOf(['bordered', 'material', 'material-white-padded']),
   startAdornment: PropTypes.element,
+  endAdornment: PropTypes.element,
   /**
    * Show large label
    */

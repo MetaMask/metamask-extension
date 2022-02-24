@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures, largeDelayMs } = require('../helpers');
 const ThreeboxMockServer = require('../mock-3box/threebox-mock-server');
 
@@ -82,11 +81,6 @@ describe('Threebox', function () {
         // goes to the settings screen
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-
-        // finds the blockies toggle turned on
-        const toggleLabel = await driver.findElement('.toggle-button__status');
-        const toggleLabelText = await toggleLabel.getText();
-        assert.equal(toggleLabelText, 'ON');
 
         // finds the restored address in the contact list
         await driver.clickElement({ text: 'Contacts', tag: 'div' });

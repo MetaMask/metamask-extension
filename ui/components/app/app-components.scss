@@ -19,6 +19,7 @@
 @import 'connected-accounts-permissions/index';
 @import 'connected-sites-list/index';
 @import 'connected-status-indicator/index';
+@import 'create-new-vault/create-new-vault.scss';
 @import 'edit-gas-display/index';
 @import 'edit-gas-display-education/index';
 @import 'edit-gas-fee-button/index';
@@ -26,8 +27,11 @@
 @import 'edit-gas-fee-popover/edit-gas-item/index';
 @import 'edit-gas-fee-popover/network-statistics/index';
 @import 'edit-gas-fee-popover/network-statistics/status-slider/index';
-@import 'flask/snaps-authorship-pill/index';
 @import 'edit-gas-fee-popover/edit-gas-tooltip/index';
+@import 'flask/experimental-area/index';
+@import 'flask/snap-install-warning/index';
+@import 'flask/snap-settings-card/index';
+@import 'flask/snaps-authorship-pill/index';
 @import 'gas-customization/gas-modal-page-container/index';
 @import 'gas-customization/gas-price-button-group/index';
 @import 'gas-customization/index';
@@ -50,7 +54,7 @@
 @import 'selected-account/index';
 @import 'signature-request/index';
 @import 'signature-request-original/index';
-@import 'flask/snap-settings-card/index';
+@import 'srp-input/srp-input';
 @import 'tab-bar/index';
 @import 'token-cell/token-cell';
 @import 'token-list-display/token-list-display';
@@ -67,7 +71,6 @@
 @import 'wallet-overview/index';
 @import 'whats-new-popup/index';
 @import 'loading-network-screen/index';
-@import 'flask/experimental-area/index';
 @import 'transaction-decoding/index';
 @import 'advanced-gas-fee-popover/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-gas-limit/index';

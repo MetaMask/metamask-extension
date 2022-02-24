@@ -69,7 +69,7 @@ export default class OnboardingController {
    * @param {string} tabId - The id of the tab registering
    */
   registerOnboarding = async (location, tabId) => {
-    if (this.completedOnboarding) {
+    if (this.store.getState().completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
     }

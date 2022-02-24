@@ -78,9 +78,6 @@
   "balance": {
     "message": "Balans"
   },
-  "blockiesIdenticon": {
-    "message": "Itilize Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Navigatè ou a pa sipòte..."
   },
@@ -482,9 +479,6 @@
   "restore": {
     "message": "Retabli"
   },
-  "restoreAccountWithSeed": {
-    "message": "Retabli kont ou avèk yo Seed Fraz"
-  },
   "revealSeedWords": {
     "message": "Revele Seed Mo Yo"
   },
@@ -544,9 +538,6 @@
   },
   "sendTokens": {
     "message": "Voye Tokens"
-  },
-  "separateEachWord": {
-    "message": "Separe chak mo ak yon sèl espas"
   },
   "settings": {
     "message": "Paramèt"
