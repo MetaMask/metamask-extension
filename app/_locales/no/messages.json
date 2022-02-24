@@ -752,9 +752,6 @@
   "restore": {
     "message": "Gjenopprett"
   },
-  "restoreAccountWithSeed": {
-    "message": "Gjenopprett konto med frøfrase"
-  },
   "revealSeedWords": {
     "message": "Vis frøord"
   },

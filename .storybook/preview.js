@@ -27,7 +27,13 @@ addParameters({
   },
   options: {
     storySort: {
-      order: ['Getting Started', 'Components', ['UI', 'App'], 'Pages'],
+      order: [
+        'Getting Started',
+        'Design Tokens',
+        'Components',
+        ['UI', 'App'],
+        'Pages',
+      ],
     },
   },
 });
