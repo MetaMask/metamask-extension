@@ -1,7 +1,6 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../popover';
 import Button from '../button';
@@ -21,37 +20,36 @@ import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/toke
 import fetchWithCache from '../../../helpers/utils/fetch-with-cache';
 import {
   getNativeCurrencyImage,
+  getProvider,
   getUseTokenDetection,
 } from '../../../selectors';
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Chip from '../chip/chip';
+import { setFirstTimeUsedNetwork } from '../../../store/actions';
 
-const NewNetworkInfo = ({ closePopup = null }) => {
+const NewNetworkInfo = () => {
   const t = useContext(I18nContext);
   const history = useHistory();
   const [tokenDetectionSupported, setTokenDetectionSupported] = useState(false);
+  const [showPopup, setShowPopup] = useState(true);
   const autoDetectToken = useSelector(getUseTokenDetection);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const currentProvider = useSelector(getProvider);
 
-  const currentProvider = useSelector((state) => ({
-    providerTicker: state.metamask.provider?.ticker,
-    providerNickname: state.metamask.provider?.nickname,
-    providerChainId: state.metamask.provider?.chainId,
-    providerType: state.metamask.provider?.type,
-  }));
+  const onCloseClick = () => {
+    setShowPopup(false);
+    setFirstTimeUsedNetwork(currentProvider.chainId);
+  };
 
-  const onCloseClick = useCallback(() => {
-    closePopup();
-  }, [closePopup]);
-
-  const addTokenManually = useCallback(() => {
+  const addTokenManually = () => {
     history.push(IMPORT_TOKEN_ROUTE);
-    closePopup();
-  }, [closePopup, history]);
+    setShowPopup(false);
+    setFirstTimeUsedNetwork(currentProvider.chainId);
+  };
 
   const updateTokenDetectionSupportStatus = async () => {
     const fetchedTokenData = await fetchWithCache(
-      `${TOKEN_API_METASWAP_CODEFI_URL}${currentProvider.providerChainId}`,
+      `${TOKEN_API_METASWAP_CODEFI_URL}${currentProvider.chainId}`,
     );
 
     if (fetchedTokenData.error) {
@@ -71,61 +69,95 @@ const NewNetworkInfo = ({ closePopup = null }) => {
     checkTokenDetection();
   });
 
-  return (
-    <Popover
-      onClose={onCloseClick}
-      className="new-network-info__wrapper"
-      footer={
-        <Button type="primary" onClick={onCloseClick}>
-          {t('recoveryPhraseReminderConfirm')}
-        </Button>
-      }
-    >
-      <Typography
-        variant={TYPOGRAPHY.H4}
-        color={COLORS.BLACK}
-        fontWeight={FONT_WEIGHT[700]}
-        align={TEXT_ALIGN.CENTER}
-      >
-        {t('switchedTo')}
-      </Typography>
-      <Chip
-        className="new-network-info__token-box"
-        backgroundColor={COLORS.UI1}
-        maxContent={false}
-        label={
-          currentProvider.providerType === NETWORK_TYPE_RPC
-            ? currentProvider.providerNickname ?? t('privateNetwork')
-            : t(currentProvider.providerType)
+  if (showPopup) {
+    return (
+      <Popover
+        onClose={onCloseClick}
+        className="new-network-info__wrapper"
+        footer={
+          <Button type="primary" onClick={onCloseClick}>
+            {t('recoveryPhraseReminderConfirm')}
+          </Button>
         }
-        labelProps={{
-          color: COLORS.BLACK,
-        }}
-        leftIcon={
-          primaryTokenImage ? (
-            <Identicon image={primaryTokenImage} diameter={14} />
-          ) : (
-            <i className="fa fa-question-circle" />
-          )
-        }
-      />
-      <Typography
-        variant={TYPOGRAPHY.H7}
-        color={COLORS.BLACK}
-        fontWeight={FONT_WEIGHT[700]}
-        align={TEXT_ALIGN.CENTER}
-        margin={[8, 0, 0, 0]}
       >
-        {t('thingsToKeep')}
-      </Typography>
-      <Box marginRight={4} marginLeft={5} marginTop={6}>
-        {currentProvider.providerTicker ? (
+        <Typography
+          variant={TYPOGRAPHY.H4}
+          color={COLORS.BLACK}
+          fontWeight={FONT_WEIGHT[700]}
+          align={TEXT_ALIGN.CENTER}
+        >
+          {t('switchedTo')}
+        </Typography>
+        <Chip
+          className="new-network-info__token-box"
+          backgroundColor={COLORS.UI1}
+          maxContent={false}
+          label={
+            currentProvider.type === NETWORK_TYPE_RPC
+              ? currentProvider.nickname ?? t('privateNetwork')
+              : t(currentProvider.type)
+          }
+          labelProps={{
+            color: COLORS.BLACK,
+          }}
+          leftIcon={
+            primaryTokenImage ? (
+              <Identicon image={primaryTokenImage} diameter={14} />
+            ) : (
+              <i className="fa fa-question-circle" />
+            )
+          }
+        />
+        <Typography
+          variant={TYPOGRAPHY.H7}
+          color={COLORS.BLACK}
+          fontWeight={FONT_WEIGHT[700]}
+          align={TEXT_ALIGN.CENTER}
+          margin={[8, 0, 0, 0]}
+        >
+          {t('thingsToKeep')}
+        </Typography>
+        <Box marginRight={4} marginLeft={5} marginTop={6}>
+          {currentProvider.ticker ? (
+            <Box
+              display={DISPLAY.FLEX}
+              alignItems={ALIGN_ITEMS.CENTER}
+              marginBottom={2}
+              paddingBottom={2}
+              className="new-network-info__bullet-paragraph"
+            >
+              <Box marginRight={4} color={COLORS.BLACK}>
+                &bull;
+              </Box>
+              <Typography
+                variant={TYPOGRAPHY.H7}
+                color={COLORS.BLACK}
+                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                key="nativeTokenInfo"
+              >
+                {t('nativeToken', [
+                  <Typography
+                    variant={TYPOGRAPHY.H7}
+                    boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                    fontWeight={FONT_WEIGHT[700]}
+                    key="ticker"
+                  >
+                    {currentProvider.ticker}
+                  </Typography>,
+                ])}
+              </Typography>
+            </Box>
+          ) : null}
           <Box
             display={DISPLAY.FLEX}
             alignItems={ALIGN_ITEMS.CENTER}
             marginBottom={2}
             paddingBottom={2}
-            className="new-network-info__bullet-paragraph"
+            className={
+              !autoDetectToken || !tokenDetectionSupported
+                ? 'new-network-info__bullet-paragraph'
+                : null
+            }
           >
             <Box marginRight={4} color={COLORS.BLACK}>
               &bull;
@@ -134,98 +166,64 @@ const NewNetworkInfo = ({ closePopup = null }) => {
               variant={TYPOGRAPHY.H7}
               color={COLORS.BLACK}
               boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-              key="nativeTokenInfo"
+              className="new-network-info__bullet-paragraph__text"
             >
-              {t('nativeToken', [
+              {t('attemptSendingAssets')}{' '}
+              <a
+                href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <Typography
                   variant={TYPOGRAPHY.H7}
+                  color={COLORS.PRIMARY1}
                   boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-                  fontWeight={FONT_WEIGHT[700]}
-                  key="providerTicker"
                 >
-                  {currentProvider.providerTicker}
-                </Typography>,
-              ])}
+                  {t('learnMoreUpperCase')}
+                </Typography>
+              </a>
             </Typography>
           </Box>
-        ) : null}
-        <Box
-          display={DISPLAY.FLEX}
-          alignItems={ALIGN_ITEMS.CENTER}
-          marginBottom={2}
-          paddingBottom={2}
-          className={
-            !autoDetectToken || !tokenDetectionSupported
-              ? 'new-network-info__bullet-paragraph'
-              : null
-          }
-        >
-          <Box marginRight={4} color={COLORS.BLACK}>
-            &bull;
-          </Box>
-          <Typography
-            variant={TYPOGRAPHY.H7}
-            color={COLORS.BLACK}
-            boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-            className="new-network-info__bullet-paragraph__text"
-          >
-            {t('attemptSendingAssets')}{' '}
-            <a
-              href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
-              target="_blank"
-              rel="noreferrer"
+          {!autoDetectToken || !tokenDetectionSupported ? (
+            <Box
+              display={DISPLAY.FLEX}
+              alignItems={ALIGN_ITEMS.CENTER}
+              marginBottom={2}
+              paddingBottom={2}
             >
-              <Typography
-                variant={TYPOGRAPHY.H7}
-                color={COLORS.PRIMARY1}
-                boxProps={{ display: DISPLAY.INLINE_BLOCK }}
-              >
-                {t('learnMoreUpperCase')}
-              </Typography>
-            </a>
-          </Typography>
-        </Box>
-        {!autoDetectToken || !tokenDetectionSupported ? (
-          <Box
-            display={DISPLAY.FLEX}
-            alignItems={ALIGN_ITEMS.CENTER}
-            marginBottom={2}
-            paddingBottom={2}
-          >
-            <Box marginRight={4} color={COLORS.BLACK}>
-              &bull;
-            </Box>
-            <Box>
-              <Typography
-                variant={TYPOGRAPHY.H7}
-                color={COLORS.BLACK}
-                className="new-network-info__token-show-up"
-              >
-                {t('tokenShowUp')}{' '}
-                <Button
-                  type="link"
-                  onClick={addTokenManually}
-                  className="new-network-info__button"
+              <Box marginRight={4} color={COLORS.BLACK}>
+                &bull;
+              </Box>
+              <Box>
+                <Typography
+                  variant={TYPOGRAPHY.H7}
+                  color={COLORS.BLACK}
+                  className="new-network-info__token-show-up"
                 >
-                  <Typography
-                    variant={TYPOGRAPHY.H7}
-                    color={COLORS.PRIMARY1}
-                    className="new-network-info__manually-add-tokens"
+                  {t('tokenShowUp')}{' '}
+                  <Button
+                    type="link"
+                    onClick={addTokenManually}
+                    className="new-network-info__button"
                   >
-                    {t('clickToManuallyAdd')}
-                  </Typography>
-                </Button>
-              </Typography>
+                    <Typography
+                      variant={TYPOGRAPHY.H7}
+                      color={COLORS.PRIMARY1}
+                      className="new-network-info__manually-add-tokens"
+                    >
+                      {t('clickToManuallyAdd')}
+                    </Typography>
+                  </Button>
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-        ) : null}
-      </Box>
-    </Popover>
-  );
-};
+          ) : null}
+        </Box>
+      </Popover>
+    );
+  }
 
-NewNetworkInfo.propTypes = {
-  closePopup: PropTypes.func,
+  return null;
 };
 
 export default NewNetworkInfo;

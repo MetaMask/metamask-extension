@@ -12,7 +12,6 @@ import {
 import {
   lockMetamask,
   setCurrentCurrency,
-  setFirstTimeUsedNetwork,
   setLastActiveTime,
   setMouseUserState,
 } from '../../store/actions';
@@ -43,6 +42,10 @@ function mapStateToProps(state) {
     providerType: state.metamask.provider?.type,
     theme: getTheme(state),
     sendStage: getSendStage(state),
+    isNetworkUsed: getIsNetworkUsed(state),
+    hasAnAccountWithNoFundsOnNetwork: getHasAnyAccountWithNoFundsOnNetwork(
+      state,
+    ),
   };
 }
 
@@ -55,7 +58,6 @@ function mapDispatchToProps(dispatch) {
     setLastActiveTime: () => dispatch(setLastActiveTime()),
     pageChanged: (path) => dispatch(pageChanged(path)),
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
-    setFirstTimeUsedNetwork: (chainId) => setFirstTimeUsedNetwork(chainId),
   };
 }
 

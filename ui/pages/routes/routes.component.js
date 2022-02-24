@@ -105,6 +105,8 @@ export default class Routes extends Component {
     browserEnvironmentBrowser: PropTypes.string,
     theme: PropTypes.string,
     sendStage: PropTypes.string,
+    isNetworkUsed: PropTypes.bool,
+    hasAnAccountWithNoFundsOnNetwork: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -347,10 +349,6 @@ export default class Routes extends Component {
     }
   };
 
-  handleClose = () => {
-    this.props.setFirstTimeUsedNetwork(this.props.providerChaindId);
-  };
-
   render() {
     const {
       isLoading,
@@ -386,7 +384,7 @@ export default class Routes extends Component {
         }}
       >
         {isUnlocked && !isNetworkUsed && hasAnAccountWithNoFundsOnNetwork && (
-          <NewNetworkInfo closePopup={this.handleClose} />
+          <NewNetworkInfo />
         )}
         <QRHardwarePopover />
         <Modal />
