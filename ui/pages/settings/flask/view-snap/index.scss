@@ -6,8 +6,6 @@
   }
 
   &__subheader {
-    @include H4;
-
     padding: 16px 4px;
     border-bottom: 1px solid var(--alto);
     margin-right: 24px;
@@ -51,10 +49,16 @@
   }
 
   &__toggle-container {
+    margin-left: auto;
+
     @media screen and (max-width: $break-small) {
       padding-left: 0;
       display: inline-block;
     }
+  }
+
+  &__toggle-button {
+    margin-right: -12px;
   }
 
   &__content-container {
