@@ -10,6 +10,7 @@ import { ethers } from 'ethers';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
+import { merge, pickBy } from 'lodash';
 import cleanErrorStack from '../../lib/cleanErrorStack';
 import {
   hexToBn,
@@ -348,6 +349,268 @@ export default class TransactionController extends EventEmitter {
       );
     });
   }
+
+  // ====================================================================================================================================================
+
+  /**
+   * @param {number} txId
+   * @returns {TransactionMeta} the txMeta who matches the given id if none found
+   * for the network returns undefined
+   */
+  _getTransaction(txId) {
+    const { transactions } = this.store.getState();
+    return transactions[txId];
+  }
+
+  _checkIfTxStatusIsUnapproved(txId) {
+    return (
+      this.txStateManager.getTransaction(txId).status ===
+      TRANSACTION_STATUSES.UNAPPROVED
+    );
+  }
+
+  _updateTransaction(txId, proposedUpdate, note) {
+    const txMeta = this.txStateManager.getTransaction(txId);
+    const updated = merge(txMeta, proposedUpdate);
+    this.txStateManager.updateTransaction(updated, note);
+  }
+
+  /**
+   *
+   * @param {string} txId - transaction id
+   * @param {object} editableParams - holds the eip1559 fees parameters
+   * @param editableParams.data
+   * @param editableParams.from
+   * @param editableParams.to
+   * @param editableParams.value
+   * @param editableParams.gas
+   * @param editableParams.gasPrice
+   */
+  updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+      return;
+    }
+
+    const editableParams = {
+      txParams: {
+        data,
+        from,
+        to,
+        value,
+        gas,
+        gasPrice,
+      },
+    };
+
+    // only update what is defined
+    editableParams.txParams = pickBy(editableParams.txParams);
+    const note = `Update Editable Params for ${txId}`;
+    this._updateTransaction(txId, editableParams, note);
+  }
+
+  /**
+   * updates the gas fees of the transaction with id if the transaction state is unapproved
+   *
+   * @param {string} txId - transaction id
+   * @param {object} txGasFees - holds the gas fees parameters
+   * {
+   * gasLimit,
+   * gasPrice,
+   * maxPriorityFeePerGas,
+   * maxFeePerGas,
+   * estimateUsed,
+   * estimateSuggested
+   * }
+   * @param txGasFees.gasLimit
+   * @param txGasFees.gasPrice
+   * @param txGasFees.maxPriorityFeePerGas
+   * @param txGasFees.maxFeePerGas
+   * @param txGasFees.estimateUsed
+   * @param txGasFees.estimateSuggested
+   * @param txGasFees.defaultGasEstimates
+   * @param txGasFees.gas
+   * @param txGasFees.originalGasEstimate
+   */
+  updateTransactionGasFees(
+    txId,
+    {
+      gas,
+      gasLimit,
+      gasPrice,
+      maxPriorityFeePerGas,
+      maxFeePerGas,
+      estimateUsed,
+      estimateSuggested,
+      defaultGasEstimates,
+      originalGasEstimate,
+    },
+  ) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+      return;
+    }
+
+    let txGasFees = {
+      txParams: {
+        gas,
+        gasLimit,
+        gasPrice,
+        maxPriorityFeePerGas,
+        maxFeePerGas,
+      },
+      estimateUsed,
+      estimateSuggested,
+      defaultGasEstimates,
+      originalGasEstimate,
+    };
+
+    // only update what is defined
+    txGasFees.txParams = pickBy(txGasFees.txParams);
+    txGasFees = pickBy(txGasFees);
+    const note = `Update Transaction Gas Fees for ${txId}`;
+    this._updateTransaction(txId, txGasFees, note);
+  }
+
+  /**
+   * updates the estimate base fees of the transaction with id if the transaction state is unapproved
+   *
+   * @param {string} txId - transaction id
+   * @param {object} txEstimateBaseFees - holds the estimate base fees parameters
+   * {
+   * estimatedBaseFee,
+   * decEstimatedBaseFee
+   * }
+   * @param txEstimateBaseFees.estimatedBaseFee
+   * @param txEstimateBaseFees.decEstimatedBaseFee
+   */
+  updateTransactionEstimatedBaseFee(
+    txId,
+    { estimatedBaseFee, decEstimatedBaseFee },
+  ) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+      return;
+    }
+
+    let txEstimateBaseFees = { estimatedBaseFee, decEstimatedBaseFee };
+    // only update what is defined
+    txEstimateBaseFees = pickBy(txEstimateBaseFees);
+
+    const note = `Update Transaction Estimated Base Fees for ${txId}`;
+    this._updateTransaction(txId, txEstimateBaseFees, note);
+  }
+
+  /**
+   * updates a swap approval transaction with provided metadata and source token symbol
+   *  if the transaction state is unapproved.
+   *
+   * @param {string} txId
+   * @param {object} swapApprovalTransaction - holds the metadata and token symbol
+   * {
+   * type,
+   * sourceTokenSymbol
+   * }
+   * @param swapApprovalTransaction.type
+   * @param swapApprovalTransaction.sourceTokenSymbol
+   */
+  updateSwapApprovalTransaction(txId, { type, sourceTokenSymbol }) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+      return;
+    }
+
+    let swapApprovalTransaction = { type, sourceTokenSymbol };
+    // only update what is defined
+    swapApprovalTransaction = pickBy(swapApprovalTransaction);
+
+    const note = `Update Swap Approval Transaction for ${txId}`;
+    this._updateTransaction(txId, swapApprovalTransaction, note);
+  }
+
+  /**
+   * updates a swap transaction with provided metadata and source token symbol
+   *  if the transaction state is unapproved.
+   *
+   * @param {string} txId
+   * @param {object} swapTransaction - holds the metadata
+   * {
+   * sourceTokenSymbol,
+   * destinationTokenSymbol,
+   * type,
+   * destinationTokenDecimals,
+   * destinationTokenAddress,
+   * swapMetaData,
+   * swapTokenValue,
+   * estimatedBaseFee,
+   * approvalTxId
+   *}
+   * @param swapTransaction.sourceTokenSymbol
+   * @param swapTransaction.destinationTokenSymbol
+   * @param swapTransaction.type
+   * @param swapTransaction.destinationTokenDecimals
+   * @param swapTransaction.destinationTokenAddress
+   * @param swapTransaction.swapMetaData
+   * @param swapTransaction.swapTokenValue
+   * @param swapTransaction.estimatedBaseFee
+   * @param swapTransaction.approvalTxId
+   */
+  updateSwapTransaction(
+    txId,
+    {
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+      estimatedBaseFee,
+      approvalTxId,
+    },
+  ) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+      return;
+    }
+
+    let swapTransaction = {
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+      estimatedBaseFee,
+      approvalTxId,
+    };
+
+    // only update what is defined
+    swapTransaction = pickBy(swapTransaction);
+
+    const note = `Update Swap Transaction for ${txId}`;
+    this._updateTransaction(txId, swapTransaction, note);
+  }
+
+  /**
+   * updates a transaction's user settings only if the transaction state is unapproved
+   *
+   * @param {string} txId
+   * @param {object} userSettings - holds the metadata
+   * { userEditedGasLimit, userFeeLevel }
+   * @param userSettings.userEditedGasLimit
+   * @param userSettings.userFeeLevel
+   */
+  updateTransactionUserSettings(txId, { userEditedGasLimit, userFeeLevel }) {
+    if (!this._checkIfTxStatusIsUnapproved(txId)) {
+      return;
+    }
+
+    let userSettings = { userEditedGasLimit, userFeeLevel };
+    // only update what is defined
+    userSettings = pickBy(userSettings);
+
+    const note = `Update User Settings for ${txId}`;
+    this._updateTransaction(txId, userSettings, note);
+  }
+
+  // ====================================================================================================================================================
 
   /**
    * Validates and generates a txMeta with defaults and puts it in txStateManager
