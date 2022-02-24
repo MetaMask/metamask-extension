@@ -19,9 +19,9 @@ const Popover = ({
   CustomBackground,
   popoverRef,
   centerTitle,
-  headerProps,
-  contentProps,
-  footerProps,
+  headerProps = {},
+  contentProps = {},
+  footerProps = {},
 }) => {
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
