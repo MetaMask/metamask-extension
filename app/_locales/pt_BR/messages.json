@@ -1996,23 +1996,11 @@
   "revealSeedWords": {
     "message": "Revelar Frase de Recuperação Secreta"
   },
-  "revealSeedWordsDescription": {
-    "message": "Se você alguma vez mudar de navegador ou trocar de computador, precisará dessa Frase de Recuperação Secreta para acessar suas contas. Salve-as em um lugar seguro e secreto."
-  },
-  "revealSeedWordsWarning": {
-    "message": "Essas palavras podem ser usadas para roubar todas as suas contas."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NÃO compartilhe essa frase com ninguém!"
-  },
   "rpcUrl": {
     "message": "Novo URL da RPC"
   },
   "save": {
     "message": "Salvar"
-  },
-  "saveAsCsvFile": {
-    "message": "Salvar como arquivo CSV"
   },
   "scanInstructions": {
     "message": "Posicione o QR code na frente da sua câmera"
@@ -3048,9 +3036,6 @@
   },
   "youSign": {
     "message": "Você está assinando"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Sua Frase de Recuperação Secreta privada"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "O preço do gás está zerado na aceleração"

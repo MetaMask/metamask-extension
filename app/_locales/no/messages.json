@@ -638,23 +638,11 @@
   "revealSeedWords": {
     "message": "Vis frøord"
   },
-  "revealSeedWordsDescription": {
-    "message": "Hvis du noen gang bytter nettlesere eller flytter datamaskiner, trenger du denne mnemoniske gjenopprettingsfrasen for å få tilgang til kontoene dine. Lagre dem på et trygt og hemmelig sted."
-  },
-  "revealSeedWordsWarning": {
-    "message": "Disse ordene kan brukes for å stjele alle kontoene dine. "
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "IKKE del denne frasen med noen! "
-  },
   "rpcUrl": {
     "message": "NY RPC-URL "
   },
   "save": {
     "message": "Lagre"
-  },
-  "saveAsCsvFile": {
-    "message": "Lagre som CSV-fil "
   },
   "scanInstructions": {
     "message": "Plasser QR-koden foran kameraet ditt"
@@ -923,9 +911,6 @@
   },
   "youSign": {
     "message": "Du signerer"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Din private frøfrase"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Null bensinpris for fremskynding"

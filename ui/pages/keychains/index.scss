@@ -74,14 +74,18 @@
 }
 
 .reveal-seed {
+  a {
+    color: var(--color-primary-default);
+  }
+
   &__content {
     padding: 20px;
   }
 
   &__label {
-    padding-bottom: 10px;
-    font-weight: 400;
-    display: inline-block;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--color-text-default);
   }
 
   &__error {
@@ -90,9 +94,32 @@
     color: var(--color-error-default);
     padding-top: 5px;
   }
+
+  &__buttons {
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: var(--color-icon-default);
+    width: 100%;
+
+    &__active {
+      border-color: var(--color-primary-default);
+      border-width: 0 0 2px 0;
+    }
+  }
+
+  &__button {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+
+    &__active {
+      color: var(--color-primary-default);
+    }
+  }
 }
 
 .page-container__footer-single-button {
-  width: 40%;
+  width: 90%;
   margin: 8px auto;
+  min-height: 40px;
 }

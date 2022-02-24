@@ -90,6 +90,7 @@ export default class AccountDetailsModal extends Component {
         <QrView
           Qr={{
             data: address,
+            isHexAddress: true,
           }}
         />
 

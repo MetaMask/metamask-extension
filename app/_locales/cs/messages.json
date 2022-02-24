@@ -295,9 +295,6 @@
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
-  "revealSeedWordsWarning": {
-    "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů."
-  },
   "save": {
     "message": "Uložit"
   },

@@ -2928,15 +2928,6 @@
   "revealSeedWords": {
     "message": "Ipakita ang Secret Recovery Phrase"
   },
-  "revealSeedWordsDescription": {
-    "message": "Kung magpapalit ka man ng browser o computer, kakailanganin mo ang Secret Recovery Phrase na ito para ma-access ang iyong mga account. I-save ang mga iyon sa isang ligtas at sikretong lugar."
-  },
-  "revealSeedWordsWarning": {
-    "message": "Magagamit ang mga salitang ito para manakaw ang lahat ng iyong account."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "Huwag ibahagi ang phrase na ito sa sinuman!"
-  },
   "revealTheSeedPhrase": {
     "message": "Ipakita ang seed phrase"
   },
@@ -2966,9 +2957,6 @@
   },
   "save": {
     "message": "I-save"
-  },
-  "saveAsCsvFile": {
-    "message": "I-save bilang CSV File"
   },
   "scanInstructions": {
     "message": "Itapat ang QR code sa iyong camera"
@@ -4393,9 +4381,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Maaaring nasa panganib ang iyong NFT"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Ang iyong pribadong seed phrase"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Walang presyo ng gas sa pagpapabilis"

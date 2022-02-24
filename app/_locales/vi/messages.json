@@ -2928,15 +2928,6 @@
   "revealSeedWords": {
     "message": "Hiện Cụm mật khẩu khôi phục bí mật"
   },
-  "revealSeedWordsDescription": {
-    "message": "Nếu thay đổi trình duyệt hoặc chuyển máy tính, bạn sẽ cần Cụm mật khẩu khôi phục bí mật này để truy cập tài khoản của mình. Hãy lưu Cụm mật khẩu khôi phục bí mật này ở nơi an toàn và bí mật."
-  },
-  "revealSeedWordsWarning": {
-    "message": "Kẻ xấu có thể dùng các từ này để đánh cắp tất cả các tài khoản của bạn."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "KHÔNG chia sẻ cụm mật khẩu này với bất kỳ ai!"
-  },
   "revealTheSeedPhrase": {
     "message": "Hiện cụm từ khôi phục bí mật"
   },
@@ -2966,9 +2957,6 @@
   },
   "save": {
     "message": "Lưu"
-  },
-  "saveAsCsvFile": {
-    "message": "Lưu dưới dạng tập tin CSV"
   },
   "scanInstructions": {
     "message": "Đặt mã QR vào trước máy ảnh"
@@ -4393,9 +4381,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Cụm mật khẩu khôi phục bí mật riêng tư của bạn"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Giá gas bằng 0 khi tăng tốc"

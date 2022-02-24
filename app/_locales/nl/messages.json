@@ -262,9 +262,6 @@
   "revealSeedWords": {
     "message": "Onthul back-up woorden"
   },
-  "revealSeedWordsWarning": {
-    "message": "Zorg dat je back-up woorden niet op een openbare plaats bekijkt! Deze woorden kunnen worden gebruikt om al uw accounts opnieuw te genereren (en dus uw account te stelen)."
-  },
   "save": {
     "message": "Opslaan"
   },

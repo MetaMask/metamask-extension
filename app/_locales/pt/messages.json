@@ -2928,15 +2928,6 @@
   "revealSeedWords": {
     "message": "Revelar Palavras Seed"
   },
-  "revealSeedWordsDescription": {
-    "message": "Se você alguma vez mudar de navegador ou trocar de computador, precisará dessa Frase de Recuperação Secreta para acessar suas contas. Salve-as em um lugar seguro e secreto."
-  },
-  "revealSeedWordsWarning": {
-    "message": "Não revele as palavras seed num espaço público! Estas palavras podem ser usadas para roubar todas as suas contas."
-  },
-  "revealSeedWordsWarningTitle": {
-    "message": "NÃO compartilhe essa frase com ninguém!"
-  },
   "revealTheSeedPhrase": {
     "message": "Revelar a frase de recuperação"
   },
@@ -2966,9 +2957,6 @@
   },
   "save": {
     "message": "Guardar"
-  },
-  "saveAsCsvFile": {
-    "message": "Salvar como arquivo CSV"
   },
   "scanInstructions": {
     "message": "Posicione o QR code na frente da sua câmera"
@@ -4393,9 +4381,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Seu NFT pode estar em risco"
-  },
-  "yourPrivateSeedPhrase": {
-    "message": "Sua Frase de Recuperação Secreta privada"
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "O preço do gás está zerado na aceleração"

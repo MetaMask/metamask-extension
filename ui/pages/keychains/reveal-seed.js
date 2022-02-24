@@ -3,11 +3,21 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { requestRevealSeedWords } from '../../store/actions';
-import ExportTextContainer from '../../components/ui/export-text-container';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { EVENT, EVENT_NAMES } from '../../../shared/constants/metametrics';
 
 import Button from '../../components/ui/button';
+import Box from '../../components/ui/box';
+import Typography from '../../components/ui/typography';
+import {
+  BorderStyle,
+  Color,
+  FONT_WEIGHT,
+  Size,
+  TypographyVariant,
+} from '../../helpers/constants/design-system';
+import WarningPopover from './components/warning-popover';
+import RevealSeedContent from './components/reveal-seed-content';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
@@ -18,6 +28,7 @@ class RevealSeedPage extends Component {
     password: '',
     seedWords: null,
     error: null,
+    showPopover: false,
   };
 
   componentDidMount() {
@@ -27,9 +38,8 @@ class RevealSeedPage extends Component {
     }
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    this.setState({ seedWords: null, error: null });
+  handleSubmit() {
+    this.setState({ showPopover: false });
     this.props
       .requestRevealSeedWords(this.state.password)
       .then((seedWords) => {
@@ -57,37 +67,63 @@ class RevealSeedPage extends Component {
 
   renderWarning() {
     return (
-      <div className="page-container__warning-container">
-        <i className="fa fa-exclamation-triangle fa-2x page-container__warning-icon" />
-        <div className="page-container__warning-message">
-          <div className="page-container__warning-title">
-            {this.context.t('revealSeedWordsWarningTitle')}
-          </div>
-          <div>{this.context.t('revealSeedWordsWarning')}</div>
-        </div>
-      </div>
+      <Box
+        className="page-container__warning-container"
+        margin={4}
+        borderStyle={BorderStyle.solid}
+        borderWidth={1}
+        borderRadius={Size.MD}
+        borderColor={Color.errorDefault}
+      >
+        <i className="fa fa-eye-slash page-container__warning-icon" />
+        <Box className="page-container__warning-message">
+          <Typography
+            variant={TypographyVariant.H7}
+            margin={0}
+            className="page-container__warning-title"
+          >
+            {this.context.t('secretRecoveryPhraseWarningTitle')}
+          </Typography>
+          <Typography
+            variant={TypographyVariant.H7}
+            margin={0}
+            fontWeight={FONT_WEIGHT.BOLD}
+          >
+            {this.context.t('secretRecoveryPhraseWarning')}
+          </Typography>
+        </Box>
+      </Box>
     );
   }
 
   renderContent() {
-    return this.state.screen === PASSWORD_PROMPT_SCREEN
-      ? this.renderPasswordPromptContent()
-      : this.renderRevealSeedContent();
+    return this.state.screen === PASSWORD_PROMPT_SCREEN ? (
+      this.renderPasswordPromptContent()
+    ) : (
+      <RevealSeedContent seedWords={this.state.seedWords} />
+    );
   }
 
   renderPasswordPromptContent() {
     const { t } = this.context;
 
     return (
-      <form onSubmit={(event) => this.handleSubmit(event)}>
-        <label className="input-label" htmlFor="password-box">
+      <form onSubmit={() => this.setState({ showPopover: true })}>
+        <Typography
+          variant={TypographyVariant.H6}
+          fontWeight={FONT_WEIGHT.BOLD}
+          color={Color.textDefault}
+          boxProps={{ paddingBottom: 3 }}
+          className="input-label"
+          htmlFor="password-box"
+        >
           {t('enterPasswordContinue')}
-        </label>
+        </Typography>
         <div className="input-group">
           <input
             data-testid="input-password"
             type="password"
-            placeholder={t('password')}
+            placeholder={t('makeSureNobodyIsLooking')}
             id="password-box"
             value={this.state.password}
             onChange={(event) =>
@@ -102,41 +138,6 @@ class RevealSeedPage extends Component {
           <div className="reveal-seed__error">{this.state.error}</div>
         )}
       </form>
-    );
-  }
-
-  renderRevealSeedContent() {
-    const { t, trackEvent } = this.context;
-
-    return (
-      <div>
-        <label className="reveal-seed__label">
-          {t('yourPrivateSeedPhrase')}
-        </label>
-        <ExportTextContainer
-          text={this.state.seedWords}
-          onClickCopy={() => {
-            trackEvent({
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES.KEY_EXPORT_COPIED,
-              properties: {
-                key_type: EVENT.KEY_TYPES.SRP,
-                copy_method: 'clipboard',
-              },
-            });
-          }}
-          onClickDownload={() => {
-            trackEvent({
-              category: EVENT.CATEGORIES.KEYS,
-              event: EVENT_NAMES.KEY_EXPORT_COPIED,
-              properties: {
-                key_type: EVENT.KEY_TYPES.SRP,
-                copy_method: 'file_download',
-              },
-            });
-          }}
-        />
-      </div>
     );
   }
 
@@ -171,7 +172,7 @@ class RevealSeedPage extends Component {
             type="primary"
             large
             className="page-container__footer-button"
-            onClick={(event) => {
+            onClick={() => {
               this.context.trackEvent({
                 category: EVENT.CATEGORIES.KEYS,
                 event: EVENT_NAMES.KEY_EXPORT_REQUESTED,
@@ -179,7 +180,7 @@ class RevealSeedPage extends Component {
                   key_type: EVENT.KEY_TYPES.SRP,
                 },
               });
-              this.handleSubmit(event);
+              this.setState({ showPopover: true });
             }}
             disabled={this.state.password === ''}
           >
@@ -209,21 +210,73 @@ class RevealSeedPage extends Component {
 
   render() {
     return (
-      <div className="page-container">
-        <div className="page-container__header">
-          <div className="page-container__title">
+      <Box className="page-container">
+        <Box className="page-container__header">
+          <Typography
+            variant={TypographyVariant.H2}
+            className="page-container__title"
+          >
             {this.context.t('secretRecoveryPhrase')}
-          </div>
-          <div className="page-container__subtitle">
-            {this.context.t('revealSeedWordsDescription')}
-          </div>
-        </div>
-        <div className="page-container__content">
+          </Typography>
+          <Typography
+            className="page-container__subtitle"
+            variant={TypographyVariant.H6}
+            fontWeight={400}
+          >
+            {this.context.t('secretRecoveryPhraseDescription', [
+              <Button
+                key="secret_recovery_phrase_link"
+                type="link"
+                href="https://metamask.zendesk.com/hc/en-us/articles/4404722782107-User-guide-Secret-Recovery-Phrase-password-and-private-keys"
+                rel="noopener noreferrer"
+                target="_blank"
+                className="settings-page__inline-link"
+              >
+                {this.context.t('secretRecoveryPhraseDescriptionLink')}
+              </Button>,
+              <b key="non_custodial_bold">
+                {this.context.t('secretRecoveryPhraseDescriptionBold')}
+              </b>,
+            ])}
+          </Typography>
+          <Typography
+            className="page-container__subtitle"
+            variant={TypographyVariant.H6}
+            fontWeight={400}
+          >
+            {this.context.t('secretRecoveryPhraseNonCustodialDescription', [
+              <Button
+                key="non_custodial_link"
+                type="link"
+                href="https://metamask.zendesk.com/hc/en-us/articles/360059952212-MetaMask-is-a-non-custodial-wallet"
+                rel="noopener noreferrer"
+                target="_blank"
+                className="settings-page__inline-link"
+              >
+                {this.context.t(
+                  'secretRecoveryPhraseNonCustodialDescriptionLink',
+                )}
+              </Button>,
+              <b key="non_custodial_bold">
+                {this.context.t(
+                  'secretRecoveryPhraseNonCustodialDescriptionBold',
+                )}
+              </b>,
+            ])}
+          </Typography>
+        </Box>
+        <Box className="page-container__content">
+          {this.state.showPopover ? (
+            <WarningPopover
+              onClose={() => this.setState({ showPopover: false })}
+              onClick={(event) => this.handleSubmit(event)}
+            />
+          ) : null}
           {this.renderWarning()}
-          <div className="reveal-seed__content">{this.renderContent()}</div>
-        </div>
+          <Box className="reveal-seed__content">{this.renderContent()}</Box>
+        </Box>
         {this.renderFooter()}
-      </div>
+      </Box>
     );
   }
 }

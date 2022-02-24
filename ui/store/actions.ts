@@ -304,6 +304,7 @@ export function requestRevealSeedWords(
       throw error;
     } finally {
       dispatch(hideLoadingIndication());
+      dispatch(hideWarning());
     }
   };
 }
