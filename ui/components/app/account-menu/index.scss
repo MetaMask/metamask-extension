@@ -43,12 +43,12 @@
 
       &:hover {
         background-color: var(--color-overlay-alternative);
-        opacity: .05; //@TODO: fix opacity
+        opacity: 0.05; //@TODO: fix opacity
       }
 
       &:active {
         background-color: var(--color-overlay-alternative);
-        opacity: .1; //@TODO: fix opacity
+        opacity: 0.1; //@TODO: fix opacity
       }
     }
 
