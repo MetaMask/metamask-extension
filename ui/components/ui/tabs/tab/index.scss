@@ -12,7 +12,7 @@
   }
 
   &--active {
-    color: var(--black);
-    border-bottom: 2px solid var(--primary-blue);
+    color: var(--color-text-default);
+    border-bottom: 2px solid var(--color-primary-default);
   }
 }

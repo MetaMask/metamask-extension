@@ -8,11 +8,11 @@
   border-radius: 100px;
 
   &:hover {
-    background-color: #f2f3f4;
+    background-color: var(--color-background-alternative);
   }
 
   &:active {
-    background-color: #ededed;
+    background-color: var(--color-background-default);
   }
 
   &__inner-circle {
@@ -43,17 +43,17 @@
   }
 
   &__yellow-circle {
-    border-color: #ffd33d;
+    border-color: var(--color-warning-default);
   }
 
   &__grey-circle {
-    border-color: var(--Grey-500);
+    border-color: var(--color-icon-default);
   }
 
   &__text {
     @include H8;
 
-    color: var(--Grey-500);
+    color: var(--color-icon-default);
     margin-left: 6px;
     white-space: nowrap;
   }
