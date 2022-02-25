@@ -297,12 +297,6 @@ function setupController(initState, initLangCode) {
   extension.runtime.onConnect.addListener(connectRemote);
   extension.runtime.onConnectExternal.addListener(connectExternal);
 
-  const metamaskInternalProcessHash = {
-    [ENVIRONMENT_TYPE_POPUP]: true,
-    [ENVIRONMENT_TYPE_NOTIFICATION]: true,
-    [ENVIRONMENT_TYPE_FULLSCREEN]: true,
-  };
-
   const metamaskBlockedPorts = ['trezor-connect'];
 
   const isClientOpenStatus = () => {
