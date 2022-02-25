@@ -98,6 +98,9 @@
   "addANetwork": {
     "message": "Add a network"
   },
+  "addANetworkManually": {
+    "message": "Add a network manually"
+  },
   "addANickname": {
     "message": "Add a nickname"
   },
@@ -136,6 +139,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
+  },
+  "addFromAListOfPopularNetworks": {
+    "message": "Add from a list of popular networks or add a network manually. Only interact with the entities you trust."
   },
   "addMemo": {
     "message": "Add memo"
@@ -405,6 +411,13 @@
   "buyCryptoWithTransakDescription": {
     "message": "Transak supports debit card and bank transfers (depending on location) in 59+ countries. $1 deposits into your MetaMask account.",
     "description": "$1 represents the cypto symbol to be purchased"
+  },
+  "buyEth": {
+    "message": "Buy ETH"
+  },
+  "buyOther": {
+    "message": "Buy $1 or deposit from another account.",
+    "description": "$1 is a token symbol"
   },
   "buyWithWyre": {
     "message": "Buy ETH with Wyre"
@@ -696,6 +709,9 @@
   },
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
+  },
+  "customNetworks": {
+    "message": "Custom networks"
   },
   "customSpendLimit": {
     "message": "Custom Spend Limit"
@@ -1343,6 +1359,9 @@
   "goerli": {
     "message": "Goerli Test Network"
   },
+  "gotIt": {
+    "message": "Got it!"
+  },
   "grantedToWithColon": {
     "message": "Granted to:"
   },
@@ -1479,6 +1498,10 @@
   },
   "insufficientBalance": {
     "message": "Insufficient balance."
+  },
+  "insufficientCurrency": {
+    "message": "You do not have enough $1 in your account to pay for transaction fees on $2 network.",
+    "description": "$1 is currency, $2 is network"
   },
   "insufficientFunds": {
     "message": "Insufficient funds."
@@ -1678,6 +1701,10 @@
   },
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
+  },
+  "logo": {
+    "message": "$1 logo",
+    "description": "$1 is the name of the ticker"
   },
   "low": {
     "message": "Low"
@@ -2207,6 +2234,9 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+  "onlyInteractWith": {
+    "message": "Only interact with entities you trust."
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -2222,6 +2252,9 @@
   },
   "or": {
     "message": "or"
+  },
+  "orDeposit": {
+    "message": "or deposit from another account."
   },
   "origin": {
     "message": "Origin"
@@ -2576,22 +2609,22 @@
     "message": "Secure my wallet (recommended)"
   },
   "seedPhraseIntroSidebarBulletFour": {
-    "message": "Write down and store in multiple secret places."
+    "message": "Write down and store in multiple secret places"
   },
   "seedPhraseIntroSidebarBulletOne": {
     "message": "Save in a password manager"
   },
   "seedPhraseIntroSidebarBulletThree": {
-    "message": "Store in a safe-deposit box."
+    "message": "Store in a safe deposit box"
   },
   "seedPhraseIntroSidebarBulletTwo": {
-    "message": "Store in a bank vault."
+    "message": "Store in a bank vault"
   },
   "seedPhraseIntroSidebarCopyOne": {
     "message": "Your Secret Recovery Phrase is a 12-word phrase that is the “master key” to your wallet and your funds"
   },
   "seedPhraseIntroSidebarCopyThree": {
-    "message": "If someone asks for your recovery phrase they are likely trying to scam you and steal your wallet funds"
+    "message": "If someone asks for your recovery phrase they are likely trying to scam you and steal your wallet funds."
   },
   "seedPhraseIntroSidebarCopyTwo": {
     "message": "Never, ever share your Secret Recovery Phrase, not even with MetaMask!"

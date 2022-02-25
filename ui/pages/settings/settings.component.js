@@ -144,7 +144,7 @@ class SettingsPage extends PureComponent {
               }}
               settingsRoutesList={getSettingsRoutes(t)}
             />
-            {isSearchList && searchText.length >= 2 && (
+            {isSearchList && searchText.length >= 3 && (
               <SettingsSearchList
                 key=""
                 results={searchResults}
