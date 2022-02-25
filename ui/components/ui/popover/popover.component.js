@@ -92,7 +92,7 @@ const Popover = ({
             {hasStyles(contentProps) ? (
               <Box {...contentProps}>{children}</Box>
             ) : (
-              { children }
+              children
             )}
           </div>
         ) : null}
