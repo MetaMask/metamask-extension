@@ -303,27 +303,21 @@ export default class Home extends PureComponent {
             : null
           ///: END:ONLY_INCLUDE_IN
         }
-        {newCollectibleAddedMessage ? (
+        {newCollectibleAddedMessage === 'success' ? (
           <ActionableMessage
-            type={newCollectibleAddedMessage === 'success' ? 'info' : 'warning'}
+            type="info"
             className="home__new-network-notification"
             message={
               <div className="home__new-network-notification-message">
-                {newCollectibleAddedMessage === 'success' ? (
-                  <img
-                    src="./images/check_circle.svg"
-                    className="home__new-network-notification-message--image"
-                  />
-                ) : null}
+                <img
+                  src="./images/check_circle.svg"
+                  className="home__new-network-notification-message--image"
+                />
                 <Typography
                   variant={TYPOGRAPHY.H7}
                   fontWeight={FONT_WEIGHT.NORMAL}
                 >
-                  {newCollectibleAddedMessage === 'success'
-                    ? t('newCollectibleAddedMessage')
-                    : t('newCollectibleAddFailed', [
-                        newCollectibleAddedMessage,
-                      ])}
+                  {t('newCollectibleAddedMessage')}
                 </Typography>
                 <button
                   className="fas fa-times home__close"
