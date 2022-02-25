@@ -32,23 +32,21 @@ describe('Search settings page', function () {
         assert.equal(await settingsButton.getText(), 'Settings');
         await settingsButton.click();
 
-        const inputSearch = await driver.findElement(
-          '#search-settings',
-        );
+        await driver.findElement('#search-settings');
 
         // enters expected search
         await driver.fill('#search-settings', 'adv');
 
         const searchResult = await driver.findElements(
-            '.settings-page__header__search__list__item',
-          );
-          const firstSearchResult = searchResult[0];
-          
-          await firstSearchResult.click();
-          await driver.waitForSelector({
-            tag: 'span',
-            text: 'Advanced gas controls',
-          });
+          '.settings-page__header__search__list__item',
+        );
+        const firstSearchResult = searchResult[0];
+
+        await firstSearchResult.click();
+        await driver.waitForSelector({
+          tag: 'span',
+          text: 'Advanced gas controls',
+        });
       },
     );
   });
@@ -76,26 +74,25 @@ describe('Search settings page', function () {
         assert.equal(await settingsButton.getText(), 'Settings');
         await settingsButton.click();
 
-        const inputSearch = await driver.findElement(
-          '#search-settings',
-        );
+        await driver.findElement('#search-settings');
 
         // enters unexpected search
         await driver.fill('#search-settings', 'xyz');
 
         const searchResult = await driver.findElements(
-            '.settings-page__header__search__list__item',
-          );
+          '.settings-page__header__search__list__item',
+        );
 
-        assert.equal(await searchResult[0].getText(), 'No matching results found');
-          
+        assert.equal(
+          await searchResult[0].getText(),
+          'No matching results found',
+        );
+
         await driver.waitForSelector({
-              tag: 'a',
-              text: 'Request here'
-          });
-
+          tag: 'a',
+          text: 'Request here',
+        });
       },
     );
-});
-
+  });
 });
