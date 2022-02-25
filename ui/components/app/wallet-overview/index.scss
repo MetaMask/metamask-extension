@@ -73,7 +73,7 @@
   &__cached-secondary-balance {
     @include Paragraph;
 
-    color: var(--color-secondary-muted)
+    color: var(--color-secondary-muted);
   }
 
   &__secondary-balance {
