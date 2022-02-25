@@ -65,7 +65,7 @@ const ConfirmAddSuggestedToken = () => {
   const suggestedAssets = useSelector(getSuggestedAssets);
   const tokens = useSelector(getTokens);
 
-  const metricsEvent = useContext(NewMetaMetricsContext);
+  const trackEvent = useContext(NewMetaMetricsContext);
 
   const knownTokenActionableMessage = useMemo(() => {
     return (
@@ -111,7 +111,7 @@ const ConfirmAddSuggestedToken = () => {
       suggestedAssets.map(async ({ asset, id }) => {
         await dispatch(acceptWatchAsset(id));
 
-        metricsEvent({
+        trackEvent({
           event: 'Token Added',
           category: 'Wallet',
           sensitiveProperties: {
@@ -126,13 +126,7 @@ const ConfirmAddSuggestedToken = () => {
     );
 
     history.push(mostRecentOverviewPage);
-  }, [
-    dispatch,
-    history,
-    metricsEvent,
-    mostRecentOverviewPage,
-    suggestedAssets,
-  ]);
+  }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedAssets]);
 
   useEffect(() => {
     if (!suggestedAssets.length) {
