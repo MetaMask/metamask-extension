@@ -11405,10 +11405,10 @@ ethers@^4.0.20, ethers@^4.0.28:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@^5.0.8, ethers@^5.4.0, ethers@^5.4.1, ethers@^5.4.5, ethers@^5.5.1:
-  version "5.5.4"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.5.4.tgz#e1155b73376a2f5da448e4a33351b57a885f4352"
-  integrity sha512-N9IAXsF8iKhgHIC6pquzRgPBJEzc9auw3JoRkaKe+y4Wl/LFBtDDunNe7YmdomontECAcC5APaAgWZBiu1kirw==
+ethers@^5.0.8, ethers@^5.4.0, ethers@^5.4.1, ethers@^5.4.5:
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.5.1.tgz#d3259a95a42557844aa543906c537106c0406fbf"
+  integrity sha512-RodEvUFZI+EmFcE6bwkuJqpCYHazdzeR1nMzg+YWQSmQEsNtfl1KHGfp/FWZYl48bI/g7cgBeP2IlPthjiVngw==
   dependencies:
     "@ethersproject/abi" "5.5.0"
     "@ethersproject/abstract-provider" "5.5.1"
@@ -13456,22 +13456,10 @@ graphql-request@^1.8.2:
   dependencies:
     cross-fetch "2.2.2"
 
-graphql-subscriptions@^1.1.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/graphql-subscriptions/-/graphql-subscriptions-1.2.1.tgz#2142b2d729661ddf967b7388f7cf1dd4cf2e061d"
-  integrity sha512-95yD/tKi24q8xYa7Q9rhQN16AYj5wPbrb8tmHGM3WRc9EBmWrG/0kkMl+tQG8wcEuE9ibR4zyOM31p5Sdr2v4g==
-  dependencies:
-    iterall "^1.3.0"
-
-"graphql@^14.0.2 || ^15.5":
-  version "15.8.0"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.8.0.tgz#33410e96b012fa3bdb1091cc99a94769db212b38"
-  integrity sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==
-
 gridplus-sdk@^0.9.7:
-  version "0.9.7"
-  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-0.9.7.tgz#fefa45c4373d02e351ea18059b49429b903d6cf5"
-  integrity sha512-n6dG93XYGplDctUaBMyDsBQzi9kWMB+/2XBzNr2uaHVBpXv8SFPSbYD+uPRUwbjIb8xcRsN0RzHL9QqMO+2vOQ==
+  version "0.9.10"
+  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-0.9.10.tgz#8835e8bc9a2ca7ae163520ddcc0b313350e67dd2"
+  integrity sha512-CNvhyaz3F8UvlHqihFJlOt+FenmFkb2dFrbBTyRth/nlzD8Tm0HjW+uyY1W0ekDp45Exz9l0VY0EmdvjphBe1w==
   dependencies:
     aes-js "^3.1.1"
     bech32 "^2.0.0"
