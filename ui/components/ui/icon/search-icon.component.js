@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default function SearchIcon({ className, size, color }) {
+export default function SearchIcon({ className = undefined, size, color }) {
   return (
     <svg
       className={className}
@@ -20,10 +20,6 @@ export default function SearchIcon({ className, size, color }) {
     </svg>
   );
 }
-
-SearchIcon.defaultProps = {
-  className: undefined,
-};
 
 SearchIcon.propTypes = {
   /**
