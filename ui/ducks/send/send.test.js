@@ -97,7 +97,7 @@ describe('Send Slice', () => {
       .mockImplementation(() => Promise.resolve(true));
     jest
       .spyOn(Actions, 'updateEditableParams')
-      .mockImplementation(() => ({ type: 'UPDATE_TRANSACTION_PARAMS' }));      
+      .mockImplementation(() => ({ type: 'UPDATE_TRANSACTION_PARAMS' }));
   });
 
   describe('Reducers', () => {
