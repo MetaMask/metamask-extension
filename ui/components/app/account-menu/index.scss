@@ -4,7 +4,7 @@
   top: 58px;
   width: 320px;
   border-radius: 4px;
-  background: rgba($black, 0.8);
+  background: var(--color-overlay-default);
   box-shadow: rgba($black, 0.15) 0 2px 2px 2px;
   min-width: 150px;
   color: var(--white);
@@ -101,7 +101,7 @@
   & &__lock-button {
     @include H7;
 
-    border: 1px solid var(--ui-white);
+    border: 1px solid var(--color-background-default);
     background-color: transparent;
     padding: 3.5px 5px;
     color: var(--white);

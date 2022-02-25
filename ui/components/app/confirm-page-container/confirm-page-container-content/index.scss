@@ -33,7 +33,7 @@
   &__data-box {
     @include H7;
 
-    background-color: #f9fafa;
+    background-color: var(--color-background-alternative);
     padding: 12px;
     word-wrap: break-word;
     overflow-y: auto;
