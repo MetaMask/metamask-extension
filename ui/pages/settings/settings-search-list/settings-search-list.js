@@ -7,63 +7,54 @@ import { I18nContext } from '../../../contexts/i18n';
 export default function SettingsSearchList({ results, onClickSetting }) {
   const t = useContext(I18nContext);
 
-  useEffect(() => {
-    results.forEach((_, i) => {
-      highlightSearchedText(i);
-    });
-  }, [results]);
+  useEffect(highlightSearchedText, [results]);
 
   return (
     <div className="settings-page__header__search__list">
-      {Array(5)
-        .fill(undefined)
-        .map((_, i) => {
-          const { image, tab, section } = results[i] || {};
+      {results.slice(0, 5).map((result) => {
+        const { image, tab, section, id } = result;
+        return (
+          Boolean(image || tab || section) && (
+            <div key={`settings_${id}`}>
+              <div
+                className="settings-page__header__search__list__item"
+                onClick={() => onClickSetting(result)}
+              >
+                <img
+                  className="settings-page__header__search__list__item__icon"
+                  src={`./images/${image}`}
+                />
 
-          return (
-            Boolean(image || tab || section) && (
-              <div key={`settings_${i}`}>
-                <div
-                  key={`res_${i}`}
-                  className="settings-page__header__search__list__item"
-                  onClick={() => onClickSetting(results[i])}
+                <span
+                  id={`menu-tab_${id}`}
+                  className={classnames(
+                    'settings-page__header__search__list__item__tab',
+                    {
+                      'settings-page__header__search__list__item__tab-multiple-lines':
+                        tab === t('securityAndPrivacy'),
+                    },
+                  )}
                 >
-                  <img
-                    className="settings-page__header__search__list__item__icon"
-                    src={`./images/${image}`}
-                  />
-
-                  <span
-                    id={`menu-tab_${i}`}
-                    className={classnames(
-                      'settings-page__header__search__list__item__tab',
-                      {
-                        'settings-page__header__search__list__item__tab-multiple-lines':
-                          tab === t('securityAndPrivacy'),
-                      },
-                    )}
-                  >
-                    {tab}
-                  </span>
-                  <div className="settings-page__header__search__list__item__caret" />
-                  <span
-                    id={`menu-section_${i}`}
-                    className={classnames(
-                      'settings-page__header__search__list__item__section',
-                      {
-                        'settings-page__header__search__list__item__section-multiple-lines':
-                          tab === t('securityAndPrivacy') ||
-                          tab === t('alerts'),
-                      },
-                    )}
-                  >
-                    {section}
-                  </span>
-                </div>
+                  {tab}
+                </span>
+                <div className="settings-page__header__search__list__item__caret" />
+                <span
+                  id={`menu-section_${id}`}
+                  className={classnames(
+                    'settings-page__header__search__list__item__section',
+                    {
+                      'settings-page__header__search__list__item__section-multiple-lines':
+                        tab === t('securityAndPrivacy') || tab === t('alerts'),
+                    },
+                  )}
+                >
+                  {section}
+                </span>
               </div>
-            )
-          );
-        })}
+            </div>
+          )
+        );
+      })}
       {results.length === 0 && (
         <div
           className="settings-page__header__search__list__item"
