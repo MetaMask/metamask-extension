@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Do not allow transaction creation with gas limit below minimum ([#13574](https://github.com/MetaMask/metamask-extension/pull/13574))
 - Fix network editing error when no block explorer is provided ([#13527](https://github.com/MetaMask/metamask-extension/pull/13527))
 - Swaps: Fix BigNumber error when submitting quote ([#13555](https://github.com/MetaMask/metamask-extension/pull/13555))
+
 ## [10.10.1]
 ### Added
 - Swaps: Enable Avalanche ([#13653](https://github.com/MetaMask/metamask-extension/pull/13653))
@@ -2760,8 +2761,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.0...HEAD
-[10.11.0]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...v10.11.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.10.1...HEAD
+[10.11.0]: https://github.com/MetaMask/metamask-extension/compare/v10.10.1...v10.11.0
 [10.10.1]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...v10.10.1
 [10.10.0]: https://github.com/MetaMask/metamask-extension/compare/v10.9.3...v10.10.0
 [10.9.3]: https://github.com/MetaMask/metamask-extension/compare/v10.9.2...v10.9.3
