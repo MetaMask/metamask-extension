@@ -101,7 +101,7 @@ const Popover = ({
             {hasStyles(footerProps) ? (
               <Box {...footerProps}>{footer}</Box>
             ) : (
-              { footer }
+              footer
             )}
           </footer>
         ) : null}
