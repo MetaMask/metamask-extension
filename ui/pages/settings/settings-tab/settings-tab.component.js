@@ -200,7 +200,7 @@ export default class SettingsTab extends PureComponent {
             {t('jazzAndBlockies')}
           </span>
           <div className="settings-page__content-item__identicon">
-            <div
+            <button
               data-test-id="jazz_icon"
               onClick={() => setUseBlockie(false)}
               className="settings-page__content-item__identicon__item"
@@ -229,8 +229,8 @@ export default class SettingsTab extends PureComponent {
               >
                 {t('jazzicons')}
               </Typography>
-            </div>
-            <div
+            </button>
+            <button
               data-test-id="blockie_icon"
               onClick={() => setUseBlockie(true)}
               className="settings-page__content-item__identicon__item"
@@ -257,7 +257,7 @@ export default class SettingsTab extends PureComponent {
               >
                 {t('blockies')}
               </Typography>
-            </div>
+            </button>
           </div>
         </div>
       </div>

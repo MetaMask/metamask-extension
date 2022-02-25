@@ -298,7 +298,8 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        cursor: pointer;
+        background: unset;
+        border: 1px solid transparent;
 
         &__icon {
           &--active {
