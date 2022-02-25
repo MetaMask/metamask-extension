@@ -1,5 +1,6 @@
 .app-loading-spinner {
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: var(--color-background-alternative);
+  opacity: .75;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,6 +10,7 @@
   z-index: 1;
 
   &__inner {
+    opacity: 1;
     width: 50px;
   }
 }
