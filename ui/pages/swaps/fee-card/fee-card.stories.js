@@ -1,14 +1,6 @@
 import React from 'react';
-import { action } from '@storybook/addon-actions';
-import { text, boolean, number, object } from '@storybook/addon-knobs';
 import { MAINNET_CHAIN_ID } from '../../../../shared/constants/network';
 import FeeCard from './fee-card';
-
-const tokenApprovalTextComponent = (
-  <span key="fee-card-approve-symbol" className="view-quote__bold">
-    ABC
-  </span>
-);
 
 const containerStyle = {
   width: '300px',
@@ -17,83 +9,123 @@ const containerStyle = {
 export default {
   title: 'Pages/Swaps/FeeCard',
   id: __filename,
+  component: FeeCard,
+  argTypes: {
+    primaryFee: {
+      control: {
+        type: 'text',
+      },
+    },
+    primaryMaxFee: {
+      control: {
+        type: 'text',
+      },
+    },
+    secondaryFee: {
+      control: {
+        type: 'text',
+      },
+    },
+    secondaryMaxFee: {
+      control: {
+        type: 'text',
+      },
+    },
+    onFeeCardMaxRowClick: {
+      action: 'Clicked max fee row edit link',
+    },
+    hideTokenApprovalRow: {
+      control: {
+        type: 'boolean',
+      },
+    },
+    tokenApprovalSourceTokenSymbol: {
+      control: {
+        type: 'text',
+      },
+    },
+    onTokenApprovalClick: {
+      action: 'Clicked on token approval',
+    },
+    metaMaskFee: {
+      control: {
+        type: 'text',
+      },
+    },
+    onQuotesClick: {
+      action: 'Clicked on quotes link',
+    },
+    numberOfQuotes: {
+      control: {
+        type: 'number',
+      },
+    },
+    chainId: {
+      control: {
+        type: 'text',
+      },
+    },
+    smartTransactionsOptInStatus: {
+      control: {
+        type: 'boolean',
+      },
+    },
+    smartTransactionsEnabled: {
+      control: {
+        type: 'boolean',
+      },
+    },
+    isBestQuote: {
+      control: {
+        type: 'boolean',
+      },
+    },
+    supportsEIP1559V2: {
+      control: {
+        type: 'boolean',
+      },
+    },
+  },
+  args: {
+    primaryFee: '1 ETH',
+    primaryMaxFee: '2 ETH',
+    secondaryFee: '100 USD',
+    secondaryMaxFee: '200 USD',
+    hideTokenApprovalRow: false,
+    tokenApprovalSourceTokenSymbol: 'ABC',
+    metaMaskFee: '0.875',
+    numberOfQuotes: 6,
+    chainId: MAINNET_CHAIN_ID,
+    isBestQuote: true,
+  },
 };
 
-export const WithAllProps = () => {
+export const DefaultStory = (args) => {
+  // Please note, currently nested arg types are not possible, but discussions are open:
+  // https://github.com/storybookjs/storybook/issues/11486
+  const {
+    primaryFee,
+    primaryMaxFee,
+    secondaryFee,
+    secondaryMaxFee,
+    ...rest
+  } = args;
+
   return (
     <div style={containerStyle}>
       <FeeCard
-        feeRowText={text('feeRowText', 'Network fees')}
         primaryFee={{
-          fee: text('primaryFee', '1 ETH'),
-          maxFee: text('primaryMaxFee', '2 ETH'),
+          fee: primaryFee,
+          maxFee: primaryMaxFee,
         }}
         secondaryFee={{
-          fee: text('secondaryFee', '100 USD'),
-          maxFee: text('secondaryMaxFee', '200 USD'),
+          fee: secondaryFee,
+          maxFee: secondaryMaxFee,
         }}
-        chainId={MAINNET_CHAIN_ID}
-        networkAndAccountSupports1559={false}
-        onFeeCardMaxRowClick={action('Clicked max fee row link')}
-        tokenApprovalTextComponent={tokenApprovalTextComponent}
-        tokenApprovalSourceTokenSymbol="ABC"
-        onTokenApprovalClick={action('Clicked third row link')}
-        hideTokenApprovalRow={false}
-        metaMaskFee="0.875"
-        savings={object('savings 1', { total: '8.55' })}
-        onQuotesClick={action('Clicked quotes link')}
-        numberOfQuotes={number('numberOfQuotes', 6)}
-        isBestQuote={boolean('isBestQuote', true)}
-        conversionRate={300}
-        currentCurrency="usd"
+        {...rest}
       />
     </div>
   );
 };
 
-export const WithoutThirdRow = () => {
-  return (
-    <div style={containerStyle}>
-      <FeeCard
-        feeRowText={text('feeRowText', 'Network fees')}
-        primaryFee={{
-          fee: text('primaryFee', '1 ETH'),
-          maxFee: text('primaryMaxFee', '2 ETH'),
-        }}
-        secondaryFee={{
-          fee: text('secondaryFee', '100 USD'),
-          maxFee: text('secondaryMaxFee', '200 USD'),
-        }}
-        onFeeCardMaxRowClick={action('Clicked max fee row link')}
-        hideTokenApprovalRow
-        onQuotesClick={action('Clicked quotes link')}
-        numberOfQuotes={number('numberOfQuotes', 1)}
-        isBestQuote={boolean('isBestQuote', true)}
-        savings={object('savings 1', { total: '8.55' })}
-        metaMaskFee="0.875"
-        chainId={MAINNET_CHAIN_ID}
-        networkAndAccountSupports1559={false}
-      />
-    </div>
-  );
-};
-
-export const WithOnlyRequiredProps = () => {
-  return (
-    <div style={containerStyle}>
-      <FeeCard
-        primaryFee={{
-          fee: text('primaryFee', '1 ETH'),
-          maxFee: text('primaryMaxFee', '2 ETH'),
-        }}
-        onFeeCardMaxRowClick={action('Clicked max fee row link')}
-        hideTokenApprovalRow
-        metaMaskFee="0.875"
-        onQuotesClick={action('Clicked quotes link')}
-        numberOfQuotes={2}
-        chainId={MAINNET_CHAIN_ID}
-        networkAndAccountSupports1559={false}
-      />
-    </div>
-  );
-};
+DefaultStory.storyName = 'Default';
