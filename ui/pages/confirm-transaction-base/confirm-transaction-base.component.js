@@ -214,6 +214,15 @@ export default class ConfirmTransactionBase extends Component {
       this.pollLedgerReady();
     }, HARDWARE_CHECK_INTERVAL);
     this.setState({ pollingIntervalId: intervalId });
+
+    window.addEventListener('beforeunload', () => this._clearPollingInterval);
+  }
+
+  _clearPollingInterval() {
+    const { pollingIntervalId } = this.state;
+    if (pollingIntervalId) {
+      clearInterval(pollingIntervalId);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -1076,11 +1085,7 @@ export default class ConfirmTransactionBase extends Component {
   componentWillUnmount() {
     this._beforeUnloadForGasPolling();
     this._removeBeforeUnload();
-
-    const { pollingIntervalId } = this.state;
-    if (pollingIntervalId) {
-      clearInterval(pollingIntervalId);
-    }
+    this._clearPollingInterval();
   }
 
   supportsEIP1559V2 =
