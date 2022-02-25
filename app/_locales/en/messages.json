@@ -98,6 +98,9 @@
   "addANetwork": {
     "message": "Add a network"
   },
+  "addANetworkManually": {
+    "message": "Add a network manually"
+  },
   "addANickname": {
     "message": "Add a nickname"
   },
@@ -136,6 +139,9 @@
   },
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
+  },
+  "addFromAListOfPopularNetworks": {
+    "message": "Add from a list of popular networks or add a network manually. Only interact with the entities you trust."
   },
   "addMemo": {
     "message": "Add memo"
@@ -703,6 +709,9 @@
   },
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
+  },
+  "customNetworks": {
+    "message": "Custom networks"
   },
   "customSpendLimit": {
     "message": "Custom Spend Limit"
@@ -1693,6 +1702,10 @@
   "lockTimeTooGreat": {
     "message": "Lock time is too great"
   },
+  "logo": {
+    "message": "$1 logo",
+    "description": "$1 is the name of the ticker"
+  },
   "low": {
     "message": "Low"
   },
@@ -2220,6 +2233,9 @@
   },
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
+  },
+  "onlyInteractWith": {
+    "message": "Only interact with entities you trust."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",

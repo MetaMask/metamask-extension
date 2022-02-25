@@ -7,6 +7,8 @@ const ZENDESK_URLS = {
     'https://metamask.zendesk.com/hc/en-us/articles/360015489331',
   TOKEN_SAFETY_PRACTICES:
     'https://metamask.zendesk.com/hc/en-us/articles/4403988839451',
+  SECRET_RECOVERY_PHRASE:
+    'https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure',
 };
 
 export default ZENDESK_URLS;
