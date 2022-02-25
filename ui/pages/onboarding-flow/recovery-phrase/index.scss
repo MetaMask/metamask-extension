@@ -69,18 +69,18 @@
       align-self: center;
     }
 
-    &--copy-and-hide {
+    &__copy-and-hide {
       width: 100%;
       display: flex;
       flex-direction: column;
 
-      &--area {
+      &__area {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
       }
 
-      &--button {
+      &__button {
         @include H6;
 
         background-color: transparent;
@@ -92,11 +92,11 @@
         padding-left: 0;
         padding-right: 0;
 
-        &--hide-seed {
+        &__hide-seed {
           justify-content: flex-start;
         }
 
-        &--copy-to-clipboard {
+        &__copy-to-clipboard {
           justify-content: flex-end;
         }
 

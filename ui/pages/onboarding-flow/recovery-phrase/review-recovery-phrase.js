@@ -82,8 +82,8 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
       />
       <div className="recovery-phrase__footer">
         {phraseRevealed ? (
-          <div className="recovery-phrase__footer--copy-and-hide">
-            <div className="recovery-phrase__footer--copy-and-hide--area">
+          <div className="recovery-phrase__footer__copy-and-hide">
+            <div className="recovery-phrase__footer__copy-and-hide__area">
               <Button
                 type="link"
                 icon={
@@ -92,7 +92,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                     color="#3098DC"
                   />
                 }
-                className="recovery-phrase__footer--copy-and-hide--button recovery-phrase__footer--copy-and-hide--button--hide-seed"
+                className="recovery-phrase__footer__copy-and-hide__button recovery-phrase__footer__copy-and-hide__button__hide-seed"
                 onClick={() => {
                   setHiddenPhrase(!hiddenPhrase);
                 }}
@@ -104,7 +104,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                   handleCopy(secretRecoveryPhrase);
                 }}
                 icon={copied ? null : <Copy size={20} color="#3098DC" />}
-                className="recovery-phrase__footer--copy-and-hide--button recovery-phrase__footer--copy-and-hide--button--copy-to-clipboard"
+                className="recovery-phrase__footer__copy-and-hide__button recovery-phrase__footer__copy-and-hide__button__copy-to-clipboard"
                 type="link"
               >
                 {copied ? t('copiedExclamation') : t('copyToClipboard')}
