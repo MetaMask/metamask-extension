@@ -4,7 +4,12 @@ const { version: reactVersion } = require('react/package.json');
 module.exports = {
   root: true,
   // Ignore files which are also in .prettierignore
-  ignorePatterns: ['app/vendor/**', 'dist/**/*', 'development/chromereload.js'],
+  ignorePatterns: [
+    'app/vendor/**',
+    'builds/**/*',
+    'dist/**/*',
+    'development/chromereload.js',
+  ],
   overrides: [
     /**
      * == Modules ==
