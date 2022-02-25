@@ -14,7 +14,7 @@
 
     width: 100%;
     font-weight: 500;
-    color: var(--black);
+    color: var(--color-text-default);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -43,11 +43,11 @@
     background-color: unset;
 
     &:hover {
-      background-color: var(--Grey-000);
+      background-color: var(--color-background-alternative);
     }
 
     &:active {
-      background-color: #d9d7da;
+      background-color: var(--color-background-default);
     }
   }
 

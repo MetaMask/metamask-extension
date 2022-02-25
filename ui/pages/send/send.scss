@@ -5,7 +5,7 @@
     position: relative;
     display: flex;
     justify-content: center;
-    background-color: var(--Grey-000);
+    background-color: var(--color-background-alternative);
     border-bottom: none;
     padding: 14px 0 3px 0;
 
@@ -39,8 +39,8 @@
     margin: 0;
     padding: 0.5rem;
     flex: 0 0 auto;
-    background-color: var(--Grey-000);
-    border-bottom: 1px solid var(--alto);
+    background-color: var(--color-background-alternative);
+    border-bottom: 1px solid var(--color-border-muted);
   }
 
   &__select-recipient-wrapper {
@@ -58,7 +58,7 @@
         @extend %row-nowrap;
 
         padding: 1rem;
-        border-bottom: 1px solid var(--alto);
+        border-bottom: 1px solid var(--color-border-muted);
         border-radius: 0;
         align-items: center;
         justify-content: flex-start;
@@ -84,7 +84,7 @@
 
         padding: 0.5rem;
         text-align: center;
-        border-bottom: 1px solid var(--alto);
+        border-bottom: 1px solid var(--color-border-muted);
         justify-content: flex-start;
       }
     }
@@ -96,13 +96,13 @@
     &__group-label {
       @include H8;
 
-      background-color: var(--Grey-000);
-      color: var(--Grey-600);
+      background-color: var(--color-background-alternative);
+      color: var(--color-icon-default);
       padding: 0.5rem 1rem;
-      border-bottom: 1px solid var(--alto);
+      border-bottom: 1px solid var(--color-border-muted);
 
       &:first-of-type {
-        border-top: 1px solid var(--alto);
+        border-top: 1px solid var(--color-border-muted);
       }
     }
 
@@ -112,7 +112,7 @@
 
       padding: 0.75rem 1rem;
       align-items: center;
-      border-bottom: 1px solid var(--alto);
+      border-bottom: 1px solid var(--color-border-muted);
       cursor: pointer;
 
       &:hover {
@@ -138,13 +138,13 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        color: var(--black);
+        color: var(--color-text-default);
       }
 
       &__subtitle {
         @include H8;
 
-        color: var(--Grey-500);
+        color: var(--color-text-muted);
       }
     }
 
@@ -164,14 +164,14 @@
     flex: 1 1 auto;
     width: 0;
     align-items: center;
-    background: var(--white);
+    background: var(--color-background-default);
     border-radius: 0.5rem;
     padding: 0.75rem 0.5rem;
-    border: 1px solid var(--Grey-100);
+    border: 1px solid var(--color-border-muted);
     transition: border-color 150ms ease-in-out;
 
     &:focus-within {
-      border-color: var(--Grey-500);
+      border-color: var(--color-border-default);
     }
 
     &__status-icon {
@@ -223,7 +223,7 @@
     }
 
     &--valid {
-      border-color: var(--Blue-500);
+      border-color: var(--color-primary-default);
 
       .ens-input__wrapper {
         &__status-icon {
@@ -235,7 +235,7 @@
 
           @include H7;
 
-          color: var(--Blue-500);
+          color: var(--color-primary-default);
         }
       }
     }
@@ -254,7 +254,7 @@
     &__subtitle {
       @include H7;
 
-      color: var(--Grey-500);
+      color: var(--color-icon-default);
       margin-top: 0.25rem;
     }
   }
