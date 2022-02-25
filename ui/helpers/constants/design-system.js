@@ -33,6 +33,7 @@ export const COLORS = {
   KOVAN: 'kovan',
   RINKEBY: 'rinkeby',
   GOERLI: 'goerli',
+  AMINO: 'amino',
   TRANSPARENT: 'transparent',
   LOCALHOST: 'localhost',
 };

@@ -236,6 +236,8 @@ class NetworkDropdown extends Component {
       name = this.context.t('rinkeby');
     } else if (providerName === 'goerli') {
       name = this.context.t('goerli');
+    } else if (providerName === 'amino') {
+      name = this.context.t('amino');
     } else if (providerName === 'localhost') {
       name = this.context.t('localhost');
     } else {
@@ -355,6 +357,7 @@ class NetworkDropdown extends Component {
 
         <div className="network-dropdown-list">
           {this.renderNetworkEntry('mainnet')}
+          {this.renderNetworkEntry('amino')}
 
           {this.renderCustomRpcList(
             rpcListDetailWithoutLocalHost,

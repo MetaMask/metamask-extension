@@ -5,6 +5,9 @@ import {
   KOVAN,
   KOVAN_CHAIN_ID,
   KOVAN_RPC_URL,
+  AMINO,
+  AMINO_CHAIN_ID,
+  AMINO_RPC_URL,
   MAINNET,
   MAINNET_CHAIN_ID,
   MAINNET_RPC_URL,
@@ -61,6 +64,16 @@ const defaultNetworksData = [
     chainId: KOVAN_CHAIN_ID,
     ticker: 'ETH',
     blockExplorerUrl: 'https://kovan.etherscan.io',
+  },
+  {
+    labelKey: AMINO,
+    iconColor: '#9064FE',
+    providerType: AMINO,
+    rpcUrl: AMINO_RPC_URL,
+    chainId: AMINO_CHAIN_ID,
+    ticker: 'TACT',
+    //#TODO: Get explorer URL from constants
+    blockExplorerUrl: 'https://leucine0.blockscout.alphacarbon.network/',
   },
 ];
 
