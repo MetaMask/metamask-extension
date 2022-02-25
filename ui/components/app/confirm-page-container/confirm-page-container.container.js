@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { getAccountsWithLabels, getAddressBookEntry } from '../../../selectors';
+import { showModal } from '../../../store/actions';
 import ConfirmPageContainer from './confirm-page-container.component';
 
 function mapStateToProps(state, ownProps) {
@@ -16,4 +17,13 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export default connect(mapStateToProps)(ConfirmPageContainer);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ConfirmPageContainer);

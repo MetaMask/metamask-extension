@@ -139,9 +139,6 @@
     "message": "在 $1 觀看帳號 ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "使用像素風格代表圖案"
-  },
   "browserNotSupported": {
     "message": "您的瀏覽器尚未支援..."
   },
@@ -749,9 +746,6 @@
   },
   "resetAccountDescription": {
     "message": "重置帳戶將清除您的交易紀錄"
-  },
-  "restoreAccountWithSeed": {
-    "message": "透過助憶詞還原您的帳戶"
   },
   "revealSeedWords": {
     "message": "顯示助憶詞"

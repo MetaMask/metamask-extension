@@ -61,8 +61,11 @@ describe('Sign Typed Data V4 Signature Request', function () {
           )}`,
         );
         assert.equal(await message.getText(), 'Hello, Bob!');
-
         // Approve signing typed data
+        await driver.clickElement(
+          '[data-testid="signature-request-scroll-button"]',
+        );
+        // await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Sign', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();

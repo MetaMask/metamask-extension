@@ -139,9 +139,6 @@
     "message": "$1 এ অ্যাকাউন্ট দেখুন",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "ব্লকিজ আইডেন্টিকন ব্যবহার করুন"
-  },
   "browserNotSupported": {
     "message": "আপনার ব্রাউজার সমর্থিত নয়..."
   },
@@ -767,9 +764,6 @@
   },
   "restore": {
     "message": "পুনরুদ্ধার করুন"
-  },
-  "restoreAccountWithSeed": {
-    "message": "সীড ফ্রেজ দিয়ে আপনার অ্যাকাউন্ট রিস্টোর করুন"
   },
   "revealSeedWords": {
     "message": "সীড শব্দগুলি প্রকাশ করুন"

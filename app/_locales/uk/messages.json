@@ -139,9 +139,6 @@
     "message": "Переглянути обліковий запис на $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Викоритовувати Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Ваш браузер не підтримується..."
   },
@@ -767,9 +764,6 @@
   },
   "restore": {
     "message": "Відновити"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Відновіть ваш обліковий запис за допомогою seed-фрази"
   },
   "revealSeedWords": {
     "message": "Показати мнемонічні слова"

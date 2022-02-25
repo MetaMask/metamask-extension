@@ -139,9 +139,6 @@
     "message": "Ogled računa na  $1 ",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Uporabi identifikacijo Blockies"
-  },
   "browserNotSupported": {
     "message": "Vaš brskalnik ni podptrt ..."
   },
@@ -755,9 +752,6 @@
   },
   "restore": {
     "message": "Obnovi"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Obnovi račun z seed phrase"
   },
   "revealSeedWords": {
     "message": "Razkrij seed words"

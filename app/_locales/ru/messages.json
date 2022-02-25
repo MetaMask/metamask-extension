@@ -362,9 +362,6 @@
     "message": "Посмотреть счет в $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Использовать идентикон Blockies"
-  },
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
   },
@@ -1005,10 +1002,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Указана резервная цена газа, поскольку основной сервис определения цены газа сейчас недоступен."
   },
-  "eth_accounts": {
-    "message": "См. адрес, баланс счета, активность и инициируйте транзакции",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Открытый адрес Ethereum"
   },
@@ -1280,18 +1273,11 @@
   "importAccountError": {
     "message": "Ошибка импорта счета."
   },
-  "importAccountLinkText": {
-    "message": "импортировать с использованием секретной фразы для восстановления"
-  },
   "importAccountMsg": {
     "message": "Импортированные счета не будут связаны с секретной фразой для восстановления вашего изначально созданного счета MetaMask. Узнайте больше об импортированных счетах"
   },
   "importAccountSeedPhrase": {
     "message": "Импорт кошелька с помощью секретной фразы для восстановления"
-  },
-  "importAccountText": {
-    "message": "или $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Введите секретную фразу для восстановления (также известную как «сид-фраза»), которую вы получили при создании кошелька. $1",
@@ -2079,6 +2065,10 @@
   "permissionRequest": {
     "message": "Запрос разрешения"
   },
+  "permission_ethereumAccounts": {
+    "message": "См. адрес, баланс счета, активность и инициируйте транзакции",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Разрешения"
   },
@@ -2232,9 +2222,6 @@
   "restore": {
     "message": "Восстановить"
   },
-  "restoreAccountWithSeed": {
-    "message": "Восстановите свой счет с помощью секретной фразы для восстановления"
-  },
   "restoreWalletPreferences": {
     "message": "Найдена резервная копия ваших данных из $1. Хотите восстановить настройки кошелька?",
     "description": "$1 is the date at which the data was backed up"
@@ -2301,9 +2288,6 @@
   },
   "secretPhrase": {
     "message": "Автоматически загружается только первый счет в этом кошельке. Для добавления дополнительных счетов, после завершения этого процесса нажмите на выпадающее меню, а затем выберите «Создать счет»."
-  },
-  "secretPhraseWarning": {
-    "message": "Если вы выполняете восстановление с использованием другой секретной фразы для восстановления, ваш текущий кошелек, счета и активы будут удалены из этого приложения без возможности восстановления. Это действие нельзя отменить."
   },
   "secretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"
@@ -2796,10 +2780,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Изменение цены в период между размещением заказа и подтверждением называется проскальзыванием. Обмен будет автоматически отменен, если фактическое проскальзывание превысит установленный «допуск проскальзывания»."
-  },
-  "swapQuoteNofN": {
-    "message": "Котировка $1 из $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Источник котировки"

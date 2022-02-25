@@ -139,9 +139,6 @@
     "message": "Prikaži račun u $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Upotrijebi identifikaciju blokovima"
-  },
   "browserNotSupported": {
     "message": "Vaš se preglednik ne podržava..."
   },
@@ -760,9 +757,6 @@
   },
   "restore": {
     "message": "Vrati"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Obnovite svoj račun početnom rečenicom"
   },
   "revealSeedWords": {
     "message": "Otkrij početne riječi"

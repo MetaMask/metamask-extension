@@ -35,10 +35,17 @@ import {
   AssetsContractController,
   CollectibleDetectionController,
 } from '@metamask/controllers';
+import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import {
   PermissionController,
   SubjectMetadataController,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SnapController,
+  ///: END:ONLY_INCLUDE_IN
 } from '@metamask/snap-controllers';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import { IframeExecutionService } from '@metamask/iframe-execution-environment-service';
+///: END:ONLY_INCLUDE_IN
 
 import {
   TRANSACTION_STATUSES,
@@ -57,11 +64,17 @@ import {
 import {
   CaveatTypes,
   RestrictedMethods,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  EndowmentPermissions,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { MILLISECOND } from '../../shared/constants/time';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  MESSAGE_TYPE,
+  ///: END:ONLY_INCLUDE_IN
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   SUBJECT_TYPES,
 } from '../../shared/constants/app';
@@ -73,7 +86,12 @@ import { isEqualCaseInsensitive } from '../../ui/helpers/utils/util';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
-import createMethodMiddleware from './lib/rpc-method-middleware';
+import {
+  createMethodMiddleware,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  createSnapMethodMiddleware,
+  ///: END:ONLY_INCLUDE_IN
+} from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
@@ -107,9 +125,13 @@ import {
   getPermissionBackgroundApiMethods,
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
-  PermissionLogController,
   NOTIFICATION_NAMES,
+  PermissionLogController,
   unrestrictedMethods,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  buildSnapEndowmentSpecifications,
+  buildSnapRestrictedMethodSpecifications,
+  ///: END:ONLY_INCLUDE_IN
 } from './controllers/permissions';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -500,36 +522,41 @@ export default class MetamaskController extends EventEmitter {
       }),
       state: initState.PermissionController,
       caveatSpecifications: getCaveatSpecifications({ getIdentities }),
-      permissionSpecifications: getPermissionSpecifications({
-        getIdentities,
-        getAllAccounts: this.keyringController.getAccounts.bind(
-          this.keyringController,
-        ),
-        captureKeyringTypesWithMissingIdentities: (
-          identities = {},
-          accounts = [],
-        ) => {
-          const accountsMissingIdentities = accounts.filter(
-            (address) => !identities[address],
-          );
-          const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
-            (address) =>
-              this.keyringController.getKeyringForAccount(address)?.type,
-          );
+      permissionSpecifications: {
+        ...getPermissionSpecifications({
+          getIdentities,
+          getAllAccounts: this.keyringController.getAccounts.bind(
+            this.keyringController,
+          ),
+          captureKeyringTypesWithMissingIdentities: (
+            identities = {},
+            accounts = [],
+          ) => {
+            const accountsMissingIdentities = accounts.filter(
+              (address) => !identities[address],
+            );
+            const keyringTypesWithMissingIdentities = accountsMissingIdentities.map(
+              (address) =>
+                this.keyringController.getKeyringForAccount(address)?.type,
+            );
 
-          const identitiesCount = Object.keys(identities || {}).length;
+            const identitiesCount = Object.keys(identities || {}).length;
 
-          const accountTrackerCount = Object.keys(
-            this.accountTracker.store.getState().accounts || {},
-          ).length;
+            const accountTrackerCount = Object.keys(
+              this.accountTracker.store.getState().accounts || {},
+            ).length;
 
-          captureException(
-            new Error(
-              `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${identitiesCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
-            ),
-          );
-        },
-      }),
+            captureException(
+              new Error(
+                `Attempt to get permission specifications failed because their were ${accounts.length} accounts, but ${identitiesCount} identities, and the ${keyringTypesWithMissingIdentities} keyrings included accounts with missing identities. Meanwhile, there are ${accountTrackerCount} accounts in the account tracker.`,
+              ),
+            );
+          },
+        }),
+        ///: BEGIN:ONLY_INCLUDE_IN(flask)
+        ...this.getSnapPermissionSpecifications(),
+        ///: END:ONLY_INCLUDE_IN
+      },
       unrestrictedMethods,
     });
 
@@ -546,6 +573,53 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SubjectMetadataController,
       subjectCacheLimit: 100,
     });
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    this.workerController = new IframeExecutionService({
+      onError: this.onExecutionEnvironmentError.bind(this),
+      iframeUrl: new URL(
+        'https://metamask.github.io/iframe-execution-environment/0.3.1',
+      ),
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'ExecutionService',
+      }),
+      setupSnapProvider: this.setupSnapProvider.bind(this),
+    });
+
+    const snapControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'SnapController',
+      allowedEvents: [
+        'ExecutionService:unhandledError',
+        'ExecutionService:unresponsive',
+      ],
+      allowedActions: [
+        `${this.permissionController.name}:getEndowments`,
+        `${this.permissionController.name}:getPermissions`,
+        `${this.permissionController.name}:hasPermission`,
+        `${this.permissionController.name}:requestPermissions`,
+        `${this.permissionController.name}:revokeAllPermissions`,
+      ],
+    });
+
+    this.snapController = new SnapController({
+      endowmentPermissionNames: Object.values(EndowmentPermissions),
+      terminateAllSnaps: this.workerController.terminateAllSnaps.bind(
+        this.workerController,
+      ),
+      terminateSnap: this.workerController.terminateSnap.bind(
+        this.workerController,
+      ),
+      executeSnap: this.workerController.executeSnap.bind(
+        this.workerController,
+      ),
+      getRpcMessageHandler: this.workerController.getRpcMessageHandler.bind(
+        this.workerController,
+      ),
+      closeAllConnections: this.removeAllConnections.bind(this),
+      state: initState.SnapController,
+      messenger: snapControllerMessenger,
+    });
+    ///: END:ONLY_INCLUDE_IN
 
     this.detectTokensController = new DetectTokensController({
       preferences: this.preferencesController,
@@ -597,7 +671,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       preferencesStore: this.preferencesController.store,
-      txHistoryLimit: 40,
+      txHistoryLimit: 60,
       signTransaction: this.keyringController.signTransaction.bind(
         this.keyringController,
       ),
@@ -623,6 +697,11 @@ export default class MetamaskController extends EventEmitter {
       getEIP1559GasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
         this.gasFeeController,
       ),
+      getExternalPendingTransactions: this.getExternalPendingTransactions.bind(
+        this,
+      ),
+      getAccountType: this.getAccountType.bind(this),
+      getDeviceModel: this.getDeviceModel.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -758,6 +837,24 @@ export default class MetamaskController extends EventEmitter {
         this.gasFeeController,
       ),
     });
+    this.smartTransactionsController = new SmartTransactionsController({
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
+      getNetwork: this.networkController.getNetworkState.bind(
+        this.networkController,
+      ),
+      getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
+        this.txController.nonceTracker,
+      ),
+      confirmExternalTransaction: this.txController.confirmExternalTransaction.bind(
+        this.txController,
+      ),
+      provider: this.provider,
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+    });
 
     // ensure accountTracker updates balances after network change
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
@@ -798,7 +895,11 @@ export default class MetamaskController extends EventEmitter {
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
+      SmartTransactionsController: this.smartTransactionsController,
       CollectiblesController: this.collectiblesController,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      SnapController: this.snapController,
+      ///: END:ONLY_INCLUDE_IN
     });
 
     this.memStore = new ComposableObservableStore({
@@ -834,7 +935,11 @@ export default class MetamaskController extends EventEmitter {
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
+        SmartTransactionsController: this.smartTransactionsController,
         CollectiblesController: this.collectiblesController,
+        ///: BEGIN:ONLY_INCLUDE_IN(flask)
+        SnapController: this.snapController,
+        ///: END:ONLY_INCLUDE_IN
       },
       controllerMessenger: this.controllerMessenger,
     });
@@ -865,6 +970,58 @@ export default class MetamaskController extends EventEmitter {
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  /**
+   * Constructor helper for getting Snap permission specifications.
+   */
+  getSnapPermissionSpecifications() {
+    return {
+      ...buildSnapEndowmentSpecifications(),
+      ...buildSnapRestrictedMethodSpecifications({
+        addSnap: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:add',
+        ),
+        clearSnapState: (fromSubject) =>
+          this.controllerMessenger(
+            'SnapController:updateSnap',
+            fromSubject,
+            {},
+          ),
+        getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
+        getSnap: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:get',
+        ),
+        getSnapRpcHandler: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getRpcMessageHandler',
+        ),
+        getSnapState: async (...args) => {
+          // TODO:flask Just return the action result directly in the next
+          // @metamask/snap-controllers update.
+          return (
+            (await this.controllerMessenger.call(
+              'SnapController:getSnapState',
+              ...args,
+            )) ?? null
+          );
+        },
+        showConfirmation: (origin, confirmationData) =>
+          this.approvalController.addAndShowApprovalRequest({
+            origin,
+            type: MESSAGE_TYPE.SNAP_CONFIRM,
+            requestData: confirmationData,
+          }),
+        updateSnapState: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:updateSnapState',
+        ),
+      }),
+    };
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Sets up BaseController V2 event subscriptions. Currently, this includes
@@ -929,6 +1086,39 @@ export default class MetamaskController extends EventEmitter {
       },
       getPermittedAccountsByOrigin,
     );
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    // Record Snap metadata whenever a Snap is added to state.
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapAdded`,
+      (snapId, snap, svgIcon = null) => {
+        const {
+          manifest: { proposedName },
+          version,
+        } = snap;
+        this.subjectMetadataController.addSubjectMetadata({
+          subjectType: SUBJECT_TYPES.SNAP,
+          name: proposedName,
+          origin: snapId,
+          version,
+          svgIcon,
+        });
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapInstalled`,
+      (snapId) => {
+        this.metaMetricsController.trackEvent({
+          event: 'Snap Installed',
+          category: 'Snaps',
+          properties: {
+            snap_id: snapId,
+          },
+        });
+      },
+    );
+    ///: END:ONLY_INCLUDE_IN
   }
 
   /**
@@ -1093,6 +1283,7 @@ export default class MetamaskController extends EventEmitter {
       swapsController,
       threeBoxController,
       tokensController,
+      smartTransactionsController,
       txController,
     } = this;
 
@@ -1315,6 +1506,9 @@ export default class MetamaskController extends EventEmitter {
       updateAndApproveTransaction: txController.updateAndApproveTransaction.bind(
         txController,
       ),
+      approveTransactionsWithSameNonce: txController.approveTransactionsWithSameNonce.bind(
+        txController,
+      ),
       createCancelTransaction: this.createCancelTransaction.bind(this),
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
@@ -1325,6 +1519,7 @@ export default class MetamaskController extends EventEmitter {
       createTransactionEventFragment: txController.createTransactionEventFragment.bind(
         txController,
       ),
+      getTransactions: txController.getTransactions.bind(txController),
 
       // messageManager
       signMessage: this.signMessage.bind(this),
@@ -1399,6 +1594,16 @@ export default class MetamaskController extends EventEmitter {
       ),
       ...getPermissionBackgroundApiMethods(permissionController),
 
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      // snaps
+      removeSnapError: this.snapController.removeSnapError.bind(
+        this.snapController,
+      ),
+      disableSnap: this.snapController.disableSnap.bind(this.snapController),
+      enableSnap: this.snapController.enableSnap.bind(this.snapController),
+      removeSnap: this.removeSnap.bind(this),
+      ///: END:ONLY_INCLUDE_IN
+
       // swaps
       fetchAndSetQuotes: swapsController.fetchAndSetQuotes.bind(
         swapsController,
@@ -1443,11 +1648,40 @@ export default class MetamaskController extends EventEmitter {
         swapsController,
       ),
       setSwapsLiveness: swapsController.setSwapsLiveness.bind(swapsController),
+      setSwapsFeatureFlags: swapsController.setSwapsFeatureFlags.bind(
+        swapsController,
+      ),
       setSwapsUserFeeLevel: swapsController.setSwapsUserFeeLevel.bind(
         swapsController,
       ),
       setSwapsQuotesPollingLimitEnabled: swapsController.setSwapsQuotesPollingLimitEnabled.bind(
         swapsController,
+      ),
+
+      // Smart Transactions
+      setSmartTransactionsOptInStatus: smartTransactionsController.setOptInState.bind(
+        smartTransactionsController,
+      ),
+      fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
+        smartTransactionsController,
+      ),
+      estimateSmartTransactionsGas: smartTransactionsController.estimateGas.bind(
+        smartTransactionsController,
+      ),
+      submitSignedTransactions: smartTransactionsController.submitSignedTransactions.bind(
+        smartTransactionsController,
+      ),
+      cancelSmartTransaction: smartTransactionsController.cancelSmartTransaction.bind(
+        smartTransactionsController,
+      ),
+      fetchSmartTransactionsLiveness: smartTransactionsController.fetchLiveness.bind(
+        smartTransactionsController,
+      ),
+      updateSmartTransaction: smartTransactionsController.updateSmartTransaction.bind(
+        smartTransactionsController,
+      ),
+      setStatusRefreshInterval: smartTransactionsController.setStatusRefreshInterval.bind(
+        smartTransactionsController,
       ),
 
       // MetaMetrics
@@ -1825,6 +2059,17 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.setSelectedAddress(address);
   }
 
+  /**
+   * Gets the mnemonic of the user's primary keyring.
+   */
+  getPrimaryKeyringMnemonic() {
+    const keyring = this.keyringController.getKeyringsByType('HD Key Tree')[0];
+    if (!keyring.mnemonic) {
+      throw new Error('Primary keyring mnemonic unavailable.');
+    }
+    return keyring.mnemonic;
+  }
+
   //
   // Hardware
   //
@@ -1861,7 +2106,7 @@ export default class MetamaskController extends EventEmitter {
     if (deviceName === DEVICE_NAMES.LATTICE) {
       keyring.appName = 'MetaMask';
     }
-    if (deviceName === 'trezor') {
+    if (deviceName === DEVICE_NAMES.TREZOR) {
       const model = keyring.getModel();
       this.appStateController.setTrezorModel(model);
     }
@@ -1872,7 +2117,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async attemptLedgerTransportCreation() {
-    const keyring = await this.getKeyringForDevice('ledger');
+    const keyring = await this.getKeyringForDevice(DEVICE_NAMES.LEDGER);
     return await keyring.attemptMakeApp();
   }
 
@@ -1937,6 +2182,54 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.getKeyringForDevice(deviceName);
     keyring.forgetDevice();
     return true;
+  }
+
+  /**
+   * Retrieves the keyring for the selected address and using the .type returns
+   * a subtype for the account. Either 'hardware', 'imported' or 'MetaMask'.
+   *
+   * @param {string} address - Address to retrieve keyring for
+   * @returns {'hardware' | 'imported' | 'MetaMask'}
+   */
+  async getAccountType(address) {
+    const keyring = await this.keyringController.getKeyringForAccount(address);
+    switch (keyring.type) {
+      case KEYRING_TYPES.TREZOR:
+      case KEYRING_TYPES.LATTICE:
+      case KEYRING_TYPES.QR:
+      case KEYRING_TYPES.LEDGER:
+        return 'hardware';
+      case KEYRING_TYPES.IMPORTED:
+        return 'imported';
+      default:
+        return 'MetaMask';
+    }
+  }
+
+  /**
+   * Retrieves the keyring for the selected address and using the .type
+   * determines if a more specific name for the device is available. Returns
+   * 'N/A' for non hardware wallets.
+   *
+   * @param {string} address - Address to retrieve keyring for
+   * @returns {'ledger' | 'lattice' | 'N/A' | string}
+   */
+  async getDeviceModel(address) {
+    const keyring = await this.keyringController.getKeyringForAccount(address);
+    switch (keyring.type) {
+      case KEYRING_TYPES.TREZOR:
+        return keyring.getModel();
+      case KEYRING_TYPES.QR:
+        return keyring.getName();
+      case KEYRING_TYPES.LEDGER:
+        // TODO: get model after ledger keyring exposes method
+        return DEVICE_NAMES.LEDGER;
+      case KEYRING_TYPES.LATTICE:
+        // TODO: get model after lattice keyring exposes method
+        return DEVICE_NAMES.LATTICE;
+      default:
+        return 'N/A';
+    }
   }
 
   /**
@@ -2199,6 +2492,32 @@ export default class MetamaskController extends EventEmitter {
     }
     return await promise;
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  /**
+   * Gets an "app key" corresponding to an Ethereum address. An app key is more
+   * or less an addrdess hashed together with some string, in this case a
+   * subject identifier / origin.
+   *
+   * @todo Figure out a way to derive app keys that doesn't depend on the user's
+   * Ethereum addresses.
+   * @param {string} subject - The identifier of the subject whose app key to
+   * retrieve.
+   * @param {string} [requestedAccount] - The account whose app key to retrieve.
+   * The first account in the keyring will be used by default.
+   */
+  async getAppKeyForSubject(subject, requestedAccount) {
+    let account;
+
+    if (requestedAccount) {
+      account = requestedAccount;
+    } else {
+      account = (await this.keyringController.getAccounts())[0];
+    }
+
+    return this.keyringController.exportAppKeyForAddress(account, subject);
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Signifies user intent to complete an eth_sign method.
@@ -2671,6 +2990,13 @@ export default class MetamaskController extends EventEmitter {
    */
 
   /**
+   * A Snap sender object.
+   *
+   * @typedef {Object} SnapSender
+   * @property {string} snapId - The ID of the snap.
+   */
+
+  /**
    * Used to create a multiplexed stream for connecting to an untrusted context
    * like a Dapp or other extension.
    *
@@ -2681,6 +3007,7 @@ export default class MetamaskController extends EventEmitter {
    */
   setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
     const { usePhishDetect } = this.preferencesController.store.getState();
+
     let _subjectType;
     if (subjectType) {
       _subjectType = subjectType;
@@ -2793,14 +3120,20 @@ export default class MetamaskController extends EventEmitter {
    * A method for serving our ethereum provider over a given stream.
    *
    * @param {*} outStream - The stream to provide over.
-   * @param {MessageSender} sender - The sender of the messages on this stream
+   * @param {MessageSender | SnapSender} sender - The sender of the messages on this stream
    * @param {string} subjectType - The type of the sender, i.e. subject.
    */
   setupProviderConnection(outStream, sender, subjectType) {
     let origin;
     if (subjectType === SUBJECT_TYPES.INTERNAL) {
       origin = 'metamask';
-    } else {
+    }
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    else if (subjectType === SUBJECT_TYPES.SNAP) {
+      origin = sender.snapId;
+    }
+    ///: END:ONLY_INCLUDE_IN
+    else {
       origin = new URL(sender.url).origin;
     }
 
@@ -2819,9 +3152,9 @@ export default class MetamaskController extends EventEmitter {
 
     const engine = this.setupProviderEngine({
       origin,
-      tabId,
       sender,
       subjectType,
+      tabId,
     });
 
     // setup connection
@@ -2842,6 +3175,33 @@ export default class MetamaskController extends EventEmitter {
       }
     });
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  /**
+   * For snaps running in workers.
+   *
+   * @param snapId
+   * @param error
+   */
+  onExecutionEnvironmentError(snapId, error) {
+    this.snapController.stopPlugin(snapId);
+    this.snapController.addSnapError(error);
+  }
+
+  /**
+   * For snaps running in workers.
+   *
+   * @param snapId
+   * @param connectionStream
+   */
+  setupSnapProvider(snapId, connectionStream) {
+    this.setupUntrustedCommunication({
+      connectionStream,
+      sender: { snapId },
+      subjectType: SUBJECT_TYPES.SNAP,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * A method for creating a provider that is safely restricted for the requesting subject.
@@ -2871,13 +3231,16 @@ export default class MetamaskController extends EventEmitter {
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
+
     // append tabId to each request if it exists
     if (tabId) {
       engine.push(createTabIdMiddleware({ tabId }));
     }
+
     // logging
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
+
     // onboarding
     if (subjectType === SUBJECT_TYPES.WEBSITE) {
       engine.push(
@@ -2887,6 +3250,8 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
     }
+
+    // Unrestricted/permissionless RPC method implementations
     engine.push(
       createMethodMiddleware({
         origin,
@@ -2974,6 +3339,34 @@ export default class MetamaskController extends EventEmitter {
         ),
       }),
     );
+
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    engine.push(
+      createSnapMethodMiddleware(subjectType === SUBJECT_TYPES.SNAP, {
+        getAppKey: this.getAppKeyForSubject.bind(this, origin),
+        getSnaps: this.snapController.getPermittedSnaps.bind(
+          this.snapController,
+          origin,
+        ),
+        requestPermissions: async (requestedPermissions) => {
+          const [
+            approvedPermissions,
+          ] = await this.permissionController.requestPermissions(
+            { origin },
+            requestedPermissions,
+          );
+
+          return Object.values(approvedPermissions);
+        },
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
+        installSnaps: this.snapController.installSnaps.bind(
+          this.snapController,
+          origin,
+        ),
+      }),
+    );
+    ///: END:ONLY_INCLUDE_IN
+
     // filter and subscription polyfills
     engine.push(filterMiddleware);
     engine.push(subscriptionManager.middleware);
@@ -2985,6 +3378,7 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
     }
+
     // forward to metamask primary provider
     engine.push(providerAsMiddleware(provider));
     return engine;
@@ -3057,6 +3451,24 @@ export default class MetamaskController extends EventEmitter {
     if (Object.keys(connections).length === 0) {
       delete this.connections[origin];
     }
+  }
+
+  /**
+   * Closes all connections for the given origin, and removes the references
+   * to them.
+   * Ignores unknown origins.
+   *
+   * @param {string} origin - The origin string.
+   */
+  removeAllConnections(origin) {
+    const connections = this.connections[origin];
+    if (!connections) {
+      return;
+    }
+
+    Object.keys(connections).forEach((id) => {
+      this.removeConnection(origin, id);
+    });
   }
 
   /**
@@ -3213,6 +3625,13 @@ export default class MetamaskController extends EventEmitter {
   //=============================================================================
   // MISCELLANEOUS
   //=============================================================================
+
+  getExternalPendingTransactions(address) {
+    return this.smartTransactionsController.getTransactions({
+      addressFrom: address,
+      status: 'pending',
+    });
+  }
 
   /**
    * Returns the nonce that will be associated with a transaction once approved
@@ -3415,7 +3834,7 @@ export default class MetamaskController extends EventEmitter {
       transportType,
     );
 
-    const keyring = await this.getKeyringForDevice('ledger');
+    const keyring = await this.getKeyringForDevice(DEVICE_NAMES.LEDGER);
     if (keyring?.updateTransportMethod) {
       return keyring.updateTransportMethod(newValue).catch((e) => {
         // If there was an error updating the transport, we should
@@ -3512,4 +3931,23 @@ export default class MetamaskController extends EventEmitter {
     }
     return this.keyringController.setLocked();
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  // SNAPS
+  /**
+   * Removes the specified snap, and all of its associated permissions.
+   * If we didn't revoke the permission to access the snap from all subjects,
+   * they could just reinstall without any confirmation.
+   *
+   * TODO: This should be implemented in `SnapController.removeSnap` via a controller action.
+   *
+   * @param {{ id: string, permissionName: string }} snap - The wrapper object of the snap to remove.
+   */
+  removeSnap(snap) {
+    this.snapController.removeSnap(snap.id);
+    this.permissionController.revokePermissionForAllSubjects(
+      snap.permissionName,
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
 }

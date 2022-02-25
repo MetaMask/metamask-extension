@@ -139,9 +139,6 @@
     "message": "Lihat akaun pada $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gunakan Identicon Blockies"
-  },
   "browserNotSupported": {
     "message": "Pelayar anda tidak disokong..."
   },
@@ -747,9 +744,6 @@
   },
   "restore": {
     "message": "Pulihkan"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Pulihkan Akaun anda dengan Ungkapan Benih"
   },
   "revealSeedWords": {
     "message": "Dedahkan Ungkapan Benih"

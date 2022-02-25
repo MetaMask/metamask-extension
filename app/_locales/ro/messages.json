@@ -139,9 +139,6 @@
     "message": "Vizualizare cont la $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Folosește Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
   },
@@ -754,9 +751,6 @@
   },
   "restore": {
     "message": "Restabilește"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Restaurați-vă contul folosind fraza inițială"
   },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"

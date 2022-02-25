@@ -362,9 +362,6 @@
     "message": "Lihat akun di $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Gunakan Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Peramban Anda tidak didukung..."
   },
@@ -1005,10 +1002,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Biaya gas cadangan diberikan karena layanan estimasi gas utama saat ini tidak tersedia."
   },
-  "eth_accounts": {
-    "message": "Lihat alamat, saldo akun, aktivitas, dan mulai transaksi",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Alamat Publik Ethereum"
   },
@@ -1280,18 +1273,11 @@
   "importAccountError": {
     "message": "Galat saat mengimpor akun."
   },
-  "importAccountLinkText": {
-    "message": "impor menggunakan Frasa Pemulihan Rahasia"
-  },
   "importAccountMsg": {
     "message": "Akun yang diimpor tidak akan dikaitkan dengan Frasa Pemulihan Rahasia akun MetaMask yang asli dibuat. Pelajari selengkapnya tentang akun yang diimpor"
   },
   "importAccountSeedPhrase": {
     "message": "Impor dompet dengan Frasa Pemulihan Rahasia"
-  },
-  "importAccountText": {
-    "message": "atau $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Masukkan Frasa Pemulihan Rahasia Anda (alias Frasa Benih) yang diberikan saat Anda membuat dompet. $1",
@@ -2079,6 +2065,10 @@
   "permissionRequest": {
     "message": "Permohonan izin"
   },
+  "permission_ethereumAccounts": {
+    "message": "Lihat alamat, saldo akun, aktivitas, dan mulai transaksi",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Izin"
   },
@@ -2232,9 +2222,6 @@
   "restore": {
     "message": "Pulihkan"
   },
-  "restoreAccountWithSeed": {
-    "message": "Pulihkan Akun dengan Frasa Pemulihan Rahasia"
-  },
   "restoreWalletPreferences": {
     "message": "Cadangan data Anda dari $1 telah ditemukan. Pulihkan preferensi dompet Anda?",
     "description": "$1 is the date at which the data was backed up"
@@ -2301,9 +2288,6 @@
   },
   "secretPhrase": {
     "message": "Hanya akun pertama di dompet ini yang akan dimuat secara otomatis. Setelah proses ini selesai, untuk menambahkan akun tambahan, klik menu drop down, lalu pilih Buat Akun."
-  },
-  "secretPhraseWarning": {
-    "message": "Jika Anda memulihkan menggunakan Frasa Pemulihan Rahasia lainnya, dompet, akun, dan aset Anda saat ini akan dihapus dari aplikasi ini secara permanen. Tindakan ini tidak dapat dibatalkan."
   },
   "secretRecoveryPhrase": {
     "message": "Frasa Pemulihan Rahasia"
@@ -2796,10 +2780,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Jika harga berubah antara waktu penempatan dan konfirmasi order Anda, ini disebut \"slippage\". Swap Anda akan otomatis dibatalkan jika slippage melebihi pengaturan \"toleransi slippage\"."
-  },
-  "swapQuoteNofN": {
-    "message": "Kuotasi $1 dari $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Sumber kuotasi"

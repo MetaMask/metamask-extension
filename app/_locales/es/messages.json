@@ -233,9 +233,6 @@
     "message": "Ver cuenta en $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
-  "blockiesIdenticon": {
-    "message": "Usar Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "El explorador no es compatible…"
   },
@@ -665,10 +662,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Se muestra el precio del gas de respaldo, ya que el servicio para calcular el precio del gas principal no se encuentra disponible en este momento."
   },
-  "eth_accounts": {
-    "message": "Ver las direcciones de las cuentas permitidas (requerido)",
-    "description": "The description for the `eth_accounts` permission"
-  },
   "ethereumPublicAddress": {
     "message": "Dirección pública de Ethereum"
   },
@@ -833,18 +826,11 @@
   "importAccount": {
     "message": "Importar cuenta"
   },
-  "importAccountLinkText": {
-    "message": "importar con la frase secreta de recuperación"
-  },
   "importAccountMsg": {
     "message": " Las cuentas importadas no se asociarán con la frase secreta de recuperación de la cuenta original de MetaMask. Más información sobre las cuentas importadas "
   },
   "importAccountSeedPhrase": {
     "message": "Importar una cuenta con la frase secreta de recuperación"
-  },
-  "importAccountText": {
-    "message": "o $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importTokenQuestion": {
     "message": "¿Desea importar el token?"
@@ -1296,6 +1282,10 @@
   "pending": {
     "message": "Pendiente"
   },
+  "permission_ethereumAccounts": {
+    "message": "Ver las direcciones de las cuentas permitidas (requerido)",
+    "description": "The description for the `eth_accounts` permission"
+  },
   "permissions": {
     "message": "Permisos"
   },
@@ -1423,9 +1413,6 @@
   },
   "restore": {
     "message": "Restaurar"
-  },
-  "restoreAccountWithSeed": {
-    "message": "Restaurar la cuenta con la frase secreta de recuperación"
   },
   "restoreWalletPreferences": {
     "message": "Se encontró una copia de seguridad de los datos de $1. ¿Desea restaurar las preferencias de cartera?",
@@ -1858,10 +1845,6 @@
   },
   "swapQuoteDetailsSlippageInfo": {
     "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"desfase\". El canje se cancelará automáticamente si el desfase supera lo establecido en la configuración \"tolerancia de desfase\"."
-  },
-  "swapQuoteNofN": {
-    "message": "Cotización $1 de $2",
-    "description": "A count of loaded quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of quotes to load."
   },
   "swapQuoteSource": {
     "message": "Fuente de la cotización"
