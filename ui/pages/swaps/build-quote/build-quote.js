@@ -599,19 +599,28 @@ export default function BuildQuote({
                   alt={t('swapSwapSwitch')}
                 />
               </Box>
-              <Typography variant={TYPOGRAPHY.H6} marginTop={0}>
+              <Typography variant={TYPOGRAPHY.H7} marginTop={0}>
                 {t('stxDescription')}
               </Typography>
               <Typography
                 tag="ul"
-                variant={TYPOGRAPHY.H6}
+                variant={TYPOGRAPHY.H7}
                 fontWeight={FONT_WEIGHT.BOLD}
                 marginTop={3}
               >
                 <li>{t('stxBenefit1')}</li>
                 <li>{t('stxBenefit2')}</li>
                 <li>{t('stxBenefit3')}</li>
-                <li>{t('stxBenefit4')}</li>
+                <li>
+                  {t('stxBenefit4')}
+                  <Typography
+                    tag="span"
+                    fontWeight={FONT_WEIGHT.NORMAL}
+                    variant={TYPOGRAPHY.H7}
+                  >
+                    {' *'}
+                  </Typography>
+                </li>
               </Typography>
               <Typography
                 variant={TYPOGRAPHY.H8}
