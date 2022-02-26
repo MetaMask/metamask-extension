@@ -1787,9 +1787,6 @@
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "No se añadió el coleccionable porque: $1"
-  },
   "newCollectibleAddedMessage": {
     "message": "¡El coleccionable fue añadido con éxito!"
   },

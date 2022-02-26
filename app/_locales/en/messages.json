@@ -486,6 +486,9 @@
   "close": {
     "message": "Close"
   },
+  "collectibleAddFailedMessage": {
+    "message": "NFT can’t be added as the ownership details do not match. Make sure you have entered correct information."
+  },
   "collectibleAddressError": {
     "message": "This token is an NFT. Add on the $1",
     "description": "$1 is a clickable link with text defined by the 'importNFTPage' key"
@@ -1960,9 +1963,6 @@
   "newAccountNumberName": {
     "message": "Account $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "Collectible was not added because: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "Collectible was successfully added!"
