@@ -3,6 +3,7 @@
   flex-direction: column;
   width: 100%;
   align-items: center;
+  overflow-y: auto;
 
   &__header--one-item,
   &__header--multiple-items {
