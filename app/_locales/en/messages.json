@@ -2326,6 +2326,9 @@
   "origin": {
     "message": "Origin"
   },
+  "padlock": {
+    "message": "Padlock"
+  },
   "parameters": {
     "message": "Parameters"
   },
