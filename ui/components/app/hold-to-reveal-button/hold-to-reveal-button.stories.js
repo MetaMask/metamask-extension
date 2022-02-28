@@ -1,22 +1,22 @@
 import React from 'react';
-import HoldToReveal from './hold-to-reveal';
+import HoldToRevealButton from './hold-to-reveal-button';
 
 export default {
-  title: 'Components/APP/HoldToReveal',
+  title: 'Components/App/HoldToRevealButton',
   id: __filename,
   argTypes: {
     buttonText: { control: 'text' },
-    onLongPressed: { action: 'Revealing SRP' },
+    onLongPressed: { action: 'Revealing the SRP' },
   },
 };
 
 export const DefaultStory = (args) => {
-  return <HoldToReveal {...args} />;
+  return <HoldToRevealButton {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   buttonText: 'Hold to reveal SRP',
-  onLongPressed: () => console.log('Reveal!'),
+  onLongPressed: () => console.log('Revealed!'),
 };
