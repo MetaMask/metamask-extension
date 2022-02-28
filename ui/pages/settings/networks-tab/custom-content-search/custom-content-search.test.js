@@ -17,6 +17,6 @@ describe('CustomContentSearch', () => {
     );
 
     expect(wrapper.find(TextField).props().id).toStrictEqual('search-networks');
-    expect(wrapper.find(TextField).props().value).toStrictEqual(undefined);
+    expect(wrapper.find(TextField).props().value).toBeUndefined();
   });
 });
