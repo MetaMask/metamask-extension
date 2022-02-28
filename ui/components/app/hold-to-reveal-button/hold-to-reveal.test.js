@@ -1,13 +1,13 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import HoldToReveal from './hold-to-reveal';
+import HoldToRevealButton from './hold-to-reveal-button';
 
-describe('HoldToReveal', () => {
+describe('HoldToRevealButton', () => {
   const onLongPressed = jest.fn();
 
   it('should render a button with label', () => {
     const { getByText } = render(
-      <HoldToReveal
+      <HoldToRevealButton
         buttonText="Hold to reveal SRP"
         onLongPressed={onLongPressed}
       />,
@@ -17,7 +17,7 @@ describe('HoldToReveal', () => {
 
   it('should render a button when mouse is down and up', () => {
     const { getByText } = render(
-      <HoldToReveal
+      <HoldToRevealButton
         buttonText="Hold to reveal SRP"
         onLongPressed={onLongPressed}
       />,

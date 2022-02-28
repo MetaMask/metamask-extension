@@ -2,12 +2,18 @@ import React, { useCallback, useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../ui/button';
 import { I18nContext } from '../../../contexts/i18n';
+import Box from '../../ui/box/box';
+import {
+  ALIGN_ITEMS,
+  DISPLAY,
+  JUSTIFY_CONTENT,
+} from '../../../helpers/constants/design-system';
 
 const radius = 14;
 const strokeWidth = 2;
 const radiusWithStroke = radius - strokeWidth / 2;
 
-export default function HoldToReveal({ buttonText, onLongPressed }) {
+export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const t = useContext(I18nContext);
   const isLongPressing = useRef(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
@@ -16,7 +22,7 @@ export default function HoldToReveal({ buttonText, onLongPressed }) {
   /**
    * Prevent animation events from propogating up
    *
-   * @param e Native animation event - React.AnimationEvent<HTMLDivElement>
+   * @param e - Native animation event - React.AnimationEvent<HTMLDivElement>
    */
   const preventPropogation = (e) => {
     e.stopPropagation();
@@ -37,16 +43,16 @@ export default function HoldToReveal({ buttonText, onLongPressed }) {
   };
 
   /**
-   * 1. Progress cirle completed. Begin next animation phase (Shrink halo and show check mark)
+   * 1. Progress cirle completed. Begin next animation phase (Shrink halo and show unlocked padlock)
    */
   const onProgressComplete = () => {
     isLongPressing.current && setIsUnlocking(true);
   };
 
   /**
-   * 2. Trigger onLongPressed callback. Begin next animation phase (Shrink check mark and fade in original content)
+   * 2. Trigger onLongPressed callback. Begin next animation phase (Shrink unlocked padlock and fade in original content)
    *
-   * @param e Native animation event - React.AnimationEvent<HTMLDivElement>
+   * @param e - Native animation event - React.AnimationEvent<HTMLDivElement>
    */
   const triggerOnLongPressed = (e) => {
     onLongPressed();
@@ -64,12 +70,12 @@ export default function HoldToReveal({ buttonText, onLongPressed }) {
 
   const renderPreCompleteContent = useCallback(() => {
     return (
-      <div
+      <Box
         className={`absolute-fill ${isUnlocking ? 'invisible' : null} ${
           hasTriggeredUnlock ? 'main-icon-show' : null
         }`}
       >
-        <div className="absolute-fill">
+        <Box className="absolute-fill">
           <svg className="circle-svg">
             <circle
               className="circle-background"
@@ -78,8 +84,8 @@ export default function HoldToReveal({ buttonText, onLongPressed }) {
               r={radiusWithStroke}
             />
           </svg>
-        </div>
-        <div className="absolute-fill">
+        </Box>
+        <Box className="absolute-fill">
           <svg className="circle-svg">
             <circle
               onTransitionEnd={onProgressComplete}
@@ -89,23 +95,29 @@ export default function HoldToReveal({ buttonText, onLongPressed }) {
               r={radiusWithStroke}
             />
           </svg>
-        </div>
-        <div className="lock-icon-container">
+        </Box>
+        <Box
+          display={DISPLAY.FLEX}
+          alignItems={ALIGN_ITEMS.CENTER}
+          justifyContent={JUSTIFY_CONTENT.CENTER}
+          className="lock-icon-container"
+        >
           <img
-            src={'images/lock-icon.svg'}
+            src="images/lock-icon.svg"
             alt={t('padlock')}
             className="lock-icon"
           />
-        </div>
-      </div>
+        </Box>
+      </Box>
     );
+    // eslint-disable-next-line
   }, [isUnlocking, hasTriggeredUnlock]);
 
   const renderPostCompleteContent = useCallback(() => {
     return isUnlocking ? (
       <div
         className={`absolute-fill ${
-          hasTriggeredUnlock ? 'check-icon-hide' : null
+          hasTriggeredUnlock ? 'unlock-icon-hide' : null
         }`}
         onAnimationEnd={resetAnimationStates}
       >
@@ -126,17 +138,18 @@ export default function HoldToReveal({ buttonText, onLongPressed }) {
           </svg>
         </div>
         <div
-          className="check-icon-container"
+          className="unlock-icon-container"
           onAnimationEnd={triggerOnLongPressed}
         >
           <img
-            src={'images/check-white.svg'}
+            src="images/unlock-icon.svg"
             alt={t('padlock')}
-            className="check-icon"
+            className="unlock-icon"
           />
         </div>
       </div>
     ) : null;
+    // eslint-disable-next-line
   }, [isUnlocking, hasTriggeredUnlock]);
 
   return (
@@ -145,18 +158,25 @@ export default function HoldToReveal({ buttonText, onLongPressed }) {
       onMouseUp={onMouseUp}
       type="primary"
       icon={
-        <div className="icon-container">
+        <Box marginRight={2} className="icon-container">
           {renderPreCompleteContent()}
           {renderPostCompleteContent()}
-        </div>
+        </Box>
       }
+      className="button-hold"
     >
       {buttonText}
     </Button>
   );
 }
 
-HoldToReveal.propTypes = {
+HoldToRevealButton.propTypes = {
+  /**
+   * Text to be displayed on the button
+   */
   buttonText: PropTypes.string.isRequired,
+  /**
+   * Function to be called after the animation is finished
+   */
   onLongPressed: PropTypes.func.isRequired,
 };
