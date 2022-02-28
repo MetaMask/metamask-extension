@@ -8,7 +8,7 @@ import {
   LOCALHOST,
   LOCALHOST_CHAIN_ID,
   LOCALHOST_RPC_URL,
-  QUAI_MAINNET,
+  QUAI_TESTNET,
   MAINNET,
   MAINNET_CHAIN_ID,
   MAINNET_RPC_URL,
@@ -20,15 +20,15 @@ import {
   ROPSTEN_RPC_URL,
 } from '../../../../shared/constants/network';
 
-import { QUAI_MAIN_CONTEXTS } from '../../../../shared/constants/quai';
+import { QUAI_TEST_CONTEXTS } from '../../../../shared/constants/quai';
 
 const defaultNetworksData = [
   {
-    labelKey: QUAI_MAINNET,
+    labelKey: QUAI_TESTNET,
     iconColor: '#29B6AF',
     providerType: 'rpc',
-    rpcUrl: QUAI_MAIN_CONTEXTS[0]['rpc'],
-    chainId: QUAI_MAIN_CONTEXTS[0]['id'],
+    rpcUrl: QUAI_TEST_CONTEXTS[0]['rpc'],
+    chainId: QUAI_TEST_CONTEXTS[0]['id'],
     ticker: 'QUAI',
     blockExplorerUrl: '',
   },

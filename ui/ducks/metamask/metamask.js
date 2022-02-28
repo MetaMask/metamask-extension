@@ -1,12 +1,7 @@
 import { addHexPrefix, isHexString, stripHexPrefix } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
-import {
-  NETWORK_TYPE_RPC,
-  QUAI_MAINNET_CHAIN_ID,
-  QUAI_MAINNET_NETWORK_ID,
-  QUAI_MAINNET_RPC_URL,
-} from '../../../shared/constants/network';
+import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,

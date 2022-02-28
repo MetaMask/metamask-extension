@@ -27,7 +27,6 @@ export const COLORS = {
   ALERT1: 'alert-1',
   ALERT2: 'alert-2',
   ALERT3: 'alert-3',
-  QUAI_MAINNET: 'quai_mainnet',
   QUAI_TESTNET: 'quai_testnet',
   MAINNET: 'mainnet',
   ROPSTEN: 'ropsten',

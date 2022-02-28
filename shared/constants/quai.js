@@ -1,115 +1,6 @@
-export const QUAI_MAINNET = 'quai_mainnet';
 export const QUAI_TESTNET = 'quai_testnet';
 
-export const QUAI_MAINNET_DISPLAY_NAME = 'Quai Mainnet';
 export const QUAI_TESTNET_DISPLAY_NAME = 'Quai Testnet';
-
-export const QUAI_MAIN_CONTEXTS = [
-  {
-    name: 'Prime',
-    value: 'prime',
-    byte: ['00', '09'],
-    id: '0x2328',
-    rpc: 'http://45.76.19.78:8546',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Cyprus',
-    value: 'cyprus',
-    byte: ['0a', '13'],
-    id: '0x238c',
-    rpc: 'http://45.76.19.78:8578',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Cyprus One',
-    value: 'cyprus-1',
-    byte: ['14', '1d'],
-    id: '0x238d',
-    rpc: 'http://45.76.19.78:8610',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Cyprus Two',
-    value: 'cyprus-2',
-    byte: ['1e', '27'],
-    id: '0x238e',
-    rpc: 'http://45.76.19.78:8642',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Cyprus Three',
-    value: 'cyprus-3',
-    byte: ['28', '31'],
-    id: '0x238f',
-    rpc: 'http://45.76.19.78:8674',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Paxos',
-    value: 'paxos',
-    byte: ['32', '3b'],
-    id: '0x23f0',
-    rpc: 'http://45.76.19.78:8580',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Paxos One',
-    value: 'paxos-1',
-    byte: ['3c', '45'],
-    id: '0x23f1',
-    rpc: 'http://45.76.19.78:8612',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Paxos Two',
-    value: 'paxos-2',
-    byte: ['46', '4f'],
-    id: '0x23f2',
-    rpc: 'http://45.76.19.78:8644',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Paxos Three',
-    value: 'paxos-3',
-    byte: ['50', '59'],
-    id: '0x23f3',
-    rpc: 'http://45.76.19.78:8676',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Hydra',
-    value: 'hydra',
-    byte: ['5a', '63'],
-    id: '0x2454',
-    rpc: 'http://45.76.19.78:8582',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Hydra One',
-    value: 'hydra-1',
-    byte: ['64', '6d'],
-    id: '0x2455',
-    rpc: 'http://45.76.19.78:8614',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Hydra Two',
-    value: 'hydra-2',
-    byte: ['6e', '77'],
-    id: '0x2456',
-    rpc: 'http://45.76.19.78:8646',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-  {
-    name: 'Hydra Three',
-    value: 'hydra-3',
-    byte: ['78', '81'],
-    id: '0x2457',
-    rpc: 'http://45.76.19.78:8678',
-    blockExplorerUrl: 'https://quaiscan.io',
-  },
-];
 
 export const QUAI_TEST_CONTEXTS = [
   {
@@ -181,7 +72,7 @@ export const QUAI_TEST_CONTEXTS = [
     value: 'paxos-3',
     byte: ['50', '59'],
     id: '0x16763',
-    rpc: 'http://45.76.19.78:8676',
+    rpc: 'http://45.76.19.78:8576',
     blockExplorerUrl: 'https://quaiscan.io',
   },
   {

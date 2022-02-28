@@ -18,8 +18,8 @@ import {
   INFURA_BLOCKED_KEY,
 } from '../../../../shared/constants/network';
 import {
-  QUAI_MAIN_CONTEXTS,
-  QUAI_MAINNET_DISPLAY_NAME,
+  QUAI_TEST_CONTEXTS,
+  QUAI_TESTNET_DISPLAY_NAME,
 } from '../../../../shared/constants/quai';
 import { SECOND } from '../../../../shared/constants/time';
 import {
@@ -45,17 +45,17 @@ if (process.env.IN_TEST === 'true') {
 } else if (process.env.METAMASK_DEBUG || env === 'test') {
   defaultProviderConfigOpts = {
     type: NETWORK_TYPE_RPC,
-    rpcUrl: QUAI_MAIN_CONTEXTS[0]['rpc'],
-    chainId: QUAI_MAIN_CONTEXTS[0]['id'],
-    nickname: QUAI_MAINNET_DISPLAY_NAME,
+    rpcUrl: QUAI_TEST_CONTEXTS[0]['rpc'],
+    chainId: QUAI_TEST_CONTEXTS[0]['id'],
+    nickname: QUAI_TESTNET_DISPLAY_NAME,
   };
   // defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
 } else {
   defaultProviderConfigOpts = {
     type: NETWORK_TYPE_RPC,
-    rpcUrl: QUAI_MAIN_CONTEXTS[0]['rpc'],
-    chainId: QUAI_MAIN_CONTEXTS[0]['id'],
-    nickname: QUAI_MAINNET_DISPLAY_NAME,
+    rpcUrl: QUAI_TEST_CONTEXTS[0]['rpc'],
+    chainId: QUAI_TEST_CONTEXTS[0]['id'],
+    nickname: QUAI_TESTNET_DISPLAY_NAME,
   };
   // defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
 }

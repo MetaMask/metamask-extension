@@ -23,11 +23,7 @@ import {
   ADVANCED_ROUTE,
 } from '../../../helpers/constants/routes';
 import { Dropdown, DropdownMenuItem } from './dropdown';
-import {
-  QUAI_MAINNET,
-  QUAI_MAIN_CONTEXTS,
-  QUAI_TEST_CONTEXTS,
-} from '../../../../shared/constants/quai';
+import { QUAI_TEST_CONTEXTS } from '../../../../shared/constants/quai';
 
 // classes from nodes of the toggle element.
 const notToggleElementClassnames = [
@@ -114,16 +110,14 @@ class NetworkDropdown extends Component {
   };
 
   getContext(address, network) {
-    const QUAI_CONTEXTS =
-      network === QUAI_MAINNET ? QUAI_MAIN_CONTEXTS : QUAI_TEST_CONTEXTS;
-    let context = QUAI_CONTEXTS.filter((obj) => {
+    let context = QUAI_TEST_CONTEXTS.filter((obj) => {
       let num = parseInt(Number('0x' + address.substring(2, 4)), 10);
       let start = parseInt(Number('0x' + obj.byte[0]), 10);
       let end = parseInt(Number('0x' + obj.byte[1]), 10);
       return num >= start && num <= end;
     });
     if (context && context[0]) return context[0];
-    else return QUAI_CONTEXTS[0];
+    else return QUAI_TEST_CONTEXTS[0];
   }
 
   handleClick(newProviderType) {
@@ -275,8 +269,6 @@ class NetworkDropdown extends Component {
 
     if (providerName === 'mainnet') {
       name = this.context.t('mainnet');
-    } else if (providerName === 'quai_mainnet') {
-      name = this.context.t('quai_mainnet');
     } else if (providerName === 'quai_testnet') {
       name = this.context.t('quai_testnet');
     } else if (providerName === 'ropsten') {
@@ -427,9 +419,6 @@ class NetworkDropdown extends Component {
         </div>
 
         <div className="network-dropdown-list">
-          {/* {this.renderNetworkEntry('quai_mainnet')}
-          {this.renderNetworkEntry('quai_testnet')} */}
-          {this.renderQuaiNetworkEntry('quai_mainnet')}
           {this.renderQuaiNetworkEntry('quai_testnet')}
           {this.renderNetworkEntry('mainnet')}
 

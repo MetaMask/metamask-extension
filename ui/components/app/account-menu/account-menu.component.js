@@ -10,11 +10,7 @@ import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
-import {
-  QUAI_MAIN_CONTEXTS,
-  QUAI_TEST_CONTEXTS,
-  QUAI_MAINNET_DISPLAY_NAME,
-} from '../../../../shared/constants/quai';
+import { QUAI_TEST_CONTEXTS } from '../../../../shared/constants/quai';
 import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
 import {
   SETTINGS_ROUTE,
@@ -31,18 +27,14 @@ import { isBeta } from '../../../helpers/utils/build-types';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 const getSelectedNetwork = (address, network) => {
-  const QUAI_CONTEXTS =
-    network === QUAI_MAINNET_DISPLAY_NAME
-      ? QUAI_MAIN_CONTEXTS
-      : QUAI_TEST_CONTEXTS;
-  let context = QUAI_CONTEXTS.filter((obj) => {
+  let context = QUAI_TEST_CONTEXTS.filter((obj) => {
     let num = parseInt(Number('0x' + address.substring(2, 4)), 10);
     let start = parseInt(Number('0x' + obj.byte[0]), 10);
     let end = parseInt(Number('0x' + obj.byte[1]), 10);
     return num >= start && num <= end;
   });
   if (context && context[0]) return context[0];
-  else return QUAI_CONTEXTS[0];
+  else return QUAI_TEST_CONTEXTS[0];
 };
 
 const getContext = (address) => {

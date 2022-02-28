@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import NewAccountCreateForm from './new-account.component';
-import { QUAI_MAIN_CONTEXTS } from '../../../shared/constants/quai';
+import { QUAI_TEST_CONTEXTS } from '../../../shared/constants/quai';
 
 const mapStateToProps = (state) => {
   const {
@@ -20,7 +20,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     createAccount: (newAccountName, chainValue) => {
-      let range = QUAI_MAIN_CONTEXTS.filter((obj) => {
+      let range = QUAI_TEST_CONTEXTS.filter((obj) => {
         return obj.value == chainValue;
       })[0].byte;
       return dispatch(actions.addNewAccount(range)).then(

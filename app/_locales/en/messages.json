@@ -1383,9 +1383,6 @@
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
-  "quai_mainnet": {
-    "message": "Quai Mainnet"
-  },
   "quai_testnet": {
     "message": "Quai Testnet"
   },
