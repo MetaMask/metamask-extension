@@ -4,8 +4,11 @@ import {
   conversionUtil,
   multiplyCurrencies,
 } from '../../../shared/modules/conversion.utils';
+import { getTokenStandardAndDetails } from '../../store/actions';
+import { ERC1155, ERC721 } from '../constants/common';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
+import { getTransactionData } from './transactions.util';
 
 const DEFAULT_SYMBOL = '';
 
@@ -211,4 +214,49 @@ export function getTokenFiatAmount(
     result = currentTokenInFiat;
   }
   return result;
+}
+
+export async function getAssetDetails(
+  tokenAddress,
+  currentUserAddress,
+  transactionData,
+  existingCollectibles,
+) {
+  const tokenData = getTransactionData(transactionData);
+  if (!tokenData) {
+    throw new Error('Unable to detect valid token data');
+  }
+
+  const tokenId = getTokenValueParam(tokenData);
+  let tokenDetails;
+  try {
+    tokenDetails = await getTokenStandardAndDetails(
+      tokenAddress,
+      currentUserAddress,
+      tokenId,
+    );
+  } catch (error) {
+    log.warn(error);
+    return {};
+  }
+
+  if (tokenDetails?.standard) {
+    const { standard } = tokenDetails;
+    if (standard === ERC721 || standard === ERC1155) {
+      const existingCollectible = existingCollectibles.find(({ address }) =>
+        util.isEqualCaseInsensitive(tokenAddress, address),
+      );
+
+      if (existingCollectible) {
+        return {
+          ...existingCollectible,
+          standard,
+        };
+      }
+    }
+    // else if not a collectible already in state or standard === ERC20 just return tokenDetails as it contains all required data
+    return tokenDetails;
+  }
+
+  return {};
 }
