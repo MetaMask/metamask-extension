@@ -8,7 +8,6 @@ import {
   loadRelativeTimeFormatLocaleData,
 } from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
-import { getSymbolAndDecimals } from '../helpers/utils/token-util';
 import { isEqualCaseInsensitive } from '../helpers/utils/util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
@@ -23,7 +22,6 @@ import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
-  getTokenList,
 } from '../selectors';
 import { computeEstimatedGasLimit, resetSendState } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
@@ -2816,46 +2814,6 @@ export function loadingTokenParamsStarted() {
 export function loadingTokenParamsFinished() {
   return {
     type: actionConstants.LOADING_TOKEN_PARAMS_FINISHED,
-  };
-}
-
-export function getTokenParams(address) {
-  return (dispatch, getState) => {
-    const tokenList = getTokenList(getState());
-    const existingTokens = getState().metamask.tokens;
-    const { selectedAddress } = getState().metamask;
-    const { chainId } = getState().metamask.provider;
-    const existingCollectibles = getState().metamask?.allCollectibles?.[
-      selectedAddress
-    ]?.[chainId];
-    const existingToken = existingTokens.find(({ address: tokenAddress }) =>
-      isEqualCaseInsensitive(address, tokenAddress),
-    );
-    const existingCollectible = existingCollectibles?.find(
-      ({ address: collectibleAddress }) =>
-        isEqualCaseInsensitive(address, collectibleAddress),
-    );
-
-    if (existingCollectible) {
-      return null;
-    }
-
-    if (existingToken) {
-      return Promise.resolve({
-        symbol: existingToken.symbol,
-        decimals: existingToken.decimals,
-      });
-    }
-
-    dispatch(loadingTokenParamsStarted());
-    log.debug(`loadingTokenParams`);
-
-    return getSymbolAndDecimals(address, tokenList).then(
-      ({ symbol, decimals }) => {
-        dispatch(addToken(address, symbol, Number(decimals)));
-        dispatch(loadingTokenParamsFinished());
-      },
-    );
   };
 }
 

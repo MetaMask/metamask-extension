@@ -5,10 +5,7 @@ import Loading from '../../components/ui/loading-screen';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import ConfirmTransactionBase from '../confirm-transaction-base';
 import ConfirmSendEther from '../confirm-send-ether';
-import ConfirmSendToken from '../confirm-send-token';
 import ConfirmDeployContract from '../confirm-deploy-contract';
-import ConfirmApprove from '../confirm-approve';
-import ConfirmTokenTransactionBaseContainer from '../confirm-token-transaction-base';
 import ConfirmDecryptMessage from '../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../confirm-encryption-public-key';
 
@@ -16,9 +13,6 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_DEPLOY_CONTRACT_PATH,
   CONFIRM_SEND_ETHER_PATH,
-  CONFIRM_SEND_TOKEN_PATH,
-  CONFIRM_APPROVE_PATH,
-  CONFIRM_TRANSFER_FROM_PATH,
   CONFIRM_TOKEN_METHOD_PATH,
   SIGNATURE_REQUEST_PATH,
   DECRYPT_MESSAGE_REQUEST_PATH,
@@ -31,6 +25,7 @@ import {
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
 } from '../../store/actions';
+import { ConfirmTokenTransactionSwitch } from './confirm-token-transaction-switch';
 import ConfTx from './conf-tx';
 
 export default class ConfirmTransaction extends Component {
@@ -49,7 +44,6 @@ export default class ConfirmTransaction extends Component {
     getContractMethodData: PropTypes.func,
     transactionId: PropTypes.string,
     paramsTransactionId: PropTypes.string,
-    getTokenParams: PropTypes.func,
     isTokenMethodAction: PropTypes.bool,
     setDefaultHomeActiveTabName: PropTypes.func,
   };
@@ -74,12 +68,10 @@ export default class ConfirmTransaction extends Component {
       sendTo,
       history,
       mostRecentOverviewPage,
-      transaction: { txParams: { data, to } = {} } = {},
+      transaction: { txParams: { data } = {} } = {},
       getContractMethodData,
       transactionId,
       paramsTransactionId,
-      getTokenParams,
-      isTokenMethodAction,
     } = this.props;
 
     getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
@@ -100,9 +92,7 @@ export default class ConfirmTransaction extends Component {
     }
 
     getContractMethodData(data);
-    if (isTokenMethodAction) {
-      getTokenParams(to);
-    }
+
     const txId = transactionId || paramsTransactionId;
     if (txId) {
       this.props.setTransactionToConfirm(txId);
@@ -154,12 +144,24 @@ export default class ConfirmTransaction extends Component {
   }
 
   render() {
-    const { transactionId, paramsTransactionId } = this.props;
+    const {
+      transactionId,
+      paramsTransactionId,
+      isTokenMethodAction,
+      transaction,
+    } = this.props;
+
+    const validTransactionId =
+      transactionId &&
+      (!paramsTransactionId || paramsTransactionId === transactionId);
+
+    if (isTokenMethodAction && validTransactionId) {
+      return <ConfirmTokenTransactionSwitch transaction={transaction} />;
+    }
     // Show routes when state.confirmTransaction has been set and when either the ID in the params
     // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
     // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-    return transactionId &&
-      (!paramsTransactionId || paramsTransactionId === transactionId) ? (
+    return validTransactionId ? (
       <Switch>
         <Route
           exact
@@ -168,28 +170,13 @@ export default class ConfirmTransaction extends Component {
         />
         <Route
           exact
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TOKEN_METHOD_PATH}`}
-          component={ConfirmTransactionBase}
-        />
-        <Route
-          exact
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_SEND_ETHER_PATH}`}
           component={ConfirmSendEther}
         />
         <Route
           exact
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_SEND_TOKEN_PATH}`}
-          component={ConfirmSendToken}
-        />
-        <Route
-          exact
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_APPROVE_PATH}`}
-          component={ConfirmApprove}
-        />
-        <Route
-          exact
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TRANSFER_FROM_PATH}`}
-          component={ConfirmTokenTransactionBaseContainer}
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${CONFIRM_TOKEN_METHOD_PATH}`}
+          component={ConfirmTransactionBase}
         />
         <Route
           exact

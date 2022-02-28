@@ -58,6 +58,10 @@
     "message": "$1 may access and spend up to this max amount",
     "description": "$1 is the url of the site requesting ability to spend"
   },
+  "accessAndSpendNoticeNFT": {
+    "message": "$1 may access and spend this asset",
+    "description": "$1 is the url of the site requesting ability to spend"
+  },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
   },
@@ -278,6 +282,9 @@
   },
   "approvedAmountWithColon": {
     "message": "Approved amount:"
+  },
+  "approvedAsset": {
+    "message": "Approved asset"
   },
   "areYouDeveloper": {
     "message": "Are you a developer?"
