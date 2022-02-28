@@ -18,5 +18,5 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   buttonText: 'Hold to reveal SRP',
-  onLongPressed: () => console.log('Revealed!'),
+  onLongPressed: () => console.log('Revealed'),
 };
