@@ -6,10 +6,13 @@ import TextField from '../../../../components/ui/text-field';
 import { I18nContext } from '../../../../contexts/i18n';
 import SearchIcon from '../../../../components/ui/search-icon';
 
-export default function CustomContentSearch({ onSearch, error, networksList }) {
+export default function CustomContentSearch({
+  onSearch,
+  error,
+  networksList,
+  searchQuery,
+}) {
   const t = useContext(I18nContext);
-
-  const [searchQuery, setSearchQuery] = useState('');
   const [searchIconColor, setSearchIconColor] = useState('#9b9b9b');
 
   const networksListArray = Object.values(networksList);
@@ -25,14 +28,12 @@ export default function CustomContentSearch({ onSearch, error, networksList }) {
 
   // eslint-disable-next-line no-shadow
   const handleSearch = async (searchQuery) => {
-    setSearchQuery(searchQuery);
     if (searchQuery === '') {
       setSearchIconColor('#9b9b9b');
     } else {
       setSearchIconColor('#24292E');
     }
 
-    // Ovde hoce da izlista samo one networke koje se pretrazuju, ali ne radi kako treba
     const fuseSearchResult = networksSearchFuse.search(searchQuery);
     const results = searchQuery ? [...fuseSearchResult] : networksListArray;
     await onSearch({ searchQuery, results });
@@ -95,4 +96,5 @@ CustomContentSearch.propTypes = {
   onSearch: PropTypes.func,
   error: PropTypes.string,
   networksList: PropTypes.array,
+  searchQuery: PropTypes.string,
 };

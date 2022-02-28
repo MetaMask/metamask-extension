@@ -13,7 +13,7 @@ import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app
 import { getProvider } from '../../../../selectors';
 import Identicon from '../../../../components/ui/identicon';
 import { getNetworkImageByChainId } from '../../../swaps/swaps.util';
-import UrlIcon from '../../../../components/ui/url-icon/url-icon';
+import UrlIcon from '../../../../components/ui/url-icon';
 
 import { handleHooksSettingsRefs } from '../../../../helpers/utils/settings-search';
 
@@ -22,6 +22,8 @@ const NetworksListItem = ({
   networkIsSelected,
   selectedRpcUrl,
   networkIndex,
+  setSearchQuery,
+  setNetworks,
 }) => {
   const t = useI18nContext();
   const history = useHistory();
@@ -61,6 +63,8 @@ const NetworksListItem = ({
       key={`settings-network-list-item:${rpcUrl}`}
       className="networks-tab__networks-list-item"
       onClick={() => {
+        setSearchQuery('');
+        setNetworks([]);
         dispatch(setSelectedSettingsRpcUrl(rpcUrl));
         if (!isFullScreen) {
           history.push(NETWORKS_FORM_ROUTE);
@@ -121,6 +125,8 @@ NetworksListItem.propTypes = {
   networkIsSelected: PropTypes.bool,
   selectedRpcUrl: PropTypes.string,
   networkIndex: PropTypes.number,
+  setSearchQuery: PropTypes.func,
+  setNetworks: PropTypes.func,
 };
 
 export default NetworksListItem;

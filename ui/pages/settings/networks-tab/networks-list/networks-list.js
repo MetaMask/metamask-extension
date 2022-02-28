@@ -41,6 +41,7 @@ const NetworksList = ({
           networksToRenderProperly.length === 0 ? t('networkSearchError') : null
         }
         networksList={networksToRender}
+        searchQuery={searchQuery}
       />
       {networksToRenderProperly.map(
         (network, index) =>
@@ -51,6 +52,8 @@ const NetworksList = ({
               networkIsSelected={networkIsSelected}
               selectedRpcUrl={selectedRpcUrl}
               networkIndex={index}
+              setSearchQuery={setSearchQuery}
+              setNetworks={setNetworks}
             />
           ),
       )}
@@ -73,6 +76,8 @@ const NetworksList = ({
               networkIsSelected={networkIsSelected}
               selectedRpcUrl={selectedRpcUrl}
               networkIndex={index}
+              setSearchQuery={setSearchQuery}
+              setNetworks={setNetworks}
             />
           ),
       )}
