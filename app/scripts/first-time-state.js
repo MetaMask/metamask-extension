@@ -20,6 +20,7 @@ const initialState = {
       // },
       {
         nickname: 'Leucine100',
+        labelKey: 'leucine100',
         rpcUrl: 'https://leucine0.node.alphacarbon.network',
         chainId: `0x${(31337).toString(16)}`,
         ticker: 'TACT',
@@ -30,6 +31,7 @@ const initialState = {
       },
       {
         nickname: 'Leucine101',
+        labelKey: 'leucine101',
         rpcUrl: 'https://leucine1.node.alphacarbon.network',
         chainId: `0x${(31338).toString(16)}`,
         ticker: 'TACT',

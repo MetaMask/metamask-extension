@@ -44,7 +44,7 @@ const NetworksTab = ({ addNewNetwork }) => {
   const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
     return {
       label: rpc.nickname,
-      labelKey: rpc.nickname.toLowerCase(),
+      labelKey: rpc.labelKey,
       iconColor: '#6A737D',
       providerType: NETWORK_TYPE_RPC,
       rpcUrl: rpc.rpcUrl,

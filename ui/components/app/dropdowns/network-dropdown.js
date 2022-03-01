@@ -152,10 +152,11 @@ class NetworkDropdown extends Component {
   }
 
   renderCustomRpcList(rpcListDetail, provider, opts = {}) {
+    //#TODO: Make sure should the networks in dropdown be reversed
     const reversedRpcListDetail = rpcListDetail.slice().reverse();
 
     return reversedRpcListDetail.map((entry) => {
-      const { rpcUrl, chainId, ticker = 'ETH', nickname = '' } = entry;
+      const { rpcUrl, chainId, ticker = 'ETH', nickname = '', labelKey } = entry;
       const isCurrentRpcTarget =
         provider.type === NETWORK_TYPE_RPC && rpcUrl === provider.rpcUrl;
 
@@ -191,7 +192,7 @@ class NetworkDropdown extends Component {
           )}
           <ColorIndicator
             // color={opts.isLocalHost ? 'localhost' : COLORS.UI2}
-            color={opts.isLocalHost ? 'localhost' : nickname.toLowerCase()}
+            color={opts.isLocalHost ? 'localhost' : labelKey || COLORS.UI2}
             size={SIZES.LG}
             type={ColorIndicator.TYPES.FILLED}
             borderColor={borderColor}
