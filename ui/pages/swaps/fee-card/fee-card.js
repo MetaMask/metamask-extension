@@ -35,6 +35,8 @@ export default function FeeCard({
   numberOfQuotes,
   onQuotesClick,
   chainId,
+  smartTransactionsOptInStatus,
+  smartTransactionsEnabled,
   isBestQuote,
   supportsEIP1559V2 = false,
 }) {
@@ -74,11 +76,15 @@ export default function FeeCard({
     <div className="fee-card">
       <div className="fee-card__main">
         <TransactionDetail
+          disableEditGasFeeButton={
+            smartTransactionsEnabled && smartTransactionsOptInStatus
+          }
           rows={[
             <TransactionDetailItem
               key="gas-item"
               detailTitle={
-                supportsEIP1559V2 ? (
+                supportsEIP1559V2 &&
+                (!smartTransactionsEnabled || !smartTransactionsOptInStatus) ? (
                   <GasDetailsItemTitle />
                 ) : (
                   <>
@@ -133,14 +139,16 @@ export default function FeeCard({
                       {t('maxFee')}
                     </Typography>
                     {`: ${secondaryFee.maxFee}`}
-                    {!supportsEIP1559V2 && (
-                      <span
-                        className="fee-card__edit-link"
-                        onClick={() => onFeeCardMaxRowClick()}
-                      >
-                        {t('edit')}
-                      </span>
-                    )}
+                    {!supportsEIP1559V2 &&
+                      (!smartTransactionsEnabled ||
+                        !smartTransactionsOptInStatus) && (
+                        <span
+                          className="fee-card__edit-link"
+                          onClick={() => onFeeCardMaxRowClick()}
+                        >
+                          {t('edit')}
+                        </span>
+                      )}
                   </>
                 )
               }
@@ -213,6 +221,8 @@ FeeCard.propTypes = {
   onQuotesClick: PropTypes.func.isRequired,
   numberOfQuotes: PropTypes.number.isRequired,
   chainId: PropTypes.string.isRequired,
+  smartTransactionsOptInStatus: PropTypes.bool,
+  smartTransactionsEnabled: PropTypes.bool,
   isBestQuote: PropTypes.bool.isRequired,
   supportsEIP1559V2: PropTypes.bool,
 };

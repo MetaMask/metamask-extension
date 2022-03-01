@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import ToggleButton from '../../../components/ui/toggle-button';
+import {
+  getSettingsSectionNumber,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -19,12 +23,30 @@ export default class ExperimentalTab extends PureComponent {
     setEIP1559V2Enabled: PropTypes.func,
   };
 
+  settingsRefs = Array(
+    getSettingsSectionNumber(this.context.t, this.context.t('experimental')),
+  )
+    .fill(undefined)
+    .map(() => {
+      return React.createRef();
+    });
+
+  componentDidUpdate() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('experimental'), this.settingsRefs);
+  }
+
+  componentDidMount() {
+    const { t } = this.context;
+    handleSettingsRefs(t, t('experimental'), this.settingsRefs);
+  }
+
   renderTokenDetectionToggle() {
     const { t } = this.context;
     const { useTokenDetection, setUseTokenDetection } = this.props;
 
     return (
-      <div className="settings-page__content-row">
+      <div ref={this.settingsRefs[0]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('useTokenDetection')}</span>
           <div className="settings-page__content-description">
@@ -68,7 +90,10 @@ export default class ExperimentalTab extends PureComponent {
     } = this.props;
 
     return (
-      <div className="settings-page__content-row--dependent">
+      <div
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row--dependent"
+      >
         <div className="settings-page__content-item">
           <span>{t('useCollectibleDetection')}</span>
           <div className="settings-page__content-description">
@@ -114,7 +139,10 @@ export default class ExperimentalTab extends PureComponent {
     } = this.props;
 
     return (
-      <div className="settings-page__content-row--parent">
+      <div
+        ref={this.settingsRefs[1]}
+        className="settings-page__content-row--parent"
+      >
         <div className="settings-page__content-item">
           <span>{t('enableOpenSeaAPI')}</span>
           <div className="settings-page__content-description">
@@ -133,10 +161,11 @@ export default class ExperimentalTab extends PureComponent {
                     name: 'Enabled/Disable OpenSea',
                   },
                 });
-                setOpenSeaEnabled(!value);
-                if (value && !useCollectibleDetection) {
-                  setUseCollectibleDetection(true);
+                // value is positive when being toggled off
+                if (value && useCollectibleDetection) {
+                  setUseCollectibleDetection(false);
                 }
+                setOpenSeaEnabled(!value);
               }}
               offLabel={t('off')}
               onLabel={t('on')}

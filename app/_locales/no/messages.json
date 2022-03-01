@@ -8,9 +8,6 @@
   "about": {
     "message": "Info"
   },
-  "aboutSettingsDescription": {
-    "message": "Versjon, brukerstøtte og kontaktinformasjon"
-  },
   "acceleratingATransaction": {
     "message": "* Akselerering av en transaksjon ved å bruke en høyere datakraftspris øker sjansene for å bli behandlet av nettverket raskere, men det er ikke alltid garantert."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Avanserte valg"
-  },
-  "advancedSettingsDescription": {
-    "message": "Få tilgang til utviklerfunksjoner, last ned tilstandslogger, tilbakestill konto, installer testnett og tilpasset RPC"
   },
   "amount": {
     "message": "Sum"
@@ -144,9 +138,6 @@
   "blockExplorerView": {
     "message": "Se konto på $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Bruk Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Nettleseren din støttes ikke ..."
@@ -413,9 +404,6 @@
   "general": {
     "message": "Generell"
   },
-  "generalSettingsDescription": {
-    "message": "Valutakonvertering, primærvaluta, språk, identifikasjonsblokkering"
-  },
   "getEther": {
     "message": "Skaff Ether "
   },
@@ -583,9 +571,6 @@
   },
   "networkName": {
     "message": "Nettverksnavn "
-  },
-  "networkSettingsDescription": {
-    "message": "Legg til og rediger tilpassede RPC-nettverk"
   },
   "networks": {
     "message": "Nettverk"
@@ -767,9 +752,6 @@
   "restore": {
     "message": "Gjenopprett"
   },
-  "restoreAccountWithSeed": {
-    "message": "Gjenopprett konto med frøfrase"
-  },
   "revealSeedWords": {
     "message": "Vis frøord"
   },
@@ -818,9 +800,6 @@
   "securityAndPrivacy": {
     "message": "Sikkerhet og personvern"
   },
-  "securitySettingsDescription": {
-    "message": "Personverninnstillinger og lommebokens mnemoniske gjenopprettingsfrase"
-  },
   "seedPhrasePlaceholder": {
     "message": "Skill hvert ord med ett enkelt mellomrom"
   },
@@ -850,9 +829,6 @@
   },
   "sendTokens": {
     "message": "Send tokener"
-  },
-  "separateEachWord": {
-    "message": "Del hvert ord med et enkelt mellomrom "
   },
   "settings": {
     "message": "Innstillinger"

@@ -19,7 +19,18 @@ import DropdownSearchList from '../dropdown-search-list';
 import SlippageButtons from '../slippage-buttons';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
+import Popover from '../../../components/ui/popover';
+import Button from '../../../components/ui/button';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
+import Box from '../../../components/ui/box';
+import Typography from '../../../components/ui/typography';
+import {
+  TYPOGRAPHY,
+  DISPLAY,
+  FLEX_DIRECTION,
+  FONT_WEIGHT,
+  COLORS,
+} from '../../../helpers/constants/design-system';
 import {
   VIEW_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,
@@ -40,10 +51,14 @@ import {
   setFromTokenError,
   setMaxSlippage,
   setReviewSwapClickedTimestamp,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+  getCurrentSmartTransactionsEnabled,
   getFromTokenInputValue,
   getFromTokenError,
   getMaxSlippage,
   getIsFeatureFlagLoaded,
+  getCurrentSmartTransactionsError,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -53,6 +68,8 @@ import {
   getRpcPrefsForCurrentProvider,
   getUseTokenDetection,
   getTokenList,
+  isHardwareWallet,
+  getHardwareWalletType,
 } from '../../../selectors';
 
 import {
@@ -84,6 +101,7 @@ import {
   setBackgroundSwapRouteState,
   clearSwapsQuotes,
   stopPollingForQuotes,
+  setSmartTransactionsOptInStatus,
 } from '../../../store/actions';
 import {
   countDecimals,
@@ -140,7 +158,32 @@ export default function BuildQuote({
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
+  const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const hardwareWalletType = useSelector(getHardwareWalletType);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const currentSmartTransactionsEnabled = useSelector(
+    getCurrentSmartTransactionsEnabled,
+  );
+  const smartTransactionsOptInPopoverDisplayed =
+    smartTransactionsOptInStatus !== undefined;
+  const currentSmartTransactionsError = useSelector(
+    getCurrentSmartTransactionsError,
+  );
   const currentCurrency = useSelector(getCurrentCurrency);
+
+  const showSmartTransactionsOptInPopover =
+    smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
+
+  const onCloseSmartTransactionsOptInPopover = (e) => {
+    e?.preventDefault();
+    setSmartTransactionsOptInStatus(false);
+  };
+
+  const onEnableSmartTransactionsClick = () =>
+    setSmartTransactionsOptInStatus(true);
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,
@@ -402,10 +445,23 @@ export default function BuildQuote({
     fromTokenBalance,
   ]);
 
+  const buildQuotePageLoadedEvent = useNewMetricEvent({
+    event: 'Build Quote Page Loaded',
+    category: 'swaps',
+    sensitiveProperties: {
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
+    },
+  });
+
   useEffect(() => {
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
-  }, [dispatch]);
+    buildQuotePageLoadedEvent();
+  }, [dispatch, buildQuotePageLoadedEvent]);
 
   const BlockExplorerLink = () => {
     return (
@@ -494,11 +550,96 @@ export default function BuildQuote({
     fromTokenInputValue,
     fromTokenAddress,
     toTokenAddress,
+    smartTransactionsOptInStatus,
   ]);
 
   return (
     <div className="build-quote">
       <div className="build-quote__content">
+        {showSmartTransactionsOptInPopover && (
+          <Popover
+            title={t('stxAreHere')}
+            footer={
+              <>
+                <Button type="primary" onClick={onEnableSmartTransactionsClick}>
+                  {t('enableSmartTransactions')}
+                </Button>
+                <Box marginTop={1}>
+                  <Typography variant={TYPOGRAPHY.H6}>
+                    <Button
+                      type="link"
+                      onClick={onCloseSmartTransactionsOptInPopover}
+                      className="smart-transactions-popover__no-thanks-link"
+                    >
+                      {t('noThanksVariant2')}
+                    </Button>
+                  </Typography>
+                </Box>
+              </>
+            }
+            footerClassName="smart-transactions-popover__footer"
+            className="smart-transactions-popover"
+          >
+            <Box
+              paddingRight={6}
+              paddingLeft={6}
+              paddingTop={0}
+              paddingBottom={0}
+              display={DISPLAY.FLEX}
+              className="smart-transactions-popover__content"
+            >
+              <Box
+                marginTop={0}
+                marginBottom={4}
+                display={DISPLAY.FLEX}
+                flexDirection={FLEX_DIRECTION.COLUMN}
+              >
+                <img
+                  src="./images/logo/smart-transactions-header.png"
+                  alt={t('swapSwapSwitch')}
+                />
+              </Box>
+              <Typography variant={TYPOGRAPHY.H7} marginTop={0}>
+                {t('stxDescription')}
+              </Typography>
+              <Typography
+                tag="ul"
+                variant={TYPOGRAPHY.H7}
+                fontWeight={FONT_WEIGHT.BOLD}
+                marginTop={3}
+              >
+                <li>{t('stxBenefit1')}</li>
+                <li>{t('stxBenefit2')}</li>
+                <li>{t('stxBenefit3')}</li>
+                <li>
+                  {t('stxBenefit4')}
+                  <Typography
+                    tag="span"
+                    fontWeight={FONT_WEIGHT.NORMAL}
+                    variant={TYPOGRAPHY.H7}
+                  >
+                    {' *'}
+                  </Typography>
+                </li>
+              </Typography>
+              <Typography
+                variant={TYPOGRAPHY.H8}
+                color={COLORS.UI4}
+                boxProps={{ marginTop: 3 }}
+              >
+                {t('stxSubDescription')}&nbsp;
+                <Typography
+                  tag="span"
+                  fontWeight={FONT_WEIGHT.BOLD}
+                  variant={TYPOGRAPHY.H8}
+                  color={COLORS.UI4}
+                >
+                  {t('stxYouCanOptOut')}&nbsp;
+                </Typography>
+              </Typography>
+            </Box>
+          </Popover>
+        )}
         <div className="build-quote__dropdown-input-pair-header">
           <div className="build-quote__input-label">{t('swapSwapFrom')}</div>
           {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
@@ -684,6 +825,10 @@ export default function BuildQuote({
               }}
               maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
               currentSlippage={maxSlippage}
+              smartTransactionsEnabled={smartTransactionsEnabled}
+              smartTransactionsOptInStatus={smartTransactionsOptInStatus}
+              setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
+              currentSmartTransactionsError={currentSmartTransactionsError}
             />
           </div>
         )}

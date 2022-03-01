@@ -8,9 +8,6 @@
   "about": {
     "message": "Tungkol sa"
   },
-  "aboutSettingsDescription": {
-    "message": "Bersyon, support center, at impormasyon sa pakikipag-ugnayan"
-  },
   "acceleratingATransaction": {
     "message": "* Ang pagpapabilis sa isang transaksyon sa pamamagitan ng paggamit ng mas mataas na presyo ng gas ay makakadagdag sa tsansa nitong maproseso ng network nang mas mabilis, pero hindi ito palaging garantisado."
   },
@@ -55,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "Mga Advanced na Opsyon"
-  },
-  "advancedSettingsDescription": {
-    "message": "I-access ang mga feature para sa mga developer, mag-download ng mga State Log, I-reset ang Account, mag-set up ng mga testnet at custom RPC"
   },
   "amount": {
     "message": "Halaga"
@@ -129,9 +123,6 @@
   "blockExplorerView": {
     "message": "Tingnan ang account sa $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Gumamit ng Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Hindi sinusuportahan ang iyong Browser..."
@@ -389,9 +380,6 @@
   "general": {
     "message": "Pangkalahatan"
   },
-  "generalSettingsDescription": {
-    "message": "Pagpapapalit ng currency, pangunahing currency, wika, blockies identicon"
-  },
   "getEther": {
     "message": "Kumuha ng Ether"
   },
@@ -534,9 +522,6 @@
   },
   "networkName": {
     "message": "Pangalan ng Network"
-  },
-  "networkSettingsDescription": {
-    "message": "Magdagdag at mag-edit ng mga custom na RPC network"
   },
   "networks": {
     "message": "Mga Network"
@@ -704,9 +689,6 @@
   "restore": {
     "message": "Ipanumbalik"
   },
-  "restoreAccountWithSeed": {
-    "message": "I-restore ang iyong Account gamit ang Seed Phrase"
-  },
   "revealSeedWords": {
     "message": "Ipakita ang Seed Words"
   },
@@ -752,9 +734,6 @@
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
-  "securitySettingsDescription": {
-    "message": "Mga setting ng privacy at seed phrase ng wallet"
-  },
   "seedPhrasePlaceholder": {
     "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
   },
@@ -787,9 +766,6 @@
   },
   "sendTokens": {
     "message": "Magpadala ng Mga Token"
-  },
-  "separateEachWord": {
-    "message": "Paghiwa-hiwalayin ang bawat salita gamit ang isang space"
   },
   "settings": {
     "message": "Mga Setting"
