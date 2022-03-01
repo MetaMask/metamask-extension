@@ -33,14 +33,8 @@ const ConfirmPageContainerSummary = (props) => {
   const t = useI18nContext();
   const { toName, isTrusted } = useAddressDetails(toAddress);
 
-  const contractInitiatedTransactionType = [
-    TRANSACTION_TYPES.CONTRACT_INTERACTION,
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
-    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
-  ];
-  const isContractTypeTransaction = contractInitiatedTransactionType.includes(
-    transactionType,
-  );
+  const isContractTypeTransaction =
+    transactionType === TRANSACTION_TYPES.CONTRACT_INTERACTION;
   const checksummedAddress = toChecksumHexAddress(toAddress);
 
   const renderImage = () => {
