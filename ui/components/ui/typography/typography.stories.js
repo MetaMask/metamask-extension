@@ -57,6 +57,9 @@ export default {
       options: marginSizeKnobOptions,
       control: 'select',
     },
+    boxProps: {
+      control: 'object',
+    },
     className: {
       control: { type: 'text' },
     },
