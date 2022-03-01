@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.10.1",
+  "version": "10.10.2",
   "private": true,
   "repository": {
     "type": "git",
@@ -152,7 +152,7 @@
     "eth-query": "^2.1.2",
     "eth-rpc-errors": "^4.0.2",
     "eth-sig-util": "^3.0.0",
-    "eth-trezor-keyring": "^0.9.1",
+    "eth-trezor-keyring": "^0.10.0",
     "ethereum-ens-network-map": "^1.0.2",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^7.0.10",
@@ -410,7 +410,8 @@
       "ganache>keccak": false,
       "ganache>leveldown": false,
       "geckodriver": true,
-      "react-devtools>electron": true
+      "react-devtools>electron": true,
+      "eth-trezor-keyring>trezor-connect>@trezor/transport>protobufjs": false
     }
   }
 }
