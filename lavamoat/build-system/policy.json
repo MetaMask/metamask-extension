@@ -3205,6 +3205,15 @@
         "unc-path-regex": true
       }
     },
+    "is-unicode-supported": {
+      "globals": {
+        "process.env.CI": true,
+        "process.env.TERM": true,
+        "process.env.TERM_PROGRAM": true,
+        "process.env.WT_SESSION": true,
+        "process.platform": true
+      }
+    },
     "is-windows": {
       "globals": {
         "define": true,
@@ -3429,13 +3438,9 @@
       }
     },
     "log-symbols": {
-      "globals": {
-        "process.env.CI": true,
-        "process.env.TERM": true,
-        "process.platform": true
-      },
       "packages": {
-        "chalk": true
+        "chalk": true,
+        "is-unicode-supported": true
       }
     },
     "loose-envify": {
@@ -4471,9 +4476,19 @@
         "fs.realpathSync": true,
         "fs.stat": true,
         "fs.statSync": true,
+        "os.homedir": true,
         "path": true
       },
       "globals": {
+        "process.env.HOME": true,
+        "process.env.HOMEDRIVE": true,
+        "process.env.HOMEPATH": true,
+        "process.env.LNAME": true,
+        "process.env.LOGNAME": true,
+        "process.env.USER": true,
+        "process.env.USERNAME": true,
+        "process.env.USERPROFILE": true,
+        "process.getuid": true,
         "process.nextTick": true,
         "process.platform": true,
         "process.versions": true

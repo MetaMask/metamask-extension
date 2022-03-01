@@ -12,6 +12,8 @@ ignores:
   # dev deps
   #
 
+  # all @types/* packages are imported implicitly by TypeScript
+  - '@types/*'
   # safety fallback for npm lifecycle scripts, not used normally
   - '@lavamoat/preinstall-always-fail'
   # used in testing + ci
