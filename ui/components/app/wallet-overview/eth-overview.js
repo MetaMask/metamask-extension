@@ -22,11 +22,10 @@ import {
   isBalanceCached,
   getSelectedAccount,
   getShouldShowFiat,
-  getIsMainnet,
-  getIsTestnet,
   getCurrentKeyring,
   getSwapsDefaultToken,
   getIsSwapsChain,
+  getIsBuyableChain,
   getNativeCurrencyImage,
 } from '../../../selectors/selectors';
 import SwapIcon from '../../ui/icon/swap-icon.component';
@@ -56,14 +55,13 @@ const EthOverview = ({ className }) => {
   });
   const history = useHistory();
   const keyring = useSelector(getCurrentKeyring);
-  const usingHardwareWallet = isHardwareKeyring(keyring.type);
+  const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   const balanceIsCached = useSelector(isBalanceCached);
   const showFiat = useSelector(getShouldShowFiat);
   const selectedAccount = useSelector(getSelectedAccount);
   const { balance } = selectedAccount;
-  const isMainnetChain = useSelector(getIsMainnet);
-  const isTestnetChain = useSelector(getIsTestnet);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const isBuyableChain = useSelector(getIsBuyableChain);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
 
   const enteredSwapsEvent = useNewMetricEvent({
@@ -118,7 +116,7 @@ const EthOverview = ({ className }) => {
           <IconButton
             className="eth-overview__button"
             Icon={BuyIcon}
-            disabled={!(isMainnetChain || isTestnetChain)}
+            disabled={!isBuyableChain}
             label={t('buy')}
             onClick={() => {
               depositEvent();

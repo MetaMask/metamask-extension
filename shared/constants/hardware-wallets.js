@@ -8,6 +8,7 @@ export const KEYRING_TYPES = {
   TREZOR: 'Trezor Hardware',
   LATTICE: 'Lattice Hardware',
   QR: 'QR Hardware Wallet Device',
+  IMPORTED: 'Simple Key Pair',
 };
 
 export const DEVICE_NAMES = {
@@ -15,6 +16,13 @@ export const DEVICE_NAMES = {
   TREZOR: 'trezor',
   QR: 'QR Hardware',
   LATTICE: 'lattice',
+};
+
+export const KEYRING_NAMES = {
+  LEDGER: 'Ledger',
+  TREZOR: 'Trezor',
+  QR: 'QR',
+  LATTICE: 'Lattice1',
 };
 
 /**

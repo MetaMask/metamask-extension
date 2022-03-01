@@ -30,6 +30,8 @@ export default function FormField({
   password,
   allowDecimals,
   disabled,
+  placeholder,
+  warning,
 }) {
   return (
     <div
@@ -84,11 +86,14 @@ export default function FormField({
             autoFocus={autoFocus}
             allowDecimals={allowDecimals}
             disabled={disabled}
+            dataTestId={dataTestId}
+            placeholder={placeholder}
           />
         ) : (
           <input
             className={classNames('form-field__input', {
               'form-field__input--error': error,
+              'form-field__input--warning': warning,
             })}
             onChange={(e) => onChange(e.target.value)}
             value={value}
@@ -96,6 +101,7 @@ export default function FormField({
             autoFocus={autoFocus}
             disabled={disabled}
             data-testid={dataTestId}
+            placeholder={placeholder}
           />
         )}
         {error && (
@@ -107,26 +113,85 @@ export default function FormField({
             {error}
           </Typography>
         )}
+        {warning && (
+          <Typography
+            color={COLORS.UI4}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__warning"
+          >
+            {warning}
+          </Typography>
+        )}
       </label>
     </div>
   );
 }
 
 FormField.propTypes = {
+  /**
+   * Identifier for testing purpose
+   */
   dataTestId: PropTypes.string,
+  /**
+   * Form Fields Title
+   */
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show unit (eg. ETH)
+   */
   titleUnit: PropTypes.string,
+  /**
+   * Add Tooltip and text content
+   */
   tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show content (text, image, component) in title
+   */
   titleDetail: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show error message
+   */
   error: PropTypes.string,
+  /**
+   * Show warning message
+   */
+  warning: PropTypes.string,
+  /**
+   * Handler when fields change
+   */
   onChange: PropTypes.func,
+  /**
+   * Field value
+   */
   value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  /**
+   * Show detail text if field mode is numeric
+   */
   detailText: PropTypes.string,
+  /**
+   * Set autofocus on render
+   */
   autoFocus: PropTypes.bool,
+  /**
+   * Set numeric mode, the default is text
+   */
   numeric: PropTypes.bool,
+  /**
+   * Set password mode
+   */
   password: PropTypes.bool,
+  /**
+   * Allow decimals on the field
+   */
   allowDecimals: PropTypes.bool,
+  /**
+   * Check if the form disabled
+   */
   disabled: PropTypes.bool,
+  /**
+   * Set the placeholder text for the input field
+   */
+  placeholder: PropTypes.string,
 };
 
 FormField.defaultProps = {

@@ -22,6 +22,7 @@ import {
 } from '../../selectors';
 
 import {
+  closeNotificationPopup,
   restoreFromThreeBox,
   turnThreeBoxSyncingOn,
   getThreeBoxLastUpdated,
@@ -34,6 +35,9 @@ import {
   setRecoveryPhraseReminderLastShown,
   setNewNetworkAdded,
   setNewCollectibleAddedMessage,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  removeSnapError,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
 import { setThreeBoxLastUpdated, hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -117,6 +121,10 @@ const mapStateToProps = (state) => {
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
     notificationsToShow: getSortedNotificationsToShow(state).length > 0,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    errorsToShow: metamask.snapErrors,
+    shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
+    ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     seedPhraseBackedUp,
@@ -127,6 +135,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
+  closeNotificationPopup: () => closeNotificationPopup(),
   turnThreeBoxSyncingOn: () => dispatch(turnThreeBoxSyncingOn()),
   setupThreeBox: () => {
     dispatch(getThreeBoxLastUpdated()).then((lastUpdated) => {
@@ -138,6 +147,9 @@ const mapDispatchToProps = (dispatch) => ({
       }
     });
   },
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  removeSnapError: async (id) => await removeSnapError(id),
+  ///: END:ONLY_INCLUDE_IN
   restoreFromThreeBox: (address) => dispatch(restoreFromThreeBox(address)),
   setShowRestorePromptToFalse: () => dispatch(setShowRestorePromptToFalse()),
   setConnectedStatusPopoverHasBeenShown: () =>

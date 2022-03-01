@@ -2,11 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Box from '../../../ui/box';
 import Tooltip from '../../../ui/tooltip';
+
+import {
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../../helpers/constants/design-system';
 
 const NetworkStatusTooltip = ({ children, html, title }) => (
   <Tooltip position="top" html={html} title={title} theme="tippy-tooltip-info">
-    {children}
+    <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
+      {children}
+    </Box>
   </Tooltip>
 );
 
@@ -57,7 +65,7 @@ PriorityFeeTooltip.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export const NetworkStabilityTooltip = ({ children, statusInfo }) => {
+export const NetworkStabilityTooltip = ({ children, color, tooltipLabel }) => {
   const t = useI18nContext();
 
   return (
@@ -66,9 +74,9 @@ export const NetworkStabilityTooltip = ({ children, statusInfo }) => {
         <strong
           key="network-status__tooltip"
           className="network-status__tooltip-label"
-          style={{ color: statusInfo.color }}
+          style={{ color }}
         >
-          {t(statusInfo.tooltipLabel)}
+          {t(tooltipLabel)}
         </strong>,
       ])}
     >
@@ -79,5 +87,6 @@ export const NetworkStabilityTooltip = ({ children, statusInfo }) => {
 
 NetworkStabilityTooltip.propTypes = {
   children: PropTypes.node.isRequired,
-  statusInfo: PropTypes.object,
+  color: PropTypes.string.isRequired,
+  tooltipLabel: PropTypes.string.isRequired,
 };

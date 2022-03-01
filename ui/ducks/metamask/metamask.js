@@ -1,6 +1,10 @@
 import { addHexPrefix, isHexString, stripHexPrefix } from 'ethereumjs-util';
 import * as actionConstants from '../../store/actionConstants';
 import { ALERT_TYPES } from '../../../shared/constants/alerts';
+import {
+  GAS_ESTIMATE_TYPES,
+  NETWORK_CONGESTION_THRESHOLDS,
+} from '../../../shared/constants/gas';
 import { NETWORK_TYPE_RPC } from '../../../shared/constants/network';
 import {
   accountsWithSendEtherInfoSelector,
@@ -11,7 +15,7 @@ import { updateTransaction } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { decGWEIToHexWEI } from '../../helpers/utils/conversions.util';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
-import { GAS_ESTIMATE_TYPES } from '../../../shared/constants/gas';
+
 import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
 
 export default function reduceMetamask(state = {}, action) {
@@ -254,7 +258,45 @@ export const getWeb3ShimUsageAlertEnabledness = (state) =>
 export const getUnconnectedAccountAlertShown = (state) =>
   state.metamask.unconnectedAccountAlertShownOrigins;
 
+export const getPendingTokens = (state) => state.metamask.pendingTokens;
+
 export const getTokens = (state) => state.metamask.tokens;
+
+export function getCollectiblesDetectionNoticeDismissed(state) {
+  return state.metamask.collectiblesDetectionNoticeDismissed;
+}
+
+export function getCollectiblesDropdownState(state) {
+  return state.metamask.collectiblesDropdownState;
+}
+
+export function getEnableEIP1559V2NoticeDismissed(state) {
+  return state.metamask.enableEIP1559V2NoticeDismissed;
+}
+
+export const getCollectibles = (state) => {
+  const {
+    metamask: {
+      allCollectibles,
+      provider: { chainId },
+      selectedAddress,
+    },
+  } = state;
+
+  return allCollectibles?.[selectedAddress]?.[chainId] ?? [];
+};
+
+export const getCollectibleContracts = (state) => {
+  const {
+    metamask: {
+      allCollectibleContracts,
+      provider: { chainId },
+      selectedAddress,
+    },
+  } = state;
+
+  return allCollectibleContracts?.[selectedAddress]?.[chainId] ?? [];
+};
 
 export function getBlockGasLimit(state) {
   return state.metamask.currentBlockGasLimit;
@@ -284,6 +326,8 @@ export function getUnapprovedTxs(state) {
 
 /**
  * Function returns true if network details are fetched and it is found to not support EIP-1559
+ *
+ * @param state
  */
 export function isNotEIP1559Network(state) {
   return state.metamask.networkDetails?.EIPS[1559] === false;
@@ -291,6 +335,8 @@ export function isNotEIP1559Network(state) {
 
 /**
  * Function returns true if network details are fetched and it is found to support EIP-1559
+ *
+ * @param state
  */
 export function isEIP1559Network(state) {
   return state.metamask.networkDetails?.EIPS[1559] === true;
@@ -327,6 +373,13 @@ export function getIsGasEstimatesLoading(state) {
       gasEstimateType === GAS_ESTIMATE_TYPES.FEE_MARKET);
 
   return isGasEstimatesLoading;
+}
+
+export function getIsNetworkBusy(state) {
+  const gasFeeEstimates = getGasFeeEstimates(state);
+  return (
+    gasFeeEstimates?.networkCongestion >= NETWORK_CONGESTION_THRESHOLDS.BUSY
+  );
 }
 
 export function getCompletedOnboarding(state) {

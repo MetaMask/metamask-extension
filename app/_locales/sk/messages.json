@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Odmítnout"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skenovať QR kód"
+  },
   "about": {
     "message": "Informácie"
-  },
-  "aboutSettingsDescription": {
-    "message": "Verzia, centrum podpory a kontaktné informácie"
   },
   "acceleratingATransaction": {
     "message": "*Urýchlenie transakcie pomocou vyššej ceny za GAS zvyšuje šance na rýchlejšie spracovanie v sieti, nie je to však vždy zaručené."
@@ -56,9 +59,6 @@
   "advancedOptions": {
     "message": "Rozšírené nastavenia"
   },
-  "advancedSettingsDescription": {
-    "message": "Získajte prístup k vývojárskym funkciám, sťahujte si Stavové denníky, resetujte účet, nastavujte testovacie siete a vlastné RPC"
-  },
   "amount": {
     "message": "Částka"
   },
@@ -69,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Schválit"
@@ -124,9 +132,6 @@
   "blockExplorerView": {
     "message": "Zobraziť účet na $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Použít Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Váš prehliadač nie je podporovaný..."
@@ -242,6 +247,9 @@
   "currentLanguage": {
     "message": "Aktuálny jazyk"
   },
+  "custom": {
+    "message": "Rozšírené"
+  },
   "customGas": {
     "message": "Nastavit palivo"
   },
@@ -269,17 +277,8 @@
   "deleteNetworkDescription": {
     "message": "Naozaj chcete túto sieť odstrániť?"
   },
-  "depositEther": {
-    "message": "Vložit Ether"
-  },
   "details": {
     "message": "Podrobnosti"
-  },
-  "directDepositEther": {
-    "message": "Vložit Ether přímo"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Pokud už vlastníte nějaký Ether, nejrychleji ho dostanete do peněženky přímým vkladem."
   },
   "done": {
     "message": "Hotovo"
@@ -406,9 +405,6 @@
   "general": {
     "message": "Všeobecne"
   },
-  "generalSettingsDescription": {
-    "message": "Prevod mien, primárna mena, jazyk, identifikácia blokov"
-  },
   "getEther": {
     "message": "Získejte Ether"
   },
@@ -506,6 +502,9 @@
   "learnMore": {
     "message": "Zjistěte více."
   },
+  "learnMoreUpperCase": {
+    "message": "Zjistěte více."
+  },
   "ledgerAccountRestriction": {
     "message": "Skôr ako budete môcť pridať nový účet, musíte použiť svoj posledný účet."
   },
@@ -548,9 +547,6 @@
   "myAccounts": {
     "message": "Moje účty"
   },
-  "needEtherInWallet": {
-    "message": "Potřebujete Ether v peněžence, abyste mohli pomocí MetaMasku interagovat s decentralizovanými aplikacemi."
-  },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"
@@ -560,9 +556,6 @@
   },
   "networkName": {
     "message": "Názov siete"
-  },
-  "networkSettingsDescription": {
-    "message": "Pridať a upraviť vlastné siete RPC"
   },
   "networks": {
     "message": "Sítě"
@@ -741,9 +734,6 @@
   "restore": {
     "message": "Obnoviť"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnoviť účet pomocou seed frázy"
-  },
   "revealSeedWords": {
     "message": "Zobrazit slova klíčové fráze"
   },
@@ -789,9 +779,6 @@
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
   },
-  "securitySettingsDescription": {
-    "message": "Nastavenia súkromia a seed fráza peňaženky"
-  },
   "seedPhrasePlaceholder": {
     "message": "Každé slovo oddeľte jednou medzerou"
   },
@@ -824,9 +811,6 @@
   },
   "sendTokens": {
     "message": "Odeslat tokeny"
-  },
-  "separateEachWord": {
-    "message": "Každé slovo oddeľte jednou medzerou"
   },
   "settings": {
     "message": "Nastavení"

@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "عدم پذیرش"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "سکن کود QR"
+  },
   "about": {
     "message": "درباره"
-  },
-  "aboutSettingsDescription": {
-    "message": "نسخه، مرکز پشتیبانی و معلومات تماس."
   },
   "acceleratingATransaction": {
     "message": "* تسریع یک معامله با استفاده از قیمت بالاتر گاز، فرصت تسریع پروسس آنرا توسط شبکه افزایش میدهد اما همیشه این تضمین نمیشود."
@@ -56,9 +59,6 @@
   "advancedOptions": {
     "message": "گزینه های پیشرفته"
   },
-  "advancedSettingsDescription": {
-    "message": "مشخصات توسعه دهنده دسترسی، دفترچه ثبت وضعیت دانلود، دوباره سازی حساب، شبکه های آزمایشی تنظیمات و RPC معمول."
-  },
   "amount": {
     "message": "مبلغ"
   },
@@ -69,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "تصدیق"
@@ -130,9 +138,6 @@
   "blockExplorerView": {
     "message": "مشاهده حساب در 1$1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "استفاده شناسا بلوک ها"
   },
   "browserNotSupported": {
     "message": "مرورگر شما پشتیبانی نمیشود"
@@ -248,6 +253,9 @@
   "currentLanguage": {
     "message": "زبان فعلی"
   },
+  "custom": {
+    "message": "پیشرفته"
+  },
   "customGas": {
     "message": "گاز دلخواه"
   },
@@ -275,17 +283,8 @@
   "deleteNetworkDescription": {
     "message": "آیا مطمئن هستید که این شبکه حذف شود؟"
   },
-  "depositEther": {
-    "message": "پرداخت ایتر"
-  },
   "details": {
     "message": "جزئیات"
-  },
-  "directDepositEther": {
-    "message": "پرداخت مستقیم ایتر"
-  },
-  "directDepositEtherExplainer": {
-    "message": "در صورتیکه شما کدام ایتر داشته باشید، سریعترین روش برای گرفتن ایتر در کیف جدید تان توسط پرداخت مستقیم."
   },
   "done": {
     "message": "تمام"
@@ -412,9 +411,6 @@
   "general": {
     "message": "عمومی"
   },
-  "generalSettingsDescription": {
-    "message": "تبادل واحد پول، واحد پول اصلی، زبان، شناسا های بلوکی"
-  },
   "getEther": {
     "message": "اتر را بگیرید"
   },
@@ -522,6 +518,9 @@
   "learnMore": {
     "message": "بیشتر بدانید"
   },
+  "learnMoreUpperCase": {
+    "message": "بیشتر بدانید"
+  },
   "ledgerAccountRestriction": {
     "message": "لازم است تا حساب قبلی تان را قبل از اینکه جدید اضافه کنید، مورد استفاده قرار دهید."
   },
@@ -576,9 +575,6 @@
   "myAccounts": {
     "message": "حساب های من"
   },
-  "needEtherInWallet": {
-    "message": "برای تعامل با اپلیکیشن های غیر متمرکز شده با استفاده از MetaMask، شما نیاز به ایتر در کیف تان خواهید داشت."
-  },
   "needImportFile": {
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",
     "description": "User is important an account and needs to add a file to continue"
@@ -588,9 +584,6 @@
   },
   "networkName": {
     "message": "نام شبکه"
-  },
-  "networkSettingsDescription": {
-    "message": "اضافه سازی و ویرایش شبکه های دلخواه PRC"
   },
   "networks": {
     "message": "شبکه ها"
@@ -772,9 +765,6 @@
   "restore": {
     "message": "بازیابی"
   },
-  "restoreAccountWithSeed": {
-    "message": "حساب تان را با عبارت بازیاب، بازیابی کنید"
-  },
   "revealSeedWords": {
     "message": "کلمات بازیاب را آشکار کنید"
   },
@@ -826,9 +816,6 @@
   "securityAndPrivacy": {
     "message": "امنیت و حریم خصوصی"
   },
-  "securitySettingsDescription": {
-    "message": "تنظیمات حریم خصوصی و عبارت بازیاب کیف"
-  },
   "seedPhrasePlaceholder": {
     "message": "هر کلمه را با یک فاصله واحد جدا سازید"
   },
@@ -861,9 +848,6 @@
   },
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
-  },
-  "separateEachWord": {
-    "message": "هر کلمه را با یک فاصله واحد جدا سازید"
   },
   "settings": {
     "message": "تنظیمات"

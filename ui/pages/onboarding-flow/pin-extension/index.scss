@@ -2,11 +2,11 @@
   max-width: 800px;
 
   .control-dots .dot {
-    background: $ui-2;
+    background: var(--ui-2);
     box-shadow: none;
 
     &.selected {
-      background: $ui-4;
+      background: var(--ui-4);
     }
   }
 

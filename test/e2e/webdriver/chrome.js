@@ -1,5 +1,13 @@
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
+const proxy = require('selenium-webdriver/proxy');
+
+/**
+ * Proxy host to use for HTTPS requests
+ *
+ * @type {string}
+ */
+const HTTPS_PROXY_HOST = '127.0.0.1:8000';
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
@@ -11,6 +19,8 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs');
     }
     const options = new chrome.Options().addArguments(args);
+    options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
+    options.setAcceptInsecureCerts(true);
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);
@@ -37,7 +47,6 @@ class ChromeDriver {
   }
 
   /**
-   * @constructor
    * @param {!ThenableWebDriver} driver - a {@code WebDriver} instance
    */
   constructor(driver) {
@@ -46,6 +55,7 @@ class ChromeDriver {
 
   /**
    * Returns the extension ID for the given extension name
+   *
    * @param {string} extensionName - the extension name
    * @returns {Promise<string|undefined>} the extension ID
    */

@@ -102,7 +102,7 @@ describe('Selectors', () => {
         metamask: {
           ...mockState.metamask,
           networkDetails: {
-            EIPS: { 1559: undefined },
+            EIPS: { 1559: false },
           },
         },
       });
@@ -117,24 +117,6 @@ describe('Selectors', () => {
         },
       });
       expect(not1559Network).toStrictEqual(true);
-    });
-
-    it('returns true if account does not support EIP-1559', () => {
-      const networkOrAccountNotSupports1559 = selectors.checkNetworkOrAccountNotSupports1559(
-        {
-          ...mockState,
-          metamask: {
-            ...mockState.metamask,
-            keyrings: [
-              {
-                type: KEYRING_TYPES.TREZOR,
-                accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
-              },
-            ],
-          },
-        },
-      );
-      expect(networkOrAccountNotSupports1559).toStrictEqual(true);
     });
   });
 
@@ -248,7 +230,7 @@ describe('Selectors', () => {
   it('#getAdvancedGasFeeValues', () => {
     const advancedGasFee = selectors.getAdvancedGasFeeValues(mockState);
     expect(advancedGasFee).toStrictEqual({
-      maxBaseFee: '1.5',
+      maxBaseFee: '75',
       priorityFee: '2',
     });
   });
@@ -257,5 +239,9 @@ describe('Selectors', () => {
       mockState,
     );
     expect(isAdvancedGasFeeDefault).toStrictEqual(true);
+  });
+  it('#getAppIsLoading', () => {
+    const appIsLoading = selectors.getAppIsLoading(mockState);
+    expect(appIsLoading).toStrictEqual(false);
   });
 });

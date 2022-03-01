@@ -7,12 +7,12 @@
   &__text {
     @include H7;
 
-    color: #6a737d;
+    color: var(--ui-4);
     display: flex;
     margin-top: 10px;
 
     &--link {
-      color: $primary-blue;
+      color: var(--primary-blue);
       margin-left: 4px;
       cursor: pointer;
     }

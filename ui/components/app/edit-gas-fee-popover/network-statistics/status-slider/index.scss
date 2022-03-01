@@ -1,7 +1,6 @@
 .status-slider {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   width: 56px;
 
@@ -17,6 +16,12 @@
     font-size: 10px;
     font-weight: bold;
     margin-top: 4px;
+    text-align: center;
+  }
+
+  &__arrow-container {
+    margin-left: -10px;
+    width: 100%;
   }
 
   &__arrow-border {

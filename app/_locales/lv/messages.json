@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Noraidīt"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Ieskenēt QR kodu"
+  },
   "about": {
     "message": "Par"
-  },
-  "aboutSettingsDescription": {
-    "message": "Versija, atbalsta centrs un kontaktinformācija"
   },
   "acceleratingATransaction": {
     "message": "* Darījuma paātrināšana, izmantojot augstāku Gas cenu, palielina iespēju, ka tīkls to apstrādās ātrāk, taču tas nav garantēts."
@@ -56,9 +59,6 @@
   "advancedOptions": {
     "message": "Papildu opcijas"
   },
-  "advancedSettingsDescription": {
-    "message": "Piekļūstiet izstrādātāju funkcijām, lejupielādējiet stāvokļu žurnālus, atiestatiet kontu, iestatiet testa tīklus un pielāgotos RPC izsaukumus"
-  },
   "amount": {
     "message": "Apjoms"
   },
@@ -69,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Apstiprināt"
@@ -130,9 +138,6 @@
   "blockExplorerView": {
     "message": "Skatīt kontu $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Izmantot blok indentifikatoru"
   },
   "browserNotSupported": {
     "message": "Jūsu pārlūkprogramma netiek atbalstīta..."
@@ -248,6 +253,9 @@
   "currentLanguage": {
     "message": "Pašreizējā valodā"
   },
+  "custom": {
+    "message": "Papildu"
+  },
   "customGas": {
     "message": "Pielāgot Gas"
   },
@@ -275,17 +283,8 @@
   "deleteNetworkDescription": {
     "message": "Vai tiešām vēlaties dzēst šo tīklu?"
   },
-  "depositEther": {
-    "message": "Noguldīt Ether"
-  },
   "details": {
     "message": "Informācija"
-  },
-  "directDepositEther": {
-    "message": "Tiešā Ether iemaksa"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Ja jums jau ir Ether, tad visātrāk Ether savā makā varat saņemt ar tiešo iemaksu."
   },
   "done": {
     "message": "Pabeigts"
@@ -408,9 +407,6 @@
   "general": {
     "message": "Vispārīgi"
   },
-  "generalSettingsDescription": {
-    "message": "Valūtas konvertēšana, galvenā valūta, valoda, bloku identifikators"
-  },
   "getEther": {
     "message": "Saņemt Ether"
   },
@@ -518,6 +514,9 @@
   "learnMore": {
     "message": "Uzzināt vairāk"
   },
+  "learnMoreUpperCase": {
+    "message": "Uzzināt vairāk"
+  },
   "ledgerAccountRestriction": {
     "message": "Jums jāizmanto pēdējais konts pirms varat pievienot jaunu."
   },
@@ -572,9 +571,6 @@
   "myAccounts": {
     "message": "Mani konti"
   },
-  "needEtherInWallet": {
-    "message": "Lai izmantotu decentralizētas lietotnes ar MetaMask, jūsu makā jābūt Ether."
-  },
   "needImportFile": {
     "message": "Jums jāatlasa fails, ko importēt",
     "description": "User is important an account and needs to add a file to continue"
@@ -584,9 +580,6 @@
   },
   "networkName": {
     "message": "Tīkla nosaukums"
-  },
-  "networkSettingsDescription": {
-    "message": "Pievienot un rediģēt pielāgotos RPC tīklus"
   },
   "networks": {
     "message": "Tīkli"
@@ -768,9 +761,6 @@
   "restore": {
     "message": "Atjaunot"
   },
-  "restoreAccountWithSeed": {
-    "message": "Atjaunojiet savu kontu ar atkopšanas frāzi"
-  },
   "revealSeedWords": {
     "message": "Parādīt atkopšanas vārdus"
   },
@@ -822,9 +812,6 @@
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
   },
-  "securitySettingsDescription": {
-    "message": "Konfidencialitātes iestatījumi un maka atkopšanas frāze"
-  },
   "seedPhrasePlaceholder": {
     "message": "Atdaliet katru vārdu ar vienu atstarpi"
   },
@@ -857,9 +844,6 @@
   },
   "sendTokens": {
     "message": "Nosūtīt marķierus"
-  },
-  "separateEachWord": {
-    "message": "Atdaliet katru vārdu ar vienu atstarpi"
   },
   "settings": {
     "message": "Iestatījumi"

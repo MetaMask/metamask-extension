@@ -1,4 +1,5 @@
 @import 'choose-account/index';
+@import 'flask/snap-install/index';
 @import 'redirect/index';
 
 .permissions-connect {
@@ -26,7 +27,7 @@
   &__back {
     @include H7;
 
-    color: $Grey-500;
+    color: var(--Grey-500);
     font-weight: bold;
     cursor: pointer;
 
@@ -38,7 +39,7 @@
   &__page-count {
     @include H7;
 
-    color: $Grey-500;
+    color: var(--Grey-500);
     grid-column: 2;
     justify-self: end;
     font-weight: bold;

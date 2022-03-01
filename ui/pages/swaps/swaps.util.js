@@ -9,6 +9,7 @@ import {
   POLYGON,
   BSC,
   RINKEBY,
+  AVALANCHE,
   SWAPS_API_V2_BASE_URL,
   SWAPS_DEV_API_V2_BASE_URL,
   GAS_API_BASE_URL,
@@ -26,6 +27,8 @@ import {
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
   RINKEBY_CHAIN_ID,
+  ETH_SYMBOL,
+  AVALANCHE_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -56,7 +59,7 @@ const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
 
 /**
- * @param {string} type Type of an API call, e.g. "tokens"
+ * @param {string} type - Type of an API call, e.g. "tokens"
  * @param {string} chainId
  * @returns string
  */
@@ -492,6 +495,34 @@ export async function fetchSwapsGasPrices(chainId) {
   };
 }
 
+export const getFeeForSmartTransaction = ({
+  chainId,
+  currentCurrency,
+  conversionRate,
+  nativeCurrencySymbol,
+  feeInWeiDec,
+}) => {
+  const feeInWeiHex = decimalToHex(feeInWeiDec);
+  const ethFee = getValueFromWeiHex({
+    value: feeInWeiHex,
+    toDenomination: ETH_SYMBOL,
+    numberOfDecimals: 5,
+  });
+  const rawNetworkFees = getValueFromWeiHex({
+    value: feeInWeiHex,
+    toCurrency: currentCurrency,
+    conversionRate,
+    numberOfDecimals: 2,
+  });
+  const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
+  const chainCurrencySymbolToUse =
+    nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
+  return {
+    feeInFiat: formattedNetworkFee,
+    feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,
+  };
+};
+
 export function getRenderableNetworkFeesForQuote({
   tradeGas,
   approveGas,
@@ -553,6 +584,8 @@ export function quotesToRenderableData(
   approveGas,
   tokenConversionRates,
   chainId,
+  smartTransactionEstimatedGas,
+  nativeCurrencySymbol,
 ) {
   return Object.values(quotes).map((quote) => {
     const {
@@ -577,11 +610,16 @@ export function quotesToRenderableData(
       destinationTokenInfo.decimals,
     ).toPrecision(8);
 
-    const {
+    let feeInFiat = null;
+    let feeInEth = null;
+    let rawNetworkFees = null;
+    let rawEthFee = null;
+
+    ({
       feeInFiat,
+      feeInEth,
       rawNetworkFees,
       rawEthFee,
-      feeInEth,
     } = getRenderableNetworkFeesForQuote({
       tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
       approveGas,
@@ -592,7 +630,17 @@ export function quotesToRenderableData(
       sourceSymbol: sourceTokenInfo.symbol,
       sourceAmount,
       chainId,
-    });
+    }));
+
+    if (smartTransactionEstimatedGas) {
+      ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
+        chainId,
+        currentCurrency,
+        conversionRate,
+        nativeCurrencySymbol,
+        estimatedFeeInWeiDec: smartTransactionEstimatedGas.feeEstimate,
+      }));
+    }
 
     const slippageMultiplier = new BigNumber(100 - slippage).div(100);
     const minimumAmountReceived = new BigNumber(destinationValue)
@@ -763,7 +811,6 @@ export function formatSwapsValueForDisplay(destinationAmount) {
  * Checks whether a contract address is valid before swapping tokens.
  *
  * @param {string} contractAddress - E.g. "0x881d40237659c251811cec9c364ef91dc08d300c" for mainnet
- * @param {object} swapMetaData - We check the following 2 fields, e.g. { token_from: "ETH", token_to: "WETH" }
  * @param {string} chainId - The hex encoded chain ID to check
  * @returns {boolean} Whether a contract address is valid or not
  */
@@ -796,6 +843,8 @@ export const getNetworkNameByChainId = (chainId) => {
       return POLYGON;
     case RINKEBY_CHAIN_ID:
       return RINKEBY;
+    case AVALANCHE_CHAIN_ID:
+      return AVALANCHE;
     default:
       return '';
   }
@@ -803,6 +852,7 @@ export const getNetworkNameByChainId = (chainId) => {
 
 /**
  * It returns info about if Swaps are enabled and if we should use our new APIs for it.
+ *
  * @param {object} swapsFeatureFlags
  * @param {string} chainId
  * @returns object with 2 items: "swapsFeatureIsLive"
@@ -838,6 +888,36 @@ export const getSwapsLivenessForNetwork = (swapsFeatureFlags = {}, chainId) => {
  * @returns number
  */
 export const countDecimals = (value) => {
-  if (!value || Math.floor(value) === value) return 0;
+  if (!value || Math.floor(value) === value) {
+    return 0;
+  }
   return value.toString().split('.')[1]?.length || 0;
+};
+
+export const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
+  if (!Number.isInteger(remainingTimeInSec)) {
+    return '0:00';
+  }
+  const minutes = Math.floor(remainingTimeInSec / 60);
+  const seconds = remainingTimeInSec % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
+
+export const stxErrorTypes = ['unavailable', 'not_enough_funds'];
+
+const smartTransactionsErrorMap = {
+  unavailable: 'Smart Transactions are temporarily unavailable.',
+  not_enough_funds: 'Not enough funds for a smart transaction.',
+};
+
+export const smartTransactionsErrorMessages = (errorType) => {
+  return (
+    smartTransactionsErrorMap[errorType] ||
+    smartTransactionsErrorMap.unavailable
+  );
+};
+
+export const parseSmartTransactionsError = (errorMessage) => {
+  const errorJson = errorMessage.slice(12);
+  return JSON.parse(errorJson.trim());
 };

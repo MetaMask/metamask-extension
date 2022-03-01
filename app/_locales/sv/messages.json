@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Avvisa"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skanna QR-koden"
+  },
   "about": {
     "message": "Om"
-  },
-  "aboutSettingsDescription": {
-    "message": "Version, supportcenter och kontaktinformation"
   },
   "acceleratingATransaction": {
     "message": "* Att snabba upp en överföring genom att använda ett högre gaspris ökar chanserna för att överföringen ska hanteras snabbare av nätverket, men det är inte en garanti."
@@ -56,9 +59,6 @@
   "advancedOptions": {
     "message": "Avancerade alternativ"
   },
-  "advancedSettingsDescription": {
-    "message": "Åtkomst till verktyg för utvecklare, ladda ner loggar, återställ konto, upprätta testnätverk och skräddarsy RPC"
-  },
   "amount": {
     "message": "Belopp"
   },
@@ -69,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Godkänn"
@@ -130,9 +138,6 @@
   "blockExplorerView": {
     "message": "Visa konto på $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Använd Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Din webbläsare stöds inte..."
@@ -242,6 +247,9 @@
   "currentLanguage": {
     "message": "Aktuellt språk"
   },
+  "custom": {
+    "message": "Avancerat"
+  },
   "customGas": {
     "message": "Anpassa gas"
   },
@@ -269,17 +277,8 @@
   "deleteNetworkDescription": {
     "message": "Är du säker på att du vill ta bort detta nätverk?"
   },
-  "depositEther": {
-    "message": "Sätt in Ether"
-  },
   "details": {
     "message": "Info"
-  },
-  "directDepositEther": {
-    "message": "Sätt in Ether direkt"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Om du redan har Ether är det snabbaste sättet att få Ether i din nya plånbok att göra en direktinsättning."
   },
   "done": {
     "message": "Klart"
@@ -402,9 +401,6 @@
   "general": {
     "message": "Allmänt"
   },
-  "generalSettingsDescription": {
-    "message": "Valutaomvandling, primär valuta, språk"
-  },
   "getEther": {
     "message": "Skaffa Ether"
   },
@@ -512,6 +508,9 @@
   "learnMore": {
     "message": "Läs mer"
   },
+  "learnMoreUpperCase": {
+    "message": "Läs mer"
+  },
   "ledgerAccountRestriction": {
     "message": "Du måste använda ditt senaste konto innan du kan lägga till ett nytt."
   },
@@ -560,9 +559,6 @@
   "myAccounts": {
     "message": "Mina konton"
   },
-  "needEtherInWallet": {
-    "message": "För att interagera med decentraliserade applikationer med MetaMask behöver du Ether i din plånbok."
-  },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",
     "description": "User is important an account and needs to add a file to continue"
@@ -572,9 +568,6 @@
   },
   "networkName": {
     "message": "Nätverksnamn"
-  },
-  "networkSettingsDescription": {
-    "message": "Lägg till och redigera RPC-nätverk"
   },
   "networks": {
     "message": "Nätverk"
@@ -756,9 +749,6 @@
   "restore": {
     "message": "Återställ"
   },
-  "restoreAccountWithSeed": {
-    "message": "Återställ ditt konto med seedphrase"
-  },
   "revealSeedWords": {
     "message": "Visa seed-ord"
   },
@@ -810,9 +800,6 @@
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"
   },
-  "securitySettingsDescription": {
-    "message": "Sekretessinställningar och plånbokens seedfras"
-  },
   "seedPhrasePlaceholder": {
     "message": "Separera varje ord med ett enda mellanslag."
   },
@@ -845,9 +832,6 @@
   },
   "sendTokens": {
     "message": "Skicka tokens"
-  },
-  "separateEachWord": {
-    "message": "Lägg in ett mellanslag mellan varje ord"
   },
   "settings": {
     "message": "Inställningar"

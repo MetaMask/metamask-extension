@@ -9,29 +9,27 @@ import { AdvancedGasFeePopoverContextProvider } from './context';
 import AdvancedGasFeeInputs from './advanced-gas-fee-inputs';
 import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 import AdvancedGasFeeSaveButton from './advanced-gas-fee-save';
+import AdvancedGasFeeDefaults from './advanced-gas-fee-defaults';
 
 const AdvancedGasFeePopover = () => {
   const t = useI18nContext();
-  const {
-    closeModal,
-    closeAllModals,
-    currentModal,
-  } = useTransactionModalContext();
+  const { closeAllModals, currentModal } = useTransactionModalContext();
 
-  if (currentModal !== 'advancedGasFee') return null;
+  if (currentModal !== 'advancedGasFee') {
+    return null;
+  }
 
   return (
     <AdvancedGasFeePopoverContextProvider>
       <Popover
         className="advanced-gas-fee-popover"
         title={t('advancedGasFeeModalTitle')}
-        onBack={() => closeModal('advancedGasFee')}
         onClose={closeAllModals}
         footer={<AdvancedGasFeeSaveButton />}
       >
-        <Box className="advanced-gas-fee-popover__wrapper" margin={4}>
+        <Box margin={4}>
           <AdvancedGasFeeInputs />
-          <div className="advanced-gas-fee-popover__separator" />
+          <AdvancedGasFeeDefaults />
           <AdvancedGasFeeGasLimit />
         </Box>
       </Popover>

@@ -34,7 +34,6 @@ const metamaskrc = require('rc')('metamask', {
   INFURA_PROD_PROJECT_ID: process.env.INFURA_PROD_PROJECT_ID,
   ONBOARDING_V2: process.env.ONBOARDING_V2,
   COLLECTIBLES_V1: process.env.COLLECTIBLES_V1,
-  EIP_1559_V2: process.env.EIP_1559_V2,
   SEGMENT_HOST: process.env.SEGMENT_HOST,
   SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY,
   SEGMENT_BETA_WRITE_KEY: process.env.SEGMENT_BETA_WRITE_KEY,
@@ -117,7 +116,7 @@ function getInfuraProjectId({ buildType, environment, testing }) {
  *
  * @param {object} options - The Segment write key options.
  * @param {BuildType} options.buildType - The current build type.
- * @param {keyof ENVIRONMENT} options.enviroment - The current build environment.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
  * @returns {string} The Segment write key.
  */
 function getSegmentWriteKey({ buildType, environment }) {
@@ -450,7 +449,9 @@ function createFactoredBuild({
       // create entry points for each file
       for (const [groupLabel, groupSet] of sizeGroupMap.entries()) {
         // skip "common" group, they are added to all other groups
-        if (groupSet === commonSet) continue;
+        if (groupSet === commonSet) {
+          continue;
+        }
 
         switch (groupLabel) {
           case 'ui': {
@@ -506,7 +507,7 @@ function createFactoredBuild({
       }
     });
 
-    await bundleIt(buildConfiguration);
+    await bundleIt(buildConfiguration, { reloadOnChange });
   };
 }
 
@@ -571,7 +572,7 @@ function createNormalBundle({
       });
     });
 
-    await bundleIt(buildConfiguration);
+    await bundleIt(buildConfiguration, { reloadOnChange });
   };
 }
 
@@ -719,7 +720,7 @@ function setupSourcemaps(buildConfiguration, { devMode }) {
   });
 }
 
-async function bundleIt(buildConfiguration) {
+async function bundleIt(buildConfiguration, { reloadOnChange }) {
   const { label, bundlerOpts, events } = buildConfiguration;
   const bundler = browserify(bundlerOpts);
 
@@ -758,6 +759,13 @@ async function bundleIt(buildConfiguration) {
       [],
     ]);
     const bundleStream = bundler.bundle();
+    if (!reloadOnChange) {
+      bundleStream.on('error', (error) => {
+        console.error('Bundling failed! See details below.');
+        console.error(error.stack || error);
+        process.exit(1);
+      });
+    }
     // trigger build pipeline instrumentations
     events.emit('configurePipeline', { pipeline, bundleStream });
     // start bundle, send into pipeline
@@ -795,7 +803,6 @@ function getEnvironmentVariables({ buildType, devMode, testing }) {
     SWAPS_USE_DEV_APIS: process.env.SWAPS_USE_DEV_APIS === '1',
     ONBOARDING_V2: metamaskrc.ONBOARDING_V2 === '1',
     COLLECTIBLES_V1: metamaskrc.COLLECTIBLES_V1 === '1',
-    EIP_1559_V2: metamaskrc.EIP_1559_V2 === '1',
   };
 }
 

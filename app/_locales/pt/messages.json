@@ -22,6 +22,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "Aprovar"
   },
@@ -36,9 +44,6 @@
   },
   "balance": {
     "message": "Saldo:"
-  },
-  "blockiesIdenticon": {
-    "message": "Usar Blockies Identicon"
   },
   "cancel": {
     "message": "Cancelar"
@@ -76,17 +81,8 @@
   "decimalsMustZerotoTen": {
     "message": "Decimais devem ser no mínimo 0 e não passar de 36."
   },
-  "depositEther": {
-    "message": "Depositar Ether"
-  },
   "details": {
     "message": "Detalhes"
-  },
-  "directDepositEther": {
-    "message": "Depositar Diretamente Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Se já tem Ether, a forma mais rápida de ficar com Ether na sua carteira é através de depósito direto."
   },
   "done": {
     "message": "Finalizado"
@@ -211,9 +207,6 @@
   },
   "myAccounts": {
     "message": "As minhas contas"
-  },
-  "needEtherInWallet": {
-    "message": "Para interagir com applicações descentralizadas usando MetaMask tem de ter Ether na sua carteira."
   },
   "needImportFile": {
     "message": "Deve selecionar um ficheiro para importar.",

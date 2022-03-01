@@ -4,6 +4,7 @@ import SendRowWrapper from '../send-row-wrapper';
 import UserPreferencedCurrencyInput from '../../../../components/app/user-preferenced-currency-input';
 import UserPreferencedTokenInput from '../../../../components/app/user-preferenced-token-input';
 import { ASSET_TYPES } from '../../../../ducks/send';
+import { MAX_DECIMAL } from '../../../../../shared/constants/decimal';
 import AmountMaxButton from './amount-max-button';
 
 export default class SendAmountRow extends Component {
@@ -31,18 +32,24 @@ export default class SendAmountRow extends Component {
         onChange={this.handleChange}
         token={asset.details}
         value={amount}
+        primaryNumberOfDecimals={asset.decimals}
       />
     ) : (
       <UserPreferencedCurrencyInput
         error={inError}
         onChange={this.handleChange}
-        value={amount}
+        hexValue={amount}
+        primaryNumberOfDecimals={MAX_DECIMAL}
       />
     );
   }
 
   render() {
-    const { inError } = this.props;
+    const { inError, asset } = this.props;
+
+    if (asset.type === ASSET_TYPES.COLLECTIBLE) {
+      return null;
+    }
 
     return (
       <SendRowWrapper

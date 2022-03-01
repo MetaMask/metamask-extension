@@ -30,7 +30,7 @@ const HIGH_GAS_OPTION = {
   maxPriorityFeePerGas: '2',
 };
 
-const renderComponent = (props, transactionProps, gasFeeContextProps) => {
+const renderComponent = (componentProps) => {
   const mockStore = {
     metamask: {
       provider: {},
@@ -43,21 +43,14 @@ const renderComponent = (props, transactionProps, gasFeeContextProps) => {
       },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
-      advancedGasFee: {
-        maxBaseFee: '1.5',
-        priorityFee: '2',
-      },
     },
   };
 
   const store = configureStore(mockStore);
 
   return renderWithProvider(
-    <GasFeeContextProvider
-      transaction={{ txParams: { gas: '0x5208' }, ...transactionProps }}
-      {...gasFeeContextProps}
-    >
-      <EditGasToolTip {...props} t={jest.fn()} />
+    <GasFeeContextProvider transaction={{ txParams: { gas: '0x5208' } }}>
+      <EditGasToolTip {...componentProps} t={jest.fn()} gasLimit={21000} />
     </GasFeeContextProvider>,
     store,
   );
@@ -70,8 +63,8 @@ describe('EditGasToolTip', () => {
       ...LOW_GAS_OPTION,
     });
 
-    expect(queryByText('2.010203381')).toBeInTheDocument();
-    expect(queryByText('1.20004164')).toBeInTheDocument();
+    expect(queryByText('2.0102')).toBeInTheDocument();
+    expect(queryByText('1.2')).toBeInTheDocument();
     expect(queryByText('21000')).toBeInTheDocument();
   });
 
@@ -80,7 +73,7 @@ describe('EditGasToolTip', () => {
       priorityLevel: 'medium',
       ...MEDIUM_GAS_OPTION,
     });
-    expect(queryByText('2.383812808')).toBeInTheDocument();
+    expect(queryByText('2.3838')).toBeInTheDocument();
     expect(queryByText('1.5')).toBeInTheDocument();
     expect(queryByText('21000')).toBeInTheDocument();
   });
@@ -90,7 +83,7 @@ describe('EditGasToolTip', () => {
       priorityLevel: 'high',
       ...HIGH_GAS_OPTION,
     });
-    expect(queryByText('2.920638342')).toBeInTheDocument();
+    expect(queryByText('2.9206')).toBeInTheDocument();
     expect(queryByText('2')).toBeInTheDocument();
     expect(queryByText('21000')).toBeInTheDocument();
   });

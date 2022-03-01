@@ -1,4 +1,10 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Rejte"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Enspeksyon QR Kòd"
+  },
   "accessingYourCamera": {
     "message": "Aksè a Kamera"
   },
@@ -40,6 +46,14 @@
     "message": "MetaMask",
     "description": "The name of the application"
   },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
+  },
   "approve": {
     "message": "Apwouve"
   },
@@ -63,9 +77,6 @@
   },
   "balance": {
     "message": "Balans"
-  },
-  "blockiesIdenticon": {
-    "message": "Itilize Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Navigatè ou a pa sipòte..."
@@ -145,17 +156,8 @@
   "decimalsMustZerotoTen": {
     "message": "Desimal yo dwe omwen 0, epi pa dwe plis pase 36."
   },
-  "depositEther": {
-    "message": "Depo Ether"
-  },
   "details": {
     "message": "Detay yo"
-  },
-  "directDepositEther": {
-    "message": "Dirèkteman Depo Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si ou deja gen kèk Ether, fason ki pi rapid yo ka resevwa Ether nan nouvo Wallet ou pa depo dirèk."
   },
   "done": {
     "message": "Fini"
@@ -299,6 +301,9 @@
   "learnMore": {
     "message": "Aprann plis"
   },
+  "learnMoreUpperCase": {
+    "message": "Aprann plis"
+  },
   "ledgerAccountRestriction": {
     "message": "Ou bezwen sèvi ak dènye kont ou anvan ou ka ajoute yon nouvo."
   },
@@ -337,9 +342,6 @@
   },
   "myAccounts": {
     "message": "Kont mwen"
-  },
-  "needEtherInWallet": {
-    "message": "Pou kominike avèk aplikasyon desantralize ou dwe itilize MetaMask, ou pral bezwen Ether nan Wallet ou."
   },
   "needImportFile": {
     "message": "Ou dwe chwazi yon dosye pou enpòte.",
@@ -477,9 +479,6 @@
   "restore": {
     "message": "Retabli"
   },
-  "restoreAccountWithSeed": {
-    "message": "Retabli kont ou avèk yo Seed Fraz"
-  },
   "revealSeedWords": {
     "message": "Revele Seed Mo Yo"
   },
@@ -539,9 +538,6 @@
   },
   "sendTokens": {
     "message": "Voye Tokens"
-  },
-  "separateEachWord": {
-    "message": "Separe chak mo ak yon sèl espas"
   },
   "settings": {
     "message": "Paramèt"

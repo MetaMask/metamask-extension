@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import classnames from 'classnames';
 import Button from '../../ui/button';
 import * as actions from '../../../store/actions';
 import { openAlert as displayInvalidCustomNetworkAlert } from '../../../ducks/alerts/invalid-custom-network';
@@ -362,21 +361,19 @@ class NetworkDropdown extends Component {
             this.props.provider,
           )}
 
-          <div
-            className={classnames('network-dropdown-testnets', {
-              'network-dropdown-testnets--no-visibility': !shouldShowTestNetworks,
-            })}
-          >
-            {this.renderNetworkEntry('ropsten')}
-            {this.renderNetworkEntry('kovan')}
-            {this.renderNetworkEntry('rinkeby')}
-            {this.renderNetworkEntry('goerli')}
-            {this.renderCustomRpcList(
-              rpcListDetailForLocalHost,
-              this.props.provider,
-              { isLocalHost: true },
-            )}
-          </div>
+          {shouldShowTestNetworks && (
+            <>
+              {this.renderNetworkEntry('ropsten')}
+              {this.renderNetworkEntry('kovan')}
+              {this.renderNetworkEntry('rinkeby')}
+              {this.renderNetworkEntry('goerli')}
+              {this.renderCustomRpcList(
+                rpcListDetailForLocalHost,
+                this.props.provider,
+                { isLocalHost: true },
+              )}
+            </>
+          )}
         </div>
 
         {this.renderAddCustomButton()}

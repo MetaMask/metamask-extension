@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../../pages/send/send.constants';
-import { PRIORITY_LEVELS } from '../../../../../../shared/constants/gas';
+import {
+  EDIT_GAS_MODES,
+  PRIORITY_LEVELS,
+} from '../../../../../../shared/constants/gas';
 import { SECONDARY } from '../../../../../helpers/constants/common';
 import { decGWEIToHexWEI } from '../../../../../helpers/utils/conversions.util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
@@ -11,13 +14,15 @@ import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import FormField from '../../../../ui/form-field';
+import Box from '../../../../ui/box';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
+import { renderFeeRange } from '../utils';
 
 const validatePriorityFee = (value, gasFeeEstimates) => {
-  if (value < 1) {
+  if (value <= 0) {
     return 'editGasMaxPriorityFeeBelowMinimumV2';
   }
   if (
@@ -43,23 +48,30 @@ const PriorityFeeInput = () => {
   const t = useI18nContext();
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const {
-    setDirty,
-    setHasError,
+    setErrorValue,
     setMaxPriorityFeePerGas,
   } = useAdvancedGasFeePopoverContext();
   const {
+    editGasMode,
     estimateUsed,
     gasFeeEstimates,
     maxPriorityFeePerGas,
   } = useGasFeeContext();
+  const {
+    latestPriorityFeeRange,
+    historicalPriorityFeeRange,
+    priorityFeeTrend,
+  } = gasFeeEstimates;
   const [priorityFeeError, setPriorityFeeError] = useState();
 
   const [priorityFee, setPriorityFee] = useState(() => {
     if (
       estimateUsed !== PRIORITY_LEVELS.CUSTOM &&
-      advancedGasFeeValues?.priorityFee
-    )
+      advancedGasFeeValues?.priorityFee &&
+      editGasMode !== EDIT_GAS_MODES.SWAPS
+    ) {
       return advancedGasFeeValues.priorityFee;
+    }
     return maxPriorityFeePerGas;
   });
 
@@ -72,36 +84,43 @@ const PriorityFeeInput = () => {
 
   const updatePriorityFee = (value) => {
     setPriorityFee(value);
-    setDirty(true);
   };
 
   useEffect(() => {
     setMaxPriorityFeePerGas(priorityFee);
     const error = validatePriorityFee(priorityFee, gasFeeEstimates);
+    setErrorValue(
+      'maxPriorityFeePerGas',
+      error === 'editGasMaxPriorityFeeBelowMinimumV2',
+    );
     setPriorityFeeError(error);
-    setHasError(Boolean(error));
   }, [
     gasFeeEstimates,
     priorityFee,
-    setHasError,
+    setErrorValue,
     setMaxPriorityFeePerGas,
     setPriorityFeeError,
   ]);
 
   return (
-    <>
+    <Box margin={[4, 2, 0, 2]} className="priority-fee-input">
       <FormField
+        dataTestId="priority-fee-input"
         error={priorityFeeError ? t(priorityFeeError) : ''}
         onChange={updatePriorityFee}
         titleText={t('priorityFeeProperCase')}
-        titleUnit="(GWEI)"
+        titleUnit={`(${t('gwei')})`}
         tooltipText={t('advancedPriorityFeeToolTip')}
         value={priorityFee}
         detailText={`≈ ${priorityFeeInFiat}`}
         numeric
       />
-      <AdvancedGasFeeInputSubtext latest="1-18 GWEI" historical="23-359 GWEI" />
-    </>
+      <AdvancedGasFeeInputSubtext
+        latest={renderFeeRange(latestPriorityFeeRange)}
+        historical={renderFeeRange(historicalPriorityFeeRange)}
+        feeTrend={priorityFeeTrend}
+      />
+    </Box>
   );
 };
 

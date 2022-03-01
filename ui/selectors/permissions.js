@@ -3,6 +3,8 @@ import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedAddress,
+  getSubjectMetadata,
+  getTargetSubjectMetadata,
 } from '.';
 
 // selectors
@@ -15,16 +17,6 @@ import {
  */
 export function getPermissionSubjects(state) {
   return state.metamask.subjects || {};
-}
-
-/**
- * Get the permission subjects metadata object.
- *
- * @param {Object} state - The current state.
- * @returns {Object} The permission subjects metadata object.
- */
-export function getPermissionSubjectsMetadata(state) {
-  return state.metamask.subjectMetadata || {};
 }
 
 /**
@@ -82,7 +74,7 @@ export function getPermittedAccountsByOrigin(state) {
 export function getConnectedSubjectsForSelectedAddress(state) {
   const { selectedAddress } = state.metamask;
   const subjects = getPermissionSubjects(state);
-  const subjectMetadata = getPermissionSubjectsMetadata(state);
+  const subjectMetadata = getSubjectMetadata(state);
 
   const connectedSubjects = [];
 
@@ -105,6 +97,27 @@ export function getConnectedSubjectsForSelectedAddress(state) {
   return connectedSubjects;
 }
 
+export function getSubjectsWithPermission(state, permissionName) {
+  const subjects = getPermissionSubjects(state);
+
+  const connectedSubjects = [];
+
+  Object.entries(subjects).forEach(([origin, { permissions }]) => {
+    if (permissions[permissionName]) {
+      const { extensionId, name, iconUrl } =
+        getTargetSubjectMetadata(state, origin) || {};
+
+      connectedSubjects.push({
+        extensionId,
+        origin,
+        name,
+        iconUrl,
+      });
+    }
+  });
+  return connectedSubjects;
+}
+
 /**
  * Returns an object mapping addresses to objects mapping origins to connected
  * subject info. Subject info objects have the following properties:
@@ -116,7 +129,7 @@ export function getConnectedSubjectsForSelectedAddress(state) {
  * connected subject info.
  */
 export function getAddressConnectedSubjectMap(state) {
-  const subjectMetadata = getPermissionSubjectsMetadata(state);
+  const subjectMetadata = getSubjectMetadata(state);
   const accountsMap = getPermittedAccountsByOrigin(state);
   const addressConnectedIconMap = {};
 
@@ -247,16 +260,23 @@ export function activeTabHasPermissions(state) {
   );
 }
 
+/**
+ * Get the connected accounts history for all origins.
+ *
+ * @param {Record<string, unknown>} state - The MetaMask state.
+ * @returns {Record<string, { accounts: Record<string, number> }>} An object
+ * with account connection histories by origin.
+ */
 export function getLastConnectedInfo(state) {
   const { permissionHistory = {} } = state.metamask;
-  return Object.keys(permissionHistory).reduce((acc, origin) => {
-    const ethAccountsHistory = JSON.parse(
-      JSON.stringify(permissionHistory[origin].eth_accounts),
-    );
-    return {
-      ...acc,
-      [origin]: ethAccountsHistory,
-    };
+  return Object.keys(permissionHistory).reduce((lastConnectedInfo, origin) => {
+    if (permissionHistory[origin].eth_accounts) {
+      lastConnectedInfo[origin] = JSON.parse(
+        JSON.stringify(permissionHistory[origin].eth_accounts),
+      );
+    }
+
+    return lastConnectedInfo;
   }, {});
 }
 

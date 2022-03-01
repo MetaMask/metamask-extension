@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import * as actions from './actions';
 
@@ -436,7 +437,7 @@ describe('Actions', () => {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.checkHardwareStatus('ledger', `m/44'/60'/0'/0`),
+        actions.checkHardwareStatus(DEVICE_NAMES.LEDGER, `m/44'/60'/0'/0`),
       );
       expect(checkHardwareStatus.callCount).toStrictEqual(1);
     });
@@ -476,7 +477,7 @@ describe('Actions', () => {
 
       actions._setBackgroundConnection(background);
 
-      await store.dispatch(actions.forgetDevice('ledger'));
+      await store.dispatch(actions.forgetDevice(DEVICE_NAMES.LEDGER));
       expect(forgetDevice.callCount).toStrictEqual(1);
     });
 
@@ -518,7 +519,7 @@ describe('Actions', () => {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.connectHardware('ledger', 0, `m/44'/60'/0'/0`),
+        actions.connectHardware(DEVICE_NAMES.LEDGER, 0, `m/44'/60'/0'/0`),
       );
       expect(connectHardware.callCount).toStrictEqual(1);
     });
@@ -544,7 +545,7 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.connectHardware('ledger')),
+        store.dispatch(actions.connectHardware(DEVICE_NAMES.LEDGER)),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -567,7 +568,7 @@ describe('Actions', () => {
       await store.dispatch(
         actions.unlockHardwareWalletAccounts(
           [0],
-          'ledger',
+          DEVICE_NAMES.LEDGER,
           `m/44'/60'/0'/0`,
           '',
         ),
@@ -1485,23 +1486,20 @@ describe('Actions', () => {
 
     it('calls setUseBlockie in background', async () => {
       const store = mockStore();
-
-      const setUseBlockStub = background.setUseBlockie.callsFake((_, cb) =>
-        cb(),
-      );
-
-      actions._setBackgroundConnection(background);
+      const setUseBlockieStub = sinon.stub().callsFake((_, cb) => cb());
+      actions._setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
 
       await store.dispatch(actions.setUseBlockie());
-      expect(setUseBlockStub.callCount).toStrictEqual(1);
+      expect(setUseBlockieStub.callCount).toStrictEqual(1);
     });
 
     it('errors when setUseBlockie in background throws', async () => {
       const store = mockStore();
+      const setUseBlockieStub = sinon.stub().callsFake((_, cb) => {
+        cb(new Error('error'));
+      });
 
-      background.setUseBlockie.callsFake((_, cb) => cb(new Error('error')));
-
-      actions._setBackgroundConnection(background);
+      actions._setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -1528,10 +1526,10 @@ describe('Actions', () => {
 
     it('calls expected actions', async () => {
       const store = mockStore();
-
-      background.setCurrentLocale.callsFake((_, cb) => cb());
-
-      actions._setBackgroundConnection(background);
+      const setCurrentLocaleStub = sinon.stub().callsFake((_, cb) => cb());
+      actions._setBackgroundConnection({
+        setCurrentLocale: setCurrentLocaleStub,
+      });
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },
@@ -1543,16 +1541,18 @@ describe('Actions', () => {
       ];
 
       await store.dispatch(actions.updateCurrentLocale('test'));
-      expect(background.setCurrentLocale.callCount).toStrictEqual(1);
+      expect(setCurrentLocaleStub.callCount).toStrictEqual(1);
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
     it('errors when setCurrentLocale throws', async () => {
       const store = mockStore();
-
-      background.setCurrentLocale.callsFake((_, cb) => cb(new Error('error')));
-
-      actions._setBackgroundConnection(background);
+      const setCurrentLocaleStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb(new Error('error')));
+      actions._setBackgroundConnection({
+        setCurrentLocale: setCurrentLocaleStub,
+      });
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', value: undefined },

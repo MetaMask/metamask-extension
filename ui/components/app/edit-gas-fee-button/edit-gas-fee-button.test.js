@@ -2,6 +2,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 
 import {
+  EDIT_GAS_MODES,
   GAS_ESTIMATE_TYPES,
   PRIORITY_LEVELS,
 } from '../../../../shared/constants/gas';
@@ -21,6 +22,7 @@ jest.mock('../../../store/actions', () => ({
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
+  createTransactionEventFragment: jest.fn(),
 }));
 
 const render = ({ componentProps, contextProps } = {}) => {
@@ -34,6 +36,7 @@ const render = ({ componentProps, contextProps } = {}) => {
         },
       },
       gasFeeEstimates: mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET],
+      eip1559V2Enabled: true,
     },
   });
 
@@ -46,14 +49,6 @@ const render = ({ componentProps, contextProps } = {}) => {
 };
 
 describe('EditGasFeeButton', () => {
-  beforeEach(() => {
-    process.env.EIP_1559_V2 = true;
-  });
-
-  afterEach(() => {
-    process.env.EIP_1559_V2 = false;
-  });
-
   it('should render edit link with text low if low gas estimates are selected', () => {
     render({ contextProps: { transaction: { userFeeLevel: 'low' } } });
     expect(screen.queryByText('🐢')).toBeInTheDocument();
@@ -66,10 +61,17 @@ describe('EditGasFeeButton', () => {
     expect(screen.queryByText('Market')).toBeInTheDocument();
   });
 
-  it('should render edit link with text agressive if high gas estimates are selected', () => {
+  it('should render edit link with text aggressive if high gas estimates are selected', () => {
     render({ contextProps: { transaction: { userFeeLevel: 'high' } } });
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();
+  });
+
+  it('should render edit link with text 10% increase if tenPercentIncreased gas estimates are selected', () => {
+    render({
+      contextProps: { transaction: { userFeeLevel: 'tenPercentIncreased' } },
+    });
+    expect(screen.queryByText('10% increase')).toBeInTheDocument();
   });
 
   it('should render edit link with text Site suggested if site suggested estimated are used', () => {
@@ -87,13 +89,25 @@ describe('EditGasFeeButton', () => {
     expect(document.getElementsByClassName('info-tooltip')).toHaveLength(1);
   });
 
+  it('should render edit link with text swap suggested if high gas estimates are selected for swaps', () => {
+    render({
+      contextProps: {
+        transaction: { userFeeLevel: 'high' },
+        editGasMode: EDIT_GAS_MODES.SWAPS,
+      },
+    });
+    expect(screen.queryByText('🔄')).toBeInTheDocument();
+    expect(screen.queryByText('Swap suggested')).toBeInTheDocument();
+  });
+
   it('should render edit link with text advance if custom gas estimates are used', () => {
     render({
       contextProps: {
         defaultEstimateToUse: 'custom',
+        transaction: {},
       },
     });
-    expect(screen.queryByText('⚙')).toBeInTheDocument();
+    expect(screen.queryByText('⚙️')).toBeInTheDocument();
     expect(screen.queryByText('Advanced')).toBeInTheDocument();
     expect(screen.queryByText('Edit')).toBeInTheDocument();
   });

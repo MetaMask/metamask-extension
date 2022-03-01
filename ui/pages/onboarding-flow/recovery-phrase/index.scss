@@ -39,7 +39,7 @@
     justify-content: center;
     padding: 8px 0 18px;
     border-radius: 4px;
-    color: $ui-white;
+    color: var(--ui-white);
 
     &--text {
       margin-top: 32px;
@@ -83,7 +83,7 @@
         display: flex;
         justify-content: space-evenly;
         width: 32%;
-        color: $primary-blue;
+        color: var(--primary-blue);
         cursor: pointer;
         margin-bottom: 24px;
 
@@ -92,7 +92,7 @@
         }
 
         &:active {
-          color: $ui-black;
+          color: var(--ui-black);
           background-color: transparent;
           border: none;
           transform: scale(0.97);
@@ -109,7 +109,7 @@
 
     &--with-input {
       width: 120px;
-      box-shadow: 0 3px 4px -3px $Grey-800;
+      box-shadow: 0 3px 4px -3px var(--Grey-800);
       border-width: 2px;
       border-radius: 13px;
       height: 32px;

@@ -8,10 +8,14 @@ import txHelper from '../helpers/utils/tx-helper';
 import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
+  SMART_TRANSACTION_STATUSES,
 } from '../../shared/constants/transaction';
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
-import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
-import { getSelectedAddress } from '.';
+import {
+  getCurrentChainId,
+  deprecatedGetCurrentNetworkId,
+  getSelectedAddress,
+} from './selectors';
 
 export const incomingTxListSelector = (state) => {
   const { showIncomingTransactions } = state.metamask.featureFlags;
@@ -42,13 +46,27 @@ export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
+export const smartTransactionsListSelector = (state) =>
+  state.metamask.smartTransactionsState?.smartTransactions?.[
+    getCurrentChainId(state)
+  ]
+    ?.filter((stx) => !stx.confirmed)
+    .map((stx) => ({
+      ...stx,
+      transactionType: TRANSACTION_TYPES.SMART,
+      status: stx.status?.startsWith('cancelled')
+        ? SMART_TRANSACTION_STATUSES.CANCELLED
+        : stx.status,
+    }));
+
 export const selectedAddressTxListSelector = createSelector(
   getSelectedAddress,
   currentNetworkTxListSelector,
-  (selectedAddress, transactions = []) => {
-    return transactions.filter(
-      ({ txParams }) => txParams.from === selectedAddress,
-    );
+  smartTransactionsListSelector,
+  (selectedAddress, transactions = [], smTransactions = []) => {
+    return transactions
+      .filter(({ txParams }) => txParams.from === selectedAddress)
+      .concat(smTransactions);
   },
 );
 
@@ -106,7 +124,6 @@ export const transactionsSelector = createSelector(
  * order.
  * @param {string[]} nonces - Array of nonce strings in hex
  * @param {string} nonceToInsert - Nonce string in hex to be inserted into the array of nonces.
- * @returns {string[]}
  */
 const insertOrderedNonce = (nonces, nonceToInsert) => {
   let insertIndex = nonces.length;
@@ -130,7 +147,6 @@ const insertOrderedNonce = (nonces, nonceToInsert) => {
  * in ascending order by time.
  * @param {Object[]} transactions - Array of transaction objects.
  * @param {Object} transaction - Transaction object to be inserted into the array of transactions.
- * @returns {Object[]}
  */
 const insertTransactionByTime = (transactions, transaction) => {
   const { time } = transaction;
@@ -151,6 +167,7 @@ const insertTransactionByTime = (transactions, transaction) => {
 
 /**
  * Contains transactions and properties associated with those transactions of the same nonce.
+ *
  * @typedef {Object} transactionGroup
  * @property {string} nonce - The nonce that the transactions within this transactionGroup share.
  * @property {Object[]} transactions - An array of transaction (txMeta) objects.

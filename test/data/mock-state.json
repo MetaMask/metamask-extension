@@ -1,5 +1,6 @@
 {
   "appState": {
+    "isLoading": false,
     "gasIsLoading": false,
     "currentView": {
       "name": "accountDetail",
@@ -161,7 +162,7 @@
     },
     "useTokenDetection": true,
     "advancedGasFee": {
-      "maxBaseFee": "1.5",
+      "maxBaseFee": "75",
       "priorityFee": "2"
     },
     "tokenList": {

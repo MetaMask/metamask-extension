@@ -147,6 +147,10 @@ describe('Network Dropdown', () => {
         'addNetwork',
       );
     });
+
+    it('shows test networks in the dropdown', () => {
+      expect(wrapper.find('.network-dropdown-list li')).toHaveLength(8);
+    });
   });
 
   describe('NetworkDropdown in appState is true and show test networks is false', () => {
@@ -192,6 +196,10 @@ describe('Network Dropdown', () => {
       expect(wrapper.find(Button).at(0).children().text()).toStrictEqual(
         'addNetwork',
       );
+    });
+
+    it('does not show test networks in the dropdown', () => {
+      expect(wrapper.find('.network-dropdown-list li')).toHaveLength(3);
     });
   });
 });

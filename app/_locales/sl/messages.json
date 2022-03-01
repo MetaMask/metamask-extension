@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Zavrni"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Skeniraj QR kodo"
+  },
   "about": {
     "message": "O možnostih"
-  },
-  "aboutSettingsDescription": {
-    "message": "Različica, center za podporo in podatki za stik"
   },
   "acceleratingATransaction": {
     "message": "* Pospešitev transakcije z višjo gas ceno poveča njene možnosti za hitrejšo obdelavo v omrežju, vendar ni vedno zagotovljena."
@@ -56,9 +59,6 @@
   "advancedOptions": {
     "message": "Napredne možnosti"
   },
-  "advancedSettingsDescription": {
-    "message": "Dostopite do funkcij razvijalca, prenesite dnevnike držav, ponastavite račun, nastavite testne mreže in RPC po meri"
-  },
   "amount": {
     "message": "Znesek"
   },
@@ -69,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Potrdi"
@@ -130,9 +138,6 @@
   "blockExplorerView": {
     "message": "Ogled računa na  $1 ",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Uporabi identifikacijo Blockies"
   },
   "browserNotSupported": {
     "message": "Vaš brskalnik ni podptrt ..."
@@ -248,6 +253,9 @@
   "currentLanguage": {
     "message": "Trenutni jezik"
   },
+  "custom": {
+    "message": "Napredno"
+  },
   "customGas": {
     "message": "Prilagodi gas"
   },
@@ -275,17 +283,8 @@
   "deleteNetworkDescription": {
     "message": "Ali ste prepričani, da želite izbrisati to omrežje?"
   },
-  "depositEther": {
-    "message": "Vplačilo ethra"
-  },
   "details": {
     "message": "Podrobnosti"
-  },
-  "directDepositEther": {
-    "message": "Neposredno vplačilo ehera"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Če že imate Ether, ga lahko najhitreje dobite v MetaMask z neposrednim vplačilom."
   },
   "done": {
     "message": "Končano"
@@ -409,9 +408,6 @@
   "general": {
     "message": "Splošno"
   },
-  "generalSettingsDescription": {
-    "message": "Pretvorba valut, primarna valuta, jezik, identifikacija Blockies"
-  },
   "getEther": {
     "message": "Pridobi Ether"
   },
@@ -516,6 +512,9 @@
   "learnMore": {
     "message": "Preberite več"
   },
+  "learnMoreUpperCase": {
+    "message": "Preberite več"
+  },
   "ledgerAccountRestriction": {
     "message": "Za dodajanje novega računa morate uporabiti zadnji račun."
   },
@@ -564,9 +563,6 @@
   "myAccounts": {
     "message": "Moji računi"
   },
-  "needEtherInWallet": {
-    "message": "Za interakcijo z decentraliziranimi aplikacijami boste v svoji denarnici potrebovali Eter."
-  },
   "needImportFile": {
     "message": "Za uvoz morate izbrati datoteko.",
     "description": "User is important an account and needs to add a file to continue"
@@ -576,9 +572,6 @@
   },
   "networkName": {
     "message": "Ime omrežja"
-  },
-  "networkSettingsDescription": {
-    "message": "Dodajte in uredite omrežja RPC po meri"
   },
   "networks": {
     "message": "Omrežja"
@@ -760,9 +753,6 @@
   "restore": {
     "message": "Obnovi"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnovi račun z seed phrase"
-  },
   "revealSeedWords": {
     "message": "Razkrij seed words"
   },
@@ -814,9 +804,6 @@
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"
   },
-  "securitySettingsDescription": {
-    "message": "Nastavitve zasebnosti in geslo za denarnico seed phrase "
-  },
   "seedPhrasePlaceholder": {
     "message": "Vsako besedo ločite z enim presledkom"
   },
@@ -849,9 +836,6 @@
   },
   "sendTokens": {
     "message": "Pošlji žetone"
-  },
-  "separateEachWord": {
-    "message": "Vsako besedo ločite z enim presledkom"
   },
   "settings": {
     "message": "Nastavitve"

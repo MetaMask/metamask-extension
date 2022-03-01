@@ -3,7 +3,7 @@
   grid-template-columns: 30% minmax(30%, 1fr) 30%;
   column-gap: 5px;
   padding: 0 8px;
-  border-bottom: 1px solid $Grey-100;
+  border-bottom: 1px solid var(--Grey-100);
   height: 64px;
 
   .menu-bar__account-options {
@@ -32,6 +32,6 @@
   &__explorer-origin {
     @include H7;
 
-    color: $Grey-500;
+    color: var(--Grey-500);
   }
 }

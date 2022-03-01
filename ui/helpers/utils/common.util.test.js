@@ -5,21 +5,21 @@ describe('Common utils', () => {
     it('should return a capitalized string from a camel-cased string', () => {
       const tests = [
         {
-          test: undefined,
+          input: undefined,
           expected: '',
         },
         {
-          test: '',
+          input: '',
           expected: '',
         },
         {
-          test: 'thisIsATest',
+          input: 'thisIsATest',
           expected: 'This Is A Test',
         },
       ];
 
-      tests.forEach(({ test, expected }) => {
-        expect(utils.camelCaseToCapitalize(test)).toStrictEqual(expected);
+      tests.forEach(({ input, expected }) => {
+        expect(utils.camelCaseToCapitalize(input)).toStrictEqual(expected);
       });
     });
   });

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
 export const AdvancedGasFeePopoverContext = createContext({});
@@ -7,22 +7,37 @@ export const AdvancedGasFeePopoverContextProvider = ({ children }) => {
   const [gasLimit, setGasLimit] = useState();
   const [maxFeePerGas, setMaxFeePerGas] = useState();
   const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState();
-  const [isDirty, setDirty] = useState();
-  const [hasError, setHasError] = useState(false);
+  const [errors, setErrors] = useState({
+    maxFeePerGas: false,
+    maxPriorityFeePerGas: false,
+    gasLimit: false,
+  });
+
+  const setErrorValue = useCallback(
+    (field, value) => {
+      if (errors[field] !== value) {
+        setErrors({ ...errors, [field]: value });
+      }
+    },
+    [errors, setErrors],
+  );
+  const [maxBaseFee, setMaxBaseFee] = useState();
 
   return (
     <AdvancedGasFeePopoverContext.Provider
       value={{
         gasLimit,
-        hasError,
-        isDirty,
+        hasErrors:
+          errors.maxFeePerGas || errors.maxPriorityFeePerGas || errors.gasLimit,
+        gasErrors: errors,
         maxFeePerGas,
         maxPriorityFeePerGas,
-        setDirty,
+        setErrorValue,
+        maxBaseFee,
         setGasLimit,
-        setHasError,
         setMaxPriorityFeePerGas,
         setMaxFeePerGas,
+        setMaxBaseFee,
       }}
     >
       {children}

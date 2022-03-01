@@ -22,9 +22,8 @@ const validateGasLimit = (gasLimit, minimumGasLimitDec) => {
 const AdvancedGasFeeGasLimit = () => {
   const t = useI18nContext();
   const {
-    setDirty,
     setGasLimit: setGasLimitInContext,
-    setHasError,
+    setErrorValue,
   } = useAdvancedGasFeePopoverContext();
   const {
     gasLimit: gasLimitInTransaction,
@@ -36,19 +35,19 @@ const AdvancedGasFeeGasLimit = () => {
 
   const updateGasLimit = (value) => {
     setGasLimit(value);
-    setDirty(true);
   };
 
   useEffect(() => {
     setGasLimitInContext(gasLimit);
     const error = validateGasLimit(gasLimit, minimumGasLimitDec);
     setGasLimitError(error);
-    setHasError(Boolean(error));
-  }, [gasLimit, minimumGasLimitDec, setGasLimitInContext, setHasError]);
+    setErrorValue('gasLimit', error === 'editGasLimitOutOfBoundsV2');
+  }, [gasLimit, minimumGasLimitDec, setGasLimitInContext, setErrorValue]);
 
   if (isEditing) {
     return (
       <FormField
+        dataTestId="gas-limit-input"
         error={
           gasLimitError
             ? t(gasLimitError, [minimumGasLimitDec - 1, MAX_GAS_LIMIT_DEC])
@@ -67,12 +66,14 @@ const AdvancedGasFeeGasLimit = () => {
       tag={TYPOGRAPHY.Paragraph}
       variant={TYPOGRAPHY.H7}
       className="advanced-gas-fee-gas-limit"
+      margin={[4, 2, 0, 2]}
     >
       <strong>
         <I18nValue messageKey="gasLimitV2" />
       </strong>
       <span>{gasLimit}</span>
       <Button
+        data-testid="advanced-gas-fee-edit"
         className="advanced-gas-fee-gas-limit__edit-link"
         onClick={() => setEditing(true)}
         type="link"

@@ -2,10 +2,15 @@
   height: 500px;
 
   &__wrapper {
-    border-top: 1px solid $ui-grey;
+    border-top: 1px solid var(--ui-grey);
+    height: 100%;
   }
 
   &__content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     padding: 16px 12px;
 
     & .error-message {
@@ -14,7 +19,7 @@
     }
 
     &__header {
-      color: $ui-4;
+      color: var(--ui-4);
       font-size: 10px;
       font-weight: 700;
       margin: 0 12px;
@@ -36,7 +41,7 @@
     }
 
     &__separator {
-      border-top: 1px solid $ui-grey;
+      border-top: 1px solid var(--ui-grey);
       margin: 8px 12px;
     }
   }
@@ -46,6 +51,6 @@
   }
 
   &__know-more a {
-    color: $primary-1;
+    color: var(--primary-1);
   }
 }

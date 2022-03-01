@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Respingeți"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Scanați codul QR"
+  },
   "about": {
     "message": "Despre"
-  },
-  "aboutSettingsDescription": {
-    "message": "Versiune, centru de asistență și date de contact"
   },
   "acceleratingATransaction": {
     "message": "* Accelerarea unei tranzacții folosind un preț în gas mai mare îi crește șansele de a fi procesată mai rapid de rețea, însă acest lucru nu este garantat întotdeauna."
@@ -56,9 +59,6 @@
   "advancedOptions": {
     "message": "Opțiuni avansate"
   },
-  "advancedSettingsDescription": {
-    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat"
-  },
   "amount": {
     "message": "Sumă"
   },
@@ -69,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Aprobați"
@@ -130,9 +138,6 @@
   "blockExplorerView": {
     "message": "Vizualizare cont la $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Folosește Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
@@ -248,6 +253,9 @@
   "currentLanguage": {
     "message": "Limba actuală"
   },
+  "custom": {
+    "message": "Avansate"
+  },
   "customGas": {
     "message": "Particularizați Gas"
   },
@@ -275,17 +283,8 @@
   "deleteNetworkDescription": {
     "message": "Sigur vreți să ștergeți această rețea?"
   },
-  "depositEther": {
-    "message": "Depuneți Ether"
-  },
   "details": {
     "message": "Detalii"
-  },
-  "directDepositEther": {
-    "message": "Depuneți direct Ether"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Dacă deja aveți Ether, cel mai rapid mod de a avea Ether în portofelul nou prin depunere directă."
   },
   "done": {
     "message": "Efectuat"
@@ -405,9 +404,6 @@
   "gasUsed": {
     "message": "Suma gaz folosită"
   },
-  "generalSettingsDescription": {
-    "message": "Schimb valutar, moneda principală, limba, blockies identicon"
-  },
   "getEther": {
     "message": "Obțineți Ether"
   },
@@ -512,6 +508,9 @@
   "learnMore": {
     "message": "Aflați mai multe"
   },
+  "learnMoreUpperCase": {
+    "message": "Aflați mai multe"
+  },
   "ledgerAccountRestriction": {
     "message": "Trebuie să folosiți ultimul cont înainte să adăugați altul."
   },
@@ -563,9 +562,6 @@
   "myAccounts": {
     "message": "Conturile mele"
   },
-  "needEtherInWallet": {
-    "message": "Pentru a interacționa cu aplicațiile descentralizate prin intermediul MetaMask, trebuie să aveți Ether în portofel."
-  },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
     "description": "User is important an account and needs to add a file to continue"
@@ -575,9 +571,6 @@
   },
   "networkName": {
     "message": "Numele rețelei"
-  },
-  "networkSettingsDescription": {
-    "message": "Adăugați și editați rețelele RPC particularizate"
   },
   "networks": {
     "message": "Rețele"
@@ -759,9 +752,6 @@
   "restore": {
     "message": "Restabilește"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaurați-vă contul folosind fraza inițială"
-  },
   "revealSeedWords": {
     "message": "Arată cuvintele din seed"
   },
@@ -813,9 +803,6 @@
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
-  "securitySettingsDescription": {
-    "message": "Setările de confidențialitate și fraza seed a portofelului"
-  },
   "seedPhrasePlaceholder": {
     "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
@@ -848,9 +835,6 @@
   },
   "sendTokens": {
     "message": "Trimiteți indicative"
-  },
-  "separateEachWord": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
   "settings": {
     "message": "Setări"

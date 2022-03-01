@@ -142,7 +142,7 @@ export default function ItemList({
                 ) : null}
               </div>
               {result.notImported && (
-                <Button type="confirm" onClick={onClick}>
+                <Button type="primary" onClick={onClick}>
                   {t('import')}
                 </Button>
               )}

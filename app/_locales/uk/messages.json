@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "Відхилити"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "Сканувати QR-код"
+  },
   "about": {
     "message": "Про Google Chrome"
-  },
-  "aboutSettingsDescription": {
-    "message": "Версія, центр підтримки та контактна інформація"
   },
   "acceleratingATransaction": {
     "message": "* Прискорення транзакції за допомогою вищих цін на газ підвищує її шанси бути обробленою мережею швидше, але це не завжди гарантовано."
@@ -56,9 +59,6 @@
   "advancedOptions": {
     "message": "Додаткові параметри"
   },
-  "advancedSettingsDescription": {
-    "message": "Отримайте доступ до функцій розробника, завантажте Логи станів, перезапустіть обліковий запис, налаштуйте тестові сітки та персоніфіковані RPC"
-  },
   "amount": {
     "message": "Кількість"
   },
@@ -69,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "Затвердити"
@@ -130,9 +138,6 @@
   "blockExplorerView": {
     "message": "Переглянути обліковий запис на $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Викоритовувати Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Ваш браузер не підтримується..."
@@ -248,6 +253,9 @@
   "currentLanguage": {
     "message": "Поточна мова"
   },
+  "custom": {
+    "message": "Розширені"
+  },
   "customGas": {
     "message": "Налаштувати пальне"
   },
@@ -275,17 +283,8 @@
   "deleteNetworkDescription": {
     "message": "Ви впевнені, що хочете видалити цю мережу?"
   },
-  "depositEther": {
-    "message": "Депонувати Ether"
-  },
   "details": {
     "message": "Деталі"
-  },
-  "directDepositEther": {
-    "message": "Внести безпосередньо Ефір"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Якщо ви вже маєте ефір, пряме переведення – найшвидший спосіб передати ефір у свій гаманець."
   },
   "done": {
     "message": "Готово"
@@ -412,9 +411,6 @@
   "general": {
     "message": "Загальні"
   },
-  "generalSettingsDescription": {
-    "message": "Конверсія валют, первісна валюта, мова, ідентикон блокіз"
-  },
   "getEther": {
     "message": "Отримати Ефір"
   },
@@ -522,6 +518,9 @@
   "learnMore": {
     "message": "Дізнатись більше"
   },
+  "learnMoreUpperCase": {
+    "message": "Дізнатись більше"
+  },
   "ledgerAccountRestriction": {
     "message": "Потрібно скористатися своїм останнім обліковим записом, перш ніж додавати новий."
   },
@@ -576,9 +575,6 @@
   "myAccounts": {
     "message": "Мої облікові записи"
   },
-  "needEtherInWallet": {
-    "message": "Щоб взаємодіяти з децентралізованими застосунками використовуючи MetaMask, вам буде потрібен Ether у вашому гаманці."
-  },
   "needImportFile": {
     "message": "Потрібно вибрати файл для імпорту.",
     "description": "User is important an account and needs to add a file to continue"
@@ -588,9 +584,6 @@
   },
   "networkName": {
     "message": "Ім’я мережі"
-  },
-  "networkSettingsDescription": {
-    "message": "Додавайте та редагуйте мережі RPC, що можна налаштовувати"
   },
   "networks": {
     "message": "Мережі"
@@ -772,9 +765,6 @@
   "restore": {
     "message": "Відновити"
   },
-  "restoreAccountWithSeed": {
-    "message": "Відновіть ваш обліковий запис за допомогою seed-фрази"
-  },
   "revealSeedWords": {
     "message": "Показати мнемонічні слова"
   },
@@ -826,9 +816,6 @@
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"
   },
-  "securitySettingsDescription": {
-    "message": "Налаштування приватності та початкова фраза гаманця"
-  },
   "seedPhrasePlaceholder": {
     "message": "Відділіть кожне слово одним пробілом"
   },
@@ -861,9 +848,6 @@
   },
   "sendTokens": {
     "message": "Надіслати токени"
-  },
-  "separateEachWord": {
-    "message": "Відділіть кожне слово одним пробілом"
   },
   "settings": {
     "message": "Налаштування"

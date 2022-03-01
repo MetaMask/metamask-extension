@@ -13,6 +13,7 @@ import { useMetricEvent } from '../../../hooks/useMetricEvent';
 import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 
 const AssetListItem = ({
   className,
@@ -65,21 +66,26 @@ const AssetListItem = ({
       <Button
         type="link"
         className="asset-list-item__send-token-button"
-        onClick={(e) => {
+        onClick={async (e) => {
           e.stopPropagation();
           sendTokenEvent();
-          dispatch(
-            updateSendAsset({
-              type: ASSET_TYPES.TOKEN,
-              details: {
-                address: tokenAddress,
-                decimals: tokenDecimals,
-                symbol: tokenSymbol,
-              },
-            }),
-          ).then(() => {
+          try {
+            await dispatch(
+              updateSendAsset({
+                type: ASSET_TYPES.TOKEN,
+                details: {
+                  address: tokenAddress,
+                  decimals: tokenDecimals,
+                  symbol: tokenSymbol,
+                },
+              }),
+            );
             history.push(SEND_ROUTE);
-          });
+          } catch (err) {
+            if (!err.message.includes(INVALID_ASSET_TYPE)) {
+              throw err;
+            }
+          }
         }}
       >
         {t('sendSpecifiedTokens', [tokenSymbol])}
@@ -138,28 +144,28 @@ const AssetListItem = ({
 };
 
 AssetListItem.propTypes = {
-  'className': PropTypes.string,
+  className: PropTypes.string,
   'data-testid': PropTypes.string,
-  'iconClassName': PropTypes.string,
-  'onClick': PropTypes.func.isRequired,
-  'tokenAddress': PropTypes.string,
-  'tokenSymbol': PropTypes.string,
-  'tokenDecimals': PropTypes.number,
-  'tokenImage': PropTypes.string,
-  'warning': PropTypes.node,
-  'primary': PropTypes.string,
-  'secondary': PropTypes.string,
-  'identiconBorder': PropTypes.bool,
-  'isERC721': PropTypes.bool,
+  iconClassName: PropTypes.string,
+  onClick: PropTypes.func.isRequired,
+  tokenAddress: PropTypes.string,
+  tokenSymbol: PropTypes.string,
+  tokenDecimals: PropTypes.number,
+  tokenImage: PropTypes.string,
+  warning: PropTypes.node,
+  primary: PropTypes.string,
+  secondary: PropTypes.string,
+  identiconBorder: PropTypes.bool,
+  isERC721: PropTypes.bool,
 };
 
 AssetListItem.defaultProps = {
-  'className': undefined,
+  className: undefined,
   'data-testid': undefined,
-  'iconClassName': undefined,
-  'tokenAddress': undefined,
-  'tokenImage': undefined,
-  'warning': undefined,
+  iconClassName: undefined,
+  tokenAddress: undefined,
+  tokenImage: undefined,
+  warning: undefined,
 };
 
 export default AssetListItem;

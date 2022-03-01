@@ -18,8 +18,8 @@ const styles = {
     '&$materialError': {
       color: '#aeaeae',
     },
-    'fontWeight': '400',
-    'color': '#aeaeae',
+    fontWeight: '400',
+    color: '#aeaeae',
   },
   materialFocused: {},
   materialUnderline: {
@@ -32,7 +32,7 @@ const styles = {
     color: '#aeaeae',
   },
   materialWhitePaddedInput: {
-    'padding': '8px',
+    padding: '8px',
 
     '&::placeholder': {
       color: '#aeaeae',
@@ -61,12 +61,12 @@ const styles = {
     'label + &': {
       marginTop: '9px',
     },
-    'border': '1px solid #BBC0C5',
-    'height': '48px',
-    'borderRadius': '6px',
-    'padding': '0 16px',
-    'display': 'flex',
-    'alignItems': 'center',
+    border: '1px solid #BBC0C5',
+    height: '48px',
+    borderRadius: '6px',
+    padding: '0 16px',
+    display: 'flex',
+    alignItems: 'center',
     '&$inputFocused': {
       border: '1px solid #2f9ae0',
     },
@@ -88,6 +88,7 @@ const getMaterialThemeInputProps = ({
   dir,
   classes: { materialLabel, materialFocused, materialError, materialUnderline },
   startAdornment,
+  endAdornment,
   min,
   max,
   autoComplete,
@@ -101,6 +102,7 @@ const getMaterialThemeInputProps = ({
   },
   InputProps: {
     startAdornment,
+    endAdornment,
     classes: {
       underline: materialUnderline,
     },
@@ -122,12 +124,14 @@ const getMaterialWhitePaddedThemeInputProps = ({
     materialWhitePaddedUnderline,
   },
   startAdornment,
+  endAdornment,
   min,
   max,
   autoComplete,
 }) => ({
   InputProps: {
     startAdornment,
+    endAdornment,
     classes: {
       root: materialWhitePaddedRoot,
       focused: materialWhitePaddedFocused,
@@ -157,6 +161,7 @@ const getBorderedThemeInputProps = ({
   },
   largeLabel,
   startAdornment,
+  endAdornment,
   min,
   max,
   autoComplete,
@@ -172,6 +177,7 @@ const getBorderedThemeInputProps = ({
   },
   InputProps: {
     startAdornment,
+    endAdornment,
     disableUnderline: true,
     classes: {
       root: inputRoot,
@@ -188,8 +194,8 @@ const getBorderedThemeInputProps = ({
 });
 
 const themeToInputProps = {
-  'material': getMaterialThemeInputProps,
-  'bordered': getBorderedThemeInputProps,
+  material: getMaterialThemeInputProps,
+  bordered: getBorderedThemeInputProps,
   'material-white-padded': getMaterialWhitePaddedThemeInputProps,
 };
 
@@ -198,6 +204,7 @@ const TextField = ({
   classes,
   theme,
   startAdornment,
+  endAdornment,
   largeLabel,
   dir,
   min,
@@ -209,6 +216,7 @@ const TextField = ({
   const inputProps = themeToInputProps[theme]({
     classes,
     startAdornment,
+    endAdornment,
     largeLabel,
     dir,
     min,
@@ -246,7 +254,7 @@ TextField.propTypes = {
   /**
    * Show error message
    */
-  error: PropTypes.string,
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   /**
    * Add custom CSS class
    */
@@ -257,6 +265,7 @@ TextField.propTypes = {
    */
   theme: PropTypes.oneOf(['bordered', 'material', 'material-white-padded']),
   startAdornment: PropTypes.element,
+  endAdornment: PropTypes.element,
   /**
    * Show large label
    */

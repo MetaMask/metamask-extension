@@ -1,8 +1,11 @@
+@use "sass:list";
 @use "sass:map";
 @use "design-system";
 @use "utilities";
 
 $attributes: padding, margin, gap;
+$extraProperties: auto;
+$attributesToApplyExtraProperties: margin;
 
 .box {
   // Padding, Margin, and Gap
@@ -20,6 +23,20 @@ $attributes: padding, margin, gap;
         }
       }
     }
+
+    @if list.index($attributesToApplyExtraProperties, $attribute) {
+      @each $property in $extraProperties {
+        &--#{$attribute}-#{$property} {
+          #{$attribute}: $property;
+        }
+
+        @each $direction in design-system.$directions {
+          &--#{$attribute}-#{$direction}-#{$property} {
+            #{$attribute}-#{$direction}: $property;
+          }
+        }
+      }
+    }
   }
 
   // Borders
@@ -31,7 +48,7 @@ $attributes: padding, margin, gap;
 
   @each $variant, $color in design-system.$color-map {
     &--border-color-#{$variant} {
-      border-color: $color;
+      border-color: var($color);
     }
   }
 
@@ -149,7 +166,7 @@ $attributes: padding, margin, gap;
   // background
   @each $variant, $color in design-system.$color-map {
     &--background-color-#{$variant} {
-      background-color: $color;
+      background-color: var($color);
     }
   }
 }

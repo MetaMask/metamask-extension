@@ -9,8 +9,13 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import Identicon from '../../ui/identicon';
 import SiteIcon from '../../ui/site-icon';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import { PRIMARY } from '../../../helpers/constants/common';
-import { KEYRING_TYPES } from '../../../../shared/constants/hardware-wallets';
+import {
+  PRIMARY,
+  SUPPORT_LINK,
+  ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
+  SUPPORT_REQUEST_LINK,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../helpers/constants/common';
 import {
   SETTINGS_ROUTE,
   NEW_ACCOUNT_ROUTE,
@@ -21,8 +26,7 @@ import {
 import TextField from '../../ui/text-field';
 import SearchIcon from '../../ui/search-icon';
 import Button from '../../ui/button';
-
-import { isBeta } from '../../../helpers/utils/build-types';
+import KeyRingLabel from './keyring-label';
 
 export function AccountMenuItem(props) {
   const { icon, children, text, subText, className, onClick } = props;
@@ -121,7 +125,7 @@ export default class AccountMenu extends Component {
           marginLeft: '8px',
         }}
       >
-        <SearchIcon />
+        <SearchIcon color="currentColor" />
       </InputAdornment>
     );
 
@@ -210,7 +214,7 @@ export default class AccountMenu extends Component {
               type={PRIMARY}
             />
           </div>
-          {this.renderKeyringType(keyring)}
+          <KeyRingLabel keyring={keyring} />
           {iconAndNameForOpenSubject ? (
             <div className="account-menu__icon-list">
               <SiteIcon
@@ -223,34 +227,6 @@ export default class AccountMenu extends Component {
         </div>
       );
     });
-  }
-
-  renderKeyringType(keyring) {
-    const { t } = this.context;
-
-    // Sometimes keyrings aren't loaded yet
-    if (!keyring) {
-      return null;
-    }
-
-    const { type } = keyring;
-    let label;
-
-    switch (type) {
-      case KEYRING_TYPES.TREZOR:
-      case KEYRING_TYPES.LEDGER:
-      case KEYRING_TYPES.LATTICE:
-      case KEYRING_TYPES.QR:
-        label = t('hardware');
-        break;
-      case 'Simple Key Pair':
-        label = t('imported');
-        break;
-      default:
-        return null;
-    }
-
-    return <div className="keyring-label allcaps">{label}</div>;
   }
 
   resetSearchQuery() {
@@ -320,11 +296,11 @@ export default class AccountMenu extends Component {
     }
 
     let supportText = t('support');
-    let supportLink = 'https://support.metamask.io';
-    if (isBeta()) {
-      supportText = t('needHelpSubmitTicket');
-      supportLink = 'https://metamask.zendesk.com/hc/en-us/requests/new';
-    }
+    let supportLink = SUPPORT_LINK;
+    ///: BEGIN:ONLY_INCLUDE_IN(beta,flask)
+    supportText = t('needHelpSubmitTicket');
+    supportLink = SUPPORT_REQUEST_LINK;
+    ///: END:ONLY_INCLUDE_IN
 
     return (
       <div className="account-menu">

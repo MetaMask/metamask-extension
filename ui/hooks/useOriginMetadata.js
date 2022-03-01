@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
-import { getSubjectMetadata } from '../selectors';
+import { getTargetSubjectMetadata } from '../selectors';
+import { SUBJECT_TYPES } from '../../shared/constants/app';
 
 /**
  * @typedef {Object} OriginMetadata
@@ -11,29 +12,42 @@ import { getSubjectMetadata } from '../selectors';
 
 /**
  * Gets origin metadata from redux and formats it appropriately.
+ *
  * @param {string} origin - The fully formed url of the site interacting with
- *  MetaMask
- * @returns {OriginMetadata | null} - The origin metadata available for the
- *  current origin
+ * MetaMask
+ * @returns {OriginMetadata | null} The origin metadata available for the
+ * current origin
  */
 export function useOriginMetadata(origin) {
-  const subjectMetadata = useSelector(getSubjectMetadata);
+  const targetSubjectMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, origin),
+  );
+
   if (!origin) {
     return null;
   }
-  const url = new URL(origin);
 
-  const minimumOriginMetadata = {
-    host: url.host,
-    hostname: url.hostname,
-    origin,
-  };
+  let minimumOriginMetadata = null;
+  try {
+    const url = new URL(origin);
+    minimumOriginMetadata = {
+      host: url.host,
+      hostname: url.hostname,
+      origin,
+      subjectType: SUBJECT_TYPES.UNKNOWN,
+    };
+  } catch (_) {
+    // do nothing
+  }
 
-  if (subjectMetadata?.[origin]) {
+  if (targetSubjectMetadata && minimumOriginMetadata) {
     return {
       ...minimumOriginMetadata,
-      ...subjectMetadata[origin],
+      ...targetSubjectMetadata,
     };
+  } else if (targetSubjectMetadata) {
+    return targetSubjectMetadata;
   }
+
   return minimumOriginMetadata;
 }

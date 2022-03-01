@@ -3,7 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { useLocation } from 'react-router-dom';
-import { describe } from 'globalthis/implementation';
 import { initialState, SEND_STAGES } from '../../ducks/send';
 import { ensInitialState } from '../../ducks/ens';
 import { renderWithProvider } from '../../../test/jest';
@@ -80,6 +79,9 @@ const baseStore = {
       '0x0': { balance: '0x0', address: '0x0' },
     },
     identities: { '0x0': { address: '0x0' } },
+  },
+  appState: {
+    sendInputCurrencySwitched: false,
   },
 };
 

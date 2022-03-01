@@ -19,8 +19,8 @@ import { isEqualCaseInsensitive } from '../helpers/utils/util';
  *                              ensure fiat is shown even if the property is not set in state.
  * @param {number} [overrides.exchangeRate] -  An exhchange rate to use instead of the one selected from state
  * @param {boolean} [overrides.showFiat] - If truthy, ensures the fiat value is shown even if the showFiat value from state is falsey
- * @param {boolean} hideCurrencySymbol Indicates whether the returned formatted amount should include the trailing currency symbol
- * @return {string} - The formatted token amount in the user's chosen fiat currency
+ * @param {boolean} hideCurrencySymbol - Indicates whether the returned formatted amount should include the trailing currency symbol
+ * @returns {string} The formatted token amount in the user's chosen fiat currency
  */
 export function useTokenFiatAmount(
   tokenAddress,

@@ -52,10 +52,13 @@ export default function reduceApp(state = {}, action) {
       testKey: null,
     },
     gasLoadingAnimationIsShowing: false,
+    smartTransactionsError: null,
+    smartTransactionsErrorMessageDismissed: false,
     ledgerWebHidConnectedStatus: WEBHID_CONNECTED_STATUSES.UNKNOWN,
     ledgerTransportStatus: TRANSPORT_STATES.NONE,
     newNetworkAdded: '',
     newCollectibleAddedMessage: '',
+    sendInputCurrencySwitched: false,
     ...state,
   };
 
@@ -93,6 +96,19 @@ export default function reduceApp(state = {}, action) {
       return {
         ...appState,
         qrCodeData: action.value,
+      };
+
+    // Smart Transactions errors.
+    case actionConstants.SET_SMART_TRANSACTIONS_ERROR:
+      return {
+        ...appState,
+        smartTransactionsError: action.payload,
+      };
+
+    case actionConstants.DISMISS_SMART_TRANSACTIONS_ERROR_MESSAGE:
+      return {
+        ...appState,
+        smartTransactionsErrorMessageDismissed: true,
       };
 
     // modal methods:
@@ -365,7 +381,11 @@ export default function reduceApp(state = {}, action) {
         ...appState,
         ledgerTransportStatus: action.value,
       };
-
+    case actionConstants.SET_CURRENCY_INPUT_SWITCH:
+      return {
+        ...appState,
+        sendInputCurrencySwitched: action.value,
+      };
     default:
       return appState;
   }
@@ -412,4 +432,8 @@ export function getLedgerWebHidConnectedStatus(state) {
 
 export function getLedgerTransportStatus(state) {
   return state.appState.ledgerTransportStatus;
+}
+
+export function toggleCurrencySwitch(value) {
+  return { type: actionConstants.SET_CURRENCY_INPUT_SWITCH, value };
 }

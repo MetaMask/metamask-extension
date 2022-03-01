@@ -1,5 +1,4 @@
-const { strict: assert } = require('assert');
-const { withFixtures, largeDelayMs } = require('../helpers');
+const { convertToHexValue, withFixtures, largeDelayMs } = require('../helpers');
 const ThreeboxMockServer = require('../mock-3box/threebox-mock-server');
 
 describe('Threebox', function () {
@@ -8,7 +7,7 @@ describe('Threebox', function () {
       {
         secretKey:
           '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: 25000000000000000000,
+        balance: convertToHexValue(25000000000000000000),
       },
     ],
   };
@@ -82,11 +81,6 @@ describe('Threebox', function () {
         // goes to the settings screen
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-
-        // finds the blockies toggle turned on
-        const toggleLabel = await driver.findElement('.toggle-button__status');
-        const toggleLabelText = await toggleLabel.getText();
-        assert.equal(toggleLabelText, 'ON');
 
         // finds the restored address in the contact list
         await driver.clickElement({ text: 'Contacts', tag: 'div' });

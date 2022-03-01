@@ -3,8 +3,8 @@ import log from 'loglevel';
 
 /**
  * @typedef {Object} InitState
- * @property {Boolean} seedPhraseBackedUp Indicates whether the user has completed the seed phrase backup challenge
- * @property {Boolean} completedOnboarding Indicates whether the user has completed the onboarding flow
+ * @property {boolean} seedPhraseBackedUp Indicates whether the user has completed the seed phrase backup challenge
+ * @property {boolean} completedOnboarding Indicates whether the user has completed the onboarding flow
  */
 
 /**
@@ -20,7 +20,7 @@ export default class OnboardingController {
   /**
    * Creates a new controller instance
    *
-   * @param {OnboardingOptions} [opts] Controller configuration parameters
+   * @param {OnboardingOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
     const initialTransientState = {
@@ -57,7 +57,6 @@ export default class OnboardingController {
    * Setter for the `firstTimeFlowType` property
    *
    * @param {string} type - Indicates the type of first time flow - create or import - the user wishes to follow
-   *
    */
   setFirstTimeFlowType(type) {
     this.store.updateState({ firstTimeFlowType: type });
@@ -70,7 +69,7 @@ export default class OnboardingController {
    * @param {string} tabId - The id of the tab registering
    */
   registerOnboarding = async (location, tabId) => {
-    if (this.completedOnboarding) {
+    if (this.store.getState().completedOnboarding) {
       log.debug('Ignoring registerOnboarding; user already onboarded');
       return;
     }

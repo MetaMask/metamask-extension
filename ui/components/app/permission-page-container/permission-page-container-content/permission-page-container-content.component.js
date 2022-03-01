@@ -7,10 +7,11 @@ import PermissionsConnectPermissionList from '../../permissions-connect-permissi
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {
     subjectMetadata: PropTypes.shape({
-      extensionId: PropTypes.string,
-      iconUrl: PropTypes.string,
       name: PropTypes.string.isRequired,
       origin: PropTypes.string.isRequired,
+      subjectType: PropTypes.string.isRequired,
+      extensionId: PropTypes.string,
+      iconUrl: PropTypes.string,
     }),
     selectedPermissions: PropTypes.object.isRequired,
     selectedIdentities: PropTypes.array,
@@ -70,11 +71,14 @@ export default class PermissionPageContainerContent extends PureComponent {
       subjectMetadata,
       selectedIdentities,
       allIdentitiesSelected,
+      selectedPermissions,
     } = this.props;
     const { t } = this.context;
 
     if (subjectMetadata.extensionId) {
       return t('externalExtension', [subjectMetadata.extensionId]);
+    } else if (!selectedPermissions.eth_accounts) {
+      return t('permissionRequestCapitalized');
     } else if (allIdentitiesSelected) {
       return t('connectToAll', [
         this.renderAccountTooltip(t('connectToAllAccounts')),
@@ -99,7 +103,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       <div className="permission-approval-container__content">
         <div className="permission-approval-container__content-container">
           <PermissionsConnectHeader
-            icon={subjectMetadata.iconUrl}
+            iconUrl={subjectMetadata.iconUrl}
             iconName={subjectMetadata.name}
             headerTitle={title}
             headerText={

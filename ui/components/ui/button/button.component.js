@@ -5,24 +5,21 @@ import classnames from 'classnames';
 const CLASSNAME_DEFAULT = 'btn-default';
 const CLASSNAME_PRIMARY = 'btn-primary';
 const CLASSNAME_SECONDARY = 'btn-secondary';
-const CLASSNAME_CONFIRM = 'btn-primary';
 const CLASSNAME_RAISED = 'btn-raised';
 const CLASSNAME_LARGE = 'btn--large';
 const CLASSNAME_ROUNDED = 'btn--rounded';
-const CLASSNAME_FIRST_TIME = 'btn--first-time';
+const CLASSNAME_INLINE = 'btn--inline';
 
 const typeHash = {
-  'default': CLASSNAME_DEFAULT,
-  'primary': CLASSNAME_PRIMARY,
-  'secondary': CLASSNAME_SECONDARY,
-  'warning': 'btn-warning',
-  'danger': 'btn-danger',
+  default: CLASSNAME_DEFAULT,
+  primary: CLASSNAME_PRIMARY,
+  secondary: CLASSNAME_SECONDARY,
+  warning: 'btn-warning',
+  danger: 'btn-danger',
   'danger-primary': 'btn-danger-primary',
-  'link': 'btn-link',
-  // TODO: Legacy button type to be deprecated
-  'confirm': CLASSNAME_CONFIRM,
-  'raised': CLASSNAME_RAISED,
-  'first-time': CLASSNAME_FIRST_TIME,
+  link: 'btn-link',
+  inline: CLASSNAME_INLINE,
+  raised: CLASSNAME_RAISED,
 };
 
 const Button = ({
@@ -35,7 +32,7 @@ const Button = ({
   rounded = true,
   ...buttonProps
 }) => {
-  const doRounding = rounded && type !== 'link';
+  const doRounding = rounded && type !== 'link' && type !== 'inline';
   // To support using the Button component to render styled links that are semantic html
   // we swap the html tag we use to render this component and delete any buttonProps that
   // we know to be erroneous attributes for a link. We will likely want to extract Link
@@ -73,12 +70,34 @@ const Button = ({
 };
 
 Button.propTypes = {
+  /**
+   * The type of variation a button can be.
+   * Can be one of 'default','primary','secondary','warning','danger','danger-primary' or 'link'
+   */
   type: PropTypes.string,
+  /**
+   * If true sets the html 'type' attribute to type="submit"
+   */
   submit: PropTypes.bool,
+  /**
+   * Increase the height of the button to 54px
+   */
   large: PropTypes.bool,
+  /**
+   * Additional className to provide on the root element of the button
+   */
   className: PropTypes.string,
+  /**
+   * The children of the button component
+   */
   children: PropTypes.node,
+  /**
+   * Provide an icon component for an icon to appear on the left side of the button
+   */
   icon: PropTypes.node,
+  /**
+   * Buttons are rounded by default.
+   */
   rounded: PropTypes.bool,
 };
 

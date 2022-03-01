@@ -5,7 +5,7 @@
     position: relative;
     display: flex;
     justify-content: center;
-    background-color: $Grey-000;
+    background-color: var(--Grey-000);
     border-bottom: none;
     padding: 14px 0 3px 0;
 
@@ -39,8 +39,8 @@
     margin: 0;
     padding: 0.5rem;
     flex: 0 0 auto;
-    background-color: $Grey-000;
-    border-bottom: 1px solid $alto;
+    background-color: var(--Grey-000);
+    border-bottom: 1px solid var(--alto);
   }
 
   &__select-recipient-wrapper {
@@ -58,7 +58,7 @@
         @extend %row-nowrap;
 
         padding: 1rem;
-        border-bottom: 1px solid $alto;
+        border-bottom: 1px solid var(--alto);
         border-radius: 0;
         align-items: center;
         justify-content: flex-start;
@@ -87,7 +87,7 @@
 
         padding: 0.5rem;
         text-align: center;
-        border-bottom: 1px solid $alto;
+        border-bottom: 1px solid var(--alto);
         justify-content: flex-start;
       }
     }
@@ -99,13 +99,13 @@
     &__group-label {
       @include H8;
 
-      background-color: $Grey-000;
-      color: $Grey-600;
+      background-color: var(--Grey-000);
+      color: var(--Grey-600);
       padding: 0.5rem 1rem;
-      border-bottom: 1px solid $alto;
+      border-bottom: 1px solid var(--alto);
 
       &:first-of-type {
-        border-top: 1px solid $alto;
+        border-top: 1px solid var(--alto);
       }
     }
 
@@ -115,7 +115,7 @@
 
       padding: 0.75rem 1rem;
       align-items: center;
-      border-bottom: 1px solid $alto;
+      border-bottom: 1px solid var(--alto);
       cursor: pointer;
 
       &:hover {
@@ -141,13 +141,13 @@
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
-        color: $black;
+        color: var(--black);
       }
 
       &__subtitle {
         @include H8;
 
-        color: $Grey-500;
+        color: var(--Grey-500);
       }
     }
 
@@ -167,14 +167,14 @@
     flex: 1 1 auto;
     width: 0;
     align-items: center;
-    background: $white;
+    background: var(--white);
     border-radius: 0.5rem;
     padding: 0.75rem 0.5rem;
-    border: 1px solid $Grey-100;
+    border: 1px solid var(--Grey-100);
     transition: border-color 150ms ease-in-out;
 
     &:focus-within {
-      border-color: $Grey-500;
+      border-color: var(--Grey-500);
     }
 
     &__status-icon {
@@ -199,7 +199,7 @@
       outline: none;
 
       &::placeholder {
-        color: $Grey-200;
+        color: var(--Grey-200);
       }
     }
 
@@ -226,7 +226,7 @@
     }
 
     &--valid {
-      border-color: $Blue-500;
+      border-color: var(--Blue-500);
 
       .ens-input__wrapper {
         &__status-icon {
@@ -238,7 +238,7 @@
 
           @include H7;
 
-          color: $Blue-500;
+          color: var(--Blue-500);
         }
       }
     }
@@ -257,7 +257,7 @@
     &__subtitle {
       @include H7;
 
-      color: $Grey-500;
+      color: var(--Grey-500);
       margin-top: 0.25rem;
     }
   }

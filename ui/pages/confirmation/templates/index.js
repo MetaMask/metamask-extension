@@ -6,10 +6,16 @@ import {
 } from '../../../store/actions';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import snapConfirm from './flask/snap-confirm/snap-confirm';
+///: END:ONLY_INCLUDE_IN
 
 const APPROVAL_TEMPLATES = {
   [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: addEthereumChain,
   [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: switchEthereumChain,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  [MESSAGE_TYPE.SNAP_CONFIRM]: snapConfirm,
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export const TEMPLATED_CONFIRMATION_MESSAGE_TYPES = Object.keys(
@@ -22,6 +28,7 @@ const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',
   'onApprove',
   'onCancel',
+  'networkDisplay',
 ];
 
 /**
@@ -43,7 +50,7 @@ const ALLOWED_TEMPLATE_KEYS = [
  */
 export async function getTemplateAlerts(pendingApproval) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getAlerts;
-  const results = fn ? await fn(pendingApproval) : undefined;
+  const results = fn ? await fn(pendingApproval) : [];
   if (!Array.isArray(results)) {
     throw new Error(`Template alerts must be an array, received: ${results}`);
   }
@@ -70,6 +77,7 @@ async function emptyState() {
  * page the object returned from the getState method will be set into the
  * confirmationState state object. Note, this state is not consumed by the page
  * itself.
+ *
  * @param {Object} pendingApproval - the object representing the confirmation
  */
 export async function getTemplateState(pendingApproval) {
@@ -89,6 +97,7 @@ export async function getTemplateState(pendingApproval) {
  * to be safe for templates to invoke. In the future we could put these behind
  * permission sets so that snaps that wish to manipulate state must ask for
  * explicit permission to do so.
+ *
  * @param {Function} dispatch - Redux dispatch function
  */
 function getAttenuatedDispatch(dispatch) {
@@ -102,6 +111,7 @@ function getAttenuatedDispatch(dispatch) {
 
 /**
  * Returns the templated values to be consumed in the confirmation page
+ *
  * @param {Object} pendingApproval - The pending confirmation object
  * @param {Function} t - Translation function
  * @param {Function} dispatch - Redux dispatch function

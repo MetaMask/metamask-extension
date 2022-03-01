@@ -1,9 +1,12 @@
 {
+  "QRHardwareSignRequestCancel": {
+    "message": "דחה"
+  },
+  "QRHardwareWalletImporterTitle": {
+    "message": "סריקת קוד QR"
+  },
   "about": {
     "message": "מידע כללי"
-  },
-  "aboutSettingsDescription": {
-    "message": "גרסה, מרכז תמיכה ופרטי יצירת קשר."
   },
   "acceleratingATransaction": {
     "message": "* האצת עסקה על ידי שימוש במחיר דלק גבוה יותר מגדילה את סיכוייה לעבור עיבוד מהיר יותר ע\"י הרשת, אך זה לא תמיד מובטח."
@@ -56,9 +59,6 @@
   "advancedOptions": {
     "message": "אפשרויות מתקדמות"
   },
-  "advancedSettingsDescription": {
-    "message": "קבלת גישה לפיצ'רים למפתחים, הורדת יומני מצב, איפוס חשבון, הגדרת testnets ו-RPC מותאם אישית."
-  },
   "amount": {
     "message": "כמות"
   },
@@ -69,6 +69,14 @@
   "appName": {
     "message": "MetaMask",
     "description": "The name of the application"
+  },
+  "appNameBeta": {
+    "message": "MetaMask Beta",
+    "description": "The name of the application (Beta)"
+  },
+  "appNameFlask": {
+    "message": "MetaMask Flask",
+    "description": "The name of the application (Flask)"
   },
   "approve": {
     "message": "אישור"
@@ -130,9 +138,6 @@
   "blockExplorerView": {
     "message": "הצג חשבון ב- $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "השתמש ב- Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "הדפדפן שלך אינו נתמך..."
@@ -248,6 +253,9 @@
   "currentLanguage": {
     "message": "שפה נוכחית"
   },
+  "custom": {
+    "message": "מתקדם"
+  },
   "customGas": {
     "message": "התאמה אישית של דלק"
   },
@@ -275,17 +283,8 @@
   "deleteNetworkDescription": {
     "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
   },
-  "depositEther": {
-    "message": "הפקדת את'ר"
-  },
   "details": {
     "message": "פרטים"
-  },
-  "directDepositEther": {
-    "message": "הפקד את'ר ישירות"
-  },
-  "directDepositEtherExplainer": {
-    "message": "אם כבר יש ברשותך את'ר (Ether) , הדרך המהירה ביותר להכניס את'ר לארנק החדש שלך היא באמצעות הפקדה ישירה."
   },
   "done": {
     "message": "סיום"
@@ -412,9 +411,6 @@
   "general": {
     "message": "כללי"
   },
-  "generalSettingsDescription": {
-    "message": "המרת מטבע, מטבע עיקרי, שפה, blockies identicon"
-  },
   "getEther": {
     "message": "השג/י את'ר"
   },
@@ -522,6 +518,9 @@
   "learnMore": {
     "message": "למדו עוד"
   },
+  "learnMoreUpperCase": {
+    "message": "למדו עוד"
+  },
   "ledgerAccountRestriction": {
     "message": "עליך להשתמש בחשבון האחרון שלך לפני שתוכל/י להוסיף חשבון חדש."
   },
@@ -573,9 +572,6 @@
   "myAccounts": {
     "message": "החשבונות שלי"
   },
-  "needEtherInWallet": {
-    "message": "כדי לתקשר עם אפליקציות מבוזרות באמצעות MetaMask, צריך להיות לך את'ר בארנק."
-  },
   "needImportFile": {
     "message": "יש לבחור קובץ לייצוא.",
     "description": "User is important an account and needs to add a file to continue"
@@ -585,9 +581,6 @@
   },
   "networkName": {
     "message": "שם רשת"
-  },
-  "networkSettingsDescription": {
-    "message": "הוסף וערוך רשתות RPC מותאמות אישית"
   },
   "networks": {
     "message": "רשתות"
@@ -769,9 +762,6 @@
   "restore": {
     "message": "שחזר"
   },
-  "restoreAccountWithSeed": {
-    "message": "שחזר את חשבונך באמצעות צירוף הגרעין"
-  },
   "revealSeedWords": {
     "message": "גלה מילות Seed"
   },
@@ -820,9 +810,6 @@
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
   },
-  "securitySettingsDescription": {
-    "message": "הגדרות פרטיות וצירוף הגרעין של הארנק"
-  },
   "seedPhrasePlaceholder": {
     "message": "הפרד/י בין המילים ברווח אחד"
   },
@@ -855,9 +842,6 @@
   },
   "sendTokens": {
     "message": "שלח טוקנים"
-  },
-  "separateEachWord": {
-    "message": "יש להפריד כל מילה עם רווח יחיד"
   },
   "settings": {
     "message": "הגדרות"

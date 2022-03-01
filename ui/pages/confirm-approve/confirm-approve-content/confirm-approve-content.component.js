@@ -26,6 +26,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
+import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 
 export default class ConfirmApproveContent extends Component {
@@ -95,12 +96,16 @@ export default class ConfirmApproveContent extends Component {
       >
         {showHeader && (
           <div className="confirm-approve-content__card-header">
-            <div className="confirm-approve-content__card-header__symbol">
-              {symbol}
-            </div>
-            <div className="confirm-approve-content__card-header__title">
-              {title}
-            </div>
+            {!supportsEIP1559V2 && (
+              <>
+                <div className="confirm-approve-content__card-header__symbol">
+                  {symbol}
+                </div>
+                <div className="confirm-approve-content__card-header__title">
+                  {title}
+                </div>
+              </>
+            )}
             {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559V2) && (
               <Box width={BLOCK_SIZES.ONE_SIXTH}>
                 <Button
@@ -134,7 +139,11 @@ export default class ConfirmApproveContent extends Component {
       hexTransactionTotal,
       txData,
       isMultiLayerFeeNetwork,
+      supportsEIP1559V2,
     } = this.props;
+    if (!isMultiLayerFeeNetwork && supportsEIP1559V2) {
+      return <GasDetailsItem />;
+    }
     return (
       <div className="confirm-approve-content__transaction-details-content">
         {isMultiLayerFeeNetwork ? (

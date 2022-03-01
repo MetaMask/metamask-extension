@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Jazzicon from '../jazzicon';
+import { getAssetImageURL } from '../../../helpers/utils/util';
 import BlockieIdenticon from './blockieIdenticon';
 
 const getStyles = (diameter) => ({
@@ -33,7 +34,7 @@ export default class Identicon extends PureComponent {
     /**
      * Used as the image source of the Identicon
      */
-    image: PropTypes.string,
+    image: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
     /**
      * Use the blockie type random image generator
      */
@@ -54,6 +55,10 @@ export default class Identicon extends PureComponent {
      * Add list of token in object
      */
     tokenList: PropTypes.object,
+    /**
+     * User preferred IPFS gateway
+     */
+    ipfsGateway: PropTypes.string,
   };
 
   static defaultProps = {
@@ -68,7 +73,19 @@ export default class Identicon extends PureComponent {
   };
 
   renderImage() {
-    const { className, diameter, image, alt, imageBorder } = this.props;
+    const { className, diameter, alt, imageBorder, ipfsGateway } = this.props;
+    let { image } = this.props;
+
+    if (Array.isArray(image) && image.length) {
+      image = image[0];
+    }
+
+    if (
+      typeof image === 'string' &&
+      image.toLowerCase().startsWith('ipfs://')
+    ) {
+      image = getAssetImageURL(image, ipfsGateway);
+    }
 
     return (
       <img
@@ -145,7 +162,7 @@ export default class Identicon extends PureComponent {
       return (
         <div
           className={classnames({ 'identicon__address-wrapper': addBorder })}
-          style={getStyles(size)}
+          style={addBorder ? getStyles(size) : null}
         >
           {useBlockie ? this.renderBlockie() : this.renderJazzicon()}
         </div>

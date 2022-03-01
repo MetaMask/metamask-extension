@@ -11,14 +11,15 @@ import TransactionDetailItem from '../transaction-detail-item/transaction-detail
 export default function TransactionDetail({
   rows = [],
   onEdit,
-  userAcknowledgedGasMissing,
+  userAcknowledgedGasMissing = false,
+  disableEditGasFeeButton = false,
 }) {
   const t = useI18nContext();
   const { supportsEIP1559V2 } = useGasFeeContext();
 
   return (
     <div className="transaction-detail">
-      {supportsEIP1559V2 && (
+      {supportsEIP1559V2 && !disableEditGasFeeButton && (
         <Box display="flex" justifyContent="flex-end" paddingTop={5}>
           <EditGasFeeButton
             userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -44,9 +45,6 @@ TransactionDetail.propTypes = {
    * onClick handler for the Edit link
    */
   onEdit: PropTypes.func,
-  /**
-   * If there is a error in getting correct estimates we show a message to the user
-   * which they can acknowledge and proceed with their transaction
-   */
-  userAcknowledgedGasMissing: PropTypes.bool.isRequired,
+  userAcknowledgedGasMissing: PropTypes.bool,
+  disableEditGasFeeButton: PropTypes.bool,
 };
