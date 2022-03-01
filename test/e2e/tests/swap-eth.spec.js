@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures, largeDelayMs } = require('../helpers');
+const { withFixtures } = require('../helpers');
 
 describe('Swap Eth for another Token', function () {
   const ganacheOptions = {
@@ -43,7 +43,7 @@ describe('Swap Eth for another Token', function () {
         await driver.clickElement(
           '[class="searchable-item-list__primary-label"]',
         );
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
+        await driver.clickElement({ text: 'Review Swap', tag: 'button' });
         await driver.waitForSelector('[class*="box--align-items-center"]');
         const estimatedEth = await driver.waitForSelector({
           css: '[class*="box--align-items-center"]',
@@ -56,12 +56,11 @@ describe('Swap Eth for another Token', function () {
         await driver.waitForSelector(
           '[class="fee-card__info-tooltip-container"]',
         );
-        await driver.waitForSelector(
-          '[data-testid="page-container-footer-next"]',
-        );
-        await driver.delay(largeDelayMs * 3);
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
-        await driver.waitForSelector('[class="awaiting-swap__header"]');
+        await driver.waitForSelector({
+          css: '[class="countdown-timer__time"]',
+          text: '0:35',
+        });
+        await driver.clickElement({ text: 'Swap', tag: 'button' });
         const sucessfulTransactionMessage = await driver.waitForSelector({
           css: '[class="awaiting-swap__header"]',
           text: 'Transaction complete',
@@ -75,7 +74,7 @@ describe('Swap Eth for another Token', function () {
           text: 'DAI',
         });
         assert.equal(await sucessfulTransactionToken.getText(), 'DAI');
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
+        await driver.clickElement({ text: 'Close', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const swaptotal = await driver.waitForSelector({
           css: '[class="transaction-list-item__primary-currency"]',
