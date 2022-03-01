@@ -1014,7 +1014,7 @@
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
   "enableSmartTransactions": {
-    "message": "Enable smart transactions"
+    "message": "Enable Smart Transactions"
   },
   "enableToken": {
     "message": "enable $1",
