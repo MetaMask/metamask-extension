@@ -392,11 +392,10 @@ export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map(
     ({ address, name, balance }) => ({
       address,
-      addressLabel: `${
-        name.length < TRUNCATED_NAME_CHAR_LIMIT
-          ? name
-          : `${name.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
-      } (${shortenAddress(address)})`,
+      addressLabel: `${name.length < TRUNCATED_NAME_CHAR_LIMIT
+        ? name
+        : `${name.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
+        } (${shortenAddress(address)})`,
       label: name,
       balance,
     }),
@@ -530,7 +529,7 @@ export function getRpcPrefsForCurrentProvider(state) {
   const { frequentRpcListDetail, provider } = state.metamask;
   const selectRpcInfo = frequentRpcListDetail.find(
     (rpcInfo) => rpcInfo.rpcUrl === provider.rpcUrl,
-  );
+  ) || provider.rpcUrl.length > 0 && provider;
   const { rpcPrefs = {} } = selectRpcInfo || {};
   return rpcPrefs;
 }

@@ -260,7 +260,6 @@ export default class NetworkController extends EventEmitter {
       this._checkInfuraAvailability(type);
     } else if (isAmino) {
       //#TODO: Maybe check is needed
-
     } else {
       this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
     }
@@ -316,8 +315,6 @@ export default class NetworkController extends EventEmitter {
     const rpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
     const name = NETWORK_TO_NAME_MAP[type];
 
-    console.log("HELLO", type, chainId, rpcUrl, name);
-
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
     const isAmino = AMINO_PROVIDER_TYPES.includes(type);
 
@@ -330,7 +327,6 @@ export default class NetworkController extends EventEmitter {
         nickname: '',
       });
     } else if (isAmino) {
-      // #FIXME: Failed to switch blockExplorerUrl
       // #TODO: Get explorer URL by map
       this.setProviderConfig({
         type,
@@ -340,7 +336,7 @@ export default class NetworkController extends EventEmitter {
         nickname: name,
         rpcPrefs: {
           blockExplorerUrl: AMINO_EXPLORER_URL,
-        }
+        },
       });
     }
   }
