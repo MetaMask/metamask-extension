@@ -55,6 +55,7 @@ describe('Hide token', function () {
   });
 });
 
+/* eslint-disable-next-line mocha/max-top-level-suites */
 describe('Add existing token using search', function () {
   const ganacheOptions = {
     accounts: [

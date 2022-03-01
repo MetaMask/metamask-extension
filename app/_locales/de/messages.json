@@ -1738,9 +1738,6 @@
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "Sammelobjekt wurde nicht hinzugefügt, weil: $1"
-  },
   "newCollectibleAddedMessage": {
     "message": "Sammelobjekt wurde erfolgreich hinzugefügt!"
   },
