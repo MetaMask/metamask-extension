@@ -190,7 +190,8 @@ class NetworkDropdown extends Component {
             <div className="network-check__transparent">✓</div>
           )}
           <ColorIndicator
-            color={opts.isLocalHost ? 'localhost' : COLORS.UI2}
+            // color={opts.isLocalHost ? 'localhost' : COLORS.UI2}
+            color={opts.isLocalHost ? 'localhost' : nickname.toLowerCase()}
             size={SIZES.LG}
             type={ColorIndicator.TYPES.FILLED}
             borderColor={borderColor}
@@ -356,15 +357,14 @@ class NetworkDropdown extends Component {
         </div>
 
         <div className="network-dropdown-list">
-          {this.renderNetworkEntry('mainnet')}
-          {this.renderNetworkEntry('amino')}
+          {/* {this.renderNetworkEntry('mainnet')} */}
 
           {this.renderCustomRpcList(
             rpcListDetailWithoutLocalHost,
             this.props.provider,
           )}
 
-          {shouldShowTestNetworks && (
+          {/* {shouldShowTestNetworks && (
             <>
               {this.renderNetworkEntry('ropsten')}
               {this.renderNetworkEntry('kovan')}
@@ -376,7 +376,7 @@ class NetworkDropdown extends Component {
                 { isLocalHost: true },
               )}
             </>
-          )}
+          )} */}
         </div>
 
         {this.renderAddCustomButton()}

@@ -25,6 +25,7 @@ const NetworksListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
     label,
     labelKey,
     rpcUrl,
+    viewOnly,
     providerType: currentProviderType,
   } = network;
 
@@ -58,12 +59,12 @@ const NetworksListItem = ({ network, networkIsSelected, selectedRpcUrl }) => {
         className={classnames('networks-tab__networks-list-name', {
           'networks-tab__networks-list-name--selected': displayNetworkListItemAsSelected,
           'networks-tab__networks-list-name--disabled':
-            currentProviderType !== NETWORK_TYPE_RPC &&
+            viewOnly &&
             !displayNetworkListItemAsSelected,
         })}
       >
         {label || t(labelKey)}
-        {currentProviderType !== NETWORK_TYPE_RPC && (
+        {viewOnly && (
           <LockIcon width="14px" height="17px" fill="#cdcdcd" />
         )}
       </div>

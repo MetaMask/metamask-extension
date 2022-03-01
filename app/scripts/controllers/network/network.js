@@ -13,15 +13,11 @@ import {
   RINKEBY,
   MAINNET,
   INFURA_PROVIDER_TYPES,
-  AMINO_PROVIDER_TYPES,
   NETWORK_TYPE_RPC,
   NETWORK_TYPE_TO_ID_MAP,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  NETWORK_TO_NAME_MAP,
   MAINNET_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   INFURA_BLOCKED_KEY,
-  AMINO_EXPLORER_URL,
 } from '../../../../shared/constants/network';
 import { SECOND } from '../../../../shared/constants/time';
 import {
@@ -37,30 +33,24 @@ const env = process.env.METAMASK_ENV;
 const fetchWithTimeout = getFetchWithTimeout(SECOND * 30);
 
 let defaultProviderConfigOpts;
-if (process.env.IN_TEST) {
-  defaultProviderConfigOpts = {
-    type: NETWORK_TYPE_RPC,
-    rpcUrl: 'http://localhost:8545',
-    chainId: '0x539',
-    nickname: 'Localhost 8545',
-  };
-} else if (process.env.METAMASK_DEBUG || env === 'test') {
-  // #TODO: Use AMINO as default
-  // defaultProviderConfigOpts = {
-  //   type: AMINO,
-  //   // type: NETWORK_TYPE_RPC,
-  //   rpcUrl: 'https://leucine0.node.alphacarbon.network',
-  //   chainId: '0x7a69',
-  //   // ticker: 'TACT',
-  //   // nickname: 'Amino',
-  //   // rpcPrefs: {
-  //   //   blockExplorerUrl: 'https://leucine0.blockscout.alphacarbon.network/',
-  //   // },
-  // }
-  defaultProviderConfigOpts = { type: RINKEBY, chainId: RINKEBY_CHAIN_ID };
-} else {
-  defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
-}
+// if (process.env.IN_TEST) {
+//   defaultProviderConfigOpts = {
+//     type: NETWORK_TYPE_RPC,
+//     rpcUrl: 'http://localhost:8545',
+//     chainId: '0x539',
+//     nickname: 'Localhost 8545',
+//   };
+// } else if (process.env.METAMASK_DEBUG || env === 'test') {
+//   defaultProviderConfigOpts = { type: RINKEBY, chainId: RINKEBY_CHAIN_ID };
+// } else {
+//   defaultProviderConfigOpts = { type: MAINNET, chainId: MAINNET_CHAIN_ID };
+// }
+defaultProviderConfigOpts = {
+  type: NETWORK_TYPE_RPC,
+  rpcUrl: 'https://leucine0.node.alphacarbon.network',
+  chainId: `0x${(31337).toString(16)}`,
+  nickname: 'Leucine100',
+};
 
 const defaultProviderConfig = {
   ticker: 'ETH',
@@ -254,12 +244,9 @@ export default class NetworkController extends EventEmitter {
     const initialNetwork = this.getNetworkState();
     const { type } = this.getProviderConfig();
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
-    const isAmino = AMINO_PROVIDER_TYPES.includes(type);
 
     if (isInfura) {
       this._checkInfuraAvailability(type);
-    } else if (isAmino) {
-      //#TODO: Maybe check is needed
     } else {
       this.emit(NETWORK_EVENTS.INFURA_IS_UNBLOCKED);
     }
@@ -311,34 +298,18 @@ export default class NetworkController extends EventEmitter {
       NETWORK_TYPE_RPC,
       `NetworkController - cannot call "setProviderType" with type "${NETWORK_TYPE_RPC}". Use "setRpcTarget"`,
     );
+    assert.ok(
+      INFURA_PROVIDER_TYPES.includes(type),
+      `Unknown Infura provider type "${type}".`,
+    )
     const { chainId } = NETWORK_TYPE_TO_ID_MAP[type];
-    const rpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
-    const name = NETWORK_TO_NAME_MAP[type];
-
-    const isInfura = INFURA_PROVIDER_TYPES.includes(type);
-    const isAmino = AMINO_PROVIDER_TYPES.includes(type);
-
-    if (isInfura) {
-      this.setProviderConfig({
-        type,
-        rpcUrl: '',
-        chainId,
-        ticker: 'ETH',
-        nickname: '',
-      });
-    } else if (isAmino) {
-      // #TODO: Get explorer URL by map
-      this.setProviderConfig({
-        type,
-        rpcUrl,
-        chainId,
-        ticker: 'TACT',
-        nickname: name,
-        rpcPrefs: {
-          blockExplorerUrl: AMINO_EXPLORER_URL,
-        },
-      });
-    }
+    this.setProviderConfig({
+      type,
+      rpcUrl: '',
+      chainId,
+      ticker: 'ETH',
+      nickname: '',
+    });
   }
 
   resetConnection() {
@@ -430,13 +401,10 @@ export default class NetworkController extends EventEmitter {
   _configureProvider({ type, rpcUrl, chainId }) {
     // infura type-based endpoints
     const isInfura = INFURA_PROVIDER_TYPES.includes(type);
-    const isAmino = AMINO_PROVIDER_TYPES.includes(type);
 
     if (isInfura) {
       this._configureInfuraProvider(type, this._infuraProjectId);
       // url-based rpc endpoints
-    } else if (isAmino) {
-      this._configureStandardProvider(rpcUrl, chainId);
     } else if (type === NETWORK_TYPE_RPC) {
       this._configureStandardProvider(rpcUrl, chainId);
     } else {

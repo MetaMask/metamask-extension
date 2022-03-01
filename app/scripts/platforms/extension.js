@@ -153,9 +153,9 @@ export default class ExtensionPlatform {
       // There was an on-chain failure
       receiptStatus === '0x0'
         ? this._showFailedTransaction(
-            txMeta,
-            'Transaction encountered an error.',
-          )
+          txMeta,
+          'Transaction encountered an error.',
+        )
         : this._showConfirmedTransaction(txMeta, rpcPrefs);
     } else if (status === TRANSACTION_STATUSES.FAILED) {
       this._showFailedTransaction(txMeta);
@@ -236,18 +236,17 @@ export default class ExtensionPlatform {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
 
     const title = 'Confirmed transaction';
-    const message = `Transaction ${nonce} confirmed! ${
-      url.length ? 'View on Etherscan' : ''
-    }`;
+    //#TODO: Change the message according to target chain
+    const message = `Transaction ${nonce} confirmed! ${url.length ? 'View on Etherscan' : ''
+      }`;
     this._showNotification(title, message, url);
   }
 
   _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = 'Failed transaction';
-    const message = `Transaction ${nonce} failed! ${
-      errorMessage || txMeta.err.message
-    }`;
+    const message = `Transaction ${nonce} failed! ${errorMessage || txMeta.err.message
+      }`;
     this._showNotification(title, message);
   }
 

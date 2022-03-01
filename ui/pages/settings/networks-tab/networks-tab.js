@@ -44,12 +44,14 @@ const NetworksTab = ({ addNewNetwork }) => {
   const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
     return {
       label: rpc.nickname,
+      labelKey: rpc.nickname.toLowerCase(),
       iconColor: '#6A737D',
       providerType: NETWORK_TYPE_RPC,
       rpcUrl: rpc.rpcUrl,
       chainId: rpc.chainId,
       ticker: rpc.ticker,
       blockExplorerUrl: rpc.rpcPrefs?.blockExplorerUrl || '',
+      viewOnly: rpc.viewOnly,
     };
   });
 

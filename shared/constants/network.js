@@ -3,7 +3,6 @@ export const RINKEBY = 'rinkeby';
 export const KOVAN = 'kovan';
 export const MAINNET = 'mainnet';
 export const GOERLI = 'goerli';
-export const AMINO = 'amino';
 export const LOCALHOST = 'localhost';
 export const NETWORK_TYPE_RPC = 'rpc';
 
@@ -12,7 +11,6 @@ export const ROPSTEN_NETWORK_ID = '3';
 export const RINKEBY_NETWORK_ID = '4';
 export const GOERLI_NETWORK_ID = '5';
 export const KOVAN_NETWORK_ID = '42';
-export const AMINO_NETWORK_ID = '31337';
 export const LOCALHOST_NETWORK_ID = '1337';
 
 export const MAINNET_CHAIN_ID = '0x1';
@@ -20,7 +18,6 @@ export const ROPSTEN_CHAIN_ID = '0x3';
 export const RINKEBY_CHAIN_ID = '0x4';
 export const GOERLI_CHAIN_ID = '0x5';
 export const KOVAN_CHAIN_ID = '0x2a';
-export const AMINO_CHAIN_ID = '0x7a69';
 export const LOCALHOST_CHAIN_ID = '0x539';
 export const BSC_CHAIN_ID = '0x38';
 export const OPTIMISM_CHAIN_ID = '0xa';
@@ -39,7 +36,6 @@ export const MAX_SAFE_CHAIN_ID = 4503599627370476;
 export const ROPSTEN_DISPLAY_NAME = 'Ropsten';
 export const RINKEBY_DISPLAY_NAME = 'Rinkeby';
 export const KOVAN_DISPLAY_NAME = 'Kovan';
-export const AMINO_DISPLAY_NAME = 'Amino';
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
@@ -53,10 +49,7 @@ export const RINKEBY_RPC_URL = getRpcUrl('rinkeby');
 export const KOVAN_RPC_URL = getRpcUrl('kovan');
 export const MAINNET_RPC_URL = getRpcUrl('mainnet');
 export const GOERLI_RPC_URL = getRpcUrl('goerli');
-export const AMINO_RPC_URL = 'https://leucine0.node.alphacarbon.network';
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
-
-export const AMINO_EXPLORER_URL = 'https://leucine0.blockscout.alphacarbon.network/';
 
 export const ETH_SYMBOL = 'ETH';
 export const WETH_SYMBOL = 'WETH';
@@ -75,14 +68,12 @@ export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
 export const AVAX_TOKEN_IMAGE_URL = './images/avax-token.png';
 
 export const INFURA_PROVIDER_TYPES = [ROPSTEN, RINKEBY, KOVAN, MAINNET, GOERLI];
-export const AMINO_PROVIDER_TYPES = [AMINO];
 
 export const TEST_CHAINS = [
   ROPSTEN_CHAIN_ID,
   RINKEBY_CHAIN_ID,
   GOERLI_CHAIN_ID,
   KOVAN_CHAIN_ID,
-  AMINO_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
 ];
 
@@ -95,7 +86,6 @@ export const NETWORK_TYPE_TO_ID_MAP = {
   [KOVAN]: { networkId: KOVAN_NETWORK_ID, chainId: KOVAN_CHAIN_ID },
   [GOERLI]: { networkId: GOERLI_NETWORK_ID, chainId: GOERLI_CHAIN_ID },
   [MAINNET]: { networkId: MAINNET_NETWORK_ID, chainId: MAINNET_CHAIN_ID },
-  [AMINO]: { networkId: AMINO_NETWORK_ID, chainId: AMINO_CHAIN_ID },
   [LOCALHOST]: { networkId: LOCALHOST_NETWORK_ID, chainId: LOCALHOST_CHAIN_ID },
 };
 
@@ -105,14 +95,12 @@ export const NETWORK_TO_NAME_MAP = {
   [KOVAN]: KOVAN_DISPLAY_NAME,
   [MAINNET]: MAINNET_DISPLAY_NAME,
   [GOERLI]: GOERLI_DISPLAY_NAME,
-  [AMINO]: AMINO_DISPLAY_NAME,
   [LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
   [ROPSTEN_NETWORK_ID]: ROPSTEN_DISPLAY_NAME,
   [RINKEBY_NETWORK_ID]: RINKEBY_DISPLAY_NAME,
   [KOVAN_NETWORK_ID]: KOVAN_DISPLAY_NAME,
   [GOERLI_NETWORK_ID]: GOERLI_DISPLAY_NAME,
-  [AMINO_NETWORK_ID]: AMINO_DISPLAY_NAME,
   [MAINNET_NETWORK_ID]: MAINNET_DISPLAY_NAME,
   [LOCALHOST_NETWORK_ID]: LOCALHOST_DISPLAY_NAME,
 
@@ -120,7 +108,6 @@ export const NETWORK_TO_NAME_MAP = {
   [RINKEBY_CHAIN_ID]: RINKEBY_DISPLAY_NAME,
   [KOVAN_CHAIN_ID]: KOVAN_DISPLAY_NAME,
   [GOERLI_CHAIN_ID]: GOERLI_DISPLAY_NAME,
-  [AMINO_CHAIN_ID]: AMINO_DISPLAY_NAME,
   [MAINNET_CHAIN_ID]: MAINNET_DISPLAY_NAME,
   [LOCALHOST_CHAIN_ID]: LOCALHOST_DISPLAY_NAME,
 };
@@ -137,7 +124,6 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [RINKEBY_CHAIN_ID]: RINKEBY_RPC_URL,
   [KOVAN_CHAIN_ID]: KOVAN_RPC_URL,
   [GOERLI_CHAIN_ID]: GOERLI_RPC_URL,
-  [AMINO_CHAIN_ID]: AMINO_RPC_URL,
   [MAINNET_CHAIN_ID]: MAINNET_RPC_URL,
   [LOCALHOST_CHAIN_ID]: LOCALHOST_RPC_URL,
 };

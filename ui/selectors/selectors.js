@@ -529,7 +529,7 @@ export function getRpcPrefsForCurrentProvider(state) {
   const { frequentRpcListDetail, provider } = state.metamask;
   const selectRpcInfo = frequentRpcListDetail.find(
     (rpcInfo) => rpcInfo.rpcUrl === provider.rpcUrl,
-  ) || provider.rpcUrl.length > 0 && provider;
+  );
   const { rpcPrefs = {} } = selectRpcInfo || {};
   return rpcPrefs;
 }
