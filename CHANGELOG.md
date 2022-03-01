@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.10.2]
+### Uncategorized
+- Add EIP-712 support for Trezor ([#13693](https://github.com/MetaMask/metamask-extension/pull/13693))
+
 ## [10.10.1]
 ### Added
 - Swaps: Enable Avalanche ([#13653](https://github.com/MetaMask/metamask-extension/pull/13653))
@@ -2739,7 +2743,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.10.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.10.2...HEAD
+[10.10.2]: https://github.com/MetaMask/metamask-extension/compare/v10.10.1...v10.10.2
 [10.10.1]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...v10.10.1
 [10.10.0]: https://github.com/MetaMask/metamask-extension/compare/v10.9.3...v10.10.0
 [10.9.3]: https://github.com/MetaMask/metamask-extension/compare/v10.9.2...v10.9.3
