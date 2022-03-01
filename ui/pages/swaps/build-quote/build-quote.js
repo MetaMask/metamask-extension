@@ -595,7 +595,7 @@ export default function BuildQuote({
                 flexDirection={FLEX_DIRECTION.COLUMN}
               >
                 <img
-                  src="./images/logo/metamask-smart-transactions@4x.png"
+                  src="./images/logo/smart-transactions-header.png"
                   alt={t('swapSwapSwitch')}
                 />
               </Box>
