@@ -110,8 +110,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
         </Box>
       </Box>
     );
-    // eslint-disable-next-line
-  }, [isUnlocking, hasTriggeredUnlock]);
+  }, [isUnlocking, hasTriggeredUnlock, t]);
 
   const renderPostCompleteContent = useCallback(() => {
     return isUnlocking ? (
@@ -149,8 +148,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
         </div>
       </div>
     ) : null;
-    // eslint-disable-next-line
-  }, [isUnlocking, hasTriggeredUnlock]);
+  }, [isUnlocking, hasTriggeredUnlock, t]);
 
   return (
     <Button
