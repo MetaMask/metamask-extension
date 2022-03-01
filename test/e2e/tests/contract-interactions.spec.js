@@ -19,7 +19,8 @@ describe('Deploy contract and call contract methods', function () {
       },
     ],
   };
-  it('should display the correct account balance after contract interactions', async function () {
+  // eslint-disable-next-line
+  it.skip('should display the correct account balance after contract interactions', async function () {
     await withFixtures(
       {
         dapp: true,
