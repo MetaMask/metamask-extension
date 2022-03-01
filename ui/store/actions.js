@@ -684,17 +684,13 @@ export function updateEditableParams(txId, editableParams) {
       throw error;
     }
 
-    try {
-      dispatch(
-        updateTransactionParams(editableParams.id, editableParams.txParams),
-      );
-      const newState = await updateMetamaskStateFromBackground();
-      dispatch(updateMetamaskState(newState));
-      dispatch(showConfTxPage({ id: editableParams.id }));
-      return editableParams;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
+    dispatch(
+      updateTransactionParams(editableParams.id, editableParams.txParams),
+    );
+    const newState = await updateMetamaskStateFromBackground();
+    dispatch(updateMetamaskState(newState));
+    dispatch(showConfTxPage({ id: editableParams.id }));
+    return editableParams;
   };
 }
 
