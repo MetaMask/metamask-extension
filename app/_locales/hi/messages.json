@@ -1738,9 +1738,6 @@
     "message": "खाता $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "संग्रहणीय नहीं जोड़ा गया था क्योंकि: $1"
-  },
   "newCollectibleAddedMessage": {
     "message": "संग्रहणीय सफलतापूर्वक जोड़ा गया!"
   },

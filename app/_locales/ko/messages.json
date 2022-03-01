@@ -1738,9 +1738,6 @@
     "message": "계정 $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "다음 이유 때문에 수집 금액이 추가되지 않았습니다: $1"
-  },
   "newCollectibleAddedMessage": {
     "message": "수집이 성공적으로 추가되었습니다!"
   },

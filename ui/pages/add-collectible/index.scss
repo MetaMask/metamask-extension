@@ -1,0 +1,9 @@
+.add-collectible {
+  &__close {
+    color: var(--ui-black);
+    background: none;
+    flex: 0;
+    align-self: flex-start;
+    padding-right: 0;
+  }
+}

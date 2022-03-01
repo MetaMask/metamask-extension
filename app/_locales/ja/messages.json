@@ -1738,9 +1738,6 @@
     "message": "アカウント$1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "次の理由により、コレクティブルは追加されませんでした: $1"
-  },
   "newCollectibleAddedMessage": {
     "message": "コレクティブルが追加されました!"
   },
