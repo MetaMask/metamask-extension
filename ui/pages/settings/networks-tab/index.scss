@@ -1,15 +1,11 @@
 @use "design-system";
 
-input#search-networks {
-  font-size: 14px;
-
-  @media screen and (max-width: $break-small) {
-    font-size: 12px;
-  }
-}
-
 p#search-networks-helper-text {
   color: var(--ui-4);
+}
+
+.imageclosectn {
+  cursor: pointer;
 }
 
 .networks-tab {
@@ -150,7 +146,21 @@ p#search-networks-helper-text {
     max-width: 350px;
     border-right: 1px solid #d8d8d8;
 
+    &__custom-search-network {
+      margin-top: 24px;
+    }
+
+    .MuiInput-input {
+      font-size: 14px;
+
+      @media screen and (max-width: $break-small) {
+        font-size: 12px;
+      }
+    }
+
     .MuiTextField-root {
+      padding-inline-end: 16px;
+
       @media screen and (max-width: $break-small) {
         padding: 0 24px 0 24px;
       }

@@ -38,10 +38,12 @@ const NetworksList = ({
           setSearchQuery(newSearchQuery);
         }}
         error={
-          networksToRenderProperly.length === 0 ? t('networkSearchError') : null
+          networksToRenderProperly.length === 0
+            ? t('settingsSearchMatchingNotFound')
+            : null
         }
         networksList={networksToRender}
-        searchQuery={searchQuery}
+        searchQueryInput={searchQuery}
       />
       {networksToRenderProperly.map(
         (network, index) =>

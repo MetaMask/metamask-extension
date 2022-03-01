@@ -10,7 +10,7 @@ export default function CustomContentSearch({
   onSearch,
   error,
   networksList,
-  searchQuery,
+  searchQueryInput,
 }) {
   const t = useContext(I18nContext);
   const [searchIconColor, setSearchIconColor] = useState('#9b9b9b');
@@ -26,7 +26,6 @@ export default function CustomContentSearch({
     keys: ['label', 'labelKey'],
   });
 
-  // eslint-disable-next-line no-shadow
   const handleSearch = async (searchQuery) => {
     if (searchQuery === '') {
       setSearchIconColor('#9b9b9b');
@@ -41,7 +40,7 @@ export default function CustomContentSearch({
 
   const renderStartAdornment = () => {
     return (
-      <InputAdornment position="start" style={{ marginRight: '12px' }}>
+      <InputAdornment position="start">
         <SearchIcon color={searchIconColor} />
       </InputAdornment>
     );
@@ -50,19 +49,18 @@ export default function CustomContentSearch({
   const renderEndAdornment = () => {
     return (
       <>
-        {searchQuery && (
+        {searchQueryInput && (
           <InputAdornment
             className="imageclosectn"
             position="end"
             onClick={() => handleSearch('')}
-            style={{ cursor: 'pointer' }}
           >
             <img
               className="imageclose"
               src="images/close-gray.svg"
               width="17"
               height="17"
-              alt=""
+              alt="Close Image"
             />
           </InputAdornment>
         )}
@@ -75,16 +73,14 @@ export default function CustomContentSearch({
       id="search-networks"
       placeholder={t('customContentSearch')}
       type="text"
-      value={searchQuery}
+      value={searchQueryInput}
       onChange={(e) => handleSearch(e.target.value)}
       error={error}
       fullWidth
       autoFocus
       autoComplete="off"
-      style={{
-        backgroundColor: '#fff',
-        paddingInlineEnd: '16px',
-        marginTop: '24px',
+      classes={{
+        inputRoot: 'networks-tab__networks-list__custom-search-network',
       }}
       startAdornment={renderStartAdornment()}
       endAdornment={renderEndAdornment()}
@@ -96,5 +92,5 @@ CustomContentSearch.propTypes = {
   onSearch: PropTypes.func,
   error: PropTypes.string,
   networksList: PropTypes.array,
-  searchQuery: PropTypes.string,
+  searchQueryInput: PropTypes.string,
 };

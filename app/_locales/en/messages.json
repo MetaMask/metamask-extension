@@ -1955,9 +1955,6 @@
   "networkNameTestnet": {
     "message": "Testnet"
   },
-  "networkSearchError": {
-    "message": "No matching results found."
-  },
   "networkSettingsChainIdDescription": {
     "message": "The chain ID is used for signing transactions. It must match the chain ID returned by the network. You can enter a decimal or '0x'-prefixed hexadecimal number, but we will display the number in decimal."
   },
@@ -2795,7 +2792,7 @@
     "message": "Settings"
   },
   "settingsSearchMatchingNotFound": {
-    "message": "No matching results found"
+    "message": "No matching results found."
   },
   "shorthandVersion": {
     "message": "v$1",
