@@ -29,6 +29,18 @@
       }
     }
 
+    &__weak {
+      color: var(--error-1);
+    }
+
+    &__average {
+      color: var(--secondary-3);
+    }
+
+    &__strong {
+      color: var(--success-3);
+    }
+
     .form-field__input {
       height: 50px;
     }

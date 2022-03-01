@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import zxcvbn from 'zxcvbn';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
@@ -25,6 +26,7 @@ import {
   TwoStepProgressBar,
   twoStepStages,
 } from '../../../components/app/step-progress-bar';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default function CreatePassword({
   createNewAccount,
@@ -35,6 +37,8 @@ export default function CreatePassword({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [passwordStrength, setPasswordStrength] = useState('');
+  const [passwordStrengthText, setPasswordStrengthText] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [termsChecked, setTermsChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -58,10 +62,68 @@ export default function CreatePassword({
   }, [password, confirmPassword, passwordError, confirmPasswordError]);
 
   const handlePasswordChange = (passwordInput) => {
-    let error = '';
     let confirmError = '';
-    if (passwordInput && passwordInput.length < 8) {
-      error = t('passwordNotLongEnough');
+    let passwordStrengthDescription = '';
+    let passwordStrengthInput;
+    const passwordEvaluation = zxcvbn(passwordInput);
+
+    switch (passwordEvaluation.score) {
+      case 0:
+        passwordStrengthInput = t('passwordStrength', [
+          <span
+            key={passwordEvaluation.score}
+            className="create-password__form__weak"
+          >
+            {t('weak')}
+          </span>,
+        ]);
+        passwordStrengthDescription = t('passwordStrengthDescription');
+        break;
+      case 1:
+        passwordStrengthInput = t('passwordStrength', [
+          <span
+            key={passwordEvaluation.score}
+            className="create-password__form__weak"
+          >
+            {t('weak')}
+          </span>,
+        ]);
+        passwordStrengthDescription = t('passwordStrengthDescription');
+        break;
+      case 2:
+        passwordStrengthInput = t('passwordStrength', [
+          <span
+            key={passwordEvaluation.score}
+            className="create-password__form__weak"
+          >
+            {t('weak')}
+          </span>,
+        ]);
+        passwordStrengthDescription = t('passwordStrengthDescription');
+        break;
+      case 3:
+        passwordStrengthInput = t('passwordStrength', [
+          <span
+            key={passwordEvaluation.score}
+            className="create-password__form__average"
+          >
+            {t('average')}
+          </span>,
+        ]);
+        passwordStrengthDescription = t('passwordStrengthDescription');
+        break;
+      case 4:
+        passwordStrengthInput = t('passwordStrength', [
+          <span
+            key={passwordEvaluation.score}
+            className="create-password__form__strong"
+          >
+            {t('strong')}
+          </span>,
+        ]);
+        break;
+      default:
+        break;
     }
 
     if (confirmPassword && passwordInput !== confirmPassword) {
@@ -69,7 +131,8 @@ export default function CreatePassword({
     }
 
     setPassword(passwordInput);
-    setPasswordError(error);
+    setPasswordStrength(passwordStrengthInput);
+    setPasswordStrengthText(passwordStrengthDescription);
     setConfirmPasswordError(confirmError);
   };
 
@@ -133,7 +196,8 @@ export default function CreatePassword({
           <FormField
             dataTestId="create-password-new"
             autoFocus
-            error={passwordError}
+            passwordStrength={passwordStrength}
+            passwordStrengthText={passwordStrengthText}
             onChange={handlePasswordChange}
             password={!showPassword}
             titleText={t('newPassword')}
@@ -181,12 +245,12 @@ export default function CreatePassword({
                 <a
                   onClick={(e) => e.stopPropagation()}
                   key="create-password__link-text"
-                  href="https://metamask.io/terms.html"
+                  href={ZENDESK_URLS.PASSWORD_ARTICLE}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <span className="create-password__link-text">
-                    {t('learnMore')}
+                    {t('learnMoreUpperCase')}
                   </span>
                 </a>,
               ])}

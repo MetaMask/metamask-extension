@@ -66,7 +66,7 @@ export default function OnboardingFlow() {
       return;
     }
 
-    if (isInitialized && !isUnlocked) {
+    if (!isInitialized && isUnlocked) {
       history.push(ONBOARDING_UNLOCK_ROUTE);
     }
   }, [
