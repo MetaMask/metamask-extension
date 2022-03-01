@@ -49,7 +49,6 @@ describe('Settings search feature', function () {
           text: 'Advanced gas controls',
         });
 
-        console.log(`ispisi tekst spana: ${await searchResultLabel.getText()}`);
         assert.equal(
           await searchResultLabel.getText(),
           'Advanced gas controls',
