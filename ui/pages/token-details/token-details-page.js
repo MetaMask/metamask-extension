@@ -93,7 +93,7 @@ export default function TokenDetailsPage() {
             color={COLORS.BLACK}
             className="token-details__token-value"
           >
-            {tokenBalance}
+            {tokenBalance || ''}
           </Typography>
           <Box marginTop={1}>
             <Identicon

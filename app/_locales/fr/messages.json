@@ -1738,9 +1738,6 @@
     "message": "Compte $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "Le collectible n’a pas été ajouté, car : $1"
-  },
   "newCollectibleAddedMessage": {
     "message": "Le collectible a été ajouté avec succès !"
   },

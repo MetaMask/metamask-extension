@@ -1738,9 +1738,6 @@
     "message": "账户 $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "未添加收藏，因为：$1"
-  },
   "newCollectibleAddedMessage": {
     "message": "收藏已成功添加！"
   },
