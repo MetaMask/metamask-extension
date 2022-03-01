@@ -634,6 +634,26 @@ export default class MetamaskController extends EventEmitter {
       state: initState.SnapController,
       messenger: snapControllerMessenger,
     });
+
+    this.rateLimitController = new RateLimitController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'RateLimitController',
+      }),
+      implementations: {
+        showNativeNotification: (origin, message) => {
+          const subjectMetadataState = this.controllerMessenger.call(
+            'SubjectMetadataController:getState',
+          );
+
+          const originMetadata = subjectMetadataState.subjectMetadata[origin];
+
+          this.platform._showNotification(
+            originMetadata?.name ?? origin,
+            message,
+          );
+        },
+      },
+    });
     ///: END:ONLY_INCLUDE_IN
 
     this.detectTokensController = new DetectTokensController({
@@ -1033,10 +1053,12 @@ export default class MetamaskController extends EventEmitter {
             type: MESSAGE_TYPE.SNAP_CONFIRM,
             requestData: confirmationData,
           }),
-        showNotification: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'NotificationControllerV2:show',
-        ),
+        showNotification: (origin, args) =>
+          this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'RateLimitController:call',
+            { type: 'showNativeNotification', args: [origin, args[1]] },
+          ),
         updateSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:updateSnapState',
