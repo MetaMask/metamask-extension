@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import I18nValue from '../../../components/ui/i18n-value';
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
   getSettingsSectionNumber,
@@ -250,11 +249,9 @@ export default class ExperimentalTab extends PureComponent {
     return (
       <div className="settings-page__content-row">
         <div className="settings-page__content-item">
-          <span>
-            <I18nValue messageKey="theme" />
-          </span>
+          <span>{this.context.t('theme')}</span>
           <div className="settings-page__content-description">
-            <I18nValue messageKey="themeDescription" />
+            {this.context.t('themeDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
