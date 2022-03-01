@@ -37,7 +37,7 @@ describe('Test Snap Confirm', function () {
         });
 
         // switch to metamask extension and click connect
-        await driver.waitUntilXWindowHandles(2);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -52,7 +52,7 @@ describe('Test Snap Confirm', function () {
         );
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(2);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -64,7 +64,7 @@ describe('Test Snap Confirm', function () {
         });
 
         // click send inputs on test snap page
-        await driver.waitUntilXWindowHandles(1);
+        await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.clickElement({
@@ -73,7 +73,7 @@ describe('Test Snap Confirm', function () {
         });
 
         // hit 'approve' on the custom confirm
-        await driver.waitUntilXWindowHandles(2);
+        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
@@ -85,7 +85,7 @@ describe('Test Snap Confirm', function () {
         });
 
         // check the results of the custom confirm
-        await driver.waitUntilXWindowHandles(1);
+        await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         const confirmResult = await driver.findElement('.sendResults');
