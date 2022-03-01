@@ -1014,7 +1014,7 @@
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
   "enableSmartTransactions": {
-    "message": "Enable smart transactions"
+    "message": "Enable Smart Transactions"
   },
   "enableToken": {
     "message": "enable $1",
@@ -2949,19 +2949,19 @@
     "message": "Store this phrase in a password manager like 1Password."
   },
   "stxAreHere": {
-    "message": "Smart transactions are here!"
+    "message": "Smart Transactions are here!"
   },
   "stxBenefit1": {
-    "message": "Decrease transaction costs"
+    "message": "Minimize transaction costs"
   },
   "stxBenefit2": {
-    "message": "Reduce failures & minimize costs"
+    "message": "Reduce transaction failures"
   },
   "stxBenefit3": {
-    "message": "Protect from front-running"
+    "message": "Eliminate stuck transactions"
   },
   "stxBenefit4": {
-    "message": "Eliminate stuck transactions"
+    "message": "Prevent front-running"
   },
   "stxCancelled": {
     "message": "Swap would have failed"
@@ -2973,7 +2973,7 @@
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
   },
   "stxDescription": {
-    "message": "Smart transactions use MetaMask smart contracts to simulate transactions before submitting in order to..."
+    "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Transactions will allow MetaMask to programmatically optimize your Swap to help:"
   },
   "stxFailure": {
     "message": "Swap failed"
@@ -2995,7 +2995,7 @@
     "message": "Privately submitting the Swap..."
   },
   "stxSubDescription": {
-    "message": "Enabling allows MetaMask to simulate transactions, proactively cancel bad transactions and sign MetaMask Swaps transactions for you."
+    "message": "* Smart Transactions will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
   },
   "stxSuccess": {
     "message": "Swap complete!"
