@@ -19,15 +19,15 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "मेटामास्क/MetaMask",
+    "message": "मेटामास्क/Amino",
     "description": "The name of the application"
   },
   "appNameBeta": {
-    "message": "MetaMask Beta",
+    "message": "Amino Beta",
     "description": "The name of the application (Beta)"
   },
   "appNameFlask": {
-    "message": "MetaMask Flask",
+    "message": "Amino Flask",
     "description": "The name of the application (Flask)"
   },
   "approve": {
