@@ -15,6 +15,7 @@ const QuoteDetails = ({
   feeInEth,
   networkFees,
   metaMaskFee,
+  hideEstimatedGasFee,
 }) => {
   const t = useContext(I18nContext);
   return (
@@ -55,19 +56,21 @@ const QuoteDetails = ({
           <span className="quote-details__bold">{` ${destinationTokenSymbol}`}</span>
         </div>
       </div>
-      <div className="quote-details__row">
-        <div className="quote-details__detail-header">
-          {t('swapEstimatedNetworkFees')}
-          <InfoTooltip
-            position="bottom"
-            contentText={t('swapEstimatedNetworkFeesInfo')}
-          />
+      {!hideEstimatedGasFee && (
+        <div className="quote-details__row">
+          <div className="quote-details__detail-header">
+            {t('swapEstimatedNetworkFees')}
+            <InfoTooltip
+              position="bottom"
+              contentText={t('swapEstimatedNetworkFeesInfo')}
+            />
+          </div>
+          <div className="quote-details__detail-content">
+            <span>{feeInEth}</span>
+            <span className="quote-details__light-grey">{` (${networkFees})`}</span>
+          </div>
         </div>
-        <div className="quote-details__detail-content">
-          <span>{feeInEth}</span>
-          <span className="quote-details__light-grey">{` (${networkFees})`}</span>
-        </div>
-      </div>
+      )}
       <div className="quote-details__row">
         <div className="quote-details__detail-header">
           {t('swapSource')}
@@ -105,6 +108,7 @@ QuoteDetails.propTypes = {
   feeInEth: PropTypes.string.isRequired,
   networkFees: PropTypes.string.isRequired,
   metaMaskFee: PropTypes.number.isRequired,
+  hideEstimatedGasFee: PropTypes.bool,
 };
 
 export default QuoteDetails;

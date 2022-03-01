@@ -753,9 +753,6 @@
   "restore": {
     "message": "Obnovi"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnovi račun z seed phrase"
-  },
   "revealSeedWords": {
     "message": "Razkrij seed words"
   },

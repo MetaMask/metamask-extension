@@ -32,6 +32,7 @@ export default function SortList({
   setSortDirection,
   sortColumn = null,
   setSortColumn,
+  hideEstimatedGasFee,
 }) {
   const t = useContext(I18nContext);
   const [noRowHover, setRowNowHover] = useState(false);
@@ -97,12 +98,16 @@ export default function SortList({
           className="select-quote-popover__column-header select-quote-popover__network-fees select-quote-popover__network-fees-header"
           onClick={() => onColumnHeaderClick('rawNetworkFees')}
         >
-          <span>{t('swapEstimatedNetworkFees')}</span>
-          <InfoTooltip
-            position="bottom"
-            contentText={t('swapEstimatedNetworkFeesInfo')}
-          />
-          <ToggleArrows />
+          {!hideEstimatedGasFee && (
+            <>
+              <span>{t('swapEstimatedNetworkFees')}</span>
+              <InfoTooltip
+                position="bottom"
+                contentText={t('swapEstimatedNetworkFeesInfo')}
+              />
+              <ToggleArrows />
+            </>
+          )}
         </div>
         <div
           className="select-quote-popover__column-header select-quote-popover__quote-source"
@@ -152,7 +157,7 @@ export default function SortList({
               )}
             </div>
             <div className="select-quote-popover__network-fees">
-              {networkFees}
+              {!hideEstimatedGasFee && networkFees}
             </div>
             <div className="select-quote-popover__quote-source">
               <div
@@ -199,4 +204,5 @@ SortList.propTypes = {
   setSortDirection: PropTypes.func.isRequired,
   sortColumn: PropTypes.string,
   setSortColumn: PropTypes.func.isRequired,
+  hideEstimatedGasFee: PropTypes.bool.isRequired,
 };

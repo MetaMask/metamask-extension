@@ -3,8 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import Identicon from '../../components/ui/identicon/identicon.component';
+import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import TokenDetailsPage from './token-details-page';
 
+const testTokenAddress = '0xaD6D458402F60fD3Bd25163575031ACDce07538A';
 const state = {
   metamask: {
     selectedAddress: '0xAddress',
@@ -86,10 +88,10 @@ const state = {
     },
     tokens: [
       {
-        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538A',
+        address: testTokenAddress,
         symbol: 'DAA',
         decimals: 18,
-        image: null,
+        image: 'testImage',
         isERC721: false,
       },
       {
@@ -101,27 +103,22 @@ const state = {
       },
     ],
   },
-  send: {
-    asset: {
-      balance: '0x0',
-      type: 'TOKEN',
-      details: {
-        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538A',
-        decimals: 18,
-        image: null,
-        isERC721: false,
-        symbol: 'DAI',
-      },
-    },
-  },
-  token: {
-    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-    decimals: 18,
-    image: './images/eth_logo.svg',
-    isERC721: false,
-    symbol: 'ETH',
-  },
 };
+
+jest.mock('react-router-dom', () => {
+  const original = jest.requireActual('react-router-dom');
+  return {
+    ...original,
+    useHistory: () => ({
+      push: jest.fn(),
+      location: {
+        state: {
+          tokenAddress: testTokenAddress,
+        },
+      },
+    }),
+  };
+});
 
 describe('TokenDetailsPage', () => {
   it('should render title "Token details" in token details page', () => {
@@ -139,14 +136,13 @@ describe('TokenDetailsPage', () => {
   });
 
   it('should render an icon image', () => {
-    const image = (
-      <Identicon
-        diameter={32}
-        address={state.send.asset.details.address}
-        image={state.token.image}
-      />
+    const token = state.metamask.tokens.find(({ address }) =>
+      isEqualCaseInsensitive(address, testTokenAddress),
     );
-    expect(image).toBeDefined();
+    const iconImage = (
+      <Identicon diameter={32} address={testTokenAddress} image={token.image} />
+    );
+    expect(iconImage).toBeDefined();
   });
 
   it('should render token contract address title in token details page', () => {
@@ -158,7 +154,7 @@ describe('TokenDetailsPage', () => {
   it('should render token contract address in token details page', () => {
     const store = configureMockStore()(state);
     const { getByText } = renderWithProvider(<TokenDetailsPage />, store);
-    expect(getByText(state.send.asset.details.address)).toBeInTheDocument();
+    expect(getByText(testTokenAddress)).toBeInTheDocument();
   });
 
   it('should call copy button when click is simulated', () => {
