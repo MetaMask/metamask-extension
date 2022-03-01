@@ -6626,6 +6626,11 @@ bn.js@=2.0.4:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-2.0.4.tgz#220a7cd677f7f1bfa93627ff4193776fe7819480"
   integrity sha1-Igp81nf38b+pNif/QZN3b+eBlIA=
 
+bn.js@>4.0.0, bn.js@^5.1.1, bn.js@^5.1.2, bn.js@^5.1.3, bn.js@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.2.0.tgz#358860674396c6997771a9d051fcc1b57d4ae002"
+  integrity sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw==
+
 bn.js@^1.0.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-1.3.0.tgz#0db4cbf96f8f23b742f5bcb9d1aa7a9994a05e83"
@@ -6635,11 +6640,6 @@ bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1, bn.js@^4.11.0, bn.js@^4.11.6, bn.js@^4
   version "4.11.9"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.9.tgz#26d556829458f9d1e81fc48952493d0ba3507828"
   integrity sha512-E6QoYqCKZfgatHTdHzs1RRKP7ip4vvm+EyRUeE2RF0NblwVvb0p6jSVeNTOFxPn26QXN2o6SMfNxKp6kU8zQaw==
-
-bn.js@^5.1.1, bn.js@^5.1.2, bn.js@^5.1.3, bn.js@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.2.0.tgz#358860674396c6997771a9d051fcc1b57d4ae002"
-  integrity sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw==
 
 bo-selector@0.0.10:
   version "0.0.10"
@@ -10789,6 +10789,15 @@ eth-block-tracker@^5.0.1:
     json-rpc-random-id "^1.0.1"
     pify "^3.0.0"
 
+eth-eip712-util-browser@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/eth-eip712-util-browser/-/eth-eip712-util-browser-0.0.3.tgz#334143d76d0a502b456e2ee5f1ce20f678a39fd3"
+  integrity sha512-RUXQ6Hjl0wEjm/ObWgYKjzMfO1segqcPFGnMPtBkkwGaHGbXXh6WFAn5vZfReK9WWujs35uIW2+kgJmh3FXtww==
+  dependencies:
+    bn.js ">4.0.0"
+    buffer "^6.0.3"
+    js-sha3 "^0.8.0"
+
 eth-ens-namehash@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/eth-ens-namehash/-/eth-ens-namehash-1.0.2.tgz#05ecdd6bac2d7fd7bc5ca84a993c6bad9da4edb9"
@@ -10886,15 +10895,15 @@ eth-keyring-controller@^6.2.0, eth-keyring-controller@^6.2.1:
     obs-store "^4.0.3"
 
 eth-lattice-keyring@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.4.0.tgz#0afab94fe1c9b13377e1c78660a725c9bc0639a0"
-  integrity sha512-AB+FzgnyqapcZmdLeVMUDGZqA09yRQZxoVm/qZaT3kb5e4jhWon4BGRo/g65JuNagC8SltIQY6fpDh/q5gXNTQ==
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.4.9.tgz#327a41fa25ef28dfc9fe87f2ce11e95139adfd67"
+  integrity sha512-ZflOgYrbuGJGPSDWgDA6PndCIlYRS2M+/bxKsJupbPgz/O8XwQdTGttszp0mHwOqPdvUULUmW08QCqd8trnuVg==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.1.1"
     bignumber.js "^9.0.1"
     ethereumjs-util "^7.0.10"
-    gridplus-sdk "^0.9.0"
+    gridplus-sdk "^0.9.7"
 
 eth-lib@0.2.8:
   version "0.2.8"
@@ -11190,11 +11199,6 @@ ethereumjs-wallet@^1.0.1:
     utf8 "^3.0.0"
     uuid "^3.3.2"
 
-ethers-eip712@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/ethers-eip712/-/ethers-eip712-0.2.0.tgz#52973b3a9a22638f7357283bf66624994c6e91ed"
-  integrity sha512-fgS196gCIXeiLwhsWycJJuxI9nL/AoUPGSQ+yvd+8wdWR+43G+J1n69LmWVWvAON0M6qNaf2BF4/M159U8fujQ==
-
 ethers@^4.0.20, ethers@^4.0.28:
   version "4.0.48"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.48.tgz#330c65b8133e112b0613156e57e92d9009d8fbbe"
@@ -11210,7 +11214,7 @@ ethers@^4.0.20, ethers@^4.0.28:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@^5.0.8, ethers@^5.4.0, ethers@^5.4.1, ethers@^5.4.2, ethers@^5.4.5:
+ethers@^5.0.8, ethers@^5.4.0, ethers@^5.4.1, ethers@^5.4.5:
   version "5.5.1"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.5.1.tgz#d3259a95a42557844aa543906c537106c0406fbf"
   integrity sha512-RodEvUFZI+EmFcE6bwkuJqpCYHazdzeR1nMzg+YWQSmQEsNtfl1KHGfp/FWZYl48bI/g7cgBeP2IlPthjiVngw==
@@ -13239,10 +13243,10 @@ graphql-request@^1.8.2:
   dependencies:
     cross-fetch "2.2.2"
 
-gridplus-sdk@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-0.9.0.tgz#6ed207e83dd0a607e472309a3d785ee2cf20c3cc"
-  integrity sha512-uhxYZ8xiZ5RwLdfZyRCE571I4tdQxsTRU0miaY7A/r+1UW6xS4xSYPYu3azEl0ZJ8sO5awfdDylrim6LMkHe+g==
+gridplus-sdk@^0.9.7:
+  version "0.9.10"
+  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-0.9.10.tgz#8835e8bc9a2ca7ae163520ddcc0b313350e67dd2"
+  integrity sha512-CNvhyaz3F8UvlHqihFJlOt+FenmFkb2dFrbBTyRth/nlzD8Tm0HjW+uyY1W0ekDp45Exz9l0VY0EmdvjphBe1w==
   dependencies:
     aes-js "^3.1.1"
     bech32 "^2.0.0"
@@ -13253,8 +13257,7 @@ gridplus-sdk@^0.9.0:
     buffer "^5.6.0"
     crc-32 "^1.2.0"
     elliptic "6.5.4"
-    ethers "^5.4.2"
-    ethers-eip712 "^0.2.0"
+    eth-eip712-util-browser "^0.0.3"
     js-sha3 "^0.8.0"
     rlp-browser "^1.0.1"
     secp256k1 "4.0.2"
