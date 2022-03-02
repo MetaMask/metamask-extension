@@ -190,7 +190,7 @@ class NetworkDropdown extends Component {
             <div className="network-check__transparent">✓</div>
           )}
           <ColorIndicator
-            color={opts.isLocalHost ? 'localhost' : COLORS.UI2}
+            color={opts.isLocalHost ? 'localhost' : COLORS.UI4}
             size={SIZES.LG}
             type={ColorIndicator.TYPES.FILLED}
             borderColor={borderColor}
