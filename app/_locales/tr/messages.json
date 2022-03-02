@@ -1741,9 +1741,6 @@
   "newNFTsDetected": {
     "message": "Yeni! NFT algılama"
   },
-  "newNFTsDetectedInfo": {
-    "message": "MetaMask'in otomatik olarak Opensea'den NFT'leri algılamasına ve MetaMask cüzdanınızda görüntülemesine izin verin."
-  },
   "newNetworkAdded": {
     "message": "\"$1\" başarılı bir şekilde eklendi!"
   },

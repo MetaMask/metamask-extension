@@ -1741,9 +1741,6 @@
   "newNFTsDetected": {
     "message": "Mới! Phát hiện NFT"
   },
-  "newNFTsDetectedInfo": {
-    "message": "Cho phép MetaMask tự động phát hiện NFT từ Opensea và hiển thị trong ví MetaMask của bạn."
-  },
   "newNetworkAdded": {
     "message": "“$1” đã được thêm thành công!"
   },

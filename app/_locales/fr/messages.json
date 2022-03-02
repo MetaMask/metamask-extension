@@ -1741,9 +1741,6 @@
   "newNFTsDetected": {
     "message": "Nouveau ! Détection de NFT"
   },
-  "newNFTsDetectedInfo": {
-    "message": "Cela permet à MetaMask de détecter automatiquement les NFT d’Opensea et de les afficher dans votre portefeuille MetaMask."
-  },
   "newNetworkAdded": {
     "message": "« $1 » a été ajouté avec succès !"
   },

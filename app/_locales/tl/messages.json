@@ -1741,9 +1741,6 @@
   "newNFTsDetected": {
     "message": "Bago! Pag-detect ng NFT"
   },
-  "newNFTsDetectedInfo": {
-    "message": "Payagan ang MetaMask na awtomatikong i-detect ang mga NFT mula sa Opensea at ipakita sa iyong MetaMask wallet."
-  },
   "newNetworkAdded": {
     "message": "Ang “$1” matagumpay na naidagdag!"
   },

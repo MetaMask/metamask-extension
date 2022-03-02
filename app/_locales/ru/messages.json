@@ -1741,9 +1741,6 @@
   "newNFTsDetected": {
     "message": "Новинка! Обнаружение NFT"
   },
-  "newNFTsDetectedInfo": {
-    "message": "Разрешите MetaMask автоматически обнаруживать NFT из Opensea и отображать их в вашем кошельке MetaMask."
-  },
   "newNetworkAdded": {
     "message": "«$1» успешно добавлен!"
   },

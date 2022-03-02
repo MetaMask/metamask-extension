@@ -1741,9 +1741,6 @@
   "newNFTsDetected": {
     "message": "新功能！NFT 检测"
   },
-  "newNFTsDetectedInfo": {
-    "message": "允许 MetaMask自动检测Opensea 的 NFT，并在您的 MetaMask钱包中显示。"
-  },
   "newNetworkAdded": {
     "message": "成功添加了“$1”！"
   },

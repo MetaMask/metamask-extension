@@ -1,7 +1,7 @@
 .collectibles-detection-notice {
   &__message {
     position: relative;
-    padding: 0 1rem 1rem 1rem !important;
+    padding: 0.75rem 0.75rem 1rem 0.75rem !important;
 
     &__close-button {
       background-color: transparent;
@@ -20,7 +20,7 @@
     }
 
     a.collectibles-detection-notice__message__link {
-      @include H6;
+      @include H7;
 
       width: 100%;
       padding: 0;
