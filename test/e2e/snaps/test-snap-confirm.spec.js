@@ -51,6 +51,8 @@ describe('Test Snap Confirm', function () {
           10000,
         );
 
+        await driver.delay(2000);
+
         // approve install of snap
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
@@ -63,6 +65,7 @@ describe('Test Snap Confirm', function () {
           tag: 'button',
         });
 
+
         // click send inputs on test snap page
         await driver.waitUntilXWindowHandles(1, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
@@ -71,6 +74,7 @@ describe('Test Snap Confirm', function () {
           text: 'Send Inputs to Hello Snap',
           tag: 'button',
         });
+
 
         // hit 'approve' on the custom confirm
         await driver.waitUntilXWindowHandles(2, 5000, 10000);
