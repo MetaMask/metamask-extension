@@ -1,8 +1,16 @@
 /* eslint-disable no-negated-condition */
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+
+import { TRANSACTION_TYPES } from '../../../../../../shared/constants/transaction';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import useAddressDetails from '../../../../../hooks/useAddressDetails';
+
 import Identicon from '../../../../ui/identicon';
+import InfoTooltip from '../../../../ui/info-tooltip';
+import NicknamePopovers from '../../../modals/nickname-popovers';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -17,7 +25,17 @@ const ConfirmPageContainerSummary = (props) => {
     origin,
     hideTitle,
     image,
+    transactionType,
+    toAddress,
   } = props;
+
+  const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
+  const t = useI18nContext();
+  const { toName, isTrusted } = useAddressDetails(toAddress);
+
+  const isContractTypeTransaction =
+    transactionType === TRANSACTION_TYPES.CONTRACT_INTERACTION;
+  const checksummedAddress = toChecksumHexAddress(toAddress);
 
   const renderImage = () => {
     if (image) {
@@ -47,7 +65,29 @@ const ConfirmPageContainerSummary = (props) => {
         <div className="confirm-page-container-summary__origin">{origin}</div>
       )}
       <div className="confirm-page-container-summary__action-row">
-        <div className="confirm-page-container-summary__action">{action}</div>
+        <div className="confirm-page-container-summary__action">
+          {isContractTypeTransaction && toName && (
+            <span className="confirm-page-container-summary__action__contract-address">
+              <button
+                className="confirm-page-container-summary__action__contract-address-btn"
+                onClick={() => setShowNicknamePopovers(true)}
+                role="button"
+              >
+                {toName}
+              </button>
+              :
+            </span>
+          )}
+          <span className="confirm-page-container-summary__action__name">
+            {action}
+          </span>
+          {isContractTypeTransaction && isTrusted === false && (
+            <InfoTooltip
+              position="top"
+              contentText={t('unverifiedContractAddressMessage')}
+            />
+          )}
+        </div>
         {nonce && (
           <div className="confirm-page-container-summary__nonce">
             {`#${nonce}`}
@@ -69,6 +109,12 @@ const ConfirmPageContainerSummary = (props) => {
           </div>
         )}
       </>
+      {showNicknamePopovers && (
+        <NicknamePopovers
+          onClose={() => setShowNicknamePopovers(false)}
+          address={checksummedAddress}
+        />
+      )}
     </div>
   );
 };
@@ -85,6 +131,8 @@ ConfirmPageContainerSummary.propTypes = {
   nonce: PropTypes.string,
   origin: PropTypes.string.isRequired,
   hideTitle: PropTypes.bool,
+  toAddress: PropTypes.string,
+  transactionType: PropTypes.string,
 };
 
 export default ConfirmPageContainerSummary;

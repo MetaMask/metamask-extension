@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Redirect, useHistory } from 'react-router-dom';
+import { Redirect, useHistory, useParams } from 'react-router-dom';
 import { getTokens } from '../../ducks/metamask/metamask';
 import { getUseTokenDetection, getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
@@ -34,7 +34,7 @@ export default function TokenDetailsPage() {
   const tokenList = useSelector(getTokenList);
   const useTokenDetection = useSelector(getUseTokenDetection);
 
-  const tokenAddress = history?.location?.state?.tokenAddress;
+  const { address: tokenAddress } = useParams();
   const tokenMetadata = Object.values(tokenList).find((token) =>
     isEqualCaseInsensitive(token.address, tokenAddress),
   );
@@ -93,7 +93,7 @@ export default function TokenDetailsPage() {
             color={COLORS.BLACK}
             className="token-details__token-value"
           >
-            {tokenBalance}
+            {tokenBalance || ''}
           </Typography>
           <Box marginTop={1}>
             <Identicon

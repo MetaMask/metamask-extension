@@ -1045,10 +1045,7 @@ export default class ConfirmTransactionBase extends Component {
     };
 
     let functionType;
-    if (
-      txData.type === TRANSACTION_TYPES.DEPLOY_CONTRACT ||
-      txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION
-    ) {
+    if (txData.type === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
       functionType = getMethodName(name);
     }
 

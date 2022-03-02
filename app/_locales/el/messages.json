@@ -1738,9 +1738,6 @@
     "message": "Λογαριασμός $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "Το Collectible δεν προστέθηκε επειδή: $1"
-  },
   "newCollectibleAddedMessage": {
     "message": "Το Collectible προστέθηκε με επιτυχία!"
   },

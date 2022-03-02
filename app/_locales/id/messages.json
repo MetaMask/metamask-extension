@@ -1738,9 +1738,6 @@
     "message": "Akun $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "Koleksi tidak ditambahkan karena: $1"
-  },
   "newCollectibleAddedMessage": {
     "message": "Koleksi berhasil ditambahkan!"
   },

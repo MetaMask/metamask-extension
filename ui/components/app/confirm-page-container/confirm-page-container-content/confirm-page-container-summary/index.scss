@@ -23,12 +23,36 @@
   &__action {
     @include H7;
 
-    text-transform: uppercase;
     color: var(--oslo-gray);
     padding: 3px 8px;
     border: 1px solid var(--oslo-gray);
     border-radius: 4px;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+
+    &__name {
+      text-transform: uppercase;
+    }
+
+    .info-tooltip {
+      margin-inline-start: 4px;
+
+      &__tooltip-container {
+        margin-bottom: -3px;
+      }
+    }
+
+    &__contract-address {
+      margin-inline-end: 4px;
+    }
+
+    &__contract-address-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      margin-inline-end: 4px;
+      color: var(--primary-1);
+    }
   }
 
   &__nonce {
