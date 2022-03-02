@@ -58,11 +58,11 @@ export default function NetworkDisplay({
             color={labelKey}
             size={indicatorSize}
             type={ColorIndicator.TYPES.FILLED}
-            iconClassName={
-              networkType === NETWORK_TYPE_RPC && indicatorSize !== SIZES.XS
-                ? 'fa fa-question'
-                : undefined
-            }
+          // iconClassName={
+          //   networkType === NETWORK_TYPE_RPC && indicatorSize !== SIZES.XS
+          //     ? 'fa fa-question'
+          //     : undefined
+          // }
           />
         </LoadingIndicator>
       }

@@ -20,7 +20,11 @@ export default function ColorIndicator({
 
   return (
     <div className={colorIndicatorClassName}>
-      <span className="color-indicator__inner-circle" />
+      {iconClassName ? (
+        <i className={classnames('color-indicator__icon', iconClassName)} />
+      ) : (
+        <span className="color-indicator__inner-circle" />
+      )}
     </div>
   );
 }
