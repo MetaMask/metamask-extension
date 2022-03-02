@@ -27,7 +27,7 @@ export const Popover = ({
   const showHeader = title || onBack || subtitle || onClose;
   const Header = () => {
     return (
-      <Box {...headerProps} className="popover-header" tag="header">
+      <Box {...headerProps} className="popover-header">
         <div
           className={classnames(
             'popover-header__title',
