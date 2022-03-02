@@ -155,7 +155,7 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated
-          path={TOKEN_DETAILS}
+          path={`${TOKEN_DETAILS}/:address/`}
           component={TokenDetailsPage}
           exact
         />

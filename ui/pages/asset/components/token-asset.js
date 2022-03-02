@@ -68,10 +68,7 @@ export default function TokenAsset({ token }) {
               dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
             }}
             onViewTokenDetails={() => {
-              history.push({
-                pathname: TOKEN_DETAILS,
-                state: { tokenAddress: token.address },
-              });
+              history.push(`${TOKEN_DETAILS}/${token.address}`);
             }}
             tokenSymbol={token.symbol}
           />
