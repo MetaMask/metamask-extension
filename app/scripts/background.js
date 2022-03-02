@@ -297,6 +297,12 @@ function setupController(initState, initLangCode) {
   extension.runtime.onConnect.addListener(connectRemote);
   extension.runtime.onConnectExternal.addListener(connectExternal);
 
+  const metamaskInternalProcessHash = {
+    [ENVIRONMENT_TYPE_POPUP]: true,
+    [ENVIRONMENT_TYPE_NOTIFICATION]: true,
+    [ENVIRONMENT_TYPE_FULLSCREEN]: true,
+  };
+
   const metamaskBlockedPorts = ['trezor-connect'];
 
   const isClientOpenStatus = () => {
@@ -350,7 +356,7 @@ function setupController(initState, initLangCode) {
     const sourcePlatform = getPlatform();
 
     if (sourcePlatform === PLATFORM_FIREFOX) {
-      isMetaMaskInternalProcess = remotePort.sender.id === extension.runtime.id;
+      isMetaMaskInternalProcess = metamaskInternalProcessHash[processName];
     } else {
       isMetaMaskInternalProcess =
         remotePort.sender.origin ===
