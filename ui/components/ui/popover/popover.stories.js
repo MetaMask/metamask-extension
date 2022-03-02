@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from '../button';
 import Box from '../box';
 import README from './README.mdx';
-import { Popover } from './popover.component';
+import Popover from './popover.component';
 
 export default {
   title: 'Components/UI/Popover',

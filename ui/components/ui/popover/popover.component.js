@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../box';
 
-export const Popover = ({
+const Popover = ({
   title,
   subtitle = '',
   children,
