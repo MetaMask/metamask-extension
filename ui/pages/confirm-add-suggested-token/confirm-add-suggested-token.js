@@ -128,10 +128,14 @@ const ConfirmAddSuggestedToken = () => {
     history.push(mostRecentOverviewPage);
   }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedAssets]);
 
-  useEffect(() => {
+  const goBackIfNoSuggestedAssetsOnFirstRender = () => {
     if (!suggestedAssets.length) {
       history.push(mostRecentOverviewPage);
     }
+  };
+
+  useEffect(() => {
+    goBackIfNoSuggestedAssetsOnFirstRender();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
