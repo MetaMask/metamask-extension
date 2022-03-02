@@ -50,6 +50,8 @@ describe('Test Snap Error', function () {
           10000,
         );
 
+        await driver.delay(2000);
+
         // approve install of snap
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
