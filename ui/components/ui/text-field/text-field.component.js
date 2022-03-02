@@ -7,13 +7,13 @@ const inputLabelBase = {
   transform: 'none',
   transition: 'none',
   position: 'initial',
-  color: '#5b5b5b',
+  color: 'var(--color-text-default)',
 };
 
 const styles = {
   materialLabel: {
     '&$materialFocused': {
-      color: '#aeaeae',
+      color: '#aeaeae', // TODO: What color should we replace this frequently used color with?
     },
     '&$materialError': {
       color: '#aeaeae',
@@ -39,11 +39,11 @@ const styles = {
     },
   },
   materialWhitePaddedFocused: {
-    color: '#fff',
+    color: 'var(--white)',
   },
   materialWhitePaddedUnderline: {
     '&:after': {
-      borderBottom: '2px solid #fff',
+      borderBottom: '2px solid var(--white)',
     },
   },
   // Non-material styles
@@ -61,14 +61,15 @@ const styles = {
     'label + &': {
       marginTop: '9px',
     },
-    border: '1px solid #BBC0C5',
+    border: '1px solid var(--color-border-default)',
+    color: 'var(--color-text-default)',
     height: '48px',
     borderRadius: '6px',
     padding: '0 16px',
     display: 'flex',
     alignItems: 'center',
     '&$inputFocused': {
-      border: '1px solid #2f9ae0',
+      border: '1px solid #2f9ae0', // TODO: What do we want to do with focused input border colors?
     },
   },
   largeInputLabel: {
