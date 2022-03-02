@@ -20,7 +20,7 @@ const getMaxPriorityFeePerGasFromTransaction = (
   transaction,
   gasFeeEstimates,
 ) => {
-  if (gasFeeEstimates[transaction?.userFeeLevel]) {
+  if (gasFeeEstimates?.[transaction?.userFeeLevel]) {
     return gasFeeEstimates[transaction.userFeeLevel]
       .suggestedMaxPriorityFeePerGas;
   }

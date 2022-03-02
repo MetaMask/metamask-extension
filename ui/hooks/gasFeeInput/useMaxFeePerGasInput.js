@@ -20,7 +20,7 @@ import { useUserPreferencedCurrency } from '../useUserPreferencedCurrency';
 import { feeParamsAreCustom, getGasFeeEstimate } from './utils';
 
 const getMaxFeePerGasFromTransaction = (transaction, gasFeeEstimates) => {
-  if (gasFeeEstimates[transaction?.userFeeLevel]) {
+  if (gasFeeEstimates?.[transaction?.userFeeLevel]) {
     return gasFeeEstimates[transaction.userFeeLevel].suggestedMaxFeePerGas;
   }
   const { maxFeePerGas, gasPrice } = transaction?.txParams || {};
