@@ -353,12 +353,13 @@ export default class SignatureRequestOriginal extends Component {
         ) : null}
         {this.renderFooter()}
         {messagesCount > 1 ? (
-          <a
+          <Button
+            type="link"
             className="request-signature__container__reject"
             onClick={() => this.handleCancelAll()}
           >
             {rejectNText}
-          </a>
+          </Button>
         ) : null}
       </div>
     );
