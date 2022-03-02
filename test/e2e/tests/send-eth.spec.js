@@ -91,6 +91,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
   });
 });
 
+/* eslint-disable-next-line mocha/max-top-level-suites */
 describe('Send ETH from inside MetaMask using advanced gas modal', function () {
   const ganacheOptions = {
     accounts: [
@@ -224,7 +225,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.switchToWindow(dapp);
 
         // initiates a send from the dapp
-        await driver.clickElement({ text: 'Send', tag: 'button' }, 10000);
+        await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.delay(2000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
@@ -243,8 +244,8 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         const gasPriceInput = inputs[1];
         await gasPriceInput.fill('100');
         await driver.delay(1000);
-        await driver.clickElement({ text: 'Save', tag: 'button' }, 10000);
-        await driver.clickElement({ text: 'Confirm', tag: 'button' }, 10000);
+        await driver.clickElement({ text: 'Save', tag: 'button' });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
@@ -256,7 +257,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         );
         await driver.waitForSelector({
           css: '.transaction-list-item__primary-currency',
-          text: '-3 ETH',
+          text: '-0 ETH',
         });
 
         // the transaction has the expected gas price

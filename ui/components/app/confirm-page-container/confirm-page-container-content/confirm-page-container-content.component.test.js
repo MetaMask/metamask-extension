@@ -75,6 +75,9 @@ describe('Confirm Page Container Content', () => {
     props.hasSimulationError = false;
     props.disabled = true;
     props.errorKey = TRANSACTION_ERROR_KEY;
+    props.currentTransaction = {
+      type: 'transfer',
+    };
     const { queryByText, getByText } = renderWithProvider(
       <ConfirmPageContainerContent {...props} />,
       store,

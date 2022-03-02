@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { util } from '@metamask/controllers';
+import slip44 from '@metamask/slip44';
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
   GOERLI_CHAIN_ID,
@@ -579,4 +580,19 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
   return toBigNumber
     .dec(toBigNumber.dec(numberish).toFixed(numberOfDecimalPlaces))
     .toNumber();
+}
+
+/**
+ * Gets the name of the SLIP-44 protocol corresponding to the specified
+ * `coin_type`.
+ *
+ * @param {string | number} coinType - The SLIP-44 `coin_type` value whose name
+ * to retrieve.
+ * @returns {string | undefined} The name of the protocol if found.
+ */
+export function coinTypeToProtocolName(coinType) {
+  if (String(coinType) === '1') {
+    return 'Test Networks';
+  }
+  return slip44[coinType]?.name || undefined;
 }

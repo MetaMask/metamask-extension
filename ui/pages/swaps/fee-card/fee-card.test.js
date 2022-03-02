@@ -63,6 +63,7 @@ const generateUseSelectorRouter = () => (selector) => {
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
   getGasFeeEstimatesAndStartPolling: jest.fn(),
+  createTransactionEventFragment: jest.fn(),
 });
 
 const createProps = (customProps = {}) => {
@@ -131,6 +132,26 @@ describe('FeeCard', () => {
     expect(
       document.querySelector('.fee-card__top-bordered-row'),
     ).toMatchSnapshot();
+  });
+
+  it('renders the component with Smart Transactions enabled and user opted in', () => {
+    const store = configureMockStore(middleware)(createSwapsMockStore());
+    const props = createProps({
+      smartTransactionsOptInStatus: true,
+      smartTransactionsEnabled: true,
+      maxPriorityFeePerGasDecGWEI: '3',
+      maxFeePerGasDecGWEI: '4',
+    });
+    const { getByText, queryByTestId } = renderWithProvider(
+      <FeeCard {...props} />,
+      store,
+    );
+    expect(getByText('Best of 6 quotes.')).toBeInTheDocument();
+    expect(getByText('Estimated gas fee')).toBeInTheDocument();
+    expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
+    expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();
+    expect(getByText(`: ${props.secondaryFee.maxFee}`)).toBeInTheDocument();
+    expect(queryByTestId('fee-card__edit-link')).not.toBeInTheDocument();
   });
 
   it('renders the component with EIP-1559 V2 enabled', () => {

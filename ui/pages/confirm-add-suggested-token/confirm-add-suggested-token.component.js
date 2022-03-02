@@ -1,15 +1,56 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 
 function getTokenName(name, symbol) {
   return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;
 }
+
+/**
+ * @param {Array} suggestedAssets - an array of assets suggested to add to the user's wallet
+ * via the RPC method `wallet_watchAsset`
+ * @param {Array} tokens - the list of tokens currently tracked in state
+ * @returns {boolean} Returns true when the list of suggestedAssets contains an entry with
+ *          an address that matches an existing token.
+ */
+function hasDuplicateAddress(suggestedAssets, tokens) {
+  const duplicate = suggestedAssets.find(({ asset }) => {
+    const dupe = tokens.find(({ address }) => {
+      return isEqualCaseInsensitive(address, asset.address);
+    });
+    return Boolean(dupe);
+  });
+  return Boolean(duplicate);
+}
+
+/**
+ * @param {Array} suggestedAssets - a list of assets suggested to add to the user's wallet
+ * via RPC method `wallet_watchAsset`
+ * @param {Array} tokens - the list of tokens currently tracked in state
+ * @returns {boolean} Returns true when the list of suggestedAssets contains an entry with both
+ *          1. a symbol that matches an existing token
+ *          2. an address that does not match an existing token
+ */
+function hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) {
+  const duplicate = suggestedAssets.find(({ asset }) => {
+    const dupe = tokens.find((token) => {
+      return (
+        isEqualCaseInsensitive(token.symbol, asset.symbol) &&
+        !isEqualCaseInsensitive(token.address, asset.address)
+      );
+    });
+    return Boolean(dupe);
+  });
+  return Boolean(duplicate);
+}
+
 const ConfirmAddSuggestedToken = (props) => {
   const {
     acceptWatchAsset,
@@ -37,38 +78,44 @@ const ConfirmAddSuggestedToken = (props) => {
     });
   };
 
-  /**
-   * Returns true if any suggestedAssets both:
-   * - Share a symbol with an existing `tokens` member.
-   * - Does not share an address with that same `tokens` member.
-   * This should be flagged as possibly deceptive or confusing.
-   */
-  const checkNameReuse = () => {
-    const duplicates = suggestedAssets.filter(({ asset }) => {
-      const dupes = tokens.filter(
-        (old) =>
-          old.symbol === asset.symbol &&
-          !isEqualCaseInsensitive(old.address, asset.address),
-      );
-      return dupes.length > 0;
-    });
-    return duplicates.length > 0;
-  };
-
-  const checkTokenDuplicates = () => {
-    const pending = suggestedAssets.map(({ asset }) =>
-      asset.address.toUpperCase(),
+  const knownTokenActionableMessage = useMemo(() => {
+    return (
+      hasDuplicateAddress(suggestedAssets, tokens) && (
+        <ActionableMessage
+          message={t('knownTokenWarning', [
+            <Button
+              type="link"
+              key="confirm-add-suggested-token-duplicate-warning"
+              className="confirm-add-suggested-token__link"
+              rel="noopener noreferrer"
+              target="_blank"
+              href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+            >
+              {t('learnScamRisk')}
+            </Button>,
+          ])}
+          type="warning"
+          withRightButton
+          useIcon
+          iconFillColor="#f8c000"
+        />
+      )
     );
-    const existing = tokens.map((token) => token.address.toUpperCase());
-    const dupes = pending.filter((proposed) => {
-      return existing.includes(proposed);
-    });
+  }, [suggestedAssets, tokens, t]);
 
-    return dupes.length > 0;
-  };
-
-  const hasTokenDuplicates = checkTokenDuplicates();
-  const reusesName = checkNameReuse();
+  const reusedTokenNameActionableMessage = useMemo(() => {
+    return (
+      hasDuplicateSymbolAndDiffAddress(suggestedAssets, tokens) && (
+        <ActionableMessage
+          message={t('reusedTokenNameWarning')}
+          type="warning"
+          withRightButton
+          useIcon
+          iconFillColor="#f8c000"
+        />
+      )
+    );
+  }, [suggestedAssets, tokens, t]);
 
   useEffect(() => {
     if (!suggestedAssets.length) {
@@ -83,12 +130,8 @@ const ConfirmAddSuggestedToken = (props) => {
         <div className="page-container__subtitle">
           {t('likeToImportTokens')}
         </div>
-        {hasTokenDuplicates ? (
-          <div className="warning">{t('knownTokenWarning')}</div>
-        ) : null}
-        {reusesName ? (
-          <div className="warning">{t('reusedTokenNameWarning')}</div>
-        ) : null}
+        {knownTokenActionableMessage}
+        {reusedTokenNameActionableMessage}
       </div>
       <div className="page-container__content">
         <div className="confirm-import-token">

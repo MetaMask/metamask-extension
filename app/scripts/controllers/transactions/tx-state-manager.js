@@ -11,7 +11,11 @@ import {
   replayHistory,
   snapshotFromTxMeta,
 } from './lib/tx-state-history-helpers';
-import { getFinalStates, normalizeAndValidateTxParams } from './lib/util';
+import {
+  getFinalStates,
+  normalizeAndValidateTxParams,
+  validateConfirmedExternalTransaction,
+} from './lib/util';
 
 /**
  * TransactionStatuses reimported from the shared transaction constants file
@@ -245,9 +249,9 @@ export default class TransactionStateManager extends EventEmitter {
     const txsToDelete = transactions
       .reverse()
       .filter((tx) => {
-        const { nonce } = tx.txParams;
+        const { nonce, from } = tx.txParams;
         const { chainId, metamaskNetworkId, status } = tx;
-        const key = `${nonce}-${chainId ?? metamaskNetworkId}`;
+        const key = `${nonce}-${chainId ?? metamaskNetworkId}-${from}`;
         if (nonceNetworkSet.has(key)) {
           return false;
         } else if (
@@ -262,6 +266,19 @@ export default class TransactionStateManager extends EventEmitter {
       .map((tx) => tx.id);
 
     this._deleteTransactions(txsToDelete);
+    this._addTransactionsToState([txMeta]);
+    return txMeta;
+  }
+
+  addExternalTransaction(txMeta) {
+    const fromAddress = txMeta?.txParams?.from;
+    const confirmedTransactions = this.getConfirmedTransactions(fromAddress);
+    const pendingTransactions = this.getPendingTransactions(fromAddress);
+    validateConfirmedExternalTransaction({
+      txMeta,
+      pendingTransactions,
+      confirmedTransactions,
+    });
     this._addTransactionsToState([txMeta]);
     return txMeta;
   }
