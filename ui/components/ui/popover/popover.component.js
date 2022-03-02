@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../box';
 
-const Popover = ({
+export const Popover = ({
   title,
   subtitle = '',
   children,
@@ -25,13 +25,9 @@ const Popover = ({
 }) => {
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
-  const hasStyles = (props) => {
-    return Boolean(Object.keys(props).length);
-  };
-
   const Header = () => {
     return (
-      <>
+      <Box {...headerProps} className="popover-header" tag="header">
         <div
           className={classnames(
             'popover-header__title',
@@ -60,7 +56,7 @@ const Popover = ({
         {subtitle ? (
           <p className="popover-header__subtitle">{subtitle}</p>
         ) : null}
-      </>
+      </Box>
     );
   };
 
@@ -76,34 +72,22 @@ const Popover = ({
         ref={popoverRef}
       >
         {showArrow ? <div className="popover-arrow" /> : null}
-        {showHeader && (
-          <header className="popover-header">
-            {hasStyles(headerProps) ? (
-              <Box {...headerProps}>
-                <Header />
-              </Box>
-            ) : (
-              <Header />
-            )}
-          </header>
-        )}
+        {showHeader && <Header />}
         {children ? (
-          <div className={classnames('popover-content', contentClassName)}>
-            {hasStyles(contentProps) ? (
-              <Box {...contentProps}>{children}</Box>
-            ) : (
-              children
-            )}
-          </div>
+          <Box
+            className={classnames('popover-content', contentClassName)}
+            {...contentProps}
+          >
+            {children}
+          </Box>
         ) : null}
         {footer ? (
-          <footer className={classnames('popover-footer', footerClassName)}>
-            {hasStyles(footerProps) ? (
-              <Box {...footerProps}>{footer}</Box>
-            ) : (
-              footer
-            )}
-          </footer>
+          <Box
+            className={classnames('popover-footer', footerClassName)}
+            {...footerProps}
+          >
+            {footer}
+          </Box>
         ) : null}
       </section>
     </div>

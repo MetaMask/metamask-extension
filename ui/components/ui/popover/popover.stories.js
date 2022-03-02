@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Button from '../button';
 import Box from '../box';
 import README from './README.mdx';
-import Popover from './popover.component';
+import { Popover } from './popover.component';
 
 export default {
   title: 'Components/UI/Popover',
@@ -26,6 +26,21 @@ export default {
     showArrow: { control: 'boolean' },
     popoverRef: { control: 'object' },
     centerTitle: { control: 'boolean' },
+    headerProps: {
+      control: 'object',
+      description:
+        'Box component props used to add container CSS for the header',
+    },
+    contentProps: {
+      control: 'object',
+      description:
+        'Box component props used to add container CSS for the content',
+    },
+    footerProps: {
+      control: 'object',
+      description:
+        'Box component props used to add container CSS for the footer',
+    },
   },
 };
 
