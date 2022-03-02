@@ -33,6 +33,12 @@ export default function NetworkDisplay({
     nickname: state.metamask.provider.nickname,
     type: state.metamask.provider.type,
   }));
+  const frequentRpcListDetail = useSelector((state) => (
+    state.metamask.frequentRpcListDetail
+  ));
+  const selectedNetwork = frequentRpcListDetail.filter((network) => network.nickname === currentNetwork.nickname)[0]
+  const labelKey = selectedNetwork ? selectedNetwork.labelKey : COLORS.UI4
+
   const t = useI18nContext();
 
   const { nickname: networkNickname, type: networkType } =
@@ -49,7 +55,7 @@ export default function NetworkDisplay({
           isLoading={networkIsLoading}
         >
           <ColorIndicator
-            color={networkType === NETWORK_TYPE_RPC ? COLORS.UI4 : networkType}
+            color={labelKey}
             size={indicatorSize}
             type={ColorIndicator.TYPES.FILLED}
             iconClassName={

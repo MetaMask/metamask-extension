@@ -192,7 +192,7 @@ class NetworkDropdown extends Component {
           )}
           <ColorIndicator
             // color={opts.isLocalHost ? 'localhost' : COLORS.UI2}
-            color={opts.isLocalHost ? 'localhost' : labelKey || COLORS.UI2}
+            color={opts.isLocalHost ? 'localhost' : labelKey || COLORS.UI4}
             size={SIZES.LG}
             type={ColorIndicator.TYPES.FILLED}
             borderColor={borderColor}
