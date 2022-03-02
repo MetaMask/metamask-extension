@@ -86,5 +86,6 @@ Typography.propTypes = {
     'div',
     'dt',
     'dd',
+    'ul',
   ]),
 };
