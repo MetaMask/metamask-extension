@@ -8,9 +8,6 @@
   "about": {
     "message": "ಕುರಿತು"
   },
-  "aboutSettingsDescription": {
-    "message": "ಆವೃತ್ತಿ, ಬೆಂಬಲ ಕೇಂದ್ರ ಮತ್ತು ಸಂಪರ್ಕ ಮಾಹಿತಿ"
-  },
   "acceleratingATransaction": {
     "message": "* ಹೆಚ್ಚಿನ ಗ್ಯಾಸ್ ಬೆಲೆಯನ್ನು ಬಳಸಿಕೊಂಡು ವಹಿವಾಟನ್ನು ವೇಗಗೊಳಿಸುವುದರಿಂದ ನೆಟ್‌ವರ್ಕ್ ವೇಗವಾಗಿ ಪ್ರಕ್ರಿಯೆಗೊಳ್ಳುವ ಸಾಧ್ಯತೆಗಳನ್ನು ಅದು ಹೆಚ್ಚಿಸುತ್ತದೆ, ಆದರೆ ಇದು ಯಾವಾಗಲೂ ಖಚಿತವಾಗಿರುವುದಿಲ್ಲ."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "ಸುಧಾರಿತ ಆಯ್ಕೆಗಳು"
-  },
-  "advancedSettingsDescription": {
-    "message": "ಡೆವಲಪರ್ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಪ್ರವೇಶಿಸಿ, ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ, ಖಾತೆಯನ್ನು ಮರುಹೊಂದಿಸಿ, ಟೆಸ್ಟ್‌ನೆಟ್ಸ್‌ ಹೊಂದಿಸಿ ಮತ್ತು ಕಸ್ಟಮ್ RPC"
   },
   "amount": {
     "message": "ಮೊತ್ತ"
@@ -144,9 +138,6 @@
   "blockExplorerView": {
     "message": " $1 ನಲ್ಲಿ ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "ಬ್ಲಾಕೀಸ್ ಐಡೆಂಟಿಕಾನ್ ಬಳಸಿ"
   },
   "browserNotSupported": {
     "message": "ನಿಮ್ಮ ಬ್ರೌಸರ್ ಬೆಂಬಲಿಸುತ್ತಿಲ್ಲ..."
@@ -292,17 +283,8 @@
   "deleteNetworkDescription": {
     "message": "ನೀವು ಈ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಖಚಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
-  "depositEther": {
-    "message": "ಎಥರ್ ಠೇವಣಿ ಮಾಡಿ"
-  },
   "details": {
     "message": "ವಿವರಗಳು"
-  },
-  "directDepositEther": {
-    "message": "ಎಥರ್ ನೇರವಾಗಿ ಠೇವಣಿ ಮಾಡಿ"
-  },
-  "directDepositEtherExplainer": {
-    "message": "ನೀವು ಈಗಾಗಲೇ ಕೆಲವು ಎಥರ್ ಹೊಂದಿದ್ದರೆ, ನೇರ ಠೇವಣಿ ಮೂಲಕ ನಿಮ್ಮ ಹೊಸ ವ್ಯಾಲೆಟ್‌ನಲ್ಲಿ ಎಥರ್ ಅನ್ನು ಪಡೆಯುವ ತ್ವರಿತ ಮಾರ್ಗ."
   },
   "done": {
     "message": "ಮುಗಿದಿದೆ"
@@ -428,9 +410,6 @@
   },
   "general": {
     "message": "ಸಾಮಾನ್ಯ"
-  },
-  "generalSettingsDescription": {
-    "message": "ಕರೆನ್ಸಿ ಪರಿವರ್ತನೆ, ಪ್ರಾಥಮಿಕ ಕರೆನ್ಸಿ, ಭಾಷೆ, ನಿರ್ಬಂಧಗಳ ಗುರುತಿಸುವಿಕೆ"
   },
   "getEther": {
     "message": "ಎಥರ್ ಪಡೆಯಿರಿ"
@@ -596,9 +575,6 @@
   "myAccounts": {
     "message": "ನನ್ನ ಖಾತೆಗಳು"
   },
-  "needEtherInWallet": {
-    "message": "MetaMask ಬಳಸಿಕೊಂಡು ವಿಕೇಂದ್ರೀಕೃತ ಖಾತೆಗಳೊಂದಿಗೆ ಸಂವಹನ ನಡೆಸಲು, ನಿಮ್ಮ ವ್ಯಾಲೆಟ್‌ನಲ್ಲಿ ನಿಮಗೆ ಎಥರ್ ಅಗತ್ಯವಿದೆ."
-  },
   "needImportFile": {
     "message": "ಆಮದು ಮಾಡಲು ನೀವು ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು.",
     "description": "User is important an account and needs to add a file to continue"
@@ -608,9 +584,6 @@
   },
   "networkName": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಹೆಸರು"
-  },
-  "networkSettingsDescription": {
-    "message": "ಕಸ್ಟಮ್ RPC ನೆಟ್‌ವರ್ಕ್‌ಗಳನ್ನು ಸೇರಿಸಿ ಮತ್ತು ಸಂಪಾದಿಸಿ"
   },
   "networks": {
     "message": "ನೆಟ್‌ವರ್ಕ್‌ಗಳು"
@@ -792,9 +765,6 @@
   "restore": {
     "message": "ಮರುಸ್ಥಾಪನೆ"
   },
-  "restoreAccountWithSeed": {
-    "message": "ಸೀಡ್ ಫ್ರೇಸ್‌ನೊಂದಿಗೆ ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಮರುಸ್ಥಾಪಿಸಿ"
-  },
   "revealSeedWords": {
     "message": "ಸೀಡ್ ವರ್ಡ್ಸ್ ಬಹಿರಂಗಪಡಿಸಿ"
   },
@@ -846,9 +816,6 @@
   "securityAndPrivacy": {
     "message": "ಭದ್ರತೆ ಮತ್ತು ಗೌಪ್ಯತೆ"
   },
-  "securitySettingsDescription": {
-    "message": "ಗೌಪ್ಯತೆ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ವ್ಯಾಲೆಟ್ ಸೀಡ್ ಫ್ರೇಸ್"
-  },
   "seedPhrasePlaceholder": {
     "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"
   },
@@ -881,9 +848,6 @@
   },
   "sendTokens": {
     "message": "ಟೋಕನ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ"
-  },
-  "separateEachWord": {
-    "message": "ಒಂದು ಸ್ಪೇಸ್ ಮೂಲಕ ಪ್ರತಿ ಪದವನ್ನು ಬೇರ್ಪಡಿಸಿ"
   },
   "settings": {
     "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"

@@ -24,6 +24,10 @@ import {
 } from '../../../selectors/selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { getURLHostName } from '../../../helpers/utils/util';
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+} from '../../../ducks/swaps/swaps';
 
 export default function DropdownSearchList({
   searchListClassName,
@@ -55,6 +59,10 @@ export default function DropdownSearchList({
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
 
   const tokenImportedEvent = useNewMetricEvent({
     event: 'Token Imported',
@@ -64,6 +72,8 @@ export default function DropdownSearchList({
       chain_id: chainId,
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: hardwareWalletType,
+      stx_enabled: smartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
     },
     category: 'swaps',
   });

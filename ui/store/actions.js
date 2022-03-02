@@ -2,7 +2,7 @@ import pify from 'pify';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
-import getBuyEthUrl from '../../app/scripts/lib/buy-eth-url';
+import getBuyUrl from '../../app/scripts/lib/buy-url';
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
@@ -18,6 +18,7 @@ import {
 import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import txHelper from '../helpers/utils/tx-helper';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
+import { decimalToHex } from '../helpers/utils/conversions.util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
@@ -33,6 +34,7 @@ import {
   LEDGER_TRANSPORT_TYPES,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
+import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import * as actionConstants from './actionConstants';
 
 let background = null;
@@ -398,7 +400,7 @@ export function connectHardware(deviceName, page, hdPath, t) {
 
     let accounts;
     try {
-      if (deviceName === 'ledger') {
+      if (deviceName === DEVICE_NAMES.LEDGER) {
         await promisifiedBackground.establishLedgerTransportPreference();
       }
       if (
@@ -424,7 +426,7 @@ export function connectHardware(deviceName, page, hdPath, t) {
     } catch (error) {
       log.error(error);
       if (
-        deviceName === 'ledger' &&
+        deviceName === DEVICE_NAMES.LEDGER &&
         ledgerTransportType === LEDGER_TRANSPORT_TYPES.WEBHID &&
         error.message.match('Failed to open the device')
       ) {
@@ -698,18 +700,23 @@ export function updateTransaction(txData, dontShowLoadingIndicator) {
   };
 }
 
-export function addUnapprovedTransaction(txParams, origin) {
+export function addUnapprovedTransaction(txParams, origin, type) {
   log.debug('background.addUnapprovedTransaction');
 
   return () => {
     return new Promise((resolve, reject) => {
-      background.addUnapprovedTransaction(txParams, origin, (err, txMeta) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(txMeta);
-      });
+      background.addUnapprovedTransaction(
+        txParams,
+        origin,
+        type,
+        (err, txMeta) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(txMeta);
+        },
+      );
     });
   };
 }
@@ -749,6 +756,10 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
         return Promise.reject(err);
       });
   };
+}
+
+export async function getTransactions(filters = {}) {
+  return await promisifiedBackground.getTransactions(filters);
 }
 
 export function completedTx(id) {
@@ -797,6 +808,33 @@ export function txError(err) {
     message: err.message,
   };
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+export function disableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.disableSnap(snapId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function enableSnap(snapId) {
+  return async (dispatch) => {
+    await promisifiedBackground.enableSnap(snapId);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function removeSnap(snap) {
+  return async (dispatch) => {
+    await promisifiedBackground.removeSnap(snap);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export async function removeSnapError(msgData) {
+  return promisifiedBackground.removeSnapError(msgData);
+}
+///: END:ONLY_INCLUDE_IN
 
 export function cancelMsg(msgData) {
   return async (dispatch) => {
@@ -2002,7 +2040,7 @@ export function showSendTokenPage() {
 
 export function buyEth(opts) {
   return async (dispatch) => {
-    const url = await getBuyEthUrl(opts);
+    const url = await getBuyUrl(opts);
     global.platform.openTab({ url });
     dispatch({
       type: actionConstants.BUY_ETH,
@@ -2369,6 +2407,13 @@ export function setPendingTokens(pendingTokens) {
 export function setSwapsLiveness(swapsLiveness) {
   return async (dispatch) => {
     await promisifiedBackground.setSwapsLiveness(swapsLiveness);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setSwapsFeatureFlags(featureFlags) {
+  return async (dispatch) => {
+    await promisifiedBackground.setSwapsFeatureFlags(featureFlags);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -3108,6 +3153,13 @@ export function createEventFragment(options) {
   return promisifiedBackground.createEventFragment(options);
 }
 
+export function createTransactionEventFragment(transactionId, event) {
+  return promisifiedBackground.createTransactionEventFragment(
+    transactionId,
+    event,
+  );
+}
+
 export function updateEventFragment(id, payload) {
   return promisifiedBackground.updateEventFragment(id, payload);
 }
@@ -3140,6 +3192,194 @@ export async function setUnconnectedAccountAlertShown(origin) {
 
 export async function setWeb3ShimUsageAlertDismissed(origin) {
   await promisifiedBackground.setWeb3ShimUsageAlertDismissed(origin);
+}
+
+// Smart Transactions Controller
+export async function setSmartTransactionsOptInStatus(optInState) {
+  trackMetaMetricsEvent({
+    event: 'STX OptIn',
+    category: 'swaps',
+    sensitiveProperties: {
+      stx_enabled: true,
+      current_stx_enabled: true,
+      stx_user_opt_in: optInState,
+    },
+  });
+  await promisifiedBackground.setSmartTransactionsOptInStatus(optInState);
+}
+
+export function fetchSmartTransactionFees(unsignedTransaction) {
+  return async (dispatch) => {
+    try {
+      return await promisifiedBackground.fetchSmartTransactionFees(
+        unsignedTransaction,
+      );
+    } catch (e) {
+      log.error(e);
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj.type,
+        });
+      }
+      throw e;
+    }
+  };
+}
+
+export function estimateSmartTransactionsGas(
+  unsignedTransaction,
+  approveTxParams,
+) {
+  if (approveTxParams) {
+    approveTxParams.value = '0x0';
+  }
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.estimateSmartTransactionsGas(
+        unsignedTransaction,
+        approveTxParams,
+      );
+    } catch (e) {
+      log.error(e);
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj.type,
+        });
+      }
+      throw e;
+    }
+  };
+}
+
+const createSignedTransactions = async (
+  unsignedTransaction,
+  fees,
+  areCancelTransactions,
+) => {
+  const unsignedTransactionsWithFees = fees.map((fee) => {
+    const unsignedTransactionWithFees = {
+      ...unsignedTransaction,
+      maxFeePerGas: decimalToHex(fee.maxFeePerGas),
+      maxPriorityFeePerGas: decimalToHex(fee.maxPriorityFeePerGas),
+      gas: areCancelTransactions
+        ? decimalToHex(21000) // It has to be 21000 for cancel transactions, otherwise the API would reject it.
+        : unsignedTransaction.gas,
+      value: unsignedTransaction.value,
+    };
+    if (areCancelTransactions) {
+      unsignedTransactionWithFees.to = unsignedTransactionWithFees.from;
+      unsignedTransactionWithFees.data = '0x';
+    }
+    return unsignedTransactionWithFees;
+  });
+  const signedTransactions = await promisifiedBackground.approveTransactionsWithSameNonce(
+    unsignedTransactionsWithFees,
+  );
+  return signedTransactions;
+};
+
+export function signAndSendSmartTransaction({
+  unsignedTransaction,
+  smartTransactionFees,
+}) {
+  return async (dispatch) => {
+    const signedTransactions = await createSignedTransactions(
+      unsignedTransaction,
+      smartTransactionFees.fees,
+    );
+    const signedCanceledTransactions = await createSignedTransactions(
+      unsignedTransaction,
+      smartTransactionFees.cancelFees,
+      true,
+    );
+    try {
+      const response = await promisifiedBackground.submitSignedTransactions({
+        signedTransactions,
+        signedCanceledTransactions,
+        txParams: unsignedTransaction,
+      }); // Returns e.g.: { uuid: 'dP23W7c2kt4FK9TmXOkz1UM2F20' }
+      return response.uuid;
+    } catch (e) {
+      log.error(e);
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj.type,
+        });
+      }
+      throw e;
+    }
+  };
+}
+
+export function updateSmartTransaction(uuid, txData) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateSmartTransaction({
+        uuid,
+        ...txData,
+      });
+    } catch (e) {
+      log.error(e);
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj.type,
+        });
+      }
+      throw e;
+    }
+  };
+}
+
+export function setSmartTransactionsRefreshInterval(refreshInterval) {
+  return async () => {
+    try {
+      await promisifiedBackground.setStatusRefreshInterval(refreshInterval);
+    } catch (e) {
+      log.error(e);
+    }
+  };
+}
+
+export function cancelSmartTransaction(uuid) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.cancelSmartTransaction(uuid);
+    } catch (e) {
+      log.error(e);
+      if (e.message.startsWith('Fetch error:')) {
+        const errorObj = parseSmartTransactionsError(e.message);
+        dispatch({
+          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+          payload: errorObj.type,
+        });
+      }
+      throw e;
+    }
+  };
+}
+
+export function fetchSmartTransactionsLiveness() {
+  return async () => {
+    try {
+      await promisifiedBackground.fetchSmartTransactionsLiveness();
+    } catch (e) {
+      log.error(e);
+    }
+  };
+}
+
+export function dismissSmartTransactionsErrorMessage() {
+  return {
+    type: actionConstants.DISMISS_SMART_TRANSACTIONS_ERROR_MESSAGE,
+  };
 }
 
 // DetectTokenController

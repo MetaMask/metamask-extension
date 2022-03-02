@@ -1,0 +1,45 @@
+.loading-span {
+  display: flex;
+  height: 250px;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.token-list-item {
+  padding: 8px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+
+  &:hover {
+    background-color: rgba($alto, 0.2);
+  }
+
+  &__data {
+    margin-left: 8px;
+  }
+
+  &__symbol {
+    @include Paragraph;
+
+    line-height: 140%;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__balance {
+    @include H7;
+
+    display: flex;
+    flex-flow: row nowrap;
+  }
+
+  &__balance__label {
+    margin-right: 4px;
+  }
+}

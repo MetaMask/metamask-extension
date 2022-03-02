@@ -17,6 +17,7 @@ import {
   getUSDConversionRate,
   isHardwareWallet,
   getHardwareWalletType,
+  getSwapsDefaultToken,
 } from '../../../selectors';
 
 import {
@@ -28,8 +29,11 @@ import {
   navigateBackToBuildQuote,
   prepareForRetryGetQuotes,
   prepareToLeaveSwaps,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
   getFromTokenInputValue,
   getMaxSlippage,
+  setSwapsFromToken,
 } from '../../../ducks/swaps/swaps';
 import Mascot from '../../../components/ui/mascot';
 import Box from '../../../components/ui/box';
@@ -80,6 +84,7 @@ export default function AwaitingSwap({
   const usdConversionRate = useSelector(getUSDConversionRate);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
 
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
     false,
@@ -104,6 +109,10 @@ export default function AwaitingSwap({
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
+  const smartTransactionsOptInStatus = useSelector(
+    getSmartTransactionsOptInStatus,
+  );
+  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
   const sensitiveProperties = {
     token_from: sourceTokenInfo?.symbol,
     token_from_amount: fetchParams?.value,
@@ -114,6 +123,8 @@ export default function AwaitingSwap({
     gas_fees: feeinUnformattedFiat,
     is_hardware_wallet: hardwareWalletUsed,
     hardware_wallet_type: hardwareWalletType,
+    stx_enabled: smartTransactionsEnabled,
+    stx_user_opt_in: smartTransactionsOptInStatus,
   };
   const quotesExpiredEvent = useNewMetricEvent({
     event: 'Quotes Timed Out',
@@ -243,9 +254,10 @@ export default function AwaitingSwap({
       <Box marginBottom={3}>
         <a
           href="#"
-          onClick={() => {
+          onClick={async () => {
             makeAnotherSwapEvent();
-            dispatch(navigateBackToBuildQuote(history));
+            await dispatch(navigateBackToBuildQuote(history));
+            dispatch(setSwapsFromToken(defaultSwapsToken));
           }}
         >
           {t('makeAnotherSwap')}
@@ -273,7 +285,7 @@ export default function AwaitingSwap({
         )}
         <div className="awaiting-swap__status-image">{statusImage}</div>
         <div className="awaiting-swap__header">{headerText}</div>
-        <div className="awaiting-swap__main-descrption">{descriptionText}</div>
+        <div className="awaiting-swap__main-description">{descriptionText}</div>
         {content}
       </div>
       {!errorKey && swapComplete ? <MakeAnotherSwap /> : null}

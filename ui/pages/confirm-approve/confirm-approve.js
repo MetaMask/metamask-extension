@@ -180,7 +180,7 @@ export default function ConfirmApprove() {
         showAccountInHeader
         title={tokensText}
         contentComponent={
-          <TransactionModalContextProvider captureEventEnabled={false}>
+          <TransactionModalContextProvider>
             <ConfirmApproveContent
               decimals={decimals}
               siteImage={siteImage}

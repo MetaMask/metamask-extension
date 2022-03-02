@@ -95,3 +95,17 @@ export function renderWithProvider(component, store) {
 
   return render(component, { wrapper: Wrapper });
 }
+
+export function renderWithLocalization(component) {
+  const Wrapper = ({ children }) => (
+    <I18nProvider currentLocale="en" current={en} en={en}>
+      <LegacyI18nProvider>{children}</LegacyI18nProvider>
+    </I18nProvider>
+  );
+
+  Wrapper.propTypes = {
+    children: PropTypes.node,
+  };
+
+  return render(component, { wrapper: Wrapper });
+}

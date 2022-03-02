@@ -180,11 +180,13 @@ describe('Collectible Items', () => {
   const setCollectiblesDetectionNoticeDismissedStub = jest.fn();
   const getStateStub = jest.fn();
   const checkAndUpdateAllCollectiblesOwnershipStatusStub = jest.fn();
+  const updateCollectibleDropDownStateStub = jest.fn();
   setBackgroundConnection({
     setCollectiblesDetectionNoticeDismissed: setCollectiblesDetectionNoticeDismissedStub,
     detectCollectibles: detectCollectiblesStub,
     getState: getStateStub,
     checkAndUpdateAllCollectiblesOwnershipStatus: checkAndUpdateAllCollectiblesOwnershipStatusStub,
+    updateCollectibleDropDownState: updateCollectibleDropDownStateStub,
   });
   const historyPushMock = jest.fn();
 

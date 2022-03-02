@@ -8,9 +8,6 @@
   "about": {
     "message": "Apie"
   },
-  "aboutSettingsDescription": {
-    "message": "Versija, palaikymo centras ir kontaktinė informacija"
-  },
   "acceleratingATransaction": {
     "message": "Operacijos paspartinimas naudojantis didesne dujų kaina padidina galimybes, kad ji bus greičiau apdorota tinkle, tačiau tai ne visada garantuojama. "
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Išplėstinės parinktys"
-  },
-  "advancedSettingsDescription": {
-    "message": "Prieigos kūrėjo funkcijos, būsenos žurnalų atsiuntimas, paskyros atstatymas, „testnet“ nustatymas ir pritaikytas RPC"
   },
   "amount": {
     "message": "Suma"
@@ -144,9 +138,6 @@
   "blockExplorerView": {
     "message": "Peržiūrėti paskyrą $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "„Blockies Identicon“ naudojimas"
   },
   "browserNotSupported": {
     "message": "Jūsų naršyklė neatpažįstama..."
@@ -292,17 +283,8 @@
   "deleteNetworkDescription": {
     "message": "Ar tikrai norite panaikinti šį tinklą?"
   },
-  "depositEther": {
-    "message": "Įnešti eterių"
-  },
   "details": {
     "message": "Išsami informacija"
-  },
-  "directDepositEther": {
-    "message": "Tiesiogiai įnešti eteriai"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Jeigu jau turite šiek tiek eterių, sparčiausias būdas gauti eterių į naują piniginę yra tiesioginis įnašas."
   },
   "done": {
     "message": "Atlikta"
@@ -428,9 +410,6 @@
   },
   "general": {
     "message": "Bendra"
-  },
-  "generalSettingsDescription": {
-    "message": "Valiutos keitimas, pagrindinė valiuta, kalba, „blockies identicon“"
   },
   "getEther": {
     "message": "Gauti eterių"
@@ -596,9 +575,6 @@
   "myAccounts": {
     "message": "Mano paskyros"
   },
-  "needEtherInWallet": {
-    "message": "Norėdami dirbti su decentralizuotomis programomis „MetaMask“, savo piniginėje turite turėti eterių."
-  },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
@@ -608,9 +584,6 @@
   },
   "networkName": {
     "message": "Tinklo pavadinimas"
-  },
-  "networkSettingsDescription": {
-    "message": "Įtraukti ir redaguoti tinkintus RPC tinklus"
   },
   "networks": {
     "message": "Tinklai"
@@ -792,9 +765,6 @@
   "restore": {
     "message": "Atkurti"
   },
-  "restoreAccountWithSeed": {
-    "message": "Atkurti paskyrą naudojant atkūrimo frazę"
-  },
   "revealSeedWords": {
     "message": "Atskleisti atkūrimo žodžius"
   },
@@ -846,9 +816,6 @@
   "securityAndPrivacy": {
     "message": "Sauga ir privatumas"
   },
-  "securitySettingsDescription": {
-    "message": "Privatumo nuostatos ir slaptažodinės atkūrimo frazė"
-  },
   "seedPhrasePlaceholder": {
     "message": "Kiekvieną žodį atskirkite viengubu tarpu"
   },
@@ -881,9 +848,6 @@
   },
   "sendTokens": {
     "message": "Siųsti žetonus"
-  },
-  "separateEachWord": {
-    "message": "Kiekvieną žodį atskirkite viengubu tarpu"
   },
   "settings": {
     "message": "Nustatymai"

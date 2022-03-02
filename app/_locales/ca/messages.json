@@ -8,9 +8,6 @@
   "about": {
     "message": "Informació"
   },
-  "aboutSettingsDescription": {
-    "message": "Versió, centre de suport, i informació de contacte"
-  },
   "acceleratingATransaction": {
     "message": "* Accelerar una transacció utilitzant un preu de gas més alt augmenta les possibilitats de ser processat més ràpidament per la xarxa, però no sempre es pot garantir."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Opcions Avançades"
-  },
-  "advancedSettingsDescription": {
-    "message": "Accedeix a característiques de desenvolupador, descarrega Registres d'Estat, Reinicia el Compte, instal·la testnets i personalitza RPC"
   },
   "amount": {
     "message": "Quantitat"
@@ -144,9 +138,6 @@
   "blockExplorerView": {
     "message": "Veure compte a $1 ",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Fer servir els Identicon Blockies"
   },
   "browserNotSupported": {
     "message": "El teu navegador no és suportat..."
@@ -289,17 +280,8 @@
   "deleteNetworkDescription": {
     "message": "Estàs segur que vols eliminar aquesta xarxa?"
   },
-  "depositEther": {
-    "message": "Diposita Ether"
-  },
   "details": {
     "message": "Detalls"
-  },
-  "directDepositEther": {
-    "message": "Diposita Ether directament"
-  },
-  "directDepositEtherExplainer": {
-    "message": "Si ja tens una mica d'Ether, la manera més ràpida de posar Ether al teu nou moneder és per dipòsit directe."
   },
   "done": {
     "message": "Fet"
@@ -418,9 +400,6 @@
   },
   "gasUsed": {
     "message": "Gas utilitzat"
-  },
-  "generalSettingsDescription": {
-    "message": "Conversió de divises, divisa principal, idioma, icones d'identificació única"
   },
   "getEther": {
     "message": "Aconsegueix Ether"
@@ -580,9 +559,6 @@
   "myAccounts": {
     "message": "Els meus Comptes"
   },
-  "needEtherInWallet": {
-    "message": "Per a interactuar amb aplicacions descentralitzades fent servir MetaMask, necessitaràs Ether al teu moneder."
-  },
   "needImportFile": {
     "message": "Has de seleccionar un arxiu per a importar.",
     "description": "User is important an account and needs to add a file to continue"
@@ -592,9 +568,6 @@
   },
   "networkName": {
     "message": "Nom de la xarxa"
-  },
-  "networkSettingsDescription": {
-    "message": "Afegeix i edita xarxes RPC a mida"
   },
   "networks": {
     "message": "Xarxes"
@@ -770,9 +743,6 @@
   "restore": {
     "message": "Restaura"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaura el teu compte amb Frase de Recuperació"
-  },
   "revealSeedWords": {
     "message": "Revelar Paraules de Recuperació"
   },
@@ -824,9 +794,6 @@
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"
   },
-  "securitySettingsDescription": {
-    "message": "Configuració de privacitat i frase de recuperació del moneder"
-  },
   "seedPhrasePlaceholder": {
     "message": "Separa cada paraula amb un únic espai"
   },
@@ -859,9 +826,6 @@
   },
   "sendTokens": {
     "message": "Enviar Fitxes"
-  },
-  "separateEachWord": {
-    "message": "Separa cada paraula amb un sol espai"
   },
   "settings": {
     "message": "Configuració"

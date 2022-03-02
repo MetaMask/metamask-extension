@@ -109,7 +109,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
       case 'error':
         return (
           <span className="sol-item solidity-error">
-            <span>Malformed data</span>
+            <span>{t('malformedData')}</span>
           </span>
         );
 

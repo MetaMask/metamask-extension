@@ -22,6 +22,7 @@ jest.mock('../../../store/actions', () => ({
     .fn()
     .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
+  createTransactionEventFragment: jest.fn(),
 }));
 
 const render = ({ componentProps, contextProps } = {}) => {
@@ -60,7 +61,7 @@ describe('EditGasFeeButton', () => {
     expect(screen.queryByText('Market')).toBeInTheDocument();
   });
 
-  it('should render edit link with text agressive if high gas estimates are selected', () => {
+  it('should render edit link with text aggressive if high gas estimates are selected', () => {
     render({ contextProps: { transaction: { userFeeLevel: 'high' } } });
     expect(screen.queryByText('🦍')).toBeInTheDocument();
     expect(screen.queryByText('Aggressive')).toBeInTheDocument();

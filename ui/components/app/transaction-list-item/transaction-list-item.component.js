@@ -296,7 +296,7 @@ const TransactionListItem = (props) => {
       transaction={transactionGroup.primaryTransaction}
       editGasMode={editGasMode}
     >
-      <TransactionModalContextProvider captureEventEnabled={false}>
+      <TransactionModalContextProvider>
         <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
         {supportsEIP1559V2 && (
           <>

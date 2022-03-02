@@ -14,6 +14,7 @@ describe('Stores custom RPC history', function () {
   it(`creates first custom RPC entry`, async function () {
     const port = 8546;
     const chainId = 1338;
+    const symbol = 'TEST';
     await withFixtures(
       {
         fixtures: 'imported-account',
@@ -35,9 +36,10 @@ describe('Stores custom RPC history', function () {
         await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
-        const networkNameInput = customRpcInputs[0];
-        const rpcUrlInput = customRpcInputs[1];
-        const chainIdInput = customRpcInputs[2];
+        const networkNameInput = customRpcInputs[1];
+        const rpcUrlInput = customRpcInputs[2];
+        const chainIdInput = customRpcInputs[3];
+        const symbolInput = customRpcInputs[4];
 
         await networkNameInput.clear();
         await networkNameInput.sendKeys(networkName);
@@ -47,6 +49,9 @@ describe('Stores custom RPC history', function () {
 
         await chainIdInput.clear();
         await chainIdInput.sendKeys(chainId.toString());
+
+        await symbolInput.clear();
+        await symbolInput.sendKeys(symbol);
 
         await driver.clickElement(
           '.networks-tab__add-network-form-footer .btn-primary',
@@ -70,7 +75,7 @@ describe('Stores custom RPC history', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // duplicate network
-        const duplicateRpcUrl = 'http://localhost:8545';
+        const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
 
         await driver.clickElement('.network-display');
 
@@ -79,12 +84,12 @@ describe('Stores custom RPC history', function () {
         await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
-        const rpcUrlInput = customRpcInputs[1];
+        const rpcUrlInput = customRpcInputs[2];
 
         await rpcUrlInput.clear();
         await rpcUrlInput.sendKeys(duplicateRpcUrl);
         await driver.findElement({
-          text: 'This URL is currently used by the Localhost 8545 network.',
+          text: 'This URL is currently used by the mainnet network.',
           tag: 'h6',
         });
       },
@@ -97,6 +102,7 @@ describe('Stores custom RPC history', function () {
         fixtures: 'imported-account',
         ganacheOptions,
         title: this.test.title,
+        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -114,17 +120,22 @@ describe('Stores custom RPC history', function () {
         await driver.findElement('.networks-tab__sub-header-text');
 
         const customRpcInputs = await driver.findElements('input[type="text"]');
-        const rpcUrlInput = customRpcInputs[1];
-        const chainIdInput = customRpcInputs[2];
-
-        await rpcUrlInput.clear();
-        await rpcUrlInput.sendKeys(newRpcUrl);
+        const rpcUrlInput = customRpcInputs[2];
+        const chainIdInput = customRpcInputs[3];
 
         await chainIdInput.clear();
         await chainIdInput.sendKeys(duplicateChainId);
         await driver.findElement({
           text:
             'This Chain ID is currently used by the Localhost 8545 network.',
+          tag: 'h6',
+        });
+
+        await rpcUrlInput.clear();
+        await rpcUrlInput.sendKeys(newRpcUrl);
+
+        await driver.findElement({
+          text: 'Could not fetch chain ID. Is your RPC URL correct?',
           tag: 'h6',
         });
       },
@@ -184,6 +195,7 @@ describe('Stores custom RPC history', function () {
         fixtures: 'custom-rpc',
         ganacheOptions,
         title: this.test.title,
+        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();

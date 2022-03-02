@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { TRANSACTION_STATUSES } from '../../shared/constants/transaction';
+import { DEVICE_NAMES } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import * as actions from './actions';
 
@@ -436,7 +437,7 @@ describe('Actions', () => {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.checkHardwareStatus('ledger', `m/44'/60'/0'/0`),
+        actions.checkHardwareStatus(DEVICE_NAMES.LEDGER, `m/44'/60'/0'/0`),
       );
       expect(checkHardwareStatus.callCount).toStrictEqual(1);
     });
@@ -476,7 +477,7 @@ describe('Actions', () => {
 
       actions._setBackgroundConnection(background);
 
-      await store.dispatch(actions.forgetDevice('ledger'));
+      await store.dispatch(actions.forgetDevice(DEVICE_NAMES.LEDGER));
       expect(forgetDevice.callCount).toStrictEqual(1);
     });
 
@@ -518,7 +519,7 @@ describe('Actions', () => {
       actions._setBackgroundConnection(background);
 
       await store.dispatch(
-        actions.connectHardware('ledger', 0, `m/44'/60'/0'/0`),
+        actions.connectHardware(DEVICE_NAMES.LEDGER, 0, `m/44'/60'/0'/0`),
       );
       expect(connectHardware.callCount).toStrictEqual(1);
     });
@@ -544,7 +545,7 @@ describe('Actions', () => {
       ];
 
       await expect(
-        store.dispatch(actions.connectHardware('ledger')),
+        store.dispatch(actions.connectHardware(DEVICE_NAMES.LEDGER)),
       ).rejects.toThrow('error');
 
       expect(store.getActions()).toStrictEqual(expectedActions);
@@ -567,7 +568,7 @@ describe('Actions', () => {
       await store.dispatch(
         actions.unlockHardwareWalletAccounts(
           [0],
-          'ledger',
+          DEVICE_NAMES.LEDGER,
           `m/44'/60'/0'/0`,
           '',
         ),
