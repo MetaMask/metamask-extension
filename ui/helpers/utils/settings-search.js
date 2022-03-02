@@ -10,9 +10,6 @@ import {
   EXPERIMENTAL_ROUTE,
 } from '../constants/routes';
 
-const MENU_TAB = 'menu-tab';
-const MENU_SECTION = 'menu-section';
-
 function showHideSettings(t, settings) {
   if (!process.env.COLLECTIBLES_V1) {
     return settings.filter(
@@ -32,6 +29,7 @@ export function getSettingsRoutes(t) {
       description: '',
       route: `${GENERAL_ROUTE}#currency-conversion`,
       image: 'general-icon.svg',
+      id: 1,
     },
     {
       tab: t('general'),
@@ -39,6 +37,7 @@ export function getSettingsRoutes(t) {
       description: t('primaryCurrencySettingDescription'),
       route: `${GENERAL_ROUTE}#primary-currency`,
       image: 'general-icon.svg',
+      id: 2,
     },
     {
       tab: t('general'),
@@ -46,6 +45,7 @@ export function getSettingsRoutes(t) {
       description: '',
       route: `${GENERAL_ROUTE}#current-language`,
       image: 'general-icon.svg',
+      id: 3,
     },
     {
       tab: t('general'),
@@ -53,6 +53,7 @@ export function getSettingsRoutes(t) {
       description: '',
       route: `${GENERAL_ROUTE}#account-identicon`,
       image: 'general-icon.svg',
+      id: 4,
     },
     {
       tab: t('general'),
@@ -60,6 +61,7 @@ export function getSettingsRoutes(t) {
       description: '',
       route: `${GENERAL_ROUTE}#zero-balancetokens`,
       image: 'general-icon.svg',
+      id: 5,
     },
     {
       tab: t('advanced'),
@@ -67,6 +69,7 @@ export function getSettingsRoutes(t) {
       description: t('stateLogsDescription'),
       route: `${ADVANCED_ROUTE}#state-logs`,
       image: 'advanced-icon.svg',
+      id: 6,
     },
     {
       tab: t('advanced'),
@@ -74,6 +77,7 @@ export function getSettingsRoutes(t) {
       description: '',
       route: `${ADVANCED_ROUTE}#sync-withmobile`,
       image: 'advanced-icon.svg',
+      id: 7,
     },
     {
       tab: t('advanced'),
@@ -81,6 +85,7 @@ export function getSettingsRoutes(t) {
       description: t('resetAccountDescription'),
       route: `${ADVANCED_ROUTE}#reset-account`,
       image: 'advanced-icon.svg',
+      id: 8,
     },
     {
       tab: t('advanced'),
@@ -88,6 +93,7 @@ export function getSettingsRoutes(t) {
       description: t('showAdvancedGasInlineDescription'),
       route: `${ADVANCED_ROUTE}#advanced-gascontrols`,
       image: 'advanced-icon.svg',
+      id: 9,
     },
     {
       tab: t('advanced'),
@@ -95,6 +101,7 @@ export function getSettingsRoutes(t) {
       description: t('showHexDataDescription'),
       route: `${ADVANCED_ROUTE}#show-hexdata`,
       image: 'advanced-icon.svg',
+      id: 10,
     },
     {
       tab: t('advanced'),
@@ -102,6 +109,7 @@ export function getSettingsRoutes(t) {
       description: t('showFiatConversionInTestnetsDescription'),
       route: `${ADVANCED_ROUTE}#conversion-testnetworks`,
       image: 'advanced-icon.svg',
+      id: 11,
     },
     {
       tab: t('advanced'),
@@ -109,6 +117,7 @@ export function getSettingsRoutes(t) {
       description: t('showTestnetNetworksDescription'),
       route: `${ADVANCED_ROUTE}#show-testnets`,
       image: 'advanced-icon.svg',
+      id: 12,
     },
     {
       tab: t('advanced'),
@@ -116,6 +125,7 @@ export function getSettingsRoutes(t) {
       description: t('nonceFieldDescription'),
       route: `${ADVANCED_ROUTE}#customize-nonce`,
       image: 'advanced-icon.svg',
+      id: 13,
     },
     {
       tab: t('advanced'),
@@ -123,6 +133,7 @@ export function getSettingsRoutes(t) {
       description: t('autoLockTimeLimitDescription'),
       route: `${ADVANCED_ROUTE}#autolock-timer`,
       image: 'advanced-icon.svg',
+      id: 14,
     },
     {
       tab: t('advanced'),
@@ -130,6 +141,7 @@ export function getSettingsRoutes(t) {
       description: t('syncWithThreeBoxDescription'),
       route: `${ADVANCED_ROUTE}#sync-with3box`,
       image: 'advanced-icon.svg',
+      id: 15,
     },
     {
       tab: t('advanced'),
@@ -137,6 +149,7 @@ export function getSettingsRoutes(t) {
       description: t('ipfsGatewayDescription'),
       route: `${ADVANCED_ROUTE}#ipfs-gateway`,
       image: 'advanced-icon.svg',
+      id: 16,
     },
     {
       tab: t('advanced'),
@@ -144,6 +157,7 @@ export function getSettingsRoutes(t) {
       description: t('preferredLedgerConnectionType'),
       route: `${ADVANCED_ROUTE}#ledger-connection`,
       image: 'advanced-icon.svg',
+      id: 17,
     },
     {
       tab: t('advanced'),
@@ -151,6 +165,7 @@ export function getSettingsRoutes(t) {
       description: t('dismissReminderDescriptionField'),
       route: `${ADVANCED_ROUTE}#dimiss-secretrecovery`,
       image: 'advanced-icon.svg',
+      id: 18,
     },
     {
       tab: t('contacts'),
@@ -158,6 +173,7 @@ export function getSettingsRoutes(t) {
       description: t('contacts'),
       route: CONTACT_LIST_ROUTE,
       image: 'contacts-icon.svg',
+      id: 19,
     },
     {
       tab: t('securityAndPrivacy'),
@@ -165,6 +181,7 @@ export function getSettingsRoutes(t) {
       description: t('revealSeedWords'),
       route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
       image: 'security-icon.svg',
+      id: 20,
     },
     {
       tab: t('securityAndPrivacy'),
@@ -172,6 +189,7 @@ export function getSettingsRoutes(t) {
       description: t('showIncomingTransactionsDescription'),
       route: `${SECURITY_ROUTE}#incoming-transaction`,
       image: 'security-icon.svg',
+      id: 21,
     },
     {
       tab: t('securityAndPrivacy'),
@@ -179,6 +197,7 @@ export function getSettingsRoutes(t) {
       description: t('usePhishingDetectionDescription'),
       route: `${SECURITY_ROUTE}#phishing-detection`,
       image: 'security-icon.svg',
+      id: 22,
     },
     {
       tab: t('securityAndPrivacy'),
@@ -186,6 +205,7 @@ export function getSettingsRoutes(t) {
       description: t('participateInMetaMetricsDescription'),
       route: `${SECURITY_ROUTE}#metrametrics`,
       image: 'security-icon.svg',
+      id: 23,
     },
     {
       tab: t('alerts'),
@@ -193,6 +213,7 @@ export function getSettingsRoutes(t) {
       description: t('alertSettingsUnconnectedAccount'),
       route: `${ALERTS_ROUTE}#unconnected-account`,
       image: 'alerts-icon.svg',
+      id: 24,
     },
     {
       tab: t('alerts'),
@@ -200,6 +221,7 @@ export function getSettingsRoutes(t) {
       description: t('alertSettingsWeb3ShimUsage'),
       route: `${ALERTS_ROUTE}#web3-shimusage`,
       image: 'alerts-icon.svg',
+      id: 25,
     },
     {
       tab: t('networks'),
@@ -207,6 +229,7 @@ export function getSettingsRoutes(t) {
       description: t('mainnet'),
       route: `${NETWORKS_ROUTE}#networks-mainnet`,
       image: 'network-icon.svg',
+      id: 26,
     },
     {
       tab: t('networks'),
@@ -214,6 +237,7 @@ export function getSettingsRoutes(t) {
       description: t('ropsten'),
       route: `${NETWORKS_ROUTE}#networks-ropsten`,
       image: 'network-icon.svg',
+      id: 27,
     },
     {
       tab: t('networks'),
@@ -221,6 +245,7 @@ export function getSettingsRoutes(t) {
       description: t('rinkeby'),
       route: `${NETWORKS_ROUTE}#networks-rinkeby`,
       image: 'network-icon.svg',
+      id: 28,
     },
     {
       tab: t('networks'),
@@ -228,6 +253,7 @@ export function getSettingsRoutes(t) {
       description: t('goerli'),
       route: `${NETWORKS_ROUTE}#networks-goerli`,
       image: 'network-icon.svg',
+      id: 29,
     },
     {
       tab: t('networks'),
@@ -235,6 +261,7 @@ export function getSettingsRoutes(t) {
       description: t('kovan'),
       route: `${NETWORKS_ROUTE}#networtks-kovan`,
       image: 'network-icon.svg',
+      id: 30,
     },
     {
       tab: t('networks'),
@@ -242,6 +269,7 @@ export function getSettingsRoutes(t) {
       description: t('localhost'),
       route: `${NETWORKS_ROUTE}#network-localhost`,
       image: 'network-icon.svg',
+      id: 31,
     },
     {
       tab: t('experimental'),
@@ -249,6 +277,7 @@ export function getSettingsRoutes(t) {
       description: t('useTokenDetectionDescription'),
       route: `${EXPERIMENTAL_ROUTE}#token-description`,
       image: 'experimental-icon.svg',
+      id: 32,
     },
     {
       tab: t('experimental'),
@@ -256,6 +285,7 @@ export function getSettingsRoutes(t) {
       description: t('enableOpenSeaAPIDescription'),
       route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
       image: 'experimental-icon.svg',
+      id: 33,
     },
     {
       tab: t('experimental'),
@@ -263,6 +293,7 @@ export function getSettingsRoutes(t) {
       description: t('useCollectibleDetectionDescription'),
       route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
       image: 'experimental-icon.svg',
+      id: 34,
     },
 
     {
@@ -271,6 +302,7 @@ export function getSettingsRoutes(t) {
       description: t('builtAroundTheWorld'),
       route: `${ABOUT_US_ROUTE}#version`,
       image: 'info-icon.svg',
+      id: 35,
     },
     {
       tab: t('about'),
@@ -278,6 +310,7 @@ export function getSettingsRoutes(t) {
       description: '',
       route: `${ABOUT_US_ROUTE}#links`,
       image: 'info-icon.svg',
+      id: 36,
     },
     {
       tab: t('about'),
@@ -285,6 +318,7 @@ export function getSettingsRoutes(t) {
       description: t('privacyMsg'),
       route: `${ABOUT_US_ROUTE}#privacy-policy`,
       image: 'info-icon.svg',
+      id: 37,
     },
     {
       tab: t('about'),
@@ -292,6 +326,7 @@ export function getSettingsRoutes(t) {
       description: t('terms'),
       route: `${ABOUT_US_ROUTE}#terms`,
       image: 'info-icon.svg',
+      id: 38,
     },
 
     {
@@ -300,6 +335,7 @@ export function getSettingsRoutes(t) {
       description: t('attributions'),
       route: `${ABOUT_US_ROUTE}#attributions`,
       image: 'info-icon.svg',
+      id: 39,
     },
 
     {
@@ -308,6 +344,7 @@ export function getSettingsRoutes(t) {
       description: t('supportCenter'),
       route: `${ABOUT_US_ROUTE}#supportcenter`,
       image: 'info-icon.svg',
+      id: 40,
     },
 
     {
@@ -316,6 +353,7 @@ export function getSettingsRoutes(t) {
       description: t('visitWebSite'),
       route: `${ABOUT_US_ROUTE}#visitwebsite`,
       image: 'info-icon.svg',
+      id: 41,
     },
 
     {
@@ -324,6 +362,7 @@ export function getSettingsRoutes(t) {
       description: t('contactUs'),
       route: `${ABOUT_US_ROUTE}#contactus`,
       image: 'info-icon.svg',
+      id: 42,
     },
   ];
 
@@ -392,16 +431,21 @@ function colorText(menuElement, regex) {
     );
   }
 }
-export function highlightSearchedText(menuIndex) {
-  const menuTabElement = document.getElementById(`${MENU_TAB}_${menuIndex}`);
-  const menuSectionElement = document.getElementById(
-    `${MENU_SECTION}_${menuIndex}`,
+export function highlightSearchedText() {
+  const searchElem = document.getElementById('search-settings');
+  const searchRegex = new RegExp(searchElem.value, 'gi');
+  const results = document.querySelectorAll(
+    '.settings-page__header__search__list__item',
   );
 
-  const searchElem = document.getElementById('search-settings');
-  searchElem.addEventListener('input', (event) => {
-    const searchQuery = event.target.value;
-    const searchRegex = new RegExp(searchQuery, 'gi');
+  [...results].forEach((element) => {
+    const menuTabElement = element.querySelector(
+      '.settings-page__header__search__list__item__tab',
+    );
+    const menuSectionElement = element.querySelector(
+      '.settings-page__header__search__list__item__section',
+    );
+
     colorText(menuTabElement, searchRegex);
     colorText(menuSectionElement, searchRegex);
   });

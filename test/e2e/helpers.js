@@ -7,6 +7,7 @@ const {
   createSegmentServer,
 } = require('../../development/lib/create-segment-server');
 const { setupMocking } = require('../../development/mock-e2e');
+const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const { buildWebDriver } = require('./webdriver');
@@ -206,6 +207,72 @@ const connectDappWithExtensionPopup = async (driver) => {
   await driver.delay(regularDelayMs);
 };
 
+const completeImportSRPOnboardingFlow = async (
+  driver,
+  seedPhrase,
+  password,
+) => {
+  if (process.env.ONBOARDING_V2 === '1') {
+    // welcome
+    await driver.clickElement('[data-testid="onboarding-import-wallet"]');
+
+    // metrics
+    await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+
+    // import with recovery phrase
+    await driver.fill('[data-testid="import-srp-text"]', seedPhrase);
+    await driver.clickElement('[data-testid="import-srp-confirm"]');
+
+    // create password
+    await driver.fill('[data-testid="create-password-new"]', password);
+    await driver.fill('[data-testid="create-password-confirm"]', password);
+    await driver.clickElement('[data-testid="create-password-terms"]');
+    await driver.clickElement('[data-testid="create-password-import"]');
+
+    // complete
+    await driver.clickElement('[data-testid="onboarding-complete-done"]');
+
+    // pin extension
+    await driver.clickElement('[data-testid="pin-extension-next"]');
+    await driver.clickElement('[data-testid="pin-extension-done"]');
+  } else {
+    // clicks the continue button on the welcome screen
+    await driver.findElement('.welcome-page__header');
+    await driver.clickElement({
+      text: enLocaleMessages.getStarted.message,
+      tag: 'button',
+    });
+
+    // clicks the "Import Wallet" option
+    await driver.clickElement({ text: 'Import wallet', tag: 'button' });
+
+    // clicks the "No thanks" option on the metametrics opt-in screen
+    await driver.clickElement('.btn-secondary');
+
+    // Import Secret Recovery Phrase
+    await driver.fill(
+      'input[placeholder="Enter your Secret Recovery Phrase"]',
+      seedPhrase,
+    );
+
+    await driver.fill('#password', password);
+    await driver.fill('#confirm-password', password);
+
+    await driver.clickElement(
+      '[data-testid="create-new-vault__terms-checkbox"]',
+    );
+
+    await driver.clickElement({ text: 'Import', tag: 'button' });
+
+    // clicks through the success screen
+    await driver.findElement({ text: 'Congratulations', tag: 'div' });
+    await driver.clickElement({
+      text: enLocaleMessages.endOfFlowMessage10.message,
+      tag: 'button',
+    });
+  }
+};
+
 module.exports = {
   getWindowHandles,
   convertToHexValue,
@@ -214,4 +281,5 @@ module.exports = {
   largeDelayMs,
   withFixtures,
   connectDappWithExtensionPopup,
+  completeImportSRPOnboardingFlow,
 };

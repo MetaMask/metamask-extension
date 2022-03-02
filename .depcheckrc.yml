@@ -35,6 +35,7 @@ ignores:
   - '@storybook/core'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
+  - 'storybook-dark-mode'
   - 'style-loader'
   - 'css-loader'
   - 'sass-loader'

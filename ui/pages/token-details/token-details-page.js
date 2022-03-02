@@ -2,11 +2,10 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useHistory } from 'react-router-dom';
 import { getTokens } from '../../ducks/metamask/metamask';
-import { getSendAssetAddress } from '../../ducks/send';
 import { getUseTokenDetection, getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 import { isEqualCaseInsensitive } from '../../helpers/utils/util';
-import Identicon from '../../components/ui/identicon/identicon.component';
+import Identicon from '../../components/ui/identicon';
 import { I18nContext } from '../../contexts/i18n';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../hooks/useTokenFiatAmount';
@@ -31,18 +30,14 @@ export default function TokenDetailsPage() {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useContext(I18nContext);
-
   const tokens = useSelector(getTokens);
   const tokenList = useSelector(getTokenList);
   const useTokenDetection = useSelector(getUseTokenDetection);
 
-  const assetAddress = useSelector((state) => ({
-    asset: getSendAssetAddress(state),
-  }));
-
-  const { asset: tokenAddress } = assetAddress;
-
-  const tokenMetadata = tokenList[tokenAddress];
+  const tokenAddress = history?.location?.state?.tokenAddress;
+  const tokenMetadata = Object.values(tokenList).find((token) =>
+    isEqualCaseInsensitive(token.address, tokenAddress),
+  );
   const fileName = tokenMetadata?.iconUrl;
   const imagePath = useTokenDetection
     ? fileName
@@ -98,7 +93,7 @@ export default function TokenDetailsPage() {
             color={COLORS.BLACK}
             className="token-details__token-value"
           >
-            {tokenBalance}
+            {tokenBalance || ''}
           </Typography>
           <Box marginTop={1}>
             <Identicon

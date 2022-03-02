@@ -1738,9 +1738,6 @@
     "message": "Tài khoản $1",
     "description": "Default name of next account to be created on create account screen"
   },
-  "newCollectibleAddFailed": {
-    "message": "Bộ sưu tập đã không được thêm vì: $1"
-  },
   "newCollectibleAddedMessage": {
     "message": "Bộ sưu tập đã được thêm thành công!"
   },
