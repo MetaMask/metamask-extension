@@ -51,7 +51,6 @@ describe('Test Snap Error', function () {
         );
 
         // approve install of snap
-        await driver.waitUntilXWindowHandles(2, 5000, 10000);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
