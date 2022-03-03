@@ -16,6 +16,7 @@ export default function HardwareConnectivityContent({
   deviceName,
   onConnectClick,
   onAdvancedClick,
+  onClose,
 }) {
   const t = useI18nContext();
 
@@ -23,6 +24,19 @@ export default function HardwareConnectivityContent({
     case 'Ledger':
       return (
         <div className="hardware-connectivity-content">
+          <div className="hardware-connectivity-content__close">
+            <i
+              onClick={onClose}
+              onKeyUp={(event) => {
+                if (event.key === 'Enter') {
+                  onClose();
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              className="fas fa-times"
+            />
+          </div>
           <Typography
             variant={TYPOGRAPHY.H3}
             fontWeight={FONT_WEIGHT.BOLD}
@@ -59,4 +73,5 @@ HardwareConnectivityContent.propTypes = {
   deviceName: PropTypes.string.isRequired,
   onConnectClick: PropTypes.func.isRequired,
   onAdvancedClick: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };

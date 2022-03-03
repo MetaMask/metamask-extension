@@ -1,4 +1,14 @@
 .hardware-connectivity-content {
+  &__close {
+    padding: 10px 0;
+    flex-direction: column;
+    text-align: right;
+
+    i {
+      cursor: pointer;
+    }
+  }
+
   &-list-container {
     display: flex;
     justify-content: center;
@@ -7,6 +17,8 @@
   ol {
     list-style-type: decimal;
     padding-inline-start: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
 
     li {
       font-size: 0.875rem;
