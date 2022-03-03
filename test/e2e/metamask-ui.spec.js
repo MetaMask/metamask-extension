@@ -450,9 +450,9 @@ describe('MetaMask', function () {
     });
 
     it('customizes gas', async function () {
-      await driver.delay(largeDelayMs);
+      await driver.delay(1000);
       await driver.clickElement({ text: 'Edit', tag: 'button' });
-      await driver.delay(largeDelayMs);
+      await driver.delay(1000);
       await driver.clickElement(
         { text: 'Edit suggested gas fee', tag: 'button' },
         10000,
