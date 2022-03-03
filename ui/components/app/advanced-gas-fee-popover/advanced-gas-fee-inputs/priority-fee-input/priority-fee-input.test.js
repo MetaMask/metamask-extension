@@ -60,26 +60,24 @@ describe('PriorityfeeInput', () => {
   it('should renders advancedGasFee.priorityfee value if current estimate used is not custom', () => {
     render({
       userFeeLevel: 'high',
-      txParams: {
-        maxFeePerGas: '0x2E90EDD000',
-      },
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
-
-  it('should not advancedGasFee.baseFee value for swaps', () => {
+  it('should not use advancedGasFee.priorityfee value for swaps', () => {
     render(
       {
         userFeeLevel: 'high',
-        txParams: {
-          maxFeePerGas: '0x2E90EDD000',
-        },
       },
       { editGasMode: EDIT_GAS_MODES.SWAPS },
     );
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(200);
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(
+      parseInt(
+        mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates.high
+          .suggestedMaxPriorityFeePerGas,
+        10,
+      ),
+    );
   });
-
   it('should renders priorityfee value from transaction if current estimate used is custom', () => {
     render({
       txParams: {
@@ -89,19 +87,11 @@ describe('PriorityfeeInput', () => {
     expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
   });
   it('should show current priority fee range in subtext', () => {
-    render({
-      txParams: {
-        maxFeePerGas: '0x174876E800',
-      },
-    });
+    render();
     expect(screen.queryByText('1 - 20 GWEI')).toBeInTheDocument();
   });
   it('should show 12hr range value in subtext', () => {
-    render({
-      txParams: {
-        maxFeePerGas: '0x174876E800',
-      },
-    });
+    render();
     expect(screen.queryByText('2 - 125 GWEI')).toBeInTheDocument();
   });
   it('should show error if value entered is 0', () => {

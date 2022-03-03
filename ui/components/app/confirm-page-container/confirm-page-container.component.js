@@ -256,6 +256,8 @@ export default class ConfirmPageContainer extends Component {
               nativeCurrency={nativeCurrency}
               networkName={networkName}
               showBuyModal={showBuyModal}
+              toAddress={toAddress}
+              transactionType={currentTransaction.type}
             />
           )}
           {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (

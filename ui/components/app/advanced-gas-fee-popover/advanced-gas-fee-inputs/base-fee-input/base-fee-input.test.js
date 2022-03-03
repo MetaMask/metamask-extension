@@ -60,24 +60,24 @@ describe('BaseFeeInput', () => {
   it('should renders advancedGasFee.baseFee value if current estimate used is not custom', () => {
     render({
       userFeeLevel: 'high',
-      txParams: {
-        maxFeePerGas: '0x2E90EDD000',
-      },
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
 
-  it('should not advancedGasFee.baseFee value for swaps', () => {
+  it('should not use advancedGasFee.baseFee value for swaps', () => {
     render(
       {
         userFeeLevel: 'high',
-        txParams: {
-          maxFeePerGas: '0x2E90EDD000',
-        },
       },
       { editGasMode: EDIT_GAS_MODES.SWAPS },
     );
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(200);
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(
+      parseInt(
+        mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates.high
+          .suggestedMaxFeePerGas,
+        10,
+      ),
+    );
   });
 
   it('should renders baseFee values from transaction if current estimate used is custom', () => {
@@ -89,19 +89,11 @@ describe('BaseFeeInput', () => {
     expect(document.getElementsByTagName('input')[0]).toHaveValue(200);
   });
   it('should show current value of estimatedBaseFee in subtext', () => {
-    render({
-      txParams: {
-        maxFeePerGas: '0x174876E800',
-      },
-    });
+    render();
     expect(screen.queryByText('50 GWEI')).toBeInTheDocument();
   });
   it('should show 12hr range value in subtext', () => {
-    render({
-      txParams: {
-        maxFeePerGas: '0x174876E800',
-      },
-    });
+    render();
     expect(screen.queryByText('50 - 100 GWEI')).toBeInTheDocument();
   });
   it('should show error if base fee is less than suggested low value', () => {
@@ -120,7 +112,6 @@ describe('BaseFeeInput', () => {
       target: { value: 50 },
     });
   });
-
   it('should show error if base if is more than suggested high value', () => {
     render({
       txParams: {
