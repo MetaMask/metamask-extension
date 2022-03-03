@@ -11,7 +11,7 @@ describe('Swap Eth for another Token', function () {
       },
     ],
   };
-  it('Completes a Swap between Eth and Dai', async function () {
+  it('Completes a Swap between Eth and Matic', async function () {
     await withFixtures(
       {
         fixtures: 'imported-account',
