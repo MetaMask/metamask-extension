@@ -198,7 +198,7 @@ describe('CurrencyInput Component', () => {
       );
 
       expect(wrapper).toHaveLength(1);
-      expect(handleChangeSpy.callCount).toStrictEqual(0);
+      expect(handleChangeSpy.callCount).toStrictEqual(1);
       expect(handleBlurSpy.callCount).toStrictEqual(0);
 
       const input = wrapper.find('input');
@@ -234,7 +234,7 @@ describe('CurrencyInput Component', () => {
       );
 
       expect(wrapper).toHaveLength(1);
-      expect(handleChangeSpy.callCount).toStrictEqual(0);
+      expect(handleChangeSpy.callCount).toStrictEqual(1);
       expect(handleBlurSpy.callCount).toStrictEqual(0);
 
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
@@ -307,7 +307,7 @@ describe('CurrencyInput Component', () => {
       );
 
       expect(wrapper).toHaveLength(1);
-      expect(handleChangeSpy.callCount).toStrictEqual(0);
+      expect(handleChangeSpy.callCount).toStrictEqual(1);
       expect(handleBlurSpy.callCount).toStrictEqual(0);
 
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(

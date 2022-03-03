@@ -44,6 +44,9 @@ export default function CurrencyInput({
 
   const [isSwapped, setSwapped] = useState(false);
   const [newHexValue, setNewHexValue] = useState(hexValue);
+  const [newfeatureSecondary, setNewFeatureSecondary] = useState(
+    featureSecondary,
+  );
 
   const shouldUseFiat = () => {
     if (hideSecondary) {
@@ -73,19 +76,13 @@ export default function CurrencyInput({
   const initialDecimalValue = hexValue ? getDecimalValue() : 0;
   const [decimalValue, setDecimalValue] = useState(initialDecimalValue);
 
-  useEffect(() => {
-    setNewHexValue(hexValue);
-    const newDecimalValue = getDecimalValue();
-    setDecimalValue(newDecimalValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hexValue]);
-
   const swap = async () => {
     await onPreferenceToggle();
     setSwapped(!isSwapped);
+    setNewFeatureSecondary(!newfeatureSecondary);
   };
 
-  const handleChange = (newDecimalValue) => {
+  const handleChange = async (newDecimalValue) => {
     const hexValueNew = shouldUseFiat()
       ? getWeiHexFromDecimalValue({
           value: newDecimalValue,
@@ -102,16 +99,23 @@ export default function CurrencyInput({
 
     setNewHexValue(hexValueNew);
     setDecimalValue(newDecimalValue);
-    onChange(hexValueNew);
+    await onChange(hexValueNew);
     setSwapped(!isSwapped);
   };
 
   useEffect(() => {
-    if (isSwapped) {
-      handleChange(decimalValue);
-    }
+    setNewHexValue(hexValue);
+    const newDecimalValue = getDecimalValue();
+    setDecimalValue(newDecimalValue);
+    handleChange(decimalValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSwapped]);
+  }, [hexValue]);
+
+  useEffect(() => {
+    if (featureSecondary) {
+      setNewFeatureSecondary(false);
+    }
+  }, [featureSecondary]);
 
   const renderConversionComponent = () => {
     let currency, numberOfDecimals;
@@ -158,7 +162,7 @@ export default function CurrencyInput({
       }}
       suffix={shouldUseFiat() ? secondarySuffix : primarySuffix}
       onChange={handleChange}
-      value={decimalValue}
+      value={newfeatureSecondary ? initialDecimalValue : decimalValue}
       actionComponent={
         <button className="currency-input__swap-component" onClick={swap}>
           <i className="fa fa-retweet fa-lg" />
