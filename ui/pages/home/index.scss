@@ -148,7 +148,7 @@
       color: var(--color-success-default);
     }
 
-    &--close {
+    &-close {
       color: var(--ui-black);
       background: none;
       margin-left: 20px;
@@ -162,13 +162,12 @@
   &__new-nft-notification {
     margin-bottom: 24px;
     margin-right: 8px;
-    left: 16px;
 
-    &--image {
+    &-image {
       margin-right: 10px;
     }
 
-    &--close {
+    &-close {
       color: var(--ui-black);
       background: none;
       margin-left: 44px;

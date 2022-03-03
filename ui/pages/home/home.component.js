@@ -313,7 +313,7 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <img
                   src="./images/check_circle.svg"
-                  className="home__new-nft-notification--image"
+                  className="home__new-nft-notification-image"
                 />
                 <Typography
                   variant={TYPOGRAPHY.H7}
@@ -322,7 +322,7 @@ export default class Home extends PureComponent {
                   {t('newCollectibleAddedMessage')}
                 </Typography>
                 <button
-                  className="fas fa-times home__new-nft-notification--close"
+                  className="fas fa-times home__new-nft-notification-close"
                   title={t('close')}
                   onClick={() => setNewCollectibleAddedMessage('')}
                 />
@@ -330,7 +330,7 @@ export default class Home extends PureComponent {
             }
           />
         ) : null}
-        {newNetworkAdded ? (
+        {newNetworkAdded || true ? (
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
@@ -338,7 +338,7 @@ export default class Home extends PureComponent {
               <Box display={DISPLAY.INLINE_FLEX}>
                 <img
                   src="./images/check_circle.svg"
-                  className="home__new-network-notification--image"
+                  className="home__new-network-notification-image"
                 />
                 <Typography
                   variant={TYPOGRAPHY.H7}
@@ -347,7 +347,7 @@ export default class Home extends PureComponent {
                   {t('newNetworkAdded', [newNetworkAdded])}
                 </Typography>
                 <button
-                  className="fas fa-times home__new-network-notification--close"
+                  className="fas fa-times home__new-network-notification-close"
                   title={t('close')}
                   onClick={() => setNewNetworkAdded('')}
                 />
