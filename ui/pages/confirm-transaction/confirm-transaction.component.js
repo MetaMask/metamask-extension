@@ -25,7 +25,7 @@ import {
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
 } from '../../store/actions';
-import { ConfirmTokenTransactionSwitch } from './confirm-token-transaction-switch';
+import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 import ConfTx from './conf-tx';
 
 export default class ConfirmTransaction extends Component {

@@ -14,9 +14,9 @@ import ConfirmSendToken from '../confirm-send-token';
 import ConfirmTokenTransactionBase from '../confirm-token-transaction-base';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 
-const { useAssetDetails } = require('../../hooks/useAssetDetails');
+import { useAssetDetails } from '../../hooks/useAssetDetails';
 
-export const ConfirmTokenTransactionSwitch = ({ transaction }) => {
+export default function ConfirmTokenTransactionSwitch({ transaction }) {
   const {
     txParams: { data, to: tokenAddress, from: userAddress } = {},
   } = transaction;
@@ -111,7 +111,7 @@ export const ConfirmTokenTransactionSwitch = ({ transaction }) => {
       <Route path="*" component={ConfirmTransactionSwitch} />
     </Switch>
   );
-};
+}
 
 ConfirmTokenTransactionSwitch.propTypes = {
   transaction: PropTypes.shape({

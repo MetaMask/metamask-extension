@@ -34,7 +34,7 @@ export default function ConfirmSendToken({
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const handlEditTransaction = ({
+  const handleEditTransaction = ({
     txData,
     tokenData,
     tokenProps: assetDetails,
@@ -53,7 +53,7 @@ export default function ConfirmSendToken({
   };
 
   const handleEdit = (confirmTransactionData) => {
-    handlEditTransaction(confirmTransactionData);
+    handleEditTransaction(confirmTransactionData);
     history.push(SEND_ROUTE);
   };
   const conversionRate = useSelector(getConversionRate);

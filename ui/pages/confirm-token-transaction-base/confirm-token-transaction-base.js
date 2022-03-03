@@ -53,7 +53,7 @@ export default function ConfirmTokenTransactionBase({
 
   const ethTransactionTotalMaxAmount = Number(
     hexWEIToDecETH(hexMaximumTransactionFee),
-  ).toFixed(6);
+  );
 
   let title, subtitle;
   if (assetStandard === ERC721 || assetStandard === ERC1155) {
