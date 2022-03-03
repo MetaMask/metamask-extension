@@ -20,22 +20,40 @@ const ConfirmPageContainerSummary = (props) => {
     subtitleComponent,
     hideSubtitle,
     className,
-    identiconAddress,
+    tokenAddress,
+    toAddress,
     nonce,
     origin,
     hideTitle,
     image,
     transactionType,
-    toAddress,
   } = props;
 
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
   const t = useI18nContext();
-  const { toName, isTrusted } = useAddressDetails(toAddress);
 
-  const isContractTypeTransaction =
-    transactionType === TRANSACTION_TYPES.CONTRACT_INTERACTION;
-  const checksummedAddress = toChecksumHexAddress(toAddress);
+  const contractInitiatedTransactionType = [
+    TRANSACTION_TYPES.CONTRACT_INTERACTION,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+  ];
+  const isContractTypeTransaction = contractInitiatedTransactionType.includes(
+    transactionType,
+  );
+  let contractAddress;
+  if (isContractTypeTransaction) {
+    // If the transaction is TOKEN_METHOD_TRANSFER or TOKEN_METHOD_TRANSFER_FROM
+    // the contract address is passed down as tokenAddress, if it is anyother
+    // type of contract interaction it is passed as toAddress
+    contractAddress =
+      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER ||
+      transactionType === TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM
+        ? tokenAddress
+        : toAddress;
+  }
+
+  const { toName, isTrusted } = useAddressDetails(contractAddress);
+  const checksummedAddress = toChecksumHexAddress(contractAddress);
 
   const renderImage = () => {
     if (image) {
@@ -46,12 +64,12 @@ const ConfirmPageContainerSummary = (props) => {
           src={image}
         />
       );
-    } else if (identiconAddress) {
+    } else if (contractAddress) {
       return (
         <Identicon
           className="confirm-page-container-summary__icon"
           diameter={36}
-          address={identiconAddress}
+          address={contractAddress}
           image={image}
         />
       );
@@ -127,11 +145,11 @@ ConfirmPageContainerSummary.propTypes = {
   subtitleComponent: PropTypes.node,
   hideSubtitle: PropTypes.bool,
   className: PropTypes.string,
-  identiconAddress: PropTypes.string,
+  tokenAddress: PropTypes.string,
+  toAddress: PropTypes.string,
   nonce: PropTypes.string,
   origin: PropTypes.string.isRequired,
   hideTitle: PropTypes.bool,
-  toAddress: PropTypes.string,
   transactionType: PropTypes.string,
 };
 
