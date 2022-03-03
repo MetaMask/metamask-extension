@@ -3426,3 +3426,14 @@ export function cancelQRHardwareSignRequest() {
     await promisifiedBackground.cancelQRHardwareSignRequest();
   };
 }
+
+export function addCustomNetworks() {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.addCustomNetworks();
+    } catch (error) {
+      log.error(error);
+      dispatch(displayWarning('Had a problem changing networks!'));
+    }
+  };
+}

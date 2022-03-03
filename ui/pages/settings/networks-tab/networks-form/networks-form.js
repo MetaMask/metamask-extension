@@ -21,6 +21,8 @@ import {
   editRpc,
   showModal,
   setNewNetworkAdded,
+  addCustomNetworks,
+  cancelQRHardwareSignRequest,
 } from '../../../../store/actions';
 import {
   DEFAULT_ROUTE,
@@ -28,6 +30,7 @@ import {
 } from '../../../../helpers/constants/routes';
 import fetchWithCache from '../../../../helpers/utils/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
+import AddNetwork from '../../../../components/app/add-network';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -538,6 +541,20 @@ const NetworksForm = ({
     !chainId ||
     !ticker;
 
+  const FEATURED_RPCS = [
+    {
+      chainId: '0x66',
+      nickname: 'Arbitrum Testnet',
+      rpcUrl:
+        'https://arbitrum-rinkeby.infura.io/v3/2b6d4a83d89a438eb1b5d036788ab29c',
+      ticker: 'ARETH',
+      rpcPrefs: {
+        blockExplorerUrl: 'https://testnet.arbiscan.io/',
+        imageUrl: './images/optimism.svg',
+      },
+    },
+  ];
+
   return (
     <div
       className={classnames({
@@ -545,91 +562,10 @@ const NetworksForm = ({
         'networks-tab__add-network-form': addNewNetwork,
       })}
     >
-      {addNewNetwork ? (
-        <ActionableMessage
-          type="warning"
-          message={t('onlyAddTrustedNetworks')}
-          iconFillColor="#f8c000"
-          useIcon
-          withRightButton
-        />
-      ) : null}
-      <div
-        className={classnames({
-          'networks-tab__network-form-body': !addNewNetwork,
-          'networks-tab__network-form-body__view-only': viewOnly,
-          'networks-tab__add-network-form-body': addNewNetwork,
-        })}
-      >
-        <FormField
-          autoFocus
-          error={errors.networkName?.msg || ''}
-          onChange={setNetworkName}
-          titleText={t('networkName')}
-          value={networkName}
-          disabled={viewOnly}
-        />
-        <FormField
-          error={errors.rpcUrl?.msg || ''}
-          onChange={setRpcUrl}
-          titleText={t('rpcUrl')}
-          value={rpcUrl}
-          disabled={viewOnly}
-        />
-        <FormField
-          error={errors.chainId?.msg || ''}
-          onChange={setChainId}
-          titleText={t('chainId')}
-          value={chainId}
-          disabled={viewOnly}
-          tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
-        />
-        <FormField
-          warning={warnings.ticker?.msg || ''}
-          onChange={setTicker}
-          titleText={t('currencySymbol')}
-          value={ticker}
-          disabled={viewOnly}
-        />
-        <FormField
-          error={errors.blockExplorerUrl?.msg || ''}
-          onChange={setBlockExplorerUrl}
-          titleText={t('blockExplorerUrl')}
-          titleUnit={t('optionalWithParanthesis')}
-          value={blockExplorerUrl}
-          disabled={viewOnly}
-        />
-      </div>
-      <div
-        className={classnames({
-          'networks-tab__network-form-footer': !addNewNetwork,
-          'networks-tab__add-network-form-footer': addNewNetwork,
-        })}
-      >
-        {!viewOnly && (
-          <>
-            {deletable && (
-              <Button type="danger" onClick={onDelete}>
-                {t('delete')}
-              </Button>
-            )}
-            <Button
-              type="secondary"
-              onClick={onCancel}
-              disabled={stateUnchanged}
-            >
-              {t('cancel')}
-            </Button>
-            <Button
-              type="primary"
-              disabled={isSubmitDisabled}
-              onClick={onSubmit}
-            >
-              {t('save')}
-            </Button>
-          </>
-        )}
-      </div>
+      <AddNetwork
+        featuredRPCS={FEATURED_RPCS}
+        onAddNetworkClick={async () => dispatch(addCustomNetworks())}
+      />
     </div>
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import EventEmitter from 'events';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
@@ -1384,6 +1385,7 @@ export default class MetamaskController extends EventEmitter {
       setCustomRpc: this.setCustomRpc.bind(this),
       updateAndSetCustomRpc: this.updateAndSetCustomRpc.bind(this),
       delCustomRpc: this.delCustomRpc.bind(this),
+      addCustomNetworks: this.addCustomNetworks.bind(this),
 
       // PreferencesController
       setSelectedAddress: preferencesController.setSelectedAddress.bind(
@@ -1784,6 +1786,57 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       releaseLock();
     }
+  }
+
+  async addCustomNetworks() {
+    const chainId = '0x66';
+    const chainName = 'Arbitrum Testnet';
+    const rpcUrl =
+      'https://arbitrum-rinkeby.infura.io/v3/2b6d4a83d89a438eb1b5d036788ab29c';
+    const ticker = 'ARETH';
+    const blockExplorerUrl = 'https://testnet.arbiscan.io/';
+
+    const requestUserApproval = await this.approvalController.addAndShowApprovalRequest.bind(
+      this.approvalController,
+    );
+
+    const addCustomRpc = async ({
+      chainId,
+      blockExplorerUrl,
+      ticker,
+      chainName,
+      rpcUrl,
+    } = {}) => {
+      await this.preferencesController.addToFrequentRpcList(
+        rpcUrl,
+        chainId,
+        ticker,
+        chainName,
+        {
+          blockExplorerUrl,
+        },
+      );
+    };
+
+    // Without request user approval a network is added to the list.
+    // await addCustomRpc(chainId, blockExplorerUrl, rpcUrl, chainName, ticker);
+
+    // With requestUserApproval following error
+    // "code": -32002,
+    // "message": "Request of type 'wallet_addEthereumChain' already pending for origin metamask. Please wait."
+    await addCustomRpc(
+      await requestUserApproval({
+        origin: 'metamask',
+        type: 'wallet_addEthereumChain',
+        requestData: {
+          chainId,
+          blockExplorerUrl,
+          chainName,
+          rpcUrl,
+          ticker,
+        },
+      }),
+    );
   }
 
   /**
