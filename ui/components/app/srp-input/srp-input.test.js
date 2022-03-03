@@ -37,6 +37,10 @@ const poorlyFormattedInputs = [
 ];
 
 describe('srp-input', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
   describe('onChange event', () => {
     it('should not fire event on render', async () => {
       const onChange = jest.fn();
@@ -58,7 +62,7 @@ describe('srp-input', () => {
             <SrpInput onChange={onChange} />,
           );
           getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-          userEvent.keyboard(invalidInput);
+          await userEvent.keyboard(invalidInput);
 
           expect(onChange).toHaveBeenLastCalledWith('');
         });
@@ -73,10 +77,8 @@ describe('srp-input', () => {
           const { getByLabelText } = renderWithLocalization(
             <SrpInput onChange={onChange} />,
           );
-          userEvent.paste(
-            getByLabelText(enLocale.secretRecoveryPhrase.message),
-            invalidInput,
-          );
+          getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+          await userEvent.paste(invalidInput);
 
           expect(onChange).toHaveBeenLastCalledWith('');
         });
@@ -84,27 +86,27 @@ describe('srp-input', () => {
     });
 
     describe('valid typed inputs', () => {
-      it('should fire event with a valid SRP', () => {
+      it('should fire event with a valid SRP', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(correct);
+        await userEvent.keyboard(correct);
 
         expect(onChange).toHaveBeenLastCalledWith(correct);
       });
 
       for (const poorlyFormattedInput of poorlyFormattedInputs) {
-        it(`should fire with formatted SRP when given poorly formatted valid SRP: '${poorlyFormattedInput}'`, () => {
+        it(`should fire with formatted SRP when given poorly formatted valid SRP: '${poorlyFormattedInput}'`, async () => {
           const onChange = jest.fn();
 
           const { getByLabelText } = renderWithLocalization(
             <SrpInput onChange={onChange} />,
           );
           getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-          userEvent.keyboard(poorlyFormattedInput);
+          await userEvent.keyboard(poorlyFormattedInput);
 
           expect(onChange).toHaveBeenLastCalledWith(correct);
         });
@@ -112,31 +114,27 @@ describe('srp-input', () => {
     });
 
     describe('valid pasted inputs', () => {
-      it('should fire event with a valid SRP', () => {
+      it('should fire event with a valid SRP', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
-        userEvent.paste(
-          getByLabelText(enLocale.secretRecoveryPhrase.message),
-          correct,
-        );
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        await userEvent.paste(correct);
 
         expect(onChange).toHaveBeenLastCalledWith(correct);
       });
 
       for (const poorlyFormattedInput of poorlyFormattedInputs) {
-        it(`should fire with formatted SRP when given poorly formatted valid SRP: '${poorlyFormattedInput}'`, () => {
+        it(`should fire with formatted SRP when given poorly formatted valid SRP: '${poorlyFormattedInput}'`, async () => {
           const onChange = jest.fn();
 
           const { getByLabelText } = renderWithLocalization(
             <SrpInput onChange={onChange} />,
           );
-          userEvent.paste(
-            getByLabelText(enLocale.secretRecoveryPhrase.message),
-            poorlyFormattedInput,
-          );
+          getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+          await userEvent.paste(poorlyFormattedInput);
 
           expect(onChange).toHaveBeenLastCalledWith(correct);
         });
@@ -158,93 +156,93 @@ describe('srp-input', () => {
     });
 
     describe('typed', () => {
-      it('should show word requirement error if SRP has too few words', () => {
+      it('should show word requirement error if SRP has too few words', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(tooFewWords);
+        await userEvent.keyboard(tooFewWords);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
       });
 
-      it('should show word requirement error if SRP has too many words', () => {
+      it('should show word requirement error if SRP has too many words', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(tooManyWords);
+        await userEvent.keyboard(tooManyWords);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
       });
 
-      it('should show word requirement error if SRP has an unsupported word count above 12 but below 24', () => {
+      it('should show word requirement error if SRP has an unsupported word count above 12 but below 24', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(invalidWordCount);
+        await userEvent.keyboard(invalidWordCount);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
       });
 
-      it('should show invalid SRP error if SRP is correct length but has an invalid checksum', () => {
+      it('should show invalid SRP error if SRP is correct length but has an invalid checksum', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(invalidChecksum);
+        await userEvent.keyboard(invalidChecksum);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
       });
 
-      it('should show invalid SRP error if SRP is correct length and has correct checksum but has an invalid word', () => {
+      it('should show invalid SRP error if SRP is correct length and has correct checksum but has an invalid word', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(invalidWordCorrectChecksum);
+        await userEvent.keyboard(invalidWordCorrectChecksum);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
       });
 
-      it('should not show error for valid SRP', () => {
+      it('should not show error for valid SRP', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(correct);
+        await userEvent.keyboard(correct);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
       });
 
       for (const poorlyFormattedInput of poorlyFormattedInputs) {
-        it(`should not show error for poorly formatted valid SRP: '${poorlyFormattedInput}'`, () => {
+        it(`should not show error for poorly formatted valid SRP: '${poorlyFormattedInput}'`, async () => {
           const onChange = jest.fn();
 
           const { getByLabelText, queryByText } = renderWithLocalization(
             <SrpInput onChange={onChange} />,
           );
           getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-          userEvent.keyboard(poorlyFormattedInput);
+          await userEvent.keyboard(poorlyFormattedInput);
 
           expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
           expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
@@ -253,107 +251,93 @@ describe('srp-input', () => {
     });
 
     describe('pasted', () => {
-      it('should show word requirement error if SRP has too few words', () => {
+      it('should show word requirement error if SRP has too few words', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
-        userEvent.paste(
-          getByLabelText(enLocale.secretRecoveryPhrase.message),
-          tooFewWords,
-        );
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        await userEvent.paste(tooFewWords);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
       });
 
-      it('should show word requirement error if SRP has too many words', () => {
+      it('should show word requirement error if SRP has too many words', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
-        userEvent.paste(
-          getByLabelText(enLocale.secretRecoveryPhrase.message),
-          tooManyWords,
-        );
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        await userEvent.paste(tooManyWords);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
       });
 
-      it('should show word requirement error if SRP has an unsupported word count above 12 but below 24', () => {
+      it('should show word requirement error if SRP has an unsupported word count above 12 but below 24', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
-        userEvent.paste(
-          getByLabelText(enLocale.secretRecoveryPhrase.message),
-          invalidWordCount,
-        );
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        await userEvent.paste(invalidWordCount);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).not.toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
       });
 
-      it('should show invalid SRP error if SRP is correct length but has an invalid checksum', () => {
+      it('should show invalid SRP error if SRP is correct length but has an invalid checksum', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
-        userEvent.paste(
-          getByLabelText(enLocale.secretRecoveryPhrase.message),
-          invalidChecksum,
-        );
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        await userEvent.paste(invalidChecksum);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
       });
 
-      it('should show invalid SRP error if SRP is correct length and has correct checksum but has an invalid word', () => {
+      it('should show invalid SRP error if SRP is correct length and has correct checksum but has an invalid word', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
-        userEvent.paste(
-          getByLabelText(enLocale.secretRecoveryPhrase.message),
-          invalidWordCorrectChecksum,
-        );
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        await userEvent.paste(invalidWordCorrectChecksum);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).not.toBeNull();
       });
 
-      it('should not show error for valid SRP', () => {
+      it('should not show error for valid SRP', async () => {
         const onChange = jest.fn();
 
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
-        userEvent.paste(
-          getByLabelText(enLocale.secretRecoveryPhrase.message),
-          correct,
-        );
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        await userEvent.paste(correct);
 
         expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
         expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
       });
 
       for (const poorlyFormattedInput of poorlyFormattedInputs) {
-        it(`should not show error for poorly formatted valid SRP: '${poorlyFormattedInput}'`, () => {
+        it(`should not show error for poorly formatted valid SRP: '${poorlyFormattedInput}'`, async () => {
           const onChange = jest.fn();
 
           const { getByLabelText, queryByText } = renderWithLocalization(
             <SrpInput onChange={onChange} />,
           );
-          userEvent.paste(
-            getByLabelText(enLocale.secretRecoveryPhrase.message),
-            poorlyFormattedInput,
-          );
+          getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+          await userEvent.paste(poorlyFormattedInput);
 
           expect(queryByText(enLocale.seedPhraseReq.message)).toBeNull();
           expect(queryByText(enLocale.invalidSeedPhrase.message)).toBeNull();
@@ -384,7 +368,7 @@ describe('srp-input', () => {
           <SrpInput onChange={onChange} />,
         );
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(correct);
+        await userEvent.keyboard(correct);
 
         expect(queryByText(correct)).toBeNull();
       });
@@ -395,10 +379,8 @@ describe('srp-input', () => {
         const { getByLabelText, queryByText } = renderWithLocalization(
           <SrpInput onChange={onChange} />,
         );
-        userEvent.paste(
-          getByLabelText(enLocale.secretRecoveryPhrase.message),
-          correct,
-        );
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        await userEvent.paste(correct);
 
         expect(queryByText(correct)).toBeNull();
       });
@@ -413,10 +395,10 @@ describe('srp-input', () => {
           getByRole,
           queryByText,
         } = renderWithLocalization(<SrpInput onChange={onChange} />);
-        userEvent.click(getByRole('checkbox'));
+        await userEvent.click(getByRole('checkbox'));
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(correct);
-        userEvent.click(getByRole('checkbox'));
+        await userEvent.keyboard(correct);
+        await userEvent.click(getByRole('checkbox'));
 
         expect(queryByText(correct)).toBeNull();
       });
@@ -429,36 +411,17 @@ describe('srp-input', () => {
           getByRole,
           queryByText,
         } = renderWithLocalization(<SrpInput onChange={onChange} />);
-        userEvent.click(getByRole('checkbox'));
-        userEvent.paste(
-          getByLabelText(enLocale.secretRecoveryPhrase.message),
-          correct,
-        );
-        userEvent.click(getByRole('checkbox'));
+        await userEvent.click(getByRole('checkbox'));
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        await userEvent.paste(correct);
+        await userEvent.click(getByRole('checkbox'));
 
         expect(queryByText(correct)).toBeNull();
       });
     });
 
     describe('shown after input', () => {
-      it('should show typed SRP', () => {
-        const onChange = jest.fn();
-
-        const {
-          getByLabelText,
-          getByRole,
-          queryByText,
-        } = renderWithLocalization(<SrpInput onChange={onChange} />);
-        userEvent.paste(
-          getByLabelText(enLocale.secretRecoveryPhrase.message),
-          correct,
-        );
-        userEvent.click(getByRole('checkbox'));
-
-        expect(queryByText(correct)).not.toBeNull();
-      });
-
-      it('should show pasted SRP', () => {
+      it('should show typed SRP', async () => {
         const onChange = jest.fn();
 
         const {
@@ -467,15 +430,30 @@ describe('srp-input', () => {
           queryByText,
         } = renderWithLocalization(<SrpInput onChange={onChange} />);
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(correct);
-        userEvent.click(getByRole('checkbox'));
+        await userEvent.paste(correct);
+        await userEvent.click(getByRole('checkbox'));
+
+        expect(queryByText(correct)).not.toBeNull();
+      });
+
+      it('should show pasted SRP', async () => {
+        const onChange = jest.fn();
+
+        const {
+          getByLabelText,
+          getByRole,
+          queryByText,
+        } = renderWithLocalization(<SrpInput onChange={onChange} />);
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        await userEvent.keyboard(correct);
+        await userEvent.click(getByRole('checkbox'));
 
         expect(queryByText(correct)).not.toBeNull();
       });
     });
 
     describe('shown before input', () => {
-      it('should show typed SRP', () => {
+      it('should show typed SRP', async () => {
         const onChange = jest.fn();
 
         const {
@@ -483,16 +461,14 @@ describe('srp-input', () => {
           getByRole,
           queryByText,
         } = renderWithLocalization(<SrpInput onChange={onChange} />);
-        userEvent.click(getByRole('checkbox'));
-        userEvent.paste(
-          getByLabelText(enLocale.secretRecoveryPhrase.message),
-          correct,
-        );
+        await userEvent.click(getByRole('checkbox'));
+        getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+        await userEvent.paste(correct);
 
         expect(queryByText(correct)).not.toBeNull();
       });
 
-      it('should show pasted SRP', () => {
+      it('should show pasted SRP', async () => {
         const onChange = jest.fn();
 
         const {
@@ -500,9 +476,9 @@ describe('srp-input', () => {
           getByRole,
           queryByText,
         } = renderWithLocalization(<SrpInput onChange={onChange} />);
-        userEvent.click(getByRole('checkbox'));
+        await userEvent.click(getByRole('checkbox'));
         getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-        userEvent.keyboard(correct);
+        await userEvent.keyboard(correct);
 
         expect(queryByText(correct)).not.toBeNull();
       });
@@ -510,7 +486,7 @@ describe('srp-input', () => {
   });
 
   describe('clear after paste', () => {
-    it('should not clear clipboard after typing hidden SRP', () => {
+    it('should not clear clipboard after typing hidden SRP', async () => {
       const onChange = jest.fn();
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
@@ -518,52 +494,48 @@ describe('srp-input', () => {
         <SrpInput onChange={onChange} />,
       );
       getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-      userEvent.keyboard(correct);
+      await userEvent.keyboard(correct);
 
       expect(writeTextSpy).not.toHaveBeenCalled();
     });
 
-    it('should not clear clipboard after typing shown SRP', () => {
+    it('should not clear clipboard after typing shown SRP', async () => {
       const onChange = jest.fn();
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByLabelText, getByRole } = renderWithLocalization(
         <SrpInput onChange={onChange} />,
       );
-      userEvent.click(getByRole('checkbox'));
+      await userEvent.click(getByRole('checkbox'));
       getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
-      userEvent.keyboard(correct);
+      await userEvent.keyboard(correct);
 
       expect(writeTextSpy).not.toHaveBeenCalled();
     });
 
-    it('should clear the clipboard after pasting hidden SRP', () => {
+    it('should clear the clipboard after pasting hidden SRP', async () => {
       const onChange = jest.fn();
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByLabelText } = renderWithLocalization(
         <SrpInput onChange={onChange} />,
       );
-      userEvent.paste(
-        getByLabelText(enLocale.secretRecoveryPhrase.message),
-        correct,
-      );
+      getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+      await userEvent.paste(correct);
 
       expect(writeTextSpy).toHaveBeenCalledWith('');
     });
 
-    it('should clear the clipboard after pasting shown SRP', () => {
+    it('should clear the clipboard after pasting shown SRP', async () => {
       const onChange = jest.fn();
       const writeTextSpy = jest.spyOn(window.navigator.clipboard, 'writeText');
 
       const { getByLabelText, getByRole } = renderWithLocalization(
         <SrpInput onChange={onChange} />,
       );
-      userEvent.click(getByRole('checkbox'));
-      userEvent.paste(
-        getByLabelText(enLocale.secretRecoveryPhrase.message),
-        correct,
-      );
+      await userEvent.click(getByRole('checkbox'));
+      getByLabelText(enLocale.secretRecoveryPhrase.message).focus();
+      await userEvent.paste(correct);
 
       expect(writeTextSpy).toHaveBeenCalledWith('');
     });
