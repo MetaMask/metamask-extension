@@ -238,7 +238,7 @@ SlippageButtons.propTypes = {
   maxAllowedSlippage: PropTypes.number.isRequired,
   currentSlippage: PropTypes.number,
   smartTransactionsEnabled: PropTypes.bool.isRequired,
-  smartTransactionsOptInStatus: PropTypes.object,
+  smartTransactionsOptInStatus: PropTypes.bool,
   setSmartTransactionsOptInStatus: PropTypes.func,
   currentSmartTransactionsError: PropTypes.string,
 };

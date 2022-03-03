@@ -1322,18 +1322,11 @@
   "importAccountError": {
     "message": "Error al importar la cuenta."
   },
-  "importAccountLinkText": {
-    "message": "importar con la frase secreta de recuperación"
-  },
   "importAccountMsg": {
     "message": "Las cuentas importadas no se asociarán con la frase secreta de recuperación de la cuenta original de MetaMask. Aprenda más sobre las cuentas importadas"
   },
   "importAccountSeedPhrase": {
     "message": "Importar una cartera con la frase secreta de recuperación"
-  },
-  "importAccountText": {
-    "message": "o $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Ingrese su frase secreta de recuperación (también conocida como Frase Semilla) que recibió al crear su cartera. $1",
@@ -1793,9 +1786,6 @@
   "newAccountNumberName": {
     "message": "Cuenta $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "No se añadió el coleccionable porque: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "¡El coleccionable fue añadido con éxito!"
@@ -2278,9 +2268,6 @@
   "restore": {
     "message": "Restaurar"
   },
-  "restoreAccountWithSeed": {
-    "message": "Restaurar la cuenta con la frase secreta de recuperación"
-  },
   "restoreWalletPreferences": {
     "message": "Se encontró una copia de seguridad de los datos de $1. ¿Desea restaurar las preferencias de cartera?",
     "description": "$1 is the date at which the data was backed up"
@@ -2346,10 +2333,7 @@
     "message": "ADVERTENCIA: No revele su frase de respaldo. Cualquier persona que tenga esta frase puede robarle los ethers."
   },
   "secretPhrase": {
-    "message": "Solo la primera cuenta de esta cartera se cargará automáticamente. Después de llevar a cabo este proceso, para agregar cuentas adicionales haga clic en el menú desplegable y luego seleccione Crear cuenta."
-  },
-  "secretPhraseWarning": {
-    "message": "Si restablece utilizando otra frase secreta de recuperación, su cartera actual, sus cuentas y sus activos se eliminarán de esta aplicación de forma permanente. Esta acción es irreversible."
+    "message": "Ingrese su frase secreta aquí para restaurar su bóveda."
   },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"

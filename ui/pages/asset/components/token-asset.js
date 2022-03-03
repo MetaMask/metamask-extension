@@ -17,8 +17,6 @@ import {
 import { getURLHostName } from '../../../helpers/utils/util';
 import { showModal } from '../../../store/actions';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
-import { ASSET_TYPES, updateSendAsset } from '../../../ducks/send';
-
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
 
@@ -70,14 +68,7 @@ export default function TokenAsset({ token }) {
               dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
             }}
             onViewTokenDetails={() => {
-              dispatch(
-                updateSendAsset({
-                  type: ASSET_TYPES.TOKEN,
-                  details: { ...token },
-                }),
-              ).then(() => {
-                history.push(TOKEN_DETAILS);
-              });
+              history.push(`${TOKEN_DETAILS}/${token.address}`);
             }}
             tokenSymbol={token.symbol}
           />

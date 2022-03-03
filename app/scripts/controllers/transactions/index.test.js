@@ -82,6 +82,8 @@ describe('Transaction Controller', function () {
       getEventFragmentById: () =>
         fragmentExists === false ? undefined : { id: 0 },
       getEIP1559GasFeeEstimates: () => undefined,
+      getAccountType: () => 'MetaMask',
+      getDeviceModel: () => 'N/A',
     });
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
@@ -1616,6 +1618,8 @@ describe('Transaction Controller', function () {
             referrer: 'metamask',
             source: 'user',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            device_model: 'N/A',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1691,6 +1695,8 @@ describe('Transaction Controller', function () {
             referrer: 'metamask',
             source: 'user',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            device_model: 'N/A',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1776,6 +1782,8 @@ describe('Transaction Controller', function () {
             referrer: 'other',
             source: 'dapp',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            device_model: 'N/A',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1853,6 +1861,8 @@ describe('Transaction Controller', function () {
             referrer: 'other',
             source: 'dapp',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
+            account_type: 'MetaMask',
+            device_model: 'N/A',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -1930,6 +1940,8 @@ describe('Transaction Controller', function () {
           referrer: 'other',
           source: 'dapp',
           type: TRANSACTION_TYPES.SIMPLE_SEND,
+          account_type: 'MetaMask',
+          device_model: 'N/A',
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -1989,6 +2001,8 @@ describe('Transaction Controller', function () {
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
+          account_type: 'MetaMask',
+          device_model: 'N/A',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2058,6 +2072,8 @@ describe('Transaction Controller', function () {
           referrer: 'other',
           source: 'dapp',
           type: TRANSACTION_TYPES.SIMPLE_SEND,
+          account_type: 'MetaMask',
+          device_model: 'N/A',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2157,6 +2173,205 @@ describe('Transaction Controller', function () {
       };
       const result = txController._getGasValuesInGWEI(params);
       assert.deepEqual(result, expectedParams);
+    });
+  });
+
+  describe('update transaction methods', function () {
+    let txStateManager;
+
+    beforeEach(function () {
+      txStateManager = txController.txStateManager;
+      txStateManager.addTransaction({
+        id: '1',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          gasLimit: '0x001',
+          gasPrice: '0x002',
+          // max fees can not be mixed with gasPrice
+          // maxPriorityFeePerGas: '0x003',
+          // maxFeePerGas: '0x004',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x005',
+        estimatedBaseFee: '0x006',
+        decEstimatedBaseFee: '6',
+        type: 'swap',
+        sourceTokenSymbol: 'ETH',
+        destinationTokenSymbol: 'UNI',
+        destinationTokenDecimals: 16,
+        destinationTokenAddress: VALID_ADDRESS,
+        swapMetaData: {},
+        swapTokenValue: '0x007',
+        userEditedGasLimit: '0x008',
+        userFeeLevel: 'medium',
+      });
+    });
+
+    it('updates transaction gas fees', function () {
+      // test update gasFees
+      txController.updateTransactionGasFees('1', {
+        gasPrice: '0x0022',
+        gasLimit: '0x0011',
+      });
+      let result = txStateManager.getTransaction('1');
+      assert.equal(result.txParams.gasPrice, '0x0022');
+      // TODO: weird behavior here...only gasPrice gets returned.
+      // assert.equal(result.txParams.gasLimit, '0x0011');
+
+      // test update maxPriorityFeePerGas
+      txStateManager.addTransaction({
+        id: '2',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          maxPriorityFeePerGas: '0x003',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x005',
+      });
+      txController.updateTransactionGasFees('2', {
+        maxPriorityFeePerGas: '0x0033',
+      });
+      result = txStateManager.getTransaction('2');
+      assert.equal(result.txParams.maxPriorityFeePerGas, '0x0033');
+
+      // test update maxFeePerGas
+      txStateManager.addTransaction({
+        id: '3',
+        status: TRANSACTION_STATUSES.UNAPPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          maxPriorityFeePerGas: '0x003',
+          maxFeePerGas: '0x004',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x005',
+      });
+      txController.updateTransactionGasFees('3', { maxFeePerGas: '0x0044' });
+      result = txStateManager.getTransaction('3');
+      assert.equal(result.txParams.maxFeePerGas, '0x0044');
+
+      // test update estimate used
+      txController.updateTransactionGasFees('3', { estimateUsed: '0x0055' });
+      result = txStateManager.getTransaction('3');
+      assert.equal(result.estimateUsed, '0x0055');
+    });
+
+    it('updates estimated base fee', function () {
+      txController.updateTransactionEstimatedBaseFee('1', {
+        estimatedBaseFee: '0x0066',
+        decEstimatedBaseFee: '66',
+      });
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.estimatedBaseFee, '0x0066');
+      assert.equal(result.decEstimatedBaseFee, '66');
+    });
+
+    it('updates swap approval transaction', function () {
+      txController.updateSwapApprovalTransaction('1', {
+        type: 'swapApproval',
+        sourceTokenSymbol: 'XBN',
+      });
+
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.type, 'swapApproval');
+      assert.equal(result.sourceTokenSymbol, 'XBN');
+    });
+
+    it('updates swap transaction', function () {
+      txController.updateSwapTransaction('1', {
+        sourceTokenSymbol: 'BTCX',
+        destinationTokenSymbol: 'ETH',
+      });
+
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.sourceTokenSymbol, 'BTCX');
+      assert.equal(result.destinationTokenSymbol, 'ETH');
+      assert.equal(result.destinationTokenDecimals, 16);
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS);
+      assert.equal(result.swapTokenValue, '0x007');
+
+      txController.updateSwapTransaction('1', {
+        type: 'swapped',
+        destinationTokenDecimals: 8,
+        destinationTokenAddress: VALID_ADDRESS_TWO,
+        swapTokenValue: '0x0077',
+      });
+      assert.equal(result.sourceTokenSymbol, 'BTCX');
+      assert.equal(result.destinationTokenSymbol, 'ETH');
+      assert.equal(result.type, 'swapped');
+      assert.equal(result.destinationTokenDecimals, 8);
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO);
+      assert.equal(result.swapTokenValue, '0x0077');
+    });
+
+    it('updates transaction user settings', function () {
+      txController.updateTransactionUserSettings('1', {
+        userEditedGasLimit: '0x0088',
+        userFeeLevel: 'high',
+      });
+
+      const result = txStateManager.getTransaction('1');
+      assert.equal(result.userEditedGasLimit, '0x0088');
+      assert.equal(result.userFeeLevel, 'high');
+    });
+
+    it('does not update if status is not unapproved', function () {
+      txStateManager.addTransaction({
+        id: '4',
+        status: TRANSACTION_STATUSES.APPROVED,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          maxPriorityFeePerGas: '0x007',
+          maxFeePerGas: '0x008',
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS,
+        },
+        estimateUsed: '0x009',
+      });
+
+      txController.updateTransactionGasFees('4', { maxFeePerGas: '0x0088' });
+      let result = txStateManager.getTransaction('4');
+      assert.equal(result.txParams.maxFeePerGas, '0x008');
+
+      // test update estimate used
+      txController.updateTransactionGasFees('4', { estimateUsed: '0x0099' });
+      result = txStateManager.getTransaction('4');
+      assert.equal(result.estimateUsed, '0x009');
+    });
+
+    it('does not update unknown parameters in update method', function () {
+      txController.updateSwapTransaction('1', {
+        type: 'swapped',
+        destinationTokenDecimals: 8,
+        destinationTokenAddress: VALID_ADDRESS_TWO,
+        swapTokenValue: '0x011',
+        gasPrice: '0x12',
+      });
+
+      let result = txStateManager.getTransaction('1');
+
+      assert.equal(result.type, 'swapped');
+      assert.equal(result.destinationTokenDecimals, 8);
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO);
+      assert.equal(result.swapTokenValue, '0x011');
+      assert.equal(result.txParams.gasPrice, '0x002'); // not updated even though it's passed in to update
+
+      txController.updateTransactionGasFees('1', {
+        estimateUsed: '0x13',
+        gasPrice: '0x14',
+        destinationTokenAddress: VALID_ADDRESS,
+      });
+
+      result = txStateManager.getTransaction('1');
+      console.log(result);
+      assert.equal(result.estimateUsed, '0x13');
+      assert.equal(result.txParams.gasPrice, '0x14');
+      assert.equal(result.destinationTokenAddress, VALID_ADDRESS_TWO); // not updated even though it's passed in to update
     });
   });
 });

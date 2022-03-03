@@ -1273,18 +1273,11 @@
   "importAccountError": {
     "message": "Hesap içe aktarılırken hata oluştu."
   },
-  "importAccountLinkText": {
-    "message": "Gizli Kurtarma İfadesi kullanarak içe aktar"
-  },
   "importAccountMsg": {
     "message": "İçe aktarılan hesaplar ilk olarak oluşturduğunuz MetaMask hesabı Gizli Kurtarma ifadenizle ilişkilendirilmez. İçe aktarılan hesaplar hakkında daha fazla bilgi edinin"
   },
   "importAccountSeedPhrase": {
     "message": "Gizli Kurtarma İfadesi ile bir cüzdanı içe aktarın"
-  },
-  "importAccountText": {
-    "message": "veya $1",
-    "description": "$1 represents the text from `importAccountLinkText` as a link"
   },
   "importExistingWalletDescription": {
     "message": "Cüzdanınızı oluşturduğunuzda size verilen Gizli Kurtarma İfadenizi (başka bir deyişle Tohum İfadesi) girin. $1",
@@ -1744,9 +1737,6 @@
   "newAccountNumberName": {
     "message": "Hesap $1",
     "description": "Default name of next account to be created on create account screen"
-  },
-  "newCollectibleAddFailed": {
-    "message": "Tahsil edilebilir tutar eklenmedi ve sebebi: $1"
   },
   "newCollectibleAddedMessage": {
     "message": "Tahsil edilebilir tutar başarılı bir şekilde eklendi!"
@@ -2229,9 +2219,6 @@
   "restore": {
     "message": "Geri Yükle"
   },
-  "restoreAccountWithSeed": {
-    "message": "Gizli Kurtarma İfadesi ile Hesabınızı geri yükleyin"
-  },
   "restoreWalletPreferences": {
     "message": "Verilerinizin $1 tarihinden bir yedeği bulundu. Cüzdan tercihlerinizi geri yüklemek ister misiniz?",
     "description": "$1 is the date at which the data was backed up"
@@ -2298,9 +2285,6 @@
   },
   "secretPhrase": {
     "message": "Sadece bu cüzdandaki ilk hesap otomatik olarak yüklenecektir. Bu işlem tamamlandıktan sonra ilave hesaplar eklemek için açılır menüye tıklayın ardından Hesap Oluştur seçeneğini seçin."
-  },
-  "secretPhraseWarning": {
-    "message": "Başka bir Gizli Kurtarma İfadesini kullanarak geri yükleme işlemi yaparsanız mevcut cüzdan, hesap ve varlıklarınız bu uygulamadan kalıcı olarak silinir. Bu işlem geri alınamaz."
   },
   "secretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesi"
