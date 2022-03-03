@@ -330,7 +330,7 @@ export default class Home extends PureComponent {
             }
           />
         ) : null}
-        {newNetworkAdded || true ? (
+        {newNetworkAdded ? (
           <ActionableMessage
             type="success"
             className="home__new-network-notification"
