@@ -116,7 +116,14 @@ const ConfirmPageContainerSummary = (props) => {
         <div className="confirm-page-container-summary__title">
           {renderImage()}
           {!hideTitle ? (
-            <div className="confirm-page-container-summary__title-text">
+            <div
+              className={
+                title && title.length < 10
+                  ? 'confirm-page-container-summary__title-text'
+                  : 'confirm-page-container-summary__title-text-long'
+              }
+              title={title}
+            >
               {titleComponent || title}
             </div>
           ) : null}
