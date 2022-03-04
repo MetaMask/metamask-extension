@@ -977,20 +977,11 @@
         "define": true
       },
       "packages": {
-        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu": true,
         "brfs>resolve": true,
         "lavamoat-browserify>merge-deep": true,
         "lavamoat>json-stable-stringify": true,
+        "lavamoat>lavamoat-tofu": true,
         "nyc>process-on-spawn>fromentries": true
-      }
-    },
-    "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "depcheck>@babel/parser": true,
-        "depcheck>@babel/traverse": true
       }
     },
     "@metamask/jazzicon>color>color-convert": {
@@ -1194,7 +1185,6 @@
     "brfs>static-module": {
       "packages": {
         "brfs>static-module>acorn-node": true,
-        "brfs>static-module>escodegen": true,
         "brfs>static-module>magic-string": true,
         "brfs>static-module>merge-source-map": true,
         "brfs>static-module>scope-analyzer": true,
@@ -1205,6 +1195,7 @@
         "browserify>duplexer2": true,
         "enzyme>has": true,
         "enzyme>object-inspect": true,
+        "jsdom>escodegen": true,
         "nyc>convert-source-map": true,
         "readable-stream": true
       }
@@ -1219,16 +1210,6 @@
     "brfs>static-module>acorn-node>acorn-walk": {
       "globals": {
         "define": true
-      }
-    },
-    "brfs>static-module>escodegen": {
-      "globals": {
-        "sourceMap.SourceNode": true
-      },
-      "packages": {
-        "eslint>esutils": true,
-        "jsdom>escodegen>estraverse": true,
-        "source-map": true
       }
     },
     "brfs>static-module>magic-string": {
@@ -1296,17 +1277,7 @@
     },
     "brfs>static-module>static-eval": {
       "packages": {
-        "brfs>static-module>static-eval>escodegen": true
-      }
-    },
-    "brfs>static-module>static-eval>escodegen": {
-      "globals": {
-        "sourceMap.SourceNode": true
-      },
-      "packages": {
-        "eslint>esutils": true,
-        "jsdom>escodegen>estraverse": true,
-        "source-map": true
+        "jsdom>escodegen": true
       }
     },
     "brfs>static-module>through2": {
@@ -5338,6 +5309,16 @@
         "vinyl>remove-trailing-separator": true
       }
     },
+    "jsdom>escodegen": {
+      "globals": {
+        "sourceMap.SourceNode": true
+      },
+      "packages": {
+        "eslint>esutils": true,
+        "jsdom>escodegen>estraverse": true,
+        "source-map": true
+      }
+    },
     "jsdom>request>safe-buffer": {
       "builtin": {
         "buffer": true
@@ -5525,6 +5506,15 @@
     "lavamoat>json-stable-stringify": {
       "packages": {
         "lavamoat>json-stable-stringify>jsonify": true
+      }
+    },
+    "lavamoat>lavamoat-tofu": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "depcheck>@babel/parser": true,
+        "depcheck>@babel/traverse": true
       }
     },
     "lavamoat>object.fromentries": {

@@ -2442,13 +2442,13 @@
   dependencies:
     resolve "^1.20.0"
 
-"@lavamoat/allow-scripts@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-2.0.0.tgz#d2b84491961c8b2b80281112e19654beae9eb584"
-  integrity sha512-WC8cvStg5/MZ0JwccYsLNhtFSiK4tGEfv4kdlMoWfji4sB053HB1xCLDMlhFSMM6m0ecKA18CmzhI6J6iyCc0w==
+"@lavamoat/allow-scripts@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@lavamoat/allow-scripts/-/allow-scripts-2.0.1.tgz#4923016ae35262fc68dbb8d523dc76c138a1da7e"
+  integrity sha512-hDFvYTHLQoq4kAju10lxxaqw2t3/comT5ihVWLLa0gYkLBmsiRYoHTpZpaODGQGnjhsB0dRkPkiuwLiIUPvhSA==
   dependencies:
+    "@lavamoat/aa" "^2.0.0"
     "@npmcli/run-script" "^1.8.1"
-    resolve "^1.20.0"
     yargs "^16.2.0"
 
 "@lavamoat/lavapack@^2.0.3", "@lavamoat/lavapack@^2.0.4":
@@ -17168,15 +17168,7 @@ lavamoat-tofu@^5.1.3:
     "@babel/parser" "^7.10.1"
     "@babel/traverse" "^7.10.1"
 
-lavamoat-tofu@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/lavamoat-tofu/-/lavamoat-tofu-6.0.0.tgz#26d37c14864eb98df247195c5419a3a762ef650b"
-  integrity sha512-tgXf+/lplow/Ao2cOsbQ4ZqTuKBLwNnSSjPFIiGAHAM6xs+c+jEr60UAqOflyBg94VOE47G6o8zYZOAylZpUrw==
-  dependencies:
-    "@babel/parser" "^7.10.1"
-    "@babel/traverse" "^7.10.1"
-
-lavamoat-tofu@^6.0.1:
+lavamoat-tofu@^6.0.0, lavamoat-tofu@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/lavamoat-tofu/-/lavamoat-tofu-6.0.1.tgz#df3a1d09021790d5a4ccc1039751e9b3c2df85f6"
   integrity sha512-QotLOiEcGBlWBJPYSZKDRRFchpwN9s3Ra8DDTuxJ57dGTBKOvvvfA+BpAjH/w1JcEhFkl5Wkc57Hl1oVzE8D2A==
