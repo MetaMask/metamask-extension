@@ -104,7 +104,7 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
     ],
   };
   it('finds the transaction in the transactions list', async function () {
-    await withFixtures(
+    withFixtures(
       {
         fixtures: 'imported-account',
         ganacheOptions,
