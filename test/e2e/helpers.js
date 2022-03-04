@@ -92,7 +92,7 @@ async function withFixtures(options, testSuite) {
       });
       await segmentServer.start(9090);
     }
-    setupMocking(mockServer, testSpecificMock);
+    await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
     if (
       process.env.SELENIUM_BROWSER === 'chrome' &&
