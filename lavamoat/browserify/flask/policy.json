@@ -597,6 +597,16 @@
         "hdkey": true
       }
     },
+    "@metamask/eth-sig-util": {
+      "packages": {
+        "buffer": true,
+        "ethereumjs-abi": true,
+        "ethereumjs-util": true,
+        "ethjs-util": true,
+        "tweetnacl": true,
+        "tweetnacl-util": true
+      }
+    },
     "@metamask/eth-token-tracker": {
       "globals": {
         "console.warn": true
@@ -4857,7 +4867,6 @@
         "document.createTextNode": true,
         "document.getElementById": true,
         "document.querySelectorAll": true,
-        "fetch": true,
         "location": true,
         "navigator": true,
         "open": true,
@@ -4867,8 +4876,9 @@
       },
       "packages": {
         "@babel/runtime": true,
-        "events": true,
-        "whatwg-fetch": true
+        "@metamask/eth-sig-util": true,
+        "cross-fetch": true,
+        "events": true
       }
     },
     "truncate-utf8-bytes": {
