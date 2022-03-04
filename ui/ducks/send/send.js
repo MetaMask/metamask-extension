@@ -54,6 +54,7 @@ import {
   showConfTxPage,
   showLoadingIndication,
   updateEditableParams,
+  updateTransactionGasFees,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
   isCollectibleOwner,
@@ -1701,6 +1702,7 @@ export function signTransaction() {
         ),
       };
       dispatch(updateEditableParams(id, editingTx.txParams));
+      dispatch(updateTransactionGasFees(id, editingTx.txParams));
     } else if (asset.type === ASSET_TYPES.TOKEN) {
       // When sending a token transaction we have to the token.transfer method
       // on the token contract to construct the transaction. This results in
