@@ -2,7 +2,7 @@
   "resources": {
     "@babel/core": {
       "packages": {
-        "<root>": true,
+        "$root$": true,
         "@babel/preset-env": true,
         "@babel/preset-react": true,
         "@babel/plugin-transform-runtime": true,
@@ -12,9 +12,9 @@
         "@babel/plugin-proposal-nullish-coalescing-operator": true
       }
     },
-    "@eslint/eslintrc": {
+    "eslint>@eslint/eslintrc": {
       "packages": {
-        "<root>": true,
+        "$root$": true,
         "@babel/eslint-parser": true,
         "@babel/eslint-plugin": true,
         "@metamask/eslint-config": true,
@@ -29,7 +29,7 @@
         "eslint-plugin-react-hooks": true
       }
     },
-    "eslint-module-utils": {
+    "eslint-plugin-import>eslint-module-utils": {
       "packages": {
         "eslint-import-resolver-node": true,
         "@babel/eslint-parser": true
@@ -38,7 +38,7 @@
     "node-sass": {
       "native": true
     },
-    "module-deps": {
+    "browserify>module-deps": {
       "packages": {
         "loose-envify": true
       }
