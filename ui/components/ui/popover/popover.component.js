@@ -29,7 +29,7 @@ const defaultContentProps = {
 const defaultFooterProps = {
   display: 'flex',
   justifyContent: JUSTIFY_CONTENT.SPACE_BETWEEN,
-  padding: [4, 6],
+  padding: [4, 6, 6],
 };
 
 const Popover = ({
@@ -114,7 +114,7 @@ const Popover = ({
         {footer ? (
           <Box
             className={classnames('popover-footer', footerClassName)}
-            {...{ ...defaultFooterProps, footerProps }}
+            {...{ ...defaultFooterProps, ...footerProps }}
           >
             {footer}
           </Box>
