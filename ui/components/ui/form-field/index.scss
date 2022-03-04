@@ -29,7 +29,7 @@
   }
 
   i {
-    color: var(--color-icon-default); // TODO: Is this good to go?
+    color: var(--color-icon-default);
     font-size: $font-size-h7;
   }
 
@@ -42,15 +42,15 @@
     border: 2px solid var(--color-border-default);
 
     &:focus {
-      /* border: solid 2px var(--primary-1); */ // TODO: Restore this when we have a proper color
+      border: solid 2px var(--color-primary-default);
     }
 
     &--error {
-      border-color: var(--color-error-default); // TODO: What color here?
+      border-color: var(--color-error-default);
     }
 
     &--warning {
-      border-color: var(--alert-3); // TODO: What color here?
+      border-color: var(--color-warning-default);
     }
   }
 }
