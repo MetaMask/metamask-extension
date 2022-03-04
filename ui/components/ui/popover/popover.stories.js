@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import Button from '../button';
 import Box from '../box';
-import README from './README.mdx';
 import Popover from './popover.component';
 
 export default {
   title: 'Components/UI/Popover',
   id: __filename,
   component: Popover,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     title: { control: 'text' },
     subtitle: { control: 'text' },
