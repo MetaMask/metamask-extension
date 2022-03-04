@@ -111,11 +111,9 @@ jest.mock('react-router-dom', () => {
     ...original,
     useHistory: () => ({
       push: jest.fn(),
-      location: {
-        state: {
-          tokenAddress: testTokenAddress,
-        },
-      },
+    }),
+    useParams: () => ({
+      address: testTokenAddress,
     }),
   };
 });
