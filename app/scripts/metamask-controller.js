@@ -856,6 +856,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         ),
       },
+      undefined,
       initState.SmartTransactionsController,
     );
 
