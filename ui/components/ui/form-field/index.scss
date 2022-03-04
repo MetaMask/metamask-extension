@@ -18,7 +18,7 @@
 
   &__error,
   &__error h6 {
-    color: var(--error-1) !important;
+    color: var(--color-error-default) !important;
     padding-top: 6px;
   }
 
@@ -46,7 +46,7 @@
     }
 
     &--error {
-      border-color: var(--error-1); // TODO: What color here?
+      border-color: var(--color-error-default); // TODO: What color here?
     }
 
     &--warning {
