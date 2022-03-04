@@ -2331,7 +2331,6 @@ export function setTheme(val) {
     log.debug(`background.setTheme`);
     try {
       await promisifiedBackground.setTheme(val);
-      await forceUpdateMetamaskState(dispatch);
     } finally {
       dispatch(hideLoadingIndication());
     }
