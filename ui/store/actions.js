@@ -705,13 +705,11 @@ export function updateTransactionGasFees(txId, txGasFees) {
       throw error;
     }
 
-    dispatch(
-      updateTransactionParams(txGasFees.id, txGasFees.txParams),
-    );
+    dispatch(updateTransactionParams(txGasFees.id, txGasFees.txParams));
     const newState = await updateMetamaskStateFromBackground();
     dispatch(updateMetamaskState(newState));
-    dispatch(showConfTxPage({ id: editableParams.id }));
-    return editableParams;
+    dispatch(showConfTxPage({ id: txGasFees.id }));
+    return txGasFees;
   };
 }
 

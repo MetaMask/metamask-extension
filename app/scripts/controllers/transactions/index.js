@@ -378,13 +378,11 @@ export default class TransactionController extends EventEmitter {
   /**
    *
    * @param {string} txId - transaction id
-   * @param {object} editableParams - holds the eip1559 fees parameters
+   * @param {object} editableParams - holds the editable parameters
    * @param {object} editableParams.data
    * @param {string} editableParams.from
    * @param {string} editableParams.to
    * @param {string} editableParams.value
-   * @param {string} editableParams.gas
-   * @param {string} editableParams.gasPrice
    */
   updateEditableParams(txId, { data, from, to, value }) {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
@@ -397,39 +395,6 @@ export default class TransactionController extends EventEmitter {
         from,
         to,
         value,
-      },
-    };
-
-    // only update what is defined
-    editableParams.txParams = pickBy(editableParams.txParams);
-    const note = `Update Editable Params for ${txId}`;
-    this._updateTransaction(txId, editableParams, note);
-  }
-
-  /**
-   *
-   * @param {string} txId - transaction id
-   * @param {object} editableParams - holds the eip1559 fees parameters
-   * @param editableParams.data
-   * @param editableParams.from
-   * @param editableParams.to
-   * @param editableParams.value
-   * @param editableParams.gas
-   * @param editableParams.gasPrice
-   */
-  updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
-    if (!this._checkIfTxStatusIsUnapproved(txId)) {
-      return;
-    }
-
-    const editableParams = {
-      txParams: {
-        data,
-        from,
-        to,
-        value,
-        gas,
-        gasPrice,
       },
     };
 
