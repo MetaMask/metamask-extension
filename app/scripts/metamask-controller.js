@@ -835,24 +835,28 @@ export default class MetamaskController extends EventEmitter {
         this.gasFeeController,
       ),
     });
-    this.smartTransactionsController = new SmartTransactionsController({
-      onNetworkStateChange: this.networkController.store.subscribe.bind(
-        this.networkController.store,
-      ),
-      getNetwork: this.networkController.getNetworkState.bind(
-        this.networkController,
-      ),
-      getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
-        this.txController.nonceTracker,
-      ),
-      confirmExternalTransaction: this.txController.confirmExternalTransaction.bind(
-        this.txController,
-      ),
-      provider: this.provider,
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-    });
+    this.smartTransactionsController = new SmartTransactionsController(
+      {
+        onNetworkStateChange: this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
+        getNetwork: this.networkController.getNetworkState.bind(
+          this.networkController,
+        ),
+        getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
+          this.txController.nonceTracker,
+        ),
+        confirmExternalTransaction: this.txController.confirmExternalTransaction.bind(
+          this.txController,
+        ),
+        provider: this.provider,
+        trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
+      },
+      undefined,
+      initState.SmartTransactionsController,
+    );
 
     // ensure accountTracker updates balances after network change
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
