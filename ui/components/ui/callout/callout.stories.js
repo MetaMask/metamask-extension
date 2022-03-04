@@ -22,7 +22,7 @@ export default {
 };
 
 export const PersistentCallout = (args) => (
-  <Box borderColor={COLORS.UI2} padding={[8, 0, 0, 0]}>
+  <Box borderColor={COLORS.BORDER_DEFAULT} padding={[8, 0, 0, 0]}>
     <Box margin={2}>
       <Typography variant={TYPOGRAPHY.H4}>This is your private key:</Typography>
       <Typography variant={TYPOGRAPHY.H6}>
@@ -36,7 +36,7 @@ export const PersistentCallout = (args) => (
 export const DismissibleCallout = (args) => {
   const [dismissed, setDismissed] = useState(false);
   return (
-    <Box borderColor={COLORS.UI2} padding={[8, 0, 0, 0]}>
+    <Box borderColor={COLORS.BORDER_DEFAULT} padding={[8, 0, 0, 0]}>
       <Box margin={2}>
         <Typography variant={TYPOGRAPHY.H4}>
           This is your private key:
@@ -81,7 +81,7 @@ export const MultipleDismissibleCallouts = () => {
   };
 
   return (
-    <Box borderColor={COLORS.UI2} padding={[8, 0, 0, 0]}>
+    <Box borderColor={COLORS.BORDER_DEFAULT} padding={[8, 0, 0, 0]}>
       <Box margin={2}>
         <Typography variant={TYPOGRAPHY.H4}>
           This is your private key:

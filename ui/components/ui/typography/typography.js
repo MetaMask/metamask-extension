@@ -16,7 +16,7 @@ const { H6, H7, H8, H9 } = TYPOGRAPHY;
 export default function Typography({
   variant = TYPOGRAPHY.Paragraph,
   className,
-  color = COLORS.BLACK,
+  color = COLORS.TEXT_DEFAULT,
   tag,
   children,
   fontWeight = 'normal',
