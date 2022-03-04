@@ -67,7 +67,7 @@ export default class ConfirmPageContainer extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
-    identiconAddress: PropTypes.string,
+    tokenAddress: PropTypes.string,
     nonce: PropTypes.string,
     warning: PropTypes.string,
     unapprovedTxCount: PropTypes.number,
@@ -126,7 +126,7 @@ export default class ConfirmPageContainer extends Component {
       onCancelAll,
       onCancel,
       onSubmit,
-      identiconAddress,
+      tokenAddress,
       nonce,
       unapprovedTxCount,
       warning,
@@ -236,7 +236,7 @@ export default class ConfirmPageContainer extends Component {
               dataHexComponent={dataHexComponent}
               errorMessage={errorMessage}
               errorKey={errorKey}
-              identiconAddress={identiconAddress}
+              tokenAddress={tokenAddress}
               nonce={nonce}
               warning={warning}
               onCancelAll={onCancelAll}
