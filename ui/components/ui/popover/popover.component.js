@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import Box from '../box';
 
 const Popover = ({
   title,
@@ -18,9 +19,47 @@ const Popover = ({
   CustomBackground,
   popoverRef,
   centerTitle,
+  headerProps = {},
+  contentProps = {},
+  footerProps = {},
 }) => {
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
+  const Header = () => {
+    return (
+      <Box {...headerProps} className="popover-header">
+        <div
+          className={classnames(
+            'popover-header__title',
+            centerTitle ? 'center' : '',
+          )}
+        >
+          <h2 title="popover">
+            {onBack ? (
+              <button
+                className="fas fa-chevron-left popover-header__button"
+                title={t('back')}
+                onClick={onBack}
+              />
+            ) : null}
+            {title}
+          </h2>
+          {onClose ? (
+            <button
+              className="fas fa-times popover-header__button"
+              title={t('close')}
+              data-testid="popover-close"
+              onClick={onClose}
+            />
+          ) : null}
+        </div>
+        {subtitle ? (
+          <p className="popover-header__subtitle">{subtitle}</p>
+        ) : null}
+      </Box>
+    );
+  };
+
   return (
     <div className="popover-container">
       {CustomBackground ? (
@@ -33,47 +72,22 @@ const Popover = ({
         ref={popoverRef}
       >
         {showArrow ? <div className="popover-arrow" /> : null}
-        {showHeader && (
-          <header className="popover-header">
-            <div
-              className={classnames(
-                'popover-header__title',
-                centerTitle ? 'center' : '',
-              )}
-            >
-              <h2 title="popover">
-                {onBack ? (
-                  <button
-                    className="fas fa-chevron-left popover-header__button"
-                    title={t('back')}
-                    onClick={onBack}
-                  />
-                ) : null}
-                {title}
-              </h2>
-              {onClose ? (
-                <button
-                  className="fas fa-times popover-header__button"
-                  title={t('close')}
-                  data-testid="popover-close"
-                  onClick={onClose}
-                />
-              ) : null}
-            </div>
-            {subtitle ? (
-              <p className="popover-header__subtitle">{subtitle}</p>
-            ) : null}
-          </header>
-        )}
+        {showHeader && <Header />}
         {children ? (
-          <div className={classnames('popover-content', contentClassName)}>
+          <Box
+            className={classnames('popover-content', contentClassName)}
+            {...contentProps}
+          >
             {children}
-          </div>
+          </Box>
         ) : null}
         {footer ? (
-          <footer className={classnames('popover-footer', footerClassName)}>
+          <Box
+            className={classnames('popover-footer', footerClassName)}
+            {...footerProps}
+          >
             {footer}
-          </footer>
+          </Box>
         ) : null}
       </section>
     </div>
@@ -132,6 +146,18 @@ Popover.propTypes = {
    * Check if use centered title
    */
   centerTitle: PropTypes.bool,
+  /**
+   * Box props for the header
+   */
+  headerProps: PropTypes.shape({ ...Box.propTypes }),
+  /**
+   * Box props for the content
+   */
+  contentProps: PropTypes.shape({ ...Box.propTypes }),
+  /**
+   * Box props for the footer
+   */
+  footerProps: PropTypes.shape({ ...Box.propTypes }),
 };
 
 export default class PopoverPortal extends PureComponent {
