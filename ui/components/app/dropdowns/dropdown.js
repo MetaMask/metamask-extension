@@ -17,7 +17,7 @@ export class Dropdown extends Component {
     const innerStyleDefaults = {
       borderRadius: '4px',
       padding: '8px 16px',
-      background: 'rgba(0, 0, 0, 0.8)',
+      background: 'var(--color-overlay-alternative)',
       boxShadow: 'rgba(0, 0, 0, 0.15) 0px 2px 2px 2px',
       ...innerStyle,
     };
