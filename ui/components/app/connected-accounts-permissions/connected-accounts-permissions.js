@@ -12,7 +12,7 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
   const getPermissionDescription = usePermissionDescriptions();
 
   const toggleExpanded = () => {
-    setExpanded(!expanded);
+    setExpanded((_expanded) => !_expanded);
   };
 
   if (!permissions.length) {
