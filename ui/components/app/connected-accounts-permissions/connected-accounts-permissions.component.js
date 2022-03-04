@@ -1,86 +1,77 @@
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { useState } from 'react';
 import CheckBox from '../../ui/check-box';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export default class ConnectedAccountsPermissions extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func.isRequired,
+const ConnectedAccountsPermissions = ({ permissions }) => {
+  const t = useI18nContext();
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
   };
 
-  static defaultProps = {
-    permissions: [],
-  };
-
-  static propTypes = {
-    permissions: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string.isRequired,
-      }),
-    ),
-  };
-
-  state = {
-    expanded: false,
-  };
-
-  toggleExpanded = () => {
-    this.setState((prevState) => ({
-      expanded: !prevState.expanded,
-    }));
-  };
-
-  render() {
-    const { permissions } = this.props;
-    const { t } = this.context;
-    const { expanded } = this.state;
-
-    if (permissions.length === 0) {
-      return null;
-    }
-
-    return (
-      <div className="connected-accounts-permissions">
-        <p
-          className="connected-accounts-permissions__header"
-          onClick={this.toggleExpanded}
-        >
-          <strong>{t('permissions')}</strong>
-          <button
-            className={classnames('fas', {
-              'fa-angle-down': !expanded,
-              'fa-angle-up': expanded,
-            })}
-            title={t('showPermissions')}
-          />
-        </p>
-        <div
-          className={classnames(
-            'connected-accounts-permissions__list-container',
-            {
-              'connected-accounts-permissions__list-container--expanded': expanded,
-            },
-          )}
-        >
-          <p>{t('authorizedPermissions')}:</p>
-          <ul className="connected-accounts-permissions__list">
-            {permissions.map(({ key: permissionName }) => (
-              <li
-                key={permissionName}
-                className="connected-accounts-permissions__list-item"
-              >
-                <CheckBox
-                  checked
-                  disabled
-                  id={permissionName}
-                  className="connected-accounts-permissions__checkbox"
-                />
-                <label htmlFor={permissionName}>{t(permissionName)}</label>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    );
+  if (!permissions.length) {
+    return null;
   }
-}
+  return (
+    <div className="connected-accounts-permissions">
+      <p
+        className="connected-accounts-permissions__header"
+        onClick={toggleExpanded}
+      >
+        <strong>{t('permissions')}</strong>
+        <button
+          className={classnames('fas', {
+            'fa-angle-down': !expanded,
+            'fa-angle-up': expanded,
+          })}
+          title={t('showPermissions')}
+        />
+      </p>
+      <div
+        className={classnames(
+          'connected-accounts-permissions__list-container',
+          {
+            'connected-accounts-permissions__list-container--expanded': expanded,
+          },
+        )}
+      >
+        <p>{t('authorizedPermissions')}:</p>
+        <ul className="connected-accounts-permissions__list">
+          {permissions.map(({ key: permissionName }) => (
+            <li
+              key={permissionName}
+              className="connected-accounts-permissions__list-item"
+            >
+              <CheckBox
+                checked
+                disabled
+                id={permissionName}
+                className="connected-accounts-permissions__checkbox"
+              />
+              <label htmlFor={permissionName}>{t(permissionName)}</label>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+ConnectedAccountsPermissions.propTypes = {
+  permissions: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+    }),
+  ),
+};
+
+ConnectedAccountsPermissions.defaultProps = {
+  permissions: [],
+};
+
+ConnectedAccountsPermissions.displayName = 'ConnectedAccountsPermissions';
+
+export default React.memo(ConnectedAccountsPermissions);
