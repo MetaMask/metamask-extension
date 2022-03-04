@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  regularDelayMs,
-} = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Token Details', function () {
   const ganacheOptions = {
@@ -34,13 +30,11 @@ describe('Token Details', function () {
         const tokenSymbol = 'AAVE';
 
         await driver.fill('#custom-address', tokenAddress);
-        await driver.delay(regularDelayMs);
+        await driver.waitForSelector('#custom-symbol-helper-text');
         await driver.fill('#custom-symbol', tokenSymbol);
         await driver.clickElement({ text: 'Add Custom Token', tag: 'button' });
         await driver.clickElement({ text: 'Import Tokens', tag: 'button' });
-        await driver.waitForSelector('[title="Asset options"]');
         await driver.clickElement('[title="Asset options"]');
-        await driver.waitForSelector({ text: 'Token details', tag: 'span' });
         await driver.clickElement({ text: 'Token details', tag: 'span' });
 
         // Using findElements for avoiding error handling, if element is not present
