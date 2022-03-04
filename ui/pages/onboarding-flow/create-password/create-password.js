@@ -61,70 +61,43 @@ export default function CreatePassword({
     return !passwordError && !confirmPasswordError;
   }, [password, confirmPassword, passwordError, confirmPasswordError]);
 
+  const getPasswordStrengthLabel = (score, translation) => {
+    if (score >= 4) {
+      return {
+        className: 'create-password__strong',
+        text: translation('strong'),
+        description: '',
+      };
+    } else if (score === 3) {
+      return {
+        className: 'create-password__average',
+        text: translation('average'),
+        description: t('passwordStrengthDescription'),
+      };
+    }
+    return {
+      className: 'create-password__weak',
+      text: translation('weak'),
+      description: t('passwordStrengthDescription'),
+    };
+  };
+
   const handlePasswordChange = (passwordInput) => {
     let confirmError = '';
-    let passwordStrengthDescription = '';
-    let passwordStrengthInput;
     const passwordEvaluation = zxcvbn(passwordInput);
-
-    switch (passwordEvaluation.score) {
-      case 0:
-        passwordStrengthInput = t('passwordStrength', [
-          <span
-            key={passwordEvaluation.score}
-            className="create-password__form__weak"
-          >
-            {t('weak')}
-          </span>,
-        ]);
-        passwordStrengthDescription = t('passwordStrengthDescription');
-        break;
-      case 1:
-        passwordStrengthInput = t('passwordStrength', [
-          <span
-            key={passwordEvaluation.score}
-            className="create-password__form__weak"
-          >
-            {t('weak')}
-          </span>,
-        ]);
-        passwordStrengthDescription = t('passwordStrengthDescription');
-        break;
-      case 2:
-        passwordStrengthInput = t('passwordStrength', [
-          <span
-            key={passwordEvaluation.score}
-            className="create-password__form__weak"
-          >
-            {t('weak')}
-          </span>,
-        ]);
-        passwordStrengthDescription = t('passwordStrengthDescription');
-        break;
-      case 3:
-        passwordStrengthInput = t('passwordStrength', [
-          <span
-            key={passwordEvaluation.score}
-            className="create-password__form__average"
-          >
-            {t('average')}
-          </span>,
-        ]);
-        passwordStrengthDescription = t('passwordStrengthDescription');
-        break;
-      case 4:
-        passwordStrengthInput = t('passwordStrength', [
-          <span
-            key={passwordEvaluation.score}
-            className="create-password__form__strong"
-          >
-            {t('strong')}
-          </span>,
-        ]);
-        break;
-      default:
-        break;
-    }
+    const passwordStrengthLabel = getPasswordStrengthLabel(
+      passwordEvaluation.score,
+      t,
+    );
+    const passwordStrengthDescription = passwordStrengthLabel.description;
+    const passwordStrengthInput = t('passwordStrength', [
+      <span
+        key={passwordEvaluation.score}
+        className={passwordStrengthLabel.className}
+      >
+        {passwordStrengthLabel.text}
+      </span>,
+    ]);
 
     if (confirmPassword && passwordInput !== confirmPassword) {
       confirmError = t('passwordsDontMatch');
