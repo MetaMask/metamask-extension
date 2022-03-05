@@ -85,7 +85,7 @@ export default function CreationSuccessful() {
             type="link"
             rel="noopener noreferrer"
           >
-            {t('learnMore')}
+            {t('learnMoreUpperCase')}
           </Button>
         </li>
       </ul>
@@ -103,7 +103,7 @@ export default function CreationSuccessful() {
           rounded
           onClick={onComplete}
         >
-          {t('done')}
+          {t('gotIt')}
         </Button>
       </Box>
     </div>

@@ -5,11 +5,9 @@ import classnames from 'classnames';
 const CLASSNAME_DEFAULT = 'btn-default';
 const CLASSNAME_PRIMARY = 'btn-primary';
 const CLASSNAME_SECONDARY = 'btn-secondary';
-const CLASSNAME_CONFIRM = 'btn-primary';
 const CLASSNAME_RAISED = 'btn-raised';
 const CLASSNAME_LARGE = 'btn--large';
 const CLASSNAME_ROUNDED = 'btn--rounded';
-const CLASSNAME_FIRST_TIME = 'btn--first-time';
 const CLASSNAME_INLINE = 'btn--inline';
 
 const typeHash = {
@@ -21,10 +19,7 @@ const typeHash = {
   'danger-primary': 'btn-danger-primary',
   link: 'btn-link',
   inline: CLASSNAME_INLINE,
-  // TODO: Legacy button type to be deprecated
-  confirm: CLASSNAME_CONFIRM,
   raised: CLASSNAME_RAISED,
-  'first-time': CLASSNAME_FIRST_TIME,
 };
 
 const Button = ({

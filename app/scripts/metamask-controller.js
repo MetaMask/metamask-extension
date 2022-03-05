@@ -671,7 +671,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController,
       ),
       preferencesStore: this.preferencesController.store,
-      txHistoryLimit: 40,
+      txHistoryLimit: 60,
       signTransaction: this.keyringController.signTransaction.bind(
         this.keyringController,
       ),
@@ -700,6 +700,8 @@ export default class MetamaskController extends EventEmitter {
       getExternalPendingTransactions: this.getExternalPendingTransactions.bind(
         this,
       ),
+      getAccountType: this.getAccountType.bind(this),
+      getDeviceModel: this.getDeviceModel.bind(this),
     });
     this.txController.on('newUnapprovedTx', () => opts.showUserConfirmation());
 
@@ -2184,6 +2186,54 @@ export default class MetamaskController extends EventEmitter {
     const keyring = await this.getKeyringForDevice(deviceName);
     keyring.forgetDevice();
     return true;
+  }
+
+  /**
+   * Retrieves the keyring for the selected address and using the .type returns
+   * a subtype for the account. Either 'hardware', 'imported' or 'MetaMask'.
+   *
+   * @param {string} address - Address to retrieve keyring for
+   * @returns {'hardware' | 'imported' | 'MetaMask'}
+   */
+  async getAccountType(address) {
+    const keyring = await this.keyringController.getKeyringForAccount(address);
+    switch (keyring.type) {
+      case KEYRING_TYPES.TREZOR:
+      case KEYRING_TYPES.LATTICE:
+      case KEYRING_TYPES.QR:
+      case KEYRING_TYPES.LEDGER:
+        return 'hardware';
+      case KEYRING_TYPES.IMPORTED:
+        return 'imported';
+      default:
+        return 'MetaMask';
+    }
+  }
+
+  /**
+   * Retrieves the keyring for the selected address and using the .type
+   * determines if a more specific name for the device is available. Returns
+   * 'N/A' for non hardware wallets.
+   *
+   * @param {string} address - Address to retrieve keyring for
+   * @returns {'ledger' | 'lattice' | 'N/A' | string}
+   */
+  async getDeviceModel(address) {
+    const keyring = await this.keyringController.getKeyringForAccount(address);
+    switch (keyring.type) {
+      case KEYRING_TYPES.TREZOR:
+        return keyring.getModel();
+      case KEYRING_TYPES.QR:
+        return keyring.getName();
+      case KEYRING_TYPES.LEDGER:
+        // TODO: get model after ledger keyring exposes method
+        return DEVICE_NAMES.LEDGER;
+      case KEYRING_TYPES.LATTICE:
+        // TODO: get model after lattice keyring exposes method
+        return DEVICE_NAMES.LATTICE;
+      default:
+        return 'N/A';
+    }
   }
 
   /**

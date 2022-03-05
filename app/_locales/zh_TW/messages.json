@@ -747,9 +747,6 @@
   "resetAccountDescription": {
     "message": "重置帳戶將清除您的交易紀錄"
   },
-  "restoreAccountWithSeed": {
-    "message": "透過助憶詞還原您的帳戶"
-  },
   "revealSeedWords": {
     "message": "顯示助憶詞"
   },

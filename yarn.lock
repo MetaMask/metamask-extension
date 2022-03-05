@@ -2707,6 +2707,11 @@
     web3 "^0.20.7"
     web3-provider-engine "^16.0.3"
 
+"@metamask/design-tokens@^1.3.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@metamask/design-tokens/-/design-tokens-1.4.0.tgz#54e3924bc354f78d7a90ecac90da747ac60a01a1"
+  integrity sha512-pQD0x8gLBk1K558PJCjR0VP3YZ+mPKmczBqFGt+/OY/rLyvN998if6Gm7IuqMviH4am4M+fJ/rngVfF/1EJUHg==
+
 "@metamask/eslint-config-jest@^9.0.0":
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/@metamask/eslint-config-jest/-/eslint-config-jest-9.0.0.tgz#516fdf1f03f6f006b26ca790bf748e2189d19d17"
@@ -4085,6 +4090,13 @@
   dependencies:
     "@babel/runtime" "^7.10.3"
     "@testing-library/dom" "^7.17.1"
+
+"@testing-library/user-event@^14.0.0-beta.12":
+  version "14.0.0-beta.12"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-14.0.0-beta.12.tgz#8df662578e49371fd80d5923d92f3c378f7dd927"
+  integrity sha512-vFZQBBzO14bJseKAS78Ae/coSuJbgrs7ywRZw88Hc52Le8RJGehdxR4w25Oj7QVNpZZpz0R6q1zMVdYGtPbd2A==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
 
 "@tootallnate/once@1":
   version "1.1.2"
@@ -11405,10 +11417,10 @@ ethers@^4.0.20, ethers@^4.0.28:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@^5.0.8, ethers@^5.4.0, ethers@^5.4.1, ethers@^5.4.5:
-  version "5.5.1"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.5.1.tgz#d3259a95a42557844aa543906c537106c0406fbf"
-  integrity sha512-RodEvUFZI+EmFcE6bwkuJqpCYHazdzeR1nMzg+YWQSmQEsNtfl1KHGfp/FWZYl48bI/g7cgBeP2IlPthjiVngw==
+ethers@^5.0.8, ethers@^5.4.0, ethers@^5.4.1, ethers@^5.4.5, ethers@^5.5.1:
+  version "5.5.4"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.5.4.tgz#e1155b73376a2f5da448e4a33351b57a885f4352"
+  integrity sha512-N9IAXsF8iKhgHIC6pquzRgPBJEzc9auw3JoRkaKe+y4Wl/LFBtDDunNe7YmdomontECAcC5APaAgWZBiu1kirw==
   dependencies:
     "@ethersproject/abi" "5.5.0"
     "@ethersproject/abstract-provider" "5.5.1"
@@ -12028,7 +12040,7 @@ fast-deep-equal@^2.0.1:
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
   integrity sha1-ewUhjd+WZ79/Nwv3/bLLFf3Qqkk=
 
-fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
+fast-deep-equal@^3.0.0, fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
   integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
@@ -13455,6 +13467,18 @@ graphql-request@^1.8.2:
   integrity sha512-dDX2M+VMsxXFCmUX0Vo0TopIZIX4ggzOtiCsThgtrKR4niiaagsGTDIHj3fsOMFETpa064vzovI+4YV4QnMbcg==
   dependencies:
     cross-fetch "2.2.2"
+
+graphql-subscriptions@^1.1.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/graphql-subscriptions/-/graphql-subscriptions-1.2.1.tgz#2142b2d729661ddf967b7388f7cf1dd4cf2e061d"
+  integrity sha512-95yD/tKi24q8xYa7Q9rhQN16AYj5wPbrb8tmHGM3WRc9EBmWrG/0kkMl+tQG8wcEuE9ibR4zyOM31p5Sdr2v4g==
+  dependencies:
+    iterall "^1.3.0"
+
+"graphql@^14.0.2 || ^15.5":
+  version "15.8.0"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.8.0.tgz#33410e96b012fa3bdb1091cc99a94769db212b38"
+  integrity sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==
 
 gridplus-sdk@^0.9.7:
   version "0.9.10"
@@ -25230,6 +25254,14 @@ storybook-addon-outline@^1.4.1:
     "@storybook/components" "^6.3.0"
     "@storybook/core-events" "^6.3.0"
     ts-dedent "^2.1.1"
+
+storybook-dark-mode@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/storybook-dark-mode/-/storybook-dark-mode-1.0.9.tgz#40c15aa340bc700df2fb4f1345250e6fdace0b3a"
+  integrity sha512-ITPXM2OSaga1zM5blpZy5HxMWAhrAqYi9aJtLgRtSdgoRrxVNAInDRD14TjmObdgLHNWxINoNbnEB+sKETa+iw==
+  dependencies:
+    fast-deep-equal "^3.0.0"
+    memoizerific "^1.11.3"
 
 stream-browserify@^2.0.0, stream-browserify@^2.0.1:
   version "2.0.1"

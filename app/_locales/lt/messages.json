@@ -765,9 +765,6 @@
   "restore": {
     "message": "Atkurti"
   },
-  "restoreAccountWithSeed": {
-    "message": "Atkurti paskyrą naudojant atkūrimo frazę"
-  },
   "revealSeedWords": {
     "message": "Atskleisti atkūrimo žodžius"
   },

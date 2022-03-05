@@ -81,7 +81,7 @@ export default function CurrencyInput({
   }, [hexValue]);
 
   const swap = async () => {
-    await onPreferenceToggle(!featureSecondary);
+    await onPreferenceToggle();
     setSwapped(!isSwapped);
   };
 

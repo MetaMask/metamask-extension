@@ -758,9 +758,6 @@
   "restore": {
     "message": "Vrati"
   },
-  "restoreAccountWithSeed": {
-    "message": "Obnovite svoj račun početnom rečenicom"
-  },
   "revealSeedWords": {
     "message": "Otkrij početne riječi"
   },
