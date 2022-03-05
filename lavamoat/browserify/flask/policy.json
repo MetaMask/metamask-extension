@@ -563,10 +563,7 @@
         "ethereumjs-wallet": true,
         "ethers": true,
         "ethjs-unit": true,
-        "ethjs-util": true,
         "events": true,
-        "human-standard-collectible-abi": true,
-        "human-standard-token-abi": true,
         "immer": true,
         "isomorphic-fetch": true,
         "jsonschema": true,
@@ -625,6 +622,25 @@
     "@metamask/etherscan-link": {
       "globals": {
         "URL": true
+      }
+    },
+    "@metamask/iframe-execution-environment-service": {
+      "globals": {
+        "clearTimeout": true,
+        "console.log": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "document.getElementById": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/post-message-stream": true,
+        "@metamask/snap-controllers": true,
+        "@metamask/snap-workers": true,
+        "json-rpc-engine": true,
+        "json-rpc-middleware-stream": true,
+        "nanoid": true,
+        "pump": true
       }
     },
     "@metamask/jazzicon": {
@@ -708,13 +724,32 @@
         "events": true
       }
     },
+    "@metamask/smart-transactions-controller": {
+      "globals": {
+        "URLSearchParams": true,
+        "clearInterval": true,
+        "console.error": true,
+        "console.log": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controllers": true,
+        "bignumber.js": true,
+        "ethers": true,
+        "fast-json-patch": true,
+        "isomorphic-fetch": true,
+        "lodash": true
+      }
+    },
     "@metamask/snap-controllers": {
       "globals": {
+        "URL": true,
         "Worker": true,
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
-        "console.warn": true,
         "fetch": true,
         "setTimeout": true
       },
@@ -725,14 +760,22 @@
         "@metamask/post-message-stream": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/snap-workers": true,
+        "ajv": true,
+        "buffer": true,
+        "concat-stream": true,
+        "crypto-browserify": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
         "fast-deep-equal": true,
+        "gunzip-maybe": true,
         "immer": true,
         "json-rpc-engine": true,
         "json-rpc-middleware-stream": true,
         "nanoid": true,
-        "pump": true
+        "pump": true,
+        "readable-web-to-node-stream": true,
+        "semver": true,
+        "tar-stream": true
       }
     },
     "@ngraveio/bc-ur": {
@@ -983,6 +1026,11 @@
         "define": true
       }
     },
+    "ajv": {
+      "packages": {
+        "fast-deep-equal": true
+      }
+    },
     "analytics-node": {
       "globals": {
         "clearTimeout": true,
@@ -1168,6 +1216,7 @@
     "bl": {
       "packages": {
         "buffer": true,
+        "inherits": true,
         "readable-stream": true,
         "util": true
       }
@@ -1280,6 +1329,16 @@
         "btoa": true
       }
     },
+    "browserify-zlib": {
+      "packages": {
+        "assert": true,
+        "buffer": true,
+        "pako": true,
+        "process": true,
+        "readable-stream": true,
+        "util": true
+      }
+    },
     "bs58": {
       "packages": {
         "base-x": true
@@ -1304,6 +1363,11 @@
       "packages": {
         "base64-js": true,
         "ieee754": true
+      }
+    },
+    "buffer-from": {
+      "packages": {
+        "buffer": true
       }
     },
     "buffer-split": {
@@ -1434,6 +1498,13 @@
         "os-browserify": true,
         "process": true,
         "util": true
+      }
+    },
+    "concat-stream": {
+      "packages": {
+        "buffer": true,
+        "inherits": true,
+        "readable-stream": true
       }
     },
     "constant-case": {
@@ -1715,6 +1786,16 @@
     "duplexer": {
       "packages": {
         "stream-browserify": true
+      }
+    },
+    "duplexify": {
+      "packages": {
+        "buffer": true,
+        "end-of-stream": true,
+        "inherits": true,
+        "process": true,
+        "readable-stream": true,
+        "stream-shift": true
       }
     },
     "elliptic": {
@@ -2221,6 +2302,11 @@
         "postMessage": true
       }
     },
+    "fs-constants": {
+      "packages": {
+        "constants-browserify": true
+      }
+    },
     "fsm-event": {
       "packages": {
         "assert": true,
@@ -2287,6 +2373,16 @@
         "rlp-browser": true,
         "secp256k1": true,
         "superagent": true
+      }
+    },
+    "gunzip-maybe": {
+      "packages": {
+        "browserify-zlib": true,
+        "is-deflate": true,
+        "is-gzip": true,
+        "peek-stream": true,
+        "pumpify": true,
+        "through2": true
       }
     },
     "hamt-sharding": {
@@ -3939,6 +4035,14 @@
         "sha.js": true
       }
     },
+    "peek-stream": {
+      "packages": {
+        "buffer": true,
+        "buffer-from": true,
+        "duplexify": true,
+        "through2": true
+      }
+    },
     "peer-book": {
       "packages": {
         "bs58": true,
@@ -4159,6 +4263,13 @@
         "end-of-stream": true,
         "once": true,
         "process": true
+      }
+    },
+    "pumpify": {
+      "packages": {
+        "duplexify": true,
+        "inherits": true,
+        "pump": true
       }
     },
     "punycode": {
@@ -4472,6 +4583,11 @@
         "string_decoder": true,
         "timers-browserify": true,
         "util-deprecate": true
+      }
+    },
+    "readable-web-to-node-stream": {
+      "packages": {
+        "readable-stream": true
       }
     },
     "receptacle": {
@@ -4793,6 +4909,19 @@
       "packages": {
         "lower-case": true,
         "upper-case": true
+      }
+    },
+    "tar-stream": {
+      "packages": {
+        "bl": true,
+        "buffer": true,
+        "end-of-stream": true,
+        "fs-constants": true,
+        "inherits": true,
+        "process": true,
+        "readable-stream": true,
+        "string_decoder": true,
+        "util": true
       }
     },
     "textarea-caret": {

@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
 import NetworksTabContent from '.';
@@ -45,7 +45,7 @@ const props = {
 };
 
 describe('NetworksTabContent Component', () => {
-  it('should render networks tab content correctly', () => {
+  it('should render networks tab content correctly', async () => {
     const { queryByText, getByDisplayValue } = renderComponent(props);
 
     expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
@@ -71,22 +71,29 @@ describe('NetworksTabContent Component', () => {
     expect(
       getByDisplayValue(props.selectedNetwork.blockExplorerUrl),
     ).toBeInTheDocument();
+
     fireEvent.change(getByDisplayValue(props.selectedNetwork.label), {
       target: { value: 'LocalHost 8545' },
     });
-    expect(getByDisplayValue('LocalHost 8545')).toBeInTheDocument();
-    fireEvent.change(getByDisplayValue(props.selectedNetwork.chainId), {
-      target: { value: '1' },
-    });
-    expect(
-      queryByText('This Chain ID is currently used by the mainnet network.'),
-    ).toBeInTheDocument();
+    expect(await getByDisplayValue('LocalHost 8545')).toBeInTheDocument();
 
     fireEvent.change(getByDisplayValue(props.selectedNetwork.rpcUrl), {
       target: { value: 'test' },
     });
     expect(
-      queryByText('URLs require the appropriate HTTP/HTTPS prefix.'),
+      await screen.findByText(
+        'URLs require the appropriate HTTP/HTTPS prefix.',
+      ),
+    ).toBeInTheDocument();
+
+    fireEvent.change(getByDisplayValue(props.selectedNetwork.chainId), {
+      target: { value: '1' },
+    });
+
+    expect(
+      await screen.findByText(
+        'Could not fetch chain ID. Is your RPC URL correct?',
+      ),
     ).toBeInTheDocument();
   });
 });

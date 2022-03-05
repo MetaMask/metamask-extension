@@ -1,1 +1,1 @@
-export { default } from './connected-accounts-permissions.component';
+export { default } from './connected-accounts-permissions';
