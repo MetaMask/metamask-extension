@@ -17,15 +17,9 @@
     "**/*.test.ts",
     "**/*.test.tsx",
     ".storybook/**/*",
+    "builds/**/*",
     "dist/**/*",
     "node_modules/**"
   ],
-  "extends": "@tsconfig/node14/tsconfig.json",
-  "include": [
-    "app/**/*",
-    "development/**/*",
-    "test/**/*",
-    "ui/**/*",
-    "dependencies.d.ts"
-  ]
+  "extends": "@tsconfig/node14/tsconfig.json"
 }
