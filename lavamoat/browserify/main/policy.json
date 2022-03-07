@@ -2340,6 +2340,7 @@
     "gridplus-sdk": {
       "globals": {
         "console.error": true,
+        "console.warn": true,
         "setTimeout": true
       },
       "packages": {
@@ -2353,6 +2354,7 @@
         "crc-32": true,
         "elliptic": true,
         "eth-eip712-util-browser": true,
+        "hash.js": true,
         "js-sha3": true,
         "rlp-browser": true,
         "secp256k1": true,

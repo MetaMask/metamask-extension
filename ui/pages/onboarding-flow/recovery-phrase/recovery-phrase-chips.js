@@ -26,7 +26,7 @@ export default function RecoveryPhraseChips({
   const hideSeedPhrase = phraseRevealed === false;
   return (
     <Box
-      borderColor={COLORS.UI2}
+      borderColor={COLORS.BORDER_MUTED}
       borderStyle={BORDER_STYLE.SOLID}
       padding={4}
       borderWidth={1}
@@ -54,7 +54,7 @@ export default function RecoveryPhraseChips({
                 </div>
                 <ChipWithInput
                   dataTestId={`recovery-phrase-input-${index}`}
-                  borderColor={COLORS.PRIMARY1}
+                  borderColor={COLORS.PRIMARY_DEFAULT}
                   className="recovery-phrase__chip--with-input"
                   inputValue={inputValue[index]}
                   setInputValue={(value) => {
@@ -72,7 +72,7 @@ export default function RecoveryPhraseChips({
               <Chip
                 dataTestId={`recovery-phrase-chip-${index}`}
                 className="recovery-phrase__chip"
-                borderColor={COLORS.UI3}
+                borderColor={COLORS.BORDER_DEFAULT}
               >
                 {word}
               </Chip>

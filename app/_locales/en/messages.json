@@ -1983,7 +1983,7 @@
     "message": "“$1” was successfully added!"
   },
   "newPassword": {
-    "message": "New password (min 8 chars)"
+    "message": "New password (8 characters min)"
   },
   "newToMetaMask": {
     "message": "New to MetaMask?"
@@ -2277,11 +2277,18 @@
   "passwordSetupDetails": {
     "message": "This password will unlock your MetaMask wallet only on this device. MetaMask can not recover this password."
   },
+  "passwordStrength": {
+    "message": "Password strength: $1",
+    "description": "Return password strength to the user when user wants to create password."
+  },
+  "passwordStrengthDescription": {
+    "message": "A strong password can improve the security of your wallet should your device be stolen or compromised."
+  },
   "passwordTermsWarning": {
     "message": "I understand that MetaMask cannot recover this password for me. $1"
   },
   "passwordsDontMatch": {
-    "message": "Passwords Don't Match"
+    "message": "Passwords don't match"
   },
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
@@ -2947,6 +2954,9 @@
   },
   "storePhrase": {
     "message": "Store this phrase in a password manager like 1Password."
+  },
+  "strong": {
+    "message": "Strong"
   },
   "stxAreHere": {
     "message": "Smart Transactions are here!"
@@ -3771,6 +3781,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Wallet creation successful"
+  },
+  "weak": {
+    "message": "Weak"
   },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",

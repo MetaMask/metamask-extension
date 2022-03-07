@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.10.2",
+  "version": "10.11.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -151,7 +151,7 @@
     "eth-json-rpc-infura": "^5.1.0",
     "eth-json-rpc-middleware": "^8.0.0",
     "eth-keyring-controller": "^6.2.0",
-    "eth-lattice-keyring": "^0.4.0",
+    "eth-lattice-keyring": "^0.5.0",
     "eth-method-registry": "^2.0.0",
     "eth-query": "^2.1.2",
     "eth-rpc-errors": "^4.0.2",
@@ -221,7 +221,8 @@
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
     "web3": "^0.20.7",
-    "web3-stream-provider": "^4.0.0"
+    "web3-stream-provider": "^4.0.0",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@babel/code-frame": "^7.12.13",
