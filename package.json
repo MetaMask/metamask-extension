@@ -222,11 +222,8 @@
     "valid-url": "^1.0.9",
     "web3": "^0.20.7",
     "web3-stream-provider": "^4.0.0",
-<<<<<<< HEAD
     "xtend": "4.0.1"
-=======
     "zxcvbn": "^4.4.2"
->>>>>>> d1c05195dd8a6a1a32986e5dca55bbaba0cff4e1
   },
   "devDependencies": {
     "@babel/code-frame": "^7.12.13",
