@@ -71,7 +71,7 @@ describe('Disconnect single connected account', function () {
         });
 
         // Disconnect from dapp
-        await driver.clickElement('i[title="Disconnect"]');
+        await driver.clickElement({ text: 'Disconnect', tag: 'a' });
         await driver.clickElement({ text: 'Disconnect', tag: 'button' });
 
         await driver.switchToWindow(dapp);
@@ -154,7 +154,7 @@ describe('Disconnect 1 of 3 connected accounts', function () {
         });
 
         // Disconnect from dapp
-        await driver.clickElement('i[title="Disconnect"]');
+        await driver.clickElement({ text: 'Disconnect', tag: 'a' });
         await driver.clickElement({ text: 'Disconnect', tag: 'button' });
 
         await driver.switchToWindow(dapp);
@@ -240,7 +240,7 @@ describe('Disconnect all accounts', function () {
         });
 
         // Disconnect all accounts
-        await driver.clickElement('i[title="Disconnect"]');
+        await driver.clickElement({ text: 'Disconnect', tag: 'a' });
         await driver.clickElement({
           text: 'Disconnect all accounts',
           tag: 'a',
