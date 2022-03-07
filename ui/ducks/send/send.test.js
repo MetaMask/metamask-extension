@@ -95,9 +95,12 @@ describe('Send Slice', () => {
     jest
       .spyOn(Actions, 'isCollectibleOwner')
       .mockImplementation(() => Promise.resolve(true));
+    jest.spyOn(Actions, 'updateEditableParams').mockImplementation(() => ({
+      type: 'UPDATE_TRANSACTION_EDITABLE_PARAMS',
+    }));
     jest
-      .spyOn(Actions, 'updateEditableParams')
-      .mockImplementation(() => ({ type: 'UPDATE_TRANSACTION_PARAMS' }));
+      .spyOn(Actions, 'updateTransactionGasFees')
+      .mockImplementation(() => ({ type: 'UPDATE_TRANSACTION_GAS_FEES' }));
   });
 
   describe('Reducers', () => {
@@ -2073,8 +2076,13 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(1);
-        expect(actionResult[0].type).toStrictEqual('UPDATE_TRANSACTION_PARAMS');
+        expect(actionResult).toHaveLength(2);
+        expect(actionResult[0].type).toStrictEqual(
+          'UPDATE_TRANSACTION_EDITABLE_PARAMS',
+        );
+        expect(actionResult[1].type).toStrictEqual(
+          'UPDATE_TRANSACTION_GAS_FEES',
+        );
       });
     });
 
