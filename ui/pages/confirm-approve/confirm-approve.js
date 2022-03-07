@@ -33,7 +33,6 @@ import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover
 import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
 import Loading from '../../components/ui/loading-screen';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { ERC20, ERC1155, ERC721 } from '../../helpers/constants/common';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';

@@ -6,6 +6,7 @@ import {
 } from '../../../shared/modules/conversion.utils';
 import { getTokenStandardAndDetails } from '../../store/actions';
 import { ERC1155, ERC721 } from '../constants/common';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 import { getTransactionData } from './transactions.util';
@@ -244,7 +245,7 @@ export async function getAssetDetails(
     const { standard } = tokenDetails;
     if (standard === ERC721 || standard === ERC1155) {
       const existingCollectible = existingCollectibles.find(({ address }) =>
-        util.isEqualCaseInsensitive(tokenAddress, address),
+        isEqualCaseInsensitive(tokenAddress, address),
       );
 
       if (existingCollectible) {
