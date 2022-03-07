@@ -13,6 +13,7 @@ import {
   TYPOGRAPHY,
 } from '../../../helpers/constants/design-system';
 import Button from '../../ui/button';
+import IconCaretLeft from '../../ui/icon/icon-caret-left';
 
 const AddNetwork = ({
   onBackClick,
@@ -36,9 +37,8 @@ const AddNetwork = ({
         flexDirection={FLEX_DIRECTION.ROW}
         className="add-network__header"
       >
-        <img
-          src="./images/caret-left-black.svg"
-          alt={t('back')}
+        <IconCaretLeft
+          aria-label={t('back')}
           onClick={onBackClick}
           className="add-network__header__back-icon"
         />

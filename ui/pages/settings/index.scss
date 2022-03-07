@@ -122,12 +122,6 @@
           }
 
           &__caret {
-            background-image: url('/images/caret-right.svg');
-            width: 8px;
-            height: 10px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
             margin: 0 4px;
 
             [dir='rtl'] & {

@@ -3,12 +3,6 @@
   cursor: pointer;
   font-size: 14px;
 
-  & > details[open] > summary {
-    &::before {
-      background-image: url("images/icons/collapse.svg");
-    }
-  }
-
   &__summary {
     position: relative;
     padding-left: 24px;
