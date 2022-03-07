@@ -2,7 +2,8 @@ import { isHexString } from 'ethereumjs-util';
 import { ethers } from 'ethers';
 import abi from 'human-standard-token-abi';
 import log from 'loglevel';
-import { TRANSACTION_TYPES } from '../constants/transaction';
+import { TOKEN_STANDARDS } from '../../ui/helpers/constants/common';
+import { ASSET_TYPES, TRANSACTION_TYPES } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
@@ -91,6 +92,8 @@ export function txParamsAreDappSuggested(transaction) {
  *
  * @param {Object} txParams - Parameters for the transaction
  * @param {EthQuery} query - EthQuery instance
+ * @param {Function} getTokenStandardAndDetails - Function to fetch token
+ *  standard and details
  * @returns {InferTransactionTypeResult}
  */
 export async function determineTransactionType(txParams, query) {
@@ -130,4 +133,48 @@ export async function determineTransactionType(txParams, query) {
   }
 
   return { type: result, getCodeResponse: contractCode };
+}
+
+export async function determineTransactionAssetType(
+  txMeta,
+  query,
+  getTokenStandardAndDetails,
+) {
+  // Because we will deal with all types of transactions (including swaps)
+  // we want to get an inferrable type of transaction that isn't special cased
+  // that way we can narrow the number of logic gates required.
+  const { type: inferrableType } = await determineTransactionType(
+    txMeta.txParams,
+    query,
+  );
+
+  const isTokenMethod = [
+    TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+    TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+  ].find((methodName) => isEqualCaseInsensitive(methodName, inferrableType));
+
+  if (isTokenMethod) {
+    const details = await getTokenStandardAndDetails(
+      txMeta.txParams.to,
+      txMeta.txParams.from,
+    );
+
+    if (details.standard) {
+      return {
+        assetType: (details.standard = TOKEN_STANDARDS.ERC20
+          ? ASSET_TYPES.TOKEN
+          : ASSET_TYPES.COLLECTIBLE),
+        tokenStandard: details.standard,
+      };
+    }
+  }
+
+  if (inferrableType === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
+    return {
+      assetType: ASSET_TYPES.UNKNOWN,
+      tokenStandard: TOKEN_STANDARDS.NONE,
+    };
+  }
+  return { assetType: ASSET_TYPES.NATIVE, tokenStandard: TOKEN_STANDARDS.NONE };
 }

@@ -46,6 +46,7 @@ import {
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
 } from '../../../../shared/constants/network';
 import {
+  determineTransactionAssetType,
   determineTransactionType,
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
@@ -130,6 +131,7 @@ export default class TransactionController extends EventEmitter {
     this.getEventFragmentById = opts.getEventFragmentById;
     this.getDeviceModel = opts.getDeviceModel;
     this.getAccountType = opts.getAccountType;
+    this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
 
     this.memStore = new ObservableStore({});
     this.query = new EthQuery(this.provider);
@@ -1833,6 +1835,12 @@ export default class TransactionController extends EventEmitter {
     } = txMeta;
     const source = referrer === 'metamask' ? 'user' : 'dapp';
 
+    const { assetType, tokenStandard } = await determineTransactionAssetType(
+      txMeta,
+      this.query,
+      this.getTokenStandardAndDetails,
+    );
+
     const gasParams = {};
 
     if (isEIP1559Transaction(txMeta)) {
@@ -1906,6 +1914,8 @@ export default class TransactionController extends EventEmitter {
       gas_edit_attempted: 'none',
       account_type: await this.getAccountType(this.getSelectedAddress()),
       device_model: await this.getDeviceModel(this.getSelectedAddress()),
+      asset_type: assetType,
+      token_standard: tokenStandard,
     };
 
     const sensitiveProperties = {

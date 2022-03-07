@@ -1,8 +1,9 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { ASSET_TYPES, editTransaction } from '../../ducks/send';
+import { editTransaction } from '../../ducks/send';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
+import { ASSET_TYPES } from '../../../shared/constants/transaction';
 import ConfirmSendEther from './confirm-send-ether.component';
 
 const mapStateToProps = (state) => {
