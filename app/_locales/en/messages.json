@@ -1437,7 +1437,7 @@
     "description": "$1 represents the name of the device"
   },
   "hardwareWalletConnectivityNotConnected": {
-    "message": "$1 is not connected.",
+    "message": "$1 may not be connected.",
     "description": "$1 represents the name of the device"
   },
   "hardwareWalletConnectivityNotConnectedConversion": {
