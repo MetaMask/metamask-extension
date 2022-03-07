@@ -1,6 +1,7 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { TRANSACTION_TYPES } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { TRANSACTION_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
@@ -10,8 +11,18 @@ describe('Confirm Page Container Content', () => {
     metamask: {
       provider: {
         type: 'test',
+        chainId: '0x3',
       },
       eip1559V2Enabled: false,
+      addressBook: {
+        '0x3': {
+          '0x06195827297c7A80a443b6894d3BDB8824b43896': {
+            address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
+            name: 'Address Book Account 1',
+            chainId: '0x3',
+          },
+        },
+      },
     },
   };
 
@@ -124,5 +135,31 @@ describe('Confirm Page Container Content', () => {
     const cancelButton = getByText('Reject');
     fireEvent.click(cancelButton);
     expect(props.onCancel).toHaveBeenCalledTimes(1);
+  });
+
+  it('render contract address name from addressBook in title for contract', async () => {
+    props.hasSimulationError = false;
+    props.disabled = false;
+    props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
+    props.transactionType = TRANSACTION_TYPES.CONTRACT_INTERACTION;
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent {...props} />,
+      store,
+    );
+
+    expect(queryByText('Address Book Account 1')).toBeInTheDocument();
+  });
+
+  it('render simple title without address name for simple send', async () => {
+    props.hasSimulationError = false;
+    props.disabled = false;
+    props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
+    props.transactionType = TRANSACTION_TYPES.SIMPLE_SEND;
+    const { queryByText } = renderWithProvider(
+      <ConfirmPageContainerContent {...props} />,
+      store,
+    );
+
+    expect(queryByText('Address Book Account 1')).not.toBeInTheDocument();
   });
 });

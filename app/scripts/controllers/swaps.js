@@ -28,7 +28,7 @@ import {
 } from '../../../ui/pages/swaps/swaps.util';
 import fetchWithCache from '../../../ui/helpers/utils/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
-import { isEqualCaseInsensitive } from '../../../ui/helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { NETWORK_EVENTS } from './network';
 
 // The MAX_GAS_LIMIT is a number that is higher than the maximum gas costs we have observed on any aggregator

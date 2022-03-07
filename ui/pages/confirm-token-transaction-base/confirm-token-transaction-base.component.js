@@ -93,7 +93,7 @@ export default function ConfirmTokenTransactionBase({
       toAddress={toAddress}
       image={image}
       onEdit={onEdit}
-      identiconAddress={tokenAddress}
+      tokenAddress={tokenAddress}
       title={title}
       subtitleComponent={subtitleComponent()}
       primaryTotalTextOverride={`${title} + ${ethTransactionTotal} ${nativeCurrency}`}

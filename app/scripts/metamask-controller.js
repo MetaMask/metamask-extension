@@ -82,7 +82,7 @@ import {
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
 import { getTransactionData } from '../../ui/helpers/utils/transactions.util';
-import { isEqualCaseInsensitive } from '../../ui/helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
@@ -837,24 +837,28 @@ export default class MetamaskController extends EventEmitter {
         this.gasFeeController,
       ),
     });
-    this.smartTransactionsController = new SmartTransactionsController({
-      onNetworkStateChange: this.networkController.store.subscribe.bind(
-        this.networkController.store,
-      ),
-      getNetwork: this.networkController.getNetworkState.bind(
-        this.networkController,
-      ),
-      getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
-        this.txController.nonceTracker,
-      ),
-      confirmExternalTransaction: this.txController.confirmExternalTransaction.bind(
-        this.txController,
-      ),
-      provider: this.provider,
-      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-        this.metaMetricsController,
-      ),
-    });
+    this.smartTransactionsController = new SmartTransactionsController(
+      {
+        onNetworkStateChange: this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
+        getNetwork: this.networkController.getNetworkState.bind(
+          this.networkController,
+        ),
+        getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
+          this.txController.nonceTracker,
+        ),
+        confirmExternalTransaction: this.txController.confirmExternalTransaction.bind(
+          this.txController,
+        ),
+        provider: this.provider,
+        trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+          this.metaMetricsController,
+        ),
+      },
+      undefined,
+      initState.SmartTransactionsController,
+    );
 
     // ensure accountTracker updates balances after network change
     this.networkController.on(NETWORK_EVENTS.NETWORK_DID_CHANGE, () => {
@@ -1420,6 +1424,7 @@ export default class MetamaskController extends EventEmitter {
       setEIP1559V2Enabled: preferencesController.setEIP1559V2Enabled.bind(
         preferencesController,
       ),
+      setTheme: preferencesController.setTheme.bind(preferencesController),
 
       // AssetsContractController
       getTokenStandardAndDetails: assetsContractController.getTokenStandardAndDetails.bind(
@@ -1521,6 +1526,12 @@ export default class MetamaskController extends EventEmitter {
       ),
       getTransactions: txController.getTransactions.bind(txController),
 
+      updateEditableParams: txController.updateEditableParams.bind(
+        txController,
+      ),
+      updateTransactionGasFees: txController.updateTransactionGasFees.bind(
+        txController,
+      ),
       // messageManager
       signMessage: this.signMessage.bind(this),
       cancelMessage: this.cancelMessage.bind(this),

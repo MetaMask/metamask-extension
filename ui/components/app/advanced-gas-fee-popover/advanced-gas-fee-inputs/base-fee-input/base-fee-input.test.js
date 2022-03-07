@@ -12,6 +12,7 @@ import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import configureStore from '../../../../../store/store';
 
 import { AdvancedGasFeePopoverContextProvider } from '../../context';
+import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import BaseFeeInput from './base-fee-input';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -50,6 +51,7 @@ const render = (txProps, contextProps) => {
     >
       <AdvancedGasFeePopoverContextProvider>
         <BaseFeeInput />
+        <AdvancedGasFeeGasLimit />
       </AdvancedGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
     store,
@@ -60,24 +62,24 @@ describe('BaseFeeInput', () => {
   it('should renders advancedGasFee.baseFee value if current estimate used is not custom', () => {
     render({
       userFeeLevel: 'high',
-      txParams: {
-        maxFeePerGas: '0x2E90EDD000',
-      },
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
 
-  it('should not advancedGasFee.baseFee value for swaps', () => {
+  it('should not use advancedGasFee.baseFee value for swaps', () => {
     render(
       {
         userFeeLevel: 'high',
-        txParams: {
-          maxFeePerGas: '0x2E90EDD000',
-        },
       },
       { editGasMode: EDIT_GAS_MODES.SWAPS },
     );
-    expect(document.getElementsByTagName('input')[0]).toHaveValue(200);
+    expect(document.getElementsByTagName('input')[0]).toHaveValue(
+      parseInt(
+        mockEstimates[GAS_ESTIMATE_TYPES.FEE_MARKET].gasFeeEstimates.high
+          .suggestedMaxFeePerGas,
+        10,
+      ),
+    );
   });
 
   it('should renders baseFee values from transaction if current estimate used is custom', () => {
@@ -88,22 +90,27 @@ describe('BaseFeeInput', () => {
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(200);
   });
-  it('should show current value of estimatedBaseFee in subtext', () => {
+
+  it('should show current value of estimatedBaseFee in users primary currency in right side of input box', () => {
     render({
       txParams: {
-        maxFeePerGas: '0x174876E800',
+        gas: '0x5208',
+        maxFeePerGas: '0x2E90EDD000',
       },
     });
+    expect(screen.queryByText('≈ 0.0042 ETH')).toBeInTheDocument();
+  });
+
+  it('should show current value of estimatedBaseFee in subtext', () => {
+    render();
     expect(screen.queryByText('50 GWEI')).toBeInTheDocument();
   });
+
   it('should show 12hr range value in subtext', () => {
-    render({
-      txParams: {
-        maxFeePerGas: '0x174876E800',
-      },
-    });
+    render();
     expect(screen.queryByText('50 - 100 GWEI')).toBeInTheDocument();
   });
+
   it('should show error if base fee is less than suggested low value', () => {
     render({
       txParams: {

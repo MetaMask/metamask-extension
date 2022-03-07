@@ -94,6 +94,7 @@ export default class Routes extends Component {
     prepareToLeaveSwaps: PropTypes.func,
     browserEnvironmentOs: PropTypes.string,
     browserEnvironmentBrowser: PropTypes.string,
+    theme: PropTypes.string,
   };
 
   static contextTypes = {
@@ -101,12 +102,22 @@ export default class Routes extends Component {
     metricsEvent: PropTypes.func,
   };
 
+  componentDidUpdate(prevProps) {
+    if (process.env.DARK_MODE_V1) {
+      const { theme } = this.props;
+      if (theme !== prevProps.theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+    }
+  }
+
   UNSAFE_componentWillMount() {
     const {
       currentCurrency,
       pageChanged,
       setCurrentCurrencyToUSD,
       history,
+      theme,
     } = this.props;
     if (!currentCurrency) {
       setCurrentCurrencyToUSD();
@@ -117,6 +128,9 @@ export default class Routes extends Component {
         pageChanged(locationObj.pathname);
       }
     });
+    if (process.env.DARK_MODE_V1 && theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
   }
 
   renderRoutes() {
@@ -155,7 +169,7 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated
-          path={TOKEN_DETAILS}
+          path={`${TOKEN_DETAILS}/:address/`}
           component={TokenDetailsPage}
           exact
         />
@@ -313,18 +327,19 @@ export default class Routes extends Component {
       isMouseUser,
       browserEnvironmentOs: os,
       browserEnvironmentBrowser: browser,
+      theme,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
         : null;
-
     return (
       <div
         className={classnames('app', {
           [`os-${os}`]: os,
           [`browser-${browser}`]: browser,
           'mouse-user-styles': isMouseUser,
+          [`theme-${theme}`]: process.env.DARK_MODE_V1 && theme,
         })}
         dir={textDirection}
         onClick={() => setMouseUserState(true)}

@@ -32,6 +32,8 @@ export default function FormField({
   disabled,
   placeholder,
   warning,
+  passwordStrength,
+  passwordStrengthText,
 }) {
   return (
     <div
@@ -122,6 +124,24 @@ export default function FormField({
             {warning}
           </Typography>
         )}
+        {passwordStrength && (
+          <Typography
+            color={COLORS.BLACK}
+            variant={TYPOGRAPHY.H7}
+            className="form-field__password-strength"
+          >
+            {passwordStrength}
+          </Typography>
+        )}
+        {passwordStrengthText && (
+          <Typography
+            color={COLORS.UI4}
+            variant={TYPOGRAPHY.H8}
+            className="form-field__password-strength-text"
+          >
+            {passwordStrengthText}
+          </Typography>
+        )}
       </label>
     </div>
   );
@@ -192,6 +212,14 @@ FormField.propTypes = {
    * Set the placeholder text for the input field
    */
   placeholder: PropTypes.string,
+  /**
+   * Show password strength according to the score
+   */
+  passwordStrength: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * Show password strength description
+   */
+  passwordStrengthText: PropTypes.string,
 };
 
 FormField.defaultProps = {
