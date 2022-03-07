@@ -635,7 +635,7 @@
     "message": "We've detected that this asset is an NFT. Metamask now has full native support for NFTs. Would you like to remove it from your token list and add it as an NFT?"
   },
   "convertTokenToNFTExistDescription": {
-    "message": "We’ve detected that this asset is an NFT and has been added as an NFT. Would you like to remove it from your token list?"
+    "message": "We’ve detected that this asset has been added as an NFT. Would you like to remove it from your token list?"
   },
   "copiedExclamation": {
     "message": "Copied!"
