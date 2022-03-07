@@ -12,6 +12,7 @@ import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import configureStore from '../../../../../store/store';
 
 import { AdvancedGasFeePopoverContextProvider } from '../../context';
+import AdvancedGasFeeGasLimit from '../../advanced-gas-fee-gas-limit';
 import PriorityfeeInput from './priority-fee-input';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -50,6 +51,7 @@ const render = (txProps, contextProps) => {
     >
       <AdvancedGasFeePopoverContextProvider>
         <PriorityfeeInput />
+        <AdvancedGasFeeGasLimit />
       </AdvancedGasFeePopoverContextProvider>
     </GasFeeContextProvider>,
     store,
@@ -63,6 +65,7 @@ describe('PriorityfeeInput', () => {
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(100);
   });
+
   it('should not use advancedGasFee.priorityfee value for swaps', () => {
     render(
       {
@@ -78,6 +81,7 @@ describe('PriorityfeeInput', () => {
       ),
     );
   });
+
   it('should renders priorityfee value from transaction if current estimate used is custom', () => {
     render({
       txParams: {
@@ -86,14 +90,27 @@ describe('PriorityfeeInput', () => {
     });
     expect(document.getElementsByTagName('input')[0]).toHaveValue(2);
   });
+
   it('should show current priority fee range in subtext', () => {
     render();
     expect(screen.queryByText('1 - 20 GWEI')).toBeInTheDocument();
   });
+
+  it('should show current value of priority fee in users primary currency in right side of input box', () => {
+    render({
+      txParams: {
+        gas: '0x5208',
+        maxPriorityFeePerGas: '0x77359400',
+      },
+    });
+    expect(screen.queryByText('≈ 0.000042 ETH')).toBeInTheDocument();
+  });
+
   it('should show 12hr range value in subtext', () => {
     render();
     expect(screen.queryByText('2 - 125 GWEI')).toBeInTheDocument();
   });
+
   it('should show error if value entered is 0', () => {
     render({
       txParams: {

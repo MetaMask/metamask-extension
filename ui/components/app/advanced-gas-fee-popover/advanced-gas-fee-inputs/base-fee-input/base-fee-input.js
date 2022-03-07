@@ -6,7 +6,7 @@ import {
   EDIT_GAS_MODES,
   PRIORITY_LEVELS,
 } from '../../../../../../shared/constants/gas';
-import { SECONDARY } from '../../../../../helpers/constants/common';
+import { PRIMARY } from '../../../../../helpers/constants/common';
 import {
   bnGreaterThan,
   bnLessThan,
@@ -57,6 +57,7 @@ const BaseFeeInput = () => {
     editGasMode,
   } = useGasFeeContext();
   const {
+    gasLimit,
     maxPriorityFeePerGas,
     setErrorValue,
     setMaxFeePerGas,
@@ -69,7 +70,7 @@ const BaseFeeInput = () => {
     baseFeeTrend,
   } = gasFeeEstimates;
   const [baseFeeError, setBaseFeeError] = useState();
-  const { currency, numberOfDecimals } = useUserPreferencedCurrency(SECONDARY);
+  const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);
 
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
 
@@ -85,8 +86,8 @@ const BaseFeeInput = () => {
     return maxFeePerGas;
   });
 
-  const [, { value: baseFeeInFiat }] = useCurrencyDisplay(
-    decGWEIToHexWEI(baseFee),
+  const [baseFeeInPrimaryCurrency] = useCurrencyDisplay(
+    decGWEIToHexWEI(baseFee * gasLimit),
     { currency, numberOfDecimals },
   );
 
@@ -128,7 +129,7 @@ const BaseFeeInput = () => {
         titleUnit={`(${t('gwei')})`}
         tooltipText={t('advancedBaseGasFeeToolTip')}
         value={baseFee}
-        detailText={`≈ ${baseFeeInFiat}`}
+        detailText={`≈ ${baseFeeInPrimaryCurrency}`}
         numeric
       />
       <AdvancedGasFeeInputSubtext
