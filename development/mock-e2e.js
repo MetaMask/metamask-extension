@@ -28,7 +28,7 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
 
-  await testSpecificMock(server);
+  testSpecificMock(server);
 }
 
 module.exports = { setupMocking };
