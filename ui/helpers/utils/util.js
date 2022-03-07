@@ -1,4 +1,4 @@
-import punycode from 'punycode/punycode';
+import punycode from 'punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
@@ -102,16 +102,35 @@ export function addressSummary(
     : '...';
 }
 
+const regexNonASCII = /[^\0-\x7E]/; // non-ASCII chars
+
+const toAscii = function(input) {
+	return mapDomain(input, function(string) {
+		return regexNonASCII.test(string)
+			? 'xn--' + punycode.encode(string)
+			: string;
+	});
+};
+
 export function isValidDomainName(address) {
-  const match = punycode
-    .toASCII(address)
-    .toLowerCase()
+  try {
+    var match = toAscii(address.toString()).toLowerCase()
     // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
     // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
     // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
     .match(
       /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
     );
+  } catch (e) {
+    console.log(e);
+    const match = punycode.toASCII(address.toString()).toLowerCase()
+    // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
+    // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
+    // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
+    .match(
+      /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
+    );
+  }
   return match !== null;
 }
 

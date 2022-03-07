@@ -4,6 +4,14 @@ import log from 'loglevel';
 import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
+import { ethers } from 'ethers';
+import {
+  abi,
+  address
+} from './fnsExports.js';
+
+const ethersProvFantom = new ethers.providers.JsonRpcProvider('https://rpc.ftm.tools');
+const fns = new ethers.Contract(address,abi,ethersProvFantom);
 
 import { getCurrentChainId } from '../selectors';
 import {
@@ -146,6 +154,14 @@ export function initializeEnsSlice() {
   };
 }
 
+async function isFnsName(name) {
+  return await fns.functions.isOwnedByMapping(name.toUpperCase());
+}
+
+export async function resolveFnsName(name) {
+  return await fns.functions.getOwnerOfName(name.toUpperCase());
+}
+
 export function lookupEnsName(ensName) {
   return async (dispatch, getState) => {
     const trimmedEnsName = ensName.trim();
@@ -155,7 +171,7 @@ export function lookupEnsName(ensName) {
     }
     state = getState();
     if (
-      state[name].stage === 'NO_NETWORK_SUPPORT' &&
+      (state[name].stage === 'NO_NETWORK_SUPPORT' && getCurrentChainId(state) != 250) &&
       !(
         isBurnAddress(trimmedEnsName) === false &&
         isValidHexAddress(trimmedEnsName, { mixedCaseUseChecksum: true })
@@ -167,11 +183,22 @@ export function lookupEnsName(ensName) {
       log.info(`ENS attempting to resolve name: ${trimmedEnsName}`);
       let address;
       let error;
+      var isFns = await isFnsName(ensName);
+      console.log("isFns:")
+      console.log(isFns)
       try {
-        address = await ens.lookup(trimmedEnsName);
+        if (isFns[0]) {
+          address = await resolveFnsName(trimmedEnsName);
+          console.log("address:")
+          console.log(address);
+          address = address[0];
+        } else {
+          address = await ens.lookup(trimmedEnsName);
+        }
       } catch (err) {
         error = err;
       }
+      console.log(address);
       const chainId = getCurrentChainId(state);
       const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
       await dispatch(

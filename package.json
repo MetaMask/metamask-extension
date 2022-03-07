@@ -161,7 +161,7 @@
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^7.0.10",
     "ethereumjs-wallet": "^0.6.4",
-    "ethers": "^5.0.8",
+    "ethers": "^5.5.4",
     "ethjs": "^0.4.0",
     "ethjs-contract": "^0.2.3",
     "ethjs-ens": "^2.0.0",
@@ -221,7 +221,8 @@
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
     "web3": "^0.20.7",
-    "web3-stream-provider": "^4.0.0"
+    "web3-stream-provider": "^4.0.0",
+    "xtend": "4.0.1"
   },
   "devDependencies": {
     "@babel/code-frame": "^7.12.13",
