@@ -21,12 +21,7 @@
   }
 
   &-header {
-    display: flex;
-    padding: 24px 16px 16px;
-    flex-direction: column;
-    background: white;
     position: relative;
-    border-radius: 10px;
 
     &__title {
       display: flex;
@@ -78,13 +73,8 @@
   &-content {
     overflow-y: auto;
     position: relative;
-    display: flex;
     flex: 1;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: stretch;
     align-content: stretch;
-    border-radius: 10px;
   }
 
   &-container {
@@ -100,11 +90,7 @@
   }
 
   &-footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
     border-top: 1px solid #d2d8dd;
-    padding: 16px 24px 24px;
 
     > :only-child {
       margin: 0 auto;

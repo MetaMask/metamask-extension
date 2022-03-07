@@ -4,6 +4,33 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../box';
+import {
+  ALIGN_ITEMS,
+  FLEX_DIRECTION,
+  JUSTIFY_CONTENT,
+} from '../../../helpers/constants/design-system';
+
+const defaultHeaderProps = {
+  padding: [6, 4, 4],
+  display: 'flex',
+  flexDirection: FLEX_DIRECTION.COLUMN,
+  backgroundColor: 'white',
+  borderRadius: 'xl',
+};
+
+const defaultContentProps = {
+  display: 'flex',
+  flexDirection: FLEX_DIRECTION.COLUMN,
+  justifyContent: JUSTIFY_CONTENT.FLEX_START,
+  alignItems: ALIGN_ITEMS.STRETCH,
+  borderRadius: 'xl',
+};
+
+const defaultFooterProps = {
+  display: 'flex',
+  justifyContent: JUSTIFY_CONTENT.SPACE_BETWEEN,
+  padding: [4, 6, 6],
+};
 
 const Popover = ({
   title,
@@ -19,15 +46,18 @@ const Popover = ({
   CustomBackground,
   popoverRef,
   centerTitle,
-  headerProps = {},
-  contentProps = {},
-  footerProps = {},
+  headerProps = defaultHeaderProps,
+  contentProps = defaultContentProps,
+  footerProps = defaultFooterProps,
 }) => {
   const t = useI18nContext();
   const showHeader = title || onBack || subtitle || onClose;
   const Header = () => {
     return (
-      <Box {...headerProps} className="popover-header">
+      <Box
+        {...{ ...defaultHeaderProps, ...headerProps }}
+        className="popover-header"
+      >
         <div
           className={classnames(
             'popover-header__title',
@@ -76,7 +106,7 @@ const Popover = ({
         {children ? (
           <Box
             className={classnames('popover-content', contentClassName)}
-            {...contentProps}
+            {...{ ...defaultContentProps, ...contentProps }}
           >
             {children}
           </Box>
@@ -84,7 +114,7 @@ const Popover = ({
         {footer ? (
           <Box
             className={classnames('popover-footer', footerClassName)}
-            {...footerProps}
+            {...{ ...defaultFooterProps, ...footerProps }}
           >
             {footer}
           </Box>
