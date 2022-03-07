@@ -82,7 +82,7 @@ import {
 import { hexToDecimal } from '../../ui/helpers/utils/conversions.util';
 import { getTokenValueParam } from '../../ui/helpers/utils/token-util';
 import { getTransactionData } from '../../ui/helpers/utils/transactions.util';
-import { isEqualCaseInsensitive } from '../../ui/helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';

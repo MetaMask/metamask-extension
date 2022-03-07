@@ -3,10 +3,8 @@ import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
-import abi from 'human-standard-token-abi';
 import Common from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
-import { ethers } from 'ethers';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
@@ -47,15 +45,14 @@ import {
   NETWORK_TYPE_RPC,
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
 } from '../../../../shared/constants/network';
-import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
-import { readAddressAsContract } from '../../../../shared/modules/contract-utils';
-import { isEqualCaseInsensitive } from '../../../../ui/helpers/utils/util';
+import {
+  determineTransactionType,
+  isEIP1559Transaction,
+} from '../../../../shared/modules/transaction.utils';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
-
-const hstInterface = new ethers.utils.Interface(abi);
 
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 
@@ -641,7 +638,7 @@ export default class TransactionController extends EventEmitter {
      * `generateTxMeta` adds the default txMeta properties to the passed object.
      * These include the tx's `id`. As we use the id for determining order of
      * txes in the tx-state-manager, it is necessary to call the asynchronous
-     * method `this._determineTransactionType` after `generateTxMeta`.
+     * method `determineTransactionType` after `generateTxMeta`.
      */
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
@@ -669,8 +666,9 @@ export default class TransactionController extends EventEmitter {
       }
     }
 
-    const { type, getCodeResponse } = await this._determineTransactionType(
+    const { type, getCodeResponse } = await determineTransactionType(
       txParams,
+      this.query,
     );
     txMeta.type = transactionType || type;
 
@@ -1724,67 +1722,6 @@ export default class TransactionController extends EventEmitter {
         'transactions/pending-tx-tracker#event: tx:retry',
       );
     });
-  }
-
-  /**
-   * @typedef { 'transfer' | 'approve' | 'transferfrom' | 'contractInteraction'| 'simpleSend' } InferrableTransactionTypes
-   */
-
-  /**
-   * @typedef {Object} InferTransactionTypeResult
-   * @property {InferrableTransactionTypes} type - The type of transaction
-   * @property {string} getCodeResponse - The contract code, in hex format if
-   *  it exists. '0x0' or '0x' are also indicators of non-existent contract
-   *  code
-   */
-
-  /**
-   * Determines the type of the transaction by analyzing the txParams.
-   * This method will return one of the types defined in shared/constants/transactions
-   * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these
-   * represent specific events that we control from the extension and are added manually
-   * at transaction creation.
-   *
-   * @param {Object} txParams - Parameters for the transaction
-   * @returns {InferTransactionTypeResult}
-   */
-  async _determineTransactionType(txParams) {
-    const { data, to } = txParams;
-    let name;
-    try {
-      name = data && hstInterface.parseTransaction({ data }).name;
-    } catch (error) {
-      log.debug('Failed to parse transaction data.', error, data);
-    }
-
-    const tokenMethodName = [
-      TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
-      TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
-      TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
-    ].find((methodName) => isEqualCaseInsensitive(methodName, name));
-
-    let result;
-    if (data && tokenMethodName) {
-      result = tokenMethodName;
-    } else if (data && !to) {
-      result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
-    }
-
-    let contractCode;
-
-    if (!result) {
-      const {
-        contractCode: resultCode,
-        isContractAddress,
-      } = await readAddressAsContract(this.query, to);
-
-      contractCode = resultCode;
-      result = isContractAddress
-        ? TRANSACTION_TYPES.CONTRACT_INTERACTION
-        : TRANSACTION_TYPES.SIMPLE_SEND;
-    }
-
-    return { type: result, getCodeResponse: contractCode };
   }
 
   /**

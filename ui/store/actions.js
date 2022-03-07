@@ -9,7 +9,6 @@ import {
 } from '../helpers/utils/i18n-helper';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import { getSymbolAndDecimals } from '../helpers/utils/token-util';
-import { isEqualCaseInsensitive } from '../helpers/utils/util';
 import switchDirection from '../helpers/utils/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -35,6 +34,7 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import * as actionConstants from './actionConstants';
 
 let background = null;
