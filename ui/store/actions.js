@@ -673,6 +673,46 @@ const updateMetamaskStateFromBackground = () => {
   });
 };
 
+export function updateEditableParams(txId, editableParams) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateEditableParams(txId, editableParams);
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    dispatch(
+      updateTransactionParams(editableParams.id, editableParams.txParams),
+    );
+    const newState = await updateMetamaskStateFromBackground();
+    dispatch(updateMetamaskState(newState));
+    dispatch(showConfTxPage({ id: editableParams.id }));
+    return editableParams;
+  };
+}
+
+export function updateTransactionGasFees(txId, txGasFees) {
+  return async (dispatch) => {
+    try {
+      await promisifiedBackground.updateTransactionGasFees(txId, txGasFees);
+    } catch (error) {
+      dispatch(txError(error));
+      dispatch(goHome());
+      log.error(error.message);
+      throw error;
+    }
+
+    dispatch(updateTransactionParams(txGasFees.id, txGasFees.txParams));
+    const newState = await updateMetamaskStateFromBackground();
+    dispatch(updateMetamaskState(newState));
+    dispatch(showConfTxPage({ id: txGasFees.id }));
+    return txGasFees;
+  };
+}
+
 export function updateTransaction(txData, dontShowLoadingIndicator) {
   return async (dispatch) => {
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
