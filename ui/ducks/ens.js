@@ -155,6 +155,9 @@ export function initializeEnsSlice() {
 }
 
 async function isFnsName(name) {
+  if (name.toString().toLowerCase.endsWith('.eth')) {
+    return false;
+  }
   return await fns.functions.isOwnedByMapping(name.toUpperCase());
 }
 
