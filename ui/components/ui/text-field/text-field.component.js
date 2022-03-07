@@ -23,8 +23,11 @@ const styles = {
   },
   materialFocused: {},
   materialUnderline: {
+    '&:before': {
+      borderBottom: '1px solid var(--color-text-default) !important', // Visible bottom border
+    },
     '&:after': {
-      borderBottom: `2px solid rgb(3, 125, 214)`,
+      borderBottom: `2px solid rgb(3, 125, 214)`, // Animated bottom border
     },
   },
   materialError: {},
@@ -43,7 +46,7 @@ const styles = {
   },
   materialWhitePaddedUnderline: {
     '&:after': {
-      borderBottom: '2px solid var(--color-background-default)',
+      borderBottom: '2px solid #fff',
     },
   },
   // Non-material styles
