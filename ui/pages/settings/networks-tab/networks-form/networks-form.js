@@ -12,6 +12,7 @@ import {
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import ActionableMessage from '../../../../components/ui/actionable-message';
+import Popover from '../../../../components/ui/popover';
 import Button from '../../../../components/ui/button';
 import FormField from '../../../../components/ui/form-field';
 import { decimalToHex } from '../../../../helpers/utils/conversions.util';
@@ -24,9 +25,11 @@ import {
   addCustomNetworks,
   cancelQRHardwareSignRequest,
 } from '../../../../store/actions';
+import ConfirmationPage from '../../../../pages/confirmation';
 import {
   DEFAULT_ROUTE,
   NETWORKS_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
 } from '../../../../helpers/constants/routes';
 import fetchWithCache from '../../../../helpers/utils/fetch-with-cache';
 import { usePrevious } from '../../../../hooks/usePrevious';
@@ -81,6 +84,7 @@ const NetworksForm = ({
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
   const selectedNetworkName = label || (labelKey && t(labelKey));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
+  const [showPopover, setShowPopover] = useState(false);
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
   const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
@@ -556,17 +560,25 @@ const NetworksForm = ({
   ];
 
   return (
-    <div
-      className={classnames({
-        'networks-tab__network-form': !addNewNetwork,
-        'networks-tab__add-network-form': addNewNetwork,
-      })}
-    >
-      <AddNetwork
-        featuredRPCS={FEATURED_RPCS}
-        onAddNetworkClick={async () => dispatch(addCustomNetworks())}
-      />
-    </div>
+    <>
+      <div
+        className={classnames({
+          'networks-tab__network-form': !addNewNetwork,
+          'networks-tab__add-network-form': addNewNetwork,
+        })}
+      >
+        <AddNetwork
+          featuredRPCS={FEATURED_RPCS}
+          onAddNetworkClick={async () => {
+            dispatch(addCustomNetworks());
+            setShowPopover(true);
+          }}
+        />
+      </div>
+      {showPopover && <Popover>
+        <ConfirmationPage />
+      </Popover>}
+    </>
   );
 };
 
