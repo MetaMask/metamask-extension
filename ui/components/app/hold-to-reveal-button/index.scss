@@ -36,129 +36,129 @@ $circle-stroke-width: 2px;
   }
 }
 
-// Shared styles
-%absolute-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
+.hold-to-reveal-button {
+  // Shared styles
+  &__absolute-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
 
-%icon {
-  height: $circle-diameter;
-  width: $circle-diameter;
-}
+  &__icon {
+    height: $circle-diameter;
+    width: $circle-diameter;
+  }
 
-%circle-shared {
-  fill: transparent;
-  stroke-width: $circle-stroke-width;
-}
+  &__circle-shared {
+    fill: transparent;
+    stroke-width: $circle-stroke-width;
+  }
 
-// Class styles
-.button-hold {
-  width: 190px !important;
-  height: 40px !important;
-  padding: 6px 13px 6px 9px !important;
-  transform: scale(1) !important;
-  transition: 0.5s transform !important;
+  // Class styles
+  &__button-hold {
+    padding: 6px 13px 6px 9px !important;
+    transform: scale(1) !important;
+    transition: 0.5s transform !important;
 
-  &:active {
-    background-color: var(--primary-1) !important;
-    transform: scale(1.05) !important;
+    &:active {
+      background-color: var(--primary-1) !important;
+      transform: scale(1.05) !important;
 
-    .circle-foreground {
-      stroke-dashoffset: 0 !important;
-    }
+      .hold-to-reveal-button__circle-foreground {
+        stroke-dashoffset: 0 !important;
+      }
 
-    .lock-icon-container {
-      opacity: 0 !important;
+      .hold-to-reveal-button__lock-icon-container {
+        opacity: 0 !important;
+      }
     }
   }
-}
 
-.absolute-fill {
-  @extend %absolute-fill;
-}
+  &__absolute-fill {
+    @extend .hold-to-reveal-button__absolute-fill;
+  }
 
-.icon-container {
-  @extend %icon;
+  &__icon-container {
+    @extend .hold-to-reveal-button__icon;
 
-  position: relative;
-}
+    position: relative;
+  }
 
-.main-icon-show {
-  animation: 0.4s fadeIn 1.2s forwards;
-}
+  &__main-icon-show {
+    animation: 0.4s fadeIn 1.2s forwards;
+  }
 
-.invisible {
-  opacity: 0;
-}
+  &__invisible {
+    opacity: 0;
+  }
 
-.circle-svg {
-  @extend %icon;
+  &__circle-svg {
+    @extend .hold-to-reveal-button__icon;
 
-  transform: rotate(-90deg);
-}
+    transform: rotate(-90deg);
+  }
 
-.circle-background {
-  @extend %circle-shared;
+  &__circle-background {
+    @extend .hold-to-reveal-button__circle-shared;
 
-  stroke: var(--primary-3);
-}
+    stroke: var(--primary-3);
+  }
 
-.circle-foreground {
-  @extend %circle-shared;
+  &__circle-foreground {
+    @extend .hold-to-reveal-button__circle-shared;
 
-  stroke: var(--ui-white);
-  stroke-dasharray: $circle-circumference;
-  stroke-dashoffset: $circle-circumference;
-  transition: 1s stroke-dashoffset;
-}
+    stroke: var(--ui-white);
+    stroke-dasharray: $circle-circumference;
+    stroke-dashoffset: $circle-circumference;
+    transition: 1s stroke-dashoffset;
+  }
 
-.lock-icon-container {
-  @extend %absolute-fill;
+  &__lock-icon-container {
+    @extend .hold-to-reveal-button__absolute-fill;
 
-  transition: 0.3s opacity;
-  opacity: 1;
-}
+    transition: 0.3s opacity;
+    opacity: 1;
+  }
 
-.lock-icon {
-  width: 7.88px;
-  height: 9px;
-}
+  &__lock-icon {
+    width: 7.88px;
+    height: 9px;
+  }
 
-.unlock-icon-hide {
-  animation: 0.3s collapse 1s forwards;
-}
+  &__unlock-icon-hide {
+    animation: 0.3s collapse 1s forwards;
+  }
 
-.circle-static-outer-container {
-  animation: 0.25s collapse forwards;
-}
+  &__circle-static-outer-container {
+    animation: 0.25s collapse forwards;
+  }
 
-.circle-static-outer {
-  fill: var(--ui-white);;
-}
+  &__circle-static-outer {
+    fill: var(--ui-white);
+  }
 
-.circle-static-inner-container {
-  animation: 0.125s collapse forwards;
-}
+  &__circle-static-inner-container {
+    animation: 0.125s collapse forwards;
+  }
 
-.circle-static-inner {
-  fill: var(--primary-1);
-}
+  &__circle-static-inner {
+    fill: var(--primary-1);
+  }
 
-.unlock-icon-container {
-  @extend %absolute-fill;
+  &__unlock-icon-container {
+    @extend .hold-to-reveal-button__absolute-fill;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: scale(0);
-  animation: 0.175s expand 0.2s forwards;
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0);
+    animation: 0.175s expand 0.2s forwards;
+  }
 
-.unlock-icon {
-  width: 14px;
-  height: 11px;
+  &__unlock-icon {
+    width: 14px;
+    height: 11px;
+  }
 }

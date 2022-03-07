@@ -71,25 +71,27 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const renderPreCompleteContent = useCallback(() => {
     return (
       <Box
-        className={`absolute-fill ${isUnlocking ? 'invisible' : null} ${
-          hasTriggeredUnlock ? 'main-icon-show' : null
+        className={`hold-to-reveal-button__absolute-fill ${
+          isUnlocking ? 'hold-to-reveal-button__invisible' : null
+        } ${
+          hasTriggeredUnlock ? 'hold-to-reveal-button__main-icon-show' : null
         }`}
       >
-        <Box className="absolute-fill">
-          <svg className="circle-svg">
+        <Box className="hold-to-reveal-button__absolute-fill">
+          <svg className="hold-to-reveal-button__circle-svg">
             <circle
-              className="circle-background"
+              className="hold-to-reveal-button__circle-background"
               cx={radius}
               cy={radius}
               r={radiusWithStroke}
             />
           </svg>
         </Box>
-        <Box className="absolute-fill">
-          <svg className="circle-svg">
+        <Box className="hold-to-reveal-button__absolute-fill">
+          <svg className="hold-to-reveal-button__circle-svg">
             <circle
               onTransitionEnd={onProgressComplete}
-              className="circle-foreground"
+              className="hold-to-reveal-button__circle-foreground"
               cx={radius}
               cy={radius}
               r={radiusWithStroke}
@@ -100,12 +102,12 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
           display={DISPLAY.FLEX}
           alignItems={ALIGN_ITEMS.CENTER}
           justifyContent={JUSTIFY_CONTENT.CENTER}
-          className="lock-icon-container"
+          className="hold-to-reveal-button__lock-icon-container"
         >
           <img
             src="images/lock-icon.svg"
             alt={t('padlock')}
-            className="lock-icon"
+            className="hold-to-reveal-button__lock-icon"
           />
         </Box>
       </Box>
@@ -115,35 +117,45 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const renderPostCompleteContent = useCallback(() => {
     return isUnlocking ? (
       <div
-        className={`absolute-fill ${
-          hasTriggeredUnlock ? 'unlock-icon-hide' : null
+        className={`hold-to-reveal-button__absolute-fill ${
+          hasTriggeredUnlock ? 'hold-to-reveal-button__unlock-icon-hide' : null
         }`}
         onAnimationEnd={resetAnimationStates}
       >
         <div
           onAnimationEnd={preventPropogation}
-          className="absolute-fill circle-static-outer-container"
+          className="hold-to-reveal-button__absolute-fill hold-to-reveal-button__circle-static-outer-container"
         >
-          <svg className="circle-svg">
-            <circle className="circle-static-outer" cx={14} cy={14} r={14} />
+          <svg className="hold-to-reveal-button__circle-svg">
+            <circle
+              className="hold-to-reveal-button__circle-static-outer"
+              cx={14}
+              cy={14}
+              r={14}
+            />
           </svg>
         </div>
         <div
           onAnimationEnd={preventPropogation}
-          className="absolute-fill circle-static-inner-container"
+          className="hold-to-reveal-button__absolute-fill hold-to-reveal-button__circle-static-inner-container"
         >
-          <svg className="circle-svg">
-            <circle className="circle-static-inner" cx={14} cy={14} r={12} />
+          <svg className="hold-to-reveal-button__circle-svg">
+            <circle
+              className="hold-to-reveal-button__circle-static-inner"
+              cx={14}
+              cy={14}
+              r={12}
+            />
           </svg>
         </div>
         <div
-          className="unlock-icon-container"
+          className="hold-to-reveal-button__unlock-icon-container"
           onAnimationEnd={triggerOnLongPressed}
         >
           <img
             src="images/unlock-icon.svg"
             alt={t('padlock')}
-            className="unlock-icon"
+            className="hold-to-reveal-button__unlock-icon"
           />
         </div>
       </div>
@@ -156,12 +168,12 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
       onMouseUp={onMouseUp}
       type="primary"
       icon={
-        <Box marginRight={2} className="icon-container">
+        <Box marginRight={2} className="hold-to-reveal-button__icon-container">
           {renderPreCompleteContent()}
           {renderPostCompleteContent()}
         </Box>
       }
-      className="button-hold"
+      className="hold-to-reveal-button__button-hold"
     >
       {buttonText}
     </Button>
