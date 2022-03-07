@@ -2325,6 +2325,18 @@ export function setEIP1559V2Enabled(val) {
   };
 }
 
+export function setTheme(val) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setTheme`);
+    try {
+      await promisifiedBackground.setTheme(val);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setIpfsGateway(val) {
   return (dispatch) => {
     dispatch(showLoadingIndication());
