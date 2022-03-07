@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  elementExists,
+} = require('../helpers');
 
 describe('Token Details', function () {
   const ganacheOptions = {
@@ -37,13 +41,13 @@ describe('Token Details', function () {
         await driver.clickElement('[title="Asset options"]');
         await driver.clickElement({ text: 'Token details', tag: 'span' });
 
-        // Using findElements for avoiding error handling, if element is not present
-        const tokenAddressFound = await driver.findElements({
+        const tokenAddressFound = {
           text: tokenAddress,
-        });
+        };
 
-        // If element was not found, array length would be 0
-        assert.equal(tokenAddressFound.length, 1);
+        const exists = await elementExists(driver, tokenAddressFound);
+
+        assert.equal(exists, true);
       },
     );
   });
