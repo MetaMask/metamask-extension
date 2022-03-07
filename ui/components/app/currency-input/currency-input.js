@@ -44,7 +44,7 @@ export default function CurrencyInput({
 
   const [isSwapped, setSwapped] = useState(false);
   const [newHexValue, setNewHexValue] = useState(hexValue);
-  const [newfeatureSecondary, setNewFeatureSecondary] = useState(
+  const [newFeatureSecondary, setNewFeatureSecondary] = useState(
     featureSecondary,
   );
 
@@ -53,7 +53,7 @@ export default function CurrencyInput({
       return false;
     }
 
-    return Boolean(featureSecondary);
+    return Boolean(newFeatureSecondary);
   };
 
   const getDecimalValue = () => {
@@ -74,12 +74,11 @@ export default function CurrencyInput({
   };
 
   const initialDecimalValue = hexValue ? getDecimalValue() : 0;
-  const [decimalValue, setDecimalValue] = useState(initialDecimalValue);
 
   const swap = async () => {
     await onPreferenceToggle();
     setSwapped(!isSwapped);
-    setNewFeatureSecondary(!newfeatureSecondary);
+    setNewFeatureSecondary(!newFeatureSecondary);
   };
 
   const handleChange = async (newDecimalValue) => {
@@ -98,24 +97,20 @@ export default function CurrencyInput({
         });
 
     setNewHexValue(hexValueNew);
-    setDecimalValue(newDecimalValue);
     await onChange(hexValueNew);
     setSwapped(!isSwapped);
   };
 
   useEffect(() => {
     setNewHexValue(hexValue);
-    const newDecimalValue = getDecimalValue();
-    setDecimalValue(newDecimalValue);
-    handleChange(decimalValue);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hexValue]);
 
   useEffect(() => {
     if (featureSecondary) {
-      setNewFeatureSecondary(false);
+      handleChange(initialDecimalValue);
     }
-  }, [featureSecondary]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [featureSecondary, initialDecimalValue]);
 
   const renderConversionComponent = () => {
     let currency, numberOfDecimals;
@@ -162,7 +157,7 @@ export default function CurrencyInput({
       }}
       suffix={shouldUseFiat() ? secondarySuffix : primarySuffix}
       onChange={handleChange}
-      value={newfeatureSecondary ? initialDecimalValue : decimalValue}
+      value={initialDecimalValue}
       actionComponent={
         <button className="currency-input__swap-component" onClick={swap}>
           <i className="fa fa-retweet fa-lg" />

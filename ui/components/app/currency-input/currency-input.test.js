@@ -198,14 +198,14 @@ describe('CurrencyInput Component', () => {
       );
 
       expect(wrapper).toHaveLength(1);
-      expect(handleChangeSpy.callCount).toStrictEqual(1);
+      expect(handleChangeSpy.callCount).toStrictEqual(0);
       expect(handleBlurSpy.callCount).toStrictEqual(0);
 
       const input = wrapper.find('input');
       expect(input.props().value).toStrictEqual(0.00432788);
 
       input.simulate('change', { target: { value: 1 } });
-      expect(handleChangeSpy.callCount).toStrictEqual(2);
+      expect(handleChangeSpy.callCount).toStrictEqual(1);
       expect(handleChangeSpy.calledWith('de0b6b3a7640000')).toStrictEqual(true);
       expect(wrapper.find('.currency-display-component').text()).toStrictEqual(
         '$231.06USD',
