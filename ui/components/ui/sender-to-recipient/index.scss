@@ -51,7 +51,7 @@
         align-items: center;
         justify-content: center;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           transform: rotate(180deg);
         }
       }
@@ -76,7 +76,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           /*rtl:ignore*/
           direction: ltr;
 
@@ -103,7 +103,7 @@
         justify-content: center;
         flex: 1;
         border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         padding: 6px;
         background: var(--color-background-default);
         cursor: pointer;
@@ -125,7 +125,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           /*rtl:ignore*/
           direction: ltr;
 
@@ -146,7 +146,7 @@
         justify-content: center;
         align-items: center;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           transform: rotate(180deg);
         }
       }
@@ -182,7 +182,7 @@
         white-space: nowrap;
         margin-inline-start: 8px;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           /*rtl:ignore*/
           direction: ltr;
 
@@ -203,7 +203,7 @@
         justify-content: center;
         align-items: center;
 
-        [dir="rtl"] & {
+        [dir='rtl'] & {
           transform: rotate(180deg);
         }
       }
