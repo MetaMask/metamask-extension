@@ -40,6 +40,7 @@ export default function SnapRemoveWarning({ onCancel, onSubmit, snapName }) {
       title={t('pleaseConfirm')}
       footer={<SnapRemoveWarningFooter />}
       onClose={onCancel}
+      headerProps={{ padding: [6, 4, 0, 6] }}
     >
       <Box paddingRight={4} paddingBottom={4} paddingLeft={6}>
         <Typography variant={TYPOGRAPHY.H4}>
