@@ -44,7 +44,6 @@ import InfoTooltip from '../../components/ui/info-tooltip/info-tooltip';
 import LoadingHeartBeat from '../../components/ui/loading-heartbeat';
 import GasDetailsItem from '../../components/app/gas-details-item';
 import GasTiming from '../../components/app/gas-timing/gas-timing.component';
-import LedgerInstructionField from '../../components/app/ledger-instruction-field';
 import MultiLayerFeeMessage from '../../components/app/multilayer-fee-message';
 
 import {
