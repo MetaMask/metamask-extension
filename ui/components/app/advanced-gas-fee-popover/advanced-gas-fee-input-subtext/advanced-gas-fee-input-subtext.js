@@ -1,42 +1,70 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { isNullish } from '../../../../helpers/utils/util';
+import { formatGasFee } from '../../../../helpers/utils/gas';
 import Box from '../../../ui/box';
 import I18nValue from '../../../ui/i18n-value';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 
-const AdvancedGasFeeInputSubtext = ({ latest, historical, feeTrend }) => {
+const FEE_TRENDS = ['up', 'down', 'level'];
+
+const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
   return (
-    <Box className="advanced-gas-fee-input-subtext">
-      <Box display="flex" alignItems="center">
-        <span className="advanced-gas-fee-input-subtext__label">
-          <I18nValue messageKey="currentTitle" />
-        </span>
-        <span className="advanced-gas-fee-input-subtext__value">
-          <LoadingHeartBeat />
-          {latest}
-        </span>
-        <span className={`advanced-gas-fee-input-subtext__${feeTrend}`}>
-          <img src={`./images/${feeTrend}-arrow.svg`} alt="feeTrend-arrow" />
-        </span>
-      </Box>
-      <Box>
-        <span className="advanced-gas-fee-input-subtext__label">
-          <I18nValue messageKey="twelveHrTitle" />
-        </span>
-        <span className="advanced-gas-fee-input-subtext__value">
-          <LoadingHeartBeat />
-          {historical}
-        </span>
-      </Box>
+    <Box
+      display="flex"
+      alignItems="center"
+      gap={4}
+      className="advanced-gas-fee-input-subtext"
+    >
+      {isNullish(latest) ? null : (
+        <Box display="flex" alignItems="center" data-testid="latest">
+          <span className="advanced-gas-fee-input-subtext__label">
+            <I18nValue messageKey="currentTitle" />
+          </span>
+          <span className="advanced-gas-fee-input-subtext__value">
+            <LoadingHeartBeat />
+            {formatGasFee(latest)}
+          </span>
+          {FEE_TRENDS.includes(trend) ? (
+            <span className={`advanced-gas-fee-input-subtext__${trend}`}>
+              <img
+                src={`./images/${trend}-arrow.svg`}
+                alt={`${trend} arrow`}
+                data-testid="fee-arrow"
+              />
+            </span>
+          ) : null}
+        </Box>
+      )}
+      {isNullish(historical) ? null : (
+        <Box>
+          <span
+            className="advanced-gas-fee-input-subtext__label"
+            data-testid="historical"
+          >
+            <I18nValue messageKey="twelveHrTitle" />
+          </span>
+          <span className="advanced-gas-fee-input-subtext__value">
+            <LoadingHeartBeat />
+            {formatGasFee(historical)}
+          </span>
+        </Box>
+      )}
     </Box>
   );
 };
 
 AdvancedGasFeeInputSubtext.propTypes = {
-  latest: PropTypes.string,
-  historical: PropTypes.string,
-  feeTrend: PropTypes.string.isRequired,
+  latest: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+  ]),
+  historical: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+  ]),
+  trend: PropTypes.oneOf(['up', 'down', 'level']),
 };
 
 export default AdvancedGasFeeInputSubtext;

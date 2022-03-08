@@ -588,3 +588,14 @@ export function coinTypeToProtocolName(coinType) {
   }
   return slip44[coinType]?.name || undefined;
 }
+
+/**
+ * Tests "nullishness". Used to guard a section of a component from being
+ * rendered based on a value.
+ *
+ * @param {any} value - A value (literally anything).
+ * @returns `true` if the value is null or undefined, `false` otherwise.
+ */
+export function isNullish(value) {
+  return value === null || value === undefined;
+}
