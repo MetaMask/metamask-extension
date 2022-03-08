@@ -29,6 +29,21 @@ async function setupMocking(server, testSpecificMock) {
     });
 
   await server
+    .forOptions(
+      'https://gas-api.metaswap.codefi.network/networks/1/suggestedGasFees',
+    )
+    .thenCallback(() => {
+      return {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
+          'Access-Control-Allow-Headers': 'content-type,x-client-id',
+        },
+        statusCode: 204,
+      };
+    });
+
+  await server
     .forGet(
       'https://gas-api.metaswap.codefi.network/networks/1/suggestedGasFees',
     )
@@ -39,7 +54,7 @@ async function setupMocking(server, testSpecificMock) {
         json: {
           low: {
             suggestedMaxPriorityFeePerGas: '1',
-            suggestedMaxFeePerGas: '20.444436136',
+            suggestedMaxFeePerGas: '20.44436136',
             minWaitTimeEstimate: 15000,
             maxWaitTimeEstimate: 30000,
           },
