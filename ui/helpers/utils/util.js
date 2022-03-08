@@ -1,4 +1,4 @@
-import punycode from 'punycode';
+import punycode from 'punycode/punycode';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
@@ -94,8 +94,10 @@ export function addressSummary(
     : '...';
 }
 
+//prettier-ignore
 const regexNonASCII = /[^\0-\x7E]/; // non-ASCII chars
 
+//prettier-ignore
 const toAscii = function(input) {
 	return mapDomain(input, function(string) {
 		return regexNonASCII.test(string)
@@ -104,6 +106,7 @@ const toAscii = function(input) {
 	});
 };
 
+//prettier-ignore
 export function isValidDomainName(address) {
   try {
     var match = toAscii(address.toString()).toLowerCase()
