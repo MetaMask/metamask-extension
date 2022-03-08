@@ -27,6 +27,7 @@ import {
   POLYGON_CHAIN_ID,
   LOCALHOST_CHAIN_ID,
   RINKEBY_CHAIN_ID,
+  ETH_SYMBOL,
   AVALANCHE_CHAIN_ID,
 } from '../../../shared/constants/network';
 import { SECOND } from '../../../shared/constants/time';
@@ -80,9 +81,11 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
+const TEST_CHAIN_IDS = [RINKEBY_CHAIN_ID, LOCALHOST_CHAIN_ID];
+
 export const getBaseApi = function (type, chainId = MAINNET_CHAIN_ID) {
   // eslint-disable-next-line no-param-reassign
-  chainId = chainId === RINKEBY_CHAIN_ID ? MAINNET_CHAIN_ID : chainId;
+  chainId = TEST_CHAIN_IDS.includes(chainId) ? MAINNET_CHAIN_ID : chainId;
   const baseUrl = getBaseUrlForNewSwapsApi(type, chainId);
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   if (!baseUrl) {
@@ -492,6 +495,34 @@ export async function fetchSwapsGasPrices(chainId) {
   };
 }
 
+export const getFeeForSmartTransaction = ({
+  chainId,
+  currentCurrency,
+  conversionRate,
+  nativeCurrencySymbol,
+  feeInWeiDec,
+}) => {
+  const feeInWeiHex = decimalToHex(feeInWeiDec);
+  const ethFee = getValueFromWeiHex({
+    value: feeInWeiHex,
+    toDenomination: ETH_SYMBOL,
+    numberOfDecimals: 5,
+  });
+  const rawNetworkFees = getValueFromWeiHex({
+    value: feeInWeiHex,
+    toCurrency: currentCurrency,
+    conversionRate,
+    numberOfDecimals: 2,
+  });
+  const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
+  const chainCurrencySymbolToUse =
+    nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
+  return {
+    feeInFiat: formattedNetworkFee,
+    feeInEth: `${ethFee} ${chainCurrencySymbolToUse}`,
+  };
+};
+
 export function getRenderableNetworkFeesForQuote({
   tradeGas,
   approveGas,
@@ -553,6 +584,8 @@ export function quotesToRenderableData(
   approveGas,
   tokenConversionRates,
   chainId,
+  smartTransactionEstimatedGas,
+  nativeCurrencySymbol,
 ) {
   return Object.values(quotes).map((quote) => {
     const {
@@ -577,11 +610,16 @@ export function quotesToRenderableData(
       destinationTokenInfo.decimals,
     ).toPrecision(8);
 
-    const {
+    let feeInFiat = null;
+    let feeInEth = null;
+    let rawNetworkFees = null;
+    let rawEthFee = null;
+
+    ({
       feeInFiat,
+      feeInEth,
       rawNetworkFees,
       rawEthFee,
-      feeInEth,
     } = getRenderableNetworkFeesForQuote({
       tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
       approveGas,
@@ -592,7 +630,17 @@ export function quotesToRenderableData(
       sourceSymbol: sourceTokenInfo.symbol,
       sourceAmount,
       chainId,
-    });
+    }));
+
+    if (smartTransactionEstimatedGas) {
+      ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
+        chainId,
+        currentCurrency,
+        conversionRate,
+        nativeCurrencySymbol,
+        estimatedFeeInWeiDec: smartTransactionEstimatedGas.feeEstimate,
+      }));
+    }
 
     const slippageMultiplier = new BigNumber(100 - slippage).div(100);
     const minimumAmountReceived = new BigNumber(destinationValue)
@@ -844,4 +892,32 @@ export const countDecimals = (value) => {
     return 0;
   }
   return value.toString().split('.')[1]?.length || 0;
+};
+
+export const showRemainingTimeInMinAndSec = (remainingTimeInSec) => {
+  if (!Number.isInteger(remainingTimeInSec)) {
+    return '0:00';
+  }
+  const minutes = Math.floor(remainingTimeInSec / 60);
+  const seconds = remainingTimeInSec % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+};
+
+export const stxErrorTypes = ['unavailable', 'not_enough_funds'];
+
+const smartTransactionsErrorMap = {
+  unavailable: 'Smart Transactions are temporarily unavailable.',
+  not_enough_funds: 'Not enough funds for a smart transaction.',
+};
+
+export const smartTransactionsErrorMessages = (errorType) => {
+  return (
+    smartTransactionsErrorMap[errorType] ||
+    smartTransactionsErrorMap.unavailable
+  );
+};
+
+export const parseSmartTransactionsError = (errorMessage) => {
+  const errorJson = errorMessage.slice(12);
+  return JSON.parse(errorJson.trim());
 };

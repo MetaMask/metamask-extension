@@ -172,9 +172,10 @@ describe('Metamask Responsive UI', function () {
         );
         await restoreSeedLink.click();
 
-        await driver.clickElement('.import-account__checkbox-container');
-
-        await driver.fill('.import-account__secret-phrase', testSeedPhrase);
+        await driver.fill(
+          'input[placeholder="Enter your Secret Recovery Phrase"]',
+          testSeedPhrase,
+        );
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');

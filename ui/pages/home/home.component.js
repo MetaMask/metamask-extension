@@ -21,7 +21,13 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Typography from '../../components/ui/typography/typography';
-import { TYPOGRAPHY, FONT_WEIGHT } from '../../helpers/constants/design-system';
+import {
+  TYPOGRAPHY,
+  FONT_WEIGHT,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  COLORS,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../helpers/constants/design-system';
 
 import {
   ASSET_ROUTE,
@@ -105,6 +111,11 @@ export default class Home extends PureComponent {
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
     notificationsToShow: PropTypes.bool.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    errorsToShow: PropTypes.object.isRequired,
+    shouldShowErrors: PropTypes.bool.isRequired,
+    removeSnapError: PropTypes.func.isRequired,
+    ///: END:ONLY_INCLUDE_IN
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
@@ -242,6 +253,11 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
+      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      removeSnapError,
+      errorsToShow,
+      shouldShowErrors,
+      ///: END:ONLY_INCLUDE_IN
       infuraBlocked,
       newNetworkAdded,
       setNewNetworkAdded,
@@ -250,6 +266,43 @@ export default class Home extends PureComponent {
     } = this.props;
     return (
       <MultipleNotifications>
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          shouldShowErrors
+            ? Object.entries(errorsToShow).map(([errorId, error]) => {
+                return (
+                  <HomeNotification
+                    classNames={['home__error-message']}
+                    infoText={error.data.snapId}
+                    descriptionText={
+                      <>
+                        <Typography
+                          color={COLORS.UI1}
+                          variant={TYPOGRAPHY.H5}
+                          fontWeight={FONT_WEIGHT.NORMAL}
+                        >
+                          {t('somethingWentWrong')}
+                        </Typography>
+                        <Typography
+                          color={COLORS.UI1}
+                          variant={TYPOGRAPHY.H7}
+                          fontWeight={FONT_WEIGHT.NORMAL}
+                        >
+                          {t('snapError', [error.message, error.code])}
+                        </Typography>
+                      </>
+                    }
+                    onIgnore={async () => {
+                      await removeSnapError(errorId);
+                    }}
+                    ignoreText="Dismiss"
+                    key="home-error-message"
+                  />
+                );
+              })
+            : null
+          ///: END:ONLY_INCLUDE_IN
+        }
         {newCollectibleAddedMessage ? (
           <ActionableMessage
             type={newCollectibleAddedMessage === 'success' ? 'info' : 'warning'}

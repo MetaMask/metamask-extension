@@ -8,9 +8,6 @@
   "about": {
     "message": "درباره"
   },
-  "aboutSettingsDescription": {
-    "message": "نسخه، مرکز پشتیبانی و معلومات تماس."
-  },
   "acceleratingATransaction": {
     "message": "* تسریع یک معامله با استفاده از قیمت بالاتر گاز، فرصت تسریع پروسس آنرا توسط شبکه افزایش میدهد اما همیشه این تضمین نمیشود."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "گزینه های پیشرفته"
-  },
-  "advancedSettingsDescription": {
-    "message": "مشخصات توسعه دهنده دسترسی، دفترچه ثبت وضعیت دانلود، دوباره سازی حساب، شبکه های آزمایشی تنظیمات و RPC معمول."
   },
   "amount": {
     "message": "مبلغ"
@@ -144,9 +138,6 @@
   "blockExplorerView": {
     "message": "مشاهده حساب در 1$1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "استفاده شناسا بلوک ها"
   },
   "browserNotSupported": {
     "message": "مرورگر شما پشتیبانی نمیشود"
@@ -420,9 +411,6 @@
   "general": {
     "message": "عمومی"
   },
-  "generalSettingsDescription": {
-    "message": "تبادل واحد پول، واحد پول اصلی، زبان، شناسا های بلوکی"
-  },
   "getEther": {
     "message": "اتر را بگیرید"
   },
@@ -596,9 +584,6 @@
   },
   "networkName": {
     "message": "نام شبکه"
-  },
-  "networkSettingsDescription": {
-    "message": "اضافه سازی و ویرایش شبکه های دلخواه PRC"
   },
   "networks": {
     "message": "شبکه ها"
@@ -834,9 +819,6 @@
   "securityAndPrivacy": {
     "message": "امنیت و حریم خصوصی"
   },
-  "securitySettingsDescription": {
-    "message": "تنظیمات حریم خصوصی و عبارت بازیاب کیف"
-  },
   "seedPhrasePlaceholder": {
     "message": "هر کلمه را با یک فاصله واحد جدا سازید"
   },
@@ -869,9 +851,6 @@
   },
   "sendTokens": {
     "message": "رمزیاب ها را ارسال کنید"
-  },
-  "separateEachWord": {
-    "message": "هر کلمه را با یک فاصله واحد جدا سازید"
   },
   "settings": {
     "message": "تنظیمات"

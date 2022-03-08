@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.11.0]
+### Added
+- Swaps: Add support for Smart Transactions on Mainnet and Rinkeby ([#12676](https://github.com/MetaMask/metamask-extension/pull/12676))
+- Add "Token details" page ([#13216](https://github.com/MetaMask/metamask-extension/pull/13216))
+- Add icons to sections in settings ([#12920](https://github.com/MetaMask/metamask-extension/pull/12920))
+- Add EIP-712 support for Trezor ([#13693](https://github.com/MetaMask/metamask-extension/pull/13693))
+
+### Changed
+- Swaps: Change language "Quote X of Y" to "Fetching quote X of Y" ([#13663](https://github.com/MetaMask/metamask-extension/pull/13663))
+- Update preferred account identicon selection UI ([#13408](https://github.com/MetaMask/metamask-extension/pull/13408))
+- Include transactions from all networks in state logs ([#13599](https://github.com/MetaMask/metamask-extension/pull/13599))
+- Update accounts connection language ([#13605](https://github.com/MetaMask/metamask-extension/pull/13605))
+- Style updates for setting page in full screen mode ([#13569](https://github.com/MetaMask/metamask-extension/pull/13569))
+- Add currency symbol validation in the add network form ([#12431](https://github.com/MetaMask/metamask-extension/pull/12431))
+
+### Fixed
+- Ensure pre-selected account on connect screen is visible in list ([#13621](https://github.com/MetaMask/metamask-extension/pull/13621))
+- Do not allow transaction creation with gas limit below minimum ([#13574](https://github.com/MetaMask/metamask-extension/pull/13574))
+- Fix network editing error when no block explorer is provided ([#13527](https://github.com/MetaMask/metamask-extension/pull/13527))
+- Swaps: Fix BigNumber error when submitting quote ([#13555](https://github.com/MetaMask/metamask-extension/pull/13555))
+
 ## [10.10.2]
 ### Added
 - Add EIP-712 support for Trezor ([#13693](https://github.com/MetaMask/metamask-extension/pull/13693))
@@ -2743,7 +2764,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.10.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.11.0...HEAD
+[10.11.0]: https://github.com/MetaMask/metamask-extension/compare/v10.10.2...v10.11.0
 [10.10.2]: https://github.com/MetaMask/metamask-extension/compare/v10.10.1...v10.10.2
 [10.10.1]: https://github.com/MetaMask/metamask-extension/compare/v10.10.0...v10.10.1
 [10.10.0]: https://github.com/MetaMask/metamask-extension/compare/v10.9.3...v10.10.0

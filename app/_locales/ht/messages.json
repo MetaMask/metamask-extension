@@ -78,9 +78,6 @@
   "balance": {
     "message": "Balans"
   },
-  "blockiesIdenticon": {
-    "message": "Itilize Blockies Identicon"
-  },
   "browserNotSupported": {
     "message": "Navigatè ou a pa sipòte..."
   },
@@ -544,9 +541,6 @@
   },
   "sendTokens": {
     "message": "Voye Tokens"
-  },
-  "separateEachWord": {
-    "message": "Separe chak mo ak yon sèl espas"
   },
   "settings": {
     "message": "Paramèt"

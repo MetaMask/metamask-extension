@@ -41,14 +41,14 @@ export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
 
 const infuraProjectId = process.env.INFURA_PROJECT_ID;
-const getRpcUrl = (network) =>
-  `https://${network}.infura.io/v3/${infuraProjectId}`;
+export const getRpcUrl = ({ network, excludeProjectId = false }) =>
+  `https://${network}.infura.io/v3/${excludeProjectId ? '' : infuraProjectId}`;
 
-export const ROPSTEN_RPC_URL = getRpcUrl('ropsten');
-export const RINKEBY_RPC_URL = getRpcUrl('rinkeby');
-export const KOVAN_RPC_URL = getRpcUrl('kovan');
-export const MAINNET_RPC_URL = getRpcUrl('mainnet');
-export const GOERLI_RPC_URL = getRpcUrl('goerli');
+export const ROPSTEN_RPC_URL = getRpcUrl({ network: ROPSTEN });
+export const RINKEBY_RPC_URL = getRpcUrl({ network: RINKEBY });
+export const KOVAN_RPC_URL = getRpcUrl({ network: KOVAN });
+export const MAINNET_RPC_URL = getRpcUrl({ network: MAINNET });
+export const GOERLI_RPC_URL = getRpcUrl({ network: GOERLI });
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 
 export const ETH_SYMBOL = 'ETH';

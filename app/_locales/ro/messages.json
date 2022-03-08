@@ -8,9 +8,6 @@
   "about": {
     "message": "Despre"
   },
-  "aboutSettingsDescription": {
-    "message": "Versiune, centru de asistență și date de contact"
-  },
   "acceleratingATransaction": {
     "message": "* Accelerarea unei tranzacții folosind un preț în gas mai mare îi crește șansele de a fi procesată mai rapid de rețea, însă acest lucru nu este garantat întotdeauna."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Opțiuni avansate"
-  },
-  "advancedSettingsDescription": {
-    "message": "Accesați funcții pentru dezvoltatori, descărcați Jurnale de stare, resetați contul, configurați rețele de test și RPC personalizat"
   },
   "amount": {
     "message": "Sumă"
@@ -144,9 +138,6 @@
   "blockExplorerView": {
     "message": "Vizualizare cont la $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Folosește Blockies Identicon"
   },
   "browserNotSupported": {
     "message": "Browserul dvs. nu este compatibil..."
@@ -413,9 +404,6 @@
   "gasUsed": {
     "message": "Suma gaz folosită"
   },
-  "generalSettingsDescription": {
-    "message": "Schimb valutar, moneda principală, limba, blockies identicon"
-  },
   "getEther": {
     "message": "Obțineți Ether"
   },
@@ -583,9 +571,6 @@
   },
   "networkName": {
     "message": "Numele rețelei"
-  },
-  "networkSettingsDescription": {
-    "message": "Adăugați și editați rețelele RPC particularizate"
   },
   "networks": {
     "message": "Rețele"
@@ -821,9 +806,6 @@
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
-  "securitySettingsDescription": {
-    "message": "Setările de confidențialitate și fraza seed a portofelului"
-  },
   "seedPhrasePlaceholder": {
     "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
@@ -856,9 +838,6 @@
   },
   "sendTokens": {
     "message": "Trimiteți indicative"
-  },
-  "separateEachWord": {
-    "message": "Despărțiți fiecare cuvânt cu un spațiu"
   },
   "settings": {
     "message": "Setări"

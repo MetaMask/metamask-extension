@@ -11,6 +11,10 @@ import {
   ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
   NETWORKS_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  SNAPS_VIEW_ROUTE,
+  SNAPS_LIST_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   CONTACT_LIST_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
@@ -26,6 +30,10 @@ import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
 import ExperimentalTab from './experimental-tab';
+///: BEGIN:ONLY_INCLUDE_IN(flask)
+import SnapListTab from './flask/snaps-list-tab';
+import ViewSnap from './flask/view-snap';
+///: END:ONLY_INCLUDE_IN
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -35,6 +43,7 @@ class SettingsPage extends PureComponent {
     history: PropTypes.object,
     isAddressEntryPage: PropTypes.bool,
     isPopup: PropTypes.bool,
+    isSnapViewPage: PropTypes.bool,
     pathnameI18nKey: PropTypes.string,
     initialBreadCrumbRoute: PropTypes.string,
     breadCrumbTextKey: PropTypes.string,
@@ -74,8 +83,8 @@ class SettingsPage extends PureComponent {
       currentPath,
       mostRecentOverviewPage,
       addNewNetwork,
+      isSnapViewPage,
     } = this.props;
-
     return (
       <div
         className={classnames('main-container settings-page', {
@@ -106,7 +115,7 @@ class SettingsPage extends PureComponent {
             {this.renderTabs()}
           </div>
           <div className="settings-page__content__modules">
-            {this.renderSubHeader()}
+            {isSnapViewPage ? null : this.renderSubHeader()}
             {this.renderContent()}
           </div>
         </div>
@@ -116,11 +125,16 @@ class SettingsPage extends PureComponent {
 
   renderTitle() {
     const { t } = this.context;
-    const { isPopup, pathnameI18nKey, addressName } = this.props;
-
+    const {
+      isPopup,
+      pathnameI18nKey,
+      addressName,
+      isSnapViewPage,
+    } = this.props;
     let titleText;
-
-    if (isPopup && addressName) {
+    if (isSnapViewPage) {
+      titleText = t('snaps');
+    } else if (isPopup && addressName) {
       titleText = t('details');
     } else if (pathnameI18nKey && isPopup) {
       titleText = t(pathnameI18nKey);
@@ -152,7 +166,7 @@ class SettingsPage extends PureComponent {
     } else if (initialBreadCrumbKey) {
       subheaderText = t(initialBreadCrumbKey);
     } else {
-      subheaderText = t(pathnameI18nKey || 'contacts');
+      subheaderText = t(pathnameI18nKey || 'general');
     }
 
     return (
@@ -193,43 +207,55 @@ class SettingsPage extends PureComponent {
       <TabBar
         tabs={[
           {
+            icon: <img src="images/general-icon.svg" alt="" />,
             content: t('general'),
-            description: t('generalSettingsDescription'),
             key: GENERAL_ROUTE,
           },
           {
+            icon: <img src="images/advanced-icon.svg" alt="" />,
             content: t('advanced'),
-            description: t('advancedSettingsDescription'),
             key: ADVANCED_ROUTE,
           },
           {
+            icon: <img src="images/contacts-icon.svg" alt="" />,
             content: t('contacts'),
-            description: t('contactsSettingsDescription'),
             key: CONTACT_LIST_ROUTE,
           },
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
           {
+            icon: (
+              <img
+                src="images/experimental-icon.svg"
+                alt={t('snapsSettingsDescription')}
+              />
+            ),
+            content: t('snaps'),
+            key: SNAPS_LIST_ROUTE,
+          },
+          ///: END:ONLY_INCLUDE_IN
+          {
+            icon: <img src="images/security-icon.svg" alt="" />,
             content: t('securityAndPrivacy'),
-            description: t('securitySettingsDescription'),
             key: SECURITY_ROUTE,
           },
           {
+            icon: <img src="images/alerts-icon.svg" alt="" />,
             content: t('alerts'),
-            description: t('alertsSettingsDescription'),
             key: ALERTS_ROUTE,
           },
           {
+            icon: <img src="images/network-icon.svg" alt="" />,
             content: t('networks'),
-            description: t('networkSettingsDescription'),
             key: NETWORKS_ROUTE,
           },
           {
+            icon: <img src="images/experimental-icon.svg" alt="" />,
             content: t('experimental'),
-            description: t('experimentalSettingsDescription'),
             key: EXPERIMENTAL_ROUTE,
           },
           {
+            icon: <img src="images/info-icon.svg" alt="" />,
             content: t('about'),
-            description: t('aboutSettingsDescription'),
             key: ABOUT_US_ROUTE,
           },
         ]}
@@ -280,6 +306,16 @@ class SettingsPage extends PureComponent {
           path={`${CONTACT_VIEW_ROUTE}/:id`}
           component={ContactListTab}
         />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          <Route exact path={SNAPS_LIST_ROUTE} component={SnapListTab} />
+          ///: END:ONLY_INCLUDE_IN
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          <Route exact path={`${SNAPS_VIEW_ROUTE}/:id`} component={ViewSnap} />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Route
           render={(routeProps) => (
             <SettingsTab

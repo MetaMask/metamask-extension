@@ -8,9 +8,6 @@
   "about": {
     "message": "Mengenai"
   },
-  "aboutSettingsDescription": {
-    "message": "Versi, pusat sokongan, dan maklumat perhubungan"
-  },
   "acceleratingATransaction": {
     "message": "* Mempercepatkan transaksi menggunakan harga gas lebih tinggi akan meningkatkan peluang diproses oleh rangkaian lebih cepat, tetapi ini pun tidak sentiasa dijamin."
   },
@@ -61,9 +58,6 @@
   },
   "advancedOptions": {
     "message": "Pilihan Lanjutan"
-  },
-  "advancedSettingsDescription": {
-    "message": "Akses ciri-ciri pembangun, muat turun Log Keadaan, Set Semula Akaun, sediakan jaringan ujian dan RPC tersuai"
   },
   "amount": {
     "message": "Jumlah"
@@ -144,9 +138,6 @@
   "blockExplorerView": {
     "message": "Lihat akaun pada $1",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Gunakan Identicon Blockies"
   },
   "browserNotSupported": {
     "message": "Pelayar anda tidak disokong..."
@@ -413,9 +404,6 @@
   "general": {
     "message": "Am"
   },
-  "generalSettingsDescription": {
-    "message": "Penukaran mata wang, mata wang utama, bahasa, blockies identicon"
-  },
   "getEther": {
     "message": "Dapatkan Ether"
   },
@@ -579,9 +567,6 @@
   },
   "networkName": {
     "message": "Nama Rangkaian"
-  },
-  "networkSettingsDescription": {
-    "message": "Tambah dan sunting rangkaian RPC tersuai"
   },
   "networks": {
     "message": "Rangkaian"
@@ -814,9 +799,6 @@
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
-  "securitySettingsDescription": {
-    "message": "Tetapan privasi dan ungkapan benih dompet"
-  },
   "seedPhrasePlaceholder": {
     "message": "Pisahkan setiap perkataan dengan satu ruang"
   },
@@ -849,9 +831,6 @@
   },
   "sendTokens": {
     "message": "Hantar Token"
-  },
-  "separateEachWord": {
-    "message": "Pisahkan setiap perkataan dengan ruang tunggal"
   },
   "settings": {
     "message": "Tetapan"

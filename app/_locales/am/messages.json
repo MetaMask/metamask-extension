@@ -2,9 +2,6 @@
   "about": {
     "message": "ስለ"
   },
-  "aboutSettingsDescription": {
-    "message": "ስሪት፣ የድጋፍ መስጫ ማዕከልና የግንኙነት መረጃ "
-  },
   "acceleratingATransaction": {
     "message": "* ከፍተኛ የነዳጅ ዋጋን በመጠቀም ግብይትን ማፋጠን በአውታረ መረቡ በፍጥነት እንዲከወን የማድረግ ዕድልን ይጨምራል፤ ነገር ግን ሁልጊዜም የተረጋገጠ አይደለም።"
   },
@@ -55,9 +52,6 @@
   },
   "advancedOptions": {
     "message": "የላቁ አማራጮች"
-  },
-  "advancedSettingsDescription": {
-    "message": "አዘጋጅ ባህርያትን መድረስ፣ የስቴት መዛግብትን ማውረድ፣ መለያን ዳግም መሙላት፣ testnets እና ብጁ RPC አዋቅር።"
   },
   "amount": {
     "message": "ሰርዝ "
@@ -138,9 +132,6 @@
   "blockExplorerView": {
     "message": "መለያን በ$1እይ",
     "description": "$1 replaced by URL for custom block explorer"
-  },
-  "blockiesIdenticon": {
-    "message": "Blockies Identicon ተጠቀም"
   },
   "browserNotSupported": {
     "message": "ማሰሺያዎት አልተደገፈም..."
@@ -411,9 +402,6 @@
   "general": {
     "message": "አጠቃላይ"
   },
-  "generalSettingsDescription": {
-    "message": "የገንዘብ ልወጣ፣ ተቀዳሚ የገንዘብ ዓይነት፣ ቋንቋ፣ blockies identicon"
-  },
   "getEther": {
     "message": "Ether ያግኙ"
   },
@@ -581,9 +569,6 @@
   },
   "networkName": {
     "message": "የአውታረ መረብ ስም"
-  },
-  "networkSettingsDescription": {
-    "message": "ብጁ የ RPC አውታረ መረቦችን አክልና አርትዕ"
   },
   "networks": {
     "message": "አውታረ መረቦች"
@@ -819,9 +804,6 @@
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
   },
-  "securitySettingsDescription": {
-    "message": "የግላዊነት ቅንብሮች እና የቋት ዘር ሐረግ"
-  },
   "seedPhrasePlaceholder": {
     "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
   },
@@ -854,9 +836,6 @@
   },
   "sendTokens": {
     "message": "ተለዋጭ ስሞችን ላክ"
-  },
-  "separateEachWord": {
-    "message": "እያንዳንዱን ቃል በነጠላ ክፍት ቦታ ይለያዩ"
   },
   "settings": {
     "message": "ቅንብሮች"
