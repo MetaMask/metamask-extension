@@ -94,22 +94,23 @@ export function addressSummary(
     : '...';
 }
 
-//prettier-ignore
-const regexNonASCII = /[^\0-\x7E]/; // non-ASCII chars
+// prettier-ignore
+const regexNonASCII = /[^\0-\x7E]/u; // non-ASCII chars
 
-//prettier-ignore
+// prettier-ignore
 const toAscii = function(input) {
-	return mapDomain(input, function(string) {
-		return regexNonASCII.test(string)
-			? 'xn--' + punycode.encode(string)
-			: string;
-	});
+  return punycode.mapDomain(input, function(string) {
+    return regexNonASCII.test(string)
+      ? `xn-- ${punycode.encode(string)}`
+      : string;
+   });
 };
 
-//prettier-ignore
+// prettier-ignore
 export function isValidDomainName(address) {
+  let match;
   try {
-    var match = toAscii(address.toString()).toLowerCase()
+    match = toAscii(address.toString()).toLowerCase()
     // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
     // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
     // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
@@ -118,7 +119,7 @@ export function isValidDomainName(address) {
     );
   } catch (e) {
     console.log(e);
-    const match = punycode.toASCII(address.toString()).toLowerCase()
+    match = punycode.toASCII(address.toString()).toLowerCase()
     // Checks that the domain consists of at least one valid domain pieces separated by periods, followed by a tld
     // Each piece of domain name has only the characters a-z, 0-9, and a hyphen (but not at the start or end of chunk)
     // A chunk has minimum length of 1, but minimum tld is set to 2 for now (no 1-character tlds exist yet)
