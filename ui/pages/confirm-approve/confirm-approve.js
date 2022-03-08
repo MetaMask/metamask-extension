@@ -43,7 +43,7 @@ import AdvancedGasFeePopover from '../../components/app/advanced-gas-fee-popover
 import EditGasFeePopover from '../../components/app/edit-gas-fee-popover';
 import EditGasPopover from '../../components/app/edit-gas-popover/edit-gas-popover.component';
 import Loading from '../../components/ui/loading-screen';
-import { isEqualCaseInsensitive } from '../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getCustomTxParamsData } from './confirm-approve.util';
 import ConfirmApproveContent from './confirm-approve-content';
 
