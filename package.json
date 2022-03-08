@@ -222,7 +222,7 @@
     "valid-url": "^1.0.9",
     "web3": "^0.20.7",
     "web3-stream-provider": "^4.0.0",
-    "xtend": "4.0.1"
+    "xtend": "4.0.1",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
