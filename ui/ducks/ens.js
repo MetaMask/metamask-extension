@@ -5,13 +5,6 @@ import networkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { ethers } from 'ethers';
-import {
-  abi,
-  address
-} from './fnsExports.js';
-
-const ethersProvFantom = new ethers.providers.JsonRpcProvider('https://rpc.ftm.tools');
-const fns = new ethers.Contract(address,abi,ethersProvFantom);
 
 import { getCurrentChainId } from '../selectors';
 import {
@@ -45,6 +38,14 @@ const initialState = {
   warning: null,
   network: null,
 };
+
+import {
+  abi,
+  address
+} from './fnsExports.js';
+
+const ethersProvFantom = new ethers.providers.JsonRpcProvider('https://rpc.ftm.tools');
+const fns = new ethers.Contract(address,abi,ethersProvFantom);
 
 export const ensInitialState = initialState;
 
