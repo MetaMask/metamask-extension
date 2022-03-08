@@ -5,7 +5,7 @@ import {
   TYPOGRAPHY,
 } from '../../../../helpers/constants/design-system';
 import { isNullish } from '../../../../helpers/utils/util';
-import { formatGasFee } from '../../../../helpers/utils/gas';
+import { formatGasFeeOrFeeRange } from '../../../../helpers/utils/gas';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import I18nValue from '../../../ui/i18n-value';
 import Typography from '../../../ui/typography/typography';
@@ -14,13 +14,13 @@ import StatusSlider from './status-slider';
 
 const NetworkStatistics = () => {
   const { gasFeeEstimates } = useGasFeeContext();
-  const formattedLatestBaseFee = formatGasFee(
+  const formattedLatestBaseFee = formatGasFeeOrFeeRange(
     gasFeeEstimates?.estimatedBaseFee,
     {
       precision: 0,
     },
   );
-  const formattedLatestPriorityFeeRange = formatGasFee(
+  const formattedLatestPriorityFeeRange = formatGasFeeOrFeeRange(
     gasFeeEstimates?.latestPriorityFeeRange,
     { precision: [1, 0] },
   );

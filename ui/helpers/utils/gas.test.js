@@ -3,7 +3,7 @@ import { PRIORITY_LEVELS } from '../../../shared/constants/gas';
 import {
   addTenPercent,
   gasEstimateGreaterThanGasUsedPlusTenPercent,
-  formatGasFee,
+  formatGasFeeOrFeeRange,
 } from './gas';
 
 describe('Gas utils', () => {
@@ -49,10 +49,10 @@ describe('Gas utils', () => {
     });
   });
 
-  describe('formatGasFee', () => {
+  describe('formatGasFeeOrFeeRange', () => {
     describe('given a singular fee', () => {
       it('should return a string "X GWEI" where X is the fee rounded to the given precision', () => {
-        expect(formatGasFee('23.43', { precision: 1 })).toStrictEqual(
+        expect(formatGasFeeOrFeeRange('23.43', { precision: 1 })).toStrictEqual(
           '23.4 GWEI',
         );
       });
@@ -62,7 +62,7 @@ describe('Gas utils', () => {
       describe('given a single precision', () => {
         it('should return a string "X - Y GWEI" where X and Y are the fees rounded to the given precision', () => {
           expect(
-            formatGasFee(['23.43', '83.9342'], { precision: 1 }),
+            formatGasFeeOrFeeRange(['23.43', '83.9342'], { precision: 1 }),
           ).toStrictEqual('23.4 - 83.9 GWEI');
         });
       });
@@ -70,7 +70,7 @@ describe('Gas utils', () => {
       describe('given two precisions', () => {
         it('should return a string "X - Y GWEI" where X and Y are the fees rounded to the given precisions', () => {
           expect(
-            formatGasFee(['23.43', '83.9342'], { precision: [1, 0] }),
+            formatGasFeeOrFeeRange(['23.43', '83.9342'], { precision: [1, 0] }),
           ).toStrictEqual('23.4 - 84 GWEI');
         });
       });
@@ -78,7 +78,9 @@ describe('Gas utils', () => {
       describe('given more than two precisions', () => {
         it('should ignore precisions past 2', () => {
           expect(
-            formatGasFee(['23.43', '83.9342'], { precision: [1, 0, 999] }),
+            formatGasFeeOrFeeRange(['23.43', '83.9342'], {
+              precision: [1, 0, 999],
+            }),
           ).toStrictEqual('23.4 - 84 GWEI');
         });
       });
@@ -87,20 +89,22 @@ describe('Gas utils', () => {
     describe('given an array of more than two fees', () => {
       it('should ignore fees past two', () => {
         expect(
-          formatGasFee(['23.43', '83.9342', '300.3414'], { precision: 1 }),
+          formatGasFeeOrFeeRange(['23.43', '83.9342', '300.3414'], {
+            precision: 1,
+          }),
         ).toStrictEqual('23.4 - 83.9 GWEI');
       });
     });
 
     describe('if the fee is null', () => {
       it('should return null', () => {
-        expect(formatGasFee(null, { precision: 1 })).toBeNull();
+        expect(formatGasFeeOrFeeRange(null, { precision: 1 })).toBeNull();
       });
     });
 
     describe('if the fee is undefined', () => {
       it('should return null', () => {
-        expect(formatGasFee(null, { precision: 1 })).toBeNull();
+        expect(formatGasFeeOrFeeRange(null, { precision: 1 })).toBeNull();
       });
     });
   });

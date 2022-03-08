@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { isNullish } from '../../../../helpers/utils/util';
-import { formatGasFee } from '../../../../helpers/utils/gas';
+import { formatGasFeeOrFeeRange } from '../../../../helpers/utils/gas';
 import Box from '../../../ui/box';
 import I18nValue from '../../../ui/i18n-value';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
@@ -24,7 +24,7 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
           </span>
           <span className="advanced-gas-fee-input-subtext__value">
             <LoadingHeartBeat />
-            {formatGasFee(latest)}
+            {formatGasFeeOrFeeRange(latest)}
           </span>
           {FEE_TRENDS.includes(trend) ? (
             <span className={`advanced-gas-fee-input-subtext__${trend}`}>
@@ -47,7 +47,7 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
           </span>
           <span className="advanced-gas-fee-input-subtext__value">
             <LoadingHeartBeat />
-            {formatGasFee(historical)}
+            {formatGasFeeOrFeeRange(historical)}
           </span>
         </Box>
       )}

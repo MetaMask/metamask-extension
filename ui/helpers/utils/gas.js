@@ -79,7 +79,7 @@ export function isMetamaskSuggestedGasEstimate(estimate) {
  * @returns A string which represents the formatted version of the fee or fee
  * range.
  */
-export function formatGasFee(
+export function formatGasFeeOrFeeRange(
   feeOrFeeRange,
   { precision: precisionOrPrecisions = 2 } = {},
 ) {
