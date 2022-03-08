@@ -15,6 +15,11 @@ export default function HardwareConnectivityMessage({
     <div className="hardware-connectivity-message">
       <ActionableMessage
         type={connected ? 'success' : 'warning'}
+        withRightButton
+        primaryAction={{
+          label: t('hardwareWalletConnectivityNotConnectedConversion'),
+          onClick,
+        }}
         message={
           connected ? (
             <>
@@ -27,12 +32,6 @@ export default function HardwareConnectivityMessage({
               {t('hardwareWalletConnectivityNotConnected', [
                 KEYRING_NAMES.LEDGER,
               ])}{' '}
-              <button
-                className="hardware-connectivity-message__button"
-                onClick={onClick}
-              >
-                {t('hardwareWalletConnectivityNotConnectedConversion')}
-              </button>
             </>
           )
         }

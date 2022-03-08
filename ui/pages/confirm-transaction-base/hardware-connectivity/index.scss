@@ -37,9 +37,19 @@
 
     .actionable-message {
       padding: 8px;
+      flex-flow: wrap;
+      margin-top: 0;
+      justify-content: unset;
 
-      &__message {
+      &__message,
+      &__actions {
         text-align: start;
+        width: auto;
+        margin-top: 0;
+      }
+
+      button {
+        margin-inline-start: 10px;
       }
 
       .fa-check-circle {
@@ -49,12 +59,6 @@
       .fa-exclamation-circle {
         color: var(--alert-3);
       }
-    }
-
-    &__button {
-      font-size: inherit;
-      background: unset;
-      padding: 0;
     }
   }
 }
