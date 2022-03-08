@@ -155,15 +155,15 @@ export function initializeEnsSlice() {
   };
 }
 
-async function isFnsName(name) {
-  if (name.toString().toLowerCase.endsWith('.eth')) {
+async function isFnsName(fnsName) {
+  if (fnsName.toString().toLowerCase.endsWith('.eth')) {
     return false;
   }
-  return await fns.functions.isOwnedByMapping(name.toUpperCase());
+  return await fns.functions.isOwnedByMapping(fnsName.toUpperCase());
 }
 
-export async function resolveFnsName(name) {
-  return await fns.functions.getOwnerOfName(name.toUpperCase());
+export async function resolveFnsName(fnsName) {
+  return await fns.functions.getOwnerOfName(fnsNname.toUpperCase());
 }
 
 export function lookupEnsName(ensName) {
