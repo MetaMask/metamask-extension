@@ -273,15 +273,6 @@ const completeImportSRPOnboardingFlow = async (
   }
 };
 
-const elementExists = async (driver, element) => {
-  try {
-    await driver.findElement(element);
-    return true;
-  } catch (NoSuchElementException) {
-    return false;
-  }
-};
-
 module.exports = {
   getWindowHandles,
   convertToHexValue,
@@ -291,5 +282,4 @@ module.exports = {
   withFixtures,
   connectDappWithExtensionPopup,
   completeImportSRPOnboardingFlow,
-  elementExists,
 };

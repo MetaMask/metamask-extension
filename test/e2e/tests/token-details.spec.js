@@ -1,9 +1,5 @@
 const { strict: assert } = require('assert');
-const {
-  convertToHexValue,
-  withFixtures,
-  elementExists,
-} = require('../helpers');
+const { convertToHexValue, withFixtures } = require('../helpers');
 
 describe('Token Details', function () {
   const ganacheOptions = {
@@ -45,9 +41,9 @@ describe('Token Details', function () {
           text: tokenAddress,
         };
 
-        const exists = await elementExists(driver, tokenAddressFound);
+        const exists = await driver.assertElementPresent(tokenAddressFound);
 
-        assert.equal(exists, true);
+        assert.ok(exists, 'Token details are not correct.');
       },
     );
   });
