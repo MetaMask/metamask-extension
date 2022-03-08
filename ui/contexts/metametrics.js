@@ -15,11 +15,12 @@ import {
   getNumberOfAccounts,
   getNumberOfTokens,
 } from '../selectors/selectors';
-import { getSendAsset, ASSET_TYPES } from '../ducks/send';
+import { getSendAsset } from '../ducks/send';
 import { txDataSelector } from '../selectors/confirm-transaction';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
 import { trackMetaMetricsEvent } from '../store/actions';
 import { getNativeCurrency } from '../ducks/metamask/metamask';
+import { ASSET_TYPES } from '../../shared/constants/transaction';
 
 export const MetaMetricsContext = createContext(() => {
   captureException(

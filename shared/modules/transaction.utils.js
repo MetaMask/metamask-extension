@@ -92,8 +92,6 @@ export function txParamsAreDappSuggested(transaction) {
  *
  * @param {Object} txParams - Parameters for the transaction
  * @param {EthQuery} query - EthQuery instance
- * @param {Function} getTokenStandardAndDetails - Function to fetch token
- *  standard and details
  * @returns {InferTransactionTypeResult}
  */
 export async function determineTransactionType(txParams, query) {
@@ -135,18 +133,41 @@ export async function determineTransactionType(txParams, query) {
   return { type: result, getCodeResponse: contractCode };
 }
 
+const INFERRABLE_TRANSACTION_TYPES = [
+  TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
+  TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
+  TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
+  TRANSACTION_TYPES.CONTRACT_INTERACTION,
+  TRANSACTION_TYPES.SIMPLE_SEND,
+];
+
+/**
+ * Given a transaction meta object, determine the asset type that the
+ * transaction is dealing with, as well as the standard for the token if it
+ * is a token transaction.
+ *
+ * @param {import('../constants/transaction').TransactionMeta} txMeta -
+ *  transaction meta object
+ * @param {EthQuery} query - EthQuery instance
+ * @param {Function} getTokenStandardAndDetails - function to get token
+ *  standards and details.
+ * @returns {{ assetType: string, tokenStandard: string}}
+ */
 export async function determineTransactionAssetType(
   txMeta,
   query,
   getTokenStandardAndDetails,
 ) {
-  // Because we will deal with all types of transactions (including swaps)
-  // we want to get an inferrable type of transaction that isn't special cased
-  // that way we can narrow the number of logic gates required.
-  const { type: inferrableType } = await determineTransactionType(
-    txMeta.txParams,
-    query,
-  );
+  // If the transaction type is already one of the inferrable types, then we do
+  // not need to re-establish the type.
+  let inferrableType = txMeta.type;
+  if (INFERRABLE_TRANSACTION_TYPES.includes(txMeta.type) === false) {
+    // Because we will deal with all types of transactions (including swaps)
+    // we want to get an inferrable type of transaction that isn't special cased
+    // that way we can narrow the number of logic gates required.
+    const result = await determineTransactionType(txMeta.txParams, query);
+    inferrableType = result.type;
+  }
 
   const isTokenMethod = [
     TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
@@ -155,21 +176,30 @@ export async function determineTransactionAssetType(
   ].find((methodName) => isEqualCaseInsensitive(methodName, inferrableType));
 
   if (isTokenMethod) {
-    const details = await getTokenStandardAndDetails(
-      txMeta.txParams.to,
-      txMeta.txParams.from,
-    );
+    let details;
+    try {
+      details = await getTokenStandardAndDetails(
+        txMeta.txParams.to,
+        txMeta.txParams.from,
+      );
+    } catch {
+      // noop
+    }
 
     if (details.standard) {
       return {
-        assetType: (details.standard = TOKEN_STANDARDS.ERC20
-          ? ASSET_TYPES.TOKEN
-          : ASSET_TYPES.COLLECTIBLE),
+        assetType:
+          details.standard === TOKEN_STANDARDS.ERC20
+            ? ASSET_TYPES.TOKEN
+            : ASSET_TYPES.COLLECTIBLE,
         tokenStandard: details.standard,
       };
     }
   }
 
+  // If the transaction is interacting with a contract but isn't a token method
+  // we use the 'UNKNOWN' value to show that it isn't a transaction sending any
+  // particular asset.
   if (inferrableType === TRANSACTION_TYPES.CONTRACT_INTERACTION) {
     return {
       assetType: ASSET_TYPES.UNKNOWN,
