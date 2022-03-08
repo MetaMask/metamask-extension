@@ -153,6 +153,10 @@
   "addNetwork": {
     "message": "Add Network"
   },
+  "addNetworkTooltipWarning": {
+    "message": "This network connection relies on third parties. This connection may be less reliable or enable third-parties to track activity. $1",
+    "description": "$1 is Learn more link"
+  },
   "addSuggestedTokens": {
     "message": "Add Suggested Tokens"
   },
@@ -726,9 +730,6 @@
   },
   "customGasSubTitle": {
     "message": "Increasing fee may decrease processing times, but it is not guaranteed."
-  },
-  "customNetworks": {
-    "message": "Custom networks"
   },
   "customSpendLimit": {
     "message": "Custom Spend Limit"
@@ -2295,9 +2296,6 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
-  "onlyInteractWith": {
-    "message": "Only interact with entities you trust."
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -2415,6 +2413,9 @@
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "popularCustomNetworks": {
+    "message": "Popular custom networks"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger Connection Type",
@@ -3917,6 +3918,9 @@
   },
   "walletCreationSuccessTitle": {
     "message": "Wallet creation successful"
+  },
+  "warning": {
+    "message": "Warning"
   },
   "weak": {
     "message": "Weak"

@@ -8,10 +8,13 @@
     }
   }
 
-  &__token-image {
-    margin-right: 7px;
-    height: 24px;
-    width: 24px;
+  &__warning-tooltip {
+    color: var(--ui-4);
+    width: 180px;
+
+    a {
+      color: var(--primary-1);
+    }
   }
 
   &__add-icon {
@@ -19,6 +22,12 @@
     margin-left: auto;
     margin-right: 0;
     cursor: pointer;
+  }
+
+  &__add-button {
+    color: var(--primary-1);
+    font-size: $font-size-h7;
+    margin-left: 24px;
   }
 
   &__footer {
@@ -39,3 +48,5 @@
     }
   }
 }
+
+
