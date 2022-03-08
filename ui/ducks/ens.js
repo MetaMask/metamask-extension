@@ -144,7 +144,7 @@ export function initializeEnsSlice() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-    const networkIsSupport manyed = Boolean(networkMap[network]);
+    const networkIsSupport = Boolean(networkMap[network]);
     if (networkIsSupported) {
       ens = new ENS({ provider: global.ethereumProvider, network });
       dispatch(enableEnsLookup(network));
