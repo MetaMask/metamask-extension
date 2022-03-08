@@ -269,7 +269,7 @@ export default class ConfirmPageContainer extends Component {
               toAddress={toAddress}
               transactionType={currentTransaction.type}
               isBuyableChain={isBuyableChain}
-              showingHardwareConnectionContents={
+              hideConfirmPageContainerSummaryAndButtons={
                 showingHardwareConnectionContents
               }
             />

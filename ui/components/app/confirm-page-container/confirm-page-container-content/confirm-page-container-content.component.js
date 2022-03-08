@@ -54,7 +54,7 @@ export default class ConfirmPageContainerContent extends Component {
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
-    showingHardwareConnectionContents: PropTypes.bool,
+    hideConfirmPageContainerSummaryAndButtons: PropTypes.bool.isRequired,
   };
 
   renderContent() {
@@ -128,7 +128,7 @@ export default class ConfirmPageContainerContent extends Component {
       toAddress,
       transactionType,
       isBuyableChain,
-      showingHardwareConnectionContents,
+      hideConfirmPageContainerSummaryAndButtons,
     } = this.props;
 
     const { t } = this.context;
@@ -211,17 +211,19 @@ export default class ConfirmPageContainerContent extends Component {
           </div>
         )}
 
-        <PageContainerFooter
-          onCancel={onCancel}
-          cancelText={cancelText}
-          onSubmit={onSubmit}
-          submitText={submitText}
-          disabled={disabled}
-        >
-          {unapprovedTxCount > 1 ? (
-            <a onClick={onCancelAll}>{rejectNText}</a>
-          ) : null}
-        </PageContainerFooter>
+        {hideConfirmPageContainerSummaryAndButtons ? null : (
+          <PageContainerFooter
+            onCancel={onCancel}
+            cancelText={cancelText}
+            onSubmit={onSubmit}
+            submitText={submitText}
+            disabled={disabled}
+          >
+            {unapprovedTxCount > 1 ? (
+              <a onClick={onCancelAll}>{rejectNText}</a>
+            ) : null}
+          </PageContainerFooter>
+        )}
       </div>
     );
   }
