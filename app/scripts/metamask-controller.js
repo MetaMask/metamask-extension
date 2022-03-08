@@ -226,11 +226,15 @@ export default class MetamaskController extends EventEmitter {
       state: initState.TokensController,
     });
 
-    this.assetsContractController = new AssetsContractController({
-      onPreferencesStateChange: (listener) =>
-        this.preferencesController.store.subscribe(listener),
-      provider: this.provider,
-    });
+    this.assetsContractController = new AssetsContractController(
+      {
+        onPreferencesStateChange: (listener) =>
+          this.preferencesController.store.subscribe(listener),
+      },
+      {
+        provider: this.provider,
+      },
+    );
 
     this.collectiblesController = new CollectiblesController(
       {
