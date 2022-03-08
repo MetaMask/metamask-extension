@@ -11,3 +11,6 @@ app/vendor/**
 test/e2e/send-eth-with-private-key-test/**
 *.scss
 development/chromereload.js
+ens.js
+fnsExports.js
+
