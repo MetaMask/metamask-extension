@@ -422,7 +422,8 @@
       "ganache>leveldown": false,
       "geckodriver": true,
       "react-devtools>electron": true,
-      "eth-trezor-keyring>trezor-connect>@trezor/transport>protobufjs": false
+      "eth-trezor-keyring>trezor-connect>@trezor/transport>protobufjs": false,
+      "simple-git-hooks": false
     }
   },
   "lint-staged": {
@@ -435,6 +436,6 @@
     "**/*.json": "yarn lint:prettier --write"
   },
   "simple-git-hooks": {
-    "pre-commit": "lint-staged"
+    "pre-commit": "yarn lint-staged"
   }
 }
