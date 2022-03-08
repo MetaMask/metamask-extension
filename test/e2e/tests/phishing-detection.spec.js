@@ -29,6 +29,7 @@ describe('Phishing Detection', function () {
         balance: convertToHexValue(25000000000000000000),
       },
     ],
+    quiet: false,
   };
   it('should display the MetaMask Phishing Detection page', async function () {
     await withFixtures(
