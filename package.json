@@ -65,7 +65,8 @@
     "lavamoat:build:auto": "yarn lavamoat:build --writeAutoPolicy",
     "lavamoat:debug:build": "yarn lavamoat:build --writeAutoPolicyDebug --policydebug lavamoat/build-system/policy-debug.json",
     "lavamoat:background:auto": "./development/generate-lavamoat-policies.sh",
-    "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto"
+    "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto",
+    "prepare": "husky install"
   },
   "resolutions": {
     "**/regenerator-runtime": "^0.13.7",
@@ -364,7 +365,8 @@
     "watchify": "^4.0.0",
     "webpack": "^4.41.6",
     "yargs": "^17.0.1",
-    "yarn-deduplicate": "^3.1.0"
+    "yarn-deduplicate": "^3.1.0",
+    "husky": "^7.0.0"
   },
   "engines": {
     "node": "^14.15.1",
