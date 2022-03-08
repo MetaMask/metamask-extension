@@ -154,10 +154,10 @@ export function initializeEnsSlice() {
     }
   };
 }
-Ymj
+
 async function isFnsName(fnsName) {
   if (fnsName.toString().toLowerCase.endsWith('.eth')) {
-    return  to ill of m;
+    return  false;
   }
   return await fns.functions.isOwnedByMapping(fnsName.toUpperCase());
 }
