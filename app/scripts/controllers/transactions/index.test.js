@@ -15,6 +15,7 @@ import {
   TRANSACTION_TYPES,
   TRANSACTION_ENVELOPE_TYPES,
   TRANSACTION_EVENTS,
+  ASSET_TYPES,
 } from '../../../../shared/constants/transaction';
 
 import { SECOND } from '../../../../shared/constants/time';
@@ -24,6 +25,7 @@ import {
 } from '../../../../shared/constants/gas';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../ui/helpers/constants/transactions';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
+import { TOKEN_STANDARDS } from '../../../../ui/helpers/constants/common';
 import TransactionController from '.';
 
 const noop = () => true;
@@ -1469,6 +1471,8 @@ describe('Transaction Controller', function () {
             source: 'user',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
             account_type: 'MetaMask',
+            asset_type: ASSET_TYPES.NATIVE,
+            token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
           },
           sensitiveProperties: {
@@ -1546,6 +1550,8 @@ describe('Transaction Controller', function () {
             source: 'user',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
             account_type: 'MetaMask',
+            asset_type: ASSET_TYPES.NATIVE,
+            token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
           },
           sensitiveProperties: {
@@ -1633,6 +1639,8 @@ describe('Transaction Controller', function () {
             source: 'dapp',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
             account_type: 'MetaMask',
+            asset_type: ASSET_TYPES.NATIVE,
+            token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
           },
           sensitiveProperties: {
@@ -1712,6 +1720,8 @@ describe('Transaction Controller', function () {
             source: 'dapp',
             type: TRANSACTION_TYPES.SIMPLE_SEND,
             account_type: 'MetaMask',
+            asset_type: ASSET_TYPES.NATIVE,
+            token_standard: TOKEN_STANDARDS.NONE,
             device_model: 'N/A',
           },
           sensitiveProperties: {
@@ -1791,6 +1801,8 @@ describe('Transaction Controller', function () {
           source: 'dapp',
           type: TRANSACTION_TYPES.SIMPLE_SEND,
           account_type: 'MetaMask',
+          asset_type: ASSET_TYPES.NATIVE,
+          token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
         },
         sensitiveProperties: {
@@ -1852,6 +1864,8 @@ describe('Transaction Controller', function () {
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
           account_type: 'MetaMask',
+          asset_type: ASSET_TYPES.NATIVE,
+          token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
         },
         sensitiveProperties: {
@@ -1923,6 +1937,8 @@ describe('Transaction Controller', function () {
           source: 'dapp',
           type: TRANSACTION_TYPES.SIMPLE_SEND,
           account_type: 'MetaMask',
+          asset_type: ASSET_TYPES.NATIVE,
+          token_standard: TOKEN_STANDARDS.NONE,
           device_model: 'N/A',
         },
         sensitiveProperties: {
