@@ -1,16 +1,10 @@
 import React from 'react';
-import testData from '../../../../.storybook/test-data';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
   FLAT_VARIANT,
 } from './sender-to-recipient.constants';
 import SenderToRecipient from '.';
-
-const sender = testData.metamask.accountArray[0];
-const recipient = testData.metamask.accountArray[1];
-console.log('sender', sender);
-console.log('recipient', recipient);
 
 export default {
   title: 'Components/UI/SenderToRecipient',
