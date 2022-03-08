@@ -2,11 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Typography from '../../../ui/typography/typography';
-import {
-  ALIGN_ITEMS,
-  TYPOGRAPHY,
-} from '../../../../helpers/constants/design-system';
-import Box from '../../../../components/ui/box/box';
+import { TYPOGRAPHY } from '../../../../helpers/constants/design-system';
+import Box from '../../../ui/box/box';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
 
