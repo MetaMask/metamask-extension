@@ -51,7 +51,7 @@ export const useTransactionFunctions = ({
   }, [editGasMode, transaction?.previousGas, transaction?.txParams]);
 
   const updateTransaction = useCallback(
-    ({
+    async ({
       estimateUsed,
       gasLimit,
       maxFeePerGas,
@@ -94,7 +94,7 @@ export const useTransactionFunctions = ({
         userSettings.userFeeLevel = updatedTxMeta.userFeeLevel;
 
         if (txMeta && txMeta.previousGas) {
-          dispatch(
+          await dispatch(
             updatePreviousGasParams(updatedTxMeta.id, txMeta.previousGas),
           );
         }
