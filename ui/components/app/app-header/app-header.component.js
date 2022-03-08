@@ -124,7 +124,6 @@ export default class AppHeader extends PureComponent {
                 <NetworkDisplay
                   colored={false}
                   outline
-                  iconClassName="app-header__network-down-arrow"
                   onClick={(event) => this.handleNetworkIndicatorClick(event)}
                   disabled={disabled || disableNetworkIndicator}
                 />
