@@ -65,8 +65,7 @@
     "lavamoat:build:auto": "yarn lavamoat:build --writeAutoPolicy",
     "lavamoat:debug:build": "yarn lavamoat:build --writeAutoPolicyDebug --policydebug lavamoat/build-system/policy-debug.json",
     "lavamoat:background:auto": "./development/generate-lavamoat-policies.sh",
-    "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto",
-    "prepare": "husky install"
+    "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:background:auto"
   },
   "resolutions": {
     "**/regenerator-runtime": "^0.13.7",
@@ -321,6 +320,7 @@
     "lavamoat": "^5.3.5",
     "lavamoat-browserify": "^14.1.0",
     "lavamoat-viz": "^6.0.9",
+    "lint-staged": "^12.3.5",
     "lockfile-lint": "^4.0.0",
     "loose-envify": "^1.4.0",
     "minimist": "^1.2.5",
@@ -347,6 +347,7 @@
     "selenium-webdriver": "^4.1.0",
     "semver": "^7.3.5",
     "serve-handler": "^6.1.2",
+    "simple-git-hooks": "^2.7.0",
     "sinon": "^9.0.0",
     "source-map": "^0.7.2",
     "source-map-explorer": "^2.4.2",
@@ -365,8 +366,7 @@
     "watchify": "^4.0.0",
     "webpack": "^4.41.6",
     "yargs": "^17.0.1",
-    "yarn-deduplicate": "^3.1.0",
-    "husky": "^7.0.0"
+    "yarn-deduplicate": "^3.1.0"
   },
   "engines": {
     "node": "^14.15.1",
@@ -424,5 +424,17 @@
       "react-devtools>electron": true,
       "eth-trezor-keyring>trezor-connect>@trezor/transport>protobufjs": false
     }
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "yarn lint:prettier --write",
+      "yarn lint:styles --fix",
+      "eslint --fix"
+    ],
+    "**/*.{css,scss}": "yarn lint:styles --fix",
+    "**/*.json": "yarn lint:prettier --write"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "lint-staged"
   }
 }
