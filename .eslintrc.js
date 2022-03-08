@@ -128,11 +128,8 @@ module.exports = {
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
       rules: {
-        /**
-         * Turn these off, as it's recommended by typescript-eslint.
-         *
-         * @see {@link https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import}
-         */
+        // Turn these off, as it's recommended by typescript-eslint.
+        // See: <https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import>
         'import/named': 'off',
         'import/namespace': 'off',
         'import/default': 'off',
