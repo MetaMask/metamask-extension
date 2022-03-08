@@ -29,7 +29,8 @@
     }
   }
 
-  &__import {
+  &__import,
+  &__form {
     display: flex;
     flex-direction: column;
   }

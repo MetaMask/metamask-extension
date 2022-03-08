@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import Identicon from '../../components/ui/identicon/identicon.component';
-import { isEqualCaseInsensitive } from '../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import TokenDetailsPage from './token-details-page';
 
 const testTokenAddress = '0xaD6D458402F60fD3Bd25163575031ACDce07538A';

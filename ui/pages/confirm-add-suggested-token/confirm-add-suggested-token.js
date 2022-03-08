@@ -10,7 +10,7 @@ import { MetaMetricsContext as NewMetaMetricsContext } from '../../contexts/meta
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { isEqualCaseInsensitive } from '../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getSuggestedAssets } from '../../selectors';
 import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
 

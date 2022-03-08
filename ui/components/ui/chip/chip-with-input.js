@@ -7,7 +7,7 @@ import Chip from '.';
 export function ChipWithInput({
   dataTestId,
   className,
-  borderColor = COLORS.UI1,
+  borderColor = COLORS.BORDER_DEFAULT,
   inputValue,
   setInputValue,
 }) {

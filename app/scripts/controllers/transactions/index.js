@@ -3,10 +3,8 @@ import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
 import { ethErrors } from 'eth-rpc-errors';
-import abi from 'human-standard-token-abi';
 import Common from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
-import { ethers } from 'ethers';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
@@ -47,15 +45,14 @@ import {
   NETWORK_TYPE_RPC,
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
 } from '../../../../shared/constants/network';
-import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
-import { readAddressAsContract } from '../../../../shared/modules/contract-utils';
-import { isEqualCaseInsensitive } from '../../../../ui/helpers/utils/util';
+import {
+  determineTransactionType,
+  isEIP1559Transaction,
+} from '../../../../shared/modules/transaction.utils';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
-
-const hstInterface = new ethers.utils.Interface(abi);
 
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 
@@ -378,15 +375,13 @@ export default class TransactionController extends EventEmitter {
   /**
    *
    * @param {string} txId - transaction id
-   * @param {object} editableParams - holds the eip1559 fees parameters
-   * @param editableParams.data
-   * @param editableParams.from
-   * @param editableParams.to
-   * @param editableParams.value
-   * @param editableParams.gas
-   * @param editableParams.gasPrice
+   * @param {object} editableParams - holds the editable parameters
+   * @param {object} editableParams.data
+   * @param {string} editableParams.from
+   * @param {string} editableParams.to
+   * @param {string} editableParams.value
    */
-  updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
+  updateEditableParams(txId, { data, from, to, value }) {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
       return;
     }
@@ -397,8 +392,6 @@ export default class TransactionController extends EventEmitter {
         from,
         to,
         value,
-        gas,
-        gasPrice,
       },
     };
 
@@ -413,23 +406,15 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {string} txId - transaction id
    * @param {object} txGasFees - holds the gas fees parameters
-   * {
-   * gasLimit,
-   * gasPrice,
-   * maxPriorityFeePerGas,
-   * maxFeePerGas,
-   * estimateUsed,
-   * estimateSuggested
-   * }
-   * @param txGasFees.gasLimit
-   * @param txGasFees.gasPrice
-   * @param txGasFees.maxPriorityFeePerGas
-   * @param txGasFees.maxFeePerGas
-   * @param txGasFees.estimateUsed
-   * @param txGasFees.estimateSuggested
-   * @param txGasFees.defaultGasEstimates
-   * @param txGasFees.gas
-   * @param txGasFees.originalGasEstimate
+   * @param {string} txGasFees.gasLimit
+   * @param {string} txGasFees.gasPrice
+   * @param {string} txGasFees.maxPriorityFeePerGas
+   * @param {string} txGasFees.maxFeePerGas
+   * @param {string} txGasFees.estimateUsed
+   * @param {string} txGasFees.estimateSuggested
+   * @param {string} txGasFees.defaultGasEstimates
+   * @param {string} txGasFees.gas
+   * @param {string} txGasFees.originalGasEstimate
    */
   updateTransactionGasFees(
     txId,
@@ -475,12 +460,8 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {string} txId - transaction id
    * @param {object} txEstimateBaseFees - holds the estimate base fees parameters
-   * {
-   * estimatedBaseFee,
-   * decEstimatedBaseFee
-   * }
-   * @param txEstimateBaseFees.estimatedBaseFee
-   * @param txEstimateBaseFees.decEstimatedBaseFee
+   * @param {string} txEstimateBaseFees.estimatedBaseFee
+   * @param {string} txEstimateBaseFees.decEstimatedBaseFee
    */
   updateTransactionEstimatedBaseFee(
     txId,
@@ -504,12 +485,8 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {string} txId
    * @param {object} swapApprovalTransaction - holds the metadata and token symbol
-   * {
-   * type,
-   * sourceTokenSymbol
-   * }
-   * @param swapApprovalTransaction.type
-   * @param swapApprovalTransaction.sourceTokenSymbol
+   * @param {string} swapApprovalTransaction.type
+   * @param {string} swapApprovalTransaction.sourceTokenSymbol
    */
   updateSwapApprovalTransaction(txId, { type, sourceTokenSymbol }) {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
@@ -530,26 +507,15 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {string} txId
    * @param {object} swapTransaction - holds the metadata
-   * {
-   * sourceTokenSymbol,
-   * destinationTokenSymbol,
-   * type,
-   * destinationTokenDecimals,
-   * destinationTokenAddress,
-   * swapMetaData,
-   * swapTokenValue,
-   * estimatedBaseFee,
-   * approvalTxId
-   *}
-   * @param swapTransaction.sourceTokenSymbol
-   * @param swapTransaction.destinationTokenSymbol
-   * @param swapTransaction.type
-   * @param swapTransaction.destinationTokenDecimals
-   * @param swapTransaction.destinationTokenAddress
-   * @param swapTransaction.swapMetaData
-   * @param swapTransaction.swapTokenValue
-   * @param swapTransaction.estimatedBaseFee
-   * @param swapTransaction.approvalTxId
+   * @param {string} swapTransaction.sourceTokenSymbol
+   * @param {string} swapTransaction.destinationTokenSymbol
+   * @param {string} swapTransaction.type
+   * @param {string} swapTransaction.destinationTokenDecimals
+   * @param {string} swapTransaction.destinationTokenAddress
+   * @param {string} swapTransaction.swapMetaData
+   * @param {string} swapTransaction.swapTokenValue
+   * @param {string} swapTransaction.estimatedBaseFee
+   * @param {string} swapTransaction.approvalTxId
    */
   updateSwapTransaction(
     txId,
@@ -568,7 +534,6 @@ export default class TransactionController extends EventEmitter {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
       return;
     }
-
     let swapTransaction = {
       sourceTokenSymbol,
       destinationTokenSymbol,
@@ -593,9 +558,8 @@ export default class TransactionController extends EventEmitter {
    *
    * @param {string} txId
    * @param {object} userSettings - holds the metadata
-   * { userEditedGasLimit, userFeeLevel }
-   * @param userSettings.userEditedGasLimit
-   * @param userSettings.userFeeLevel
+   * @param {string} userSettings.userEditedGasLimit
+   * @param {string} userSettings.userFeeLevel
    */
   updateTransactionUserSettings(txId, { userEditedGasLimit, userFeeLevel }) {
     if (!this._checkIfTxStatusIsUnapproved(txId)) {
@@ -641,7 +605,7 @@ export default class TransactionController extends EventEmitter {
      * `generateTxMeta` adds the default txMeta properties to the passed object.
      * These include the tx's `id`. As we use the id for determining order of
      * txes in the tx-state-manager, it is necessary to call the asynchronous
-     * method `this._determineTransactionType` after `generateTxMeta`.
+     * method `determineTransactionType` after `generateTxMeta`.
      */
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
@@ -669,8 +633,9 @@ export default class TransactionController extends EventEmitter {
       }
     }
 
-    const { type, getCodeResponse } = await this._determineTransactionType(
+    const { type, getCodeResponse } = await determineTransactionType(
       txParams,
+      this.query,
     );
     txMeta.type = transactionType || type;
 
@@ -1724,67 +1689,6 @@ export default class TransactionController extends EventEmitter {
         'transactions/pending-tx-tracker#event: tx:retry',
       );
     });
-  }
-
-  /**
-   * @typedef { 'transfer' | 'approve' | 'transferfrom' | 'contractInteraction'| 'simpleSend' } InferrableTransactionTypes
-   */
-
-  /**
-   * @typedef {Object} InferTransactionTypeResult
-   * @property {InferrableTransactionTypes} type - The type of transaction
-   * @property {string} getCodeResponse - The contract code, in hex format if
-   *  it exists. '0x0' or '0x' are also indicators of non-existent contract
-   *  code
-   */
-
-  /**
-   * Determines the type of the transaction by analyzing the txParams.
-   * This method will return one of the types defined in shared/constants/transactions
-   * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these
-   * represent specific events that we control from the extension and are added manually
-   * at transaction creation.
-   *
-   * @param {Object} txParams - Parameters for the transaction
-   * @returns {InferTransactionTypeResult}
-   */
-  async _determineTransactionType(txParams) {
-    const { data, to } = txParams;
-    let name;
-    try {
-      name = data && hstInterface.parseTransaction({ data }).name;
-    } catch (error) {
-      log.debug('Failed to parse transaction data.', error, data);
-    }
-
-    const tokenMethodName = [
-      TRANSACTION_TYPES.TOKEN_METHOD_APPROVE,
-      TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER,
-      TRANSACTION_TYPES.TOKEN_METHOD_TRANSFER_FROM,
-    ].find((methodName) => isEqualCaseInsensitive(methodName, name));
-
-    let result;
-    if (data && tokenMethodName) {
-      result = tokenMethodName;
-    } else if (data && !to) {
-      result = TRANSACTION_TYPES.DEPLOY_CONTRACT;
-    }
-
-    let contractCode;
-
-    if (!result) {
-      const {
-        contractCode: resultCode,
-        isContractAddress,
-      } = await readAddressAsContract(this.query, to);
-
-      contractCode = resultCode;
-      result = isContractAddress
-        ? TRANSACTION_TYPES.CONTRACT_INTERACTION
-        : TRANSACTION_TYPES.SIMPLE_SEND;
-    }
-
-    return { type: result, getCodeResponse: contractCode };
   }
 
   /**

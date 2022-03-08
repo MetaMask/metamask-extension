@@ -13,7 +13,7 @@ import {
   getTokenValueParam,
 } from '../../helpers/utils/token-util';
 import { hexWEIToDecETH } from '../../helpers/utils/conversions.util';
-import { isEqualCaseInsensitive } from '../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import ConfirmTokenTransactionBase from './confirm-token-transaction-base.component';
 
 const mapStateToProps = (state, ownProps) => {

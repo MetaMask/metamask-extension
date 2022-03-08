@@ -36,11 +36,12 @@ async function withFixtures(options, testSuite) {
   } = options;
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
+  const https = await mockttp.generateCACertificate();
+  const mockServer = mockttp.getLocal({ https });
   let secondaryGanacheServer;
   let dappServer;
   let segmentServer;
   let segmentStub;
-  let mockServer;
 
   let webDriver;
   let failed = false;
@@ -91,9 +92,7 @@ async function withFixtures(options, testSuite) {
       });
       await segmentServer.start(9090);
     }
-    const https = await mockttp.generateCACertificate();
-    mockServer = mockttp.getLocal({ https });
-    setupMocking(mockServer, testSpecificMock);
+    await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
     if (
       process.env.SELENIUM_BROWSER === 'chrome' &&
@@ -157,9 +156,7 @@ async function withFixtures(options, testSuite) {
       if (segmentServer) {
         await segmentServer.stop();
       }
-      if (mockServer) {
-        await mockServer.stop();
-      }
+      await mockServer.stop();
     }
   }
 }

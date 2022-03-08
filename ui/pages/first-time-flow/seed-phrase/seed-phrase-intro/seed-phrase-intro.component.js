@@ -87,7 +87,7 @@ export default function SeedPhraseIntro() {
             padding={4}
             borderWidth={1}
             borderRadius={SIZES.MD}
-            borderColor={COLORS.UI2}
+            borderColor={COLORS.BORDER_MUTED}
             borderStyle={BORDER_STYLE.SOLID}
           >
             <Box marginBottom={4}>

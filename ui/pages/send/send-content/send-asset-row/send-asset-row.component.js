@@ -7,7 +7,7 @@ import TokenListDisplay from '../../../../components/app/token-list-display';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import { ERC20, ERC721, PRIMARY } from '../../../../helpers/constants/common';
 import { ASSET_TYPES } from '../../../../ducks/send';
-import { isEqualCaseInsensitive } from '../../../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 
 export default class SendAssetRow extends Component {
   static propTypes = {

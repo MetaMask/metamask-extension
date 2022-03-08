@@ -114,7 +114,7 @@ export default class ConfirmTransactionBase extends Component {
     dataHexComponent: PropTypes.node,
     hideData: PropTypes.bool,
     hideSubtitle: PropTypes.bool,
-    identiconAddress: PropTypes.string,
+    tokenAddress: PropTypes.string,
     onEdit: PropTypes.func,
     subtitleComponent: PropTypes.node,
     title: PropTypes.string,
@@ -998,7 +998,7 @@ export default class ConfirmTransactionBase extends Component {
       methodData,
       title,
       hideSubtitle,
-      identiconAddress,
+      tokenAddress,
       contentComponent,
       onEdit,
       nonce,
@@ -1080,7 +1080,7 @@ export default class ConfirmTransactionBase extends Component {
           contentComponent={contentComponent}
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}
-          identiconAddress={identiconAddress}
+          tokenAddress={tokenAddress}
           errorMessage={submitError}
           errorKey={errorKey}
           hasSimulationError={hasSimulationError}

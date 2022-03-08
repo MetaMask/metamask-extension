@@ -1,4 +1,16 @@
 .create-password {
+  &__weak {
+    color: var(--error-1);
+  }
+
+  &__average {
+    color: var(--secondary-3);;
+  }
+
+  &__strong {
+    color: var(--success-3);
+  }
+
   &__wrapper {
     display: flex;
     justify-content: center;
