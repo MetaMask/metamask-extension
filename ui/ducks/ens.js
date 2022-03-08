@@ -175,7 +175,7 @@ export function lookupEnsName(ensName) {
     }
     state = getState();
     if (
-      (state[name].stage === 'NO_NETWORK_SUPPORT' && getCurrentChainId(state) != 250) &&
+      (state[name].stage === 'NO_NETWORK_SUPPORT' && getCurrentChainId(state) !== 250) &&
       !(
         isBurnAddress(trimmedEnsName) === false &&
         isValidHexAddress(trimmedEnsName, { mixedCaseUseChecksum: true })
