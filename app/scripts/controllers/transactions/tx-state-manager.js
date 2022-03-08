@@ -253,6 +253,12 @@ export default class TransactionStateManager extends EventEmitter {
         const { chainId, metamaskNetworkId, status } = tx;
         const key = `${nonce}-${chainId ?? metamaskNetworkId}-${from}`;
         if (nonceNetworkSet.has(key)) {
+          if (
+            status === TRANSACTION_STATUSES.DROPPED &&
+            status === TRANSACTION_STATUSES.REJECTED
+          ) {
+            return true;
+          }
           return false;
         } else if (
           nonceNetworkSet.size < txHistoryLimit - 1 ||
