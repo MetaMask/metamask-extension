@@ -41,7 +41,7 @@ describe('Token Details', function () {
           text: tokenAddress,
         };
 
-        const exists = await driver.assertElementPresent(tokenAddressFound);
+        const exists = await driver.isElementPresent(tokenAddressFound);
 
         assert.ok(exists, 'Token details are not correct.');
       },
