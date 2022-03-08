@@ -7887,10 +7887,10 @@ chrome-trace-event@^1.0.2:
   dependencies:
     tslib "^1.9.0"
 
-chromedriver@^98.0.0:
-  version "98.0.0"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-98.0.0.tgz#b2c3c1941fad4cdfadad5d4c46923e02f089fd30"
-  integrity sha512-Oi6Th5teK+VI4nti+423/dFkENYHEMOdUvqwJHzOaNwXqLwZ8FuSaKBybgALCctGapwJbd+tmPv3qSd6tUUIHQ==
+chromedriver@^99.0.0:
+  version "99.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-99.0.0.tgz#fbfcc7e74991dd50962e7dd456d78eaf49f56774"
+  integrity sha512-pyB+5LuyZdb7EBPL3i5D5yucZUD+SlkdiUtmpjaEnLd9zAXp+SvD/hP5xF4l/ZmWvUo/1ZLxAI1YBdhazGTpgA==
   dependencies:
     "@testim/chrome-version" "^1.1.2"
     axios "^0.24.0"
@@ -11122,16 +11122,16 @@ eth-keyring-controller@^6.2.0, eth-keyring-controller@^6.2.1:
     loglevel "^1.5.0"
     obs-store "^4.0.3"
 
-eth-lattice-keyring@^0.4.0:
-  version "0.4.9"
-  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.4.9.tgz#327a41fa25ef28dfc9fe87f2ce11e95139adfd67"
-  integrity sha512-ZflOgYrbuGJGPSDWgDA6PndCIlYRS2M+/bxKsJupbPgz/O8XwQdTGttszp0mHwOqPdvUULUmW08QCqd8trnuVg==
+eth-lattice-keyring@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/eth-lattice-keyring/-/eth-lattice-keyring-0.5.0.tgz#19dbbc2de31008dfd576531fa44a5d34061e61c8"
+  integrity sha512-+6iTQqrAqneUDfLR5aLVmYtys++a8C5N6F/9ibEtGT3YNYUE0NLZMI/DvFz/JhjpHhTjSXXtSb3yUajW6liAaQ==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.1.1"
     bignumber.js "^9.0.1"
     ethereumjs-util "^7.0.10"
-    gridplus-sdk "^0.9.7"
+    gridplus-sdk "^1.0.0"
 
 eth-lib@0.2.8:
   version "0.2.8"
@@ -13506,10 +13506,10 @@ graphql-subscriptions@^1.1.0:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.8.0.tgz#33410e96b012fa3bdb1091cc99a94769db212b38"
   integrity sha512-5gghUc24tP9HRznNpV2+FIoq3xKkj5dTQqf4v0CpdPbFVwFkWoxOM+o+2OC9ZSvjEMTjfmG9QT+gcvggTwW1zw==
 
-gridplus-sdk@^0.9.7:
-  version "0.9.10"
-  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-0.9.10.tgz#8835e8bc9a2ca7ae163520ddcc0b313350e67dd2"
-  integrity sha512-CNvhyaz3F8UvlHqihFJlOt+FenmFkb2dFrbBTyRth/nlzD8Tm0HjW+uyY1W0ekDp45Exz9l0VY0EmdvjphBe1w==
+gridplus-sdk@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/gridplus-sdk/-/gridplus-sdk-1.0.0.tgz#008a24a8ec5b50a6fdb8005723a77f5d24fc88cd"
+  integrity sha512-vVyLyAY7Ockkf8hv+em1KkjPwvKkLmb7mYZFY2Vtt60+qpmPut1S2/WjrZGdNGGawWAKAmpw8WKdw5MSg2UkpA==
   dependencies:
     aes-js "^3.1.1"
     bech32 "^2.0.0"
@@ -13521,6 +13521,7 @@ gridplus-sdk@^0.9.7:
     crc-32 "^1.2.0"
     elliptic "6.5.4"
     eth-eip712-util-browser "^0.0.3"
+    hash.js "^1.1.7"
     js-sha3 "^0.8.0"
     rlp-browser "^1.0.1"
     secp256k1 "4.0.2"
@@ -28379,3 +28380,8 @@ zwitch@^1.0.0:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/zwitch/-/zwitch-1.0.5.tgz#d11d7381ffed16b742f6af7b3f223d5cd9fe9920"
   integrity sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==
+
+zxcvbn@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/zxcvbn/-/zxcvbn-4.4.2.tgz#28ec17cf09743edcab056ddd8b1b06262cc73c30"
+  integrity sha1-KOwXzwl0PtyrBW3dixsGJizHPDA=

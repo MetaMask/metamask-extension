@@ -4,7 +4,6 @@ import { Redirect, useHistory, useParams } from 'react-router-dom';
 import { getTokens } from '../../ducks/metamask/metamask';
 import { getUseTokenDetection, getTokenList } from '../../selectors';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
-import { isEqualCaseInsensitive } from '../../helpers/utils/util';
 import Identicon from '../../components/ui/identicon';
 import { I18nContext } from '../../contexts/i18n';
 import { useTokenTracker } from '../../hooks/useTokenTracker';
@@ -25,6 +24,7 @@ import {
   TEXT_ALIGN,
   OVERFLOW_WRAP,
 } from '../../helpers/constants/design-system';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 export default function TokenDetailsPage() {
   const dispatch = useDispatch();

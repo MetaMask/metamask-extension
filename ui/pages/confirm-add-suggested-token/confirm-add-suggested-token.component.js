@@ -7,7 +7,7 @@ import TokenBalance from '../../components/ui/token-balance';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { isEqualCaseInsensitive } from '../../helpers/utils/util';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 function getTokenName(name, symbol) {
   return typeof name === 'undefined' ? symbol : `${name} (${symbol})`;

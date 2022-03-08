@@ -14,11 +14,7 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import { isBalanceSufficient, calcGasTotal } from '../send/send.utils';
-import {
-  isEqualCaseInsensitive,
-  shortenAddress,
-  valuesFor,
-} from '../../helpers/utils/util';
+import { shortenAddress, valuesFor } from '../../helpers/utils/util';
 import {
   getAdvancedInlineGasShown,
   getCustomNonceValue,
@@ -55,6 +51,7 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';

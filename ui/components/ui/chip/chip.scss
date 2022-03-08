@@ -4,7 +4,7 @@
   $self: &;
 
   border-radius: 100px;
-  border: 1px solid var(--ui-1);
+  border: 1px solid var(--color-border-default);
   padding: 8px 16px;
   margin: 0 4px;
   display: flex;
@@ -46,6 +46,7 @@
     text-align: center;
     width: 100%;
     font-size: design-system.$font-size-h5;
+    color: var(--color-text-default);
 
     &:focus {
       text-align: left;

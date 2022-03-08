@@ -68,6 +68,7 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LEDGER_TRANSPORT_TYPES.WEBHID
         : LEDGER_TRANSPORT_TYPES.U2F,
+      theme: 'default',
       ...opts.initState,
     };
 
@@ -167,6 +168,15 @@ export default class PreferencesController {
    */
   setEIP1559V2Enabled(val) {
     this.store.updateState({ eip1559V2Enabled: val });
+  }
+
+  /**
+   * Setter for the `theme` property
+   *
+   * @param {string} val - 'default' or 'dark' value based on the mode selected by user.
+   */
+  setTheme(val) {
+    this.store.updateState({ theme: val });
   }
 
   /**

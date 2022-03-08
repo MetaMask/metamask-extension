@@ -102,7 +102,7 @@ export default function AddCollectible() {
           {collectibleAddFailed && (
             <ActionableMessage
               type="danger"
-              useIcon="true"
+              useIcon
               iconFillColor="#d73a49"
               message={
                 <Box display={DISPLAY.INLINE_FLEX}>

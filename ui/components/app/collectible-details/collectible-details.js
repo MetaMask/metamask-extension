@@ -18,11 +18,7 @@ import {
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getAssetImageURL,
-  isEqualCaseInsensitive,
-  shortenAddress,
-} from '../../../helpers/utils/util';
+import { getAssetImageURL, shortenAddress } from '../../../helpers/utils/util';
 import {
   getCurrentChainId,
   getIpfsGateway,
@@ -54,6 +50,7 @@ import InfoTooltip from '../../ui/info-tooltip';
 import { ERC721 } from '../../../helpers/constants/common';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 
 export default function CollectibleDetails({ collectible }) {
   const {

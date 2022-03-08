@@ -33,11 +33,7 @@ import {
   ALLOWED_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import {
-  shortenAddress,
-  getAccountByAddress,
-  isEqualCaseInsensitive,
-} from '../helpers/utils/util';
+import { shortenAddress, getAccountByAddress } from '../helpers/utils/util';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -60,6 +56,7 @@ import {
   getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
 } from '../ducks/app/app';
+import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -787,6 +784,16 @@ export function getUseCollectibleDetection(state) {
  */
 export function getOpenSeaEnabled(state) {
   return Boolean(state.metamask.openSeaEnabled);
+}
+
+/**
+ * To get the `theme` value which determines which theme is selected
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getTheme(state) {
+  return state.metamask.theme;
 }
 
 /**

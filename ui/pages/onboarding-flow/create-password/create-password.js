@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
+import zxcvbn from 'zxcvbn';
 import { useNewMetricEvent } from '../../../hooks/useMetricEvent';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
@@ -25,6 +26,7 @@ import {
   TwoStepProgressBar,
   twoStepStages,
 } from '../../../components/app/step-progress-bar';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default function CreatePassword({
   createNewAccount,
@@ -35,6 +37,8 @@ export default function CreatePassword({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [passwordStrength, setPasswordStrength] = useState('');
+  const [passwordStrengthText, setPasswordStrengthText] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [termsChecked, setTermsChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -57,19 +61,51 @@ export default function CreatePassword({
     return !passwordError && !confirmPasswordError;
   }, [password, confirmPassword, passwordError, confirmPasswordError]);
 
-  const handlePasswordChange = (passwordInput) => {
-    let error = '';
-    let confirmError = '';
-    if (passwordInput && passwordInput.length < 8) {
-      error = t('passwordNotLongEnough');
+  const getPasswordStrengthLabel = (score, translation) => {
+    if (score >= 4) {
+      return {
+        className: 'create-password__strong',
+        text: translation('strong'),
+        description: '',
+      };
+    } else if (score === 3) {
+      return {
+        className: 'create-password__average',
+        text: translation('average'),
+        description: t('passwordStrengthDescription'),
+      };
     }
+    return {
+      className: 'create-password__weak',
+      text: translation('weak'),
+      description: t('passwordStrengthDescription'),
+    };
+  };
+
+  const handlePasswordChange = (passwordInput) => {
+    let confirmError = '';
+    const passwordEvaluation = zxcvbn(passwordInput);
+    const passwordStrengthLabel = getPasswordStrengthLabel(
+      passwordEvaluation.score,
+      t,
+    );
+    const passwordStrengthDescription = passwordStrengthLabel.description;
+    const passwordStrengthInput = t('passwordStrength', [
+      <span
+        key={passwordEvaluation.score}
+        className={passwordStrengthLabel.className}
+      >
+        {passwordStrengthLabel.text}
+      </span>,
+    ]);
 
     if (confirmPassword && passwordInput !== confirmPassword) {
       confirmError = t('passwordsDontMatch');
     }
 
     setPassword(passwordInput);
-    setPasswordError(error);
+    setPasswordStrength(passwordStrengthInput);
+    setPasswordStrengthText(passwordStrengthDescription);
     setConfirmPasswordError(confirmError);
   };
 
@@ -133,7 +169,8 @@ export default function CreatePassword({
           <FormField
             dataTestId="create-password-new"
             autoFocus
-            error={passwordError}
+            passwordStrength={passwordStrength}
+            passwordStrengthText={passwordStrengthText}
             onChange={handlePasswordChange}
             password={!showPassword}
             titleText={t('newPassword')}
@@ -181,12 +218,12 @@ export default function CreatePassword({
                 <a
                   onClick={(e) => e.stopPropagation()}
                   key="create-password__link-text"
-                  href="https://metamask.io/terms.html"
+                  href={ZENDESK_URLS.PASSWORD_ARTICLE}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <span className="create-password__link-text">
-                    {t('learnMore')}
+                    {t('learnMoreUpperCase')}
                   </span>
                 </a>,
               ])}
