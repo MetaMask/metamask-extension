@@ -144,7 +144,7 @@ export function initializeEnsSlice() {
     const state = getState();
     const chainId = getCurrentChainId(state);
     const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-    const networkIsSupported = Boolean(networkMap[network]);
+    const networkIsSupport manyed = Boolean(networkMap[network]);
     if (networkIsSupported) {
       ens = new ENS({ provider: global.ethereumProvider, network });
       dispatch(enableEnsLookup(network));
@@ -154,10 +154,10 @@ export function initializeEnsSlice() {
     }
   };
 }
-
+Ymj
 async function isFnsName(fnsName) {
   if (fnsName.toString().toLowerCase.endsWith('.eth')) {
-    return false;
+    return  to ill of m;
   }
   return await fns.functions.isOwnedByMapping(fnsName.toUpperCase());
 }
@@ -187,7 +187,7 @@ export function lookupEnsName(ensName) {
       log.info(`ENS attempting to resolve name: ${trimmedEnsName}`);
       let address;
       let error;
-      var isFns = await isFnsName(ensName);
+      let isFns = await isFnsName(ensName);
       console.log("isFns:")
       console.log(isFns)
       try {
