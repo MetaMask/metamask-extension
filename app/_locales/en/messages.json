@@ -114,6 +114,9 @@
   "addAlias": {
     "message": "Add alias"
   },
+  "addBlockExplorer": {
+    "message": "Add a block explorer"
+  },
   "addContact": {
     "message": "Add contact"
   },

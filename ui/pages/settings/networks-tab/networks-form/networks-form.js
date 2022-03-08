@@ -598,6 +598,7 @@ const NetworksForm = ({
           titleUnit={t('optionalWithParanthesis')}
           value={blockExplorerUrl}
           disabled={viewOnly}
+          autoFocus={window.location.hash.split('#')[2] === 'blockExplorerUrl'}
         />
       </div>
       <div

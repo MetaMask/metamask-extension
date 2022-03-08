@@ -5,12 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAccountLink } from '@metamask/etherscan-link';
 
 import { showModal } from '../../../store/actions';
-import { CONNECTED_ROUTE } from '../../../helpers/constants/routes';
+import {
+  CONNECTED_ROUTE,
+  NETWORKS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { Menu, MenuItem } from '../../ui/menu';
 import {
   getCurrentChainId,
   getCurrentKeyring,
+  getIsCustomNetwork,
   getRpcPrefsForCurrentProvider,
   getSelectedIdentity,
 } from '../../../selectors';
@@ -33,6 +37,7 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
   const { blockExplorerUrl } = rpcPrefs;
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
   const trackEvent = useContext(MetaMetricsContext);
+  const isCustomNetwork = useSelector(getIsCustomNetwork);
 
   const isRemovable = keyring.type !== 'HD Key Tree';
 
@@ -43,21 +48,27 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
       onHide={onClose}
     >
       <MenuItem
-        onClick={() => {
-          trackEvent({
-            event: 'Clicked Block Explorer Link',
-            category: 'Navigation',
-            properties: {
-              link_type: 'Account Tracker',
-              action: 'Account Options',
-              block_explorer_domain: getURLHostName(addressLink),
-            },
-          });
-          global.platform.openTab({
-            url: addressLink,
-          });
-          onClose();
-        }}
+        onClick={
+          !rpcPrefs.blockExplorerUrl && isCustomNetwork
+            ? () => {
+                history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+              }
+            : () => {
+                trackEvent({
+                  event: 'Clicked Block Explorer Link',
+                  category: 'Navigation',
+                  properties: {
+                    link_type: 'Account Tracker',
+                    action: 'Account Options',
+                    block_explorer_domain: getURLHostName(addressLink),
+                  },
+                });
+                global.platform.openTab({
+                  url: addressLink,
+                });
+                onClose();
+              }
+        }
         subtitle={
           blockExplorerUrlSubTitle ? (
             <span className="account-options-menu__explorer-origin">
@@ -67,9 +78,12 @@ export default function AccountOptionsMenu({ anchorElement, onClose }) {
         }
         iconClassName="fas fa-external-link-alt"
       >
-        {rpcPrefs.blockExplorerUrl
-          ? t('viewinExplorer', [t('blockExplorerAccountAction')])
-          : t('viewOnEtherscan', [t('blockExplorerAccountAction')])}
+        {rpcPrefs.blockExplorerUrl &&
+          t('viewinExplorer', [t('blockExplorerAccountAction')])}
+        {!rpcPrefs.blockExplorerUrl && isCustomNetwork && t('addBlockExplorer')}
+        {!rpcPrefs.blockExplorerUrl &&
+          !isCustomNetwork &&
+          t('viewOnEtherscan', [t('blockExplorerAccountAction')])}
       </MenuItem>
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem

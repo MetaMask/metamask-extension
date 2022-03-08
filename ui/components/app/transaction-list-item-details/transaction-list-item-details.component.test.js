@@ -30,6 +30,10 @@ describe('TransactionListItemDetails Component', () => {
       initialTransaction: transaction,
     };
 
+    const rpcPrefs = {
+      blockExplorerUrl: 'https://customblockexplorer.com/',
+    };
+
     const wrapper = shallow(
       <TransactionListItemDetails
         onClose={() => undefined}
@@ -40,6 +44,7 @@ describe('TransactionListItemDetails Component', () => {
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
+        rpcPrefs={rpcPrefs}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
@@ -75,6 +80,10 @@ describe('TransactionListItemDetails Component', () => {
       hasCancelled: false,
     };
 
+    const rpcPrefs = {
+      blockExplorerUrl: 'https://customblockexplorer.com/',
+    };
+
     const wrapper = shallow(
       <TransactionListItemDetails
         onClose={() => undefined}
@@ -86,6 +95,7 @@ describe('TransactionListItemDetails Component', () => {
         showSpeedUp
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
+        rpcPrefs={rpcPrefs}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
@@ -117,6 +127,10 @@ describe('TransactionListItemDetails Component', () => {
       initialTransaction: transaction,
     };
 
+    const rpcPrefs = {
+      blockExplorerUrl: 'https://customblockexplorer.com/',
+    };
+
     const wrapper = shallow(
       <TransactionListItemDetails
         onClose={() => undefined}
@@ -127,6 +141,7 @@ describe('TransactionListItemDetails Component', () => {
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
+        rpcPrefs={rpcPrefs}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );
@@ -161,6 +176,10 @@ describe('TransactionListItemDetails Component', () => {
       initialTransaction: transaction,
     };
 
+    const rpcPrefs = {
+      blockExplorerUrl: 'https://customblockexplorer.com/',
+    };
+
     const wrapper = shallow(
       <TransactionListItemDetails
         onClose={() => undefined}
@@ -171,6 +190,7 @@ describe('TransactionListItemDetails Component', () => {
         transactionGroup={transactionGroup}
         senderNickname="sender-nickname"
         recipientNickname="recipient-nickname"
+        rpcPrefs={rpcPrefs}
       />,
       { context: { t: (str1, str2) => (str2 ? str1 + str2 : str1) } },
     );

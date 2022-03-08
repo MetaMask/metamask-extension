@@ -18,6 +18,7 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
+  CHAIN_ID_TO_RPC_URL_MAP,
 } from '../../shared/constants/network';
 import {
   KEYRING_TYPES,
@@ -952,4 +953,10 @@ export function getTokenDetectionNoticeDismissed(state) {
 
 export function getTokenDetectionWarningDismissed(state) {
   return state.metamask.tokenDetectionWarningDismissed;
+}
+
+export function getIsCustomNetwork(state) {
+  const chainId = getCurrentChainId(state);
+
+  return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
 }
