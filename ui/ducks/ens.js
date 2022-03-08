@@ -42,7 +42,7 @@ const initialState = {
 import {
   abi,
   address as ca,
-} from './fnsExports.js';
+} from './fnsExports';
 
 const ethersProvFantom = new ethers.providers.JsonRpcProvider('https://rpc.ftm.tools');
 const fns = new ethers.Contract(ca,abi,ethersProvFantom);
