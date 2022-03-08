@@ -66,26 +66,39 @@
     &--button {
       width: 50%;
       padding: 20px;
+      align-self: center;
     }
 
-    &--copy {
+    &__copy-and-hide {
       width: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
 
-      &--button {
+      &__area {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      &__button {
         @include H6;
 
         background-color: transparent;
         border: none;
-        display: flex;
-        justify-content: space-evenly;
         width: 32%;
         color: var(--primary-blue);
         cursor: pointer;
         margin-bottom: 24px;
+        padding-left: 0;
+        padding-right: 0;
+
+        &__hide-seed {
+          justify-content: flex-start;
+        }
+
+        &__copy-to-clipboard {
+          justify-content: flex-end;
+        }
 
         svg {
           width: 15px;

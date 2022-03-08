@@ -1412,6 +1412,9 @@
   "hide": {
     "message": "Hide"
   },
+  "hideSeedPhrase": {
+    "message": "Hide seed phrase"
+  },
   "hideToken": {
     "message": "Hide token"
   },
@@ -2554,6 +2557,9 @@
   },
   "revealSeedWordsWarningTitle": {
     "message": "DO NOT share this phrase with anyone!"
+  },
+  "revealTheSeedPhrase": {
+    "message": "Reveal seed phrase"
   },
   "rinkeby": {
     "message": "Rinkeby Test Network"
