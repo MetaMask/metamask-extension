@@ -83,7 +83,7 @@ export default function Typography({
   align,
   overflowWrap,
   title,
-  boxProps = {},
+  tag,
   margin = [1, 0],
   boxProps = {},
   className,
