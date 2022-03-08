@@ -97,7 +97,7 @@
       "tokens": [],
       "hiddenTokens": [],
       "suggestedTokens": {},
-      "useBlockie": true,
+      "useBlockie": false,
       "useNonceField": false,
       "usePhishDetect": true,
       "featureFlags": {

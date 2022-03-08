@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures, largeDelayMs } = require('../helpers');
 const ThreeboxMockServer = require('../mock-3box/threebox-mock-server');
 
@@ -19,6 +20,7 @@ describe('Threebox', function () {
   after(async function () {
     await threeboxServer.stop();
   });
+
   it('Set up data to be restored by 3box', async function () {
     await withFixtures(
       {
@@ -81,6 +83,24 @@ describe('Threebox', function () {
         // goes to the settings screen
         await driver.clickElement('.account-menu__icon');
         await driver.clickElement({ text: 'Settings', tag: 'div' });
+
+        await driver.waitForSelector('[data-test-id="jazz_icon"]');
+        // finds the jazzicon toggle turned on
+        await driver.findElement(
+          '.settings-page__content-item__identicon__item__icon--active',
+        );
+
+        const jazziconText = await driver.findElement({
+          tag: 'h6',
+          text: 'Jazzicons',
+        });
+        assert.equal(await jazziconText.getText(), 'Jazzicons');
+
+        const blockiesText = await driver.findElement({
+          tag: 'h6',
+          text: 'Blockies',
+        });
+        assert.equal(await blockiesText.getText(), 'Blockies');
 
         // finds the restored address in the contact list
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
