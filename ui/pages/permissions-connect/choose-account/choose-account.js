@@ -48,7 +48,7 @@ const ChooseAccount = ({
   };
 
   return (
-    <div className="permissions-connect-choose-account">
+    <>
       <PermissionsConnectHeader
         iconUrl={targetSubjectMetadata?.iconUrl}
         iconName={targetSubjectMetadata?.name}
@@ -89,7 +89,7 @@ const ChooseAccount = ({
           </Button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
