@@ -502,10 +502,10 @@ export function unlockHardwareWalletAccounts(
   };
 }
 
-export async function checkLedgerReady(fromAddress) {
+export async function checkDeviceReady(fromAddress) {
   let isReady = false;
   try {
-    isReady = await promisifiedBackground.checkLedgerReady(fromAddress);
+    isReady = await promisifiedBackground.checkDeviceReady(fromAddress);
   } catch (e) {
     log.error(e);
   }

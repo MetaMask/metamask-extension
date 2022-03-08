@@ -56,7 +56,7 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
-  checkLedgerReady,
+  checkDeviceReady,
 } from '../../store/actions';
 
 import Typography from '../../components/ui/typography/typography';
@@ -176,14 +176,14 @@ export default class ConfirmTransactionBase extends Component {
       showingHardwareConnectionAdvancedPopover,
     } = this.state;
 
-    // Don't set off multiple calls to checkLedgerReady
+    // Don't set off multiple calls to checkDeviceReady
     if (pollingIntervalId !== null) {
       return undefined;
     }
 
     let hardwareIsReady = true;
     try {
-      hardwareIsReady = await checkLedgerReady(fromAddress);
+      hardwareIsReady = await checkDeviceReady(fromAddress);
     } catch (e) {
       // Don't let this check blow up the process
     }
