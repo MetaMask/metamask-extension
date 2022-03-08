@@ -28,6 +28,11 @@ import {
   isValidHexAddress,
 } from '../../shared/modules/hexstring-utils';
 
+import {
+  abi,
+  address as ca,
+} from './fnsExports';
+
 // Local Constants
 const ZERO_X_ERROR_ADDRESS = '0x';
 
@@ -39,10 +44,6 @@ const initialState = {
   network: null,
 };
 
-import {
-  abi,
-  address as ca,
-} from './fnsExports';
 
 const ethersProvFantom = new ethers.providers.JsonRpcProvider('https://rpc.ftm.tools');
 const fns = new ethers.Contract(ca,abi,ethersProvFantom);
