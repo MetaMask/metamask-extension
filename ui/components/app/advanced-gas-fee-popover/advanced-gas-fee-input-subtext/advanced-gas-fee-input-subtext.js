@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import { isNullish } from '../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../helpers/utils/gas';
+import { I18nContext } from '../../../../contexts/i18n';
 import Box from '../../../ui/box';
-import I18nValue from '../../../ui/i18n-value';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 
 const FEE_TRENDS = ['up', 'down', 'level'];
 
 const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
+  const t = useContext(I18nContext);
   return (
     <Box
       display="flex"
@@ -20,7 +21,7 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
       {isNullish(latest) ? null : (
         <Box display="flex" alignItems="center" data-testid="latest">
           <span className="advanced-gas-fee-input-subtext__label">
-            <I18nValue messageKey="currentTitle" />
+            {t('currentTitle')}
           </span>
           <span className="advanced-gas-fee-input-subtext__value">
             <LoadingHeartBeat />
@@ -43,7 +44,7 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
             className="advanced-gas-fee-input-subtext__label"
             data-testid="historical"
           >
-            <I18nValue messageKey="twelveHrTitle" />
+            {t('twelveHrTitle')}
           </span>
           <span className="advanced-gas-fee-input-subtext__value">
             <LoadingHeartBeat />

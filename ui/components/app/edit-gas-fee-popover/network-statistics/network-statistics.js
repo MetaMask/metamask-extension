@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   COLORS,
   FONT_WEIGHT,
@@ -6,13 +6,14 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { isNullish } from '../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../helpers/utils/gas';
+import { I18nContext } from '../../../../contexts/i18n';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
-import I18nValue from '../../../ui/i18n-value';
 import Typography from '../../../ui/typography/typography';
 import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
 import StatusSlider from './status-slider';
 
 const NetworkStatistics = () => {
+  const t = useContext(I18nContext);
   const { gasFeeEstimates } = useGasFeeContext();
   const formattedLatestBaseFee = formatGasFeeOrFeeRange(
     gasFeeEstimates?.estimatedBaseFee,
@@ -34,7 +35,7 @@ const NetworkStatistics = () => {
         margin={[3, 0]}
         variant={TYPOGRAPHY.H8}
       >
-        <I18nValue messageKey="networkStatus" />
+        {t('networkStatus')}
       </Typography>
       <div className="network-statistics__info">
         {isNullish(formattedLatestBaseFee) ? null : (
@@ -47,7 +48,7 @@ const NetworkStatistics = () => {
                 {formattedLatestBaseFee}
               </span>
               <span className="network-statistics__field-label">
-                <I18nValue messageKey="baseFee" />
+                {t('baseFee')}
               </span>
             </BaseFeeTooltip>
           </div>
@@ -62,7 +63,7 @@ const NetworkStatistics = () => {
                 {formattedLatestPriorityFeeRange}
               </span>
               <span className="network-statistics__field-label">
-                <I18nValue messageKey="priorityFee" />
+                {t('priorityFee')}
               </span>
             </PriorityFeeTooltip>
           </div>
