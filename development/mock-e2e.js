@@ -14,6 +14,12 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
 
+  await server.forPost('https://api.segment.io/v1/batch').thenCallback(() => {
+    return {
+      statusCode: 200,
+    };
+  });
+
   testSpecificMock(server);
 }
 
