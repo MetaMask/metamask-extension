@@ -40,6 +40,9 @@ import {
   CollectibleDetectionController,
   PermissionController,
   SubjectMetadataController,
+  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  RateLimitController,
+  ///: END:ONLY_INCLUDE_IN
 } from '@metamask/controllers';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
