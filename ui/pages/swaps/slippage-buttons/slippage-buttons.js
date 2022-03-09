@@ -169,8 +169,9 @@ export default function SlippageButtons({
                           setCustomValue(event.target.value);
                           onSelect(Number(event.target.value));
                         }}
-                        type="number"
-                        step="0.1"
+                        type="text"
+                        pattern="\d*"
+                        maxLength="4"
                         ref={setInputRef}
                         onBlur={() => {
                           setEnteringCustomValue(false);
