@@ -174,7 +174,7 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const isCollectibleTransfer = Boolean(
-    allCollectibleContracts?.[selectedAddress]?.[chainId].find((contract) => {
+    allCollectibleContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
       return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
     }),
   );

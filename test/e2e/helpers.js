@@ -16,6 +16,7 @@ const { ensureXServerIsRunning } = require('./x-server');
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
 const largeDelayMs = regularDelayMs * 2;
+const veryLargeDelayMs = largeDelayMs * 2;
 const dappPort = 8080;
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
@@ -276,6 +277,7 @@ module.exports = {
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
+  veryLargeDelayMs,
   withFixtures,
   connectDappWithExtensionPopup,
   completeImportSRPOnboardingFlow,

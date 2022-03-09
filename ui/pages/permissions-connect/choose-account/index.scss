@@ -1,16 +1,4 @@
 .permissions-connect-choose-account {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  height: 100%;
-
-  @media screen and (min-width: $break-large) {
-    width: 426px;
-  }
-
   &__title {
     @include H4;
   }
