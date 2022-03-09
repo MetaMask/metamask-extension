@@ -42,7 +42,7 @@ const AddNetwork = ({
           onClick={onBackClick}
           className="add-network__header__back-icon"
         />
-        <Typography variant={TYPOGRAPHY.H3} color={COLORS.BLACK}>
+        <Typography variant={TYPOGRAPHY.H3} color={COLORS.TEXT_DEFAULT}>
           {t('addNetwork')}
         </Typography>
       </Box>
@@ -53,14 +53,14 @@ const AddNetwork = ({
       >
         <Typography
           variant={TYPOGRAPHY.H6}
-          color={COLORS.UI4}
+          color={COLORS.TEXT_ALTERNATIVE}
           margin={[4, 0, 0, 0]}
         >
           {t('addFromAListOfPopularNetworks')}
         </Typography>
         <Typography
           variant={TYPOGRAPHY.H7}
-          color={COLORS.UI3}
+          color={COLORS.TEXT_MUTED}
           margin={[4, 0, 3, 0]}
         >
           {t('customNetworks')}
@@ -77,7 +77,7 @@ const AddNetwork = ({
               src={item?.rpcPrefs?.imageUrl}
               alt={t('logo', [item.ticker])}
             />
-            <Typography variant={TYPOGRAPHY.H7} color={COLORS.BLACK}>
+            <Typography variant={TYPOGRAPHY.H7} color={COLORS.TEXT_DEFAULT}>
               {item.ticker}
             </Typography>
             <img
@@ -95,7 +95,7 @@ const AddNetwork = ({
         className="add-network__footer"
       >
         <Button type="link" onClick={onAddNetworkManuallyClick}>
-          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY1}>
+          <Typography variant={TYPOGRAPHY.H6} color={COLORS.PRIMARY_DEFAULT}>
             {t('addANetworkManually')}
           </Typography>
         </Button>

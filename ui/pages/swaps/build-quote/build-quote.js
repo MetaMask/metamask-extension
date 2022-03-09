@@ -622,7 +622,7 @@ export default function BuildQuote({
               </Typography>
               <Typography
                 variant={TYPOGRAPHY.H8}
-                color={COLORS.UI4}
+                color={COLORS.TEXT_ALTERNATIVE}
                 boxProps={{ marginTop: 3 }}
               >
                 {t('stxSubDescription')}&nbsp;
@@ -630,7 +630,7 @@ export default function BuildQuote({
                   tag="span"
                   fontWeight={FONT_WEIGHT.BOLD}
                   variant={TYPOGRAPHY.H8}
-                  color={COLORS.UI4}
+                  color={COLORS.TEXT_ALTERNATIVE}
                 >
                   {t('stxYouCanOptOut')}&nbsp;
                 </Typography>

@@ -488,7 +488,7 @@ export default class ConfirmApproveContent extends Component {
             <Typography
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.NORMAL}
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               boxProps={{ marginLeft: 1, marginTop: 2 }}
             >
               {getURLHostName(origin)}
@@ -519,7 +519,7 @@ export default class ConfirmApproveContent extends Component {
             <Typography
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.NORMAL}
-              color={COLORS.UI4}
+              color={COLORS.TEXT_ALTERNATIVE}
               boxProps={{ marginBottom: 0 }}
             >
               {ellipsify(toAddress)}
