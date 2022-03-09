@@ -58,7 +58,7 @@ export default function FormField({
               <Typography
                 tag={TYPOGRAPHY.H6}
                 variant={TYPOGRAPHY.H6}
-                color={COLORS.UI4}
+                color={COLORS.TEXT_ALTERNATIVE}
                 boxProps={{ display: DISPLAY.INLINE_BLOCK }}
               >
                 {titleUnit}
@@ -108,7 +108,7 @@ export default function FormField({
         )}
         {error && (
           <Typography
-            color={COLORS.ERROR1}
+            color={COLORS.ERROR_DEFAULT}
             variant={TYPOGRAPHY.H7}
             className="form-field__error"
           >
@@ -117,7 +117,7 @@ export default function FormField({
         )}
         {warning && (
           <Typography
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
             variant={TYPOGRAPHY.H7}
             className="form-field__warning"
           >
@@ -126,7 +126,7 @@ export default function FormField({
         )}
         {passwordStrength && (
           <Typography
-            color={COLORS.BLACK}
+            color={COLORS.TEXT_DEFAULT}
             variant={TYPOGRAPHY.H7}
             className="form-field__password-strength"
           >
@@ -135,7 +135,7 @@ export default function FormField({
         )}
         {passwordStrengthText && (
           <Typography
-            color={COLORS.UI4}
+            color={COLORS.TEXT_ALTERNATIVE}
             variant={TYPOGRAPHY.H8}
             className="form-field__password-strength-text"
           >

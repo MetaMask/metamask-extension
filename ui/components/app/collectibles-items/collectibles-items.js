@@ -159,7 +159,7 @@ export default function CollectiblesItems({
                 collectionName,
               )}
               <Typography
-                color={COLORS.BLACK}
+                color={COLORS.TEXT_DEFAULT}
                 variant={TYPOGRAPHY.H5}
                 margin={[0, 0, 0, 2]}
               >

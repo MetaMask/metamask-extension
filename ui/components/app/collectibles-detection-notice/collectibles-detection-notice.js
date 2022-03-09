@@ -33,7 +33,7 @@ export default function CollectiblesDetectionNotice() {
           </Box>
           <Box paddingLeft={4}>
             <Typography
-              color={COLORS.BLACK}
+              color={COLORS.TEXT_DEFAULT}
               align={TEXT_ALIGN.LEFT}
               variant={TYPOGRAPHY.H6}
               fontWeight={FONT_WEIGHT.BOLD}
@@ -41,7 +41,7 @@ export default function CollectiblesDetectionNotice() {
               {t('newNFTsDetected')}
             </Typography>
             <Typography
-              color={COLORS.BLACK}
+              color={COLORS.TEXT_DEFAULT}
               align={TEXT_ALIGN.LEFT}
               variant={TYPOGRAPHY.H6}
               boxProps={{ marginBottom: 4 }}

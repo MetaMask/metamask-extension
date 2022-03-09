@@ -20,7 +20,7 @@ const NetworkStatistics = () => {
   return (
     <div className="network-statistics">
       <Typography
-        color={COLORS.UI4}
+        color={COLORS.TEXT_ALTERNATIVE}
         fontWeight={FONT_WEIGHT.BOLD}
         margin={[3, 0]}
         variant={TYPOGRAPHY.H8}
