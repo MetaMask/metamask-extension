@@ -7,10 +7,34 @@ import { I18nContext } from '../../../../contexts/i18n';
 import Box from '../../../ui/box';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
 
-const FEE_TRENDS = ['up', 'down', 'level'];
+function determineTrendInfo(trend, t) {
+  switch (trend) {
+    case 'up':
+      return {
+        className: 'advanced-gas-fee-input-subtext__up',
+        imageSrc: '/images/up-arrow.svg',
+        imageAlt: t('upArrow'),
+      };
+    case 'down':
+      return {
+        className: 'advanced-gas-fee-input-subtext__down',
+        imageSrc: '/images/down-arrow.svg',
+        imageAlt: t('downArrow'),
+      };
+    case 'level':
+      return {
+        className: 'advanced-gas-fee-input-subtext__level',
+        imageSrc: '/images/level-arrow.svg',
+        imageAlt: t('levelArrow'),
+      };
+    default:
+      return null;
+  }
+}
 
 const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
   const t = useContext(I18nContext);
+  const trendInfo = determineTrendInfo(trend, t);
   return (
     <Box
       display="flex"
@@ -27,15 +51,15 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
             <LoadingHeartBeat />
             {formatGasFeeOrFeeRange(latest)}
           </span>
-          {FEE_TRENDS.includes(trend) ? (
-            <span className={`advanced-gas-fee-input-subtext__${trend}`}>
+          {trendInfo === null ? null : (
+            <span className={trendInfo.className}>
               <img
-                src={`./images/${trend}-arrow.svg`}
-                alt={`${trend} arrow`}
+                src={trendInfo.imageSrc}
+                alt={trendInfo.imageAlt}
                 data-testid="fee-arrow"
               />
             </span>
-          ) : null}
+          )}
         </Box>
       )}
       {isNullish(historical) ? null : (
@@ -65,7 +89,7 @@ AdvancedGasFeeInputSubtext.propTypes = {
     PropTypes.string,
     PropTypes.arrayOf(PropTypes.string),
   ]),
-  trend: PropTypes.oneOf(FEE_TRENDS),
+  trend: PropTypes.oneOf(['up', 'down', 'level']),
 };
 
 export default AdvancedGasFeeInputSubtext;
