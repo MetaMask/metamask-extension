@@ -77,6 +77,14 @@
     text-overflow: ellipsis;
   }
 
+  &__title-text-long {
+    @include H3;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   &__subtitle {
     @include H5;
 
