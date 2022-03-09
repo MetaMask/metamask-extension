@@ -9,7 +9,6 @@ describe('Phishing Detection', function () {
       )
       .thenCallback(() => {
         return {
-          headers: { 'Access-Control-Allow-Origin': '*' },
           statusCode: 200,
           json: {
             version: 2,

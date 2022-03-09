@@ -33,7 +33,7 @@ async function withFixtures(options, testSuite) {
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
   const https = await mockttp.generateCACertificate();
-  const mockServer = mockttp.getLocal({ https });
+  const mockServer = mockttp.getLocal({ https, cors: true });
   let secondaryGanacheServer;
   let dappServer;
 
