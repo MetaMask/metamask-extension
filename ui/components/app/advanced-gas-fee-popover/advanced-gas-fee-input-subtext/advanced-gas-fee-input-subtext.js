@@ -65,7 +65,7 @@ AdvancedGasFeeInputSubtext.propTypes = {
     PropTypes.string,
     PropTypes.arrayOf(PropTypes.string),
   ]),
-  trend: PropTypes.oneOf(['up', 'down', 'level']),
+  trend: PropTypes.oneOf(FEE_TRENDS),
 };
 
 export default AdvancedGasFeeInputSubtext;
