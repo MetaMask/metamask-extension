@@ -66,6 +66,7 @@ const mapStateToProps = (state) => {
     defaultHomeActiveTabName,
     swapsState,
     dismissSeedBackUpReminder,
+    firstTimeFlowType,
   } = metamask;
   const accountBalance = getCurrentEthBalance(state);
   const { forgottenPassword, threeBoxLastUpdated } = appState;
@@ -112,6 +113,7 @@ const mapStateToProps = (state) => {
     totalUnapprovedCount,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
+    firstTimeFlowType,
     haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
     swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
