@@ -24,6 +24,11 @@ const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: 'fas fa-user-check',
     rightIcon: null,
   },
+  [RestrictedMethods.snap_notify]: {
+    leftIcon: 'fas fa-bell',
+    label: (t) => t('permission_notifications'),
+    rightIcon: null,
+  },
   [RestrictedMethods['snap_getBip44Entropy_*']]: {
     label: (t, permissionName) => {
       const coinType = permissionName.split('_').slice(-1);
