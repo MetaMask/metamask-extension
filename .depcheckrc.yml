@@ -12,6 +12,9 @@ ignores:
   # dev deps
   #
 
+  # used when linting stylesheets
+  - 'postcss'
+  - 'stylelint-config-standard-scss'
   # safety fallback for npm lifecycle scripts, not used normally
   - '@lavamoat/preinstall-always-fail'
   # used in testing + ci

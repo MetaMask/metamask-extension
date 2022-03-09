@@ -2233,8 +2233,7 @@
         "@nodelib/fs.walk": true,
         "glob-parent": true,
         "merge2": true,
-        "micromatch": true,
-        "picomatch": true
+        "micromatch": true
       }
     },
     "fastq": {
