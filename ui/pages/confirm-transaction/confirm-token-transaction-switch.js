@@ -84,7 +84,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             transaction={transaction}
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
-            hexTransactionTotal={hexTransactionTotal}
+            hexMaximumTransactionFee={hexMaximumTransactionFee}
           />
         )}
       />
