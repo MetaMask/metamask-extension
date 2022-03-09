@@ -4,6 +4,7 @@
   }
 
   &__token-button {
+    color: var(--color-text-default);
     padding-inline-start: 0;
     min-width: 0;
     min-height: 0;
@@ -29,7 +30,7 @@
   }
 
   &__chevron-right {
-    color: var(--Grey-500);
+    color: var(--color-icon-default);
   }
 
   .list-item__right-content {

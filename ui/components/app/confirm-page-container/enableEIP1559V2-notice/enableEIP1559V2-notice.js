@@ -50,7 +50,7 @@ export default function EnableEIP1559V2Notice({ isFirstAlert }) {
           </Box>
           <Box paddingLeft={4}>
             <Typography
-              color={COLORS.BLACK}
+              color={COLORS.TEXT_DEFAULT}
               align={TEXT_ALIGN.LEFT}
               variant={TYPOGRAPHY.H7}
               fontWeight={FONT_WEIGHT.BOLD}
@@ -58,7 +58,7 @@ export default function EnableEIP1559V2Notice({ isFirstAlert }) {
               {t('enableEIP1559V2Header')}
             </Typography>
             <Typography
-              color={COLORS.BLACK}
+              color={COLORS.TEXT_DEFAULT}
               align={TEXT_ALIGN.LEFT}
               variant={TYPOGRAPHY.H7}
               boxProps={{ marginBottom: 2 }}

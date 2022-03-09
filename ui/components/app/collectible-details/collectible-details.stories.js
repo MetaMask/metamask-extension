@@ -13,6 +13,7 @@ export default {
 
 const collectible = {
   name: 'Catnip Spicywright',
+  assetName: 'CryptoKitties',
   tokenId: '1124157',
   address: '0x06012c8cf97bead5deae237070f9587f8e7a266d',
   image: './catnip-spicywright.png',

@@ -127,6 +127,7 @@ export const WithBothIcons = () => (
     label="Account 1"
     borderColor={COLORS.BORDER_DEFAULT}
     rightIcon={<InfoIcon size={24} severity={SEVERITIES.INFO} />}
+    bordercolor={COLORS.TEXT_ALTERNATIVE}
     leftIcon={
       <Identicon
         address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"

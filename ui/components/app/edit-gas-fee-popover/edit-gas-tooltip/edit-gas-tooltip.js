@@ -124,7 +124,7 @@ const EditGasToolTip = ({
             {maxFeePerGas && (
               <Typography
                 variant={TYPOGRAPHY.H7}
-                color={COLORS.NEUTRAL_GREY}
+                color={COLORS.TEXT_ALTERNATIVE}
                 className="edit-gas-tooltip__container__value"
               >
                 {roundToDecimalPlacesRemovingExtraZeroes(maxFeePerGas, 4)}
@@ -142,7 +142,7 @@ const EditGasToolTip = ({
             {maxPriorityFeePerGas && (
               <Typography
                 variant={TYPOGRAPHY.H7}
-                color={COLORS.NEUTRAL_GREY}
+                color={COLORS.TEXT_ALTERNATIVE}
                 className="edit-gas-tooltip__container__value"
               >
                 {roundToDecimalPlacesRemovingExtraZeroes(
@@ -163,7 +163,7 @@ const EditGasToolTip = ({
             {gasLimit && (
               <Typography
                 variant={TYPOGRAPHY.H7}
-                color={COLORS.NEUTRAL_GREY}
+                color={COLORS.TEXT_ALTERNATIVE}
                 className="edit-gas-tooltip__container__value"
               >
                 {roundToDecimalPlacesRemovingExtraZeroes(gasLimit, 4)}
