@@ -3,11 +3,6 @@
   flex-flow: column;
 
   &__transaction-data-summary {
-    padding-left: 24px;
-    padding-right: 24px;
-  }
-
-  &__transaction-data-summary {
     display: flex;
     flex-flow: column;
     color: var(--mid-gray);

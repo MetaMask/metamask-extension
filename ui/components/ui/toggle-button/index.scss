@@ -1,11 +1,11 @@
 .toggle-button {
   display: flex;
+
   $self: &;
 
   &__status {
     @include Paragraph;
 
-    display: flex;
     align-items: center;
     text-transform: uppercase;
     display: grid;

@@ -13,7 +13,7 @@
   flex-flow: column nowrap;
 
   &__header {
-    padding: 8px 24px 8px 24px;
+    padding: 8px 24px;
     position: relative;
 
     @media screen and (max-width: $break-small) {
@@ -260,7 +260,7 @@
     padding: 10px 0 20px;
 
     &--parent {
-      padding: 10px 0 10px;
+      padding: 10px 0;
     }
 
     &--dependent {

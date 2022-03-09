@@ -6,7 +6,7 @@
   font-style: normal;
 
   &__warning {
-    padding: 0 24px 16px 24px;
+    padding: 0 24px 16px;
   }
 
   &__icon-display-content {
@@ -14,7 +14,7 @@
     height: 51px;
     width: 65%;
     margin-top: 16px;
-    padding: 12px 12px 14px 12px;
+    padding: 12px 12px 14px;
     border: 1px solid var(--ui-1);
     box-sizing: border-box;
     border-radius: 100px;
@@ -46,7 +46,7 @@
   &__address-display-content {
     display: flex;
     height: 27px;
-    padding: 12px 12px 14px 12px;
+    padding: 12px 12px 14px;
     background-color: var(--ui-1);
     border-radius: 100px;
     align-items: center;
@@ -394,7 +394,7 @@
     height: 49px;
     margin-top: 5px;
     margin-bottom: 6px;
-    padding: 12px 12px 14px 12px;
+    padding: 12px 12px 14px;
     border: 1px solid #bbc0c5;
     box-sizing: border-box;
     border-radius: 6px;

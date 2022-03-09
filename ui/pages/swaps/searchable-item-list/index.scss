@@ -4,6 +4,8 @@
   position: relative;
 
   &__search {
+    z-index: 1001;
+
     > div {
       border: none;
       border-bottom: 1px solid var(--Grey-100);
@@ -44,6 +46,8 @@
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    z-index: 1002;
+    background: white;
   }
 
   &__item {
@@ -192,14 +196,6 @@
     white-space: nowrap;
   }
 
-  &__list-container {
-    z-index: 1002;
-    background: white;
-  }
-
-  &__search {
-    z-index: 1001;
-  }
 
   &__item--highlighted {
     background: var(--Grey-000);

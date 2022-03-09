@@ -4,8 +4,8 @@
 @use "utilities";
 
 $attributes: padding, margin, gap;
-$extraProperties: auto;
-$attributesToApplyExtraProperties: margin;
+$extra-properties: auto;
+$attributes-to-apply-extra-properties: margin;
 
 .box {
   // Padding, Margin, and Gap
@@ -24,8 +24,8 @@ $attributesToApplyExtraProperties: margin;
       }
     }
 
-    @if list.index($attributesToApplyExtraProperties, $attribute) {
-      @each $property in $extraProperties {
+    @if list.index($attributes-to-apply-extra-properties, $attribute) {
+      @each $property in $extra-properties {
         &--#{$attribute}-#{$property} {
           #{$attribute}: $property;
         }

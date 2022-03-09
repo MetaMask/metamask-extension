@@ -51,8 +51,8 @@
   }
 
   &__content {
-    overflow-y: scroll;
     flex: 1;
+    overflow-y: auto;
   }
 
   &__row {
@@ -94,10 +94,6 @@
   &__bottom-text {
     margin-top: 10px;
     color: #9a9a9a;
-  }
-
-  &__content {
-    overflow-y: auto;
   }
 
   &__footer {

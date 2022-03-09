@@ -40,7 +40,7 @@
   position: relative;
   height: 100px;
   width: 325px;
-  margin: 12px 0 42px 0;
+  margin: 12px 0 42px;
 
   &__textarea {
     @include Paragraph;

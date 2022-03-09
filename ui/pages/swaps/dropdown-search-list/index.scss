@@ -57,7 +57,6 @@
   &__selector-closed {
     display: flex;
     flex-flow: row nowrap;
-    align-items: center;
     padding: 16px 12px;
     box-sizing: border-box;
     cursor: pointer;
@@ -126,7 +125,6 @@
 
     padding: 16px;
     color: var(--Grey-500);
-    min-height: 300px;
     position: relative;
     z-index: 1002;
     background: white;

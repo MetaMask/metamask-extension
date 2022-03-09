@@ -11,6 +11,7 @@
   --Blue-700: #024272;
   --Blue-800: #01253f;
   --Blue-900: #00080d;
+
   // Greys
   --Grey-000: #f2f3f4;
   --Grey-100: #d6d9dc;
@@ -22,6 +23,7 @@
   --Grey-700: #3b4046;
   --Grey-800: #24272a;
   --Grey-900: #141618;
+
   // Greens
   --Green-000: #f3fcf5;
   --Green-100: #d6ffdf;
@@ -33,6 +35,7 @@
   --Green-700: #145523;
   --Green-800: #0a2c12;
   --Green-900: #041007;
+
   // Reds
   --Red-000: #fcf2f3;
   --Red-100: #f7d5d8;
@@ -44,6 +47,7 @@
   --Red-700: #8e1d28;
   --Red-800: #64141c;
   --Red-900: #3a0c10;
+
   // Orange
   --Orange-000: #fef5ef;
   --Orange-100: #fde2cf;
@@ -55,25 +59,31 @@
   --Orange-700: #954005;
   --Orange-800: #632b04;
   --Orange-900: #321602;
+
   // Yellow
   --Yellow-000: #fefae8; // Temporary placeholder
   --Yellow-100: #fefcde;
   --Yellow-500: #ffd33d;
+
   // Black
   --Black-100: #24292e;
+
   // Primary colors
   --primary-blue: var(--Blue-500);
   --primary-orange: var(--Orange-500);
+
   // Accents
   --accent-yellow: var(--Yellow-500);
   --accent-green: var(--Green-500);
   --accent-red: var(--Red-500);
   --accent-purple: #6f42c1;
   --accent-pink: #ff45d8;
+
   // Neutrals
   --neutral-white: #fff;
   --neutral-black: var(--Black-100);
   --neutral-grey: var(--Grey-500);
+
   // Everything below this line is part of the new color system
   --primary-1: #037dd6;
   --primary-2: #eaf6ff;
@@ -108,6 +118,7 @@
 }
 
 /* Deprecated colors */
+/* stylelint-disable-next-line no-duplicate-selectors */
 :root {
   --white: #fff;
   --black: #000;

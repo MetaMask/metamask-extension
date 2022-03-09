@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .settings-tab {
   &__error {
     padding-bottom: 20px;
@@ -13,11 +15,11 @@
   }
 
   &__button--red {
-    border-color: lighten($monzo, 10%);
+    border-color: color.adjust($monzo, $lightness: 10%);
     color: var(--monzo);
 
     &:active {
-      background: lighten($monzo, 55%);
+      background: color.adjust($monzo, $lightness: 55%);
       border-color: var(--monzo);
     }
 

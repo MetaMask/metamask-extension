@@ -119,6 +119,7 @@ input.form-control {
 }
 
 /** Default Typography on base elements **/
+/* stylelint-disable-next-line no-duplicate-selectors */
 * {
   font-family: $font-family;
 }

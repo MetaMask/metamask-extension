@@ -58,10 +58,6 @@
       display: none;
     }
 
-    &__tab {
-      margin-right: 0;
-    }
-
     &__tabs {
       margin-top: 0;
     }
@@ -69,6 +65,7 @@
     &__tab {
       @include H6;
 
+      margin-right: 0;
       width: 100%;
 
       &:last-of-type {

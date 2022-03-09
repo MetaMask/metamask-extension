@@ -1,7 +1,7 @@
 .invalid-custom-network-alert {
   &__content {
     border-radius: 0;
-    padding: 0 24px 16px 24px;
+    padding: 0 24px 16px;
 
     > p {
       @include Paragraph;

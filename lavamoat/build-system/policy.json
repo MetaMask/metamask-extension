@@ -946,22 +946,25 @@
         "fastq": true
       }
     },
-    "@stylelint/postcss-css-in-js": {
+    "@ronilaukkarinen/gulp-stylelint": {
+      "builtin": {
+        "fs.mkdir": true,
+        "fs.writeFile": true,
+        "path.dirname": true,
+        "path.resolve": true,
+        "stream.Transform": true
+      },
       "globals": {
-        "__dirname": true
+        "Buffer.from": true,
+        "process.cwd": true,
+        "process.nextTick": true
       },
       "packages": {
-        "@babel/core": true,
-        "postcss": true,
-        "postcss-syntax": true
-      }
-    },
-    "@stylelint/postcss-markdown": {
-      "packages": {
-        "postcss-html": true,
-        "postcss-syntax": true,
-        "remark": true,
-        "unist-util-find-all-after": true
+        "fancy-log": true,
+        "plugin-error": true,
+        "source-map": true,
+        "strip-ansi": true,
+        "stylelint": true
       }
     },
     "JSONStream": {
@@ -1147,16 +1150,13 @@
     },
     "autoprefixer": {
       "globals": {
-        "console": true,
-        "process.cwd": true,
-        "process.env.AUTOPREFIXER_GRID": true
+        "process.cwd": true
       },
       "packages": {
         "browserslist": true,
         "caniuse-lite": true,
         "normalize-range": true,
         "num2fraction": true,
-        "picocolors": true,
         "postcss": true,
         "postcss-value-parser": true
       }
@@ -1511,11 +1511,6 @@
         "shallow-clone": true
       }
     },
-    "clone-regexp": {
-      "packages": {
-        "is-regexp": true
-      }
-    },
     "clone-stats": {
       "builtin": {
         "fs.Stats": true
@@ -1774,23 +1769,6 @@
       "packages": {
         "esutils": true,
         "isarray": true
-      }
-    },
-    "dom-serializer": {
-      "packages": {
-        "domelementtype": true,
-        "entities": true
-      }
-    },
-    "domhandler": {
-      "packages": {
-        "domelementtype": true
-      }
-    },
-    "domutils": {
-      "packages": {
-        "dom-serializer": true,
-        "domelementtype": true
       }
     },
     "duplexer": {
@@ -2174,11 +2152,6 @@
         "through": true
       }
     },
-    "execall": {
-      "packages": {
-        "clone-regexp": true
-      }
-    },
     "expand-brackets": {
       "globals": {
         "__filename": true
@@ -2351,8 +2324,7 @@
       },
       "packages": {
         "flatted": true,
-        "rimraf": true,
-        "write": true
+        "rimraf": true
       }
     },
     "flush-write-stream": {
@@ -2667,12 +2639,6 @@
         "path.join": true
       }
     },
-    "gonzales-pe": {
-      "globals": {
-        "console.error": true,
-        "define": true
-      }
-    },
     "graceful-fs": {
       "builtin": {
         "assert.equal": true,
@@ -2796,27 +2762,6 @@
         "through2": true
       }
     },
-    "gulp-stylelint": {
-      "builtin": {
-        "fs.mkdir": true,
-        "fs.writeFile": true,
-        "path.dirname": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "Buffer.from": true,
-        "process.cwd": true,
-        "process.nextTick": true
-      },
-      "packages": {
-        "fancy-log": true,
-        "plugin-error": true,
-        "source-map": true,
-        "strip-ansi": true,
-        "stylelint": true,
-        "through2": true
-      }
-    },
     "gulp-watch": {
       "builtin": {
         "path.dirname": true,
@@ -2894,21 +2839,6 @@
       "builtin": {
         "url.URL": true,
         "url.parse": true
-      }
-    },
-    "htmlparser2": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "string_decoder.StringDecoder": true
-      },
-      "packages": {
-        "domelementtype": true,
-        "domhandler": true,
-        "domutils": true,
-        "entities": true,
-        "inherits": true,
-        "readable-stream": true
       }
     },
     "http-parser-js": {
@@ -2997,12 +2927,6 @@
     "is-accessor-descriptor": {
       "packages": {
         "kind-of": true
-      }
-    },
-    "is-alphanumerical": {
-      "packages": {
-        "is-alphabetical": true,
-        "is-decimal": true
       }
     },
     "is-binary-path": {
@@ -3341,16 +3265,6 @@
         "setTimeout": true
       }
     },
-    "log-symbols": {
-      "globals": {
-        "process.env.CI": true,
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "chalk": true
-      }
-    },
     "loose-envify": {
       "builtin": {
         "stream.PassThrough": true,
@@ -3405,19 +3319,9 @@
         "object-visit": true
       }
     },
-    "markdown-table": {
-      "packages": {
-        "repeat-string": true
-      }
-    },
     "math-random": {
       "builtin": {
         "crypto.randomBytes": true
-      }
-    },
-    "mdast-util-compact": {
-      "packages": {
-        "unist-util-visit": true
       }
     },
     "memoizee": {
@@ -3510,13 +3414,6 @@
       "packages": {
         "for-in": true,
         "is-extendable": true
-      }
-    },
-    "mkdirp": {
-      "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
       }
     },
     "module-deps": {
@@ -3648,11 +3545,6 @@
     "normalize-path": {
       "packages": {
         "remove-trailing-separator": true
-      }
-    },
-    "normalize-selector": {
-      "globals": {
-        "define": true
       }
     },
     "now-and-later": {
@@ -3829,16 +3721,6 @@
         "path-platform": true
       }
     },
-    "parse-entities": {
-      "packages": {
-        "character-entities": true,
-        "character-entities-legacy": true,
-        "character-reference-invalid": true,
-        "is-alphanumerical": true,
-        "is-decimal": true,
-        "is-hexadecimal": true
-      }
-    },
     "parse-glob": {
       "packages": {
         "glob-base": true,
@@ -3976,69 +3858,29 @@
     "postcss": {
       "builtin": {
         "fs": true,
-        "path": true
+        "path": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true
       },
       "globals": {
         "Buffer": true,
+        "URL": true,
         "atob": true,
         "btoa": true,
         "console": true,
+        "process.env.LANG": true,
         "process.env.NODE_ENV": true
       },
       "packages": {
         "chalk": true,
+        "nanoid": true,
         "picocolors": true,
         "source-map": true,
+        "source-map-js": true,
         "supports-color": true
       }
     },
-    "postcss-html": {
-      "globals": {
-        "__dirname": true
-      },
-      "packages": {
-        "htmlparser2": true,
-        "postcss-syntax": true
-      }
-    },
-    "postcss-less": {
-      "packages": {
-        "postcss": true
-      }
-    },
-    "postcss-reporter": {
-      "packages": {
-        "lodash": true
-      }
-    },
     "postcss-safe-parser": {
-      "packages": {
-        "postcss": true
-      }
-    },
-    "postcss-sass": {
-      "packages": {
-        "gonzales-pe": true,
-        "postcss": true
-      }
-    },
-    "postcss-scss": {
-      "packages": {
-        "postcss": true
-      }
-    },
-    "postcss-selector-parser": {
-      "packages": {
-        "cssesc": true,
-        "util-deprecate": true
-      }
-    },
-    "postcss-syntax": {
-      "builtin": {
-        "path.isAbsolute": true,
-        "path.resolve": true,
-        "path.sep": true
-      },
       "packages": {
         "postcss": true
       }
@@ -4305,51 +4147,6 @@
         "regjsparser": "write"
       }
     },
-    "remark": {
-      "packages": {
-        "remark-parse": true,
-        "remark-stringify": true,
-        "unified": true
-      }
-    },
-    "remark-parse": {
-      "packages": {
-        "ccount": true,
-        "collapse-white-space": true,
-        "is-alphabetical": true,
-        "is-decimal": true,
-        "is-whitespace-character": true,
-        "is-word-character": true,
-        "markdown-escapes": true,
-        "parse-entities": true,
-        "repeat-string": true,
-        "state-toggle": true,
-        "trim": true,
-        "trim-trailing-lines": true,
-        "unherit": true,
-        "unist-util-remove-position": true,
-        "vfile-location": true,
-        "xtend": true
-      }
-    },
-    "remark-stringify": {
-      "packages": {
-        "ccount": true,
-        "is-alphanumeric": true,
-        "is-decimal": true,
-        "is-whitespace-character": true,
-        "longest-streak": true,
-        "markdown-escapes": true,
-        "markdown-table": true,
-        "mdast-util-compact": true,
-        "parse-entities": true,
-        "repeat-string": true,
-        "state-toggle": true,
-        "stringify-entities": true,
-        "unherit": true,
-        "xtend": true
-      }
-    },
     "remove-bom-buffer": {
       "packages": {
         "is-buffer": true,
@@ -4577,13 +4374,6 @@
         "process": true
       }
     },
-    "slice-ansi": {
-      "packages": {
-        "ansi-styles": true,
-        "astral-regex": true,
-        "is-fullwidth-code-point": true
-      }
-    },
     "snapdragon": {
       "builtin": {
         "fs.readFileSync": true,
@@ -4692,11 +4482,6 @@
         "spdx-license-ids": true
       }
     },
-    "specificity": {
-      "globals": {
-        "define": true
-      }
-    },
     "split": {
       "builtin": {
         "string_decoder.StringDecoder": true
@@ -4784,7 +4569,6 @@
     "string-width": {
       "packages": {
         "code-point-at": true,
-        "emoji-regex": true,
         "is-fullwidth-code-point": true,
         "strip-ansi": true
       }
@@ -4805,15 +4589,6 @@
       },
       "packages": {
         "safe-buffer": true
-      }
-    },
-    "stringify-entities": {
-      "packages": {
-        "character-entities-html4": true,
-        "character-entities-legacy": true,
-        "is-alphanumerical": true,
-        "is-decimal": true,
-        "is-hexadecimal": true
       }
     },
     "strip-ansi": {
@@ -4837,79 +4612,46 @@
     },
     "stylelint": {
       "builtin": {
+        "fs.existsSync": true,
         "fs.lstatSync": true,
-        "fs.readFile": true,
+        "fs.promises.readFile": true,
         "fs.readFileSync": true,
-        "fs.stat": true,
         "os.EOL": true,
         "path.dirname": true,
+        "path.extname": true,
         "path.isAbsolute": true,
         "path.join": true,
         "path.normalize": true,
         "path.relative": true,
         "path.resolve": true,
         "path.sep": true,
-        "url.URL": true
+        "util.types.isNativeError": true
       },
       "globals": {
-        "__dirname": true,
-        "assert": true,
+        "console.assert": true,
         "console.warn": true,
         "process.cwd": true,
-        "process.env.NODE_ENV": true,
-        "process.stdout.columns": true,
-        "process.stdout.isTTY": true
+        "process.env.NODE_ENV": true
       },
       "packages": {
-        "@stylelint/postcss-css-in-js": true,
-        "@stylelint/postcss-markdown": true,
-        "autoprefixer": true,
-        "balanced-match": true,
-        "chalk": true,
         "cosmiconfig": true,
         "debug": true,
-        "execall": true,
+        "fast-glob": true,
+        "fastest-levenshtein": true,
         "file-entry-cache": true,
         "global-modules": true,
         "globby": true,
         "globjoin": true,
-        "html-tags": true,
         "ignore": true,
         "import-lazy": true,
         "imurmurhash": true,
-        "known-css-properties": true,
-        "leven": true,
-        "lodash": true,
-        "log-symbols": true,
-        "mathml-tag-names": true,
+        "is-plain-object": true,
         "micromatch": true,
-        "normalize-selector": true,
+        "normalize-path": true,
         "postcss": true,
-        "postcss-html": true,
-        "postcss-less": true,
-        "postcss-media-query-parser": true,
-        "postcss-reporter": true,
-        "postcss-resolve-nested-selector": true,
         "postcss-safe-parser": true,
-        "postcss-sass": true,
-        "postcss-scss": true,
-        "postcss-selector-parser": true,
-        "postcss-syntax": true,
-        "postcss-value-parser": true,
         "resolve-from": true,
-        "slash": true,
-        "specificity": true,
-        "string-width": true,
-        "style-search": true,
-        "sugarss": true,
-        "svg-tags": true,
-        "table": true,
         "write-file-atomic": true
-      }
-    },
-    "sugarss": {
-      "packages": {
-        "postcss": true
       }
     },
     "supports-color": {
@@ -4931,17 +4673,6 @@
     "syntax-error": {
       "packages": {
         "acorn-node": true
-      }
-    },
-    "table": {
-      "globals": {
-        "process.stdout.write": true
-      },
-      "packages": {
-        "ajv": true,
-        "lodash": true,
-        "slice-ansi": true,
-        "string-width": true
       }
     },
     "terser": {
@@ -5072,14 +4803,6 @@
         "prelude-ls": true
       }
     },
-    "typedarray-to-buffer": {
-      "globals": {
-        "Buffer.from": true
-      },
-      "packages": {
-        "is-typedarray": true
-      }
-    },
     "typescript": {
       "builtin": {
         "buffer.Buffer": true,
@@ -5155,26 +4878,10 @@
         "undertaker-registry": true
       }
     },
-    "unherit": {
-      "packages": {
-        "inherits": true,
-        "xtend": true
-      }
-    },
     "unicode-match-property-ecmascript": {
       "packages": {
         "unicode-canonical-property-names-ecmascript": true,
         "unicode-property-aliases-ecmascript": true
-      }
-    },
-    "unified": {
-      "packages": {
-        "bail": true,
-        "extend": true,
-        "is-buffer": true,
-        "is-plain-obj": true,
-        "trough": true,
-        "vfile": true
       }
     },
     "union-value": {
@@ -5189,26 +4896,6 @@
       "packages": {
         "json-stable-stringify": true,
         "through2-filter": true
-      }
-    },
-    "unist-util-find-all-after": {
-      "packages": {
-        "unist-util-is": true
-      }
-    },
-    "unist-util-remove-position": {
-      "packages": {
-        "unist-util-visit": true
-      }
-    },
-    "unist-util-visit": {
-      "packages": {
-        "unist-util-visit-parents": true
-      }
-    },
-    "unist-util-visit-parents": {
-      "packages": {
-        "unist-util-is": true
       }
     },
     "unset-value": {
@@ -5246,28 +4933,6 @@
       "packages": {
         "spdx-correct": true,
         "spdx-expression-parse": true
-      }
-    },
-    "vfile": {
-      "builtin": {
-        "path.basename": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.join": true,
-        "path.sep": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "is-buffer": true,
-        "replace-ext": true,
-        "vfile-message": true
-      }
-    },
-    "vfile-message": {
-      "packages": {
-        "unist-util-stringify-position": true
       }
     },
     "vinyl": {
@@ -5441,17 +5106,6 @@
         "string-width": true
       }
     },
-    "write": {
-      "builtin": {
-        "fs.createWriteStream": true,
-        "fs.writeFile": true,
-        "fs.writeFileSync": true,
-        "path.dirname": true
-      },
-      "packages": {
-        "mkdirp": true
-      }
-    },
     "write-file-atomic": {
       "builtin": {
         "fs.chmod": true,
@@ -5479,16 +5133,13 @@
         "worker_threads.threadId": true
       },
       "globals": {
-        "Buffer.isBuffer": true,
         "__filename": true,
         "process.getuid": true,
         "process.pid": true
       },
       "packages": {
         "imurmurhash": true,
-        "is-typedarray": true,
-        "signal-exit": true,
-        "typedarray-to-buffer": true
+        "signal-exit": true
       }
     },
     "yaml": {

@@ -8,7 +8,7 @@
     color: var(--tundora);
     border-style: solid;
     border-color: var(--alto);
-    border-width: 1px 1px 1px;
+    border-width: 1px;
     border-left: 0;
     flex: 1;
     padding: 12px;
@@ -63,7 +63,7 @@
 
     &:hover {
       box-shadow: 0 0 14px rgba(0, 0, 0, 0.18);
-    };
+    }
   }
 
   .radio-button--active.radio-button--danger {

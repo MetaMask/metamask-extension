@@ -8,7 +8,7 @@
   &__first-notification {
     display: flex;
     flex-direction: column;
-    margin: 0 24px 24px 24px;
+    margin: 0 24px 24px;
     border-bottom: 1px solid var(--Grey-100);
     position: relative;
   }
@@ -17,7 +17,7 @@
     > * {
       &:nth-last-child(2) {
         margin-bottom: 0;
-      };
+      }
     }
 
     .whats-new-popup__intersection-observable {

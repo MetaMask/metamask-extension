@@ -82,7 +82,13 @@
     }
 
     &__radio-button {
+      position: relative;
       width: 18px;
+      height: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 4px;
     }
 
     &__option-text {
@@ -116,15 +122,6 @@
       color: #24292e;
     }
 
-    &__radio-button {
-      position: relative;
-      width: 18px;
-      height: 18px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-right: 4px;
-    }
 
     &__radio-button-outline,
     &__radio-button-outline--selected {
