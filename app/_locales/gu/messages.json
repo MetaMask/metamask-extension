@@ -141,7 +141,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "મેટામાસ્ક",
+    "message": "MetaMask",
     "description": "The name of the application"
   },
   "approvalAndAggregatorTxFeeCost": {
