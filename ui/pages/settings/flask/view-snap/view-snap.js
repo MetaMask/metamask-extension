@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../../../../components/ui/button';
@@ -12,6 +12,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import SnapsAuthorshipPill from '../../../../components/app/flask/snaps-authorship-pill';
 import Box from '../../../../components/ui/box';
+import SnapRemoveWarning from '../../../../components/app/flask/snap-remove-warning';
 import ToggleButton from '../../../../components/ui/toggle-button';
 import PermissionsConnectPermissionList from '../../../../components/app/permissions-connect-permission-list/permissions-connect-permission-list';
 import ConnectedSitesList from '../../../../components/app/connected-sites-list';
@@ -38,6 +39,8 @@ function ViewSnap() {
       const decoded = decodeURIComponent(escape(window.atob(pathNameTail)));
       return snapState.id === decoded;
     });
+
+  const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
 
   useEffect(() => {
     if (!snap) {
@@ -155,12 +158,19 @@ function ViewSnap() {
               css={{
                 maxWidth: '175px',
               }}
-              onClick={() => {
-                dispatch(removeSnap(snap));
-              }}
+              onClick={() => setIsShowingRemoveWarning(true)}
             >
               {t('removeSnap')}
             </Button>
+            {isShowingRemoveWarning && (
+              <SnapRemoveWarning
+                onCancel={() => setIsShowingRemoveWarning(false)}
+                onSubmit={async () => {
+                  await dispatch(removeSnap(snap));
+                }}
+                snapName={snap.manifest.proposedName}
+              />
+            )}
           </div>
         </Box>
       </div>
