@@ -654,6 +654,7 @@ export default class MetamaskController extends EventEmitter {
             originMetadata?.name ?? origin,
             message,
           );
+          return null;
         },
       },
     });
@@ -1057,10 +1058,12 @@ export default class MetamaskController extends EventEmitter {
             requestData: confirmationData,
           }),
         showNotification: (origin, args) =>
-          this.controllerMessenger.call.bind(
-            this.controllerMessenger,
+          this.controllerMessenger.call(
             'RateLimitController:call',
-            { type: 'showNativeNotification', args: [origin, args[1]] },
+            origin,
+            'showNativeNotification',
+            origin,
+            args.message,
           ),
         updateSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
