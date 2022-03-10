@@ -135,7 +135,7 @@ export default function EditGasPopover({
     }
   }, [onClose, dispatch]);
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (!updatedTransaction || !mode) {
       closePopover();
     }
@@ -192,7 +192,9 @@ export default function EditGasPopover({
         userSettings.userEditedGasLimit = updatedTxMeta.userEditedGasLimit;
         userSettings.userFeeLevel = updatedTxMeta.userFeeLevel;
 
-        dispatch(updateTransactionGasFees(updatedTxMeta.id, newGasSettings));
+        await dispatch(
+          updateTransactionGasFees(updatedTxMeta.id, newGasSettings),
+        );
         dispatch(updateTransactionUserSettings(updatedTxMeta.id, userSettings));
         break;
       case EDIT_GAS_MODES.SWAPS:
