@@ -31,8 +31,13 @@ function print_flask_version ()
   local flask_filename
   flask_filename="$(find ./builds-flask -type f -name 'metamask-flask-chrome-*.zip' -exec basename {} .zip \;)"
 
-  # Use substring parameter expansion to remove the first 22 characters ("metamask-extension-flask-")
-  echo "${flask_filename:22}"
+  local flask_build_filename_prefix
+  flask_build_filename_prefix='metamask-flask-chrome-'
+  local flask_build_filename_prefix_size
+  flask_build_filename_prefix_size="${#flask_build_filename_prefix}"
+
+  # Use substring parameter expansion to remove the filename prefix, leaving just the version
+  echo "${flask_filename:$flask_build_filename_prefix_size}"
 }
 
 current_commit_msg=$(git show -s --format='%s' HEAD)
