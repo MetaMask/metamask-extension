@@ -382,7 +382,7 @@ class Driver {
     const ignoredLogTypes = ['WARNING'];
     const ignoredErrorMessages = [
       // Third-party Favicon 404s show up as errors
-      'favicon.ico - Failed to load resource: the server responded with a status of 404 (Not Found)',
+      'favicon.ico - Failed to load resource: the server responded with a status of 404',
       // Sentry rate limiting
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte
